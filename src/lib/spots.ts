@@ -275,6 +275,239 @@ export const spots: Spot[] = [
     descriptionEn: '4km long beach with side-shore wind. Kitesurf and windsurf school in the center.',
     images: ['/images/meia-praia-1.jpg'], facilities: ['Estacionamento', 'Escolas', 'Aluguer', 'Restaurantes'],
     hazards: ['Tráfego na época alta']
+  },
+
+  // ==================== AÇORES ====================
+  {
+    id: 'santa-barbara', slug: 'santa-barbara', name: 'Santa Bárbara', nameEn: 'Santa Barbara',
+    region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.821, lon: -25.698,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'S, SE', bestSwell: 'N, NW',
+    description: 'Paraíso dos surfistas nos Açores. Ondas potentes com cenário vulcânico único. Competições internacionais. Areia negra vulcânica.',
+    descriptionEn: 'Surfers paradise in the Azores. Powerful waves with unique volcanic scenery. International competitions. Black volcanic sand.',
+    images: ['/images/santa-barbara-1.jpg'], facilities: ['Estacionamento', 'Café', 'Escola surf', 'WC'],
+    hazards: ['Rochas vulcânicas', 'Multidão em eventos']
+  },
+  {
+    id: 'monte-verde', slug: 'monte-verde', name: 'Monte Verde', nameEn: 'Monte Verde',
+    region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.829, lon: -25.653,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'S, SE', bestSwell: 'NW, W',
+    description: 'Beach break versátil que funciona com qualquer swell. Ondas poderosas em dias grandes. Fácil acesso pela cidade de Ribeira Grande.',
+    descriptionEn: 'Versatile beach break that works with any swell. Powerful waves on big days. Easy access from Ribeira Grande town.',
+    images: ['/images/monte-verde-1.jpg'], facilities: ['Estacionamento', 'Café', 'WC'],
+    hazards: ['Correntes', 'Ondas pesadas']
+  },
+  {
+    id: 'mosteiros', slug: 'mosteiros', name: 'Mosteiros', nameEn: 'Mosteiros',
+    region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.890, lon: -25.823,
+    type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Point break direito com ondas longas sobre rocha vulcânica. Os ilhéus escuros criam um cenário épico ao pôr do sol.',
+    descriptionEn: 'Right-hand point break with long waves over volcanic rock. The dark islets create an epic sunset scenery.',
+    images: ['/images/mosteiros-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
+    hazards: ['Rocha vulcânica rasa', 'Acesso difícil']
+  },
+  {
+    id: 'agua-alto', slug: 'agua-alto', name: "Água d'Alto", nameEn: 'Agua de Alto',
+    region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.714, lon: -25.472,
+    type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SE',
+    description: 'Alternativa perfeita para fugir da multidão de Milícias. Beach break com fundo misto. Esquerda longa perto do hotel.',
+    descriptionEn: 'Perfect alternative to escape the Milicias crowd. Beach break with mixed bottom. Long left near the hotel.',
+    images: ['/images/agua-alto-1.jpg'], facilities: ['Estacionamento', 'Hotel', 'WC'],
+    hazards: ['Rochas no fundo']
+  },
+  {
+    id: 'milicias', slug: 'milicias', name: 'Milícias', nameEn: 'Milicias',
+    region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.738, lon: -25.636,
+    type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SW',
+    description: 'Praia urbana perto de Ponta Delgada. Areia negra vulcânica com múltiplos picos. Consistente com swell do sul.',
+    descriptionEn: 'Urban beach near Ponta Delgada. Black volcanic sand with multiple peaks. Consistent with south swell.',
+    images: ['/images/milicias-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
+    hazards: ['Multidão', 'Surf schools']
+  },
+  {
+    id: 'praia-vitoria', slug: 'praia-vitoria', name: 'Praia da Vitória', nameEn: 'Praia da Vitoria',
+    region: 'Terceira', regionEn: 'Terceira', lat: 38.730, lon: -27.066,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
+    description: 'Baía abrigada na Terceira com ondas consistentes. Praia extensa com areia clara. Cenário único dos Açores centrais.',
+    descriptionEn: 'Sheltered bay in Terceira with consistent waves. Long beach with light sand. Unique scenery of the Central Azores.',
+    images: ['/images/praia-vitoria-1.jpg'], facilities: ['Estacionamento', 'Restaurantes', 'WC'],
+    hazards: ['Correntes moderadas']
+  },
+  {
+    id: 'santa-catarina-terceira', slug: 'santa-catarina-terceira', name: 'Santa Catarina', nameEn: 'Santa Catarina',
+    region: 'Terceira', regionEn: 'Terceira', lat: 38.683, lon: -27.218,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
+    description: 'Reef break exposto e consistente. O mais popular da Terceira. Ondas longas e tubulares sobre fundo de rocha.',
+    descriptionEn: 'Exposed and consistent reef break. The most popular in Terceira. Long and tubular waves over rock bottom.',
+    images: ['/images/santa-catarina-terceira-1.jpg'], facilities: ['Estacionamento', 'WC'],
+    hazards: ['Rochas afiadas', 'Acesso difícil']
+  },
+  {
+    id: 'almoxarife', slug: 'almoxarife', name: 'Praia do Almoxarife', nameEn: 'Praia do Almoxarife',
+    region: 'Faial', regionEn: 'Faial', lat: 38.533, lon: -28.633,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'N, NW',
+    description: 'Breaks rochosos na costa leste do Faial. Recebe swell do norte e sul. Vistas para o Pico.',
+    descriptionEn: 'Rocky breaks on the east coast of Faial. Takes north and south swells. Views of Pico.',
+    images: ['/images/almoxarife-1.jpg'], facilities: ['Estacionamento', 'WC'],
+    hazards: ['Rochas', 'Pouco profundo']
+  },
+  {
+    id: 'anjos', slug: 'anjos', name: 'Anjos', nameEn: 'Anjos',
+    region: 'Santa Maria', regionEn: 'Santa Maria', lat: 36.967, lon: -25.100,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'S, SW', bestSwell: 'NW, N',
+    description: 'Reef break direito exposto na costa noroeste de Santa Maria. Ondas tubulares em dias grandes.',
+    descriptionEn: 'Exposed right reef break on the northwest coast of Santa Maria. Tubular waves on big days.',
+    images: ['/images/anjos-1.jpg'], facilities: ['Estacionamento limitado', 'WC'],
+    hazards: ['Rochas', 'Acesso difícil']
+  },
+
+  // ==================== MADEIRA ====================
+  {
+    id: 'porto-da-cruz', slug: 'porto-da-cruz', name: 'Porto da Cruz', nameEn: 'Porto da Cruz',
+    region: 'Madeira', regionEn: 'Madeira', lat: 32.767, lon: -16.833,
+    type: 'surf', difficulty: 'beginner', bestWind: 'S, SE', bestSwell: 'N, NW',
+    description: 'Melhor spot para iniciantes na Madeira. Ondas suaves com areia vulcânica preta. Escolas de surf e ambiente familiar.',
+    descriptionEn: 'Best beginner spot in Madeira. Gentle waves with black volcanic sand. Surf schools and family atmosphere.',
+    images: ['/images/porto-da-cruz-1.jpg'], facilities: ['Estacionamento', 'Escolas surf', 'Restaurantes', 'WC'],
+    hazards: ['Multidão em dias de evento']
+  },
+  {
+    id: 'jardim-mar', slug: 'jardim-mar', name: 'Jardim do Mar', nameEn: 'Jardim do Mar',
+    region: 'Madeira', regionEn: 'Madeira', lat: 32.750, lon: -17.217,
+    type: 'surf', difficulty: 'advanced', bestWind: 'E, NE', bestSwell: 'W, NW',
+    description: 'Onda direita lendária da Madeira. Uma das mais pesadas da Europa. Tubos longos sobre reef. Apenas experts.',
+    descriptionEn: 'Legendary Madeira right-hand wave. One of the heaviest in Europe. Long tubes over reef. Experts only.',
+    images: ['/images/jardim-mar-1.jpg'], facilities: ['Estacionamento limitado', 'Restaurante'],
+    hazards: ['Reef raso', 'Acesso por molhe', 'Ondas mortais']
+  },
+  {
+    id: 'paul-mar', slug: 'paul-mar', name: 'Paul do Mar', nameEn: 'Paul do Mar',
+    region: 'Madeira', regionEn: 'Madeira', lat: 32.767, lon: -17.233,
+    type: 'surf', difficulty: 'advanced', bestWind: 'E, NE', bestSwell: 'W, NW',
+    description: 'Ondas tubulares de classe mundial. Aqui foi realizado o World Big Wave Championship 2001. Ondas até 8 metros.',
+    descriptionEn: 'World-class barreling waves. The 2001 World Big Wave Championship was held here. Waves up to 8 meters.',
+    images: ['/images/paul-mar-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'Escola surf'],
+    hazards: ['Rochas', 'Ondas gigantescas', 'Correntes']
+  },
+  {
+    id: 'ponta-sao-lourenco', slug: 'ponta-sao-lourenco', name: 'Ponta de São Lourenço', nameEn: 'Ponta de Sao Lourenco',
+    region: 'Madeira', regionEn: 'Madeira', lat: 32.733, lon: -16.667,
+    type: 'surf', difficulty: 'advanced', bestWind: 'N, NE', bestSwell: 'S, SE',
+    description: 'Paisagem lunar vulcânica com ondas consistentes. Spot remoto para aventureiros. Águas turquesa e cenário dramático.',
+    descriptionEn: 'Lunar volcanic landscape with consistent waves. Remote spot for adventurers. Turquoise waters and dramatic scenery.',
+    images: ['/images/ponta-sao-lourenco-1.jpg'], facilities: ['Estacionamento limitado'],
+    hazards: ['Acesso difícil', 'Rochas', 'Sem infraestruturas']
+  },
+  {
+    id: 'funchal', slug: 'funchal', name: 'Praia Formosa', nameEn: 'Praia Formosa',
+    region: 'Madeira', regionEn: 'Madeira', lat: 32.650, lon: -16.917,
+    type: 'kitesurf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S',
+    description: 'Baía do Funchal com vento térmico. Kitesurf no centro da cidade. Águas quentes e cenário urbano único.',
+    descriptionEn: 'Funchal bay with thermal wind. Kitesurf in the city center. Warm waters and unique urban scenery.',
+    images: ['/images/funchal-1.jpg'], facilities: ['Estacionamento', 'Escola kite', 'Restaurantes', 'WC'],
+    hazards: ['Tráfego de barcos', 'Banhistas']
+  },
+  {
+    id: 'ribeira-brava', slug: 'ribeira-brava', name: 'Ribeira Brava', nameEn: 'Ribeira Brava',
+    region: 'Madeira', regionEn: 'Madeira', lat: 32.683, lon: -17.000,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
+    description: 'Onda de reef break potente na costa sul. Cenário de montanhas verdes. Acesso fácil pela estrada costeira.',
+    descriptionEn: 'Powerful reef break wave on the south coast. Green mountain scenery. Easy access by coastal road.',
+    images: ['/images/ribeira-brava-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
+    hazards: ['Rochas', 'Correntes']
+  },
+  {
+    id: 'sao-vicente-madeira', slug: 'sao-vicente-madeira', name: 'São Vicente', nameEn: 'Sao Vicente',
+    region: 'Madeira', regionEn: 'Madeira', lat: 32.800, lon: -17.033,
+    type: 'surf', difficulty: 'beginner', bestWind: 'S, SE', bestSwell: 'N, NW',
+    description: 'Norte da ilha com ondas suaves perfeitas para iniciantes. Mar sempre agitado. Escola de surf local.',
+    descriptionEn: 'North of the island with soft waves perfect for beginners. Sea always rough. Local surf school.',
+    images: ['/images/sao-vicente-madeira-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'WC'],
+    hazards: ['Correntes moderadas']
+  },
+
+  // ==================== ALENTEJO ====================
+  {
+    id: 'vila-nova-milfontes', slug: 'vila-nova-milfontes', name: 'Vila Nova de Milfontes', nameEn: 'Vila Nova de Milfontes',
+    region: 'Alentejo', regionEn: 'Alentejo', lat: 37.723, lon: -8.783,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
+    description: 'Vila charmosa na foz do rio Mira. Múltiplos beach breaks: Malhão, Aivados, Furnas. Costa Vicentina selvagem.',
+    descriptionEn: 'Charming village at the mouth of the Mira River. Multiple beach breaks: Malhao, Aivados, Furnas. Wild Vicentina Coast.',
+    images: ['/images/vila-nova-milfontes-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Alojamento', 'WC'],
+    hazards: ['Correntes']
+  },
+  {
+    id: 'zambujeira', slug: 'zambujeira', name: 'Zambujeira do Mar', nameEn: 'Zambujeira do Mar',
+    region: 'Alentejo', regionEn: 'Alentejo', lat: 37.527, lon: -8.785,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
+    description: 'Vila postal nas falésias com beach break potente. Direita pesada junto às falésias. Festival MEO Sudoeste nas proximidades.',
+    descriptionEn: 'Postcard village on cliffs with powerful beach break. Heavy right near the cliffs. MEO Sudoeste festival nearby.',
+    images: ['/images/zambujeira-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
+    hazards: ['Ondas pesadas', 'Locals']
+  },
+  {
+    id: 'porto-covo', slug: 'porto-covo', name: 'Porto Covo', nameEn: 'Porto Covo',
+    region: 'Alentejo', regionEn: 'Alentejo', lat: 37.852, lon: -8.790,
+    type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Vila piscatória típica com praias cristalinas. Praia Grande com ondas perfeitas para longboarders. Várias enseadas secretas.',
+    descriptionEn: 'Typical fishing village with crystal clear beaches. Praia Grande with perfect waves for longboarders. Several secret coves.',
+    images: ['/images/porto-covo-1.jpg'], facilities: ['Estacionamento', 'Restaurantes', 'WC'],
+    hazards: ['Acesso por trilhos']
+  },
+  {
+    id: 'odeceixe', slug: 'odeceixe', name: 'Odeceixe', nameEn: 'Odeceixe',
+    region: 'Alentejo', regionEn: 'Alentejo', lat: 37.440, lon: -8.800,
+    type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SW',
+    description: 'Praia única onde o rio encontra o mar. Perfeita para SUP e iniciantes de surf. Natureza intocada.',
+    descriptionEn: 'Unique beach where the river meets the sea. Perfect for SUP and beginner surfers. Untouched nature.',
+    images: ['/images/odeceixe-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
+    hazards: ['Correntes de maré']
+  },
+  {
+    id: 'sao-torpes', slug: 'sao-torpes', name: 'São Torpes', nameEn: 'Sao Torpes',
+    region: 'Alentejo', regionEn: 'Alentejo', lat: 37.950, lon: -8.800,
+    type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Spot único — antiga central térmica aquece a água! Surf de inverno com wetsuit mais fino. Beach break longo e acessível.',
+    descriptionEn: 'Unique spot — old power station warms the water! Winter surfing with thinner wetsuit. Long and accessible beach break.',
+    images: ['/images/sao-torpes-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
+    hazards: ['Estruturas industriais no fundo']
+  },
+  {
+    id: 'malhao', slug: 'malhao', name: 'Malhão', nameEn: 'Malhao',
+    region: 'Alentejo', regionEn: 'Alentejo', lat: 37.775, lon: -8.775,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Beach break versátil de 2km com múltiplos picos. Varia de slab overhead a ondas de joelho. Escolas de surf locais.',
+    descriptionEn: 'Versatile 2km beach break with multiple peaks. Varies from overhead slab to knee-high waves. Local surf schools.',
+    images: ['/images/malhao-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'WC'],
+    hazards: ['Multidão', 'Correntes']
+  },
+
+  // ==================== LAGOAS / WAKEBOARD ====================
+  {
+    id: 'castelo-bode', slug: 'castelo-bode', name: 'Castelo de Bode', nameEn: 'Castelo de Bode',
+    region: 'Santarém', regionEn: 'Santarem', lat: 39.600, lon: -8.300,
+    type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
+    description: 'Maior resort de wakeboard da Europa! 5 cable parks em 30km de lagoa. Água cristalina e plana. Perfeito para iniciantes a pros.',
+    descriptionEn: 'Biggest wakeboard resort in Europe! 5 cable parks along 30km of lake. Crystal clear flat water. Perfect from beginners to pros.',
+    images: ['/images/castelo-bode-1.jpg'], facilities: ['Estacionamento', '5 Cable Parks', 'Escola wake', 'Aluguer', 'Restaurante', 'Alojamento'],
+    hazards: ['Outros riders', 'Barcos']
+  },
+  {
+    id: 'alqueva', slug: 'alqueva', name: 'Alqueva', nameEn: 'Alqueva',
+    region: 'Alentejo', regionEn: 'Alentejo', lat: 38.200, lon: -7.500,
+    type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
+    description: 'Maior lago artificial da Europa. Wakeboard e waterski com Mastercraft. Clima estável e água calma o ano todo.',
+    descriptionEn: 'Largest artificial lake in Europe. Wakeboard and waterski with Mastercraft. Stable climate and calm water all year round.',
+    images: ['/images/alqueva-1.jpg'], facilities: ['Estacionamento', 'Escola wake', 'Aluguer', 'Restaurante'],
+    hazards: ['Barcos de pesca']
+  },
+  {
+    id: 'lagos-wakepark', slug: 'lagos-wakepark', name: 'Lagos Wake Park', nameEn: 'Lagos Wake Park',
+    region: 'Algarve', regionEn: 'Algarve', lat: 37.100, lon: -8.670,
+    type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
+    description: 'Cable park 2.0 na salina de Lagos. Rampas, rails, kickers e sliders. Mastercraft X-23 para wake boat. Campo completo!',
+    descriptionEn: '2.0 cable park on Lagos salt flat. Ramps, rails, kickers and sliders. Mastercraft X-23 for wake boat. Complete park!',
+    images: ['/images/lagos-wakepark-1.jpg'], facilities: ['Estacionamento', 'Cable 2.0', 'Wake Boat', 'Escola', 'Alojamento'],
+    hazards: ['Outros riders']
   }
 ];
 

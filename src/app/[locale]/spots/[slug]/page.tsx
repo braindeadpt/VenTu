@@ -58,6 +58,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
     intermediate: t.spots.intermediate,
     advanced: t.spots.advanced,
     expert: t.spots.expert,
+    all: 'Todos os níveis',
   }
 
   return (

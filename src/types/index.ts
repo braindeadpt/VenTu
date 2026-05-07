@@ -7,8 +7,8 @@ export interface Spot {
   regionEn: string;
   lat: number;
   lon: number;
-  type: 'surf' | 'kitesurf' | 'windsurf' | 'big-wave' | 'foil' | 'multisport';
-  difficulty: 'beginner' | 'intermediate' | 'advanced' | 'expert';
+  type: 'surf' | 'kitesurf' | 'windsurf' | 'big-wave' | 'foil' | 'multisport' | 'wakeboard';
+  difficulty: 'beginner' | 'intermediate' | 'advanced' | 'expert' | 'all';
   bestWind: string;
   bestSwell: string;
   description: string;
