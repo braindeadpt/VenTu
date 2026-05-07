@@ -89,7 +89,7 @@ export const spots: Spot[] = [
     type: 'kitesurf', difficulty: 'intermediate', bestWind: 'N, NW', bestSwell: 'S, SW',
     description: 'Spot de kitesurf ao lado do Cabedelo. Água plana ideal para freestyle e foil. Menos crowd que o Cabedelo principal.',
     descriptionEn: 'Kitesurf spot next to Cabedelo. Flat water ideal for freestyle and foil. Less crowded than main Cabedelo.',
-    images: ['/images/amorosa-1.jpg'], facilities: ['Estacionamento', 'Escola kite', 'WC'],
+    images: ['/images/cabedelo-1.jpg'], facilities: ['Estacionamento', 'Escola kite', 'WC'],
     hazards: ['Pedras entre Cabedelo e Amorosa', 'Mare']
   },
   {
@@ -464,7 +464,7 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'intermediate', bestWind: 'S, SW', bestSwell: 'NW, N',
     description: 'Reef break direito exposto na costa noroeste de Santa Maria. Ondas tubulares em dias grandes.',
     descriptionEn: 'Exposed right reef break on the northwest coast of Santa Maria. Tubular waves on big days.',
-    images: ['/images/anjos-1.jpg'], facilities: ['Estacionamento limitado', 'WC'],
+    images: ['/images/santa-barbara-1.jpg'], facilities: ['Estacionamento limitado', 'WC'],
     hazards: ['Rochas', 'Acesso difícil']
   },
 
