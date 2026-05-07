@@ -358,15 +358,6 @@ export const spots: Spot[] = [
     hazards: ['Rochas submersas', 'Multidão na época alta']
   },
   {
-    id: 'espinho', slug: 'espinho', name: 'Espinho', nameEn: 'Espinho',
-    region: 'Norte', regionEn: 'North', lat: 41.007, lon: -8.640,
-    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
-    description: 'Onda de direita consistente sobre areia. Uma das melhores do norte de Portugal.',
-    descriptionEn: 'Consistent right-hand wave over sand. One of the best in northern Portugal.',
-    images: ['/images/espinho-1.jpg'], facilities: ['Estacionamento', 'Restaurantes', 'Escola surf', 'WC'],
-    hazards: ['Correntes', 'Ressaca']
-  },
-  {
     id: 'carrapateira', slug: 'carrapateira', name: 'Carrapateira', nameEn: 'Carrapateira',
     region: 'Algarve', regionEn: 'Algarve', lat: 37.183, lon: -8.905,
     type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'W, NW',
