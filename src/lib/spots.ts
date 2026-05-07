@@ -56,6 +56,123 @@ export const spots: Spot[] = [
     images: ['/images/moledo-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
     hazards: ['Correntes fortes', 'Água fria']
   },
+  {
+    id: 'afife', slug: 'afife', name: 'Afife (Praia da Arda)', nameEn: 'Afife (Arda Beach)',
+    region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.780, lon: -8.860,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Destino de surf e windsurf desde os anos 70! Ondas de qualidade com ventos fortes ocasionais. Um dos spots mais icónicos do norte.',
+    descriptionEn: 'Surfing and windsurfing destination since the 70s! Quality waves with occasional strong winds. One of the most iconic northern spots.',
+    images: ['/images/afife-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'Restaurante', 'WC'],
+    hazards: ['Vento forte', 'Correntes', 'Exposto ao vento']
+  },
+  {
+    id: 'vila-praia-ancora', slug: 'vila-praia-ancora', name: 'Vila Praia de Âncora', nameEn: 'Vila Praia de Ancora',
+    region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.817, lon: -8.850,
+    type: 'surf', difficulty: 'beginner', bestWind: 'E, NE', bestSwell: 'W, NW',
+    description: 'A melhor praia para aprender surf no distrito de Viana. Ondas suaves, praia extensa e paisagem natural deslumbrante. Perfeita para famílias.',
+    descriptionEn: 'The best beach to learn surf in Viana district. Gentle waves, extensive beach and stunning natural landscape. Perfect for families.',
+    images: ['/images/vila-praia-ancora-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Alojamento', 'WC'],
+    hazards: ['Correntes moderadas']
+  },
+  {
+    id: 'castelo-neiva', slug: 'castelo-neiva', name: 'Castelo do Neiva', nameEn: 'Castelo do Neiva',
+    region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.750, lon: -8.820,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Praia com bandeira azul e ambiente tranquilo. Beach break consistente com múltiplos picos. Clube náutico na zona.',
+    descriptionEn: 'Blue flag beach with tranquil atmosphere. Consistent beach break with multiple peaks. Nautical club in the area.',
+    images: ['/images/castelo-neiva-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'Clube Nautico', 'WC'],
+    hazards: ['Rochas submersas', 'Correntes']
+  },
+  {
+    id: 'amorosa', slug: 'amorosa', name: 'Praia da Amorosa', nameEn: 'Amorosa Beach',
+    region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.700, lon: -8.850,
+    type: 'kitesurf', difficulty: 'intermediate', bestWind: 'N, NW', bestSwell: 'S, SW',
+    description: 'Spot de kitesurf ao lado do Cabedelo. Água plana ideal para freestyle e foil. Menos crowd que o Cabedelo principal.',
+    descriptionEn: 'Kitesurf spot next to Cabedelo. Flat water ideal for freestyle and foil. Less crowded than main Cabedelo.',
+    images: ['/images/amorosa-1.jpg'], facilities: ['Estacionamento', 'Escola kite', 'WC'],
+    hazards: ['Pedras entre Cabedelo e Amorosa', 'Mare']
+  },
+  {
+    id: 'apulia', slug: 'apulia', name: 'Apúlia', nameEn: 'Apulia',
+    region: 'Esposende', regionEn: 'Esposende', lat: 41.480, lon: -8.760,
+    type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Praia famosa do Norte com moinhos de vento como cenário. Ondas suaves perfeitas para iniciantes e longboard. Ambiente único.',
+    descriptionEn: 'Famous Northern beach with windmills as scenery. Gentle waves perfect for beginners and longboard. Unique atmosphere.',
+    images: ['/images/apulia-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC', 'Moinhos de vento'],
+    hazards: ['Correntes', 'Multidao no verao']
+  },
+  {
+    id: 'fao', slug: 'fao', name: 'Fão', nameEn: 'Fao',
+    region: 'Esposende', regionEn: 'Esposende', lat: 41.510, lon: -8.770,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Spot junto a Ofir com beach break consistente. Praia menos explorada, ideal para escapar da multidão. Fundo de areia variável.',
+    descriptionEn: 'Spot next to Ofir with consistent beach break. Less explored beach, ideal to escape crowds. Variable sand bottom.',
+    images: ['/images/fao-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
+    hazards: ['Ressaca forte', 'Correntes']
+  },
+  {
+    id: 'espinho', slug: 'espinho', name: 'Espinho', nameEn: 'Espinho',
+    region: 'Porto', regionEn: 'Porto', lat: 41.007, lon: -8.640,
+    type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'A LENDARIA "Direita do Casino"! Onda tubular que forma junto ao molhe do casino. Uma das ondas mais famosas do Norte. Sede de etapas do World Junior Tour.',
+    descriptionEn: 'The LEGENDARY "Casino Right"! Barrel wave forming next to the casino breakwater. One of the most famous waves in the North. Host of World Junior Tour stages.',
+    images: ['/images/espinho-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Casino', 'WC'],
+    hazards: ['Ondas pesadas', 'Molhe', 'Locals']
+  },
+  {
+    id: 'esmoriz', slug: 'esmoriz', name: 'Esmoriz', nameEn: 'Esmoriz',
+    region: 'Ovar', regionEn: 'Ovar', lat: 40.960, lon: -8.620,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Considerada pelo Evening Times a 2ª melhor zona de surf do MUNDO! Beach break de 6km com múltiplos picos. Pinhal ao fundo. Spot selvagem e pouco crowd.',
+    descriptionEn: 'Ranked by Evening Times as the 2nd best surf area in the WORLD! 6km beach break with multiple peaks. Pine forest backdrop. Wild and uncrowded spot.',
+    images: ['/images/esmoriz-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Camping', 'WC'],
+    hazards: ['Correntes', 'Ressaca forte']
+  },
+  {
+    id: 'cortegaca', slug: 'cortegaca', name: 'Cortegaça', nameEn: 'Cortegaca',
+    region: 'Ovar', regionEn: 'Ovar', lat: 40.940, lon: -8.610,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Beach break consistente famoso pelo festival de surf nocturno. Ondas de qualidade com pouco crowd. Pinhal ao lado.',
+    descriptionEn: 'Consistent beach break famous for night surfing festival. Quality waves with little crowd. Pine forest next to it.',
+    images: ['/images/cortegaca-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'WC'],
+    hazards: ['Correntes', 'Ressaca']
+  },
+  {
+    id: 'azurara', slug: 'azurara', name: 'Azurara', nameEn: 'Azurara',
+    region: 'Vila do Conde', regionEn: 'Vila do Conde', lat: 41.360, lon: -8.750,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Uma das melhores praias de surf do Norte de Portugal! Orientação geográfica perfeita para ondas. Beach break com múltiplos picos.',
+    descriptionEn: 'One of the best surf beaches in Northern Portugal! Perfect geographic orientation for waves. Beach break with multiple peaks.',
+    images: ['/images/azurara-1.jpg'], facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
+    hazards: ['Correntes', 'Ressaca forte']
+  },
+  {
+    id: 'leca-palmeira', slug: 'leca-palmeira', name: 'Leça da Palmeira', nameEn: 'Leca da Palmeira',
+    region: 'Porto', regionEn: 'Porto', lat: 41.190, lon: -8.700,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Praia com bandeira azul ao lado de Matosinhos. Beach break potente com ondas mais hollow. Pool de mares famoso nas proximidades.',
+    descriptionEn: 'Blue flag beach next to Matosinhos. Powerful beach break with hollower waves. Famous tidal pool nearby.',
+    images: ['/images/leca-palmeira-1.jpg'], facilities: ['Estacionamento', 'Restaurante', 'Piscina de Mares', 'WC'],
+    hazards: ['Correntes', 'Ressaca']
+  },
+  {
+    id: 'maceda', slug: 'maceda', name: 'Maceda', nameEn: 'Maceda',
+    region: 'Ovar', regionEn: 'Ovar', lat: 40.930, lon: -8.600,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Beach break selvagem com dunas imensas. Spot pouco explorado, ideal para escapar da multidão. Ondas de qualidade com crowd minimo.',
+    descriptionEn: 'Wild beach break with huge dunes. Little explored spot, ideal to escape crowds. Quality waves with minimal crowd.',
+    images: ['/images/maceda-1.jpg'], facilities: ['Estacionamento', 'WC'],
+    hazards: ['Correntes fortes', 'Isolamento']
+  },
+  {
+    id: 'sao-jacinto', slug: 'sao-jacinto', name: 'São Jacinto', nameEn: 'Sao Jacinto',
+    region: 'Aveiro', regionEn: 'Aveiro', lat: 40.700, lon: -8.730,
+    type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+    description: 'Reserva Natural das Dunas com surf de qualidade. Praia selvagem acessível apenas de barco. Ondas consistentes e crowd zero.',
+    descriptionEn: 'Dunes Nature Reserve with quality surf. Wild beach accessible only by boat. Consistent waves and zero crowd.',
+    images: ['/images/sao-jacinto-1.jpg'], facilities: ['Barco', 'Restaurante', 'WC'],
+    hazards: ['Acesso de barco apenas', 'Correntes']
+  },
 
   // ==================== CENTRO ====================
   {
