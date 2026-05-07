@@ -39,9 +39,20 @@ export default function SpotCard({ spot, locale, conditions }: SpotCardProps) {
     <Link href={`/${locale}/spots/${spot.slug}/`}>
       <div className="glass-card overflow-hidden hover:bg-white/10 transition-all duration-300 cursor-pointer group">
         <div className="relative h-48 bg-gradient-to-br from-ocean-800 to-ocean-950 overflow-hidden">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Waves className="w-16 h-16 text-white/20 group-hover:text-white/30 transition-colors" />
-          </div>
+      {spot.images && spot.images.length > 0 ? (
+            <img
+              src={spot.images[0]}
+              alt={spot.name}
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+              }}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Waves className="w-16 h-16 text-white/20 group-hover:text-white/30 transition-colors" />
+            </div>
+          )}
           <div className="absolute top-3 left-3">
             <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${typeColors[spot.type]}`}>
               {spot.type === 'big-wave' ? 'Big Wave' : spot.type.charAt(0).toUpperCase() + spot.type.slice(1)}

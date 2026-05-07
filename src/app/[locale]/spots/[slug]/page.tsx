@@ -50,7 +50,6 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
     waveRating = getWaveRating(current.waveHeight)
   } catch (e) {
     console.error(`Failed to load conditions for spot ${spot.name}:`, e)
-    // Use defaults already set above
   }
 
   const difficultyLabels = {
@@ -68,6 +67,18 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
           <ArrowLeft className="w-4 h-4" />
           {isPt ? 'Voltar aos spots' : 'Back to spots'}
         </Link>
+
+        {/* Hero Image */}
+        {spot.images && spot.images.length > 0 && (
+          <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden">
+            <img
+              src={spot.images[0]}
+              alt={spot.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
