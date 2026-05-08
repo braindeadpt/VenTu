@@ -44,7 +44,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
           <div className="text-center space-y-8">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ocean-500/10 border border-ocean-500/20 text-ocean-300 text-sm font-medium">
               <Activity className="w-4 h-4" />
-              {locale === 'pt' ? 'Dados em tempo real' : 'Real-time data'}
+              {t.hero.badge}
             </div>
 
             <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
@@ -87,10 +87,10 @@ export default async function HomePage({ params }: { params: { locale: string } 
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold text-white/90">{t.spots.title}</h2>
-            <p className="text-white/50 mt-1">{locale === 'pt' ? 'Spots em destaque' : 'Featured spots'}</p>
+            <p className="text-white/50 mt-1">{t.hero.featured}</p>
           </div>
           <Link href={`/${locale}/spots/`} className="flex items-center gap-2 text-ocean-400 hover:text-ocean-300 transition-colors">
-            {locale === 'pt' ? 'Ver todos' : 'View all'}
+            {t.hero.viewAll}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -105,7 +105,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
                 <Waves className="w-6 h-6 text-wave-400" />
               </div>
               <div>
-                <p className="text-sm text-white/50">{locale === 'pt' ? 'Altura Média' : 'Avg Wave'}</p>
+                <p className="text-sm text-white/50">{t.hero.avgWave}</p>
                 <p className="text-xl font-bold">1.2m</p>
               </div>
             </div>
@@ -114,7 +114,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
                 <Wind className="w-6 h-6 text-wind-400" />
               </div>
               <div>
-                <p className="text-sm text-white/50">{locale === 'pt' ? 'Vento Médio' : 'Avg Wind'}</p>
+                <p className="text-sm text-white/50">{t.hero.avgWind}</p>
                 <p className="text-xl font-bold">14kt</p>
               </div>
             </div>
@@ -123,7 +123,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
                 <Thermometer className="w-6 h-6 text-surf-400" />
               </div>
               <div>
-                <p className="text-sm text-white/50">{locale === 'pt' ? 'Temp. Água' : 'Water Temp'}</p>
+                <p className="text-sm text-white/50">{t.hero.waterTempShort}</p>
                 <p className="text-xl font-bold">16°C</p>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
                 <MapPin className="w-6 h-6 text-ocean-400" />
               </div>
               <div>
-                <p className="text-sm text-white/50">{locale === 'pt' ? 'Melhor Spot' : 'Best Spot'}</p>
+                <p className="text-sm text-white/50">{t.hero.bestSpot}</p>
                 <p className="text-xl font-bold">Peniche</p>
               </div>
             </div>

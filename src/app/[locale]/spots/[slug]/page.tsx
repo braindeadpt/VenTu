@@ -58,7 +58,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
     intermediate: t.spots.intermediate,
     advanced: t.spots.advanced,
     expert: t.spots.expert,
-    all: 'Todos os níveis',
+    all: t.spots.allLevels,
   }
 
   return (
@@ -66,7 +66,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
       <div className="space-y-4">
         <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors">
           <ArrowLeft className="w-4 h-4" />
-          {isPt ? 'Voltar aos spots' : 'Back to spots'}
+          {t.spots.backToSpots}
         </Link>
 
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -96,7 +96,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Bloco 1 - Condições meteorológicas */}
         <div className="glass-card p-6">
-          <ConditionCard {...current} />
+          <ConditionCard {...current} locale={locale} />
         </div>
         
         {/* Bloco 2 - Recomendação */}
@@ -105,11 +105,11 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
           <p className="text-xl text-white/80 mb-4">{isPt ? rating.recommendation : rating.recommendationEn}</p>
           <div className="grid grid-cols-2 gap-4 mt-6">
             <div>
-              <p className="text-sm text-white/50 mb-1">{isPt ? 'Vento ideal' : 'Best wind'}</p>
+              <p className="text-sm text-white/50 mb-1">{t.spots.idealWind}</p>
               <p className="font-semibold">{spot.bestWind}</p>
             </div>
             <div>
-              <p className="text-sm text-white/50 mb-1">{isPt ? 'Swell ideal' : 'Best swell'}</p>
+              <p className="text-sm text-white/50 mb-1">{t.spots.idealSwell}</p>
               <p className="font-semibold">{spot.bestSwell}</p>
             </div>
           </div>
@@ -119,15 +119,15 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
         <div className="glass-card p-4">
           <h4 className="text-sm font-semibold text-white/60 mb-3 flex items-center gap-2">
             <MapPin className="w-4 h-4" />
-            {isPt ? 'Localização' : 'Location'}
+            {t.map.location}
           </h4>
           <div className="h-48 rounded-xl overflow-hidden">
-            <SpotMap lat={spot.lat} lon={spot.lon} />
+            <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
           </div>
         </div>
       </div>
 
-      <ForecastChart data={forecast.slice(0, 72)} />
+      <ForecastChart data={forecast.slice(0, 72)} locale={locale} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="glass-card p-6">
@@ -161,7 +161,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
       </div>
 
       <div className="glass-card p-6">
-        <h3 className="text-lg font-semibold mb-3">{isPt ? 'Sobre o spot' : 'About this spot'}</h3>
+        <h3 className="text-lg font-semibold mb-3">{t.spots.aboutSpot}</h3>
         <p className="text-white/70 leading-relaxed">{isPt ? spot.description : spot.descriptionEn}</p>
       </div>
     </div>

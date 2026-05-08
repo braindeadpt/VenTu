@@ -5,10 +5,12 @@ import { useEffect, useRef } from 'react';
 interface SpotMapProps {
   lat: number;
   lon: number;
+  locale?: string;
 }
 
-export default function SpotMap({ lat, lon }: SpotMapProps) {
+export default function SpotMap({ lat, lon, locale = 'pt' }: SpotMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
+  const isPt = locale === 'pt';
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -43,7 +45,7 @@ export default function SpotMap({ lat, lon }: SpotMapProps) {
         rel="noopener noreferrer"
         className="absolute bottom-3 right-3 text-xs text-white/70 hover:text-white bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-lg transition-all hover:bg-black/70 z-10"
       >
-        Abrir mapa ↗
+        {isPt ? 'Abrir mapa' : 'Open map'} ↗
       </a>
     </div>
   );

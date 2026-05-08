@@ -1,12 +1,14 @@
 'use client';
 
 import { Wind, Github, Heart, ExternalLink } from 'lucide-react';
+import { getTranslation } from '@/lib/i18n';
 
 interface FooterProps {
   locale: string;
 }
 
 export default function Footer({ locale }: FooterProps) {
+  const t = getTranslation(locale as any);
   const isPt = locale === 'pt';
 
   return (
@@ -27,7 +29,7 @@ export default function Footer({ locale }: FooterProps) {
 
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider">
-              {isPt ? 'Links' : 'Links'}
+              {t.footer.links}
             </h4>
             <ul className="space-y-2">
               <li>
@@ -47,7 +49,7 @@ export default function Footer({ locale }: FooterProps) {
 
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider">
-              {isPt ? 'Dados' : 'Data'}
+              {t.footer.data}
             </h4>
             <ul className="space-y-2 text-sm text-white/50">
               <li>{isPt ? 'Ondas: Open-Meteo Marine' : 'Waves: Open-Meteo Marine'}</li>
@@ -62,7 +64,7 @@ export default function Footer({ locale }: FooterProps) {
             © 2026 WindSpot Portugal. MIT License. Open Source Project.
           </p>
           <p className="flex items-center gap-1 text-xs text-white/30">
-            {isPt ? 'Feito com' : 'Made with'} <Heart className="w-3 h-3 text-red-400" /> {isPt ? 'para a comunidade' : 'for the community'}
+            {t.footer.madeWith} <Heart className="w-3 h-3 text-red-400" /> {t.footer.forCommunity}
           </p>
         </div>
       </div>

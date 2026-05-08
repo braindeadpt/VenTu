@@ -12,13 +12,15 @@ interface ConditionCardProps {
   windGust: number;
   waterTemp: number;
   compact?: boolean;
+  locale?: string;
 }
 
 export default function ConditionCard({
-  waveHeight, wavePeriod, windSpeed, windDirection, windGust, waterTemp, compact = false,
+  waveHeight, wavePeriod, windSpeed, windDirection, windGust, waterTemp, compact = false, locale = 'pt',
 }: ConditionCardProps) {
   const waveRating = getWaveRating(waveHeight);
   const windRating = getWindRating(windSpeed);
+  const isPt = locale === 'pt';
 
   if (compact) {
     return (
@@ -45,7 +47,7 @@ export default function ConditionCard({
         <div className="flex items-center gap-3">
           <Waves className="w-5 h-5 text-wave-400" />
           <div>
-            <p className="text-xs text-white/50">Altura Onda</p>
+            <p className="text-xs text-white/50">{isPt ? 'Altura Onda' : 'Wave Height'}</p>
             <p className="text-2xl font-bold">{waveHeight.toFixed(1)}<span className="text-sm font-normal text-white/60">m</span></p>
           </div>
         </div>
@@ -58,13 +60,13 @@ export default function ConditionCard({
         <div className="flex items-center gap-3">
           <WindCompass direction={windDirection} speed={windSpeed} size={48} />
           <div>
-            <p className="text-xs text-white/50">Vento</p>
+            <p className="text-xs text-white/50">{isPt ? 'Vento' : 'Wind'}</p>
             <p className="text-2xl font-bold">{windSpeed.toFixed(0)}<span className="text-sm font-normal text-white/60">kt</span></p>
           </div>
         </div>
         <div className="text-right">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${windRating.className}`}>
-            Raj: {windGust.toFixed(0)}kt
+            {isPt ? 'Raj' : 'Gust'}: {windGust.toFixed(0)}kt
           </span>
         </div>
       </div>
@@ -73,14 +75,14 @@ export default function ConditionCard({
         <div className="flex items-center gap-3">
           <Thermometer className="w-5 h-5 text-surf-400" />
           <div>
-            <p className="text-xs text-white/50">Temp. Água</p>
+            <p className="text-xs text-white/50">{isPt ? 'Temp. Água' : 'Water Temp'}</p>
             <p className="text-lg font-bold">{waterTemp.toFixed(1)}°C</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <Gauge className="w-5 h-5 text-ocean-400" />
           <div>
-            <p className="text-xs text-white/50">Período</p>
+            <p className="text-xs text-white/50">{isPt ? 'Período' : 'Period'}</p>
             <p className="text-lg font-bold">{wavePeriod.toFixed(1)}s</p>
           </div>
         </div>
