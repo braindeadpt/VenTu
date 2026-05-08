@@ -1,0 +1,211 @@
+import { Spot } from '@/types';
+
+export interface SpotLocalTips {
+  spotSlug: string;
+  bestTide: string;
+  bestTideEn: string;
+  parking: string;
+  parkingEn: string;
+  food: string;
+  foodEn: string;
+  localRule?: string;
+  localRuleEn?: string;
+}
+
+export interface SpotSecretTips {
+  spotSlug: string;
+  tips: string;
+  tipsEn: string;
+}
+
+// Local tips from the community — real knowledge from locals
+export const localTips: SpotLocalTips[] = [
+  {
+    spotSlug: 'matosinhos',
+    bestTide: 'Qualquer maré — funciona sempre',
+    bestTideEn: 'Any tide — works always',
+    parking: 'Estacionamento grande junto à praia, gratuito no inverno. No verão chega cedo!',
+    parkingEn: 'Large parking by the beach, free in winter. In summer arrive early!',
+    food: 'Marea Baja — burgers e cerveja artesanal. O pós-surf perfeito.',
+    foodEn: 'Marea Baja — burgers and craft beer. Perfect post-surf.',
+    localRule: 'Respeita os iniciantes — este é o spot de aprendizagem do Porto.',
+    localRuleEn: 'Respect beginners — this is the learning spot of Porto.',
+  },
+  {
+    spotSlug: 'ofir',
+    bestTide: 'Maré média-baixa — o beach break fecha com maré alta',
+    bestTideEn: 'Mid-low tide — the beach break closes out at high tide',
+    parking: 'Parque de estacionamento na entrada da praia. Gratuito fora de época balnear.',
+    parkingEn: 'Parking lot at the beach entrance. Free outside bathing season.',
+    food: 'Restaurante Ofir — arroz de marisco brutal após sessão.',
+    foodEn: 'Restaurante Ofir — epic seafood rice after session.',
+    localRule: 'Pico principal junto à foz do rio — não drop in nos locals que surfam lá há 20 anos.',
+    localRuleEn: 'Main peak near the river mouth — don\'t drop in on locals who have surfed there for 20 years.',
+  },
+  {
+    spotSlug: 'nazare',
+    bestTide: 'Maré alta — as ondas grandes precisam de fundo suficiente',
+    bestTideEn: 'High tide — big waves need enough depth',
+    parking: 'Estacionamento na Praia do Norte, mas chega MUITO cedo nos dias de ondulação.',
+    parkingEn: 'Parking at Praia do Norte, but arrive VERY early on swell days.',
+    food: 'Restaurante Odeceixe Mar — peixe grelhado com vista para as ondas gigantes.',
+    foodEn: 'Restaurante Odeceixe Mar — grilled fish with view of the giant waves.',
+    localRule: 'NÃO entres na água sem jet ski support e equipamento de segurança. Nazaré não é brincadeira.',
+    localRuleEn: 'DO NOT enter the water without jet ski support and safety equipment. Nazaré is no joke.',
+  },
+  {
+    spotSlug: 'guincho',
+    bestTide: 'Maré baixa a média — com maré alta as ondas perdem força',
+    bestTideEn: 'Low to mid tide — at high tide waves lose power',
+    parking: 'Estacionamento junto à praia, mas enche rápido ao fim de semana. Alternativa: parar na estrada acima.',
+    parkingEn: 'Parking by the beach, but fills fast on weekends. Alternative: park on the road above.',
+    food: 'Bar do Guincho — petiscos e imperial com vista. Santo António para jantar mais calmo.',
+    foodEn: 'Bar do Guincho — snacks and beer with a view. Santo António for a quieter dinner.',
+    localRule: 'Guincho é WINDY. Se o vento é offshore de Este, prepara-te para o voo dos dias.',
+    localRuleEn: 'Guincho is WINDY. If the wind is offshore from East, prepare for flying sand.',
+  },
+  {
+    spotSlug: 'carcavelos',
+    bestTide: 'Qualquer maré — reef funciona em todas',
+    bestTideEn: 'Any tide — reef works on all',
+    parking: 'Estacionamento subterrâneo no centro comercial (pago) ou rua acima (gratuito mas disputado).',
+    parkingEn: 'Underground parking at shopping center (paid) or street above (free but contested).',
+    food: 'Gallo — pizzeria brutal a 2 min a pé. Maré Alta para peixe fresco.',
+    foodEn: 'Gallo — epic pizzeria 2 min walk. Maré Alta for fresh fish.',
+    localRule: 'Pico do reef é dos locals — respeita a hierarquia. Beach break é mais amigável.',
+    localRuleEn: 'Reef peak belongs to locals — respect the hierarchy. Beach break is more friendly.',
+  },
+  {
+    spotSlug: 'supertubos',
+    bestTide: 'Maré média — os tubos fecham com maré muito alta ou muito baixa',
+    bestTideEn: 'Mid tide — barrels close out at very high or very low tide',
+    parking: 'Parque grande junto à praia. Gratuito fora do verão.',
+    parkingEn: 'Large lot by the beach. Free outside summer.',
+    food: 'Restaurante Caldas — peixe fresco na Nazaré a 10 min de carro.',
+    foodEn: 'Restaurante Caldas — fresh fish in Nazaré, 10 min drive.',
+    localRule: 'Supertubos é pesado. Não entres se não tês experiência em shore break tubulares.',
+    localRuleEn: 'Supertubos is heavy. Don\'t enter if you don\'t have experience in tubular shore break.',
+  },
+  {
+    spotSlug: 'costa-caparica',
+    bestTide: 'Maré baixa — mais consistente e menos corrente',
+    bestTideEn: 'Low tide — more consistent and less current',
+    parking: 'Estacionamento na praia de CDS ou rua lateral. Gratuito no inverno.',
+    parkingEn: 'Parking at CDS beach or side street. Free in winter.',
+    food: 'Musa — cerveja artesanal e burgers. Tamariz para peixe grelhado.',
+    foodEn: 'Musa — craft beer and burgers. Tamariz for grilled fish.',
+    localRule: 'A corrente puxa forte para norte. Sabe onde estás e como sair.',
+    localRuleEn: 'Current pulls strong to the north. Know where you are and how to get out.',
+  },
+  {
+    spotSlug: 'foz-lizandro',
+    bestTide: 'Maré média — o rio fecha com maré muito alta',
+    bestTideEn: 'Mid tide — the river closes out at very high tide',
+    parking: 'Parque junto à praia. Gratuito.',
+    parkingEn: 'Lot by the beach. Free.',
+    food: 'Restaurante Ondas — vista direta para o pico.',
+    foodEn: 'Restaurante Ondas — direct view of the peak.',
+    localRule: 'Respeita os iniciantes — muitas escolas de surf aqui.',
+    localRuleEn: 'Respect beginners — many surf schools here.',
+  },
+  {
+    spotSlug: 'ericeira',
+    bestTide: 'Depende do spot — Ribeira funciona em todas, Coxos precisa de maré média-alta',
+    bestTideEn: 'Depends on the spot — Ribeira works on all, Coxos needs mid-high tide',
+    parking: 'Estacionamento na Ribeira (pago no verão). Coxos — estaciona na rua acima e caminha.',
+    parkingEn: 'Parking at Ribeira (paid in summer). Coxos — park on the street above and walk.',
+    food: 'Ti Matias — melhor arroz de marisco da Ericeira. Green is Better para brunch.',
+    foodEn: 'Ti Matias — best seafood rice in Ericeira. Green is Better for brunch.',
+    localRule: 'Coxos é dos locals. Não entres se não sabes o que fazes. Ribeira é mais amigável.',
+    localRuleEn: 'Coxos belongs to locals. Don\'t enter if you don\'t know what you\'re doing. Ribeira is friendlier.',
+  },
+  {
+    spotSlug: 'sagres-tonel',
+    bestTide: 'Maré média-baixa — reef exposto',
+    bestTideEn: 'Mid-low tide — exposed reef',
+    parking: 'Estacionamento junto à praia. Gratuito.',
+    parkingEn: 'Parking by the beach. Free.',
+    food: 'Vila do Bispo — muitas opções a 10 min de carro.',
+    foodEn: 'Vila do Bispo — many options 10 min drive.',
+    localRule: 'Ondas pesadas e reef afiado. Sapatos de reef recomendados.',
+    localRuleEn: 'Heavy waves and sharp reef. Reef booties recommended.',
+  },
+  {
+    spotSlug: 'lagos',
+    bestTide: 'Maré alta — melhores ondas com mais fundo',
+    bestTideEn: 'High tide — best waves with more depth',
+    parking: 'Estacionamento na praia. Gratuito fora do verão.',
+    parkingEn: 'Parking at the beach. Free outside summer.',
+    food: 'Restaurante O Camilo — peixe fresco com vista para a praia.',
+    foodEn: 'Restaurante O Camilo — fresh fish with beach view.',
+    localRule: 'Pico principal junto às rochas — cuidado com o fundo.',
+    localRuleEn: 'Main peak near the rocks — watch the bottom.',
+  },
+];
+
+// Secret tips — only for secret spots
+export const secretTips: SpotSecretTips[] = [
+  {
+    spotSlug: 'zambujeira',
+    tips: 'Chega pela manhã cedo (antes das 9h) para ter as ondas só para ti. O melhor pico fica a sul, perto das rochas. NÃO estacione na rampa de acesso — os pescadores precisam dela. Posto de gasolina mais próximo é a 20km (São Teotónio), enche o depósito antes.',
+    tipsEn: 'Arrive early morning (before 9am) to have waves to yourself. Best peak is south, near the rocks. DO NOT park on the access ramp — fishermen need it. Nearest gas station is 20km away (São Teotónio), fill up before.',
+  },
+  {
+    spotSlug: 'odeceixe',
+    tips: 'Acesso pelo parque de campismo — é mais rápido e evita a multidão da entrada principal. O melhor pico é na foz do rio, mas cuidado com a corrente de descida. Leva água e snacks — não há nada por perto.',
+    tipsEn: 'Access through the campsite — it\'s faster and avoids the main entrance crowd. Best peak is at the river mouth, but watch the outgoing current. Bring water and snacks — there\'s nothing nearby.',
+  },
+  {
+    spotSlug: 'sao-torpes',
+    tips: 'Spot pouco conhecido ao sul de Sines. Acesso por estrada de terra — carro alto recomendado. As ondas são mais consistentes no inverno. Não há salva-vidas — surf por tua conta e risco.',
+    tipsEn: 'Little-known spot south of Sines. Access via dirt road — high car recommended. Waves are more consistent in winter. No lifeguards — surf at your own risk.',
+  },
+  {
+    spotSlug: 'ponta-pequena',
+    tips: 'Wave vulcânica na ilha de São Miguel. Acesso difícil — precisas de guia local. O swell chega de NW e fecha rápido. Só para experts. Tempestades de Inverno são a melhor época.',
+    tipsEn: 'Volcanic wave on São Miguel island. Difficult access — you need a local guide. Swell comes from NW and closes fast. Experts only. Winter storms are best season.',
+  },
+  {
+    spotSlug: 'jardim-mar',
+    tips: 'Reef break perfeito da Madeira. Acesso pela escada junto ao restaurante. Funciona de maré baixa a média. O vento de leste é offshore — dias de leste são OURO. Respeita os locals madeirenses — são poucos e protegem o spot.',
+    tipsEn: 'Perfect reef break in Madeira. Access via stairs near the restaurant. Works low to mid tide. East wind is offshore — east days are GOLD. Respect Madeiran locals — they are few and protective of the spot.',
+  },
+  {
+    spotSlug: 'paul-mar',
+    tips: 'Ondas pesadas e tubulares na costa oeste. Acesso por trilho — 15 min a pé. Só funciona com swell grande de NW. Leva água e comida — não há nada na praia. Melhor época: outono/inverno.',
+    tipsEn: 'Heavy tubular waves on the west coast. Access via trail — 15 min walk. Only works with large NW swell. Bring water and food — nothing at the beach. Best season: autumn/winter.',
+  },
+  {
+    spotSlug: 'coxos',
+    tips: 'A última secção de Ericeira — o reef que os locais não querem que conheças. Acesso pela escada junto ao restaurante. Maré média-alta é ideal. NÃO publica fotos com a localização exata nas redes sociais.',
+    tipsEn: 'The last section of Ericeira — the reef locals don\'t want you to know. Access via stairs near the restaurant. Mid-high tide is ideal. DO NOT post photos with exact location on social media.',
+  },
+];
+
+export const getLocalTips = (slug: string): SpotLocalTips | undefined =>
+  localTips.find(t => t.spotSlug === slug);
+
+export const getSecretTips = (slug: string): SpotSecretTips | undefined =>
+  secretTips.find(t => t.spotSlug === slug);
+
+// Blue flag beaches mapping (static data from official sources)
+export const blueFlagBeaches: Record<string, { year: number; waterQuality: 'excelente' | 'boa' | 'razoavel' | 'má' }> = {
+  matosinhos: { year: 2024, waterQuality: 'excelente' },
+  ofir: { year: 2024, waterQuality: 'excelente' },
+  'povoa-varzim': { year: 2024, waterQuality: 'excelente' },
+  esposende: { year: 2024, waterQuality: 'boa' },
+  carcavelos: { year: 2024, waterQuality: 'excelente' },
+  'costa-caparica': { year: 2024, waterQuality: 'excelente' },
+  'foz-lizandro': { year: 2024, waterQuality: 'excelente' },
+  guincho: { year: 2024, waterQuality: 'excelente' },
+  ericeira: { year: 2024, waterQuality: 'excelente' },
+  baleal: { year: 2024, waterQuality: 'excelente' },
+  'praia-grande': { year: 2024, waterQuality: 'excelente' },
+  lagos: { year: 2024, waterQuality: 'excelente' },
+  'alvor': { year: 2024, waterQuality: 'excelente' },
+  'porto-covo': { year: 2024, waterQuality: 'boa' },
+  'zambujeira': { year: 2024, waterQuality: 'boa' },
+  'odeceixe': { year: 2024, waterQuality: 'boa' },
+  'moledo': { year: 2024, waterQuality: 'excelente' },
+  'ancora': { year: 2024, waterQuality: 'excelente' },
+};

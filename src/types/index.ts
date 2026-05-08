@@ -25,6 +25,20 @@ export interface Spot {
   // Crowd / secret spot info
   localSecret?: boolean;
   secretLevel?: 'known' | 'semi-secret' | 'secret' | 'deep-secret';
+  // Local knowledge / tips
+  localTips?: {
+    bestTide?: string;
+    bestTideEn?: string;
+    parking?: string;
+    parkingEn?: string;
+    food?: string;
+    foodEn?: string;
+    localRule?: string;
+    localRuleEn?: string;
+  };
+  // Secret spot exclusive info
+  secretTips?: string;
+  secretTipsEn?: string;
 }
 
 export interface MarineData {

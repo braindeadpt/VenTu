@@ -201,32 +201,33 @@ export function calculateSurfability(
  */
 export function getSessionForecast(
   spot: Spot,
-  hourlyData: Array<{
-    time: string;
-    waveHeight: number;
-    wavePeriod: number;
-    waveDirection: number;
-    windSpeed: number;
-    windDirection: number;
-  }>
-): Array<{ hour: string; score: number; stars: number; label: string; labelEn: string }> {
-  return hourlyData.slice(0, 12).map(hour => {
+  hourlyData: {
+    time: string[];
+    wave_height: number[];
+    wave_period: number[];
+    wave_direction: number[];
+    wind_speed_10m: number[];
+    wind_direction_10m: number[];
+  }
+): Array<{ time: string; score: number; rating: string; waveHeight: number; wavePeriod: number; windSpeed: number; windDirection: number }> {
+  const count = Math.min(12, hourlyData.time.length);
+  return Array.from({ length: count }, (_, i) => {
     const result = calculateSurfability(spot, {
-      waveHeight: hour.waveHeight,
-      wavePeriod: hour.wavePeriod,
-      waveDirection: hour.waveDirection,
-      windSpeed: hour.windSpeed,
-      windDirection: hour.windDirection,
+      waveHeight: hourlyData.wave_height[i] || 0,
+      wavePeriod: hourlyData.wave_period[i] || 0,
+      waveDirection: hourlyData.wave_direction[i] || 0,
+      windSpeed: hourlyData.wind_speed_10m[i] || 0,
+      windDirection: hourlyData.wind_direction_10m[i] || 0,
     });
 
-    const timeLabel = new Date(hour.time).getHours().toString().padStart(2, '0') + ':00';
-
     return {
-      hour: timeLabel,
+      time: hourlyData.time[i],
       score: result.score,
-      stars: result.stars,
-      label: result.rating,
-      labelEn: result.ratingEn,
+      rating: result.rating,
+      waveHeight: hourlyData.wave_height[i] || 0,
+      wavePeriod: hourlyData.wave_period[i] || 0,
+      windSpeed: hourlyData.wind_speed_10m[i] || 0,
+      windDirection: hourlyData.wind_direction_10m[i] || 0,
     };
   });
 }

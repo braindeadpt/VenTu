@@ -2,10 +2,15 @@ import { notFound } from 'next/navigation'
 import { getSpotBySlug } from '@/lib/spots'
 import { getTranslation } from '@/lib/i18n'
 import { fetchMarineData, getCurrentConditions, getForecastData, getSportRating, getWaveRating } from '@/lib/openmeteo'
-import { calculateSurfability, estimateCrowd, getScoreColor } from '@/lib/surfability'
+import { calculateSurfability, estimateCrowd, getScoreColor, getSessionForecast } from '@/lib/surfability'
+import { getLocalTips, getSecretTips, blueFlagBeaches } from '@/lib/spotTips'
 import ConditionCard from '@/components/weather/ConditionCard'
 import ForecastChart from '@/components/weather/ForecastChart'
 import SpotMap from '@/components/spots/SpotMap'
+import { LocalTipsSection } from '@/components/spots/LocalTipsSection'
+import { SecretTipsSection } from '@/components/spots/SecretTipsSection'
+import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge'
+import { SessionForecastChart } from '@/components/spots/SessionForecastChart'
 import { MapPin, Star, ArrowLeft, CheckCircle, AlertTriangle, Zap, Users } from 'lucide-react'
 import Link from 'next/link'
 
@@ -66,6 +71,25 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
   const scoreColors = getScoreColor(surfability.score)
   const crowd = estimateCrowd(surfability.score, false, false, spot.difficulty)
 
+  // Get session forecast for next 12h
+  let sessionForecast: any[] = []
+  try {
+    const marineData = await fetchMarineData(spot.lat, spot.lon)
+    sessionForecast = getSessionForecast(spot, marineData.hourly)
+  } catch (e) {
+    console.error(`Failed to get session forecast for ${spot.name}:`, e)
+  }
+
+  // Get local tips and secret tips
+  const spotLocalTips = getLocalTips(spot.slug)
+  const spotSecretTips = getSecretTips(spot.slug)
+
+  // Get water quality data
+  const beachInfo = blueFlagBeaches[spot.slug]
+  const spotWaterQuality = spot.waterQuality || beachInfo?.waterQuality
+  const spotWaterQualityEn = spot.waterQualityEn || beachInfo?.waterQuality
+  const hasBlueFlag = spot.blueFlag || !!beachInfo
+
   const difficultyLabels = {
     beginner: t.spots.beginner,
     intermediate: t.spots.intermediate,
@@ -97,6 +121,19 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
               <Star className="w-4 h-4" />
               {difficultyLabels[spot.difficulty]}
             </div>
+
+            {/* Water Quality & Blue Flag Badges */}
+            {(hasBlueFlag || spotWaterQuality || spot.accessibleBeach) && (
+              <div className="mt-3">
+                <WaterQualityBadge
+                  blueFlag={hasBlueFlag}
+                  waterQuality={spotWaterQuality as any}
+                  waterQualityEn={spotWaterQualityEn as any}
+                  accessibleBeach={spot.accessibleBeach}
+                  locale={locale}
+                />
+              </div>
+            )}
           </div>
 
           <div className="glass-card p-4 text-center">
@@ -208,6 +245,11 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
 
       <ForecastChart data={forecast.slice(0, 72)} locale={locale} />
 
+      {/* Session Quality — Next 12h */}
+      {sessionForecast.length > 0 && (
+        <SessionForecastChart forecast={sessionForecast} locale={locale} />
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="glass-card p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -241,7 +283,23 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
 
       <div className="glass-card p-6">
         <h3 className="text-lg font-semibold mb-3">{t.spots.aboutSpot}</h3>
-        <p className="text-white/70 leading-relaxed">{isPt ? spot.description : spot.descriptionEn}</p>
+        <p className="text-white/70 leading-relaxed mb-4">{isPt ? spot.description : spot.descriptionEn}</p>
+
+        {/* Local Tips */}
+        {spotLocalTips && (
+          <LocalTipsSection tips={spotLocalTips} locale={locale} />
+        )}
+
+        {/* Secret Tips — only for secret spots */}
+        {spotSecretTips && (
+          <div className="mt-4">
+            <SecretTipsSection
+              tips={spotSecretTips}
+              locale={locale}
+              secretLevel={spot.secretLevel}
+            />
+          </div>
+        )}
       </div>
     </div>
   )
