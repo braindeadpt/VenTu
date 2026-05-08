@@ -8,7 +8,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
     description: 'A melhor praia para aprender surf em Portugal. Sem correntes, sem rochas, ondas suaves e consistentes. O local mais seguro do norte.',
     descriptionEn: 'The best beach to learn surf in Portugal. No rip currents, no rocks, soft and consistent waves. The safest spot in the north.',
-    webcam: 'https://beachcam.meo.pt/livecams/matosinhos/',
     facilities: ['Estacionamento', 'Escolas surf', 'Restaurantes', 'Metro', 'WC'],
     hazards: ['Multidão nos fins de semana']
   },
@@ -18,7 +17,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
     description: 'Beach break potente com ondas de qualidade. Pouco crowd comparado com outras praias do norte. Fundo de areia variável.',
     descriptionEn: 'Powerful beach break with quality waves. Less crowded than other northern beaches. Variable sand bottom.',
-    webcam: 'https://beachcam.meo.pt/livecams/ofir/',
     facilities: ['Estacionamento', 'Restaurante', 'WC'],
     hazards: ['Correntes', 'Ressaca forte']
   },
@@ -37,7 +35,6 @@ export const spots: Spot[] = [
     type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'SW',
     description: 'Um dos melhores spots de kitesurf do Norte. Água plana na barra do rio Lima. Vento térmico de NW consistente. Épico para iniciantes!',
     descriptionEn: 'One of the best kitesurf spots in the north. Flat water at the Lima river bar. Consistent NW thermal wind. Epic for beginners!',
-    webcam: 'https://beachcam.meo.pt/livecams/cabedelo/',
     facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'WC'],
     hazards: ['Tráfego de barcos', 'Correntes na foz']
   },
@@ -184,7 +181,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'NW, W',
     description: 'Onda direita clássica da Ericeira, palco do WSL. Uma das mais consistentes de Portugal. Longa, perfeita, tubos incríveis.',
     descriptionEn: 'Classic Ericeira right-hand wave, WSL venue. One of the most consistent in Portugal. Long, perfect, incredible barrels.',
-    webcam: 'https://beachcam.meo.pt/livecams/ericeira-ribeira-dilhas/',
     facilities: ['Estacionamento', 'Café', 'WC'],
     hazards: ['Locals', 'Rochas', 'Multidão']
   },
@@ -203,7 +199,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SW',
     description: 'Praia de areia em forma de L no estuário do rio Lizandro. Ondas para todos os níveis. Reef breaks Lage dos Tubos e Limipicos no norte.',
     descriptionEn: 'L-shaped sand beach at the Lizandro river estuary. Waves for all levels. Lage dos Tubos and Limipicos reef breaks in the north.',
-    webcam: 'https://beachcam.meo.pt/livecams/ericeira-foz-lizandro/',
     facilities: ['Estacionamento', 'Restaurantes', 'Escola surf', 'WC'],
     hazards: ['Correntes na maré vazante', 'Rochas no reef']
   },
@@ -222,7 +217,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'W, NW',
     description: 'O beach break mais famoso de Lisboa. Ondas de classe mundial ao pé do Forte de São Julião. Multidão de surfistas de qualidade.',
     descriptionEn: 'The most famous beach break in Lisbon. World-class waves next to Forte de São Julião. Crowd of quality surfers.',
-    webcam: 'https://beachcam.meo.pt/livecams/carcavelos/',
     facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Comboio', 'WC'],
     hazards: ['Multidão extrema', 'Correntes']
   },
@@ -232,7 +226,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, SW',
     description: '10km de beach breaks perfeitos para aprender. Várias praias: Dragão Vermelho, CDS, Rainha. A 20 min de Lisboa.',
     descriptionEn: '10km of perfect beach breaks to learn. Multiple beaches: Dragão Vermelho, CDS, Rainha. 20 min from Lisbon.',
-    webcam: 'https://beachcam.meo.pt/livecams/costa-da-caparica/',
     facilities: ['Estacionamento', 'Escolas surf', 'Restaurantes', 'WC'],
     hazards: ['Correntes em alguns picos']
   },
@@ -269,7 +262,6 @@ export const spots: Spot[] = [
     type: 'big-wave', difficulty: 'expert', bestWind: 'N, NNE', bestSwell: 'W, WNW',
     description: 'Famoso pelas maiores ondas do mundo. Praia do Norte é o palco do Big Wave Surfing. Canal submarino amplifica ondas gigantescas.',
     descriptionEn: 'Famous for the biggest waves in the world. Praia do Norte is the stage for Big Wave Surfing. Underwater canyon amplifies giant waves.',
-    webcam: 'https://beachcam.meo.pt/livecams/nazare-praia-do-norte/',
     facilities: ['Estacionamento', 'Restaurantes', 'Salva-vidas', 'WC'],
     hazards: ['Ondas gigantescas', 'Correntes fortes', 'Rochas submersas']
   },
@@ -279,7 +271,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'advanced', bestWind: 'N, NE', bestSwell: 'W, NW',
     description: 'Onda tubular perfeita, palco do WSL Championship Tour. Tubos rápidos e potentes sobre areia.',
     descriptionEn: 'Perfect barreling wave, WSL Championship Tour venue. Fast and powerful tubes over sand.',
-    webcam: 'https://beachcam.meo.pt/livecams/peniche-supertubos/',
     facilities: ['Estacionamento', 'Escola de surf', 'Aluguer', 'WC'],
     hazards: ['Correntes', 'Ressaca forte']
   },
@@ -289,7 +280,6 @@ export const spots: Spot[] = [
     type: 'kitesurf', difficulty: 'intermediate', bestWind: 'N, NNW', bestSwell: 'SW, W',
     description: 'Spot icónico de kitesurf e windsurf. Vento térmico Nortada consistente no verão. Melhor vento de Portugal.',
     descriptionEn: 'Iconic kitesurf and windsurf spot. Consistent thermal Nortada wind in summer. Best wind in Portugal.',
-    webcam: 'https://beachcam.meo.pt/livecams/praia-do-guincho/',
     facilities: ['Estacionamento', 'Restaurante', 'Escola kite', 'WC'],
     hazards: ['Vento forte', 'Correntes', 'Rochas']
   },
@@ -328,7 +318,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
     description: 'Um dos beach breaks mais consistentes do sul. Ondas nítidas e ocas em frente à falésia. Melhor entre maré baixa e média.',
     descriptionEn: 'One of the most consistent beach breaks in the south. Clean and hollow waves in front of the cliff. Best between low and mid tide.',
-    webcam: 'https://beachcam.meo.pt/livecams/sagres-tonel/',
     facilities: ['Estacionamento', 'Restaurante', 'WC'],
     hazards: ['Correntes fortes', 'Rochas', 'Multidão']
   },
@@ -338,7 +327,6 @@ export const spots: Spot[] = [
     type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
     description: 'Praia virada a oeste com ondas potentes. Acesso por escadaria na falésia. Beach break épico em dias grandes.',
     descriptionEn: 'West-facing beach with powerful waves. Access by staircase on the cliff. Epic beach break on big days.',
-    webcam: 'https://beachcam.meo.pt/livecams/sagres-beliche/',
     facilities: ['Estacionamento limitado', 'WC'],
     hazards: ['Acesso difícil', 'Correntes fortes', 'Rochas']
   },
@@ -393,7 +381,6 @@ export const spots: Spot[] = [
     type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'S',
     description: 'Praia extensa de 4km com vento side-shore. Escola de kitesurf e windsurf no centro.',
     descriptionEn: '4km long beach with side-shore wind. Kitesurf and windsurf school in the center.',
-    webcam: 'https://beachcam.meo.pt/livecams/lagos-meia-praia/',
     facilities: ['Estacionamento', 'Escolas', 'Aluguer', 'Restaurantes'],
     hazards: ['Tráfego na época alta']
   },

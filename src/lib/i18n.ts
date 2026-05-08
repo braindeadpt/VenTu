@@ -43,12 +43,6 @@ export const translations = {
     map: {
       openMap: 'Abrir mapa', location: 'Localização',
     },
-    webcam: {
-      live: 'Webcam em Direto', refresh: 'Atualizar', open: 'Abrir webcam',
-      unavailable: 'Webcam não disponível',
-      checkBeachcam: 'Ver Beachcam para webcams próximas',
-      viewBeachcam: 'Ver Beachcam',
-    },
     news: { title: 'Notícias', latest: 'Últimas', readMore: 'Ler mais', source: 'Fonte', category: 'Categoria', generatedBy: 'Resumido por IA' },
     footer: {
       about: 'WindSpot é uma plataforma open-source para desportos náuticos em Portugal.',
@@ -100,12 +94,6 @@ export const translations = {
     },
     map: {
       openMap: 'Open map', location: 'Location',
-    },
-    webcam: {
-      live: 'Live Webcam', refresh: 'Refresh', open: 'Open webcam',
-      unavailable: 'No webcam available',
-      checkBeachcam: 'Check Beachcam for nearby webcams',
-      viewBeachcam: 'View Beachcam',
     },
     news: { title: 'News', latest: 'Latest', readMore: 'Read more', source: 'Source', category: 'Category', generatedBy: 'Summarized by AI' },
     footer: {

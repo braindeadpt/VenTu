@@ -5,7 +5,6 @@ import { fetchMarineData, getCurrentConditions, getForecastData, getSportRating,
 import ConditionCard from '@/components/weather/ConditionCard'
 import ForecastChart from '@/components/weather/ForecastChart'
 import SpotMap from '@/components/spots/SpotMap'
-import WebcamSection from '@/components/webcam/WebcamSection'
 import { MapPin, Star, ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 
@@ -127,8 +126,6 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
           </div>
         </div>
       </div>
-
-      <WebcamSection webcamUrl={spot.webcam} spotName={spot.name} locale={locale} />
 
       <ForecastChart data={forecast.slice(0, 72)} locale={locale} />
 

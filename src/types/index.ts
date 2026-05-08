@@ -13,7 +13,6 @@ export interface Spot {
   bestSwell: string;
   description: string;
   descriptionEn: string;
-  webcam?: string;
   images?: string[];
   facilities: string[];
   hazards: string[];
