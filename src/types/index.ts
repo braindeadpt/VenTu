@@ -14,7 +14,7 @@ export interface Spot {
   description: string;
   descriptionEn: string;
   webcam?: string;
-  images: string[];
+  images?: string[];
   facilities: string[];
   hazards: string[];
 }
