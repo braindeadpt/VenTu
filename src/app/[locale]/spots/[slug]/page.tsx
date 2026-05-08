@@ -46,7 +46,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
     const marineData = await fetchMarineData(spot.lat, spot.lon)
     current = getCurrentConditions(marineData)
     forecast = getForecastData(marineData)
-    rating = getSportRating(spot.type, current.waveHeight, current.windSpeed)
+    rating = getSportRating(spot.type, current.waveHeight, current.windSpeed, current.wavePeriod, current.windDirection)
     waveRating = getWaveRating(current.waveHeight)
   } catch (e) {
     console.error(`Failed to load conditions for spot ${spot.name}:`, e)

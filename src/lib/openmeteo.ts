@@ -203,49 +203,135 @@ export function getDirectionArrow(degrees: number): string {
   return directions[index];
 }
 
-export function getSportRating(spotType: string, waveHeight: number, windSpeed: number) {
+export function getSportRating(spotType: string, waveHeight: number, windSpeed: number, wavePeriod?: number, windDirection?: number) {
   let rating = 5;
   let recommendation = 'Condições razoáveis';
   let recommendationEn = 'Fair conditions';
 
+  // Wind direction analysis for surf (offshore vs onshore)
+  const isOffshore = windDirection !== undefined && (
+    (windDirection >= 45 && windDirection <= 135) || // E to SE (offshore for W coast)
+    (windDirection >= 180 && windDirection <= 270)   // S to W (offshore for E coast)
+  );
+  const isOnshore = windDirection !== undefined && (
+    (windDirection >= 270 && windDirection <= 360) || // W to N (onshore for W coast)
+    (windDirection >= 0 && windDirection <= 45)      // N to NE (onshore for W coast)
+  );
+
   switch (spotType) {
     case 'surf':
     case 'big-wave':
-      if (waveHeight > 2 && windSpeed < 15) {
+      if (waveHeight > 2.5 && windSpeed < 12) {
         rating = 9;
-        recommendation = 'Excelentes condições de surf!';
-        recommendationEn = 'Excellent surf conditions!';
-      } else if (waveHeight > 1 && windSpeed < 20) {
+        recommendation = 'Excelentes condições de surf! 🌊';
+        recommendationEn = 'Excellent surf conditions! 🌊';
+      } else if (waveHeight > 1.5 && windSpeed < 15) {
         rating = 7;
         recommendation = 'Boas condições para surf';
         recommendationEn = 'Good surf conditions';
+      } else if (waveHeight > 1 && windSpeed < 20) {
+        rating = 5;
+        recommendation = 'Condições aceitáveis, vento atrapalha um pouco';
+        recommendationEn = 'Acceptable conditions, wind is a bit messy';
       } else if (waveHeight < 0.5) {
         rating = 2;
-        recommendation = 'Ondas muito pequenas';
-        recommendationEn = 'Very small waves';
+        recommendation = 'Ondas muito pequenas - não vale a pena para surf';
+        recommendationEn = 'Very small waves - not worth it for surfing';
+      } else if (windSpeed > 25) {
+        rating = 3;
+        recommendation = 'Vento muito forte - ondas desarrumadas';
+        recommendationEn = 'Too windy - messy waves';
+      }
+      
+      // Adjust for wind direction
+      if (isOffshore && rating > 3) {
+        rating = Math.min(10, rating + 1);
+        recommendation += ' (vento offshore!)';
+        recommendationEn += ' (offshore wind!)';
+      } else if (isOnshore && rating > 3) {
+        rating = Math.max(1, rating - 1);
+        recommendation += ' (vento onshore)';
+        recommendationEn += ' (onshore wind)';
       }
       break;
+      
     case 'kitesurf':
-    case 'windsurf':
-      if (windSpeed > 15 && windSpeed < 30) {
+      if (windSpeed > 18 && windSpeed < 28) {
         rating = 9;
-        recommendation = 'Vento perfeito para kite!';
-        recommendationEn = 'Perfect wind for kite!';
+        recommendation = 'Vento perfeito para kitesurf! 💨';
+        recommendationEn = 'Perfect wind for kitesurfing! 💨';
+      } else if (windSpeed > 15 && windSpeed < 30) {
+        rating = 7;
+        recommendation = 'Bom vento para kitesurf';
+        recommendationEn = 'Good wind for kitesurfing';
+      } else if (windSpeed > 12) {
+        rating = 5;
+        recommendation = 'Vento fraco - precisas de kite grande';
+        recommendationEn = 'Light wind - you\'ll need a big kite';
+      } else if (windSpeed < 8) {
+        rating = 2;
+        recommendation = 'Vento muito fraco para kitesurf';
+        recommendationEn = 'Too little wind for kitesurfing';
+      } else if (windSpeed > 35) {
+        rating = 3;
+        recommendation = 'Vento muito forte - perigoso para kite';
+        recommendationEn = 'Too windy - dangerous for kitesurfing';
+      }
+      break;
+      
+    case 'windsurf':
+      if (windSpeed > 15 && windSpeed < 25) {
+        rating = 9;
+        recommendation = 'Vento perfeito para windsurf! 💨';
+        recommendationEn = 'Perfect wind for windsurfing! 💨';
+      } else if (windSpeed > 12 && windSpeed < 30) {
+        rating = 7;
+        recommendation = 'Bom vento para windsurf';
+        recommendationEn = 'Good wind for windsurfing';
       } else if (windSpeed > 10) {
-        rating = 6;
-        recommendation = 'Vento adequado para kite';
-        recommendationEn = 'Adequate wind for kite';
+        rating = 5;
+        recommendation = 'Vento fraco - ideal para iniciantes';
+        recommendationEn = 'Light wind - good for beginners';
+      } else if (windSpeed < 8) {
+        rating = 2;
+        recommendation = 'Vento muito fraco para windsurf';
+        recommendationEn = 'Too little wind for windsurfing';
+      } else if (windSpeed > 35) {
+        rating = 3;
+        recommendation = 'Vento muito forte - só para experts';
+        recommendationEn = 'Too windy - experts only';
+      }
+      break;
+      
+    case 'foil':
+      if (windSpeed > 8 && windSpeed < 20) {
+        rating = 8;
+        recommendation = 'Bom vento para foil!';
+        recommendationEn = 'Good wind for foiling!';
+      } else if (windSpeed > 5) {
+        rating = 5;
+        recommendation = 'Vento fraco mas funciona para foil';
+        recommendationEn = 'Light wind but works for foiling';
       } else {
         rating = 2;
-        recommendation = 'Vento fraco demais';
-        recommendationEn = 'Too little wind';
+        recommendation = 'Vento muito fraco para foil';
+        recommendationEn = 'Too little wind for foiling';
       }
       break;
+      
     case 'multisport':
-      if (waveHeight > 0.5 && waveHeight < 1.5 && windSpeed < 20) {
+      if (waveHeight > 0.5 && waveHeight < 1.5 && windSpeed < 20 && windSpeed > 8) {
         rating = 8;
-        recommendation = 'Boas condições para iniciantes';
-        recommendationEn = 'Good conditions for beginners';
+        recommendation = 'Boas condições para vários desportos';
+        recommendationEn = 'Good conditions for multiple sports';
+      } else if (windSpeed > 15) {
+        rating = 6;
+        recommendation = 'Vento bom para kite/windsurf';
+        recommendationEn = 'Good wind for kite/windsurf';
+      } else if (waveHeight > 1) {
+        rating = 6;
+        recommendation = 'Ondas boas para surf';
+        recommendationEn = 'Good waves for surfing';
       }
       break;
   }
