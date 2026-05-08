@@ -94,34 +94,35 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1">
+        {/* Bloco 1 - Condições meteorológicas */}
+        <div className="glass-card p-6">
           <ConditionCard {...current} />
         </div>
-        <div className="lg:col-span-2 space-y-6">
-          <div className="glass-card p-6">
-            <h3 className="text-lg font-semibold mb-4">{t.conditions.recommendation}</h3>
-            <p className="text-xl text-white/80 mb-4">{isPt ? rating.recommendation : rating.recommendationEn}</p>
-            <div className="grid grid-cols-2 gap-4 mt-6">
-              <div>
-                <p className="text-sm text-white/50 mb-1">{isPt ? 'Vento ideal' : 'Best wind'}</p>
-                <p className="font-semibold">{spot.bestWind}</p>
-              </div>
-              <div>
-                <p className="text-sm text-white/50 mb-1">{isPt ? 'Swell ideal' : 'Best swell'}</p>
-                <p className="font-semibold">{spot.bestSwell}</p>
-              </div>
+        
+        {/* Bloco 2 - Recomendação */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-semibold mb-4">{t.conditions.recommendation}</h3>
+          <p className="text-xl text-white/80 mb-4">{isPt ? rating.recommendation : rating.recommendationEn}</p>
+          <div className="grid grid-cols-2 gap-4 mt-6">
+            <div>
+              <p className="text-sm text-white/50 mb-1">{isPt ? 'Vento ideal' : 'Best wind'}</p>
+              <p className="font-semibold">{spot.bestWind}</p>
+            </div>
+            <div>
+              <p className="text-sm text-white/50 mb-1">{isPt ? 'Swell ideal' : 'Best swell'}</p>
+              <p className="font-semibold">{spot.bestSwell}</p>
             </div>
           </div>
-          
-          {/* Mapa pequeno integrado */}
-          <div className="glass-card p-4">
-            <h4 className="text-sm font-semibold text-white/60 mb-3 flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              {isPt ? 'Localização' : 'Location'}
-            </h4>
-            <div className="h-48 rounded-xl overflow-hidden">
-              <SpotMap lat={spot.lat} lon={spot.lon} />
-            </div>
+        </div>
+        
+        {/* Bloco 3 - Mapa */}
+        <div className="glass-card p-4">
+          <h4 className="text-sm font-semibold text-white/60 mb-3 flex items-center gap-2">
+            <MapPin className="w-4 h-4" />
+            {isPt ? 'Localização' : 'Location'}
+          </h4>
+          <div className="h-48 rounded-xl overflow-hidden">
+            <SpotMap lat={spot.lat} lon={spot.lon} />
           </div>
         </div>
       </div>
