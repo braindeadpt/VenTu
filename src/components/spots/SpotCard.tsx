@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Wind, Waves, Star } from 'lucide-react';
+import { MapPin, Wind, Waves, Star, Thermometer } from 'lucide-react';
 import { Spot } from '@/types';
-import ConditionCard from '@/components/weather/ConditionCard';
+import { getSportRating } from '@/lib/openmeteo';
 
 interface SpotCardProps {
   spot: Spot;
@@ -35,24 +35,17 @@ export default function SpotCard({ spot, locale, conditions }: SpotCardProps) {
     expert: 'text-red-400',
   };
 
+  // Calculate sport-specific rating
+  let rating = { rating: 5, recommendation: 'Condições razoáveis', recommendationEn: 'Fair conditions' };
+  if (conditions) {
+    rating = getSportRating(spot.type, conditions.waveHeight, conditions.windSpeed, conditions.wavePeriod, conditions.windDirection);
+  }
+
   return (
     <Link href={`/${locale}/spots/${spot.slug}/`}>
       <div className="glass-card overflow-hidden hover:bg-white/10 transition-all duration-300 cursor-pointer group">
-        <div className="relative h-48 bg-gradient-to-br from-ocean-800 to-ocean-950 overflow-hidden">
-      {spot.images && spot.images.length > 0 ? (
-            <img
-              src={spot.images[0]}
-              alt={spot.name}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              onError={(e) => {
-                (e.target as HTMLImageElement).style.display = 'none';
-              }}
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center">
-              <Waves className="w-16 h-16 text-white/20 group-hover:text-white/30 transition-colors" />
-            </div>
-          )}
+        {/* Header with spot info */}
+        <div className="relative h-32 bg-gradient-to-br from-ocean-800 to-ocean-950 overflow-hidden">
           <div className="absolute top-3 left-3">
             <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${typeColors[spot.type]}`}>
               {spot.type === 'big-wave' ? 'Big Wave' : spot.type.charAt(0).toUpperCase() + spot.type.slice(1)}
@@ -71,11 +64,57 @@ export default function SpotCard({ spot, locale, conditions }: SpotCardProps) {
               {spot.region}
             </div>
           </div>
+          {/* Rating badge */}
+          <div className="absolute bottom-3 right-3">
+            <div className={`px-2 py-1 rounded-lg text-xs font-bold ${
+              rating.rating >= 7 ? 'bg-green-500/30 text-green-300' :
+              rating.rating >= 4 ? 'bg-yellow-500/30 text-yellow-300' :
+              'bg-red-500/30 text-red-300'
+            }`}>
+              {rating.rating}/10
+            </div>
+          </div>
         </div>
 
+        {/* Conditions section - THE FOCUS */}
         <div className="p-4">
           {conditions ? (
-            <ConditionCard {...conditions} compact />
+            <div className="space-y-3">
+              {/* Wave height */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Waves className="w-4 h-4 text-wave-400" />
+                  <span className="text-sm text-white/60">Ondas</span>
+                </div>
+                <span className="font-semibold text-white">{conditions.waveHeight.toFixed(1)}m</span>
+              </div>
+              
+              {/* Wind */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Wind className="w-4 h-4 text-wind-400" />
+                  <span className="text-sm text-white/60">Vento</span>
+                </div>
+                <div className="text-right">
+                  <span className="font-semibold text-white">{conditions.windSpeed.toFixed(0)}kt</span>
+                  <span className="text-xs text-white/40 ml-1">({conditions.windGust.toFixed(0)}kt)</span>
+                </div>
+              </div>
+              
+              {/* Water temp */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Thermometer className="w-4 h-4 text-surf-400" />
+                  <span className="text-sm text-white/60">Água</span>
+                </div>
+                <span className="font-semibold text-white">{conditions.waterTemp.toFixed(0)}°C</span>
+              </div>
+              
+              {/* Recommendation */}
+              <div className="pt-2 border-t border-white/10">
+                <p className="text-sm font-medium text-white/80">{locale === 'pt' ? rating.recommendation : rating.recommendationEn}</p>
+              </div>
+            </div>
           ) : (
             <div className="flex items-center gap-2 text-white/40 text-sm">
               <Wind className="w-4 h-4 animate-pulse" />
