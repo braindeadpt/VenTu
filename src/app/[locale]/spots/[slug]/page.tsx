@@ -11,6 +11,7 @@ import { LocalTipsSection } from '@/components/spots/LocalTipsSection'
 import { SecretTipsSection } from '@/components/spots/SecretTipsSection'
 import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge'
 import { SessionForecastChart } from '@/components/spots/SessionForecastChart'
+import SpotChat from '@/components/spots/SpotChat'
 import { MapPin, Star, ArrowLeft, CheckCircle, AlertTriangle, Zap, Users } from 'lucide-react'
 import Link from 'next/link'
 
@@ -301,6 +302,8 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
           </div>
         )}
       </div>
+      {/* Chat por spot */}
+      <SpotChat spotSlug={spot.slug} spotName={isPt ? spot.name : spot.nameEn} locale={locale} />
     </div>
   )
 }
