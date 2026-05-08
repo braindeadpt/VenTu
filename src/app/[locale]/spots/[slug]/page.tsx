@@ -107,6 +107,8 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
   // Get tide info
   const tideInfo = getTideInfo(current.seaLevelHeight)
   const weatherDesc = getWeatherDescription(weatherData.weatherCode)
+
+  const difficultyLabels = {
     beginner: t.spots.beginner,
     intermediate: t.spots.intermediate,
     advanced: t.spots.advanced,
