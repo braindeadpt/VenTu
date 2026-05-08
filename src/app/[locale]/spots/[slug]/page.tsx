@@ -4,6 +4,7 @@ import { getTranslation } from '@/lib/i18n'
 import { fetchMarineData, getCurrentConditions, getForecastData, getSportRating, getWaveRating } from '@/lib/openmeteo'
 import ConditionCard from '@/components/weather/ConditionCard'
 import ForecastChart from '@/components/weather/ForecastChart'
+import SpotMap from '@/components/spots/SpotMap'
 import { MapPin, Star, ArrowLeft, CheckCircle, AlertTriangle } from 'lucide-react'
 import Link from 'next/link'
 
@@ -90,6 +91,11 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
             <div className="text-sm text-white/50">{t.conditions.rating}</div>
           </div>
         </div>
+      </div>
+
+      {/* Map */}
+      <div className="w-full max-w-3xl mx-auto">
+        <SpotMap lat={spot.lat} lon={spot.lon} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
