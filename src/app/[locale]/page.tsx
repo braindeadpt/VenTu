@@ -97,23 +97,15 @@ function getTopSpots(
   })).filter(item => item.spot)
 }
 
-export default async function HomePage({ params, searchParams }: { params: { locale: string }, searchParams: { sport?: string } }) {
+export default async function HomePage({ params }: { params: { locale: string } }) {
   const { locale } = params
   const t = getTranslation(locale as any)
-  const selectedSport = (searchParams.sport as SportType) || undefined
-  const { conditions, surfabilityScores, sportRatings } = await getAllConditions(selectedSport)
+  const { conditions, surfabilityScores, sportRatings } = await getAllConditions()
 
-  const topSpots = getTopSpots(surfabilityScores, sportRatings, selectedSport, 3)
+  const topSpots = getTopSpots(surfabilityScores, sportRatings, undefined, 3)
   const isPt = locale === 'pt'
 
-  const filteredSpots = selectedSport
-    ? spots.filter(spot => {
-        if (spot.compatibleSports?.length) {
-          return spot.compatibleSports.includes(selectedSport)
-        }
-        return isSpotCompatibleWithSport(spot, selectedSport)
-      })
-    : spots
+  const filteredSpots = spots
 
   const bestSpot = topSpots[0]
   const bestConditions = bestSpot ? conditions[bestSpot.spot.id] : null
@@ -207,7 +199,7 @@ export default async function HomePage({ params, searchParams }: { params: { loc
             return (
               <Link
                 key={spot.id}
-                href={`/${locale}/spots/${spot.slug}${selectedSport ? `?sport=${selectedSport}` : ''}`}
+                href={`/${locale}/spots/${spot.slug}`}
                 className={`glass-card p-5 hover:scale-[1.02] transition-all cursor-pointer group ${colors.border} border`}
               >
                 <div className="flex items-start justify-between mb-3">
@@ -235,7 +227,7 @@ export default async function HomePage({ params, searchParams }: { params: { loc
                   </div>
                   <span className="text-sm font-medium text-white/70">
                     {isSportMode 
-                      ? (isPt ? SPORT_LABELS[selectedSport as SportType].pt : SPORT_LABELS[selectedSport as SportType].en)
+                      ? (isPt ? 'Ver condições' : 'See conditions')
                       : ratingLabel
                     }
                   </span>
@@ -301,7 +293,7 @@ export default async function HomePage({ params, searchParams }: { params: { loc
             <h2 className="text-2xl md:text-3xl font-bold text-white/90">
               {isPt ? 'Mapa dos Spots' : 'Spots Map'}
             </h2>
-            <p className="text-white/50 text-sm">{isPt ? `Clique num spot para ver detalhes${selectedSport ? ` para ${SPORT_LABELS[selectedSport as SportType].pt}` : ''}` : `Click a spot for details${selectedSport ? ` for ${SPORT_LABELS[selectedSport as SportType].en}` : ''}`}</p>
+            <p className="text-white/50 text-sm">{isPt ? `Clique num spot para ver detalhes` : `Click a spot for details`}</p>
           </div>
         </div>
 
@@ -309,7 +301,7 @@ export default async function HomePage({ params, searchParams }: { params: { loc
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
             {filteredSpots.map((spot) => {
               const score = surfabilityScores[spot.id]
-              const sportRating = selectedSport && sportRatings[spot.id]?.[selectedSport]
+              const sportRating = sportRatings[spot.id]
               const displayScore = sportRating ? sportRating.rating : (score?.score || 0)
               const maxScore = sportRating ? 10 : 100
               const colors = score ? getScoreColor(score.score) : { bg: 'bg-gray-500/20', text: 'text-gray-400', border: 'border-gray-500/30', glow: '' }
@@ -317,7 +309,7 @@ export default async function HomePage({ params, searchParams }: { params: { loc
               return (
                 <Link
                   key={spot.id}
-                  href={`/${locale}/spots/${spot.slug}${selectedSport ? `?sport=${selectedSport}` : ''}`}
+                  href={`/${locale}/spots/${spot.slug}`}
                   className={`p-3 rounded-xl ${colors.bg} ${colors.border} border hover:scale-105 transition-all group`}
                 >
                   <div className="flex items-center justify-between mb-1">
@@ -420,20 +412,10 @@ export default async function HomePage({ params, searchParams }: { params: { loc
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold text-white/90">
-              {selectedSport 
-                ? (isPt 
-                  ? `${SPORT_LABELS[selectedSport as SportType].pt} Spots` 
-                  : `${SPORT_LABELS[selectedSport as SportType].en} Spots`)
-                : t.spots.title
-              }
+              {t.spots.title}
             </h2>
             <p className="text-white/50 mt-1">
-              {selectedSport
-                ? (isPt 
-                  ? `${filteredSpots.length} spots para ${SPORT_LABELS[selectedSport as SportType].pt}` 
-                  : `${filteredSpots.length} spots for ${SPORT_LABELS[selectedSport as SportType].en}`)
-                : t.hero.featured
-              }
+              {t.hero.featured}
             </p>
           </div>
           <Link href={`/${locale}/spots/`} className="flex items-center gap-2 text-ocean-400 hover:text-ocean-300 transition-colors">
@@ -446,7 +428,6 @@ export default async function HomePage({ params, searchParams }: { params: { loc
           locale={locale} 
           conditions={conditions} 
           sportRatings={sportRatings}
-          selectedSport={selectedSport}
         />
       </section>
 
