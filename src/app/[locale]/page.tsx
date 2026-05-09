@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { getTranslation } from '@/lib/i18n'
 import { spots } from '@/lib/spots'
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo'
@@ -168,7 +169,9 @@ export default async function HomePage({ params }: { params: { locale: string } 
 
       {/* SPORT SELECTOR */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <SportSelector locale={locale} />
+        <Suspense fallback={<div className="h-16" />}>
+          <SportSelector locale={locale} />
+        </Suspense>
       </section>
 
       {/* TOP 3 SPOTS — Onde está a boa onda hoje? */}
