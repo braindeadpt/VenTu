@@ -57,16 +57,10 @@ async function generateSummaryWithGemini(articles, locale) {
   const prompt = locale === 'pt'
     ? `Resume as seguintes notícias de desportos náuticos em português, focando em condições de ondas e vento para Portugal.
 
-${articles.map(a => `Título: ${a.title}
-Descrição: ${a.description}`).join('
-
-')}`
+${articles.map(a => `Título: ${a.title}\nDescrição: ${a.description}`).join('\n\n')}`
     : `Summarize the following water sports news in English, focusing on wave and wind conditions for Portugal.
 
-${articles.map(a => `Title: ${a.title}
-Description: ${a.description}`).join('
-
-')}`;
+${articles.map(a => `Title: ${a.title}\nDescription: ${a.description}`).join('\n\n')}`;
 
   try {
     const response = await fetch(`${GEMINI_API}?key=${GEMINI_API_KEY}`, {
@@ -84,8 +78,7 @@ Description: ${a.description}`).join('
 
     return articles.map((a, i) => ({
       ...a,
-      summary: summary.split('
-')[i * 2 + 1] || a.description,
+      summary: summary.split('\n')[i * 2 + 1] || a.description,
       summaryEn: a.description,
     }));
   } catch (e) {
@@ -109,7 +102,24 @@ async function updateNews() {
 
   console.log(`  Found ${allArticles.length} articles`);
 
-  const ptNews = await generateSummaryWithGemini(allArticles.slice(0, 6), 'pt');
+  // Filter out articles with empty/invalid URLs
+  const validArticles = allArticles.filter(a => {
+    if (!a.url || a.url.trim() === '') {
+      console.log(`⚠️ Skipping article with empty URL: ${a.title}`);
+      return false;
+    }
+    try {
+      new URL(a.url);
+      return true;
+    } catch {
+      console.log(`⚠️ Skipping article with invalid URL: ${a.title} (${a.url})`);
+      return false;
+    }
+  });
+
+  console.log(`  Valid articles: ${validArticles.length}`);
+
+  const ptNews = await generateSummaryWithGemini(validArticles.slice(0, 6), 'pt');
 
   const newsItems = ptNews.map((a, i) => ({
     id: `news-${Date.now()}-${i}`,
@@ -118,7 +128,13 @@ async function updateNews() {
     summary: a.summary,
     summaryEn: a.summaryEn,
     category: 'general',
-    source: new URL(a.url).hostname.replace('www.', ''),
+    source: (() => {
+      try {
+        return new URL(a.url).hostname.replace('www.', '');
+      } catch {
+        return 'unknown';
+      }
+    })(),
     url: a.url,
     publishedAt: a.publishedAt || new Date().toISOString(),
     tags: [],
@@ -128,9 +144,11 @@ async function updateNews() {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, JSON.stringify(newsItems, null, 2));
 
-  console.log(`
-✅ News saved to ${outputPath}`);
+  console.log(`\n✅ News saved to ${outputPath}`);
   console.log(`📰 Generated ${newsItems.length} news items`);
 }
 
-updateNews().catch(console.error);
+updateNews().catch(e => {
+  console.error('❌ Fatal error in update-news.js:', e);
+  process.exit(1);
+});

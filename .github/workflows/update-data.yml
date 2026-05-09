@@ -23,6 +23,7 @@ jobs:
       - name: Update News
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        continue-on-error: true
         run: node scripts/update-news.js
 
       - name: Commit and Push
