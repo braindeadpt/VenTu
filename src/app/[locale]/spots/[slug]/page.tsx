@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getSpotBySlug } from '@/lib/spots'
+import { getSpotBySlug, spots } from '@/lib/spots'
 import { getTranslation } from '@/lib/i18n'
 import { fetchMarineData, getCurrentConditions, getForecastData, getSportRating, getWaveRating, fetchWeatherData, getTideInfo, getWeatherDescription } from '@/lib/openmeteo'
 import { calculateSurfability, estimateCrowd, getScoreColor, getSessionForecast } from '@/lib/surfability'
@@ -17,9 +17,8 @@ import Link from 'next/link'
 
 export const revalidate = 1800
 
-export function generateStaticParams() {
-  const { spots } = require('@/lib/spots')
-  return spots.flatMap((spot: any) => [
+export async function generateStaticParams() {
+  return spots.flatMap((spot) => [
     { locale: 'pt', slug: spot.slug },
     { locale: 'en', slug: spot.slug },
   ])
