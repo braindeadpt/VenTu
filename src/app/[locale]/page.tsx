@@ -478,7 +478,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
               <div className="text-sm text-white/50">{t.hero.stats.spots}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-surf-400">{spots.filter(s => s.type === 'surf' || s.type === 'bodyboard' || s.type === 'sup' || s.type === 'big-wave').length}</div>
+              <div className="text-4xl font-bold text-surf-400">{spots.filter(s => s.type === 'surf' || s.type === 'big-wave').length}</div>
               <div className="text-sm text-white/50">{isPt ? 'Com Ondas' : 'With Waves'}</div>
             </div>
             <div className="text-center">
