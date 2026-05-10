@@ -69,13 +69,13 @@ export function AlertButton({ spotId, spotName, locale = 'pt' }: AlertButtonProp
   }
 
   return (
-    <button
+    <div
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
         toggleAlert(spotId, spotName);
       }}
-      className={`flex items-center gap-1.5 transition-all hover:scale-110 ${
+      className={`flex items-center gap-1.5 transition-all hover:scale-110 cursor-pointer ${
         active ? 'text-yellow-400' : 'text-white/40 hover:text-white/70'
       }`}
       title={
@@ -83,9 +83,18 @@ export function AlertButton({ spotId, spotName, locale = 'pt' }: AlertButtonProp
           ? isPt ? `Alerta ativo para ${spotName}` : `Alert active for ${spotName}`
           : isPt ? `Criar alerta para ${spotName}` : `Create alert for ${spotName}`
       }
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleAlert(spotId, spotName);
+        }
+      }}
     >
       {active ? <Bell className="w-5 h-5 fill-current" /> : <BellOff className="w-5 h-5" />}
-    </button>
+    </div>
   );
 }
 

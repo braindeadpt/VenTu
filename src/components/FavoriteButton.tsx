@@ -73,13 +73,22 @@ export default function FavoriteButton({
   }
 
   return (
-    <button
+    <div
+      role="button"
+      tabIndex={0}
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
         toggleFavorite(spotId);
       }}
-      className={`flex items-center gap-2 transition-all hover:scale-110 ${
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleFavorite(spotId);
+        }
+      }}
+      className={`flex items-center gap-2 transition-all hover:scale-110 cursor-pointer ${
         active ? 'text-red-400' : 'text-white/40 hover:text-white/70'
       }`}
       title={
@@ -99,6 +108,6 @@ export default function FavoriteButton({
           }
         </span>
       )}
-    </button>
+    </div>
   );
 }
