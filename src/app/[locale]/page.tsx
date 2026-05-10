@@ -1,513 +1,527 @@
-import DawnPatrolBanner from '@/components/DawnPatrolBanner'
-import { AlertBanner } from '@/components/AlertBanner'
-import { getTranslation } from '@/lib/i18n'
-import { ALL_SPORTS } from '@/lib/sportRatings'
-import { spots } from '@/lib/spots'
-import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo'
-import { calculateSurfability, getSessionForecast, estimateCrowd, getScoreColor } from '@/lib/surfability'
-import { calculateSportRating, SPORT_LABELS, SportType, getCompatibleSports } from '@/lib/sportRatings'
-import { Wind, Waves, MapPin, ArrowRight, Activity, Thermometer, Star, Zap, Flame, Sunrise, Users, Heart, Bot, Anchor } from 'lucide-react'
+'use client';
 
-// Sport icon mapping (no emojis)
-const SPORT_ICONS: Record<SportType, React.ElementType> = {
-  surf: Waves,
-  kitesurf: Wind,
-  windsurf: Wind,
-  wakeboard: Anchor,
-  bodyboard: Waves,
-  sup: Heart,
-};
-import Link from 'next/link'
-import SpotGrid from '@/components/spots/SpotGrid'
-import SportSelector from '@/components/SportSelector'
+import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
+import { 
+  Wind, Waves, Thermometer, MapPin, ArrowRight, Zap, 
+  ChevronDown, Filter, Star, Sunrise, TrendingUp
+} from 'lucide-react';
+import { spots } from '@/lib/spots';
+import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
+import { calculateSurfability, getScoreColor, estimateCrowd } from '@/lib/surfability';
+import { calculateSportRating, SPORT_LABELS, SportType, getCompatibleSports } from '@/lib/sportRatings';
+import { getTranslation } from '@/lib/i18n';
 
-
-function isSpotCompatibleWithSport(spot: any, sport: SportType): boolean {
-  const typeMapping: Record<string, SportType[]> = {
-    surf: ['surf', 'bodyboard', 'sup'],
-    kitesurf: ['kitesurf', 'windsurf'],
-    windsurf: ['windsurf', 'kitesurf'],
-    'big-wave': ['surf', 'bodyboard', 'windsurf'],
-    foil: ['windsurf', 'kitesurf', 'sup'],
-    multisport: ['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'],
-    wakeboard: ['wakeboard'],
-  }
-  const compatible = typeMapping[spot.type] || ['surf']
-  return compatible.includes(sport)
+// ─── Types ───
+interface SpotData {
+  spot: typeof spots[0];
+  conditions: {
+    waveHeight: number;
+    wavePeriod: number;
+    windSpeed: number;
+    windDirection: number;
+    windGust: number;
+    waterTemp: number;
+  };
+  surfability: ReturnType<typeof calculateSurfability>;
+  sportRatings: Record<string, any>;
 }
 
-async function getAllConditions(selectedSport?: SportType) {
-  const conditions: Record<string, any> = {}
-  const surfabilityScores: Record<string, any> = {}
-  const sportRatings: Record<string, Record<string, any>> = {}
+// ─── Sport Config ───
+const SPORTS: { id: SportType | 'all'; label: string; icon: React.ElementType; color: string }[] = [
+  { id: 'all', label: 'Todos', icon: Star, color: 'text-white' },
+  { id: 'surf', label: 'Surf', icon: Waves, color: 'text-cyan-400' },
+  { id: 'kitesurf', label: 'Kitesurf', icon: Wind, color: 'text-sky-400' },
+  { id: 'windsurf', label: 'Windsurf', icon: Wind, color: 'text-blue-400' },
+  { id: 'bodyboard', label: 'Bodyboard', icon: Waves, color: 'text-teal-400' },
+  { id: 'sup', label: 'SUP', icon: Waves, color: 'text-emerald-400' },
+  { id: 'wakeboard', label: 'Wakeboard', icon: Zap, color: 'text-purple-400' },
+];
 
-  await Promise.all(
-    spots.map(async (spot) => {
-      try {
-        const data = await fetchMarineData(spot.lat, spot.lon)
-        const current = getCurrentConditions(data)
-        conditions[spot.id] = current
+const REGIONS = ['Todos', 'Norte', 'Centro', 'Lisboa', 'Alentejo', 'Algarve', 'Açores', 'Madeira'];
 
-        const score = calculateSurfability(spot, {
-          waveHeight: current.waveHeight,
-          wavePeriod: current.wavePeriod,
-          waveDirection: current.waveDirection,
-          windSpeed: current.windSpeed,
-          windDirection: current.windDirection,
-          waterTemp: current.waterTemp,
-        })
-        surfabilityScores[spot.id] = score
+// ─── Components ───
 
-        sportRatings[spot.id] = {}
-        const compatibleSports = spot.compatibleSports?.length 
-          ? spot.compatibleSports 
-          : getCompatibleSports(current.waveHeight, current.windSpeed, current.wavePeriod)
-        
-        compatibleSports.forEach((sport: SportType) => {
-          sportRatings[spot.id][sport] = calculateSportRating(
-            sport,
-            current.waveHeight,
-            current.wavePeriod,
-            current.windSpeed,
-            current.windDirection
-          )
-        })
-      } catch (e) {
-        console.error(`Failed to fetch conditions for ${spot.name}`, e)
-      }
-    })
-  )
-
-  return { conditions, surfabilityScores, sportRatings }
-}
-
-function getTopSpots(
-  surfabilityScores: Record<string, any>, 
-  sportRatings: Record<string, Record<string, any>>,
-  selectedSport?: SportType,
-  limit = 3
-) {
-  const scores = selectedSport && sportRatings
-    ? Object.entries(sportRatings)
-        .filter(([id, ratings]) => ratings[selectedSport])
-        .map(([id, ratings]) => ({
-          id,
-          score: ratings[selectedSport].rating * 10,
-          sportRating: ratings[selectedSport],
-        }))
-        .sort((a, b) => b.score - a.score)
-        .slice(0, limit)
-    : Object.entries(surfabilityScores)
-        .sort(([, a], [, b]) => b.score - a.score)
-        .slice(0, limit)
-        .map(([id, score]) => ({ id, score, sportRating: null }))
-
-  return scores.map(({ id, score, sportRating }) => ({
-    spot: spots.find(s => s.id === id)!,
-    score: sportRating || score,
-    sportRating,
-  })).filter(item => item.spot)
-}
-
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'WindSpot Portugal — Real-time Surf & Wind Conditions',
-  description: 'Real-time conditions for surf, kitesurf, windsurf and more across 81 spots in Portugal. Live wave, wind and water data.',
-  openGraph: {
-    title: 'WindSpot Portugal — Real-time Surf & Wind Conditions',
-    description: 'Real-time conditions for surf, kitesurf, windsurf and more across 81 spots in Portugal.',
-    url: 'https://braindeadpt.github.io/windspot-pt',
-    siteName: 'WindSpot Portugal',
-    locale: 'pt_PT',
-    type: 'website',
-  },
-}
-
-export default async function HomePage({ params }: { params: { locale: string } }) {
-  const { locale } = params
-  const t = getTranslation(locale as any)
-  const { conditions, surfabilityScores, sportRatings } = await getAllConditions()
-
-  const topSpots = getTopSpots(surfabilityScores, sportRatings, undefined, 3)
-  const isPt = locale === 'pt'
-
-  const filteredSpots = spots
-
-  const bestSpot = topSpots[0]
-  const bestConditions = bestSpot ? conditions[bestSpot.spot.id] : null
+function LiveTicker({ spotsData, locale }: { spotsData: SpotData[]; locale: string }) {
+  const isPt = locale === 'pt';
+  const top5 = useMemo(() => 
+    [...spotsData].sort((a, b) => b.surfability.score - a.surfability.score).slice(0, 5),
+    [spotsData]
+  );
 
   return (
-    <div className="space-y-16">
-      {/* HERO — Onde está a boa onda? */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-ocean-900/50 to-ocean-950" />
-        <div className="absolute inset-0 opacity-10">
-          <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-            <path d="M0,50 Q20,35 40,50 T80,50 T100,50" fill="none" stroke="white" strokeWidth="0.5">
-              <animate attributeName="d" dur="4s" repeatCount="indefinite"
-                values="M0,50 Q20,35 40,50 T80,50 T100,50;M0,50 Q20,45 40,50 T80,50 T100,50;M0,50 Q20,35 40,50 T80,50 T100,50"/>
-            </path>
-            <path d="M0,60 Q25,45 50,60 T100,60" fill="none" stroke="white" strokeWidth="0.5" opacity="0.5">
-              <animate attributeName="d" dur="5s" repeatCount="indefinite"
-                values="M0,60 Q25,45 50,60 T100,60;M0,60 Q25,55 50,60 T100,60;M0,60 Q25,45 50,60 T100,60"/>
-            </path>
-            <path d="M0,70 Q30,55 60,70 T100,70" fill="none" stroke="white" strokeWidth="0.5" opacity="0.3">
-              <animate attributeName="d" dur="6s" repeatCount="indefinite"
-                values="M0,70 Q30,55 60,70 T100,70;M0,70 Q30,65 60,70 T100,70;M0,70 Q30,55 60,70 T100,70"/>
-            </path>
-          </svg>
+    <div className="w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 overflow-hidden">
+      <div className="flex animate-marquee whitespace-nowrap py-2">
+        {[...top5, ...top5].map((data, i) => (
+          <Link
+            key={`${data.spot.id}-${i}`}
+            href={`/${locale}/spots/${data.spot.slug}`}
+            className="inline-flex items-center gap-3 px-6 hover:bg-white/5 transition-colors"
+          >
+            <span className="font-bold text-white/90">{isPt ? data.spot.name : data.spot.nameEn}</span>
+            <span className="flex items-center gap-1 text-xs text-white/50">
+              <Waves className="w-3 h-3" />
+              {data.conditions.waveHeight.toFixed(1)}m
+            </span>
+            <span className="flex items-center gap-1 text-xs text-white/50">
+              <Wind className="w-3 h-3" />
+              {(data.conditions.windSpeed * 1.94384).toFixed(0)}kt
+            </span>
+            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${getScoreColor(data.surfability.score).bg} ${getScoreColor(data.surfability.score).text}`}>
+              {data.surfability.score}
+            </span>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function HeroSection({ bestSpot, locale }: { bestSpot: SpotData; locale: string }) {
+  const isPt = locale === 'pt';
+  const colors = getScoreColor(bestSpot.surfability.score);
+  const crowd = estimateCrowd(bestSpot.surfability.score, false, false, bestSpot.spot.difficulty);
+
+  return (
+    <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-900 via-slate-800 to-slate-950" />
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-cyan-500/20 via-transparent to-transparent" />
+      </div>
+      
+      {/* Animated mesh */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000" />
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-8">
+        {/* Score Badge */}
+        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full ${colors.bg} border ${colors.border} animate-pulse`}>
+          <TrendingUp className={`w-4 h-4 ${colors.text}`} />
+          <span className={`font-bold ${colors.text}`}>
+            {isPt ? 'Melhor Spot Hoje' : 'Best Spot Today'}
+          </span>
+          <span className={`text-xl font-bold ${colors.text}`}>{bestSpot.surfability.score}/100</span>
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-          <div className="text-center space-y-6">
-            {/* Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ocean-500/10 border border-ocean-500/20 text-ocean-300 text-sm font-medium animate-pulse">
-              <Zap className="w-4 h-4" />
-              {isPt ? 'Dados em tempo real para Locals' : 'Real-time data for Locals'}
-            </div>
+        {/* Spot Name */}
+        <h1 className="text-5xl md:text-7xl font-black text-white tracking-tight">
+          {isPt ? bestSpot.spot.name : bestSpot.spot.nameEn}
+        </h1>
 
-            {/* Title */}
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-              <span className="text-gradient">WindSpot</span>
-            </h1>
+        {/* Tagline */}
+        <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto">
+          {isPt ? bestSpot.surfability.rating : bestSpot.surfability.ratingEn}
+        </p>
 
-            {/* Dynamic subtitle based on best spot */}
-            <p className="text-2xl md:text-3xl text-white/80 max-w-3xl mx-auto leading-relaxed font-medium">
-              {bestSpot ? (
-                isPt
-                  ? <>Hoje é dia de <span className="text-ocean-400 font-bold">{bestSpot.spot.name}</span>! {bestSpot.score.rating}</>
-                  : <>Today is <span className="text-ocean-400 font-bold">{bestSpot.spot.name}</span> day! {bestSpot.score.ratingEn}</>
-              ) : t.hero.subtitle}
-            </p>
-
-            {/* CTA */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 px-8 py-4 bg-ocean-500 hover:bg-ocean-600 text-white rounded-xl font-semibold transition-all hover:scale-105 shadow-lg shadow-ocean-500/25">
-                <Zap className="w-5 h-5" />
-                {isPt ? 'Ver Onde Está a Boa Onda' : 'Find the Best Waves'}
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
+        {/* Key Stats */}
+        <div className="flex items-center justify-center gap-8 md:gap-12">
+          <div className="text-center space-y-1">
+            <Waves className="w-6 h-6 text-cyan-400 mx-auto" />
+            <div className="text-2xl font-bold text-white">{bestSpot.conditions.waveHeight.toFixed(1)}m</div>
+            <div className="text-xs text-white/50">{isPt ? 'Ondas' : 'Waves'}</div>
           </div>
-        </div>
-      </section>
-
-      {/* ALERTS BANNER — temporarily disabled for hydration debug */}
-      {/*
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <AlertBanner locale={locale} />
-      </section>
-      */}
-
-      {/* DAWN PATROL AI ADVISOR — temporarily disabled for hydration debug */}
-      {/*
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
-        <DawnPatrolBanner locale={locale} />
-      </section>
-      */}
-
-      {/* SPORT SELECTOR */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-        <SportSelector locale={locale} />
-      </section>
-
-      {/* TOP 3 SPOTS — Onde está a boa onda hoje? */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-red-500/10">
-            <Flame className="w-6 h-6 text-red-400" />
+          <div className="w-px h-12 bg-white/10" />
+          <div className="text-center space-y-1">
+            <Wind className="w-6 h-6 text-sky-400 mx-auto" />
+            <div className="text-2xl font-bold text-white">{(bestSpot.conditions.windSpeed * 1.94384).toFixed(0)}kt</div>
+            <div className="text-xs text-white/50">{isPt ? 'Vento' : 'Wind'}</div>
           </div>
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white/90">
-              {isPt ? 'TOP 3 — Onde Está a Boa Onda?' : 'TOP 3 — Where Are the Best Waves?'}
-            </h2>
-            <p className="text-white/50 text-sm flex items-center gap-1">{isPt ? 'Scores calculados agora mesmo' : 'Scores calculated just now'} <Bot className="w-3.5 h-3.5 inline text-white/40" /></p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {topSpots.map(({ spot, score, sportRating }, index) => {
-            const isSportMode = !!sportRating
-            const ratingScore = isSportMode ? sportRating.rating : score.score / 10
-            const ratingLabel = isSportMode 
-              ? (isPt ? sportRating.label : sportRating.label)
-              : (isPt ? score.rating : score.ratingEn)
-            const colors = isSportMode 
-              ? { bg: `bg-[${sportRating.color}]/20`, text: `text-[${sportRating.color}]`, border: `border-[${sportRating.color}]/30` }
-              : getScoreColor(score.score)
-            
-            return (
-              <Link
-                key={spot.id}
-                href={`/${locale}/spots/${spot.slug}`}
-                className={`glass-card p-5 hover:scale-[1.02] transition-all cursor-pointer group ${colors.border} border`}
-              >
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg ${colors.bg} ${colors.text}`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg text-white/90 group-hover:text-ocean-300 transition-colors">
-                        {isPt ? spot.name : spot.nameEn}
-                      </h3>
-                      <p className="text-sm text-white/50">{isPt ? spot.region : spot.regionEn}</p>
-                    </div>
-                  </div>
-                  <div className={`px-3 py-1 rounded-full text-sm font-bold ${colors.bg} ${colors.text}`}>
-                    {isSportMode ? `${sportRating.rating?.toFixed(1) || '—'}/10` : `${score.score || '—'}/100`}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="flex gap-1">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star key={i} className={`w-4 h-4 ${i < Math.round(ratingScore / 2) ? 'text-yellow-400 fill-yellow-400' : 'text-white/20'}`} />
-                    ))}
-                  </div>
-                  <span className="text-sm font-medium text-white/70">
-                    {isSportMode 
-                      ? (isPt ? 'Ver condições' : 'See conditions')
-                      : ratingLabel
-                    }
-                  </span>
-                </div>
-
-                <p className="text-sm text-white/60 mb-3">
-                  {isSportMode 
-                    ? (isPt ? sportRating.description : sportRating.description)
-                    : (isPt ? score.recommendation : score.recommendationEn)
-                  }
-                </p>
-
-                {/* Sport compatibility badges */}
-                {!isSportMode && sportRatings[spot.id] && (
-                  <div className="flex flex-wrap gap-1 mb-2">
-                    {Object.entries(sportRatings[spot.id])
-                      .sort(([, a], [, b]) => b.rating - a.rating)
-                      .slice(0, 3)
-                      .map(([sport, rating]) => (
-                        <span 
-                          key={sport}
-                          className="text-xs px-2 py-0.5 rounded-full bg-slate-700/50 text-slate-300"
-                          style={{ borderColor: rating.color }}
-                        >
-                          {(() => {
-                            const SportIcon = SPORT_ICONS[sport as SportType];
-                            return SportIcon ? <SportIcon className="w-3 h-3 inline mr-1" /> : null;
-                          })()}
-                          {rating.rating?.toFixed(0) || '—'}
-                        </span>
-                      ))
-                    }
-                  </div>
-                )}
-
-                {/* Mini conditions */}
-                <div className="flex gap-3 text-xs text-white/50">
-                  <span className="flex items-center gap-1">
-                    <Waves className="w-3 h-3" />
-                    {conditions[spot.id]?.waveHeight?.toFixed(1) || '—'}m
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Wind className="w-3 h-3" />
-                    {conditions[spot.id]?.windSpeed?.toFixed(0) || '—'}km/h
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Users className="w-3 h-3" />
-                    {isSportMode 
-                      ? (isPt ? 'Ver condições' : 'See conditions')
-                      : estimateCrowd(score.score, false, false, spot.difficulty).level
-                    }
-                  </span>
-                </div>
-              </Link>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* MAPA INTERATIVO */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-ocean-500/10">
-            <MapPin className="w-6 h-6 text-ocean-400" />
-          </div>
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white/90">
-              {isPt ? 'Mapa dos Spots' : 'Spots Map'}
-            </h2>
-            <p className="text-white/50 text-sm">{isPt ? `Clique num spot para ver detalhes` : `Click a spot for details`}</p>
+          <div className="w-px h-12 bg-white/10" />
+          <div className="text-center space-y-1">
+            <Thermometer className="w-6 h-6 text-emerald-400 mx-auto" />
+            <div className="text-2xl font-bold text-white">{bestSpot.conditions.waterTemp.toFixed(1)}°C</div>
+            <div className="text-xs text-white/50">{isPt ? 'Água' : 'Water'}</div>
           </div>
         </div>
 
-        <div className="glass-card p-6 relative overflow-hidden">
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
-            {filteredSpots.map((spot) => {
-              const score = surfabilityScores[spot.id]
-              const sportRating = sportRatings[spot.id]
-              const displayScore = sportRating ? sportRating.rating : (score?.score || 0)
-              const maxScore = sportRating ? 10 : 100
-              const colors = score ? getScoreColor(score.score) : { bg: 'bg-gray-500/20', text: 'text-gray-400', border: 'border-gray-500/30', glow: '' }
-              
-              return (
-                <Link
-                  key={spot.id}
-                  href={`/${locale}/spots/${spot.slug}`}
-                  className={`p-3 rounded-xl ${colors.bg} ${colors.border} border hover:scale-105 transition-all group`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-bold text-sm text-white/90 group-hover:text-ocean-300 transition-colors">
-                      {isPt ? spot.name : spot.nameEn}
-                    </span>
-                    {sportRating && (
-                      <span className="text-xs font-bold" style={{ color: sportRating.color }}>
-                        {sportRating.rating?.toFixed(1) || '—'}
-                      </span>
-                    )}
-                    {!sportRating && score && (
-                      <span className={`text-xs font-bold ${colors.text}`}>
-                        {score.score}
-                      </span>
-                    )}
-                  </div>
-                  <div className="text-xs text-white/50">{isPt ? spot.region : spot.regionEn}</div>
-                  {score && (
-                    <div className="mt-2 flex items-center gap-1">
-                      <div 
-                        className={`h-1.5 rounded-full flex-1 ${score.score >= 60 ? 'bg-gradient-to-r from-green-400 to-yellow-400' : 'bg-gray-500/30'}`} 
-                        style={{ opacity: sportRating ? sportRating.rating / 10 : score.score / 100 }} 
-                      />
-                    </div>
-                  )}
-                </Link>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* CONDIÇÕES GERAIS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="glass-card p-6">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-wave-500/10">
-              <Activity className="w-6 h-6 text-wave-400" />
-            </div>
-            <h2 className="text-xl md:text-2xl font-bold text-white/90">
-              {isPt ? 'Condições em Destaque' : 'Conditions Highlight'}
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-wave-500/10">
-                <Waves className="w-6 h-6 text-wave-400" />
-              </div>
-              <div>
-                <p className="text-sm text-white/50">{isPt ? 'Swell' : 'Swell'}</p>
-                <p className="text-xl font-bold">
-                  {bestConditions?.waveHeight?.toFixed(1) || '—'}m
-                  <span className="text-sm text-white/50 font-normal ml-1">
-                    @{bestConditions?.wavePeriod?.toFixed(0) || '—'}s
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-wind-500/10">
-                <Wind className="w-6 h-6 text-wind-400" />
-              </div>
-              <div>
-                <p className="text-sm text-white/50">{isPt ? 'Vento' : 'Wind'}</p>
-                <p className="text-xl font-bold">
-                  {bestConditions?.windSpeed?.toFixed(0) || '—'}km/h
-                  <span className="text-sm text-white/50 font-normal ml-1">
-                    {bestConditions?.windGust?.toFixed(0) || '—'}kt gust
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-surf-500/10">
-                <Thermometer className="w-6 h-6 text-surf-400" />
-              </div>
-              <div>
-                <p className="text-sm text-white/50">{isPt ? 'Água' : 'Water'}</p>
-                <p className="text-xl font-bold">{bestConditions?.waterTemp?.toFixed(1) || '—'}°C</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-xl bg-ocean-500/10">
-                <Sunrise className="w-6 h-6 text-ocean-400" />
-              </div>
-              <div>
-                <p className="text-sm text-white/50">{isPt ? 'Dawn Patrol' : 'Dawn Patrol'}</p>
-                <p className="text-xl font-bold">{(() => {
-                  const now = new Date();
-                  const month = now.getMonth();
-                  // Aproximação: Verão ~6h, Inverno ~8h
-                  const hour = month >= 4 && month <= 8 ? 6 : (month >= 9 || month <= 2 ? 7 : 6.5);
-                  const min = month >= 5 && month <= 7 ? 15 : 45;
-                  return `${hour.toFixed(0)}:${min.toString().padStart(2, '0')}h`;
-                })()}</p>
-                <p className="text-xs text-white/50">{isPt ? 'Nascer do sol' : 'Sunrise'}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* TODOS OS SPOTS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="text-3xl font-bold text-white/90">
-              {t.spots.title}
-            </h2>
-            <p className="text-white/50 mt-1">
-              {t.hero.featured}
-            </p>
-          </div>
-          <Link href={`/${locale}/spots/`} className="flex items-center gap-2 text-ocean-400 hover:text-ocean-300 transition-colors">
-            {t.hero.viewAll}
+        {/* CTA */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <Link
+            href={`/${locale}/spots/${bestSpot.spot.slug}`}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white rounded-xl font-bold text-lg transition-all hover:scale-105 shadow-lg shadow-cyan-500/25"
+          >
+            <Zap className="w-5 h-5" />
+            {isPt ? 'Ver Condições ao Vivo' : 'Live Conditions'}
+          </Link>
+          <Link
+            href={`/${locale}/spots/`}
+            className="inline-flex items-center gap-2 px-6 py-4 bg-white/5 hover:bg-white/10 text-white/80 rounded-xl font-medium transition-all border border-white/10"
+          >
+            {isPt ? 'Explorar todos os spots' : 'Explore all spots'}
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <SpotGrid 
-          spots={filteredSpots.slice(0, 6)} 
-          locale={locale} 
-          conditions={conditions} 
-          sportRatings={sportRatings}
-        />
-      </section>
 
-      {/* STATS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
-        <div className="glass-card p-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-ocean-400">{spots.length}</div>
-              <div className="text-sm text-white/50">{t.hero.stats.spots}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-surf-400">{spots.filter(s => s.type === 'surf' || s.type === 'big-wave').length}</div>
-              <div className="text-sm text-white/50">{isPt ? 'Com Ondas' : 'With Waves'}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-wind-400">{ALL_SPORTS.length}</div>
-              <div className="text-sm text-white/50">{t.hero.stats.sports}</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-yellow-400 flex items-center justify-center">
-                <Heart className="w-8 h-8" />
-              </div>
-              <div className="text-sm text-white/50">{isPt ? 'Feito por Locals' : 'Made by Locals'}</div>
-            </div>
+        {/* Crowd */}
+        <div className="text-sm text-white/40">
+          {isPt ? `Crowd estimado: ${crowd.level}` : `Estimated crowd: ${crowd.levelEn}`}
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
+        <ChevronDown className="w-6 h-6 text-white/30" />
+      </div>
+    </section>
+  );
+}
+
+function FilterBar({ 
+  selectedSport, setSelectedSport,
+  selectedRegion, setSelectedRegion,
+  locale 
+}: {
+  selectedSport: SportType | 'all';
+  setSelectedSport: (s: SportType | 'all') => void;
+  selectedRegion: string;
+  setSelectedRegion: (r: string) => void;
+  locale: string;
+}) {
+  const isPt = locale === 'pt';
+
+  return (
+    <div className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-white/5 py-3">
+      <div className="max-w-7xl mx-auto px-4 flex items-center gap-4 overflow-x-auto no-scrollbar">
+        <Filter className="w-4 h-4 text-white/40 shrink-0" />
+        
+        {/* Sport filters */}
+        <div className="flex items-center gap-2 shrink-0">
+          {SPORTS.map((sport) => {
+            const Icon = sport.icon;
+            const isActive = selectedSport === sport.id;
+            return (
+              <button
+                key={sport.id}
+                onClick={() => setSelectedSport(sport.id as SportType | 'all')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                  isActive 
+                    ? 'bg-white/15 text-white border border-white/20' 
+                    : 'bg-white/5 text-white/60 hover:bg-white/10 border border-transparent'
+                }`}
+              >
+                <Icon className={`w-3.5 h-3.5 ${isActive ? sport.color : 'text-white/40'}`} />
+                {sport.label}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="w-px h-6 bg-white/10 shrink-0" />
+
+        {/* Region filters */}
+        <div className="flex items-center gap-2 shrink-0">
+          {REGIONS.map((region) => {
+            const isActive = selectedRegion === region;
+            return (
+              <button
+                key={region}
+                onClick={() => setSelectedRegion(region)}
+                className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
+                  isActive 
+                    ? 'bg-white/15 text-white border border-white/20' 
+                    : 'bg-white/5 text-white/60 hover:bg-white/10 border border-transparent'
+                }`}
+              >
+                {region === 'Todos' ? (isPt ? 'Todos' : 'All') : region}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SpotCard({ data, locale }: { data: SpotData; locale: string }) {
+  const isPt = locale === 'pt';
+  const colors = getScoreColor(data.surfability.score);
+  const crowd = estimateCrowd(data.surfability.score, false, false, data.spot.difficulty);
+
+  return (
+    <Link
+      href={`/${locale}/spots/${data.spot.slug}`}
+      className="group block bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/5"
+    >
+      {/* Image / Gradient header */}
+      <div className="relative h-40 bg-gradient-to-br from-slate-700 to-slate-800 overflow-hidden">
+        {data.spot.images?.[0] ? (
+          <img 
+            src={data.spot.images[0]} 
+            alt={data.spot.name}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        ) : (
+          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
+        
+        {/* Score badge */}
+        <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold ${colors.bg} ${colors.text} border ${colors.border}`}>
+          {data.surfability.score}
+        </div>
+
+        {/* Name overlay */}
+        <div className="absolute bottom-3 left-3 right-3">
+          <h3 className="text-lg font-bold text-white">{isPt ? data.spot.name : data.spot.nameEn}</h3>
+          <div className="flex items-center gap-1 text-sm text-white/60">
+            <MapPin className="w-3 h-3" />
+            {data.spot.region}
           </div>
         </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-4 space-y-3">
+        {/* Conditions */}
+        <div className="flex items-center justify-between text-sm">
+          <span className="flex items-center gap-1.5 text-white/60">
+            <Waves className="w-4 h-4 text-cyan-400" />
+            {data.conditions.waveHeight.toFixed(1)}m
+          </span>
+          <span className="flex items-center gap-1.5 text-white/60">
+            <Wind className="w-4 h-4 text-sky-400" />
+            {(data.conditions.windSpeed * 1.94384).toFixed(0)}kt
+          </span>
+          <span className="flex items-center gap-1.5 text-white/60">
+            <Thermometer className="w-4 h-4 text-emerald-400" />
+            {data.conditions.waterTemp.toFixed(0)}°C
+          </span>
+        </div>
+
+        {/* Rating text */}
+        <p className={`text-sm font-medium ${colors.text}`}>
+          {isPt ? data.surfability.rating : data.surfability.ratingEn}
+        </p>
+
+        {/* Sports */}
+        <div className="flex flex-wrap gap-1.5">
+          {Object.entries(data.sportRatings)
+            .sort(([, a], [, b]) => b.rating - a.rating)
+            .slice(0, 3)
+            .map(([sport, rating]) => (
+              <span
+                key={sport}
+                className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/50 border border-white/5"
+                style={{ borderLeftColor: rating.color, borderLeftWidth: '2px' }}
+              >
+                {SPORT_LABELS[sport as SportType]?.pt || sport} {rating.rating?.toFixed(0)}
+              </span>
+            ))}
+        </div>
+      </div>
+    </Link>
+  );
+}
+
+function MiniMap({ locale }: { locale: string }) {
+  const isPt = locale === 'pt';
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-white/90">
+            {isPt ? 'Mapa dos Spots' : 'Spots Map'}
+          </h2>
+          <p className="text-white/50 text-sm mt-1">
+            {isPt ? '81 spots em Portugal, Açores e Madeira' : '81 spots in Portugal, Azores and Madeira'}
+          </p>
+        </div>
+        <Link
+          href={`/${locale}/spots/`}
+          className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
+        >
+          {isPt ? 'Ver lista completa' : 'Full list'}
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+
+      <div className="relative h-[400px] rounded-2xl overflow-hidden border border-white/10 bg-slate-800/50">
+        <iframe
+          src={`https://www.openstreetmap.org/export/embed.html?bbox=-31.5%2C32.0%2C-6.0%2C42.5&layer=mapnik`}
+          className="w-full h-full border-0 opacity-70"
+          title="Map"
+        />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-slate-900/50 to-transparent" />
+        <div className="absolute bottom-4 left-4">
+          <Link
+            href={`/${locale}/spots/`}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur-sm text-white rounded-lg text-sm font-medium border border-white/10 hover:bg-slate-800/80 transition-colors"
+          >
+            <MapPin className="w-4 h-4" />
+            {isPt ? 'Explorar todos os spots' : 'Explore all spots'}
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FooterStats({ locale }: { locale: string }) {
+  const isPt = locale === 'pt';
+
+  const stats = [
+    { value: '81', label: isPt ? 'spots monitorizados' : 'spots monitored', color: 'text-cyan-400' },
+    { value: '6', label: isPt ? 'desportos suportados' : 'sports supported', color: 'text-sky-400' },
+    { value: 'Realtime', label: 'Open-Meteo API', color: 'text-emerald-400' },
+    { value: '100%', label: isPt ? 'grátis para sempre' : 'free forever', color: 'text-amber-400' },
+  ];
+
+  return (
+    <section className="border-t border-white/5 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center space-y-2">
+              <div className={`text-4xl md:text-5xl font-black ${stat.color}`}>{stat.value}</div>
+              <div className="text-sm text-white/40">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ─── Main Page ───
+
+export default function HomePage({ params }: { params: { locale: string } }) {
+  const { locale } = params;
+  const isPt = locale === 'pt';
+  const t = getTranslation(locale as any);
+  
+  const [spotsData, setSpotsData] = useState<SpotData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedSport, setSelectedSport] = useState<SportType | 'all'>('all');
+  const [selectedRegion, setSelectedRegion] = useState('Todos');
+
+  useEffect(() => {
+    async function loadData() {
+      const results: SpotData[] = [];
+      
+      await Promise.all(
+        spots.map(async (spot) => {
+          try {
+            const data = await fetchMarineData(spot.lat, spot.lon);
+            const conditions = getCurrentConditions(data);
+            const surfability = calculateSurfability(spot, {
+              waveHeight: conditions.waveHeight,
+              wavePeriod: conditions.wavePeriod,
+              waveDirection: conditions.waveDirection,
+              windSpeed: conditions.windSpeed,
+              windDirection: conditions.windDirection,
+              waterTemp: conditions.waterTemp,
+            });
+            
+            const sportRatings: Record<string, any> = {};
+            const compatibleSports = getCompatibleSports(
+              conditions.waveHeight, conditions.windSpeed, conditions.wavePeriod
+            );
+            
+            compatibleSports.forEach((sport: SportType) => {
+              sportRatings[sport] = calculateSportRating(
+                sport, conditions.waveHeight, conditions.wavePeriod,
+                conditions.windSpeed, conditions.windDirection
+              );
+            });
+            
+            results.push({ spot, conditions, surfability, sportRatings });
+          } catch (e) {
+            console.error(`Failed to load ${spot.name}`, e);
+          }
+        })
+      );
+      
+      setSpotsData(results);
+      setLoading(false);
+    }
+    
+    loadData();
+  }, []);
+
+  // Filter logic
+  const filteredSpots = useMemo(() => {
+    return spotsData.filter((data) => {
+      const sportMatch = selectedSport === 'all' || 
+        (data.sportRatings[selectedSport] && data.sportRatings[selectedSport].rating > 0);
+      const regionMatch = selectedRegion === 'Todos' || data.spot.region === selectedRegion;
+      return sportMatch && regionMatch;
+    });
+  }, [spotsData, selectedSport, selectedRegion]);
+
+  // Best spot for hero
+  const bestSpot = useMemo(() => {
+    return [...spotsData].sort((a, b) => b.surfability.score - a.surfability.score)[0];
+  }, [spotsData]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400 mx-auto" />
+          <p className="text-white/60 text-sm">{isPt ? 'A carregar condições...' : 'Loading conditions...'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-950">
+      {/* Live Ticker */}
+      <LiveTicker spotsData={spotsData} locale={locale} />
+      
+      {/* Hero */}
+      {bestSpot && <HeroSection bestSpot={bestSpot} locale={locale} />}
+      
+      {/* Sticky Filters */}
+      <FilterBar 
+        selectedSport={selectedSport} 
+        setSelectedSport={setSelectedSport}
+        selectedRegion={selectedRegion}
+        setSelectedRegion={setSelectedRegion}
+        locale={locale}
+      />
+      
+      {/* Spots Grid */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold text-white/90">
+              {isPt ? `Spots filtrados (${filteredSpots.length})` : `Filtered spots (${filteredSpots.length})`}
+            </h2>
+            <p className="text-white/50 text-sm mt-1">
+              {selectedSport !== 'all' && `${SPORTS.find(s => s.id === selectedSport)?.label} • `}
+              {selectedRegion !== 'Todos' && `${selectedRegion} • `}
+              {isPt ? 'Ordenados por score' : 'Sorted by score'}
+            </p>
+          </div>
+        </div>
+        
+        {filteredSpots.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-white/40 text-lg">
+              {isPt ? 'Nenhum spot encontrado com estes filtros.' : 'No spots found with these filters.'}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredSpots
+              .sort((a, b) => b.surfability.score - a.surfability.score)
+              .map((data) => (
+                <SpotCard key={data.spot.id} data={data} locale={locale} />
+              ))}
+          </div>
+        )}
       </section>
+      
+      {/* Mini Map */}
+      <MiniMap locale={locale} />
+      
+      {/* Footer Stats */}
+      <FooterStats locale={locale} />
     </div>
-  )
+  );
 }
