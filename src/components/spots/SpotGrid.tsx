@@ -37,7 +37,7 @@ const SPORTS: { id: SportType | 'all'; label: string; icon: React.ElementType; c
   { id: 'wakeboard', label: 'Wakeboard', icon: Zap, color: 'text-purple-400' },
 ];
 
-const REGIONS = ['Todos', 'Norte', 'Centro', 'Lisboa', 'Oeste', 'Algarve', 'Alentejo', 'Açores', 'Madeira'];
+import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
 
 export default function SpotGrid({ spots, locale, conditions = {}, sportScores = {}, selectedSport: initialSport }: SpotGridProps) {
   const [selectedSport, setSelectedSport] = useState<SportType | 'all'>(initialSport || 'all');
@@ -52,7 +52,7 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
         (sportScores[spot.id]?.[selectedSport]?.score || 0) > 0 ||
         spot.compatibleSports?.includes(selectedSport);
       
-      const regionMatch = selectedRegion === 'Todos' || spot.region === selectedRegion;
+      const regionMatch = selectedRegion === 'Todos' || getMacroRegion(spot.region) === selectedRegion;
       
       return sportMatch && regionMatch;
     });
@@ -97,7 +97,7 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
       {/* Region filters */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
         <MapPin className="w-4 h-4 text-white/40 shrink-0" />
-        {REGIONS.map((region) => {
+        {MACRO_REGIONS.map((region) => {
           const isActive = selectedRegion === region;
           return (
             <button

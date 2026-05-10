@@ -37,7 +37,7 @@ const SPORTS: { id: SportType | 'all'; label: string; icon: React.ElementType; c
   { id: 'wakeboard', label: 'Wakeboard', icon: Zap, color: 'text-purple-400' },
 ];
 
-const REGIONS = ['Todos', 'Norte', 'Centro', 'Lisboa', 'Alentejo', 'Algarve', 'Açores', 'Madeira'];
+import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
 
 // ─── Components ───
 
@@ -197,7 +197,7 @@ function FilterBar({
         <div className="w-px h-6 bg-white/10 shrink-0" />
 
         <div className="flex items-center gap-2 shrink-0">
-          {REGIONS.map((region) => {
+          {MACRO_REGIONS.map((region) => {
             const isActive = selectedRegion === region;
             return (
               <button
@@ -403,7 +403,7 @@ export default function HomePage({ params }: { params: { locale: string } }) {
   const filteredSpots = useMemo(() => {
     return spotsData.filter((data) => {
       const sportMatch = selectedSport === 'all' || (data.allScores[selectedSport]?.score || 0) > 0;
-      const regionMatch = selectedRegion === 'Todos' || data.spot.region === selectedRegion;
+      const regionMatch = selectedRegion === 'Todos' || getMacroRegion(data.spot.region) === selectedRegion;
       return sportMatch && regionMatch;
     });
   }, [spotsData, selectedSport, selectedRegion]);
