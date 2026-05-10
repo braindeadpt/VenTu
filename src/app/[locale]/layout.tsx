@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { locales, getTranslation } from '@/lib/i18n'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
+import HtmlLang from '@/components/HtmlLang'
 import '../globals.css'
 
 export const viewport: Viewport = {
@@ -68,6 +69,7 @@ export default function LocaleLayout({
 
   return (
     <>
+      <HtmlLang locale={locale} />
       <Header locale={locale} />
       <main className="pt-16">{children}</main>
       <Footer locale={locale} />
