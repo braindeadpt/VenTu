@@ -35,6 +35,7 @@ O **WindSpot** é uma plataforma **gratuita e open-source** que fornece condiç�
 | Styling | Tailwind CSS 3.4 |
 | Charts | Recharts |
 | Dados | Open-Meteo Marine API (grátis) |
+| Chat | Supabase (PostgreSQL + Realtime) |
 | IA | Google Gemini Flash (grátis) |
 | Deploy | GitHub Pages / Vercel |
 

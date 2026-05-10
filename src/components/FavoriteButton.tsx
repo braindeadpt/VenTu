@@ -104,6 +104,11 @@ export default function FavoriteButton({
     >
       <Heart
         className={`${sizeClasses[size]} ${active ? 'fill-current' : ''}`}
+        aria-label={
+          active
+            ? isPt ? `Remover ${spotName} dos favoritos` : `Remove ${spotName} from favorites`
+            : isPt ? `Adicionar ${spotName} aos favoritos` : `Add ${spotName} to favorites`
+        }
       />
       {showLabel && (
         <span className="text-sm font-medium">

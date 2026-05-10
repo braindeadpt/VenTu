@@ -278,6 +278,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
             onClick={() => setShowRules(!showRules)}
             className="text-slate-500 hover:text-cyan-400 transition-colors"
             title={isPT ? 'Regras do chat' : 'Chat rules'}
+            aria-label={isPT ? 'Regras do chat' : 'Chat rules'}
           >
             <Shield className="w-4 h-4" />
           </button>
@@ -285,6 +286,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
             onClick={clearChat}
             className="text-slate-500 hover:text-red-400 transition-colors"
             title={isPT ? 'Limpar chat' : 'Clear chat'}
+            aria-label={isPT ? 'Limpar chat' : 'Clear chat'}
           >
             <Trash2 className="w-4 h-4" />
           </button>

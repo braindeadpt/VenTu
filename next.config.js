@@ -6,7 +6,7 @@ const nextConfig = {
   // Use explicit env var instead of NODE_ENV check (fragile)
   basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
   assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
-  eslint: { ignoreDuringBuilds: true },
+  eslint: { ignoreDuringBuilds: false },
 }
 
 module.exports = nextConfig

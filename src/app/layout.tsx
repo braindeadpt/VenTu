@@ -26,9 +26,27 @@ const cspContent = [
 export const metadata: Metadata = {
   title: 'WindSpot Portugal',
   description: 'Real-time conditions for water sports in Portugal',
+  openGraph: {
+    title: 'WindSpot Portugal',
+    description: 'Real-time conditions for surf, kitesurf, windsurf and big wave in Portugal',
+    type: 'website',
+    images: [{
+      url: '/og-image.svg',
+      width: 1200,
+      height: 630,
+      alt: 'WindSpot Portugal - Real-time water sports conditions',
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'WindSpot Portugal',
+    description: 'Real-time conditions for surf, kitesurf, windsurf and big wave in Portugal',
+    images: ['/og-image.png'],
+  },
   other: {
     'referrer': 'strict-origin-when-cross-origin',
     'Content-Security-Policy': cspContent,
+    'format-detection': 'telephone=no',
   },
   icons: {
     icon: '/favicon.svg',
