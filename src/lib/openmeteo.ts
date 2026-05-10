@@ -214,10 +214,10 @@ export function getCurrentConditions(data: MarineData) {
   const now = new Date();
   const currentHour = now.getHours();
 
-  const timeIndex = data.hourly.time.findIndex((t: string) => {
+  const timeIndex = Math.max(0, data.hourly.time.findIndex((t: string) => {
     const hour = new Date(t).getHours();
     return hour === currentHour;
-  }) || 0;
+  }));
 
   return {
     waveHeight: data.hourly.wave_height[timeIndex] || 0,

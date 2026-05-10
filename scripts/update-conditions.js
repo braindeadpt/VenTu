@@ -130,8 +130,8 @@ function getCurrentConditions(marineData, weatherData) {
   const now = new Date();
   const currentHour = now.getHours();
   
-  const marineTimeIndex = marineData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour) || 0;
-  const weatherTimeIndex = weatherData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour) || 0;
+  const marineTimeIndex = Math.max(0, marineData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour));
+  const weatherTimeIndex = Math.max(0, weatherData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour));
 
   return {
     waveHeight: marineData.hourly.wave_height[marineTimeIndex] || 0,
