@@ -13,6 +13,7 @@ import Link from 'next/link';
 interface SpotConditions {
   waveHeight: number;
   wavePeriod: number;
+  waveDirection: number;
   windSpeed: number;
   windDirection: number;
   windGust: number;
@@ -41,8 +42,50 @@ export default function FavoritesPage() {
       const results: Record<string, SpotConditions> = {};
       const scores: Record<string, any> = {};
       
+      // Try pre-computed conditions first (1 request for ALL favorites)
+      try {
+        const response = await fetch('/data/conditions.json', { cache: 'no-store' });
+        if (response.ok) {
+          const precomputed = await response.json();
+          
+          for (const id of favorites) {
+            const spot = spots.find(s => s.id === id);
+            if (!spot) continue;
+            
+            const cond = precomputed[id];
+            if (cond) {
+              const current = {
+                waveHeight: cond.waveHeight || 0,
+                wavePeriod: cond.wavePeriod || 0,
+                waveDirection: cond.waveDirection || 0,
+                windSpeed: cond.windSpeed || 0,
+                windDirection: cond.windDirection || 0,
+                windGust: cond.windGust || 0,
+                waterTemp: cond.waterTemp || 0,
+              };
+              results[id] = current;
+              
+              const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
+              scores[id] = getSportScore(spot, primarySport, current);
+            }
+          }
+          
+          // If all favorites have data, skip live fetch
+          if (favorites.every(id => results[id])) {
+            setConditions(results);
+            setSportScores(scores);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('Precomputed conditions not available, falling back to live fetch');
+      }
+      
+      // Fallback: live fetch for missing spots
       await Promise.all(
         favorites.map(async (id) => {
+          if (results[id]) return; // Already have from precomputed
+          
           const spot = spots.find(s => s.id === id);
           if (!spot) return;
           try {
@@ -50,12 +93,12 @@ export default function FavoritesPage() {
             const current = getCurrentConditions(data);
             results[id] = current;
             
-            // Score for primary sport
             const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
             scores[id] = getSportScore(spot, primarySport, current);
           } catch { /* ignore */ }
         })
       );
+      
       setConditions(results);
       setSportScores(scores);
     };

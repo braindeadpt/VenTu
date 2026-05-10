@@ -152,6 +152,52 @@ export default function SpotDetailClient({
 
   useEffect(() => {
     async function loadData() {
+      // Try pre-computed conditions first (1 request vs live API)
+      try {
+        const response = await fetch('/data/conditions.json', { cache: 'no-store' });
+        if (response.ok) {
+          const precomputed = await response.json();
+          const cond = precomputed[spot.id];
+          
+          if (cond) {
+            const conditions = {
+              waveHeight: cond.waveHeight || 0,
+              wavePeriod: cond.wavePeriod || 0,
+              waveDirection: cond.waveDirection || 0,
+              windSpeed: cond.windSpeed || 0,
+              windDirection: cond.windDirection || 0,
+              windGust: cond.windGust || 0,
+              waterTemp: cond.waterTemp || 0,
+            };
+            const allScores = getAllSportScores(spot, conditions);
+            
+            // Forecast still needs live fetch (not in precomputed)
+            let forecast: any[] = [];
+            try {
+              const marineData = await fetchMarineData(spot.lat, spot.lon);
+              forecast = getForecastData(marineData).slice(0, 24);
+            } catch {
+              // Forecast not critical — skip if live fetch fails
+            }
+            
+            setSpotData({ spot, conditions, allScores, forecast });
+            
+            if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
+              setSelectedSport(sportFromUrl);
+            } else {
+              const bestSport = (Object.entries(allScores) as [SportType, any][])
+                .sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
+              if (bestSport) setSelectedSport(bestSport);
+            }
+            setLoading(false);
+            return; // Success! Skip live fetch
+          }
+        }
+      } catch (e) {
+        console.warn('Precomputed conditions not available, falling back to live fetch');
+      }
+      
+      // Fallback: live fetch
       try {
         const marineData = await fetchMarineData(spot.lat, spot.lon);
         const conditions = getCurrentConditions(marineData);
