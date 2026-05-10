@@ -8,7 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 // RSS feeds to try (fallback)
 const RSS_FEEDS = [
@@ -159,7 +159,7 @@ function findBestSpots(conditions) {
 async function generateDailyBriefing(spotData) {
   if (!GEMINI_API_KEY) {
     console.log('⚠️ No GEMINI_API_KEY found, using static briefing');
-    return null;
+    return generateStaticBriefing(spotData);
   }
 
   const { bestSurf, bestKite, allSpots } = spotData;
@@ -200,8 +200,33 @@ TÍTULO 3|SUMÁRIO 3`;
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('❌ Gemini API error:', response.status, errorText);
-      return null;
+      console.error('❌ Gemini API error:', response.status, errorText.substring(0, 200));
+      
+      if (response.status === 429) {
+        console.log('⏳ Rate limited! Retrying in 5 seconds...');
+        await new Promise(r => setTimeout(r, 5000));
+        
+        // Retry once
+        const retry = await fetch(`${GEMINI_API}?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
+          }),
+        });
+        
+        if (!retry.ok) {
+          console.log('❌ Retry also failed, using static fallback');
+          return generateStaticBriefing(spotData);
+        }
+        
+        const retryData = await retry.json();
+        const retryText = retryData.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        return parseGeminiResponse(retryText);
+      }
+      
+      return generateStaticBriefing(spotData);
     }
     
     const data = await response.json();
@@ -210,29 +235,98 @@ TÍTULO 3|SUMÁRIO 3`;
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
     console.log('📝 Gemini raw text length:', text.length);
     
-    // Parse response format: TÍTULO|SUMÁRIO
-    const lines = text.split('\n').filter(l => l.trim() && l.includes('|'));
-    console.log('📄 Parsed lines:', lines.length);
+    const result = parseGeminiResponse(text);
+    if (result.length === 0) {
+      console.log('⚠️ Gemini returned empty, using static fallback');
+      return generateStaticBriefing(spotData);
+    }
     
-    return lines.slice(0, 3).map((line, i) => {
-      const [title, summary] = line.split('|').map(s => s.trim());
-      return {
-        id: `news-${Date.now()}-${i}`,
-        title: title || `Notícia ${i+1}`,
-        titleEn: title || `News ${i+1}`,
-        summary: summary || 'Resumo não disponível',
-        summaryEn: summary || 'Summary not available',
-        category: i === 0 ? 'surf' : i === 1 ? 'kitesurf' : 'general',
-        source: 'WindSpot AI',
-        url: 'https://windspot.pt',
-        publishedAt: new Date().toISOString(),
-        tags: ['portugal', 'condicoes', i === 0 ? 'surf' : i === 1 ? 'kitesurf' : 'geral'],
-      };
-    });
+    return result;
   } catch (e) {
     console.error('Gemini API error:', e.message);
-    return null;
+    return generateStaticBriefing(spotData);
   }
+}
+
+function parseGeminiResponse(text) {
+  const lines = text.split('\n').filter(l => l.trim() && l.includes('|'));
+  console.log('📄 Parsed lines:', lines.length);
+  
+  return lines.slice(0, 3).map((line, i) => {
+    const [title, summary] = line.split('|').map(s => s.trim());
+    return {
+      id: `news-${Date.now()}-${i}`,
+      title: title || `Notícia ${i+1}`,
+      titleEn: title || `News ${i+1}`,
+      summary: summary || 'Resumo não disponível',
+      summaryEn: summary || 'Summary not available',
+      category: i === 0 ? 'surf' : i === 1 ? 'kitesurf' : 'general',
+      source: 'WindSpot AI',
+      url: 'https://windspot.pt',
+      publishedAt: new Date().toISOString(),
+      tags: ['portugal', 'condicoes', i === 0 ? 'surf' : i === 1 ? 'kitesurf' : 'geral'],
+    };
+  });
+}
+
+function generateStaticBriefing(spotData) {
+  console.log('📝 Generating static briefing from spot data...');
+  const { bestSurf, bestKite, allSpots } = spotData;
+  
+  const avgWind = allSpots.length > 0 
+    ? (allSpots.reduce((sum, s) => sum + s.windKt, 0) / allSpots.length).toFixed(0)
+    : 0;
+  
+  const surfSpot = bestSurf[0];
+  const kiteSpot = bestKite[0];
+  
+  const news = [];
+  
+  if (surfSpot) {
+    news.push({
+      id: `news-${Date.now()}-surf`,
+      title: `Ondas brutais em ${surfSpot.id.replace(/-/g, ' ')} hoje!`,
+      titleEn: `Great waves at ${surfSpot.id.replace(/-/g, ' ')} today!`,
+      summary: `Com ${surfSpot.waveHeight}m de ondas e apenas ${surfSpot.windKt}kt de vento, as condições estão mesmo boas para surf. Água a ${surfSpot.waterTemp}°C — leva a wetsuit!`,
+      summaryEn: `With ${surfSpot.waveHeight}m waves and only ${surfSpot.windKt}kt wind, conditions are great for surfing. Water at ${surfSpot.waterTemp}°C — bring your wetsuit!`,
+      category: 'surf',
+      source: 'WindSpot AI',
+      url: `https://windspot.pt/pt/spots/${surfSpot.id}`,
+      publishedAt: new Date().toISOString(),
+      tags: [surfSpot.id, 'surf', 'condicoes', 'portugal'],
+    });
+  }
+  
+  if (kiteSpot) {
+    news.push({
+      id: `news-${Date.now()}-kite`,
+      title: `Nortada forte em ${kiteSpot.id.replace(/-/g, ' ')}! 🪁`,
+      titleEn: `Strong wind at ${kiteSpot.id.replace(/-/g, ' ')}! 🪁`,
+      summary: `${kiteSpot.windKt}kt de vento steady — perfeito para kitesurf! As condições estão mesmo a dar para uma sessão épica.`,
+      summaryEn: `${kiteSpot.windKt}kt steady wind — perfect for kitesurfing! Conditions are epic for a great session.`,
+      category: 'kitesurf',
+      source: 'WindSpot AI',
+      url: `https://windspot.pt/pt/spots/${kiteSpot.id}`,
+      publishedAt: new Date().toISOString(),
+      tags: [kiteSpot.id, 'kitesurf', 'vento', 'portugal'],
+    });
+  }
+  
+  news.push({
+    id: `news-${Date.now()}-summary`,
+    title: `Resumo nacional: média de ${avgWind}kt de vento`,
+    titleEn: `National summary: ${avgWind}kt average wind`,
+    summary: `Hoje temos condições variadas em Portugal. Melhores spots de surf: ${bestSurf.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}. Para kitesurf: ${bestKite.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}.`,
+    summaryEn: `Today we have varied conditions in Portugal. Best surf spots: ${bestSurf.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}. For kitesurf: ${bestKite.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}.`,
+    category: 'general',
+    source: 'WindSpot AI',
+    url: 'https://windspot.pt',
+    publishedAt: new Date().toISOString(),
+    tags: ['portugal', 'resumo', 'condicoes'],
+  });
+  
+  console.log(`✅ Generated ${news.length} static news items`);
+  return news;
 }
 
 /**
