@@ -253,7 +253,9 @@ export function getForecastData(result: FetchResult) {
   return data.hourly.time.slice(0, 168).map((time, i) => ({
     time,
     waveHeight: data.hourly.wave_height[i] || 0,
+    wavePeriod: data.hourly.wave_period[i] || 0,
     windSpeed: data.hourly.wind_speed_10m[i] || 0,
+    windDirection: data.hourly.wind_direction_10m[i] || 0,
     windGust: data.hourly.wind_gusts_10m[i] || 0,
     waterTemp: data.hourly.water_temperature[i] || 0,
   }));

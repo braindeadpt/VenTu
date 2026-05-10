@@ -14,6 +14,8 @@ import type { SportType } from '@/lib/sportRatings';
 import SpotMap from '@/components/spots/SpotMap';
 import SpotChat from '@/components/spots/SpotChat';
 import FavoriteButton from '@/components/FavoriteButton';
+import MagicWindows from '@/components/MagicWindows';
+import SwellDetective from '@/components/SwellDetective';
 
 // ─── Types ───
 interface Conditions {
@@ -371,6 +373,29 @@ export default function SpotDetailClient({
       {/* Forecast */}
       <div className="max-w-4xl mx-auto px-4 py-4">
         <ForecastMini data={forecast} sport={selectedSport} locale={locale} />
+      </div>
+
+      {/* Magic Windows — Best condition windows */}
+      <div className="max-w-4xl mx-auto px-4 py-4">
+        <MagicWindows
+          hourly={forecast.map((f: any) => ({
+            time: f.time,
+            waveHeight: f.waveHeight ?? 0,
+            wavePeriod: f.wavePeriod ?? 0,
+            windSpeed: f.windSpeed ?? 0,
+            windDirection: f.windDirection ?? 0,
+            windGust: f.windGust ?? 0,
+            waterTemp: f.waterTemp ?? 0,
+          }))}
+          spotType={selectedSport}
+          spotBestWind={spot.bestWind || ''}
+          locale={locale}
+        />
+      </div>
+
+      {/* Swell Detective — Historical patterns */}
+      <div className="max-w-4xl mx-auto px-4 py-4">
+        <SwellDetective spotSlug={spot.slug} locale={locale} />
       </div>
 
       {/* Map */}

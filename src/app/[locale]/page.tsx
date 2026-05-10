@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { 
   Wind, Waves, Thermometer, MapPin, ArrowRight, Zap, 
@@ -11,6 +12,19 @@ import type { SportType } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
+
+// Dynamic import for client component (avoids SSR issues)
+const DawnPatrolBanner = dynamic(() => import('@/components/DawnPatrolBanner'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full bg-slate-900/50 border-b border-white/5 py-3 px-4 animate-pulse">
+      <div className="max-w-7xl mx-auto flex items-center gap-3">
+        <div className="w-5 h-5 rounded-full bg-white/10" />
+        <div className="h-4 bg-white/10 rounded w-48" />
+      </div>
+    </div>
+  ),
+});
 
 // ─── Types ───
 interface SpotData {
@@ -92,6 +106,9 @@ export default function HomePage({ params }: { params: { locale: string } }) {
           : `WindSpot Portugal - ${spotsData.length} surf, kitesurf and windsurf spots with real-time conditions`
         }
       </h1>
+
+      {/* Dawn Patrol AI Advisor Banner */}
+      <DawnPatrolBanner locale={locale} />
 
       {/* Live Ticker - Top 5 spots */}
       <div className="w-full bg-slate-900/80 backdrop-blur-md border-b border-white/5 overflow-hidden">
