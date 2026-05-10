@@ -6,10 +6,20 @@ import { spots } from '@/lib/spots'
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo'
 import { calculateSurfability, getSessionForecast, estimateCrowd, getScoreColor } from '@/lib/surfability'
 import { calculateSportRating, SPORT_LABELS, SportType, getCompatibleSports } from '@/lib/sportRatings'
+import { Wind, Waves, MapPin, ArrowRight, Activity, Thermometer, Star, Zap, Flame, Sunrise, Users, Heart, Bot, Anchor } from 'lucide-react'
+
+// Sport icon mapping (no emojis)
+const SPORT_ICONS: Record<SportType, React.ElementType> = {
+  surf: Waves,
+  kitesurf: Wind,
+  windsurf: Wind,
+  wakeboard: Anchor,
+  bodyboard: Waves,
+  sup: Heart,
+};
+import Link from 'next/link'
 import SpotGrid from '@/components/spots/SpotGrid'
 import SportSelector from '@/components/SportSelector'
-import { Wind, Waves, MapPin, ArrowRight, Activity, Thermometer, Star, Zap, Flame, Sunrise, Users, Heart, Bot } from 'lucide-react'
-import Link from 'next/link'
 
 
 function isSpotCompatibleWithSport(spot: any, sport: SportType): boolean {
@@ -283,7 +293,11 @@ export default async function HomePage({ params }: { params: { locale: string } 
                           className="text-xs px-2 py-0.5 rounded-full bg-slate-700/50 text-slate-300"
                           style={{ borderColor: rating.color }}
                         >
-                          {SPORT_LABELS[sport as SportType].emoji} {rating.rating?.toFixed(0) || '—'}
+                          {(() => {
+                            const SportIcon = SPORT_ICONS[sport as SportType];
+                            return SportIcon ? <SportIcon className="w-3 h-3 inline mr-1" /> : null;
+                          })()}
+                          {rating.rating?.toFixed(0) || '—'}
                         </span>
                       ))
                     }

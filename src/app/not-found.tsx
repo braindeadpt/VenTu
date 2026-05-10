@@ -11,7 +11,7 @@ export default function NotFound() {
         
         <div className="space-y-2">
           <h2 className="text-3xl font-bold text-white/90">
-            Spot não encontrado 🏄‍♂️
+            Spot não encontrado
           </h2>
           <p className="text-white/60 text-sm">
             Este spot não existe na nossa base de dados. Verifica se escreveste correctamente ou explora outros spots!

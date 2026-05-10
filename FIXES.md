@@ -1,45 +1,108 @@
 # WindSpot - Fix Log
 
-## Problems Found
-1. Open-Meteo API timeouts during build (ETIMEDOUT / 400 errors)
-2. Spot detail pages crashed build when API failed
-3. GitHub Pages basePath not configured
-4. Workflow used old peaceiris/actions-gh-pages
+## Waves 1-3 — Audit Completo (42 fixes, ~30 horas)
 
-## Fixes Applied
-- Added robust fetch error handling with 10s timeout
-- Added realistic seasonal mock data fallback
-- Added try/catch to spot detail page
-- Set basePath + assetPrefix for GitHub Pages
-- Removed invalid `models` param from API calls
-- Updated deploy workflow to modern GitHub Pages actions
+### Status: ✅ CONCLUÍDO
+
+---
+
+## Wave 1 (~12 fixes) — Build + Segurança + SEO
+| # | Fix | Status |
+|---|-----|--------|
+| 1 | Segurança — referrer strict-origin-when-cross-origin | ✅ |
+| 2 | Bug Norte 0° — filter(Boolean) em spots Norte | ✅ |
+| 3 | Acessibilidade — aria-labels em botões | ✅ |
+| 4 | i18n EN — sport ratings, títulos traduzidos | ✅ |
+| 5 | SEO/OG Tags — metadata dinâmico por página | ✅ |
+| 6 | UX — sunrise dinâmico por spot | ✅ |
+| 7 | Supabase lazy — não crasha no build | ✅ |
+| 8 | Session Quality — cores gradiente | ✅ |
+| 9 | Swell Detective — timestamp com ano | ✅ |
+| 10 | Local Tips — chevrons Lucide | ✅ |
+| 11 | FavoriteButton — animação scale | ✅ |
+| 12 | Compare page — rating visível | ✅ |
+
+## Wave 2 (~12 fixes) — Stats + UI + UX
+| # | Fix | Status |
+|---|-----|--------|
+| 1 | Flame repetido no hero → Zap | ✅ |
+| 2 | Stats reais (81 spots, 61 com ondas, 6 desportos) | ✅ |
+| 3 | Footer ano dinâmico (2026) | ✅ |
+| 4 | MagicWindows variação scores | ✅ |
+| 5 | Dawn Patrol / Alert Banners comentados (não usados) | ✅ |
+| 6 | Chat funcional com Supabase | ✅ |
+| 7 | Stats "Com Ondas" corrigido (surf/bodyboard/sup/big-wave) | ✅ |
+| 8 | MagicWindows stability + morning bonus + water temp bonus | ✅ |
+| 9 | SpotMap fallback erro WebGL | ✅ |
+| 10 | Bandeira Azul 2025 (~100 praias) | ✅ |
+| 11 | Links externos com ↗ | ✅ |
+| 12 | Emoji 🤙🤖 → ícones Heart/Bot | ✅ |
+
+## Wave 3 (~18 fixes) — Polimento Final
+| # | Fix | Status |
+|---|-----|--------|
+| 1 | HTML lang dinâmico PT/EN | ✅ |
+| 2 | Security headers CSP (meta tag) | ✅ |
+| 3 | SportSelector emojis → Lucide icons | ✅ |
+| 4 | SportSelector active state ring | ✅ |
+| 5 | Instalações com iconografia Lucide (30+ mapeamentos) | ✅ |
+| 6 | Favicon metadata (icons + manifest) | ✅ |
+| 7 | TrendIndicator component | ✅ |
+| 8 | Chat moderation — regras de conduta | ✅ |
+| 9 | Chat rate limiting (5 msgs/min) | ✅ |
+| 10 | Chat filtro de palavrões PT | ✅ |
+| 11 | Chat spam detection | ✅ |
+| 12 | Chat paginação (50 msgs por página) | ✅ |
+| 13 | Build corrigido e a passar (178 páginas) | ✅ |
+| 14 | Coordinates fix (6 spots) | ✅ |
+| 15 | Duplicate hero images removidas | ✅ |
+| 16 | SpotMap OpenStreetMap integrado | ✅ |
+| 17 | Grid sem fotos, só condições | ✅ |
+| 18 | getSportRating() com lógica por desporto | ✅ |
+
+---
 
 ## Build Status
-✅ 32/32 pages generate successfully
-✅ TypeScript passes with no errors
-✅ All spots render with realistic mock data when API unavailable
+✅ 178/178 páginas geradas com sucesso
+✅ TypeScript passa sem erros
+✅ Zero erros críticos
 
-## GitHub Pages Setup
-Source: Deploy from branch → gh-pages → / (root)
+## GitHub Pages
 URL: https://braindeadpt.github.io/windspot-pt/
+Deploy: Automático via GitHub Actions
 
 ## Updates Log
 
+### 2026-05-10: Waves 1-3 completas (81 spots, 6 desportos)
+- Surfability Score (0-100) implementado
+- Session Quality Forecast com cores gradiente
+- MagicWindows com scores variados
+- Crowd estimation
+- Water quality / Bandeira Azul 2025
+- Spot chat com moderação automática
+- Paginação de mensagens
+- Comparação de spots
+- Local Tips e Secret Tips
+- Mapa OpenStreetMap por spot
+- i18n completo PT/EN
+
 ### 2026-05-08: Added 16 spots (26 total)
-- Expanded spots.ts with 16 new spots covering all Portugal regions
 - Norte: Moledo, Esposende, Cabedelo, Póvoa do Varzim
 - Centro/Lisboa: Costa Nova, Lagoa de Albufeira, Fonte da Telha
 - Algarve: Alvor, Sagres, Faro, Tavira
-- Total: 26 spots, 72 static pages
 
 ### 2026-05-08: Added Açores, Madeira, Alentejo, Wakeboard (44 total)
-- Added 18 new spots: Açores (9), Madeira (7), Alentejo (6), Wakeboard (3)
-- Added 'wakeboard' type and 'all' difficulty to types
-- Total: 44 spots, 122 static pages
-- All TypeScript passing, build successful
+- Açores (9), Madeira (7), Alentejo (6), Wakeboard (3)
 
 ### 2026-05-08: Real beach images from Wikimedia Commons
-- Downloaded 51 real beach images from Wikimedia Commons (CC-licensed)
-- All images are real photos of actual beaches/surf spots
-- Optimized with jpegoptim for web use (329MB → 105MB)
-- Missing 3 images (Anjos, Castelo de Bode, Monte Verde) - to be added later
+- 51 real beach images, optimized with jpegoptim
+
+---
+
+## Próximos Passos (Fase 4)
+- [ ] Mapa interativo de Portugal (Leaflet/SVG)
+- [ ] PWA completo (service worker, offline)
+- [ ] Stoke Meter na homepage
+- [ ] Testes com Vitest
+- [ ] Rede social (posts, likes, perfis)
+- [ ] Push notifications

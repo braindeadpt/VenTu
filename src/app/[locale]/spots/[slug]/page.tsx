@@ -265,7 +265,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
           </div>
           <div className="text-center">
             <div className="text-sm text-white/50 mb-1">{isPt ? 'Crowd Est.' : 'Crowd Est.'}</div>
-            <div className="text-xl font-bold text-ocean-400">{crowd.icon}</div>
+            <div className="text-xl font-bold text-ocean-400">{crowd.icon === 'low' ? 'Low' : crowd.icon === 'medium' ? 'Medium' : 'High'}</div>
             <div className="text-xs text-white/50 mt-1">{isPt ? crowd.level : crowd.levelEn} ({crowd.count})</div>
           </div>
         </div>

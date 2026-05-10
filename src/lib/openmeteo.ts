@@ -282,8 +282,8 @@ export function getSportRating(spotType: string, waveHeight: number, windSpeed: 
     case 'big-wave':
       if (waveHeight > 2.5 && windSpeed < 12) {
         rating = 9;
-        recommendation = 'Excelentes condições de surf! 🌊';
-        recommendationEn = 'Excellent surf conditions! 🌊';
+        recommendation = 'Excelentes condições de surf!';
+        recommendationEn = 'Excellent surf conditions!';
       } else if (waveHeight > 1.5 && windSpeed < 15) {
         rating = 7;
         recommendation = 'Boas condições para surf';
@@ -317,8 +317,8 @@ export function getSportRating(spotType: string, waveHeight: number, windSpeed: 
     case 'kitesurf':
       if (windSpeed > 18 && windSpeed < 28) {
         rating = 9;
-        recommendation = 'Vento perfeito para kitesurf! 💨';
-        recommendationEn = 'Perfect wind for kitesurfing! 💨';
+        recommendation = 'Vento perfeito para kitesurf!';
+        recommendationEn = 'Perfect wind for kitesurfing!';
       } else if (windSpeed > 15 && windSpeed < 30) {
         rating = 7;
         recommendation = 'Bom vento para kitesurf';
@@ -341,8 +341,8 @@ export function getSportRating(spotType: string, waveHeight: number, windSpeed: 
     case 'windsurf':
       if (windSpeed > 15 && windSpeed < 25) {
         rating = 9;
-        recommendation = 'Vento perfeito para windsurf! 💨';
-        recommendationEn = 'Perfect wind for windsurfing! 💨';
+        recommendation = 'Vento perfeito para windsurf!';
+        recommendationEn = 'Perfect wind for windsurfing!';
       } else if (windSpeed > 12 && windSpeed < 30) {
         rating = 7;
         recommendation = 'Bom vento para windsurf';

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MapPin, Wind, Waves, Star, Thermometer, Zap } from 'lucide-react';
+import { MapPin, Wind, Waves, Star, Thermometer, Zap, Flame, Anchor, Heart, Tent, Droplets } from 'lucide-react';
 import { Spot } from '@/types';
 import { calculateSurfability, getScoreColor } from '@/lib/surfability';
 import { SPORT_LABELS, SportType } from '@/lib/sportRatings';
@@ -22,6 +22,16 @@ interface SpotCardProps {
   sportRatings?: Record<string, any>;
   selectedSport?: SportType | null;
 }
+
+// Sport icon mapping (Lucide icons, no emojis)
+const SPORT_ICONS: Record<SportType, React.ElementType> = {
+  surf: Waves,
+  kitesurf: Wind,
+  windsurf: Wind,
+  wakeboard: Anchor,
+  bodyboard: Waves,
+  sup: Heart,
+};
 
 export default function SpotCard({ spot, locale, conditions, sportRatings, selectedSport }: SpotCardProps) {
   const typeColors: Record<string, string> = {
@@ -101,8 +111,12 @@ export default function SpotCard({ spot, locale, conditions, sportRatings, selec
               {isPt ? typeLabel.pt : typeLabel.en}
             </span>
             {sportRating && (
-              <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
-                {SPORT_LABELS[selectedSport].emoji} {SPORT_LABELS[selectedSport].pt}
+              <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 flex items-center gap-1">
+                {(() => {
+                  const SportIcon = SPORT_ICONS[selectedSport];
+                  return SportIcon ? <SportIcon className="w-3 h-3" /> : null;
+                })()}
+                {SPORT_LABELS[selectedSport].pt}
               </span>
             )}
           </div>
@@ -155,7 +169,11 @@ export default function SpotCard({ spot, locale, conditions, sportRatings, selec
                     className="text-xs px-2 py-0.5 rounded-full bg-slate-700/50 text-slate-300 border border-slate-600/30"
                     style={{ borderLeftColor: rating.color, borderLeftWidth: '2px' }}
                   >
-                    {SPORT_LABELS[sport as SportType].emoji} {rating.rating.toFixed(0)}
+                    {(() => {
+                      const SportIcon = SPORT_ICONS[sport as SportType];
+                      return SportIcon ? <SportIcon className="w-3 h-3 inline mr-1" /> : null;
+                    })()}
+                    {rating.rating.toFixed(0)}
                   </span>
                 ))
               }

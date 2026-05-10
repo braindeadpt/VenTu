@@ -17,8 +17,8 @@ export default function Header({ locale }: HeaderProps) {
   const navItems = [
     { href: `/${locale}/`, label: isPt ? 'Início' : 'Home' },
     { href: `/${locale}/spots/`, label: 'Spots' },
-    { href: `/${locale}/favorites/`, label: isPt ? '❤️ Favs' : '❤️ Favs' },
-    { href: `/${locale}/compare?spots=supertubos,guincho`, label: isPt ? '🏆 VS' : '🏆 VS', special: true },
+    { href: `/${locale}/favorites/`, label: isPt ? 'Favs' : 'Favs' },
+    { href: `/${locale}/compare?spots=supertubos,guincho`, label: isPt ? 'VS' : 'VS', special: true },
     { href: `/${locale}/news/`, label: isPt ? 'Notícias' : 'News' },
     { href: `/${locale}/about/`, label: isPt ? 'Sobre' : 'About' },
   ];

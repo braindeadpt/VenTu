@@ -124,7 +124,7 @@ function BattleContent() {
       <div className="min-h-screen bg-ocean-950 flex items-center justify-center px-4">
         <div className="text-center space-y-6 max-w-md">
           <Trophy className="w-16 h-16 text-yellow-400 mx-auto" />
-          <h1 className="text-3xl font-bold text-white">Spot vs Spot 🏆</h1>
+          <h1 className="text-3xl font-bold text-white">Spot vs Spot</h1>
           <p className="text-white/60">
             {isPt 
               ? 'Escolhe 2-3 spots para comparar. Exemplo: /compare?spots=supertubos,guincho,nazare'
@@ -188,7 +188,7 @@ function BattleContent() {
         {/* Title */}
         <div className="text-center space-y-2">
           <Trophy className="w-12 h-12 text-yellow-400 mx-auto" />
-          <h1 className="text-4xl font-bold text-white">Spot vs Spot 🏆</h1>
+          <h1 className="text-4xl font-bold text-white">Spot vs Spot</h1>
           <p className="text-white/60">{isPt ? 'Quem ganha hoje?' : 'Who wins today?'}</p>
         </div>
 
@@ -262,7 +262,7 @@ function BattleContent() {
                       <Users className="w-4 h-4 text-ocean-400" />
                       {isPt ? 'Crowd estimado' : 'Estimated crowd'}
                     </div>
-                    <span className="font-bold">{data.crowd.icon} {isPt ? data.crowd.level : data.crowd.levelEn}</span>
+                    <span className="font-bold">{data.crowd.icon === 'low' ? 'Low' : data.crowd.icon === 'medium' ? 'Medium' : 'High'} — {isPt ? data.crowd.level : data.crowd.levelEn}</span>
                   </div>
                 </div>
 

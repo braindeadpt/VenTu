@@ -200,29 +200,38 @@ tideQuality = 1 - abs(currentTide - idealTide) / tideRange
 
 ## 8. Roadmap de Implementação 🗓️
 
-### Fase 1 — Já (Esta Semana)
+### Fase 1 — ✅ CONCLUÍDA (Maio 2026)
 - [x] Remover webcams quebradas
-- [ ] Criar Surfability Score algorithm
-- [ ] Redesenhar frontpage com mapa + top spots
-- [ ] Adicionar Session Quality Forecast
+- [x] Criar Surfability Score algorithm (0-100)
+- [x] Redesenhar frontpage com stats + top spots
+- [x] Adicionar Session Quality Forecast
+- [x] Adicionar MagicWindows (melhores horas)
+- [x] Crowd estimation
+- [x] i18n completo PT/EN
 
-### Fase 2 — Próximas 2 Semanas
-- [ ] Página do spot com Local Knowledge
-- [ ] Crowd Forecast estimado
-- [ ] Community Reports (estrutura)
-- [ ] Design system: cores, tipografia, componentes
+### Fase 2 — ✅ CONCLUÍDA (Maio 2026)
+- [x] Página do spot com Local Knowledge / Secret Tips
+- [x] Spot Comparison Tool
+- [x] Community Chat por spot com moderação
+- [x] Water Quality / Bandeira Azul 2025
+- [x] Design system: cores, tipografia, componentes
+- [x] SpotMap OpenStreetMap
+- [x] FavoriteButton com localStorage
 
-### Fase 3 — Mês 1
-- [ ] Mapa interativo com spots coloridos
+### Fase 3 — 🔄 EM PROGRESSO
+- [ ] Mapa interativo com spots coloridos (Leaflet/SVG)
 - [ ] Gamification (badges, streaks)
 - [ ] User-generated content (fotos, tips)
 - [ ] Push notifications ("O teu spot favorito está a 90/100!")
+- [ ] PWA completo (service worker, offline)
+- [ ] Testes com Vitest
 
 ### Fase 4 — Futuro
-- [ ] Mobile app (PWA)
-- [ ] Community moderation
+- [ ] Mobile app (PWA avançado)
+- [ ] Community moderation avançada
 - [ ] Premium features (spots secretos, alerts avançados)
 - [ ] Integração com GPS / tracking de sessões
+- [ ] Rede social completa (posts, likes, perfis, seguir)
 
 ---
 

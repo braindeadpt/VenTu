@@ -44,7 +44,7 @@ export function LocalTipsSection({ tips, locale }: LocalTipsSectionProps) {
       <div className="flex items-center gap-2 mb-4">
         <MapPin className="w-5 h-5 text-cyan-400" />
         <h3 className="text-lg font-bold text-white">
-          {isPT ? '🤙 Dicas do Local' : '🤙 Local Tips'}
+          {isPT ? 'Dicas do Local' : 'Local Tips'}
         </h3>
       </div>
 

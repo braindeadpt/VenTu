@@ -16,7 +16,7 @@ export function SecretTipsSection({ tips, locale, secretLevel }: SecretTipsSecti
     known: { pt: 'Conhecido', en: 'Known', color: 'bg-green-500/20 text-green-400 border-green-500/30' },
     'semi-secret': { pt: 'Semi-Secreto', en: 'Semi-Secret', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' },
     secret: { pt: 'Secreto', en: 'Secret', color: 'bg-orange-500/20 text-orange-400 border-orange-500/30' },
-    'deep-secret': { pt: 'Deep Secret 🤫', en: 'Deep Secret 🤫', color: 'bg-red-500/20 text-red-400 border-red-500/30' },
+    'deep-secret': { pt: 'Deep Secret', en: 'Deep Secret', color: 'bg-red-500/20 text-red-400 border-red-500/30' },
   };
 
   const level = secretLevel ? levelLabels[secretLevel] : null;
@@ -29,7 +29,7 @@ export function SecretTipsSection({ tips, locale, secretLevel }: SecretTipsSecti
       <div className="flex items-center gap-2 mb-4 relative">
         <Lock className="w-5 h-5 text-purple-400" />
         <h3 className="text-lg font-bold text-white">
-          {isPT ? '🔒 Segredo Local' : '🔒 Local Secret'}
+          {isPT ? 'Segredo Local' : 'Local Secret'}
         </h3>
         {level && (
           <span className={`ml-auto px-2 py-1 rounded-full text-xs font-bold border ${level.color}`}>
@@ -46,8 +46,8 @@ export function SecretTipsSection({ tips, locale, secretLevel }: SecretTipsSecti
 
       <p className="mt-3 text-xs text-slate-500 italic">
         {isPT
-          ? '⚠️ Respeita este spot. Não partilhes a localização exata nas redes sociais.'
-          : '⚠️ Respect this spot. Don\'t share the exact location on social media.'}
+          ? 'Respeita este spot. Não partilhes a localização exata nas redes sociais.'
+          : 'Respect this spot. Don\'t share the exact location on social media.'}
       </p>
     </div>
   );

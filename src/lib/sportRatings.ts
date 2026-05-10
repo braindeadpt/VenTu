@@ -435,13 +435,13 @@ function calculateSUPRating(windSpeed: number, waveHeight: number): number {
 }
 
 // Labels dos desportos
-export const SPORT_LABELS: Record<SportType, { pt: string; en: string; emoji: string }> = {
-  surf: { pt: 'Surf', en: 'Surf', emoji: '🏄' },
-  kitesurf: { pt: 'Kitesurf', en: 'Kitesurf', emoji: '🪁' },
-  windsurf: { pt: 'Windsurf', en: 'Windsurf', emoji: '🌊' },
-  wakeboard: { pt: 'Wakeboard', en: 'Wakeboard', emoji: '🚤' },
-  bodyboard: { pt: 'Bodyboard', en: 'Bodyboard', emoji: '🏄‍♂️' },
-  sup: { pt: 'SUP', en: 'SUP', emoji: '🏄‍♀️' },
+export const SPORT_LABELS: Record<SportType, { pt: string; en: string }> = {
+  surf: { pt: 'Surf', en: 'Surf' },
+  kitesurf: { pt: 'Kitesurf', en: 'Kitesurf' },
+  windsurf: { pt: 'Windsurf', en: 'Windsurf' },
+  wakeboard: { pt: 'Wakeboard', en: 'Wakeboard' },
+  bodyboard: { pt: 'Bodyboard', en: 'Bodyboard' },
+  sup: { pt: 'SUP', en: 'SUP' },
 }
 
 // Desportos disponíveis para filtro

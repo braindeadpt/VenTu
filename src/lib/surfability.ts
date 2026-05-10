@@ -115,39 +115,39 @@ function windScore(speed: number, direction: number, idealWindDirs: number[]): n
 
 // Get rating text based on score
 function getRating(score: number): { rating: string; ratingEn: string; stars: number; color: string } {
-  if (score >= 90) return { rating: 'ÉPICO! 🔥', ratingEn: 'EPIC! 🔥', stars: 5, color: 'bg-red-500' };
-  if (score >= 75) return { rating: 'FIRE! ⚡', ratingEn: 'FIRE! ⚡', stars: 4, color: 'bg-orange-500' };
-  if (score >= 60) return { rating: 'BOM! 👍', ratingEn: 'GOOD! 👍', stars: 3, color: 'bg-yellow-500' };
-  if (score >= 40) return { rating: 'Razoável', ratingEn: 'Fair', stars: 2, color: 'bg-blue-400' };
-  if (score >= 20) return { rating: 'Fraco', ratingEn: 'Poor', stars: 1, color: 'bg-gray-400' };
-  return { rating: 'Não Vale a Pena', ratingEn: 'Not Worth It', stars: 0, color: 'bg-gray-600' };
+  if (score >= 90) return { rating: 'EPIC!', ratingEn: 'EPIC!', stars: 5, color: 'bg-red-500' };
+  if (score >= 75) return { rating: 'FIRE!', ratingEn: 'FIRE!', stars: 4, color: 'bg-orange-500' };
+  if (score >= 60) return { rating: 'GOOD', ratingEn: 'GOOD', stars: 3, color: 'bg-yellow-500' };
+  if (score >= 40) return { rating: 'Fair', ratingEn: 'Fair', stars: 2, color: 'bg-blue-400' };
+  if (score >= 20) return { rating: 'Poor', ratingEn: 'Poor', stars: 1, color: 'bg-gray-400' };
+  return { rating: 'Not Worth It', ratingEn: 'Not Worth It', stars: 0, color: 'bg-gray-600' };
 }
 
 // Get recommendation text
 function getRecommendation(score: number, spotName: string): { text: string; textEn: string } {
   if (score >= 90) return {
-    text: `NÃO PERCAS! ${spotName} está épico hoje! 🏄‍♂️🔥`,
-    textEn: `DON'T MISS! ${spotName} is epic today! 🏄‍♂️🔥`,
+    text: `NÃO PERCAS! ${spotName} está épico hoje!`,
+    textEn: `DON'T MISS! ${spotName} is epic today!`,
   };
   if (score >= 75) return {
-    text: `Ótimas condições em ${spotName}! Vai lá! ⚡`,
-    textEn: `Great conditions at ${spotName}! Go for it! ⚡`,
+    text: `Ótimas condições em ${spotName}! Vai lá!`,
+    textEn: `Great conditions at ${spotName}! Go for it!`,
   };
   if (score >= 60) return {
-    text: `${spotName} tá bom hoje. Vale a pena uma sessão! 👍`,
-    textEn: `${spotName} is good today. Worth a session! 👍`,
+    text: `${spotName} tá bom hoje. Vale a pena uma sessão!`,
+    textEn: `${spotName} is good today. Worth a session!`,
   };
   if (score >= 40) return {
-    text: `${spotName} tá razoável. Se não tens outra opção... 🤷`,
-    textEn: `${spotName} is fair. If you have no other option... 🤷`,
+    text: `${spotName} tá razoável. Se não tens outra opção...`,
+    textEn: `${spotName} is fair. If you have no other option...`,
   };
   if (score >= 20) return {
-    text: `${spotName} não tá grande coisa hoje. Talvez amanhã? 😴`,
-    textEn: `${spotName} is not great today. Maybe tomorrow? 😴`,
+    text: `${spotName} não tá grande coisa hoje. Talvez amanhã?`,
+    textEn: `${spotName} is not great today. Maybe tomorrow?`,
   };
   return {
-    text: `${spotName} tá flat ou vento forte. Evita hoje. ❌`,
-    textEn: `${spotName} is flat or windy. Skip today. ❌`,
+    text: `${spotName} tá flat ou vento forte. Evita hoje.`,
+    textEn: `${spotName} is flat or windy. Skip today.`,
   };
 }
 
@@ -250,11 +250,11 @@ export function estimateCrowd(
 
   baseCrowd = Math.round(baseCrowd);
 
-  if (baseCrowd < 10) return { level: 'Vazio', levelEn: 'Empty', icon: '🟢', count: '< 10' };
-  if (baseCrowd < 20) return { level: 'Tranquilo', levelEn: 'Quiet', icon: '🟢', count: '10-20' };
-  if (baseCrowd < 35) return { level: 'Médio', levelEn: 'Moderate', icon: '🟡', count: '20-35' };
-  if (baseCrowd < 50) return { level: 'Crowded', levelEn: 'Crowded', icon: '🟠', count: '35-50' };
-  return { level: 'Lotado', levelEn: 'Packed', icon: '🔴', count: '50+' };
+  if (baseCrowd < 10) return { level: 'Vazio', levelEn: 'Empty', icon: 'low', count: '< 10' };
+  if (baseCrowd < 20) return { level: 'Tranquilo', levelEn: 'Quiet', icon: 'low', count: '10-20' };
+  if (baseCrowd < 35) return { level: 'Médio', levelEn: 'Moderate', icon: 'medium', count: '20-35' };
+  if (baseCrowd < 50) return { level: 'Crowded', levelEn: 'Crowded', icon: 'medium', count: '35-50' };
+  return { level: 'Lotado', levelEn: 'Packed', icon: 'high', count: '50+' };
 }
 
 /**

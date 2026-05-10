@@ -22,12 +22,12 @@ interface SpotChatProps {
 // Mock messages for demo when Supabase is not configured
 const mockMessages: Record<string, ChatMessage[]> = {
   guincho: [
-    { id: '1', spot_slug: 'guincho', username: 'RiderLocal', content: 'Ondas estão a bater! 🏄‍♂️', created_at: new Date(Date.now() - 1000 * 60 * 5).toISOString() },
+    { id: '1', spot_slug: 'guincho', username: 'RiderLocal', content: 'Ondas estão a bater!', created_at: new Date(Date.now() - 1000 * 60 * 5).toISOString() },
     { id: '2', spot_slug: 'guincho', username: 'KiteGirl', content: 'Vento de N a 25kt, perfeito!', created_at: new Date(Date.now() - 1000 * 60 * 3).toISOString() },
     { id: '3', spot_slug: 'guincho', username: 'SurfNovo', content: 'Alguém me dá boleia desde Lisboa?', created_at: new Date(Date.now() - 1000 * 60).toISOString() },
   ],
   nazare: [
-    { id: '1', spot_slug: 'nazare', username: 'BigWaveHunter', content: 'Hoje não é dia, flat... 😴', created_at: new Date(Date.now() - 1000 * 60 * 10).toISOString() },
+    { id: '1', spot_slug: 'nazare', username: 'BigWaveHunter', content: 'Hoje não é dia, flat...', created_at: new Date(Date.now() - 1000 * 60 * 10).toISOString() },
     { id: '2', spot_slug: 'nazare', username: 'JetSkiMario', content: 'Amanhã promete! Swell de NW a subir.', created_at: new Date(Date.now() - 1000 * 60 * 5).toISOString() },
   ],
 };
@@ -240,7 +240,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-cyan-400" />
           <h3 className="text-lg font-bold text-white">
-            {isPT ? `💬 Chat ${spotName}` : `💬 ${spotName} Chat`}
+            {isPT ? `Chat ${spotName}` : `${spotName} Chat`}
           </h3>
         </div>
         <div className="flex items-center gap-3">
@@ -336,8 +336,8 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
             <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">
               {isPT 
-                ? `Ninguém disse nada ainda no ${spotName}. Sê o primeiro! 🤙`
-                : `No one has said anything at ${spotName} yet. Be the first! 🤙`
+                ? `Ninguém disse nada ainda no ${spotName}. Sê o primeiro!`
+                : `No one has said anything at ${spotName} yet. Be the first!`
               }
             </p>
           </div>
@@ -393,8 +393,8 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
         <div className="px-4 pb-3">
           <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2.5 text-xs text-yellow-300">
             {isPT 
-              ? '⚠️ Modo demo — Conecta Supabase para chat real. Ver SOCIAL-REPORT.md'
-              : '⚠️ Demo mode — Connect Supabase for real chat. See SOCIAL-REPORT.md'
+              ? 'Modo demo — Conecta Supabase para chat real.'
+              : 'Demo mode — Connect Supabase for real chat.'
             }
           </div>
         </div>

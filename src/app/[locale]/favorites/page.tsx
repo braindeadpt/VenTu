@@ -104,8 +104,8 @@ export default function FavoritesPage() {
             <Heart className="w-16 h-16 text-white/20 mx-auto" />
             <p className="text-white/40 text-lg">
               {isPt 
-                ? 'Ainda não tens favoritos. Vai aos spots e clica no ❤️!' 
-                : 'No favorites yet. Go to spots and click ❤️!'
+                ? 'Ainda não tens favoritos. Vai aos spots e clica no coração!' 
+                : 'No favorites yet. Go to spots and click the heart!'
               }
             </p>
             <Link
@@ -138,7 +138,7 @@ export default function FavoritesPage() {
                   <div className="relative h-40 bg-gradient-to-br from-ocean-800 to-ocean-950 overflow-hidden">
                     <div className="absolute top-3 left-3">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium border bg-wave-500/20 text-wave-300 border-wave-500/30`}>
-                        {spot.type === 'surf' ? '🏄' : spot.type === 'kitesurf' ? '🪁' : spot.type === 'windsurf' ? '💨' : '🌊'} {spot.type}
+                        {spot.type}
                       </span>
                     </div>
                     <div className="absolute top-3 right-3">
