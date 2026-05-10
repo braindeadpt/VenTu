@@ -35,13 +35,13 @@ export default function Footer({ locale }: FooterProps) {
               <li>
                 <a href="https://github.com/braindeadpt/windspot-pt" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-white/50 hover:text-ocean-400 transition-colors">
                   <Github className="w-4 h-4" />
-                  GitHub
+                  GitHub ↗
                 </a>
               </li>
               <li>
                 <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-white/50 hover:text-ocean-400 transition-colors">
                   <ExternalLink className="w-4 h-4" />
-                  Open-Meteo
+                  Open-Meteo ↗
                 </a>
               </li>
             </ul>

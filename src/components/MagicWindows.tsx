@@ -120,6 +120,17 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
       if (h.waterTemp >= 18) {
         score += 5;
       }
+      // Variety bonus: stable conditions get a small bonus
+      const waveVariance = i > 0 ? Math.abs(h.waveHeight - hourly[i-1]?.waveHeight || 0) : 0;
+      const windVariance = i > 0 ? Math.abs(h.windSpeed - hourly[i-1]?.windSpeed || 0) : 0;
+      if (waveVariance < 0.3 && windVariance < 5) {
+        score += 3;
+      }
+      // Morning bonus (for surf): early hours slightly preferred
+      const hourOfDay = new Date(h.time).getHours();
+      if ((spotType === 'surf' || spotType === 'big-wave') && hourOfDay >= 6 && hourOfDay <= 10) {
+        score += 4;
+      }
 
       return {
         hour: i,

@@ -90,7 +90,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
           className="inline-flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 text-white rounded-xl font-medium transition-all border border-white/10"
         >
           <Code className="w-5 h-5" />
-          {isPt ? 'Contribuir no GitHub' : 'Contribute on GitHub'}
+          {isPt ? 'Contribuir no GitHub ↗' : 'Contribute on GitHub ↗'}
         </a>
       </div>
     </div>

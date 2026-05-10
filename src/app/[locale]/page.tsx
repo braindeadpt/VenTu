@@ -8,7 +8,7 @@ import { calculateSurfability, getSessionForecast, estimateCrowd, getScoreColor 
 import { calculateSportRating, SPORT_LABELS, SportType, getCompatibleSports } from '@/lib/sportRatings'
 import SpotGrid from '@/components/spots/SpotGrid'
 import SportSelector from '@/components/SportSelector'
-import { Wind, Waves, MapPin, ArrowRight, Activity, Thermometer, Star, Zap, Flame, Sunrise, Users } from 'lucide-react'
+import { Wind, Waves, MapPin, ArrowRight, Activity, Thermometer, Star, Zap, Flame, Sunrise, Users, Heart, Bot } from 'lucide-react'
 import Link from 'next/link'
 
 
@@ -212,7 +212,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
             <h2 className="text-2xl md:text-3xl font-bold text-white/90">
               {isPt ? 'TOP 3 — Onde Está a Boa Onda?' : 'TOP 3 — Where Are the Best Waves?'}
             </h2>
-            <p className="text-white/50 text-sm">{isPt ? 'Scores calculados agora mesmo 🤖' : 'Scores calculated just now 🤖'}</p>
+            <p className="text-white/50 text-sm flex items-center gap-1">{isPt ? 'Scores calculados agora mesmo' : 'Scores calculated just now'} <Bot className="w-3.5 h-3.5 inline text-white/40" /></p>
           </div>
         </div>
 
@@ -478,15 +478,17 @@ export default async function HomePage({ params }: { params: { locale: string } 
               <div className="text-sm text-white/50">{t.hero.stats.spots}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-surf-400">{ALL_SPORTS.length * 8}</div>
-              <div className="text-sm text-white/50">{t.hero.stats.updates}</div>
+              <div className="text-4xl font-bold text-surf-400">{spots.filter(s => s.type === 'surf' || s.type === 'kitesurf' || s.type === 'windsurf').length}</div>
+              <div className="text-sm text-white/50">{isPt ? 'Com Ondas' : 'With Waves'}</div>
             </div>
             <div className="text-center">
               <div className="text-4xl font-bold text-wind-400">{ALL_SPORTS.length}</div>
               <div className="text-sm text-white/50">{t.hero.stats.sports}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-yellow-400">🤙</div>
+              <div className="text-4xl font-bold text-yellow-400 flex items-center justify-center">
+                <Heart className="w-8 h-8" />
+              </div>
               <div className="text-sm text-white/50">{isPt ? 'Feito por Locals' : 'Made by Locals'}</div>
             </div>
           </div>
