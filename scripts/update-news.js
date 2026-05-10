@@ -186,6 +186,7 @@ TÍTULO 2|SUMÁRIO 2
 TÍTULO 3|SUMÁRIO 3`;
 
   try {
+    console.log('🤖 Calling Gemini API...');
     const response = await fetch(`${GEMINI_API}?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -195,12 +196,23 @@ TÍTULO 3|SUMÁRIO 3`;
       }),
     });
 
-    if (!response.ok) throw new Error(`Gemini API error: ${response.status}`);
+    console.log('📡 Gemini response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ Gemini API error:', response.status, errorText);
+      return null;
+    }
+    
     const data = await response.json();
+    console.log('📡 Gemini response keys:', Object.keys(data));
+    
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    console.log('📝 Gemini raw text length:', text.length);
     
     // Parse response format: TÍTULO|SUMÁRIO
     const lines = text.split('\n').filter(l => l.trim() && l.includes('|'));
+    console.log('📄 Parsed lines:', lines.length);
     
     return lines.slice(0, 3).map((line, i) => {
       const [title, summary] = line.split('|').map(s => s.trim());
@@ -289,6 +301,7 @@ function extractTags(text) {
 
 async function updateNews() {
   console.log('📰 WindSpot - Updating news...');
+  console.log('🔑 GEMINI_API_KEY present:', !!GEMINI_API_KEY);
 
   // Load conditions data
   const conditions = loadConditions();
@@ -307,7 +320,11 @@ async function updateNews() {
     if (briefing && briefing.length > 0) {
       newsItems = briefing;
       console.log(`✅ Generated ${briefing.length} AI news items`);
+    } else {
+      console.log('⚠️ Gemini returned no news items');
     }
+  } else {
+    console.log('⚠️ No conditions data found');
   }
 
   // If Gemini failed or no conditions, try RSS fallback
@@ -319,24 +336,17 @@ async function updateNews() {
     }
   }
 
-  // If everything failed, create a static "no data" placeholder
-  if (newsItems.length === 0) {
-    console.warn('⚠️ No news sources available');
-    // Don't overwrite with empty - keep existing if present
-    const existingPath = path.join(__dirname, '../public/data/news.json');
-    if (fs.existsSync(existingPath)) {
-      console.log('📄 Keeping existing news.json');
-      return;
-    }
-  }
-
-  // Save news
+  // Save news (even if empty - for debugging)
   const outputPath = path.join(__dirname, '../public/data/news.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, JSON.stringify(newsItems, null, 2));
 
   console.log(`\n✅ News saved to ${outputPath}`);
   console.log(`📰 ${newsItems.length} news items`);
+  
+  if (newsItems.length === 0) {
+    console.log('⚠️ WARNING: No news items generated!');
+  }
   
   newsItems.forEach((item, i) => {
     console.log(`\n  ${i + 1}. [${item.category.toUpperCase()}] ${item.title}`);
