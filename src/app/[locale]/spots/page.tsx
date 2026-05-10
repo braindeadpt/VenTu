@@ -3,7 +3,6 @@ import { spots } from '@/lib/spots'
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo'
 import SpotGrid from '@/components/spots/SpotGrid'
 
-export const revalidate = 1800
 
 async function getAllConditions() {
   const conditions: Record<string, any> = {}

@@ -10,6 +10,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: 'WindSpot Portugal',
   description: 'Real-time conditions for water sports in Portugal',
+  other: {
+    'referrer': 'strict-origin-when-cross-origin',
+  },
 }
 
 export default function RootLayout({

@@ -61,7 +61,7 @@ export default function Footer({ locale }: FooterProps) {
 
         <div className="mt-8 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-white/30">
-            © 2026 WindSpot Portugal. MIT License. Open Source Project.
+            © {new Date().getFullYear()} WindSpot Portugal. MIT License. Open Source Project.
           </p>
           <p className="flex items-center gap-1 text-xs text-white/30">
             {t.footer.madeWith} <Heart className="w-3 h-3 text-red-400" /> {t.footer.forCommunity}

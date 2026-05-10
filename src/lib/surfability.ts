@@ -39,7 +39,7 @@ function parseDirections(dirString: string): number[] {
     'S': 180, 'SSW': 202.5, 'SW': 225, 'WSW': 247.5,
     'W': 270, 'WNW': 292.5, 'NW': 315, 'NNW': 337.5,
   };
-  return dirString.split(',').map(d => dirMap[d.trim()]).filter(Boolean);
+  return dirString.split(',').map(d => dirMap[d.trim()]).filter(v => v !== undefined);
 }
 
 // Calculate angular difference (0-180)

@@ -47,6 +47,7 @@ export default function SpotCard({ spot, locale, conditions, sportRatings, selec
     'big-wave': { pt: 'Big Wave', en: 'Big Wave' },
     foil: { pt: 'Foil', en: 'Foil' },
     multisport: { pt: 'Multidesporto', en: 'Multisport' },
+    wakeboard: { pt: 'Wakeboard', en: 'Wakeboard' },
   };
 
   const difficultyLabels: Record<string, { pt: string; en: string }> = {
@@ -54,6 +55,7 @@ export default function SpotCard({ spot, locale, conditions, sportRatings, selec
     intermediate: { pt: 'Intermédio', en: 'Intermediate' },
     advanced: { pt: 'Avançado', en: 'Advanced' },
     expert: { pt: 'Especialista', en: 'Expert' },
+    all: { pt: 'Todos os níveis', en: 'All levels' },
   };
 
   const isPt = locale === 'pt';
@@ -64,7 +66,7 @@ export default function SpotCard({ spot, locale, conditions, sportRatings, selec
     surfability = calculateSurfability(spot, {
       waveHeight: conditions.waveHeight,
       wavePeriod: conditions.wavePeriod,
-      waveDirection: conditions.windDirection, // approximate
+      waveDirection: conditions.windDirection || 270, // Approximate with wind direction
       windSpeed: conditions.windSpeed,
       windDirection: conditions.windDirection,
       waterTemp: conditions.waterTemp,
@@ -86,11 +88,11 @@ export default function SpotCard({ spot, locale, conditions, sportRatings, selec
   // Determine display rating
   const displayRating = sportRating || (surfability ? { score: surfability.score, rating: surfability.rating, color: getScoreColor(surfability.score).text.replace('text-', '') } : null);
   const displayScore = sportRating ? sportRating.rating : (surfability?.score || 0);
-  const scoreLabel = sportRating ? (isPt ? sportRating.label : sportRating.label) : (isPt ? surfability?.rating : surfability?.ratingEn);
+  const scoreLabel = sportRating ? (isPt ? sportRating.label : sportRating.labelEn || sportRating.label) : (isPt ? surfability?.rating : surfability?.ratingEn);
   const maxScore = sportRating ? 10 : 100;
 
   return (
-    <Link href={`/${locale}/spots/${spot.slug}/${selectedSport ? `?sport=${selectedSport}` : ''}`}>
+    <Link href={selectedSport ? `/${locale}/spots/${spot.slug}/?sport=${selectedSport}` : `/${locale}/spots/${spot.slug}/`}>
       <div className="glass-card overflow-hidden hover:bg-white/10 transition-all duration-300 cursor-pointer group">
         {/* Header with spot info */}
         <div className="relative h-32 bg-gradient-to-br from-ocean-800 to-ocean-950 overflow-hidden">

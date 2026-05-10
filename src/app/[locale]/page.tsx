@@ -1,6 +1,7 @@
 import DawnPatrolBanner from '@/components/DawnPatrolBanner'
 import { AlertBanner } from '@/components/AlertBanner'
 import { getTranslation } from '@/lib/i18n'
+import { ALL_SPORTS } from '@/lib/sportRatings'
 import { spots } from '@/lib/spots'
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo'
 import { calculateSurfability, getSessionForecast, estimateCrowd, getScoreColor } from '@/lib/surfability'
@@ -10,7 +11,6 @@ import SportSelector from '@/components/SportSelector'
 import { Wind, Waves, MapPin, ArrowRight, Activity, Thermometer, Star, Zap, Flame, Sunrise, Users } from 'lucide-react'
 import Link from 'next/link'
 
-export const revalidate = 1800
 
 function isSpotCompatibleWithSport(spot: any, sport: SportType): boolean {
   const typeMapping: Record<string, SportType[]> = {
@@ -415,7 +415,14 @@ export default async function HomePage({ params }: { params: { locale: string } 
               </div>
               <div>
                 <p className="text-sm text-white/50">{isPt ? 'Dawn Patrol' : 'Dawn Patrol'}</p>
-                <p className="text-xl font-bold">6:15h</p>
+                <p className="text-xl font-bold">{(() => {
+                  const now = new Date();
+                  const month = now.getMonth();
+                  // Aproximação: Verão ~6h, Inverno ~8h
+                  const hour = month >= 4 && month <= 8 ? 6 : (month >= 9 || month <= 2 ? 7 : 6.5);
+                  const min = month >= 5 && month <= 7 ? 15 : 45;
+                  return `${hour.toFixed(0)}:${min.toString().padStart(2, '0')}h`;
+                })()}</p>
                 <p className="text-xs text-white/50">{isPt ? 'Nascer do sol' : 'Sunrise'}</p>
               </div>
             </div>
@@ -456,11 +463,11 @@ export default async function HomePage({ params }: { params: { locale: string } 
               <div className="text-sm text-white/50">{t.hero.stats.spots}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-surf-400">48</div>
+              <div className="text-4xl font-bold text-surf-400">{ALL_SPORTS.length * 8}</div>
               <div className="text-sm text-white/50">{t.hero.stats.updates}</div>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-bold text-wind-400">6</div>
+              <div className="text-4xl font-bold text-wind-400">{ALL_SPORTS.length}</div>
               <div className="text-sm text-white/50">{t.hero.stats.sports}</div>
             </div>
             <div className="text-center">

@@ -7,7 +7,9 @@ export interface SportConditions {
   sport: SportType
   rating: number // 0-10
   label: string
+  labelEn: string
   description: string
+  descriptionEn: string
   color: string
   primaryFactor: string // O que mais importa para este desporto
 }
@@ -215,9 +217,70 @@ export function calculateSportRating(
     },
   }
 
+  const labelsEn: Record<number, string> = {
+    0: 'Unrideable',
+    1: 'Very Poor',
+    2: 'Poor',
+    3: 'Weak',
+    4: 'Fair',
+    5: 'Average',
+    6: 'Good',
+    7: 'Very Good',
+    8: 'Excellent',
+    9: 'Epic',
+    10: 'Perfect',
+  }
+
+  const descriptionsEn: Record<SportType, Record<number, string>> = {
+    surf: {
+      0: 'No waves or too windy',
+      3: 'Small waves, rideable',
+      6: 'Good waves, have fun!',
+      8: 'Excellent waves, don\'t miss!',
+      10: 'Epic! Best day of the year!',
+    },
+    kitesurf: {
+      0: 'Not enough wind',
+      3: 'Light wind, big kite needed',
+      6: 'Good wind, have fun!',
+      8: 'Perfect wind for freestyle!',
+      10: 'Epic wind! Everyone to the spot!',
+    },
+    windsurf: {
+      0: 'No wind',
+      3: 'Light wind, big board',
+      6: 'Good wind, have fun!',
+      8: 'Strong wind, perfect waves!',
+      10: 'Classic! Wind + waves!',
+    },
+    wakeboard: {
+      0: 'Too choppy',
+      3: 'Acceptable water',
+      6: 'Flat water, good for wake!',
+      8: 'Glassy! Perfect for wake!',
+      10: 'Smooth as glass! Epic!',
+    },
+    bodyboard: {
+      0: 'No waves',
+      3: 'Small waves, rideable for BB',
+      6: 'Good waves for bodyboard!',
+      8: 'Perfect waves for BB!',
+      10: 'Barrels! BB only!',
+    },
+    sup: {
+      0: 'Too windy/rough',
+      3: 'Acceptable conditions',
+      6: 'Calm, good for SUP!',
+      8: 'Perfect for SUP ride!',
+      10: 'Glassy! Dream SUP!',
+    },
+  }
+
   const roundedScore = Math.round(score)
   const label = labels[roundedScore] || 'Desconhecido'
+  const labelEn = labelsEn[roundedScore] || 'Unknown'
   const description = descriptions[sport][roundedScore] || descriptions[sport][Math.floor(roundedScore / 2) * 2] || ''
+  const descriptionEn = descriptionsEn[sport][roundedScore] || descriptionsEn[sport][Math.floor(roundedScore / 2) * 2] || ''
 
   // Cores por rating
   const colors = [
@@ -234,7 +297,9 @@ export function calculateSportRating(
     sport,
     rating: score,
     label,
+    labelEn,
     description,
+    descriptionEn,
     color: colors[colorIndex],
     primaryFactor,
   }

@@ -66,6 +66,7 @@ export default function SportSelector({ locale }: SportSelectorProps) {
         {/* All sports button */}
         <button
           onClick={() => handleSportChange(null)}
+          aria-label={isPT ? 'Mostrar todos os desportos' : 'Show all sports'}
           className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
             !currentSport
               ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 scale-105'
@@ -83,6 +84,7 @@ export default function SportSelector({ locale }: SportSelectorProps) {
             <button
               key={sport}
               onClick={() => handleSportChange(sport)}
+              aria-label={isPT ? `Filtrar por ${label.pt}` : `Filter by ${label.en}`}
               className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5 ${
                 isActive
                   ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 scale-105'

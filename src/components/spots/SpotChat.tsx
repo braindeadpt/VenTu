@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageCircle, Users, Trash2 } from 'lucide-react';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
+import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
 
 interface ChatMessage {
   id: string;
@@ -69,7 +69,9 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
 
     // Fetch existing messages
     const fetchMessages = async () => {
-      const { data } = await supabase
+      const client = getSupabaseClient();
+      if (!client) return;
+      const { data } = await client
         .from('messages')
         .select('*')
         .eq('spot_slug', spotSlug)
@@ -82,8 +84,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
     fetchMessages();
 
     // Subscribe to new messages
-    const channel = supabase
-      .channel(`spot-chat-${spotSlug}`)
+    const channel = getSupabaseClient()?.channel(`spot-chat-${spotSlug}`)
       .on('postgres_changes', {
         event: 'INSERT',
         schema: 'public',
@@ -97,7 +98,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
       });
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channel) getSupabaseClient()?.removeChannel(channel);
     };
   }, [spotSlug]);
 
@@ -124,11 +125,15 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
       return;
     }
 
-    const { error } = await supabase.from('messages').insert({
-      spot_slug: spotSlug,
-      username,
-      content: newMessage.trim(),
-    });
+    const client = getSupabaseClient();
+    if (!client) return;
+    const { error } = await client.from('messages').insert([
+      {
+        spot_slug: spotSlug,
+        username,
+        content: newMessage.trim(),
+      }
+    ] as any);
 
     if (error) {
       console.error('Error sending message:', error);

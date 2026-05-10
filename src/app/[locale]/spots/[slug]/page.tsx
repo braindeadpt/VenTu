@@ -20,7 +20,6 @@ import { AlertButton } from '@/components/AlertBanner'
 import { MapPin, Star, ArrowLeft, CheckCircle, AlertTriangle, Zap, Users, CloudRain, Sun, Droplets } from 'lucide-react'
 import Link from 'next/link'
 
-export const revalidate = 1800
 
 export async function generateStaticParams() {
   return spots.flatMap((spot) => [
