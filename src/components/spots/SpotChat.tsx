@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Send, MessageCircle, Users, Trash2 } from 'lucide-react';
+import { Send, MessageCircle, Users, Trash2, Shield } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
+import { moderateMessage, checkRateLimit, CHAT_RULES } from '@/lib/chatModeration';
 
 interface ChatMessage {
   id: string;
@@ -37,6 +38,9 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
   const [username, setUsername] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [hasSetup, setHasSetup] = useState(false);
+  const [showRules, setShowRules] = useState(false);
+  const [moderationWarning, setModerationWarning] = useState<string | null>(null);
+  const [rateLimitWarning, setRateLimitWarning] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const isPT = locale === 'pt';
 
@@ -111,13 +115,37 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
     e.preventDefault();
     if (!newMessage.trim() || !username) return;
 
+    // Clear previous warnings
+    setModerationWarning(null);
+    setRateLimitWarning(null);
+
+    // Check rate limit
+    const rateCheck = checkRateLimit(username);
+    if (!rateCheck.allowed) {
+      setRateLimitWarning(
+        isPT 
+          ? `Muito rápido! Espera ${rateCheck.retryAfter}s` 
+          : `Too fast! Wait ${rateCheck.retryAfter}s`
+      );
+      return;
+    }
+
+    // Moderate content
+    const moderation = moderateMessage(newMessage.trim(), locale);
+    if (!moderation.allowed) {
+      setModerationWarning(moderation.reason || (isPT ? 'Mensagem bloqueada' : 'Message blocked'));
+      return;
+    }
+
+    const contentToSend = moderation.sanitized || newMessage.trim();
+
     if (!isSupabaseConfigured()) {
       // Mock send - just add locally
       const mockMsg: ChatMessage = {
         id: Date.now().toString(),
         spot_slug: spotSlug,
         username,
-        content: newMessage.trim(),
+        content: contentToSend,
         created_at: new Date().toISOString(),
       };
       setMessages((prev) => [...prev, mockMsg]);
@@ -131,7 +159,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
       {
         spot_slug: spotSlug,
         username,
-        content: newMessage.trim(),
+        content: contentToSend,
       }
     ] as any);
 
@@ -187,6 +215,13 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
             <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
           )}
           <button
+            onClick={() => setShowRules(!showRules)}
+            className="text-slate-500 hover:text-cyan-400 transition-colors"
+            title={isPT ? 'Regras do chat' : 'Chat rules'}
+          >
+            <Shield className="w-4 h-4" />
+          </button>
+          <button
             onClick={clearChat}
             className="text-slate-500 hover:text-red-400 transition-colors"
             title={isPT ? 'Limpar chat' : 'Clear chat'}
@@ -195,6 +230,44 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
           </button>
         </div>
       </div>
+
+      {/* Rules Panel */}
+      {showRules && (
+        <div className="bg-slate-700/50 border-b border-white/10 p-3">
+          <h4 className="text-xs font-semibold text-cyan-400 mb-2 flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            {isPT ? 'Regras do Chat' : 'Chat Rules'}
+          </h4>
+          <ul className="space-y-1">
+            {CHAT_RULES[isPT ? 'pt' : 'en'].map((rule, i) => (
+              <li key={i} className="text-xs text-slate-400 flex items-center gap-1.5">
+                <div className="w-1 h-1 rounded-full bg-cyan-400" />
+                {rule}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Moderation Warning */}
+      {moderationWarning && (
+        <div className="bg-red-500/10 border border-red-500/20 p-2 mx-4 mt-2 rounded-lg">
+          <p className="text-xs text-red-300 flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            {moderationWarning}
+          </p>
+        </div>
+      )}
+
+      {/* Rate Limit Warning */}
+      {rateLimitWarning && (
+        <div className="bg-yellow-500/10 border border-yellow-500/20 p-2 mx-4 mt-2 rounded-lg">
+          <p className="text-xs text-yellow-300 flex items-center gap-1">
+            <Shield className="w-3 h-3" />
+            {rateLimitWarning}
+          </p>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="h-64 overflow-y-auto p-4 space-y-3">
