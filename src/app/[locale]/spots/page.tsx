@@ -26,6 +26,7 @@ interface Conditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  source?: 'real' | 'mock';
 }
 
 async function getAllConditions() {

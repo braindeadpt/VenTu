@@ -18,6 +18,7 @@ interface SpotConditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  source?: 'real' | 'mock';
 }
 
 export default function FavoritesPage() {
@@ -160,7 +161,14 @@ export default function FavoritesPage() {
                         <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
                       </div>
                       <div className="absolute bottom-3 left-3 right-3">
-                        <h3 className="text-xl font-bold text-white">{spot.name}</h3>
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-xl font-bold text-white">{spot.name}</h3>
+                          {current?.source === 'mock' && (
+                            <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                              DEMO
+                            </span>
+                          )}
+                        </div>
                         <div className="flex items-center gap-1 text-sm text-white/60">
                           <MapPin className="w-3 h-3" />{spot.region}
                         </div>

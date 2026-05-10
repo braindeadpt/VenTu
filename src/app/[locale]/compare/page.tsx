@@ -162,7 +162,14 @@ function BattleContent() {
             return (
               <div key={data.spot.id} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <Icon className={`w-6 h-6 ${rankColors[i]}`} />
+                  <div className="flex items-center gap-2">
+                    <Icon className={`w-6 h-6 ${rankColors[i]}`} />
+                    {data.conditions.source === 'mock' && (
+                      <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                        DEMO
+                      </span>
+                    )}
+                  </div>
                   <span className={`text-3xl font-bold ${colors.text}`}>#{i + 1}</span>
                 </div>
 

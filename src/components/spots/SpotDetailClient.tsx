@@ -24,6 +24,7 @@ interface Conditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  source?: 'real' | 'mock';
 }
 
 interface SpotData {
@@ -305,6 +306,18 @@ export default function SpotDetailClient({
           <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
         </div>
       </div>
+
+      {/* Mock data warning */}
+      {(conditions as any).source === 'mock' && (
+        <div className="max-w-4xl mx-auto px-4 pt-4">
+          <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg px-4 py-3 flex items-center gap-2">
+            <span className="text-amber-400 font-bold text-sm">⚠️ DEMO</span>
+            <span className="text-amber-400/80 text-sm">
+              {isPt ? 'Dados de demonstração — condições reais indisponíveis' : 'Demo data — real conditions unavailable'}
+            </span>
+          </div>
+        </div>
+      )}
 
       {/* Score Section */}
       <div className={`py-8 ${colors.bg} border-y ${colors.border}`}>

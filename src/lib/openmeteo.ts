@@ -3,9 +3,25 @@ import { MarineData } from '@/types';
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
 
+export interface FetchResult {
+  data: MarineData;
+  source: 'real' | 'mock';
+}
+
+export interface CurrentConditions {
+  waveHeight: number;
+  wavePeriod: number;
+  waveDirection: number;
+  windSpeed: number;
+  windDirection: number;
+  windGust: number;
+  waterTemp: number;
+  source: 'real' | 'mock';
+}
+const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+
 // In-memory cache for static builds to reduce API calls
 const cache = new Map<string, { data: MarineData; timestamp: number }>();
-const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 
 // Rate limiting: track last request time
 let lastRequestTime = 0;
@@ -127,11 +143,11 @@ function generateMockData(lat: number, lon: number): MarineData {
   };
 }
 
-export async function fetchMarineData(lat: number, lon: number): Promise<MarineData> {
+export async function fetchMarineData(lat: number, lon: number): Promise<FetchResult> {
   const cacheKey = `${lat.toFixed(3)},${lon.toFixed(3)}`;
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.data;
+    return { data: cached.data, source: 'real' };
   }
 
   // Rate limiting
@@ -167,7 +183,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<MarineD
       console.warn(`Open-Meteo API returned ${response.status}, using mock data`);
       const mock = generateMockData(lat, lon);
       cache.set(cacheKey, { data: mock, timestamp: Date.now() });
-      return mock;
+      return { data: mock, source: 'mock' as const };
     }
 
     const data = await response.json();
@@ -177,7 +193,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<MarineD
       console.warn('Open-Meteo API returned invalid data structure, using mock data');
       const mock = generateMockData(lat, lon);
       cache.set(cacheKey, { data: mock, timestamp: Date.now() });
-      return mock;
+      return { data: mock, source: 'mock' as const };
     }
 
     const result = {
@@ -201,16 +217,17 @@ export async function fetchMarineData(lat: number, lon: number): Promise<MarineD
     };
     
     cache.set(cacheKey, { data: result, timestamp: Date.now() });
-    return result;
+    return { data: result, source: 'real' as const };
   } catch (error) {
     console.warn(`Failed to fetch marine data for ${lat},${lon}:`, error instanceof Error ? error.message : 'Unknown error');
     const mock = generateMockData(lat, lon);
     cache.set(cacheKey, { data: mock, timestamp: Date.now() });
-    return mock;
+    return { data: mock, source: 'mock' as const };
   }
 }
 
-export function getCurrentConditions(data: MarineData) {
+export function getCurrentConditions(result: FetchResult): CurrentConditions {
+  const data = result.data;
   const now = new Date();
   const currentHour = now.getHours();
 
@@ -227,11 +244,12 @@ export function getCurrentConditions(data: MarineData) {
     windDirection: data.hourly.wind_direction_10m[timeIndex] || 0,
     windGust: data.hourly.wind_gusts_10m[timeIndex] || 0,
     waterTemp: data.hourly.water_temperature[timeIndex] || 0,
-    seaLevelHeight: data.hourly.sea_level_height?.[timeIndex] || 0,
+    source: result.source,
   };
 }
 
-export function getForecastData(data: MarineData) {
+export function getForecastData(result: FetchResult) {
+  const data = result.data;
   return data.hourly.time.slice(0, 168).map((time, i) => ({
     time,
     waveHeight: data.hourly.wave_height[i] || 0,

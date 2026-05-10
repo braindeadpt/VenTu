@@ -17,6 +17,7 @@ interface SpotCardProps {
     windDirection: number;
     windGust: number;
     waterTemp: number;
+    source?: 'real' | 'mock';
   };
   sportScore?: {
     score: number;
@@ -46,6 +47,13 @@ export default function SpotCard({ spot, locale, conditions, sportScore, selecte
           {sportScore && (
             <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold ${colors.bg} ${colors.text} border ${colors.border}`}>
               {sportScore.score}
+            </div>
+          )}
+          
+          {/* Mock data badge */}
+          {conditions?.source === 'mock' && (
+            <div className="absolute top-3 left-3 px-2 py-0.5 rounded-full text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              DEMO
             </div>
           )}
 
