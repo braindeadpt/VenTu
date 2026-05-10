@@ -24,10 +24,10 @@ export async function generateMetadata({ params }: { params: { locale: string } 
       ? 'Condições em tempo real para surf, kitesurf, windsurf e big wave em Portugal. Dados de ondas, vento e temperatura da água.'
       : 'Real-time conditions for surf, kitesurf, windsurf and big wave in Portugal. Wave, wind and water temperature data.',
     keywords: ['surf', 'kitesurf', 'windsurf', 'Portugal', 'ondas', 'vento', 'Nazaré', 'Peniche', 'big wave'],
-    manifest: '/manifest.json',
+    manifest: '/windspot-pt/manifest.json',
     icons: {
-      icon: '/favicon.ico',
-      apple: '/apple-touch-icon.png',
+      icon: '/windspot-pt/favicon.ico',
+      apple: '/windspot-pt/apple-touch-icon.png',
     },
     openGraph: {
       title: isPt ? 'WindSpot Portugal' : 'WindSpot Portugal',
