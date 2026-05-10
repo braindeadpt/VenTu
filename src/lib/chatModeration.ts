@@ -5,7 +5,7 @@
 //     The REAL protection is in supabase-schema.sql RLS policies:
 //     - Content length: 1-280 chars (enforced at DB level)
 //     - Rate limit: max 1 msg per username per 10 seconds (enforced at DB level)
-//     - For production, add Cloudflare Turnstile or Supabase Edge Functions
+//     - For production, add Cloudflare Turnstile/hCaptcha or Supabase Edge Functions
 
 const BAD_WORDS_PT = [
   'caralho', 'foda', 'merda', 'puta', 'crl', 'fodasse',
@@ -21,12 +21,19 @@ const SPAM_PATTERNS = [
 
 const MAX_MESSAGE_LENGTH = 280;
 const MIN_MESSAGE_LENGTH = 1;
+const MAX_USERNAME_LENGTH = 30;
+const MIN_USERNAME_LENGTH = 2;
 
 export interface ModerationResult {
   allowed: boolean;
   reason?: string;
   reasonEn?: string;
   sanitized?: string;
+}
+
+function containsBadWord(text: string): string | undefined {
+  const lower = text.toLowerCase();
+  return BAD_WORDS_PT.find(word => lower.includes(word));
 }
 
 export function moderateMessage(content: string, locale: string = 'pt'): ModerationResult {
@@ -50,10 +57,8 @@ export function moderateMessage(content: string, locale: string = 'pt'): Moderat
   }
   
   // Check for bad words
-  const lower = content.toLowerCase();
-  const foundBadWord = BAD_WORDS_PT.find(word => lower.includes(word));
+  const foundBadWord = containsBadWord(content);
   if (foundBadWord) {
-    // Sanitize — replace bad word with ***
     let sanitized = content;
     const regex = new RegExp(foundBadWord, 'gi');
     sanitized = sanitized.replace(regex, '***');
@@ -75,6 +80,39 @@ export function moderateMessage(content: string, locale: string = 'pt'): Moderat
         reasonEn: 'Detected as spam',
       };
     }
+  }
+  
+  return { allowed: true };
+}
+
+export function moderateUsername(username: string, locale: string = 'pt'): ModerationResult {
+  const isPT = locale === 'pt';
+  
+  // Check length
+  if (username.length > MAX_USERNAME_LENGTH) {
+    return {
+      allowed: false,
+      reason: isPT ? `Nome muito longo (max ${MAX_USERNAME_LENGTH} caracteres)` : `Name too long (max ${MAX_USERNAME_LENGTH} chars)`,
+      reasonEn: `Name too long (max ${MAX_USERNAME_LENGTH} chars)`,
+    };
+  }
+  
+  if (username.trim().length < MIN_USERNAME_LENGTH) {
+    return {
+      allowed: false,
+      reason: isPT ? 'Nome muito curto (min 2 caracteres)' : 'Name too short (min 2 chars)',
+      reasonEn: 'Name too short (min 2 chars)',
+    };
+  }
+  
+  // Check for bad words in username
+  const foundBadWord = containsBadWord(username);
+  if (foundBadWord) {
+    return {
+      allowed: false,
+      reason: isPT ? 'Nome contém linguagem inapropriada' : 'Name contains inappropriate language',
+      reasonEn: 'Name contains inappropriate language',
+    };
   }
   
   return { allowed: true };

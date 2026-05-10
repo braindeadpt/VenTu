@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageCircle, Users, Trash2, Shield, Loader2, ChevronUp } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
-import { moderateMessage, checkRateLimit, CHAT_RULES } from '@/lib/chatModeration';
+import { moderateMessage, moderateUsername, checkRateLimit, CHAT_RULES } from '@/lib/chatModeration';
 
 interface ChatMessage {
   id: string;
@@ -51,18 +51,29 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
   useEffect(() => {
     const stored = localStorage.getItem('windspot_username');
     if (stored) {
-      setUsername(stored);
+      // Validate stored username for bad words
+      const moderation = moderateUsername(stored, locale);
+      if (moderation.allowed) {
+        setUsername(stored);
+      } else {
+        // Stored username is offensive — generate new one
+        generateNewUsername();
+      }
     } else {
-      const randomNames = [
-        'WaveRider', 'SurfLoco', 'KiteMaster', 'WindHunter',
-        'BoarderPT', 'RiderSempre', 'OndaRapida', 'MarAlto',
-        'SaltyHair', 'BeachBum', 'DawnPatrol', 'SwellSeeker',
-      ];
-      const random = randomNames[Math.floor(Math.random() * randomNames.length)] + Math.floor(Math.random() * 100);
-      setUsername(random);
-      localStorage.setItem('windspot_username', random);
+      generateNewUsername();
     }
-  }, []);
+  }, [locale]);
+
+  function generateNewUsername() {
+    const randomNames = [
+      'WaveRider', 'SurfLoco', 'KiteMaster', 'WindHunter',
+      'BoarderPT', 'RiderSempre', 'OndaRapida', 'MarAlto',
+      'SaltyHair', 'BeachBum', 'DawnPatrol', 'SwellSeeker',
+    ];
+    const random = randomNames[Math.floor(Math.random() * randomNames.length)] + Math.floor(Math.random() * 100);
+    setUsername(random);
+    localStorage.setItem('windspot_username', random);
+  }
 
   // Load messages
   useEffect(() => {
@@ -155,6 +166,18 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
     // Clear previous warnings
     setModerationWarning(null);
     setRateLimitWarning(null);
+
+    // Validate username
+    const usernameModeration = moderateUsername(username, locale);
+    if (!usernameModeration.allowed) {
+      setModerationWarning(
+        isPT 
+          ? 'Nome de utilizador inapropriado. Geração de novo nome...' 
+          : 'Inappropriate username. Generating new one...'
+      );
+      generateNewUsername();
+      return;
+    }
 
     // Check rate limit
     const rateCheck = checkRateLimit(username);
