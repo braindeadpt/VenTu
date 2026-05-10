@@ -18,6 +18,7 @@ import MagicWindows from '@/components/MagicWindows'
 import SwellDetective from '@/components/SwellDetective'
 import FavoriteButton from '@/components/FavoriteButton'
 import { AlertButton } from '@/components/AlertBanner'
+import FacilityIcon from '@/components/spots/FacilityIcon'
 import { MapPin, Star, ArrowLeft, CheckCircle, AlertTriangle, Zap, Users, CloudRain, Sun, Droplets } from 'lucide-react'
 import Link from 'next/link'
 
@@ -362,7 +363,7 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
           <ul className="space-y-2">
             {spot.facilities.map((f: string, i: number) => (
               <li key={i} className="flex items-center gap-2 text-white/70">
-                <div className="w-1.5 h-1.5 rounded-full bg-surf-400" />
+                <FacilityIcon name={f} />
                 {f}
               </li>
             ))}
