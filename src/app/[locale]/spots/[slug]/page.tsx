@@ -4,6 +4,7 @@ import { getTranslation } from '@/lib/i18n'
 import { fetchMarineData, getCurrentConditions, getForecastData, getSportRating, getWaveRating, fetchWeatherData, getTideInfo, getWeatherDescription } from '@/lib/openmeteo'
 import { calculateSurfability, estimateCrowd, getScoreColor, getSessionForecast } from '@/lib/surfability'
 import { getLocalTips, getSecretTips, blueFlagBeaches } from '@/lib/spotTips'
+import { MarineData } from '@/types'
 import ConditionCard from '@/components/weather/ConditionCard'
 import ForecastChart from '@/components/weather/ForecastChart'
 import SpotMap from '@/components/spots/SpotMap'
@@ -12,6 +13,7 @@ import { SecretTipsSection } from '@/components/spots/SecretTipsSection'
 import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge'
 import { SessionForecastChart } from '@/components/spots/SessionForecastChart'
 import SpotChat from '@/components/spots/SpotChat'
+import MagicWindows from '@/components/MagicWindows'
 import { MapPin, Star, ArrowLeft, CheckCircle, AlertTriangle, Zap, Users, CloudRain, Sun, Droplets } from 'lucide-react'
 import Link from 'next/link'
 
@@ -59,12 +61,27 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
     isDay: true,
   }
 
+  let marineData: MarineData | null = null
+  let hourly: any[] = []
+
   try {
-    const marineData = await fetchMarineData(spot.lat, spot.lon)
-    current = getCurrentConditions(marineData)
-    forecast = getForecastData(marineData)
-    rating = getSportRating(spot.type, current.waveHeight, current.windSpeed, current.wavePeriod, current.windDirection)
-    waveRating = getWaveRating(current.waveHeight)
+    marineData = await fetchMarineData(spot.lat, spot.lon)
+    if (marineData) {
+      const md = marineData
+      current = getCurrentConditions(md)
+      forecast = getForecastData(md)
+      hourly = md.hourly.time.map((t: string, i: number) => ({
+        time: t,
+        waveHeight: md.hourly.wave_height[i],
+        wavePeriod: md.hourly.wave_period[i],
+        windSpeed: md.hourly.wind_speed_10m[i],
+        windDirection: md.hourly.wind_direction_10m[i],
+        windGust: md.hourly.wind_gusts_10m[i],
+        waterTemp: md.hourly.water_temperature[i],
+      }))
+      rating = getSportRating(spot.type, current.waveHeight, current.windSpeed, current.wavePeriod, current.windDirection)
+      waveRating = getWaveRating(current.waveHeight)
+    }
     
     // Fetch weather data
     weatherData = await fetchWeatherData(spot.lat, spot.lon)
@@ -87,8 +104,9 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
   // Get session forecast for next 12h
   let sessionForecast: any[] = []
   try {
-    const marineData = await fetchMarineData(spot.lat, spot.lon)
-    sessionForecast = getSessionForecast(spot, marineData.hourly)
+    if (marineData) {
+      sessionForecast = getSessionForecast(spot, marineData.hourly)
+    }
   } catch (e) {
     console.error(`Failed to get session forecast for ${spot.name}:`, e)
   }
@@ -293,6 +311,16 @@ export default async function SpotDetailPage({ params }: { params: { locale: str
       </div>
 
       <ForecastChart data={forecast.slice(0, 72)} locale={locale} />
+
+      {/* MAGIC WINDOWS */}
+      {hourly.length > 0 && (
+        <MagicWindows
+          hourly={hourly}
+          spotType={spot.type}
+          spotBestWind={spot.bestWind}
+          locale={locale}
+        />
+      )}
 
       {/* Session Quality — Next 12h */}
       {sessionForecast.length > 0 && (

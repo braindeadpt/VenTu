@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, Wind, Globe } from 'lucide-react';
+import { Menu, X, Wind, Globe, Trophy } from 'lucide-react';
 
 interface HeaderProps {
   locale: string;
@@ -17,6 +17,7 @@ export default function Header({ locale }: HeaderProps) {
   const navItems = [
     { href: `/${locale}/`, label: isPt ? 'Início' : 'Home' },
     { href: `/${locale}/spots/`, label: 'Spots' },
+    { href: `/${locale}/compare?spots=supertubos,guincho`, label: isPt ? '🏆 VS' : '🏆 VS', special: true },
     { href: `/${locale}/news/`, label: isPt ? 'Notícias' : 'News' },
     { href: `/${locale}/about/`, label: isPt ? 'Sobre' : 'About' },
   ];

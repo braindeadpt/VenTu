@@ -10,7 +10,9 @@
     "lint": "next lint",
     "news:generate": "node scripts/update-news.js",
     "conditions:update": "node scripts/update-conditions.js",
-    "data:update": "npm run conditions:update && npm run news:generate"
+    "data:update": "npm run conditions:update && npm run news:generate",
+    "dawn-patrol:generate": "node scripts/dawn-patrol.js",
+    "dawn-patrol:dev": "node -e \"require('dotenv').config()\" && node scripts/dawn-patrol.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.3",
@@ -25,6 +27,8 @@
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
     "autoprefixer": "^10.4.20",
+    "eslint": "^9.39.4",
+    "eslint-config-next": "^16.2.6",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.4.0"

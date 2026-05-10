@@ -1,0 +1,33 @@
+name: Dawn Patrol AI Advisor
+
+on:
+  schedule:
+    # Run every day at 6:00 AM Lisbon time (5:00 UTC)
+    - cron: '0 5 * * *'
+  workflow_dispatch: # Manual trigger
+
+jobs:
+  generate-dawn-patrol:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate Dawn Patrol
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/dawn-patrol.js
+
+      - name: Commit and push
+        run: |
+          git config user.name "WindSpot Bot"
+          git config user.email "bot@windspot.pt"
+          git add public/data/dawn-patrol.json
+          git diff --staged --quiet || (git commit -m "🌅 Dawn Patrol: $(date +%Y-%m-%d)" && git push)

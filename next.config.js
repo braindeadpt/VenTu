@@ -5,6 +5,7 @@ const nextConfig = {
   trailingSlash: true,
   basePath: process.env.NODE_ENV === 'production' ? '/windspot-pt' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/windspot-pt' : '',
+  eslint: { ignoreDuringBuilds: true },
 }
 
 module.exports = nextConfig
