@@ -11,6 +11,7 @@
     "news:generate": "node scripts/update-news.js",
     "conditions:update": "node scripts/update-conditions.js",
     "data:update": "npm run conditions:update && npm run news:generate",
+    "sitemap:generate": "node scripts/generate-sitemap.js",
     "dawn-patrol:generate": "node scripts/dawn-patrol.js",
     "dawn-patrol:dev": "node -e \"require('dotenv').config()\" && node scripts/dawn-patrol.js"
   },
