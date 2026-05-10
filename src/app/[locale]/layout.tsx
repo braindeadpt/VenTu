@@ -26,8 +26,8 @@ export async function generateMetadata({ params }: { params: { locale: string } 
     keywords: ['surf', 'kitesurf', 'windsurf', 'Portugal', 'ondas', 'vento', 'Nazaré', 'Peniche', 'big wave'],
     manifest: '/windspot-pt/manifest.json',
     icons: {
-      icon: '/windspot-pt/favicon.ico',
-      apple: '/windspot-pt/apple-touch-icon.png',
+      icon: '/windspot-pt/favicon.svg',
+      apple: '/windspot-pt/apple-touch-icon.svg',
     },
     openGraph: {
       title: isPt ? 'WindSpot Portugal' : 'WindSpot Portugal',
