@@ -168,15 +168,16 @@ export default async function HomePage({ params }: { params: { locale: string } 
         </div>
       </section>
 
-      {/* ALERTS BANNER - temporarily disabled to debug hydration issue */}
-      {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+  // Re-enable banners after hydration fix
+  {/* ALERTS BANNER */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
         <AlertBanner locale={locale} />
-      </section> */}
+      </section>
 
-      {/* DAWN PATROL AI ADVISOR - temporarily disabled to debug hydration issue */}
-      {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      {/* DAWN PATROL AI ADVISOR */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
         <DawnPatrolBanner locale={locale} />
-      </section> */}
+      </section>
 
       {/* SPORT SELECTOR */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">

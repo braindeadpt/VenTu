@@ -2,7 +2,7 @@
 const nextConfig = {
   output: 'export',
   images: { unoptimized: true },
-  trailingSlash: true,
+  trailingSlash: false,
   basePath: process.env.NODE_ENV === 'production' ? '/windspot-pt' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/windspot-pt' : '',
   eslint: { ignoreDuringBuilds: true },
