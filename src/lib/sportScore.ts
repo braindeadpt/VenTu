@@ -40,8 +40,11 @@ function scoreSurf(spot: Spot, c: Conditions): SportScore {
   if (c.wavePeriod > 8) factors.push(`${c.wavePeriod.toFixed(0)}s período`)
 
   // Wind direction — offshore is good for surf (0-25 pts)
-  const windDir = c.windDirection
-  const isOffshore = windDir > 180 && windDir < 360  // Simplified
+  // coastOrientation = direction the beach faces (0=N, 90=E, 180=S, 270=W)
+  // offshore = wind blowing FROM land TO sea = |windDir - coastOrientation| > 90
+  const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation || 270))
+  const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff
+  const isOffshore = normalizedDiff > 90
   const windScore = isOffshore ? Math.max(0, 25 - c.windSpeed * 0.5) : Math.max(0, 15 - c.windSpeed * 0.3)
   score += windScore
   if (isOffshore) factors.push('Vento offshore')

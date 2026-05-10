@@ -263,20 +263,17 @@ export function getDirectionArrow(degrees: number): string {
   return directions[index];
 }
 
-export function getSportRating(spotType: string, waveHeight: number, windSpeed: number, wavePeriod?: number, windDirection?: number) {
+export function getSportRating(spotType: string, waveHeight: number, windSpeed: number, wavePeriod?: number, windDirection?: number, coastOrientation?: number) {
   let rating = 5;
   let recommendation = 'Condições razoáveis';
   let recommendationEn = 'Fair conditions';
 
-  // Wind direction analysis for surf (offshore vs onshore)
-  const isOffshore = windDirection !== undefined && (
-    (windDirection >= 45 && windDirection <= 135) || // E to SE (offshore for W coast)
-    (windDirection >= 180 && windDirection <= 270)   // S to W (offshore for E coast)
-  );
-  const isOnshore = windDirection !== undefined && (
-    (windDirection >= 270 && windDirection <= 360) || // W to N (onshore for W coast)
-    (windDirection >= 0 && windDirection <= 45)      // N to NE (onshore for W coast)
-  );
+  // Wind direction analysis using coastOrientation
+  const coast = coastOrientation || 270; // Default: West coast
+  const angleDiff = windDirection !== undefined ? Math.abs(windDirection - coast) : 0;
+  const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff;
+  const isOffshore = windDirection !== undefined && normalizedDiff > 90;
+  const isOnshore = windDirection !== undefined && normalizedDiff < 45;
 
   switch (spotType) {
     case 'surf':

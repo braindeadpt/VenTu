@@ -38,9 +38,10 @@ export interface Spot {
     localRule?: string;
     localRuleEn?: string;
   };
-  // Secret spot exclusive info
-  secretTips?: string;
-  secretTipsEn?: string;
+  // Coast orientation in degrees (0-360) - direction the beach faces
+  // Used for offshore/onshore wind calculation
+  // 0=N, 90=E, 180=S, 270=W
+  coastOrientation: number;
 }
 
 export interface MarineData {
