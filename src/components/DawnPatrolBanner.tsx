@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap } from 'lucide-react';
 import Link from 'next/link';
+import { getAssetPath } from '@/lib/paths';
 
 interface DawnPatrolData {
   date: string;
@@ -39,7 +40,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
   const isPt = locale === 'pt';
 
   useEffect(() => {
-    fetch('/data/dawn-patrol.json')
+    fetch(getAssetPath('/data/dawn-patrol.json'))
       .then(r => r.json())
       .then(d => {
         setData(d);

@@ -11,6 +11,7 @@ import { Spot } from '@/types';
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
 import { getAllSportScores, getScoreColor, getRelevantSports } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
+import { getAssetPath } from '@/lib/paths';
 import SpotMap from '@/components/spots/SpotMap';
 import SpotChat from '@/components/spots/SpotChat';
 import FavoriteButton from '@/components/FavoriteButton';
@@ -157,7 +158,7 @@ export default function SpotDetailClient({
     async function loadData() {
       // Try pre-computed conditions first (1 request vs live API)
       try {
-        const response = await fetch('/data/conditions.json', { cache: 'no-store' });
+        const response = await fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' });
         if (response.ok) {
           const precomputed = await response.json();
           const cond = precomputed[spot.id];

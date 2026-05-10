@@ -7,6 +7,7 @@ import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getSportScore, getScoreColor } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
+import { getAssetPath } from '@/lib/paths';
 import FavoriteButton from '@/components/FavoriteButton';
 import Link from 'next/link';
 
@@ -45,7 +46,7 @@ export default function FavoritesPage() {
       
       // Try pre-computed conditions first (1 request for ALL favorites)
       try {
-        const response = await fetch('/data/conditions.json', { cache: 'no-store' });
+        const response = await fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' });
         if (response.ok) {
           const precomputed = await response.json();
           
