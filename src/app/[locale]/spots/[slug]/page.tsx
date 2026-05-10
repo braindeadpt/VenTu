@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
 import { getTranslation } from '@/lib/i18n'
+import type { Metadata } from 'next'
 import { fetchMarineData, getCurrentConditions, getForecastData, getSportRating, getWaveRating, fetchWeatherData, getTideInfo, getWeatherDescription } from '@/lib/openmeteo'
 import { calculateSurfability, estimateCrowd, getScoreColor, getSessionForecast } from '@/lib/surfability'
 import { getLocalTips, getSecretTips, blueFlagBeaches } from '@/lib/spotTips'
@@ -26,6 +27,27 @@ export async function generateStaticParams() {
     { locale: 'pt', slug: spot.slug },
     { locale: 'en', slug: spot.slug },
   ])
+}
+
+export async function generateMetadata({ params }: { params: { locale: string; slug: string } }): Promise<Metadata> {
+  const spot = getSpotBySlug(params.slug)
+  if (!spot) return {}
+  const isPt = params.locale === 'pt'
+  return {
+    title: `${spot.name} — WindSpot Portugal`,
+    description: isPt
+      ? `Condições em tempo real para ${spot.name}. ${spot.type} em ${spot.region}, Portugal. Ondas, vento e temperatura da água.`
+      : `Real-time conditions for ${spot.name}. ${spot.type} in ${spot.region}, Portugal. Waves, wind and water temperature.`,
+    openGraph: {
+      title: `${spot.name} — WindSpot Portugal`,
+      description: isPt
+        ? `Condições em tempo real para ${spot.name} em Portugal.`
+        : `Real-time conditions for ${spot.name} in Portugal.`,
+      url: `https://braindeadpt.github.io/windspot-pt/spots/${spot.slug}`,
+      siteName: 'WindSpot Portugal',
+      type: 'website',
+    },
+  }
 }
 
 export default async function SpotDetailPage({ params }: { params: { locale: string; slug: string } }) {

@@ -99,6 +99,21 @@ function getTopSpots(
   })).filter(item => item.spot)
 }
 
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'WindSpot Portugal — Real-time Surf & Wind Conditions',
+  description: 'Real-time conditions for surf, kitesurf, windsurf and more across 81 spots in Portugal. Live wave, wind and water data.',
+  openGraph: {
+    title: 'WindSpot Portugal — Real-time Surf & Wind Conditions',
+    description: 'Real-time conditions for surf, kitesurf, windsurf and more across 81 spots in Portugal.',
+    url: 'https://braindeadpt.github.io/windspot-pt',
+    siteName: 'WindSpot Portugal',
+    locale: 'pt_PT',
+    type: 'website',
+  },
+}
+
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const { locale } = params
   const t = getTranslation(locale as any)
@@ -138,7 +153,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
           <div className="text-center space-y-6">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ocean-500/10 border border-ocean-500/20 text-ocean-300 text-sm font-medium animate-pulse">
-              <Flame className="w-4 h-4" />
+              <Zap className="w-4 h-4" />
               {isPt ? 'Dados em tempo real para Locals' : 'Real-time data for Locals'}
             </div>
 

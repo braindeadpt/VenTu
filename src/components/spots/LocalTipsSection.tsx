@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { MapPin, Clock, Car, Utensils, Shield } from 'lucide-react';
+import { MapPin, Clock, Car, Utensils, Shield, ChevronDown, ChevronUp } from 'lucide-react';
 import { SpotLocalTips } from '@/lib/spotTips';
 
 interface LocalTipsSectionProps {
@@ -78,11 +78,12 @@ export function LocalTipsSection({ tips, locale }: LocalTipsSectionProps) {
       {items.length > 2 && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-3 text-xs text-cyan-400 hover:text-cyan-300 transition-colors w-full text-center"
+          className="mt-3 text-xs text-cyan-400 hover:text-cyan-300 transition-colors w-full text-center flex items-center justify-center gap-1"
         >
           {expanded
-            ? isPT ? 'Mostrar menos ↑' : 'Show less ↑'
-            : isPT ? 'Ver todas as dicas ↓' : 'See all tips ↓'}
+            ? <>{isPT ? 'Mostrar menos' : 'Show less'} <ChevronUp className="w-3 h-3" /></>
+            : <>{isPT ? 'Ver todas as dicas' : 'See all tips'} <ChevronDown className="w-3 h-3" /></>
+          }
         </button>
       )}
     </div>

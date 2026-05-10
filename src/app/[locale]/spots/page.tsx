@@ -2,6 +2,19 @@ import { getTranslation } from '@/lib/i18n'
 import { spots } from '@/lib/spots'
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo'
 import SpotGrid from '@/components/spots/SpotGrid'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'All Spots — WindSpot Portugal',
+  description: 'Browse all 81 surf, kitesurf and windsurf spots in Portugal with real-time conditions.',
+  openGraph: {
+    title: 'All Spots — WindSpot Portugal',
+    description: 'Browse all 81 surf, kitesurf and windsurf spots in Portugal.',
+    url: 'https://braindeadpt.github.io/windspot-pt/spots',
+    siteName: 'WindSpot Portugal',
+    type: 'website',
+  },
+}
 
 
 async function getAllConditions() {

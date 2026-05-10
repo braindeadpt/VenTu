@@ -154,8 +154,8 @@ export default function SwellDetective({ spotSlug, locale }: SwellDetectiveProps
           <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
           <p className="text-xs text-white/50">
             {isPt 
-              ? 'Dados baseados em análise histórica de condições. Probabilidades são estimativas baseadas em padrões sazonais. Sempre verifica as condições atuais antes de ir.'
-              : 'Data based on historical condition analysis. Probabilities are estimates based on seasonal patterns. Always check current conditions before going.'
+              ? `Dados baseados em análise histórica de condições (${new Date().getFullYear()}). Probabilidades são estimativas baseadas em padrões sazonais. Sempre verifica as condições atuais antes de ir.`
+              : `Data based on historical condition analysis (${new Date().getFullYear()}). Probabilities are estimates based on seasonal patterns. Always check current conditions before going.`
             }
           </p>
         </div>

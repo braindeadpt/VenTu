@@ -24,6 +24,7 @@ export function SessionForecastChart({ forecast, locale }: SessionForecastChartP
   const maxScore = useMemo(() => Math.max(...forecast.map(f => f.score), 1), [forecast]);
 
   const getBarColor = (score: number) => {
+    if (score >= 90) return 'bg-gradient-to-r from-amber-400 to-red-500'; // FIRE!/ÉPICO! glow
     if (score >= 80) return 'bg-emerald-400';
     if (score >= 60) return 'bg-cyan-400';
     if (score >= 40) return 'bg-yellow-400';
@@ -83,7 +84,7 @@ export function SessionForecastChart({ forecast, locale }: SessionForecastChartP
             </div>
 
             <span className="text-xs font-semibold w-16 text-right shrink-0" style={{
-              color: hour.score >= 80 ? '#34d399' : hour.score >= 60 ? '#22d3ee' : hour.score >= 40 ? '#facc15' : hour.score >= 20 ? '#fb923c' : '#f87171'
+              color: hour.score >= 90 ? '#f59e0b' : hour.score >= 80 ? '#34d399' : hour.score >= 60 ? '#22d3ee' : hour.score >= 40 ? '#facc15' : hour.score >= 20 ? '#fb923c' : '#f87171'
             }}>
               {getRatingLabel(hour.rating)}
             </span>
