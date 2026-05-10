@@ -14,8 +14,10 @@ interface FavoriteButtonProps {
 export function useFavorites() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem('windspot-favorites');
@@ -46,7 +48,7 @@ export function useFavorites() {
     [favorites]
   );
 
-  return { favorites, toggleFavorite, isFavorite, loaded, count: favorites.length };
+  return { favorites, toggleFavorite, isFavorite, loaded, mounted, count: favorites.length };
 }
 
 export default function FavoriteButton({
@@ -56,7 +58,7 @@ export default function FavoriteButton({
   showLabel = false,
   locale = 'pt',
 }: FavoriteButtonProps) {
-  const { isFavorite, toggleFavorite, loaded } = useFavorites();
+  const { isFavorite, toggleFavorite, loaded, mounted } = useFavorites();
   const active = isFavorite(spotId);
   const isPt = locale === 'pt';
 
@@ -66,7 +68,7 @@ export default function FavoriteButton({
     lg: 'w-6 h-6',
   };
 
-  if (!loaded) {
+  if (!mounted || !loaded) {
     return <div className={`${sizeClasses[size]} animate-pulse bg-white/10 rounded`} />;
   }
 

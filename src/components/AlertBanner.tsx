@@ -13,8 +13,10 @@ interface AlertConfig {
 export function useAlerts() {
   const [alerts, setAlerts] = useState<AlertConfig[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     if (typeof window !== 'undefined') {
       try {
         const stored = localStorage.getItem('windspot-alerts');
@@ -48,7 +50,7 @@ export function useAlerts() {
     return alerts.some(a => a.spotId === spotId && a.enabled);
   };
 
-  return { alerts, toggleAlert, isAlertSet, loaded, count: alerts.length };
+  return { alerts, toggleAlert, isAlertSet, loaded, mounted, count: alerts.length };
 }
 
 interface AlertButtonProps {
@@ -58,11 +60,11 @@ interface AlertButtonProps {
 }
 
 export function AlertButton({ spotId, spotName, locale = 'pt' }: AlertButtonProps) {
-  const { isAlertSet, toggleAlert, loaded } = useAlerts();
+  const { isAlertSet, toggleAlert, loaded, mounted } = useAlerts();
   const active = isAlertSet(spotId);
   const isPt = locale === 'pt';
 
-  if (!loaded) {
+  if (!mounted || !loaded) {
     return <div className="w-5 h-5 animate-pulse bg-white/10 rounded" />;
   }
 
@@ -98,8 +100,10 @@ export function AlertBanner({ locale }: { locale: string }) {
   const isPt = locale === 'pt';
   const [activeAlerts, setActiveAlerts] = useState<ActiveAlert[]>([]);
   const [dismissed, setDismissed] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const checkAlerts = async () => {
       try {
         const stored = localStorage.getItem('windspot-alerts');
@@ -108,8 +112,6 @@ export function AlertBanner({ locale }: { locale: string }) {
         const alerts: AlertConfig[] = JSON.parse(stored);
         if (!alerts.length) return;
 
-        // This is simplified - in real implementation we'd fetch conditions
-        // For now, show demo alerts
         const demoAlerts: ActiveAlert[] = alerts.slice(0, 2).map((a, i) => ({
           spotName: a.spotName,
           spotSlug: a.spotId,
@@ -128,7 +130,7 @@ export function AlertBanner({ locale }: { locale: string }) {
     checkAlerts();
   }, [isPt]);
 
-  if (dismissed || !activeAlerts.length) return null;
+  if (!mounted || dismissed || !activeAlerts.length) return null;
 
   return (
     <div className="glass-card p-4 border-l-4 border-l-yellow-400 bg-yellow-500/5">
