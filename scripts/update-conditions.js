@@ -100,6 +100,7 @@ async function fetchMarineData(lat, lon) {
     models: 'meteofrance_wave,ecmwf_wam025,gfs_wave',
     timezone: 'Europe/Lisbon',
     forecast_days: '7',
+    wind_speed_unit: 'ms',
   });
 
   const response = await fetch(`${MARINE_API}?${params}`);

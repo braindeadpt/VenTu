@@ -26,7 +26,7 @@ const TOP_SPOTS = [
 
 async function fetchMarineData(lat, lon) {
   try {
-    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,wind_speed_10m,wind_direction_10m,wind_gusts_10m,water_temperature&timezone=Europe/Lisbon&forecast_days=2`;
+    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,wind_speed_10m,wind_direction_10m,wind_gusts_10m,water_temperature&timezone=Europe/Lisbon&forecast_days=2&wind_speed_unit=ms`;
     const response = await fetch(url, { headers: { 'User-Agent': 'WindSpot-Bot/1.0' } });
     if (!response.ok) return null;
     return await response.json();

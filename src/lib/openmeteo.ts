@@ -149,6 +149,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<MarineD
     daily: 'wave_height_max,wind_speed_max,water_temperature_max',
     timezone: 'Europe/Lisbon',
     forecast_days: '7',
+    wind_speed_unit: 'ms',
   });
 
   try {
