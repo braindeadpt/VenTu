@@ -48,3 +48,21 @@ export function getCardinalLabel(deg: number): string {
   const idx = Math.round(deg / 45) % 8;
   return dirs[idx];
 }
+
+/**
+ * Map a wind direction (degrees, meteorological convention) to an arrow
+ * pointing WHERE the wind GOES.
+ *
+ * @example
+ * getWindArrow(0)   // '↓' — wind from North → blows South
+ * @example
+ * getWindArrow(90)  // '←' — wind from East → blows West
+ * @example
+ * getWindArrow(270) // '↑' — wind from West → blows East
+ */
+export function getWindArrow(direction: number): string {
+  const arrows = ['↓', '↙', '←', '↖', '↑', '↗', '→', '↘'];
+  const snapped = ((Math.round(direction / 45) * 45) % 360 + 360) % 360;
+  const index = snapped / 45;
+  return arrows[index];
+}

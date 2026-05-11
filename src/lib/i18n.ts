@@ -52,7 +52,17 @@ export const translations = {
       madeWith: 'Feito com',
       forCommunity: 'para a comunidade',
     },
-    common: { loading: 'A carregar...', error: 'Erro ao carregar dados', refresh: 'Atualizar', today: 'Hoje', tomorrow: 'Amanhã', now: 'Agora' }
+    common: { loading: 'A carregar...', error: 'Erro ao carregar dados', refresh: 'Atualizar', today: 'Hoje', tomorrow: 'Amanhã', now: 'Agora' },
+    forecastTable: {
+      caption: 'Previsão horária para as próximas {hours} horas',
+      waves: 'Ondas (m)',
+      period: 'Período (s)',
+      wind: 'Vento (kt)',
+      gust: 'Rajada (kt)',
+      direction: 'Direcção',
+      water: 'Água (°C)',
+      score: 'Score',
+    }
   },
   en: {
     nav: { home: 'Home', spots: 'Spots', news: 'News', about: 'About' },
@@ -104,7 +114,17 @@ export const translations = {
       madeWith: 'Made with',
       forCommunity: 'for the community',
     },
-    common: { loading: 'Loading...', error: 'Error loading data', refresh: 'Refresh', today: 'Today', tomorrow: 'Tomorrow', now: 'Now' }
+    common: { loading: 'Loading...', error: 'Error loading data', refresh: 'Refresh', today: 'Today', tomorrow: 'Tomorrow', now: 'Now' },
+    forecastTable: {
+      caption: 'Hourly forecast for the next {hours} hours',
+      waves: 'Waves (m)',
+      period: 'Period (s)',
+      wind: 'Wind (kt)',
+      gust: 'Gust (kt)',
+      direction: 'Direction',
+      water: 'Water (°C)',
+      score: 'Score',
+    }
   }
 };
 
