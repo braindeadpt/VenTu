@@ -33,8 +33,8 @@ async function loadNews(): Promise<NewsItem[]> {
   return [];
 }
 
-export default async function NewsPage({ params }: { params: { locale: string } }) {
-  const { locale } = params
+export default async function NewsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   const t = getTranslation(locale as any)
   const news = await loadNews()
   

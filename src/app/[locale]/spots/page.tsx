@@ -48,9 +48,9 @@ async function getAllConditions() {
   return { conditions, sportScores }
 }
 
-export default async function SpotsPage({ params }: { params: { locale: string } }) {
-  const { locale } = params
-  const t = getTranslation(locale as any)
+export default async function SpotsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const t = getTranslation(locale as any) as any
   const { conditions, sportScores } = await getAllConditions()
 
   return (

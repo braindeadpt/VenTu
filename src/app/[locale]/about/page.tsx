@@ -1,8 +1,8 @@
 import { getTranslation } from '@/lib/i18n'
 import { Wind, Waves, Database, Brain, Code, Heart, Globe, Zap, Shield } from 'lucide-react'
 
-export default async function AboutPage({ params }: { params: { locale: string } }) {
-  const { locale } = params
+export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
   const isPt = locale === 'pt'
 
   return (

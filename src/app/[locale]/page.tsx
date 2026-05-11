@@ -1,6 +1,5 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { 
   MapPin, ArrowRight, Search
@@ -12,19 +11,9 @@ import { getCompatibleSports } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
+import PortugalMap from '@/components/maps/PortugalMap';
 
-// Dynamic import for client component (avoids SSR issues)
-const DawnPatrolBanner = dynamic(() => import('@/components/DawnPatrolBanner'), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full bg-slate-900/50 border-b border-white/5 py-3 px-4 animate-pulse">
-      <div className="max-w-7xl mx-auto flex items-center gap-3">
-        <div className="w-5 h-5 rounded-full bg-white/10" />
-        <div className="h-4 bg-white/10 rounded w-48" />
-      </div>
-    </div>
-  ),
-});
+import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
 
 // ─── Types ───
 interface SpotData {
@@ -77,8 +66,8 @@ const SPORTS: { id: SportType | 'all'; label: string; color: string }[] = [
 ];
 
 // ─── Server Component ───
-export default function HomePage({ params, searchParams }: { params: { locale: string }; searchParams?: { sport?: string; region?: string } }) {
-  const { locale } = params;
+export default async function HomePage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams?: { sport?: string; region?: string } }) {
+  const { locale } = await params;
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);
 
@@ -275,64 +264,54 @@ export default function HomePage({ params, searchParams }: { params: { locale: s
         initialRegion={undefined}
       />
 
-      {/* Mini Map */}
+      {/* Interactive Portugal Map */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-white/90">
-              {isPt ? 'Mapa dos Spots' : 'Spots Map'}
+            <h2 className="text-h1 text-fg">
+              {isPt ? (t as any).hero.mapTitle || 'Mapa dos Spots' : 'Spots Map'}
             </h2>
-            <p className="text-white/50 text-sm mt-1">
-              {isPt ? `${spots.length} spots em Portugal, Açores e Madeira` : `${spots.length} spots in Portugal, Azores and Madeira`}
+            <p className="text-meta text-fg-muted mt-1">
+              {isPt
+                ? `${spotsData.length} spots em Portugal, Açores e Madeira`
+                : `${spotsData.length} spots in Portugal, Azores and Madeira`}
             </p>
           </div>
-          <Link
-            href={`/${locale}/spots/`}
-            className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 transition-colors text-sm font-medium"
-          >
-            {isPt ? 'Ver lista completa' : 'Full list'}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
-
-        <div className="relative h-[400px] rounded-2xl overflow-hidden border border-white/10 bg-slate-800/50">
-          <iframe
-            src={`https://www.openstreetmap.org/export/embed.html?bbox=-31.5%2C32.0%2C-6.0%2C42.5&layer=mapnik`}
-            className="w-full h-full border-0 opacity-70"
-            title="Map"
+        <div className="card-1 p-4 rounded-card">
+          <PortugalMap
+            spotsData={spotsData}
+            locale={locale}
+            selectedSport="all"
           />
-          <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-slate-900/50 to-transparent" />
-          <div className="absolute bottom-4 left-4">
-            <Link
-              href={`/${locale}/spots/`}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-slate-900/80 backdrop-blur-sm text-white rounded-lg text-sm font-medium border border-white/10 hover:bg-slate-800/80 transition-colors"
-            >
-              <MapPin className="w-4 h-4" />
-              {isPt ? 'Explorar todos os spots' : 'Explore all spots'}
-            </Link>
-          </div>
         </div>
       </section>
 
-      {/* Footer Stats */}
-      <section className="border-t border-white/5 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center space-y-2">
-              <div className="text-4xl md:text-5xl font-black text-cyan-400">{spots.length}</div>
-              <div className="text-sm text-white/40">{isPt ? 'spots monitorizados' : 'spots monitored'}</div>
+      {/* Footer Stats — Semantic Refresh */}
+      <section className="border-t border-divider py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div>
+            <div className="font-mono text-num-lg text-fg">{spotsData.length}</div>
+            <div className="text-meta-sm text-fg-subtle">
+              {isPt ? 'Spots monitorados' : 'Spots monitored'}
             </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl md:text-5xl font-black text-sky-400">7</div>
-              <div className="text-sm text-white/40">{isPt ? 'desportos suportados' : 'sports supported'}</div>
+          </div>
+          <div>
+            <div className="font-mono text-num-lg text-fg">7</div>
+            <div className="text-meta-sm text-fg-subtle">
+              {isPt ? 'Desportos' : 'Sports'}
             </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl md:text-5xl font-black text-emerald-400">Realtime</div>
-              <div className="text-sm text-white/40">Open-Meteo API</div>
+          </div>
+          <div>
+            <div className="text-num-lg text-fg">Open-Meteo</div>
+            <div className="text-meta-sm text-fg-subtle">
+              {isPt ? 'Fonte de dados' : 'Data source'}
             </div>
-            <div className="text-center space-y-2">
-              <div className="text-4xl md:text-5xl font-black text-amber-400">100%</div>
-              <div className="text-sm text-white/40">{isPt ? 'grátis para sempre' : 'free forever'}</div>
+          </div>
+          <div>
+            <div className="text-num-lg text-fg">MIT</div>
+            <div className="text-meta-sm text-fg-subtle">
+              {isPt ? 'Open source' : 'Open source'}
             </div>
           </div>
         </div>
