@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { getCardinalLabel, getWindRelationToCoast } from '@/lib/wind';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  WindCompass — Meteorological wind direction compass with animated needle.
@@ -107,21 +108,6 @@ function resolveSize(input?: SizeKey | number): SizeConfig {
 }
 
 /* ──────────── wind direction → cardinal label ──────────── */
-function getCardinalLabel(deg: number): string {
-  const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-  const idx = Math.round(deg / 45) % 8;
-  return dirs[idx];
-}
-
-/* ──────────── wind relation (offshore / onshore / cross) ──────────── */
-function getWindRelation(direction: number, coastOrientation: number): WindRelation {
-  const angleDiff = ((direction - coastOrientation + 540) % 360) - 180;
-  const absDiff = Math.abs(angleDiff);
-  if (absDiff < 67.5) return 'onshore';
-  if (absDiff > 112.5) return 'offshore';
-  return 'cross';
-}
-
 /* ──────────── wind strength color (Tailwind class, literal) ────────────
  *  Returns a literal Tailwind text-* class.  Keep literal — no purge risk.
  *  ─────────────────────────────────────────────────────────────────── */
@@ -171,7 +157,7 @@ export default function WindCompass({
   /* ── wind relation (if coast known) ── */
   const relation: WindRelation =
     coastOrientation !== undefined
-      ? getWindRelation(direction, coastOrientation)
+      ? getWindRelationToCoast(direction, coastOrientation)
       : 'unknown';
 
   /* ── needle color ── */
