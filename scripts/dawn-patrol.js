@@ -24,16 +24,31 @@ const TOP_SPOTS = [
   { name: 'Carcavelos', slug: 'carcavelos', lat: 38.679, lon: -9.335, region: 'Lisboa', type: 'surf' },
 ];
 
-async function fetchMarineData(lat, lon) {
-  try {
-    const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,wind_speed_10m,wind_direction_10m,wind_gusts_10m,water_temperature&timezone=Europe/Lisbon&forecast_days=2&wind_speed_unit=ms`;
-    const response = await fetch(url, { headers: { 'User-Agent': 'WindSpot-Bot/1.0' } });
-    if (!response.ok) return null;
-    return await response.json();
-  } catch (e) {
-    console.error(`Failed to fetch marine data for ${lat},${lon}:`, e.message);
-    return null;
+async function fetchMarineData(lat, lon, retries = 2) {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const url = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,wind_speed_10m,wind_direction_10m,wind_gusts_10m,water_temperature&timezone=Europe/Lisbon&forecast_days=2&wind_speed_unit=ms`;
+      const response = await fetch(url, { headers: { 'User-Agent': 'WindSpot-Bot/1.0' } });
+      if (!response.ok) {
+        if (attempt < retries) {
+          console.log(`     Retry ${attempt + 1}/${retries} for ${lat},${lon}...`);
+          await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+          continue;
+        }
+        return null;
+      }
+      return await response.json();
+    } catch (e) {
+      if (attempt < retries) {
+        console.log(`     Retry ${attempt + 1}/${retries} for ${lat},${lon}...`);
+        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+      } else {
+        console.error(`Failed to fetch marine data for ${lat},${lon}:`, e.message);
+        return null;
+      }
+    }
   }
+  return null;
 }
 
 function getMorningConditions(hourly) {
@@ -164,11 +179,37 @@ Gera um JSON com esta estrutura EXACTA:
     throw new Error('No JSON found in response');
   } catch (e) {
     console.error('Gemini error:', e.message);
+    console.log('   Falling back to basic advice...');
     return generateBasicAdvice(spotsData);
   }
 }
 
 function generateBasicAdvice(spotsData) {
+  // Fallback quando não há dados de nenhum spot
+  if (!spotsData || spotsData.length === 0) {
+    const date = new Date().toISOString().slice(0, 10);
+    return {
+      date,
+      topSpot: 'N/A',
+      topSpotSlug: '',
+      pt: {
+        headline: 'Dados temporariamente indisponíveis 🌊',
+        advice: 'Não foi possível obter dados das condições neste momento. Verifica as previsões mais tarde ou consulta a página individual de cada spot.',
+        bestTime: '--:--',
+        wetsuit: '3/2mm',
+        crowdTip: 'Chega cedo para evitar crowd!',
+      },
+      en: {
+        headline: 'Data temporarily unavailable 🌊',
+        advice: 'Could not fetch conditions data right now. Check forecasts later or visit each spot\'s individual page.',
+        bestTime: '--:--',
+        wetsuit: '3/2mm',
+        crowdTip: 'Get there early to beat the crowd!',
+      },
+      spots: [],
+    };
+  }
+
   const best = spotsData.sort((a, b) => b.bestWindow.score - a.bestWindow.score)[0];
   const windKnots = best.bestWindow.windSpeed * 1.94384;
   const waterTemp = best.bestWindow.waterTemp;
