@@ -1,5 +1,14 @@
 import type { Config } from 'tailwindcss'
 
+/** Safelist — classes referenced dynamically that Tailwind JIT can't detect. */
+const SCORE_GLOW_SAFELIST = [
+  'shadow-glow-epic',
+  'shadow-glow-good',
+  'shadow-glow-fair',
+  'shadow-glow-poor',
+  'shadow-glow-closed',
+]
+
 /**
  * WindSpot Tailwind Config
  *
@@ -31,6 +40,7 @@ import type { Config } from 'tailwindcss'
  */
 
 const config: Config = {
+  safelist: SCORE_GLOW_SAFELIST,
   content: [
     './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',

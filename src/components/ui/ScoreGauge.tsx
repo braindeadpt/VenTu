@@ -89,7 +89,7 @@ export default function ScoreGauge({
 
   /* ───── animation on first mount only ───── */
   useEffect(() => {
-    // After first animation, sync directly on score changes
+    // After first animation, sync directly on score changes (no re-animation)
     if (hasAnimated.current) {
       setAnimatedScore(clamped);
       return;
