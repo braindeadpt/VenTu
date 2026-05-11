@@ -522,7 +522,7 @@ Restrições:
 - Não tocar em ficheiros fora de: [paths]
 - Não adicionar dependências npm.
 - Manter compatibilidade com static export.
-- Bugs técnicos conhecidos (unidades de vento, slugs duplicados, etc.) NÃO são para resolver agora.
+- Bugs técnicos conhecidos: unidades de vento ✅ RESOLVIDO (commit 1f58255), slugs duplicados ✅ RESOLVIDO (commits anteriores + 8f4785e), findIndex || 0 ✅ RESOLVIDO. Outros (filtro regiões, mockNews, CSP, WindCompass, etc.) continuam pendentes.
 
 Antes de gerar código, faz-me 2-3 perguntas se houver ambiguidade no design.
 

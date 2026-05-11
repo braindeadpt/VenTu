@@ -110,15 +110,17 @@ docs/
 
 Não é objectivo desta sessão arranjar isto a menos que seja explicitamente pedido. Listado para evitar que a LLM resolva problemas errados ou introduza assumptions falsas.
 
-- **Unidades de vento erradas em todo o lado.** Open-Meteo devolve km/h; o código multiplica por `1.94384` (factor m/s → kt). Display em kt está ~3,6× exagerado. Quando se mexer em UI que mostra kt, **não usar `windSpeed * 1.94384`** — ou usar `windSpeed * 0.5400` (km/h → kt) ou adicionar `&wind_speed_unit=ms` ao fetch.
+- **Unidades de vento erradas em todo o lado.** ✅ Resolvido em commit `1f58255`.
+  
+  *Nota para futuras sessões:* O diagnóstico inicial ("Open-Meteo devolve km/h; factor 1.94384 está errado") estava incorreto. A API devolve **m/s** porque já se passa `wind_speed_unit=ms` em todos os pontos de fetch. O factor `1.94384` (m/s → kt) está matematicamente correcto. O bug REAL era que `scoreSurf`, `scoreBodyboard` e `scoreSUP` comparavam `windSpeed` (m/s) directamente contra thresholds calibrados em **knots**, enquanto `scoreKitesurf` e `scoreWindsurf` já convertiam correctamente. Foi corrigido adicionando `const windKt = c.windSpeed * 1.94384` nas três funções em falta. Display layer (SpotCard, SpotDetailClient, page.tsx) já estava correcto: consome m/s e converte para kt localmente.
+- **Slugs duplicados em `spots.ts`.** ✅ Resolvido em sessões anteriores (verificação: `grep -oE "slug: '[a-z0-9-]+'" src/lib/spots.ts | sort | uniq -d` → zero output). O `update-conditions.js` tinha 8 duplicados + 1 ID errado que foram eliminados no commit `8f4785e`.
 - **Filtro de regiões da home não funciona.** `REGIONS` usa macro (Norte/Centro/Lisboa) mas `spot.region` guarda municípios.
-- **Slugs duplicados em `spots.ts`** (zambujeira, sao-torpes, porto-covo, paul-mar, odeceixe, moledo, jardim-mar + vila-nova-milfontes/vilanova-milfontes).
 - **Página de notícias usa `mockNews` hardcoded**, não lê `public/data/news.json`.
 - **Home faz 81 fetches paralelos client-side** ignorando `public/data/conditions.json` (que está vazio).
 - **`SecurityHeaders.tsx` injecta CSP via JS** em runtime — sem efeito real.
 - **DawnPatrolBanner, AlertBanner, MagicWindows, SwellDetective** estão definidos mas nunca importados.
 - **`WindCompass` SVG roda os labels** junto com a seta — bug visual.
-- **`findIndex(...) || 0`** em `openmeteo.ts:216` e `update-conditions.js:113` — `-1 || 0` é `-1`.
+- **`findIndex(...) || 0`.** ✅ Resolvido. Ambos `openmeteo.ts` e `update-conditions.js` agora usam `Math.max(0, ...findIndex(...))` em vez de `|| 0`.
 - **Inter declarada em `globals.css` mas nunca carregada.** Site usa system fonts.
 - **`manifest.json` start_url é `/pt` mas o site vive em `/windspot-pt/pt/`.**
 
