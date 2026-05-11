@@ -68,15 +68,16 @@ function loadConditions(): Record<string, any> {
 const SPORTS: { id: SportType | 'all'; label: string; color: string }[] = [
   { id: 'all', label: 'Todos', color: 'text-white' },
   { id: 'surf', label: 'Surf', color: 'text-cyan-400' },
+  { id: 'bodyboard', label: 'Bodyboard', color: 'text-teal-400' },
   { id: 'kitesurf', label: 'Kitesurf', color: 'text-sky-400' },
   { id: 'windsurf', label: 'Windsurf', color: 'text-blue-400' },
-  { id: 'bodyboard', label: 'Bodyboard', color: 'text-teal-400' },
+  { id: 'foil', label: 'Foil', color: 'text-sport-foil' },
   { id: 'sup', label: 'SUP', color: 'text-emerald-400' },
   { id: 'wakeboard', label: 'Wakeboard', color: 'text-purple-400' },
 ];
 
 // ─── Server Component ───
-export default function HomePage({ params }: { params: { locale: string } }) {
+export default function HomePage({ params, searchParams }: { params: { locale: string }; searchParams?: { sport?: string; region?: string } }) {
   const { locale } = params;
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);
@@ -270,6 +271,8 @@ export default function HomePage({ params }: { params: { locale: string } }) {
         spotsData={spotsData} 
         locale={locale}
         regions={[...MACRO_REGIONS]}
+        initialSport={undefined}
+        initialRegion={undefined}
       />
 
       {/* Mini Map */}
