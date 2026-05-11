@@ -1,5 +1,5 @@
 /**
- * WindSpot - Update Conditions Script
+ * VenTu - Update Conditions Script
  * Fetches marine + weather data from Open-Meteo for all spots
  * Marine API: waves, sea temp
  * Weather API: wind, gusts
@@ -137,7 +137,7 @@ function getCurrentConditions(marineData, weatherData) {
 }
 
 async function updateConditions() {
-  console.log('🌊 WindSpot - Updating conditions...');
+  console.log('🌊 VenTu - Updating conditions...');
   const allConditions = {};
 
   for (const spot of spots) {

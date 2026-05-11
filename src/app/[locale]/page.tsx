@@ -133,8 +133,8 @@ export default async function HomePage({ params, searchParams }: { params: Promi
       {/* SEO H1 - visible to Googlebot */}
       <h1 className="sr-only">
         {isPt 
-          ? `WindSpot Portugal - ${spotsData.length} spots de surf, kitesurf e windsurf com condições em tempo real`
-          : `WindSpot Portugal - ${spotsData.length} surf, kitesurf and windsurf spots with real-time conditions`
+          ? `VenTu - ${spotsData.length} spots de surf, kitesurf e windsurf com condições em tempo real`
+          : `VenTu - ${spotsData.length} surf, kitesurf and windsurf spots with real-time conditions`
         }
       </h1>
 

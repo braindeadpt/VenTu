@@ -10,7 +10,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <div className="text-center space-y-4">
         <Wind className="w-16 h-16 text-ocean-400 mx-auto" />
         <h1 className="text-4xl font-bold text-white/90">
-          {isPt ? 'Sobre o WindSpot' : 'About WindSpot'}
+          {isPt ? 'Sobre o VenTu' : 'About VenTu'}
         </h1>
         <p className="text-xl text-white/60 max-w-2xl mx-auto">
           {isPt
@@ -25,8 +25,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </h2>
         <p className="text-white/70 leading-relaxed">
           {isPt
-            ? 'O WindSpot nasceu da necessidade de ter uma plataforma centralizada, gratuita e de código aberto para todos os praticantes de desportos náuticos em Portugal. Queremos democratizar o acesso à informação meteorológica marítima e criar uma comunidade forte em torno do surf, kitesurf, windsurf e big wave.'
-            : 'WindSpot was born from the need to have a centralized, free and open-source platform for all water sports practitioners in Portugal. We want to democratize access to marine weather information and create a strong community around surf, kitesurf, windsurf and big wave.'}
+            ? 'O VenTu nasceu da necessidade de ter uma plataforma centralizada, gratuita e de código aberto para todos os praticantes de desportos náuticos em Portugal. Queremos democratizar o acesso à informação meteorológica marítima e criar uma comunidade forte em torno do surf, kitesurf, windsurf e big wave.'
+            : 'VenTu was born from the need to have a centralized, free and open-source platform for all water sports practitioners in Portugal. We want to democratize access to marine weather information and create a strong community around surf, kitesurf, windsurf and big wave.'}
         </p>
       </div>
 

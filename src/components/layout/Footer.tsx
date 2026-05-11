@@ -18,7 +18,7 @@ export default function Footer({ locale }: FooterProps) {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Wind className="w-6 h-6 text-cyan-400" />
-              <span className="text-lg font-bold text-gradient">WindSpot</span>
+              <span className="text-lg font-bold text-fg">Ven</span><span className="text-lg font-bold text-data-waves">Tu</span>
             </div>
             <p className="text-sm text-white/50 leading-relaxed">
               {isPt 
@@ -61,7 +61,7 @@ export default function Footer({ locale }: FooterProps) {
 
         <div className="mt-8 pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs text-white/30">
-            © {new Date().getFullYear()} WindSpot Portugal. MIT License. Open Source Project.
+            © {new Date().getFullYear()} VenTu. MIT License. Open Source Project.
           </p>
           <p className="flex items-center gap-1 text-xs text-white/30">
             {t.footer.madeWith} <Heart className="w-3 h-3 text-red-400" /> {t.footer.forCommunity}

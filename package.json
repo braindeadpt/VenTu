@@ -16,7 +16,7 @@
     "dawn-patrol:dev": "node -e \"require('dotenv').config()\" && node scripts/dawn-patrol.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.105.3",
+    "@supabase/supabase-js": "^2.105.4",
     "geist": "^1.7.0",
     "lucide-react": "^0.469.0",
     "next": "^16.2.6",

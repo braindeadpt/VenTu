@@ -1,5 +1,5 @@
 /**
- * WindSpot - LLM Fallback Module
+ * VenTu - LLM Fallback Module
  * Cadeia de fallback: Gemini → Groq → Cerebras → Static
  * Usado por dawn-patrol.js e update-news.js
  */

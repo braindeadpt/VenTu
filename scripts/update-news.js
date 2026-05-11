@@ -1,5 +1,5 @@
 /**
- * WindSpot - Update News Script
+ * VenTu - Update News Script
  * Uses LLM with fallback (Gemini → Groq → Cerebras) to generate daily surf conditions briefing
  * Falls back to RSS feeds if available
  */
@@ -343,7 +343,7 @@ function extractTags(text) {
 }
 
 async function updateNews() {
-  console.log('📰 WindSpot - Updating news...');
+  console.log('📰 VenTu - Updating news...');
   console.log('🔑 LLM providers configured:', require('./llm-fallback').getAvailableProviders().map(p => p.name).join(', ') || 'NONE');
 
   // Load conditions data

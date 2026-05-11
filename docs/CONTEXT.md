@@ -1,10 +1,10 @@
-# WindSpot — Context for LLM sessions
+# VenTu — Context for LLM sessions
 
 Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do projecto e as restrições técnicas que limitam que soluções são viáveis.
 
 ## Identidade
 
-- **Projecto:** WindSpot Portugal — plataforma open-source de condições para desportos náuticos em Portugal (surf, kitesurf, windsurf, bodyboard, SUP, wakeboard).
+- **Projecto:** VenTu — plataforma open-source de condições para desportos náuticos em Portugal (surf, kitesurf, windsurf, bodyboard, SUP, wakeboard).
 - **Repo:** https://github.com/braindeadpt/windspot-pt
 - **Site em produção:** https://braindeadpt.github.io/windspot-pt/pt/
 - **Licença:** MIT.

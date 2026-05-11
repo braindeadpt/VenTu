@@ -7,13 +7,13 @@ import SpotGrid from '@/components/spots/SpotGrid'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'All Spots — WindSpot Portugal',
+  title: 'All Spots — VenTu',
   description: 'Browse all 81 surf, kitesurf and windsurf spots in Portugal with real-time conditions.',
   openGraph: {
-    title: 'All Spots — WindSpot Portugal',
+    title: 'All Spots — VenTu',
     description: 'Browse all 81 surf, kitesurf and windsurf spots in Portugal.',
     url: 'https://braindeadpt.github.io/windspot-pt/spots',
-    siteName: 'WindSpot Portugal',
+    siteName: 'VenTu',
     type: 'website',
   },
 }

@@ -4,7 +4,7 @@ import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 /**
- * WindSpot Root Layout
+ * VenTu Root Layout
  *
  * Geist Sans (display/body) + Geist Mono (numbers/code) loaded via
  * the `geist` package (Vercel's official wrapper for Next.js < 15).
@@ -23,8 +23,8 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'WindSpot Portugal',
-  description: 'Real-time conditions for water sports in Portugal',
+  title: 'VenTu',
+  description: 'VenTu — Real-time conditions for water sports in Portugal',
   other: {
     referrer: 'strict-origin-when-cross-origin',
   },
