@@ -145,10 +145,10 @@ const config: Config = {
       //  TYPOGRAPHY
       // ═══════════════════════════════════════════════════════════
       fontFamily: {
-        // Wired up in src/app/layout.tsx via next/font/google.
-        // CSS variable: --font-inter (Inter, loaded via next/font/google).
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
-        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'monospace'],
+        // Wired up in src/app/layout.tsx via the `geist` package.
+        // CSS variables: --font-geist-sans, --font-geist-mono.
+        sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
+        mono: ['var(--font-geist-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'monospace'],
       },
 
       // Semantic font sizes with line-height, letter-spacing and weight baked in.

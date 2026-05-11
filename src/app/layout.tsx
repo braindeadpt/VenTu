@@ -1,21 +1,20 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { GeistSans } from 'geist/font/sans'
+import { GeistMono } from 'geist/font/mono'
 import './globals.css'
 
 /**
- * Inter Tight loaded via next/font/google — zero external requests,
- * subsets shipped with the build.  Variable font gives us the full
- * weight range (100-900) in a single file.
+ * WindSpot Root Layout
  *
- * CSS variables used in tailwind.config.ts:
- *   --font-inter  → font-sans utility
- *   --font-mono   → font-mono utility (system mono stack)
+ * Geist Sans (display/body) + Geist Mono (numbers/code) loaded via
+ * the `geist` package (Vercel's official wrapper for Next.js < 15).
+ * Zero external requests — subsets are shipped with the build.
+ * Variable fonts give us the full weight range in a single file each.
+ *
+ * CSS variables wired in tailwind.config.ts:
+ *   --font-geist-sans → font-sans utility
+ *   --font-geist-mono → font-mono utility (tabular-nums for scores)
  */
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -44,7 +43,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-PT"
-      className={`${inter.variable} dark`}
+      className={`${GeistSans.variable} ${GeistMono.variable} dark`}
       suppressHydrationWarning
     >
       <body className="min-h-screen bg-bg-base text-fg font-sans antialiased">
