@@ -3,6 +3,11 @@ import { MarineData } from '@/types';
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
 
+// Open-Meteo returns wind_speed_10m in m/s because we explicitly
+// request wind_speed_unit=ms. The 1.94384 multiplier converts
+// m/s → knots downstream where needed (scoreKitesurf,
+// scoreWindsurf, display layer).
+
 export interface FetchResult {
   data: MarineData;
   source: 'real' | 'mock';

@@ -8,7 +8,7 @@ export interface Conditions {
   waveHeight: number
   wavePeriod: number
   waveDirection: number
-  windSpeed: number        // km/h
+  windSpeed: number        // m/s (Open-Meteo with wind_speed_unit=ms)
   windDirection: number
   windGust: number
   waterTemp: number
@@ -29,6 +29,9 @@ function scoreSurf(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
+  // Convert wind to kt for consistent thresholds
+  const windKt = c.windSpeed * 1.94384
+
   // Wave height (0-40 pts)
   const waveScore = Math.min(c.waveHeight * 15, 40)
   score += waveScore
@@ -45,10 +48,10 @@ function scoreSurf(spot: Spot, c: Conditions): SportScore {
   const angleDiff = Math.abs(c.windDirection - (spot.coastOrientation || 270))
   const normalizedDiff = angleDiff > 180 ? 360 - angleDiff : angleDiff
   const isOffshore = normalizedDiff > 90
-  const windScore = isOffshore ? Math.max(0, 25 - c.windSpeed * 0.5) : Math.max(0, 15 - c.windSpeed * 0.3)
+  const windScore = isOffshore ? Math.max(0, 25 - windKt * 0.5) : Math.max(0, 15 - windKt * 0.3)
   score += windScore
   if (isOffshore) factors.push('Vento offshore')
-  else if (c.windSpeed < 10) factors.push('Vento fraco')
+  else if (windKt < 10) factors.push('Vento fraco')
 
   // Water temp (0-15 pts) — bonus
   score += Math.min(c.waterTemp * 0.5, 15)
@@ -180,6 +183,9 @@ function scoreBodyboard(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
+  // Convert wind to kt for consistent thresholds
+  const windKt = c.windSpeed * 1.94384
+
   // Wave height — bodyboard works with smaller waves (0-45 pts)
   const waveScore = Math.min(c.waveHeight * 18, 45)
   score += waveScore
@@ -190,7 +196,7 @@ function scoreBodyboard(spot: Spot, c: Conditions): SportScore {
   if (c.wavePeriod > 6) factors.push(`${c.wavePeriod.toFixed(0)}s período`)
 
   // Wind (0-25 pts)
-  score += Math.max(0, 25 - c.windSpeed * 0.4)
+  score += Math.max(0, 25 - windKt * 0.4)
 
   // Water temp (0-10 pts)
   score += Math.min(c.waterTemp * 0.4, 10)
@@ -209,6 +215,9 @@ function scoreSUP(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
+  // Convert wind to kt for consistent thresholds
+  const windKt = c.windSpeed * 1.94384
+
   // SUP likes flat or small waves (0-40 pts)
   if (c.waveHeight < 0.5) {
     score += 40
@@ -221,10 +230,10 @@ function scoreSUP(spot: Spot, c: Conditions): SportScore {
   }
 
   // Light wind (0-30 pts)
-  if (c.windSpeed < 15) {
+  if (windKt < 15) {
     score += 30
     factors.push('Vento fraco')
-  } else if (c.windSpeed < 25) {
+  } else if (windKt < 25) {
     score += 15
   }
 
