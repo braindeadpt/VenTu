@@ -1,23 +1,16 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
-import { 
-  Wind, Waves, Thermometer, MapPin, ArrowRight, Zap, Filter, Star
+import {
+  Wind, Waves, Zap, Filter, Star,
 } from 'lucide-react';
-import { getScoreColor } from '@/lib/sportScore';
+import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { getMacroRegion } from '@/lib/regions';
+import SpotCard from '@/components/spots/SpotCard';
 
 interface SpotData {
-  spot: {
-    id: string;
-    name: string;
-    nameEn: string;
-    slug: string;
-    region: string;
-    images?: string[];
-  };
+  spot: Spot;
   conditions: {
     waveHeight: number;
     wavePeriod: number;
@@ -140,87 +133,29 @@ export function SpotGridClient({ spotsData, locale, regions }: SpotGridClientPro
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSpots.map((data) => (
-              <SpotCard key={data.spot.id} data={data} locale={locale} />
-            ))}
+            {filteredSpots.map((data) => {
+              const sportEntries = Object.entries(data.allScores)
+                .filter(([, s]) => s.score > 0)
+                .sort(([, a], [, b]) => b.score - a.score);
+
+              const primary = sportEntries[0];
+              const primarySport = primary?.[0] as SportType | null;
+              const primaryScore = primary?.[1];
+
+              return (
+                <SpotCard
+                  key={data.spot.id}
+                  spot={data.spot}
+                  locale={locale}
+                  conditions={data.conditions}
+                  sportScore={primaryScore}
+                  selectedSport={primarySport}
+                />
+              );
+            })}
           </div>
         )}
       </section>
     </>
-  );
-}
-
-function SpotCard({ data, locale }: { data: SpotData; locale: string }) {
-  const isPt = locale === 'pt';
-  const surfScore = data.allScores['surf'] || { score: 0, rating: '?', ratingEn: '?' };
-  const colors = getScoreColor(surfScore.score);
-
-  return (
-    <Link
-      href={`/${locale}/spots/${data.spot.slug}`}
-      className="group block bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-cyan-500/5"
-    >
-      <div className="relative h-40 bg-gradient-to-br from-slate-700 to-slate-800 overflow-hidden">
-        {data.spot.images?.[0] ? (
-          <img 
-            src={data.spot.images[0]} 
-            alt={data.spot.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-blue-500/20" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent" />
-        
-        <div className={`absolute top-3 right-3 px-2.5 py-1 rounded-full text-xs font-bold ${colors.bg} ${colors.text} border ${colors.border}`}>
-          {surfScore.score}
-        </div>
-
-        <div className="absolute bottom-3 left-3 right-3">
-          <h3 className="text-lg font-bold text-white">{isPt ? data.spot.name : data.spot.nameEn}</h3>
-          <div className="flex items-center gap-1 text-sm text-white/60">
-            <MapPin className="w-3 h-3" />
-            {data.spot.region}
-          </div>
-        </div>
-      </div>
-
-      <div className="p-4 space-y-3">
-        <div className="flex items-center justify-between text-sm">
-          <span className="flex items-center gap-1.5 text-white/60">
-            <Waves className="w-4 h-4 text-cyan-400" />
-            {data.conditions.waveHeight.toFixed(1)}m
-          </span>
-          <span className="flex items-center gap-1.5 text-white/60">
-            <Wind className="w-4 h-4 text-sky-400" />
-            {(data.conditions.windSpeed * 1.94384).toFixed(0)}kt
-          </span>
-          <span className="flex items-center gap-1.5 text-white/60">
-            <Thermometer className="w-4 h-4 text-emerald-400" />
-            {data.conditions.waterTemp.toFixed(0)}°C
-          </span>
-        </div>
-
-        <p className={`text-sm font-medium ${colors.text}`}>
-          {isPt ? surfScore.rating : surfScore.ratingEn}
-        </p>
-
-        <div className="flex flex-wrap gap-1.5">
-          {Object.entries(data.allScores)
-            .filter(([, score]) => score.score > 0)
-            .sort(([, a], [, b]) => b.score - a.score)
-            .slice(0, 3)
-            .map(([sport, score]) => (
-              <span
-                key={sport}
-                className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/50 border border-white/5"
-                style={{ borderLeftColor: score.color, borderLeftWidth: '2px' }}
-              >
-                {sport} {score.score}
-              </span>
-            ))}
-        </div>
-      </div>
-    </Link>
   );
 }
