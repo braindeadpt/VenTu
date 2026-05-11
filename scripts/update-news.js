@@ -1,14 +1,12 @@
 /**
  * WindSpot - Update News Script
- * Uses Gemini Flash to generate daily surf conditions briefing
+ * Uses LLM with fallback (Gemini → Groq → Cerebras) to generate daily surf conditions briefing
  * Falls back to RSS feeds if available
  */
 
 const fs = require('fs');
 const path = require('path');
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+const { callLLM } = require('./llm-fallback');
 
 // RSS feeds to try (fallback)
 const RSS_FEEDS = [
@@ -154,14 +152,9 @@ function findBestSpots(conditions) {
 }
 
 /**
- * Generate daily briefing with Gemini
+ * Generate daily briefing with LLM (Gemini → Groq → Cerebras fallback)
  */
 async function generateDailyBriefing(spotData) {
-  if (!GEMINI_API_KEY) {
-    console.log('⚠️ No GEMINI_API_KEY found, using static briefing');
-    return generateStaticBriefing(spotData);
-  }
-
   const { bestSurf, bestKite, allSpots } = spotData;
   const avgWind = allSpots.length > 0 
     ? (allSpots.reduce((sum, s) => sum + s.windKt, 0) / allSpots.length).toFixed(0)
@@ -186,64 +179,20 @@ TÍTULO 2|SUMÁRIO 2
 TÍTULO 3|SUMÁRIO 3`;
 
   try {
-    console.log('🤖 Calling Gemini API...');
-    const response = await fetch(`${GEMINI_API}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
-      }),
-    });
-
-    console.log('📡 Gemini response status:', response.status);
+    console.log('   🤖 Calling LLM with fallback chain (Gemini → Groq → Cerebras)...');
+    const text = await callLLM(prompt, { maxTokens: 1024 });
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('❌ Gemini API error:', response.status, errorText.substring(0, 200));
-      
-      if (response.status === 429) {
-        console.log('⏳ Rate limited! Retrying in 5 seconds...');
-        await new Promise(r => setTimeout(r, 5000));
-        
-        // Retry once
-        const retry = await fetch(`${GEMINI_API}?key=${GEMINI_API_KEY}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { maxOutputTokens: 1024, temperature: 0.7 },
-          }),
-        });
-        
-        if (!retry.ok) {
-          console.log('❌ Retry also failed, using static fallback');
-          return generateStaticBriefing(spotData);
-        }
-        
-        const retryData = await retry.json();
-        const retryText = retryData.candidates?.[0]?.content?.parts?.[0]?.text || '';
-        return parseGeminiResponse(retryText);
-      }
-      
-      return generateStaticBriefing(spotData);
-    }
-    
-    const data = await response.json();
-    console.log('📡 Gemini response keys:', Object.keys(data));
-    
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    console.log('📝 Gemini raw text length:', text.length);
+    console.log('📡 LLM raw text length:', text.length);
     
     const result = parseGeminiResponse(text);
     if (result.length === 0) {
-      console.log('⚠️ Gemini returned empty, using static fallback');
+      console.log('⚠️ LLM returned empty, using static fallback');
       return generateStaticBriefing(spotData);
     }
     
     return result;
   } catch (e) {
-    console.error('Gemini API error:', e.message);
+    console.error('LLM error:', e.message);
     return generateStaticBriefing(spotData);
   }
 }
@@ -395,7 +344,7 @@ function extractTags(text) {
 
 async function updateNews() {
   console.log('📰 WindSpot - Updating news...');
-  console.log('🔑 GEMINI_API_KEY present:', !!GEMINI_API_KEY);
+  console.log('🔑 LLM providers configured:', require('./llm-fallback').getAvailableProviders().map(p => p.name).join(', ') || 'NONE');
 
   // Load conditions data
   const conditions = loadConditions();

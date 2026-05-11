@@ -1,13 +1,11 @@
 /**
  * Dawn Patrol AI Advisor
- * Generates morning surf advice for top spots using Gemini AI
+ * Generates morning surf advice for top spots using LLM (Gemini → Groq → Cerebras fallback)
  */
 
 const fs = require('fs');
 const path = require('path');
-
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const { callLLM } = require('./llm-fallback');
 
 const RSS_FEEDS = [
   'https://surfertoday.com/rss',
@@ -109,10 +107,10 @@ function findBestWindow(conditions) {
   return scored[0];
 }
 
-async function generateDawnPatrolWithGemini(spotsData) {
-  if (!GEMINI_API_KEY) {
-    console.log('⚠️ No GEMINI_API_KEY found, using basic advice');
-    return generateBasicAdvice(spotsData);
+async function generateDawnPatrolWithLLM(spotsData) {
+  // Fallback quando não há dados de nenhum spot
+  if (!spotsData || spotsData.length === 0) {
+    return generateBasicAdvice([]);
   }
 
   const prompt = `És um surf advisor experiente para Portugal. Analisa estas condições matinais e dá conselhos curtos e úteis em português (e inglês) para surfistas.
@@ -158,27 +156,23 @@ Gera um JSON com esta estrutura EXACTA:
 }`;
 
   try {
-    const response = await fetch(`${GEMINI_API}?key=${GEMINI_API_KEY}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.4 },
-      }),
-    });
-
-    if (!response.ok) throw new Error(`Gemini API error: ${response.status}`);
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    console.log('   🤖 Calling LLM with fallback chain (Gemini → Groq → Cerebras)...');
+    const result = await callLLM(prompt, { maxTokens: 2048, extractJson: true });
     
-    // Extract JSON from response
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    // If result is already an object (JSON extracted)
+    if (typeof result === 'object' && result !== null) {
+      return result;
+    }
+    
+    // Try to extract JSON from text
+    const jsonMatch = result.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       return JSON.parse(jsonMatch[0]);
     }
+    
     throw new Error('No JSON found in response');
   } catch (e) {
-    console.error('Gemini error:', e.message);
+    console.error('LLM error:', e.message);
     console.log('   Falling back to basic advice...');
     return generateBasicAdvice(spotsData);
   }
@@ -271,7 +265,7 @@ async function generateDawnPatrol() {
 
   console.log(`   Analyzed ${spotsData.length} spots`);
 
-  const advice = await generateDawnPatrolWithGemini(spotsData);
+  const advice = await generateDawnPatrolWithLLM(spotsData);
 
   const outputPath = path.join(__dirname, '../public/data/dawn-patrol.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });

@@ -23,6 +23,8 @@ jobs:
       - name: Generate Dawn Patrol
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS_API_KEY }}
         run: node scripts/dawn-patrol.js
 
       - name: Commit and push
