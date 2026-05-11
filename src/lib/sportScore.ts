@@ -282,6 +282,35 @@ export function getAllSportScores(spot: Spot, conditions: Conditions): Record<Sp
   }
 }
 
+/** Calculate per-hour scores for a sport from hourly forecast data.
+ *  Missing fields in hourly fallback to currentConditions. */
+export function getHourlyScores(
+  spot: Spot,
+  sport: SportType,
+  hourly: Array<{
+    waveHeight: number
+    wavePeriod: number
+    windSpeed: number
+    windDirection: number
+    windGust?: number
+    waterTemp?: number
+  }>,
+  currentConditions: Conditions,
+): number[] {
+  return hourly.map((h) => {
+    const hourConditions: Conditions = {
+      waveHeight: h.waveHeight,
+      wavePeriod: h.wavePeriod,
+      waveDirection: currentConditions.waveDirection,
+      windSpeed: h.windSpeed,
+      windDirection: h.windDirection,
+      windGust: h.windGust ?? currentConditions.windGust,
+      waterTemp: h.waterTemp ?? currentConditions.waterTemp,
+    }
+    return getSportScore(spot, sport, hourConditions).score
+  })
+}
+
 // Color for score (reused from surfability)
 export function getScoreColor(score: number) {
   if (score >= 85) return { bg: 'bg-emerald-500/20', text: 'text-emerald-400', border: 'border-emerald-500/30', glow: 'shadow-emerald-500/20' }

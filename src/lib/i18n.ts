@@ -62,6 +62,19 @@ export const translations = {
       direction: 'Direcção',
       water: 'Água (°C)',
       score: 'Score',
+    },
+    spotDetail: {
+      share: 'Partilhar',
+      copyLink: 'Link copiado!',
+      bestWindows: 'Melhores janelas',
+      about: 'Sobre o spot',
+      localTips: 'Dicas locais',
+      facilities: 'Instalações',
+      hazards: 'Cuidados',
+      chat: 'Conversa do spot',
+      location: 'Localização',
+      waterQuality: 'Qualidade da água',
+      noForecast: 'Previsão indisponível',
     }
   },
   en: {
@@ -124,6 +137,19 @@ export const translations = {
       direction: 'Direction',
       water: 'Water (°C)',
       score: 'Score',
+    },
+    spotDetail: {
+      share: 'Share',
+      copyLink: 'Link copied!',
+      bestWindows: 'Best windows',
+      about: 'About this spot',
+      localTips: 'Local tips',
+      facilities: 'Facilities',
+      hazards: 'Hazards',
+      chat: 'Spot chat',
+      location: 'Location',
+      waterQuality: 'Water quality',
+      noForecast: 'Forecast unavailable',
     }
   }
 };
