@@ -11,7 +11,7 @@ interface HeaderProps {
 
 export default function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() || '';
   const isPt = locale === 'pt';
 
   const navItems = [
@@ -27,7 +27,7 @@ export default function Header({ locale }: HeaderProps) {
   const isActive = (href: string) => pathname === href.split('?')[0];
 
   const switchLocale = isPt ? 'en' : 'pt';
-  const switchPath = pathname.replace(`/${locale}`, `/${switchLocale}`);
+  const switchPath = (pathname || '').replace(`/${locale}`, `/${switchLocale}`);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/10">
