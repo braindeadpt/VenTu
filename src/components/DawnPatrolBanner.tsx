@@ -100,7 +100,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           </div>
           <div className="flex items-center gap-3">
             <Link
-              href={`/${locale}/spots/${data.topSpotSlug}`}
+              href={`/${locale}/spots/${data.topSpotSlug}/`}
               className="hidden sm:flex items-center gap-2 px-4 py-2 bg-ocean-500 hover:bg-ocean-600 text-white rounded-xl text-sm font-medium transition-all hover:scale-105"
               onClick={e => e.stopPropagation()}
             >
@@ -138,7 +138,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             {data.spots.map(spot => (
               <Link
                 key={spot.slug}
-                href={`/${locale}/spots/${spot.slug}`}
+                href={`/${locale}/spots/${spot.slug}/`}
                 className="flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors group"
               >
                 <div className="flex items-center gap-3">

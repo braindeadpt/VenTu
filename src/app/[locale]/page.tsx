@@ -172,7 +172,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
             return (
               <Link
                 key={`${data.spot.id}-${i}`}
-                href={`/${locale}/spots/${data.spot.slug}`}
+                href={`/${locale}/spots/${data.spot.slug}/`}
                 className="inline-flex items-center gap-3 px-5 py-1.5 hover:bg-surface-2 transition-colors"
               >
                 <span className="w-0.5 h-4 rounded-full" style={{ backgroundColor: color }} />
