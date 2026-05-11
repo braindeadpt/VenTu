@@ -100,6 +100,7 @@ const config: Config = {
           bodyboard: '#2dd4bf', // teal-400
           sup: '#6ee7b7',       // emerald-300
           wakeboard: '#e879f9', // fuchsia-400 — cable park, stands out
+          foil: '#facc15',      // yellow-400 — sun + hydrofoil association
         },
 
         // ═══════════════════════════════════════════════════════════

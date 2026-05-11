@@ -136,6 +136,7 @@
   .sport-accent[data-sport="bodyboard"] { @apply text-sport-bodyboard; }
   .sport-accent[data-sport="sup"]       { @apply text-sport-sup; }
   .sport-accent[data-sport="wakeboard"] { @apply text-sport-wakeboard; }
+  .sport-accent[data-sport="foil"]      { @apply text-sport-foil; }
 
   /* ──────────────────────────────────────────────────────────────────
    *  LEGACY (deprecated — kept until Fase 4 migrates all callers)
