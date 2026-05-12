@@ -368,11 +368,11 @@ export function getHourlyScores(
 
 // Color for score (reused from surfability)
 export function getScoreColor(score: number) {
-  if (score >= 85) return { bg: 'bg-emerald-500/20', text: 'text-emerald-400', border: 'border-emerald-500/30', glow: 'shadow-emerald-500/20' }
-  if (score >= 70) return { bg: 'bg-cyan-500/20', text: 'text-cyan-400', border: 'border-cyan-500/30', glow: 'shadow-cyan-500/20' }
-  if (score >= 50) return { bg: 'bg-amber-500/20', text: 'text-amber-400', border: 'border-amber-500/30', glow: 'shadow-amber-500/20' }
-  if (score >= 30) return { bg: 'bg-orange-500/20', text: 'text-orange-400', border: 'border-orange-500/30', glow: 'shadow-orange-500/20' }
-  return { bg: 'bg-slate-500/20', text: 'text-slate-400', border: 'border-slate-500/30', glow: 'shadow-slate-500/20' }
+  if (score >= 85) return { bg: 'bg-score-epic/20', text: 'text-score-epic', border: 'border-score-epic/30', glow: 'shadow-glow-epic' }
+  if (score >= 70) return { bg: 'bg-score-good/20', text: 'text-score-good', border: 'border-score-good/30', glow: 'shadow-glow-good' }
+  if (score >= 50) return { bg: 'bg-score-fair/20', text: 'text-score-fair', border: 'border-score-fair/30', glow: 'shadow-glow-fair' }
+  if (score >= 30) return { bg: 'bg-score-poor/20', text: 'text-score-poor', border: 'border-score-poor/30', glow: 'shadow-glow-poor' }
+  return { bg: 'bg-score-closed/20', text: 'text-score-closed', border: 'border-score-closed/30', glow: 'shadow-glow-closed' }
 }
 
 // Get sports that are relevant for this spot (score > 0 or primary sport)

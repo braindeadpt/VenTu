@@ -5,40 +5,31 @@ import { Sun, Moon } from 'lucide-react';
 
 const THEME_KEY = 'windspot:theme';
 
-function getInitialTheme(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    const stored = localStorage.getItem(THEME_KEY);
-    return stored === 'coast';
-  } catch {
-    return false;
-  }
-}
-
 interface ThemeToggleProps {
   locale: string;
 }
 
 export default function ThemeToggle({ locale }: ThemeToggleProps) {
   const isPt = locale === 'pt';
-  const [isCoast, setIsCoast] = useState(false);
+  // Coast is default (theme-coast class present). Dark is the alternative.
+  const [isDark, setIsDark] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   // Sync with DOM after mount (SSR-safe: reads actual class applied by pre-hydration script)
   useEffect(() => {
-    setIsCoast(document.documentElement.classList.contains('theme-coast'));
+    setIsDark(!document.documentElement.classList.contains('theme-coast'));
     setMounted(true);
   }, []);
 
   const toggle = () => {
-    const next = !isCoast;
-    document.documentElement.classList.toggle('theme-coast', next);
+    const next = !isDark;
+    document.documentElement.classList.toggle('theme-coast', !next);
     try {
-      localStorage.setItem(THEME_KEY, next ? 'coast' : 'dark');
+      localStorage.setItem(THEME_KEY, next ? 'dark' : 'coast');
     } catch {
       /* ignore */
     }
-    setIsCoast(next);
+    setIsDark(next);
   };
 
   // Prevent hydration mismatch: render a placeholder until mounted
@@ -48,9 +39,9 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
     );
   }
 
-  const label = isCoast
-    ? (isPt ? 'Alternar para tema escuro' : 'Switch to dark theme')
-    : (isPt ? 'Alternar para tema claro' : 'Switch to light theme');
+  const label = isDark
+    ? (isPt ? 'Alternar para tema claro' : 'Switch to light theme')
+    : (isPt ? 'Alternar para tema escuro' : 'Switch to dark theme');
 
   return (
     <button
@@ -59,7 +50,7 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
       title={label}
       aria-label={label}
     >
-      {isCoast ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
     </button>
   );
 }

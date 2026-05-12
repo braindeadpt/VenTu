@@ -40,10 +40,10 @@ export function LocalTipsSection({ tips, locale }: LocalTipsSectionProps) {
   const visibleItems = expanded ? items : items.slice(0, 2);
 
   return (
-    <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl p-5 border border-cyan-500/20">
+    <div className="bg-surface-2 backdrop-blur-sm rounded-xl p-5 border border-data-waves/20">
       <div className="flex items-center gap-2 mb-4">
-        <MapPin className="w-5 h-5 text-cyan-400" />
-        <h3 className="text-lg font-bold text-white">
+        <MapPin className="w-5 h-5 text-data-waves" />
+        <h3 className="text-lg font-bold text-fg">
           {isPT ? 'Dicas do Local' : 'Local Tips'}
         </h3>
       </div>
@@ -54,20 +54,20 @@ export function LocalTipsSection({ tips, locale }: LocalTipsSectionProps) {
             key={i}
             className={`flex gap-3 p-3 rounded-lg ${
               item.highlight
-                ? 'bg-orange-500/10 border border-orange-500/30'
-                : 'bg-slate-700/30'
+                ? 'bg-score-poor/10 border border-score-poor/30'
+                : 'bg-surface-1'
             }`}
           >
             <item.icon
               className={`w-4 h-4 mt-0.5 shrink-0 ${
-                item.highlight ? 'text-orange-400' : 'text-slate-400'
+                item.highlight ? 'text-score-poor' : 'text-fg-muted'
               }`}
             />
             <div>
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
+              <p className="text-xs font-semibold text-fg-muted uppercase tracking-wide mb-1">
                 {item.label}
               </p>
-              <p className={`text-sm ${item.highlight ? 'text-orange-200' : 'text-slate-200'}`}>
+              <p className={`text-sm ${item.highlight ? 'text-fg' : 'text-fg-subtle'}`}>
                 {item.value}
               </p>
             </div>
@@ -78,7 +78,7 @@ export function LocalTipsSection({ tips, locale }: LocalTipsSectionProps) {
       {items.length > 2 && (
         <button
           onClick={() => setExpanded(!expanded)}
-          className="mt-3 text-xs text-cyan-400 hover:text-cyan-300 transition-colors w-full text-center flex items-center justify-center gap-1"
+          className="mt-3 text-xs text-data-waves hover:text-data-waves/80 transition-colors w-full text-center flex items-center justify-center gap-1"
         >
           {expanded
             ? <>{isPT ? 'Mostrar menos' : 'Show less'} <ChevronUp className="w-3 h-3" /></>

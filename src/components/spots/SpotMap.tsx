@@ -41,14 +41,14 @@ export default function SpotMap({ lat, lon, locale = 'pt' }: SpotMapProps) {
 
   if (error) {
     return (
-      <div className="relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-black/20 ring-1 ring-white/10 bg-slate-900 flex items-center justify-center">
+      <div className="relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-card ring-1 ring-divider bg-bg-base flex items-center justify-center">
         <div className="text-center p-4">
-          <p className="text-white/60 text-sm mb-2">{isPt ? 'Mapa não disponível' : 'Map unavailable'}</p>
+          <p className="text-fg-muted text-sm mb-2">{isPt ? 'Mapa não disponível' : 'Map unavailable'}</p>
           <a 
             href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-cyan-400 hover:text-cyan-300 underline"
+            className="text-xs text-data-waves hover:text-data-waves/80 underline"
           >
             {isPt ? 'Ver no OpenStreetMap' : 'View on OpenStreetMap'} ↗
           </a>
@@ -58,13 +58,13 @@ export default function SpotMap({ lat, lon, locale = 'pt' }: SpotMapProps) {
   }
 
   return (
-    <div className="relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-black/20 ring-1 ring-white/10">
+    <div className="relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-card ring-1 ring-divider">
       <div ref={mapRef} className="w-full h-full" />
       <a 
         href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="absolute bottom-3 right-3 text-xs text-white/70 hover:text-white bg-black/50 backdrop-blur-sm px-3 py-1.5 rounded-lg transition-all hover:bg-black/70 z-10"
+        className="absolute bottom-3 right-3 text-xs text-fg-muted hover:text-fg bg-bg-base/80 backdrop-blur-sm px-3 py-1.5 rounded-lg transition-all hover:bg-bg-base/90 z-10"
       >
         {isPt ? 'Abrir mapa' : 'Open map'} ↗
       </a>

@@ -105,6 +105,18 @@ const config: Config = {
         },
 
         // ═══════════════════════════════════════════════════════════
+        //  SCORE COLORS — theme-aware via CSS variables
+        //  Use for badges, gauges, and score indicators.
+        // ═══════════════════════════════════════════════════════════
+        score: {
+          epic:   'rgb(var(--score-epic) / <alpha-value>)',
+          good:   'rgb(var(--score-good) / <alpha-value>)',
+          fair:   'rgb(var(--score-fair) / <alpha-value>)',
+          poor:   'rgb(var(--score-poor) / <alpha-value>)',
+          closed: 'rgb(var(--score-closed) / <alpha-value>)',
+        },
+
+        // ═══════════════════════════════════════════════════════════
         //  WIND DIRECTION TINT (offshore vs onshore)
         //  Use as subtle background or border tint, not dominant color.
         //  NOTE: namespaced under windDir/ to avoid collision with the

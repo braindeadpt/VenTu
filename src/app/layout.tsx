@@ -39,8 +39,8 @@ const themeScript = `
   (function() {
     try {
       var t = localStorage.getItem('windspot:theme');
-      if (t === 'coast') {
-        document.documentElement.classList.add('theme-coast');
+      if (t === 'dark') {
+        document.documentElement.classList.remove('theme-coast');
       }
     } catch (e) {}
   })();
@@ -54,7 +54,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-PT"
-      className={`${GeistSans.variable} ${GeistMono.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} theme-coast`}
       suppressHydrationWarning
     >
       <head>
