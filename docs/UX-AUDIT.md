@@ -1,6 +1,6 @@
 # VenTu — UX/UI Audit
 
-Auditoria completa do UX/UI do site em produção (https://braindeadpt.github.io/windspot-pt/pt/) e dos componentes em `src/`. Identifica defeitos actuais, define princípios de design para um forecast tool moderno, e propõe um redesign concreto por componente.
+Auditoria completa do UX/UI do site em produção (https://ventu.surf/pt/) e dos componentes em `src/`. Identifica defeitos actuais, define princípios de design para um forecast tool moderno, e propõe um redesign concreto por componente.
 
 > Pré-requisito: lê `docs/CONTEXT.md` antes deste ficheiro. Define stack, restrições e bugs conhecidos que limitam o que é viável.
 
