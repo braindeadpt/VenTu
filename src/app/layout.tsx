@@ -35,6 +35,17 @@ export const metadata: Metadata = {
   manifest: '/manifest.json',
 }
 
+const themeScript = `
+  (function() {
+    try {
+      var t = localStorage.getItem('windspot:theme');
+      if (t === 'coast' || (t === null && window.matchMedia('(prefers-color-scheme: light)').matches)) {
+        document.documentElement.classList.add('theme-coast');
+      }
+    } catch (e) {}
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: {
@@ -43,9 +54,12 @@ export default function RootLayout({
   return (
     <html
       lang="pt-PT"
-      className={`${GeistSans.variable} ${GeistMono.variable} dark`}
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body className="min-h-screen bg-bg-base text-fg font-sans antialiased">
         {children}
       </body>

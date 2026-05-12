@@ -146,6 +146,19 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* Smooth theme transitions — Fase 7.4
+     Apply to main surfaces so theme toggle feels responsive
+     without janking every element on the page. */
+  body,
+  .card-1,
+  .card-2,
+  .card-hero,
+  .pill,
+  .pill-ghost,
+  .pill-active {
+    transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+
   /* Numbers should align in tables and stat strips by default. */
   .font-mono {
     font-variant-numeric: tabular-nums;
