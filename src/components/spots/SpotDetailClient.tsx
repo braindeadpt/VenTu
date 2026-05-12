@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+// useSearchParams removed — using window.location.search for static export safety
 import {
   Wind, Waves, Droplets, Zap, ArrowLeft, Share2,
   MapPin, Star,
@@ -202,8 +202,17 @@ export default function SpotDetailClient({
   spot: Spot;
   locale: string;
 }) {
-  const searchParams = useSearchParams();
-  const sportFromUrl = searchParams?.get('sport') as SportType | null;
+  // Read sport from URL safely (no useSearchParams to avoid static-export crash)
+  const [sportFromUrl, setSportFromUrl] = useState<SportType | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const sport = params.get('sport') as SportType | null;
+        setSportFromUrl(sport);
+      } catch { /* ignore */ }
+    }
+  }, []);
 
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');

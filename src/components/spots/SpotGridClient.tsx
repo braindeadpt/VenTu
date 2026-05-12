@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+// useSearchParams removed — using window.location.search for static export safety
 import Link from 'next/link';
 import { Wind, Waves, Zap, Filter, Star, X, RotateCcw, ArrowRight } from 'lucide-react';
 import SpotCard from './SpotCard';
@@ -127,7 +127,18 @@ export function SpotGridClient({
 }) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);
-  const nextSearch = useSearchParams();
+  // Read URL params safely on client (no useSearchParams to avoid static-export crash)
+  const [urlSport, setUrlSport] = useState<string | null>(null);
+  const [urlRegion, setUrlRegion] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        setUrlSport(params.get('sport'));
+        setUrlRegion(params.get('region'));
+      } catch { /* ignore */ }
+    }
+  }, []);
 
   // ─── Hydration-safe state init ───
   // Priority: URL query param > localStorage > default
@@ -139,21 +150,21 @@ export function SpotGridClient({
     setMounted(true);
 
     // Resolve sport: URL > localStorage > default
-    const urlSport = initialSport || nextSearch?.get('sport');
+    const sportFromUrl = initialSport || urlSport;
     const lsSport = typeof window !== 'undefined' ? localStorage.getItem(LS_SPORT_KEY) : null;
-    const resolvedSport = (urlSport as SportType | 'all') || (lsSport as SportType | 'all') || 'all';
+    const resolvedSport = (sportFromUrl as SportType | 'all') || (lsSport as SportType | 'all') || 'all';
     if (SPORTS.some(s => s.id === resolvedSport)) {
       setSelectedSport(resolvedSport);
     }
 
     // Resolve region: URL > localStorage > default
-    const urlRegion = initialRegion || nextSearch?.get('region');
+    const regionFromUrl = initialRegion || urlRegion;
     const lsRegion = typeof window !== 'undefined' ? localStorage.getItem(LS_REGION_KEY) : null;
-    const resolvedRegion = urlRegion || lsRegion || 'Todos';
+    const resolvedRegion = regionFromUrl || lsRegion || 'Todos';
     if (regions.includes(resolvedRegion)) {
       setSelectedRegion(resolvedRegion);
     }
-  }, [initialSport, initialRegion, nextSearch, regions]);
+  }, [initialSport, initialRegion, urlSport, urlRegion, regions]);
 
   // Persist to localStorage when changed by user (not from URL init)
   useEffect(() => {

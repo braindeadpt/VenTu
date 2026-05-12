@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams, useParams } from 'next/navigation';
-import { Trophy, MapPin, Wind, Waves, Clock, ArrowLeft, Zap, Crown, Medal, Award } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Trophy, MapPin, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getAllSportScores, getScoreColor } from '@/lib/sportScore';
@@ -36,18 +35,46 @@ function getDriveTimeFromPorto(region: string): string {
   return times[region] || '—';
 }
 
-function BattleContent() {
-  const searchParams = useSearchParams();
-  const params = useParams();
+// Read spots from URL query string directly — avoids useSearchParams crash in static export
+function getSpotsFromUrl(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const spotsParam = params.get('spots');
+    return spotsParam ? spotsParam.split(',').filter(Boolean) : [];
+  } catch {
+    return [];
+  }
+}
+
+// Read locale from pathname — avoids useParams in static export
+function getLocaleFromPath(): string {
+  if (typeof window === 'undefined') return 'pt';
+  try {
+    const match = window.location.pathname.match(/^\/(pt|en)\//);
+    return match ? match[1] : 'pt';
+  } catch {
+    return 'pt';
+  }
+}
+
+export default function CompareClient() {
   const [battleData, setBattleData] = useState<SpotBattleData[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedSport, setSelectedSport] = useState<SportType>('surf');
   const [baseCity, setBaseCity] = useState<'lisbon' | 'porto'>('lisbon');
+  const [slugs, setSlugs] = useState<string[]>([]);
+  const [locale, setLocale] = useState('pt');
 
-  const slugs = searchParams?.get('spots')?.split(',') || [];
-  const locale = (params?.locale as string) || 'pt';
+  // Read URL params once on mount (safe for static export)
+  useEffect(() => {
+    setSlugs(getSpotsFromUrl());
+    setLocale(getLocaleFromPath());
+  }, []);
+
   const isPt = locale === 'pt';
 
+  // Fetch data for selected spots
   useEffect(() => {
     if (!slugs.length) { setLoading(false); return; }
 
@@ -199,13 +226,5 @@ function BattleContent() {
         </div>
       </div>
     </div>
-  );
-}
-
-export default function CompareClient() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-950 flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400" /></div>}>
-      <BattleContent />
-    </Suspense>
   );
 }
