@@ -53,14 +53,14 @@ function loadConditions(): Record<string, any> {
 
 // ─── Sport Config (used only in server component) ───
 const SPORTS: { id: SportType | 'all'; label: string; color: string }[] = [
-  { id: 'all', label: 'Todos', color: 'text-white' },
-  { id: 'surf', label: 'Surf', color: 'text-cyan-400' },
-  { id: 'bodyboard', label: 'Bodyboard', color: 'text-teal-400' },
-  { id: 'kitesurf', label: 'Kitesurf', color: 'text-sky-400' },
-  { id: 'windsurf', label: 'Windsurf', color: 'text-blue-400' },
+  { id: 'all', label: 'Todos', color: 'text-fg' },
+  { id: 'surf', label: 'Surf', color: 'text-data-waves' },
+  { id: 'bodyboard', label: 'Bodyboard', color: 'text-data-waves' },
+  { id: 'kitesurf', label: 'Kitesurf', color: 'text-data-waves' },
+  { id: 'windsurf', label: 'Windsurf', color: 'text-data-waves' },
   { id: 'foil', label: 'Foil', color: 'text-sport-foil' },
-  { id: 'sup', label: 'SUP', color: 'text-emerald-400' },
-  { id: 'wakeboard', label: 'Wakeboard', color: 'text-purple-400' },
+  { id: 'sup', label: 'SUP', color: 'text-data-waves' },
+  { id: 'wakeboard', label: 'Wakeboard', color: 'text-data-waves' },
 ];
 
 // ─── Server Component ───
@@ -129,7 +129,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
   const bestSportId = (bestSportEntry?.[0] as SportType) || 'surf';
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-bg-base">
       {/* SEO H1 - visible to Googlebot */}
       <h1 className="sr-only">
         {isPt 

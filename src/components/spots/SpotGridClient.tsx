@@ -27,7 +27,7 @@ interface SpotData {
 
 // ─── Sport config (Fase 4b order: affinity grouping) ───
 const SPORTS: { id: SportType | 'all'; labelPt: string; labelEn: string; icon: React.ReactNode; color: string }[] = [
-  { id: 'all', labelPt: 'Todos', labelEn: 'All', icon: <Star className="w-4 h-4" />, color: 'text-white' },
+  { id: 'all', labelPt: 'Todos', labelEn: 'All', icon: <Star className="w-4 h-4" />, color: 'text-fg' },
   { id: 'surf', labelPt: 'Surf', labelEn: 'Surf', icon: <Waves className="w-4 h-4" />, color: 'text-sport-surf' },
   { id: 'bodyboard', labelPt: 'Bodyboard', labelEn: 'Bodyboard', icon: <Waves className="w-4 h-4" />, color: 'text-sport-bodyboard' },
   { id: 'kitesurf', labelPt: 'Kitesurf', labelEn: 'Kitesurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-kitesurf' },
@@ -54,7 +54,7 @@ function getSportIcon(sport: SportType | 'all') {
 }
 
 function getSportColor(sport: SportType | 'all') {
-  return SPORTS.find(s => s.id === sport)?.color || 'text-white';
+  return SPORTS.find(s => s.id === sport)?.color || 'text-fg';
 }
 
 function getSportLabel(sport: SportType | 'all', isPt: boolean) {

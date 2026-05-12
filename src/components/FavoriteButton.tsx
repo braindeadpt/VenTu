@@ -70,7 +70,7 @@ export default function FavoriteButton({
   };
 
   if (!mounted || !loaded) {
-    return <div className={`${sizeClasses[size]} animate-pulse bg-white/10 rounded`} />;
+    return <div className={`${sizeClasses[size]} animate-pulse bg-surface-1 rounded`} />;
   }
 
   const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
@@ -94,7 +94,7 @@ export default function FavoriteButton({
       className={`flex items-center gap-2 transition-all hover:scale-110 cursor-pointer ${
         clickEffect ? 'scale-125' : ''
       } ${
-        active ? 'text-red-400' : 'text-white/40 hover:text-white/70'
+        active ? 'text-windDir-onshore' : 'text-fg-subtle hover:text-fg-muted'
       }`}
       title={
         active

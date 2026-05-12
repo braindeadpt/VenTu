@@ -103,19 +103,19 @@ export default function CompareClient() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-400" />
+      <div className="min-h-screen bg-bg-base flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-data-waves" />
       </div>
     );
   }
 
   if (!slugs.length || battleData.length < 2) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
         <div className="text-center space-y-6 max-w-md">
-          <Trophy className="w-16 h-16 text-yellow-400 mx-auto" />
-          <h1 className="text-3xl font-bold text-white">Spot vs Spot</h1>
-          <p className="text-white/60">
+          <Trophy className="w-16 h-16 text-score-fair mx-auto" />
+          <h1 className="text-3xl font-bold text-fg">Spot vs Spot</h1>
+          <p className="text-fg-muted">
             {isPt 
               ? 'Escolhe 2-3 spots para comparar. Exemplo: /compare/?spots=supertubos,guincho'
               : 'Pick 2-3 spots to compare. Example: /compare/?spots=supertubos,guincho'
@@ -132,26 +132,26 @@ export default function CompareClient() {
   const winner = sorted[0];
 
   const rankIcons = [Crown, Medal, Award];
-  const rankColors = ['text-yellow-400', 'text-slate-300', 'text-amber-600'];
+  const rankColors = ['text-score-fair', 'text-fg-muted', 'text-score-poor'];
 
   return (
-    <div className="min-h-screen bg-slate-950 pb-20">
+    <div className="min-h-screen bg-bg-base pb-20">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         <div className="flex items-center justify-between">
-          <Link href={`/${locale}/spots/`} className="flex items-center gap-2 text-white/50 hover:text-white">
+          <Link href={`/${locale}/spots/`} className="flex items-center gap-2 text-fg-muted hover:text-fg">
             <ArrowLeft className="w-4 h-4" />
             {isPt ? 'Voltar' : 'Back'}
           </Link>
           <div className="flex items-center gap-2">
-            <button onClick={() => setBaseCity('lisbon')} className={`px-3 py-1 rounded-lg text-sm ${baseCity === 'lisbon' ? 'bg-cyan-500 text-white' : 'bg-white/5 text-white/60'}`}>Lisboa</button>
-            <button onClick={() => setBaseCity('porto')} className={`px-3 py-1 rounded-lg text-sm ${baseCity === 'porto' ? 'bg-cyan-500 text-white' : 'bg-white/5 text-white/60'}`}>Porto</button>
+            <button onClick={() => setBaseCity('lisbon')} className={`px-3 py-1 rounded-lg text-sm ${baseCity === 'lisbon' ? 'bg-data-waves text-bg-base' : 'bg-surface-1 text-fg-muted'}`}>Lisboa</button>
+            <button onClick={() => setBaseCity('porto')} className={`px-3 py-1 rounded-lg text-sm ${baseCity === 'porto' ? 'bg-data-waves text-bg-base' : 'bg-surface-1 text-fg-muted'}`}>Porto</button>
           </div>
         </div>
 
         <div className="text-center space-y-2">
-          <Trophy className="w-12 h-12 text-yellow-400 mx-auto" />
-          <h1 className="text-4xl font-bold text-white">Spot vs Spot</h1>
-          <p className="text-white/60">{isPt ? 'Quem ganha hoje?' : 'Who wins today?'}</p>
+          <Trophy className="w-12 h-12 text-score-fair mx-auto" />
+          <h1 className="text-4xl font-bold text-fg">Spot vs Spot</h1>
+          <p className="text-fg-muted">{isPt ? 'Quem ganha hoje?' : 'Who wins today?'}</p>
         </div>
 
         <div className="flex items-center justify-center gap-2">
@@ -159,19 +159,19 @@ export default function CompareClient() {
             <button
               key={sport}
               onClick={() => setSelectedSport(sport)}
-              className={`px-4 py-2 rounded-full text-sm font-medium ${selectedSport === sport ? 'bg-white/15 text-white border border-white/20' : 'bg-white/5 text-white/60'}`}
+              className={`px-4 py-2 rounded-full text-sm font-medium ${selectedSport === sport ? 'bg-surface-2 text-fg border border-divider' : 'bg-surface-1 text-fg-muted'}`}
             >
               {sport.charAt(0).toUpperCase() + sport.slice(1)}
             </button>
           ))}
         </div>
 
-        <div className="bg-white/5 backdrop-blur-sm border border-yellow-500/30 rounded-2xl p-6 text-center">
-          <Crown className="w-8 h-8 text-yellow-400 mx-auto mb-2" />
-          <p className="text-yellow-400 font-bold mb-2">{isPt ? 'VENCEDOR' : 'WINNER'}</p>
-          <h2 className="text-3xl font-bold text-white">{isPt ? winner.spot.name : winner.spot.nameEn}</h2>
-          <p className="text-white/60">{isPt ? winner.allScores[selectedSport]?.rating : winner.allScores[selectedSport]?.ratingEn}</p>
-          <div className="text-5xl font-bold text-yellow-400 mt-4">{winner.allScores[selectedSport]?.score}/100</div>
+        <div className="bg-surface-1 backdrop-blur-sm border border-score-fair/30 rounded-2xl p-6 text-center">
+          <Crown className="w-8 h-8 text-score-fair mx-auto mb-2" />
+          <p className="text-score-fair font-bold mb-2">{isPt ? 'VENCEDOR' : 'WINNER'}</p>
+          <h2 className="text-3xl font-bold text-fg">{isPt ? winner.spot.name : winner.spot.nameEn}</h2>
+          <p className="text-fg-muted">{isPt ? winner.allScores[selectedSport]?.rating : winner.allScores[selectedSport]?.ratingEn}</p>
+          <div className="text-5xl font-bold text-score-fair mt-4">{winner.allScores[selectedSport]?.score}/100</div>
         </div>
 
         <div className={`grid gap-6 ${sorted.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
@@ -181,12 +181,12 @@ export default function CompareClient() {
             const score = data.allScores[selectedSport];
             
             return (
-              <div key={data.spot.id} className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+              <div key={data.spot.id} className="bg-surface-1 backdrop-blur-sm border border-divider rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Icon className={`w-6 h-6 ${rankColors[i]}`} />
                     {data.conditions.source === 'mock' && (
-                      <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                      <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-score-fair/20 text-score-fair border border-score-fair/30">
                         DEMO
                       </span>
                     )}
@@ -194,30 +194,30 @@ export default function CompareClient() {
                   <span className={`text-3xl font-bold ${colors.text}`}>#{i + 1}</span>
                 </div>
 
-                <h3 className="text-xl font-bold text-white">{isPt ? data.spot.name : data.spot.nameEn}</h3>
-                <p className="text-sm text-white/50">{data.spot.region}</p>
+                <h3 className="text-xl font-bold text-fg">{isPt ? data.spot.name : data.spot.nameEn}</h3>
+                <p className="text-sm text-fg-muted">{data.spot.region}</p>
 
                 <div className="text-center my-4">
                   <div className={`text-4xl font-bold ${colors.text}`}>{score?.score || 0}</div>
-                  <div className="text-xs text-white/50">/100</div>
+                  <div className="text-xs text-fg-muted">/100</div>
                 </div>
 
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-white/60 flex items-center gap-1"><Waves className="w-4 h-4"/>{isPt ? 'Ondas' : 'Waves'}</span>
+                    <span className="text-fg-muted flex items-center gap-1"><Waves className="w-4 h-4"/>{isPt ? 'Ondas' : 'Waves'}</span>
                     <span className="font-bold">{data.conditions.waveHeight.toFixed(1)}m</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/60 flex items-center gap-1"><Wind className="w-4 h-4"/>{isPt ? 'Vento' : 'Wind'}</span>
+                    <span className="text-fg-muted flex items-center gap-1"><Wind className="w-4 h-4"/>{isPt ? 'Vento' : 'Wind'}</span>
                     <span className="font-bold">{(data.conditions.windSpeed * 1.94384).toFixed(0)}kt</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-white/60 flex items-center gap-1"><Clock className="w-4 h-4"/>{isPt ? 'Condução' : 'Drive'}</span>
-                    <span className="text-cyan-400">{data.driveTime}</span>
+                    <span className="text-fg-muted flex items-center gap-1"><Clock className="w-4 h-4"/>{isPt ? 'Condução' : 'Drive'}</span>
+                    <span className="text-data-waves">{data.driveTime}</span>
                   </div>
                 </div>
 
-                <Link href={`/${locale}/spots/${data.spot.slug}/?sport=${selectedSport}`} className="mt-4 block w-full text-center py-3 bg-cyan-500 hover:bg-cyan-400 text-white rounded-xl font-medium transition-all">
+                <Link href={`/${locale}/spots/${data.spot.slug}/?sport=${selectedSport}`} className="mt-4 block w-full text-center py-3 bg-data-waves hover:bg-data-waves/80 text-bg-base rounded-xl font-medium transition-all">
                   {isPt ? 'Ver Detalhes' : 'View Details'}
                 </Link>
               </div>

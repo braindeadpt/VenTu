@@ -198,7 +198,7 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
 
   if (!windows.length) {
     return (
-      <div className="glass-card p-4 text-center text-white/50 text-sm">
+      <div className="glass-card p-4 text-center text-fg-muted text-sm">
         {isPt ? 'Nenhuma janela mágica detectada nas próximas horas.' : 'No magic windows detected in the next hours.'}
       </div>
     );
@@ -214,8 +214,8 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
   return (
     <div className="space-y-3">
       <div className="flex items-center gap-2 mb-4">
-        <Sparkles className="w-5 h-5 text-yellow-400" />
-        <h3 className="text-lg font-bold text-white/90">
+        <Sparkles className="w-5 h-5 text-score-fair" />
+        <h3 className="text-lg font-bold text-fg">
           {isPt ? '✨ Janelas Mágicas' : '✨ Magic Windows'}
         </h3>
       </div>
@@ -224,30 +224,30 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
         <div
           key={i}
           className={`glass-card p-4 border-l-4 ${
-            w.score >= 80 ? 'border-l-green-400' : w.score >= 60 ? 'border-l-yellow-400' : 'border-l-cyan-400'
+            w.score >= 80 ? 'border-l-windDir-offshore' : w.score >= 60 ? 'border-l-score-fair' : 'border-l-data-waves'
           }`}
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-yellow-500/10">
-                <Clock className="w-5 h-5 text-yellow-400" />
+              <div className="p-2 rounded-lg bg-score-fair/10">
+                <Clock className="w-5 h-5 text-score-fair" />
               </div>
               <div>
-                <div className="font-bold text-white">
+                <div className="font-bold text-fg">
                   {formatHour(w.start)} — {formatHour(w.end)}
                 </div>
-                <div className="text-xs text-white/50">
+                <div className="text-xs text-fg-muted">
                   {isPt ? `${w.duration}h de condições boas` : `${w.duration}h of good conditions`}
                 </div>
               </div>
             </div>
             <div className="text-right">
               <div className={`text-2xl font-bold ${
-                w.score >= 80 ? 'text-green-400' : w.score >= 60 ? 'text-yellow-400' : 'text-cyan-400'
+                w.score >= 80 ? 'text-windDir-offshore' : w.score >= 60 ? 'text-score-fair' : 'text-data-waves'
               }`}>
                 {w.score}
               </div>
-              <div className="text-xs text-white/50">/100</div>
+              <div className="text-xs text-fg-muted">/100</div>
             </div>
           </div>
 
@@ -255,7 +255,7 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
             {(isPt ? w.reason : w.reasonEn).split(' + ').map((r, ri) => (
               <span
                 key={ri}
-                className="text-xs px-2.5 py-1 rounded-full bg-white/5 text-white/60 border border-white/10"
+                className="text-xs px-2.5 py-1 rounded-full bg-surface-1 text-fg-muted border border-divider"
               >
                 {r}
               </span>

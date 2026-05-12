@@ -84,12 +84,11 @@ export default function ScoreGauge({
   const variant = getScoreVariant(clamped);
   const cfg = SIZE_CONFIG[size];
 
-  const [animatedScore, setAnimatedScore] = useState(0);
+  /* ───── Static-export safe: show final value in HTML, animate arc via CSS ───── */
+  const [animatedScore, setAnimatedScore] = useState(clamped);
   const hasAnimated = useRef(false);
 
-  /* ───── animation on first mount only ───── */
   useEffect(() => {
-    // After first animation, sync directly on score changes (no re-animation)
     if (hasAnimated.current) {
       setAnimatedScore(clamped);
       return;
@@ -97,7 +96,6 @@ export default function ScoreGauge({
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) {
-      setAnimatedScore(clamped);
       hasAnimated.current = true;
       return;
     }
@@ -113,6 +111,7 @@ export default function ScoreGauge({
       if (progress < 1) requestAnimationFrame(tick);
     };
 
+    setAnimatedScore(0);
     requestAnimationFrame(tick);
   }, [clamped]);
 
@@ -157,7 +156,7 @@ export default function ScoreGauge({
             cy="40"
             r={cfg.radius}
             fill="none"
-            stroke="rgb(255 255 255 / 0.08)"
+            stroke="rgb(var(--divider))"
             strokeWidth={cfg.stroke}
             strokeLinecap="round"
             transform="rotate(225 50 40)"
@@ -189,7 +188,7 @@ export default function ScoreGauge({
             style={{ color: scoreColor }}
             aria-hidden="true"
           >
-            {Math.round(animatedScore)}
+            {Math.round(animatedScore || clamped)}
           </span>
         </div>
       </div>

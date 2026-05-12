@@ -15,7 +15,7 @@ export default function TrendIndicator({ current, previous, label }: TrendIndica
   
   if (Math.abs(diff) < 0.01) {
     return (
-      <span className="flex items-center gap-1 text-white/40 text-xs">
+      <span className="flex items-center gap-1 text-fg-subtle text-xs">
         <Minus className="w-3 h-3" />
         {label && <span>{label}</span>}
       </span>
@@ -23,14 +23,14 @@ export default function TrendIndicator({ current, previous, label }: TrendIndica
   }
   
   const isUp = diff > 0;
-  const color = isUp ? 'text-wave-400' : 'text-surf-400';
+  const color = isUp ? 'text-data-waves' : 'text-data-waves';
   const Icon = isUp ? TrendingUp : TrendingDown;
   
   return (
     <span className={`flex items-center gap-1 ${color} text-xs`}>
       <Icon className="w-3 h-3" />
       {Math.abs(percent).toFixed(0)}%
-      {label && <span className="text-white/40 ml-1">{label}</span>}
+      {label && <span className="text-fg-subtle ml-1">{label}</span>}
     </span>
   );
 }

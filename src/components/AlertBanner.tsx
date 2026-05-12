@@ -65,7 +65,7 @@ export function AlertButton({ spotId, spotName, locale = 'pt' }: AlertButtonProp
   const isPt = locale === 'pt';
 
   if (!mounted || !loaded) {
-    return <div className="w-5 h-5 animate-pulse bg-white/10 rounded" />;
+    return <div className="w-5 h-5 animate-pulse bg-surface-1 rounded" />;
   }
 
   return (
@@ -76,7 +76,7 @@ export function AlertButton({ spotId, spotName, locale = 'pt' }: AlertButtonProp
         toggleAlert(spotId, spotName);
       }}
       className={`flex items-center gap-1.5 transition-all hover:scale-110 cursor-pointer ${
-        active ? 'text-yellow-400' : 'text-white/40 hover:text-white/70'
+        active ? 'text-score-fair' : 'text-fg-subtle hover:text-fg-muted'
       }`}
       title={
         active
@@ -142,26 +142,26 @@ export function AlertBanner({ locale }: { locale: string }) {
   if (!mounted || dismissed || !activeAlerts.length) return null;
 
   return (
-    <div className="glass-card p-4 border-l-4 border-l-yellow-400 bg-yellow-500/5">
+    <div className="glass-card p-4 border-l-4 border-l-score-fair bg-score-fair/5">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-yellow-500/10">
-            <Bell className="w-5 h-5 text-yellow-400 fill-current" />
+          <div className="p-2 rounded-lg bg-score-fair/10">
+            <Bell className="w-5 h-5 text-score-fair fill-current" />
           </div>
           <div>
-            <h4 className="font-bold text-white">
+            <h4 className="font-bold text-fg">
               {isPt ? '🔔 Alertas Ativos' : '🔔 Active Alerts'}
             </h4>
             <div className="space-y-1 mt-1">
               {activeAlerts.map((alert, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm">
-                  <span className="text-white/80">{alert.spotName}</span>
+                  <span className="text-fg-muted">{alert.spotName}</span>
                   <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                    alert.score >= 80 ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'
+                    alert.score >= 80 ? 'bg-windDir-offshore/20 text-windDir-offshore' : 'bg-score-fair/20 text-score-fair'
                   }`}>
                     {alert.score}/100
                   </span>
-                  <span className="text-white/50">{alert.reason}</span>
+                  <span className="text-fg-muted">{alert.reason}</span>
                 </div>
               ))}
             </div>
@@ -169,7 +169,7 @@ export function AlertBanner({ locale }: { locale: string }) {
         </div>
         <button 
           onClick={() => setDismissed(true)}
-          className="text-white/40 hover:text-white/70 transition-colors"
+          className="text-fg-subtle hover:text-fg-muted transition-colors"
         >
           <X className="w-4 h-4" />
         </button>
