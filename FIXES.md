@@ -1,4 +1,4 @@
-# WindSpot - Fix Log
+# VenTu - Fix Log
 
 ## Waves 1-3 — Audit Completo (42 fixes, ~30 horas)
 
@@ -68,7 +68,7 @@
 ✅ Zero erros críticos
 
 ## GitHub Pages
-URL: https://braindeadpt.github.io/windspot-pt/
+URL: https://ventu.surf/
 Deploy: Automático via GitHub Actions
 
 ## Updates Log

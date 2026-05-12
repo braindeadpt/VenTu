@@ -1,4 +1,4 @@
-# WindSpot Chat — Security Setup
+# VenTu Chat — Security Setup
 
 ## 🔒 RLS Policies (Database-Level Protection)
 
