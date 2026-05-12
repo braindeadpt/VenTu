@@ -673,12 +673,6 @@ export default function SpotDetailClient({
           )}
         </div>
 
-        {/* TODO Fase 5: SwellDetective — historical patterns */}
-        {/*
-          <div className="mt-6">
-            <SwellDetective spotSlug={spot.slug} locale={locale} />
-          </div>
-        */}
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
@@ -697,6 +691,14 @@ export default function SpotDetailClient({
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+ *  TODO (futuro): activar SwellDetective APENAS com dados históricos
+ *  reais. O componente está pronto em src/components/SwellDetective.tsx
+ *  mas usa mock data para a maioria dos spots. Activar agora seria
+ *  induzir utilizadores em erro com "padrões históricos" inventados.
+ *  Aguarda pipeline de histórico real (parsing Open-Meteo archived
+ *  ou ingestion própria).
+ *  ═══════════════════════════════════════════════════════════════════════
+ *
  *  TEST NOTES
  *  ═══════════════════════════════════════════════════════════════════════
  *
