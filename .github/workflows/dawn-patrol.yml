@@ -30,6 +30,6 @@ jobs:
       - name: Commit and push
         run: |
           git config user.name "VenTu Bot"
-          git config user.email "bot@windspot.pt"
+          git config user.email "bot@ventu.surf"
           git add public/data/dawn-patrol.json
           git diff --staged --quiet || (git commit -m "🌅 Dawn Patrol: $(date +%Y-%m-%d)" && git push)

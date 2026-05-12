@@ -210,8 +210,8 @@ function parseGeminiResponse(text) {
       summary: summary || 'Resumo não disponível',
       summaryEn: summary || 'Summary not available',
       category: i === 0 ? 'surf' : i === 1 ? 'kitesurf' : 'general',
-      source: 'WindSpot AI',
-      url: 'https://windspot.pt',
+      source: 'VenTu AI',
+      url: 'https://ventu.surf',
       publishedAt: new Date().toISOString(),
       tags: ['portugal', 'condicoes', i === 0 ? 'surf' : i === 1 ? 'kitesurf' : 'geral'],
     };
@@ -239,8 +239,8 @@ function generateStaticBriefing(spotData) {
       summary: `Com ${surfSpot.waveHeight}m de ondas e apenas ${surfSpot.windKt}kt de vento, as condições estão mesmo boas para surf. Água a ${surfSpot.waterTemp}°C — leva a wetsuit!`,
       summaryEn: `With ${surfSpot.waveHeight}m waves and only ${surfSpot.windKt}kt wind, conditions are great for surfing. Water at ${surfSpot.waterTemp}°C — bring your wetsuit!`,
       category: 'surf',
-      source: 'WindSpot AI',
-      url: `https://windspot.pt/pt/spots/${surfSpot.id}`,
+      source: 'VenTu AI',
+      url: `https://ventu.surf/pt/spots/${surfSpot.id}`,
       publishedAt: new Date().toISOString(),
       tags: [surfSpot.id, 'surf', 'condicoes', 'portugal'],
     });
@@ -254,8 +254,8 @@ function generateStaticBriefing(spotData) {
       summary: `${kiteSpot.windKt}kt de vento steady — perfeito para kitesurf! As condições estão mesmo a dar para uma sessão épica.`,
       summaryEn: `${kiteSpot.windKt}kt steady wind — perfect for kitesurfing! Conditions are epic for a great session.`,
       category: 'kitesurf',
-      source: 'WindSpot AI',
-      url: `https://windspot.pt/pt/spots/${kiteSpot.id}`,
+      source: 'VenTu AI',
+      url: `https://ventu.surf/pt/spots/${kiteSpot.id}`,
       publishedAt: new Date().toISOString(),
       tags: [kiteSpot.id, 'kitesurf', 'vento', 'portugal'],
     });
