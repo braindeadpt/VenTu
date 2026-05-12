@@ -121,12 +121,12 @@ function getHeightTier(height: number): {
   hasGlow: boolean;
 } {
   if (height < 1) {
-    return { strokeColor: '#60a5fa', strokeOpacity: 0.6, hasGlow: false }; // flat
+    return { strokeColor: 'rgb(var(--data-waves))', strokeOpacity: 0.6, hasGlow: false }; // flat
   }
   if (height <= 2.5) {
-    return { strokeColor: '#60a5fa', strokeOpacity: 1.0, hasGlow: false }; // rideable
+    return { strokeColor: 'rgb(var(--data-waves))', strokeOpacity: 1.0, hasGlow: false }; // rideable
   }
-  return { strokeColor: '#60a5fa', strokeOpacity: 1.0, hasGlow: true };     // epic
+  return { strokeColor: 'rgb(var(--data-waves))', strokeOpacity: 1.0, hasGlow: true };     // epic
 }
 
 export default function WaveShape({
@@ -208,8 +208,8 @@ export default function WaveShape({
         {/* Background gradient below horizon — depth */}
         <defs>
           <linearGradient id={`waveBg-${size}`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="rgb(255 255 255 / 0)" />
-            <stop offset="100%" stopColor="rgb(255 255 255 / 0.04)" />
+            <stop offset="0%" stopColor="rgb(var(--fg-rgb) / 0)" />
+            <stop offset="100%" stopColor="rgb(var(--fg-rgb) / 0.04)" />
           </linearGradient>
 
           {/* Glow filter for epic waves */}
@@ -237,7 +237,7 @@ export default function WaveShape({
           y1={cfg.height / 2}
           x2={cfg.width}
           y2={cfg.height / 2}
-          stroke="rgb(255 255 255 / 0.08)"
+          stroke="rgb(var(--divider))"
           strokeWidth={1}
           strokeDasharray="4 4"
         />
@@ -264,7 +264,7 @@ export default function WaveShape({
         <div className="absolute bottom-2 left-2 flex items-center gap-1.5">
           <span
             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-pill
-                       bg-bg-base/80 backdrop-blur-sm border border-white/10"
+                       bg-bg-base/80 backdrop-blur-sm border border-divider"
           >
             <span className="font-mono text-num-sm text-fg tabular-nums">
               {labelText}

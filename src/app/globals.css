@@ -33,6 +33,19 @@
     --fg-subtle:   255 255 255 / 0.45;
     --fg-disabled: 255 255 255 / 0.30;
 
+    /* Alpha-free RGB companions — for composing custom alpha values
+       in SVG attributes and other contexts where Tailwind opacity
+       modifiers don't work (e.g. rgb(var(--fg-rgb) / 0.04)). */
+    --fg-rgb:          255 255 255;
+    --fg-muted-rgb:    255 255 255;
+    --fg-subtle-rgb:   255 255 255;
+    --fg-disabled-rgb: 255 255 255;
+    --surface-1-rgb:   255 255 255;
+    --surface-2-rgb:   255 255 255;
+    --surface-3-rgb:   255 255 255;
+    --divider-rgb:     255 255 255;
+    --divider-strong-rgb: 255 255 255;
+
     /* ───── Data viz colors ───── */
     --data-waves:   96 165 250;   /* blue-400 */
     --data-wind:   251 191 36;    /* amber-400 */
@@ -87,6 +100,17 @@
     --fg-muted:     26 43 58 / 0.70;
     --fg-subtle:    26 43 58 / 0.50;
     --fg-disabled:  26 43 58 / 0.30;
+
+    /* Alpha-free RGB companions — see :root for explanation. */
+    --fg-rgb:          26 43 58;
+    --fg-muted-rgb:    26 43 58;
+    --fg-subtle-rgb:   26 43 58;
+    --fg-disabled-rgb: 26 43 58;
+    --surface-1-rgb:   26 43 58;
+    --surface-2-rgb:   26 43 58;
+    --surface-3-rgb:   26 43 58;
+    --divider-rgb:     26 43 58;
+    --divider-strong-rgb: 26 43 58;
 
     /* ───── Data viz (mais saturados para fundo claro) ───── */
     --data-waves:    37 99 235;        /* blue-600 */
@@ -203,7 +227,7 @@
     background-image: linear-gradient(
       90deg,
       transparent 0%,
-      rgb(var(--surface-1) / 1) 50%,
+      rgb(var(--surface-1-rgb) / 1) 50%,
       transparent 100%
     );
     background-size: 200% 100%;

@@ -262,22 +262,22 @@ export default function SwellRadar({
 
   /* ── wind color ── */
   let windColor: string;
-  if (windRelation === 'offshore') windColor = '#22c55e'; // green-500
-  else if (windRelation === 'onshore') windColor = '#ef4444'; // red-500
-  else if (windRelation === 'cross') windColor = '#94a3b8'; // slate-400
-  else windColor = '#fbbf24'; // amber-400 (data-wind)
+  if (windRelation === 'offshore') windColor = 'rgb(var(--windDir-offshore))';
+  else if (windRelation === 'onshore') windColor = 'rgb(var(--windDir-onshore))';
+  else if (windRelation === 'cross') windColor = 'rgb(var(--windDir-cross))';
+  else windColor = 'rgb(var(--data-wind))';
 
   /* ── swell color ── */
-  const swellColor = '#60a5fa'; // blue-400
+  const swellColor = 'rgb(var(--data-waves))';
 
   /* ── incidence color ── */
   const incidenceColor =
     incidenceDeg !== null
       ? incidenceDeg < 30
-        ? '#60a5fa' // good
+        ? 'rgb(var(--data-waves))'
         : incidenceDeg <= 60
-          ? 'rgb(255 255 255 / 0.65)'
-          : 'rgb(255 255 255 / 0.45)'
+          ? 'rgb(var(--fg-muted))'
+          : 'rgb(var(--fg-subtle))'
       : null;
 
   /* ── a11y ── */
@@ -315,16 +315,16 @@ export default function SwellRadar({
           {hasCoast && (
             <g opacity={fadeIn}>
               {/* Sea side */}
-              <circle cx={c} cy={c} r={R} fill="rgb(96 165 250 / 0.08)" clipPath={`url(#seaClip-${cfg.preset})`} />
+              <circle cx={c} cy={c} r={R} fill="rgb(var(--data-waves) / 0.08)" clipPath={`url(#seaClip-${cfg.preset})`} />
               {/* Land side */}
-              <circle cx={c} cy={c} r={R} fill="rgb(255 255 255 / 0.03)" clipPath={`url(#landClip-${cfg.preset})`} />
+              <circle cx={c} cy={c} r={R} fill="rgb(var(--surface-1-rgb) / 0.75)" clipPath={`url(#landClip-${cfg.preset})`} />
               {/* Coast line */}
               <line
                 x1={c - R * Math.cos(((coastAngle - 90) * Math.PI) / 180)}
                 y1={c - R * Math.sin(((coastAngle - 90) * Math.PI) / 180)}
                 x2={c + R * Math.cos(((coastAngle - 90) * Math.PI) / 180)}
                 y2={c + R * Math.sin(((coastAngle - 90) * Math.PI) / 180)}
-                stroke="rgb(255 255 255 / 0.15)"
+                stroke="rgb(var(--divider-strong))"
                 strokeWidth={2}
                 strokeDasharray="6 4"
               />
@@ -332,7 +332,7 @@ export default function SwellRadar({
           )}
 
           {/* Track circle */}
-          <circle cx={c} cy={c} r={R} fill="none" stroke="rgb(255 255 255 / 0.06)" strokeWidth={cfg.strokeTrack} />
+          <circle cx={c} cy={c} r={R} fill="none" stroke="rgb(var(--divider))" strokeWidth={cfg.strokeTrack} />
 
           {/* Cardinal labels */}
           <text x={c} y={c - R + 8} textAnchor="middle" className={`fill-current ${cfg.fontCardinal} text-fg-subtle font-semibold`} aria-hidden="true">N</text>
@@ -349,7 +349,7 @@ export default function SwellRadar({
               <line key={angle}
                 x1={c + inner * Math.cos(rad)} y1={c + inner * Math.sin(rad)}
                 x2={c + outer * Math.cos(rad)} y2={c + outer * Math.sin(rad)}
-                stroke="rgb(255 255 255 / 0.04)" strokeWidth={cfg.strokeTick}
+                stroke="rgb(var(--divider-rgb) / 0.5)" strokeWidth={cfg.strokeTick}
               />
             );
           })}
@@ -382,7 +382,7 @@ export default function SwellRadar({
 
           {/* Spot marker */}
           <circle cx={markerPos.x} cy={markerPos.y} r={markerR}
-            fill="rgb(255 255 255 / 0.9)" stroke="#09090b" strokeWidth={1} />
+            fill="rgb(var(--fg))" stroke="rgb(var(--bg-base))" strokeWidth={1} />
 
           {/* Incidence angle indicator */}
           {incidenceDeg !== null && incidenceColor !== null && (

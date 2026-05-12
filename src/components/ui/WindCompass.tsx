@@ -280,7 +280,7 @@ export default function WindCompass({
             cy={center}
             r={R}
             fill="none"
-            stroke="rgb(255 255 255 / 0.08)"
+            stroke="rgb(var(--divider))"
             strokeWidth={cfg.strokeTrack}
           />
 
@@ -335,7 +335,7 @@ export default function WindCompass({
                   y1={center + inner * Math.sin(rad)}
                   x2={center + outer * Math.cos(rad)}
                   y2={center + outer * Math.sin(rad)}
-                  stroke="rgb(255 255 255 / 0.06)"
+                  stroke="rgb(var(--divider-rgb) / 0.75)"
                   strokeWidth={cfg.strokeTick}
                 />
               );
@@ -346,7 +346,7 @@ export default function WindCompass({
             <path
               d={describeArc(center, center, R + 4, gustStart, gustEnd)}
               fill="none"
-              stroke="rgb(251 191 36 / 0.4)"
+              stroke="rgb(var(--data-wind) / 0.4)"
               strokeWidth={2}
               strokeLinecap="round"
             />
