@@ -268,8 +268,8 @@ function generateStaticBriefing(spotData) {
     summary: `Hoje temos condições variadas em Portugal. Melhores spots de surf: ${bestSurf.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}. Para kitesurf: ${bestKite.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}.`,
     summaryEn: `Today we have varied conditions in Portugal. Best surf spots: ${bestSurf.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}. For kitesurf: ${bestKite.slice(0, 3).map(s => s.id.replace(/-/g, ' ')).join(', ')}.`,
     category: 'general',
-    source: 'WindSpot AI',
-    url: 'https://windspot.pt',
+    source: 'VenTu AI',
+    url: 'https://ventu.surf',
     publishedAt: new Date().toISOString(),
     tags: ['portugal', 'resumo', 'condicoes'],
   });
