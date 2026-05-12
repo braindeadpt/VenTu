@@ -237,8 +237,8 @@ export default function ForecastTable({
     );
   }
 
-  /* ── slice data ── */
-  const visible = useMemo(() => {
+  /* ── slice data (raw — all hours) ── */
+  const rawVisible = useMemo(() => {
     let startIndex = 0;
     if (startTime) {
       startIndex = hourly.findIndex((h) => {
@@ -250,7 +250,24 @@ export default function ForecastTable({
     return hourly.slice(startIndex, startIndex + visibleCount);
   }, [hourly, startTime, visibleCount]);
 
-  /* ── day groups ── */
+  /* ── day groups from raw (for tabs) ── */
+  const allDayGroups = useMemo(
+    () => groupHoursByDay(rawVisible, locale),
+    [rawVisible, locale],
+  );
+
+  /* ── day filter state ── */
+  const [filterDayIndex, setFilterDayIndex] = useState<number | null>(null);
+
+  /* ── filtered visible hours ── */
+  const visible = useMemo(() => {
+    if (filterDayIndex === null) return rawVisible;
+    const group = allDayGroups[filterDayIndex];
+    if (!group) return rawVisible;
+    return rawVisible.slice(group.startIndex, group.startIndex + group.count);
+  }, [rawVisible, allDayGroups, filterDayIndex]);
+
+  /* ── day groups from filtered (for table header) ── */
   const dayGroups = useMemo(
     () => groupHoursByDay(visible, locale),
     [visible, locale],
@@ -263,24 +280,12 @@ export default function ForecastTable({
     return map;
   }, [dayGroups]);
 
-  /* ── active day + scroll ── */
-  const [activeDay, setActiveDay] = useState(0);
-
-  const scrollToDay = useCallback(
+  /* ── day click handler (toggle filter) ── */
+  const handleDayClick = useCallback(
     (dayIndex: number) => {
-      setActiveDay(dayIndex);
-      const startIdx = dayGroups[dayIndex]?.startIndex;
-      if (startIdx === undefined) return;
-      const el = document.getElementById(`ft-day-${dayIndex}`);
-      if (el) {
-        el.scrollIntoView({
-          behavior: 'smooth',
-          inline: 'start',
-          block: 'nearest',
-        });
-      }
+      setFilterDayIndex((prev) => (prev === dayIndex ? null : dayIndex));
     },
-    [dayGroups],
+    [],
   );
 
   /* ── current hour ref ── */
@@ -313,16 +318,16 @@ export default function ForecastTable({
       {/* ═══════════════════════════════════════════════════════════════
           DAY PICKER TABS
           ═══════════════════════════════════════════════════════════════ */}
-      {dayGroups.length > 1 && (
+      {allDayGroups.length > 1 && (
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          {dayGroups.map((group, i) => (
+          {allDayGroups.map((group, i) => (
             <button
               key={i}
-              onClick={() => scrollToDay(i)}
+              onClick={() => handleDayClick(i)}
               className={`
                 px-3 py-1.5 sm:px-4 sm:py-2 rounded-pill text-meta-sm font-medium whitespace-nowrap
                 transition-all duration-fast
-                ${activeDay === i
+                ${filterDayIndex === i
                   ? 'bg-surface-3 text-fg ring-1 ring-divider-strong'
                   : 'bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg'
                 }
@@ -338,6 +343,14 @@ export default function ForecastTable({
               )}
             </button>
           ))}
+          {filterDayIndex !== null && (
+            <button
+              onClick={() => setFilterDayIndex(null)}
+              className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-pill text-meta-sm font-medium whitespace-nowrap transition-all duration-fast bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg border border-dashed border-divider"
+            >
+              {isPt ? 'Todas' : 'All'}
+            </button>
+          )}
         </div>
       )}
 
