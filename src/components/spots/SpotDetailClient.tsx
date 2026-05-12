@@ -251,7 +251,7 @@ export default function SpotDetailClient({
             let forecast: SpotData['forecast'] = [];
             try {
               const marineData = await fetchMarineData(spot.lat, spot.lon);
-              forecast = getForecastData(marineData).slice(0, 48);
+              forecast = getForecastData(marineData).slice(0, 120);
             } catch {
               /* forecast not critical */
             }
@@ -279,7 +279,7 @@ export default function SpotDetailClient({
         const marineData = await fetchMarineData(spot.lat, spot.lon);
         const conditions = getCurrentConditions(marineData);
         const allScores = getAllSportScores(spot, conditions);
-        const forecast = getForecastData(marineData).slice(0, 48);
+        const forecast = getForecastData(marineData).slice(0, 120);
 
         setSpotData({ spot, conditions, allScores, forecast });
 
@@ -535,7 +535,7 @@ export default function SpotDetailClient({
           <div className="card-1 p-4">
             <ForecastTable
               hourly={forecastTableData}
-              hours={48}
+              hours={120}
               sport={selectedSport}
               coastOrientation={spot.coastOrientation}
               locale={locale as 'pt' | 'en'}
@@ -706,7 +706,7 @@ export default function SpotDetailClient({
  *     - Hero com nome, região, dificuldade, badges
  *     - 3+ sport tabs com scores
  *     - Showcase: ScoreGauge lg + WaveShape lg + SwellRadar lg
- *     - ForecastTable com 48h + score row colorido
+ *     - ForecastTable com 120h + score row colorido
  *     - Stats: ondas, vento c/ arrow, água, rajada
  *     - Chat funcional
  *

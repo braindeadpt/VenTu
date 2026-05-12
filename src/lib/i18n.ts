@@ -83,6 +83,7 @@ export const translations = {
     theme: { toggle: 'Alternar tema', toggleDark: 'Alternar para tema escuro', toggleCoast: 'Alternar para tema claro' },
     forecastTable: {
       caption: 'Previsão horária para as próximas {hours} horas',
+      today: 'Hoje',
       waves: 'Ondas (m)',
       period: 'Período (s)',
       wind: 'Vento (kt)',
@@ -184,6 +185,7 @@ export const translations = {
     theme: { toggle: 'Switch theme', toggleDark: 'Switch to dark theme', toggleCoast: 'Switch to light theme' },
     forecastTable: {
       caption: 'Hourly forecast for the next {hours} hours',
+      today: 'Today',
       waves: 'Waves (m)',
       period: 'Period (s)',
       wind: 'Wind (kt)',
