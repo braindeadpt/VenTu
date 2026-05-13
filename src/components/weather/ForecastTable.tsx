@@ -375,14 +375,15 @@ export default function ForecastTable({
       {/* ═══════════════════════════════════════════════════════════════
           TABLE
           ═══════════════════════════════════════════════════════════════ */}
-      <div
-        ref={scrollRef}
-        onScroll={handleScroll}
-        className="overflow-x-auto no-scrollbar rounded-card-lg border border-divider bg-bg-base"
-        tabIndex={0}
-        role="region"
-        aria-label={t.caption.replace('{hours}', String(visible.length))}
-      >
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="overflow-x-auto no-scrollbar rounded-card-lg border border-divider bg-bg-base"
+          tabIndex={0}
+          role="region"
+          aria-label={t.caption.replace('{hours}', String(visible.length))}
+        >
         <table className="w-full border-separate border-spacing-x-[2px] border-spacing-y-[1px] text-center">
           {/* Caption for screen readers */}
           <caption className="sr-only">
@@ -643,7 +644,10 @@ export default function ForecastTable({
           </tbody>
         </table>
       </div>
+      {/* Scroll hint — gradient fade on right edge */}
+      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-bg-base to-transparent pointer-events-none z-10" aria-hidden="true" />
     </div>
+  </div>
   );
 }
 

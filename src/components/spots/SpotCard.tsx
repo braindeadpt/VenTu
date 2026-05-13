@@ -146,7 +146,7 @@ export default function SpotCard({
               <WaveShape
                 height={conditions.waveHeight}
                 period={conditions.wavePeriod}
-                size="md"
+                size="sm"
                 showLabel={false}
               />
             ) : (

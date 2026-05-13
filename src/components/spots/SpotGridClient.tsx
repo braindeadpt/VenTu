@@ -265,7 +265,7 @@ export function SpotGridClient({
                   key={sport.id}
                   onClick={() => handleSportChange(sport.id)}
                   className={[
-                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium',
+                    'inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium min-h-[44px]',
                     'transition-all duration-200 whitespace-nowrap shrink-0',
                     active
                       ? 'bg-surface-2 border border-divider-strong text-fg'
@@ -294,7 +294,7 @@ export function SpotGridClient({
                     key={region}
                     onClick={() => handleRegionChange(region)}
                     className={[
-                      'inline-flex items-center px-2.5 py-1 rounded-md text-sm',
+                      'inline-flex items-center px-2.5 py-1.5 rounded-md text-sm min-h-[40px]',
                       'transition-all duration-200 whitespace-nowrap shrink-0',
                       active
                         ? 'bg-surface-2 border border-divider-strong text-fg font-medium'

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 // useSearchParams removed — using window.location.search for static export safety
 import {
@@ -32,9 +33,11 @@ import ForecastTable from '@/components/weather/ForecastTable';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
 import SpotMap from '@/components/spots/SpotMap';
-import SpotChat from '@/components/spots/SpotChat';
 import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
+
+// Lazy-load SpotChat — Supabase client is heavy (~45-60KB), chat is below the fold
+const SpotChat = dynamic(() => import('@/components/spots/SpotChat'), { ssr: false });
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SpotDetailClient — Redesigned showcase of all signature components.
@@ -406,7 +409,7 @@ export default function SpotDetailClient({
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={handleShare}
-              className="p-2.5 rounded-button bg-surface-1 border border-divider text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors duration-fast relative"
+              className="p-3 rounded-button bg-surface-1 border border-divider text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors duration-fast relative min-w-[44px] min-h-[44px]"
               aria-label={td.share}
               title={td.share}
             >

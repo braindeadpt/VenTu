@@ -1,6 +1,3 @@
-/* Leaflet map styles */
-@import 'leaflet/dist/leaflet.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -33,7 +30,7 @@
     /* ───── Foreground / text ───── */
     --fg:          255 255 255 / 0.95;
     --fg-muted:    255 255 255 / 0.65;
-    --fg-subtle:   255 255 255 / 0.45;
+    --fg-subtle:   255 255 255 / 0.55;
     --fg-disabled: 255 255 255 / 0.30;
 
     /* Alpha-free RGB companions — for composing custom alpha values
@@ -101,7 +98,7 @@
     /* ───── Foreground / text ───── */
     --fg:           26 43 58 / 0.95;   /* navy escuro */
     --fg-muted:     26 43 58 / 0.70;
-    --fg-subtle:    26 43 58 / 0.50;
+    --fg-subtle:    26 43 58 / 0.55;
     --fg-disabled:  26 43 58 / 0.30;
 
     /* Alpha-free RGB companions — see :root for explanation. */

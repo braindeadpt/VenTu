@@ -23,6 +23,7 @@ export default function SpotMap({ lat, lon, locale = 'pt' }: SpotMapProps) {
     iframe.style.borderRadius = '12px';
     iframe.loading = 'lazy';
     iframe.allowFullscreen = true;
+    iframe.title = isPt ? `Mapa do spot` : `Spot map`;
     
     const url = `https://www.openstreetmap.org/export/embed.html?bbox=${lon-0.015}%2C${lat-0.015}%2C${lon+0.015}%2C${lat+0.015}&layer=mapnik&marker=${lat}%2C${lon}`;
     iframe.src = url;

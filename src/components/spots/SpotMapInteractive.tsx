@@ -95,6 +95,23 @@ export default function SpotMapInteractive({
     let destroyed = false;
 
     const initMap = async () => {
+      // Inject Leaflet CSS dynamically (avoids render-blocking on pages without maps)
+      if (!document.getElementById('leaflet-css')) {
+        const link = document.createElement('link');
+        link.id = 'leaflet-css';
+        link.rel = 'stylesheet';
+        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+        link.crossOrigin = '';
+        document.head.appendChild(link);
+        // Wait for CSS to load before initializing map
+        await new Promise<void>((resolve) => {
+          link.onload = () => resolve();
+          link.onerror = () => resolve(); // continue even if CSS fails
+          // Fallback: resolve after 1s anyway
+          setTimeout(resolve, 1000);
+        });
+      }
+
       const L = (await import('leaflet')).default;
       if (destroyed) return;
       leafletRef.current = L;
@@ -289,7 +306,7 @@ export default function SpotMapInteractive({
   }, [spotsData, selectedSport, selectedRegion, isReady, locale, isPt]);
 
   return (
-    <div className="relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1" style={{ height: 'clamp(400px, 55vh, 600px)' }}>
+    <div className="relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1" style={{ height: 'clamp(300px, 50vh, 600px)' }}>
       {!isReady && (
         <div className="absolute inset-0 flex items-center justify-center bg-surface-1 z-10">
           <div className="flex flex-col items-center gap-3">

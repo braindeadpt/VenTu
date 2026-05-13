@@ -81,34 +81,26 @@ export default function FavoriteButton({
     setTimeout(() => setClickEffect(false), 300);
   };
 
+  const label = active
+    ? isPt ? `Remover ${spotName} dos favoritos` : `Remove ${spotName} from favorites`
+    : isPt ? `Adicionar ${spotName} aos favoritos` : `Add ${spotName} to favorites`;
+
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
+      type="button"
       onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick(e);
-        }
-      }}
-      className={`flex items-center gap-2 transition-all hover:scale-110 cursor-pointer ${
+      aria-pressed={active}
+      aria-label={label}
+      title={label}
+      className={`flex items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-lg transition-all hover:scale-110 ${
         clickEffect ? 'scale-125' : ''
       } ${
         active ? 'text-windDir-onshore' : 'text-fg-subtle hover:text-fg-muted'
       }`}
-      title={
-        active
-          ? isPt ? `Remover ${spotName} dos favoritos` : `Remove ${spotName} from favorites`
-          : isPt ? `Adicionar ${spotName} aos favoritos` : `Add ${spotName} to favorites`
-      }
     >
       <Heart
         className={`${sizeClasses[size]} ${active ? 'fill-current' : ''}`}
-        aria-label={
-          active
-            ? isPt ? `Remover ${spotName} dos favoritos` : `Remove ${spotName} from favorites`
-            : isPt ? `Adicionar ${spotName} aos favoritos` : `Add ${spotName} to favorites`
-        }
+        aria-hidden="true"
       />
       {showLabel && (
         <span className="text-sm font-medium">
@@ -118,6 +110,6 @@ export default function FavoriteButton({
           }
         </span>
       )}
-    </div>
+    </button>
   );
 }
