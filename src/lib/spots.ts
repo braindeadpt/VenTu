@@ -576,10 +576,20 @@ export const spots: Spot[] = [
       region: 'Algarve', regionEn: 'Algarve', lat: 37.183, lon: -7.500,
       coastOrientation: 180,
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'S, SE',
-      description: 'Praia selvagem entre VRSA e Monte Gordo. Menos crowd, ondas mais organizadas. Kitesurf com vento de leste e ondas de Sotavento.',
-      descriptionEn: 'Wild beach between VRSA and Monte Gordo. Less crowded, more organized waves. Kitesurfing with east wind and Sotavento waves.',
+      description: 'Praia selvagem entre VRSA e Monte Gordo. Menos crowd, ondas mais organizadas. Kitesurf com vento de leste e ondas de Sotavento. ⚠️ Proibido kitesurf de 1 junho a 30 setembro — usar Altura (a 3km) como alternativa.',
+      descriptionEn: 'Wild beach between VRSA and Monte Gordo. Less crowded, more organized waves. Kitesurfing with east wind and Sotavento waves. ⚠️ Kitesurf banned 1 Jun–30 Sep — use Altura (3km away) as alternative.',
       facilities: ['Estacionamento', 'Bar de praia (verão)'],
-      hazards: ['Correntes', 'Sem vigilância']
+      hazards: ['Correntes', 'Sem vigilância', 'Kitesurf proibido 1 Jun–30 Sep']
+    },
+  {
+      id: 'altura', slug: 'altura', name: 'Altura (Praia da Alagoa)', nameEn: 'Altura (Alagoa Beach)',
+      region: 'Algarve', regionEn: 'Algarve', lat: 37.170, lon: -7.498,
+      coastOrientation: 180,
+      type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'S, SE',
+      description: 'Praia extensa em Altura, a 3km de Monte Gordo. Água plana e vento de leste consistente. Alternativa oficial para kitesurf durante a proibição de Verão na Praia Verde (1 junho–30 setembro). Escola de kite no local.',
+      descriptionEn: 'Long beach at Altura, 3km from Monte Gordo. Flat water and consistent east wind. Official alternative for kitesurfing during the Praia Verde summer ban (1 Jun–30 Sep). Kite school on site.',
+      facilities: ['Estacionamento', 'Escola kite', 'Restaurantes', 'WC'],
+      hazards: ['Multidão no verão']
     },
   {
       id: 'praia-rocha', slug: 'praia-rocha', name: 'Praia da Rocha', nameEn: 'Praia da Rocha',
