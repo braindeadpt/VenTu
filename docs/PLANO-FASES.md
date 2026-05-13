@@ -1,342 +1,289 @@
-# VenTu — Plano de Implementação por Fases
+# VenTu — Plano de Implementação por Fases (Baseado nas 6 Auditorias)
 
-> Criado: 2026-05-14 | Estado: Pendente aprovação do utilizador
-> Filosofia: **pequenas vitórias, teste contínuo, zero regressões**
-
----
-
-## 🎯 Visão Geral
-
-Este plano organiza todo o trabalho restante em **fases pequenas, independentes e testáveis**.
-Cada fase termina com um **build verde** e um **deploy funcional** — nunca deixamos o repo quebrado.
-
-```
-Fase 0 │ Estabilização (fixes críticos que temos AGORA)
-Fase 1 │ Arquitetura de Dados (scores por desporto — a base de tudo)
-Fase 2 │ Redesign Core (Spot Detail → Grid → Compare → Favorites)
-Fase 3 │ Funcionalidades Novas (marés, câmaras, dados reais)
-Fase 4 │ Expansão & Polish (mais spots, idiomas, SEO, PWA)
-```
+> **Baseado em:** 6 relatórios de auditoria independentes  
+> **Total de problemas identificados:** ~112  
+> **Data do plano:** 2026-05-14  
+> **Status:** Reorganizado por criticidade e dependências
 
 ---
 
-## ✅ FASE 0: Estabilização
-**Objetivo:** Corrigir bugs críticos e completar o que ficou pendente dos audits.
-**Duração estimada:** 2-3 sessões
-**Critério de saída:** Todos os workflows a passar, zero erros no build, site 100% funcional.
+## 🎯 Filosofia do Plano
 
-### 0.1 — Fix Workflows GitHub Actions
-- [ ] `update-conditions.js`: validação de segurança (já feita?), testar run manual
-- [ ] `update-news.js`: fix do crash quando `a.url` é vazio
-- [ ] `dawn-patrol.js`: já fixado com retry + fallback — confirmar run automática
-- [ ] Verificar se `conditions.json` está a ser populado correctamente
+**Ordem de implementação:**
+1. **Segurança primeiro** — o que está partido protege o projeto
+2. **Estabilidade** — o que não funciona impede o resto
+3. **UX defeitos** — o que frustra utilizadores hoje
+4. **UX redesign** — o que eleva o produto
+5. **Polish** — o que faz brilhar
 
-**Teste:** Trigger manual de cada workflow → verificar green check + output correcto.
-
-### 0.2 — Completar Traduções EN
-- [ ] Auditar `i18n.ts` — listar todas as strings em PT sem equivalente EN
-- [ ] Traduzir faltas (prioridade: labels de UI, não conteúdo editorial)
-- [ ] Verificar build não quebra com locale `en`
-
-**Teste:** `npm run build` com ambos locales + spot check visual em `/en/spots/`.
-
-### 0.3 — Fix "Spot não encontrado"
-- [ ] Reproduzir: clicar em spot no grid → "spot não encontrado"
-- [ ] Verificar se o problema é em slugs com caracteres especiais, acentos, ou hífens
-- [ ] Corrigir `generateStaticParams` ou normalização de slug
-
-**Teste:** Clicar em 10 spots aleatórios (PT + EN), confirmar que todos abrem.
-
-### 0.4 — Limpar Dead Code
-- [ ] Remover `DawnPatrolBanner.tsx`, `AlertBanner.tsx`, `MagicWindows.tsx`, `SwellDetective.tsx` se não são importados
-- [ ] Remover `SecurityHeaders.tsx` (CSP via JS é inútil em static export)
-- [ ] Verificar `SessionForecastChart.tsx` e `ForecastChart.tsx` — deletados no remote, verificar se não há imports fantasmas
-
-**Teste:** `npm run build` + grep por imports removidos.
-
-### 0.5 — Municípios em Falta
-- [ ] Auditar `regions.ts` vs `spots.ts` — listar municípios não mapeados
-- [ ] Adicionar mappings em falta
-- [ ] Garantir `getMacroRegion()` nunca devolve `null`/`undefined`
-
-**Teste:** Build + verificar que todos os 81 spots têm região atribuída.
+**Regras por fase:**
+- Cada fase tem ≤8 itens (testável numa sessão)
+- Cada fase termina com `npm run build` verde
+- Nada avança sem teste visual/manual
+- Regressões = parar e corrigir
 
 ---
 
-## 🏗 FASE 1: Arquitetura de Dados por Desporto
-**Objetivo:** Cada spot mostra só o que é relevante para o desporto seleccionado.
-**Duração estimada:** 3-4 sessões
-**Critério de saída:** Sistema de scores por desporto funciona em todas as páginas.
-**Dependências:** Fase 0 completa.
+## 🔴 FASE 1: Segurança Crítica (1-2 sessões)
 
-### 1.1 — Sistema de Compatibilidade
-- [ ] Adicionar `primarySports` e `possibleSports` ao tipo `Spot`
-- [ ] Preencher os 81 spots com compatibilidade real (trabalho manual + LLM valida)
-- [ ] Implementar `getCompatibleSports(spot)` robusto (não só fallback heurístico)
-- [ ] `isSportCompatible(spot, sport)` → boolean
+**Fontes:** Security Audit (13 vulns) + Segurança (20 vulns)  
+**Risco se não fizer:** Dados apagados, spam massivo, acesso não autorizado ao admin
 
-**Teste:** Verificar Guincho (surf + kite + wind) vs Lagoa de Alqueva (wake + sup) vs Nazaré (surf + body).
+### 1.1 — Credenciais Hardcoded [CRÍTICO]
+- [ ] `src/lib/supabase-config.ts` — remover fallbacks hardcoded (URL + key), exigir env vars
+- [ ] `src/app/[locale]/admin/contributions/page.tsx` — remover password `'Ventu2026'` hardcoded ou desativar página admin
+- [ ] `.env.example` — adicionar comentário `SERVER-SIDE ONLY` no `GEMINI_API_KEY`
+- [ ] `package.json` — `"private": true`
 
-### 1.2 — Scores por Desporto
-- [ ] Reescrever `sportScore.ts`: `getSportScore(spot, sport, conditions)` → `{ score, rating, factors, warning? }`
-- [ ] Cada desporto tem lógica própria:
-  - Surf: ondas + offshore
-  - Kitesurf: vento forte + ondas pequenas
-  - Windsurf: vento moderado
-  - Wakeboard: 0 se não tiver cable park
-  - Bodyboard: ondas (mais tolerante que surf)
-  - SUP: ondas pequenas + vento leve
-  - Foil: vento leve/moderado
-- [ ] Remover score "geral" misturado
+### 1.2 — Row Level Security (RLS) [CRÍTICO]
+- [ ] `supabase-contributions.sql` — remover políticas UPDATE/DELETE anónimas na tabela `contributions`
+- [ ] `supabase-schema.sql` — adicionar DENY UPDATE/DELETE para anónimos na tabela `messages`
+- [ ] Verificar se RLS do messages já tem rate limit server-side (1 msg/10s)
 
-**Teste:** Comparar scores do mesmo spot em desportos diferentes — devem variar logicamente.
+### 1.3 — Sanitização & XSS [ALTO]
+- [ ] `src/components/spots/SpotMapInteractive.tsx` — substituir `innerHTML` por DOM API (`textContent`) nos popups do Leaflet
+- [ ] `src/components/spots/SpotMapInteractive.tsx` — remover `onmouseover`/`onmouseout` inline dos `divIcon`, usar CSS `:hover`
+- [ ] `src/app/layout.tsx` — adicionar `id="theme-script"` ao `dangerouslySetInnerHTML` (mitigação parcial já existe)
 
-### 1.3 — Filtros Funcionais
-- [ ] Quando filtra "Kitesurf": mostrar só spots compatíveis, ordenar por score de KITESURF
-- [ ] Quando filtra "Surf": mostrar só spots compatíveis, ordenar por score de SURF
-- [ ] Sport "all": mostrar todos, ordenar por `primaryScore` (score do desporto principal do spot)
-- [ ] Atualizar `SpotGridClient.tsx` para usar novo sistema
+### 1.4 — Headers & Configuração [MÉDIO]
+- [ ] `next.config.js` — `reactStrictMode: true`
+- [ ] `next.config.js` — `compress: true`
+- [ ] Meta tags CSP no `<head>` (mitigação parcial para static export)
 
-**Teste:**
-1. Filtrar "Wakeboard" → só spots com cable park / lagoas
-2. Filtrar "Surf" em Lisboa → não aparecer spots de lagoa
-3. Filtrar "Kitesurf" → top spots têm vento forte
-
-### 1.4 — SpotCard Adaptativo
-- [ ] `SpotCard` recebe `sport` prop
-- [ ] Mostra score do desporto seleccionado (não primaryScore genérico)
-- [ ] Stats relevantes ao desporto:
-  - Surf: Ondas X.Xm | Período XXs | Vento offshore
-  - Kite: Vento XXkt | Rajadas XX | Ondas X.Xm
-  - Wakeboard: Aberto/Fechado | Temperatura
-
-**Teste:** Mudar filtro de desporto na homepage → cards mudam stats e scores.
+**Teste de validação:**
+- `grep -r "sb_publishable_ihub" src/` → deve dar zero resultados
+- `grep -r "Ventu2026" src/` → deve dar zero resultados
+- Build verde (`npm run build`)
 
 ---
 
-## 🎨 FASE 2: Redesign Consistente
-**Objetivo:** Todas as páginas usam os mesmos componentes e design language.
-**Duração estimada:** 5-6 sessões
-**Critério de saída:** Site consistente em todas as páginas, mobile-first, zero information overload.
-**Dependências:** Fase 1 completa (usamos scores por desporto).
+## 🟠 FASE 2: Estabilidade & Performance Crítica (2-3 sessões)
 
-### 2.1 — Spot Detail (P1 — mais importante)
-- [ ] Layout 1 coluna, scroll natural
-- [ ] Header: nome + região + score grande + badge desporto + favorito
-- [ ] Condições: 3 cards só com dados relevantes ao desporto
-- [ ] Forecast: tabela 24h simplificada (mantemos a actual mas com cores por desporto)
-- [ ] Recomendação: texto gerado + crowd + melhor hora
-- [ ] Mapa: OpenStreetMap pequeno
-- [ ] Info do spot: facilities em ícones, hazards só se existirem
-- [ ] Chat: compacto, sempre visível
-- [ ] Remover: SwellDetective, excesso de facilities, scores de desportos não compatíveis
+**Fontes:** APIs & Performance (19 problemas) + Performance Audit (15 problemas)  
+**Risco se não fizer:** Builds que falham, site sem dados, performance degradada
 
-**Teste:** Abrir 5 spots diferentes (surf, kite, wake, sup, foil) → verificar que cada um mostra só info relevante.
+### 2.1 — API & Dados [CRÍTICO]
+- [ ] `public/data/conditions.json` — adicionar seed data real (não vazio `{}`) para fallback quando workflow falha
+- [ ] `scripts/update-conditions.js` — implementar retry com backoff exponencial (3 tentativas) nas chamadas Open-Meteo
+- [ ] `scripts/update-news.js` — retry com backoff + timeout 30s nas chamadas Gemini API
+- [ ] `.github/workflows/update-data.yml` — reduzir frequência de 8x/dia para 4x/dia (a cada 6h)
 
-### 2.2 — Spot Grid (/spots)
-- [ ] Usar `SpotCard` adaptativo (de Fase 1.4)
-- [ ] Filtros sticky: desporto + região + dificuldade + score mínimo
-- [ ] Top 3 destaque quando filtra desporto (já feito em Fase 4b, validar que funciona com novo sistema)
-- [ ] Empty state com sugestão alternativa
+### 2.2 — Performance — Bundle & Cache [ALTO]
+- [ ] `next.config.js` — ativar otimização de imagens (`images.unoptimized: false` + custom loader para static export)
+- [ ] `src/lib/openmeteo.ts` — implementar LRU cache com limite (max 100 entradas)
+- [ ] `src/components/spots/SpotGridClient.tsx` — dynamic import para `SpotMapInteractive` (reduz bundle inicial)
+- [ ] `src/app/layout.tsx` — adicionar `dns-prefetch` + `preconnect` para Open-Meteo, Supabase, Carto CDN
 
-**Teste:**
-- Filtrar + verificar ordenação correcta
-- Mobile: filtros em drawer, scroll natural
-- Desktop: 3 colunas, cards alinhados
+### 2.3 — Client-Side Robustez [MÉDIO]
+- [ ] `SpotDetailClient.tsx` + `FavoritesClient.tsx` — cache `conditions.json` com `cache: 'default'` em vez de `no-store`
+- [ ] `SpotDetailClient.tsx` — limpar timer do `handleShare` no unmount (memory leak)
+- [ ] `ForecastTable.tsx` — substituir hover React state por CSS `:hover` (melhora INP)
+- [ ] `src/lib/openmeteo.ts` — reduzir timeout de 10s para 5s
 
-### 2.3 — Compare
-- [ ] Layout tabela lado a lado (não cards sobrepostos)
-- [ ] Max 3 spots
-- [ ] Linhas comparáveis: score, ondas, vento, temperatura, crowd
-- [ ] Highlight no melhor de cada categoria
+### 2.4 — Mock Data & Freshness [MÉDIO]
+- [ ] `src/lib/openmeteo.ts` — quando usar mock data, mostrar badge "⚠ Dados estimados" na UI
+- [ ] `SpotDetailClient.tsx` — adicionar timestamp "Atualizado às HH:MM" visível
 
-**Teste:** Comparar Guincho vs Nazaré vs Carcavelos → verificar que a comparação faz sentido.
-
-### 2.4 — Favorites
-- [ ] Usar `SpotCard` adaptativo
-- [ ] Badge de alerta se condições mudaram desde última visita
-- [ ] Fácil remover favorito
-
-**Teste:** Adicionar/remover favorito + verificar persistência (localStorage).
-
-### 2.5 — Homepage Ajustes
-- [ ] Conectar com novo sistema de scores
-- [ ] Quando filtra desporto, hero mostra spot #1 desse desporto
-- [ ] Live ticker com dados reais (conditions.json)
-- [ ] PortugalMap SVG (já feito em Fase 4c, validar que funciona)
-
-**Teste:** Homepage em PT + EN, mobile + desktop, filtros funcionais.
+**Teste de validação:**
+- Build passa com `npm run build`
+- `conditions.json` tem dados reais (não `{}`)
+- Lighthouse Performance sobe de 62-72 para 70-80
 
 ---
 
-## 🌊 FASE 3: Funcionalidades Novas
-**Objetivo:** Adicionar dados reais que fazem diferença na decisão do rider.
-**Duração estimada:** 4-5 sessões
-**Critério de saída:** Dados de marés e câmaras funcionais, qualidade da água integrada.
-**Dependências:** Fase 2 completa.
+## 🟡 FASE 3: UX — Defeitos Atuais (3-4 sessões)
 
-### 3.1 — Marés (Alta Prioridade)
-- [ ] Investigar API do Instituto Hidrográfico (hidrografico.pt)
-- [ ] Ou usar WorldTides/Stormglass com cache inteligente
-- [ ] Adicionar `tide` ao tipo `Spot` (altitude, fase, próxima maré)
-- [ ] Mostrar na Spot Detail: "Maré alta em 2h" / "Melhor: maré baixa"
-- [ ] Indicar spots que dependem de maré (Carcavelos, Costa Caparica)
+**Fonte:** UX/UI Audit — Parte 1 (Defeitos Actuais)  
+**Risco se não fizer:** Utilizadores confusos, altos bounce rates, frustração
 
-**Teste:** Verificar maré actual vs site oficial do IH.
+### 3.1 — Homepage & First Impression
+- [ ] Hero: substituir "VenTu" gigante descontextualizado por comunicação clara: "Condições para surf, kitesurf e windsurf em Portugal"
+- [ ] "Melhor Spot Hoje": usar lógica agnóstica de desporto ou permitir escolha do desporto principal
+- [ ] Adicionar search com autocomplete no hero (fuzzy search em `spots.ts`)
 
-### 3.2 — Livecams nos Spots Populares
-- [ ] Identificar 5-6 spots com webcams públicas (Carcavelos, Guincho, Nazaré, Supertubos, Ribeira d'Ilhas)
-- [ ] Componente `<Livecam>` com iframe ou YouTube embed
-- [ ] Integrar na Spot Detail (secção "Câmara ao vivo")
-- [ ] Fallback elegante se stream offline
+### 3.2 — SpotCard & Glanceability
+- [ ] Consolidar os dois `SpotCard` (componente + inline em page.tsx) num só
+- [ ] Reduzir densidade de informação: nome, score gauge, 3 stats principais, melhor janela
+- [ ] WindCompass: rodar SÓ a seta, não os labels N/S/E/W
 
-**Teste:** Abrir spot com câmara → verificar stream a correr.
+### 3.3 — Dados & Visualização
+- [ ] ForecastChart: separar eixos (ondas à esquerda, vento à direita) ou usar bandas coloridas
+- [ ] ForecastMini: destacar hora atual, adicionar ícones de tendência (↑→↓)
+- [ ] LiveTicker: transformar em "Top 3 perto de ti" em vez de marquee infinito
+- [ ] MiniMap: aumentar para 256-320px ou remover se não acrescentar valor
 
-### 3.3 — Qualidade da Água
-- [ ] Parse boletim APA (semanal)
-- [ ] Badge na Spot Detail: "Qualidade Excelente" / "Boa" / "Insuficiente"
-- [ ] Link para boletim oficial
+### 3.4 — Interação & Filtros
+- [ ] Filtros região: sincronizar com URL (`?region=norte&sport=surf`)
+- [ ] Filtros: adicionar botão "Limpar filtros" quando nenhum resultado
+- [ ] Favoritos: adicionar URL shareable (`?favs=guincho,nazare`)
+- [ ] SportSelector: só mostrar desportos compatíveis com o spot atual
 
-**Teste:** Verificar badge vs último boletim APA.
+### 3.5 — Mobile & Estados
+- [ ] Hero mobile: reduzir de 70vh para 50vh
+- [ ] Filter bar: adicionar fade-edge ou chevron a indicar scroll horizontal
+- [ ] Loading: substituir spinner por skeleton shimmer
+- [ ] Stale data: badge "Dados de há X min" quando >30 min
+- [ ] Error state: "⚠ Dados em cache" / "⚠ Dados estimados" com retry button
 
-### 3.4 — Imagens Reais por Spot
-- [ ] Curadoria: Wikimedia Commons + Unsplash para 20 spots principais
-- [ ] Adicionar campo `images` ao Spot
-- [ ] Variante `<SpotCard variant="hero">` para destaques
-- [ ] Lazy loading + otimização
+### 3.6 — Microcopy & Acessibilidade
+- [ ] Unificar tom de voz (PT-PT consistente, sem abreviações mistas)
+- [ ] Adicionar `prefers-reduced-motion` em todas as animações
+- [ ] Melhorar contraste em `text-white/30` e `text-white/40`
+- [ ] Adicionar skip links para navegação por teclado
 
-**Teste:** Verificar que imagens carregam rápido (Lighthouse performance).
-
----
-
-## 🌍 FASE 4: Expansão & Polish
-**Objetivo:** Site profissional, completo, pronto para crescimento.
-**Duração estimada:** 4-6 sessões
-**Critério de saída:** SEO optimizado, PWA funcional, internacionalizado, analytics privados.
-**Dependências:** Fase 3 completa.
-
-### 4.1 — Mais Spots
-- [ ] Açores: Santa Maria, São Miguel (spot já existe?), Pico, Faial, São Jorge
-- [ ] Madeira: Jardim do Mar, Paul do Mar, Machico
-- [ ] Lagoas interiores: Alqueva, Castelo do Bode, barragens
-- [ ] Norte adicional: spots menos conhecidos
-- [ ] Atualizar `regions.ts`, `spots.ts`, `update-conditions.js`
-
-**Teste:** Todos os novos spots têm coordenadas correctas, região mapeada, e aparecem no grid.
-
-### 4.2 — SEO Landing Pages
-- [ ] Gerar rotas estáticas por combinação:
-  - `/pt/surf/` — spots de surf
-  - `/pt/kitesurf-algarve/` — sport × região
-  - `/pt/melhores-spots-fim-de-semana/` — editorial
-- [ ] `generateStaticParams` para cada combinação
-- [ ] Meta descriptions únicos por página
-
-**Teste:** Verificar que páginas geradas têm meta tags correctos (inspect element).
-
-### 4.3 — Analytics (Privacidade-First)
-- [ ] Integrar Plausible.io, GoatCounter, ou Umami
-- [ ] Zero cookies → sem banner de cookies
-- [ ] Track: page views, filtros usados, spots clicados
-
-**Teste:** Verificar dashboard analytics a receber dados.
-
-### 4.4 — PWA (App Instalável)
-- [ ] `manifest.json` já existe — verificar se está completo
-- [ ] Service Worker para cache offline
-- [ ] Ícones em todas as resoluções
-- [ ] Testar "Add to Home Screen" em Android/iOS
-
-**Teste:** Instalar em telemóvel → verificar que funciona offline (cache das últimas condições).
-
-### 4.5 — Mais Idiomas
-- [ ] ES (espanhóis no Algarve)
-- [ ] FR (franceses surfistas)
-- [ ] DE (alemães na Madeira)
-- [ ] Adicionar routes `/es/`, `/fr/`, `/de/`
-- [ ] Traduzir `i18n.ts` (~200 strings por idioma)
-
-**Teste:** Navegar em cada idioma, verificar que não há strings em PT.
-
-### 4.6 — Social / Chat por Spot (Investigação)
-- [ ] Avaliar viabilidade técnica (já investigado — é viável com Supabase)
-- [ ] Custo: Supabase free tier aguenta?
-- [ ] Implementar chat persistente por spot (já existe SpotChat.tsx, expandir)
-- [ ] Perfis anónimos + moderacão
-
-**Teste:** 2 users a conversar no chat do mesmo spot em tempo real.
+**Teste de validação:**
+- Testar em mobile (iPhone SE width)
+- Testar filtros com URL
+- Testar dark mode toggle (se implementado)
+- axe-core ou Lighthouse Accessibility >90
 
 ---
 
-## 🧪 Processo de Teste por Fase
+## 🟢 FASE 4: UX — Componentes Signature (3-4 sessões)
 
-Cada fase segue este ritual:
+**Fonte:** UX/UI Audit — Parte 3 (Proposta de Redesign)  
+**Objetivo:** Linguagem visual única e screenshotable
 
-```
-1. ANTES de começar: Build verde confirmado
-2. DURANTE: a cada sub-tarefa, build verde
-3. DEPOIS de cada fase:
-   ├── npm run build (zero erros, zero warnings)
-   ├── npm run lint (zero erros)
-   ├── Teste manual: 10 spots clicáveis, filtros funcionais
-   ├── Teste mobile: Chrome DevTools 375px
-   ├── Teste EN: /en/ prefixo funcional
-   └── Commit com mensagem clara + push
-4. VALIDAÇÃO: user confirma que faz sentido antes da próxima fase
-```
+### 4.1 — Componentes UI Foundation
+- [ ] `ScoreGauge` — SVG circular com arco, glow, count-up animation
+- [ ] `WaveShape` — curva senoidal com amplitude ∝ height, período ∝ period
+- [ ] `SwellRadar` — seta swell + seta wind + linha de costa
+- [ ] `WindCompass` — redesign: seta rotaciona, labels fixos, cor por força
 
-### Checklist de Regressão (fazer sempre)
-- [ ] Homepage carrega em < 3s
-- [ ] Spot grid mostra scores e ordena correctamente
-- [ ] Spot detail abre para todos os slugs
-- [ ] Favoritos persistem em localStorage
-- [ ] Chat funciona (sem erros de console)
-- [ ] Dawn Patrol gera JSON válido
-- [ ] Forecast table mostra dados em knots
-- [ ] Mapa interativo renderiza com markers
-- [ ] Build: 180+ páginas estáticas geradas
+### 4.2 — Componentes Compostos
+- [ ] `ForecastTable` — estilo Windguru: células coloridas por valor, coluna atual destacada, setas de direção
+- [ ] `LiveCam` — embed iframe/snapshot para spots com webcam (Carcavelos, Guincho, Nazaré, etc.)
+- [ ] `SpotCard` redesign — ScoreGauge + WaveShape + 4 stats + melhor janela
+
+### 4.3 — Páginas
+- [ ] Homepage redesign com novos componentes
+- [ ] SpotDetail redesign — layout hierárquico: hero > score > forecast > livecam > mapa > chat
+- [ ] Spots index (`/spots`) — grid com filtros sticky
+
+**Teste de validação:**
+- Cada componente funciona isoladamente (storybook-style)
+- Build verde
+- Visual comparison com design proposto
 
 ---
 
-## 📊 Roadmap Visual
+## 🔵 FASE 5: Interações & Polish (2-3 sessões)
 
-```
-AGORA        +1 semana      +2 semanas     +3 semanas     +1 mês
-  │              │              │              │              │
-  ▼              ▼              ▼              ▼              ▼
-┌──────┐    ┌──────┐      ┌──────┐      ┌──────┐      ┌──────┐
-│Fase 0│    │Fase 1│      │Fase 2│      │Fase 3│      │Fase 4│
-│Fixes │ →  │Dados │  →   │Design│  →   │Dados │  →   │Expan-│
-│Pend  │    │Sport │      │Pages │      │Novos │      │são   │
-└──────┘    └──────┘      └──────┘      └──────┘      └──────┘
-   │            │             │             │             │
-   │            │             │             │             │
-   ▼            ▼             ▼             ▼             ▼
-Workflows   Scores por    Spot Detail   Marés +      Mais spots
-Traduções   desporto      redesign      Câmaras      + Idiomas
-Spot click  Filtros       Grid/Compare  Qualidade    + SEO
-Dead code   SpotCard      Favorites     Imagens      + PWA
-Municípios  adaptativo    Homepage      reais        + Analytics
+**Fonte:** UX/UI Audit — Parte 3 (Interações) + BACKLOG.md  
+**Objetivo:** Elevar de "site" a "produto"
+
+### 5.1 — Interações Avançadas
+- [ ] Search com autocomplete + Cmd+K shortcut
+- [ ] Geolocation opcional ("Permitir localização?") + ordenar por distância
+- [ ] Unit toggle (kt ↔ km/h ↔ m/s, m ↔ ft, °C ↔ °F) persistente em localStorage
+- [ ] Sport principal persistente em localStorage + URL
+
+### 5.2 — Estados & Edge Cases
+- [ ] Empty state favoritos (ilustração + CTA)
+- [ ] Empty state filtros sem matches (mensagem contextual + sugestão alternativa)
+- [ ] Offline state (PWA) — "Sem ligação. Dados em cache de HH:MM"
+- [ ] Demo/mock state — banner amarelo visível
+
+### 5.3 — Motion & Acessibilidade Final
+- [ ] Microinteractions: stagger fade-up cards, lift on hover, underline slide tabs
+- [ ] `@media (prefers-reduced-motion: reduce) { animation: none }` global
+- [ ] Audit final de contraste, focus rings, heading hierarchy
+
+### 5.4 — Infra & SEO
+- [ ] JSON-LD structured data para spots (Schema.org)
+- [ ] Sitemap dinâmico com todas as combinações
+- [ ] Analytics privacy-first (Plausible/Umami)
+
+**Teste de validação:**
+- Lighthouse Performance >75, Accessibility >90, SEO >95
+- Teste manual de todas as interações
+- Teste em 3 breakpoints (mobile, tablet, desktop)
+
+---
+
+## 🟣 FASE 6: Dados & Features Avançadas (Backlog)
+
+**Fonte:** BACKLOG.md + Fase 5 dos audits  
+**Não prioritário mas de alto valor quando chegar aqui:**
+
+### 6.1 — Dados em Falta
+- [ ] Marés (Instituto Hidrográfico) — parse + UI no spot detail
+- [ ] Qualidade da água (APA) — boletim semanal
+- [ ] Imagens reais por spot (Wikimedia Commons/Unsplash)
+
+### 6.2 — Comunidade
+- [ ] Chat security completo (rate limit server-side, CAPTCHA, autenticação mínima)
+- [ ] Contribuições com RLS apertado (só INSERT anónimo, não UPDATE/DELETE)
+
+### 6.3 — Calibração
+- [ ] Recalibração empírica de `sportScore.ts` baseada em feedback real de utilizadores
+- [ ] SwellDetective — ativar quando houver pipeline de histórico real
+
+### 6.4 — Internacionalização
+- [ ] ES, FR, DE — tradução das ~200 strings
+- [ ] URLs por idioma (`/es/`, `/fr/`, `/de/`)
+
+### 6.5 — Infra Avançada
+- [ ] Service Worker + PWA completo (offline support)
+- [ ] Migrar para ISR/Vercel Edge (se necessário)
+- [ ] SEO landing pages por combinação (`/pt/surf/`, `/pt/kitesurf-algarve/`)
+
+---
+
+## 📊 Resumo por Severidade (o que falta resolver)
+
+| Origem | Crítico | Alto | Médio | Baixo | Total |
+|--------|---------|------|-------|-------|-------|
+| Segurança | 3 | 5 | 6 | 3 | 17 |
+| Performance/APIs | 3 | 4 | 7 | 4 | 18 |
+| UX Defeitos | 0 | 2 | 12 | 8 | 22 |
+| UX Redesign | 0 | 0 | 8 | 12 | 20 |
+| Infra/Polish | 0 | 1 | 4 | 3 | 8 |
+| **TOTAL** | **6** | **12** | **37** | **30** | **85** |
+
+> Nota: ~27 dos ~112 problemas originais já foram resolvidos nas Fases 1-4 anteriores (knots, coordenadas, SpotGrid redesign, etc.)
+
+---
+
+## 🧪 Como Testar Cada Fase
+
+### Template de teste por fase:
+
+```bash
+# 1. Build
+npm run build
+
+# 2. Verificar erros no console
+# (abrir dist/index.html em browser, verificar DevTools console)
+
+# 3. Verificar funcionalidade crítica
+# - Homepage carrega
+# - Spot detail carrega
+# - Filtros funcionam
+# - Chat funciona (se aplicável)
+
+# 4. Lighthouse (se possível)
+npx lighthouse https://ventu.surf/pt/ --output=json
+
+# 5. grep de segurança (Fase 1)
+grep -r "sb_publishable_ihub\|Ventu2026\|hardcoded" src/
 ```
 
 ---
 
-## 🎮 Como Começar
+## 📅 Estimativa de Tempo Total
 
-1. **User aprova este plano** (ou pede ajustes)
-2. **Começamos Fase 0** — estabilizar o que está partido AGORA
-3. **Uma fase de cada vez** — não avançamos sem o user validar
-4. **Deploy contínuo** — cada commit verde vai para produção
-
----
-
-## 📝 Notas
-
-- Este plano é **vivo** — pode ser ajustado a qualquer momento
-- Prioridades podem mudar com base no feedback do user
-- Fases 3+ dependem de APIs externas (IH, webcams) — se falharem, adaptamos
-- A filosofia é **menos é mais** — não adicionar features só porque são "fixes"
+| Fase | Sessões Est. | Semanas |
+|------|-----------|---------|
+| Fase 1 — Segurança | 1-2 | 0.5 |
+| Fase 2 — Estabilidade | 2-3 | 1 |
+| Fase 3 — UX Defeitos | 3-4 | 1.5 |
+| Fase 4 — UX Redesign | 3-4 | 1.5 |
+| Fase 5 — Polish | 2-3 | 1 |
+| Fase 6 — Avançado | 4-6 | 2+ |
+| **Total** | **15-22** | **7-10 semanas** |
 
 ---
 
-*Plano criado por Botnoid worker | VenTu Project*
+*Plano gerado a partir de 6 relatórios de auditoria independentes.  
+Atualizar este ficheiro à medida que fases forem completadas.*
