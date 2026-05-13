@@ -30,24 +30,22 @@ CREATE POLICY "Allow anonymous insert" ON contributions
   FOR INSERT TO anon
   WITH CHECK (length(message) >= 1 AND length(message) <= 2000);
 
--- Política para SELECT (qualquer um pode ver — ou remove se quiseres privado)
--- Se quiseres que só o admin veja, comenta a linha abaixo
-CREATE POLICY "Allow anonymous select" ON contributions
-  FOR SELECT TO anon
-  USING (true);
+-- Política para UPDATE (apenas autenticado - requer Supabase Auth)
+-- NOTA: Para ativar, descomenta e implementa Supabase Auth no admin
+-- CREATE POLICY "Allow authenticated update" ON contributions
+--   FOR UPDATE TO authenticated
+--   USING (true)
+--   WITH CHECK (true);
 
--- Política para UPDATE (qualquer um pode atualizar status — para a página admin simples)
--- NOTA: Em produção, considera autenticação real. Isto é uma solução simples.
-CREATE POLICY "Allow anonymous update" ON contributions
-  FOR UPDATE TO anon
-  USING (true)
-  WITH CHECK (true);
+-- Política para DELETE (apenas autenticado - requer Supabase Auth)
+-- NOTA: Para ativar, descomenta e implementa Supabase Auth no admin
+-- CREATE POLICY "Allow authenticated delete" ON contributions
+--   FOR DELETE TO authenticated
+--   USING (true);
 
--- Política para DELETE (qualquer um pode eliminar — para a página admin)
--- NOTA: Em produção, restringe isto.
-CREATE POLICY "Allow anonymous delete" ON contributions
-  FOR DELETE TO anon
-  USING (true);
+-- ⚠️  ATENÇÃO: O admin actual usa password client-side (NÃO é seguro!)
+--   Qualquer pessoa com a password pode fazer update/delete.
+--   Para segurança real em produção, implementa Supabase Auth.
 
 -- Opcional: auto-cleanup de itens muito antigos (descomenta se quiseres)
 -- DELETE FROM contributions WHERE created_at < now() - interval '90 days';
