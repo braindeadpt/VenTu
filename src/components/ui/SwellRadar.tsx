@@ -285,7 +285,8 @@ export default function SwellRadar({
   if (swellHeight !== undefined) ariaParts.push(`${swellHeight} meters`);
   if (swellPeriod !== undefined) ariaParts.push(`${swellPeriod} seconds`);
   if (windDirection !== undefined && windSpeed !== undefined) {
-    ariaParts.push(`Wind from ${getCardinalLabel(windDirection)} at ${windSpeed}`);
+    const windKt = Math.round(windSpeed * 1.94384);
+    ariaParts.push(`Wind from ${getCardinalLabel(windDirection)} at ${windKt}kt`);
     if (windRelation) ariaParts.push(windRelation);
   }
   if (hasCoast) ariaParts.push(`Coast facing ${getCardinalLabel(coastAngle)}`);
@@ -410,7 +411,7 @@ export default function SwellRadar({
             <span>
               <span className="text-fg-subtle">Wind:</span>{' '}
               <span className="text-fg font-mono tabular-nums">
-                {windSpeed.toFixed(0)}kt {getCardinalLabel(windDirection)}
+                {(windSpeed * 1.94384).toFixed(0)}kt {getCardinalLabel(windDirection)}
               </span>
               {windRelation && (
                 <span className={`ml-1 ${

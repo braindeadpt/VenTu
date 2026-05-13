@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -215,6 +215,7 @@ export default function SpotDetailClient({
   );
   const [loading, setLoading] = useState(true);
   const [copyToast, setCopyToast] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   /* ── Data loading (preserved exactly) ── */
   useEffect(() => {
@@ -318,7 +319,8 @@ export default function SpotDetailClient({
     const url = window.location.href;
     navigator.clipboard.writeText(url).then(() => {
       setCopyToast(true);
-      setTimeout(() => setCopyToast(false), 2000);
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = setTimeout(() => setCopyToast(false), 2000);
     });
   }, []);
 
@@ -553,8 +555,8 @@ export default function SpotDetailClient({
           <StatCard
             icon={Wind}
             label={t.forecastTable.wind}
-            value={Math.round(conditions.windSpeed)}
-            unit="km/h"
+            value={Math.round(windKt)}
+            unit="kt"
             sub={`${getWindArrow(conditions.windDirection)} ${windDir}`}
           />
           <StatCard
@@ -566,8 +568,8 @@ export default function SpotDetailClient({
           <StatCard
             icon={Zap}
             label={t.forecastTable.gust}
-            value={conditions.windGust > 0 ? Math.round(conditions.windGust) : '—'}
-            unit={conditions.windGust > 0 ? 'km/h' : undefined}
+            value={conditions.windGust > 0 ? Math.round(conditions.windGust * 1.94384) : '—'}
+            unit={conditions.windGust > 0 ? 'kt' : undefined}
           />
         </div>
       </section>

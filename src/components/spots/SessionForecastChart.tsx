@@ -90,7 +90,7 @@ export function SessionForecastChart({ forecast, locale }: SessionForecastChartP
             </span>
 
             <span className="text-xs text-slate-500 w-20 shrink-0 hidden sm:block">
-              {hour.waveHeight.toFixed(1)}m · {hour.windSpeed.toFixed(0)}kt
+              {hour.waveHeight.toFixed(1)}m · {(hour.windSpeed * 1.94384).toFixed(0)}kt
             </span>
           </div>
         ))}

@@ -19,6 +19,8 @@ export default function ForecastChart({ data, locale = 'pt' }: ForecastChartProp
   const chartData = useMemo(() => {
     return data.map((d) => ({
       ...d,
+      windSpeed: Math.round(d.windSpeed * 1.94384),
+      windGust: Math.round(d.windGust * 1.94384),
       time: new Date(d.time).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB', { weekday: 'short', hour: '2-digit' }),
     }));
   }, [data, isPt]);

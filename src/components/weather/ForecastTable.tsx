@@ -32,9 +32,9 @@ export interface ForecastHour {
   time: string;        // ISO string or Date-compatible
   waveHeight: number;
   wavePeriod: number;
-  windSpeed: number; // km/h (displayed raw; unit bug is Fase 5)
+  windSpeed: number; // m/s from API — converted to knots for display
   windDirection: number;
-  windGust?: number;
+ windGust?: number; // m/s from API — converted to knots for display
   waterTemp?: number;
   score?: number;    // 0-100, pre-calculated by caller
 }
@@ -71,27 +71,27 @@ function periodBg(p: number): string {
   return 'bg-data-period/30';
 }
 
-/** Wind speed (km/h, displayed as "kt" label) → background tier. */
-function windBg(s: number): string {
-  if (s < 10) return 'bg-surface-1';
-  if (s < 15) return 'bg-data-wind/10';
-  if (s < 22) return 'bg-data-wind/20';
-  if (s < 30) return 'bg-data-wind/30';
+/** Wind speed (knots) → background tier. */
+function windBg(kt: number): string {
+  if (kt < 8) return 'bg-surface-1';
+  if (kt < 14) return 'bg-data-wind/10';
+  if (kt < 20) return 'bg-data-wind/20';
+  if (kt < 28) return 'bg-data-wind/30';
   return 'bg-data-wind/40';
 }
 
-/** Wind speed text colour for alarming values. */
-function windText(s: number): string {
-  if (s >= 30) return 'text-data-wind';
+/** Wind speed text colour for alarming values (knots). */
+function windText(kt: number): string {
+  if (kt >= 28) return 'text-data-wind';
   return 'text-fg';
 }
 
-/** Gust — same scale as wind but lighter opacity. */
-function gustBg(g: number): string {
-  if (g < 10) return 'bg-surface-1';
-  if (g < 15) return 'bg-data-wind/[0.07]';
-  if (g < 22) return 'bg-data-wind/[0.14]';
-  if (g < 30) return 'bg-data-wind/[0.21]';
+/** Gust — same scale as wind but lighter opacity (knots). */
+function gustBg(kt: number): string {
+  if (kt < 8) return 'bg-surface-1';
+  if (kt < 14) return 'bg-data-wind/[0.07]';
+  if (kt < 20) return 'bg-data-wind/[0.14]';
+  if (kt < 28) return 'bg-data-wind/[0.21]';
   return 'bg-data-wind/[0.28]';
 }
 
@@ -147,11 +147,13 @@ function isCurrentHour(iso: string, now: Date): boolean {
 }
 
 function buildTooltip(h: ForecastHour, sportLabel?: string): string {
+  const windKt = Math.round(h.windSpeed * 1.94384);
+  const gustKt = h.windGust !== undefined ? Math.round(h.windGust * 1.94384) : undefined;
   const parts: string[] = [
     `${parseHourLabel(h.time)}: ${h.waveHeight.toFixed(1)}m @ ${Math.round(h.wavePeriod)}s`,
-    `${Math.round(h.windSpeed)}kt ${getCardinalLabel(h.windDirection)}`,
+    `${windKt}kt ${getCardinalLabel(h.windDirection)}`,
   ];
-  if (h.windGust !== undefined) parts.push(`gust ${Math.round(h.windGust)}kt`);
+  if (gustKt !== undefined) parts.push(`gust ${gustKt}kt`);
   if (h.waterTemp !== undefined) parts.push(`water ${h.waterTemp.toFixed(1)}°C`);
   if (h.score !== undefined) parts.push(`score ${h.score}${sportLabel ? ` (${sportLabel})` : ''}`);
   return parts.join(' · ');
@@ -312,19 +314,22 @@ export default function ForecastTable({
             >
               {t.wind}
             </th>
-            {visible.map((h, i) => (
-              <td
-                key={i}
-                className={`${hourW} ${cellPx} ${windBg(h.windSpeed)} font-mono text-num ${windText(
-                  h.windSpeed,
-                )} ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast`}
-                title={buildTooltip(h, sportLabel)}
-                onMouseEnter={() => setHoveredCol(i)}
-                onMouseLeave={() => setHoveredCol(null)}
-              >
-                {Math.round(h.windSpeed)}
-              </td>
-            ))}
+            {visible.map((h, i) => {
+              const windKt = Math.round(h.windSpeed * 1.94384);
+              return (
+                <td
+                  key={i}
+                  className={`${hourW} ${cellPx} ${windBg(windKt)} font-mono text-num ${windText(
+                    windKt,
+                  )} ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast`}
+                  title={buildTooltip(h, sportLabel)}
+                  onMouseEnter={() => setHoveredCol(i)}
+                  onMouseLeave={() => setHoveredCol(null)}
+                >
+                  {windKt}
+                </td>
+              );
+            })}
           </tr>
 
           {/* ── WIND DIRECTION ── */}
@@ -365,21 +370,24 @@ export default function ForecastTable({
               >
                 {t.gust}
               </th>
-              {visible.map((h, i) => (
-                <td
-                  key={i}
-                  className={`${hourW} ${cellPx} ${
-                    typeof h.windGust === 'number' ? gustBg(h.windGust) : 'bg-surface-1'
-                  } font-mono text-num-sm text-fg-muted ${
-                    hoveredCol === i ? 'bg-surface-2' : ''
-                  } transition-colors duration-fast`}
-                  title={buildTooltip(h, sportLabel)}
-                  onMouseEnter={() => setHoveredCol(i)}
-                  onMouseLeave={() => setHoveredCol(null)}
-                >
-                  {typeof h.windGust === 'number' ? Math.round(h.windGust) : '—'}
-                </td>
-              ))}
+              {visible.map((h, i) => {
+                const gustKt = typeof h.windGust === 'number' ? Math.round(h.windGust * 1.94384) : null;
+                return (
+                  <td
+                    key={i}
+                    className={`${hourW} ${cellPx} ${
+                      gustKt !== null ? gustBg(gustKt) : 'bg-surface-1'
+                    } font-mono text-num-sm text-fg-muted ${
+                      hoveredCol === i ? 'bg-surface-2' : ''
+                    } transition-colors duration-fast`}
+                    title={buildTooltip(h, sportLabel)}
+                    onMouseEnter={() => setHoveredCol(i)}
+                    onMouseLeave={() => setHoveredCol(null)}
+                  >
+                    {gustKt !== null ? gustKt : '—'}
+                  </td>
+                );
+              })}
             </tr>
           )}
 

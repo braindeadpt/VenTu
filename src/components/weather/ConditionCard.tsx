@@ -31,7 +31,7 @@ export default function ConditionCard({
         </div>
         <div className="flex items-center gap-1.5">
           <Wind className="w-4 h-4 text-wind-400" />
-          <span className="font-semibold">{windSpeed.toFixed(0)}kt</span>
+          <span className="font-semibold">{(windSpeed * 1.94384).toFixed(0)}kt</span>
         </div>
         <div className="flex items-center gap-1.5">
           <Thermometer className="w-4 h-4 text-surf-400" />
@@ -58,15 +58,15 @@ export default function ConditionCard({
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <WindCompass direction={windDirection} speed={windSpeed} size={48} />
+          <WindCompass direction={windDirection} speed={windSpeed * 1.94384} size={48} />
           <div>
             <p className="text-xs text-white/50">{isPt ? 'Vento' : 'Wind'}</p>
-            <p className="text-2xl font-bold">{windSpeed.toFixed(0)}<span className="text-sm font-normal text-white/60">kt</span></p>
+            <p className="text-2xl font-bold">{(windSpeed * 1.94384).toFixed(0)}<span className="text-sm font-normal text-white/60">kt</span></p>
           </div>
         </div>
         <div className="text-right">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${windRating.className}`}>
-            {isPt ? 'Raj' : 'Gust'}: {windGust.toFixed(0)}kt
+            {isPt ? 'Raj' : 'Gust'}: {(windGust * 1.94384).toFixed(0)}kt
           </span>
         </div>
       </div>

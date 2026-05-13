@@ -7,6 +7,7 @@ const nextConfig = {
   assetPrefix: process.env.NODE_ENV === 'production' ? '/windspot-pt' : '',
   eslint: { ignoreDuringBuilds: true },
   transpilePackages: ['geist'],
+  reactStrictMode: true,
 }
 
 module.exports = nextConfig

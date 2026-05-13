@@ -84,21 +84,31 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
     }
 
     setHasSetup(true);
+    let isMounted = true;
 
     // Fetch initial messages (last 50)
     const fetchMessages = async () => {
-      const client = getSupabaseClient();
-      if (!client) return;
-      const { data, count } = await client
-        .from('messages')
-        .select('*', { count: 'exact' })
-        .eq('spot_slug', spotSlug)
-        .order('created_at', { ascending: true })
-        .limit(MESSAGES_PER_PAGE);
-      
-      if (data) {
-        setMessages(data);
-        setHasMore((count || 0) > MESSAGES_PER_PAGE);
+      try {
+        const client = getSupabaseClient();
+        if (!client) return;
+        const { data, count, error } = await client
+          .from('messages')
+          .select('*', { count: 'exact' })
+          .eq('spot_slug', spotSlug)
+          .order('created_at', { ascending: true })
+          .limit(MESSAGES_PER_PAGE);
+        
+        if (error) {
+          console.error('Error fetching messages:', error);
+          return;
+        }
+        
+        if (data && isMounted) {
+          setMessages(data);
+          setHasMore((count || 0) > MESSAGES_PER_PAGE);
+        }
+      } catch (err) {
+        console.error('Unexpected error fetching messages:', err);
       }
     };
 
@@ -112,13 +122,18 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
         table: 'messages',
         filter: `spot_slug=eq.${spotSlug}`,
       }, (payload) => {
-        setMessages((prev) => [...prev, payload.new as ChatMessage]);
+        if (isMounted) {
+          setMessages((prev) => [...prev, payload.new as ChatMessage]);
+        }
       })
       .subscribe((status) => {
-        setIsConnected(status === 'SUBSCRIBED');
+        if (isMounted) {
+          setIsConnected(status === 'SUBSCRIBED');
+        }
       });
 
     return () => {
+      isMounted = false;
       if (channel) getSupabaseClient()?.removeChannel(channel);
     };
   }, [spotSlug]);
@@ -128,30 +143,38 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
     if (isLoadingMore || messages.length === 0) return;
     
     setIsLoadingMore(true);
-    const oldestMessage = messages[0];
-    
-    const client = getSupabaseClient();
-    if (!client) {
+    try {
+      const oldestMessage = messages[0];
+      
+      const client = getSupabaseClient();
+      if (!client) {
+        return;
+      }
+      
+      const { data, count, error } = await client
+        .from('messages')
+        .select('*', { count: 'exact' })
+        .eq('spot_slug', spotSlug)
+        .lt('created_at', oldestMessage.created_at)
+        .order('created_at', { ascending: true })
+        .limit(MESSAGES_PER_PAGE);
+      
+      if (error) {
+        console.error('Error loading more messages:', error);
+        return;
+      }
+      
+      if (data && data.length > 0) {
+        setMessages((prev) => [...data, ...prev]);
+        setHasMore((count || 0) > data.length);
+      } else {
+        setHasMore(false);
+      }
+    } catch (err) {
+      console.error('Unexpected error loading more messages:', err);
+    } finally {
       setIsLoadingMore(false);
-      return;
     }
-    
-    const { data, count } = await client
-      .from('messages')
-      .select('*', { count: 'exact' })
-      .eq('spot_slug', spotSlug)
-      .lt('created_at', oldestMessage.created_at)
-      .order('created_at', { ascending: true })
-      .limit(MESSAGES_PER_PAGE);
-    
-    if (data && data.length > 0) {
-      setMessages((prev) => [...data, ...prev]);
-      setHasMore((count || 0) > data.length);
-    } else {
-      setHasMore(false);
-    }
-    
-    setIsLoadingMore(false);
   };
 
   // Scroll to bottom on new messages
