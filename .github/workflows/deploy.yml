@@ -35,7 +35,7 @@ jobs:
       - name: Build
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
-          NEXT_PUBLIC_BASE_PATH: '/windspot-pt'
+          NEXT_PUBLIC_BASE_PATH: ''
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
         run: |

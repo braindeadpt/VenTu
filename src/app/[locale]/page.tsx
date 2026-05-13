@@ -51,20 +51,8 @@ function loadConditions(): Record<string, any> {
   }
 }
 
-// ─── Sport Config (used only in server component) ───
-const SPORTS: { id: SportType | 'all'; label: string; color: string }[] = [
-  { id: 'all', label: 'Todos', color: 'text-white' },
-  { id: 'surf', label: 'Surf', color: 'text-cyan-400' },
-  { id: 'bodyboard', label: 'Bodyboard', color: 'text-teal-400' },
-  { id: 'kitesurf', label: 'Kitesurf', color: 'text-sky-400' },
-  { id: 'windsurf', label: 'Windsurf', color: 'text-blue-400' },
-  { id: 'foil', label: 'Foil', color: 'text-sport-foil' },
-  { id: 'sup', label: 'SUP', color: 'text-emerald-400' },
-  { id: 'wakeboard', label: 'Wakeboard', color: 'text-purple-400' },
-];
-
 // ─── Server Component ───
-export default async function HomePage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams?: { sport?: string; region?: string } }) {
+export default async function HomePage({ params, searchParams }: { params: Promise<{ locale: string }>; searchParams?: Promise<{ sport?: string; region?: string }> }) {
   const { locale } = await params;
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);
@@ -129,12 +117,12 @@ export default async function HomePage({ params, searchParams }: { params: Promi
   const bestSportId = (bestSportEntry?.[0] as SportType) || 'surf';
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen bg-bg-base">
       {/* SEO H1 - visible to Googlebot */}
       <h1 className="sr-only">
         {isPt 
-          ? `WindSpot Portugal - ${spotsData.length} spots de surf, kitesurf e windsurf com condições em tempo real`
-          : `WindSpot Portugal - ${spotsData.length} surf, kitesurf and windsurf spots with real-time conditions`
+          ? `VenTu - ${spotsData.length} spots de surf, kitesurf e windsurf com condições em tempo real`
+          : `VenTu - ${spotsData.length} surf, kitesurf and windsurf spots with real-time conditions`
         }
       </h1>
 
@@ -236,19 +224,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
               </Link>
             </div>
 
-            {/* Sport Pills */}
-            <div className="flex items-center justify-center gap-2 pt-2 overflow-x-auto no-scrollbar">
-              {SPORTS.filter(s => s.id !== 'all').map(sport => (
-                <Link
-                  key={sport.id}
-                  href={`/${locale}/spots/?sport=${sport.id}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium border border-divider bg-surface-1 hover:bg-surface-2 transition-colors whitespace-nowrap"
-                >
-                  <span className="sport-accent" data-sport={sport.id}>●</span>
-                  {sport.label}
-                </Link>
-              ))}
-            </div>
+            {/* Quick links removed — sport filters now live in SpotGridClient below */}
           </div>
         </section>
       )}

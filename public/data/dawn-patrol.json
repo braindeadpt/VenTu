@@ -1,26 +1,34 @@
 {
-  "date": "2026-05-11",
-  "topSpot": "Coxos",
-  "topSpotSlug": "coxos",
+  "date": "2026-05-13",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Hoje é dia de Coxos! 🌊",
-    "advice": "Melhor janela: 6:00h. Ondas de 2.2m com 7 nós de vento.",
-    "bestTime": "6:00",
+    "headline": "Hoje é dia de Nazaré! 🌊",
+    "advice": "Melhor janela: 7:00h. Ondas de 1.6m com 9 nós de vento.",
+    "bestTime": "7:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!"
   },
   "en": {
-    "headline": "Today is Coxos day! 🌊",
-    "advice": "Best window: 6:00. 2.2m waves with 7 knot wind.",
-    "bestTime": "6:00",
+    "headline": "Today is Nazaré day! 🌊",
+    "advice": "Best window: 7:00. 1.6m waves with 9 knot wind.",
+    "bestTime": "7:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!"
   },
   "spots": [
     {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 77,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 88,
+      "score": 75,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
@@ -28,23 +36,7 @@
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 87,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 86,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 86,
+      "score": 74,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
@@ -52,7 +44,7 @@
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-dilhas",
-      "score": 86,
+      "score": 74,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
@@ -60,18 +52,26 @@
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 86,
+      "score": 74,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
     },
     {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 69,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
+    },
+    {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 85,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "score": 54,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     }
   ]
 }

@@ -2,7 +2,7 @@
 // Use this for ALL client-side fetch() calls to public assets
 // 
 // ⚠️  NEVER use absolute paths like '/data/xxx.json' directly in fetch()!
-//     When basePath is set (e.g., '/windspot-pt'), absolute paths break.
+//     When basePath is set, absolute paths break.
 //     Always use getAssetPath() or import from this module.
 
 const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
@@ -11,7 +11,7 @@ const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH || '';
  * Returns an absolute path with basePath prefix for public assets.
  * 
  * @param path — absolute path starting with / (e.g., '/data/conditions.json')
- * @returns path with basePath prefix (e.g., '/windspot-pt/data/conditions.json')
+ * @returns path with basePath prefix (e.g., '/data/conditions.json')
  * 
  * Usage:
  *   fetch(getAssetPath('/data/conditions.json'))

@@ -1,4 +1,4 @@
-# 🌊 WindSpot Portugal
+# 🌊 VenTu
 
 > **A modern, open-source platform for real-time water sports conditions in Portugal**
 
@@ -13,9 +13,9 @@
 
 ## 🇵🇹 Português
 
-### 🏄 O que é o WindSpot?
+### 🏄 O que é o VenTu?
 
-O **WindSpot** é uma plataforma **gratuita e open-source** que fornece condições em tempo real para desportos náuticos em Portugal. Inclui dados de ondas, vento, temperatura da água e notícias automáticas sobre surf, kitesurf, windsurf e big wave.
+O **VenTu** é uma plataforma **gratuita e open-source** que fornece condições em tempo real para desportos náuticos em Portugal. Inclui dados de ondas, vento, temperatura da água e notícias automáticas sobre surf, kitesurf, windsurf e big wave.
 
 ### ✨ Funcionalidades
 
@@ -43,8 +43,8 @@ O **WindSpot** é uma plataforma **gratuita e open-source** que fornece condiç�
 
 ```bash
 # Clone o repositório
-git clone https://github.com/braindeadpt/windspot-pt.git
-cd windspot-pt
+git clone https://github.com/braindeadpt/ventu.git
+cd ventu
 
 # Instalar dependências
 npm install
@@ -72,9 +72,9 @@ Contribuições são bem-vindas! Abre um PR ou issue no GitHub.
 
 ## 🇬🇧 English
 
-### 🏄 What is WindSpot?
+### 🏄 What is VenTu?
 
-**WindSpot** is a **free, open-source** platform providing real-time conditions for water sports in Portugal. Includes wave, wind, water temperature data and automated news about surf, kitesurf, windsurf and big wave.
+**VenTu** is a **free, open-source** platform providing real-time conditions for water sports in Portugal. Includes wave, wind, water temperature data and automated news about surf, kitesurf, windsurf and big wave.
 
 ### ✨ Features
 
@@ -101,8 +101,8 @@ Contribuições são bem-vindas! Abre um PR ou issue no GitHub.
 
 ```bash
 # Clone the repository
-git clone https://github.com/braindeadpt/windspot-pt.git
-cd windspot-pt
+git clone https://github.com/braindeadpt/ventu.git
+cd ventu
 
 # Install dependencies
 npm install

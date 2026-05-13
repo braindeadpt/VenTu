@@ -1,4 +1,4 @@
-# WindSpot — Plano de Reorganização e Redesign
+# VenTu — Plano de Reorganização e Redesign
 
 ## Estado Atual (Problemas Identificados)
 

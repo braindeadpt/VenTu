@@ -1,7 +1,7 @@
-# 🤙 WindSpot Social — Report de Viabilidade
+# 🤙 VenTu Social — Report de Viabilidade
 
 ## A Ideia
-Transformar o windspot-pt numa **rede social** para desportos náuticos, com **chat em tempo real para cada spot** (Guincho Chat, Nazaré Chat, etc.) + perfis de riders + check-ins + fotos/vídeos da sessão.
+Transformar o ventu numa **rede social** para desportos náuticos, com **chat em tempo real para cada spot** (Guincho Chat, Nazaré Chat, etc.) + perfis de riders + check-ins + fotos/vídeos da sessão.
 
 ---
 
@@ -264,4 +264,4 @@ Mas recomendo **fasear**:
 
 ---
 
-> **Conclusão:** A ideia é **irreverente, viável e valiosa**. O chat por spot transforma o windspot-pt de "site de informação" para "comunidade". Com Supabase, o custo técnico é baixo e o potencial de engajamento é enorme. **Recomendo começar pelo MVP de chat anónimo** para validar interesse antes de investir em auth/perfil completo. 🫡💪
+> **Conclusão:** A ideia é **irreverente, viável e valiosa**. O chat por spot transforma o ventu de "site de informação" para "comunidade". Com Supabase, o custo técnico é baixo e o potencial de engajamento é enorme. **Recomendo começar pelo MVP de chat anónimo** para validar interesse antes de investir em auth/perfil completo. 🫡💪

@@ -1,12 +1,12 @@
-# WindSpot — Context for LLM sessions
+# VenTu — Context for LLM sessions
 
 Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do projecto e as restrições técnicas que limitam que soluções são viáveis.
 
 ## Identidade
 
-- **Projecto:** WindSpot Portugal — plataforma open-source de condições para desportos náuticos em Portugal (surf, kitesurf, windsurf, bodyboard, SUP, wakeboard).
-- **Repo:** https://github.com/braindeadpt/windspot-pt
-- **Site em produção:** https://braindeadpt.github.io/windspot-pt/pt/
+- **Projecto:** VenTu — plataforma open-source de condições para desportos náuticos em Portugal (surf, kitesurf, windsurf, bodyboard, SUP, wakeboard).
+- **Repo:** https://github.com/braindeadpt/ventu
+- **Site em produção:** https://ventu.surf/pt/
 - **Licença:** MIT.
 
 ## Stack técnica
@@ -29,7 +29,7 @@ São restrições estruturais — qualquer proposta tem de as respeitar.
 
 1. **Static export.** `next.config.js` tem `output: 'export'`. Não há server-side rendering em runtime, não há API routes (todas as `app/api/*` estão fora de questão), não há middleware. Tudo o que existe em runtime é HTML/JS/CSS estático servido pelo GitHub Pages.
 
-2. **basePath obrigatório em produção.** O site vive em `/windspot-pt/`, não na raiz. Qualquer fetch absoluto (`/data/x.json`) parte. Usar paths relativos ou respeitar o `basePath` do Next config.
+2. **basePath.** O site vive na raiz do domínio. Paths absolutos funcionam normalmente.
 
 3. **Sem headers HTTP customizáveis.** GitHub Pages não permite. CSP, HSTS, etc. só via `<meta http-equiv>` no HTML — e com limitações.
 
@@ -122,7 +122,7 @@ Não é objectivo desta sessão arranjar isto a menos que seja explicitamente pe
 - **`WindCompass` SVG roda os labels** junto com a seta — bug visual.
 - **`findIndex(...) || 0`.** ✅ Resolvido. Ambos `openmeteo.ts` e `update-conditions.js` agora usam `Math.max(0, ...findIndex(...))` em vez de `|| 0`.
 - **Inter declarada em `globals.css` mas nunca carregada.** Site usa system fonts.
-- **`manifest.json` start_url é `/pt` mas o site vive em `/windspot-pt/pt/`.**
+- **`manifest.json` start_url é `/pt` e o site vive em `/pt/`.**
 
 ## Convenções
 

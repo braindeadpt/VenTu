@@ -47,22 +47,22 @@ export default function SwellDetective({ spotSlug, locale }: SwellDetectiveProps
   const [selectedPattern, setSelectedPattern] = useState<SwellPattern | null>(null);
 
   const getTrendIcon = (prob: number) => {
-    if (prob >= 80) return <TrendingUp className="w-4 h-4 text-green-400" />;
-    if (prob >= 50) return <Minus className="w-4 h-4 text-yellow-400" />;
-    return <TrendingDown className="w-4 h-4 text-red-400" />;
+    if (prob >= 80) return <TrendingUp className="w-4 h-4 text-windDir-offshore" />;
+    if (prob >= 50) return <Minus className="w-4 h-4 text-score-fair" />;
+    return <TrendingDown className="w-4 h-4 text-windDir-onshore" />;
   };
 
   return (
     <div className="glass-card p-6">
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2.5 rounded-xl bg-blue-500/10">
-          <Search className="w-6 h-6 text-blue-400" />
+        <div className="p-2.5 rounded-xl bg-data-waves/10">
+          <Search className="w-6 h-6 text-data-waves" />
         </div>
         <div>
-          <h3 className="text-xl font-bold text-white">
+          <h3 className="text-xl font-bold text-fg">
             {isPt ? '🔍 Swell Detective' : '🔍 Swell Detective'}
           </h3>
-          <p className="text-sm text-white/50">
+          <p className="text-sm text-fg-muted">
             {isPt 
               ? 'Padrões de swell históricos para este spot'
               : 'Historical swell patterns for this spot'
@@ -77,29 +77,29 @@ export default function SwellDetective({ spotSlug, locale }: SwellDetectiveProps
             key={i}
             className={`p-4 rounded-xl border transition-all cursor-pointer ${
               selectedPattern === pattern
-                ? 'bg-white/10 border-blue-500/30'
-                : 'bg-white/5 border-white/10 hover:bg-white/8'
+                ? 'bg-surface-1 border-data-waves/30'
+                : 'bg-surface-1 border-divider hover:bg-surface-2'
             }`}
             onClick={() => setSelectedPattern(selectedPattern === pattern ? null : pattern)}
           >
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`p-2 rounded-lg ${
-                  pattern.probability >= 80 ? 'bg-green-500/10' :
-                  pattern.probability >= 50 ? 'bg-yellow-500/10' :
-                  'bg-red-500/10'
+                  pattern.probability >= 80 ? 'bg-windDir-offshore/10' :
+                  pattern.probability >= 50 ? 'bg-score-fair/10' :
+                  'bg-windDir-onshore/10'
                 }`}>
                   <Waves className={`w-5 h-5 ${
-                    pattern.probability >= 80 ? 'text-green-400' :
-                    pattern.probability >= 50 ? 'text-yellow-400' :
-                    'text-red-400'
+                    pattern.probability >= 80 ? 'text-windDir-offshore' :
+                    pattern.probability >= 50 ? 'text-score-fair' :
+                    'text-windDir-onshore'
                   }`} />
                 </div>
                 <div>
-                  <div className="font-bold text-white">
+                  <div className="font-bold text-fg">
                     {isPt ? pattern.name : pattern.nameEn}
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-white/50">
+                  <div className="flex items-center gap-2 text-xs text-fg-muted">
                     <Wind className="w-3 h-3" />
                     {pattern.typicalHeight}
                     <span className="mx-1">•</span>
@@ -112,24 +112,24 @@ export default function SwellDetective({ spotSlug, locale }: SwellDetectiveProps
                 <div className="flex items-center gap-2">
                   {getTrendIcon(pattern.probability)}
                   <span className={`text-lg font-bold ${
-                    pattern.probability >= 80 ? 'text-green-400' :
-                    pattern.probability >= 50 ? 'text-yellow-400' :
-                    'text-red-400'
+                    pattern.probability >= 80 ? 'text-windDir-offshore' :
+                    pattern.probability >= 50 ? 'text-score-fair' :
+                    'text-windDir-onshore'
                   }`}>
                     {pattern.probability}%
                   </span>
                 </div>
-                <div className="text-xs text-white/40">
+                <div className="text-xs text-fg-subtle">
                   {isPt ? 'probabilidade' : 'probability'}
                 </div>
               </div>
             </div>
 
             {selectedPattern === pattern && (
-              <div className="mt-4 pt-4 border-t border-white/10">
+              <div className="mt-4 pt-4 border-t border-divider">
                 <div className="flex items-start gap-2">
-                  <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                  <p className="text-sm text-white/70">
+                  <Info className="w-4 h-4 text-data-waves mt-0.5 flex-shrink-0" />
+                  <p className="text-sm text-fg-muted">
                     {isPt ? pattern.description : pattern.descriptionEn}
                   </p>
                 </div>
@@ -137,7 +137,7 @@ export default function SwellDetective({ spotSlug, locale }: SwellDetectiveProps
                   {pattern.bestMonths.map(month => (
                     <span
                       key={month}
-                      className="text-xs px-2.5 py-1 rounded-full bg-white/5 text-white/60 border border-white/10"
+                      className="text-xs px-2.5 py-1 rounded-full bg-surface-1 text-fg-muted border border-divider"
                     >
                       {month}
                     </span>
@@ -149,10 +149,10 @@ export default function SwellDetective({ spotSlug, locale }: SwellDetectiveProps
         ))}
       </div>
 
-      <div className="mt-6 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+      <div className="mt-6 p-4 rounded-xl bg-data-waves/5 border border-data-waves/10">
         <div className="flex items-start gap-2">
-          <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
-          <p className="text-xs text-white/50">
+          <Info className="w-4 h-4 text-data-waves mt-0.5 flex-shrink-0" />
+          <p className="text-xs text-fg-muted">
             {isPt 
               ? `Dados baseados em análise histórica de condições (${new Date().getFullYear()}). Probabilidades são estimativas baseadas em padrões sazonais. Sempre verifica as condições atuais antes de ir.`
               : `Data based on historical condition analysis (${new Date().getFullYear()}). Probabilities are estimates based on seasonal patterns. Always check current conditions before going.`

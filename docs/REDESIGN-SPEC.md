@@ -1,4 +1,4 @@
-# WindSpot — UX/UI Redesign Specification
+# VenTu — UX/UI Redesign Specification
 
 ## Audit Summary
 
@@ -6,7 +6,7 @@
 
 1. **Hero Section — Weak First Impression**
    - SVG wave animation looks cheap/cheap
-   - Title "WindSpot" alone doesn't explain value prop
+   - Title "VenTu" alone doesn't explain value prop
    - Dynamic subtitle is clever but visually jumbled
    - CTA is a generic button, no urgency
    - No live data visible above the fold

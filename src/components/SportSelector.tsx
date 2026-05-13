@@ -69,7 +69,7 @@ export default function SportSelector({ locale }: SportSelectorProps) {
 
   return (
     <div className="w-full">
-      <p className="text-sm text-slate-400 mb-3 text-center">
+      <p className="text-sm text-fg-muted mb-3 text-center">
         {isPT ? 'Escolhe o teu desporto:' : 'Choose your sport:'}
       </p>
       <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
@@ -79,8 +79,8 @@ export default function SportSelector({ locale }: SportSelectorProps) {
           aria-label={isPT ? 'Mostrar todos os desportos' : 'Show all sports'}
           className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5 ${
             !currentSport
-              ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 scale-105 ring-2 ring-cyan-400/50'
-              : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/5'
+              ? 'bg-data-waves text-bg-base shadow-lg shadow-data-waves/25 scale-105 ring-2 ring-data-waves/50'
+              : 'bg-surface-1 text-fg-muted hover:bg-surface-2 border border-divider'
           }`}
         >
           <Waves className="w-4 h-4" />
@@ -98,8 +98,8 @@ export default function SportSelector({ locale }: SportSelectorProps) {
               aria-label={isPT ? `Filtrar por ${label.pt}` : `Filter by ${label.en}`}
               className={`px-4 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-cyan-500 text-white shadow-lg shadow-cyan-500/25 scale-105 ring-2 ring-cyan-400/50'
-                  : 'bg-slate-700/50 text-slate-300 hover:bg-slate-700 border border-white/5'
+                  ? 'bg-data-waves text-bg-base shadow-lg shadow-data-waves/25 scale-105 ring-2 ring-data-waves/50'
+                  : 'bg-surface-1 text-fg-muted hover:bg-surface-2 border border-divider'
               }`}
             >
               {SPORT_ICONS[sport]}
@@ -111,13 +111,13 @@ export default function SportSelector({ locale }: SportSelectorProps) {
 
       {currentSport && (
         <div className="mt-4 text-center">
-          <span className="inline-flex items-center gap-2 bg-cyan-500/10 text-cyan-300 px-4 py-2 rounded-full text-sm">
+          <span className="inline-flex items-center gap-2 bg-data-waves/10 text-data-waves px-4 py-2 rounded-full text-sm">
             {SPORT_ICONS[currentSport]}
             {isPT ? 'A mostrar spots para' : 'Showing spots for'}{' '}
             <strong>{isPT ? SPORT_LABELS[currentSport].pt : SPORT_LABELS[currentSport].en}</strong>
             <button
               onClick={() => handleSportChange(null)}
-              className="ml-2 text-cyan-400 hover:text-white transition-colors"
+              className="ml-2 text-data-waves hover:text-fg transition-colors"
             >
               <X className="w-4 h-4" />
             </button>

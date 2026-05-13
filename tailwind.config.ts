@@ -54,26 +54,27 @@ const config: Config = {
         // ═══════════════════════════════════════════════════════════
 
         // Backgrounds (use these for app shell + cards)
+        // Fase 7.1: valores agora vêm de CSS variables em globals.css
         bg: {
-          base: '#09090b',       // zinc-950 — page background
-          elevated: '#18181b',   // zinc-900 — modals, popovers
+          base:     'rgb(var(--bg-base) / <alpha-value>)',
+          elevated: 'rgb(var(--bg-elevated) / <alpha-value>)',
         },
         surface: {
-          1: 'rgb(255 255 255 / 0.04)',   // default card
-          2: 'rgb(255 255 255 / 0.08)',   // hover / active card
-          3: 'rgb(255 255 255 / 0.12)',   // pressed / selected
+          1: 'rgb(var(--surface-1))',
+          2: 'rgb(var(--surface-2))',
+          3: 'rgb(var(--surface-3))',
         },
         divider: {
-          DEFAULT: 'rgb(255 255 255 / 0.08)',
-          strong: 'rgb(255 255 255 / 0.12)',
+          DEFAULT: 'rgb(var(--divider))',
+          strong:  'rgb(var(--divider-strong))',
         },
 
         // Foreground text (semantic hierarchy)
         fg: {
-          DEFAULT: 'rgb(255 255 255 / 0.95)',  // primary text
-          muted: 'rgb(255 255 255 / 0.65)',    // secondary — AA on bg-base
-          subtle: 'rgb(255 255 255 / 0.45)',   // tertiary — labels (AA large only)
-          disabled: 'rgb(255 255 255 / 0.30)', // disabled state
+          DEFAULT:  'rgb(var(--fg))',
+          muted:    'rgb(var(--fg-muted))',
+          subtle:   'rgb(var(--fg-subtle))',
+          disabled: 'rgb(var(--fg-disabled))',
         },
 
         // ═══════════════════════════════════════════════════════════
@@ -81,10 +82,10 @@ const config: Config = {
         //  (use for chart series, condition icons, gauges)
         // ═══════════════════════════════════════════════════════════
         data: {
-          waves: '#60a5fa',    // blue-400  — ocean wave
-          wind: '#fbbf24',     // amber-400 — air movement
-          water: '#2dd4bf',    // teal-400  — water temperature
-          period: '#a78bfa',   // violet-400 — temporal measure
+          waves:  'rgb(var(--data-waves) / <alpha-value>)',
+          wind:   'rgb(var(--data-wind) / <alpha-value>)',
+          water:  'rgb(var(--data-water) / <alpha-value>)',
+          period: 'rgb(var(--data-period) / <alpha-value>)',
         },
 
         // ═══════════════════════════════════════════════════════════
@@ -94,13 +95,25 @@ const config: Config = {
         //  score colors. Never use as card background or primary border.
         // ═══════════════════════════════════════════════════════════
         sport: {
-          surf: '#22d3ee',      // cyan-400
-          kitesurf: '#c084fc',  // purple-400  — distinct from surf
-          windsurf: '#fb923c',  // orange-400  — "wind & speed"
-          bodyboard: '#2dd4bf', // teal-400
-          sup: '#6ee7b7',       // emerald-300
-          wakeboard: '#e879f9', // fuchsia-400 — cable park, stands out
-          foil: '#facc15',      // yellow-400 — sun + hydrofoil association
+          surf:      'rgb(var(--sport-surf) / <alpha-value>)',
+          kitesurf:  'rgb(var(--sport-kitesurf) / <alpha-value>)',
+          windsurf:  'rgb(var(--sport-windsurf) / <alpha-value>)',
+          bodyboard: 'rgb(var(--sport-bodyboard) / <alpha-value>)',
+          sup:       'rgb(var(--sport-sup) / <alpha-value>)',
+          wakeboard: 'rgb(var(--sport-wakeboard) / <alpha-value>)',
+          foil:      'rgb(var(--sport-foil) / <alpha-value>)',
+        },
+
+        // ═══════════════════════════════════════════════════════════
+        //  SCORE COLORS — theme-aware via CSS variables
+        //  Use for badges, gauges, and score indicators.
+        // ═══════════════════════════════════════════════════════════
+        score: {
+          epic:   'rgb(var(--score-epic) / <alpha-value>)',
+          good:   'rgb(var(--score-good) / <alpha-value>)',
+          fair:   'rgb(var(--score-fair) / <alpha-value>)',
+          poor:   'rgb(var(--score-poor) / <alpha-value>)',
+          closed: 'rgb(var(--score-closed) / <alpha-value>)',
         },
 
         // ═══════════════════════════════════════════════════════════
@@ -110,9 +123,9 @@ const config: Config = {
         //        legacy `wind` palette below.
         // ═══════════════════════════════════════════════════════════
         windDir: {
-          offshore: '#22c55e',  // green-500 — wind from land (good for surf)
-          onshore: '#ef4444',   // red-500   — wind from sea (bad for surf)
-          cross: '#94a3b8',     // slate-400 — sideshore (neutral)
+          offshore: 'rgb(var(--windDir-offshore) / <alpha-value>)',
+          onshore:  'rgb(var(--windDir-onshore) / <alpha-value>)',
+          cross:    'rgb(var(--windDir-cross) / <alpha-value>)',
         },
 
         // ═══════════════════════════════════════════════════════════
@@ -196,12 +209,13 @@ const config: Config = {
         'card-hover':   '0 8px 24px -4px rgb(0 0 0 / 0.3), 0 4px 8px -2px rgb(0 0 0 / 0.2)',
         'inset-divider':'inset 0 -1px 0 0 rgb(255 255 255 / 0.06)',
 
-        // Score glows for badges, gauges, hero CTAs
-        'glow-epic':   '0 0 32px -4px rgb(52 211 153 / 0.45)',  // emerald
-        'glow-good':   '0 0 32px -4px rgb(56 189 248 / 0.40)',  // sky
-        'glow-fair':   '0 0 24px -4px rgb(251 191 36 / 0.35)',  // amber
-        'glow-poor':   '0 0 24px -4px rgb(249 115 22 / 0.30)',  // orange
-        'glow-closed': '0 0 16px -4px rgb(244 63 94 / 0.25)',   // rose
+        // Score glows for badges, gauges, hero CTAs.
+        // Fase 7.2: convertido para CSS variables — agora respeitam o tema.
+        'glow-epic':   '0 0 32px -4px rgb(var(--score-epic) / 0.45)',
+        'glow-good':   '0 0 32px -4px rgb(var(--score-good) / 0.40)',
+        'glow-fair':   '0 0 24px -4px rgb(var(--score-fair) / 0.35)',
+        'glow-poor':   '0 0 24px -4px rgb(var(--score-poor) / 0.30)',
+        'glow-closed': '0 0 16px -4px rgb(var(--score-closed) / 0.25)',
       },
 
       // ═══════════════════════════════════════════════════════════

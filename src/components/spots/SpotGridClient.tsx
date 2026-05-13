@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
+// useSearchParams removed — using window.location.search for static export safety
 import Link from 'next/link';
-import { Wind, Waves, Zap, Filter, Star, X, RotateCcw, ArrowRight } from 'lucide-react';
-import SpotCard from './SpotCard';
+import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight } from 'lucide-react';
+import SpotMapInteractive from './SpotMapInteractive';
 import { getMacroRegion, type MacroRegion } from '@/lib/regions';
 import { getCompatibleSports, type SportType } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
@@ -27,7 +27,7 @@ interface SpotData {
 
 // ─── Sport config (Fase 4b order: affinity grouping) ───
 const SPORTS: { id: SportType | 'all'; labelPt: string; labelEn: string; icon: React.ReactNode; color: string }[] = [
-  { id: 'all', labelPt: 'Todos', labelEn: 'All', icon: <Star className="w-4 h-4" />, color: 'text-white' },
+  { id: 'all', labelPt: 'Todos', labelEn: 'All', icon: <Star className="w-4 h-4" />, color: 'text-fg' },
   { id: 'surf', labelPt: 'Surf', labelEn: 'Surf', icon: <Waves className="w-4 h-4" />, color: 'text-sport-surf' },
   { id: 'bodyboard', labelPt: 'Bodyboard', labelEn: 'Bodyboard', icon: <Waves className="w-4 h-4" />, color: 'text-sport-bodyboard' },
   { id: 'kitesurf', labelPt: 'Kitesurf', labelEn: 'Kitesurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-kitesurf' },
@@ -54,7 +54,7 @@ function getSportIcon(sport: SportType | 'all') {
 }
 
 function getSportColor(sport: SportType | 'all') {
-  return SPORTS.find(s => s.id === sport)?.color || 'text-white';
+  return SPORTS.find(s => s.id === sport)?.color || 'text-fg';
 }
 
 function getSportLabel(sport: SportType | 'all', isPt: boolean) {
@@ -127,7 +127,18 @@ export function SpotGridClient({
 }) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);
-  const nextSearch = useSearchParams();
+  // Read URL params safely on client (no useSearchParams to avoid static-export crash)
+  const [urlSport, setUrlSport] = useState<string | null>(null);
+  const [urlRegion, setUrlRegion] = useState<string | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        setUrlSport(params.get('sport'));
+        setUrlRegion(params.get('region'));
+      } catch { /* ignore */ }
+    }
+  }, []);
 
   // ─── Hydration-safe state init ───
   // Priority: URL query param > localStorage > default
@@ -139,21 +150,21 @@ export function SpotGridClient({
     setMounted(true);
 
     // Resolve sport: URL > localStorage > default
-    const urlSport = initialSport || nextSearch.get('sport');
+    const sportFromUrl = initialSport || urlSport;
     const lsSport = typeof window !== 'undefined' ? localStorage.getItem(LS_SPORT_KEY) : null;
-    const resolvedSport = (urlSport as SportType | 'all') || (lsSport as SportType | 'all') || 'all';
+    const resolvedSport = (sportFromUrl as SportType | 'all') || (lsSport as SportType | 'all') || 'all';
     if (SPORTS.some(s => s.id === resolvedSport)) {
       setSelectedSport(resolvedSport);
     }
 
     // Resolve region: URL > localStorage > default
-    const urlRegion = initialRegion || nextSearch.get('region');
+    const regionFromUrl = initialRegion || urlRegion;
     const lsRegion = typeof window !== 'undefined' ? localStorage.getItem(LS_REGION_KEY) : null;
-    const resolvedRegion = urlRegion || lsRegion || 'Todos';
+    const resolvedRegion = regionFromUrl || lsRegion || 'Todos';
     if (regions.includes(resolvedRegion)) {
       setSelectedRegion(resolvedRegion);
     }
-  }, [initialSport, initialRegion, nextSearch, regions]);
+  }, [initialSport, initialRegion, urlSport, urlRegion, regions]);
 
   // Persist to localStorage when changed by user (not from URL init)
   useEffect(() => {
@@ -254,7 +265,7 @@ export function SpotGridClient({
                   key={sport.id}
                   onClick={() => handleSportChange(sport.id)}
                   className={[
-                    'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium',
+                    'inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium min-h-[44px]',
                     'transition-all duration-200 whitespace-nowrap shrink-0',
                     active
                       ? 'bg-surface-2 border border-divider-strong text-fg'
@@ -283,7 +294,7 @@ export function SpotGridClient({
                     key={region}
                     onClick={() => handleRegionChange(region)}
                     className={[
-                      'inline-flex items-center px-2.5 py-1 rounded-md text-sm',
+                      'inline-flex items-center px-2.5 py-1.5 rounded-md text-sm min-h-[40px]',
                       'transition-all duration-200 whitespace-nowrap shrink-0',
                       active
                         ? 'bg-surface-2 border border-divider-strong text-fg font-medium'
@@ -331,85 +342,18 @@ export function SpotGridClient({
         </div>
       </div>
 
-      {/* ─── Top 3 para ti ─── */}
-      {top3Count > 0 && selectedSport !== 'all' && (
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
-            <span className={`${sportColor}`}>{sportIcon}</span>
-            <h2 className="text-h2 text-fg">
-              {top3Count === 1
-                ? `${isPt ? t.hero.top3One : t.hero.top3One} ${sportLabel}`
-                : `${isPt ? t.hero.top3 : t.hero.top3} ${sportLabel}`}
-              {selectedRegion !== 'Todos' && (
-                <span className="text-fg-muted"> {isPt ? 'em' : 'in'} {selectedRegion}</span>
-              )}
-              {' · '}
-              <span className="text-meta text-fg-muted">
-                {top3Count === 1
-                  ? (isPt ? t.hero.top3OneSub : t.hero.top3OneSub)
-                  : (isPt ? t.hero.top3Sub : t.hero.top3Sub)}
-              </span>
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {top3.map((data, idx) => {
-              // Bug F fix: pass the score of the SELECTED sport, not primaryScore
-              const scoreToShow = data.allScores[selectedSport];
-              return (
-                <SpotCard
-                  key={`top3-${data.spot.id}`}
-                  spot={data.spot}
-                  conditions={data.conditions}
-                  sportScore={scoreToShow}
-                  locale={locale}
-                />
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* ─── Section heading for grid ─── */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-h2 text-fg">
-          {isPt ? t.hero.filteredSpots : t.hero.filteredSpots}
-          {selectedSport !== 'all' && (
-            <span className="text-fg-muted"> · {sportLabel}</span>
-          )}
-          {selectedRegion !== 'Todos' && (
-            <span className="text-fg-muted"> {isPt ? 'em' : 'in'} {selectedRegion}</span>
-          )}
-        </h2>
-        <span className="text-meta text-fg-muted">
-          {isPt ? t.hero.sortedByScore : t.hero.sortedByScore}
-        </span>
+      {/* ─── Interactive Map ─── */}
+      <div className="mb-8">
+        <SpotMapInteractive
+          spotsData={filtered}
+          selectedSport={selectedSport}
+          selectedRegion={selectedRegion}
+          locale={locale}
+        />
       </div>
 
-      {/* ─── Grid ─── */}
-      {sorted.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {sorted.map((data, idx) => {
-            // Bug F fix: pass the score of the SELECTED sport, not primaryScore
-            const scoreToShow = selectedSport === 'all'
-              ? data.allScores[Object.keys(data.allScores).reduce((a, b) =>
-                  (data.allScores[a as SportType]?.score || 0) > (data.allScores[b as SportType]?.score || 0) ? a : b
-                ) as SportType]
-              : data.allScores[selectedSport];
-
-            return (
-              <SpotCard
-                key={data.spot.id}
-                spot={data.spot}
-                conditions={data.conditions}
-                sportScore={scoreToShow}
-                locale={locale}
-              />
-            );
-          })}
-        </div>
-      ) : (
-        /* ─── Empty state ─── */
+      {/* ─── Empty state (when no spots match filters) ─── */}
+      {sorted.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="w-16 h-16 rounded-2xl bg-surface-1 border border-divider flex items-center justify-center mb-4">
             <Filter className="w-8 h-8 text-fg-muted" />

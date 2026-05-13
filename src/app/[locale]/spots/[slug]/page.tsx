@@ -9,8 +9,8 @@ export async function generateStaticParams() {
   ])
 }
 
-export default async function SpotDetailPage({ params }: { params: { locale: string; slug: string } }) {
-  const { locale, slug } = params
+export default async function SpotDetailPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params
   const spot = getSpotBySlug(slug)
   
   if (!spot) {

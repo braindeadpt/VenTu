@@ -1,4 +1,4 @@
-# WindSpot — Plano de Diferenciação
+# VenTu — Plano de Diferenciação
 
 ## O Problema
 A frontpage atual é uma cópia do Beachcam/Surftotal:
@@ -9,7 +9,7 @@ A frontpage atual é uma cópia do Beachcam/Surftotal:
 - ❌ Zero informação que um local já não saiba
 
 ## A Visão
-**WindSpot = o Guia Local que os sites grandes nunca serão.**
+**VenTu = o Guia Local que os sites grandes nunca serão.**
 
 Informação que só quem surf/kitesurf em Portugal sabe. Métricas que ninguém calcula. Uma experiência divertida, útil e impossível de ignorar.
 
@@ -57,7 +57,7 @@ Para as próximas 48h, por hora:
 
 ```
 ┌─────────────────────────────────────────┐
-│  🌊 WindSpot — Onde está a boa onda?    │
+│  🌊 VenTu — Onde está a boa onda?    │
 │  "Hoje é dia de Guincho! 🔥"            │
 ├─────────────────────────────────────────┤
 │                                         │
@@ -129,7 +129,7 @@ Para as próximas 48h, por hora:
 - "Este spot funciona em 73% dos dias de Inverno"
 - "Média de crowd: 15 pessoas (manhã) vs 45 (tarde)"
 
-## 4. Métricas Únicas — O Algoritmo WindSpot 🤖
+## 4. Métricas Únicas — O Algoritmo VenTu 🤖
 
 ### Surfability Score (0-100)
 ```
@@ -245,4 +245,4 @@ tideQuality = 1 - abs(currentTide - idealTide) / tideRange
 
 ---
 
-*WindSpot — feito por surfers, para surfers. Ninguém sabe Portugal como nós.* 🌊🇵🇹
+*VenTu — feito por surfers, para surfers. Ninguém sabe Portugal como nós.* 🌊🇵🇹

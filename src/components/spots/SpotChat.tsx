@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Send, MessageCircle, Users, Trash2, Shield, Loader2, ChevronUp } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
-import { moderateMessage, moderateUsername, checkRateLimit, CHAT_RULES } from '@/lib/chatModeration';
+import { moderateMessage, moderateUsername, checkRateLimit, CHAT_RULES, sanitizeContent, validateUsername } from '@/lib/chatModeration';
 
 interface ChatMessage {
   id: string;
@@ -177,9 +177,11 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
     }
   };
 
-  // Scroll to bottom on new messages
+  // Scroll to bottom on new messages (skip on mount when empty)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length > 0) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
   }, [messages]);
 
   const sendMessage = async (e: React.FormEvent) => {
@@ -190,7 +192,19 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
     setModerationWarning(null);
     setRateLimitWarning(null);
 
-    // Validate username
+    // Validate username format (defense in depth — server also validates)
+    const usernameValidation = validateUsername(username);
+    if (!usernameValidation.valid) {
+      setModerationWarning(
+        isPT
+          ? `Username inválido: ${usernameValidation.reason}. Geração de novo nome...`
+          : `Invalid username: ${usernameValidation.reason}. Generating new one...`
+      );
+      generateNewUsername();
+      return;
+    }
+
+    // Moderate username content
     const usernameModeration = moderateUsername(username, locale);
     if (!usernameModeration.allowed) {
       setModerationWarning(
@@ -213,14 +227,23 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
       return;
     }
 
+    // Sanitize content (defense in depth — server also sanitizes)
+    const rawContent = newMessage.trim();
+    const sanitizedContent = sanitizeContent(rawContent);
+
+    if (sanitizedContent.length < 1) {
+      setModerationWarning(isPT ? 'Mensagem vazia após sanitização' : 'Message empty after sanitization');
+      return;
+    }
+
     // Moderate content
-    const moderation = moderateMessage(newMessage.trim(), locale);
+    const moderation = moderateMessage(sanitizedContent, locale);
     if (!moderation.allowed) {
       setModerationWarning(moderation.reason || (isPT ? 'Mensagem bloqueada' : 'Message blocked'));
       return;
     }
 
-    const contentToSend = moderation.sanitized || newMessage.trim();
+    const contentToSend = moderation.sanitized || sanitizedContent;
 
     if (!isSupabaseConfigured()) {
       // Mock send - just add locally
@@ -280,26 +303,26 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
   };
 
   return (
-    <div className="bg-slate-800/60 backdrop-blur-sm rounded-xl border border-cyan-500/20 overflow-hidden">
+    <div className="bg-bg-elevated/60 backdrop-blur-sm rounded-xl border border-data-waves/20 overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+      <div className="p-4 border-b border-divider flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-cyan-400" />
-          <h3 className="text-lg font-bold text-white">
+          <MessageCircle className="w-5 h-5 text-data-waves" />
+          <h3 className="text-lg font-bold text-fg">
             {isPT ? `Chat ${spotName}` : `${spotName} Chat`}
           </h3>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5 text-xs text-slate-400">
+          <div className="flex items-center gap-1.5 text-xs text-fg-muted">
             <Users className="w-3.5 h-3.5" />
             {messages.length > 0 ? `${new Set(messages.map(m => m.username)).size} online` : '0 online'}
           </div>
           {isSupabaseConfigured() && (
-            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
+            <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-windDir-offshore animate-pulse' : 'bg-windDir-onshore'}`} />
           )}
           <button
             onClick={() => setShowRules(!showRules)}
-            className="text-slate-500 hover:text-cyan-400 transition-colors"
+            className="text-fg-subtle hover:text-data-waves transition-colors"
             title={isPT ? 'Regras do chat' : 'Chat rules'}
             aria-label={isPT ? 'Regras do chat' : 'Chat rules'}
           >
@@ -307,7 +330,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
           </button>
           <button
             onClick={clearChat}
-            className="text-slate-500 hover:text-red-400 transition-colors"
+            className="text-fg-subtle hover:text-windDir-onshore transition-colors"
             title={isPT ? 'Limpar chat' : 'Clear chat'}
             aria-label={isPT ? 'Limpar chat' : 'Clear chat'}
           >
@@ -318,15 +341,15 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
 
       {/* Rules Panel */}
       {showRules && (
-        <div className="bg-slate-700/50 border-b border-white/10 p-3">
-          <h4 className="text-xs font-semibold text-cyan-400 mb-2 flex items-center gap-1">
+        <div className="bg-surface-2 border-b border-divider p-3">
+          <h4 className="text-xs font-semibold text-data-waves mb-2 flex items-center gap-1">
             <Shield className="w-3 h-3" />
             {isPT ? 'Regras do Chat' : 'Chat Rules'}
           </h4>
           <ul className="space-y-1">
             {CHAT_RULES[isPT ? 'pt' : 'en'].map((rule, i) => (
-              <li key={i} className="text-xs text-slate-400 flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full bg-cyan-400" />
+              <li key={i} className="text-xs text-fg-muted flex items-center gap-1.5">
+                <div className="w-1 h-1 rounded-full bg-data-waves" />
                 {rule}
               </li>
             ))}
@@ -336,8 +359,8 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
 
       {/* Moderation Warning */}
       {moderationWarning && (
-        <div className="bg-red-500/10 border border-red-500/20 p-2 mx-4 mt-2 rounded-lg">
-          <p className="text-xs text-red-300 flex items-center gap-1">
+        <div className="bg-windDir-onshore/10 border border-windDir-onshore/20 p-2 mx-4 mt-2 rounded-lg">
+          <p className="text-xs text-windDir-onshore flex items-center gap-1">
             <Shield className="w-3 h-3" />
             {moderationWarning}
           </p>
@@ -346,12 +369,12 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
 
       {/* Rate Limit Warning */}
       {rateLimitWarning && (
-        <div className="bg-yellow-500/10 border border-yellow-500/20 p-2 mx-4 mt-2 rounded-lg">
-          <p className="text-xs text-yellow-300 flex items-center gap-1">
+        <div className="bg-score-fair/10 border border-score-fair/20 p-2 mx-4 mt-2 rounded-lg">
+          <p className="text-xs text-score-fair flex items-center gap-1">
             <Shield className="w-3 h-3" />
             {rateLimitWarning}
           </p>
-          <p className="text-xs text-yellow-300/60 mt-0.5">
+          <p className="text-xs text-score-fair/60 mt-0.5">
             {isPT ? 'Limite do cliente — o servidor impõe max 1 msg/10s por utilizador' : 'Client limit — server enforces max 1 msg/10s per user'}
           </p>
         </div>
@@ -365,7 +388,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
             <button
               onClick={loadMoreMessages}
               disabled={isLoadingMore}
-              className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors disabled:opacity-50 flex items-center gap-1 mx-auto"
+              className="text-xs text-data-waves hover:text-data-waves/80 transition-colors disabled:opacity-50 flex items-center gap-1 mx-auto"
             >
               {isLoadingMore ? (
                 <>
@@ -383,7 +406,7 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
         )}
         
         {messages.length === 0 ? (
-          <div className="text-center text-slate-500 py-8">
+          <div className="text-center text-fg-subtle py-8">
             <MessageCircle className="w-8 h-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">
               {isPT 
@@ -395,15 +418,15 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
         ) : (
           messages.map((msg) => (
             <div key={msg.id} className="flex gap-2">
-              <div className={`w-8 h-8 rounded-full ${getAvatarColor(msg.username)} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+              <div className={`w-8 h-8 rounded-full ${getAvatarColor(msg.username)} flex items-center justify-center text-fg text-xs font-bold shrink-0`}>
                 {msg.username.slice(0, 2).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-semibold text-cyan-300">{msg.username}</span>
-                  <span className="text-xs text-slate-500">{formatTime(msg.created_at)}</span>
+                  <span className="text-sm font-semibold text-data-waves/80">{msg.username}</span>
+                  <span className="text-xs text-fg-subtle">{formatTime(msg.created_at)}</span>
                 </div>
-                <p className="text-sm text-slate-200 break-words">{msg.content}</p>
+                <p className="text-sm text-fg-muted break-words">{msg.content}</p>
               </div>
             </div>
           ))
@@ -412,41 +435,41 @@ export default function SpotChat({ spotSlug, spotName, locale }: SpotChatProps) 
       </div>
 
       {/* Input */}
-      <form onSubmit={sendMessage} className="p-4 border-t border-white/10">
+      <form onSubmit={sendMessage} className="p-4 border-t border-divider">
         <div className="flex gap-2">
           <input
             type="text"
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder={isPT ? 'Escreve algo...' : 'Type something...'}
-            className="flex-1 bg-slate-700/50 border border-white/10 rounded-lg px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50"
+            className="flex-1 bg-surface-2 border border-divider rounded-lg px-4 py-2.5 text-sm text-fg placeholder-fg-subtle focus:outline-none focus:border-data-waves/50"
             maxLength={280}
           />
           <button
             type="submit"
             disabled={!newMessage.trim()}
-            className="bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 rounded-lg px-4 py-2.5 hover:bg-cyan-500/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            className="bg-data-waves/20 text-data-waves border border-data-waves/30 rounded-lg px-4 py-2.5 hover:bg-data-waves/30 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4" />
           </button>
         </div>
         <div className="flex justify-between mt-2">
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-fg-subtle">
             {isPT ? `A falar como ` : `Chatting as `}
-            <span className="text-cyan-400 font-medium">{username}</span>
+            <span className="text-data-waves font-medium">{username}</span>
           </span>
-          <span className="text-xs text-slate-500">{newMessage.length}/280</span>
+          <span className="text-xs text-fg-subtle">{newMessage.length}/280</span>
         </div>
       </form>
 
       {/* Demo mode notice */}
       {!isSupabaseConfigured() && (
         <div className="px-4 pb-3">
-          <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-2.5">
-            <p className="text-xs text-yellow-300 font-medium">
+          <div className="bg-score-fair/10 border border-score-fair/20 rounded-lg p-2.5">
+            <p className="text-xs text-score-fair font-medium">
               {isPT ? 'Modo demo — Chat local (mensagens não persistem)' : 'Demo mode — Local chat (messages do not persist)'}
             </p>
-            <p className="text-xs text-yellow-300/60 mt-1">
+            <p className="text-xs text-score-fair/60 mt-1">
               {isPT 
                 ? 'Conecta Supabase para chat real com rate-limiting e moderação automática.'
                 : 'Connect Supabase for real chat with rate-limiting and auto-moderation.'

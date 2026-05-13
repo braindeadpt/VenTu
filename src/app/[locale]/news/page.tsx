@@ -43,10 +43,10 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: s
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-8">
       <div className="flex items-center gap-4">
-        <Newspaper className="w-8 h-8 text-cyan-400" />
+        <Newspaper className="w-8 h-8 text-data-waves" />
         <div>
-          <h1 className="text-4xl font-bold text-white/90">{t.news.title}</h1>
-          <p className="text-white/50 mt-1">
+          <h1 className="text-4xl font-bold text-fg">{t.news.title}</h1>
+          <p className="text-fg-muted mt-1">
             {isPt ? 'Notícias automáticas sobre desportos náuticos' : 'Automated news about water sports'}
           </p>
         </div>
@@ -54,13 +54,13 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: s
 
       {news.length === 0 ? (
         <div className="text-center py-16 space-y-4">
-          <Newspaper className="w-16 h-16 text-white/20 mx-auto" />
-          <p className="text-white/40 text-lg">
+          <Newspaper className="w-16 h-16 text-fg-subtle mx-auto" />
+          <p className="text-fg-subtle text-lg">
             {isPt 
               ? 'Ainda não há notícias disponíveis. Volta mais tarde!' 
               : 'No news available yet. Check back later!'}
           </p>
-          <p className="text-white/30 text-sm">
+          <p className="text-fg-subtle/80 text-sm">
             {isPt 
               ? 'As notícias são atualizadas automaticamente a cada 3 horas.' 
               : 'News are automatically updated every 3 hours.'}

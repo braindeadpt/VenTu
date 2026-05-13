@@ -26,15 +26,15 @@ export default function ConditionCard({
     return (
       <div className="flex items-center gap-3 text-sm">
         <div className="flex items-center gap-1.5">
-          <Waves className="w-4 h-4 text-wave-400" />
+          <Waves className="w-4 h-4 text-data-waves" />
           <span className="font-semibold">{waveHeight.toFixed(1)}m</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Wind className="w-4 h-4 text-wind-400" />
+          <Wind className="w-4 h-4 text-data-wind" />
           <span className="font-semibold">{(windSpeed * 1.94384).toFixed(0)}kt</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Thermometer className="w-4 h-4 text-surf-400" />
+          <Thermometer className="w-4 h-4 text-data-waves" />
           <span className="font-semibold">{waterTemp.toFixed(0)}°C</span>
         </div>
       </div>
@@ -45,10 +45,10 @@ export default function ConditionCard({
     <div className="glass-card p-4 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Waves className="w-5 h-5 text-wave-400" />
+          <Waves className="w-5 h-5 text-data-waves" />
           <div>
-            <p className="text-xs text-white/50">{isPt ? 'Altura Onda' : 'Wave Height'}</p>
-            <p className="text-2xl font-bold">{waveHeight.toFixed(1)}<span className="text-sm font-normal text-white/60">m</span></p>
+            <p className="text-xs text-fg-muted">{isPt ? 'Altura Onda' : 'Wave Height'}</p>
+            <p className="text-2xl font-bold">{waveHeight.toFixed(1)}<span className="text-sm font-normal text-fg-subtle">m</span></p>
           </div>
         </div>
         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${waveRating.className}`}>
@@ -60,8 +60,8 @@ export default function ConditionCard({
         <div className="flex items-center gap-3">
           <WindCompass direction={windDirection} speed={windSpeed * 1.94384} size={48} />
           <div>
-            <p className="text-xs text-white/50">{isPt ? 'Vento' : 'Wind'}</p>
-            <p className="text-2xl font-bold">{(windSpeed * 1.94384).toFixed(0)}<span className="text-sm font-normal text-white/60">kt</span></p>
+            <p className="text-xs text-fg-muted">{isPt ? 'Vento' : 'Wind'}</p>
+            <p className="text-2xl font-bold">{(windSpeed * 1.94384).toFixed(0)}<span className="text-sm font-normal text-fg-subtle">kt</span></p>
           </div>
         </div>
         <div className="text-right">
@@ -71,18 +71,18 @@ export default function ConditionCard({
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-2 border-t border-white/10">
+      <div className="flex items-center justify-between pt-2 border-t border-divider">
         <div className="flex items-center gap-3">
-          <Thermometer className="w-5 h-5 text-surf-400" />
+          <Thermometer className="w-5 h-5 text-data-waves" />
           <div>
-            <p className="text-xs text-white/50">{isPt ? 'Temp. Água' : 'Water Temp'}</p>
+            <p className="text-xs text-fg-muted">{isPt ? 'Temp. Água' : 'Water Temp'}</p>
             <p className="text-lg font-bold">{waterTemp.toFixed(1)}°C</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Gauge className="w-5 h-5 text-ocean-400" />
+          <Gauge className="w-5 h-5 text-data-waves" />
           <div>
-            <p className="text-xs text-white/50">{isPt ? 'Período' : 'Period'}</p>
+            <p className="text-xs text-fg-muted">{isPt ? 'Período' : 'Period'}</p>
             <p className="text-lg font-bold">{wavePeriod.toFixed(1)}s</p>
           </div>
         </div>

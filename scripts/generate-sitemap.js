@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE_URL = 'https://braindeadpt.github.io/windspot-pt';
+const BASE_URL = 'https://ventu.surf';
 const LOCALES = ['pt', 'en'];
 
 // Read spots from the source file

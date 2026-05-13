@@ -1,6 +1,7 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -14,14 +15,14 @@ import { getTranslation } from '@/lib/i18n';
 /* ═══════════════════════════════════════════════════════════════════════
  *  ForecastTable — Dense hourly forecast table (Windguru-style).
  *
- *  Signature feature. Shows 24-72 hours of wave, wind, and score data
- *  in a compact colour-coded table with sticky headers and semantic
- *  cell backgrounds.
+ *  Signature feature. Shows 24-120 hours of wave, wind, and score data
+ *  in a compact colour-coded table with sticky headers, semantic
+ *  cell backgrounds, day separators, and day-picker tabs.
  *
  *  @example
  *  <ForecastTable
  *    hourly={forecastData}
- *    hours={24}
+ *    hours={120}
  *    sport="surf"
  *    coastOrientation={270}
  *    locale="pt"
@@ -50,7 +51,61 @@ interface ForecastTableProps {
 }
 
 /* ──────────── cap hours ──────────── */
-const MAX_HOURS = 72;
+const MAX_HOURS = 120;
+
+/* ──────────── day grouping helpers ──────────── */
+
+interface DayGroup {
+  date: Date;
+  startIndex: number;
+  count: number;
+  label: string;
+  isToday: boolean;
+  weekdayShort: string;
+}
+
+function groupHoursByDay(hours: ForecastHour[], locale: string): DayGroup[] {
+  if (hours.length === 0) return [];
+
+  const groups: DayGroup[] = [];
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${now.getMonth()}-${now.getDate()}`;
+  const weekdayFmt = new Intl.DateTimeFormat(locale, { weekday: 'short' });
+
+  let current: DayGroup | null = null;
+
+  hours.forEach((h, i) => {
+    const d = new Date(h.time);
+    const dateStr = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const isToday = dateStr === todayStr;
+    const weekdayRaw = weekdayFmt.format(d);
+    const weekdayShort = weekdayRaw.charAt(0).toUpperCase() + weekdayRaw.slice(1);
+
+    if (!current || current.date.getDate() !== d.getDate()) {
+      if (current) groups.push(current);
+      current = {
+        date: d,
+        startIndex: i,
+        count: 1,
+        label: `${weekdayShort} ${d.getDate()}`,
+        isToday,
+        weekdayShort,
+      };
+    } else {
+      current.count++;
+    }
+  });
+
+  if (current) groups.push(current);
+  return groups;
+}
+
+function isDayBoundary(hours: ForecastHour[], index: number): boolean {
+  if (index <= 0) return false;
+  const curr = new Date(hours[index].time);
+  const prev = new Date(hours[index - 1].time);
+  return curr.getDate() !== prev.getDate();
+}
 
 /* ──────────── colour helpers (literal classes for Tailwind JIT) ──────────── */
 
@@ -173,6 +228,7 @@ export default function ForecastTable({
   compact = false,
 }: ForecastTableProps) {
   const t = getTranslation(locale as 'pt' | 'en').forecastTable;
+  const tc = getTranslation(locale as 'pt' | 'en').common;
   const isPt = locale === 'pt';
 
   /* ── cap hours ── */
@@ -180,7 +236,7 @@ export default function ForecastTable({
   if (hours > MAX_HOURS && process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-console
     console.warn(
-      `ForecastTable: hours capped at ${MAX_HOURS} (received ${hours}). Pagination coming in a future release.`,
+      `ForecastTable: hours capped at ${MAX_HOURS} (received ${hours}). Currently the max supported horizon.`,
     );
   }
 
@@ -196,6 +252,91 @@ export default function ForecastTable({
     }
     return hourly.slice(startIndex, startIndex + visibleCount);
   }, [hourly, startTime, visibleCount]);
+
+  /* ── day groups ── */
+  const dayGroups = useMemo(
+    () => groupHoursByDay(visible, locale),
+    [visible, locale],
+  );
+
+  /* ── day boundary lookup (startIndex → dayIndex) ── */
+  const startIndexToDayIndex = useMemo(() => {
+    const map = new Map<number, number>();
+    dayGroups.forEach((group, idx) => map.set(group.startIndex, idx));
+    return map;
+  }, [dayGroups]);
+
+  /* ── scroll container ref + nav logic ── */
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const isProgrammaticScroll = useRef(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
+
+  const updateScrollButtons = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  }, []);
+
+  const scrollByAmount = useCallback((amount: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: amount, behavior: 'smooth' });
+  }, []);
+
+  /* ── active day + scroll ── */
+  const [activeDay, setActiveDay] = useState(0);
+
+  const scrollToDay = useCallback(
+    (dayIndex: number) => {
+      setActiveDay(dayIndex);
+      const el = document.getElementById(`ft-day-${dayIndex}`);
+      if (!el || !scrollRef.current) return;
+      isProgrammaticScroll.current = true;
+      el.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      setTimeout(() => { isProgrammaticScroll.current = false; }, 600);
+    },
+    [],
+  );
+
+  /* ── track active day + scroll buttons from scroll position ── */
+  const handleScroll = useCallback(() => {
+    updateScrollButtons();
+    if (isProgrammaticScroll.current) return;
+    if (dayGroups.length <= 1) return;
+
+    const container = scrollRef.current;
+    if (!container) return;
+
+    // Find which day is most visible
+    let closestDay = 0;
+    let minDistance = Infinity;
+
+    for (let i = 0; i < dayGroups.length; i++) {
+      const el = document.getElementById(`ft-day-${i}`);
+      if (!el) continue;
+      const distance = Math.abs(el.offsetLeft - container.scrollLeft);
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestDay = i;
+      }
+    }
+
+    setActiveDay(closestDay);
+  }, [dayGroups.length, updateScrollButtons]);
+
+  /* ── init scroll buttons on mount / resize ── */
+  useEffect(() => {
+    // Wait for table layout to settle before checking scrollability
+    const timer = setTimeout(() => updateScrollButtons(), 100);
+    const onResize = () => updateScrollButtons();
+    window.addEventListener('resize', onResize);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [updateScrollButtons, visible.length]);
 
   /* ── current hour ref ── */
   const now = useMemo(() => new Date(), []);
@@ -218,41 +359,84 @@ export default function ForecastTable({
   const labelW = 'w-[80px] md:w-[80px]';
   const hourW = compact ? 'min-w-[32px]' : 'min-w-[36px]';
 
-  return (
-    <div
-      className="overflow-x-auto no-scrollbar rounded-card-lg border border-divider bg-bg-base"
-      tabIndex={0}
-      role="region"
-      aria-label={t.caption.replace('{hours}', String(visibleCount))}
-    >
-      <table className="w-full border-separate border-spacing-x-[2px] border-spacing-y-[1px] text-center">
-        {/* Caption for screen readers */}
-        <caption className="sr-only">
-          {t.caption.replace('{hours}', String(visibleCount))}
-        </caption>
+  /* ── day boundary class helper ── */
+  const boundaryClass = (i: number) =>
+    isDayBoundary(visible, i) ? 'border-l-2 border-l-divider-strong' : '';
 
-        <thead>
-          {/* Hour header row */}
-          <tr>
-            {/* Sticky label column */}
-            <th
-              scope="col"
-              className={`sticky left-0 z-20 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
-            />
-            {visible.map((h, i) => {
-              const current = isCurrentHour(h.time, now);
-              return (
+  return (
+    <div className="space-y-3">
+      {/* ═══════════════════════════════════════════════════════════════
+          DAY PICKER TABS
+          ═══════════════════════════════════════════════════════════════ */}
+      {dayGroups.length > 1 && (
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          {dayGroups.map((group, i) => (
+            <button
+              key={i}
+              onClick={() => scrollToDay(i)}
+              className={`
+                px-3 py-1.5 sm:px-4 sm:py-2 rounded-pill text-meta-sm font-medium whitespace-nowrap
+                transition-all duration-fast
+                ${activeDay === i
+                  ? 'bg-surface-3 text-fg ring-1 ring-divider-strong'
+                  : 'bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg'
+                }
+              `}
+            >
+              {group.isToday ? (
+                tc.today
+              ) : (
+                <>
+                  <span className="hidden sm:inline">{group.weekdayShort} </span>
+                  <span>{group.date.getDate()}</span>
+                </>
+              )}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════════════════════════════
+          TABLE
+          ═══════════════════════════════════════════════════════════════ */}
+      <div className="relative">
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="overflow-x-auto rounded-card-lg border border-divider bg-bg-base"
+          tabIndex={0}
+          role="region"
+          aria-label={t.caption.replace('{hours}', String(visible.length))}
+        >
+        <table className="w-max border-separate border-spacing-x-[2px] border-spacing-y-[1px] text-center">
+          {/* Caption for screen readers */}
+          <caption className="sr-only">
+            {t.caption.replace('{hours}', String(visibleCount))}
+          </caption>
+
+          <thead>
+            {/* ── Day labels row ── */}
+            <tr>
+              {/* Sticky label column */}
+              <th
+                scope="col"
+                className={`sticky left-0 z-20 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
+              />
+              {dayGroups.map((group, i) => (
                 <th
                   key={i}
                   scope="col"
-                  className={`sticky top-0 z-10 ${hourW} ${cellPx} font-mono text-num-sm ${
-                    current
-                      ? 'bg-surface-2 text-fg border-b-2 border-score-good'
-                      : 'bg-bg-base text-fg-muted'
-                  } transition-colors duration-fast`}
-                  aria-current={current ? 'time' : undefined}
+                  colSpan={group.count}
+                  className="sticky top-0 z-[11] bg-surface-1 border-b border-divider-strong py-1 text-meta-sm font-mono uppercase tracking-wider text-fg-muted"
                 >
-                  {parseHourLabel(h.time)}
+                  {group.isToday ? (
+                    tc.today
+                  ) : (
+                    <>
+                      <span className="hidden sm:inline">{group.weekdayShort} </span>
+                      <span>{group.date.getDate()}</span>
+                    </>
+                  )}
                 </th>
               );
             })}
@@ -389,80 +573,33 @@ export default function ForecastTable({
                 );
               })}
             </tr>
-          )}
+      </div>
+      {/* Scroll hint — gradient fade on right edge */}
+      <div className="absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-bg-base to-transparent pointer-events-none z-10" aria-hidden="true" />
 
-          {/* ── WATER TEMP (conditional) ── */}
-          {hasWaterTemp && (
-            <tr>
-              <th
-                scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
-              >
-                {t.water}
-              </th>
-              {visible.map((h, i) => (
-                <td
-                  key={i}
-                  className={`${hourW} ${cellPx} ${
-                    typeof h.waterTemp === 'number'
-                      ? waterBg(h.waterTemp)
-                      : 'bg-surface-1'
-                  } font-mono text-num ${
-                    typeof h.waterTemp === 'number'
-                      ? waterText(h.waterTemp)
-                      : 'text-fg-subtle'
-                  } ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast`}
-                  title={buildTooltip(h, sportLabel)}
-                  onMouseEnter={() => setHoveredCol(i)}
-                  onMouseLeave={() => setHoveredCol(null)}
-                >
-                  {typeof h.waterTemp === 'number'
-                    ? h.waterTemp.toFixed(1)
-                    : '—'}
-                </td>
-              ))}
-            </tr>
-          )}
-
-          {/* ── SCORE (conditional, heavy visual weight) ── */}
-          {hasAnyScore && (
-            <tr className="border-t-2 border-divider-strong">
-              <th
-                scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg font-semibold`}
-              >
-                {sportLabel ?? t.score}
-              </th>
-              {visible.map((h, i) => {
-                const hasScore = typeof h.score === 'number';
-                const variant = hasScore ? scoreVariant(h.score!) : '--score-closed';
-                return (
-                  <td
-                    key={i}
-                    className={`${hourW} ${cellPx} font-mono text-num-lg font-semibold ${
-                      hoveredCol === i ? 'bg-surface-2' : ''
-                    } transition-colors duration-fast`}
-                    style={
-                      hasScore
-                        ? ({
-                            backgroundColor: `rgb(var(${variant}) / 0.18)`,
-                            color: `rgb(var(${variant}))`,
-                          } as React.CSSProperties)
-                        : undefined
-                    }
-                    title={buildTooltip(h, sportLabel)}
-                    onMouseEnter={() => setHoveredCol(i)}
-                    onMouseLeave={() => setHoveredCol(null)}
-                  >
-                    {hasScore ? h.score : '—'}
-                  </td>
-                );
-              })}
-            </tr>
-          )}
-        </tbody>
-      </table>
+      {/* Desktop nav arrows */}
+      {canScrollLeft && (
+        <button
+          type="button"
+          onClick={() => scrollByAmount(-300)}
+          className="hidden md:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 items-center justify-center w-8 h-8 rounded-full bg-surface-1 border border-divider shadow-md text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors z-20"
+          aria-label={isPt ? 'Scrollar para a esquerda' : 'Scroll left'}
+        >
+          <ChevronLeft className="w-4 h-4" />
+        </button>
+      )}
+      {canScrollRight && (
+        <button
+          type="button"
+          onClick={() => scrollByAmount(300)}
+          className="hidden md:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 items-center justify-center w-8 h-8 rounded-full bg-surface-1 border border-divider shadow-md text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors z-20"
+          aria-label={isPt ? 'Scrollar para a direita' : 'Scroll right'}
+        >
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      )}
     </div>
+  </div>
   );
 }
 
@@ -473,54 +610,69 @@ export default function ForecastTable({
  *  1.  Visual density:
  *      • 24h table should be ~720-960px wide on desktop (no scroll).
  *      • 48h+ should trigger overflow-x with smooth scroll.
+ *      • 120h should still render smoothly (~960 cells).
  *
  *  2.  Sticky behaviour:
  *      • First column (labels) stays visible during horizontal scroll.
- *      • Header row (hours) stays visible during vertical scroll.
- *      • z-index layering: label col z-20 over header z-10 in corner.
+ *      • Header rows (day labels + hours) stay visible during vertical scroll.
+ *      • Day labels row sits above hour row when both are sticky.
+ *      • z-index layering: label col z-20 over header z-10/11 in corner.
  *
  *  3.  Current hour highlight:
  *      • Column matching current system hour gets surface-2 bg +
  *        border-b-2 border-score-good + text-fg (not muted).
  *
- *  4.  Colour semantics:
+ *  4.  Day separators:
+ *      • First hour of each day gets border-l-2 border-l-divider-strong.
+ *      • Applies to all rows (header + data).
+ *      • Day labels row shows weekday + date (or "Hoje" for today).
+ *
+ *  5.  Day picker tabs:
+ *      • One tab per day present in the data.
+ *      • Active tab has bg-surface-3 + ring.
+ *      • Click scrolls table horizontally to first hour of that day.
+ *      • "Hoje" label for current day.
+ *      • Mobile: weekday hidden, only date number shown.
+ *
+ *  6.  Colour semantics:
  *      • Wave cells: flat → small → rideable → good → big (increasing blue).
  *      • Wind cells: light → useful → strong → alarming (increasing amber).
  *      • Direction cells: offshore tint green, onshore tint red, cross neutral.
  *      • Water cells: cold → mild → warm (increasing teal).
  *      • Score cells: epic/good/fair/poor/closed colours via CSS var.
  *
- *  5.  Conditional rows:
+ *  7.  Conditional rows:
  *      • No gust data anywhere → gust row completely omitted.
  *      • No water temp anywhere → water row omitted.
  *      • No score anywhere → score row omitted (heavy row, don't waste space).
  *      • Partial score data → score row shown, missing cells show "—".
  *
- *  6.  Mobile (320px-375px):
+ *  8.  Mobile (320px-375px):
  *      • Overflow-x scrolls smoothly, first column sticky.
  *      • Compact mode: smaller padding + narrower hour columns.
+ *      • Day picker tabs scroll horizontally if needed.
  *
- *  7.  Accessibility:
+ *  9.  Accessibility:
  *      • <caption> sr-only for screen readers.
  *      • <th scope="col"> for hour headers, <th scope="row"> for labels.
  *      • aria-current="time" on current hour header.
  *      • title tooltips on every data cell with full info.
  *      • Keyboard focusable wrapper (tabIndex={0}).
  *
- *  8.  Hover column:
+ *  10. Hover column:
  *      • Hover any cell → entire column highlights with surface-2 bg.
  *      • Transition 120ms (duration-fast).
  *      • Respects prefers-reduced-motion via globals.css.
  *
- *  9.  Hours cap:
- *      • Passing hours={96} internally caps to 72, console.warn in dev.
- *      • Caller can paginate by shifting startTime in Fase 5.
+ *  11. Hours cap:
+ *      • Passing hours={150} internally caps to 120, console.warn in dev.
+ *      • Caller can paginate by shifting startTime in future releases.
  *
- *  10. Sport label:
+ *  12. Sport label:
  *      • Score row header uses translated sport name when sport prop given.
  *      • Falls back to generic "Score" label.
  *
- *  11. Arrow convention:
+ *  13. Arrow convention:
  *      • Arrow points WHERE wind goes (meteorological output direction).
  *      • Cardinal label shows where wind comes FROM.
  *      • Example: wind from N (0°) → arrow ↓ (goes S) + label "N".

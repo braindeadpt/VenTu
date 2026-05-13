@@ -28,13 +28,13 @@ interface SpotGridProps {
 }
 
 const SPORTS: { id: SportType | 'all'; label: string; icon: React.ElementType; color: string }[] = [
-  { id: 'all', label: 'Todos', icon: Waves, color: 'text-white' },
-  { id: 'surf', label: 'Surf', icon: Waves, color: 'text-cyan-400' },
-  { id: 'kitesurf', label: 'Kitesurf', icon: Wind, color: 'text-sky-400' },
-  { id: 'windsurf', label: 'Windsurf', icon: Wind, color: 'text-blue-400' },
-  { id: 'bodyboard', label: 'Bodyboard', icon: Waves, color: 'text-teal-400' },
-  { id: 'sup', label: 'SUP', icon: Waves, color: 'text-emerald-400' },
-  { id: 'wakeboard', label: 'Wakeboard', icon: Zap, color: 'text-purple-400' },
+  { id: 'all', label: 'Todos', icon: Waves, color: 'text-fg' },
+  { id: 'surf', label: 'Surf', icon: Waves, color: 'text-data-waves' },
+  { id: 'kitesurf', label: 'Kitesurf', icon: Wind, color: 'text-data-waves' },
+  { id: 'windsurf', label: 'Windsurf', icon: Wind, color: 'text-data-waves' },
+  { id: 'bodyboard', label: 'Bodyboard', icon: Waves, color: 'text-data-waves' },
+  { id: 'sup', label: 'SUP', icon: Waves, color: 'text-data-waves' },
+  { id: 'wakeboard', label: 'Wakeboard', icon: Zap, color: 'text-data-waves' },
 ];
 
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
@@ -73,7 +73,7 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
     <div className="space-y-6">
       {/* Sport filters */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
-        <Filter className="w-4 h-4 text-white/40 shrink-0" />
+        <Filter className="w-4 h-4 text-fg-subtle shrink-0" />
         {SPORTS.map((sport) => {
           const Icon = sport.icon;
           const isActive = selectedSport === sport.id;
@@ -83,11 +83,11 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
               onClick={() => setSelectedSport(sport.id as SportType | 'all')}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                 isActive 
-                  ? 'bg-white/15 text-white border border-white/20' 
-                  : 'bg-white/5 text-white/60 hover:bg-white/10 border border-transparent'
+                  ? 'bg-surface-2 text-fg border border-divider' 
+                  : 'bg-surface-1 text-fg-muted hover:bg-surface-2 border border-transparent'
               }`}
             >
-              <Icon className={`w-3.5 h-3.5 ${isActive ? sport.color : 'text-white/40'}`} />
+              <Icon className={`w-3.5 h-3.5 ${isActive ? sport.color : 'text-fg-subtle'}`} />
               {sport.label}
             </button>
           );
@@ -96,7 +96,7 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
 
       {/* Region filters */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
-        <MapPin className="w-4 h-4 text-white/40 shrink-0" />
+        <MapPin className="w-4 h-4 text-fg-subtle shrink-0" />
         {MACRO_REGIONS.map((region) => {
           const isActive = selectedRegion === region;
           return (
@@ -105,8 +105,8 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
               onClick={() => setSelectedRegion(region)}
               className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
                 isActive 
-                  ? 'bg-white/15 text-white border border-white/20' 
-                  : 'bg-white/5 text-white/60 hover:bg-white/10 border border-transparent'
+                  ? 'bg-surface-2 text-fg border border-divider' 
+                  : 'bg-surface-1 text-fg-muted hover:bg-surface-2 border border-transparent'
               }`}
             >
               {region === 'Todos' ? (isPt ? 'Todos' : 'All') : region}
@@ -116,7 +116,7 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
       </div>
 
       {/* Results count */}
-      <div className="text-sm text-white/50">
+      <div className="text-sm text-fg-muted">
         {sortedSpots.length} {isPt ? 'spots encontrados' : 'spots found'}
         {selectedSport !== 'all' && ` • ${SPORTS.find(s => s.id === selectedSport)?.label}`}
         {selectedRegion !== 'Todos' && ` • ${selectedRegion}`}
@@ -124,16 +124,37 @@ export default function SpotGrid({ spots, locale, conditions = {}, sportScores =
 
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedSpots.map((spot) => (
-          <SpotCard
-            key={spot.id}
-            spot={spot}
-            locale={locale}
-            conditions={conditions[spot.id]}
-            sportScore={selectedSport !== 'all' ? sportScores[spot.id]?.[selectedSport] : undefined}
-            selectedSport={selectedSport !== 'all' ? selectedSport : undefined}
-          />
-        ))}
+        {sortedSpots.map((spot) => {
+          // When 'all' is selected, show the best score across any sport
+          let scoreToShow = selectedSport !== 'all' ? sportScores[spot.id]?.[selectedSport] : undefined;
+          let sportToShow: SportType | undefined = selectedSport !== 'all' ? selectedSport : undefined;
+
+          if (selectedSport === 'all') {
+            const scores = sportScores[spot.id];
+            if (scores) {
+              let bestScore = -1;
+              for (const [sport, data] of Object.entries(scores)) {
+                const s = (data as any)?.score ?? 0;
+                if (s > bestScore) {
+                  bestScore = s;
+                  scoreToShow = data as any;
+                  sportToShow = sport as SportType;
+                }
+              }
+            }
+          }
+
+          return (
+            <SpotCard
+              key={spot.id}
+              spot={spot}
+              locale={locale}
+              conditions={conditions[spot.id]}
+              sportScore={scoreToShow}
+              selectedSport={sportToShow}
+            />
+          );
+        })}
       </div>
     </div>
   );

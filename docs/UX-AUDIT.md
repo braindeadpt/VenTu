@@ -1,6 +1,6 @@
-# WindSpot — UX/UI Audit
+# VenTu — UX/UI Audit
 
-Auditoria completa do UX/UI do site em produção (https://braindeadpt.github.io/windspot-pt/pt/) e dos componentes em `src/`. Identifica defeitos actuais, define princípios de design para um forecast tool moderno, e propõe um redesign concreto por componente.
+Auditoria completa do UX/UI do site em produção (https://ventu.surf/pt/) e dos componentes em `src/`. Identifica defeitos actuais, define princípios de design para um forecast tool moderno, e propõe um redesign concreto por componente.
 
 > Pré-requisito: lê `docs/CONTEXT.md` antes deste ficheiro. Define stack, restrições e bugs conhecidos que limitam o que é viável.
 
@@ -11,13 +11,13 @@ Auditoria completa do UX/UI do site em produção (https://braindeadpt.github.io
 ### A. Identidade e first impression
 
 **A1. O hero não comunica para que serve o site.**
-Utilizador chega à home, lê "WindSpot" gigante, vê um score 87/100 num spot aleatório, três métricas (m/kt/°C). Não sabe se isto é para surfistas, kiters, planeadores de viagem ou turistas. Comparação: Windguru tem campo de busca + lista de spots populares acima de tudo; Surfline mostra livecam. WindSpot mostra um número descontextualizado.
+Utilizador chega à home, lê "VenTu" gigante, vê um score 87/100 num spot aleatório, três métricas (m/kt/°C). Não sabe se isto é para surfistas, kiters, planeadores de viagem ou turistas. Comparação: Windguru tem campo de busca + lista de spots populares acima de tudo; Surfline mostra livecam. VenTu mostra um número descontextualizado.
 
 **A2. "Melhor Spot Hoje" é só best-surf-score.**
 A lógica é `sort by allScores['surf']` — independentemente do desporto do utilizador. Para um kiter que vem ao site, "melhor spot: Supertubos 87/100" quando ele queria Guincho é desorientador. Ranking precisa de ser **agnóstico ao desporto** ou **personalizado**.
 
 **A3. Tipografia sem hierarquia real.**
-"WindSpot" (h1) e nomes de spot (h1 também) usam font-weight 900 com tamanhos próximos. Score badge `text-3xl` vs nome `text-5xl` vs subtítulos `text-xl`. Cinco níveis tipográficos misturados. Inter declarada em `globals.css` mas **não carregada** (sem `next/font`, sem `<link>` Google Fonts) — site usa system fonts a fingir Inter.
+"VenTu" (h1) e nomes de spot (h1 também) usam font-weight 900 com tamanhos próximos. Score badge `text-3xl` vs nome `text-5xl` vs subtítulos `text-xl`. Cinco níveis tipográficos misturados. Inter declarada em `globals.css` mas **não carregada** (sem `next/font`, sem `<link>` Google Fonts) — site usa system fonts a fingir Inter.
 
 **A4. Paleta confusa.**
 `tailwind.config.ts` define 4 famílias (`ocean`, `surf`, `wind`, `wave`) mas a homepage usa defaults (`cyan`, `sky`, `emerald`, `slate`). Coexistem dois sistemas. `text-gradient` do logo é cyan→green→amber (paleta "tropical resort") contra resto dark/ocean — choque visual. Para meteo náutica, cromática devia **mapear-se a significado** (cyan=água, amber=vento, emerald=bom, rose=mau), não ser decorativa.
@@ -138,9 +138,9 @@ Hero pulsing, marquee infinito, bounce chevron. Para vestibular sensitivity ou e
 
 Estado da arte: Windguru, Surfline, Magicseaweed, Stormglass, Surf-forecast, Windfinder.
 
-**P1. Densidade > beleza.** Windguru lidera há 20 anos porque mete 84h × 12 variáveis = ~1000 pontos de dados num ecrã legível. Cards bonitos com 3 stats em prosa servem turistas, não a tribo. WindSpot tem menos info mas parece ter mais por layout prolixo.
+**P1. Densidade > beleza.** Windguru lidera há 20 anos porque mete 84h × 12 variáveis = ~1000 pontos de dados num ecrã legível. Cards bonitos com 3 stats em prosa servem turistas, não a tribo. VenTu tem menos info mas parece ter mais por layout prolixo.
 
-**P2. Cor é semântica.** Cada célula em Windguru tem cor que indica go/marginal/no-go. Não decoração. WindSpot usa cores ocean/cyan/emerald por estética.
+**P2. Cor é semântica.** Cada célula em Windguru tem cor que indica go/marginal/no-go. Não decoração. VenTu usa cores ocean/cyan/emerald por estética.
 
 **P3. Camera + condições + horário num só lugar.** Surfline integra livecam + report + forecast com timeline scrubbable. Vários spots PT têm livecams públicas (Carcavelos, Costa Caparica, Guincho, Supertubos, Ribeira d'Ilhas, Praia do Norte Nazaré) — embed.
 
@@ -150,7 +150,7 @@ Estado da arte: Windguru, Surfline, Magicseaweed, Stormglass, Surf-forecast, Win
 
 **P6. Janelas, não instantes.** "Melhor janela hoje: 09:00–11:30, score 78" em vez de "agora 1,2m / 18kt". Surfistas planeiam por janela.
 
-**P7. Comparação cross-spot.** "Dos 5 spots a 1h de Porto, qual amanhã às 9h?" — esta query decide ir ou não ir. WindSpot tem `/compare` mas escondido.
+**P7. Comparação cross-spot.** "Dos 5 spots a 1h de Porto, qual amanhã às 9h?" — esta query decide ir ou não ir. VenTu tem `/compare` mas escondido.
 
 **P8. Confiança = mostrar fontes.** Surfline mostra modelo (NWW3, ECMWF); Windguru mostra GFS/IFS/Wavewatch lado-a-lado. Power-users querem comparar previsões.
 

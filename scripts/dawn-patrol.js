@@ -24,7 +24,7 @@ const TOP_SPOTS = [
 async function fetchWithRetry(url, retries = 2) {
   for (let attempt = 0; attempt <= retries; attempt++) {
     try {
-      const response = await fetch(url, { headers: { 'User-Agent': 'WindSpot-Bot/1.0' } });
+      const response = await fetch(url, { headers: { 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' } });
       if (!response.ok) {
         if (attempt < retries) {
           console.log(`     Retry ${attempt + 1}/${retries} for ${url.slice(0, 60)}...`);

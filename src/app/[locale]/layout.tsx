@@ -20,29 +20,29 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const isPt = locale === 'pt'
   return {
-    title: isPt ? 'WindSpot Portugal — Condições em Tempo Real' : 'WindSpot Portugal — Real-time Conditions',
+    title: isPt ? 'VenTu — Condições em Tempo Real' : 'VenTu — Real-time Conditions',
     description: isPt
       ? 'Condições em tempo real para surf, kitesurf, windsurf e big wave em Portugal. Dados de ondas, vento e temperatura da água.'
       : 'Real-time conditions for surf, kitesurf, windsurf and big wave in Portugal. Wave, wind and water temperature data.',
     keywords: ['surf', 'kitesurf', 'windsurf', 'Portugal', 'ondas', 'vento', 'Nazaré', 'Peniche', 'big wave'],
-    manifest: '/windspot-pt/manifest.json',
+    manifest: '/manifest.json',
     icons: {
-      icon: '/windspot-pt/favicon.svg',
-      apple: '/windspot-pt/apple-touch-icon.svg',
+      icon: '/favicon.svg',
+      apple: '/apple-touch-icon.svg',
     },
     openGraph: {
-      title: isPt ? 'WindSpot Portugal' : 'WindSpot Portugal',
+      title: 'VenTu',
       description: isPt
         ? 'Condições em tempo real para desportos náuticos em Portugal'
         : 'Real-time conditions for water sports in Portugal',
       type: 'website',
       locale: isPt ? 'pt_PT' : 'en_US',
-      url: 'https://braindeadpt.github.io/windspot-pt',
-      siteName: 'WindSpot Portugal',
+      url: 'https://ventu.surf',
+      siteName: 'VenTu',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'WindSpot Portugal',
+      title: 'VenTu',
       description: isPt
         ? 'Condições em tempo real para desportos náuticos em Portugal'
         : 'Real-time conditions for water sports in Portugal',
@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       index: true,
       follow: true,
     },
-    authors: [{ name: 'WindSpot PT' }],
+    authors: [{ name: 'VenTu PT' }],
   }
 }
 

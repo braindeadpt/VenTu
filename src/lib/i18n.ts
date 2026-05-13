@@ -5,7 +5,7 @@ export const translations = {
   pt: {
     nav: { home: 'Início', spots: 'Spots', news: 'Notícias', about: 'Sobre' },
     hero: {
-      title: 'WindSpot',
+      title: 'VenTu',
       subtitle: 'Condições em tempo real para desportos náuticos em Portugal',
       cta: 'Ver Spots',
       stats: { spots: 'Spots', updates: 'Atualizações/dia', sports: 'Desportos' },
@@ -72,16 +72,18 @@ export const translations = {
     },
     news: { title: 'Notícias', latest: 'Últimas', readMore: 'Ler mais', source: 'Fonte', category: 'Categoria', generatedBy: 'Resumido por IA' },
     footer: {
-      about: 'WindSpot é uma plataforma open-source para desportos náuticos em Portugal.',
+      about: 'VenTu é uma plataforma open-source para desportos náuticos em Portugal.',
       openSource: 'Código aberto', data: 'Dados', poweredBy: 'Powered by',
-      copyright: 'WindSpot Portugal. Open Source Project.',
+      copyright: 'VenTu. Open Source Project.',
       links: 'Links',
       madeWith: 'Feito com',
       forCommunity: 'para a comunidade',
     },
     common: { loading: 'A carregar...', error: 'Erro ao carregar dados', refresh: 'Atualizar', today: 'Hoje', tomorrow: 'Amanhã', now: 'Agora' },
+    theme: { toggle: 'Alternar tema', toggleDark: 'Alternar para tema escuro', toggleCoast: 'Alternar para tema claro' },
     forecastTable: {
       caption: 'Previsão horária para as próximas {hours} horas',
+      today: 'Hoje',
       waves: 'Ondas (m)',
       period: 'Período (s)',
       wind: 'Vento (kt)',
@@ -107,7 +109,7 @@ export const translations = {
   en: {
     nav: { home: 'Home', spots: 'Spots', news: 'News', about: 'About' },
     hero: {
-      title: 'WindSpot',
+      title: 'VenTu',
       subtitle: 'Real-time conditions for water sports in Portugal',
       cta: 'View Spots',
       stats: { spots: 'Spots', updates: 'Updates/day', sports: 'Sports' },
@@ -172,16 +174,18 @@ export const translations = {
     },
     news: { title: 'News', latest: 'Latest', readMore: 'Read more', source: 'Source', category: 'Category', generatedBy: 'Summarized by AI' },
     footer: {
-      about: 'WindSpot is an open-source platform for water sports in Portugal.',
+      about: 'VenTu is an open-source platform for water sports in Portugal.',
       openSource: 'Open Source', data: 'Data', poweredBy: 'Powered by',
-      copyright: 'WindSpot Portugal. Open Source Project.',
+      copyright: 'VenTu. Open Source Project.',
       links: 'Links',
       madeWith: 'Made with',
       forCommunity: 'for the community',
     },
     common: { loading: 'Loading...', error: 'Error loading data', refresh: 'Refresh', today: 'Today', tomorrow: 'Tomorrow', now: 'Now' },
+    theme: { toggle: 'Switch theme', toggleDark: 'Switch to dark theme', toggleCoast: 'Switch to light theme' },
     forecastTable: {
       caption: 'Hourly forecast for the next {hours} hours',
+      today: 'Today',
       waves: 'Waves (m)',
       period: 'Period (s)',
       wind: 'Wind (kt)',

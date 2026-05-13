@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+// useSearchParams removed — using window.location.search for static export safety
 import {
   Wind, Waves, Droplets, Zap, ArrowLeft, Share2,
   MapPin, Star,
@@ -32,9 +33,11 @@ import ForecastTable from '@/components/weather/ForecastTable';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
 import SpotMap from '@/components/spots/SpotMap';
-import SpotChat from '@/components/spots/SpotChat';
 import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
+
+// Lazy-load SpotChat — Supabase client is heavy (~45-60KB), chat is below the fold
+const SpotChat = dynamic(() => import('@/components/spots/SpotChat'), { ssr: false });
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SpotDetailClient — Redesigned showcase of all signature components.
@@ -202,8 +205,17 @@ export default function SpotDetailClient({
   spot: Spot;
   locale: string;
 }) {
-  const searchParams = useSearchParams();
-  const sportFromUrl = searchParams.get('sport') as SportType | null;
+  // Read sport from URL safely (no useSearchParams to avoid static-export crash)
+  const [sportFromUrl, setSportFromUrl] = useState<SportType | null>(null);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const sport = params.get('sport') as SportType | null;
+        setSportFromUrl(sport);
+      } catch { /* ignore */ }
+    }
+  }, []);
 
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
@@ -243,7 +255,7 @@ export default function SpotDetailClient({
             let forecast: SpotData['forecast'] = [];
             try {
               const marineData = await fetchMarineData(spot.lat, spot.lon);
-              forecast = getForecastData(marineData).slice(0, 48);
+              forecast = getForecastData(marineData).slice(0, 120);
             } catch {
               /* forecast not critical */
             }
@@ -271,7 +283,7 @@ export default function SpotDetailClient({
         const marineData = await fetchMarineData(spot.lat, spot.lon);
         const conditions = getCurrentConditions(marineData);
         const allScores = getAllSportScores(spot, conditions);
-        const forecast = getForecastData(marineData).slice(0, 48);
+        const forecast = getForecastData(marineData).slice(0, 120);
 
         setSpotData({ spot, conditions, allScores, forecast });
 
@@ -399,7 +411,7 @@ export default function SpotDetailClient({
           <div className="flex items-center gap-2 flex-shrink-0">
             <button
               onClick={handleShare}
-              className="p-2.5 rounded-button bg-surface-1 border border-divider text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors duration-fast relative"
+              className="p-3 rounded-button bg-surface-1 border border-divider text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors duration-fast relative min-w-[44px] min-h-[44px]"
               aria-label={td.share}
               title={td.share}
             >
@@ -528,7 +540,7 @@ export default function SpotDetailClient({
           <div className="card-1 p-4">
             <ForecastTable
               hourly={forecastTableData}
-              hours={48}
+              hours={120}
               sport={selectedSport}
               coastOrientation={spot.coastOrientation}
               locale={locale as 'pt' | 'en'}
@@ -666,12 +678,6 @@ export default function SpotDetailClient({
           )}
         </div>
 
-        {/* TODO Fase 5: SwellDetective — historical patterns */}
-        {/*
-          <div className="mt-6">
-            <SwellDetective spotSlug={spot.slug} locale={locale} />
-          </div>
-        */}
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
@@ -690,6 +696,14 @@ export default function SpotDetailClient({
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+ *  TODO (futuro): activar SwellDetective APENAS com dados históricos
+ *  reais. O componente está pronto em src/components/SwellDetective.tsx
+ *  mas usa mock data para a maioria dos spots. Activar agora seria
+ *  induzir utilizadores em erro com "padrões históricos" inventados.
+ *  Aguarda pipeline de histórico real (parsing Open-Meteo archived
+ *  ou ingestion própria).
+ *  ═══════════════════════════════════════════════════════════════════════
+ *
  *  TEST NOTES
  *  ═══════════════════════════════════════════════════════════════════════
  *
@@ -697,7 +711,7 @@ export default function SpotDetailClient({
  *     - Hero com nome, região, dificuldade, badges
  *     - 3+ sport tabs com scores
  *     - Showcase: ScoreGauge lg + WaveShape lg + SwellRadar lg
- *     - ForecastTable com 48h + score row colorido
+ *     - ForecastTable com 120h + score row colorido
  *     - Stats: ondas, vento c/ arrow, água, rajada
  *     - Chat funcional
  *

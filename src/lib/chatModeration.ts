@@ -24,6 +24,17 @@ const MIN_MESSAGE_LENGTH = 1;
 const MAX_USERNAME_LENGTH = 30;
 const MIN_USERNAME_LENGTH = 2;
 
+// Characters rejected in usernames (matches server-side validate_username)
+const USERNAME_INVALID_CHARS = /[<>"':;{}\\[\\]|\\^~@#$%&*=+]/;
+const USERNAME_RESERVED = /bot|test|spam|xss|admin|moderator|system/i;
+const USERNAME_STARTS_NUMBER = /^[0-9]/;
+
+// HTML tag pattern (matches server-side sanitize_content)
+const HTML_TAG_PATTERN = /<[^>]+>/gi;
+const EVENT_HANDLER_PATTERN = /on\w+\s*=\s*["']?[^"'> ]*/gi;
+const JS_PROTOCOL_PATTERN = /javascript:/gi;
+const DATA_PROTOCOL_PATTERN = /data:/gi;
+
 export interface ModerationResult {
   allowed: boolean;
   reason?: string;
@@ -34,6 +45,39 @@ export interface ModerationResult {
 function containsBadWord(text: string): string | undefined {
   const lower = text.toLowerCase();
   return BAD_WORDS_PT.find(word => lower.includes(word));
+}
+
+/**
+ * Strip HTML tags and dangerous content from text.
+ * Mirrors server-side sanitize_content() in supabase-chat-cleanup.sql
+ */
+export function sanitizeContent(text: string): string {
+  let cleaned = text;
+  cleaned = cleaned.replace(HTML_TAG_PATTERN, '');
+  cleaned = cleaned.replace(EVENT_HANDLER_PATTERN, '');
+  cleaned = cleaned.replace(JS_PROTOCOL_PATTERN, '');
+  cleaned = cleaned.replace(DATA_PROTOCOL_PATTERN, '');
+  return cleaned.trim();
+}
+
+/**
+ * Validate username format.
+ * Mirrors server-side validate_username() in supabase-chat-cleanup.sql
+ */
+export function validateUsername(username: string): { valid: boolean; reason?: string } {
+  if (!username || username.length < MIN_USERNAME_LENGTH || username.length > MAX_USERNAME_LENGTH) {
+    return { valid: false, reason: 'Username must be 2-30 characters' };
+  }
+  if (USERNAME_INVALID_CHARS.test(username)) {
+    return { valid: false, reason: 'Username contains invalid characters' };
+  }
+  if (USERNAME_RESERVED.test(username)) {
+    return { valid: false, reason: 'Username is reserved' };
+  }
+  if (USERNAME_STARTS_NUMBER.test(username)) {
+    return { valid: false, reason: 'Username cannot start with a number' };
+  }
+  return { valid: true };
 }
 
 export function moderateMessage(content: string, locale: string = 'pt'): ModerationResult {

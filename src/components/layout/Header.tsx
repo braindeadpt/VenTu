@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { Menu, X, Wind, Globe, Trophy } from 'lucide-react';
+import { Menu, X, Wind, Globe } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 interface HeaderProps {
   locale: string;
@@ -11,7 +12,7 @@ interface HeaderProps {
 
 export default function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() || '';
   const isPt = locale === 'pt';
 
   const navItems = [
@@ -27,17 +28,17 @@ export default function Header({ locale }: HeaderProps) {
   const isActive = (href: string) => pathname === href.split('?')[0];
 
   const switchLocale = isPt ? 'en' : 'pt';
-  const switchPath = pathname.replace(`/${locale}`, `/${switchLocale}`);
+  const switchPath = (pathname || '').replace(`/${locale}`, `/${switchLocale}`);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-white/10">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-bg-base/80 backdrop-blur-xl border-b border-divider">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href={`/${locale}/`} className="flex items-center gap-2 group">
+          <Link href={`/${locale}/`} className="flex items-center gap-2.5 group">
             <div className="relative">
-              <Wind className="w-8 h-8 text-cyan-400 group-hover:text-cyan-300 transition-colors" />
+              <Wind className="w-10 h-10 text-data-waves group-hover:text-data-waves/80 transition-colors" />
             </div>
-            <span className="text-xl font-bold text-gradient">WindSpot</span>
+            <span className="text-2xl font-bold text-fg tracking-tight">Ven<span className="text-data-waves">Tu</span></span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -47,33 +48,38 @@ export default function Header({ locale }: HeaderProps) {
                 href={item.href}
                 className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   isActive(item.href)
-                    ? 'bg-white/10 text-white'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                    ? 'bg-surface-2 text-fg'
+                    : 'text-fg-subtle hover:text-fg hover:bg-surface-2/50'
                 }`}
               >
                 {item.label}
               </Link>
             ))}
+            <ThemeToggle locale={locale} />
             <Link
               href={switchPath}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/5 transition-all ml-2"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-2/50 transition-all"
             >
               <Globe className="w-4 h-4" />
               {isPt ? 'EN' : 'PT'}
             </Link>
           </nav>
 
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 rounded-lg text-white/60 hover:text-white hover:bg-white/5 transition-colors"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="flex items-center gap-1 md:hidden">
+            <ThemeToggle locale={locale} />
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-lg text-fg-subtle hover:text-fg hover:bg-surface-2/50 transition-colors"
+              aria-label={mobileMenuOpen ? (isPt ? 'Fechar menu' : 'Close menu') : (isPt ? 'Abrir menu' : 'Open menu')}
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-slate-950/95 backdrop-blur-xl border-b border-white/10">
+        <div className="md:hidden bg-bg-base/95 backdrop-blur-xl border-b border-divider">
           <div className="px-4 py-3 space-y-1">
             {navItems.map((item) => (
               <Link
@@ -82,8 +88,8 @@ export default function Header({ locale }: HeaderProps) {
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block px-4 py-3 rounded-lg text-sm font-medium transition-all ${
                   isActive(item.href)
-                    ? 'bg-white/10 text-white'
-                    : 'text-white/60 hover:text-white hover:bg-white/5'
+                    ? 'bg-surface-2 text-fg'
+                    : 'text-fg-subtle hover:text-fg hover:bg-surface-2/50'
                 }`}
               >
                 {item.label}
@@ -92,7 +98,7 @@ export default function Header({ locale }: HeaderProps) {
             <Link
               href={switchPath}
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-white/60 hover:text-white hover:bg-white/5 transition-all"
+              className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-2/50 transition-all"
             >
               <Globe className="w-4 h-4" />
               {isPt ? 'Switch to English' : 'Mudar para Português'}
