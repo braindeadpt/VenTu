@@ -273,12 +273,20 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
 export function getCurrentConditions(result: FetchResult): CurrentConditions {
   const data = result.data;
   const now = new Date();
-  const currentHour = now.getHours();
+  const nowTime = now.getTime();
 
-  const timeIndex = Math.max(0, data.hourly.time.findIndex((t: string) => {
-    const hour = new Date(t).getHours();
-    return hour === currentHour;
-  }));
+  let timeIndex = data.hourly.time.findIndex((t: string) => {
+    const hTime = new Date(t).getTime();
+    return hTime >= nowTime && hTime < nowTime + 3600000;
+  });
+  if (timeIndex === -1) {
+    timeIndex = 0;
+    let minDiff = Math.abs(new Date(data.hourly.time[0]).getTime() - nowTime);
+    data.hourly.time.forEach((t: string, i: number) => {
+      const diff = Math.abs(new Date(t).getTime() - nowTime);
+      if (diff < minDiff) { minDiff = diff; timeIndex = i; }
+    });
+  }
 
   return {
     waveHeight: data.hourly.wave_height[timeIndex] || 0,

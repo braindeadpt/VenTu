@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -57,27 +57,27 @@ const MAX_HOURS = 72;
 /** Wave height → background tier. */
 function waveBg(h: number): string {
   if (h < 0.5) return 'bg-surface-1';
-  if (h < 1.0) return 'bg-data-waves/10';
-  if (h < 2.0) return 'bg-data-waves/15';
-  if (h < 3.0) return 'bg-data-waves/25';
-  return 'bg-data-waves/35';
+  if (h < 1.0) return 'bg-data-waves/25';
+  if (h < 2.0) return 'bg-data-waves/45';
+  if (h < 3.0) return 'bg-data-waves/65';
+  return 'bg-data-waves/80';
 }
 
 /** Wave period → background tier. */
 function periodBg(p: number): string {
   if (p < 6) return 'bg-surface-1';
-  if (p < 9) return 'bg-data-period/10';
-  if (p < 12) return 'bg-data-period/20';
-  return 'bg-data-period/30';
+  if (p < 9) return 'bg-data-period/25';
+  if (p < 12) return 'bg-data-period/50';
+  return 'bg-data-period/70';
 }
 
 /** Wind speed (knots) → background tier. */
 function windBg(kt: number): string {
   if (kt < 8) return 'bg-surface-1';
-  if (kt < 14) return 'bg-data-wind/10';
-  if (kt < 20) return 'bg-data-wind/20';
-  if (kt < 28) return 'bg-data-wind/30';
-  return 'bg-data-wind/40';
+  if (kt < 14) return 'bg-data-wind/25';
+  if (kt < 20) return 'bg-data-wind/45';
+  if (kt < 28) return 'bg-data-wind/65';
+return 'bg-data-wind/80';
 }
 
 /** Wind speed text colour for alarming values (knots). */
@@ -89,18 +89,18 @@ function windText(kt: number): string {
 /** Gust — same scale as wind but lighter opacity (knots). */
 function gustBg(kt: number): string {
   if (kt < 8) return 'bg-surface-1';
-  if (kt < 14) return 'bg-data-wind/[0.07]';
-  if (kt < 20) return 'bg-data-wind/[0.14]';
-  if (kt < 28) return 'bg-data-wind/[0.21]';
-  return 'bg-data-wind/[0.28]';
+  if (kt < 14) return 'bg-data-wind/15';
+  if (kt < 20) return 'bg-data-wind/30';
+  if (kt < 28) return 'bg-data-wind/50';
+  return 'bg-data-wind/65';
 }
 
 /** Water temperature → background tier. */
 function waterBg(t: number): string {
   if (t < 14) return 'bg-surface-1';
-  if (t < 18) return 'bg-data-water/10';
-  if (t < 22) return 'bg-data-water/20';
-  return 'bg-data-water/30';
+  if (t < 18) return 'bg-data-water/25';
+  if (t < 22) return 'bg-data-water/50';
+return 'bg-data-water/70';
 }
 
 /** Water temperature text colour. */
@@ -203,6 +203,61 @@ export default function ForecastTable({
   /* ── hover column state ── */
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
 
+  /* ── scroll container ref ── */
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  /* ── find current hour index ── */
+  const currentHourIndex = useMemo(() => {
+    return visible.findIndex((h) => isCurrentHour(h.time, now));
+  }, [visible, now]);
+
+  /* ── scroll to current hour on mount ── */
+  useEffect(() => {
+    if (scrollRef.current && currentHourIndex >= 0) {
+      const container = scrollRef.current;
+      setTimeout(() => {
+        const labelWidth = 96;
+        const dataStart = labelWidth;
+        const cellWidth = (container.scrollWidth - labelWidth) / visible.length;
+        const cellCenter = dataStart + currentHourIndex * cellWidth + cellWidth / 2;
+        const targetLeft = cellCenter - container.clientWidth / 2;
+        container.scrollLeft = Math.max(0, targetLeft);
+      }, 200);
+    }
+  }, [currentHourIndex, visible.length]);
+
+  const dayGroups = useMemo(() => {
+    const groups: { day: string; dayLabel: string; startIndex: number }[] = [];
+    let currentDay = '';
+    visible.forEach((h, i) => {
+      const d = new Date(h.time);
+      const dayKey = d.toDateString();
+      if (dayKey !== currentDay) {
+        currentDay = dayKey;
+        groups.push({
+          day: dayKey,
+          dayLabel: d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' }),
+          startIndex: i,
+        });
+      }
+    });
+    return groups;
+  }, [visible, locale]);
+
+  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+
+  const scrollToDay = (index: number) => {
+    setSelectedDayIndex(index);
+    if (scrollRef.current && index < visible.length) {
+      const labelWidth = 96;
+      const dataStart = labelWidth;
+      const cellWidth = (scrollRef.current.scrollWidth - labelWidth) / visible.length;
+      const cellCenter = dataStart + index * cellWidth + cellWidth / 2;
+      const targetLeft = cellCenter - scrollRef.current.clientWidth / 2;
+      scrollRef.current.scrollTo({ left: Math.max(0, targetLeft), behavior: 'smooth' });
+    }
+  };
+
   /* ── row presence checks ── */
   const hasGust = visible.some((h) => typeof h.windGust === 'number');
   const hasWaterTemp = visible.some((h) => typeof h.waterTemp === 'number');
@@ -214,66 +269,115 @@ export default function ForecastTable({
     : undefined;
 
   /* ── cell dimensions ── */
-  const cellPx = compact ? 'px-1.5 py-1' : 'px-2 py-1.5';
-  const labelW = 'w-[80px] md:w-[80px]';
-  const hourW = compact ? 'min-w-[32px]' : 'min-w-[36px]';
+  const cellPx = compact ? 'px-1 py-1' : 'px-2 py-1';
+  const labelW = 'w-[88px] md:w-[96px]';
+  const hourW = compact ? 'min-w-[32px]' : 'min-w-[40px]';
 
   return (
-    <div
-      className="overflow-x-auto no-scrollbar rounded-card-lg border border-divider bg-bg-base"
-      tabIndex={0}
-      role="region"
-      aria-label={t.caption.replace('{hours}', String(visibleCount))}
-    >
-      <table className="w-full border-separate border-spacing-x-[2px] border-spacing-y-[1px] text-center">
-        {/* Caption for screen readers */}
-        <caption className="sr-only">
-          {t.caption.replace('{hours}', String(visibleCount))}
-        </caption>
+    <div className="space-y-2">
+      {/* Current time indicator */}
+{currentHourIndex >= 0 && (
+        <div className="flex items-center gap-2 text-meta text-fg-muted px-1">
+          <span className="w-2 h-2 rounded-full bg-score-good animate-pulse" />
+          <span>{isPt ? 'Hora atual' : 'Current time'} — {isPt ? 'Arraste para ver mais' : 'Scroll to see more'}</span>
+        </div>
+      )}
 
-        <thead>
-          {/* Hour header row */}
-          <tr>
-            {/* Sticky label column */}
-            <th
-              scope="col"
-              className={`sticky left-0 z-20 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
-            />
-            {visible.map((h, i) => {
-              const current = isCurrentHour(h.time, now);
-              return (
-                <th
-                  key={i}
-                  scope="col"
-                  className={`sticky top-0 z-10 ${hourW} ${cellPx} font-mono text-num-sm ${
-                    current
-                      ? 'bg-surface-2 text-fg border-b-2 border-score-good'
-                      : 'bg-bg-base text-fg-muted'
-                  } transition-colors duration-fast`}
-                  aria-current={current ? 'time' : undefined}
-                >
-                  {parseHourLabel(h.time)}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
+      {dayGroups.length > 1 && (
+        <div className="flex gap-1 overflow-x-auto no-scrollbar pb-1">
+          {dayGroups.map((group, i) => (
+            <button
+              key={group.day}
+              onClick={() => scrollToDay(group.startIndex)}
+              className={`px-3 py-1 rounded-pill text-meta-xs whitespace-nowrap transition-all ${
+                selectedDayIndex === i
+                  ? 'bg-score-good/20 text-score-good border border-score-good/30 font-semibold'
+                  : 'bg-surface-1 text-fg-muted border border-divider hover:bg-surface-2'
+              }`}
+            >
+              {group.dayLabel}
+            </button>
+          ))}
+        </div>
+      )}
+
+<div
+        ref={scrollRef}
+className="overflow-x-auto rounded-card border border-divider bg-bg-base min-w-[800px] relative"
+        tabIndex={0}
+        role="region"
+        aria-label={t.caption.replace('{hours}', String(visibleCount))}
+        onWheel={(e) => {
+          e.preventDefault();
+          e.currentTarget.scrollLeft += e.deltaY + e.deltaX;
+        }}
+      >
+        <div className="absolute inset-y-0 left-0 w-8 bg-bg-base/95 backdrop-blur-[2px] pointer-events-none z-10 border-r border-divider" />
+        <table className="w-full border-collapse text-center min-w-[800px] relative z-0">
+          {/* Caption for screen readers */}
+          <caption className="sr-only">
+            {t.caption.replace('{hours}', String(visibleCount))}
+          </caption>
+
+          <thead>
+            {/* Hour header row */}
+            <tr>
+              {/* Sticky label column */}
+              <th
+                scope="col"
+                className={`sticky left-0 z-20 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm font-semibold text-fg border-b-2 border-r-2 border-score-good/30`}
+              >
+                <div className="flex flex-col gap-0.5">
+                  <span>{isPt ? 'Dia' : 'Day'}</span>
+                  <span className="text-fg-muted font-medium">{isPt ? 'Hora' : 'Hour'}</span>
+                </div>
+              </th>
+              {visible.map((h, i) => {
+                const current = isCurrentHour(h.time, now);
+                const d = new Date(h.time);
+                const isNewDay = i === 0 || d.toDateString() !== new Date(visible[i - 1].time).toDateString();
+                return (
+                  <th
+                    key={i}
+                    scope="col"
+                    className={`sticky top-0 z-10 ${hourW} ${cellPx} font-mono text-num-xs md:text-num-sm ${
+                      current
+                        ? 'bg-score-good/20 text-fg border-b-2 border-score-good/40'
+                        : isNewDay
+                        ? 'bg-surface-2 text-fg border-b border-divider-strong'
+                        : 'bg-bg-base text-fg-muted border-b border-divider'
+                    }`}
+                    aria-current={current ? 'time' : undefined}
+                  >
+                    <div className="flex flex-col items-center">
+                      {isNewDay && (
+                        <span className="text-[9px] md:text-[10px] font-semibold text-fg-subtle leading-none mb-0.5">
+                          {d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}
+                        </span>
+                      )}
+                      <span>{parseHourLabel(h.time)}</span>
+                    </div>
+                  </th>
+                );
+              })}
+            </tr>
+          </thead>
 
         <tbody>
           {/* ── WAVES ── */}
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
+              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.waves}
             </th>
             {visible.map((h, i) => (
               <td
                 key={i}
-                className={`${hourW} ${cellPx} ${waveBg(h.waveHeight)} font-mono text-num ${
+                className={`${hourW} ${cellPx} ${waveBg(h.waveHeight)} font-mono text-num-xs md:text-num ${
                   hoveredCol === i ? 'bg-surface-2' : ''
-                } transition-colors duration-fast`}
+                } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
                 onMouseLeave={() => setHoveredCol(null)}
@@ -287,16 +391,16 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
+              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.period}
             </th>
             {visible.map((h, i) => (
               <td
                 key={i}
-                className={`${hourW} ${cellPx} ${periodBg(h.wavePeriod)} font-mono text-num ${
+                className={`${hourW} ${cellPx} ${periodBg(h.wavePeriod)} font-mono text-num-xs md:text-num ${
                   hoveredCol === i ? 'bg-surface-2' : ''
-                } transition-colors duration-fast`}
+                } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
                 onMouseLeave={() => setHoveredCol(null)}
@@ -310,7 +414,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
+              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.wind}
             </th>
@@ -319,9 +423,9 @@ export default function ForecastTable({
               return (
                 <td
                   key={i}
-                  className={`${hourW} ${cellPx} ${windBg(windKt)} font-mono text-num ${windText(
+                  className={`${hourW} ${cellPx} ${windBg(windKt)} font-mono text-num-xs md:text-num ${windText(
                     windKt,
-                  )} ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast`}
+                  )} ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast border-b border-divider/20`}
                   title={buildTooltip(h, sportLabel)}
                   onMouseEnter={() => setHoveredCol(i)}
                   onMouseLeave={() => setHoveredCol(null)}
@@ -336,7 +440,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
+              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.direction}
             </th>
@@ -346,16 +450,16 @@ export default function ForecastTable({
                 className={`${hourW} ${cellPx} ${windDirBg(
                   h.windDirection,
                   coastOrientation,
-                )} font-mono text-meta ${
+                )} font-mono text-meta-xs md:text-meta-sm ${
                   hoveredCol === i ? 'bg-surface-2' : ''
-                } transition-colors duration-fast`}
+                } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
                 onMouseLeave={() => setHoveredCol(null)}
               >
                 <span className="inline-flex items-center gap-0.5">
                   <span>{getWindArrow(h.windDirection)}</span>
-                  <span>{getCardinalLabel(h.windDirection)}</span>
+                  <span className="hidden md:inline">{getCardinalLabel(h.windDirection)}</span>
                 </span>
               </td>
             ))}
@@ -366,7 +470,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
+                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.gust}
               </th>
@@ -377,9 +481,9 @@ export default function ForecastTable({
                     key={i}
                     className={`${hourW} ${cellPx} ${
                       gustKt !== null ? gustBg(gustKt) : 'bg-surface-1'
-                    } font-mono text-num-sm text-fg-muted ${
+                    } font-mono text-num-xs text-fg-muted ${
                       hoveredCol === i ? 'bg-surface-2' : ''
-                    } transition-colors duration-fast`}
+                    } transition-colors duration-fast border-b border-divider/20`}
                     title={buildTooltip(h, sportLabel)}
                     onMouseEnter={() => setHoveredCol(i)}
                     onMouseLeave={() => setHoveredCol(null)}
@@ -396,7 +500,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg-subtle font-medium`}
+                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.water}
               </th>
@@ -407,11 +511,11 @@ export default function ForecastTable({
                     typeof h.waterTemp === 'number'
                       ? waterBg(h.waterTemp)
                       : 'bg-surface-1'
-                  } font-mono text-num ${
+                  } font-mono text-num-xs md:text-num ${
                     typeof h.waterTemp === 'number'
                       ? waterText(h.waterTemp)
                       : 'text-fg-subtle'
-                  } ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast`}
+                  } ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast border-b border-divider/20`}
                   title={buildTooltip(h, sportLabel)}
                   onMouseEnter={() => setHoveredCol(i)}
                   onMouseLeave={() => setHoveredCol(null)}
@@ -424,12 +528,12 @@ export default function ForecastTable({
             </tr>
           )}
 
-          {/* ── SCORE (conditional, heavy visual weight) ── */}
+{/* ── SCORE (conditional, heavy visual weight) ── */}
           {hasAnyScore && (
             <tr className="border-t-2 border-divider-strong">
               <th
                 scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-sm text-fg font-semibold`}
+                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
               >
                 {sportLabel ?? t.score}
               </th>
@@ -439,13 +543,13 @@ export default function ForecastTable({
                 return (
                   <td
                     key={i}
-                    className={`${hourW} ${cellPx} font-mono text-num-lg font-semibold ${
+                    className={`${hourW} ${cellPx} font-mono text-num-xs md:text-num font-semibold ${
                       hoveredCol === i ? 'bg-surface-2' : ''
-                    } transition-colors duration-fast`}
+                    } transition-colors duration-fast border-b border-divider/20`}
                     style={
                       hasScore
                         ? ({
-                            backgroundColor: `rgb(var(${variant}) / 0.18)`,
+                            backgroundColor: `rgb(var(${variant}) / 0.35)`,
                             color: `rgb(var(${variant}))`,
                           } as React.CSSProperties)
                         : undefined
@@ -461,7 +565,8 @@ export default function ForecastTable({
             </tr>
           )}
         </tbody>
-      </table>
+        </table>
+      </div>
     </div>
   );
 }

@@ -231,56 +231,9 @@ export default function SpotDetailClient({
   const [copyToast, setCopyToast] = useState(false);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  /* ── Data loading (preserved exactly) ── */
+  /* ── Data loading ── */
   useEffect(() => {
     async function loadData() {
-      try {
-        const response = await fetch(getAssetPath('/data/conditions.json'), {
-          cache: 'no-store',
-        });
-        if (response.ok) {
-          const precomputed = await response.json();
-          const cond = precomputed[spot.id];
-
-          if (cond) {
-            const conditions: Conditions = {
-              waveHeight: cond.waveHeight || 0,
-              wavePeriod: cond.wavePeriod || 0,
-              waveDirection: cond.waveDirection || 0,
-              windSpeed: cond.windSpeed || 0,
-              windDirection: cond.windDirection || 0,
-              windGust: cond.windGust || 0,
-              waterTemp: cond.waterTemp || 0,
-            };
-            const allScores = getAllSportScores(spot, conditions);
-
-            let forecast: SpotData['forecast'] = [];
-            try {
-              const marineData = await fetchMarineData(spot.lat, spot.lon);
-              forecast = getForecastData(marineData).slice(0, 120);
-            } catch {
-              /* forecast not critical */
-            }
-
-            setSpotData({ spot, conditions, allScores, forecast });
-
-            if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
-              setSelectedSport(sportFromUrl);
-            } else {
-              const bestSport = (
-                Object.entries(allScores) as [SportType, any][]
-              ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
-              if (bestSport) setSelectedSport(bestSport);
-            }
-            setLoading(false);
-            return;
-          }
-        }
-      } catch {
-        /* fall through */
-      }
-
-      /* Fallback: live fetch */
       try {
         const marineData = await fetchMarineData(spot.lat, spot.lon);
         const conditions = getCurrentConditions(marineData);
