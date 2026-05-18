@@ -38,6 +38,7 @@ function msToKnots(ms) {
  * @returns {Array<{ id: string; title: string; titleEn: string; summary: string; summaryEn: string; category: string; source: string; sourceType: string; eventSeverity: string; url: string; publishedAt: string; tags: string[] }>}
  */
 function detectEvents(conditions) {
+  if (!conditions) conditions = loadConditions();
   const events = [];
   const spots = Object.entries(conditions).filter(([, c]) => c);
   const now = new Date().toISOString();
