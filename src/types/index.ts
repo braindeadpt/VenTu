@@ -70,8 +70,11 @@ export interface NewsItem {
   titleEn: string;
   summary: string;
   summaryEn: string;
-  category: string;
+  category: 'surf' | 'kitesurf' | 'windsurf' | 'big-wave' | 'sup' | 'foil' | 'bodyboard' | 'wakeboard' | 'safety' | 'general' | 'competition' | 'alert';
   source: string;
+  sourceType: 'rss' | 'data' | 'llm';
+  eventSeverity?: 'info' | 'warning' | 'alert';
+  keyPoints?: string[];
   url: string;
   publishedAt: string;
   image?: string;

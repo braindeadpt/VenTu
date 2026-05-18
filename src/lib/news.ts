@@ -2,7 +2,7 @@ import type { NewsItem } from '@/types';
 
 export const ITEMS_PER_PAGE = 12;
 
-export const CATEGORIES = ['all', 'surf', 'kitesurf', 'windsurf', 'competition', 'safety', 'general'] as const;
+export const CATEGORIES = ['all', 'surf', 'kitesurf', 'windsurf', 'big-wave', 'sup', 'foil', 'bodyboard', 'wakeboard', 'safety', 'general', 'competition', 'alert'] as const;
 export type NewsCategory = typeof CATEGORIES[number];
 
 export const DATE_FILTERS = ['today', '7d', '30d', 'all'] as const;

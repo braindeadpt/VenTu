@@ -1,7 +1,7 @@
 'use client';
 
 import { NewsItem } from '@/types';
-import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper } from 'lucide-react';
+import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 
 interface NewsCardProps {
   news: NewsItem;
@@ -13,18 +13,30 @@ const categoryColors: Record<string, string> = {
   surf:       'bg-data-waves/12 text-data-waves border border-data-waves/25',
   kitesurf:   'bg-data-wind/12 text-data-wind border border-data-wind/25',
   windsurf:   'bg-data-waves/12 text-data-waves border border-data-waves/25',
+  'big-wave': 'bg-windDir-offshore/12 text-windDir-offshore border border-windDir-offshore/25',
+  sup:        'bg-data-water/12 text-data-water border border-data-water/25',
+  foil:       'bg-score-fair/12 text-score-fair border border-score-fair/25',
+  bodyboard:  'bg-data-period/12 text-data-period border border-data-period/25',
+  wakeboard:  'bg-score-good/12 text-score-good border border-score-good/25',
   competition:'bg-data-period/12 text-data-period border border-data-period/25',
   safety:     'bg-windDir-onshore/12 text-windDir-onshore border border-windDir-onshore/25',
   general:    'bg-data-water/12 text-data-water border border-data-water/25',
+  alert:      'bg-windDir-onshore/20 text-windDir-onshore border border-windDir-onshore/35',
 };
 
 const categoryIcons: Record<string, React.ReactNode> = {
   surf:        <Waves className="w-4 h-4" />,
   kitesurf:    <Wind className="w-4 h-4" />,
-  windsurf:    <Wind className="w-4 h-4" />,
+  windsurf:    <Sailboat className="w-4 h-4" />,
+  'big-wave':  <Mountain className="w-4 h-4" />,
+  sup:         <Monitor className="w-4 h-4" />,
+  foil:        <Triangle className="w-4 h-4" />,
+  bodyboard:   <Waves className="w-4 h-4" />,
+  wakeboard:   <Zap className="w-4 h-4" />,
   competition: <Trophy className="w-4 h-4" />,
   safety:      <Shield className="w-4 h-4" />,
   general:     <Newspaper className="w-4 h-4" />,
+  alert:       <AlertTriangle className="w-4 h-4" />,
 };
 
 export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardProps) {
