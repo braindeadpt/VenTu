@@ -75,6 +75,15 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
     }
   };
 
+  const handleRetry = useCallback(() => {
+    setLoading(true);
+    setError(false);
+    fetch(getAssetPath('/data/dawn-patrol.json'))
+      .then(r => { if (!r.ok) throw new Error('Fetch failed'); return r.json(); })
+      .then(d => { setData(d); setLoading(false); })
+      .catch(() => { setLoading(false); setError(true); });
+  }, []);
+
   if (loading) {
     return (
       <div className="w-full bg-surface-1 border-b border-divider p-5 animate-pulse">
@@ -99,7 +108,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           </span>
           <button
             type="button"
-            onClick={() => { setLoading(true); setError(false); fetch(getAssetPath('/data/dawn-patrol.json')).then(r => r.json()).then(d => { setData(d); setLoading(false); }).catch(() => { setLoading(false); setError(true); }); }}
+            onClick={handleRetry}
             className="px-3 py-1 rounded-lg bg-surface-2 hover:bg-surface-3 transition-colors text-fg-muted text-xs font-medium"
           >
             {isPt ? 'Tentar de novo' : 'Retry'}
@@ -133,7 +142,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
         role="button"
         tabIndex={0}
         aria-expanded={expanded}
-        aria-label={isPt ? content.headline : content.headline}
+        aria-label={content.headline}
         onKeyDown={handleKeyDown}
       >
         <div className="flex items-start sm:items-center justify-between gap-3">
