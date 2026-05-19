@@ -107,6 +107,9 @@ async function callLLM(prompt, options = {}) {
       continue;
     }
 
+    // Delay between providers to avoid rate-limit bursts
+    if (errors.length > 0) await new Promise(r => setTimeout(r, 1500));
+
     try {
       console.log(`   🤖 Trying ${provider.name}...`);
       const text = await fn();
