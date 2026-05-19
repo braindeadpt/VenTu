@@ -28,12 +28,8 @@ jobs:
         run: node scripts/dawn-patrol.js
 
       - name: Commit and push
-        env:
-          TOKEN: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "VenTu Bot"
           git config user.email "bot@ventu.surf"
-          git remote set-url origin "https://x-access-token:${TOKEN}@github.com/braindeadpt/VenTu.git"
           git add public/data/dawn-patrol.json
-          git diff --staged --quiet || git commit -m "🌅 Dawn Patrol: $(date +%Y-%m-%d)"
-          git push
+          git diff --staged --quiet || (git commit -m "🌅 Dawn Patrol: $(date +%Y-%m-%d)" && git push)
