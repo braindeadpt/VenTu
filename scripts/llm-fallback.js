@@ -29,7 +29,7 @@ const PROVIDERS = {
     apiKey: CEREBRAS_API_KEY,
     baseUrl: 'https://api.cerebras.ai/v1/chat/completions',
     isOpenAI: true,
-    model: 'llama-3.3-70b',
+    model: 'gpt-oss-120b',
     maxTokens: 2048,
   },
 };
