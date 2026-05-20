@@ -1,0 +1,984 @@
+{
+  "stations": {
+    "12": {
+      "codp": 12,
+      "title": "Leixões",
+      "category": "1",
+      "lat": 41.1854734,
+      "lon": -8.7040444,
+      "lastObs": 1.107,
+      "lastData": "2026-05-14T05:40:58+00:00"
+    },
+    "19": {
+      "codp": 19,
+      "title": "Barra de Faro-Olhão",
+      "category": "1",
+      "lat": 36.9778027,
+      "lon": -7.8663946,
+      "lastObs": 3.057,
+      "lastData": "2026-05-20T15:39:00+00:00"
+    },
+    "20": {
+      "codp": 20,
+      "title": "Setúbal - Tróia",
+      "category": "2",
+      "lat": 38.4944358,
+      "lon": -8.9007503,
+      "lastObs": 2.933,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "21": {
+      "codp": 21,
+      "title": "Vila Real de S. António",
+      "category": "2",
+      "lat": 37.1934389,
+      "lon": -7.4133917,
+      "lastObs": 3.15,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "22": {
+      "codp": 22,
+      "title": "B. do Douro - Cantareira",
+      "category": "1",
+      "lat": 41.146439,
+      "lon": -8.6668632,
+      "lastObs": 3.196,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "28": {
+      "codp": 28,
+      "title": "Sesimbra",
+      "category": "1",
+      "lat": 38.4397973,
+      "lon": -9.1103589,
+      "lastObs": 3.082,
+      "lastData": "2026-05-20T15:39:00+00:00"
+    },
+    "43": {
+      "codp": 43,
+      "title": "Sines - Posto 3",
+      "category": "1",
+      "lat": 37.9487403,
+      "lon": -8.8884982,
+      "lastObs": 3.21,
+      "lastData": "2026-05-20T15:38:16+00:00"
+    },
+    "74": {
+      "codp": 74,
+      "title": "Viana do Castelo",
+      "category": "1",
+      "lat": 41.6837114,
+      "lon": -8.8386142,
+      "lastObs": 3.044,
+      "lastData": "2026-05-20T15:39:00+00:00"
+    },
+    "121": {
+      "codp": 121,
+      "title": "Funchal",
+      "category": "1",
+      "lat": 32.6447835,
+      "lon": -16.9107824,
+      "lastObs": 2.528,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "152": {
+      "codp": 152,
+      "title": "Lisboa - Alcântara",
+      "category": "2",
+      "lat": 38.700194,
+      "lon": -9.16325,
+      "lastObs": 2.957,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "156": {
+      "codp": 156,
+      "title": "Sesimbra - C",
+      "category": "2",
+      "lat": 38.4397973,
+      "lon": -9.1103589,
+      "lastObs": 3,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "157": {
+      "codp": 157,
+      "title": "Base Naval de Lisboa",
+      "category": "1",
+      "lat": 38.6732122,
+      "lon": -9.1460925,
+      "lastObs": 3.067,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "159": {
+      "codp": 159,
+      "title": "Leixões - B",
+      "category": "2",
+      "lat": 41.1854734,
+      "lon": -8.7040444,
+      "lastObs": 2.982,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "160": {
+      "codp": 160,
+      "title": "Aveiro-B",
+      "category": "2",
+      "lat": 40.6441018,
+      "lon": -8.7454002,
+      "lastObs": 2.876,
+      "lastData": "2026-05-20T15:39:00+00:00"
+    },
+    "162": {
+      "codp": 162,
+      "title": "Peniche - C",
+      "category": "2",
+      "lat": 39.3535667,
+      "lon": -9.3674056,
+      "lastObs": 3.134,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "212": {
+      "codp": 212,
+      "title": "Ponta Delgada - B",
+      "category": "1",
+      "lat": 37.7355975,
+      "lon": -25.671419,
+      "lastObs": 1.625,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "221": {
+      "codp": 221,
+      "title": "Angra do Heroísmo",
+      "category": "1",
+      "lat": 38.6500172,
+      "lon": -27.2218806,
+      "lastObs": 1.747,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "231": {
+      "codp": 231,
+      "title": "Horta",
+      "category": "1",
+      "lat": 38.5338439,
+      "lon": -28.6214467,
+      "lastObs": 1.805,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "245": {
+      "codp": 245,
+      "title": "Vila do Porto",
+      "category": "1",
+      "lat": 36.944175,
+      "lon": -25.148986,
+      "lastObs": 1.75,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "855": {
+      "codp": 855,
+      "title": "Peniche",
+      "category": "1",
+      "lat": 39.3535667,
+      "lon": -9.3674056,
+      "lastObs": 3.174,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "856": {
+      "codp": 856,
+      "title": "Nazaré - B",
+      "category": "1",
+      "lat": 39.5861139,
+      "lon": -9.0742642,
+      "lastObs": 3.064,
+      "lastData": "2026-05-20T15:39:25+00:00"
+    },
+    "857": {
+      "codp": 857,
+      "title": "Aveiro - Molhe Central",
+      "category": "1",
+      "lat": 40.6441568,
+      "lon": -8.7486849,
+      "lastObs": 2.882,
+      "lastData": "2026-05-20T15:39:21+00:00"
+    },
+    "859": {
+      "codp": 859,
+      "title": "Sines - Terminal XXI",
+      "category": "1",
+      "lat": 37.9362045,
+      "lon": -8.8486802,
+      "lastObs": 3.205,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "866": {
+      "codp": 866,
+      "title": "Figueira da Foz - C. Comercial",
+      "category": "1",
+      "lat": 40.1470267,
+      "lon": -8.8532498,
+      "lastObs": 3.057,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "893": {
+      "codp": 893,
+      "title": "Sines - Terminal XXI - C",
+      "category": "2",
+      "lat": 37.9362045,
+      "lon": -8.8486802,
+      "lastObs": 3.213,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "894": {
+      "codp": 894,
+      "title": "Viana do Castelo - D",
+      "category": "2",
+      "lat": 41.6837114,
+      "lon": -8.8386142,
+      "lastObs": 3.006,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "895": {
+      "codp": 895,
+      "title": "Nazaré - C",
+      "category": "2",
+      "lat": 39.5861139,
+      "lon": -9.0742642,
+      "lastObs": 3.034,
+      "lastData": "2026-05-20T15:39:00+00:00"
+    },
+    "896": {
+      "codp": 896,
+      "title": "Figueira da Foz - C",
+      "category": "2",
+      "lat": 40.1469917,
+      "lon": -8.8532497,
+      "lastObs": 3.067,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "897": {
+      "codp": 897,
+      "title": "Lisboa - Alcântara - B",
+      "category": "1",
+      "lat": 38.700194,
+      "lon": -9.16325,
+      "lastObs": 3.003,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "898": {
+      "codp": 898,
+      "title": "Setúbal - Tróia - B",
+      "category": "1",
+      "lat": 38.4944358,
+      "lon": -8.9007503,
+      "lastObs": 2.95,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "899": {
+      "codp": 899,
+      "title": "B. do Douro - Cantareira - B",
+      "category": "2",
+      "lat": 41.146439,
+      "lon": -8.6668632,
+      "lastObs": 3.04,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    },
+    "900": {
+      "codp": 900,
+      "title": "Sines - C",
+      "category": "2",
+      "lat": 37.9487403,
+      "lon": -8.8884982,
+      "lastObs": 3.166,
+      "lastData": "2026-05-20T15:40:20+00:00"
+    },
+    "1001": {
+      "codp": 1001,
+      "title": "Funchal - B",
+      "category": "2",
+      "lat": 32.6447835,
+      "lon": -16.9107824,
+      "lastObs": 2.516,
+      "lastData": "2026-05-20T15:40:00+00:00"
+    }
+  },
+  "spotMapping": {
+    "moledo": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 18.4
+    },
+    "vila-praia-ancora": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 14.9
+    },
+    "afife": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 10.9
+    },
+    "castelo-neiva": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 7.5
+    },
+    "amorosa": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 2
+    },
+    "cabedelo": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 0.6
+    },
+    "foil-cabedelo": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 0.6
+    },
+    "ofir": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 15.6
+    },
+    "esposende": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 17.1
+    },
+    "fao": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 20.1
+    },
+    "apulia": {
+      "codp": 74,
+      "stationTitle": "Viana do Castelo",
+      "distanceKm": 23.6
+    },
+    "povoa-varzim": {
+      "codp": 12,
+      "stationTitle": "Leixões",
+      "distanceKm": 21.8
+    },
+    "azurara": {
+      "codp": 12,
+      "stationTitle": "Leixões",
+      "distanceKm": 19.8
+    },
+    "leca-palmeira": {
+      "codp": 12,
+      "stationTitle": "Leixões",
+      "distanceKm": 0.8
+    },
+    "matosinhos": {
+      "codp": 12,
+      "stationTitle": "Leixões",
+      "distanceKm": 1.4
+    },
+    "espinho": {
+      "codp": 22,
+      "stationTitle": "B. do Douro - Cantareira",
+      "distanceKm": 15.7
+    },
+    "esmoriz": {
+      "codp": 22,
+      "stationTitle": "B. do Douro - Cantareira",
+      "distanceKm": 21.1
+    },
+    "cortegaca": {
+      "codp": 22,
+      "stationTitle": "B. do Douro - Cantareira",
+      "distanceKm": 23.4
+    },
+    "maceda": {
+      "codp": 22,
+      "stationTitle": "B. do Douro - Cantareira",
+      "distanceKm": 24.7
+    },
+    "murtosa": {
+      "codp": 160,
+      "stationTitle": "Aveiro-B",
+      "distanceKm": 12.7
+    },
+    "furadouro": {
+      "codp": 160,
+      "stationTitle": "Aveiro-B",
+      "distanceKm": 6.4
+    },
+    "sao-jacinto": {
+      "codp": 160,
+      "stationTitle": "Aveiro-B",
+      "distanceKm": 4.9
+    },
+    "costa-nova": {
+      "codp": 160,
+      "stationTitle": "Aveiro-B",
+      "distanceKm": 2.7
+    },
+    "quiaios": {
+      "codp": 866,
+      "stationTitle": "Figueira da Foz - C. Comercial",
+      "distanceKm": 8.7
+    },
+    "figueira-foz": {
+      "codp": 866,
+      "stationTitle": "Figueira da Foz - C. Comercial",
+      "distanceKm": 1.5
+    },
+    "leirosa": {
+      "codp": 896,
+      "stationTitle": "Figueira da Foz - C",
+      "distanceKm": 10.5
+    },
+    "praia-norte": {
+      "codp": 856,
+      "stationTitle": "Nazaré - B",
+      "distanceKm": 2
+    },
+    "castelo-bode": {
+      "codp": 856,
+      "stationTitle": "Nazaré - B",
+      "distanceKm": 66.4
+    },
+    "nazare": {
+      "codp": 856,
+      "stationTitle": "Nazaré - B",
+      "distanceKm": 1.2
+    },
+    "foz-arelho": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 15.8
+    },
+    "foil-foz-arelho": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 15.8
+    },
+    "obidos-lagoon": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 13.7
+    },
+    "baleal": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 3.3
+    },
+    "supertubos": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 1.9
+    },
+    "coxos": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 39.8
+    },
+    "ribeira-ilhas": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 39.2
+    },
+    "foz-sizandro": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 30.5
+    },
+    "empa": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 38.9
+    },
+    "sao-lourenco": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 38.2
+    },
+    "pedra-branca": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 37.5
+    },
+    "sao-sebastiao": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 37.3
+    },
+    "foz-lizandro": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 32.9
+    },
+    "praia-grande-sintra": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 29.7
+    },
+    "adraga": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 30
+    },
+    "guincho": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 27.1
+    },
+    "praia-vitoria": {
+      "codp": 221,
+      "stationTitle": "Angra do Heroísmo",
+      "distanceKm": 16.2
+    },
+    "santa-catarina-terceira": {
+      "codp": 221,
+      "stationTitle": "Angra do Heroísmo",
+      "distanceKm": 3.7
+    },
+    "parede": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 16.4
+    },
+    "carcavelos": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 15.1
+    },
+    "nova-vaga": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 8
+    },
+    "sao-joao-caparica": {
+      "codp": 157,
+      "stationTitle": "Base Naval de Lisboa",
+      "distanceKm": 7.7
+    },
+    "costa-caparica": {
+      "codp": 157,
+      "stationTitle": "Base Naval de Lisboa",
+      "distanceKm": 8.4
+    },
+    "fonte-telha": {
+      "codp": 157,
+      "stationTitle": "Base Naval de Lisboa",
+      "distanceKm": 11.8
+    },
+    "almoxarife": {
+      "codp": 231,
+      "stationTitle": "Horta",
+      "distanceKm": 1
+    },
+    "lagoa-albufeira": {
+      "codp": 28,
+      "stationTitle": "Sesimbra",
+      "distanceKm": 7.3
+    },
+    "foil-lagoa-albufeira": {
+      "codp": 28,
+      "stationTitle": "Sesimbra",
+      "distanceKm": 7.3
+    },
+    "sao-torpes": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 4.1
+    },
+    "mosteiros": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 21.7
+    },
+    "porto-covo": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 10.7
+    },
+    "monte-verde": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 10.5
+    },
+    "santa-barbara": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 9.8
+    },
+    "malhao": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 19.1
+    },
+    "milicias": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 3.1
+    },
+    "vila-nova-milfontes": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 24.4
+    },
+    "alteirinhos": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 32.4
+    },
+    "agua-alto": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 17.7
+    },
+    "zambujeira": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 45.8
+    },
+    "odeceixe": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 55.3
+    },
+    "amoreira": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 65.2
+    },
+    "monte-clerigo": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 66.3
+    },
+    "arrifana": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 71.4
+    },
+    "vale-figueiras": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 76.3
+    },
+    "amado": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 84.2
+    },
+    "bordeira": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 87.5
+    },
+    "barriga": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 93.3
+    },
+    "castelejo": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 94.6
+    },
+    "luz": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 77.7
+    },
+    "burgau": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 81.8
+    },
+    "salema": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 85.6
+    },
+    "cordoama": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 96.5
+    },
+    "ferragudo": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 60.1
+    },
+    "vila-real-santo-antonio": {
+      "codp": 21,
+      "stationTitle": "Vila Real de S. António",
+      "distanceKm": 0.8
+    },
+    "monte-gordo": {
+      "codp": 21,
+      "stationTitle": "Vila Real de S. António",
+      "distanceKm": 3.4
+    },
+    "praia-verde": {
+      "codp": 21,
+      "stationTitle": "Vila Real de S. António",
+      "distanceKm": 7.8
+    },
+    "altura": {
+      "codp": 21,
+      "stationTitle": "Vila Real de S. António",
+      "distanceKm": 7.9
+    },
+    "praia-rocha": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 61.2
+    },
+    "alvor": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 66.9
+    },
+    "foil-alvor": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 66.9
+    },
+    "lagos": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 71.5
+    },
+    "lagos-wakepark": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 72.6
+    },
+    "beliche": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 98.2
+    },
+    "martinhal": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 95
+    },
+    "barrinha-faro": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 7.3
+    },
+    "fuseta": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 13.1
+    },
+    "ilha-faro": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 10.1
+    },
+    "ilha-tavira": {
+      "codp": 21,
+      "stationTitle": "Vila Real de S. António",
+      "distanceKm": 22.5
+    },
+    "cabanas-tavira": {
+      "codp": 21,
+      "stationTitle": "Vila Real de S. António",
+      "distanceKm": 18
+    },
+    "tonel": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 95.9
+    },
+    "zavial": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 94.1
+    },
+    "anjos": {
+      "codp": 245,
+      "stationTitle": "Vila do Porto",
+      "distanceKm": 5
+    },
+    "ponta-delgada": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 0.6
+    },
+    "sao-vicente-madeira": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 20.7
+    },
+    "porto-da-cruz": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 15.4
+    },
+    "paul-mar": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 33.1
+    },
+    "jardim-mar": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 31
+    },
+    "ponta-sao-lourenco": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 22.2
+    },
+    "ribeira-brava": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 14.6
+    },
+    "funchal": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 0.8
+    },
+    "barra-aveiro": {
+      "codp": 857,
+      "stationTitle": "Aveiro - Molhe Central",
+      "distanceKm": 0.7
+    },
+    "vila-cha": {
+      "codp": 12,
+      "stationTitle": "Leixões",
+      "distanceKm": 12.1
+    },
+    "santa-cruz": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 23.9
+    },
+    "consolacao": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 3.7
+    },
+    "areia-branca": {
+      "codp": 162,
+      "stationTitle": "Peniche - C",
+      "distanceKm": 11
+    },
+    "sao-martinho-porto": {
+      "codp": 856,
+      "stationTitle": "Nazaré - B",
+      "distanceKm": 9.5
+    },
+    "cave-ericeira": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 37.3
+    },
+    "pescadores-ericeira": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 36.7
+    },
+    "crazy-left": {
+      "codp": 152,
+      "stationTitle": "Lisboa - Alcântara",
+      "distanceKm": 36.2
+    },
+    "meco": {
+      "codp": 28,
+      "stationTitle": "Sesimbra",
+      "distanceKm": 7.7
+    },
+    "lagoa-santo-andre": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 17.8
+    },
+    "lagoa-sancha": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 10.8
+    },
+    "pessegueiro": {
+      "codp": 859,
+      "stationTitle": "Sines - Terminal XXI",
+      "distanceKm": 12.6
+    },
+    "garrão": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 8.4
+    },
+    "falesia": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 27.6
+    },
+    "tres-irmaos": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 67.1
+    },
+    "canavial": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 49.3
+    },
+    "mareta": {
+      "codp": 19,
+      "stationTitle": "Barra de Faro-Olhão",
+      "distanceKm": 95.4
+    },
+    "machico": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 15.8
+    },
+    "seixal-madeira": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 26.2
+    },
+    "ponta-pargo": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 38.4
+    },
+    "madalena-mar": {
+      "codp": 121,
+      "stationTitle": "Funchal",
+      "distanceKm": 21.9
+    },
+    "calhetas": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 11.4
+    },
+    "ribeira-quente": {
+      "codp": 212,
+      "stationTitle": "Ponta Delgada - B",
+      "distanceKm": 32
+    },
+    "formosa-santa-maria": {
+      "codp": 245,
+      "stationTitle": "Vila do Porto",
+      "distanceKm": 8.9
+    },
+    "porto-martins": {
+      "codp": 221,
+      "stationTitle": "Angra do Heroísmo",
+      "distanceKm": 14.5
+    },
+    "cachorro-pico": {
+      "codp": 231,
+      "stationTitle": "Horta",
+      "distanceKm": 28
+    },
+    "faja-cubres": {
+      "codp": 231,
+      "stationTitle": "Horta",
+      "distanceKm": 57.9
+    }
+  },
+  "fetchedAt": "2026-05-20T15:43:00.864Z"
+}
