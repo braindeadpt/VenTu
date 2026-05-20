@@ -22,16 +22,6 @@ export const spots: Spot[] = [
       hazards: ['Correntes moderadas']
     },
   {
-      id: 'ancora', slug: 'ancora', name: 'Âncora', nameEn: 'Ancora',
-      region: 'Caminha', regionEn: 'Caminha', lat: 41.815, lon: -8.860,
-      coastOrientation: 270,
-      type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
-      description: 'Praia familiar com ondas suaves. Perfeita para iniciantes no norte de Portugal. Pouco crowd e água limpa.',
-      descriptionEn: 'Family beach with gentle waves. Perfect for beginners in northern Portugal. Low crowd and clean water.',
-      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
-      hazards: ['Correntes moderadas']
-    },
-  {
       id: 'afife', slug: 'afife', name: 'Afife (Praia da Arda)', nameEn: 'Afife (Arda Beach)',
       region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.780, lon: -8.860,
       coastOrientation: 270,
@@ -143,7 +133,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'leca-palmeira', slug: 'leca-palmeira', name: 'Leça da Palmeira', nameEn: 'Leca da Palmeira',
-      region: 'Porto', regionEn: 'Porto', lat: 41.190, lon: -8.700,
+      region: 'Porto', regionEn: 'Porto', lat: 41.192, lon: -8.709,
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia com bandeira azul ao lado de Matosinhos. Beach break potente com ondas mais hollow. Pool de mares famoso nas proximidades.',
@@ -227,7 +217,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'sao-jacinto', slug: 'sao-jacinto', name: 'São Jacinto', nameEn: 'Sao Jacinto',
-      region: 'Aveiro', regionEn: 'Aveiro', lat: 40.700, lon: -8.730,
+      region: 'Aveiro', regionEn: 'Aveiro', lat: 40.686, lon: -8.729,
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Reserva Natural das Dunas com surf de qualidade. Praia selvagem acessível apenas de barco. Ondas consistentes e crowd zero.',
@@ -247,7 +237,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'quiaios', slug: 'quiaios', name: 'Quiaios', nameEn: 'Quiaios',
-      region: 'Figueira da Foz', regionEn: 'Figueira da Foz', lat: 40.200, lon: -8.870,
+      region: 'Figueira da Foz', regionEn: 'Figueira da Foz', lat: 40.220, lon: -8.890,
       coastOrientation: 270,
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia longa e selvagem no norte da Figueira da Foz. Ondas suaves ideais para iniciantes. Pouco crowd e ambiente natural preservado.',
@@ -269,7 +259,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'leirosa', slug: 'leirosa', name: 'Leirosa', nameEn: 'Leirosa',
-      region: 'Figueira da Foz', regionEn: 'Figueira da Foz', lat: 39.850, lon: -8.900,
+      region: 'Figueira da Foz', regionEn: 'Figueira da Foz', lat: 40.057, lon: -8.890,
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia rústica e pouco frequentada entre a Figueira da Foz e Nazaré. Beach break potente com ondas tubulares em dias bons. Para surfistas que gostam de isolamento.',
@@ -611,7 +601,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'sao-torpes', slug: 'sao-torpes', name: 'São Torpes', nameEn: 'Sao Torpes',
-      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.950, lon: -8.800,
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.922, lon: -8.806,
       coastOrientation: 270,
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Spot único — antiga central térmica aquece a água! Surf de inverno com wetsuit mais fino. Beach break longo e acessível.',
@@ -821,7 +811,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'luz', slug: 'luz', name: 'Praia da Luz', nameEn: 'Praia da Luz',
-      region: 'Lagos', regionEn: 'Lagos', lat: 37.090, lon: -8.720,
+      region: 'Lagos', regionEn: 'Lagos', lat: 37.087, lon: -8.731,
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia familiar que esconde um reef break de qualidade junto à Rocha Negra. Direitas perfeitas com a maré e swell certos. Pouco conhecida fora da comunidade local.',
@@ -844,7 +834,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'salema', slug: 'salema', name: 'Salema', nameEn: 'Salema',
-      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.060, lon: -8.820,
+      region: 'Vila do Bispo', regionEn: 'Vila do Bispo', lat: 37.065, lon: -8.824,
       coastOrientation: 180,
       type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
       description: 'Praia de vila piscatória no coração do Algarve. Ondas suaves ideais para iniciantes e longboarders. Água cristalina e ambiente tranquilo.',
@@ -887,16 +877,6 @@ export const spots: Spot[] = [
       hazards: ['Tráfego de barcos na ria']
     },
   {
-      id: 'carrapateira', slug: 'carrapateira', name: 'Carrapateira', nameEn: 'Carrapateira',
-      region: 'Algarve', regionEn: 'Algarve', lat: 37.183, lon: -8.905,
-      coastOrientation: 270,
-      type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'W, NW',
-      description: 'Praia da Bordeira com ondas de beach break potentes. Cenário natural deslumbrante da Costa Vicentina.',
-      descriptionEn: 'Bordeira Beach with powerful beach break waves. Stunning natural scenery of the Vicentina Coast.',
-      facilities: ['Estacionamento limitado', 'Restaurante', 'WC'],
-      hazards: ['Correntes fortes', 'Rochas']
-    },
-  {
       id: 'monte-gordo', slug: 'monte-gordo', name: 'Monte Gordo', nameEn: 'Monte Gordo',
       region: 'Algarve', regionEn: 'Algarve', lat: 37.183, lon: -7.450,
       coastOrientation: 180,
@@ -928,7 +908,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'praia-rocha', slug: 'praia-rocha', name: 'Praia da Rocha', nameEn: 'Praia da Rocha',
-      region: 'Portimão', regionEn: 'Portimão', lat: 37.139, lon: -8.535,
+      region: 'Portimão', regionEn: 'Portimão', lat: 37.117, lon: -8.533,
       coastOrientation: 270,
       type: 'multisport', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'SW',
       description: 'Praia de areia com falésias impressionantes. Ondas de inverno para surf. Vento de leste para windsurf e kitesurf no verão.',
@@ -1132,7 +1112,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'ponta-sao-lourenco', slug: 'ponta-sao-lourenco', name: 'Ponta de São Lourenço', nameEn: 'Ponta de Sao Lourenco',
-      region: 'Madeira', regionEn: 'Madeira', lat: 32.733, lon: -16.667,
+      region: 'Madeira', regionEn: 'Madeira', lat: 32.745, lon: -16.706,
       coastOrientation: 90,
       type: 'surf', difficulty: 'advanced', bestWind: 'N, NE', bestSwell: 'S, SE',
       description: 'Paisagem lunar vulcânica com ondas consistentes. Spot remoto para aventureiros. Águas turquesa e cenário dramático.',
@@ -1142,7 +1122,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'ribeira-brava', slug: 'ribeira-brava', name: 'Ribeira Brava', nameEn: 'Ribeira Brava',
-      region: 'Madeira', regionEn: 'Madeira', lat: 32.683, lon: -17.000,
+      region: 'Madeira', regionEn: 'Madeira', lat: 32.675, lon: -17.063,
       coastOrientation: 90,
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'Onda de reef break potente na costa sul. Cenário de montanhas verdes. Acesso fácil pela estrada costeira.',
@@ -1160,7 +1140,299 @@ export const spots: Spot[] = [
       facilities: ['Estacionamento', 'Escola kite', 'Restaurantes', 'WC'],
       hazards: ['Tráfego de barcos', 'Banhistas']
     },
-];
+  {
+      id: 'barra-aveiro', slug: 'barra-aveiro', name: 'Praia da Barra (Aveiro)', nameEn: 'Barra Beach (Aveiro)',
+      region: 'Aveiro', regionEn: 'Aveiro', lat: 40.638, lon: -8.748,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'beginner', bestWind: 'E, NE', bestSwell: 'W, NW',
+      description: 'Praia do farol mais alto de Portugal. Ondas suaves e consistentes. Kitesurf na ria adjacente. Um dos spots mais populares de Aveiro.',
+      descriptionEn: 'Beach of Portugal\'s tallest lighthouse. Soft and consistent waves. Kitesurf in the adjacent ria. One of the most popular spots in Aveiro.',
+      compatibleSports: ['surf', 'kitesurf', 'windsurf'],
+      facilities: ['Estacionamento', 'Restaurantes', 'Farol', 'WC'],
+      hazards: ['Correntes', 'Multidão no verão']
+    },
+  {
+      id: 'vila-cha', slug: 'vila-cha', name: 'Vila Chã', nameEn: 'Vila Cha',
+      region: 'Porto', regionEn: 'Porto', lat: 41.291, lon: -8.739,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia selvagem a norte do Porto. Beach break consistente com menos crowd que Matosinhos. Ideal para quem quer fugir da multidão.',
+      descriptionEn: 'Wild beach north of Porto. Consistent beach break with less crowd than Matosinhos. Ideal for escaping the crowds.',
+      facilities: ['Estacionamento', 'WC'],
+      hazards: ['Correntes fortes', 'Acesso íngreme']
+    },
+  {
+      id: 'santa-cruz', slug: 'santa-cruz', name: 'Santa Cruz (Praia Azul)', nameEn: 'Santa Cruz (Praia Azul)',
+      region: 'Torres Vedras', regionEn: 'Torres Vedras', lat: 39.139, lon: -9.380,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia icónica com ondas consistentes e palco de campeonatos nacionais. Areia dourada e falésias. Kitesurf com vento térmico no verão.',
+      descriptionEn: 'Iconic beach with consistent waves, host of national championships. Golden sand and cliffs. Kitesurf with thermal wind in summer.',
+      compatibleSports: ['surf', 'kitesurf', 'bodyboard'],
+      blueFlag: true,
+      facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Alojamento', 'WC'],
+      hazards: ['Correntes fortes', 'Multidão no verão', 'Rochas junto ao molhe']
+    },
+  {
+      id: 'consolacao', slug: 'consolacao', name: 'Praia da Consolação', nameEn: 'Consolacao Beach',
+      region: 'Peniche', regionEn: 'Peniche', lat: 39.320, lon: -9.367,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia entre Peniche e a Lagoa de Óbidos. Beach break potente com múltiplos picos. Menos crowd que Supertubos. Ideal para surfistas intermediários.',
+      descriptionEn: 'Beach between Peniche and Obidos Lagoon. Powerful beach break with multiple peaks. Less crowded than Supertubos. Ideal for intermediate surfers.',
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Correntes', 'Rochas submersas']
+    },
+  {
+      id: 'areia-branca', slug: 'areia-branca', name: 'Areia Branca', nameEn: 'Areia Branca',
+      region: 'Lourinhã', regionEn: 'Lourinha', lat: 39.258, lon: -9.335,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
+      description: 'Praia turística com ondas consistentes para todos os níveis. Palco de provas do circuito nacional. Golfinhos frequentes.',
+      descriptionEn: 'Tourist beach with consistent waves for all levels. Host of national circuit events. Frequent dolphin sightings.',
+      blueFlag: true,
+      facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Alojamento', 'WC'],
+      hazards: ['Multidão no verão', 'Correntes']
+    },
+  {
+      id: 'sao-martinho-porto', slug: 'sao-martinho-porto', name: 'São Martinho do Porto', nameEn: 'Sao Martinho do Porto',
+      region: 'Oeste', regionEn: 'West Coast', lat: 39.514, lon: -9.134,
+      coastOrientation: 180,
+      type: 'kitesurf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'Baía',
+      description: 'Baía em forma de concha com águas calmas e vento térmico. Perfeita para aprender kitesurf e windsurf. Água plana protegida.',
+      descriptionEn: 'Shell-shaped bay with calm waters and thermal wind. Perfect for learning kitesurf and windsurf. Sheltered flat water.',
+      compatibleSports: ['kitesurf', 'windsurf', 'sup'],
+      blueFlag: true,
+      facilities: ['Estacionamento', 'Escolas kite', 'Restaurantes', 'WC'],
+      hazards: ['Tráfego de barcos', 'Maré baixa expõe areia']
+    },
+  {
+      id: 'cave-ericeira', slug: 'cave-ericeira', name: 'Cave (Ericeira)', nameEn: 'Cave (Ericeira)',
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.968, lon: -9.422,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'NW, W',
+      description: 'Reef break pesado com ondas tubulares. Uma das ondas mais técnicas da Ericeira. Apenas para surfistas experientes.',
+      descriptionEn: 'Heavy reef break with barreling waves. One of the most technical waves in Ericeira. For experienced surfers only.',
+      facilities: ['Estacionamento limitado'],
+      hazards: ['Rochas afiadas', 'Ondas pesadas', 'Correntes']
+    },
+  {
+      id: 'pescadores-ericeira', slug: 'pescadores-ericeira', name: 'Pescadores (Ericeira)', nameEn: 'Pescadores (Ericeira)',
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.963, lon: -9.419,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'NW, W',
+      description: 'Point break junto ao porto de pesca da Ericeira. Direita longa e consistente com fundo de rocha. Spot clássico da vila.',
+      descriptionEn: 'Point break next to Ericeira\'s fishing port. Long and consistent right-hander with rock bottom. Classic village spot.',
+      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
+      hazards: ['Rochas', 'Barcos de pesca', 'Locals']
+    },
+  {
+      id: 'crazy-left', slug: 'crazy-left', name: 'Crazy Left (Ericeira)', nameEn: 'Crazy Left (Ericeira)',
+      region: 'Ericeira', regionEn: 'Ericeira', lat: 38.958, lon: -9.418,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'NW, W',
+      description: 'Esquerda tubular e rápida sobre reef. Uma das poucas esquerdas de qualidade da Ericeira. Técnica e perigosa. Experts apenas.',
+      descriptionEn: 'Fast barreling left over reef. One of the few quality lefts in Ericeira. Technical and dangerous. Experts only.',
+      facilities: [],
+      hazards: ['Rochas', 'Ondas rápidas', 'Pouco profundo']
+    },
+  {
+      id: 'meco', slug: 'meco', name: 'Praia do Meco', nameEn: 'Meco Beach',
+      region: 'Sesimbra', regionEn: 'Sesimbra', lat: 38.473, lon: -9.188,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia selvagem ao sul da Lagoa de Albufeira. Beach break potente com ondas de qualidade. Ambiente naturista e natureza intocada.',
+      descriptionEn: 'Wild beach south of Albufeira Lagoon. Powerful beach break with quality waves. Naturist atmosphere and untouched nature.',
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Correntes fortes', 'Falésias', 'Sem vigilância']
+    },
+  {
+      id: 'lagoa-santo-andre', slug: 'lagoa-santo-andre', name: 'Lagoa de Santo André', nameEn: 'Santo Andre Lagoon',
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 38.090, lon: -8.792,
+      coastOrientation: 270,
+      type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Lagoa',
+      description: 'Lagoa costeira enorme com água plana e vento térmico consistente. Perfeita para kitesurf e windsurf. Reserva natural com flamingos.',
+      descriptionEn: 'Huge coastal lagoon with flat water and consistent thermal wind. Perfect for kitesurf and windsurf. Nature reserve with flamingos.',
+      compatibleSports: ['kitesurf', 'windsurf', 'foil', 'sup'],
+      facilities: ['Estacionamento', 'Escola kite', 'Restaurante', 'WC'],
+      hazards: ['Maré baixa expõe bancos de areia']
+    },
+  {
+      id: 'lagoa-sancha', slug: 'lagoa-sancha', name: 'Lagoa da Sancha', nameEn: 'Sancha Lagoon',
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 38.025, lon: -8.798,
+      coastOrientation: 270,
+      type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Lagoa',
+      description: 'Pequena lagoa natural entre Santo André e São Torpes. Água calma e vento térmico. Spot secreto de kitesurf do Alentejo.',
+      descriptionEn: 'Small natural lagoon between Santo Andre and Sao Torpes. Calm water and thermal wind. Alentejo\'s secret kitesurf spot.',
+      compatibleSports: ['kitesurf', 'foil', 'sup'],
+      facilities: ['Estacionamento'],
+      hazards: ['Acesso por estrada de terra', 'Maré baixa']
+    },
+  {
+      id: 'pessegueiro', slug: 'pessegueiro', name: 'Ilha do Pessegueiro', nameEn: 'Pessegueiro Island',
+      region: 'Alentejo', regionEn: 'Alentejo', lat: 37.831, lon: -8.796,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia com ilhota e forte histórico. Beach break consistente com ondas de qualidade. Um dos spots mais bonitos do Alentejo.',
+      descriptionEn: 'Beach with islet and historic fort. Consistent beach break with quality waves. One of the most beautiful spots in Alentejo.',
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Rochas junto ao forte', 'Correntes']
+    },
+  {
+      id: 'garrão', slug: 'garrão', name: 'Praia do Garrão', nameEn: 'Garrao Beach',
+      region: 'Faro', regionEn: 'Faro', lat: 36.970, lon: -7.960,
+      coastOrientation: 180,
+      type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
+      description: 'Praia extensa da Ria Formosa com ondas suaves. Ideal para iniciantes e longboard. Água quente e cristalina.',
+      descriptionEn: 'Long Ria Formosa beach with gentle waves. Ideal for beginners and longboard. Warm crystal clear water.',
+      compatibleSports: ['surf', 'sup', 'kitesurf'],
+      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
+      hazards: ['Bancos de areia', 'Correntes na barra']
+    },
+  {
+      id: 'falesia', slug: 'falesia', name: 'Praia da Falésia', nameEn: 'Falesia Beach',
+      region: 'Albufeira', regionEn: 'Albufeira', lat: 37.075, lon: -8.153,
+      coastOrientation: 180,
+      type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
+      description: 'Praia icónica com falésias vermelhas de 40m. Beach break com múltiplos picos. Água quente e ondas suaves. Uma das praias mais fotografadas do Algarve.',
+      descriptionEn: 'Iconic beach with 40m red cliffs. Beach break with multiple peaks. Warm water and gentle waves. One of the most photographed beaches in the Algarve.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
+      blueFlag: true,
+      facilities: ['Estacionamento', 'Hotéis', 'Restaurantes', 'WC'],
+      hazards: ['Correntes', 'Quedas de falésia']
+    },
+  {
+      id: 'tres-irmaos', slug: 'tres-irmaos', name: 'Praia dos Três Irmãos', nameEn: 'Tres Irmãos Beach',
+      region: 'Alvor', regionEn: 'Alvor', lat: 37.122, lon: -8.601,
+      coastOrientation: 180,
+      type: 'surf', difficulty: 'beginner', bestWind: 'W, NW', bestSwell: 'S, SW',
+      description: 'Praia de grutas e rochas com ondas suaves. Água quente e protegida. Ideal para famílias e iniciantes de surf.',
+      descriptionEn: 'Beach with caves and rock formations with gentle waves. Warm protected water. Ideal for families and beginner surfers.',
+      facilities: ['Estacionamento', 'Restaurantes', 'Hotel', 'WC'],
+      hazards: ['Rochas submersas', 'Maré baixa']
+    },
+  {
+      id: 'canavial', slug: 'canavial', name: 'Praia do Canavial', nameEn: 'Canavial Beach',
+      region: 'Algarve', regionEn: 'Algarve', lat: 37.115, lon: -8.395,
+      coastOrientation: 180,
+      type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'Lagoa',
+      description: 'Praia pouco conhecida entre a Ria Formosa e o mar. Água plana com vento térmico de leste. Kitesurf e foil sem multidão.',
+      descriptionEn: 'Little-known beach between Ria Formosa and the sea. Flat water with east thermal wind. Kitesurf and foil with no crowd.',
+      compatibleSports: ['kitesurf', 'foil'],
+      facilities: ['Estacionamento'],
+      hazards: ['Acesso por estrada de terra', 'Sem vigilância']
+    },
+  {
+      id: 'mareta', slug: 'mareta', name: 'Praia da Mareta', nameEn: 'Mareta Beach',
+      region: 'Sagres', regionEn: 'Sagres', lat: 37.006, lon: -8.940,
+      coastOrientation: 180,
+      type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
+      description: 'Praia virada a sul protegida do vento norte. Ondas suaves perfeitas para iniciantes. Água cristalina. Centro da vila de Sagres.',
+      descriptionEn: 'South-facing beach sheltered from the north wind. Gentle waves perfect for beginners. Crystal clear water. Sagres town center.',
+      facilities: ['Estacionamento', 'Restaurantes', 'Escola surf', 'WC'],
+      hazards: ['Rochas nas pontas']
+    },
+  {
+      id: 'machico', slug: 'machico', name: 'Machico', nameEn: 'Machico',
+      region: 'Madeira', regionEn: 'Madeira', lat: 32.720, lon: -16.767,
+      coastOrientation: 90,
+      type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SE',
+      description: 'A melhor praia de areia dourada da Madeira. Ondas suaves e consistentes. Água cristalina e falésias verdes. Ideal para iniciantes.',
+      descriptionEn: 'The best golden sand beach in Madeira. Soft and consistent waves. Crystal clear water and green cliffs. Ideal for beginners.',
+      facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
+      hazards: ['Correntes', 'Multidão no verão']
+    },
+  {
+      id: 'seixal-madeira', slug: 'seixal-madeira', name: 'Seixal', nameEn: 'Seixal',
+      region: 'Madeira', regionEn: 'Madeira', lat: 32.813, lon: -17.107,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'S, SE', bestSwell: 'N, NW',
+      description: 'Praia de calhau rolado entre montanhas verdes. Ondas consistentes na costa norte. Poços naturais de água cristalina. Cenário deslumbrante.',
+      descriptionEn: 'Pebble beach between green mountains. Consistent waves on the north coast. Natural crystal clear water pools. Stunning scenery.',
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Mar agitado', 'Calhau rolado']
+    },
+  {
+      id: 'ponta-pargo', slug: 'ponta-pargo', name: 'Ponta do Pargo', nameEn: 'Ponta do Pargo',
+      region: 'Madeira', regionEn: 'Madeira', lat: 32.817, lon: -17.267,
+      coastOrientation: 270,
+      type: 'big-wave', difficulty: 'expert', bestWind: 'N, NE', bestSwell: 'W, NW',
+      description: 'O ponto mais ocidental da Madeira com ondas gigantes até 15m. Big wave spot para tow-in. Apenas profissionais. Farol icónico.',
+      descriptionEn: 'Westernmost point of Madeira with giant waves up to 15m. Big wave tow-in spot. Professionals only. Iconic lighthouse.',
+      facilities: ['Estacionamento limitado'],
+      hazards: ['Ondas mortais', 'Rochas', 'Acesso difícil']
+    },
+  {
+      id: 'madalena-mar', slug: 'madalena-mar', name: 'Madalena do Mar', nameEn: 'Madalena do Mar',
+      region: 'Madeira', regionEn: 'Madeira', lat: 32.707, lon: -17.133,
+      coastOrientation: 180,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
+      description: 'Reef break consistente na costa sul. Ondas de qualidade com crowd reduzido. Acesso fácil e cenário de bananeiras e montanhas.',
+      descriptionEn: 'Consistent reef break on the south coast. Quality waves with reduced crowd. Easy access and scenery of banana trees and mountains.',
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Rochas', 'Correntes']
+    },
+  {
+      id: 'calhetas', slug: 'calhetas', name: 'Calhetas (São Miguel)', nameEn: 'Calhetas (Sao Miguel)',
+      region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.821, lon: -25.599,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'advanced', bestWind: 'S, SE', bestSwell: 'N, NW',
+      description: 'Point break esquerdo sobre lava vulcânica. Ondas longas e tubulares. Um dos spots mais famosos dos Açores. Apenas experts.',
+      descriptionEn: 'Left-hand point break over volcanic lava. Long barreling waves. One of the most famous Azores spots. Experts only.',
+      facilities: ['Estacionamento'],
+      hazards: ['Rocha vulcânica afiada', 'Correntes', 'Acesso difícil']
+    },
+  {
+      id: 'ribeira-quente', slug: 'ribeira-quente', name: 'Ribeira Quente (São Miguel)', nameEn: 'Ribeira Quente (Sao Miguel)',
+      region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.728, lon: -25.308,
+      coastOrientation: 180,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
+      description: 'Praia de areia negra com águas geotérmicas quentes. Ondas consistentes com fundo vulcânico. Restaurantes de peixe fresco junto à praia.',
+      descriptionEn: 'Black sand beach with warm geothermal waters. Consistent waves over volcanic bottom. Fresh fish restaurants by the beach.',
+      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
+      hazards: ['Rochas vulcânicas', 'Água quente junto à costa']
+    },
+  {
+      id: 'formosa-santa-maria', slug: 'formosa-santa-maria', name: 'Formosa (Santa Maria)', nameEn: 'Formosa (Santa Maria)',
+      region: 'Santa Maria', regionEn: 'Santa Maria', lat: 36.990, lon: -25.067,
+      coastOrientation: 180,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
+      description: 'A melhor onda de Santa Maria. Direita longa sobre fundo de rocha. Água cristalina e cenário tropical. Praia de areia dourada.',
+      descriptionEn: 'The best wave in Santa Maria. Long right-hander over rock bottom. Crystal clear water and tropical scenery. Golden sand beach.',
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Rochas', 'Correntes']
+    },
+  {
+      id: 'porto-martins', slug: 'porto-martins', name: 'Porto Martins (Terceira)', nameEn: 'Porto Martins (Terceira)',
+      region: 'Terceira', regionEn: 'Terceira', lat: 38.676, lon: -27.058,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Point break consistente na costa este da Terceira. Ondas de qualidade com menos multidão que Santa Catarina. Fundo de lava.',
+      descriptionEn: 'Consistent point break on Terceira\'s east coast. Quality waves with less crowd than Santa Catarina. Lava bottom.',
+      facilities: ['Estacionamento'],
+      hazards: ['Rochas', 'Correntes']
+    },
+  {
+      id: 'cachorro-pico', slug: 'cachorro-pico', name: 'Cachorro (Pico)', nameEn: 'Cachorro (Pico)',
+      region: 'Pico', regionEn: 'Pico', lat: 38.533, lon: -28.300,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Point break esquerdo na costa norte do Pico. Ondas tubulares sobre fundo vulcânico. Cenário dramático com a montanha do Pico ao fundo.',
+      descriptionEn: 'Left-hand point break on Pico\'s north coast. Barreling waves over volcanic bottom. Dramatic scenery with Pico mountain in the background.',
+      facilities: ['Estacionamento limitado'],
+      hazards: ['Rochas', 'Acesso difícil', 'Ondas pesadas']
+    },
+  {
+      id: 'faja-cubres', slug: 'faja-cubres', name: 'Fajã dos Cubres (São Jorge)', nameEn: 'Faja dos Cubres (Sao Jorge)',
+      region: 'São Jorge', regionEn: 'Sao Jorge', lat: 38.633, lon: -27.967,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Fajã (plataforma lávica) com point break esquerdo. Uma das ondas mais bonitas dos Açores. Lagoa interior de água salgada. Cenário único.',
+      descriptionEn: 'Lava platform with left-hand point break. One of the most beautiful waves in the Azores. Interior saltwater lagoon. Unique scenery.',
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Acesso por estrada íngreme', 'Rochas']
+    },
+    ];
 
 export const getSpotBySlug = (slug: string): Spot | undefined =>
   spots.find(s => s.slug === slug);

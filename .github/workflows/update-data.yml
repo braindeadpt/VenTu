@@ -20,6 +20,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Fetch IH Tide Station Data
+        run: node scripts/fetch-ih-tides.js
+
       - name: Update Conditions
         run: node scripts/update-conditions.js
 

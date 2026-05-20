@@ -80,7 +80,7 @@ async function fetchMarineData(lat, lon) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
-    hourly: 'wave_height,wave_direction,wave_period,sea_surface_temperature',
+    hourly: 'wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl',
     timezone: 'Europe/Lisbon',
     forecast_days: '2',
   });
@@ -103,14 +103,31 @@ async function fetchWeatherData(lat, lon) {
   return data;
 }
 
-function getCurrentConditions(marineData, weatherData) {
+function getTideStatus(seaLevel, seaLevelNext) {
+  const threshold = 0.3;
+  if (seaLevel > threshold) {
+    return { status: 'high', label: 'Maré Alta' };
+  } else if (seaLevel < -threshold) {
+    return { status: 'low', label: 'Maré Baixa' };
+  } else if (seaLevelNext !== undefined && seaLevelNext > seaLevel) {
+    return { status: 'rising', label: 'Maré a Subir' };
+  } else {
+    return { status: 'falling', label: 'Maré a Descer' };
+  }
+}
+
+function getCurrentConditions(marineData, weatherData, ihTideObs) {
   const now = new Date();
   const currentHour = now.getHours();
   
   const marineTimeIndex = Math.max(0, marineData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour));
   const weatherTimeIndex = Math.max(0, weatherData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour));
 
-  return {
+  const seaLevel = marineData.hourly.sea_level_height_msl?.[marineTimeIndex] || 0;
+  const seaLevelNext = marineData.hourly.sea_level_height_msl?.[marineTimeIndex + 1];
+  const tide = getTideStatus(seaLevel, seaLevelNext);
+
+  const result = {
     waveHeight: marineData.hourly.wave_height[marineTimeIndex] || 0,
     wavePeriod: marineData.hourly.wave_period[marineTimeIndex] || 0,
     waveDirection: marineData.hourly.wave_direction[marineTimeIndex] || 0,
@@ -118,12 +135,35 @@ function getCurrentConditions(marineData, weatherData) {
     windDirection: weatherData.hourly.wind_direction_10m[weatherTimeIndex] || 0,
     windGust: weatherData.hourly.wind_gusts_10m[weatherTimeIndex] || 0,
     waterTemp: marineData.hourly.sea_surface_temperature[marineTimeIndex] || 0,
+    tideHeight: seaLevel,
+    tideStatus: tide.status,
+    tideLabel: tide.label,
   };
+
+  if (ihTideObs) {
+    result.tideObservedHeight = ihTideObs.lastObs;
+    result.tideObservedAt = ihTideObs.lastData;
+    result.tideStation = ihTideObs.stationTitle;
+  }
+
+  return result;
 }
 
 async function updateConditions() {
   console.log('🌊 VenTu - Updating conditions...');
   const allConditions = {};
+
+  // Load IH tide station data (if available)
+  let ihTides = { stations: {}, spotMapping: {} };
+  const ihTidesPath = path.join(__dirname, '../public/data/ih-tides.json');
+  if (fs.existsSync(ihTidesPath)) {
+    try {
+      ihTides = JSON.parse(fs.readFileSync(ihTidesPath, 'utf-8'));
+      console.log(`📡 IH tide data loaded (${Object.keys(ihTides.stations).length} stations, ${Object.keys(ihTides.spotMapping).length} spot mappings)\n`);
+    } catch (e) {
+      console.warn('⚠️ Could not parse ih-tides.json, continuing without IH tide data\n');
+    }
+  }
 
   for (const spot of spots) {
     try {
@@ -135,12 +175,26 @@ async function updateConditions() {
         fetchWeatherData(spot.lat, spot.lon),
       ]);
       
+      // Check if we have IH tide data for this spot
+      const spotMapping = ihTides.spotMapping[spot.id];
+      let ihTideObs = null;
+      if (spotMapping) {
+        const station = ihTides.stations[spotMapping.codp];
+        if (station) {
+          ihTideObs = {
+            lastObs: station.lastObs,
+            lastData: station.lastData,
+            stationTitle: station.title,
+          };
+        }
+      }
+      
       allConditions[spot.id] = {
-        ...getCurrentConditions(marineData, weatherData),
+        ...getCurrentConditions(marineData, weatherData, ihTideObs),
         updatedAt: new Date().toISOString(),
       };
       
-      console.log(`  ✓ ${spot.id} updated`);
+      console.log(`  ✓ ${spot.id} updated${ihTideObs ? ` (IH tide: ${ihTideObs.lastObs}m)` : ''}`);
       
       // Rate limiting: wait 250ms between spots to avoid Open-Meteo limits
       // Open-Meteo free tier: ~10,000 calls/day, but burst limiting applies

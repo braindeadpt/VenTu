@@ -29,14 +29,15 @@ import { getTranslation } from '@/lib/i18n';
  *  ═══════════════════════════════════════════════════════════════════════ */
 
 export interface ForecastHour {
-  time: string;        // ISO string or Date-compatible
+  time: string;
   waveHeight: number;
   wavePeriod: number;
-  windSpeed: number; // m/s from API — converted to knots for display
+  windSpeed: number;
   windDirection: number;
- windGust?: number; // m/s from API — converted to knots for display
+ windGust?: number;
   waterTemp?: number;
-  score?: number;    // 0-100, pre-calculated by caller
+  tideHeight?: number;
+  score?: number;
 }
 
 interface ForecastTableProps {
@@ -261,6 +262,7 @@ export default function ForecastTable({
   /* ── row presence checks ── */
   const hasGust = visible.some((h) => typeof h.windGust === 'number');
   const hasWaterTemp = visible.some((h) => typeof h.waterTemp === 'number');
+  const hasTide = visible.some((h) => typeof h.tideHeight === 'number');
   const hasAnyScore = visible.some((h) => typeof h.score === 'number');
 
   /* ── sport label for score row ── */
@@ -528,7 +530,35 @@ className="overflow-x-auto rounded-card border border-divider bg-bg-base min-w-[
             </tr>
           )}
 
-{/* ── SCORE (conditional, heavy visual weight) ── */}
+          {/* ── TIDE (conditional) ── */}
+          {hasTide && (
+            <tr>
+              <th
+                scope="row"
+                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg-subtle font-medium border-r-2 border-divider`}
+              >
+                {t.tide}
+              </th>
+              {visible.map((h, i) => (
+                <td
+                  key={i}
+                  className={`${hourW} ${cellPx} ${
+                    typeof h.tideHeight === 'number'
+                      ? h.tideHeight > 0.3 ? 'bg-data-waves/20' : h.tideHeight < -0.3 ? 'bg-data-waves/10' : 'bg-surface-1'
+                      : 'bg-surface-1'
+                  } font-mono text-num-xs md:text-num ${
+                    typeof h.tideHeight === 'number' ? (h.tideHeight > 0.3 ? 'text-data-waves' : 'text-fg-muted') : 'text-fg-subtle'
+                  } ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  onMouseEnter={() => setHoveredCol(i)}
+                  onMouseLeave={() => setHoveredCol(null)}
+                >
+                  {typeof h.tideHeight === 'number' ? h.tideHeight.toFixed(1) : '—'}
+                </td>
+              ))}
+            </tr>
+          )}
+
+          {/* ── SCORE (conditional, heavy visual weight) ── */}
           {hasAnyScore && (
             <tr className="border-t-2 border-divider-strong">
               <th

@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 import type { Spot } from '@/types';
-import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
+import { fetchMarineData, getCurrentConditions, getForecastData, getTideInfo } from '@/lib/openmeteo';
 import {
   getAllSportScores,
   getRelevantSports,
@@ -58,6 +58,9 @@ interface Conditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  tideHeight?: number;
+  tideStatus?: 'high' | 'low' | 'rising' | 'falling';
+  tideLabel?: string;
   source?: 'real' | 'mock';
 }
 
@@ -76,7 +79,13 @@ interface SpotData {
     windDirection: number;
     windGust: number;
     waterTemp: number;
+    tideHeight?: number;
   }>;
+  tideObserved?: {
+    height: number;
+    at: string;
+    station: string;
+  };
 }
 
 /* ─── Helpers ─── */
@@ -240,7 +249,23 @@ export default function SpotDetailClient({
         const allScores = getAllSportScores(spot, conditions);
         const forecast = getForecastData(marineData).slice(0, 120);
 
-        setSpotData({ spot, conditions, allScores, forecast });
+        let tideObserved = undefined;
+        try {
+          const resp = await fetch('/data/conditions.json');
+          if (resp.ok) {
+            const precomputed = await resp.json();
+            const spotPre = precomputed[spot.id];
+            if (spotPre?.tideObservedHeight && spotPre?.tideStation) {
+              tideObserved = {
+                height: spotPre.tideObservedHeight,
+                at: spotPre.tideObservedAt,
+                station: spotPre.tideStation,
+              };
+            }
+          }
+        } catch {}
+
+        setSpotData({ spot, conditions, allScores, forecast, tideObserved });
 
         if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
           setSelectedSport(sportFromUrl);
@@ -277,6 +302,7 @@ export default function SpotDetailClient({
       windDirection: h.windDirection,
       windGust: h.windGust,
       waterTemp: h.waterTemp,
+      tideHeight: h.tideHeight,
       score: hourlyScores[i],
     }));
   }, [spotData, hourlyScores]);
@@ -557,10 +583,10 @@ export default function SpotDetailClient({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          STATS DETAILHADOS — 4 universais
+          STATS DETAILHADOS — 5 universais + maré
           ═══════════════════════════════════════════════════════════════ */}
       <section className="max-w-5xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           <StatCard
             icon={Waves}
             label={t.forecastTable.waves}
@@ -586,7 +612,23 @@ export default function SpotDetailClient({
             value={conditions.windGust > 0 ? Math.round(conditions.windGust * 1.94384) : '—'}
             unit={conditions.windGust > 0 ? 'kt' : undefined}
           />
+          <StatCard
+            icon={Waves}
+            label={isPt ? 'Maré (prev)' : 'Tide (pred)'}
+            value={conditions.tideHeight !== undefined ? conditions.tideHeight.toFixed(1) : '—'}
+            unit={conditions.tideHeight !== undefined ? 'm' : undefined}
+            sub={conditions.tideLabel || undefined}
+          />
         </div>
+        {spotData.tideObserved && (
+          <div className="mt-2 text-meta-sm text-fg-muted text-center">
+            {isPt ? 'Observado' : 'Observed'}: {spotData.tideObserved.height.toFixed(2)}m
+            {' · '}{spotData.tideObserved.station}
+            {spotData.tideObserved.at && (
+              <> · {new Date(spotData.tideObserved.at).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}</>
+            )}
+          </div>
+        )}
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════

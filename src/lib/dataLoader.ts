@@ -13,6 +13,12 @@ export interface PrecomputedConditions {
     windDirection: number;
     windGust: number;
     waterTemp: number;
+    tideHeight?: number;
+    tideStatus?: 'high' | 'low' | 'rising' | 'falling';
+    tideLabel?: string;
+    tideObservedHeight?: number;
+    tideObservedAt?: string;
+    tideStation?: string;
     updatedAt: string;
   };
 }

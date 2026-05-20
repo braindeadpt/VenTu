@@ -15,6 +15,11 @@ export interface SpotData {
     windDirection: number
     windGust: number
     waterTemp: number
+    tideHeight?: number
+    tideStatus?: 'high' | 'low' | 'rising' | 'falling'
+    tideObservedHeight?: number
+    tideObservedAt?: string
+    tideStation?: string
   }
   allScores: Record<SportType, SportScore>
 }

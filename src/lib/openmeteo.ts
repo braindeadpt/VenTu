@@ -21,6 +21,9 @@ export interface CurrentConditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  tideHeight?: number;
+  tideStatus?: 'high' | 'low' | 'rising' | 'falling';
+  tideLabel?: string;
   source: 'real' | 'mock';
 }
 const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
@@ -288,6 +291,13 @@ export function getCurrentConditions(result: FetchResult): CurrentConditions {
     });
   }
 
+  const seaLevel = data.hourly.sea_level_height?.[timeIndex];
+  const seaLevelNext = data.hourly.sea_level_height?.[timeIndex + 1];
+  let tideInfo: TideInfo | undefined;
+  if (seaLevel !== undefined) {
+    tideInfo = getTideInfo(seaLevel, seaLevelNext);
+  }
+
   return {
     waveHeight: data.hourly.wave_height[timeIndex] || 0,
     wavePeriod: data.hourly.wave_period[timeIndex] || 0,
@@ -296,6 +306,9 @@ export function getCurrentConditions(result: FetchResult): CurrentConditions {
     windDirection: data.hourly.wind_direction_10m[timeIndex] || 0,
     windGust: data.hourly.wind_gusts_10m[timeIndex] || 0,
     waterTemp: data.hourly.water_temperature[timeIndex] || 0,
+    tideHeight: tideInfo?.height,
+    tideStatus: tideInfo?.status,
+    tideLabel: tideInfo?.label,
     source: result.source,
   };
 }
@@ -310,6 +323,7 @@ export function getForecastData(result: FetchResult) {
     windDirection: data.hourly.wind_direction_10m[i] || 0,
     windGust: data.hourly.wind_gusts_10m[i] || 0,
     waterTemp: data.hourly.water_temperature[i] || 0,
+    tideHeight: data.hourly.sea_level_height?.[i],
   }));
 }
 
@@ -541,12 +555,9 @@ export async function fetchWeatherData(lat: number, lon: number): Promise<Weathe
   }
 }
 
-export function getTideInfo(seaLevelHeight: number): TideInfo {
-  // Open-Meteo sea_level_height_msl is relative to global mean sea level
-  // Positive = above mean (closer to high tide), Negative = below mean (closer to low tide)
-  
-  const threshold = 0.3; // meters
-  
+export function getTideInfo(seaLevelHeight: number, nextSeaLevel?: number): TideInfo {
+  const threshold = 0.3;
+
   if (seaLevelHeight > threshold) {
     return {
       height: seaLevelHeight,
@@ -560,6 +571,20 @@ export function getTideInfo(seaLevelHeight: number): TideInfo {
       status: 'low',
       label: 'Maré Baixa',
       labelEn: 'Low Tide',
+    };
+  } else if (nextSeaLevel !== undefined && nextSeaLevel > seaLevelHeight) {
+    return {
+      height: seaLevelHeight,
+      status: 'rising',
+      label: 'Maré a Subir',
+      labelEn: 'Rising Tide',
+    };
+  } else if (nextSeaLevel !== undefined && nextSeaLevel < seaLevelHeight) {
+    return {
+      height: seaLevelHeight,
+      status: 'falling',
+      label: 'Maré a Descer',
+      labelEn: 'Falling Tide',
     };
   } else if (seaLevelHeight > 0) {
     return {
