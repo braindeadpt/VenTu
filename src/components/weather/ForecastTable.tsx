@@ -51,7 +51,7 @@ interface ForecastTableProps {
 }
 
 /* ──────────── cap hours ──────────── */
-const MAX_HOURS = 72;
+const MAX_HOURS = 120;
 
 /* ──────────── colour helpers (literal classes for Tailwind JIT) ──────────── */
 
@@ -181,7 +181,7 @@ export default function ForecastTable({
   if (hours > MAX_HOURS && process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-console
     console.warn(
-      `ForecastTable: hours capped at ${MAX_HOURS} (received ${hours}). Pagination coming in a future release.`,
+      `ForecastTable: hours capped at ${MAX_HOURS} (received ${hours}). Use day picker to navigate.`,
     );
   }
 
@@ -648,8 +648,8 @@ className="overflow-x-auto rounded-card border border-divider bg-bg-base min-w-[
  *      • Respects prefers-reduced-motion via globals.css.
  *
  *  9.  Hours cap:
- *      • Passing hours={96} internally caps to 72, console.warn in dev.
- *      • Caller can paginate by shifting startTime in Fase 5.
+ *      • MAX_HOURS = 120. Passing hours={168} internally caps to 120.
+ *      • Day picker provides navigation across days.
  *
  *  10. Sport label:
  *      • Score row header uses translated sport name when sport prop given.
