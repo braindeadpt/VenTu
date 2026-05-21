@@ -23,11 +23,12 @@ export const spots: Spot[] = [
     },
   {
       id: 'afife', slug: 'afife', name: 'Afife (Praia da Arda)', nameEn: 'Afife (Arda Beach)',
-      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.780, lon: -8.860,
+      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.778, lon: -8.871,
       coastOrientation: 270,
-      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
-      description: 'Destino de surf e windsurf desde os anos 70! Ondas de qualidade com ventos fortes ocasionais. Um dos spots mais icónicos do norte.',
-      descriptionEn: 'Surfing and windsurfing destination since the 70s! Quality waves with occasional strong winds. One of the most iconic northern spots.',
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Destino de surf, kitesurf, bodyboard e SUP desde os anos 70! Ondas de qualidade com ventos fortes ocasionais. Um dos spots mais icónicos do norte. Praia extensa com múltiplas secções — Afife a norte, Arda a sul.',
+      descriptionEn: 'Surf, kitesurf, bodyboard and SUP destination since the 70s! Quality waves with occasional strong winds. One of the most iconic northern spots. Long beach with multiple sections — Afife in the north, Arda in the south.',
+      compatibleSports: ['surf', 'kitesurf', 'sup', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurante', 'WC'],
       hazards: ['Vento forte', 'Correntes', 'Exposto ao vento']
     },
