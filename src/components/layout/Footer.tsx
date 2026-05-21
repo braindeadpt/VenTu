@@ -1,6 +1,6 @@
 'use client';
 
-import { Wind, Github, Heart, ExternalLink, Shield } from 'lucide-react';
+import { Wind, Github, Heart, ExternalLink } from 'lucide-react';
 import FeedbackForm from '@/components/FeedbackForm';
 import { getTranslation } from '@/lib/i18n';
 
@@ -68,13 +68,6 @@ export default function Footer({ locale }: FooterProps) {
             <FeedbackForm locale={locale} />
           </div>
           <div className="flex items-center gap-4">
-            <a
-              href={`/${locale}/admin/contributions`}
-              className="inline-flex items-center gap-1 text-xs text-fg-subtle hover:text-fg transition-colors"
-            >
-              <Shield className="w-3 h-3" />
-              Admin
-            </a>
             <p className="flex items-center gap-1 text-xs text-fg-subtle">
               {t.footer.madeWith} <Heart className="w-3 h-3 text-windDir-onshore" /> {t.footer.forCommunity}
             </p>
