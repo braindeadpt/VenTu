@@ -2,24 +2,23 @@
 
 Registo de ideias, melhorias e features identificadas mas não agendadas. Cada item tem contexto suficiente para retomar quando fizer sentido.
 
-Última actualização: 2026-05-11
+Última actualização: 2026-05-21
+
+---
+
+## ✅ Concluído (Maio 2026)
+
+### Marés (IH OGC API)
+
+✅ **Feito.** Sistema de marés integrado via OGC API do Instituto Hidrográfico (hidrografico.pt). Cobertura: 33 estações, 135/167 spots mapeados. Display duplo: previsão Open-Meteo + observado IH.
+
+**Fluxo actual:** `fetch-ih-tides.js` → `ih-tides.json` → `update-conditions.js` lê e integra → `conditions.json` com fields tideHeight, tideObservedHeight, tideStation → SpotDetailClient (StatCard + nota IH observed) + ForecastTable (row condicional "Maré").
+
+**Alternativas rejeitadas:** NOAA (cobertura PT fraca), WorldTides (100 calls/dia insuficiente), Stormglass (10 calls/dia).
 
 ---
 
 ## 🌊 Dados em falta
-
-### Marés (alta prioridade)
-
-Para surf, kitesurf e SUP, a maré determina se um spot funciona. Carcavelos, Costa Caparica, vários spots do Algarve dependem fortemente.
-
-**Fonte recomendada**: Instituto Hidrográfico (hidrografico.pt) — dados oficiais de marés para portos portugueses, gratuito. API pouco documentada mas há projectos open-source que fazem parse.
-
-**Alternativas avaliadas (Fase 5 audit)**:
-- NOAA Tides — cobertura focada EUA, pobre para PT
-- WorldTides API — free tier 100 calls/dia (insuficiente para 80 spots × cron horário)
-- Stormglass — free tier 10 calls/dia (combina mal)
-
-**Estimativa de esforço**: 1-2 sessões (parse + ingestion + UI no spot detail).
 
 ### Qualidade da água
 
@@ -35,7 +34,7 @@ Tens waterTemp (Open-Meteo) mas não qualidade bacteriológica. APA (Agência Po
 
 ### Imagens reais por spot
 
-Audit original (Fase 1) identificou: `images: []` vazio em todos os 80 spots. Decidido manter porque não há fotos curadas e o tema Coast compensa visualmente.
+Audit original (Fase 1) identificou: `images: []` vazio em todos os 167 spots. Decidido manter porque não há fotos curadas e o tema Coast compensa visualmente.
 
 **Fontes potenciais**:
 - Wikimedia Commons — fotos CC0 da maior parte das praias portuguesas
@@ -69,11 +68,12 @@ Várias praias portuguesas têm webcams públicas: Carcavelos, Costa Caparica, G
 
 ### Fase 5b — compatibleSports manual
 
-Todos os 80 spots em `src/lib/spots.ts` têm `compatibleSports` vazio. O helper `getCompatibleSports()` em `sportRatings.ts` usa fallback heurístico baseado em `spot.type`.
+**Estado actual:** 89/167 spots preenchidos (53%). 78 spots pendentes. A maioria são surf-only onde compatibleSports é opcional.
 
-**Trabalho**: preencher manualmente cada spot com a lista de desportos que faz sentido praticar lá. Requer conhecimento de domínio (não só LLM).
+**Críticos (~14 spots):** spots type=kitesurf ou type=foil sem compatibleSports:
+foz-arelho, lagoa-albufeira, fonte-telha, barrinha-esmoriz, foil-alvor, vila-real-santo-antonio, monte-gordo, praia-verde, altura, lagos, barrinha-faro, funchal, amorosa, foil-foz-arelho
 
-**Estimativa**: 1-2h de trabalho do utilizador + 30 min LLM para validar e formatar.
+**Estimativa restante**: ~30 min LLM para os 14 críticos + 1-2h utilizador para os restantes 64.
 
 ### Fase 5c — Chat security
 
@@ -87,6 +87,30 @@ Chat anónimo via Supabase. RLS policies precisam de auditoria:
 - Audit das policies actuais (utilizador faz no Supabase dashboard)
 - Preparação de SQL pela LLM
 - Execução do SQL pelo utilizador
+
+---
+
+## 🐛 Bugs identificados (auditoria Maio 2026)
+
+### Bug 1: ForecastTable capped a 72h (não 120h) ✅ FIXED
+
+**Fix**: bump para MAX_HOURS = 120 (commit `efd84fb`).
+
+### Bug 2: WindCompass labels rodam com a seta ✅ JÁ FIXED
+
+**Nota**: bug foi corrigido em `b34c65b` (Fase 2c). O código actual já tem labels estáticos.
+
+### Bug 3: Filtro de regiões na homepage ✅ FIXED
+
+**Fix**: mapeamento completo de 50 municípios → macros em `src/lib/regions.ts` (commit `fdad5af`). Fallback alterado de 'Lisboa' para ''.
+
+### Bug 6: 31 spots sem conditions.json
+
+Aguardam próxima execução de `update-data.yml` (cron 3h). Não é acção de código.
+
+### Bug 7: 32 spots sem tide station
+
+Maioria adições recentes. Display condicional cobre — não crítico.
 
 ---
 
