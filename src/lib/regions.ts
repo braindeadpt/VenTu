@@ -17,14 +17,18 @@ const MUNICIPALITY_TO_REGION: Record<string, MacroRegion> = {
   'Caminha': 'Norte',
   'Ovar': 'Norte',
   'Aveiro': 'Norte',
-  
+  'Espinho': 'Norte',
+
   // Centro
   'Nazaré': 'Centro',
   'Oeste': 'Centro',
   'Santarém': 'Centro',
   'Figueira da Foz': 'Centro',
   'Óbidos': 'Centro',
-  
+  'Cantanhede': 'Centro',
+  'Lourinhã': 'Centro',
+  'Caldas da Rainha': 'Centro',
+
   // Lisboa
   'Cascais': 'Lisboa',
   'Ericeira': 'Lisboa',
@@ -34,11 +38,12 @@ const MUNICIPALITY_TO_REGION: Record<string, MacroRegion> = {
   'Sintra': 'Lisboa',
   'Torres Vedras': 'Lisboa',
   'Costa da Caparica': 'Lisboa',
-  
+  'Seixal': 'Lisboa',
+
   // Alentejo
   'Alentejo': 'Alentejo',
   'Zambujeira do Mar': 'Alentejo',
-  
+
   // Algarve
   'Algarve': 'Algarve',
   'Sagres': 'Algarve',
@@ -51,18 +56,23 @@ const MUNICIPALITY_TO_REGION: Record<string, MacroRegion> = {
   'Tavira': 'Algarve',
   'Vila do Bispo': 'Algarve',
   'Carrapateira': 'Algarve',
-  
+  'Albufeira': 'Algarve',
+  'Alvor': 'Algarve',
+  'Vila Real de Santo António': 'Algarve',
+
   // Açores
   'São Miguel': 'Açores',
   'Terceira': 'Açores',
   'Santa Maria': 'Açores',
   'Faial': 'Açores',
   'Açores': 'Açores',
-  
+  'Pico': 'Açores',
+  'São Jorge': 'Açores',
+
   // Madeira
   'Madeira': 'Madeira',
 };
 
 export function getMacroRegion(municipality: string): string {
-  return MUNICIPALITY_TO_REGION[municipality] || 'Lisboa';
+  return MUNICIPALITY_TO_REGION[municipality] || '';
 }
