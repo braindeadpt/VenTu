@@ -187,14 +187,9 @@ Filtros da homepage são client-side. Para SEO de combinações populares (sport
 
 **Estimativa**: 1-2 sessões. Aumenta páginas geradas mas com benefício SEO real.
 
-### Analytics
+### Analytics ✅
 
-Não há analytics actualmente. Considerar:
-- **Plausible.io** — privacidade-first, gratuito self-hosted
-- **GoatCounter** — open source, free tier
-- **Umami** — open source
-
-Decisão de privacidade: nenhum cookie banner se usar plataforma sem cookies.
+GoatCounter integrado (privacy-first, sem cookies). Commit `e5675f5`. Script só carrega em produção com `NEXT_PUBLIC_GOATCOUNTER_CODE` configurado.
 
 ---
 

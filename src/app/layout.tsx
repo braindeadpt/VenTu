@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css'
 import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import './globals.css'
+import GoatCounterScript from '@/components/analytics/GoatCounterScript'
 
 /**
  * VenTu Root Layout
@@ -65,6 +66,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-bg-base text-fg font-sans antialiased">
         {children}
+        <GoatCounterScript />
       </body>
     </html>
   )
