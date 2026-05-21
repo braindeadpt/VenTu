@@ -37,6 +37,7 @@ import type { ForecastHour } from '@/components/weather/ForecastTable';
 import SpotMap from '@/components/spots/SpotMap';
 import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
+import WindyWebcam from '@/components/weather/WindyWebcam';
 
 // Lazy-load SpotChat — Supabase client is heavy (~45-60KB), chat is below the fold
 const SpotChat = dynamic(() => import('@/components/spots/SpotChat'), { ssr: false });
@@ -799,6 +800,13 @@ export default function SpotDetailClient({
             <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
           </div>
         </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          WEBCAM (Windy)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="max-w-5xl mx-auto px-4 py-6">
+        <WindyWebcam lat={spot.lat} lon={spot.lon} locale={locale} />
       </section>
     </div>
     </>
