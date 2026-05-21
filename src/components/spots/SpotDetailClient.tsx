@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 // useSearchParams removed — using window.location.search for static export safety
 import {
@@ -38,9 +37,6 @@ import SpotMap from '@/components/spots/SpotMap';
 import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
 import WindyWebcam from '@/components/weather/WindyWebcam';
-
-// Lazy-load SpotChat — Supabase client is heavy (~45-60KB), chat is below the fold
-const SpotChat = dynamic(() => import('@/components/spots/SpotChat'), { ssr: false });
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SpotDetailClient — Redesigned showcase of all signature components.
@@ -697,20 +693,6 @@ export default function SpotDetailClient({
       </section>
 
       {/* ═══════════════════════════════════════════════════════════════
-          CHAT
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <h2 className="text-h2 text-fg mb-4">{td.chat}</h2>
-        <div className="card-1 p-4">
-          <SpotChat
-            spotSlug={spot.slug}
-            spotName={isPt ? spot.name : spot.nameEn}
-            locale={locale}
-          />
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
           SOBRE O SPOT
           ═══════════════════════════════════════════════════════════════ */}
       <section className="max-w-5xl mx-auto px-4 py-6">
@@ -867,13 +849,9 @@ export default function SpotDetailClient({
  *     - Continua a togglar, persistente via localStorage
  *     - Não alterado — consumido como está
  *
- *  9. Chat:
- *     - SpotChat dentro de card-1 wrapper
- *     - Funcionalidade inalterada
- *
- *  10. i18n:
+ *  9. i18n:
  *      - Todas as strings via getTranslation()
  *      - spotDetail chaves: share, copyLink, bestWindows, about,
- *        localTips, facilities, hazards, chat, location, waterQuality,
+ *        localTips, facilities, hazards, location, waterQuality,
  *        noForecast
  */

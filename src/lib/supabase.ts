@@ -6,7 +6,7 @@ let client: ReturnType<typeof createClient> | null = null
 export function getSupabaseClient() {
   if (!client) {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-      console.warn('Supabase not configured — chat features disabled')
+      console.warn('Supabase not configured — Supabase features disabled')
       return null
     }
     client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)

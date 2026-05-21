@@ -18,7 +18,7 @@ const url = process.env.NEXT_PUBLIC_SUPABASE_URL
 const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
 if (!url || !key) {
-  console.warn('[VenTu] Supabase not configured — chat features will be disabled')
+  console.warn('[VenTu] Supabase not configured — real-time features will be disabled')
 }
 
 export const SUPABASE_URL = url || ''

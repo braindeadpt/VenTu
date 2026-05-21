@@ -1,3 +1,7 @@
+> **ARCHIVED 2026-05-21** — Chat removido temporariamente.
+> Schema preservado em `supabase-schema.sql` para futura ressurreição.
+> Ver `docs/BACKLOG.md` secção "Chat global (adiado)" para contexto.
+
 # VenTu Chat — Security Setup
 
 ## 🔒 RLS Policies (Database-Level Protection)

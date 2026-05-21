@@ -75,18 +75,16 @@ foz-arelho, lagoa-albufeira, fonte-telha, barrinha-esmoriz, foil-alvor, vila-rea
 
 **Estimativa restante**: ~30 min LLM para os 14 críticos + 1-2h utilizador para os restantes 64.
 
-### Fase 5c — Chat security
+### Chat global (adiado)
 
-Chat anónimo via Supabase. RLS policies precisam de auditoria:
-- Rate limiting actual é cliente-side (`chatModeration.ts`), reseta com F5
-- Rate limit real precisa de RLS policy server-side ou RPC function
+> Chat por spot foi removido em 2026-05-21 por decisão de não introduzir feature social sem analytics que justifiquem.
+> Schema Supabase preservado em `supabase-schema.sql`. UI removida (SpotChat.tsx, chatModeration.ts).
+> Documentação de segurança arquivada em `docs/archive/CHAT-SECURITY.md`.
 
-**Risco**: spam massivo via API directa do Supabase (key pública no bundle).
-
-**Estimativa**: 1 sessão. Inclui:
-- Audit das policies actuais (utilizador faz no Supabase dashboard)
-- Preparação de SQL pela LLM
-- Execução do SQL pelo utilizador
+**Contexto**: Eventualmente, considerar chat global (não por spot) quando houver tráfego comprovado.
+- Chat por spot era frágil (abuso via username rotation, sem CAPTCHA)
+- Sem analytics a justificar manutenção de feature social
+- RLS policies no schema já estão preparadas — basta criar nova UI
 
 ---
 

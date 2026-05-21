@@ -22,7 +22,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 | Charts | `recharts` | |
 | Dados marinha | Open-Meteo Marine API | Free, sem auth, `wind_speed_unit=ms` em todos os fetches |
 | Marés (observado) | IH OGC API (hidrografico.pt) | Free, CC-BY 4.0, 33 estações, 135 spots mapeados |
-| Chat | Supabase (`@supabase/supabase-js`) | Realtime + RLS |
+| Chat (removido) | N/A | UI removida 2026-05-21. Schema preservado para futuro |
 | IA notícias | Google Gemini Flash (primário) + Groq Llama 3.3 (fallback 1) + Cerebras (fallback 2) | Corre em GitHub Actions, cadeia sequencial com 1.5s entre providers |
 | Previsões | Open-Meteo (wind + waves) + precomputed forecasts.json | CI gera a cada 3h, client carrega JSON primeiro, live API como fallback |
 | Deploy | GitHub Pages (static export) | `output: 'export'` no `next.config.js` |
@@ -86,7 +86,7 @@ src/
 ├── components/
 │   ├── layout/Header.tsx, Footer.tsx
 │   ├── spots/SpotCard.tsx, SpotGrid.tsx, SpotDetailClient.tsx,
-│   │         SpotMap.tsx, SpotChat.tsx, SessionForecastChart.tsx,
+│   │         SpotMap.tsx, SessionForecastChart.tsx,
 │   │         LocalTipsSection.tsx, SecretTipsSection.tsx,
 │   │         WaterQualityBadge.tsx, FacilityIcon.tsx
 │   ├── weather/ConditionCard.tsx, ForecastChart.tsx, ForecastTable.tsx
@@ -108,7 +108,6 @@ src/
 │   ├── paths.ts                      getAssetPath para basePath
 │   ├── i18n.ts                       Translations PT/EN
 │   ├── spotTips.ts                   Local tips por spot
-│   ├── chatModeration.ts             Filtro de palavrões + rate limit
 │   ├── supabase-config.ts            Anon key hardcoded como fallback
 │   └── supabase.ts                   Client lazy
 ├── types/index.ts                    Spot, MarineData, NewsItem, Locale
@@ -207,7 +206,7 @@ docs/
 ## Convenções
 
 - **Idioma do projecto:** Português europeu (PT-PT). Strings duplicadas em `i18n.ts` para PT/EN.
-- **Tom:** directo, conciso. Não usar exclamações excessivas. Não usar emojis em UI excepto onde já existem (avisos, chat empty states).
+- **Tom:** directo, conciso. Não usar exclamações excessivas. Não usar emojis em UI excepto onde já existem (avisos).
 - **Comentários no código:** em inglês ou português — escolher um por ficheiro e manter.
 - **Tailwind:** usar utilities, evitar `@apply` excepto para componentes que se repetem em múltiplos sítios. Custom em `globals.css @layer components`.
 - **Componentes:** server-first sempre que possível. `'use client'` só quando há `useState`, `useEffect`, event handlers, ou hooks do `next/navigation`.
