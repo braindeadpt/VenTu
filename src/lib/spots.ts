@@ -53,7 +53,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'cabedelo', slug: 'cabedelo', name: 'Cabedelo', nameEn: 'Cabedelo',
-      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.687, lon: -8.845,
+      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.679, lon: -8.833,
       coastOrientation: 270,
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'SW',
       description: 'Um dos melhores spots de kitesurf do Norte. Água plana na barra do rio Lima. Vento térmico de NW consistente. Épico para iniciantes!',
@@ -63,7 +63,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'foil-cabedelo', slug: 'foil-cabedelo', name: 'Cabedelo - Foil', nameEn: 'Cabedelo - Foil',
-      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.687, lon: -8.845,
+      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.679, lon: -8.833,
       coastOrientation: 270,
       type: 'foil', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'Rio',
       description: 'Água plana na barra do rio Lima — perfeita para wing foil. Vento térmico de NW consistente. Spot de foil no norte de Portugal.',
