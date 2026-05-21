@@ -64,7 +64,7 @@ async function fetchIHTides() {
     let nearestDist = Infinity;
     for (const [codp, station] of Object.entries(stations)) {
       const dist = haversineDistance(spot.lat, spot.lon, station.lat, station.lon);
-      if (dist < nearestDist && dist < 100) {
+      if (dist < nearestDist && dist < 120) {
         nearestDist = dist;
         nearestCodp = codp;
       }

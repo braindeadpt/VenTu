@@ -8,6 +8,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia de areia fina no extremo norte de Portugal. Ondas potentes com pouca multidão. Vista para a Espanha do outro lado do rio Minho.',
       descriptionEn: 'Fine sand beach at the extreme north of Portugal. Powerful waves with little crowd. View of Spain across the Minho river.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Correntes fortes', 'Água fria']
     },
@@ -18,6 +19,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'A melhor praia para aprender surf no distrito de Viana. Ondas suaves, praia extensa e paisagem natural deslumbrante. Perfeita para famílias.',
       descriptionEn: 'The best beach to learn surf in Viana district. Gentle waves, extensive beach and stunning natural landscape. Perfect for families.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Alojamento', 'WC'],
       hazards: ['Correntes moderadas']
     },
@@ -39,6 +41,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia com bandeira azul e ambiente tranquilo. Beach break consistente com múltiplos picos. Clube náutico na zona.',
       descriptionEn: 'Blue flag beach with tranquil atmosphere. Consistent beach break with multiple peaks. Nautical club in the area.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Restaurante', 'Clube Nautico', 'WC'],
       hazards: ['Rochas submersas', 'Correntes']
     },
@@ -49,6 +52,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'N, NW', bestSwell: 'S, SW',
       description: 'Spot de kitesurf ao lado do Cabedelo. Água plana ideal para freestyle e foil. Menos crowd que o Cabedelo principal.',
       descriptionEn: 'Kitesurf spot next to Cabedelo. Flat water ideal for freestyle and foil. Less crowded than main Cabedelo.',
+      compatibleSports: ['kitesurf', 'foil', 'sup'],
       facilities: ['Estacionamento', 'Escola kite', 'WC'],
       hazards: ['Pedras entre Cabedelo e Amorosa', 'Mare']
     },
@@ -70,6 +74,7 @@ export const spots: Spot[] = [
       type: 'foil', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Rio',
       description: 'Água plana na barra do rio Lima — perfeita para wing foil e kite foil. Vento térmico NW consistente. Parte do spot multidesportos mundialmente conhecido Cabedelo.',
       descriptionEn: 'Flat water at the Lima river bar — perfect for wing foil and kite foil. Consistent NW thermal wind. Part of the world-renowned Cabedelo multi-sport spot.',
+      compatibleSports: ['foil', 'kitesurf'],
       facilities: ['Estacionamento', 'Escola foil', 'Aluguer', 'WC'],
       hazards: ['Tráfego de barcos', 'Correntes na foz']
     },
@@ -91,6 +96,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Beach break potente com ondas de qualidade. Pouco crowd comparado com outras praias do norte. Fundo de areia variável.',
       descriptionEn: 'Powerful beach break with quality waves. Less crowded than other northern beaches. Variable sand bottom.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Correntes', 'Ressaca forte']
     },
@@ -112,6 +118,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Spot junto a Ofir com beach break consistente. Praia menos explorada, ideal para escapar da multidão. Fundo de areia variável.',
       descriptionEn: 'Spot next to Ofir with consistent beach break. Less explored beach, ideal to escape crowds. Variable sand bottom.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Ressaca forte', 'Correntes']
     },
@@ -122,6 +129,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia famosa do Norte com moinhos de vento como cenário. Ondas suaves perfeitas para iniciantes e longboard. Ambiente único.',
       descriptionEn: 'Famous Northern beach with windmills as scenery. Gentle waves perfect for beginners and longboard. Unique atmosphere.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Restaurante', 'WC', 'Moinhos de vento'],
       hazards: ['Correntes', 'Multidao no verao']
     },
@@ -132,6 +140,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia longa com ondas suaves perfeitas para iniciantes. Escolas de surf com boa reputação. Ambiente familiar.',
       descriptionEn: 'Long beach with gentle waves perfect for beginners. Reputable surf schools. Family-friendly atmosphere.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Escolas surf', 'Restaurantes', 'WC'],
       hazards: ['Correntes moderadas']
     },
@@ -230,6 +239,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'A LENDARIA "Direita do Casino"! Onda tubular que forma junto ao molhe do casino. Uma das ondas mais famosas do Norte. Sede de etapas do World Junior Tour.',
       descriptionEn: 'The LEGENDARY "Casino Right"! Barrel wave forming next to the casino breakwater. One of the most famous waves in the North. Host of World Junior Tour stages.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Casino', 'WC'],
       hazards: ['Ondas pesadas', 'Molhe', 'Locals']
     },
@@ -273,6 +283,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'SW',
       description: 'Spot secreto! Barrinha (laguna costeira) com água plana para kitesurf. A água pode cheirar mal em dias de calor intenso. Ideal para iniciantes e freestyle.',
       descriptionEn: 'Secret spot! Coastal lagoon with flat water for kitesurf. The water can smell bad on hot days. Ideal for beginners and freestyle.',
+      compatibleSports: ['kitesurf', 'foil', 'sup'],
       facilities: ['Estacionamento'],
       hazards: ['Água pode cheirar mal', 'Fundos lamacentos']
     },
@@ -395,6 +406,7 @@ export const spots: Spot[] = [
       type: 'windsurf', difficulty: 'intermediate', bestWind: 'N, NW', bestSwell: 'W',
       description: 'Spot clássico de windsurf no centro de Portugal. Ondas e vento de NW. Cenário único com as casas listradas.',
       descriptionEn: 'Classic windsurf spot in central Portugal. Waves and NW wind. Unique scenery with the striped houses.',
+      compatibleSports: ['windsurf', 'kitesurf', 'foil', 'sup'],
       facilities: ['Estacionamento', 'Escola windsurf', 'WC'],
       hazards: ['Correntes', 'Água fria']
     },
@@ -416,6 +428,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia longa e selvagem no norte da Figueira da Foz. Ondas suaves ideais para iniciantes. Pouco crowd e ambiente natural preservado.',
       descriptionEn: 'Long and wild beach north of Figueira da Foz. Gentle waves ideal for beginners. Low crowd and preserved natural environment.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'WC'],
       hazards: ['Correntes moderadas', 'Sem vigilância']
     },
@@ -438,6 +451,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia rústica e pouco frequentada entre a Figueira da Foz e Nazaré. Beach break potente com ondas tubulares em dias bons. Para surfistas que gostam de isolamento.',
       descriptionEn: 'Rustic and little-frequented beach between Figueira da Foz and Nazaré. Powerful beach break with tubular waves on good days. For surfers who enjoy isolation.',
+      compatibleSports: ['surf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento'],
       hazards: ['Correntes fortes', 'Sem infraestruturas']
     },
@@ -448,6 +462,7 @@ export const spots: Spot[] = [
       type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
       description: 'Maior resort de wakeboard da Europa! 5 cable parks em 30km de lagoa. Água cristalina e plana. Perfeito para iniciantes a pros.',
       descriptionEn: 'Biggest wakeboard resort in Europe! 5 cable parks along 30km of lake. Crystal clear flat water. Perfect from beginners to pros.',
+      compatibleSports: ['wakeboard', 'sup'],
       facilities: ['Estacionamento', '5 Cable Parks', 'Escola wake', 'Aluguer', 'Restaurante', 'Alojamento'],
       hazards: ['Outros riders', 'Barcos']
     },
@@ -458,6 +473,7 @@ export const spots: Spot[] = [
       type: 'big-wave', difficulty: 'expert', bestWind: 'N, NNE', bestSwell: 'W, WNW',
       description: 'Famoso pelas maiores ondas do mundo. Praia do Norte é o palco do Big Wave Surfing. Canal submarino amplifica ondas gigantescas.',
       descriptionEn: 'Famous for the biggest waves in the world. Praia do Norte is the stage for Big Wave Surfing. Underwater canyon amplifies giant waves.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurantes', 'Salva-vidas', 'WC'],
       hazards: ['Ondas gigantescas', 'Correntes fortes', 'Rochas submersas']
     },
@@ -468,6 +484,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'N, NNE', bestSwell: 'W',
       description: 'Lagoa de Óbidos perfeita para iniciantes. Água plana, vento side-onshore. Escolas e aluguer.',
       descriptionEn: 'Obidos Lagoon perfect for beginners. Flat water, side-onshore wind. Schools and rental.',
+      compatibleSports: ['kitesurf', 'foil', 'sup'],
       facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'Restaurantes', 'WC'],
       hazards: ['Tráfego de iniciantes', 'Maré baixa']
     },
@@ -478,6 +495,7 @@ export const spots: Spot[] = [
       type: 'foil', difficulty: 'beginner', bestWind: 'N, NNE', bestSwell: 'Lagoa',
       description: 'Lagoa de Óbidos perfeita para wing foil e kite foil. Água plana, vento side-onshore. Escolas com equipamento de foil.',
       descriptionEn: 'Obidos Lagoon perfect for wing foil and kite foil. Flat water, side-onshore wind. Schools with foil equipment.',
+      compatibleSports: ['foil', 'kitesurf', 'sup'],
       facilities: ['Estacionamento', 'Escolas foil', 'Aluguer', 'Restaurantes', 'WC'],
       hazards: ['Tráfego de iniciantes', 'Maré baixa']
     },
