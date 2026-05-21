@@ -244,26 +244,90 @@ export default function SpotDetailClient({
   useEffect(() => {
     async function loadData() {
       try {
-        const marineData = await fetchMarineData(spot.lat, spot.lon);
-        const conditions = getCurrentConditions(marineData);
-        const allScores = getAllSportScores(spot, conditions);
-        const forecast = getForecastData(marineData).slice(0, 120);
-
+        // Try loading precomputed data first (avoids live API calls)
+        let conditions: Conditions;
+        let forecast: Array<{
+          time: string;
+          waveHeight: number;
+          wavePeriod: number;
+          windSpeed: number;
+          windDirection: number;
+          windGust: number;
+          waterTemp: number;
+          tideHeight?: number;
+        }> = [];
         let tideObserved = undefined;
-        try {
-          const resp = await fetch('/data/conditions.json');
-          if (resp.ok) {
-            const precomputed = await resp.json();
-            const spotPre = precomputed[spot.id];
-            if (spotPre?.tideObservedHeight && spotPre?.tideStation) {
+
+        const [conditionsResp, forecastsResp] = await Promise.all([
+          fetch('/data/conditions.json'),
+          fetch('/data/forecasts.json'),
+        ]);
+
+        if (conditionsResp.ok && forecastsResp.ok) {
+          const condJson = await conditionsResp.json();
+          const spotCond = condJson[spot.id];
+          const fcJson = await forecastsResp.json();
+          const spotFc = fcJson[spot.id];
+
+          if (spotCond && spotFc) {
+            conditions = {
+              waveHeight: spotCond.waveHeight || 0,
+              wavePeriod: spotCond.wavePeriod || 0,
+              waveDirection: spotCond.waveDirection || 0,
+              windSpeed: spotCond.windSpeed || 0,
+              windDirection: spotCond.windDirection || 0,
+              windGust: spotCond.windGust || 0,
+              waterTemp: spotCond.waterTemp || 0,
+              tideHeight: spotCond.tideHeight,
+              tideStatus: spotCond.tideStatus,
+              tideLabel: spotCond.tideLabel,
+              source: 'real',
+            };
+
+            forecast = spotFc;
+
+            if (spotCond.tideObservedHeight && spotCond.tideStation) {
               tideObserved = {
-                height: spotPre.tideObservedHeight,
-                at: spotPre.tideObservedAt,
-                station: spotPre.tideStation,
+                height: spotCond.tideObservedHeight,
+                at: spotCond.tideObservedAt,
+                station: spotCond.tideStation,
               };
             }
+
+            const allScores = getAllSportScores(spot, conditions);
+            setSpotData({ spot, conditions, allScores, forecast, tideObserved });
+
+            if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
+              setSelectedSport(sportFromUrl);
+            } else {
+              const bestSport = (
+                Object.entries(allScores) as [SportType, any][]
+              ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
+              if (bestSport) setSelectedSport(bestSport);
+            }
+            setLoading(false);
+            return;
           }
-        } catch {}
+        }
+
+        // Fallback: live API call
+        const marineData = await fetchMarineData(spot.lat, spot.lon);
+        conditions = getCurrentConditions(marineData);
+        const allScores = getAllSportScores(spot, conditions);
+        forecast = getForecastData(marineData).slice(0, 120);
+
+        // Try tide observed data even in fallback
+        if (conditionsResp.ok) {
+          const condJson = await conditionsResp.json();
+          const spotCond = condJson[spot.id];
+          if (spotCond?.tideObservedHeight && spotCond?.tideStation) {
+            tideObserved = {
+              height: spotCond.tideObservedHeight,
+              at: spotCond.tideObservedAt,
+              station: spotCond.tideStation,
+            };
+          }
+        }
 
         setSpotData({ spot, conditions, allScores, forecast, tideObserved });
 

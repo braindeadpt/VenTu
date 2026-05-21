@@ -82,7 +82,7 @@ async function fetchMarineData(lat, lon) {
     longitude: lon.toString(),
     hourly: 'wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl',
     timezone: 'Europe/Lisbon',
-    forecast_days: '2',
+    forecast_days: '7',
   });
 
   const data = await fetchWithRetry(`${MARINE_API}?${params}`);
@@ -95,7 +95,7 @@ async function fetchWeatherData(lat, lon) {
     longitude: lon.toString(),
     hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m',
     timezone: 'Europe/Lisbon',
-    forecast_days: '2',
+    forecast_days: '7',
     wind_speed_unit: 'ms',
   });
 
@@ -152,6 +152,7 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
 async function updateConditions() {
   console.log('🌊 VenTu - Updating conditions...');
   const allConditions = {};
+  const allForecasts = {};
 
   // Load IH tide station data (if available)
   let ihTides = { stations: {}, spotMapping: {} };
@@ -193,6 +194,24 @@ async function updateConditions() {
         ...getCurrentConditions(marineData, weatherData, ihTideObs),
         updatedAt: new Date().toISOString(),
       };
+
+      // Store full hourly forecast for spot detail page
+      const mergedForecast = [];
+      const maxHours = Math.min(marineData.hourly.time.length, weatherData.hourly.time.length, 168);
+      for (let i = 0; i < maxHours; i++) {
+        mergedForecast.push({
+          time: marineData.hourly.time[i],
+          waveHeight: marineData.hourly.wave_height[i] || 0,
+          wavePeriod: marineData.hourly.wave_period[i] || 0,
+          waveDirection: marineData.hourly.wave_direction[i] || 0,
+          windSpeed: weatherData.hourly.wind_speed_10m[i] || 0,
+          windDirection: weatherData.hourly.wind_direction_10m[i] || 0,
+          windGust: weatherData.hourly.wind_gusts_10m[i] || 0,
+          waterTemp: marineData.hourly.sea_surface_temperature[i] || 0,
+          tideHeight: marineData.hourly.sea_level_height_msl[i] || 0,
+        });
+      }
+      allForecasts[spot.id] = mergedForecast;
       
       console.log(`  ✓ ${spot.id} updated${ihTideObs ? ` (IH tide: ${ihTideObs.lastObs}m)` : ''}`);
       
@@ -222,7 +241,12 @@ async function updateConditions() {
   
   fs.writeFileSync(outputPath, JSON.stringify(allConditions, null, 2));
 
+  // Write hourly forecasts for spot detail pages
+  const forecastsPath = path.join(__dirname, '../public/data/forecasts.json');
+  fs.writeFileSync(forecastsPath, JSON.stringify(allForecasts));
+
   console.log(`\n✅ Conditions saved to ${outputPath}`);
+  console.log(`📈 Forecasts saved to ${forecastsPath}`);
   console.log(`📊 Updated ${spotCount} spots`);
 }
 
