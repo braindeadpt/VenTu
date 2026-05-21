@@ -56,9 +56,9 @@ export const spots: Spot[] = [
       region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.679, lon: -8.833,
       coastOrientation: 270,
       type: 'multisport', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'SW',
-      description: 'Praia multidesportos reconhecida mundialmente, palco do Campeonato Mundial de Kitesurf. Vento térmico NW consistente (Abr-Set). Três áreas distintas: água plana na barra do rio Lima, ondas no oceano e zona mista. Perfeita para kitesurf, windsurf, foil e SUP. Escola de kite no local.',
-      descriptionEn: 'World-renowned multi-sport beach, host of the Kitesurf World Championship. Consistent NW thermal wind (Apr-Sep). Three distinct areas: flat water at Lima river bar, ocean waves and mixed zone. Perfect for kitesurf, windsurf, foil and SUP. Kite school on site.',
-      compatibleSports: ['kitesurf', 'windsurf', 'foil', 'sup'],
+      description: 'Praia multidesportos reconhecida mundialmente, palco do Campeonato Mundial de Kitesurf. Vento térmico NW consistente (Abr-Set). Três áreas distintas: água plana na barra do rio Lima, ondas no oceano com direitas magníficas e zona mista. Perfeita para kitesurf, windsurf, surf, foil e SUP. Escola de kite no local.',
+      descriptionEn: 'World-renowned multi-sport beach, host of the Kitesurf World Championship. Consistent NW thermal wind (Apr-Sep). Three distinct areas: flat water at Lima river bar, ocean waves with magnificent rights and mixed zone. Perfect for kitesurf, windsurf, surf, foil and SUP. Kite school on site.',
+      compatibleSports: ['kitesurf', 'windsurf', 'surf', 'foil', 'sup'],
       facilities: ['Estacionamento', 'Escolas kite', 'Escolas windsurf', 'Aluguer', 'WC'],
       hazards: ['Tráfego de barcos', 'Correntes na foz']
     },
