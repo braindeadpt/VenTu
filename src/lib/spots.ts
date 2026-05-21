@@ -1460,6 +1460,28 @@ export const spots: Spot[] = [
       facilities: ['Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Correntes', 'Vento forte no verão']
     },
+  {
+      id: 'mindelo', slug: 'mindelo', name: 'Praia de Mindelo', nameEn: 'Mindelo Beach',
+      region: 'Vila do Conde', regionEn: 'Vila do Conde', lat: 41.309, lon: -8.740,
+      coastOrientation: 270,
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia extensa entre Azurara e Vila Chã. Beach break consistente com múltiplos picos. Kitesurf com vento de sul no inverno. Ideal para surf, bodyboard e SUP. Menos crowd nas pontas.',
+      descriptionEn: 'Long beach between Azurara and Vila Cha. Consistent beach break with multiple peaks. Kitesurf with south wind in winter. Ideal for surf, bodyboard and SUP. Less crowded at the ends.',
+      compatibleSports: ['surf', 'bodyboard', 'sup', 'kitesurf'],
+      facilities: ['Estacionamento', 'Restaurante', 'WC'],
+      hazards: ['Correntes', 'Multidão no verão']
+    },
+  {
+      id: 'aterro', slug: 'aterro', name: 'Praia do Aterro', nameEn: 'Aterro Beach',
+      region: 'Porto', regionEn: 'Porto', lat: 41.208, lon: -8.716,
+      coastOrientation: 270,
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Praia entre Leça e Matosinhos. Surf, bodyboard e SUP consistentes. Kitesurf no inverno com vento sul e no verão com vento norte. Muito crowd na areia na época alta.',
+      descriptionEn: 'Beach between Leca and Matosinhos. Consistent surf, bodyboard and SUP. Kitesurf in winter with south wind and in summer with north wind. Very crowded sand in high season.',
+      compatibleSports: ['surf', 'bodyboard', 'sup', 'kitesurf'],
+      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
+      hazards: ['Multidão no verão', 'Correntes']
+    },
     ];
 
 export const getSpotBySlug = (slug: string): Spot | undefined =>
