@@ -74,6 +74,17 @@ export const spots: Spot[] = [
       hazards: ['Tráfego de barcos', 'Correntes na foz']
     },
   {
+      id: 'rodanho', slug: 'rodanho', name: 'Praia do Rodanho', nameEn: 'Rodanho Beach',
+      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.667, lon: -8.825,
+      coastOrientation: 270,
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW, W',
+      description: 'Praia entre Cabedelo e Amorosa, ideal para kitesurf e windsurf. Vento térmico NW consistente. Menos crowd que o Cabedelo. Área de água plana segura.',
+      descriptionEn: 'Beach between Cabedelo and Amorosa, ideal for kitesurf and windsurf. Consistent NW thermal wind. Less crowded than Cabedelo. Safe flat water area.',
+      compatibleSports: ['kitesurf', 'windsurf'],
+      facilities: ['Estacionamento'],
+      hazards: ['Correntes', 'Pedras na maré baixa']
+    },
+  {
       id: 'ofir', slug: 'ofir', name: 'Ofir', nameEn: 'Ofir',
       region: 'Esposende', regionEn: 'Esposende', lat: 41.548, lon: -8.789,
       coastOrientation: 270,
@@ -126,11 +137,12 @@ export const spots: Spot[] = [
     },
   {
       id: 'azurara', slug: 'azurara', name: 'Azurara', nameEn: 'Azurara',
-      region: 'Vila do Conde', regionEn: 'Vila do Conde', lat: 41.360, lon: -8.750,
+      region: 'Vila do Conde', regionEn: 'Vila do Conde', lat: 41.338, lon: -8.743,
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
-      description: 'Uma das melhores praias de surf do Norte de Portugal! Orientação geográfica perfeita para ondas. Beach break com múltiplos picos.',
-      descriptionEn: 'One of the best surf beaches in Northern Portugal! Perfect geographic orientation for waves. Beach break with multiple peaks.',
+      description: 'Uma das melhores praias de surf do Norte de Portugal! Orientação geográfica perfeita para ondas. Beach break com múltiplos picos. Também kitesurf no inverno com vento sul. SUP e bodyboard em dias de mar calmo.',
+      descriptionEn: 'One of the best surf beaches in Northern Portugal! Perfect geographic orientation for waves. Beach break with multiple peaks. Also kitesurf in winter with south wind. SUP and bodyboard on calm days.',
+      compatibleSports: ['surf', 'sup', 'bodyboard', 'kitesurf'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
       hazards: ['Correntes', 'Ressaca forte']
     },
