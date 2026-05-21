@@ -83,7 +83,7 @@ export const spots: Spot[] = [
     },
   {
       id: 'esposende', slug: 'esposende', name: 'Esposende', nameEn: 'Esposende',
-      region: 'Braga', regionEn: 'Braga', lat: 41.536, lon: -8.783,
+      region: 'Braga', regionEn: 'Braga', lat: 41.5336, lon: -8.7892,
       coastOrientation: 270,
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW',
       description: 'Lagoa, foz do rio e praia aberta — três spots num só. Água plana na lagoa, ondas no oceano. Versátil e consistente.',
@@ -1423,6 +1423,28 @@ export const spots: Spot[] = [
       descriptionEn: 'Lava platform with left-hand point break. One of the most beautiful waves in the Azores. Interior saltwater lagoon. Unique scenery.',
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Acesso por estrada íngreme', 'Rochas']
+    },
+  {
+      id: 'fao-ofir-surf', slug: 'fao-ofir-surf', name: 'Fão/Ofir (Surf)', nameEn: 'Fao/Ofir (Surf)',
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5233, lon: -8.7900,
+      coastOrientation: 270,
+      type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
+      description: 'Beach break consistente entre Fão e Ofir. Ondas potentes com múltiplos picos. Ponto de encontro de surfistas locais. Menos crowd que as praias centrais.',
+      descriptionEn: 'Consistent beach break between Fao and Ofir. Powerful waves with multiple peaks. Local surfer meeting point. Less crowded than central beaches.',
+      compatibleSports: ['surf', 'kitesurf'],
+      facilities: ['Estacionamento', 'WC'],
+      hazards: ['Correntes', 'Ressaca forte']
+    },
+  {
+      id: 'ofir-praia', slug: 'ofir-praia', name: 'Praia de Ofir (Surf & Kite)', nameEn: 'Ofir Beach (Surf & Kite)',
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5172, lon: -8.7876,
+      coastOrientation: 270,
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'W, NW',
+      description: 'Praia extensa de Ofir com condições para surf e kitesurf. Vento térmico de NW no verão para kite. Ondas consistentes no inverno para surf.',
+      descriptionEn: 'Long Ofir beach with conditions for surf and kitesurf. NW thermal wind in summer for kite. Consistent waves in winter for surf.',
+      compatibleSports: ['surf', 'kitesurf', 'foil'],
+      facilities: ['Estacionamento', 'Restaurantes', 'WC'],
+      hazards: ['Correntes', 'Vento forte no verão']
     },
     ];
 
