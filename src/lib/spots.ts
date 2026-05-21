@@ -786,6 +786,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'SW',
       description: 'Praia de areia com ondas pequenas. Perfeito para iniciantes de kitesurf. Vento térmico de Nortada no verão. Pouca multidão!',
       descriptionEn: 'Sand beach with small waves. Perfect for beginner kitesurfers. Thermal Nortada wind in summer. Low crowd!',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escola kite', 'WC'],
       hazards: ['Falésias no fundo — usar vento sideshore']
     },
@@ -806,6 +807,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'SW',
       description: 'Lagoa separada do oceano por um banco de areia. Água plana até à cintura — paraíso para iniciantes. Nortada consistente.',
       descriptionEn: 'Lagoon separated from the ocean by a sand bar. Chest-high flat water — paradise for beginners. Consistent Nortada.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escola kite', 'Aluguer', 'WC'],
       hazards: ['Maré alta pode subir a lagoa']
     },
@@ -1139,6 +1141,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'Ria Formosa',
       description: 'Água plana na Ria Formosa com vento de leste térmico consistente. Um dos spots mais fiáveis do Algarve para kitesurf. Praia extensa e segura.',
       descriptionEn: 'Flat water in Ria Formosa with consistent east thermal wind. One of the most reliable spots in the Algarve for kitesurfing. Long and safe beach.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'Restaurantes', 'WC'],
       hazards: ['Tráfego de barcos na ria']
     },
@@ -1149,6 +1152,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'S, SE',
       description: 'Praia dourada extensa com água morna e vento de leste épico. Kitesurf perfeito para todos os níveis. Uma das melhores praias do Sotavento.',
       descriptionEn: 'Long golden beach with warm water and epic east wind. Perfect kitesurfing for all levels. One of the best beaches in the Sotavento.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escolas kite', 'Restaurantes', 'WC'],
       hazards: ['Multidão no verão']
     },
@@ -1159,6 +1163,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'S, SE',
       description: 'Praia selvagem entre VRSA e Monte Gordo. Menos crowd, ondas mais organizadas. Kitesurf com vento de leste e ondas de Sotavento. ⚠️ Proibido kitesurf de 1 junho a 30 setembro — usar Altura (a 3km) como alternativa.',
       descriptionEn: 'Wild beach between VRSA and Monte Gordo. Less crowded, more organized waves. Kitesurfing with east wind and Sotavento waves. ⚠️ Kitesurf banned 1 Jun–30 Sep — use Altura (3km away) as alternative.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Bar de praia (verão)'],
       hazards: ['Correntes', 'Sem vigilância', 'Kitesurf proibido 1 Jun–30 Sep']
     },
@@ -1169,6 +1174,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'S, SE',
       description: 'Praia extensa em Altura, a 3km de Monte Gordo. Água plana e vento de leste consistente. Alternativa oficial para kitesurf durante a proibição de Verão na Praia Verde (1 junho–30 setembro). Escola de kite no local.',
       descriptionEn: 'Long beach at Altura, 3km from Monte Gordo. Flat water and consistent east wind. Official alternative for kitesurfing during the Praia Verde summer ban (1 Jun–30 Sep). Kite school on site.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escola kite', 'Restaurantes', 'WC'],
       hazards: ['Multidão no verão']
     },
@@ -1200,6 +1206,7 @@ export const spots: Spot[] = [
       type: 'foil', difficulty: 'intermediate', bestWind: 'W, NW', bestSwell: 'Lagoa',
       description: 'Lagoa de Alvor é o spot secreto de foil do Algarve. Água plana com vento térmico. Wing foil e kite foil em condições perfeitas.',
       descriptionEn: 'Alvor Lagoon is the secret foil spot of the Algarve. Flat water with thermal wind. Wing foil and kite foil in perfect conditions.',
+      compatibleSports: ['foil'],
       facilities: ['Estacionamento', 'Escola foil', 'Aluguer', 'WC'],
       hazards: ['Rochas na extremidade sul', 'Maré']
     },
@@ -1210,6 +1217,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'S',
       description: 'Praia extensa de 4km com vento side-shore. Escola de kitesurf e windsurf no centro.',
       descriptionEn: '4km long beach with side-shore wind. Kitesurf and windsurf school in the center.',
+      compatibleSports: ['kitesurf', 'windsurf'],
       facilities: ['Estacionamento', 'Escolas', 'Aluguer', 'Restaurantes'],
       hazards: ['Tráfego na época alta']
     },
@@ -1251,6 +1259,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'Ria Formosa',
       description: 'Lagoa da Ria Formosa com água plana e vento de leste. Spot perfeito para iniciantes e freestyle. Barra de acesso com barco típico.',
       descriptionEn: 'Ria Formosa lagoon with flat water and east wind. Perfect spot for beginners and freestyle. Access via traditional boat.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Barco-táxi', 'Escolas kite', 'Restaurantes'],
       hazards: ['Tráfego de barcos', 'Maré']
     },
@@ -1450,6 +1459,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S',
       description: 'Baía do Funchal com vento térmico. Kitesurf no centro da cidade. Águas quentes e cenário urbano único.',
       descriptionEn: 'Funchal bay with thermal wind. Kitesurf in the city center. Warm waters and unique urban scenery.',
+      compatibleSports: ['kitesurf'],
       facilities: ['Estacionamento', 'Escola kite', 'Restaurantes', 'WC'],
       hazards: ['Tráfego de barcos', 'Banhistas']
     },
