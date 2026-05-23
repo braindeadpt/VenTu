@@ -11,7 +11,11 @@ import '../globals.css'
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#06b6d4',
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
+    { media: '(prefers-color-scheme: light)', color: '#FAFAF7' },
+  ],
 }
 
 export function generateStaticParams() {

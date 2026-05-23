@@ -1,13 +1,15 @@
-const CACHE_NAME = 'ventu-v1';
+// Bump these whenever cached payloads change shape so old clients
+// don't get stuck on stale assets/data.
+const CACHE_NAME = 'ventu-static-v2';
+const DATA_CACHE = 'ventu-data-v2';
+const DATA_MAX_AGE_MS = 1000 * 60 * 60 * 6; // 6h — conditions update hourly
+
 const STATIC_ASSETS = [
-  '/',
   '/manifest.json',
   '/favicon.svg',
   '/apple-touch-icon.svg',
   '/og-image.svg',
 ];
-
-const DATA_CACHE = 'ventu-data-v1';
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -38,18 +40,33 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
 
   if (url.pathname.startsWith('/data/')) {
+    // Network-first: always try fresh data; fall back to cache only if
+    // offline AND cached entry is younger than DATA_MAX_AGE_MS.
     event.respondWith(
-      caches.open(DATA_CACHE).then((cache) => {
-        return fetch(request)
-          .then((response) => {
-            if (response.ok) {
-              cache.put(request, response.clone());
-            }
-            return response;
-          })
-          .catch(() => {
-            return cache.match(request);
-          });
+      caches.open(DATA_CACHE).then(async (cache) => {
+        try {
+          const response = await fetch(request);
+          if (response.ok) {
+            const cloned = response.clone();
+            const headers = new Headers(cloned.headers);
+            headers.set('x-ventu-cached-at', String(Date.now()));
+            const stamped = new Response(await cloned.blob(), {
+              status: cloned.status,
+              statusText: cloned.statusText,
+              headers,
+            });
+            cache.put(request, stamped);
+          }
+          return response;
+        } catch {
+          const cached = await cache.match(request);
+          if (!cached) return Response.error();
+          const stamp = Number(cached.headers.get('x-ventu-cached-at') || 0);
+          if (stamp && Date.now() - stamp > DATA_MAX_AGE_MS) {
+            return Response.error();
+          }
+          return cached;
+        }
       })
     );
     return;

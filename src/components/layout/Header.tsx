@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useCallback, useEffect } from 'react';
-import { Menu, X, Wind, Globe, Search, User } from 'lucide-react';
+import { Menu, X, Wind, Globe, Search } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import MegaMenu from './MegaMenu';
 import SearchPalette from '@/components/search/SearchPalette';
@@ -26,12 +26,25 @@ export default function Header({ locale }: HeaderProps) {
     setIsMac(navigator.platform.includes('Mac'));
   }, []);
 
+  // Close any open menus / palettes when the route changes (e.g. user
+  // hits browser back/forward, or follows a link inside a mega menu).
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setOpenMega(null);
+    setSearchOpen(false);
+  }, [pathname]);
+
   const navLabel = t.nav;
 
   const isActive = (href: string) => pathname === href.split('?')[0];
 
   const switchLocale = isPt ? 'en' : 'pt';
-  const switchPath = (pathname || '').replace(`/${locale}`, `/${switchLocale}`);
+  // Only swap the leading /<locale> segment, not arbitrary later occurrences.
+  const switchPath =
+    (pathname || '/').replace(
+      new RegExp(`^/${locale}(?=/|$)`),
+      `/${switchLocale}`,
+    ) || `/${switchLocale}/`;
 
   const handleMegaToggle = useCallback((variant: 'modalidades' | 'metricas') => {
     setOpenMega((prev) => (prev === variant ? null : variant));
@@ -130,20 +143,17 @@ export default function Header({ locale }: HeaderProps) {
                 <Globe className="w-3.5 h-3.5" />
                 <span className="text-xs">{isPt ? 'EN' : 'PT'}</span>
               </Link>
-              <button
-                className="flex items-center justify-center w-8 h-8 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-                aria-label={navLabel.avatar}
-                disabled
-              >
-                <User className="w-4 h-4" />
-              </button>
+              {/* Avatar / account button removed until auth is wired up.
+                  A permanently-disabled button violated WCAG (no feedback)
+                  and added a dead 8x8 touch target. Re-introduce when
+                  Supabase Auth lands. */}
             </div>
 
             {/* Mobile hamburger */}
             <div className="flex items-center gap-1 md:hidden">
               <button
                 onClick={openSearch}
-                className="p-2 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
                 aria-label={navLabel.search}
               >
                 <Search className="w-5 h-5" />
@@ -151,8 +161,10 @@ export default function Header({ locale }: HeaderProps) {
               <ThemeToggle locale={locale} />
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
                 aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-nav"
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
@@ -160,58 +172,66 @@ export default function Header({ locale }: HeaderProps) {
           </div>
         </div>
 
-        {/* Mobile menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden bg-bg-base/95 backdrop-blur-xl border-b border-divider">
-            <div className="px-4 py-3 space-y-1">
-              <Link
-                href={`/${locale}/sazonalidade`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-              >
-                {navLabel.sazonalidade}
-              </Link>
-              <Link
-                href={`/${locale}/compare`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-              >
-                {navLabel.comparar}
-              </Link>
-              <div className="border-t border-divider my-2" />
-              <Link
-                href={`/${locale}/spots/`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-              >
-                Spots
-              </Link>
-              <Link
-                href={`/${locale}/news/`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-              >
-                {navLabel.news}
-              </Link>
-              <Link
-                href={`/${locale}/about/`}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-              >
-                {navLabel.about}
-              </Link>
-              <div className="border-t border-divider my-2" />
-              <Link
-                href={switchPath}
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2 px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-              >
-                <Globe className="w-4 h-4" />
-                {isPt ? 'Switch to English' : 'Mudar para Português'}
-              </Link>
-            </div>
+        {/* Mobile menu — animated slide-down via max-height transition */}
+        <div
+          id="mobile-nav"
+          className={[
+            'md:hidden overflow-hidden transition-all duration-slow ease-out-expo',
+            'bg-bg-base/95 backdrop-blur-xl',
+            mobileMenuOpen
+              ? 'max-h-[500px] border-b border-divider opacity-100'
+              : 'max-h-0 opacity-0 pointer-events-none',
+          ].join(' ')}
+          aria-hidden={!mobileMenuOpen}
+        >
+          <div className="px-4 py-3 space-y-1">
+            <Link
+              href={`/${locale}/sazonalidade`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              {navLabel.sazonalidade}
+            </Link>
+            <Link
+              href={`/${locale}/compare`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              {navLabel.comparar}
+            </Link>
+            <div className="border-t border-divider my-2" />
+            <Link
+              href={`/${locale}/spots/`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              Spots
+            </Link>
+            <Link
+              href={`/${locale}/news/`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              {navLabel.news}
+            </Link>
+            <Link
+              href={`/${locale}/about/`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              {navLabel.about}
+            </Link>
+            <div className="border-t border-divider my-2" />
+            <Link
+              href={switchPath}
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              <Globe className="w-4 h-4" />
+              {isPt ? 'Switch to English' : 'Mudar para Português'}
+            </Link>
           </div>
-        )}
+        </div>
       </header>
 
       {/* Search palette (rendered at document level) */}

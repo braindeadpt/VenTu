@@ -14,6 +14,8 @@ interface DrawerProps {
 
 const FOCUSABLE_SELECTOR = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+const DRAG_CLOSE_THRESHOLD = 80; // px down to trigger close
+
 export default function Drawer({
   isOpen,
   onClose,
@@ -27,6 +29,9 @@ export default function Drawer({
   const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const dragStartY = useRef<number | null>(null);
+  const dragCurrentY = useRef<number>(0);
+  const [dragOffset, setDragOffset] = useState(0);
 
   // Track viewport width
   useEffect(() => {
@@ -95,14 +100,48 @@ export default function Drawer({
     }
   }, [visible]);
 
+  // ── Touch handlers (mobile drag-to-close) ──
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    if (!isMobile) return;
+    dragStartY.current = e.touches[0].clientY;
+    dragCurrentY.current = 0;
+  }, [isMobile]);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!isMobile || dragStartY.current === null) return;
+    const delta = e.touches[0].clientY - dragStartY.current;
+    // Only allow dragging down (positive delta)
+    if (delta > 0) {
+      dragCurrentY.current = delta;
+      setDragOffset(delta);
+    }
+  }, [isMobile]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!isMobile || dragStartY.current === null) return;
+    if (dragCurrentY.current > DRAG_CLOSE_THRESHOLD) {
+      onClose();
+    }
+    dragStartY.current = null;
+    dragCurrentY.current = 0;
+    setDragOffset(0);
+  }, [isMobile, onClose]);
+
   if (!mounted) return null;
 
   const panelStyle: React.CSSProperties = {};
   if (isMobile) {
     panelStyle.height = '80vh';
     panelStyle.maxHeight = '80vh';
-    if (!visible) panelStyle.transform = 'translateY(100%)';
-    else panelStyle.transform = 'translateY(0)';
+    if (!visible) {
+      panelStyle.transform = 'translateY(100%)';
+    } else if (dragOffset > 0) {
+      // While dragging, follow finger; disable transition for smooth tracking
+      panelStyle.transform = `translateY(${dragOffset}px)`;
+      panelStyle.transition = 'none';
+    } else {
+      panelStyle.transform = 'translateY(0)';
+    }
   } else {
     panelStyle.width = `${width}px`;
     panelStyle.maxWidth = '100vw';
@@ -129,6 +168,9 @@ export default function Drawer({
         aria-modal="true"
         aria-labelledby={title ? 'drawer-title' : undefined}
         onKeyDown={handleKeyDown}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
         className={[
           'fixed bg-bg-base border-divider shadow-2xl overflow-y-auto',
           'transition-transform duration-slow ease-out motion-reduce:transition-none',

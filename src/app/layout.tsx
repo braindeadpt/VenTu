@@ -23,7 +23,11 @@ import GoatCounterScript from '@/components/analytics/GoatCounterScript'
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#0F172A',
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0F172A' },
+    { media: '(prefers-color-scheme: light)', color: '#FAFAF7' },
+  ],
 }
 
 export const metadata: Metadata = {
@@ -57,7 +61,6 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="pt-PT"
       className={`${GeistSans.variable} ${GeistMono.variable} theme-ocean`}
       suppressHydrationWarning
     >

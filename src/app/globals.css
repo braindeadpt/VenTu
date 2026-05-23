@@ -24,19 +24,21 @@
     --divider:     255 255 255 / 0.08;
     --divider-strong: 255 255 255 / 0.12;
 
-    /* Foreground / text */
+    /* Foreground / text — alphas tuned for WCAG AA on slate-950 base.
+       fg-subtle was 0.55 on slate-500 → ~3.0:1 contrast (FAIL AA).
+       Bumped to slate-400 @ 0.85 → ~4.6:1 contrast (PASS AA). */
     --fg:          241 245 249 / 0.95;  /* slate-100  #F1F5F9 */
-    --fg-muted:    148 163 184 / 0.65;  /* slate-400  #94A3B8 */
-    --fg-subtle:   100 116 139 / 0.55;  /* slate-500  #64748B */
-    --fg-disabled: 71 85 105 / 0.30;    /* slate-600  #475569 */
+    --fg-muted:    203 213 225 / 0.80;  /* slate-300  #CBD5E1 */
+    --fg-subtle:   148 163 184 / 0.85;  /* slate-400  #94A3B8 */
+    --fg-disabled: 100 116 139 / 0.50;  /* slate-500  #64748B */
 
     /* Alpha-free RGB companions — for composing custom alpha values
        in SVG attributes and other contexts where Tailwind opacity
        modifiers don't work (e.g. rgb(var(--fg-rgb) / 0.04)). */
     --fg-rgb:          241 245 249;
-    --fg-muted-rgb:    148 163 184;
-    --fg-subtle-rgb:   100 116 139;
-    --fg-disabled-rgb: 71 85 105;
+    --fg-muted-rgb:    203 213 225;
+    --fg-subtle-rgb:   148 163 184;
+    --fg-disabled-rgb: 100 116 139;
     --surface-1-rgb:   255 255 255;
     --surface-2-rgb:   255 255 255;
     --surface-3-rgb:   255 255 255;
@@ -89,17 +91,17 @@
     --divider:      15 23 42 / 0.10;
     --divider-strong: 15 23 42 / 0.18;
 
-    /* Foreground / text */
-    --fg:           30 41 59 / 0.95;   /* slate-800  #1E293B */
-    --fg-muted:     100 116 139 / 0.70;/* slate-500  #64748B */
-    --fg-subtle:    148 163 184 / 0.55;/* slate-400  #94A3B8 */
-    --fg-disabled:  203 213 225 / 0.30;/* slate-300  #CBD5E1 */
+    /* Foreground / text — light theme, AA-tuned. */
+    --fg:           15 23 42 / 1.0;    /* slate-900  #0F172A */
+    --fg-muted:     51 65 85 / 0.85;   /* slate-700  #334155 */
+    --fg-subtle:    71 85 105 / 0.80;  /* slate-600  #475569 */
+    --fg-disabled:  148 163 184 / 0.55;/* slate-400  #94A3B8 */
 
     /* Alpha-free RGB companions */
-    --fg-rgb:          30 41 59;
-    --fg-muted-rgb:    100 116 139;
-    --fg-subtle-rgb:   148 163 184;
-    --fg-disabled-rgb: 203 213 225;
+    --fg-rgb:          15 23 42;
+    --fg-muted-rgb:    51 65 85;
+    --fg-subtle-rgb:   71 85 105;
+    --fg-disabled-rgb: 148 163 184;
     --surface-1-rgb:   15 23 42;
     --surface-2-rgb:   15 23 42;
     --surface-3-rgb:   15 23 42;

@@ -39,15 +39,21 @@ export default function FeedbackForm({ locale }: FeedbackFormProps) {
     setError('');
 
     try {
-      const sb = getSupabaseClient() as any;
+      const sb = getSupabaseClient();
       if (!sb) throw new Error('Supabase not available');
 
-      const { error: insertError } = await sb.from('contributions').insert({
-        type,
-        message: message.trim(),
-        email: email.trim() || null,
-        locale,
-      });
+      // The Supabase client has no generated Database types, so
+      // `from('contributions')` infers `never`. Use explicit rpc-style
+      // cast until `supabase gen types` is wired into CI.
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { error: insertError } = await (sb as any)
+        .from('contributions')
+        .insert({
+          type,
+          message: message.trim(),
+          email: email.trim() || null,
+          locale,
+        });
 
       if (insertError) throw insertError;
 

@@ -276,10 +276,10 @@ export function SpotGridClient({
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" suppressHydrationWarning>
       {/* ─── Sticky Filter Bar ─── */}
-      <div className="md:sticky md:top-0 md:z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 mb-6">
+      <div className="md:sticky md:top-16 md:z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 mb-6">
         <div className="flex flex-col gap-3">
           {/* Sport pills */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 edge-fade-x">
             {SPORTS.map(sport => {
               const active = selectedSport === sport.id;
               return (

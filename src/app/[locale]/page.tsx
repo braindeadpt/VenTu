@@ -138,8 +138,14 @@ export default async function HomePage({ params, searchParams }: { params: Promi
         }
       </h1>
 
-      {/* Status Bar */}
-      <section role="status" aria-live="polite" className="w-full bg-surface-1 border-b border-divider z-30 sticky top-0">
+      {/* Status Bar — sits below the fixed header (z-50), so its sticky
+          offset has to be the header height (16) and its z-index must
+          stay below the header to avoid covering the menu trigger. */}
+      <section
+        role="status"
+        aria-live="polite"
+        className="hidden md:block w-full bg-surface-1 border-b border-divider z-30 sticky top-16"
+      >
         <div className="max-w-7xl mx-auto px-4 h-10 flex items-center justify-between">
           <div className="flex items-center gap-2 text-meta text-fg-muted">
             <span
@@ -176,11 +182,15 @@ export default async function HomePage({ params, searchParams }: { params: Promi
               {[...tickerSpots, ...tickerSpots].map((data, i) => {
                 const score = data.allScores?.['surf']?.score || 0;
                 const color = getScoreRgb(score);
+                // Second half is a visual duplicate for the marquee loop;
+                // hide it from assistive tech to avoid double-reads.
+                const isClone = i >= tickerSpots.length;
                 return (
-                  <li key={`${data.spot.id}-${i}`} className="inline-flex">
+                  <li key={`${data.spot.id}-${i}`} className="inline-flex" aria-hidden={isClone || undefined}>
                     <Link
                       href={`/${locale}/spots/${data.spot.slug}/`}
                       className="inline-flex items-center gap-3 px-5 py-1.5 hover:bg-surface-2 transition-colors"
+                      tabIndex={isClone ? -1 : 0}
                     >
                       <span className="w-0.5 h-4 rounded-full" style={{ backgroundColor: color }} />
                       <span className="font-sans font-semibold text-sm text-fg">{isPt ? data.spot.name : data.spot.nameEn}</span>
@@ -201,7 +211,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
 
       {/* Hero Compact */}
       {bestSpot && (
-        <section className="relative min-h-[50vh] md:min-h-[40vh] flex items-center justify-center overflow-hidden py-12 md:py-8 bg-bg-base">
+        <section className="relative min-h-[30vh] md:min-h-[40vh] flex items-center justify-center overflow-hidden py-8 md:py-8 bg-bg-base">
           {/* Subtle radial glow — removed-motion safe */}
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgb(var(--score-good))_0%,transparent_70%)]" />
@@ -223,9 +233,12 @@ export default async function HomePage({ params, searchParams }: { params: Promi
                   : (isPt ? `${onCount} spots ON para ti hoje` : `${onCount} spots ON for you today`)}
             </h2>
 
-            {/* Sub-line */}
+            {/* Sub-line — links to best spot */}
             <p className="text-h3 text-fg-muted">
-              {isPt ? 'Top score' : 'Top score'}: {isPt ? bestSpot.spot.name : bestSpot.spot.nameEn}{' '}
+              {isPt ? 'Top score' : 'Top score'}:{' '}
+              <Link href={`/${locale}/spots/${bestSpot.spot.slug}/`} className="underline decoration-dotted underline-offset-4 hover:text-fg transition-colors">
+                {isPt ? bestSpot.spot.name : bestSpot.spot.nameEn}
+              </Link>{' '}
               <span className="font-mono tabular-nums">{bestSpot.allScores[bestSportId]?.score || 0}/100</span>
               {' · '}
               <span className="sport-accent" data-sport={bestSportId}>

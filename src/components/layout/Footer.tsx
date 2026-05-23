@@ -9,7 +9,7 @@ interface FooterProps {
 }
 
 export default function Footer({ locale }: FooterProps) {
-  const t = getTranslation(locale as any);
+  const t = getTranslation(locale as 'pt' | 'en');
   const isPt = locale === 'pt';
 
   return (
