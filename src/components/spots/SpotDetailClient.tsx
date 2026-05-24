@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 // useSearchParams removed — using window.location.search for static export safety
 import {
-  Wind, Waves, Droplets, Zap, ArrowLeft, Share2,
-  MapPin, Star,
+  ArrowLeft,
 } from 'lucide-react';
 
 import type { Spot } from '@/types';
@@ -18,43 +17,30 @@ import {
 } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
-import {
-  getCardinalLabel,
-  getWindArrow,
-  getWindRelationToCoast,
-} from '@/lib/wind';
 import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 
-import ScoreGauge from '@/components/ui/ScoreGauge';
-import WaveShape from '@/components/ui/WaveShape';
-import SocialShare from '@/components/ui/SocialShare';
 import SeoHead from '@/components/SeoHead';
-import SwellRadar from '@/components/ui/SwellRadar';
 import ForecastTable from '@/components/weather/ForecastTable';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
 import SpotMap from '@/components/spots/SpotMap';
-import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
-import DataSourceBadge from '@/components/ui/DataSourceBadge';
+import SpotDetailHero from '@/components/spots/SpotDetailHero';
+import SpotConditionsOverview from '@/components/spots/SpotConditionsOverview';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
-import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
-import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
 import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 
 /* ═══════════════════════════════════════════════════════════════════════
- *  SpotDetailClient — Redesigned showcase of all signature components.
- *
- *  Preserves ALL existing state logic, fetch flow, and integrations.
- *  Changes ONLY presentation (JSX, classes, visual composition).
+ *  SpotDetailClient — structured spot page (conditions → forecast → info).
+ *  Data loading unchanged; layout deduplicated and sectioned.
  *  ═══════════════════════════════════════════════════════════════════════ */
 
 /* ─── Types ─── */
@@ -142,36 +128,6 @@ function SportTab({
   );
 }
 
-function StatCard({
-  icon: Icon,
-  label,
-  value,
-  unit,
-  sub,
-}: {
-  icon: React.ElementType;
-  label: string;
-  value: string | number;
-  unit?: string;
-  sub?: string;
-}) {
-  const display = value === undefined || value === null || value === '—' ? '—' : value;
-
-  return (
-    <div className="card-1 p-4 flex flex-col items-center text-center gap-2">
-      <Icon className="w-[18px] h-[18px] text-fg-subtle" />
-      <div className="font-mono text-num-lg text-fg">
-        {display}
-        {unit && display !== '—' && (
-          <span className="text-num-sm text-fg-subtle ml-0.5">{unit}</span>
-        )}
-      </div>
-      <div className="text-meta-sm text-fg-subtle uppercase tracking-wider">{label}</div>
-      {sub && <div className="text-meta text-fg-subtle">{sub}</div>}
-    </div>
-  );
-}
-
 /* ─── Main Component ─── */
 
 export default function SpotDetailClient({
@@ -204,8 +160,6 @@ export default function SpotDetailClient({
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
-  const [copyToast, setCopyToast] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [communityOverlay, setCommunityOverlay] = useState<Record<string, import('@/lib/communityTips').CommunityTipEntry>>({});
 
   useEffect(() => {
@@ -347,16 +301,6 @@ export default function SpotDetailClient({
     }));
   }, [spotData, hourlyScores]);
 
-  /* ── Share handler ── */
-  const handleShare = useCallback(() => {
-    const url = window.location.href;
-    navigator.clipboard.writeText(url).then(() => {
-      setCopyToast(true);
-      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-      copyTimeoutRef.current = setTimeout(() => setCopyToast(false), 2000);
-    });
-  }, []);
-
   /* ── Loading skeleton ── */
   if (loading) {
     return (
@@ -406,7 +350,6 @@ export default function SpotDetailClient({
 
   const { conditions, allScores, forecast } = spotData;
   const score = allScores[selectedSport];
-  const tokens = getScoreTokens(score.score);
   const relevantSports = getRelevantSports(spot, allScores);
   const mergedLocalTipsRaw = mergeLocalTips(spot, getLocalTips(spot.slug), communityOverlay[spot.slug]);
   const mergedLocalTips = mergedLocalTipsRaw
@@ -422,13 +365,6 @@ export default function SpotDetailClient({
         localRuleEn: mergedLocalTipsRaw.localRuleEn,
       }
     : null;
-
-  const windKt = conditions.windSpeed * 1.94384;
-  const windRelation = spot.coastOrientation
-    ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
-    : null;
-  const swellDir = getCardinalLabel(conditions.waveDirection);
-  const windDir = getCardinalLabel(conditions.windDirection);
 
   return (
     <>
@@ -463,350 +399,170 @@ export default function SpotDetailClient({
         }}
       />
 
-      {/* Social Share Buttons */}
-      <div className="fixed bottom-6 right-6 z-40 md:hidden">
-        <SocialShare 
-          title={`${isPt ? spot.name : spot.nameEn} - ${spot.region}`}
-          locale={locale}
-        />
-      </div>
+      <div className="min-h-screen bg-bg-base pb-12">
+        <SpotDetailHero spot={spot} locale={locale} backLabel={t.spots.backToSpots} />
 
-      <div className="min-h-screen bg-bg-base pb-20">
-      {/* ═══════════════════════════════════════════════════════════════
-          HEADER / HERO
-          ═══════════════════════════════════════════════════════════════ */}
-      <header className="max-w-5xl mx-auto px-4 pt-6 pb-4">
-        <div className="flex items-center gap-3 mb-4">
-          <Link
-            href={`/${locale}/spots/`}
-            className="inline-flex items-center gap-1.5 text-meta text-fg-muted hover:text-fg transition-colors duration-fast"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            {t.spots.backToSpots}
-          </Link>
-        </div>
-
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <h1 className="text-display-lg text-fg truncate">
-              {isPt ? spot.name : spot.nameEn}
-            </h1>
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-body-lg text-fg-muted mt-1">
-              <MapPin className="w-4 h-4 flex-shrink-0" />
-              <span>{spot.region}</span>
-              <span>·</span>
-              <Star className="w-4 h-4 flex-shrink-0" />
-              <span>{spot.difficulty}</span>
-            </div>
-
-            {/* Badges row */}
-            {(spot.blueFlag || spot.waterQuality || spot.accessibleBeach) && (
-              <div className="mt-3">
-                <WaterQualityBadge
-                  blueFlag={spot.blueFlag}
-                  waterQuality={spot.waterQuality}
-                  waterQualityEn={spot.waterQualityEn}
-                  accessibleBeach={spot.accessibleBeach}
+        {/* Sport selector */}
+        <section className="max-w-6xl mx-auto px-4 pb-2">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 edge-fade-x">
+            {(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
+              .filter((s) => relevantSports.includes(s))
+              .map((sport) => (
+                <SportTab
+                  key={sport}
+                  sport={sport}
+                  score={allScores[sport].score}
+                  active={selectedSport === sport}
+                  onClick={() => setSelectedSport(sport)}
                   locale={locale}
                 />
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <SocialShare 
-              title={`${isPt ? spot.name : spot.nameEn} - ${spot.region}`}
-              locale={locale}
-            />
-            <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
-          </div>
-        </div>
-      </header>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          SPORT TABS
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-4">
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 edge-fade-x">
-          {(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
-            .filter((s) => relevantSports.includes(s))
-            .map((sport) => (
-              <SportTab
-                key={sport}
-                sport={sport}
-                score={allScores[sport].score}
-                active={selectedSport === sport}
-                onClick={() => setSelectedSport(sport)}
-                locale={locale}
-              />
-            ))}
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          MAIN SHOWCASE — 3 signature widgets
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <div className="flex justify-center mb-4">
-          <DataSourceBadge
-            source={conditions.source}
-            updatedAt={conditions.updatedAt}
-            locale={locale}
-            size="md"
-          />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Widget 1: ScoreGauge */}
-          <div className="card-1 p-6 flex flex-col items-center justify-center gap-3">
-            <ScoreGauge
-              score={score.score}
-              label={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
-              sublabel="/100"
-              size="lg"
-            />
-            <p className={`text-body font-medium ${tokens.text}`}>
-              {isPt ? score.rating : score.ratingEn}
-            </p>
-            <ScoreFeedback
-              spotSlug={spot.slug}
-              sport={selectedSport}
-              predictedScore={score.score}
-              conditionsSnapshot={{
-                waveHeight: conditions.waveHeight,
-                wavePeriod: conditions.wavePeriod,
-                windSpeed: conditions.windSpeed,
-                windDirection: conditions.windDirection,
-                waterTemp: conditions.waterTemp,
-              }}
-              locale={locale}
-            />
-          </div>
-
-          {/* Widget 2: WaveShape */}
-          <div className="card-1 p-6 flex flex-col items-center justify-center gap-3">
-            <WaveShape
-              height={conditions.waveHeight}
-              period={conditions.wavePeriod}
-              direction={swellDir}
-              size="lg"
-            />
-            <p className="text-meta text-fg-subtle">
-              {conditions.waveHeight.toFixed(1)}m @ {Math.round(conditions.wavePeriod)}s {swellDir}
-            </p>
-          </div>
-
-          {/* Widget 3: SwellRadar */}
-          <div className="card-1 p-6 flex flex-col items-center justify-center gap-3">
-            <SwellRadar
-              swellDirection={conditions.waveDirection}
-              swellHeight={conditions.waveHeight}
-              windDirection={conditions.windDirection}
-              windSpeed={conditions.windSpeed}
-              coastOrientation={spot.coastOrientation ?? undefined}
-              size="lg"
-            />
-            <p className="text-meta text-fg-subtle">
-              {windRelation
-                ? `${isPt ? 'Vento' : 'Wind'} ${windRelation} ${Math.round(windKt)}kt ${windDir}`
-                : `${Math.round(windKt)}kt ${windDir}`}
-            </p>
-          </div>
-        </div>
-
-        {/* Summary line */}
-        <p className="text-body-lg text-fg-muted text-center mt-4">
-          {isPt ? score.rating : score.ratingEn}
-          {' · '}
-          {conditions.waveHeight.toFixed(1)}m @ {Math.round(conditions.wavePeriod)}s {swellDir}
-          {' · '}
-          {windRelation && `${isPt ? 'Vento' : 'Wind'} ${windRelation} `}
-          {Math.round(windKt)}kt {windDir}
-        </p>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          BEST WINDOWS (MagicWindows — ressuscitado)
-          ═══════════════════════════════════════════════════════════════ */}
-      {forecast.length > 0 && (
-        <section className="max-w-5xl mx-auto px-4 py-6">
-          <h2 className="text-h2 text-fg mb-4">{td.bestWindows}</h2>
-          <div className="card-1 p-4">
-            <MagicWindows
-              hourly={forecast.map((f) => ({
-                time: f.time,
-                waveHeight: f.waveHeight ?? 0,
-                wavePeriod: f.wavePeriod ?? 0,
-                windSpeed: f.windSpeed ?? 0,
-                windDirection: f.windDirection ?? 0,
-                windGust: f.windGust ?? 0,
-                waterTemp: f.waterTemp ?? 0,
-              }))}
-              spotType={selectedSport}
-              spotBestWind={spot.bestWind || ''}
-              locale={locale}
-            />
+              ))}
           </div>
         </section>
-      )}
 
-      {/* ═══════════════════════════════════════════════════════════════
-          FORECAST TABLE
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        {forecastTableData.length > 0 ? (
-          <div className="card-1 p-4">
-            <ForecastTable
-              hourly={forecastTableData}
-              hours={120}
-              sport={selectedSport}
-              coastOrientation={spot.coastOrientation}
-              locale={locale as 'pt' | 'en'}
-            />
-          </div>
-        ) : (
-          <div className="card-1 p-8 text-center text-body text-fg-subtle">
-            {td.noForecast}
-          </div>
-        )}
-      </section>
+        <SpotConditionsOverview
+          spotSlug={spot.slug}
+          coastOrientation={spot.coastOrientation}
+          sport={selectedSport}
+          score={score.score}
+          rating={score.rating}
+          ratingEn={score.ratingEn}
+          conditions={conditions}
+          tideObserved={spotData.tideObserved}
+          locale={locale}
+        />
 
-      {/* ═══════════════════════════════════════════════════════════════
-          STATS DETAILHADOS — 5 universais + maré
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-          <StatCard
-            icon={Waves}
-            label={t.forecastTable.waves}
-            value={conditions.waveHeight.toFixed(1)}
-            unit="m"
-          />
-          <StatCard
-            icon={Wind}
-            label={t.forecastTable.wind}
-            value={Math.round(windKt)}
-            unit="kt"
-            sub={`${getWindArrow(conditions.windDirection)} ${windDir}`}
-          />
-          <StatCard
-            icon={Droplets}
-            label={t.forecastTable.water}
-            value={conditions.waterTemp.toFixed(1)}
-            unit="°C"
-          />
-          <StatCard
-            icon={Zap}
-            label={t.forecastTable.gust}
-            value={conditions.windGust > 0 ? Math.round(conditions.windGust * 1.94384) : '—'}
-            unit={conditions.windGust > 0 ? 'kt' : undefined}
-          />
-          <StatCard
-            icon={Waves}
-            label={isPt ? 'Maré (prev)' : 'Tide (pred)'}
-            value={conditions.tideHeight !== undefined ? conditions.tideHeight.toFixed(1) : '—'}
-            unit={conditions.tideHeight !== undefined ? 'm' : undefined}
-            sub={conditions.tideLabel || undefined}
-          />
-        </div>
-        {spotData.tideObserved && (
-          <div className="mt-2 text-meta-sm text-fg-muted text-center">
-            {isPt ? 'Observado' : 'Observed'}: {spotData.tideObserved.height.toFixed(2)}m
-            {' · '}{spotData.tideObserved.station}
-            {spotData.tideObserved.at && (
-              <> · {new Date(spotData.tideObserved.at).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}</>
+        {/* Forecast + sidebar */}
+        <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <section className="lg:col-span-2 space-y-3">
+            <h2 className="text-h2 text-fg">
+              {isPt ? 'Previsão horária' : 'Hourly forecast'}
+            </h2>
+            {forecastTableData.length > 0 ? (
+              <div className="card-1 p-3 md:p-4 overflow-x-auto">
+                <ForecastTable
+                  hourly={forecastTableData}
+                  hours={120}
+                  sport={selectedSport}
+                  coastOrientation={spot.coastOrientation}
+                  locale={locale as 'pt' | 'en'}
+                />
+              </div>
+            ) : (
+              <div className="card-1 p-8 text-center text-body text-fg-subtle">
+                {td.noForecast}
+              </div>
             )}
-          </div>
-        )}
-      </section>
+          </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          SOBRE O SPOT
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <h2 className="text-h2 text-fg mb-4">{td.about}</h2>
-        <div className="card-1 p-6 space-y-4">
-          <p className="text-body text-fg-muted leading-relaxed">
-            {isPt ? spot.description : spot.descriptionEn}
-          </p>
+          <aside className="space-y-6">
+            {forecast.length > 0 && (
+              <section>
+                <h2 className="text-h2 text-fg mb-3">{td.bestWindows}</h2>
+                <div className="card-1 p-4">
+                  <MagicWindows
+                    hourly={forecast.map((f) => ({
+                      time: f.time,
+                      waveHeight: f.waveHeight ?? 0,
+                      wavePeriod: f.wavePeriod ?? 0,
+                      windSpeed: f.windSpeed ?? 0,
+                      windDirection: f.windDirection ?? 0,
+                      windGust: f.windGust ?? 0,
+                      waterTemp: f.waterTemp ?? 0,
+                    }))}
+                    spotType={selectedSport}
+                    spotBestWind={spot.bestWind || ''}
+                    locale={locale}
+                  />
+                </div>
+              </section>
+            )}
 
-          {/* Local tips */}
-          {mergedLocalTips && (
-            <div className="pt-4 border-t border-divider space-y-2">
-              <LocalTipsSection tips={mergedLocalTips} locale={locale} />
-              {communityOverlay[spot.slug]?.contributor && (
-                <p className="text-xs text-fg-subtle">
-                  {isPt ? 'Contribuição da comunidade' : 'Community contribution'}
-                  {' · '}
-                  @{communityOverlay[spot.slug].contributor}
-                </p>
+            <section>
+              <h2 className="text-h2 text-fg mb-3">{td.location}</h2>
+              <div className="card-1 p-2">
+                <div className="h-56 lg:h-64 rounded-card overflow-hidden">
+                  <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
+                </div>
+              </div>
+            </section>
+          </aside>
+        </div>
+
+        <SpotWebcamSection slug={spot.slug} locale={locale} />
+
+        {/* Spot info — separated from actions */}
+        <section className="max-w-6xl mx-auto px-4 py-6">
+          <h2 className="text-h2 text-fg mb-4">{td.about}</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="card-1 p-5 space-y-4">
+              <p className="text-body text-fg-muted leading-relaxed">
+                {isPt ? spot.description : spot.descriptionEn}
+              </p>
+              {mergedLocalTips && (
+                <div className="pt-4 border-t border-divider space-y-2">
+                  <LocalTipsSection tips={mergedLocalTips} locale={locale} />
+                  {communityOverlay[spot.slug]?.contributor && (
+                    <p className="text-xs text-fg-subtle">
+                      {isPt ? 'Contribuição da comunidade' : 'Community contribution'}
+                      {' · '}
+                      @{communityOverlay[spot.slug].contributor}
+                    </p>
+                  )}
+                </div>
               )}
             </div>
-          )}
 
-          <div className="pt-4 border-t border-divider">
+            <div className="card-1 p-5 space-y-5">
+              {spot.hazards && spot.hazards.length > 0 && (
+                <div>
+                  <h3 className="text-h3 text-fg mb-2">{td.hazards}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {spot.hazards.map((h, i) => (
+                      <span
+                        key={i}
+                        className="px-3 py-1.5 rounded-pill bg-score-poor/10 text-score-poor border border-score-poor/20 text-meta-sm"
+                      >
+                        {h}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {spot.facilities && spot.facilities.length > 0 && (
+                <div>
+                  <h3 className="text-h3 text-fg mb-2">{td.facilities}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {spot.facilities.map((f, i) => (
+                      <span
+                        key={i}
+                        className="px-3 py-1.5 rounded-pill bg-surface-2 text-fg-muted border border-divider text-meta-sm"
+                      >
+                        {f}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* Actions — compact footer */}
+        <section className="max-w-6xl mx-auto px-4 py-6 border-t border-divider">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <AlertSubscribeForm
               spotSlug={spot.slug}
               spotName={isPt ? spot.name : spot.nameEn}
               defaultSport={selectedSport}
               locale={locale}
             />
-          </div>
-
-          <div className="pt-2">
-            <FeedbackForm locale={locale} defaultSpotSlug={spot.slug} />
-          </div>
-
-          {/* Hazards */}
-          {spot.hazards && spot.hazards.length > 0 && (
-            <div className="pt-4 border-t border-divider">
-              <h3 className="text-h3 text-fg mb-2">{td.hazards}</h3>
-              <div className="flex flex-wrap gap-2">
-                {spot.hazards.map((h, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1.5 rounded-pill bg-score-poor/10 text-score-poor border border-score-poor/20 text-meta-sm"
-                  >
-                    {h}
-                  </span>
-                ))}
-              </div>
+            <div className="flex items-end">
+              <FeedbackForm locale={locale} defaultSpotSlug={spot.slug} />
             </div>
-          )}
-
-          {/* Facilities */}
-          {spot.facilities && spot.facilities.length > 0 && (
-            <div className="pt-4 border-t border-divider">
-              <h3 className="text-h3 text-fg mb-2">{td.facilities}</h3>
-              <div className="flex flex-wrap gap-2">
-                {spot.facilities.map((f, i) => (
-                  <span
-                    key={i}
-                    className="px-3 py-1.5 rounded-pill bg-surface-2 text-fg-muted border border-divider text-meta-sm"
-                  >
-                    {f}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════════
-          MAPA
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <h2 className="text-h2 text-fg mb-4">{td.location}</h2>
-        <div className="card-1 p-2">
-          <div className="h-80 md:h-96 rounded-card overflow-hidden">
-            <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
           </div>
-        </div>
-      </section>
-
-      <SpotWebcamSection slug={spot.slug} locale={locale} />
-    </div>
+        </section>
+      </div>
     </>
   );
 }
