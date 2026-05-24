@@ -1,6 +1,7 @@
 import { loadSpotData } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
+import PageHeader from '@/components/ui/PageHeader'
 import { spots } from '@/lib/spots'
 import type { Metadata } from 'next'
 
@@ -41,15 +42,15 @@ export default async function SpotsPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-2">
-        <h1 className="text-4xl font-bold text-fg">
-          {isPt ? 'Todos os Spots' : 'All Spots'}
-        </h1>
-        <p className="text-fg-muted">
-          {isPt
-            ? `${spots.length} spots em Portugal — dados actualizados a cada 3 horas`
-            : `${spots.length} spots in Portugal — data updated every 3 hours`}
-        </p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <PageHeader
+          title={isPt ? 'Todos os Spots' : 'All Spots'}
+          subtitle={
+            isPt
+              ? `${spots.length} spots em Portugal — dados actualizados a cada 3 horas`
+              : `${spots.length} spots in Portugal — data updated every 3 hours`
+          }
+        />
       </div>
 
       <SpotGridClient

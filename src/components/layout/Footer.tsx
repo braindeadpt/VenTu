@@ -76,6 +76,14 @@ export default function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <Link
+                  href={`/${locale}/livecams/`}
+                  className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                >
+                  {isPt ? 'Livecams →' : 'Live cams →'}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={`/${locale}/spots/`}
                   className="text-sm text-fg-muted hover:text-data-waves transition-colors"
                 >

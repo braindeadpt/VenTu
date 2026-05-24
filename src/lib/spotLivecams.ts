@@ -206,3 +206,15 @@ export function getSpotLivecam(slug: string): SpotLivecam | null {
 export function getLivecamSpotCount(): number {
   return Object.keys(SPOT_LIVECAMS).length
 }
+
+export interface LivecamEntry {
+  slug: string
+  cam: SpotLivecam
+}
+
+/** All curated livecams sorted by label. */
+export function listAllLivecams(): LivecamEntry[] {
+  return Object.entries(SPOT_LIVECAMS)
+    .map(([slug, cam]) => ({ slug, cam }))
+    .sort((a, b) => a.cam.labelPt.localeCompare(b.cam.labelPt, 'pt'))
+}

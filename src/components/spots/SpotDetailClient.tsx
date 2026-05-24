@@ -47,6 +47,8 @@ import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
 import FeedbackForm from '@/components/FeedbackForm';
+import Skeleton from '@/components/ui/Skeleton';
+import ErrorState from '@/components/ui/ErrorState';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SpotDetailClient — Redesigned showcase of all signature components.
@@ -200,6 +202,8 @@ export default function SpotDetailClient({
     sportFromUrl || (spot.compatibleSports?.[0] as SportType) || 'surf',
   );
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
   const [copyToast, setCopyToast] = useState(false);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [communityOverlay, setCommunityOverlay] = useState<Record<string, import('@/lib/communityTips').CommunityTipEntry>>({});
@@ -212,6 +216,7 @@ export default function SpotDetailClient({
   useEffect(() => {
     async function loadData() {
       try {
+        setLoadError(false);
         // Try loading precomputed data first (avoids live API calls)
         let conditions: Conditions;
         let forecast: Array<{
@@ -311,13 +316,14 @@ export default function SpotDetailClient({
         }
       } catch (e) {
         console.error(e);
+        setLoadError(true);
       } finally {
         setLoading(false);
       }
     }
 
     loadData();
-  }, [spot, sportFromUrl]);
+  }, [spot, sportFromUrl, retryCount]);
 
   /* ── Per-hour scores for ForecastTable ── */
   const hourlyScores = useMemo(() => {
@@ -352,27 +358,48 @@ export default function SpotDetailClient({
   }, []);
 
   /* ── Loading skeleton ── */
-  if (loading || !spotData) {
+  if (loading) {
     return (
-      <div className="min-h-screen bg-bg-base p-4 space-y-6 animate-pulse">
-        {/* Header skeleton */}
+      <div className="min-h-screen bg-bg-base p-4 space-y-6">
         <div className="max-w-5xl mx-auto space-y-4">
-          <div className="h-8 bg-surface-1 rounded w-3/4" />
-          <div className="h-4 bg-surface-1 rounded w-1/2" />
+          <Skeleton className="h-8 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
         </div>
-        
-        {/* Stats grid skeleton */}
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-24 bg-surface-1 rounded-lg" />
+            <Skeleton key={i} className="h-24 rounded-card" />
           ))}
         </div>
-        
-        {/* Forecast skeleton */}
-        <div className="max-w-5xl mx-auto h-64 bg-surface-1 rounded-lg" />
-        
-        {/* Map skeleton */}
-        <div className="max-w-5xl mx-auto h-56 bg-surface-1 rounded-lg" />
+        <div className="max-w-5xl mx-auto">
+          <Skeleton className="h-64 rounded-card" />
+        </div>
+        <div className="max-w-5xl mx-auto">
+          <Skeleton className="h-56 rounded-card" />
+        </div>
+      </div>
+    );
+  }
+
+  if (loadError || !spotData) {
+    return (
+      <div className="min-h-screen bg-bg-base">
+        <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+          <Link
+            href={`/${locale}/spots/`}
+            className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {isPt ? t.spots.backToSpots : t.spots.backToSpots}
+          </Link>
+          <ErrorState
+            message={td.loadError}
+            locale={locale}
+            onRetry={() => {
+              setLoading(true);
+              setRetryCount(c => c + 1);
+            }}
+          />
+        </div>
       </div>
     );
   }

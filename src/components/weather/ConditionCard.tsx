@@ -42,7 +42,7 @@ export default function ConditionCard({
   }
 
   return (
-    <div className="glass-card p-4 space-y-4">
+    <div className="card-1 p-4 space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <Waves className="w-5 h-5 text-data-waves" />

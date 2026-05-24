@@ -2,6 +2,9 @@
 
 import { Search, X } from 'lucide-react';
 import { CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter, type NewsFiltersState } from '@/lib/news';
+import FilterPill from '@/components/ui/FilterPill';
+import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
 
 interface NewsFiltersProps {
   filters: NewsFiltersState;
@@ -66,20 +69,14 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
         {REGION_FILTERS.map((reg) => {
           const active = filters.region === reg;
           return (
-            <button
+            <FilterPill
               key={reg}
+              active={active}
               onClick={() => onChange({ region: reg as RegionFilter, page: 1 })}
-              className={[
-                'inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium min-h-[44px]',
-                'transition-all duration-200 whitespace-nowrap shrink-0',
-                active
-                  ? 'bg-data-waves/15 text-data-waves border border-data-waves/30'
-                  : 'bg-surface-1 border border-divider text-fg-muted hover:bg-surface-2 hover:text-fg',
-              ].join(' ')}
-              aria-pressed={active}
+              activeClassName="bg-data-waves/15 text-data-waves border-data-waves/30"
             >
               {isPt ? regionLabels[reg]?.pt : regionLabels[reg]?.en}
-            </button>
+            </FilterPill>
           );
         })}
       </div>
@@ -135,36 +132,35 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
           })}
         </div>
 
-        <div className="relative flex-1 w-full sm:max-w-xs">
-          {debouncing ? (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+        <Input
+          type="search"
+          value={filters.query}
+          onChange={e => onChange({ query: e.target.value, page: 1 })}
+          placeholder={isPt ? 'Pesquisar notícias...' : 'Search news...'}
+          aria-label={isPt ? 'Pesquisar notícias' : 'Search news'}
+          icon={
+            debouncing ? (
               <div className="w-4 h-4 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
-            </div>
-          ) : (
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle pointer-events-none" />
-          )}
-          <input
-            type="search"
-            value={filters.query}
-            onChange={e => onChange({ query: e.target.value, page: 1 })}
-            placeholder={isPt ? 'Pesquisar notícias...' : 'Search news...'}
-            className="w-full pl-9 pr-3 py-2 rounded-md border border-divider bg-surface-1 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-data-waves/30 focus:border-data-waves transition-all"
-            aria-label={isPt ? 'Pesquisar notícias' : 'Search news'}
-          />
-        </div>
+            ) : (
+              <Search className="w-4 h-4" />
+            )
+          }
+          wrapperClassName="flex-1 w-full sm:max-w-xs"
+        />
 
         <span className="text-xs text-fg-subtle whitespace-nowrap">
           {total} {isPt ? 'notícias' : 'news'}
         </span>
 
         {hasActiveFilters && (
-          <button
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={() => onChange({ category: 'all', region: 'all', period: 'all', query: '', page: 1 })}
-            className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg transition-colors min-h-[36px]"
           >
-            <X className="w-3.5 h-3.5" />
+            <X className="w-3.5 h-3.5" aria-hidden />
             {isPt ? 'Limpar filtros' : 'Clear filters'}
-          </button>
+          </Button>
         )}
       </div>
     </div>

@@ -15,6 +15,8 @@ export const translations = {
     nav: {
       home: 'Início', spots: 'Spots', news: 'Notícias', about: 'Sobre',
       sazonalidade: 'Sazonalidade', comparar: 'Comparar', favorites: 'Favoritos',
+      explorar: 'Explorar', livecams: 'Livecams',
+      openMenu: 'Abrir menu', closeMenu: 'Fechar menu',
       modalidades: 'Modalidades', metricas: 'Métricas',
       search: 'Pesquisar', searchPlaceholder: 'Pesquisar spots, regiões...',
       searchNoResults: 'Sem resultados para "{query}"',
@@ -134,7 +136,7 @@ export const translations = {
       reportar: 'Reportar erro',
       fontes: 'Fontes oficiais',
     },
-    common: { loading: 'A carregar...', error: 'Erro ao carregar dados', refresh: 'Atualizar', today: 'Hoje', tomorrow: 'Amanhã', now: 'Agora' },
+    common: { loading: 'A carregar...', error: 'Erro ao carregar dados', refresh: 'Atualizar', close: 'Fechar', today: 'Hoje', tomorrow: 'Amanhã', now: 'Agora' },
     theme: { toggle: 'Alternar tema', toggleDark: 'Alternar para tema escuro', toggleLight: 'Alternar para tema claro' },
     forecastTable: {
       caption: 'Previsão horária para as próximas {hours} horas',
@@ -159,12 +161,22 @@ export const translations = {
       location: 'Localização',
       waterQuality: 'Qualidade da água',
       noForecast: 'Previsão indisponível',
+      loadError: 'Não foi possível carregar as condições',
+    },
+    livecams: {
+      title: 'Livecams',
+      subtitle: 'Câmaras ao vivo nos spots mais populares de Portugal — fontes externas.',
+      watchLive: 'Ver ao vivo',
+      viewSpot: 'Ver spot',
+      provider: 'Fonte',
     }
   },
   en: {
     nav: {
       home: 'Home', spots: 'Spots', news: 'News', about: 'About',
       sazonalidade: 'Seasonality', comparar: 'Compare', favorites: 'Favorites',
+      explorar: 'Explore', livecams: 'Live cams',
+      openMenu: 'Open menu', closeMenu: 'Close menu',
       modalidades: 'Modalities', metricas: 'Metrics',
       search: 'Search', searchPlaceholder: 'Search spots, regions...',
       searchNoResults: 'No results for "{query}"',
@@ -282,7 +294,7 @@ export const translations = {
       reportar: 'Report an issue',
       fontes: 'Official sources',
     },
-    common: { loading: 'Loading...', error: 'Error loading data', refresh: 'Refresh', today: 'Today', tomorrow: 'Tomorrow', now: 'Now' },
+    common: { loading: 'Loading...', error: 'Error loading data', refresh: 'Refresh', close: 'Close', today: 'Today', tomorrow: 'Tomorrow', now: 'Now' },
     theme: { toggle: 'Switch theme', toggleDark: 'Switch to dark theme', toggleLight: 'Switch to light theme' },
     forecastTable: {
       caption: 'Hourly forecast for the next {hours} hours',
@@ -307,6 +319,14 @@ export const translations = {
       location: 'Location',
       waterQuality: 'Water quality',
       noForecast: 'Forecast unavailable',
+      loadError: 'Could not load conditions',
+    },
+    livecams: {
+      title: 'Live cams',
+      subtitle: 'Live cameras at Portugal\'s most popular spots — external sources.',
+      watchLive: 'Watch live',
+      viewSpot: 'View spot',
+      provider: 'Source',
     }
   }
 };

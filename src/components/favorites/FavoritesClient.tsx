@@ -11,6 +11,10 @@ import { getAssetPath } from '@/lib/paths';
 import FavoriteButton from '@/components/FavoriteButton';
 import Link from 'next/link';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
+import PageHeader from '@/components/ui/PageHeader';
+import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
+import Skeleton from '@/components/ui/Skeleton';
 
 interface SpotConditions {
   waveHeight: number;
@@ -162,15 +166,18 @@ export default function FavoritesClient() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-bg-base p-4 space-y-6 animate-pulse">
-        <div className="max-w-4xl mx-auto space-y-4 pt-8">
-          <div className="h-8 w-20 bg-surface-1 rounded" />
-          <div className="h-10 w-48 bg-surface-1 rounded" />
-        </div>
-        <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-40 bg-surface-1 rounded-lg" />
-          ))}
+      <div className="min-h-screen bg-bg-base p-4">
+        <div className="max-w-4xl mx-auto space-y-8 pt-8">
+          <Skeleton className="h-5 w-20" />
+          <div className="space-y-3">
+            <Skeleton className="h-10 w-48" />
+            <Skeleton className="h-5 w-24" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Skeleton key={i} className="h-40 rounded-card" />
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -185,36 +192,36 @@ export default function FavoritesClient() {
             {isPt ? 'Voltar' : 'Back'}
           </Link>
           
-          <div className="flex items-center gap-3">
-            <Heart className="w-8 h-8 text-windDir-onshore fill-current" />
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-fg">{isPt ? 'Meus Favoritos' : 'My Favorites'}</h1>
-              <p className="text-fg-muted">{favoriteSpots.length} {isPt ? 'spots' : 'spots'}</p>
-            </div>
-            {favoriteSpots.length > 0 && (
-              <button
+          <PageHeader
+            icon={<Heart className="w-8 h-8 text-windDir-onshore fill-current" aria-hidden />}
+            title={isPt ? 'Meus Favoritos' : 'My Favorites'}
+            subtitle={`${favoriteSpots.length} ${isPt ? 'spots' : 'spots'}`}
+          />
+          {favoriteSpots.length > 0 && (
+            <div className="flex justify-end -mt-4">
+              <Button
+                variant={shareCopied ? 'secondary' : 'secondary'}
+                size="sm"
                 onClick={handleShare}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  shareCopied
-                    ? 'bg-score-good/20 text-score-good border border-score-good/30'
-                    : 'bg-surface-2 text-fg-subtle hover:text-fg border border-divider'
-                }`}
+                className={shareCopied ? 'text-score-good border-score-good/30' : ''}
               >
-                {shareCopied ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                {shareCopied ? <Check className="w-4 h-4" aria-hidden /> : <Share2 className="w-4 h-4" aria-hidden />}
                 {shareCopied ? (isPt ? 'Copiado!' : 'Copied!') : (isPt ? 'Partilhar' : 'Share')}
-              </button>
-            )}
-          </div>
+              </Button>
+            </div>
+          )}
         </div>
 
         {favoriteSpots.length === 0 ? (
-          <div className="text-center py-16 space-y-4">
-            <Heart className="w-16 h-16 text-fg-subtle mx-auto" />
-            <p className="text-fg-subtle">{isPt ? 'Ainda não tens favoritos.' : 'No favorites yet.'}</p>
-            <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 px-6 py-3 bg-data-waves text-bg-base rounded-xl">
-              {isPt ? 'Explorar Spots' : 'Explore Spots'}
-            </Link>
-          </div>
+          <EmptyState
+            icon={<Heart className="w-8 h-8 text-fg-subtle" aria-hidden />}
+            title={isPt ? 'Ainda não tens favoritos.' : 'No favorites yet.'}
+            action={
+              <Button href={`/${locale}/spots/`} size="lg">
+                {isPt ? 'Explorar Spots' : 'Explore Spots'}
+              </Button>
+            }
+          />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {favoriteSpots.map(spot => {

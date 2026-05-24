@@ -70,8 +70,10 @@ export default function Header({ locale }: HeaderProps) {
   }, []);
 
   const navLinks = [
+    { href: `/${locale}/explorar/`, label: navLabel.explorar },
     { href: `/${locale}/sazonalidade/`, label: navLabel.sazonalidade },
     { href: `/${locale}/compare/`, label: navLabel.comparar },
+    { href: `/${locale}/livecams/`, label: navLabel.livecams },
     { href: `/${locale}/favorites/`, label: navLabel.favorites },
     { href: `/${locale}/news/`, label: navLabel.news },
     { href: `/${locale}/about/`, label: navLabel.about },
@@ -156,7 +158,7 @@ export default function Header({ locale }: HeaderProps) {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="inline-flex items-center justify-center w-11 h-11 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
-                aria-label={mobileMenuOpen ? 'Fechar menu' : 'Abrir menu'}
+                aria-label={mobileMenuOpen ? navLabel.closeMenu : navLabel.openMenu}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
               >
@@ -180,6 +182,13 @@ export default function Header({ locale }: HeaderProps) {
         >
           <div className="px-4 py-3 space-y-1">
             <Link
+              href={`/${locale}/explorar/`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              {navLabel.explorar}
+            </Link>
+            <Link
               href={`/${locale}/sazonalidade/`}
               onClick={() => setMobileMenuOpen(false)}
               className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
@@ -192,6 +201,13 @@ export default function Header({ locale }: HeaderProps) {
               className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
             >
               {navLabel.comparar}
+            </Link>
+            <Link
+              href={`/${locale}/livecams/`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              {navLabel.livecams}
             </Link>
             <Link
               href={`/${locale}/favorites/`}

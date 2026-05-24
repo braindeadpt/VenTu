@@ -73,6 +73,7 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
       onClose={onClose}
       side="left"
       title={spot?.name ?? ''}
+      locale={locale}
     >
       {spotData && spot && conditions && (
         <div className="space-y-4">

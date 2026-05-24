@@ -11,6 +11,9 @@ import { getTranslation } from '@/lib/i18n';
 import { useGeolocation, calculateDistance } from '@/lib/geolocation';
 import type { Spot } from '@/types';
 import SpotDrawer from './SpotDrawer';
+import FilterPill from '@/components/ui/FilterPill';
+import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
 import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
 import {
   DEFAULT_REGION,
@@ -274,21 +277,15 @@ export function SpotGridClient({
             {SPORTS.map(sport => {
               const active = selectedSport === sport.id;
               return (
-                <button
+                <FilterPill
                   key={sport.id}
+                  active={active}
                   onClick={() => handleSportChange(sport.id)}
-                  className={[
-                    'inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium min-h-[44px]',
-                    'transition-all duration-200 whitespace-nowrap shrink-0',
-                    active
-                      ? 'bg-surface-2 border border-divider-strong text-fg'
-                      : 'bg-surface-1 border border-divider text-fg-muted hover:bg-surface-2 hover:text-fg',
-                  ].join(' ')}
-                  aria-pressed={active}
+                  icon={<span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>}
+                  className="rounded-full"
                 >
-                  <span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>
-                  <span>{isPt ? sport.labelPt : sport.labelEn}</span>
-                </button>
+                  {isPt ? sport.labelPt : sport.labelEn}
+                </FilterPill>
               );
             })}
           </div>
@@ -302,43 +299,41 @@ export function SpotGridClient({
               {regions.map(region => {
                 const active = selectedRegion === region;
                 return (
-                  <button
+                  <FilterPill
                     key={region}
+                    compact
+                    active={active}
                     onClick={() => handleRegionChange(region)}
-                    className={[
-                      'inline-flex items-center px-2.5 py-1.5 rounded-md text-sm min-h-[40px]',
-                      'transition-all duration-200 whitespace-nowrap shrink-0',
-                      active
-                        ? 'bg-surface-2 border border-divider-strong text-fg font-medium'
-                        : 'bg-transparent border border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1',
-                    ].join(' ')}
-                    aria-pressed={active}
+                    activeClassName="bg-surface-2 border-divider-strong text-fg font-medium"
+                    inactiveClassName="bg-transparent border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1"
+                    className="rounded-md"
                   >
                     {region}
-                  </button>
+                  </FilterPill>
                 );
               })}
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              <button
+              <FilterPill
+                compact
+                active={sortBy === 'distance' && !!latitude}
                 onClick={() => setSortBy(sortBy === 'score' ? 'distance' : 'score')}
                 disabled={sortBy === 'distance' && !latitude}
-                className={[
-                  'inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-sm min-h-[40px]',
-                  'transition-all duration-200',
-                  sortBy === 'distance' && latitude
-                    ? 'bg-surface-2 border border-divider-strong text-fg font-medium'
-                    : 'bg-transparent border border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1',
-                  sortBy === 'distance' && !latitude ? 'opacity-50 cursor-not-allowed' : '',
-                ].join(' ')}
-                title={sortBy === 'distance' && !latitude ? (isPt ? 'Ative a localização para ordenar por distância' : 'Enable location to sort by distance') : ''}
+                aria-label={
+                  sortBy === 'score'
+                    ? (isPt ? 'Ordenar por score' : 'Sort by score')
+                    : (isPt ? 'Ordenar por distância' : 'Sort by distance')
+                }
+                activeClassName="bg-surface-2 border-divider-strong text-fg font-medium"
+                inactiveClassName="bg-transparent border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1"
+                className="rounded-md"
+                icon={sortBy === 'distance' ? <Navigation className="w-3.5 h-3.5" /> : <Star className="w-3.5 h-3.5" />}
               >
-                {sortBy === 'distance' ? <Navigation className="w-3.5 h-3.5" /> : <Star className="w-3.5 h-3.5" />}
                 <span className="hidden sm:inline">
-                  {sortBy === 'score' ? (isPt ? 'Score' : 'Score') : (isPt ? 'Distância' : 'Distance')}
+                  {sortBy === 'score' ? 'Score' : (isPt ? 'Distância' : 'Distance')}
                 </span>
-              </button>
+              </FilterPill>
 
               {sortBy === 'distance' && !latitude && (
                 <button
@@ -394,55 +389,44 @@ export function SpotGridClient({
       </div>
 
       {sorted.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-surface-1 border border-divider flex items-center justify-center mb-4">
-            <Filter className="w-8 h-8 text-fg-muted" />
-          </div>
-          <h3 className="text-h3 text-fg mb-2">
-            {isPt
+        <EmptyState
+          icon={<Filter className="w-8 h-8 text-fg-muted" aria-hidden />}
+          title={
+            isPt
               ? t.hero.noSpotsFound.replace('{sport}', sportLabel || '').replace('{region}', selectedRegion)
-              : t.hero.noSpotsFound.replace('{sport}', sportLabel || '').replace('{region}', selectedRegion)}
-          </h3>
-
-          {alternativeSport && (
-            <p className="text-body text-fg-muted mb-4 max-w-md">
-              {isPt
+              : t.hero.noSpotsFound.replace('{sport}', sportLabel || '').replace('{region}', selectedRegion)
+          }
+          description={
+            alternativeSport
+              ? (isPt
                 ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt) || '')
-                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt) || '')}
-            </p>
-          )}
-
-          <div className="flex items-center gap-3">
-            {alternativeSport && (
-              <button
-                onClick={() => handleSportChange(alternativeSport)}
-                className="inline-flex items-center gap-2 h-10 px-4 bg-surface-1 border border-divider hover:border-divider-strong rounded-lg text-fg transition-colors"
-              >
-                <span className={getSportColor(alternativeSport)}>
-                  {getSportIcon(alternativeSport)}
-                </span>
-                <span>
+                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt) || ''))
+              : undefined
+          }
+          action={
+            <div className="flex items-center gap-3 flex-wrap justify-center">
+              {alternativeSport && (
+                <Button
+                  variant="secondary"
+                  onClick={() => handleSportChange(alternativeSport)}
+                >
+                  <span className={getSportColor(alternativeSport)}>
+                    {getSportIcon(alternativeSport)}
+                  </span>
                   {isPt ? 'Ver' : 'View'} {getSportLabel(alternativeSport, isPt)}
-                </span>
-              </button>
-            )}
-            <button
-              onClick={handleReset}
-              className="inline-flex items-center gap-2 h-10 px-4 bg-surface-1 border border-divider hover:border-divider-strong rounded-lg text-fg transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-              <span>{isPt ? t.hero.clearFilters : t.hero.clearFilters}</span>
-            </button>
-          </div>
-
-          <Link
-            href={`/${locale}/spots/`}
-            className="mt-6 inline-flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors"
-          >
-            {isPt ? t.hero.exploreAll : t.hero.exploreAll}
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
+                </Button>
+              )}
+              <Button variant="secondary" onClick={handleReset}>
+                <RotateCcw className="w-4 h-4" aria-hidden />
+                {t.hero.clearFilters}
+              </Button>
+              <Button href={`/${locale}/spots/`} variant="ghost" size="sm">
+                {t.hero.exploreAll}
+                <ArrowRight className="w-4 h-4" aria-hidden />
+              </Button>
+            </div>
+          }
+        />
       )}
 
       <SpotDrawer

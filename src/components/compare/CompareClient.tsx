@@ -13,6 +13,9 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import FilterPill from '@/components/ui/FilterPill';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import Skeleton from '@/components/ui/Skeleton';
+import ErrorState from '@/components/ui/ErrorState';
 
 interface SpotBattleData {
   spot: typeof spots[0];
@@ -127,22 +130,22 @@ function groupByRegion(spotsList: typeof spots): Map<string, typeof spots> {
 
 function CompareLoadingSkeleton() {
   return (
-    <div className="min-h-screen bg-bg-base animate-pulse">
+    <div className="min-h-screen bg-bg-base">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
-        <div className="h-5 w-24 bg-surface-1 rounded" />
+        <Skeleton className="h-5 w-24" />
         <div className="space-y-3">
-          <div className="h-10 w-64 bg-surface-1 rounded mx-auto md:mx-0" />
-          <div className="h-5 w-40 bg-surface-1 rounded mx-auto md:mx-0" />
+          <Skeleton className="h-10 w-64 mx-auto md:mx-0" />
+          <Skeleton className="h-5 w-40 mx-auto md:mx-0" />
         </div>
         <div className="flex gap-2">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-11 w-24 bg-surface-1 rounded-pill" />
+            <Skeleton key={i} className="h-11 w-24 rounded-pill" />
           ))}
         </div>
-        <div className="card-1 h-48" />
+        <Skeleton className="h-48 rounded-card" />
         <div className="grid gap-6 md:grid-cols-2">
           {[1, 2].map(i => (
-            <div key={i} className="card-1 h-72" />
+            <Skeleton key={i} className="h-72 rounded-card" />
           ))}
         </div>
       </div>
@@ -160,6 +163,7 @@ export default function CompareClient() {
   const [selectedSlugs, setSelectedSlugs] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [picking, setPicking] = useState(false);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
     const urlSlugs = getSpotsFromUrl();
@@ -202,7 +206,7 @@ export default function CompareClient() {
     })();
 
     return () => { cancelled = true; };
-  }, [slugs, baseCity]);
+  }, [slugs, baseCity, retryKey]);
 
   const startCompare = () => {
     if (selectedSlugs.length < 2) return;
@@ -249,16 +253,13 @@ export default function CompareClient() {
             subtitle={isPt ? 'Escolhe 2-3 spots para comparar' : 'Pick 2-3 spots to compare'}
           />
 
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" aria-hidden />
-            <input
-              type="search"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              placeholder={isPt ? 'Procurar spot...' : 'Search spot...'}
-              className="w-full pl-9 pr-3 py-2.5 rounded-card border border-divider bg-surface-1 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-data-waves/30"
-            />
-          </div>
+          <Input
+            type="search"
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            placeholder={isPt ? 'Procurar spot...' : 'Search spot...'}
+            icon={<Search className="w-4 h-4" />}
+          />
 
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <span className="text-meta text-fg-muted">
@@ -327,6 +328,26 @@ export default function CompareClient() {
 
   if (loading) {
     return <CompareLoadingSkeleton />;
+  }
+
+  if (slugs.length >= 2 && battleData.length < 2) {
+    return (
+      <div className="min-h-screen bg-bg-base">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
+          <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors">
+            <ArrowLeft className="w-4 h-4" />
+            {isPt ? 'Voltar' : 'Back'}
+          </Link>
+          <ErrorState
+            locale={locale}
+            onRetry={() => {
+              setLoading(true);
+              setRetryKey(k => k + 1);
+            }}
+          />
+        </div>
+      </div>
+    );
   }
 
   if (!slugs.length || battleData.length < 2) {

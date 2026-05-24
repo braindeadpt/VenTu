@@ -17,14 +17,14 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
   return (
     <div className="card-1 p-4">
       <div className="flex items-start gap-3">
-        <div className="rounded-card bg-accent/10 p-2 text-accent shrink-0">
+        <div className="rounded-card bg-data-waves/10 p-2 text-data-waves shrink-0">
           <Video className="w-5 h-5" aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
           <h3 className="text-h3 text-fg mb-1">
             {isPt ? 'Livecam' : 'Live cam'}
           </h3>
-          <p className="text-sm text-muted mb-3">
+          <p className="text-sm text-fg-muted mb-3">
             {isPt
               ? `${cam.labelPt} — ${cam.provider}. Abre numa nova janela.`
               : `${cam.labelEn} — ${cam.provider}. Opens in a new window.`}
@@ -33,7 +33,7 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
             href={cam.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-medium text-data-waves hover:underline"
           >
             {isPt ? 'Ver livecam ao vivo' : 'Watch live cam'}
             <ExternalLink className="w-4 h-4" aria-hidden />

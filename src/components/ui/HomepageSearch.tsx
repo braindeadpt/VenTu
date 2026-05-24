@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, X, MapPin, Wind, Waves, Zap } from 'lucide-react';
 import type { Spot } from '@/types';
 import { searchSpots as filterSpots } from '@/lib/spotSearch';
+import { getTranslation } from '@/lib/i18n';
+import Input from '@/components/ui/Input';
 
 interface HomepageSearchProps {
   locale: string;
@@ -30,8 +32,11 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Spot[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const isPt = locale === 'pt';
+  const t = getTranslation(locale as 'pt' | 'en');
 
   const searchSpots = (searchQuery: string) => {
     setResults(filterSpots({ locale, query: searchQuery, limit: 8 }));
@@ -43,11 +48,11 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
     setIsOpen(true);
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpen(false);
     setQuery('');
     setResults([]);
-  };
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') {
@@ -70,36 +75,70 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
     handleClose();
   };
 
+  useEffect(() => {
+    if (!isOpen) return;
+
+    inputRef.current?.focus();
+    document.body.style.overflow = 'hidden';
+
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    document.addEventListener('keydown', handler);
+
+    return () => {
+      document.removeEventListener('keydown', handler);
+      document.body.style.overflow = '';
+    };
+  }, [isOpen, handleClose]);
+
+  const handleOverlayClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) handleClose();
+  };
+
   return (
     <>
-      {/* Search Button */}
       <button
         onClick={handleOpen}
         className="inline-flex items-center gap-2 w-full sm:w-auto h-12 px-4 bg-surface-1 border border-divider hover:border-divider-strong rounded-lg text-fg-subtle transition-colors"
       >
-        <Search className="w-4 h-4 text-fg-muted" />
+        <Search className="w-4 h-4 text-fg-muted" aria-hidden />
         <span>{isPt ? 'Procurar spot...' : 'Search spot...'}</span>
       </button>
 
-      {/* Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh]">
-          <div className="absolute inset-0 bg-bg-base/80 backdrop-blur-sm" onClick={handleClose} />
-          
-          <div className="relative w-full max-w-xl mx-4 bg-surface-1 border border-divider rounded-2xl shadow-2xl overflow-hidden">
+        <div
+          className="fixed inset-0 z-[100] flex items-start justify-center pt-[20vh] bg-bg-base/80 backdrop-blur-sm"
+          onClick={handleOverlayClick}
+          role="dialog"
+          aria-modal="true"
+          aria-label={t.nav.search}
+        >
+          <div
+            ref={dialogRef}
+            className="relative w-full max-w-xl mx-4 bg-surface-1 border border-divider rounded-2xl shadow-2xl overflow-hidden"
+          >
             <div className="flex items-center gap-3 p-4 border-b border-divider">
-              <Search className="w-5 h-5 text-fg-subtle" />
-              <input
+              <Input
+                ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); searchSpots(e.target.value); }}
                 onKeyDown={handleKeyDown}
                 placeholder={isPt ? 'Pesquisar spots, regiões...' : 'Search spots, regions...'}
-                className="flex-1 bg-transparent text-fg placeholder:text-fg-subtle outline-none text-lg"
-                autoFocus
+                icon={<Search className="w-5 h-5" />}
+                wrapperClassName="flex-1"
+                className="text-lg border-0 bg-transparent focus:ring-0 pl-9"
+                aria-label={t.nav.search}
+                autoComplete="off"
+                spellCheck={false}
               />
-              <button onClick={handleClose} className="p-1 rounded hover:bg-surface-2">
-                <X className="w-5 h-5 text-fg-subtle" />
+              <button
+                onClick={handleClose}
+                className="p-1 rounded hover:bg-surface-2 shrink-0"
+                aria-label={t.common.close}
+              >
+                <X className="w-5 h-5 text-fg-subtle" aria-hidden />
               </button>
             </div>
 
@@ -126,12 +165,12 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
                         }`}
                       >
                         <div className="w-10 h-10 rounded-lg bg-surface-2 flex items-center justify-center">
-                          <Icon className="w-5 h-5 text-data-waves" />
+                          <Icon className="w-5 h-5 text-data-waves" aria-hidden />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="font-medium truncate">{name}</p>
                           <p className="text-sm text-fg-subtle flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />{region}
+                            <MapPin className="w-3 h-3" aria-hidden />{region}
                           </p>
                         </div>
                       </button>

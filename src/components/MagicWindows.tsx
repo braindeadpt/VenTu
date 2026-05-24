@@ -198,7 +198,7 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
 
   if (!windows.length) {
     return (
-      <div className="glass-card p-4 text-center text-fg-muted text-sm">
+      <div className="card-1 p-4 text-center text-fg-muted text-sm">
         {isPt ? 'Nenhuma janela mágica detectada nas próximas horas.' : 'No magic windows detected in the next hours.'}
       </div>
     );
@@ -223,7 +223,7 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
       {windows.map((w, i) => (
         <div
           key={i}
-          className={`glass-card p-4 border-l-4 ${
+          className={`card-1 p-4 border-l-4 ${
             w.score >= 80 ? 'border-l-windDir-offshore' : w.score >= 60 ? 'border-l-score-fair' : 'border-l-data-waves'
           }`}
         >

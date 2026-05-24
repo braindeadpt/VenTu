@@ -54,7 +54,7 @@ export default function WindyWebcam({ lat, lon, locale, onEmpty }: WindyWebcamPr
       });
   }, [lat, lon, locale, onEmpty]);
 
-  if (loading) return <div className="animate-pulse h-48 bg-gray-800/20 rounded-card" />;
+  if (loading) return <div className="skeleton h-48 rounded-card" />;
   if (!camUrl) return null;
 
   return (
