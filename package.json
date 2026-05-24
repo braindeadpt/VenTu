@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run windy:fetch && next build",
+    "windy:fetch": "node scripts/fetch-windy-webcams.js",
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run",

@@ -805,7 +805,7 @@ export default function SpotDetailClient({
         </div>
       </section>
 
-      <SpotWebcamSection slug={spot.slug} lat={spot.lat} lon={spot.lon} locale={locale} />
+      <SpotWebcamSection slug={spot.slug} locale={locale} />
     </div>
     </>
   );

@@ -44,37 +44,27 @@ async function main() {
     await page.close();
   }
 
-  // ── 2. Windy webcam + CSP (Guincho) ─────────────────────────────────
+  // ── 2. Windy webcam embed (Guincho) — build-time data, no browser API call ──
   {
     const page = await browser.newPage();
     const cspViolations = [];
-    const windyCspViolations = [];
-    const apiCalls = [];
     page.on('console', (msg) => {
       const t = msg.text();
-      if (/content security policy|csp/i.test(t)) {
+      if (/content security policy|csp/i.test(t) && /windy|webcam/i.test(t)) {
         cspViolations.push(t);
-        if (/windy|webcam|embed\.windy/i.test(t)) windyCspViolations.push(t);
-      }
-    });
-    page.on('request', (req) => {
-      const u = req.url();
-      if (u.includes('api.windy.com') || u.includes('embed.windy') || u.includes('webcams')) {
-        apiCalls.push(u);
       }
     });
     await page.goto(`${BASE}/pt/spots/guincho/`, { waitUntil: 'networkidle', timeout: 45_000 });
-    await page.waitForTimeout(6000);
+    await page.waitForTimeout(3000);
     const iframe = page.locator('iframe[src*="windy"], iframe[src*="webcam"], iframe[title*="Webcam"]');
     const iframeCount = await iframe.count();
     const iframeVisible = iframeCount > 0 && await iframe.first().isVisible().catch(() => false);
-    if (windyCspViolations.length === 0) pass('windy-csp', 'Sem violações CSP relacionadas com Windy');
-    else fail('windy-csp', windyCspViolations.slice(0, 2).join(' | '));
+    if (cspViolations.length === 0) pass('windy-csp', 'Sem violações CSP Windy');
+    else fail('windy-csp', cspViolations.slice(0, 2).join(' | '));
     if (iframeVisible) pass('windy-load', `Iframe Windy visível (${iframeCount})`);
-    else if (apiCalls.length > 0) skip('windy-load', `API Windy chamada (${apiCalls.length}x) mas sem iframe — pode não haver câmara perto`);
     else {
       const curated = await page.locator('a[href*="surftotal"], a[href*="meo"], a[href*="webcam"]').count();
-      if (curated > 0) skip('windy-load', `Sem embed; ${curated} link(s) curado(s)`);
+      if (curated > 0) skip('windy-load', `Sem iframe Windy; ${curated} link(s) curado(s)`);
       else fail('windy-load', 'Sem webcam Windy nem links alternativos');
     }
     const goatBlocked = cspViolations.some((v) => /goatcounter/i.test(v));
