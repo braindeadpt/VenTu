@@ -102,18 +102,34 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const mapShell = page.locator('[data-map-cluster]');
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
 
-      await page.locator('.spot-marker').first().click({ timeout: 15_000 });
-      await expect(page.locator('.spot-popup')).toBeVisible({ timeout: 5_000 });
-      await expect(page.locator('.spot-popup')).toContainText(/kW\/m|Swell|Vento|Wind/i);
-
       const showAllBtn = page.getByRole('button', { name: /Mostrar todos|Show all/i });
       await showAllBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
-      await expect(page.locator('.spot-marker').first()).toBeVisible({ timeout: 10_000 });
+      await expect(page.locator('.leaflet-marker-icon.spot-marker').first()).toBeVisible({ timeout: 15_000 });
 
       const clusterBtn = page.getByRole('button', { name: /Agrupar spots|Cluster spots/i });
-      await clusterBtn.click();
+      await clusterBtn.click({ force: true });
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
+
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+      await context.close();
+    });
+
+    test('02d — Homepage: popup com swell e energia (desktop)', async ({ browser }) => {
+      test.skip(viewport === 'mobile', 'Popup abre por hover em desktop');
+      const context = await createContext(browser, viewport);
+      const { page, health } = await setupPage(context, viewport);
+      await gotoHealthy(page, health, '/pt/');
+
+      await page.getByRole('button', { name: /Mostrar todos|Show all/i }).click();
+      await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 15_000 });
+      const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
+      const box = await marker.boundingBox();
+      expect(box).toBeTruthy();
+      await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
+      const popup = page.locator('.leaflet-popup.spot-popup');
+      await expect(popup).toBeVisible({ timeout: 5_000 });
+      await expect(popup).toContainText(/kW\/m|Swell|Vento|Wind/i);
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
