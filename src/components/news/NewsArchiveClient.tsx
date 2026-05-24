@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import type { NewsItem } from '@/types';
-import { filterNews, paginateNews, groupByDay, CATEGORIES, DATE_FILTERS, type NewsCategory, type DateFilter } from '@/lib/news';
+import { filterNews, paginateNews, groupByDay, CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter } from '@/lib/news';
 import NewsFilters from './NewsFilters';
 import NewsListGrouped from './NewsListGrouped';
 import NewsPagination from './NewsPagination';
@@ -16,6 +16,7 @@ interface NewsArchiveClientProps {
 export default function NewsArchiveClient({ news, locale }: NewsArchiveClientProps) {
   const isPt = locale === 'pt';
   const [category, setCategory] = useState<NewsCategory>('all');
+  const [region, setRegion] = useState<RegionFilter>('all');
   const [period, setPeriod] = useState<DateFilter>('all');
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState('');
@@ -29,11 +30,13 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
     try {
       const params = new URLSearchParams(window.location.search);
       const cat = params.get('category');
+      const reg = params.get('region');
       const p = params.get('period');
       const q = params.get('q');
       const pn = params.get('page');
 
       if (cat && (CATEGORIES as readonly string[]).includes(cat)) setCategory(cat as NewsCategory);
+      if (reg && (REGION_FILTERS as readonly string[]).includes(reg)) setRegion(reg as RegionFilter);
       if (p && (DATE_FILTERS as readonly string[]).includes(p)) setPeriod(p as DateFilter);
       if (q) { setSearchInput(q); setDebouncedQuery(q); }
       if (pn) { const n = parseInt(pn, 10); if (!isNaN(n) && n > 0) setPage(n); }
@@ -48,15 +51,17 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
   }, [searchInput]);
 
   // Sync URL to state
-  const syncUrl = useCallback((cat: string, per: string, q: string, pg: number) => {
+  const syncUrl = useCallback((cat: string, reg: string, per: string, q: string, pg: number) => {
     if (typeof window === 'undefined') return;
     try {
       const url = new URL(window.location.href);
       url.searchParams.delete('category');
+      url.searchParams.delete('region');
       url.searchParams.delete('period');
       url.searchParams.delete('q');
       url.searchParams.delete('page');
       if (cat !== 'all') url.searchParams.set('category', cat);
+      if (reg !== 'all') url.searchParams.set('region', reg);
       if (per !== 'all') url.searchParams.set('period', per);
       if (q) url.searchParams.set('q', q);
       if (pg > 1) url.searchParams.set('page', String(pg));
@@ -67,12 +72,17 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
   // Sync URL after debounced query settles
   useEffect(() => {
     if (!hydrated) return;
-    syncUrl(category, period, debouncedQuery, page);
-  }, [category, period, debouncedQuery, page, hydrated, syncUrl]);
+    syncUrl(category, region, period, debouncedQuery, page);
+  }, [category, region, period, debouncedQuery, page, hydrated, syncUrl]);
 
   // Sync URL immediately for non-debounced filters
   const handleCategoryChange = useCallback((cat: NewsCategory) => {
     setCategory(cat);
+    setPage(1);
+  }, []);
+
+  const handleRegionChange = useCallback((r: RegionFilter) => {
+    setRegion(r);
     setPage(1);
   }, []);
 
@@ -93,6 +103,7 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
 
   const handleClear = useCallback(() => {
     setCategory('all');
+    setRegion('all');
     setPeriod('all');
     setSearchInput('');
     setDebouncedQuery('');
@@ -101,10 +112,11 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
 
   const currentFilters = useMemo(() => ({
     category,
+    region,
     period,
     query: debouncedQuery,
     page,
-  }), [category, period, debouncedQuery, page]);
+  }), [category, region, period, debouncedQuery, page]);
 
   const isDebouncing = searchInput !== debouncedQuery && searchInput !== '';
   const filteredAll = useMemo(() => filterNews(news, currentFilters), [news, currentFilters]);
@@ -131,7 +143,7 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
         <div>
           <h1 className="text-4xl font-bold text-fg">{isPt ? 'Notícias' : 'News'}</h1>
           <p className="text-fg-muted mt-1">
-            {isPt ? 'Notícias automáticas sobre desportos náuticos' : 'Automated news about water sports'}
+            {isPt ? 'Cena PT e notícias internacionais de desportos náuticos' : 'Portuguese scene and international water sports news'}
           </p>
         </div>
       </div>
@@ -140,9 +152,10 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
       <div className="sticky top-0 z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3">
         <div className="max-w-7xl mx-auto">
           <NewsFilters
-            filters={{ category, period, query: searchInput, page }}
-            onChange={({ category: cat, period: per, query: q, page: pg }) => {
+            filters={{ category, region, period, query: searchInput, page }}
+            onChange={({ category: cat, region: reg, period: per, query: q, page: pg }) => {
               if (cat !== undefined) handleCategoryChange(cat);
+              if (reg !== undefined) handleRegionChange(reg);
               if (per !== undefined) handlePeriodChange(per);
               if (q !== undefined) handleSearchChange(q);
               if (pg !== undefined) handlePageChange(pg);
@@ -171,7 +184,7 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
             <p className="text-fg-subtle/80 text-sm">
               {isPt ? 'Tenta remover filtros ou alargar o período.' : 'Try removing filters or expanding the time period.'}
             </p>
-            {(category !== 'all' || period !== 'all' || debouncedQuery) && (
+            {(category !== 'all' || region !== 'all' || period !== 'all' || debouncedQuery) && (
               <button
                 onClick={handleClear}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-2 border border-divider text-sm text-fg hover:bg-surface-3 transition-colors"

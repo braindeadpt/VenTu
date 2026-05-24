@@ -70,6 +70,8 @@ function assignIds(items) {
     if (!item.id) {
       item.id = `news-${Date.now()}-${counter++}`;
     }
+    if (!item.tags) item.tags = [];
+    if (!item.sourceRegion) item.sourceRegion = 'intl';
     return item;
   });
 }

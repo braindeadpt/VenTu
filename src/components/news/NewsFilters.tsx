@@ -1,7 +1,7 @@
 'use client';
 
 import { Search, X } from 'lucide-react';
-import { CATEGORIES, DATE_FILTERS, type NewsCategory, type DateFilter, type NewsFiltersState } from '@/lib/news';
+import { CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter, type NewsFiltersState } from '@/lib/news';
 
 interface NewsFiltersProps {
   filters: NewsFiltersState;
@@ -49,12 +49,41 @@ const categoryColors: Record<string, string> = {
   alert:      'bg-windDir-onshore/20 text-windDir-onshore border border-windDir-onshore/35',
 };
 
+const regionLabels: Record<string, { pt: string; en: string }> = {
+  all:   { pt: 'Tudo',           en: 'All' },
+  pt:    { pt: '🇵🇹 Cena PT',    en: '🇵🇹 PT Scene' },
+  intl:  { pt: '🌍 Internacional', en: '🌍 International' },
+};
+
 export default function NewsFilters({ filters, onChange, locale, total, debouncing }: NewsFiltersProps) {
   const isPt = locale === 'pt';
-  const hasActiveFilters = filters.category !== 'all' || filters.period !== 'all' || filters.query !== '';
+  const hasActiveFilters = filters.category !== 'all' || filters.region !== 'all' || filters.period !== 'all' || filters.query !== '';
 
   return (
     <div className="space-y-4">
+      {/* Region pills (Cena PT) */}
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label={isPt ? 'Filtrar por origem' : 'Filter by region'}>
+        {REGION_FILTERS.map((reg) => {
+          const active = filters.region === reg;
+          return (
+            <button
+              key={reg}
+              onClick={() => onChange({ region: reg as RegionFilter, page: 1 })}
+              className={[
+                'inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-sm font-medium min-h-[44px]',
+                'transition-all duration-200 whitespace-nowrap shrink-0',
+                active
+                  ? 'bg-data-waves/15 text-data-waves border border-data-waves/30'
+                  : 'bg-surface-1 border border-divider text-fg-muted hover:bg-surface-2 hover:text-fg',
+              ].join(' ')}
+              aria-pressed={active}
+            >
+              {isPt ? regionLabels[reg]?.pt : regionLabels[reg]?.en}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Category pills */}
       <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label={isPt ? 'Filtrar por categoria' : 'Filter by category'}>
         {CATEGORIES.map(cat => {
@@ -130,7 +159,7 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
 
         {hasActiveFilters && (
           <button
-            onClick={() => onChange({ category: 'all', period: 'all', query: '', page: 1 })}
+            onClick={() => onChange({ category: 'all', region: 'all', period: 'all', query: '', page: 1 })}
             className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg transition-colors min-h-[36px]"
           >
             <X className="w-3.5 h-3.5" />

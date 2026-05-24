@@ -38,6 +38,13 @@ import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
 import WindyWebcam from '@/components/weather/WindyWebcam';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
+import { getLocalTips } from '@/lib/spotTips';
+import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
+import { rememberDataUpdate } from '@/lib/dataCache';
+import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
+import ScoreFeedback from '@/components/spots/ScoreFeedback';
+import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
+import FeedbackForm from '@/components/FeedbackForm';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SpotDetailClient — Redesigned showcase of all signature components.
@@ -238,6 +245,11 @@ export default function SpotDetailClient({
   const [loading, setLoading] = useState(true);
   const [copyToast, setCopyToast] = useState(false);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [communityOverlay, setCommunityOverlay] = useState<Record<string, import('@/lib/communityTips').CommunityTipEntry>>({});
+
+  useEffect(() => {
+    loadCommunityTips().then(setCommunityOverlay);
+  }, []);
 
   /* ── Data loading ── */
   useEffect(() => {
@@ -296,6 +308,7 @@ export default function SpotDetailClient({
 
             const allScores = getAllSportScores(spot, conditions);
             setSpotData({ spot, conditions, allScores, forecast, tideObserved });
+            rememberDataUpdate(spotCond.updatedAt);
 
             if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
               setSelectedSport(sportFromUrl);
@@ -411,6 +424,20 @@ export default function SpotDetailClient({
   const score = allScores[selectedSport];
   const tokens = scoreTokens(score.score);
   const relevantSports = getRelevantSports(spot, allScores);
+  const mergedLocalTipsRaw = mergeLocalTips(spot, getLocalTips(spot.slug), communityOverlay[spot.slug]);
+  const mergedLocalTips = mergedLocalTipsRaw
+    ? {
+        spotSlug: spot.slug,
+        bestTide: mergedLocalTipsRaw.bestTide || '',
+        bestTideEn: mergedLocalTipsRaw.bestTideEn || mergedLocalTipsRaw.bestTide || '',
+        parking: mergedLocalTipsRaw.parking || '',
+        parkingEn: mergedLocalTipsRaw.parkingEn || mergedLocalTipsRaw.parking || '',
+        food: mergedLocalTipsRaw.food || '',
+        foodEn: mergedLocalTipsRaw.foodEn || mergedLocalTipsRaw.food || '',
+        localRule: mergedLocalTipsRaw.localRule,
+        localRuleEn: mergedLocalTipsRaw.localRuleEn,
+      }
+    : null;
 
   const windKt = conditions.windSpeed * 1.94384;
   const windRelation = spot.coastOrientation
@@ -564,6 +591,19 @@ export default function SpotDetailClient({
             <p className={`text-body font-medium ${tokens.text}`}>
               {isPt ? score.rating : score.ratingEn}
             </p>
+            <ScoreFeedback
+              spotSlug={spot.slug}
+              sport={selectedSport}
+              predictedScore={score.score}
+              conditionsSnapshot={{
+                waveHeight: conditions.waveHeight,
+                wavePeriod: conditions.wavePeriod,
+                windSpeed: conditions.windSpeed,
+                windDirection: conditions.windDirection,
+                waterTemp: conditions.waterTemp,
+              }}
+              locale={locale}
+            />
           </div>
 
           {/* Widget 2: WaveShape */}
@@ -714,37 +754,31 @@ export default function SpotDetailClient({
           </p>
 
           {/* Local tips */}
-          {spot.localTips && (
-            <div className="pt-4 border-t border-divider">
-              <h3 className="text-h3 text-fg mb-2">{td.localTips}</h3>
-              <div className="space-y-2">
-                {spot.localTips.bestTide && (
-                  <p className="text-body text-fg-muted">
-                    <span className="text-fg font-medium">{isPt ? 'Maré' : 'Tide'}: </span>
-                    {isPt ? spot.localTips.bestTide : (spot.localTips.bestTideEn || spot.localTips.bestTide)}
-                  </p>
-                )}
-                {spot.localTips.parking && (
-                  <p className="text-body text-fg-muted">
-                    <span className="text-fg font-medium">{isPt ? 'Estacionamento' : 'Parking'}: </span>
-                    {isPt ? spot.localTips.parking : (spot.localTips.parkingEn || spot.localTips.parking)}
-                  </p>
-                )}
-                {spot.localTips.food && (
-                  <p className="text-body text-fg-muted">
-                    <span className="text-fg font-medium">{isPt ? 'Comida' : 'Food'}: </span>
-                    {isPt ? spot.localTips.food : (spot.localTips.foodEn || spot.localTips.food)}
-                  </p>
-                )}
-                {spot.localTips.localRule && (
-                  <p className="text-body text-fg-muted">
-                    <span className="text-fg font-medium">{isPt ? 'Regras locais' : 'Local rules'}: </span>
-                    {isPt ? spot.localTips.localRule : (spot.localTips.localRuleEn || spot.localTips.localRule)}
-                  </p>
-                )}
-              </div>
+          {mergedLocalTips && (
+            <div className="pt-4 border-t border-divider space-y-2">
+              <LocalTipsSection tips={mergedLocalTips} locale={locale} />
+              {communityOverlay[spot.slug]?.contributor && (
+                <p className="text-xs text-fg-subtle">
+                  {isPt ? 'Contribuição da comunidade' : 'Community contribution'}
+                  {' · '}
+                  @{communityOverlay[spot.slug].contributor}
+                </p>
+              )}
             </div>
           )}
+
+          <div className="pt-4 border-t border-divider">
+            <AlertSubscribeForm
+              spotSlug={spot.slug}
+              spotName={isPt ? spot.name : spot.nameEn}
+              defaultSport={selectedSport}
+              locale={locale}
+            />
+          </div>
+
+          <div className="pt-2">
+            <FeedbackForm locale={locale} defaultSpotSlug={spot.slug} />
+          </div>
 
           {/* Hazards */}
           {spot.hazards && spot.hazards.length > 0 && (

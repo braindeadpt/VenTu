@@ -11,14 +11,18 @@ const { canDiscard } = require('./spam-filter');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
-/** Feed configuration: source → category hint */
+/** Feed configuration: source → category hint + region */
 const FEEDS = [
-  { url: 'https://stabmag.com/feed/',             source: 'Stab Mag',    defaultCategory: 'surf' },
-  { url: 'https://stabmag.com/category/news/feed/', source: 'Stab Mag',    defaultCategory: 'surf' },
-  { url: 'https://www.iksurfmag.com/feed/',        source: 'IKSURF Mag',  defaultCategory: 'kitesurf' },
-  { url: 'https://www.iksurfmag.com/category/kitesurfing/feed/', source: 'IKSURF Mag', defaultCategory: 'kitesurf' },
-  { url: 'https://www.iksurfmag.com/category/windsurfing/feed/', source: 'IKSURF Mag', defaultCategory: 'windsurf' },
-  { url: 'https://www.surfd.com/feed/',            source: 'SURFD',       defaultCategory: 'surf' },
+  // ── Portugal (Cena PT) ──
+  { url: 'https://www.ansurfistas.com/feed/',           source: 'ANS',              defaultCategory: 'surf',       sourceRegion: 'pt' },
+  { url: 'https://www.noticiasdomar.pt/feed/',          source: 'Notícias do Mar',  defaultCategory: 'general',  sourceRegion: 'pt' },
+  // ── Internacional ──
+  { url: 'https://stabmag.com/feed/',             source: 'Stab Mag',    defaultCategory: 'surf',       sourceRegion: 'intl' },
+  { url: 'https://stabmag.com/category/news/feed/', source: 'Stab Mag',    defaultCategory: 'surf',       sourceRegion: 'intl' },
+  { url: 'https://www.iksurfmag.com/feed/',        source: 'IKSURF Mag',  defaultCategory: 'kitesurf',   sourceRegion: 'intl' },
+  { url: 'https://www.iksurfmag.com/category/kitesurfing/feed/', source: 'IKSURF Mag', defaultCategory: 'kitesurf', sourceRegion: 'intl' },
+  { url: 'https://www.iksurfmag.com/category/windsurfing/feed/', source: 'IKSURF Mag', defaultCategory: 'windsurf', sourceRegion: 'intl' },
+  { url: 'https://www.surfd.com/feed/',            source: 'SURFD',       defaultCategory: 'surf',       sourceRegion: 'intl' },
 ];
 
 /**
@@ -108,6 +112,8 @@ async function fetchFeed(feed) {
         source: feed.source,
         defaultCategory: feed.defaultCategory,
         sourceType: 'rss',
+        sourceRegion: feed.sourceRegion || 'intl',
+        tags: feed.sourceRegion === 'pt' ? ['cena-pt'] : [],
       };
 
       // Apply filters

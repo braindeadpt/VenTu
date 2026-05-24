@@ -40,14 +40,14 @@ gh issue create --title "A1 — Dawn Patrol: slugs, JSON fresco, guard stale" --
 | B3 | Unit tests no scoring | B | P1 | 4h | ✅ done |
 | B4 | Documentação actualizada | B | P1 | 2h | ✅ done |
 | B5 | Sitemap & SEO completo | B | P1 | 3h | ✅ done |
-| C1 | Notícias PT | C | P2 | 6h | ⬜ pending |
-| C2 | Alertas por email | C | P2 | 12h | ⬜ pending |
-| C3 | Loop comunidade → `localTips` | C | P2 | 8h | ⬜ pending |
-| C4 | Calibração de scores | C | P2 | contínuo | ⬜ pending |
-| C5 | PWA install + offline claro | C | P2 | 4h | ⬜ pending |
+| C1 | Notícias PT | C | P2 | 6h | ✅ done |
+| C2 | Alertas por email | C | P2 | 12h | ✅ done |
+| C3 | Loop comunidade → `localTips` | C | P2 | 8h | ✅ done |
+| C4 | Calibração de scores | C | P2 | contínuo | ✅ done |
+| C5 | PWA install + offline claro | C | P2 | 4h | ✅ done |
 
-**Fase activa:** C — Diferenciação  
-**Critério de saída da Fase B:** homepage multi-desporto, URL sync, ≥20 unit tests scoring, CONTEXT.md actualizado, sitemap completo. ✅ **Concluída 2026-05-24**
+**Fase activa:** — (roadmap A→C concluído)  
+**Critério de saída da Fase C:** Cena PT, alertas email, dicas comunidade, feedback scores, PWA UX. ✅ **Concluída 2026-05-24**
 
 ---
 
@@ -358,6 +358,15 @@ _Regista aqui decisões, bloqueios e o que ficou feito em cada sessão de trabal
 - **B5:** `generate-sitemap.js` expandido (about, sazonalidade, modalidades, news, hreflang); CI/deploy
 - **Build:** `npm test` + `npm run build` verde
 - **Próximo:** C1 (notícias PT) ou calibração scores
+
+### 2026-05-24 — Fase C concluída
+
+- **C1:** RSS PT (ANS, Notícias do Mar), `sourceRegion`, filtro “Cena PT” na página news
+- **C2:** `supabase-alerts.sql`, `AlertSubscribeForm`, confirm/unsubscribe pages, `evaluate-alerts.js` + workflow
+- **C3:** `spotTips.ts` ligado ao detail, `community-tips.json`, tipo `tip` no feedback, `apply-contributions.js`
+- **C4:** `supabase-score-feedback.sql`, `ScoreFeedback` 3-tap no spot detail, `analyze-score-feedback.js`
+- **C5:** `InstallPrompt`, `OfflineBanner`, `dataCache.ts`, SW cache timestamp
+- **Secrets necessários (manual):** `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` no GitHub
 
 <!-- Template para sessões futuras:
 ### YYYY-MM-DD — Título curto

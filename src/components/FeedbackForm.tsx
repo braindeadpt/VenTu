@@ -1,18 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import { Send, X, MapPin, Lightbulb, Bug } from 'lucide-react';
+import { Send, X, MapPin, Lightbulb, Bug, MessageSquare } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
 import { getTranslation } from '@/lib/i18n';
 
 interface FeedbackFormProps {
   locale: string;
+  /** Pre-fill spot slug when opened from spot detail */
+  defaultSpotSlug?: string;
 }
 
 const TYPES = [
   { id: 'spot', labelPt: 'Novo spot', labelEn: 'New spot', icon: MapPin },
+  { id: 'tip', labelPt: 'Dica local', labelEn: 'Local tip', icon: MessageSquare },
   { id: 'idea', labelPt: 'Ideia', labelEn: 'Idea', icon: Lightbulb },
   { id: 'bug', labelPt: 'Bug / Defeito', labelEn: 'Bug / Issue', icon: Bug },
+];
+
+const TIP_FIELDS = [
+  { id: 'bestTide', labelPt: 'Maré ideal', labelEn: 'Best tide' },
+  { id: 'parking', labelPt: 'Estacionamento', labelEn: 'Parking' },
+  { id: 'food', labelPt: 'Onde comer', labelEn: 'Food' },
+  { id: 'localRule', labelPt: 'Regra local', labelEn: 'Local rule' },
 ];
 
 const CLIENT_ID_KEY = 'ventu:client_id';
@@ -31,13 +41,15 @@ function getClientId(): string {
   }
 }
 
-export default function FeedbackForm({ locale }: FeedbackFormProps) {
+export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormProps) {
   const t = getTranslation(locale as 'pt' | 'en');
   const isPt = locale === 'pt';
   const [open, setOpen] = useState(false);
-  const [type, setType] = useState('spot');
+  const [type, setType] = useState(defaultSpotSlug ? 'tip' : 'spot');
   const [message, setMessage] = useState('');
   const [email, setEmail] = useState('');
+  const [spotSlug, setSpotSlug] = useState(defaultSpotSlug || '');
+  const [tipField, setTipField] = useState('localRule');
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
@@ -70,6 +82,8 @@ export default function FeedbackForm({ locale }: FeedbackFormProps) {
           email: email.trim() || null,
           locale,
           client_id: getClientId(),
+          spot_slug: type === 'tip' ? spotSlug.trim() || null : null,
+          tip_field: type === 'tip' ? tipField : null,
         });
 
       if (insertError) throw insertError;
@@ -162,6 +176,8 @@ export default function FeedbackForm({ locale }: FeedbackFormProps) {
               <label className="block text-meta-sm text-fg-muted mb-1.5">
                 {type === 'spot'
                   ? (isPt ? 'Descrição do spot' : 'Spot description')
+                  : type === 'tip'
+                    ? (isPt ? 'A tua dica' : 'Your tip')
                   : type === 'idea'
                     ? (isPt ? 'A tua ideia' : 'Your idea')
                     : (isPt ? 'Descrição do problema' : 'Issue description')}
@@ -172,6 +188,8 @@ export default function FeedbackForm({ locale }: FeedbackFormProps) {
                 placeholder={
                   type === 'spot'
                     ? (isPt ? 'Nome, localização, condições ideais, acesso...' : 'Name, location, ideal conditions, access...')
+                    : type === 'tip'
+                      ? (isPt ? 'Partilha conhecimento local (maré, estacionamento, regras...)' : 'Share local knowledge (tide, parking, rules...)')
                     : type === 'idea'
                       ? (isPt ? 'Descreve a tua sugestão...' : 'Describe your suggestion...')
                       : (isPt ? 'O que não está a funcionar?' : 'What is not working?')
@@ -181,6 +199,40 @@ export default function FeedbackForm({ locale }: FeedbackFormProps) {
                 required
               />
             </div>
+
+            {type === 'tip' && (
+              <>
+                <div>
+                  <label className="block text-meta-sm text-fg-muted mb-1.5">
+                    {isPt ? 'Slug do spot' : 'Spot slug'}
+                  </label>
+                  <input
+                    type="text"
+                    value={spotSlug}
+                    onChange={(e) => setSpotSlug(e.target.value)}
+                    placeholder="guincho, nazare, supertubos..."
+                    className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-meta-sm text-fg-muted mb-1.5">
+                    {isPt ? 'Tipo de dica' : 'Tip type'}
+                  </label>
+                  <select
+                    value={tipField}
+                    onChange={(e) => setTipField(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-body text-fg"
+                  >
+                    {TIP_FIELDS.map((f) => (
+                      <option key={f.id} value={f.id}>
+                        {isPt ? f.labelPt : f.labelEn}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </>
+            )}
 
             {/* Email */}
             <div>

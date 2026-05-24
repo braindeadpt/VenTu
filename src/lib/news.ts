@@ -8,9 +8,13 @@ export type NewsCategory = typeof CATEGORIES[number];
 export const DATE_FILTERS = ['today', '7d', '30d', 'all'] as const;
 export type DateFilter = typeof DATE_FILTERS[number];
 
+export const REGION_FILTERS = ['all', 'pt', 'intl'] as const;
+export type RegionFilter = typeof REGION_FILTERS[number];
+
 export interface NewsFiltersState {
   category: NewsCategory;
   period: DateFilter;
+  region: RegionFilter;
   query: string;
   page: number;
 }
@@ -18,6 +22,7 @@ export interface NewsFiltersState {
 export const DEFAULT_FILTERS: NewsFiltersState = {
   category: 'all',
   period: 'all',
+  region: 'all',
   query: '',
   page: 1,
 };
@@ -61,6 +66,10 @@ export function filterNews(news: NewsItem[], filters: NewsFiltersState): NewsIte
 
   if (filters.category !== 'all') {
     result = result.filter(item => item.category === filters.category);
+  }
+
+  if (filters.region !== 'all') {
+    result = result.filter(item => (item.sourceRegion ?? 'intl') === filters.region);
   }
 
   result = filterNewsByDate(result, filters.period);

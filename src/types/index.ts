@@ -78,7 +78,9 @@ export interface NewsItem {
   url: string;
   publishedAt: string;
   image?: string;
-  tags: string[];
+  tags?: string[];
+  /** PT-origin vs international syndication */
+  sourceRegion?: 'pt' | 'intl';
 }
 
 export type Locale = 'pt' | 'en';
