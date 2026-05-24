@@ -29,7 +29,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'VenTu',
-  description: 'VenTu — Real-time conditions for water sports in Portugal',
+  description: 'VenTu — Water sports conditions in Portugal, updated every 3 hours',
   other: {
     referrer: 'strict-origin-when-cross-origin',
   },

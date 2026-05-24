@@ -32,6 +32,12 @@ jobs:
           npm cache clean --force
           npm ci
 
+      - name: Unit tests
+        run: npm test
+
+      - name: Generate sitemap
+        run: npm run sitemap:generate
+
       - name: Build
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'

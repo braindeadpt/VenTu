@@ -2,7 +2,9 @@
 
 Registo de ideias, melhorias e features identificadas mas não agendadas. Cada item tem contexto suficiente para retomar quando fizer sentido.
 
-Última actualização: 2026-05-21
+> **Roadmap activo (prioridades P0–P2):** ver [`ROADMAP.md`](./ROADMAP.md) · Templates GitHub: [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md)
+
+Última actualização: 2026-05-24
 
 ---
 
@@ -68,12 +70,13 @@ Várias praias portuguesas têm webcams públicas: Carcavelos, Costa Caparica, G
 
 ### Fase 5b — compatibleSports manual
 
-**Estado actual:** 89/167 spots preenchidos (53%). 78 spots pendentes. A maioria são surf-only onde compatibleSports é opcional.
+**Estado actual (2026-05-24):** 117/167 preenchidos (70%). 50 pendentes — maioritariamente surf-only.
 
-**Críticos (~14 spots):** spots type=kitesurf ou type=foil sem compatibleSports:
-foz-arelho, lagoa-albufeira, fonte-telha, barrinha-esmoriz, foil-alvor, vila-real-santo-antonio, monte-gordo, praia-verde, altura, lagos, barrinha-faro, funchal, amorosa, foil-foz-arelho
+**Críticos restantes (4):** `foil-lagoa-albufeira`, `alqueva`, `praia-rocha`, `lagos-wakepark`
 
-**Estimativa restante**: ~30 min LLM para os 14 críticos + 1-2h utilizador para os restantes 64.
+**Agendado em:** [ROADMAP.md § A4](./ROADMAP.md#a4--completar-compatiblesports)
+
+**Estimativa restante:** ~30 min para os 4 críticos + 1–2h batch dos 46 surf-only.
 
 ### Chat global (adiado)
 

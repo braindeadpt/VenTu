@@ -818,6 +818,7 @@ export const spots: Spot[] = [
       type: 'foil', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Lagoa',
       description: 'Paraíso do foil! Água plana até à cintura, vento térmico consistente. Perfeito para aprender wing foil e kite foil. Sem ondas, sem stress.',
       descriptionEn: 'Foil paradise! Chest-high flat water, consistent thermal wind. Perfect for learning wing foil and kite foil. No waves, no stress.',
+      compatibleSports: ['foil', 'kitesurf', 'sup'],
       facilities: ['Estacionamento', 'Escola foil', 'Aluguer', 'WC'],
       hazards: ['Maré alta pode subir a lagoa', 'Outros riders']
     },
@@ -839,6 +840,7 @@ export const spots: Spot[] = [
       type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
       description: 'Maior lago artificial da Europa. Wakeboard e waterski com Mastercraft. Clima estável e água calma o ano todo.',
       descriptionEn: 'Largest artificial lake in Europe. Wakeboard and waterski with Mastercraft. Stable climate and calm water all year round.',
+      compatibleSports: ['wakeboard'],
       facilities: ['Estacionamento', 'Escola wake', 'Aluguer', 'Restaurante'],
       hazards: ['Barcos de pesca']
     },
@@ -1185,6 +1187,7 @@ export const spots: Spot[] = [
       type: 'multisport', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'SW',
       description: 'Praia de areia com falésias impressionantes. Ondas de inverno para surf. Vento de leste para windsurf e kitesurf no verão.',
       descriptionEn: 'Sand beach with impressive cliffs. Winter waves for surf. East wind for windsurf and kitesurf in summer.',
+      compatibleSports: ['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup'],
       facilities: ['Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Rochas submersas', 'Multidão na época alta']
     },
@@ -1228,6 +1231,7 @@ export const spots: Spot[] = [
       type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
       description: 'Cable park 2.0 na salina de Lagos. Rampas, rails, kickers e sliders. Mastercraft X-23 para wake boat. Campo completo!',
       descriptionEn: '2.0 cable park on Lagos salt flat. Ramps, rails, kickers and sliders. Mastercraft X-23 for wake boat. Complete park!',
+      compatibleSports: ['wakeboard'],
       facilities: ['Estacionamento', 'Cable 2.0', 'Wake Boat', 'Escola', 'Alojamento'],
       hazards: ['Outros riders']
     },

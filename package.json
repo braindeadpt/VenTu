@@ -8,6 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "test:e2e": "playwright test",
     "news:generate": "node scripts/update-news.js",
     "conditions:update": "node scripts/update-conditions.js",
@@ -41,6 +43,7 @@
     "postcss": "^8.4.49",
     "postcss-import": "^16.1.1",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.7"
   }
 }

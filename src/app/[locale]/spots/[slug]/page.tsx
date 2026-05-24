@@ -23,17 +23,17 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const spotName = isPt ? spot.name : spot.nameEn
   const regionName = isPt ? spot.region : spot.regionEn
   
-  const title = `${spotName} — Condições em Tempo Real | VenTu`
+  const title = `${spotName} — Condições | VenTu`
   const description = isPt
-    ? `Condições de surf em tempo real em ${spotName}, ${regionName}. Ondas, vento e temperatura da água atualizados automaticamente.`
-    : `Real-time surf conditions at ${spotName}, ${regionName}. Wave, wind and water temperature data updated automatically.`
+    ? `Condições em ${spotName}, ${regionName}. Ondas, vento e temperatura da água — actualizadas a cada 3 horas.`
+    : `Conditions at ${spotName}, ${regionName}. Waves, wind and water temperature — updated every 3 hours.`
 
   return {
     title,
     description,
     keywords: [
       'surf', spot.type, spotName, regionName, 'Portugal',
-      isPt ? 'condições em tempo real' : 'real-time conditions',
+      isPt ? 'condições Portugal' : 'conditions Portugal',
       isPt ? 'ondas vento' : 'waves wind',
     ],
     openGraph: {

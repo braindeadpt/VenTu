@@ -23,8 +23,8 @@ export default function Footer({ locale }: FooterProps) {
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">
               {isPt 
-                ? 'Plataforma open-source para desportos náuticos em Portugal. Dados em tempo real, previsões e notícias automáticas.'
-                : 'Open-source platform for water sports in Portugal. Real-time data, forecasts and automated news.'}
+                ? 'Plataforma open-source para desportos náuticos em Portugal. Dados actualizados a cada 3 horas, previsões e notícias automáticas.'
+                : 'Open-source platform for water sports in Portugal. Data updated every 3 hours, forecasts and automated news.'}
             </p>
           </div>
 

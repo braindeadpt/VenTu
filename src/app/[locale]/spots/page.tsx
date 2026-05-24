@@ -10,8 +10,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   const title = isPt ? `Todos os Spots — VenTu` : `All Spots — VenTu`
   const description = isPt
-    ? `Explora os ${spots.length} spots de surf, kitesurf e windsurf em Portugal com condições em tempo real.`
-    : `Browse all ${spots.length} surf, kitesurf and windsurf spots in Portugal with real-time conditions.`
+    ? `Explora os ${spots.length} spots de surf, kitesurf e windsurf em Portugal — condições actualizadas a cada 3 horas.`
+    : `Browse all ${spots.length} surf, kitesurf and windsurf spots in Portugal — conditions updated every 3 hours.`
 
   return {
     title,
@@ -47,8 +47,8 @@ export default async function SpotsPage({ params }: { params: Promise<{ locale: 
         </h1>
         <p className="text-fg-muted">
           {isPt
-            ? `${spots.length} spots em Portugal com dados em tempo real`
-            : `${spots.length} spots in Portugal with real-time data`}
+            ? `${spots.length} spots em Portugal — dados actualizados a cada 3 horas`
+            : `${spots.length} spots in Portugal — data updated every 3 hours`}
         </p>
       </div>
 

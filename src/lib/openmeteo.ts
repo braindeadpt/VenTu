@@ -25,6 +25,7 @@ export interface CurrentConditions {
   tideStatus?: 'high' | 'low' | 'rising' | 'falling';
   tideLabel?: string;
   source: 'real' | 'mock';
+  updatedAt?: string;
 }
 const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
 

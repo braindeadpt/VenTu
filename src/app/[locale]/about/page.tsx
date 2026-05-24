@@ -53,7 +53,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="glass-card p-6 text-center space-y-4">
           <Database className="w-10 h-10 text-data-waves mx-auto" />
-          <h3 className="text-lg font-semibold">{isPt ? 'Dados em Tempo Real' : 'Real-time Data'}</h3>
+          <h3 className="text-lg font-semibold">{isPt ? 'Dados Actualizados' : 'Updated Data'}</h3>
           <p className="text-sm text-fg-muted">
             {isPt ? 'Open-Meteo Marine API com atualizações a cada 3 horas' : 'Open-Meteo Marine API with updates every 3 hours'}
           </p>

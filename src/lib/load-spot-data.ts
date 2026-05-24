@@ -20,6 +20,8 @@ export interface SpotData {
     tideObservedHeight?: number
     tideObservedAt?: string
     tideStation?: string
+    updatedAt?: string
+    source?: 'real' | 'mock'
   }
   allScores: Record<SportType, SportScore>
 }
@@ -45,6 +47,8 @@ export function loadSpotData(): SpotData[] {
         windDirection: cond.windDirection || 0,
         windGust: cond.windGust || 0,
         waterTemp: cond.waterTemp || 0,
+        updatedAt: cond.updatedAt,
+        source: 'real' as const,
       }
       const allScores = getAllSportScores(spot, conditions)
       result.push({ spot, conditions, allScores })

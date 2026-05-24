@@ -278,10 +278,40 @@ function generateBasicAdvice(spotsData) {
   };
 }
 
+function loadValidSlugs() {
+  const spotsPath = path.join(__dirname, '../src/lib/spots.ts');
+  const content = fs.readFileSync(spotsPath, 'utf8');
+  return new Set([...content.matchAll(/slug: '([^']+)'/g)].map(m => m[1]));
+}
+
+function validateAdviceSlugs(advice, validSlugs) {
+  if (advice.topSpotSlug && !validSlugs.has(advice.topSpotSlug)) {
+    console.warn(`   ⚠️  Invalid topSpotSlug "${advice.topSpotSlug}" — clearing link`);
+    advice.topSpotSlug = '';
+  }
+
+  if (Array.isArray(advice.spots)) {
+    const before = advice.spots.length;
+    advice.spots = advice.spots.filter(s => {
+      if (!s.slug || !validSlugs.has(s.slug)) {
+        console.warn(`   ⚠️  Removing invalid spot slug "${s.slug || '(empty)'}"`);
+        return false;
+      }
+      return true;
+    });
+    if (advice.spots.length < before) {
+      console.log(`   Slug validation: ${before - advice.spots.length} invalid entries removed`);
+    }
+  }
+
+  return advice;
+}
+
 async function generateDawnPatrol() {
   console.log('🌅 Dawn Patrol AI Advisor - Generating...');
   console.log(`   Time: ${new Date().toLocaleString('pt-PT')}`);
 
+  const validSlugs = loadValidSlugs();
   const spotsData = [];
 
   for (const spot of TOP_SPOTS) {
@@ -309,7 +339,8 @@ async function generateDawnPatrol() {
 
   console.log(`   Analyzed ${spotsData.length} spots`);
 
-  const advice = await generateDawnPatrolWithLLM(spotsData);
+  let advice = await generateDawnPatrolWithLLM(spotsData);
+  advice = validateAdviceSlugs(advice, validSlugs);
 
   const outputPath = path.join(__dirname, '../public/data/dawn-patrol.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });

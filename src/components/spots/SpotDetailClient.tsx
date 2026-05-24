@@ -37,6 +37,7 @@ import SpotMap from '@/components/spots/SpotMap';
 import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
 import WindyWebcam from '@/components/weather/WindyWebcam';
+import DataSourceBadge from '@/components/ui/DataSourceBadge';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SpotDetailClient — Redesigned showcase of all signature components.
@@ -59,6 +60,7 @@ interface Conditions {
   tideStatus?: 'high' | 'low' | 'rising' | 'falling';
   tideLabel?: string;
   source?: 'real' | 'mock';
+  updatedAt?: string;
 }
 
 interface SpotData {
@@ -279,6 +281,7 @@ export default function SpotDetailClient({
               tideStatus: spotCond.tideStatus,
               tideLabel: spotCond.tideLabel,
               source: 'real',
+              updatedAt: spotCond.updatedAt,
             };
 
             forecast = spotFc;
@@ -308,10 +311,10 @@ export default function SpotDetailClient({
         }
 
         // Fallback: live API call
-        const marineData = await fetchMarineData(spot.lat, spot.lon);
-        conditions = getCurrentConditions(marineData);
+        const marineResult = await fetchMarineData(spot.lat, spot.lon);
+        conditions = getCurrentConditions(marineResult);
         const allScores = getAllSportScores(spot, conditions);
-        forecast = getForecastData(marineData).slice(0, 120);
+        forecast = getForecastData(marineResult).slice(0, 120);
 
         // Try tide observed data even in fallback
         if (conditionsResp.ok) {
@@ -541,6 +544,14 @@ export default function SpotDetailClient({
           MAIN SHOWCASE — 3 signature widgets
           ═══════════════════════════════════════════════════════════════ */}
       <section className="max-w-5xl mx-auto px-4 py-6">
+        <div className="flex justify-center mb-4">
+          <DataSourceBadge
+            source={conditions.source}
+            updatedAt={conditions.updatedAt}
+            locale={locale}
+            size="md"
+          />
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Widget 1: ScoreGauge */}
           <div className="card-1 p-6 flex flex-col items-center justify-center gap-3">

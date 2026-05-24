@@ -1,6 +1,6 @@
 # 🌊 VenTu
 
-> **A modern, open-source platform for real-time water sports conditions in Portugal**
+> **A modern, open-source platform for water sports conditions in Portugal**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
@@ -15,11 +15,11 @@
 
 ### 🏄 O que é o VenTu?
 
-O **VenTu** é uma plataforma **gratuita e open-source** que fornece condições em tempo real para desportos náuticos em Portugal. Inclui dados de ondas, vento, temperatura da água e notícias automáticas sobre surf, kitesurf, windsurf e big wave.
+O **VenTu** é uma plataforma **gratuita e open-source** que fornece condições para desportos náuticos em Portugal — actualizadas a cada 3 horas. Inclui dados de ondas, vento, temperatura da água e notícias automáticas sobre surf, kitesurf, windsurf e big wave.
 
 ### ✨ Funcionalidades
 
-- 🌊 **Condições em tempo real** - Ondas, vento, temperatura da água
+- 🌊 **Condições actualizadas** - Ondas, vento, temperatura da água (a cada 3h)
 - 📊 **Previsão 7 dias** - Tabela interativa de forecast
 - 📰 **Notícias automáticas** - Resumidas por IA (Gemini Flash)
 - 🗺️ **167 spots portugueses** - Nazaré, Peniche, Guincho, Algarve, Açores, Madeira, Centro, Norte, Sul e mais
@@ -68,17 +68,19 @@ Para notícias automáticas com IA:
 
 Contribuições são bem-vindas! Abre um PR ou issue no GitHub.
 
+Consulta o [roadmap executável](docs/ROADMAP.md) para prioridades actuais (Fases A–C).
+
 ---
 
 ## 🇬🇧 English
 
 ### 🏄 What is VenTu?
 
-**VenTu** is a **free, open-source** platform providing real-time conditions for water sports in Portugal. Includes wave, wind, water temperature data and automated news about surf, kitesurf, windsurf and big wave.
+**VenTu** is a **free, open-source** platform providing water sports conditions in Portugal — updated every 3 hours. Includes wave, wind, water temperature data and automated news about surf, kitesurf, windsurf and big wave.
 
 ### ✨ Features
 
-- 🌊 **Real-time conditions** - Waves, wind, water temperature
+- 🌊 **Updated conditions** - Waves, wind, water temperature (every 3h)
 - 📊 **7-day forecast** - Interactive forecast table
 - 📰 **Automated news** - AI-summarized by Gemini Flash
 - 🗺️ **167 Portuguese spots** - Nazaré, Peniche, Guincho, Algarve, Azores, Madeira, and more
@@ -126,6 +128,8 @@ For automated AI news:
 ### 🤝 Contributing
 
 Contributions are welcome! Open a PR or issue on GitHub.
+
+See the [executable roadmap](docs/ROADMAP.md) for current priorities (Phases A–C).
 
 ---
 

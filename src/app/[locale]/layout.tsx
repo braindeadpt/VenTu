@@ -26,10 +26,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const isPt = locale === 'pt'
   return {
-    title: isPt ? 'VenTu — Condições em Tempo Real' : 'VenTu — Real-time Conditions',
+    title: isPt ? 'VenTu — Condições Náuticas em Portugal' : 'VenTu — Water Sports Conditions in Portugal',
     description: isPt
-      ? 'Condições em tempo real para surf, kitesurf, windsurf e big wave em Portugal. Dados de ondas, vento e temperatura da água.'
-      : 'Real-time conditions for surf, kitesurf, windsurf and big wave in Portugal. Wave, wind and water temperature data.',
+      ? 'Condições para surf, kitesurf, windsurf e big wave em Portugal. Dados actualizados a cada 3 horas — ondas, vento e temperatura da água.'
+      : 'Conditions for surf, kitesurf, windsurf and big wave in Portugal. Data updated every 3 hours — waves, wind and water temperature.',
     keywords: ['surf', 'kitesurf', 'windsurf', 'Portugal', 'ondas', 'vento', 'Nazaré', 'Peniche', 'big wave'],
     manifest: '/manifest.json',
     icons: {
@@ -39,8 +39,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     openGraph: {
       title: 'VenTu',
       description: isPt
-        ? 'Condições em tempo real para desportos náuticos em Portugal'
-        : 'Real-time conditions for water sports in Portugal',
+        ? 'Condições para desportos náuticos em Portugal — actualizadas a cada 3 horas'
+        : 'Water sports conditions in Portugal — updated every 3 hours',
       type: 'website',
       locale: isPt ? 'pt_PT' : 'en_US',
       url: 'https://ventu.surf',
@@ -50,8 +50,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       card: 'summary_large_image',
       title: 'VenTu',
       description: isPt
-        ? 'Condições em tempo real para desportos náuticos em Portugal'
-        : 'Real-time conditions for water sports in Portugal',
+        ? 'Condições para desportos náuticos em Portugal — actualizadas a cada 3 horas'
+        : 'Water sports conditions in Portugal — updated every 3 hours',
     },
     robots: {
       index: true,

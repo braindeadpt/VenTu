@@ -10,6 +10,7 @@ import type { SportType } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
 import FavoriteButton from '@/components/FavoriteButton';
 import Link from 'next/link';
+import DataSourceBadge from '@/components/ui/DataSourceBadge';
 
 interface SpotConditions {
   waveHeight: number;
@@ -20,6 +21,7 @@ interface SpotConditions {
   windGust: number;
   waterTemp: number;
   source?: 'real' | 'mock';
+  updatedAt?: string;
 }
 
 export default function FavoritesClient() {
@@ -111,7 +113,11 @@ export default function FavoritesClient() {
                 windGust: cond.windGust || 0,
                 waterTemp: cond.waterTemp || 0,
               };
-              results[id] = current;
+              results[id] = {
+                ...current,
+                source: 'real',
+                updatedAt: cond.updatedAt,
+              };
               
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
               scores[id] = getSportScore(spot, primarySport, current);
@@ -227,11 +233,11 @@ export default function FavoritesClient() {
                       <div className="absolute bottom-3 left-3 right-3">
                         <div className="flex items-center gap-2">
                           <h3 className="text-xl font-bold text-fg">{spot.name}</h3>
-                          {current?.source === 'mock' && (
-                            <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-score-fair/20 text-score-fair border border-score-fair/30">
-                              DEMO
-                            </span>
-                          )}
+                          <DataSourceBadge
+                            source={current?.source}
+                            updatedAt={current?.updatedAt}
+                            locale={locale}
+                          />
                         </div>
                         <div className="flex items-center gap-1 text-sm text-fg-muted">
                           <MapPin className="w-3 h-3" />{spot.region}

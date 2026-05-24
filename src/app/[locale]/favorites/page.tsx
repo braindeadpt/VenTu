@@ -12,8 +12,8 @@ export async function generateMetadata({
   return {
     title: isPt ? 'Favoritos — VenTu' : 'Favorites — VenTu',
     description: isPt
-      ? 'Os teus spots favoritos com condições em tempo real guardados no browser.'
-      : 'Your favorite spots with real-time conditions saved in your browser.',
+      ? 'Os teus spots favoritos com condições actualizadas a cada 3 horas — guardados no browser.'
+      : 'Your favorite spots with conditions updated every 3 hours — saved in your browser.',
     alternates: {
       canonical: `/${locale}/favorites/`,
       languages: { pt: '/pt/favorites/', en: '/en/favorites/' },

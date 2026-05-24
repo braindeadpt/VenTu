@@ -28,10 +28,10 @@ export const translations = {
     },
     hero: {
       title: 'VenTu',
-      subtitle: 'Condições em tempo real para desportos náuticos em Portugal',
+      subtitle: 'Condições para desportos náuticos em Portugal — actualizadas a cada 3 horas',
       cta: 'Ver Spots',
       stats: { spots: 'Spots', updates: 'Atualizações/dia', sports: 'Desportos' },
-      badge: 'Dados em tempo real',
+      badge: 'Actualizado a cada 3 horas',
       featured: 'Spots em destaque',
       viewAll: 'Ver todos',
       avgWave: 'Altura Média',
@@ -82,7 +82,7 @@ export const translations = {
       aboutSpot: 'Sobre o spot',
     },
     conditions: {
-      title: 'Condições em Tempo Real', updated: 'Atualizado', rating: 'Avaliação', recommendation: 'Recomendação',
+      title: 'Condições Actuais', updated: 'Actualizado', rating: 'Avaliação', recommendation: 'Recomendação',
       excellent: 'Excelente', good: 'Bom', fair: 'Razoável', poor: 'Fraco', closed: 'Não recomendado',
       period: 'Período', gust: 'Raj',
     },
@@ -178,10 +178,10 @@ export const translations = {
     },
     hero: {
       title: 'VenTu',
-      subtitle: 'Real-time conditions for water sports in Portugal',
+      subtitle: 'Water sports conditions in Portugal — updated every 3 hours',
       cta: 'View Spots',
       stats: { spots: 'Spots', updates: 'Updates/day', sports: 'Sports' },
-      badge: 'Real-time data',
+      badge: 'Updated every 3 hours',
       featured: 'Featured spots',
       viewAll: 'View all',
       avgWave: 'Avg Wave Height',
@@ -230,7 +230,7 @@ export const translations = {
       aboutSpot: 'About this spot',
     },
     conditions: {
-      title: 'Real-time Conditions', updated: 'Updated', rating: 'Rating', recommendation: 'Recommendation',
+      title: 'Current Conditions', updated: 'Updated', rating: 'Rating', recommendation: 'Recommendation',
       excellent: 'Excellent', good: 'Good', fair: 'Fair', poor: 'Poor', closed: 'Not recommended',
       period: 'Period', gust: 'Gust',
     },

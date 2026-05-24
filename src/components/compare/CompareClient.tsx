@@ -8,6 +8,7 @@ import { getAllSportScores, getScoreColor } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
 import Link from 'next/link';
+import DataSourceBadge from '@/components/ui/DataSourceBadge';
 
 interface SpotBattleData {
   spot: typeof spots[0];
@@ -24,6 +25,7 @@ interface PrecomputedCondition {
   windDirection?: number;
   windGust?: number;
   waterTemp?: number;
+  updatedAt?: string;
 }
 
 async function loadSpotBattleData(
@@ -46,6 +48,7 @@ async function loadSpotBattleData(
       windGust: cond.windGust || 0,
       waterTemp: cond.waterTemp || 0,
       source: 'real' as const,
+      updatedAt: cond.updatedAt,
     };
     return {
       spot,
@@ -56,8 +59,8 @@ async function loadSpotBattleData(
   }
 
   try {
-    const data = await fetchMarineData(spot.lat, spot.lon);
-    const conditions = getCurrentConditions(data);
+    const result = await fetchMarineData(spot.lat, spot.lon);
+    const conditions = getCurrentConditions(result);
     return {
       spot,
       conditions,
@@ -386,9 +389,11 @@ export default function CompareClient() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <Icon className={`w-6 h-6 ${rankColors[i]}`} />
-                    {data.conditions.source === 'mock' && (
-                      <span className="px-1.5 py-0.5 rounded text-xs font-bold bg-score-fair/20 text-score-fair border border-score-fair/30">DEMO</span>
-                    )}
+                    <DataSourceBadge
+                      source={data.conditions.source}
+                      updatedAt={data.conditions.updatedAt}
+                      locale={locale}
+                    />
                   </div>
                   <span className={`text-3xl font-bold ${colors.text}`}>#{i + 1}</span>
                 </div>

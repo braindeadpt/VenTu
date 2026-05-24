@@ -22,10 +22,10 @@ export default function SeoHead({
 
   const fullTitle = title
     ? `${title} | VenTu`
-    : 'VenTu — Condições em Tempo Real para Desportos Náuticos';
+    : 'VenTu — Condições para Desportos Náuticos em Portugal';
 
   const fullDesc = description
-    || 'Condições em tempo real para surf, kitesurf, windsurf e big wave em Portugal. Ondas, vento e temperatura da água para 167 spots.';
+    || 'Condições para surf, kitesurf, windsurf e big wave em Portugal — actualizadas a cada 3 horas. Ondas, vento e temperatura da água para 167 spots.';
 
   return (
     <>

@@ -43,8 +43,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description: isPt
-      ? `Spots de ${name.pt.toLowerCase()} em Portugal. Condições em tempo real, previsões e scores náuticos.`
-      : `${name.en} spots in Portugal. Real-time conditions, forecasts and nautical scores.`,
+      ? `Spots de ${name.pt.toLowerCase()} em Portugal. Condições actualizadas a cada 3 horas, previsões e scores náuticos.`
+      : `${name.en} spots in Portugal. Conditions updated every 3 hours, forecasts and nautical scores.`,
   }
 }
 
@@ -72,8 +72,8 @@ export default async function ModalidadePage({ params }: Props) {
           <h1 className="text-3xl font-bold text-fg">{isPt ? name.pt : name.en}</h1>
           <p className="text-fg-muted mt-1">
             {isPt
-              ? `Spots de ${name.pt.toLowerCase()} em Portugal — condições em tempo real`
-              : `${name.en} spots in Portugal — real-time conditions`}
+              ? `Spots de ${name.pt.toLowerCase()} em Portugal — condições actualizadas a cada 3 horas`
+              : `${name.en} spots in Portugal — conditions updated every 3 hours`}
           </p>
         </div>
       </div>

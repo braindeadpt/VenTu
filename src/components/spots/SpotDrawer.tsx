@@ -12,6 +12,7 @@ import SpotDrawerHeader from './SpotDrawerHeader';
 import SpotDrawerTabs from './SpotDrawerTabs';
 import MetricBar from '@/components/ui/MetricBar';
 import FavoriteButton from '@/components/FavoriteButton';
+import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import { ArrowRight } from 'lucide-react';
 
 interface SpotData {
@@ -24,6 +25,8 @@ interface SpotData {
     windDirection: number;
     windGust: number;
     waterTemp: number;
+    updatedAt?: string;
+    source?: 'real' | 'mock';
   };
   allScores: Record<SportType, SportScore>;
 }
@@ -83,6 +86,14 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
             waterTemp={Math.round(conditions.waterTemp)}
             locale={locale}
           />
+
+          <div className="flex justify-start">
+            <DataSourceBadge
+              source={conditions.source}
+              updatedAt={conditions.updatedAt}
+              locale={locale}
+            />
+          </div>
 
           {/* ── Sport pills ── */}
           {compatibleSports.length > 1 && (

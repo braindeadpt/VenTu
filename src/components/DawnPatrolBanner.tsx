@@ -1,9 +1,11 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap } from 'lucide-react';
+import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { getAssetPath } from '@/lib/paths';
+import { spots } from '@/lib/spots';
+import { isDawnPatrolStale } from '@/lib/dataFreshness';
 
 interface DawnPatrolData {
   date: string;
@@ -31,6 +33,15 @@ interface DawnPatrolData {
     ptReason: string;
     enReason: string;
   }>;
+}
+
+const VALID_SLUGS = new Set(spots.map(s => s.slug));
+
+function resolveSpotHref(locale: string, slug: string): string {
+  if (slug && VALID_SLUGS.has(slug)) {
+    return `/${locale}/spots/${slug}/`;
+  }
+  return `/${locale}/spots/`;
 }
 
 export default function DawnPatrolBanner({ locale }: { locale: string }) {
@@ -121,6 +132,9 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
   if (!data) return null;
 
   const content = isPt ? data.pt : data.en;
+  const stale = isDawnPatrolStale(data.date);
+  const topSpotHref = resolveSpotHref(locale, data.topSpotSlug);
+  const topSpotLinkValid = Boolean(data.topSpotSlug && VALID_SLUGS.has(data.topSpotSlug));
   const verdictColors = {
     go: 'bg-windDir-offshore/20 text-windDir-offshore border-windDir-offshore/30',
     maybe: 'bg-score-fair/20 text-score-fair border-score-fair/30',
@@ -156,6 +170,15 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                   {isPt ? 'Dawn Patrol' : 'Dawn Patrol'}
                 </span>
                 <span className="text-xs text-fg-subtle whitespace-nowrap">{data.date}</span>
+                {stale && (
+                  <span
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-score-fair/15 text-score-fair border border-score-fair/30"
+                    title={isPt ? 'Briefing com mais de 24 horas — a aguardar actualização' : 'Briefing older than 24 hours — awaiting update'}
+                  >
+                    <AlertTriangle className="w-3 h-3" />
+                    {isPt ? 'Desactualizado' : 'Outdated'}
+                  </span>
+                )}
               </div>
               <h3 className="text-lg font-bold text-fg truncate">{content.headline}</h3>
               <p className="text-sm text-fg-muted mt-1 line-clamp-2">{content.advice}</p>
@@ -165,12 +188,14 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           <div className="flex items-center gap-2 shrink-0">
             {/* Desktop CTA — visible sm+ */}
             <Link
-              href={`/${locale}/spots/${data.topSpotSlug}/`}
+              href={topSpotHref}
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-data-waves hover:bg-data-waves/80 text-bg-base rounded-xl text-sm font-medium transition-all hover:scale-105"
               onClick={e => e.stopPropagation()}
             >
               <Zap className="w-4 h-4" />
-              {isPt ? 'Ver Spot' : 'View Spot'}
+              {topSpotLinkValid
+                ? (isPt ? 'Ver Spot' : 'View Spot')
+                : (isPt ? 'Ver Spots' : 'View Spots')}
             </Link>
             {expanded ? <ChevronUp className="w-5 h-5 text-fg-subtle" /> : <ChevronDown className="w-5 h-5 text-fg-subtle" />}
           </div>
@@ -203,7 +228,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             {data.spots.map(spot => (
               <Link
                 key={spot.slug}
-                href={`/${locale}/spots/${spot.slug}/`}
+                href={resolveSpotHref(locale, spot.slug)}
                 className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-2 transition-colors group"
               >
                 <div className="flex items-center gap-3 min-w-0">
@@ -230,11 +255,13 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
           {/* Mobile CTA — visible inside expanded area */}
           <Link
-            href={`/${locale}/spots/${data.topSpotSlug}/`}
+            href={topSpotHref}
             className="sm:hidden flex items-center justify-center gap-2 mt-4 w-full py-3 bg-data-waves hover:bg-data-waves/80 text-bg-base rounded-xl text-sm font-medium transition-all"
           >
             <Zap className="w-4 h-4" />
-            {isPt ? 'Ver Spot em destaque' : 'View featured spot'}
+            {topSpotLinkValid
+              ? (isPt ? 'Ver Spot em destaque' : 'View featured spot')
+              : (isPt ? 'Ver todos os spots' : 'View all spots')}
           </Link>
         </div>
       )}

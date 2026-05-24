@@ -2,11 +2,13 @@
 
 Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do projecto e as restrições técnicas que limitam que soluções são viáveis.
 
-Última actualização: 2026-05-21 (auditoria completa pós-94 commits em 9 dias).
+> **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) (Fases A→C, actualizado 2026-05-24)
+
+Última actualização: 2026-05-24 (Fase B concluída — confiança + coerência multi-desporto).
 
 ## Identidade
 
-- **Projecto:** VenTu — plataforma open-source de condições para desportos náuticos em Portugal (surf, kitesurf, windsurf, bodyboard, SUP, wakeboard).
+- **Projecto:** VenTu — plataforma open-source de condições para desportos náuticos em Portugal (surf, kitesurf, windsurf, bodyboard, SUP, foil, wakeboard).
 - **Repo:** https://github.com/braindeadpt/ventu
 - **Site em produção:** https://ventu.surf/pt/
 - **Licença:** MIT.
@@ -15,208 +17,119 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 | Camada | Tecnologia | Notas |
 |---|---|---|
-| Framework | Next.js 14.2 + React 18.3 | App Router |
+| Framework | Next.js 16 + React 18.3 | App Router, static export |
 | Linguagem | TypeScript 5.4 (strict) | |
-| Styling | Tailwind CSS 3.4 | Config em `tailwind.config.ts` com paletas custom (`ocean`, `surf`, `wind`, `wave`) parcialmente usadas |
+| Styling | Tailwind CSS 3.4 | Config em `tailwind.config.ts` |
 | Ícones | `lucide-react` | Não trocar por outra lib |
-| Charts | `recharts` | |
-| Dados marinha | Open-Meteo Marine API | Free, sem auth, `wind_speed_unit=ms` em todos os fetches |
-| Marés (observado) | IH OGC API (hidrografico.pt) | Free, CC-BY 4.0, 33 estações, 135 spots mapeados |
-| Chat (removido) | N/A | UI removida 2026-05-21. Schema preservado para futuro |
-| IA notícias | Google Gemini Flash (primário) + Groq Llama 3.3 (fallback 1) + Cerebras (fallback 2) | Corre em GitHub Actions, cadeia sequencial com 1.5s entre providers |
-| Previsões | Open-Meteo (wind + waves) + precomputed forecasts.json | CI gera a cada 3h, client carrega JSON primeiro, live API como fallback |
+| Mapas | Leaflet + MarkerCluster | SpotMap, cluster na homepage |
+| Dados marinha | Open-Meteo Marine API | Free, sem auth, `wind_speed_unit=ms` |
+| Marés (observado) | IH OGC API (hidrografico.pt) | Free, CC-BY 4.0, 33 estações |
+| Chat | Removido | UI removida 2026-05-21 |
+| IA notícias / Dawn Patrol | Gemini Flash + Groq Llama 3.3 + Cerebras | GitHub Actions (secrets no repo remoto) |
+| Previsões | Open-Meteo + `forecasts.json` precomputed | CI a cada 3h; client JSON first, live API fallback |
+| Testes | Vitest (unit) + Playwright (E2E) | `npm test` + `npm run test:e2e` |
 | Deploy | GitHub Pages (static export) | `output: 'export'` no `next.config.js` |
 
 ## Restrições técnicas críticas
 
-São restrições estruturais — qualquer proposta tem de as respeitar.
+1. **Static export.** Sem API routes em runtime, sem middleware. Tudo é HTML/JS/CSS estático.
+2. **Sem headers HTTP customizáveis** no GitHub Pages (CSP só via meta, limitado).
+3. **Deps leves.** Justificar novas dependências antes de adicionar.
+4. **Rotas dinâmicas exigem `generateStaticParams`.** Não introduzir rotas não enumeráveis.
+5. **Server components correm em build time**, não em runtime.
+6. **Homepage:** não usar `searchParams` async no server — quebra static export. Filtros sport/region via client + `?sport=` / `?region=` (`gridFilters.ts`).
 
-1. **Static export.** `next.config.js` tem `output: 'export'`. Não há server-side rendering em runtime, não há API routes (todas as `app/api/*` estão fora de questão), não há middleware. Tudo o que existe em runtime é HTML/JS/CSS estático servido pelo GitHub Pages.
+## Copy e confiança (Fase A — concluída)
 
-2. **basePath.** O site vive na raiz do domínio. Paths absolutos funcionam normalmente.
+- **Nunca** “tempo real” / “real-time”. Cadência honesta: *actualizado a cada 3 horas*.
+- **`DataSourceBadge`** (`src/components/ui/DataSourceBadge.tsx`) — DEMO / stale / cached em SpotDetail, Compare, Favoritos, SpotDrawer, grid.
+- **Dawn Patrol:** `public/data/dawn-patrol.json` + guard stale (>24h) e validação de slugs no banner.
+- **Stale threshold:** >3h amarelo, >12h vermelho (`src/lib/dataFreshness.ts`).
 
-3. **Sem headers HTTP customizáveis.** GitHub Pages não permite. CSP, HSTS, etc. só via `<meta http-equiv>` no HTML — e com limitações.
+## Scoring multi-desporto
 
-4. **Sem dependências pesadas novas.** O `package.json` actual é deliberadamente leve. Antes de adicionar qualquer dep, justificar. Preferir CSS/SVG vanilla a libs (ex.: gauges, wave shapes — não precisam de uma lib).
+| Ficheiro | Função |
+|---|---|
+| `src/lib/sportScore.ts` | Scores 0–100 por modalidade, `getHourlyScores`, `getRelevantSports` |
+| `src/lib/sportRatings.ts` | `SportType`, `getCompatibleSports`, `TYPE_TO_SPORTS` fallback |
+| `src/lib/homepageSport.ts` | Sort/ticker/hero por modalidade preferida (`ventu-preferred-sport`) |
+| `src/lib/gridFilters.ts` | Sync URL ↔ filtros do grid |
 
-5. **`output: 'export'` + páginas dinâmicas exigem `generateStaticParams`.** A rota `/[locale]/spots/[slug]` já o tem. Não introduzir rotas dinâmicas que não sejam estaticamente enumeráveis.
+**Testes:** `src/lib/__tests__/sportScore.test.ts` (20+ casos). Correr `npm test`.
 
-6. **Cliente vs servidor:** componentes com `'use client'` correm no browser. Componentes server (sem essa directiva) correm em **build time** (não em runtime — não há servidor). Decidir bem onde colocar o fetch de dados.
+**`compatibleSports`:** 117/167 explícitos; 4 críticos preenchidos (foil-lagoa-albufeira, alqueva, praia-rocha, lagos-wakepark). Validação CI: `scripts/validate-spots.js`.
 
 ## Maré (Instituto Hidrográfico)
 
-Sistema de marés integrado via OGC API do IH (hidrografico.pt). Dados observados reais de 33 estações oficiais — não previsão.
-
-**Fluido:**
 ```
-scripts/fetch-ih-tides.js
-  → public/data/ih-tides.json (stations + spotMapping via Haversine < 100 km)
-  → scripts/update-conditions.js lê e integra
-    → public/data/conditions.json com fields:
-      tideHeight, tideStatus, tideLabel, tideObservedHeight, tideObservedAt, tideStation
-  → SpotDetailClient.tsx (StatCard + nota IH observed)
-  → ForecastTable.tsx (row condicional "Maré" se hasTide=true)
+scripts/fetch-ih-tides.js → public/data/ih-tides.json
+scripts/update-conditions.js → conditions.json (tide fields)
+SpotDetailClient + ForecastTable (row condicional)
 ```
 
-**Estado actual:**
-- 33 estações activas (Viana do Castelo a Vila do Porto — Açores)
-- 135/167 spots mapeados (81%)
-- 32 spots sem cobertura (maioria adições recentes: Porto, Aveiro, Algarve, Alentejo)
-- 1 spot sem cobertura natural: Alqueva (lago interior) — tratado graciosamente
+- 33 estações IH · ~135/167 spots mapeados
+- Dados observados (não previsão horária IH); previsão MSL via Open-Meteo
 
-**Limitação:** dados observados (não previsão horária). Maré prevista vem do Open-Meteo `sea_level_height_msl`. As duas escalas são diferentes (MSL global vs zero hidrográfico local) — ambas são válidas e mostradas separadamente.
-
-## Estrutura do repo
+## Estrutura do repo (resumo)
 
 ```
 src/
-├── app/
-│   ├── layout.tsx                    Root layout
-│   ├── page.tsx                      Redirect / → /pt/
-│   ├── globals.css                   Tailwind + custom utilities
-│   └── [locale]/
-│       ├── layout.tsx                Header + Footer + metadata
-│       ├── page.tsx                  HOME (client-side, usa precomputed JSON)
-│       ├── spots/page.tsx            Lista (server, fetch em build)
-│       ├── spots/[slug]/page.tsx     Detail (delega ao SpotDetailClient)
-│       ├── favorites/page.tsx        Favoritos (localStorage)
-│       ├── compare/page.tsx          Comparador VS
-│       ├── news/page.tsx             Notícias (lê public/data/news.json)
-│       └── about/page.tsx            Sobre
-├── components/
-│   ├── layout/Header.tsx, Footer.tsx
-│   ├── spots/SpotCard.tsx, SpotGrid.tsx, SpotDetailClient.tsx,
-│   │         SpotMap.tsx, SessionForecastChart.tsx,
-│   │         LocalTipsSection.tsx, SecretTipsSection.tsx,
-│   │         WaterQualityBadge.tsx, FacilityIcon.tsx
-│   ├── weather/ConditionCard.tsx, ForecastChart.tsx, ForecastTable.tsx
-│   ├── news/NewsCard.tsx
-│   ├── ui/WindCompass.tsx, ScoreGauge.tsx, WaveShape.tsx, SwellRadar.tsx,
-│   │     SocialShare.tsx, SeoHead.tsx, MagicWindows.tsx
-│   ├── FavoriteButton.tsx, TrendIndicator.tsx, SportSelector.tsx,
-│   │   HtmlLang.tsx, SecurityHeaders.tsx
-│   ├── DawnPatrolBanner.tsx, DawnPatrolBannerWrapper.tsx   ← VIVO (home page)
-│   └── SwellDetective.tsx                                   ← DEAD CODE intencional
-├── lib/
-│   ├── spots.ts                      167 spots
-│   ├── openmeteo.ts                  Fetch + parsing Open-Meteo
-│   ├── sportScore.ts                 Scoring 0-100 por desporto
-│   ├── sportRatings.ts               Tipos SportType
-│   ├── load-spot-data.ts             Loader de precomputed conditions
-│   ├── dataLoader.ts                 Leitura de conditions.json em build
-│   ├── wind.ts                       Cardinal helpers + setas
-│   ├── paths.ts                      getAssetPath para basePath
-│   ├── i18n.ts                       Translations PT/EN
-│   ├── spotTips.ts                   Local tips por spot
-│   ├── supabase-config.ts            Anon key hardcoded como fallback
-│   └── supabase.ts                   Client lazy
-├── types/index.ts                    Spot, MarineData, NewsItem, Locale
-└── ...
-    └── llm-fallback.js               Cadeia Gemini → Groq → Cerebras
+├── app/[locale]/          Home, spots, favorites, compare, news, about, modalidades, sazonalidade
+├── components/            UI, spots, weather, layout, DawnPatrolBanner, DataSourceBadge
+├── lib/                   spots.ts (167), sportScore, openmeteo, i18n, homepageSport, gridFilters
+└── types/
 
-public/
-├── data/
-│   ├── conditions.json              136/167 spots preenchidos (CI a cada 3h)
-│   ├── forecasts.json               Precomputed hourly (gerado pelo CI)
-│   ├── ih-tides.json                Estações IH + spot mapping
-│   ├── dawn-patrol.json             Gerado por workflow diário
-│   └── news.json                    Gerado por workflow RSS+LLM
-├── sw.js                            Service Worker
-├── favicon.svg, apple-touch-icon.svg
-├── manifest.json, robots.txt, sitemap.xml
-
-scripts/
-├── update-conditions.js              GH Action: actualiza conditions.json + forecasts.json a cada 3h
-├── fetch-ih-tides.js                 GH Action: busca estações IH, mapeia spots
-├── update-news.js                    GH Action: RSS + LLM (Gemini→Groq→Cerebras)
-├── dawn-patrol.js                    GH Action diária: geração matinal LLM
-└── news/
-    ├── fetch-rss.js                  6 feeds RSS
-    └── llm-tasks.js                  Funções LLM categorização/tradução/síntese
-
-.github/workflows/
-├── deploy.yml                        Build + deploy GitHub Pages (on push)
-├── update-data.yml                   Cron 3h para marés + condições + notícias
-└── dawn-patrol.yml                   Cron diário 06:00 Lisboa
-
-docs/
-├── REDESIGN-SPEC.md                  Spec antiga (parcialmente implementada)
-├── PLANO-REORGANIZACAO.md
-├── BACKLOG.md                        Pendências organizadas
-├── CONTEXT.md                        ← este ficheiro
-└── UX-AUDIT.md                       ← audit detalhado
+public/data/               conditions.json, forecasts.json, news.json, dawn-patrol.json, ih-tides.json
+scripts/                   update-conditions, update-news, dawn-patrol, generate-sitemap, validate-spots
+tests/e2e/                 Playwright (critical-routes incl. URL filter sync)
+.github/workflows/         ci.yml, deploy.yml, update-data.yml, dawn-patrol.yml
+docs/                      ROADMAP.md ← fonte de verdade para prioridades
 ```
 
-## Estado actual conhecido (bugs e dívida)
+## SEO
 
-### ✅ Resolvidos (mantidos por contexto histórico)
+- **Sitemap:** `npm run sitemap:generate` → `public/sitemap.xml` (~448 URLs: spots, modalidades, about, sazonalidade, news)
+- **hreflang** pt/en no sitemap
+- **JSON-LD:** `SpotDetailClient` (Beach + SportsActivityLocation), artigos news
+- Geração automática no CI/deploy antes do build
 
-- **Unidades de vento.** Commit `1f58255`. O bug real era que `scoreSurf`, `scoreBodyboard` e `scoreSUP` comparavam `windSpeed` (m/s) contra thresholds em knots. Corrigido adicionando `const windKt = c.windSpeed * 1.94384` nas três funções.
-- **Slugs duplicados em `spots.ts`.** Verificado: `grep` zero output. `update-conditions.js` tinha 8 duplicados + 1 ID errado eliminados em `8f4785e`.
-- **`findIndex(...) || 0`.** ✅ Ambos `openmeteo.ts` e `update-conditions.js` usam `Math.max(0, ...)`.
-- **Página de notícias.** Já não usa `mockNews` — lê `public/data/news.json`.
-- **Home page fetches.** Já não faz 167 fetches paralelos — usa precomputed conditions.json.
-- **`conditions.json` vazio.** Agora tem 136/167 spots preenchidos via CI a cada 3h.
+## Pipelines CI
 
-### ❌ Bugs activos
+| Workflow | Frequência | O que faz |
+|---|---|---|
+| `update-data.yml` | 3h | conditions + forecasts + news + IH tides |
+| `dawn-patrol.yml` | Diário 05:00 UTC | dawn-patrol.json via LLM |
+| `ci.yml` | PR + push main | lint, unit tests, sitemap, build, E2E |
+| `deploy.yml` | push main | test, sitemap, build, GitHub Pages |
 
-1. **`SecurityHeaders.tsx` injecta CSP via JS** em runtime — sem efeito real em static export.
-2. **Inter declarada em `globals.css` mas nunca carregada.** Site usa system fonts.
-3. **`manifest.json` start_url é `/pt` e o site vive em `/pt/`.** Redirecciona browser para rota errada.
-4. **AlertBanner.tsx** — ficheiro existe mas não é importado em lado nenhum (dead code).
-5. **SwellDetective.tsx** — dead code intencional (preservado à espera de dados históricos reais).
+## Estado actual (2026-05-24)
+
+### ✅ Fases A + B concluídas
+
+- Confiança: copy honesto, badges, Dawn Patrol guards, compatibleSports críticos
+- Coerência: homepage multi-desporto, URL sync filtros, unit tests scoring, docs, sitemap completo
+
+### ⚠️ Dívida conhecida (não bloqueante)
+
+1. `SecurityHeaders.tsx` — CSP via JS sem efeito real em static export
+2. ~50 spots surf-only sem `compatibleSports` explícito (heurística OK)
+3. Fase C por implementar: notícias PT, alertas email, comunidade, calibração scores, PWA
 
 ### Distribuição de spots
 
-**167 spots total:**
-- 96 surf · 33 multisport · 27 kitesurf · 4 foil · 3 wakeboard · 2 windsurf · 2 big-wave
-
-**compatibleSports:**
-- 89/167 preenchidos (53%)
-- 78 pendentes (maioria surf-only legítimos — campo opcional para single-sport)
-- **Críticos pendentes (~14):** spots type=kitesurf ou type=foil sem compatibleSports — foz-arelho, lagoa-albufeira, fonte-telha, barrinha-esmoriz, foil-alvor, vila-real-santo-antonio, monte-gordo, praia-verde, altura, lagos, barrinha-faro, funchal, amorosa, foil-foz-arelho
-
-## Bugs activos descobertos pela auditoria (21/Maio)
-
-1. ~~**ForecastTable capped silenciosamente.** SpotDetailClient passa `hours={120}`. ForecastTable.MAX_HOURS = 72 (regressão da Fase 5d.1). Utilizador vê 3 dias em vez de 5.~~ ✅ **Fixed** — `efd84fb`. MAX_HOURS bumped to 120.
-
-2. ~~**WindCompass labels rodam com a seta.** Bug visual em todos os spot details. Regressão posterior à Fase 2c.~~ ✅ **Already fixed** em `b34c65b` (Fase 2c). Stale bug report.
-
-3. **31 spots novos sem entradas em conditions.json.** Adicionados após último CI run. Aguardam próxima execução de `update-data.yml` (3h).
-
-4. **32 spots sem tide station.** Maioria adições recentes (Porto, Aveiro, Algarve). Não é crítico — display condicional cobre.
-
-5. **78 spots sem compatibleSports.** Prioridade: ~14 kitesurf/foil spots (sem compatibleSports o frontend não sabe que desportos mostrar). Restantes 64 são surf-only (cosmético).
-
-6. ~~**Filtro de regiões na homepage.** `REGIONS` usa macros, `spot.region` usa municípios.~~ ✅ **Fixed** — `fdad5af`. Added 10 missing municipality mappings; fallback changed from 'Lisboa' to '' (safe). All 50 municipalities now mapped.
-
-## Features implementadas (Maio 2026)
-
-- **IH Tide integration** — 33 estações IH, 135 spots mapeados, display duplo (previsto + observado) no SpotDetailClient e ForecastTable
-- **Precomputed forecasts system** — `forecasts.json` com 7 dias de dados horários por spot; SpotDetailClient carrega precomputed first, live API como fallback
-- **MagicWindows** — componente de "best windows" substituiu placeholder anterior
-- **Sport scoring 0-100** — `sportScore.ts` com thresholds calibrados para surf, kitesurf, windsurf, bodyboard, SUP, wakeboard
-- **Dawn Patrol workflow** — CI diário 06:00 com LLM chain (Gemini → Groq → Cerebras)
-- **SeoHead, SocialShare, FavoriteButton** — integrados no SpotDetailClient
-- **ForecastTable redesign** — color tiers por intensidade, day picker, conditional rows (gust, water, tide aparecem apenas se data existe), sticky headers, hover column highlight
-- **SpotDetailClient redesign** — ScoreGauge, WaveShape, SwellRadar, MagicWindows, StatCard grid com tide
-- **+87 novos spots** (80 → 167), correcção de coordenadas, modalidades, descrições
-- **94 commits entre 12-21 Maio** sem auditoria intermédia — maior parte adições/correcções de spots, tide integration, precomputed forecasts, refinements visuais
+**167 spots:** surf, multisport, kitesurf, foil, wakeboard, windsurf, big-wave (ver `spots.ts`).
 
 ## Convenções
 
-- **Idioma do projecto:** Português europeu (PT-PT). Strings duplicadas em `i18n.ts` para PT/EN.
-- **Tom:** directo, conciso. Não usar exclamações excessivas. Não usar emojis em UI excepto onde já existem (avisos).
-- **Comentários no código:** em inglês ou português — escolher um por ficheiro e manter.
-- **Tailwind:** usar utilities, evitar `@apply` excepto para componentes que se repetem em múltiplos sítios. Custom em `globals.css @layer components`.
-- **Componentes:** server-first sempre que possível. `'use client'` só quando há `useState`, `useEffect`, event handlers, ou hooks do `next/navigation`.
-- **Imports:** alias `@/*` aponta para `src/*` (configurado em `tsconfig.json`).
+- **Idioma:** PT-PT no UI; strings em `i18n.ts` (PT/EN).
+- **Tom:** directo, conciso, sem exclamações excessivas.
+- **Tailwind:** utilities first; custom em `globals.css @layer components`.
+- **Componentes:** server-first; `'use client'` só quando necessário.
+- **Imports:** alias `@/*` → `src/*`.
 
 ## Como pedir trabalho à LLM
 
-1. **Carregar este ficheiro primeiro.** `Lê docs/CONTEXT.md.`
-2. **Carregar o audit/spec relevante.** `Lê docs/UX-AUDIT.md.`
-3. **Pedir trabalho cirúrgico, uma fase de cada vez.** Não pedir "redesign completo". Pedir "implementa apenas a Foundation" ou "implementa o ScoreGauge isolado em `src/components/ui/`".
-4. **Pedir perguntas antes de código.** `Se houver ambiguidade, faz-me 2-3 perguntas antes de gerar código.`
-5. **Definir o output esperado.** "Devolve: (a) ficheiro completo do componente novo, (b) diff dos ficheiros existentes a alterar, (c) lista de imports a adicionar."
-6. **Restringir escopo do diff.** `Não tocar em ficheiros fora dos que listei.`
+1. `Lê docs/CONTEXT.md` + `docs/ROADMAP.md`
+2. Trabalho cirúrgico, uma fase de cada vez
+3. Terminar com `npm test` + `npm run build` verde
+4. Registar progresso em `ROADMAP.md` → Notas de sessão
