@@ -18,7 +18,7 @@ const CSP_META = {
   styleSrc: "'self' 'unsafe-inline'",
   fontSrc: "'self' data:",
   imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co",
-  connectSrc: "'self' https://gc.zgo.at https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://api.windy.com",
+  connectSrc: "'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://api.windy.com",
   frameSrc: "https://embed.windy.com https://*.windy.com https://www.openstreetmap.org",
   objectSrc: "'none'",
   baseUri: "'self'",

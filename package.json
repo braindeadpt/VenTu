@@ -15,6 +15,7 @@
     "test:e2e:ux": "playwright test visual-ux-audit",
     "audit:full": "node scripts/run-full-audit.js",
     "audit:ux": "node scripts/run-ux-audit.js",
+    "test:prod-check": "node scripts/prod-manual-check.js",
     "audit:install": "playwright install chromium",
     "news:generate": "node scripts/update-news.js",
     "conditions:update": "node scripts/update-conditions.js",

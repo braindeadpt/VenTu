@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase-config'
+import { SUPABASE_URL, SUPABASE_ANON_KEY, isValidSupabaseUrl } from './supabase-config'
 
 let client: ReturnType<typeof createClient> | null = null
 
@@ -15,5 +15,5 @@ export function getSupabaseClient() {
 }
 
 export const isSupabaseConfigured = () => {
-  return !!SUPABASE_URL && !!SUPABASE_ANON_KEY
+  return !!SUPABASE_URL && !!SUPABASE_ANON_KEY && isValidSupabaseUrl(SUPABASE_URL)
 }
