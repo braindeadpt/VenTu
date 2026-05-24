@@ -291,7 +291,7 @@ export default function ForecastTable({
             <button
               key={group.day}
               onClick={() => scrollToDay(group.startIndex)}
-              className={`px-3 py-1 rounded-pill text-meta-xs whitespace-nowrap transition-all ${
+              className={`px-3 py-1 rounded-pill text-meta-xs whitespace-nowrap shrink-0 transition-all ${
                 selectedDayIndex === i
                   ? 'bg-score-good/20 text-score-good border border-score-good/30 font-semibold'
                   : 'bg-surface-1 text-fg-muted border border-divider hover:bg-surface-2'
@@ -305,7 +305,7 @@ export default function ForecastTable({
 
 <div
         ref={scrollRef}
-className="overflow-x-auto rounded-card border border-divider bg-bg-base min-w-[600px] md:min-w-[800px] relative"
+className="overflow-x-auto overscroll-x-contain touch-pan-x rounded-card border border-divider bg-bg-base min-w-[600px] md:min-w-[800px] relative"
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}

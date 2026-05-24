@@ -107,7 +107,7 @@ function SportTab({
     <button
       onClick={onClick}
       className={`
-        relative flex items-center gap-2 px-4 py-2.5 rounded-pill
+        relative flex shrink-0 items-center gap-2 px-4 py-2.5 rounded-pill
         font-medium text-sm whitespace-nowrap
         transition-all duration-fast
         ${
@@ -160,7 +160,16 @@ export default function SpotDetailClient({
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
   const [communityOverlay, setCommunityOverlay] = useState<Record<string, import('@/lib/communityTips').CommunityTipEntry>>({});
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   useEffect(() => {
     loadCommunityTips().then(setCommunityOverlay);
@@ -402,10 +411,10 @@ export default function SpotDetailClient({
       <div className="min-h-screen bg-bg-base pb-12">
         <SpotDetailHero spot={spot} locale={locale} backLabel={t.spots.backToSpots} />
 
-        {/* Sport selector — sticky below header on scroll */}
-        <section className="sticky top-16 z-30 bg-bg-base/95 backdrop-blur-sm border-b border-divider">
+        {/* Sport selector — sticky on desktop; horizontal scroll on mobile */}
+        <section className="md:sticky md:top-16 z-30 bg-bg-base/95 md:backdrop-blur-sm border-b border-divider">
           <div className="max-w-6xl mx-auto px-4 py-2">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 edge-fade-x">
+            <div className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain touch-pan-x no-scrollbar pb-1 edge-fade-x">
             {(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
               .filter((s) => relevantSports.includes(s))
               .map((sport) => (
@@ -418,7 +427,7 @@ export default function SpotDetailClient({
                   locale={locale}
                 />
               ))}
-          </div>
+            </div>
           </div>
         </section>
 
@@ -441,13 +450,21 @@ export default function SpotDetailClient({
               {isPt ? 'Previsão horária' : 'Hourly forecast'}
             </h2>
             {forecastTableData.length > 0 ? (
-              <div className="card-1 p-3 md:p-4 overflow-x-auto">
+              <div className="card-1 overflow-hidden md:p-4 p-0">
+                {isMobile && (
+                  <p className="text-meta-sm text-fg-muted px-4 pt-3 pb-2 border-b border-divider">
+                    {isPt
+                      ? 'Deslize horizontalmente para ver todas as horas →'
+                      : 'Swipe horizontally for all hours →'}
+                  </p>
+                )}
                 <ForecastTable
                   hourly={forecastTableData}
-                  hours={120}
+                  hours={isMobile ? 72 : 120}
                   sport={selectedSport}
                   coastOrientation={spot.coastOrientation}
                   locale={locale as 'pt' | 'en'}
+                  compact={isMobile}
                 />
               </div>
             ) : (
