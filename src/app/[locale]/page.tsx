@@ -144,12 +144,12 @@ export default async function HomePage({ params, searchParams }: { params: Promi
       <section
         role="status"
         aria-live="polite"
-        className="hidden md:block w-full bg-surface-1 border-b border-divider z-30 sticky top-16"
+        className="w-full bg-surface-1 border-b border-divider z-30 sticky top-16"
       >
-        <div className="max-w-7xl mx-auto px-4 h-10 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-meta text-fg-muted">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 h-9 sm:h-10 flex items-center">
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-meta text-fg-muted min-w-0">
             <span
-              className={`w-2 h-2 rounded-full ${
+              className={`w-2 h-2 rounded-full shrink-0 ${
                 hoursSinceMin < 3
                   ? 'bg-[rgb(var(--score-good))]'
                   : hoursSinceMin < 12
@@ -157,7 +157,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
                     : 'bg-[rgb(var(--score-poor))]'
               } ${hoursSinceMin < 12 ? 'animate-pulse' : ''}`}
             />
-            <span>
+            <span className="truncate">
               {minTs
                 ? `${isPt ? 'Atualizado às' : 'Updated at'} ${new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(maxTs!))} · ${spotsData.length} ${isPt ? 'spots monitorizados' : 'spots monitored'}`
                 : isPt ? 'Sem dados de condições' : 'No condition data'}

@@ -6,7 +6,7 @@
 // CSP — keep narrow. Static export means meta tag, not header.
 // We allow:
 //  - GoatCounter (analytics, optional)
-//  - Supabase (chat + contributions, optional)
+//  - Supabase (contributions feedback + admin, optional)
 //  - OpenStreetMap / Carto / ESRI tiles (Leaflet basemaps)
 //  - Windy webcams (iframe embed in spot detail)
 // NOTE: 'unsafe-eval' was removed (was unused; lingered from a copy/paste).
@@ -18,8 +18,8 @@ const CSP_META = {
   styleSrc: "'self' 'unsafe-inline'",
   fontSrc: "'self' data:",
   imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co",
-  connectSrc: "'self' https://gc.zgo.at https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com",
-  frameSrc: "https://embed.windy.com",
+  connectSrc: "'self' https://gc.zgo.at https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://api.windy.com",
+  frameSrc: "https://embed.windy.com https://*.windy.com https://www.openstreetmap.org",
   objectSrc: "'none'",
   baseUri: "'self'",
   formAction: "'self'",

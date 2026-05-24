@@ -10,49 +10,69 @@ CREATE TABLE IF NOT EXISTS contributions (
   message TEXT NOT NULL CHECK (length(message) >= 1 AND length(message) <= 2000),
   email TEXT,
   locale TEXT DEFAULT 'pt',
+  client_id TEXT NOT NULL CHECK (length(client_id) >= 8 AND length(client_id) <= 64),
   status TEXT DEFAULT 'new' CHECK (status IN ('new', 'done', 'rejected')),
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Índice para ordenação por data
+-- Migração para instalações existentes (ignora se coluna já existir)
+ALTER TABLE contributions ADD COLUMN IF NOT EXISTS client_id TEXT;
+
+-- Índices
 CREATE INDEX IF NOT EXISTS idx_contributions_created_at 
   ON contributions(created_at DESC);
 
--- Índice para filtrar por status
 CREATE INDEX IF NOT EXISTS idx_contributions_status 
   ON contributions(status);
 
--- Política RLS: permitir INSERT anónimo (qualquer user pode enviar)
+CREATE INDEX IF NOT EXISTS idx_contributions_client_created
+  ON contributions(client_id, created_at DESC);
+
+-- RLS
 ALTER TABLE contributions ENABLE ROW LEVEL SECURITY;
 
--- Política para inserção (qualquer um pode enviar)
-CREATE POLICY "Allow anonymous insert" ON contributions
+-- INSERT anónimo com rate limit (formulário público)
+DROP POLICY IF EXISTS "Allow anonymous insert" ON contributions;
+DROP POLICY IF EXISTS "Allow anonymous insert with rate limit" ON contributions;
+
+CREATE POLICY "Allow anonymous insert with rate limit" ON contributions
   FOR INSERT TO anon
-  WITH CHECK (length(message) >= 1 AND length(message) <= 2000);
+  WITH CHECK (
+    length(message) >= 1
+    AND length(message) <= 2000
+    AND client_id IS NOT NULL
+    AND length(client_id) >= 8
+    AND length(client_id) <= 64
+    AND (
+      NOT EXISTS (
+        SELECT 1 FROM contributions c
+        WHERE c.client_id = contributions.client_id
+        AND c.created_at > NOW() - INTERVAL '30 seconds'
+      )
+    )
+  );
 
--- Política para UPDATE (apenas autenticado - requer Supabase Auth)
--- NOTA: Para ativar, descomenta e implementa Supabase Auth no admin
--- CREATE POLICY "Allow authenticated update" ON contributions
---   FOR UPDATE TO authenticated
---   USING (true)
---   WITH CHECK (true);
+-- Admin: utilizadores autenticados (Supabase Auth)
+DROP POLICY IF EXISTS "Allow authenticated select" ON contributions;
+DROP POLICY IF EXISTS "Allow authenticated update" ON contributions;
+DROP POLICY IF EXISTS "Allow authenticated delete" ON contributions;
 
--- Política para DELETE (apenas autenticado - requer Supabase Auth)
--- NOTA: Para ativar, descomenta e implementa Supabase Auth no admin
--- CREATE POLICY "Allow authenticated delete" ON contributions
---   FOR DELETE TO authenticated
---   USING (true);
+CREATE POLICY "Allow authenticated select" ON contributions
+  FOR SELECT TO authenticated
+  USING (true);
 
--- ⚠️  ATENÇÃO: O admin actual usa password client-side (NÃO é seguro!)
---   Qualquer pessoa com a password pode fazer update/delete.
---   Para segurança real em produção, implementa Supabase Auth.
+CREATE POLICY "Allow authenticated update" ON contributions
+  FOR UPDATE TO authenticated
+  USING (true)
+  WITH CHECK (true);
 
--- Opcional: auto-cleanup de itens muito antigos (descomenta se quiseres)
--- DELETE FROM contributions WHERE created_at < now() - interval '90 days';
+CREATE POLICY "Allow authenticated delete" ON contributions
+  FOR DELETE TO authenticated
+  USING (true);
 
 -- ============================================================
--- Como verificar se funcionou:
--- 1. Vai a Table Editor → contributions
--- 2. Clica em "Insert row" para testar manualmente
--- 3. Vai a /pt/admin/contributions no site para ver tudo
+-- Admin setup:
+-- 1. Authentication → Users → Add user (email + password)
+-- 2. Abrir /pt/admin/contributions/ no site e fazer login
+-- 3. Não há link público — só admins conhecem o URL
 -- ============================================================

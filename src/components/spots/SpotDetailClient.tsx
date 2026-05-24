@@ -256,8 +256,8 @@ export default function SpotDetailClient({
         let tideObserved = undefined;
 
         const [conditionsResp, forecastsResp] = await Promise.all([
-          fetch('/data/conditions.json'),
-          fetch('/data/forecasts.json'),
+          fetch(getAssetPath('/data/conditions.json')),
+          fetch(getAssetPath('/data/forecasts.json')),
         ]);
 
         if (conditionsResp.ok && forecastsResp.ok) {
@@ -398,8 +398,8 @@ export default function SpotDetailClient({
         {/* Forecast skeleton */}
         <div className="max-w-5xl mx-auto h-64 bg-surface-1 rounded-lg" />
         
-        {/* Chat skeleton */}
-        <div className="max-w-5xl mx-auto h-48 bg-surface-1 rounded-lg" />
+        {/* Map skeleton */}
+        <div className="max-w-5xl mx-auto h-56 bg-surface-1 rounded-lg" />
       </div>
     );
   }
@@ -795,63 +795,3 @@ export default function SpotDetailClient({
   );
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
- *  TODO (futuro): activar SwellDetective APENAS com dados históricos
- *  reais. O componente está pronto em src/components/SwellDetective.tsx
- *  mas usa mock data para a maioria dos spots. Activar agora seria
- *  induzir utilizadores em erro com "padrões históricos" inventados.
- *  Aguarda pipeline de histórico real (parsing Open-Meteo archived
- *  ou ingestion própria).
- *  ═══════════════════════════════════════════════════════════════════════
- *
- *  TEST NOTES
- *  ═══════════════════════════════════════════════════════════════════════
- *
- *  1. Spot completo (Supertubos):
- *     - Hero com nome, região, dificuldade, badges
- *     - 3+ sport tabs com scores
- *     - Showcase: ScoreGauge lg + WaveShape lg + SwellRadar lg
- *     - ForecastTable com 120h + score row colorido
- *     - Stats: ondas, vento c/ arrow, água, rajada
- *     - Chat funcional
- *
- *  2. Spot sem hourly (interior / falha de API):
- *     - ForecastTable mostra "Previsão indisponível"
- *     - MagicWindows omitido (forecast.length === 0)
- *     - Showcase continua com dados current
- *
- *  3. Spot sem coastOrientation:
- *     - SwellRadar em modo agnóstico (sem semicírculos)
- *     - Resumo textual sem "Vento offshore/onshore"
- *
- *  4. Switch de sport:
- *     - ScoreGauge atualiza (animated count-up)
- *     - Tabs activas mudam cor
- *     - ForecastTable score row recalcula via useMemo
- *     - Resumo textual atualiza
- *
- *  5. Mobile (360px):
- *     - Header: nome truncado, botões shrink
- *     - Showcase: grid 1 coluna
- *     - Stats: grid 2 colunas
- *     - Sport tabs: scroll horizontal com edge-fade
- *     - ForecastTable: overflow-x scroll, sticky first col
- *
- *  6. Reduced motion:
- *     - ScoreGauge count-up respeita prefers-reduced-motion
- *     - Hover transitions desligadas via globals.css
- *
- *  7. Share button:
- *     - Click → clipboard → toast "Link copiado!" por 2s
- *     - Sem toast nativo, usa span absoluto
- *
- *  8. FavoriteButton:
- *     - Continua a togglar, persistente via localStorage
- *     - Não alterado — consumido como está
- *
- *  9. i18n:
- *      - Todas as strings via getTranslation()
- *      - spotDetail chaves: share, copyLink, bestWindows, about,
- *        localTips, facilities, hazards, location, waterQuality,
- *        noForecast
- */

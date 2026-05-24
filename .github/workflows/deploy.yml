@@ -39,6 +39,7 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_GOATCOUNTER_CODE: ${{ secrets.NEXT_PUBLIC_GOATCOUNTER_CODE }}
+          NEXT_PUBLIC_WINDY_API_KEY: ${{ secrets.NEXT_PUBLIC_WINDY_API_KEY }}
         run: |
           npm run build 2>&1 | tee build.log || {
             echo "::error::BUILD FAILED - Last 200 lines:"

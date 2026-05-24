@@ -4,9 +4,9 @@ import { useState, useEffect, useMemo } from 'react';
 // useSearchParams removed — using window.location.search for static export safety
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation } from 'lucide-react';
+import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation, Ship } from 'lucide-react';
 import { getMacroRegion, type MacroRegion } from '@/lib/regions';
-import { getCompatibleSports, type SportType } from '@/lib/sportRatings';
+import { getCompatibleSports, type SportType, type GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import { getTranslation } from '@/lib/i18n';
 import { useGeolocation, calculateDistance, formatDistance } from '@/lib/geolocation';
@@ -31,12 +31,13 @@ interface SpotData {
 }
 
 // ─── Sport config (Fase 4b order: affinity grouping) ───
-const SPORTS: { id: SportType | 'all'; labelPt: string; labelEn: string; icon: React.ReactNode; color: string }[] = [
+const SPORTS: { id: GridSportFilter; labelPt: string; labelEn: string; icon: React.ReactNode; color: string }[] = [
   { id: 'all', labelPt: 'Todos', labelEn: 'All', icon: <Star className="w-4 h-4" />, color: 'text-fg' },
   { id: 'surf', labelPt: 'Surf', labelEn: 'Surf', icon: <Waves className="w-4 h-4" />, color: 'text-sport-surf' },
   { id: 'bodyboard', labelPt: 'Bodyboard', labelEn: 'Bodyboard', icon: <Waves className="w-4 h-4" />, color: 'text-sport-bodyboard' },
   { id: 'kitesurf', labelPt: 'Kitesurf', labelEn: 'Kitesurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-kitesurf' },
   { id: 'windsurf', labelPt: 'Windsurf', labelEn: 'Windsurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-windsurf' },
+  { id: 'big-wave', labelPt: 'Big Wave', labelEn: 'Big Wave', icon: <Ship className="w-4 h-4" />, color: 'text-windDir-offshore' },
   { id: 'foil', labelPt: 'Foil', labelEn: 'Foil', icon: <Zap className="w-4 h-4" />, color: 'text-sport-foil' },
   { id: 'sup', labelPt: 'SUP', labelEn: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
   { id: 'wakeboard', labelPt: 'Wakeboard', labelEn: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
@@ -56,17 +57,23 @@ type SortOption = 'score' | 'distance';
 const PLAYABLE_THRESHOLD = 30;
 
 // ─── Helpers ───
-function getSportIcon(sport: SportType | 'all') {
+function getSportIcon(sport: GridSportFilter) {
   return SPORTS.find(s => s.id === sport)?.icon || <Star className="w-4 h-4" />;
 }
 
-function getSportColor(sport: SportType | 'all') {
+function getSportColor(sport: GridSportFilter) {
   return SPORTS.find(s => s.id === sport)?.color || 'text-fg';
 }
 
-function getSportLabel(sport: SportType | 'all', isPt: boolean) {
+function getSportLabel(sport: GridSportFilter, isPt: boolean) {
   const s = SPORTS.find(x => x.id === sport);
   return isPt ? s?.labelPt : s?.labelEn;
+}
+
+/** Score key for sorting/counts — big-wave spots use surf scoring. */
+function getScoreSport(sport: GridSportFilter): SportType | null {
+  if (sport === 'all' || sport === 'big-wave') return sport === 'big-wave' ? 'surf' : null;
+  return sport;
 }
 
 /**
@@ -75,8 +82,11 @@ function getSportLabel(sport: SportType | 'all', isPt: boolean) {
  * have a playable score (>= PLAYABLE_THRESHOLD) for that sport.
  * For 'all', no sport filter is applied.
  */
-function spotMatchesSportFilter(data: SpotData, sport: SportType | 'all'): boolean {
+function spotMatchesSportFilter(data: SpotData, sport: GridSportFilter): boolean {
   if (sport === 'all') return true;
+  if (sport === 'big-wave') {
+    return data.spot.type === 'big-wave';
+  }
   const compatible = getCompatibleSports(data.spot);
   if (!compatible.includes(sport)) return false;
   const score = data.allScores[sport]?.score ?? 0;
@@ -99,10 +109,10 @@ function spotMatchesRegionFilter(data: SpotData, region: string): boolean {
  */
 function getAlternativeSport(
   spotsData: SpotData[],
-  currentSport: SportType | 'all',
+  currentSport: GridSportFilter,
   region: string,
 ): SportType | null {
-  if (currentSport === 'all') return null;
+  if (currentSport === 'all' || currentSport === 'big-wave') return null;
   const counts: Record<string, number> = {};
   for (const data of spotsData) {
     if (!spotMatchesRegionFilter(data, region)) continue;
@@ -149,7 +159,7 @@ export function SpotGridClient({
 
   // ─── Hydration-safe state init ───
   // Priority: URL query param > localStorage > default
-  const [selectedSport, setSelectedSport] = useState<SportType | 'all'>('all');
+  const [selectedSport, setSelectedSport] = useState<GridSportFilter>('all');
   const [selectedRegion, setSelectedRegion] = useState<string>('Todos');
   const [sortBy, setSortBy] = useState<SortOption>('score');
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
@@ -161,7 +171,7 @@ export function SpotGridClient({
 
     // Resolve sport: URL > 'all' default (no localStorage — always start fresh)
     const sportFromUrl = initialSport || urlSport;
-    const resolvedSport = (sportFromUrl as SportType | 'all') || 'all';
+    const resolvedSport = (sportFromUrl as GridSportFilter) || 'all';
     if (SPORTS.some(s => s.id === resolvedSport)) {
       setSelectedSport(resolvedSport);
     }
@@ -208,8 +218,9 @@ export function SpotGridClient({
         const bestB = Math.max(...Object.values(b.allScores).map((s: any) => s.score || 0));
         return bestB - bestA;
       }
-      const scoreA = a.allScores[selectedSport]?.score || 0;
-      const scoreB = b.allScores[selectedSport]?.score || 0;
+      const scoreKey = getScoreSport(selectedSport)!;
+      const scoreA = a.allScores[scoreKey]?.score || 0;
+      const scoreB = b.allScores[scoreKey]?.score || 0;
       return scoreB - scoreA;
     });
     return sortedSpots;
@@ -226,7 +237,8 @@ export function SpotGridClient({
       const best = Math.max(...Object.values(d.allScores).map((s: any) => s.score || 0));
       return best >= 70;
     }
-    return (d.allScores[selectedSport]?.score || 0) >= 70;
+    const scoreKey = getScoreSport(selectedSport)!;
+    return (d.allScores[scoreKey]?.score || 0) >= 70;
   }).length;
 
   const marginalCount = sorted.filter(d => {
@@ -234,15 +246,17 @@ export function SpotGridClient({
       const best = Math.max(...Object.values(d.allScores).map((s: any) => s.score || 0));
       return best >= 40 && best < 70;
     }
-    const s = d.allScores[selectedSport]?.score || 0;
+    const scoreKey = getScoreSport(selectedSport)!;
+    const s = d.allScores[scoreKey]?.score || 0;
     return s >= 40 && s < 70;
   }).length;
 
   // ─── Derived: Top 3 ───
   const top3 = useMemo(() => {
     if (selectedSport === 'all') return [];
+    const scoreKey = getScoreSport(selectedSport)!;
     return sorted
-      .filter(d => (d.allScores[selectedSport]?.score || 0) >= PLAYABLE_THRESHOLD)
+      .filter(d => (d.allScores[scoreKey]?.score || 0) >= PLAYABLE_THRESHOLD)
       .slice(0, 3);
   }, [sorted, selectedSport]);
 
@@ -255,7 +269,7 @@ export function SpotGridClient({
   }, [spotsData, selectedSport, selectedRegion, sorted.length]);
 
   // ─── Handlers ───
-  const handleSportChange = (sport: SportType | 'all') => {
+  const handleSportChange = (sport: GridSportFilter) => {
     setSelectedSport(sport);
   };
 

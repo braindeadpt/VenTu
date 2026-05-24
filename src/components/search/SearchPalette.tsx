@@ -8,6 +8,8 @@ import { spots } from '@/lib/spots';
 import type { Spot, NewsItem } from '@/types';
 import { getTranslation } from '@/lib/i18n';
 import { newsSlug } from '@/lib/news';
+import { getAssetPath } from '@/lib/paths';
+import { getMacroRegion } from '@/lib/regions';
 
 interface SearchPaletteProps {
   locale: string;
@@ -60,7 +62,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   // Load news once
   const [newsCache, setNewsCache] = useState<NewsItem[]>([]);
   useEffect(() => {
-    fetch('/data/news.json')
+    fetch(getAssetPath('/data/news.json'))
       .then((r) => r.json())
       .then((data) => setNewsCache(Array.isArray(data) ? data : []))
       .catch(() => setNewsCache([]));
@@ -93,16 +95,19 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
       }
     });
 
-    // Regions
+    // Regions → homepage macro-region filter (?region=Norte, etc.)
     regions.forEach((r) => {
       const name = isPt ? r.name : r.nameEn;
-      if (name.toLowerCase().includes(q)) {
+      const macro = getMacroRegion(r.name);
+      if (!macro) return;
+      const searchName = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (searchName.includes(q)) {
         results.push({
           type: 'regiao',
           label: name,
           labelEn: r.name,
-          meta: '',
-          href: `/${locale}/regioes/${r.slug}`,
+          meta: macro,
+          href: `/${locale}/?region=${encodeURIComponent(macro)}`,
           icon: MapPin,
         });
       }

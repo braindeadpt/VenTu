@@ -80,12 +80,12 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { icon: <Zap className="w-6 h-6" />, name: 'Next.js 14', desc: 'React Framework' },
+            { icon: <Zap className="w-6 h-6" />, name: 'Next.js 16', desc: 'React Framework' },
             { icon: <Wind className="w-6 h-6" />, name: 'Tailwind CSS', desc: 'Styling' },
-            { icon: <Waves className="w-6 h-6" />, name: 'Recharts', desc: 'Charts' },
+            { icon: <Waves className="w-6 h-6" />, name: 'Leaflet', desc: 'Interactive maps' },
             { icon: <Globe className="w-6 h-6" />, name: 'Open-Meteo', desc: 'Marine API' },
             { icon: <Brain className="w-6 h-6" />, name: 'Gemini Flash', desc: 'AI News' },
-            { icon: <Shield className="w-6 h-6" />, name: 'TypeScript', desc: 'Type Safety' },
+            { icon: <Shield className="w-6 h-6" />, name: 'Supabase', desc: 'Contributions' },
           ].map((tech, i) => (
             <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-surface-1">
               <div className="text-data-waves">{tech.icon}</div>

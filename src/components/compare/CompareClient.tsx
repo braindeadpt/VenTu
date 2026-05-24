@@ -6,6 +6,7 @@ import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getAllSportScores, getScoreColor } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
+import { getAssetPath } from '@/lib/paths';
 import Link from 'next/link';
 
 interface SpotBattleData {
@@ -13,6 +14,59 @@ interface SpotBattleData {
   conditions: ReturnType<typeof getCurrentConditions>;
   allScores: Record<SportType, any>;
   driveTime: string;
+}
+
+interface PrecomputedCondition {
+  waveHeight?: number;
+  wavePeriod?: number;
+  waveDirection?: number;
+  windSpeed?: number;
+  windDirection?: number;
+  windGust?: number;
+  waterTemp?: number;
+}
+
+async function loadSpotBattleData(
+  spot: typeof spots[0],
+  baseCity: 'lisbon' | 'porto',
+  precomputed?: Record<string, PrecomputedCondition> | null,
+): Promise<SpotBattleData | null> {
+  const driveTime = baseCity === 'lisbon'
+    ? getDriveTimeFromLisbon(spot.region)
+    : getDriveTimeFromPorto(spot.region);
+
+  const cond = precomputed?.[spot.id];
+  if (cond) {
+    const conditions = {
+      waveHeight: cond.waveHeight || 0,
+      wavePeriod: cond.wavePeriod || 0,
+      waveDirection: cond.waveDirection || 0,
+      windSpeed: cond.windSpeed || 0,
+      windDirection: cond.windDirection || 0,
+      windGust: cond.windGust || 0,
+      waterTemp: cond.waterTemp || 0,
+      source: 'real' as const,
+    };
+    return {
+      spot,
+      conditions,
+      allScores: getAllSportScores(spot, conditions),
+      driveTime,
+    };
+  }
+
+  try {
+    const data = await fetchMarineData(spot.lat, spot.lon);
+    const conditions = getCurrentConditions(data);
+    return {
+      spot,
+      conditions,
+      allScores: getAllSportScores(spot, conditions),
+      driveTime,
+    };
+  } catch {
+    return null;
+  }
 }
 
 function getDriveTimeFromLisbon(region: string): string {
@@ -86,31 +140,40 @@ export default function CompareClient() {
   useEffect(() => {
     if (!slugs.length) { setLoading(false); return; }
 
+    let cancelled = false;
+    setLoading(true);
+
     const selectedSpots = slugs
       .map(slug => spots.find(s => s.slug === slug))
       .filter(Boolean) as typeof spots;
 
-    Promise.all(
-      selectedSpots.map(async (spot) => {
-        try {
-          const data = await fetchMarineData(spot.lat, spot.lon);
-          const conditions = getCurrentConditions(data);
-          const allScores = getAllSportScores(spot, conditions);
-          const driveTime = baseCity === 'lisbon'
-            ? getDriveTimeFromLisbon(spot.region)
-            : getDriveTimeFromPorto(spot.region);
-          return { spot, conditions, allScores, driveTime };
-        } catch { return null; }
-      })
-    ).then(results => {
-      setBattleData(results.filter(Boolean) as SpotBattleData[]);
-      setLoading(false);
-    });
+    (async () => {
+      let precomputed: Record<string, PrecomputedCondition> | null = null;
+      try {
+        const response = await fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' });
+        if (response.ok) {
+          precomputed = await response.json();
+        }
+      } catch {
+        // Fall back to live Open-Meteo per spot
+      }
+
+      const results = await Promise.all(
+        selectedSpots.map((spot) => loadSpotBattleData(spot, baseCity, precomputed)),
+      );
+
+      if (!cancelled) {
+        setBattleData(results.filter(Boolean) as SpotBattleData[]);
+        setLoading(false);
+      }
+    })();
+
+    return () => { cancelled = true; };
   }, [slugs, baseCity]);
 
   const startCompare = () => {
     if (selectedSlugs.length < 2) return;
-    const url = `/${locale}/compare?spots=${selectedSlugs.join(',')}`;
+    const url = `/${locale}/compare/?spots=${selectedSlugs.join(',')}`;
     window.history.pushState({}, '', url);
     setSlugs([...selectedSlugs]);
     setLoading(true);

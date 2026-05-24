@@ -15,6 +15,22 @@ const TYPES = [
   { id: 'bug', labelPt: 'Bug / Defeito', labelEn: 'Bug / Issue', icon: Bug },
 ];
 
+const CLIENT_ID_KEY = 'ventu:client_id';
+
+function getClientId(): string {
+  if (typeof window === 'undefined') return '';
+  try {
+    let id = localStorage.getItem(CLIENT_ID_KEY);
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(CLIENT_ID_KEY, id);
+    }
+    return id;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
 export default function FeedbackForm({ locale }: FeedbackFormProps) {
   const t = getTranslation(locale as 'pt' | 'en');
   const isPt = locale === 'pt';
@@ -53,6 +69,7 @@ export default function FeedbackForm({ locale }: FeedbackFormProps) {
           message: message.trim(),
           email: email.trim() || null,
           locale,
+          client_id: getClientId(),
         });
 
       if (insertError) throw insertError;

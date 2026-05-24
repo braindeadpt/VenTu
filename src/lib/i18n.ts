@@ -14,7 +14,7 @@ export const translations = {
   pt: {
     nav: {
       home: 'Início', spots: 'Spots', news: 'Notícias', about: 'Sobre',
-      sazonalidade: 'Sazonalidade', comparar: 'Comparar',
+      sazonalidade: 'Sazonalidade', comparar: 'Comparar', favorites: 'Favoritos',
       modalidades: 'Modalidades', metricas: 'Métricas',
       search: 'Pesquisar', searchPlaceholder: 'Pesquisar spots, regiões...',
       searchNoResults: 'Sem resultados para "{query}"',
@@ -164,7 +164,7 @@ export const translations = {
   en: {
     nav: {
       home: 'Home', spots: 'Spots', news: 'News', about: 'About',
-      sazonalidade: 'Seasonality', comparar: 'Compare',
+      sazonalidade: 'Seasonality', comparar: 'Compare', favorites: 'Favorites',
       modalidades: 'Modalities', metricas: 'Metrics',
       search: 'Search', searchPlaceholder: 'Search spots, regions...',
       searchNoResults: 'No results for "{query}"',

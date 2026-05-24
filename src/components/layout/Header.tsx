@@ -15,7 +15,7 @@ interface HeaderProps {
 
 export default function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openMega, setOpenMega] = useState<'modalidades' | 'metricas' | null>(null);
+  const [openMega, setOpenMega] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
   const pathname = usePathname() || '';
@@ -30,7 +30,7 @@ export default function Header({ locale }: HeaderProps) {
   // hits browser back/forward, or follows a link inside a mega menu).
   useEffect(() => {
     setMobileMenuOpen(false);
-    setOpenMega(null);
+    setOpenMega(false);
     setSearchOpen(false);
   }, [pathname]);
 
@@ -46,12 +46,12 @@ export default function Header({ locale }: HeaderProps) {
       `/${switchLocale}`,
     ) || `/${switchLocale}/`;
 
-  const handleMegaToggle = useCallback((variant: 'modalidades' | 'metricas') => {
-    setOpenMega((prev) => (prev === variant ? null : variant));
+  const handleMegaToggle = useCallback(() => {
+    setOpenMega((prev) => !prev);
   }, []);
 
   const handleMegaClose = useCallback(() => {
-    setOpenMega(null);
+    setOpenMega(false);
   }, []);
 
   const openSearch = useCallback(() => {
@@ -70,9 +70,11 @@ export default function Header({ locale }: HeaderProps) {
   }, []);
 
   const navLinks = [
-    { href: `/${locale}/sazonalidade`, label: navLabel.sazonalidade },
-    { href: `/${locale}/compare`, label: navLabel.comparar },
+    { href: `/${locale}/sazonalidade/`, label: navLabel.sazonalidade },
+    { href: `/${locale}/compare/`, label: navLabel.comparar },
+    { href: `/${locale}/favorites/`, label: navLabel.favorites },
     { href: `/${locale}/news/`, label: navLabel.news },
+    { href: `/${locale}/about/`, label: navLabel.about },
   ];
 
   return (
@@ -94,17 +96,9 @@ export default function Header({ locale }: HeaderProps) {
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-0.5 mx-4" aria-label={navLabel.home}>
               <MegaMenu
-                variant="modalidades"
                 locale={locale}
-                isOpen={openMega === 'modalidades'}
-                onToggle={() => handleMegaToggle('modalidades')}
-                onClose={handleMegaClose}
-              />
-              <MegaMenu
-                variant="metricas"
-                locale={locale}
-                isOpen={openMega === 'metricas'}
-                onToggle={() => handleMegaToggle('metricas')}
+                isOpen={openMega}
+                onToggle={handleMegaToggle}
                 onClose={handleMegaClose}
               />
               {navLinks.map((link) => (
@@ -186,18 +180,25 @@ export default function Header({ locale }: HeaderProps) {
         >
           <div className="px-4 py-3 space-y-1">
             <Link
-              href={`/${locale}/sazonalidade`}
+              href={`/${locale}/sazonalidade/`}
               onClick={() => setMobileMenuOpen(false)}
               className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
             >
               {navLabel.sazonalidade}
             </Link>
             <Link
-              href={`/${locale}/compare`}
+              href={`/${locale}/compare/`}
               onClick={() => setMobileMenuOpen(false)}
               className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
             >
               {navLabel.comparar}
+            </Link>
+            <Link
+              href={`/${locale}/favorites/`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+            >
+              {navLabel.favorites}
             </Link>
             <div className="border-t border-divider my-2" />
             <Link

@@ -11,7 +11,8 @@ import Drawer from '@/components/ui/Drawer';
 import SpotDrawerHeader from './SpotDrawerHeader';
 import SpotDrawerTabs from './SpotDrawerTabs';
 import MetricBar from '@/components/ui/MetricBar';
-import { ArrowRight, Heart } from 'lucide-react';
+import FavoriteButton from '@/components/FavoriteButton';
+import { ArrowRight } from 'lucide-react';
 
 interface SpotData {
   spot: Spot;
@@ -62,8 +63,6 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
     if (!spotData) return [];
     return getRelevantSports(spotData.spot, spotData.allScores);
   }, [spotData]);
-
-  const isFav = false; // placeholder — no fav system yet
 
   return (
     <Drawer
@@ -179,13 +178,12 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
               {isPt ? 'Ver página completa' : 'View full page'}
               <ArrowRight className="w-4 h-4" />
             </Link>
-            <button
-              type="button"
-              className="flex items-center justify-center w-11 h-11 rounded-lg border border-divider text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-              aria-label={isPt ? 'Adicionar aos favoritos' : 'Add to favorites'}
-            >
-              <Heart className={`w-5 h-5 ${isFav ? 'fill-data-waves text-data-waves' : ''}`} />
-            </button>
+            <FavoriteButton
+              spotId={spot.id}
+              spotName={isPt ? spot.name : spot.nameEn}
+              size="md"
+              locale={locale}
+            />
           </div>
         </div>
       )}

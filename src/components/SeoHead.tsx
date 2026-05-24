@@ -25,7 +25,7 @@ export default function SeoHead({
     : 'VenTu — Condições em Tempo Real para Desportos Náuticos';
 
   const fullDesc = description
-    || 'Condições em tempo real para surf, kitesurf, windsurf e big wave em Portugal. Ondas, vento e temperatura da água para 81 spots.';
+    || 'Condições em tempo real para surf, kitesurf, windsurf e big wave em Portugal. Ondas, vento e temperatura da água para 167 spots.';
 
   return (
     <>

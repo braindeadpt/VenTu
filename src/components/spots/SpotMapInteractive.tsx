@@ -1,9 +1,13 @@
 'use client';
 
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
+
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
 import type { Spot } from '@/types';
-import type { SportType } from '@/lib/sportRatings';
+import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
@@ -37,16 +41,19 @@ interface SpotData {
 
 interface SpotMapInteractiveProps {
   spotsData: SpotData[];
-  selectedSport: SportType | 'all';
+  selectedSport: GridSportFilter;
   selectedRegion: string;
   locale: string;
   onSpotSelect?: (spotId: string) => void;
 }
 
 // ─── Helpers ───
-function getBestScore(data: SpotData, sport: SportType | 'all'): number {
+function getBestScore(data: SpotData, sport: GridSportFilter): number {
   if (sport === 'all') {
     return Math.max(...Object.values(data.allScores).map((s) => s?.score || 0));
+  }
+  if (sport === 'big-wave') {
+    return data.allScores.surf?.score || 0;
   }
   return data.allScores[sport]?.score || 0;
 }

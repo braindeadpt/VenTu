@@ -4,6 +4,9 @@ import { Spot } from '@/types'
 
 export type SportType = 'surf' | 'kitesurf' | 'windsurf' | 'wakeboard' | 'bodyboard' | 'sup' | 'foil'
 
+/** Sport filter used in SpotGridClient (includes modality-only big-wave). */
+export type GridSportFilter = SportType | 'all' | 'big-wave'
+
 export const SPORT_LABELS: Record<SportType, { pt: string; en: string }> = {
   surf: { pt: 'Surf', en: 'Surf' },
   kitesurf: { pt: 'Kitesurf', en: 'Kitesurf' },
