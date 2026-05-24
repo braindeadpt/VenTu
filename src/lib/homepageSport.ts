@@ -2,6 +2,7 @@ import type { SportScore } from '@/lib/sportScore'
 import type { SportType, GridSportFilter } from '@/lib/sportRatings'
 import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings'
 import type { Spot } from '@/types'
+import type { MarineConditionsFields } from '@/lib/marineConditions'
 
 export const LS_SPORT_KEY = 'windspot:sport'
 
@@ -13,17 +14,7 @@ const VALID_FILTERS: GridSportFilter[] = [
 
 export interface HomepageSpotData {
   spot: Spot
-  conditions: {
-    waveHeight: number
-    wavePeriod: number
-    waveDirection: number
-    windSpeed: number
-    windDirection: number
-    windGust: number
-    waterTemp: number
-    updatedAt?: string
-    source?: 'real' | 'mock'
-  }
+  conditions: MarineConditionsFields
   allScores: Record<SportType, SportScore>
 }
 

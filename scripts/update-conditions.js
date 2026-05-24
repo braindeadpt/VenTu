@@ -76,11 +76,33 @@ async function fetchWithRetry(url, retries = 3, delay = 1000) {
   throw new Error('Max retries exceeded');
 }
 
+function wavePowerKwPerM(heightM, periodS) {
+  if (!heightM || !periodS || heightM <= 0 || periodS <= 0) return 0;
+  return 0.5 * heightM * heightM * periodS;
+}
+
+function wavePowerFromMarine({ swellHeight, swellPeriod, waveHeight, wavePeriod }) {
+  if (swellHeight > 0 && swellPeriod > 0) {
+    return wavePowerKwPerM(swellHeight, swellPeriod);
+  }
+  return wavePowerKwPerM(waveHeight || 0, wavePeriod || 0);
+}
+
 async function fetchMarineData(lat, lon) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
-    hourly: 'wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl',
+    hourly: [
+      'wave_height',
+      'wave_direction',
+      'wave_period',
+      'swell_wave_height',
+      'swell_wave_direction',
+      'swell_wave_period',
+      'wind_wave_height',
+      'sea_surface_temperature',
+      'sea_level_height_msl',
+    ].join(','),
     timezone: 'Europe/Lisbon',
     forecast_days: '7',
   });
@@ -127,10 +149,20 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
   const seaLevelNext = marineData.hourly.sea_level_height_msl?.[marineTimeIndex + 1];
   const tide = getTideStatus(seaLevel, seaLevelNext);
 
+  const waveHeight = marineData.hourly.wave_height[marineTimeIndex] || 0;
+  const wavePeriod = marineData.hourly.wave_period[marineTimeIndex] || 0;
+  const swellHeight = marineData.hourly.swell_wave_height?.[marineTimeIndex] ?? 0;
+  const swellPeriod = marineData.hourly.swell_wave_period?.[marineTimeIndex] ?? 0;
+
   const result = {
-    waveHeight: marineData.hourly.wave_height[marineTimeIndex] || 0,
-    wavePeriod: marineData.hourly.wave_period[marineTimeIndex] || 0,
+    waveHeight,
+    wavePeriod,
     waveDirection: marineData.hourly.wave_direction[marineTimeIndex] || 0,
+    swellHeight,
+    swellPeriod,
+    swellDirection: marineData.hourly.swell_wave_direction?.[marineTimeIndex] ?? 0,
+    windWaveHeight: marineData.hourly.wind_wave_height?.[marineTimeIndex] ?? 0,
+    wavePowerKw: wavePowerFromMarine({ swellHeight, swellPeriod, waveHeight, wavePeriod }),
     windSpeed: weatherData.hourly.wind_speed_10m[weatherTimeIndex] || 0,
     windDirection: weatherData.hourly.wind_direction_10m[weatherTimeIndex] || 0,
     windGust: weatherData.hourly.wind_gusts_10m[weatherTimeIndex] || 0,
@@ -199,11 +231,25 @@ async function updateConditions() {
       const mergedForecast = [];
       const maxHours = Math.min(marineData.hourly.time.length, weatherData.hourly.time.length, 168);
       for (let i = 0; i < maxHours; i++) {
+        const fh = marineData.hourly.wave_height[i] || 0;
+        const ft = marineData.hourly.wave_period[i] || 0;
+        const fSwellH = marineData.hourly.swell_wave_height?.[i] ?? 0;
+        const fSwellT = marineData.hourly.swell_wave_period?.[i] ?? 0;
         mergedForecast.push({
           time: marineData.hourly.time[i],
-          waveHeight: marineData.hourly.wave_height[i] || 0,
-          wavePeriod: marineData.hourly.wave_period[i] || 0,
+          waveHeight: fh,
+          wavePeriod: ft,
           waveDirection: marineData.hourly.wave_direction[i] || 0,
+          swellHeight: fSwellH,
+          swellPeriod: fSwellT,
+          swellDirection: marineData.hourly.swell_wave_direction?.[i] ?? 0,
+          windWaveHeight: marineData.hourly.wind_wave_height?.[i] ?? 0,
+          wavePowerKw: wavePowerFromMarine({
+            swellHeight: fSwellH,
+            swellPeriod: fSwellT,
+            waveHeight: fh,
+            wavePeriod: ft,
+          }),
           windSpeed: weatherData.hourly.wind_speed_10m[i] || 0,
           windDirection: weatherData.hourly.wind_direction_10m[i] || 0,
           windGust: weatherData.hourly.wind_gusts_10m[i] || 0,

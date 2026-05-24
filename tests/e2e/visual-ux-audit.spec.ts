@@ -102,6 +102,10 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const mapShell = page.locator('[data-map-cluster]');
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
 
+      await page.locator('.spot-marker').first().click({ timeout: 15_000 });
+      await expect(page.locator('.spot-popup')).toBeVisible({ timeout: 5_000 });
+      await expect(page.locator('.spot-popup')).toContainText(/kW\/m|Swell|Vento|Wind/i);
+
       const showAllBtn = page.getByRole('button', { name: /Mostrar todos|Show all/i });
       await showAllBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');

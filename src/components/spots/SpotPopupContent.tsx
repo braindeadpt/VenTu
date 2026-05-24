@@ -1,17 +1,20 @@
 'use client';
 
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Waves, Wind, Thermometer } from 'lucide-react';
+import { Waves, Wind, Zap } from 'lucide-react';
 
-interface SpotPopupContentProps {
+export interface SpotPopupContentProps {
   name: string;
   region: string;
   score: number;
   scoreColor: string;
-  waveHeight: string;
+  swellHeight: string;
+  swellPeriod: string;
   windKnots: string;
-  waterTemp: string | number;
+  windDirection: string;
+  wavePowerKw: string;
   spotSlug: string;
+  spotId: string;
   locale: string;
 }
 
@@ -20,15 +23,18 @@ export function SpotPopupContent({
   region,
   score,
   scoreColor,
-  waveHeight,
+  swellHeight,
+  swellPeriod,
   windKnots,
-  waterTemp,
+  windDirection,
+  wavePowerKw,
   spotSlug,
+  spotId,
   locale,
 }: SpotPopupContentProps) {
   const isPt = locale === 'pt';
   return (
-    <div className="space-y-3 min-w-[200px]">
+    <div className="space-y-3 min-w-[210px]">
       <div className="flex items-center justify-between">
         <div className="min-w-0">
           <div className="font-bold text-sm text-[rgb(var(--fg))] truncate">{name}</div>
@@ -49,24 +55,40 @@ export function SpotPopupContent({
       <div className="grid grid-cols-3 gap-2 text-[11px]">
         <div className="text-center bg-[rgb(var(--surface-1))] rounded-md py-1.5 px-1">
           <Waves className="w-3.5 h-3.5 mx-auto mb-0.5 text-[rgb(var(--fg-subtle))]" />
-          <span className="font-semibold text-[rgb(var(--fg))]">{waveHeight}m</span>
+          <span className="block text-[9px] text-[rgb(var(--fg-subtle))]">{isPt ? 'Swell' : 'Swell'}</span>
+          <span className="font-semibold text-[rgb(var(--fg))]">
+            {swellHeight}m · {swellPeriod}s
+          </span>
         </div>
         <div className="text-center bg-[rgb(var(--surface-1))] rounded-md py-1.5 px-1">
           <Wind className="w-3.5 h-3.5 mx-auto mb-0.5 text-[rgb(var(--fg-subtle))]" />
-          <span className="font-semibold text-[rgb(var(--fg))]">{windKnots}kt</span>
+          <span className="block text-[9px] text-[rgb(var(--fg-subtle))]">{isPt ? 'Vento' : 'Wind'}</span>
+          <span className="font-semibold text-[rgb(var(--fg))]">
+            {windKnots}kt {windDirection}
+          </span>
         </div>
         <div className="text-center bg-[rgb(var(--surface-1))] rounded-md py-1.5 px-1">
-          <Thermometer className="w-3.5 h-3.5 mx-auto mb-0.5 text-[rgb(var(--fg-subtle))]" />
-          <span className="font-semibold text-[rgb(var(--fg))]">{waterTemp}°C</span>
+          <Zap className="w-3.5 h-3.5 mx-auto mb-0.5 text-[rgb(var(--fg-subtle))]" />
+          <span className="block text-[9px] text-[rgb(var(--fg-subtle))]">{isPt ? 'Energia' : 'Energy'}</span>
+          <span className="font-semibold text-[rgb(var(--fg))]">{wavePowerKw} kW/m</span>
         </div>
       </div>
 
-      <a
-        href={`/${locale}/spots/${spotSlug}`}
-        className="block w-full text-center py-2 rounded-lg bg-[rgb(var(--surface-1))] text-[rgb(var(--data-waves))] text-xs font-semibold no-underline transition-colors hover:bg-[rgb(var(--surface-2))]"
-      >
-        {isPt ? 'Ver spot →' : 'View spot →'}
-      </a>
+      <div className="flex flex-col gap-1.5">
+        <button
+          type="button"
+          className="ventu-popup-detail w-full text-center py-2 rounded-lg bg-[rgb(var(--data-waves))] text-white text-xs font-semibold border-0 cursor-pointer"
+          data-spot-id={spotId}
+        >
+          {isPt ? 'Ver condições' : 'View conditions'}
+        </button>
+        <a
+          href={`/${locale}/spots/${spotSlug}/`}
+          className="block w-full text-center py-1.5 rounded-lg bg-[rgb(var(--surface-1))] text-[rgb(var(--fg-muted))] text-xs font-medium no-underline transition-colors hover:bg-[rgb(var(--surface-2))] hover:text-[rgb(var(--fg))]"
+        >
+          {isPt ? 'Página do spot →' : 'Spot page →'}
+        </a>
+      </div>
     </div>
   );
 }

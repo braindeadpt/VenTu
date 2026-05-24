@@ -4,8 +4,14 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation, Ship } from 'lucide-react';
-import { getMacroRegion } from '@/lib/regions';
 import { getCompatibleSports, type SportType, type GridSportFilter } from '@/lib/sportRatings';
+import {
+  filterGridSpots,
+  spotMatchesSportFilter,
+  spotMatchesRegionFilter,
+  PLAYABLE_THRESHOLD,
+  type GridSpotData,
+} from '@/lib/gridSpotFilters';
 import type { SportScore } from '@/lib/sportScore';
 import { getTranslation } from '@/lib/i18n';
 import { useGeolocation, calculateDistance } from '@/lib/geolocation';
@@ -24,21 +30,7 @@ import {
 
 const SpotMapInteractive = dynamic(() => import('./SpotMapInteractive'), { ssr: false });
 
-interface SpotData {
-  spot: Spot;
-  conditions: {
-    waveHeight: number;
-    wavePeriod: number;
-    waveDirection: number;
-    windSpeed: number;
-    windDirection: number;
-    windGust: number;
-    waterTemp: number;
-    updatedAt?: string;
-    source?: 'real' | 'mock';
-  };
-  allScores: Record<SportType, SportScore>;
-}
+type SpotData = GridSpotData;
 
 const SPORTS: { id: GridSportFilter; labelPt: string; labelEn: string; icon: React.ReactNode; color: string }[] = [
   { id: 'all', labelPt: 'Todos', labelEn: 'All', icon: <Star className="w-4 h-4" />, color: 'text-fg' },
@@ -53,7 +45,6 @@ const SPORTS: { id: GridSportFilter; labelPt: string; labelEn: string; icon: Rea
 ];
 
 const LS_REGION_KEY = 'windspot:region';
-const PLAYABLE_THRESHOLD = 30;
 
 type SortOption = 'score' | 'distance';
 
@@ -73,19 +64,6 @@ function getSportLabel(sport: GridSportFilter, isPt: boolean) {
 function getScoreSport(sport: GridSportFilter): SportType | null {
   if (sport === 'all' || sport === 'big-wave') return sport === 'big-wave' ? 'surf' : null;
   return sport;
-}
-
-function spotMatchesSportFilter(data: SpotData, sport: GridSportFilter): boolean {
-  if (sport === 'all') return true;
-  if (sport === 'big-wave') return data.spot.type === 'big-wave';
-  const compatible = getCompatibleSports(data.spot);
-  if (!compatible.includes(sport)) return false;
-  return (data.allScores[sport]?.score ?? 0) >= PLAYABLE_THRESHOLD;
-}
-
-function spotMatchesRegionFilter(data: SpotData, region: string): boolean {
-  if (region === DEFAULT_REGION) return true;
-  return getMacroRegion(data.spot.region) === region;
 }
 
 function getAlternativeSport(
@@ -198,12 +176,28 @@ export function SpotGridClient({
     return () => window.removeEventListener('popstate', onPopState);
   }, [regions]);
 
-  const filtered = useMemo(() => {
-    return spotsData.filter(d =>
-      spotMatchesSportFilter(d, selectedSport) &&
-      spotMatchesRegionFilter(d, selectedRegion),
-    );
-  }, [spotsData, selectedSport, selectedRegion]);
+  const filtered = useMemo(
+    () => filterGridSpots(spotsData, selectedSport, selectedRegion),
+    [spotsData, selectedSport, selectedRegion],
+  );
+
+  const mapLastUpdated = useMemo(() => {
+    let latest: string | null = null;
+    for (const d of filtered) {
+      const at = d.conditions.updatedAt;
+      if (!at) continue;
+      if (!latest || at > latest) latest = at;
+    }
+    if (!latest) return null;
+    try {
+      return new Date(latest).toLocaleTimeString(isPt ? 'pt-PT' : 'en-GB', {
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return null;
+    }
+  }, [filtered, isPt]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
@@ -380,11 +374,23 @@ export function SpotGridClient({
 
       <div className="mb-8">
         <SpotMapInteractive
-          spotsData={spotsData}
+          spotsData={filtered}
           selectedSport={selectedSport}
           selectedRegion={selectedRegion}
           locale={locale}
           onSpotSelect={setSelectedSpotId}
+          mapHud={{
+            sportLabel: sportLabel || (isPt ? 'Todos' : 'All'),
+            regionLabel: selectedRegion,
+            spotCount: filtered.length,
+            onCount,
+            marginalCount,
+            lastUpdated: mapLastUpdated,
+            showClearFilters:
+              selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION,
+            onResetFilters: handleReset,
+            clearFiltersLabel: t.hero.clearFilters,
+          }}
         />
       </div>
 

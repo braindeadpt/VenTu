@@ -11,6 +11,11 @@ import { getTranslation, validateLocale } from '@/lib/i18n';
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
+import type { MarineConditionsFields } from '@/lib/marineConditions';
+import { wavePowerFromMarine, MS_TO_KNOTS } from '@/lib/waveEnergy';
+import { getCardinalLabel } from '@/lib/wind';
+import { renderSpotPopup } from './SpotPopupContent';
+import MapFullscreenHud from './MapFullscreenHud';
 import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
 import type { BasemapMode } from './MapLayerToggle';
@@ -30,16 +35,20 @@ import {
 // ─── Types ───
 interface SpotData {
   spot: Spot;
-  conditions: {
-    waveHeight: number;
-    wavePeriod: number;
-    waveDirection: number;
-    windSpeed: number;
-    windDirection: number;
-    windGust: number;
-    waterTemp: number;
-  };
+  conditions: MarineConditionsFields;
   allScores: Record<SportType, SportScore>;
+}
+
+export interface MapHudProps {
+  sportLabel: string;
+  regionLabel: string;
+  spotCount: number;
+  onCount: number;
+  marginalCount: number;
+  lastUpdated: string | null;
+  showClearFilters: boolean;
+  onResetFilters: () => void;
+  clearFiltersLabel: string;
 }
 
 interface SpotMapInteractiveProps {
@@ -48,6 +57,7 @@ interface SpotMapInteractiveProps {
   selectedRegion: string;
   locale: string;
   onSpotSelect?: (spotId: string) => void;
+  mapHud?: MapHudProps;
 }
 
 // ─── Helpers ───
@@ -73,12 +83,25 @@ function createSpotMarker(
   Leaflet: typeof L,
   data: SpotData,
   selectedSport: GridSportFilter,
+  locale: string,
   onSpotSelect?: (spotId: string) => void,
 ): L.Marker {
-  const { spot } = data;
+  const { spot, conditions } = data;
   const score = getBestScore(data, selectedSport);
   const sportColor = getSpotRgb(spot);
   const scoreColor = getScoreRgb(score);
+  const isPt = locale === 'pt';
+
+  const swellH = conditions.swellHeight ?? conditions.waveHeight;
+  const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
+  const powerKw =
+    conditions.wavePowerKw ??
+    wavePowerFromMarine({
+      swellHeight: conditions.swellHeight,
+      swellPeriod: conditions.swellPeriod,
+      waveHeight: conditions.waveHeight,
+      wavePeriod: conditions.wavePeriod,
+    });
 
   const icon = Leaflet.divIcon({
     className: 'spot-marker',
@@ -109,7 +132,39 @@ function createSpotMarker(
 
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
   (marker as L.Marker & { spotScore?: number }).spotScore = score;
-  marker.on('click', () => onSpotSelect?.(spot.id));
+
+  marker.bindPopup(
+    renderSpotPopup({
+      name: isPt ? spot.name : (spot.nameEn || spot.name),
+      region: isPt ? spot.region : (spot.regionEn || spot.region),
+      score,
+      scoreColor,
+      swellHeight: swellH.toFixed(1),
+      swellPeriod: swellT.toFixed(0),
+      windKnots: (conditions.windSpeed * MS_TO_KNOTS).toFixed(0),
+      windDirection: getCardinalLabel(conditions.windDirection),
+      wavePowerKw: powerKw.toFixed(1),
+      spotSlug: spot.slug,
+      spotId: spot.id,
+      locale,
+    }),
+    { className: 'spot-popup', maxWidth: 280, closeButton: true, autoClose: true, closeOnClick: false },
+  );
+
+  marker.on('click', (e) => {
+    Leaflet.DomEvent.stopPropagation(e);
+    if (marker.isPopupOpen()) {
+      onSpotSelect?.(spot.id);
+    } else {
+      marker.openPopup();
+    }
+  });
+
+  if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
+    marker.on('mouseover', () => marker.openPopup());
+    marker.on('mouseout', () => marker.closePopup());
+  }
+
   return marker;
 }
 
@@ -128,6 +183,7 @@ export default function SpotMapInteractive({
   selectedRegion,
   locale,
   onSpotSelect,
+  mapHud,
 }: SpotMapInteractiveProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -135,7 +191,13 @@ export default function SpotMapInteractive({
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markersGroupRef = useRef<L.LayerGroup | null>(null);
   const didFitBoundsRef = useRef(false);
+  const filterBoundsKeyRef = useRef('');
+  const onSpotSelectRef = useRef(onSpotSelect);
   const LRef = useRef<typeof L | null>(null);
+
+  useEffect(() => {
+    onSpotSelectRef.current = onSpotSelect;
+  }, [onSpotSelect]);
   const [isReady, setIsReady] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [basemapMode, setBasemapMode] = useState<BasemapMode>('map');
@@ -319,6 +381,20 @@ export default function SpotMapInteractive({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isFullscreen, exitFullscreen]);
 
+  // Popup "Ver condições" button (static HTML from renderSpotPopup)
+  useEffect(() => {
+    const el = mapRef.current;
+    if (!el) return;
+    const onClick = (e: MouseEvent) => {
+      const btn = (e.target as HTMLElement).closest('.ventu-popup-detail');
+      if (!btn) return;
+      const spotId = btn.getAttribute('data-spot-id');
+      if (spotId) onSpotSelectRef.current?.(spotId);
+    };
+    el.addEventListener('click', onClick);
+    return () => el.removeEventListener('click', onClick);
+  }, []);
+
   // Add/update markers (clustered or all visible)
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current || !clusterGroupRef.current || !markersGroupRef.current) return;
@@ -339,13 +415,18 @@ export default function SpotMapInteractive({
       if (!map.hasLayer(lg)) map.addLayer(lg);
     }
 
+    const boundsKey = `${spotsData.length}:${selectedSport}:${selectedRegion}`;
+    if (filterBoundsKeyRef.current !== boundsKey) {
+      filterBoundsKeyRef.current = boundsKey;
+      didFitBoundsRef.current = false;
+    }
+
     if (spotsData.length === 0) return;
 
     const bounds = Leaflet.latLngBounds([]);
-    const targetLayer = clusterEnabled ? mcg : lg;
 
     spotsData.forEach((data) => {
-      const marker = createSpotMarker(Leaflet, data, selectedSport, onSpotSelect);
+      const marker = createSpotMarker(Leaflet, data, selectedSport, locale, onSpotSelect);
       if (clusterEnabled) {
         mcg.addLayer(marker);
       } else {
@@ -358,7 +439,7 @@ export default function SpotMapInteractive({
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
       didFitBoundsRef.current = true;
     }
-  }, [spotsData, selectedSport, selectedRegion, isReady, clusterEnabled, onSpotSelect]);
+  }, [spotsData, selectedSport, selectedRegion, isReady, clusterEnabled, locale, onSpotSelect]);
 
   const fullscreenLabel = t.map.fullscreen;
   const exitFullscreenLabel = t.map.exitFullscreen;
@@ -425,6 +506,20 @@ export default function SpotMapInteractive({
             isPt={isPt}
           />
           <MapLegend locale={locale} />
+          {isFullscreen && mapHud && (
+            <MapFullscreenHud
+              isPt={isPt}
+              sportLabel={mapHud.sportLabel}
+              regionLabel={mapHud.regionLabel}
+              spotCount={mapHud.spotCount}
+              onCount={mapHud.onCount}
+              marginalCount={mapHud.marginalCount}
+              lastUpdated={mapHud.lastUpdated}
+              showClearFilters={mapHud.showClearFilters}
+              onResetFilters={mapHud.onResetFilters}
+              clearFiltersLabel={mapHud.clearFiltersLabel}
+            />
+          )}
         </>
       )}
     </div>
