@@ -50,3 +50,5 @@ playwright/.cache/
 public/data/
 # Exception: keep .gitkeep to preserve directory
 !public/data/.gitkeep
+# Community tips overlay (merged from approved contributions)
+!public/data/community-tips.json
