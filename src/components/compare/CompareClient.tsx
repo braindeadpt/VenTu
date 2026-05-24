@@ -1,14 +1,18 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { Trophy, MapPin, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Search, X } from 'lucide-react';
+import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Search, X } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
-import { getAllSportScores, getScoreColor } from '@/lib/sportScore';
+import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
+import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
 import Link from 'next/link';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
+import FilterPill from '@/components/ui/FilterPill';
+import PageHeader from '@/components/ui/PageHeader';
+import Button from '@/components/ui/Button';
 
 interface SpotBattleData {
   spot: typeof spots[0];
@@ -27,6 +31,8 @@ interface PrecomputedCondition {
   waterTemp?: number;
   updatedAt?: string;
 }
+
+const COMPARE_SPORTS: SportType[] = ['surf', 'kitesurf', 'windsurf', 'bodyboard'];
 
 async function loadSpotBattleData(
   spot: typeof spots[0],
@@ -109,7 +115,6 @@ function getLocaleFromPath(): string {
   } catch { return 'pt'; }
 }
 
-// Group spots by region
 function groupByRegion(spotsList: typeof spots): Map<string, typeof spots> {
   const map = new Map<string, typeof spots>();
   for (const spot of spotsList) {
@@ -118,6 +123,31 @@ function groupByRegion(spotsList: typeof spots): Map<string, typeof spots> {
     map.get(region)!.push(spot);
   }
   return map;
+}
+
+function CompareLoadingSkeleton() {
+  return (
+    <div className="min-h-screen bg-bg-base animate-pulse">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+        <div className="h-5 w-24 bg-surface-1 rounded" />
+        <div className="space-y-3">
+          <div className="h-10 w-64 bg-surface-1 rounded mx-auto md:mx-0" />
+          <div className="h-5 w-40 bg-surface-1 rounded mx-auto md:mx-0" />
+        </div>
+        <div className="flex gap-2">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="h-11 w-24 bg-surface-1 rounded-pill" />
+          ))}
+        </div>
+        <div className="card-1 h-48" />
+        <div className="grid gap-6 md:grid-cols-2">
+          {[1, 2].map(i => (
+            <div key={i} className="card-1 h-72" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function CompareClient() {
@@ -206,79 +236,83 @@ export default function CompareClient() {
   if (picking) {
     return (
       <div className="min-h-screen bg-bg-base py-8">
-        <div className="max-w-4xl mx-auto px-4 space-y-6">
-          <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-6">
+          <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors">
             <ArrowLeft className="w-4 h-4" />
             {isPt ? 'Voltar' : 'Back'}
           </Link>
 
-          <div className="text-center space-y-2">
-            <Trophy className="w-12 h-12 text-score-fair mx-auto" />
-            <h1 className="text-3xl font-bold text-fg">Spot vs Spot</h1>
-            <p className="text-fg-muted">{isPt ? 'Escolhe 2-3 spots para comparar' : 'Pick 2-3 spots to compare'}</p>
-          </div>
+          <PageHeader
+            align="center"
+            icon={<Trophy className="w-12 h-12 text-score-epic" aria-hidden />}
+            title="Spot vs Spot"
+            subtitle={isPt ? 'Escolhe 2-3 spots para comparar' : 'Pick 2-3 spots to compare'}
+          />
 
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" aria-hidden />
             <input
               type="search"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder={isPt ? 'Procurar spot...' : 'Search spot...'}
-              className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-divider bg-surface-1 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-data-waves/30"
+              className="w-full pl-9 pr-3 py-2.5 rounded-card border border-divider bg-surface-1 text-sm text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-data-waves/30"
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-fg-muted">
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+            <span className="text-meta text-fg-muted">
               {selectedSlugs.length}/3 {isPt ? 'selecionados' : 'selected'}
             </span>
             <div className="flex gap-2">
               {selectedSlugs.length > 0 && (
-                <button onClick={() => setSelectedSlugs([])} className="text-sm text-fg-muted hover:text-fg px-3 py-1">
-                  <X className="w-4 h-4 inline mr-1" />{isPt ? 'Limpar' : 'Clear'}
-                </button>
+                <Button variant="ghost" size="sm" onClick={() => setSelectedSlugs([])}>
+                  <X className="w-4 h-4" aria-hidden />
+                  {isPt ? 'Limpar' : 'Clear'}
+                </Button>
               )}
-              <button
-                onClick={startCompare}
-                disabled={selectedSlugs.length < 2}
-                className="px-4 py-2 rounded-lg bg-data-waves text-bg-base font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:bg-data-waves/80 transition-colors"
-              >
+              <Button size="sm" onClick={startCompare} disabled={selectedSlugs.length < 2}>
                 {isPt ? 'Comparar' : 'Compare'}
-              </button>
+              </Button>
             </div>
           </div>
 
           <div className="space-y-6 max-h-[60vh] overflow-y-auto">
             {Array.from(regionGroups.entries()).map(([region, regionSpots]) => (
               <div key={region}>
-                <h3 className="text-sm font-semibold text-fg-muted uppercase tracking-wide mb-2">{region}</h3>
+                <h3 className="text-meta-sm font-semibold text-fg-muted uppercase tracking-wide mb-2">{region}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {regionSpots.map(spot => {
                     const selected = selectedSlugs.includes(spot.slug);
+                    const atLimit = selectedSlugs.length >= 3 && !selected;
                     return (
                       <button
                         key={spot.id}
+                        type="button"
                         onClick={() => toggleSpot(spot.slug)}
+                        aria-pressed={selected}
+                        disabled={atLimit}
                         className={[
-                          'flex items-center gap-3 p-3 rounded-lg border text-left transition-all',
+                          'flex items-center gap-3 p-3 rounded-card border text-left transition-all min-h-[44px]',
                           selected
                             ? 'bg-data-waves/10 border-data-waves text-fg'
-                            : 'bg-surface-1 border-divider text-fg-muted hover:bg-surface-2 hover:text-fg',
-                          selectedSlugs.length >= 3 && !selected ? 'opacity-50' : '',
+                            : 'card-1 text-fg-muted hover:bg-surface-2 hover:text-fg',
+                          atLimit ? 'opacity-50 cursor-not-allowed' : '',
                         ].join(' ')}
-                        disabled={selectedSlugs.length >= 3 && !selected}
                       >
-                        <div className={[
-                          'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all',
-                          selected ? 'bg-data-waves border-data-waves' : 'border-fg-disabled',
-                        ].join(' ')}>
-                          {selected && <Check className="w-3 h-3 text-white" />}
-                        </div>
-                        <div className="min-w-0">
-                          <div className="text-sm font-medium truncate">{isPt ? spot.name : spot.nameEn}</div>
-                          <div className="text-xs text-fg-subtle">{spot.region}</div>
-                        </div>
+                        <span
+                          className={[
+                            'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all',
+                            selected ? 'bg-data-waves border-data-waves' : 'border-fg-disabled',
+                          ].join(' ')}
+                          aria-hidden
+                        >
+                          {selected && <Check className="w-3 h-3 text-bg-base" />}
+                        </span>
+                        <span className="min-w-0">
+                          <span className="block text-sm font-medium truncate">{isPt ? spot.name : spot.nameEn}</span>
+                          <span className="block text-xs text-fg-subtle">{spot.region}</span>
+                        </span>
                       </button>
                     );
                   })}
@@ -292,33 +326,26 @@ export default function CompareClient() {
   }
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-bg-base p-4 space-y-6 animate-pulse">
-        <div className="max-w-4xl mx-auto space-y-4 pt-8">
-          <div className="h-10 w-48 bg-surface-1 rounded mx-auto" />
-          <div className="h-64 bg-surface-1 rounded-lg" />
-        </div>
-      </div>
-    );
+    return <CompareLoadingSkeleton />;
   }
 
   if (!slugs.length || battleData.length < 2) {
     return (
       <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
         <div className="text-center space-y-6 max-w-md">
-          <Trophy className="w-16 h-16 text-score-fair mx-auto" />
-          <h1 className="text-3xl font-bold text-fg">Spot vs Spot</h1>
-          <p className="text-fg-muted">
-            {isPt
-              ? 'Seleciona 2-3 spots para comparar condições.'
-              : 'Pick 2-3 spots to compare conditions.'}
-          </p>
-          <button
-            onClick={() => setPicking(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-data-waves text-bg-base font-medium hover:bg-data-waves/80 transition-colors"
-          >
+          <PageHeader
+            align="center"
+            icon={<Trophy className="w-16 h-16 text-score-epic" aria-hidden />}
+            title="Spot vs Spot"
+            subtitle={
+              isPt
+                ? 'Seleciona 2-3 spots para comparar condições.'
+                : 'Pick 2-3 spots to compare conditions.'
+            }
+          />
+          <Button size="lg" onClick={() => setPicking(true)}>
             {isPt ? 'Escolher spots' : 'Choose spots'}
-          </button>
+          </Button>
         </div>
       </div>
     );
@@ -328,103 +355,129 @@ export default function CompareClient() {
     (b.allScores[selectedSport]?.score || 0) - (a.allScores[selectedSport]?.score || 0)
   );
   const winner = sorted[0];
+  const winnerScore = winner.allScores[selectedSport]?.score || 0;
+  const winnerTokens = getScoreTokens(winnerScore);
   const rankIcons = [Crown, Medal, Award];
-  const rankColors = ['text-score-fair', 'text-fg-muted', 'text-score-poor'];
+  const rankColors = ['text-score-epic', 'text-score-good', 'text-score-fair'];
 
   return (
     <div className="min-h-screen bg-bg-base pb-20">
-      <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-        <div className="flex items-center justify-between">
-          <Link href={`/${locale}/spots/`} className="flex items-center gap-2 text-fg-muted hover:text-fg">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-8">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors">
             <ArrowLeft className="w-4 h-4" />
             {isPt ? 'Voltar' : 'Back'}
           </Link>
           <div className="flex items-center gap-2">
-            <button onClick={() => setBaseCity('lisbon')} className={`px-3 py-1 rounded-lg text-sm ${baseCity === 'lisbon' ? 'bg-data-waves text-bg-base' : 'bg-surface-1 text-fg-muted'}`}>Lisboa</button>
-            <button onClick={() => setBaseCity('porto')} className={`px-3 py-1 rounded-lg text-sm ${baseCity === 'porto' ? 'bg-data-waves text-bg-base' : 'bg-surface-1 text-fg-muted'}`}>Porto</button>
+            <FilterPill active={baseCity === 'lisbon'} onClick={() => setBaseCity('lisbon')}>
+              Lisboa
+            </FilterPill>
+            <FilterPill active={baseCity === 'porto'} onClick={() => setBaseCity('porto')}>
+              Porto
+            </FilterPill>
           </div>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-fg">Spot vs Spot</h1>
-            <p className="text-fg-muted">{isPt ? 'Quem ganha hoje?' : 'Who wins today?'}</p>
-          </div>
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <PageHeader
+            title="Spot vs Spot"
+            subtitle={isPt ? 'Quem ganha hoje?' : 'Who wins today?'}
+          />
           <button
+            type="button"
             onClick={() => { setPicking(true); setSelectedSlugs(slugs); }}
-            className="text-sm text-data-waves hover:underline"
+            className="text-sm text-data-waves hover:underline shrink-0"
           >
             {isPt ? 'Trocar spots' : 'Change spots'}
           </button>
         </div>
 
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-          {(['surf', 'kitesurf', 'windsurf', 'bodyboard'] as SportType[]).map(sport => (
-            <button
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar edge-fade-x pb-1">
+          {COMPARE_SPORTS.map(sport => (
+            <FilterPill
               key={sport}
+              active={selectedSport === sport}
               onClick={() => setSelectedSport(sport)}
-              className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap ${selectedSport === sport ? 'bg-surface-2 text-fg border border-divider' : 'bg-surface-1 text-fg-muted hover:bg-surface-2'}`}
             >
-              {sport.charAt(0).toUpperCase() + sport.slice(1)}
-            </button>
+              {SPORT_LABELS[sport][isPt ? 'pt' : 'en']}
+            </FilterPill>
           ))}
         </div>
 
-        <div className="bg-surface-1 backdrop-blur-sm border border-score-fair/30 rounded-2xl p-6 text-center">
-          <Crown className="w-8 h-8 text-score-fair mx-auto mb-2" />
-          <p className="text-score-fair font-bold mb-2">{isPt ? 'VENCEDOR' : 'WINNER'}</p>
-          <h2 className="text-3xl font-bold text-fg">{isPt ? winner.spot.name : winner.spot.nameEn}</h2>
-          <p className="text-fg-muted">{isPt ? winner.allScores[selectedSport]?.rating : winner.allScores[selectedSport]?.ratingEn}</p>
-          <div className="text-5xl font-bold text-score-fair mt-4">{winner.allScores[selectedSport]?.score}/100</div>
+        <div className={`card-1 p-6 text-center border ${winnerTokens.border} ${winnerTokens.glow}`}>
+          <Crown className={`w-8 h-8 ${winnerTokens.text} mx-auto mb-2`} aria-hidden />
+          <p className={`text-meta-sm font-bold uppercase tracking-wide ${winnerTokens.text} mb-2`}>
+            {isPt ? 'Vencedor' : 'Winner'}
+          </p>
+          <h2 className="text-h2 text-fg">{isPt ? winner.spot.name : winner.spot.nameEn}</h2>
+          <p className="text-fg-muted mt-1">
+            {isPt ? winner.allScores[selectedSport]?.rating : winner.allScores[selectedSport]?.ratingEn}
+          </p>
+          <div className={`text-display-lg font-mono tabular-nums ${winnerTokens.text} mt-4`}>
+            {winnerScore}/100
+          </div>
         </div>
 
         <div className={`grid gap-6 ${sorted.length === 2 ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'}`}>
           {sorted.map((data, i) => {
             const Icon = rankIcons[i] || Award;
-            const colors = getScoreColor(data.allScores[selectedSport]?.score || 0);
+            const scoreValue = data.allScores[selectedSport]?.score || 0;
+            const tokens = getScoreTokens(scoreValue);
             const score = data.allScores[selectedSport];
 
             return (
-              <div key={data.spot.id} className="bg-surface-1 backdrop-blur-sm border border-divider rounded-2xl p-6">
+              <article key={data.spot.id} className="card-1 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <Icon className={`w-6 h-6 ${rankColors[i]}`} />
+                    <Icon className={`w-6 h-6 ${rankColors[i] ?? 'text-fg-muted'}`} aria-hidden />
                     <DataSourceBadge
                       source={data.conditions.source}
                       updatedAt={data.conditions.updatedAt}
                       locale={locale}
                     />
                   </div>
-                  <span className={`text-3xl font-bold ${colors.text}`}>#{i + 1}</span>
+                  <span className={`text-h2 font-mono tabular-nums ${tokens.text}`}>#{i + 1}</span>
                 </div>
 
-                <h3 className="text-xl font-bold text-fg">{isPt ? data.spot.name : data.spot.nameEn}</h3>
-                <p className="text-sm text-fg-muted">{data.spot.region}</p>
+                <h3 className="text-h3 text-fg">{isPt ? data.spot.name : data.spot.nameEn}</h3>
+                <p className="text-meta text-fg-muted">{data.spot.region}</p>
 
                 <div className="text-center my-4">
-                  <div className={`text-4xl font-bold ${colors.text}`}>{score?.score || 0}</div>
-                  <div className="text-xs text-fg-muted">/100</div>
+                  <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>{score?.score || 0}</div>
+                  <div className="text-meta-sm text-fg-muted">/100</div>
                 </div>
 
-                <div className="space-y-2 text-sm">
+                <dl className="space-y-2 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-fg-muted flex items-center gap-1"><Waves className="w-4 h-4" />{isPt ? 'Ondas' : 'Waves'}</span>
-                    <span className="font-bold">{data.conditions.waveHeight.toFixed(1)}m</span>
+                    <dt className="text-fg-muted flex items-center gap-1">
+                      <Waves className="w-4 h-4" aria-hidden />
+                      {isPt ? 'Ondas' : 'Waves'}
+                    </dt>
+                    <dd className="font-mono tabular-nums font-semibold text-fg">{data.conditions.waveHeight.toFixed(1)}m</dd>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-fg-muted flex items-center gap-1"><Wind className="w-4 h-4" />{isPt ? 'Vento' : 'Wind'}</span>
-                    <span className="font-bold">{(data.conditions.windSpeed * 1.94384).toFixed(0)}kt</span>
+                    <dt className="text-fg-muted flex items-center gap-1">
+                      <Wind className="w-4 h-4" aria-hidden />
+                      {isPt ? 'Vento' : 'Wind'}
+                    </dt>
+                    <dd className="font-mono tabular-nums font-semibold text-fg">{(data.conditions.windSpeed * 1.94384).toFixed(0)}kt</dd>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-fg-muted flex items-center gap-1"><Clock className="w-4 h-4" />{isPt ? 'Condução' : 'Drive'}</span>
-                    <span className="text-data-waves">{data.driveTime}</span>
+                    <dt className="text-fg-muted flex items-center gap-1">
+                      <Clock className="w-4 h-4" aria-hidden />
+                      {isPt ? 'Condução' : 'Drive'}
+                    </dt>
+                    <dd className="text-data-waves font-medium">{data.driveTime}</dd>
                   </div>
-                </div>
+                </dl>
 
-                <Link href={`/${locale}/spots/${data.spot.slug}/?sport=${selectedSport}`} className="mt-4 block w-full text-center py-3 bg-data-waves hover:bg-data-waves/80 text-bg-base rounded-xl font-medium transition-all">
-                  {isPt ? 'Ver Detalhes' : 'View Details'}
-                </Link>
-              </div>
+                <Button
+                  href={`/${locale}/spots/${data.spot.slug}/?sport=${selectedSport}`}
+                  className="mt-4 w-full"
+                >
+                  {isPt ? 'Ver detalhes' : 'View details'}
+                </Button>
+              </article>
             );
           })}
         </div>

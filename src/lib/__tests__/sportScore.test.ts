@@ -6,6 +6,8 @@ import {
   getHourlyScores,
   getRelevantSports,
   getScoreColor,
+  getScoreTokens,
+  SCORE_TIER_THRESHOLDS,
   type Conditions,
 } from '@/lib/sportScore'
 import { getCompatibleSports, TYPE_TO_SPORTS } from '@/lib/sportRatings'
@@ -235,6 +237,23 @@ describe('getScoreColor', () => {
     expect(getScoreColor(55).text).toContain('score-fair')
     expect(getScoreColor(35).text).toContain('score-poor')
     expect(getScoreColor(10).text).toContain('score-closed')
+  })
+})
+
+describe('getScoreTokens', () => {
+  it('uses unified thresholds aligned with globals.css', () => {
+    expect(getScoreTokens(80).tier).toBe('epic')
+    expect(getScoreTokens(79).tier).toBe('good')
+    expect(getScoreTokens(60).tier).toBe('good')
+    expect(getScoreTokens(59).tier).toBe('fair')
+    expect(getScoreTokens(40).tier).toBe('fair')
+    expect(getScoreTokens(39).tier).toBe('poor')
+    expect(getScoreTokens(20).tier).toBe('poor')
+    expect(getScoreTokens(19).tier).toBe('closed')
+  })
+
+  it('exports documented threshold constants', () => {
+    expect(SCORE_TIER_THRESHOLDS).toEqual({ epic: 80, good: 60, fair: 40, poor: 20 })
   })
 })
 

@@ -14,6 +14,7 @@ import {
   getAllSportScores,
   getRelevantSports,
   getHourlyScores,
+  getScoreTokens,
 } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -42,6 +43,7 @@ import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
+import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
 import FeedbackForm from '@/components/FeedbackForm';
@@ -94,51 +96,6 @@ interface SpotData {
   };
 }
 
-/* ─── Helpers ─── */
-
-/** Score → colour tokens from design system. */
-function scoreTokens(score: number) {
-  if (score >= 80)
-    return {
-      text: 'text-score-epic',
-      bg: 'bg-score-epic/15',
-      border: 'border-score-epic/25',
-      ring: 'ring-score-epic/40',
-      glow: 'shadow-glow-epic',
-    };
-  if (score >= 60)
-    return {
-      text: 'text-score-good',
-      bg: 'bg-score-good/15',
-      border: 'border-score-good/25',
-      ring: 'ring-score-good/40',
-      glow: 'shadow-glow-good',
-    };
-  if (score >= 40)
-    return {
-      text: 'text-score-fair',
-      bg: 'bg-score-fair/15',
-      border: 'border-score-fair/25',
-      ring: 'ring-score-fair/40',
-      glow: 'shadow-glow-fair',
-    };
-  if (score >= 20)
-    return {
-      text: 'text-score-poor',
-      bg: 'bg-score-poor/15',
-      border: 'border-score-poor/25',
-      ring: 'ring-score-poor/40',
-      glow: 'shadow-glow-poor',
-    };
-  return {
-    text: 'text-score-closed',
-    bg: 'bg-score-closed/15',
-    border: 'border-score-closed/25',
-    ring: 'ring-score-closed/40',
-    glow: 'shadow-glow-closed',
-  };
-}
-
 /* ─── Sub-components ─── */
 
 function SportTab({
@@ -155,7 +112,7 @@ function SportTab({
   locale: string;
 }) {
   const isPt = locale === 'pt';
-  const tokens = scoreTokens(score);
+  const tokens = getScoreTokens(score);
   const label = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
 
   return (
@@ -422,7 +379,7 @@ export default function SpotDetailClient({
 
   const { conditions, allScores, forecast } = spotData;
   const score = allScores[selectedSport];
-  const tokens = scoreTokens(score.score);
+  const tokens = getScoreTokens(score.score);
   const relevantSports = getRelevantSports(spot, allScores);
   const mergedLocalTipsRaw = mergeLocalTips(spot, getLocalTips(spot.slug), communityOverlay[spot.slug]);
   const mergedLocalTips = mergedLocalTipsRaw
@@ -517,22 +474,14 @@ export default function SpotDetailClient({
 
             {/* Badges row */}
             {(spot.blueFlag || spot.waterQuality || spot.accessibleBeach) && (
-              <div className="flex flex-wrap gap-2 mt-3">
-                {spot.blueFlag && (
-                  <span className="badge-blue-flag text-meta-sm">
-                    🏖️ Blue Flag
-                  </span>
-                )}
-                {spot.waterQuality && (
-                  <span className="badge-water-quality text-meta-sm">
-                    💧 {td.waterQuality}
-                  </span>
-                )}
-                {spot.accessibleBeach && (
-                  <span className="badge-accessible text-meta-sm">
-                    ♿ {isPt ? 'Acessível' : 'Accessible'}
-                  </span>
-                )}
+              <div className="mt-3">
+                <WaterQualityBadge
+                  blueFlag={spot.blueFlag}
+                  waterQuality={spot.waterQuality}
+                  waterQualityEn={spot.waterQualityEn}
+                  accessibleBeach={spot.accessibleBeach}
+                  locale={locale}
+                />
               </div>
             )}
           </div>

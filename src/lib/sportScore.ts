@@ -366,13 +366,55 @@ export function getHourlyScores(
   })
 }
 
-// Color for score (reused from surfability)
+/** Score tier thresholds — aligned with globals.css (80 / 60 / 40 / 20). */
+export const SCORE_TIER_THRESHOLDS = {
+  epic: 80,
+  good: 60,
+  fair: 40,
+  poor: 20,
+} as const
+
+export type ScoreTier = 'epic' | 'good' | 'fair' | 'poor' | 'closed'
+
+export interface ScoreTokens {
+  tier: ScoreTier
+  text: string
+  bg: string
+  border: string
+  ring: string
+  glow: string
+}
+
+function scoreTierName(score: number): ScoreTier {
+  if (score >= SCORE_TIER_THRESHOLDS.epic) return 'epic'
+  if (score >= SCORE_TIER_THRESHOLDS.good) return 'good'
+  if (score >= SCORE_TIER_THRESHOLDS.fair) return 'fair'
+  if (score >= SCORE_TIER_THRESHOLDS.poor) return 'poor'
+  return 'closed'
+}
+
+/** Single source of truth for score → design-system colour tokens. */
+export function getScoreTokens(score: number): ScoreTokens {
+  const tier = scoreTierName(score)
+  return {
+    tier,
+    text: `text-score-${tier}`,
+    bg: `bg-score-${tier}/15`,
+    border: `border-score-${tier}/25`,
+    ring: `ring-score-${tier}/40`,
+    glow: `shadow-glow-${tier}`,
+  }
+}
+
+/** @deprecated Use getScoreTokens — kept for existing imports. */
 export function getScoreColor(score: number) {
-  if (score >= 85) return { bg: 'bg-score-epic/20', text: 'text-score-epic', border: 'border-score-epic/30', glow: 'shadow-glow-epic' }
-  if (score >= 70) return { bg: 'bg-score-good/20', text: 'text-score-good', border: 'border-score-good/30', glow: 'shadow-glow-good' }
-  if (score >= 50) return { bg: 'bg-score-fair/20', text: 'text-score-fair', border: 'border-score-fair/30', glow: 'shadow-glow-fair' }
-  if (score >= 30) return { bg: 'bg-score-poor/20', text: 'text-score-poor', border: 'border-score-poor/30', glow: 'shadow-glow-poor' }
-  return { bg: 'bg-score-closed/20', text: 'text-score-closed', border: 'border-score-closed/30', glow: 'shadow-glow-closed' }
+  const tokens = getScoreTokens(score)
+  return {
+    bg: tokens.bg.replace('/15', '/20'),
+    text: tokens.text,
+    border: tokens.border.replace('/25', '/30'),
+    glow: tokens.glow,
+  }
 }
 
 // Get sports that are relevant for this spot (score > 0 or primary sport)
