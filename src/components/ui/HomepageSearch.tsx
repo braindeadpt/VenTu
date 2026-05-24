@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, X, MapPin, Wind, Waves, Zap } from 'lucide-react';
-import { spots } from '@/lib/spots';
 import type { Spot } from '@/types';
+import { searchSpots as filterSpots } from '@/lib/spotSearch';
 
 interface HomepageSearchProps {
   locale: string;
@@ -34,23 +34,7 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
   const isPt = locale === 'pt';
 
   const searchSpots = (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setResults(spots.slice(0, 6));
-      return;
-    }
-
-    const q = searchQuery.toLowerCase();
-    const filtered = spots.filter(spot => {
-      const name = isPt ? spot.name : spot.nameEn;
-      const region = isPt ? spot.region : spot.regionEn;
-      return (
-        name.toLowerCase().includes(q) ||
-        region.toLowerCase().includes(q) ||
-        spot.id.toLowerCase().includes(q)
-      );
-    }).slice(0, 8);
-
-    setResults(filtered);
+    setResults(filterSpots({ locale, query: searchQuery, limit: 8 }));
     setSelectedIndex(0);
   };
 

@@ -4,7 +4,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 > **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) (Fases A→C, actualizado 2026-05-24)
 
-Última actualização: 2026-05-24 (Fase B concluída — confiança + coerência multi-desporto).
+Última actualização: 2026-05-25 (Fases A→C concluídas; secrets Supabase/Resend configurados).
 
 ## Identidade
 
@@ -57,7 +57,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 **Testes:** `src/lib/__tests__/sportScore.test.ts` (20+ casos). Correr `npm test`.
 
-**`compatibleSports`:** 117/167 explícitos; 4 críticos preenchidos (foil-lagoa-albufeira, alqueva, praia-rocha, lagos-wakepark). Validação CI: `scripts/validate-spots.js`.
+**`compatibleSports`:** 167/167 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
 
 ## Maré (Instituto Hidrográfico)
 
@@ -99,21 +99,22 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 |---|---|---|
 | `update-data.yml` | 3h | conditions + forecasts + news + IH tides |
 | `dawn-patrol.yml` | Diário 05:00 UTC | dawn-patrol.json via LLM |
-| `ci.yml` | PR + push main | lint, unit tests, sitemap, build, E2E |
+| `ci.yml` | PR + push main | lint, validate spots, unit tests, sitemap, build, E2E |
 | `deploy.yml` | push main | test, sitemap, build, GitHub Pages |
 
-## Estado actual (2026-05-24)
+## Estado actual (2026-05-25)
 
-### ✅ Fases A + B concluídas
+### ✅ Fases A + B + C concluídas
 
-- Confiança: copy honesto, badges, Dawn Patrol guards, compatibleSports críticos
+- Confiança: copy honesto, badges, Dawn Patrol guards, `compatibleSports` 167/167
 - Coerência: homepage multi-desporto, URL sync filtros, unit tests scoring, docs, sitemap completo
+- Diferenciação: notícias PT (ANS, Notícias do Mar, FPS), alertas email, feedback scores, dicas comunidade, PWA
 
 ### ⚠️ Dívida conhecida (não bloqueante)
 
 1. `SecurityHeaders.tsx` — CSP via JS sem efeito real em static export
-2. ~50 spots surf-only sem `compatibleSports` explícito (heurística OK)
-3. Fase C por implementar: notícias PT, alertas email, comunidade, calibração scores, PWA
+2. Calibração automática de scores (C4) — recolhe feedback; ajuste de pesos manual/contínuo
+3. Livecams curadas — links externos Surftotal/MEO nos top spots; embed Windy quando API key presente
 
 ### Distribuição de spots
 

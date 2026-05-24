@@ -329,7 +329,7 @@ gh issue create --title "A1 — Dawn Patrol: slugs, JSON fresco, guard stale" --
 | Dawn Patrol freshness | 2024-09-16 | ≤ 24h | ≤ 24h |
 | Copy “tempo real” | ~15 ficheiros | 0 | 0 |
 | Mock sem badge | spot detail, grid | 0 surfaces | 0 |
-| `compatibleSports` | 117/167 | 167/167 | 167/167 |
+| `compatibleSports` | 167/167 | 167/167 | 167/167 |
 | Homepage sport bias | surf-only sort | — | sport preferido |
 | Unit tests scoring | 0 | 0 | ≥ 20 casos ✅ |
 | Sitemap URLs | parcial | parcial | completo ✅ |
@@ -367,6 +367,21 @@ _Regista aqui decisões, bloqueios e o que ficou feito em cada sessão de trabal
 - **C4:** `supabase-score-feedback.sql`, `ScoreFeedback` 3-tap no spot detail, `analyze-score-feedback.js`
 - **C5:** `InstallPrompt`, `OfflineBanner`, `dataCache.ts`, SW cache timestamp
 - **Secrets necessários (manual):** `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` no GitHub
+
+### 2026-05-25 — Pós-Fase C (backlog)
+
+- **A4 batch:** `compatibleSports` 167/167 (46 surf/big-wave spots preenchidos)
+- **C1:** feed RSS FPS (`fps.pt/feed/`) adicionado à Cena PT
+- **Livecams:** links curados Surftotal/MEO em 8 spots top (`spotLivecams.ts` + `SpotWebcamSection`)
+- **CI:** `npm run spots:validate` no pipeline; docs actualizados (CONTEXT, PLANO-FASES)
+- **Próximo:** testar secrets Supabase/Resend em produção; calibração scores com dados reais
+
+### 2026-05-25 (noite) — Backlog SEO + livecams
+
+- **SEO:** `/explorar/[slug]/` — ~60 landing pages sport × região (estáticas, sitemap, footer)
+- **Search:** `spotSearch.ts` — pesquisa por modalidade no hero
+- **Livecams:** +5 spots (Matosinhos, Leça, Figueira, Cabedelo, Consolação)
+- **Pendente commit/deploy:** alterações acumuladas desde sessão anterior
 
 <!-- Template para sessões futuras:
 ### YYYY-MM-DD — Título curto

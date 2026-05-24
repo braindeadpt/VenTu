@@ -1,7 +1,7 @@
 # VenTu — Plano de Implementação por Fases (Baseado nas 6 Auditorias)
 
 > **Nota (2026-05-24):** Este documento é histórico (auditorias Maio 2026).  
-> **Prioridades actuais:** [`ROADMAP.md`](./ROADMAP.md) — Fases A (confiança) e B (coerência) concluídas; Fase C em backlog.
+> **Prioridades actuais:** [`ROADMAP.md`](./ROADMAP.md) — Fases A→C concluídas; backlog pós-roadmap em [`BACKLOG.md`](./BACKLOG.md).
 
 > **Baseado em:** 6 relatórios de auditoria independentes  
 > **Total de problemas identificados:** ~112  

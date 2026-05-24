@@ -591,6 +591,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'N, NE', bestSwell: 'NW, W',
       description: 'Reef break poderoso e tubar. Uma das melhores ondas de Portugal — direita longa, íngreme, ocas. Apenas para experts.',
       descriptionEn: 'Powerful reef break barrel. One of the best waves in Portugal — long, steep, hollow right. Experts only.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento limitado', 'Acesso íngreme'],
       hazards: ['Rochas afiadas', 'Locals agressivos', 'Pouco profundo']
     },
@@ -601,6 +602,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'NW, W',
       description: 'Onda direita clássica da Ericeira, palco do WSL. Uma das mais consistentes de Portugal. Longa, perfeita, tubos incríveis.',
       descriptionEn: 'Classic Ericeira right-hand wave, WSL venue. One of the most consistent in Portugal. Long, perfect, incredible barrels.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Café', 'WC'],
       hazards: ['Locals', 'Rochas', 'Multidão']
     },
@@ -712,6 +714,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Baía abrigada na Terceira com ondas consistentes. Praia extensa com areia clara. Cenário único dos Açores centrais.',
       descriptionEn: 'Sheltered bay in Terceira with consistent waves. Long beach with light sand. Unique scenery of the Central Azores.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Correntes moderadas']
     },
@@ -722,6 +725,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Reef break exposto e consistente. O mais popular da Terceira. Ondas longas e tubulares sobre fundo de rocha.',
       descriptionEn: 'Exposed and consistent reef break. The most popular in Terceira. Long and tubular waves over rock bottom.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'WC'],
       hazards: ['Rochas afiadas', 'Acesso difícil']
     },
@@ -743,6 +747,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'W, NW',
       description: 'O beach break mais famoso de Lisboa. Ondas de classe mundial ao pé do Forte de São Julião. Multidão de surfistas de qualidade.',
       descriptionEn: 'The most famous beach break in Lisbon. World-class waves next to Forte de São Julião. Crowd of quality surfers.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Comboio', 'WC'],
       hazards: ['Multidão extrema', 'Correntes']
     },
@@ -776,6 +781,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, SW',
       description: '10km de beach breaks perfeitos para aprender. Várias praias: Dragão Vermelho, CDS, Rainha. A 20 min de Lisboa.',
       descriptionEn: '10km of perfect beach breaks to learn. Multiple beaches: Dragão Vermelho, CDS, Rainha. 20 min from Lisbon.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escolas surf', 'Restaurantes', 'WC'],
       hazards: ['Correntes em alguns picos']
     },
@@ -797,6 +803,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'N, NW',
       description: 'Breaks rochosos na costa leste do Faial. Recebe swell do norte e sul. Vistas para o Pico.',
       descriptionEn: 'Rocky breaks on the east coast of Faial. Takes north and south swells. Views of Pico.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'WC'],
       hazards: ['Rochas', 'Pouco profundo']
     },
@@ -862,6 +869,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Spot único — antiga central térmica aquece a água! Surf de inverno com wetsuit mais fino. Beach break longo e acessível.',
       descriptionEn: 'Unique spot — old power station warms the water! Winter surfing with thinner wetsuit. Long and accessible beach break.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Estruturas industriais no fundo']
     },
@@ -872,6 +880,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Point break direito com ondas longas sobre rocha vulcânica. Os ilhéus escuros criam um cenário épico ao pôr do sol.',
       descriptionEn: 'Right-hand point break with long waves over volcanic rock. The dark islets create an epic sunset scenery.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Rocha vulcânica rasa', 'Acesso difícil']
     },
@@ -882,6 +891,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Vila piscatória típica com praias cristalinas. Praia Grande com ondas perfeitas para longboarders. Várias enseadas secretas.',
       descriptionEn: 'Typical fishing village with crystal clear beaches. Praia Grande with perfect waves for longboarders. Several secret coves.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Acesso por trilhos']
     },
@@ -892,6 +902,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'S, SE', bestSwell: 'NW, W',
       description: 'Beach break versátil que funciona com qualquer swell. Ondas poderosas em dias grandes. Fácil acesso pela cidade de Ribeira Grande.',
       descriptionEn: 'Versatile beach break that works with any swell. Powerful waves on big days. Easy access from Ribeira Grande town.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Café', 'WC'],
       hazards: ['Correntes', 'Ondas pesadas']
     },
@@ -902,6 +913,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'S, SE', bestSwell: 'N, NW',
       description: 'Paraíso dos surfistas nos Açores. Ondas potentes com cenário vulcânico único. Competições internacionais. Areia negra vulcânica.',
       descriptionEn: 'Surfers paradise in the Azores. Powerful waves with unique volcanic scenery. International competitions. Black volcanic sand.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Café', 'Escola surf', 'WC'],
       hazards: ['Rochas vulcânicas', 'Multidão em eventos']
     },
@@ -912,6 +924,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Beach break versátil de 2km com múltiplos picos. Varia de slab overhead a ondas de joelho. Escolas de surf locais.',
       descriptionEn: 'Versatile 2km beach break with multiple peaks. Varies from overhead slab to knee-high waves. Local surf schools.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'WC'],
       hazards: ['Multidão', 'Correntes']
     },
@@ -922,6 +935,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'Praia urbana perto de Ponta Delgada. Areia negra vulcânica com múltiplos picos. Consistente com swell do sul.',
       descriptionEn: 'Urban beach near Ponta Delgada. Black volcanic sand with multiple peaks. Consistent with south swell.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
       hazards: ['Multidão', 'Surf schools']
     },
@@ -932,6 +946,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Vila charmosa na foz do rio Mira. Múltiplos beach breaks: Malhão, Aivados, Furnas. Costa Vicentina selvagem.',
       descriptionEn: 'Charming village at the mouth of the Mira River. Multiple beach breaks: Malhao, Aivados, Furnas. Wild Vicentina Coast.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Alojamento', 'WC'],
       hazards: ['Correntes']
     },
@@ -953,6 +968,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SE',
       description: 'Alternativa perfeita para fugir da multidão de Milícias. Beach break com fundo misto. Esquerda longa perto do hotel.',
       descriptionEn: 'Perfect alternative to escape the Milicias crowd. Beach break with mixed bottom. Long left near the hotel.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Hotel', 'WC'],
       hazards: ['Rochas no fundo']
     },
@@ -1242,6 +1258,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia virada a oeste com ondas potentes. Acesso por escadaria na falésia. Beach break épico em dias grandes.',
       descriptionEn: 'West-facing beach with powerful waves. Access by staircase on the cliff. Epic beach break on big days.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento limitado', 'WC'],
       hazards: ['Acesso difícil', 'Correntes fortes', 'Rochas']
     },
@@ -1362,6 +1379,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'Beach break virado a sul com ondas de qualidade. Menos crowd que Tonel e Beliche. Fundo de areia.',
       descriptionEn: 'South-facing beach break with quality waves. Less crowd than Tonel and Beliche. Sand bottom.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'WC'],
       hazards: ['Correntes']
     },
@@ -1383,6 +1401,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'S, SW', bestSwell: 'NW, N',
       description: 'Reef break direito exposto na costa noroeste de Santa Maria. Ondas tubulares em dias grandes.',
       descriptionEn: 'Exposed right reef break on the northwest coast of Santa Maria. Tubular waves on big days.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento limitado', 'WC'],
       hazards: ['Rochas', 'Acesso difícil']
     },
@@ -1393,6 +1412,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'São Miguel — ondas potentes no meio do Atlântico. Água cristalina, crowd mínimo. Um paraíso escondido para surfistas aventureiros.',
       descriptionEn: 'São Miguel — powerful waves in the middle of the Atlantic. Crystal clear water, minimal crowd. A hidden paradise for adventurous surfers.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
       hazards: ['Ondas irregulares', 'Água fria (17-20°C)']
     },
@@ -1403,6 +1423,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'S, SE', bestSwell: 'N, NW',
       description: 'Norte da ilha com ondas suaves perfeitas para iniciantes. Mar sempre agitado. Escola de surf local.',
       descriptionEn: 'North of the island with soft waves perfect for beginners. Sea always rough. Local surf school.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'WC'],
       hazards: ['Correntes moderadas']
     },
@@ -1413,6 +1434,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'S, SE', bestSwell: 'N, NW',
       description: 'Melhor spot para iniciantes na Madeira. Ondas suaves com areia vulcânica preta. Escolas de surf e ambiente familiar.',
       descriptionEn: 'Best beginner spot in Madeira. Gentle waves with black volcanic sand. Surf schools and family atmosphere.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escolas surf', 'Restaurantes', 'WC'],
       hazards: ['Multidão em dias de evento']
     },
@@ -1423,6 +1445,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Ondas tubulares de classe mundial. Aqui foi realizado o World Big Wave Championship 2001. Ondas até 8 metros.',
       descriptionEn: 'World-class barreling waves. The 2001 World Big Wave Championship was held here. Waves up to 8 meters.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'Escola surf'],
       hazards: ['Rochas', 'Ondas gigantescas', 'Correntes']
     },
@@ -1433,6 +1456,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Onda direita lendária da Madeira. Uma das mais pesadas da Europa. Tubos longos sobre reef. Apenas experts.',
       descriptionEn: 'Legendary Madeira right-hand wave. One of the heaviest in Europe. Long tubes over reef. Experts only.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento limitado', 'Restaurante'],
       hazards: ['Reef raso', 'Acesso por molhe', 'Ondas mortais']
     },
@@ -1443,6 +1467,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'N, NE', bestSwell: 'S, SE',
       description: 'Paisagem lunar vulcânica com ondas consistentes. Spot remoto para aventureiros. Águas turquesa e cenário dramático.',
       descriptionEn: 'Lunar volcanic landscape with consistent waves. Remote spot for adventurers. Turquoise waters and dramatic scenery.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento limitado'],
       hazards: ['Acesso difícil', 'Rochas', 'Sem infraestruturas']
     },
@@ -1453,6 +1478,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'Onda de reef break potente na costa sul. Cenário de montanhas verdes. Acesso fácil pela estrada costeira.',
       descriptionEn: 'Powerful reef break wave on the south coast. Green mountain scenery. Easy access by coastal road.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Rochas', 'Correntes']
     },
@@ -1485,6 +1511,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia selvagem a norte do Porto. Beach break consistente com menos crowd que Matosinhos. Ideal para quem quer fugir da multidão.',
       descriptionEn: 'Wild beach north of Porto. Consistent beach break with less crowd than Matosinhos. Ideal for escaping the crowds.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'WC'],
       hazards: ['Correntes fortes', 'Acesso íngreme']
     },
@@ -1507,6 +1534,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia entre Peniche e a Lagoa de Óbidos. Beach break potente com múltiplos picos. Menos crowd que Supertubos. Ideal para surfistas intermediários.',
       descriptionEn: 'Beach between Peniche and Obidos Lagoon. Powerful beach break with multiple peaks. Less crowded than Supertubos. Ideal for intermediate surfers.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Correntes', 'Rochas submersas']
     },
@@ -1517,6 +1545,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, NE', bestSwell: 'W, NW',
       description: 'Praia turística com ondas consistentes para todos os níveis. Palco de provas do circuito nacional. Golfinhos frequentes.',
       descriptionEn: 'Tourist beach with consistent waves for all levels. Host of national circuit events. Frequent dolphin sightings.',
+      compatibleSports: ['surf', 'bodyboard'],
       blueFlag: true,
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'Alojamento', 'WC'],
       hazards: ['Multidão no verão', 'Correntes']
@@ -1540,6 +1569,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'NW, W',
       description: 'Reef break pesado com ondas tubulares. Uma das ondas mais técnicas da Ericeira. Apenas para surfistas experientes.',
       descriptionEn: 'Heavy reef break with barreling waves. One of the most technical waves in Ericeira. For experienced surfers only.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento limitado'],
       hazards: ['Rochas afiadas', 'Ondas pesadas', 'Correntes']
     },
@@ -1549,6 +1579,7 @@ export const spots: Spot[] = [
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'NW, W',
       description: 'Point break junto ao porto de pesca da Ericeira. Direita longa e consistente com fundo de rocha. Spot clássico da vila.',
+      compatibleSports: ['surf', 'bodyboard'],
       descriptionEn: 'Point break next to Ericeira\'s fishing port. Long and consistent right-hander with rock bottom. Classic village spot.',
       facilities: ['Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Rochas', 'Barcos de pesca', 'Locals']
@@ -1560,6 +1591,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'NW, W',
       description: 'Esquerda tubular e rápida sobre reef. Uma das poucas esquerdas de qualidade da Ericeira. Técnica e perigosa. Experts apenas.',
       descriptionEn: 'Fast barreling left over reef. One of the few quality lefts in Ericeira. Technical and dangerous. Experts only.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: [],
       hazards: ['Rochas', 'Ondas rápidas', 'Pouco profundo']
     },
@@ -1570,6 +1602,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia selvagem ao sul da Lagoa de Albufeira. Beach break potente com ondas de qualidade. Ambiente naturista e natureza intocada.',
       descriptionEn: 'Wild beach south of Albufeira Lagoon. Powerful beach break with quality waves. Naturist atmosphere and untouched nature.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Correntes fortes', 'Falésias', 'Sem vigilância']
     },
@@ -1602,6 +1635,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Praia com ilhota e forte histórico. Beach break consistente com ondas de qualidade. Um dos spots mais bonitos do Alentejo.',
       descriptionEn: 'Beach with islet and historic fort. Consistent beach break with quality waves. One of the most beautiful spots in Alentejo.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Rochas junto ao forte', 'Correntes']
     },
@@ -1635,6 +1669,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'W, NW', bestSwell: 'S, SW',
       description: 'Praia de grutas e rochas com ondas suaves. Água quente e protegida. Ideal para famílias e iniciantes de surf.',
       descriptionEn: 'Beach with caves and rock formations with gentle waves. Warm protected water. Ideal for families and beginner surfers.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurantes', 'Hotel', 'WC'],
       hazards: ['Rochas submersas', 'Maré baixa']
     },
@@ -1667,6 +1702,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
       description: 'Praia virada a sul protegida do vento norte. Ondas suaves perfeitas para iniciantes. Água cristalina. Centro da vila de Sagres.',
       descriptionEn: 'South-facing beach sheltered from the north wind. Gentle waves perfect for beginners. Crystal clear water. Sagres town center.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurantes', 'Escola surf', 'WC'],
       hazards: ['Rochas nas pontas']
     },
@@ -1677,6 +1713,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SE',
       description: 'A melhor praia de areia dourada da Madeira. Ondas suaves e consistentes. Água cristalina e falésias verdes. Ideal para iniciantes.',
       descriptionEn: 'The best golden sand beach in Madeira. Soft and consistent waves. Crystal clear water and green cliffs. Ideal for beginners.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
       hazards: ['Correntes', 'Multidão no verão']
     },
@@ -1687,6 +1724,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'S, SE', bestSwell: 'N, NW',
       description: 'Praia de calhau rolado entre montanhas verdes. Ondas consistentes na costa norte. Poços naturais de água cristalina. Cenário deslumbrante.',
       descriptionEn: 'Pebble beach between green mountains. Consistent waves on the north coast. Natural crystal clear water pools. Stunning scenery.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Mar agitado', 'Calhau rolado']
     },
@@ -1697,6 +1735,7 @@ export const spots: Spot[] = [
       type: 'big-wave', difficulty: 'expert', bestWind: 'N, NE', bestSwell: 'W, NW',
       description: 'O ponto mais ocidental da Madeira com ondas gigantes até 15m. Big wave spot para tow-in. Apenas profissionais. Farol icónico.',
       descriptionEn: 'Westernmost point of Madeira with giant waves up to 15m. Big wave tow-in spot. Professionals only. Iconic lighthouse.',
+      compatibleSports: ['surf'],
       facilities: ['Estacionamento limitado'],
       hazards: ['Ondas mortais', 'Rochas', 'Acesso difícil']
     },
@@ -1707,6 +1746,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'Reef break consistente na costa sul. Ondas de qualidade com crowd reduzido. Acesso fácil e cenário de bananeiras e montanhas.',
       descriptionEn: 'Consistent reef break on the south coast. Quality waves with reduced crowd. Easy access and scenery of banana trees and mountains.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Rochas', 'Correntes']
     },
@@ -1717,6 +1757,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'advanced', bestWind: 'S, SE', bestSwell: 'N, NW',
       description: 'Point break esquerdo sobre lava vulcânica. Ondas longas e tubulares. Um dos spots mais famosos dos Açores. Apenas experts.',
       descriptionEn: 'Left-hand point break over volcanic lava. Long barreling waves. One of the most famous Azores spots. Experts only.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento'],
       hazards: ['Rocha vulcânica afiada', 'Correntes', 'Acesso difícil']
     },
@@ -1727,6 +1768,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'Praia de areia negra com águas geotérmicas quentes. Ondas consistentes com fundo vulcânico. Restaurantes de peixe fresco junto à praia.',
       descriptionEn: 'Black sand beach with warm geothermal waters. Consistent waves over volcanic bottom. Fresh fish restaurants by the beach.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Rochas vulcânicas', 'Água quente junto à costa']
     },
@@ -1737,6 +1779,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'N, NE', bestSwell: 'S, SW',
       description: 'A melhor onda de Santa Maria. Direita longa sobre fundo de rocha. Água cristalina e cenário tropical. Praia de areia dourada.',
       descriptionEn: 'The best wave in Santa Maria. Long right-hander over rock bottom. Crystal clear water and tropical scenery. Golden sand beach.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Rochas', 'Correntes']
     },
@@ -1746,6 +1789,7 @@ export const spots: Spot[] = [
       coastOrientation: 270,
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Point break consistente na costa este da Terceira. Ondas de qualidade com menos multidão que Santa Catarina. Fundo de lava.',
+      compatibleSports: ['surf', 'bodyboard'],
       descriptionEn: 'Consistent point break on Terceira\'s east coast. Quality waves with less crowd than Santa Catarina. Lava bottom.',
       facilities: ['Estacionamento'],
       hazards: ['Rochas', 'Correntes']
@@ -1756,6 +1800,7 @@ export const spots: Spot[] = [
       coastOrientation: 270,
       type: 'surf', difficulty: 'advanced', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Point break esquerdo na costa norte do Pico. Ondas tubulares sobre fundo vulcânico. Cenário dramático com a montanha do Pico ao fundo.',
+      compatibleSports: ['surf', 'bodyboard'],
       descriptionEn: 'Left-hand point break on Pico\'s north coast. Barreling waves over volcanic bottom. Dramatic scenery with Pico mountain in the background.',
       facilities: ['Estacionamento limitado'],
       hazards: ['Rochas', 'Acesso difícil', 'Ondas pesadas']
@@ -1767,6 +1812,7 @@ export const spots: Spot[] = [
       type: 'surf', difficulty: 'intermediate', bestWind: 'E, SE', bestSwell: 'W, NW',
       description: 'Fajã (plataforma lávica) com point break esquerdo. Uma das ondas mais bonitas dos Açores. Lagoa interior de água salgada. Cenário único.',
       descriptionEn: 'Lava platform with left-hand point break. One of the most beautiful waves in the Azores. Interior saltwater lagoon. Unique scenery.',
+      compatibleSports: ['surf', 'bodyboard'],
       facilities: ['Estacionamento', 'Restaurante', 'WC'],
       hazards: ['Acesso por estrada íngreme', 'Rochas']
     },

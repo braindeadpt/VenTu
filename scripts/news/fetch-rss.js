@@ -16,6 +16,7 @@ const FEEDS = [
   // ── Portugal (Cena PT) ──
   { url: 'https://www.ansurfistas.com/feed/',           source: 'ANS',              defaultCategory: 'surf',       sourceRegion: 'pt' },
   { url: 'https://www.noticiasdomar.pt/feed/',          source: 'Notícias do Mar',  defaultCategory: 'general',  sourceRegion: 'pt' },
+  { url: 'https://www.fps.pt/feed/',                    source: 'FPS',              defaultCategory: 'surf',       sourceRegion: 'pt' },
   // ── Internacional ──
   { url: 'https://stabmag.com/feed/',             source: 'Stab Mag',    defaultCategory: 'surf',       sourceRegion: 'intl' },
   { url: 'https://stabmag.com/category/news/feed/', source: 'Stab Mag',    defaultCategory: 'surf',       sourceRegion: 'intl' },

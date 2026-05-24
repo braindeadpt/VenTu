@@ -12,7 +12,6 @@ const content = fs.readFileSync(spotsPath, 'utf8');
 const ids = [...content.matchAll(/^\s+id: '([^']+)'/gm)];
 const errors = [];
 
-const CRITICAL_TYPES = new Set(['kitesurf', 'foil', 'wakeboard', 'multisport', 'windsurf', 'sup']);
 const re = /id: '([^']+)'[\s\S]*?(?=^\s+id: '|^\];)/gm;
 let m;
 
@@ -21,8 +20,8 @@ while ((m = re.exec(content))) {
   const id = m[1];
   const type = (block.match(/type: '([^']+)'/) || [])[1];
 
-  if (!block.includes('compatibleSports:') && type && CRITICAL_TYPES.has(type)) {
-    errors.push(`Spot "${id}" (${type}) missing compatibleSports`);
+  if (!block.includes('compatibleSports:')) {
+    errors.push(`Spot "${id}" (${type || 'unknown'}) missing compatibleSports`);
   }
 }
 
@@ -32,4 +31,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`✅ validate-spots: ${ids.length} spots OK, 0 critical missing compatibleSports`);
+console.log(`✅ validate-spots: ${ids.length}/167 spots OK — all have compatibleSports`);

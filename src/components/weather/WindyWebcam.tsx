@@ -6,9 +6,10 @@ interface WindyWebcamProps {
   lat: number;
   lon: number;
   locale: string;
+  onEmpty?: () => void;
 }
 
-export default function WindyWebcam({ lat, lon, locale }: WindyWebcamProps) {
+export default function WindyWebcam({ lat, lon, locale, onEmpty }: WindyWebcamProps) {
   const [camUrl, setCamUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [camName, setCamName] = useState('');
@@ -17,6 +18,7 @@ export default function WindyWebcam({ lat, lon, locale }: WindyWebcamProps) {
     const apiKey = process.env.NEXT_PUBLIC_WINDY_API_KEY;
     if (!apiKey) {
       setLoading(false);
+      onEmpty?.();
       return;
     }
 
@@ -42,9 +44,15 @@ export default function WindyWebcam({ lat, lon, locale }: WindyWebcamProps) {
           }
         }
         setLoading(false);
+        if (!cams.some((cam: { player?: { live?: string; day?: string } }) => cam.player?.live || cam.player?.day)) {
+          onEmpty?.();
+        }
       })
-      .catch(() => setLoading(false));
-  }, [lat, lon, locale]);
+      .catch(() => {
+        setLoading(false);
+        onEmpty?.();
+      });
+  }, [lat, lon, locale, onEmpty]);
 
   if (loading) return <div className="animate-pulse h-48 bg-gray-800/20 rounded-card" />;
   if (!camUrl) return null;

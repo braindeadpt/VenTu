@@ -24,6 +24,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate spots
+        run: node scripts/validate-spots.js
+
       - name: Lint
         run: npm run lint
 

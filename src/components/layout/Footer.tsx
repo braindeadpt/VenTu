@@ -1,8 +1,10 @@
 'use client';
 
+import Link from 'next/link';
 import { Wind, Github, Heart, ExternalLink } from 'lucide-react';
 import FeedbackForm from '@/components/FeedbackForm';
 import { getTranslation } from '@/lib/i18n';
+import { getPopularLandings, landingTitle } from '@/lib/seoLandings';
 
 interface FooterProps {
   locale: string;
@@ -11,11 +13,12 @@ interface FooterProps {
 export default function Footer({ locale }: FooterProps) {
   const t = getTranslation(locale as 'pt' | 'en');
   const isPt = locale === 'pt';
+  const popularLandings = getPopularLandings();
 
   return (
     <footer className="border-t border-divider bg-bg-base/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Wind className="w-6 h-6 text-data-waves" />
@@ -44,6 +47,32 @@ export default function Footer({ locale }: FooterProps) {
                   <ExternalLink className="w-4 h-4" />
                   Open-Meteo ↗
                 </a>
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
+              {isPt ? 'Explorar' : 'Explore'}
+            </h4>
+            <ul className="space-y-2">
+              {popularLandings.map((landing) => (
+                <li key={landing.slug}>
+                  <Link
+                    href={`/${locale}/explorar/${landing.slug}/`}
+                    className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                  >
+                    {landingTitle(landing, locale)}
+                  </Link>
+                </li>
+              ))}
+              <li>
+                <Link
+                  href={`/${locale}/spots/`}
+                  className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                >
+                  {isPt ? 'Todos os spots →' : 'All spots →'}
+                </Link>
               </li>
             </ul>
           </div>

@@ -53,16 +53,9 @@ Audit original (Fase 1) identificou: `images: []` vazio em todos os 167 spots. D
 
 ### Livecams nos spots populares
 
-Várias praias portuguesas têm webcams públicas: Carcavelos, Costa Caparica, Guincho, Supertubos, Nazaré, Ribeira d'Ilhas. Algumas têm streams YouTube 24/7.
+✅ **Parcial (2026-05-25).** Links curados Surftotal/MEO em 8 spots (Guincho, Carcavelos, Costa Caparica, Nazaré, Supertubos, Peniche, Ribeira d'Ilhas) + embed Windy quando `NEXT_PUBLIC_WINDY_API_KEY` configurada.
 
-**Implementação**:
-- iframe directo ou YouTube embed nos 5-6 spots principais
-- Custo: zero (gratuito)
-- Risco: URLs de streams privados podem mudar
-
-**Estimativa**: 1 sessão (sourcing das URLs + componente <Livecam> + integração no SpotDetail).
-
-**Valor UX**: alto — single biggest "wow" por menor custo.
+**Pendente:** iframe embed directo (streams MEO/Surftotal são JS-only); expandir lista de spots.
 
 ---
 
@@ -70,13 +63,9 @@ Várias praias portuguesas têm webcams públicas: Carcavelos, Costa Caparica, G
 
 ### Fase 5b — compatibleSports manual
 
-**Estado actual (2026-05-24):** 117/167 preenchidos (70%). 50 pendentes — maioritariamente surf-only.
+**Estado actual (2026-05-25):** 167/167 preenchidos ✅
 
-**Críticos restantes (4):** `foil-lagoa-albufeira`, `alqueva`, `praia-rocha`, `lagos-wakepark`
-
-**Agendado em:** [ROADMAP.md § A4](./ROADMAP.md#a4--completar-compatiblesports)
-
-**Estimativa restante:** ~30 min para os 4 críticos + 1–2h batch dos 46 surf-only.
+**Agendado em:** [ROADMAP.md § A4](./ROADMAP.md#a4--completar-compatiblesports) — concluído
 
 ### Chat global (adiado)
 
@@ -117,28 +106,17 @@ Maioria adições recentes. Display condicional cobre — não crítico.
 
 ## 🎨 UX e polish
 
-### Mapa interactivo da homepage
-
-Removida em Fase 4c por execução inadequada (SVG path inventado pela LLM). Vale reconsiderar com bibliotecas reais:
-
-- **Leaflet + CartoDB Positron tiles**: gratuito, dark + light themes disponíveis, ~40 KB no bundle. Recomendado.
-- **Mapbox**: melhor estilo customizável mas requer API key + risco de tier pago.
-
-**Estimativa**: 1 sessão (Leaflet) + 30 min de ajustes visuais.
-
-**Valor UX**: utilizadores queixaram-se de não conseguir localizar spots geograficamente.
-
 ### Search autocomplete real
 
-Hero da homepage tem input "Procurar spot..." que actualmente é só link para `/spots/`. Falta:
+✅ **Feito.** `HomepageSearch.tsx` — autocomplete modal com keyboard nav; `SearchPalette` (Cmd+K) para spots, regiões, modalidades e notícias. Pesquisa por modalidade via `spotSearch.ts`.
 
-- Autocomplete em tempo real
-- Match em name + region + sport
-- Keyboard navigation
+### Mapa interactivo da homepage
 
-**Estimativa**: 1 sessão. Cliente-side com fuzzy search sobre spots.ts.
+✅ **Feito.** `SpotMapInteractive.tsx` (Leaflet + MarkerCluster) integrado no grid de spots.
 
-### Imagens variadas no card (variante "hero")
+### SEO landing pages por combinação
+
+✅ **Feito (2026-05-25).** Rotas estáticas `/pt/explorar/{sport}/` e `/pt/explorar/{sport}-{regiao}/` (ex. `kitesurf-algarve`) — geradas automaticamente quando há spots compatíveis. Sitemap + links no footer.
 
 Quando imagens reais por spot existirem (ver acima), considerar variante `<SpotCard variant="hero">` com imagem de fundo, para usar em destaques e top-3.
 
@@ -183,14 +161,9 @@ Routes actuais: `/pt/` e `/en/`. Adicionar `/es/`, `/fr/`, `/de/` quando idiomas
 
 ### SEO landing pages por combinação
 
-Filtros da homepage são client-side. Para SEO de combinações populares (sport × região), gerar rotas estáticas:
-- `/pt/surf/` — landing page com spots de surf
-- `/pt/kitesurf-algarve/` — sport × região
-- `/pt/melhores-spots-fim-de-semana/` — combinações editoriais
+Ver secção UX acima — implementado em `/explorar/[slug]/`.
 
-**Estimativa**: 1-2 sessões. Aumenta páginas geradas mas com benefício SEO real.
-
-### Analytics ✅
+### Imagens variadas no card (variante "hero")
 
 GoatCounter integrado (privacy-first, sem cookies). Commit `e5675f5`. Script só carrega em produção com `NEXT_PUBLIC_GOATCOUNTER_CODE` configurado.
 

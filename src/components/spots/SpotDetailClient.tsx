@@ -36,7 +36,7 @@ import type { ForecastHour } from '@/components/weather/ForecastTable';
 import SpotMap from '@/components/spots/SpotMap';
 import FavoriteButton from '@/components/FavoriteButton';
 import MagicWindows from '@/components/MagicWindows';
-import WindyWebcam from '@/components/weather/WindyWebcam';
+import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
@@ -829,12 +829,7 @@ export default function SpotDetailClient({
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════════
-          WEBCAM (Windy)
-          ═══════════════════════════════════════════════════════════════ */}
-      <section className="max-w-5xl mx-auto px-4 py-6">
-        <WindyWebcam lat={spot.lat} lon={spot.lon} locale={locale} />
-      </section>
+      <SpotWebcamSection slug={spot.slug} lat={spot.lat} lon={spot.lon} locale={locale} />
     </div>
     </>
   );

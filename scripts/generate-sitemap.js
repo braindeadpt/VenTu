@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const { getSeoLandingSlugs } = require('./seo-landings-slugs');
 
 const BASE_URL = 'https://ventu.surf';
 const LOCALES = ['pt', 'en'];
@@ -85,6 +86,14 @@ for (const slug of MODALITY_SLUGS) {
   addUrl(urlEntries, `/modalidades/${slug}/`, {
     changefreq: 'weekly',
     priority: '0.75',
+    lastmod: today,
+  });
+}
+
+for (const slug of getSeoLandingSlugs()) {
+  addUrl(urlEntries, `/explorar/${slug}/`, {
+    changefreq: 'weekly',
+    priority: '0.8',
     lastmod: today,
   });
 }

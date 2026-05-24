@@ -121,7 +121,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
           label: m.label,
           labelEn: m.label,
           meta: '',
-          href: `/${locale}/modalidades/${m.slug}`,
+          href: `/${locale}/explorar/${m.slug}/`,
           icon: Tag,
         });
       }
