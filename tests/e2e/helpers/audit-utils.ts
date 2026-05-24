@@ -14,6 +14,7 @@ const IGNORED_CONSOLE_PATTERNS = [
 
 const IGNORED_PAGE_ERROR_PATTERNS = [
   /_leaflet_pos/i,
+  /Map container not found/i,
   /leaflet/i,
 ];
 

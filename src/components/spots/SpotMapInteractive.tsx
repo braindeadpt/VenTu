@@ -5,7 +5,9 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { Layers, MapPin, Maximize2, Minimize2 } from 'lucide-react';
 import type L from 'leaflet';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
@@ -20,6 +22,7 @@ import {
   DEFAULT_ZOOM,
   MAX_ZOOM,
   CLUSTER_CONFIG,
+  MAP_CLUSTER_LS_KEY,
   getScoreRgb,
   SPORT_CSS_VARS,
 } from '@/lib/map-constants';
@@ -66,6 +69,58 @@ function getSpotRgb(spot: Spot): string {
   return 'rgb(var(--fg-muted))';
 }
 
+function createSpotMarker(
+  Leaflet: typeof L,
+  data: SpotData,
+  selectedSport: GridSportFilter,
+  onSpotSelect?: (spotId: string) => void,
+): L.Marker {
+  const { spot } = data;
+  const score = getBestScore(data, selectedSport);
+  const sportColor = getSpotRgb(spot);
+  const scoreColor = getScoreRgb(score);
+
+  const icon = Leaflet.divIcon({
+    className: 'spot-marker',
+    html: `
+      <div style="
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: ${sportColor};
+        border: 2px solid ${scoreColor};
+        box-shadow: 0 0 8px ${sportColor}66, 0 2px 4px rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        font-weight: 700;
+        color: #fff;
+        cursor: pointer;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+      ">
+        ${Math.round(score)}
+      </div>
+    `,
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    popupAnchor: [0, -16],
+  });
+
+  const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
+  (marker as L.Marker & { spotScore?: number }).spotScore = score;
+  marker.on('click', () => onSpotSelect?.(spot.id));
+  return marker;
+}
+
+function readClusterPref(): boolean {
+  if (typeof window === 'undefined') return true;
+  try {
+    if (localStorage.getItem(MAP_CLUSTER_LS_KEY) === '0') return false;
+  } catch { /* noop */ }
+  return true;
+}
+
 // ─── Component ───
 export default function SpotMapInteractive({
   spotsData,
@@ -78,13 +133,18 @@ export default function SpotMapInteractive({
   const mapInstanceRef = useRef<L.Map | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
+  const markersGroupRef = useRef<L.LayerGroup | null>(null);
+  const didFitBoundsRef = useRef(false);
   const LRef = useRef<typeof L | null>(null);
   const [isReady, setIsReady] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [basemapMode, setBasemapMode] = useState<BasemapMode>('map');
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   const isPt = locale === 'pt';
+  const t = getTranslation(validateLocale(locale));
 
-  // Restore persisted basemap preference
+  // Restore persisted map preferences
   useEffect(() => {
     if (typeof window === 'undefined') return;
     try {
@@ -143,8 +203,10 @@ export default function SpotMapInteractive({
         ...CLUSTER_CONFIG,
         iconCreateFunction: createClusterIconFunction(Leaflet),
       });
-      map.addLayer(mcg);
+      const lg = Leaflet.layerGroup();
       clusterGroupRef.current = mcg;
+      markersGroupRef.current = lg;
+      map.addLayer(mcg);
 
       mapInstanceRef.current = map;
       setIsReady(true);
@@ -156,6 +218,8 @@ export default function SpotMapInteractive({
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
         clusterGroupRef.current = null;
+        markersGroupRef.current = null;
+        didFitBoundsRef.current = false;
         tileLayerRef.current = null;
       }
     };
@@ -198,78 +262,124 @@ export default function SpotMapInteractive({
     } catch { /* noop */ }
   }, []);
 
-  // Add/update markers and cluster
+  const enterFullscreen = useCallback(() => setIsFullscreen(true), []);
+  const exitFullscreen = useCallback(() => setIsFullscreen(false), []);
+
+  const toggleCluster = useCallback(() => {
+    setClusterEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_CLUSTER_LS_KEY, next ? '1' : '0');
+      } catch { /* noop */ }
+      return next;
+    });
+  }, []);
+
+  // Recalculate Leaflet size when toggling fullscreen or resizing
   useEffect(() => {
-    if (!isReady || !mapInstanceRef.current || !clusterGroupRef.current) return;
+    if (!isReady || !mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+    const raf = requestAnimationFrame(() => {
+      if (mapInstanceRef.current) map.invalidateSize();
+    });
+    const t = window.setTimeout(() => {
+      if (mapInstanceRef.current) map.invalidateSize();
+    }, 300);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+    };
+  }, [isFullscreen, isReady]);
+
+  useEffect(() => {
+    if (!isReady || !mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+    const onResize = () => map.invalidateSize();
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [isReady]);
+
+  // Lock page scroll while map is fullscreen
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [isFullscreen]);
+
+  // Escape closes fullscreen
+  useEffect(() => {
+    if (!isFullscreen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') exitFullscreen();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isFullscreen, exitFullscreen]);
+
+  // Add/update markers (clustered or all visible)
+  useEffect(() => {
+    if (!isReady || !mapInstanceRef.current || !clusterGroupRef.current || !markersGroupRef.current) return;
     const Leaflet = LRef.current;
     if (!Leaflet) return;
 
+    const map = mapInstanceRef.current;
     const mcg = clusterGroupRef.current;
+    const lg = markersGroupRef.current;
     mcg.clearLayers();
+    lg.clearLayers();
+
+    if (clusterEnabled) {
+      if (map.hasLayer(lg)) map.removeLayer(lg);
+      if (!map.hasLayer(mcg)) map.addLayer(mcg);
+    } else {
+      if (map.hasLayer(mcg)) map.removeLayer(mcg);
+      if (!map.hasLayer(lg)) map.addLayer(lg);
+    }
 
     if (spotsData.length === 0) return;
 
     const bounds = Leaflet.latLngBounds([]);
+    const targetLayer = clusterEnabled ? mcg : lg;
 
     spotsData.forEach((data) => {
-      const { spot, conditions } = data;
-      const score = getBestScore(data, selectedSport);
-      const sportColor = getSpotRgb(spot);
-      const scoreColor = getScoreRgb(score);
-
-      const icon = Leaflet.divIcon({
-        className: 'spot-marker',
-        html: `
-          <div style="
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: ${sportColor};
-            border: 2px solid ${scoreColor};
-            box-shadow: 0 0 8px ${sportColor}66, 0 2px 4px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 700;
-            color: #fff;
-            cursor: pointer;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-          ">
-            ${Math.round(score)}
-          </div>
-        `,
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
-        popupAnchor: [0, -16],
-      });
-
-      const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
-
-      (marker as any).spotScore = score;
-
-      marker.on('click', () => {
-        onSpotSelect?.(spot.id);
-      });
-
-      mcg.addLayer(marker);
-      bounds.extend([spot.lat, spot.lon]);
+      const marker = createSpotMarker(Leaflet, data, selectedSport, onSpotSelect);
+      if (clusterEnabled) {
+        mcg.addLayer(marker);
+      } else {
+        lg.addLayer(marker);
+      }
+      bounds.extend([data.spot.lat, data.spot.lon]);
     });
 
-    if (bounds.isValid()) {
-      mapInstanceRef.current.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+    if (!didFitBoundsRef.current && bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+      didFitBoundsRef.current = true;
     }
-  }, [spotsData, selectedSport, selectedRegion, isReady, locale]);
+  }, [spotsData, selectedSport, selectedRegion, isReady, clusterEnabled, onSpotSelect]);
+
+  const fullscreenLabel = t.map.fullscreen;
+  const exitFullscreenLabel = t.map.exitFullscreen;
+  const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
 
   return (
-    <div className="relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1" style={{ height: 'clamp(300px, 50vh, 600px)' }}>
+    <div
+      className={
+        isFullscreen
+          ? 'fixed inset-0 z-[1100] w-full overflow-hidden bg-surface-1 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
+          : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1'
+      }
+      style={isFullscreen ? { height: '100dvh' } : { height: 'clamp(300px, 50vh, 600px)' }}
+      data-map-fullscreen={isFullscreen ? 'true' : 'false'}
+      data-map-cluster={clusterEnabled ? 'true' : 'false'}
+    >
       {!isReady && (
         <div className="absolute inset-0 flex items-center justify-center bg-surface-1 z-10">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
-            <span className="text-sm text-fg-muted">
-              {isPt ? 'A carregar mapa...' : 'Loading map...'}
-            </span>
+            <span className="text-sm text-fg-muted">{t.map.loading}</span>
           </div>
         </div>
       )}
@@ -277,6 +387,38 @@ export default function SpotMapInteractive({
 
       {isReady && (
         <>
+          <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
+            <button
+              type="button"
+              onClick={isFullscreen ? exitFullscreen : enterFullscreen}
+              className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg))] text-xs font-semibold shadow-lg hover:bg-[rgb(var(--surface-1))] transition-colors touch-manipulation"
+              aria-label={isFullscreen ? exitFullscreenLabel : fullscreenLabel}
+              aria-expanded={isFullscreen}
+            >
+              {isFullscreen ? (
+                <Minimize2 className="w-4 h-4 shrink-0" aria-hidden />
+              ) : (
+                <Maximize2 className="w-4 h-4 shrink-0" aria-hidden />
+              )}
+              <span className="hidden sm:inline">
+                {isFullscreen ? exitFullscreenLabel : fullscreenLabel}
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={toggleCluster}
+              className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg))] text-xs font-semibold shadow-lg hover:bg-[rgb(var(--surface-1))] transition-colors touch-manipulation"
+              aria-label={clusterLabel}
+              aria-pressed={!clusterEnabled}
+            >
+              {clusterEnabled ? (
+                <MapPin className="w-4 h-4 shrink-0" aria-hidden />
+              ) : (
+                <Layers className="w-4 h-4 shrink-0" aria-hidden />
+              )}
+              <span className="hidden sm:inline">{clusterLabel}</span>
+            </button>
+          </div>
           <MapLayerToggle
             current={basemapMode}
             onChange={handleBasemapChange}

@@ -99,6 +99,10 @@ export const translations = {
       clusterLabel: '{count} spots',
       noData: 'Sem dados',
       loading: 'A carregar mapa...',
+      fullscreen: 'Ecrã inteiro',
+      exitFullscreen: 'Sair do ecrã inteiro',
+      showAllSpots: 'Mostrar todos',
+      clusterSpots: 'Agrupar spots',
     },
     news: { title: 'Notícias', latest: 'Últimas', readMore: 'Ler mais', source: 'Fonte', category: 'Categoria', generatedBy: 'Resumido por IA' },
     megaMenu: {
@@ -257,6 +261,10 @@ export const translations = {
       clusterLabel: '{count} spots',
       noData: 'No data',
       loading: 'Loading map...',
+      fullscreen: 'Full screen',
+      exitFullscreen: 'Exit full screen',
+      showAllSpots: 'Show all',
+      clusterSpots: 'Cluster spots',
     },
     news: { title: 'News', latest: 'Latest', readMore: 'Read more', source: 'Source', category: 'Category', generatedBy: 'Summarized by AI' },
     megaMenu: {

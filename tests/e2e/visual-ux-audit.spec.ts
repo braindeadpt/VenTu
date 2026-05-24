@@ -12,9 +12,15 @@ const VIEWPORTS: Record<Viewport, { width: number; height: number }> = {
   mobile: { width: 390, height: 844 },
 };
 
+async function createContext(browser: import('@playwright/test').Browser, viewport: Viewport) {
+  return browser.newContext({
+    viewport: VIEWPORTS[viewport],
+    hasTouch: viewport === 'mobile',
+  });
+}
+
 async function setupPage(context: BrowserContext, viewport: Viewport) {
   const page = await context.newPage();
-  await page.setViewportSize(VIEWPORTS[viewport]);
   const health = attachPageHealthCollectors(page);
   return { page, health };
 }
@@ -25,9 +31,26 @@ async function gotoHealthy(page: Page, health: ReturnType<typeof attachPageHealt
 }
 
 async function openMobileMenu(page: Page) {
-  const trigger = page.getByRole('button', { name: /Abrir menu|Open menu/i });
-  await trigger.click();
+  const trigger = page.locator('button[aria-controls="mobile-nav"]');
+  await trigger.scrollIntoViewIfNeeded();
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if ((await trigger.getAttribute('aria-expanded')) === 'true') break;
+    await trigger.click({ force: true });
+    await page.waitForTimeout(100);
+  }
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true', { timeout: 10_000 });
   await expect(page.locator('#mobile-nav')).toHaveAttribute('aria-hidden', 'false');
+}
+
+async function closeMobileMenu(page: Page) {
+  const trigger = page.locator('button[aria-controls="mobile-nav"]');
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    if ((await trigger.getAttribute('aria-expanded')) === 'false') break;
+    await trigger.click({ force: true });
+    await page.waitForTimeout(100);
+  }
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false', { timeout: 10_000 });
+  await expect(page.locator('#mobile-nav')).toHaveAttribute('aria-hidden', 'true');
 }
 
 async function openSearch(page: Page) {
@@ -40,7 +63,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     test.describe.configure({ mode: 'parallel' });
 
     test('01 — Homepage: filtros desporto e região sincronizam URL', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
@@ -62,7 +85,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('02 — Homepage: mapa Leaflet carrega', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
       await page.waitForSelector('.leaflet-container', { timeout: 20_000 });
@@ -70,8 +93,57 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await context.close();
     });
 
+    test('02c — Homepage: toggle mostrar todos os spots', async ({ browser }) => {
+      const context = await createContext(browser, viewport);
+      const { page, health } = await setupPage(context, viewport);
+      await gotoHealthy(page, health, '/pt/');
+      await page.waitForSelector('.leaflet-container', { timeout: 20_000 });
+
+      const mapShell = page.locator('[data-map-cluster]');
+      await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
+
+      const showAllBtn = page.getByRole('button', { name: /Mostrar todos|Show all/i });
+      await showAllBtn.click();
+      await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
+      await expect(page.locator('.spot-marker').first()).toBeVisible({ timeout: 10_000 });
+
+      const clusterBtn = page.getByRole('button', { name: /Agrupar spots|Cluster spots/i });
+      await clusterBtn.click();
+      await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
+
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+      await context.close();
+    });
+
+    test('02b — Homepage: ecrã inteiro do mapa (opcional)', async ({ browser }) => {
+      const context = await createContext(browser, viewport);
+      const { page, health } = await setupPage(context, viewport);
+      await gotoHealthy(page, health, '/pt/');
+      await page.waitForSelector('.leaflet-container', { timeout: 20_000 });
+
+      const mapShell = page.locator('[data-map-fullscreen]');
+      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
+
+      const enterBtn = page.getByRole('button', { name: /Ecrã inteiro|Full screen/i });
+      await enterBtn.click();
+      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
+      await expect(page.locator('.leaflet-container')).toBeVisible();
+
+      const exitBtn = page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i });
+      await exitBtn.click();
+      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
+
+      await enterBtn.click();
+      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
+      await page.keyboard.press('Escape');
+      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
+
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+      await context.close();
+    });
+
     test('03 — Header: pesquisa abre, navega e fecha com Escape', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
@@ -90,7 +162,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('04 — Header: alternar tema claro/escuro', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
@@ -111,7 +183,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('05 — Header: mudar idioma PT → EN', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
@@ -127,7 +199,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('06 — Navegação principal: todas as páginas carregam', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
 
       const routes: { label: RegExp; url: RegExp }[] = [
@@ -141,11 +213,12 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       ];
 
       for (const route of routes) {
-        await gotoHealthy(page, health, '/pt/');
         if (viewport === 'mobile') {
+          await gotoHealthy(page, health, '/pt/');
           await openMobileMenu(page);
           await page.locator('#mobile-nav').getByRole('link', { name: route.label }).click();
         } else {
+          await gotoHealthy(page, health, '/pt/');
           await page.getByRole('navigation').getByRole('link', { name: route.label }).click();
         }
         await expect(page).toHaveURL(route.url, { timeout: 10_000 });
@@ -156,7 +229,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
     test('07 — Desktop: mega menu modalidades → Surf', async ({ browser }) => {
       test.skip(viewport === 'mobile', 'Mega menu só existe em desktop');
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
@@ -171,20 +244,19 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
     test('08 — Mobile: menu hamburger abre e fecha', async ({ browser }) => {
       test.skip(viewport === 'desktop', 'Hamburger só em mobile');
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
       await openMobileMenu(page);
       await expect(page.locator('#mobile-nav').getByRole('link', { name: /Explorar/i })).toBeVisible();
 
-      await page.getByRole('button', { name: /Fechar menu|Close menu/i }).click();
-      await expect(page.locator('#mobile-nav')).toHaveAttribute('aria-hidden', 'true');
+      await closeMobileMenu(page);
       await context.close();
     });
 
     test('09 — Compare: seleccionar 2 spots e comparar', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/compare/');
       await expect(page.getByText('Spot vs Spot')).toBeVisible();
@@ -202,7 +274,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('10 — Favoritos: adicionar e remover spot', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
 
       await gotoHealthy(page, health, '/pt/');
@@ -223,7 +295,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('11 — Notícias: filtros categoria, data e limpar', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/news/');
 
@@ -239,7 +311,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('12 — Explorar: landing SEO navega correctamente', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/explorar/');
 
@@ -253,7 +325,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('13 — Spot detail: conteúdo e voltar', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/spots/nazare/');
 
@@ -264,7 +336,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('16 — Spot detail: secções estruturadas sem duplicados', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/spots/guincho/');
 
@@ -311,7 +383,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('14 — Logo: volta à homepage', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/about/');
       await page.getByRole('banner').getByRole('link', { name: /Ven/i }).click();
@@ -320,7 +392,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('15 — Sem erros JS não filtrados', async ({ browser }) => {
-      const context = await browser.newContext();
+      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
 
       const pages = ['/pt/', '/pt/spots/guincho/', '/pt/compare/', '/pt/news/', '/pt/explorar/', '/pt/livecams/'];
