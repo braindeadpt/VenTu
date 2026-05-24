@@ -100,24 +100,42 @@ async function main() {
     } else {
       const uniqueMsg = `E2E prod test ${Date.now()}`;
       await page.locator('textarea').first().fill(uniqueMsg);
+
+      const insertPromise = page.waitForResponse(
+        (r) => r.url().includes('/rest/v1/contributions') && r.request().method() === 'POST',
+        { timeout: 15_000 },
+      );
       await page.getByRole('button', { name: /Enviar contribuição|Send contribution/i }).click();
-      await page.waitForTimeout(3000);
-      const success = page.getByText(/Obrigado|Thank you|enviado|sent/i);
-      const err = page.getByText(/Erro|Error|rate|limite|limit/i);
-      if (await success.isVisible().catch(() => false)) {
-        pass('feedback-send', `Enviado: "${uniqueMsg.slice(0, 30)}..."`);
+      const insertRes = await insertPromise.catch(() => null);
+
+      if (insertRes?.status() === 201) {
+        pass('feedback-send', `HTTP 201 — "${uniqueMsg.slice(0, 30)}..."`);
+        await page.getByText(/Obrigado|Recebemos|Thank you|received/i).waitFor({ timeout: 5_000 }).catch(() => {});
         // Rate limit — immediate second submit
-        await page.getByRole('button', { name: /Sugerir|Suggest/i }).click().catch(() => {});
+        await page.waitForTimeout(2500);
+        await page.getByRole('button', { name: /Sugerir|Reportar|Suggest/i }).first().click();
+        await page.getByRole('heading', { name: /Contribuir|Contribute/i }).waitFor({ state: 'visible', timeout: 10_000 });
         await page.locator('textarea').first().fill('rate limit test 2');
+        const secondInsert = page.waitForResponse(
+          (r) => r.url().includes('/rest/v1/contributions') && r.request().method() === 'POST',
+          { timeout: 10_000 },
+        );
         await page.getByRole('button', { name: /Enviar contribuição|Send contribution/i }).click();
-        await page.waitForTimeout(2000);
-        const rateBlocked = await err.isVisible().catch(() => false);
-        if (rateBlocked) pass('feedback-rate-limit', 'Segundo envio bloqueado (<30s)');
-        else skip('feedback-rate-limit', 'Segundo envio não bloqueou visivelmente (pode ser policy Supabase)');
-      } else if (await err.isVisible().catch(() => false)) {
-        fail('feedback-send', await err.textContent().catch(() => 'Erro desconhecido'));
+        const secondRes = await secondInsert.catch(() => null);
+        if (secondRes && secondRes.status() >= 400) {
+          pass('feedback-rate-limit', `Segundo envio bloqueado (HTTP ${secondRes.status()})`);
+        } else if (secondRes?.status() === 201) {
+          skip('feedback-rate-limit', 'Segundo envio passou — policy pode não estar activa');
+        } else {
+          const rateMsg = await page.getByText(/rate|limite|limit|Erro|Error/i).textContent().catch(() => '');
+          if (rateMsg) pass('feedback-rate-limit', `Bloqueado: ${rateMsg.slice(0, 60)}`);
+          else skip('feedback-rate-limit', 'Segundo envio sem resposta clara');
+        }
+      } else if (insertRes) {
+        fail('feedback-send', `HTTP ${insertRes.status()}: ${await insertRes.text().catch(() => '')}`);
       } else {
-        fail('feedback-send', 'Sem confirmação de sucesso após submit');
+        const errText = await page.getByText(/Erro|Error|indisponível|unavailable/i).textContent().catch(() => '');
+        fail('feedback-send', errText || 'Sem resposta POST /contributions');
       }
     }
     await page.close();
@@ -127,6 +145,7 @@ async function main() {
   {
     const page = await browser.newPage();
     await page.goto(`${BASE}/pt/admin/contributions/`, { waitUntil: 'domcontentloaded' });
+    await page.getByRole('heading', { name: /Admin/i }).waitFor({ timeout: 15_000 });
     const unconfigured = page.getByText(/Supabase não configurado|Supabase is not configured/i);
     const loginHeading = page.getByRole('heading', { name: /Admin|Contribui/i });
     const emailInput = page.locator('input[type="email"]');
@@ -190,9 +209,11 @@ async function main() {
       if (ciRuns.length === 0) skip('github-ci', 'Sem runs CI recentes na API pública');
       else {
         const latest = ciRuns[0];
-        const ok = latest.conclusion === 'success';
+        const ok = latest.status === 'completed' && latest.conclusion === 'success';
+        const pending = latest.status === 'in_progress' || latest.status === 'queued';
         if (ok) pass('github-ci', `CI #${latest.run_number} ${latest.conclusion} (${latest.head_sha?.slice(0, 7)})`);
-        else fail('github-ci', `CI #${latest.run_number} ${latest.conclusion}`);
+        else if (pending) skip('github-ci', `CI #${latest.run_number} ainda a correr (${latest.status})`);
+        else fail('github-ci', `CI #${latest.run_number} ${latest.conclusion ?? latest.status}`);
       }
       const deployRuns = (data.workflow_runs || []).filter((r) => r.name?.includes('Deploy')).slice(0, 1);
       if (deployRuns[0]) {
