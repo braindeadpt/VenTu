@@ -68,6 +68,14 @@ export default function Footer({ locale }: FooterProps) {
               ))}
               <li>
                 <Link
+                  href={`/${locale}/explorar/`}
+                  className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                >
+                  {isPt ? 'Ver todas as combinações →' : 'View all combinations →'}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={`/${locale}/spots/`}
                   className="text-sm text-fg-muted hover:text-data-waves transition-colors"
                 >

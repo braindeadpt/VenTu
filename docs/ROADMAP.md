@@ -376,12 +376,12 @@ _Regista aqui decisões, bloqueios e o que ficou feito em cada sessão de trabal
 - **CI:** `npm run spots:validate` no pipeline; docs actualizados (CONTEXT, PLANO-FASES)
 - **Próximo:** testar secrets Supabase/Resend em produção; calibração scores com dados reais
 
-### 2026-05-25 (noite) — Backlog SEO + livecams
+### 2026-05-25 (noite 2) — Livecams, índice explorar, polish
 
-- **SEO:** `/explorar/[slug]/` — ~60 landing pages sport × região (estáticas, sitemap, footer)
-- **Search:** `spotSearch.ts` — pesquisa por modalidade no hero
-- **Livecams:** +5 spots (Matosinhos, Leça, Figueira, Cabedelo, Consolação)
-- **Pendente commit/deploy:** alterações acumuladas desde sessão anterior
+- **Livecams:** 13 → 31 spots (Surftotal/MEO)
+- **SEO:** `/explorar/` índice com 49 combinações agrupadas por desporto
+- **Polish:** tooltip status dot; stats homepage em `<dl>`
+- **Testes:** +11 (spotSearch, seoLandings, livecams) — total 31
 
 <!-- Template para sessões futuras:
 ### YYYY-MM-DD — Título curto

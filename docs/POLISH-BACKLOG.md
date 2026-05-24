@@ -7,15 +7,11 @@
 
 ## Status Bar
 
-- [ ] **Tooltip on status dot** — Explain green/amber/red meaning on hover. E.g., "Dados frescos (<3h) / Ligeiramente desactualizados / Muito desactualizados" with concrete timestamps.
-  - File: `src/app/[locale]/page.tsx` ~line 141
-  - Priority: Low (users don't ask about the dot yet)
+- [x] **Tooltip on status dot** — `HomepageStatusBar.tsx` (2026-05-25)
 
 ## Footer Stats
 
-- [ ] **Semantic `<dl>` refactor** — Replace bare `<div>` pairs with `<dl><dt>label</dt><dd>number</dd></dl>` for screen reader structure.
-  - File: `src/app/[locale]/page.tsx` ~line 250
-  - Priority: Medium (SEO + a11y, but low traffic)
+- [x] **Semantic `<dl>` refactor** — homepage stats footer (2026-05-25)
 
 ## Hero
 

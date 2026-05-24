@@ -66,6 +66,7 @@ const urlEntries = [];
 
 const staticPages = [
   { path: '/', priority: '1.0', changefreq: 'daily' },
+  { path: '/explorar/', priority: '0.85', changefreq: 'weekly' },
   { path: '/spots/', priority: '0.9', changefreq: 'daily' },
   { path: '/favorites/', priority: '0.7', changefreq: 'weekly' },
   { path: '/compare/', priority: '0.6', changefreq: 'weekly' },

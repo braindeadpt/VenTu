@@ -9,6 +9,7 @@ import { MACRO_REGIONS } from '@/lib/regions';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
 import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
 import HomepageFeatured from '@/components/homepage/HomepageFeatured';
+import HomepageStatusBar from '@/components/homepage/HomepageStatusBar';
 import { parseSportFilter, type HomepageSpotData } from '@/lib/homepageSport';
 
 type SpotData = HomepageSpotData;
@@ -86,30 +87,13 @@ export default async function HomePage({
           : `VenTu - ${spotsData.length} surf, kitesurf and windsurf spots — conditions updated every 3 hours`}
       </h1>
 
-      <section
-        role="status"
-        aria-live="polite"
-        className="w-full bg-surface-1 border-b border-divider z-30 sticky top-16"
-      >
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 h-9 sm:h-10 flex items-center">
-          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-meta text-fg-muted min-w-0">
-            <span
-              className={`w-2 h-2 rounded-full shrink-0 ${
-                hoursSinceMin < 3
-                  ? 'bg-[rgb(var(--score-good))]'
-                  : hoursSinceMin < 12
-                    ? 'bg-[rgb(var(--score-fair))]'
-                    : 'bg-[rgb(var(--score-poor))]'
-              } ${hoursSinceMin < 12 ? 'animate-pulse' : ''}`}
-            />
-            <span className="truncate">
-              {minTs
-                ? `${isPt ? 'Actualizado às' : 'Updated at'} ${new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(maxTs!))} · ${isPt ? 'a cada 3h' : 'every 3h'} · ${spotsData.length} ${isPt ? 'spots monitorizados' : 'spots monitored'}`
-                : isPt ? 'Sem dados de condições' : 'No condition data'}
-            </span>
-          </div>
-        </div>
-      </section>
+      <HomepageStatusBar
+        locale={locale}
+        hoursSinceMin={hoursSinceMin}
+        maxTs={maxTs}
+        minTs={minTs}
+        spotCount={spotsData.length}
+      />
 
       <DawnPatrolBanner locale={locale} />
 
@@ -127,31 +111,25 @@ export default async function HomePage({
       />
 
       <section className="border-t border-divider py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div>
-            <div className="font-mono text-num-lg text-fg">{spotsData.length}</div>
-            <div className="text-meta-sm text-fg-subtle">
-              {isPt ? 'Spots monitorados' : 'Spots monitored'}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <dl className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div>
+              <dd className="font-mono text-num-lg text-fg">{spotsData.length}</dd>
+              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Spots monitorizados' : 'Spots monitored'}</dt>
             </div>
-          </div>
-          <div>
-            <div className="font-mono text-num-lg text-fg">{ALL_SPORTS.length}</div>
-            <div className="text-meta-sm text-fg-subtle">
-              {isPt ? 'Desportos' : 'Sports'}
+            <div>
+              <dd className="font-mono text-num-lg text-fg">{ALL_SPORTS.length}</dd>
+              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Desportos' : 'Sports'}</dt>
             </div>
-          </div>
-          <div>
-            <div className="text-num-lg text-fg">Open-Meteo</div>
-            <div className="text-meta-sm text-fg-subtle">
-              {isPt ? 'Fonte de dados' : 'Data source'}
+            <div>
+              <dd className="text-num-lg text-fg">Open-Meteo</dd>
+              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Fonte de dados' : 'Data source'}</dt>
             </div>
-          </div>
-          <div>
-            <div className="text-num-lg text-fg">MIT</div>
-            <div className="text-meta-sm text-fg-subtle">
-              {isPt ? 'Open source' : 'Open source'}
+            <div>
+              <dd className="text-num-lg text-fg">MIT</dd>
+              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Open source' : 'Open source'}</dt>
             </div>
-          </div>
+          </dl>
         </div>
       </section>
     </div>
