@@ -1,69 +1,78 @@
 {
-  "date": "2024-09-16",
-  "topSpot": "Supertubos",
-  "topSpotSlug": "supertubos",
+  "date": "2026-05-24",
+  "generatedAt": "2026-05-24T19:50:15.406Z",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Ondas perfeitas!",
-    "advice": "Hoje é um dia excelente para surfar em Supertubos, com ondas de 1.1m e vento leve. É uma boa ideia chegar cedo para aproveitar as melhores condições. Não se esqueça de levar um fato de 3/2mm para se manter aquecido.",
-    "bestTime": "08:00",
-    "wetsuit": "3/2mm",
-    "crowdTip": "Chegue cedo para evitar multidões"
+    "headline": "Hoje é dia de Nazaré! 🌊",
+    "advice": "Melhor janela: 11:00h. Ondas de 1.3m com 1 nós de vento.",
+    "bestTime": "11:00",
+    "wetsuit": "2mm shorty",
+    "crowdTip": "Chega cedo para evitar crowd!"
   },
   "en": {
-    "headline": "Perfect waves!",
-    "advice": "Today is an excellent day to surf at Supertubos, with 1.1m waves and light wind. It's a good idea to arrive early to take advantage of the best conditions. Don't forget to bring a 3/2mm wetsuit to stay warm.",
-    "bestTime": "08:00",
-    "wetsuit": "3/2mm",
-    "crowdTip": "Arrive early to avoid crowds"
+    "headline": "Today is Nazaré day! 🌊",
+    "advice": "Best window: 11:00. 1.3m waves with 1 knot wind.",
+    "bestTime": "11:00",
+    "wetsuit": "2mm shorty",
+    "crowdTip": "Get there early to beat the crowd!"
   },
   "spots": [
     {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 86,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 84,
+      "score": 85,
       "verdict": "go",
-      "ptReason": "Ondas perfeitas e vento leve",
-      "enReason": "Perfect waves and light wind"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 84,
+      "score": 85,
       "verdict": "go",
-      "ptReason": "Condições semelhantes às de Supertubos",
-      "enReason": "Similar conditions to Supertubos"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 84,
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 85,
       "verdict": "go",
-      "ptReason": "Ondas um pouco mais lentas, mas ainda assim excelentes",
-      "enReason": "Waves are a bit slower, but still excellent"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 84,
+      "score": 85,
       "verdict": "go",
-      "ptReason": "Condições excelentes, com ondas perfeitas e vento leve",
-      "enReason": "Excellent conditions, with perfect waves and light wind"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 78,
-      "verdict": "maybe",
-      "ptReason": "Condições um pouco mais difíceis, com ondas menores e mais vento",
-      "enReason": "Conditions are a bit more challenging, with smaller waves and more wind"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
+      "score": 83,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
       "score": 79,
-      "verdict": "maybe",
-      "ptReason": "Condições razoáveis, mas com ondas menores e mais vento",
-      "enReason": "Conditions are decent, but with smaller waves and more wind"
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     }
   ]
 }

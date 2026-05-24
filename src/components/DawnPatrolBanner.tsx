@@ -133,6 +133,10 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
   const content = isPt ? data.pt : data.en;
   const stale = isDawnPatrolStale(data.date);
+  const dateLabel = new Date(`${data.date}T12:00:00`).toLocaleDateString(
+    isPt ? 'pt-PT' : 'en-GB',
+    { weekday: 'short', day: 'numeric', month: 'short' },
+  );
   const topSpotHref = resolveSpotHref(locale, data.topSpotSlug);
   const topSpotLinkValid = Boolean(data.topSpotSlug && VALID_SLUGS.has(data.topSpotSlug));
   const verdictColors = {
@@ -169,7 +173,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                 <span className="text-xs font-bold text-score-fair uppercase tracking-wider">
                   {isPt ? 'Dawn Patrol' : 'Dawn Patrol'}
                 </span>
-                <span className="text-xs text-fg-subtle whitespace-nowrap">{data.date}</span>
+                <span className="text-xs text-fg-subtle whitespace-nowrap">{dateLabel}</span>
                 {stale && (
                   <span
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-score-fair/15 text-score-fair border border-score-fair/30"

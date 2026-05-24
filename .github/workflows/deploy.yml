@@ -38,6 +38,13 @@ jobs:
       - name: Generate sitemap
         run: npm run sitemap:generate
 
+      - name: Generate Dawn Patrol
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS }}
+        run: node scripts/dawn-patrol.js
+
       - name: Build
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'

@@ -33,6 +33,13 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS }}
         run: node scripts/update-news.js
 
+      - name: Generate Dawn Patrol
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ }}
+          CEREBRAS_API_KEY: ${{ secrets.CEREBRAS }}
+        run: node scripts/dawn-patrol.js
+
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"

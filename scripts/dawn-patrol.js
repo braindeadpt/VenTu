@@ -15,11 +15,32 @@ const TOP_SPOTS = [
   { name: 'Supertubos', slug: 'supertubos', lat: 39.336, lon: -9.364, region: 'Peniche', type: 'surf' },
   { name: 'Guincho', slug: 'guincho', lat: 38.733, lon: -9.473, region: 'Cascais', type: 'surf' },
   { name: 'Nazaré', slug: 'nazare', lat: 39.597, lon: -9.073, region: 'Nazaré', type: 'big-wave' },
-  { name: 'Ribeira d\'Ilhas', slug: 'ribeira-dilhas', lat: 39.489, lon: -9.364, region: 'Ericeira', type: 'surf' },
+  { name: 'Ribeira d\'Ilhas', slug: 'ribeira-ilhas', lat: 39.489, lon: -9.364, region: 'Ericeira', type: 'surf' },
   { name: 'Coxos', slug: 'coxos', lat: 38.934, lon: -9.434, region: 'Ericeira', type: 'surf' },
   { name: 'Arrifana', slug: 'arrifana', lat: 37.294, lon: -8.864, region: 'Algarve', type: 'surf' },
   { name: 'Carcavelos', slug: 'carcavelos', lat: 38.679, lon: -9.335, region: 'Lisboa', type: 'surf' },
 ];
+
+/** YYYY-MM-DD in Europe/Lisbon (matches Open-Meteo timezone=Europe/Lisbon). */
+function lisbonDateStr(date = new Date()) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Lisbon' }).format(date);
+}
+
+function lisbonHour(date = new Date()) {
+  return Number(
+    new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Europe/Lisbon',
+      hour: 'numeric',
+      hour12: false,
+    }).format(date),
+  );
+}
+
+function addDays(date, days) {
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
 
 async function fetchWithRetry(url, retries = 2) {
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -86,15 +107,17 @@ async function fetchSpotData(lat, lon) {
 function getMorningConditions(hourly) {
   const now = new Date();
   const morningHours = [6, 7, 8, 9, 10, 11];
+  const currentHour = lisbonHour(now);
 
   const morningData = morningHours.map(h => {
-    const targetTime = new Date(now);
-    targetTime.setHours(h, 0, 0, 0);
-    if (targetTime < now) targetTime.setDate(targetTime.getDate() + 1);
+    // Past morning hours today → target same hour tomorrow (Lisbon local)
+    let dateStr = lisbonDateStr(now);
+    if (h <= currentHour) {
+      dateStr = lisbonDateStr(addDays(now, 1));
+    }
 
-    // Match by hour string (e.g. "2026-05-12T06:00")
-    const hourStr = targetTime.toISOString().slice(0, 13);
-    const idx = hourly.time.findIndex(t => t.startsWith(hourStr));
+    const prefix = `${dateStr}T${String(h).padStart(2, '0')}`;
+    const idx = hourly.time.findIndex(t => t.startsWith(prefix));
 
     if (idx === -1) return null;
 
@@ -216,10 +239,12 @@ Gera um JSON com esta estrutura EXACTA:
 }
 
 function generateBasicAdvice(spotsData) {
+  const date = lisbonDateStr();
+
   if (!spotsData || spotsData.length === 0) {
-    const date = new Date().toISOString().slice(0, 10);
     return {
       date,
+      generatedAt: new Date().toISOString(),
       topSpot: 'N/A',
       topSpotSlug: '',
       pt: {
@@ -247,10 +272,9 @@ function generateBasicAdvice(spotsData) {
   const wetsuit = waterTemp > 18 ? '2mm shorty' : waterTemp > 15 ? '3/2mm' : waterTemp > 12 ? '4/3mm' : '5/4mm com capuz';
   const wetsuitEn = waterTemp > 18 ? '2mm shorty' : waterTemp > 15 ? '3/2mm' : waterTemp > 12 ? '4/3mm' : '5/4mm with hood';
 
-  const date = new Date().toISOString().slice(0, 10);
-
   return {
     date,
+    generatedAt: new Date().toISOString(),
     topSpot: best.name,
     topSpotSlug: best.slug,
     pt: {
@@ -285,6 +309,10 @@ function loadValidSlugs() {
 }
 
 function validateAdviceSlugs(advice, validSlugs) {
+  // Always use Lisbon calendar date — LLM may return stale or placeholder dates
+  advice.date = lisbonDateStr();
+  advice.generatedAt = new Date().toISOString();
+
   if (advice.topSpotSlug && !validSlugs.has(advice.topSpotSlug)) {
     console.warn(`   ⚠️  Invalid topSpotSlug "${advice.topSpotSlug}" — clearing link`);
     advice.topSpotSlug = '';
