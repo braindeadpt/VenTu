@@ -88,7 +88,7 @@ export default function SpotConditionsOverview({
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-6 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-[auto_1fr_auto] gap-4 lg:gap-6 items-center">
           {/* Score */}
           <div className="flex flex-col items-center gap-2 lg:items-start">
             <ScoreGauge
@@ -103,7 +103,7 @@ export default function SpotConditionsOverview({
           </div>
 
           {/* Key metrics — single source of truth */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full">
             <MetricCell
               label={isPt ? 'Ondas' : 'Waves'}
               value={`${conditions.waveHeight.toFixed(1)}m @ ${Math.round(conditions.wavePeriod)}s`}
@@ -129,7 +129,7 @@ export default function SpotConditionsOverview({
             />
           </div>
 
-          {/* Direction visual — once only */}
+          {/* Direction visual — desktop sidebar */}
           <div className="hidden lg:flex flex-col items-center gap-2">
             <SwellRadar
               swellDirection={conditions.waveDirection}
@@ -140,6 +140,18 @@ export default function SpotConditionsOverview({
               size="md"
             />
           </div>
+        </div>
+
+        {/* Direction visual — mobile, below metrics */}
+        <div className="flex lg:hidden justify-center pt-2">
+          <SwellRadar
+            swellDirection={conditions.waveDirection}
+            swellHeight={conditions.waveHeight}
+            windDirection={conditions.windDirection}
+            windSpeed={conditions.windSpeed}
+            coastOrientation={coastOrientation}
+            size="sm"
+          />
         </div>
 
         {tideObserved && (

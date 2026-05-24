@@ -76,8 +76,28 @@ test.describe('UI interactions audit', () => {
     await expect(page.locator('main')).toBeVisible();
   });
 
-  test('spot detail: forecast region visible', async ({ page }) => {
-    await page.goto('/pt/spots/nazare/');
-    await expect(page.locator('main')).toContainText(/Nazar/i, { timeout: 15_000 });
+  test('spot detail: structured sections and sport tabs', async ({ page }) => {
+    await page.goto('/pt/spots/guincho/');
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+
+    await expect(
+      page.getByRole('heading', { name: /Condições actuais|Current conditions/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: /Melhores janelas|Best windows/i }),
+    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /Livecam|Live cam/i })).toHaveCount(1);
+
+    const kiteTab = page.getByRole('button', { name: /Kitesurf/i });
+    if (await kiteTab.isVisible()) {
+      await kiteTab.click();
+      await expect(kiteTab).toHaveAttribute('aria-pressed', 'true');
+    }
   });
 });

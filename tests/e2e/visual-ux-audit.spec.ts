@@ -263,6 +263,53 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await context.close();
     });
 
+    test('16 — Spot detail: secções estruturadas sem duplicados', async ({ browser }) => {
+      const context = await browser.newContext();
+      const { page, health } = await setupPage(context, viewport);
+      await gotoHealthy(page, health, '/pt/spots/guincho/');
+
+      await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+        timeout: 20_000,
+      });
+
+      await expect(
+        page.getByRole('heading', { name: /Condições actuais|Current conditions/i }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: /Melhores janelas|Best windows/i }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: /Localização|Location/i }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: /Livecam|Live cam/i }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: /Sobre o spot|About this spot/i }),
+      ).toBeVisible();
+
+      // Single livecam block — no duplicate section titles
+      await expect(
+        page.getByRole('heading', { name: /Livecam|Live cam/i }),
+      ).toHaveCount(1);
+
+      // Sport tabs switch updates active state
+      const kiteTab = page.getByRole('button', { name: /Kitesurf/i });
+      if (await kiteTab.isVisible()) {
+        await kiteTab.click();
+        await expect(kiteTab).toHaveAttribute('aria-pressed', 'true');
+      }
+
+      // Windy embed (Guincho has build-time Windy data)
+      await expect(page.locator('iframe[src*="windy"]')).toBeVisible({ timeout: 15_000 });
+
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+      await context.close();
+    });
+
     test('14 — Logo: volta à homepage', async ({ browser }) => {
       const context = await browser.newContext();
       const { page, health } = await setupPage(context, viewport);

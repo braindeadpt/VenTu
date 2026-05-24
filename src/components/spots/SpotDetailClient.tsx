@@ -402,8 +402,9 @@ export default function SpotDetailClient({
       <div className="min-h-screen bg-bg-base pb-12">
         <SpotDetailHero spot={spot} locale={locale} backLabel={t.spots.backToSpots} />
 
-        {/* Sport selector */}
-        <section className="max-w-6xl mx-auto px-4 pb-2">
+        {/* Sport selector — sticky below header on scroll */}
+        <section className="sticky top-16 z-30 bg-bg-base/95 backdrop-blur-sm border-b border-divider">
+          <div className="max-w-6xl mx-auto px-4 py-2">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 edge-fade-x">
             {(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
               .filter((s) => relevantSports.includes(s))
@@ -417,6 +418,7 @@ export default function SpotDetailClient({
                   locale={locale}
                 />
               ))}
+          </div>
           </div>
         </section>
 
@@ -432,9 +434,9 @@ export default function SpotDetailClient({
           locale={locale}
         />
 
-        {/* Forecast + sidebar */}
+        {/* Forecast + sidebar — on mobile: map/windows before long forecast table */}
         <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <section className="lg:col-span-2 space-y-3">
+          <section className="lg:col-span-2 order-2 lg:order-1 space-y-3">
             <h2 className="text-h2 text-fg">
               {isPt ? 'Previsão horária' : 'Hourly forecast'}
             </h2>
@@ -455,7 +457,16 @@ export default function SpotDetailClient({
             )}
           </section>
 
-          <aside className="space-y-6">
+          <aside className="order-1 lg:order-2 space-y-6">
+            <section>
+              <h2 className="text-h2 text-fg mb-3">{td.location}</h2>
+              <div className="card-1 p-2">
+                <div className="h-48 sm:h-56 lg:h-64 rounded-card overflow-hidden">
+                  <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
+                </div>
+              </div>
+            </section>
+
             {forecast.length > 0 && (
               <section>
                 <h2 className="text-h2 text-fg mb-3">{td.bestWindows}</h2>
@@ -477,15 +488,6 @@ export default function SpotDetailClient({
                 </div>
               </section>
             )}
-
-            <section>
-              <h2 className="text-h2 text-fg mb-3">{td.location}</h2>
-              <div className="card-1 p-2">
-                <div className="h-56 lg:h-64 rounded-card overflow-hidden">
-                  <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
-                </div>
-              </div>
-            </section>
           </aside>
         </div>
 
