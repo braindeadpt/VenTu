@@ -44,7 +44,17 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: E2E tests
-        run: npm run test:e2e
+      - name: E2E — critical routes
+        run: npx playwright test critical-routes
+        env:
+          CI: true
+
+      - name: E2E — full route audit
+        run: npm run test:e2e:audit
+        env:
+          CI: true
+
+      - name: E2E — visual UX audit
+        run: npm run test:e2e:ux
         env:
           CI: true

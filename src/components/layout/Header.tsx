@@ -46,8 +46,8 @@ export default function Header({ locale }: HeaderProps) {
       `/${switchLocale}`,
     ) || `/${switchLocale}/`;
 
-  const handleMegaToggle = useCallback(() => {
-    setOpenMega((prev) => !prev);
+  const handleMegaOpen = useCallback(() => {
+    setOpenMega(true);
   }, []);
 
   const handleMegaClose = useCallback(() => {
@@ -100,7 +100,7 @@ export default function Header({ locale }: HeaderProps) {
               <MegaMenu
                 locale={locale}
                 isOpen={openMega}
-                onToggle={handleMegaToggle}
+                onOpen={handleMegaOpen}
                 onClose={handleMegaClose}
               />
               {navLinks.map((link) => (

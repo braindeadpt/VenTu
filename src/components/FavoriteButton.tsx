@@ -2,6 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Heart } from 'lucide-react';
+import {
+  FAVORITES_CHANGED_EVENT,
+  readFavoritesFromStorage,
+  writeFavoritesToStorage,
+} from '@/lib/favoritesStorage';
 
 interface FavoriteButtonProps {
   spotId: string;
@@ -18,17 +23,16 @@ export function useFavorites() {
 
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== 'undefined') {
-      try {
-        const stored = localStorage.getItem('windspot-favorites');
-        if (stored) {
-          setFavorites(JSON.parse(stored));
-        }
-      } catch {
-        // ignore
-      }
-      setLoaded(true);
-    }
+    setFavorites(readFavoritesFromStorage());
+    setLoaded(true);
+
+    const sync = () => setFavorites(readFavoritesFromStorage());
+    window.addEventListener(FAVORITES_CHANGED_EVENT, sync);
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener(FAVORITES_CHANGED_EVENT, sync);
+      window.removeEventListener('storage', sync);
+    };
   }, []);
 
   const toggleFavorite = useCallback((spotId: string) => {
@@ -36,9 +40,7 @@ export function useFavorites() {
       const next = prev.includes(spotId)
         ? prev.filter(id => id !== spotId)
         : [...prev, spotId];
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('windspot-favorites', JSON.stringify(next));
-      }
+      writeFavoritesToStorage(next);
       return next;
     });
   }, []);

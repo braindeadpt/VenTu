@@ -8,6 +8,11 @@ import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getSportScore, getScoreColor } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
+import {
+  FAVORITES_CHANGED_EVENT,
+  readFavoritesFromStorage,
+  writeFavoritesToStorage,
+} from '@/lib/favoritesStorage';
 import FavoriteButton from '@/components/FavoriteButton';
 import Link from 'next/link';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
@@ -48,16 +53,9 @@ export default function FavoritesClient() {
         return parsed;
       }
     }
-    const stored = localStorage.getItem('windspot-favorites');
-    return stored ? JSON.parse(stored) : [];
+    const stored = readFavoritesFromStorage();
+    return stored;
   }, [searchParams]);
-
-  useEffect(() => {
-    const favs = initFavorites();
-    setFavorites(favs);
-    localStorage.setItem('windspot-favorites', JSON.stringify(favs));
-    setLoading(false);
-  }, [initFavorites]);
 
   const updateUrl = useCallback((favs: string[]) => {
     const url = new URL(window.location.href);
@@ -69,10 +67,26 @@ export default function FavoritesClient() {
     router.replace(url.pathname + url.search, { scroll: false });
   }, [router]);
 
+  useEffect(() => {
+    const favs = initFavorites();
+    setFavorites(favs);
+    writeFavoritesToStorage(favs);
+    setLoading(false);
+
+    const syncFromStorage = () => {
+      const next = readFavoritesFromStorage();
+      setFavorites(next);
+      updateUrl(next);
+    };
+
+    window.addEventListener(FAVORITES_CHANGED_EVENT, syncFromStorage);
+    return () => window.removeEventListener(FAVORITES_CHANGED_EVENT, syncFromStorage);
+  }, [initFavorites, updateUrl]);
+
   const handleRemoveFavorite = (spotId: string) => {
     const newFavs = favorites.filter(id => id !== spotId);
     setFavorites(newFavs);
-    localStorage.setItem('windspot-favorites', JSON.stringify(newFavs));
+    writeFavoritesToStorage(newFavs);
     updateUrl(newFavs);
   };
 

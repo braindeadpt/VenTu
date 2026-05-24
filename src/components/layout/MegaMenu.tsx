@@ -8,7 +8,7 @@ import { getTranslation } from '@/lib/i18n';
 interface MegaMenuProps {
   locale: string;
   isOpen: boolean;
-  onToggle: () => void;
+  onOpen: () => void;
   onClose: () => void;
 }
 
@@ -23,7 +23,7 @@ const MODALIDADES_ITEMS = [
   { id: 'wakeboard', slug: 'wakeboard', icon: Zap, i18nKey: 'modalidadeWakeboard', i18nDesc: 'modalidadesWakeboard' },
 ] as const;
 
-export default function MegaMenu({ locale, isOpen, onToggle, onClose }: MegaMenuProps) {
+export default function MegaMenu({ locale, isOpen, onOpen, onClose }: MegaMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const t = getTranslation(locale as 'pt' | 'en');
@@ -56,8 +56,8 @@ export default function MegaMenu({ locale, isOpen, onToggle, onClose }: MegaMenu
     <div ref={menuRef} className="relative">
       <button
         ref={triggerRef}
-        onClick={onToggle}
-        onMouseEnter={onToggle}
+        onClick={onOpen}
+        onMouseEnter={onOpen}
         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -71,33 +71,34 @@ export default function MegaMenu({ locale, isOpen, onToggle, onClose }: MegaMenu
         <div
           id="mega-menu-modalidades"
           role="menu"
-          className="absolute top-full left-0 mt-1 w-[480px] rounded-modal border border-divider bg-bg-elevated shadow-modal backdrop-blur-xl p-4 z-[1300]"
-          onMouseLeave={onClose}
+          className="absolute top-full left-0 pt-1 w-[480px] z-[1300]"
         >
-          <div className="text-xs font-medium text-fg-subtle uppercase tracking-wider mb-3 px-1">
-            {t.megaMenu.modalidadesTitle}
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            {MODALIDADES_ITEMS.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.id}
-                  href={`/${locale}/modalidades/${item.slug}/`}
-                  role="menuitem"
-                  onClick={onClose}
-                  className="flex items-start gap-3 p-3 rounded-card hover:bg-surface-1 transition-colors group"
-                >
-                  <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-input bg-surface-1 text-data-waves group-hover:bg-surface-2 transition-colors">
-                    <Icon className="w-4 h-4" />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="text-sm font-medium text-fg">{t.nav[item.i18nKey]}</div>
-                    <div className="text-xs text-fg-subtle leading-relaxed">{t.megaMenu[item.i18nDesc]}</div>
-                  </div>
-                </Link>
-              );
-            })}
+          <div className="rounded-modal border border-divider bg-bg-elevated shadow-modal backdrop-blur-xl p-4">
+            <div className="text-xs font-medium text-fg-subtle uppercase tracking-wider mb-3 px-1">
+              {t.megaMenu.modalidadesTitle}
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              {MODALIDADES_ITEMS.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Link
+                    key={item.id}
+                    href={`/${locale}/modalidades/${item.slug}/`}
+                    role="menuitem"
+                    onClick={onClose}
+                    className="flex items-start gap-3 p-3 rounded-card hover:bg-surface-1 transition-colors group"
+                  >
+                    <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-input bg-surface-1 text-data-waves group-hover:bg-surface-2 transition-colors">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-sm font-medium text-fg">{t.nav[item.i18nKey]}</div>
+                      <div className="text-xs text-fg-subtle leading-relaxed">{t.megaMenu[item.i18nDesc]}</div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
