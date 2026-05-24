@@ -37,9 +37,13 @@ build_debug.log
 # OS
 .DS_Store
 Thumbs.db
-tsconfig.tsbuildinfo
-tsconfig.tsbuildinfo
 *.tsbuildinfo
+
+# Testing
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
 
 # Auto-generated data files (updated by GitHub Actions)
 # Keep the directory structure but ignore contents
