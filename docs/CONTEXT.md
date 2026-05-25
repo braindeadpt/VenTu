@@ -114,7 +114,7 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 
 1. `SecurityHeaders.tsx` — CSP via JS sem efeito real em static export
 2. Calibração automática de scores (C4) — recolhe feedback; ajuste de pesos manual/contínuo
-3. Livecams curadas — links externos Surftotal/MEO nos top spots; embed Windy quando API key presente
+3. Livecams curadas — links externos Surftotal/MEO em 31 spots (`src/lib/spotLivecams.ts`); sem embeds
 
 ### Distribuição de spots
 

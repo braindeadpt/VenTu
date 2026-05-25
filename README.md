@@ -1,148 +1,165 @@
-# 🌊 VenTu
+# VenTu
 
-> **A modern, open-source platform for water sports conditions in Portugal**
+Open-source surf and water-sports conditions for Portugal — scores, forecasts, maps, and curated live camera links.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+**Live site:** [ventu.surf](https://ventu.surf)
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.4-38B2AC)](https://tailwindcss.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
 [![Open-Meteo](https://img.shields.io/badge/Data-Open--Meteo-green)](https://open-meteo.com/)
 
-[🇵🇹 Português](#português) | [🇬🇧 English](#english)
+[Português](#português) · [English](#english)
 
 ---
 
-## 🇵🇹 Português
+## Português
 
-### 🏄 O que é o VenTu?
+### O que é
 
-O **VenTu** é uma plataforma **gratuita e open-source** que fornece condições para desportos náuticos em Portugal — actualizadas a cada 3 horas. Inclui dados de ondas, vento, temperatura da água e notícias automáticas sobre surf, kitesurf, windsurf e big wave.
+O **VenTu** agrega condições marítimas (ondas, vento, temperatura da água, maré) para **167 spots** em Portugal, com scores por modalidade, previsão horária, mapa interactivo, notícias resumidas por IA e **links para livecams** em direto (Surftotal, MEO Beachcam) nos spots mais populares.
 
-### ✨ Funcionalidades
+### Funcionalidades
 
-- 🌊 **Condições actualizadas** - Ondas, vento, temperatura da água (a cada 3h)
-- 📊 **Previsão 7 dias** - Tabela interativa de forecast
-- 📰 **Notícias automáticas** - Resumidas por IA (Gemini Flash)
-- 🗺️ **167 spots portugueses** - Nazaré, Peniche, Guincho, Algarve, Açores, Madeira, Centro, Norte, Sul e mais
-- 🌐 **Bilingue** - Português e Inglês para turistas
-- 📱 **Responsivo** - Funciona em mobile e desktop
-- ⚡ **Atualização automática** - A cada 3 horas via GitHub Actions
+- Condições actualizadas a cada **3 horas** (pipeline GitHub Actions + Open-Meteo)
+- Scores por desporto (surf, kitesurf, windsurf, bodyboard, foil, SUP, big wave, …)
+- Mapa com filtros por região e modalidade
+- Página de spot: condições, previsão, janelas, localização, câmara (quando curada)
+- Índice [`/livecams`](https://ventu.surf/pt/livecams/) — links externos verificados
+- UI em **PT** e **EN**
 
-### 🚀 Tecnologias
+### Stack
 
 | Camada | Tecnologia |
-|--------|-----------|
-| Framework | Next.js 16 + React 18 + TypeScript |
-| Styling | Tailwind CSS 3.4 |
-| Maps | Leaflet + MarkerCluster |
-| Dados | Open-Meteo Marine API (grátis) |
-| Feedback | Supabase (PostgreSQL) |
-| IA | Google Gemini Flash (grátis) |
-| Deploy | GitHub Pages / Vercel |
+|--------|------------|
+| App | Next.js 16, React 18, TypeScript |
+| UI | Tailwind CSS 3.4, Lucide |
+| Mapa | Leaflet, MarkerCluster |
+| Dados mar | Open-Meteo Marine API |
+| Feedback / alertas | Supabase |
+| Notícias | Gemini (opcional) + RSS |
+| Deploy | GitHub Pages (static export) |
 
-### 📦 Instalação
+### Início rápido
 
 ```bash
-# Clone o repositório
-git clone https://github.com/braindeadpt/ventu.git
-cd ventu
-
-# Instalar dependências
+git clone https://github.com/braindeadpt/VenTu.git
+cd VenTu
 npm install
+cp .env.example .env.local   # opcional: Supabase, Gemini, analytics
+npm run dev                  # http://localhost:3000
+```
 
-# Desenvolvimento local
-npm run dev
+Build de produção:
 
-# Build para produção
+```bash
 npm run build
 ```
 
-### 🔑 Configurar Gemini API (Opcional)
+### Variáveis de ambiente
 
-Para notícias automáticas com IA:
+Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `public/data/` gerados pelo CI).
 
-1. Vai a [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Cria uma API Key gratuita
-3. Adiciona como secret no GitHub: `Settings > Secrets > GEMINI_API_KEY`
+| Variável | Obrigatória | Uso |
+|----------|-------------|-----|
+| `NEXT_PUBLIC_SUPABASE_URL` | Não | Formulário de feedback e contribuições |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Não | Idem |
+| `GEMINI_API_KEY` | Não | Geração de notícias (`npm run news:generate`) |
+| `NEXT_PUBLIC_GOATCOUNTER_CODE` | Não | Analytics privacy-first |
+| `RESEND_API_KEY` | Não | Alertas por email |
 
-### 🤝 Contribuir
+### Scripts úteis
 
-Contribuições são bem-vindas! Abre um PR ou issue no GitHub.
+| Comando | Descrição |
+|---------|-----------|
+| `npm run dev` | Servidor de desenvolvimento |
+| `npm run build` | Build estático |
+| `npm test` | Testes unitários (Vitest) |
+| `npm run test:e2e` | E2E (Playwright) |
+| `npm run conditions:update` | Actualizar `public/data/conditions.json` |
+| `npm run data:update` | Condições + notícias |
+| `npm run spots:validate` | Validar `src/lib/spots.ts` |
 
-Consulta o [roadmap executável](docs/ROADMAP.md) para prioridades actuais (Fases A–C).
+### Estrutura do projecto
 
----
-
-## 🇬🇧 English
-
-### 🏄 What is VenTu?
-
-**VenTu** is a **free, open-source** platform providing water sports conditions in Portugal — updated every 3 hours. Includes wave, wind, water temperature data and automated news about surf, kitesurf, windsurf and big wave.
-
-### ✨ Features
-
-- 🌊 **Updated conditions** - Waves, wind, water temperature (every 3h)
-- 📊 **7-day forecast** - Interactive forecast table
-- 📰 **Automated news** - AI-summarized by Gemini Flash
-- 🗺️ **167 Portuguese spots** - Nazaré, Peniche, Guincho, Algarve, Azores, Madeira, and more
-- 🌐 **Bilingual** - Portuguese and English for tourists
-- 📱 **Responsive** - Works on mobile and desktop
-- ⚡ **Auto-updates** - Every 3 hours via GitHub Actions
-
-### 🚀 Tech Stack
-
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 16 + React 18 + TypeScript |
-| Styling | Tailwind CSS 3.4 |
-| Maps | Leaflet + MarkerCluster |
-| Data | Open-Meteo Marine API (free) |
-| Feedback | Supabase (PostgreSQL) |
-| AI | Google Gemini Flash (free) |
-| Deploy | GitHub Pages / Vercel |
-
-### 📦 Installation
-
-```bash
-# Clone the repository
-git clone https://github.com/braindeadpt/ventu.git
-cd ventu
-
-# Install dependencies
-npm install
-
-# Local development
-npm run dev
-
-# Production build
-npm run build
+```
+src/
+  app/[locale]/     # Rotas (spots, compare, news, livecams, …)
+  components/       # UI e secções (mapa, spot detail, …)
+  lib/              # Lógica (scores, spots, i18n, spotLivecams.ts)
+  data/             # Dados estáticos gerados (se aplicável)
+public/data/        # conditions.json, forecasts.json (CI)
+scripts/            # Pipelines de dados e auditoria
+docs/               # Roadmap, contexto, design system
 ```
 
-### 🔑 Setup Gemini API (Optional)
+### Documentação
 
-For automated AI news:
+- [docs/CONTEXT.md](docs/CONTEXT.md) — arquitectura e convenções
+- [docs/ROADMAP.md](docs/ROADMAP.md) — prioridades e estado das fases
+- [CONTRIBUTING.md](CONTRIBUTING.md) — como contribuir (spots, livecams, scores)
 
-1. Go to [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Create a free API Key
-3. Add as GitHub secret: `Settings > Secrets > GEMINI_API_KEY`
+### Livecams
 
-### 🤝 Contributing
+Não usamos embeds de terceiros (Windy timelapse, iframes MEO bloqueados). Nos **31 spots curados**, a secção «Câmara ao vivo» abre o stream **no site do operador** (nova janela). Para adicionar um spot, edita `src/lib/spotLivecams.ts`.
 
-Contributions are welcome! Open a PR or issue on GitHub.
+### Contribuir
 
-See the [executable roadmap](docs/ROADMAP.md) for current priorities (Phases A–C).
-
----
-
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file
-
-## 🙏 Credits
-
-- Data: [Open-Meteo](https://open-meteo.com/) - Free Weather API
-- AI: [Google Gemini](https://ai.google.dev/) - Generative AI
-- Icons: [Lucide](https://lucide.dev/) - Beautiful icons
+Issues e PRs são bem-vindos. Lê [CONTRIBUTING.md](CONTRIBUTING.md) antes de submeter.
 
 ---
 
-**Made with ❤️ for the Portuguese water sports community**
+## English
+
+### What it is
+
+**VenTu** aggregates marine conditions for **167 spots** in Portugal, with per-sport scores, hourly forecast, interactive map, AI-summarized news, and **curated live camera links** (Surftotal, MEO Beachcam) on popular spots.
+
+### Features
+
+- Conditions updated every **3 hours** (GitHub Actions + Open-Meteo)
+- Multi-sport scores, regional map filters
+- Spot pages: conditions, forecast, windows, location, live cam (when curated)
+- [`/livecams`](https://ventu.surf/en/livecams/) index — verified external links
+- **PT** and **EN** UI
+
+### Quick start
+
+```bash
+git clone https://github.com/braindeadpt/VenTu.git
+cd VenTu
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+### Environment
+
+See `.env.example`. The app runs without secrets using CI-generated files under `public/data/`.
+
+### Documentation
+
+- [docs/CONTEXT.md](docs/CONTEXT.md)
+- [docs/ROADMAP.md](docs/ROADMAP.md)
+- [CONTRIBUTING.md](CONTRIBUTING.md)
+
+### Live cameras
+
+No third-party embeds. Curated spots link out to the operator’s live stream. Add entries in `src/lib/spotLivecams.ts`.
+
+### Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## License
+
+[MIT](LICENSE)
+
+## Credits
+
+- [Open-Meteo](https://open-meteo.com/) — marine weather data  
+- [Google Gemini](https://ai.google.dev/) — news summarization (optional)  
+- [Lucide](https://lucide.dev/) — icons  
+- Live camera operators: [Surftotal](https://www.surftotal.com/), [MEO Beachcam](https://beachcam.meo.pt/)

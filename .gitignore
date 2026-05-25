@@ -39,6 +39,11 @@ build_debug.log
 Thumbs.db
 *.tsbuildinfo
 
+# Local one-off debug scripts (never commit)
+scripts/probe-*
+scripts/extract-*
+scripts/find-jwt-*
+
 # Testing
 test-results/
 playwright-report/

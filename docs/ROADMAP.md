@@ -131,15 +131,9 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ---
 
-### E6 — Livecams (em curso)
+### E6 — Livecams ✅
 
-**Feito:** 31 spots com links Surftotal/MEO (`spotLivecams.ts`).
-
-**Pendente:**
-
-- [x] Embed MEO (`embedUrl`) em `supertubos`, `coxos` — `SpotLivecamLink.tsx`
-- [x] +4 spots curados: `coxos`, `baleal`, `obidos-lagoon`, `lagos` (35 total)
-- [x] Windy iframe quando sem `embedUrl` curado (`SpotWebcamSection.tsx`)
+**Feito (2026-05-25):** 31 spots com links externos Surftotal/MEO (`spotLivecams.ts`). Secção «Câmara ao vivo» só em spots curados; botão abre o operador (live real). Removidos embeds Windy (timelapse) e iframes MEO.
 
 ---
 
@@ -231,7 +225,7 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 | App nativa iOS/Android | PWA + SEO primeiro |
 | Contas completas / sync favoritos | URL + localStorage + export suficiente |
 | Chat global | Sem analytics que justifiquem ([`archive/CHAT-SECURITY.md`](./archive/CHAT-SECURITY.md)) |
-| Câmaras Windy em massa | Key externa; links curados em 31 spots (**E6**) |
+| Câmaras embed genéricas | Descartado; links curados em 31 spots (**E6** ✅) |
 
 ---
 

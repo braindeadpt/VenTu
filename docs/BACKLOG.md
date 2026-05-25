@@ -53,9 +53,9 @@ Audit original (Fase 1) identificou: `images: []` vazio em todos os 167 spots. D
 
 ### Livecams nos spots populares
 
-✅ **Parcial (2026-05-25).** Links curados Surftotal/MEO em **31 spots** + embed Windy quando `NEXT_PUBLIC_WINDY_API_KEY` configurada.
+✅ **Concluído (2026-05-25).** Links externos curados Surftotal/MEO em **31 spots** (`spotLivecams.ts`). Sem embeds (Windy = timelapse 24h; MEO = X-Frame bloqueado).
 
-**Pendente:** iframe embed directo (streams MEO/Surftotal são JS-only); expandir lista de spots.
+**Pendente (opcional):** expandir lista de spots com URLs MEO/Surftotal verificadas.
 
 ---
 

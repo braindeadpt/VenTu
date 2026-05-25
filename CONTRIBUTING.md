@@ -41,24 +41,27 @@ O modo mais fácil de contribuir é adicionar spots que conheces!
 3. Adiciona o spot na secção correta (Norte, Centro, Lisboa, Oeste, Algarve, Alentejo, Açores, Madeira)
 4. Abre um Pull Request com `[Spot] Nome do Spot — Região`
 
-### 2. Adicionar Webcams Open Source
+### 2. Adicionar ou corrigir livecams
 
-As webcams comerciais (Beachcam MEO, Nazaré Waves) **não funcionam** em embeds. Mas se conheceres uma webcam que:
-- Permite iframe embed
-- Tem URL pública de stream
-- É open-source ou permissiva
+O VenTu **não faz embed** de streams (Windy = timelapse; MEO/Surftotal bloqueiam iframe). Usamos **links externos** para páginas com transmissão em direto.
 
-Adiciona em `src/lib/spots.ts` no campo `webcamUrl`!
+Edita `src/lib/spotLivecams.ts`:
 
-**Formato aceite:**
-- Iframe embed URL (`https://example.com/embed/cam`)
-- YouTube Live URL
-- HLS stream URL (`.m3u8`)
+```typescript
+'nome-do-spot': {
+  url: 'https://www.surftotal.com/camaras-report/...',  // ou beachcam.meo.pt/livecams/...
+  provider: 'Surftotal',  // ou 'MEO Beachcam'
+  labelPt: 'Nome da praia',
+  labelEn: 'Beach name',
+},
+```
 
-**NÃO aceite:**
-- Blob URLs (nazarewaves.com)
-- URLs com proteção CloudFront (beachcam.meo.pt)
-- URLs que requerem login/autenticação
+**Critérios:**
+- URL abre uma página com **live** real (não slideshow de 24h)
+- Operador conhecido (Surftotal, MEO Beachcam, ou câmara pública municipal)
+- Spot existe em `src/lib/spots.ts` (usa o mesmo `slug`)
+
+Abre um PR com `[Livecam] Nome do spot`.
 
 ### 3. Corrigir Dados de um Spot
 
@@ -91,7 +94,7 @@ Usa estas labels quando abrires issues:
 |-------|-----|
 | `[Spot]` | Adicionar novo spot |
 | `[Correction]` | Corrigir dados existentes |
-| `[Webcam]` | Adicionar webcam open source |
+| `[Livecam]` | Adicionar ou corrigir link de livecam curada |
 | `[Algorithm]` | Melhorar Surfability Score |
 | `[Translation]` | Novo idioma |
 | `[Bug]` | Bug report |

@@ -1,8 +1,14 @@
 {
   "name": "ventu",
   "version": "1.0.0",
+  "description": "Open-source surf and water-sports conditions for Portugal (167 spots, scores, forecasts, curated live cams)",
   "private": false,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/braindeadpt/VenTu.git"
+  },
+  "homepage": "https://ventu.surf",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
