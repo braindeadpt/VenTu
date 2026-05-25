@@ -206,6 +206,7 @@ export default function ForecastTable({
 
   /* ── scroll container ref ── */
   const scrollRef = useRef<HTMLDivElement>(null);
+  const labelWidthPx = compact ? 72 : 96;
 
   /* ── find current hour index ── */
   const currentHourIndex = useMemo(() => {
@@ -246,8 +247,6 @@ export default function ForecastTable({
   }, [visible, locale]);
 
   const [activeDayGroupIndex, setActiveDayGroupIndex] = useState(0);
-
-  const labelWidthPx = compact ? 72 : 96;
 
   const getColumnIndexAtScroll = (scrollLeft: number, clientWidth: number, scrollWidth: number) => {
     if (visible.length === 0) return 0;
