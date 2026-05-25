@@ -20,8 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const count = getLivecamSpotCount();
   const title = isPt ? `Livecams — ${count} spots — VenTu` : `Live cams — ${count} spots — VenTu`;
   const description = isPt
-    ? `${count} livecams nos spots mais populares de Portugal — Surftotal, MEO Beachcam e mais.`
-    : `${count} live cameras at Portugal's most popular spots — Surftotal, MEO Beachcam and more.`;
+    ? `${count} links para câmaras em direto nos spots mais populares — Surftotal e MEO Beachcam.`
+    : `${count} links to live cameras at popular spots — Surftotal and MEO Beachcam.`;
   return { title, description, openGraph: { title, description } };
 }
 

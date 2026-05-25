@@ -66,7 +66,7 @@ describe('spotLivecams', () => {
     expect(getLivecamSpotCount()).toBeGreaterThanOrEqual(34)
     expect(getSpotLivecam('guincho')?.provider).toBe('Surftotal')
     expect(getSpotLivecam('supertubos')?.provider).toBe('MEO Beachcam')
-    expect(getSpotLivecam('coxos')?.embedUrl).toContain('beachcam.meo.pt')
+    expect(getSpotLivecam('coxos')?.url).toContain('beachcam.meo.pt')
     expect(getSpotLivecam('baleal')?.url).toContain('surftotal.com')
   })
 

@@ -387,7 +387,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         page.getByRole('heading', { name: /Localização|Location/i }),
       ).toBeVisible();
       await expect(
-        page.getByRole('heading', { name: /Livecam|Live cam/i }),
+        page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }),
       ).toBeVisible();
       await expect(
         page.getByRole('heading', { name: /Sobre o spot|About this spot/i }),
@@ -395,7 +395,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       // Single livecam block — no duplicate section titles
       await expect(
-        page.getByRole('heading', { name: /Livecam|Live cam/i }),
+        page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }),
       ).toHaveCount(1);
 
       // Sport tabs switch updates active state
@@ -405,8 +405,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         await expect(kiteTab).toHaveAttribute('aria-pressed', 'true');
       }
 
-      // Windy embed (Guincho has build-time Windy data)
-      await expect(page.locator('iframe[src*="windy"]')).toBeVisible({ timeout: 15_000 });
+      // Guincho: curated Surftotal — external live link only
+      await expect(page.getByRole('link', { name: /Ver ao vivo|Watch live/i })).toBeVisible();
+      await expect(page.locator('iframe')).toHaveCount(0);
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();

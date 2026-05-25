@@ -44,29 +44,26 @@ async function main() {
     await page.close();
   }
 
-  // ── 2. Windy webcam embed (Guincho) — build-time data, no browser API call ──
+  // ── 2. Curated livecam link (Guincho) — external Surftotal, no iframe ──
   {
     const page = await browser.newPage();
     const cspViolations = [];
     page.on('console', (msg) => {
       const t = msg.text();
-      if (/content security policy|csp/i.test(t) && /windy|webcam/i.test(t)) {
+      if (/content security policy|csp/i.test(t) && /webcam|livecam/i.test(t)) {
         cspViolations.push(t);
       }
     });
     await page.goto(`${BASE}/pt/spots/guincho/`, { waitUntil: 'networkidle', timeout: 45_000 });
     await page.waitForTimeout(3000);
-    const iframe = page.locator('iframe[src*="windy"], iframe[src*="webcam"], iframe[title*="Webcam"]');
-    const iframeCount = await iframe.count();
-    const iframeVisible = iframeCount > 0 && await iframe.first().isVisible().catch(() => false);
-    if (cspViolations.length === 0) pass('windy-csp', 'Sem violações CSP Windy');
-    else fail('windy-csp', cspViolations.slice(0, 2).join(' | '));
-    if (iframeVisible) pass('windy-load', `Iframe Windy visível (${iframeCount})`);
-    else {
-      const curated = await page.locator('a[href*="surftotal"], a[href*="meo"], a[href*="webcam"]').count();
-      if (curated > 0) skip('windy-load', `Sem iframe Windy; ${curated} link(s) curado(s)`);
-      else fail('windy-load', 'Sem webcam Windy nem links alternativos');
-    }
+    const liveLink = page.getByRole('link', { name: /Ver ao vivo/i });
+    const hasLiveLink = await liveLink.isVisible().catch(() => false);
+    const iframeCount = await page.locator('iframe').count();
+    if (cspViolations.length === 0) pass('livecam-csp', 'Sem violações CSP livecam');
+    else fail('livecam-csp', cspViolations.slice(0, 2).join(' | '));
+    if (hasLiveLink && iframeCount === 0) pass('livecam-link', 'Link curado Surftotal visível, sem iframe');
+    else if (hasLiveLink) fail('livecam-link', `Link ok mas ${iframeCount} iframe(s) inesperado(s)`);
+    else fail('livecam-link', 'Sem link «Ver ao vivo» no Guincho');
     const goatBlocked = cspViolations.some((v) => /goatcounter/i.test(v));
     if (goatBlocked) fail('goatcounter-csp', cspViolations.filter((v) => /goatcounter/i.test(v)).slice(0, 1).join(' | '));
     else pass('goatcounter-csp', 'Sem violações CSP GoatCounter');

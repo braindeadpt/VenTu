@@ -181,7 +181,7 @@ export const translations = {
     },
     livecams: {
       title: 'Livecams',
-      subtitle: 'Câmaras ao vivo nos spots mais populares de Portugal — fontes externas.',
+      subtitle: 'Links para transmissões em direto (Surftotal, MEO Beachcam) — abrem no site do operador.',
       watchLive: 'Ver ao vivo',
       viewSpot: 'Ver spot',
       provider: 'Fonte',
@@ -355,7 +355,7 @@ export const translations = {
     },
     livecams: {
       title: 'Live cams',
-      subtitle: 'Live cameras at Portugal\'s most popular spots — external sources.',
+      subtitle: 'Links to live streams (Surftotal, MEO Beachcam) — open on the provider site.',
       watchLive: 'Watch live',
       viewSpot: 'View spot',
       provider: 'Source',

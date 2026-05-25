@@ -1,7 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { ExternalLink, Video } from 'lucide-react';
 import { getSpotLivecam } from '@/lib/spotLivecams';
+import { getTranslation } from '@/lib/i18n';
 
 interface SpotLivecamLinkProps {
   slug: string;
@@ -13,55 +15,42 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
   if (!cam) return null;
 
   const isPt = locale === 'pt';
+  const t = getTranslation(locale as 'pt' | 'en');
   const title = isPt ? cam.labelPt : cam.labelEn;
 
   return (
-    <div className="card-1 p-4">
-      <div className="flex items-start gap-3">
-        <div className="rounded-card bg-data-waves/10 p-2 text-data-waves shrink-0">
-          <Video className="w-5 h-5" aria-hidden />
+    <div className="card-1 p-4 md:p-5">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+        <div className="flex items-start gap-3 min-w-0 flex-1">
+          <div className="rounded-card bg-data-waves/10 p-2.5 text-data-waves shrink-0">
+            <Video className="w-5 h-5" aria-hidden />
+          </div>
+          <div className="min-w-0">
+            <p className="text-h3 text-fg">{title}</p>
+            <p className="text-sm text-fg-muted mt-1">
+              {isPt
+                ? `Transmissão em direto em ${cam.provider}. Abre no site do operador (nova janela).`
+                : `Live stream on ${cam.provider}. Opens on the provider site (new tab).`}
+            </p>
+          </div>
         </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-h3 text-fg mb-1">
-            {isPt ? 'Livecam' : 'Live cam'}
-          </h3>
-          <p className="text-sm text-fg-muted mb-3">
-            {isPt
-              ? `${title} — ${cam.provider}.`
-              : `${title} — ${cam.provider}.`}
-            {cam.embedUrl
-              ? isPt
-                ? ' Player embebido abaixo; link externo como alternativa.'
-                : ' Embedded player below; external link as fallback.'
-              : isPt
-                ? ' Abre numa nova janela.'
-                : ' Opens in a new window.'}
-          </p>
 
-          {cam.embedUrl && (
-            <div className="aspect-video rounded-card overflow-hidden bg-black mb-3 border border-divider">
-              <iframe
-                src={cam.embedUrl}
-                className="w-full h-full"
-                loading="lazy"
-                allowFullScreen
-                title={title}
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-          )}
-
-          <a
-            href={cam.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-medium text-data-waves hover:underline"
-          >
-            {isPt ? 'Abrir no site do operador' : 'Open on provider site'}
-            <ExternalLink className="w-4 h-4" aria-hidden />
-          </a>
-        </div>
+        <a
+          href={cam.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold bg-data-waves text-bg-base hover:bg-data-waves/90 transition-colors min-h-[44px] shrink-0"
+        >
+          {t.livecams.watchLive}
+          <ExternalLink className="w-4 h-4" aria-hidden />
+        </a>
       </div>
+
+      <p className="text-meta-sm text-fg-subtle mt-4 pt-3 border-t border-divider">
+        <Link href={`/${locale}/livecams/`} className="text-data-waves hover:underline">
+          {isPt ? 'Ver todas as livecams' : 'Browse all live cameras'}
+        </Link>
+      </p>
     </div>
   );
 }

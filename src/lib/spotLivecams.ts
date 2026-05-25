@@ -1,12 +1,10 @@
-/** Curated public livecam pages for popular spots (external — no fragile iframe embeds). */
+/** Curated live streams — external links only (Surftotal / MEO Beachcam). */
 
 export interface SpotLivecam {
   url: string
   provider: string
   labelPt: string
   labelEn: string
-  /** Optional iframe embed (e.g. MEO Beachcam player page). */
-  embedUrl?: string
 }
 
 const SURFTOTAL = 'Surftotal'
@@ -108,14 +106,12 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     provider: MEO,
     labelPt: 'Supertubos — Molhe Leste',
     labelEn: 'Supertubos — East Pier',
-    embedUrl: 'https://beachcam.meo.pt/livecams/peniche-supertubos/',
   },
   coxos: {
     url: 'https://beachcam.meo.pt/livecams/ericeira/',
     provider: MEO,
     labelPt: 'Ericeira (zona Coxos)',
     labelEn: 'Ericeira (Coxos area)',
-    embedUrl: 'https://beachcam.meo.pt/livecams/ericeira/',
   },
   baleal: {
     url: 'https://www.surftotal.com/camaras-report/peniche/peniche-super-tubos',

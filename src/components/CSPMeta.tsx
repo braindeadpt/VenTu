@@ -8,7 +8,6 @@
 //  - GoatCounter (analytics, optional)
 //  - Supabase (contributions feedback + admin, optional)
 //  - OpenStreetMap / Carto / ESRI tiles (Leaflet basemaps)
-//  - Windy webcams (iframe embed in spot detail)
 // NOTE: 'unsafe-eval' was removed (was unused; lingered from a copy/paste).
 // 'unsafe-inline' for scripts is still required by the pre-hydration
 // theme script in app/layout.tsx and Next.js inline runtime.
@@ -19,7 +18,7 @@ const CSP_META = {
   fontSrc: "'self' data:",
   imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co",
   connectSrc: "'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com",
-  frameSrc: "https://embed.windy.com https://*.windy.com https://webcams.windy.com https://www.openstreetmap.org",
+  frameSrc: "https://www.openstreetmap.org",
   objectSrc: "'none'",
   baseUri: "'self'",
   formAction: "'self'",
