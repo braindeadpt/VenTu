@@ -303,9 +303,10 @@ export default function ForecastTable({
         </div>
       )}
 
-<div
+<div className="edge-fade-x rounded-card">
+      <div
         ref={scrollRef}
-className="overflow-x-auto overscroll-x-contain touch-pan-x rounded-card border border-divider bg-bg-base min-w-[600px] md:min-w-[800px] relative"
+        className="overflow-x-auto overscroll-x-contain touch-pan-x border border-divider bg-bg-base min-w-[600px] md:min-w-[800px] relative rounded-card"
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
@@ -596,6 +597,7 @@ className="overflow-x-auto overscroll-x-contain touch-pan-x rounded-card border 
           )}
         </tbody>
         </table>
+      </div>
       </div>
     </div>
   );

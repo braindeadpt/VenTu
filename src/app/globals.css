@@ -280,6 +280,13 @@
     display: none;
   }
 
+  /* Hero glow — skip heavy gradient on data-saver / reduced-data */
+  @media (prefers-reduced-data: reduce) {
+    .hero-radial-glow-disc {
+      display: none;
+    }
+  }
+
   /* Edge fade for horizontal scroll containers */
   .edge-fade-x {
     mask-image: linear-gradient(

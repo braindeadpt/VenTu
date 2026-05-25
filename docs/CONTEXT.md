@@ -2,7 +2,7 @@
 
 Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do projecto e as restrições técnicas que limitam que soluções são viáveis.
 
-> **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) (Fases A→C, actualizado 2026-05-24)
+> **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) — Fase **E** activa (E1 alertas prod → E2 polish → E3 notícias v2)
 
 Última actualização: 2026-05-25 (Fases A→C concluídas; secrets Supabase/Resend configurados).
 

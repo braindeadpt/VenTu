@@ -5,6 +5,8 @@ export interface SpotLivecam {
   provider: string
   labelPt: string
   labelEn: string
+  /** Optional iframe embed (e.g. MEO Beachcam player page). */
+  embedUrl?: string
 }
 
 const SURFTOTAL = 'Surftotal'
@@ -106,6 +108,20 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     provider: MEO,
     labelPt: 'Supertubos — Molhe Leste',
     labelEn: 'Supertubos — East Pier',
+    embedUrl: 'https://beachcam.meo.pt/livecams/peniche-supertubos/',
+  },
+  coxos: {
+    url: 'https://beachcam.meo.pt/livecams/ericeira/',
+    provider: MEO,
+    labelPt: 'Ericeira (zona Coxos)',
+    labelEn: 'Ericeira (Coxos area)',
+    embedUrl: 'https://beachcam.meo.pt/livecams/ericeira/',
+  },
+  baleal: {
+    url: 'https://www.surftotal.com/camaras-report/peniche/peniche-super-tubos',
+    provider: SURFTOTAL,
+    labelPt: 'Baleal / Peniche',
+    labelEn: 'Baleal / Peniche',
   },
   consolacao: {
     url: 'https://www.surftotal.com/camaras-report/peniche/peniche-super-tubos',
@@ -196,6 +212,18 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     provider: SURFTOTAL,
     labelPt: 'Seixal (Madeira)',
     labelEn: 'Seixal (Madeira)',
+  },
+  'obidos-lagoon': {
+    url: 'https://www.surftotal.com/camaras-report/figueira-da-foz/praia-do-cabedelo-hd',
+    provider: SURFTOTAL,
+    labelPt: 'Lagoa de Óbidos (Cabedelo ref.)',
+    labelEn: 'Obidos Lagoon (Cabedelo ref.)',
+  },
+  lagos: {
+    url: 'https://www.surftotal.com/camaras-report/alentejo-algarve/fuzeta',
+    provider: SURFTOTAL,
+    labelPt: 'Lagos / Fuzeta (Ria)',
+    labelEn: 'Lagos / Fuzeta (estuary)',
   },
 }
 

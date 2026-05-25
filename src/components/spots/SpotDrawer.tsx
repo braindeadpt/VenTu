@@ -108,7 +108,7 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
                     aria-checked={active}
                     onClick={() => setSelectedSport(sport)}
                     className={[
-                      'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
+                      'px-3 py-2 min-h-[44px] rounded-full text-xs font-medium transition-all whitespace-nowrap',
                       active
                         ? 'bg-surface-2 border border-divider-strong text-fg'
                         : 'bg-surface-1 border border-divider text-fg-muted hover:bg-surface-2 hover:text-fg',

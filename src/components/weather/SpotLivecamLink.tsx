@@ -13,6 +13,7 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
   if (!cam) return null;
 
   const isPt = locale === 'pt';
+  const title = isPt ? cam.labelPt : cam.labelEn;
 
   return (
     <div className="card-1 p-4">
@@ -26,16 +27,37 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
           </h3>
           <p className="text-sm text-fg-muted mb-3">
             {isPt
-              ? `${cam.labelPt} — ${cam.provider}. Abre numa nova janela.`
-              : `${cam.labelEn} — ${cam.provider}. Opens in a new window.`}
+              ? `${title} — ${cam.provider}.`
+              : `${title} — ${cam.provider}.`}
+            {cam.embedUrl
+              ? isPt
+                ? ' Player embebido abaixo; link externo como alternativa.'
+                : ' Embedded player below; external link as fallback.'
+              : isPt
+                ? ' Abre numa nova janela.'
+                : ' Opens in a new window.'}
           </p>
+
+          {cam.embedUrl && (
+            <div className="aspect-video rounded-card overflow-hidden bg-black mb-3 border border-divider">
+              <iframe
+                src={cam.embedUrl}
+                className="w-full h-full"
+                loading="lazy"
+                allowFullScreen
+                title={title}
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          )}
+
           <a
             href={cam.url}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 text-sm font-medium text-data-waves hover:underline"
           >
-            {isPt ? 'Ver livecam ao vivo' : 'Watch live cam'}
+            {isPt ? 'Abrir no site do operador' : 'Open on provider site'}
             <ExternalLink className="w-4 h-4" aria-hidden />
           </a>
         </div>

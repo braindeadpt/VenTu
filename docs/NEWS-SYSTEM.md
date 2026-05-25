@@ -41,7 +41,7 @@ Reads `conditions.json` snapshot, applies hard thresholds:
 | Warm water | waterTemp > 22°C in >50% spots | general | info |
 | Storm | windSpeed > 35kt in 3+ spots | safety | alert |
 
-**TODO v2:** Fetch Open-Meteo hourly forecast for 72h/24h window detection.
+**v2 (2026-05-25):** Reads `forecasts.json` hourly arrays — events for swell ≥3m in 72h and wind ≥25kt in 24h (tags `forecast-72h`, `forecast-24h`). Snapshot events tagged `agora`.
 
 ### Etapa 3 — LLM Auxiliary (3 Specific Tasks)
 
@@ -76,7 +76,7 @@ Accumulates over time (no longer overwrite):
 |------|--------|---------|
 | Core (2-3 feeds) | surf, kitesurf, windsurf, big-wave | Dedicated RSS + keyword extraction |
 | Standard (1 feed) | sup, foil, bodyboard | Tags in core feeds |
-| Marginal (TODO) | wakeboard | No dedicated source yet |
+| Marginal | wakeboard | Keyword inference from title/summary (`category-keywords.js`) |
 
 ## Anti-Spam
 

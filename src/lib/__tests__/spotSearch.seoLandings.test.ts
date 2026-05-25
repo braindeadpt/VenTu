@@ -63,9 +63,11 @@ describe('seoLandings', () => {
 
 describe('spotLivecams', () => {
   it('has livecams for popular spots', () => {
-    expect(getLivecamSpotCount()).toBeGreaterThanOrEqual(25)
+    expect(getLivecamSpotCount()).toBeGreaterThanOrEqual(34)
     expect(getSpotLivecam('guincho')?.provider).toBe('Surftotal')
     expect(getSpotLivecam('supertubos')?.provider).toBe('MEO Beachcam')
+    expect(getSpotLivecam('coxos')?.embedUrl).toContain('beachcam.meo.pt')
+    expect(getSpotLivecam('baleal')?.url).toContain('surftotal.com')
   })
 
   it('returns null for spots without livecam', () => {

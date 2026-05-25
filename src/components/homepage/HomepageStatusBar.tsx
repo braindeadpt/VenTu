@@ -42,20 +42,34 @@ export default function HomepageStatusBar({
       aria-live="polite"
       className="w-full bg-surface-1 border-b border-divider z-30 sticky top-16"
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 h-9 sm:h-10 flex items-center">
-        <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-meta text-fg-muted min-w-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 h-8 sm:h-10 flex items-center">
+        <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-meta text-fg-muted min-w-0 w-full">
           <span
             className={`w-2 h-2 rounded-full shrink-0 ${dotColor} ${hoursSinceMin < 12 ? 'animate-pulse' : ''}`}
             title={tooltip}
             aria-label={tooltip}
           />
-          <span className="truncate">
-            {minTs
-              ? `${isPt ? 'Actualizado às' : 'Updated at'} ${new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(maxTs!))} · ${isPt ? 'a cada 3h' : 'every 3h'} · ${spotCount} ${isPt ? 'spots monitorizados' : 'spots monitored'}`
-              : isPt
-                ? 'Sem dados de condições'
-                : 'No condition data'}
-          </span>
+          {minTs ? (
+            <>
+              <span className="truncate sm:hidden font-mono tabular-nums">
+                {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(maxTs!))}
+                {' · '}
+                {spotCount} {isPt ? 'spots' : 'spots'}
+              </span>
+              <span className="truncate hidden sm:inline">
+                {isPt ? 'Actualizado às' : 'Updated at'}{' '}
+                {new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(new Date(maxTs!))}
+                {' · '}
+                {isPt ? 'a cada 3h' : 'every 3h'}
+                {' · '}
+                {spotCount} {isPt ? 'spots monitorizados' : 'spots monitored'}
+              </span>
+            </>
+          ) : (
+            <span className="truncate">
+              {isPt ? 'Sem dados de condições' : 'No condition data'}
+            </span>
+          )}
         </div>
       </div>
     </section>

@@ -2,311 +2,224 @@
 
 > **Objectivo:** transformar o VenTu de “projecto impressionante” em “ferramenta em que confio todos os dias”.  
 > **Posicionamento:** referência gratuita portuguesa multi-desporto — *não* rival do Surfline.  
-> **Criado:** 2026-05-24 · **Próxima revisão:** após conclusão da Fase A
+> **Criado:** 2026-05-24 · **Última revisão:** 2026-05-25
 
 ---
 
 ## Como usar entre sessões
 
-1. Consulta a **tabela de progresso** abaixo — começa sempre pelo primeiro item `⬜ pending` da fase activa.
-2. Marca `[x]` nas checkboxes quando concluíres uma tarefa.
-3. Actualiza a coluna **Status** na tabela (`✅ done` / `🔄 wip` / `⬜ pending`).
-4. Regista decisões ou bloqueios na secção **Notas de sessão** no fim do ficheiro.
-5. Cada fase termina com `npm run build` verde + verificação manual em https://ventu.surf/pt/
-6. Documentos relacionados: [`PLANO-FASES.md`](./PLANO-FASES.md) (auditorias históricas), [`BACKLOG.md`](./BACKLOG.md) (ideias futuras)
+1. Consulta a **Fase E (activa)** — começa pelo primeiro item `⬜ pending`.
+2. Fases **A→C** estão concluídas (referência histórica + critérios de aceitação).
+3. Marca `[x]` nas checkboxes quando concluíres; actualiza Status na tabela.
+4. Regista decisões na secção **Notas de sessão**.
+5. Cada entrega: `npm run build` verde + verificação em https://ventu.surf/pt/
+6. Documentos: [`PLANO-FASES.md`](./PLANO-FASES.md) (auditorias históricas), [`BACKLOG.md`](./BACKLOG.md), [`VISUAL-AUDIT.md`](./VISUAL-AUDIT.md), [`NEWS-SYSTEM.md`](./NEWS-SYSTEM.md)
 
 ### Importar issues no GitHub
 
-`gh` não estava autenticado em 2026-05-24. Templates prontos em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md).  
-Depois de `gh auth login`:
-
-```bash
-# Exemplo — criar issue da Fase A1
-gh issue create --title "A1 — Dawn Patrol: slugs, JSON fresco, guard stale" --label "phase-a,trust" --body-file docs/issue-templates/A1-dawn-patrol.md
-```
+Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth login`, criar issues por item da Fase E.
 
 ---
 
-## Progresso global
+## Progresso — Fases A→C (concluídas)
 
-| ID | Título | Fase | Prioridade | Est. | Status |
-|----|--------|------|------------|------|--------|
-| A1 | Dawn Patrol funcional | A | P0 | 3h | ✅ done |
-| A2 | Copy honesto sobre frescura | A | P0 | 2h | ✅ done |
-| A3 | Badges DEMO / stale / fallback | A | P0 | 3h | ✅ done |
-| A4 | `compatibleSports` em falta | A | P0 | 1h | ✅ done |
-| B1 | Homepage multi-desporto | B | P1 | 4h | ✅ done |
-| B2 | URL sync nos filtros | B | P1 | 2h | ✅ done |
-| B3 | Unit tests no scoring | B | P1 | 4h | ✅ done |
-| B4 | Documentação actualizada | B | P1 | 2h | ✅ done |
-| B5 | Sitemap & SEO completo | B | P1 | 3h | ✅ done |
-| C1 | Notícias PT | C | P2 | 6h | ✅ done |
-| C2 | Alertas por email | C | P2 | 12h | ✅ done |
-| C3 | Loop comunidade → `localTips` | C | P2 | 8h | ✅ done |
-| C4 | Calibração de scores | C | P2 | contínuo | ✅ done |
-| C5 | PWA install + offline claro | C | P2 | 4h | ✅ done |
+| ID | Título | Fase | Prioridade | Status |
+|----|--------|------|------------|--------|
+| A1 | Dawn Patrol funcional | A | P0 | ✅ done |
+| A2 | Copy honesto sobre frescura | A | P0 | ✅ done |
+| A3 | Badges DEMO / stale / fallback | A | P0 | ✅ done |
+| A4 | `compatibleSports` 167/167 | A | P0 | ✅ done |
+| B1 | Homepage multi-desporto | B | P1 | ✅ done |
+| B2 | URL sync nos filtros | B | P1 | ✅ done |
+| B3 | Unit tests no scoring | B | P1 | ✅ done |
+| B4 | Documentação actualizada | B | P1 | ✅ done |
+| B5 | Sitemap & SEO completo | B | P1 | ✅ done |
+| C1 | Notícias PT (base Cena PT) | C | P2 | ✅ done |
+| C2 | Alertas por email (código) | C | P2 | ✅ done |
+| C3 | Loop comunidade → `localTips` | C | P2 | ✅ done |
+| C4 | Feedback scores (UI + pipeline) | C | P2 | ✅ done |
+| C5 | PWA install + offline claro | C | P2 | ✅ done |
 
-**Fase activa:** — (roadmap A→C concluído)  
-**Critério de saída da Fase C:** Cena PT, alertas email, dicas comunidade, feedback scores, PWA UX. ✅ **Concluída 2026-05-24**
+**Concluída:** 2026-05-24 (A–C) · **Batch A4 + livecams + explorar:** 2026-05-25
+
+---
+
+## Fase E — Activa (pós-roadmap)
+
+> **Objectivo:** fechar lacunas de **produção**, **polish do audit visual**, e **v2** de features já lançadas.  
+> **Ordem recomendada:** E1 → E2 → E3 → E4 (E4 depende de dados reais de utilizadores).
+
+| ID | Título | Prioridade | Est. | Status |
+|----|--------|------------|------|--------|
+| E1 | Alertas email em produção | P0 | 1h | ⬜ pending |
+| E2 | Polish audit visual (quick wins) | P1 | 2–3h | ✅ done |
+| E3 | Notícias v2 | P1 | 4–6h | ✅ done |
+| C4b | Calibração scores (pesos empíricos) | P2 | contínuo | ⬜ pending |
+| E5 | Mapa / UX mapa (vento legível) | P1 | 1h | ✅ done |
+| E6 | Livecams embed + expansão | P2 | 4h+ | ✅ done |
+
+**Fase activa:** **E1** (alertas produção) · E2/E3/E6 concluídos 2026-05-25
 
 ---
 
-## Fase A — Confiança (P0)
+### E1 — Alertas email em produção
 
-> **Porquê primeiro:** sem confiança, design e 167 spots não convertem. Bloqueador antes de marketing ou Product Hunt.  
-> **Estimativa total:** 1 semana · **Deploy:** independente
+**Estado:** código + workflows existem; falta validação com secrets reais.
+
+**Tarefas:**
+
+- [ ] Confirmar `SUPABASE_SERVICE_ROLE_KEY` e `RESEND_API_KEY` nos GitHub Secrets
+- [ ] Correr `evaluate-alerts` manualmente (workflow_dispatch) sem erro
+- [ ] Subscrição teste → email recebido → link confirm/unsubscribe funciona
+- [ ] Documentar no README ou `docs/CONTEXT.md` o fluxo para o utilizador
+
+**Ref:** `supabase-alerts.sql`, `AlertSubscribeForm`, `.github/workflows/` (alertas)
 
 ---
+
+### E2 — Polish audit visual (quick wins)
+
+**Fonte:** [`VISUAL-AUDIT.md`](./VISUAL-AUDIT.md) · [`POLISH-BACKLOG.md`](./POLISH-BACKLOG.md)
+
+**Tarefas (por impacto / tempo):**
+
+- [x] **[P1]** `NewsCard.tsx` — já usa `card-1` (verificado)
+- [x] **[P4]** `SpotGridClient` — `md:top-16` (já aplicado)
+- [x] **[P3]** Status bar compacta em mobile (`HomepageStatusBar.tsx`)
+- [x] **[P5]** Hero `min-h-[30vh]` mobile (`HomepageFeatured.tsx`)
+- [x] **[M1]** Menu mobile animado (`Header.tsx`)
+- [x] `prefers-reduced-data` no glow (`globals.css` + `hero-radial-glow-disc`)
+- [x] Drawer sport pills `min-h-[44px]`; `ForecastTable` `edge-fade-x`
+
+**Critério de saída:** `npm run audit:ux` ou revisão manual 320px + desktop sem regressões óbvias.
+
+---
+
+### E3 — Notícias v2
+
+**Base feita (C1):** ANS, Notícias do Mar, FPS + `sourceRegion` + filtro «Cena PT» + feeds intl (`scripts/news/fetch-rss.js`).
+
+**Tarefas:**
+
+- [x] Eventos forecast 72h/24h via `forecasts.json` (`detect-events.js`)
+- [x] Wakeboard por keywords (`category-keywords.js`)
+- [ ] Mais RSS PT — feeds testados (Liga Surf, SAPO, Fed Surf) indisponíveis/HTML; manter ANS+NMar+FPS
+- [ ] (Opcional) Reponder títulos PT com LLM para feeds ambíguos
+
+**Não repetir:** pipeline 4 etapas, spam filter, merge 7 dias — já operacional.
+
+---
+
+### C4b — Calibração scores (dados reais)
+
+**Infra feita (C4):** `ScoreFeedback` no spot detail, Supabase, `analyze-score-feedback.js`.
+
+**Tarefas:**
+
+- [ ] Aguardar N≥30 feedbacks por modalidade antes de mudar pesos
+- [ ] Correr `analyze-score-feedback.js` e rever sugestões
+- [ ] Ajustar `sportScore.ts` com evidência (Nazaré ≠ Lagoa)
+- [ ] Registar alterações e re-correr `npm test`
+
+**Nota:** tuning sem dados = especulativo ([`BACKLOG.md`](./BACKLOG.md)).
+
+---
+
+### E5 — Mapa: setas de vento legíveis ✅
+
+- [x] Setas maiores, halo de contraste, opacidade por intensidade (`mapWindArrow.ts`, deploy 2026-05-25)
+
+---
+
+### E6 — Livecams (em curso)
+
+**Feito:** 31 spots com links Surftotal/MEO (`spotLivecams.ts`).
+
+**Pendente:**
+
+- [x] Embed MEO (`embedUrl`) em `supertubos`, `coxos` — `SpotLivecamLink.tsx`
+- [x] +4 spots curados: `coxos`, `baleal`, `obidos-lagoon`, `lagos` (35 total)
+- [x] Windy iframe quando sem `embedUrl` curado (`SpotWebcamSection.tsx`)
+
+---
+
+## Fase A — Confiança (P0) ✅
+
+<details>
+<summary>Checklist A1–A4 (concluída 2026-05-24/25)</summary>
 
 ### A1 — Dawn Patrol funcional
 
-**Problema confirmado (2026-05-24):**
-- `public/data/dawn-patrol.json` com data **2024-09-16**
-- Slugs legacy (`coxos-ericeira`, `guincho-cascais`, `supertubos-peniche`) → 404 nos links
-- Script `scripts/dawn-patrol.js` já usa slugs correctos (`coxos`, `guincho`, …)
-- Workflow `.github/workflows/dawn-patrol.yml` existe (cron 05:00 UTC) mas o JSON nunca foi actualizado
+- [x] Regenerar `public/data/dawn-patrol.json`
+- [x] Validar slugs vs `src/lib/spots.ts`
+- [x] `DawnPatrolBanner.tsx`: guard stale + validação slug
+- [x] Workflow dawn-patrol (secrets + dispatch manual validado em sessão)
 
-**Tarefas:**
+### A2 — Copy honesto
 
-- [ ] Regenerar `public/data/dawn-patrol.json` via `node scripts/dawn-patrol.js` (requer `GEMINI_API_KEY` ou fallback básico)
-- [ ] Validar que todos os slugs em `spots[]` e `topSpotSlug` existem em `src/lib/spots.ts`
-- [ ] Em `DawnPatrolBanner.tsx`: esconder ou avisar se `data.date` > 24h (`"Briefing desactualizado"`)
-- [ ] Em `DawnPatrolBanner.tsx`: validar slug antes do link; fallback para `/spots/` se inválido
-- [ ] Verificar secrets GitHub: `GEMINI_API_KEY`, `GROQ`, `CEREBRAS` — workflow tem de fazer commit diário
-- [ ] Disparar `workflow_dispatch` manualmente após merge e confirmar commit do bot
+- [x] i18n, meta, manifest, README, páginas — sem “tempo real” enganoso
+- [x] Status bar com hora de update; About explica 3h + fontes
 
-**Ficheiros:**
-- `public/data/dawn-patrol.json`
-- `scripts/dawn-patrol.js`
-- `src/components/DawnPatrolBanner.tsx`
-- `.github/workflows/dawn-patrol.yml`
+### A3 — Badges DEMO / stale
 
-**Critérios de aceitação:**
-- [ ] JSON com data ≤ 24h
-- [ ] Clicar “Ver Spot” no banner abre página válida (sem 404)
-- [ ] Banner mostra aviso se briefing > 24h
-- [ ] Workflow corre sem erro no Actions
+- [x] `DataSourceBadge` + `dataFreshness.ts`
+- [x] Spot detail, compare, favoritos, drawer
+
+### A4 — `compatibleSports`
+
+- [x] 167/167 + `scripts/validate-spots.js` no CI
+- [x] 4 spots críticos + batch surf/big-wave
+
+</details>
 
 ---
 
-### A2 — Copy honesto sobre frescura de dados
+## Fase B — Coerência (P1) ✅
 
-**Problema:** copy diz “tempo real” / “real-time” mas dados actualizam a cada **3 horas** (`update-data.yml`).
+<details>
+<summary>Checklist B1–B5 (concluída 2026-05-24)</summary>
 
-**Substituir por:**
-- PT: *“Condições actualizadas a cada 3 horas”* / *“Actualizado às HH:MM”*
-- EN: *“Conditions updated every 3 hours”* / *“Updated at HH:MM”*
+- [x] **B1** Homepage multi-desporto (`homepageSport.ts`, `HomepageFeatured.tsx`)
+- [x] **B2** URL sync filtros (`gridFilters.ts`, E2E reload)
+- [x] **B3** Vitest + 20+ testes `sportScore.test.ts`, CI `npm test`
+- [x] **B4** `CONTEXT.md`, README roadmap, `PLANO-FASES` superseded
+- [x] **B5** `generate-sitemap.js` (~448 URLs, hreflang, JSON-LD)
 
-**Tarefas:**
-
-- [ ] Actualizar chaves em `src/lib/i18n.ts` (`hero.badge`, `hero.subtitle`, meta strings)
-- [ ] Actualizar `src/components/SeoHead.tsx`, `src/app/[locale]/layout.tsx`, `src/app/layout.tsx`
-- [ ] Actualizar meta de páginas: `page.tsx`, `spots/page.tsx`, `compare/page.tsx`, `favorites/page.tsx`, `about/page.tsx`, `modalidades/[slug]/page.tsx`, `spots/[slug]/page.tsx`
-- [ ] Actualizar `public/manifest.json`, `src/components/layout/Footer.tsx`
-- [ ] Actualizar `README.md` (PT + EN) — manter “atualização a cada 3h” como feature honesta
-- [ ] Revisar H1 sr-only em `src/app/[locale]/page.tsx` (já tem status bar com hora — alinhar copy)
-
-**Ficheiros afectados (grep `tempo real|real-time`):**
-`i18n.ts`, `SeoHead.tsx`, `layout.tsx`, `[locale]/layout.tsx`, `[locale]/page.tsx`, `spots/page.tsx`, `compare/page.tsx`, `favorites/page.tsx`, `about/page.tsx`, `manifest.json`, `Footer.tsx`, `README.md`
-
-**Critérios de aceitação:**
-- [ ] Zero ocorrências de “tempo real” / “real-time” no UI e meta tags (excepto comentários/docs históricos)
-- [ ] Status bar da homepage mantém hora de update
-- [ ] About page explica cadência de 3h + fontes (Open-Meteo, IH)
+</details>
 
 ---
 
-### A3 — Badges DEMO / stale / fallback em toda a UI
+## Fase C — Diferenciação (P2) ✅
 
-**Problema:** `openmeteo.ts` devolve `source: 'mock'` silenciosamente; badge DEMO só existe em Compare e Favoritos.
+<details>
+<summary>Checklist C1–C5 (concluída 2026-05-24; C1 v2 → Fase E3)</summary>
 
-**Tarefas:**
+### C1 — Notícias PT (base)
 
-- [ ] Criar componente reutilizável `DataSourceBadge` (`real` | `mock` | `stale` | `cached`)
-- [ ] Mostrar badge em:
-  - [ ] `SpotDetailClient.tsx` (condições live + fallback client)
-  - [ ] `SpotGridClient.tsx` / SpotCard quando condições vêm de mock ou `updatedAt` > 3h
-  - [ ] Homepage ticker / hero “melhor spot” se dados stale
-  - [ ] `CompareClient.tsx` e `FavoritesClient.tsx` (migrar para componente partilhado)
-- [ ] Propagar `source` desde `conditions.json` se o pipeline passar a marcar origem (opcional nesta fase)
-- [ ] Stale threshold: > 3h = amarelo “Dados de há X h”; > 12h = vermelho
-- [ ] Nunca mostrar scores altos com mock sem badge visível
+- [x] RSS PT: ANS, Notícias do Mar, FPS
+- [x] `sourceRegion` + tags `cena-pt` + filtro UI
+- [ ] Mais fontes PT + LLM reponder → **E3**
+- [ ] Eventos forecast 72h → **E3**
 
-**Ficheiros:**
-- `src/lib/openmeteo.ts`
-- `src/components/ui/DataSourceBadge.tsx` (novo)
-- `src/components/spots/SpotDetailClient.tsx`
-- `src/components/spots/SpotGridClient.tsx`
-- `src/components/compare/CompareClient.tsx`
-- `src/components/favorites/FavoritesClient.tsx`
+### C2 — Alertas email
 
-**Critérios de aceitação:**
-- [ ] Simular falha Open-Meteo → badge DEMO visível no spot detail
-- [ ] Dados com `updatedAt` antigo → badge stale
-- [ ] Compare e Favoritos usam o mesmo componente
+- [x] Supabase + Resend + formulário + confirm/unsubscribe + workflow
+- [ ] Produção validada → **E1**
 
----
+### C3 — Comunidade
 
-### A4 — Completar `compatibleSports`
+- [x] `spotTips`, `community-tips.json`, `apply-contributions.js`
 
-**Estado actual (2026-05-24):** 117/167 preenchidos · **50 em falta**
+### C4 — Feedback scores
 
-**Críticos (heurística `TYPE_TO_SPORTS` falha ou sub-classifica):**
-| Spot | type | Acção |
-|------|------|-------|
-| `foil-lagoa-albufeira` | foil | `['foil', 'kitesurf', 'sup']` |
-| `alqueva` | wakeboard | `['wakeboard']` |
-| `praia-rocha` | multisport | `['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup']` |
-| `lagos-wakepark` | wakeboard | `['wakeboard']` |
+- [x] UI 3-tap + Supabase + script análise
+- [ ] Pesos empíricos → **C4b**
 
-**Restantes 46:** maioritariamente `type: surf` — heurística funciona, mas preencher explicitamente evita surpresas no scoring e filtros.
+### C5 — PWA
 
-**Tarefas:**
+- [x] `InstallPrompt`, `OfflineBanner`, SW cache timestamp
 
-- [ ] Preencher os 4 críticos acima em `src/lib/spots.ts`
-- [ ] Script de validação: `node scripts/validate-spots.js` — falhar CI se spot sem `compatibleSports`
-- [ ] (Opcional Fase A) Batch dos 46 surf-only restantes
-- [ ] Remover TODO em `src/lib/sportRatings.ts` quando 167/167
-
-**Critérios de aceitação:**
-- [ ] 4 spots críticos com modalidades correctas no UI (SportSelector, filtros)
-- [ ] Guincho / Lagoa Albufeira aparecem correctamente para kiter na homepage (após B1)
-
----
-
-## Fase B — Coerência de produto (P1)
-
-> **Depende de:** Fase A deployada  
-> **Estimativa total:** 2–4 semanas
-
----
-
-### B1 — Homepage multi-desporto
-
-**Problema:** sort, ticker e “melhor spot” fixos em `surf` (`src/app/[locale]/page.tsx` L86–87, L183).
-
-**Tarefas:**
-
-- [ ] Sport preferido: `localStorage` key `ventu-preferred-sport` (já parcialmente usado no grid)
-- [ ] Server sort default: sport preferido ou `'surf'` fallback
-- [ ] Ticker mostra score do sport activo, não sempre surf
-- [ ] Hero “Melhor spot hoje” usa melhor score entre `getCompatibleSports(spot)` ou sport seleccionado
-- [ ] Sub-linha: “Top score · kitesurf” reflecte modalidade real
-
-**Ficheiros:** `src/app/[locale]/page.tsx`, possivelmente extrair lógica para `src/lib/homepageSort.ts`
-
----
-
-### B2 — URL sync nos filtros do grid
-
-**Problema:** `SpotGridClient` lê `?sport=` e `?region=` mas não escreve quando o utilizador muda filtros.
-
-**Tarefas:**
-
-- [ ] Ao mudar sport/region: `history.replaceState` com `?sport=kitesurf&region=Algarve`
-- [ ] Preservar locale no path (`/pt/?sport=…`)
-- [ ] Partilhar link copiado reflecte filtros activos
-- [ ] Teste E2E: mudar filtro → reload → filtro mantém-se
-
-**Ficheiros:** `src/components/spots/SpotGridClient.tsx`, `tests/e2e/` (novo teste)
-
----
-
-### B3 — Unit tests no scoring
-
-**Problema:** zero tests em `sportScore.ts` — coração do produto desprotegido.
-
-**Tarefas:**
-
-- [ ] Configurar Vitest (ou Jest) — mínimo, sem E2E duplication
-- [ ] 20–30 casos em `src/lib/__tests__/sportScore.test.ts`:
-  - Guincho NNW offshore para kite
-  - Nazaré swell grande → surf score alto, kite baixo
-  - Lagoa flat + vento moderado → kite alto
-  - Lake / flat spot → scores coerentes
-  - `getCompatibleSports` fallback vs explicit
-- [ ] Adicionar step `npm test` ao CI (`.github/workflows/`)
-
-**Ficheiros:** `package.json`, `src/lib/sportScore.ts`, `src/lib/sportRatings.ts`
-
----
-
-### B4 — Documentação actualizada
-
-**Problema:** `docs/CONTEXT.md` desactualizado (Next 14, recharts, chat activo, 136 conditions).
-
-**Tarefas:**
-
-- [ ] Actualizar `docs/CONTEXT.md`: Next 16, stack actual, 167 spots, marés IH, chat removido, scoring files
-- [ ] Actualizar contagem `compatibleSports` e estado pipelines
-- [ ] README: secção “Roadmap” com link para este ficheiro
-- [ ] Marcar items concluídos em `docs/PLANO-FASES.md` ou adicionar nota “superseded by ROADMAP.md”
-
----
-
-### B5 — Sitemap & SEO completo
-
-**Problema:** `public/sitemap.xml` estático omite `/about/`, `/sazonalidade/`, modalidades, artigos news.
-
-**Tarefas:**
-
-- [ ] Script `scripts/generate-sitemap.js` — corre no CI antes do build
-- [ ] Incluir: todos os spots, modalidades, about, sazonalidade, compare, favorites, news articles
-- [ ] `hreflang` pt/en onde aplicável
-- [ ] JSON-LD por spot (Schema.org `SportsActivityLocation` ou `Beach`)
-
-**Ficheiros:** `public/sitemap.xml` → gerado, `scripts/generate-sitemap.js`, `.github/workflows/deploy.yml`
-
----
-
-## Fase C — Diferenciação (P2)
-
-> **Horizonte:** 1–3 meses · **Não bloquear Fases A/B**
-
----
-
-### C1 — Notícias PT
-
-- [ ] RSS locais: Liga Surf Portugal, federações, Peniche/Nazaré, SAPO Desporto, etc.
-- [ ] Filtrar/reponder com LLM para audiência PT
-- [ ] Secção “Cena PT” distinct de Stab/IKSURF internacional
-
-**Ref:** `scripts/update-news.js`, `docs/NEWS-SYSTEM.md`
-
----
-
-### C2 — Alertas por email
-
-- [ ] Supabase Edge Function + Resend (ou cron externo + webhook)
-- [ ] Utilizador escolhe spot + modalidade + threshold score
-- [ ] Sem contas complexas: magic link ou email-only subscription
-- [ ] Limitação static export: alertas são **push out**, não in-app realtime
-
-**Ref:** pedido #1 de utilizadores pós-“está on?”
-
----
-
-### C3 — Loop comunidade → spots
-
-- [ ] Feedback aprovado em `/admin/contributions/` → merge para `localTips` / `hazards` no spot
-- [ ] PR automático ou script semanal que aplica contribuições validadas
-- [ ] Atribuição “contribuído por @user” opcional
-
----
-
-### C4 — Calibração de scores
-
-- [ ] Formulário “condições reais vs previsão” (1 tap: melhor/pior/igual)
-- [ ] Agregar feedback por spot + modalidade
-- [ ] Ajustar pesos em `sportScore.ts` com dados empíricos (Nazaré ≠ Albufeira)
-
----
-
-### C5 — PWA install + offline claro
-
-- [ ] Prompt install after engagement
-- [ ] Service worker: mensagem clara “Offline — dados de HH:MM”
-- [ ] Ícones e `manifest.json` alinhados com copy honesto (pós A2)
+</details>
 
 ---
 
@@ -316,75 +229,58 @@ gh issue create --title "A1 — Dawn Patrol: slugs, JSON fresco, guard stale" --
 |------|--------------|
 | Multi-modelo GFS/ECMWF | Windguru domina power users; complexidade alta |
 | App nativa iOS/Android | PWA + SEO primeiro |
-| Contas completas / sync favoritos | URL + localStorage + export suficiente por agora |
-| Chat global | Removido com razão; só com analytics que justifiquem |
-| Câmaras sem key Windy | Dependência externa; livecam embed manual nos top 5 spots (ver BACKLOG) |
+| Contas completas / sync favoritos | URL + localStorage + export suficiente |
+| Chat global | Sem analytics que justifiquem ([`archive/CHAT-SECURITY.md`](./archive/CHAT-SECURITY.md)) |
+| Câmaras Windy em massa | Key externa; links curados em 31 spots (**E6**) |
 
 ---
 
-## Métricas de sucesso
+## Métricas (2026-05-25)
 
-| Métrica | Actual (est.) | Meta pós-Fase A | Meta pós-Fase B |
-|---------|---------------|-----------------|-----------------|
-| Dawn Patrol freshness | 2024-09-16 | ≤ 24h | ≤ 24h |
-| Copy “tempo real” | ~15 ficheiros | 0 | 0 |
-| Mock sem badge | spot detail, grid | 0 surfaces | 0 |
-| `compatibleSports` | 167/167 | 167/167 | 167/167 |
-| Homepage sport bias | surf-only sort | — | sport preferido |
-| Unit tests scoring | 0 | 0 | ≥ 20 casos ✅ |
-| Sitemap URLs | parcial | parcial | completo ✅ |
+| Métrica | Estado actual |
+|---------|----------------|
+| Dawn Patrol freshness | ≤ 24h (workflow) |
+| Copy “tempo real” no UI | 0 |
+| `compatibleSports` | 167/167 ✅ |
+| Unit tests scoring | 31+ (incl. map/search/livecams) |
+| Sitemap URLs | ~448 ✅ |
+| Livecams curadas | 31 spots |
+| Alertas email prod | ⬜ validar E1 |
+| Feedback scores → tuning | ⬜ aguardar volume (C4b) |
+| Notícias Cena PT | 3 feeds PT + intl |
 
 ---
 
 ## Notas de sessão
 
-_Regista aqui decisões, bloqueios e o que ficou feito em cada sessão de trabalho._
+### 2026-05-25 — E2, E3, E6
 
-### 2026-05-24 — Fase A concluída
+- **E2:** status bar mobile, hero reduced-data, drawer touch, forecast edge-fade
+- **E3:** `detectForecastEvents` (72h swell / 24h wind), `category-keywords.js`, testes
+- **E6:** 35 livecams, MEO embed coxos/supertubos
+- **Testes:** 46 vitest + `npm run build` verde
+- **Próximo:** E1 alertas produção
 
-- **A1:** `dawn-patrol.json` regenerado (2026-05-24, slugs correctos); banner com guard stale + validação de slugs; script com validação de slugs
-- **A2:** copy “tempo real” substituído em i18n, meta, manifest, README, páginas
-- **A3:** `DataSourceBadge` + `dataFreshness.ts`; integrado em SpotDetail, Compare, Favoritos, SpotDrawer
-- **A4:** 4 spots críticos (`foil-lagoa-albufeira`, `alqueva`, `praia-rocha`, `lagos-wakepark`); `scripts/validate-spots.js`
-- **Build:** `npm run build` verde
-- **Próximo:** B1 (homepage multi-desporto)
+### 2026-05-25 — Revisão roadmap + mapa vento
 
-### 2026-05-24 — Fase B concluída
-
-- **B1:** `homepageSport.ts`, `HomepageFeatured.tsx` — ticker/hero/sort por modalidade preferida
-- **B2:** `gridFilters.ts` — URL sync `?sport=` / `?region=`; teste E2E reload
-- **B3:** Vitest + 20 testes em `src/lib/__tests__/sportScore.test.ts`; step `npm test` no CI
-- **B4:** `docs/CONTEXT.md` actualizado; README com link roadmap; nota em `PLANO-FASES.md`
-- **B5:** `generate-sitemap.js` expandido (about, sazonalidade, modalidades, news, hreflang); CI/deploy
-- **Build:** `npm test` + `npm run build` verde
-- **Próximo:** C1 (notícias PT) ou calibração scores
-
-### 2026-05-24 — Fase C concluída
-
-- **C1:** RSS PT (ANS, Notícias do Mar), `sourceRegion`, filtro “Cena PT” na página news
-- **C2:** `supabase-alerts.sql`, `AlertSubscribeForm`, confirm/unsubscribe pages, `evaluate-alerts.js` + workflow
-- **C3:** `spotTips.ts` ligado ao detail, `community-tips.json`, tipo `tip` no feedback, `apply-contributions.js`
-- **C4:** `supabase-score-feedback.sql`, `ScoreFeedback` 3-tap no spot detail, `analyze-score-feedback.js`
-- **C5:** `InstallPrompt`, `OfflineBanner`, `dataCache.ts`, SW cache timestamp
-- **Secrets necessários (manual):** `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY` no GitHub
-
-### 2026-05-25 — Pós-Fase C (backlog)
-
-- **A4 batch:** `compatibleSports` 167/167 (46 surf/big-wave spots preenchidos)
-- **C1:** feed RSS FPS (`fps.pt/feed/`) adicionado à Cena PT
-- **Livecams:** links curados Surftotal/MEO em 8 spots top (`spotLivecams.ts` + `SpotWebcamSection`)
-- **CI:** `npm run spots:validate` no pipeline; docs actualizados (CONTEXT, PLANO-FASES)
-- **Próximo:** testar secrets Supabase/Resend em produção; calibração scores com dados reais
+- **Docs:** ROADMAP reorganizado — Fase E activa; checkboxes A→C alinhadas com estado real
+- **E5:** setas de vento no mapa mais legíveis (`mapWindArrow.ts`, commit `8ab3863`)
+- **Próximo recomendado:** **E1** alertas produção → **E2** NewsCard + polish visual
 
 ### 2026-05-25 (noite 2) — Livecams, índice explorar, polish
 
-- **Livecams:** 13 → 31 spots (Surftotal/MEO)
-- **SEO:** `/explorar/` índice com 49 combinações agrupadas por desporto
-- **Polish:** tooltip status dot; stats homepage em `<dl>`
-- **Testes:** +11 (spotSearch, seoLandings, livecams) — total 31
+- Livecams 31 spots; `/explorar/` 49 landings; tooltip status; stats `<dl>`; +11 testes
 
-<!-- Template para sessões futuras:
-### YYYY-MM-DD — Título curto
+### 2026-05-25 — Pós-Fase C
+
+- A4 167/167; FPS feed; livecams iniciais; `spots:validate` no CI
+
+### 2026-05-24 — Fases A, B, C
+
+- Ver histórico acima (Dawn Patrol, copy 3h, badges, homepage sport, sitemap, notícias base, alertas código, PWA, feedback UI)
+
+<!-- Template:
+### YYYY-MM-DD — Título
 - Feito: ...
 - Bloqueado: ...
 - Próximo: ...

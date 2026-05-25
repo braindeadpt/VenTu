@@ -2,9 +2,9 @@
 
 Registo de ideias, melhorias e features identificadas mas não agendadas. Cada item tem contexto suficiente para retomar quando fizer sentido.
 
-> **Roadmap activo (prioridades P0–P2):** ver [`ROADMAP.md`](./ROADMAP.md) · Templates GitHub: [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md)
+> **Roadmap activo:** [`ROADMAP.md`](./ROADMAP.md) — **Fase E** (pós A→C) · Templates: [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md)
 
-Última actualização: 2026-05-24
+Última actualização: 2026-05-25
 
 ---
 

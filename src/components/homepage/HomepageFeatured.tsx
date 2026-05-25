@@ -134,8 +134,8 @@ export default function HomepageFeatured({
 
       {bestSpot && (
         <section className="relative min-h-[30vh] md:min-h-[40vh] flex items-center justify-center overflow-hidden py-8 md:py-8 bg-bg-base">
-          <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgb(var(--score-good))_0%,transparent_70%)]" />
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none hero-radial-glow">
+            <div className="hero-radial-glow-disc absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[radial-gradient(circle,rgb(var(--score-good))_0%,transparent_70%)]" />
           </div>
 
           <div className="relative z-10 max-w-3xl mx-auto px-4 text-center space-y-6">

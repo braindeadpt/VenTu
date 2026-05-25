@@ -8,6 +8,7 @@
  */
 
 const { canDiscard } = require('./spam-filter');
+const { applyCategoryKeywords } = require('./category-keywords');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -121,7 +122,7 @@ async function fetchFeed(feed) {
       if (canDiscard(stub)) continue;
       if (isTooOld(stub.publishedAt)) continue;
 
-      items.push(stub);
+      items.push(applyCategoryKeywords(stub));
     }
 
     console.log(`  ✓ ${feed.url}: ${items.length} items`);

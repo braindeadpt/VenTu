@@ -25,7 +25,7 @@ export default function SpotWebcamSection({ slug, locale }: SpotWebcamSectionPro
     <section className="max-w-6xl mx-auto px-4 py-6">
       <h2 className="text-h2 text-fg mb-4">{isPt ? 'Livecam' : 'Live cam'}</h2>
 
-      {hasWindy && windyVisible ? (
+      {hasWindy && windyVisible && !curated?.embedUrl ? (
         <div className="space-y-3">
           <WindyWebcam slug={slug} onEmpty={() => setWindyVisible(false)} />
           {curated && (
