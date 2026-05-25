@@ -355,9 +355,14 @@
 /* ── Map wind arrows (spot markers) ── */
 .ventu-wind-arrow {
   pointer-events: none;
+  color: rgb(var(--data-wind));
+  line-height: 0;
+  margin-bottom: 2px;
 }
 .ventu-spot-marker-wrap .ventu-wind-arrow svg {
   display: block;
+  width: 16px;
+  height: 16px;
 }
 
 /* ── Popup ── */

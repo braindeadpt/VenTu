@@ -99,7 +99,7 @@ function createSpotMarker(
     });
 
   const windArrowHtml = showWind
-    ? `<div class="ventu-wind-arrow" style="margin-bottom:1px;line-height:0;">${buildMapWindArrowSvg(conditions.windDirection, windKtNum)}</div>`
+    ? `<div class="ventu-wind-arrow">${buildMapWindArrowSvg(conditions.windDirection, windKtNum)}</div>`
     : '';
 
   const icon = Leaflet.divIcon({
@@ -124,9 +124,9 @@ function createSpotMarker(
         ">${Math.round(score)}</div>
       </div>
     `,
-    iconSize: showWind ? [28, 50] : [28, 28],
-    iconAnchor: showWind ? [14, 50] : [14, 14],
-    popupAnchor: [0, showWind ? -52 : -16],
+    iconSize: showWind ? [28, 48] : [28, 28],
+    iconAnchor: showWind ? [14, 48] : [14, 14],
+    popupAnchor: [0, showWind ? -50 : -16],
   });
 
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
