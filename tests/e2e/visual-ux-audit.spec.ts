@@ -405,9 +405,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         await expect(kiteTab).toHaveAttribute('aria-pressed', 'true');
       }
 
-      // Guincho: curated Surftotal — external live link only
+      // Guincho: curated Surftotal — external live link only (map may use OSM iframe)
       await expect(page.getByRole('link', { name: /Ver ao vivo|Watch live/i })).toBeVisible();
-      await expect(page.locator('iframe')).toHaveCount(0);
+      await expect(page.locator('iframe[src*="windy"], iframe[src*="webcam"], iframe[src*="beachcam"]')).toHaveCount(0);
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();

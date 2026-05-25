@@ -167,7 +167,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
         return;
       }
     },
-    [allResults, selectedIndex, onClose],
+    [allResults, selectedIndex, onClose, router],
   );
 
   const handleOverlayClick = useCallback(

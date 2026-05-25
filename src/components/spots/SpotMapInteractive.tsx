@@ -267,7 +267,8 @@ export default function SpotMapInteractive({
         attributionControl: false,
       });
 
-      const tileUrl = isDark ? TILE_URLS.dark : TILE_URLS.light;
+      const darkOnInit = !document.documentElement.classList.contains('theme-ocean');
+      const tileUrl = darkOnInit ? TILE_URLS.dark : TILE_URLS.light;
       tileLayerRef.current = Leaflet.tileLayer(tileUrl, {
         attribution: TILE_ATTRIBUTIONS.carto,
         subdomains: 'abcd',

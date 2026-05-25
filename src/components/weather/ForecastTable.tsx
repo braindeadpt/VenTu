@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -248,24 +248,30 @@ export default function ForecastTable({
 
   const [activeDayGroupIndex, setActiveDayGroupIndex] = useState(0);
 
-  const getColumnIndexAtScroll = (scrollLeft: number, clientWidth: number, scrollWidth: number) => {
-    if (visible.length === 0) return 0;
-    const dataWidth = Math.max(1, scrollWidth - labelWidthPx);
-    const cellWidth = dataWidth / visible.length;
-    const anchorX = scrollLeft + clientWidth * 0.35 - labelWidthPx;
-    return Math.max(0, Math.min(visible.length - 1, Math.floor(anchorX / cellWidth)));
-  };
+  const getColumnIndexAtScroll = useCallback(
+    (scrollLeft: number, clientWidth: number, scrollWidth: number) => {
+      if (visible.length === 0) return 0;
+      const dataWidth = Math.max(1, scrollWidth - labelWidthPx);
+      const cellWidth = dataWidth / visible.length;
+      const anchorX = scrollLeft + clientWidth * 0.35 - labelWidthPx;
+      return Math.max(0, Math.min(visible.length - 1, Math.floor(anchorX / cellWidth)));
+    },
+    [visible.length, labelWidthPx],
+  );
 
-  const dayIndexForColumn = (colIndex: number) => {
-    let idx = 0;
-    for (let i = dayGroups.length - 1; i >= 0; i--) {
-      if (colIndex >= dayGroups[i].startIndex) {
-        idx = i;
-        break;
+  const dayIndexForColumn = useCallback(
+    (colIndex: number) => {
+      let idx = 0;
+      for (let i = dayGroups.length - 1; i >= 0; i--) {
+        if (colIndex >= dayGroups[i].startIndex) {
+          idx = i;
+          break;
+        }
       }
-    }
-    return idx;
-  };
+      return idx;
+    },
+    [dayGroups],
+  );
 
   const scrollToDayGroup = (groupIndex: number) => {
     const group = dayGroups[groupIndex];
@@ -284,7 +290,7 @@ export default function ForecastTable({
     if (currentHourIndex >= 0) {
       setActiveDayGroupIndex(dayIndexForColumn(currentHourIndex));
     }
-  }, [currentHourIndex, dayGroups.length]);
+  }, [currentHourIndex, dayGroups.length, dayIndexForColumn]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -298,7 +304,7 @@ export default function ForecastTable({
     onScroll();
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => el.removeEventListener('scroll', onScroll);
-  }, [dayGroups, visible.length, labelWidthPx, compact]);
+  }, [dayGroups.length, getColumnIndexAtScroll, dayIndexForColumn]);
 
   /* ── row presence checks ── */
   const hasGust = visible.some((h) => typeof h.windGust === 'number');

@@ -14,7 +14,8 @@ export default function SpotMap({ lat, lon, locale = 'pt' }: SpotMapProps) {
   const isPt = locale === 'pt';
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    const container = mapRef.current;
+    if (!container) return;
 
     const iframe = document.createElement('iframe');
     iframe.width = '100%';
@@ -31,15 +32,13 @@ export default function SpotMap({ lat, lon, locale = 'pt' }: SpotMapProps) {
     
     iframe.onerror = () => setError(true);
 
-    mapRef.current.innerHTML = '';
-    mapRef.current.appendChild(iframe);
+    container.innerHTML = '';
+    container.appendChild(iframe);
 
     return () => {
-      if (mapRef.current) {
-        mapRef.current.innerHTML = '';
-      }
+      container.innerHTML = '';
     };
-  }, [lat, lon]);
+  }, [lat, lon, isPt]);
 
   if (error) {
     return (
