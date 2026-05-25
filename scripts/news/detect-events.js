@@ -232,7 +232,11 @@ function detectEvents(conditions) {
 
   const snapshot = detectSnapshotEvents(conditions);
   const forecast = detectForecastEvents(forecasts);
-  const events = [...snapshot, ...forecast];
+  const events = [...snapshot, ...forecast].map((e) => ({
+    ...e,
+    sourceRegion: 'pt',
+    tags: [...new Set([...(e.tags || []), 'cena-pt', 'portugal'])],
+  }));
 
   if (snapshot.length) console.log(`  📍 Snapshot events: ${snapshot.length}`);
   if (forecast.length) console.log(`  📅 Forecast events: ${forecast.length}`);

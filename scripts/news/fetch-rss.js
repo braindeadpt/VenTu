@@ -25,6 +25,8 @@ const FEEDS = [
   { url: 'https://www.iksurfmag.com/category/kitesurfing/feed/', source: 'IKSURF Mag', defaultCategory: 'kitesurf', sourceRegion: 'intl' },
   { url: 'https://www.iksurfmag.com/category/windsurfing/feed/', source: 'IKSURF Mag', defaultCategory: 'windsurf', sourceRegion: 'intl' },
   { url: 'https://www.surfd.com/feed/',            source: 'SURFD',       defaultCategory: 'surf',       sourceRegion: 'intl' },
+  // Wakeboard (nicho — único RSS estável encontrado em 2026-05-25)
+  { url: 'https://www.alliancewake.com/feed/',     source: 'Alliance Wake', defaultCategory: 'wakeboard', sourceRegion: 'intl' },
 ];
 
 /**

@@ -71,9 +71,9 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 - [ ] Confirmar `SUPABASE_SERVICE_ROLE_KEY` e `RESEND_API_KEY` nos GitHub Secrets
 - [ ] Correr `evaluate-alerts` manualmente (workflow_dispatch) sem erro
 - [ ] Subscrição teste → email recebido → link confirm/unsubscribe funciona
-- [ ] Documentar no README ou `docs/CONTEXT.md` o fluxo para o utilizador
+- [x] Documentar fluxo em [`docs/ALERTS.md`](./ALERTS.md) + `npm run alerts:preflight`
 
-**Ref:** `supabase-alerts.sql`, `AlertSubscribeForm`, `.github/workflows/` (alertas)
+**Ref:** `supabase-alerts.sql`, `AlertSubscribeForm`, `.github/workflows/evaluate-alerts.yml`
 
 ---
 
@@ -105,6 +105,8 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 - [x] Wakeboard por keywords (`category-keywords.js`)
 - [ ] Mais RSS PT — feeds testados (Liga Surf, SAPO, Fed Surf) indisponíveis/HTML; manter ANS+NMar+FPS
 - [ ] (Opcional) Reponder títulos PT com LLM para feeds ambíguos
+- [x] UI `/pt/news/` abre com filtro **Cena PT** por defeito (sem `?region=` na URL)
+- [x] Eventos VenTu (`detect-events`) com `sourceRegion: pt` + keywords costa PT em `category-keywords.js`
 
 **Não repetir:** pipeline 4 etapas, spam filter, merge 7 dias — já operacional.
 

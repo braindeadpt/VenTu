@@ -62,6 +62,20 @@ Create wiki pages for:
 
 ---
 
+## Email alerts (E1)
+
+See **[docs/ALERTS.md](./ALERTS.md)** for full setup.
+
+Required GitHub Actions secrets (in addition to deploy):
+
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `RESEND_API_KEY`
+- `RESEND_FROM` (optional, e.g. `VenTu <alerts@ventu.surf>`)
+
+Run locally: `npm run alerts:preflight` then `npm run alerts:evaluate`.
+
+---
+
 ## Quick Setup Checklist
 
 - [ ] Enable branch protection for `main`

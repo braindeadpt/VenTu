@@ -54,6 +54,18 @@ describe('category keywords', () => {
     expect(inferCategoryFromText('Cable park session in Alqueva', 'general')).toBe('wakeboard');
   });
 
+  it('infers bodyboard from title', () => {
+    expect(inferCategoryFromText('APB bodyboard tour in Praia do Norte', 'general')).toBe('bodyboard');
+  });
+
+  it('infers sup from paddle keywords', () => {
+    expect(inferCategoryFromText('Stand up paddle race on Alqueva lake', 'general')).toBe('sup');
+  });
+
+  it('infers foil from kitefoiling', () => {
+    expect(inferCategoryFromText('Warning: Kitefoiling is addictive', 'kitesurf')).toBe('foil');
+  });
+
   it('keeps default when no match', () => {
     expect(inferCategoryFromText('Random headline', 'surf')).toBe('surf');
   });

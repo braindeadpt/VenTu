@@ -1,4 +1,6 @@
-import type { NewsItem } from '@/types';
+import type { NewsItem, Spot } from '@/types';
+import type { SportType } from '@/lib/sportRatings';
+import { getMacroRegion } from '@/lib/regions';
 
 export const ITEMS_PER_PAGE = 12;
 
@@ -26,6 +28,11 @@ export const DEFAULT_FILTERS: NewsFiltersState = {
   query: '',
   page: 1,
 };
+
+/** PT locale: default to Cena PT when URL has no region param. */
+export function getDefaultNewsRegion(locale: string): RegionFilter {
+  return locale === 'pt' ? 'pt' : 'all';
+}
 
 // Stable deterministic slug: strip diacritics → lowercase → collapse non-alphanumeric → truncate
 // Appending last 6 chars of the item's UUID avoids collisions from identical titles
@@ -143,4 +150,80 @@ export function getRelatedNews(news: NewsItem[], current: NewsItem, maxCount = 3
   return news
     .filter(item => item.id !== current.id && item.category === current.category)
     .slice(0, maxCount);
+}
+
+const MACRO_TERMS: Record<string, string[]> = {
+  Norte: ['norte', 'minho', 'viana', 'porto', 'braga', 'caminha', 'espinho'],
+  Centro: ['centro', 'nazaré', 'nazare', 'peniche', 'figueira', 'óbidos', 'obidos', 'lourinhã'],
+  Lisboa: ['lisboa', 'cascais', 'ericeira', 'guincho', 'carcavelos', 'caparica', 'sintra', 'torres vedras'],
+  Alentejo: ['alentejo', 'sines', 'tróia', 'troia', 'comporta'],
+  Algarve: ['algarve', 'sagres', 'lagos', 'tavira', 'portimão', 'portimao', 'albufeira'],
+  Açores: ['açores', 'acores', 'são miguel', 'sao miguel', 'terceira'],
+  Madeira: ['madeira', 'machico', 'porto santo'],
+};
+
+function spotSearchTerms(spot: Spot): string[] {
+  const slugPhrase = spot.slug.replace(/-/g, ' ');
+  return [
+    spot.slug,
+    spot.id,
+    spot.name,
+    spot.nameEn,
+    slugPhrase,
+    spot.region,
+    spot.regionEn,
+  ]
+    .map((s) => s.toLowerCase().trim())
+    .filter((s) => s.length > 2);
+}
+
+/**
+ * News relevant to a spot: tag/slug match, place names, macro region, then sport.
+ */
+export function getRelatedNewsForSpot(
+  news: NewsItem[],
+  spot: Spot,
+  options?: { sport?: SportType; limit?: number },
+): NewsItem[] {
+  const limit = options?.limit ?? 4;
+  const sport = options?.sport;
+  const terms = spotSearchTerms(spot);
+  const macro = getMacroRegion(spot.region);
+  const regionTerms = MACRO_TERMS[macro] ?? [];
+
+  const scored = news
+    .map((item) => {
+      let score = 0;
+      const blob = `${item.title} ${item.titleEn} ${item.summary} ${item.summaryEn} ${(item.tags ?? []).join(' ')}`.toLowerCase();
+
+      if (item.tags?.includes(spot.slug) || item.tags?.includes(spot.id)) score += 50;
+      for (const term of terms) {
+        if (term.length >= 4 && blob.includes(term)) score += 28;
+        else if (term.length >= 3 && blob.includes(term)) score += 12;
+      }
+      for (const rt of regionTerms) {
+        if (blob.includes(rt)) score += 6;
+      }
+      if (sport && item.category === sport) score += 18;
+      else if (spot.compatibleSports?.includes(item.category as SportType)) score += 10;
+      if (item.sourceRegion === 'pt') score += 4;
+
+      return { item, score };
+    })
+    .filter((x) => x.score >= 20)
+    .sort((a, b) => {
+      if (b.score !== a.score) return b.score - a.score;
+      return new Date(b.item.publishedAt).getTime() - new Date(a.item.publishedAt).getTime();
+    });
+
+  const picked = scored.slice(0, limit).map((x) => x.item);
+  if (picked.length > 0) return picked;
+
+  const sports = sport
+    ? [sport]
+    : (spot.compatibleSports?.length ? spot.compatibleSports : [spot.type as SportType]);
+  return news
+    .filter((item) => sports.includes(item.category as SportType))
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+    .slice(0, limit);
 }

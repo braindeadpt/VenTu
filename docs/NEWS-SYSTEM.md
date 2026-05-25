@@ -12,17 +12,23 @@ Etapa 2 (Data) ──┘
 
 Fetches from confirmed-working RSS feeds, parses XML, applies spam filter.
 
-**Feeds:**
-| Feed | Category | Status |
-|------|----------|--------|
-| stabmag.com/feed/ | surf | ✅ |
-| stabmag.com/category/news/feed/ | surf | ✅ |
-| iksurfmag.com/feed/ | kitesurf | ✅ |
-| iksurfmag.com/category/kitesurfing/feed/ | kitesurf | ✅ |
-| iksurfmag.com/category/windsurfing/feed/ | windsurf | ✅ |
-| surfd.com/feed/ | surf | ✅ |
+**Feeds (see [`NEWS-LOCAL-RESEARCH.md`](./NEWS-LOCAL-RESEARCH.md) for full PT study):**
 
-**Deprecated feeds** (removed — 403/404/HTML): theinertia, surfline, windmag, thekitemag, magicseaweed
+| Feed | Region | Category hint | Status |
+|------|--------|---------------|--------|
+| ansurfistas.com/feed/ | pt | surf | ✅ |
+| noticiasdomar.pt/feed/ | pt | general | ✅ |
+| fps.pt/feed/ | pt | surf | ✅ |
+| stabmag.com/feed/ | intl | surf | ✅ |
+| iksurfmag.com/feed/ (+ kite/wind cats) | intl | kite/wind | ✅ |
+| surfd.com/feed/ | intl | surf | ✅ |
+| alliancewake.com/feed/ | intl | wakeboard | ✅ |
+
+**Nicho (bodyboard, SUP):** sem RSS fiável encontrado — ver [`NEWS-LOCAL-RESEARCH.md`](./NEWS-LOCAL-RESEARCH.md#modalidades-de-nicho-bodyboard-wakeboard-foil-sup).
+
+**Probe new URLs:** `node scripts/news/probe-feeds.js`
+
+**Deprecated / failed PT candidates:** ligasurf.pt, SAPO feeds, surftotal.com (no RSS), surfline, windmag, thekitemag, magicseaweed, theinertia
 
 **Filters applied deterministically (zero LLM):**
 - No title or URL → discard
@@ -41,7 +47,9 @@ Reads `conditions.json` snapshot, applies hard thresholds:
 | Warm water | waterTemp > 22°C in >50% spots | general | info |
 | Storm | windSpeed > 35kt in 3+ spots | safety | alert |
 
-**v2 (2026-05-25):** Reads `forecasts.json` hourly arrays — events for swell ≥3m in 72h and wind ≥25kt in 24h (tags `forecast-72h`, `forecast-24h`). Snapshot events tagged `agora`.
+**v2 (2026-05-25):** Reads `forecasts.json` hourly arrays — events for swell ≥3m in 72h and wind ≥25kt in 24h (tags `forecast-72h`, `forecast-24h`). Snapshot events tagged `agora`. All VenTu events carry `sourceRegion: pt` and appear under **Cena PT** in the UI.
+
+**UI (2026-05-25):** `/pt/news/` defaults to region filter **Cena PT**; sport filters via category pills + URL `?category=surf`. International RSS remains under **Internacional**.
 
 ### Etapa 3 — LLM Auxiliary (3 Specific Tasks)
 

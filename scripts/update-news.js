@@ -13,6 +13,7 @@
 
 const { fetchAllFeeds } = require('./news/fetch-rss');
 const { detectEvents } = require('./news/detect-events');
+const { inferCategoryFromText, hasSpecificCategory } = require('./news/category-keywords');
 const { categoriseItem, ensureBilingual, synthesiseEvent } = require('./news/llm-tasks');
 const { mergeAndPersist, loadExisting } = require('./news/merge-persist');
 const { callLLM } = require('./llm-fallback');
@@ -54,12 +55,18 @@ async function updateNews() {
   // 3a: Categorise RSS items (only those where LLM adds value)
   const categorisedRss = [];
   for (const item of rssItems) {
+    const text = `${item.title || ''} ${item.summary || ''}`;
+    const keywordCategory = inferCategoryFromText(text, item.defaultCategory || 'general');
+    const useKeywordOnly =
+      hasSpecificCategory(text, 'general') ||
+      (keywordCategory !== item.defaultCategory && keywordCategory !== 'general');
+
     try {
-      // Categorise via LLM; fallback to defaultCategory from feed config
-      const category = await categoriseItem(item.title, item.summary, item.defaultCategory);
-      item.category = category;
+      item.category = useKeywordOnly
+        ? keywordCategory
+        : await categoriseItem(item.title, item.summary, keywordCategory);
     } catch (e) {
-      item.category = item.defaultCategory || 'general';
+      item.category = keywordCategory || item.defaultCategory || 'general';
     }
 
     // Translate to bilingual

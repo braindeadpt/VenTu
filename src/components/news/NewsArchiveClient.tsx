@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import type { NewsItem } from '@/types';
-import { filterNews, paginateNews, groupByDay, CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter } from '@/lib/news';
+import { filterNews, paginateNews, groupByDay, getDefaultNewsRegion, CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter } from '@/lib/news';
 import NewsFilters from './NewsFilters';
 import NewsListGrouped from './NewsListGrouped';
 import NewsPagination from './NewsPagination';
@@ -16,7 +16,7 @@ interface NewsArchiveClientProps {
 export default function NewsArchiveClient({ news, locale }: NewsArchiveClientProps) {
   const isPt = locale === 'pt';
   const [category, setCategory] = useState<NewsCategory>('all');
-  const [region, setRegion] = useState<RegionFilter>('all');
+  const [region, setRegion] = useState<RegionFilter>(() => getDefaultNewsRegion(locale));
   const [period, setPeriod] = useState<DateFilter>('all');
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState('');

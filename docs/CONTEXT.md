@@ -101,6 +101,7 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 | `dawn-patrol.yml` | Diário 05:00 UTC | dawn-patrol.json via LLM |
 | `ci.yml` | PR + push main | lint, validate spots, unit tests, sitemap, build, E2E |
 | `deploy.yml` | push main | test, sitemap, build, GitHub Pages |
+| `evaluate-alerts.yml` | */3h + manual | email alerts (Resend + Supabase) |
 
 ## Estado actual (2026-05-25)
 
@@ -115,6 +116,7 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 1. `SecurityHeaders.tsx` — CSP via JS sem efeito real em static export
 2. Calibração automática de scores (C4) — recolhe feedback; ajuste de pesos manual/contínuo
 3. Livecams curadas — links externos Surftotal/MEO em 31 spots (`src/lib/spotLivecams.ts`); sem embeds
+4. Alertas email — código pronto; validação produção → [`ALERTS.md`](./ALERTS.md) (E1)
 
 ### Distribuição de spots
 

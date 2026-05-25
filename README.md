@@ -79,6 +79,7 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 | `npm run conditions:update` | Actualizar `public/data/conditions.json` |
 | `npm run data:update` | Condições + notícias |
 | `npm run spots:validate` | Validar `src/lib/spots.ts` |
+| `npm run alerts:preflight` | Verificar setup alertas email |
 
 ### Estrutura do projecto
 
@@ -97,6 +98,7 @@ docs/               # Roadmap, contexto, design system
 
 - [docs/CONTEXT.md](docs/CONTEXT.md) — arquitectura e convenções
 - [docs/ROADMAP.md](docs/ROADMAP.md) — prioridades e estado das fases
+- [docs/ALERTS.md](docs/ALERTS.md) — alertas por email (setup produção)
 - [CONTRIBUTING.md](CONTRIBUTING.md) — como contribuir (spots, livecams, scores)
 
 ### Livecams

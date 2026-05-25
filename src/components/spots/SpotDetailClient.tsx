@@ -27,6 +27,7 @@ import type { ForecastHour } from '@/components/weather/ForecastTable';
 import SpotMap from '@/components/spots/SpotMap';
 import MagicWindows from '@/components/MagicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
+import SpotRelatedNews from '@/components/spots/SpotRelatedNews';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
 import SpotConditionsOverview from '@/components/spots/SpotConditionsOverview';
 import { getLocalTips } from '@/lib/spotTips';
@@ -515,6 +516,8 @@ export default function SpotDetailClient({
         </div>
 
         <SpotWebcamSection slug={spot.slug} locale={locale} />
+
+        <SpotRelatedNews spot={spot} locale={locale} sport={selectedSport} />
 
         {/* Spot info — separated from actions */}
         <section className="max-w-6xl mx-auto px-4 py-6">
