@@ -143,20 +143,30 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       const mapShell = page.locator('[data-map-fullscreen]');
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
+      await expect(mapShell).toHaveAttribute('data-map-hud', 'hidden');
+      await expect(
+        page.getByRole('region', { name: /Filtros do mapa|Map filters/i }),
+      ).toHaveCount(0);
 
       const enterBtn = page.getByRole('button', { name: /Ecrã inteiro|Full screen/i });
       await enterBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
+      await expect(mapShell).toHaveAttribute('data-map-hud', 'visible');
+      await expect(
+        page.getByRole('region', { name: /Filtros do mapa|Map filters/i }),
+      ).toBeVisible();
       await expect(page.locator('.leaflet-container')).toBeVisible();
 
       const exitBtn = page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i });
       await exitBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
+      await expect(mapShell).toHaveAttribute('data-map-hud', 'hidden');
 
       await enterBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
       await page.keyboard.press('Escape');
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
+      await expect(mapShell).toHaveAttribute('data-map-hud', 'hidden');
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();

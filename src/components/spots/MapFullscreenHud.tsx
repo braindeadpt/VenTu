@@ -12,6 +12,8 @@ export interface MapHudSportOption {
 }
 
 export interface MapFullscreenHudProps {
+  /** When false, nothing is rendered (filters only belong in fullscreen map). */
+  visible?: boolean;
   isPt: boolean;
   sports: MapHudSportOption[];
   regions: readonly string[];
@@ -26,6 +28,7 @@ export interface MapFullscreenHudProps {
 }
 
 export default function MapFullscreenHud({
+  visible = true,
   isPt,
   sports,
   regions,
@@ -38,6 +41,8 @@ export default function MapFullscreenHud({
   clearFiltersLabel,
   showClearFilters,
 }: MapFullscreenHudProps) {
+  if (!visible) return null;
+
   return (
     <div
       className="absolute bottom-0 inset-x-0 z-[1000] px-2 sm:px-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 pointer-events-none"

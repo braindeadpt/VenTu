@@ -6,16 +6,18 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface MapLegendProps {
   locale: string;
+  /** Extra bottom margin when fullscreen filter bar is visible. */
+  reserveHudSpace?: boolean;
 }
 
-export default function MapLegend({ locale }: MapLegendProps) {
+export default function MapLegend({ locale, reserveHudSpace = false }: MapLegendProps) {
   const isPt = locale === 'pt';
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
   return (
     <div
-      className="absolute bottom-0 right-0 z-[1000] mb-[60px] mr-3"
+      className={`absolute bottom-0 right-0 z-[1000] mr-3 ${reserveHudSpace ? 'mb-[60px]' : 'mb-3'}`}
       role="region"
       aria-label={isPt ? 'Legenda do mapa' : 'Map legend'}
     >

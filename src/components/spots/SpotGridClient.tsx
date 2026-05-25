@@ -137,6 +137,7 @@ export function SpotGridClient({
   const [selectedRegion, setSelectedRegion] = useState<string>(DEFAULT_REGION);
   const [sortBy, setSortBy] = useState<SortOption>('score');
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
+  const [mapFullscreen, setMapFullscreen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { latitude, longitude, loading: geoLoading, requestLocation } = useGeolocation();
 
@@ -361,24 +362,29 @@ export function SpotGridClient({
           selectedRegion={selectedRegion}
           locale={locale}
           onSpotSelect={setSelectedSpotId}
-          mapHud={{
-            sports: SPORTS.map((s) => ({
-              id: s.id,
-              label: (isPt ? s.labelPt : s.labelEn) ?? s.id,
-              icon: s.icon,
-              color: s.color,
-            })),
-            regions,
-            selectedSport,
-            selectedRegion,
-            spotCount: filtered.length,
-            onSportChange: handleSportChange,
-            onRegionChange: handleRegionChange,
-            onResetFilters: handleReset,
-            clearFiltersLabel: t.hero.clearFilters,
-            showClearFilters:
-              selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION,
-          }}
+          onFullscreenChange={setMapFullscreen}
+          mapHud={
+            mapFullscreen
+              ? {
+                  sports: SPORTS.map((s) => ({
+                    id: s.id,
+                    label: (isPt ? s.labelPt : s.labelEn) ?? s.id,
+                    icon: s.icon,
+                    color: s.color,
+                  })),
+                  regions,
+                  selectedSport,
+                  selectedRegion,
+                  spotCount: filtered.length,
+                  onSportChange: handleSportChange,
+                  onRegionChange: handleRegionChange,
+                  onResetFilters: handleReset,
+                  clearFiltersLabel: t.hero.clearFilters,
+                  showClearFilters:
+                    selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION,
+                }
+              : undefined
+          }
         />
       </div>
 

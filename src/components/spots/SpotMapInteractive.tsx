@@ -50,6 +50,7 @@ interface SpotMapInteractiveProps {
   locale: string;
   onSpotSelect?: (spotId: string) => void;
   mapHud?: MapHudProps;
+  onFullscreenChange?: (isFullscreen: boolean) => void;
 }
 
 // ─── Helpers ───
@@ -204,6 +205,7 @@ export default function SpotMapInteractive({
   locale,
   onSpotSelect,
   mapHud,
+  onFullscreenChange,
 }: SpotMapInteractiveProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
@@ -347,6 +349,10 @@ export default function SpotMapInteractive({
 
   const enterFullscreen = useCallback(() => setIsFullscreen(true), []);
   const exitFullscreen = useCallback(() => setIsFullscreen(false), []);
+
+  useEffect(() => {
+    onFullscreenChange?.(isFullscreen);
+  }, [isFullscreen, onFullscreenChange]);
 
   const toggleCluster = useCallback(() => {
     setClusterEnabled((prev) => {
@@ -492,6 +498,7 @@ export default function SpotMapInteractive({
       }
       style={isFullscreen ? { height: '100dvh' } : { height: 'clamp(300px, 50vh, 600px)' }}
       data-map-fullscreen={isFullscreen ? 'true' : 'false'}
+      data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}
       data-map-cluster={clusterEnabled ? 'true' : 'false'}
       data-map-wind={showWindOnMarkers ? 'true' : 'false'}
     >
@@ -561,15 +568,19 @@ export default function SpotMapInteractive({
             onChange={handleBasemapChange}
             isPt={isPt}
           />
-          <MapLegend locale={locale} />
+          <MapLegend locale={locale} reserveHudSpace={isFullscreen} />
           <p
             className={`absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-[10px] text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none ${
-              isFullscreen ? 'top-14 left-3 right-auto' : 'bottom-14 left-1/2 -translate-x-1/2'
+              isFullscreen
+                ? 'top-14 left-3 right-auto'
+                : 'max-md:hidden bottom-14 left-1/2 -translate-x-1/2'
             }`}
           >
             {t.map.mapDataHint}
           </p>
-          {isFullscreen && mapHud && <MapFullscreenHud {...mapHud} isPt={isPt} />}
+          {mapHud && (
+            <MapFullscreenHud {...mapHud} visible={isFullscreen} isPt={isPt} />
+          )}
         </>
       )}
     </div>
