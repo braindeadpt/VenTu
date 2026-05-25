@@ -53,6 +53,9 @@ interface Conditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  swellHeight?: number;
+  swellPeriod?: number;
+  wavePowerKw?: number;
   tideHeight?: number;
   tideStatus?: 'high' | 'low' | 'rising' | 'falling';
   tideLabel?: string;
@@ -214,6 +217,9 @@ export default function SpotDetailClient({
               windDirection: spotCond.windDirection || 0,
               windGust: spotCond.windGust || 0,
               waterTemp: spotCond.waterTemp || 0,
+              swellHeight: spotCond.swellHeight,
+              swellPeriod: spotCond.swellPeriod,
+              wavePowerKw: spotCond.wavePowerKw,
               tideHeight: spotCond.tideHeight,
               tideStatus: spotCond.tideStatus,
               tideLabel: spotCond.tideLabel,

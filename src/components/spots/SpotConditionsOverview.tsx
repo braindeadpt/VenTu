@@ -4,6 +4,7 @@ import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getScoreTokens } from '@/lib/sportScore';
 import { getCardinalLabel, getWindRelationToCoast } from '@/lib/wind';
+import { resolveWavePowerKw } from '@/lib/waveEnergy';
 
 import ScoreGauge from '@/components/ui/ScoreGauge';
 import SwellRadar from '@/components/ui/SwellRadar';
@@ -17,6 +18,9 @@ interface Conditions {
   windSpeed: number;
   windDirection: number;
   waterTemp: number;
+  swellHeight?: number;
+  swellPeriod?: number;
+  wavePowerKw?: number;
   tideHeight?: number;
   tideLabel?: string;
   source?: 'real' | 'mock';
@@ -72,6 +76,7 @@ export default function SpotConditionsOverview({
   const windRelation = coastOrientation
     ? getWindRelationToCoast(conditions.windDirection, coastOrientation)
     : null;
+  const wavePowerKw = resolveWavePowerKw(conditions);
 
   return (
     <section className="max-w-6xl mx-auto px-4 py-4">
@@ -103,11 +108,15 @@ export default function SpotConditionsOverview({
           </div>
 
           {/* Key metrics — single source of truth */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 w-full">
             <MetricCell
               label={isPt ? 'Ondas' : 'Waves'}
               value={`${conditions.waveHeight.toFixed(1)}m @ ${Math.round(conditions.wavePeriod)}s`}
               sub={swellDir}
+            />
+            <MetricCell
+              label={isPt ? 'Energia' : 'Energy'}
+              value={`${wavePowerKw.toFixed(1)} kW/m`}
             />
             <MetricCell
               label={isPt ? 'Vento' : 'Wind'}

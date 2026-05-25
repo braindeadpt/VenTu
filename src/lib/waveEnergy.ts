@@ -25,3 +25,17 @@ export function wavePowerFromMarine(params: {
 }
 
 export const MS_TO_KNOTS = 1.94384;
+
+/** Prefer stored kW/m; otherwise derive from swell or total sea state. */
+export function resolveWavePowerKw(params: {
+  wavePowerKw?: number | null;
+  swellHeight?: number | null;
+  swellPeriod?: number | null;
+  waveHeight: number;
+  wavePeriod: number;
+}): number {
+  if (params.wavePowerKw != null && Number.isFinite(params.wavePowerKw)) {
+    return params.wavePowerKw;
+  }
+  return wavePowerFromMarine(params);
+}

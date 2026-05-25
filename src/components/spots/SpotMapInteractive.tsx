@@ -12,7 +12,7 @@ import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
-import { wavePowerFromMarine, MS_TO_KNOTS } from '@/lib/waveEnergy';
+import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import { renderSpotPopup } from './SpotPopupContent';
 import MapFullscreenHud, { type MapFullscreenHudProps } from './MapFullscreenHud';
@@ -90,14 +90,7 @@ function createSpotMarker(
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
   const windKt = windKtNum.toFixed(0);
-  const powerKw =
-    conditions.wavePowerKw ??
-    wavePowerFromMarine({
-      swellHeight: conditions.swellHeight,
-      swellPeriod: conditions.swellPeriod,
-      waveHeight: conditions.waveHeight,
-      wavePeriod: conditions.wavePeriod,
-    });
+  const powerKw = resolveWavePowerKw(conditions);
 
   const windArrowHtml = showWind
     ? `<div class="ventu-wind-arrow">${buildMapWindArrowSvg(conditions.windDirection, windKtNum)}</div>`

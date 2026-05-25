@@ -4,25 +4,11 @@ import { spots } from '@/lib/spots'
 import { getAllSportScores } from '@/lib/sportScore'
 import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
+import type { MarineConditionsFields } from '@/lib/marineConditions'
 
 export interface SpotData {
   spot: typeof spots[0]
-  conditions: {
-    waveHeight: number
-    wavePeriod: number
-    waveDirection: number
-    windSpeed: number
-    windDirection: number
-    windGust: number
-    waterTemp: number
-    tideHeight?: number
-    tideStatus?: 'high' | 'low' | 'rising' | 'falling'
-    tideObservedHeight?: number
-    tideObservedAt?: string
-    tideStation?: string
-    updatedAt?: string
-    source?: 'real' | 'mock'
-  }
+  conditions: MarineConditionsFields
   allScores: Record<SportType, SportScore>
 }
 
@@ -47,6 +33,9 @@ export function loadSpotData(): SpotData[] {
         windDirection: cond.windDirection || 0,
         windGust: cond.windGust || 0,
         waterTemp: cond.waterTemp || 0,
+        swellHeight: cond.swellHeight,
+        swellPeriod: cond.swellPeriod,
+        wavePowerKw: cond.wavePowerKw,
         updatedAt: cond.updatedAt,
         source: 'real' as const,
       }

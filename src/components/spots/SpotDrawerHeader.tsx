@@ -1,7 +1,7 @@
 'use client';
 
 import ScoreGauge from '@/components/ui/ScoreGauge';
-import { Waves, Wind, Thermometer } from 'lucide-react';
+import { Waves, Wind, Thermometer, Zap } from 'lucide-react';
 
 interface SpotDrawerHeaderProps {
   name: string;
@@ -9,6 +9,7 @@ interface SpotDrawerHeaderProps {
   score: number;
   waveHeight: string;
   windKnots: string;
+  wavePowerKw: string;
   waterTemp: string | number;
   locale: string;
 }
@@ -19,6 +20,7 @@ export default function SpotDrawerHeader({
   score,
   waveHeight,
   windKnots,
+  wavePowerKw,
   waterTemp,
   locale,
 }: SpotDrawerHeaderProps) {
@@ -39,6 +41,10 @@ export default function SpotDrawerHeader({
           <span className="inline-flex items-center gap-1">
             <Wind className="w-3 h-3" />
             {windKnots}kt
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Zap className="w-3 h-3" />
+            {wavePowerKw} kW/m
           </span>
           <span className="inline-flex items-center gap-1">
             <Thermometer className="w-3 h-3" />

@@ -14,20 +14,12 @@ import MetricBar from '@/components/ui/MetricBar';
 import FavoriteButton from '@/components/FavoriteButton';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import { ArrowRight } from 'lucide-react';
+import { resolveWavePowerKw } from '@/lib/waveEnergy';
+import type { MarineConditionsFields } from '@/lib/marineConditions';
 
 interface SpotData {
   spot: Spot;
-  conditions: {
-    waveHeight: number;
-    wavePeriod: number;
-    waveDirection: number;
-    windSpeed: number;
-    windDirection: number;
-    windGust: number;
-    waterTemp: number;
-    updatedAt?: string;
-    source?: 'real' | 'mock';
-  };
+  conditions: MarineConditionsFields;
   allScores: Record<SportType, SportScore>;
 }
 
@@ -67,6 +59,8 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
     return getRelevantSports(spotData.spot, spotData.allScores);
   }, [spotData]);
 
+  const wavePowerKw = conditions ? resolveWavePowerKw(conditions) : 0;
+
   return (
     <Drawer
       isOpen={!!spotData}
@@ -84,6 +78,7 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
             score={currentScore}
             waveHeight={conditions.waveHeight.toFixed(1)}
             windKnots={kts(conditions.windSpeed)}
+            wavePowerKw={wavePowerKw.toFixed(1)}
             waterTemp={Math.round(conditions.waterTemp)}
             locale={locale}
           />
@@ -136,6 +131,13 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
                   value={conditions.wavePeriod.toFixed(0)}
                   unit="s"
                   fillPercent={Math.min(100, (conditions.wavePeriod - 3) * 12)}
+                  colorVar="--data-period"
+                />
+                <MetricBar
+                  label={isPt ? 'Energia' : 'Energy'}
+                  value={wavePowerKw.toFixed(1)}
+                  unit="kW/m"
+                  fillPercent={Math.min(100, wavePowerKw * 2)}
                   colorVar="--data-period"
                 />
                 <MetricBar
