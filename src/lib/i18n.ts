@@ -111,6 +111,7 @@ export const translations = {
       openDetail: 'Ver condições',
       updatedAt: 'Actualizado',
       spotsVisible: 'spots no mapa',
+      mapDataHint: 'Clica num spot para detalhe · ou Mostrar todos',
     },
     news: { title: 'Notícias', latest: 'Últimas', readMore: 'Ler mais', source: 'Fonte', category: 'Categoria', generatedBy: 'Resumido por IA' },
     megaMenu: {
@@ -281,6 +282,7 @@ export const translations = {
       openDetail: 'View conditions',
       updatedAt: 'Updated',
       spotsVisible: 'spots on map',
+      mapDataHint: 'Tap a spot for details · or Show all',
     },
     news: { title: 'News', latest: 'Latest', readMore: 'Read more', source: 'Source', category: 'Category', generatedBy: 'Summarized by AI' },
     megaMenu: {

@@ -15,7 +15,7 @@ import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { wavePowerFromMarine, MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import { renderSpotPopup } from './SpotPopupContent';
-import MapFullscreenHud from './MapFullscreenHud';
+import MapFullscreenHud, { type MapFullscreenHudProps } from './MapFullscreenHud';
 import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
 import type { BasemapMode } from './MapLayerToggle';
@@ -39,17 +39,7 @@ interface SpotData {
   allScores: Record<SportType, SportScore>;
 }
 
-export interface MapHudProps {
-  sportLabel: string;
-  regionLabel: string;
-  spotCount: number;
-  onCount: number;
-  marginalCount: number;
-  lastUpdated: string | null;
-  showClearFilters: boolean;
-  onResetFilters: () => void;
-  clearFiltersLabel: string;
-}
+type MapHudProps = Omit<MapFullscreenHudProps, 'isPt'>;
 
 interface SpotMapInteractiveProps {
   spotsData: SpotData[];
@@ -94,6 +84,7 @@ function createSpotMarker(
 
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
+  const windKt = (conditions.windSpeed * MS_TO_KNOTS).toFixed(0);
   const powerKw =
     conditions.wavePowerKw ??
     wavePowerFromMarine({
@@ -106,28 +97,41 @@ function createSpotMarker(
   const icon = Leaflet.divIcon({
     className: 'spot-marker',
     html: `
-      <div style="
-        width: 28px;
-        height: 28px;
-        border-radius: 50%;
-        background: ${sportColor};
-        border: 2px solid ${scoreColor};
-        box-shadow: 0 0 8px ${sportColor}66, 0 2px 4px rgba(0,0,0,0.4);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 10px;
-        font-weight: 700;
-        color: #fff;
-        cursor: pointer;
-        text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-      ">
-        ${Math.round(score)}
+      <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+        <div style="
+          width: 28px;
+          height: 28px;
+          border-radius: 50%;
+          background: ${sportColor};
+          border: 2px solid ${scoreColor};
+          box-shadow: 0 0 8px ${sportColor}66, 0 2px 4px rgba(0,0,0,0.4);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 10px;
+          font-weight: 700;
+          color: #fff;
+          text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        ">${Math.round(score)}</div>
+        <div style="
+          margin-top: 2px;
+          padding: 2px 4px;
+          border-radius: 4px;
+          background: rgba(0,0,0,0.72);
+          font-size: 8px;
+          font-weight: 600;
+          line-height: 1.2;
+          color: #fff;
+          white-space: nowrap;
+          text-align: center;
+        ">
+          ${swellH.toFixed(1)}m · ${windKt}kt · ${powerKw.toFixed(0)}kW
+        </div>
       </div>
     `,
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-    popupAnchor: [0, -16],
+    iconSize: [52, 44],
+    iconAnchor: [26, 44],
+    popupAnchor: [0, -46],
   });
 
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
@@ -148,16 +152,12 @@ function createSpotMarker(
       spotId: spot.id,
       locale,
     }),
-    { className: 'spot-popup', maxWidth: 280, closeButton: true, autoClose: true, closeOnClick: false },
+    { className: 'spot-popup', maxWidth: 280, closeButton: true, autoClose: false, closeOnClick: true },
   );
 
   marker.on('click', (e) => {
     Leaflet.DomEvent.stopPropagation(e);
-    if (marker.isPopupOpen()) {
-      onSpotSelect?.(spot.id);
-    } else {
-      marker.openPopup();
-    }
+    marker.openPopup();
   });
 
   if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
@@ -506,20 +506,14 @@ export default function SpotMapInteractive({
             isPt={isPt}
           />
           <MapLegend locale={locale} />
-          {isFullscreen && mapHud && (
-            <MapFullscreenHud
-              isPt={isPt}
-              sportLabel={mapHud.sportLabel}
-              regionLabel={mapHud.regionLabel}
-              spotCount={mapHud.spotCount}
-              onCount={mapHud.onCount}
-              marginalCount={mapHud.marginalCount}
-              lastUpdated={mapHud.lastUpdated}
-              showClearFilters={mapHud.showClearFilters}
-              onResetFilters={mapHud.onResetFilters}
-              clearFiltersLabel={mapHud.clearFiltersLabel}
-            />
-          )}
+          <p
+            className={`absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-[10px] text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none ${
+              isFullscreen ? 'top-14 left-3 right-auto' : 'bottom-14 left-1/2 -translate-x-1/2'
+            }`}
+          >
+            {t.map.mapDataHint}
+          </p>
+          {isFullscreen && mapHud && <MapFullscreenHud {...mapHud} isPt={isPt} />}
         </>
       )}
     </div>

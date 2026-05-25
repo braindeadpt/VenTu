@@ -181,24 +181,6 @@ export function SpotGridClient({
     [spotsData, selectedSport, selectedRegion],
   );
 
-  const mapLastUpdated = useMemo(() => {
-    let latest: string | null = null;
-    for (const d of filtered) {
-      const at = d.conditions.updatedAt;
-      if (!at) continue;
-      if (!latest || at > latest) latest = at;
-    }
-    if (!latest) return null;
-    try {
-      return new Date(latest).toLocaleTimeString(isPt ? 'pt-PT' : 'en-GB', {
-        hour: '2-digit',
-        minute: '2-digit',
-      });
-    } catch {
-      return null;
-    }
-  }, [filtered, isPt]);
-
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
       if (sortBy === 'distance' && latitude && longitude) {
@@ -380,16 +362,22 @@ export function SpotGridClient({
           locale={locale}
           onSpotSelect={setSelectedSpotId}
           mapHud={{
-            sportLabel: sportLabel || (isPt ? 'Todos' : 'All'),
-            regionLabel: selectedRegion,
+            sports: SPORTS.map((s) => ({
+              id: s.id,
+              label: (isPt ? s.labelPt : s.labelEn) ?? s.id,
+              icon: s.icon,
+              color: s.color,
+            })),
+            regions,
+            selectedSport,
+            selectedRegion,
             spotCount: filtered.length,
-            onCount,
-            marginalCount,
-            lastUpdated: mapLastUpdated,
-            showClearFilters:
-              selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION,
+            onSportChange: handleSportChange,
+            onRegionChange: handleRegionChange,
             onResetFilters: handleReset,
             clearFiltersLabel: t.hero.clearFilters,
+            showClearFilters:
+              selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION,
           }}
         />
       </div>
