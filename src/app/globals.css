@@ -378,6 +378,12 @@
   border: 1px solid rgb(var(--divider));
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  pointer-events: auto;
+}
+.spot-popup .ventu-popup-detail,
+.spot-popup a[href] {
+  pointer-events: auto;
+  cursor: pointer;
 }
 .spot-popup .leaflet-popup-tip {
   display: none;

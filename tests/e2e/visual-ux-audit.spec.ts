@@ -115,8 +115,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await context.close();
     });
 
-    test('02d — Homepage: popup com swell e energia (desktop)', async ({ browser }) => {
-      test.skip(viewport === 'mobile', 'Popup abre por hover em desktop');
+    test('02d — Homepage: popup e botão Ver condições', async ({ browser }) => {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
@@ -124,12 +123,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await page.getByRole('button', { name: /Mostrar todos|Show all/i }).click();
       await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 15_000 });
       const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
-      const box = await marker.boundingBox();
-      expect(box).toBeTruthy();
-      await page.mouse.move(box!.x + box!.width / 2, box!.y + box!.height / 2);
-      const popup = page.locator('.leaflet-popup.spot-popup');
+      await marker.click({ position: { x: 14, y: 14 }, force: true });
+      const popup = page.locator('.leaflet-popup.spot-popup').last();
       await expect(popup).toBeVisible({ timeout: 5_000 });
       await expect(popup).toContainText(/kW\/m|Swell|Vento|Wind/i);
+
+      await popup.getByRole('button', { name: /Ver condições|View conditions/i }).click();
+      await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 });
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();

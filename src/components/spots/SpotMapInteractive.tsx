@@ -147,18 +147,35 @@ function createSpotMarker(
       spotId: spot.id,
       locale,
     }),
-    { className: 'spot-popup', maxWidth: 280, closeButton: true, autoClose: false, closeOnClick: true },
+    { className: 'spot-popup', maxWidth: 280, closeButton: true, autoClose: true, closeOnClick: false },
   );
 
   marker.on('click', (e) => {
     Leaflet.DomEvent.stopPropagation(e);
-    marker.openPopup();
   });
 
-  if (typeof window !== 'undefined' && window.matchMedia('(hover: hover)').matches) {
-    marker.on('mouseover', () => marker.openPopup());
-    marker.on('mouseout', () => marker.closePopup());
-  }
+  marker.on('popupopen', () => {
+    const root = marker.getPopup()?.getElement();
+    if (!root) return;
+
+    const detailBtn = root.querySelector('.ventu-popup-detail');
+    if (detailBtn) {
+      detailBtn.addEventListener(
+        'click',
+        (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          onSpotSelect?.(spot.id);
+          marker.closePopup();
+        },
+        { once: true },
+      );
+    }
+
+    root.querySelectorAll('a[href]').forEach((anchor) => {
+      anchor.addEventListener('click', (ev) => ev.stopPropagation());
+    });
+  });
 
   return marker;
 }
@@ -397,19 +414,21 @@ export default function SpotMapInteractive({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isFullscreen, exitFullscreen]);
 
-  // Popup "Ver condições" button (static HTML from renderSpotPopup)
+  // Fallback: popup buttons (Leaflet pane) — capture so clicks register before map handlers
   useEffect(() => {
-    const el = mapRef.current;
-    if (!el) return;
+    if (!isReady || !mapInstanceRef.current) return;
+    const container = mapInstanceRef.current.getContainer();
     const onClick = (e: MouseEvent) => {
       const btn = (e.target as HTMLElement).closest('.ventu-popup-detail');
       if (!btn) return;
+      e.preventDefault();
+      e.stopPropagation();
       const spotId = btn.getAttribute('data-spot-id');
       if (spotId) onSpotSelectRef.current?.(spotId);
     };
-    el.addEventListener('click', onClick);
-    return () => el.removeEventListener('click', onClick);
-  }, []);
+    container.addEventListener('click', onClick, true);
+    return () => container.removeEventListener('click', onClick, true);
+  }, [isReady]);
 
   // Add/update markers (clustered or all visible)
   useEffect(() => {
@@ -420,6 +439,7 @@ export default function SpotMapInteractive({
     const map = mapInstanceRef.current;
     const mcg = clusterGroupRef.current;
     const lg = markersGroupRef.current;
+    map.closePopup();
     mcg.clearLayers();
     lg.clearLayers();
 
