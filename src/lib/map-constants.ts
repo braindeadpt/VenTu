@@ -18,6 +18,7 @@ export const DEFAULT_ZOOM = 6;
 export const MAX_ZOOM = 19;
 
 export const MAP_CLUSTER_LS_KEY = 'ventu.map.cluster';
+export const MAP_WIND_LS_KEY = 'ventu.map.wind';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,

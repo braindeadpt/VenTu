@@ -352,6 +352,14 @@
   color: rgb(var(--data-waves)) !important;
 }
 
+/* ── Map wind arrows (spot markers) ── */
+.ventu-wind-arrow {
+  pointer-events: none;
+}
+.ventu-spot-marker-wrap .ventu-wind-arrow svg {
+  display: block;
+}
+
 /* ── Popup ── */
 .leaflet-popup.spot-popup {
   z-index: 1200 !important;

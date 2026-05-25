@@ -5,7 +5,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Layers, MapPin, Maximize2, Minimize2 } from 'lucide-react';
+import { Layers, MapPin, Maximize2, Minimize2, Wind } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import type { Spot } from '@/types';
@@ -28,9 +28,11 @@ import {
   MAX_ZOOM,
   CLUSTER_CONFIG,
   MAP_CLUSTER_LS_KEY,
+  MAP_WIND_LS_KEY,
   getScoreRgb,
   SPORT_CSS_VARS,
 } from '@/lib/map-constants';
+import { buildMapWindArrowSvg } from '@/lib/mapWindArrow';
 
 // ─── Types ───
 interface SpotData {
@@ -74,6 +76,7 @@ function createSpotMarker(
   data: SpotData,
   selectedSport: GridSportFilter,
   locale: string,
+  showWind: boolean,
   onSpotSelect?: (spotId: string) => void,
 ): L.Marker {
   const { spot, conditions } = data;
@@ -84,7 +87,8 @@ function createSpotMarker(
 
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
-  const windKt = (conditions.windSpeed * MS_TO_KNOTS).toFixed(0);
+  const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
+  const windKt = windKtNum.toFixed(0);
   const powerKw =
     conditions.wavePowerKw ??
     wavePowerFromMarine({
@@ -94,10 +98,15 @@ function createSpotMarker(
       wavePeriod: conditions.wavePeriod,
     });
 
+  const windArrowHtml = showWind
+    ? `<div class="ventu-wind-arrow" style="margin-bottom:1px;line-height:0;">${buildMapWindArrowSvg(conditions.windDirection, windKtNum)}</div>`
+    : '';
+
   const icon = Leaflet.divIcon({
     className: 'spot-marker',
     html: `
-      <div style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+      <div class="ventu-spot-marker-wrap" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+        ${windArrowHtml}
         <div style="
           width: 28px;
           height: 28px;
@@ -113,25 +122,11 @@ function createSpotMarker(
           color: #fff;
           text-shadow: 0 1px 2px rgba(0,0,0,0.4);
         ">${Math.round(score)}</div>
-        <div style="
-          margin-top: 2px;
-          padding: 2px 4px;
-          border-radius: 4px;
-          background: rgba(0,0,0,0.72);
-          font-size: 8px;
-          font-weight: 600;
-          line-height: 1.2;
-          color: #fff;
-          white-space: nowrap;
-          text-align: center;
-        ">
-          ${swellH.toFixed(1)}m · ${windKt}kt · ${powerKw.toFixed(0)}kW
-        </div>
       </div>
     `,
-    iconSize: [52, 44],
-    iconAnchor: [26, 44],
-    popupAnchor: [0, -46],
+    iconSize: showWind ? [28, 50] : [28, 28],
+    iconAnchor: showWind ? [14, 50] : [14, 14],
+    popupAnchor: [0, showWind ? -52 : -16],
   });
 
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
@@ -176,6 +171,14 @@ function readClusterPref(): boolean {
   return true;
 }
 
+function readWindPref(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return localStorage.getItem(MAP_WIND_LS_KEY) === '1';
+  } catch { /* noop */ }
+  return false;
+}
+
 // ─── Component ───
 export default function SpotMapInteractive({
   spotsData,
@@ -203,6 +206,7 @@ export default function SpotMapInteractive({
   const [basemapMode, setBasemapMode] = useState<BasemapMode>('map');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
+  const [windEnabled, setWindEnabled] = useState(readWindPref);
   const isPt = locale === 'pt';
   const t = getTranslation(validateLocale(locale));
 
@@ -337,6 +341,18 @@ export default function SpotMapInteractive({
     });
   }, []);
 
+  const toggleWind = useCallback(() => {
+    setWindEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_WIND_LS_KEY, next ? '1' : '0');
+      } catch { /* noop */ }
+      return next;
+    });
+  }, []);
+
+  const showWindOnMarkers = windEnabled && !clusterEnabled;
+
   // Recalculate Leaflet size when toggling fullscreen or resizing
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
@@ -426,7 +442,7 @@ export default function SpotMapInteractive({
     const bounds = Leaflet.latLngBounds([]);
 
     spotsData.forEach((data) => {
-      const marker = createSpotMarker(Leaflet, data, selectedSport, locale, onSpotSelect);
+      const marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, onSpotSelect);
       if (clusterEnabled) {
         mcg.addLayer(marker);
       } else {
@@ -439,11 +455,13 @@ export default function SpotMapInteractive({
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
       didFitBoundsRef.current = true;
     }
-  }, [spotsData, selectedSport, selectedRegion, isReady, clusterEnabled, locale, onSpotSelect]);
+  }, [spotsData, selectedSport, selectedRegion, isReady, clusterEnabled, showWindOnMarkers, locale, onSpotSelect]);
 
   const fullscreenLabel = t.map.fullscreen;
   const exitFullscreenLabel = t.map.exitFullscreen;
   const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
+  const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
+  const windHint = clusterEnabled && windEnabled ? t.map.windNeedsShowAll : null;
 
   return (
     <div
@@ -455,6 +473,7 @@ export default function SpotMapInteractive({
       style={isFullscreen ? { height: '100dvh' } : { height: 'clamp(300px, 50vh, 600px)' }}
       data-map-fullscreen={isFullscreen ? 'true' : 'false'}
       data-map-cluster={clusterEnabled ? 'true' : 'false'}
+      data-map-wind={showWindOnMarkers ? 'true' : 'false'}
     >
       {!isReady && (
         <div className="absolute inset-0 flex items-center justify-center bg-surface-1 z-10">
@@ -498,6 +517,23 @@ export default function SpotMapInteractive({
                 <Layers className="w-4 h-4 shrink-0" aria-hidden />
               )}
               <span className="hidden sm:inline">{clusterLabel}</span>
+            </button>
+            <button
+              type="button"
+              onClick={toggleWind}
+              title={windHint ?? undefined}
+              className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border shadow-lg transition-colors touch-manipulation text-xs font-semibold ${
+                showWindOnMarkers
+                  ? 'border-[rgb(var(--data-wind))] bg-[rgb(var(--data-wind)/0.15)] text-[rgb(var(--fg))]'
+                  : windEnabled && clusterEnabled
+                    ? 'border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg-muted))] opacity-80'
+                    : 'border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg))] hover:bg-[rgb(var(--surface-1))]'
+              }`}
+              aria-label={windLabel}
+              aria-pressed={showWindOnMarkers}
+            >
+              <Wind className="w-4 h-4 shrink-0 text-[rgb(var(--data-wind))]" aria-hidden />
+              <span className="hidden sm:inline">{windLabel}</span>
             </button>
           </div>
           <MapLayerToggle
