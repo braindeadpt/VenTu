@@ -1,5 +1,3 @@
-'use client';
-
 import Link from 'next/link';
 import { Wind, Github, Heart, ExternalLink } from 'lucide-react';
 import FeedbackForm from '@/components/FeedbackForm';

@@ -1,18 +1,16 @@
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { spots } from '@/lib/spots';
-import { getAllSportScores } from '@/lib/sportScore';
 import { ALL_SPORTS } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
+import { loadSpotData } from '@/lib/load-spot-data';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
 import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
 import HomepageFeatured from '@/components/homepage/HomepageFeatured';
 import HomepageStatusBar from '@/components/homepage/HomepageStatusBar';
-import { parseSportFilter, type HomepageSpotData } from '@/lib/homepageSport';
-
-type SpotData = HomepageSpotData;
+import { parseSportFilter } from '@/lib/homepageSport';
+import type { SpotData } from '@/lib/load-spot-data';
 
 function loadDawnPatrol(): Record<string, any> | null {
   try {
@@ -21,17 +19,6 @@ function loadDawnPatrol(): Record<string, any> | null {
     return JSON.parse(data);
   } catch {
     return null;
-  }
-}
-
-function loadConditions(): Record<string, any> {
-  try {
-    const filePath = join(process.cwd(), 'public', 'data', 'conditions.json');
-    const data = readFileSync(filePath, 'utf-8');
-    return JSON.parse(data);
-  } catch (e) {
-    console.warn('Failed to load conditions.json:', e);
-    return {};
   }
 }
 
@@ -45,36 +32,15 @@ export default async function HomePage({
   getTranslation(locale as Locale);
   const initialSport = parseSportFilter(null);
 
-  const conditions = loadConditions();
-
-  const spotsData: SpotData[] = [];
-  for (const spot of spots) {
-    const cond = conditions[spot.id];
-    if (cond) {
-      const conditionsData = {
-        waveHeight: cond.waveHeight || 0,
-        wavePeriod: cond.wavePeriod || 0,
-        waveDirection: cond.waveDirection || 0,
-        windSpeed: cond.windSpeed || 0,
-        windDirection: cond.windDirection || 0,
-        windGust: cond.windGust || 0,
-        waterTemp: cond.waterTemp || 0,
-        updatedAt: cond.updatedAt,
-        source: 'real' as const,
-      };
-      const allScores = getAllSportScores(spot, conditionsData);
-      spotsData.push({ spot, conditions: conditionsData, allScores });
-    }
-  }
-
+  const spotsData = loadSpotData();
   const dawnPatrol = loadDawnPatrol();
   const dawnHeadline = dawnPatrol?.[isPt ? 'pt' : 'en']?.headline || null;
 
   const now = Date.now();
   const timestamps = spotsData
-    .map(d => conditions[d.spot.id]?.updatedAt)
-    .filter(Boolean)
-    .map((ts: string) => new Date(ts).getTime());
+    .map(d => d.conditions.updatedAt)
+    .filter((ts): ts is string => Boolean(ts))
+    .map((ts) => new Date(ts).getTime());
   const maxTs = timestamps.length > 0 ? Math.max(...timestamps) : null;
   const minTs = timestamps.length > 0 ? Math.min(...timestamps) : null;
   const hoursSinceMin = minTs ? (now - minTs) / 3600000 : Infinity;

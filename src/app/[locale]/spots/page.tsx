@@ -17,20 +17,20 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   return {
     title,
     description,
-    openGraph: {
-      title,
-      description,
-      url: `https://ventu.surf/${locale}/spots/`,
-      siteName: 'VenTu',
-      type: 'website',
-      locale: isPt ? 'pt_PT' : 'en_US',
-    },
     alternates: {
       canonical: `/${locale}/spots/`,
       languages: {
         pt: '/pt/spots/',
         en: '/en/spots/',
       },
+    },
+    openGraph: {
+      title,
+      description,
+      url: `/${locale}/spots/`,
+      siteName: 'VenTu',
+      type: 'website',
+      locale: isPt ? 'pt_PT' : 'en_US',
     },
   }
 }

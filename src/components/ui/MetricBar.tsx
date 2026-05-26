@@ -1,5 +1,3 @@
-'use client';
-
 interface MetricBarProps {
   label: string;
   value: string | number;

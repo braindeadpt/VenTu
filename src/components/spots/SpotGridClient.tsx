@@ -1,31 +1,20 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation, Ship } from 'lucide-react';
-import { getCompatibleSports, type SportType, type GridSportFilter } from '@/lib/sportRatings';
-import {
-  filterGridSpots,
-  spotMatchesSportFilter,
-  spotMatchesRegionFilter,
-  PLAYABLE_THRESHOLD,
-  type GridSpotData,
-} from '@/lib/gridSpotFilters';
-import type { SportScore } from '@/lib/sportScore';
+import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation } from 'lucide-react';
+import type { GridSportFilter } from '@/lib/sportRatings';
+import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { getTranslation } from '@/lib/i18n';
-import { useGeolocation, calculateDistance } from '@/lib/geolocation';
-import type { Spot } from '@/types';
 import SpotDrawer from './SpotDrawer';
 import FilterPill from '@/components/ui/FilterPill';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
-import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
+import { useSpotGridFilters } from './hooks/useSpotGridFilters';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
-  readGridFiltersFromWindow,
-  syncGridFiltersToUrl,
 } from '@/lib/gridFilters';
 
 const SpotMapInteractive = dynamic(() => import('./SpotMapInteractive'), { ssr: false });
@@ -38,15 +27,11 @@ const SPORTS: { id: GridSportFilter; labelPt: string; labelEn: string; icon: Rea
   { id: 'bodyboard', labelPt: 'Bodyboard', labelEn: 'Bodyboard', icon: <Waves className="w-4 h-4" />, color: 'text-sport-bodyboard' },
   { id: 'kitesurf', labelPt: 'Kitesurf', labelEn: 'Kitesurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-kitesurf' },
   { id: 'windsurf', labelPt: 'Windsurf', labelEn: 'Windsurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-windsurf' },
-  { id: 'big-wave', labelPt: 'Big Wave', labelEn: 'Big Wave', icon: <Ship className="w-4 h-4" />, color: 'text-windDir-offshore' },
+  { id: 'big-wave', labelPt: 'Big Wave', labelEn: 'Big Wave', icon: <span className="w-4 h-4" />, color: 'text-windDir-offshore' },
   { id: 'foil', labelPt: 'Foil', labelEn: 'Foil', icon: <Zap className="w-4 h-4" />, color: 'text-sport-foil' },
   { id: 'sup', labelPt: 'SUP', labelEn: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
   { id: 'wakeboard', labelPt: 'Wakeboard', labelEn: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
 ];
-
-const LS_REGION_KEY = 'windspot:region';
-
-type SortOption = 'score' | 'distance';
 
 function getSportIcon(sport: GridSportFilter) {
   return SPORTS.find(s => s.id === sport)?.icon || <Star className="w-4 h-4" />;
@@ -56,64 +41,10 @@ function getSportColor(sport: GridSportFilter) {
   return SPORTS.find(s => s.id === sport)?.color || 'text-fg';
 }
 
-function getSportLabel(sport: GridSportFilter, isPt: boolean) {
+function getSportLabel(sport: unknown, isPt: boolean): string {
+  if (typeof sport !== 'string') return '';
   const s = SPORTS.find(x => x.id === sport);
-  return isPt ? s?.labelPt : s?.labelEn;
-}
-
-function getScoreSport(sport: GridSportFilter): SportType | null {
-  if (sport === 'all' || sport === 'big-wave') return sport === 'big-wave' ? 'surf' : null;
-  return sport;
-}
-
-function getAlternativeSport(
-  spotsData: SpotData[],
-  currentSport: GridSportFilter,
-  region: string,
-): SportType | null {
-  if (currentSport === 'all' || currentSport === 'big-wave') return null;
-  const counts: Record<string, number> = {};
-  for (const data of spotsData) {
-    if (!spotMatchesRegionFilter(data, region)) continue;
-    for (const sport of Object.keys(data.allScores) as SportType[]) {
-      if (sport === currentSport) continue;
-      if ((data.allScores[sport]?.score ?? 0) >= PLAYABLE_THRESHOLD) {
-        counts[sport] = (counts[sport] || 0) + 1;
-      }
-    }
-  }
-  const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  return entries.length > 0 ? (entries[0][0] as SportType) : null;
-}
-
-function resolveInitialFilters(
-  regions: readonly string[],
-  initialSport?: string,
-  initialRegion?: string,
-) {
-  const fromUrl = typeof window !== 'undefined'
-    ? readGridFiltersFromWindow(regions)
-    : { sport: DEFAULT_SPORT as GridSportFilter, region: DEFAULT_REGION };
-
-  const lsSport = typeof window !== 'undefined' ? localStorage.getItem(LS_SPORT_KEY) : null;
-  const lsRegion = typeof window !== 'undefined' ? localStorage.getItem(LS_REGION_KEY) : null;
-
-  const hasUrlSport = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('sport');
-  const hasUrlRegion = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('region');
-
-  let sport = fromUrl.sport;
-  if (!hasUrlSport) {
-    const candidate = (initialSport || lsSport || DEFAULT_SPORT) as GridSportFilter;
-    if (SPORTS.some(s => s.id === candidate)) sport = candidate;
-  }
-
-  let region = fromUrl.region;
-  if (!hasUrlRegion) {
-    const candidate = initialRegion || lsRegion || DEFAULT_REGION;
-    if (regions.includes(candidate)) region = candidate;
-  }
-
-  return { sport, region };
+  return isPt ? s?.labelPt || '' : s?.labelEn || '';
 }
 
 export function SpotGridClient({
@@ -131,116 +62,31 @@ export function SpotGridClient({
 }) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);
-  const skipUrlSync = useRef(false);
-
-  const [selectedSport, setSelectedSport] = useState<GridSportFilter>(DEFAULT_SPORT);
-  const [selectedRegion, setSelectedRegion] = useState<string>(DEFAULT_REGION);
-  const [sortBy, setSortBy] = useState<SortOption>('score');
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [mapFullscreen, setMapFullscreen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { latitude, longitude, loading: geoLoading, requestLocation } = useGeolocation();
 
-  useEffect(() => {
-    setMounted(true);
-    const { sport, region } = resolveInitialFilters(regions, initialSport, initialRegion);
-    setSelectedSport(sport);
-    setSelectedRegion(region);
-    dispatchSportChange(sport);
-  }, [initialSport, initialRegion, regions]);
-
-  useEffect(() => {
-    if (!mounted) return;
-    localStorage.setItem(LS_SPORT_KEY, selectedSport);
-    localStorage.setItem(LS_REGION_KEY, selectedRegion);
-  }, [selectedSport, selectedRegion, mounted]);
-
-  useEffect(() => {
-    if (!mounted) return;
-    if (skipUrlSync.current) {
-      skipUrlSync.current = false;
-      return;
-    }
-    syncGridFiltersToUrl(selectedSport, selectedRegion, regions);
-    dispatchSportChange(selectedSport);
-  }, [selectedSport, selectedRegion, mounted, regions]);
-
-  useEffect(() => {
-    const onPopState = () => {
-      const { sport, region } = readGridFiltersFromWindow(regions);
-      skipUrlSync.current = true;
-      setSelectedSport(sport);
-      setSelectedRegion(region);
-      dispatchSportChange(sport);
-    };
-    window.addEventListener('popstate', onPopState);
-    return () => window.removeEventListener('popstate', onPopState);
-  }, [regions]);
-
-  const filtered = useMemo(
-    () => filterGridSpots(spotsData, selectedSport, selectedRegion),
-    [spotsData, selectedSport, selectedRegion],
-  );
-
-  const sorted = useMemo(() => {
-    return [...filtered].sort((a, b) => {
-      if (sortBy === 'distance' && latitude && longitude) {
-        const distA = calculateDistance(latitude, longitude, a.spot.lat, a.spot.lon);
-        const distB = calculateDistance(latitude, longitude, b.spot.lat, b.spot.lon);
-        return distA - distB;
-      }
-      if (selectedSport === 'all') {
-        const bestA = Math.max(...Object.values(a.allScores).map(s => s.score || 0));
-        const bestB = Math.max(...Object.values(b.allScores).map(s => s.score || 0));
-        return bestB - bestA;
-      }
-      const scoreKey = getScoreSport(selectedSport)!;
-      return (b.allScores[scoreKey]?.score || 0) - (a.allScores[scoreKey]?.score || 0);
-    });
-  }, [filtered, selectedSport, sortBy, latitude, longitude]);
+  const {
+    selectedSport,
+    selectedRegion,
+    sortBy,
+    setSortBy,
+    handleSportChange,
+    handleRegionChange,
+    handleReset,
+    filtered,
+    sorted,
+    onCount,
+    marginalCount,
+    alternativeSport,
+    latitude,
+    geoLoading,
+    requestLocation,
+  } = useSpotGridFilters({ spotsData, regions, initialSport, initialRegion });
 
   const selectedSpotData = useMemo(() => {
     if (!selectedSpotId) return null;
     return spotsData.find(d => d.spot.id === selectedSpotId) || null;
   }, [selectedSpotId, spotsData]);
-
-  const onCount = sorted.filter(d => {
-    if (selectedSport === 'all') {
-      return Math.max(...Object.values(d.allScores).map(s => s.score || 0)) >= 70;
-    }
-    const scoreKey = getScoreSport(selectedSport)!;
-    return (d.allScores[scoreKey]?.score || 0) >= 70;
-  }).length;
-
-  const marginalCount = sorted.filter(d => {
-    if (selectedSport === 'all') {
-      const best = Math.max(...Object.values(d.allScores).map(s => s.score || 0));
-      return best >= 40 && best < 70;
-    }
-    const scoreKey = getScoreSport(selectedSport)!;
-    const s = d.allScores[scoreKey]?.score || 0;
-    return s >= 40 && s < 70;
-  }).length;
-
-  const top3 = useMemo(() => {
-    if (selectedSport === 'all') return [];
-    const scoreKey = getScoreSport(selectedSport)!;
-    return sorted
-      .filter(d => (d.allScores[scoreKey]?.score || 0) >= PLAYABLE_THRESHOLD)
-      .slice(0, 3);
-  }, [sorted, selectedSport]);
-
-  const alternativeSport = useMemo(() => {
-    if (sorted.length > 0) return null;
-    return getAlternativeSport(spotsData, selectedSport, selectedRegion);
-  }, [spotsData, selectedSport, selectedRegion, sorted.length]);
-
-  const handleSportChange = (sport: GridSportFilter) => setSelectedSport(sport);
-  const handleRegionChange = (region: string) => setSelectedRegion(region);
-  const handleReset = () => {
-    setSelectedSport(DEFAULT_SPORT);
-    setSelectedRegion(DEFAULT_REGION);
-  };
 
   const sportIcon = getSportIcon(selectedSport);
   const sportColor = getSportColor(selectedSport);
@@ -393,14 +239,14 @@ export function SpotGridClient({
           icon={<Filter className="w-8 h-8 text-fg-muted" aria-hidden />}
           title={
             isPt
-              ? t.hero.noSpotsFound.replace('{sport}', sportLabel || '').replace('{region}', selectedRegion)
-              : t.hero.noSpotsFound.replace('{sport}', sportLabel || '').replace('{region}', selectedRegion)
+              ? t.hero.noSpotsFound.replace('{sport}', sportLabel).replace('{region}', selectedRegion)
+              : t.hero.noSpotsFound.replace('{sport}', sportLabel).replace('{region}', selectedRegion)
           }
           description={
             alternativeSport
               ? (isPt
-                ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt) || '')
-                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt) || ''))
+                ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt))
+                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt)))
               : undefined
           }
           action={
@@ -408,10 +254,10 @@ export function SpotGridClient({
               {alternativeSport && (
                 <Button
                   variant="secondary"
-                  onClick={() => handleSportChange(alternativeSport)}
+                  onClick={() => handleSportChange(alternativeSport as GridSportFilter)}
                 >
-                  <span className={getSportColor(alternativeSport)}>
-                    {getSportIcon(alternativeSport)}
+                  <span className={getSportColor(alternativeSport as GridSportFilter)}>
+                    {getSportIcon(alternativeSport as GridSportFilter)}
                   </span>
                   {isPt ? 'Ver' : 'View'} {getSportLabel(alternativeSport, isPt)}
                 </Button>

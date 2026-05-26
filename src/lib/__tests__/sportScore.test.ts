@@ -295,3 +295,99 @@ describe('getCompatibleSports', () => {
     expect(getCompatibleSports(wake)).toEqual(['wakeboard'])
   })
 })
+
+describe('Representative conditions — surf bom', () => {
+  it('surf ideal: 2m @ 12s with offshore wind and warm water', () => {
+    // Guincho (coastOrientation=270), offshore wind from 90°, chest-high swell
+    const guincho = spotBySlug('guincho')
+    const c: Conditions = {
+      waveHeight: 2.0,
+      wavePeriod: 12,
+      waveDirection: 270,
+      windSpeed: ktToMs(10),
+      windDirection: 90,
+      windGust: ktToMs(12),
+      waterTemp: 18,
+    }
+    const result = getSportScore(guincho, 'surf', c)
+    // Offshore wind + decent waves should give a solid score
+    expect(result.score).toBeGreaterThanOrEqual(60)
+    expect(result.factors.some((f) => f.includes('ondas'))).toBe(true)
+    expect(result.factors.some((f) => f.includes('período'))).toBe(true)
+    expect(result.factors.some((f) => f.includes('offshore'))).toBe(true)
+    expect(result.primaryFactor).toContain('2.0m')
+  })
+})
+
+describe('Representative conditions — kite bom', () => {
+  it('kite ideal: 20kt side-offshore wind, small waves, warm water', () => {
+    // Guincho (coastOrientation=270)
+    // Wind from 350° → |350-270|=80° → side-onshore
+    // Let's use wind from 10° instead: |10-270|=260 → norm=100 → side-offshore
+    const guincho = spotBySlug('guincho')
+    const c: Conditions = {
+      waveHeight: 0.5,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windSpeed: ktToMs(20),
+      windDirection: 10,
+      windGust: ktToMs(22),
+      waterTemp: 18,
+    }
+    const result = getSportScore(guincho, 'kitesurf', c)
+    expect(result.score).toBeGreaterThanOrEqual(70)
+    expect(result.factors.some((f) => f.includes('kt'))).toBe(true)
+    expect(result.factors.some((f) => f.includes('Ondas pequenas'))).toBe(true)
+    expect(result.warning).toBeUndefined()
+  })
+
+  it('kite scores lower on onshore wind vs side-offshore (same speed)', () => {
+    const guincho = spotBySlug('guincho')
+    const sideOffshore: Conditions = {
+      waveHeight: 0.5, wavePeriod: 8, waveDirection: 270,
+      windSpeed: ktToMs(18), windDirection: 10, windGust: ktToMs(20), waterTemp: 18,
+    }
+    const onshore: Conditions = {
+      waveHeight: 0.5, wavePeriod: 8, waveDirection: 270,
+      windSpeed: ktToMs(18), windDirection: 270, windGust: ktToMs(20), waterTemp: 18,
+    }
+    const sideScore = getSportScore(guincho, 'kitesurf', sideOffshore).score
+    const onScore = getSportScore(guincho, 'kitesurf', onshore).score
+    expect(sideScore).toBeGreaterThan(onScore)
+  })
+})
+
+describe('Representative conditions — SUP bom', () => {
+  it('SUP ideal: flat water, light wind, warm', () => {
+    const guincho = spotBySlug('guincho')
+    const c: Conditions = {
+      waveHeight: 0.2,
+      wavePeriod: 5,
+      waveDirection: 270,
+      windSpeed: ktToMs(6),
+      windDirection: 270,
+      windGust: ktToMs(8),
+      waterTemp: 20,
+    }
+    const result = getSportScore(guincho, 'sup', c)
+    expect(result.score).toBeGreaterThanOrEqual(60)
+    expect(result.factors.some((f) => f.includes('Água plana'))).toBe(true)
+    expect(result.factors.some((f) => f.includes('Vento fraco'))).toBe(true)
+    expect(result.factors.some((f) => f.includes('água'))).toBe(true)
+  })
+
+  it('SUP penalised by big waves and strong wind', () => {
+    const guincho = spotBySlug('guincho')
+    const bad: Conditions = {
+      waveHeight: 2.5,
+      wavePeriod: 10,
+      waveDirection: 270,
+      windSpeed: ktToMs(30),
+      windDirection: 270,
+      windGust: ktToMs(35),
+      waterTemp: 14,
+    }
+    const result = getSportScore(guincho, 'sup', bad)
+    expect(result.score).toBeLessThan(30)
+  })
+})

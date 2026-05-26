@@ -1,5 +1,3 @@
-'use client';
-
 import { NewsItem } from '@/types';
 import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 

@@ -114,12 +114,20 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
     );
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') setOpen(false)
+  }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onKeyDown={handleKeyDown}
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-bg-base/80 backdrop-blur-sm"
         onClick={() => setOpen(false)}
+        aria-hidden="true"
       />
 
       {/* Modal */}
@@ -128,12 +136,13 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
           <h3 className="text-h3 text-fg">
             {isPt ? 'Contribuir para o VenTu' : 'Contribute to VenTu'}
           </h3>
-          <button
-            onClick={() => setOpen(false)}
-            className="p-1 rounded-md text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
+      <button
+        onClick={() => setOpen(false)}
+        className="p-1 rounded-md text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors"
+        aria-label={isPt ? 'Fechar' : 'Close'}
+      >
+        <X className="w-5 h-5" />
+      </button>
         </div>
 
         {sent ? (
@@ -173,7 +182,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
 
             {/* Message */}
             <div>
-              <label className="block text-meta-sm text-fg-muted mb-1.5">
+              <label htmlFor="ff-message" className="block text-meta-sm text-fg-muted mb-1.5">
                 {type === 'spot'
                   ? (isPt ? 'Descrição do spot' : 'Spot description')
                   : type === 'tip'
@@ -183,6 +192,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     : (isPt ? 'Descrição do problema' : 'Issue description')}
               </label>
               <textarea
+                id="ff-message"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={
@@ -203,10 +213,11 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
             {type === 'tip' && (
               <>
                 <div>
-                  <label className="block text-meta-sm text-fg-muted mb-1.5">
+                  <label htmlFor="ff-spot-slug" className="block text-meta-sm text-fg-muted mb-1.5">
                     {isPt ? 'Slug do spot' : 'Spot slug'}
                   </label>
                   <input
+                    id="ff-spot-slug"
                     type="text"
                     value={spotSlug}
                     onChange={(e) => setSpotSlug(e.target.value)}
@@ -216,10 +227,11 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                   />
                 </div>
                 <div>
-                  <label className="block text-meta-sm text-fg-muted mb-1.5">
+                  <label htmlFor="ff-tip-field" className="block text-meta-sm text-fg-muted mb-1.5">
                     {isPt ? 'Tipo de dica' : 'Tip type'}
                   </label>
                   <select
+                    id="ff-tip-field"
                     value={tipField}
                     onChange={(e) => setTipField(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-body text-fg"
@@ -236,10 +248,11 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
 
             {/* Email */}
             <div>
-              <label className="block text-meta-sm text-fg-muted mb-1.5">
+              <label htmlFor="ff-email" className="block text-meta-sm text-fg-muted mb-1.5">
                 {isPt ? 'Email (opcional)' : 'Email (optional)'}
               </label>
               <input
+                id="ff-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}

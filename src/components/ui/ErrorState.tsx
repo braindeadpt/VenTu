@@ -1,5 +1,3 @@
-'use client';
-
 import { AlertCircle } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 import Button from '@/components/ui/Button';

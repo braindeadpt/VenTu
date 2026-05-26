@@ -1,5 +1,3 @@
-'use client';
-
 import { getDataFreshness, formatStaleAge } from '@/lib/dataFreshness';
 
 interface DataSourceBadgeProps {

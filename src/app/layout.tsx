@@ -28,6 +28,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://ventu.surf'),
   title: 'VenTu',
   description: 'VenTu — Water sports conditions in Portugal, updated every 3 hours',
   other: {
@@ -58,6 +59,7 @@ export default function RootLayout({
 }) {
   return (
     <html
+      lang="pt-PT"
       className={`${GeistSans.variable} ${GeistMono.variable} theme-ocean`}
       suppressHydrationWarning
     >

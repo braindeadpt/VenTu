@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
+      url: `/${locale}/news/${slug}`,
       type: 'article',
       publishedTime: news.publishedAt,
       section: news.category,
