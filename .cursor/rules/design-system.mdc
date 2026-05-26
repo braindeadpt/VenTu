@@ -1,0 +1,41 @@
+---
+description: VenTu design system v2 — tokens, components, spacing, motion
+alwaysApply: true
+---
+
+# VenTu Design System
+
+## Principles
+- Clarity over effects; animation/gradient only when it aids reading or feedback
+- Use base components (`Button`, `Card`, `FilterPill`, `ScoreBadge`, `StatChip`, `EmptyState`); no ad-hoc page CSS
+- Performance: prefer opacity/transform; avoid heavy blur on mobile
+- A11y: visible focus (globals.css), AA contrast, 44px touch targets on mobile
+- Score is product language: always use `getScoreTokens(score)` / `--score-*` tokens
+
+## Tokens (globals.css)
+- Surfaces: `bg-base`, `bg-elevated`, `surface-1/2/3`, `divider`, `divider-strong`
+- Text: `fg`, `fg-muted` (meta/legends), `fg-subtle` (secondary)
+- Sport accents: `--sport-*` / `text-sport-*`
+- Spacing scale only: 4, 8, 12, 16, 24, 32, 48 px
+
+## Components
+- **Button**: `primary` | `secondary` | `ghost`; sizes `sm`(36) `md`(44) `lg`(48+); `leftIcon`/`rightIcon`; loading shows spinner + label
+- **Card**: `card-1` | `card-2` | `card-hero`; clickable → `hover:-translate-y-px`, `hover:border-divider-strong`, light shadow
+- **Pill**: `pill-ghost` (inactive) / `pill-active` (active) via `FilterPill`
+- **ScoreBadge**: `getScoreTokens`; glow only for epic/good tiers
+- **StatChip**: icon + mono value + short label (spot hero metrics)
+
+## Motion
+- 150ms hover/focus; 200ms filter/list; 300ms map fullscreen/drawers
+- Respect `prefers-reduced-motion`
+
+## Do not
+- Invent colors outside tokens
+- Multiple button styles per page
+- Continuous animations on home (no marquee loops)
+- Heavy backdrop-blur on long mobile sections
+
+## Page patterns
+- **Home**: headline, “Atualizado há Xh” chip, CTA “Explorar mapa”, “Top agora” cards with score + metrics
+- **Spot**: large score, 4 stat chips, sport tabs with score, scannable forecast
+- **Map fullscreen**: clear HUD, tooltips, bottom sheet on mobile

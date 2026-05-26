@@ -534,6 +534,18 @@ export function getScoreTokens(score: number): ScoreTokens {
   }
 }
 
+const SCORE_TIER_LABELS: Record<ScoreTier, { pt: string; en: string }> = {
+  epic: { pt: 'Épico', en: 'Epic' },
+  good: { pt: 'Bom', en: 'Good' },
+  fair: { pt: 'Razoável', en: 'Fair' },
+  poor: { pt: 'Fraco', en: 'Poor' },
+  closed: { pt: 'Fechado', en: 'Closed' },
+}
+
+export function getScoreTierLabel(tier: ScoreTier, locale: 'pt' | 'en' = 'pt'): string {
+  return SCORE_TIER_LABELS[tier][locale]
+}
+
 /** @deprecated Use getScoreTokens — kept for existing imports. */
 export function getScoreColor(score: number) {
   const tokens = getScoreTokens(score)

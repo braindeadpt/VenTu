@@ -97,18 +97,18 @@ export function SpotGridClient({
       <div className="md:sticky md:top-16 md:z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 mb-6">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 edge-fade-x">
-            {SPORTS.map(sport => {
+            {SPORTS.map((sport, i) => {
               const active = selectedSport === sport.id;
               return (
-                <FilterPill
-                  key={sport.id}
-                  active={active}
-                  onClick={() => handleSportChange(sport.id)}
-                  icon={<span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>}
-                  className="rounded-full"
-                >
-                  {isPt ? sport.labelPt : sport.labelEn}
-                </FilterPill>
+                <span key={sport.id} className="stagger-fade-in" style={{ '--stagger-delay': i * 40 } as React.CSSProperties}>
+                  <FilterPill
+                    active={active}
+                    onClick={() => handleSportChange(sport.id)}
+                    icon={<span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>}
+                  >
+                    {isPt ? sport.labelPt : sport.labelEn}
+                  </FilterPill>
+                </span>
               );
             })}
           </div>
@@ -119,20 +119,18 @@ export function SpotGridClient({
                 <Filter className="w-3.5 h-3.5" />
                 <span className="text-meta-sm">{isPt ? 'Região' : 'Region'}</span>
               </div>
-              {regions.map(region => {
+              {regions.map((region, i) => {
                 const active = selectedRegion === region;
                 return (
-                  <FilterPill
-                    key={region}
-                    compact
-                    active={active}
-                    onClick={() => handleRegionChange(region)}
-                    activeClassName="bg-surface-2 border-divider-strong text-fg font-medium"
-                    inactiveClassName="bg-transparent border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1"
-                    className="rounded-md"
-                  >
-                    {region}
-                  </FilterPill>
+                  <span key={region} className="stagger-fade-in" style={{ '--stagger-delay': i * 60 } as React.CSSProperties}>
+                    <FilterPill
+                      compact
+                      active={active}
+                      onClick={() => handleRegionChange(region)}
+                    >
+                      {region}
+                    </FilterPill>
+                  </span>
                 );
               })}
             </div>
@@ -148,9 +146,6 @@ export function SpotGridClient({
                     ? (isPt ? 'Ordenar por score' : 'Sort by score')
                     : (isPt ? 'Ordenar por distância' : 'Sort by distance')
                 }
-                activeClassName="bg-surface-2 border-divider-strong text-fg font-medium"
-                inactiveClassName="bg-transparent border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1"
-                className="rounded-md"
                 icon={sortBy === 'distance' ? <Navigation className="w-3.5 h-3.5" /> : <Star className="w-3.5 h-3.5" />}
               >
                 <span className="hidden sm:inline">
@@ -159,14 +154,17 @@ export function SpotGridClient({
               </FilterPill>
 
               {sortBy === 'distance' && !latitude && (
-                <button
+                <Button
+                  variant="secondary"
+                  size="sm"
                   onClick={requestLocation}
-                  disabled={geoLoading}
-                  className="inline-flex items-center gap-1 px-2 py-1.5 rounded-md text-sm min-h-[40px] bg-data-waves/10 text-data-waves hover:bg-data-waves/20 transition-colors"
+                  loading={geoLoading}
+                  leftIcon={<MapPin className="w-3.5 h-3.5" aria-hidden />}
+                  locale={isPt ? 'pt' : 'en'}
+                  className="text-data-waves border-data-waves/20 bg-data-waves/10 hover:bg-data-waves/20"
                 >
-                  <MapPin className={`w-3.5 h-3.5 ${geoLoading ? 'animate-pulse' : ''}`} />
                   <span className="hidden sm:inline">{isPt ? 'Usar minha localização' : 'Use my location'}</span>
-                </button>
+                </Button>
               )}
 
               <span className="text-meta-sm text-fg-muted">
@@ -187,21 +185,23 @@ export function SpotGridClient({
               </span>
 
               {(selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION) && (
-                <button
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={handleReset}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-sm text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors"
+                  leftIcon={<RotateCcw className="w-3.5 h-3.5" aria-hidden />}
                   aria-label={isPt ? t.hero.clearFilters : t.hero.clearFilters}
+                  locale={isPt ? 'pt' : 'en'}
                 >
-                  <RotateCcw className="w-3.5 h-3.5" />
                   <span className="hidden sm:inline">{isPt ? t.hero.clearFilters : t.hero.clearFilters}</span>
-                </button>
+                </Button>
               )}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mb-8">
+      <div id="explore-map" className="mb-8 map-fullscreen-wrap scroll-mt-24">
         <SpotMapInteractive
           spotsData={filtered}
           selectedSport={selectedSport}

@@ -5,7 +5,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { Layers, MapPin, Maximize2, Minimize2, Wind } from 'lucide-react';
+import { Layers, MapPin, Maximize2, Wind } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import type { Spot } from '@/types';
@@ -15,7 +15,8 @@ import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import { renderSpotPopup } from './SpotPopupContent';
-import MapFullscreenHud, { type MapFullscreenHudProps } from './MapFullscreenHud';
+import MapExploreHud, { type MapExploreHudProps } from './MapExploreHud';
+import MapSpotSheet, { type MapSpotSheetData } from './MapSpotSheet';
 import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
 import type { BasemapMode } from './MapLayerToggle';
@@ -41,7 +42,26 @@ interface SpotData {
   allScores: Record<SportType, SportScore>;
 }
 
-type MapHudProps = Omit<MapFullscreenHudProps, 'isPt'>;
+type MapHudProps = Omit<
+  MapExploreHudProps,
+  | 'isPt'
+  | 'visible'
+  | 'basemapMode'
+  | 'onBasemapChange'
+  | 'clusterEnabled'
+  | 'onToggleCluster'
+  | 'windEnabled'
+  | 'showWindOnMarkers'
+  | 'onToggleWind'
+  | 'onExitFullscreen'
+  | 'windHint'
+  | 'exploreModeLabel'
+  | 'layerMapLabel'
+  | 'layerSatelliteLabel'
+  | 'clusterLabel'
+  | 'windLabel'
+  | 'exitLabel'
+>;
 
 interface SpotMapInteractiveProps {
   spotsData: SpotData[];
@@ -72,31 +92,23 @@ function getSpotRgb(spot: Spot): string {
   return 'rgb(var(--fg-muted))';
 }
 
-function createSpotMarker(
+function buildMarkerIcon(
   Leaflet: typeof L,
   data: SpotData,
   selectedSport: GridSportFilter,
-  locale: string,
   showWind: boolean,
-  onSpotSelect?: (spotId: string) => void,
-): L.Marker {
+): L.DivIcon {
   const { spot, conditions } = data;
   const score = getBestScore(data, selectedSport);
   const sportColor = getSpotRgb(spot);
   const scoreColor = getScoreRgb(score);
-  const isPt = locale === 'pt';
-
-  const swellH = conditions.swellHeight ?? conditions.waveHeight;
-  const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
-  const windKt = windKtNum.toFixed(0);
-  const powerKw = resolveWavePowerKw(conditions);
 
   const windArrowHtml = showWind
     ? `<div class="ventu-wind-arrow">${buildMapWindArrowSvg(conditions.windDirection, windKtNum)}</div>`
     : '';
 
-  const icon = Leaflet.divIcon({
+  return Leaflet.divIcon({
     className: 'spot-marker',
     html: `
       <div class="ventu-spot-marker-wrap" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
@@ -122,53 +134,103 @@ function createSpotMarker(
     iconAnchor: showWind ? [14, 48] : [14, 14],
     popupAnchor: [0, showWind ? -50 : -16],
   });
+}
 
+function buildMarkerPopupContent(
+  data: SpotData,
+  selectedSport: GridSportFilter,
+  locale: string,
+): string {
+  const { spot, conditions } = data;
+  const score = getBestScore(data, selectedSport);
+  const scoreColor = getScoreRgb(score);
+  const isPt = locale === 'pt';
+  const swellH = conditions.swellHeight ?? conditions.waveHeight;
+  const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
+  const powerKw = resolveWavePowerKw(conditions);
+
+  return renderSpotPopup({
+    name: isPt ? spot.name : (spot.nameEn || spot.name),
+    region: isPt ? spot.region : (spot.regionEn || spot.region),
+    score,
+    scoreColor,
+    swellHeight: swellH.toFixed(1),
+    swellPeriod: swellT.toFixed(0),
+    windKnots: (conditions.windSpeed * MS_TO_KNOTS).toFixed(0),
+    windDirection: getCardinalLabel(conditions.windDirection),
+    wavePowerKw: powerKw.toFixed(1),
+    spotSlug: spot.slug,
+    spotId: spot.id,
+    locale,
+  });
+}
+
+function buildMarkerCacheKey(
+  data: SpotData,
+  selectedSport: GridSportFilter,
+  showWind: boolean,
+  locale: string,
+  useMobileSheet: boolean,
+): string {
+  const score = getBestScore(data, selectedSport);
+  return [data.spot.id, selectedSport, score, showWind, locale, useMobileSheet].join(':');
+}
+
+function createSpotMarker(
+  Leaflet: typeof L,
+  data: SpotData,
+  selectedSport: GridSportFilter,
+  locale: string,
+  showWind: boolean,
+  options: {
+    useMobileSheet: boolean;
+    onMobileTap?: (data: SpotData) => void;
+    onSpotSelect?: (spotId: string) => void;
+  },
+): L.Marker {
+  const { spot } = data;
+  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
-  (marker as L.Marker & { spotScore?: number }).spotScore = score;
+  (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
 
-  marker.bindPopup(
-    renderSpotPopup({
-      name: isPt ? spot.name : (spot.nameEn || spot.name),
-      region: isPt ? spot.region : (spot.regionEn || spot.region),
-      score,
-      scoreColor,
-      swellHeight: swellH.toFixed(1),
-      swellPeriod: swellT.toFixed(0),
-      windKnots: (conditions.windSpeed * MS_TO_KNOTS).toFixed(0),
-      windDirection: getCardinalLabel(conditions.windDirection),
-      wavePowerKw: powerKw.toFixed(1),
-      spotSlug: spot.slug,
-      spotId: spot.id,
-      locale,
-    }),
-    { className: 'spot-popup', maxWidth: 280, closeButton: true, autoClose: true, closeOnClick: false },
-  );
+  if (!options.useMobileSheet) {
+    marker.bindPopup(buildMarkerPopupContent(data, selectedSport, locale), {
+      className: 'spot-popup',
+      maxWidth: 280,
+      closeButton: true,
+      autoClose: true,
+      closeOnClick: false,
+    });
+
+    marker.on('popupopen', () => {
+      const root = marker.getPopup()?.getElement();
+      if (!root) return;
+
+      const detailBtn = root.querySelector('.ventu-popup-detail');
+      if (detailBtn) {
+        detailBtn.addEventListener(
+          'click',
+          (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            options.onSpotSelect?.(spot.id);
+            marker.closePopup();
+          },
+          { once: true },
+        );
+      }
+
+      root.querySelectorAll('a[href]').forEach((anchor) => {
+        anchor.addEventListener('click', (ev) => ev.stopPropagation());
+      });
+    });
+  }
 
   marker.on('click', (e) => {
     Leaflet.DomEvent.stopPropagation(e);
-  });
-
-  marker.on('popupopen', () => {
-    const root = marker.getPopup()?.getElement();
-    if (!root) return;
-
-    const detailBtn = root.querySelector('.ventu-popup-detail');
-    if (detailBtn) {
-      detailBtn.addEventListener(
-        'click',
-        (ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          onSpotSelect?.(spot.id);
-          marker.closePopup();
-        },
-        { once: true },
-      );
+    if (options.useMobileSheet) {
+      options.onMobileTap?.(data);
     }
-
-    root.querySelectorAll('a[href]').forEach((anchor) => {
-      anchor.addEventListener('click', (ev) => ev.stopPropagation());
-    });
   });
 
   return marker;
@@ -205,6 +267,7 @@ export default function SpotMapInteractive({
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markersGroupRef = useRef<L.LayerGroup | null>(null);
+  const markersCacheRef = useRef<Map<string, L.Marker>>(new Map());
   const didFitBoundsRef = useRef(false);
   const filterBoundsKeyRef = useRef('');
   const onSpotSelectRef = useRef(onSpotSelect);
@@ -219,8 +282,20 @@ export default function SpotMapInteractive({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   const [windEnabled, setWindEnabled] = useState(readWindPref);
+  const [isMobile, setIsMobile] = useState(false);
+  const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
   const isPt = locale === 'pt';
   const t = getTranslation(validateLocale(locale));
+
+  // Mobile viewport — bottom sheet instead of Leaflet popup
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 767px)');
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
 
   // Restore persisted map preferences
   useEffect(() => {
@@ -350,6 +425,7 @@ export default function SpotMapInteractive({
   }, []);
 
   const exitFullscreen = useCallback(() => {
+    setSheetSpot(null);
     setIsFullscreen(false);
   }, []);
 
@@ -357,10 +433,13 @@ export default function SpotMapInteractive({
     onFullscreenChange?.(isFullscreen);
   }, [isFullscreen, onFullscreenChange]);
 
-  // Focus management: on fullscreen enter → exit button; on exit → return to trigger
+  // Focus: enter fullscreen → exit control; exit → restore trigger
   useEffect(() => {
     if (isFullscreen) {
-      requestAnimationFrame(() => fullscreenBtnRef.current?.focus());
+      requestAnimationFrame(() => {
+        const exitBtn = document.querySelector<HTMLElement>('[data-map-exit-fullscreen]');
+        exitBtn?.focus();
+      });
     } else if (prevFocusRef.current instanceof HTMLElement) {
       prevFocusRef.current.focus();
       prevFocusRef.current = null;
@@ -423,15 +502,21 @@ export default function SpotMapInteractive({
     };
   }, [isFullscreen]);
 
-  // Escape closes fullscreen
+  // Escape: close sheet first, then exit fullscreen
   useEffect(() => {
-    if (!isFullscreen) return;
+    if (!isFullscreen && !sheetSpot) return;
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') exitFullscreen();
+      if (e.key !== 'Escape') return;
+      if (sheetSpot) {
+        e.preventDefault();
+        setSheetSpot(null);
+        return;
+      }
+      if (isFullscreen) exitFullscreen();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isFullscreen, exitFullscreen]);
+  }, [isFullscreen, sheetSpot, exitFullscreen]);
 
   // Fallback: popup buttons (Leaflet pane) — capture so clicks register before map handlers
   useEffect(() => {
@@ -449,7 +534,7 @@ export default function SpotMapInteractive({
     return () => container.removeEventListener('click', onClick, true);
   }, [isReady]);
 
-  // Add/update markers (clustered or all visible)
+  // Markers: reuse cached Leaflet markers when possible (see TODO below).
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current || !clusterGroupRef.current || !markersGroupRef.current) return;
     const Leaflet = LRef.current;
@@ -458,7 +543,10 @@ export default function SpotMapInteractive({
     const map = mapInstanceRef.current;
     const mcg = clusterGroupRef.current;
     const lg = markersGroupRef.current;
+    const cache = markersCacheRef.current;
+
     map.closePopup();
+    setSheetSpot(null);
     mcg.clearLayers();
     lg.clearLayers();
 
@@ -478,10 +566,42 @@ export default function SpotMapInteractive({
 
     if (spotsData.length === 0) return;
 
+    const nextIds = new Set(spotsData.map((d) => d.spot.id));
+    for (const [id, marker] of cache) {
+      if (!nextIds.has(id)) {
+        marker.remove();
+        cache.delete(id);
+      }
+    }
+
     const bounds = Leaflet.latLngBounds([]);
+    const useMobileSheet = isMobile;
 
     spotsData.forEach((data) => {
-      const marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, onSpotSelect);
+      const cacheKey = buildMarkerCacheKey(
+        data,
+        selectedSport,
+        showWindOnMarkers,
+        locale,
+        useMobileSheet,
+      );
+      let marker = cache.get(data.spot.id);
+      const meta = marker as (L.Marker & { ventuKey?: string }) | undefined;
+
+      if (!marker || meta?.ventuKey !== cacheKey) {
+        if (marker) {
+          marker.remove();
+          cache.delete(data.spot.id);
+        }
+        marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, {
+          useMobileSheet,
+          onMobileTap: setSheetSpot,
+          onSpotSelect,
+        });
+        (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
+        cache.set(data.spot.id, marker);
+      }
+
       if (clusterEnabled) {
         mcg.addLayer(marker);
       } else {
@@ -494,9 +614,21 @@ export default function SpotMapInteractive({
       map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
       didFitBoundsRef.current = true;
     }
-  }, [spotsData, selectedSport, selectedRegion, isReady, clusterEnabled, showWindOnMarkers, locale, onSpotSelect]);
 
-  const fullscreenLabel = t.map.fullscreen;
+    // TODO(perf): diff marker event handlers when toggling mobile/desktop without full cache bust;
+    // popup vs sheet mode still requires recreate today when isMobile changes.
+  }, [
+    spotsData,
+    selectedSport,
+    selectedRegion,
+    isReady,
+    clusterEnabled,
+    showWindOnMarkers,
+    locale,
+    onSpotSelect,
+    isMobile,
+  ]);
+
   const exitFullscreenLabel = t.map.exitFullscreen;
   const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
   const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
@@ -527,73 +659,109 @@ export default function SpotMapInteractive({
 
       {isReady && (
         <>
-          <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
-            <button
-              ref={fullscreenBtnRef}
-              type="button"
-              onClick={isFullscreen ? exitFullscreen : enterFullscreen}
-              className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg))] text-xs font-semibold shadow-lg hover:bg-[rgb(var(--surface-1))] transition-colors touch-manipulation"
-              aria-label={isFullscreen ? exitFullscreenLabel : fullscreenLabel}
-              aria-expanded={isFullscreen}
-            >
-              {isFullscreen ? (
-                <Minimize2 className="w-4 h-4 shrink-0" aria-hidden />
-              ) : (
+          {!isFullscreen && (
+            <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
+              <button
+                ref={fullscreenBtnRef}
+                type="button"
+                onClick={enterFullscreen}
+                className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1 transition-colors duration-150 touch-manipulation"
+                aria-label={t.map.exploreMode}
+                aria-expanded={false}
+              >
                 <Maximize2 className="w-4 h-4 shrink-0" aria-hidden />
-              )}
-              <span className="hidden sm:inline">
-                {isFullscreen ? exitFullscreenLabel : fullscreenLabel}
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={toggleCluster}
-              className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg))] text-xs font-semibold shadow-lg hover:bg-[rgb(var(--surface-1))] transition-colors touch-manipulation"
-              aria-label={clusterLabel}
-              aria-pressed={!clusterEnabled}
-            >
-              {clusterEnabled ? (
-                <MapPin className="w-4 h-4 shrink-0" aria-hidden />
-              ) : (
-                <Layers className="w-4 h-4 shrink-0" aria-hidden />
-              )}
-              <span className="hidden sm:inline">{clusterLabel}</span>
-            </button>
-            <button
-              type="button"
-              onClick={toggleWind}
-              title={windHint ?? undefined}
-              className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border shadow-lg transition-colors touch-manipulation text-xs font-semibold ${
-                showWindOnMarkers
-                  ? 'border-[rgb(var(--data-wind))] bg-[rgb(var(--data-wind)/0.15)] text-[rgb(var(--fg))]'
-                  : windEnabled && clusterEnabled
-                    ? 'border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg-muted))] opacity-80'
-                    : 'border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg))] hover:bg-[rgb(var(--surface-1))]'
-              }`}
-              aria-label={windLabel}
-              aria-pressed={showWindOnMarkers}
-            >
-              <Wind className="w-4 h-4 shrink-0 text-[rgb(var(--data-wind))]" aria-hidden />
-              <span className="hidden sm:inline">{windLabel}</span>
-            </button>
-          </div>
-          <MapLayerToggle
-            current={basemapMode}
-            onChange={handleBasemapChange}
-            isPt={isPt}
-          />
+                <span className="hidden sm:inline">{t.map.exploreMode}</span>
+              </button>
+              <button
+                type="button"
+                onClick={toggleCluster}
+                className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1 transition-colors duration-150 touch-manipulation"
+                aria-label={clusterLabel}
+                aria-pressed={!clusterEnabled}
+              >
+                {clusterEnabled ? (
+                  <MapPin className="w-4 h-4 shrink-0" aria-hidden />
+                ) : (
+                  <Layers className="w-4 h-4 shrink-0" aria-hidden />
+                )}
+                <span className="hidden sm:inline">{clusterLabel}</span>
+              </button>
+              <button
+                type="button"
+                onClick={toggleWind}
+                title={windHint ?? undefined}
+                className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
+                  showWindOnMarkers
+                    ? 'border-data-wind/40 bg-data-wind/15 text-fg'
+                    : windEnabled && clusterEnabled
+                      ? 'border-divider bg-bg-elevated text-fg-muted opacity-80'
+                      : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1'
+                }`}
+                aria-label={windLabel}
+                aria-pressed={showWindOnMarkers}
+              >
+                <Wind className="w-4 h-4 shrink-0 text-data-wind" aria-hidden />
+                <span className="hidden sm:inline">{windLabel}</span>
+              </button>
+            </div>
+          )}
+
+          {!isFullscreen && (
+            <MapLayerToggle
+              current={basemapMode}
+              onChange={handleBasemapChange}
+              isPt={isPt}
+            />
+          )}
+
           <MapLegend locale={locale} reserveHudSpace={isFullscreen} />
-          <p
-            className={`absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-[10px] text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none ${
-              isFullscreen
-                ? 'top-14 left-3 right-auto'
-                : 'max-md:hidden bottom-14 left-1/2 -translate-x-1/2'
-            }`}
-          >
-            {t.map.mapDataHint}
-          </p>
-          {mapHud && (
-            <MapFullscreenHud {...mapHud} visible={isFullscreen} isPt={isPt} />
+
+          {!isFullscreen && (
+            <p className="absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-meta-sm text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none max-md:hidden bottom-14 left-1/2 -translate-x-1/2">
+              {t.map.mapDataHint}
+            </p>
+          )}
+
+          {windHint && !isFullscreen && (
+            <p
+              role="status"
+              className="absolute top-3 left-3 mt-[148px] z-[1000] max-w-[220px] px-2 py-1 rounded-input text-meta-sm text-score-fair bg-bg-elevated/95 border border-score-fair/30 shadow-sm pointer-events-none sm:max-w-xs"
+            >
+              {windHint}
+            </p>
+          )}
+
+          {mapHud && isFullscreen && (
+            <MapExploreHud
+              {...mapHud}
+              visible
+              isPt={isPt}
+              basemapMode={basemapMode}
+              onBasemapChange={handleBasemapChange}
+              clusterEnabled={clusterEnabled}
+              onToggleCluster={toggleCluster}
+              windEnabled={windEnabled}
+              showWindOnMarkers={showWindOnMarkers}
+              onToggleWind={toggleWind}
+              onExitFullscreen={exitFullscreen}
+              windHint={windHint}
+              exploreModeLabel={t.map.exploreMode}
+              layerMapLabel={t.map.layerMap}
+              layerSatelliteLabel={t.map.layerSatellite}
+              clusterLabel={clusterLabel}
+              windLabel={windLabel}
+              exitLabel={exitFullscreenLabel}
+            />
+          )}
+
+          {isMobile && (
+            <MapSpotSheet
+              data={sheetSpot}
+              selectedSport={selectedSport}
+              locale={locale}
+              onClose={() => setSheetSpot(null)}
+              onViewSpot={onSpotSelect}
+            />
           )}
         </>
       )}

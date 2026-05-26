@@ -13,7 +13,6 @@ import {
   getAllSportScores,
   getRelevantSports,
   getHourlyScores,
-  getScoreTokens,
 } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -30,6 +29,7 @@ import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotRelatedNews from '@/components/spots/SpotRelatedNews';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
 import SpotConditionsOverview from '@/components/spots/SpotConditionsOverview';
+import SportTab from '@/components/spots/SportTab';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
@@ -86,50 +86,6 @@ interface SpotData {
     at: string;
     station: string;
   };
-}
-
-/* ─── Sub-components ─── */
-
-function SportTab({
-  sport,
-  score,
-  active,
-  onClick,
-  locale,
-}: {
-  sport: SportType;
-  score: number;
-  active: boolean;
-  onClick: () => void;
-  locale: string;
-}) {
-  const isPt = locale === 'pt';
-  const tokens = getScoreTokens(score);
-  const label = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
-
-  return (
-    <button
-      onClick={onClick}
-      className={`
-        relative flex shrink-0 items-center gap-2 px-4 py-2.5 rounded-pill
-        font-medium text-sm whitespace-nowrap
-        transition-all duration-fast
-        ${
-          active
-            ? `${tokens.bg} ${tokens.text} ${tokens.border} border ring-1 ${tokens.ring} ${tokens.glow}`
-            : 'bg-surface-1 text-fg-muted border border-divider hover:bg-surface-2 hover:text-fg'
-        }
-      `}
-      aria-pressed={active}
-    >
-      <span className="font-medium">{label}</span>
-      <span
-        className={`font-mono text-num-sm font-semibold ${active ? tokens.text : 'text-fg-subtle'}`}
-      >
-        {score}
-      </span>
-    </button>
-  );
 }
 
 /* ─── Main Component ─── */
@@ -416,24 +372,38 @@ export default function SpotDetailClient({
       />
 
       <div className="min-h-screen bg-bg-base pb-12">
-        <SpotDetailHero spot={spot} locale={locale} backLabel={t.spots.backToSpots} />
+        <SpotDetailHero
+          spot={spot}
+          locale={locale}
+          backLabel={t.spots.backToSpots}
+          sport={selectedSport}
+          score={score.score}
+          rating={score.rating}
+          ratingEn={score.ratingEn}
+          conditions={conditions}
+        />
 
-        {/* Sport selector — sticky on desktop; horizontal scroll on mobile */}
+        {/* Sport selector — sticky; horizontal scroll + edge-fade on mobile */}
         <section className="md:sticky md:top-16 z-30 bg-bg-base/95 md:backdrop-blur-sm border-b border-divider">
           <div className="max-w-6xl mx-auto px-4 py-2">
-            <div className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain touch-pan-x no-scrollbar pb-1 edge-fade-x">
-            {(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
-              .filter((s) => relevantSports.includes(s))
-              .map((sport) => (
-                <SportTab
-                  key={sport}
-                  sport={sport}
-                  score={allScores[sport].score}
-                  active={selectedSport === sport}
-                  onClick={() => setSelectedSport(sport)}
-                  locale={locale}
-                />
-              ))}
+            <p className="text-meta-sm text-fg-muted mb-2 md:hidden">{td.sportTabsHint}</p>
+            <div
+              className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain touch-pan-x no-scrollbar pb-1 edge-fade-x"
+              role="tablist"
+              aria-label={isPt ? 'Modalidade' : 'Sport'}
+            >
+              {(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
+                .filter((s) => relevantSports.includes(s))
+                .map((sport) => (
+                  <SportTab
+                    key={sport}
+                    sport={sport}
+                    score={allScores[sport].score}
+                    active={selectedSport === sport}
+                    onClick={() => setSelectedSport(sport)}
+                    locale={locale}
+                  />
+                ))}
             </div>
           </div>
         </section>
@@ -443,8 +413,6 @@ export default function SpotDetailClient({
           coastOrientation={spot.coastOrientation}
           sport={selectedSport}
           score={score.score}
-          rating={score.rating}
-          ratingEn={score.ratingEn}
           conditions={conditions}
           tideObserved={spotData.tideObserved}
           locale={locale}
@@ -457,18 +425,10 @@ export default function SpotDetailClient({
               {isPt ? 'Previsão horária' : 'Hourly forecast'}
             </h2>
             {forecastTableData.length > 0 ? (
-              <div className="card-1 overflow-hidden md:p-4 p-0">
-                {isMobile && (
-                  <p className="text-meta-sm text-fg-muted px-4 pt-3 pb-2 border-b border-divider">
-                    {isPt
-                      ? 'Deslize horizontalmente para ver todas as horas →'
-                      : 'Swipe horizontally for all hours →'}
-                  </p>
-                )}
+              <div className="card-1 overflow-hidden p-3 md:p-4">
                 <ForecastTable
                   hourly={forecastTableData}
                   hours={isMobile ? 72 : 120}
-                  sport={selectedSport}
                   coastOrientation={spot.coastOrientation}
                   locale={locale as 'pt' | 'en'}
                   compact={isMobile}

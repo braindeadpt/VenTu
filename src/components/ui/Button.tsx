@@ -2,22 +2,24 @@
 
 import Link from 'next/link';
 import { cn } from '@/lib/cn';
+import { Loader2 } from 'lucide-react';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-data-waves text-bg-base hover:bg-data-waves/80 border border-transparent',
+    'bg-data-waves text-bg-base hover:bg-data-waves/90 active:bg-data-waves/80 border border-transparent',
   secondary:
-    'bg-surface-1 text-fg border border-divider hover:bg-surface-2',
-  ghost: 'bg-transparent text-fg-muted hover:text-fg hover:bg-surface-1 border border-transparent',
+    'bg-surface-1 text-fg border border-divider hover:bg-surface-2 hover:border-divider-strong active:bg-surface-1',
+  ghost:
+    'bg-transparent text-fg-muted hover:text-fg hover:bg-surface-1 border border-transparent active:bg-surface-2',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'px-3 py-1.5 text-sm rounded-lg min-h-[36px]',
-  md: 'px-4 py-2 text-sm rounded-lg min-h-[44px]',
-  lg: 'px-6 py-3 text-base rounded-xl min-h-[48px]',
+  sm: 'px-3 py-1.5 text-sm rounded-input min-h-[36px]',
+  md: 'px-4 py-2 text-sm rounded-input min-h-[44px]',
+  lg: 'px-6 py-3 text-base rounded-input min-h-[48px]',
 };
 
 type ButtonBaseProps = {
@@ -25,6 +27,11 @@ type ButtonBaseProps = {
   size?: ButtonSize;
   className?: string;
   children: React.ReactNode;
+  loading?: boolean;
+  loadingLabel?: string;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+  locale?: 'pt' | 'en';
 };
 
 type ButtonAsButton = ButtonBaseProps &
@@ -40,29 +47,58 @@ export default function Button({
   size = 'md',
   className,
   children,
+  loading,
+  loadingLabel,
+  leftIcon,
+  rightIcon,
+  locale = 'pt',
   ...props
 }: ButtonProps) {
+  const defaultLoadingLabel = locale === 'pt' ? 'A carregar…' : 'Loading…';
+  const label = loadingLabel ?? defaultLoadingLabel;
+
   const classes = cn(
-    'inline-flex items-center justify-center gap-2 font-medium transition-colors',
+    'inline-flex items-center justify-center gap-2 font-medium',
+    'transition-[background-color,border-color,color,transform,box-shadow] duration-150 ease-out',
     'disabled:opacity-40 disabled:cursor-not-allowed',
+    'active:scale-[0.98]',
     variantClasses[variant],
     sizeClasses[size],
     className,
   );
 
+  const content = loading ? (
+    <>
+      <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
+      <span>{label}</span>
+    </>
+  ) : (
+    <>
+      {leftIcon}
+      {children}
+      {rightIcon}
+    </>
+  );
+
   if ('href' in props && props.href) {
     const { href, ...linkProps } = props;
     return (
-      <Link href={href} className={classes} {...linkProps}>
-        {children}
+      <Link href={href} className={classes} aria-busy={loading || undefined} {...linkProps}>
+        {content}
       </Link>
     );
   }
 
   const { href: _href, ...buttonProps } = props as ButtonAsButton;
   return (
-    <button type="button" className={classes} {...buttonProps}>
-      {children}
+    <button
+      type="button"
+      className={classes}
+      disabled={loading || buttonProps.disabled}
+      aria-busy={loading || undefined}
+      {...buttonProps}
+    >
+      {content}
     </button>
   );
 }

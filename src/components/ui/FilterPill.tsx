@@ -27,9 +27,6 @@ export default function FilterPill({
   inactiveClassName,
   'aria-label': ariaLabel,
 }: FilterPillProps) {
-  const defaultActive = 'bg-surface-2 text-fg border-divider';
-  const defaultInactive = 'bg-surface-1 text-fg-muted border-divider hover:bg-surface-2 hover:text-fg';
-
   return (
     <button
       type="button"
@@ -38,12 +35,12 @@ export default function FilterPill({
       aria-pressed={active}
       aria-label={ariaLabel}
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-pill text-sm font-medium whitespace-nowrap shrink-0',
-        'transition-all duration-fast border',
-        compact ? 'px-2.5 py-1.5 min-h-[40px]' : 'px-4 py-2 min-h-[44px]',
+        'pill inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap shrink-0',
+        'transition-[background-color,border-color,color] duration-150',
+        compact ? 'px-2 py-1.5 min-h-[36px]' : 'px-3 py-2 min-h-[44px]',
         active
-          ? (activeClassName ?? defaultActive)
-          : (inactiveClassName ?? defaultInactive),
+          ? (activeClassName ?? 'pill-active')
+          : (inactiveClassName ?? 'pill-ghost'),
         disabled && 'opacity-50 cursor-not-allowed',
         className,
       )}

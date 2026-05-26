@@ -1,27 +1,15 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
 import { ALL_SPORTS } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { loadSpotData } from '@/lib/load-spot-data';
+import { getTotalOnCount } from '@/lib/homepageSport';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
 import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
-import HomepageFeatured from '@/components/homepage/HomepageFeatured';
-import HomepageStatusBar from '@/components/homepage/HomepageStatusBar';
-import { parseSportFilter } from '@/lib/homepageSport';
-import type { SpotData } from '@/lib/load-spot-data';
-
-function loadDawnPatrol(): Record<string, any> | null {
-  try {
-    const filePath = join(process.cwd(), 'public', 'data', 'dawn-patrol.json');
-    const data = readFileSync(filePath, 'utf-8');
-    return JSON.parse(data);
-  } catch {
-    return null;
-  }
-}
-
+import HomepageHero from '@/components/homepage/HomepageHero';
+import HomepageTopNow from '@/components/homepage/HomepageTopNow';
+import HomepageGridStatusBar from '@/components/homepage/HomepageGridStatusBar';
+import { StatCard } from '@/components/ui/Card';
 export default async function HomePage({
   params,
 }: {
@@ -30,15 +18,13 @@ export default async function HomePage({
   const { locale } = await params;
   const isPt = locale === 'pt';
   getTranslation(locale as Locale);
-  const initialSport = parseSportFilter(null);
 
   const spotsData = loadSpotData();
-  const dawnPatrol = loadDawnPatrol();
-  const dawnHeadline = dawnPatrol?.[isPt ? 'pt' : 'en']?.headline || null;
+  const totalOnCount = getTotalOnCount(spotsData);
 
   const now = Date.now();
   const timestamps = spotsData
-    .map(d => d.conditions.updatedAt)
+    .map((d) => d.conditions.updatedAt)
     .filter((ts): ts is string => Boolean(ts))
     .map((ts) => new Date(ts).getTime());
   const maxTs = timestamps.length > 0 ? Math.max(...timestamps) : null;
@@ -53,47 +39,47 @@ export default async function HomePage({
           : `VenTu - ${spotsData.length} surf, kitesurf and windsurf spots — conditions updated every 3 hours`}
       </h1>
 
-      <HomepageStatusBar
+      <HomepageHero
         locale={locale}
-        hoursSinceMin={hoursSinceMin}
         maxTs={maxTs}
-        minTs={minTs}
-        spotCount={spotsData.length}
+        hoursSinceMin={hoursSinceMin}
+        totalOnCount={totalOnCount}
       />
+
+      <HomepageTopNow spotsData={spotsData} locale={locale} />
 
       <DawnPatrolBanner locale={locale} />
 
-      <HomepageFeatured
-        spotsData={spotsData}
-        locale={locale}
-        initialSport={initialSport}
-        dawnHeadline={dawnHeadline}
-      />
+      <HomepageGridStatusBar locale={locale} maxTs={maxTs} spotCount={spotsData.length} />
 
-      <SpotGridClient
-        spotsData={spotsData}
-        locale={locale}
-        regions={[...MACRO_REGIONS]}
-      />
+      <SpotGridClient spotsData={spotsData} locale={locale} regions={[...MACRO_REGIONS]} />
 
       <section className="border-t border-divider py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <dl className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div>
-              <dd className="font-mono text-num-lg text-fg">{spotsData.length}</dd>
-              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Spots monitorizados' : 'Spots monitored'}</dt>
+          <dl className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div
+              className="stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 0 } as React.CSSProperties}
+            >
+              <StatCard label={isPt ? 'Spots monitorizados' : 'Spots monitored'} value={spotsData.length} />
             </div>
-            <div>
-              <dd className="font-mono text-num-lg text-fg">{ALL_SPORTS.length}</dd>
-              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Desportos' : 'Sports'}</dt>
+            <div
+              className="stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 80 } as React.CSSProperties}
+            >
+              <StatCard label={isPt ? 'Desportos' : 'Sports'} value={ALL_SPORTS.length} />
             </div>
-            <div>
-              <dd className="text-num-lg text-fg">Open-Meteo</dd>
-              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Fonte de dados' : 'Data source'}</dt>
+            <div
+              className="stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 160 } as React.CSSProperties}
+            >
+              <StatCard label={isPt ? 'Fonte de dados' : 'Data source'} value="Open-Meteo" />
             </div>
-            <div>
-              <dd className="text-num-lg text-fg">MIT</dd>
-              <dt className="text-meta-sm text-fg-subtle">{isPt ? 'Open source' : 'Open source'}</dt>
+            <div
+              className="stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 240 } as React.CSSProperties}
+            >
+              <StatCard label={isPt ? 'Open source' : 'Open source'} value="MIT" />
             </div>
           </dl>
         </div>

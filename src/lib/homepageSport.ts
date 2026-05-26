@@ -75,6 +75,28 @@ export function getSportLabel(sport: GridSportFilter, isPt: boolean): string {
   return SPORT_LABELS[sport][isPt ? 'pt' : 'en']
 }
 
+/** Sports shown in the home "Top agora" row. */
+export const TOP_NOW_SPORTS = ['surf', 'kitesurf', 'windsurf'] as const
+export type TopNowSport = (typeof TOP_NOW_SPORTS)[number]
+
+export function getTopSpotForSport(
+  spotsData: HomepageSpotData[],
+  sport: TopNowSport,
+): HomepageSpotData | null {
+  const sorted = sortSpotsBySport(spotsData, sport)
+  return sorted.find((d) => getScoreForFilter(d, sport) > 0) ?? null
+}
+
+/** Unique spots with score ≥ threshold for surf, kitesurf or windsurf. */
+export function getTotalOnCount(
+  spotsData: HomepageSpotData[],
+  threshold = 70,
+): number {
+  return spotsData.filter((d) =>
+    TOP_NOW_SPORTS.some((s) => getScoreForFilter(d, s) >= threshold),
+  ).length
+}
+
 export function dispatchSportChange(sport: GridSportFilter) {
   if (typeof window === 'undefined') return
   window.dispatchEvent(new CustomEvent(SPORT_CHANGE_EVENT, { detail: sport }))

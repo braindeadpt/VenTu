@@ -298,6 +298,12 @@
     );
   }
 
+  /* Staggered fade-up for list items — use CSS var --stagger-delay (ms) */
+  .stagger-fade-in {
+    animation: fade-up 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: calc(var(--stagger-delay, 0) * 1ms);
+  }
+
   /* Line clamps */
   .line-clamp-2 {
     display: -webkit-box;
@@ -444,8 +450,13 @@
 }
 
 /* ── Layer toggle ── */
-.layer-toggle-control {
-  background: rgb(var(--bg-elevated)) !important;
+  /* Map fullscreen wrapper */
+  .map-fullscreen-wrap {
+    transition: all 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .layer-toggle-control {
+    background: rgb(var(--bg-elevated)) !important;
   border: 1px solid rgb(var(--divider)) !important;
   border-radius: 8px !important;
   overflow: hidden;
