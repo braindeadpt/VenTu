@@ -82,8 +82,9 @@ test.describe('UI interactions audit', () => {
       timeout: 20_000,
     });
 
+    await expect(page.getByRole('main').getByRole('meter')).toBeVisible();
     await expect(
-      page.getByRole('heading', { name: /Condições actuais|Current conditions/i }),
+      page.getByRole('heading', { name: /Direcções|Directions/i }),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
