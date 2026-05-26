@@ -46,7 +46,12 @@ export default async function HomePage({
 
       <HomepageTopNow spotsData={spotsData} locale={locale} />
 
-      <SpotGridClient spotsData={spotsData} locale={locale} regions={[...MACRO_REGIONS]} />
+      <SpotGridClient
+        spotsData={spotsData}
+        locale={locale}
+        regions={[...MACRO_REGIONS]}
+        dataStatus={{ maxTs, spotCount: spotsData.length }}
+      />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
         <DawnPatrolBanner locale={locale} />

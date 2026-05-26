@@ -168,7 +168,7 @@ export default function SpotDetailHero({
 
         <div className="mt-6 pt-6 border-t border-divider">
           <h2 className="text-h3 text-fg mb-4">
-            {isPt ? 'Condições actuais' : 'Current conditions'}
+            {isPt ? 'Agora' : 'Now'}
           </h2>
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <SwellRadar

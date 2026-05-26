@@ -1,21 +1,16 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import { Map } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import HomepageSearch from '@/components/ui/HomepageSearch';
 import { getTranslation } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { readGridFiltersFromWindow } from '@/lib/gridFilters';
-import {
-  type GridSportFilter,
-} from '@/lib/sportRatings';
+import { type GridSportFilter } from '@/lib/sportRatings';
 import {
   type HomepageSpotData,
-  sortSpotsBySport,
   getOnCount,
-  getScoreForFilter,
   getSportLabel,
   SPORT_CHANGE_EVENT,
 } from '@/lib/homepageSport';
@@ -67,11 +62,8 @@ export default function HomepageHero({
     };
   }, []);
 
-  const sorted = useMemo(() => sortSpotsBySport(spotsData, sport), [spotsData, sport]);
-  const bestSpot = sorted.find((d) => getScoreForFilter(d, sport) > 0) ?? sorted[0];
-  const onCount = getOnCount(spotsData, sport);
+  const onCount = useMemo(() => getOnCount(spotsData, sport), [spotsData, sport]);
   const sportLabel = getSportLabel(sport, isPt);
-  const bestScore = bestSpot ? getScoreForFilter(bestSpot, sport) : 0;
 
   const headline =
     onCount === 0
@@ -92,11 +84,6 @@ export default function HomepageHero({
       : hoursSinceMin < 12
         ? 'bg-[rgb(var(--score-fair))]'
         : 'bg-[rgb(var(--score-poor))]';
-
-  const bestHref =
-    bestSpot && bestScore > 0
-      ? `/${locale}/spots/${bestSpot.spot.slug}/?sport=${sport}`
-      : null;
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
@@ -127,20 +114,9 @@ export default function HomepageHero({
             {headline}
           </h2>
 
-          {bestHref && bestSpot ? (
-            <p className="text-body-lg text-fg-muted">
-              {isPt ? 'Melhor agora' : 'Best now'}:{' '}
-              <Link
-                href={bestHref}
-                className="text-fg font-medium hover:text-data-waves transition-colors duration-150"
-              >
-                {isPt ? bestSpot.spot.name : bestSpot.spot.nameEn}
-              </Link>
-              <span className="font-mono tabular-nums text-fg ml-1">· {bestScore}</span>
-            </p>
-          ) : (
-            <p className="text-body-lg text-fg-muted">{t.hero.heroSublineZero}</p>
-          )}
+          <p className="text-body-lg text-fg-muted">
+            {onCount > 0 ? t.hero.heroSubline.replace('{count}', String(onCount)) : t.hero.heroSublineZero}
+          </p>
         </div>
 
         <div className="flex flex-col sm:flex-row flex-wrap gap-3 shrink-0">

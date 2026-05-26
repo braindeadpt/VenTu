@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
@@ -14,6 +13,7 @@ import MetricBar from '@/components/ui/MetricBar';
 import FavoriteButton from '@/components/FavoriteButton';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import { ArrowRight } from 'lucide-react';
+import Button from '@/components/ui/Button';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 
@@ -185,13 +185,15 @@ export default function SpotDrawer({ spotData, onClose, locale }: SpotDrawerProp
 
           {/* ── Footer actions ── */}
           <div className="flex items-center gap-3 pt-3 border-t border-divider sticky bottom-0 bg-bg-base">
-            <Link
+            <Button
               href={`/${locale}/spots/${spot.slug}`}
-              className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-data-waves hover:bg-data-waves/80 text-bg-base text-sm font-medium transition-all"
+              size="md"
+              className="flex-1"
+              locale={isPt ? 'pt' : 'en'}
+              rightIcon={<ArrowRight className="w-4 h-4" aria-hidden />}
             >
               {isPt ? 'Ver página completa' : 'View full page'}
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            </Button>
             <FavoriteButton
               spotId={spot.id}
               spotName={isPt ? spot.name : spot.nameEn}

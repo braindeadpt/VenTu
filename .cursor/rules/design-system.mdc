@@ -36,6 +36,9 @@ alwaysApply: true
 - Heavy backdrop-blur on long mobile sections
 
 ## Page patterns
-- **Home**: headline, “Atualizado há Xh” chip, CTA “Explorar mapa”, “Top agora” cards with score + metrics
-- **Spot**: large score, 4 stat chips, sport tabs with score, scannable forecast
-- **Map fullscreen**: clear HUD, tooltips, bottom sheet on mobile
+- **Home**: dynamic ON headline, “Atualizado há Xh” chip, `SpotListCard` in “Top agora”, map + `SpotGridRankedList` (top 3 + more)
+- **Spot**: large score, 4 stat chips, “Agora” block (radar + feedback), sport tabs, Windguru forecast
+- **Map fullscreen**: single bottom HUD, `MapSpotSheet` on mobile; drawer uses `Button` CTAs
+
+## Shared list UI
+- **`SpotListCard`**: `Card` + `ScoreBadge` + wave/period/wind metrics — use for home Top agora and grid ranked list
