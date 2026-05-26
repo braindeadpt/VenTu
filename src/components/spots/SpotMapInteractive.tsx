@@ -341,12 +341,31 @@ export default function SpotMapInteractive({
     } catch { /* noop */ }
   }, []);
 
-  const enterFullscreen = useCallback(() => setIsFullscreen(true), []);
-  const exitFullscreen = useCallback(() => setIsFullscreen(false), []);
+  const fullscreenBtnRef = useRef<HTMLButtonElement>(null);
+  const prevFocusRef = useRef<Element | null>(null);
+
+  const enterFullscreen = useCallback(() => {
+    prevFocusRef.current = document.activeElement;
+    setIsFullscreen(true);
+  }, []);
+
+  const exitFullscreen = useCallback(() => {
+    setIsFullscreen(false);
+  }, []);
 
   useEffect(() => {
     onFullscreenChange?.(isFullscreen);
   }, [isFullscreen, onFullscreenChange]);
+
+  // Focus management: on fullscreen enter → exit button; on exit → return to trigger
+  useEffect(() => {
+    if (isFullscreen) {
+      requestAnimationFrame(() => fullscreenBtnRef.current?.focus());
+    } else if (prevFocusRef.current instanceof HTMLElement) {
+      prevFocusRef.current.focus();
+      prevFocusRef.current = null;
+    }
+  }, [isFullscreen]);
 
   const toggleCluster = useCallback(() => {
     setClusterEnabled((prev) => {
@@ -510,6 +529,7 @@ export default function SpotMapInteractive({
         <>
           <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
             <button
+              ref={fullscreenBtnRef}
               type="button"
               onClick={isFullscreen ? exitFullscreen : enterFullscreen}
               className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-lg border border-[rgb(var(--divider))] bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg))] text-xs font-semibold shadow-lg hover:bg-[rgb(var(--surface-1))] transition-colors touch-manipulation"

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 'react';
 import { Menu, X, Wind, Globe, Search } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import MegaMenu from './MegaMenu';
@@ -33,6 +33,23 @@ export default function Header({ locale }: HeaderProps) {
     setOpenMega(false);
     setSearchOpen(false);
   }, [pathname]);
+
+  const mobileNavRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (mobileMenuOpen && mobileNavRef.current) {
+      const firstLink = mobileNavRef.current.querySelector<HTMLAnchorElement>('a');
+      firstLink?.focus();
+    }
+  }, [mobileMenuOpen]);
+
+  const handleMobileKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      setMobileMenuOpen(false);
+      const hamburger = document.querySelector<HTMLButtonElement>('[aria-controls="mobile-nav"]');
+      hamburger?.focus();
+    }
+  };
 
   const navLabel = t.nav;
 
@@ -170,7 +187,11 @@ export default function Header({ locale }: HeaderProps) {
 
         {/* Mobile menu — animated slide-down via max-height transition */}
         <div
+          ref={mobileNavRef}
           id="mobile-nav"
+          role="navigation"
+          aria-label={isPt ? 'Navegação móvel' : 'Mobile navigation'}
+          onKeyDown={handleMobileKeyDown}
           className={[
             'md:hidden overflow-hidden transition-all duration-slow ease-out-expo',
             'bg-bg-base/95 backdrop-blur-xl',
