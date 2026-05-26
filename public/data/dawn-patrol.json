@@ -1,70 +1,78 @@
 {
   "date": "2026-05-26",
+  "generatedAt": "2026-05-26T22:32:51.491Z",
   "topSpot": "Nazaré",
   "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Ondas perfeitas e vento leve: o dia ideal para surfar!",
-    "advice": "Com ondas de 1.4 m e período de 10 s, a água está em torno de 18 °C, ideal para um shorty 3/2 mm. O vento está calmo (3 kn), garantindo boas condições de manobra. Priorize Nazaré ou Ribeira d'Ilhas e chegue cedo para evitar a multidão.",
-    "bestTime": "08:00",
-    "wetsuit": "3/2mm shorty",
-    "crowdTip": "Chegue antes das 9 h e escolha um ponto de saída menos popular."
+    "headline": "Hoje é dia de Nazaré! 🌊",
+    "advice": "Melhor janela: 6:00h. Ondas de 1.4m com 3 nós de vento.",
+    "bestTime": "6:00",
+    "wetsuit": "2mm shorty",
+    "crowdTip": "Chega cedo para evitar crowd!"
   },
   "en": {
-    "headline": "Perfect waves and light wind: ideal day to surf!",
-    "advice": "With 1.4 m waves and a 10‑second period, the water is around 18 °C—perfect for a 3/2 mm shorty. Light wind (3 kn) means clean lines and good maneuverability. Target Nazaré or Ribeira d'Ilhas and get there early to beat the crowd.",
-    "bestTime": "08:00",
-    "wetsuit": "3/2mm shorty",
-    "crowdTip": "Arrive before 9 am and pick a less‑crowded take‑off."
+    "headline": "Today is Nazaré day! 🌊",
+    "advice": "Best window: 6:00. 1.4m waves with 3 knot wind.",
+    "bestTime": "6:00",
+    "wetsuit": "2mm shorty",
+    "crowdTip": "Get there early to beat the crowd!"
   },
   "spots": [
-    {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 85,
-      "verdict": "maybe",
-      "ptReason": "Boa qualidade de onda e vento leve, mas a multidão pode ser alta.",
-      "enReason": "Good wave quality and light wind, but crowds can be heavy."
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 81,
-      "verdict": "maybe",
-      "ptReason": "Ondas decentes, porém menos consistentes que os tops.",
-      "enReason": "Decent waves but less consistent than the top spots."
-    },
     {
       "name": "Nazaré",
       "slug": "nazare",
       "score": 86,
       "verdict": "go",
-      "ptReason": "Maior score, ondas perfeitas e vento calmo – ideal para surf de qualidade.",
-      "enReason": "Highest score, perfect waves and calm wind – ideal for quality surf."
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 86,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 85,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 81,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 81,
-      "verdict": "maybe",
-      "ptReason": "Ondas boas, mas a exposição ao vento pode variar.",
-      "enReason": "Good waves, but wind exposure can be variable."
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 74,
-      "verdict": "skip",
-      "ptReason": "Vento forte (11 kn) atrapalha a qualidade da onda.",
-      "enReason": "Strong wind (11 kn) degrades wave quality."
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 80,
-      "verdict": "maybe",
-      "ptReason": "Ondas menores e boa água, porém spot mais popular.",
-      "enReason": "Smaller waves and good water, but a more popular spot."
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 74,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     }
-  ],
-  "generatedAt": "2026-05-26T20:29:59.589Z"
+  ]
 }
