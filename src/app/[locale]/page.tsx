@@ -3,13 +3,12 @@ import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { loadSpotData } from '@/lib/load-spot-data';
-import { getTotalOnCount } from '@/lib/homepageSport';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
 import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
 import HomepageHero from '@/components/homepage/HomepageHero';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
-import HomepageGridStatusBar from '@/components/homepage/HomepageGridStatusBar';
 import { StatCard } from '@/components/ui/Card';
+
 export default async function HomePage({
   params,
 }: {
@@ -20,7 +19,6 @@ export default async function HomePage({
   getTranslation(locale as Locale);
 
   const spotsData = loadSpotData();
-  const totalOnCount = getTotalOnCount(spotsData);
 
   const now = Date.now();
   const timestamps = spotsData
@@ -41,18 +39,18 @@ export default async function HomePage({
 
       <HomepageHero
         locale={locale}
+        spotsData={spotsData}
         maxTs={maxTs}
         hoursSinceMin={hoursSinceMin}
-        totalOnCount={totalOnCount}
       />
 
       <HomepageTopNow spotsData={spotsData} locale={locale} />
 
-      <DawnPatrolBanner locale={locale} />
-
-      <HomepageGridStatusBar locale={locale} maxTs={maxTs} spotCount={spotsData.length} />
-
       <SpotGridClient spotsData={spotsData} locale={locale} regions={[...MACRO_REGIONS]} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+        <DawnPatrolBanner locale={locale} />
+      </div>
 
       <section className="border-t border-divider py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

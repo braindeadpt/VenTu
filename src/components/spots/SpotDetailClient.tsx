@@ -28,7 +28,6 @@ import MagicWindows from '@/components/MagicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotRelatedNews from '@/components/spots/SpotRelatedNews';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
-import SpotConditionsOverview from '@/components/spots/SpotConditionsOverview';
 import SportTab from '@/components/spots/SportTab';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
@@ -374,12 +373,15 @@ export default function SpotDetailClient({
       <div className="min-h-screen bg-bg-base pb-12">
         <SpotDetailHero
           spot={spot}
+          spotSlug={spot.slug}
           locale={locale}
           backLabel={t.spots.backToSpots}
           sport={selectedSport}
           score={score.score}
           rating={score.rating}
           ratingEn={score.ratingEn}
+          coastOrientation={spot.coastOrientation}
+          tideObserved={spotData.tideObserved}
           conditions={conditions}
         />
 
@@ -408,16 +410,6 @@ export default function SpotDetailClient({
           </div>
         </section>
 
-        <SpotConditionsOverview
-          spotSlug={spot.slug}
-          coastOrientation={spot.coastOrientation}
-          sport={selectedSport}
-          score={score.score}
-          conditions={conditions}
-          tideObserved={spotData.tideObserved}
-          locale={locale}
-        />
-
         {/* Forecast + sidebar — on mobile: map/windows before long forecast table */}
         <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
           <section className="lg:col-span-2 order-2 lg:order-1 space-y-3">
@@ -429,6 +421,7 @@ export default function SpotDetailClient({
                 <ForecastTable
                   hourly={forecastTableData}
                   hours={isMobile ? 72 : 120}
+                  sport={selectedSport}
                   coastOrientation={spot.coastOrientation}
                   locale={locale as 'pt' | 'en'}
                   compact={isMobile}

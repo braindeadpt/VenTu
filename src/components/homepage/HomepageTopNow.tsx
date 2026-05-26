@@ -41,14 +41,14 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
 
   return (
     <section
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6"
       aria-labelledby="top-now-heading"
     >
-      <h2 id="top-now-heading" className="text-h2 text-fg mb-6">
+      <h2 id="top-now-heading" className="text-h3 text-fg mb-3">
         {t.hero.topNow}
       </h2>
 
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 list-none p-0 m-0">
+      <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 list-none p-0 m-0">
         {cards.map(({ sport, data }, i) => {
           const score = getScoreForFilter(data, sport);
           const windKt = Math.round(data.conditions.windSpeed * 1.94384);
@@ -59,12 +59,12 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
             <li
               key={sport}
               className="stagger-fade-in motion-reduce:animate-none"
-              style={{ '--stagger-delay': i * 60 } as React.CSSProperties}
+              style={{ '--stagger-delay': i * 40 } as React.CSSProperties}
             >
-              <Card hoverable href={href} className="h-full flex flex-col gap-4">
-                <div className="flex items-center justify-between gap-2">
+              <Card hoverable href={href} className="p-3 flex flex-col gap-2">
+                <div className="flex items-center justify-between gap-2 min-w-0">
                   <span
-                    className="pill pill-ghost gap-1.5 px-2 py-1 min-h-0 sport-accent"
+                    className="pill pill-ghost gap-1 px-2 py-0.5 min-h-0 text-meta-sm sport-accent shrink-0"
                     data-sport={SPORT_ACCENTS[sport]}
                   >
                     {sportLabel}
@@ -76,43 +76,25 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
                   <h3 className="text-body font-semibold text-fg truncate">
                     {isPt ? data.spot.name : data.spot.nameEn}
                   </h3>
-                  <p className="text-meta-sm text-fg-muted mt-0.5 truncate">
+                  <p className="text-meta-sm text-fg-muted truncate">
                     {isPt ? data.spot.region : data.spot.regionEn}
                   </p>
                 </div>
 
-                <dl className="grid grid-cols-3 gap-2 pt-3 border-t border-divider mt-auto">
-                  <div>
-                    <dt className="sr-only">{isPt ? 'Ondas' : 'Waves'}</dt>
-                    <dd className="flex flex-col gap-1">
-                      <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-                      <span className="font-mono text-num-sm text-fg tabular-nums">
-                        {data.conditions.waveHeight.toFixed(1)}m
-                      </span>
-                      <span className="text-meta-sm text-fg-muted">{isPt ? 'Ondas' : 'Waves'}</span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="sr-only">{isPt ? 'Período' : 'Period'}</dt>
-                    <dd className="flex flex-col gap-1">
-                      <Clock className="w-3.5 h-3.5 text-data-period" aria-hidden />
-                      <span className="font-mono text-num-sm text-fg tabular-nums">
-                        {Math.round(data.conditions.wavePeriod)}s
-                      </span>
-                      <span className="text-meta-sm text-fg-muted">{isPt ? 'Período' : 'Period'}</span>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="sr-only">{isPt ? 'Vento' : 'Wind'}</dt>
-                    <dd className="flex flex-col gap-1">
-                      <Wind className="w-3.5 h-3.5 text-data-wind" aria-hidden />
-                      <span className="font-mono text-num-sm text-fg tabular-nums">
-                        {windKt}kt
-                      </span>
-                      <span className="text-meta-sm text-fg-muted">{isPt ? 'Vento' : 'Wind'}</span>
-                    </dd>
-                  </div>
-                </dl>
+                <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums">
+                  <span className="inline-flex items-center gap-1">
+                    <Waves className="w-3 h-3 text-data-waves" aria-hidden />
+                    {data.conditions.waveHeight.toFixed(1)}m
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Clock className="w-3 h-3 text-data-period" aria-hidden />
+                    {Math.round(data.conditions.wavePeriod)}s
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <Wind className="w-3 h-3 text-data-wind" aria-hidden />
+                    {windKt}kt
+                  </span>
+                </p>
               </Card>
             </li>
           );
