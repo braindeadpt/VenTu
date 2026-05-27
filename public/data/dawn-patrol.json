@@ -1,62 +1,70 @@
 {
   "date": "2026-05-27",
-  "topSpot": "Ribeira d'Ilhas",
-  "topSpotSlug": "",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Ondas perfeitas!",
-    "advice": "Hoje é um dia excelente para surfar em Ribeira d'Ilhas, com ondas de 1.4m e vento leve. É uma boa ideia chegar cedo para aproveitar as condições mais tranquilas. Lembre-se de usar um fato de 3/2mm para se manter aquecido.",
+    "headline": "Ondas fortes!",
+    "advice": "Hoje é um dia perfeito para surfar em Nazaré, com ondas de 1.3m e vento moderado. É recomendável chegar cedo para aproveitar as melhores condições. Não se esqueça de usar um fato de neoprene 3/2mm para se manter aquecido.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chegue cedo para evitar multidões"
   },
   "en": {
-    "headline": "Perfect waves!",
-    "advice": "Today is an excellent day to surf at Ribeira d'Ilhas, with waves of 1.4m and light wind. It's a good idea to arrive early to take advantage of the most tranquil conditions. Don't forget to wear a 3/2mm wetsuit to stay warm.",
+    "headline": "Big waves!",
+    "advice": "Today is a perfect day to surf in Nazaré, with waves of 1.3m and moderate wind. It's recommended to arrive early to take advantage of the best conditions. Don't forget to wear a 3/2mm wetsuit to stay warm.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Arrive early to avoid crowds"
   },
   "spots": [
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
+      "name": "Nazaré",
+      "slug": "nazare",
       "score": 85,
       "verdict": "go",
-      "ptReason": "Ondas consistentes e vento leve",
-      "enReason": "Consistent waves and light wind"
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 81,
-      "verdict": "maybe",
-      "ptReason": "Ondas um pouco menores, mas ainda assim divertidas",
-      "enReason": "Slightly smaller waves, but still fun"
+      "ptReason": "Ondas fortes e vento moderado tornam este spot ideal para hoje",
+      "enReason": "Big waves and moderate wind make this spot ideal for today"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 81,
+      "score": 80,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes e vento leve tornam este spot uma boa opção",
+      "enReason": "Consistent waves and light wind make this spot a good option"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 80,
       "verdict": "maybe",
-      "ptReason": "Ondas um pouco menores, mas ainda assim divertidas",
-      "enReason": "Slightly smaller waves, but still fun"
+      "ptReason": "Condições boas, mas com mais vento do que os outros spots",
+      "enReason": "Good conditions, but with more wind than the other spots"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 79,
+      "verdict": "maybe",
+      "ptReason": "Ondas menores do que os outros spots, mas ainda assim uma boa opção",
+      "enReason": "Smaller waves than the other spots, but still a good option"
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 79,
+      "verdict": "maybe",
+      "ptReason": "Condições semelhantes a Supertubos, mas com mais multidões",
+      "enReason": "Similar conditions to Supertubos, but with more crowds"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
       "score": 67,
       "verdict": "skip",
-      "ptReason": "Vento forte e ondas desorganizadas",
-      "enReason": "Strong wind and disorganized waves"
-    },
-    {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 80,
-      "verdict": "maybe",
-      "ptReason": "Ondas menores, mas ainda assim divertidas",
-      "enReason": "Smaller waves, but still fun"
+      "ptReason": "Vento forte torna este spot desaconselhável para hoje",
+      "enReason": "Strong wind makes this spot not recommended for today"
     }
   ],
-  "generatedAt": "2026-05-27T04:43:56.828Z"
+  "generatedAt": "2026-05-27T08:41:16.940Z"
 }
