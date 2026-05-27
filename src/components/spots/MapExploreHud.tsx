@@ -2,8 +2,9 @@
 
 import { Filter, Layers, MapPin, Minimize2, RotateCcw, Wind } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
+import MapControlButton from '@/components/ui/MapControlButton';
 import type { BasemapMode } from './MapLayerToggle';
-import type { MapFullscreenHudProps } from './MapFullscreenHud';
+import type { MapFullscreenHudProps } from './mapHudTypes';
 
 export interface MapExploreHudProps extends MapFullscreenHudProps {
   basemapMode: BasemapMode;
@@ -95,55 +96,43 @@ export default function MapExploreHud({
             })}
           </div>
 
-          <button
-            type="button"
+          <MapControlButton
             onClick={onToggleCluster}
             aria-label={clusterLabel}
-            aria-pressed={!clusterEnabled}
-            className={`flex items-center justify-center min-h-[40px] min-w-[40px] rounded-input border transition-colors duration-150 ${
-              !clusterEnabled
-                ? 'border-divider-strong bg-surface-2 text-fg'
-                : 'border-divider bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg'
-            }`}
+            pressed={!clusterEnabled}
           >
             {clusterEnabled ? (
               <MapPin className="w-4 h-4" aria-hidden />
             ) : (
               <Layers className="w-4 h-4" aria-hidden />
             )}
-          </button>
+          </MapControlButton>
 
-          <button
-            type="button"
+          <MapControlButton
             onClick={onToggleWind}
             aria-label={windLabel}
-            aria-pressed={showWindOnMarkers}
+            pressed={showWindOnMarkers}
             title={windHint ?? undefined}
-            className={`flex items-center justify-center min-h-[40px] min-w-[40px] rounded-input border transition-colors duration-150 ${
-              showWindOnMarkers
-                ? 'border-data-wind/40 bg-data-wind/15 text-fg'
-                : windEnabled && clusterEnabled
-                  ? 'border-divider bg-surface-1 text-fg-muted opacity-80'
-                  : 'border-divider bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg'
-            }`}
+            className={
+              showWindOnMarkers ? 'border-data-wind/40 bg-data-wind/15 text-fg' : undefined
+            }
           >
             <Wind className="w-4 h-4 text-data-wind" aria-hidden />
-          </button>
+          </MapControlButton>
 
           <span className="pill pill-ghost shrink-0 px-2 py-1 min-h-0 text-meta-sm hidden sm:inline-flex">
             <span className="font-mono tabular-nums text-fg">{spotCount}</span>
             <span className="text-fg-muted ml-1">{isPt ? 'spots' : ''}</span>
           </span>
 
-          <button
-            type="button"
+          <MapControlButton
             onClick={onExitFullscreen}
             aria-label={exitLabel}
+            className="ml-auto sm:ml-0"
             data-map-exit-fullscreen
-            className="flex items-center justify-center min-h-[40px] min-w-[40px] rounded-input border border-divider bg-surface-1 text-fg hover:bg-surface-2 transition-colors duration-150 ml-auto sm:ml-0"
           >
             <Minimize2 className="w-4 h-4" aria-hidden />
-          </button>
+          </MapControlButton>
         </div>
 
         {windHint && (

@@ -386,7 +386,7 @@ export default function SpotDetailClient({
         />
 
         {/* Sport selector — sticky; horizontal scroll + edge-fade on mobile */}
-        <section className="md:sticky md:top-16 z-30 bg-bg-base/95 md:backdrop-blur-sm border-b border-divider">
+        <section className="sticky top-16 z-30 bg-bg-base/95 backdrop-blur-sm border-b border-divider">
           <div className="max-w-6xl mx-auto px-4 py-2">
             <p className="text-meta-sm text-fg-muted mb-2 md:hidden">{td.sportTabsHint}</p>
             <div
@@ -416,6 +416,7 @@ export default function SpotDetailClient({
             <h2 className="text-h2 text-fg">
               {isPt ? 'Previsão horária' : 'Hourly forecast'}
             </h2>
+            <p className="text-meta text-fg-muted md:hidden">{td.forecastHint}</p>
             {forecastTableData.length > 0 ? (
               <div className="card-1 overflow-hidden p-3 md:p-4">
                 <ForecastTable

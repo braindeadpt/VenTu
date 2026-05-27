@@ -1,4 +1,5 @@
 import type { SportType } from './sportRatings';
+import { getScoreCssVar, getScoreRgb, SCORE_THRESHOLD_STEPS } from '@/lib/scoreThresholds';
 
 export const TILE_URLS = {
   light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
@@ -30,25 +31,17 @@ export const CLUSTER_CONFIG = {
   showCoverageOnHover: false,
 } as const;
 
-export const SCORE_THRESHOLDS: { min: number; cssVar: string }[] = [
-  { min: 85, cssVar: '--score-epic' },
-  { min: 70, cssVar: '--score-good' },
-  { min: 50, cssVar: '--score-fair' },
-  { min: 30, cssVar: '--score-poor' },
-  { min: 0, cssVar: '--score-closed' },
-];
+/** @deprecated Use SCORE_THRESHOLD_STEPS from scoreThresholds */
+export const SCORE_THRESHOLDS = SCORE_THRESHOLD_STEPS;
 
 export function getScoreThreshold(score: number): { min: number; cssVar: string } {
-  for (const t of SCORE_THRESHOLDS) {
+  for (const t of SCORE_THRESHOLD_STEPS) {
     if (score >= t.min) return t;
   }
-  return SCORE_THRESHOLDS[SCORE_THRESHOLDS.length - 1];
+  return SCORE_THRESHOLD_STEPS[SCORE_THRESHOLD_STEPS.length - 1];
 }
 
-export function getScoreRgb(score: number): string {
-  const threshold = getScoreThreshold(score);
-  return `rgb(var(${threshold.cssVar}))`;
-}
+export { getScoreRgb, getScoreCssVar };
 
 export const SPORT_CSS_VARS: Record<SportType, string> = {
   surf: '--sport-surf',

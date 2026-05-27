@@ -36,9 +36,11 @@ alwaysApply: true
 - Heavy backdrop-blur on long mobile sections
 
 ## Page patterns
-- **Home**: dynamic ON headline, “Atualizado há Xh” chip, `SpotListCard` in “Top agora”, map + `SpotGridRankedList` (top 3 + more)
-- **Spot**: large score, 4 stat chips, “Agora” block (radar + feedback), sport tabs, Windguru forecast
-- **Map fullscreen**: single bottom HUD, `MapSpotSheet` on mobile; drawer uses `Button` CTAs
+- **Home (5 zones)**: Pulse (h1 ON + freshness) → Top agora (3 sports, `SpotListCard`) → Explore (filters + map) → More spots list (excludes Top agora slugs) → Dawn Patrol (5–12h) / trust footer
+- **Spot**: score + 4 chips + “Agora” (radar; wind kt only in chips) + sticky sport tabs + Windguru forecast
+- **Map fullscreen**: single bottom HUD (`MapControlButton` 44px), `MapSpotSheet` on mobile
+- **Drawer**: real metrics only — no placeholder tabs; sync `gridSport` + `?sport=` on CTA
 
 ## Shared list UI
-- **`SpotListCard`**: `Card` + `ScoreBadge` + wave/period/wind metrics — use for home Top agora and grid ranked list
+- **`SpotListCard`**: `Card` + `ScoreBadge` + metrics — Top agora + “Mais spots” (never duplicate same slug)
+- **Scores**: `getScoreTokens` / `scoreThresholds.ts` — map markers must match badges (80/60/40/20)

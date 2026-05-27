@@ -3,10 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Map } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import HomepageSearch from '@/components/ui/HomepageSearch';
 import { getTranslation } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
-import { readGridFiltersFromWindow } from '@/lib/gridFilters';
+import { readGridFiltersFromWindow, DEFAULT_SPORT as GRID_DEFAULT_SPORT } from '@/lib/gridFilters';
 import { type GridSportFilter } from '@/lib/sportRatings';
 import {
   type HomepageSpotData,
@@ -18,21 +17,17 @@ import {
 interface HomepageHeroProps {
   locale: string;
   spotsData: HomepageSpotData[];
-  initialSport?: GridSportFilter;
   maxTs: number | null;
-  hoursSinceMin: number;
 }
 
 export default function HomepageHero({
   locale,
   spotsData,
-  initialSport = 'surf',
   maxTs,
-  hoursSinceMin,
 }: HomepageHeroProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
-  const [sport, setSport] = useState<GridSportFilter>(initialSport);
+  const [sport, setSport] = useState<GridSportFilter>(GRID_DEFAULT_SPORT);
   const [hoursAgo, setHoursAgo] = useState<number | null>(
     maxTs ? Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)) : null,
   );
@@ -78,12 +73,14 @@ export default function HomepageHero({
           ? `${onCount} spots ON para ${sportLabel} hoje`
           : `${onCount} spots ON for ${sportLabel} today`;
 
-  const dotColor =
-    hoursSinceMin < 3
-      ? 'bg-[rgb(var(--score-good))]'
-      : hoursSinceMin < 12
-        ? 'bg-[rgb(var(--score-fair))]'
-        : 'bg-[rgb(var(--score-poor))]';
+  const freshnessDot =
+    hoursAgo === null
+      ? 'bg-fg-subtle'
+      : hoursAgo < 3
+        ? 'bg-[rgb(var(--score-good))]'
+        : hoursAgo < 12
+          ? 'bg-[rgb(var(--score-fair))]'
+          : 'bg-[rgb(var(--score-poor))]';
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
@@ -93,14 +90,14 @@ export default function HomepageHero({
       >
         <div className="space-y-3 max-w-2xl">
           <span
-            className="pill pill-ghost inline-flex items-center gap-1.5 px-2 py-1 min-h-0 text-meta motion-reduce:transition-none transition-opacity duration-150"
+            className="pill pill-ghost inline-flex items-center gap-1.5 px-2 py-1 min-h-0 text-meta"
             title={
               isPt
-                ? 'Hora da última actualização de condições'
-                : 'Time of last conditions update'
+                ? 'Hora da última actualização de condições (Open-Meteo)'
+                : 'Time of last conditions update (Open-Meteo)'
             }
           >
-            <span className={`w-2 h-2 rounded-full shrink-0 ${dotColor}`} aria-hidden />
+            <span className={`w-2 h-2 rounded-full shrink-0 ${freshnessDot}`} aria-hidden />
             {hoursAgo !== null ? (
               <span className="font-mono tabular-nums text-fg-muted">
                 {t.hero.updatedAgo.replace('{hours}', String(hoursAgo))}
@@ -108,11 +105,13 @@ export default function HomepageHero({
             ) : (
               <span className="text-fg-muted">{t.hero.statusNoData}</span>
             )}
+            <span aria-hidden className="text-fg-subtle">·</span>
+            <span className="text-fg-muted">{t.hero.gridStatusSource}</span>
           </span>
 
-          <h2 className="text-[clamp(1.75rem,4vw,2.25rem)] font-bold text-fg tracking-tight leading-[1.1]">
+          <h1 className="text-[clamp(1.75rem,4vw,2.25rem)] font-bold text-fg tracking-tight leading-[1.1]">
             {headline}
-          </h2>
+          </h1>
 
           <p className="text-body-lg text-fg-muted">
             {onCount > 0 ? t.hero.heroSubline.replace('{count}', String(onCount)) : t.hero.heroSublineZero}
@@ -137,13 +136,6 @@ export default function HomepageHero({
             {t.hero.viewAllSpots}
           </Button>
         </div>
-      </div>
-
-      <div
-        className="stagger-fade-in mt-5 max-w-md motion-reduce:animate-none"
-        style={{ '--stagger-delay': 80 } as React.CSSProperties}
-      >
-        <HomepageSearch locale={locale} />
       </div>
     </section>
   );

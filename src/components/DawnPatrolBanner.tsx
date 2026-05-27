@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import Button from '@/components/ui/Button';
 import { getAssetPath } from '@/lib/paths';
 import { spots } from '@/lib/spots';
 import { isDawnPatrolStale } from '@/lib/dataFreshness';
@@ -191,16 +192,18 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
           <div className="flex items-center gap-2 shrink-0">
             {/* Desktop CTA — visible sm+ */}
-            <Link
+            <Button
               href={topSpotHref}
-              className="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-data-waves hover:bg-data-waves/80 text-bg-base rounded-xl text-sm font-medium transition-all hover:scale-105"
-              onClick={e => e.stopPropagation()}
+              size="sm"
+              className="hidden sm:inline-flex"
+              locale={isPt ? 'pt' : 'en'}
+              leftIcon={<Zap className="w-4 h-4" aria-hidden />}
+              onClick={(e) => e.stopPropagation()}
             >
-              <Zap className="w-4 h-4" />
               {topSpotLinkValid
                 ? (isPt ? 'Ver Spot' : 'View Spot')
                 : (isPt ? 'Ver Spots' : 'View Spots')}
-            </Link>
+            </Button>
             {expanded ? <ChevronUp className="w-5 h-5 text-fg-subtle" /> : <ChevronDown className="w-5 h-5 text-fg-subtle" />}
           </div>
         </div>
@@ -258,15 +261,17 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           </div>
 
           {/* Mobile CTA — visible inside expanded area */}
-          <Link
+          <Button
             href={topSpotHref}
-            className="sm:hidden flex items-center justify-center gap-2 mt-4 w-full py-3 bg-data-waves hover:bg-data-waves/80 text-bg-base rounded-xl text-sm font-medium transition-all"
+            size="lg"
+            className="sm:hidden w-full mt-4"
+            locale={isPt ? 'pt' : 'en'}
+            leftIcon={<Zap className="w-4 h-4" aria-hidden />}
           >
-            <Zap className="w-4 h-4" />
             {topSpotLinkValid
               ? (isPt ? 'Ver Spot em destaque' : 'View featured spot')
               : (isPt ? 'Ver todos os spots' : 'View all spots')}
-          </Link>
+          </Button>
         </div>
       )}
     </div>

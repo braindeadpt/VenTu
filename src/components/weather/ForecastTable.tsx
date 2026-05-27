@@ -331,7 +331,7 @@ export default function ForecastTable({
       {/* Current time indicator */}
 {currentHourIndex >= 0 && (
         <div className="flex items-center gap-2 text-meta text-fg-muted px-1">
-          <span className="w-2 h-2 rounded-full bg-score-good animate-pulse" />
+          <span className="w-2 h-2 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
           <span>{isPt ? 'Hora atual' : 'Current time'} — {isPt ? 'Arraste para ver mais' : 'Scroll to see more'}</span>
         </div>
       )}
@@ -368,12 +368,15 @@ export default function ForecastTable({
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
         onWheel={(e) => {
-          e.preventDefault();
-          e.currentTarget.scrollLeft += e.deltaY + e.deltaX;
+          if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) {
+            e.preventDefault();
+            e.currentTarget.scrollLeft += e.deltaY;
+          }
         }}
       >
         <div
-          className={`absolute inset-y-0 left-0 bg-bg-base/95 backdrop-blur-[2px] pointer-events-none z-10 border-r border-divider ${compact ? 'w-[72px]' : 'w-8 md:w-8'}`}
+          className="absolute inset-y-0 left-0 bg-bg-base/95 backdrop-blur-[2px] pointer-events-none z-10 border-r border-divider"
+          style={{ width: labelWidthPx }}
         />
         <table className={`border-collapse text-center relative z-0 ${tableMinW}`}>
           {/* Caption for screen readers */}

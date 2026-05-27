@@ -87,6 +87,16 @@ export function getTopSpotForSport(
   return sorted.find((d) => getScoreForFilter(d, sport) > 0) ?? null
 }
 
+/** Spot slugs featured in home "Top agora" — exclude from ranked list below map. */
+export function getTopNowExcludedSlugs(spotsData: HomepageSpotData[]): Set<string> {
+  const slugs = new Set<string>()
+  for (const sport of TOP_NOW_SPORTS) {
+    const top = getTopSpotForSport(spotsData, sport)
+    if (top) slugs.add(top.spot.slug)
+  }
+  return slugs
+}
+
 /** Unique spots with score ≥ threshold for surf, kitesurf or windsurf. */
 export function getTotalOnCount(
   spotsData: HomepageSpotData[],

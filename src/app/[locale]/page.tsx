@@ -1,13 +1,13 @@
-import { ALL_SPORTS } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { loadSpotData } from '@/lib/load-spot-data';
+import { getTopNowExcludedSlugs } from '@/lib/homepageSport';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
 import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
 import HomepageHero from '@/components/homepage/HomepageHero';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
-import { StatCard } from '@/components/ui/Card';
+import { isDawnPatrolWindow } from '@/lib/dawnPatrolHours';
 
 export default async function HomePage({
   params,
@@ -19,30 +19,25 @@ export default async function HomePage({
   getTranslation(locale as Locale);
 
   const spotsData = loadSpotData();
+  const topNowExcluded = getTopNowExcludedSlugs(spotsData);
 
-  const now = Date.now();
   const timestamps = spotsData
     .map((d) => d.conditions.updatedAt)
     .filter((ts): ts is string => Boolean(ts))
     .map((ts) => new Date(ts).getTime());
   const maxTs = timestamps.length > 0 ? Math.max(...timestamps) : null;
-  const minTs = timestamps.length > 0 ? Math.min(...timestamps) : null;
-  const hoursSinceMin = minTs ? (now - minTs) / 3600000 : Infinity;
+
+  const showDawnPatrol = isDawnPatrolWindow();
 
   return (
     <div className="min-h-screen bg-bg-base">
-      <h1 className="sr-only">
-        {isPt
-          ? `VenTu - ${spotsData.length} spots de surf, kitesurf e windsurf — condições actualizadas a cada 3 horas`
-          : `VenTu - ${spotsData.length} surf, kitesurf and windsurf spots — conditions updated every 3 hours`}
-      </h1>
+      <HomepageHero locale={locale} spotsData={spotsData} maxTs={maxTs} />
 
-      <HomepageHero
-        locale={locale}
-        spotsData={spotsData}
-        maxTs={maxTs}
-        hoursSinceMin={hoursSinceMin}
-      />
+      {showDawnPatrol && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+          <DawnPatrolBanner locale={locale} />
+        </div>
+      )}
 
       <HomepageTopNow spotsData={spotsData} locale={locale} />
 
@@ -50,43 +45,27 @@ export default async function HomePage({
         spotsData={spotsData}
         locale={locale}
         regions={[...MACRO_REGIONS]}
-        dataStatus={{ maxTs, spotCount: spotsData.length }}
+        excludeTopNowSlugs={topNowExcluded}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-        <DawnPatrolBanner locale={locale} />
-      </div>
-
-      <section className="border-t border-divider py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <dl className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div
-              className="stagger-fade-in motion-reduce:animate-none"
-              style={{ '--stagger-delay': 0 } as React.CSSProperties}
-            >
-              <StatCard label={isPt ? 'Spots monitorizados' : 'Spots monitored'} value={spotsData.length} />
-            </div>
-            <div
-              className="stagger-fade-in motion-reduce:animate-none"
-              style={{ '--stagger-delay': 80 } as React.CSSProperties}
-            >
-              <StatCard label={isPt ? 'Desportos' : 'Sports'} value={ALL_SPORTS.length} />
-            </div>
-            <div
-              className="stagger-fade-in motion-reduce:animate-none"
-              style={{ '--stagger-delay': 160 } as React.CSSProperties}
-            >
-              <StatCard label={isPt ? 'Fonte de dados' : 'Data source'} value="Open-Meteo" />
-            </div>
-            <div
-              className="stagger-fade-in motion-reduce:animate-none"
-              style={{ '--stagger-delay': 240 } as React.CSSProperties}
-            >
-              <StatCard label={isPt ? 'Open source' : 'Open source'} value="MIT" />
-            </div>
-          </dl>
+      {!showDawnPatrol && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
+          <DawnPatrolBanner locale={locale} />
         </div>
-      </section>
+      )}
+
+      <footer className="border-t border-divider py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-meta text-fg-muted text-center">
+            <span className="font-mono tabular-nums text-fg">{spotsData.length}</span>
+            {isPt ? ' spots monitorizados' : ' spots monitored'}
+            <span aria-hidden className="mx-2">·</span>
+            Open-Meteo
+            <span aria-hidden className="mx-2">·</span>
+            MIT
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

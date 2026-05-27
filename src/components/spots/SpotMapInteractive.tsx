@@ -667,7 +667,7 @@ export default function SpotMapInteractive({
                 onClick={enterFullscreen}
                 className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1 transition-colors duration-150 touch-manipulation"
                 aria-label={t.map.exploreMode}
-                aria-expanded={false}
+                aria-expanded={isFullscreen}
               >
                 <Maximize2 className="w-4 h-4 shrink-0" aria-hidden />
                 <span className="hidden sm:inline">{t.map.exploreMode}</span>

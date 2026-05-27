@@ -43,7 +43,9 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
       <h2 id="top-now-heading" className="text-h3 text-fg mb-1">
         {t.hero.topNow}
       </h2>
-      <p className="text-meta text-fg-muted mb-3">{t.hero.top3Sub}</p>
+      <p className="text-meta text-fg-muted mb-3">
+        {isPt ? 'Melhor spot por desporto · Portugal' : 'Best spot per sport · Portugal'}
+      </p>
 
       <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 list-none p-0 m-0">
         {cards.map(({ sport, data }, i) => {

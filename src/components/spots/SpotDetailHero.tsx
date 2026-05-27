@@ -6,7 +6,7 @@ import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getScoreTokens } from '@/lib/sportScore';
-import { getCardinalLabel } from '@/lib/wind';
+import { getDataFreshness } from '@/lib/dataFreshness';
 import { cn } from '@/lib/cn';
 import FavoriteButton from '@/components/FavoriteButton';
 import SocialShare from '@/components/ui/SocialShare';
@@ -32,6 +32,7 @@ interface SpotDetailHeroProps {
     waveHeight: number;
     wavePeriod: number;
     waveDirection: number;
+    swellHeight?: number;
     windSpeed: number;
     windDirection: number;
     waterTemp: number;
@@ -59,7 +60,7 @@ export default function SpotDetailHero({
   const tokens = getScoreTokens(score);
   const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
   const windKt = Math.round(conditions.windSpeed * 1.94384);
-  const windDir = getCardinalLabel(conditions.windDirection);
+  const swellH = conditions.swellHeight ?? conditions.waveHeight;
 
   const updatedLabel = conditions.updatedAt
     ? new Intl.DateTimeFormat(locale, {
@@ -69,6 +70,9 @@ export default function SpotDetailHero({
         month: 'short',
       }).format(new Date(conditions.updatedAt))
     : null;
+
+  const freshness = conditions.updatedAt ? getDataFreshness(conditions.updatedAt) : null;
+  const showUpdatedPill = updatedLabel && (!freshness || freshness === 'fresh');
 
   return (
     <header className="max-w-6xl mx-auto px-4 pt-4 pb-2">
@@ -117,7 +121,7 @@ export default function SpotDetailHero({
             )}
 
             <div className="flex flex-wrap items-center gap-2 mt-4">
-              {updatedLabel && (
+              {showUpdatedPill && (
                 <span className="pill pill-ghost gap-1.5 px-2 py-1 min-h-0 text-meta-sm text-fg-muted">
                   {isPt ? 'Actualizado' : 'Updated'} {updatedLabel}
                 </span>
@@ -156,7 +160,7 @@ export default function SpotDetailHero({
           />
           <StatChip
             icon={<Wind className="w-4 h-4 text-data-wind" />}
-            value={`${windKt}kt ${windDir}`}
+            value={`${windKt}kt`}
             label={isPt ? 'Vento' : 'Wind'}
           />
           <StatChip
@@ -173,7 +177,7 @@ export default function SpotDetailHero({
           <div className="flex flex-col sm:flex-row items-center gap-6">
             <SwellRadar
               swellDirection={conditions.waveDirection}
-              swellHeight={conditions.waveHeight}
+              swellHeight={swellH}
               windDirection={conditions.windDirection}
               windSpeed={conditions.windSpeed}
               coastOrientation={coastOrientation}

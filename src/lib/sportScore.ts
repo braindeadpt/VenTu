@@ -430,10 +430,10 @@ function windCategoryLabel(category: WindCategory): string {
 }
 
 function getRatingLabels(score: number): { rating: string; ratingEn: string } {
-  if (score >= 85) return { rating: 'Épico!', ratingEn: 'Epic!' }
-  if (score >= 70) return { rating: 'Bom', ratingEn: 'Good' }
-  if (score >= 50) return { rating: 'Razoável', ratingEn: 'Fair' }
-  if (score >= 30) return { rating: 'Fraco', ratingEn: 'Poor' }
+  if (score >= SCORE_TIER_THRESHOLDS.epic) return { rating: 'Épico!', ratingEn: 'Epic!' }
+  if (score >= SCORE_TIER_THRESHOLDS.good) return { rating: 'Bom', ratingEn: 'Good' }
+  if (score >= SCORE_TIER_THRESHOLDS.fair) return { rating: 'Razoável', ratingEn: 'Fair' }
+  if (score >= SCORE_TIER_THRESHOLDS.poor) return { rating: 'Fraco', ratingEn: 'Poor' }
   if (score > 0) return { rating: 'Mau', ratingEn: 'Bad' }
   return { rating: 'N/A', ratingEn: 'N/A' }
 }

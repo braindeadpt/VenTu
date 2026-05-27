@@ -54,15 +54,15 @@ export function SpotGridClient({
   regions,
   initialSport,
   initialRegion,
-  dataStatus,
+  excludeTopNowSlugs,
 }: {
   spotsData: SpotData[];
   locale: string;
   regions: string[];
   initialSport?: string;
   initialRegion?: string;
-  /** Optional status line above filters (home page). */
-  dataStatus?: { maxTs: number | null; spotCount: number };
+  /** Home: exclude spots already in Top agora */
+  excludeTopNowSlugs?: Set<string>;
 }) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);
@@ -96,36 +96,9 @@ export function SpotGridClient({
   const sportColor = getSportColor(selectedSport);
   const sportLabel = getSportLabel(selectedSport, isPt);
 
-  const updatedStatusLabel =
-    dataStatus?.maxTs != null
-      ? t.hero.statusUpdated.replace(
-          '{time}',
-          new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit' }).format(
-            new Date(dataStatus.maxTs),
-          ),
-        )
-      : t.hero.statusNoData;
-
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" suppressHydrationWarning>
-      {dataStatus && (
-        <p
-          role="status"
-          aria-live="polite"
-          className="text-meta-sm text-fg-muted mb-4 truncate"
-        >
-          <span>{updatedStatusLabel}</span>
-          <span aria-hidden className="mx-2">·</span>
-          <span>{t.hero.gridStatusSource}</span>
-          <span aria-hidden className="mx-2">·</span>
-          <span>
-            <span className="font-mono tabular-nums text-fg">{dataStatus.spotCount}</span>{' '}
-            {t.hero.spotsCount}
-          </span>
-        </p>
-      )}
-
-      <div className="md:sticky md:top-16 md:z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 mb-6">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" suppressHydrationWarning>
+      <div className="md:sticky md:top-16 md:z-40 bg-bg-base/95 md:backdrop-blur-sm border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3 mb-6">
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 edge-fade-x">
             {SPORTS.map((sport, i) => {
@@ -270,6 +243,7 @@ export function SpotGridClient({
           sorted={sorted}
           selectedSport={selectedSport}
           locale={locale}
+          excludeSlugs={excludeTopNowSlugs}
         />
       )}
 
@@ -318,6 +292,7 @@ export function SpotGridClient({
         spotData={selectedSpotData}
         onClose={() => setSelectedSpotId(null)}
         locale={locale}
+        gridSport={selectedSport}
       />
     </section>
   );
