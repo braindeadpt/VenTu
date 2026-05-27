@@ -1,62 +1,78 @@
 {
   "date": "2026-05-27",
-  "topSpot": "Guincho",
-  "topSpotSlug": "guincho",
+  "generatedAt": "2026-05-27T16:09:04.938Z",
+  "topSpot": "Coxos",
+  "topSpotSlug": "coxos",
   "pt": {
-    "headline": "Surfe em Guincho!",
-    "advice": "As condições em Guincho estão excelentes, com ondas de 1.0m e vento de 6 nós. É um dia perfeito para surfar em Cascais. Certifique-se de chegar cedo para aproveitar as melhores ondas.",
-    "bestTime": "08:00",
-    "wetsuit": "3/2mm",
-    "crowdTip": "Chegue cedo para evitar a multidão"
+    "headline": "Hoje é dia de Coxos! 🌊",
+    "advice": "Melhor janela: 9:00h. Ondas de 1.1m com 4 nós de vento.",
+    "bestTime": "9:00",
+    "wetsuit": "2mm shorty",
+    "crowdTip": "Chega cedo para evitar crowd!"
   },
   "en": {
-    "headline": "Surf Guincho!",
-    "advice": "The conditions at Guincho are excellent, with waves of 1.0m and wind of 6 knots. It's a perfect day to surf in Cascais. Make sure to arrive early to catch the best waves.",
-    "bestTime": "08:00",
-    "wetsuit": "3/2mm",
-    "crowdTip": "Arrive early to avoid the crowd"
+    "headline": "Today is Coxos day! 🌊",
+    "advice": "Best window: 9:00. 1.1m waves with 4 knot wind.",
+    "bestTime": "9:00",
+    "wetsuit": "2mm shorty",
+    "crowdTip": "Get there early to beat the crowd!"
   },
   "spots": [
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 79,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
     {
       "name": "Guincho",
       "slug": "guincho",
       "score": 78,
       "verdict": "go",
-      "ptReason": "Ondas consistentes e vento favorável",
-      "enReason": "Consistent waves and favorable wind"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
-      "name": "Coxos",
-      "slug": "coxos",
+      "name": "Nazaré",
+      "slug": "nazare",
       "score": 78,
       "verdict": "go",
-      "ptReason": "Ondas excelentes e vento leve",
-      "enReason": "Excellent waves and light wind"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 59,
-      "verdict": "maybe",
-      "ptReason": "Ondas menores e vento moderado",
-      "enReason": "Smaller waves and moderate wind"
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 59,
-      "verdict": "maybe",
-      "ptReason": "Ondas menores e vento moderado",
-      "enReason": "Smaller waves and moderate wind"
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 58,
-      "verdict": "skip",
-      "ptReason": "Ondas menores e vento leve",
-      "enReason": "Smaller waves and light wind"
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     }
-  ],
-  "generatedAt": "2026-05-27T10:16:41.091Z"
+  ]
 }
