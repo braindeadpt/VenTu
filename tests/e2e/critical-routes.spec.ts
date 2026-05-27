@@ -4,12 +4,15 @@ test.describe('Critical routes', () => {
   test('homepage PT loads', async ({ page }) => {
     await page.goto('/pt/');
     await expect(page.getByRole('banner')).toContainText('Ven');
-    await expect(page.getByRole('status')).toBeVisible();
+    await expect(page.getByRole('status').first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
   test('homepage EN loads', async ({ page }) => {
     await page.goto('/en/');
     await expect(page.getByRole('banner')).toContainText('Ven');
+    await expect(page.getByRole('status').first()).toBeVisible();
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   });
 
   test('spot detail page loads', async ({ page }) => {

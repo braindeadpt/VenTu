@@ -90,6 +90,8 @@ export default function HomepageHero({
       >
         <div className="space-y-3 max-w-2xl">
           <span
+            role="status"
+            aria-live="polite"
             className="pill pill-ghost inline-flex items-center gap-1.5 px-2 py-1 min-h-0 text-meta"
             title={
               isPt
