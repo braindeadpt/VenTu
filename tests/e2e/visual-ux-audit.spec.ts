@@ -124,11 +124,19 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 15_000 });
       const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
       await marker.click({ position: { x: 14, y: 14 }, force: true });
-      const popup = page.locator('.leaflet-popup.spot-popup').last();
-      await expect(popup).toBeVisible({ timeout: 5_000 });
-      await expect(popup).toContainText(/kW\/m|Swell|Vento|Wind/i);
 
-      await popup.getByRole('button', { name: /Ver condições|View conditions/i }).click();
+      if (viewport === 'mobile') {
+        const sheet = page.locator('[aria-labelledby="map-spot-sheet-title"]');
+        await expect(sheet).toBeVisible({ timeout: 5_000 });
+        await expect(sheet).toContainText(/\d+\.\d+m|kt|Vento|Wind/i);
+        await sheet.getByRole('button', { name: /Painel rápido|Quick panel/i }).click();
+      } else {
+        const popup = page.locator('.leaflet-popup.spot-popup').last();
+        await expect(popup).toBeVisible({ timeout: 5_000 });
+        await expect(popup).toContainText(/kW\/m|Swell|Vento|Wind/i);
+        await popup.getByRole('button', { name: /Ver condições|View conditions/i }).click();
+      }
+
       await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 });
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
@@ -145,15 +153,15 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
       await expect(mapShell).toHaveAttribute('data-map-hud', 'hidden');
       await expect(
-        page.getByRole('region', { name: /Filtros do mapa|Map filters/i }),
+        page.getByRole('region', { name: /Modo explorar|Explore mode/i }),
       ).toHaveCount(0);
 
-      const enterBtn = page.getByRole('button', { name: /Ecrã inteiro|Full screen/i });
+      const enterBtn = page.getByRole('button', { name: /Modo Explorar|Explore mode/i });
       await enterBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
       await expect(mapShell).toHaveAttribute('data-map-hud', 'visible');
       await expect(
-        page.getByRole('region', { name: /Filtros do mapa|Map filters/i }),
+        page.getByRole('region', { name: /Modo explorar|Explore mode/i }),
       ).toBeVisible();
       await expect(page.locator('.leaflet-container')).toBeVisible();
 
