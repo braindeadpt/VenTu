@@ -429,6 +429,14 @@ function windCategoryLabel(category: WindCategory): string {
   }
 }
 
+/** Score tier thresholds — aligned with globals.css (80 / 60 / 40 / 20). */
+export const SCORE_TIER_THRESHOLDS = {
+  epic: 80,
+  good: 60,
+  fair: 40,
+  poor: 20,
+} as const
+
 function getRatingLabels(score: number): { rating: string; ratingEn: string } {
   if (score >= SCORE_TIER_THRESHOLDS.epic) return { rating: 'Épico!', ratingEn: 'Epic!' }
   if (score >= SCORE_TIER_THRESHOLDS.good) return { rating: 'Bom', ratingEn: 'Good' }
@@ -493,14 +501,6 @@ export function getHourlyScores(
     return getSportScore(spot, sport, hourConditions).score
   })
 }
-
-/** Score tier thresholds — aligned with globals.css (80 / 60 / 40 / 20). */
-export const SCORE_TIER_THRESHOLDS = {
-  epic: 80,
-  good: 60,
-  fair: 40,
-  poor: 20,
-} as const
 
 export type ScoreTier = 'epic' | 'good' | 'fair' | 'poor' | 'closed'
 

@@ -14,7 +14,7 @@ interface SpotGridRankedListProps {
   selectedSport: GridSportFilter;
   locale: string;
   /** Home Model A: omit spots already shown in Top agora */
-  excludeSlugs?: Set<string>;
+  excludeSlugs?: string[];
 }
 
 export default function SpotGridRankedList({
@@ -27,8 +27,11 @@ export default function SpotGridRankedList({
   const t = getTranslation(locale as 'pt' | 'en');
   const sportLabel = getSportLabel(selectedSport, isPt);
 
-  const filtered = excludeSlugs?.size
-    ? sorted.filter((d) => !excludeSlugs.has(d.spot.slug))
+  const exclude = excludeSlugs?.length
+    ? new Set(excludeSlugs)
+    : null;
+  const filtered = exclude
+    ? sorted.filter((d) => !exclude.has(d.spot.slug))
     : sorted;
 
   const list = filtered.slice(0, LIST_LIMIT);

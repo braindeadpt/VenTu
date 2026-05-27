@@ -62,7 +62,7 @@ export function SpotGridClient({
   initialSport?: string;
   initialRegion?: string;
   /** Home: exclude spots already in Top agora */
-  excludeTopNowSlugs?: Set<string>;
+  excludeTopNowSlugs?: string[];
 }) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as any);

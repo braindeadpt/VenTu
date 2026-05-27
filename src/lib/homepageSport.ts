@@ -88,11 +88,11 @@ export function getTopSpotForSport(
 }
 
 /** Spot slugs featured in home "Top agora" — exclude from ranked list below map. */
-export function getTopNowExcludedSlugs(spotsData: HomepageSpotData[]): Set<string> {
-  const slugs = new Set<string>()
+export function getTopNowExcludedSlugs(spotsData: HomepageSpotData[]): string[] {
+  const slugs: string[] = []
   for (const sport of TOP_NOW_SPORTS) {
     const top = getTopSpotForSport(spotsData, sport)
-    if (top) slugs.add(top.spot.slug)
+    if (top && !slugs.includes(top.spot.slug)) slugs.push(top.spot.slug)
   }
   return slugs
 }

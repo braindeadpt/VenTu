@@ -4,10 +4,9 @@ import { MACRO_REGIONS } from '@/lib/regions';
 import { loadSpotData } from '@/lib/load-spot-data';
 import { getTopNowExcludedSlugs } from '@/lib/homepageSport';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
-import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
 import HomepageHero from '@/components/homepage/HomepageHero';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
-import { isDawnPatrolWindow } from '@/lib/dawnPatrolHours';
+import { DawnPatrolTopSlot, DawnPatrolBottomSlot } from '@/components/homepage/HomeDawnPatrolSlots';
 
 export default async function HomePage({
   params,
@@ -27,17 +26,11 @@ export default async function HomePage({
     .map((ts) => new Date(ts).getTime());
   const maxTs = timestamps.length > 0 ? Math.max(...timestamps) : null;
 
-  const showDawnPatrol = isDawnPatrolWindow();
-
   return (
     <div className="min-h-screen bg-bg-base">
       <HomepageHero locale={locale} spotsData={spotsData} maxTs={maxTs} />
 
-      {showDawnPatrol && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
-          <DawnPatrolBanner locale={locale} />
-        </div>
-      )}
+      <DawnPatrolTopSlot locale={locale} />
 
       <HomepageTopNow spotsData={spotsData} locale={locale} />
 
@@ -48,11 +41,7 @@ export default async function HomePage({
         excludeTopNowSlugs={topNowExcluded}
       />
 
-      {!showDawnPatrol && (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8">
-          <DawnPatrolBanner locale={locale} />
-        </div>
-      )}
+      <DawnPatrolBottomSlot locale={locale} />
 
       <footer className="border-t border-divider py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
