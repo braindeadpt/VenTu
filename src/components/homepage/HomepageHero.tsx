@@ -28,12 +28,13 @@ export default function HomepageHero({
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
   const [sport, setSport] = useState<GridSportFilter>(GRID_DEFAULT_SPORT);
-  const [hoursAgo, setHoursAgo] = useState<number | null>(
-    maxTs ? Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)) : null,
-  );
+  const [hoursAgo, setHoursAgo] = useState<number | null>(null);
 
   useEffect(() => {
-    if (!maxTs) return;
+    if (!maxTs) {
+      setHoursAgo(null);
+      return;
+    }
     setHoursAgo(Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)));
   }, [maxTs]);
 
