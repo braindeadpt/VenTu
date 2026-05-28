@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { Map } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import HomepageSearch from '@/components/ui/HomepageSearch';
-import FreshnessIndicator from '@/components/ui/FreshnessIndicator';
 import AggregateScoreGauge from '@/components/ui/AggregateScoreGauge';
 import { getTranslation } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
@@ -20,27 +19,15 @@ import {
 interface HomepageHeroProps {
   locale: string;
   spotsData: HomepageSpotData[];
-  maxTs: number | null;
 }
 
 export default function HomepageHero({
   locale,
   spotsData,
-  maxTs,
 }: HomepageHeroProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
   const [sport, setSport] = useState<GridSportFilter>(GRID_DEFAULT_SPORT);
-  const [hoursAgo, setHoursAgo] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!maxTs) {
-      setHoursAgo(null);
-      return;
-    }
-    setHoursAgo(Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)));
-  }, [maxTs]);
-
   useEffect(() => {
     const syncFromLocation = () => {
       const { sport: urlSport } = readGridFiltersFromWindow(MACRO_REGIONS);
@@ -92,12 +79,6 @@ export default function HomepageHero({
         style={{ '--stagger-delay': 0 } as React.CSSProperties}
       >
         <div className="space-y-4 max-w-2xl flex-1 min-w-0">
-          <FreshnessIndicator
-            hoursAgo={hoursAgo}
-            locale={locale}
-            sourceLabel={t.hero.gridStatusSource}
-          />
-
           <p className="text-[clamp(2rem,5vw,3rem)] font-bold text-fg tracking-tight leading-[1.05]">
             {headline}
           </p>

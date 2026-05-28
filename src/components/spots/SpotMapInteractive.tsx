@@ -237,11 +237,13 @@ function createSpotMarker(
 }
 
 function readClusterPref(): boolean {
-  if (typeof window === 'undefined') return true;
+  if (typeof window === 'undefined') return false;
   try {
-    if (localStorage.getItem(MAP_CLUSTER_LS_KEY) === '0') return false;
+    const v = localStorage.getItem(MAP_CLUSTER_LS_KEY);
+    if (v === '1') return true;
+    if (v === '0') return false;
   } catch { /* noop */ }
-  return true;
+  return false;
 }
 
 function readWindPref(): boolean {

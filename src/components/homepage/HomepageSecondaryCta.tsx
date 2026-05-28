@@ -24,7 +24,7 @@ export default function HomepageSecondaryCta({ locale }: HomepageSecondaryCtaPro
       body: isPt ? 'Lado a lado, mesmo timeframe' : 'Side by side, same timeframe',
     },
     {
-      href: `/${locale}/spots/`,
+      href: `/${locale}/alerts/`,
       icon: Bell,
       title: isPt ? 'Alertas' : 'Alerts',
       body: isPt

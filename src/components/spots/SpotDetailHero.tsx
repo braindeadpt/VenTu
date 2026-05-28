@@ -83,7 +83,7 @@ export default function SpotDetailHero({
     : null;
 
   return (
-    <header className="max-w-6xl mx-auto px-4 pt-4 pb-2">
+    <header className="max-w-5xl mx-auto px-4 pt-4 pb-2">
       <Link
         href={`/${locale}/spots/`}
         className="inline-flex items-center gap-1.5 text-meta text-fg-muted hover:text-fg transition-colors duration-150 mb-4"
@@ -92,8 +92,8 @@ export default function SpotDetailHero({
         {backLabel}
       </Link>
 
-      <div className="card-hero p-4 md:p-5 space-y-5" data-spot-slug={spotSlug}>
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <div className="card-hero p-4 md:p-4 space-y-4" data-spot-slug={spotSlug}>
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex items-start justify-between gap-3">
               <h1 className="text-display-lg text-fg tracking-tight">{title}</h1>

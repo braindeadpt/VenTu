@@ -21,6 +21,7 @@ const STATIC_PATHS = [
   '/sazonalidade/',
   '/livecams/',
   '/admin/contributions/',
+  '/alerts/',
   '/alerts/confirm/',
   '/alerts/unsubscribe/',
 ];

@@ -3,7 +3,8 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation } from 'lucide-react';
+import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation, Mountain } from 'lucide-react';
+import type { Locale } from '@/lib/i18n';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { getTranslation } from '@/lib/i18n';
@@ -28,7 +29,7 @@ const SPORTS: { id: GridSportFilter; labelPt: string; labelEn: string; icon: Rea
   { id: 'bodyboard', labelPt: 'Bodyboard', labelEn: 'Bodyboard', icon: <Waves className="w-4 h-4" />, color: 'text-sport-bodyboard' },
   { id: 'kitesurf', labelPt: 'Kitesurf', labelEn: 'Kitesurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-kitesurf' },
   { id: 'windsurf', labelPt: 'Windsurf', labelEn: 'Windsurf', icon: <Wind className="w-4 h-4" />, color: 'text-sport-windsurf' },
-  { id: 'big-wave', labelPt: 'Big Wave', labelEn: 'Big Wave', icon: <span className="w-4 h-4" />, color: 'text-windDir-offshore' },
+  { id: 'big-wave', labelPt: 'Big Wave', labelEn: 'Big Wave', icon: <Mountain className="w-4 h-4" />, color: 'text-windDir-offshore' },
   { id: 'foil', labelPt: 'Foil', labelEn: 'Foil', icon: <Zap className="w-4 h-4" />, color: 'text-sport-foil' },
   { id: 'sup', labelPt: 'SUP', labelEn: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
   { id: 'wakeboard', labelPt: 'Wakeboard', labelEn: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
@@ -65,7 +66,7 @@ export function SpotGridClient({
   excludeTopNowSlugs?: string[];
 }) {
   const isPt = locale === 'pt';
-  const t = getTranslation(locale as any);
+  const t = getTranslation(locale as Locale);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [mapFullscreen, setMapFullscreen] = useState(false);
 
@@ -147,14 +148,12 @@ export function SpotGridClient({
                 disabled={sortBy === 'distance' && !latitude}
                 aria-label={
                   sortBy === 'score'
-                    ? (isPt ? 'Ordenar por score' : 'Sort by score')
-                    : (isPt ? 'Ordenar por distância' : 'Sort by distance')
+                    ? (isPt ? 'Ordenar por score (clique para distância)' : 'Sort by score (click for distance)')
+                    : (isPt ? 'Ordenar por distância (clique para score)' : 'Sort by distance (click for score)')
                 }
                 icon={sortBy === 'distance' ? <Navigation className="w-3.5 h-3.5" /> : <Star className="w-3.5 h-3.5" />}
               >
-                <span className="hidden sm:inline">
-                  {sortBy === 'score' ? 'Score' : (isPt ? 'Distância' : 'Distance')}
-                </span>
+                <span className="hidden sm:inline">{isPt ? 'Ordenar' : 'Sort'}</span>
               </FilterPill>
 
               {sortBy === 'distance' && !latitude && (
@@ -176,13 +175,13 @@ export function SpotGridClient({
                 {' '}{isPt ? t.hero.spotsCount : t.hero.spotsCount}
                 {onCount > 0 && (
                   <span className="ml-2">
-                    · <span className="font-mono tabular-nums text-[rgb(var(--score-good))]">{onCount}</span>{' '}
+                    · <span className="font-mono tabular-nums text-score-good">{onCount}</span>{' '}
                     {isPt ? t.hero.onCount : 'ON'}
                   </span>
                 )}
                 {marginalCount > 0 && (
                   <span className="ml-1">
-                    · <span className="font-mono tabular-nums text-[rgb(var(--score-fair))]">{marginalCount}</span>{' '}
+                    · <span className="font-mono tabular-nums text-score-fair">{marginalCount}</span>{' '}
                     {isPt ? t.hero.marginalCount : t.hero.marginalCount}
                   </span>
                 )}

@@ -36,7 +36,7 @@ export default async function HomePage({
           : `VenTu — ${spotsData.length} surf, kitesurf and windsurf spots in Portugal, conditions updated every 3 hours`}
       </h1>
 
-      <HomepageHero locale={locale} spotsData={spotsData} maxTs={maxTs} />
+      <HomepageHero locale={locale} spotsData={spotsData} />
 
       <TrustStrip
         spotCount={spotsData.length}
@@ -44,8 +44,6 @@ export default async function HomePage({
         maxTs={maxTs}
         locale={locale}
       />
-
-      <DawnPatrolTopSlot locale={locale} />
 
       <HomepageTopNow spotsData={spotsData} locale={locale} />
 
@@ -55,6 +53,8 @@ export default async function HomePage({
         regions={[...MACRO_REGIONS]}
         excludeTopNowSlugs={topNowExcluded}
       />
+
+      <DawnPatrolTopSlot locale={locale} />
 
       <HomepageSecondaryCta locale={locale} />
 

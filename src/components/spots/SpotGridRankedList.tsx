@@ -5,6 +5,7 @@ import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { getTranslation } from '@/lib/i18n';
 import { getSportLabel } from '@/lib/homepageSport';
 import { getGridSpotScore, spotDetailHref } from '@/lib/gridSpotScore';
+import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import SpotListCard from './SpotListCard';
 
 const LIST_LIMIT = 12;
@@ -73,6 +74,11 @@ export default function SpotGridRankedList({
               conditions={data.conditions}
               href={spotDetailHref(locale, data.spot.slug, selectedSport)}
               locale={isPt ? 'pt' : 'en'}
+              calmWaterLabel={getCalmWaterMetricLabel(
+                data.spot,
+                data.conditions.waveHeight,
+                isPt,
+              )}
             />
           </li>
         ))}

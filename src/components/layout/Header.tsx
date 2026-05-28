@@ -9,6 +9,7 @@ import HeaderFreshness from './HeaderFreshness';
 import MegaMenu from './MegaMenu';
 import SearchPalette from '@/components/search/SearchPalette';
 import { getTranslation } from '@/lib/i18n';
+import { OPEN_SEARCH_EVENT } from '@/lib/searchEvents';
 
 interface HeaderProps {
   locale: string;
@@ -25,6 +26,12 @@ export default function Header({ locale }: HeaderProps) {
 
   useEffect(() => {
     setIsMac(navigator.platform.includes('Mac'));
+  }, []);
+
+  useEffect(() => {
+    const onOpenSearch = () => setSearchOpen(true);
+    window.addEventListener(OPEN_SEARCH_EVENT, onOpenSearch);
+    return () => window.removeEventListener(OPEN_SEARCH_EVENT, onOpenSearch);
   }, []);
 
   // Close any open menus / palettes when the route changes (e.g. user

@@ -21,10 +21,10 @@ export default function MapLegend({ locale, reserveHudSpace = false }: MapLegend
       role="region"
       aria-label={isPt ? 'Legenda do mapa' : 'Map legend'}
     >
-      <div className="bg-[rgb(var(--bg-elevated))] border border-[rgb(var(--divider))] rounded-lg px-3 py-2 shadow-lg min-w-[130px] sm:min-w-[140px]">
+      <div className="bg-bg-elevated border border-divider rounded-lg px-3 py-2 shadow-lg min-w-[130px] sm:min-w-[140px]">
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-between w-full text-[11px] font-semibold uppercase tracking-wide text-[rgb(var(--fg-muted))] mb-1 sm:mb-1.5 sm:cursor-default sm:hover:opacity-100"
+          className="flex items-center justify-between w-full text-[11px] font-semibold uppercase tracking-wide text-fg-muted mb-1 sm:mb-1.5 sm:cursor-default sm:hover:opacity-100"
           aria-expanded={!collapsed}
         >
           <span>{isPt ? 'Score Náutico' : 'Nautical Score'}</span>
@@ -47,7 +47,7 @@ export default function MapLegend({ locale, reserveHudSpace = false }: MapLegend
             }}
           />
 
-          <div className="flex justify-between text-[9px] text-[rgb(var(--fg-subtle))]">
+          <div className="flex justify-between text-[9px] text-fg-subtle">
             {labels.map((l) => (
               <span key={l.label}>{l.label}</span>
             ))}

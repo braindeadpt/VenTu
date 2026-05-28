@@ -10,6 +10,7 @@ import {
   type HomepageSpotData,
   type TopNowSport,
 } from '@/lib/homepageSport';
+import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import SpotListCard from '@/components/spots/SpotListCard';
 
 interface HomepageTopNowProps {
@@ -83,6 +84,11 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
                   locale={cardLocale}
                   sportLabel={sportLabel}
                   sportAccent={SPORT_ACCENTS[sport]}
+                  calmWaterLabel={getCalmWaterMetricLabel(
+                    data.spot,
+                    data.conditions.waveHeight,
+                    isPt,
+                  )}
                 />
               </li>
             );

@@ -23,6 +23,8 @@ interface SpotListCardProps {
   rank?: number;
   compact?: boolean;
   className?: string;
+  /** e.g. lagoa / água plana — replaces wave line when set */
+  calmWaterLabel?: string | null;
 }
 
 export default function SpotListCard({
@@ -37,6 +39,7 @@ export default function SpotListCard({
   rank,
   compact = false,
   className,
+  calmWaterLabel = null,
 }: SpotListCardProps) {
   const isPt = locale === 'pt';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
@@ -78,10 +81,17 @@ export default function SpotListCard({
       </div>
 
       <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto">
-        <span className="inline-flex items-center gap-1">
-          <Waves className="w-3 h-3 text-data-waves" aria-hidden />
-          {conditions.waveHeight.toFixed(1)}m
-        </span>
+        {calmWaterLabel ? (
+          <span className="inline-flex items-center gap-1 text-fg-subtle normal-case font-sans">
+            <Waves className="w-3 h-3 text-data-waves" aria-hidden />
+            {calmWaterLabel}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1">
+            <Waves className="w-3 h-3 text-data-waves" aria-hidden />
+            {conditions.waveHeight.toFixed(1)}m
+          </span>
+        )}
         <span className="inline-flex items-center gap-1">
           <Clock className="w-3 h-3 text-data-period" aria-hidden />
           {Math.round(conditions.wavePeriod)}s

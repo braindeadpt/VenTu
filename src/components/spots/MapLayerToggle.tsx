@@ -11,7 +11,7 @@ interface MapLayerToggleProps {
 export default function MapLayerToggle({ current, onChange, isPt }: MapLayerToggleProps) {
   return (
     <div
-      className="absolute top-3 right-3 z-[1000] flex rounded-lg overflow-hidden border border-[rgb(var(--divider))] shadow-lg"
+      className="absolute top-3 right-3 z-[1000] flex rounded-lg overflow-hidden border border-divider shadow-lg"
       role="radiogroup"
       aria-label={isPt ? 'Tipo de mapa' : 'Map type'}
     >
@@ -26,10 +26,10 @@ export default function MapLayerToggle({ current, onChange, isPt }: MapLayerTogg
             role="radio"
             aria-checked={active}
             onClick={() => onChange(mode)}
-            className={`px-3 py-1.5 text-xs font-semibold transition-colors ${
+            className={`px-3 py-1.5 text-xs font-semibold transition-colors duration-150 ${
               active
-                ? 'bg-[rgb(var(--surface-2))] text-[rgb(var(--fg))]'
-                : 'bg-[rgb(var(--bg-elevated))] text-[rgb(var(--fg-muted))] hover:bg-[rgb(var(--surface-1))]'
+                ? 'bg-surface-2/[0.08] text-fg'
+                : 'bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg'
             }`}
           >
             {label}
