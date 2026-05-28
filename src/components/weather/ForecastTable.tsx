@@ -179,7 +179,7 @@ export default function ForecastTable({
   /* ── cap hours ── */
   const visibleCount = Math.min(hours, MAX_HOURS);
   if (hours > MAX_HOURS && process.env.NODE_ENV === 'development') {
-    // eslint-disable-next-line no-console
+     
     console.warn(
       `ForecastTable: hours capped at ${MAX_HOURS} (received ${hours}). Use day picker to navigate.`,
     );

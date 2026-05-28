@@ -37,8 +37,8 @@ export function SpotPopupContent({
     <div className="space-y-3 min-w-[210px]">
       <div className="flex items-center justify-between">
         <div className="min-w-0">
-          <div className="font-bold text-sm text-[rgb(var(--fg))] truncate">{name}</div>
-          <div className="text-[11px] text-[rgb(var(--fg-muted))]">{region}</div>
+          <div className="font-bold text-sm text-fg truncate">{name}</div>
+          <div className="text-[11px] text-fg-muted">{region}</div>
         </div>
         <div
           className="w-9 h-9 rounded-full flex items-center justify-center font-extrabold text-[13px] shrink-0 ml-3"
@@ -53,38 +53,38 @@ export function SpotPopupContent({
       </div>
 
       <div className="grid grid-cols-3 gap-2 text-[11px]">
-        <div className="text-center bg-[rgb(var(--surface-1))] rounded-md py-1.5 px-1">
-          <Waves className="w-3.5 h-3.5 mx-auto mb-0.5 text-[rgb(var(--fg-subtle))]" />
-          <span className="block text-[9px] text-[rgb(var(--fg-subtle))]">{isPt ? 'Swell' : 'Swell'}</span>
-          <span className="font-semibold text-[rgb(var(--fg))]">
+        <div className="text-center bg-surface-1/[0.08] rounded-md py-1.5 px-1">
+          <Waves className="w-3.5 h-3.5 mx-auto mb-0.5 text-fg-subtle" aria-hidden />
+          <span className="block text-[9px] text-fg-subtle">{isPt ? 'Swell' : 'Swell'}</span>
+          <span className="font-semibold text-fg tabular-nums">
             {swellHeight}m · {swellPeriod}s
           </span>
         </div>
-        <div className="text-center bg-[rgb(var(--surface-1))] rounded-md py-1.5 px-1">
-          <Wind className="w-3.5 h-3.5 mx-auto mb-0.5 text-[rgb(var(--fg-subtle))]" />
-          <span className="block text-[9px] text-[rgb(var(--fg-subtle))]">{isPt ? 'Vento' : 'Wind'}</span>
-          <span className="font-semibold text-[rgb(var(--fg))]">
+        <div className="text-center bg-surface-1/[0.08] rounded-md py-1.5 px-1">
+          <Wind className="w-3.5 h-3.5 mx-auto mb-0.5 text-fg-subtle" aria-hidden />
+          <span className="block text-[9px] text-fg-subtle">{isPt ? 'Vento' : 'Wind'}</span>
+          <span className="font-semibold text-fg tabular-nums">
             {windKnots}kt {windDirection}
           </span>
         </div>
-        <div className="text-center bg-[rgb(var(--surface-1))] rounded-md py-1.5 px-1">
-          <Zap className="w-3.5 h-3.5 mx-auto mb-0.5 text-[rgb(var(--fg-subtle))]" />
-          <span className="block text-[9px] text-[rgb(var(--fg-subtle))]">{isPt ? 'Energia' : 'Energy'}</span>
-          <span className="font-semibold text-[rgb(var(--fg))]">{wavePowerKw} kW/m</span>
+        <div className="text-center bg-surface-1/[0.08] rounded-md py-1.5 px-1">
+          <Zap className="w-3.5 h-3.5 mx-auto mb-0.5 text-fg-subtle" aria-hidden />
+          <span className="block text-[9px] text-fg-subtle">{isPt ? 'Energia' : 'Energy'}</span>
+          <span className="font-semibold text-fg tabular-nums">{wavePowerKw} kW/m</span>
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5">
         <button
           type="button"
-          className="ventu-popup-detail w-full text-center py-2 rounded-lg bg-[rgb(var(--data-waves))] text-white text-xs font-semibold border-0 cursor-pointer"
+          className="ventu-popup-detail w-full text-center py-2 rounded-lg bg-data-waves text-white text-xs font-semibold border-0 cursor-pointer"
           data-spot-id={spotId}
         >
           {isPt ? 'Ver condições' : 'View conditions'}
         </button>
         <a
           href={`/${locale}/spots/${spotSlug}/`}
-          className="block w-full text-center py-1.5 rounded-lg bg-[rgb(var(--surface-1))] text-[rgb(var(--fg-muted))] text-xs font-medium no-underline transition-colors hover:bg-[rgb(var(--surface-2))] hover:text-[rgb(var(--fg))]"
+          className="block w-full text-center py-1.5 rounded-lg bg-surface-1/[0.08] text-fg-muted text-xs font-medium no-underline transition-colors hover:bg-surface-2/[0.12] hover:text-fg"
         >
           {isPt ? 'Página do spot →' : 'Spot page →'}
         </a>

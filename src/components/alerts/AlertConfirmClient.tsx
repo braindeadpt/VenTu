@@ -20,7 +20,7 @@ export default function AlertConfirmClient({ locale, token }: { locale: string; 
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     (sb as any).rpc('verify_alert_subscription', { p_token: token })
       .then(({ error }: { error: Error | null }) => setStatus(error ? 'fail' : 'ok'))
       .catch(() => setStatus('fail'));

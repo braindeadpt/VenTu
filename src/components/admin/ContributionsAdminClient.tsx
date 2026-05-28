@@ -37,7 +37,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
     const sb = getSupabaseClient();
     if (!sb) return;
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const { data, error: fetchError } = await (sb as any)
       .from('contributions')
       .select('*')
@@ -109,7 +109,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
       const sb = getSupabaseClient();
       if (!sb) throw new Error('Supabase not configured');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const { error: updateError } = await (sb as any)
         .from('contributions')
         .update({ status })
@@ -133,7 +133,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
       const sb = getSupabaseClient();
       if (!sb) throw new Error('Supabase not configured');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const { error: deleteError } = await (sb as any)
         .from('contributions')
         .delete()

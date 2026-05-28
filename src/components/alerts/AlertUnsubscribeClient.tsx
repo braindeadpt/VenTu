@@ -20,7 +20,7 @@ export default function AlertUnsubscribeClient({ locale, token }: { locale: stri
       return;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     (sb as any).rpc('unsubscribe_alert', { p_token: token })
       .then(({ error }: { error: Error | null }) => setStatus(error ? 'fail' : 'ok'))
       .catch(() => setStatus('fail'));

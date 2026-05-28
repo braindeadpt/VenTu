@@ -44,6 +44,9 @@ scripts/probe-*
 scripts/extract-*
 scripts/find-jwt-*
 
+# Local Lighthouse audit reports (run against prod: serve out/ then npx lighthouse)
+lighthouse-*.json
+
 # Testing
 test-results/
 playwright-report/

@@ -58,7 +58,7 @@ export default function ScoreFeedback({
       const sb = getSupabaseClient();
       if (!sb) throw new Error('Supabase unavailable');
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const { error: insertError } = await (sb as any).from('score_feedback').insert({
         spot_slug: spotSlug,
         sport,

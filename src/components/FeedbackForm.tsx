@@ -73,7 +73,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
       // The Supabase client has no generated Database types, so
       // `from('contributions')` infers `never`. Use explicit rpc-style
       // cast until `supabase gen types` is wired into CI.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const { error: insertError } = await (sb as any)
         .from('contributions')
         .insert({

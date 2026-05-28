@@ -61,7 +61,7 @@ export default function AlertSubscribeForm({
 
       const verifyToken = crypto.randomUUID();
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const { error: insertError } = await (sb as any).from('alert_subscriptions').insert({
         email: email.trim().toLowerCase(),
         spot_slug: spotSlug,
