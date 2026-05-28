@@ -1,6 +1,8 @@
 import { getTranslation } from '@/lib/i18n';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { spotDetailHref } from '@/lib/gridSpotScore';
+import Button from '@/components/ui/Button';
+import EmptyState from '@/components/ui/EmptyState';
 import {
   TOP_NOW_SPORTS,
   getScoreForFilter,
@@ -19,6 +21,7 @@ const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
   surf: 'surf',
   kitesurf: 'kitesurf',
   windsurf: 'windsurf',
+  bodyboard: 'bodyboard',
 };
 
 export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProps) {
@@ -30,10 +33,6 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
     sport,
     data: getTopSpotForSport(spotsData, sport),
   })).filter((entry): entry is { sport: TopNowSport; data: HomepageSpotData } => entry.data !== null);
-
-  if (cards.length === 0) {
-    return null;
-  }
 
   return (
     <section
@@ -47,32 +46,49 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
         {isPt ? 'Melhor spot por desporto · Portugal' : 'Best spot per sport · Portugal'}
       </p>
 
-      <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 list-none p-0 m-0">
-        {cards.map(({ sport, data }, i) => {
-          const score = getScoreForFilter(data, sport);
-          const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
+      {cards.length === 0 ? (
+        <EmptyState
+          className="py-10"
+          title={isPt ? 'Sem spots ON agora' : 'No spots ON right now'}
+          description={
+            isPt
+              ? 'Vê os melhores previstos para amanhã'
+              : 'See best forecasted for tomorrow'
+          }
+          action={
+            <Button variant="secondary" href={`/${locale}/explorar/`} locale={cardLocale}>
+              {isPt ? 'Ver previsões' : 'View forecasts'}
+            </Button>
+          }
+        />
+      ) : (
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 list-none p-0 m-0">
+          {cards.map(({ sport, data }, i) => {
+            const score = getScoreForFilter(data, sport);
+            const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
 
-          return (
-            <li
-              key={sport}
-              className="stagger-fade-in motion-reduce:animate-none"
-              style={{ '--stagger-delay': i * 40 } as React.CSSProperties}
-            >
-              <SpotListCard
-                compact
-                name={isPt ? data.spot.name : data.spot.nameEn}
-                region={isPt ? data.spot.region : data.spot.regionEn}
-                score={score}
-                conditions={data.conditions}
-                href={spotDetailHref(locale, data.spot.slug, sport)}
-                locale={cardLocale}
-                sportLabel={sportLabel}
-                sportAccent={SPORT_ACCENTS[sport]}
-              />
-            </li>
-          );
-        })}
-      </ul>
+            return (
+              <li
+                key={sport}
+                className="stagger-fade-in motion-reduce:animate-none"
+                style={{ '--stagger-delay': i * 40 } as React.CSSProperties}
+              >
+                <SpotListCard
+                  compact
+                  name={isPt ? data.spot.name : data.spot.nameEn}
+                  region={isPt ? data.spot.region : data.spot.regionEn}
+                  score={score}
+                  conditions={data.conditions}
+                  href={spotDetailHref(locale, data.spot.slug, sport)}
+                  locale={cardLocale}
+                  sportLabel={sportLabel}
+                  sportAccent={SPORT_ACCENTS[sport]}
+                />
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </section>
   );
 }

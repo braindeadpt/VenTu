@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
 import SpotDetailClient from '@/components/spots/SpotDetailClient'
@@ -62,5 +63,9 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
     notFound()
   }
 
-  return <SpotDetailClient spot={spot} locale={locale} />
+  return (
+    <Suspense fallback={null}>
+      <SpotDetailClient spot={spot} locale={locale} />
+    </Suspense>
+  )
 }

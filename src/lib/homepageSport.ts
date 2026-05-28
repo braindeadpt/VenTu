@@ -4,7 +4,7 @@ import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings'
 import type { Spot } from '@/types'
 import type { MarineConditionsFields } from '@/lib/marineConditions'
 
-export const LS_SPORT_KEY = 'windspot:sport'
+export const LS_SPORT_KEY = 'ventu:sport'
 
 export const SPORT_CHANGE_EVENT = 'ventu:sport-change'
 
@@ -76,7 +76,7 @@ export function getSportLabel(sport: GridSportFilter, isPt: boolean): string {
 }
 
 /** Sports shown in the home "Top agora" row. */
-export const TOP_NOW_SPORTS = ['surf', 'kitesurf', 'windsurf'] as const
+export const TOP_NOW_SPORTS = ['surf', 'kitesurf', 'windsurf', 'bodyboard'] as const
 export type TopNowSport = (typeof TOP_NOW_SPORTS)[number]
 
 export function getTopSpotForSport(

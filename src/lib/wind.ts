@@ -40,6 +40,28 @@ export function getWindRelationToCoast(
   return 'cross';
 }
 
+const WIND_RELATION_STYLES: Record<WindRelation, string> = {
+  offshore: 'text-windDir-offshore border-windDir-offshore/30 bg-windDir-offshore/10',
+  onshore: 'text-windDir-onshore border-windDir-onshore/30 bg-windDir-onshore/10',
+  cross: 'text-windDir-cross border-divider bg-surface-2',
+};
+
+const WIND_RELATION_LABELS: Record<WindRelation, { pt: string; en: string }> = {
+  offshore: { pt: 'Offshore', en: 'Offshore' },
+  onshore: { pt: 'Onshore', en: 'Onshore' },
+  cross: { pt: 'Cross-shore', en: 'Cross-shore' },
+};
+
+export function getWindRelationLabel(
+  relation: WindRelation,
+  locale: 'pt' | 'en',
+): { label: string; className: string } {
+  return {
+    label: WIND_RELATION_LABELS[relation][locale],
+    className: WIND_RELATION_STYLES[relation],
+  };
+}
+
 /**
  * Map a direction in degrees to its nearest cardinal / intercardinal label.
  */

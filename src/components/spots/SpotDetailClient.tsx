@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-// useSearchParams removed — using window.location.search for static export safety
+import { useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
 } from 'lucide-react';
@@ -38,6 +38,7 @@ import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
 import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
+import Card from '@/components/ui/Card';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SpotDetailClient — structured spot page (conditions → forecast → info).
@@ -97,17 +98,8 @@ export default function SpotDetailClient({
   spot: Spot;
   locale: string;
 }) {
-  // Read sport from URL safely (no useSearchParams to avoid static-export crash)
-  const [sportFromUrl, setSportFromUrl] = useState<SportType | null>(null);
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const params = new URLSearchParams(window.location.search);
-        const sport = params.get('sport') as SportType | null;
-        setSportFromUrl(sport);
-      } catch { /* ignore */ }
-    }
-  }, []);
+  const searchParams = useSearchParams();
+  const sportFromUrl = searchParams?.get('sport') as SportType | null;
 
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
@@ -374,10 +366,13 @@ export default function SpotDetailClient({
       <div className="min-h-screen bg-bg-base pb-12">
         <SpotDetailHero
           spot={spot}
+          spotSlug={spot.slug}
           locale={locale}
           backLabel={t.spots.backToSpots}
           sport={selectedSport}
           score={score.score}
+          rating={score.rating}
+          ratingEn={score.ratingEn}
           coastOrientation={spot.coastOrientation}
           tideObserved={spotData.tideObserved}
           conditions={conditions}
@@ -387,7 +382,10 @@ export default function SpotDetailClient({
           className="max-w-6xl mx-auto px-4 pt-3"
           aria-label={isPt ? 'Feedback sobre o score' : 'Score feedback'}
         >
-          <div className="card-1 px-4 py-3">
+          <Card variant="card-1" className="px-4 py-3">
+            <h3 className="text-meta-sm font-semibold uppercase tracking-wide text-fg-muted mb-2">
+              {isPt ? 'Verificar previsão' : 'Verify forecast'}
+            </h3>
             <ScoreFeedback
               spotSlug={spot.slug}
               sport={selectedSport}
@@ -401,7 +399,7 @@ export default function SpotDetailClient({
               }}
               locale={locale}
             />
-          </div>
+          </Card>
         </section>
 
         {/* Sport selector — sticky; horizontal scroll + edge-fade on mobile */}

@@ -5,14 +5,14 @@ test.describe('Critical routes', () => {
     await page.goto('/pt/');
     await expect(page.getByRole('banner')).toContainText('Ven');
     await expect(page.getByRole('status').first()).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('h1.sr-only')).toBeAttached();
   });
 
   test('homepage EN loads', async ({ page }) => {
     await page.goto('/en/');
     await expect(page.getByRole('banner')).toContainText('Ven');
     await expect(page.getByRole('status').first()).toBeVisible();
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('h1.sr-only')).toBeAttached();
   });
 
   test('spot detail page loads', async ({ page }) => {

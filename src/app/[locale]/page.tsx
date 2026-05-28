@@ -6,6 +6,8 @@ import { getTopNowExcludedSlugs } from '@/lib/homepageSport';
 import { SpotGridClient } from '@/components/spots/SpotGridClient';
 import HomepageHero from '@/components/homepage/HomepageHero';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
+import TrustStrip from '@/components/homepage/TrustStrip';
+import HomepageSecondaryCta from '@/components/homepage/HomepageSecondaryCta';
 import { DawnPatrolTopSlot, DawnPatrolBottomSlot } from '@/components/homepage/HomeDawnPatrolSlots';
 
 export default async function HomePage({
@@ -28,7 +30,20 @@ export default async function HomePage({
 
   return (
     <div className="min-h-screen bg-bg-base">
+      <h1 className="sr-only">
+        {isPt
+          ? `VenTu — ${spotsData.length} spots de surf, kitesurf e windsurf em Portugal, condições actualizadas a cada 3 horas`
+          : `VenTu — ${spotsData.length} surf, kitesurf and windsurf spots in Portugal, conditions updated every 3 hours`}
+      </h1>
+
       <HomepageHero locale={locale} spotsData={spotsData} maxTs={maxTs} />
+
+      <TrustStrip
+        spotCount={spotsData.length}
+        sportsCount={7}
+        maxTs={maxTs}
+        locale={locale}
+      />
 
       <DawnPatrolTopSlot locale={locale} />
 
@@ -41,20 +56,9 @@ export default async function HomePage({
         excludeTopNowSlugs={topNowExcluded}
       />
 
-      <DawnPatrolBottomSlot locale={locale} />
+      <HomepageSecondaryCta locale={locale} />
 
-      <footer className="border-t border-divider py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-meta text-fg-muted text-center">
-            <span className="font-mono tabular-nums text-fg">{spotsData.length}</span>
-            {isPt ? ' spots monitorizados' : ' spots monitored'}
-            <span aria-hidden className="mx-2">·</span>
-            Open-Meteo
-            <span aria-hidden className="mx-2">·</span>
-            MIT
-          </p>
-        </div>
-      </footer>
+      <DawnPatrolBottomSlot locale={locale} />
     </div>
   );
 }

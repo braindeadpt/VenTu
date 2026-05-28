@@ -52,7 +52,7 @@ export default function SpotDrawerHeader({
           </span>
         </div>
 
-        <p className="text-[10px] text-fg-subtle/60 mt-1">
+        <p className="text-meta-sm text-fg-subtle/60 mt-1">
           {isPt ? 'Score para desporto selecionado' : 'Score for selected sport'}
         </p>
       </div>

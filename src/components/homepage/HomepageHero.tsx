@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Map } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import HomepageSearch from '@/components/ui/HomepageSearch';
+import FreshnessIndicator from '@/components/ui/FreshnessIndicator';
+import AggregateScoreGauge from '@/components/ui/AggregateScoreGauge';
 import { getTranslation } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { readGridFiltersFromWindow, DEFAULT_SPORT as GRID_DEFAULT_SPORT } from '@/lib/gridFilters';
@@ -60,85 +63,76 @@ export default function HomepageHero({
 
   const onCount = useMemo(() => getOnCount(spotsData, sport), [spotsData, sport]);
   const sportLabel = getSportLabel(sport, isPt);
+  const calmDay = onCount === 0;
 
-  const headline =
-    onCount === 0
+  const headline = calmDay
+    ? isPt
+      ? 'Mar calmo hoje · ver previsões'
+      : 'Calm sea today · view forecasts'
+    : onCount === 1
       ? isPt
-        ? `0 spots ON para ${sportLabel} hoje`
-        : `0 spots ON for ${sportLabel} today`
-      : onCount === 1
-        ? isPt
-          ? `1 spot ON para ${sportLabel} hoje`
-          : `1 spot ON for ${sportLabel} today`
-        : isPt
-          ? `${onCount} spots ON para ${sportLabel} hoje`
-          : `${onCount} spots ON for ${sportLabel} today`;
+        ? `1 spot ON para ${sportLabel} hoje`
+        : `1 spot ON for ${sportLabel} today`
+      : isPt
+        ? `${onCount} spots ON para ${sportLabel} hoje`
+        : `${onCount} spots ON for ${sportLabel} today`;
 
-  const freshnessDot =
-    hoursAgo === null
-      ? 'bg-fg-subtle'
-      : hoursAgo < 3
-        ? 'bg-[rgb(var(--score-good))]'
-        : hoursAgo < 12
-          ? 'bg-[rgb(var(--score-fair))]'
-          : 'bg-[rgb(var(--score-poor))]';
+  const subline = calmDay
+    ? isPt
+      ? 'Ainda não há spots ON. Vê os spots com melhor previsão para amanhã.'
+      : 'No spots ON yet. See the best forecasted spots for tomorrow.'
+    : onCount > 0
+      ? t.hero.heroSubline.replace('{count}', String(onCount))
+      : t.hero.heroSublineZero;
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
       <div
-        className="stagger-fade-in flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between"
+        className="stagger-fade-in flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
         style={{ '--stagger-delay': 0 } as React.CSSProperties}
       >
-        <div className="space-y-3 max-w-2xl">
-          <span
-            role="status"
-            aria-live="polite"
-            className="pill pill-ghost inline-flex items-center gap-1.5 px-2 py-1 min-h-0 text-meta"
-            title={
-              isPt
-                ? 'Hora da última actualização de condições (Open-Meteo)'
-                : 'Time of last conditions update (Open-Meteo)'
-            }
-          >
-            <span className={`w-2 h-2 rounded-full shrink-0 ${freshnessDot}`} aria-hidden />
-            {hoursAgo !== null ? (
-              <span className="font-mono tabular-nums text-fg-muted">
-                {t.hero.updatedAgo.replace('{hours}', String(hoursAgo))}
-              </span>
-            ) : (
-              <span className="text-fg-muted">{t.hero.statusNoData}</span>
-            )}
-            <span aria-hidden className="text-fg-subtle">·</span>
-            <span className="text-fg-muted">{t.hero.gridStatusSource}</span>
-          </span>
+        <div className="space-y-4 max-w-2xl flex-1 min-w-0">
+          <FreshnessIndicator
+            hoursAgo={hoursAgo}
+            locale={locale}
+            sourceLabel={t.hero.gridStatusSource}
+          />
 
-          <h1 className="text-[clamp(1.75rem,4vw,2.25rem)] font-bold text-fg tracking-tight leading-[1.1]">
+          <p className="text-[clamp(2rem,5vw,3rem)] font-bold text-fg tracking-tight leading-[1.05]">
             {headline}
-          </h1>
-
-          <p className="text-body-lg text-fg-muted">
-            {onCount > 0 ? t.hero.heroSubline.replace('{count}', String(onCount)) : t.hero.heroSublineZero}
           </p>
+
+          <p className="text-body-lg text-fg-muted">{subline}</p>
+
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3">
+            <Button
+              href={`/${locale}/#explore-map`}
+              size="lg"
+              leftIcon={<Map className="w-4 h-4" aria-hidden />}
+              locale={isPt ? 'pt' : 'en'}
+            >
+              {t.hero.exploreMap}
+            </Button>
+            <Button
+              href={calmDay ? `/${locale}/explorar/` : `/${locale}/spots/`}
+              variant="secondary"
+              size="lg"
+              locale={isPt ? 'pt' : 'en'}
+            >
+              {calmDay
+                ? isPt
+                  ? 'Ver previsões'
+                  : 'View forecasts'
+                : t.hero.viewAllSpots}
+            </Button>
+          </div>
+
+          <div className="max-w-md w-full">
+            <HomepageSearch locale={locale} />
+          </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row flex-wrap gap-3 shrink-0">
-          <Button
-            href={`/${locale}/#explore-map`}
-            size="lg"
-            leftIcon={<Map className="w-4 h-4" aria-hidden />}
-            locale={isPt ? 'pt' : 'en'}
-          >
-            {t.hero.exploreMap}
-          </Button>
-          <Button
-            href={`/${locale}/spots/`}
-            variant="secondary"
-            size="lg"
-            locale={isPt ? 'pt' : 'en'}
-          >
-            {t.hero.viewAllSpots}
-          </Button>
-        </div>
+        <AggregateScoreGauge spotsData={spotsData} sport={sport} locale={locale} />
       </div>
     </section>
   );
