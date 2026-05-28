@@ -40,7 +40,7 @@ export function LocalTipsSection({ tips, locale }: LocalTipsSectionProps) {
   const visibleItems = expanded ? items : items.slice(0, 2);
 
   return (
-    <div className="bg-surface-2 backdrop-blur-sm rounded-xl p-5 border border-data-waves/20">
+    <div className="bg-surface-2/[0.08] backdrop-blur-sm rounded-xl p-5 border border-data-waves/20">
       <div className="flex items-center gap-2 mb-4">
         <MapPin className="w-5 h-5 text-data-waves" />
         <h3 className="text-lg font-bold text-fg">
@@ -55,7 +55,7 @@ export function LocalTipsSection({ tips, locale }: LocalTipsSectionProps) {
             className={`flex gap-3 p-3 rounded-lg ${
               item.highlight
                 ? 'bg-score-poor/10 border border-score-poor/30'
-                : 'bg-surface-1'
+                : 'bg-surface-1/[0.04]'
             }`}
           >
             <item.icon

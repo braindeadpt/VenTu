@@ -158,25 +158,25 @@ export default function SpotDetailHero({
             icon={<Waves className="w-4 h-4 text-data-waves" />}
             value={`${conditions.waveHeight.toFixed(1)}m`}
             label={isPt ? 'Ondas' : 'Waves'}
-            className="bg-surface-1/80"
+            className="bg-surface-1/[0.04]"
           />
           <StatChip
             icon={<Clock className="w-4 h-4 text-data-period" />}
             value={`${Math.round(conditions.wavePeriod)}s`}
             label={isPt ? 'Período' : 'Period'}
-            className="bg-surface-1/80"
+            className="bg-surface-1/[0.04]"
           />
           <StatChip
             icon={<Wind className="w-4 h-4 text-data-wind" />}
             value={`${windKt}kt`}
             label={isPt ? 'Vento' : 'Wind'}
-            className="bg-surface-1/80"
+            className="bg-surface-1/[0.04]"
           />
           <StatChip
             icon={<Droplets className="w-4 h-4 text-data-water" />}
             value={`${conditions.waterTemp.toFixed(1)}°C`}
             label={isPt ? 'Água' : 'Water'}
-            className="bg-surface-1/80"
+            className="bg-surface-1/[0.04]"
           />
         </div>
 

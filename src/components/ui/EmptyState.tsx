@@ -18,7 +18,7 @@ export default function EmptyState({
   return (
     <div className={cn('flex flex-col items-center justify-center py-16 text-center', className)}>
       {icon && (
-        <div className="w-16 h-16 rounded-card bg-surface-1 border border-divider flex items-center justify-center mb-4">
+        <div className="w-16 h-16 rounded-card bg-surface-1/[0.04] border border-divider flex items-center justify-center mb-4">
           {icon}
         </div>
       )}

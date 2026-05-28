@@ -16,7 +16,7 @@ export default function NotFoundContent() {
         <PageHeader
           align="center"
           icon={
-            <div className="p-4 rounded-full bg-surface-1 mx-auto w-fit">
+            <div className="p-4 rounded-full bg-surface-1/[0.04] mx-auto w-fit">
               <MapPin className="w-8 h-8 text-data-waves" />
             </div>
           }

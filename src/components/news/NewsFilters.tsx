@@ -95,9 +95,9 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
                 'transition-all duration-200 whitespace-nowrap shrink-0',
                 active
                   ? cat === 'all'
-                    ? 'bg-surface-2 border border-divider-strong text-fg'
+                    ? 'bg-surface-2/[0.08] border border-divider-strong text-fg'
                     : `${colorClass} border`
-                  : 'bg-surface-1 border border-divider text-fg-muted hover:bg-surface-2 hover:text-fg',
+                  : 'bg-surface-1/[0.04] border border-divider text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg',
               ].join(' ')}
               aria-pressed={active}
             >
@@ -121,8 +121,8 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
                   'px-2.5 py-1.5 rounded-md text-sm min-h-[36px]',
                   'transition-all duration-200 whitespace-nowrap',
                   active
-                    ? 'bg-surface-2 border border-divider-strong text-fg font-medium'
-                    : 'bg-transparent border border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1',
+                    ? 'bg-surface-2/[0.08] border border-divider-strong text-fg font-medium'
+                    : 'bg-transparent border border-transparent text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]',
                 ].join(' ')}
                 aria-pressed={active}
               >

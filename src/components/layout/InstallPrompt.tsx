@@ -94,7 +94,7 @@ export default function InstallPrompt() {
             <button
               type="button"
               onClick={dismiss}
-              className="h-9 px-3 rounded-lg text-fg-muted text-sm hover:bg-surface-2 transition-colors"
+              className="h-9 px-3 rounded-lg text-fg-muted text-sm hover:bg-surface-2/[0.08] transition-colors"
             >
               {isPt ? 'Agora não' : 'Not now'}
             </button>

@@ -297,7 +297,7 @@ export default function CompareClient() {
                           'flex items-center gap-3 p-3 rounded-card border text-left transition-all min-h-[44px]',
                           selected
                             ? 'bg-data-waves/10 border-data-waves text-fg'
-                            : 'card-1 text-fg-muted hover:bg-surface-2 hover:text-fg',
+                            : 'card-1 text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg',
                           atLimit ? 'opacity-50 cursor-not-allowed' : '',
                         ].join(' ')}
                       >

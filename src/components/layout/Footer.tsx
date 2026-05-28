@@ -16,7 +16,7 @@ export default function Footer({ locale }: FooterProps) {
   return (
     <footer className="border-t border-divider bg-bg-base/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Wind className="w-6 h-6 text-data-waves" />
@@ -35,13 +35,13 @@ export default function Footer({ locale }: FooterProps) {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="https://github.com/braindeadpt/ventu" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-fg-muted hover:text-data-waves transition-colors">
+                <a href="https://github.com/braindeadpt/ventu" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors">
                   <Github className="w-4 h-4" />
                   GitHub ↗
                 </a>
               </li>
               <li>
-                <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-fg-muted hover:text-data-waves transition-colors">
+                <a href="https://open-meteo.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-fg-muted hover:text-fg transition-colors">
                   <ExternalLink className="w-4 h-4" />
                   Open-Meteo ↗
                 </a>
@@ -58,7 +58,7 @@ export default function Footer({ locale }: FooterProps) {
                 <li key={landing.slug}>
                   <Link
                     href={`/${locale}/explorar/${landing.slug}/`}
-                    className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                    className="text-sm text-fg-muted hover:text-fg transition-colors"
                   >
                     {landingTitle(landing, locale)}
                   </Link>
@@ -67,7 +67,7 @@ export default function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/explorar/`}
-                  className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
                   {isPt ? 'Ver todas as combinações →' : 'View all combinations →'}
                 </Link>
@@ -75,7 +75,7 @@ export default function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/livecams/`}
-                  className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
                   {isPt ? 'Livecams →' : 'Live cams →'}
                 </Link>
@@ -83,9 +83,57 @@ export default function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/spots/`}
-                  className="text-sm text-fg-muted hover:text-data-waves transition-colors"
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
                   {isPt ? 'Todos os spots →' : 'All spots →'}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div className="space-y-4">
+            <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
+              {isPt ? 'Recursos' : 'Resources'}
+            </h4>
+            <ul className="space-y-2">
+              <li>
+                <Link
+                  href={`/${locale}/news/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {t.nav.news}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/sazonalidade/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {t.nav.sazonalidade}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/compare/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {t.nav.comparar}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/alerts/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {isPt ? 'Alertas' : 'Alerts'}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/about/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {t.nav.about}
                 </Link>
               </li>
             </ul>

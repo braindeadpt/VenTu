@@ -49,7 +49,7 @@ export default async function LivecamsPage({ params }: Props) {
             return (
               <article
                 key={slug}
-                className="card-1 p-4 flex flex-col gap-3 hover:bg-surface-2/50 transition-colors"
+                className="card-1 p-4 flex flex-col gap-3 hover:bg-surface-2/[0.04] transition-colors"
               >
                 <div className="flex items-start gap-3">
                   <div className="rounded-card bg-data-waves/10 p-2 text-data-waves shrink-0">
@@ -79,7 +79,7 @@ export default async function LivecamsPage({ params }: Props) {
                   {spot && (
                     <Link
                       href={`/${locale}/spots/${slug}/`}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-surface-2 text-fg border border-divider hover:bg-surface-3 transition-colors min-h-[36px]"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-surface-2/[0.08] text-fg border border-divider hover:bg-surface-3/[0.12] transition-colors min-h-[36px]"
                     >
                       {t.livecams.viewSpot}
                     </Link>

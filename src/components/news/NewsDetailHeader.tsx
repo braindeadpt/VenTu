@@ -23,7 +23,7 @@ export default function NewsDetailHeader({ news, locale }: NewsDetailHeaderProps
     <header className="space-y-6">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-fg-muted">
-        <Link href={`/${locale}/news`} className="hover:text-fg transition-colors">
+        <Link href={`/${locale}/news/`} className="hover:text-fg transition-colors">
           {isPt ? 'Notícias' : 'News'}
         </Link>
         <span aria-hidden="true" className="text-fg-disabled">/</span>

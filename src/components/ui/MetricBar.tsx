@@ -18,7 +18,7 @@ export default function MetricBar({
   return (
     <div className="flex items-center gap-3 py-1">
       <span className="w-24 shrink-0 text-xs text-fg-muted">{label}</span>
-      <div className="flex-1 h-2 rounded-full bg-surface-1 overflow-hidden">
+      <div className="flex-1 h-2 rounded-full bg-surface-1/[0.04] overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500 motion-reduce:transition-none"
           style={{ width: `${clamped}%`, backgroundColor: `rgb(var(${colorVar}) / 0.7)` }}

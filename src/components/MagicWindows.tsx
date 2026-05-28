@@ -255,7 +255,7 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
             {(isPt ? w.reason : w.reasonEn).split(' + ').map((r, ri) => (
               <span
                 key={ri}
-                className="text-xs px-2.5 py-1 rounded-full bg-surface-1 text-fg-muted border border-divider"
+                className="text-xs px-2.5 py-1 rounded-full bg-surface-1/[0.04] text-fg-muted border border-divider"
               >
                 {r}
               </span>

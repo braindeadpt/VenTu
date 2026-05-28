@@ -329,17 +329,17 @@ export function getForecastData(result: FetchResult) {
 }
 
 export function getWaveRating(height: number) {
-  if (height < 0.5) return { label: 'flat', className: 'bg-surf-500/20 text-surf-300 border-surf-500/30' };
-  if (height < 1.0) return { label: 'small', className: 'bg-wave-500/20 text-wave-300 border-wave-500/30' };
-  if (height < 2.0) return { label: 'medium', className: 'bg-wind-500/20 text-wind-300 border-wind-500/30' };
+  if (height < 0.5) return { label: 'flat', className: 'bg-score-good/20 text-score-good border-score-good/30' };
+  if (height < 1.0) return { label: 'small', className: 'bg-data-waves/20 text-data-waves border-data-waves/30' };
+  if (height < 2.0) return { label: 'medium', className: 'bg-score-fair/20 text-score-fair border-score-fair/30' };
   if (height < 4.0) return { label: 'large', className: 'bg-red-500/20 text-red-300 border-red-500/30' };
   return { label: 'huge', className: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
 }
 
 export function getWindRating(speed: number) {
-  if (speed < 5) return { label: 'calm', className: 'bg-surf-500/20 text-surf-300 border-surf-500/30' };
-  if (speed < 15) return { label: 'light', className: 'bg-wave-500/20 text-wave-300 border-wave-500/30' };
-  if (speed < 25) return { label: 'moderate', className: 'bg-wind-500/20 text-wind-300 border-wind-500/30' };
+  if (speed < 5) return { label: 'calm', className: 'bg-score-good/20 text-score-good border-score-good/30' };
+  if (speed < 15) return { label: 'light', className: 'bg-data-waves/20 text-data-waves border-data-waves/30' };
+  if (speed < 25) return { label: 'moderate', className: 'bg-score-fair/20 text-score-fair border-score-fair/30' };
   if (speed < 35) return { label: 'strong', className: 'bg-red-500/20 text-red-300 border-red-500/30' };
   return { label: 'extreme', className: 'bg-purple-500/20 text-purple-300 border-purple-500/30' };
 }

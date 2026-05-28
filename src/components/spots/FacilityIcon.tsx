@@ -48,7 +48,7 @@ export default function FacilityIcon({ name }: FacilityIconProps) {
 }
 
 export function getFacilityIcon(name: string): React.ReactNode {
-  return FACILITY_ICONS[name] || <div className="w-1.5 h-1.5 rounded-full bg-surf-400" />;
+  return FACILITY_ICONS[name] || <div className="w-1.5 h-1.5 rounded-full bg-score-good" />;
 }
 
 export function getHazardIcon(name: string): React.ReactNode {

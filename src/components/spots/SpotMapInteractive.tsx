@@ -638,8 +638,8 @@ export default function SpotMapInteractive({
     <div
       className={
         isFullscreen
-          ? 'fixed inset-0 z-[1100] w-full overflow-hidden bg-surface-1 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
-          : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1'
+          ? 'fixed inset-0 z-[1100] w-full overflow-hidden bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
+          : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
       }
       style={isFullscreen ? { height: '100dvh' } : { height: 'clamp(300px, 50vh, 600px)' }}
       data-map-fullscreen={isFullscreen ? 'true' : 'false'}
@@ -648,7 +648,7 @@ export default function SpotMapInteractive({
       data-map-wind={showWindOnMarkers ? 'true' : 'false'}
     >
       {!isReady && (
-        <div className="absolute inset-0 flex items-center justify-center bg-surface-1 z-10">
+        <div className="absolute inset-0 flex items-center justify-center bg-surface-1/[0.04] z-10">
           <div className="flex flex-col items-center gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
             <span className="text-sm text-fg-muted">{t.map.loading}</span>
@@ -665,7 +665,7 @@ export default function SpotMapInteractive({
                 ref={fullscreenBtnRef}
                 type="button"
                 onClick={enterFullscreen}
-                className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1 transition-colors duration-150 touch-manipulation"
+                className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1/[0.04] transition-colors duration-150 touch-manipulation"
                 aria-label={t.map.exploreMode}
                 aria-expanded={isFullscreen}
               >
@@ -675,7 +675,7 @@ export default function SpotMapInteractive({
               <button
                 type="button"
                 onClick={toggleCluster}
-                className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1 transition-colors duration-150 touch-manipulation"
+                className="flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1/[0.04] transition-colors duration-150 touch-manipulation"
                 aria-label={clusterLabel}
                 aria-pressed={!clusterEnabled}
               >
@@ -695,7 +695,7 @@ export default function SpotMapInteractive({
                     ? 'border-data-wind/40 bg-data-wind/15 text-fg'
                     : windEnabled && clusterEnabled
                       ? 'border-divider bg-bg-elevated text-fg-muted opacity-80'
-                      : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1'
+                      : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1/[0.04]'
                 }`}
                 aria-label={windLabel}
                 aria-pressed={showWindOnMarkers}

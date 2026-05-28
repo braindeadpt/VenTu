@@ -57,7 +57,7 @@ const MAX_HOURS = 120;
 
 /** Wave height → background tier. */
 function waveBg(h: number): string {
-  if (h < 0.5) return 'bg-surface-1';
+  if (h < 0.5) return 'bg-surface-1/[0.04]';
   if (h < 1.0) return 'bg-data-waves/25';
   if (h < 2.0) return 'bg-data-waves/45';
   if (h < 3.0) return 'bg-data-waves/65';
@@ -66,7 +66,7 @@ function waveBg(h: number): string {
 
 /** Wave period → background tier. */
 function periodBg(p: number): string {
-  if (p < 6) return 'bg-surface-1';
+  if (p < 6) return 'bg-surface-1/[0.04]';
   if (p < 9) return 'bg-data-period/25';
   if (p < 12) return 'bg-data-period/50';
   return 'bg-data-period/70';
@@ -74,7 +74,7 @@ function periodBg(p: number): string {
 
 /** Wind speed (knots) → background tier. */
 function windBg(kt: number): string {
-  if (kt < 8) return 'bg-surface-1';
+  if (kt < 8) return 'bg-surface-1/[0.04]';
   if (kt < 14) return 'bg-data-wind/25';
   if (kt < 20) return 'bg-data-wind/45';
   if (kt < 28) return 'bg-data-wind/65';
@@ -89,7 +89,7 @@ function windText(kt: number): string {
 
 /** Gust — same scale as wind but lighter opacity (knots). */
 function gustBg(kt: number): string {
-  if (kt < 8) return 'bg-surface-1';
+  if (kt < 8) return 'bg-surface-1/[0.04]';
   if (kt < 14) return 'bg-data-wind/15';
   if (kt < 20) return 'bg-data-wind/30';
   if (kt < 28) return 'bg-data-wind/50';
@@ -98,7 +98,7 @@ function gustBg(kt: number): string {
 
 /** Water temperature → background tier. */
 function waterBg(t: number): string {
-  if (t < 14) return 'bg-surface-1';
+  if (t < 14) return 'bg-surface-1/[0.04]';
   if (t < 18) return 'bg-data-water/25';
   if (t < 22) return 'bg-data-water/50';
 return 'bg-data-water/70';
@@ -124,11 +124,11 @@ function windDirBg(
   direction: number,
   coastOrientation: number | undefined,
 ): string {
-  if (coastOrientation === undefined) return 'bg-surface-1';
+  if (coastOrientation === undefined) return 'bg-surface-1/[0.04]';
   const relation = getWindRelationToCoast(direction, coastOrientation);
   if (relation === 'offshore') return 'bg-windDir-offshore/15';
   if (relation === 'onshore') return 'bg-windDir-onshore/15';
-  return 'bg-surface-1';
+  return 'bg-surface-1/[0.04]';
 }
 
 /* ──────────── time helpers ──────────── */
@@ -350,7 +350,7 @@ export default function ForecastTable({
                 className={`px-2.5 py-1 rounded-pill text-meta-xs whitespace-nowrap shrink-0 transition-all ${
                   activeDayGroupIndex === i
                     ? 'bg-score-good/20 text-score-good border border-score-good/30 font-semibold'
-                    : 'bg-surface-1 text-fg-muted border border-divider hover:bg-surface-2'
+                    : 'bg-surface-1/[0.04] text-fg-muted border border-divider hover:bg-surface-2/[0.08]'
                 }`}
               >
                 {group.dayLabel}
@@ -415,7 +415,7 @@ export default function ForecastTable({
                       current
                         ? 'bg-score-good/20 text-fg border-b-2 border-score-good/40'
                         : isNewDay
-                        ? 'bg-surface-2 text-fg border-b border-divider-strong'
+                        ? 'bg-surface-2/[0.08] text-fg border-b border-divider-strong'
                         : 'bg-bg-base text-fg-muted border-b border-divider'
                     }`}
                     aria-current={current ? 'time' : undefined}
@@ -447,7 +447,7 @@ export default function ForecastTable({
               <td
                 key={i}
                 className={`${hourW} ${cellPx} ${waveBg(h.waveHeight)} font-mono ${numText} ${
-                  hoveredCol === i ? 'bg-surface-2' : ''
+                  hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                 } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
@@ -470,7 +470,7 @@ export default function ForecastTable({
               <td
                 key={i}
                 className={`${hourW} ${cellPx} ${periodBg(h.wavePeriod)} font-mono ${numText} ${
-                  hoveredCol === i ? 'bg-surface-2' : ''
+                  hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                 } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
@@ -496,7 +496,7 @@ export default function ForecastTable({
                   key={i}
                   className={`${hourW} ${cellPx} ${windBg(windKt)} font-mono ${numText} ${windText(
                     windKt,
-                  )} ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  )} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                   title={buildTooltip(h, sportLabel)}
                   onMouseEnter={() => setHoveredCol(i)}
                   onMouseLeave={() => setHoveredCol(null)}
@@ -522,7 +522,7 @@ export default function ForecastTable({
                   h.windDirection,
                   coastOrientation,
                 )} font-mono ${metaText} ${
-                  hoveredCol === i ? 'bg-surface-2' : ''
+                  hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                 } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
                 onMouseEnter={() => setHoveredCol(i)}
@@ -551,9 +551,9 @@ export default function ForecastTable({
                   <td
                     key={i}
                     className={`${hourW} ${cellPx} ${
-                      gustKt !== null ? gustBg(gustKt) : 'bg-surface-1'
+                      gustKt !== null ? gustBg(gustKt) : 'bg-surface-1/[0.04]'
                     } font-mono ${numText} text-fg-muted ${
-                      hoveredCol === i ? 'bg-surface-2' : ''
+                      hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                     } transition-colors duration-fast border-b border-divider/20`}
                     title={buildTooltip(h, sportLabel)}
                     onMouseEnter={() => setHoveredCol(i)}
@@ -581,12 +581,12 @@ export default function ForecastTable({
                   className={`${hourW} ${cellPx} ${
                     typeof h.waterTemp === 'number'
                       ? waterBg(h.waterTemp)
-                      : 'bg-surface-1'
+                      : 'bg-surface-1/[0.04]'
                   } font-mono ${numText} ${
                     typeof h.waterTemp === 'number'
                       ? waterText(h.waterTemp)
                       : 'text-fg-subtle'
-                  } ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                   title={buildTooltip(h, sportLabel)}
                   onMouseEnter={() => setHoveredCol(i)}
                   onMouseLeave={() => setHoveredCol(null)}
@@ -613,11 +613,11 @@ export default function ForecastTable({
                   key={i}
                   className={`${hourW} ${cellPx} ${
                     typeof h.tideHeight === 'number'
-                      ? h.tideHeight > 0.3 ? 'bg-data-waves/20' : h.tideHeight < -0.3 ? 'bg-data-waves/10' : 'bg-surface-1'
-                      : 'bg-surface-1'
+                      ? h.tideHeight > 0.3 ? 'bg-data-waves/20' : h.tideHeight < -0.3 ? 'bg-data-waves/10' : 'bg-surface-1/[0.04]'
+                      : 'bg-surface-1/[0.04]'
                   } font-mono ${numText} ${
                     typeof h.tideHeight === 'number' ? (h.tideHeight > 0.3 ? 'text-data-waves' : 'text-fg-muted') : 'text-fg-subtle'
-                  } ${hoveredCol === i ? 'bg-surface-2' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                   onMouseEnter={() => setHoveredCol(i)}
                   onMouseLeave={() => setHoveredCol(null)}
                 >
@@ -643,7 +643,7 @@ export default function ForecastTable({
                   <td
                     key={i}
                     className={`${hourW} ${cellPx} font-mono ${numText} font-semibold ${
-                      hoveredCol === i ? 'bg-surface-2' : ''
+                      hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                     } transition-colors duration-fast border-b border-divider/20`}
                     style={
                       hasScore

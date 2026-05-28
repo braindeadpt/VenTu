@@ -58,7 +58,7 @@ export default function MegaMenu({ locale, isOpen, onOpen, onClose }: MegaMenuPr
         ref={triggerRef}
         onClick={onOpen}
         onMouseEnter={onOpen}
-        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-controls="mega-menu-modalidades"
@@ -86,9 +86,9 @@ export default function MegaMenu({ locale, isOpen, onOpen, onClose }: MegaMenuPr
                     href={`/${locale}/modalidades/${item.slug}/`}
                     role="menuitem"
                     onClick={onClose}
-                    className="flex items-start gap-3 p-3 rounded-card hover:bg-surface-1 transition-colors group"
+                    className="flex items-start gap-3 p-3 rounded-card hover:bg-surface-1/[0.04] transition-colors group"
                   >
-                    <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-input bg-surface-1 text-data-waves group-hover:bg-surface-2 transition-colors">
+                    <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-input bg-surface-1/[0.04] text-data-waves group-hover:bg-surface-2/[0.08] transition-colors">
                       <Icon className="w-4 h-4" />
                     </div>
                     <div className="min-w-0">

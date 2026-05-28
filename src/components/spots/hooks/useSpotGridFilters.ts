@@ -5,7 +5,7 @@ import type { GridSportFilter } from '@/lib/sportRatings';
 import { filterGridSpots } from '@/lib/gridSpotFilters';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { useGeolocation, calculateDistance } from '@/lib/geolocation';
-import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
+import { dispatchSportChange, LS_SPORT_KEY, readSportFromStorage } from '@/lib/homepageSport';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
@@ -37,7 +37,7 @@ function resolveInitialFilters(
     ? readGridFiltersFromWindow(regions)
     : { sport: DEFAULT_SPORT as GridSportFilter, region: DEFAULT_REGION };
 
-  const lsSport = typeof window !== 'undefined' ? localStorage.getItem(LS_SPORT_KEY) : null;
+  const lsSport = typeof window !== 'undefined' ? readSportFromStorage() : null;
   const lsRegion = typeof window !== 'undefined' ? localStorage.getItem(LS_REGION_KEY) : null;
 
   const hasUrlSport = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('sport');

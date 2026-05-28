@@ -46,7 +46,7 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
   return (
     <button
       onClick={toggle}
-      className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors"
+      className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
       title={label}
       aria-label={label}
       aria-pressed={isDark}

@@ -30,8 +30,8 @@ export default function MapControlButton({
       className={cn(
         'flex items-center justify-center min-h-[44px] min-w-[44px] rounded-input border transition-colors duration-150',
         isOn
-          ? 'border-divider-strong bg-surface-2 text-fg'
-          : 'border-divider bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg',
+          ? 'border-divider-strong bg-surface-2/[0.08] text-fg'
+          : 'border-divider bg-surface-1/[0.04] text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg',
         disabled && 'opacity-50 cursor-not-allowed',
         className,
       )}

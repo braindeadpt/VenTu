@@ -3,7 +3,7 @@ import Skeleton from '@/components/ui/Skeleton';
 export default function Loading() {
   return (
     <div className="min-h-screen bg-bg-base">
-      <div className="sticky top-16 z-30 border-b border-divider bg-surface-1">
+      <div className="sticky top-16 z-30 border-b border-divider bg-surface-1/[0.04]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-10 flex items-center">
           <Skeleton className="h-3 w-48" />
         </div>

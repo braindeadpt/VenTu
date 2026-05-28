@@ -138,7 +138,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
           </h3>
       <button
         onClick={() => setOpen(false)}
-        className="p-1 rounded-md text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors"
+        className="p-1 rounded-md text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
         aria-label={isPt ? 'Fechar' : 'Close'}
       >
         <X className="w-5 h-5" />
@@ -168,8 +168,8 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                       flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
                       transition-all duration-fast
                       ${active
-                        ? 'bg-surface-2 text-fg border border-divider-strong'
-                        : 'bg-surface-1 text-fg-muted border border-divider hover:bg-surface-2 hover:text-fg'
+                        ? 'bg-surface-2/[0.08] text-fg border border-divider-strong'
+                        : 'bg-surface-1/[0.04] text-fg-muted border border-divider hover:bg-surface-2/[0.08] hover:text-fg'
                       }
                     `}
                   >
@@ -205,7 +205,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                       : (isPt ? 'O que não está a funcionar?' : 'What is not working?')
                 }
                 rows={4}
-                className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50 resize-none"
+                className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50 resize-none"
                 required
               />
             </div>
@@ -222,7 +222,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     value={spotSlug}
                     onChange={(e) => setSpotSlug(e.target.value)}
                     placeholder="guincho, nazare, supertubos..."
-                    className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
+                    className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
                     required
                   />
                 </div>
@@ -234,7 +234,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     id="ff-tip-field"
                     value={tipField}
                     onChange={(e) => setTipField(e.target.value)}
-                    className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-body text-fg"
+                    className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg"
                   >
                     {TIP_FIELDS.map((f) => (
                       <option key={f.id} value={f.id}>
@@ -257,7 +257,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={isPt ? 'Para te contactarmos de volta' : 'So we can reach you back'}
-                className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
+                className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
               />
             </div>
 
@@ -268,7 +268,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
             <button
               type="submit"
               disabled={sending || !message.trim()}
-              className="w-full flex items-center justify-center gap-2 h-11 px-4 bg-surface-2 border border-divider-strong rounded-lg text-fg font-medium hover:bg-surface-3 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full flex items-center justify-center gap-2 h-11 px-4 bg-surface-2/[0.08] border border-divider-strong rounded-lg text-fg font-medium hover:bg-surface-3/[0.12] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send className="w-4 h-4" />
               {sending

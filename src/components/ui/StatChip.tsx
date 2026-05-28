@@ -11,7 +11,7 @@ export default function StatChip({ icon, value, label, className }: StatChipProp
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-2 rounded-pill bg-surface-1 border border-divider px-3 py-2 min-h-[44px]',
+        'inline-flex items-center gap-2 rounded-pill bg-surface-1/[0.04] border border-divider px-3 py-2 min-h-[44px]',
         className,
       )}
     >

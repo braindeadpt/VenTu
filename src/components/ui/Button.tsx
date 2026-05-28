@@ -11,9 +11,9 @@ const variantClasses: Record<ButtonVariant, string> = {
   primary:
     'bg-data-waves text-bg-base hover:bg-data-waves/90 active:bg-data-waves/80 border border-transparent',
   secondary:
-    'bg-surface-1 text-fg border border-divider hover:bg-surface-2 hover:border-divider-strong active:bg-surface-1',
+    'bg-surface-1/[0.04] text-fg border border-divider hover:bg-surface-2/[0.08] hover:border-divider-strong active:bg-surface-1/[0.04]',
   ghost:
-    'bg-transparent text-fg-muted hover:text-fg hover:bg-surface-1 border border-transparent active:bg-surface-2',
+    'bg-transparent text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] border border-transparent active:bg-surface-2/[0.08]',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {

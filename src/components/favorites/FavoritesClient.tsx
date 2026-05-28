@@ -241,11 +241,11 @@ export default function FavoritesClient() {
             {favoriteSpots.map(spot => {
               const current = conditions[spot.id];
               const score = sportScores[spot.id];
-              const colors = score ? getScoreColor(score.score) : { bg: 'bg-surface-2', text: 'text-fg-subtle' };
+              const colors = score ? getScoreColor(score.score) : { bg: 'bg-surface-2/[0.08]', text: 'text-fg-subtle' };
 
               return (
                 <Link key={spot.id} href={`/${locale}/spots/${spot.slug}/`} className="block">
-                  <div className="bg-surface-1 backdrop-blur-sm border border-divider rounded-2xl overflow-hidden hover:bg-surface-2 transition-all duration-300 hover:-translate-y-1">
+                  <div className="bg-surface-1/[0.04] backdrop-blur-sm border border-divider rounded-2xl overflow-hidden hover:bg-surface-2/[0.08] transition-all duration-300 hover:-translate-y-1">
                     <div className="relative h-40 bg-gradient-to-br from-bg-elevated to-bg-base">
                       <div className="absolute inset-0 bg-gradient-to-t from-bg-base/80 to-transparent" />
                       <div className="absolute top-3 right-3">

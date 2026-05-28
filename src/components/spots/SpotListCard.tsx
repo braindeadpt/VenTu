@@ -52,7 +52,7 @@ export default function SpotListCard({
         <div className="flex items-center gap-2 min-w-0">
           {rank !== undefined && (
             <span
-              className="shrink-0 w-6 h-6 rounded-full bg-surface-2 border border-divider flex items-center justify-center font-mono text-meta-sm font-semibold text-fg tabular-nums"
+              className="shrink-0 w-6 h-6 rounded-full bg-surface-2/[0.08] border border-divider flex items-center justify-center font-mono text-meta-sm font-semibold text-fg tabular-nums"
               aria-hidden
             >
               {rank}

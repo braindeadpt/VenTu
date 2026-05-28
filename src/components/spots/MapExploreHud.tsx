@@ -85,8 +85,8 @@ export default function MapExploreHud({
                   onClick={() => onBasemapChange(mode)}
                   className={`px-2 sm:px-2.5 py-1.5 min-h-[40px] text-meta-sm font-semibold transition-colors duration-150 ${
                     active
-                      ? 'bg-surface-2 text-fg'
-                      : 'bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg'
+                      ? 'bg-surface-2/[0.08] text-fg'
+                      : 'bg-surface-1/[0.04] text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg'
                   }`}
                 >
                   <span className="hidden sm:inline">{label}</span>
@@ -187,7 +187,7 @@ export default function MapExploreHud({
             <button
               type="button"
               onClick={onResetFilters}
-              className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 rounded-input text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-1 transition-colors duration-150 min-h-[36px]"
+              className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 rounded-input text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] transition-colors duration-150 min-h-[36px]"
               aria-label={clearFiltersLabel}
             >
               <RotateCcw className="w-3.5 h-3.5" aria-hidden />

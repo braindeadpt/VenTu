@@ -100,7 +100,7 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
     <>
       <button
         onClick={handleOpen}
-        className="inline-flex items-center gap-2 w-full sm:w-auto h-12 px-4 bg-surface-1 border border-divider hover:border-divider-strong rounded-lg text-fg-subtle transition-colors"
+        className="inline-flex items-center gap-2 w-full sm:w-auto h-12 px-4 bg-surface-1/[0.04] border border-divider hover:border-divider-strong rounded-lg text-fg-subtle transition-colors"
       >
         <Search className="w-4 h-4 text-fg-muted" aria-hidden />
         <span>{isPt ? 'Procurar spot...' : 'Search spot...'}</span>
@@ -116,7 +116,7 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
         >
           <div
             ref={dialogRef}
-            className="relative w-full max-w-xl mx-4 bg-surface-1 border border-divider rounded-2xl shadow-2xl overflow-hidden"
+            className="relative w-full max-w-xl mx-4 bg-surface-1/[0.04] border border-divider rounded-2xl shadow-2xl overflow-hidden"
           >
             <div className="flex items-center gap-3 p-4 border-b border-divider">
               <Input
@@ -135,7 +135,7 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
               />
               <button
                 onClick={handleClose}
-                className="p-1 rounded hover:bg-surface-2 shrink-0"
+                className="p-1 rounded hover:bg-surface-2/[0.08] shrink-0"
                 aria-label={t.common.close}
               >
                 <X className="w-5 h-5 text-fg-subtle" aria-hidden />
@@ -161,10 +161,10 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
                         className={`w-full flex items-center gap-3 p-3 rounded-xl text-left transition-colors ${
                           index === selectedIndex
                             ? 'bg-data-waves/10 text-fg'
-                            : 'hover:bg-surface-2 text-fg-subtle'
+                            : 'hover:bg-surface-2/[0.08] text-fg-subtle'
                         }`}
                       >
-                        <div className="w-10 h-10 rounded-lg bg-surface-2 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-lg bg-surface-2/[0.08] flex items-center justify-center">
                           <Icon className="w-5 h-5 text-data-waves" aria-hidden />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -182,11 +182,11 @@ export default function HomepageSearch({ locale }: HomepageSearchProps) {
 
             <div className="p-3 border-t border-divider flex items-center justify-between text-xs text-fg-subtle">
               <div className="flex items-center gap-2">
-                <kbd className="px-1.5 py-0.5 rounded bg-surface-2 border border-divider">↑↓</kbd>
+                <kbd className="px-1.5 py-0.5 rounded bg-surface-2/[0.08] border border-divider">↑↓</kbd>
                 <span>{isPt ? 'Navegar' : 'Navigate'}</span>
               </div>
               <div className="flex items-center gap-2">
-                <kbd className="px-1.5 py-0.5 rounded bg-surface-2 border border-divider">↵</kbd>
+                <kbd className="px-1.5 py-0.5 rounded bg-surface-2/[0.08] border border-divider">↵</kbd>
                 <span>{isPt ? 'Selecionar' : 'Select'}</span>
               </div>
             </div>

@@ -187,7 +187,7 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
             {(category !== 'all' || region !== 'all' || period !== 'all' || debouncedQuery) && (
               <button
                 onClick={handleClear}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-2 border border-divider text-sm text-fg hover:bg-surface-3 transition-colors"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-2/[0.08] border border-divider text-sm text-fg hover:bg-surface-3/[0.12] transition-colors"
               >
                 {isPt ? 'Limpar todos os filtros' : 'Clear all filters'}
               </button>

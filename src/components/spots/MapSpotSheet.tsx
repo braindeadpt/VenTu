@@ -91,7 +91,7 @@ export default function MapSpotSheet({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 rounded-input hover:bg-surface-1 text-fg-muted hover:text-fg transition-colors duration-150 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2 rounded-input hover:bg-surface-1/[0.04] text-fg-muted hover:text-fg transition-colors duration-150 min-h-[44px] min-w-[44px] flex items-center justify-center"
                 aria-label={isPt ? 'Fechar' : 'Close'}
               >
                 <X className="w-4 h-4" aria-hidden />

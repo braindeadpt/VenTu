@@ -286,6 +286,9 @@ describe('getCompatibleSports', () => {
       bestSwell: 'W',
       description: 'Test',
       descriptionEn: 'Test',
+      coastOrientation: 270,
+      facilities: [],
+      hazards: [],
     }
     expect(getCompatibleSports(spot)).toEqual(TYPE_TO_SPORTS.kitesurf)
   })
@@ -389,5 +392,54 @@ describe('Representative conditions — SUP bom', () => {
     }
     const result = getSportScore(guincho, 'sup', bad)
     expect(result.score).toBeLessThan(30)
+  })
+})
+
+describe('sportScore — validation cases', () => {
+  const nullConditions: Conditions = {
+    waveHeight: 0,
+    wavePeriod: 0,
+    waveDirection: 0,
+    windSpeed: 0,
+    windDirection: 0,
+    windGust: 0,
+    waterTemp: 0,
+  }
+
+  it('null/zero conditions yield low surf score (<25)', () => {
+    const moledo = spotBySlug('moledo')
+    const result = getSportScore(moledo, 'surf', nullConditions)
+    expect(result.score).toBeLessThan(25)
+  })
+
+  it('ideal surf at E-facing coast scores ≥70', () => {
+    const moledo = spotBySlug('moledo')
+    expect(moledo.bestWind).toContain('E')
+    const ideal: Conditions = {
+      waveHeight: 2,
+      wavePeriod: 12,
+      waveDirection: 270,
+      windSpeed: 5,
+      windDirection: 90,
+      windGust: 7,
+      waterTemp: 18,
+    }
+    const result = getSportScore(moledo, 'surf', ideal)
+    expect(result.score).toBeGreaterThanOrEqual(70)
+  })
+
+  it('ideal kite (~20kt) with 1m waves scores ≥70', () => {
+    const moledo = spotBySlug('moledo')
+    const ideal: Conditions = {
+      waveHeight: 1,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windSpeed: 10,
+      windDirection: 90,
+      windGust: 12,
+      waterTemp: 18,
+    }
+    const result = getSportScore(moledo, 'kitesurf', ideal)
+    expect(result.score).toBeGreaterThanOrEqual(70)
   })
 })

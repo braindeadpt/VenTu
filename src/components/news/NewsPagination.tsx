@@ -46,7 +46,7 @@ export default function NewsPagination({ currentPage, totalPages, onPageChange, 
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1"
+        className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
         aria-label={isPt ? 'Página anterior' : 'Previous page'}
       >
         <ChevronLeft className="w-4 h-4" />
@@ -75,8 +75,8 @@ export default function NewsPagination({ currentPage, totalPages, onPageChange, 
               'inline-flex items-center justify-center w-10 h-10 rounded-md text-sm font-medium min-h-[44px] min-w-[44px]',
               'transition-all duration-200',
               isCurrent
-                ? 'bg-surface-2 border border-divider-strong text-fg'
-                : 'text-fg-muted hover:text-fg hover:bg-surface-1',
+                ? 'bg-surface-2/[0.08] border border-divider-strong text-fg'
+                : 'text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]',
             ].join(' ')}
           >
             {page}
@@ -87,7 +87,7 @@ export default function NewsPagination({ currentPage, totalPages, onPageChange, 
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1"
+        className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
         aria-label={isPt ? 'Próxima página' : 'Next page'}
       >
         <ChevronRight className="w-4 h-4" />

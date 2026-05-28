@@ -159,7 +159,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
   }
 
   if (loading) {
-    return <div className="max-w-5xl mx-auto py-16 px-4 animate-pulse h-32 bg-surface-1 rounded-lg" />;
+    return <div className="max-w-5xl mx-auto py-16 px-4 animate-pulse h-32 bg-surface-1/[0.04] rounded-lg" />;
   }
 
   if (!session) {
@@ -183,7 +183,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="username"
-              className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-fg"
+              className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-fg"
             />
           </div>
           <div>
@@ -196,7 +196,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-fg"
+              className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-fg"
             />
           </div>
           {error && <p className="text-sm text-score-poor">{error}</p>}
@@ -227,7 +227,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
             type="button"
             onClick={() => loadContributions().catch((err: Error) => setError(err.message))}
             disabled={busy}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-divider text-sm hover:bg-surface-1"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-divider text-sm hover:bg-surface-1/[0.04]"
           >
             <RefreshCw className={`w-4 h-4 ${busy ? 'animate-spin' : ''}`} />
             {isPt ? 'Actualizar' : 'Refresh'}
@@ -235,7 +235,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
           <button
             type="button"
             onClick={handleLogout}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-divider text-sm hover:bg-surface-1"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-divider text-sm hover:bg-surface-1/[0.04]"
           >
             <LogOut className="w-4 h-4" />
             {isPt ? 'Sair' : 'Sign out'}
@@ -251,7 +251,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
             onClick={() => setFilter(key)}
             className={`px-3 py-1.5 rounded-full text-sm border ${
               filter === key
-                ? 'bg-surface-2 border-divider-strong text-fg'
+                ? 'bg-surface-2/[0.08] border-divider-strong text-fg'
                 : 'border-divider text-fg-muted hover:text-fg'
             }`}
           >

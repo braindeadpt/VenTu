@@ -19,6 +19,9 @@ const ericeiraSpot: Spot = {
   description: '',
   descriptionEn: '',
   compatibleSports: ['surf', 'bodyboard'],
+  coastOrientation: 270,
+  facilities: [],
+  hazards: [],
 };
 
 const sampleNews: NewsItem[] = [

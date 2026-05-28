@@ -38,16 +38,16 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       isPt ? 'ondas vento' : 'waves wind',
     ],
     alternates: {
-      canonical: `/${locale}/spots/${slug}`,
+      canonical: `/${locale}/spots/${slug}/`,
       languages: {
-        'pt': `/pt/spots/${slug}`,
-        'en': `/en/spots/${slug}`,
+        'pt': `/pt/spots/${slug}/`,
+        'en': `/en/spots/${slug}/`,
       },
     },
     openGraph: {
       title,
       description,
-      url: `/${locale}/spots/${slug}`,
+      url: `/${locale}/spots/${slug}/`,
       siteName: 'VenTu',
       type: 'website',
       locale: isPt ? 'pt_PT' : 'en_US',

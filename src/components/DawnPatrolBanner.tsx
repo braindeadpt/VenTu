@@ -98,7 +98,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
   if (loading) {
     return (
-      <div className="w-full bg-surface-1 border-b border-divider p-5 animate-pulse">
+      <div className="w-full bg-surface-1/[0.04] border-b border-divider p-5 animate-pulse">
         <div className="max-w-7xl mx-auto flex items-center gap-4">
           <div className="w-12 h-12 rounded-xl bg-fg-muted/10" />
           <div className="flex-1 space-y-2">
@@ -113,7 +113,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
   if (error) {
     return (
-      <div className="w-full bg-surface-1 border-b border-divider px-4 py-3">
+      <div className="w-full bg-surface-1/[0.04] border-b border-divider px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-fg-muted">
           <span>
             {isPt ? 'Dawn Patrol indisponível' : 'Dawn Patrol unavailable'}
@@ -121,7 +121,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           <button
             type="button"
             onClick={handleRetry}
-            className="px-3 py-1 rounded-lg bg-surface-2 hover:bg-surface-3 transition-colors text-fg-muted text-xs font-medium"
+            className="px-3 py-1 rounded-lg bg-surface-2/[0.08] hover:bg-surface-3/[0.12] transition-colors text-fg-muted text-xs font-medium"
           >
             {isPt ? 'Tentar de novo' : 'Retry'}
           </button>
@@ -153,10 +153,10 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
   };
 
   return (
-    <div className="w-full bg-surface-1 border-b border-divider overflow-hidden">
+    <div className="w-full bg-surface-1/[0.04] border-b border-divider overflow-hidden">
       {/* Main banner — toggle area */}
       <div
-        className="p-5 cursor-pointer hover:bg-surface-2 transition-colors select-none"
+        className="p-5 cursor-pointer hover:bg-surface-2/[0.08] transition-colors select-none"
         onClick={handleToggle}
         role="button"
         tabIndex={0}
@@ -236,7 +236,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
               <Link
                 key={spot.slug}
                 href={resolveSpotHref(locale, spot.slug)}
-                className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-2 transition-colors group"
+                className="flex items-center justify-between p-3 rounded-xl hover:bg-surface-2/[0.08] transition-colors group"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <span className={`px-2.5 py-1 rounded-lg text-xs font-bold border shrink-0 ${verdictColors[spot.verdict]}`}>
@@ -248,7 +248,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                   <span className="text-xs text-fg-subtle truncate hidden sm:inline">{isPt ? spot.ptReason : spot.enReason}</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <div className="h-2 w-20 rounded-full bg-surface-2 overflow-hidden" role="progressbar" aria-valuenow={spot.score} aria-valuemin={0} aria-valuemax={100}>
+                  <div className="h-2 w-20 rounded-full bg-surface-2/[0.08] overflow-hidden" role="progressbar" aria-valuenow={spot.score} aria-valuemin={0} aria-valuemax={100}>
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-windDir-offshore to-data-waves transition-all duration-700 ease-out motion-reduce:transition-none"
                       style={{ width: barAnimated ? `${spot.score}%` : '0%' }}

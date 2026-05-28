@@ -112,7 +112,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       {/* Main Share Button */}
       <button
         onClick={handleNativeShare}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors border border-divider"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors border border-divider"
         aria-label={isPt ? 'Partilhar' : 'Share'}
       >
         {copied ? <Check className="w-4 h-4 text-score-good" /> : <Share2 className="w-4 h-4" />}
@@ -122,7 +122,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       {/* Copy Link Alternative */}
       <button
         onClick={handleCopy}
-        className="p-2 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2 transition-colors"
+        className="p-2 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
         aria-label={isPt ? 'Copiar link' : 'Copy link'}
         title={isPt ? 'Copiar link' : 'Copy link'}
       >
@@ -131,7 +131,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
 
       {/* Social Options Dropdown */}
       {showOptions && (
-        <div className="absolute right-0 top-full mt-1 bg-surface-1 border border-divider rounded-lg shadow-lg p-2 z-50 min-w-[140px]">
+        <div className="absolute right-0 top-full mt-1 bg-surface-1/[0.04] border border-divider rounded-lg shadow-lg p-2 z-50 min-w-[140px]">
           <div className="text-xs text-fg-subtle px-2 py-1 mb-1">
             {isPt ? 'Partilhar em:' : 'Share on:'}
           </div>
@@ -141,7 +141,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-2 px-3 py-2 rounded text-sm text-fg-muted hover:text-fg ${social.color} hover:bg-surface-2 transition-colors`}
+              className={`flex items-center gap-2 px-3 py-2 rounded text-sm text-fg-muted hover:text-fg ${social.color} hover:bg-surface-2/[0.08] transition-colors`}
               onClick={() => setShowOptions(false)}
             >
               <social.icon className="w-4 h-4" />

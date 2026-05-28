@@ -40,6 +40,15 @@ O **VenTu** agrega condições marítimas (ondas, vento, temperatura da água, m
 | Notícias | Gemini (opcional) + RSS |
 | Deploy | GitHub Pages (static export) |
 
+### Componentes UI (homepage)
+
+| Componente | Caminho | Uso |
+|------------|---------|-----|
+| `TrustStrip` | `src/components/homepage/TrustStrip.tsx` | Prova social (spots, desportos, Open-Meteo, cadência 3h) |
+| `AggregateScoreGauge` | `src/components/ui/AggregateScoreGauge.tsx` | Média top-10 por modalidade no hero |
+| `FreshnessIndicator` | `src/components/ui/FreshnessIndicator.tsx` | Dot + “actualizado há Nh” (hero e header) |
+| `HomepageSecondaryCta` | `src/components/homepage/HomepageSecondaryCta.tsx` | 3 cards: sazonalidade, comparar, alertas |
+
 ### Início rápido
 
 ```bash
@@ -124,6 +133,10 @@ Issues e PRs são bem-vindos. Lê [CONTRIBUTING.md](CONTRIBUTING.md) antes de su
 - Spot pages: conditions, forecast, windows, location, live cam (when curated)
 - [`/livecams`](https://ventu.surf/en/livecams/) index — verified external links
 - **PT** and **EN** UI
+
+### UI components (homepage)
+
+See the Portuguese [Componentes UI (homepage)](#componentes-ui-homepage) table — `TrustStrip`, `AggregateScoreGauge`, `FreshnessIndicator`, `HomepageSecondaryCta`.
 
 ### Quick start
 

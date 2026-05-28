@@ -13,10 +13,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
       ? 'Conheça a missão do VenTu, uma plataforma open-source para desportos náuticos em Portugal.'
       : 'Learn about VenTu\'s mission, an open-source platform for water sports in Portugal.',
     alternates: {
-      canonical: `/${locale}/about`,
+      canonical: `/${locale}/about/`,
       languages: {
-        'pt': '/pt/about',
-        'en': '/en/about',
+        'pt': '/pt/about/',
+        'en': '/en/about/',
       },
     },
   }
@@ -87,7 +87,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             { icon: <Brain className="w-6 h-6" />, name: 'Gemini Flash', desc: 'AI News' },
             { icon: <Shield className="w-6 h-6" />, name: 'Supabase', desc: 'Contributions' },
           ].map((tech, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-surface-1">
+            <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-surface-1/[0.04]">
               <div className="text-data-waves">{tech.icon}</div>
               <div>
                 <p className="text-sm font-medium">{tech.name}</p>

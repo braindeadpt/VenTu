@@ -43,7 +43,7 @@ export function getWindRelationToCoast(
 const WIND_RELATION_STYLES: Record<WindRelation, string> = {
   offshore: 'text-windDir-offshore border-windDir-offshore/30 bg-windDir-offshore/10',
   onshore: 'text-windDir-onshore border-windDir-onshore/30 bg-windDir-onshore/10',
-  cross: 'text-windDir-cross border-divider bg-surface-2',
+  cross: 'text-windDir-cross border-divider bg-surface-2/[0.08]',
 };
 
 const WIND_RELATION_LABELS: Record<WindRelation, { pt: string; en: string }> = {

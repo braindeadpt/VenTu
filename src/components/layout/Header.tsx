@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 'react';
 import { Menu, X, Wind, Globe, Search } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
+import HeaderFreshness from './HeaderFreshness';
 import MegaMenu from './MegaMenu';
 import SearchPalette from '@/components/search/SearchPalette';
 import { getTranslation } from '@/lib/i18n';
@@ -96,6 +97,14 @@ export default function Header({ locale }: HeaderProps) {
     { href: `/${locale}/about/`, label: navLabel.about },
   ];
 
+  const allLinks = [
+    ...navLinks,
+    { href: `/${locale}/spots/`, label: navLabel.spots },
+  ];
+
+  const mobileLinkClass =
+    'block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all';
+
   return (
     <>
       <header
@@ -126,8 +135,8 @@ export default function Header({ locale }: HeaderProps) {
                   href={link.href}
                   className={`px-3 py-1.5 rounded-input text-sm font-medium transition-all ${
                     isActive(link.href)
-                      ? 'bg-surface-2 text-fg'
-                      : 'text-fg-subtle hover:text-fg hover:bg-surface-1'
+                      ? 'bg-surface-2/[0.08] text-fg'
+                      : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
                   }`}
                 >
                   {link.label}
@@ -139,7 +148,7 @@ export default function Header({ locale }: HeaderProps) {
             <div className="hidden md:flex items-center gap-1">
               <button
                 onClick={openSearch}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
                 aria-label={navLabel.search}
               >
                 <Search className="w-4 h-4" />
@@ -147,10 +156,11 @@ export default function Header({ locale }: HeaderProps) {
                   {isMac ? '⌘K' : 'Ctrl+K'}
                 </span>
               </button>
+              <HeaderFreshness locale={locale} />
               <ThemeToggle locale={locale} />
               <Link
                 href={switchPath}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
                 aria-label={isPt ? 'Switch to English' : 'Mudar para Português'}
               >
                 <Globe className="w-3.5 h-3.5" />
@@ -166,7 +176,7 @@ export default function Header({ locale }: HeaderProps) {
             <div className="flex items-center gap-1 md:hidden">
               <button
                 onClick={openSearch}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-colors"
                 aria-label={navLabel.search}
               >
                 <Search className="w-5 h-5" />
@@ -174,7 +184,7 @@ export default function Header({ locale }: HeaderProps) {
               <ThemeToggle locale={locale} />
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-colors"
                 aria-label={mobileMenuOpen ? navLabel.closeMenu : navLabel.openMenu}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
@@ -202,68 +212,21 @@ export default function Header({ locale }: HeaderProps) {
           aria-hidden={!mobileMenuOpen}
         >
           <div className="px-4 py-3 space-y-1">
-            <Link
-              href={`/${locale}/explorar/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              {navLabel.explorar}
-            </Link>
-            <Link
-              href={`/${locale}/sazonalidade/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              {navLabel.sazonalidade}
-            </Link>
-            <Link
-              href={`/${locale}/compare/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              {navLabel.comparar}
-            </Link>
-            <Link
-              href={`/${locale}/livecams/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              {navLabel.livecams}
-            </Link>
-            <Link
-              href={`/${locale}/favorites/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              {navLabel.favorites}
-            </Link>
-            <div className="border-t border-divider my-2" />
-            <Link
-              href={`/${locale}/spots/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              Spots
-            </Link>
-            <Link
-              href={`/${locale}/news/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              {navLabel.news}
-            </Link>
-            <Link
-              href={`/${locale}/about/`}
-              onClick={() => setMobileMenuOpen(false)}
-              className="block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
-            >
-              {navLabel.about}
-            </Link>
+            {allLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className={mobileLinkClass}
+              >
+                {link.label}
+              </Link>
+            ))}
             <div className="border-t border-divider my-2" />
             <Link
               href={switchPath}
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1 transition-all"
+              className="flex items-center gap-2 px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
             >
               <Globe className="w-4 h-4" />
               {isPt ? 'Switch to English' : 'Mudar para Português'}

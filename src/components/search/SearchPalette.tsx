@@ -250,7 +250,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
           {query && (
             <button
               onClick={() => setQuery('')}
-              className="p-1 rounded text-fg-subtle hover:text-fg hover:bg-surface-1 transition-colors"
+              className="p-1 rounded text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-colors"
               aria-label="Clear search"
             >
               <X className="w-4 h-4" />
@@ -276,8 +276,8 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
                       onClick={onClose}
                       className={`flex items-center gap-3 px-4 py-2.5 transition-colors ${
                         globalIdx === selectedIndex
-                          ? 'bg-surface-2 text-fg'
-                          : 'text-fg-muted hover:bg-surface-1 hover:text-fg'
+                          ? 'bg-surface-2/[0.08] text-fg'
+                          : 'text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg'
                       }`}
                     >
                       <Icon className="w-4 h-4 shrink-0 text-data-waves" />
@@ -306,17 +306,17 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
         )}
 
         {/* Footer hint */}
-        <div className="flex items-center gap-4 px-4 py-2 border-t border-divider bg-surface-1">
+        <div className="flex items-center gap-4 px-4 py-2 border-t border-divider bg-surface-1/[0.04]">
           <span className="text-xs text-fg-subtle">
-            <kbd className="px-1 py-0.5 rounded bg-surface-2 text-fg-muted font-mono text-xs">↑↓</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-surface-2/[0.08] text-fg-muted font-mono text-xs">↑↓</kbd>
             {' '}{isPt ? 'navegar' : 'navigate'}
           </span>
           <span className="text-xs text-fg-subtle">
-            <kbd className="px-1 py-0.5 rounded bg-surface-2 text-fg-muted font-mono text-xs">⏎</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-surface-2/[0.08] text-fg-muted font-mono text-xs">⏎</kbd>
             {' '}{isPt ? 'abrir' : 'open'}
           </span>
           <span className="text-xs text-fg-subtle">
-            <kbd className="px-1 py-0.5 rounded bg-surface-2 text-fg-muted font-mono text-xs">Esc</kbd>
+            <kbd className="px-1 py-0.5 rounded bg-surface-2/[0.08] text-fg-muted font-mono text-xs">Esc</kbd>
             {' '}{isPt ? 'fechar' : 'close'}
           </span>
         </div>

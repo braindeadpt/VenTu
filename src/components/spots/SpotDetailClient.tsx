@@ -535,7 +535,7 @@ export default function SpotDetailClient({
                     {spot.facilities.map((f, i) => (
                       <span
                         key={i}
-                        className="px-3 py-1.5 rounded-pill bg-surface-2 text-fg-muted border border-divider text-meta-sm"
+                        className="px-3 py-1.5 rounded-pill bg-surface-2/[0.08] text-fg-muted border border-divider text-meta-sm"
                       >
                         {f}
                       </span>

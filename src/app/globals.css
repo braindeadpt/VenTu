@@ -18,9 +18,9 @@
     /* Surfaces & backgrounds */
     --bg-base:       15 23 42;          /* slate-950  #0F172A */
     --bg-elevated:  30 41 59;           /* slate-800  #1E293B */
-    --surface-1:   255 255 255 / 0.04;
-    --surface-2:   255 255 255 / 0.08;
-    --surface-3:   255 255 255 / 0.12;
+    --surface-1:   255 255 255;
+    --surface-2:   255 255 255;
+    --surface-3:   255 255 255;
     --divider:     255 255 255 / 0.08;
     --divider-strong: 255 255 255 / 0.12;
 
@@ -85,9 +85,9 @@
     /* Surfaces & backgrounds */
     --bg-base:       250 250 247;      /* #FAFAF7 — white-sand */
     --bg-elevated:  255 255 255;       /* #FFFFFF — white */
-    --surface-1:    15 23 42 / 0.04;   /* slate a 4% */
-    --surface-2:    15 23 42 / 0.08;   /* slate a 8% */
-    --surface-3:    15 23 42 / 0.12;   /* slate a 12% */
+    --surface-1:    15 23 42;
+    --surface-2:    15 23 42;
+    --surface-3:    15 23 42;
     --divider:      15 23 42 / 0.10;
     --divider-strong: 15 23 42 / 0.18;
 
@@ -198,13 +198,13 @@
 @layer components {
   /* Card surfaces */
   .card-1 {
-    @apply bg-surface-1 border border-divider rounded-card backdrop-blur-sm;
+    @apply bg-surface-1/[0.04] border border-divider rounded-card backdrop-blur-sm;
   }
   .card-2 {
-    @apply bg-surface-2 border border-divider-strong rounded-card backdrop-blur-md;
+    @apply bg-surface-2/[0.08] border border-divider-strong rounded-card backdrop-blur-md;
   }
   .card-hero {
-    @apply bg-surface-1 border border-divider-strong rounded-card backdrop-blur-md;
+    @apply bg-surface-1/[0.04] border border-divider-strong rounded-card backdrop-blur-md;
   }
 
   /* Pill — filter chips, sport selectors, score badges */
@@ -213,15 +213,15 @@
            transition-colors duration-base;
   }
   .pill-ghost {
-    @apply bg-surface-1 text-fg-muted hover:bg-surface-2 hover:text-fg border border-transparent;
+    @apply bg-surface-1/[0.04] text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg border border-transparent;
   }
   .pill-active {
-    @apply bg-surface-2 text-fg border border-divider-strong;
+    @apply bg-surface-2/[0.08] text-fg border border-divider-strong;
   }
 
   /* Skeleton shimmer for loading states */
   .skeleton {
-    @apply bg-surface-1 rounded-card overflow-hidden relative;
+    @apply bg-surface-1/[0.04] rounded-card overflow-hidden relative;
     background-image: linear-gradient(
       90deg,
       transparent 0%,
@@ -249,19 +249,6 @@
   .sport-accent[data-sport="wakeboard"] { @apply text-sport-wakeboard; }
   .sport-accent[data-sport="foil"]      { @apply text-sport-foil; }
 
-  /* ──────────────────────────────────────────────────────────────────
-   *  LEGACY (deprecated)
-   * ────────────────────────────────────────────────────────────────── */
-  .glass-card {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl;
-  }
-  .glass-card-strong {
-    @apply bg-white/10 backdrop-blur-2xl border border-white/20 rounded-2xl;
-  }
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #38bdf8 0%, #34d399 50%, #fbbf24 100%);
-  }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

@@ -92,7 +92,7 @@ export default async function SazonalidadePage({ params }: Props) {
           {seasonData.map((s) => {
             const Icon = s.icon
             return (
-              <div key={s.season.en} className="bg-surface-1 border border-divider rounded-2xl p-6 space-y-4">
+              <div key={s.season.en} className="bg-surface-1/[0.04] border border-divider rounded-2xl p-6 space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-xl bg-data-waves/10 flex items-center justify-center">
                     <Icon className="w-5 h-5 text-data-waves" />
@@ -134,7 +134,7 @@ export default async function SazonalidadePage({ params }: Props) {
           })}
         </div>
 
-        <div className="bg-surface-1 border border-divider rounded-2xl p-6 text-center">
+        <div className="bg-surface-1/[0.04] border border-divider rounded-2xl p-6 text-center">
           <p className="text-sm text-fg-muted">
             {isPt
               ? 'Queres ver as condições agora?'

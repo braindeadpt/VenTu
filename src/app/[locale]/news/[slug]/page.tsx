@@ -41,16 +41,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${title} — VenTu`,
     description,
     alternates: {
-      canonical: `/${locale}/news/${slug}`,
+      canonical: `/${locale}/news/${slug}/`,
       languages: {
-        'pt': `/pt/news/${slug}`,
-        'en': `/en/news/${slug}`,
+        'pt': `/pt/news/${slug}/`,
+        'en': `/en/news/${slug}/`,
       },
     },
     openGraph: {
       title,
       description,
-      url: `/${locale}/news/${slug}`,
+      url: `/${locale}/news/${slug}/`,
       type: 'article',
       publishedTime: news.publishedAt,
       section: news.category,
@@ -90,7 +90,7 @@ export default async function NewsDetailPage({ params }: Props) {
 
       {/* Back link */}
       <Link
-        href={`/${locale}/news`}
+        href={`/${locale}/news/`}
         className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors mb-8"
       >
         <ArrowLeft className="w-4 h-4" />
@@ -113,7 +113,7 @@ export default async function NewsDetailPage({ params }: Props) {
           href={news.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-surface-2 border border-divider text-fg font-medium hover:bg-surface-3 transition-colors"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-surface-2/[0.08] border border-divider text-fg font-medium hover:bg-surface-3/[0.12] transition-colors"
         >
           {isPt ? 'Ler artigo original' : 'Read original article'}
           <ExternalLink className="w-4 h-4" />

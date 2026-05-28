@@ -72,7 +72,7 @@ export default function FavoriteButton({
   };
 
   if (!mounted || !loaded) {
-    return <div className={`${sizeClasses[size]} animate-pulse bg-surface-1 rounded`} />;
+    return <div className={`${sizeClasses[size]} animate-pulse bg-surface-1/[0.04] rounded`} />;
   }
 
   const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {

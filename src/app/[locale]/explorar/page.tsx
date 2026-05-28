@@ -86,7 +86,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
                   {sportOnly && (
                     <Link
                       href={`/${locale}/explorar/${sportOnly.slug}/`}
-                      className={`card-1 p-4 border-l-4 ${accent} hover:bg-surface-2/50 transition-colors group`}
+                      className={`card-1 p-4 border-l-4 ${accent} hover:bg-surface-2/[0.04] transition-colors group`}
                     >
                       <p className="text-body font-medium text-fg group-hover:text-data-waves transition-colors">
                         {landingTitle(sportOnly, locale)}
@@ -101,7 +101,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
                     <Link
                       key={landing.slug}
                       href={`/${locale}/explorar/${landing.slug}/`}
-                      className={`card-1 p-4 border-l-4 ${accent} hover:bg-surface-2/50 transition-colors group`}
+                      className={`card-1 p-4 border-l-4 ${accent} hover:bg-surface-2/[0.04] transition-colors group`}
                     >
                       <p className="text-body font-medium text-fg group-hover:text-data-waves transition-colors flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-fg-subtle shrink-0" aria-hidden />

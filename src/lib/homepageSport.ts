@@ -25,6 +25,23 @@ export function parseSportFilter(value?: string | null): GridSportFilter {
   return 'surf'
 }
 
+const LEGACY_SPORT_KEY = 'windspot:sport'
+
+/** Read persisted grid sport; migrates legacy `windspot:sport` → `ventu:sport`. */
+export function readSportFromStorage(): GridSportFilter {
+  if (typeof window === 'undefined') return 'surf'
+  try {
+    const v = localStorage.getItem(LS_SPORT_KEY) ?? localStorage.getItem(LEGACY_SPORT_KEY)
+    if (localStorage.getItem(LEGACY_SPORT_KEY) && !localStorage.getItem(LS_SPORT_KEY) && v) {
+      localStorage.setItem(LS_SPORT_KEY, v)
+      localStorage.removeItem(LEGACY_SPORT_KEY)
+    }
+    return parseSportFilter(v)
+  } catch {
+    return 'surf'
+  }
+}
+
 export function getScoreForFilter(
   data: HomepageSpotData,
   sport: GridSportFilter,

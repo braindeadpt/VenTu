@@ -129,7 +129,7 @@ export default function AlertSubscribeForm({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-sm text-fg"
+              className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
             />
           </div>
 
@@ -139,7 +139,7 @@ export default function AlertSubscribeForm({
               <select
                 value={sport}
                 onChange={(e) => setSport(e.target.value as SportType)}
-                className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-sm text-fg"
+                className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
               >
                 {ALL_SPORTS.map((s) => (
                   <option key={s} value={s}>
@@ -157,7 +157,7 @@ export default function AlertSubscribeForm({
                 step={5}
                 value={minScore}
                 onChange={(e) => setMinScore(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-lg bg-surface-1 border border-divider text-sm text-fg"
+                className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
               />
             </div>
           </div>
@@ -168,7 +168,7 @@ export default function AlertSubscribeForm({
             <button
               type="submit"
               disabled={sending}
-              className="flex-1 inline-flex items-center justify-center gap-1.5 h-9 rounded-lg bg-surface-2 border border-divider-strong text-sm font-medium hover:bg-surface-3 disabled:opacity-50"
+              className="flex-1 inline-flex items-center justify-center gap-1.5 h-9 rounded-lg bg-surface-2/[0.08] border border-divider-strong text-sm font-medium hover:bg-surface-3/[0.12] disabled:opacity-50"
             >
               <Send className="w-3.5 h-3.5" />
               {sending ? (isPt ? 'A guardar…' : 'Saving…') : (isPt ? 'Subscrever' : 'Subscribe')}
@@ -176,7 +176,7 @@ export default function AlertSubscribeForm({
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="px-3 h-9 rounded-lg text-sm text-fg-muted hover:bg-surface-2"
+              className="px-3 h-9 rounded-lg text-sm text-fg-muted hover:bg-surface-2/[0.08]"
             >
               {isPt ? 'Fechar' : 'Close'}
             </button>
