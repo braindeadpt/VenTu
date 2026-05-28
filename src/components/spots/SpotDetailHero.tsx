@@ -5,27 +5,23 @@ import { ArrowLeft, Clock, Droplets, MapPin, Waves, Wind } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
-import { getScoreTokens } from '@/lib/sportScore';
 import { getDataFreshness } from '@/lib/dataFreshness';
+import { getWindRelationToCoast } from '@/lib/wind';
 import { cn } from '@/lib/cn';
 import FavoriteButton from '@/components/FavoriteButton';
 import SocialShare from '@/components/ui/SocialShare';
 import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
-import ScoreGauge from '@/components/ui/ScoreGauge';
+import ScoreBadge from '@/components/ui/ScoreBadge';
 import StatChip from '@/components/ui/StatChip';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import SwellRadar from '@/components/ui/SwellRadar';
-import ScoreFeedback from '@/components/spots/ScoreFeedback';
 
 interface SpotDetailHeroProps {
   spot: Spot;
-  spotSlug: string;
   locale: string;
   backLabel: string;
   sport: SportType;
   score: number;
-  rating: string;
-  ratingEn: string;
   coastOrientation?: number;
   tideObserved?: { height: number; at: string; station: string };
   conditions: {
@@ -41,15 +37,33 @@ interface SpotDetailHeroProps {
   };
 }
 
+const WIND_RELATION_LABEL: Record<
+  ReturnType<typeof getWindRelationToCoast>,
+  { pt: string; en: string; className: string }
+> = {
+  offshore: {
+    pt: 'Offshore',
+    en: 'Offshore',
+    className: 'text-windDir-offshore border-windDir-offshore/30 bg-windDir-offshore/10',
+  },
+  onshore: {
+    pt: 'Onshore',
+    en: 'Onshore',
+    className: 'text-windDir-onshore border-windDir-onshore/30 bg-windDir-onshore/10',
+  },
+  cross: {
+    pt: 'Cross-shore',
+    en: 'Cross-shore',
+    className: 'text-windDir-cross border-divider bg-surface-2',
+  },
+};
+
 export default function SpotDetailHero({
   spot,
-  spotSlug,
   locale,
   backLabel,
   sport,
   score,
-  rating,
-  ratingEn,
   coastOrientation,
   tideObserved,
   conditions,
@@ -57,7 +71,6 @@ export default function SpotDetailHero({
   const isPt = locale === 'pt';
   const title = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
-  const tokens = getScoreTokens(score);
   const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
@@ -74,6 +87,12 @@ export default function SpotDetailHero({
   const freshness = conditions.updatedAt ? getDataFreshness(conditions.updatedAt) : null;
   const showUpdatedPill = updatedLabel && (!freshness || freshness === 'fresh');
 
+  const windRelation =
+    coastOrientation !== undefined
+      ? getWindRelationToCoast(conditions.windDirection, coastOrientation)
+      : null;
+  const windRelationMeta = windRelation ? WIND_RELATION_LABEL[windRelation] : null;
+
   return (
     <header className="max-w-6xl mx-auto px-4 pt-4 pb-2">
       <Link
@@ -84,19 +103,20 @@ export default function SpotDetailHero({
         {backLabel}
       </Link>
 
-      <div className="card-hero p-4 md:p-6">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div className="min-w-0 flex-1">
-            <div className="flex items-start justify-between gap-3 mb-2">
-              <h1 className="text-display-lg text-fg tracking-tight">{title}</h1>
-              <div className="flex items-center gap-2 shrink-0 lg:hidden">
+      <div className="card-hero p-4 md:p-5 space-y-5">
+        {/* Title row + score */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="flex items-start justify-between gap-3">
+              <h1 className="text-h1 text-fg tracking-tight">{title}</h1>
+              <div className="flex items-center gap-2 shrink-0 sm:hidden">
                 <SocialShare title={`${title} — ${region}`} locale={locale} />
                 <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-body text-fg-muted">
-              <MapPin className="w-4 h-4 shrink-0" aria-hidden />
+            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-fg-muted">
+              <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
               <span>{region}</span>
               <span aria-hidden>·</span>
               <span className="capitalize">{spot.difficulty}</span>
@@ -109,18 +129,16 @@ export default function SpotDetailHero({
             </div>
 
             {(spot.blueFlag || spot.waterQuality || spot.accessibleBeach) && (
-              <div className="mt-2">
-                <WaterQualityBadge
-                  blueFlag={spot.blueFlag}
-                  waterQuality={spot.waterQuality}
-                  waterQualityEn={spot.waterQualityEn}
-                  accessibleBeach={spot.accessibleBeach}
-                  locale={locale}
-                />
-              </div>
+              <WaterQualityBadge
+                blueFlag={spot.blueFlag}
+                waterQuality={spot.waterQuality}
+                waterQualityEn={spot.waterQualityEn}
+                accessibleBeach={spot.accessibleBeach}
+                locale={locale}
+              />
             )}
 
-            <div className="flex flex-wrap items-center gap-2 mt-4">
+            <div className="flex flex-wrap items-center gap-2">
               {showUpdatedPill && (
                 <span className="pill pill-ghost gap-1.5 px-2 py-1 min-h-0 text-meta-sm text-fg-muted">
                   {isPt ? 'Actualizado' : 'Updated'} {updatedLabel}
@@ -135,88 +153,104 @@ export default function SpotDetailHero({
             </div>
           </div>
 
-          <div className="flex flex-col items-center lg:items-end gap-2 shrink-0">
-            <div className="hidden lg:flex items-center gap-2 mb-1">
+          <div className="flex items-center gap-3 shrink-0 sm:flex-col sm:items-end">
+            <div className="hidden sm:flex items-center gap-2">
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
-            <p className={cn('text-body font-semibold', tokens.text)}>
-              {isPt ? rating : ratingEn}
-            </p>
+            <div className="flex flex-col items-start sm:items-end gap-1.5">
+              <span className="pill pill-ghost px-2 py-0.5 min-h-0 text-meta-sm sport-accent" data-sport={sport}>
+                {sportLabel}
+              </span>
+              <ScoreBadge score={score} locale={isPt ? 'pt' : 'en'} size="md" showLabel />
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 mt-6">
+        {/* Hero metrics — wind kt only here + waves/water */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
           <StatChip
             icon={<Waves className="w-4 h-4 text-data-waves" />}
             value={`${conditions.waveHeight.toFixed(1)}m`}
             label={isPt ? 'Ondas' : 'Waves'}
+            className="bg-surface-1/80"
           />
           <StatChip
             icon={<Clock className="w-4 h-4 text-data-period" />}
             value={`${Math.round(conditions.wavePeriod)}s`}
             label={isPt ? 'Período' : 'Period'}
+            className="bg-surface-1/80"
           />
           <StatChip
             icon={<Wind className="w-4 h-4 text-data-wind" />}
             value={`${windKt}kt`}
             label={isPt ? 'Vento' : 'Wind'}
+            className="bg-surface-1/80"
           />
           <StatChip
             icon={<Droplets className="w-4 h-4 text-data-water" />}
             value={`${conditions.waterTemp.toFixed(1)}°C`}
             label={isPt ? 'Água' : 'Water'}
+            className="bg-surface-1/80"
           />
         </div>
 
-        <div className="mt-6 pt-6 border-t border-divider">
-          <h2 className="text-h3 text-fg mb-4">
+        {/* Agora — radar only; no duplicate swell/wind legend */}
+        <section className="pt-5 border-t border-divider" aria-labelledby="spot-now-heading">
+          <h2 id="spot-now-heading" className="text-h3 text-fg mb-4">
             {isPt ? 'Agora' : 'Now'}
           </h2>
-          <div className="flex flex-col sm:flex-row items-center gap-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <SwellRadar
               swellDirection={conditions.waveDirection}
               swellHeight={swellH}
+              swellPeriod={conditions.wavePeriod}
               windDirection={conditions.windDirection}
               windSpeed={conditions.windSpeed}
               coastOrientation={coastOrientation}
               size="md"
+              showLegend={false}
             />
-            <div className="flex-1 text-center sm:text-left">
-              <p className="text-meta text-fg-muted">
+            <div className="flex-1 w-full text-center sm:text-left space-y-3">
+              <p className="text-meta text-fg-muted max-w-sm mx-auto sm:mx-0">
                 {isPt
-                  ? 'Swell e vento face à orientação da costa'
+                  ? 'Ondulação e vento face à orientação da costa'
                   : 'Swell and wind relative to coast orientation'}
               </p>
+              {windRelationMeta && (
+                <span
+                  className={cn(
+                    'inline-flex items-center rounded-pill border px-2.5 py-1 text-meta-sm font-medium',
+                    windRelationMeta.className,
+                  )}
+                >
+                  {isPt ? windRelationMeta.pt : windRelationMeta.en}
+                </span>
+              )}
               {tideObserved && (
-                <p className="text-meta-sm text-fg-muted mt-3">
-                  {isPt ? 'Maré observada' : 'Observed tide'}: {tideObserved.height.toFixed(2)}m
-                  {' · '}{tideObserved.station}
+                <p className="text-meta-sm text-fg-subtle">
+                  {isPt ? 'Maré observada' : 'Observed tide'}:{' '}
+                  <span className="font-mono tabular-nums text-fg-muted">
+                    {tideObserved.height.toFixed(2)}m
+                  </span>
+                  {' · '}
+                  {tideObserved.station}
                   {tideObserved.at && (
-                    <> · {new Date(tideObserved.at).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}</>
+                    <>
+                      {' · '}
+                      {new Date(tideObserved.at).toLocaleString(isPt ? 'pt-PT' : 'en-GB', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </>
                   )}
                 </p>
               )}
             </div>
           </div>
-
-          <div className="mt-4 pt-4 border-t border-divider">
-            <ScoreFeedback
-              spotSlug={spotSlug}
-              sport={sport}
-              predictedScore={score}
-              conditionsSnapshot={{
-                waveHeight: conditions.waveHeight,
-                wavePeriod: conditions.wavePeriod,
-                windSpeed: conditions.windSpeed,
-                windDirection: conditions.windDirection,
-                waterTemp: conditions.waterTemp,
-              }}
-              locale={locale}
-            />
-          </div>
-        </div>
+        </section>
       </div>
     </header>
   );

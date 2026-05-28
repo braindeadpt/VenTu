@@ -29,6 +29,7 @@ import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotRelatedNews from '@/components/spots/SpotRelatedNews';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
 import SportTab from '@/components/spots/SportTab';
+import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
@@ -373,20 +374,38 @@ export default function SpotDetailClient({
       <div className="min-h-screen bg-bg-base pb-12">
         <SpotDetailHero
           spot={spot}
-          spotSlug={spot.slug}
           locale={locale}
           backLabel={t.spots.backToSpots}
           sport={selectedSport}
           score={score.score}
-          rating={score.rating}
-          ratingEn={score.ratingEn}
           coastOrientation={spot.coastOrientation}
           tideObserved={spotData.tideObserved}
           conditions={conditions}
         />
 
+        <section
+          className="max-w-6xl mx-auto px-4 pt-3"
+          aria-label={isPt ? 'Feedback sobre o score' : 'Score feedback'}
+        >
+          <div className="card-1 px-4 py-3">
+            <ScoreFeedback
+              spotSlug={spot.slug}
+              sport={selectedSport}
+              predictedScore={score.score}
+              conditionsSnapshot={{
+                waveHeight: conditions.waveHeight,
+                wavePeriod: conditions.wavePeriod,
+                windSpeed: conditions.windSpeed,
+                windDirection: conditions.windDirection,
+                waterTemp: conditions.waterTemp,
+              }}
+              locale={locale}
+            />
+          </div>
+        </section>
+
         {/* Sport selector — sticky; horizontal scroll + edge-fade on mobile */}
-        <section className="sticky top-16 z-30 bg-bg-base/95 backdrop-blur-sm border-b border-divider">
+        <section className="sticky top-16 z-30 bg-bg-base border-b border-divider md:bg-bg-base/95 md:backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-4 py-2">
             <p className="text-meta-sm text-fg-muted mb-2 md:hidden">{td.sportTabsHint}</p>
             <div

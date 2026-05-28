@@ -37,7 +37,7 @@ alwaysApply: true
 
 ## Page patterns
 - **Home (5 zones)**: Pulse (h1 ON + freshness) → Top agora (3 sports, `SpotListCard`) → Explore (filters + map) → More spots list (excludes Top agora slugs) → Dawn Patrol (5–12h) / trust footer
-- **Spot**: score + 4 chips + “Agora” (radar; wind kt only in chips) + sticky sport tabs + Windguru forecast
+- **Spot**: `ScoreBadge` + sport pill (no large `ScoreGauge` in hero) + 4 `StatChip` + “Agora” (`SwellRadar` `showLegend={false}`; wind kt only in chips; offshore/onshore pill only) + feedback in `card-1` below hero + sticky sport tabs + forecast
 - **Map fullscreen**: single bottom HUD (`MapControlButton` 44px), `MapSpotSheet` on mobile
 - **Drawer**: real metrics only — no placeholder tabs; sync `gridSport` + `?sport=` on CTA
 

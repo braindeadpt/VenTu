@@ -81,18 +81,18 @@ export default function ScoreFeedback({
 
   if (sent) {
     return (
-      <p className="text-xs text-fg-muted text-center">
+      <p className="text-meta-sm text-fg-muted">
         {isPt ? 'Obrigado — o teu feedback ajuda a calibrar scores.' : 'Thanks — your feedback helps calibrate scores.'}
       </p>
     );
   }
 
   return (
-    <div className="space-y-2 pt-2 border-t border-divider/50 w-full">
-      <p className="text-xs text-fg-subtle text-center">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
+      <p className="text-meta-sm text-fg-muted">
         {isPt ? 'As condições reais foram…' : 'Were real conditions…'}
       </p>
-      <div className="flex justify-center gap-2">
+      <div className="flex flex-wrap gap-2">
         {([
           ['worse', ThumbsDown, isPt ? 'Piores' : 'Worse'],
           ['same', Minus, isPt ? 'Iguais' : 'Same'],
@@ -103,14 +103,14 @@ export default function ScoreFeedback({
             type="button"
             disabled={sending}
             onClick={() => submit(verdict)}
-            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs bg-surface-2 border border-divider text-fg-muted hover:text-fg hover:bg-surface-3 transition-colors disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1.5 min-h-[44px] px-3 py-2 rounded-input text-meta-sm bg-surface-2 border border-divider text-fg-muted hover:text-fg hover:border-divider-strong transition-colors duration-150 disabled:opacity-50"
           >
-            <Icon className="w-3.5 h-3.5" />
+            <Icon className="w-4 h-4 shrink-0" aria-hidden />
             {label}
           </button>
         ))}
       </div>
-      {error && <p className="text-xs text-score-poor text-center">{error}</p>}
+      {error && <p className="text-meta-sm text-score-poor sm:col-span-2">{error}</p>}
     </div>
   );
 }
