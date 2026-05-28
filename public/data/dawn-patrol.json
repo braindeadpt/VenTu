@@ -1,70 +1,78 @@
 {
   "date": "2026-05-28",
+  "generatedAt": "2026-05-28T22:50:56.663Z",
   "topSpot": "Carcavelos",
   "topSpotSlug": "carcavelos",
   "pt": {
-    "headline": "Surfe perfeito!",
-    "advice": "As condições matinais são ideais para surfar em Carcavelos, com ondas de 1.0m e vento leve. É uma boa oportunidade para pegar algumas ondas consistentes. Lembre-se de chegar cedo para evitar a multidão.",
-    "bestTime": "08:00",
+    "headline": "Hoje é dia de Carcavelos! 🌊",
+    "advice": "Melhor janela: 6:00h. Ondas de 1.0m com 4 nós de vento.",
+    "bestTime": "6:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue cedo para evitar a multidão"
+    "crowdTip": "Chega cedo para evitar crowd!"
   },
   "en": {
-    "headline": "Perfect surf!",
-    "advice": "The morning conditions are ideal for surfing in Carcavelos, with 1.0m waves and light wind. It's a good opportunity to catch some consistent waves. Remember to arrive early to avoid the crowd.",
-    "bestTime": "08:00",
+    "headline": "Today is Carcavelos day! 🌊",
+    "advice": "Best window: 6:00. 1.0m waves with 4 knot wind.",
+    "bestTime": "6:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Arrive early to avoid the crowd"
+    "crowdTip": "Get there early to beat the crowd!"
   },
   "spots": [
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 78,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
     {
       "name": "Supertubos",
       "slug": "supertubos",
       "score": 76,
       "verdict": "go",
-      "ptReason": "Ondas consistentes e vento moderado",
-      "enReason": "Consistent waves and moderate wind"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Guincho",
       "slug": "guincho",
       "score": 76,
       "verdict": "go",
-      "ptReason": "Ondas consistentes e vento leve",
-      "enReason": "Consistent waves and light wind"
-    },
-    {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 75,
-      "verdict": "maybe",
-      "ptReason": "Ondas menores e vento leve",
-      "enReason": "Smaller waves and light wind"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 76,
       "verdict": "go",
-      "ptReason": "Ondas consistentes e vento moderado",
-      "enReason": "Consistent waves and moderate wind"
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 75,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
       "score": 75,
-      "verdict": "maybe",
-      "ptReason": "Ondas menores e vento leve",
-      "enReason": "Smaller waves and light wind"
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 78,
-      "verdict": "go",
-      "ptReason": "Ondas consistentes e vento leve",
-      "enReason": "Consistent waves and light wind"
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 69,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis",
+      "enReason": "Fair conditions"
     }
-  ],
-  "generatedAt": "2026-05-28T20:39:21.049Z"
+  ]
 }
