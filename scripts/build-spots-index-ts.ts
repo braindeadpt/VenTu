@@ -8,6 +8,7 @@ import { spots } from '../src/lib/spots';
 import { getAllSportScores, type SportScore } from '../src/lib/sportScore';
 import type { SportType } from '../src/lib/sportRatings';
 import { pickConfidenceFields } from '../src/lib/forecastConfidence';
+import { resolveConditionsEntry } from '../src/lib/spotConditionsSource';
 
 type ConditionsJson = Record<
   string,
@@ -64,7 +65,7 @@ function build() {
   console.log(`[spots-index] ${Object.keys(conditionsData).length} entries in conditions.json`);
 
   const index = spots.map((spot) => {
-    const cond = conditionsData[spot.id];
+    const cond = resolveConditionsEntry(spot, conditionsData);
     const useLakeDefault = !cond && isWakeboardOnly(spot);
     if (!cond && !useLakeDefault) {
       return {

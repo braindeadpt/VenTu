@@ -16,6 +16,7 @@ import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
+import { getConditionsDataId } from '@/lib/spotConditionsSource';
 
 interface SpotBattleData {
   spot: typeof spots[0];
@@ -46,7 +47,8 @@ async function loadSpotBattleData(
     ? getDriveTimeFromLisbon(spot.region)
     : getDriveTimeFromPorto(spot.region);
 
-  const cond = precomputed?.[spot.id];
+  const dataId = getConditionsDataId(spot);
+  const cond = precomputed?.[dataId] ?? precomputed?.[spot.id];
   if (cond) {
     const conditions = {
       waveHeight: cond.waveHeight || 0,
@@ -93,7 +95,7 @@ function getDriveTimeFromLisbon(region: string): string {
 
 function getDriveTimeFromPorto(region: string): string {
   const times: Record<string, string> = {
-    'Porto': '20 min', 'Viana do Castelo': '1h', 'Braga': '30 min',
+    'Porto': '20 min', 'Viana do Castelo': '1h', 'Braga': '30 min', 'Esposende': '45 min',
     'Caminha': '1h 15min', 'Peniche': '2h 30min', 'Ericeira': '3h',
     'Lisboa': '3h 15min', 'Cascais': '3h 30min', 'Nazaré': '2h',
     'Algarve': '5h', 'Madeira': '1h 30min (avion)',

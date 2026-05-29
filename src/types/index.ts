@@ -46,6 +46,8 @@ export interface Spot {
   // Used for offshore/onshore wind calculation
   // 0=N, 90=E, 180=S, 270=W
   coastOrientation: number;
+  /** Reuse conditions/forecasts from another spot (same weather cell; no extra API fetch). */
+  conditionsSource?: string;
 }
 
 export interface MarineData {

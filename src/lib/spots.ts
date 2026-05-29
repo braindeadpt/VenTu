@@ -113,11 +113,11 @@ export const spots: Spot[] = [
     },
   {
       id: 'esposende', slug: 'esposende', name: 'Esposende', nameEn: 'Esposende',
-      region: 'Braga', regionEn: 'Braga', lat: 41.5336, lon: -8.7892,
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5310, lon: -8.7830,
       coastOrientation: 270,
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW',
-      description: 'Lagoa, foz do rio e praia aberta — três spots num só. Água plana na lagoa, ondas no oceano. Versátil e consistente.',
-      descriptionEn: 'Lagoon, river mouth and open beach — three spots in one. Flat water in the lagoon, waves in the ocean. Versatile and consistent.',
+      description: 'Estuário do Cávado — referência nacional de kite e foil. Lagoa de água plana na foz (escolas com barco para a margem da reserva), Nortada NW no verão. Duas escolas de kitesurf na vila; ondas no oceano a poucos minutos.',
+      descriptionEn: 'Cavado estuary — a top Portuguese kite and foil hub. Flat lagoon at the river mouth (schools run boat shuttles to the reserve bank), NW Nortada in summer. Two kite schools in town; ocean waves minutes away.',
       compatibleSports: ['kitesurf', 'foil', 'windsurf'],
       facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'WC'],
       hazards: ['Correntes na foz', 'Rochas na lagoa']
@@ -209,6 +209,30 @@ export const spots: Spot[] = [
       compatibleSports: ['foil'],
       facilities: ['Marina', 'Estacionamento', 'Restaurantes', 'WC'],
       hazards: ['Tráfego de barcos', 'Correntes no Douro', 'Zona portuária']
+    },
+  {
+      id: 'foil-fao-cavado', slug: 'foil-fao-cavado', name: 'Fão — Foil (Cávado)', nameEn: 'Fao — Foil (Cavado)',
+      conditionsSource: 'esposende',
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5245702, lon: -8.7874109,
+      coastOrientation: 270,
+      type: 'foil', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Estuário',
+      description: 'Água plana no estuário do Cávado, zona de Fão — ideal para wing foil e kite foil. Vento térmico NW consistente no verão. Lançamento junto ao rio; modalidade exclusiva de foil.',
+      descriptionEn: 'Flat water on the Cavado estuary at Fao — ideal for wing foil and kite foil. Consistent NW thermal wind in summer. River launch; foil-only spot.',
+      compatibleSports: ['foil'],
+      facilities: ['Estacionamento', 'Escolas na zona', 'WC'],
+      hazards: ['Correntes na foz', 'Tráfego de barcos', 'Bancos de areia com maré']
+    },
+  {
+      id: 'foil-esposende-piscinas', slug: 'foil-esposende-piscinas', name: 'Esposende Piscinas — Foil (Cávado)', nameEn: 'Esposende Pools — Foil (Cavado)',
+      conditionsSource: 'esposende',
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.5283812, lon: -8.7825726,
+      coastOrientation: 270,
+      type: 'foil', difficulty: 'beginner', bestWind: 'NW, N', bestSwell: 'Estuário',
+      description: 'Lançamento junto às piscinas municipais de Esposende, no estuário do Cávado — água plana para wing foil e kite foil. Mesmas condições meteorológicas que o spot Esposende. Apenas foil.',
+      descriptionEn: 'Launch near Esposende municipal pools on the Cavado estuary — flat water for wing and kite foil. Same weather forecast as Esposende spot. Foil only.',
+      compatibleSports: ['foil'],
+      facilities: ['Piscinas municipais', 'Estacionamento', 'Restaurantes'],
+      hazards: ['Correntes na foz', 'Tráfego de barcos', 'Maré']
     },
   {
       id: 'praia-da-lomba', slug: 'praia-da-lomba', name: 'Praia da Lomba — Wakeboard', nameEn: 'Lomba River Beach — Wakeboard',
@@ -973,15 +997,15 @@ export const spots: Spot[] = [
       hazards: ['Multidão', 'Correntes']
     },
   {
-      id: 'milicias', slug: 'milicias', name: 'Milícias', nameEn: 'Milicias',
-      region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.738, lon: -25.636,
+      id: 'milicias', slug: 'milicias', name: 'Praia das Milícias', nameEn: 'Praia das Milicias',
+      region: 'São Miguel', regionEn: 'Sao Miguel', lat: 37.7615, lon: -25.6590,
       coastOrientation: 180,
-      type: 'surf', difficulty: 'beginner', bestWind: 'N, NE', bestSwell: 'S, SW',
-      description: 'Praia urbana perto de Ponta Delgada. Areia negra vulcânica com múltiplos picos. Consistente com swell do sul.',
-      descriptionEn: 'Urban beach near Ponta Delgada. Black volcanic sand with multiple peaks. Consistent with south swell.',
-      compatibleSports: ['surf', 'bodyboard'],
-      facilities: ['Estacionamento', 'Escola surf', 'Restaurantes', 'WC'],
-      hazards: ['Multidão', 'Surf schools']
+      type: 'multisport', difficulty: 'intermediate', bestWind: 'S, SE, SW', bestSwell: 'S, SW',
+      description: 'Praia Grande de São Roque (Ponta Delgada) — o spot de kitesurf mais frequentado da ilha. Areia vulcânica, chop e ondas pequenas; melhor com vento de sul a sueste. Surf e bodyboard nos dias de swell; respeitar época balnear e banhistas.',
+      descriptionEn: 'Sao Roque main beach (Ponta Delgada) — São Miguel’s busiest kitesurf beach. Volcanic sand, chop and small waves; best with south to southeast wind. Surf and bodyboard on swell days; respect bathing season and swimmers.',
+      compatibleSports: ['kitesurf', 'surf', 'bodyboard'],
+      facilities: ['Estacionamento', 'Escolas kite e surf', 'Restaurantes', 'WC'],
+      hazards: ['Multidão', 'Banhistas no verão', 'Correntes', 'Rochas nas extremidades']
     },
   {
       id: 'vila-nova-milfontes', slug: 'vila-nova-milfontes', name: 'Vila Nova de Milfontes', nameEn: 'Vila Nova de Milfontes',

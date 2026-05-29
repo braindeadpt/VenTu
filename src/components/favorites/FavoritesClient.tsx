@@ -20,6 +20,7 @@ import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
+import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import Skeleton from '@/components/ui/Skeleton';
 
 interface SpotConditions {
@@ -121,7 +122,7 @@ export default function FavoritesClient() {
             const spot = spots.find(s => s.id === id);
             if (!spot) continue;
             
-            const cond = precomputed[id];
+            const cond = precomputed[getConditionsDataId(spot)];
             if (cond) {
               const current = {
                 waveHeight: cond.waveHeight || 0,

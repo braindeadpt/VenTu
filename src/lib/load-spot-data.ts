@@ -6,6 +6,7 @@ import type { Spot } from '@/types'
 import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
 import { pickConfidenceFields } from '@/lib/forecastConfidence'
+import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
 
 const CALM_LAKE_CONDITIONS = {
   waveHeight: 0,
@@ -97,7 +98,7 @@ export function loadSpotData(): SpotData[] {
 
   const result: SpotData[] = []
   for (const spot of spots) {
-    const raw = conditionsData[spot.id] ?? null
+    const raw = resolveConditionsEntry(spot, conditionsData) ?? null
     const row = buildSpotData(spot, raw)
     if (row) result.push(row)
   }

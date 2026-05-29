@@ -31,6 +31,7 @@ import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationToCoast, getWindRelationLabel } from '@/lib/wind';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
 import { buildTideSchedule, phaseFromConditionsStatus } from '@/lib/tideSchedule';
+import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { cn } from '@/lib/cn';
 
 import SeoHead from '@/components/SeoHead';
@@ -166,9 +167,10 @@ export default function SpotDetailClient({
 
         if (conditionsResp.ok && forecastsResp.ok) {
           const condJson = await conditionsResp.json();
-          const spotCond = condJson[spot.id];
+          const dataId = getConditionsDataId(spot);
+          const spotCond = condJson[dataId] ?? condJson[spot.id];
           const fcJson = await forecastsResp.json();
-          const spotFc = fcJson[spot.id];
+          const spotFc = fcJson[dataId] ?? fcJson[spot.id];
 
           if (spotCond && spotFc) {
             conditions = {
@@ -218,7 +220,21 @@ export default function SpotDetailClient({
 
         if (conditionsResp.ok) {
           const condJson = await conditionsResp.json();
-          const spotCond = condJson[spot.id];
+          const dataId = getConditionsDataId(spot);
+          const spotCond = condJson[dataId] ?? condJson[spot.id];
+          if (spotCond) {
+            conditions = {
+              waveHeight: spotCond.waveHeight || 0,
+              wavePeriod: spotCond.wavePeriod || 0,
+              waveDirection: spotCond.waveDirection || 0,
+              windSpeed: spotCond.windSpeed || 0,
+              windDirection: spotCond.windDirection || 0,
+              windGust: spotCond.windGust || 0,
+              waterTemp: spotCond.waterTemp || 0,
+              source: 'real',
+              updatedAt: spotCond.updatedAt,
+            };
+          }
         }
 
         setSpotData({ spot, conditions, allScores, forecast });

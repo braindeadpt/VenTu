@@ -3,6 +3,7 @@
 // Falls back to live fetch only if JSON is missing/empty
 
 import { spots } from './spots';
+import { getConditionsDataId } from './spotConditionsSource';
 
 export interface PrecomputedConditions {
   [spotId: string]: {
@@ -86,7 +87,9 @@ export function hasPrecomputedConditions(): boolean {
  */
 export function getSpotConditions(spotId: string): PrecomputedConditions[string] | null {
   const conditions = loadPrecomputedConditions();
-  return conditions[spotId] || null;
+  const spot = spots.find((s) => s.id === spotId);
+  const key = spot ? getConditionsDataId(spot) : spotId;
+  return conditions[key] || conditions[spotId] || null;
 }
 
 /**

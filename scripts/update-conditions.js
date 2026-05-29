@@ -30,18 +30,22 @@ function parseSpotsFromFile() {
   const content = fs.readFileSync(spotsPath, 'utf-8');
 
   const spots = [];
-  // Match each spot block: id, lat, lon
-  const spotRegex = /id:\s*['"]([^'"]+)['"][^}]*lat:\s*([0-9.\-]+)[^}]*lon:\s*([0-9.\-]+)/g;
+  const blockRegex = /\{\s*\n\s*id:\s*['"]([^'"]+)['"]([\s\S]*?)\n\s*\},/g;
   let match;
-  while ((match = spotRegex.exec(content)) !== null) {
+  while ((match = blockRegex.exec(content)) !== null) {
+    const body = match[2];
+    const latMatch = body.match(/lat:\s*([0-9.\-]+)/);
+    const lonMatch = body.match(/lon:\s*([0-9.\-]+)/);
+    if (!latMatch || !lonMatch) continue;
+    const srcMatch = body.match(/conditionsSource:\s*['"]([^'"]+)['"]/);
     spots.push({
       id: match[1],
-      lat: parseFloat(match[2]),
-      lon: parseFloat(match[3]),
+      lat: parseFloat(latMatch[1]),
+      lon: parseFloat(lonMatch[1]),
+      conditionsSource: srcMatch ? srcMatch[1] : undefined,
     });
   }
 
-  // Remove duplicates (some spots like foil variants share same coords)
   const seen = new Set();
   return spots.filter(s => {
     if (seen.has(s.id)) return false;
@@ -235,7 +239,11 @@ async function updateConditions() {
     }
   }
 
+  const aliasSpots = spots.filter((s) => s.conditionsSource);
+
   for (const spot of spots) {
+    if (spot.conditionsSource) continue;
+
     try {
       console.log(`  Fetching ${spot.id}...`);
       
@@ -319,6 +327,17 @@ async function updateConditions() {
     } catch (error) {
       console.error(`  ✗ ${spot.id} failed:`, error.message);
     }
+  }
+
+  for (const spot of aliasSpots) {
+    const srcId = spot.conditionsSource;
+    if (!allConditions[srcId]) {
+      console.error(`  ✗ ${spot.id}: conditionsSource "${srcId}" not found — fetch source spot first`);
+      continue;
+    }
+    allConditions[spot.id] = JSON.parse(JSON.stringify(allConditions[srcId]));
+    allForecasts[spot.id] = allForecasts[srcId];
+    console.log(`  ↳ ${spot.id} ← ${srcId} (no API)`);
   }
 
   const outputPath = path.join(__dirname, '../public/data/conditions.json');
