@@ -1,4 +1,8 @@
-import { spotMatchesRegionFilter, PLAYABLE_THRESHOLD } from '@/lib/gridSpotFilters';
+import {
+  spotMatchesRegionFilter,
+  spotMeetsPlayableScore,
+  PLAYABLE_THRESHOLD,
+} from '@/lib/gridSpotFilters';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import type { GridSportFilter, SportType } from '@/lib/sportRatings';
 
@@ -48,7 +52,7 @@ export function alternativeSport(
     if (!spotMatchesRegionFilter(data, region)) continue;
     for (const sport of Object.keys(data.allScores) as SportType[]) {
       if (sport === currentSport) continue;
-      if ((data.allScores[sport]?.score ?? 0) >= PLAYABLE_THRESHOLD) {
+      if (spotMeetsPlayableScore(data, sport, PLAYABLE_THRESHOLD)) {
         counts[sport] = (counts[sport] || 0) + 1;
       }
     }
