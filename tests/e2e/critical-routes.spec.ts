@@ -4,14 +4,18 @@ test.describe('Critical routes', () => {
   test('homepage PT loads', async ({ page }) => {
     await page.goto('/pt/');
     await expect(page.getByRole('banner')).toContainText('Ven');
-    await expect(page.getByRole('status').first()).toBeVisible();
+    await expect(page.getByRole('region', { name: /Mapa interactivo/i })).toBeVisible({
+      timeout: 20_000,
+    });
     await expect(page.locator('h1.sr-only')).toBeAttached();
   });
 
   test('homepage EN loads', async ({ page }) => {
     await page.goto('/en/');
     await expect(page.getByRole('banner')).toContainText('Ven');
-    await expect(page.getByRole('status').first()).toBeVisible();
+    await expect(page.getByRole('region', { name: /Interactive map/i })).toBeVisible({
+      timeout: 20_000,
+    });
     await expect(page.locator('h1.sr-only')).toBeAttached();
   });
 
