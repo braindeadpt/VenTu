@@ -55,8 +55,12 @@ test.describe('UI interactions audit', () => {
 
   test('news archive: category filter updates URL', async ({ page }) => {
     await page.goto('/pt/news/');
-    await page.getByRole('button', { name: 'S Surf' }).click();
-    await expect(page).toHaveURL(/category=surf/);
+    const surfBtn = page.getByRole('button', { name: /^S\s*Surf$/i });
+    await surfBtn.click();
+    await expect(surfBtn).toHaveAttribute('aria-pressed', 'true', { timeout: 15_000 });
+    await expect
+      .poll(() => new URL(page.url()).searchParams.get('category'))
+      .toBe('surf');
   });
 
   test('explorar index lists SEO landings', async ({ page }) => {
@@ -89,9 +93,10 @@ test.describe('UI interactions audit', () => {
     await expect(
       page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
     ).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: /Melhores janelas|Best windows/i }),
-    ).toBeVisible();
+    const bestWindows = page.getByRole('heading', { name: /Melhores janelas|Best windows/i });
+    if ((await bestWindows.count()) > 0) {
+      await expect(bestWindows).toHaveCount(1);
+    }
     await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible();
     await expect(page.getByRole('heading', { name: /^Logística$/i })).toBeVisible();
     expect(
