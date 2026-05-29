@@ -173,7 +173,7 @@ export const translations = {
       gust: 'Rajada (kt)',
       direction: 'Direcção',
       water: 'Água (°C)',
-      tide: 'Maré (m)',
+      tide: 'Maré',
       score: 'Score',
     },
     spotDetail: {
@@ -367,7 +367,7 @@ export const translations = {
       gust: 'Gust (kt)',
       direction: 'Direction',
       water: 'Water (°C)',
-      tide: 'Tide (m)',
+      tide: 'Tide',
       score: 'Score',
     },
     spotDetail: {

@@ -184,3 +184,37 @@ export function phaseFromConditionsStatus(
 ): TidePhase | undefined {
   return status;
 }
+
+/** Short labels for hourly forecast table cells */
+export const TIDE_PHASE_CELL: Record<TidePhase, { pt: string; en: string }> = {
+  high: { pt: 'Alta', en: 'High' },
+  low: { pt: 'Baixa', en: 'Low' },
+  rising: { pt: '↑', en: '↑' },
+  falling: { pt: '↓', en: '↓' },
+};
+
+/** Per-hour tide phase from MSL curve (for forecast table). */
+export function getTidePhasesForHours(hours: TideHourPoint[]): (TidePhase | null)[] {
+  const extrema = findTideExtrema(hours);
+  const extremaByTime = new Map(extrema.map((e) => [e.at.getTime(), e.type] as const));
+
+  return hours.map((h, i) => {
+    if (typeof h.tideHeight !== 'number' || Number.isNaN(h.tideHeight)) return null;
+
+    const at = parseTime(h.time).getTime();
+    const atExtremum = extremaByTime.get(at);
+    if (atExtremum) return atExtremum;
+
+    const next = hours[i + 1]?.tideHeight;
+    if (typeof next === 'number') {
+      if (next > h.tideHeight) return 'rising';
+      if (next < h.tideHeight) return 'falling';
+    }
+    const prev = hours[i - 1]?.tideHeight;
+    if (typeof prev === 'number') {
+      if (h.tideHeight > prev) return 'rising';
+      if (h.tideHeight < prev) return 'falling';
+    }
+    return null;
+  });
+}

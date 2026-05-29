@@ -10,6 +10,11 @@ import {
   getWindRelationToCoast,
 } from '@/lib/wind';
 import { getTranslation } from '@/lib/i18n';
+import {
+  getTidePhasesForHours,
+  TIDE_PHASE_CELL,
+  type TidePhase,
+} from '@/lib/tideSchedule';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  ForecastTable — Dense hourly forecast table (Windguru-style).
@@ -108,6 +113,19 @@ return 'bg-data-water/70';
 function waterText(t: number): string {
   if (t < 14) return 'text-windDir-onshore';
   return 'text-fg';
+}
+
+function tidePhaseBg(phase: TidePhase): string {
+  if (phase === 'high') return 'bg-data-waves/25';
+  if (phase === 'low') return 'bg-surface-2/[0.08]';
+  if (phase === 'rising') return 'bg-data-waves/15';
+  return 'bg-data-period/15';
+}
+
+function tidePhaseText(phase: TidePhase): string {
+  if (phase === 'high') return 'text-data-waves font-semibold';
+  if (phase === 'low') return 'text-fg-muted';
+  return 'text-fg-subtle';
 }
 
 /** Score → CSS variable name for inline colour. */
@@ -310,6 +328,10 @@ export default function ForecastTable({
   const hasGust = visible.some((h) => typeof h.windGust === 'number');
   const hasWaterTemp = visible.some((h) => typeof h.waterTemp === 'number');
   const hasTide = visible.some((h) => typeof h.tideHeight === 'number');
+  const tidePhases = useMemo(
+    () => (hasTide ? getTidePhasesForHours(visible) : []),
+    [visible, hasTide],
+  );
   const hasAnyScore = visible.some((h) => typeof h.score === 'number');
 
   /* ── sport label for score row ── */
@@ -390,7 +412,7 @@ export default function ForecastTable({
               {/* Sticky label column */}
               <th
                 scope="col"
-                className={`sticky left-0 z-20 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} font-semibold text-fg border-b-2 border-r-2 border-score-good/30`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} font-semibold text-fg border-b-2 border-r-2 border-score-good/30`}
               >
                 <div className="flex flex-col gap-0.5">
                   {dayGroups.length > 1 ? (
@@ -439,7 +461,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.waves}
             </th>
@@ -462,7 +484,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.period}
             </th>
@@ -485,7 +507,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.wind}
             </th>
@@ -511,7 +533,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.direction}
             </th>
@@ -541,7 +563,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.gust}
               </th>
@@ -571,7 +593,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.water}
               </th>
@@ -604,26 +626,38 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.tide}
               </th>
-              {visible.map((h, i) => (
-                <td
-                  key={i}
-                  className={`${hourW} ${cellPx} ${
-                    typeof h.tideHeight === 'number'
-                      ? h.tideHeight > 0.3 ? 'bg-data-waves/20' : h.tideHeight < -0.3 ? 'bg-data-waves/10' : 'bg-surface-1/[0.04]'
-                      : 'bg-surface-1/[0.04]'
-                  } font-mono ${numText} ${
-                    typeof h.tideHeight === 'number' ? (h.tideHeight > 0.3 ? 'text-data-waves' : 'text-fg-muted') : 'text-fg-subtle'
-                  } ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
-                  onMouseEnter={() => setHoveredCol(i)}
-                  onMouseLeave={() => setHoveredCol(null)}
-                >
-                  {typeof h.tideHeight === 'number' ? h.tideHeight.toFixed(1) : '—'}
-                </td>
-              ))}
+              {visible.map((h, i) => {
+                const phase = tidePhases[i];
+                const label =
+                  phase != null
+                    ? TIDE_PHASE_CELL[phase][isPt ? 'pt' : 'en']
+                    : '—';
+                const phaseTitle =
+                  phase != null
+                    ? isPt
+                      ? { high: 'Maré alta', low: 'Maré baixa', rising: 'Maré a subir', falling: 'Maré a descer' }[phase]
+                      : { high: 'High tide', low: 'Low tide', rising: 'Rising tide', falling: 'Falling tide' }[phase]
+                    : undefined;
+                return (
+                  <td
+                    key={i}
+                    className={`${hourW} ${cellPx} ${
+                      phase ? tidePhaseBg(phase) : 'bg-surface-1/[0.04]'
+                    } ${metaText} ${phase ? tidePhaseText(phase) : 'text-fg-subtle'} ${
+                      hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
+                    } transition-colors duration-fast border-b border-divider/20`}
+                    title={phaseTitle}
+                    onMouseEnter={() => setHoveredCol(i)}
+                    onMouseLeave={() => setHoveredCol(null)}
+                  >
+                    {label}
+                  </td>
+                );
+              })}
             </tr>
           )}
 
@@ -632,7 +666,7 @@ export default function ForecastTable({
             <tr className="border-t-2 border-divider-strong">
               <th
                 scope="row"
-                className={`sticky left-0 z-10 bg-bg-base ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
               >
                 {sportLabel ?? t.score}
               </th>

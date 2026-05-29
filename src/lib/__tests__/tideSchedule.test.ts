@@ -3,6 +3,7 @@ import {
   buildTideSchedule,
   findTideExtrema,
   formatTideScheduleLine,
+  getTidePhasesForHours,
 } from '../tideSchedule';
 
 describe('findTideExtrema', () => {
@@ -52,5 +53,23 @@ describe('buildTideSchedule', () => {
     expect(formatTideScheduleLine(schedule!, 'pt')).toMatch(/Baixa às/);
     expect(formatTideScheduleLine(schedule!, 'pt')).toMatch(/Alta às/);
     expect(formatTideScheduleLine(schedule!, 'pt')).not.toMatch(/3\.\d+m/);
+  });
+});
+
+describe('getTidePhasesForHours', () => {
+  it('marks extrema and rising/falling between them', () => {
+    const hourly = [
+      { time: '2026-05-29T05:00', tideHeight: -0.9 },
+      { time: '2026-05-29T06:00', tideHeight: -1.1 },
+      { time: '2026-05-29T07:00', tideHeight: -0.8 },
+      { time: '2026-05-29T08:00', tideHeight: -0.2 },
+      { time: '2026-05-29T09:00', tideHeight: 0.4 },
+      { time: '2026-05-29T10:00', tideHeight: 0.7 },
+    ];
+    const phases = getTidePhasesForHours(hourly);
+    expect(phases[1]).toBe('low');
+    expect(phases[5]).toBe('high');
+    expect(phases[3]).toBe('rising');
+    expect(phases[4]).toBe('rising');
   });
 });
