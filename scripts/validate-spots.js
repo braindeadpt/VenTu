@@ -31,4 +31,4 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`✅ validate-spots: ${ids.length}/167 spots OK — all have compatibleSports`);
+console.log(`✅ validate-spots: ${ids.length} spots OK — all have compatibleSports`);

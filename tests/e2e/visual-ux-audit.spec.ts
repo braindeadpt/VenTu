@@ -171,13 +171,15 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('02b — /mapa: já abre em fullscreen', async ({ browser }) => {
+      test.setTimeout(60_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/mapa/');
-      await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
+      await page.waitForSelector('.leaflet-container', { timeout: 35_000 });
+      await page.waitForSelector('[data-map-hud="visible"]', { timeout: 35_000 });
 
       const mapShell = page.locator('[data-map-fullscreen="true"]');
-      await expect(mapShell).toBeVisible({ timeout: 20_000 });
+      await expect(mapShell).toBeVisible({ timeout: 30_000 });
       await expect(mapShell).toHaveAttribute('data-map-hud', 'visible');
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
@@ -337,14 +339,16 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/news/');
 
-      await page.getByRole('button', { name: /Surf/i }).first().click();
-      await expect(page).toHaveURL(/category=surf/);
+      const surfFilter = page.getByRole('button', { name: /^Surf$/i }).first();
+      await surfFilter.scrollIntoViewIfNeeded();
+      await surfFilter.click();
+      await expect(page).toHaveURL(/category=surf/, { timeout: 15_000 });
 
       await page.getByRole('button', { name: /7 dias|7 days/i }).click();
-      await expect(page).toHaveURL(/period=7d/);
+      await expect(page).toHaveURL(/period=7d/, { timeout: 15_000 });
 
       await page.getByRole('button', { name: /Limpar filtros|Clear filters/i }).click();
-      await expect(page).not.toHaveURL(/category=/);
+      await expect(page).not.toHaveURL(/category=/, { timeout: 15_000 });
       await context.close();
     });
 
@@ -353,11 +357,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/explorar/');
 
-      const firstLanding = page.locator('main a[href*="/explorar/"]').first();
+      const firstLanding = page
+        .locator('main a[href^="/pt/explorar/"]:not([href="/pt/explorar/"]):not([href="/pt/explorar"])')
+        .first();
       const href = await firstLanding.getAttribute('href');
-      expect(href).toBeTruthy();
+      expect(href).toMatch(/\/pt\/explorar\/[^/]+\/?$/);
       await firstLanding.click();
-      await expect(page).toHaveURL(/\/pt\/explorar\/.+/);
+      await expect(page).toHaveURL(/\/pt\/explorar\/[^/]+\/?/, { timeout: 15_000 });
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
     });

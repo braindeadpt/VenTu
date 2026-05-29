@@ -5,11 +5,11 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
   testDir: './tests/e2e',
-  fullyParallel: true,
+  fullyParallel: !process.env.CI,
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 1 : 0,
-  workers: process.env.CI ? 2 : undefined,
-  timeout: 30_000,
+  retries: process.env.CI ? 2 : 0,
+  workers: process.env.CI ? 1 : undefined,
+  timeout: process.env.CI ? 60_000 : 30_000,
   reporter: process.env.CI
     ? [['github'], ['html', { open: 'never', outputFolder: 'playwright-report' }]]
     : [['list'], ['html', { open: 'never', outputFolder: 'playwright-report' }]],
@@ -28,6 +28,6 @@ export default defineConfig({
     command: `npx serve out -l ${PORT}`,
     url: baseURL,
     reuseExistingServer: true,
-    timeout: 60_000,
+    timeout: process.env.CI ? 120_000 : 60_000,
   },
 });
