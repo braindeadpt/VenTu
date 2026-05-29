@@ -6,6 +6,8 @@ import type { Spot } from '@/types'
 import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
 import { pickConfidenceFields } from '@/lib/forecastConfidence'
+import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions'
+import type { ObservedConditions } from '@/lib/observations'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
 
 const CALM_LAKE_CONDITIONS = {
@@ -61,12 +63,17 @@ export interface SpotData {
     waterTemp: number
     swellHeight?: number
     swellPeriod?: number
+    swellDirection?: number
+    secondarySwellHeight?: number
+    secondarySwellPeriod?: number
+    secondarySwellDirection?: number
     wavePowerKw?: number
     updatedAt?: string
     source?: 'real' | 'mock'
     confidence?: import('@/lib/forecastConfidence').ConfidenceTier
     confidenceDetail?: import('@/lib/forecastConfidence').ConfidenceDetail
     dailyConfidence?: import('@/lib/forecastConfidence').DailyConfidence[]
+    observed?: ObservedConditions
   }
   allScores: Record<SportType, SportScore>
 }
@@ -82,12 +89,11 @@ function buildSpotData(spot: Spot, raw: RawConditions | null): SpotData | null {
     spot,
     conditions: {
       ...scoreInput,
-      swellHeight: raw?.swellHeight != null ? Number(raw.swellHeight) : undefined,
-      swellPeriod: raw?.swellPeriod != null ? Number(raw.swellPeriod) : undefined,
-      wavePowerKw: raw?.wavePowerKw != null ? Number(raw.wavePowerKw) : undefined,
+      ...pickMarineDisplayFields((raw ?? {}) as Record<string, unknown>),
       updatedAt: (raw?.updatedAt as string) || undefined,
       source: raw ? ('real' as const) : ('mock' as const),
       ...(raw ? pickConfidenceFields(raw) : {}),
+      observed: raw ? pickObservedField(raw as Record<string, unknown>) : undefined,
     },
     allScores,
   }

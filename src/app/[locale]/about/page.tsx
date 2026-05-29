@@ -84,6 +84,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             { icon: <Wind className="w-6 h-6" />, name: 'Tailwind CSS', desc: 'Styling' },
             { icon: <Waves className="w-6 h-6" />, name: 'Leaflet', desc: 'Interactive maps' },
             { icon: <Globe className="w-6 h-6" />, name: 'Open-Meteo', desc: 'Marine API' },
+            { icon: <Wind className="w-6 h-6" />, name: 'IPMA', desc: isPt ? 'Observações PT' : 'PT observations' },
             { icon: <Brain className="w-6 h-6" />, name: 'Gemini Flash', desc: 'AI News' },
             { icon: <Shield className="w-6 h-6" />, name: 'Supabase', desc: 'Contributions' },
           ].map((tech, i) => (

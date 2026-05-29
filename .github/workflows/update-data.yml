@@ -27,6 +27,9 @@ jobs:
       - name: Update Conditions
         run: node scripts/update-conditions.js
 
+      - name: Merge IPMA observations
+        run: npm run obs:update
+
       - name: Build spots index
         run: npm run spots:index
 

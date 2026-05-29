@@ -146,6 +146,33 @@ export default function Footer({ locale }: FooterProps) {
             <ul className="space-y-2 text-sm text-fg-muted">
               <li>{isPt ? 'Ondas: Open-Meteo Marine' : 'Waves: Open-Meteo Marine'}</li>
               <li>{isPt ? 'Vento: ECMWF / GFS' : 'Wind: ECMWF / GFS'}</li>
+              <li>
+                {isPt ? (
+                  <>
+                    Observações:{' '}
+                    <a
+                      href="https://www.ipma.pt/"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      IPMA
+                    </a>
+                  </>
+                ) : (
+                  <>
+                    Observations:{' '}
+                    <a
+                      href="https://www.ipma.pt/"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      IPMA
+                    </a>
+                  </>
+                )}
+              </li>
               <li>{isPt ? 'Notícias: Gemini Flash' : 'News: Gemini Flash'}</li>
             </ul>
           </div>

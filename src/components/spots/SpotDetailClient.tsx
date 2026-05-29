@@ -11,7 +11,6 @@ import {
   ExternalLink,
   Waves,
   Wind,
-  Zap,
 } from 'lucide-react';
 
 import type { Spot } from '@/types';
@@ -29,7 +28,7 @@ import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { getWindguruUrl } from '@/lib/windguru';
 import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationToCoast, getWindRelationLabel } from '@/lib/wind';
-import { resolveWavePowerKw } from '@/lib/waveEnergy';
+import { buildSwellTrains } from '@/lib/waveEnergy';
 import { buildTideSchedule, phaseFromConditionsStatus } from '@/lib/tideSchedule';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { cn } from '@/lib/cn';
@@ -59,6 +58,9 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import StatChip from '@/components/ui/StatChip';
 import SwellRadar from '@/components/ui/SwellRadar';
+import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
+import ObservedNow from '@/components/spots/ObservedNow';
+import type { ObservedConditions } from '@/lib/observations';
 
 interface Conditions {
   waveHeight: number;
@@ -70,6 +72,10 @@ interface Conditions {
   waterTemp: number;
   swellHeight?: number;
   swellPeriod?: number;
+  swellDirection?: number;
+  secondarySwellHeight?: number;
+  secondarySwellPeriod?: number;
+  secondarySwellDirection?: number;
   wavePowerKw?: number;
   tideHeight?: number;
   tideStatus?: 'high' | 'low' | 'rising' | 'falling';
@@ -79,6 +85,7 @@ interface Conditions {
   confidence?: import('@/lib/forecastConfidence').ConfidenceTier;
   confidenceDetail?: import('@/lib/forecastConfidence').ConfidenceDetail;
   dailyConfidence?: import('@/lib/forecastConfidence').DailyConfidence[];
+  observed?: ObservedConditions;
 }
 
 interface SpotData {
@@ -183,7 +190,12 @@ export default function SpotDetailClient({
               waterTemp: spotCond.waterTemp || 0,
               swellHeight: spotCond.swellHeight,
               swellPeriod: spotCond.swellPeriod,
+              swellDirection: spotCond.swellDirection,
+              secondarySwellHeight: spotCond.secondarySwellHeight,
+              secondarySwellPeriod: spotCond.secondarySwellPeriod,
+              secondarySwellDirection: spotCond.secondarySwellDirection,
               wavePowerKw: spotCond.wavePowerKw,
+              observed: spotCond.observed,
               tideHeight: spotCond.tideHeight,
               tideStatus: spotCond.tideStatus,
               tideLabel: spotCond.tideLabel,
@@ -378,8 +390,7 @@ export default function SpotDetailClient({
 
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
-  const swellH = conditions.swellHeight ?? conditions.waveHeight;
-  const powerKw = resolveWavePowerKw(conditions);
+  const swellTrains = buildSwellTrains(conditions);
   const windCardinal = getCardinalLabel(conditions.windDirection);
 
   const windRelation =
@@ -471,52 +482,46 @@ export default function SpotDetailClient({
               <h2 className="text-h3 text-fg">{td.now}</h2>
               <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
                 <SwellRadar
-                  swellDirection={conditions.waveDirection}
-                  swellHeight={swellH}
-                  swellPeriod={conditions.wavePeriod}
+                  swellTrains={swellTrains.map((t) => ({
+                    key: t.key,
+                    direction: t.direction,
+                    height: t.height,
+                    period: t.period,
+                  }))}
                   windDirection={conditions.windDirection}
                   windSpeed={conditions.windSpeed}
                   coastOrientation={spot.coastOrientation}
                   size="md"
                   showLegend={false}
                 />
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 flex-1 w-full">
-                  <StatChip
-                    icon={<Waves className="w-4 h-4 text-data-waves" />}
-                    value={`${conditions.waveHeight.toFixed(1)}m`}
-                    label={isPt ? 'Ondas' : 'Waves'}
-                    className="bg-surface-1/[0.04]"
-                  />
-                  <StatChip
-                    icon={<Clock className="w-4 h-4 text-data-period" />}
-                    value={`${Math.round(conditions.wavePeriod)}s`}
-                    label={isPt ? 'Período' : 'Period'}
-                    className="bg-surface-1/[0.04]"
-                  />
-                  <StatChip
-                    icon={<Waves className="w-4 h-4 text-data-waves/80" />}
-                    value={`${swellH.toFixed(1)}m`}
-                    label={isPt ? 'Swell' : 'Swell'}
-                    className="bg-surface-1/[0.04]"
-                  />
-                  <StatChip
-                    icon={<Wind className="w-4 h-4 text-data-wind" />}
-                    value={`${windKt}kt`}
-                    label={`${isPt ? 'Vento' : 'Wind'} · ${windCardinal}`}
-                    className="bg-surface-1/[0.04]"
-                  />
-                  <StatChip
-                    icon={<Wind className="w-4 h-4 text-data-wind/70" />}
-                    value={`${gustKt}kt`}
-                    label={isPt ? 'Rajada' : 'Gust'}
-                    className="bg-surface-1/[0.04]"
-                  />
-                  <StatChip
-                    icon={<Zap className="w-4 h-4 text-data-period" />}
-                    value={`${powerKw.toFixed(0)}`}
-                    label={isPt ? 'Energia kW' : 'Power kW'}
-                    className="bg-surface-1/[0.04]"
-                  />
+                <div className="flex flex-col gap-3 flex-1 w-full min-w-0">
+                  <div className="grid grid-cols-2 gap-2">
+                    <StatChip
+                      icon={<Waves className="w-4 h-4 text-data-waves" />}
+                      value={`${conditions.waveHeight.toFixed(1)}m`}
+                      label={isPt ? 'Ondas (total)' : 'Waves (total)'}
+                      className="bg-surface-1/[0.04]"
+                    />
+                    <StatChip
+                      icon={<Clock className="w-4 h-4 text-data-period" />}
+                      value={`${Math.round(conditions.wavePeriod)}s`}
+                      label={isPt ? 'Período (total)' : 'Period (total)'}
+                      className="bg-surface-1/[0.04]"
+                    />
+                    <StatChip
+                      icon={<Wind className="w-4 h-4 text-data-wind" />}
+                      value={`${windKt}kt`}
+                      label={`${isPt ? 'Vento' : 'Wind'} · ${windCardinal}`}
+                      className="bg-surface-1/[0.04]"
+                    />
+                    <StatChip
+                      icon={<Wind className="w-4 h-4 text-data-wind/70" />}
+                      value={`${gustKt}kt`}
+                      label={isPt ? 'Rajada' : 'Gust'}
+                      className="bg-surface-1/[0.04]"
+                    />
+                  </div>
+                  <SwellTrainsTable conditions={conditions} locale={locale} />
                 </div>
               </div>
 
@@ -532,6 +537,14 @@ export default function SpotDetailClient({
                   </span>
                 )}
               </div>
+
+              {conditions.observed && (
+                <ObservedNow
+                  observed={conditions.observed}
+                  forecastWindSpeedMs={conditions.windSpeed}
+                  locale={locale}
+                />
+              )}
 
               {tideSchedule && (
                 <TideScheduleStrip schedule={tideSchedule} locale={locale} />

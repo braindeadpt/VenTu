@@ -1,4 +1,5 @@
 import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidence';
+import type { ObservedConditions } from '@/lib/observations';
 
 export type { ConfidenceDetail, ConfidenceTier, DailyConfidence };
 
@@ -14,6 +15,9 @@ export interface MarineConditionsFields {
   swellHeight?: number;
   swellPeriod?: number;
   swellDirection?: number;
+  secondarySwellHeight?: number;
+  secondarySwellPeriod?: number;
+  secondarySwellDirection?: number;
   windWaveHeight?: number;
   wavePowerKw?: number;
   updatedAt?: string;
@@ -28,4 +32,63 @@ export interface MarineConditionsFields {
   confidence?: ConfidenceTier;
   confidenceDetail?: ConfidenceDetail;
   dailyConfidence?: DailyConfidence[];
+  /** Ground-truth snapshot (IPMA station); does not affect score. */
+  observed?: ObservedConditions;
+}
+
+const MARINE_DISPLAY_KEYS = [
+  'swellHeight',
+  'swellPeriod',
+  'swellDirection',
+  'secondarySwellHeight',
+  'secondarySwellPeriod',
+  'secondarySwellDirection',
+  'windWaveHeight',
+  'wavePowerKw',
+] as const satisfies readonly (keyof MarineConditionsFields)[];
+
+/** Snapshot fields for index / drawer (not used in sport score). */
+export function pickMarineDisplayFields(
+  raw: Record<string, unknown>,
+): Partial<Pick<MarineConditionsFields, (typeof MARINE_DISPLAY_KEYS)[number]>> {
+  const out: Partial<Pick<MarineConditionsFields, (typeof MARINE_DISPLAY_KEYS)[number]>> = {};
+  for (const key of MARINE_DISPLAY_KEYS) {
+    const v = raw[key];
+    if (v != null && Number.isFinite(Number(v))) {
+      (out as Record<string, number>)[key] = Number(v);
+    }
+  }
+  return out;
+}
+
+/** Pass observed layer through index / client loaders. */
+export function pickObservedField(
+  raw: Record<string, unknown>,
+): ObservedConditions | undefined {
+  const o = raw.observed;
+  if (!o || typeof o !== 'object') return undefined;
+  const obs = o as Record<string, unknown>;
+  if (
+    typeof obs.windSpeedKt !== 'number' ||
+    typeof obs.windDirDeg !== 'number' ||
+    typeof obs.windCardinal !== 'string' ||
+    typeof obs.stationName !== 'string' ||
+    typeof obs.distanceKm !== 'number' ||
+    typeof obs.observedAt !== 'string' ||
+    obs.source !== 'ipma'
+  ) {
+    return undefined;
+  }
+  return {
+    windSpeedKt: obs.windSpeedKt,
+    windDirDeg: obs.windDirDeg,
+    windCardinal: obs.windCardinal,
+    windCardinalEn:
+      typeof obs.windCardinalEn === 'string' ? obs.windCardinalEn : undefined,
+    tempC: typeof obs.tempC === 'number' ? obs.tempC : undefined,
+    stationName: obs.stationName,
+    distanceKm: obs.distanceKm,
+    observedAt: obs.observedAt,
+    source: 'ipma',
+  };
 }

@@ -9,6 +9,7 @@ import { getAllSportScores, type SportScore } from '../src/lib/sportScore';
 import type { SportType } from '../src/lib/sportRatings';
 import { pickConfidenceFields } from '../src/lib/forecastConfidence';
 import { resolveConditionsEntry } from '../src/lib/spotConditionsSource';
+import { pickMarineDisplayFields, pickObservedField } from '../src/lib/marineConditions';
 
 type ConditionsJson = Record<
   string,
@@ -94,10 +95,13 @@ function build() {
     }
 
     const scoreInput = cond ? toScoreInput(cond) : CALM_LAKE;
+    const rawCond = (cond ?? {}) as Record<string, unknown>;
     const conditions = {
       ...scoreInput,
+      ...pickMarineDisplayFields(rawCond),
+      observed: pickObservedField(rawCond),
       updatedAt: cond?.updatedAt ?? new Date().toISOString(),
-      ...pickConfidenceFields((cond ?? {}) as Record<string, unknown>),
+      ...pickConfidenceFields(rawCond),
     };
 
     const allScores = getAllSportScores(spot, scoreInput);

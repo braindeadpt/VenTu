@@ -95,11 +95,24 @@ function wavePowerKwPerM(heightM, periodS) {
   return 0.5 * heightM * heightM * periodS;
 }
 
+const SWELL_TRAIN_MIN_HEIGHT_M = 0.1;
+
 function wavePowerFromMarine({ swellHeight, swellPeriod, waveHeight, wavePeriod }) {
-  if (swellHeight > 0 && swellPeriod > 0) {
+  if (swellHeight > SWELL_TRAIN_MIN_HEIGHT_M && swellPeriod > 0) {
     return wavePowerKwPerM(swellHeight, swellPeriod);
   }
   return wavePowerKwPerM(waveHeight || 0, wavePeriod || 0);
+}
+
+function pickSwellTrain(height, period, direction) {
+  if (height == null || height < SWELL_TRAIN_MIN_HEIGHT_M || period == null || period <= 0) {
+    return null;
+  }
+  return {
+    height,
+    period,
+    direction: direction ?? 0,
+  };
 }
 
 async function fetchMarineData(lat, lon) {
@@ -113,6 +126,9 @@ async function fetchMarineData(lat, lon) {
       'swell_wave_height',
       'swell_wave_direction',
       'swell_wave_period',
+      'secondary_swell_wave_height',
+      'secondary_swell_wave_period',
+      'secondary_swell_wave_direction',
       'wind_wave_height',
       'sea_surface_temperature',
       'sea_level_height_msl',
@@ -192,8 +208,19 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
 
   const waveHeight = marineData.hourly.wave_height[marineTimeIndex] || 0;
   const wavePeriod = marineData.hourly.wave_period[marineTimeIndex] || 0;
-  const swellHeight = marineData.hourly.swell_wave_height?.[marineTimeIndex] ?? 0;
-  const swellPeriod = marineData.hourly.swell_wave_period?.[marineTimeIndex] ?? 0;
+  const primaryRaw = pickSwellTrain(
+    marineData.hourly.swell_wave_height?.[marineTimeIndex],
+    marineData.hourly.swell_wave_period?.[marineTimeIndex],
+    marineData.hourly.swell_wave_direction?.[marineTimeIndex],
+  );
+  const secondaryRaw = pickSwellTrain(
+    marineData.hourly.secondary_swell_wave_height?.[marineTimeIndex],
+    marineData.hourly.secondary_swell_wave_period?.[marineTimeIndex],
+    marineData.hourly.secondary_swell_wave_direction?.[marineTimeIndex],
+  );
+
+  const swellHeight = primaryRaw?.height ?? 0;
+  const swellPeriod = primaryRaw?.period ?? 0;
 
   const result = {
     waveHeight,
@@ -201,7 +228,7 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
     waveDirection: marineData.hourly.wave_direction[marineTimeIndex] || 0,
     swellHeight,
     swellPeriod,
-    swellDirection: marineData.hourly.swell_wave_direction?.[marineTimeIndex] ?? 0,
+    swellDirection: primaryRaw?.direction ?? 0,
     windWaveHeight: marineData.hourly.wind_wave_height?.[marineTimeIndex] ?? 0,
     wavePowerKw: wavePowerFromMarine({ swellHeight, swellPeriod, waveHeight, wavePeriod }),
     windSpeed: weatherData.hourly.wind_speed_10m[weatherTimeIndex] || 0,
@@ -212,6 +239,12 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
     tideStatus: tide.status,
     tideLabel: tide.label,
   };
+
+  if (secondaryRaw) {
+    result.secondarySwellHeight = secondaryRaw.height;
+    result.secondarySwellPeriod = secondaryRaw.period;
+    result.secondarySwellDirection = secondaryRaw.direction;
+  }
 
   if (ihTideObs) {
     result.tideObservedHeight = ihTideObs.lastObs;

@@ -113,11 +113,11 @@ export const spots: Spot[] = [
     },
   {
       id: 'esposende', slug: 'esposende', name: 'Esposende', nameEn: 'Esposende',
-      region: 'Esposende', regionEn: 'Esposende', lat: 41.5310, lon: -8.7830,
+      region: 'Esposende', regionEn: 'Esposende', lat: 41.531527, lon: -8.789240,
       coastOrientation: 270,
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW',
-      description: 'Estuário do Cávado — referência nacional de kite e foil. Lagoa de água plana na foz (escolas com barco para a margem da reserva), Nortada NW no verão. Duas escolas de kitesurf na vila; ondas no oceano a poucos minutos.',
-      descriptionEn: 'Cavado estuary — a top Portuguese kite and foil hub. Flat lagoon at the river mouth (schools run boat shuttles to the reserve bank), NW Nortada in summer. Two kite schools in town; ocean waves minutes away.',
+      description: 'Ponto de lançamento e encontro da malta no estuário do Cávado — referência nacional de kite e foil. Lagoa plana na foz (escolas com barco para a margem da reserva), Nortada NW no verão. Duas escolas na vila; ondas no oceano a poucos minutos.',
+      descriptionEn: 'Main kite launch and meet-up on the Cavado estuary — a top Portuguese kite and foil hub. Flat lagoon at the river mouth (school boat shuttles to the reserve bank), NW Nortada in summer. Two schools in town; ocean waves minutes away.',
       compatibleSports: ['kitesurf', 'foil', 'windsurf'],
       facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'WC'],
       hazards: ['Correntes na foz', 'Rochas na lagoa']

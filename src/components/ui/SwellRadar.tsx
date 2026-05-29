@@ -44,10 +44,21 @@ import { getWindRelationToCoast, getCardinalLabel } from '@/lib/wind';
 
 type SizeKey = 'sm' | 'md' | 'lg';
 type WindRelation = 'offshore' | 'onshore' | 'cross';
+export type SwellRadarTrainKey = 'primary' | 'secondary';
+
+export interface SwellRadarTrain {
+  key: SwellRadarTrainKey;
+  /** Direction in degrees (0–360), where swell COMES FROM. */
+  direction: number;
+  height: number;
+  period: number;
+}
 
 interface SwellRadarProps {
-  /** Swell direction in degrees (0–360), where it COMES FROM. */
-  swellDirection: number;
+  /** Primary + secondary swell trains (dominant first). Overrides legacy single-swell props. */
+  swellTrains?: SwellRadarTrain[];
+  /** Swell direction in degrees (0–360), where it COMES FROM. Legacy single train. */
+  swellDirection?: number;
   /** Swell height in meters (controls arrow thickness). */
   swellHeight?: number;
   /** Swell period in seconds (shown in legend). */
@@ -116,6 +127,27 @@ function getSwellStroke(height?: number): number {
   return 9;
 }
 
+function swellColorForKey(key: SwellRadarTrainKey): string {
+  return key === 'primary' ? 'rgb(var(--data-waves))' : 'rgb(var(--data-waves) / 0.6)';
+}
+
+function resolveSwellTrains(props: SwellRadarProps): SwellRadarTrain[] {
+  if (props.swellTrains && props.swellTrains.length > 0) {
+    return props.swellTrains.slice(0, 2);
+  }
+  if (props.swellDirection !== undefined) {
+    return [
+      {
+        key: 'primary',
+        direction: props.swellDirection,
+        height: props.swellHeight ?? 0,
+        period: props.swellPeriod ?? 0,
+      },
+    ];
+  }
+  return [];
+}
+
 /* ──────────── wind arrow opacity by speed ──────────── */
 function getWindOpacity(speed?: number): number {
   if (speed === undefined) return 0.7;
@@ -153,6 +185,7 @@ function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
  *  ═══════════════════════════════════════════════════════════════════════ */
 
 export default function SwellRadar({
+  swellTrains: swellTrainsProp,
   swellDirection,
   swellHeight,
   swellPeriod,
@@ -162,6 +195,14 @@ export default function SwellRadar({
   size,
   showLegend = true,
 }: SwellRadarProps) {
+  const swellTrains = resolveSwellTrains({
+    swellTrains: swellTrainsProp,
+    swellDirection,
+    swellHeight,
+    swellPeriod,
+  });
+  const dominantSwell = swellTrains[0];
+
   const cfg = resolveSize(size);
   const c = cfg.viewBox / 2;
   const R = cfg.trackRadius;
@@ -178,72 +219,72 @@ export default function SwellRadar({
       ? getWindRelationToCoast(windDirection, coastAngle)
       : null;
 
-  /* ── incidence angle ── */
-  const incidenceDeg = hasCoast ? getIncidenceAngle(swellDirection, coastAngle) : null;
+  /* ── incidence angle (dominant swell train) ── */
+  const incidenceDeg =
+    dominantSwell && hasCoast
+      ? getIncidenceAngle(dominantSwell.direction, coastAngle)
+      : null;
 
   /* ── animated rotation values ── */
-  const swellTarget = (swellDirection + 180) % 360;
+  const swellTargets = swellTrains.map((t) => (t.direction + 180) % 360);
   const windTarget = windDirection !== undefined ? (windDirection + 180) % 360 : null;
 
-  const [swellRot, setSwellRot] = useState(0);
+  const [swellRots, setSwellRots] = useState<number[]>(() => swellTargets.map(() => 0));
   const [windRot, setWindRot] = useState(0);
   const [fadeIn, setFadeIn] = useState(0);
-  const prevSwell = useRef(0);
+  const prevSwellRots = useRef<number[]>(swellTargets.map(() => 0));
   const prevWind = useRef(0);
-  const hasAnimated = useRef(false);
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) {
-      setSwellRot(swellTarget);
+      setSwellRots(swellTargets);
       if (windTarget !== null) setWindRot(windTarget);
       setFadeIn(1);
-      hasAnimated.current = true;
+      prevSwellRots.current = [...swellTargets];
       return;
     }
 
     const duration = 600;
     const start = performance.now();
-
-    let deltaSwell = swellTarget - prevSwell.current;
-    while (deltaSwell > 180) deltaSwell -= 360;
-    while (deltaSwell < -180) deltaSwell += 360;
+    const deltas = swellTargets.map((target, i) => {
+      let d = target - (prevSwellRots.current[i] ?? 0);
+      while (d > 180) d -= 360;
+      while (d < -180) d += 360;
+      return d;
+    });
 
     let deltaWind = windTarget !== null ? windTarget - prevWind.current : 0;
     while (deltaWind > 180) deltaWind -= 360;
     while (deltaWind < -180) deltaWind += 360;
-
-    hasAnimated.current = true;
 
     const tick = (now: number) => {
       const elapsed = now - start;
       const progress = Math.min(elapsed / duration, 1);
       const eased = easeOutExpo(progress);
 
-      setSwellRot(prevSwell.current + deltaSwell * eased);
+      setSwellRots(
+        swellTargets.map((_, i) => (prevSwellRots.current[i] ?? 0) + deltas[i] * eased),
+      );
       if (windTarget !== null) {
-        // 200ms delay for wind arrow
         const windProgress = Math.max(0, Math.min((elapsed - 200) / (duration - 200), 1));
         setWindRot(prevWind.current + deltaWind * easeOutExpo(windProgress));
       }
-      setFadeIn(Math.min(progress * 1.5, 1)); // fade-in faster
+      setFadeIn(Math.min(progress * 1.5, 1));
 
       if (progress < 1) {
         requestAnimationFrame(tick);
       } else {
-        prevSwell.current = swellTarget;
+        prevSwellRots.current = [...swellTargets];
         if (windTarget !== null) prevWind.current = windTarget;
       }
     };
 
     requestAnimationFrame(tick);
-  }, [swellTarget, windTarget]);
+  }, [swellTargets.join(','), windTarget]);
 
   /* ── arrow geometry ── */
-  // Swell arrow: from edge towards center, length ~55% of R
   const swellLen = R * 0.55;
-  const swellStart = polarToCartesian(c, c, R + 2, swellDirection); // slight outside
-  const swellEnd = polarToCartesian(c, c, R - swellLen, swellDirection);
 
   // Wind arrow: from edge towards center, length ~40% of R, ends further from center
   const windLen = R * 0.40;
@@ -267,9 +308,6 @@ export default function SwellRadar({
   else if (windRelation === 'cross') windColor = 'rgb(var(--windDir-cross))';
   else windColor = 'rgb(var(--data-wind))';
 
-  /* ── swell color ── */
-  const swellColor = 'rgb(var(--data-waves))';
-
   /* ── incidence color ── */
   const incidenceColor =
     incidenceDeg !== null
@@ -281,9 +319,12 @@ export default function SwellRadar({
       : null;
 
   /* ── a11y ── */
-  const ariaParts: string[] = [`Swell from ${getCardinalLabel(swellDirection)}`];
-  if (swellHeight !== undefined) ariaParts.push(`${swellHeight} meters`);
-  if (swellPeriod !== undefined) ariaParts.push(`${swellPeriod} seconds`);
+  const ariaParts: string[] = [];
+  swellTrains.forEach((t) => {
+    ariaParts.push(
+      `${t.key} swell from ${getCardinalLabel(t.direction)}, ${t.height.toFixed(1)} meters, ${t.period.toFixed(1)} seconds`,
+    );
+  });
   if (windDirection !== undefined && windSpeed !== undefined) {
     const windKt = Math.round(windSpeed * 1.94384);
     ariaParts.push(`Wind from ${getCardinalLabel(windDirection)} at ${windKt}kt`);
@@ -355,17 +396,49 @@ export default function SwellRadar({
             );
           })}
 
-          {/* Swell arrow (chevron style) */}
-          <g transform={`rotate(${swellRot} ${c} ${c})`}>
-            {/* Body line */}
-            <line x1={swellStart.x} y1={swellStart.y} x2={swellEnd.x} y2={swellEnd.y}
-              stroke={swellColor} strokeWidth={getSwellStroke(swellHeight)} strokeLinecap="round" />
-            {/* Chevron head */}
-            <polyline
-              points={chevronPoints(swellEnd.x, swellEnd.y, swellDirection, R * 0.12)}
-              fill="none" stroke={swellColor} strokeWidth={getSwellStroke(swellHeight) * 1.5} strokeLinecap="round" strokeLinejoin="round"
-            />
-          </g>
+          {/* Swell arrows (primary + secondary) */}
+          {swellTrains.map((train, idx) => {
+            const color = swellColorForKey(train.key);
+            const stroke = getSwellStroke(train.height);
+            const rot = swellRots[idx] ?? 0;
+            const start = polarToCartesian(c, c, R + 2, train.direction);
+            const end = polarToCartesian(c, c, R - swellLen, train.direction);
+            const labelPos = polarToCartesian(c, c, R - swellLen * 0.45, train.direction);
+            return (
+              <g key={train.key} transform={`rotate(${rot} ${c} ${c})`}>
+                <line
+                  x1={start.x}
+                  y1={start.y}
+                  x2={end.x}
+                  y2={end.y}
+                  stroke={color}
+                  strokeWidth={stroke}
+                  strokeLinecap="round"
+                />
+                <polyline
+                  points={chevronPoints(end.x, end.y, train.direction, R * 0.12)}
+                  fill="none"
+                  stroke={color}
+                  strokeWidth={stroke * 1.5}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                {train.period > 0 && cfg.preset !== 'sm' && (
+                  <text
+                    x={labelPos.x}
+                    y={labelPos.y}
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="fill-current text-num-xs font-mono tabular-nums font-semibold"
+                    style={{ fill: color }}
+                    aria-hidden
+                  >
+                    {train.period.toFixed(1)}s
+                  </text>
+                )}
+              </g>
+            );
+          })}
 
           {/* Wind arrow (small filled triangle) */}
           {windStart && windEnd && (
@@ -397,16 +470,18 @@ export default function SwellRadar({
       </div>
 
       {/* ── Legend overlay ── */}
-      {showLegend && (
+      {showLegend && swellTrains.length > 0 && (
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-meta text-fg-muted">
-          <span>
-            <span className="text-fg-subtle">Swell:</span>{' '}
-            <span className="text-fg font-mono tabular-nums">
-              {swellHeight !== undefined ? `${swellHeight.toFixed(1)}m ` : ''}
-              {swellPeriod !== undefined ? `${swellPeriod.toFixed(0)}s ` : ''}
-              {getCardinalLabel(swellDirection)}
+          {swellTrains.map((train) => (
+            <span key={train.key}>
+              <span className="text-fg-subtle">
+                {train.key === 'primary' ? 'Swell' : 'Swell 2'}:
+              </span>{' '}
+              <span className="text-fg font-mono tabular-nums">
+                {train.height.toFixed(1)}m {train.period.toFixed(1)}s {getCardinalLabel(train.direction)}
+              </span>
             </span>
-          </span>
+          ))}
           {windDirection !== undefined && windSpeed !== undefined && (
             <span>
               <span className="text-fg-subtle">Wind:</span>{' '}
