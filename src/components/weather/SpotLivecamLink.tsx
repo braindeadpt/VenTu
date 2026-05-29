@@ -22,7 +22,7 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
   const isSurfline = cam.kind === 'surfline' && cam.embedUrl;
   const hasEmbed = isYoutube || isSurfline;
   const embedSrc = isYoutube
-    ? `https://www.youtube-nocookie.com/embed/${cam.youtubeId}`
+    ? `https://www.youtube-nocookie.com/embed/${cam.youtubeId}?rel=0&playsinline=1`
     : cam.embedUrl;
 
   return (

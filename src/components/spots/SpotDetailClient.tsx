@@ -30,6 +30,7 @@ import { getWindguruSearchUrl } from '@/lib/windguru';
 import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationToCoast, getWindRelationLabel } from '@/lib/wind';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
+import { buildTideSchedule, phaseFromConditionsStatus } from '@/lib/tideSchedule';
 import { cn } from '@/lib/cn';
 
 import SeoHead from '@/components/SeoHead';
@@ -42,6 +43,7 @@ import { computeMagicWindows } from '@/lib/magicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotWeatherlinkSection from '@/components/weather/SpotWeatherlinkSection';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
+import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
 import SportTab from '@/components/spots/SportTab';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import { getLocalTips } from '@/lib/spotTips';
@@ -95,11 +97,6 @@ interface SpotData {
     waterTemp: number;
     tideHeight?: number;
   }>;
-  tideObserved?: {
-    height: number;
-    at: string;
-    station: string;
-  };
 }
 
 export default function SpotDetailClient({
@@ -129,6 +126,14 @@ export default function SpotDetailClient({
     Record<string, import('@/lib/communityTips').CommunityTipEntry>
   >({});
 
+  const tideSchedule = useMemo(() => {
+    if (!spotData?.forecast?.length) return null;
+    return buildTideSchedule(spotData.forecast, {
+      locale: isPt ? 'pt' : 'en',
+      phaseOverride: phaseFromConditionsStatus(spotData.conditions.tideStatus),
+    });
+  }, [spotData, isPt]);
+
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
     const update = () => setIsMobile(mq.matches);
@@ -147,8 +152,6 @@ export default function SpotDetailClient({
         setLoadError(false);
         let conditions: Conditions;
         let forecast: SpotData['forecast'] = [];
-        let tideObserved = undefined;
-
         const [conditionsResp, forecastsResp] = await Promise.all([
           fetch(getAssetPath('/data/conditions.json')),
           fetch(getAssetPath('/data/forecasts.json')),
@@ -184,16 +187,8 @@ export default function SpotDetailClient({
 
             forecast = spotFc;
 
-            if (spotCond.tideObservedHeight && spotCond.tideStation) {
-              tideObserved = {
-                height: spotCond.tideObservedHeight,
-                at: spotCond.tideObservedAt,
-                station: spotCond.tideStation,
-              };
-            }
-
             const allScores = getAllSportScores(spot, conditions);
-            setSpotData({ spot, conditions, allScores, forecast, tideObserved });
+            setSpotData({ spot, conditions, allScores, forecast });
             rememberDataUpdate(spotCond.updatedAt);
 
             if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
@@ -217,16 +212,9 @@ export default function SpotDetailClient({
         if (conditionsResp.ok) {
           const condJson = await conditionsResp.json();
           const spotCond = condJson[spot.id];
-          if (spotCond?.tideObservedHeight && spotCond?.tideStation) {
-            tideObserved = {
-              height: spotCond.tideObservedHeight,
-              at: spotCond.tideObservedAt,
-              station: spotCond.tideStation,
-            };
-          }
         }
 
-        setSpotData({ spot, conditions, allScores, forecast, tideObserved });
+        setSpotData({ spot, conditions, allScores, forecast });
 
         if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
           setSelectedSport(sportFromUrl);
@@ -515,15 +503,11 @@ export default function SpotDetailClient({
                     {windRelationMeta.label}
                   </span>
                 )}
-                {spotData.tideObserved && (
-                  <span className="text-meta-sm text-fg-muted">
-                    {isPt ? 'Maré' : 'Tide'}:{' '}
-                    <span className="font-mono tabular-nums">
-                      {spotData.tideObserved.height.toFixed(2)}m
-                    </span>
-                  </span>
-                )}
               </div>
+
+              {tideSchedule && (
+                <TideScheduleStrip schedule={tideSchedule} locale={locale} />
+              )}
 
               <div className="pt-2 border-t border-divider/60">
                 <p className="text-meta-sm text-fg-subtle mb-1.5">{td.scoreFeedbackHint}</p>

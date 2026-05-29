@@ -8,6 +8,7 @@
 //  - GoatCounter (analytics, optional)
 //  - Supabase (contributions feedback + admin, optional)
 //  - OpenStreetMap / Carto / ESRI tiles (Leaflet basemaps)
+//  - Curated spot iframes: WeatherLink (Cabedelo), YouTube livecams, Surfline (wake park)
 // NOTE: 'unsafe-eval' is omitted in production (not needed for static export).
 // React dev requires eval() — this meta is skipped when NODE_ENV !== 'production'.
 // 'unsafe-inline' for scripts is still required by the pre-hydration theme script in app/layout.tsx.
@@ -19,7 +20,8 @@ const CSP_META = {
   fontSrc: "'self' data:",
   imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co",
   connectSrc: "'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com",
-  frameSrc: "https://www.openstreetmap.org",
+  frameSrc:
+    "'self' https://www.openstreetmap.org https://www.youtube-nocookie.com https://www.youtube.com https://www.weatherlink.com https://embed.cdn-surfline.com",
   objectSrc: "'none'",
   baseUri: "'self'",
   formAction: "'self'",
