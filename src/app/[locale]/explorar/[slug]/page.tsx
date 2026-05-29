@@ -12,6 +12,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import ExplorarRegionHero from '@/components/explorar/ExplorarRegionHero'
 
 interface Props {
   params: Promise<{ locale: string; slug: string }>
@@ -52,22 +53,46 @@ export default async function ExplorarPage({ params }: Props) {
   const title = landingTitle(landing, locale)
   const description = landingDescription(landing, locale)
 
+  const regionHero =
+    landing.region && landing.region !== 'Todos' ? (
+      <ExplorarRegionHero
+        region={landing.region}
+        locale={locale}
+        title={title}
+        description={description}
+      />
+    ) : null
+
   return (
     <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <Link
-          href={`/${locale}/spots/`}
-          className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {isPt ? 'Todos os spots' : 'All spots'}
-        </Link>
+      {regionHero ?? (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <Link
+            href={`/${locale}/spots/`}
+            className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {isPt ? 'Todos os spots' : 'All spots'}
+          </Link>
 
-        <div>
-          <h1 className="text-3xl font-bold text-fg">{title}</h1>
-          <p className="text-fg-muted mt-2 max-w-2xl">{description}</p>
+          <div>
+            <h1 className="font-display text-display-lg font-bold text-fg">{title}</h1>
+            <p className="text-fg-muted mt-2 max-w-2xl">{description}</p>
+          </div>
         </div>
-      </div>
+      )}
+
+      {regionHero && (
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <Link
+            href={`/${locale}/spots/`}
+            className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            {isPt ? 'Todos os spots' : 'All spots'}
+          </Link>
+        </div>
+      )}
 
       <SpotGridClient
         spotsData={spotsData}

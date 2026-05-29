@@ -98,6 +98,27 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         </div>
       </div>
 
+      <div className="card-1 p-8 space-y-4">
+        <h2 className="text-2xl font-bold text-fg">
+          {isPt ? 'Imagens e atribuição' : 'Imagery & attribution'}
+        </h2>
+        <ul className="text-sm text-fg-muted space-y-2 list-disc pl-5">
+          <li>
+            {isPt
+              ? 'Miniaturas dos spots: export Esri World Imagery nas coordenadas reais de cada praia (nunca stock genérico a fingir ser o spot).'
+              : 'Spot thumbnails: Esri World Imagery export at each beach’s real coordinates (never generic stock pretending to be the spot).'}
+          </li>
+          <li>
+            <strong className="text-fg">Imagery © Esri, Maxar, Earthstar Geographics</strong>
+          </li>
+          <li>
+            {isPt
+              ? 'Fotos de ambiente por região (home, explorar, sobre): Unsplash e Pexels — licença livre para uso comercial. Lista em public/images/CREDITS.md.'
+              : 'Regional lifestyle photos (home, explore, about): Unsplash and Pexels — free for commercial use. See public/images/CREDITS.md.'}
+          </li>
+        </ul>
+      </div>
+
       <div className="text-center space-y-4">
         <p className="flex items-center justify-center gap-2 text-fg-muted">
           <Heart className="w-5 h-5 text-windDir-onshore" />

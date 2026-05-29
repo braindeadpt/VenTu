@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getRegionGradientCss, getSpotImage } from '@/lib/spotImage';
+import { getRegionGradientCss, getSpotAerialPath, getSpotImage, getSpotImageAlt } from '@/lib/spotImage';
 
 describe('spotImage', () => {
   const base = {
@@ -10,34 +10,40 @@ describe('spotImage', () => {
     images: undefined as string[] | undefined,
   };
 
-  it('returns image source when curated URL exists', () => {
+  it('returns curated image when URL exists', () => {
     const result = getSpotImage({ ...base, images: ['https://example.com/g.jpg'] });
     expect(result.kind).toBe('image');
     if (result.kind === 'image') {
       expect(result.src).toContain('example.com');
+      expect(result.aerial).toBe(false);
     }
   });
 
-  it('returns deterministic gradient per region when no image', () => {
-    const a = getSpotImage(base);
-    const b = getSpotImage(base);
-    expect(a.kind).toBe('gradient');
-    expect(b.kind).toBe('gradient');
-    if (a.kind === 'gradient' && b.kind === 'gradient') {
-      expect(a.background).toBe(b.background);
+  it('returns aerial path when no curated image', () => {
+    const result = getSpotImage(base);
+    expect(result.kind).toBe('image');
+    if (result.kind === 'image') {
+      expect(result.src).toBe(getSpotAerialPath('guincho'));
+      expect(result.aerial).toBe(true);
     }
-    const palettes = new Set(
-      ['Lisboa', 'Algarve', 'Norte', 'Açores', 'Madeira'].map((region) => {
-        const r = getSpotImage({ ...base, region });
-        return r.kind === 'gradient' ? r.background : '';
-      }),
-    );
-    expect(palettes.size).toBeGreaterThan(1);
+  });
+
+  it('getSpotImageAlt is descriptive in PT', () => {
+    expect(getSpotImageAlt(base, 'pt')).toBe('Vista aérea de Guincho');
   });
 
   it('getRegionGradientCss uses sunset/ocean tokens', () => {
     const css = getRegionGradientCss('Norte');
     expect(css).toContain('linear-gradient');
     expect(css).toContain('--accent-sunset');
+  });
+
+  it('gradient palettes differ by region', () => {
+    const palettes = new Set(
+      ['Lisboa', 'Algarve', 'Norte', 'Açores', 'Madeira'].map((region) =>
+        getRegionGradientCss(region),
+      ),
+    );
+    expect(palettes.size).toBeGreaterThan(1);
   });
 });

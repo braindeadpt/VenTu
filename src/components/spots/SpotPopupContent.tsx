@@ -11,6 +11,7 @@ import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDeta
 import { getScoreRgb } from '@/lib/scoreThresholds';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
+import { getSpotImageAlt } from '@/lib/spotImage';
 
 export interface SpotPopupContentProps {
   spot: Spot;
@@ -56,8 +57,8 @@ export function SpotPopupContent({
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src={imageUrl}
-          alt=""
-          className="w-full h-24 object-cover rounded-lg -mt-1"
+          alt={getSpotImageAlt(spot, isPt ? 'pt' : 'en')}
+          className="w-full h-24 object-cover rounded-lg -mt-1 ring-1 ring-divider"
           loading="lazy"
         />
       ) : null}

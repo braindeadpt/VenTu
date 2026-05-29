@@ -50,7 +50,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6"
       aria-labelledby="top-now-heading"
     >
-      <h2 id="top-now-heading" className="font-display text-display-lg text-fg tracking-tight mb-1">
+      <h2 id="top-now-heading" className="font-display text-display-lg font-bold text-fg tracking-tight mb-1">
         {isPt ? 'A bombar agora' : 'Firing now'}
       </h2>
       <p className="text-meta text-fg-muted mb-4">

@@ -107,7 +107,7 @@ export default function SpotListCard({
                   : undefined
               }
             >
-              <SpotImage spot={spot} aspect="video" locale={locale} className="w-full" />
+              <SpotImage spot={spot} aspect="video" locale={locale} className="w-full" scrim />
             </div>
           </div>
         )}

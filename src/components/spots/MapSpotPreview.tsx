@@ -150,9 +150,8 @@ export default function MapSpotPreview({
         </Button>
         <Button
           href={directionsUrl}
-          variant="secondary"
           size="lg"
-          className="flex-1"
+          className="flex-1 bg-sunset border-transparent hover:opacity-95 active:opacity-90"
           locale={isPt ? 'pt' : 'en'}
           target="_blank"
           rel="noopener noreferrer"

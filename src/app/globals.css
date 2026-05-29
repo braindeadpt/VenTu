@@ -28,8 +28,8 @@
        fg-subtle was 0.55 on slate-500 → ~3.0:1 contrast (FAIL AA).
        Bumped to slate-400 @ 0.85 → ~4.6:1 contrast (PASS AA). */
     --fg:          241 245 249 / 0.95;  /* slate-100  #F1F5F9 */
-    --fg-muted:    203 213 225 / 0.80;  /* slate-300  #CBD5E1 */
-    --fg-subtle:   148 163 184 / 0.85;  /* slate-400  #94A3B8 */
+    --fg-muted:    203 213 225 / 0.85;  /* slate-300  #CBD5E1 */
+    --fg-subtle:   148 163 184 / 0.90;  /* slate-400  #94A3B8 */
     --fg-disabled: 100 116 139 / 0.50;  /* slate-500  #64748B */
 
     /* Alpha-free RGB companions — for composing custom alpha values
@@ -46,9 +46,9 @@
     --divider-strong-rgb: 255 255 255;
 
     /* Data viz colors */
-    --data-waves:   14 165 233;   /* sky-500   */
+    --data-waves:    2 132 199;   /* sky-600 — richer ocean */
     --data-wind:   139 92 246;    /* violet-500 */
-    --data-water:   6 182 212;    /* cyan-500  */
+    --data-water:   8 145 178;    /* cyan-600  */
     --data-period: 245 158 11;    /* amber-500 */
 
     /* Sport accents (diferenciados para identificação rápida) */
@@ -308,6 +308,16 @@
       rgb(var(--bg-base) / 0.82) 38%,
       rgb(var(--bg-base) / 0.2) 100%
     );
+  }
+
+  .hero-map-sunset-corners {
+    background:
+      radial-gradient(ellipse 55% 45% at 0% 0%, rgb(var(--accent-sunset-1) / 0.14), transparent 70%),
+      radial-gradient(ellipse 45% 40% at 100% 0%, rgb(var(--accent-sunset-3) / 0.1), transparent 65%);
+  }
+
+  .hero-sunset-surface {
+    box-shadow: inset 0 0 120px -60px rgb(var(--data-water) / 0.08);
   }
 
   /* ── Map marker motion (CSS only) ── */

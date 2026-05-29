@@ -36,6 +36,7 @@ import {
 import { buildMapWindArrowSvg } from '@/lib/mapWindArrow';
 import { getDifficultyMarkerColor } from '@/lib/mapDifficulty';
 import { getMacroRegion } from '@/lib/regions';
+import { getSpotImage } from '@/lib/spotImage';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
 
 const ISLAND_MACRO_REGIONS = new Set(['Açores', 'Madeira']);
@@ -191,7 +192,10 @@ function buildMarkerPopupContent(data: SpotData, locale: string): string {
     windDirection: getCardinalLabel(conditions.windDirection),
     waterTemp: conditions.waterTemp.toFixed(1),
     wavePowerKw: powerKw.toFixed(1),
-    imageUrl: spot.images?.[0],
+    imageUrl: (() => {
+      const src = getSpotImage(spot);
+      return src.kind === 'image' ? src.src : undefined;
+    })(),
     confidence: conditions.confidence,
     confidenceDetail: conditions.confidenceDetail,
   });

@@ -2,6 +2,11 @@ import type { Spot } from '@/types';
 
 export type SpotImagePick = Pick<Spot, 'slug' | 'name' | 'nameEn' | 'region' | 'images'>;
 
+/** Local Esri export path (see scripts/generate-spot-aerials.mjs). */
+export function getSpotAerialPath(slug: string): string {
+  return `/images/spots/${slug}.jpg`;
+}
+
 /** Gradient pairs: beach → ocean → sunset (deterministic per region). */
 const REGION_GRADIENT_KEYS: [string, string, string][] = [
   ['--accent-sunset-1', '--data-waves', '--accent-sunset-3'],
@@ -27,17 +32,29 @@ export function getRegionGradientCss(region: string): string {
 }
 
 export type SpotImageSource =
-  | { kind: 'image'; src: string }
+  | { kind: 'image'; src: string; aerial?: boolean }
   | { kind: 'gradient'; background: string };
 
-/** Curated image or deterministic region gradient — never empty. */
+/**
+ * Spot imagery priority:
+ * 1. Community curated URL (spot.images[0])
+ * 2. Generated aerial at coordinates (/images/spots/{slug}.jpg)
+ * 3. Deterministic region gradient (fallback via SpotImage onError)
+ */
 export function getSpotImage(spot: SpotImagePick): SpotImageSource {
-  const src = spot.images?.[0]?.trim();
-  if (src) {
-    return { kind: 'image', src };
+  const curated = spot.images?.[0]?.trim();
+  if (curated) {
+    return { kind: 'image', src: curated, aerial: false };
   }
   return {
-    kind: 'gradient',
-    background: getRegionGradientCss(spot.region || spot.slug),
+    kind: 'image',
+    src: getSpotAerialPath(spot.slug),
+    aerial: true,
   };
+}
+
+/** PT/EN alt for aerial thumbnails. */
+export function getSpotImageAlt(spot: SpotImagePick, locale: 'pt' | 'en' = 'pt'): string {
+  const name = locale === 'pt' ? spot.name : spot.nameEn || spot.name;
+  return locale === 'pt' ? `Vista aérea de ${name}` : `Aerial view of ${name}`;
 }

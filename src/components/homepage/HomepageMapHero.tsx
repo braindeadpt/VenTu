@@ -18,6 +18,8 @@ import { useUrlGridSport } from '@/hooks/useUrlGridSport';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { STALE_THRESHOLD_HOURS } from '@/lib/dataFreshness';
 import { heroStatusLine } from '@/lib/voice';
+import RegionLifestyleImage from '@/components/ui/RegionLifestyleImage';
+import { HOME_HERO_REGION_SLUG } from '@/lib/regionImage';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -100,13 +102,53 @@ export default function HomepageMapHero({
         />
       </div>
 
+      {isFeatured && (
+        <div
+          className="absolute inset-x-0 top-0 z-[5] h-[min(42%,320px)] sm:h-[min(38%,360px)] pointer-events-none overflow-hidden"
+          aria-hidden
+        >
+          <div className="relative h-full w-full">
+            <RegionLifestyleImage
+              slug={HOME_HERO_REGION_SLUG}
+              locale={isPt ? 'pt' : 'en'}
+              decorative
+              className="opacity-35 mix-blend-soft-light"
+              priority
+            />
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-bg-base/70 via-bg-base/40 to-transparent" />
+        </div>
+      )}
+
       <div
         className={
           isFeatured
-            ? 'hero-sunset-overlay absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none bg-gradient-to-b from-bg-base/90 via-bg-base/40 to-transparent max-h-[min(52%,420px)] sm:max-h-none sm:inset-0 sm:bg-gradient-to-b sm:from-bg-base/85 sm:via-bg-base/25 sm:to-transparent'
-            : 'absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none bg-gradient-to-b from-bg-base/92 via-bg-base/50 to-transparent pb-2'
+            ? 'hero-sunset-overlay absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none max-h-[min(52%,420px)] sm:max-h-none sm:inset-0'
+            : 'absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none pb-2'
         }
       >
+        {isFeatured && (
+          <>
+            <div
+              className="absolute inset-0 bg-gradient-to-r from-bg-base/92 via-bg-base/55 to-transparent sm:via-bg-base/35 pointer-events-none"
+              aria-hidden
+            />
+            <div
+              className="absolute inset-0 bg-gradient-to-b from-bg-base/88 via-bg-base/35 to-transparent pointer-events-none"
+              aria-hidden
+            />
+            <div
+              className="absolute inset-0 hero-map-sunset-corners pointer-events-none"
+              aria-hidden
+            />
+          </>
+        )}
+        {!isFeatured && (
+          <div
+            className="absolute inset-x-0 top-0 bottom-0 bg-gradient-to-b from-bg-base/92 via-bg-base/50 to-transparent pointer-events-none"
+            aria-hidden
+          />
+        )}
         <div
           className={
             isFeatured
@@ -119,8 +161,8 @@ export default function HomepageMapHero({
               id="home-map-hero-heading"
               className={
                 isFeatured
-                  ? 'font-display text-display-lg text-fg tracking-tight leading-[1.05]'
-                  : 'font-display text-h2 text-fg tracking-tight'
+                  ? 'font-display text-display-xl font-bold text-fg tracking-tight leading-[1.02] drop-shadow-sm'
+                  : 'font-display text-h2 font-semibold text-fg tracking-tight'
               }
             >
               {isFeatured

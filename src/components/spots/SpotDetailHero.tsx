@@ -91,10 +91,15 @@ export default function SpotDetailHero({
           aspect="hero"
           locale={isPt ? 'pt' : 'en'}
           priority
+          scrim={false}
           className="h-full min-h-[220px] md:min-h-[280px]"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/95 to-bg-base/70 dark:from-bg-base dark:via-bg-base/95 dark:to-bg-base/75"
+          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/92 to-bg-base/55 dark:from-bg-base dark:via-bg-base/90 dark:to-bg-base/50"
+          aria-hidden
+        />
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-bg-base/80 via-transparent to-transparent max-w-[min(100%,520px)]"
           aria-hidden
         />
       </div>
@@ -172,8 +177,8 @@ export default function SpotDetailHero({
                 className={cn(
                   'inline-flex items-center justify-center gap-2 font-medium',
                   'px-4 py-2 text-sm rounded-input min-h-[44px]',
-                  'bg-data-waves text-bg-base hover:bg-data-waves/90 active:bg-data-waves/80',
-                  'border border-transparent transition-colors duration-150',
+                  'bg-sunset border-transparent hover:opacity-95 active:opacity-90',
+                  'transition-opacity duration-150 shadow-card',
                 )}
               >
                 <Navigation className="w-4 h-4" aria-hidden />

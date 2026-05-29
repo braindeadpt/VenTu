@@ -151,7 +151,43 @@ export default function Footer({ locale }: FooterProps) {
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-divider flex flex-col md:flex-row items-center justify-between gap-4">
+        <p className="mt-8 text-xs text-fg-subtle leading-relaxed max-w-3xl">
+          {isPt ? (
+            <>
+              Imagery © Esri, Maxar, Earthstar Geographics (vistas aéreas dos spots). Fotos de região:{' '}
+              <a href="https://unsplash.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+                Unsplash
+              </a>
+              {' / '}
+              <a href="https://www.pexels.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+                Pexels
+              </a>
+              . Ver{' '}
+              <Link href={`/${locale}/about/`} className="underline hover:text-fg-muted">
+                Sobre
+              </Link>{' '}
+              e <code className="text-meta-sm">public/images/CREDITS.md</code>.
+            </>
+          ) : (
+            <>
+              Imagery © Esri, Maxar, Earthstar Geographics (spot aerials). Region photos:{' '}
+              <a href="https://unsplash.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+                Unsplash
+              </a>
+              {' / '}
+              <a href="https://www.pexels.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+                Pexels
+              </a>
+              . See{' '}
+              <Link href={`/${locale}/about/`} className="underline hover:text-fg-muted">
+                About
+              </Link>{' '}
+              and <code className="text-meta-sm">public/images/CREDITS.md</code>.
+            </>
+          )}
+        </p>
+
+        <div className="mt-6 pt-6 border-t border-divider flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <p className="text-xs text-fg-subtle">
               © {new Date().getFullYear()} VenTu. MIT License. Open Source Project.
