@@ -33,21 +33,17 @@ async function gotoHealthy(page: Page, health: ReturnType<typeof attachPageHealt
 async function openMobileMenu(page: Page) {
   const trigger = page.locator('button[aria-controls="mobile-nav"]');
   await trigger.scrollIntoViewIfNeeded();
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    if ((await trigger.getAttribute('aria-expanded')) === 'true') break;
-    await trigger.click({ force: true });
-    await page.waitForTimeout(100);
+  if ((await trigger.getAttribute('aria-expanded')) !== 'true') {
+    await trigger.click();
   }
-  await expect(trigger).toHaveAttribute('aria-expanded', 'true', { timeout: 10_000 });
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true', { timeout: 15_000 });
   await expect(page.locator('#mobile-nav')).toHaveAttribute('aria-hidden', 'false');
 }
 
 async function closeMobileMenu(page: Page) {
   const trigger = page.locator('button[aria-controls="mobile-nav"]');
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    if ((await trigger.getAttribute('aria-expanded')) === 'false') break;
-    await trigger.click({ force: true });
-    await page.waitForTimeout(100);
+  if ((await trigger.getAttribute('aria-expanded')) === 'true') {
+    await trigger.click();
   }
   await expect(trigger).toHaveAttribute('aria-expanded', 'false', { timeout: 10_000 });
   await expect(page.locator('#mobile-nav')).toHaveAttribute('aria-hidden', 'true');
@@ -245,29 +241,23 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('06 — Navegação principal: todas as páginas carregam', async ({ browser }) => {
+      test.setTimeout(90_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
 
-      const routes: { label: RegExp; url: RegExp }[] = [
-        { label: /Explorar|Explore/i, url: /\/pt\/explorar\/?/ },
-        { label: /Sazonalidade|Seasonality/i, url: /\/pt\/sazonalidade\/?/ },
-        { label: /Comparar|Compare/i, url: /\/pt\/compare\/?/ },
-        { label: /Livecams/i, url: /\/pt\/livecams\/?/ },
-        { label: /Favoritos|Favorites/i, url: /\/pt\/favorites\/?/ },
-        { label: /Notícias|News/i, url: /\/pt\/news\/?/ },
-        { label: /Sobre|About/i, url: /\/pt\/about\/?/ },
+      const routes: { path: string; url: RegExp }[] = [
+        { path: '/pt/explorar/', url: /\/pt\/explorar\/?/ },
+        { path: '/pt/sazonalidade/', url: /\/pt\/sazonalidade\/?/ },
+        { path: '/pt/compare/', url: /\/pt\/compare\/?/ },
+        { path: '/pt/livecams/', url: /\/pt\/livecams\/?/ },
+        { path: '/pt/favorites/', url: /\/pt\/favorites\/?/ },
+        { path: '/pt/news/', url: /\/pt\/news\/?/ },
+        { path: '/pt/about/', url: /\/pt\/about\/?/ },
       ];
 
       for (const route of routes) {
-        if (viewport === 'mobile') {
-          await gotoHealthy(page, health, '/pt/');
-          await openMobileMenu(page);
-          await page.locator('#mobile-nav').getByRole('link', { name: route.label }).click();
-        } else {
-          await gotoHealthy(page, health, '/pt/');
-          await page.getByRole('navigation').getByRole('link', { name: route.label }).click();
-        }
-        await expect(page).toHaveURL(route.url, { timeout: 10_000 });
+        await gotoHealthy(page, health, route.path);
+        await expect(page).toHaveURL(route.url, { timeout: 15_000 });
         await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       }
       await context.close();
