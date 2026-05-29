@@ -30,6 +30,7 @@
     "conditions:update": "node scripts/update-conditions.js",
     "data:update": "npm run conditions:update && npm run spots:index && npm run news:generate",
 "spots:index": "node scripts/build-spots-index.js",
+    "spots:aerials": "node scripts/generate-spot-aerials.mjs",
     "sitemap:generate": "node scripts/generate-sitemap.js",
     "spots:validate": "node scripts/validate-spots.js",
     "alerts:evaluate": "node scripts/evaluate-alerts.js",
