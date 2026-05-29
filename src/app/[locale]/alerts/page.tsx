@@ -22,8 +22,8 @@ export async function generateMetadata({
   return {
     title: isPt ? 'Alertas por email — VenTu' : 'Email alerts — VenTu',
     description: isPt
-      ? 'Recebe avisos quando o teu spot estiver ON — score mínimo e modalidade à tua escolha.'
-      : 'Get notified when your spot is ON — minimum score and sport of your choice.',
+      ? 'Recebe avisos quando o teu spot estiver a bombar — score mínimo e modalidade à tua escolha.'
+      : 'Get notified when your spot is firing — minimum score and sport of your choice.',
     alternates: {
       canonical: `/${locale}/alerts/`,
       languages: { pt: '/pt/alerts/', en: '/en/alerts/' },

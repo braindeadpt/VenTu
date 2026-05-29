@@ -7,44 +7,45 @@ import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
 import { pickConfidenceFields } from '@/lib/forecastConfidence'
 
-interface SpotsIndexEntry {
-  id: string
-  slug: string
-  name: string
-  nameEn: string
-  region: string
-  regionEn: string
-  lat: number
-  lon: number
-  coastOrientation: number
-  type: string
-  difficulty: string
-  compatibleSports: string[]
-  description: string
-  descriptionEn: string
-  facilities: string[]
-  hazards: string[]
-  blueFlag?: boolean
-  accessibleBeach?: boolean
-  conditions: {
-    waveHeight: number
-    wavePeriod: number
-    waveDirection: number
-    windSpeed: number
-    windDirection: number
-    windGust: number
-    waterTemp: number
-    updatedAt?: string
-  } | null
-  allScores: Record<string, {
-    score: number
-    rating: string
-    ratingEn: string
-    factors: string[]
-    warning?: string
-    primaryFactor: string
-  }> | null
-  bestScore: number
+const CALM_LAKE_CONDITIONS = {
+  waveHeight: 0,
+  wavePeriod: 0,
+  waveDirection: 0,
+  windSpeed: 0,
+  windDirection: 0,
+  windGust: 0,
+  waterTemp: 18,
+}
+
+function isWakeboardOnly(spot: Spot): boolean {
+  return (
+    spot.type === 'wakeboard' ||
+    (spot.compatibleSports?.length === 1 && spot.compatibleSports[0] === 'wakeboard')
+  )
+}
+
+type RawConditions = Record<string, unknown>
+
+function toScoreInput(raw: RawConditions) {
+  return {
+    waveHeight: Number(raw.waveHeight) || 0,
+    wavePeriod: Number(raw.wavePeriod) || 0,
+    waveDirection: Number(raw.waveDirection) || 0,
+    windSpeed: Number(raw.windSpeed) || 0,
+    windDirection: Number(raw.windDirection) || 0,
+    windGust: Number(raw.windGust) || 0,
+    waterTemp: Number(raw.waterTemp) || 0,
+  }
+}
+
+function loadConditionsJson(): Record<string, RawConditions> {
+  try {
+    const filePath = join(process.cwd(), 'public', 'data', 'conditions.json')
+    if (existsSync(filePath)) {
+      return JSON.parse(readFileSync(filePath, 'utf-8'))
+    }
+  } catch { /* noop */ }
+  return {}
 }
 
 export interface SpotData {
@@ -69,90 +70,43 @@ export interface SpotData {
   allScores: Record<SportType, SportScore>
 }
 
-let cachedIndex: SpotsIndexEntry[] | null = null
+function buildSpotData(spot: Spot, raw: RawConditions | null): SpotData | null {
+  const useLakeDefault = !raw && isWakeboardOnly(spot)
+  if (!raw && !useLakeDefault) return null
 
-function loadIndex(): SpotsIndexEntry[] {
-  if (cachedIndex) return cachedIndex
-  try {
-    const filePath = join(process.cwd(), 'public', 'data', 'spots-index.json')
-    if (existsSync(filePath)) {
-      const raw = JSON.parse(readFileSync(filePath, 'utf-8'))
-      cachedIndex = raw.spots || raw
-      return cachedIndex!
-    }
-  } catch { /* fall through */ }
-  return []
+  const scoreInput = raw ? toScoreInput(raw) : CALM_LAKE_CONDITIONS
+  const allScores = getAllSportScores(spot, scoreInput)
+
+  return {
+    spot,
+    conditions: {
+      ...scoreInput,
+      swellHeight: raw?.swellHeight != null ? Number(raw.swellHeight) : undefined,
+      swellPeriod: raw?.swellPeriod != null ? Number(raw.swellPeriod) : undefined,
+      wavePowerKw: raw?.wavePowerKw != null ? Number(raw.wavePowerKw) : undefined,
+      updatedAt: (raw?.updatedAt as string) || undefined,
+      source: raw ? ('real' as const) : ('mock' as const),
+      ...(raw ? pickConfidenceFields(raw) : {}),
+    },
+    allScores,
+  }
 }
 
 export function loadSpotData(): SpotData[] {
-  const index = loadIndex()
-  if (index.length > 0) {
-    const result = index
-      .filter((entry) => entry.conditions && entry.allScores)
-      .map((entry) => {
-        const spot = spots.find((s) => s.id === entry.id)
-        if (!spot) return null
-        return {
-          spot,
-          conditions: {
-            waveHeight: entry.conditions!.waveHeight,
-            wavePeriod: entry.conditions!.wavePeriod,
-            waveDirection: entry.conditions!.waveDirection,
-            windSpeed: entry.conditions!.windSpeed,
-            windDirection: entry.conditions!.windDirection,
-            windGust: entry.conditions!.windGust,
-            waterTemp: entry.conditions!.waterTemp,
-            updatedAt: entry.conditions!.updatedAt,
-            source: 'real' as const,
-            ...pickConfidenceFields(entry.conditions as Record<string, unknown>),
-          },
-          allScores: entry.allScores as unknown as Record<SportType, SportScore>,
-        } as SpotData
-      })
-      .filter(Boolean) as SpotData[]
-    result.sort((a, b) => (b.allScores.surf?.score || 0) - (a.allScores.surf?.score || 0))
-    return result
-  }
-
-  // Fallback: read conditions.json + compute scores at render time
-  let conditionsData: Record<string, any> = {}
-  try {
-    const filePath = join(process.cwd(), 'public', 'data', 'conditions.json')
-    if (existsSync(filePath)) {
-      conditionsData = JSON.parse(readFileSync(filePath, 'utf-8'))
-    }
-  } catch { /* noop */ }
+  const conditionsData = loadConditionsJson()
 
   const result: SpotData[] = []
   for (const spot of spots) {
-    const cond = conditionsData[spot.id]
-    if (cond) {
-      result.push({
-        spot,
-        conditions: {
-          waveHeight: cond.waveHeight || 0,
-          wavePeriod: cond.wavePeriod || 0,
-          waveDirection: cond.waveDirection || 0,
-          windSpeed: cond.windSpeed || 0,
-          windDirection: cond.windDirection || 0,
-          windGust: cond.windGust || 0,
-          waterTemp: cond.waterTemp || 0,
-          updatedAt: cond.updatedAt,
-          source: 'real' as const,
-          ...pickConfidenceFields(cond),
-        },
-        allScores: getAllSportScores(spot, {
-          waveHeight: cond.waveHeight || 0,
-          wavePeriod: cond.wavePeriod || 0,
-          waveDirection: cond.waveDirection || 0,
-          windSpeed: cond.windSpeed || 0,
-          windDirection: cond.windDirection || 0,
-          windGust: cond.windGust || 0,
-          waterTemp: cond.waterTemp || 0,
-        }),
-      })
-    }
+    const raw = conditionsData[spot.id] ?? null
+    const row = buildSpotData(spot, raw)
+    if (row) result.push(row)
   }
-  result.sort((a, b) => (b.allScores?.surf?.score || 0) - (a.allScores?.surf?.score || 0))
+
+  result.sort((a, b) => {
+    const bestA = Math.max(...Object.values(a.allScores).map((s) => s.score), 0)
+    const bestB = Math.max(...Object.values(b.allScores).map((s) => s.score), 0)
+    return bestB - bestA
+  })
+
   return result
 }

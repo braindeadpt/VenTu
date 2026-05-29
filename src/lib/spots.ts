@@ -118,7 +118,7 @@ export const spots: Spot[] = [
       type: 'kitesurf', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'SW',
       description: 'Lagoa, foz do rio e praia aberta — três spots num só. Água plana na lagoa, ondas no oceano. Versátil e consistente.',
       descriptionEn: 'Lagoon, river mouth and open beach — three spots in one. Flat water in the lagoon, waves in the ocean. Versatile and consistent.',
-      compatibleSports: ['kitesurf', 'foil', 'windsurf', 'wakeboard'],
+      compatibleSports: ['kitesurf', 'foil', 'windsurf'],
       facilities: ['Estacionamento', 'Escolas kite', 'Aluguer', 'WC'],
       hazards: ['Correntes na foz', 'Rochas na lagoa']
     },

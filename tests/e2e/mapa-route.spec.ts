@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { openMapSpotSheet } from './helpers/map-sheet';
 
 test.describe('/pt/mapa fullscreen map', () => {
   test.use({
@@ -48,13 +49,7 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 
   test('Escape closes sheet', async ({ page }) => {
-    const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i });
-    if (await showAll.isVisible()) {
-      await showAll.click();
-    }
-    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 25_000 });
-    await page.locator('.leaflet-marker-icon.spot-marker').first().click({ position: { x: 14, y: 14 }, force: true });
-    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 });
+    await openMapSpotSheet(page);
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden({ timeout: 5000 });
   });

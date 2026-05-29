@@ -94,7 +94,7 @@ describe('getSportScore', () => {
     const result = getSportScore(wake, 'wakeboard', storm)
     expect(result.score).toBe(80)
     expect(result.rating).toBe('Disponível')
-    expect(result.factors).toContain('Cable park disponível')
+    expect(result.factors.some((f) => /cable|teleski|disponível/i.test(f))).toBe(true)
   })
 
   it('Ocean surf spot without cable — wakeboard N/A', () => {

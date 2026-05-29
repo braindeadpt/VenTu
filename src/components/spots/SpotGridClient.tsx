@@ -207,7 +207,7 @@ export function SpotGridClient({
                 {onCount > 0 && (
                   <span className="ml-2">
                     · <span className="font-mono tabular-nums text-score-good">{onCount}</span>{' '}
-                    {isPt ? t.hero.onCount : 'ON'}
+                    {isPt ? t.hero.onCount : 'firing'}
                   </span>
                 )}
                 {marginalCount > 0 && (

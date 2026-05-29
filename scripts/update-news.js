@@ -59,6 +59,7 @@ async function updateNews() {
     const keywordCategory = inferCategoryFromText(text, item.defaultCategory || 'general');
     const useKeywordOnly =
       hasSpecificCategory(text, 'general') ||
+      keywordCategory !== 'general' ||
       (keywordCategory !== item.defaultCategory && keywordCategory !== 'general');
 
     try {
@@ -69,9 +70,14 @@ async function updateNews() {
       item.category = keywordCategory || item.defaultCategory || 'general';
     }
 
-    // Translate to bilingual
+  // Translate to bilingual (skips PT feeds inside ensureBilingual)
     try {
-      await ensureBilingual(item);
+      if (item.sourceRegion !== 'pt') {
+        await ensureBilingual(item);
+      } else {
+        item.titleEn = item.titleEn || item.title;
+        item.summaryEn = item.summaryEn || item.summary;
+      }
     } catch (e) {
       // Keep original if translation fails
     }
@@ -80,11 +86,12 @@ async function updateNews() {
   }
   console.log(`   → Categorised ${categorisedRss.length} RSS items`);
 
-  // 3b: Synthesise event news (Task C)
+  // 3b: Event news — factual copy by default (LLM synthesis opt-in via NEWS_LLM_SYNTHESIS=1)
+  const useLlmSynthesis = process.env.NEWS_LLM_SYNTHESIS === '1';
   const eventNews = [];
   for (const event of events) {
     try {
-      const story = await synthesiseEvent(event);
+      const story = useLlmSynthesis ? await synthesiseEvent(event) : null;
       if (story) {
         eventNews.push({
           id: `event-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,

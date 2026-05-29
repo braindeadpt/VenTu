@@ -56,18 +56,14 @@ export default function HomepageHero({
     ? isPt
       ? 'Mar calmo hoje · ver previsões'
       : 'Calm sea today · view forecasts'
-    : onCount === 1
-      ? isPt
-        ? `1 spot ON para ${sportLabel} hoje`
-        : `1 spot ON for ${sportLabel} today`
-      : isPt
-        ? `${onCount} spots ON para ${sportLabel} hoje`
-        : `${onCount} spots ON for ${sportLabel} today`;
+    : isPt
+      ? `${onCount} spots a bombar para ${sportLabel} hoje`
+      : `${onCount} spots firing for ${sportLabel} today`;
 
   const subline = calmDay
     ? isPt
-      ? 'Ainda não há spots ON. Vê os spots com melhor previsão para amanhã.'
-      : 'No spots ON yet. See the best forecasted spots for tomorrow.'
+      ? 'Ainda sem condições fortes. Vê os spots com melhor previsão para amanhã.'
+      : 'No firing spots yet. See the best forecasted spots for tomorrow.'
     : onCount > 0
       ? t.hero.heroSubline.replace('{count}', String(onCount))
       : t.hero.heroSublineZero;

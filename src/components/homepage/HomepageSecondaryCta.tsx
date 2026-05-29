@@ -30,8 +30,8 @@ export default function HomepageSecondaryCta({ locale, compact = false }: Homepa
       icon: Bell,
       title: isPt ? 'Alertas' : 'Alerts',
       body: isPt
-        ? 'Avisos por email quando o teu spot estiver ON'
-        : 'Email alerts when your spot is ON',
+        ? 'Avisos por email quando o teu spot estiver a bombar'
+        : 'Email alerts when your spot is firing',
     },
   ] as const;
 

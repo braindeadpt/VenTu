@@ -300,30 +300,52 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
   }
 }
 
-function scoreWakeboard(spot: Spot, c: Conditions): SportScore {
-  const hasCablePark = spot.facilities?.some(f => 
-    f.toLowerCase().includes('cable') || 
-    f.toLowerCase().includes('wake') ||
-    f.toLowerCase().includes('lagoa')
-  ) || spot.type === 'wakeboard'
+function wakeboardAvailabilityLabel(spot: Spot): { pt: string; en: string; primary: string } {
+  const facilities = (spot.facilities ?? []).map((f) => f.toLowerCase())
+  if (facilities.some((f) => f.includes('teleski') || f.includes('cable'))) {
+    return { pt: 'Cable/teleski disponível', en: 'Cable/teleski available', primary: 'Cable' }
+  }
+  if (facilities.some((f) => f.includes('escola wake') || f.includes('barco'))) {
+    return { pt: 'Sessões com barco', en: 'Boat-tow sessions', primary: 'Barco' }
+  }
+  if (spot.type === 'wakeboard') {
+    return { pt: 'Wake disponível', en: 'Wake available', primary: 'Wake' }
+  }
+  return { pt: 'Infraestrutura wake', en: 'Wake infrastructure', primary: 'Wake' }
+}
 
-  if (!hasCablePark) {
+function scoreWakeboard(spot: Spot, c: Conditions): SportScore {
+  const hasWakeInfra =
+    spot.type === 'wakeboard' ||
+    spot.facilities?.some((f) => {
+      const x = f.toLowerCase()
+      return (
+        x.includes('cable') ||
+        x.includes('teleski') ||
+        x.includes('wake') ||
+        x.includes('lagoa') ||
+        x.includes('barco')
+      )
+    })
+
+  if (!hasWakeInfra) {
     return {
       score: 0,
       rating: 'N/A',
       ratingEn: 'N/A',
-      factors: ['Sem cable park'],
+      factors: ['Sem infraestrutura wake'],
       warning: 'Este spot não tem infraestrutura para wakeboard',
       primaryFactor: 'N/A',
     }
   }
 
+  const label = wakeboardAvailabilityLabel(spot)
   return {
     score: 80,
     rating: 'Disponível',
     ratingEn: 'Available',
-    factors: ['Cable park disponível'],
-    primaryFactor: 'Cable Park',
+    factors: [label.pt],
+    primaryFactor: label.primary,
   }
 }
 

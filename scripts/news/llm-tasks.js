@@ -81,15 +81,25 @@ Responde APENAS com a tradução, sem mais texto.`;
  * @returns {Promise<{ title: string; titleEn: string; summary: string; summaryEn: string }>}
  */
 async function ensureBilingual(item) {
-  // Assume all RSS feeds are in English
   if (item.title && !item.titleEn) item.titleEn = item.title;
   if (item.summary && !item.summaryEn) item.summaryEn = item.summary;
 
-  if (item.title) {
-    item.title = await translateText(item.title, 'pt');
+  // PT feeds: mirror fields — zero LLM cost
+  if (item.sourceRegion === 'pt') {
+    if (!item.titleEn && item.title) item.titleEn = item.title;
+    if (!item.summaryEn && item.summary) item.summaryEn = item.summary;
+    return item;
   }
-  if (item.summary) {
-    item.summary = await translateText(item.summary, 'pt');
+
+  // International feeds: translate title + summary to PT only when missing PT copy
+  const needsTitlePt = item.titleEn && item.titleEn === item.title;
+  const needsSummaryPt = item.summaryEn && item.summaryEn === item.summary;
+
+  if (needsTitlePt && item.titleEn) {
+    item.title = await translateText(item.titleEn, 'pt');
+  }
+  if (needsSummaryPt && item.summaryEn) {
+    item.summary = await translateText(item.summaryEn, 'pt');
   }
 
   return item;

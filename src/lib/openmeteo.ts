@@ -206,11 +206,21 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
   }
   lastRequestTime = Date.now();
 
-  const params = new URLSearchParams({
+  const marineParams = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
-    hourly: 'wave_height,wave_direction,wave_period,wind_speed_10m,wind_direction_10m,wind_gusts_10m,water_temperature,sea_level_height_msl',
-    daily: 'wave_height_max,wind_speed_max,water_temperature_max',
+    hourly:
+      'wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl',
+    daily: 'wave_height_max,sea_surface_temperature_max',
+    timezone: 'Europe/Lisbon',
+    forecast_days: '7',
+  });
+
+  const weatherParams = new URLSearchParams({
+    latitude: lat.toString(),
+    longitude: lon.toString(),
+    hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m',
+    daily: 'wind_speed_10m_max',
     timezone: 'Europe/Lisbon',
     forecast_days: '7',
     wind_speed_unit: 'ms',
@@ -220,47 +230,57 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-    const response = await fetch(`${MARINE_API}?${params}`, {
-      next: { revalidate: 1800 },
-      signal: controller.signal,
-    });
-    
+    const [marineRes, weatherRes] = await Promise.all([
+      fetch(`${MARINE_API}?${marineParams}`, {
+        next: { revalidate: 1800 },
+        signal: controller.signal,
+      }),
+      fetch(`${WEATHER_API}?${weatherParams}`, {
+        next: { revalidate: 1800 },
+        signal: controller.signal,
+      }),
+    ]);
+
     clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      console.warn(`Open-Meteo API returned ${response.status}, using mock data`);
+    if (!marineRes.ok || !weatherRes.ok) {
+      console.warn(
+        `Open-Meteo API marine=${marineRes.status} weather=${weatherRes.status}, using mock`,
+      );
       const mock = generateMockData(lat, lon);
       cache.set(cacheKey, { data: mock, timestamp: Date.now() });
       return { data: mock, source: 'mock' as const };
     }
 
-    const data = await response.json();
+    const marine = await marineRes.json();
+    const weather = await weatherRes.json();
 
-    // Validate response structure
-    if (!data.hourly || !data.hourly.time || !Array.isArray(data.hourly.time)) {
-      console.warn('Open-Meteo API returned invalid data structure, using mock data');
+    if (!marine.hourly?.time || !Array.isArray(marine.hourly.time)) {
+      console.warn('Open-Meteo marine returned invalid structure, using mock');
       const mock = generateMockData(lat, lon);
       cache.set(cacheKey, { data: mock, timestamp: Date.now() });
       return { data: mock, source: 'mock' as const };
     }
+
+    const windHourly = weather.hourly ?? {};
 
     const result = {
       hourly: {
-        time: data.hourly.time,
-        wave_height: data.hourly.wave_height || [],
-        wave_direction: data.hourly.wave_direction || [],
-        wave_period: data.hourly.wave_period || [],
-        wind_speed_10m: data.hourly.wind_speed_10m || [],
-        wind_direction_10m: data.hourly.wind_direction_10m || [],
-        wind_gusts_10m: data.hourly.wind_gusts_10m || [],
-        water_temperature: data.hourly.water_temperature || [],
-        sea_level_height: data.hourly.sea_level_height_msl || [],
+        time: marine.hourly.time,
+        wave_height: marine.hourly.wave_height || [],
+        wave_direction: marine.hourly.wave_direction || [],
+        wave_period: marine.hourly.wave_period || [],
+        wind_speed_10m: windHourly.wind_speed_10m || [],
+        wind_direction_10m: windHourly.wind_direction_10m || [],
+        wind_gusts_10m: windHourly.wind_gusts_10m || [],
+        water_temperature: marine.hourly.sea_surface_temperature || [],
+        sea_level_height: marine.hourly.sea_level_height_msl || [],
       },
       daily: {
-        time: data.daily?.time || [],
-        wave_height_max: data.daily?.wave_height_max || [],
-        wind_speed_max: data.daily?.wind_speed_max || [],
-        water_temperature_max: data.daily?.water_temperature_max || [],
+        time: marine.daily?.time || [],
+        wave_height_max: marine.daily?.wave_height_max || [],
+        wind_speed_max: weather.daily?.wind_speed_10m_max || [],
+        water_temperature_max: marine.daily?.sea_surface_temperature_max || [],
       },
     };
     

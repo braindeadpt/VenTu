@@ -71,13 +71,13 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       name: 'Facebook',
       icon: Facebook,
       url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-      color: 'hover:bg-blue-600',
+      color: 'hover:bg-surface-2/[0.12]',
     },
     {
       name: 'X (Twitter)',
       icon: Twitter,
       url: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
-      color: 'hover:bg-black',
+      color: 'hover:bg-surface-2/[0.12]',
     },
     {
       name: 'LinkedIn',
@@ -89,7 +89,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       name: 'Email',
       icon: Mail,
       url: `mailto:?subject=${encodeURIComponent(shareText)}&body=${encodeURIComponent(`${shareText}\n\n${shareUrl}`)}`,
-      color: 'hover:bg-gray-600',
+      color: 'hover:bg-surface-2/[0.12]',
     },
   ];
 
