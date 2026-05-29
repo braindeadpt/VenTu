@@ -1,14 +1,26 @@
-/** Curated live streams — external links only (Surftotal / MEO Beachcam). */
+/** Curated live streams — Surftotal / MEO / YouTube (embed when kind=youtube). */
+
+export type LivecamKind = 'external' | 'youtube' | 'surfline'
 
 export interface SpotLivecam {
   url: string
   provider: string
   labelPt: string
   labelEn: string
+  kind?: LivecamKind
+  /** Required when kind is youtube — used for nocookie embed on spot page. */
+  youtubeId?: string
+  /** Full embed URL when kind is surfline. */
+  embedUrl?: string
 }
 
 const SURFTOTAL = 'Surftotal'
 const MEO = 'MEO Beachcam'
+const YOUTUBE = 'YouTube'
+const SURFLINE = 'Surfline'
+
+const FEELVIANA_SURFLINE_EMBED =
+  'https://embed.cdn-surfline.com/cams/613205b46012d3ad55a4eec5/ba821de41fedcb2cdd9cdc28e95d92e4450dad63'
 
 export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
   moledo: {
@@ -78,10 +90,28 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     labelEn: 'Barra Beach',
   },
   cabedelo: {
-    url: 'https://www.surftotal.com/camaras-report/figueira-da-foz/praia-do-cabedelo-hd',
-    provider: SURFTOTAL,
-    labelPt: 'Cabedelo HD',
-    labelEn: 'Cabedelo HD',
+    kind: 'youtube',
+    youtubeId: 'MTF1W80G-a4',
+    url: 'https://www.youtube.com/watch?v=MTF1W80G-a4',
+    provider: YOUTUBE,
+    labelPt: 'Cabedelo — Viana do Castelo (24h)',
+    labelEn: 'Cabedelo — Viana do Castelo (24h live)',
+  },
+  'foil-cabedelo': {
+    kind: 'youtube',
+    youtubeId: 'MTF1W80G-a4',
+    url: 'https://www.youtube.com/watch?v=MTF1W80G-a4',
+    provider: YOUTUBE,
+    labelPt: 'Cabedelo — Viana do Castelo (24h)',
+    labelEn: 'Cabedelo — Viana do Castelo (24h live)',
+  },
+  'cabedelo-wakepark': {
+    kind: 'surfline',
+    embedUrl: FEELVIANA_SURFLINE_EMBED,
+    url: 'https://www.feelviana.com/en/wake-park',
+    provider: SURFLINE,
+    labelPt: 'FeelViana Wake Park — Cabedelo',
+    labelEn: 'FeelViana Wake Park — Cabedelo',
   },
   'figueira-foz': {
     url: 'https://www.surftotal.com/camaras-report/figueira-da-foz/praia-do-cabedelo-hd',

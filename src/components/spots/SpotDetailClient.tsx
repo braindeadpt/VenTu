@@ -40,6 +40,7 @@ import type { ForecastHour } from '@/components/weather/ForecastTable';
 import SpotMap from '@/components/spots/SpotMap';
 import MagicWindows from '@/components/MagicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
+import SpotWeatherlinkSection from '@/components/weather/SpotWeatherlinkSection';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
 import SportTab from '@/components/spots/SportTab';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
@@ -638,6 +639,8 @@ export default function SpotDetailClient({
             </p>
           )}
         </section>
+
+        <SpotWeatherlinkSection slug={spot.slug} locale={locale} />
 
         <div className="max-w-6xl mx-auto px-4">
           <SpotWebcamSection slug={spot.slug} locale={locale} />

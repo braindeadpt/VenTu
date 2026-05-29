@@ -12,6 +12,7 @@ const MUNICIPALITY_TO_REGION: Record<string, MacroRegion> = {
   'Porto': 'Norte',
   'Viana do Castelo': 'Norte',
   'Braga': 'Norte',
+  'Vieira do Minho': 'Norte',
   'Esposende': 'Norte',
   'Vila do Conde': 'Norte',
   'Caminha': 'Norte',

@@ -79,6 +79,17 @@ export const spots: Spot[] = [
       hazards: ['Tráfego de barcos', 'Correntes na foz']
     },
   {
+      id: 'cabedelo-wakepark', slug: 'cabedelo-wakepark', name: 'FeelViana Wake Park', nameEn: 'FeelViana Wake Park',
+      region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.692, lon: -8.834,
+      coastOrientation: 270,
+      type: 'wakeboard', difficulty: 'all', bestWind: 'NW, N', bestSwell: 'Lagoa',
+      description: 'Cable park na margem esquerda do Lima, mesmo ao lado da Praia do Cabedelo. Wakeboard 2.0, E-foil e escola FeelViana — água plana no rio, a poucos metros do oceano.',
+      descriptionEn: 'Cable park on the left bank of the Lima, right next to Cabedelo Beach. Wakeboard 2.0, E-foil and FeelViana school — flat river water, steps from the ocean.',
+      compatibleSports: ['wakeboard'],
+      facilities: ['Estacionamento', 'Cable park', 'Escola wake', 'Aluguer', 'FeelViana Sport Hotel'],
+      hazards: ['Outros riders', 'Tráfego de barcos na foz']
+    },
+  {
       id: 'rodanho', slug: 'rodanho', name: 'Praia do Rodanho', nameEn: 'Rodanho Beach',
       region: 'Viana do Castelo', regionEn: 'Viana do Castelo', lat: 41.667, lon: -8.825,
       coastOrientation: 270,
@@ -850,6 +861,17 @@ export const spots: Spot[] = [
       compatibleSports: ['wakeboard'],
       facilities: ['Estacionamento', 'Escola wake', 'Aluguer', 'Restaurante'],
       hazards: ['Barcos de pesca']
+    },
+  {
+      id: 'ilha-do-ermal', slug: 'ilha-do-ermal', name: 'Ilha do Ermal — Teleski', nameEn: 'Ilha do Ermal — Cable',
+      region: 'Vieira do Minho', regionEn: 'Vieira do Minho', lat: 41.594, lon: -8.130,
+      coastOrientation: 270,
+      type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
+      description: 'Teleski/cable na barragem do Ermal (Serra do Gerês). Wakeboard, kneeboard e mono-ski — infraestrutura única com ~800 m de percurso. Praia fluvial, insufláveis e restauração.',
+      descriptionEn: 'Cable/teleski at Ermal reservoir (Gerês mountains). Wakeboard, kneeboard and mono-ski — ~800 m course. River beach, inflatables and café on site.',
+      compatibleSports: ['wakeboard'],
+      facilities: ['Estacionamento', 'Teleski', 'Escola wake', 'Restaurante', 'Parque de merendas'],
+      hazards: ['Outros riders', 'Barcos na albufeira']
     },
   {
       id: 'melides', slug: 'melides', name: 'Praia de Melides', nameEn: 'Melides Beach',
