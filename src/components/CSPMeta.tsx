@@ -8,9 +8,10 @@
 //  - GoatCounter (analytics, optional)
 //  - Supabase (contributions feedback + admin, optional)
 //  - OpenStreetMap / Carto / ESRI tiles (Leaflet basemaps)
-// NOTE: 'unsafe-eval' was removed (was unused; lingered from a copy/paste).
-// 'unsafe-inline' for scripts is still required by the pre-hydration
-// theme script in app/layout.tsx and Next.js inline runtime.
+// NOTE: 'unsafe-eval' is omitted in production (not needed for static export).
+// React dev requires eval() — this meta is skipped when NODE_ENV !== 'production'.
+// 'unsafe-inline' for scripts is still required by the pre-hydration theme script in app/layout.tsx.
+// frame-ancestors in <meta> is ignored by browsers (host HTTP headers only) — separate hardening task.
 const CSP_META = {
   defaultSrc: "'self'",
   scriptSrc: "'self' 'unsafe-inline' https://gc.zgo.at",
@@ -30,6 +31,10 @@ const CSP_META = {
 const toKebab = (s: string) => s.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`);
 
 export default function CSPMeta() {
+  if (process.env.NODE_ENV !== 'production') {
+    return null;
+  }
+
   const cspValue = Object.entries(CSP_META)
     .map(([key, value]) =>
       value === '' ? toKebab(key) : `${toKebab(key)} ${value}`

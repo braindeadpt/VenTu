@@ -10,6 +10,7 @@ export type MacroRegion = typeof MACRO_REGIONS[number];
 const MUNICIPALITY_TO_REGION: Record<string, MacroRegion> = {
   // Norte
   'Porto': 'Norte',
+  'Gondomar': 'Norte',
   'Viana do Castelo': 'Norte',
   'Braga': 'Norte',
   'Vieira do Minho': 'Norte',

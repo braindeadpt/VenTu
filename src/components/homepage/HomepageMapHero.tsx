@@ -90,7 +90,7 @@ export default function HomepageMapHero({
           : 'relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y'
       }
     >
-      <div className="absolute inset-0 z-0 pointer-events-auto">
+      <div className="absolute inset-0 z-0 pointer-events-none [&_.leaflet-marker-icon]:pointer-events-auto">
         <SpotMapInteractive
           spotsData={filtered}
           selectedSport={sport}

@@ -35,6 +35,22 @@ import {
 } from '@/lib/map-constants';
 import { buildMapWindArrowSvg } from '@/lib/mapWindArrow';
 import { getDifficultyMarkerColor } from '@/lib/mapDifficulty';
+import { getMacroRegion } from '@/lib/regions';
+import { DEFAULT_REGION } from '@/lib/gridFilters';
+
+const ISLAND_MACRO_REGIONS = new Set(['Açores', 'Madeira']);
+
+/** Keep initial fitBounds on continental PT unless the user filters to islands. */
+function includeSpotInViewportBounds(spot: Spot, selectedRegion: string): boolean {
+  const macro = getMacroRegion(spot.region);
+  if (selectedRegion === 'Açores' || selectedRegion === 'Madeira') {
+    return macro === selectedRegion;
+  }
+  if (selectedRegion !== DEFAULT_REGION && selectedRegion !== 'Todos') {
+    return macro === selectedRegion;
+  }
+  return !ISLAND_MACRO_REGIONS.has(macro);
+}
 
 // ─── Types ───
 interface SpotData {
@@ -363,6 +379,16 @@ export default function SpotMapInteractive({
         zoom: DEFAULT_ZOOM,
         zoomControl: false,
         attributionControl: false,
+        ...(isHeroEmbed
+          ? {
+              scrollWheelZoom: false,
+              dragging: false,
+              touchZoom: false,
+              doubleClickZoom: false,
+              boxZoom: false,
+              keyboard: false,
+            }
+          : {}),
       });
 
       const darkOnInit = !document.documentElement.classList.contains('theme-ocean');
@@ -373,8 +399,10 @@ export default function SpotMapInteractive({
         maxZoom: MAX_ZOOM,
       }).addTo(map);
 
-      Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
-      Leaflet.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+      if (!isHeroEmbed) {
+        Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
+        Leaflet.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+      }
 
       const mcg = Leaflet.markerClusterGroup({
         ...CLUSTER_CONFIG,
@@ -400,7 +428,7 @@ export default function SpotMapInteractive({
         tileLayerRef.current = null;
       }
     };
-  }, []);
+  }, [isHeroEmbed]);
 
   // Switch basemap tiles
   useEffect(() => {
@@ -634,11 +662,17 @@ export default function SpotMapInteractive({
       } else {
         lg.addLayer(marker);
       }
-      bounds.extend([data.spot.lat, data.spot.lon]);
+      if (includeSpotInViewportBounds(data.spot, selectedRegion)) {
+        bounds.extend([data.spot.lat, data.spot.lon]);
+      }
     });
 
     if (!didFitBoundsRef.current && bounds.isValid()) {
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 12 });
+      const fitMaxZoom = isMobile ? 9 : 11;
+      map.fitBounds(bounds, {
+        padding: isMobile ? [16, 16] : [40, 40],
+        maxZoom: fitMaxZoom,
+      });
       didFitBoundsRef.current = true;
     }
 
@@ -685,6 +719,7 @@ export default function SpotMapInteractive({
       data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}
       data-map-cluster={clusterEnabled ? 'true' : 'false'}
       data-map-wind={showWindOnMarkers ? 'true' : 'false'}
+      data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
     >
       {!isReady && (
         <div className="absolute inset-0 flex items-center justify-center bg-surface-1/[0.04] z-10">

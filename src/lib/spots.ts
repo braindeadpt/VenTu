@@ -200,6 +200,17 @@ export const spots: Spot[] = [
       hazards: ['Tráfego de barcos', 'Correntes na foz']
     },
   {
+      id: 'praia-da-lomba', slug: 'praia-da-lomba', name: 'Praia da Lomba — Wakeboard', nameEn: 'Lomba River Beach — Wakeboard',
+      region: 'Gondomar', regionEn: 'Gondomar', lat: 41.070, lon: -8.413,
+      coastOrientation: 270,
+      type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
+      description: 'Wakeboard e bóia rebocada no Rio Douro, em águas calmas na margem esquerda. Praia fluvial da Lomba (~30 min do Porto) — sessões com barco e guias; não é cable park. Ideal para iniciantes em água plana.',
+      descriptionEn: 'Wakeboard and towable tube on the calm Douro River at Lomba river beach (~30 min from Porto). Boat-towed sessions with guides — not a cable park. Great for beginners on flat water.',
+      compatibleSports: ['wakeboard'],
+      facilities: ['Estacionamento', 'Praia fluvial', 'Snackbar', 'Parque de merendas', 'Salva-vidas (época balnear)'],
+      hazards: ['Tráfego fluvial', 'Infraestrutura balnear Jun–Set']
+    },
+  {
       id: 'salgueiros', slug: 'salgueiros', name: 'Praia de Salgueiros', nameEn: 'Salgueiros Beach',
       region: 'Porto', regionEn: 'Porto', lat: 41.120, lon: -8.665,
       coastOrientation: 270,

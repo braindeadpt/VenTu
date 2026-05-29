@@ -434,6 +434,11 @@
   font-family: inherit;
 }
 
+/* Home hero map teaser: page scroll passes through; markers stay clickable */
+[data-map-hero-teaser='true'] .leaflet-container {
+  touch-action: pan-y;
+}
+
 /* ── Zoom Control ── */
 .leaflet-control-zoom a {
   background: rgb(var(--bg-elevated)) !important;
