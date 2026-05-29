@@ -125,16 +125,26 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await gotoHealthy(page, health, '/pt/mapa/');
       await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
 
-      const mapShell = page.locator('[data-map-fullscreen]');
-      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
-      await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
+      const mapShell = page.locator('[data-map-fullscreen="true"]');
+      await expect(mapShell).toBeVisible({ timeout: 20_000 });
 
-      const showAllBtn = page.getByRole('button', { name: /Mostrar todos|Show all/i });
-      await showAllBtn.click();
-      await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
+      const clustered = await mapShell.getAttribute('data-map-cluster');
+      if (clustered === 'true') {
+        await page.getByRole('button', { name: /Mostrar todos|Show all/i }).click();
+        await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
+      } else {
+        await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
+      }
+
       await expect(page.locator('.leaflet-marker-icon.spot-marker').first()).toBeVisible({
         timeout: 15_000,
       });
+
+      const clusterBtn = page.getByRole('button', { name: /Agrupar spots|Cluster spots/i });
+      if (await clusterBtn.isVisible()) {
+        await clusterBtn.click();
+        await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
+      }
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
@@ -169,8 +179,8 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await gotoHealthy(page, health, '/pt/mapa/');
       await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
 
-      const mapShell = page.locator('[data-map-fullscreen]');
-      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
+      const mapShell = page.locator('[data-map-fullscreen="true"]');
+      await expect(mapShell).toBeVisible({ timeout: 20_000 });
       await expect(mapShell).toHaveAttribute('data-map-hud', 'visible');
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });

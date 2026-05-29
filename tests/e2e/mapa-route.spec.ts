@@ -12,8 +12,8 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 
   test('opens in fullscreen with HUD visible', async ({ page }) => {
-    const mapShell = page.locator('[data-map-fullscreen]');
-    await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true', { timeout: 20_000 });
+    const mapShell = page.locator('[data-map-fullscreen="true"]');
+    await expect(mapShell).toBeVisible({ timeout: 20_000 });
     await expect(mapShell).toHaveAttribute('data-map-hud', 'visible');
     await expect(page.getByRole('heading', { name: /Mapa de spots/i, level: 1 })).toBeAttached();
   });
