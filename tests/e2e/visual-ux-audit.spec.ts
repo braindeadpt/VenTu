@@ -335,7 +335,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(page.locator('main')).toContainText(/Guincho/i, { timeout: 15_000 });
 
       await page.getByRole('button', { name: /Remover Guincho dos favoritos/i }).click();
-      await expect(page.getByText(/Ainda não tens favoritos|No favorites yet/i)).toBeVisible();
+      await expect(
+        page.getByRole('heading', { name: /Ainda sem favoritos|No favorites yet/i }),
+      ).toBeVisible({ timeout: 10_000 });
       await context.close();
     });
 
