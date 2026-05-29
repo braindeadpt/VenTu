@@ -34,7 +34,14 @@ export default function ScoreBadge({
     >
       <span>{score}</span>
       {showLabel && (
-        <span className="font-sans font-medium">{label}</span>
+        <span
+          className={cn(
+            'font-sans font-medium',
+            tokens.tier === 'epic' && 'text-sunset font-display',
+          )}
+        >
+          {label}
+        </span>
       )}
     </span>
   );

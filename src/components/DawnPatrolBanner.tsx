@@ -153,7 +153,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
   };
 
   return (
-    <div className="w-full bg-surface-1/[0.04] border-b border-divider overflow-hidden">
+    <div className="w-full bg-surface-1/[0.04] border-b border-divider overflow-hidden border-l-4 border-l-sunset-2">
       {/* Main banner — toggle area */}
       <div
         className="p-5 cursor-pointer hover:bg-surface-2/[0.08] transition-colors select-none"
@@ -166,12 +166,12 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
       >
         <div className="flex items-start sm:items-center justify-between gap-3">
           <div className="flex items-start sm:items-center gap-4 min-w-0">
-            <div className="p-2.5 rounded-xl bg-score-fair/10 shrink-0">
-              <Sunrise className="w-7 h-7 text-score-fair" />
+            <div className="p-2.5 rounded-xl bg-sunset-1/15 shrink-0">
+              <Sunrise className="w-7 h-7 text-sunset-1" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="text-xs font-bold text-score-fair uppercase tracking-wider">
+                <span className="text-xs font-bold text-sunset uppercase tracking-wider font-display">
                   {isPt ? 'Dawn Patrol' : 'Dawn Patrol'}
                 </span>
                 <span className="text-xs text-fg-subtle whitespace-nowrap">{dateLabel}</span>
@@ -185,7 +185,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                   </span>
                 )}
               </div>
-              <h3 className="text-lg font-bold text-fg truncate">{content.headline}</h3>
+              <h3 className="font-display text-lg font-bold text-fg truncate">{content.headline}</h3>
               <p className="text-sm text-fg-muted mt-1 line-clamp-2">{content.advice}</p>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             <Button
               href={topSpotHref}
               size="sm"
-              className="hidden sm:inline-flex"
+              className="hidden sm:inline-flex bg-sunset border-transparent hover:opacity-95"
               locale={isPt ? 'pt' : 'en'}
               leftIcon={<Zap className="w-4 h-4" aria-hidden />}
               onClick={(e) => e.stopPropagation()}

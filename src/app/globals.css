@@ -81,6 +81,11 @@
     --sunset-warm:    251 146 60;   /* amber-400 */
     --sunset-glow:    244 63 94;    /* rose-500 */
     --sunset-sky:     56 189 248;   /* sky-400 */
+
+    /* Sunset accent — intentional CTA / épico / Dawn Patrol only */
+    --accent-sunset-1: 251 146 60;
+    --accent-sunset-2: 244 114 182;
+    --accent-sunset-3: 139 92 246;
   }
 
   /* ═══════════════════════════════════════════════════════════════
@@ -140,6 +145,10 @@
     --score-fair:    217 119 6;        /* amber-600 */
     --score-poor:    220 38 38;        /* red-600 */
     --score-closed:  107 114 128;      /* gray-500 */
+
+    --accent-sunset-1: 251 146 60;
+    --accent-sunset-2: 244 114 182;
+    --accent-sunset-3: 139 92 246;
   }
 
   /* Default surface */
@@ -211,6 +220,29 @@
   }
   .card-hero {
     @apply bg-surface-1/[0.04] border border-divider-strong rounded-card backdrop-blur-md;
+  }
+
+  /* Sunset accent — hero CTA, épico badge label, Dawn Patrol only */
+  .bg-sunset {
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--accent-sunset-1)) 0%,
+      rgb(var(--accent-sunset-2)) 52%,
+      rgb(var(--accent-sunset-3)) 100%
+    );
+    color: rgb(var(--bg-base));
+  }
+
+  .text-sunset {
+    background-image: linear-gradient(
+      135deg,
+      rgb(var(--accent-sunset-1)) 0%,
+      rgb(var(--accent-sunset-2)) 52%,
+      rgb(var(--accent-sunset-3)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   /* Pill — filter chips, sport selectors, score badges */

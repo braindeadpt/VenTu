@@ -176,6 +176,8 @@ function buildMarkerPopupContent(data: SpotData, locale: string): string {
     waterTemp: conditions.waterTemp.toFixed(1),
     wavePowerKw: powerKw.toFixed(1),
     imageUrl: spot.images?.[0],
+    confidence: conditions.confidence,
+    confidenceDetail: conditions.confidenceDetail,
   });
 }
 

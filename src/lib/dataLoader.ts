@@ -20,6 +20,22 @@ export interface PrecomputedConditions {
     tideObservedAt?: string;
     tideStation?: string;
     updatedAt: string;
+    confidence?: 'alta' | 'média' | 'baixa';
+    confidenceDetail?: {
+      waveSpread: number;
+      windSpread: number;
+      waveSpreadPct?: number;
+      windSpreadPct?: number;
+      combinedSpreadPct?: number;
+      degraded?: boolean;
+    };
+    dailyConfidence?: Array<{
+      date: string;
+      confidence: 'alta' | 'média' | 'baixa';
+      waveSpread: number;
+      windSpread: number;
+      degraded?: boolean;
+    }>;
   };
 }
 

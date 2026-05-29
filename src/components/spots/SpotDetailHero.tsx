@@ -20,10 +20,13 @@ import { cn } from '@/lib/cn';
 import FavoriteButton from '@/components/FavoriteButton';
 import SocialShare from '@/components/ui/SocialShare';
 import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
-import SpotImage from '@/components/spots/SpotImage';
+import SpotImage from '@/components/ui/SpotImage';
 import ScoreGauge from '@/components/ui/ScoreGauge';
 import StatChip from '@/components/ui/StatChip';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
+import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
+import SpotLevelToday from '@/components/spots/SpotLevelToday';
+import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 interface SpotDetailHeroProps {
   spot: Spot;
   spotSlug: string;
@@ -42,6 +45,8 @@ interface SpotDetailHeroProps {
     waterTemp: number;
     source?: 'real' | 'mock';
     updatedAt?: string;
+    confidence?: ConfidenceTier;
+    confidenceDetail?: ConfidenceDetail;
   };
 }
 
@@ -85,10 +90,11 @@ export default function SpotDetailHero({
           spot={spot}
           aspect="hero"
           locale={isPt ? 'pt' : 'en'}
+          priority
           className="h-full min-h-[220px] md:min-h-[280px]"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/92 to-bg-base/55 dark:from-bg-base dark:via-bg-base/92 dark:to-bg-base/60"
+          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/95 to-bg-base/70 dark:from-bg-base dark:via-bg-base/95 dark:to-bg-base/75"
           aria-hidden
         />
       </div>
@@ -105,7 +111,7 @@ export default function SpotDetailHero({
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex items-start justify-between gap-3">
-              <h1 className="font-serif text-display-lg text-fg tracking-tight drop-shadow-sm">
+              <h1 className="font-display text-display-lg text-fg tracking-tight drop-shadow-sm">
                 {title}
               </h1>
               <div className="flex items-center gap-2 shrink-0 sm:hidden">
@@ -137,6 +143,13 @@ export default function SpotDetailHero({
               />
             )}
 
+            <SpotLevelToday
+              difficulty={spot.difficulty}
+              score={score}
+              locale={locale}
+              className="mt-1"
+            />
+
             <div className="flex flex-wrap items-center gap-2 pt-1">
               {showUpdatedPill && (
                 <span className="pill pill-ghost gap-1.5 px-2 py-1 min-h-0 text-meta-sm text-fg-muted bg-bg-base/40">
@@ -159,8 +172,8 @@ export default function SpotDetailHero({
                 className={cn(
                   'inline-flex items-center justify-center gap-2 font-medium',
                   'px-4 py-2 text-sm rounded-input min-h-[44px]',
-                  'bg-data-waves text-bg-base hover:bg-data-waves/90',
-                  'transition-colors duration-150',
+                  'bg-data-waves text-bg-base hover:bg-data-waves/90 active:bg-data-waves/80',
+                  'border border-transparent transition-colors duration-150',
                 )}
               >
                 <Navigation className="w-4 h-4" aria-hidden />
@@ -179,6 +192,14 @@ export default function SpotDetailHero({
               <p className={cn('text-body font-semibold text-center mt-1', tokens.text)}>
                 {isPt ? rating : ratingEn}
               </p>
+              <div className="flex justify-center mt-2">
+                <ConfidenceBadge
+                  confidence={conditions.confidence}
+                  detail={conditions.confidenceDetail}
+                  locale={locale}
+                  size="sm"
+                />
+              </div>
             </div>
           </div>
         </div>

@@ -10,8 +10,9 @@ import { resolveWavePowerKw } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
-import SpotImage from '@/components/spots/SpotImage';
+import SpotImage from '@/components/ui/SpotImage';
 import ScoreBadge from '@/components/ui/ScoreBadge';
+import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import Button from '@/components/ui/Button';
 
 export interface MapSpotPreviewData {
@@ -59,7 +60,17 @@ export default function MapSpotPreview({
       <SpotImage spot={spot} aspect="video" locale={isPt ? 'pt' : 'en'} className="rounded-xl w-full" />
 
       <div className="space-y-1">
-        <h2 className="text-h3 text-fg font-semibold">{isPt ? spot.name : spot.nameEn}</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          <h2 className="font-display text-h3 text-fg font-semibold">
+            {isPt ? spot.name : spot.nameEn}
+          </h2>
+          <ConfidenceBadge
+            confidence={conditions.confidence}
+            detail={conditions.confidenceDetail}
+            locale={locale}
+            size="sm"
+          />
+        </div>
         <p className="text-meta text-fg-muted">
           {isPt ? spot.region : spot.regionEn}
           <span aria-hidden> · </span>

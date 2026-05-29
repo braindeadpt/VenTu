@@ -84,7 +84,7 @@ export default function FavoriteButton({
     toggleFavorite(spotId);
     if (!wasFavorite) {
       showToast(
-        isPt ? 'Adicionado aos teus spots 🤙' : 'Added to your spots 🤙',
+        isPt ? 'Adicionado aos teus spots' : 'Added to your spots',
       );
     }
     setClickEffect(true);

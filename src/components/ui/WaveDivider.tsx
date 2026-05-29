@@ -7,13 +7,13 @@ interface WaveDividerProps {
 }
 
 /**
- * Decorative section divider — static SVG, no continuous animation.
+ * Decorative section divider — gentle drift when motion is allowed.
  */
 export default function WaveDivider({ className, flip = false }: WaveDividerProps) {
   return (
     <div
       className={cn(
-        'w-full h-8 sm:h-10 text-data-waves/25 pointer-events-none select-none',
+        'w-full h-8 sm:h-10 text-data-waves/25 pointer-events-none select-none overflow-hidden',
         flip && 'rotate-180',
         className,
       )}
@@ -22,7 +22,9 @@ export default function WaveDivider({ className, flip = false }: WaveDividerProp
       <svg
         viewBox="0 0 1200 48"
         preserveAspectRatio="none"
-        className="w-full h-full block"
+        className={cn(
+          'w-full h-full block motion-safe:animate-wave-drift',
+        )}
         xmlns="http://www.w3.org/2000/svg"
       >
         <path

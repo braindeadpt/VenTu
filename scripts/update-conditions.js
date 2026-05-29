@@ -11,6 +11,16 @@ const path = require('path');
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
 
+const MIN_REQUEST_INTERVAL = 200;
+
+const {
+  WAVE_MODELS,
+  WIND_MODELS,
+  confidenceAtIndex,
+  confidenceByDay,
+  findCurrentHourIndex,
+} = require('./lib/forecastConfidence');
+
 /**
  * Parse spots from src/lib/spots.ts automatically.
  * No more hardcoded list — add a spot to spots.ts and it gets fetched automatically.
@@ -125,6 +135,33 @@ async function fetchWeatherData(lat, lon) {
   return data;
 }
 
+/** Multi-model wave_height only — spread/confidence (best_match stays on fetchMarineData). */
+async function fetchMarineWaveModels(lat, lon) {
+  const params = new URLSearchParams({
+    latitude: lat.toString(),
+    longitude: lon.toString(),
+    hourly: 'wave_height',
+    models: WAVE_MODELS.join(','),
+    timezone: 'Europe/Lisbon',
+    forecast_days: '7',
+  });
+  return fetchWithRetry(`${MARINE_API}?${params}`);
+}
+
+/** Multi-model wind_speed_10m only — spread/confidence. */
+async function fetchWindModels(lat, lon) {
+  const params = new URLSearchParams({
+    latitude: lat.toString(),
+    longitude: lon.toString(),
+    hourly: 'wind_speed_10m',
+    models: WIND_MODELS.join(','),
+    timezone: 'Europe/Lisbon',
+    forecast_days: '7',
+    wind_speed_unit: 'ms',
+  });
+  return fetchWithRetry(`${WEATHER_API}?${params}`);
+}
+
 function getTideStatus(seaLevel, seaLevelNext) {
   const threshold = 0.3;
   if (seaLevel > threshold) {
@@ -202,11 +239,17 @@ async function updateConditions() {
     try {
       console.log(`  Fetching ${spot.id}...`);
       
-      // Fetch both APIs in parallel
-      const [marineData, weatherData] = await Promise.all([
+      // best_match (display values) + multi-model spreads (confidence only)
+      const [marineData, weatherData, marineWaveModels, windModels] = await Promise.all([
         fetchMarineData(spot.lat, spot.lon),
         fetchWeatherData(spot.lat, spot.lon),
+        fetchMarineWaveModels(spot.lat, spot.lon),
+        fetchWindModels(spot.lat, spot.lon),
       ]);
+
+      const timeIndex = findCurrentHourIndex(marineWaveModels.hourly.time);
+      const confidenceDetail = confidenceAtIndex(marineWaveModels, windModels, timeIndex);
+      const dailyConfidence = confidenceByDay(marineWaveModels, windModels);
       
       // Check if we have IH tide data for this spot
       const spotMapping = ihTides.spotMapping[spot.id];
@@ -224,6 +267,16 @@ async function updateConditions() {
       
       allConditions[spot.id] = {
         ...getCurrentConditions(marineData, weatherData, ihTideObs),
+        confidence: confidenceDetail.confidence,
+        confidenceDetail: {
+          waveSpread: confidenceDetail.waveSpread,
+          windSpread: confidenceDetail.windSpread,
+          waveSpreadPct: confidenceDetail.waveSpreadPct,
+          windSpreadPct: confidenceDetail.windSpreadPct,
+          combinedSpreadPct: confidenceDetail.combinedSpreadPct,
+          degraded: confidenceDetail.degraded,
+        },
+        dailyConfidence,
         updatedAt: new Date().toISOString(),
       };
 
@@ -261,9 +314,8 @@ async function updateConditions() {
       
       console.log(`  ✓ ${spot.id} updated${ihTideObs ? ` (IH tide: ${ihTideObs.lastObs}m)` : ''}`);
       
-      // Rate limiting: wait 250ms between spots to avoid Open-Meteo limits
-      // Open-Meteo free tier: ~10,000 calls/day, but burst limiting applies
-      await sleep(250);
+      // 4 calls/spot; ~300/min with 200ms gap (under Open-Meteo 600/min)
+      await sleep(MIN_REQUEST_INTERVAL);
     } catch (error) {
       console.error(`  ✗ ${spot.id} failed:`, error.message);
     }

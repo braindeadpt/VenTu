@@ -70,7 +70,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-data-waves hover:text-data-waves/80 font-medium"
         >
-          {isPt ? 'Ver alojamento perto' : 'Find nearby stays'}
+          {isPt ? 'Ver alojamento perto ↗' : 'Find nearby stays ↗'}
           <ExternalLink className="w-3 h-3 shrink-0" aria-hidden />
         </a>
       ),

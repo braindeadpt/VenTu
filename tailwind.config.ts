@@ -103,6 +103,12 @@ const config: Config = {
           cross:    'rgb(var(--windDir-cross) / <alpha-value>)',
         },
 
+        sunset: {
+          1: 'rgb(var(--accent-sunset-1) / <alpha-value>)',
+          2: 'rgb(var(--accent-sunset-2) / <alpha-value>)',
+          3: 'rgb(var(--accent-sunset-3) / <alpha-value>)',
+        },
+
       },
 
       // ═══════════════════════════════════════════════════════════
@@ -111,6 +117,7 @@ const config: Config = {
       fontFamily: {
         sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-geist-mono)', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'monospace'],
+        display: ['var(--font-display)', 'var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         serif: ['Georgia', 'serif'],
       },
 
@@ -191,11 +198,16 @@ const config: Config = {
           '0%':   { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
         },
+        'wave-drift': {
+          '0%':   { transform: 'translateX(0)' },
+          '100%': { transform: 'translateX(-2%)' },
+        },
       },
       animation: {
         'marquee':  'marquee 30s linear infinite',
         'fade-up':  'fade-up 400ms cubic-bezier(0.16, 1, 0.3, 1) both',
         'shimmer':  'shimmer 1.6s linear infinite',
+        'wave-drift': 'wave-drift 10s ease-in-out infinite alternate',
       },
     },
   },

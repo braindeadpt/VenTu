@@ -11,24 +11,45 @@ alwaysApply: true
 - Performance: prefer opacity/transform; avoid heavy blur on mobile
 - A11y: visible focus (globals.css), AA contrast, 44px touch targets on mobile
 - Score is product language: always use `getScoreTokens(score)` / `--score-*` tokens
+- **Stoke inclusivo**: energia e comunidade (todas as idades e níveis) — sem tom de festa, sexualização ou exclusão de género
 
 ## Tokens (globals.css)
 - Surfaces: `bg-base`, `bg-elevated`, `surface-1/2/3`, `divider`, `divider-strong`
 - Text: `fg`, `fg-muted` (meta/legends), `fg-subtle` (secondary)
 - Sport accents: `--sport-*` / `text-sport-*`
+- **Sunset accent** (intencional, poucos sítios): `--accent-sunset-1/2/3`, `colors.sunset.{1,2,3}`, `.bg-sunset`, `.text-sunset` (gradiente 135°)
 - Spacing scale only: 4, 8, 12, 16, 24, 32, 48 px
 
+## Typography
+- **Body**: Geist Sans (`font-sans`) — UI, parágrafos, labels
+- **Data**: Geist Mono (`font-mono`, tabular) — scores em tabela, métricas numéricas
+- **Display**: Space Grotesk (`font-display`, `--font-display` via `next/font`) — headlines hero, nomes de spot, label épico no `ScoreBadge`
+
+## Sunset accent — onde usar (e onde NÃO)
+Usar **apenas**:
+- CTA primário do hero homepage (`bg-sunset` no `Button` “Explorar mapa”)
+- Label de tier **épico** no `ScoreBadge` (`text-sunset` + `font-display`)
+- Dawn Patrol (barra lateral, badge, CTA “Ver spot”)
+
+Não usar em: cards de lista, mapa, filtros, scores não-épicos, footer, nav.
+
+## Voice (PT-PT) — `src/lib/voice.ts`
+- **“a bombar”** / “firing” — nunca “ON” como copy de produto
+- **“mar de espelho”** — mar calmo
+- `tierPhrase(score)` — micro-copy em cards (não altera `getScoreTierLabel` / scoring)
+- Tom: comunidade real, sem clichés de género
+
+## Imagens de spot — `getSpotImage` + `SpotImage`
+- `src/lib/spotImage.ts` — URL curada ou gradiente determinístico por `hash(region)` (praia/oceano/sunset)
+- `src/components/ui/SpotImage.tsx` — `aspect`: `video` | `square` | `hero`; `next/image` `unoptimized`; fallback mantém aspect ratio (layout estável)
+
 ## Components
-- **Button**: `primary` | `secondary` | `ghost`; sizes `sm`(36) `md`(44) `lg`(48+); `leftIcon`/`rightIcon`; loading shows spinner + label
+- **Button**: `primary` | `secondary` | `ghost`; sizes `sm`(36) `md`(44) `lg`(48+); hero map CTA pode usar `className="bg-sunset …"`
 - **Card**: `card-1` | `card-2` | `card-hero`; clickable → `hover:-translate-y-px`, `hover:border-divider-strong`, light shadow
 - **Pill**: `pill-ghost` (inactive) / `pill-active` (active) via `FilterPill`
-- **ScoreBadge**: `getScoreTokens`; glow only for epic/good tiers
+- **ScoreBadge**: `getScoreTokens`; glow epic/good; label épico → `text-sunset`
 - **StatChip**: icon + mono value + short label (spot hero metrics)
-- **FreshnessIndicator**: pill + coloured dot + “há Nh” + source label (`sm` | `md`)
-- **AggregateScoreGauge**: homepage hero — `ScoreGauge` lg for top-10 average by sport
-- **TrustStrip** (`homepage/`): horizontal trust row (spot count, sports, Open-Meteo, refresh cadence)
-- **HomepageSecondaryCta** (`homepage/`): 3 `Card` links (sazonalidade, compare, spots/alertas)
-- **HeaderFreshness** (`layout/`): client fetch of `conditions.json` → `FreshnessIndicator` in header
+- **WaveDivider**: separador SVG entre zonas; `motion-safe:animate-wave-drift` (respeita `prefers-reduced-motion`)
 
 ## Motion
 - 150ms hover/focus; 200ms filter/list; 300ms map fullscreen/drawers
@@ -39,13 +60,13 @@ alwaysApply: true
 - Multiple button styles per page
 - Continuous animations on home (no marquee loops)
 - Heavy backdrop-blur on long mobile sections
+- Espalhar gradiente sunset fora dos 3 pontos acima
 
 ## Page patterns
-- **Home (5 zones)**: Pulse (sr-only h1, `AggregateScoreGauge`, `FreshnessIndicator`, search) → `TrustStrip` → Top agora (**4** sports: surf, kitesurf, windsurf, bodyboard — `TOP_NOW_SPORTS`) → Explore (filters + map) → More spots (`SpotListCard`, excludes Top agora slugs) → `HomepageSecondaryCta` (3 cards) → Dawn Patrol (5–12h)
-- **Spot**: `ScoreGauge` lg + rating label + 4 `StatChip` + “Agora” (radar; wind kt only in chips) + feedback in `card-1` + sticky sport tabs + forecast
-- **Map fullscreen**: single bottom HUD (`MapControlButton` 44px), `MapSpotSheet` on mobile
-- **Drawer**: real metrics only — no placeholder tabs; sync `gridSport` + `?sport=` on CTA
+- **Home**: Map hero (`font-display` h2, `bg-sunset` CTA) → Top agora → Dawn Patrol → footer; `WaveDivider` entre zonas
+- **Spot**: `font-display` no nome; `SpotImage` hero; score + chips + forecast (dados em mono)
+- **Map fullscreen**: HUD + sheet; dados claros, sem sunset decorativo
 
 ## Shared list UI
-- **`SpotListCard`**: `Card` + `ScoreBadge` + metrics — Top agora + “Mais spots” (never duplicate same slug)
+- **`SpotListCard`**: `Card` + `ScoreBadge` + `SpotImage` opcional + hover via `tierPhrase`
 - **Scores**: `getScoreTokens` / `scoreThresholds.ts` — map markers must match badges (80/60/40/20)

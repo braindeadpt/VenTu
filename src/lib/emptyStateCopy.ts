@@ -1,3 +1,5 @@
+import { calmLabel, onLabel } from '@/lib/voice';
+
 export type PlayfulEmptyVariant = 'flat-day' | 'no-spots-filter' | 'no-favorites' | 'no-top-now';
 
 interface PlayfulEmptyCopy {
@@ -8,7 +10,7 @@ interface PlayfulEmptyCopy {
 const COPY: Record<PlayfulEmptyVariant, { pt: PlayfulEmptyCopy; en: PlayfulEmptyCopy }> = {
   'flat-day': {
     pt: {
-      title: 'Mar de espelho hoje 🪞',
+      title: `${calmLabel(true).charAt(0).toUpperCase()}${calmLabel(true).slice(1)} hoje 🪞`,
       description: 'Dia de SUP e cafés — o vento volta amanhã.',
     },
     en: {
@@ -18,11 +20,11 @@ const COPY: Record<PlayfulEmptyVariant, { pt: PlayfulEmptyCopy; en: PlayfulEmpty
   },
   'no-top-now': {
     pt: {
-      title: 'Ninguém a bombar agora 😴',
-      description: 'Mar de espelho hoje 🪞 — dia de SUP e cafés. Vê o mapa na mesma.',
+      title: `Ninguém ${onLabel(true)} agora 😴`,
+      description: `${calmLabel(true).charAt(0).toUpperCase()}${calmLabel(true).slice(1)} hoje 🪞 — dia de SUP e cafés. Vê o mapa na mesma.`,
     },
     en: {
-      title: 'Nothing firing right now 😴',
+      title: `Nothing ${onLabel(false)} right now 😴`,
       description: 'Glassy day — SUP and coffee. Still worth checking the map.',
     },
   },

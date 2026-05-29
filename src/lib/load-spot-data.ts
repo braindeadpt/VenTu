@@ -5,6 +5,7 @@ import { getAllSportScores } from '@/lib/sportScore'
 import type { Spot } from '@/types'
 import type { SportType } from '@/lib/sportRatings'
 import type { SportScore } from '@/lib/sportScore'
+import { pickConfidenceFields } from '@/lib/forecastConfidence'
 
 interface SpotsIndexEntry {
   id: string
@@ -61,6 +62,9 @@ export interface SpotData {
     wavePowerKw?: number
     updatedAt?: string
     source?: 'real' | 'mock'
+    confidence?: import('@/lib/forecastConfidence').ConfidenceTier
+    confidenceDetail?: import('@/lib/forecastConfidence').ConfidenceDetail
+    dailyConfidence?: import('@/lib/forecastConfidence').DailyConfidence[]
   }
   allScores: Record<SportType, SportScore>
 }
@@ -100,6 +104,7 @@ export function loadSpotData(): SpotData[] {
             waterTemp: entry.conditions!.waterTemp,
             updatedAt: entry.conditions!.updatedAt,
             source: 'real' as const,
+            ...pickConfidenceFields(entry.conditions as Record<string, unknown>),
           },
           allScores: entry.allScores as unknown as Record<SportType, SportScore>,
         } as SpotData
@@ -134,6 +139,7 @@ export function loadSpotData(): SpotData[] {
           waterTemp: cond.waterTemp || 0,
           updatedAt: cond.updatedAt,
           source: 'real' as const,
+          ...pickConfidenceFields(cond),
         },
         allScores: getAllSportScores(spot, {
           waveHeight: cond.waveHeight || 0,

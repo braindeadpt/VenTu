@@ -1,13 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { spaceGrotesk } from '@/lib/fonts/display'
 import './globals.css'
 import GoatCounterScript from '@/components/analytics/GoatCounterScript'
 
 /**
  * VenTu Root Layout
  *
- * Geist Sans (display/body) + Geist Mono (numbers/code) loaded via
+ * Geist Sans (body) + Geist Mono (data) + Space Grotesk (display headlines) via
  * the `geist` package (Vercel's official wrapper for Next.js < 15).
  * Zero external requests — subsets are shipped with the build.
  * Variable fonts give us the full weight range in a single file each.
@@ -60,7 +61,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-PT"
-      className={`${GeistSans.variable} ${GeistMono.variable} theme-ocean`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${spaceGrotesk.variable} theme-ocean`}
       suppressHydrationWarning
     >
       <head>

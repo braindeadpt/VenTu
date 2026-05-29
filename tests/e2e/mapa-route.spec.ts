@@ -18,6 +18,12 @@ test.describe('/pt/mapa fullscreen map', () => {
     await expect(page.getByRole('heading', { name: /Mapa de spots/i, level: 1 })).toBeAttached();
   });
 
+  test('difficulty filter persists in localStorage', async ({ page }) => {
+    await page.getByRole('button', { name: 'Iniciante', exact: true }).click();
+    const stored = await page.evaluate(() => localStorage.getItem('ventu:map:difficulty'));
+    expect(stored).toBe('beginner');
+  });
+
   test('marker opens sheet with directions and view spot', async ({ page }) => {
     const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i });
     if (await showAll.isVisible()) {
@@ -35,6 +41,22 @@ test.describe('/pt/mapa fullscreen map', () => {
     await expect(directions).toHaveAttribute('href', /google\.com\/maps\/dir/);
 
     await expect(sheet.getByRole('link', { name: /Ver spot/i })).toBeVisible();
+
+    await expect(
+      sheet.getByRole('status', { name: /Confiança da previsão/i }),
+    ).toBeVisible();
+  });
+
+  test('Escape closes sheet', async ({ page }) => {
+    const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i });
+    if (await showAll.isVisible()) {
+      await showAll.click();
+    }
+    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 25_000 });
+    await page.locator('.leaflet-marker-icon.spot-marker').first().click({ position: { x: 14, y: 14 }, force: true });
+    await expect(page.getByRole('dialog')).toBeVisible({ timeout: 10_000 });
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toBeHidden({ timeout: 5000 });
   });
 });
 

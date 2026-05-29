@@ -1,3 +1,5 @@
+export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidence';
+
 export interface Spot {
   id: string;
   slug: string;

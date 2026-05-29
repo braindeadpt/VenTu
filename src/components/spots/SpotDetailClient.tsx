@@ -55,6 +55,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import StatChip from '@/components/ui/StatChip';
 import SwellRadar from '@/components/ui/SwellRadar';
+import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 
 interface Conditions {
   waveHeight: number;
@@ -72,6 +73,9 @@ interface Conditions {
   tideLabel?: string;
   source?: 'real' | 'mock';
   updatedAt?: string;
+  confidence?: import('@/lib/forecastConfidence').ConfidenceTier;
+  confidenceDetail?: import('@/lib/forecastConfidence').ConfidenceDetail;
+  dailyConfidence?: import('@/lib/forecastConfidence').DailyConfidence[];
 }
 
 interface SpotData {
@@ -171,6 +175,9 @@ export default function SpotDetailClient({
               tideHeight: spotCond.tideHeight,
               tideStatus: spotCond.tideStatus,
               tideLabel: spotCond.tideLabel,
+              confidence: spotCond.confidence,
+              confidenceDetail: spotCond.confidenceDetail,
+              dailyConfidence: spotCond.dailyConfidence,
               source: 'real',
               updatedAt: spotCond.updatedAt,
             };
@@ -487,6 +494,12 @@ export default function SpotDetailClient({
                     {windRelationMeta.label}
                   </span>
                 )}
+                <ConfidenceBadge
+                  confidence={conditions.confidence}
+                  detail={conditions.confidenceDetail}
+                  locale={locale}
+                  size="sm"
+                />
                 {spotData.tideObserved && (
                   <span className="text-meta-sm text-fg-muted">
                     {isPt ? 'Maré' : 'Tide'}:{' '}
@@ -497,8 +510,8 @@ export default function SpotDetailClient({
                 )}
               </div>
 
-              <div className="pt-3 border-t border-divider">
-                <p className="text-meta-sm text-fg-muted mb-2">{td.scoreFeedbackHint}</p>
+              <div className="pt-2 border-t border-divider/60">
+                <p className="text-meta-sm text-fg-subtle mb-1.5">{td.scoreFeedbackHint}</p>
                 <ScoreFeedback
                   spotSlug={spot.slug}
                   sport={selectedSport}

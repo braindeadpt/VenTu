@@ -9,6 +9,8 @@ import type { SportScore } from '@/lib/sportScore';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getScoreRgb } from '@/lib/scoreThresholds';
+import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
+import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 
 export interface SpotPopupContentProps {
   spot: Spot;
@@ -21,6 +23,8 @@ export interface SpotPopupContentProps {
   waterTemp: string;
   wavePowerKw: string;
   imageUrl?: string;
+  confidence?: ConfidenceTier;
+  confidenceDetail?: ConfidenceDetail;
 }
 
 export function SpotPopupContent({
@@ -34,11 +38,15 @@ export function SpotPopupContent({
   waterTemp,
   wavePowerKw,
   imageUrl,
+  confidence,
+  confidenceDetail,
 }: SpotPopupContentProps) {
   const isPt = locale === 'pt';
   const name = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
-  const sports = getCompatibleSports(spot);
+  const sports = [...getCompatibleSports(spot)].sort(
+    (a, b) => (allScores[b]?.score ?? 0) - (allScores[a]?.score ?? 0),
+  );
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
   const detailHref = getSpotDetailHref(locale, spot.slug);
 
@@ -55,7 +63,16 @@ export function SpotPopupContent({
       ) : null}
 
       <div>
-        <div className="font-bold text-sm text-fg">{name}</div>
+        <div className="flex flex-wrap items-center gap-1.5">
+          <div className="font-bold text-sm text-fg">{name}</div>
+          <ConfidenceBadge
+            confidence={confidence}
+            detail={confidenceDetail}
+            locale={locale}
+            size="sm"
+            withTooltip={false}
+          />
+        </div>
         <div className="text-[11px] text-fg-muted mt-0.5">
           {region} · {getDifficultyLabel(spot.difficulty, isPt)}
         </div>
@@ -121,13 +138,6 @@ export function SpotPopupContent({
         >
           <Navigation className="w-3.5 h-3.5" aria-hidden />
           {isPt ? 'Como chegar' : 'Get directions'}
-        </a>
-        <a
-          href={detailHref}
-          className="block w-full text-center py-1.5 rounded-lg text-fg-muted text-[11px] font-medium no-underline hover:text-fg"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {isPt ? 'Página completa →' : 'Full page →'}
         </a>
       </div>
     </div>

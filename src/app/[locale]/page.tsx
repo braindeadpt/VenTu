@@ -1,11 +1,7 @@
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { loadSpotData } from '@/lib/load-spot-data';
-import HomepageMapHero from '@/components/homepage/HomepageMapHero';
-import HomepageTopNow from '@/components/homepage/HomepageTopNow';
-import HomepageFooterSection from '@/components/homepage/HomepageFooterSection';
-import { DawnPatrolTopSlot } from '@/components/homepage/HomeDawnPatrolSlots';
-import WaveDivider from '@/components/ui/WaveDivider';
+import HomeAdaptive from '@/components/homepage/HomeAdaptive';
 
 export default async function HomePage({
   params,
@@ -32,19 +28,13 @@ export default async function HomePage({
           : `VenTu — ${spotsData.length} surf, kitesurf and windsurf spots in Portugal, conditions updated every 3 hours`}
       </h1>
 
-      <HomepageMapHero locale={locale} spotsData={spotsData} maxTs={maxTs} />
-
-      <WaveDivider />
-
-      <HomepageTopNow spotsData={spotsData} locale={locale} />
-
-      <WaveDivider flip />
-
-      <DawnPatrolTopSlot locale={locale} />
-
-      <WaveDivider />
-
-      <HomepageFooterSection locale={locale} spotCount={spotsData.length} sportsCount={7} />
+      <HomeAdaptive
+        locale={locale}
+        spotsData={spotsData}
+        maxTs={maxTs}
+        spotCount={spotsData.length}
+        sportsCount={7}
+      />
     </div>
   );
 }

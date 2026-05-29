@@ -5,14 +5,18 @@ import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
 import type { Spot } from '@/types';
 import Card from '@/components/ui/Card';
 import ScoreBadge from '@/components/ui/ScoreBadge';
-import SpotImage from '@/components/spots/SpotImage';
+import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
+import SpotImage from '@/components/ui/SpotImage';
 import { getSpotListCardHoverLine } from '@/lib/spotListCardDelight';
+import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { cn } from '@/lib/cn';
 
 export interface SpotListCardConditions {
   waveHeight: number;
   wavePeriod: number;
   windSpeed: number;
+  confidence?: ConfidenceTier;
+  confidenceDetail?: ConfidenceDetail;
 }
 
 interface SpotListCardProps {
@@ -29,7 +33,8 @@ interface SpotListCardProps {
   className?: string;
   calmWaterLabel?: string | null;
   withImage?: boolean;
-  spot?: Pick<Spot, 'slug' | 'type' | 'images' | 'name' | 'nameEn'>;
+  spot?: Pick<Spot, 'slug' | 'type' | 'images' | 'name' | 'nameEn' | 'region'>;
+  statusLine?: string;
 }
 
 export default function SpotListCard({
@@ -47,6 +52,7 @@ export default function SpotListCard({
   calmWaterLabel = null,
   withImage = false,
   spot,
+  statusLine,
 }: SpotListCardProps) {
   const isPt = locale === 'pt';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
@@ -125,12 +131,26 @@ export default function SpotListCard({
               </span>
             )}
           </div>
-          <ScoreBadge score={score} locale={locale} size="sm" />
+          <div className="flex items-center gap-1.5 shrink-0">
+            <ScoreBadge score={score} locale={locale} size="sm" />
+            {conditions.confidence && (
+              <ConfidenceBadge
+                confidence={conditions.confidence}
+                detail={conditions.confidenceDetail}
+                locale={locale}
+                size="sm"
+                withTooltip={false}
+              />
+            )}
+          </div>
         </div>
 
         <div className="min-w-0">
-          <h3 className="font-semibold text-fg truncate text-body">{name}</h3>
+          <h3 className="font-display font-semibold text-fg truncate text-body">{name}</h3>
           <p className="text-meta-sm text-fg-muted truncate">{region}</p>
+          {statusLine && (
+            <p className="text-meta-sm text-fg-subtle mt-0.5 capitalize">{statusLine}</p>
+          )}
         </div>
 
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto">

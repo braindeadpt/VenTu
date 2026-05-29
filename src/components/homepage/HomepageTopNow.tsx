@@ -12,11 +12,14 @@ import {
   type TopNowSport,
 } from '@/lib/homepageSport';
 import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
+import { tierPhrase } from '@/lib/voice';
 import SpotListCard from '@/components/spots/SpotListCard';
 
 interface HomepageTopNowProps {
   spotsData: HomepageSpotData[];
   locale: string;
+  /** Cap cards (e.g. 4 for returning visitors). Default: all TOP_NOW sports. */
+  maxCards?: number;
 }
 
 const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
@@ -26,22 +29,28 @@ const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
   bodyboard: 'bodyboard',
 };
 
-export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProps) {
+export default function HomepageTopNow({ spotsData, locale, maxCards }: HomepageTopNowProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
   const cardLocale = isPt ? 'pt' : 'en';
 
-  const cards = TOP_NOW_SPORTS.map((sport) => ({
-    sport,
-    data: getTopSpotForSport(spotsData, sport),
-  })).filter((entry): entry is { sport: TopNowSport; data: HomepageSpotData } => entry.data !== null);
+  const sportsList = maxCards
+    ? TOP_NOW_SPORTS.slice(0, maxCards)
+    : [...TOP_NOW_SPORTS];
+
+  const cards = sportsList
+    .map((sport) => ({
+      sport,
+      data: getTopSpotForSport(spotsData, sport),
+    }))
+    .filter((entry): entry is { sport: TopNowSport; data: HomepageSpotData } => entry.data !== null);
 
   return (
     <section
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6"
       aria-labelledby="top-now-heading"
     >
-      <h2 id="top-now-heading" className="text-display-lg text-fg tracking-tight mb-1">
+      <h2 id="top-now-heading" className="font-display text-display-lg text-fg tracking-tight mb-1">
         {isPt ? 'A bombar agora' : 'Firing now'}
       </h2>
       <p className="text-meta text-fg-muted mb-4">
@@ -64,6 +73,7 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
           {cards.map(({ sport, data }, i) => {
             const score = getScoreForFilter(data, sport);
             const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
+            const statusLine = tierPhrase(score, isPt);
 
             return (
               <li
@@ -88,6 +98,7 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
                     data.conditions.waveHeight,
                     isPt,
                   )}
+                  statusLine={statusLine}
                 />
               </li>
             );

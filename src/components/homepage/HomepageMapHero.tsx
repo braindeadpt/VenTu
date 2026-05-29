@@ -16,6 +16,7 @@ import { dispatchSportChange, getOnCount, type HomepageSpotData } from '@/lib/ho
 import { buildGridFiltersSearch, syncGridFiltersToUrl } from '@/lib/gridFilters';
 import { useUrlGridSport } from '@/hooks/useUrlGridSport';
 import { MACRO_REGIONS } from '@/lib/regions';
+import { heroStatusLine } from '@/lib/voice';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -26,17 +27,31 @@ const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInter
   ),
 });
 
+/** One row of core sports on the discovery hero (new visitors). */
+const HERO_SPORT_FILTERS = MAP_SPORT_FILTERS.filter((f) =>
+  ['all', 'surf', 'kitesurf', 'windsurf'].includes(f.id),
+);
+
 interface HomepageMapHeroProps {
   locale: string;
   spotsData: HomepageSpotData[];
   maxTs: number | null;
+  variant?: 'featured' | 'compact';
 }
 
-export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMapHeroProps) {
+export default function HomepageMapHero({
+  locale,
+  spotsData,
+  maxTs,
+  variant = 'featured',
+}: HomepageMapHeroProps) {
   const isPt = locale === 'pt';
+  const isFeatured = variant === 'featured';
   const regions = useMemo(() => [...MACRO_REGIONS], []);
   const sport = useUrlGridSport(regions, 'surf');
   const [hoursAgo, setHoursAgo] = useState<number | null>(null);
+
+  const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
 
   useEffect(() => {
     if (!maxTs) {
@@ -52,6 +67,7 @@ export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMa
   );
 
   const onCount = useMemo(() => getOnCount(spotsData, sport), [spotsData, sport]);
+  const liveLine = heroStatusLine(onCount, isPt);
 
   const handleSportChange = (next: GridSportFilter) => {
     try {
@@ -63,22 +79,17 @@ export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMa
     dispatchSportChange(next);
   };
 
-  const liveLine =
-    onCount > 0
-      ? isPt
-        ? `${onCount} spot${onCount === 1 ? '' : 's'} a bombar`
-        : `${onCount} spot${onCount === 1 ? '' : 's'} firing`
-      : isPt
-        ? 'Mar calmo — vê o mapa na mesma'
-        : 'Calm day — still worth a look';
-
   return (
     <section
       role="region"
       aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
-      className="hero-sunset-surface relative w-full h-[clamp(420px,70vh,760px)] rounded-b-3xl overflow-hidden border-b border-divider"
+      className={
+        isFeatured
+          ? 'hero-sunset-surface relative w-full h-[clamp(420px,65vh,720px)] rounded-b-3xl overflow-hidden border-b border-divider touch-pan-y'
+          : 'relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y'
+      }
     >
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 pointer-events-auto">
         <SpotMapInteractive
           spotsData={filtered}
           selectedSport={sport}
@@ -88,28 +99,51 @@ export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMa
         />
       </div>
 
-      <div className="hero-sunset-overlay absolute inset-0 z-10 flex flex-col pointer-events-none bg-gradient-to-b from-bg-base/85 via-bg-base/25 to-transparent transition-[background] duration-slow">
-        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-5 sm:pt-6 pb-4 flex flex-col gap-3 pointer-events-none">
-          <div className="pointer-events-auto flex flex-col gap-3 max-w-xl">
+      <div
+        className={
+          isFeatured
+            ? 'hero-sunset-overlay absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none bg-gradient-to-b from-bg-base/90 via-bg-base/40 to-transparent max-h-[min(52%,420px)] sm:max-h-none sm:inset-0 sm:bg-gradient-to-b sm:from-bg-base/85 sm:via-bg-base/25 sm:to-transparent'
+            : 'absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none bg-gradient-to-b from-bg-base/92 via-bg-base/50 to-transparent pb-2'
+        }
+      >
+        <div
+          className={
+            isFeatured
+              ? 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-3 flex flex-col gap-2 sm:gap-3 pointer-events-none'
+              : 'w-full px-4 pt-3 pb-2 flex flex-col gap-2 pointer-events-none'
+          }
+        >
+          <div className="pointer-events-auto flex flex-col gap-2 sm:gap-3 max-w-xl">
             <h2
               id="home-map-hero-heading"
-              className="text-display-lg text-fg tracking-tight leading-[1.05]"
+              className={
+                isFeatured
+                  ? 'font-display text-display-lg text-fg tracking-tight leading-[1.05]'
+                  : 'font-display text-h2 text-fg tracking-tight'
+              }
             >
-              {isPt ? 'Onde está bom hoje?' : "Where's it firing today?"}
+              {isFeatured
+                ? isPt
+                  ? 'Onde está bom hoje?'
+                  : "Where's it firing today?"
+                : isPt
+                  ? 'Mapa ao vivo'
+                  : 'Live map'}
             </h2>
 
             <div
-              className="flex gap-2 overflow-x-auto no-scrollbar edge-fade-x pb-0.5 -mx-1 px-1"
+              className="flex gap-2 overflow-x-auto no-scrollbar edge-fade-x pb-0.5 -mx-1 px-1 touch-pan-x"
               role="group"
               aria-label={isPt ? 'Filtrar por desporto' : 'Filter by sport'}
             >
-              {MAP_SPORT_FILTERS.map((item) => {
+              {sportFilters.map((item) => {
                 const active = sport === item.id;
                 return (
                   <FilterPill
                     key={item.id}
                     active={active}
                     onClick={() => handleSportChange(item.id)}
+                    compact={!isFeatured}
                     icon={
                       <span className={active ? item.color : 'text-fg-muted'}>{item.icon}</span>
                     }
@@ -124,24 +158,36 @@ export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMa
               <span className="font-medium text-fg" suppressHydrationWarning>
                 {liveLine}
               </span>
-              <span aria-hidden className="text-fg-subtle">
-                ·
-              </span>
-              <FreshnessIndicator size="sm" hoursAgo={hoursAgo} locale={locale} />
+              {isFeatured && (
+                <>
+                  <span aria-hidden className="text-fg-subtle">
+                    ·
+                  </span>
+                  <FreshnessIndicator size="sm" hoursAgo={hoursAgo} locale={locale} />
+                </>
+              )}
+              {!isFeatured && hoursAgo !== null && (
+                <span className="text-meta-sm text-fg-subtle">
+                  · {isPt ? `há ${hoursAgo}h` : `${hoursAgo}h ago`}
+                </span>
+              )}
             </p>
 
-            <div className="flex flex-col sm:flex-row flex-wrap gap-2 pt-1">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2 pt-0.5">
               <Button
                 href={`/${locale}/mapa/${buildGridFiltersSearch(sport, DEFAULT_REGION, regions)}`}
-                size="lg"
+                size={isFeatured ? 'lg' : 'md'}
                 locale={isPt ? 'pt' : 'en'}
+                className="bg-sunset border-transparent hover:opacity-95 active:opacity-90 shadow-card shrink-0"
                 rightIcon={<Maximize2 className="w-4 h-4" aria-hidden />}
               >
                 {isPt ? 'Explorar mapa' : 'Explore map'}
               </Button>
-              <div className="min-w-0 flex-1 sm:max-w-xs">
-                <HomepageSearch locale={locale} />
-              </div>
+              {isFeatured && (
+                <div className="min-w-0 flex-1 sm:max-w-xs">
+                  <HomepageSearch locale={locale} />
+                </div>
+              )}
             </div>
           </div>
         </div>
