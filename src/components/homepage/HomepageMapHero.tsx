@@ -15,7 +15,6 @@ import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
 import {
   dispatchSportChange,
   getOnCount,
-  readSportFromStorage,
   SPORT_CHANGE_EVENT,
   type HomepageSpotData,
 } from '@/lib/homepageSport';
@@ -40,7 +39,8 @@ interface HomepageMapHeroProps {
 export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMapHeroProps) {
   const isPt = locale === 'pt';
   const regions = useMemo(() => [...MACRO_REGIONS], []);
-  const [sport, setSport] = useState<GridSportFilter>(() => readSportFromStorage());
+  /** Must match SSR (readSportFromStorage when `window` is undefined → 'surf'). */
+  const [sport, setSport] = useState<GridSportFilter>('surf');
   const [hoursAgo, setHoursAgo] = useState<number | null>(null);
 
   useEffect(() => {
