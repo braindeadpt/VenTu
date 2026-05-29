@@ -26,7 +26,7 @@ import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
-import { getWindguruSearchUrl } from '@/lib/windguru';
+import { getWindguruUrl } from '@/lib/windguru';
 import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationToCoast, getWindRelationLabel } from '@/lib/wind';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
@@ -261,7 +261,12 @@ export default function SpotDetailClient({
   }, [forecastExpanded, isMobile]);
 
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
-  const windguruUrl = getWindguruSearchUrl(isPt ? spot.name : spot.nameEn, spot.lat, spot.lon);
+  const windguruUrl = getWindguruUrl(
+    spot.slug,
+    isPt ? spot.name : spot.nameEn,
+    spot.lat,
+    spot.lon,
+  );
 
   const magicWindowsHourly = useMemo(
     () =>
