@@ -16,6 +16,7 @@ import { dispatchSportChange, getOnCount, type HomepageSpotData } from '@/lib/ho
 import { buildGridFiltersSearch, syncGridFiltersToUrl } from '@/lib/gridFilters';
 import { useUrlGridSport } from '@/hooks/useUrlGridSport';
 import { MACRO_REGIONS } from '@/lib/regions';
+import { STALE_THRESHOLD_HOURS } from '@/lib/dataFreshness';
 import { heroStatusLine } from '@/lib/voice';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
@@ -158,18 +159,13 @@ export default function HomepageMapHero({
               <span className="font-medium text-fg" suppressHydrationWarning>
                 {liveLine}
               </span>
-              {isFeatured && (
+              {isFeatured && hoursAgo !== null && hoursAgo < STALE_THRESHOLD_HOURS && (
                 <>
                   <span aria-hidden className="text-fg-subtle">
                     ·
                   </span>
                   <FreshnessIndicator size="sm" hoursAgo={hoursAgo} locale={locale} />
                 </>
-              )}
-              {!isFeatured && hoursAgo !== null && (
-                <span className="text-meta-sm text-fg-subtle">
-                  · {isPt ? `há ${hoursAgo}h` : `${hoursAgo}h ago`}
-                </span>
               )}
             </p>
 

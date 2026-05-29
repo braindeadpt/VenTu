@@ -4,6 +4,15 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Bot data commits use GITHUB_TOKEN — they do not trigger `push` workflows.
+  workflow_run:
+    workflows:
+      - Update VenTu Data
+      - Dawn Patrol AI Advisor
+    types:
+      - completed
+    branches:
+      - main
 
 permissions:
   contents: read
@@ -16,10 +25,15 @@ concurrency:
 
 jobs:
   build:
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5

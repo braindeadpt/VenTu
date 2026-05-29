@@ -1,5 +1,6 @@
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
+import { STALE_THRESHOLD_HOURS } from '@/lib/dataFreshness';
 import { cn } from '@/lib/cn';
 
 interface FreshnessIndicatorProps {
@@ -18,6 +19,11 @@ export default function FreshnessIndicator({
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
   const label = sourceLabel ?? t.hero.gridStatusSource;
+
+  /** Only show when data is within the 3h pipeline cadence — stale ages erode trust. */
+  if (hoursAgo === null || hoursAgo >= STALE_THRESHOLD_HOURS) {
+    return null;
+  }
 
   const dotClass =
     hoursAgo === null
