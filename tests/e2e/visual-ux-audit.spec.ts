@@ -75,12 +75,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         'true',
       );
 
-      await page.reload();
-      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+      await page.reload({ waitUntil: 'domcontentloaded' });
       await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
         'aria-pressed',
         'true',
+        { timeout: 10_000 },
       );
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
 
       await context.close();
     });

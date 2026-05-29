@@ -12,13 +12,9 @@ import { filterGridSpots } from '@/lib/gridSpotFilters';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
-import {
-  dispatchSportChange,
-  getOnCount,
-  SPORT_CHANGE_EVENT,
-  type HomepageSpotData,
-} from '@/lib/homepageSport';
-import { buildGridFiltersSearch, readGridFiltersFromWindow, syncGridFiltersToUrl } from '@/lib/gridFilters';
+import { dispatchSportChange, getOnCount, type HomepageSpotData } from '@/lib/homepageSport';
+import { buildGridFiltersSearch, syncGridFiltersToUrl } from '@/lib/gridFilters';
+import { useUrlGridSport } from '@/hooks/useUrlGridSport';
 import { MACRO_REGIONS } from '@/lib/regions';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
@@ -39,8 +35,7 @@ interface HomepageMapHeroProps {
 export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMapHeroProps) {
   const isPt = locale === 'pt';
   const regions = useMemo(() => [...MACRO_REGIONS], []);
-  /** Must match SSR (readSportFromStorage when `window` is undefined → 'surf'). */
-  const [sport, setSport] = useState<GridSportFilter>('surf');
+  const sport = useUrlGridSport(regions, 'surf');
   const [hoursAgo, setHoursAgo] = useState<number | null>(null);
 
   useEffect(() => {
@@ -50,26 +45,6 @@ export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMa
     }
     setHoursAgo(Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)));
   }, [maxTs]);
-
-  useEffect(() => {
-    const sync = () => {
-      const { sport: urlSport } = readGridFiltersFromWindow(regions);
-      setSport(urlSport);
-    };
-    sync();
-
-    const onSportChange = (e: Event) => {
-      const detail = (e as CustomEvent<GridSportFilter>).detail;
-      if (detail) setSport(detail);
-    };
-
-    window.addEventListener('popstate', sync);
-    window.addEventListener(SPORT_CHANGE_EVENT, onSportChange);
-    return () => {
-      window.removeEventListener('popstate', sync);
-      window.removeEventListener(SPORT_CHANGE_EVENT, onSportChange);
-    };
-  }, [regions]);
 
   const filtered = useMemo(
     () => filterGridSpots(spotsData as GridSpotData[], sport, DEFAULT_REGION),
@@ -147,7 +122,9 @@ export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMa
             </div>
 
             <p className="text-body-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-1">
-              <span className="font-medium text-fg">{liveLine}</span>
+              <span className="font-medium text-fg" suppressHydrationWarning>
+                {liveLine}
+              </span>
               <span aria-hidden className="text-fg-subtle">
                 ·
               </span>
