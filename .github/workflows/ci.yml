@@ -36,6 +36,9 @@ jobs:
       - name: Generate sitemap
         run: npm run sitemap:generate
 
+      - name: Build spots index
+        run: npm run spots:index
+
       - name: Build
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
@@ -44,7 +47,17 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: E2E (critical routes + audits)
-        run: npx playwright test critical-routes full-audit visual-ux-audit
+      - name: E2E — critical routes
+        run: npx playwright test critical-routes
+        env:
+          CI: true
+
+      - name: E2E — route audit
+        run: npx playwright test full-audit
+        env:
+          CI: true
+
+      - name: E2E — visual UX audit
+        run: npx playwright test visual-ux-audit
         env:
           CI: true

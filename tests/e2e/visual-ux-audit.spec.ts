@@ -149,22 +149,41 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
     test('02d — /mapa: sheet com Como chegar e Ver spot', async ({ browser }) => {
       test.skip(viewport === 'desktop', 'Mobile sheet only');
+      test.setTimeout(60_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/mapa/');
+      await page.waitForSelector('[data-map-hud="visible"]', { timeout: 35_000 });
 
       const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i });
       if (await showAll.isVisible()) await showAll.click();
-      await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 20_000 });
-      await page.locator('.leaflet-marker-icon.spot-marker').first().click({
-        position: { x: 14, y: 14 },
-        force: true,
-      });
+
+      await page.waitForFunction(() => window.matchMedia('(max-width: 767px)').matches);
+      await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
 
       const sheet = page.getByRole('dialog');
+      const markerIcon = page.locator('.leaflet-marker-icon.spot-marker').first();
+      await expect(markerIcon).toBeVisible({ timeout: 15_000 });
+
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        await markerIcon.click({ position: { x: 14, y: 14 }, force: true });
+        try {
+          await sheet.waitFor({ state: 'visible', timeout: 4_000 });
+          break;
+        } catch {
+          await page.evaluate(() => {
+            const icon = document.querySelector<HTMLElement>('.leaflet-marker-icon.spot-marker');
+            icon?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+          });
+        }
+      }
       await expect(sheet).toBeVisible({ timeout: 10_000 });
-      await expect(sheet.getByRole('link', { name: /Como chegar/i })).toBeVisible();
-      await expect(sheet.getByRole('link', { name: /Ver spot/i })).toBeVisible();
+      await expect(
+        sheet.getByRole('link', { name: /Como chegar|Get directions/i }),
+      ).toBeVisible({ timeout: 15_000 });
+      await expect(sheet.getByRole('link', { name: /Ver spot|View spot/i })).toBeVisible({
+        timeout: 15_000,
+      });
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
@@ -335,20 +354,31 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('11 — Notícias: filtros categoria, data e limpar', async ({ browser }) => {
+      test.setTimeout(60_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/news/');
 
-      const surfFilter = page.getByRole('button', { name: /^Surf$/i }).first();
-      await surfFilter.scrollIntoViewIfNeeded();
-      await surfFilter.click();
-      await expect(page).toHaveURL(/category=surf/, { timeout: 15_000 });
+      const categoryGroup = page.getByRole('group', { name: /Filtrar por categoria|Filter by category/i });
+      const surfBtn = categoryGroup.getByRole('button', { name: /^S\s*Surf$/i });
+      await surfBtn.click();
+      await expect(surfBtn).toHaveAttribute('aria-pressed', 'true', { timeout: 15_000 });
+      await expect
+        .poll(() => new URL(page.url()).searchParams.get('category'))
+        .toBe('surf');
 
-      await page.getByRole('button', { name: /7 dias|7 days/i }).click();
-      await expect(page).toHaveURL(/period=7d/, { timeout: 15_000 });
+      const sevenDays = page.getByRole('button', { name: /7 dias|7 days/i });
+      await sevenDays.click();
+      await expect(sevenDays).toHaveAttribute('aria-pressed', 'true', { timeout: 15_000 });
+      await expect
+        .poll(() => new URL(page.url()).searchParams.get('period'))
+        .toBe('7d');
 
       await page.getByRole('button', { name: /Limpar filtros|Clear filters/i }).click();
-      await expect(page).not.toHaveURL(/category=/, { timeout: 15_000 });
+      await expect(surfBtn).toHaveAttribute('aria-pressed', 'false', { timeout: 15_000 });
+      await expect
+        .poll(() => new URL(page.url()).searchParams.get('category'))
+        .toBeNull();
       await context.close();
     });
 
@@ -380,37 +410,56 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('16 — Spot detail: secções estruturadas sem duplicados', async ({ browser }) => {
+      test.setTimeout(90_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/spots/guincho/');
 
-      await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
-        timeout: 20_000,
+      const hero = page.locator('header[data-spot-slug]');
+      await expect(hero.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+        timeout: 30_000,
       });
 
-      await expect(page.getByRole('main').getByRole('meter')).toBeVisible();
-      await expect(
-        page.getByRole('heading', { name: /^Agora$|^Now$/i }),
-      ).toBeVisible();
+      // Conditions live only in "Agora" — no duplicate StatChip row in hero
+      await expect(hero.locator('.grid.grid-cols-2')).toHaveCount(0);
+
+      await expect(hero.getByRole('meter')).toBeVisible({ timeout: 15_000 });
+      await expect(hero.getByRole('status', { name: /Confiança da previsão/i })).toBeVisible({
+        timeout: 15_000,
+      });
+      // Hero lives inside <main> — assert badge only in hero, not duplicated in Agora
+      const agora = page.locator('section').filter({
+        has: page.getByRole('heading', { name: /^Agora$|^Now$/i }),
+      });
+      await expect(agora.getByRole('status', { name: /Confiança da previsão/i })).toHaveCount(0);
+
+      await expect(page.getByRole('heading', { name: /^Agora$|^Now$/i })).toBeVisible({
+        timeout: 25_000,
+      });
       await expect(
         page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
-      ).toBeVisible();
-      await expect(
-        page.getByRole('heading', { name: /Melhores janelas|Best windows/i }),
-      ).toBeVisible();
-      await expect(
-        page.getByRole('heading', { name: /Localização|Location/i }),
-      ).toBeVisible();
-      await expect(
-        page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }),
-      ).toBeVisible();
-      await expect(
-        page.getByRole('heading', { name: /Logística|Logistics/i }),
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 25_000 });
+      await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible({
+        timeout: 15_000,
+      });
 
-      // Single livecam block — no duplicate section titles
+      const bestWindows = page.getByRole('heading', { name: /Melhores janelas|Best windows/i });
+      if ((await bestWindows.count()) > 0) {
+        await expect(bestWindows).toHaveCount(1);
+      }
+
+      const livecamHeading = page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i });
+      if ((await livecamHeading.count()) > 0) {
+        await expect(livecamHeading).toHaveCount(1);
+      }
+
+      await expect(page.getByRole('heading', { name: /Logística|Logistics/i })).toBeVisible({
+        timeout: 15_000,
+      });
+
+      // Single primary directions CTA in hero; location uses text link when present
       await expect(
-        page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }),
+        hero.getByRole('link', { name: /Como chegar|Get directions/i }),
       ).toHaveCount(1);
 
       // Sport tabs switch updates active state

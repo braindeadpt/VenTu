@@ -9,7 +9,6 @@ import {
   ChevronUp,
   Clock,
   ExternalLink,
-  Navigation,
   Waves,
   Wind,
   Zap,
@@ -39,6 +38,7 @@ import type { ForecastHour } from '@/components/weather/ForecastTable';
 
 import SpotMap from '@/components/spots/SpotMap';
 import MagicWindows from '@/components/MagicWindows';
+import { computeMagicWindows } from '@/lib/magicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotWeatherlinkSection from '@/components/weather/SpotWeatherlinkSection';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
@@ -56,7 +56,6 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import StatChip from '@/components/ui/StatChip';
 import SwellRadar from '@/components/ui/SwellRadar';
-import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 
 interface Conditions {
   waveHeight: number;
@@ -275,6 +274,27 @@ export default function SpotDetailClient({
 
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
   const windguruUrl = getWindguruSearchUrl(isPt ? spot.name : spot.nameEn, spot.lat, spot.lon);
+
+  const magicWindowsHourly = useMemo(
+    () =>
+      spotData?.forecast.map((f) => ({
+        time: f.time,
+        waveHeight: f.waveHeight ?? 0,
+        wavePeriod: f.wavePeriod ?? 0,
+        windSpeed: f.windSpeed ?? 0,
+        windDirection: f.windDirection ?? 0,
+        windGust: f.windGust ?? 0,
+        waterTemp: f.waterTemp ?? 0,
+      })) ?? [],
+    [spotData?.forecast],
+  );
+
+  const showMagicWindows = useMemo(
+    () =>
+      magicWindowsHourly.length > 0 &&
+      computeMagicWindows(magicWindowsHourly, selectedSport, spot.bestWind || '').length > 0,
+    [magicWindowsHourly, selectedSport, spot.bestWind],
+  );
 
   if (loading) {
     return (
@@ -495,12 +515,6 @@ export default function SpotDetailClient({
                     {windRelationMeta.label}
                   </span>
                 )}
-                <ConfidenceBadge
-                  confidence={conditions.confidence}
-                  detail={conditions.confidenceDetail}
-                  locale={locale}
-                  size="sm"
-                />
                 {spotData.tideObserved && (
                   <span className="text-meta-sm text-fg-muted">
                     {isPt ? 'Maré' : 'Tide'}:{' '}
@@ -539,30 +553,18 @@ export default function SpotDetailClient({
                   href={directionsUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={cn(
-                    'flex w-full items-center justify-center gap-2 font-medium',
-                    'px-4 py-2 text-sm rounded-input min-h-[44px]',
-                    'bg-data-waves text-bg-base hover:bg-data-waves/90 transition-colors',
-                  )}
+                  className="inline-flex items-center gap-1 text-meta text-data-waves hover:text-data-waves/80 font-medium transition-colors duration-150"
                 >
-                  <Navigation className="w-4 h-4" aria-hidden />
-                  {td.getDirections}
+                  {isPt ? 'Abrir no Google Maps' : 'Open in Google Maps'}
+                  <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden />
                 </a>
               </Card>
 
-              {forecast.length > 0 && (
+              {showMagicWindows && (
                 <Card variant="card-1" className="p-4">
                   <h2 className="text-h3 text-fg mb-3">{td.bestWindows}</h2>
                   <MagicWindows
-                    hourly={forecast.map((f) => ({
-                      time: f.time,
-                      waveHeight: f.waveHeight ?? 0,
-                      wavePeriod: f.wavePeriod ?? 0,
-                      windSpeed: f.windSpeed ?? 0,
-                      windDirection: f.windDirection ?? 0,
-                      windGust: f.windGust ?? 0,
-                      waterTemp: f.waterTemp ?? 0,
-                    }))}
+                    hourly={magicWindowsHourly}
                     spotType={selectedSport}
                     spotBestWind={spot.bestWind || ''}
                     locale={locale}

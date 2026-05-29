@@ -325,7 +325,10 @@ export default function SpotMapInteractive({
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   const [windEnabled, setWindEnabled] = useState(readWindPref);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(max-width: 767px)').matches;
+  });
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
   const isPt = locale === 'pt';
   const t = getTranslation(validateLocale(locale));

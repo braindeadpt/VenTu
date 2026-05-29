@@ -30,6 +30,12 @@ type TipCard = {
   highlight?: boolean;
 };
 
+function hasText(value: string | undefined | null): boolean {
+  if (!value) return false;
+  const t = value.trim();
+  return t.length > 0 && t !== '—' && t !== '-';
+}
+
 export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) {
   const isPt = locale === 'pt';
   const nearStayUrl = getNearAccommodationUrl(spot.lat, spot.lon);
@@ -38,63 +44,83 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     ? tips?.accommodation ?? spot.localTips?.accommodation
     : tips?.accommodationEn ?? tips?.accommodation ?? spot.localTips?.accommodationEn ?? spot.localTips?.accommodation;
 
-  const cards: TipCard[] = [
-    {
+  const parkingText = isPt
+    ? tips?.parking || spot.localTips?.parking
+    : tips?.parkingEn || tips?.parking || spot.localTips?.parkingEn;
+
+  const foodText = isPt
+    ? tips?.food || spot.localTips?.food
+    : tips?.foodEn || tips?.food || spot.localTips?.foodEn;
+
+  const tideText = isPt
+    ? tips?.bestTide || spot.localTips?.bestTide
+    : tips?.bestTideEn || tips?.bestTide || spot.localTips?.bestTideEn;
+
+  const localRule = isPt
+    ? tips?.localRule ?? spot.localTips?.localRule
+    : tips?.localRuleEn ?? tips?.localRule ?? spot.localTips?.localRuleEn;
+
+  const cards: TipCard[] = [];
+
+  if (hasText(parkingText)) {
+    cards.push({
       id: 'parking',
       icon: Car,
       label: isPt ? 'Estacionamento' : 'Parking',
-      body:
-        (isPt
-          ? tips?.parking || spot.localTips?.parking
-          : tips?.parkingEn || tips?.parking || spot.localTips?.parkingEn) ||
-        (isPt ? 'Sem dado — chega cedo em época alta.' : 'No data yet.'),
-    },
-    {
+      body: parkingText,
+    });
+  }
+
+  if (hasText(foodText)) {
+    cards.push({
       id: 'food',
       icon: Utensils,
       label: isPt ? 'Comer' : 'Food',
-      body: isPt
-        ? tips?.food || spot.localTips?.food || '—'
-        : tips?.foodEn || tips?.food || spot.localTips?.foodEn || '—',
-    },
-    {
+      body: foodText,
+    });
+  }
+
+  if (hasText(accommodationText)) {
+    cards.push({
       id: 'sleep',
       icon: BedDouble,
       label: isPt ? 'Dormir' : 'Stay',
-      body: accommodationText ? (
-        <span>{accommodationText}</span>
-      ) : (
+      body: accommodationText,
+    });
+  } else {
+    cards.push({
+      id: 'sleep',
+      icon: BedDouble,
+      label: isPt ? 'Dormir' : 'Stay',
+      body: (
         <a
           href={nearStayUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-data-waves hover:text-data-waves/80 font-medium"
         >
-          {isPt ? 'Ver alojamento perto ↗' : 'Find nearby stays ↗'}
+          {isPt ? 'Ver alojamento perto' : 'Find nearby stays'}
           <ExternalLink className="w-3 h-3 shrink-0" aria-hidden />
         </a>
       ),
-    },
-    {
+    });
+  }
+
+  if (hasText(tideText)) {
+    cards.push({
       id: 'tide',
       icon: Waves,
       label: isPt ? 'Melhor maré' : 'Best tide',
-      body: isPt
-        ? tips?.bestTide || spot.localTips?.bestTide || '—'
-        : tips?.bestTideEn || tips?.bestTide || spot.localTips?.bestTideEn || '—',
-    },
-  ];
+      body: tideText,
+    });
+  }
 
-  const localRule = isPt
-    ? tips?.localRule ?? spot.localTips?.localRule
-    : tips?.localRuleEn ?? tips?.localRule ?? spot.localTips?.localRuleEn;
-
-  if (localRule) {
+  if (hasText(localRule)) {
     cards.push({
       id: 'rule',
       icon: Shield,
       label: isPt ? 'Regra local' : 'Local rule',
-      body: <span>{localRule}</span>,
+      body: localRule,
       highlight: true,
     });
   }
@@ -105,7 +131,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
       icon: AlertTriangle,
       label: isPt ? 'Perigos' : 'Hazards',
       body: (
-        <ul className="list-disc pl-4 space-y-0.5 text-fg-muted">
+        <ul className="list-disc pl-4 space-y-0.5 text-fg-muted m-0">
           {spot.hazards.map((h) => (
             <li key={h}>{h}</li>
           ))}
@@ -119,16 +145,16 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
       id: 'facilities',
       icon: ShowerHead,
       label: isPt ? 'Instalações' : 'Facilities',
-      body: (
-        <p className="text-fg-muted">
-          {spot.facilities.join(isPt ? ' · ' : ' · ')}
-        </p>
-      ),
+      body: spot.facilities.join(isPt ? ' · ' : ' · '),
     });
   }
 
+  if (cards.length === 0) {
+    return null;
+  }
+
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-3">
       {cards.map((card) => {
         const Icon = card.icon;
         return (
@@ -136,7 +162,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
             key={card.id}
             variant="card-1"
             className={cn(
-              'p-3 space-y-2',
+              'p-3 space-y-1.5',
               card.highlight && 'ring-1 ring-score-poor/30 bg-score-poor/[0.06]',
             )}
           >
