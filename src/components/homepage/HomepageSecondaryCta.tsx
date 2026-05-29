@@ -3,9 +3,11 @@ import Card from '@/components/ui/Card';
 
 interface HomepageSecondaryCtaProps {
   locale: string;
+  /** When true, omit outer section chrome (used inside HomepageFooterSection). */
+  compact?: boolean;
 }
 
-export default function HomepageSecondaryCta({ locale }: HomepageSecondaryCtaProps) {
+export default function HomepageSecondaryCta({ locale, compact = false }: HomepageSecondaryCtaProps) {
   const isPt = locale === 'pt';
 
   const cards = [
@@ -33,8 +35,8 @@ export default function HomepageSecondaryCta({ locale }: HomepageSecondaryCtaPro
     },
   ] as const;
 
-  return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+  const inner = (
+    <>
       <h2 className="text-h3 text-fg mb-1">
         {isPt ? 'Mais para explorar' : 'More to explore'}
       </h2>
@@ -62,6 +64,14 @@ export default function HomepageSecondaryCta({ locale }: HomepageSecondaryCtaPro
           </Card>
         ))}
       </div>
+    </>
+  );
+
+  if (compact) return inner;
+
+  return (
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {inner}
     </section>
   );
 }

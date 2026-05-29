@@ -95,6 +95,7 @@ export default function Header({ locale }: HeaderProps) {
   }, []);
 
   const navLinks = [
+    { href: `/${locale}/mapa/`, label: navLabel.mapa, featured: true },
     { href: `/${locale}/explorar/`, label: navLabel.explorar },
     { href: `/${locale}/sazonalidade/`, label: navLabel.sazonalidade },
     { href: `/${locale}/compare/`, label: navLabel.comparar },
@@ -115,7 +116,7 @@ export default function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="fixed top-0 left-0 right-0 z-50 bg-bg-base/80 backdrop-blur-xl border-b border-divider"
+        className="site-header fixed top-0 left-0 right-0 z-50 bg-bg-base/80 backdrop-blur-xl border-b border-divider transition-[background,border-color] duration-slow"
         onKeyDown={handleKeyDown}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -136,19 +137,25 @@ export default function Header({ locale }: HeaderProps) {
                 onOpen={handleMegaOpen}
                 onClose={handleMegaClose}
               />
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`px-3 py-1.5 rounded-input text-sm font-medium transition-all ${
-                    isActive(link.href)
-                      ? 'bg-surface-2/[0.08] text-fg'
-                      : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const featured = 'featured' in link && link.featured;
+                const active = isActive(link.href);
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`px-3 py-1.5 rounded-input text-sm font-medium transition-all ${
+                      active || featured
+                        ? active
+                          ? 'bg-data-waves/15 text-data-waves ring-1 ring-data-waves/25'
+                          : 'text-data-waves hover:bg-data-waves/10'
+                        : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Desktop actions */}

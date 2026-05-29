@@ -7,11 +7,7 @@ test.describe('Spot detail hero gauge', () => {
   test('hero meter and rating label are visible', async ({ page }) => {
     await page.goto(`/pt/spots/${firstSlug}/`);
 
-    const hero = page.locator('.card-hero').first();
-    await expect(hero.getByRole('meter')).toBeVisible({ timeout: 15_000 });
-
-    await expect(
-      hero.getByText(/Épico|Bom|Razoável|Fraco|N\/A/i),
-    ).toBeVisible();
+    await expect(page.getByRole('meter')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByText(/Épico|Bom|Razoável|Fraco|N\/A/i).first()).toBeVisible();
   });
 });

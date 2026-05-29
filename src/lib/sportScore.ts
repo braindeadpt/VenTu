@@ -52,12 +52,15 @@ const BODYBOARD_CONFIG = {
 } as const
 
 const KITE_CONFIG = {
+  /** Below this: no «Razoável» — flat sea / gusts must not inflate the score. */
+  WIND_SESSION_MIN_KT: 15,
   WIND_IDEAL_MIN_KT: 15,
   WIND_IDEAL_MAX_KT: 30,
   WIND_PTS_IDEAL: 60,
   WIND_STRONG_PTS: 50,
   WIND_PTS_PER_KT: 2,
-  WIND_PTS_MIN_KT: 10,
+  /** Marginal band 12–14 kt before session minimum; no secondary bonuses. */
+  WIND_PTS_MIN_KT: 12,
   GUST_LOW_MAX: 10,
   GUST_LOW_PTS: 15,
   GUST_MED_MAX: 20,
@@ -73,11 +76,13 @@ const KITE_CONFIG = {
 } as const
 
 const WIND_CONFIG = {
+  WIND_SESSION_MIN_KT: 15,
   WIND_IDEAL_MIN_KT: 15,
   WIND_IDEAL_MAX_KT: 28,
   WIND_IDEAL_PTS: 55,
   WIND_PTS_PER_KT: 2,
-  WIND_PTS_MIN_KT: 10,
+  /** Windsurf planing threshold — no score from waves/temp below this. */
+  WIND_PTS_MIN_KT: 15,
   WAVE_IDEAL_MIN: 1,
   WAVE_IDEAL_MAX: 3,
   WAVE_IDEAL_PTS: 20,
@@ -194,42 +199,51 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
   let score = 0
 
   const windKt = c.windSpeed * 1.94384
-  let windScore = 0
-  if (windKt >= KITE_CONFIG.WIND_IDEAL_MIN_KT && windKt <= KITE_CONFIG.WIND_IDEAL_MAX_KT) {
-    windScore = KITE_CONFIG.WIND_PTS_IDEAL
-    factors.push(`${windKt.toFixed(0)}kt vento`)
-  } else if (windKt > KITE_CONFIG.WIND_IDEAL_MAX_KT) {
-    windScore = KITE_CONFIG.WIND_STRONG_PTS
-    factors.push(`${windKt.toFixed(0)}kt vento forte`)
-  } else if (windKt >= KITE_CONFIG.WIND_PTS_MIN_KT) {
-    windScore = windKt * KITE_CONFIG.WIND_PTS_PER_KT
-    factors.push(`${windKt.toFixed(0)}kt vento`)
-  }
-  score += windScore
 
-  const gustDiff = c.windGust - c.windSpeed
-  if (gustDiff < KITE_CONFIG.GUST_LOW_MAX) {
-    score += KITE_CONFIG.GUST_LOW_PTS
-  } else if (gustDiff < KITE_CONFIG.GUST_MED_MAX) {
-    score += KITE_CONFIG.GUST_MED_PTS
+  if (windKt < KITE_CONFIG.WIND_PTS_MIN_KT) {
+    score = Math.round(Math.min(15, windKt * 3))
+    factors.push('Vento insuficiente')
+  } else if (windKt < KITE_CONFIG.WIND_SESSION_MIN_KT) {
+    score = Math.round(windKt * KITE_CONFIG.WIND_PTS_PER_KT)
+    factors.push(`${windKt.toFixed(0)}kt vento fraco`)
+    score = Math.min(score, SCORE_TIER_THRESHOLDS.fair - 1)
   } else {
-    score += KITE_CONFIG.GUST_HIGH_PTS
+    let windScore = 0
+    if (windKt >= KITE_CONFIG.WIND_IDEAL_MIN_KT && windKt <= KITE_CONFIG.WIND_IDEAL_MAX_KT) {
+      windScore = KITE_CONFIG.WIND_PTS_IDEAL
+      factors.push(`${windKt.toFixed(0)}kt vento`)
+    } else if (windKt > KITE_CONFIG.WIND_IDEAL_MAX_KT) {
+      windScore = KITE_CONFIG.WIND_STRONG_PTS
+      factors.push(`${windKt.toFixed(0)}kt vento forte`)
+    } else {
+      windScore = windKt * KITE_CONFIG.WIND_PTS_PER_KT
+      factors.push(`${windKt.toFixed(0)}kt vento`)
+    }
+    score += windScore
+
+    const gustDiff = c.windGust - c.windSpeed
+    if (gustDiff < KITE_CONFIG.GUST_LOW_MAX) {
+      score += KITE_CONFIG.GUST_LOW_PTS
+    } else if (gustDiff < KITE_CONFIG.GUST_MED_MAX) {
+      score += KITE_CONFIG.GUST_MED_PTS
+    } else {
+      score += KITE_CONFIG.GUST_HIGH_PTS
+    }
+
+    if (c.waveHeight < KITE_CONFIG.WAVE_SMALL_MAX) {
+      score += KITE_CONFIG.WAVE_SMALL_PTS
+      factors.push('Ondas pequenas')
+    } else if (c.waveHeight < KITE_CONFIG.WAVE_MED_MAX) {
+      score += KITE_CONFIG.WAVE_MED_PTS
+    }
+
+    const kiteWindCat = classifyWind(spot, c.windDirection)
+    const dirPts = windDirFactor(kiteWindCat, KITE_CONFIG.WIND_DIR_PTS_MAX)
+    score += dirPts
+    if (dirPts > 0) factors.push(`Vento ${windCategoryLabel(kiteWindCat)}`)
+
+    score += Math.min(c.waterTemp * KITE_CONFIG.TEMP_PTS_PER_DEG, KITE_CONFIG.TEMP_PTS_MAX)
   }
-
-  if (c.waveHeight < KITE_CONFIG.WAVE_SMALL_MAX) {
-    score += KITE_CONFIG.WAVE_SMALL_PTS
-    factors.push('Ondas pequenas')
-  } else if (c.waveHeight < KITE_CONFIG.WAVE_MED_MAX) {
-    score += KITE_CONFIG.WAVE_MED_PTS
-  }
-
-  // Wind direction: side-offshore ideal, onshore/offshore penalised (0-10 pts)
-  const kiteWindCat = classifyWind(spot, c.windDirection)
-  const dirPts = windDirFactor(kiteWindCat, KITE_CONFIG.WIND_DIR_PTS_MAX)
-  score += dirPts
-  if (dirPts > 0) factors.push(`Vento ${windCategoryLabel(kiteWindCat)}`)
-
-  score += Math.min(c.waterTemp * KITE_CONFIG.TEMP_PTS_PER_DEG, KITE_CONFIG.TEMP_PTS_MAX)
 
   score = Math.round(Math.min(100, Math.max(0, score)))
 
@@ -237,7 +251,7 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
     score,
     ...getRatingLabels(score),
     factors,
-    warning: windKt > 35 ? 'Vento muito forte — apenas avançados' : windKt < 12 ? 'Vento fraco — precisa de kite grande' : undefined,
+    warning: windKt > 35 ? 'Vento muito forte — apenas avançados' : windKt < KITE_CONFIG.WIND_SESSION_MIN_KT ? 'Vento fraco — mínimo ~15kt para kite' : undefined,
     primaryFactor: `${windKt.toFixed(0)}kt`,
   }
 }
@@ -247,28 +261,33 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
   let score = 0
 
   const windKt = c.windSpeed * 1.94384
-  if (windKt >= WIND_CONFIG.WIND_IDEAL_MIN_KT && windKt <= WIND_CONFIG.WIND_IDEAL_MAX_KT) {
-    score += WIND_CONFIG.WIND_IDEAL_PTS
-    factors.push(`${windKt.toFixed(0)}kt vento`)
-  } else if (windKt >= WIND_CONFIG.WIND_PTS_MIN_KT) {
-    score += windKt * WIND_CONFIG.WIND_PTS_PER_KT
-    factors.push(`${windKt.toFixed(0)}kt vento`)
+
+  if (windKt < WIND_CONFIG.WIND_PTS_MIN_KT) {
+    score = Math.round(Math.min(15, windKt * 3))
+    factors.push('Vento insuficiente')
+  } else {
+    if (windKt >= WIND_CONFIG.WIND_IDEAL_MIN_KT && windKt <= WIND_CONFIG.WIND_IDEAL_MAX_KT) {
+      score += WIND_CONFIG.WIND_IDEAL_PTS
+      factors.push(`${windKt.toFixed(0)}kt vento`)
+    } else {
+      score += windKt * WIND_CONFIG.WIND_PTS_PER_KT
+      factors.push(`${windKt.toFixed(0)}kt vento`)
+    }
+
+    if (c.waveHeight > WIND_CONFIG.WAVE_IDEAL_MIN && c.waveHeight < WIND_CONFIG.WAVE_IDEAL_MAX) {
+      score += WIND_CONFIG.WAVE_IDEAL_PTS
+      factors.push(`${c.waveHeight.toFixed(1)}m ondas`)
+    } else if (c.waveHeight < 4) {
+      score += WIND_CONFIG.WAVE_OTHER_PTS
+    }
+
+    const windCategory = classifyWind(spot, c.windDirection)
+    const windDirPts = windDirFactor(windCategory, WIND_CONFIG.WIND_DIR_PTS_MAX)
+    score += windDirPts
+    if (windDirPts > 0) factors.push(`Vento ${windCategoryLabel(windCategory)}`)
+
+    score += Math.min(c.waterTemp * WIND_CONFIG.TEMP_PTS_PER_DEG, WIND_CONFIG.TEMP_PTS_MAX)
   }
-
-  if (c.waveHeight > WIND_CONFIG.WAVE_IDEAL_MIN && c.waveHeight < WIND_CONFIG.WAVE_IDEAL_MAX) {
-    score += WIND_CONFIG.WAVE_IDEAL_PTS
-    factors.push(`${c.waveHeight.toFixed(1)}m ondas`)
-  } else if (c.waveHeight < 4) {
-    score += WIND_CONFIG.WAVE_OTHER_PTS
-  }
-
-  // Wind direction: side-offshore ideal, onshore penalised (0-10 pts)
-  const windCategory = classifyWind(spot, c.windDirection)
-  const windDirPts = windDirFactor(windCategory, WIND_CONFIG.WIND_DIR_PTS_MAX)
-  score += windDirPts
-  if (windDirPts > 0) factors.push(`Vento ${windCategoryLabel(windCategory)}`)
-
-  score += Math.min(c.waterTemp * WIND_CONFIG.TEMP_PTS_PER_DEG, WIND_CONFIG.TEMP_PTS_MAX)
 
   score = Math.round(Math.min(100, Math.max(0, score)))
 
@@ -276,6 +295,7 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
     score,
     ...getRatingLabels(score),
     factors,
+    warning: windKt < WIND_CONFIG.WIND_PTS_MIN_KT ? 'Mínimo ~15kt para windsurf' : undefined,
     primaryFactor: `${windKt.toFixed(0)}kt`,
   }
 }

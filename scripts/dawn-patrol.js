@@ -215,7 +215,10 @@ Gera um JSON com esta estrutura EXACTA:
       "enReason": "Why go or not"
     }
   ]
-}`;
+}
+
+IMPORTANTE: Em "spots", usa APENAS estes slugs exactos (um por spot analisado):
+${spotsData.map((s) => `- ${s.slug} (${s.name})`).join('\n')}`;
 
   try {
     console.log('   🤖 Calling LLM with fallback chain (Gemini → Groq → Cerebras)...');
@@ -291,14 +294,7 @@ function generateBasicAdvice(spotsData) {
       wetsuit: wetsuitEn,
       crowdTip: 'Get there early to beat the crowd!',
     },
-    spots: spotsData.map(s => ({
-      name: s.name,
-      slug: s.slug,
-      score: s.bestWindow.score,
-      verdict: s.bestWindow.score >= 70 ? 'go' : s.bestWindow.score >= 50 ? 'maybe' : 'skip',
-      ptReason: s.bestWindow.score >= 70 ? 'Condições excelentes' : s.bestWindow.score >= 50 ? 'Condições razoáveis' : 'Não vale a pena',
-      enReason: s.bestWindow.score >= 70 ? 'Excellent conditions' : s.bestWindow.score >= 50 ? 'Fair conditions' : 'Not worth it',
-    })),
+    spots: spotsFromMorningData(spotsData),
   };
 }
 
@@ -308,27 +304,66 @@ function loadValidSlugs() {
   return new Set([...content.matchAll(/slug: '([^']+)'/g)].map(m => m[1]));
 }
 
-function validateAdviceSlugs(advice, validSlugs) {
+function resolveValidSlug(slug, validSlugs) {
+  if (!slug) return null;
+  if (validSlugs.has(slug)) return slug;
+  const first = slug.split('-')[0];
+  if (validSlugs.has(first)) return first;
+  for (const valid of validSlugs) {
+    if (slug.startsWith(`${valid}-`) || slug.includes(valid)) return valid;
+  }
+  return null;
+}
+
+function spotsFromMorningData(spotsData) {
+  return spotsData.map((s) => ({
+    name: s.name,
+    slug: s.slug,
+    score: s.bestWindow.score,
+    verdict: s.bestWindow.score >= 70 ? 'go' : s.bestWindow.score >= 50 ? 'maybe' : 'skip',
+    ptReason: s.bestWindow.score >= 70 ? 'Condições excelentes' : s.bestWindow.score >= 50 ? 'Condições razoáveis' : 'Não vale a pena',
+    enReason: s.bestWindow.score >= 70 ? 'Excellent conditions' : s.bestWindow.score >= 50 ? 'Fair conditions' : 'Not worth it',
+  }));
+}
+
+function validateAdviceSlugs(advice, validSlugs, spotsData = []) {
   // Always use Lisbon calendar date — LLM may return stale or placeholder dates
   advice.date = lisbonDateStr();
   advice.generatedAt = new Date().toISOString();
 
-  if (advice.topSpotSlug && !validSlugs.has(advice.topSpotSlug)) {
+  const resolvedTop = resolveValidSlug(advice.topSpotSlug, validSlugs);
+  if (advice.topSpotSlug && !resolvedTop) {
     console.warn(`   ⚠️  Invalid topSpotSlug "${advice.topSpotSlug}" — clearing link`);
     advice.topSpotSlug = '';
+  } else if (resolvedTop) {
+    advice.topSpotSlug = resolvedTop;
   }
 
   if (Array.isArray(advice.spots)) {
     const before = advice.spots.length;
-    advice.spots = advice.spots.filter(s => {
-      if (!s.slug || !validSlugs.has(s.slug)) {
-        console.warn(`   ⚠️  Removing invalid spot slug "${s.slug || '(empty)'}"`);
-        return false;
-      }
-      return true;
-    });
+    advice.spots = advice.spots
+      .map((s) => {
+        const resolved = resolveValidSlug(s.slug, validSlugs);
+        if (!resolved) {
+          console.warn(`   ⚠️  Removing invalid spot slug "${s.slug || '(empty)'}"`);
+          return null;
+        }
+        return { ...s, slug: resolved };
+      })
+      .filter(Boolean);
     if (advice.spots.length < before) {
       console.log(`   Slug validation: ${before - advice.spots.length} invalid entries removed`);
+    }
+  } else {
+    advice.spots = [];
+  }
+
+  if (advice.spots.length === 0 && spotsData.length > 0) {
+    console.log('   ⚠️  No valid verdict spots after LLM — using rule-based list');
+    advice.spots = spotsFromMorningData(spotsData);
+    if (!advice.topSpotSlug && advice.spots[0]) {
+      advice.topSpotSlug = advice.spots[0].slug;
+      advice.topSpot = advice.spots[0].name;
     }
   }
 
@@ -368,7 +403,7 @@ async function generateDawnPatrol() {
   console.log(`   Analyzed ${spotsData.length} spots`);
 
   let advice = await generateDawnPatrolWithLLM(spotsData);
-  advice = validateAdviceSlugs(advice, validSlugs);
+  advice = validateAdviceSlugs(advice, validSlugs, spotsData);
 
   const outputPath = path.join(__dirname, '../public/data/dawn-patrol.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });

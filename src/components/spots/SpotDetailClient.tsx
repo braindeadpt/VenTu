@@ -5,10 +5,18 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import {
   ArrowLeft,
+  ChevronDown,
+  ChevronUp,
+  Clock,
+  ExternalLink,
+  Navigation,
+  Waves,
+  Wind,
+  Zap,
 } from 'lucide-react';
 
 import type { Spot } from '@/types';
-import { fetchMarineData, getCurrentConditions, getForecastData, getTideInfo } from '@/lib/openmeteo';
+import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
 import {
   getAllSportScores,
   getRelevantSports,
@@ -18,6 +26,12 @@ import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
+import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
+import { getWindguruSearchUrl } from '@/lib/windguru';
+import { getCardinalLabel } from '@/lib/wind';
+import { getWindRelationToCoast, getWindRelationLabel } from '@/lib/wind';
+import { resolveWavePowerKw } from '@/lib/waveEnergy';
+import { cn } from '@/lib/cn';
 
 import SeoHead from '@/components/SeoHead';
 import ForecastTable from '@/components/weather/ForecastTable';
@@ -26,7 +40,6 @@ import type { ForecastHour } from '@/components/weather/ForecastTable';
 import SpotMap from '@/components/spots/SpotMap';
 import MagicWindows from '@/components/MagicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
-import SpotRelatedNews from '@/components/spots/SpotRelatedNews';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
 import SportTab from '@/components/spots/SportTab';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
@@ -39,13 +52,9 @@ import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import Card from '@/components/ui/Card';
-
-/* ═══════════════════════════════════════════════════════════════════════
- *  SpotDetailClient — structured spot page (conditions → forecast → info).
- *  Data loading unchanged; layout deduplicated and sectioned.
- *  ═══════════════════════════════════════════════════════════════════════ */
-
-/* ─── Types ─── */
+import Button from '@/components/ui/Button';
+import StatChip from '@/components/ui/StatChip';
+import SwellRadar from '@/components/ui/SwellRadar';
 
 interface Conditions {
   waveHeight: number;
@@ -89,8 +98,6 @@ interface SpotData {
   };
 }
 
-/* ─── Main Component ─── */
-
 export default function SpotDetailClient({
   spot,
   locale,
@@ -113,7 +120,10 @@ export default function SpotDetailClient({
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
-  const [communityOverlay, setCommunityOverlay] = useState<Record<string, import('@/lib/communityTips').CommunityTipEntry>>({});
+  const [forecastExpanded, setForecastExpanded] = useState(false);
+  const [communityOverlay, setCommunityOverlay] = useState<
+    Record<string, import('@/lib/communityTips').CommunityTipEntry>
+  >({});
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -127,23 +137,12 @@ export default function SpotDetailClient({
     loadCommunityTips().then(setCommunityOverlay);
   }, []);
 
-  /* ── Data loading ── */
   useEffect(() => {
     async function loadData() {
       try {
         setLoadError(false);
-        // Try loading precomputed data first (avoids live API calls)
         let conditions: Conditions;
-        let forecast: Array<{
-          time: string;
-          waveHeight: number;
-          wavePeriod: number;
-          windSpeed: number;
-          windDirection: number;
-          windGust: number;
-          waterTemp: number;
-          tideHeight?: number;
-        }> = [];
+        let forecast: SpotData['forecast'] = [];
         let tideObserved = undefined;
 
         const [conditionsResp, forecastsResp] = await Promise.all([
@@ -194,7 +193,7 @@ export default function SpotDetailClient({
               setSelectedSport(sportFromUrl);
             } else {
               const bestSport = (
-                Object.entries(allScores) as [SportType, any][]
+                Object.entries(allScores) as [SportType, { score: number }][]
               ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
               if (bestSport) setSelectedSport(bestSport);
             }
@@ -203,13 +202,11 @@ export default function SpotDetailClient({
           }
         }
 
-        // Fallback: live API call
         const marineResult = await fetchMarineData(spot.lat, spot.lon);
         conditions = getCurrentConditions(marineResult);
         const allScores = getAllSportScores(spot, conditions);
         forecast = getForecastData(marineResult).slice(0, 120);
 
-        // Try tide observed data even in fallback
         if (conditionsResp.ok) {
           const condJson = await conditionsResp.json();
           const spotCond = condJson[spot.id];
@@ -228,7 +225,7 @@ export default function SpotDetailClient({
           setSelectedSport(sportFromUrl);
         } else {
           const bestSport = (
-            Object.entries(allScores) as [SportType, any][]
+            Object.entries(allScores) as [SportType, { score: number }][]
           ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
           if (bestSport) setSelectedSport(bestSport);
         }
@@ -243,13 +240,11 @@ export default function SpotDetailClient({
     loadData();
   }, [spot, sportFromUrl, retryCount]);
 
-  /* ── Per-hour scores for ForecastTable ── */
   const hourlyScores = useMemo(() => {
     if (!spotData || !spotData.forecast.length) return [];
     return getHourlyScores(spot, selectedSport, spotData.forecast, spotData.conditions);
   }, [spot, selectedSport, spotData]);
 
-  /* ── ForecastTable data transformation ── */
   const forecastTableData: ForecastHour[] = useMemo(() => {
     if (!spotData) return [];
     return spotData.forecast.map((h, i) => ({
@@ -265,24 +260,25 @@ export default function SpotDetailClient({
     }));
   }, [spotData, hourlyScores]);
 
-  /* ── Loading skeleton ── */
+  const forecastHours = useMemo(() => {
+    if (forecastExpanded) return isMobile ? 72 : 120;
+    return isMobile ? 36 : 48;
+  }, [forecastExpanded, isMobile]);
+
+  const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
+  const windguruUrl = getWindguruSearchUrl(isPt ? spot.name : spot.nameEn, spot.lat, spot.lon);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-bg-base p-4 space-y-6">
-        <div className="max-w-5xl mx-auto space-y-4">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <Skeleton className="h-48 w-full rounded-card" />
           <Skeleton className="h-8 w-3/4" />
-          <Skeleton className="h-4 w-1/2" />
         </div>
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="h-24 rounded-card" />
+        <div className="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded-card" />
           ))}
-        </div>
-        <div className="max-w-5xl mx-auto">
-          <Skeleton className="h-64 rounded-card" />
-        </div>
-        <div className="max-w-5xl mx-auto">
-          <Skeleton className="h-56 rounded-card" />
         </div>
       </div>
     );
@@ -291,20 +287,20 @@ export default function SpotDetailClient({
   if (loadError || !spotData) {
     return (
       <div className="min-h-screen bg-bg-base">
-        <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+        <div className="max-w-6xl mx-auto px-4 py-8 space-y-6">
           <Link
             href={`/${locale}/spots/`}
             className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? t.spots.backToSpots : t.spots.backToSpots}
+            {t.spots.backToSpots}
           </Link>
           <ErrorState
             message={td.loadError}
             locale={locale}
             onRetry={() => {
               setLoading(true);
-              setRetryCount(c => c + 1);
+              setRetryCount((c) => c + 1);
             }}
           />
         </div>
@@ -315,7 +311,11 @@ export default function SpotDetailClient({
   const { conditions, allScores, forecast } = spotData;
   const score = allScores[selectedSport];
   const relevantSports = getRelevantSports(spot, allScores);
-  const mergedLocalTipsRaw = mergeLocalTips(spot, getLocalTips(spot.slug), communityOverlay[spot.slug]);
+  const mergedLocalTipsRaw = mergeLocalTips(
+    spot,
+    getLocalTips(spot.slug),
+    communityOverlay[spot.slug],
+  );
   const mergedLocalTips = mergedLocalTipsRaw
     ? {
         spotSlug: spot.slug,
@@ -327,12 +327,27 @@ export default function SpotDetailClient({
         foodEn: mergedLocalTipsRaw.foodEn || mergedLocalTipsRaw.food || '',
         localRule: mergedLocalTipsRaw.localRule,
         localRuleEn: mergedLocalTipsRaw.localRuleEn,
+        accommodation: mergedLocalTipsRaw.accommodation,
+        accommodationEn: mergedLocalTipsRaw.accommodationEn,
       }
+    : null;
+
+  const windKt = Math.round(conditions.windSpeed * 1.94384);
+  const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
+  const swellH = conditions.swellHeight ?? conditions.waveHeight;
+  const powerKw = resolveWavePowerKw(conditions);
+  const windCardinal = getCardinalLabel(conditions.windDirection);
+
+  const windRelation =
+    spot.coastOrientation !== undefined
+      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
+      : null;
+  const windRelationMeta = windRelation
+    ? getWindRelationLabel(windRelation, isPt ? 'pt' : 'en')
     : null;
 
   return (
     <>
-      {/* SEO: JSON-LD for structured data */}
       <SeoHead
         title={`${isPt ? spot.name : spot.nameEn} - ${spot.region}${isPt ? ', ' : ', '}${spot.regionEn}`}
         description={isPt ? spot.description : spot.descriptionEn}
@@ -356,53 +371,31 @@ export default function SpotDetailClient({
           url: `https://ventu.surf/${locale}/spots/${spot.slug}/`,
           sportActivityLocation: {
             '@type': 'SportsActivityLocation',
-            name: (spot.compatibleSports?.[0] && SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS])
-              ? SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS][isPt ? 'pt' : 'en']
-              : spot.type,
+            name:
+              spot.compatibleSports?.[0] &&
+              SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS]
+                ? SPORT_LABELS[spot.compatibleSports[0] as keyof typeof SPORT_LABELS][
+                    isPt ? 'pt' : 'en'
+                  ]
+                : spot.type,
           },
         }}
       />
 
-      <div className="min-h-screen bg-bg-base pb-12">
+      <div className="min-h-screen bg-bg-base pb-10">
         <SpotDetailHero
           spot={spot}
           spotSlug={spot.slug}
           locale={locale}
           backLabel={t.spots.backToSpots}
+          directionsLabel={td.getDirections}
           sport={selectedSport}
           score={score.score}
           rating={score.rating}
           ratingEn={score.ratingEn}
-          coastOrientation={spot.coastOrientation}
-          tideObserved={spotData.tideObserved}
           conditions={conditions}
         />
 
-        <section
-          className="max-w-6xl mx-auto px-4 pt-3"
-          aria-label={isPt ? 'Feedback sobre o score' : 'Score feedback'}
-        >
-          <Card variant="card-1" className="px-4 py-3">
-            <h3 className="text-meta-sm font-semibold uppercase tracking-wide text-fg-muted mb-2">
-              {isPt ? 'Verificar previsão' : 'Verify forecast'}
-            </h3>
-            <ScoreFeedback
-              spotSlug={spot.slug}
-              sport={selectedSport}
-              predictedScore={score.score}
-              conditionsSnapshot={{
-                waveHeight: conditions.waveHeight,
-                wavePeriod: conditions.wavePeriod,
-                windSpeed: conditions.windSpeed,
-                windDirection: conditions.windDirection,
-                waterTemp: conditions.waterTemp,
-              }}
-              locale={locale}
-            />
-          </Card>
-        </section>
-
-        {/* Sport selector — sticky; horizontal scroll + edge-fade on mobile */}
         <section className="sticky top-16 z-30 bg-bg-base border-b border-divider md:bg-bg-base/95 md:backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-4 py-2">
             <p className="text-meta-sm text-fg-muted mb-2 md:hidden">{td.sportTabsHint}</p>
@@ -427,45 +420,125 @@ export default function SpotDetailClient({
           </div>
         </section>
 
-        {/* Forecast + sidebar — on mobile: map/windows before long forecast table */}
-        <div className="max-w-6xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <section className="lg:col-span-2 order-2 lg:order-1 space-y-3">
-            <h2 className="text-h2 text-fg">
-              {isPt ? 'Previsão horária' : 'Hourly forecast'}
-            </h2>
-            <p className="text-meta text-fg-muted md:hidden">{td.forecastHint}</p>
-            {forecastTableData.length > 0 ? (
-              <div className="card-1 overflow-hidden p-3 md:p-4">
-                <ForecastTable
-                  hourly={forecastTableData}
-                  hours={isMobile ? 72 : 120}
-                  sport={selectedSport}
+        {/* Dashboard: Agora + mapa acima da dobra */}
+        <section className="max-w-6xl mx-auto px-4 py-4" aria-label={td.now}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card variant="card-1" className="p-4 space-y-4">
+              <h2 className="text-h3 text-fg">{td.now}</h2>
+              <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
+                <SwellRadar
+                  swellDirection={conditions.waveDirection}
+                  swellHeight={swellH}
+                  swellPeriod={conditions.wavePeriod}
+                  windDirection={conditions.windDirection}
+                  windSpeed={conditions.windSpeed}
                   coastOrientation={spot.coastOrientation}
-                  locale={locale as 'pt' | 'en'}
-                  compact={isMobile}
+                  size="md"
+                  showLegend={false}
                 />
-              </div>
-            ) : (
-              <div className="card-1 p-8 text-center text-body text-fg-subtle">
-                {td.noForecast}
-              </div>
-            )}
-          </section>
-
-          <aside className="order-1 lg:order-2 space-y-6">
-            <section>
-              <h2 className="text-h2 text-fg mb-3">{td.location}</h2>
-              <div className="card-1 p-2">
-                <div className="h-48 sm:h-56 lg:h-64 rounded-card overflow-hidden">
-                  <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 flex-1 w-full">
+                  <StatChip
+                    icon={<Waves className="w-4 h-4 text-data-waves" />}
+                    value={`${conditions.waveHeight.toFixed(1)}m`}
+                    label={isPt ? 'Ondas' : 'Waves'}
+                    className="bg-surface-1/[0.04]"
+                  />
+                  <StatChip
+                    icon={<Clock className="w-4 h-4 text-data-period" />}
+                    value={`${Math.round(conditions.wavePeriod)}s`}
+                    label={isPt ? 'Período' : 'Period'}
+                    className="bg-surface-1/[0.04]"
+                  />
+                  <StatChip
+                    icon={<Waves className="w-4 h-4 text-data-waves/80" />}
+                    value={`${swellH.toFixed(1)}m`}
+                    label={isPt ? 'Swell' : 'Swell'}
+                    className="bg-surface-1/[0.04]"
+                  />
+                  <StatChip
+                    icon={<Wind className="w-4 h-4 text-data-wind" />}
+                    value={`${windKt}kt`}
+                    label={`${isPt ? 'Vento' : 'Wind'} · ${windCardinal}`}
+                    className="bg-surface-1/[0.04]"
+                  />
+                  <StatChip
+                    icon={<Wind className="w-4 h-4 text-data-wind/70" />}
+                    value={`${gustKt}kt`}
+                    label={isPt ? 'Rajada' : 'Gust'}
+                    className="bg-surface-1/[0.04]"
+                  />
+                  <StatChip
+                    icon={<Zap className="w-4 h-4 text-data-period" />}
+                    value={`${powerKw.toFixed(0)}`}
+                    label={isPt ? 'Energia kW' : 'Power kW'}
+                    className="bg-surface-1/[0.04]"
+                  />
                 </div>
               </div>
-            </section>
 
-            {forecast.length > 0 && (
-              <section>
-                <h2 className="text-h2 text-fg mb-3">{td.bestWindows}</h2>
-                <div className="card-1 p-4">
+              <div className="flex flex-wrap items-center gap-2">
+                {windRelationMeta && (
+                  <span
+                    className={cn(
+                      'inline-flex items-center rounded-pill border px-2.5 py-1 text-meta-sm font-medium',
+                      windRelationMeta.className,
+                    )}
+                  >
+                    {windRelationMeta.label}
+                  </span>
+                )}
+                {spotData.tideObserved && (
+                  <span className="text-meta-sm text-fg-muted">
+                    {isPt ? 'Maré' : 'Tide'}:{' '}
+                    <span className="font-mono tabular-nums">
+                      {spotData.tideObserved.height.toFixed(2)}m
+                    </span>
+                  </span>
+                )}
+              </div>
+
+              <div className="pt-3 border-t border-divider">
+                <p className="text-meta-sm text-fg-muted mb-2">{td.scoreFeedbackHint}</p>
+                <ScoreFeedback
+                  spotSlug={spot.slug}
+                  sport={selectedSport}
+                  predictedScore={score.score}
+                  conditionsSnapshot={{
+                    waveHeight: conditions.waveHeight,
+                    wavePeriod: conditions.wavePeriod,
+                    windSpeed: conditions.windSpeed,
+                    windDirection: conditions.windDirection,
+                    waterTemp: conditions.waterTemp,
+                  }}
+                  locale={locale}
+                />
+              </div>
+            </Card>
+
+            <div className="space-y-4">
+              <Card variant="card-1" className="p-3 space-y-3">
+                <h2 className="text-h3 text-fg">{td.location}</h2>
+                <div className="h-40 sm:h-44 rounded-card overflow-hidden border border-divider">
+                  <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
+                </div>
+                <a
+                  href={directionsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={cn(
+                    'flex w-full items-center justify-center gap-2 font-medium',
+                    'px-4 py-2 text-sm rounded-input min-h-[44px]',
+                    'bg-data-waves text-bg-base hover:bg-data-waves/90 transition-colors',
+                  )}
+                >
+                  <Navigation className="w-4 h-4" aria-hidden />
+                  {td.getDirections}
+                </a>
+              </Card>
+
+              {forecast.length > 0 && (
+                <Card variant="card-1" className="p-4">
+                  <h2 className="text-h3 text-fg mb-3">{td.bestWindows}</h2>
                   <MagicWindows
                     hourly={forecast.map((f) => ({
                       time: f.time,
@@ -480,74 +553,83 @@ export default function SpotDetailClient({
                     spotBestWind={spot.bestWind || ''}
                     locale={locale}
                   />
-                </div>
-              </section>
-            )}
-          </aside>
-        </div>
-
-        <SpotWebcamSection slug={spot.slug} locale={locale} />
-
-        <SpotRelatedNews spot={spot} locale={locale} sport={selectedSport} />
-
-        {/* Spot info — separated from actions */}
-        <section className="max-w-6xl mx-auto px-4 py-6">
-          <h2 className="text-h2 text-fg mb-4">{td.about}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="card-1 p-5 space-y-4">
-              <p className="text-body text-fg-muted leading-relaxed">
-                {isPt ? spot.description : spot.descriptionEn}
-              </p>
-              {mergedLocalTips && (
-                <div className="pt-4 border-t border-divider space-y-2">
-                  <LocalTipsSection tips={mergedLocalTips} locale={locale} />
-                  {communityOverlay[spot.slug]?.contributor && (
-                    <p className="text-xs text-fg-subtle">
-                      {isPt ? 'Contribuição da comunidade' : 'Community contribution'}
-                      {' · '}
-                      @{communityOverlay[spot.slug].contributor}
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <div className="card-1 p-5 space-y-5">
-              {spot.hazards && spot.hazards.length > 0 && (
-                <div>
-                  <h3 className="text-h3 text-fg mb-2">{td.hazards}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {spot.hazards.map((h, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1.5 rounded-pill bg-score-poor/10 text-score-poor border border-score-poor/20 text-meta-sm"
-                      >
-                        {h}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {spot.facilities && spot.facilities.length > 0 && (
-                <div>
-                  <h3 className="text-h3 text-fg mb-2">{td.facilities}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {spot.facilities.map((f, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1.5 rounded-pill bg-surface-2/[0.08] text-fg-muted border border-divider text-meta-sm"
-                      >
-                        {f}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                </Card>
               )}
             </div>
           </div>
         </section>
 
-        {/* Actions — compact footer */}
+        <section className="max-w-6xl mx-auto px-4 py-4 space-y-3">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <h2 className="text-h2 text-fg">
+              {isPt ? 'Previsão horária' : 'Hourly forecast'}
+            </h2>
+            <a
+              href={windguruUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-meta text-data-waves hover:text-data-waves/80"
+            >
+              {td.windguruLink}
+              <ExternalLink className="w-3.5 h-3.5" aria-hidden />
+            </a>
+          </div>
+          {/* TODO: Windguru WRF 9km iframe — pending ToS review (see src/lib/windguru.ts) */}
+          <p className="text-meta text-fg-muted md:hidden">{td.forecastHint}</p>
+          {forecastTableData.length > 0 ? (
+            <>
+              <div className="card-1 overflow-hidden p-3 md:p-4">
+                <ForecastTable
+                  hourly={forecastTableData}
+                  hours={forecastHours}
+                  sport={selectedSport}
+                  coastOrientation={spot.coastOrientation}
+                  locale={locale as 'pt' | 'en'}
+                  compact={isMobile}
+                />
+              </div>
+              {forecastTableData.length > (isMobile ? 36 : 48) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setForecastExpanded((v) => !v)}
+                  rightIcon={
+                    forecastExpanded ? (
+                      <ChevronUp className="w-4 h-4" aria-hidden />
+                    ) : (
+                      <ChevronDown className="w-4 h-4" aria-hidden />
+                    )
+                  }
+                  locale={isPt ? 'pt' : 'en'}
+                >
+                  {forecastExpanded ? td.collapseForecast : td.expandForecast}
+                </Button>
+              )}
+            </>
+          ) : (
+            <div className="card-1 p-8 text-center text-body text-fg-subtle">{td.noForecast}</div>
+          )}
+        </section>
+
+        <section className="max-w-6xl mx-auto px-4 py-4 space-y-3">
+          <h2 className="text-h2 text-fg">{td.logistics}</h2>
+          <p className="text-body text-fg-muted leading-relaxed max-w-3xl">
+            {isPt ? spot.description : spot.descriptionEn}
+          </p>
+          <LocalTipsSection spot={spot} tips={mergedLocalTips} locale={locale} />
+          {communityOverlay[spot.slug]?.contributor && (
+            <p className="text-meta-sm text-fg-subtle">
+              {isPt ? 'Contribuição da comunidade' : 'Community contribution'}
+              {' · '}
+              @{communityOverlay[spot.slug].contributor}
+            </p>
+          )}
+        </section>
+
+        <div className="max-w-6xl mx-auto px-4">
+          <SpotWebcamSection slug={spot.slug} locale={locale} />
+        </div>
+
         <section className="max-w-6xl mx-auto px-4 py-6 border-t border-divider">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <AlertSubscribeForm
@@ -565,4 +647,3 @@ export default function SpotDetailClient({
     </>
   );
 }
-

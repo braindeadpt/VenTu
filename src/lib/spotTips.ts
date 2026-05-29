@@ -10,6 +10,8 @@ export interface SpotLocalTips {
   foodEn: string;
   localRule?: string;
   localRuleEn?: string;
+  accommodation?: string;
+  accommodationEn?: string;
 }
 
 export interface SpotSecretTips {

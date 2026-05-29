@@ -1,8 +1,12 @@
 'use client';
 
-import { Clock, Wind, Waves } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
+import type { Spot } from '@/types';
 import Card from '@/components/ui/Card';
 import ScoreBadge from '@/components/ui/ScoreBadge';
+import SpotImage from '@/components/spots/SpotImage';
+import { getSpotListCardHoverLine } from '@/lib/spotListCardDelight';
 import { cn } from '@/lib/cn';
 
 export interface SpotListCardConditions {
@@ -23,8 +27,9 @@ interface SpotListCardProps {
   rank?: number;
   compact?: boolean;
   className?: string;
-  /** e.g. lagoa / água plana — replaces wave line when set */
   calmWaterLabel?: string | null;
+  withImage?: boolean;
+  spot?: Pick<Spot, 'slug' | 'type' | 'images' | 'name' | 'nameEn'>;
 }
 
 export default function SpotListCard({
@@ -40,68 +45,133 @@ export default function SpotListCard({
   compact = false,
   className,
   calmWaterLabel = null,
+  withImage = false,
+  spot,
 }: SpotListCardProps) {
   const isPt = locale === 'pt';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
+  const hoverLine = getSpotListCardHoverLine(score, isPt);
+  const imageWrapRef = useRef<HTMLDivElement>(null);
+  const [parallax, setParallax] = useState({ x: 0, y: 0 });
+  const [motionOk, setMotionOk] = useState(false);
+
+  useEffect(() => {
+    setMotionOk(!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }, []);
+
+  const handleParallax = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!motionOk || !withImage) return;
+    const el = imageWrapRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    setParallax({ x: px * 6, y: py * 4 });
+  };
+
+  const resetParallax = () => setParallax({ x: 0, y: 0 });
 
   return (
-    <Card
-      hoverable
-      href={href}
-      padding={false}
-      className={cn(compact ? 'p-3' : 'p-4', 'flex flex-col gap-2 h-full', className)}
+    <div
+      className={cn('group h-full', className)}
+      onMouseMove={handleParallax}
+      onMouseLeave={resetParallax}
     >
-      <div className="flex items-center justify-between gap-2 min-w-0">
-        <div className="flex items-center gap-2 min-w-0">
-          {rank !== undefined && (
-            <span
-              className="shrink-0 w-6 h-6 rounded-full bg-surface-2/[0.08] border border-divider flex items-center justify-center font-mono text-meta-sm font-semibold text-fg tabular-nums"
-              aria-hidden
-            >
-              {rank}
-            </span>
-          )}
-          {sportLabel && (
-            <span
-              className="pill pill-ghost gap-1 px-2 py-0.5 min-h-0 text-meta-sm sport-accent shrink-0"
-              data-sport={sportAccent}
-            >
-              {sportLabel}
-            </span>
-          )}
-        </div>
-        <ScoreBadge score={score} locale={locale} size="sm" />
-      </div>
-
-      <div className="min-w-0">
-        <h3 className={cn('font-semibold text-fg truncate', compact ? 'text-body' : 'text-body')}>
-          {name}
-        </h3>
-        <p className="text-meta-sm text-fg-muted truncate">{region}</p>
-      </div>
-
-      <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto">
-        {calmWaterLabel ? (
-          <span className="inline-flex items-center gap-1 text-fg-subtle normal-case font-sans">
-            <Waves className="w-3 h-3 text-data-waves" aria-hidden />
-            {calmWaterLabel}
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1">
-            <Waves className="w-3 h-3 text-data-waves" aria-hidden />
-            {conditions.waveHeight.toFixed(1)}m
-          </span>
+      <Card
+        hoverable
+        href={href}
+        padding={false}
+        className={cn(
+          compact ? 'p-3' : 'p-4',
+          'flex flex-col gap-2 h-full overflow-hidden',
         )}
-        <span className="inline-flex items-center gap-1">
-          <Clock className="w-3 h-3 text-data-period" aria-hidden />
-          {Math.round(conditions.wavePeriod)}s
-        </span>
-        <span className="inline-flex items-center gap-1">
-          <Wind className="w-3 h-3 text-data-wind" aria-hidden />
-          {windKt}kt
-        </span>
-        <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>
-      </p>
-    </Card>
+      >
+        {withImage && spot && (
+          <div ref={imageWrapRef} className="relative overflow-hidden rounded-lg shrink-0">
+            <div
+              className={cn(
+                'transition-transform duration-300 ease-out motion-safe:will-change-transform',
+                motionOk && 'group-hover:scale-[1.04]',
+              )}
+              style={
+                motionOk
+                  ? {
+                      transform: `translate3d(${parallax.x}px, ${parallax.y}px, 0)`,
+                    }
+                  : undefined
+              }
+            >
+              <SpotImage spot={spot} aspect="video" locale={locale} className="w-full" />
+            </div>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
+            {rank !== undefined && (
+              <span
+                className="shrink-0 w-6 h-6 rounded-full bg-surface-2/[0.08] border border-divider flex items-center justify-center font-mono text-meta-sm font-semibold text-fg tabular-nums"
+                aria-hidden
+              >
+                {rank}
+              </span>
+            )}
+            {sportLabel && (
+              <span
+                className="pill pill-ghost gap-1 px-2 py-0.5 min-h-0 text-meta-sm sport-accent shrink-0"
+                data-sport={sportAccent}
+              >
+                {sportLabel}
+              </span>
+            )}
+          </div>
+          <ScoreBadge score={score} locale={locale} size="sm" />
+        </div>
+
+        <div className="min-w-0">
+          <h3 className="font-semibold text-fg truncate text-body">{name}</h3>
+          <p className="text-meta-sm text-fg-muted truncate">{region}</p>
+        </div>
+
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto">
+          {calmWaterLabel ? (
+            <span className="inline-flex items-center gap-1 text-fg-subtle normal-case font-sans">
+              <Waves className="w-3 h-3 text-data-waves" aria-hidden />
+              {calmWaterLabel}
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1">
+              <Waves className="w-3 h-3 text-data-waves" aria-hidden />
+              {conditions.waveHeight.toFixed(1)}m
+            </span>
+          )}
+          <span className="inline-flex items-center gap-1">
+            <Clock className="w-3 h-3 text-data-period" aria-hidden />
+            {Math.round(conditions.wavePeriod)}s
+          </span>
+          <span className="inline-flex items-center gap-1">
+            <Wind className="w-3 h-3 text-data-wind" aria-hidden />
+            {windKt}kt
+          </span>
+          <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>
+        </p>
+
+        {hoverLine && (
+          <p
+            className={cn(
+              'flex items-center gap-1 text-meta-sm font-medium text-data-waves',
+              'opacity-0 translate-y-1 transition-all duration-200 ease-out',
+              'group-hover:opacity-100 group-hover:translate-y-0',
+              'group-focus-within:opacity-100 group-focus-within:translate-y-0',
+              'motion-reduce:opacity-100 motion-reduce:translate-y-0',
+            )}
+            aria-hidden
+          >
+            {hoverLine}
+            <ArrowRight className="w-3.5 h-3.5" />
+          </p>
+        )}
+      </Card>
+    </div>
   );
 }

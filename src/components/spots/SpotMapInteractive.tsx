@@ -34,6 +34,7 @@ import {
   SPORT_CSS_VARS,
 } from '@/lib/map-constants';
 import { buildMapWindArrowSvg } from '@/lib/mapWindArrow';
+import { getDifficultyMarkerColor } from '@/lib/mapDifficulty';
 
 // ─── Types ───
 interface SpotData {
@@ -71,6 +72,14 @@ interface SpotMapInteractiveProps {
   onSpotSelect?: (spotId: string) => void;
   mapHud?: MapHudProps;
   onFullscreenChange?: (isFullscreen: boolean) => void;
+  /** Home hero: fill parent, hide corner controls (overlay has filters). */
+  embedMode?: 'default' | 'hero';
+  /** Start in explore/fullscreen mode (e.g. /mapa page). */
+  initialFullscreen?: boolean;
+  /** Fullscreen map below fixed header (top offset 4rem). */
+  fullscreenBelowHeader?: boolean;
+  /** Override exit fullscreen (e.g. navigate home). */
+  onExitFullscreen?: () => void;
 }
 
 // ─── Helpers ───
@@ -102,6 +111,7 @@ function buildMarkerIcon(
   const score = getBestScore(data, selectedSport);
   const sportColor = getSpotRgb(spot);
   const scoreColor = getScoreRgb(score);
+  const diffColor = getDifficultyMarkerColor(spot.difficulty);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
 
   const windArrowHtml = showWind
@@ -111,23 +121,36 @@ function buildMarkerIcon(
   return Leaflet.divIcon({
     className: 'spot-marker',
     html: `
-      <div class="ventu-spot-marker-wrap" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+      <div class="ventu-spot-marker-wrap ventu-marker-enter" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
         ${windArrowHtml}
-        <div style="
-          width: 28px;
-          height: 28px;
-          border-radius: 50%;
-          background: ${sportColor};
-          border: 2px solid ${scoreColor};
-          box-shadow: 0 0 8px ${sportColor}66, 0 2px 4px rgba(0,0,0,0.4);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 10px;
-          font-weight: 700;
-          color: #fff;
-          text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-        ">${Math.round(score)}</div>
+        <div style="position:relative;">
+          <div class="ventu-spot-marker-dot" style="
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: ${sportColor};
+            border: 2px solid ${scoreColor};
+            box-shadow: 0 0 8px ${sportColor}66, 0 2px 4px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+          ">${Math.round(score)}</div>
+          <span style="
+            position:absolute;
+            top:-1px;
+            right:-1px;
+            width:9px;
+            height:9px;
+            border-radius:50%;
+            background:${diffColor};
+            border:1.5px solid rgba(255,255,255,0.9);
+            box-shadow:0 1px 2px rgba(0,0,0,0.35);
+          " title="difficulty"></span>
+        </div>
       </div>
     `,
     iconSize: showWind ? [28, 48] : [28, 28],
@@ -136,32 +159,23 @@ function buildMarkerIcon(
   });
 }
 
-function buildMarkerPopupContent(
-  data: SpotData,
-  selectedSport: GridSportFilter,
-  locale: string,
-): string {
-  const { spot, conditions } = data;
-  const score = getBestScore(data, selectedSport);
-  const scoreColor = getScoreRgb(score);
-  const isPt = locale === 'pt';
+function buildMarkerPopupContent(data: SpotData, locale: string): string {
+  const { spot, conditions, allScores } = data;
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
   const powerKw = resolveWavePowerKw(conditions);
 
   return renderSpotPopup({
-    name: isPt ? spot.name : (spot.nameEn || spot.name),
-    region: isPt ? spot.region : (spot.regionEn || spot.region),
-    score,
-    scoreColor,
+    spot,
+    locale,
+    allScores,
     swellHeight: swellH.toFixed(1),
     swellPeriod: swellT.toFixed(0),
     windKnots: (conditions.windSpeed * MS_TO_KNOTS).toFixed(0),
     windDirection: getCardinalLabel(conditions.windDirection),
+    waterTemp: conditions.waterTemp.toFixed(1),
     wavePowerKw: powerKw.toFixed(1),
-    spotSlug: spot.slug,
-    spotId: spot.id,
-    locale,
+    imageUrl: spot.images?.[0],
   });
 }
 
@@ -194,7 +208,7 @@ function createSpotMarker(
   (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
 
   if (!options.useMobileSheet) {
-    marker.bindPopup(buildMarkerPopupContent(data, selectedSport, locale), {
+    marker.bindPopup(buildMarkerPopupContent(data, locale), {
       className: 'spot-popup',
       maxWidth: 280,
       closeButton: true,
@@ -220,7 +234,7 @@ function createSpotMarker(
         );
       }
 
-      root.querySelectorAll('a[href]').forEach((anchor) => {
+      root.querySelectorAll('a[href], .ventu-popup-directions').forEach((anchor) => {
         anchor.addEventListener('click', (ev) => ev.stopPropagation());
       });
     });
@@ -263,7 +277,12 @@ export default function SpotMapInteractive({
   onSpotSelect,
   mapHud,
   onFullscreenChange,
+  embedMode = 'default',
+  initialFullscreen = false,
+  fullscreenBelowHeader = false,
+  onExitFullscreen: onExitFullscreenOverride,
 }: SpotMapInteractiveProps) {
+  const isHeroEmbed = embedMode === 'hero';
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -281,7 +300,7 @@ export default function SpotMapInteractive({
   const [isReady, setIsReady] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [basemapMode, setBasemapMode] = useState<BasemapMode>('map');
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   const [windEnabled, setWindEnabled] = useState(readWindPref);
   const [isMobile, setIsMobile] = useState(false);
@@ -428,8 +447,12 @@ export default function SpotMapInteractive({
 
   const exitFullscreen = useCallback(() => {
     setSheetSpot(null);
-    setIsFullscreen(false);
-  }, []);
+    if (onExitFullscreenOverride) {
+      onExitFullscreenOverride();
+    } else {
+      setIsFullscreen(false);
+    }
+  }, [onExitFullscreenOverride]);
 
   useEffect(() => {
     onFullscreenChange?.(isFullscreen);
@@ -560,7 +583,7 @@ export default function SpotMapInteractive({
       if (!map.hasLayer(lg)) map.addLayer(lg);
     }
 
-    const boundsKey = `${spotsData.length}:${selectedSport}:${selectedRegion}`;
+    const boundsKey = `${spotsData.length}:${selectedSport}:${selectedRegion}:${spotsData.map((d) => d.spot.id).join(',')}`;
     if (filterBoundsKeyRef.current !== boundsKey) {
       filterBoundsKeyRef.current = boundsKey;
       didFitBoundsRef.current = false;
@@ -640,10 +663,22 @@ export default function SpotMapInteractive({
     <div
       className={
         isFullscreen
-          ? 'fixed inset-0 z-[1100] w-full overflow-hidden bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
-          : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
+          ? fullscreenBelowHeader
+            ? 'fixed left-0 right-0 bottom-0 z-40 w-full overflow-hidden bg-surface-1/[0.04] top-16'
+            : 'fixed inset-0 z-[1100] w-full overflow-hidden bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
+          : isHeroEmbed
+            ? 'relative w-full h-full overflow-hidden bg-surface-1/[0.04]'
+            : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
       }
-      style={isFullscreen ? { height: '100dvh' } : { height: 'clamp(300px, 50vh, 600px)' }}
+      style={
+        isFullscreen
+          ? fullscreenBelowHeader
+            ? { height: 'calc(100dvh - 4rem)' }
+            : { height: '100dvh' }
+          : isHeroEmbed
+            ? { height: '100%' }
+            : { height: 'clamp(300px, 50vh, 600px)' }
+      }
       data-map-fullscreen={isFullscreen ? 'true' : 'false'}
       data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}
       data-map-cluster={clusterEnabled ? 'true' : 'false'}
@@ -661,7 +696,7 @@ export default function SpotMapInteractive({
 
       {isReady && (
         <>
-          {!isFullscreen && (
+          {!isFullscreen && !isHeroEmbed && (
             <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
               <button
                 ref={fullscreenBtnRef}
@@ -708,7 +743,7 @@ export default function SpotMapInteractive({
             </div>
           )}
 
-          {!isFullscreen && (
+          {!isFullscreen && !isHeroEmbed && (
             <MapLayerToggle
               current={basemapMode}
               onChange={handleBasemapChange}
@@ -716,15 +751,17 @@ export default function SpotMapInteractive({
             />
           )}
 
-          <MapLegend locale={locale} reserveHudSpace={isFullscreen} />
+          {!isHeroEmbed && (
+            <MapLegend locale={locale} reserveHudSpace={isFullscreen} />
+          )}
 
-          {!isFullscreen && (
+          {!isFullscreen && !isHeroEmbed && (
             <p className="absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-meta-sm text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none max-md:hidden bottom-14 left-1/2 -translate-x-1/2">
               {t.map.mapDataHint}
             </p>
           )}
 
-          {windHint && !isFullscreen && (
+          {windHint && !isFullscreen && !isHeroEmbed && (
             <p
               role="status"
               className="absolute top-3 left-3 mt-[148px] z-[1000] max-w-[220px] px-2 py-1 rounded-input text-meta-sm text-score-fair bg-bg-elevated/95 border border-score-fair/30 shadow-sm pointer-events-none sm:max-w-xs"

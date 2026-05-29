@@ -11,13 +11,24 @@ test.describe('Homepage redesign', () => {
     await expect(h1).toContainText(/spots/i);
   });
 
-  test('aggregate score gauge is exposed as meter', async ({ page }) => {
-    await expect(page.getByRole('meter').first()).toBeVisible({ timeout: 15_000 });
+  test('map hero headline and explore link', async ({ page }) => {
+    await expect(
+      page.getByRole('heading', { name: /Onde está bom hoje/i }),
+    ).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('link', { name: /Explorar mapa/i })).toBeVisible();
   });
 
-  test('TrustStrip shows Open-Meteo', async ({ page }) => {
-    const trustStrip = page.getByLabel(/Prova social|Trust indicators/i);
-    await expect(trustStrip.getByText('Open-Meteo', { exact: true })).toBeVisible();
+  test('top now section with firing title', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible();
+  });
+
+  test('no full spot grid filters on home', async ({ page }) => {
+    await expect(page.getByText('Mais spots para', { exact: false })).toHaveCount(0);
+    await expect(page.getByText('Limpar filtros', { exact: true })).toHaveCount(0);
+  });
+
+  test('footer trust strip shows Open-Meteo', async ({ page }) => {
+    await expect(page.getByLabel(/Prova social/i).getByText('Open-Meteo')).toBeVisible();
   });
 
   test('HomepageSecondaryCta renders three cards', async ({ page }) => {

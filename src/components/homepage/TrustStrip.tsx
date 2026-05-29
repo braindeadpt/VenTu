@@ -3,15 +3,16 @@ import { Activity, Clock, Github, Globe, MapPin } from 'lucide-react';
 interface TrustStripProps {
   spotCount: number;
   sportsCount: number;
-  maxTs: number | null;
+  maxTs?: number | null;
   locale: string;
+  variant?: 'default' | 'inline';
 }
 
 export default function TrustStrip({
   spotCount,
   sportsCount,
-  maxTs: _maxTs,
   locale,
+  variant = 'default',
 }: TrustStripProps) {
   const isPt = locale === 'pt';
 
@@ -46,6 +47,28 @@ export default function TrustStrip({
       label: isPt ? 'MIT · Open source' : 'MIT · Open source',
     },
   ];
+
+  if (variant === 'inline') {
+    return (
+      <div
+        className="mt-6 pt-4 border-t border-divider"
+        aria-label={isPt ? 'Prova social' : 'Trust indicators'}
+      >
+        <ul className="flex items-center gap-2 overflow-x-auto no-scrollbar list-none p-0 m-0">
+          {items.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <li key={index} className="flex items-center gap-2 shrink-0 text-meta-sm text-fg-muted">
+                {index > 0 && <span aria-hidden>·</span>}
+                <Icon className="w-3 h-3 shrink-0" aria-hidden />
+                {item.label}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    );
+  }
 
   return (
     <section

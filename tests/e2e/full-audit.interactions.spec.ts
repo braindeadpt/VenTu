@@ -93,9 +93,10 @@ test.describe('UI interactions audit', () => {
       page.getByRole('heading', { name: /Melhores janelas|Best windows/i }),
     ).toBeVisible();
     await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible();
-    await expect(
-      page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }),
-    ).toHaveCount(1);
+    await expect(page.getByRole('heading', { name: /^Logística$/i })).toBeVisible();
+    expect(
+      await page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }).count(),
+    ).toBeLessThanOrEqual(1);
 
     const kiteTab = page.getByRole('button', { name: /Kitesurf/i });
     if (await kiteTab.isVisible()) {

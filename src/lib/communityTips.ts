@@ -9,6 +9,8 @@ export interface CommunityTipEntry {
   foodEn?: string;
   localRule?: string;
   localRuleEn?: string;
+  accommodation?: string;
+  accommodationEn?: string;
   contributor?: string;
 }
 
@@ -38,6 +40,8 @@ export function mergeLocalTips(
     foodEn: string;
     localRule?: string;
     localRuleEn?: string;
+    accommodation?: string;
+    accommodationEn?: string;
   },
   community?: CommunityTipEntry,
 ) {
@@ -51,6 +55,10 @@ export function mergeLocalTips(
     foodEn: community?.foodEn ?? fromSpotTips?.foodEn ?? base.foodEn,
     localRule: community?.localRule ?? fromSpotTips?.localRule ?? base.localRule,
     localRuleEn: community?.localRuleEn ?? fromSpotTips?.localRuleEn ?? base.localRuleEn,
+    accommodation:
+      community?.accommodation ?? fromSpotTips?.accommodation ?? base.accommodation,
+    accommodationEn:
+      community?.accommodationEn ?? fromSpotTips?.accommodationEn ?? base.accommodationEn,
     contributor: community?.contributor,
   };
 

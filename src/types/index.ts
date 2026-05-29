@@ -37,6 +37,8 @@ export interface Spot {
     foodEn?: string;
     localRule?: string;
     localRuleEn?: string;
+    accommodation?: string;
+    accommodationEn?: string;
   };
   // Coast orientation in degrees (0-360) - direction the beach faces
   // Used for offshore/onshore wind calculation

@@ -231,6 +231,13 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           <h4 className="text-sm font-bold text-fg-muted uppercase tracking-wider mb-3">
             {isPt ? 'Vereditos de hoje' : "Today's Verdicts"}
           </h4>
+          {data.spots.length === 0 ? (
+            <p className="text-sm text-fg-muted mb-4">
+              {isPt
+                ? 'Ainda não há vereditos por spot para hoje. Consulta o mapa ou o spot em destaque.'
+                : 'No per-spot verdicts for today yet. Check the map or the featured spot.'}
+            </p>
+          ) : (
           <div className="space-y-2">
             {data.spots.map(spot => (
               <Link
@@ -259,6 +266,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
               </Link>
             ))}
           </div>
+          )}
 
           {/* Mobile CTA — visible inside expanded area */}
           <Button

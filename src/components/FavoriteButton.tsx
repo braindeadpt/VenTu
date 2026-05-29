@@ -7,6 +7,7 @@ import {
   readFavoritesFromStorage,
   writeFavoritesToStorage,
 } from '@/lib/favoritesStorage';
+import { useToast } from '@/components/ui/ToastProvider';
 
 interface FavoriteButtonProps {
   spotId: string;
@@ -61,6 +62,7 @@ export default function FavoriteButton({
   locale = 'pt',
 }: FavoriteButtonProps) {
   const { isFavorite, toggleFavorite, loaded, mounted } = useFavorites();
+  const { showToast } = useToast();
   const active = isFavorite(spotId);
   const isPt = locale === 'pt';
   const [clickEffect, setClickEffect] = useState(false);
@@ -78,7 +80,13 @@ export default function FavoriteButton({
   const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    const wasFavorite = active;
     toggleFavorite(spotId);
+    if (!wasFavorite) {
+      showToast(
+        isPt ? 'Adicionado aos teus spots 🤙' : 'Added to your spots 🤙',
+      );
+    }
     setClickEffect(true);
     setTimeout(() => setClickEffect(false), 300);
   };

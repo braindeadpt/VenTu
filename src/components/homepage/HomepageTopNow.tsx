@@ -3,6 +3,7 @@ import { SPORT_LABELS } from '@/lib/sportRatings';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import {
   TOP_NOW_SPORTS,
   getScoreForFilter,
@@ -40,22 +41,18 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6"
       aria-labelledby="top-now-heading"
     >
-      <h2 id="top-now-heading" className="text-h3 text-fg mb-1">
-        {t.hero.topNow}
+      <h2 id="top-now-heading" className="text-display-lg text-fg tracking-tight mb-1">
+        {isPt ? 'A bombar agora' : 'Firing now'}
       </h2>
-      <p className="text-meta text-fg-muted mb-3">
+      <p className="text-meta text-fg-muted mb-4">
         {isPt ? 'Melhor spot por desporto · Portugal' : 'Best spot per sport · Portugal'}
       </p>
 
       {cards.length === 0 ? (
         <EmptyState
           className="py-10"
-          title={isPt ? 'Sem spots ON agora' : 'No spots ON right now'}
-          description={
-            isPt
-              ? 'Vê os melhores previstos para amanhã'
-              : 'See best forecasted for tomorrow'
-          }
+          title={getPlayfulEmptyCopy('no-top-now', isPt).title}
+          description={getPlayfulEmptyCopy('no-top-now', isPt).description}
           action={
             <Button variant="secondary" href={`/${locale}/explorar/`} locale={cardLocale}>
               {isPt ? 'Ver previsões' : 'View forecasts'}
@@ -76,6 +73,8 @@ export default function HomepageTopNow({ spotsData, locale }: HomepageTopNowProp
               >
                 <SpotListCard
                   compact
+                  withImage
+                  spot={data.spot}
                   name={isPt ? data.spot.name : data.spot.nameEn}
                   region={isPt ? data.spot.region : data.spot.regionEn}
                   score={score}

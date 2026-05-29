@@ -37,6 +37,10 @@ export default function MapExploreHud({
   onResetFilters,
   clearFiltersLabel,
   showClearFilters,
+  difficulties,
+  selectedDifficulty,
+  onDifficultyChange,
+  difficultyGroupLabel,
   basemapMode,
   onBasemapChange,
   clusterEnabled,
@@ -157,6 +161,26 @@ export default function MapExploreHud({
                 compact
               >
                 {sport.label}
+              </FilterPill>
+            );
+          })}
+        </div>
+
+        <div
+          className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x pb-0.5"
+          role="group"
+          aria-label={difficultyGroupLabel}
+        >
+          {difficulties.map((level) => {
+            const active = selectedDifficulty === level.id;
+            return (
+              <FilterPill
+                key={level.id}
+                compact
+                active={active}
+                onClick={() => onDifficultyChange(level.id)}
+              >
+                {level.label}
               </FilterPill>
             );
           })}

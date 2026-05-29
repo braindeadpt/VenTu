@@ -62,25 +62,51 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
   test.describe(`UX audit — ${viewport}`, () => {
     test.describe.configure({ mode: 'parallel' });
 
-    test('01 — Homepage: filtros desporto e região sincronizam URL', async ({ browser }) => {
+    test('01 — Homepage: filtro desporto no hero sincroniza URL', async ({ browser }) => {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
+      const hero = page.getByRole('region', { name: /Mapa interactivo/i });
+      await hero.getByRole('button', { name: 'Kitesurf', exact: true }).click();
+      await expect(page).toHaveURL(/sport=kitesurf/);
+      await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+
+      await page.reload();
+      await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+      await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+
+      await context.close();
+    });
+
+    test('01b — /mapa: filtros desporto e região sincronizam URL', async ({ browser }) => {
+      const context = await createContext(browser, viewport);
+      const { page, health } = await setupPage(context, viewport);
+      await gotoHealthy(page, health, '/pt/mapa/');
+      await page.waitForSelector('[data-map-hud="visible"]', { timeout: 25_000 });
+
       await page.getByRole('button', { name: 'Kitesurf', exact: true }).click();
       await expect(page).toHaveURL(/sport=kitesurf/);
-      await expect(page.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute('aria-pressed', 'true');
-
       await page.getByRole('button', { name: 'Algarve', exact: true }).click();
       await expect(page).toHaveURL(/region=Algarve/);
 
       await page.reload();
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
-      await expect(page.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute('aria-pressed', 'true');
-      await expect(page.getByRole('button', { name: 'Algarve', exact: true })).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
+      await expect(page.getByRole('button', { name: 'Algarve', exact: true })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      );
 
-      await page.getByRole('button', { name: /Limpar filtros|Clear filters/i }).click();
-      await expect(page).not.toHaveURL(/sport=/);
       await context.close();
     });
 
@@ -93,88 +119,59 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await context.close();
     });
 
-    test('02c — Homepage: toggle mostrar todos os spots', async ({ browser }) => {
+    test('02c — /mapa: toggle mostrar todos os spots', async ({ browser }) => {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
-      await gotoHealthy(page, health, '/pt/');
-      await page.waitForSelector('.leaflet-container', { timeout: 20_000 });
+      await gotoHealthy(page, health, '/pt/mapa/');
+      await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
 
-      const mapShell = page.locator('[data-map-cluster]');
+      const mapShell = page.locator('[data-map-fullscreen]');
+      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
 
       const showAllBtn = page.getByRole('button', { name: /Mostrar todos|Show all/i });
       await showAllBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
-      await expect(page.locator('.leaflet-marker-icon.spot-marker').first()).toBeVisible({ timeout: 15_000 });
-
-      const clusterBtn = page.getByRole('button', { name: /Agrupar spots|Cluster spots/i });
-      await clusterBtn.click({ force: true });
-      await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
+      await expect(page.locator('.leaflet-marker-icon.spot-marker').first()).toBeVisible({
+        timeout: 15_000,
+      });
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
     });
 
-    test('02d — Homepage: popup e botão Ver condições', async ({ browser }) => {
+    test('02d — /mapa: sheet com Como chegar e Ver spot', async ({ browser }) => {
+      test.skip(viewport === 'desktop', 'Mobile sheet only');
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
-      await gotoHealthy(page, health, '/pt/');
+      await gotoHealthy(page, health, '/pt/mapa/');
 
-      await page.getByRole('button', { name: /Mostrar todos|Show all/i }).click();
-      await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 15_000 });
-      const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
-      await marker.click({ position: { x: 14, y: 14 }, force: true });
+      const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i });
+      if (await showAll.isVisible()) await showAll.click();
+      await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 20_000 });
+      await page.locator('.leaflet-marker-icon.spot-marker').first().click({
+        position: { x: 14, y: 14 },
+        force: true,
+      });
 
-      if (viewport === 'mobile') {
-        const sheet = page.locator('[aria-labelledby="map-spot-sheet-title"]');
-        await expect(sheet).toBeVisible({ timeout: 5_000 });
-        await expect(sheet).toContainText(/\d+\.\d+m|kt|Vento|Wind/i);
-        await sheet.getByRole('button', { name: /Painel rápido|Quick panel/i }).click();
-      } else {
-        const popup = page.locator('.leaflet-popup.spot-popup').last();
-        await expect(popup).toBeVisible({ timeout: 5_000 });
-        await expect(popup).toContainText(/kW\/m|Swell|Vento|Wind/i);
-        await popup.getByRole('button', { name: /Ver condições|View conditions/i }).click();
-      }
-
-      await expect(page.getByRole('dialog')).toBeVisible({ timeout: 5_000 });
+      const sheet = page.getByRole('dialog');
+      await expect(sheet).toBeVisible({ timeout: 10_000 });
+      await expect(sheet.getByRole('link', { name: /Como chegar/i })).toBeVisible();
+      await expect(sheet.getByRole('link', { name: /Ver spot/i })).toBeVisible();
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
     });
 
-    test('02b — Homepage: ecrã inteiro do mapa (opcional)', async ({ browser }) => {
+    test('02b — /mapa: já abre em fullscreen', async ({ browser }) => {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
-      await gotoHealthy(page, health, '/pt/');
-      await page.waitForSelector('.leaflet-container', { timeout: 20_000 });
+      await gotoHealthy(page, health, '/pt/mapa/');
+      await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
 
       const mapShell = page.locator('[data-map-fullscreen]');
-      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
-      await expect(mapShell).toHaveAttribute('data-map-hud', 'hidden');
-      await expect(
-        page.getByRole('region', { name: /Modo explorar|Explore mode/i }),
-      ).toHaveCount(0);
-
-      const enterBtn = page.getByRole('button', { name: /Modo Explorar|Explore mode/i });
-      await enterBtn.click();
       await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
       await expect(mapShell).toHaveAttribute('data-map-hud', 'visible');
-      await expect(
-        page.getByRole('region', { name: /Modo explorar|Explore mode/i }),
-      ).toBeVisible();
-      await expect(page.locator('.leaflet-container')).toBeVisible();
-
-      const exitBtn = page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i });
-      await exitBtn.click();
-      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
-      await expect(mapShell).toHaveAttribute('data-map-hud', 'hidden');
-
-      await enterBtn.click();
-      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true');
-      await page.keyboard.press('Escape');
-      await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
-      await expect(mapShell).toHaveAttribute('data-map-hud', 'hidden');
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();

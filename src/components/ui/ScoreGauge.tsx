@@ -143,6 +143,7 @@ export default function ScoreGauge({
           'relative rounded-full p-1',
           cfg.wrapper,
           GLOW_CLASS[variant],
+          variant === 'epic' ? 'score-gauge-epic-pulse' : '',
         ].join(' ')}
       >
         <svg

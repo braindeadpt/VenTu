@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation, Mountain } from 'lucide-react';
@@ -12,12 +12,20 @@ import SpotDrawer from './SpotDrawer';
 import FilterPill from '@/components/ui/FilterPill';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import SpotGridRankedList from './SpotGridRankedList';
 import { useSpotGridFilters } from './hooks/useSpotGridFilters';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
 } from '@/lib/gridFilters';
+import {
+  MAP_DIFFICULTY_LS_KEY,
+  MAP_DIFFICULTY_OPTIONS,
+  readMapDifficultyFromStorage,
+  spotMatchesDifficultyFilter,
+  type MapDifficultyFilter,
+} from '@/lib/mapDifficulty';
 
 const SpotMapInteractive = dynamic(() => import('./SpotMapInteractive'), { ssr: false });
 
@@ -69,6 +77,19 @@ export function SpotGridClient({
   const t = getTranslation(locale as Locale);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [mapFullscreen, setMapFullscreen] = useState(false);
+  const [mapDifficulty, setMapDifficulty] = useState<MapDifficultyFilter>('all');
+
+  useEffect(() => {
+    setMapDifficulty(readMapDifficultyFromStorage());
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(MAP_DIFFICULTY_LS_KEY, mapDifficulty);
+    } catch {
+      /* noop */
+    }
+  }, [mapDifficulty]);
 
   const {
     selectedSport,
@@ -87,6 +108,16 @@ export function SpotGridClient({
     geoLoading,
     requestLocation,
   } = useSpotGridFilters({ spotsData, regions, initialSport, initialRegion });
+
+  const mapSpotsData = useMemo(() => {
+    if (mapDifficulty === 'all') return filtered;
+    return filtered.filter((d) => spotMatchesDifficultyFilter(d.spot, mapDifficulty));
+  }, [filtered, mapDifficulty]);
+
+  const handleMapReset = useCallback(() => {
+    handleReset();
+    setMapDifficulty('all');
+  }, [handleReset]);
 
   const selectedSpotData = useMemo(() => {
     if (!selectedSpotId) return null;
@@ -206,7 +237,7 @@ export function SpotGridClient({
 
       <div id="explore-map" className="mb-8 map-fullscreen-wrap scroll-mt-24">
         <SpotMapInteractive
-          spotsData={filtered}
+          spotsData={mapSpotsData}
           selectedSport={selectedSport}
           selectedRegion={selectedRegion}
           locale={locale}
@@ -224,13 +255,22 @@ export function SpotGridClient({
                   regions,
                   selectedSport,
                   selectedRegion,
-                  spotCount: filtered.length,
+                  spotCount: mapSpotsData.length,
                   onSportChange: handleSportChange,
                   onRegionChange: handleRegionChange,
-                  onResetFilters: handleReset,
+                  onResetFilters: handleMapReset,
                   clearFiltersLabel: t.hero.clearFilters,
                   showClearFilters:
-                    selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION,
+                    selectedSport !== DEFAULT_SPORT ||
+                    selectedRegion !== DEFAULT_REGION ||
+                    mapDifficulty !== 'all',
+                  difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
+                    id: d.id,
+                    label: isPt ? d.labelPt : d.labelEn,
+                  })),
+                  selectedDifficulty: mapDifficulty,
+                  onDifficultyChange: setMapDifficulty,
+                  difficultyGroupLabel: isPt ? 'Nível' : 'Level',
                 }
               : undefined
           }
@@ -259,7 +299,7 @@ export function SpotGridClient({
               ? (isPt
                 ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt))
                 : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt)))
-              : undefined
+              : getPlayfulEmptyCopy('no-spots-filter', isPt).description
           }
           action={
             <div className="flex items-center gap-3 flex-wrap justify-center">

@@ -200,7 +200,9 @@ const config: Config = {
     },
   },
   plugins: [
-    plugin(function ({ addUtilities }) {
+    plugin(function ({ addUtilities, addVariant }) {
+      addVariant('motion-reduce', '@media (prefers-reduced-motion: reduce)');
+      addVariant('motion-safe', '@media (prefers-reduced-motion: no-preference)');
       addUtilities({
         '.font-tabular': {
           'font-variant-numeric': 'tabular-nums',

@@ -61,15 +61,22 @@ test.describe('Critical routes', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Big Wave/i })).toBeVisible({ timeout: 15_000 });
   });
 
-  test('homepage filters sync to URL and persist on reload', async ({ page }) => {
+  test('homepage sport filter syncs to URL', async ({ page }) => {
     await page.goto('/pt/');
-    await page.getByRole('button', { name: 'Kitesurf', exact: true }).click();
+    const hero = page.getByRole('region', { name: /Mapa interactivo/i });
+    await hero.getByRole('button', { name: 'Kitesurf', exact: true }).click();
     await expect(page).toHaveURL(/sport=kitesurf/);
-    await page.getByRole('button', { name: 'Algarve', exact: true }).click();
-    await expect(page).toHaveURL(/region=Algarve/);
     await page.reload();
-    await expect(page.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.getByRole('button', { name: 'Algarve', exact: true })).toHaveAttribute('aria-pressed', 'true');
+    await expect(hero.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
+      'aria-pressed',
+      'true',
+    );
+  });
+
+  test('mapa page loads fullscreen', async ({ page }) => {
+    await page.goto('/pt/mapa/');
+    await expect(page.locator('[data-map-fullscreen="true"]')).toBeVisible({ timeout: 25_000 });
+    await expect(page).toHaveTitle(/Mapa de spots — VenTu/i);
   });
 
   test('admin contributions page loads', async ({ page }) => {

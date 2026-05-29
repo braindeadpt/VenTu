@@ -131,6 +131,32 @@ describe('getSportScore', () => {
     )
   })
 
+  it('Windsurf below 15kt is never Razoável', () => {
+    const guincho = spotBySlug('guincho')
+    const c: Conditions = {
+      ...baseConditions,
+      windSpeed: ktToMs(12),
+      windGust: ktToMs(14),
+      waveHeight: 0.9,
+    }
+    const result = getSportScore(guincho, 'windsurf', c)
+    expect(result.score).toBeLessThan(SCORE_TIER_THRESHOLDS.fair)
+    expect(result.factors).toContain('Vento insuficiente')
+  })
+
+  it('Kitesurf 12–14kt stays below Razoável without sea bonuses', () => {
+    const guincho = spotBySlug('guincho')
+    const c: Conditions = {
+      ...baseConditions,
+      windSpeed: ktToMs(14),
+      windGust: ktToMs(15),
+      waveHeight: 0.2,
+    }
+    const result = getSportScore(guincho, 'kitesurf', c)
+    expect(result.score).toBeLessThan(SCORE_TIER_THRESHOLDS.fair)
+    expect(result.rating).not.toBe('Razoável')
+  })
+
   it('Kitesurf warns on very strong wind', () => {
     const guincho = spotBySlug('guincho')
     const c: Conditions = { ...baseConditions, windSpeed: ktToMs(38), windGust: ktToMs(45) }
@@ -143,6 +169,21 @@ describe('getSportScore', () => {
     const c: Conditions = { ...baseConditions, windSpeed: ktToMs(8) }
     const result = getSportScore(guincho, 'kitesurf', c)
     expect(result.warning).toContain('fraco')
+  })
+
+  it('Kitesurf with 2kt must not rate as Razoável (flat sea must not inflate score)', () => {
+    const spot = spotBySlug('moledo')
+    const c: Conditions = {
+      ...baseConditions,
+      windSpeed: ktToMs(2),
+      windGust: ktToMs(2.5),
+      waveHeight: 0.9,
+      wavePeriod: 10,
+    }
+    const result = getSportScore(spot, 'kitesurf', c)
+    expect(result.score).toBeLessThan(SCORE_TIER_THRESHOLDS.fair)
+    expect(result.rating).not.toBe('Razoável')
+    expect(result.factors).toContain('Vento insuficiente')
   })
 
   it('Bodyboard scores with smaller waves than surf minimum', () => {

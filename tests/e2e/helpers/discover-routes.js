@@ -14,6 +14,7 @@ const STATIC_PATHS = [
   '/',
   '/about/',
   '/explorar/',
+  '/mapa/',
   '/spots/',
   '/favorites/',
   '/compare/',

@@ -2,7 +2,7 @@
 
 import { useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { ChevronDown, Waves, Wind, Diamond, Sailboat, Ship, Flame, Zap } from 'lucide-react';
+import { ChevronDown, Map, Waves, Wind, Diamond, Sailboat, Ship, Flame, Zap } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 
 interface MegaMenuProps {
@@ -74,6 +74,24 @@ export default function MegaMenu({ locale, isOpen, onOpen, onClose }: MegaMenuPr
           className="absolute top-full left-0 pt-1 w-[480px] z-[1300]"
         >
           <div className="rounded-modal border border-divider bg-bg-elevated shadow-modal backdrop-blur-xl p-4">
+            <Link
+              href={`/${locale}/mapa/`}
+              role="menuitem"
+              onClick={onClose}
+              className="flex items-center gap-3 p-3 mb-3 rounded-card border border-data-waves/30 bg-data-waves/[0.06] hover:bg-data-waves/10 transition-colors group"
+            >
+              <div className="flex h-10 w-10 items-center justify-center rounded-input bg-data-waves/15 text-data-waves">
+                <Map className="w-5 h-5" aria-hidden />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm font-semibold text-data-waves">{t.nav.mapa}</div>
+                <div className="text-xs text-fg-subtle leading-relaxed">
+                  {locale === 'pt'
+                    ? 'Mapa fullscreen com filtros e condições em tempo real'
+                    : 'Fullscreen map with filters and live conditions'}
+                </div>
+              </div>
+            </Link>
             <div className="text-xs font-medium text-fg-subtle uppercase tracking-wider mb-3 px-1">
               {t.megaMenu.modalidadesTitle}
             </div>

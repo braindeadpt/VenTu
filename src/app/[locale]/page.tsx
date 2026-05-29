@@ -1,14 +1,11 @@
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
-import { MACRO_REGIONS } from '@/lib/regions';
 import { loadSpotData } from '@/lib/load-spot-data';
-import { getTopNowExcludedSlugs } from '@/lib/homepageSport';
-import { SpotGridClient } from '@/components/spots/SpotGridClient';
-import HomepageHero from '@/components/homepage/HomepageHero';
+import HomepageMapHero from '@/components/homepage/HomepageMapHero';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
-import TrustStrip from '@/components/homepage/TrustStrip';
-import HomepageSecondaryCta from '@/components/homepage/HomepageSecondaryCta';
-import { DawnPatrolTopSlot, DawnPatrolBottomSlot } from '@/components/homepage/HomeDawnPatrolSlots';
+import HomepageFooterSection from '@/components/homepage/HomepageFooterSection';
+import { DawnPatrolTopSlot } from '@/components/homepage/HomeDawnPatrolSlots';
+import WaveDivider from '@/components/ui/WaveDivider';
 
 export default async function HomePage({
   params,
@@ -20,7 +17,6 @@ export default async function HomePage({
   getTranslation(locale as Locale);
 
   const spotsData = loadSpotData();
-  const topNowExcluded = getTopNowExcludedSlugs(spotsData);
 
   const timestamps = spotsData
     .map((d) => d.conditions.updatedAt)
@@ -36,29 +32,19 @@ export default async function HomePage({
           : `VenTu — ${spotsData.length} surf, kitesurf and windsurf spots in Portugal, conditions updated every 3 hours`}
       </h1>
 
-      <HomepageHero locale={locale} spotsData={spotsData} />
+      <HomepageMapHero locale={locale} spotsData={spotsData} maxTs={maxTs} />
 
-      <TrustStrip
-        spotCount={spotsData.length}
-        sportsCount={7}
-        maxTs={maxTs}
-        locale={locale}
-      />
+      <WaveDivider />
 
       <HomepageTopNow spotsData={spotsData} locale={locale} />
 
-      <SpotGridClient
-        spotsData={spotsData}
-        locale={locale}
-        regions={[...MACRO_REGIONS]}
-        excludeTopNowSlugs={topNowExcluded}
-      />
+      <WaveDivider flip />
 
       <DawnPatrolTopSlot locale={locale} />
 
-      <HomepageSecondaryCta locale={locale} />
+      <WaveDivider />
 
-      <DawnPatrolBottomSlot locale={locale} />
+      <HomepageFooterSection locale={locale} spotCount={spotsData.length} sportsCount={7} />
     </div>
   );
 }

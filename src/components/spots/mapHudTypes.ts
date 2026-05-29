@@ -1,4 +1,5 @@
 import type { GridSportFilter } from '@/lib/sportRatings';
+import type { MapDifficultyFilter } from '@/lib/mapDifficulty';
 
 export interface MapHudSportOption {
   id: GridSportFilter;
@@ -20,4 +21,8 @@ export interface MapFullscreenHudProps {
   onResetFilters: () => void;
   clearFiltersLabel: string;
   showClearFilters: boolean;
+  difficulties: { id: MapDifficultyFilter; label: string }[];
+  selectedDifficulty: MapDifficultyFilter;
+  onDifficultyChange: (difficulty: MapDifficultyFilter) => void;
+  difficultyGroupLabel: string;
 }

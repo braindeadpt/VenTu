@@ -19,6 +19,7 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
+import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import Skeleton from '@/components/ui/Skeleton';
 
 interface SpotConditions {
@@ -229,7 +230,8 @@ export default function FavoritesClient() {
         {favoriteSpots.length === 0 ? (
           <EmptyState
             icon={<Heart className="w-8 h-8 text-fg-subtle" aria-hidden />}
-            title={isPt ? 'Ainda não tens favoritos.' : 'No favorites yet.'}
+            title={getPlayfulEmptyCopy('no-favorites', isPt).title}
+            description={getPlayfulEmptyCopy('no-favorites', isPt).description}
             action={
               <Button href={`/${locale}/spots/`} size="lg">
                 {isPt ? 'Explorar Spots' : 'Explore Spots'}
