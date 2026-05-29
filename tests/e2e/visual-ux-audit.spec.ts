@@ -408,7 +408,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i }),
       ).toBeVisible();
       await expect(
-        page.getByRole('heading', { name: /Sobre o spot|About this spot/i }),
+        page.getByRole('heading', { name: /Logística|Logistics/i }),
       ).toBeVisible();
 
       // Single livecam block — no duplicate section titles
