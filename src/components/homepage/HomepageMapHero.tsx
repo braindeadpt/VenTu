@@ -54,7 +54,6 @@ export default function HomepageMapHero({ locale, spotsData, maxTs }: HomepageMa
   const onCount = useMemo(() => getOnCount(spotsData, sport), [spotsData, sport]);
 
   const handleSportChange = (next: GridSportFilter) => {
-    setSport(next);
     try {
       localStorage.setItem('ventu:sport', next);
     } catch {
