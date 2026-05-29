@@ -200,6 +200,17 @@ export const spots: Spot[] = [
       hazards: ['Tráfego de barcos', 'Correntes na foz']
     },
   {
+      id: 'marina-afurada-foil', slug: 'marina-afurada-foil', name: 'Marina da Afurada — Foil', nameEn: 'Afurada Marina — Foil',
+      region: 'Porto', regionEn: 'Porto', lat: 41.141446, lon: -8.652399,
+      coastOrientation: 270,
+      type: 'foil', difficulty: 'intermediate', bestWind: 'NW, N', bestSwell: 'Douro',
+      description: 'Zona da Marina da Afurada (Douro), junto a Canidelo — água abrigada do rio ideal para wing foil e kite foil. Lançamento junto à marina; modalidade exclusiva de foil (sem surf/kite de praia).',
+      descriptionEn: 'Afurada Marina area on the Douro, by Canidelo — sheltered river water for wing foil and kite foil. Launch next to the marina; foil-only spot (no beach surf/kite).',
+      compatibleSports: ['foil'],
+      facilities: ['Marina', 'Estacionamento', 'Restaurantes', 'WC'],
+      hazards: ['Tráfego de barcos', 'Correntes no Douro', 'Zona portuária']
+    },
+  {
       id: 'praia-da-lomba', slug: 'praia-da-lomba', name: 'Praia da Lomba — Wakeboard', nameEn: 'Lomba River Beach — Wakeboard',
       region: 'Gondomar', regionEn: 'Gondomar', lat: 41.070, lon: -8.413,
       coastOrientation: 270,
