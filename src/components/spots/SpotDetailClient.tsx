@@ -114,9 +114,8 @@ export default function SpotDetailClient({
   const td = t.spotDetail;
 
   const [spotData, setSpotData] = useState<SpotData | null>(null);
-  const [selectedSport, setSelectedSport] = useState<SportType>(
-    sportFromUrl || (spot.compatibleSports?.[0] as SportType) || 'surf',
-  );
+  const initialSport = sportFromUrl || (spot.compatibleSports?.[0] as SportType) || 'surf';
+  const [selectedSport, setSelectedSport] = useState<SportType>(initialSport);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
@@ -145,6 +144,14 @@ export default function SpotDetailClient({
   useEffect(() => {
     loadCommunityTips().then(setCommunityOverlay);
   }, []);
+
+  useEffect(() => {
+    if (!spotData) return;
+    const sports = getRelevantSports(spot, spotData.allScores);
+    if (sports.length > 0 && !sports.includes(selectedSport)) {
+      setSelectedSport(sports[0]);
+    }
+  }, [spot, spotData, selectedSport]);
 
   useEffect(() => {
     async function loadData() {
@@ -330,8 +337,8 @@ export default function SpotDetailClient({
   }
 
   const { conditions, allScores, forecast } = spotData;
-  const score = allScores[selectedSport];
   const relevantSports = getRelevantSports(spot, allScores);
+  const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
   const mergedLocalTipsRaw = mergeLocalTips(
     spot,
     getLocalTips(spot.slug),

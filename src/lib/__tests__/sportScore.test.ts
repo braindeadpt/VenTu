@@ -258,16 +258,18 @@ describe('getHourlyScores', () => {
 })
 
 describe('getRelevantSports', () => {
-  it('includes compatibleSports and high-scoring sports', () => {
+  it('returns all compatible sports for the spot', () => {
     const guincho = spotBySlug('guincho')
-    const all = getAllSportScores(guincho, {
-      ...baseConditions,
-      windSpeed: ktToMs(22),
-      waveHeight: 1.2,
-    })
-    const relevant = getRelevantSports(guincho, all)
+    const relevant = getRelevantSports(guincho)
     expect(relevant).toContain('kitesurf')
     expect(relevant).toContain('surf')
+    expect(relevant).toContain('foil')
+  })
+
+  it('returns foil only for foil-only spots', () => {
+    const foilOnly = spotBySlug('marina-afurada-foil')
+    if (!foilOnly) return
+    expect(getRelevantSports(foilOnly)).toEqual(['foil'])
   })
 })
 

@@ -2,7 +2,7 @@
 // Each sport has its own criteria — NO mixed generic score
 
 import { Spot } from '@/types'
-import { SportType } from './sportRatings'
+import { SportType, getCompatibleSports } from './sportRatings'
 
 export interface Conditions {
   waveHeight: number
@@ -599,21 +599,10 @@ export function getScoreColor(score: number) {
   }
 }
 
-// Get sports that are relevant for this spot (score > 0 or primary sport)
-export function getRelevantSports(spot: Spot, allScores: Record<SportType, SportScore>): SportType[] {
-  const relevant: SportType[] = []
-  
-  let primary: SportType[] = []
-  if (spot.compatibleSports && Array.isArray(spot.compatibleSports)) {
-    primary = spot.compatibleSports as SportType[]
-  }
-  
-  (Object.keys(allScores) as SportType[]).forEach(sport => {
-    if (primary.includes(sport) || allScores[sport].score > 30) {
-      relevant.push(sport)
-    }
-  })
-  
-  const unique = relevant.filter((item, index) => relevant.indexOf(item) === index)
-  return unique
+/** Sports shown in spot tabs / drawer — same set as map filters (compatibleSports). */
+export function getRelevantSports(
+  spot: Spot,
+  _allScores?: Record<SportType, SportScore>,
+): SportType[] {
+  return getCompatibleSports(spot)
 }
