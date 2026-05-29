@@ -30,10 +30,15 @@ const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInter
   ),
 });
 
-/** One row of core sports on the discovery hero (new visitors). */
+/** Core sports on the discovery hero — horizontal scroll on mobile. */
 const HERO_SPORT_FILTERS = MAP_SPORT_FILTERS.filter((f) =>
-  ['all', 'surf', 'kitesurf', 'windsurf'].includes(f.id),
+  ['all', 'surf', 'bodyboard', 'kitesurf', 'windsurf', 'foil'].includes(f.id),
 );
+
+const HERO_PILL_ACTIVE =
+  'bg-bg-elevated text-fg border-divider-strong shadow-[0_2px_12px_rgba(0,0,0,0.2)]';
+const HERO_PILL_INACTIVE =
+  'bg-bg-base/92 text-fg border-divider backdrop-blur-sm shadow-[0_1px_8px_rgba(0,0,0,0.18)] hover:bg-bg-base hover:border-divider-strong';
 
 interface HomepageMapHeroProps {
   locale: string;
@@ -130,11 +135,11 @@ export default function HomepageMapHero({
         {isFeatured && (
           <>
             <div
-              className="absolute inset-0 bg-gradient-to-r from-bg-base/92 via-bg-base/55 to-transparent sm:via-bg-base/35 pointer-events-none"
+              className="absolute inset-0 bg-gradient-to-r from-bg-base/96 via-bg-base/72 to-bg-base/25 sm:via-bg-base/35 sm:to-transparent pointer-events-none"
               aria-hidden
             />
             <div
-              className="absolute inset-0 bg-gradient-to-b from-bg-base/88 via-bg-base/35 to-transparent pointer-events-none"
+              className="absolute inset-0 bg-gradient-to-b from-bg-base/94 via-bg-base/55 to-transparent sm:via-bg-base/35 pointer-events-none"
               aria-hidden
             />
             <div
@@ -223,7 +228,7 @@ export default function HomepageMapHero({
               </Button>
               {isFeatured && (
                 <div className="min-w-0 flex-1 sm:max-w-xs">
-                  <HomepageSearch locale={locale} />
+                  <HomepageSearch locale={locale} variant="hero" />
                 </div>
               )}
             </div>
