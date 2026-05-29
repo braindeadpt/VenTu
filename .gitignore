@@ -60,3 +60,5 @@ public/data/
 !public/data/.gitkeep
 # Community tips overlay (merged from approved contributions)
 !public/data/community-tips.json
+# Precomputed scores index (regenerate with npm run spots:index)
+!public/data/spots-index.json
