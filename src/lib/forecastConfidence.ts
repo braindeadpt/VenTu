@@ -1,6 +1,3 @@
-import type { LucideIcon } from 'lucide-react';
-import { Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
-
 export type ConfidenceTier = 'alta' | 'média' | 'baixa';
 
 export interface ConfidenceDetail {
@@ -107,15 +104,4 @@ export function pickConfidenceFields(raw: {
     confidenceDetail: raw.confidenceDetail,
     dailyConfidence: raw.dailyConfidence,
   };
-}
-
-export function getConfidenceIcon(tier: ConfidenceTier): LucideIcon {
-  switch (tier) {
-    case 'alta':
-      return ShieldCheck;
-    case 'baixa':
-      return ShieldAlert;
-    default:
-      return Shield;
-  }
 }

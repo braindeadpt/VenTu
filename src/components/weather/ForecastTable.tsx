@@ -385,11 +385,12 @@ export default function ForecastTable({
 <div className="edge-fade-x rounded-card max-w-full">
       <div
         ref={scrollRef}
-        className={`overflow-x-auto overscroll-x-contain touch-pan-x border border-divider bg-bg-base relative rounded-card max-w-full ${compact ? '' : 'min-w-[600px] md:min-w-[800px]'}`}
+        className={`overflow-x-auto overscroll-x-contain border border-divider bg-bg-base relative rounded-card max-w-full ${compact ? '' : 'min-w-[600px] md:min-w-[800px]'}`}
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
         onWheel={(e) => {
+          if (window.matchMedia('(pointer: coarse)').matches) return;
           if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) {
             e.preventDefault();
             e.currentTarget.scrollLeft += e.deltaY;

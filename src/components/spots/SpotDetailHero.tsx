@@ -90,11 +90,11 @@ export default function SpotDetailHero({
           className="h-full min-h-[200px] md:min-h-[240px]"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/92 to-bg-base/55 dark:from-bg-base dark:via-bg-base/90 dark:to-bg-base/50"
+          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/88 to-bg-base/40 md:via-bg-base/92 md:to-bg-base/55"
           aria-hidden
         />
         <div
-          className="absolute inset-0 bg-gradient-to-r from-bg-base/80 via-transparent to-transparent max-w-[min(100%,520px)]"
+          className="absolute inset-0 hidden md:block bg-gradient-to-r from-bg-base/80 via-transparent to-transparent max-w-[min(100%,520px)]"
           aria-hidden
         />
       </div>
@@ -108,13 +108,13 @@ export default function SpotDetailHero({
           {backLabel}
         </Link>
 
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div className="min-w-0 flex-1 space-y-2">
             <div className="flex items-start justify-between gap-3">
-              <h1 className="font-display text-display-lg text-fg tracking-tight drop-shadow-sm leading-tight">
+              <h1 className="font-display text-display-lg text-fg tracking-tight leading-tight pr-1">
                 {title}
               </h1>
-              <div className="flex items-center gap-2 shrink-0 sm:hidden">
+              <div className="flex items-center gap-2 shrink-0 lg:hidden">
                 <SocialShare title={`${title} — ${region}`} locale={locale} />
                 <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
               </div>
@@ -181,17 +181,17 @@ export default function SpotDetailHero({
             </a>
           </div>
 
-          <div className="flex flex-col items-start sm:items-end gap-2 shrink-0">
-            <div className="hidden sm:flex items-center gap-2">
+          <div className="flex flex-col gap-2 shrink-0 w-full sm:w-auto sm:items-end">
+            <div className="hidden lg:flex items-center gap-2 sm:justify-end">
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="rounded-card bg-bg-base/50 backdrop-blur-sm p-2 border border-divider/60">
+            <div className="rounded-card bg-bg-elevated border border-divider p-3 flex flex-row sm:flex-col items-center sm:items-center gap-4 sm:gap-2 w-full sm:w-auto">
               <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
-              <p className={cn('text-body font-semibold text-center mt-1', tokens.text)}>
-                {isPt ? rating : ratingEn}
-              </p>
-              <div className="flex justify-center mt-1.5">
+              <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
+                <p className={cn('text-body font-semibold', tokens.text)}>
+                  {isPt ? rating : ratingEn}
+                </p>
                 <ConfidenceBadge
                   confidence={conditions.confidence}
                   detail={conditions.confidenceDetail}

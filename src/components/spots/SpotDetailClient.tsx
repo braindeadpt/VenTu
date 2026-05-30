@@ -3,15 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import {
-  ArrowLeft,
-  ChevronDown,
-  ChevronUp,
-  Clock,
-  ExternalLink,
-  Waves,
-  Wind,
-} from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 
 import type { Spot } from '@/types';
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
@@ -26,13 +18,8 @@ import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { getWindguruUrl } from '@/lib/windguru';
-import { getCardinalLabel } from '@/lib/wind';
-import { getWindRelationToCoast, getWindRelationLabel } from '@/lib/wind';
-import { buildSwellTrains } from '@/lib/waveEnergy';
 import { buildTideSchedule, phaseFromConditionsStatus } from '@/lib/tideSchedule';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
-import { cn } from '@/lib/cn';
-
 import SeoHead from '@/components/SeoHead';
 import ForecastTable from '@/components/weather/ForecastTable';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
@@ -43,9 +30,7 @@ import { computeMagicWindows } from '@/lib/magicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotWeatherlinkSection from '@/components/weather/SpotWeatherlinkSection';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
-import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
 import SportTab from '@/components/spots/SportTab';
-import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
@@ -56,10 +41,7 @@ import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import StatChip from '@/components/ui/StatChip';
-import SwellRadar from '@/components/ui/SwellRadar';
-import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
-import ObservedNow from '@/components/spots/ObservedNow';
+import SpotNowPanel from '@/components/spots/SpotNowPanel';
 import type { ObservedConditions } from '@/lib/observations';
 
 interface Conditions {
@@ -388,19 +370,6 @@ export default function SpotDetailClient({
       }
     : null;
 
-  const windKt = Math.round(conditions.windSpeed * 1.94384);
-  const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
-  const swellTrains = buildSwellTrains(conditions);
-  const windCardinal = getCardinalLabel(conditions.windDirection);
-
-  const windRelation =
-    spot.coastOrientation !== undefined
-      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
-      : null;
-  const windRelationMeta = windRelation
-    ? getWindRelationLabel(windRelation, isPt ? 'pt' : 'en')
-    : null;
-
   return (
     <>
       <SeoHead
@@ -451,15 +420,15 @@ export default function SpotDetailClient({
           conditions={conditions}
         />
 
-        <section className="sticky top-16 z-30 bg-bg-base border-b border-divider md:bg-bg-base/95 md:backdrop-blur-sm">
+        <section className="sticky top-16 z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-4 py-2">
             <p className="text-meta-sm text-fg-muted mb-2 md:hidden">{td.sportTabsHint}</p>
             <div
-              className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain touch-pan-x no-scrollbar pb-1 edge-fade-x"
+              className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x scroll-smooth"
               role="tablist"
               aria-label={isPt ? 'Modalidade' : 'Sport'}
             >
-              {(['surf', 'kitesurf', 'windsurf', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
+              {(['surf', 'kitesurf', 'windsurf', 'foil', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
                 .filter((s) => relevantSports.includes(s))
                 .map((sport) => (
                   <SportTab
@@ -478,95 +447,16 @@ export default function SpotDetailClient({
         {/* Dashboard: Agora + mapa acima da dobra */}
         <section className="max-w-6xl mx-auto px-4 py-4" aria-label={td.now}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <Card variant="card-1" className="p-4 space-y-4">
-              <h2 className="text-h3 text-fg">{td.now}</h2>
-              <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
-                <SwellRadar
-                  swellTrains={swellTrains.map((t) => ({
-                    key: t.key,
-                    direction: t.direction,
-                    height: t.height,
-                    period: t.period,
-                  }))}
-                  windDirection={conditions.windDirection}
-                  windSpeed={conditions.windSpeed}
-                  coastOrientation={spot.coastOrientation}
-                  size="md"
-                  showLegend={false}
-                />
-                <div className="flex flex-col gap-3 flex-1 w-full min-w-0">
-                  <div className="grid grid-cols-2 gap-2">
-                    <StatChip
-                      icon={<Waves className="w-4 h-4 text-data-waves" />}
-                      value={`${conditions.waveHeight.toFixed(1)}m`}
-                      label={isPt ? 'Ondas (total)' : 'Waves (total)'}
-                      className="bg-surface-1/[0.04]"
-                    />
-                    <StatChip
-                      icon={<Clock className="w-4 h-4 text-data-period" />}
-                      value={`${Math.round(conditions.wavePeriod)}s`}
-                      label={isPt ? 'Período (total)' : 'Period (total)'}
-                      className="bg-surface-1/[0.04]"
-                    />
-                    <StatChip
-                      icon={<Wind className="w-4 h-4 text-data-wind" />}
-                      value={`${windKt}kt`}
-                      label={`${isPt ? 'Vento' : 'Wind'} · ${windCardinal}`}
-                      className="bg-surface-1/[0.04]"
-                    />
-                    <StatChip
-                      icon={<Wind className="w-4 h-4 text-data-wind/70" />}
-                      value={`${gustKt}kt`}
-                      label={isPt ? 'Rajada' : 'Gust'}
-                      className="bg-surface-1/[0.04]"
-                    />
-                  </div>
-                  <SwellTrainsTable conditions={conditions} locale={locale} />
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-2">
-                {windRelationMeta && (
-                  <span
-                    className={cn(
-                      'inline-flex items-center rounded-pill border px-2.5 py-1 text-meta-sm font-medium',
-                      windRelationMeta.className,
-                    )}
-                  >
-                    {windRelationMeta.label}
-                  </span>
-                )}
-              </div>
-
-              {conditions.observed && (
-                <ObservedNow
-                  observed={conditions.observed}
-                  forecastWindSpeedMs={conditions.windSpeed}
-                  locale={locale}
-                />
-              )}
-
-              {tideSchedule && (
-                <TideScheduleStrip schedule={tideSchedule} locale={locale} />
-              )}
-
-              <div className="pt-2 border-t border-divider/60">
-                <p className="text-meta-sm text-fg-subtle mb-1.5">{td.scoreFeedbackHint}</p>
-                <ScoreFeedback
-                  spotSlug={spot.slug}
-                  sport={selectedSport}
-                  predictedScore={score.score}
-                  conditionsSnapshot={{
-                    waveHeight: conditions.waveHeight,
-                    wavePeriod: conditions.wavePeriod,
-                    windSpeed: conditions.windSpeed,
-                    windDirection: conditions.windDirection,
-                    waterTemp: conditions.waterTemp,
-                  }}
-                  locale={locale}
-                />
-              </div>
-            </Card>
+            <SpotNowPanel
+              spot={spot}
+              locale={locale}
+              title={td.now}
+              conditions={conditions}
+              tideSchedule={tideSchedule}
+              selectedSport={selectedSport}
+              score={score}
+              scoreFeedbackHint={td.scoreFeedbackHint}
+            />
 
             <div className="space-y-4">
               <Card variant="card-1" className="p-3 space-y-3">

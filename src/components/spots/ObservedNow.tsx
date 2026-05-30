@@ -30,60 +30,62 @@ export default function ObservedNow({
 
   return (
     <section
-      className="rounded-lg border border-divider bg-surface-2/80 p-3 space-y-2"
+      className="rounded-card border border-divider bg-surface-1/[0.04] p-3 space-y-3"
       aria-label={isPt ? 'Observado agora' : 'Observed now'}
     >
-      <p className="text-meta-sm text-fg-muted leading-snug">
-        <span className="font-semibold text-fg">{isPt ? 'Observado agora' : 'Observed now'}</span>
-        {' · '}
-        {observed.stationName}
-        <span className="text-fg-subtle">
-          {' '}
-          ({observed.distanceKm.toFixed(1)} km) · {age}
-        </span>
-      </p>
-
-      <p className="text-meta text-fg">
-        <span className="text-fg-muted">{isPt ? 'Vento observado' : 'Observed wind'}:</span>{' '}
-        <span className="font-mono tabular-nums font-semibold text-fg">
-          {observed.windSpeedKt} kt {cardinal}
-        </span>
-        {observed.tempC != null && (
-          <span className="text-fg-subtle font-mono tabular-nums">
-            {' '}
-            · {observed.tempC.toFixed(1)}°C
-          </span>
-        )}
-      </p>
-
-      <div className="flex flex-wrap items-center gap-2 pt-0.5">
-        <p className="text-meta-sm text-fg-muted font-mono tabular-nums">
-          {isPt ? 'Previsão' : 'Forecast'}{' '}
-          <span className="text-fg">{verification.forecastWindKt} kt</span>
-          {' · '}
-          {isPt ? 'Observado' : 'Observed'}{' '}
-          <span className="text-fg">{verification.observedWindKt} kt</span>
+      <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
+        <h3 className="text-meta font-semibold text-fg">
+          {isPt ? 'Observado agora' : 'Observed now'}
+        </h3>
+        <p className="text-meta-sm text-fg-subtle">
+          {observed.stationName} · {observed.distanceKm.toFixed(1)} km · {age}
         </p>
-        <span
-          className={cn(
-            'inline-flex items-center gap-1 rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
-            badge.className,
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-meta">
+        <div className="rounded-lg border border-divider/60 bg-bg-base/40 px-2.5 py-2">
+          <p className="text-meta-sm text-fg-muted mb-0.5">
+            {isPt ? 'Vento (IPMA)' : 'Wind (IPMA)'}
+          </p>
+          <p className="font-mono tabular-nums font-semibold text-fg">
+            {observed.windSpeedKt} kt {cardinal}
+          </p>
+          {observed.tempC != null && (
+            <p className="text-meta-sm text-fg-subtle font-mono tabular-nums mt-0.5">
+              {observed.tempC.toFixed(1)}°C
+            </p>
           )}
-          title={
-            isPt
-              ? `Diferença ${verification.deltaKt >= 0 ? '+' : ''}${verification.deltaKt} kt`
-              : `Delta ${verification.deltaKt >= 0 ? '+' : ''}${verification.deltaKt} kt`
-          }
-        >
-          <span aria-hidden>{badge.symbol}</span>
-          {badge.label}
-        </span>
+        </div>
+        <div className="rounded-lg border border-divider/60 bg-bg-base/40 px-2.5 py-2">
+          <p className="text-meta-sm text-fg-muted mb-0.5">
+            {isPt ? 'Previsão modelo' : 'Model forecast'}
+          </p>
+          <p className="font-mono tabular-nums font-semibold text-fg">
+            {verification.forecastWindKt} kt
+          </p>
+        </div>
+        <div className="col-span-2 sm:col-span-1 flex flex-col justify-center">
+          <span
+            className={cn(
+              'inline-flex items-center justify-center gap-1 rounded-pill border px-2.5 py-1.5 text-meta-sm font-medium w-full sm:w-auto',
+              badge.className,
+            )}
+            title={
+              isPt
+                ? `Diferença ${verification.deltaKt >= 0 ? '+' : ''}${verification.deltaKt} kt`
+                : `Delta ${verification.deltaKt >= 0 ? '+' : ''}${verification.deltaKt} kt`
+            }
+          >
+            <span aria-hidden>{badge.symbol}</span>
+            {badge.label}
+          </span>
+        </div>
       </div>
 
       <p className="text-meta-sm text-fg-subtle leading-snug">
         {isPt
-          ? 'Estação meteorológica terrestre IPMA — pode diferir do line-up na praia.'
-          : 'IPMA land weather station — may differ from conditions on the beach.'}
+          ? 'Estação terrestre IPMA — pode diferir do vento no line-up.'
+          : 'Land IPMA station — may differ from wind on the water.'}
       </p>
     </section>
   );

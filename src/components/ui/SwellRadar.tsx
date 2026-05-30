@@ -237,16 +237,19 @@ export default function SwellRadar({
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) {
+    const coarse = window.matchMedia('(pointer: coarse)').matches;
+    if (reduced || coarse) {
       setSwellRots(swellTargets);
       if (windTarget !== null) setWindRot(windTarget);
       setFadeIn(1);
       prevSwellRots.current = [...swellTargets];
+      if (windTarget !== null) prevWind.current = windTarget;
       return;
     }
 
     const duration = 600;
     const start = performance.now();
+    let frameId = 0;
     const deltas = swellTargets.map((target, i) => {
       let d = target - (prevSwellRots.current[i] ?? 0);
       while (d > 180) d -= 360;
@@ -273,14 +276,15 @@ export default function SwellRadar({
       setFadeIn(Math.min(progress * 1.5, 1));
 
       if (progress < 1) {
-        requestAnimationFrame(tick);
+        frameId = requestAnimationFrame(tick);
       } else {
         prevSwellRots.current = [...swellTargets];
         if (windTarget !== null) prevWind.current = windTarget;
       }
     };
 
-    requestAnimationFrame(tick);
+    frameId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frameId);
   }, [swellTargets.join(','), windTarget]);
 
   /* ── arrow geometry ── */

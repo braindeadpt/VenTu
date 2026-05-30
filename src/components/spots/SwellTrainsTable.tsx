@@ -26,61 +26,77 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
         : 'Secondary';
 
   return (
-    <div className="w-full space-y-2">
+    <div className="w-full min-w-0 space-y-2">
       <h3 className="text-meta font-semibold text-fg-muted uppercase tracking-wide">
         {isPt ? 'Ondulação' : 'Swell'}
       </h3>
-      <ul className="space-y-1.5" role="list">
-        {trains.map((train) => (
-          <li
-            key={train.key}
-            className={cn(
-              'flex flex-wrap items-center gap-x-2 gap-y-0.5 rounded-lg px-2.5 py-2 text-meta',
-              train.isDominant
-                ? 'bg-surface-2 border border-divider-strong'
-                : 'bg-surface-1/[0.04] border border-divider/60',
-            )}
-          >
-            <span
-              className={cn(
-                'h-2 w-2 shrink-0 rounded-full',
-                train.key === 'primary' ? 'bg-data-waves' : 'bg-data-waves/60',
-              )}
-              aria-hidden
-            />
-            {train.isDominant && (
-              <span className="text-data-waves" aria-hidden>
-                ★
-              </span>
-            )}
-            <span className="text-fg-muted min-w-[4.5rem]">{trainLabel(train.key)}</span>
-            <span className="font-mono tabular-nums text-fg font-medium">
-              {getCardinalLabel(train.direction)}
-            </span>
-            <span className="text-fg-subtle" aria-hidden>
-              ·
-            </span>
-            <span className="font-mono tabular-nums text-fg">
-              {train.height.toFixed(1)}m
-            </span>
-            <span className="text-fg-subtle" aria-hidden>
-              ·
-            </span>
-            <span className="font-mono tabular-nums text-fg">
-              {train.period.toFixed(1)}s
-            </span>
-            <span className="text-fg-subtle" aria-hidden>
-              ·
-            </span>
-            <span className="font-mono tabular-nums text-fg-muted">
-              {train.powerKw.toFixed(1)} kW/m
-            </span>
-          </li>
-        ))}
-      </ul>
+      <div className="overflow-x-auto -mx-1 px-1">
+        <table className="w-full min-w-[280px] border-collapse text-meta">
+          <thead>
+            <tr className="text-fg-muted text-meta-sm">
+              <th scope="col" className="text-left font-medium py-1 pr-2">
+                {isPt ? 'Feixe' : 'Train'}
+              </th>
+              <th scope="col" className="text-left font-medium py-1 pr-2">
+                {isPt ? 'Dir.' : 'Dir.'}
+              </th>
+              <th scope="col" className="text-right font-medium py-1 pr-2">
+                H
+              </th>
+              <th scope="col" className="text-right font-medium py-1 pr-2">
+                T
+              </th>
+              <th scope="col" className="text-right font-medium py-1">
+                kW/m
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {trains.map((train) => (
+              <tr
+                key={train.key}
+                className={cn(
+                  'border-t border-divider/60',
+                  train.isDominant && 'bg-surface-2/80',
+                )}
+              >
+                <td className="py-2 pr-2 text-fg-muted whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span
+                      className={cn(
+                        'h-2 w-2 shrink-0 rounded-full',
+                        train.key === 'primary' ? 'bg-data-waves' : 'bg-data-waves/60',
+                      )}
+                      aria-hidden
+                    />
+                    {trainLabel(train.key)}
+                    {train.isDominant && (
+                      <span className="text-data-waves text-meta-sm" aria-hidden>
+                        ★
+                      </span>
+                    )}
+                  </span>
+                </td>
+                <td className="py-2 pr-2 font-mono tabular-nums text-fg whitespace-nowrap">
+                  {getCardinalLabel(train.direction)}
+                </td>
+                <td className="py-2 pr-2 font-mono tabular-nums text-fg text-right whitespace-nowrap">
+                  {train.height.toFixed(1)}m
+                </td>
+                <td className="py-2 pr-2 font-mono tabular-nums text-fg text-right whitespace-nowrap">
+                  {train.period.toFixed(1)}s
+                </td>
+                <td className="py-2 font-mono tabular-nums text-fg-muted text-right whitespace-nowrap">
+                  {train.powerKw.toFixed(1)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       {trains.length > 1 && (
         <p className="text-meta text-fg-muted font-mono tabular-nums">
-          {isPt ? 'Total' : 'Total'}:{' '}
+          {isPt ? 'Energia total' : 'Total energy'}:{' '}
           <span className="text-fg font-medium">{total.toFixed(1)} kW/m</span>
         </p>
       )}
