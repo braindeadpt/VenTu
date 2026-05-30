@@ -24,7 +24,6 @@ import SeoHead from '@/components/SeoHead';
 import ForecastTable from '@/components/weather/ForecastTable';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
-import SpotMap from '@/components/spots/SpotMap';
 import MagicWindows from '@/components/MagicWindows';
 import { computeMagicWindows } from '@/lib/magicWindows';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
@@ -41,7 +40,8 @@ import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import SpotNowPanel from '@/components/spots/SpotNowPanel';
+import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard';
+import SpotLocationCompact from '@/components/spots/SpotLocationCompact';
 import type { ObservedConditions } from '@/lib/observations';
 
 interface Conditions {
@@ -444,51 +444,57 @@ export default function SpotDetailClient({
           </div>
         </section>
 
-        {/* Dashboard: Agora + mapa acima da dobra */}
-        <section className="max-w-6xl mx-auto px-4 py-4" aria-label={td.now}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <SpotNowPanel
-              spot={spot}
-              locale={locale}
-              title={td.now}
-              conditions={conditions}
-              tideSchedule={tideSchedule}
-              selectedSport={selectedSport}
-              score={score}
-              scoreFeedbackHint={td.scoreFeedbackHint}
-            />
-
-            <div className="space-y-4">
-              <Card variant="card-1" className="p-3 space-y-3">
-                <h2 className="text-h3 text-fg">{td.location}</h2>
-                <div className="h-40 sm:h-44 rounded-card overflow-hidden border border-divider">
-                  <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} />
-                </div>
-                <a
-                  href={directionsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-meta text-data-waves hover:text-data-waves/80 font-medium transition-colors duration-150"
-                >
-                  {isPt ? 'Abrir no Google Maps' : 'Open in Google Maps'}
-                  <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden />
-                </a>
-              </Card>
-
-              {showMagicWindows && (
-                <Card variant="card-1" className="p-4">
-                  <h2 className="text-h3 text-fg mb-3">{td.bestWindows}</h2>
-                  <MagicWindows
-                    hourly={magicWindowsHourly}
-                    spotType={selectedSport}
-                    spotBestWind={spot.bestWind || ''}
-                    locale={locale}
-                  />
-                </Card>
-              )}
-            </div>
-          </div>
+        <section className="max-w-6xl mx-auto px-4 py-4">
+          <SpotConditionsDashboard
+            spot={spot}
+            locale={locale}
+            conditions={conditions}
+            tideSchedule={tideSchedule}
+            selectedSport={selectedSport}
+            score={score}
+            copy={{
+              title: td.now,
+              subtitle: td.nowSubtitle,
+              wavesLabel: td.wavesLabel,
+              wavesHint: td.wavesHint,
+              periodLabel: td.periodLabel,
+              periodHint: td.periodHint,
+              windLabel: td.windLabel,
+              gustLabel: td.gustLabel,
+              waterLabel: td.waterLabel,
+              waterHint: td.waterHint,
+              seaStateTitle: td.seaStateTitle,
+              seaStateHint: td.seaStateHint,
+              windContextTitle: td.windContextTitle,
+              windRelationHints: {
+                offshore: td.windOffshoreHint,
+                onshore: td.windOnshoreHint,
+                cross: td.windCrossHint,
+              },
+              verificationTitle: td.verificationTitle,
+              scoreFeedbackHint: td.scoreFeedbackHint,
+            }}
+          />
         </section>
+
+        {showMagicWindows && (
+          <section className="max-w-6xl mx-auto px-4 pb-4">
+            <Card variant="card-1" className="p-4 md:p-5">
+              <h2 className="text-h2 text-fg mb-1">{td.bestWindows}</h2>
+              <p className="text-meta-sm text-fg-muted mb-4">
+                {isPt
+                  ? 'Intervalos com melhor score para a modalidade seleccionada nas próximas horas.'
+                  : 'Time windows with the best score for the selected sport in coming hours.'}
+              </p>
+              <MagicWindows
+                hourly={magicWindowsHourly}
+                spotType={selectedSport}
+                spotBestWind={spot.bestWind || ''}
+                locale={locale}
+              />
+            </Card>
+          </section>
+        )}
 
         <section className="max-w-6xl mx-auto px-4 py-4 space-y-3">
           <div className="flex flex-wrap items-end justify-between gap-2">
@@ -542,8 +548,17 @@ export default function SpotDetailClient({
           )}
         </section>
 
-        <section className="max-w-6xl mx-auto px-4 py-4 space-y-3">
+        <section className="max-w-6xl mx-auto px-4 py-4 space-y-4">
           <h2 className="text-h2 text-fg">{td.logistics}</h2>
+          <SpotLocationCompact
+            lat={spot.lat}
+            lon={spot.lon}
+            locale={locale}
+            title={td.location}
+            directionsHref={directionsUrl}
+            directionsLabel={td.getDirections}
+            openMapsLabel={td.openMapsLabel}
+          />
           <p className="text-body text-fg-muted leading-relaxed max-w-3xl">
             {isPt ? spot.description : spot.descriptionEn}
           </p>

@@ -27,9 +27,16 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
 
   return (
     <div className="w-full min-w-0 space-y-2">
-      <h3 className="text-meta font-semibold text-fg-muted uppercase tracking-wide">
-        {isPt ? 'Ondulação' : 'Swell'}
-      </h3>
+      <div>
+        <h3 className="text-meta font-semibold text-fg uppercase tracking-wide">
+          {isPt ? 'Feixes de ondulação' : 'Swell trains'}
+        </h3>
+        <p className="text-meta-sm text-fg-muted mt-0.5">
+          {isPt
+            ? 'Primário e secundário — altura, período, direcção e energia (kW/m).'
+            : 'Primary and secondary — height, period, direction and energy (kW/m).'}
+        </p>
+      </div>
       <div className="overflow-x-auto -mx-1 px-1">
         <table className="w-full min-w-[280px] border-collapse text-meta">
           <thead>
@@ -94,9 +101,9 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
           </tbody>
         </table>
       </div>
-      {trains.length > 1 && (
-        <p className="text-meta text-fg-muted font-mono tabular-nums">
-          {isPt ? 'Energia total' : 'Total energy'}:{' '}
+      {trains.length === 1 && (
+        <p className="text-meta-sm text-fg-subtle font-mono tabular-nums">
+          {isPt ? 'Energia' : 'Energy'}:{' '}
           <span className="text-fg font-medium">{total.toFixed(1)} kW/m</span>
         </p>
       )}
