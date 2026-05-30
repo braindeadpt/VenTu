@@ -6,7 +6,6 @@ import type { SportScore } from '@/lib/sportScore';
 import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
-import { cn } from '@/lib/cn';
 import MetricTile from '@/components/ui/MetricTile';
 import SwellRadar from '@/components/ui/SwellRadar';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
@@ -157,15 +156,12 @@ export default function SpotConditionsDashboard({
                 coastOrientation={spot.coastOrientation}
                 size="md"
                 showLegend={false}
+                visualTone="dashboard"
               />
               {windRelationMeta && windRelation && (
                 <div className="w-full max-w-xs space-y-1.5 text-center lg:text-left">
-                  <span
-                    className={cn(
-                      'inline-flex items-center rounded-pill border px-2.5 py-1 text-meta-sm font-medium',
-                      windRelationMeta.className,
-                    )}
-                  >
+                  <span className="inline-flex items-center gap-2 rounded-pill border border-divider bg-bg-elevated px-2.5 py-1.5 text-meta-sm font-medium text-fg">
+                    <Wind className="w-3.5 h-3.5 text-data-wind shrink-0" aria-hidden />
                     {windRelationMeta.label}
                   </span>
                   <p className="text-meta-sm text-fg-muted leading-snug">
@@ -185,26 +181,29 @@ export default function SpotConditionsDashboard({
               )}
             </div>
 
-            <div className="lg:col-span-3 rounded-card border border-divider bg-surface-1/[0.03] p-3 space-y-2">
+            <div className="lg:col-span-3 rounded-card border border-divider bg-bg-elevated p-3 space-y-2">
               <h4 className="text-meta font-semibold text-fg">{copy.windContextTitle}</h4>
-              <ul className="text-meta-sm text-fg-muted space-y-2 leading-relaxed">
+              <ul className="text-meta-sm text-fg-muted space-y-2.5 leading-relaxed list-none p-0 m-0">
                 <li>
-                  <span className="text-fg font-medium">{isPt ? 'Offshore' : 'Offshore'}:</span>{' '}
+                  <span className="font-medium text-fg">{isPt ? 'Offshore' : 'Offshore'}</span>
+                  <span className="text-fg-subtle"> — </span>
                   {copy.windRelationHints.offshore}
                 </li>
                 <li>
-                  <span className="text-fg font-medium">{isPt ? 'Onshore' : 'Onshore'}:</span>{' '}
+                  <span className="font-medium text-fg">{isPt ? 'Onshore' : 'Onshore'}</span>
+                  <span className="text-fg-subtle"> — </span>
                   {copy.windRelationHints.onshore}
                 </li>
                 <li>
-                  <span className="text-fg font-medium">{isPt ? 'Cross' : 'Cross-shore'}:</span>{' '}
+                  <span className="font-medium text-fg">{isPt ? 'Cross' : 'Cross-shore'}</span>
+                  <span className="text-fg-subtle"> — </span>
                   {copy.windRelationHints.cross}
                 </li>
               </ul>
-              <p className="text-meta-sm text-fg-subtle pt-1 border-t border-divider/60">
+              <p className="text-meta-sm text-fg-subtle pt-2 border-t border-divider">
                 {isPt
-                  ? 'Setas = direção de onde vem o vento/ondulação (convenção meteorológica).'
-                  : 'Arrows show where wind/swell come from (meteorological convention).'}
+                  ? 'Azul = ondulação · âmbar = vento. Terra/mar no radar são só referência de costa.'
+                  : 'Blue = swell · amber = wind. Land/sea shading on the radar is coast reference only.'}
               </p>
             </div>
           </div>

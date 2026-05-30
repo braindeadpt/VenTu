@@ -37,10 +37,10 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
             : 'Primary and secondary — height, period, direction and energy (kW/m).'}
         </p>
       </div>
-      <div className="overflow-x-auto -mx-1 px-1">
-        <table className="w-full min-w-[280px] border-collapse text-meta">
+      <div className="overflow-x-auto -mx-1 px-1 rounded-card border border-divider">
+        <table className="w-full min-w-[280px] border-collapse text-meta bg-bg-base">
           <thead>
-            <tr className="text-fg-muted text-meta-sm">
+            <tr className="text-fg-muted text-meta-sm bg-surface-1/[0.04]">
               <th scope="col" className="text-left font-medium py-1 pr-2">
                 {isPt ? 'Feixe' : 'Train'}
               </th>
@@ -63,37 +63,68 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
               <tr
                 key={train.key}
                 className={cn(
-                  'border-t border-divider/60',
-                  train.isDominant && 'bg-surface-2/80',
+                  'border-t border-divider',
+                  train.isDominant
+                    ? 'bg-data-waves/[0.06]'
+                    : 'bg-bg-base',
                 )}
               >
-                <td className="py-2 pr-2 text-fg-muted whitespace-nowrap">
+                <td
+                  className={cn(
+                    'py-2.5 pr-2 whitespace-nowrap',
+                    train.isDominant
+                      ? 'border-l-2 border-l-data-waves pl-2 text-fg'
+                      : 'pl-2.5 text-fg-muted',
+                  )}
+                >
                   <span className="inline-flex items-center gap-1.5">
                     <span
                       className={cn(
                         'h-2 w-2 shrink-0 rounded-full',
-                        train.key === 'primary' ? 'bg-data-waves' : 'bg-data-waves/60',
+                        train.key === 'primary' ? 'bg-data-waves' : 'bg-data-waves/50',
                       )}
                       aria-hidden
                     />
-                    {trainLabel(train.key)}
+                    <span className={train.isDominant ? 'font-medium text-fg' : undefined}>
+                      {trainLabel(train.key)}
+                    </span>
                     {train.isDominant && (
-                      <span className="text-data-waves text-meta-sm" aria-hidden>
+                      <span className="text-meta-sm text-data-waves font-medium" aria-hidden>
                         ★
                       </span>
                     )}
                   </span>
                 </td>
-                <td className="py-2 pr-2 font-mono tabular-nums text-fg whitespace-nowrap">
+                <td
+                  className={cn(
+                    'py-2.5 pr-2 font-mono tabular-nums whitespace-nowrap',
+                    train.isDominant ? 'text-fg font-semibold' : 'text-fg',
+                  )}
+                >
                   {getCardinalLabel(train.direction)}
                 </td>
-                <td className="py-2 pr-2 font-mono tabular-nums text-fg text-right whitespace-nowrap">
-                  {train.height.toFixed(1)}m
+                <td
+                  className={cn(
+                    'py-2.5 pr-2 font-mono tabular-nums text-right whitespace-nowrap',
+                    train.isDominant ? 'text-fg font-semibold' : 'text-fg',
+                  )}
+                >
+                  {train.height.toFixed(1)} m
                 </td>
-                <td className="py-2 pr-2 font-mono tabular-nums text-fg text-right whitespace-nowrap">
-                  {train.period.toFixed(1)}s
+                <td
+                  className={cn(
+                    'py-2.5 pr-2 font-mono tabular-nums text-right whitespace-nowrap',
+                    train.isDominant ? 'text-fg font-semibold' : 'text-fg',
+                  )}
+                >
+                  {train.period.toFixed(1)} s
                 </td>
-                <td className="py-2 font-mono tabular-nums text-fg-muted text-right whitespace-nowrap">
+                <td
+                  className={cn(
+                    'py-2.5 pr-2 font-mono tabular-nums text-right whitespace-nowrap',
+                    train.isDominant ? 'text-fg font-semibold' : 'text-fg-muted',
+                  )}
+                >
                   {train.powerKw.toFixed(1)}
                 </td>
               </tr>

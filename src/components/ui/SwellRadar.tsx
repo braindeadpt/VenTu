@@ -76,6 +76,11 @@ interface SwellRadarProps {
   size?: SizeKey | number;
   /** Show legend overlay below radar. Default: true. */
   showLegend?: boolean;
+  /**
+   * `dashboard` — high-contrast, neutral fills (spot detail).
+   * `default` — semantic offshore/onshore wind colours.
+   */
+  visualTone?: 'default' | 'dashboard';
 }
 
 /* ──────────── size presets ──────────── */
@@ -194,7 +199,9 @@ export default function SwellRadar({
   coastOrientation,
   size,
   showLegend = true,
+  visualTone = 'default',
 }: SwellRadarProps) {
+  const dashboardTone = visualTone === 'dashboard';
   const swellTrains = resolveSwellTrains({
     swellTrains: swellTrainsProp,
     swellDirection,
@@ -307,20 +314,20 @@ export default function SwellRadar({
 
   /* ── wind color ── */
   let windColor: string;
-  if (windRelation === 'offshore') windColor = 'rgb(var(--windDir-offshore))';
-  else if (windRelation === 'onshore') windColor = 'rgb(var(--windDir-onshore))';
-  else if (windRelation === 'cross') windColor = 'rgb(var(--windDir-cross))';
-  else windColor = 'rgb(var(--data-wind))';
+  if (dashboardTone) {
+    windColor = 'rgb(var(--data-wind))';
+  } else if (windRelation === 'offshore') {
+    windColor = 'rgb(var(--windDir-offshore))';
+  } else if (windRelation === 'onshore') {
+    windColor = 'rgb(var(--windDir-onshore))';
+  } else if (windRelation === 'cross') {
+    windColor = 'rgb(var(--windDir-cross))';
+  } else {
+    windColor = 'rgb(var(--data-wind))';
+  }
 
-  /* ── incidence color ── */
   const incidenceColor =
-    incidenceDeg !== null
-      ? incidenceDeg < 30
-        ? 'rgb(var(--data-waves))'
-        : incidenceDeg <= 60
-          ? 'rgb(var(--fg-muted))'
-          : 'rgb(var(--fg-subtle))'
-      : null;
+    incidenceDeg !== null ? 'rgb(var(--fg-muted))' : null;
 
   /* ── a11y ── */
   const ariaParts: string[] = [];
@@ -361,9 +368,29 @@ export default function SwellRadar({
           {hasCoast && (
             <g opacity={fadeIn}>
               {/* Sea side */}
-              <circle cx={c} cy={c} r={R} fill="rgb(var(--data-waves) / 0.08)" clipPath={`url(#seaClip-${cfg.preset})`} />
-              {/* Land side */}
-              <circle cx={c} cy={c} r={R} fill="rgb(var(--surface-1-rgb) / 0.75)" clipPath={`url(#landClip-${cfg.preset})`} />
+              <circle
+                cx={c}
+                cy={c}
+                r={R}
+                fill={
+                  dashboardTone
+                    ? 'rgb(var(--data-waves) / 0.07)'
+                    : 'rgb(var(--data-waves) / 0.08)'
+                }
+                clipPath={`url(#seaClip-${cfg.preset})`}
+              />
+              {/* Land side — avoid heavy dark fill on dashboard */}
+              <circle
+                cx={c}
+                cy={c}
+                r={R}
+                fill={
+                  dashboardTone
+                    ? 'rgb(var(--divider) / 0.12)'
+                    : 'rgb(var(--surface-1-rgb) / 0.75)'
+                }
+                clipPath={`url(#landClip-${cfg.preset})`}
+              />
               {/* Coast line */}
               <line
                 x1={c - R * Math.cos(((coastAngle - 90) * Math.PI) / 180)}
