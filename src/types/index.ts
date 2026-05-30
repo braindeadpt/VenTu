@@ -1,4 +1,4 @@
-export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidence';
+export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 
 export interface Spot {
   id: string;

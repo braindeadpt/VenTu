@@ -1,7 +1,7 @@
-import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidence';
+import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 import type { ObservedConditions } from '@/lib/observations';
 
-export type { ConfidenceDetail, ConfidenceTier, DailyConfidence };
+export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 
 /** Shared marine condition fields (static JSON + map + drawer). */
 export interface MarineConditionsFields {

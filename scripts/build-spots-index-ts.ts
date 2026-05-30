@@ -7,7 +7,7 @@ import { join } from 'path';
 import { spots } from '../src/lib/spots';
 import { getAllSportScores, type SportScore } from '../src/lib/sportScore';
 import type { SportType } from '../src/lib/sportRatings';
-import { pickConfidenceFields } from '../src/lib/forecastConfidence';
+import { pickConfidenceFields } from '../src/lib/forecastConfidenceCore';
 import { resolveConditionsEntry } from '../src/lib/spotConditionsSource';
 import { pickMarineDisplayFields, pickObservedField } from '../src/lib/marineConditions';
 

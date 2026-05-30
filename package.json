@@ -31,7 +31,7 @@
     "obs:map": "node scripts/build-station-map.mjs",
     "obs:update": "node scripts/build-station-map.mjs && node scripts/update-observations.mjs",
     "data:update": "npm run conditions:update && npm run obs:update && npm run spots:index && npm run news:generate",
-"spots:index": "npx tsx scripts/build-spots-index-ts.ts",
+    "spots:index": "tsx scripts/build-spots-index-ts.ts",
     "spots:aerials": "node scripts/generate-spot-aerials.mjs",
     "sitemap:generate": "node scripts/generate-sitemap.js",
     "spots:validate": "node scripts/validate-spots.js",
@@ -67,6 +67,7 @@
     "postcss": "^8.4.49",
     "postcss-import": "^16.1.1",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.22.3",
     "typescript": "^5.4.0",
     "vitest": "^4.1.7"
   }
