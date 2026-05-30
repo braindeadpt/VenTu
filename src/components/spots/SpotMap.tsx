@@ -6,11 +6,19 @@ interface SpotMapProps {
   lat: number;
   lon: number;
   locale?: string;
-  /** Fills parent height (e.g. compact location strip). */
+  /** Fills parent height (e.g. logistics panel). */
   compact?: boolean;
+  /** Hide floating OSM link (parent provides actions). */
+  hideOverlay?: boolean;
 }
 
-export default function SpotMap({ lat, lon, locale = 'pt', compact = false }: SpotMapProps) {
+export default function SpotMap({
+  lat,
+  lon,
+  locale = 'pt',
+  compact = false,
+  hideOverlay = false,
+}: SpotMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState(false);
   const isPt = locale === 'pt';
@@ -61,20 +69,22 @@ export default function SpotMap({ lat, lon, locale = 'pt', compact = false }: Sp
   }
 
   const shellClass = compact
-    ? 'relative w-full h-full min-h-[7rem] rounded-lg overflow-hidden border border-divider'
+    ? 'relative w-full h-full min-h-0'
     : 'relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-card ring-1 ring-divider';
 
   return (
     <div className={shellClass}>
-      <div ref={mapRef} className="w-full h-full" />
-      <a 
-        href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="absolute bottom-3 right-3 text-xs text-fg-muted hover:text-fg bg-bg-base/80 backdrop-blur-sm px-3 py-1.5 rounded-lg transition-all hover:bg-bg-base/90 z-10"
-      >
-        {isPt ? 'Abrir mapa' : 'Open map'} ↗
-      </a>
+      <div ref={mapRef} className="absolute inset-0 w-full h-full" />
+      {!hideOverlay && (
+        <a
+          href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-3 right-3 text-xs text-fg-muted hover:text-fg bg-bg-base/90 px-3 py-1.5 rounded-lg border border-divider z-10"
+        >
+          {isPt ? 'Abrir mapa' : 'Open map'} ↗
+        </a>
+      )}
     </div>
   );
 }

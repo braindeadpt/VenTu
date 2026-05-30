@@ -41,7 +41,7 @@ import ErrorState from '@/components/ui/ErrorState';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard';
-import SpotLocationCompact from '@/components/spots/SpotLocationCompact';
+import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
 import type { ObservedConditions } from '@/lib/observations';
 
 interface Conditions {
@@ -550,18 +550,17 @@ export default function SpotDetailClient({
 
         <section className="max-w-6xl mx-auto px-4 py-4 space-y-4">
           <h2 className="text-h2 text-fg">{td.logistics}</h2>
-          <SpotLocationCompact
-            lat={spot.lat}
-            lon={spot.lon}
+          <SpotLogisticsPanel
+            spot={spot}
             locale={locale}
-            title={td.location}
+            locationTitle={td.location}
+            aboutTitle={td.aboutSpot}
             directionsHref={directionsUrl}
             directionsLabel={td.getDirections}
             openMapsLabel={td.openMapsLabel}
+            regionLabel={isPt ? 'Região' : 'Region'}
+            difficultyLabel={isPt ? 'Nível' : 'Level'}
           />
-          <p className="text-body text-fg-muted leading-relaxed max-w-3xl">
-            {isPt ? spot.description : spot.descriptionEn}
-          </p>
           <LocalTipsSection spot={spot} tips={mergedLocalTips} locale={locale} />
           {communityOverlay[spot.slug]?.contributor && (
             <p className="text-meta-sm text-fg-subtle">
