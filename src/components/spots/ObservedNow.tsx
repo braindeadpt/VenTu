@@ -2,8 +2,12 @@
 
 import type { ObservedConditions } from '@/lib/observations';
 import {
-  formatObservedAge,
+  formatObservedClockTime,
   forecastWindKtFromMs,
+  isObservedFresh,
+  observedSectionTitle,
+  observedSourceLabel,
+  observedWindDisclaimer,
   verificationBadge,
   verifyWind,
 } from '@/lib/observations';
@@ -21,31 +25,42 @@ export default function ObservedNow({
   locale,
 }: ObservedNowProps) {
   const isPt = locale === 'pt';
+  const fresh = isObservedFresh(observed.observedAt);
   const forecastKt = forecastWindKtFromMs(forecastWindSpeedMs);
   const verification = verifyWind(forecastKt, observed.windSpeedKt);
   const badge = verificationBadge(verification.agreement, locale);
   const cardinal =
     isPt ? observed.windCardinal : (observed.windCardinalEn ?? observed.windCardinal);
-  const age = formatObservedAge(observed.observedAt, locale);
+  const clock = formatObservedClockTime(observed.observedAt, locale);
+  const sourceLabel = observedSourceLabel(observed.source, locale);
+  const title = observedSectionTitle(observed.source, fresh, locale);
+
+  const metaLine = isPt
+    ? `Observado ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km`
+    : `Observed ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km`;
 
   return (
     <section
-      className="rounded-card border border-divider bg-surface-1/[0.04] p-3 space-y-3"
-      aria-label={isPt ? 'Observado agora' : 'Observed now'}
+      className={cn(
+        'rounded-card border p-3 space-y-3',
+        fresh
+          ? 'border-divider bg-surface-1/[0.04]'
+          : 'border-divider/60 bg-surface-1/[0.02] opacity-80',
+      )}
+      aria-label={title}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
-        <h3 className="text-meta font-semibold text-fg">
-          {isPt ? 'Observado agora' : 'Observed now'}
+        <h3 className={cn('text-meta font-semibold', fresh ? 'text-fg' : 'text-fg-muted')}>
+          {title}
+          <span className="ml-1.5 text-meta-sm font-normal text-fg-subtle">({sourceLabel})</span>
         </h3>
-        <p className="text-meta-sm text-fg-subtle">
-          {observed.stationName} · {observed.distanceKm.toFixed(1)} km · {age}
-        </p>
+        <p className="text-meta-sm text-fg-subtle">{metaLine}</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-meta">
         <div className="rounded-lg border border-divider/60 bg-bg-base/40 px-2.5 py-2">
           <p className="text-meta-sm text-fg-muted mb-0.5">
-            {isPt ? 'Vento (IPMA)' : 'Wind (IPMA)'}
+            {isPt ? `Vento (${sourceLabel})` : `Wind (${sourceLabel})`}
           </p>
           <p className="font-mono tabular-nums font-semibold text-fg">
             {observed.windSpeedKt} kt {cardinal}
@@ -83,9 +98,7 @@ export default function ObservedNow({
       </div>
 
       <p className="text-meta-sm text-fg-subtle leading-snug">
-        {isPt
-          ? 'Estação terrestre IPMA — pode diferir do vento no line-up.'
-          : 'Land IPMA station — may differ from wind on the water.'}
+        {observedWindDisclaimer(observed.source, locale)}
       </p>
     </section>
   );

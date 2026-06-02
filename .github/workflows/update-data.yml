@@ -38,7 +38,11 @@ jobs:
       - name: Update Conditions
         run: node scripts/update-conditions.js
 
-      - name: Merge IPMA observations
+      - name: Merge IPMA + Ecowitt observations
+        env:
+          ECOWITT_APPLICATION_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
+          ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
+          ECOWITT_MAC: ${{ secrets.ECOWITT_MAC }}
         run: npm run obs:update
 
       - name: Build spots index

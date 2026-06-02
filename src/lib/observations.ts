@@ -3,7 +3,7 @@
  * Independent from sport score and multi-model confidence.
  */
 
-export type ObservedSource = 'ipma';
+export type ObservedSource = 'ipma' | 'ecowitt';
 
 export interface ObservedConditions {
   windSpeedKt: number;
@@ -74,6 +74,31 @@ export function verificationBadge(
   }
 }
 
+export const OBSERVED_FRESH_MAX_HOURS = 3;
+
+export function getObservedAgeHours(observedAt: string): number | null {
+  const ms = Date.now() - new Date(observedAt).getTime();
+  if (!Number.isFinite(ms) || ms < 0) return null;
+  return ms / 3_600_000;
+}
+
+export function isObservedFresh(observedAt: string, maxHours = OBSERVED_FRESH_MAX_HOURS): boolean {
+  const age = getObservedAgeHours(observedAt);
+  return age !== null && age <= maxHours;
+}
+
+/** Wall-clock time of the IPMA snapshot in Europe/Lisbon. */
+export function formatObservedClockTime(observedAt: string, locale: string): string {
+  const d = new Date(observedAt);
+  if (Number.isNaN(d.getTime())) return '—';
+  return d.toLocaleTimeString(locale === 'pt' ? 'pt-PT' : 'en-GB', {
+    timeZone: 'Europe/Lisbon',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+}
+
 /** Human-readable age since IPMA snapshot. */
 export function formatObservedAge(observedAt: string, locale: string): string {
   const ms = Date.now() - new Date(observedAt).getTime();
@@ -93,4 +118,33 @@ export function formatObservedAge(observedAt: string, locale: string): string {
 
 export function forecastWindKtFromMs(windSpeedMs: number): number {
   return Math.round(windSpeedMs * 1.94384);
+}
+
+export function observedSourceLabel(source: ObservedSource, locale: string): string {
+  if (source === 'ecowitt') return 'Ecowitt';
+  return locale === 'pt' ? 'IPMA' : 'IPMA';
+}
+
+export function observedSectionTitle(
+  source: ObservedSource,
+  fresh: boolean,
+  locale: string,
+): string {
+  const isPt = locale === 'pt';
+  if (!fresh) {
+    return isPt ? `Observado (${observedSourceLabel(source, locale)})` : `Observed (${observedSourceLabel(source, locale)})`;
+  }
+  return isPt ? 'Observado agora' : 'Observed now';
+}
+
+export function observedWindDisclaimer(source: ObservedSource, locale: string): string {
+  const isPt = locale === 'pt';
+  if (source === 'ecowitt') {
+    return isPt
+      ? 'Estação Ecowitt (PWS) — vento medido na costa; pode diferir do line-up.'
+      : 'Ecowitt PWS — measured on the coast; may differ from the lineup.';
+  }
+  return isPt
+    ? 'Estação terrestre IPMA — pode diferir do vento no line-up.'
+    : 'Land IPMA station — may differ from wind on the water.';
 }

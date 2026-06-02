@@ -158,6 +158,15 @@ export default function Footer({ locale }: FooterProps) {
                     >
                       IPMA
                     </a>
+                    {' · '}
+                    <a
+                      href="https://www.ecowitt.net/"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Ecowitt
+                    </a>
                   </>
                 ) : (
                   <>
@@ -169,6 +178,15 @@ export default function Footer({ locale }: FooterProps) {
                       rel="noopener noreferrer"
                     >
                       IPMA
+                    </a>
+                    {' · '}
+                    <a
+                      href="https://www.ecowitt.net/"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Ecowitt
                     </a>
                   </>
                 )}

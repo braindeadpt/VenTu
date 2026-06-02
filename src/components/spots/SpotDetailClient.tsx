@@ -444,7 +444,7 @@ export default function SpotDetailClient({
           </div>
         </section>
 
-        <section className="max-w-6xl mx-auto px-4 py-4">
+        <section className="max-w-6xl mx-auto px-4 py-3">
           <SpotConditionsDashboard
             spot={spot}
             locale={locale}
@@ -473,6 +473,9 @@ export default function SpotDetailClient({
                 onshore: td.windOnshoreHint,
                 cross: td.windCrossHint,
               },
+              radarFootnote: isPt
+                ? 'Azul = ondulação · âmbar = vento. Terra/mar no radar são só referência de costa.'
+                : 'Blue = swell · amber = wind. Land/sea shading on the radar is coast reference only.',
               verificationTitle: td.verificationTitle,
               scoreFeedbackHint: td.scoreFeedbackHint,
             }}
@@ -558,7 +561,7 @@ export default function SpotDetailClient({
             locationTitle={td.location}
             aboutTitle={td.aboutSpot}
             directionsHref={directionsUrl}
-            directionsLabel={td.getDirections}
+            googleMapsLinkLabel={td.openGoogleMaps}
             openMapsLabel={td.openMapsLabel}
             regionLabel={isPt ? 'Região' : 'Region'}
             difficultyLabel={isPt ? 'Nível' : 'Level'}

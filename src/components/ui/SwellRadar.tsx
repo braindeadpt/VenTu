@@ -374,19 +374,18 @@ export default function SwellRadar({
                 r={R}
                 fill={
                   dashboardTone
-                    ? 'rgb(var(--data-waves) / 0.07)'
+                    ? 'rgb(var(--data-waves) / 0.10)'
                     : 'rgb(var(--data-waves) / 0.08)'
                 }
                 clipPath={`url(#seaClip-${cfg.preset})`}
               />
-              {/* Land side — avoid heavy dark fill on dashboard */}
               <circle
                 cx={c}
                 cy={c}
                 r={R}
                 fill={
                   dashboardTone
-                    ? 'rgb(var(--divider) / 0.12)'
+                    ? 'rgb(var(--fg-subtle) / 0.06)'
                     : 'rgb(var(--surface-1-rgb) / 0.75)'
                 }
                 clipPath={`url(#landClip-${cfg.preset})`}
@@ -434,9 +433,21 @@ export default function SwellRadar({
             const rot = swellRots[idx] ?? 0;
             const start = polarToCartesian(c, c, R + 2, train.direction);
             const end = polarToCartesian(c, c, R - swellLen, train.direction);
-            const labelPos = polarToCartesian(c, c, R - swellLen * 0.45, train.direction);
+            const tipLabelPos = polarToCartesian(c, c, R - swellLen + 12, train.direction);
+            const chevron = chevronPoints(end.x, end.y, train.direction, R * 0.12);
+            const haloStroke = dashboardTone ? Math.max(stroke + 3, 5) : stroke + 2;
             return (
               <g key={train.key} transform={`rotate(${rot} ${c} ${c})`}>
+                <line
+                  x1={start.x}
+                  y1={start.y}
+                  x2={end.x}
+                  y2={end.y}
+                  stroke="rgb(255 255 255 / 0.92)"
+                  strokeWidth={haloStroke}
+                  strokeLinecap="round"
+                  opacity={dashboardTone ? 0.95 : 0.75}
+                />
                 <line
                   x1={start.x}
                   y1={start.y}
@@ -447,7 +458,16 @@ export default function SwellRadar({
                   strokeLinecap="round"
                 />
                 <polyline
-                  points={chevronPoints(end.x, end.y, train.direction, R * 0.12)}
+                  points={chevron}
+                  fill="none"
+                  stroke="rgb(255 255 255 / 0.92)"
+                  strokeWidth={stroke * 1.5 + 2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  opacity={dashboardTone ? 0.95 : 0.75}
+                />
+                <polyline
+                  points={chevron}
                   fill="none"
                   stroke={color}
                   strokeWidth={stroke * 1.5}
@@ -455,17 +475,22 @@ export default function SwellRadar({
                   strokeLinejoin="round"
                 />
                 {train.period > 0 && cfg.preset !== 'sm' && (
-                  <text
-                    x={labelPos.x}
-                    y={labelPos.y}
-                    textAnchor="middle"
-                    dominantBaseline="middle"
-                    className="fill-current text-num-xs font-mono tabular-nums font-semibold"
-                    style={{ fill: color }}
-                    aria-hidden
-                  >
-                    {train.period.toFixed(1)}s
-                  </text>
+                  <>
+                    <text
+                      x={tipLabelPos.x}
+                      y={tipLabelPos.y}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      className="text-num-xs font-mono tabular-nums font-semibold"
+                      stroke="rgb(255 255 255 / 0.95)"
+                      strokeWidth={3}
+                      paintOrder="stroke fill"
+                      style={{ fill: color }}
+                      aria-hidden
+                    >
+                      {train.period.toFixed(0)}s
+                    </text>
+                  </>
                 )}
               </g>
             );
@@ -474,10 +499,30 @@ export default function SwellRadar({
           {/* Wind arrow (small filled triangle) */}
           {windStart && windEnd && (
             <g transform={`rotate(${windRot} ${c} ${c})`} opacity={getWindOpacity(windSpeed)}>
-              {/* Body */}
-              <line x1={windStart.x} y1={windStart.y} x2={windEnd.x} y2={windEnd.y}
-                stroke={windColor} strokeWidth={2.5} strokeLinecap="round" />
-              {/* Triangle head */}
+              <line
+                x1={windStart.x}
+                y1={windStart.y}
+                x2={windEnd.x}
+                y2={windEnd.y}
+                stroke="rgb(255 255 255 / 0.92)"
+                strokeWidth={dashboardTone ? 5.5 : 4.5}
+                strokeLinecap="round"
+              />
+              <line
+                x1={windStart.x}
+                y1={windStart.y}
+                x2={windEnd.x}
+                y2={windEnd.y}
+                stroke={windColor}
+                strokeWidth={2.5}
+                strokeLinecap="round"
+              />
+              <polygon
+                points={trianglePoints(windEnd.x, windEnd.y, windDirection ?? 0, R * 0.08)}
+                fill="rgb(255 255 255 / 0.95)"
+                stroke="rgb(255 255 255 / 0.95)"
+                strokeWidth={1}
+              />
               <polygon
                 points={trianglePoints(windEnd.x, windEnd.y, windDirection ?? 0, R * 0.08)}
                 fill={windColor}

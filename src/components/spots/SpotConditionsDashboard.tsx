@@ -1,11 +1,12 @@
 'use client';
 
-import { Clock, Droplets, Waves, Wind } from 'lucide-react';
+import { Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportScore } from '@/lib/sportScore';
 import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
+import { isObservedFresh } from '@/lib/observations';
 import MetricTile from '@/components/ui/MetricTile';
 import SwellRadar from '@/components/ui/SwellRadar';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
@@ -53,6 +54,7 @@ interface SpotConditionsDashboardProps {
     seaStateHint: string;
     windContextTitle: string;
     windRelationHints: Record<WindRelation, string>;
+    radarFootnote: string;
     verificationTitle: string;
     scoreFeedbackHint: string;
   };
@@ -87,20 +89,26 @@ export default function SpotConditionsDashboard({
     ? getWindRelationLabel(windRelation, isPt ? 'pt' : 'en')
     : null;
 
+  const freshObserved =
+    conditions.observed && isObservedFresh(conditions.observed.observedAt)
+      ? conditions.observed
+      : null;
+
+  const showVerification = Boolean(freshObserved || tideSchedule);
+
   return (
     <section
       className="card-1 rounded-card border border-divider overflow-hidden"
       aria-label={copy.title}
     >
-      <header className="px-4 pt-4 pb-3 md:px-5 border-b border-divider bg-surface-1/[0.03]">
+      <header className="px-3 pt-3 pb-2.5 md:px-4 md:pt-4 border-b border-divider bg-surface-1/[0.03]">
         <h2 className="text-h2 text-fg">{copy.title}</h2>
         <p className="text-meta text-fg-muted mt-1 max-w-3xl leading-relaxed">{copy.subtitle}</p>
       </header>
 
-      <div className="p-4 md:p-5 space-y-5">
-        {/* Primary metrics — horizontal band */}
+      <div className="p-3 md:p-4 space-y-4">
         <div
-          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 md:gap-3"
+          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 md:gap-2.5"
           role="group"
           aria-label={isPt ? 'Métricas principais' : 'Key metrics'}
         >
@@ -142,15 +150,48 @@ export default function SpotConditionsDashboard({
           />
         </div>
 
-        {/* Sea state — horizontal 3-zone layout */}
-        <div className="border-t border-divider pt-5">
-          <div className="mb-3">
-            <h3 className="text-h3 text-fg">{copy.seaStateTitle}</h3>
-            <p className="text-meta-sm text-fg-muted mt-0.5">{copy.seaStateHint}</p>
+        <div className="border-t border-divider pt-4">
+          <div className="mb-2.5 flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <h3 className="text-h3 text-fg">{copy.seaStateTitle}</h3>
+              <p className="text-meta-sm text-fg-muted mt-0.5">{copy.seaStateHint}</p>
+            </div>
+            <details className="relative shrink-0 group">
+              <summary
+                className="list-none flex items-center justify-center w-9 h-9 rounded-full border border-divider bg-bg-elevated text-fg-muted hover:text-fg hover:border-divider-strong cursor-pointer transition-colors [&::-webkit-details-marker]:hidden"
+                aria-label={copy.windContextTitle}
+              >
+                <HelpCircle className="w-4 h-4" aria-hidden />
+              </summary>
+              <div
+                className="absolute right-0 top-full z-20 mt-1.5 w-[min(18rem,calc(100vw-2rem))] rounded-card border border-divider bg-bg-elevated shadow-lg p-3 text-meta-sm text-fg-muted leading-relaxed"
+                role="note"
+              >
+                <p className="font-semibold text-fg text-meta mb-2">{copy.windContextTitle}</p>
+                <ul className="space-y-2 list-none p-0 m-0">
+                  <li>
+                    <span className="font-medium text-fg">Offshore</span>
+                    <span className="text-fg-subtle"> — </span>
+                    {copy.windRelationHints.offshore}
+                  </li>
+                  <li>
+                    <span className="font-medium text-fg">Onshore</span>
+                    <span className="text-fg-subtle"> — </span>
+                    {copy.windRelationHints.onshore}
+                  </li>
+                  <li>
+                    <span className="font-medium text-fg">{isPt ? 'Cross' : 'Cross-shore'}</span>
+                    <span className="text-fg-subtle"> — </span>
+                    {copy.windRelationHints.cross}
+                  </li>
+                </ul>
+                <p className="text-fg-subtle mt-2 pt-2 border-t border-divider">{copy.radarFootnote}</p>
+              </div>
+            </details>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-start">
-            <div className="lg:col-span-4 flex flex-col items-center lg:items-start gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-start">
+            <div className="lg:col-span-4 flex flex-col items-center lg:items-start gap-2">
               <SwellRadar
                 swellTrains={swellTrains.map((t) => ({
                   key: t.key,
@@ -166,8 +207,8 @@ export default function SpotConditionsDashboard({
                 visualTone="dashboard"
               />
               {windRelationMeta && windRelation && (
-                <div className="w-full max-w-xs space-y-1.5 text-center lg:text-left">
-                  <span className="inline-flex items-center gap-2 rounded-pill border border-divider bg-bg-elevated px-2.5 py-1.5 text-meta-sm font-medium text-fg">
+                <div className="w-full max-w-xs space-y-1 text-center lg:text-left">
+                  <span className="inline-flex items-center gap-2 rounded-pill border border-divider bg-bg-elevated px-2.5 py-1 text-meta-sm font-medium text-fg">
                     <Wind className="w-3.5 h-3.5 text-data-wind shrink-0" aria-hidden />
                     {windRelationMeta.label}
                   </span>
@@ -178,7 +219,7 @@ export default function SpotConditionsDashboard({
               )}
             </div>
 
-            <div className="lg:col-span-5 min-w-0">
+            <div className="lg:col-span-8 min-w-0">
               <SwellTrainsTable conditions={conditions} locale={locale} />
               {swellTrains.length > 0 && (
                 <p className="text-meta-sm text-fg-subtle mt-2 font-mono tabular-nums">
@@ -187,53 +228,26 @@ export default function SpotConditionsDashboard({
                 </p>
               )}
             </div>
-
-            <div className="lg:col-span-3 rounded-card border border-divider bg-bg-elevated p-3 space-y-2">
-              <h4 className="text-meta font-semibold text-fg">{copy.windContextTitle}</h4>
-              <ul className="text-meta-sm text-fg-muted space-y-2.5 leading-relaxed list-none p-0 m-0">
-                <li>
-                  <span className="font-medium text-fg">{isPt ? 'Offshore' : 'Offshore'}</span>
-                  <span className="text-fg-subtle"> — </span>
-                  {copy.windRelationHints.offshore}
-                </li>
-                <li>
-                  <span className="font-medium text-fg">{isPt ? 'Onshore' : 'Onshore'}</span>
-                  <span className="text-fg-subtle"> — </span>
-                  {copy.windRelationHints.onshore}
-                </li>
-                <li>
-                  <span className="font-medium text-fg">{isPt ? 'Cross' : 'Cross-shore'}</span>
-                  <span className="text-fg-subtle"> — </span>
-                  {copy.windRelationHints.cross}
-                </li>
-              </ul>
-              <p className="text-meta-sm text-fg-subtle pt-2 border-t border-divider">
-                {isPt
-                  ? 'Azul = ondulação · âmbar = vento. Terra/mar no radar são só referência de costa.'
-                  : 'Blue = swell · amber = wind. Land/sea shading on the radar is coast reference only.'}
-              </p>
-            </div>
           </div>
         </div>
 
-        {/* Verification row */}
-        {(conditions.observed || tideSchedule) && (
-          <div className="border-t border-divider pt-5 space-y-3">
+        {showVerification && (
+          <div className="border-t border-divider pt-4 space-y-2.5">
             <h3 className="text-h3 text-fg">{copy.verificationTitle}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {conditions.observed ? (
+            <div
+              className={
+                freshObserved && tideSchedule
+                  ? 'grid grid-cols-1 md:grid-cols-2 gap-3'
+                  : 'grid grid-cols-1 gap-3'
+              }
+            >
+              {freshObserved ? (
                 <ObservedNow
-                  observed={conditions.observed}
+                  observed={freshObserved}
                   forecastWindSpeedMs={conditions.windSpeed}
                   locale={locale}
                 />
-              ) : (
-                <div className="rounded-card border border-dashed border-divider px-3 py-4 text-meta-sm text-fg-subtle">
-                  {isPt
-                    ? 'Sem estação IPMA próxima — usa o vento do modelo acima.'
-                    : 'No nearby IPMA station — use model wind above.'}
-                </div>
-              )}
+              ) : null}
               {tideSchedule ? (
                 <div className="rounded-card border border-divider bg-surface-1/[0.03] px-3 py-3">
                   <p className="text-meta-sm font-semibold text-fg-muted mb-2">
@@ -243,10 +257,24 @@ export default function SpotConditionsDashboard({
                 </div>
               ) : null}
             </div>
+            {!freshObserved && conditions.observed && (
+              <p className="text-meta-sm text-fg-subtle">
+                {isPt
+                  ? 'Observação antiga (>3 h) — usa o vento do modelo acima.'
+                  : 'Observation older than 3 h — use model wind above.'}
+              </p>
+            )}
+            {!freshObserved && !conditions.observed && (
+              <p className="text-meta-sm text-fg-subtle">
+                {isPt
+                  ? 'Sem estação IPMA/Ecowitt próxima e fresca — usa o vento do modelo acima.'
+                  : 'No fresh IPMA/Ecowitt station nearby — use model wind above.'}
+              </p>
+            )}
           </div>
         )}
 
-        <div className="border-t border-divider pt-4">
+        <div className="border-t border-divider pt-3">
           <p className="text-meta-sm text-fg-subtle mb-2">{copy.scoreFeedbackHint}</p>
           <ScoreFeedback
             spotSlug={spot.slug}

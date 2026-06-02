@@ -1,9 +1,8 @@
 'use client';
 
-import { ExternalLink, MapPin, Navigation } from 'lucide-react';
+import { ExternalLink, MapPin } from 'lucide-react';
 import type { Spot } from '@/types';
 import SpotMap from '@/components/spots/SpotMap';
-import { cn } from '@/lib/cn';
 
 interface SpotLogisticsPanelProps {
   spot: Spot;
@@ -11,7 +10,7 @@ interface SpotLogisticsPanelProps {
   locationTitle: string;
   aboutTitle: string;
   directionsHref: string;
-  directionsLabel: string;
+  googleMapsLinkLabel: string;
   openMapsLabel: string;
   regionLabel: string;
   difficultyLabel: string;
@@ -26,7 +25,7 @@ export default function SpotLogisticsPanel({
   locationTitle,
   aboutTitle,
   directionsHref,
-  directionsLabel,
+  googleMapsLinkLabel,
   openMapsLabel,
   regionLabel,
   difficultyLabel,
@@ -59,28 +58,24 @@ export default function SpotLogisticsPanel({
             <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} compact hideOverlay />
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:items-center">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:items-center sm:gap-4">
             <a
               href={directionsHref}
               target="_blank"
               rel="noopener noreferrer"
-              className={cn(
-                'inline-flex items-center justify-center gap-2 font-medium w-full sm:w-auto',
-                'px-4 py-2.5 text-sm rounded-input min-h-[44px]',
-                'bg-sunset border border-transparent hover:opacity-95 active:opacity-90 transition-opacity',
-              )}
+              className="inline-flex items-center gap-1 text-meta font-medium text-data-waves hover:text-data-waves/80 hover:underline underline-offset-2 min-h-[44px] sm:min-h-0 items-center"
             >
-              <Navigation className="w-4 h-4 shrink-0" aria-hidden />
-              {directionsLabel}
+              {googleMapsLinkLabel}
+              <span aria-hidden>↗</span>
             </a>
             <a
               href={osmUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto rounded-input border border-divider bg-bg-elevated px-4 py-2.5 text-meta font-medium text-data-waves hover:border-divider-strong transition-colors min-h-[44px]"
+              className="inline-flex items-center gap-1.5 text-meta-sm text-fg-muted hover:text-fg hover:underline underline-offset-2 min-h-[44px] sm:min-h-0 items-center"
             >
               {openMapsLabel}
-              <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden />
+              <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-70" aria-hidden />
             </a>
           </div>
         </div>

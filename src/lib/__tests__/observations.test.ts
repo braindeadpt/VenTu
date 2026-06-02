@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { verifyWind, formatObservedAge, forecastWindKtFromMs } from '../observations';
+import {
+  verifyWind,
+  formatObservedAge,
+  formatObservedClockTime,
+  forecastWindKtFromMs,
+  isObservedFresh,
+} from '../observations';
 
 describe('verifyWind', () => {
   it('classifies match within 3 kt', () => {
@@ -26,5 +32,24 @@ describe('formatObservedAge', () => {
   it('formats recent minutes in PT', () => {
     const recent = new Date(Date.now() - 15 * 60_000).toISOString();
     expect(formatObservedAge(recent, 'pt')).toMatch(/há 15 min/);
+  });
+});
+
+describe('isObservedFresh', () => {
+  it('is fresh within 3 hours', () => {
+    const recent = new Date(Date.now() - 2 * 3_600_000).toISOString();
+    expect(isObservedFresh(recent)).toBe(true);
+  });
+
+  it('is stale after 3 hours', () => {
+    const old = new Date(Date.now() - 4 * 3_600_000).toISOString();
+    expect(isObservedFresh(old)).toBe(false);
+  });
+});
+
+describe('formatObservedClockTime', () => {
+  it('returns HH:mm in Lisbon', () => {
+    const t = formatObservedClockTime('2026-06-01T14:30:00.000Z', 'pt');
+    expect(t).toMatch(/^\d{2}:\d{2}$/);
   });
 });

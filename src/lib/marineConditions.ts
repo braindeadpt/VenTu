@@ -75,7 +75,7 @@ export function pickObservedField(
     typeof obs.stationName !== 'string' ||
     typeof obs.distanceKm !== 'number' ||
     typeof obs.observedAt !== 'string' ||
-    obs.source !== 'ipma'
+    (obs.source !== 'ipma' && obs.source !== 'ecowitt')
   ) {
     return undefined;
   }
@@ -89,6 +89,6 @@ export function pickObservedField(
     stationName: obs.stationName,
     distanceKm: obs.distanceKm,
     observedAt: obs.observedAt,
-    source: 'ipma',
+    source: obs.source as 'ipma' | 'ecowitt',
   };
 }
