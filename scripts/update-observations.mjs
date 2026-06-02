@@ -90,5 +90,6 @@ async function main() {
 
 main().catch((err) => {
   console.error('❌ update-observations failed:', err.message);
-  process.exit(1);
+  // Do not fail the data pipeline — forecast layer still ships without observed IPMA
+  process.exit(0);
 });

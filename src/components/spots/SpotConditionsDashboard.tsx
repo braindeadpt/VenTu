@@ -44,7 +44,9 @@ interface SpotConditionsDashboardProps {
     periodLabel: string;
     periodHint: string;
     windLabel: string;
+    windHint: string;
     gustLabel: string;
+    gustHint: string;
     waterLabel: string;
     waterHint: string;
     seaStateTitle: string;
@@ -118,13 +120,18 @@ export default function SpotConditionsDashboard({
             icon={<Wind className="w-4 h-4 text-data-wind" />}
             label={copy.windLabel}
             value={`${windKt} kt`}
-            hint={`${windCardinal} · ${isPt ? 'média' : 'avg'}`}
+            hint={`${windCardinal} · ${copy.windHint}`}
           />
           <MetricTile
             icon={<Wind className="w-4 h-4 text-data-wind/80" />}
             label={copy.gustLabel}
             value={`${gustKt} kt`}
-            hint={isPt ? 'Rajada prevista' : 'Forecast gust'}
+            hint={
+              gustKt > windKt + 2
+                ? `${copy.gustHint} (+${gustKt - windKt} kt ${isPt ? 'vs média' : 'vs avg'})`
+                : copy.gustHint
+            }
+            className={gustKt > windKt + 2 ? 'ring-1 ring-data-wind/30' : undefined}
           />
           <MetricTile
             icon={<Droplets className="w-4 h-4 text-data-waves/80" />}

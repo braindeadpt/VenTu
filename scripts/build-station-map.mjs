@@ -19,7 +19,16 @@ const metaPath = path.join(root, 'public/data/ipma-station-map.meta.json');
 async function main() {
   console.log('📡 IPMA — building station map...');
   const spots = parseSpotsFromFile(spotsPath);
-  const stations = await fetchIpmaStations();
+  let stations;
+  try {
+    stations = await fetchIpmaStations();
+  } catch (err) {
+    if (fs.existsSync(outPath)) {
+      console.warn(`⚠️ IPMA stations unavailable (${err.message}) — keeping existing ${outPath}`);
+      return;
+    }
+    throw err;
+  }
   console.log(`   ${spots.length} spots, ${stations.length} IPMA stations`);
 
   const map = {};

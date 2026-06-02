@@ -178,13 +178,10 @@ function confidenceByDay(marineMulti, weatherMulti) {
   return daily;
 }
 
+const { findCurrentHourIndex: findOpenMeteoHourIndex } = require('./openMeteoTime');
+
 function findCurrentHourIndex(times) {
-  const now = new Date();
-  const currentHour = now.getHours();
-  return Math.max(
-    0,
-    times.findIndex((t) => new Date(t).getHours() === currentHour),
-  );
+  return findOpenMeteoHourIndex(times);
 }
 
 module.exports = {

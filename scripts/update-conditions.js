@@ -196,11 +196,11 @@ function getTideStatus(seaLevel, seaLevelNext) {
 }
 
 function getCurrentConditions(marineData, weatherData, ihTideObs) {
-  const now = new Date();
-  const currentHour = now.getHours();
-  
-  const marineTimeIndex = Math.max(0, marineData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour));
-  const weatherTimeIndex = Math.max(0, weatherData.hourly.time.findIndex(t => new Date(t).getHours() === currentHour));
+  const marineTimeIndex = findCurrentHourIndex(marineData.hourly.time);
+  const weatherTimeIndex = Math.min(
+    findCurrentHourIndex(weatherData.hourly.time),
+    weatherData.hourly.wind_speed_10m.length - 1,
+  );
 
   const seaLevel = marineData.hourly.sea_level_height_msl?.[marineTimeIndex] || 0;
   const seaLevelNext = marineData.hourly.sea_level_height_msl?.[marineTimeIndex + 1];

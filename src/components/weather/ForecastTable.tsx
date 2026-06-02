@@ -15,6 +15,7 @@ import {
   TIDE_PHASE_CELL,
   type TidePhase,
 } from '@/lib/tideSchedule';
+import { findCurrentHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  ForecastTable — Dense hourly forecast table (Windguru-style).
@@ -156,13 +157,7 @@ function parseHourLabel(iso: string): string {
 }
 
 function isCurrentHour(iso: string, now: Date): boolean {
-  const d = new Date(iso);
-  return (
-    d.getHours() === now.getHours() &&
-    d.getDate() === now.getDate() &&
-    d.getMonth() === now.getMonth() &&
-    d.getFullYear() === now.getFullYear()
-  );
+  return hourKeyFromOpenMeteo(iso) === lisbonHourKeyFromDate(now);
 }
 
 function buildTooltip(h: ForecastHour, sportLabel?: string): string {

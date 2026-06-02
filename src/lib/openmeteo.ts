@@ -1,4 +1,5 @@
 import { MarineData } from '@/types';
+import { findCurrentHourIndex } from '@/lib/openMeteoTime';
 
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
@@ -296,21 +297,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
 
 export function getCurrentConditions(result: FetchResult): CurrentConditions {
   const data = result.data;
-  const now = new Date();
-  const nowTime = now.getTime();
-
-  let timeIndex = data.hourly.time.findIndex((t: string) => {
-    const hTime = new Date(t).getTime();
-    return hTime >= nowTime && hTime < nowTime + 3600000;
-  });
-  if (timeIndex === -1) {
-    timeIndex = 0;
-    let minDiff = Math.abs(new Date(data.hourly.time[0]).getTime() - nowTime);
-    data.hourly.time.forEach((t: string, i: number) => {
-      const diff = Math.abs(new Date(t).getTime() - nowTime);
-      if (diff < minDiff) { minDiff = diff; timeIndex = i; }
-    });
-  }
+  const timeIndex = findCurrentHourIndex(data.hourly.time);
 
   const seaLevel = data.hourly.sea_level_height?.[timeIndex];
   const seaLevelNext = data.hourly.sea_level_height?.[timeIndex + 1];
