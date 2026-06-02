@@ -1,0 +1,12 @@
+name = "ventu-observations"
+main = "src/index.ts"
+compatibility_date = "2026-06-01"
+
+[vars]
+ECOWITT_LAT = "41.15703"
+ECOWITT_LON = "-8.681834"
+ECOWITT_NAME = "Foz do Porto"
+ALLOWED_ORIGINS = "https://ventu.surf,http://localhost:3000,http://localhost:3001"
+
+# Secrets (wrangler secret put — never commit):
+# ECOWITT_APPLICATION_KEY, ECOWITT_API_KEY, ECOWITT_MAC

@@ -94,7 +94,9 @@ export default function SpotConditionsDashboard({
       ? conditions.observed
       : null;
 
-  const showVerification = Boolean(freshObserved || tideSchedule);
+  const obsWorkerEnabled = Boolean(process.env.NEXT_PUBLIC_OBS_WORKER_URL?.trim());
+  const showObservedBlock = Boolean(freshObserved || obsWorkerEnabled);
+  const showVerification = Boolean(showObservedBlock || tideSchedule || conditions.observed);
 
   return (
     <section
@@ -236,16 +238,18 @@ export default function SpotConditionsDashboard({
             <h3 className="text-h3 text-fg">{copy.verificationTitle}</h3>
             <div
               className={
-                freshObserved && tideSchedule
+                showObservedBlock && tideSchedule
                   ? 'grid grid-cols-1 md:grid-cols-2 gap-3'
                   : 'grid grid-cols-1 gap-3'
               }
             >
-              {freshObserved ? (
+              {showObservedBlock ? (
                 <ObservedNow
-                  observed={freshObserved}
+                  observed={conditions.observed}
                   forecastWindSpeedMs={conditions.windSpeed}
                   locale={locale}
+                  lat={spot.lat}
+                  lon={spot.lon}
                 />
               ) : null}
               {tideSchedule ? (

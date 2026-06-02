@@ -11,19 +11,61 @@ import {
   verificationBadge,
   verifyWind,
 } from '@/lib/observations';
+import { useObservedNow } from '@/hooks/useObservedNow';
 import { cn } from '@/lib/cn';
 
 interface ObservedNowProps {
-  observed: ObservedConditions;
+  /** Baked fallback from conditions.json (pipeline, ≤3 h when fresh). */
+  observed?: ObservedConditions | null;
   forecastWindSpeedMs: number;
   locale: string;
+  lat: number;
+  lon: number;
 }
 
 export default function ObservedNow({
+  observed: bakedObserved,
+  forecastWindSpeedMs,
+  locale,
+  lat,
+  lon,
+}: ObservedNowProps) {
+  const { observed: liveObserved, loading, error } = useObservedNow(lat, lon);
+
+  const bakedFresh =
+    bakedObserved && isObservedFresh(bakedObserved.observedAt) ? bakedObserved : null;
+
+  const fromLive = Boolean(liveObserved && !error);
+  const displayObserved = fromLive ? liveObserved : bakedFresh;
+
+  if (!displayObserved || !isObservedFresh(displayObserved.observedAt)) {
+    return null;
+  }
+
+  return (
+    <ObservedNowContent
+      observed={displayObserved}
+      forecastWindSpeedMs={forecastWindSpeedMs}
+      locale={locale}
+      fromLive={fromLive}
+      loadingLive={loading && !fromLive && Boolean(bakedFresh)}
+    />
+  );
+}
+
+function ObservedNowContent({
   observed,
   forecastWindSpeedMs,
   locale,
-}: ObservedNowProps) {
+  fromLive,
+  loadingLive,
+}: {
+  observed: ObservedConditions;
+  forecastWindSpeedMs: number;
+  locale: string;
+  fromLive: boolean;
+  loadingLive: boolean;
+}) {
   const isPt = locale === 'pt';
   const fresh = isObservedFresh(observed.observedAt);
   const forecastKt = forecastWindKtFromMs(forecastWindSpeedMs);
@@ -36,8 +78,8 @@ export default function ObservedNow({
   const title = observedSectionTitle(observed.source, fresh, locale);
 
   const metaLine = isPt
-    ? `Observado ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km`
-    : `Observed ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km`;
+    ? `Observado ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km · ${sourceLabel}`
+    : `Observed ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km · ${sourceLabel}`;
 
   return (
     <section
@@ -46,13 +88,19 @@ export default function ObservedNow({
         fresh
           ? 'border-divider bg-surface-1/[0.04]'
           : 'border-divider/60 bg-surface-1/[0.02] opacity-80',
+        loadingLive && 'opacity-90',
       )}
       aria-label={title}
+      aria-busy={loadingLive}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
         <h3 className={cn('text-meta font-semibold', fresh ? 'text-fg' : 'text-fg-muted')}>
           {title}
-          <span className="ml-1.5 text-meta-sm font-normal text-fg-subtle">({sourceLabel})</span>
+          {fromLive && fresh && (
+            <span className="ml-1.5 text-meta-sm font-normal text-fg-subtle">
+              {isPt ? '(ao vivo)' : '(live)'}
+            </span>
+          )}
         </h3>
         <p className="text-meta-sm text-fg-subtle">{metaLine}</p>
       </div>
