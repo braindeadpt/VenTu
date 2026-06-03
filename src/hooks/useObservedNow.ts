@@ -34,6 +34,9 @@ export function useObservedNow(lat: number, lon: number): UseObservedNowState {
     setLoading(true);
     setError(null);
 
+    const timeoutMs = 8000;
+    const timeout = setTimeout(() => ac.abort(), timeoutMs);
+
     void (async () => {
       try {
         const res = await fetch(workerUrl, {
@@ -55,11 +58,15 @@ export function useObservedNow(lat: number, lon: number): UseObservedNowState {
         setError(e instanceof Error ? e.message : String(e));
         setObserved(null);
       } finally {
+        clearTimeout(timeout);
         if (!ac.signal.aborted) setLoading(false);
       }
     })();
 
-    return () => ac.abort();
+    return () => {
+      clearTimeout(timeout);
+      ac.abort();
+    };
   }, [workerUrl]);
 
   if (!workerUrl) {

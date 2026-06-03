@@ -14,7 +14,6 @@ import {
 } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
-import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { getWindguruUrl } from '@/lib/windguru';
@@ -33,6 +32,7 @@ import SportTab from '@/components/spots/SportTab';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
+import { loadConditionsJson, loadForecastsJson } from '@/lib/spotDataCache';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
 import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
 import FeedbackForm from '@/components/FeedbackForm';
@@ -144,55 +144,69 @@ export default function SpotDetailClient({
   }, [spot, spotData, selectedSport]);
 
   useEffect(() => {
+    let cancelled = false;
+    const loadSlug = spot.slug;
+
     async function loadData() {
       try {
         setLoadError(false);
         let conditions: Conditions;
         let forecast: SpotData['forecast'] = [];
-        const [conditionsResp, forecastsResp] = await Promise.all([
-          fetch(getAssetPath('/data/conditions.json')),
-          fetch(getAssetPath('/data/forecasts.json')),
-        ]);
 
-        if (conditionsResp.ok && forecastsResp.ok) {
-          const condJson = await conditionsResp.json();
+        let condJson: Record<string, unknown> | null = null;
+        let fcJson: Record<string, unknown> | null = null;
+
+        try {
+          [condJson, fcJson] = await Promise.all([loadConditionsJson(), loadForecastsJson()]);
+        } catch {
+          condJson = null;
+          fcJson = null;
+        }
+
+        if (cancelled || spot.slug !== loadSlug) return;
+
+        if (condJson && fcJson) {
           const dataId = getConditionsDataId(spot);
-          const spotCond = condJson[dataId] ?? condJson[spot.id];
-          const fcJson = await forecastsResp.json();
-          const spotFc = fcJson[dataId] ?? fcJson[spot.id];
+          const spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
+          const spotFc = (fcJson[dataId] ?? fcJson[spot.id]) as SpotData['forecast'] | undefined;
 
           if (spotCond && spotFc) {
             conditions = {
-              waveHeight: spotCond.waveHeight || 0,
-              wavePeriod: spotCond.wavePeriod || 0,
-              waveDirection: spotCond.waveDirection || 0,
-              windSpeed: spotCond.windSpeed || 0,
-              windDirection: spotCond.windDirection || 0,
-              windGust: spotCond.windGust || 0,
-              waterTemp: spotCond.waterTemp || 0,
-              swellHeight: spotCond.swellHeight,
-              swellPeriod: spotCond.swellPeriod,
-              swellDirection: spotCond.swellDirection,
-              secondarySwellHeight: spotCond.secondarySwellHeight,
-              secondarySwellPeriod: spotCond.secondarySwellPeriod,
-              secondarySwellDirection: spotCond.secondarySwellDirection,
-              wavePowerKw: spotCond.wavePowerKw,
-              observed: spotCond.observed,
-              tideHeight: spotCond.tideHeight,
-              tideStatus: spotCond.tideStatus,
-              tideLabel: spotCond.tideLabel,
-              confidence: spotCond.confidence,
-              confidenceDetail: spotCond.confidenceDetail,
-              dailyConfidence: spotCond.dailyConfidence,
+              waveHeight: Number(spotCond.waveHeight) || 0,
+              wavePeriod: Number(spotCond.wavePeriod) || 0,
+              waveDirection: Number(spotCond.waveDirection) || 0,
+              windSpeed: Number(spotCond.windSpeed) || 0,
+              windDirection: Number(spotCond.windDirection) || 0,
+              windGust: Number(spotCond.windGust) || 0,
+              waterTemp: Number(spotCond.waterTemp) || 0,
+              swellHeight: spotCond.swellHeight as number | undefined,
+              swellPeriod: spotCond.swellPeriod as number | undefined,
+              swellDirection: spotCond.swellDirection as number | undefined,
+              secondarySwellHeight: spotCond.secondarySwellHeight as number | undefined,
+              secondarySwellPeriod: spotCond.secondarySwellPeriod as number | undefined,
+              secondarySwellDirection: spotCond.secondarySwellDirection as number | undefined,
+              wavePowerKw: spotCond.wavePowerKw as number | undefined,
+              observed: spotCond.observed as ObservedConditions | undefined,
+              tideHeight: spotCond.tideHeight as number | undefined,
+              tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
+              tideLabel: spotCond.tideLabel as string | undefined,
+              confidence: spotCond.confidence as Conditions['confidence'],
+              confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
+              dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],
               source: 'real',
-              updatedAt: spotCond.updatedAt,
+              updatedAt:
+                typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
             };
 
             forecast = spotFc;
 
             const allScores = getAllSportScores(spot, conditions);
+            if (cancelled || spot.slug !== loadSlug) return;
+
             setSpotData({ spot, conditions, allScores, forecast });
-            rememberDataUpdate(spotCond.updatedAt);
+            rememberDataUpdate(
+              typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
+            );
 
             if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
               setSelectedSport(sportFromUrl);
@@ -202,34 +216,37 @@ export default function SpotDetailClient({
               ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
               if (bestSport) setSelectedSport(bestSport);
             }
-            setLoading(false);
             return;
           }
         }
 
         const marineResult = await fetchMarineData(spot.lat, spot.lon);
+        if (cancelled || spot.slug !== loadSlug) return;
+
         conditions = getCurrentConditions(marineResult);
         const allScores = getAllSportScores(spot, conditions);
         forecast = getForecastData(marineResult).slice(0, 120);
 
-        if (conditionsResp.ok) {
-          const condJson = await conditionsResp.json();
+        if (condJson) {
           const dataId = getConditionsDataId(spot);
-          const spotCond = condJson[dataId] ?? condJson[spot.id];
+          const spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
           if (spotCond) {
             conditions = {
-              waveHeight: spotCond.waveHeight || 0,
-              wavePeriod: spotCond.wavePeriod || 0,
-              waveDirection: spotCond.waveDirection || 0,
-              windSpeed: spotCond.windSpeed || 0,
-              windDirection: spotCond.windDirection || 0,
-              windGust: spotCond.windGust || 0,
-              waterTemp: spotCond.waterTemp || 0,
+              waveHeight: Number(spotCond.waveHeight) || 0,
+              wavePeriod: Number(spotCond.wavePeriod) || 0,
+              waveDirection: Number(spotCond.waveDirection) || 0,
+              windSpeed: Number(spotCond.windSpeed) || 0,
+              windDirection: Number(spotCond.windDirection) || 0,
+              windGust: Number(spotCond.windGust) || 0,
+              waterTemp: Number(spotCond.waterTemp) || 0,
               source: 'real',
-              updatedAt: spotCond.updatedAt,
+              updatedAt:
+                typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
             };
           }
         }
+
+        if (cancelled || spot.slug !== loadSlug) return;
 
         setSpotData({ spot, conditions, allScores, forecast });
 
@@ -242,14 +259,20 @@ export default function SpotDetailClient({
           if (bestSport) setSelectedSport(bestSport);
         }
       } catch (e) {
+        if (cancelled) return;
         console.error(e);
         setLoadError(true);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
-    loadData();
+    setLoading(true);
+    void loadData();
+
+    return () => {
+      cancelled = true;
+    };
   }, [spot, sportFromUrl, retryCount]);
 
   const hourlyScores = useMemo(() => {
