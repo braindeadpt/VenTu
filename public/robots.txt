@@ -1,16 +1,11 @@
-# VenTu - robots.txt
-# https://ventu.surf/robots.txt
+# VenTu — https://ventu.surf/robots.txt
 
 User-agent: *
 Allow: /
 
-# Sitemaps for all locales
-Sitemap: https://ventu.surf/pt/sitemap.xml
-Sitemap: https://ventu.surf/en/sitemap.xml
+Sitemap: https://ventu.surf/sitemap.xml
 
-# Crawl delay for polite crawling
-Crawl-delay: 1
-
-# Block API/internal paths if any
 Disallow: /api/
 Disallow: /_next/
+Disallow: /pt/admin/
+Disallow: /en/admin/

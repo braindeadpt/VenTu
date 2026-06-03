@@ -14,7 +14,7 @@ interface SeoProps {
 export default function SeoHead({
   title,
   description,
-  image = '/og-image.svg',
+  image = '/og-image.png',
   type = 'website',
   jsonLd
 }: SeoProps) {

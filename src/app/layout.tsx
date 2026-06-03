@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { spaceGrotesk } from '@/lib/fonts/display'
+import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, SPOT_COUNT } from '@/lib/seo'
 import './globals.css'
 import GoatCounterScript from '@/components/analytics/GoatCounterScript'
 
@@ -29,9 +30,20 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://ventu.surf'),
-  title: 'VenTu',
-  description: 'VenTu — Water sports conditions in Portugal, updated every 3 hours',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: `${SITE_NAME} — Condições Náuticas em Portugal`,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: `${SPOT_COUNT} spots · surf, kitesurf, windsurf em Portugal. Scores, mapa e previsão a cada 3 horas. Grátis e open source.`,
+  applicationName: SITE_NAME,
+  creator: 'VenTu',
+  publisher: 'VenTu',
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   other: {
     referrer: 'strict-origin-when-cross-origin',
   },
@@ -40,6 +52,22 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.svg',
   },
   manifest: '/manifest.json',
+  openGraph: {
+    type: 'website',
+    siteName: SITE_NAME,
+    locale: 'pt_PT',
+    alternateLocale: ['en_US'],
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: [DEFAULT_OG_IMAGE.url],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    'max-image-preview': 'large',
+  },
 }
 
 const themeScript = `

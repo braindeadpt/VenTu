@@ -66,8 +66,11 @@ const urlEntries = [];
 
 const staticPages = [
   { path: '/', priority: '1.0', changefreq: 'daily' },
+  { path: '/mapa/', priority: '0.95', changefreq: 'daily' },
   { path: '/explorar/', priority: '0.85', changefreq: 'weekly' },
   { path: '/spots/', priority: '0.9', changefreq: 'daily' },
+  { path: '/livecams/', priority: '0.85', changefreq: 'weekly' },
+  { path: '/alerts/', priority: '0.75', changefreq: 'weekly' },
   { path: '/favorites/', priority: '0.7', changefreq: 'weekly' },
   { path: '/compare/', priority: '0.6', changefreq: 'weekly' },
   { path: '/news/', priority: '0.8', changefreq: 'daily' },

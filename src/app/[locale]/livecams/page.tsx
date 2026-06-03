@@ -3,6 +3,7 @@ import { ExternalLink, Video } from 'lucide-react';
 import { locales, getTranslation } from '@/lib/i18n';
 import { listAllLivecams, getLivecamSpotCount } from '@/lib/spotLivecams';
 import { spots } from '@/lib/spots';
+import { buildPageMetadata } from '@/lib/seo';
 import PageHeader from '@/components/ui/PageHeader';
 import type { Metadata } from 'next';
 
@@ -17,12 +18,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
+  const loc = isPt ? 'pt' : 'en';
   const count = getLivecamSpotCount();
   const title = isPt ? `Livecams — ${count} spots — VenTu` : `Live cams — ${count} spots — VenTu`;
   const description = isPt
     ? `${count} links para câmaras em direto nos spots mais populares — Surftotal e MEO Beachcam.`
     : `${count} links to live cameras at popular spots — Surftotal and MEO Beachcam.`;
-  return { title, description, openGraph: { title, description } };
+  return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/livecams/` });
 }
 
 export default async function LivecamsPage({ params }: Props) {

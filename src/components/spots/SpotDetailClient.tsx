@@ -398,7 +398,7 @@ export default function SpotDetailClient({
       <SeoHead
         title={`${isPt ? spot.name : spot.nameEn} - ${spot.region}${isPt ? ', ' : ', '}${spot.regionEn}`}
         description={isPt ? spot.description : spot.descriptionEn}
-        image="/og-image.svg"
+        image="/og-image.png"
         type="article"
         jsonLd={{
           '@context': 'https://schema.org',

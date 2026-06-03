@@ -1,25 +1,22 @@
 import { Wind, Waves, Database, Brain, Code, Heart, Globe, Zap, Shield } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import Button from '@/components/ui/Button'
+import { buildPageMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isPt = locale === 'pt'
-  
-  return {
+  const loc = isPt ? 'pt' : 'en'
+
+  return buildPageMetadata({
     title: isPt ? 'Sobre — VenTu' : 'About — VenTu',
     description: isPt
-      ? 'Conheça a missão do VenTu, uma plataforma open-source para desportos náuticos em Portugal.'
-      : 'Learn about VenTu\'s mission, an open-source platform for water sports in Portugal.',
-    alternates: {
-      canonical: `/${locale}/about/`,
-      languages: {
-        'pt': '/pt/about/',
-        'en': '/en/about/',
-      },
-    },
-  }
+      ? 'Plataforma open-source de condições náuticas em Portugal — missão, dados e como contribuir.'
+      : 'Open-source water sports conditions platform for Portugal — mission, data and how to contribute.',
+    locale: loc,
+    path: `/${loc}/about/`,
+  })
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: string }> }) {

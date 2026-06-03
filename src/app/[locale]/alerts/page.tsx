@@ -4,6 +4,7 @@ import { Bell, MapPin } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { validateLocale } from '@/lib/i18n';
+import { buildPageMetadata } from '@/lib/seo';
 
 const FEATURED_SPOTS = [
   { slug: 'guincho', namePt: 'Guincho', nameEn: 'Guincho' },
@@ -18,17 +19,16 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
+  const loc = isPt ? 'pt' : 'en';
 
-  return {
+  return buildPageMetadata({
     title: isPt ? 'Alertas por email — VenTu' : 'Email alerts — VenTu',
     description: isPt
       ? 'Recebe avisos quando o teu spot estiver a bombar — score mínimo e modalidade à tua escolha.'
       : 'Get notified when your spot is firing — minimum score and sport of your choice.',
-    alternates: {
-      canonical: `/${locale}/alerts/`,
-      languages: { pt: '/pt/alerts/', en: '/en/alerts/' },
-    },
-  };
+    locale: loc,
+    path: `/${loc}/alerts/`,
+  });
 }
 
 export default async function AlertsPage({

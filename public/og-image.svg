@@ -1,16 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="#0f172a"/>
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  <text x="600" y="200" font-family="system-ui, -apple-system, sans-serif" font-size="80" font-weight="900" fill="url(#grad)" text-anchor="middle">VenTu</text>
-  <text x="600" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="500" fill="#94a3b8" text-anchor="middle">Real-time conditions for surf, kitesurf, windsurf &amp; big wave</text>
-  <text x="600" y="380" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="400" fill="#64748b" text-anchor="middle">80+ spots • Nazaré • Peniche • Guincho • Algarve • Açores • Madeira</text>
-  <g transform="translate(600, 480)" text-anchor="middle">
-    <rect x="-120" y="-25" width="240" height="50" rx="25" fill="#06b6d4" opacity="0.2"/>
-    <text font-family="system-ui, -apple-system, sans-serif" font-size="20" font-weight="600" fill="#06b6d4">Free • Open Source • Real-time</text>
-  </g>
+  <!-- subtle coast line -->
+  <path d="M0 420 Q200 380 400 400 T800 390 T1200 410 L1200 630 L0 630 Z" fill="#1e293b" opacity="0.6"/>
+  <path d="M0 460 Q300 430 600 450 T1200 440 L1200 630 L0 630 Z" fill="#0ea5e9" opacity="0.08"/>
+  <!-- sunset accent bar (design system — single intentional use) -->
+  <rect x="80" y="120" width="6" height="120" rx="3" fill="#f97316"/>
+  <text x="110" y="175" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="88" font-weight="700" fill="#f1f5f9" letter-spacing="-2">VenTu</text>
+  <text x="110" y="230" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" font-weight="600" fill="#f97316" letter-spacing="1">Vem. Tu.</text>
+  <text x="110" y="310" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="28" fill="#94a3b8">170+ spots · surf · kite · wind · foil</text>
+  <text x="110" y="360" font-family="system-ui, sans-serif" font-size="26" fill="#cbd5e1">Condições náuticas em Portugal</text>
+  <text x="110" y="410" font-family="system-ui, sans-serif" font-size="22" fill="#64748b">Scores · mapa · previsão 3h · grátis · open source</text>
+  <!-- score badge mock -->
+  <rect x="920" y="140" width="180" height="140" rx="16" fill="none" stroke="#0ea5e9" stroke-width="3"/>
+  <text x="1010" y="210" text-anchor="middle" font-family="ui-monospace, monospace" font-size="56" font-weight="700" fill="#0ea5e9">87</text>
+  <text x="1010" y="245" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="600" fill="#0ea5e9" letter-spacing="3">ÉPICO</text>
+  <text x="1010" y="275" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">a bombar</text>
+  <text x="110" y="560" font-family="ui-monospace, monospace" font-size="28" fill="#0ea5e9">ventu.surf</text>
 </svg>

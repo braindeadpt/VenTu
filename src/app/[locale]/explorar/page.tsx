@@ -8,6 +8,7 @@ import {
   landingTitle,
   type SeoLanding,
 } from '@/lib/seoLandings';
+import { buildPageMetadata } from '@/lib/seo';
 import PageHeader from '@/components/ui/PageHeader';
 import type { Metadata } from 'next';
 
@@ -33,11 +34,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
+  const loc = isPt ? 'pt' : 'en';
   const title = isPt ? 'Explorar spots por desporto e região — VenTu' : 'Explore spots by sport and region — VenTu';
   const description = isPt
     ? `${SEO_LANDINGS.length} combinações de desporto e região em Portugal — condições actualizadas a cada 3 horas.`
     : `${SEO_LANDINGS.length} sport and region combinations in Portugal — conditions updated every 3 hours.`;
-  return { title, description, openGraph: { title, description } };
+  return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/explorar/` });
 }
 
 function groupLandings(landings: SeoLanding[]) {
