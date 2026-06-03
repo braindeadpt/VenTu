@@ -39,7 +39,7 @@
 - [ ] `package.json` — `"private": true`
 
 ### 1.2 — Row Level Security (RLS) [CRÍTICO]
-- [ ] `supabase-contributions.sql` — remover políticas UPDATE/DELETE anónimas na tabela `contributions`
+- [ ] `supabase/supabase-contributions.sql` — remover políticas UPDATE/DELETE anónimas na tabela `contributions`
 - [ ] `supabase-schema.sql` — adicionar DENY UPDATE/DELETE para anónimos na tabela `messages`
 - [ ] Verificar se RLS do messages já tem rate limit server-side (1 msg/10s)
 

@@ -47,6 +47,11 @@ scripts/find-jwt-*
 # Local Lighthouse audit reports (run against prod: serve out/ then npx lighthouse)
 lighthouse-*.json
 
+# Local audit screenshots (never commit)
+audit-screenshots/
+.screenshots/
+conditions-update.log
+
 # Testing
 test-results/
 playwright-report/

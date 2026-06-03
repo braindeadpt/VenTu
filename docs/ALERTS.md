@@ -17,7 +17,7 @@ Utilizador ← email confirmação / alerta ← /pt/alerts/confirm|unsubscribe/?
 ### 1. Supabase
 
 1. Abre o [SQL Editor](https://supabase.com/dashboard) do projecto VenTu.
-2. Executa o ficheiro [`supabase-alerts.sql`](../supabase-alerts.sql) na íntegra.
+2. Executa o ficheiro [`supabase/supabase-alerts.sql`](../supabase/supabase-alerts.sql) na íntegra.
 3. Confirma que a tabela `alert_subscriptions` existe e que as funções `verify_alert_subscription` e `unsubscribe_alert` estão expostas a `anon`.
 
 ### 2. Resend

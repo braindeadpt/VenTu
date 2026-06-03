@@ -4,7 +4,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 > **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) — Fase **E** activa (E1 alertas prod → E2 polish → E3 notícias v2)
 
-Última actualização: 2026-05-25 (Fases A→C concluídas; secrets Supabase/Resend configurados).
+Última actualização: 2026-06-03 (SEO/social OG PNG; 173 spots; schemas em `supabase/`).
 
 ## Identidade
 

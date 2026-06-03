@@ -6,7 +6,7 @@ Open-source surf and water-sports conditions for Portugal — scores, forecasts,
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue)](https://www.typescript.org/)
 [![Open-Meteo](https://img.shields.io/badge/Data-Open--Meteo-green)](https://open-meteo.com/)
 
 [Português](#português) · [English](#english)
@@ -17,14 +17,15 @@ Open-source surf and water-sports conditions for Portugal — scores, forecasts,
 
 ### O que é
 
-O **VenTu** agrega condições marítimas (ondas, vento, temperatura da água, maré) para **167 spots** em Portugal, com scores por modalidade, previsão horária, mapa interactivo, notícias resumidas por IA e **links para livecams** em direto (Surftotal, MEO Beachcam) nos spots mais populares.
+O **VenTu** (Vem + Tu) agrega condições marítimas para **173 spots** em Portugal (continental, Açores, Madeira), com scores por modalidade, previsão horária, mapa interactivo, Dawn Patrol, notícias resumidas por IA e **links para livecams** (Surftotal, MEO Beachcam) em **37 spots** curados.
 
 ### Funcionalidades
 
-- Condições actualizadas a cada **3 horas** (pipeline GitHub Actions + Open-Meteo)
+- Condições actualizadas a cada **3 horas** (GitHub Actions + Open-Meteo)
 - Scores por desporto (surf, kitesurf, windsurf, bodyboard, foil, SUP, big wave, …)
-- Mapa com filtros por região e modalidade
+- Mapa fullscreen com filtros por região e modalidade
 - Página de spot: condições, previsão, janelas, localização, câmara (quando curada)
+- Alertas por email quando o spot atinge condições definidas
 - Índice [`/livecams`](https://ventu.surf/pt/livecams/) — links externos verificados
 - UI em **PT** e **EN**
 
@@ -33,21 +34,12 @@ O **VenTu** agrega condições marítimas (ondas, vento, temperatura da água, m
 | Camada | Tecnologia |
 |--------|------------|
 | App | Next.js 16, React 18, TypeScript |
-| UI | Tailwind CSS 3.4, Lucide |
+| UI | Tailwind CSS 3.4, Lucide, Geist + Space Grotesk |
 | Mapa | Leaflet, MarkerCluster |
 | Dados mar | Open-Meteo Marine API |
 | Feedback / alertas | Supabase |
-| Notícias | Gemini (opcional) + RSS |
+| Notícias / Dawn Patrol | Gemini + Groq + Cerebras (opcional) |
 | Deploy | GitHub Pages (static export) |
-
-### Componentes UI (homepage)
-
-| Componente | Caminho | Uso |
-|------------|---------|-----|
-| `TrustStrip` | `src/components/homepage/TrustStrip.tsx` | Prova social (spots, desportos, Open-Meteo, cadência 3h) |
-| `AggregateScoreGauge` | `src/components/ui/AggregateScoreGauge.tsx` | Média top-10 por modalidade no hero |
-| `FreshnessIndicator` | `src/components/ui/FreshnessIndicator.tsx` | Dot + “actualizado há Nh” (hero e header) |
-| `HomepageSecondaryCta` | `src/components/homepage/HomepageSecondaryCta.tsx` | 3 cards: sazonalidade, comparar, alertas |
 
 ### Início rápido
 
@@ -59,7 +51,7 @@ cp .env.example .env.local   # opcional: Supabase, Gemini, analytics
 npm run dev                  # http://localhost:3000
 ```
 
-Build de produção:
+Build de produção (gera OG image PNG + export estático):
 
 ```bash
 npm run build
@@ -71,9 +63,9 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 
 | Variável | Obrigatória | Uso |
 |----------|-------------|-----|
-| `NEXT_PUBLIC_SUPABASE_URL` | Não | Formulário de feedback e contribuições |
+| `NEXT_PUBLIC_SUPABASE_URL` | Não | Feedback, contribuições, alertas |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Não | Idem |
-| `GEMINI_API_KEY` | Não | Geração de notícias (`npm run news:generate`) |
+| `GEMINI_API_KEY` | Não | Notícias e Dawn Patrol |
 | `NEXT_PUBLIC_GOATCOUNTER_CODE` | Não | Analytics privacy-first |
 | `RESEND_API_KEY` | Não | Alertas por email |
 
@@ -82,11 +74,13 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 | Comando | Descrição |
 |---------|-----------|
 | `npm run dev` | Servidor de desenvolvimento |
-| `npm run build` | Build estático |
+| `npm run build` | OG PNG + build estático |
 | `npm test` | Testes unitários (Vitest) |
 | `npm run test:e2e` | E2E (Playwright) |
-| `npm run conditions:update` | Actualizar `public/data/conditions.json` |
-| `npm run data:update` | Condições + notícias |
+| `npm run data:update` | Condições + observações + índice + notícias |
+| `npm run sitemap:generate` | Regenerar `public/sitemap.xml` |
+| `npm run og:generate` | Regenerar `public/og-image.png` (social previews) |
+| `npm run dawn-patrol:generate` | Dawn Patrol diário |
 | `npm run spots:validate` | Validar `src/lib/spots.ts` |
 | `npm run alerts:preflight` | Verificar setup alertas email |
 
@@ -94,25 +88,31 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 
 ```
 src/
-  app/[locale]/     # Rotas (spots, compare, news, livecams, …)
-  components/       # UI e secções (mapa, spot detail, …)
-  lib/              # Lógica (scores, spots, i18n, spotLivecams.ts)
-  data/             # Dados estáticos gerados (se aplicável)
-public/data/        # conditions.json, forecasts.json (CI)
-scripts/            # Pipelines de dados e auditoria
-docs/               # Roadmap, contexto, design system
+  app/[locale]/       # Rotas (spots, mapa, news, livecams, …)
+  components/         # UI (layout, homepage, spots, …)
+  lib/                # Lógica (scores, spots, i18n, seo.ts, …)
+public/
+  data/               # JSON gerado pelo CI (conditions, forecasts, …)
+  og-image.png        # Imagem Open Graph (WhatsApp, Facebook, X)
+scripts/              # Pipelines de dados e auditoria
+supabase/             # Schemas SQL (alertas, contribuições, feedback)
+docs/                 # Roadmap, contexto, design system
+  archive/            # Planos e relatórios históricos
 ```
 
 ### Documentação
 
-- [docs/CONTEXT.md](docs/CONTEXT.md) — arquitectura e convenções
-- [docs/ROADMAP.md](docs/ROADMAP.md) — prioridades e estado das fases
-- [docs/ALERTS.md](docs/ALERTS.md) — alertas por email (setup produção)
-- [CONTRIBUTING.md](CONTRIBUTING.md) — como contribuir (spots, livecams, scores)
+| Documento | Conteúdo |
+|-----------|----------|
+| [docs/CONTEXT.md](docs/CONTEXT.md) | Arquitectura, CI, convenções |
+| [docs/ROADMAP.md](docs/ROADMAP.md) | Prioridades e estado das fases |
+| [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) | Tokens, componentes, voz PT-PT |
+| [docs/ALERTS.md](docs/ALERTS.md) | Alertas por email |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Como contribuir (spots, livecams) |
 
 ### Livecams
 
-Não usamos embeds de terceiros (Windy timelapse, iframes MEO bloqueados). Nos **31 spots curados**, a secção «Câmara ao vivo» abre o stream **no site do operador** (nova janela). Para adicionar um spot, edita `src/lib/spotLivecams.ts`.
+Sem embeds de terceiros (iframes bloqueados). Nos spots curados, a secção «Câmara ao vivo» abre o stream **no site do operador**. Para adicionar um spot, edita `src/lib/spotLivecams.ts`.
 
 ### Contribuir
 
@@ -124,19 +124,15 @@ Issues e PRs são bem-vindos. Lê [CONTRIBUTING.md](CONTRIBUTING.md) antes de su
 
 ### What it is
 
-**VenTu** aggregates marine conditions for **167 spots** in Portugal, with per-sport scores, hourly forecast, interactive map, AI-summarized news, and **curated live camera links** (Surftotal, MEO Beachcam) on popular spots.
+**VenTu** aggregates marine conditions for **173 spots** in Portugal, with per-sport scores, hourly forecast, interactive map, Dawn Patrol, AI-summarized news, and **curated live camera links** on **37 spots**.
 
 ### Features
 
 - Conditions updated every **3 hours** (GitHub Actions + Open-Meteo)
-- Multi-sport scores, regional map filters
+- Multi-sport scores, regional map filters, email alerts
 - Spot pages: conditions, forecast, windows, location, live cam (when curated)
 - [`/livecams`](https://ventu.surf/en/livecams/) index — verified external links
 - **PT** and **EN** UI
-
-### UI components (homepage)
-
-See the Portuguese [Componentes UI (homepage)](#componentes-ui-homepage) table — `TrustStrip`, `AggregateScoreGauge`, `FreshnessIndicator`, `HomepageSecondaryCta`.
 
 ### Quick start
 
@@ -148,19 +144,9 @@ cp .env.example .env.local
 npm run dev
 ```
 
-### Environment
-
-See `.env.example`. The app runs without secrets using CI-generated files under `public/data/`.
-
 ### Documentation
 
-- [docs/CONTEXT.md](docs/CONTEXT.md)
-- [docs/ROADMAP.md](docs/ROADMAP.md)
-- [CONTRIBUTING.md](CONTRIBUTING.md)
-
-### Live cameras
-
-No third-party embeds. Curated spots link out to the operator’s live stream. Add entries in `src/lib/spotLivecams.ts`.
+See the Portuguese [Documentação](#documentação) table — [CONTEXT](docs/CONTEXT.md), [ROADMAP](docs/ROADMAP.md), [CONTRIBUTING](CONTRIBUTING.md).
 
 ### Contributing
 
@@ -175,6 +161,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 ## Credits
 
 - [Open-Meteo](https://open-meteo.com/) — marine weather data  
-- [Google Gemini](https://ai.google.dev/) — news summarization (optional)  
+- [Google Gemini](https://ai.google.dev/) — news & Dawn Patrol (optional)  
 - [Lucide](https://lucide.dev/) — icons  
 - Live camera operators: [Surftotal](https://www.surftotal.com/), [MEO Beachcam](https://beachcam.meo.pt/)

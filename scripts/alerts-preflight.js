@@ -36,9 +36,9 @@ async function main() {
 
   let pass = true;
 
-  const sqlPath = path.join(__dirname, '../supabase-alerts.sql');
-  if (fs.existsSync(sqlPath)) ok('supabase-alerts.sql present');
-  else pass = fail('Missing supabase-alerts.sql');
+  const sqlPath = path.join(__dirname, '../supabase/supabase-alerts.sql');
+  if (fs.existsSync(sqlPath)) ok('supabase/supabase-alerts.sql present');
+  else pass = fail('Missing supabase/supabase-alerts.sql');
 
   const conditionsPath = path.join(__dirname, '../public/data/conditions.json');
   if (fs.existsSync(conditionsPath)) {
@@ -75,7 +75,7 @@ async function main() {
       if (res.ok) {
         ok('Supabase table alert_subscriptions reachable');
       } else if (res.status === 404 || res.status === 406) {
-        pass = fail(`Supabase returned ${res.status} — run supabase-alerts.sql in SQL Editor`);
+        pass = fail(`Supabase returned ${res.status} — run supabase/supabase-alerts.sql in SQL Editor`);
       } else {
         pass = fail(`Supabase check failed: HTTP ${res.status}`);
       }

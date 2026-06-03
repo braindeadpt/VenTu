@@ -1,4 +1,4 @@
-# 🤙 Contribuir para VenTu Portugal
+# Contribuir para VenTu Portugal
 
 Obrigado por quereres ajudar! Este projeto é **open-source** e feito por surfistas, para surfistas. Toda a ajuda é bem-vinda!
 
