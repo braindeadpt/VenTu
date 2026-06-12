@@ -1,62 +1,78 @@
 {
-  "date": "2026-06-11",
-  "topSpot": "Ribeira d'Ilhas",
-  "topSpotSlug": "ribeira-ilhas",
+  "date": "2026-06-12",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Ondas fortes!",
-    "advice": "Hoje é um dia excelente para surfar em Ribeira d'Ilhas, com ondas de 1.8m e vento moderado. Coxos também é uma boa opção, com ondas de 1.7m e vento leve. Não se esqueça de levar o seu fato de neoprene 3/2mm.",
+    "headline": "Nazaré é o destino!",
+    "advice": "As condições em Nazaré estão excelentes, com ondas de 1.0m e período de 10s. O vento é leve e a água está a 16.6°C. É um dia perfeito para surfar em Nazaré.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chegue cedo para evitar a multidão"
   },
   "en": {
-    "headline": "Big waves!",
-    "advice": "Today is an excellent day to surf in Ribeira d'Ilhas, with waves of 1.8m and moderate wind. Coxos is also a good option, with waves of 1.7m and light wind. Don't forget to bring your 3/2mm wetsuit.",
+    "headline": "Nazaré is the spot!",
+    "advice": "Conditions in Nazaré are excellent, with waves of 1.0m and a period of 10s. The wind is light and the water is at 16.6°C. It's a perfect day to surf in Nazaré.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Arrive early to avoid the crowd"
   },
   "spots": [
     {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 75,
+      "verdict": "maybe",
+      "ptReason": "As ondas estão um pouco baixas, mas o vento é moderado",
+      "enReason": "The waves are a bit small, but the wind is moderate"
+    },
+    {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 79,
+      "score": 75,
       "verdict": "maybe",
-      "ptReason": "Ondas de 1.6m, mas vento muito leve",
-      "enReason": "Waves of 1.6m, but very light wind"
+      "ptReason": "As ondas estão razoáveis, mas o vento é muito leve",
+      "enReason": "The waves are reasonable, but the wind is very light"
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 83,
+      "verdict": "go",
+      "ptReason": "As ondas estão excelentes e o vento é leve",
+      "enReason": "The waves are excellent and the wind is light"
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 80,
-      "verdict": "go",
-      "ptReason": "Ondas de 1.8m e vento moderado",
-      "enReason": "Waves of 1.8m and moderate wind"
+      "score": 78,
+      "verdict": "maybe",
+      "ptReason": "As ondas estão razoáveis, mas o vento é muito leve",
+      "enReason": "The waves are reasonable, but the wind is very light"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 80,
-      "verdict": "go",
-      "ptReason": "Ondas de 1.7m e vento leve",
-      "enReason": "Waves of 1.7m and light wind"
+      "score": 78,
+      "verdict": "maybe",
+      "ptReason": "As ondas estão razoáveis, mas o vento é moderado",
+      "enReason": "The waves are reasonable, but the wind is moderate"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 79,
+      "score": 74,
       "verdict": "maybe",
-      "ptReason": "Ondas de 1.5m, mas vento forte",
-      "enReason": "Waves of 1.5m, but strong wind"
+      "ptReason": "As ondas estão razoáveis, mas o vento é forte",
+      "enReason": "The waves are reasonable, but the wind is strong"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 76,
+      "score": 56,
       "verdict": "skip",
-      "ptReason": "Ondas de 1.2m, muito pequenas",
-      "enReason": "Waves of 1.2m, too small"
+      "ptReason": "As ondas estão muito baixas e o vento é moderado",
+      "enReason": "The waves are very small and the wind is moderate"
     }
   ],
-  "generatedAt": "2026-06-11T09:15:35.355Z"
+  "generatedAt": "2026-06-12T09:02:38.828Z"
 }
