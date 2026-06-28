@@ -88,3 +88,21 @@ export function getWindArrow(direction: number): string {
   const index = snapped / 45;
   return arrows[index];
 }
+
+/** Conversion factor from metres-per-second to knots. */
+export const MS_TO_KNOTS = 1.94384;
+
+/** Convert wind speed from m/s to knots. */
+export function msToKnots(ms: number): number {
+  return ms * MS_TO_KNOTS;
+}
+
+/** Convert m/s to knots, rounded to the nearest integer. */
+export function msToKnotsRound(ms: number): number {
+  return Math.round(ms * MS_TO_KNOTS);
+}
+
+/** Convert m/s to knots, formatted as a string with no decimals (e.g. "12"). */
+export function formatKnots(ms: number): string {
+  return (ms * MS_TO_KNOTS).toFixed(0);
+}

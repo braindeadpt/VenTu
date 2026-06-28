@@ -102,7 +102,8 @@ export function totalSwellPowerKw(conditions: SwellTrainConditions): number {
   return buildSwellTrains(conditions).reduce((sum, t) => sum + t.powerKw, 0);
 }
 
-export const MS_TO_KNOTS = 1.94384;
+/** @deprecated Import from '@/lib/wind' instead. */
+export { MS_TO_KNOTS } from './wind';
 
 /** Prefer stored kW/m; otherwise derive from primary swell only (retrocompat). */
 export function resolveWavePowerKw(params: {

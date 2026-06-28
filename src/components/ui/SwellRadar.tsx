@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { getWindRelationToCoast, getCardinalLabel } from '@/lib/wind';
+import { getWindRelationToCoast, getCardinalLabel, msToKnotsRound, formatKnots } from '@/lib/wind';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SwellRadar — Wave incidence & wind relation diagram.
@@ -337,7 +337,7 @@ export default function SwellRadar({
     );
   });
   if (windDirection !== undefined && windSpeed !== undefined) {
-    const windKt = Math.round(windSpeed * 1.94384);
+    const windKt = msToKnotsRound(windSpeed);
     ariaParts.push(`Wind from ${getCardinalLabel(windDirection)} at ${windKt}kt`);
     if (windRelation) ariaParts.push(windRelation);
   }
@@ -562,7 +562,7 @@ export default function SwellRadar({
             <span>
               <span className="text-fg-subtle">Wind:</span>{' '}
               <span className="text-fg font-mono tabular-nums">
-                {(windSpeed * 1.94384).toFixed(0)}kt {getCardinalLabel(windDirection)}
+                {formatKnots(windSpeed)}kt {getCardinalLabel(windDirection)}
               </span>
               {windRelation && (
                 <span className={`ml-1 ${

@@ -1,7 +1,7 @@
 'use client';
 
 import { Search, X } from 'lucide-react';
-import { CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter, type NewsFiltersState } from '@/lib/news';
+import { CATEGORIES, DATE_FILTERS, REGION_FILTERS, NEWS_CATEGORY_LABELS, NEWS_CATEGORY_COLORS, type NewsCategory, type DateFilter, type RegionFilter, type NewsFiltersState } from '@/lib/news';
 import FilterPill from '@/components/ui/FilterPill';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -14,21 +14,7 @@ interface NewsFiltersProps {
   debouncing?: boolean;
 }
 
-const categoryLabels: Record<string, { pt: string; en: string }> = {
-  all:        { pt: 'Todas',       en: 'All' },
-  surf:       { pt: 'Surf',        en: 'Surf' },
-  kitesurf:   { pt: 'Kitesurf',    en: 'Kitesurf' },
-  windsurf:   { pt: 'Windsurf',    en: 'Windsurf' },
-  'big-wave': { pt: 'Big Wave',    en: 'Big Wave' },
-  sup:        { pt: 'SUP',         en: 'SUP' },
-  foil:       { pt: 'Foil',        en: 'Foil' },
-  bodyboard:  { pt: 'Bodyboard',   en: 'Bodyboard' },
-  wakeboard:  { pt: 'Wakeboard',   en: 'Wakeboard' },
-  competition:{ pt: 'Competição',  en: 'Competition' },
-  safety:     { pt: 'Segurança',   en: 'Safety' },
-  general:    { pt: 'Geral',       en: 'General' },
-  alert:      { pt: 'Alerta',      en: 'Alert' },
-};
+const categoryLabels = NEWS_CATEGORY_LABELS;
 
 const dateLabels: Record<string, { pt: string; en: string }> = {
   today:  { pt: 'Hoje',     en: 'Today' },
@@ -37,20 +23,7 @@ const dateLabels: Record<string, { pt: string; en: string }> = {
   all:    { pt: 'Tudo',     en: 'All' },
 };
 
-const categoryColors: Record<string, string> = {
-  surf:       'bg-data-waves/12 text-data-waves border border-data-waves/25',
-  kitesurf:   'bg-data-wind/12 text-data-wind border border-data-wind/25',
-  windsurf:   'bg-data-waves/12 text-data-waves border border-data-waves/25',
-  'big-wave': 'bg-windDir-offshore/12 text-windDir-offshore border border-windDir-offshore/25',
-  sup:        'bg-data-water/12 text-data-water border border-data-water/25',
-  foil:       'bg-score-fair/12 text-score-fair border border-score-fair/25',
-  bodyboard:  'bg-data-period/12 text-data-period border border-data-period/25',
-  wakeboard:  'bg-score-good/12 text-score-good border border-score-good/25',
-  competition:'bg-data-period/12 text-data-period border border-data-period/25',
-  safety:     'bg-windDir-onshore/12 text-windDir-onshore border border-windDir-onshore/25',
-  general:    'bg-data-water/12 text-data-water border border-data-water/25',
-  alert:      'bg-windDir-onshore/20 text-windDir-onshore border border-windDir-onshore/35',
-};
+const categoryColors = NEWS_CATEGORY_COLORS;
 
 const regionLabels: Record<string, { pt: string; en: string }> = {
   all:   { pt: 'Tudo',           en: 'All' },

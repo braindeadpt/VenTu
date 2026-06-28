@@ -3,7 +3,7 @@
 import { Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportScore } from '@/lib/sportScore';
-import { getCardinalLabel } from '@/lib/wind';
+import { getCardinalLabel, msToKnotsRound } from '@/lib/wind';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
 import { isObservedFresh } from '@/lib/observations';
@@ -74,8 +74,8 @@ export default function SpotConditionsDashboard({
   score,
 }: SpotConditionsDashboardProps) {
   const isPt = locale === 'pt';
-  const windKt = Math.round(conditions.windSpeed * 1.94384);
-  const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
+  const windKt = msToKnotsRound(conditions.windSpeed);
+  const gustKt = msToKnotsRound(conditions.windGust ?? conditions.windSpeed);
   const windCardinal = getCardinalLabel(conditions.windDirection);
   const waveCardinal = getCardinalLabel(conditions.waveDirection);
   const swellTrains = buildSwellTrains(conditions);

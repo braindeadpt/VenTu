@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import ErrorState from '@/components/ui/ErrorState';
+import { localeFromPathname } from '@/lib/i18n';
 
 export default function LocaleError({
   error,
@@ -12,7 +13,7 @@ export default function LocaleError({
   reset: () => void;
 }) {
   const pathname = usePathname() || '';
-  const locale = pathname.startsWith('/en') ? 'en' : 'pt';
+  const locale = localeFromPathname(pathname);
 
   useEffect(() => {
     console.error(error);

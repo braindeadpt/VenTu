@@ -450,3 +450,37 @@ export const translations = {
 };
 
 export const getTranslation = (locale: typeof locales[number]): any => translations[locale];
+
+/** Map app locale to BCP-47 tag for Intl / toLocaleString. */
+export function toBcp47(locale: Locale | string): string {
+  return locale === 'pt' ? 'pt-PT' : 'en-GB';
+}
+
+/** Derive app locale from a Next.js pathname (e.g. `/en/spots`). */
+export function localeFromPathname(pathname: string): Locale {
+  return pathname.startsWith('/en') ? 'en' : 'pt';
+}
+
+/** Format a date string for display (day + month, or full date). */
+export function formatDate(
+  iso: string,
+  locale: Locale | string,
+  options?: Intl.DateTimeFormatOptions,
+): string {
+  return new Date(iso).toLocaleDateString(
+    toBcp47(locale),
+    options ?? { day: 'numeric', month: 'short' },
+  );
+}
+
+/** Format a date-time string for display. */
+export function formatDateTime(
+  iso: string,
+  locale: Locale | string,
+  options?: Intl.DateTimeFormatOptions,
+): string {
+  return new Date(iso).toLocaleString(
+    toBcp47(locale),
+    options ?? { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' },
+  );
+}

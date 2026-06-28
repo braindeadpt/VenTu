@@ -3,6 +3,7 @@
 import { Wind, Waves, Thermometer, Gauge } from 'lucide-react';
 import WindCompass from '@/components/ui/WindCompass';
 import { getWaveRating, getWindRating } from '@/lib/openmeteo';
+import { msToKnots, formatKnots } from '@/lib/wind';
 
 interface ConditionCardProps {
   waveHeight: number;
@@ -31,7 +32,7 @@ export default function ConditionCard({
         </div>
         <div className="flex items-center gap-1.5">
           <Wind className="w-4 h-4 text-data-wind" />
-          <span className="font-semibold">{(windSpeed * 1.94384).toFixed(0)}kt</span>
+          <span className="font-semibold">{formatKnots(windSpeed)}kt</span>
         </div>
         <div className="flex items-center gap-1.5">
           <Thermometer className="w-4 h-4 text-data-waves" />
@@ -58,15 +59,15 @@ export default function ConditionCard({
 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <WindCompass direction={windDirection} speed={windSpeed * 1.94384} size={48} />
+          <WindCompass direction={windDirection} speed={msToKnots(windSpeed)} size={48} />
           <div>
             <p className="text-xs text-fg-muted">{isPt ? 'Vento' : 'Wind'}</p>
-            <p className="text-2xl font-bold">{(windSpeed * 1.94384).toFixed(0)}<span className="text-sm font-normal text-fg-subtle">kt</span></p>
+            <p className="text-2xl font-bold">{formatKnots(windSpeed)}<span className="text-sm font-normal text-fg-subtle">kt</span></p>
           </div>
         </div>
         <div className="text-right">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${windRating.className}`}>
-            {isPt ? 'Raj' : 'Gust'}: {(windGust * 1.94384).toFixed(0)}kt
+            {isPt ? 'Raj' : 'Gust'}: {formatKnots(windGust)}kt
           </span>
         </div>
       </div>

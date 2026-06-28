@@ -1,3 +1,5 @@
+import { msToKnots } from './wind';
+
 export interface HourlyCondition {
   time: string;
   waveHeight: number;
@@ -75,7 +77,7 @@ export function computeMagicWindows(
     }
 
     if (spotType === 'kitesurf') {
-      const windKnots = h.windSpeed * 1.94384;
+      const windKnots = msToKnots(h.windSpeed);
       if (windKnots >= 15 && windKnots <= 28) {
         score += 30;
         reasons.push(`Vento ideal (${Math.round(windKnots)}kt)`);
@@ -88,7 +90,7 @@ export function computeMagicWindows(
     }
 
     if (spotType === 'windsurf') {
-      const windKnots = h.windSpeed * 1.94384;
+      const windKnots = msToKnots(h.windSpeed);
       if (windKnots >= 12 && windKnots <= 25) {
         score += 30;
         reasons.push(`Vento bom (${Math.round(windKnots)}kt)`);

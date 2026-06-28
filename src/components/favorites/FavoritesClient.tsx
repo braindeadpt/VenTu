@@ -6,6 +6,7 @@ import { Heart, MapPin, ArrowLeft, Wind, Waves, Thermometer, Share2, Check } fro
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getSportScore, getScoreColor } from '@/lib/sportScore';
+import { formatKnots } from '@/lib/wind';
 import type { SportType } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
 import {
@@ -274,7 +275,7 @@ export default function FavoritesClient() {
                         <>
                           <div className="flex items-center justify-between text-sm">
                             <span className="flex items-center gap-1.5 text-fg-muted"><Waves className="w-4 h-4 text-data-waves" />{current.waveHeight.toFixed(1)}m</span>
-                            <span className="flex items-center gap-1.5 text-fg-muted"><Wind className="w-4 h-4 text-data-wind" />{(current.windSpeed * 1.94384).toFixed(0)}kt</span>
+                            <span className="flex items-center gap-1.5 text-fg-muted"><Wind className="w-4 h-4 text-data-wind" />{formatKnots(current.windSpeed)}kt</span>
                             <span className="flex items-center gap-1.5 text-fg-muted"><Thermometer className="w-4 h-4 text-data-water" />{current.waterTemp.toFixed(0)}°C</span>
                           </div>
                           

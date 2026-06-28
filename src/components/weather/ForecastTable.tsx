@@ -8,6 +8,7 @@ import {
   getCardinalLabel,
   getWindArrow,
   getWindRelationToCoast,
+  msToKnotsRound,
 } from '@/lib/wind';
 import { getTranslation } from '@/lib/i18n';
 import {
@@ -161,8 +162,8 @@ function isCurrentHour(iso: string, now: Date): boolean {
 }
 
 function buildTooltip(h: ForecastHour, sportLabel?: string): string {
-  const windKt = Math.round(h.windSpeed * 1.94384);
-  const gustKt = h.windGust !== undefined ? Math.round(h.windGust * 1.94384) : undefined;
+  const windKt = msToKnotsRound(h.windSpeed);
+  const gustKt = h.windGust !== undefined ? msToKnotsRound(h.windGust) : undefined;
   const parts: string[] = [
     `${parseHourLabel(h.time)}: ${h.waveHeight.toFixed(1)}m @ ${Math.round(h.wavePeriod)}s`,
     `${windKt}kt ${getCardinalLabel(h.windDirection)}`,
@@ -508,7 +509,7 @@ export default function ForecastTable({
               {t.wind}
             </th>
             {visible.map((h, i) => {
-              const windKt = Math.round(h.windSpeed * 1.94384);
+              const windKt = msToKnotsRound(h.windSpeed);
               return (
                 <td
                   key={i}
@@ -564,7 +565,7 @@ export default function ForecastTable({
                 {t.gust}
               </th>
               {visible.map((h, i) => {
-                const gustKt = typeof h.windGust === 'number' ? Math.round(h.windGust * 1.94384) : null;
+                const gustKt = typeof h.windGust === 'number' ? msToKnotsRound(h.windGust) : null;
                 return (
                   <td
                     key={i}

@@ -3,6 +3,7 @@
 
 import { Spot } from '@/types'
 import { SportType, getCompatibleSports } from './sportRatings'
+import { msToKnots } from './wind'
 
 export interface Conditions {
   waveHeight: number
@@ -162,7 +163,7 @@ function scoreSurf(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
-  const windKt = c.windSpeed * 1.94384
+  const windKt = msToKnots(c.windSpeed)
 
   const waveScore = Math.min(c.waveHeight * SURF_CONFIG.WAVE_PTS_PER_M, SURF_CONFIG.WAVE_PTS_MAX)
   score += waveScore
@@ -198,7 +199,7 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
-  const windKt = c.windSpeed * 1.94384
+  const windKt = msToKnots(c.windSpeed)
 
   if (windKt < KITE_CONFIG.WIND_PTS_MIN_KT) {
     score = Math.round(Math.min(15, windKt * 3))
@@ -260,7 +261,7 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
-  const windKt = c.windSpeed * 1.94384
+  const windKt = msToKnots(c.windSpeed)
 
   if (windKt < WIND_CONFIG.WIND_PTS_MIN_KT) {
     score = Math.round(Math.min(15, windKt * 3))
@@ -353,7 +354,7 @@ function scoreBodyboard(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
-  const windKt = c.windSpeed * 1.94384
+  const windKt = msToKnots(c.windSpeed)
 
   const waveScore = Math.min(c.waveHeight * BODYBOARD_CONFIG.WAVE_PTS_PER_M, BODYBOARD_CONFIG.WAVE_PTS_MAX)
   score += waveScore
@@ -380,7 +381,7 @@ function scoreSUP(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
   let score = 0
 
-  const windKt = c.windSpeed * 1.94384
+  const windKt = msToKnots(c.windSpeed)
 
   if (c.waveHeight < SUP_CONFIG.WAVE_FLAT_MAX) {
     score += SUP_CONFIG.WAVE_FLAT_PTS
@@ -416,7 +417,7 @@ function scoreSUP(spot: Spot, c: Conditions): SportScore {
 
 function scoreFoil(spot: Spot, c: Conditions): SportScore {
   const factors: string[] = []
-  const windKt = c.windSpeed * 1.94384
+  const windKt = msToKnots(c.windSpeed)
 
   let score = 0
 

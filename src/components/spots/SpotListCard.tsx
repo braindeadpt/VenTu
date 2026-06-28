@@ -10,6 +10,7 @@ import SpotImage from '@/components/ui/SpotImage';
 import { getSpotListCardHoverLine } from '@/lib/spotListCardDelight';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { cn } from '@/lib/cn';
+import { msToKnotsRound } from '@/lib/wind';
 
 export interface SpotListCardConditions {
   waveHeight: number;
@@ -55,7 +56,7 @@ export default function SpotListCard({
   statusLine,
 }: SpotListCardProps) {
   const isPt = locale === 'pt';
-  const windKt = Math.round(conditions.windSpeed * 1.94384);
+  const windKt = msToKnotsRound(conditions.windSpeed);
   const hoverLine = getSpotListCardHoverLine(score, isPt);
   const imageWrapRef = useRef<HTMLDivElement>(null);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });

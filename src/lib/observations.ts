@@ -3,6 +3,9 @@
  * Independent from sport score and multi-model confidence.
  */
 
+import { msToKnotsRound } from './wind';
+import { toBcp47 } from './i18n';
+
 export type ObservedSource = 'ipma' | 'ecowitt';
 
 export interface ObservedConditions {
@@ -91,7 +94,7 @@ export function isObservedFresh(observedAt: string, maxHours = OBSERVED_FRESH_MA
 export function formatObservedClockTime(observedAt: string, locale: string): string {
   const d = new Date(observedAt);
   if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleTimeString(locale === 'pt' ? 'pt-PT' : 'en-GB', {
+  return d.toLocaleTimeString(toBcp47(locale), {
     timeZone: 'Europe/Lisbon',
     hour: '2-digit',
     minute: '2-digit',
@@ -116,8 +119,9 @@ export function formatObservedAge(observedAt: string, locale: string): string {
   return rem > 0 ? `${hours}h ${rem}m ago` : `${hours}h ago`;
 }
 
+/** @deprecated Use msToKnotsRound from '@/lib/wind'. */
 export function forecastWindKtFromMs(windSpeedMs: number): number {
-  return Math.round(windSpeedMs * 1.94384);
+  return msToKnotsRound(windSpeedMs);
 }
 
 export function observedSourceLabel(source: ObservedSource, locale: string): string {

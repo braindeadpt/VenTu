@@ -1,4 +1,5 @@
 import type { NewsItem, Spot } from '@/types';
+import { toBcp47 } from './i18n';
 import type { SportType } from '@/lib/sportRatings';
 import { getMacroRegion } from '@/lib/regions';
 
@@ -20,6 +21,39 @@ export interface NewsFiltersState {
   query: string;
   page: number;
 }
+
+/** Tailwind class map for news category pills/badges (shared by NewsCard, NewsFilters). */
+export const NEWS_CATEGORY_COLORS: Record<string, string> = {
+  surf:       'bg-data-waves/12 text-data-waves border border-data-waves/25',
+  kitesurf:   'bg-data-wind/12 text-data-wind border border-data-wind/25',
+  windsurf:   'bg-data-waves/12 text-data-waves border border-data-waves/25',
+  'big-wave': 'bg-windDir-offshore/12 text-windDir-offshore border border-windDir-offshore/25',
+  sup:        'bg-data-water/12 text-data-water border border-data-water/25',
+  foil:       'bg-score-fair/12 text-score-fair border border-score-fair/25',
+  bodyboard:  'bg-data-period/12 text-data-period border border-data-period/25',
+  wakeboard:  'bg-score-good/12 text-score-good border border-score-good/25',
+  competition:'bg-data-period/12 text-data-period border border-data-period/25',
+  safety:     'bg-windDir-onshore/12 text-windDir-onshore border border-windDir-onshore/25',
+  general:    'bg-data-water/12 text-data-water border border-data-water/25',
+  alert:      'bg-windDir-onshore/20 text-windDir-onshore border border-windDir-onshore/35',
+};
+
+/** Bilingual labels for news categories (shared by NewsFilters, NewsDetailHeader). */
+export const NEWS_CATEGORY_LABELS: Record<string, { pt: string; en: string }> = {
+  all:        { pt: 'Todas',       en: 'All' },
+  surf:       { pt: 'Surf',        en: 'Surf' },
+  kitesurf:   { pt: 'Kitesurf',    en: 'Kitesurf' },
+  windsurf:   { pt: 'Windsurf',    en: 'Windsurf' },
+  'big-wave': { pt: 'Big Wave',    en: 'Big Wave' },
+  sup:        { pt: 'SUP',         en: 'SUP' },
+  foil:       { pt: 'Foil',        en: 'Foil' },
+  bodyboard:  { pt: 'Bodyboard',   en: 'Bodyboard' },
+  wakeboard:  { pt: 'Wakeboard',   en: 'Wakeboard' },
+  competition:{ pt: 'Competição',  en: 'Competition' },
+  safety:     { pt: 'Segurança',   en: 'Safety' },
+  general:    { pt: 'Geral',       en: 'General' },
+  alert:      { pt: 'Alerta',      en: 'Alert' },
+};
 
 export const DEFAULT_FILTERS: NewsFiltersState = {
   category: 'all',
@@ -139,8 +173,8 @@ export function groupByDay(news: NewsItem[], locale: string): DayGroup[] {
         label = 'Ontem';
         labelEn = 'Yesterday';
       } else {
-        label = d.toLocaleDateString('pt-PT', { day: 'numeric', month: 'long', year: 'numeric' });
-        labelEn = d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+        label = d.toLocaleDateString(toBcp47('pt'), { day: 'numeric', month: 'long', year: 'numeric' });
+        labelEn = d.toLocaleDateString(toBcp47('en'), { day: 'numeric', month: 'long', year: 'numeric' });
       }
       return { date: dateStr, label, labelEn, items };
     });

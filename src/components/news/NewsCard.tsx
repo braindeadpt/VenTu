@@ -1,4 +1,6 @@
 import { NewsItem } from '@/types';
+import { formatDate } from '@/lib/i18n';
+import { NEWS_CATEGORY_COLORS } from '@/lib/news';
 import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 
 interface NewsCardProps {
@@ -7,20 +9,7 @@ interface NewsCardProps {
   variant?: 'grid' | 'compact';
 }
 
-const categoryColors: Record<string, string> = {
-  surf:       'bg-data-waves/12 text-data-waves border border-data-waves/25',
-  kitesurf:   'bg-data-wind/12 text-data-wind border border-data-wind/25',
-  windsurf:   'bg-data-waves/12 text-data-waves border border-data-waves/25',
-  'big-wave': 'bg-windDir-offshore/12 text-windDir-offshore border border-windDir-offshore/25',
-  sup:        'bg-data-water/12 text-data-water border border-data-water/25',
-  foil:       'bg-score-fair/12 text-score-fair border border-score-fair/25',
-  bodyboard:  'bg-data-period/12 text-data-period border border-data-period/25',
-  wakeboard:  'bg-score-good/12 text-score-good border border-score-good/25',
-  competition:'bg-data-period/12 text-data-period border border-data-period/25',
-  safety:     'bg-windDir-onshore/12 text-windDir-onshore border border-windDir-onshore/25',
-  general:    'bg-data-water/12 text-data-water border border-data-water/25',
-  alert:      'bg-windDir-onshore/20 text-windDir-onshore border border-windDir-onshore/35',
-};
+const categoryColors = NEWS_CATEGORY_COLORS;
 
 const categoryIcons: Record<string, React.ReactNode> = {
   surf:        <Waves className="w-4 h-4" />,
@@ -54,7 +43,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
           </h4>
           <div className="flex items-center gap-2 mt-0.5">
             <span className="text-xs text-fg-subtle">
-              {new Date(news.publishedAt).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB', { day: 'numeric', month: 'short' })}
+              {formatDate(news.publishedAt, locale)}
             </span>
             <span className="flex items-center gap-1 text-xs text-fg-subtle/80">
               <Sparkles className="w-2.5 h-2.5" />
@@ -87,7 +76,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
           </div>
           <span className="flex items-center gap-1 text-xs text-fg-subtle">
             <Clock className="w-3 h-3" />
-            {new Date(news.publishedAt).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')}
+            {formatDate(news.publishedAt, locale)}
           </span>
           <span className="flex items-center gap-1 text-xs text-fg-subtle/80">
             <Sparkles className="w-3 h-3" />

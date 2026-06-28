@@ -6,6 +6,7 @@ import {
   computeMagicWindows,
   type HourlyCondition,
 } from '@/lib/magicWindows';
+import { toBcp47 } from '@/lib/i18n';
 
 interface MagicWindowsProps {
   hourly: HourlyCondition[];
@@ -30,7 +31,7 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
     const h = hourly[idx];
     if (!h?.time) return '--:--';
     const date = new Date(h.time);
-    return date.toLocaleTimeString(isPt ? 'pt-PT' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString(toBcp47(locale), { hour: '2-digit', minute: '2-digit' });
   };
 
   return (

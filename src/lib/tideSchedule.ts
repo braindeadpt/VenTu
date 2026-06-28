@@ -3,6 +3,8 @@
  * Uses hourly sea_level from Open-Meteo (forecasts.json / conditions).
  */
 
+import { toBcp47 } from './i18n';
+
 export type TidePhase = 'high' | 'low' | 'rising' | 'falling';
 
 export interface TideHourPoint {
@@ -150,7 +152,7 @@ export function buildTideSchedule(
 }
 
 export function formatTideTime(date: Date, locale: 'pt' | 'en'): string {
-  return new Intl.DateTimeFormat(locale === 'pt' ? 'pt-PT' : 'en-GB', {
+  return new Intl.DateTimeFormat(toBcp47(locale), {
     hour: '2-digit',
     minute: '2-digit',
     timeZone: 'Europe/Lisbon',

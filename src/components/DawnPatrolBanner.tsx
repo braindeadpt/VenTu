@@ -7,6 +7,7 @@ import Button from '@/components/ui/Button';
 import { getAssetPath } from '@/lib/paths';
 import { spots } from '@/lib/spots';
 import { isDawnPatrolStale } from '@/lib/dataFreshness';
+import { toBcp47 } from '@/lib/i18n';
 
 interface DawnPatrolData {
   date: string;
@@ -135,7 +136,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
   const content = isPt ? data.pt : data.en;
   const stale = isDawnPatrolStale(data.date);
   const dateLabel = new Date(`${data.date}T12:00:00`).toLocaleDateString(
-    isPt ? 'pt-PT' : 'en-GB',
+    toBcp47(locale),
     { weekday: 'short', day: 'numeric', month: 'short' },
   );
   const topSpotHref = resolveSpotHref(locale, data.topSpotSlug);

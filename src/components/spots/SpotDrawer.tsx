@@ -14,6 +14,7 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import { ArrowRight } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
+import { formatKnots } from '@/lib/wind';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 
@@ -30,9 +31,7 @@ interface SpotDrawerProps {
   gridSport?: GridSportFilter;
 }
 
-function kts(v: number): string {
-  return (v * 1.94384).toFixed(0);
-}
+const kts = formatKnots;
 
 function resolveDrawerSport(
   gridSport: GridSportFilter,

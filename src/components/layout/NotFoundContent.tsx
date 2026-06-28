@@ -4,10 +4,11 @@ import { usePathname } from 'next/navigation';
 import { MapPin, ArrowLeft, Search } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
+import { localeFromPathname } from '@/lib/i18n';
 
 export default function NotFoundContent() {
   const pathname = usePathname() || '';
-  const locale = pathname.startsWith('/en') ? 'en' : 'pt';
+  const locale = localeFromPathname(pathname);
   const isPt = locale === 'pt';
 
   return (

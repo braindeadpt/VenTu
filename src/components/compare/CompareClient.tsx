@@ -5,6 +5,7 @@ import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Sear
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
 import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
+import { formatKnots } from '@/lib/wind';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -483,7 +484,7 @@ export default function CompareClient() {
                       <Wind className="w-4 h-4" aria-hidden />
                       {isPt ? 'Vento' : 'Wind'}
                     </dt>
-                    <dd className="font-mono tabular-nums font-semibold text-fg">{(data.conditions.windSpeed * 1.94384).toFixed(0)}kt</dd>
+                    <dd className="font-mono tabular-nums font-semibold text-fg">{formatKnots(data.conditions.windSpeed)}kt</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-fg-muted flex items-center gap-1">

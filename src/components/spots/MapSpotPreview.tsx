@@ -7,7 +7,7 @@ import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
-import { getCardinalLabel } from '@/lib/wind';
+import { getCardinalLabel, msToKnotsRound } from '@/lib/wind';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import SpotImage from '@/components/ui/SpotImage';
@@ -37,7 +37,7 @@ export default function MapSpotPreview({
 }: MapSpotPreviewProps) {
   const isPt = locale === 'pt';
   const { spot, conditions, allScores } = data;
-  const windKt = Math.round(conditions.windSpeed * 1.94384);
+  const windKt = msToKnotsRound(conditions.windSpeed);
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
   const powerKw = resolveWavePowerKw(conditions);

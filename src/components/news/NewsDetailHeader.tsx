@@ -1,20 +1,15 @@
 import type { NewsItem } from '@/types';
 import { Sparkles, Calendar } from 'lucide-react';
 import Link from 'next/link';
+import { formatDate } from '@/lib/i18n';
+import { NEWS_CATEGORY_LABELS } from '@/lib/news';
 
 interface NewsDetailHeaderProps {
   news: NewsItem;
   locale: string;
 }
 
-const categoryLabels: Record<string, { pt: string; en: string }> = {
-  surf:        { pt: 'Surf',        en: 'Surf' },
-  kitesurf:    { pt: 'Kitesurf',    en: 'Kitesurf' },
-  windsurf:    { pt: 'Windsurf',    en: 'Windsurf' },
-  competition: { pt: 'Competição',  en: 'Competition' },
-  safety:      { pt: 'Segurança',   en: 'Safety' },
-  general:     { pt: 'Geral',       en: 'General' },
-};
+const categoryLabels = NEWS_CATEGORY_LABELS;
 
 export default function NewsDetailHeader({ news, locale }: NewsDetailHeaderProps) {
   const isPt = locale === 'pt';
@@ -45,7 +40,7 @@ export default function NewsDetailHeader({ news, locale }: NewsDetailHeaderProps
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-fg-muted">
         <span className="flex items-center gap-1.5">
           <Calendar className="w-4 h-4" />
-          {new Date(news.publishedAt).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB', {
+          {formatDate(news.publishedAt, locale, {
             day: 'numeric',
             month: 'long',
             year: 'numeric',
