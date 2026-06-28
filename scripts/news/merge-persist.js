@@ -7,6 +7,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 
 const NEWS_PATH = path.join(__dirname, '../../public/data/news.json');
 const MAX_ITEMS = 100;
@@ -62,13 +63,21 @@ function deduplicate(items) {
 }
 
 /**
- * Assign a unique ID to items that lack one (e.g., newly created items).
+ * Derive a stable, deterministic ID from an item's content so IDs
+ * don't change every pipeline run.
+ */
+function stableId(item) {
+  const key = `${item.sourceType || 'rss'}:${item.url || ''}:${item.title || ''}`;
+  return `news-${crypto.createHash('sha256').update(key).digest('hex').slice(0, 12)}`;
+}
+
+/**
+ * Assign a stable ID to items that lack one (e.g., newly created items).
  */
 function assignIds(items) {
-  let counter = 0;
   return items.map((item) => {
     if (!item.id) {
-      item.id = `news-${Date.now()}-${counter++}`;
+      item.id = stableId(item);
     }
     if (!item.tags) item.tags = [];
     if (!item.sourceRegion) item.sourceRegion = 'intl';

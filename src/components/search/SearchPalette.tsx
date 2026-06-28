@@ -182,7 +182,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
     inputRef.current?.focus();
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if ((e.key === 'k' && (e.metaKey || e.ctrlKey))) {
+      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
         e.preventDefault();
         onClose();
       }

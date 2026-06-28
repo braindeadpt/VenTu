@@ -7,6 +7,12 @@
 
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+
+let idCounter = 0;
+function uniqueId(prefix) {
+  return `${prefix}-${Date.now()}-${(idCounter++).toString(36)}-${crypto.randomBytes(3).toString('hex')}`;
+}
 
 function loadConditions() {
   try {
@@ -54,7 +60,7 @@ function detectSnapshotEvents(conditions) {
     const maxH = Math.max(...bigSwellSpots.map(([, c]) => c.waveHeight || 0));
     const isMassive = maxH > 4.0;
     events.push({
-      id: `event-snapshot-${Date.now()}-big-swell`,
+      id: uniqueId('event-snapshot-big-swell'),
       title: `Ondas grandes detectadas: ${maxH.toFixed(1)}m em ${bigSwellSpots.length} spot${bigSwellSpots.length > 1 ? 's' : ''}`,
       titleEn: `Big swell detected: ${maxH.toFixed(1)}m at ${bigSwellSpots.length} spot${bigSwellSpots.length > 1 ? 's' : ''}`,
       summary: `Ondas acima de 3m em ${names}. ${isMassive ? 'Condições extremas — apenas para especialistas.' : 'Prepara-te para um dia de ondas grandes.'}`,
@@ -79,7 +85,7 @@ function detectSnapshotEvents(conditions) {
     else if (maxKt > 30) category = 'windsurf';
     const severity = isStorm ? 'alert' : maxKt > 35 ? 'warning' : 'info';
     events.push({
-      id: `event-snapshot-${Date.now()}-wind`,
+      id: uniqueId('event-snapshot-wind'),
       title: `Vento forte: ${maxKt.toFixed(0)}kt em ${strongWindSpots.length} spot${strongWindSpots.length > 1 ? 's' : ''}`,
       titleEn: `Strong wind: ${maxKt.toFixed(0)}kt at ${strongWindSpots.length} spot${strongWindSpots.length > 1 ? 's' : ''}`,
       summary: `Rajadas acima de ${maxKt.toFixed(0)}kt detectadas em ${names}. ${isStorm ? 'Perigo — vento extremo, evita a água.' : 'Condições ideais para kitesurf/windsurf com experiência.'}`,
@@ -98,7 +104,7 @@ function detectSnapshotEvents(conditions) {
   if (warmSpots.length > spots.length * 0.5) {
     const avgTemp = warmSpots.reduce((s, [, c]) => s + (c.waterTemp || 0), 0) / warmSpots.length;
     events.push({
-      id: `event-snapshot-${Date.now()}-warm-water`,
+      id: uniqueId('event-snapshot-warm-water'),
       title: `Água quente: média ${avgTemp.toFixed(1)}°C na maioria dos spots`,
       titleEn: `Warm water: avg ${avgTemp.toFixed(1)}°C across most spots`,
       summary: `Temperatura da água acima de 22°C em ${warmSpots.length} spots. Dias de praia perfeitos!`,
@@ -113,11 +119,15 @@ function detectSnapshotEvents(conditions) {
     });
   }
 
+  // Only emit a separate storm event when it wasn't already covered by the
+  // strong-wind event above (which fires at >25kt and already flags >40kt as
+  // 'alert').  This avoids duplicate near-identical items in the feed.
+  const alreadyHasWindAlert = events.some((e) => e.tags?.includes('vento-forte'));
   const stormSpots = spots.filter(([, c]) => msToKnots(c.windSpeed || 0) > 35);
-  if (stormSpots.length >= 3) {
+  if (stormSpots.length >= 3 && !alreadyHasWindAlert) {
     const names = stormSpots.slice(0, 5).map(([id]) => id.replace(/-/g, ' ')).join(', ');
     events.push({
-      id: `event-snapshot-${Date.now()}-storm`,
+      id: uniqueId('event-snapshot-storm'),
       title: `Tempestade: vento >35kt em ${stormSpots.length} spots`,
       titleEn: `Storm: wind >35kt at ${stormSpots.length} spots`,
       summary: `Condições de tempestade detectadas em vários spots: ${names}. Recomenda-se não ir para a água.`,
@@ -183,7 +193,7 @@ function detectForecastEvents(forecasts) {
     const isMassive = maxWave72 > 4;
     const sample = waveSpotIds.slice(0, 5).map((id) => id.replace(/-/g, ' ')).join(', ');
     events.push({
-      id: `event-forecast-${Date.now()}-swell-72h`,
+      id: uniqueId('event-forecast-swell-72h'),
       title: `Previsão 72h: ondas até ${maxWave72.toFixed(1)}m em ${waveSpotIds.length} spots`,
       titleEn: `72h forecast: waves up to ${maxWave72.toFixed(1)}m at ${waveSpotIds.length} spots`,
       summary: `Nas próximas 72 horas, ondas ≥3m previstas em ${sample}${waveSpotIds.length > 5 ? '…' : ''}. ${isMassive ? 'Atenção redobrada em spots expostos.' : 'Bom para planear sessão.'}`,
@@ -206,7 +216,7 @@ function detectForecastEvents(forecasts) {
     else if (maxWind24 > 30) category = 'windsurf';
 
     events.push({
-      id: `event-forecast-${Date.now()}-wind-24h`,
+      id: uniqueId('event-forecast-wind-24h'),
       title: `Previsão 24h: vento até ${maxWind24.toFixed(0)}kt em ${windSpotIds.length} spots`,
       titleEn: `24h forecast: wind up to ${maxWind24.toFixed(0)}kt at ${windSpotIds.length} spots`,
       summary: `Nas próximas 24 horas, vento forte previsto em ${sample}${windSpotIds.length > 5 ? '…' : ''}. ${isStorm ? 'Evita água em spots expostos.' : 'Janela para kite/wind com experiência.'}`,

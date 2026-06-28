@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback, useState } from 'react';
+import { useEffect, useRef, useCallback, useState, useId } from 'react';
 import type { ReactNode } from 'react';
 
 interface DrawerProps {
@@ -26,6 +26,8 @@ export default function Drawer({
   locale = 'pt',
   children,
 }: DrawerProps) {
+  const instanceId = useId();
+  const titleId = `drawer-title-${instanceId}`;
   const drawerRef = useRef<HTMLDivElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -41,6 +43,13 @@ export default function Drawer({
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
+  }, []);
+
+  // Ensure body scroll lock is always cleaned up on unmount
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, []);
 
   // Open/close animation
@@ -59,9 +68,6 @@ export default function Drawer({
       }, 320);
       return () => clearTimeout(timer);
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [isOpen]);
 
   // Focus trap + Esc
@@ -168,7 +174,7 @@ export default function Drawer({
         ref={drawerRef}
         role="dialog"
         aria-modal="true"
-        aria-labelledby={title ? 'drawer-title' : undefined}
+        aria-labelledby={title ? titleId : undefined}
         onKeyDown={handleKeyDown}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -194,7 +200,7 @@ export default function Drawer({
         {/* Title + close */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-divider">
           {title ? (
-            <h2 id="drawer-title" className="text-sm font-bold text-fg truncate">
+            <h2 id={titleId} className="text-sm font-bold text-fg truncate">
               {title}
             </h2>
           ) : (

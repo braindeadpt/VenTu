@@ -1,6 +1,6 @@
 'use client';
 
-import { type ReactNode } from 'react';
+import { useId, type ReactNode } from 'react';
 import { Waves, CalendarDays, Sparkles, BarChart3 } from 'lucide-react';
 
 interface TabDef {
@@ -31,6 +31,7 @@ export default function SpotDrawerTabs({
   children,
 }: SpotDrawerTabsProps) {
   const isPt = locale === 'pt';
+  const instanceId = useId();
 
   return (
     <div>
@@ -39,11 +40,16 @@ export default function SpotDrawerTabs({
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const active = activeTab === tab.id;
+          const tabId = `drawer-tab-${tab.id}-${instanceId}`;
+          const panelId = `drawer-tabpanel-${tab.id}-${instanceId}`;
           return (
             <button
               key={tab.id}
+              id={tabId}
               role="tab"
               aria-selected={active}
+              aria-controls={panelId}
+              tabIndex={active ? 0 : -1}
               onClick={() => onTabChange(tab.id)}
               className={[
                 'flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-all whitespace-nowrap',
@@ -60,7 +66,12 @@ export default function SpotDrawerTabs({
       </div>
 
       {/* Tab content */}
-      <div className="pt-3" role="tabpanel">
+      <div
+        id={`drawer-tabpanel-${activeTab}-${instanceId}`}
+        role="tabpanel"
+        aria-labelledby={`drawer-tab-${activeTab}-${instanceId}`}
+        className="pt-3"
+      >
         {children}
       </div>
     </div>

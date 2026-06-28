@@ -91,7 +91,8 @@ async function ensureBilingual(item) {
     return item;
   }
 
-  // International feeds: translate title + summary to PT only when missing PT copy
+  // International feeds: RSS stubs set title === titleEn at creation time, so
+  // equality signals the item still lacks a proper PT translation.
   const needsTitlePt = item.titleEn && item.titleEn === item.title;
   const needsSummaryPt = item.summaryEn && item.summaryEn === item.summary;
 

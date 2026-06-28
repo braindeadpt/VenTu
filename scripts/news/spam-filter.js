@@ -27,15 +27,20 @@ const BLACKLIST = [
   'save big',
 ];
 
+// Pre-compiled regexes for word-boundary matching to reduce false positives
+// (e.g. "subscribe" won't match inside "subscribers" context in article text).
+const BLACKLIST_PATTERNS = BLACKLIST.map(
+  (kw) => new RegExp(`\\b${kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i'),
+);
+
 /**
- * Check if a piece of text contains any blacklisted keyword.
+ * Check if a piece of text contains any blacklisted keyword (word-boundary match).
  * @param {string} text
  * @returns {boolean}
  */
 function isSpam(text) {
   if (!text) return false;
-  const lower = text.toLowerCase();
-  return BLACKLIST.some((kw) => lower.includes(kw));
+  return BLACKLIST_PATTERNS.some((re) => re.test(text));
 }
 
 /**
