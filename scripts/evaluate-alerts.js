@@ -16,6 +16,15 @@ const SITE_URL = 'https://ventu.surf';
 const FROM_EMAIL = process.env.RESEND_FROM || 'VenTu <alerts@ventu.surf>';
 const COOLDOWN_MS = 3 * 60 * 60 * 1000;
 
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 function loadSpotSlugs() {
   const content = fs.readFileSync(SPOTS_PATH, 'utf-8');
   const ids = [...content.matchAll(/id:\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
@@ -90,7 +99,9 @@ async function sendEmail(to, subject, html) {
 async function markSent(id) {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  await fetch(`${url}/rest/v1/alert_subscriptions?id=eq.${id}`, {
+  const safeId = Number(id);
+  if (!Number.isFinite(safeId)) throw new Error(`Invalid subscription id: ${id}`);
+  await fetch(`${url}/rest/v1/alert_subscriptions?id=eq.${safeId}`, {
     method: 'PATCH',
     headers: {
       apikey: key,
@@ -104,11 +115,14 @@ async function markSent(id) {
 
 async function sendVerification(sub) {
   const isPt = sub.locale !== 'en';
-  const link = `${SITE_URL}/${sub.locale || 'pt'}/alerts/confirm/?token=${sub.verify_token}`;
+  const link = `${SITE_URL}/${encodeURIComponent(sub.locale || 'pt')}/alerts/confirm/?token=${encodeURIComponent(sub.verify_token)}`;
+  const slug = escapeHtml(sub.spot_slug);
+  const sport = escapeHtml(sub.sport);
+  const minScore = escapeHtml(sub.min_score);
   const subject = isPt ? 'Confirma o teu alerta VenTu' : 'Confirm your VenTu alert';
   const html = isPt
-    ? `<p>Confirma o alerta para <strong>${sub.spot_slug}</strong> (${sub.sport}, score ≥ ${sub.min_score}):</p><p><a href="${link}">Confirmar alerta</a></p>`
-    : `<p>Confirm alert for <strong>${sub.spot_slug}</strong> (${sub.sport}, score ≥ ${sub.min_score}):</p><p><a href="${link}">Confirm alert</a></p>`;
+    ? `<p>Confirma o alerta para <strong>${slug}</strong> (${sport}, score ≥ ${minScore}):</p><p><a href="${link}">Confirmar alerta</a></p>`
+    : `<p>Confirm alert for <strong>${slug}</strong> (${sport}, score ≥ ${minScore}):</p><p><a href="${link}">Confirm alert</a></p>`;
   await sendEmail(sub.email, subject, html);
 }
 
@@ -142,14 +156,18 @@ async function main() {
     if (score === null || score < sub.min_score) continue;
 
     const isPt = sub.locale !== 'en';
-    const spotUrl = `${SITE_URL}/${sub.locale || 'pt'}/spots/${sub.spot_slug}/`;
-    const unsub = `${SITE_URL}/${sub.locale || 'pt'}/alerts/unsubscribe/?token=${sub.verify_token}`;
+    const locale = encodeURIComponent(sub.locale || 'pt');
+    const spotUrl = `${SITE_URL}/${locale}/spots/${encodeURIComponent(sub.spot_slug)}/`;
+    const unsub = `${SITE_URL}/${locale}/alerts/unsubscribe/?token=${encodeURIComponent(sub.verify_token)}`;
+    const slug = escapeHtml(sub.spot_slug);
+    const sport = escapeHtml(sub.sport);
+    const minScore = escapeHtml(sub.min_score);
     const subject = isPt
       ? `VenTu — ${sub.spot_slug}: score ${score} (${sub.sport})`
       : `VenTu — ${sub.spot_slug}: score ${score} (${sub.sport})`;
     const html = isPt
-      ? `<p>Condições boas em <strong>${sub.spot_slug}</strong>!</p><p>Score ${sub.sport}: <strong>${score}</strong>/100 (limiar ${sub.min_score})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
-      : `<p>Good conditions at <strong>${sub.spot_slug}</strong>!</p><p>${sub.sport} score: <strong>${score}</strong>/100 (threshold ${sub.min_score})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
+      ? `<p>Condições boas em <strong>${slug}</strong>!</p><p>Score ${sport}: <strong>${score}</strong>/100 (limiar ${minScore})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
+      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} score: <strong>${score}</strong>/100 (threshold ${minScore})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
 
     const ok = await sendEmail(sub.email, subject, html);
     if (ok) {

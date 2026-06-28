@@ -205,6 +205,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                       : (isPt ? 'O que não está a funcionar?' : 'What is not working?')
                 }
                 rows={4}
+                maxLength={2000}
                 className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50 resize-none"
                 required
               />

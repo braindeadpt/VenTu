@@ -52,6 +52,8 @@ export default function AlertSubscribeForm({
       return;
     }
 
+    const clampedScore = Math.max(0, Math.min(100, Math.round(minScore)));
+
     setSending(true);
     setError('');
 
@@ -66,7 +68,7 @@ export default function AlertSubscribeForm({
         email: email.trim().toLowerCase(),
         spot_slug: spotSlug,
         sport,
-        min_score: minScore,
+        min_score: clampedScore,
         verify_token: verifyToken,
         verified: false,
         active: true,

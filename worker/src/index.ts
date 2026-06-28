@@ -180,7 +180,6 @@ async function ecowittObserved(
     Number((x as { code?: unknown })?.code) === 0,
   )) as EcowittResponse;
 
-  console.log('ecowitt code/msg:', j?.code, j?.msg);
   if (Number(j.code) !== 0 || !j.data?.wind) return null;
 
   const w = j.data.wind;
