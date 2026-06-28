@@ -158,7 +158,8 @@ export default function SpotDetailClient({
 
         try {
           [condJson, fcJson] = await Promise.all([loadConditionsJson(), loadForecastsJson()]);
-        } catch {
+        } catch (e) {
+          console.warn('Failed to load precomputed spot data, falling back to live fetch:', e);
           condJson = null;
           fcJson = null;
         }

@@ -30,7 +30,8 @@ export default function SpotRelatedNews({ spot, locale, sport }: SpotRelatedNews
           setLoaded(true);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.warn('Failed to load related news:', err);
         if (!cancelled) setLoaded(true);
       });
     return () => {

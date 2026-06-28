@@ -39,7 +39,8 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
           url: shareUrl,
         });
       } catch (err) {
-        // User cancelled or error
+        if (err instanceof DOMException && err.name === 'AbortError') return;
+        console.warn('Native share failed:', err);
       }
     } else {
       setShowOptions(!showOptions);

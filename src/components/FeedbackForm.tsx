@@ -95,8 +95,10 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
         setSent(false);
         setOpen(false);
       }, 2000);
-    } catch (err: any) {
-      setError(err.message || (isPt ? 'Erro ao enviar' : 'Error sending'));
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn('Feedback submission failed:', msg);
+      setError(msg || (isPt ? 'Erro ao enviar' : 'Error sending'));
     } finally {
       setSending(false);
     }

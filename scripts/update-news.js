@@ -67,6 +67,7 @@ async function updateNews() {
         ? keywordCategory
         : await categoriseItem(item.title, item.summary, keywordCategory);
     } catch (e) {
+      console.warn(`  ⚠️ Categorisation failed for "${(item.title || '').substring(0, 50)}": ${e.message}`);
       item.category = keywordCategory || item.defaultCategory || 'general';
     }
 
@@ -79,7 +80,7 @@ async function updateNews() {
         item.summaryEn = item.summaryEn || item.summary;
       }
     } catch (e) {
-      // Keep original if translation fails
+      console.warn(`  ⚠️ Translation failed for "${(item.title || '').substring(0, 50)}": ${e.message}`);
     }
 
     categorisedRss.push(item);

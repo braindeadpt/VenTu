@@ -63,9 +63,12 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   const [newsCache, setNewsCache] = useState<NewsItem[]>([]);
   useEffect(() => {
     fetch(getAssetPath('/data/news.json'))
-      .then((r) => r.json())
+      .then((r) => (r.ok ? r.json() : []))
       .then((data) => setNewsCache(Array.isArray(data) ? data : []))
-      .catch(() => setNewsCache([]));
+      .catch((err) => {
+        console.warn('Failed to load news for search:', err);
+        setNewsCache([]);
+      });
   }, []);
 
   // Filter logic

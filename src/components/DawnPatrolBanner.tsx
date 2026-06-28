@@ -63,7 +63,8 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
         setData(d);
         setLoading(false);
       })
-      .catch(() => {
+      .catch((err) => {
+        console.warn('Failed to load Dawn Patrol data:', err);
         setLoading(false);
         setError(true);
       });
@@ -93,7 +94,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
     fetch(getAssetPath('/data/dawn-patrol.json'))
       .then(r => { if (!r.ok) throw new Error('Fetch failed'); return r.json(); })
       .then(d => { setData(d); setLoading(false); })
-      .catch(() => { setLoading(false); setError(true); });
+      .catch((err) => { console.warn('Failed to reload Dawn Patrol data:', err); setLoading(false); setError(true); });
   }, []);
 
   if (loading) {

@@ -66,7 +66,9 @@ export default function OfflineBanner() {
           try { localStorage.setItem(LAST_UPDATE_KEY, data.updatedAt); } catch { /* noop */ }
         }
       })
-      .catch(() => { /* keep stored value */ });
+      .catch((err) => {
+        console.warn('Failed to fetch conditions while offline:', err);
+      });
   }, [offline]);
 
   if (!offline) return null;

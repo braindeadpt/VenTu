@@ -23,7 +23,10 @@ export default function AlertUnsubscribeClient({ locale, token }: { locale: stri
      
     (sb as any).rpc('unsubscribe_alert', { p_token: token })
       .then(({ error }: { error: Error | null }) => setStatus(error ? 'fail' : 'ok'))
-      .catch(() => setStatus('fail'));
+      .catch((err: unknown) => {
+        console.warn('Alert unsubscribe failed:', err);
+        setStatus('fail');
+      });
   }, [token]);
 
   return (

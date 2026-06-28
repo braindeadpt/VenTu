@@ -23,7 +23,10 @@ export default function AlertConfirmClient({ locale, token }: { locale: string; 
      
     (sb as any).rpc('verify_alert_subscription', { p_token: token })
       .then(({ error }: { error: Error | null }) => setStatus(error ? 'fail' : 'ok'))
-      .catch(() => setStatus('fail'));
+      .catch((err: unknown) => {
+        console.warn('Alert confirmation failed:', err);
+        setStatus('fail');
+      });
   }, [token]);
 
   return (

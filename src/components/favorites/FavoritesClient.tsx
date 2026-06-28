@@ -151,7 +151,7 @@ export default function FavoritesClient() {
           }
         }
       } catch (e) {
-        console.warn('Precomputed conditions not available, falling back to live fetch');
+        console.warn('Precomputed conditions not available, falling back to live fetch:', e);
       }
       
       await Promise.all(
@@ -167,7 +167,9 @@ export default function FavoritesClient() {
             
             const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
             scores[id] = getSportScore(spot, primarySport, current);
-          } catch { /* ignore */ }
+          } catch (e) {
+            console.warn(`Failed to fetch live conditions for spot ${id}:`, e);
+          }
         })
       );
       
