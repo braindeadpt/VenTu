@@ -4,8 +4,8 @@ import 'leaflet/dist/leaflet.css';
 import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { Layers, MapPin, Maximize2, Wind } from 'lucide-react';
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { Layers, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import type { Spot } from '@/types';
@@ -30,6 +30,7 @@ import {
   CLUSTER_CONFIG,
   MAP_CLUSTER_LS_KEY,
   MAP_WIND_LS_KEY,
+  MAP_ONLY_ON_LS_KEY,
   getScoreRgb,
   SPORT_CSS_VARS,
 } from '@/lib/map-constants';
@@ -38,6 +39,7 @@ import { getDifficultyMarkerColor } from '@/lib/mapDifficulty';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 
 const ISLAND_MACRO_REGIONS = new Set(['Açores', 'Madeira']);
 
@@ -71,6 +73,10 @@ type MapHudProps = Omit<
   | 'windEnabled'
   | 'showWindOnMarkers'
   | 'onToggleWind'
+  | 'onlyOnEnabled'
+  | 'onToggleOnlyOn'
+  | 'onlyOnLabel'
+  | 'onlyOnHint'
   | 'onExitFullscreen'
   | 'windHint'
   | 'exploreModeLabel'
@@ -290,6 +296,14 @@ function readWindPref(): boolean {
   return false;
 }
 
+function readOnlyOnPref(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return localStorage.getItem(MAP_ONLY_ON_LS_KEY) === '1';
+  } catch { /* noop */ }
+  return false;
+}
+
 // ─── Component ───
 export default function SpotMapInteractive({
   spotsData,
@@ -325,6 +339,7 @@ export default function SpotMapInteractive({
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   const [windEnabled, setWindEnabled] = useState(readWindPref);
+  const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -528,7 +543,22 @@ export default function SpotMapInteractive({
     });
   }, []);
 
+  const toggleOnlyOn = useCallback(() => {
+    setOnlyOnEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_ONLY_ON_LS_KEY, next ? '1' : '0');
+      } catch { /* noop */ }
+      return next;
+    });
+  }, []);
+
   const showWindOnMarkers = windEnabled && !clusterEnabled;
+
+  const visibleSpots = useMemo(() => {
+    if (!onlyOnEnabled) return spotsData;
+    return spotsData.filter((d) => spotMeetsOnFilter(d, selectedSport));
+  }, [spotsData, onlyOnEnabled, selectedSport]);
 
   // Recalculate Leaflet size when toggling fullscreen or resizing
   useEffect(() => {
@@ -620,15 +650,15 @@ export default function SpotMapInteractive({
       if (!map.hasLayer(lg)) map.addLayer(lg);
     }
 
-    const boundsKey = `${spotsData.length}:${selectedSport}:${selectedRegion}:${spotsData.map((d) => d.spot.id).join(',')}`;
+    const boundsKey = `${visibleSpots.length}:${onlyOnEnabled}:${selectedSport}:${selectedRegion}:${visibleSpots.map((d) => d.spot.id).join(',')}`;
     if (filterBoundsKeyRef.current !== boundsKey) {
       filterBoundsKeyRef.current = boundsKey;
       didFitBoundsRef.current = false;
     }
 
-    if (spotsData.length === 0) return;
+    if (visibleSpots.length === 0) return;
 
-    const nextIds = new Set(spotsData.map((d) => d.spot.id));
+    const nextIds = new Set(visibleSpots.map((d) => d.spot.id));
     for (const [id, marker] of cache) {
       if (!nextIds.has(id)) {
         marker.remove();
@@ -639,7 +669,7 @@ export default function SpotMapInteractive({
     const bounds = Leaflet.latLngBounds([]);
     const useMobileSheet = isMobile;
 
-    spotsData.forEach((data) => {
+    visibleSpots.forEach((data) => {
       const cacheKey = buildMarkerCacheKey(
         data,
         selectedSport,
@@ -686,7 +716,8 @@ export default function SpotMapInteractive({
     // TODO(perf): diff marker event handlers when toggling mobile/desktop without full cache bust;
     // popup vs sheet mode still requires recreate today when isMobile changes.
   }, [
-    spotsData,
+    visibleSpots,
+    onlyOnEnabled,
     selectedSport,
     selectedRegion,
     isReady,
@@ -701,6 +732,9 @@ export default function SpotMapInteractive({
   const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
   const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
   const windHint = clusterEnabled && windEnabled ? t.map.windNeedsShowAll : null;
+  const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
+  const onlyOnHint = t.map.onlyOnHint;
+  const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
   return (
     <div
@@ -726,6 +760,7 @@ export default function SpotMapInteractive({
       data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}
       data-map-cluster={clusterEnabled ? 'true' : 'false'}
       data-map-wind={showWindOnMarkers ? 'true' : 'false'}
+      data-map-only-on={onlyOnEnabled ? 'true' : 'false'}
       data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
     >
       {!isReady && (
@@ -784,6 +819,21 @@ export default function SpotMapInteractive({
                 <Wind className="w-4 h-4 shrink-0 text-data-wind" aria-hidden />
                 <span className="hidden sm:inline">{windLabel}</span>
               </button>
+              <button
+                type="button"
+                onClick={toggleOnlyOn}
+                title={onlyOnHint}
+                className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
+                  onlyOnEnabled
+                    ? 'border-score-good/40 bg-score-good/15 text-fg'
+                    : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1/[0.04]'
+                }`}
+                aria-label={onlyOnLabel}
+                aria-pressed={onlyOnEnabled}
+              >
+                <Zap className="w-4 h-4 shrink-0 text-score-good" aria-hidden />
+                <span className="hidden sm:inline">{onlyOnLabel}</span>
+              </button>
             </div>
           )}
 
@@ -817,6 +867,7 @@ export default function SpotMapInteractive({
           {mapHud && isFullscreen && (
             <MapExploreHud
               {...mapHud}
+              spotCount={hudSpotCount}
               visible
               isPt={isPt}
               basemapMode={basemapMode}
@@ -826,6 +877,10 @@ export default function SpotMapInteractive({
               windEnabled={windEnabled}
               showWindOnMarkers={showWindOnMarkers}
               onToggleWind={toggleWind}
+              onlyOnEnabled={onlyOnEnabled}
+              onToggleOnlyOn={toggleOnlyOn}
+              onlyOnLabel={onlyOnLabel}
+              onlyOnHint={onlyOnHint}
               onExitFullscreen={exitFullscreen}
               windHint={windHint}
               exploreModeLabel={t.map.exploreMode}

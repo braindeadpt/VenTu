@@ -10,6 +10,8 @@ import { resolveWavePowerKw } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
+import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
+import { getMapTideLine } from '@/lib/spotTideRelevance';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreBadge from '@/components/ui/ScoreBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
@@ -55,6 +57,9 @@ export default function MapSpotPreview({
     return sb - sa;
   });
 
+  const narrative = getMapSpotNarrative(spot, conditions, allScores, highlightSport, isPt);
+  const tideLine = getMapTideLine(spot, conditions, isPt);
+
   return (
     <div className="space-y-4">
       <SpotImage spot={spot} aspect="video" locale={isPt ? 'pt' : 'en'} className="rounded-xl w-full" />
@@ -76,6 +81,13 @@ export default function MapSpotPreview({
           <span aria-hidden> · </span>
           <span className="capitalize">{getDifficultyLabel(spot.difficulty, isPt)}</span>
         </p>
+        <p className="text-body-sm text-fg leading-snug pt-1">{narrative}</p>
+        {tideLine ? (
+          <p className="text-meta-sm text-fg-muted flex items-center gap-1.5 pt-0.5">
+            <Clock className="w-3.5 h-3.5 shrink-0 text-data-water" aria-hidden />
+            {tideLine}
+          </p>
+        ) : null}
       </div>
 
       <div className="flex flex-wrap gap-1.5" role="list" aria-label={isPt ? 'Scores por desporto' : 'Scores by sport'}>

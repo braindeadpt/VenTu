@@ -1,6 +1,6 @@
 'use client';
 
-import { Filter, Layers, MapPin, Minimize2, RotateCcw, Wind } from 'lucide-react';
+import { Filter, Layers, MapPin, Minimize2, RotateCcw, Wind, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import type { BasemapMode } from './MapLayerToggle';
@@ -14,6 +14,10 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   windEnabled: boolean;
   showWindOnMarkers: boolean;
   onToggleWind: () => void;
+  onlyOnEnabled: boolean;
+  onToggleOnlyOn: () => void;
+  onlyOnLabel: string;
+  onlyOnHint: string;
   onExitFullscreen: () => void;
   windHint: string | null;
   exploreModeLabel: string;
@@ -48,6 +52,10 @@ export default function MapExploreHud({
   windEnabled,
   showWindOnMarkers,
   onToggleWind,
+  onlyOnEnabled,
+  onToggleOnlyOn,
+  onlyOnLabel,
+  onlyOnHint,
   onExitFullscreen,
   windHint,
   exploreModeLabel,
@@ -122,6 +130,18 @@ export default function MapExploreHud({
             }
           >
             <Wind className="w-4 h-4 text-data-wind" aria-hidden />
+          </MapControlButton>
+
+          <MapControlButton
+            onClick={onToggleOnlyOn}
+            aria-label={onlyOnLabel}
+            pressed={onlyOnEnabled}
+            title={onlyOnHint}
+            className={
+              onlyOnEnabled ? 'border-score-good/40 bg-score-good/15 text-fg' : undefined
+            }
+          >
+            <Zap className="w-4 h-4 text-score-good" aria-hidden />
           </MapControlButton>
 
           <span className="pill pill-ghost shrink-0 px-2 py-1 min-h-0 text-meta-sm hidden sm:inline-flex">

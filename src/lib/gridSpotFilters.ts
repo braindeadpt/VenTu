@@ -4,8 +4,13 @@ import type { SportScore } from '@/lib/sportScore';
 import type { Spot } from '@/types';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { getGridSpotScore } from '@/lib/gridSpotScore';
+import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore';
 
 export const PLAYABLE_THRESHOLD = 30;
+
+/** Map filter «Só ON» — score tier «Bom» and above for the active sport. */
+export const MAP_ON_THRESHOLD = SCORE_TIER_THRESHOLDS.good;
 
 export interface GridSpotData {
   spot: Spot;
@@ -34,12 +39,33 @@ export function spotMatchesRegionFilter(data: GridSpotData, region: string): boo
   return getMacroRegion(data.spot.region) === region;
 }
 
+/** «Só ON» — spot meets minimum score for the selected sport filter. */
+export function spotMeetsOnFilter(
+  data: GridSpotData,
+  sport: GridSportFilter,
+  minScore = MAP_ON_THRESHOLD,
+): boolean {
+  if (!spotMatchesSportFilter(data, sport)) return false;
+  if (sport === 'big-wave') {
+    return data.spot.type === 'big-wave' && getGridSpotScore(data, sport) >= minScore;
+  }
+  return getGridSpotScore(data, sport) >= minScore;
+}
+
+export interface FilterGridSpotsOptions {
+  onlyOn?: boolean;
+}
+
 export function filterGridSpots(
   spotsData: GridSpotData[],
   sport: GridSportFilter,
   region: string,
+  options?: FilterGridSpotsOptions,
 ): GridSpotData[] {
   return spotsData.filter(
-    (d) => spotMatchesSportFilter(d, sport) && spotMatchesRegionFilter(d, region),
+    (d) =>
+      spotMatchesSportFilter(d, sport) &&
+      spotMatchesRegionFilter(d, region) &&
+      (!options?.onlyOn || spotMeetsOnFilter(d, sport)),
   );
 }
