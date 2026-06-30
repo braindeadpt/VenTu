@@ -58,6 +58,9 @@ playwright-report/
 blob-report/
 playwright/.cache/
 
+# OG spot share cards — generated at build (npm run og:generate)
+public/images/og/
+
 # Auto-generated data files (updated by GitHub Actions)
 # Keep the directory structure but ignore contents
 public/data/

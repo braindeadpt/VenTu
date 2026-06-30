@@ -86,7 +86,9 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
     url: imagePath,
     width: DEFAULT_OG_IMAGE.width,
     height: DEFAULT_OG_IMAGE.height,
-    type: DEFAULT_OG_IMAGE.type,
+    type: (imagePath.endsWith('.jpg') || imagePath.endsWith('.jpeg')
+      ? 'image/jpeg'
+      : 'image/png') as 'image/jpeg' | 'image/png',
     alt: imageAlt,
   };
 
@@ -149,12 +151,13 @@ export function buildHomeMetadata(locale: 'pt' | 'en'): Metadata {
 }
 
 export function buildSpotOgImagePath(slug: string): string {
-  return `/images/spots/${slug}.jpg`;
+  return `/images/og/${slug}.jpg`;
 }
 
 export function resolveSpotOgImagePath(slug: string): string {
-  const file = path.join(process.cwd(), 'public', 'images', 'spots', `${slug}.jpg`);
-  return existsSync(file) ? buildSpotOgImagePath(slug) : DEFAULT_OG_IMAGE_PATH;
+  const branded = path.join(process.cwd(), 'public', 'images', 'og', `${slug}.jpg`);
+  if (existsSync(branded)) return buildSpotOgImagePath(slug);
+  return DEFAULT_OG_IMAGE_PATH;
 }
 
 export function buildSpotMetadata(

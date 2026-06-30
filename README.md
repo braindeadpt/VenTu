@@ -79,7 +79,7 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 | `npm run test:e2e` | E2E (Playwright) |
 | `npm run data:update` | Condições + observações + índice + notícias |
 | `npm run sitemap:generate` | Regenerar `public/sitemap.xml` |
-| `npm run og:generate` | Regenerar `public/og-image.png` (social previews) |
+| `npm run og:generate` | Regenerar `public/og-image.png` + `public/images/og/*.png` (previews sociais) |
 | `npm run dawn-patrol:generate` | Dawn Patrol diário |
 | `npm run spots:validate` | Validar `src/lib/spots.ts` |
 | `npm run alerts:preflight` | Verificar setup alertas email |

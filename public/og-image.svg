@@ -1,19 +1,80 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#0f172a"/>
-  <!-- subtle coast line -->
-  <path d="M0 420 Q200 380 400 400 T800 390 T1200 410 L1200 630 L0 630 Z" fill="#1e293b" opacity="0.6"/>
-  <path d="M0 460 Q300 430 600 450 T1200 440 L1200 630 L0 630 Z" fill="#0ea5e9" opacity="0.08"/>
-  <!-- sunset accent bar (design system — single intentional use) -->
-  <rect x="80" y="120" width="6" height="120" rx="3" fill="#f97316"/>
-  <text x="110" y="175" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="88" font-weight="700" fill="#f1f5f9" letter-spacing="-2">VenTu</text>
-  <text x="110" y="230" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="36" font-weight="600" fill="#f97316" letter-spacing="1">Vem. Tu.</text>
-  <text x="110" y="310" font-family="ui-monospace, 'Cascadia Code', monospace" font-size="28" fill="#94a3b8">170+ spots · surf · kite · wind · foil</text>
-  <text x="110" y="360" font-family="system-ui, sans-serif" font-size="26" fill="#cbd5e1">Condições náuticas em Portugal</text>
-  <text x="110" y="410" font-family="system-ui, sans-serif" font-size="22" fill="#64748b">Scores · mapa · previsão 3h · grátis · open source</text>
-  <!-- score badge mock -->
-  <rect x="920" y="140" width="180" height="140" rx="16" fill="none" stroke="#0ea5e9" stroke-width="3"/>
-  <text x="1010" y="210" text-anchor="middle" font-family="ui-monospace, monospace" font-size="56" font-weight="700" fill="#0ea5e9">87</text>
-  <text x="1010" y="245" text-anchor="middle" font-family="system-ui, sans-serif" font-size="18" font-weight="600" fill="#0ea5e9" letter-spacing="3">ÉPICO</text>
-  <text x="1010" y="275" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" fill="#64748b">a bombar</text>
-  <text x="110" y="560" font-family="ui-monospace, monospace" font-size="28" fill="#0ea5e9">ventu.surf</text>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="55%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="sunset" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="50%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="ocean" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#0284c7" stop-opacity="0.22"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="78%" cy="28%" r="42%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#000" flood-opacity="0.45"/>
+    </filter>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.2" fill="#94a3b8" opacity="0.12"/>
+    </pattern>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect y="380" width="1200" height="250" fill="url(#ocean)"/>
+
+  <!-- map arc / coast -->
+  <path d="M0 520 C180 470 360 500 540 485 C720 470 900 495 1200 475 L1200 630 L0 630 Z" fill="#1e293b" opacity="0.55"/>
+  <path d="M0 555 C240 530 480 548 720 535 C900 526 1050 540 1200 532 L1200 630 L0 630 Z" fill="#0284c7" opacity="0.08"/>
+
+  <!-- marker cluster (abstract map) -->
+  <g opacity="0.9">
+    <circle cx="860" cy="200" r="11" fill="#8b5cf6" opacity="0.9"/>
+    <circle cx="900" cy="235" r="9" fill="#10b981"/>
+    <circle cx="835" cy="248" r="8" fill="#0ea5e9"/>
+    <circle cx="945" cy="210" r="7" fill="#f59e0b" opacity="0.85"/>
+    <circle cx="820" cy="190" r="6" fill="#94a3b8" opacity="0.5"/>
+    <circle cx="970" cy="255" r="6" fill="#94a3b8" opacity="0.4"/>
+  </g>
+
+  <!-- brand block -->
+  <rect x="72" y="88" width="5" height="96" rx="2.5" fill="url(#sunset)"/>
+  <text x="96" y="152" font-family="Arial, Helvetica, sans-serif" font-size="92" font-weight="700" fill="#f8fafc" letter-spacing="-3">VenTu</text>
+  <text x="96" y="198" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600" fill="url(#sunset)">Onde está bom hoje?</text>
+  <text x="96" y="268" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600" fill="#e2e8f0">Condições náuticas em Portugal</text>
+  <text x="96" y="318" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#94a3b8">185+ spots · scores por modalidade · mapa · previsão 3h</text>
+
+  <!-- sport chips -->
+  <g font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600">
+    <rect x="96" y="348" width="72" height="36" rx="18" fill="#0ea5e9" fill-opacity="0.15" stroke="#0ea5e9" stroke-opacity="0.35"/>
+    <text x="132" y="371" text-anchor="middle" fill="#7dd3fc">Surf</text>
+    <rect x="178" y="348" width="88" height="36" rx="18" fill="#8b5cf6" fill-opacity="0.15" stroke="#8b5cf6" stroke-opacity="0.35"/>
+    <text x="222" y="371" text-anchor="middle" fill="#c4b5fd">Kitesurf</text>
+    <rect x="276" y="348" width="96" height="36" rx="18" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-opacity="0.35"/>
+    <text x="324" y="371" text-anchor="middle" fill="#fcd34d">Windsurf</text>
+    <rect x="382" y="348" width="56" height="36" rx="18" fill="#6366f1" fill-opacity="0.15" stroke="#6366f1" stroke-opacity="0.35"/>
+    <text x="410" y="371" text-anchor="middle" fill="#a5b4fc">Foil</text>
+  </g>
+
+  <!-- score card -->
+  <g filter="url(#cardShadow)">
+    <rect x="900" y="108" width="228" height="228" rx="24" fill="#1e293b" fill-opacity="0.92" stroke="#334155" stroke-width="1.5"/>
+    <rect x="900" y="108" width="228" height="6" rx="3" fill="url(#sunset)"/>
+    <text x="1014" y="210" text-anchor="middle" font-family="Courier New, monospace" font-size="72" font-weight="700" fill="#38bdf8">87</text>
+    <text x="1014" y="252" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700" fill="#38bdf8" letter-spacing="4">ÉPICO</text>
+    <text x="1014" y="286" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#94a3b8">a bombar · agora</text>
+    <text x="1014" y="314" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#64748b">score ao vivo</text>
+  </g>
+
+  <!-- footer -->
+  <text x="96" y="572" font-family="Courier New, monospace" font-size="26" font-weight="700" fill="#38bdf8">ventu.surf</text>
+  <text x="1090" y="572" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="16" fill="#64748b">Grátis · open source</text>
 </svg>
