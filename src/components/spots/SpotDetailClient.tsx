@@ -32,7 +32,7 @@ import SportTab from '@/components/spots/SportTab';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
-import { loadConditionsJson, loadForecastsJson } from '@/lib/spotDataCache';
+import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
 import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
 import FeedbackForm from '@/components/FeedbackForm';
@@ -154,21 +154,23 @@ export default function SpotDetailClient({
         let forecast: SpotData['forecast'] = [];
 
         let condJson: Record<string, unknown> | null = null;
-        let fcJson: Record<string, unknown> | null = null;
+        let spotFc: SpotData['forecast'] | null = null;
 
         try {
-          [condJson, fcJson] = await Promise.all([loadConditionsJson(), loadForecastsJson()]);
+          const dataId = getConditionsDataId(spot);
+          [condJson, spotFc] = await Promise.all([
+            loadConditionsJson(),
+            loadForecastForSpot(dataId).then((d) => d as SpotData['forecast']).catch(() => null),
+          ]);
         } catch {
           condJson = null;
-          fcJson = null;
         }
 
         if (cancelled || spot.slug !== loadSlug) return;
 
-        if (condJson && fcJson) {
+        if (condJson && spotFc) {
           const dataId = getConditionsDataId(spot);
           const spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
-          const spotFc = (fcJson[dataId] ?? fcJson[spot.id]) as SpotData['forecast'] | undefined;
 
           if (spotCond && spotFc) {
             conditions = {

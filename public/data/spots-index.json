@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T14:35:32.232Z",
+  "generatedAt": "2026-06-30T16:35:11.572Z",
   "spots": [
     {
       "id": "ponta-sao-lourenco",
@@ -11194,14 +11194,16 @@
         "windsurf",
         "foil"
       ],
-      "description": "Estuário do Tejo com água plana perfeita para kitesurf, windsurf e foil. Spot de referência na margem sul de Lisboa.",
-      "descriptionEn": "Tagus estuary with flat water perfect for kitesurf, windsurf and foil. Reference spot on the south bank of Lisbon.",
+      "description": "Estuário do Tejo com água plana — referência de kite, windsurf e foil na margem sul de Lisboa. Inclui zona Alcochete/Seixal. Crowd de kite concentrada aos fins de semana de vento; ideal para kitetrip urbano com Lisboa a 20 min.",
+      "descriptionEn": "Tagus estuary flat water — reference kite, windsurf and foil spot on the south bank of Lisbon. Includes Alcochete/Seixal area. Kite crowd peaks on windy weekends; ideal urban kitetrip with Lisbon 20 min away.",
       "facilities": [
-        "Estacionamento"
+        "Estacionamento",
+        "Escola kite"
       ],
       "hazards": [
         "Tráfego de barcos",
-        "Maré"
+        "Maré",
+        "Corrente do Tejo"
       ],
       "blueFlag": false,
       "accessibleBeach": false,
@@ -13825,8 +13827,8 @@
     {
       "id": "carvalhal",
       "slug": "carvalhal",
-      "name": "Praia do Carvalhal",
-      "nameEn": "Carvalhal Beach",
+      "name": "Carvalhal",
+      "nameEn": "Carvalhal (Vicentina Coast)",
       "region": "Alentejo",
       "regionEn": "Alentejo",
       "lat": 37.5,
@@ -13839,8 +13841,8 @@
         "bodyboard",
         "sup"
       ],
-      "description": "Praia selvagem entre Zambujeira e Odeceixe. Surf, bodyboard e SUP consistentes. Costa Vicentina preservada.",
-      "descriptionEn": "Wild beach between Zambujeira and Odeceixe. Consistent surf, bodyboard and SUP. Preserved Vicentina Coast.",
+      "description": "Praia selvagem na Costa Vicentina. Surf, bodyboard e SUP consistentes. Para kite ver Carvalhal/Comporta e Tróia a norte (slug carvalhal-comporta).",
+      "descriptionEn": "Wild beach on the Vicentina Coast. Consistent surf, bodyboard and SUP. For kite see Carvalhal/Comporta and Troia to the north (slug carvalhal-comporta).",
       "facilities": [
         "Estacionamento"
       ],
@@ -19089,6 +19091,393 @@
       "bestScore": 76
     },
     {
+      "id": "obidos-lagoon-sul",
+      "slug": "obidos-lagoon-sul",
+      "name": "Lagoa de Óbidos — Sul",
+      "nameEn": "Obidos Lagoon — South",
+      "region": "Óbidos",
+      "regionEn": "Obidos",
+      "lat": 39.427,
+      "lon": -9.232,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "beginner",
+      "compatibleSports": [
+        "kitesurf",
+        "foil",
+        "windsurf",
+        "sup"
+      ],
+      "description": "Zona sul da lagoa, junto à Foz do Arelho — água plana e rasa para kite e foil. Crowd das escolas concentrada aqui no verão; maré média-alta dá mais profundidade. Pin separado para kitetrip (vs. centro da lagoa e foz).",
+      "descriptionEn": "South lagoon zone by Foz do Arelho — flat shallow water for kite and foil. School crowd concentrates here in summer; mid-high tide adds depth. Separate pin for kitetrips (vs. lagoon centre and mouth).",
+      "facilities": [
+        "Estacionamento",
+        "Escolas kite",
+        "Aluguer",
+        "WC",
+        "Restaurantes"
+      ],
+      "hazards": [
+        "Multidão de iniciantes",
+        "Conchas no fundo",
+        "Maré baixa"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": {
+        "waveHeight": 2.1,
+        "wavePeriod": 7.85,
+        "waveDirection": 324,
+        "windSpeed": 6.75,
+        "windDirection": 353,
+        "windGust": 14.5,
+        "waterTemp": 17.4,
+        "swellHeight": 1.9,
+        "swellPeriod": 7.2,
+        "swellDirection": 319,
+        "secondarySwellHeight": 0.1,
+        "secondarySwellPeriod": 4.15,
+        "secondarySwellDirection": 25,
+        "windWaveHeight": 0.9,
+        "wavePowerKw": 12.996,
+        "observed": {
+          "windSpeedKt": 13,
+          "windDirDeg": 0,
+          "windCardinal": "N",
+          "windCardinalEn": "N",
+          "stationName": "Cabo Carvoeiro",
+          "distanceKm": 16.3,
+          "observedAt": "2026-06-30T12:00:00.000Z",
+          "source": "ipma"
+        },
+        "updatedAt": "2026-06-30T14:34:48.336Z",
+        "confidence": "alta",
+        "confidenceDetail": {
+          "waveSpread": 0.42,
+          "windSpread": 0.19,
+          "waveSpreadPct": 0.177,
+          "windSpreadPct": 0.027,
+          "combinedSpreadPct": 0.102,
+          "degraded": false
+        },
+        "dailyConfidence": [
+          {
+            "date": "2026-06-30",
+            "confidence": "alta",
+            "waveSpread": 0.4,
+            "windSpread": 0.6,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-01",
+            "confidence": "alta",
+            "waveSpread": 0.19,
+            "windSpread": 0.77,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-02",
+            "confidence": "média",
+            "waveSpread": 0.12,
+            "windSpread": 1.31,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-03",
+            "confidence": "média",
+            "waveSpread": 0.08,
+            "windSpread": 1.12,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-04",
+            "confidence": "baixa",
+            "waveSpread": 0.16,
+            "windSpread": 1.1,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-05",
+            "confidence": "alta",
+            "waveSpread": 0.02,
+            "windSpread": 0.39,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-06",
+            "confidence": "alta",
+            "waveSpread": 0.02,
+            "windSpread": 0.3,
+            "degraded": false
+          }
+        ]
+      },
+      "allScores": {
+        "surf": {
+          "score": 60,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "2.1m ondas"
+          ],
+          "primaryFactor": "2.1m @ 8s"
+        },
+        "kitesurf": {
+          "score": 26,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "13kt vento fraco"
+          ],
+          "warning": "Vento fraco — mínimo ~15kt para kite",
+          "primaryFactor": "13kt"
+        },
+        "windsurf": {
+          "score": 15,
+          "rating": "Mau",
+          "ratingEn": "Bad",
+          "factors": [
+            "Vento insuficiente"
+          ],
+          "warning": "Mínimo ~15kt para windsurf",
+          "primaryFactor": "13kt"
+        },
+        "wakeboard": {
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
+          "factors": [
+            "Sem infraestrutura wake"
+          ],
+          "warning": "Este spot não tem infraestrutura para wakeboard",
+          "primaryFactor": "N/A"
+        },
+        "bodyboard": {
+          "score": 76,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "2.1m ondas",
+            "8s período"
+          ],
+          "primaryFactor": "2.1m"
+        },
+        "sup": {
+          "score": 47,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "Vento fraco",
+            "17°C água"
+          ],
+          "primaryFactor": "2.1m"
+        },
+        "foil": {
+          "score": 61,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "13kt vento ideal",
+            "Vento side-onshore"
+          ],
+          "primaryFactor": "Vento ideal"
+        }
+      },
+      "bestScore": 76
+    },
+    {
+      "id": "obidos-lagoon-foz",
+      "slug": "obidos-lagoon-foz",
+      "name": "Lagoa de Óbidos — Foz",
+      "nameEn": "Obidos Lagoon — Mouth",
+      "region": "Óbidos",
+      "regionEn": "Obidos",
+      "lat": 39.429,
+      "lon": -9.225,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "foil",
+        "windsurf"
+      ],
+      "description": "Foz da lagoa com vento venturi amplificado — freeride com mais espaço que o sul em dias bons. Corrente possível para a praia oceânica; intermediários e avançados. Menos escolas que a zona sul.",
+      "descriptionEn": "Lagoon mouth with amplified venturi wind — freeride with more space than the south on good days. Possible current toward the ocean beach; intermediates and advanced. Fewer schools than the south zone.",
+      "facilities": [
+        "Estacionamento",
+        "Escolas kite",
+        "WC"
+      ],
+      "hazards": [
+        "Corrente na foz",
+        "Rochas na praia oceânica adjacente",
+        "Vento irregular junto à foz"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": {
+        "waveHeight": 2.1,
+        "wavePeriod": 7.85,
+        "waveDirection": 324,
+        "windSpeed": 6.75,
+        "windDirection": 353,
+        "windGust": 14.5,
+        "waterTemp": 17.4,
+        "swellHeight": 1.9,
+        "swellPeriod": 7.2,
+        "swellDirection": 319,
+        "secondarySwellHeight": 0.1,
+        "secondarySwellPeriod": 4.15,
+        "secondarySwellDirection": 25,
+        "windWaveHeight": 0.9,
+        "wavePowerKw": 12.996,
+        "observed": {
+          "windSpeedKt": 13,
+          "windDirDeg": 0,
+          "windCardinal": "N",
+          "windCardinalEn": "N",
+          "stationName": "Cabo Carvoeiro",
+          "distanceKm": 16.3,
+          "observedAt": "2026-06-30T12:00:00.000Z",
+          "source": "ipma"
+        },
+        "updatedAt": "2026-06-30T14:34:48.336Z",
+        "confidence": "alta",
+        "confidenceDetail": {
+          "waveSpread": 0.42,
+          "windSpread": 0.19,
+          "waveSpreadPct": 0.177,
+          "windSpreadPct": 0.027,
+          "combinedSpreadPct": 0.102,
+          "degraded": false
+        },
+        "dailyConfidence": [
+          {
+            "date": "2026-06-30",
+            "confidence": "alta",
+            "waveSpread": 0.4,
+            "windSpread": 0.6,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-01",
+            "confidence": "alta",
+            "waveSpread": 0.19,
+            "windSpread": 0.77,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-02",
+            "confidence": "média",
+            "waveSpread": 0.12,
+            "windSpread": 1.31,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-03",
+            "confidence": "média",
+            "waveSpread": 0.08,
+            "windSpread": 1.12,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-04",
+            "confidence": "baixa",
+            "waveSpread": 0.16,
+            "windSpread": 1.1,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-05",
+            "confidence": "alta",
+            "waveSpread": 0.02,
+            "windSpread": 0.39,
+            "degraded": false
+          },
+          {
+            "date": "2026-07-06",
+            "confidence": "alta",
+            "waveSpread": 0.02,
+            "windSpread": 0.3,
+            "degraded": false
+          }
+        ]
+      },
+      "allScores": {
+        "surf": {
+          "score": 60,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "2.1m ondas"
+          ],
+          "primaryFactor": "2.1m @ 8s"
+        },
+        "kitesurf": {
+          "score": 26,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "13kt vento fraco"
+          ],
+          "warning": "Vento fraco — mínimo ~15kt para kite",
+          "primaryFactor": "13kt"
+        },
+        "windsurf": {
+          "score": 15,
+          "rating": "Mau",
+          "ratingEn": "Bad",
+          "factors": [
+            "Vento insuficiente"
+          ],
+          "warning": "Mínimo ~15kt para windsurf",
+          "primaryFactor": "13kt"
+        },
+        "wakeboard": {
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
+          "factors": [
+            "Sem infraestrutura wake"
+          ],
+          "warning": "Este spot não tem infraestrutura para wakeboard",
+          "primaryFactor": "N/A"
+        },
+        "bodyboard": {
+          "score": 76,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "2.1m ondas",
+            "8s período"
+          ],
+          "primaryFactor": "2.1m"
+        },
+        "sup": {
+          "score": 47,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "Vento fraco",
+            "17°C água"
+          ],
+          "primaryFactor": "2.1m"
+        },
+        "foil": {
+          "score": 61,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "13kt vento ideal",
+            "Vento side-onshore"
+          ],
+          "primaryFactor": "Vento ideal"
+        }
+      },
+      "bestScore": 76
+    },
+    {
       "id": "cabedelo-douro",
       "slug": "cabedelo-douro",
       "name": "Cabedelo do Douro",
@@ -22713,17 +23102,18 @@
       "nameEn": "Furadouro",
       "region": "Ovar",
       "regionEn": "Ovar",
-      "lat": 40.65,
-      "lon": -8.67,
+      "lat": 40.878,
+      "lon": -8.66,
       "coastOrientation": 270,
-      "type": "surf",
+      "type": "kitesurf",
       "difficulty": "intermediate",
       "compatibleSports": [
+        "kitesurf",
         "surf",
         "bodyboard"
       ],
-      "description": "Praia extensa com ondas consistentes e múltiplos picos. Beach break popular entre surfistas do Porto e Aveiro. Funciona em quase todas as marés.",
-      "descriptionEn": "Extensive beach with consistent waves and multiple peaks. Popular beach break among Porto and Aveiro surfers. Works on almost all tides.",
+      "description": "Praia extensa entre Maceda e Espinho — referência de kite no norte com Nortada de verão. Beach break consistente para surf; na maré baixa há espaço amplo para lançamento. Menos crowd que Espinho no pico de kite.",
+      "descriptionEn": "Long beach between Maceda and Espinho — northern kite reference with summer Nortada. Consistent beach break for surf; low tide gives wide launch space. Less kite crowd than Espinho.",
       "facilities": [
         "Estacionamento",
         "Escola surf",
@@ -24840,15 +25230,16 @@
       "compatibleSports": [
         "kitesurf"
       ],
-      "description": "Praia de areia com ondas pequenas. Perfeito para iniciantes de kitesurf. Vento térmico de Nortada no verão. Pouca multidão!",
-      "descriptionEn": "Sand beach with small waves. Perfect for beginner kitesurfers. Thermal Nortada wind in summer. Low crowd!",
+      "description": "Referência de kite na margem sul — Nortada térmica de verão, pouca multidão face à Caparica central. Ondas pequenas; ideal para iniciantes e freeride. Escola de kite na praia.",
+      "descriptionEn": "South bank kite reference — summer thermal Nortada, far less crowded than central Caparica. Small waves; ideal for beginners and freeride. Kite school on the beach.",
       "facilities": [
         "Estacionamento",
         "Escola kite",
         "WC"
       ],
       "hazards": [
-        "Falésias no fundo — usar vento sideshore"
+        "Falésias no fundo — vento sideshore",
+        "Corrente em maré viva"
       ],
       "blueFlag": false,
       "accessibleBeach": false,
@@ -30892,26 +31283,29 @@
       "nameEn": "Sao Joao da Caparica",
       "region": "Costa da Caparica",
       "regionEn": "Costa da Caparica",
-      "lat": 38.65,
-      "lon": -9.23,
+      "lat": 38.658,
+      "lon": -9.252,
       "coastOrientation": 270,
-      "type": "surf",
+      "type": "multisport",
       "difficulty": "beginner",
       "compatibleSports": [
         "surf",
         "bodyboard",
-        "sup"
+        "sup",
+        "kitesurf"
       ],
-      "description": "Praia mais tranquila da Costa da Caparica. Ondas suaves ideais para aprender. Menos crowd que as praias centrais. Perfeita para famílias e iniciantes.",
-      "descriptionEn": "Quieter beach at Costa da Caparica. Gentle waves ideal for learning. Less crowded than central beaches. Perfect for families and beginners.",
+      "description": "Praia tranquila da Caparica — ondas suaves para aprender surf e kite com Nortada fora do verão. Menos crowd que CDS/Rainha. Escolas de surf e kite na marginal.",
+      "descriptionEn": "Quieter Caparica beach — gentle waves for learning surf and kite with Nortada outside summer. Less crowded than CDS/Rainha. Surf and kite schools on the waterfront.",
       "facilities": [
         "Estacionamento",
         "Escola surf",
+        "Escola kite",
         "Restaurantes",
         "WC"
       ],
       "hazards": [
-        "Correntes moderadas"
+        "Correntes moderadas",
+        "Restrições de kite na época balnear"
       ],
       "blueFlag": true,
       "accessibleBeach": false,
@@ -31070,29 +31464,33 @@
     {
       "id": "costa-caparica",
       "slug": "costa-caparica",
-      "name": "Costa da Caparica",
-      "nameEn": "Costa da Caparica",
+      "name": "Costa da Caparica (CDS)",
+      "nameEn": "Costa da Caparica (CDS)",
       "region": "Almada",
       "regionEn": "Almada",
       "lat": 38.645,
       "lon": -9.236,
       "coastOrientation": 270,
-      "type": "surf",
+      "type": "multisport",
       "difficulty": "beginner",
       "compatibleSports": [
         "surf",
-        "bodyboard"
+        "bodyboard",
+        "kitesurf"
       ],
-      "description": "10km de beach breaks perfeitos para aprender. Várias praias: Dragão Vermelho, CDS, Rainha. A 20 min de Lisboa.",
-      "descriptionEn": "10km of perfect beach breaks to learn. Multiple beaches: Dragão Vermelho, CDS, Rainha. 20 min from Lisbon.",
+      "description": "Praia central da Caparica (CDS, Dragão Vermelho). Beach breaks para aprender; kite possível com Nortada fora da época balnear. A 20 min de Lisboa — muito crowd de surf no fim de semana.",
+      "descriptionEn": "Central Caparica beach (CDS, Dragão Vermelho). Beach breaks for learning; kite possible with Nortada outside bathing season. 20 min from Lisbon — very crowded with surfers on weekends.",
       "facilities": [
         "Estacionamento",
         "Escolas surf",
+        "Escola kite",
         "Restaurantes",
         "WC"
       ],
       "hazards": [
-        "Correntes em alguns picos"
+        "Correntes em alguns picos",
+        "Multidão extrema no verão",
+        "Kite restrito na época balnear"
       ],
       "blueFlag": false,
       "accessibleBeach": false,
@@ -31439,23 +31837,26 @@
       "lat": 38.66,
       "lon": -9.24,
       "coastOrientation": 270,
-      "type": "surf",
+      "type": "multisport",
       "difficulty": "intermediate",
       "compatibleSports": [
         "surf",
-        "bodyboard"
+        "bodyboard",
+        "kitesurf"
       ],
-      "description": "Um dos picos mais consistentes da Costa da Caparica. Múltiplos peaks com ondas de qualidade. Muito procurada por surfistas de Lisboa.",
-      "descriptionEn": "One of the most consistent peaks at Costa da Caparica. Multiple peaks with quality waves. Very popular among Lisbon surfers.",
+      "description": "Um dos picos mais consistentes da Costa da Caparica — surf de qualidade e kite com Nortada fora da época balnear. Multidão de surfistas de Lisboa; crowd de kite moderada comparada com Fonte da Telha.",
+      "descriptionEn": "One of the most consistent peaks at Costa da Caparica — quality surf and kite with Nortada outside bathing season. Crowded with Lisbon surfers; moderate kite crowd compared to Fonte da Telha.",
       "facilities": [
         "Estacionamento",
         "Escola surf",
+        "Escola kite",
         "Restaurante",
         "WC"
       ],
       "hazards": [
         "Correntes",
-        "Multidão"
+        "Multidão",
+        "Restrições de kite no verão (época balnear)"
       ],
       "blueFlag": false,
       "accessibleBeach": false,
@@ -32710,6 +33111,351 @@
         }
       },
       "bestScore": 64
+    },
+    {
+      "id": "esposende-praia",
+      "slug": "esposende-praia",
+      "name": "Esposende Praia (Oceano)",
+      "nameEn": "Esposende Ocean Beach",
+      "region": "Esposende",
+      "regionEn": "Esposende",
+      "lat": 41.537,
+      "lon": -8.789,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "surf",
+        "bodyboard",
+        "windsurf"
+      ],
+      "description": "Lado oceano de Esposende — kite e surf com Nortada quando a lagoa do Cávado está cheia de crowd. Complementa o spot da lagoa (esposende). Praia ampla; escolas de kite na vila.",
+      "descriptionEn": "Ocean side of Esposende — kite and surf with Nortada when the Cavado lagoon is crowded. Complements the lagoon spot (esposende). Wide beach; kite schools in town.",
+      "facilities": [
+        "Estacionamento",
+        "Escolas kite",
+        "Restaurantes",
+        "WC"
+      ],
+      "hazards": [
+        "Correntes",
+        "Multidão de verão"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "praia-da-vieira",
+      "slug": "praia-da-vieira",
+      "name": "Praia da Vieira",
+      "nameEn": "Vieira Beach",
+      "region": "Marinha Grande",
+      "regionEn": "Marinha Grande",
+      "lat": 39.872,
+      "lon": -8.97,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Praia longa entre Leiria e Figueira da Foz com Nortada de verão. Kitesurf em freeride com ondulação moderada; surf e bodyboard em swell. Vila da Vieira da Beira Nova com alojamento e restauração a poucos minutos — útil em kitetrip pela costa centro.",
+      "descriptionEn": "Long beach between Leiria and Figueira da Foz with summer Nortada. Kitesurf freeride with moderate swell; surf and bodyboard on swell days. Vieira da Beira Nova village with accommodation and food minutes away — handy on a central coast kitetrip.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "Alojamento",
+        "WC"
+      ],
+      "hazards": [
+        "Correntes",
+        "Multidão de verão na zona balnear"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "ponta-dos-corvos",
+      "slug": "ponta-dos-corvos",
+      "name": "Ponta dos Corvos",
+      "nameEn": "Ponta dos Corvos",
+      "region": "Seixal",
+      "regionEn": "Seixal",
+      "lat": 38.651,
+      "lon": -9.104,
+      "coastOrientation": 225,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "foil"
+      ],
+      "description": "Spot de kite na margem sul do Tejo, a sul da Caparica. Água mais abrigada que o oceano aberto — freeride e foil com Nortada. Pouco crowd; acesso por estradas da costa seixalense.",
+      "descriptionEn": "Kite spot on the south Tagus bank, south of Caparica. More sheltered water than open ocean — freeride and foil with Nortada. Low crowd; access via Seixal coastal roads.",
+      "facilities": [
+        "Estacionamento"
+      ],
+      "hazards": [
+        "Correntes do Tejo",
+        "Rochas em maré baixa",
+        "Menos infraestrutura que Caparica"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "trafaria",
+      "slug": "trafaria",
+      "name": "Trafaria Kitebeach",
+      "nameEn": "Trafaria Kitebeach",
+      "region": "Almada",
+      "regionEn": "Almada",
+      "lat": 38.671,
+      "lon": -9.243,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "foil"
+      ],
+      "description": "Praia em frente a Belém, do lado sul do Tejo. Kite com Nortada e vista para Lisboa. Ferry de Belém para Trafaria. Crowd de kite moderada; muito procurada em tardes térmicas de verão.",
+      "descriptionEn": "Beach facing Belém on the south bank of the Tagus. Kite with Nortada and Lisbon skyline views. Ferry from Belém to Trafaria. Moderate kite crowd; popular on summer thermal afternoons.",
+      "facilities": [
+        "Estacionamento",
+        "Ferry",
+        "Restaurantes",
+        "Escola kite"
+      ],
+      "hazards": [
+        "Corrente na foz do Tejo",
+        "Tráfego marítimo",
+        "Restrições na época balnear"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "cova-do-vapor",
+      "slug": "cova-do-vapor",
+      "name": "Cova do Vapor",
+      "nameEn": "Cova do Vapor",
+      "region": "Almada",
+      "regionEn": "Almada",
+      "lat": 38.665,
+      "lon": -9.267,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf"
+      ],
+      "description": "Aldeia piscatória e praia selvagem a sul da Caparica. Kite com Nortada num ambiente mais autêntico e menos turístico. Menos crowd que Nova Vaga ou CDS.",
+      "descriptionEn": "Fishing village and wild beach south of Caparica. Kite with Nortada in a more authentic, less touristy setting. Less crowded than Nova Vaga or CDS.",
+      "facilities": [
+        "Estacionamento"
+      ],
+      "hazards": [
+        "Correntes",
+        "Acesso estreito",
+        "Sem escola de kite na praia"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "praia-da-rainha",
+      "slug": "praia-da-rainha",
+      "name": "Praia da Rainha",
+      "nameEn": "Rainha Beach",
+      "region": "Costa da Caparica",
+      "regionEn": "Costa da Caparica",
+      "lat": 38.636,
+      "lon": -9.232,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "beginner",
+      "compatibleSports": [
+        "kitesurf",
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Secção sul da Costa da Caparica, junto à Rainha. Ondas suaves e espaço para kite iniciante com Nortada. Mais calma que CDS; boa para quem aprende após Fonte da Telha.",
+      "descriptionEn": "South section of Costa da Caparica, near Rainha. Gentle waves and space for beginner kite with Nortada. Calmer than CDS; good for learning after Fonte da Telha.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "WC"
+      ],
+      "hazards": [
+        "Correntes",
+        "Multidão de verão",
+        "Kite restrito na época balnear"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "troia",
+      "slug": "troia",
+      "name": "Tróia (Península do Sado)",
+      "nameEn": "Troia (Sado Peninsula)",
+      "region": "Grândola",
+      "regionEn": "Grandola",
+      "lat": 38.496,
+      "lon": -8.892,
+      "coastOrientation": 200,
+      "type": "kitesurf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "kitesurf",
+        "foil"
+      ],
+      "description": "Península entre o Sado e o Atlântico — spot duplo: água plana no estuário (Bico das Lulas) e ondas médias no oceano. Vento mais estável de S/SW; Nortada pode ser gusty. Ferry de Setúbal. Reserva natural com golfinhos do Sado.",
+      "descriptionEn": "Peninsula between the Sado and Atlantic — dual spot: flat water in the estuary (Bico das Lulas) and medium waves on the ocean side. More stable S/SW wind; Nortada can be gusty. Ferry from Setúbal. Nature reserve with Sado dolphins.",
+      "facilities": [
+        "Estacionamento",
+        "Ferry Setúbal",
+        "Escola kite",
+        "Restaurantes",
+        "Alojamento",
+        "WC"
+      ],
+      "hazards": [
+        "Corrente na foz do Sado",
+        "Nortada irregular",
+        "Zonas de proteção da reserva"
+      ],
+      "blueFlag": true,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "comporta",
+      "slug": "comporta",
+      "name": "Comporta",
+      "nameEn": "Comporta",
+      "region": "Grândola",
+      "regionEn": "Grandola",
+      "lat": 38.38,
+      "lon": -8.785,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "beginner",
+      "compatibleSports": [
+        "kitesurf",
+        "foil"
+      ],
+      "description": "Praia extensa de areia branca no Alentejo litoral. Freeride e light-wind com Nortada; ondulação só com swell forte. Menos crowd de kite que Tróia no pico de verão. Vila com alojamento boutique — paragem clássica em kitetrip sul de Lisboa.",
+      "descriptionEn": "Long white sand beach on the Alentejo coast. Freeride and light-wind with Nortada; swell only on strong days. Less kite crowd than Troia at summer peak. Village with boutique lodging — classic stop on a south-Lisbon kitetrip.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "Alojamento",
+        "WC"
+      ],
+      "hazards": [
+        "Correntes com swell",
+        "Multidão de verão na vila (não na praia)"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "carvalhal-comporta",
+      "slug": "carvalhal-comporta",
+      "name": "Carvalhal / Comporta",
+      "nameEn": "Carvalhal / Comporta",
+      "region": "Grândola",
+      "regionEn": "Grandola",
+      "lat": 38.262,
+      "lon": -8.772,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "beginner",
+      "compatibleSports": [
+        "kitesurf",
+        "foil",
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Praia do Carvalhal no pinhal do Sado — kite com Nortada em freeride, a sul de Comporta. Quase sem crowd face a Tróia ou Caparica. Não confundir com Carvalhal na Costa Vicentina (slug carvalhal).",
+      "descriptionEn": "Carvalhal beach in the Sado pine forest — Nortada kite freeride, south of Comporta. Almost no crowd compared to Troia or Caparica. Not to be confused with Carvalhal on the Vicentina Coast (slug carvalhal).",
+      "facilities": [
+        "Estacionamento"
+      ],
+      "hazards": [
+        "Sem infraestrutura",
+        "Correntes com swell",
+        "Acesso por estrada de pinhal"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
+    },
+    {
+      "id": "sines",
+      "slug": "sines",
+      "name": "Sines",
+      "nameEn": "Sines",
+      "region": "Sines",
+      "regionEn": "Sines",
+      "lat": 37.955,
+      "lon": -8.869,
+      "coastOrientation": 270,
+      "type": "kitesurf",
+      "difficulty": "advanced",
+      "compatibleSports": [
+        "kitesurf",
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Praia urbana junto ao porto de Sines. Kite com Nortada e ondulação em swell — lançamento com atenção a rochas. Spot distinto de São Torpes (7 km). Menos crowd de kite; infraestrutura urbana para alojamento e reparações.",
+      "descriptionEn": "Urban beach by Sines port. Kite with Nortada and swell waves — launch carefully around rocks. Distinct from Sao Torpes (7 km). Low kite crowd; town infrastructure for lodging and repairs.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "Alojamento",
+        "WC"
+      ],
+      "hazards": [
+        "Rochas no lançamento",
+        "Correntes",
+        "Vento gusty junto ao porto"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": null,
+      "allScores": null,
+      "bestScore": 0
     }
   ]
 }

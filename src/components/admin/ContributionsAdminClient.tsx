@@ -32,6 +32,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<'all' | ContributionStatus>('all');
+  const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
   const loadContributions = useCallback(async () => {
     const sb = getSupabaseClient();
@@ -124,9 +125,11 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
     }
   };
 
-  const deleteItem = async (id: number) => {
-    if (!confirm(isPt ? 'Apagar esta contribuição?' : 'Delete this contribution?')) return;
+  const confirmDelete = (id: number) => setConfirmingId(id);
+  const cancelDelete = () => setConfirmingId(null);
 
+  const deleteItem = async (id: number) => {
+    setConfirmingId(null);
     setBusy(true);
     setError('');
     try {
@@ -319,15 +322,37 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
                     Reset
                   </button>
                 )}
-                <button
-                  type="button"
-                  onClick={() => deleteItem(item.id)}
-                  disabled={busy}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs text-score-poor border border-score-poor/20 hover:bg-score-poor/10"
-                >
-                  <Trash2 className="w-3.5 h-3.5" />
-                  {isPt ? 'Apagar' : 'Delete'}
-                </button>
+                {confirmingId === item.id ? (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-fg-muted">
+                    <span>{isPt ? 'Confirmar exclusão?' : 'Confirm delete?'}</span>
+                    <button
+                      type="button"
+                      onClick={() => deleteItem(item.id)}
+                      disabled={busy}
+                      className="px-2 py-1 rounded text-xs bg-score-poor/10 text-score-poor border border-score-poor/20"
+                    >
+                      {isPt ? 'Sim' : 'Yes'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={cancelDelete}
+                      disabled={busy}
+                      className="px-2 py-1 rounded text-xs border border-divider text-fg-muted"
+                    >
+                      {isPt ? 'Não' : 'No'}
+                    </button>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => confirmDelete(item.id)}
+                    disabled={busy}
+                    className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs text-score-poor border border-score-poor/20 hover:bg-score-poor/10"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                    {isPt ? 'Apagar' : 'Delete'}
+                  </button>
+                )}
               </div>
             </li>
           ))}

@@ -37,12 +37,15 @@ jobs:
         run: npm run sitemap:generate
 
       - name: Build spots index
-        run: npm run spots:index
+        run: npm run spots:index && npm run spots:lite
 
       - name: Build
         env:
           NODE_OPTIONS: '--max-old-space-size=4096'
         run: npm run build
+
+      - name: Lighthouse audit (perf, a11y, SEO)
+        run: node scripts/run-lighthouse-prod.js
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium

@@ -33,6 +33,9 @@ describe('mapa page SEO', () => {
     expect(en.alternates?.canonical).toBe('/en/mapa/');
     expect(pt.alternates?.languages).toEqual({ pt: '/pt/mapa/', en: '/en/mapa/' });
     expect(en.alternates?.languages).toEqual({ pt: '/pt/mapa/', en: '/en/mapa/' });
-    expect(pt.openGraph?.images?.[0]?.url).toBe('/og-image.png');
+    const images = pt.openGraph?.images;
+    const first = Array.isArray(images) ? images[0] : images;
+    const url = typeof first === 'object' && first && 'url' in first ? first.url : first;
+    expect(url).toBe('/og-image.png');
   });
 });

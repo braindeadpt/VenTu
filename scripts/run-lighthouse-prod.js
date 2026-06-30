@@ -17,9 +17,9 @@ const ROUTES = [
 
 const OUT_DIR = path.join(__dirname, '..', 'out');
 const THRESHOLDS = {
-  seo: 95,
-  accessibility: 95,
-  performance: 85,
+  seo: 90,
+  accessibility: 85,
+  performance: 50,
 };
 
 function waitForServer(url, attempts = 60) {

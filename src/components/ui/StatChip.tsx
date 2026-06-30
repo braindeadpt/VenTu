@@ -11,16 +11,16 @@ export default function StatChip({ icon, value, label, className }: StatChipProp
   return (
     <div
       className={cn(
-        'inline-flex items-center gap-2 rounded-pill bg-surface-1/[0.04] border border-divider px-3 py-2 min-h-[44px]',
+        'flex items-center gap-2 rounded-card border border-divider bg-surface-1/[0.04] px-2.5 py-2',
         className,
       )}
     >
-      <span className="text-fg-muted shrink-0" aria-hidden>
+      <span className="shrink-0 text-fg-subtle" aria-hidden>
         {icon}
       </span>
       <div className="min-w-0">
-        <div className="font-mono text-num-sm text-fg tabular-nums leading-none">{value}</div>
-        <div className="text-meta-sm text-fg-muted mt-0.5">{label}</div>
+        <p className="font-mono text-num-sm text-fg tabular-nums leading-tight">{value}</p>
+        <p className="text-meta-sm text-fg-subtle leading-tight">{label}</p>
       </div>
     </div>
   );

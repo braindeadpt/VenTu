@@ -29,17 +29,17 @@ function data(
   scores: Partial<Record<'surf' | 'kitesurf' | 'windsurf', number>>,
 ): GridSpotData {
   const allScores = {
-    surf: { score: scores.surf ?? 0, rating: '', ratingEn: '', factors: [] },
-    kitesurf: { score: scores.kitesurf ?? 0, rating: '', ratingEn: '', factors: [] },
-    windsurf: { score: scores.windsurf ?? 0, rating: '', ratingEn: '', factors: [] },
-    wakeboard: { score: 0, rating: '', ratingEn: '', factors: [] },
-    bodyboard: { score: 0, rating: '', ratingEn: '', factors: [] },
-    sup: { score: 0, rating: '', ratingEn: '', factors: [] },
-    foil: { score: 0, rating: '', ratingEn: '', factors: [] },
+    surf: { score: scores.surf ?? 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
+    kitesurf: { score: scores.kitesurf ?? 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
+    windsurf: { score: scores.windsurf ?? 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
+    wakeboard: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
+    bodyboard: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
+    sup: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
+    foil: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
   };
   return {
     spot: spotDef,
-    conditions: { windSpeed: 5, windDirection: 270, waveHeight: 1, wavePeriod: 8 },
+    conditions: { windSpeed: 5, windDirection: 270, waveHeight: 1, wavePeriod: 8, waveDirection: 270, windGust: 5, waterTemp: 16 },
     allScores,
   };
 }

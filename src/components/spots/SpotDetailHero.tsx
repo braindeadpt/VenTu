@@ -1,12 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Navigation } from 'lucide-react';
+import { ArrowLeft, Clock, Droplets, MapPin, Navigation, Waves, Wind } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
-import { getScoreTokens } from '@/lib/sportScore';
-import { getDataFreshness } from '@/lib/dataFreshness';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { cn } from '@/lib/cn';
 import FavoriteButton from '@/components/FavoriteButton';
@@ -14,9 +12,11 @@ import SocialShare from '@/components/ui/SocialShare';
 import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreGauge from '@/components/ui/ScoreGauge';
+import ScoreBadge from '@/components/ui/ScoreBadge';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import SpotLevelToday from '@/components/spots/SpotLevelToday';
+import StatChip from '@/components/ui/StatChip';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 
 interface SpotDetailHeroProps {
@@ -58,8 +58,8 @@ export default function SpotDetailHero({
   const title = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
   const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
-  const tokens = getScoreTokens(score);
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
+  const windKt = Math.round(conditions.windSpeed * 1.94384);
 
   const updatedLabel = conditions.updatedAt
     ? new Intl.DateTimeFormat(locale, {
@@ -70,8 +70,6 @@ export default function SpotDetailHero({
       }).format(new Date(conditions.updatedAt))
     : null;
 
-  const freshness = conditions.updatedAt ? getDataFreshness(conditions.updatedAt) : null;
-  const showUpdatedPill = updatedLabel && (!freshness || freshness === 'fresh');
   const showQuality =
     spot.blueFlag || spot.waterQuality || spot.accessibleBeach;
 
@@ -151,19 +149,12 @@ export default function SpotDetailHero({
               locale={locale}
             />
 
-            <div className="flex flex-wrap items-center gap-1.5">
-              {showUpdatedPill && (
-                <span className="pill pill-ghost gap-1 px-2 py-0.5 min-h-0 text-meta-sm text-fg-muted bg-bg-base/40">
-                  {isPt ? 'Actualizado' : 'Updated'} {updatedLabel}
-                </span>
-              )}
-              <DataSourceBadge
-                source={conditions.source}
-                updatedAt={conditions.updatedAt}
-                locale={locale}
-                size="sm"
-              />
-            </div>
+            <DataSourceBadge
+              source={conditions.source}
+              updatedAt={conditions.updatedAt}
+              locale={locale}
+              size="sm"
+            />
 
             <a
               href={directionsUrl}
@@ -186,19 +177,49 @@ export default function SpotDetailHero({
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="rounded-card bg-bg-elevated border border-divider p-3 flex flex-row sm:flex-col items-center sm:items-center gap-4 sm:gap-2 w-full sm:w-auto">
-              <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
-              <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
-                <p className={cn('text-body font-semibold', tokens.text)}>
-                  {isPt ? rating : ratingEn}
-                </p>
-                <ConfidenceBadge
-                  confidence={conditions.confidence}
-                  detail={conditions.confidenceDetail}
-                  locale={locale}
-                  size="sm"
+            <div className="rounded-card bg-bg-elevated border border-divider p-3 sm:p-4 w-full sm:w-[270px]">
+              <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
+                <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
+                <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
+                  <ScoreBadge score={score} locale={locale as 'pt' | 'en'} size="md" showLabel />
+                  <ConfidenceBadge
+                    confidence={conditions.confidence}
+                    detail={conditions.confidenceDetail}
+                    locale={locale}
+                    size="sm"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-3 pt-3 border-t border-divider grid grid-cols-2 gap-2">
+                <StatChip
+                  icon={<Waves className="w-4 h-4 text-data-waves" />}
+                  value={`${conditions.waveHeight.toFixed(1)}m`}
+                  label={isPt ? 'Ondas' : 'Waves'}
+                />
+                <StatChip
+                  icon={<Clock className="w-4 h-4 text-data-period" />}
+                  value={`${Math.round(conditions.wavePeriod)}s`}
+                  label={isPt ? 'Período' : 'Period'}
+                />
+                <StatChip
+                  icon={<Wind className="w-4 h-4 text-data-wind" />}
+                  value={`${windKt}kt`}
+                  label={isPt ? 'Vento' : 'Wind'}
+                />
+                <StatChip
+                  icon={<Droplets className="w-4 h-4 text-data-water" />}
+                  value={`${conditions.waterTemp.toFixed(1)}°C`}
+                  label={isPt ? 'Água' : 'Water'}
                 />
               </div>
+
+              {updatedLabel && (
+                <div className="mt-2 flex items-center justify-center gap-1 text-meta-sm text-fg-muted">
+                  <span className="w-1.5 h-1.5 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
+                  <span>{isPt ? 'Actualizado' : 'Updated'} {updatedLabel}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

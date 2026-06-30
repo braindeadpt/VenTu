@@ -373,6 +373,16 @@ async function updateConditions() {
     console.log(`  ↳ ${spot.id} ← ${srcId} (no API)`);
   }
 
+  function atomicWriteJson(filePath, content) {
+    const tmpPath = filePath + '.tmp';
+    fs.writeFileSync(tmpPath, JSON.stringify(content), 'utf-8');
+    const backupPath = filePath + '.backup';
+    if (fs.existsSync(filePath)) {
+      fs.copyFileSync(filePath, backupPath);
+    }
+    fs.renameSync(tmpPath, filePath);
+  }
+
   const outputPath = path.join(__dirname, '../public/data/conditions.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   
@@ -383,20 +393,29 @@ async function updateConditions() {
     process.exit(1);
   }
   
-  // Backup existing file before overwriting
-  const backupPath = outputPath + '.backup';
-  if (fs.existsSync(outputPath)) {
-    fs.copyFileSync(outputPath, backupPath);
-  }
-  
-  fs.writeFileSync(outputPath, JSON.stringify(allConditions, null, 2));
+  atomicWriteJson(outputPath, allConditions);
 
   // Write hourly forecasts for spot detail pages
   const forecastsPath = path.join(__dirname, '../public/data/forecasts.json');
-  fs.writeFileSync(forecastsPath, JSON.stringify(allForecasts));
+  atomicWriteJson(forecastsPath, allForecasts);
+
+  // Write per-spot forecast files (~50KB each, vs 8MB full file)
+  const perSpotDir = path.join(__dirname, '../public/data/forecasts');
+  fs.mkdirSync(perSpotDir, { recursive: true });
+  let perSpotCount = 0;
+  for (const [dataId, forecast] of Object.entries(allForecasts)) {
+    try {
+      const spotPath = path.join(perSpotDir, `${dataId}.json`);
+      atomicWriteJson(spotPath, forecast);
+      perSpotCount++;
+    } catch (err) {
+      console.error(`  ⚠️ Failed to write per-spot forecast for ${dataId}:`, err.message);
+    }
+  }
 
   console.log(`\n✅ Conditions saved to ${outputPath}`);
   console.log(`📈 Forecasts saved to ${forecastsPath}`);
+  console.log(`📊 Per-spot forecasts: ${perSpotCount} files in ${perSpotDir}`);
   console.log(`📊 Updated ${spotCount} spots`);
 }
 

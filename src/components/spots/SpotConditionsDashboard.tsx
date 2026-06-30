@@ -1,8 +1,10 @@
 'use client';
 
 import { Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
+import { cn } from '@/lib/cn';
 import type { Spot } from '@/types';
 import type { SportScore } from '@/lib/sportScore';
+import { getScoreTokens } from '@/lib/sportScore';
 import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
@@ -13,6 +15,7 @@ import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
 import ObservedNow from '@/components/spots/ObservedNow';
 import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
+import ScoreBadge from '@/components/ui/ScoreBadge';
 import type { ObservedConditions } from '@/lib/observations';
 import type { SportType } from '@/lib/sportRatings';
 import type { TideSchedule } from '@/lib/tideSchedule';
@@ -74,6 +77,7 @@ export default function SpotConditionsDashboard({
   score,
 }: SpotConditionsDashboardProps) {
   const isPt = locale === 'pt';
+  const scoreTokens = getScoreTokens(score.score);
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
   const windCardinal = getCardinalLabel(conditions.windDirection);
@@ -103,8 +107,16 @@ export default function SpotConditionsDashboard({
       className="card-1 rounded-card border border-divider overflow-hidden"
       aria-label={copy.title}
     >
-      <header className="px-3 pt-3 pb-2.5 md:px-4 md:pt-4 border-b border-divider bg-surface-1/[0.03]">
-        <h2 className="text-h2 text-fg">{copy.title}</h2>
+      <header
+        className={cn(
+          'px-3 pt-3 pb-2.5 md:px-4 md:pt-4 border-b-2 bg-surface-1/[0.03]',
+          scoreTokens.border,
+        )}
+      >
+        <div className="flex items-center gap-2">
+          <h2 className="text-h2 text-fg">{copy.title}</h2>
+          <ScoreBadge score={score.score} locale={locale as 'pt' | 'en'} size="sm" showLabel />
+        </div>
         <p className="text-meta text-fg-muted mt-1 max-w-3xl leading-relaxed">{copy.subtitle}</p>
       </header>
 

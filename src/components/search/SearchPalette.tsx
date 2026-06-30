@@ -4,12 +4,19 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Search, X, ArrowRight, Waves, MapPin, Newspaper, Tag } from 'lucide-react';
-import { spots } from '@/lib/spots';
-import type { Spot, NewsItem } from '@/types';
+import type { NewsItem } from '@/types';
 import { getTranslation } from '@/lib/i18n';
 import { newsSlug } from '@/lib/news';
 import { getAssetPath } from '@/lib/paths';
 import { getMacroRegion } from '@/lib/regions';
+
+interface SpotLite {
+  slug: string;
+  name: string;
+  nameEn: string;
+  region: string;
+  regionEn: string;
+}
 
 interface SearchPaletteProps {
   locale: string;
@@ -35,7 +42,7 @@ const MODALIDADES = [
 ];
 
 // Deduplicate regions preserving order
-function getUniqueRegions(spotsList: Spot[]): { slug: string; name: string; nameEn: string }[] {
+function getUniqueRegions(spotsList: SpotLite[]): { slug: string; name: string; nameEn: string }[] {
   const seen = new Set<string>();
   return spotsList.reduce<{ slug: string; name: string; nameEn: string }[]>((acc, s) => {
     const key = s.region.toLowerCase();
@@ -57,7 +64,16 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   const t = getTranslation(locale as 'pt' | 'en');
   const isPt = locale === 'pt';
 
-  const regions = useMemo(() => getUniqueRegions(spots), []);
+  const regions = useMemo(() => getUniqueRegions(spotsCache), [spotsCache]);
+
+  // Load spots index once
+  const [spotsCache, setSpotsCache] = useState<SpotLite[]>([]);
+  useEffect(() => {
+    fetch(getAssetPath('/data/spots-lite.json'))
+      .then((r) => r.json())
+      .then((data) => setSpotsCache(Array.isArray(data) ? data : []))
+      .catch(() => setSpotsCache([]));
+  }, []);
 
   // Load news once
   const [newsCache, setNewsCache] = useState<NewsItem[]>([]);
@@ -80,7 +96,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
     const results: SearchResult[] = [];
 
     // Spots
-    spots.forEach((spot) => {
+    spotsCache.forEach((spot) => {
       const name = isPt ? spot.name : spot.nameEn;
       const searchName = name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
       if (searchName.includes(q)) {
@@ -146,10 +162,36 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
     setSelectedIndex(0);
   }, [query, locale, isPt, regions, newsCache]);
 
+  const getTabbable = useCallback(() => {
+    if (!resultsRef.current) return [];
+    const anchors = resultsRef.current.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    );
+    return Array.from(anchors);
+  }, []);
+
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Escape') {
         onClose();
+        return;
+      }
+      if (e.key === 'Tab') {
+        const tabbable = getTabbable();
+        if (tabbable.length === 0) return;
+        const current = document.activeElement;
+        const currentIdx = tabbable.indexOf(current as HTMLElement);
+        if (e.shiftKey) {
+          if (currentIdx <= 0) {
+            e.preventDefault();
+            tabbable[tabbable.length - 1].focus();
+          }
+        } else {
+          if (currentIdx === tabbable.length - 1 || currentIdx === -1) {
+            e.preventDefault();
+            tabbable[0].focus();
+          }
+        }
         return;
       }
       if (e.key === 'ArrowDown') {
@@ -167,7 +209,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
         return;
       }
     },
-    [allResults, selectedIndex, onClose, router],
+    [allResults, selectedIndex, onClose, router, getTabbable],
   );
 
   const handleOverlayClick = useCallback(
@@ -251,7 +293,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
             <button
               onClick={() => setQuery('')}
               className="p-1 rounded text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-colors"
-              aria-label="Clear search"
+              aria-label={t.nav.searchClear}
             >
               <X className="w-4 h-4" />
             </button>
