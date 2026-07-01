@@ -336,6 +336,7 @@ export default function ForecastTable({
 
   /* ── cell dimensions ── */
   const cellPx = compact ? 'px-0.5 py-0.5' : 'px-2 py-1';
+  const labelCellPx = compact ? 'pl-2 pr-1 py-0.5' : 'px-2 py-1';
   const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[88px] md:w-[96px]';
   const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[40px]';
   const numText = compact ? 'text-[10px] leading-tight' : 'text-num-xs md:text-num';
@@ -377,7 +378,7 @@ export default function ForecastTable({
         </div>
       )}
 
-<div className="edge-fade-x rounded-card max-w-full">
+<div className="rounded-card max-w-full">
       <div
         ref={scrollRef}
         className={`overflow-x-auto overscroll-x-contain border border-divider bg-bg-base relative rounded-card max-w-full ${compact ? '' : 'min-w-[600px] md:min-w-[800px]'}`}
@@ -408,7 +409,7 @@ export default function ForecastTable({
               {/* Sticky label column */}
               <th
                 scope="col"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} font-semibold text-fg border-b-2 border-r-2 border-score-good/30`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} font-semibold text-fg border-b-2 border-r-2 border-score-good/30`}
               >
                 <div className="flex flex-col gap-0.5">
                   {dayGroups.length > 1 ? (
@@ -457,7 +458,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.waves}
             </th>
@@ -480,7 +481,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.period}
             </th>
@@ -503,7 +504,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.wind}
             </th>
@@ -529,7 +530,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.direction}
             </th>
@@ -559,7 +560,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.gust}
               </th>
@@ -589,7 +590,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.water}
               </th>
@@ -622,7 +623,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.tide}
               </th>
@@ -662,7 +663,7 @@ export default function ForecastTable({
             <tr className="border-t-2 border-divider-strong">
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${cellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
+                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
               >
                 {sportLabel ?? t.score}
               </th>
