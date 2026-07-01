@@ -64,10 +64,9 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   const t = getTranslation(locale as 'pt' | 'en');
   const isPt = locale === 'pt';
 
-  const regions = useMemo(() => getUniqueRegions(spotsCache), [spotsCache]);
-
   // Load spots index once
   const [spotsCache, setSpotsCache] = useState<SpotLite[]>([]);
+  const regions = useMemo(() => getUniqueRegions(spotsCache), [spotsCache]);
   useEffect(() => {
     fetch(getAssetPath('/data/spots-lite.json'))
       .then((r) => r.json())
