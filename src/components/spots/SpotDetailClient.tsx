@@ -34,7 +34,6 @@ import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
-import AlertSubscribeForm from '@/components/alerts/AlertSubscribeForm';
 import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
@@ -608,17 +607,7 @@ export default function SpotDetailClient({
         </div>
 
         <section className="max-w-6xl mx-auto px-4 py-6 border-t border-divider">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <AlertSubscribeForm
-              spotSlug={spot.slug}
-              spotName={isPt ? spot.name : spot.nameEn}
-              defaultSport={selectedSport}
-              locale={locale}
-            />
-            <div className="flex items-end">
-              <FeedbackForm locale={locale} defaultSpotSlug={spot.slug} />
-            </div>
-          </div>
+          <FeedbackForm locale={locale} defaultSpotSlug={spot.slug} />
         </section>
       </div>
     </>

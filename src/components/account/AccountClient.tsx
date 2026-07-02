@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { LogOut, Heart, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import Button from '@/components/ui/Button';
@@ -78,9 +77,9 @@ export default function AccountClient({ locale }: { locale: string }) {
       </Button>
 
       <p className="text-meta-xs text-fg-subtle">
-        <Link href={`/${locale}/alerts/`} className="text-data-waves hover:underline">
-          {isPt ? 'Alertas por email' : 'Email alerts'}
-        </Link>
+        {isPt
+          ? 'Alertas por email nos favoritos — em breve.'
+          : 'Email alerts on favorites — coming soon.'}
       </p>
     </div>
   );

@@ -54,15 +54,29 @@ export default async function AlertsPage({
 
         <p className="text-body-lg text-fg-muted mb-8">
           {isPt
-            ? 'Define um score mínimo e a modalidade. Quando as condições baterem certo, recebes um email — confirma a subscrição na caixa de entrada.'
-            : 'Set a minimum score and sport. When conditions match, you get an email — confirm the subscription from your inbox.'}
+            ? 'Guarda spots nos favoritos com a tua conta. Em breve podes activar alertas por email para todos os favoritos de uma vez.'
+            : 'Save spots to favorites with your account. Soon you can turn on email alerts for all your favorites at once.'}
         </p>
 
         <ol className="space-y-3 mb-10 text-body text-fg-muted list-decimal list-inside">
-          <li>{isPt ? 'Abre a página de um spot' : 'Open a spot page'}</li>
-          <li>{isPt ? 'Toca em «Alertas» e indica o email' : 'Tap «Alerts» and enter your email'}</li>
-          <li>{isPt ? 'Confirma o link que enviamos' : 'Confirm the link we send you'}</li>
+          <li>{isPt ? 'Entra com magic link (header ou favoritos)' : 'Sign in with a magic link (header or favorites)'}</li>
+          <li>{isPt ? 'Guarda os spots que queres seguir' : 'Save the spots you want to follow'}</li>
+          <li>{isPt ? 'Activa alertas nos favoritos (em breve)' : 'Enable alerts from favorites (coming soon)'}</li>
         </ol>
+
+        <div className="flex flex-wrap gap-3 mb-8">
+          <Button href={`/${locale}/favorites/`} size="lg" locale={locale}>
+            {isPt ? 'Os meus favoritos' : 'My favorites'}
+          </Button>
+          <Button
+            href={`/${locale}/conta/`}
+            variant="secondary"
+            size="lg"
+            locale={locale}
+          >
+            {isPt ? 'Entrar na conta' : 'Sign in'}
+          </Button>
+        </div>
 
         <h2 className="text-h3 text-fg mb-3">
           {isPt ? 'Spots populares' : 'Popular spots'}
@@ -84,20 +98,6 @@ export default async function AlertsPage({
             </li>
           ))}
         </ul>
-
-        <div className="flex flex-wrap gap-3">
-          <Button href={`/${locale}/explorar/`} size="lg" locale={locale}>
-            {isPt ? 'Explorar mapa' : 'Explore map'}
-          </Button>
-          <Button
-            href={`/${locale}/favorites/`}
-            variant="secondary"
-            size="lg"
-            locale={locale}
-          >
-            {isPt ? 'Os meus favoritos' : 'My favorites'}
-          </Button>
-        </div>
 
         <p className="text-meta text-fg-muted mt-8">
           {isPt ? 'Já tens um link de confirmação ou cancelamento? ' : 'Already have a confirm or unsubscribe link? '}

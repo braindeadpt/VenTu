@@ -1,4 +1,4 @@
-import { ArrowRight, Bell, Calendar, Columns3 } from 'lucide-react';
+import { ArrowRight, Calendar, Columns3, Heart } from 'lucide-react';
 import Card from '@/components/ui/Card';
 
 interface HomepageSecondaryCtaProps {
@@ -26,12 +26,12 @@ export default function HomepageSecondaryCta({ locale, compact = false }: Homepa
       body: isPt ? 'Lado a lado, mesmo timeframe' : 'Side by side, same timeframe',
     },
     {
-      href: `/${locale}/alerts/`,
-      icon: Bell,
-      title: isPt ? 'Alertas' : 'Alerts',
+      href: `/${locale}/favorites/`,
+      icon: Heart,
+      title: isPt ? 'Favoritos' : 'Favorites',
       body: isPt
-        ? 'Avisos por email quando o teu spot estiver a bombar'
-        : 'Email alerts when your spot is firing',
+        ? 'Guarda spots na tua conta — alertas em lote em breve'
+        : 'Save spots to your account — bulk alerts coming soon',
     },
   ] as const;
 
