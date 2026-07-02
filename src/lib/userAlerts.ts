@@ -1,11 +1,14 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { SportType } from '@/lib/sportRatings';
 
+export type AlertMode = 'digest' | 'immediate';
+
 export interface UserAlertPrefs {
   user_id: string;
   email: string;
   min_score: number;
   sport: string;
+  alert_mode: AlertMode;
   verified: boolean;
   active: boolean;
   locale: string;
@@ -18,7 +21,15 @@ export interface SubscribeFavoritesAlertsResult {
   ok: boolean;
   verified?: boolean;
   favorite_count?: number;
+  alert_mode?: AlertMode;
   error?: string;
+}
+
+export function alertModeLabel(mode: AlertMode, isPt: boolean): string {
+  if (mode === 'immediate') {
+    return isPt ? 'Imediato (máx. 1×/3h)' : 'Immediate (max once per 3h)';
+  }
+  return isPt ? 'Resumo diário (~7h30)' : 'Daily digest (~7:30 AM)';
 }
 
 export async function fetchUserAlertPrefs(
@@ -27,12 +38,18 @@ export async function fetchUserAlertPrefs(
 ): Promise<UserAlertPrefs | null> {
   const { data, error } = await sb
     .from('user_alert_prefs')
-    .select('user_id, email, min_score, sport, verified, active, locale, last_sent_at, created_at, updated_at')
+    .select(
+      'user_id, email, min_score, sport, alert_mode, verified, active, locale, last_sent_at, created_at, updated_at',
+    )
     .eq('user_id', userId)
     .maybeSingle();
 
   if (error || !data) return null;
-  return data as UserAlertPrefs;
+  const row = data as UserAlertPrefs;
+  return {
+    ...row,
+    alert_mode: row.alert_mode === 'immediate' ? 'immediate' : 'digest',
+  };
 }
 
 export async function subscribeFavoritesAlerts(
@@ -40,11 +57,13 @@ export async function subscribeFavoritesAlerts(
   minScore: number,
   sport: SportType,
   locale: string,
+  alertMode: AlertMode = 'digest',
 ): Promise<SubscribeFavoritesAlertsResult> {
   const { data, error } = await (sb as SupabaseClient).rpc('subscribe_favorites_alerts', {
     p_min_score: minScore,
     p_sport: sport,
     p_locale: locale,
+    p_alert_mode: alertMode,
   });
 
   if (error) {
@@ -58,7 +77,13 @@ export async function subscribeFavoritesAlerts(
     return { ok: false, error: message || 'subscribe_failed' };
   }
 
-  const row = data as { ok?: boolean; verified?: boolean; favorite_count?: number; error?: string } | null;
+  const row = data as {
+    ok?: boolean;
+    verified?: boolean;
+    favorite_count?: number;
+    alert_mode?: AlertMode;
+    error?: string;
+  } | null;
   if (!row?.ok) {
     return { ok: false, error: row?.error ?? 'subscribe_failed' };
   }
@@ -67,6 +92,7 @@ export async function subscribeFavoritesAlerts(
     ok: true,
     verified: row.verified,
     favorite_count: row.favorite_count,
+    alert_mode: row.alert_mode === 'immediate' ? 'immediate' : 'digest',
   };
 }
 

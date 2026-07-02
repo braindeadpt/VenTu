@@ -10,6 +10,8 @@ import {
   fetchUserAlertPrefs,
   formatUserAlertsError,
   subscribeFavoritesAlerts,
+  alertModeLabel,
+  type AlertMode,
   type UserAlertPrefs,
 } from '@/lib/userAlerts';
 import Button from '@/components/ui/Button';
@@ -26,6 +28,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
   const [loading, setLoading] = useState(true);
   const [sport, setSport] = useState<SportType>('kitesurf');
   const [minScore, setMinScore] = useState(70);
+  const [alertMode, setAlertMode] = useState<AlertMode>('digest');
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -45,6 +48,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
       if (row) {
         setSport(row.sport as SportType);
         setMinScore(row.min_score);
+        setAlertMode(row.alert_mode);
       }
     } finally {
       setLoading(false);
@@ -70,7 +74,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
     setSaved(false);
 
     try {
-      const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale);
+      const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode);
       if (!result.ok) {
         setError(formatUserAlertsError(result.error, isPt));
         return;
@@ -118,8 +122,8 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           </h2>
           <p className="text-meta-sm text-fg-muted mt-1">
             {isPt
-              ? `Um email quando algum dos teus ${favoriteCount} favorito${favoriteCount === 1 ? '' : 's'} atingir o score mínimo (máx. 1× por 3h).`
-              : `One email when any of your ${favoriteCount} favorite${favoriteCount === 1 ? '' : 's'} hits the minimum score (max once per 3h).`}
+              ? `Avisa-te quando algum dos teus ${favoriteCount} favorito${favoriteCount === 1 ? '' : 's'} atingir o score mínimo. Por defeito: resumo diário (~7h30); opcional: alerta imediato (máx. 1×/3h).`
+              : `Get notified when any of your ${favoriteCount} favorite${favoriteCount === 1 ? '' : 's'} hits the minimum score. Default: daily digest (~7:30 AM); optional: immediate alert (max once per 3h).`}
           </p>
         </div>
       </div>
@@ -131,6 +135,8 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           {SPORT_LABELS[prefs!.sport as SportType]?.[isPt ? 'pt' : 'en'] ?? prefs!.sport}
           {' · '}
           {isPt ? 'score ≥' : 'score ≥'} {prefs!.min_score}
+          {' · '}
+          {alertModeLabel(prefs!.alert_mode, isPt)}
         </p>
       )}
 
@@ -184,6 +190,22 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
               className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg font-mono tabular-nums"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-xs text-fg-muted mb-1">{isPt ? 'Frequência' : 'Frequency'}</label>
+          <select
+            value={alertMode}
+            onChange={(e) => setAlertMode(e.target.value as AlertMode)}
+            className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
+          >
+            <option value="digest">
+              {isPt ? 'Resumo diário (~7h30) — recomendado' : 'Daily digest (~7:30 AM) — recommended'}
+            </option>
+            <option value="immediate">
+              {isPt ? 'Imediato quando estiver bom (máx. 1×/3h)' : 'Immediate when conditions fire (max once per 3h)'}
+            </option>
+          </select>
         </div>
 
         {error && <p className="text-xs text-score-poor">{error}</p>}

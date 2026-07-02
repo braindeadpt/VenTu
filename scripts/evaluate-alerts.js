@@ -15,6 +15,36 @@ const SPOTS_PATH = path.join(__dirname, '../src/lib/spots.ts');
 const SITE_URL = 'https://ventu.surf';
 const FROM_EMAIL = process.env.RESEND_FROM || 'VenTu <alerts@ventu.surf>';
 const COOLDOWN_MS = 3 * 60 * 60 * 1000;
+const DIGEST_HOUR_LISBON = 7;
+
+function lisbonDateTimeParts(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Europe/Lisbon',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: 'numeric',
+    hour12: false,
+  }).formatToParts(date);
+  const get = (type) => parts.find((p) => p.type === type)?.value;
+  return {
+    dateKey: `${get('year')}-${get('month')}-${get('day')}`,
+    hour: Number(get('hour')),
+  };
+}
+
+function isDigestWindow() {
+  return lisbonDateTimeParts().hour === DIGEST_HOUR_LISBON;
+}
+
+function alreadySentDigestToday(lastSentAt) {
+  if (!lastSentAt) return false;
+  return lisbonDateTimeParts(new Date(lastSentAt)).dateKey === lisbonDateTimeParts().dateKey;
+}
+
+function normalizeAlertMode(value) {
+  return value === 'immediate' ? 'immediate' : 'digest';
+}
 
 function loadSpotMaps() {
   const content = fs.readFileSync(SPOTS_PATH, 'utf-8');
@@ -158,13 +188,21 @@ async function sendLegacyVerification(sub) {
 
 async function sendUserVerification(pref, favoriteCount) {
   const isPt = pref.locale !== 'en';
+  const mode = normalizeAlertMode(pref.alert_mode);
   const link = `${SITE_URL}/${pref.locale || 'pt'}/alerts/confirm/?token=${pref.verify_token}`;
   const subject = isPt
     ? 'Confirma alertas VenTu nos teus favoritos'
     : 'Confirm VenTu alerts on your favorites';
+  const freqNote = isPt
+    ? mode === 'immediate'
+      ? 'alertas imediatos (máx. 1×/3h)'
+      : 'resumo diário (~7h30)'
+    : mode === 'immediate'
+      ? 'immediate alerts (max once per 3h)'
+      : 'daily digest (~7:30 AM)';
   const html = isPt
-    ? `<p>Confirma alertas por email para <strong>${favoriteCount}</strong> spot(s) favorito(s) (${pref.sport}, score ≥ ${pref.min_score}):</p><p><a href="${link}">Confirmar alertas</a></p>`
-    : `<p>Confirm email alerts for <strong>${favoriteCount}</strong> favorite spot(s) (${pref.sport}, score ≥ ${pref.min_score}):</p><p><a href="${link}">Confirm alerts</a></p>`;
+    ? `<p>Confirma alertas por email para <strong>${favoriteCount}</strong> spot(s) favorito(s) (${pref.sport}, score ≥ ${pref.min_score}, ${freqNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
+    : `<p>Confirm email alerts for <strong>${favoriteCount}</strong> favorite spot(s) (${pref.sport}, score ≥ ${pref.min_score}, ${freqNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
   await sendEmail(pref.email, subject, html);
 }
 
@@ -212,10 +250,13 @@ async function evaluateLegacySubscriptions(slugToId, conditions) {
 async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
   const prefs = await fetchUserAlertPrefs();
   let sent = 0;
+  let digestSkipped = 0;
+  let immediateSkipped = 0;
 
   for (const pref of prefs) {
     const favoriteIds = await fetchUserFavorites(pref.user_id);
     const favoriteCount = favoriteIds.length;
+    const mode = normalizeAlertMode(pref.alert_mode);
 
     if (!pref.verified) {
       if (favoriteCount === 0) continue;
@@ -229,9 +270,6 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
 
     if (favoriteCount === 0) continue;
 
-    const lastSent = pref.last_sent_at ? new Date(pref.last_sent_at).getTime() : 0;
-    if (Date.now() - lastSent < COOLDOWN_MS) continue;
-
     const firing = [];
     for (const spotId of favoriteIds) {
       const slug = idToSlug[spotId] || spotId;
@@ -243,24 +281,52 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
 
     if (firing.length === 0) continue;
 
+    const lastSent = pref.last_sent_at ? new Date(pref.last_sent_at).getTime() : 0;
+
+    if (mode === 'digest') {
+      if (!isDigestWindow()) {
+        digestSkipped++;
+        continue;
+      }
+      if (alreadySentDigestToday(pref.last_sent_at)) {
+        digestSkipped++;
+        continue;
+      }
+    } else {
+      if (Date.now() - lastSent < COOLDOWN_MS) {
+        immediateSkipped++;
+        continue;
+      }
+    }
+
     const isPt = pref.locale !== 'en';
     const unsub = `${SITE_URL}/${pref.locale || 'pt'}/alerts/unsubscribe/?token=${pref.verify_token}`;
-    const subject = isPt
-      ? `VenTu — ${firing.length} favorito(s) a bombar`
-      : `VenTu — ${firing.length} favorite(s) firing`;
+    const subject =
+      mode === 'digest'
+        ? isPt
+          ? `VenTu — bom dia: ${firing.length} favorito(s) a bombar`
+          : `VenTu — morning: ${firing.length} favorite(s) firing`
+        : isPt
+          ? `VenTu — ${firing.length} favorito(s) a bombar`
+          : `VenTu — ${firing.length} favorite(s) firing`;
+
+    const intro =
+      mode === 'digest'
+        ? isPt
+          ? '<p>Resumo diário dos teus favoritos com condições boas agora:</p>'
+          : '<p>Daily digest of your favorites with good conditions right now:</p>'
+        : isPt
+          ? '<p>Condições boas nos teus favoritos:</p>'
+          : '<p>Good conditions on your favorites:</p>';
 
     const items = firing
       .map(({ slug, score }) => {
         const spotUrl = `${SITE_URL}/${pref.locale || 'pt'}/spots/${slug}/`;
-        return isPt
-          ? `<li><a href="${spotUrl}"><strong>${slug}</strong></a> — score ${score}/100</li>`
-          : `<li><a href="${spotUrl}"><strong>${slug}</strong></a> — score ${score}/100</li>`;
+        return `<li><a href="${spotUrl}"><strong>${slug}</strong></a> — score ${score}/100</li>`;
       })
       .join('');
 
-    const html = isPt
-      ? `<p>Condições boas nos teus favoritos:</p><ul>${items}</ul><p><a href="${unsub}">Cancelar alertas</a></p>`
-      : `<p>Good conditions on your favorites:</p><ul>${items}</ul><p><a href="${unsub}">Unsubscribe</a></p>`;
+    const html = `${intro}<ul>${items}</ul><p><a href="${unsub}">${isPt ? 'Cancelar alertas' : 'Unsubscribe'}</a></p>`;
 
     const ok = await sendEmail(pref.email, subject, html);
     if (ok) {
@@ -269,7 +335,12 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
     }
   }
 
-  return { userPrefsCount: prefs.length, userDigestSent: sent };
+  return {
+    userPrefsCount: prefs.length,
+    userDigestSent: sent,
+    digestSkipped,
+    immediateSkipped,
+  };
 }
 
 async function main() {
@@ -283,6 +354,12 @@ async function main() {
 
   console.log(`  Legacy subscriptions: ${legacy.legacyCount}`);
   console.log(`  User alert prefs (E1c): ${e1c.userPrefsCount}`);
+  if (e1c.digestSkipped > 0) {
+    console.log(`  Digest skipped (outside window or already sent today): ${e1c.digestSkipped}`);
+  }
+  if (e1c.immediateSkipped > 0) {
+    console.log(`  Immediate skipped (3h cooldown): ${e1c.immediateSkipped}`);
+  }
   console.log(`\n✅ Alerts sent: ${legacy.legacySent + e1c.userDigestSent}`);
 }
 

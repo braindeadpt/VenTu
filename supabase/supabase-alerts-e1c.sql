@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS user_alert_prefs (
   verified BOOLEAN NOT NULL DEFAULT false,
   active BOOLEAN NOT NULL DEFAULT true,
   locale TEXT DEFAULT 'pt',
+  alert_mode TEXT NOT NULL DEFAULT 'digest' CHECK (alert_mode IN ('digest', 'immediate')),
   last_sent_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now()
@@ -31,7 +32,8 @@ CREATE POLICY "Users read own alert prefs" ON user_alert_prefs
 CREATE OR REPLACE FUNCTION subscribe_favorites_alerts(
   p_min_score INTEGER,
   p_sport TEXT,
-  p_locale TEXT DEFAULT 'pt'
+  p_locale TEXT DEFAULT 'pt',
+  p_alert_mode TEXT DEFAULT 'digest'
 )
 RETURNS JSONB
 LANGUAGE plpgsql
@@ -43,6 +45,7 @@ DECLARE
   v_email TEXT;
   v_count INTEGER;
   v_row user_alert_prefs%ROWTYPE;
+  v_mode TEXT;
 BEGIN
   IF v_uid IS NULL THEN
     RAISE EXCEPTION 'not_authenticated';
@@ -50,6 +53,11 @@ BEGIN
 
   IF p_min_score < 0 OR p_min_score > 100 THEN
     RETURN jsonb_build_object('ok', false, 'error', 'invalid_score');
+  END IF;
+
+  v_mode := lower(trim(COALESCE(p_alert_mode, 'digest')));
+  IF v_mode NOT IN ('digest', 'immediate') THEN
+    v_mode := 'digest';
   END IF;
 
   SELECT email INTO v_email FROM auth.users WHERE id = v_uid;
@@ -75,6 +83,7 @@ BEGIN
       min_score = p_min_score,
       sport = p_sport,
       locale = COALESCE(NULLIF(trim(p_locale), ''), 'pt'),
+      alert_mode = v_mode,
       active = true,
       updated_at = now()
     WHERE user_id = v_uid;
@@ -82,30 +91,33 @@ BEGIN
     RETURN jsonb_build_object(
       'ok', true,
       'verified', v_row.verified,
-      'favorite_count', v_count
+      'favorite_count', v_count,
+      'alert_mode', v_mode
     );
   END IF;
 
   INSERT INTO user_alert_prefs (
-    user_id, email, min_score, sport, verify_token, locale
+    user_id, email, min_score, sport, verify_token, locale, alert_mode
   ) VALUES (
     v_uid,
     lower(trim(v_email)),
     p_min_score,
     p_sport,
     gen_random_uuid()::text,
-    COALESCE(NULLIF(trim(p_locale), ''), 'pt')
+    COALESCE(NULLIF(trim(p_locale), ''), 'pt'),
+    v_mode
   );
 
   RETURN jsonb_build_object(
     'ok', true,
     'verified', false,
-    'favorite_count', v_count
+    'favorite_count', v_count,
+    'alert_mode', v_mode
   );
 END;
 $$;
 
-GRANT EXECUTE ON FUNCTION subscribe_favorites_alerts(INTEGER, TEXT, TEXT) TO authenticated;
+GRANT EXECUTE ON FUNCTION subscribe_favorites_alerts(INTEGER, TEXT, TEXT, TEXT) TO authenticated;
 
 -- Verify E1c subscription (confirm page)
 CREATE OR REPLACE FUNCTION verify_user_alerts(p_token TEXT)

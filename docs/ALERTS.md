@@ -1,6 +1,6 @@
 # VenTu — Alertas por email (E1 + E1c)
 
-Alertas quando o score atinge o limiar (máx. 1 email por 3 horas).
+Dois modos (E1b): **resumo diário** (~7h30, por defeito) ou **imediato** (máx. 1 email / 3h).
 
 ## E1c (actual) — favoritos + conta
 
@@ -9,13 +9,14 @@ Alertas quando o score atinge o limiar (máx. 1 email por 3 horas).
                                               ↓
                          user_alert_prefs + user_favorites
                                               ↓
-GitHub Actions (evaluate-alerts.yml, */3h) → digest email (Resend)
+GitHub Actions (evaluate-alerts.yml) → digest ou imediato (Resend)
                                               ↓
 Utilizador ← confirmação / alerta ← /pt/alerts/confirm|unsubscribe/?token=…
 ```
 
 - **Um** email de confirmação para todos os favoritos
-- **Um** digest quando algum favorito atinge o limiar
+- **Digest (default):** 1 email por dia ~7h30 (Lisboa) se algum favorito ≥ limiar
+- **Imediato (opcional):** quando condições batem, máx. 1× / 3h
 - Gerir em `/favorites#alertas` ou `/conta`
 
 ## E1 (legacy) — por spot, anónimo
@@ -30,7 +31,8 @@ Subscrições antigas em `alert_subscriptions` continuam a funcionar. O evaluato
 2. Executa [`supabase/supabase-alerts.sql`](../supabase/supabase-alerts.sql) (E1).
 3. Executa [`supabase/supabase-auth-profiles.sql`](../supabase/supabase-auth-profiles.sql) (F1).
 4. Executa [`supabase/supabase-alerts-e1c.sql`](../supabase/supabase-alerts-e1c.sql) (E1c).
-5. Confirma tabelas `alert_subscriptions` e `user_alert_prefs`.
+5. Executa [`supabase/supabase-alerts-e1b-frequency.sql`](../supabase/supabase-alerts-e1b-frequency.sql) (E1b — digest vs imediato).
+6. Confirma tabelas `alert_subscriptions` e `user_alert_prefs`.
 
 ### 2. Resend
 
@@ -51,7 +53,8 @@ Em **Settings → Secrets and variables → Actions**:
 
 O workflow [`.github/workflows/evaluate-alerts.yml`](../.github/workflows/evaluate-alerts.yml) corre:
 
-- **Cron:** `15 */3 * * *` (15 min após cada update de condições)
+- **Cron imediato:** `15 */3 * * *` (15 min após cada update de condições)
+- **Cron digest:** `30 7 * * *` (timezone `Europe/Lisbon`)
 - **Manual:** Actions → *Evaluate Alerts* → *Run workflow*
 
 ## Verificação local
@@ -90,4 +93,4 @@ npm run alerts:evaluate
 | Formulário diz Supabase não configurado | Faltam `NEXT_PUBLIC_SUPABASE_*` no build |
 | Sem email de confirmação | `RESEND_API_KEY` em falta no workflow ou domínio não verificado |
 | Confirm link 404 / falha | SQL não aplicado ou token inválido |
-| Alertas nunca chegam | Subscrição não confirmada, score abaixo do limiar, ou cooldown 3h |
+| Alertas nunca chegam | Subscrição não confirmada, score abaixo do limiar, digest fora da janela 7h, ou cooldown 3h (imediato) |

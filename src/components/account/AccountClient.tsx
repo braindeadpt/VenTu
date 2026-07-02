@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { LogOut, Heart, User, Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
-import { fetchUserAlertPrefs, type UserAlertPrefs } from '@/lib/userAlerts';
+import { fetchUserAlertPrefs, alertModeLabel, type UserAlertPrefs } from '@/lib/userAlerts';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -94,8 +94,8 @@ export default function AccountClient({ locale }: { locale: string }) {
                     ? 'Aguarda confirmação por email'
                     : 'Awaiting email confirmation'
                   : isPt
-                    ? `Activos · score ≥ ${alertPrefs.min_score}`
-                    : `Active · score ≥ ${alertPrefs.min_score}`}
+                    ? `Activos · score ≥ ${alertPrefs.min_score} · ${alertModeLabel(alertPrefs.alert_mode, true)}`
+                    : `Active · score ≥ ${alertPrefs.min_score} · ${alertModeLabel(alertPrefs.alert_mode, false)}`}
             </p>
           </div>
         </div>
