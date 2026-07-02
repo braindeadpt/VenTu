@@ -21,6 +21,12 @@ function formatAlertError(err: unknown, isPt: boolean): string {
   const message = 'message' in err && typeof err.message === 'string' ? err.message : '';
   const code = 'code' in err && typeof err.code === 'string' ? err.code : '';
 
+  if (message.includes('rate_limit')) {
+    return isPt
+      ? 'Demasiadas tentativas. Espera 1 minuto e tenta outra vez.'
+      : 'Too many attempts. Wait a minute and try again.';
+  }
+
   if (code === '42501' || message.includes('row-level security') || message.includes('permission denied')) {
     return isPt
       ? 'Não foi possível guardar. Espera 1 minuto e tenta outra vez.'
@@ -77,21 +83,23 @@ export default function AlertSubscribeForm({
 
       const verifyToken = crypto.randomUUID();
 
-       
-      const { error: insertError } = await (sb as any).from('alert_subscriptions').insert({
-        email: email.trim().toLowerCase(),
-        spot_slug: spotSlug,
-        sport,
-        min_score: minScore,
-        verify_token: verifyToken,
-        verified: false,
-        active: true,
-        client_id: getClientId(),
-        locale,
+      const { data, error: rpcError } = await (sb as any).rpc('subscribe_alert', {
+        p_email: email.trim().toLowerCase(),
+        p_spot_slug: spotSlug,
+        p_sport: sport,
+        p_min_score: minScore,
+        p_verify_token: verifyToken,
+        p_client_id: getClientId(),
+        p_locale: locale,
       });
 
-      if (insertError) {
-        setError(formatAlertError(insertError, isPt));
+      if (rpcError) {
+        setError(formatAlertError(rpcError, isPt));
+        return;
+      }
+
+      if (data !== true) {
+        setError(formatAlertError(new Error('subscribe_failed'), isPt));
         return;
       }
 
