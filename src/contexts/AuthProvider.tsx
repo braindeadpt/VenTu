@@ -190,7 +190,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     } catch {
       await loadFavorites(userId);
     }
-  }, [favorites, loadFavorites, session?.user]);
+  }, [favorites, loadFavorites, session]);
 
   const isFavorite = useCallback((spotId: string) => favorites.includes(spotId), [favorites]);
 

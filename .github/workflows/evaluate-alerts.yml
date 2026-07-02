@@ -6,7 +6,7 @@ on:
     - cron: '15 */3 * * *'
     # Daily digest — ~7:30 Europe/Lisbon
     - cron: '30 7 * * *'
-      timezone: Europe/Lisbon
+      timezone: 'Europe/Lisbon'
   workflow_dispatch:
 
 permissions:
