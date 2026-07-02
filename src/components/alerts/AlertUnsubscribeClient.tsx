@@ -21,8 +21,10 @@ export default function AlertUnsubscribeClient({ locale, token }: { locale: stri
     }
 
      
-    (sb as any).rpc('unsubscribe_alert', { p_token: token })
-      .then(({ error }: { error: Error | null }) => setStatus(error ? 'fail' : 'ok'))
+    (sb as any).rpc('unsubscribe_alert_token', { p_token: token })
+      .then(({ data, error }: { data: boolean | null; error: Error | null }) => {
+        setStatus(error || data !== true ? 'fail' : 'ok');
+      })
       .catch(() => setStatus('fail'));
   }, [token]);
 

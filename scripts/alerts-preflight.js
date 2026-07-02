@@ -37,8 +37,11 @@ async function main() {
   let pass = true;
 
   const sqlPath = path.join(__dirname, '../supabase/supabase-alerts.sql');
+  const e1cPath = path.join(__dirname, '../supabase/supabase-alerts-e1c.sql');
   if (fs.existsSync(sqlPath)) ok('supabase/supabase-alerts.sql present');
   else pass = fail('Missing supabase/supabase-alerts.sql');
+  if (fs.existsSync(e1cPath)) ok('supabase/supabase-alerts-e1c.sql present');
+  else pass = fail('Missing supabase/supabase-alerts-e1c.sql');
 
   const conditionsPath = path.join(__dirname, '../public/data/conditions.json');
   if (fs.existsSync(conditionsPath)) {
@@ -78,6 +81,18 @@ async function main() {
         pass = fail(`Supabase returned ${res.status} — run supabase/supabase-alerts.sql in SQL Editor`);
       } else {
         pass = fail(`Supabase check failed: HTTP ${res.status}`);
+      }
+
+      const e1cRes = await fetch(`${url}/rest/v1/user_alert_prefs?select=user_id&limit=1`, {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+        },
+      });
+      if (e1cRes.ok) {
+        ok('Supabase table user_alert_prefs reachable (E1c)');
+      } else if (e1cRes.status === 404 || e1cRes.status === 406) {
+        warn('user_alert_prefs not found — run supabase/supabase-alerts-e1c.sql for E1c');
       }
     } catch (e) {
       pass = fail(`Supabase request error: ${e.message}`);

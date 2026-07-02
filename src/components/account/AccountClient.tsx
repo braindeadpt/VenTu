@@ -1,13 +1,26 @@
 'use client';
 
-import { LogOut, Heart, User } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { LogOut, Heart, User, Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
+import { getSupabaseClient } from '@/lib/supabase';
+import { fetchUserAlertPrefs, type UserAlertPrefs } from '@/lib/userAlerts';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
 export default function AccountClient({ locale }: { locale: string }) {
   const isPt = locale === 'pt';
   const { session, authLoading, favorites, signOut, requestLogin, isSupabaseReady } = useAuth();
+  const [alertPrefs, setAlertPrefs] = useState<UserAlertPrefs | null>(null);
+
+  useEffect(() => {
+    const sb = getSupabaseClient();
+    if (!sb || !session?.user) {
+      setAlertPrefs(null);
+      return;
+    }
+    void fetchUserAlertPrefs(sb, session.user.id).then(setAlertPrefs);
+  }, [session?.user]);
 
   if (!isSupabaseReady) {
     return (
@@ -66,6 +79,36 @@ export default function AccountClient({ locale }: { locale: string }) {
         </Button>
       </Card>
 
+      <Card variant="card-1" className="p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <Bell className="w-5 h-5 text-data-waves" aria-hidden />
+          <div>
+            <p className="text-sm font-semibold text-fg">{isPt ? 'Alertas' : 'Alerts'}</p>
+            <p className="text-meta-sm text-fg-muted">
+              {!alertPrefs || !alertPrefs.active
+                ? isPt
+                  ? 'Desactivados'
+                  : 'Disabled'
+                : !alertPrefs.verified
+                  ? isPt
+                    ? 'Aguarda confirmação por email'
+                    : 'Awaiting email confirmation'
+                  : isPt
+                    ? `Activos · score ≥ ${alertPrefs.min_score}`
+                    : `Active · score ≥ ${alertPrefs.min_score}`}
+            </p>
+          </div>
+        </div>
+        <Button
+          href={`/${locale}/favorites/#alertas`}
+          variant="secondary"
+          size="md"
+          locale={locale as 'pt' | 'en'}
+        >
+          {isPt ? 'Gerir alertas' : 'Manage alerts'}
+        </Button>
+      </Card>
+
       <Button
         variant="ghost"
         size="md"
@@ -75,12 +118,6 @@ export default function AccountClient({ locale }: { locale: string }) {
         <LogOut className="w-4 h-4" aria-hidden />
         {isPt ? 'Sair' : 'Sign out'}
       </Button>
-
-      <p className="text-meta-xs text-fg-subtle">
-        {isPt
-          ? 'Alertas por email nos favoritos — em breve.'
-          : 'Email alerts on favorites — coming soon.'}
-      </p>
     </div>
   );
 }

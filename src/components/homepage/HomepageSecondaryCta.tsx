@@ -30,8 +30,8 @@ export default function HomepageSecondaryCta({ locale, compact = false }: Homepa
       icon: Heart,
       title: isPt ? 'Favoritos' : 'Favorites',
       body: isPt
-        ? 'Guarda spots na tua conta — alertas em lote em breve'
-        : 'Save spots to your account — bulk alerts coming soon',
+        ? 'Sincroniza spots e activa alertas por email'
+        : 'Sync spots and enable email alerts',
     },
   ] as const;
 

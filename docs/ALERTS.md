@@ -1,24 +1,36 @@
-# VenTu — Alertas por email (E1)
+# VenTu — Alertas por email (E1 + E1c)
 
-Alertas quando o score de um spot atinge o limiar definido (máx. 1 email por 3 horas por subscrição).
+Alertas quando o score atinge o limiar (máx. 1 email por 3 horas).
 
-## Arquitectura
+## E1c (actual) — favoritos + conta
 
 ```
-Spot detail → AlertSubscribeForm → Supabase alert_subscriptions
+/favorites → FavoritesAlertsPanel → subscribe_favorites_alerts RPC
                                               ↓
-GitHub Actions (evaluate-alerts.yml, */3h) → scripts/evaluate-alerts.js → Resend
+                         user_alert_prefs + user_favorites
                                               ↓
-Utilizador ← email confirmação / alerta ← /pt/alerts/confirm|unsubscribe/?token=…
+GitHub Actions (evaluate-alerts.yml, */3h) → digest email (Resend)
+                                              ↓
+Utilizador ← confirmação / alerta ← /pt/alerts/confirm|unsubscribe/?token=…
 ```
+
+- **Um** email de confirmação para todos os favoritos
+- **Um** digest quando algum favorito atinge o limiar
+- Gerir em `/favorites#alertas` ou `/conta`
+
+## E1 (legacy) — por spot, anónimo
+
+Subscrições antigas em `alert_subscriptions` continuam a funcionar. O evaluator trata ambos os modos.
 
 ## Pré-requisitos (uma vez)
 
 ### 1. Supabase
 
-1. Abre o [SQL Editor](https://supabase.com/dashboard) do projecto VenTu.
-2. Executa o ficheiro [`supabase/supabase-alerts.sql`](../supabase/supabase-alerts.sql) na íntegra.
-3. Confirma que a tabela `alert_subscriptions` existe e que as funções `verify_alert_subscription` e `unsubscribe_alert` estão expostas a `anon`.
+1. [SQL Editor](https://supabase.com/dashboard) do projecto VenTu.
+2. Executa [`supabase/supabase-alerts.sql`](../supabase/supabase-alerts.sql) (E1).
+3. Executa [`supabase/supabase-auth-profiles.sql`](../supabase/supabase-auth-profiles.sql) (F1).
+4. Executa [`supabase/supabase-alerts-e1c.sql`](../supabase/supabase-alerts-e1c.sql) (E1c).
+5. Confirma tabelas `alert_subscriptions` e `user_alert_prefs`.
 
 ### 2. Resend
 
@@ -54,20 +66,22 @@ npm run alerts:evaluate
 
 `alerts:preflight` valida ficheiros, variáveis e ligação à tabela. Sem `RESEND_API_KEY` o evaluate faz dry-run (só log).
 
-## Teste end-to-end (produção)
+## Teste end-to-end (produção, E1c)
 
-1. Em https://ventu.surf/pt/spots/guincho/ — subscrever alerta com email real.
-2. Actions → **Evaluate Alerts** → Run workflow (ou esperar o cron).
-3. Receber email **Confirma o teu alerta** → clicar link → `/pt/alerts/confirm/?token=…`
-4. Quando score ≥ limiar → email de condições boas.
-5. Link **Cancelar alerta** → `/pt/alerts/unsubscribe/?token=…`
+1. Entra em https://ventu.surf com magic link.
+2. Guarda 1+ spots nos favoritos.
+3. Em `/pt/favorites/` — **Activar alertas** (score + modalidade).
+4. Actions → **Evaluate Alerts** → Run workflow (ou esperar cron).
+5. Email **Confirma alertas nos teus favoritos** → link → `/pt/alerts/confirm/?token=…`
+6. Quando score ≥ limiar → digest com spots a bombar.
+7. **Desactivar** em favoritos ou link cancelar no email.
 
 ## Fluxo do utilizador (UI)
 
-- Formulário no detalhe do spot (`AlertSubscribeForm.tsx`).
-- Sem Supabase configurado: mensagem «Alertas indisponíveis».
+- Painel em `/favorites` (`FavoritesAlertsPanel.tsx`).
+- Estado na `/conta` com link **Gerir alertas**.
+- Sem favoritos: não é possível activar.
 - Subscrição fica `verified: false` até confirmar por email.
-- Cooldown 3h entre alertas de condições; reenvio de confirmação no máximo 1×/24h se ainda não verificado.
 
 ## Troubleshooting
 

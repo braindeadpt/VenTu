@@ -21,8 +21,10 @@ export default function AlertConfirmClient({ locale, token }: { locale: string; 
     }
 
      
-    (sb as any).rpc('verify_alert_subscription', { p_token: token })
-      .then(({ error }: { error: Error | null }) => setStatus(error ? 'fail' : 'ok'))
+    (sb as any).rpc('verify_alert_token', { p_token: token })
+      .then(({ data, error }: { data: boolean | null; error: Error | null }) => {
+        setStatus(error || data !== true ? 'fail' : 'ok');
+      })
       .catch(() => setStatus('fail'));
   }, [token]);
 
@@ -38,8 +40,8 @@ export default function AlertConfirmClient({ locale, token }: { locale: string; 
           </p>
           <p className="text-fg-muted text-sm">
             {isPt
-              ? 'Receberás emails quando as condições atingirem o teu limiar.'
-              : 'You will receive emails when conditions hit your threshold.'}
+              ? 'Receberás um email quando algum dos teus favoritos atingir o limiar.'
+              : 'You will receive an email when any of your favorites hits your threshold.'}
           </p>
         </>
       )}

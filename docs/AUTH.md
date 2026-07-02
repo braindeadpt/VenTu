@@ -50,6 +50,18 @@ Na primeira sessão, favoritos antigos (`windspot-favorites`) importam para `use
 | `profiles` | locale, plan (`free`) |
 | `user_favorites` | `user_id` + `spot_id` |
 
-## Próximo: E1c
+## E1c — Alertas nos favoritos
 
-Alertas multi-spot ligados a `user_id` (depois do F1 em produção).
+Depois do F1, executa também [`supabase/supabase-alerts-e1c.sql`](../supabase/supabase-alerts-e1c.sql).
+
+| Tabela | Função |
+|--------|--------|
+| `user_alert_prefs` | preferências de alerta por utilizador (score, modalidade, token) |
+
+Fluxo:
+
+1. `/favorites` → painel **Alertas por email** → activar
+2. Um email de confirmação para todos os favoritos
+3. Quando algum favorito atinge o score → digest (máx. 1×/3h)
+
+Ver [`docs/ALERTS.md`](./ALERTS.md).

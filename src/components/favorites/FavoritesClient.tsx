@@ -18,6 +18,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import Skeleton from '@/components/ui/Skeleton';
+import FavoritesAlertsPanel from '@/components/alerts/FavoritesAlertsPanel';
 
 interface SpotConditions {
   waveHeight: number;
@@ -207,6 +208,10 @@ export default function FavoritesClient() {
             </div>
           )}
         </div>
+
+        {favoriteSpots.length > 0 && (
+          <FavoritesAlertsPanel locale={loc} favoriteCount={favoriteSpots.length} />
+        )}
 
         {favoriteSpots.length === 0 ? (
           <EmptyState

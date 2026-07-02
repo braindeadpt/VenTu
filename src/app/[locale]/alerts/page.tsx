@@ -24,8 +24,8 @@ export async function generateMetadata({
   return buildPageMetadata({
     title: isPt ? 'Alertas por email — VenTu' : 'Email alerts — VenTu',
     description: isPt
-      ? 'Recebe avisos quando o teu spot estiver a bombar — score mínimo e modalidade à tua escolha.'
-      : 'Get notified when your spot is firing — minimum score and sport of your choice.',
+      ? 'Activa alertas nos teus favoritos — um email quando algum spot atingir o score mínimo.'
+      : 'Enable alerts on your favorites — one email when any spot hits your minimum score.',
     locale: loc,
     path: `/${loc}/alerts/`,
   });
@@ -54,19 +54,19 @@ export default async function AlertsPage({
 
         <p className="text-body-lg text-fg-muted mb-8">
           {isPt
-            ? 'Guarda spots nos favoritos com a tua conta. Em breve podes activar alertas por email para todos os favoritos de uma vez.'
-            : 'Save spots to favorites with your account. Soon you can turn on email alerts for all your favorites at once.'}
+            ? 'Guarda spots nos favoritos e activa alertas num só passo — recebes um email quando algum favorito atingir o score mínimo.'
+            : 'Save spots to favorites and enable alerts in one step — get one email when any favorite hits your minimum score.'}
         </p>
 
         <ol className="space-y-3 mb-10 text-body text-fg-muted list-decimal list-inside">
-          <li>{isPt ? 'Entra com magic link (header ou favoritos)' : 'Sign in with a magic link (header or favorites)'}</li>
-          <li>{isPt ? 'Guarda os spots que queres seguir' : 'Save the spots you want to follow'}</li>
-          <li>{isPt ? 'Activa alertas nos favoritos (em breve)' : 'Enable alerts from favorites (coming soon)'}</li>
+          <li>{isPt ? 'Entra com magic link' : 'Sign in with a magic link'}</li>
+          <li>{isPt ? 'Guarda spots nos favoritos' : 'Save spots to favorites'}</li>
+          <li>{isPt ? 'Em /favorites, activa alertas e confirma por email' : 'On /favorites, enable alerts and confirm by email'}</li>
         </ol>
 
         <div className="flex flex-wrap gap-3 mb-8">
-          <Button href={`/${locale}/favorites/`} size="lg" locale={locale}>
-            {isPt ? 'Os meus favoritos' : 'My favorites'}
+          <Button href={`/${locale}/favorites/#alertas`} size="lg" locale={locale}>
+            {isPt ? 'Activar nos favoritos' : 'Enable on favorites'}
           </Button>
           <Button
             href={`/${locale}/conta/`}

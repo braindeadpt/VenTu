@@ -4,7 +4,8 @@ Run these files once in the [Supabase SQL Editor](https://supabase.com/dashboard
 
 | File | Purpose |
 |------|---------|
-| [`supabase-alerts.sql`](supabase-alerts.sql) | Email alert subscriptions (E1) |
+| [`supabase-alerts.sql`](supabase-alerts.sql) | Email alert subscriptions (E1 legacy) |
+| [`supabase-alerts-e1c.sql`](supabase-alerts-e1c.sql) | Bulk alerts on favorites (E1c) |
 | [`supabase-auth-profiles.sql`](supabase-auth-profiles.sql) | User accounts + synced favorites (F1) |
 | [`supabase-contributions.sql`](supabase-contributions.sql) | Community contributions form |
 | [`supabase-contributions-migration-c3.sql`](supabase-contributions-migration-c3.sql) | Migration for contributions schema |
