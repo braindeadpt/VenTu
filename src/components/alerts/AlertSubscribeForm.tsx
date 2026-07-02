@@ -14,6 +14,22 @@ interface AlertSubscribeFormProps {
 
 const CLIENT_ID_KEY = 'ventu:client_id';
 
+function formatAlertError(err: unknown, isPt: boolean): string {
+  const fallback = isPt ? 'Erro ao subscrever. Tenta outra vez.' : 'Subscription failed. Please try again.';
+  if (!err || typeof err !== 'object') return fallback;
+
+  const message = 'message' in err && typeof err.message === 'string' ? err.message : '';
+  const code = 'code' in err && typeof err.code === 'string' ? err.code : '';
+
+  if (code === '42501' || message.includes('row-level security') || message.includes('permission denied')) {
+    return isPt
+      ? 'Não foi possível guardar. Espera 1 minuto e tenta outra vez.'
+      : 'Could not save. Wait a minute and try again.';
+  }
+
+  return message || fallback;
+}
+
 function getClientId(): string {
   if (typeof window === 'undefined') return '';
   try {
@@ -74,13 +90,15 @@ export default function AlertSubscribeForm({
         locale,
       });
 
-      if (insertError) throw insertError;
+      if (insertError) {
+        setError(formatAlertError(insertError, isPt));
+        return;
+      }
 
       setSent(true);
       setEmail('');
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : String(err);
-      setError(msg);
+      setError(formatAlertError(err, isPt));
     } finally {
       setSending(false);
     }

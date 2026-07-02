@@ -89,3 +89,7 @@ END;
 $$;
 
 GRANT EXECUTE ON FUNCTION unsubscribe_alert(TEXT) TO anon;
+
+-- Required for anon inserts (SERIAL id + RLS policies above)
+GRANT USAGE, SELECT ON SEQUENCE alert_subscriptions_id_seq TO anon;
+GRANT INSERT, UPDATE ON alert_subscriptions TO anon;
