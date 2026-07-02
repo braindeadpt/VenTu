@@ -399,8 +399,8 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         timeout: 30_000,
       });
 
-      // Conditions live only in "Agora" — no duplicate StatChip row in hero
-      await expect(hero.locator('.grid.grid-cols-2')).toHaveCount(0);
+      // Hero score card includes compact metric chips (not duplicated in Agora)
+      await expect(hero.locator('.grid.grid-cols-2')).toHaveCount(1);
 
       await expect(hero.getByRole('meter')).toBeVisible({ timeout: 15_000 });
       await expect(hero.getByRole('status', { name: /Confiança da previsão/i })).toBeVisible({
