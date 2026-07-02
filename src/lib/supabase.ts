@@ -9,7 +9,13 @@ export function getSupabaseClient() {
       console.warn('Supabase not configured — feedback/admin features disabled')
       return null
     }
-    client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    client = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+      },
+    })
   }
   return client
 }

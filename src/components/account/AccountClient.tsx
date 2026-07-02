@@ -1,0 +1,87 @@
+'use client';
+
+import Link from 'next/link';
+import { LogOut, Heart, User } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthProvider';
+import Button from '@/components/ui/Button';
+import Card from '@/components/ui/Card';
+
+export default function AccountClient({ locale }: { locale: string }) {
+  const isPt = locale === 'pt';
+  const { session, authLoading, favorites, signOut, requestLogin, isSupabaseReady } = useAuth();
+
+  if (!isSupabaseReady) {
+    return (
+      <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted text-sm">
+        {isPt ? 'Contas indisponíveis (Supabase não configurado).' : 'Accounts unavailable (Supabase not configured).'}
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return (
+      <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted text-sm">
+        {isPt ? 'A carregar…' : 'Loading…'}
+      </div>
+    );
+  }
+
+  if (!session?.user) {
+    return (
+      <div className="max-w-lg mx-auto py-16 px-4 text-center space-y-4">
+        <User className="w-10 h-10 mx-auto text-fg-subtle" aria-hidden />
+        <h1 className="text-h2 text-fg">{isPt ? 'A tua conta' : 'Your account'}</h1>
+        <p className="text-sm text-fg-muted">
+          {isPt
+            ? 'Entra com magic link para sincronizar favoritos entre dispositivos.'
+            : 'Sign in with a magic link to sync favorites across devices.'}
+        </p>
+        <Button size="lg" onClick={() => requestLogin('general')}>
+          {isPt ? 'Entrar com email' : 'Sign in with email'}
+        </Button>
+      </div>
+    );
+  }
+
+  const email = session.user.email ?? '';
+
+  return (
+    <div className="max-w-lg mx-auto py-10 px-4 space-y-6">
+      <div>
+        <h1 className="text-display-lg text-fg tracking-tight">{isPt ? 'Conta' : 'Account'}</h1>
+        <p className="text-meta text-fg-muted mt-1">{email}</p>
+      </div>
+
+      <Card variant="card-1" className="p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <Heart className="w-5 h-5 text-windDir-onshore" aria-hidden />
+          <div>
+            <p className="text-sm font-semibold text-fg">{isPt ? 'Favoritos' : 'Favorites'}</p>
+            <p className="text-meta-sm text-fg-muted">
+              {favorites.length} {isPt ? 'spots guardados' : 'saved spots'}
+            </p>
+          </div>
+        </div>
+        <Button href={`/${locale}/favorites/`} variant="secondary" size="md" locale={locale as 'pt' | 'en'}>
+          {isPt ? 'Ver favoritos' : 'View favorites'}
+        </Button>
+      </Card>
+
+      <Button
+        variant="ghost"
+        size="md"
+        className="text-fg-muted"
+        onClick={() => void signOut()}
+      >
+        <LogOut className="w-4 h-4" aria-hidden />
+        {isPt ? 'Sair' : 'Sign out'}
+      </Button>
+
+      <p className="text-meta-xs text-fg-subtle">
+        <Link href={`/${locale}/alerts/`} className="text-data-waves hover:underline">
+          {isPt ? 'Alertas por email' : 'Email alerts'}
+        </Link>
+      </p>
+    </div>
+  );
+}

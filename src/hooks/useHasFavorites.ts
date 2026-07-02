@@ -1,25 +1,20 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import {
-  FAVORITES_CHANGED_EVENT,
-  readFavoritesFromStorage,
-} from '@/lib/favoritesStorage';
+import { useAuth } from '@/contexts/AuthProvider';
 
 /**
- * `null` until mounted (SSR-safe); then whether the user has saved favorites.
+ * `null` until mounted and favorites loaded; then whether the logged-in user has favorites.
  */
 export function useHasFavorites(): boolean | null {
-  const [hasFavorites, setHasFavorites] = useState<boolean | null>(null);
+  const { session, favorites, favoritesReady } = useAuth();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const sync = () => {
-      setHasFavorites(readFavoritesFromStorage().length > 0);
-    };
-    sync();
-    window.addEventListener(FAVORITES_CHANGED_EVENT, sync);
-    return () => window.removeEventListener(FAVORITES_CHANGED_EVENT, sync);
+    setMounted(true);
   }, []);
 
-  return hasFavorites;
+  if (!mounted || !favoritesReady) return null;
+  if (!session) return false;
+  return favorites.length > 0;
 }

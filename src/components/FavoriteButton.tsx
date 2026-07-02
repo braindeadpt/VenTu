@@ -1,12 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState } from 'react';
 import { Heart } from 'lucide-react';
-import {
-  FAVORITES_CHANGED_EVENT,
-  readFavoritesFromStorage,
-  writeFavoritesToStorage,
-} from '@/lib/favoritesStorage';
+import { useFavorites } from '@/contexts/AuthProvider';
 import { useToast } from '@/components/ui/ToastProvider';
 
 interface FavoriteButtonProps {
@@ -17,42 +13,7 @@ interface FavoriteButtonProps {
   locale?: string;
 }
 
-export function useFavorites() {
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    setFavorites(readFavoritesFromStorage());
-    setLoaded(true);
-
-    const sync = () => setFavorites(readFavoritesFromStorage());
-    window.addEventListener(FAVORITES_CHANGED_EVENT, sync);
-    window.addEventListener('storage', sync);
-    return () => {
-      window.removeEventListener(FAVORITES_CHANGED_EVENT, sync);
-      window.removeEventListener('storage', sync);
-    };
-  }, []);
-
-  const toggleFavorite = useCallback((spotId: string) => {
-    setFavorites(prev => {
-      const next = prev.includes(spotId)
-        ? prev.filter(id => id !== spotId)
-        : [...prev, spotId];
-      writeFavoritesToStorage(next);
-      return next;
-    });
-  }, []);
-
-  const isFavorite = useCallback(
-    (spotId: string) => favorites.includes(spotId),
-    [favorites]
-  );
-
-  return { favorites, toggleFavorite, isFavorite, loaded, mounted, count: favorites.length };
-}
+export { useFavorites } from '@/contexts/AuthProvider';
 
 export default function FavoriteButton({
   spotId,
@@ -61,7 +22,7 @@ export default function FavoriteButton({
   showLabel = false,
   locale = 'pt',
 }: FavoriteButtonProps) {
-  const { isFavorite, toggleFavorite, loaded, mounted } = useFavorites();
+  const { isFavorite, toggleFavorite, loaded, mounted, requestLogin, isSupabaseReady, isLoggedIn } = useFavorites();
   const { showToast } = useToast();
   const active = isFavorite(spotId);
   const isPt = locale === 'pt';
@@ -77,47 +38,71 @@ export default function FavoriteButton({
     return <div className={`${sizeClasses[size]} animate-pulse bg-surface-1/[0.04] rounded`} />;
   }
 
-  const handleClick = (e: React.MouseEvent | React.KeyboardEvent) => {
+  const handleClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    if (!isSupabaseReady) {
+      showToast(isPt ? 'Favoritos indisponíveis' : 'Favorites unavailable');
+      return;
+    }
+
+    if (!isLoggedIn) {
+      requestLogin('favorite');
+      return;
+    }
+
     const wasFavorite = active;
-    toggleFavorite(spotId);
+    await toggleFavorite(spotId);
     if (!wasFavorite) {
-      showToast(
-        isPt ? 'Adicionado aos teus spots' : 'Added to your spots',
-      );
+      showToast(isPt ? 'Adicionado aos teus spots' : 'Added to your spots');
     }
     setClickEffect(true);
     setTimeout(() => setClickEffect(false), 300);
   };
 
-  const label = active
-    ? isPt ? `Remover ${spotName} dos favoritos` : `Remove ${spotName} from favorites`
-    : isPt ? `Adicionar ${spotName} aos favoritos` : `Add ${spotName} to favorites`;
+  const label = !isLoggedIn
+    ? isPt
+      ? `Entrar para guardar ${spotName}`
+      : `Sign in to save ${spotName}`
+    : active
+      ? isPt
+        ? `Remover ${spotName} dos favoritos`
+        : `Remove ${spotName} from favorites`
+      : isPt
+        ? `Adicionar ${spotName} aos favoritos`
+        : `Add ${spotName} to favorites`;
 
   return (
     <button
       type="button"
       onClick={handleClick}
-      aria-pressed={active}
+      aria-pressed={isLoggedIn ? active : undefined}
       aria-label={label}
       title={label}
       className={`flex items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-lg transition-all hover:scale-110 ${
         clickEffect ? 'scale-125' : ''
       } ${
-        active ? 'text-windDir-onshore' : 'text-fg-subtle hover:text-fg-muted'
+        active && isLoggedIn ? 'text-windDir-onshore' : 'text-fg-subtle hover:text-fg-muted'
       }`}
     >
       <Heart
-        className={`${sizeClasses[size]} ${active ? 'fill-current' : ''}`}
+        className={`${sizeClasses[size]} ${active && isLoggedIn ? 'fill-current' : ''}`}
         aria-hidden="true"
       />
       {showLabel && (
         <span className="text-sm font-medium">
-          {active
-            ? isPt ? 'Favorito' : 'Favorited'
-            : isPt ? 'Favoritar' : 'Favorite'
-          }
+          {!isLoggedIn
+            ? isPt
+              ? 'Entrar'
+              : 'Sign in'
+            : active
+              ? isPt
+                ? 'Favorito'
+                : 'Favorited'
+              : isPt
+                ? 'Favoritar'
+                : 'Favorite'}
         </span>
       )}
     </button>

@@ -40,11 +40,12 @@ test.describe('UI interactions audit', () => {
     await expect(page.locator('main')).toContainText(/Nazar/i);
   });
 
-  test('favorites: add spot from detail page and see on favorites', async ({ page }) => {
+  test('favorites: heart opens login when signed out (F1)', async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
     await page.getByRole('button', { name: /Adicionar Guincho aos favoritos/i }).click();
+    await expect(page.getByRole('dialog')).toContainText(/Entrar para guardar favoritos/i);
     await page.goto('/pt/favorites/');
-    await expect(page.locator('main')).toContainText(/Guincho/i);
+    await expect(page.locator('main')).toContainText(/Entrar para ver os teus favoritos/i);
   });
 
   test('spots map page: list and map render', async ({ page }) => {

@@ -5,6 +5,7 @@ import { buildHomeMetadata, buildOrganizationJsonLd, buildWebApplicationJsonLd }
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ClientProviders from '@/components/layout/ClientProviders'
+import AuthProvider from '@/contexts/AuthProvider'
 import CSPMeta from '@/components/CSPMeta'
 
 export function generateStaticParams() {
@@ -36,25 +37,27 @@ export default async function LocaleLayout({
 
   return (
     <ClientProviders>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `document.documentElement.lang="${htmlLang}";`,
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <CSPMeta />
-      <a
-        href="#main-content"
-        className="skip-link sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bg-elevated focus:text-fg focus:rounded-card focus:shadow-lg focus:outline-2 focus:outline-score-good"
-      >
-        {isPt ? 'Ir para o conteúdo' : 'Skip to content'}
-      </a>
-      <Header locale={locale} />
-      <main id="main-content" className="pt-16">{children}</main>
-      <Footer locale={locale} />
+      <AuthProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.lang="${htmlLang}";`,
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+        <CSPMeta />
+        <a
+          href="#main-content"
+          className="skip-link sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bg-elevated focus:text-fg focus:rounded-card focus:shadow-lg focus:outline-2 focus:outline-score-good"
+        >
+          {isPt ? 'Ir para o conteúdo' : 'Skip to content'}
+        </a>
+        <Header locale={locale} />
+        <main id="main-content" className="pt-16">{children}</main>
+        <Footer locale={locale} />
+      </AuthProvider>
     </ClientProviders>
   )
 }

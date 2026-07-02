@@ -1,10 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import {
-  FAVORITES_CHANGED_EVENT,
-  readFavoritesFromStorage,
-} from '@/lib/favoritesStorage';
+import { useAuth } from '@/contexts/AuthProvider';
 import { useHasFavorites } from '@/hooks/useHasFavorites';
 import type { HomepageSpotData } from '@/lib/homepageSport';
 import HomepageMapHero from '@/components/homepage/HomepageMapHero';
@@ -30,26 +26,17 @@ export default function HomeAdaptive({
   sportsCount,
 }: HomeAdaptiveProps) {
   const hasFavorites = useHasFavorites();
-  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (hasFavorites === null) return;
-    const sync = () => setFavoriteIds(readFavoritesFromStorage());
-    sync();
-    window.addEventListener(FAVORITES_CHANGED_EVENT, sync);
-    return () => window.removeEventListener(FAVORITES_CHANGED_EVENT, sync);
-  }, [hasFavorites]);
-
+  const { favorites } = useAuth();
   const isReturning = hasFavorites === true;
 
   return (
     <>
-      {isReturning && favoriteIds.length > 0 && (
+      {isReturning && favorites.length > 0 && (
         <>
           <HomepageFavoritesNow
             locale={locale}
             spotsData={spotsData}
-            favoriteIds={favoriteIds}
+            favoriteIds={favorites}
           />
           <WaveDivider />
         </>

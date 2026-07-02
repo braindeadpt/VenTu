@@ -309,26 +309,17 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await context.close();
     });
 
-    test('10 — Favoritos: adicionar e remover spot', async ({ browser }) => {
+    test('10 — Favoritos: login obrigatório para guardar', async ({ browser }) => {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
 
-      await gotoHealthy(page, health, '/pt/');
-      await page.evaluate(() => localStorage.setItem('windspot-favorites', '[]'));
-
       await gotoHealthy(page, health, '/pt/spots/guincho/');
-      await page.getByRole('button', { name: /Adicionar Guincho aos favoritos/i }).click();
-      await expect(
-        page.getByRole('button', { name: /Remover Guincho dos favoritos/i }),
-      ).toHaveAttribute('aria-pressed', 'true');
+      await page.getByRole('button', { name: /Entrar para guardar Guincho|Sign in to save Guincho/i }).click();
+      await expect(page.getByRole('dialog', { name: /Entrar|Sign in/i })).toBeVisible({ timeout: 10_000 });
 
       await page.goto('/pt/favorites/');
-      await expect(page.locator('main')).toContainText(/Guincho/i, { timeout: 15_000 });
-
-      await page.getByRole('button', { name: /Remover Guincho dos favoritos/i }).click();
-      await expect(
-        page.getByRole('heading', { name: /Ainda sem favoritos|No favorites yet/i }),
-      ).toBeVisible({ timeout: 10_000 });
+      await expect(page.getByRole('heading', { name: /Meus Favoritos|My Favorites/i })).toBeVisible();
+      await expect(page.getByRole('button', { name: /Entrar com magic link|Sign in with magic link/i })).toBeVisible();
       await context.close();
     });
 

@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 'react';
-import { Menu, X, Wind, Globe, Search } from 'lucide-react';
+import { Menu, X, Wind, Globe, Search, User } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import HeaderFreshness from './HeaderFreshness';
 import MegaMenu from './MegaMenu';
 import SearchPalette from '@/components/search/SearchPalette';
 import { getTranslation } from '@/lib/i18n';
 import { OPEN_SEARCH_EVENT } from '@/lib/searchEvents';
+import { useAuth } from '@/contexts/AuthProvider';
 
 interface HeaderProps {
   locale: string;
@@ -23,6 +24,7 @@ export default function Header({ locale }: HeaderProps) {
   const pathname = usePathname() || '';
   const t = getTranslation(locale as 'pt' | 'en');
   const isPt = locale === 'pt';
+  const { session, authLoading, requestLogin, isSupabaseReady } = useAuth();
 
   useEffect(() => {
     setIsMac(navigator.platform.includes('Mac'));
@@ -180,10 +182,30 @@ export default function Header({ locale }: HeaderProps) {
                 <Globe className="w-3.5 h-3.5" />
                 <span className="text-xs">{isPt ? 'EN' : 'PT'}</span>
               </Link>
-              {/* Avatar / account button removed until auth is wired up.
-                  A permanently-disabled button violated WCAG (no feedback)
-                  and added a dead 8x8 touch target. Re-introduce when
-                  Supabase Auth lands. */}
+              {isSupabaseReady && (
+                session?.user ? (
+                  <Link
+                    href={`/${locale}/conta/`}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all max-w-[160px]"
+                    title={session.user.email ?? undefined}
+                  >
+                    <User className="w-4 h-4 shrink-0" aria-hidden />
+                    <span className="truncate text-xs">
+                      {session.user.email?.split('@')[0] ?? (isPt ? 'Conta' : 'Account')}
+                    </span>
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => requestLogin('general')}
+                    disabled={authLoading}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all min-h-[44px] disabled:opacity-50"
+                  >
+                    <User className="w-4 h-4" aria-hidden />
+                    {isPt ? 'Entrar' : 'Sign in'}
+                  </button>
+                )
+              )}
             </div>
 
             {/* Mobile actions */}
@@ -244,6 +266,28 @@ export default function Header({ locale }: HeaderProps) {
                 {link.label}
               </Link>
             ))}
+            {isSupabaseReady && (
+              session?.user ? (
+                <Link
+                  href={`/${locale}/conta/`}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={mobileLinkClass}
+                >
+                  {isPt ? 'Conta' : 'Account'}
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    requestLogin('general');
+                  }}
+                  className={`${mobileLinkClass} w-full text-left`}
+                >
+                  {isPt ? 'Entrar' : 'Sign in'}
+                </button>
+              )
+            )}
           </div>
         </div>
       </header>

@@ -41,11 +41,11 @@ const COPY: Record<PlayfulEmptyVariant, { pt: PlayfulEmptyCopy; en: PlayfulEmpty
   'no-favorites': {
     pt: {
       title: 'Ainda sem favoritos 🤙',
-      description: 'Toca no coração num spot — aparece aqui com condições frescas.',
+      description: 'Entra e toca no coração num spot — sincroniza em todos os dispositivos.',
     },
     en: {
       title: 'No favorites yet 🤙',
-      description: 'Tap the heart on a spot — it shows up here with fresh conditions.',
+      description: 'Sign in and tap the heart on a spot — syncs across all your devices.',
     },
   },
 };
