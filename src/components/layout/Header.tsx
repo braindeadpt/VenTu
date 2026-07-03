@@ -73,6 +73,15 @@ export default function Header({ locale }: HeaderProps) {
       `/${switchLocale}`,
     ) || `/${switchLocale}/`;
 
+  // Persist user choice so the root inline-redirect script uses it.
+  const handleSwitchLocale = useCallback(() => {
+    try {
+      localStorage.setItem('ventu:locale', switchLocale);
+    } catch {
+      /* noop */
+    }
+  }, [switchLocale]);
+
   const handleMegaOpen = useCallback(() => {
     setOpenMega(true);
   }, []);
@@ -176,6 +185,7 @@ export default function Header({ locale }: HeaderProps) {
               <ThemeToggle locale={locale} />
               <Link
                 href={switchPath}
+                onClick={handleSwitchLocale}
                 className="flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
                 aria-label={isPt ? 'Switch to English' : 'Mudar para Português'}
               >
@@ -220,6 +230,7 @@ export default function Header({ locale }: HeaderProps) {
               <ThemeToggle locale={locale} />
               <Link
                 href={switchPath}
+                onClick={handleSwitchLocale}
                 className="inline-flex items-center justify-center gap-1 min-w-11 h-11 px-2 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
                 aria-label={isPt ? 'Switch to English' : 'Mudar para Português'}
               >

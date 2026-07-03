@@ -81,6 +81,29 @@ const themeScript = `
   })();
 `;
 
+/**
+ * Pre-paint locale redirect. Only runs on the root `/` (any other path is
+ * already locale-prefixed). Priority: localStorage('ventu:locale') →
+ * navigator.language → 'pt'.
+ */
+const localeRedirectScript = `
+  (function () {
+    try {
+      var path = location.pathname;
+      if (path !== '/' && path !== '') return;
+      var stored = null;
+      try { stored = localStorage.getItem('ventu:locale'); } catch (e) {}
+      var navLang = (navigator && (navigator.language || navigator.userLanguage)) || '';
+      var pick = stored || navLang || 'pt';
+      var locale = String(pick).toLowerCase().indexOf('pt') === 0 ? 'pt' : 'en';
+      var target = '/' + locale + '/';
+      if (path !== target) location.replace(target);
+    } catch (e) {
+      location.replace('/pt/');
+    }
+  })();
+`;
+
 export default function RootLayout({
   children,
 }: {
@@ -93,6 +116,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: localeRedirectScript }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-screen bg-bg-base text-fg font-sans antialiased">

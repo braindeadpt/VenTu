@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Maximize2 } from 'lucide-react';
+import { Maximize2, Waves, Wind, Droplets, Compass, Clock } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import Button from '@/components/ui/Button';
 import HomepageSearch from '@/components/ui/HomepageSearch';
@@ -12,7 +12,12 @@ import { filterGridSpots } from '@/lib/gridSpotFilters';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
-import { dispatchSportChange, getOnCount, type HomepageSpotData } from '@/lib/homepageSport';
+import {
+  dispatchSportChange,
+  getOnCount,
+  getTopSpotForSport,
+  type HomepageSpotData,
+} from '@/lib/homepageSport';
 import { buildGridFiltersSearch, syncGridFiltersToUrl } from '@/lib/gridFilters';
 import { useUrlGridSport } from '@/hooks/useUrlGridSport';
 import { MACRO_REGIONS } from '@/lib/regions';
@@ -20,6 +25,14 @@ import { STALE_THRESHOLD_HOURS } from '@/lib/dataFreshness';
 import { heroStatusLine } from '@/lib/voice';
 import RegionLifestyleImage from '@/components/ui/RegionLifestyleImage';
 import { HOME_HERO_REGION_SLUG } from '@/lib/regionImage';
+import BestWindowBanner from '@/components/homepage/BestWindowBanner';
+import HeroTicker from '@/components/homepage/HeroTicker';
+import {
+  estimateBestWindow,
+  formatBestWindowHours,
+  type BestWindow,
+} from '@/lib/bestWindow';
+import { SPORT_LABELS, type SportType } from '@/lib/sportRatings';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -58,6 +71,16 @@ export default function HomepageMapHero({
   const regions = useMemo(() => [...MACRO_REGIONS], []);
   const sport = useUrlGridSport(regions, 'surf');
   const [hoursAgo, setHoursAgo] = useState<number | null>(null);
+  const [now, setNow] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setNow(new Date());
+    if (!maxTs) {
+      setHoursAgo(null);
+      return;
+    }
+    setHoursAgo(Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)));
+  }, [maxTs]);
 
   const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
 
@@ -76,6 +99,36 @@ export default function HomepageMapHero({
 
   const onCount = useMemo(() => getOnCount(spotsData, sport), [spotsData, sport]);
   const liveLine = heroStatusLine(onCount, isPt);
+
+  // Top spot for the currently filtered sport.
+  const topSpot = useMemo(() => {
+    const ts = getTopSpotForSport(spotsData, sport as 'surf' | 'kitesurf' | 'windsurf' | 'bodyboard');
+    return ts;
+  }, [spotsData, sport]);
+
+  // Best window for that top spot, recomputed on mount (now is set in useEffect).
+  const bestWindow: BestWindow | null = useMemo(() => {
+    if (!now || !topSpot) return null;
+    const score =
+      topSpot.allScores[sport as SportType]?.score ??
+      Math.max(...Object.values(topSpot.allScores).map((s) => s.score), 0);
+    return estimateBestWindow(score, sport as SportType, now);
+  }, [now, topSpot, sport]);
+
+  // Aggregates for the ticker.
+  const aggregates = useMemo(() => {
+    const filteredForSport =
+      sport === 'all' ? spotsData : spotsData.filter((d) => d.allScores[sport as SportType]?.score);
+    const on = filteredForSport.filter((d) => {
+      const s = d.allScores[sport as SportType]?.score ?? 0;
+      return s >= 40;
+    });
+    if (on.length === 0) return null;
+    const avgWave = on.reduce((sum, d) => sum + (d.conditions.waveHeight ?? 0), 0) / on.length;
+    const avgWind = on.reduce((sum, d) => sum + (d.conditions.windSpeed ?? 0), 0) / on.length;
+    const avgTemp = on.reduce((sum, d) => sum + (d.conditions.waterTemp ?? 0), 0) / on.length;
+    return { avgWave, avgWind, avgTemp, onCount: on.length };
+  }, [spotsData, sport]);
 
   const handleSportChange = (next: GridSportFilter) => {
     try {
@@ -162,13 +215,27 @@ export default function HomepageMapHero({
           }
         >
           <div className="pointer-events-auto flex flex-col gap-2 sm:gap-3 max-w-xl">
+            {isFeatured && bestWindow && topSpot && (
+              <div
+                className="stagger-fade-in motion-reduce:animate-none"
+                style={{ '--stagger-delay': 0 } as React.CSSProperties}
+              >
+                <BestWindowBanner
+                  window={bestWindow}
+                  spotSlug={topSpot.spot.slug}
+                  spotName={isPt ? topSpot.spot.name : topSpot.spot.nameEn}
+                  locale={locale}
+                />
+              </div>
+            )}
             <h2
               id="home-map-hero-heading"
               className={
                 isFeatured
-                  ? 'font-display text-display-xl font-bold text-fg tracking-tight leading-[1.02] drop-shadow-sm'
+                  ? 'font-display text-display-xl font-bold text-fg tracking-tight leading-[1.02] drop-shadow-sm stagger-fade-in motion-reduce:animate-none'
                   : 'font-display text-h2 font-semibold text-fg tracking-tight'
               }
+              style={isFeatured ? ({ '--stagger-delay': 80 } as React.CSSProperties) : undefined}
             >
               {isFeatured
                 ? isPt
@@ -180,9 +247,10 @@ export default function HomepageMapHero({
             </h2>
 
             <div
-              className="flex gap-2 overflow-x-auto no-scrollbar edge-fade-x pb-0.5 -mx-1 px-1 touch-pan-x"
+              className="flex gap-2 overflow-x-auto no-scrollbar edge-fade-x pb-0.5 -mx-1 px-1 touch-pan-x stagger-fade-in motion-reduce:animate-none"
               role="group"
               aria-label={isPt ? 'Filtrar por desporto' : 'Filter by sport'}
+              style={{ '--stagger-delay': 160 } as React.CSSProperties}
             >
               {sportFilters.map((item) => {
                 const active = sport === item.id;
@@ -202,7 +270,10 @@ export default function HomepageMapHero({
               })}
             </div>
 
-            <p className="text-body-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-1">
+            <p
+              className="text-body-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-1 stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 240 } as React.CSSProperties}
+            >
               <span className="font-medium text-fg" suppressHydrationWarning>
                 {liveLine}
               </span>
@@ -216,7 +287,10 @@ export default function HomepageMapHero({
               )}
             </p>
 
-            <div className="flex flex-col sm:flex-row flex-wrap gap-2 pt-0.5">
+            <div
+              className="flex flex-col sm:flex-row flex-wrap gap-2 pt-0.5 stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 320 } as React.CSSProperties}
+            >
               <Button
                 href={`/${locale}/mapa/${buildGridFiltersSearch(sport, DEFAULT_REGION, regions)}`}
                 size={isFeatured ? 'lg' : 'md'}
@@ -233,6 +307,50 @@ export default function HomepageMapHero({
               )}
             </div>
           </div>
+
+          {isFeatured && aggregates && (
+            <div
+              className="pointer-events-auto self-start sm:self-end mt-auto pb-1 sm:pb-2 max-w-full overflow-x-auto no-scrollbar stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 400 } as React.CSSProperties}
+            >
+              <HeroTicker
+                locale={locale}
+                bestWindowLabel={
+                  bestWindow && topSpot
+                    ? (isPt
+                        ? `Janela ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.name}`
+                        : `Window ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.nameEn ?? topSpot.spot.name}`)
+                    : undefined
+                }
+                stats={[
+                  {
+                    label: isPt ? 'Onda' : 'Wave',
+                    value: `${aggregates.avgWave.toFixed(1)}m`,
+                    icon: <Waves className="w-3 h-3" />,
+                  },
+                  {
+                    label: isPt ? 'Vento' : 'Wind',
+                    value: `${Math.round(aggregates.avgWind)}kt`,
+                    icon: <Wind className="w-3 h-3" />,
+                  },
+                  {
+                    label: isPt ? 'Água' : 'Water',
+                    value: `${aggregates.avgTemp.toFixed(1)}°C`,
+                    icon: <Droplets className="w-3 h-3" />,
+                  },
+                  ...(hoursAgo !== null
+                    ? [
+                        {
+                          label: isPt ? 'Atualizado' : 'Updated',
+                          value: hoursAgo === 0 ? (isPt ? 'agora' : 'now') : `${hoursAgo}h`,
+                          icon: <Clock className="w-3 h-3" />,
+                        },
+                      ]
+                    : []),
+                ]}
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>

@@ -96,8 +96,8 @@ export default function SpotListCard({
           <div ref={imageWrapRef} className="relative overflow-hidden rounded-lg shrink-0">
             <div
               className={cn(
-                'transition-transform duration-300 ease-out motion-safe:will-change-transform',
-                motionOk && 'group-hover:scale-[1.04]',
+                'transition-[transform,filter] duration-300 ease-out motion-safe:will-change-transform',
+                motionOk && 'group-hover:scale-[1.04] group-hover:saturate-[1.15]',
               )}
               style={
                 motionOk
