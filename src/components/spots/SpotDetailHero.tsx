@@ -40,6 +40,8 @@ interface SpotDetailHeroProps {
     confidence?: ConfidenceTier;
     confidenceDetail?: ConfidenceDetail;
   };
+  /** Optional ref pointing to the hero root — used by the sticky condensed bar. */
+  heroRef?: React.Ref<HTMLElement>;
 }
 
 export default function SpotDetailHero({
@@ -53,6 +55,7 @@ export default function SpotDetailHero({
   rating,
   ratingEn,
   conditions,
+  heroRef,
 }: SpotDetailHeroProps) {
   const isPt = locale === 'pt';
   const title = isPt ? spot.name : spot.nameEn;
@@ -75,6 +78,7 @@ export default function SpotDetailHero({
 
   return (
     <header
+      ref={heroRef}
       className="relative w-full overflow-hidden border-b border-divider"
       data-spot-slug={spotSlug}
     >

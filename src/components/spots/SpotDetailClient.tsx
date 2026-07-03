@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
@@ -37,9 +37,9 @@ import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
 import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
-import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard';
+import SpotStickyBar from '@/components/spots/SpotStickyBar';
 import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
 import type { ObservedConditions } from '@/lib/observations';
 
@@ -113,6 +113,8 @@ export default function SpotDetailClient({
   const [communityOverlay, setCommunityOverlay] = useState<
     Record<string, import('@/lib/communityTips').CommunityTipEntry>
   >({});
+
+  const heroRef = useRef<HTMLElement>(null);
 
   const tideSchedule = useMemo(() => {
     if (!spotData?.forecast?.length) return null;
@@ -442,6 +444,15 @@ export default function SpotDetailClient({
           rating={score.rating}
           ratingEn={score.ratingEn}
           conditions={conditions}
+          heroRef={heroRef}
+        />
+
+        <SpotStickyBar
+          score={score}
+          sportLabel={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
+          conditions={conditions}
+          heroRef={heroRef}
+          locale={locale}
         />
 
         <section className="sticky top-16 z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm">
@@ -467,6 +478,31 @@ export default function SpotDetailClient({
             </div>
           </div>
         </section>
+
+        {/* Best windows promoted — directly under the score, side by side with
+            the "Agora" panel when there is room. This is the answer the
+            practitioner is looking for. */}
+        {(showMagicWindows || true) && (
+          <section
+            className="max-w-6xl mx-auto px-4 pt-3"
+            aria-label={isPt ? 'Melhores janelas' : 'Best windows'}
+          >
+            <header className="flex items-baseline justify-between mb-2">
+              <h2 className="font-display text-h2 text-fg font-semibold tracking-tight">
+                {td.bestWindows}
+              </h2>
+              <span className="text-meta-sm text-fg-muted font-mono tabular-nums">
+                {isPt ? 'Próximas 24h' : 'Next 24h'}
+              </span>
+            </header>
+            <MagicWindows
+              hourly={magicWindowsHourly}
+              spotType={selectedSport}
+              spotBestWind={spot.bestWind || ''}
+              locale={locale}
+            />
+          </section>
+        )}
 
         <section className="max-w-6xl mx-auto px-4 py-3">
           <SpotConditionsDashboard
@@ -505,25 +541,6 @@ export default function SpotDetailClient({
             }}
           />
         </section>
-
-        {showMagicWindows && (
-          <section className="max-w-6xl mx-auto px-4 pb-4">
-            <Card variant="card-1" className="p-4 md:p-5">
-              <h2 className="text-h2 text-fg mb-1">{td.bestWindows}</h2>
-              <p className="text-meta-sm text-fg-muted mb-4">
-                {isPt
-                  ? 'Intervalos com melhor score para a modalidade seleccionada nas próximas horas.'
-                  : 'Time windows with the best score for the selected sport in coming hours.'}
-              </p>
-              <MagicWindows
-                hourly={magicWindowsHourly}
-                spotType={selectedSport}
-                spotBestWind={spot.bestWind || ''}
-                locale={locale}
-              />
-            </Card>
-          </section>
-        )}
 
         <section className="max-w-6xl mx-auto px-4 py-4 space-y-3">
           <div className="flex flex-wrap items-end justify-between gap-2">

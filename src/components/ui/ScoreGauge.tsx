@@ -55,9 +55,10 @@ interface SizeConfig {
 }
 
 const SIZE_CONFIG: Record<SizeKey, SizeConfig> = {
-  sm: { wrapper: 'w-16 h-16',  radius: 32, stroke: 6,  number: 'text-num-lg' },     // 64×64
-  md: { wrapper: 'w-24 h-24',  radius: 38, stroke: 8,  number: 'text-num-xl' },    // 96×96
-  lg: { wrapper: 'w-36 h-36',  radius: 42, stroke: 10, number: 'text-display-lg' }, // 144×144
+  sm: { wrapper: 'w-16 h-16',  radius: 32, stroke: 6,  number: 'text-num-lg font-mono' },
+  md: { wrapper: 'w-24 h-24',  radius: 38, stroke: 8,  number: 'text-num-xl font-mono' },
+  // lg uses display font (Space Grotesk) for the cockpit instrument feel.
+  lg: { wrapper: 'w-36 h-36',  radius: 42, stroke: 10, number: 'text-display-lg font-display' },
 };
 
 /* ──────────── Tailwind glow classes (literal for purge safety) ──────────── */
@@ -100,7 +101,7 @@ export default function ScoreGauge({
       return;
     }
 
-    const duration = 700;
+    const duration = 600;
     const start = performance.now();
     hasAnimated.current = true;
 
@@ -183,7 +184,7 @@ export default function ScoreGauge({
         <div className="absolute inset-0 flex items-center justify-center">
           <span
             className={[
-              'font-mono font-semibold tabular-nums',
+              'font-semibold tabular-nums leading-none',
               cfg.number,
             ].join(' ')}
             style={{ color: scoreColor }}

@@ -584,3 +584,50 @@
 .legend-control {
   margin-bottom: 60px;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+ *  LIGHT-THEME OVERRIDES
+ *  Glows and pulses are reserved for the dark "cockpit" identity; the
+ *  light day-mode reads as a chart on a paper and uses flat colour instead.
+ * ═══════════════════════════════════════════════════════════════════════ */
+.theme-ocean [class*='shadow-glow-'] {
+  box-shadow: none !important;
+}
+.theme-ocean .score-gauge-epic-pulse {
+  animation: none !important;
+}
+
+/* Snap-x forecast table: thin vertical cyan line at the current hour. */
+.forecast-now-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: rgb(var(--accent) / 0.85);
+  box-shadow: 0 0 6px rgb(var(--accent) / 0.6);
+  pointer-events: none;
+  z-index: 5;
+}
+.theme-ocean .forecast-now-bar {
+  background-color: rgb(var(--accent) / 0.9);
+  box-shadow: none;
+}
+
+/* Overflow scroll shadows: thin gradient edges to signal more data. */
+.scroll-overflow-x {
+  --fade-size: 24px;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--fade-size),
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    black var(--fade-size),
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+}
