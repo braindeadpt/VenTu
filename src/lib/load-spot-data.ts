@@ -9,6 +9,8 @@ import { pickConfidenceFields } from '@/lib/forecastConfidence'
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions'
 import type { ObservedConditions } from '@/lib/observations'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
+import type { BestWindowToday, BestWindowsBySport } from '@/lib/bestWindowToday'
+import { computeBestWindowsForSpot } from '@/lib/bestWindowToday'
 
 const CALM_LAKE_CONDITIONS = {
   waveHeight: 0,
@@ -39,6 +41,16 @@ function toScoreInput(raw: RawConditions) {
     windGust: Number(raw.windGust) || 0,
     waterTemp: Number(raw.waterTemp) || 0,
   }
+}
+
+function loadForecastsJson(): Record<string, Array<Record<string, unknown>>> {
+  try {
+    const filePath = join(process.cwd(), 'public', 'data', 'forecasts.json')
+    if (existsSync(filePath)) {
+      return JSON.parse(readFileSync(filePath, 'utf-8'))
+    }
+  } catch { /* noop */ }
+  return {}
 }
 
 function loadConditionsJson(): Record<string, RawConditions> {
@@ -76,14 +88,32 @@ export interface SpotData {
     observed?: ObservedConditions
   }
   allScores: Record<SportType, SportScore>
+  bestWindowToday: BestWindowToday | null
+  bestWindowsBySport: BestWindowsBySport
 }
 
-function buildSpotData(spot: Spot, raw: RawConditions | null): SpotData | null {
+function buildSpotData(
+  spot: Spot,
+  raw: RawConditions | null,
+  forecastsData: Record<string, Array<Record<string, unknown>>>,
+): SpotData | null {
   const useLakeDefault = !raw && isWakeboardOnly(spot)
   if (!raw && !useLakeDefault) return null
 
   const scoreInput = raw ? toScoreInput(raw) : CALM_LAKE_CONDITIONS
   const allScores = getAllSportScores(spot, scoreInput)
+
+  const dataId = spot.conditionsSource ?? spot.id
+  const forecast = (forecastsData[dataId] ?? forecastsData[spot.id] ?? []) as Array<{
+    time: string
+    waveHeight?: number
+    wavePeriod?: number
+    windSpeed?: number
+    windDirection?: number
+    windGust?: number
+    waterTemp?: number
+  }>
+  const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast)
 
   return {
     spot,
@@ -96,16 +126,19 @@ function buildSpotData(spot: Spot, raw: RawConditions | null): SpotData | null {
       observed: raw ? pickObservedField(raw as Record<string, unknown>) : undefined,
     },
     allScores,
+    bestWindowToday,
+    bestWindowsBySport,
   }
 }
 
 export function loadSpotData(): SpotData[] {
   const conditionsData = loadConditionsJson()
+  const forecastsData = loadForecastsJson()
 
   const result: SpotData[] = []
   for (const spot of spots) {
     const raw = resolveConditionsEntry(spot, conditionsData) ?? null
-    const row = buildSpotData(spot, raw)
+    const row = buildSpotData(spot, raw, forecastsData)
     if (row) result.push(row)
   }
 

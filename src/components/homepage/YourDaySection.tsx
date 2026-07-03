@@ -12,10 +12,9 @@ import {
 } from '@/lib/homepageSport';
 import { getScoreTokens } from '@/lib/sportScore';
 import {
-  estimateBestWindow,
   formatBestWindowHours,
 } from '@/lib/bestWindow';
-import { getTranslation } from '@/lib/i18n';
+import { resolveBestWindowForSport } from '@/lib/bestWindowToday';
 import Button from '@/components/ui/Button';
 
 interface YourDaySectionProps {
@@ -32,8 +31,6 @@ export default function YourDaySection({
   activeSport = 'all',
 }: YourDaySectionProps) {
   const isPt = locale === 'pt';
-  const t = getTranslation(locale as 'pt' | 'en');
-  const now = useMemo(() => new Date(), []);
 
   const cards = useMemo(() => {
     const byId = new Map(spotsData.map((d) => [d.spot.id, d]));
@@ -60,11 +57,15 @@ export default function YourDaySection({
           sportScore = getScoreForFilter(data, sport as GridSportFilter);
           bestSport = sport as SportType;
         }
-        const window = estimateBestWindow(sportScore, bestSport, now);
+        const window = resolveBestWindowForSport(
+          data.bestWindowToday,
+          data.bestWindowsBySport,
+          sport === 'all' || sport === 'big-wave' ? bestSport : (sport as SportType),
+        );
         return { data, sport: bestSport, score: sportScore, window };
       })
       .sort((a, b) => b.score - a.score);
-  }, [favoriteIds, spotsData, activeSport, now]);
+  }, [favoriteIds, spotsData, activeSport]);
 
   // Empty state
   if (cards.length === 0) {

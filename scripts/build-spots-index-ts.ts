@@ -10,6 +10,11 @@ import type { SportType } from '../src/lib/sportRatings';
 import { pickConfidenceFields } from '../src/lib/forecastConfidenceCore';
 import { resolveConditionsEntry } from '../src/lib/spotConditionsSource';
 import { pickMarineDisplayFields, pickObservedField } from '../src/lib/marineConditions';
+import {
+  computeBestWindowsForSpot,
+  type BestWindowToday,
+  type BestWindowsBySport,
+} from '../src/lib/bestWindowToday';
 
 type ConditionsJson = Record<
   string,
@@ -24,6 +29,19 @@ type ConditionsJson = Record<
     updatedAt?: string;
     [key: string]: unknown;
   }
+>;
+
+type ForecastJson = Record<
+  string,
+  Array<{
+    time: string;
+    waveHeight?: number;
+    wavePeriod?: number;
+    windSpeed?: number;
+    windDirection?: number;
+    windGust?: number;
+    waterTemp?: number;
+  }>
 >;
 
 const CALM_LAKE = {
@@ -57,15 +75,24 @@ function toScoreInput(cond: ConditionsJson[string]) {
 
 function build() {
   const conditionsPath = join(process.cwd(), 'public', 'data', 'conditions.json');
+  const forecastsPath = join(process.cwd(), 'public', 'data', 'forecasts.json');
   let conditionsData: ConditionsJson = {};
+  let forecastsData: ForecastJson = {};
   if (existsSync(conditionsPath)) {
     conditionsData = JSON.parse(readFileSync(conditionsPath, 'utf-8'));
+  }
+  if (existsSync(forecastsPath)) {
+    forecastsData = JSON.parse(readFileSync(forecastsPath, 'utf-8'));
   }
 
   console.log(`[spots-index] ${spots.length} spots in spots.ts`);
   console.log(`[spots-index] ${Object.keys(conditionsData).length} entries in conditions.json`);
+  console.log(`[spots-index] ${Object.keys(forecastsData).length} entries in forecasts.json`);
 
   const index = spots.map((spot) => {
+    const dataId = spot.conditionsSource ?? spot.id;
+    const forecast = forecastsData[dataId] ?? forecastsData[spot.id] ?? [];
+    const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast);
     const cond = resolveConditionsEntry(spot, conditionsData);
     const useLakeDefault = !cond && isWakeboardOnly(spot);
     if (!cond && !useLakeDefault) {
@@ -91,6 +118,8 @@ function build() {
         conditions: null,
         allScores: null,
         bestScore: 0,
+        bestWindowToday: null as BestWindowToday | null,
+        bestWindowsBySport: {} as BestWindowsBySport,
       };
     }
 
@@ -129,6 +158,8 @@ function build() {
       conditions,
       allScores: allScores as Record<SportType, SportScore>,
       bestScore,
+      bestWindowToday,
+      bestWindowsBySport,
     };
   });
 

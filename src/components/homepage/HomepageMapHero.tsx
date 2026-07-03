@@ -28,10 +28,11 @@ import { HOME_HERO_REGION_SLUG } from '@/lib/regionImage';
 import BestWindowBanner from '@/components/homepage/BestWindowBanner';
 import HeroTicker from '@/components/homepage/HeroTicker';
 import {
-  estimateBestWindow,
   formatBestWindowHours,
+  toBestWindowWithTier,
   type BestWindow,
 } from '@/lib/bestWindow';
+import { resolveBestWindowForSport } from '@/lib/bestWindowToday';
 import { SPORT_LABELS, type SportType } from '@/lib/sportRatings';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
@@ -71,10 +72,8 @@ export default function HomepageMapHero({
   const regions = useMemo(() => [...MACRO_REGIONS], []);
   const sport = useUrlGridSport(regions, 'surf');
   const [hoursAgo, setHoursAgo] = useState<number | null>(null);
-  const [now, setNow] = useState<Date | null>(null);
 
   useEffect(() => {
-    setNow(new Date());
     if (!maxTs) {
       setHoursAgo(null);
       return;
@@ -83,14 +82,6 @@ export default function HomepageMapHero({
   }, [maxTs]);
 
   const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
-
-  useEffect(() => {
-    if (!maxTs) {
-      setHoursAgo(null);
-      return;
-    }
-    setHoursAgo(Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)));
-  }, [maxTs]);
 
   const filtered = useMemo(
     () => filterGridSpots(spotsData as GridSpotData[], sport, DEFAULT_REGION),
@@ -106,14 +97,18 @@ export default function HomepageMapHero({
     return ts;
   }, [spotsData, sport]);
 
-  // Best window for that top spot, recomputed on mount (now is set in useEffect).
+  // Best window for the top spot — pre-computed from hourly forecast (matches spot page).
   const bestWindow: BestWindow | null = useMemo(() => {
-    if (!now || !topSpot) return null;
-    const score =
-      topSpot.allScores[sport as SportType]?.score ??
-      Math.max(...Object.values(topSpot.allScores).map((s) => s.score), 0);
-    return estimateBestWindow(score, sport as SportType, now);
-  }, [now, topSpot, sport]);
+    if (!topSpot) return null;
+    const sportFilter =
+      sport === 'all' ? 'all' : (sport as SportType);
+    const resolved = resolveBestWindowForSport(
+      topSpot.bestWindowToday,
+      topSpot.bestWindowsBySport,
+      sportFilter,
+    );
+    return resolved ? toBestWindowWithTier(resolved) : null;
+  }, [topSpot, sport]);
 
   // Aggregates for the ticker.
   const aggregates = useMemo(() => {

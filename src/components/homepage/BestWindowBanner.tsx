@@ -1,10 +1,10 @@
 import { getScoreTokens } from '@/lib/sportScore';
-import type { BestWindow } from '@/lib/bestWindow';
+import type { BestWindowToday } from '@/lib/bestWindowToday';
 import { formatBestWindowHours } from '@/lib/bestWindow';
 import Link from 'next/link';
 
 interface BestWindowBannerProps {
-  window: BestWindow;
+  window: BestWindowToday & { tier?: ReturnType<typeof getScoreTokens>['tier'] };
   spotSlug: string;
   spotName: string;
   locale: string;
@@ -12,14 +12,14 @@ interface BestWindowBannerProps {
   displayScore?: number;
 }
 
-const TIER_LABEL_PT: Record<BestWindow['tier'], string> = {
+const TIER_LABEL_PT: Record<ReturnType<typeof getScoreTokens>['tier'], string> = {
   epic: 'Épico',
   good: 'Bom',
   fair: 'Médio',
   poor: 'Fraco',
   closed: 'Sem janela',
 };
-const TIER_LABEL_EN: Record<BestWindow['tier'], string> = {
+const TIER_LABEL_EN: Record<ReturnType<typeof getScoreTokens>['tier'], string> = {
   epic: 'Epic',
   good: 'Good',
   fair: 'Fair',
@@ -41,7 +41,8 @@ export default function BestWindowBanner({
   const isPt = locale === 'pt';
   const score = displayScore ?? window.score;
   const tokens = getScoreTokens(score);
-  const tierLabel = isPt ? TIER_LABEL_PT[window.tier] : TIER_LABEL_EN[window.tier];
+  const tier = window.tier ?? tokens.tier;
+  const tierLabel = isPt ? TIER_LABEL_PT[tier] : TIER_LABEL_EN[tier];
   const hours = formatBestWindowHours(window);
 
   return (

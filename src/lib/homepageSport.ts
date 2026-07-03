@@ -16,6 +16,8 @@ export interface HomepageSpotData {
   spot: Spot
   conditions: MarineConditionsFields
   allScores: Record<SportType, SportScore>
+  bestWindowToday: import('@/lib/bestWindowToday').BestWindowToday | null
+  bestWindowsBySport: import('@/lib/bestWindowToday').BestWindowsBySport
 }
 
 export function parseSportFilter(value?: string | null): GridSportFilter {
