@@ -319,6 +319,15 @@
   .ventu-spot-marker-wrap {
     transform-origin: center bottom;
   }
+  /* Inner marker elements must not intercept clicks — Leaflet's pane
+     event system requires the `click` to reach the .leaflet-marker-icon
+     element (or a child with no pointer-events override). */
+  .ventu-marker-drop * {
+    pointer-events: none;
+  }
+  .ventu-wind-arrow {
+    pointer-events: none;
+  }
 
   .ventu-marker-drop-circle {
     transition:

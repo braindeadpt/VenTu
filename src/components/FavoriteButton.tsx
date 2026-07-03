@@ -42,8 +42,8 @@ export default function FavoriteButton({
     e.preventDefault();
     e.stopPropagation();
 
-    if (!isSupabaseReady) {
-      showToast(isPt ? 'Favoritos indisponíveis' : 'Favorites unavailable');
+    if (!isLoggedIn && !isSupabaseReady) {
+      requestLogin('favorite');
       return;
     }
 
