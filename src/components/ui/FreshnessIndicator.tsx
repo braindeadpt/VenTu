@@ -1,10 +1,11 @@
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
-import { STALE_THRESHOLD_HOURS } from '@/lib/dataFreshness';
+import { STALE_THRESHOLD_HOURS, formatForecastUpdatedAt } from '@/lib/dataFreshness';
 import { cn } from '@/lib/cn';
 
 interface FreshnessIndicatorProps {
   hoursAgo: number | null;
+  updatedAtTs?: number | null;
   locale: string;
   sourceLabel?: string;
   size?: 'sm' | 'md';
@@ -12,6 +13,7 @@ interface FreshnessIndicatorProps {
 
 export default function FreshnessIndicator({
   hoursAgo,
+  updatedAtTs,
   locale,
   sourceLabel,
   size = 'md',
@@ -20,19 +22,21 @@ export default function FreshnessIndicator({
   const t = getTranslation(locale as Locale);
   const label = sourceLabel ?? t.hero.gridStatusSource;
 
-  /** Only show when data is within the 3h pipeline cadence — stale ages erode trust. */
-  if (hoursAgo === null || hoursAgo >= STALE_THRESHOLD_HOURS) {
+  if (hoursAgo === null && updatedAtTs == null) {
     return null;
   }
 
   const dotClass =
     hoursAgo === null
       ? 'bg-fg-subtle'
-      : hoursAgo < 3
+      : hoursAgo < STALE_THRESHOLD_HOURS
         ? 'bg-[rgb(var(--score-good))]'
         : hoursAgo < 12
           ? 'bg-[rgb(var(--score-fair))]'
           : 'bg-[rgb(var(--score-poor))]';
+
+  const timeLabel =
+    updatedAtTs != null ? formatForecastUpdatedAt(updatedAtTs, locale) : null;
 
   return (
     <span
@@ -44,12 +48,19 @@ export default function FreshnessIndicator({
       )}
       title={
         isPt
-          ? 'Hora da última actualização de condições (Open-Meteo)'
-          : 'Time of last conditions update (Open-Meteo)'
+          ? 'Hora da última actualização de condições (Open-Meteo, pipeline a cada 3h)'
+          : 'Last conditions update (Open-Meteo, pipeline every 3h)'
       }
     >
       <span className={cn('w-2 h-2 rounded-full shrink-0', dotClass)} aria-hidden />
-      {hoursAgo !== null ? (
+      {timeLabel ? (
+        <time
+          className="font-mono tabular-nums text-fg-muted"
+          dateTime={new Date(updatedAtTs!).toISOString()}
+        >
+          {timeLabel}
+        </time>
+      ) : hoursAgo !== null ? (
         <span className="font-mono tabular-nums text-fg-muted">
           {t.hero.updatedAgo.replace('{hours}', String(hoursAgo))}
         </span>

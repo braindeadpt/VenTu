@@ -12,6 +12,7 @@ type ConditionEntry = { updatedAt?: string };
 
 export default function HeaderFreshness({ locale }: HeaderFreshnessProps) {
   const [hoursAgo, setHoursAgo] = useState<number | null>(null);
+  const [updatedAtTs, setUpdatedAtTs] = useState<number | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -32,10 +33,12 @@ export default function HeaderFreshness({ locale }: HeaderFreshnessProps) {
 
         if (timestamps.length === 0) {
           setHoursAgo(null);
+          setUpdatedAtTs(null);
           return;
         }
 
         const maxTs = Math.max(...timestamps);
+        setUpdatedAtTs(maxTs);
         setHoursAgo(Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)));
       } catch {
         if (!cancelled) setHoursAgo(null);
@@ -48,5 +51,5 @@ export default function HeaderFreshness({ locale }: HeaderFreshnessProps) {
     };
   }, []);
 
-  return <FreshnessIndicator size="sm" hoursAgo={hoursAgo} locale={locale} />;
+  return <FreshnessIndicator size="sm" hoursAgo={hoursAgo} updatedAtTs={updatedAtTs} locale={locale} />;
 }

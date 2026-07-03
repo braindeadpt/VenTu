@@ -4,19 +4,39 @@ export const VERY_STALE_THRESHOLD_HOURS = 12;
 
 export type DataFreshness = 'fresh' | 'stale' | 'very-stale';
 
-export function getAgeHours(updatedAt?: string | null): number | null {
-  if (!updatedAt) return null;
-  const ts = new Date(updatedAt).getTime();
+export function getAgeHours(updatedAt?: string | number | null): number | null {
+  if (updatedAt === null || updatedAt === undefined) return null;
+  const ts = typeof updatedAt === 'number' ? updatedAt : new Date(updatedAt).getTime();
   if (Number.isNaN(ts)) return null;
   return (Date.now() - ts) / 3600000;
 }
 
-export function getDataFreshness(updatedAt?: string | null): DataFreshness | null {
+export function getDataFreshness(updatedAt?: string | number | null): DataFreshness | null {
   const ageHours = getAgeHours(updatedAt);
   if (ageHours === null) return null;
   if (ageHours < STALE_THRESHOLD_HOURS) return 'fresh';
   if (ageHours < VERY_STALE_THRESHOLD_HOURS) return 'stale';
   return 'very-stale';
+}
+
+/** Clock time (and short date if not today) of the last pipeline update. */
+export function formatForecastUpdatedAt(ts: number, locale: string): string {
+  const isPt = locale === 'pt';
+  const date = new Date(ts);
+  const loc = isPt ? 'pt-PT' : 'en-GB';
+  const isToday = date.toDateString() === new Date().toDateString();
+  const time = new Intl.DateTimeFormat(loc, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date);
+
+  if (isToday) {
+    return isPt ? `Actualizado ${time}` : `Updated ${time}`;
+  }
+
+  const day = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short' }).format(date);
+  return isPt ? `Actualizado ${day}, ${time}` : `Updated ${day}, ${time}`;
 }
 
 export function formatStaleAge(updatedAt: string, isPt: boolean): string {
