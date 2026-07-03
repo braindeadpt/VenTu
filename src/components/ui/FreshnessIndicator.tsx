@@ -9,6 +9,8 @@ interface FreshnessIndicatorProps {
   locale: string;
   sourceLabel?: string;
   size?: 'sm' | 'md';
+  /** Header bar: só hora + ponto (esconde fonte até 2xl). */
+  compact?: boolean;
 }
 
 export default function FreshnessIndicator({
@@ -17,6 +19,7 @@ export default function FreshnessIndicator({
   locale,
   sourceLabel,
   size = 'md',
+  compact = false,
 }: FreshnessIndicatorProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
@@ -67,10 +70,10 @@ export default function FreshnessIndicator({
       ) : (
         <span className="text-fg-muted">{t.hero.statusNoData}</span>
       )}
-      <span aria-hidden className="text-fg-subtle">
+      <span aria-hidden className={cn('text-fg-subtle', compact && 'hidden 2xl:inline')}>
         ·
       </span>
-      <span className="text-fg-muted">{label}</span>
+      <span className={cn('text-fg-muted', compact && 'hidden 2xl:inline')}>{label}</span>
     </span>
   );
 }

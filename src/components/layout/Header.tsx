@@ -62,9 +62,9 @@ export default function Header({ locale }: HeaderProps) {
     };
   }, [mobileMenuOpen]);
 
-  // Fecha menu móvel ao passar para desktop (evita estado preso após resize).
+  // Fecha menu móvel ao passar para desktop (nav completa só em xl+).
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1024px)');
+    const mq = window.matchMedia('(min-width: 1280px)');
     const onChange = (e: MediaQueryListEvent) => {
       if (e.matches) setMobileMenuOpen(false);
     };
@@ -140,6 +140,13 @@ export default function Header({ locale }: HeaderProps) {
     { href: `/${locale}/spots/`, label: navLabel.spots },
   ];
 
+  const modalidadeQuickLinks = [
+    { slug: 'surf', label: navLabel.modalidadeSurf },
+    { slug: 'kitesurf', label: navLabel.modalidadeKite },
+    { slug: 'windsurf', label: navLabel.modalidadeWind },
+    { slug: 'big-wave', label: navLabel.modalidadeBigWave },
+  ];
+
   const mobileLinkClass =
     'block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all';
 
@@ -150,17 +157,23 @@ export default function Header({ locale }: HeaderProps) {
         onKeyDown={handleKeyDown}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link href={`/${locale}/`} className="flex items-center gap-2.5 group shrink-0">
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 xl:gap-x-3 h-16">
+            {/* Logo — isolated so centre nav never paints over it */}
+            <Link
+              href={`/${locale}/`}
+              className="flex items-center gap-2.5 group shrink-0 relative z-10 bg-bg-base/90 pr-1"
+            >
               <Wind className="w-8 h-8 text-accent group-hover:text-accent-hover transition-colors" />
               <span className="text-xl font-bold text-fg tracking-tight">
                 Ven<span className="text-accent">Tu</span>
               </span>
             </Link>
 
-            {/* Desktop nav */}
-            <nav className="hidden lg:flex items-center gap-0.5 mx-4 min-w-0 flex-1 justify-center" aria-label={navLabel.home}>
+            {/* Desktop nav — xl+ only; minmax(0,1fr) prevents overlap with logo/actions */}
+            <nav
+              className="hidden xl:flex items-center justify-center gap-0 min-w-0 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-0.5"
+              aria-label={navLabel.home}
+            >
               <MegaMenu
                 locale={locale}
                 isOpen={openMega}
@@ -174,7 +187,7 @@ export default function Header({ locale }: HeaderProps) {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`px-3 py-1.5 rounded-input text-sm font-medium transition-all ${
+                    className={`shrink-0 px-2 2xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all ${
                       active || featured
                         ? active
                           ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
@@ -189,18 +202,18 @@ export default function Header({ locale }: HeaderProps) {
             </nav>
 
             {/* Desktop actions */}
-            <div className="hidden lg:flex items-center gap-1 shrink-0">
+            <div className="hidden xl:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-10 justify-end bg-bg-base/90 pl-1">
               <button
                 onClick={openSearch}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
+                className="inline-flex items-center justify-center gap-2 min-w-9 h-9 px-2 2xl:px-3 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
                 aria-label={navLabel.search}
               >
-                <Search className="w-4 h-4" />
-                <span className="text-xs text-fg-subtle/60 hidden lg:inline">
+                <Search className="w-4 h-4 shrink-0" />
+                <span className="text-xs text-fg-subtle/60 hidden 2xl:inline">
                   {isMac ? '⌘K' : 'Ctrl+K'}
                 </span>
               </button>
-              <HeaderFreshness locale={locale} />
+              <HeaderFreshness locale={locale} compact />
               <ThemeToggle locale={locale} />
               <Link
                 href={switchPath}
@@ -215,7 +228,7 @@ export default function Header({ locale }: HeaderProps) {
                 session?.user ? (
                   <Link
                     href={`/${locale}/conta/`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all max-w-[160px]"
+                    className="inline-flex items-center gap-1.5 px-2 2xl:px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all max-w-[7rem] 2xl:max-w-[10rem]"
                     title={session.user.email ?? undefined}
                   >
                     <User className="w-4 h-4 shrink-0" aria-hidden />
@@ -237,8 +250,8 @@ export default function Header({ locale }: HeaderProps) {
               )}
             </div>
 
-            {/* Mobile actions */}
-            <div className="flex items-center gap-1 lg:hidden shrink-0">
+            {/* Mobile / tablet actions (até xl) */}
+            <div className="flex items-center gap-1 xl:hidden shrink-0 col-start-3 justify-end">
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
@@ -277,7 +290,7 @@ export default function Header({ locale }: HeaderProps) {
           aria-label={isPt ? 'Navegação móvel' : 'Mobile navigation'}
           onKeyDown={handleMobileKeyDown}
           className={[
-            'lg:hidden overflow-hidden transition-all duration-slow ease-out-expo',
+            'xl:hidden overflow-hidden transition-all duration-slow ease-out-expo',
             'bg-bg-base/95 backdrop-blur-xl',
             mobileMenuOpen
               ? 'max-h-[min(80dvh,560px)] border-b border-divider opacity-100 overflow-y-auto'
@@ -286,6 +299,20 @@ export default function Header({ locale }: HeaderProps) {
           aria-hidden={!mobileMenuOpen}
         >
           <div className="px-4 py-3 space-y-1">
+            <p className="px-0 pt-0 pb-1 text-meta-sm font-semibold text-fg-muted">
+              {navLabel.modalidades}
+            </p>
+            {modalidadeQuickLinks.map((item) => (
+              <Link
+                key={item.slug}
+                href={`/${locale}/modalidades/${item.slug}/`}
+                onClick={() => setMobileMenuOpen(false)}
+                className={mobileLinkClass}
+              >
+                {item.label}
+              </Link>
+            ))}
+            <div className="border-t border-divider my-2" role="separator" />
             {allLinks.map((link) => (
               <Link
                 key={link.href}

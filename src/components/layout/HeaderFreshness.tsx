@@ -6,11 +6,12 @@ import { getAssetPath } from '@/lib/paths';
 
 interface HeaderFreshnessProps {
   locale: string;
+  compact?: boolean;
 }
 
 type ConditionEntry = { updatedAt?: string };
 
-export default function HeaderFreshness({ locale }: HeaderFreshnessProps) {
+export default function HeaderFreshness({ locale, compact }: HeaderFreshnessProps) {
   const [hoursAgo, setHoursAgo] = useState<number | null>(null);
   const [updatedAtTs, setUpdatedAtTs] = useState<number | null>(null);
 
@@ -51,5 +52,5 @@ export default function HeaderFreshness({ locale }: HeaderFreshnessProps) {
     };
   }, []);
 
-  return <FreshnessIndicator size="sm" hoursAgo={hoursAgo} updatedAtTs={updatedAtTs} locale={locale} />;
+  return <FreshnessIndicator size="sm" hoursAgo={hoursAgo} updatedAtTs={updatedAtTs} locale={locale} compact={compact} />;
 }
