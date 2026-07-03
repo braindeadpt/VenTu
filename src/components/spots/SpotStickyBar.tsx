@@ -70,10 +70,10 @@ export default function SpotStickyBar({
       className="md:hidden fixed left-0 right-0 z-30 h-14 bg-bg-base/95 supports-[backdrop-filter]:backdrop-blur-md border-b border-divider"
       style={{ top: '64px' }}
     >
-      <div className="max-w-6xl mx-auto px-3 h-full flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <div className="max-w-6xl mx-auto px-2 h-full flex items-center gap-1.5 overflow-x-auto no-scrollbar">
         <div
           className={[
-            'shrink-0 flex items-center justify-center min-w-[44px] h-9 rounded-pill border font-mono font-semibold text-sm px-2 tabular-nums',
+            'shrink-0 flex items-center justify-center min-w-[36px] h-8 rounded-pill border font-mono font-semibold text-xs px-1.5 tabular-nums',
             tokens.bg,
             tokens.text,
             tokens.border,
@@ -82,10 +82,10 @@ export default function SpotStickyBar({
         >
           {score.score}
         </div>
-        <Stat icon={<Waves className="w-3.5 h-3.5 text-data-waves" />} value={`${conditions.waveHeight.toFixed(1)}m`} label={isPt ? 'Onda' : 'Wave'} />
-        <Stat icon={<Clock className="w-3.5 h-3.5 text-data-period" />} value={`${Math.round(conditions.wavePeriod)}s`} label={isPt ? 'Período' : 'Period'} />
-        <Stat icon={<Wind className="w-3.5 h-3.5 text-data-wind" />} value={`${windKt}kt`} label={isPt ? 'Vento' : 'Wind'} />
-        <Stat icon={<Droplets className="w-3.5 h-3.5 text-data-water" />} value={`${conditions.waterTemp.toFixed(1)}°`} label={isPt ? 'Água' : 'Water'} />
+        <Stat icon={<Waves className="w-3 h-3 text-data-waves" />} value={`${conditions.waveHeight.toFixed(1)}m`} label={isPt ? 'Onda' : 'Wave'} />
+        <Stat icon={<Clock className="w-3 h-3 text-data-period" />} value={`${Math.round(conditions.wavePeriod)}s`} label={isPt ? 'Período' : 'Period'} />
+        <Stat icon={<Wind className="w-3 h-3 text-data-wind" />} value={`${windKt}kt`} label={isPt ? 'Vento' : 'Wind'} />
+        <Stat icon={<Droplets className="w-3 h-3 text-data-water" />} value={`${conditions.waterTemp.toFixed(1)}°`} label={isPt ? 'Água' : 'Water'} />
       </div>
     </div>
   );
@@ -93,10 +93,10 @@ export default function SpotStickyBar({
 
 function Stat({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="shrink-0 flex items-center gap-1.5 px-2.5 py-1 rounded-pill bg-surface-1/[0.04] border border-divider">
+    <div className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-pill bg-surface-1/[0.04] border border-divider">
       {icon}
       <span className="font-mono tabular-nums text-meta font-medium text-fg">{value}</span>
-      <span className="text-meta-sm text-fg-muted">{label}</span>
+      <span className="text-meta-sm text-fg-muted hidden sm:inline">{label}</span>
     </div>
   );
 }

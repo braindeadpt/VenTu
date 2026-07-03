@@ -463,7 +463,6 @@ export default function SpotDetailClient({
 
         <section className="sticky top-16 z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm">
           <div className="max-w-6xl mx-auto px-4 py-2">
-            <p className="text-meta-sm text-fg-muted mb-2 md:hidden">{td.sportTabsHint}</p>
             <div
               className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x scroll-smooth"
               role="tablist"
