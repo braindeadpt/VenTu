@@ -600,6 +600,22 @@ export default function SpotMapInteractive({
     return () => window.removeEventListener('resize', onResize);
   }, [isReady]);
 
+  // Hero embed: parent height is set after mount — keep Leaflet in sync
+  useEffect(() => {
+    if (!isHeroEmbed || !isReady || !mapInstanceRef.current || !mapRef.current) return;
+    const host = mapRef.current.closest('[data-map-hero-teaser]');
+    if (!host) return;
+    const map = mapInstanceRef.current;
+    const sync = () => map.invalidateSize();
+    const ro = new ResizeObserver(() => sync());
+    ro.observe(host);
+    const t = window.setTimeout(sync, 100);
+    return () => {
+      ro.disconnect();
+      window.clearTimeout(t);
+    };
+  }, [isHeroEmbed, isReady]);
+
   // Lock page scroll while map is fullscreen
   useEffect(() => {
     if (!isFullscreen) return;

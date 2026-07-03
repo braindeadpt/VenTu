@@ -141,30 +141,29 @@ export default function HomepageMapHero({
       aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
       className={
         isFeatured
-          ? 'hero-ocean-surface relative w-full flex flex-col rounded-b-3xl overflow-hidden border-b border-divider touch-pan-y'
+          ? 'hero-ocean-surface relative w-full h-[clamp(480px,72vh,760px)] rounded-b-3xl overflow-hidden border-b border-divider touch-pan-y'
           : 'relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y'
       }
     >
       <div
         className={
           isFeatured
-            ? 'relative flex-1 min-h-[clamp(380px,58vh,640px)]'
-            : 'absolute inset-0'
+            ? 'absolute inset-0 z-0 pointer-events-none [&_.leaflet-marker-icon]:pointer-events-auto'
+            : 'absolute inset-0 pointer-events-none [&_.leaflet-marker-icon]:pointer-events-auto'
         }
       >
-      <div className="absolute inset-0 z-0 pointer-events-none [&_.leaflet-marker-icon]:pointer-events-auto">
         <SpotMapInteractive
           spotsData={filtered}
           selectedSport={sport}
           selectedRegion={DEFAULT_REGION}
           locale={locale}
-          embedMode="hero"
+          embedMode={isFeatured ? 'hero' : 'default'}
         />
       </div>
 
       {isFeatured && (
         <div
-          className="absolute inset-x-0 top-0 z-[5] h-[min(42%,320px)] sm:h-[min(38%,360px)] pointer-events-none overflow-hidden"
+          className="absolute inset-x-0 top-0 z-[5] h-[min(36%,280px)] sm:h-[min(32%,300px)] pointer-events-none overflow-hidden"
           aria-hidden
         >
           <div className="relative h-full w-full">
@@ -172,11 +171,11 @@ export default function HomepageMapHero({
               slug={HOME_HERO_REGION_SLUG}
               locale={isPt ? 'pt' : 'en'}
               decorative
-              className="opacity-35 mix-blend-soft-light"
+              className="opacity-30 mix-blend-soft-light"
               priority
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-bg-base/45 via-bg-base/15 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-bg-base/40 via-bg-base/10 to-transparent" />
         </div>
       )}
 
@@ -208,7 +207,7 @@ export default function HomepageMapHero({
           <div
             className={
               isFeatured
-                ? 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-3 flex flex-col gap-2 sm:gap-3 pointer-events-none z-20 relative'
+                ? `max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 flex flex-col gap-2 sm:gap-3 pointer-events-none z-20 relative ${aggregates ? 'pb-14 sm:pb-16' : 'pb-4'}`
                 : 'w-full px-4 pt-3 pb-2 flex flex-col gap-2 pointer-events-none'
             }
           >
@@ -310,15 +309,14 @@ export default function HomepageMapHero({
 
       {isFeatured && (
         <div
-          className="absolute inset-x-0 bottom-0 z-[8] h-20 sm:h-24 hero-map-bottom-fade pointer-events-none"
+          className="absolute inset-x-0 bottom-0 z-[8] h-28 sm:h-32 hero-map-bottom-fade pointer-events-none"
           aria-hidden
         />
       )}
-      </div>
 
       {isFeatured && aggregates && (
         <div
-          className="hero-ticker-band relative z-10 shrink-0 px-4 sm:px-6 lg:px-8 pt-2 pb-2.5 pointer-events-auto stagger-fade-in motion-reduce:animate-none supports-[backdrop-filter]:backdrop-blur-[3px]"
+          className="hero-ticker-band absolute inset-x-0 bottom-0 z-20 px-4 sm:px-6 lg:px-8 pt-6 pb-2.5 pointer-events-auto stagger-fade-in motion-reduce:animate-none supports-[backdrop-filter]:backdrop-blur-[2px]"
           style={{ '--stagger-delay': 400 } as React.CSSProperties}
         >
           <div className="max-w-7xl mx-auto">
