@@ -20,13 +20,13 @@ const {
   confidenceByDay,
   findCurrentHourIndex,
 } = require('./lib/forecastConfidence');
-const { useMultiModel: scheduleUseMultiModel } = require('./lib/updateSchedule');
+const { isMultiModelEnabled: scheduleIsMultiModelEnabled } = require('./lib/updateSchedule');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
   if (raw === 'true' || raw === '1') return true;
   if (raw === 'false' || raw === '0') return false;
-  return scheduleUseMultiModel();
+  return scheduleIsMultiModelEnabled();
 }
 
 function confidenceFromPrevious(prev) {

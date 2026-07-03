@@ -4,7 +4,7 @@
  * Writes mode=full|observations|skip to GITHUB_OUTPUT when set.
  */
 const fs = require('fs');
-const { getUpdateMode, getLisbonParts, describeSchedule, useMultiModel } = require('./lib/updateSchedule');
+const { getUpdateMode, getLisbonParts, describeSchedule, isMultiModelEnabled } = require('./lib/updateSchedule');
 const { printAuditSummary } = require('./lib/dataPipelineAudit');
 
 if (process.argv.includes('--print-audit')) {
@@ -14,7 +14,7 @@ if (process.argv.includes('--print-audit')) {
 
 const force = process.env.VENTU_FORCE_MODE?.trim();
 const mode = force === 'full' || force === 'observations' ? force : getUpdateMode();
-const multimodel = mode === 'full' && useMultiModel();
+const multimodel = mode === 'full' && isMultiModelEnabled();
 const { hour, minute } = getLisbonParts();
 
 console.log(`Lisbon ${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')} → mode: ${mode}`);

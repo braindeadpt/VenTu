@@ -60,7 +60,7 @@ function getUpdateMode(now = new Date()) {
  * Night full runs (00h, 04h) use best_match only to save API quota.
  * @param {Date} [now]
  */
-function useMultiModel(now = new Date()) {
+function isMultiModelEnabled(now = new Date()) {
   if (getUpdateMode(now) !== 'full') return false;
   const { hour } = getLisbonParts(now);
   return hour >= DAY_START && hour <= DAY_END;
@@ -94,7 +94,7 @@ module.exports = {
   NIGHT_INTERVAL_H,
   getLisbonParts,
   getUpdateMode,
-  useMultiModel,
+  isMultiModelEnabled,
   describeSchedule,
   nextFullRunHint,
 };
