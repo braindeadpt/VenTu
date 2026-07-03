@@ -141,10 +141,17 @@ export default function HomepageMapHero({
       aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
       className={
         isFeatured
-          ? 'hero-ocean-surface relative w-full h-[clamp(420px,65vh,720px)] rounded-b-3xl overflow-hidden border-b border-divider touch-pan-y'
+          ? 'hero-ocean-surface relative w-full flex flex-col rounded-b-3xl overflow-hidden border-b border-divider touch-pan-y'
           : 'relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y'
       }
     >
+      <div
+        className={
+          isFeatured
+            ? 'relative flex-1 min-h-[clamp(380px,58vh,640px)]'
+            : 'absolute inset-0'
+        }
+      >
       <div className="absolute inset-0 z-0 pointer-events-none [&_.leaflet-marker-icon]:pointer-events-auto">
         <SpotMapInteractive
           spotsData={filtered}
@@ -302,52 +309,54 @@ export default function HomepageMapHero({
               )}
             </div>
           </div>
-
-          {isFeatured && aggregates && (
-            <div
-              className="pointer-events-auto sm:absolute sm:bottom-0 sm:left-0 sm:right-0 pb-1 sm:pb-2 max-w-full stagger-fade-in motion-reduce:animate-none"
-              style={{ '--stagger-delay': 400 } as React.CSSProperties}
-            >
-              <HeroTicker
-                locale={locale}
-                bestWindowLabel={
-                  bestWindow && topSpot
-                    ? (isPt
-                        ? `Janela ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.name}`
-                        : `Window ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.nameEn ?? topSpot.spot.name}`)
-                    : undefined
-                }
-                stats={[
-                  {
-                    label: isPt ? 'Onda' : 'Wave',
-                    value: `${aggregates.avgWave.toFixed(1)}m`,
-                    icon: <Waves className="w-3 h-3" />,
-                  },
-                  {
-                    label: isPt ? 'Vento' : 'Wind',
-                    value: `${Math.round(aggregates.avgWind)}kt`,
-                    icon: <Wind className="w-3 h-3" />,
-                  },
-                  {
-                    label: isPt ? 'Água' : 'Water',
-                    value: `${aggregates.avgTemp.toFixed(1)}°C`,
-                    icon: <Droplets className="w-3 h-3" />,
-                  },
-                  ...(hoursAgo !== null
-                    ? [
-                        {
-                          label: isPt ? 'Atualizado' : 'Updated',
-                          value: hoursAgo === 0 ? (isPt ? 'agora' : 'now') : `${hoursAgo}h`,
-                          icon: <Clock className="w-3 h-3" />,
-                        },
-                      ]
-                    : []),
-                ]}
-              />
-            </div>
-          )}
         </div>
       </div>
+
+      {isFeatured && aggregates && (
+        <div
+          className="relative z-10 shrink-0 px-4 sm:px-6 lg:px-8 py-2 bg-bg-base/85 backdrop-blur-sm border-t border-divider pointer-events-auto stagger-fade-in motion-reduce:animate-none"
+          style={{ '--stagger-delay': 400 } as React.CSSProperties}
+        >
+          <div className="max-w-7xl mx-auto">
+            <HeroTicker
+              locale={locale}
+              bestWindowLabel={
+                bestWindow && topSpot
+                  ? (isPt
+                      ? `Janela ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.name}`
+                      : `Window ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.nameEn ?? topSpot.spot.name}`)
+                  : undefined
+              }
+              stats={[
+                {
+                  label: isPt ? 'Onda' : 'Wave',
+                  value: `${aggregates.avgWave.toFixed(1)}m`,
+                  icon: <Waves className="w-3 h-3" />,
+                },
+                {
+                  label: isPt ? 'Vento' : 'Wind',
+                  value: `${Math.round(aggregates.avgWind)}kt`,
+                  icon: <Wind className="w-3 h-3" />,
+                },
+                {
+                  label: isPt ? 'Água' : 'Water',
+                  value: `${aggregates.avgTemp.toFixed(1)}°C`,
+                  icon: <Droplets className="w-3 h-3" />,
+                },
+                ...(hoursAgo !== null
+                  ? [
+                      {
+                        label: isPt ? 'Atualizado' : 'Updated',
+                        value: hoursAgo === 0 ? (isPt ? 'agora' : 'now') : `${hoursAgo}h`,
+                        icon: <Clock className="w-3 h-3" />,
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
