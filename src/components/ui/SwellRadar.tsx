@@ -364,31 +364,14 @@ export default function SwellRadar({
             )}
           </defs>
 
-          {/* Coast plane semicircles */}
+          {/* Coast → uniform surface fill, no half-blue/half-light glitch */}
           {hasCoast && (
             <g opacity={fadeIn}>
-              {/* Sea side */}
               <circle
                 cx={c}
                 cy={c}
                 r={R}
-                fill={
-                  dashboardTone
-                    ? 'rgb(var(--data-waves) / 0.10)'
-                    : 'rgb(var(--data-waves) / 0.08)'
-                }
-                clipPath={`url(#seaClip-${cfg.preset})`}
-              />
-              <circle
-                cx={c}
-                cy={c}
-                r={R}
-                fill={
-                  dashboardTone
-                    ? 'rgb(var(--fg-subtle) / 0.06)'
-                    : 'rgb(var(--surface-1-rgb) / 0.75)'
-                }
-                clipPath={`url(#landClip-${cfg.preset})`}
+                fill="rgb(var(--surface-1-rgb) / 0.06)"
               />
               {/* Coast line */}
               <line
@@ -403,7 +386,7 @@ export default function SwellRadar({
             </g>
           )}
 
-          {/* Track circle */}
+          {/* Track circle — always visible, uniform fill */}
           <circle cx={c} cy={c} r={R} fill="none" stroke="rgb(var(--divider))" strokeWidth={cfg.strokeTrack} />
 
           {/* Cardinal labels */}
@@ -412,16 +395,18 @@ export default function SwellRadar({
           <text x={c + R - 6} y={c + 3} textAnchor="middle" className={`fill-current ${cfg.fontCardinal} text-fg-subtle`} aria-hidden="true">E</text>
           <text x={c - R + 6} y={c + 3} textAnchor="middle" className={`fill-current ${cfg.fontCardinal} text-fg-subtle`} aria-hidden="true">W</text>
 
-          {/* Intermediate ticks (lg only) */}
-          {cfg.preset === 'lg' && [45, 135, 225, 315].map((angle) => {
+          {/* Directional ticks — 8 main directions, every size */}
+          {[0, 45, 90, 135, 180, 225, 270, 315].map((angle) => {
             const rad = (angle * Math.PI) / 180;
-            const inner = R * 0.90;
+            const minor = [45, 135, 225, 315].includes(angle);
+            const inner = minor ? R * 0.88 : R * 0.86;
             const outer = R * 0.98;
             return (
               <line key={angle}
                 x1={c + inner * Math.cos(rad)} y1={c + inner * Math.sin(rad)}
                 x2={c + outer * Math.cos(rad)} y2={c + outer * Math.sin(rad)}
-                stroke="rgb(var(--divider-rgb) / 0.5)" strokeWidth={cfg.strokeTick}
+                stroke={minor ? 'rgb(var(--divider-rgb) / 0.35)' : 'rgb(var(--divider-rgb) / 0.55)'}
+                strokeWidth={cfg.strokeTick}
               />
             );
           })}
