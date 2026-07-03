@@ -541,6 +541,11 @@ export default function SpotDetailClient({
               seaStateTitle: td.seaStateTitle,
               seaStateHint: td.seaStateHint,
               windContextTitle: td.windContextTitle,
+              windShoreTitle: td.windShoreTitle,
+              windShoreSea: td.windShoreSea,
+              windShoreLand: td.windShoreLand,
+              windShoreFrom: td.windShoreFrom,
+              windShoreCoastFacing: td.windShoreCoastFacing,
               windRelationHints: {
                 offshore: td.windOffshoreHint,
                 onshore: td.windOnshoreHint,

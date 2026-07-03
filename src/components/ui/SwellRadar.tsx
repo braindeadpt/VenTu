@@ -76,6 +76,8 @@ interface SwellRadarProps {
   size?: SizeKey | number;
   /** Show legend overlay below radar. Default: true. */
   showLegend?: boolean;
+  /** Draw wind arrow on the radar. Default: true. */
+  showWind?: boolean;
   /**
    * `dashboard` — high-contrast, neutral fills (spot detail).
    * `default` — semantic offshore/onshore wind colours.
@@ -199,6 +201,7 @@ export default function SwellRadar({
   coastOrientation,
   size,
   showLegend = true,
+  showWind = true,
   visualTone = 'default',
 }: SwellRadarProps) {
   const dashboardTone = visualTone === 'dashboard';
@@ -234,7 +237,8 @@ export default function SwellRadar({
 
   /* ── animated rotation values ── */
   const swellTargets = swellTrains.map((t) => (t.direction + 180) % 360);
-  const windTarget = windDirection !== undefined ? (windDirection + 180) % 360 : null;
+  const windTarget =
+    showWind && windDirection !== undefined ? (windDirection + 180) % 360 : null;
 
   const [swellRots, setSwellRots] = useState<number[]>(() => swellTargets.map(() => 0));
   const [windRot, setWindRot] = useState(0);
@@ -299,12 +303,14 @@ export default function SwellRadar({
 
   // Wind arrow: from edge towards center, length ~40% of R, ends further from center
   const windLen = R * 0.40;
-  const windStart = windDirection !== undefined
-    ? polarToCartesian(c, c, R + 2, windDirection)
-    : null;
-  const windEnd = windDirection !== undefined
-    ? polarToCartesian(c, c, R - windLen, windDirection)
-    : null;
+  const windStart =
+    showWind && windDirection !== undefined
+      ? polarToCartesian(c, c, R + 2, windDirection)
+      : null;
+  const windEnd =
+    showWind && windDirection !== undefined
+      ? polarToCartesian(c, c, R - windLen, windDirection)
+      : null;
 
   // Spot marker position
   const markerPos = hasCoast
@@ -336,7 +342,7 @@ export default function SwellRadar({
       `${t.key} swell from ${getCardinalLabel(t.direction)}, ${t.height.toFixed(1)} meters, ${t.period.toFixed(1)} seconds`,
     );
   });
-  if (windDirection !== undefined && windSpeed !== undefined) {
+  if (showWind && windDirection !== undefined && windSpeed !== undefined) {
     const windKt = Math.round(windSpeed * 1.94384);
     ariaParts.push(`Wind from ${getCardinalLabel(windDirection)} at ${windKt}kt`);
     if (windRelation) ariaParts.push(windRelation);
@@ -543,7 +549,7 @@ export default function SwellRadar({
               </span>
             </span>
           ))}
-          {windDirection !== undefined && windSpeed !== undefined && (
+          {showWind && windDirection !== undefined && windSpeed !== undefined && (
             <span>
               <span className="text-fg-subtle">Wind:</span>{' '}
               <span className="text-fg font-mono tabular-nums">
