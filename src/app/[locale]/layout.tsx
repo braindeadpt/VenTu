@@ -6,6 +6,7 @@ import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ClientProviders from '@/components/layout/ClientProviders'
 import AuthProvider from '@/contexts/AuthProvider'
+import SignupNudge from '@/components/homepage/SignupNudge'
 import CSPMeta from '@/components/CSPMeta'
 import SetHtmlLang from '@/components/SetHtmlLang'
 
@@ -54,6 +55,7 @@ export default async function LocaleLayout({
         <Header locale={locale} />
         <main id="main-content" className="pt-16">{children}</main>
         <Footer locale={locale} />
+        <SignupNudge locale={locale} />
       </AuthProvider>
     </ClientProviders>
   )

@@ -17,6 +17,7 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import SpotLevelToday from '@/components/spots/SpotLevelToday';
 import StatChip from '@/components/ui/StatChip';
+import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 
 interface SpotDetailHeroProps {
@@ -184,6 +185,13 @@ export default function SpotDetailHero({
                     detail={conditions.confidenceDetail}
                     locale={locale}
                     size="sm"
+                  />
+                  <SpotAlertPopover
+                    spotSlug={spotSlug}
+                    sport={sport}
+                    score={score}
+                    locale={locale}
+                    onRequestLogin={() => {}}
                   />
                 </div>
               </div>

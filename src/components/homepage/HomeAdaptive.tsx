@@ -1,10 +1,15 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { useHasFavorites } from '@/hooks/useHasFavorites';
 import type { HomepageSpotData } from '@/lib/homepageSport';
+import type { GridSportFilter } from '@/lib/sportRatings';
+import { useUrlGridSport } from '@/hooks/useUrlGridSport';
+import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { MACRO_REGIONS } from '@/lib/regions';
 import HomepageMapHero from '@/components/homepage/HomepageMapHero';
-import HomepageFavoritesNow from '@/components/homepage/HomepageFavoritesNow';
+import YourDaySection from '@/components/homepage/YourDaySection';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
 import HomepageFooterSection from '@/components/homepage/HomepageFooterSection';
 import { DawnPatrolTopSlot } from '@/components/homepage/HomeDawnPatrolSlots';
@@ -28,15 +33,18 @@ export default function HomeAdaptive({
   const hasFavorites = useHasFavorites();
   const { favorites } = useAuth();
   const isReturning = hasFavorites === true;
+  const regions = useMemo(() => [...MACRO_REGIONS], []);
+  const activeSport = useUrlGridSport(regions, 'surf');
 
   return (
     <>
-      {isReturning && favorites.length > 0 && (
+      {isReturning && (
         <>
-          <HomepageFavoritesNow
+          <YourDaySection
             locale={locale}
             spotsData={spotsData}
-            favoriteIds={favorites}
+            favoriteIds={favorites.length > 0 ? favorites : []}
+            activeSport={activeSport}
           />
           <WaveDivider />
         </>

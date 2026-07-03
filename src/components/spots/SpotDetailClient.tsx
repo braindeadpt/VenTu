@@ -42,6 +42,7 @@ import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard'
 import SpotStickyBar from '@/components/spots/SpotStickyBar';
 import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
 import type { ObservedConditions } from '@/lib/observations';
+import { trackSpotView } from '@/components/homepage/SignupNudge';
 
 interface Conditions {
   waveHeight: number;
@@ -130,6 +131,11 @@ export default function SpotDetailClient({
     update();
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
+  }, []);
+
+  // Track anonymous spot views for the signup nudge
+  useEffect(() => {
+    trackSpotView();
   }, []);
 
   useEffect(() => {

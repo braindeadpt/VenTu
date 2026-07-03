@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { Wind, Github, Heart, ExternalLink } from 'lucide-react';
 import FeedbackForm from '@/components/FeedbackForm';
+import DailyStreak from '@/components/layout/DailyStreak';
 import { getTranslation } from '@/lib/i18n';
 import { getPopularLandings, landingTitle } from '@/lib/seoLandings';
 
@@ -242,8 +243,9 @@ export default function Footer({ locale }: FooterProps) {
 
         <div className="mt-6 pt-6 border-t border-divider flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <p className="text-xs text-fg-subtle">
+            <p className="text-xs text-fg-subtle inline-flex items-center gap-2">
               © {new Date().getFullYear()} VenTu. MIT License. Open Source Project.
+              <DailyStreak />
             </p>
             <FeedbackForm locale={locale} />
           </div>
