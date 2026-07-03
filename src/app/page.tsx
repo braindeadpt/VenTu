@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { buildRootMetadata } from '@/lib/seo';
 import RootLocaleRedirect from '@/components/RootLocaleRedirect';
 
@@ -43,7 +44,7 @@ export default function RootPage() {
           </p>
           <p style={{ marginTop: '2rem', fontSize: '0.875rem', opacity: 0.6 }}>Escolhe o teu idioma:</p>
           <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
-            <a
+            <Link
               href="/pt/"
               style={{
                 display: 'inline-block',
@@ -57,8 +58,8 @@ export default function RootPage() {
               }}
             >
               Português
-            </a>
-            <a
+            </Link>
+            <Link
               href="/en/"
               style={{
                 display: 'inline-block',
@@ -72,7 +73,7 @@ export default function RootPage() {
               }}
             >
               English
-            </a>
+            </Link>
           </div>
         </div>
       </noscript>
