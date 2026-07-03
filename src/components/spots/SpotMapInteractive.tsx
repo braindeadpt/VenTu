@@ -552,7 +552,8 @@ export default function SpotMapInteractive({
     });
   }, []);
 
-  const showWindOnMarkers = windEnabled && !clusterEnabled;
+  const showWindOnMarkers = windEnabled && !clusterEnabled && !isHeroEmbed;
+  const activeCluster = isHeroEmbed ? true : clusterEnabled;
 
   // Performance measurement — marker creation timing
   const perfMeasure = useCallback((label: string) => {
@@ -600,21 +601,45 @@ export default function SpotMapInteractive({
     return () => window.removeEventListener('resize', onResize);
   }, [isReady]);
 
-  // Hero embed: parent height is set after mount — keep Leaflet in sync
+  // Hero embed: keep Leaflet sized to the hero plane and refit Portugal into the right pane
   useEffect(() => {
     if (!isHeroEmbed || !isReady || !mapInstanceRef.current || !mapRef.current) return;
     const host = mapRef.current.closest('[data-map-hero-teaser]');
     if (!host) return;
     const map = mapInstanceRef.current;
-    const sync = () => map.invalidateSize();
-    const ro = new ResizeObserver(() => sync());
+    const Leaflet = LRef.current;
+    if (!Leaflet) return;
+
+    const fitHero = () => {
+      const bounds = Leaflet.latLngBounds([]);
+      visibleSpots.forEach((data) => {
+        if (includeSpotInViewportBounds(data.spot, selectedRegion)) {
+          bounds.extend([data.spot.lat, data.spot.lon]);
+        }
+      });
+      if (!bounds.isValid()) return;
+      map.invalidateSize({ animate: false });
+      const leftPad = isMobile ? 20 : 300;
+      map.fitBounds(bounds, {
+        paddingTopLeft: Leaflet.point(leftPad, 48),
+        paddingBottomRight: Leaflet.point(40, 96),
+        maxZoom: isMobile ? 8 : 10,
+        animate: false,
+      });
+    };
+
+    const ro = new ResizeObserver(() => fitHero());
     ro.observe(host);
-    const t = window.setTimeout(sync, 100);
+    const t1 = window.setTimeout(fitHero, 0);
+    const t2 = window.setTimeout(fitHero, 150);
+    const t3 = window.setTimeout(fitHero, 500);
     return () => {
       ro.disconnect();
-      window.clearTimeout(t);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
     };
-  }, [isHeroEmbed, isReady]);
+  }, [isHeroEmbed, isReady, visibleSpots, selectedRegion, isMobile]);
 
   // Lock page scroll while map is fullscreen
   useEffect(() => {
@@ -674,7 +699,7 @@ export default function SpotMapInteractive({
     mcg.clearLayers();
     lg.clearLayers();
 
-    if (clusterEnabled) {
+    if (activeCluster) {
       if (map.hasLayer(lg)) map.removeLayer(lg);
       if (!map.hasLayer(mcg)) map.addLayer(mcg);
     } else {
@@ -726,7 +751,7 @@ export default function SpotMapInteractive({
         cache.set(data.spot.id, marker);
       }
 
-      if (clusterEnabled) {
+      if (activeCluster) {
         mcg.addLayer(marker);
       } else {
         lg.addLayer(marker);
@@ -737,11 +762,22 @@ export default function SpotMapInteractive({
     });
 
     if (!didFitBoundsRef.current && bounds.isValid()) {
-      const fitMaxZoom = isMobile ? 9 : 11;
-      map.fitBounds(bounds, {
-        padding: isMobile ? [16, 16] : [40, 40],
-        maxZoom: fitMaxZoom,
-      });
+      map.invalidateSize({ animate: false });
+      if (isHeroEmbed) {
+        const leftPad = isMobile ? 20 : 300;
+        map.fitBounds(bounds, {
+          paddingTopLeft: Leaflet.point(leftPad, 48),
+          paddingBottomRight: Leaflet.point(40, 96),
+          maxZoom: isMobile ? 8 : 10,
+          animate: false,
+        });
+      } else {
+        const fitMaxZoom = isMobile ? 9 : 11;
+        map.fitBounds(bounds, {
+          padding: isMobile ? [16, 16] : [40, 40],
+          maxZoom: fitMaxZoom,
+        });
+      }
       didFitBoundsRef.current = true;
     }
 
@@ -758,6 +794,8 @@ export default function SpotMapInteractive({
     locale,
     onSpotSelect,
     isMobile,
+    isHeroEmbed,
+    activeCluster,
   ]);
 
   const exitFullscreenLabel = t.map.exitFullscreen;
@@ -776,7 +814,7 @@ export default function SpotMapInteractive({
             ? 'fixed left-0 right-0 bottom-0 z-40 w-full overflow-hidden bg-surface-1/[0.04] top-16'
             : 'fixed inset-0 z-[1100] w-full overflow-hidden bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
           : isHeroEmbed
-            ? 'relative w-full h-full overflow-hidden bg-surface-1/[0.04]'
+            ? 'absolute inset-0 overflow-hidden bg-bg-base'
             : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
       }
       style={
@@ -785,7 +823,7 @@ export default function SpotMapInteractive({
             ? { height: 'calc(100dvh - 4rem)' }
             : { height: '100dvh' }
           : isHeroEmbed
-            ? { height: '100%' }
+            ? undefined
             : { height: 'clamp(300px, 50vh, 600px)' }
       }
       data-map-fullscreen={isFullscreen ? 'true' : 'false'}
