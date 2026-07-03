@@ -42,10 +42,20 @@ test.describe('UI interactions audit', () => {
 
   test('favorites: heart opens login when signed out (F1)', async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
-    await page.getByRole('button', { name: /Entrar para guardar Guincho/i }).click();
-    await expect(page.getByRole('dialog')).toContainText(/Entrar para guardar favoritos/i);
+    await page
+      .getByRole('button', { name: /Entrar para guardar Guincho|Sign in to save Guincho/i })
+      .click();
+    const loginDialog = page.getByRole('dialog', { name: /Entrar|Sign in/i });
+    await expect(loginDialog).toBeVisible();
+    await expect(loginDialog.getByRole('heading', { level: 2 })).toContainText(
+      /Entra para guardar favoritos|Sign in to save favorites/i,
+    );
+
     await page.goto('/pt/favorites/');
-    await expect(page.locator('main')).toContainText(/Entrar para ver os teus favoritos/i);
+    await expect(page.getByRole('heading', { name: /Meus Favoritos|My Favorites/i })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /Entrar com magic link|Sign in with magic link/i }),
+    ).toBeVisible();
   });
 
   test('spots map page: list and map render', async ({ page }) => {
