@@ -48,8 +48,8 @@ export default function FreshnessIndicator({
       )}
       title={
         isPt
-          ? 'Hora da última actualização de condições (Open-Meteo, pipeline a cada 3h)'
-          : 'Last conditions update (Open-Meteo, pipeline every 3h)'
+          ? 'Hora da última actualização de condições (Open-Meteo, 2h de dia / 4h de noite Lisboa)'
+          : 'Last conditions update (Open-Meteo, 2h daytime / 4h night Lisbon)'
       }
     >
       <span className={cn('w-2 h-2 rounded-full shrink-0', dotClass)} aria-hidden />

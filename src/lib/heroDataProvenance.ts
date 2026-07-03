@@ -29,18 +29,18 @@ export const HERO_FORECAST_LAYERS = [
   },
 ] as const;
 
-export const HERO_PIPELINE_CADENCE_HOURS = 3;
+export const HERO_PIPELINE_CADENCE_HOURS = 2;
 
 export function getHeroCadenceLabel(locale: string): string {
   const isPt = locale === 'pt';
-  return isPt ? `cada ${HERO_PIPELINE_CADENCE_HOURS}h` : `every ${HERO_PIPELINE_CADENCE_HOURS}h`;
+  return isPt ? '2h dia · 4h noite' : '2h day · 4h night';
 }
 
 export function getHeroCadenceTitle(locale: string): string {
   const isPt = locale === 'pt';
   return isPt
-    ? `Pipeline automático: novas previsões a cada ${HERO_PIPELINE_CADENCE_HOURS} horas`
-    : `Automated pipeline: new forecasts every ${HERO_PIPELINE_CADENCE_HOURS} hours`;
+    ? 'Previsões Open-Meteo: de 2h em 2h (06h–20h Lisboa) e de 4h em 4h de noite. Observações IH/IPMA nas horas intermédias.'
+    : 'Open-Meteo forecasts: every 2h (06:00–20:00 Lisbon) and every 4h at night. IH/IPMA observations on in-between hours.';
 }
 
 export function getHeroFreshnessTitle(locale: string, updatedAtTs: number): string {
@@ -53,6 +53,6 @@ export function getHeroFreshnessTitle(locale: string, updatedAtTs: number): stri
   }).format(new Date(updatedAtTs));
 
   return isPt
-    ? `Última actualização do pipeline: ${when} (Lisboa). Ondas, vento e temperatura da água via Open-Meteo; marés observadas via IH.`
-    : `Last pipeline update: ${when} (Lisbon). Waves, wind and water temperature via Open-Meteo; observed tides via IH.`;
+    ? `Última actualização do pipeline: ${when} (Lisboa). Ondas, vento e temperatura da água via Open-Meteo (2h de dia, 4h de noite); marés observadas via IH.`
+    : `Last pipeline update: ${when} (Lisbon). Waves, wind and water temperature via Open-Meteo (2h daytime, 4h night); observed tides via IH.`;
 }

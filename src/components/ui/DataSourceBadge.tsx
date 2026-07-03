@@ -50,8 +50,8 @@ export default function DataSourceBadge({
       } ${className}`}
       title={
         isPt
-          ? 'Condições actualizadas a cada 3 horas via Open-Meteo'
-          : 'Conditions updated every 3 hours via Open-Meteo'
+          ? 'Condições via Open-Meteo (2h de dia, 4h de noite, hora Lisboa)'
+          : 'Conditions via Open-Meteo (2h daytime, 4h night, Lisbon time)'
       }
     >
       {label}

@@ -2,14 +2,18 @@ name: Update VenTu Data
 
 on:
   schedule:
-    # Marine/weather + spots index every 3 hours
-    - cron: '0 */3 * * *'
+    # Hourly UTC; Lisbon-aware gate picks full vs observations vs skip
+    - cron: '0 * * * *'
   workflow_dispatch:
+    inputs:
+      force_mode:
+        description: 'auto | full | observations (force Open-Meteo or obs-only)'
+        required: false
+        default: auto
 
 permissions:
   contents: write
 
-# Avoid overlapping cron runs and push races on public/data/
 concurrency:
   group: update-ventu-data
   cancel-in-progress: false
@@ -22,21 +26,34 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Schedule gate (Europe/Lisbon)
+        id: gate
+        env:
+          VENTU_FORCE_MODE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force_mode != 'auto' && github.event.inputs.force_mode || '' }}
+        run: node scripts/should-run-data-update.js
 
       - name: Setup Node.js
+        if: steps.gate.outputs.mode != 'skip'
         uses: actions/setup-node@v5
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
+        if: steps.gate.outputs.mode != 'skip'
         run: npm ci
 
+      - name: Print pipeline audit
+        if: steps.gate.outputs.mode == 'full'
+        run: node scripts/should-run-data-update.js --print-audit
+
       - name: Fetch IH Tide Station Data
+        if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ih-tides.js
 
-      - name: Update Conditions
+      - name: Update Conditions (Open-Meteo)
+        if: steps.gate.outputs.mode == 'full'
         run: |
           node scripts/update-conditions.js || {
             echo "First fetch failed — waiting 90s and retrying once..."
@@ -45,6 +62,7 @@ jobs:
           }
 
       - name: Merge IPMA + Ecowitt observations
+        if: steps.gate.outputs.mode != 'skip'
         env:
           ECOWITT_APPLICATION_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
           ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
@@ -52,7 +70,14 @@ jobs:
         run: npm run obs:update
 
       - name: Build spots index
+        if: steps.gate.outputs.mode != 'skip'
         run: npm run spots:index && npm run spots:lite
 
       - name: Commit and Push
-        run: bash scripts/push-data-update.sh "auto: update conditions and spots index [$(date -u +'%Y-%m-%d %H:%M UTC')]"
+        if: steps.gate.outputs.mode != 'skip'
+        run: |
+          if [ "${{ steps.gate.outputs.mode }}" = "observations" ]; then
+            bash scripts/push-data-update.sh "auto: refresh observations [$(date -u +'%Y-%m-%d %H:%M UTC')]"
+          else
+            bash scripts/push-data-update.sh "auto: update conditions and spots index [$(date -u +'%Y-%m-%d %H:%M UTC')]"
+          fi

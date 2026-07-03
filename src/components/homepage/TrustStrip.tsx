@@ -40,7 +40,7 @@ export default function TrustStrip({
     },
     {
       icon: Clock,
-      label: isPt ? 'Actualização: 3h/3h' : 'Refresh: every 3h',
+      label: isPt ? 'Previsão: 2h dia · 4h noite' : 'Forecast: 2h day · 4h night',
     },
     {
       icon: Github,

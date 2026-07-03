@@ -1,5 +1,5 @@
-/** Thresholds aligned with update-data.yml cadence (every 3h). */
-export const STALE_THRESHOLD_HOURS = 3;
+/** Thresholds aligned with Lisbon schedule (2h day / 4h night). */
+export const STALE_THRESHOLD_HOURS = 2.5;
 export const VERY_STALE_THRESHOLD_HOURS = 12;
 
 export type DataFreshness = 'fresh' | 'stale' | 'very-stale';
