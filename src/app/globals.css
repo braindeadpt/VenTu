@@ -519,8 +519,12 @@
 }
 .ventu-spot-marker-wrap .ventu-wind-arrow svg {
   display: block;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
+}
+
+body.ventu-signup-nudge-open footer {
+  padding-bottom: 5.5rem;
 }
 
 /* ── Popup ── */

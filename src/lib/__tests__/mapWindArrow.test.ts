@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { windBlowsToDegrees, windArrowOpacity, buildMapWindArrowSvg } from '../mapWindArrow';
+import { windBlowsToDegrees, windArrowShaftLength, buildMapWindArrowSvg } from '../mapWindArrow';
 
 describe('mapWindArrow', () => {
   it('wind blows opposite to meteo from', () => {
@@ -7,13 +7,14 @@ describe('mapWindArrow', () => {
     expect(windBlowsToDegrees(90)).toBe(270);
   });
 
-  it('opacity scales with speed', () => {
-    expect(windArrowOpacity(2)).toBeLessThan(windArrowOpacity(20));
+  it('shaft length scales with speed', () => {
+    expect(windArrowShaftLength(2)).toBeLessThan(windArrowShaftLength(20));
   });
 
-  it('builds svg with rotation', () => {
+  it('builds 24px svg at full opacity with rotation', () => {
     const svg = buildMapWindArrowSvg(0, 15);
     expect(svg).toContain('rotate(180deg)');
-    expect(svg).toContain('<svg');
+    expect(svg).toContain('width="24"');
+    expect(svg).toContain('opacity: 1');
   });
 });
