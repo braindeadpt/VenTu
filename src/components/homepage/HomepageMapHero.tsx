@@ -185,35 +185,35 @@ export default function HomepageMapHero({
             : 'absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none pb-2'
         }
       >
-        {isFeatured && (
-          <>
+          {isFeatured && (
+            <>
+              <div
+                className="absolute inset-0 bg-gradient-to-r from-bg-base/96 via-bg-base/72 to-bg-base/25 sm:via-bg-base/35 sm:to-transparent pointer-events-none"
+                aria-hidden
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-b from-bg-base/96 via-bg-base/70 to-transparent sm:via-bg-base/45 pointer-events-none"
+                aria-hidden
+              />
+              <div
+                className="absolute inset-0 hero-map-ocean-corners pointer-events-none"
+                aria-hidden
+              />
+            </>
+          )}
+          {!isFeatured && (
             <div
-              className="absolute inset-0 bg-gradient-to-r from-bg-base/96 via-bg-base/72 to-bg-base/25 sm:via-bg-base/35 sm:to-transparent pointer-events-none"
+              className="absolute inset-x-0 top-0 bottom-0 bg-gradient-to-b from-bg-base/92 via-bg-base/50 to-transparent pointer-events-none"
               aria-hidden
             />
-            <div
-              className="absolute inset-0 bg-gradient-to-b from-bg-base/94 via-bg-base/55 to-transparent sm:via-bg-base/35 pointer-events-none"
-              aria-hidden
-            />
-            <div
-              className="absolute inset-0 hero-map-ocean-corners pointer-events-none"
-              aria-hidden
-            />
-          </>
-        )}
-        {!isFeatured && (
+          )}
           <div
-            className="absolute inset-x-0 top-0 bottom-0 bg-gradient-to-b from-bg-base/92 via-bg-base/50 to-transparent pointer-events-none"
-            aria-hidden
-          />
-        )}
-        <div
-          className={
-            isFeatured
-              ? 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-3 flex flex-col gap-2 sm:gap-3 pointer-events-none'
-              : 'w-full px-4 pt-3 pb-2 flex flex-col gap-2 pointer-events-none'
-          }
-        >
+            className={
+              isFeatured
+                ? 'max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-4 sm:pt-6 pb-3 flex flex-col gap-2 sm:gap-3 pointer-events-none z-20 relative'
+                : 'w-full px-4 pt-3 pb-2 flex flex-col gap-2 pointer-events-none'
+            }
+          >
           <div className="pointer-events-auto flex flex-col gap-2 sm:gap-3 max-w-xl">
             {isFeatured && bestWindow && topSpot && (
               <div
