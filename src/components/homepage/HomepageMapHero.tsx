@@ -176,25 +176,21 @@ export default function HomepageMapHero({
               priority
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-b from-bg-base/70 via-bg-base/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-bg-base/45 via-bg-base/15 to-transparent" />
         </div>
       )}
 
       <div
         className={
           isFeatured
-            ? 'hero-ocean-overlay absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none max-h-[min(52%,420px)] sm:max-h-none sm:inset-0'
+            ? 'hero-ocean-overlay absolute inset-0 z-10 flex flex-col pointer-events-none'
             : 'absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none pb-2'
         }
       >
           {isFeatured && (
             <>
               <div
-                className="absolute inset-0 bg-gradient-to-r from-bg-base/96 via-bg-base/72 to-bg-base/25 sm:via-bg-base/35 sm:to-transparent pointer-events-none"
-                aria-hidden
-              />
-              <div
-                className="absolute inset-0 bg-gradient-to-b from-bg-base/96 via-bg-base/70 to-transparent sm:via-bg-base/45 pointer-events-none"
+                className="absolute inset-y-0 left-0 right-0 sm:right-[38%] hero-map-readability-left pointer-events-none"
                 aria-hidden
               />
               <div
@@ -311,11 +307,18 @@ export default function HomepageMapHero({
           </div>
         </div>
       </div>
+
+      {isFeatured && (
+        <div
+          className="absolute inset-x-0 bottom-0 z-[8] h-20 sm:h-24 hero-map-bottom-fade pointer-events-none"
+          aria-hidden
+        />
+      )}
       </div>
 
       {isFeatured && aggregates && (
         <div
-          className="relative z-10 shrink-0 px-4 sm:px-6 lg:px-8 py-2 bg-bg-base/85 backdrop-blur-sm border-t border-divider pointer-events-auto stagger-fade-in motion-reduce:animate-none"
+          className="hero-ticker-band relative z-10 shrink-0 px-4 sm:px-6 lg:px-8 pt-2 pb-2.5 pointer-events-auto stagger-fade-in motion-reduce:animate-none supports-[backdrop-filter]:backdrop-blur-[3px]"
           style={{ '--stagger-delay': 400 } as React.CSSProperties}
         >
           <div className="max-w-7xl mx-auto">

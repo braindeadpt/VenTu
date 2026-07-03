@@ -50,7 +50,7 @@ export default function HeroTicker(props: HeroTickerProps) {
     <div
       role="status"
       aria-live="polite"
-      className="pointer-events-auto w-full flex items-center px-0 sm:px-1 py-0 overflow-hidden"
+      className="pointer-events-auto w-full flex items-center px-0 sm:px-1 py-0 overflow-hidden [text-shadow:0_1px_12px_rgb(var(--bg-base)/0.85)]"
     >
       {/* Desktop: static. Mobile: marquee loop */}
       <span className="inline-flex flex-nowrap items-center gap-2 sm:gap-3 motion-safe:animate-marquee sm:animate-none">
