@@ -95,10 +95,86 @@ jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.publish.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Deploy to GitHub Pages
+      # GitHub Pages API often fails transiently ("try again later") while build is fine.
+      - name: Deploy to GitHub Pages (1/5)
         id: deployment
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before retry
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 45
+
+      - name: Deploy to GitHub Pages (2/5)
+        id: deployment2
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before retry
+        if: steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
+        run: sleep 45
+
+      - name: Deploy to GitHub Pages (3/5)
+        id: deployment3
+        if: steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before retry
+        if: >-
+          steps.deployment.outcome == 'failure' &&
+          steps.deployment2.outcome == 'failure' &&
+          steps.deployment3.outcome == 'failure'
+        run: sleep 45
+
+      - name: Deploy to GitHub Pages (4/5)
+        id: deployment4
+        if: >-
+          steps.deployment.outcome == 'failure' &&
+          steps.deployment2.outcome == 'failure' &&
+          steps.deployment3.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before retry
+        if: >-
+          steps.deployment.outcome == 'failure' &&
+          steps.deployment2.outcome == 'failure' &&
+          steps.deployment3.outcome == 'failure' &&
+          steps.deployment4.outcome == 'failure'
+        run: sleep 45
+
+      - name: Deploy to GitHub Pages (5/5)
+        id: deployment5
+        if: >-
+          steps.deployment.outcome == 'failure' &&
+          steps.deployment2.outcome == 'failure' &&
+          steps.deployment3.outcome == 'failure' &&
+          steps.deployment4.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Publish deployment URL
+        id: publish
+        if: always()
+        env:
+          URL1: ${{ steps.deployment.outputs.page_url }}
+          URL2: ${{ steps.deployment2.outputs.page_url }}
+          URL3: ${{ steps.deployment3.outputs.page_url }}
+          URL4: ${{ steps.deployment4.outputs.page_url }}
+          URL5: ${{ steps.deployment5.outputs.page_url }}
+        run: |
+          for url in "$URL5" "$URL4" "$URL3" "$URL2" "$URL1"; do
+            if [ -n "$url" ]; then
+              echo "page_url=$url" >> "$GITHUB_OUTPUT"
+              echo "Deployed to $url"
+              exit 0
+            fi
+          done
+          echo "::error::GitHub Pages deploy failed after 5 attempts (transient API error). Re-run this workflow from Actions."
+          exit 1
