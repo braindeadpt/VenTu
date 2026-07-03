@@ -510,20 +510,6 @@ export default function HomepageMapHero({
 
               updatedAtTs={maxTs}
 
-              bestWindowLabel={
-
-                bestWindow && topSpot
-
-                  ? (isPt
-
-                      ? `Janela ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.name}`
-
-                      : `Window ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.nameEn ?? topSpot.spot.name}`)
-
-                  : undefined
-
-              }
-
             />
 
           </div>

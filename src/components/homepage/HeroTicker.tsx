@@ -4,14 +4,11 @@ import {
 } from '@/lib/dataFreshness';
 import {
   HERO_FORECAST_LAYERS,
-  getHeroCadenceLabel,
-  getHeroCadenceTitle,
   getHeroFreshnessTitle,
 } from '@/lib/heroDataProvenance';
 
 interface HeroTickerProps {
   updatedAtTs?: number | null;
-  bestWindowLabel?: string;
   locale: string;
 }
 
@@ -24,11 +21,7 @@ function freshnessDotClass(ageHours: number | null): string {
   return 'bg-score-poor';
 }
 
-function TickerItems({
-  updatedAtTs,
-  bestWindowLabel,
-  locale,
-}: HeroTickerProps) {
+function TickerItems({ updatedAtTs, locale }: HeroTickerProps) {
   const isPt = locale === 'pt';
   const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
   const updated =
@@ -72,25 +65,6 @@ function TickerItems({
           </span>
         </span>
       ))}
-
-      <span className="inline-flex items-center gap-1 shrink-0">
-        {SEP}
-        <span
-          className="text-meta font-mono tabular-nums text-fg-muted"
-          title={getHeroCadenceTitle(locale)}
-        >
-          {getHeroCadenceLabel(locale)}
-        </span>
-      </span>
-
-      {bestWindowLabel && (
-        <span className="inline-flex items-center gap-1.5 shrink-0">
-          {SEP}
-          <span className="font-mono tabular-nums text-meta text-fg truncate max-w-[200px] sm:max-w-[320px]">
-            {bestWindowLabel}
-          </span>
-        </span>
-      )}
     </>
   );
 }

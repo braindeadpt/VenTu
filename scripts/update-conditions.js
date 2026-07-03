@@ -388,6 +388,17 @@ async function updateConditions() {
   
   // Validate we have data before writing
   const spotCount = Object.keys(allConditions).length;
+  const primaryIds = spots.filter((s) => !s.conditionsSource).map((s) => s.id);
+  const failedPrimary = primaryIds.filter((id) => !allConditions[id]);
+  if (failedPrimary.length > 0) {
+    console.warn(`⚠️ ${failedPrimary.length} primary spots failed: ${failedPrimary.slice(0, 8).join(', ')}${failedPrimary.length > 8 ? '…' : ''}`);
+  }
+  const minOk = Math.ceil(primaryIds.length * 0.95);
+  const okPrimary = primaryIds.length - failedPrimary.length;
+  if (okPrimary < minOk) {
+    console.error(`\n❌ ERROR: Only ${okPrimary}/${primaryIds.length} primary spots fetched (need ≥${minOk}). Not writing.`);
+    process.exit(1);
+  }
   if (spotCount === 0) {
     console.error('\n❌ ERROR: No conditions fetched! Not writing empty file.');
     process.exit(1);
@@ -419,4 +430,7 @@ async function updateConditions() {
   console.log(`📊 Updated ${spotCount} spots`);
 }
 
-updateConditions().catch(console.error);
+updateConditions().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

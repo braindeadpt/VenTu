@@ -22,6 +22,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -36,7 +37,12 @@ jobs:
         run: node scripts/fetch-ih-tides.js
 
       - name: Update Conditions
-        run: node scripts/update-conditions.js
+        run: |
+          node scripts/update-conditions.js || {
+            echo "First fetch failed — waiting 90s and retrying once..."
+            sleep 90
+            node scripts/update-conditions.js
+          }
 
       - name: Merge IPMA + Ecowitt observations
         env:
@@ -49,19 +55,4 @@ jobs:
         run: npm run spots:index && npm run spots:lite
 
       - name: Commit and Push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f public/data/
-          if git diff --staged --quiet; then
-            echo "No data changes to commit"
-            exit 0
-          fi
-          git commit -m "auto: update conditions and spots index [$(date +'%Y-%m-%d %H:%M')]"
-          for attempt in 1 2 3 4 5; do
-            git pull --rebase origin main && git push origin HEAD:main && exit 0
-            echo "Push failed (attempt $attempt) — another workflow may have updated main; retrying..."
-            sleep $((attempt * 4))
-          done
-          echo "Failed to push after 5 attempts"
-          exit 1
+        run: bash scripts/push-data-update.sh "auto: update conditions and spots index [$(date -u +'%Y-%m-%d %H:%M UTC')]"
