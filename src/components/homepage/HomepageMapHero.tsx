@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { Maximize2, Waves, Wind, Droplets } from 'lucide-react';
+import { Maximize2 } from 'lucide-react';
 
 import FilterPill from '@/components/ui/FilterPill';
 
@@ -197,36 +197,6 @@ export default function HomepageMapHero({
     return resolved ? toBestWindowWithTier(resolved) : null;
 
   }, [topSpot, sport]);
-
-
-
-  const aggregates = useMemo(() => {
-
-    const filteredForSport =
-
-      sport === 'all' ? spotsData : spotsData.filter((d) => d.allScores[sport as SportType]?.score);
-
-    const on = filteredForSport.filter((d) => {
-
-      const s = d.allScores[sport as SportType]?.score ?? 0;
-
-      return s >= 40;
-
-    });
-
-    if (on.length === 0) return null;
-
-    const avgWave = on.reduce((sum, d) => sum + (d.conditions.waveHeight ?? 0), 0) / on.length;
-
-    const avgWind = on.reduce((sum, d) => sum + (d.conditions.windSpeed ?? 0), 0) / on.length;
-
-    const avgTemp = on.reduce((sum, d) => sum + (d.conditions.waterTemp ?? 0), 0) / on.length;
-
-    return { avgWave, avgWind, avgTemp, onCount: on.length };
-
-  }, [spotsData, sport]);
-
-
 
   const handleSportChange = (next: GridSportFilter) => {
 
@@ -524,79 +494,41 @@ export default function HomepageMapHero({
 
 
 
-        {aggregates && (
+        <div
 
-          <div
+          className="pointer-events-auto mt-auto px-4 sm:px-6 lg:px-8 pb-2.5 pt-8 bg-gradient-to-t from-bg-base via-bg-base/55 to-transparent stagger-fade-in motion-reduce:animate-none"
 
-            className="pointer-events-auto mt-auto px-4 sm:px-6 lg:px-8 pb-2.5 pt-8 bg-gradient-to-t from-bg-base via-bg-base/55 to-transparent stagger-fade-in motion-reduce:animate-none"
+          style={{ '--stagger-delay': 400 } as React.CSSProperties}
 
-            style={{ '--stagger-delay': 400 } as React.CSSProperties}
+        >
 
-          >
+          <div className="max-w-7xl mx-auto">
 
-            <div className="max-w-7xl mx-auto">
+            <HeroTicker
 
-              <HeroTicker
+              locale={locale}
 
-                locale={locale}
+              updatedAtTs={maxTs}
 
-                updatedAtTs={maxTs}
+              bestWindowLabel={
 
-                bestWindowLabel={
+                bestWindow && topSpot
 
-                  bestWindow && topSpot
+                  ? (isPt
 
-                    ? (isPt
+                      ? `Janela ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.name}`
 
-                        ? `Janela ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.name}`
+                      : `Window ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.nameEn ?? topSpot.spot.name}`)
 
-                        : `Window ${formatBestWindowHours(bestWindow)} · ${SPORT_LABELS[sport as SportType]?.[isPt ? 'pt' : 'en'] ?? ''} · ${topSpot.spot.nameEn ?? topSpot.spot.name}`)
+                  : undefined
 
-                    : undefined
+              }
 
-                }
-
-                stats={[
-
-                  {
-
-                    label: isPt ? 'Onda' : 'Wave',
-
-                    value: `${aggregates.avgWave.toFixed(1)}m`,
-
-                    icon: <Waves className="w-3 h-3" />,
-
-                  },
-
-                  {
-
-                    label: isPt ? 'Vento' : 'Wind',
-
-                    value: `${Math.round(aggregates.avgWind)}kt`,
-
-                    icon: <Wind className="w-3 h-3" />,
-
-                  },
-
-                  {
-
-                    label: isPt ? 'Água' : 'Water',
-
-                    value: `${aggregates.avgTemp.toFixed(1)}°C`,
-
-                    icon: <Droplets className="w-3 h-3" />,
-
-                  },
-
-                ]}
-
-              />
-
-            </div>
+            />
 
           </div>
 
-        )}
+        </div>
 
       </div>
 

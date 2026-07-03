@@ -19,6 +19,39 @@ export function getDataFreshness(updatedAt?: string | number | null): DataFreshn
   return 'very-stale';
 }
 
+export type ForecastUpdatedParts = {
+  prefix: string;
+  datePart: string;
+  timePart: string;
+  combined: string;
+};
+
+/** Date + clock time for trust surfaces (hero ticker, tooltips). */
+export function formatForecastUpdatedParts(ts: number, locale: string): ForecastUpdatedParts {
+  const isPt = locale === 'pt';
+  const date = new Date(ts);
+  const loc = isPt ? 'pt-PT' : 'en-GB';
+  const datePart = new Intl.DateTimeFormat(loc, {
+    day: 'numeric',
+    month: 'short',
+    timeZone: 'Europe/Lisbon',
+  }).format(date);
+  const timePart = new Intl.DateTimeFormat(loc, {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+    timeZone: 'Europe/Lisbon',
+  }).format(date);
+  const prefix = isPt ? 'Actualizado' : 'Updated';
+
+  return {
+    prefix,
+    datePart,
+    timePart,
+    combined: `${prefix} ${datePart}, ${timePart}`,
+  };
+}
+
 /** Clock time (and short date if not today) of the last pipeline update. */
 export function formatForecastUpdatedAt(ts: number, locale: string): string {
   const isPt = locale === 'pt';

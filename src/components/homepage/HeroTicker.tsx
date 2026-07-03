@@ -1,16 +1,17 @@
-import { formatForecastUpdatedAt } from '@/lib/dataFreshness';
-
-interface TickerStat {
-  label: string;
-  value: string;
-  icon?: React.ReactNode;
-  ariaLabel?: string;
-}
+import {
+  formatForecastUpdatedParts,
+  getAgeHours,
+} from '@/lib/dataFreshness';
+import {
+  HERO_FORECAST_LAYERS,
+  getHeroCadenceLabel,
+  getHeroCadenceTitle,
+  getHeroFreshnessTitle,
+} from '@/lib/heroDataProvenance';
 
 interface HeroTickerProps {
   updatedAtTs?: number | null;
   bestWindowLabel?: string;
-  stats: TickerStat[];
   locale: string;
 }
 
@@ -26,59 +27,70 @@ function freshnessDotClass(ageHours: number | null): string {
 function TickerItems({
   updatedAtTs,
   bestWindowLabel,
-  stats,
   locale,
-}: {
-  updatedAtTs?: number | null;
-  bestWindowLabel?: string;
-  stats: TickerStat[];
-  locale: string;
-}) {
+}: HeroTickerProps) {
   const isPt = locale === 'pt';
-  const ageHours =
-    updatedAtTs != null ? Math.max(0, (Date.now() - updatedAtTs) / 3600000) : null;
-  const updatedLabel =
-    updatedAtTs != null
-      ? formatForecastUpdatedAt(updatedAtTs, locale)
-      : isPt
-        ? 'Sem hora de actualização'
-        : 'Update time unavailable';
+  const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
+  const updated =
+    updatedAtTs != null ? formatForecastUpdatedParts(updatedAtTs, locale) : null;
 
   return (
     <>
       <span
-        className="inline-flex items-center gap-1.5 text-meta font-medium text-fg shrink-0"
-        title={
-          isPt
-            ? 'Hora da última actualização das previsões (Open-Meteo)'
-            : 'Last forecast update time (Open-Meteo)'
-        }
+        className="inline-flex items-center gap-1.5 shrink-0"
+        title={updatedAtTs != null ? getHeroFreshnessTitle(locale, updatedAtTs) : undefined}
       >
         <span
           aria-hidden
           className={`inline-block w-1.5 h-1.5 rounded-full ${freshnessDotClass(ageHours)}`}
         />
-        <time dateTime={updatedAtTs != null ? new Date(updatedAtTs).toISOString() : undefined}>
-          {updatedLabel}
-        </time>
+        {updated ? (
+          <time
+            dateTime={new Date(updatedAtTs!).toISOString()}
+            className="inline-flex items-baseline gap-1 text-meta"
+          >
+            <span className="text-fg-muted font-medium">{updated.prefix}</span>
+            <span className="font-mono tabular-nums text-fg">{updated.datePart}</span>
+            <span className="font-mono tabular-nums text-fg">{updated.timePart}</span>
+          </time>
+        ) : (
+          <span className="text-meta text-fg-muted">
+            {isPt ? 'Hora de actualização indisponível' : 'Update time unavailable'}
+          </span>
+        )}
       </span>
+
+      {HERO_FORECAST_LAYERS.map((layer) => (
+        <span key={layer.key} className="inline-flex items-center gap-1 shrink-0">
+          {SEP}
+          <span
+            className="inline-flex items-center gap-1 text-meta"
+            title={isPt ? layer.detailPt : layer.detailEn}
+          >
+            <span className="text-fg-muted">{isPt ? layer.labelPt : layer.labelEn}</span>
+            <span className="font-medium text-fg">{isPt ? layer.sourcePt : layer.sourceEn}</span>
+          </span>
+        </span>
+      ))}
+
+      <span className="inline-flex items-center gap-1 shrink-0">
+        {SEP}
+        <span
+          className="text-meta font-mono tabular-nums text-fg-muted"
+          title={getHeroCadenceTitle(locale)}
+        >
+          {getHeroCadenceLabel(locale)}
+        </span>
+      </span>
+
       {bestWindowLabel && (
         <span className="inline-flex items-center gap-1.5 shrink-0">
           {SEP}
-          <span className="font-mono tabular-nums text-meta text-fg truncate max-w-[180px] sm:max-w-[260px]">
+          <span className="font-mono tabular-nums text-meta text-fg truncate max-w-[200px] sm:max-w-[320px]">
             {bestWindowLabel}
           </span>
         </span>
       )}
-      {stats.map((s, i) => (
-        <span key={i} className="inline-flex items-center gap-1.5 shrink-0">
-          {SEP}
-          <span className="text-meta text-fg-muted">{s.label}</span>
-          <span className="font-mono tabular-nums text-meta text-fg" aria-label={s.ariaLabel ?? `${s.label} ${s.value}`}>
-            {s.value}
-          </span>
-        </span>
-      ))}
     </>
   );
 }
@@ -88,12 +100,18 @@ export default function HeroTicker(props: HeroTickerProps) {
     <div
       role="status"
       aria-live="polite"
+      aria-label={
+        props.locale === 'pt'
+          ? 'Actualização das previsões e fontes de dados'
+          : 'Forecast update time and data sources'
+      }
       className="pointer-events-auto w-full flex items-center px-0 sm:px-1 py-0 overflow-hidden [text-shadow:0_1px_12px_rgb(var(--bg-base)/0.85)]"
     >
-      {/* Desktop: static. Mobile: marquee loop */}
       <span className="inline-flex flex-nowrap items-center gap-2 sm:gap-3 motion-safe:animate-marquee sm:animate-none">
         <TickerItems {...props} />
-        <span className="sm:hidden" aria-hidden><TickerItems {...props} /></span>
+        <span className="sm:hidden" aria-hidden>
+          <TickerItems {...props} />
+        </span>
       </span>
     </div>
   );
