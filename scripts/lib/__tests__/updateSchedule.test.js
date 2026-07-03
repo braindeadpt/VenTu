@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { getUpdateMode } = require('../updateSchedule');
+const { getUpdateMode, useMultiModel } = require('../updateSchedule');
 
 describe('getUpdateMode (Europe/Lisbon)', () => {
   it('full at 08:00 Lisbon in summer', () => {
@@ -21,5 +21,11 @@ describe('getUpdateMode (Europe/Lisbon)', () => {
 
   it('full at 20:00 Lisbon', () => {
     assert.equal(getUpdateMode(new Date('2026-07-03T19:00:00Z')), 'full');
+  });
+
+  it('multi-model only on daytime full runs', () => {
+    assert.equal(useMultiModel(new Date('2026-07-03T07:00:00Z')), true);
+    assert.equal(useMultiModel(new Date('2026-07-02T23:00:00Z')), false);
+    assert.equal(useMultiModel(new Date('2026-07-03T03:00:00Z')), false);
   });
 });

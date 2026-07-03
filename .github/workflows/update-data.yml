@@ -54,6 +54,8 @@ jobs:
 
       - name: Update Conditions (Open-Meteo)
         if: steps.gate.outputs.mode == 'full'
+        env:
+          VENTU_MULTIMODEL: ${{ steps.gate.outputs.multimodel }}
         run: |
           node scripts/update-conditions.js || {
             echo "First fetch failed — waiting 90s and retrying once..."

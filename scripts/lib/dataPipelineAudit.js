@@ -26,7 +26,7 @@ const DATA_SOURCES = [
     usedFor: 'Vento, rajadas, previsão horária',
     callsPerFullRun: '~170 spots × 2 pedidos (best_match + multi-modelo)',
     limits: 'Mesmo quota IP que Marine',
-    notes: 'Corre em paralelo com Marine por spot (4 HTTP/spot no total).',
+    notes: 'Dia (06–20h): 4 HTTP/spot com multi-modelo. Noite (00h/04h): 2 HTTP/spot só best_match.',
   },
   {
     id: 'ih-tides',
@@ -110,7 +110,7 @@ function printAuditSummary() {
   const p = SCHEDULE_BUDGET.proposed;
   const daily = estimatedOpenMeteoDaily(p.openMeteoPerDay);
   console.log('── Agenda proposta (hora Lisboa) ──');
-  console.log(`  Open-Meteo completo: ${p.dayRuns}× dia (06–20, 2h) + ${p.nightRuns}× noite (00, 04)`);
+  console.log(`  Open-Meteo: ${p.dayRuns}× dia (multi-modelo) + ${p.nightRuns}× noite (só best_match, −50% pedidos)`);
   console.log(`  Só observações (IH+IPMA+Ecowitt): ${p.obsOnlyRuns}× dia (07–19, horas ímpares)`);
   console.log(`  Open-Meteo estimado/dia: ~${daily.toLocaleString('en')} chamadas ponderadas (limite 10 000)`);
   console.log(`  HTTP/spot (full): ${HTTP_REQUESTS_PER_SPOT_FULL} · spots primários ~${PRIMARY_SPOT_COUNT_ESTIMATE}`);

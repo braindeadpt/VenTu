@@ -53,6 +53,6 @@ export function getHeroFreshnessTitle(locale: string, updatedAtTs: number): stri
   }).format(new Date(updatedAtTs));
 
   return isPt
-    ? `Última actualização do pipeline: ${when} (Lisboa). Ondas, vento e temperatura da água via Open-Meteo (2h de dia, 4h de noite); marés observadas via IH.`
-    : `Last pipeline update: ${when} (Lisbon). Waves, wind and water temperature via Open-Meteo (2h daytime, 4h night); observed tides via IH.`;
+    ? `Última actualização do pipeline: ${when} (Lisboa). De dia: Open-Meteo com multi-modelo (2h). De noite: só best_match (4h). Marés via IH.`
+    : `Last pipeline update: ${when} (Lisbon). Daytime: Open-Meteo with multi-model (2h). Night: best_match only (4h). Tides via IH.`;
 }

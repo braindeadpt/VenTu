@@ -55,12 +55,23 @@ function getUpdateMode(now = new Date()) {
   return 'skip';
 }
 
+/**
+ * Multi-model spread (2 extra Open-Meteo calls/spot) only on daytime full runs (06h–20h).
+ * Night full runs (00h, 04h) use best_match only to save API quota.
+ * @param {Date} [now]
+ */
+function useMultiModel(now = new Date()) {
+  if (getUpdateMode(now) !== 'full') return false;
+  const { hour } = getLisbonParts(now);
+  return hour >= DAY_START && hour <= DAY_END;
+}
+
 function describeSchedule(locale = 'pt') {
   const isPt = locale === 'pt';
   if (isPt) {
-    return 'Previsões Open-Meteo: de 2h em 2h (06h–20h Lisboa) e de 4h em 4h de noite (00h, 04h). Observações IH/IPMA: horas ímpares entre atualizações de dia.';
+    return 'Open-Meteo: 2h (06h–20h, com multi-modelo) · 4h de noite (00h/04h, só best_match) · IH/IPMA nas horas ímpares de dia.';
   }
-  return 'Open-Meteo forecasts: every 2h (06:00–20:00 Lisbon) and every 4h at night (00:00, 04:00). IH/IPMA observations: odd hours between daytime model runs.';
+  return 'Open-Meteo: every 2h (06:00–20:00, multi-model) · every 4h at night (00:00/04:00, best_match only) · IH/IPMA on odd daytime hours.';
 }
 
 function nextFullRunHint(now = new Date()) {
@@ -83,6 +94,7 @@ module.exports = {
   NIGHT_INTERVAL_H,
   getLisbonParts,
   getUpdateMode,
+  useMultiModel,
   describeSchedule,
   nextFullRunHint,
 };

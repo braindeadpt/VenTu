@@ -20,6 +20,43 @@ const {
   confidenceByDay,
   findCurrentHourIndex,
 } = require('./lib/forecastConfidence');
+const { useMultiModel: scheduleUseMultiModel } = require('./lib/updateSchedule');
+
+function resolveUseMultiModel() {
+  const raw = process.env.VENTU_MULTIMODEL;
+  if (raw === 'true' || raw === '1') return true;
+  if (raw === 'false' || raw === '0') return false;
+  return scheduleUseMultiModel();
+}
+
+function confidenceFromPrevious(prev) {
+  if (!prev?.confidenceDetail) {
+    return {
+      confidence: 'média',
+      confidenceDetail: {
+        waveSpread: 0,
+        windSpread: 0,
+        waveSpreadPct: 0,
+        windSpreadPct: 0,
+        combinedSpreadPct: 0,
+        degraded: true,
+      },
+      dailyConfidence: prev?.dailyConfidence ?? [],
+    };
+  }
+  return {
+    confidence: prev.confidence ?? 'média',
+    confidenceDetail: {
+      waveSpread: prev.confidenceDetail.waveSpread ?? 0,
+      windSpread: prev.confidenceDetail.windSpread ?? 0,
+      waveSpreadPct: prev.confidenceDetail.waveSpreadPct ?? 0,
+      windSpreadPct: prev.confidenceDetail.windSpreadPct ?? 0,
+      combinedSpreadPct: prev.confidenceDetail.combinedSpreadPct ?? 0,
+      degraded: true,
+    },
+    dailyConfidence: prev.dailyConfidence ?? [],
+  };
+}
 
 /**
  * Parse spots from src/lib/spots.ts automatically.
@@ -256,7 +293,24 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
 }
 
 async function updateConditions() {
+  const useMultiModel = resolveUseMultiModel();
   console.log('🌊 VenTu - Updating conditions...');
+  console.log(
+    useMultiModel
+      ? '☀️ Modo dia: best_match + multi-modelo (4 pedidos/spot)'
+      : '🌙 Modo noite: só best_match (2 pedidos/spot) — confiança herdada',
+  );
+
+  const outputPath = path.join(__dirname, '../public/data/conditions.json');
+  let previousConditions = {};
+  if (fs.existsSync(outputPath)) {
+    try {
+      previousConditions = JSON.parse(fs.readFileSync(outputPath, 'utf-8'));
+    } catch {
+      console.warn('⚠️ Could not parse existing conditions.json — confidence will reset until daytime run');
+    }
+  }
+
   const allConditions = {};
   const allForecasts = {};
 
@@ -279,18 +333,36 @@ async function updateConditions() {
 
     try {
       console.log(`  Fetching ${spot.id}...`);
-      
-      // best_match (display values) + multi-model spreads (confidence only)
-      const [marineData, weatherData, marineWaveModels, windModels] = await Promise.all([
-        fetchMarineData(spot.lat, spot.lon),
-        fetchWeatherData(spot.lat, spot.lon),
-        fetchMarineWaveModels(spot.lat, spot.lon),
-        fetchWindModels(spot.lat, spot.lon),
-      ]);
 
-      const timeIndex = findCurrentHourIndex(marineWaveModels.hourly.time);
-      const confidenceDetail = confidenceAtIndex(marineWaveModels, windModels, timeIndex);
-      const dailyConfidence = confidenceByDay(marineWaveModels, windModels);
+      let marineData;
+      let weatherData;
+      let confidenceDetail;
+      let dailyConfidence;
+
+      if (useMultiModel) {
+        const [marine, weather, marineWaveModels, windModels] = await Promise.all([
+          fetchMarineData(spot.lat, spot.lon),
+          fetchWeatherData(spot.lat, spot.lon),
+          fetchMarineWaveModels(spot.lat, spot.lon),
+          fetchWindModels(spot.lat, spot.lon),
+        ]);
+        marineData = marine;
+        weatherData = weather;
+        const timeIndex = findCurrentHourIndex(marineWaveModels.hourly.time);
+        confidenceDetail = confidenceAtIndex(marineWaveModels, windModels, timeIndex);
+        dailyConfidence = confidenceByDay(marineWaveModels, windModels);
+      } else {
+        [marineData, weatherData] = await Promise.all([
+          fetchMarineData(spot.lat, spot.lon),
+          fetchWeatherData(spot.lat, spot.lon),
+        ]);
+        const inherited = confidenceFromPrevious(previousConditions[spot.id]);
+        confidenceDetail = {
+          confidence: inherited.confidence,
+          ...inherited.confidenceDetail,
+        };
+        dailyConfidence = inherited.dailyConfidence;
+      }
       
       // Check if we have IH tide data for this spot
       const spotMapping = ihTides.spotMapping[spot.id];
@@ -315,7 +387,7 @@ async function updateConditions() {
           waveSpreadPct: confidenceDetail.waveSpreadPct,
           windSpreadPct: confidenceDetail.windSpreadPct,
           combinedSpreadPct: confidenceDetail.combinedSpreadPct,
-          degraded: confidenceDetail.degraded,
+          degraded: confidenceDetail.degraded ?? !useMultiModel,
         },
         dailyConfidence,
         updatedAt: new Date().toISOString(),
@@ -383,7 +455,6 @@ async function updateConditions() {
     fs.renameSync(tmpPath, filePath);
   }
 
-  const outputPath = path.join(__dirname, '../public/data/conditions.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   
   // Validate we have data before writing
