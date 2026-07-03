@@ -9,6 +9,7 @@ import AuthProvider from '@/contexts/AuthProvider'
 import SignupNudge from '@/components/homepage/SignupNudge'
 import CSPMeta from '@/components/CSPMeta'
 import SetHtmlLang from '@/components/SetHtmlLang'
+import PageFadeGuard from '@/components/PageFadeGuard'
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
@@ -41,6 +42,7 @@ export default async function LocaleLayout({
     <ClientProviders>
       <AuthProvider>
         <SetHtmlLang lang={htmlLang} />
+        <PageFadeGuard />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

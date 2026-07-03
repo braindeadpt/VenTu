@@ -187,11 +187,9 @@ export default function SpotDetailHero({
                     size="sm"
                   />
                   <SpotAlertPopover
-                    spotSlug={spotSlug}
+                    spotId={spot.id}
                     sport={sport}
-                    score={score}
                     locale={locale}
-                    onRequestLogin={() => {}}
                   />
                 </div>
               </div>

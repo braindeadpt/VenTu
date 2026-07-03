@@ -1,46 +1,86 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Bell, Check, Loader2 } from 'lucide-react';
-import type { SportType, GridSportFilter } from '@/lib/sportRatings';
+import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
-import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
-import { subscribeFavoritesAlerts, formatUserAlertsError } from '@/lib/userAlerts';
+import { getSupabaseClient } from '@/lib/supabase';
+import {
+  fetchUserAlertPrefs,
+  subscribeFavoritesAlerts,
+  formatUserAlertsError,
+  type AlertMode,
+  type UserAlertPrefs,
+} from '@/lib/userAlerts';
 import { useAuth } from '@/contexts/AuthProvider';
 
 interface SpotAlertPopoverProps {
-  spotSlug: string;
+  /** Spot id — added to favorites on save (alerts cover favorites). */
+  spotId: string;
   sport: SportType;
-  score: number;
   locale: string;
-  /** Callback to open the login modal. */
-  onRequestLogin: () => void;
 }
 
+/**
+ * "Alert me" button + popover in the spot hero score card.
+ *
+ * Honest scope: the alert backend is ONE preference per user covering all
+ * their favorite spots (subscribe_favorites_alerts RPC). Saving here adds
+ * the current spot to favorites (so the alert actually covers it) and the
+ * copy says "your favorites", not "this spot". If a preference already
+ * exists it is pre-filled and the user is told saving replaces it.
+ */
 export default function SpotAlertPopover({
-  spotSlug,
+  spotId,
   sport,
-  score,
   locale,
-  onRequestLogin,
 }: SpotAlertPopoverProps) {
   const isPt = locale === 'pt';
-  const { session } = useAuth();
+  const { session, requestLogin, favorites, isFavorite, toggleFavorite } = useAuth();
   const [open, setOpen] = useState(false);
+  const [pendingOpen, setPendingOpen] = useState(false);
   const [minScore, setMinScore] = useState(70);
-  const [alertMode, setAlertMode] = useState<'digest' | 'immediate'>('digest');
+  const [alertMode, setAlertMode] = useState<AlertMode>('digest');
+  const [existing, setExisting] = useState<UserAlertPrefs | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [savedCount, setSavedCount] = useState<number | null>(null);
   const [error, setError] = useState('');
+
+  // If the user clicked while signed out, reopen after the login completes.
+  useEffect(() => {
+    if (pendingOpen && session) {
+      setPendingOpen(false);
+      setOpen(true);
+    }
+  }, [pendingOpen, session]);
+
+  // Pre-fill from the existing preference so "save replaces it" is visible.
+  useEffect(() => {
+    if (!open || !session) return;
+    const sb = getSupabaseClient();
+    if (!sb) return;
+    let cancelled = false;
+    fetchUserAlertPrefs(sb, session.user.id).then((prefs) => {
+      if (cancelled || !prefs || !prefs.active) return;
+      setExisting(prefs);
+      setMinScore(prefs.min_score);
+      setAlertMode(prefs.alert_mode);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [open, session]);
 
   const handleToggle = useCallback(() => {
     if (!session) {
-      onRequestLogin();
+      setPendingOpen(true);
+      requestLogin('general');
       return;
     }
     setOpen((v) => !v);
     setError('');
-  }, [session, onRequestLogin]);
+  }, [session, requestLogin]);
 
   const handleSave = useCallback(async () => {
     setError('');
@@ -49,22 +89,31 @@ export default function SpotAlertPopover({
       const sb = getSupabaseClient();
       if (!sb) throw new Error(isPt ? 'Supabase não configurado' : 'Supabase not configured');
 
+      // The alert covers favorites — make sure this spot is one of them.
+      if (!isFavorite(spotId)) {
+        await toggleFavorite(spotId);
+      }
+
       const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode);
       if (!result.ok) {
         setError(formatUserAlertsError(result.error ?? 'unknown', isPt));
         return;
       }
+      setSavedCount(result.favorite_count ?? null);
       setSaved(true);
       setTimeout(() => {
         setSaved(false);
         setOpen(false);
-      }, 1800);
+      }, 2200);
     } catch (err) {
       setError(err instanceof Error ? err.message : isPt ? 'Erro ao guardar' : 'Save failed');
     } finally {
       setSaving(false);
     }
-  }, [minScore, sport, locale, alertMode, isPt]);
+  }, [minScore, sport, locale, alertMode, isPt, isFavorite, toggleFavorite, spotId]);
+
+  const spotIsFavorite = isFavorite(spotId);
+  const favoriteCountAfterSave = spotIsFavorite ? favorites.length : favorites.length + 1;
 
   return (
     <div className="relative">
@@ -72,7 +121,7 @@ export default function SpotAlertPopover({
         type="button"
         onClick={handleToggle}
         className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-input text-meta-sm font-medium border border-divider bg-surface-1/[0.04] text-fg-muted hover:text-fg hover:border-divider-strong transition-colors duration-150"
-        aria-label={isPt ? 'Avisa-me quando este spot estiver a bombar' : 'Alert me when this spot is firing'}
+        aria-label={isPt ? 'Criar alerta de condições para os teus favoritos' : 'Create a conditions alert for your favorites'}
       >
         <Bell className="w-3.5 h-3.5" aria-hidden />
         {isPt ? 'Avisa-me' : 'Alert me'}
@@ -98,17 +147,27 @@ export default function SpotAlertPopover({
                 </p>
                 <p className="text-meta-sm text-fg-muted">
                   {isPt
-                    ? 'Recebes notificação quando as condições baterem o score definido.'
-                    : 'You\'ll be notified when conditions meet your score threshold.'}
+                    ? `Recebes email quando um dos teus ${savedCount ?? ''} favoritos bater o score definido.`
+                    : `You'll get an email when one of your ${savedCount ?? ''} favorites meets your score.`}
                 </p>
               </div>
             ) : (
               <div className="space-y-3">
-                <p className="text-body-sm font-semibold text-fg">
-                  {isPt ? 'Avisa-me quando...' : 'Alert me when...'}
-                </p>
+                <div>
+                  <p className="text-body-sm font-semibold text-fg">
+                    {isPt ? 'Alerta de condições' : 'Conditions alert'}
+                  </p>
+                  <p className="text-meta-sm text-fg-muted mt-0.5">
+                    {isPt
+                      ? `Cobre os teus favoritos (${favoriteCountAfterSave} ${favoriteCountAfterSave === 1 ? 'spot' : 'spots'}).`
+                      : `Covers your favorites (${favoriteCountAfterSave} ${favoriteCountAfterSave === 1 ? 'spot' : 'spots'}).`}
+                    {!spotIsFavorite && (
+                      <> {isPt ? 'Este spot será adicionado.' : 'This spot will be added.'}</>
+                    )}
+                  </p>
+                </div>
 
-                {/* Sport label (read-only) */}
+                {/* Sport label */}
                 <div className="flex items-center gap-2 text-meta-sm text-fg-muted">
                   <span className="font-medium text-fg">
                     {SPORT_LABELS[sport][isPt ? 'pt' : 'en']}
@@ -161,6 +220,14 @@ export default function SpotAlertPopover({
                     ))}
                   </div>
                 </div>
+
+                {existing && (
+                  <p className="text-meta-sm text-fg-muted border-l-2 border-score-fair/60 pl-2">
+                    {isPt
+                      ? `Substitui o alerta atual (${existing.sport} ≥ ${existing.min_score}).`
+                      : `Replaces your current alert (${existing.sport} ≥ ${existing.min_score}).`}
+                  </p>
+                )}
 
                 {error && (
                   <p className="text-meta-sm text-score-poor">{error}</p>
