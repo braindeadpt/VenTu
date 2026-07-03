@@ -32,10 +32,8 @@ import {
   MAP_WIND_LS_KEY,
   MAP_ONLY_ON_LS_KEY,
   getScoreRgb,
-  SPORT_CSS_VARS,
 } from '@/lib/map-constants';
 import { buildMapWindArrowSvg } from '@/lib/mapWindArrow';
-import { getDifficultyMarkerColor } from '@/lib/mapDifficulty';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
@@ -116,69 +114,55 @@ function getBestScore(data: SpotData, sport: GridSportFilter): number {
   return data.allScores[sport]?.score || 0;
 }
 
-function getSpotRgb(spot: Spot): string {
-  const sportType = spot.type as SportType;
-  if (sportType in SPORT_CSS_VARS) {
-    return `rgb(var(${SPORT_CSS_VARS[sportType]}))`;
-  }
-  return 'rgb(var(--fg-muted))';
-}
-
 function buildMarkerIcon(
   Leaflet: typeof L,
   data: SpotData,
   selectedSport: GridSportFilter,
   showWind: boolean,
 ): L.DivIcon {
-  const { spot, conditions } = data;
+  const { conditions } = data;
   const score = getBestScore(data, selectedSport);
-  const sportColor = getSpotRgb(spot);
-  const scoreColor = getScoreRgb(score);
-  const diffColor = getDifficultyMarkerColor(spot.difficulty);
+  const scoreRgb = getScoreRgb(score);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
 
   const windArrowHtml = showWind
     ? `<div class="ventu-wind-arrow">${buildMapWindArrowSvg(conditions.windDirection, windKtNum)}</div>`
     : '';
 
+  // Drop marker: circle + CSS tail, score number in Geist Mono
+  const markerHtml = `
+    <div class="ventu-spot-marker-wrap ventu-marker-enter" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
+      ${windArrowHtml}
+      <div class="ventu-marker-drop" style="position:relative;">
+        <div class="ventu-marker-drop-circle" style="
+          width:34px;height:34px;border-radius:50%;
+          background:${scoreRgb};
+          border:2.5px solid rgb(var(--bg-elevated));
+          box-shadow:0 3px 6px rgba(0,0,0,0.35);
+          display:flex;align-items:center;justify-content:center;
+        ">
+          <span style="
+            font-family:var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
+            font-variant-numeric:tabular-nums;
+            font-size:13px;font-weight:700;color:#fff;
+            line-height:1;white-space:nowrap;
+          ">${Math.round(score)}</span>
+        </div>
+        <div class="ventu-marker-drop-tail" aria-hidden style="
+          width:0;height:0;margin:0 auto -1px;
+          border-left:6px solid transparent;border-right:6px solid transparent;
+          border-top:8px solid ${scoreRgb};
+        "></div>
+      </div>
+    </div>
+  `;
+
   return Leaflet.divIcon({
     className: 'spot-marker',
-    html: `
-      <div class="ventu-spot-marker-wrap ventu-marker-enter" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-        ${windArrowHtml}
-        <div style="position:relative;">
-          <div class="ventu-spot-marker-dot" style="
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: ${sportColor};
-            border: 2px solid ${scoreColor};
-            box-shadow: 0 0 8px ${sportColor}66, 0 2px 4px rgba(0,0,0,0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
-          ">${Math.round(score)}</div>
-          <span style="
-            position:absolute;
-            top:-1px;
-            right:-1px;
-            width:9px;
-            height:9px;
-            border-radius:50%;
-            background:${diffColor};
-            border:1.5px solid rgba(255,255,255,0.9);
-            box-shadow:0 1px 2px rgba(0,0,0,0.35);
-          " title="difficulty"></span>
-        </div>
-      </div>
-    `,
-    iconSize: showWind ? [28, 48] : [28, 28],
-    iconAnchor: showWind ? [14, 48] : [14, 14],
-    popupAnchor: [0, showWind ? -50 : -16],
+    html: markerHtml,
+    iconSize: showWind ? [34, 54] : [34, 44],
+    iconAnchor: showWind ? [17, 54] : [17, 44],
+    popupAnchor: [0, showWind ? -54 : -46],
   });
 }
 
@@ -245,6 +229,13 @@ function createSpotMarker(
     });
 
     marker.on('popupopen', () => {
+      // Spring scale on selected marker
+      const el = marker.getElement();
+      if (el) {
+        const wrap = el.querySelector('.ventu-spot-marker-wrap') as HTMLElement | null;
+        if (wrap) wrap.classList.add('ventu-marker-selected');
+      }
+
       const root = marker.getPopup()?.getElement();
       if (!root) return;
 
@@ -265,6 +256,14 @@ function createSpotMarker(
       root.querySelectorAll('a[href], .ventu-popup-directions').forEach((anchor) => {
         anchor.addEventListener('click', (ev) => ev.stopPropagation());
       });
+    });
+
+    marker.on('popupclose', () => {
+      const el = marker.getElement();
+      if (el) {
+        const wrap = el.querySelector('.ventu-spot-marker-wrap') as HTMLElement | null;
+        if (wrap) wrap.classList.remove('ventu-marker-selected');
+      }
     });
   }
 
@@ -554,6 +553,23 @@ export default function SpotMapInteractive({
   }, []);
 
   const showWindOnMarkers = windEnabled && !clusterEnabled;
+
+  // Performance measurement — marker creation timing
+  const perfMeasure = useCallback((label: string) => {
+    if (typeof performance !== 'undefined') {
+      performance.mark(`ventu-map-${label}`);
+      const entries = performance.getEntriesByType('measure').filter(
+        (e) => e.name.startsWith('ventu-map-'),
+      );
+      if (entries.length > 1) {
+        const last = entries[entries.length - 1] as PerformanceMeasure;
+        const prev = entries[entries.length - 2] as PerformanceMeasure;
+        if (last.duration > 0) {
+          console.log(`[map perf] ${label}: ${Math.round(last.duration)}ms`);
+        }
+      }
+    }
+  }, []);
 
   const visibleSpots = useMemo(() => {
     if (!onlyOnEnabled) return spotsData;

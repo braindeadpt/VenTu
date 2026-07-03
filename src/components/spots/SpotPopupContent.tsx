@@ -1,15 +1,14 @@
 'use client';
 
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Clock, Droplets, Navigation, Waves, Wind, Zap } from 'lucide-react';
+import { Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
-import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings';
+import { SPORT_LABELS } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
+import { getScoreTokens } from '@/lib/sportScore';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
-import { getScoreRgb } from '@/lib/scoreThresholds';
-import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { getSpotImageAlt } from '@/lib/spotImage';
 
@@ -45,101 +44,106 @@ export function SpotPopupContent({
   const isPt = locale === 'pt';
   const name = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
-  const sports = [...getCompatibleSports(spot)].sort(
-    (a, b) => (allScores[b]?.score ?? 0) - (allScores[a]?.score ?? 0),
-  );
-  const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
   const detailHref = getSpotDetailHref(locale, spot.slug);
 
+  const topSport = (Object.entries(allScores) as [SportType, SportScore][])
+    .filter(([, s]) => s.score > 0)
+    .sort(([, a], [, b]) => b.score - a.score)[0];
+  const topScore = topSport?.[1]?.score ?? 0;
+  const topSportLabel = topScore > 0 && topSport
+    ? SPORT_LABELS[topSport[0]]?.[isPt ? 'pt' : 'en']
+    : null;
+  const tokens = topScore > 0 ? getScoreTokens(topScore) : null;
+
   return (
-    <div className="space-y-3 min-w-[240px] max-w-[280px]">
-      {imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={imageUrl}
-          alt={getSpotImageAlt(spot, isPt ? 'pt' : 'en')}
-          className="w-full h-24 object-cover rounded-lg -mt-1 ring-1 ring-divider"
-          loading="lazy"
-        />
-      ) : null}
-
-      <div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          <div className="font-bold text-sm text-fg">{name}</div>
-          <ConfidenceBadge
-            confidence={confidence}
-            detail={confidenceDetail}
-            locale={locale}
-            size="sm"
-            withTooltip={false}
+    <div className="min-w-[240px] max-w-[280px]">
+      {/* Image with score overlay */}
+      <div className="relative">
+        {imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={imageUrl}
+            alt={getSpotImageAlt(spot, isPt ? 'pt' : 'en')}
+            className="w-full h-24 object-cover rounded-t-lg ring-1 ring-divider"
+            loading="lazy"
           />
-        </div>
-        <div className="text-[11px] text-fg-muted mt-0.5">
-          {region} · {getDifficultyLabel(spot.difficulty, isPt)}
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-1">
-        {sports.map((sport) => {
-          const score = allScores[sport]?.score ?? 0;
-          const label = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
-          return (
+        ) : (
+          <div className="w-full h-16 rounded-t-lg bg-surface-1/[0.04]" />
+        )}
+        {tokens && topScore > 0 && (
+          <div className="absolute top-1.5 right-1.5 flex flex-col items-end gap-0.5">
             <span
-              key={sport}
-              className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-semibold border border-divider bg-surface-1/[0.04]"
+              className={[
+                'inline-flex items-center justify-center min-w-[36px] h-[22px] rounded-pill text-xs font-mono font-semibold tabular-nums border px-2',
+                tokens.bg,
+                tokens.text,
+                tokens.border,
+              ].join(' ')}
+              aria-label={topSportLabel ? `${topSportLabel}: ${topScore}` : `Score: ${topScore}`}
             >
-              <span className="text-fg-muted">{label}</span>
-              <span className="font-mono tabular-nums" style={{ color: getScoreRgb(score) }}>
-                {score}
-              </span>
+              {topScore}
             </span>
-          );
-        })}
+            {topSportLabel && (
+              <span className="text-[10px] text-fg-muted font-sans">{topSportLabel}</span>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="grid grid-cols-2 gap-1.5 text-[11px]">
-        <div className="bg-surface-1/[0.08] rounded-md py-1.5 px-1.5 col-span-2">
-          <Waves className="w-3 h-3 inline mr-1 text-data-waves align-text-bottom" aria-hidden />
-          <span className="text-fg-subtle">{isPt ? 'Ondas' : 'Waves'} </span>
-          <span className="font-semibold text-fg tabular-nums">
-            {swellHeight}m · {swellPeriod}s
-          </span>
+      {/* Spot name + region */}
+      <div className="px-2.5 pt-2 pb-1.5 space-y-0.5">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-semibold text-fg truncate">{name}</span>
+          {confidence && (
+            <span className="inline-block w-2 h-2 rounded-full"
+              style={{
+                backgroundColor: (
+                  confidence as string === 'high' ? 'rgb(var(--score-good))'
+                  : confidence as string === 'medium' ? 'rgb(var(--score-fair))'
+                  : 'rgb(var(--score-poor))'
+                ),
+              }}
+              aria-label={confidence}
+            />
+          )}
         </div>
-        <div className="bg-surface-1/[0.08] rounded-md py-1.5 px-1.5">
-          <Wind className="w-3 h-3 inline mr-1 text-data-wind align-text-bottom" aria-hidden />
-          <span className="font-semibold text-fg tabular-nums">
-            {windKnots}kt {windDirection}
-          </span>
-        </div>
-        <div className="bg-surface-1/[0.08] rounded-md py-1.5 px-1.5">
-          <Droplets className="w-3 h-3 inline mr-1 text-data-water align-text-bottom" aria-hidden />
-          <span className="font-semibold text-fg tabular-nums">{waterTemp}°C</span>
-        </div>
-        <div className="bg-surface-1/[0.08] rounded-md py-1.5 px-1.5 col-span-2">
-          <Zap className="w-3 h-3 inline mr-1 text-score-fair align-text-bottom" aria-hidden />
-          <span className="text-fg-subtle">{isPt ? 'Energia' : 'Power'} </span>
-          <span className="font-semibold text-fg tabular-nums">{wavePowerKw} kW/m</span>
-        </div>
+        <p className="text-[11px] text-fg-muted">
+          {region} · {getDifficultyLabel(spot.difficulty, isPt)}
+        </p>
       </div>
 
-      <div className="flex flex-col gap-1.5">
+      {/* 3 metrics in mono */}
+      <div className="px-2.5 pb-2 flex items-center gap-2 text-[11px] font-mono tabular-nums">
+        <span className="inline-flex items-center gap-1 text-fg">
+          <Waves className="w-3 h-3 text-data-waves" aria-hidden />
+          {swellHeight}m · {swellPeriod}s
+        </span>
+        <span aria-hidden className="text-fg-subtle/40">|</span>
+        <span className="inline-flex items-center gap-1 text-fg">
+          <Wind className="w-3 h-3 text-data-wind" aria-hidden />
+          {windKnots}kt {windDirection}
+        </span>
+        <span aria-hidden className="text-fg-subtle/40">|</span>
+        <span className="inline-flex items-center gap-1 text-fg">
+          <Droplets className="w-3 h-3 text-data-water" aria-hidden />
+          {waterTemp}°
+        </span>
+      </div>
+
+      {/* CTA button */}
+      <div className="px-2.5 pb-2.5">
         <button
           type="button"
-          className="ventu-popup-detail w-full text-center py-2 rounded-lg bg-data-waves text-white text-xs font-semibold border-0 cursor-pointer"
+          className="ventu-popup-detail w-full text-center py-2 rounded-input text-xs font-semibold border-0 cursor-pointer inline-flex items-center justify-center gap-1.5"
+          style={{
+            backgroundColor: tokens ? `rgb(var(--score-${tokens.tier}) / 0.15)` : 'rgb(var(--surface-1) / 0.08)',
+            color: tokens ? `rgb(var(--score-${tokens.tier}))` : 'rgb(var(--fg))',
+          }}
           data-spot-id={spot.id}
         >
           {isPt ? 'Ver spot' : 'View spot'}
+          <ArrowUpRight className="w-3 h-3" aria-hidden />
         </button>
-        <a
-          href={directionsUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ventu-popup-directions flex items-center justify-center gap-1 w-full text-center py-2 rounded-lg bg-surface-2/[0.08] text-fg text-xs font-semibold no-underline border border-divider hover:bg-surface-1/[0.04]"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Navigation className="w-3.5 h-3.5" aria-hidden />
-          {isPt ? 'Como chegar' : 'Get directions'}
-        </a>
       </div>
     </div>
   );

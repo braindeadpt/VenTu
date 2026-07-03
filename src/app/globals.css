@@ -320,18 +320,31 @@
     transform-origin: center bottom;
   }
 
-  .ventu-spot-marker-dot {
+  .ventu-marker-drop-circle {
     transition:
       transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
       box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
+  .ventu-marker-drop-tail {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-  .leaflet-marker-icon:hover .ventu-spot-marker-dot,
-  .leaflet-marker-icon:focus-visible .ventu-spot-marker-dot {
+  .leaflet-marker-icon:hover .ventu-marker-drop-circle,
+  .leaflet-marker-icon:focus-visible .ventu-marker-drop-circle {
     transform: scale(1.1);
     box-shadow:
       0 0 12px rgb(var(--data-waves) / 0.45),
       0 4px 8px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  /* Spring scale on selected marker */
+  .ventu-marker-selected .ventu-marker-drop-circle {
+    transform: scale(1.2);
+    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .ventu-marker-selected .ventu-marker-drop-tail {
+    transform: scaleX(1.2);
+    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
   @keyframes score-epic-pulse {
@@ -604,6 +617,31 @@
 }
 .theme-ocean .spot-hero-scrim-side {
   background: linear-gradient(to right, rgba(15,23,42,0.65) 0%, transparent 100%) !important;
+}
+
+/* Hero ink: the scrim above is dark even in light mode, so all text that
+   sits directly over the image must switch to the dark-theme (light) ink.
+   The elevated score card re-establishes light-theme ink because it has its
+   own opaque light background. */
+.theme-ocean .spot-hero-ink {
+  --fg:          241 245 249 / 0.95;
+  --fg-muted:    203 213 225 / 0.85;
+  --fg-subtle:   148 163 184 / 0.90;
+  --fg-rgb:          241 245 249;
+  --fg-muted-rgb:    203 213 225;
+  --fg-subtle-rgb:   148 163 184;
+  --divider:     255 255 255 / 0.14;
+  --divider-rgb: 255 255 255;
+}
+.theme-ocean .spot-hero-ink .spot-hero-card {
+  --fg:           15 23 42 / 1.0;
+  --fg-muted:     51 65 85 / 0.85;
+  --fg-subtle:    71 85 105 / 0.80;
+  --fg-rgb:          15 23 42;
+  --fg-muted-rgb:    51 65 85;
+  --fg-subtle-rgb:   71 85 105;
+  --divider:      15 23 42 / 0.10;
+  --divider-rgb:  15 23 42;
 }
 
 /* Snap-x forecast table: thin vertical cyan line at the current hour. */
