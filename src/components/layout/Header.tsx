@@ -53,6 +53,25 @@ export default function Header({ locale }: HeaderProps) {
     }
   }, [mobileMenuOpen]);
 
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [mobileMenuOpen]);
+
+  // Fecha menu móvel ao passar para desktop (evita estado preso após resize).
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const onChange = (e: MediaQueryListEvent) => {
+      if (e.matches) setMobileMenuOpen(false);
+    };
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
   const handleMobileKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       setMobileMenuOpen(false);
@@ -141,7 +160,7 @@ export default function Header({ locale }: HeaderProps) {
             </Link>
 
             {/* Desktop nav */}
-            <nav className="hidden md:flex items-center gap-0.5 mx-4" aria-label={navLabel.home}>
+            <nav className="hidden lg:flex items-center gap-0.5 mx-4 min-w-0 flex-1 justify-center" aria-label={navLabel.home}>
               <MegaMenu
                 locale={locale}
                 isOpen={openMega}
@@ -170,7 +189,7 @@ export default function Header({ locale }: HeaderProps) {
             </nav>
 
             {/* Desktop actions */}
-            <div className="hidden md:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-1 shrink-0">
               <button
                 onClick={openSearch}
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
@@ -219,7 +238,7 @@ export default function Header({ locale }: HeaderProps) {
             </div>
 
             {/* Mobile actions */}
-            <div className="flex items-center gap-1 md:hidden">
+            <div className="flex items-center gap-1 lg:hidden shrink-0">
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
@@ -258,10 +277,10 @@ export default function Header({ locale }: HeaderProps) {
           aria-label={isPt ? 'Navegação móvel' : 'Mobile navigation'}
           onKeyDown={handleMobileKeyDown}
           className={[
-            'md:hidden overflow-hidden transition-all duration-slow ease-out-expo',
+            'lg:hidden overflow-hidden transition-all duration-slow ease-out-expo',
             'bg-bg-base/95 backdrop-blur-xl',
             mobileMenuOpen
-              ? 'max-h-[500px] border-b border-divider opacity-100'
+              ? 'max-h-[min(80dvh,560px)] border-b border-divider opacity-100 overflow-y-auto'
               : 'max-h-0 opacity-0 pointer-events-none',
           ].join(' ')}
           aria-hidden={!mobileMenuOpen}
