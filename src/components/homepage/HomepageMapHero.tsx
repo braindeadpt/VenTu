@@ -310,7 +310,7 @@ export default function HomepageMapHero({
 
           {isFeatured && aggregates && (
             <div
-              className="pointer-events-auto self-start sm:self-end mt-auto pb-1 sm:pb-2 max-w-full overflow-x-auto no-scrollbar stagger-fade-in motion-reduce:animate-none"
+              className="pointer-events-auto sm:absolute sm:bottom-0 sm:left-0 sm:right-0 pb-1 sm:pb-2 max-w-full stagger-fade-in motion-reduce:animate-none"
               style={{ '--stagger-delay': 400 } as React.CSSProperties}
             >
               <HeroTicker
