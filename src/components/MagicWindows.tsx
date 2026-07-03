@@ -121,9 +121,9 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
               </div>
             </div>
 
-            {/* 24h bar */}
+            {/* 24h bar — ticks + labels BELOW the track */}
             <div
-              className="relative h-7 rounded-pill bg-surface-1/[0.06] border border-divider overflow-hidden"
+              className="relative"
               role="img"
               aria-label={
                 isPt
@@ -131,37 +131,36 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
                   : `Window between ${formatHour(w.start)} and ${formatHour(w.end)} with score ${w.score}`
               }
             >
-              {/* Tinted intensity ramp using tier color, very low opacity */}
-              <div
-                className="absolute inset-y-0 left-0 right-0 opacity-25"
-                style={{
-                  background: `linear-gradient(90deg, ${tierBarGradient(w.score)})`,
-                }}
-                aria-hidden
-              />
-              {/* The window itself */}
-              <div
-                className="absolute inset-y-1 rounded-pill border"
-                style={{
-                  left: `${leftPct}%`,
-                  width: `${widthPct}%`,
-                  backgroundColor: `rgb(var(--score-${tokens.tier}) / 0.22)`,
-                  borderColor: `rgb(var(--score-${tokens.tier}) / 0.55)`,
-                }}
-                aria-hidden
-              />
-              {/* Hour ticks */}
-              <div className="absolute inset-0 flex pointer-events-none" aria-hidden>
-                {DAY_TICKS.map((tick) => (
-                  <div
-                    key={tick}
-                    className="absolute top-0 bottom-0 border-l border-divider/40"
-                    style={{ left: `${(tick / 24) * 100}%` }}
-                  />
-                ))}
+              <div className="relative h-6 rounded-pill bg-surface-1/[0.06] border border-divider overflow-hidden">
+                <div
+                  className="absolute inset-y-0 left-0 right-0 opacity-25"
+                  style={{
+                    background: `linear-gradient(90deg, ${tierBarGradient(w.score)})`,
+                  }}
+                  aria-hidden
+                />
+                <div
+                  className="absolute inset-y-1 rounded-pill border"
+                  style={{
+                    left: `${leftPct}%`,
+                    width: `${widthPct}%`,
+                    backgroundColor: `rgb(var(--score-${tokens.tier}) / 0.22)`,
+                    borderColor: `rgb(var(--score-${tokens.tier}) / 0.55)`,
+                  }}
+                  aria-hidden
+                />
+                <div className="absolute inset-0 flex pointer-events-none" aria-hidden>
+                  {DAY_TICKS.map((tick) => (
+                    <div
+                      key={tick}
+                      className="absolute top-0 bottom-0 border-l border-divider/40"
+                      style={{ left: `${(tick / 24) * 100}%` }}
+                    />
+                  ))}
+                </div>
               </div>
-              {/* Hour labels */}
-              <div className="absolute inset-x-0 bottom-0.5 flex justify-between px-1.5 text-[9px] font-mono tabular-nums text-fg-subtle pointer-events-none" aria-hidden>
+              {/* Labels below the bar, not overlapping */}
+              <div className="flex justify-between px-0.5 mt-0.5 text-[10px] font-mono tabular-nums text-fg-subtle" aria-hidden>
                 {DAY_TICKS.map((tick) => (
                   <span key={tick}>{String(tick).padStart(2, '0')}h</span>
                 ))}
@@ -169,11 +168,11 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
             </div>
 
             {reasons.length > 0 && (
-              <ul className="flex flex-wrap gap-1.5 mt-3 list-none p-0 m-0">
+              <ul className="flex flex-wrap gap-1.5 mt-4 list-none p-0 m-0">
                 {reasons.map((r, ri) => (
                   <li
                     key={ri}
-                    className="text-meta-sm px-2 py-0.5 rounded-pill bg-surface-1/[0.04] text-fg-muted border border-divider"
+                    className="text-meta-sm px-2.5 py-1 rounded-pill bg-surface-1/[0.04] text-fg-muted border border-divider"
                   >
                     {r}
                   </li>
