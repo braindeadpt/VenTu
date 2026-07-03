@@ -101,7 +101,7 @@ export default function SpotDetailHero({
         />
       </div>
 
-      <div className="relative max-w-6xl mx-auto px-4 pt-3 pb-4">
+      <div className="spot-hero-ink relative max-w-6xl mx-auto px-4 pt-3 pb-4">
         <Link
           href={`/${locale}/spots/`}
           className="inline-flex items-center gap-1.5 text-meta-sm text-fg-muted hover:text-fg transition-colors duration-150 mb-2"
@@ -174,7 +174,7 @@ export default function SpotDetailHero({
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="rounded-card bg-bg-elevated border border-divider p-3 sm:p-4 w-full sm:w-[270px]">
+            <div className="spot-hero-card rounded-card bg-bg-elevated border border-divider p-3 sm:p-4 w-full sm:w-[270px]">
               <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">

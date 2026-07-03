@@ -15,7 +15,8 @@ interface MagicWindowsProps {
   locale: string;
 }
 
-const DAY_TICKS = [0, 6, 12, 18, 24];
+const AXIS_TICKS = [0, 6, 12, 18, 24];
+const AXIS_HOURS = 24;
 const HOUR_MS = 3_600_000;
 
 function pickWindowTime(hourly: HourlyCondition[], index: number): Date {
@@ -23,10 +24,19 @@ function pickWindowTime(hourly: HourlyCondition[], index: number): Date {
   return t ? new Date(t) : new Date();
 }
 
-function dayStartUtc(date: Date): number {
+/** Floor a date to the start of its hour (local time). */
+function hourFloor(date: Date): number {
   const d = new Date(date);
-  d.setUTCHours(0, 0, 0, 0);
+  d.setMinutes(0, 0, 0);
   return d.getTime();
+}
+
+function isSameCalendarDay(a: Date, b: Date): boolean {
+  return (
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate()
+  );
 }
 
 export default function MagicWindows({ hourly, spotType, spotBestWind, locale }: MagicWindowsProps) {
@@ -56,21 +66,30 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
     });
   };
 
-  // Reference day-start in UTC for the first hourly slot. The bar is
-  // normalised to the 24h day that contains the first window.
-  const firstWindow = windows[0];
-  const firstWindowTime = pickWindowTime(hourly, firstWindow.start);
-  const dayStart = dayStartUtc(firstWindowTime);
+  // Rolling axis: from the first forecast hour (≈ now) to +24h. Matches the
+  // "Próximas 24h" header, so no window ever falls outside the track.
+  const axisStart = hourFloor(new Date(hourly[0]?.time ?? Date.now()));
+  const axisStartDate = new Date(axisStart);
+  const tickLabels = AXIS_TICKS.map((offset) => {
+    const h = new Date(axisStart + offset * HOUR_MS).getHours();
+    return `${String(h).padStart(2, '0')}h`;
+  });
 
   return (
     <div className="space-y-3">
       {windows.map((w, i) => {
         const startTime = pickWindowTime(hourly, w.start);
         const endTime = pickWindowTime(hourly, w.end);
-        const startMin = Math.max(0, (startTime.getTime() - dayStart) / HOUR_MS);
-        const endMin = Math.min(24, (endTime.getTime() - dayStart) / HOUR_MS);
-        const leftPct = (startMin / 24) * 100;
-        const widthPct = Math.max(2, ((endMin - startMin) / 24) * 100);
+        const startH = Math.max(0, (startTime.getTime() - axisStart) / HOUR_MS);
+        const endH = Math.min(AXIS_HOURS, (endTime.getTime() - axisStart) / HOUR_MS);
+        const leftPct = (startH / AXIS_HOURS) * 100;
+        const widthPct = Math.max(2, ((endH - startH) / AXIS_HOURS) * 100);
+
+        // Day hints: flag windows that start tomorrow, and ranges that cross
+        // midnight, so "05:00 – 04:00" can't be read as going backwards.
+        const startsTomorrow = !isSameCalendarDay(startTime, axisStartDate);
+        const crossesMidnight = !isSameCalendarDay(startTime, endTime);
+        const tomorrowLabel = isPt ? 'amanhã' : 'tomorrow';
 
         const tokens = getScoreTokens(w.score);
         const reasons = (isPt ? w.reason : w.reasonEn).split(' + ').filter(Boolean);
@@ -97,7 +116,17 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
                 </div>
                 <div className="min-w-0">
                   <div className="font-display text-h3 text-fg font-semibold leading-tight tabular-nums">
+                    {startsTomorrow && (
+                      <span className="text-meta text-fg-muted font-sans font-medium mr-1.5 capitalize">
+                        {tomorrowLabel}
+                      </span>
+                    )}
                     {formatHour(w.start)} – {formatHour(w.end)}
+                    {!startsTomorrow && crossesMidnight && (
+                      <span className="text-meta text-fg-muted font-sans font-medium ml-1.5">
+                        ({tomorrowLabel})
+                      </span>
+                    )}
                   </div>
                   <div className="text-meta-sm text-fg-muted">
                     {isPt
@@ -150,19 +179,19 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
                   aria-hidden
                 />
                 <div className="absolute inset-0 flex pointer-events-none" aria-hidden>
-                  {DAY_TICKS.map((tick) => (
+                  {AXIS_TICKS.map((tick) => (
                     <div
                       key={tick}
                       className="absolute top-0 bottom-0 border-l border-divider/40"
-                      style={{ left: `${(tick / 24) * 100}%` }}
+                      style={{ left: `${(tick / AXIS_HOURS) * 100}%` }}
                     />
                   ))}
                 </div>
               </div>
               {/* Labels below the bar, not overlapping */}
               <div className="flex justify-between px-0.5 mt-0.5 text-[10px] font-mono tabular-nums text-fg-subtle" aria-hidden>
-                {DAY_TICKS.map((tick) => (
-                  <span key={tick}>{String(tick).padStart(2, '0')}h</span>
+                {tickLabels.map((label, li) => (
+                  <span key={li}>{label}</span>
                 ))}
               </div>
             </div>

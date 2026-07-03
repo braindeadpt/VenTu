@@ -7,6 +7,7 @@ import Footer from '@/components/layout/Footer'
 import ClientProviders from '@/components/layout/ClientProviders'
 import AuthProvider from '@/contexts/AuthProvider'
 import CSPMeta from '@/components/CSPMeta'
+import SetHtmlLang from '@/components/SetHtmlLang'
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
@@ -38,11 +39,7 @@ export default async function LocaleLayout({
   return (
     <ClientProviders>
       <AuthProvider>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.documentElement.lang="${htmlLang}";`,
-          }}
-        />
+        <SetHtmlLang lang={htmlLang} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

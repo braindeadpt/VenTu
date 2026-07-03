@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Waves, Wind, Droplets, Clock } from 'lucide-react';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { SportScore } from '@/lib/sportScore';
@@ -38,12 +38,11 @@ export default function SpotStickyBar({
 }: SpotStickyBarProps) {
   const isPt = locale === 'pt';
   const [visible, setVisible] = useState(false);
-  const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (typeof window === 'undefined' || window.matchMedia('(min-width: 768px)').matches) {
-      return;
-    }
+    // Always observe — the bar is hidden on md+ via CSS (`md:hidden`), so
+    // gating the observer on viewport width here would freeze the mount-time
+    // decision and break rotation/resize into mobile widths.
     if (!heroRef.current) return;
     // Use a sentinel placed right after the hero. When the sentinel scrolls
     // out of view (above the viewport) the hero is gone — show the bar.

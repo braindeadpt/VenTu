@@ -136,7 +136,23 @@ export function computeMagicWindows(
   let start = -1;
   let end = -1;
 
+  // Invariant: no window longer than 24h, regardless of how many hours the
+  // caller passes in. Longer runs are split into ≤24h segments; segments
+  // shorter than 2h are dropped (same minimum as the run detection below).
+  const MAX_WINDOW_HOURS = 24;
+
   const pushWindow = (s: number, e: number) => {
+    if (e - s + 1 > MAX_WINDOW_HOURS) {
+      for (let cs = s; cs <= e; cs += MAX_WINDOW_HOURS) {
+        const ce = Math.min(cs + MAX_WINDOW_HOURS - 1, e);
+        if (ce - cs >= 1) pushSegment(cs, ce);
+      }
+      return;
+    }
+    pushSegment(s, e);
+  };
+
+  const pushSegment = (s: number, e: number) => {
     const windowScores = scored.slice(s, e + 1);
     const avgScore = Math.floor(windowScores.reduce((a, b) => a + b.score, 0) / windowScores.length);
     const durationBonus = Math.min((e - s) * 2, 15);
