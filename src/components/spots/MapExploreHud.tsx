@@ -1,8 +1,9 @@
 'use client';
 
-import { Filter, Layers, MapPin, Minimize2, RotateCcw, Wind, Zap } from 'lucide-react';
+import { Filter, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
+import { dispatchOpenSearch } from '@/lib/searchEvents';
 import type { BasemapMode } from './MapLayerToggle';
 import type { MapFullscreenHudProps } from './mapHudTypes';
 
@@ -107,6 +108,13 @@ export default function MapExploreHud({
               );
             })}
           </div>
+
+          <MapControlButton
+            onClick={() => dispatchOpenSearch()}
+            aria-label={isPt ? 'Pesquisar spots' : 'Search spots'}
+          >
+            <Search className="w-4 h-4" aria-hidden />
+          </MapControlButton>
 
           <MapControlButton
             onClick={onToggleCluster}
