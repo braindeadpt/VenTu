@@ -64,8 +64,12 @@ export default function SpotGridRankedList({
       </div>
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 list-none p-0 m-0">
-        {list.map((data) => (
-          <li key={data.spot.id}>
+        {list.map((data, i) => (
+          <li
+            key={data.spot.id}
+            className="stagger-fade-in motion-reduce:animate-none"
+            style={{ '--stagger-delay': i * 30 } as React.CSSProperties}
+          >
             <SpotListCard
               compact
               name={isPt ? data.spot.name : data.spot.nameEn}

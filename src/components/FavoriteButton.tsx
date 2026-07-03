@@ -80,14 +80,16 @@ export default function FavoriteButton({
       aria-pressed={isLoggedIn ? active : undefined}
       aria-label={label}
       title={label}
-      className={`flex items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-lg transition-all hover:scale-110 ${
-        clickEffect ? 'scale-125' : ''
+      className={`flex items-center justify-center min-w-[44px] min-h-[44px] p-2 rounded-lg transition-all duration-200 ease-out motion-reduce:transition-none hover:scale-110 active:scale-95 ${
+        clickEffect ? 'scale-[1.3]' : ''
       } ${
         active && isLoggedIn ? 'text-windDir-onshore' : 'text-fg-subtle hover:text-fg-muted'
       }`}
     >
       <Heart
-        className={`${sizeClasses[size]} ${active && isLoggedIn ? 'fill-current' : ''}`}
+        className={`${sizeClasses[size]} transition-colors duration-200 motion-reduce:transition-none ${
+          active && isLoggedIn ? 'fill-current' : 'fill-transparent'
+        }`}
         aria-hidden="true"
       />
       {showLabel && (

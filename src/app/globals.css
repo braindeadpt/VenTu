@@ -356,6 +356,21 @@
     transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 
+  /* Page entrance — single fade-up on initial paint (static export). */
+  @keyframes page-fade-in {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  main#main-content {
+    animation: page-fade-in 300ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  /* Pull-to-refresh indicator spin */
+  @keyframes ptr-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
   @keyframes score-epic-pulse {
     0%,
     100% {
@@ -651,6 +666,31 @@
   --fg-subtle-rgb:   71 85 105;
   --divider:      15 23 42 / 0.10;
   --divider-rgb:  15 23 42;
+}
+
+/* Pull-to-refresh — mobile overscroll indicator. */
+.ptr-container {
+  overscroll-behavior-y: contain;
+  touch-action: pan-y;
+}
+.ptr-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 0;
+  overflow: hidden;
+  transition: height 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.ptr-indicator.active {
+  height: 48px;
+}
+.ptr-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgb(var(--divider));
+  border-top-color: rgb(var(--accent));
+  border-radius: 50%;
+  animation: ptr-spin 600ms linear infinite;
 }
 
 /* Snap-x forecast table: thin vertical cyan line at the current hour. */

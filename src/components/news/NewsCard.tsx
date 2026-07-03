@@ -76,7 +76,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
   }
 
   return (
-    <article className="card-1 overflow-hidden hover:bg-surface-2/[0.08] transition-all duration-300 group">
+    <article className="card-1 overflow-hidden hover:bg-surface-2/[0.08] hover:-translate-y-px hover:shadow-card-hover active:translate-y-0 transition-all duration-200 ease-out motion-reduce:transition-none group">
       <div className="p-5 space-y-3">
         <div className="flex items-center gap-2 flex-wrap">
           <div className="flex items-center gap-1">
