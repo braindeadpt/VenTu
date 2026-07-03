@@ -92,11 +92,11 @@ export default function SpotDetailHero({
           className="h-full min-h-[200px] md:min-h-[240px]"
         />
         <div
-          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/88 to-bg-base/40 md:via-bg-base/92 md:to-bg-base/55"
+          className="absolute inset-0 bg-gradient-to-t from-bg-base via-bg-base/88 to-bg-base/40 md:via-bg-base/92 md:to-bg-base/55 spot-hero-scrim-bottom"
           aria-hidden
         />
         <div
-          className="absolute inset-0 hidden md:block bg-gradient-to-r from-bg-base/80 via-transparent to-transparent max-w-[min(100%,520px)]"
+          className="absolute inset-0 hidden md:block bg-gradient-to-r from-bg-base/80 via-transparent to-transparent max-w-[min(100%,520px)] spot-hero-scrim-side"
           aria-hidden
         />
       </div>
@@ -151,13 +151,6 @@ export default function SpotDetailHero({
               difficulty={spot.difficulty}
               score={score}
               locale={locale}
-            />
-
-            <DataSourceBadge
-              source={conditions.source}
-              updatedAt={conditions.updatedAt}
-              locale={locale}
-              size="sm"
             />
 
             <a
@@ -218,10 +211,25 @@ export default function SpotDetailHero({
                 />
               </div>
 
-              {updatedLabel && (
-                <div className="mt-2 flex items-center justify-center gap-1 text-meta-sm text-fg-muted">
-                  <span className="w-1.5 h-1.5 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
-                  <span>{isPt ? 'Actualizado' : 'Updated'} {updatedLabel}</span>
+              {(updatedLabel || conditions.source) && (
+                <div className="mt-2 flex items-center justify-center gap-1.5 text-meta-sm text-fg-muted flex-wrap">
+                  {updatedLabel && (
+                    <>
+                      <span className="w-1.5 h-1.5 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
+                      <span>{isPt ? 'Actualizado' : 'Updated'} {updatedLabel}</span>
+                    </>
+                  )}
+                  {conditions.source && (
+                    <span aria-hidden className="text-fg-subtle">
+                      ·
+                    </span>
+                  )}
+                  <DataSourceBadge
+                    source={conditions.source}
+                    updatedAt={conditions.updatedAt}
+                    locale={locale}
+                    size="sm"
+                  />
                 </div>
               )}
             </div>
