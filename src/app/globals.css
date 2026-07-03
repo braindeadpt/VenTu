@@ -698,6 +698,17 @@ body.ventu-signup-nudge-open footer {
   --fg-subtle-rgb:   71 85 105;
   --divider:      15 23 42 / 0.10;
   --divider-rgb:  15 23 42;
+  --divider-strong: 15 23 42 / 0.18;
+  --divider-strong-rgb: 15 23 42;
+  --bg-elevated: 255 255 255;
+  background-color: rgb(var(--bg-elevated));
+  color: rgb(var(--fg));
+}
+
+/* Score card: opaque elevated panel with theme-native ink (never hero scrim ink) */
+.spot-hero-ink .spot-hero-card {
+  background-color: rgb(var(--bg-elevated));
+  color: rgb(var(--fg));
 }
 
 /* Pull-to-refresh — mobile overscroll indicator. */

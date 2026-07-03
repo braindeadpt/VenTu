@@ -179,7 +179,7 @@ export default function SpotDetailHero({
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="spot-hero-card rounded-card bg-bg-elevated/95 border border-divider p-3 sm:p-4 w-full sm:w-[270px] shadow-card supports-[backdrop-filter]:bg-bg-elevated/88 supports-[backdrop-filter]:backdrop-blur-sm">
+            <div className="spot-hero-card rounded-card border border-divider bg-bg-elevated p-3 sm:p-4 w-full sm:w-[270px] shadow-card">
               <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
@@ -203,25 +203,21 @@ export default function SpotDetailHero({
                   icon={<Waves className="w-4 h-4 text-data-waves" />}
                   value={`${conditions.waveHeight.toFixed(1)}m`}
                   label={isPt ? 'Ondas' : 'Waves'}
-                  className="bg-surface-2 border-divider-strong"
                 />
                 <StatChip
                   icon={<Clock className="w-4 h-4 text-data-period" />}
                   value={`${Math.round(conditions.wavePeriod)}s`}
                   label={isPt ? 'Período' : 'Period'}
-                  className="bg-surface-2 border-divider-strong"
                 />
                 <StatChip
                   icon={<Wind className="w-4 h-4 text-data-wind" />}
                   value={`${windKt}kt`}
                   label={isPt ? 'Vento' : 'Wind'}
-                  className="bg-surface-2 border-divider-strong"
                 />
                 <StatChip
                   icon={<Droplets className="w-4 h-4 text-data-water" />}
                   value={`${conditions.waterTemp.toFixed(1)}°C`}
                   label={isPt ? 'Água' : 'Water'}
-                  className="bg-surface-2 border-divider-strong"
                 />
               </div>
 
