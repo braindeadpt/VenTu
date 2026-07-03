@@ -8,6 +8,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Layers, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
+import { unlockPageInteraction } from '@/lib/mapFullscreen';
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
@@ -503,6 +504,7 @@ export default function SpotMapInteractive({
     } else {
       setIsFullscreen(false);
     }
+    unlockPageInteraction();
   }, [onExitFullscreenOverride]);
 
   useEffect(() => {
@@ -641,15 +643,38 @@ export default function SpotMapInteractive({
     };
   }, [isHeroEmbed, isReady, visibleSpots, selectedRegion, isMobile]);
 
-  // Lock page scroll while map is fullscreen
+  // Lock page scroll while map is fullscreen — always clear on exit (Drawer pattern)
   useEffect(() => {
-    if (!isFullscreen) return;
-    const prev = document.body.style.overflow;
+    if (!isFullscreen) {
+      unlockPageInteraction();
+      return;
+    }
+
+    document.body.classList.add('ventu-map-fullscreen-open');
     document.body.style.overflow = 'hidden';
+
     return () => {
-      document.body.style.overflow = prev;
+      unlockPageInteraction();
     };
   }, [isFullscreen]);
+
+  // Leaflet keeps viewport-sized panes until invalidateSize runs after layout settles
+  useEffect(() => {
+    if (isFullscreen || !isReady || !mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+    const sync = () => map.invalidateSize({ animate: false });
+    sync();
+    const raf = requestAnimationFrame(sync);
+    const t1 = window.setTimeout(sync, 0);
+    const t2 = window.setTimeout(sync, 150);
+    const t3 = window.setTimeout(sync, 320);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.clearTimeout(t3);
+    };
+  }, [isFullscreen, isReady]);
 
   // Escape: close sheet first, then exit fullscreen
   useEffect(() => {

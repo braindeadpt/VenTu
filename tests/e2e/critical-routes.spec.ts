@@ -83,6 +83,33 @@ test.describe('Critical routes', () => {
     await expect(page).toHaveTitle(/Mapa de spots — VenTu/i);
   });
 
+  test('spots map exits fullscreen without freezing the page', async ({ page }) => {
+    test.setTimeout(60_000);
+    await page.goto('/pt/spots/');
+    await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
+
+    const mapShell = page.locator('#explore-map [data-map-fullscreen]');
+    await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
+
+    await page.getByRole('button', { name: /Modo explorar|Explore mode/i }).click();
+    await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true', { timeout: 10_000 });
+
+    await page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i }).click();
+    await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false', { timeout: 10_000 });
+
+    const bodyOverflow = await page.evaluate(() => document.body.style.overflow);
+    expect(bodyOverflow).toBe('');
+
+    const mainOpacity = await page.evaluate(() => {
+      const main = document.getElementById('main-content');
+      return main ? getComputedStyle(main).opacity : '1';
+    });
+    expect(Number(mainOpacity)).toBeGreaterThan(0.9);
+
+    await page.getByRole('banner').getByRole('button', { name: /Pesquisar|Search/i }).first().click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+  });
+
   test('admin contributions page loads', async ({ page }) => {
     await page.goto('/pt/admin/contributions/');
     const loginHeading = page.getByRole('heading', { name: /Admin — Contribuições/i });

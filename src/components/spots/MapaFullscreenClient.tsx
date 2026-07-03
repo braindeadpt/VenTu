@@ -22,7 +22,7 @@ import {
   syncGridFiltersToUrl,
 } from '@/lib/gridFilters';
 import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
-import { getTranslation } from '@/lib/i18n';
+import { unlockPageInteraction } from '@/lib/mapFullscreen';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -106,6 +106,7 @@ export default function MapaFullscreenClient({
   }, []);
 
   const handleExit = useCallback(() => {
+    unlockPageInteraction();
     router.push(`/${locale}/`);
   }, [router, locale]);
 

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { unlockPageInteraction } from '@/lib/mapFullscreen';
 
 /**
  * Safety net for the `page-fade-in` entrance animation on `#main-content`
@@ -16,8 +17,7 @@ export default function PageFadeGuard() {
     if (!main) return;
 
     const unlock = () => {
-      main.style.animation = 'none';
-      main.style.opacity = '1';
+      unlockPageInteraction();
     };
 
     const onAnimationEnd = (e: AnimationEvent) => {
