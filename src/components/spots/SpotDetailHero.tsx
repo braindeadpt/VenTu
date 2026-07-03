@@ -179,7 +179,7 @@ export default function SpotDetailHero({
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="spot-hero-card rounded-card border border-divider bg-bg-elevated p-3 sm:p-4 w-full sm:w-[270px] shadow-card">
+            <div className="spot-hero-card rounded-card border p-3 sm:p-4 w-full sm:w-[270px] shadow-card">
               <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">

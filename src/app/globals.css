@@ -698,17 +698,63 @@ body.ventu-signup-nudge-open footer {
   --fg-subtle-rgb:   71 85 105;
   --divider:      15 23 42 / 0.10;
   --divider-rgb:  15 23 42;
-  --divider-strong: 15 23 42 / 0.18;
+  --divider-strong: 15 23 42 / 0.14;
   --divider-strong-rgb: 15 23 42;
-  --bg-elevated: 255 255 255;
-  background-color: rgb(var(--bg-elevated));
+  border-color: rgb(255 255 255 / 0.42);
   color: rgb(var(--fg));
+  background-color: rgb(255 255 255 / 0.86);
+  box-shadow:
+    0 8px 32px -8px rgb(15 23 42 / 0.22),
+    inset 0 1px 0 rgb(255 255 255 / 0.92);
 }
 
-/* Score card: opaque elevated panel with theme-native ink (never hero scrim ink) */
+/* Score card — frosted glass over map; solid fallback when blur unsupported */
 .spot-hero-ink .spot-hero-card {
-  background-color: rgb(var(--bg-elevated));
+  border-color: rgb(var(--divider-strong));
   color: rgb(var(--fg));
+  background-color: rgb(var(--bg-elevated) / 0.88);
+  box-shadow:
+    0 8px 32px -10px rgb(0 0 0 / 0.42),
+    inset 0 1px 0 rgb(255 255 255 / 0.07);
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .spot-hero-ink .spot-hero-card {
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    background-color: rgb(var(--bg-elevated) / 0.74);
+  }
+
+  .theme-ocean .spot-hero-ink .spot-hero-card {
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    background-color: rgb(255 255 255 / 0.76);
+  }
+}
+
+@media (min-width: 768px) {
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .spot-hero-ink .spot-hero-card {
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      background-color: rgb(var(--bg-elevated) / 0.68);
+    }
+  }
+}
+
+/* Mobile light: slightly more opacity — card spans full width over brighter map */
+@media (max-width: 767px) {
+  .theme-ocean .spot-hero-ink .spot-hero-card {
+    background-color: rgb(255 255 255 / 0.90);
+  }
+
+  @supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .theme-ocean .spot-hero-ink .spot-hero-card {
+      background-color: rgb(255 255 255 / 0.84);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+    }
+  }
 }
 
 /* Pull-to-refresh — mobile overscroll indicator. */
