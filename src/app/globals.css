@@ -671,6 +671,9 @@ body.ventu-signup-nudge-open footer {
 .theme-ocean .spot-hero-scrim-side {
   background: linear-gradient(to right, rgba(15,23,42,0.65) 0%, transparent 100%) !important;
 }
+.theme-ocean .spot-hero-scrim-score {
+  background: linear-gradient(to left, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.5) 55%, transparent 100%) !important;
+}
 
 /* Hero ink: the scrim above is dark even in light mode, so all text that
    sits directly over the image must switch to the dark-theme (light) ink.
@@ -736,6 +739,46 @@ body.ventu-signup-nudge-open footer {
 .theme-ocean .forecast-now-bar {
   background-color: rgb(var(--accent) / 0.9);
   box-shadow: none;
+}
+
+/* Forecast table horizontal scroll — fade only the trailing edge so the
+   sticky label column stays fully opaque (left fade breaks sticky cells). */
+.forecast-table-scroll {
+  --fade-size: 20px;
+  mask-image: linear-gradient(
+    to right,
+    black 0,
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    black 0,
+    black calc(100% - var(--fade-size)),
+    transparent 100%
+  );
+}
+
+.forecast-sticky-label {
+  position: sticky;
+  left: 0;
+  z-index: 30;
+  background-color: rgb(var(--bg-base));
+  box-shadow: 4px 0 10px -6px rgb(0 0 0 / 0.18);
+}
+.theme-ocean .forecast-sticky-label {
+  box-shadow: 4px 0 10px -6px rgb(0 0 0 / 0.1);
+}
+.forecast-sticky-corner {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 40;
+  background-color: rgb(var(--bg-base));
+  box-shadow: 4px 0 10px -6px rgb(0 0 0 / 0.18);
+}
+.theme-ocean .forecast-sticky-corner {
+  box-shadow: 4px 0 10px -6px rgb(0 0 0 / 0.1);
 }
 
 /* Overflow scroll shadows: thin gradient edges to signal more data. */

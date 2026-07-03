@@ -228,7 +228,7 @@ export default function ForecastTable({
 
   /* ── measure current-hour bar position in pixels ── */
   const [nowBarLeft, setNowBarLeft] = useState<number | null>(null);
-  const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[88px] md:w-[96px]';
+  const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[96px] min-w-[96px]';
   const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[40px]';
   useLayoutEffect(() => {
     if (currentHourIndex < 0 || !scrollRef.current) return;
@@ -392,7 +392,7 @@ export default function ForecastTable({
 <div className="rounded-card max-w-full">
       <div
         ref={scrollRef}
-        className={`scroll-overflow-x overflow-x-auto overscroll-x-contain border border-divider bg-bg-base relative rounded-card max-w-full max-md:snap-x max-md:snap-proximity [scrollbar-color:rgb(var(--fg-disabled))_transparent]`}
+        className={`forecast-table-scroll overflow-x-auto overscroll-x-contain border border-divider bg-bg-base relative rounded-card max-w-full max-md:snap-x max-md:snap-proximity [scrollbar-color:rgb(var(--fg-disabled))_transparent]`}
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
@@ -411,11 +411,7 @@ export default function ForecastTable({
             aria-hidden
           />
         )}
-        <div
-          className="absolute inset-y-0 left-0 bg-bg-base/95 backdrop-blur-[2px] pointer-events-none z-10 border-r border-divider"
-          style={{ width: labelWidthPx }}
-        />
-        <table className={`border-collapse text-center relative z-0 ${tableMinW}`}>
+        <table className={`border-collapse text-center ${tableMinW}`}>
           {/* Caption for screen readers */}
           <caption className="sr-only">
             {t.caption.replace('{hours}', String(visibleCount))}
@@ -427,7 +423,7 @@ export default function ForecastTable({
               {/* Sticky label column */}
               <th
                 scope="col"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} font-semibold text-fg border-b-2 border-r-2 border-score-good/30`}
+                className={`forecast-sticky-corner ${labelW} ${labelCellPx} text-left ${metaText} font-semibold text-fg border-b-2 border-r-2 border-score-good/30`}
               >
                 <div className="flex flex-col gap-0.5">
                   {dayGroups.length > 1 ? (
@@ -448,7 +444,7 @@ export default function ForecastTable({
                   <th
                     key={i}
                     scope="col"
-                    className={`sticky top-0 z-10 ${hourW} ${cellPx} font-mono ${metaText} max-md:snap-start ${
+                    className={`sticky top-0 z-20 ${hourW} ${cellPx} font-mono ${metaText} max-md:snap-start ${
                       current
                         ? 'bg-accent/20 text-fg border-b-2 border-accent/55'
                         : isNewDay
@@ -476,7 +472,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.waves}
             </th>
@@ -499,7 +495,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.period}
             </th>
@@ -522,7 +518,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.wind}
             </th>
@@ -548,7 +544,7 @@ export default function ForecastTable({
           <tr>
             <th
               scope="row"
-              className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
               {t.direction}
             </th>
@@ -578,7 +574,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.gust}
               </th>
@@ -608,7 +604,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.water}
               </th>
@@ -641,7 +637,7 @@ export default function ForecastTable({
             <tr>
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
               >
                 {t.tide}
               </th>
@@ -681,7 +677,7 @@ export default function ForecastTable({
             <tr className="border-t-2 border-divider-strong">
               <th
                 scope="row"
-                className={`sticky left-0 z-30 bg-bg-base shadow-[4px_0_8px_-4px_rgba(0,0,0,0.35)] ${labelW} ${labelCellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left text-meta-xs md:text-meta-sm text-fg font-semibold border-r-2 border-t border-b border-divider`}
               >
                 {sportLabel ?? t.score}
               </th>
