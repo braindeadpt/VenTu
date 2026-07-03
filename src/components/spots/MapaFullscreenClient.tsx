@@ -23,6 +23,7 @@ import {
 } from '@/lib/gridFilters';
 import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
+import { getTranslation } from '@/lib/i18n';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
