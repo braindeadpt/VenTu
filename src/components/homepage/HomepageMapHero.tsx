@@ -311,6 +311,7 @@ export default function HomepageMapHero({
           </div>
         </div>
       </div>
+      </div>
 
       {isFeatured && aggregates && (
         <div
