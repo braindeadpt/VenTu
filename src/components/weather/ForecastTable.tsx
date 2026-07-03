@@ -61,30 +61,30 @@ const MAX_HOURS = 120;
 
 /* ──────────── colour helpers (literal classes for Tailwind JIT) ──────────── */
 
-/** Wave height → background tier. */
+/** Wave height → background tier (low saturation, same-family data-* token). */
 function waveBg(h: number): string {
-  if (h < 0.5) return 'bg-surface-1/[0.04]';
-  if (h < 1.0) return 'bg-data-waves/25';
-  if (h < 2.0) return 'bg-data-waves/45';
-  if (h < 3.0) return 'bg-data-waves/65';
-  return 'bg-data-waves/80';
+  if (h < 0.5) return 'bg-surface-1/[0.02]';
+  if (h < 1.0) return 'bg-data-waves/10';
+  if (h < 2.0) return 'bg-data-waves/15';
+  if (h < 3.0) return 'bg-data-waves/20';
+  return 'bg-data-waves/25';
 }
 
 /** Wave period → background tier. */
 function periodBg(p: number): string {
-  if (p < 6) return 'bg-surface-1/[0.04]';
-  if (p < 9) return 'bg-data-period/25';
-  if (p < 12) return 'bg-data-period/50';
-  return 'bg-data-period/70';
+  if (p < 6) return 'bg-surface-1/[0.02]';
+  if (p < 9) return 'bg-data-period/10';
+  if (p < 12) return 'bg-data-period/15';
+  return 'bg-data-period/20';
 }
 
 /** Wind speed (knots) → background tier. */
 function windBg(kt: number): string {
-  if (kt < 8) return 'bg-surface-1/[0.04]';
-  if (kt < 14) return 'bg-data-wind/25';
-  if (kt < 20) return 'bg-data-wind/45';
-  if (kt < 28) return 'bg-data-wind/65';
-return 'bg-data-wind/80';
+  if (kt < 8) return 'bg-surface-1/[0.02]';
+  if (kt < 14) return 'bg-data-wind/8';
+  if (kt < 20) return 'bg-data-wind/14';
+  if (kt < 28) return 'bg-data-wind/21';
+return 'bg-data-wind/25';
 }
 
 /** Wind speed text colour for alarming values (knots). */
@@ -95,19 +95,19 @@ function windText(kt: number): string {
 
 /** Gust — same scale as wind but lighter opacity (knots). */
 function gustBg(kt: number): string {
-  if (kt < 8) return 'bg-surface-1/[0.04]';
-  if (kt < 14) return 'bg-data-wind/15';
-  if (kt < 20) return 'bg-data-wind/30';
-  if (kt < 28) return 'bg-data-wind/50';
-  return 'bg-data-wind/65';
+  if (kt < 8) return 'bg-surface-1/[0.02]';
+  if (kt < 14) return 'bg-data-wind/6';
+  if (kt < 20) return 'bg-data-wind/10';
+  if (kt < 28) return 'bg-data-wind/16';
+  return 'bg-data-wind/20';
 }
 
 /** Water temperature → background tier. */
 function waterBg(t: number): string {
-  if (t < 14) return 'bg-surface-1/[0.04]';
-  if (t < 18) return 'bg-data-water/25';
-  if (t < 22) return 'bg-data-water/50';
-return 'bg-data-water/70';
+  if (t < 14) return 'bg-surface-1/[0.02]';
+  if (t < 18) return 'bg-data-water/8';
+  if (t < 22) return 'bg-data-water/14';
+return 'bg-data-water/20';
 }
 
 /** Water temperature text colour. */
