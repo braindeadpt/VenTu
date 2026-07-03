@@ -175,7 +175,7 @@ export default function SpotDetailHero({
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="spot-hero-card rounded-card bg-bg-elevated border border-divider p-3 sm:p-4 w-full sm:w-[270px]">
+            <div className="spot-hero-card rounded-card bg-bg-elevated border border-divider p-3 sm:p-4 w-full sm:w-[270px] lg:rounded-none lg:bg-transparent lg:border-0 lg:p-0 lg:shadow-none">
               <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
@@ -194,7 +194,7 @@ export default function SpotDetailHero({
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-divider grid grid-cols-2 gap-2">
+              <div className="mt-3 pt-3 border-t border-divider grid grid-cols-2 gap-2 lg:mt-2 lg:pt-2 lg:border-t-0">
                 <StatChip
                   icon={<Waves className="w-4 h-4 text-data-waves" />}
                   value={`${conditions.waveHeight.toFixed(1)}m`}
