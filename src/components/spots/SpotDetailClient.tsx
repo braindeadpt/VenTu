@@ -311,9 +311,12 @@ export default function SpotDetailClient({
     spot.lon,
   );
 
-  const magicWindowsHourly = useMemo(
-    () =>
-      spotData?.forecast.map((f) => ({
+  const magicWindowsHourly = useMemo(() => {
+    const HOUR_MS = 3_600_000;
+    const now = Date.now();
+    const cutoff = now + 24 * HOUR_MS;
+    return (spotData?.forecast ?? [])
+      .map((f) => ({
         time: f.time,
         waveHeight: f.waveHeight ?? 0,
         wavePeriod: f.wavePeriod ?? 0,
@@ -321,9 +324,12 @@ export default function SpotDetailClient({
         windDirection: f.windDirection ?? 0,
         windGust: f.windGust ?? 0,
         waterTemp: f.waterTemp ?? 0,
-      })) ?? [],
-    [spotData?.forecast],
-  );
+      }))
+      .filter((h) => {
+        const t = new Date(h.time).getTime();
+        return t >= now && t < cutoff;
+      });
+  }, [spotData?.forecast]);
 
   const showMagicWindows = useMemo(
     () =>
