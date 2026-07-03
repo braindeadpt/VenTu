@@ -74,8 +74,8 @@ const themeScript = `
   (function() {
     try {
       var t = localStorage.getItem('windspot:theme');
-      if (t === 'dark') {
-        document.documentElement.classList.remove('theme-ocean');
+      if (t === 'light') {
+        document.documentElement.classList.add('theme-ocean');
       }
     } catch (e) {}
   })();
@@ -89,7 +89,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-PT"
-      className={`${GeistSans.variable} ${GeistMono.variable} ${spaceGrotesk.variable} theme-ocean`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${spaceGrotesk.variable}`}
       suppressHydrationWarning
     >
       <head>

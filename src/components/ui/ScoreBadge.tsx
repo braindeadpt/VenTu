@@ -37,7 +37,7 @@ export default function ScoreBadge({
         <span
           className={cn(
             'font-sans font-medium',
-            tokens.tier === 'epic' && 'text-sunset font-display',
+            tokens.tier === 'epic' && 'text-accent font-display',
           )}
         >
           {label}

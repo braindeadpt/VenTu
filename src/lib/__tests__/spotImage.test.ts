@@ -32,10 +32,11 @@ describe('spotImage', () => {
     expect(getSpotImageAlt(base, 'pt')).toBe('Vista aérea de Guincho');
   });
 
-  it('getRegionGradientCss uses sunset/ocean tokens', () => {
+  it('getRegionGradientCss uses cool tokens (no sunset)', () => {
     const css = getRegionGradientCss('Norte');
     expect(css).toContain('linear-gradient');
-    expect(css).toContain('--accent-sunset');
+    expect(css).not.toContain('--accent-sunset');
+    expect(css).not.toContain('--sunset-');
   });
 
   it('gradient palettes differ by region', () => {

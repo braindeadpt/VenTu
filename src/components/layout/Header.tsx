@@ -125,9 +125,9 @@ export default function Header({ locale }: HeaderProps) {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href={`/${locale}/`} className="flex items-center gap-2.5 group shrink-0">
-              <Wind className="w-8 h-8 text-data-waves group-hover:text-data-waves/80 transition-colors" />
+              <Wind className="w-8 h-8 text-accent group-hover:text-accent-hover transition-colors" />
               <span className="text-xl font-bold text-fg tracking-tight">
-                Ven<span className="text-data-waves">Tu</span>
+                Ven<span className="text-accent">Tu</span>
               </span>
             </Link>
 
@@ -149,8 +149,8 @@ export default function Header({ locale }: HeaderProps) {
                     className={`px-3 py-1.5 rounded-input text-sm font-medium transition-all ${
                       active || featured
                         ? active
-                          ? 'bg-data-waves/15 text-data-waves ring-1 ring-data-waves/25'
-                          : 'text-data-waves hover:bg-data-waves/10'
+                          ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
+                          : 'text-accent hover:bg-accent/10'
                         : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
                     }`}
                   >

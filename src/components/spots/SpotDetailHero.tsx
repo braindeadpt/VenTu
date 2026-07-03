@@ -163,7 +163,7 @@ export default function SpotDetailHero({
               className={cn(
                 'inline-flex items-center justify-center gap-2 font-medium',
                 'px-4 py-2 text-sm rounded-input min-h-[44px]',
-                'bg-sunset border-transparent hover:opacity-95 active:opacity-90',
+                'bg-accent hover:bg-accent-hover active:bg-accent-active border border-transparent',
                 'transition-opacity duration-150 shadow-card',
               )}
             >

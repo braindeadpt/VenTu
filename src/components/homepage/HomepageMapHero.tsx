@@ -93,7 +93,7 @@ export default function HomepageMapHero({
       aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
       className={
         isFeatured
-          ? 'hero-sunset-surface relative w-full h-[clamp(420px,65vh,720px)] rounded-b-3xl overflow-hidden border-b border-divider touch-pan-y'
+          ? 'hero-ocean-surface relative w-full h-[clamp(420px,65vh,720px)] rounded-b-3xl overflow-hidden border-b border-divider touch-pan-y'
           : 'relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y'
       }
     >
@@ -128,7 +128,7 @@ export default function HomepageMapHero({
       <div
         className={
           isFeatured
-            ? 'hero-sunset-overlay absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none max-h-[min(52%,420px)] sm:max-h-none sm:inset-0'
+            ? 'hero-ocean-overlay absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none max-h-[min(52%,420px)] sm:max-h-none sm:inset-0'
             : 'absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none pb-2'
         }
       >
@@ -143,7 +143,7 @@ export default function HomepageMapHero({
               aria-hidden
             />
             <div
-              className="absolute inset-0 hero-map-sunset-corners pointer-events-none"
+              className="absolute inset-0 hero-map-ocean-corners pointer-events-none"
               aria-hidden
             />
           </>
@@ -221,7 +221,7 @@ export default function HomepageMapHero({
                 href={`/${locale}/mapa/${buildGridFiltersSearch(sport, DEFAULT_REGION, regions)}`}
                 size={isFeatured ? 'lg' : 'md'}
                 locale={isPt ? 'pt' : 'en'}
-                className="bg-sunset border-transparent hover:opacity-95 active:opacity-90 shadow-card shrink-0"
+                className="shadow-card shrink-0"
                 rightIcon={<Maximize2 className="w-4 h-4" aria-hidden />}
               >
                 {isPt ? 'Explorar mapa' : 'Explore map'}

@@ -8,7 +8,7 @@ const emptyScores = Object.fromEntries(
   (['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as SportType[]).map(
     (s) => [s, { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' }],
   ),
-) as Record<SportType, SportScore>;
+) as unknown as Record<SportType, SportScore>;
 
 const baseSpot: Spot = {
   id: 'test',

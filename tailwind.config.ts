@@ -103,11 +103,10 @@ const config: Config = {
           cross:    'rgb(var(--windDir-cross) / <alpha-value>)',
         },
 
-        sunset: {
-          1: 'rgb(var(--accent-sunset-1) / <alpha-value>)',
-          2: 'rgb(var(--accent-sunset-2) / <alpha-value>)',
-          3: 'rgb(var(--accent-sunset-3) / <alpha-value>)',
-        },
+        // Single signature accent — solid color, three states.
+        accent:        'rgb(var(--accent) / <alpha-value>)',
+        'accent-hover': 'rgb(var(--accent-hover) / <alpha-value>)',
+        'accent-active':'rgb(var(--accent-active) / <alpha-value>)',
 
       },
 

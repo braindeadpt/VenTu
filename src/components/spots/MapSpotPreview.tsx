@@ -163,7 +163,7 @@ export default function MapSpotPreview({
         <Button
           href={directionsUrl}
           size="lg"
-          className="flex-1 bg-sunset border-transparent hover:opacity-95 active:opacity-90"
+          className="flex-1"
           locale={isPt ? 'pt' : 'en'}
           target="_blank"
           rel="noopener noreferrer"

@@ -7,14 +7,14 @@ export function getSpotAerialPath(slug: string): string {
   return `/images/spots/${slug}.jpg`;
 }
 
-/** Gradient pairs: beach → ocean → sunset (deterministic per region). */
+/** Gradient pairs: beach → ocean → accent (cool only, deterministic per region). */
 const REGION_GRADIENT_KEYS: [string, string, string][] = [
-  ['--accent-sunset-1', '--data-waves', '--accent-sunset-3'],
-  ['--data-water', '--sport-surf', '--accent-sunset-2'],
-  ['--sport-surf', '--data-waves', '--accent-sunset-1'],
-  ['--accent-sunset-2', '--data-water', '--accent-sunset-3'],
-  ['--data-waves', '--accent-sunset-2', '--sport-bodyboard'],
-  ['--accent-sunset-3', '--sport-surf', '--data-water'],
+  ['--accent',         '--data-waves',  '--data-water'],
+  ['--data-water',     '--sport-surf',  '--accent'],
+  ['--sport-surf',     '--data-waves',  '--accent'],
+  ['--accent',         '--data-water',  '--sport-kitesurf'],
+  ['--data-waves',     '--accent',      '--sport-bodyboard'],
+  ['--accent',         '--sport-surf',  '--data-water'],
 ];
 
 function hashRegion(region: string): number {

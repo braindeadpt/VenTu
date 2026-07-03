@@ -15,14 +15,14 @@ export default function RootPage() {
         <h1 className="font-display text-5xl sm:text-6xl font-bold tracking-tight text-fg">
           VenTu
         </h1>
-        <p className="mt-3 text-xl text-sunset font-display font-semibold">Vem. Tu.</p>
+        <p className="mt-3 text-xl text-accent font-display font-semibold">Vem. Tu.</p>
         <p className="mt-6 max-w-lg text-fg-muted leading-relaxed">
           Condições náuticas em Portugal — surf, kitesurf, windsurf e mais.
           Scores, mapa e previsão actualizados a cada 3 horas. Grátis · open source.
         </p>
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link href="/pt/">
-            <Button variant="primary" size="lg" className="bg-sunset min-w-[140px]">
+            <Button variant="primary" size="lg" className="min-w-[140px]">
               Português
             </Button>
           </Link>

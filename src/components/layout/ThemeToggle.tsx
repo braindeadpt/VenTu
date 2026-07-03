@@ -11,37 +11,33 @@ interface ThemeToggleProps {
 
 export default function ThemeToggle({ locale }: ThemeToggleProps) {
   const isPt = locale === 'pt';
-  // Coast is default (theme-ocean class present). Dark is the alternative.
-  const [isDark, setIsDark] = useState(false);
+  // Dark is the default (cockpit/nautical night). Light is the opt-in day mode.
+  const [isLight, setIsLight] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Sync with DOM after mount (SSR-safe: reads actual class applied by pre-hydration script)
   useEffect(() => {
-    setIsDark(!document.documentElement.classList.contains('theme-ocean'));
+    setIsLight(document.documentElement.classList.contains('theme-ocean'));
     setMounted(true);
   }, []);
 
   const toggle = () => {
-    const next = !isDark;
-    document.documentElement.classList.toggle('theme-ocean', !next);
+    const next = !isLight;
+    document.documentElement.classList.toggle('theme-ocean', next);
     try {
-      localStorage.setItem(THEME_KEY, next ? 'dark' : 'ocean');
+      localStorage.setItem(THEME_KEY, next ? 'light' : 'dark');
     } catch {
       /* ignore */
     }
-    setIsDark(next);
+    setIsLight(next);
   };
 
-  // Prevent hydration mismatch: render a placeholder until mounted
   if (!mounted) {
-    return (
-      <div className="w-11 h-11" aria-hidden="true" />
-    );
+    return <div className="w-11 h-11" aria-hidden="true" />;
   }
 
-  const label = isDark
-    ? (isPt ? 'Alternar para tema claro' : 'Switch to light theme')
-    : (isPt ? 'Alternar para tema escuro' : 'Switch to dark theme');
+  const label = isLight
+    ? (isPt ? 'Alternar para tema escuro' : 'Switch to dark theme')
+    : (isPt ? 'Alternar para tema claro' : 'Switch to light theme');
 
   return (
     <button
@@ -49,9 +45,9 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
       className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
       title={label}
       aria-label={label}
-      aria-pressed={isDark}
+      aria-pressed={isLight}
     >
-      {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      {isLight ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
     </button>
   );
 }

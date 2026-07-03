@@ -26,7 +26,7 @@ export default function WaveDivider({ className, flip = false }: WaveDividerProp
           <linearGradient id="ventu-wave-fill" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor="rgb(var(--data-water))" stopOpacity="0.22" />
             <stop offset="45%" stopColor="rgb(var(--data-waves))" stopOpacity="0.28" />
-            <stop offset="100%" stopColor="rgb(var(--accent-sunset-3))" stopOpacity="0.12" />
+            <stop offset="100%" stopColor="rgb(var(--accent))" stopOpacity="0.12" />
           </linearGradient>
         </defs>
         <path
