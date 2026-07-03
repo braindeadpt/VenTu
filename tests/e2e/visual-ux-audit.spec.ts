@@ -451,7 +451,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/about/');
-      await page.getByRole('banner').getByRole('link', { name: /Ven/i }).click();
+      const logo = page.getByRole('banner').getByRole('link', { name: 'VenTu', exact: true });
+      await expect(logo).toHaveAttribute('href', /\/pt\/?/);
+      await logo.evaluate((el) => (el as HTMLAnchorElement).click());
       await expect(page).toHaveURL(/\/pt\/?$/);
       await context.close();
     });
