@@ -1,4 +1,5 @@
 import { spots } from '@/lib/spots'
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import { getCompatibleSports, type GridSportFilter, type SportType } from '@/lib/sportRatings'
 import { getMacroRegion, MACRO_REGIONS, type MacroRegion } from '@/lib/regions'
 
@@ -122,9 +123,9 @@ export function landingDescription(landing: SeoLanding, locale: string): string 
   const isPt = locale === 'pt'
   const title = landingTitle(landing, locale)
   if (isPt) {
-    return `${title} — ${landing.spotCount} spots com condições actualizadas a cada 3 horas, scores e previsões no VenTu.`
+    return `${title} — ${landing.spotCount} spots com condições ${pipelineSchedule('pt')}, scores e previsões no VenTu.`
   }
-  return `${title} — ${landing.spotCount} spots with conditions updated every 3 hours, scores and forecasts on VenTu.`
+  return `${title} — ${landing.spotCount} spots with conditions ${pipelineSchedule('en')}, scores and forecasts on VenTu.`
 }
 
 export const POPULAR_LANDING_SLUGS = [

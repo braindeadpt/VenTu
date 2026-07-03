@@ -2,6 +2,7 @@ import { Wind, Waves, Database, Brain, Code, Heart, Globe, Zap, Shield } from 'l
 import PageHeader from '@/components/ui/PageHeader'
 import Button from '@/components/ui/Button'
 import { buildPageMetadata } from '@/lib/seo'
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -52,7 +53,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <Database className="w-10 h-10 text-data-waves mx-auto" />
           <h3 className="text-lg font-semibold">{isPt ? 'Dados Actualizados' : 'Updated Data'}</h3>
           <p className="text-sm text-fg-muted">
-            {isPt ? 'Open-Meteo Marine API com atualizações a cada 3 horas' : 'Open-Meteo Marine API with updates every 3 hours'}
+            {isPt ? `Open-Meteo — previsões ${pipelineSchedule('pt')}` : `Open-Meteo — forecasts ${pipelineSchedule('en')}`}
           </p>
         </div>
         <div className="card-1 p-6 text-center space-y-4">

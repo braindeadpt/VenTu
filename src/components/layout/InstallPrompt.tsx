@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Download, X } from 'lucide-react';
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 
 const VISITS_KEY = 'ventu:visit-count';
 const DISMISS_KEY = 'ventu:install-dismissed-until';
@@ -80,8 +81,8 @@ export default function InstallPrompt() {
           </p>
           <p className="text-xs text-fg-muted mt-0.5">
             {isPt
-              ? 'Acesso rápido às condições — dados actualizados a cada 3 horas.'
-              : 'Quick access to conditions — data updated every 3 hours.'}
+              ? `Acesso rápido às condições — previsões ${pipelineSchedule('pt')}.`
+              : `Quick access to conditions — forecasts ${pipelineSchedule('en')}.`}
           </p>
           <div className="flex gap-2 mt-3">
             <button

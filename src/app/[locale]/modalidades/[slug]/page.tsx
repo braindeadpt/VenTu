@@ -6,6 +6,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 
 const VALID_SLUGS = ['surf', 'kitesurf', 'windsurf', 'big-wave', 'bodyboard', 'sup', 'foil', 'wakeboard']
 
@@ -43,8 +44,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description: isPt
-      ? `Spots de ${name.pt.toLowerCase()} em Portugal. Condições actualizadas a cada 3 horas, previsões e scores náuticos.`
-      : `${name.en} spots in Portugal. Conditions updated every 3 hours, forecasts and nautical scores.`,
+      ? `Spots de ${name.pt.toLowerCase()} em Portugal. Condições ${pipelineSchedule('pt')}, previsões e scores náuticos.`
+      : `${name.en} spots in Portugal. Conditions ${pipelineSchedule('en')}, forecasts and nautical scores.`,
   }
 }
 
@@ -72,8 +73,8 @@ export default async function ModalidadePage({ params }: Props) {
           <h1 className="text-3xl font-bold text-fg">{isPt ? name.pt : name.en}</h1>
           <p className="text-fg-muted mt-1">
             {isPt
-              ? `Spots de ${name.pt.toLowerCase()} em Portugal — condições actualizadas a cada 3 horas`
-              : `${name.en} spots in Portugal — conditions updated every 3 hours`}
+              ? `Spots de ${name.pt.toLowerCase()} em Portugal — condições ${pipelineSchedule('pt')}`
+              : `${name.en} spots in Portugal — conditions ${pipelineSchedule('en')}`}
           </p>
         </div>
       </div>

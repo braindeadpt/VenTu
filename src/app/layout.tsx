@@ -3,6 +3,7 @@ import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
 import { spaceGrotesk } from '@/lib/fonts/display'
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, SPOT_COUNT } from '@/lib/seo'
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import './globals.css'
 import GoatCounterScript from '@/components/analytics/GoatCounterScript'
 
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
     default: `${SITE_NAME} — Condições Náuticas em Portugal`,
     template: `%s | ${SITE_NAME}`,
   },
-  description: `${SPOT_COUNT} spots · surf, kitesurf, windsurf em Portugal. Scores, mapa e previsão a cada 3 horas. Grátis e open source.`,
+  description: `${SPOT_COUNT} spots · surf, kitesurf, windsurf em Portugal. Scores, mapa e previsão ${pipelineSchedule('pt')}. Grátis e open source.`,
   applicationName: SITE_NAME,
   creator: 'VenTu',
   publisher: 'VenTu',

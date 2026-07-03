@@ -9,6 +9,7 @@ import {
   type SeoLanding,
 } from '@/lib/seoLandings';
 import { buildPageMetadata } from '@/lib/seo';
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import PageHeader from '@/components/ui/PageHeader';
 import type { Metadata } from 'next';
 
@@ -37,8 +38,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const loc = isPt ? 'pt' : 'en';
   const title = isPt ? 'Explorar spots por desporto e região — VenTu' : 'Explore spots by sport and region — VenTu';
   const description = isPt
-    ? `${SEO_LANDINGS.length} combinações de desporto e região em Portugal — condições actualizadas a cada 3 horas.`
-    : `${SEO_LANDINGS.length} sport and region combinations in Portugal — conditions updated every 3 hours.`;
+    ? `${SEO_LANDINGS.length} combinações de desporto e região em Portugal — condições ${pipelineSchedule('pt')}.`
+    : `${SEO_LANDINGS.length} sport and region combinations in Portugal — conditions ${pipelineSchedule('en')}.`;
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/explorar/` });
 }
 
@@ -66,8 +67,8 @@ export default async function ExplorarIndexPage({ params }: Props) {
           title={isPt ? 'Explorar spots' : 'Explore spots'}
           subtitle={
             isPt
-              ? `${SEO_LANDINGS.length} páginas por desporto e região — scores, previsões e condições actualizadas a cada 3 horas.`
-              : `${SEO_LANDINGS.length} pages by sport and region — scores, forecasts and conditions updated every 3 hours.`
+              ? `${SEO_LANDINGS.length} páginas por desporto e região — scores, previsões e condições ${pipelineSchedule('pt')}.`
+              : `${SEO_LANDINGS.length} pages by sport and region — scores, forecasts and conditions ${pipelineSchedule('en')}.`
           }
         />
 

@@ -4,6 +4,7 @@ import FeedbackForm from '@/components/FeedbackForm';
 import DailyStreak from '@/components/layout/DailyStreak';
 import { getTranslation } from '@/lib/i18n';
 import { getPopularLandings, landingTitle } from '@/lib/seoLandings';
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 
 interface FooterProps {
   locale: string;
@@ -25,8 +26,8 @@ export default function Footer({ locale }: FooterProps) {
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">
               {isPt 
-                ? 'Plataforma open-source para desportos náuticos em Portugal. Dados actualizados a cada 3 horas, previsões e notícias automáticas.'
-                : 'Open-source platform for water sports in Portugal. Data updated every 3 hours, forecasts and automated news.'}
+                ? `Plataforma open-source para desportos náuticos em Portugal. Previsões ${pipelineSchedule('pt')}, observações IH/IPMA e notícias automáticas.`
+                : `Open-source platform for water sports in Portugal. Forecasts ${pipelineSchedule('en')}, IH/IPMA observations and automated news.`}
             </p>
           </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-// FIX C4: Simplified - only JSON-LD since OG tags are now handled by Next.js generateMetadata
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 // This component is for dynamic structured data that can't be generated at build time
 
 interface SeoProps {
@@ -25,7 +25,7 @@ export default function SeoHead({
     : 'VenTu — Condições para Desportos Náuticos em Portugal';
 
   const fullDesc = description
-    || 'Condições para surf, kitesurf, windsurf e big wave em Portugal — actualizadas a cada 3 horas. Ondas, vento e temperatura da água para 167 spots.';
+    || `Condições para surf, kitesurf, windsurf e big wave em Portugal — ${pipelineSchedule('pt')}. Ondas, vento e temperatura da água.`;
 
   return (
     <>

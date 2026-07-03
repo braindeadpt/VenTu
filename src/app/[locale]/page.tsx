@@ -1,6 +1,7 @@
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { loadSpotData } from '@/lib/load-spot-data';
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
 
 export default async function HomePage({
@@ -24,8 +25,8 @@ export default async function HomePage({
     <div className="min-h-screen bg-bg-base">
       <h1 className="sr-only">
         {isPt
-          ? `VenTu — ${spotsData.length} spots de surf, kitesurf e windsurf em Portugal, condições actualizadas a cada 3 horas`
-          : `VenTu — ${spotsData.length} surf, kitesurf and windsurf spots in Portugal, conditions updated every 3 hours`}
+          ? `VenTu — ${spotsData.length} spots de surf, kitesurf e windsurf em Portugal, condições ${pipelineSchedule('pt')}`
+          : `VenTu — ${spotsData.length} surf, kitesurf and windsurf spots in Portugal, conditions ${pipelineSchedule('en')}`}
       </h1>
 
       <HomeAdaptive

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { existsSync } from 'fs';
 import path from 'path';
 import { spots } from '@/lib/spots';
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 
 export const SITE_URL = 'https://ventu.surf';
 export const SITE_NAME = 'VenTu';
@@ -129,7 +130,7 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
 export function buildRootMetadata(): Metadata {
   return buildPageMetadata({
     title: 'VenTu — Condições Náuticas em Portugal',
-    description: `${SPOT_COUNT} spots · surf, kitesurf, windsurf e mais. Scores, mapa e previsão actualizados a cada 3 horas. Grátis e open source.`,
+    description: `${SPOT_COUNT} spots · surf, kitesurf, windsurf e mais. Scores, mapa e previsão ${pipelineSchedule('pt')}. Grátis e open source.`,
     locale: 'pt',
     path: '/pt/',
   });
@@ -143,8 +144,8 @@ export function buildHomeMetadata(locale: 'pt' | 'en'): Metadata {
       ? `VenTu — ${SPOT_COUNT} spots · Condições Náuticas em Portugal`
       : `VenTu — ${SPOT_COUNT} spots · Water Sports in Portugal`,
     description: isPt
-      ? `${SPOT_COUNT} spots em Portugal — scores por modalidade, mapa interactivo e previsão a cada 3 horas. Surf, kitesurf, windsurf, foil, SUP. Grátis.`
-      : `${SPOT_COUNT} spots in Portugal — sport scores, interactive map and forecast every 3 hours. Surf, kitesurf, windsurf, foil, SUP. Free.`,
+      ? `${SPOT_COUNT} spots em Portugal — scores por modalidade, mapa interactivo e previsão ${pipelineSchedule('pt')}. Surf, kitesurf, windsurf, foil, SUP. Grátis.`
+      : `${SPOT_COUNT} spots in Portugal — sport scores, interactive map and forecast ${pipelineSchedule('en')}. Surf, kitesurf, windsurf, foil, SUP. Free.`,
     locale,
     path: `/${locale}/`,
   });
@@ -169,8 +170,8 @@ export function buildSpotMetadata(
   const isPt = locale === 'pt';
   const title = `${spotName} — Condições | VenTu`;
   const description = isPt
-    ? `Condições em ${spotName}, ${regionName}. Ondas, vento e temperatura da água — actualizadas a cada 3 horas.`
-    : `Conditions at ${spotName}, ${regionName}. Waves, wind and water temperature — updated every 3 hours.`;
+    ? `Condições em ${spotName}, ${regionName}. Ondas, vento e temperatura da água — ${pipelineSchedule('pt')}.`
+    : `Conditions at ${spotName}, ${regionName}. Waves, wind and water temperature — ${pipelineSchedule('en')}.`;
 
   return buildPageMetadata({
     title,
@@ -193,8 +194,8 @@ export function buildWebApplicationJsonLd(locale: 'pt' | 'en') {
     operatingSystem: 'Web',
     url: absoluteUrl(`/${locale}/`),
     description: isPt
-      ? `Condições para surf, kitesurf, windsurf e big wave em Portugal — ${SPOT_COUNT} spots, actualizadas a cada 3 horas`
-      : `Water sports conditions in Portugal — ${SPOT_COUNT} spots, updated every 3 hours`,
+      ? `Condições para surf, kitesurf, windsurf e big wave em Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('pt')}`
+      : `Water sports conditions in Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('en')}`,
     inLanguage: isPt ? 'pt-PT' : 'en',
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
     author: {

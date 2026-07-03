@@ -38,8 +38,8 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: s
           </p>
           <p className="text-fg-subtle/80 text-sm">
             {isPt
-              ? 'As notícias são atualizadas automaticamente a cada 3 horas.'
-              : 'News are automatically updated every 3 hours.'}
+              ? 'As notícias são actualizadas automaticamente via RSS.'
+              : 'News are updated automatically via RSS.'}
           </p>
         </div>
       </div>

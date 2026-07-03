@@ -1,3 +1,5 @@
+import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+
 export const defaultLocale = 'pt';
 export const locales = ['pt', 'en'] as const;
 export type Locale = typeof locales[number];
@@ -31,10 +33,10 @@ export const translations = {
     },
     hero: {
       title: 'VenTu',
-      subtitle: 'Condições para desportos náuticos em Portugal — actualizadas a cada 3 horas',
+      subtitle: `Condições para desportos náuticos em Portugal — ${pipelineSchedule('pt')}`,
       cta: 'Ver Spots',
       stats: { spots: 'Spots', updates: 'Atualizações/dia', sports: 'Desportos' },
-      badge: 'Actualizado a cada 3 horas',
+      badge: `Actualizado ${pipelineSchedule('pt', 'short')}`,
       featured: 'Spots em destaque',
       viewAll: 'Ver todos',
       avgWave: 'Altura Média',
@@ -254,10 +256,10 @@ export const translations = {
     },
     hero: {
       title: 'VenTu',
-      subtitle: 'Water sports conditions in Portugal — updated every 3 hours',
+      subtitle: `Water sports conditions in Portugal — ${pipelineSchedule('en')}`,
       cta: 'View Spots',
       stats: { spots: 'Spots', updates: 'Updates/day', sports: 'Sports' },
-      badge: 'Updated every 3 hours',
+      badge: `Updated ${pipelineSchedule('en', 'short')}`,
       featured: 'Featured spots',
       viewAll: 'View all',
       avgWave: 'Avg Wave Height',
