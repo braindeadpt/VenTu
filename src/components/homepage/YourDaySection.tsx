@@ -43,7 +43,7 @@ export default function YourDaySection({
         // For 'all': use the best score across compatible sports
         let sportScore: number;
         let bestSport: SportType;
-        if (sport === 'all' || sport === 'big-wave') {
+        if (sport === 'all') {
           const compatible = data.spot.compatibleSports ?? ['surf' as SportType];
           let maxScore = 0;
           let maxS: SportType = compatible[0] || 'surf';

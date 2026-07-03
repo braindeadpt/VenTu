@@ -12,8 +12,7 @@ const LS_NUDGE_SEEN = 'ventu:seenSignupNudge';
 const LS_SPOT_VIEWS = 'ventu:spotViews';
 
 /**
- * Increment the anonymous spot-view counter. Call this from SpotDetailClient
- * on every spot page visit (for non-logged-in users).
+ * Increment the anonymous spot-view counter (signed-out users only).
  */
 export function trackSpotView(): void {
   if (typeof window === 'undefined') return;
@@ -34,7 +33,10 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    if (session) return;
+    if (session?.user) {
+      setVisible(false);
+      return;
+    }
     try {
       const dismissed = localStorage.getItem(LS_NUDGE_SEEN);
       if (dismissed) return;
@@ -44,7 +46,12 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
         setVisible(true);
       }
     } catch { /* noop */ }
-  }, [session]);
+  }, [session?.user]);
+
+  useEffect(() => {
+    document.body.classList.toggle('ventu-signup-nudge-open', visible);
+    return () => document.body.classList.remove('ventu-signup-nudge-open');
+  }, [visible]);
 
   const handleDismiss = () => {
     setVisible(false);
@@ -53,13 +60,12 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
     } catch { /* noop */ }
   };
 
-  if (!visible) return null;
+  if (!visible || session?.user) return null;
 
   return (
     <div
       role="status"
       className="fixed bottom-0 left-0 right-0 z-40 bg-bg-elevated border-t border-divider shadow-modal motion-reduce:transition-none transition-transform duration-300 ease-out"
-      style={{ transform: visible ? 'translateY(0)' : 'translateY(100%)' }}
     >
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
         <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-pill bg-accent/15 text-accent" aria-hidden>
@@ -67,8 +73,8 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
         </div>
         <p className="flex-1 text-body-sm text-fg leading-snug">
           {isPt
-            ? 'Recebes as condições dos teus spots todas as manhãs às 7h. Cria conta gratuita.'
-            : 'Get your spots\' conditions every morning at 7 AM. Create a free account.'}
+            ? 'Recebes as condições dos teus spots todas as manhãs (~7h30). Cria conta gratuita.'
+            : 'Get your spots\' conditions every morning (~7:30 AM). Create a free account.'}
         </p>
         <div className="flex items-center gap-2 shrink-0">
           <a

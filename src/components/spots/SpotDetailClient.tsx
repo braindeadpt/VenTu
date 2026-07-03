@@ -43,6 +43,7 @@ import SpotStickyBar from '@/components/spots/SpotStickyBar';
 import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
 import type { ObservedConditions } from '@/lib/observations';
 import { trackSpotView } from '@/components/homepage/SignupNudge';
+import { useAuth } from '@/contexts/AuthProvider';
 
 interface Conditions {
   waveHeight: number;
@@ -116,6 +117,7 @@ export default function SpotDetailClient({
   >({});
 
   const heroRef = useRef<HTMLElement>(null);
+  const { session } = useAuth();
 
   const tideSchedule = useMemo(() => {
     if (!spotData?.forecast?.length) return null;
@@ -135,8 +137,8 @@ export default function SpotDetailClient({
 
   // Track anonymous spot views for the signup nudge
   useEffect(() => {
-    trackSpotView();
-  }, []);
+    if (!session?.user) trackSpotView();
+  }, [session?.user]);
 
   useEffect(() => {
     loadCommunityTips().then(setCommunityOverlay);
