@@ -84,8 +84,13 @@ export default function MapaFullscreenClient({
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) unlockPageInteraction();
+    };
+    window.addEventListener('pageshow', onPageShow);
     return () => {
-      document.body.style.overflow = '';
+      window.removeEventListener('pageshow', onPageShow);
+      unlockPageInteraction();
     };
   }, []);
 

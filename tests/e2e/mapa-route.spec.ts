@@ -20,6 +20,7 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 
   test('difficulty filter persists in localStorage', async ({ page }) => {
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
     await page.getByRole('button', { name: 'Iniciante', exact: true }).click();
     const stored = await page.evaluate(() => localStorage.getItem('ventu:map:difficulty'));
     expect(stored).toBe('beginner');
@@ -52,6 +53,49 @@ test.describe('/pt/mapa fullscreen map', () => {
     await openMapSpotSheet(page);
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden({ timeout: 5000 });
+  });
+
+  test('mobile HUD collapses to show more map', async ({ page }) => {
+    const hud = page.locator('[data-map-hud-collapsed]');
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
+    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeHidden();
+
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'false');
+    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /Ocultar filtros|Hide filters/i }).click();
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
+    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeHidden();
+  });
+
+  test('exit and re-enter map without freezing', async ({ page }) => {
+    test.setTimeout(90_000);
+
+    await page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i }).click();
+    await page.waitForURL(/\/pt\/?$/, { timeout: 15_000 });
+
+    const bodyOverflow = await page.evaluate(() => document.body.style.overflow);
+    expect(bodyOverflow).toBe('');
+
+    const mainOpacity = await page.evaluate(() => {
+      const main = document.getElementById('main-content');
+      return main ? getComputedStyle(main).opacity : '1';
+    });
+    expect(Number(mainOpacity)).toBeGreaterThan(0.9);
+
+    await page.getByRole('banner').getByRole('button', { name: /Pesquisar|Search/i }).first().click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await page.goto('/pt/mapa/');
+    await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
+    await expect(page.locator('[data-map-fullscreen="true"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('.leaflet-marker-icon').first()).toBeVisible({ timeout: 20_000 });
+
+    await page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i }).click();
+    await page.waitForURL(/\/pt\/?$/, { timeout: 15_000 });
+    await expect(page.getByRole('banner')).toBeVisible();
   });
 });
 
