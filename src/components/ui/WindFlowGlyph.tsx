@@ -11,7 +11,7 @@ interface WindFlowGlyphProps {
   className?: string;
 }
 
-/** Compact Windy-style flow arrow for hero chips and inline metrics. */
+/** Compact flow arrow for hero chips (same speed ramp as map). */
 export default function WindFlowGlyph({
   directionDeg,
   speedKt,

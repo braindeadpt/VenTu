@@ -1,14 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import {
   windBlowsToDegrees,
+  windArrowColorRgb,
   windArrowShaftLength,
   windArrowPxForZoom,
-  windArrowColorRgb,
   markerWindArrowLayout,
-  buildMarkerWindOverlaySvg,
+  buildSpotWindArrowSvg,
   buildMapWindArrowTitle,
   buildMapWindArrowHtml,
-  WIND_OVERLAY_VIEWBOX,
 } from '../mapWindArrow';
 
 describe('mapWindArrow', () => {
@@ -17,40 +16,41 @@ describe('mapWindArrow', () => {
     expect(windBlowsToDegrees(90)).toBe(270);
   });
 
-  it('shaft length scales with speed', () => {
-    expect(windArrowShaftLength(2)).toBeLessThan(windArrowShaftLength(25));
+  it('speed maps to windy-style colour ramp', () => {
+    expect(windArrowColorRgb(5)).toEqual([14, 165, 233]);
+    expect(windArrowColorRgb(35)).toEqual([239, 68, 68]);
   });
 
-  it('color ramps with speed', () => {
-    expect(windArrowColorRgb(3)).not.toEqual(windArrowColorRgb(25));
+  it('shaft grows with speed', () => {
+    expect(windArrowShaftLength(3)).toBeLessThan(windArrowShaftLength(25));
   });
 
   it('arrow px grows with zoom', () => {
-    expect(windArrowPxForZoom(7)).toBeLessThan(windArrowPxForZoom(12));
-    expect(windArrowPxForZoom(15)).toBe(windArrowPxForZoom(20));
+    expect(windArrowPxForZoom(8)).toBeLessThan(windArrowPxForZoom(12));
   });
 
-  it('marker layout keeps pin size — wind overflows', () => {
+  it('marker layout reserves height for arrow above pin', () => {
     const withWind = markerWindArrowLayout(true);
     const withoutWind = markerWindArrowLayout(false);
-    expect(withWind.iconSize).toEqual(withoutWind.iconSize);
+    expect(withWind.iconSize[1]).toBeGreaterThan(withoutWind.iconSize[1]);
   });
 
-  it('overlay svg has no origin dot — single vector on pin', () => {
-    const svg = buildMarkerWindOverlaySvg(0, 15);
-    expect(svg).toContain(`rotate(180 ${WIND_OVERLAY_VIEWBOX / 2}`);
-    expect(svg).toContain('ventu-marker-wind');
-    expect(svg).not.toContain('<circle');
+  it('builds windy-style arrow with origin dot and speed colour', () => {
+    const svg = buildSpotWindArrowSvg(0, 18);
+    expect(svg).toContain('rotate(180');
+    expect(svg).toContain('<circle');
+    expect(svg).toContain('rgb(6,182,212)');
   });
 
-  it('title uses meteorological from-direction', () => {
-    expect(buildMapWindArrowTitle(0, 12, 'pt')).toContain('de N');
-    expect(buildMapWindArrowTitle(270, 8, 'en')).toContain('from W');
+  it('title states from-direction, flow and intensity', () => {
+    expect(buildMapWindArrowTitle(270, 12, 'pt')).toContain('de W');
+    expect(buildMapWindArrowTitle(0, 8, 'en')).toContain('from N');
+    expect(buildMapWindArrowTitle(0, 8, 'pt')).toContain('intensidade');
   });
 
-  it('html wrapper includes accessible title', () => {
+  it('html wrapper for spot marker', () => {
     const html = buildMapWindArrowHtml(90, 10, 'pt');
+    expect(html).toContain('ventu-spot-wind');
     expect(html).toContain('title=');
-    expect(html).toContain('ventu-marker-wind');
   });
 });
