@@ -35,11 +35,10 @@ import {
   getScoreRgb,
 } from '@/lib/map-constants';
 import {
-  buildCompoundSpotMarkerHtml,
-  markerWindArrowLayout,
-  markerPxForZoom,
-  MARKER_MIN_PX,
+  buildWindRingMarkerHtml,
+  markerIconLayout,
 } from '@/lib/mapWindArrow';
+import { getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
@@ -127,22 +126,21 @@ function buildMarkerIcon(
   selectedSport: GridSportFilter,
   showWind: boolean,
   locale: string,
-  markerPx = MARKER_MIN_PX,
 ): L.DivIcon {
-  const { conditions } = data;
+  const { spot, conditions } = data;
   const score = getBestScore(data, selectedSport);
   const scoreRgb = getScoreRgb(score);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
 
   const markerHtml = showWind
-    ? buildCompoundSpotMarkerHtml(
+    ? buildWindRingMarkerHtml(
         score,
         scoreRgb,
         conditions.windDirection,
         windKtNum,
         true,
         locale,
-        markerPx,
+        spot.coastOrientation,
       )
     : `
     <div class="ventu-spot-marker-wrap ventu-marker-enter" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
@@ -170,7 +168,7 @@ function buildMarkerIcon(
     </div>
   `;
 
-  const layout = markerWindArrowLayout(showWind, markerPx);
+  const layout = markerIconLayout(showWind);
 
   return Leaflet.divIcon({
     className: 'spot-marker',
@@ -193,6 +191,16 @@ function buildMarkerPopupContent(
   const sportParam =
     selectedSport !== 'all' && selectedSport !== 'big-wave' ? selectedSport : undefined;
 
+  const windKt = (conditions.windSpeed * MS_TO_KNOTS).toFixed(0);
+  const windRelation =
+    spot.coastOrientation !== undefined
+      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
+      : undefined;
+  const windRelationLabel =
+    windRelation != null
+      ? getWindRelationLabel(windRelation, locale === 'pt' ? 'pt' : 'en')
+      : undefined;
+
   return renderSpotPopup({
     spot,
     locale,
@@ -200,8 +208,10 @@ function buildMarkerPopupContent(
     allScores,
     swellHeight: swellH.toFixed(1),
     swellPeriod: swellT.toFixed(0),
-    windKnots: (conditions.windSpeed * MS_TO_KNOTS).toFixed(0),
+    windKnots: windKt,
     windDirection: getCardinalLabel(conditions.windDirection),
+    windRelation: windRelationLabel?.label,
+    windRelationClass: windRelationLabel?.className,
     waterTemp: conditions.waterTemp.toFixed(1),
     wavePowerKw: powerKw.toFixed(1),
     imageUrl: (() => {
@@ -233,7 +243,6 @@ function createSpotMarker(
   selectedSport: GridSportFilter,
   locale: string,
   showWind: boolean,
-  markerPx: number,
   options: {
     useMobileSheet: boolean;
     onMobileTap?: (data: SpotData) => void;
@@ -241,7 +250,7 @@ function createSpotMarker(
   },
 ): L.Marker {
   const { spot } = data;
-  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, markerPx);
+  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
   (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
 
@@ -480,29 +489,13 @@ export default function SpotMapInteractive({
     };
   }, [isHeroEmbed]);
 
-  // Scale compound markers with zoom (CSS var — no marker rebuild)
+  // Basemap + theme on Leaflet container (wind ring halo on satellite)
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
-    const map = mapInstanceRef.current;
-    const el = map.getContainer();
-
-    const syncMarkerSize = () => {
-      const px = markerPxForZoom(map.getZoom());
-      el.style.setProperty('--ventu-marker-px', `${px}px`);
-      el.querySelectorAll<HTMLElement>('.ventu-compound-marker-wrap').forEach((node) => {
-        const w = px;
-        const h = Math.round((px * 136) / 128);
-        node.style.width = `${w}px`;
-        node.style.height = `${h}px`;
-      });
-    };
-
-    syncMarkerSize();
-    map.on('zoom zoomend', syncMarkerSize);
-    return () => {
-      map.off('zoom zoomend', syncMarkerSize);
-    };
-  }, [isReady]);
+    const el = mapInstanceRef.current.getContainer();
+    el.dataset.basemap = basemapMode;
+    el.dataset.mapTheme = isDark ? 'dark' : 'light';
+  }, [basemapMode, isDark, isReady]);
 
   // Switch basemap tiles
   useEffect(() => {
@@ -809,7 +802,6 @@ export default function SpotMapInteractive({
 
     const bounds = Leaflet.latLngBounds([]);
     const useMobileSheet = isMobile;
-    const markerPx = showWindOnMarkers ? markerPxForZoom(map.getZoom()) : MARKER_MIN_PX;
 
     visibleSpots.forEach((data) => {
       const cacheKey = buildMarkerCacheKey(
@@ -827,7 +819,7 @@ export default function SpotMapInteractive({
           marker.remove();
           cache.delete(data.spot.id);
         }
-        marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, markerPx, {
+        marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, {
           useMobileSheet,
           onMobileTap: setSheetSpot,
           onSpotSelect,

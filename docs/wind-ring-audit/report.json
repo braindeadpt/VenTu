@@ -1,0 +1,80 @@
+{
+  "capturedAt": "2026-07-04T12:58:40.892Z",
+  "url": "http://127.0.0.1:4173/pt/mapa/",
+  "hashes": {
+    "light-map": "34ad2324cf1dac6c6004d7858426c2c8",
+    "dark-map": "b7f5e398750e4cc032eebac169d93ccf",
+    "satellite": "c6d2239e74afe0f465ba149b62338959",
+    "clusters": "a3be95a313afda215f8cf6d09bb450e3"
+  },
+  "captures": [
+    {
+      "id": "light-map",
+      "basemap": "map",
+      "theme": "light",
+      "label": "Light map tiles",
+      "filename": "wind-ring-light-map.png",
+      "filePath": "C:\\Users\\Braindead\\Documents\\windspot-pt-v2\\docs\\wind-ring-audit\\wind-ring-light-map.png",
+      "hash": "34ad2324cf1dac6c6004d7858426c2c8",
+      "stats": {
+        "ringCount": 185,
+        "clusterCount": 0,
+        "legend": true,
+        "themeOcean": true,
+        "basemap": "map",
+        "haloVisible": false,
+        "tileSample": "https://a.basemaps.cartocdn.com/light_all/7/60/48.png"
+      }
+    },
+    {
+      "id": "dark-map",
+      "basemap": "map",
+      "theme": "dark",
+      "label": "Dark map tiles",
+      "filename": "wind-ring-dark-map.png",
+      "filePath": "C:\\Users\\Braindead\\Documents\\windspot-pt-v2\\docs\\wind-ring-audit\\wind-ring-dark-map.png",
+      "hash": "b7f5e398750e4cc032eebac169d93ccf",
+      "stats": {
+        "ringCount": 185,
+        "clusterCount": 0,
+        "legend": true,
+        "themeOcean": false,
+        "basemap": "map",
+        "haloVisible": false,
+        "tileSample": "https://a.basemaps.cartocdn.com/dark_all/7/60/48.png"
+      }
+    },
+    {
+      "id": "satellite",
+      "basemap": "satellite",
+      "theme": "dark",
+      "label": "Satellite tiles",
+      "filename": "wind-ring-satellite.png",
+      "filePath": "C:\\Users\\Braindead\\Documents\\windspot-pt-v2\\docs\\wind-ring-audit\\wind-ring-satellite.png",
+      "hash": "c6d2239e74afe0f465ba149b62338959",
+      "stats": {
+        "ringCount": 185,
+        "clusterCount": 0,
+        "legend": true,
+        "themeOcean": false,
+        "basemap": "satellite",
+        "haloVisible": true,
+        "tileSample": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/7/48/60"
+      }
+    },
+    {
+      "id": "clusters",
+      "label": "Cluster zoom (no wind rings)",
+      "filename": "wind-ring-clusters.png",
+      "filePath": "C:\\Users\\Braindead\\Documents\\windspot-pt-v2\\docs\\wind-ring-audit\\wind-ring-clusters.png",
+      "hash": "a3be95a313afda215f8cf6d09bb450e3",
+      "stats": {
+        "clusterCount": 13,
+        "ringCount": 0,
+        "dataMapCluster": "true",
+        "dataMapWind": "false",
+        "clusterHint": true
+      }
+    }
+  ]
+}

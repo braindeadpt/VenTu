@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Map wind compound markers', () => {
+test.describe('Map wind ring markers', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.setItem('ventu.map.wind', '1');
@@ -11,35 +11,37 @@ test.describe('Map wind compound markers', () => {
     await page.waitForTimeout(2500);
   });
 
-  test('renders compound markers with wind rays', async ({ page }) => {
+  test('renders integrated wind rings on individual markers', async ({ page }) => {
     await expect(page.locator('[data-map-wind="true"]')).toBeVisible({ timeout: 15_000 });
 
-    const rays = page.locator('.ventu-wind-wedge');
-    await expect(rays.first()).toBeVisible({ timeout: 20_000 });
-    const count = await rays.count();
+    const rings = page.locator('.ventu-wind-ring');
+    await expect(rings.first()).toBeVisible({ timeout: 20_000 });
+    const count = await rings.count();
     expect(count).toBeGreaterThan(50);
 
     const sample = await page.evaluate(() => {
-      const wedge = document.querySelector('.ventu-wind-wedge path:nth-of-type(2)') as SVGPathElement | null;
-      const wrap = document.querySelector('.ventu-compound-marker-wrap') as HTMLElement | null;
+      const ring = document.querySelector('.ventu-wind-ring-arc') as SVGPathElement | null;
+      const wrap = document.querySelector('.ventu-wind-ring-marker-wrap') as HTMLElement | null;
       const pin = document.querySelector('.ventu-marker-pin circle:nth-of-type(2)') as SVGCircleElement | null;
-      if (!wedge || !wrap || !pin) return null;
-      const bbox = wedge.getBBox();
+      if (!ring || !wrap || !pin) return null;
+      const wrapBox = wrap.getBoundingClientRect();
       return {
-        wrapW: wrap.getBoundingClientRect().width,
-        wedgeLen: Math.max(bbox.width, bbox.height),
+        wrapW: wrapBox.width,
+        wrapH: wrapBox.height,
         pinR: pin.r.baseVal.value,
-        hasCompound: !!document.querySelector('.ventu-compound-marker'),
-        oldArrow: document.querySelectorAll('.ventu-spot-wind').length,
+        hasRing: !!document.querySelector('.ventu-wind-ring'),
+        legacyWedge: document.querySelectorAll('.ventu-wind-wedge').length,
+        legacyArrow: document.querySelectorAll('.ventu-wind-arrow, .ventu-spot-wind').length,
       };
     });
 
     expect(sample).not.toBeNull();
-    expect(sample!.hasCompound).toBe(true);
-    expect(sample!.oldArrow).toBe(0);
-    expect(sample!.wrapW).toBeGreaterThanOrEqual(84);
-    expect(sample!.wedgeLen).toBeGreaterThanOrEqual(24);
-    expect(sample!.pinR).toBeCloseTo(20, 0);
+    expect(sample!.hasRing).toBe(true);
+    expect(sample!.legacyWedge).toBe(0);
+    expect(sample!.legacyArrow).toBe(0);
+    expect(sample!.wrapW).toBeLessThanOrEqual(60);
+    expect(sample!.wrapH).toBeLessThanOrEqual(50);
+    expect(sample!.pinR).toBeCloseTo(17, 0);
   });
 
   test('visual snapshot at Peniche zoom', async ({ page }) => {
@@ -50,8 +52,8 @@ test.describe('Map wind compound markers', () => {
     await page.waitForTimeout(2000);
     const map = page.locator('.leaflet-container');
     await expect(map).toBeVisible();
-    await expect(page.locator('.ventu-wind-wedge').first()).toBeVisible();
-    await expect(map).toHaveScreenshot('map-compound-wind-peniche.png', {
+    await expect(page.locator('.ventu-wind-ring').first()).toBeVisible();
+    await expect(map).toHaveScreenshot('map-wind-ring-peniche.png', {
       maxDiffPixelRatio: 0.08,
     });
   });

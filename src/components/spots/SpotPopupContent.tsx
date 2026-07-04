@@ -21,6 +21,8 @@ export interface SpotPopupContentProps {
   swellPeriod: string;
   windKnots: string;
   windDirection: string;
+  windRelation?: string;
+  windRelationClass?: string;
   waterTemp: string;
   wavePowerKw: string;
   imageUrl?: string;
@@ -37,6 +39,8 @@ export function SpotPopupContent({
   swellPeriod,
   windKnots,
   windDirection,
+  windRelation,
+  windRelationClass,
   waterTemp,
   wavePowerKw,
   imageUrl,
@@ -120,9 +124,16 @@ export function SpotPopupContent({
           {swellHeight}m · {swellPeriod}s
         </span>
         <span aria-hidden className="text-fg-subtle/40">|</span>
-        <span className="inline-flex items-center gap-1 text-fg">
-          <Wind className="w-3 h-3 text-data-wind" aria-hidden />
-          {windKnots}kt {windDirection}
+        <span className="inline-flex items-center gap-1 text-fg flex-wrap">
+          <Wind className="w-3 h-3 text-data-wind shrink-0" aria-hidden />
+          <span className="font-mono tabular-nums">{windKnots}kt {windDirection}</span>
+          {windRelation ? (
+            <span
+              className={`font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-pill border ${windRelationClass ?? ''}`}
+            >
+              {windRelation}
+            </span>
+          ) : null}
         </span>
         <span aria-hidden className="text-fg-subtle/40">|</span>
         <span className="inline-flex items-center gap-1 text-fg">

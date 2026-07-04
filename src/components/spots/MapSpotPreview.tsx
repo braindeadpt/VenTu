@@ -7,7 +7,7 @@ import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
-import { getCardinalLabel } from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
@@ -59,6 +59,14 @@ export default function MapSpotPreview({
 
   const narrative = getMapSpotNarrative(spot, conditions, allScores, highlightSport, isPt);
   const tideLine = getMapTideLine(spot, conditions, isPt);
+  const windRelation =
+    spot.coastOrientation !== undefined
+      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
+      : undefined;
+  const windRelationMeta =
+    windRelation != null
+      ? getWindRelationLabel(windRelation, isPt ? 'pt' : 'en')
+      : undefined;
 
   return (
     <div className="space-y-4">
@@ -128,8 +136,15 @@ export default function MapSpotPreview({
             <Wind className="w-3.5 h-3.5 text-data-wind" aria-hidden />
             <span>{isPt ? 'Vento' : 'Wind'}</span>
           </div>
-          <p className="font-mono tabular-nums text-fg font-semibold">
-            {windKt}kt {getCardinalLabel(conditions.windDirection)}
+          <p className="font-mono tabular-nums text-fg font-semibold flex flex-wrap items-center gap-1.5">
+            <span>{windKt}kt {getCardinalLabel(conditions.windDirection)}</span>
+            {windRelationMeta ? (
+              <span
+                className={`text-[10px] font-sans font-medium px-1.5 py-0.5 rounded-pill border ${windRelationMeta.className}`}
+              >
+                {windRelationMeta.label}
+              </span>
+            ) : null}
           </p>
         </div>
         <div className="rounded-lg bg-surface-1/[0.04] border border-divider p-2.5">
