@@ -8,16 +8,24 @@ interface MapLegendProps {
   locale: string;
   /** Extra bottom margin when fullscreen filter bar is visible. */
   reserveHudSpace?: boolean;
+  /** Smaller margin when mobile HUD filters are collapsed. */
+  hudCompact?: boolean;
 }
 
-export default function MapLegend({ locale, reserveHudSpace = false }: MapLegendProps) {
+export default function MapLegend({ locale, reserveHudSpace = false, hudCompact = false }: MapLegendProps) {
   const isPt = locale === 'pt';
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
+  const bottomMargin = !reserveHudSpace
+    ? 'mb-3'
+    : hudCompact
+      ? 'mb-[88px] md:mb-[60px]'
+      : 'mb-[240px] md:mb-[60px]';
+
   return (
     <div
-      className={`absolute bottom-0 right-0 z-[1000] mr-3 ${reserveHudSpace ? 'mb-[60px]' : 'mb-3'}`}
+      className={`absolute bottom-0 right-0 z-[1000] mr-3 ${bottomMargin}`}
       role="region"
       aria-label={isPt ? 'Legenda do mapa' : 'Map legend'}
     >

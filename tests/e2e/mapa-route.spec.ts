@@ -20,6 +20,7 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 
   test('difficulty filter persists in localStorage', async ({ page }) => {
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
     await page.getByRole('button', { name: 'Iniciante', exact: true }).click();
     const stored = await page.evaluate(() => localStorage.getItem('ventu:map:difficulty'));
     expect(stored).toBe('beginner');
@@ -52,6 +53,20 @@ test.describe('/pt/mapa fullscreen map', () => {
     await openMapSpotSheet(page);
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden({ timeout: 5000 });
+  });
+
+  test('mobile HUD collapses to show more map', async ({ page }) => {
+    const hud = page.locator('[data-map-hud-collapsed]');
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
+    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeHidden();
+
+    await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'false');
+    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: /Ocultar filtros|Hide filters/i }).click();
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
+    await expect(page.getByRole('button', { name: 'Iniciante', exact: true })).toBeHidden();
   });
 });
 

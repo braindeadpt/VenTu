@@ -89,6 +89,9 @@ type MapHudProps = Omit<
   | 'clusterLabel'
   | 'windLabel'
   | 'exitLabel'
+  | 'collapseHudLabel'
+  | 'expandHudLabel'
+  | 'onCollapsedChange'
 >;
 
 interface SpotMapInteractiveProps {
@@ -382,8 +385,13 @@ export default function SpotMapInteractive({
     return window.matchMedia('(max-width: 767px)').matches;
   });
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
+  const [hudCollapsed, setHudCollapsed] = useState(true);
   const isPt = locale === 'pt';
   const t = getTranslation(validateLocale(locale));
+
+  useEffect(() => {
+    if (!isFullscreen) setHudCollapsed(true);
+  }, [isFullscreen]);
 
   // Mobile viewport — bottom sheet instead of Leaflet popup
   useEffect(() => {
@@ -998,7 +1006,11 @@ export default function SpotMapInteractive({
           )}
 
           {!isHeroEmbed && (
-            <MapLegend locale={locale} reserveHudSpace={isFullscreen} />
+            <MapLegend
+              locale={locale}
+              reserveHudSpace={isFullscreen}
+              hudCompact={isFullscreen && hudCollapsed}
+            />
           )}
 
           {!isFullscreen && !isHeroEmbed && (
@@ -1041,6 +1053,9 @@ export default function SpotMapInteractive({
               clusterLabel={clusterLabel}
               windLabel={windLabel}
               exitLabel={exitFullscreenLabel}
+              collapseHudLabel={t.map.collapseHud}
+              expandHudLabel={t.map.expandHud}
+              onCollapsedChange={setHudCollapsed}
             />
           )}
 

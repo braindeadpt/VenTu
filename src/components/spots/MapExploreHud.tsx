@@ -1,6 +1,7 @@
 'use client';
 
-import { Filter, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, Filter, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -27,6 +28,9 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   clusterLabel: string;
   windLabel: string;
   exitLabel: string;
+  collapseHudLabel: string;
+  expandHudLabel: string;
+  onCollapsedChange?: (collapsed: boolean) => void;
 }
 
 export default function MapExploreHud({
@@ -65,19 +69,54 @@ export default function MapExploreHud({
   clusterLabel,
   windLabel,
   exitLabel,
+  collapseHudLabel,
+  expandHudLabel,
+  onCollapsedChange,
 }: MapExploreHudProps) {
+  const [collapsed, setCollapsed] = useState(true);
+
   if (!visible) return null;
+
+  const toggleCollapsed = () => {
+    setCollapsed((prev) => {
+      const next = !prev;
+      onCollapsedChange?.(next);
+      return next;
+    });
+  };
 
   return (
     <div
       className="absolute inset-x-0 bottom-0 z-[1000] pointer-events-none pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       role="region"
       aria-label={isPt ? 'Modo explorar' : 'Explore mode'}
+      data-map-hud-collapsed={collapsed ? 'true' : 'false'}
     >
-      <div className="pointer-events-auto mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card px-2.5 py-2.5 flex flex-col gap-2">
+      <div className="pointer-events-auto mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card px-2.5 py-2 flex flex-col gap-2 md:py-2.5">
+        <button
+          type="button"
+          onClick={toggleCollapsed}
+          className="md:hidden flex flex-col items-center gap-1 w-full min-h-[36px] -mx-0.5 px-0.5 rounded-input hover:bg-surface-1/[0.04] transition-colors duration-150"
+          aria-expanded={!collapsed}
+          aria-label={collapsed ? expandHudLabel : collapseHudLabel}
+        >
+          <span className="w-8 h-1 rounded-full bg-fg-subtle/30" aria-hidden />
+          <ChevronDown
+            className={`w-4 h-4 text-fg-muted motion-reduce:transition-none transition-transform duration-200 ${
+              collapsed ? '' : 'rotate-180'
+            }`}
+            aria-hidden
+          />
+        </button>
+
         <div className="flex items-center gap-2 min-h-[40px] flex-wrap">
           <span className="text-meta font-semibold text-fg shrink-0">
             {exploreModeLabel}
+          </span>
+
+          <span className="pill pill-ghost shrink-0 px-2 py-1 min-h-0 text-meta-sm md:hidden inline-flex">
+            <span className="font-mono tabular-nums text-fg">{spotCount}</span>
+            <span className="text-fg-muted ml-1">{isPt ? 'spots' : ''}</span>
           </span>
 
           <div
@@ -167,85 +206,87 @@ export default function MapExploreHud({
           </MapControlButton>
         </div>
 
-        {windHint && (
-          <p role="status" className="text-meta-sm text-score-fair px-0.5">
-            {windHint}
-          </p>
-        )}
+        <div className={`flex flex-col gap-2 ${collapsed ? 'hidden md:flex' : 'flex'}`}>
+          {windHint && (
+            <p role="status" className="text-meta-sm text-score-fair px-0.5">
+              {windHint}
+            </p>
+          )}
 
-        <div
-          className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x pb-0.5"
-          role="group"
-          aria-label={isPt ? 'Modalidade' : 'Sport'}
-        >
-          {sports.map((sport) => {
-            const active = selectedSport === sport.id;
-            return (
-              <FilterPill
-                key={sport.id}
-                active={active}
-                onClick={() => onSportChange(sport.id)}
-                icon={<span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>}
-                compact
-              >
-                {sport.label}
-              </FilterPill>
-            );
-          })}
-        </div>
-
-        <div
-          className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x pb-0.5"
-          role="group"
-          aria-label={difficultyGroupLabel}
-        >
-          {difficulties.map((level) => {
-            const active = selectedDifficulty === level.id;
-            return (
-              <FilterPill
-                key={level.id}
-                compact
-                active={active}
-                onClick={() => onDifficultyChange(level.id)}
-              >
-                {level.label}
-              </FilterPill>
-            );
-          })}
-        </div>
-
-        <div className="flex items-center gap-2 min-h-[36px]">
-          <div className="flex items-center gap-1 shrink-0 text-fg-muted">
-            <Filter className="w-3.5 h-3.5" aria-hidden />
-            <span className="text-meta-sm font-semibold uppercase tracking-wide">
-              {isPt ? 'Região' : 'Region'}
-            </span>
-          </div>
           <div
-            className="flex items-center gap-1 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x flex-1 min-w-0"
+            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x pb-0.5"
             role="group"
-            aria-label={isPt ? 'Região' : 'Region'}
+            aria-label={isPt ? 'Modalidade' : 'Sport'}
           >
-            {regions.map((region) => {
-              const active = selectedRegion === region;
+            {sports.map((sport) => {
+              const active = selectedSport === sport.id;
               return (
-                <FilterPill key={region} compact active={active} onClick={() => onRegionChange(region)}>
-                  {region}
+                <FilterPill
+                  key={sport.id}
+                  active={active}
+                  onClick={() => onSportChange(sport.id)}
+                  icon={<span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>}
+                  compact
+                >
+                  {sport.label}
                 </FilterPill>
               );
             })}
           </div>
-          {showClearFilters && (
-            <button
-              type="button"
-              onClick={onResetFilters}
-              className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 rounded-input text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] transition-colors duration-150 min-h-[36px]"
-              aria-label={clearFiltersLabel}
+
+          <div
+            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x pb-0.5"
+            role="group"
+            aria-label={difficultyGroupLabel}
+          >
+            {difficulties.map((level) => {
+              const active = selectedDifficulty === level.id;
+              return (
+                <FilterPill
+                  key={level.id}
+                  compact
+                  active={active}
+                  onClick={() => onDifficultyChange(level.id)}
+                >
+                  {level.label}
+                </FilterPill>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-2 min-h-[36px]">
+            <div className="flex items-center gap-1 shrink-0 text-fg-muted">
+              <Filter className="w-3.5 h-3.5" aria-hidden />
+              <span className="text-meta-sm font-semibold uppercase tracking-wide">
+                {isPt ? 'Região' : 'Region'}
+              </span>
+            </div>
+            <div
+              className="flex items-center gap-1 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x flex-1 min-w-0"
+              role="group"
+              aria-label={isPt ? 'Região' : 'Region'}
             >
-              <RotateCcw className="w-3.5 h-3.5" aria-hidden />
-              <span className="hidden sm:inline">{clearFiltersLabel}</span>
-            </button>
-          )}
+              {regions.map((region) => {
+                const active = selectedRegion === region;
+                return (
+                  <FilterPill key={region} compact active={active} onClick={() => onRegionChange(region)}>
+                    {region}
+                  </FilterPill>
+                );
+              })}
+            </div>
+            {showClearFilters && (
+              <button
+                type="button"
+                onClick={onResetFilters}
+                className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 rounded-input text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] transition-colors duration-150 min-h-[36px]"
+                aria-label={clearFiltersLabel}
+              >
+                <RotateCcw className="w-3.5 h-3.5" aria-hidden />
+                <span className="hidden sm:inline">{clearFiltersLabel}</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
