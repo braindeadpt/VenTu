@@ -152,7 +152,7 @@ export default function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="site-header fixed top-0 left-0 right-0 z-50 bg-bg-base/80 backdrop-blur-xl border-b border-divider transition-[background,border-color] duration-slow"
+        className="site-header fixed top-0 left-0 right-0 z-50 bg-bg-base/90 backdrop-blur-xl border-b border-divider transition-[background,border-color] duration-slow"
         onKeyDown={handleKeyDown}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -160,7 +160,7 @@ export default function Header({ locale }: HeaderProps) {
             {/* Logo — isolated so centre nav never paints over it */}
             <Link
               href={`/${locale}/`}
-              className="flex items-center gap-2.5 group shrink-0 relative z-10 bg-bg-base/90 pr-1"
+              className="flex items-center gap-2.5 group shrink-0 relative z-10 pr-1"
             >
               <Wind className="w-8 h-8 text-accent group-hover:text-accent-hover transition-colors" />
               <span className="text-xl font-bold text-fg tracking-tight">
@@ -201,7 +201,7 @@ export default function Header({ locale }: HeaderProps) {
             </nav>
 
             {/* Desktop actions */}
-            <div className="hidden xl:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-10 justify-end bg-bg-base/90 pl-1">
+            <div className="hidden xl:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-10 justify-end pl-1">
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center gap-2 min-w-9 h-9 px-2 2xl:px-3 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
