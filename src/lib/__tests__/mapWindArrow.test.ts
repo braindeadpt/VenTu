@@ -8,6 +8,7 @@ import {
   buildSpotWindArrowSvg,
   buildMapWindArrowTitle,
   buildMapWindArrowHtml,
+  WIND_ARROW_MIN_PX,
 } from '../mapWindArrow';
 
 describe('mapWindArrow', () => {
@@ -21,18 +22,22 @@ describe('mapWindArrow', () => {
     expect(windArrowColorRgb(35)).toEqual([239, 68, 68]);
   });
 
-  it('shaft grows with speed', () => {
-    expect(windArrowShaftLength(3)).toBeLessThan(windArrowShaftLength(25));
+  it('shaft grows with speed (target ~22–28px at default render)', () => {
+    expect(windArrowShaftLength(3)).toBe(18);
+    expect(windArrowShaftLength(15)).toBe(25);
+    expect(windArrowShaftLength(25)).toBeGreaterThanOrEqual(28);
   });
 
   it('arrow px grows with zoom', () => {
-    expect(windArrowPxForZoom(8)).toBeLessThan(windArrowPxForZoom(12));
+    expect(windArrowPxForZoom(7)).toBe(WIND_ARROW_MIN_PX);
+    expect(windArrowPxForZoom(12)).toBeGreaterThan(WIND_ARROW_MIN_PX);
   });
 
-  it('marker layout reserves height for arrow above pin', () => {
-    const withWind = markerWindArrowLayout(true);
+  it('marker layout reserves height for large arrow above pin', () => {
+    const withWind = markerWindArrowLayout(true, 72);
     const withoutWind = markerWindArrowLayout(false);
-    expect(withWind.iconSize[1]).toBeGreaterThan(withoutWind.iconSize[1]);
+    expect(withWind.iconSize[1]).toBeGreaterThan(100);
+    expect(withoutWind.iconSize[1]).toBe(44);
   });
 
   it('builds windy-style arrow with origin dot and speed colour', () => {
@@ -40,6 +45,7 @@ describe('mapWindArrow', () => {
     expect(svg).toContain('rotate(180');
     expect(svg).toContain('<circle');
     expect(svg).toContain('rgb(6,182,212)');
+    expect(svg).not.toContain('width="56"');
   });
 
   it('title states from-direction, flow and intensity', () => {
@@ -48,9 +54,9 @@ describe('mapWindArrow', () => {
     expect(buildMapWindArrowTitle(0, 8, 'pt')).toContain('intensidade');
   });
 
-  it('html wrapper for spot marker', () => {
-    const html = buildMapWindArrowHtml(90, 10, 'pt');
+  it('html wrapper embeds inline pixel size', () => {
+    const html = buildMapWindArrowHtml(90, 10, 'pt', 56);
     expect(html).toContain('ventu-spot-wind');
-    expect(html).toContain('title=');
+    expect(html).toContain('style="width:56px;height:56px"');
   });
 });
