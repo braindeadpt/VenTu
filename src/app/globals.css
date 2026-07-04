@@ -541,9 +541,9 @@
   pointer-events: none;
   line-height: 0;
   flex-shrink: 0;
-  width: var(--ventu-marker-px, 56px);
-  height: calc(var(--ventu-marker-px, 56px) * 94 / 88);
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
+  width: var(--ventu-marker-px, 88px);
+  height: calc(var(--ventu-marker-px, 88px) * 136 / 128);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.65));
 }
 .ventu-compound-marker-wrap .ventu-compound-marker {
   display: block;
@@ -551,7 +551,7 @@
   height: 100%;
   overflow: visible;
 }
-.ventu-compound-marker-wrap .ventu-wind-ray {
+.ventu-compound-marker-wrap .ventu-wind-wedge {
   pointer-events: none;
 }
 .leaflet-marker-icon.spot-marker {

@@ -119,7 +119,7 @@ export const translations = {
       viewSpot: 'Ver spot',
       quickPanel: 'Painel rápido',
       windNeedsShowAll: 'Desligue cluster para ver vento',
-      windArrowHint: 'Raio = para onde sopra · cor = intensidade · score no centro',
+      windArrowHint: 'Asa = para onde sopra · cor = intensidade · score no centro',
       onlyOn: 'Só ON',
       onlyOnOff: 'Todos os spots',
       onlyOnHint: 'Score ≥ 60 para a modalidade seleccionada',

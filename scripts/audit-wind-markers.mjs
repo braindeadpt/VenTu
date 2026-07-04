@@ -31,7 +31,7 @@ async function main() {
   await page.waitForTimeout(2000);
 
   const stats = await page.evaluate(() => {
-    const rays = document.querySelectorAll('.ventu-wind-ray');
+    const rays = document.querySelectorAll('.ventu-wind-wedge');
     const compounds = document.querySelectorAll('.ventu-compound-marker');
     const old = document.querySelectorAll('.ventu-spot-wind');
     const line = document.querySelector('.ventu-wind-ray line:nth-of-type(3)');

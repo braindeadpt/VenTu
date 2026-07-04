@@ -491,7 +491,7 @@ export default function SpotMapInteractive({
       el.style.setProperty('--ventu-marker-px', `${px}px`);
       el.querySelectorAll<HTMLElement>('.ventu-compound-marker-wrap').forEach((node) => {
         const w = px;
-        const h = Math.round((px / 88) * 94);
+        const h = Math.round((px * 136) / 128);
         node.style.width = `${w}px`;
         node.style.height = `${h}px`;
       });
