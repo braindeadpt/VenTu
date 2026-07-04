@@ -34,7 +34,7 @@ import {
   MAP_ONLY_ON_LS_KEY,
   getScoreRgb,
 } from '@/lib/map-constants';
-import { buildMapWindArrowSvg } from '@/lib/mapWindArrow';
+import { buildMapWindArrowHtml, markerWindArrowLayout, windArrowPxForZoom } from '@/lib/mapWindArrow';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
@@ -120,6 +120,7 @@ function buildMarkerIcon(
   data: SpotData,
   selectedSport: GridSportFilter,
   showWind: boolean,
+  locale: string,
 ): L.DivIcon {
   const { conditions } = data;
   const score = getBestScore(data, selectedSport);
@@ -127,7 +128,7 @@ function buildMarkerIcon(
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
 
   const windArrowHtml = showWind
-    ? `<div class="ventu-wind-arrow">${buildMapWindArrowSvg(conditions.windDirection, windKtNum)}</div>`
+    ? buildMapWindArrowHtml(conditions.windDirection, windKtNum, locale)
     : '';
 
   // Drop marker: circle + CSS tail, score number in Geist Mono
@@ -158,12 +159,14 @@ function buildMarkerIcon(
     </div>
   `;
 
+  const layout = markerWindArrowLayout(showWind);
+
   return Leaflet.divIcon({
     className: 'spot-marker',
     html: markerHtml,
-    iconSize: showWind ? [34, 54] : [34, 44],
-    iconAnchor: showWind ? [17, 54] : [17, 44],
-    popupAnchor: [0, showWind ? -54 : -46],
+    iconSize: layout.iconSize,
+    iconAnchor: layout.iconAnchor,
+    popupAnchor: layout.popupAnchor,
   });
 }
 
@@ -200,7 +203,10 @@ function buildMarkerCacheKey(
   useMobileSheet: boolean,
 ): string {
   const score = getBestScore(data, selectedSport);
-  return [data.spot.id, selectedSport, score, showWind, locale, useMobileSheet].join(':');
+  const windKey = showWind
+    ? `${Math.round(data.conditions.windDirection)}:${Math.round(data.conditions.windSpeed * MS_TO_KNOTS)}`
+    : '';
+  return [data.spot.id, selectedSport, score, showWind, windKey, locale, useMobileSheet].join(':');
 }
 
 function createSpotMarker(
@@ -216,7 +222,7 @@ function createSpotMarker(
   },
 ): L.Marker {
   const { spot } = data;
-  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind);
+  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
   (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
 
@@ -451,6 +457,24 @@ export default function SpotMapInteractive({
       }
     };
   }, [isHeroEmbed]);
+
+  // Scale wind arrows with zoom (CSS var — no marker rebuild)
+  useEffect(() => {
+    if (!isReady || !mapInstanceRef.current || !mapRef.current) return;
+    const map = mapInstanceRef.current;
+    const el = mapRef.current;
+
+    const syncWindArrowSize = () => {
+      const px = windArrowPxForZoom(map.getZoom());
+      el.style.setProperty('--ventu-wind-arrow-px', `${px}px`);
+    };
+
+    syncWindArrowSize();
+    map.on('zoom zoomend', syncWindArrowSize);
+    return () => {
+      map.off('zoom zoomend', syncWindArrowSize);
+    };
+  }, [isReady]);
 
   // Switch basemap tiles
   useEffect(() => {
@@ -826,7 +850,12 @@ export default function SpotMapInteractive({
   const exitFullscreenLabel = t.map.exitFullscreen;
   const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
   const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
-  const windHint = clusterEnabled && windEnabled ? t.map.windNeedsShowAll : null;
+  const windHint =
+    clusterEnabled && windEnabled
+      ? t.map.windNeedsShowAll
+      : showWindOnMarkers
+        ? t.map.windArrowHint
+        : null;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);

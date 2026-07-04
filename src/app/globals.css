@@ -538,14 +538,20 @@
 /* ── Map wind arrows (spot markers) ── */
 .ventu-wind-arrow {
   pointer-events: none;
-  color: rgb(var(--data-wind));
   line-height: 0;
-  margin-bottom: 2px;
+  margin-bottom: 3px;
+  width: var(--ventu-wind-arrow-px, 32px);
+  height: var(--ventu-wind-arrow-px, 32px);
+  flex-shrink: 0;
 }
 .ventu-spot-marker-wrap .ventu-wind-arrow svg {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1px 1.5px rgba(0, 0, 0, 0.45));
+}
+.leaflet-marker-icon.spot-marker {
+  overflow: visible !important;
 }
 
 body.ventu-signup-nudge-open footer {

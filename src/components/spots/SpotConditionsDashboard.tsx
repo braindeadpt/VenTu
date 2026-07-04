@@ -11,7 +11,6 @@ import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
 import { isObservedFresh } from '@/lib/observations';
 import MetricTile from '@/components/ui/MetricTile';
 import SwellRadar from '@/components/ui/SwellRadar';
-import WindShoreMap from '@/components/ui/WindShoreMap';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
 import ObservedNow from '@/components/spots/ObservedNow';
 import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
@@ -57,11 +56,6 @@ interface SpotConditionsDashboardProps {
     seaStateTitle: string;
     seaStateHint: string;
     windContextTitle: string;
-    windShoreTitle: string;
-    windShoreSea: string;
-    windShoreLand: string;
-    windShoreFrom: string;
-    windShoreCoastFacing: string;
     windRelationHints: Record<WindRelation, string>;
     radarFootnote: string;
     verificationTitle: string;
@@ -211,29 +205,7 @@ export default function SpotConditionsDashboard({
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-start">
-            {spot.coastOrientation !== undefined && windRelation && windRelationMeta ? (
-              <div className="lg:col-span-5">
-                <WindShoreMap
-                  windDirection={conditions.windDirection}
-                  windSpeed={conditions.windSpeed}
-                  coastOrientation={spot.coastOrientation}
-                  locale={isPt ? 'pt' : 'en'}
-                  title={copy.windShoreTitle}
-                  seaLabel={copy.windShoreSea}
-                  landLabel={copy.windShoreLand}
-                  windFromLabel={copy.windShoreFrom}
-                  coastFacingLabel={copy.windShoreCoastFacing}
-                  relationHint={copy.windRelationHints[windRelation]}
-                />
-              </div>
-            ) : null}
-
-            <div
-              className={cn(
-                'flex flex-col items-center gap-2',
-                spot.coastOrientation !== undefined ? 'lg:col-span-3' : 'lg:col-span-4 lg:items-start',
-              )}
-            >
+            <div className="lg:col-span-4 flex flex-col items-center lg:items-start gap-2">
               <SwellRadar
                 swellTrains={swellTrains.map((t) => ({
                   key: t.key,
@@ -244,12 +216,11 @@ export default function SpotConditionsDashboard({
                 windDirection={conditions.windDirection}
                 windSpeed={conditions.windSpeed}
                 coastOrientation={spot.coastOrientation}
-                size={spot.coastOrientation !== undefined ? 'sm' : 'md'}
+                size="md"
                 showLegend={false}
-                showWind={spot.coastOrientation === undefined}
                 visualTone="dashboard"
               />
-              {windRelationMeta && windRelation && spot.coastOrientation === undefined && (
+              {windRelationMeta && windRelation && (
                 <div className="w-full max-w-xs space-y-1 text-center lg:text-left">
                   <span className="inline-flex items-center gap-2 rounded-pill border border-divider bg-bg-elevated px-2.5 py-1 text-meta-sm font-medium text-fg">
                     <Wind className="w-3.5 h-3.5 text-data-wind shrink-0" aria-hidden />
@@ -262,12 +233,7 @@ export default function SpotConditionsDashboard({
               )}
             </div>
 
-            <div
-              className={cn(
-                'min-w-0',
-                spot.coastOrientation !== undefined ? 'lg:col-span-4' : 'lg:col-span-8',
-              )}
-            >
+            <div className="lg:col-span-8 min-w-0">
               <SwellTrainsTable conditions={conditions} locale={locale} />
               {swellTrains.length > 0 && (
                 <p className="text-meta-sm text-fg-subtle mt-2 font-mono tabular-nums">
