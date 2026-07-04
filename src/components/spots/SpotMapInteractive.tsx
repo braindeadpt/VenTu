@@ -42,6 +42,7 @@ import {
 } from '@/lib/mapWindArrow';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
+import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
 import { spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 
@@ -180,15 +181,22 @@ function buildMarkerIcon(
   });
 }
 
-function buildMarkerPopupContent(data: SpotData, locale: string): string {
+function buildMarkerPopupContent(
+  data: SpotData,
+  locale: string,
+  selectedSport: GridSportFilter,
+): string {
   const { spot, conditions, allScores } = data;
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
   const powerKw = resolveWavePowerKw(conditions);
+  const sportParam =
+    selectedSport !== 'all' && selectedSport !== 'big-wave' ? selectedSport : undefined;
 
   return renderSpotPopup({
     spot,
     locale,
+    detailHref: getSpotDetailHref(locale, spot.slug, sportParam),
     allScores,
     swellHeight: swellH.toFixed(1),
     swellPeriod: swellT.toFixed(0),
@@ -238,7 +246,7 @@ function createSpotMarker(
   (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
 
   if (!options.useMobileSheet) {
-    marker.bindPopup(buildMarkerPopupContent(data, locale), {
+    marker.bindPopup(buildMarkerPopupContent(data, locale, selectedSport), {
       className: 'spot-popup',
       maxWidth: 280,
       closeButton: true,
@@ -262,9 +270,10 @@ function createSpotMarker(
         detailBtn.addEventListener(
           'click',
           (ev) => {
+            if (!options.onSpotSelect) return;
             ev.preventDefault();
             ev.stopPropagation();
-            options.onSpotSelect?.(spot.id);
+            options.onSpotSelect(spot.id);
             marker.closePopup();
           },
           { once: true },
@@ -748,10 +757,11 @@ export default function SpotMapInteractive({
     const onClick = (e: MouseEvent) => {
       const btn = (e.target as HTMLElement).closest('.ventu-popup-detail');
       if (!btn) return;
+      if (!onSpotSelectRef.current) return;
       e.preventDefault();
       e.stopPropagation();
       const spotId = btn.getAttribute('data-spot-id');
-      if (spotId) onSpotSelectRef.current?.(spotId);
+      if (spotId) onSpotSelectRef.current(spotId);
     };
     container.addEventListener('click', onClick, true);
     return () => container.removeEventListener('click', onClick, true);

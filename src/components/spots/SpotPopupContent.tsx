@@ -8,13 +8,14 @@ import { SPORT_LABELS } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import { getScoreTokens } from '@/lib/sportScore';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
-import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
+import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { getSpotImageAlt } from '@/lib/spotImage';
 
 export interface SpotPopupContentProps {
   spot: Spot;
   locale: string;
+  detailHref: string;
   allScores: Record<SportType, SportScore>;
   swellHeight: string;
   swellPeriod: string;
@@ -30,6 +31,7 @@ export interface SpotPopupContentProps {
 export function SpotPopupContent({
   spot,
   locale,
+  detailHref,
   allScores,
   swellHeight,
   swellPeriod,
@@ -44,7 +46,6 @@ export function SpotPopupContent({
   const isPt = locale === 'pt';
   const name = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
-  const detailHref = getSpotDetailHref(locale, spot.slug);
 
   const topSport = (Object.entries(allScores) as [SportType, SportScore][])
     .filter(([, s]) => s.score > 0)
@@ -132,9 +133,9 @@ export function SpotPopupContent({
 
       {/* CTA button */}
       <div className="px-2.5 pb-2.5">
-        <button
-          type="button"
-          className="ventu-popup-detail w-full text-center py-2 rounded-input text-xs font-semibold border-0 cursor-pointer inline-flex items-center justify-center gap-1.5"
+        <a
+          href={detailHref}
+          className="ventu-popup-detail w-full text-center py-2 rounded-input text-xs font-semibold border-0 cursor-pointer inline-flex items-center justify-center gap-1.5 no-underline"
           style={{
             backgroundColor: tokens ? `rgb(var(--score-${tokens.tier}) / 0.15)` : 'rgb(var(--surface-1) / 0.08)',
             color: tokens ? `rgb(var(--score-${tokens.tier}))` : 'rgb(var(--fg))',
@@ -143,7 +144,7 @@ export function SpotPopupContent({
         >
           {isPt ? 'Ver spot' : 'View spot'}
           <ArrowUpRight className="w-3 h-3" aria-hidden />
-        </button>
+        </a>
       </div>
     </div>
   );

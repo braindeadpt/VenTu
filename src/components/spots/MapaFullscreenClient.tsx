@@ -23,6 +23,7 @@ import {
 } from '@/lib/gridFilters';
 import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
+import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
@@ -111,6 +112,17 @@ export default function MapaFullscreenClient({
     router.push(`/${locale}/`);
   }, [router, locale]);
 
+  const handleSpotSelect = useCallback(
+    (spotId: string) => {
+      const row = spotsData.find((d) => d.spot.id === spotId);
+      if (!row) return;
+      const sportParam = sport !== 'all' && sport !== 'big-wave' ? sport : undefined;
+      unlockPageInteraction();
+      router.push(getSpotDetailHref(locale, row.spot.slug, sportParam));
+    },
+    [spotsData, sport, locale, router],
+  );
+
   const showClearFilters =
     sport !== DEFAULT_SPORT || region !== DEFAULT_REGION || difficulty !== 'all';
 
@@ -151,6 +163,7 @@ export default function MapaFullscreenClient({
           initialFullscreen
           fullscreenBelowHeader
           onExitFullscreen={handleExit}
+          onSpotSelect={handleSpotSelect}
           mapHud={mapHud}
         />
       )}
