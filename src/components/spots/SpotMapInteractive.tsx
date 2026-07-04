@@ -295,11 +295,13 @@ function readClusterPref(): boolean {
 }
 
 function readWindPref(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined') return true;
   try {
-    return localStorage.getItem(MAP_WIND_LS_KEY) === '1';
+    const v = localStorage.getItem(MAP_WIND_LS_KEY);
+    if (v === '0') return false;
+    if (v === '1') return true;
   } catch { /* noop */ }
-  return false;
+  return true;
 }
 
 function readOnlyOnPref(): boolean {
@@ -460,9 +462,9 @@ export default function SpotMapInteractive({
 
   // Scale wind arrows with zoom (CSS var — no marker rebuild)
   useEffect(() => {
-    if (!isReady || !mapInstanceRef.current || !mapRef.current) return;
+    if (!isReady || !mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
-    const el = mapRef.current;
+    const el = map.getContainer();
 
     const syncWindArrowSize = () => {
       const px = windArrowPxForZoom(map.getZoom());
@@ -561,6 +563,12 @@ export default function SpotMapInteractive({
   const toggleWind = useCallback(() => {
     setWindEnabled((prev) => {
       const next = !prev;
+      if (next) {
+        setClusterEnabled(false);
+        try {
+          localStorage.setItem(MAP_CLUSTER_LS_KEY, '0');
+        } catch { /* noop */ }
+      }
       try {
         localStorage.setItem(MAP_WIND_LS_KEY, next ? '1' : '0');
       } catch { /* noop */ }

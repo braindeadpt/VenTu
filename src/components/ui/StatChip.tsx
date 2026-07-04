@@ -8,13 +8,15 @@ interface StatChipProps {
   value: string;
   label: string;
   className?: string;
+  /** Overrides the default value aria-label (e.g. wind direction context). */
+  ariaLabel?: string;
 }
 
 function easeOutExpo(t: number): number {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
 
-export default function StatChip({ icon, value, label, className }: StatChipProps) {
+export default function StatChip({ icon, value, label, className, ariaLabel }: StatChipProps) {
   // Extract leading numeric value for count-up animation.
   const match = value.match(/^([\d.-]+)/);
   const targetNum = match ? parseFloat(match[1]) : null;
@@ -59,7 +61,7 @@ export default function StatChip({ icon, value, label, className }: StatChipProp
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="font-mono text-num-sm text-fg tabular-nums leading-tight" aria-label={value}>
+        <p className="font-mono text-num-sm text-fg tabular-nums leading-tight" aria-label={ariaLabel ?? value}>
           {animatedValue}
         </p>
         <p className="text-meta-sm text-fg-subtle leading-tight">{label}</p>

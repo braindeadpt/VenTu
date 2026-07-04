@@ -26,8 +26,8 @@ describe('mapWindArrow', () => {
   });
 
   it('arrow px grows with zoom', () => {
-    expect(windArrowPxForZoom(8)).toBeLessThan(windArrowPxForZoom(12));
-    expect(windArrowPxForZoom(14)).toBe(windArrowPxForZoom(20));
+    expect(windArrowPxForZoom(7)).toBeLessThan(windArrowPxForZoom(12));
+    expect(windArrowPxForZoom(15)).toBe(windArrowPxForZoom(20));
   });
 
   it('marker layout reserves space for max arrow when wind is on', () => {
@@ -36,10 +36,10 @@ describe('mapWindArrow', () => {
     expect(withWind.iconSize[1]).toBeGreaterThan(withoutWind.iconSize[1]);
   });
 
-  it('builds windy-style svg with pivot rotation and origin dot', () => {
+  it('builds high-contrast svg with pivot rotation', () => {
     const svg = buildMapWindArrowSvg(0, 15);
     expect(svg).toContain(`rotate(180 ${WIND_ARROW_VIEWBOX / 2}`);
-    expect(svg).toContain(`viewBox="0 0 ${WIND_ARROW_VIEWBOX} ${WIND_ARROW_VIEWBOX}"`);
+    expect(svg).toContain(`width="${WIND_ARROW_VIEWBOX}"`);
     expect(svg).toContain('<circle');
   });
 

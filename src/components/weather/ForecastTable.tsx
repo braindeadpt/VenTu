@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState, useEffect, useRef, useCallback, useLayoutEffect } from 'react';
+import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -226,18 +226,14 @@ export default function ForecastTable({
     return visible.findIndex((h) => isCurrentHour(h.time, now));
   }, [visible, now]);
 
-  /* ── measure current-hour bar position in pixels ── */
-  const [nowBarLeft, setNowBarLeft] = useState<number | null>(null);
+  const nowCol = useCallback(
+    (i: number) =>
+      currentHourIndex >= 0 && i === currentHourIndex ? 'ring-1 ring-inset ring-accent/20' : '',
+    [currentHourIndex],
+  );
+
   const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[96px] min-w-[96px]';
   const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[40px]';
-  useLayoutEffect(() => {
-    if (currentHourIndex < 0 || !scrollRef.current) return;
-    const container = scrollRef.current;
-    const totalWidth = container.scrollWidth;
-    const dataWidth = totalWidth - labelWidthPx;
-    const cellWidth = dataWidth / Math.max(1, visible.length);
-    setNowBarLeft(labelWidthPx + cellWidth * currentHourIndex + cellWidth / 2);
-  }, [currentHourIndex, visible.length, labelWidthPx, compact]);
 
   /* ── scroll to current hour on mount ── */
   useEffect(() => {
@@ -404,13 +400,6 @@ export default function ForecastTable({
           }
         }}
       >
-        {currentHourIndex >= 0 && nowBarLeft !== null && (
-          <div
-            className="forecast-now-bar"
-            style={{ left: `${nowBarLeft}px` }}
-            aria-hidden
-          />
-        )}
         <table className={`border-collapse text-center ${tableMinW}`}>
           {/* Caption for screen readers */}
           <caption className="sr-only">
@@ -444,9 +433,9 @@ export default function ForecastTable({
                   <th
                     key={i}
                     scope="col"
-                    className={`sticky top-0 z-20 ${hourW} ${cellPx} font-mono ${metaText} max-md:snap-start ${
+                    className={`sticky top-0 z-20 ${hourW} ${cellPx} font-mono ${metaText} max-md:snap-start ${nowCol(i)} ${
                       current
-                        ? 'bg-accent/20 text-fg border-b-2 border-accent/55'
+                        ? 'bg-accent/12 text-fg font-semibold'
                         : isNewDay
                         ? 'bg-surface-2/[0.08] text-fg border-b border-divider-strong'
                         : 'bg-bg-base text-fg-muted border-b border-divider'
@@ -479,7 +468,7 @@ export default function ForecastTable({
             {visible.map((h, i) => (
               <td
                 key={i}
-                className={`${hourW} ${cellPx} max-md:snap-start ${waveBg(h.waveHeight)} font-mono ${numText} ${
+                className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${waveBg(h.waveHeight)} font-mono ${numText} ${
                   hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                 } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
@@ -502,7 +491,7 @@ export default function ForecastTable({
             {visible.map((h, i) => (
               <td
                 key={i}
-                className={`${hourW} ${cellPx} max-md:snap-start ${periodBg(h.wavePeriod)} font-mono ${numText} ${
+                className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${periodBg(h.wavePeriod)} font-mono ${numText} ${
                   hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                 } transition-colors duration-fast border-b border-divider/20`}
                 title={buildTooltip(h, sportLabel)}
@@ -527,7 +516,7 @@ export default function ForecastTable({
               return (
                 <td
                   key={i}
-                  className={`${hourW} ${cellPx} max-md:snap-start ${windBg(windKt)} font-mono ${numText} ${windText(
+                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${windBg(windKt)} font-mono ${numText} ${windText(
                     windKt,
                   )} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
                   title={buildTooltip(h, sportLabel)}
@@ -551,7 +540,7 @@ export default function ForecastTable({
             {visible.map((h, i) => (
               <td
                 key={i}
-                  className={`${hourW} ${cellPx} max-md:snap-start ${windDirBg(
+                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${windDirBg(
                   h.windDirection,
                   coastOrientation,
                 )} font-mono ${metaText} ${
@@ -583,7 +572,7 @@ export default function ForecastTable({
                 return (
                   <td
                     key={i}
-                    className={`${hourW} ${cellPx} max-md:snap-start ${
+                    className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                       gustKt !== null ? gustBg(gustKt) : 'bg-surface-1/[0.04]'
                     } font-mono ${numText} text-fg-muted ${
                       hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
@@ -611,7 +600,7 @@ export default function ForecastTable({
               {visible.map((h, i) => (
                 <td
                   key={i}
-                  className={`${hourW} ${cellPx} max-md:snap-start ${
+                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                     typeof h.waterTemp === 'number'
                       ? waterBg(h.waterTemp)
                       : 'bg-surface-1/[0.04]'
@@ -656,7 +645,7 @@ export default function ForecastTable({
                 return (
                   <td
                     key={i}
-                    className={`${hourW} ${cellPx} max-md:snap-start ${
+                    className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                       phase ? tidePhaseBg(phase) : 'bg-surface-1/[0.04]'
                     } ${metaText} ${phase ? tidePhaseText(phase) : 'text-fg-subtle'} ${
                       hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
@@ -687,7 +676,7 @@ export default function ForecastTable({
                 return (
                   <td
                     key={i}
-                    className={`${hourW} ${cellPx} max-md:snap-start font-mono ${numText} font-semibold ${
+                    className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} font-mono ${numText} font-semibold ${
                       hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                     } transition-colors duration-fast border-b border-divider/20`}
                     style={

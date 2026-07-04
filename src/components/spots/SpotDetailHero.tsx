@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Clock, Droplets, MapPin, Navigation, Waves, Wind } from 'lucide-react';
+import { ArrowLeft, Clock, Droplets, MapPin, Navigation, Waves } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -17,6 +17,8 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import SpotLevelToday from '@/components/spots/SpotLevelToday';
 import StatChip from '@/components/ui/StatChip';
+import WindFlowGlyph, { windFlowAriaLabel } from '@/components/ui/WindFlowGlyph';
+import { getCardinalLabel } from '@/lib/wind';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 
@@ -35,6 +37,7 @@ interface SpotDetailHeroProps {
     wavePeriod: number;
     swellHeight?: number;
     windSpeed: number;
+    windDirection: number;
     waterTemp: number;
     source?: 'real' | 'mock';
     updatedAt?: string;
@@ -64,6 +67,7 @@ export default function SpotDetailHero({
   const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
   const windKt = Math.round(conditions.windSpeed * 1.94384);
+  const windCardinal = getCardinalLabel(conditions.windDirection);
 
   const updatedLabel = conditions.updatedAt
     ? new Intl.DateTimeFormat(locale, {
@@ -179,7 +183,7 @@ export default function SpotDetailHero({
               <SocialShare title={`${title} — ${region}`} locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="spot-hero-card rounded-card border p-3 sm:p-4 w-full sm:w-[270px] shadow-card">
+            <div className="spot-hero-card spot-hero-card--dissolved rounded-card border p-3 sm:p-4 w-full sm:w-[270px] shadow-card">
               <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
@@ -198,23 +202,34 @@ export default function SpotDetailHero({
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-divider grid grid-cols-2 gap-2">
+              <div className="mt-3 pt-3 border-t border-divider grid grid-cols-2 gap-2 lg:mt-2 lg:pt-0 lg:border-t-0">
                 <StatChip
+                  className="spot-hero-stat"
                   icon={<Waves className="w-4 h-4 text-data-waves" />}
                   value={`${conditions.waveHeight.toFixed(1)}m`}
                   label={isPt ? 'Ondas' : 'Waves'}
                 />
                 <StatChip
+                  className="spot-hero-stat"
                   icon={<Clock className="w-4 h-4 text-data-period" />}
                   value={`${Math.round(conditions.wavePeriod)}s`}
                   label={isPt ? 'Período' : 'Period'}
                 />
                 <StatChip
-                  icon={<Wind className="w-4 h-4 text-data-wind" />}
+                  className="spot-hero-stat"
+                  icon={
+                    <WindFlowGlyph
+                      directionDeg={conditions.windDirection}
+                      speedKt={windKt}
+                      size={20}
+                    />
+                  }
                   value={`${windKt}kt`}
-                  label={isPt ? 'Vento' : 'Wind'}
+                  label={isPt ? `Vento · ${windCardinal}` : `Wind · ${windCardinal}`}
+                  ariaLabel={windFlowAriaLabel(conditions.windDirection, windKt, locale)}
                 />
                 <StatChip
+                  className="spot-hero-stat"
                   icon={<Droplets className="w-4 h-4 text-data-water" />}
                   value={`${conditions.waterTemp.toFixed(1)}°C`}
                   label={isPt ? 'Água' : 'Water'}
