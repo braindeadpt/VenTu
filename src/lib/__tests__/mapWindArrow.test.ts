@@ -1,62 +1,84 @@
 import { describe, it, expect } from 'vitest';
 import {
   windBlowsToDegrees,
+  blowUnitVector,
   windArrowColorRgb,
-  windArrowShaftLength,
-  windArrowPxForZoom,
+  windRayLength,
+  windRayGeometry,
+  markerPxForZoom,
   markerWindArrowLayout,
-  buildSpotWindArrowSvg,
+  buildCompoundSpotMarkerSvg,
+  buildCompoundSpotMarkerHtml,
   buildMapWindArrowTitle,
-  buildMapWindArrowHtml,
-  WIND_ARROW_MIN_PX,
+  MARKER_MIN_PX,
+  MARKER_VIEWBOX_W,
 } from '../mapWindArrow';
 
-describe('mapWindArrow', () => {
+describe('mapWindArrow compound marker', () => {
   it('wind blows opposite to meteo from', () => {
     expect(windBlowsToDegrees(0)).toBe(180);
     expect(windBlowsToDegrees(90)).toBe(270);
   });
 
-  it('speed maps to windy-style colour ramp', () => {
-    expect(windArrowColorRgb(5)).toEqual([14, 165, 233]);
-    expect(windArrowColorRgb(35)).toEqual([239, 68, 68]);
+  it('blow unit vector: north wind blows south (down)', () => {
+    const { ux, uy } = blowUnitVector(180);
+    expect(ux).toBeCloseTo(0, 5);
+    expect(uy).toBeGreaterThan(0);
   });
 
-  it('shaft grows with speed (target ~22–28px at default render)', () => {
-    expect(windArrowShaftLength(3)).toBe(18);
-    expect(windArrowShaftLength(15)).toBe(25);
-    expect(windArrowShaftLength(25)).toBeGreaterThanOrEqual(28);
+  it('speed maps to colour ramp', () => {
+    expect(windArrowColorRgb(5)).toEqual([56, 189, 248]);
+    expect(windArrowColorRgb(35)).toEqual([248, 113, 113]);
   });
 
-  it('arrow px grows with zoom', () => {
-    expect(windArrowPxForZoom(7)).toBe(WIND_ARROW_MIN_PX);
-    expect(windArrowPxForZoom(12)).toBeGreaterThan(WIND_ARROW_MIN_PX);
+  it('ray length grows with speed (14–38 viewBox units)', () => {
+    expect(windRayLength(3)).toBe(14);
+    expect(windRayLength(15)).toBe(26);
+    expect(windRayLength(35)).toBe(38);
   });
 
-  it('marker layout reserves height for large arrow above pin', () => {
-    const withWind = markerWindArrowLayout(true, 72);
+  it('ray starts on circle rim and extends outward', () => {
+    const geo = windRayGeometry(0, 24);
+    const dist = Math.hypot(geo.x1 - 44, geo.y1 - 38);
+    expect(dist).toBeCloseTo(17, 1);
+    const rayLen = Math.hypot(geo.x2 - geo.x1, geo.y2 - geo.y1);
+    expect(rayLen).toBeCloseTo(24, 1);
+    expect(geo.chevron).toContain('M');
+  });
+
+  it('marker px grows with zoom', () => {
+    expect(markerPxForZoom(7)).toBe(MARKER_MIN_PX);
+    expect(markerPxForZoom(12)).toBeGreaterThan(MARKER_MIN_PX);
+  });
+
+  it('compound layout is single glyph taller than pin-only', () => {
+    const withWind = markerWindArrowLayout(true, 76);
     const withoutWind = markerWindArrowLayout(false);
-    expect(withWind.iconSize[1]).toBeGreaterThan(100);
-    expect(withoutWind.iconSize[1]).toBe(44);
+    expect(withWind.iconSize[1]).toBeGreaterThan(withoutWind.iconSize[1]);
   });
 
-  it('builds windy-style arrow with origin dot and speed colour', () => {
-    const svg = buildSpotWindArrowSvg(0, 18);
-    expect(svg).toContain('rotate(180');
-    expect(svg).toContain('<circle');
-    expect(svg).toContain('rgb(6,182,212)');
-    expect(svg).not.toContain('width="56"');
+  it('compound svg is one glyph with ray + pin', () => {
+    const svg = buildCompoundSpotMarkerSvg(78, 'rgb(16,185,129)', 270, 18, true);
+    expect(svg).toContain('ventu-compound-marker');
+    expect(svg).toContain('ventu-wind-ray');
+    expect(svg).toContain('ventu-marker-pin');
+    expect(svg).not.toContain('ventu-spot-wind');
+    expect(svg).toContain('>78<');
   });
 
-  it('title states from-direction, flow and intensity', () => {
-    expect(buildMapWindArrowTitle(270, 12, 'pt')).toContain('de W');
-    expect(buildMapWindArrowTitle(0, 8, 'en')).toContain('from N');
+  it('no wind ray when disabled', () => {
+    const svg = buildCompoundSpotMarkerSvg(60, 'rgb(200,100,50)', 0, 10, false);
+    expect(svg).not.toContain('ventu-wind-ray');
+  });
+
+  it('html wrapper uses compound classes', () => {
+    const html = buildCompoundSpotMarkerHtml(80, 'rgb(1,2,3)', 90, 12, true, 'pt', 64);
+    expect(html).toContain('ventu-compound-marker-wrap');
+    expect(html).toContain('raio = para onde sopra');
+  });
+
+  it('title mentions ray and intensity', () => {
+    expect(buildMapWindArrowTitle(0, 8, 'pt')).toContain('raio');
     expect(buildMapWindArrowTitle(0, 8, 'pt')).toContain('intensidade');
-  });
-
-  it('html wrapper embeds inline pixel size', () => {
-    const html = buildMapWindArrowHtml(90, 10, 'pt', 56);
-    expect(html).toContain('ventu-spot-wind');
-    expect(html).toContain('style="width:56px;height:56px"');
   });
 });

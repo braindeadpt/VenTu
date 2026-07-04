@@ -34,7 +34,12 @@ import {
   MAP_ONLY_ON_LS_KEY,
   getScoreRgb,
 } from '@/lib/map-constants';
-import { buildMapWindArrowHtml, markerWindArrowLayout, windArrowPxForZoom, WIND_ARROW_MIN_PX } from '@/lib/mapWindArrow';
+import {
+  buildCompoundSpotMarkerHtml,
+  markerWindArrowLayout,
+  markerPxForZoom,
+  MARKER_MIN_PX,
+} from '@/lib/mapWindArrow';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
@@ -121,17 +126,25 @@ function buildMarkerIcon(
   selectedSport: GridSportFilter,
   showWind: boolean,
   locale: string,
-  arrowPx = WIND_ARROW_MIN_PX,
+  markerPx = MARKER_MIN_PX,
 ): L.DivIcon {
   const { conditions } = data;
   const score = getBestScore(data, selectedSport);
   const scoreRgb = getScoreRgb(score);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
-  const windArrowHtml = showWind ? buildMapWindArrowHtml(conditions.windDirection, windKtNum, locale, arrowPx) : '';
 
-  const markerHtml = `
+  const markerHtml = showWind
+    ? buildCompoundSpotMarkerHtml(
+        score,
+        scoreRgb,
+        conditions.windDirection,
+        windKtNum,
+        true,
+        locale,
+        markerPx,
+      )
+    : `
     <div class="ventu-spot-marker-wrap ventu-marker-enter" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-      ${windArrowHtml}
       <div class="ventu-marker-drop" style="position:relative;width:34px;">
         <div class="ventu-marker-drop-circle" style="
           width:34px;height:34px;border-radius:50%;
@@ -156,7 +169,7 @@ function buildMarkerIcon(
     </div>
   `;
 
-  const layout = markerWindArrowLayout(showWind, arrowPx);
+  const layout = markerWindArrowLayout(showWind, markerPx);
 
   return Leaflet.divIcon({
     className: 'spot-marker',
@@ -212,7 +225,7 @@ function createSpotMarker(
   selectedSport: GridSportFilter,
   locale: string,
   showWind: boolean,
-  arrowPx: number,
+  markerPx: number,
   options: {
     useMobileSheet: boolean;
     onMobileTap?: (data: SpotData) => void;
@@ -220,7 +233,7 @@ function createSpotMarker(
   },
 ): L.Marker {
   const { spot } = data;
-  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, arrowPx);
+  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, markerPx);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
   (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
 
@@ -458,25 +471,27 @@ export default function SpotMapInteractive({
     };
   }, [isHeroEmbed]);
 
-  // Scale wind arrows with zoom (CSS var — no marker rebuild)
+  // Scale compound markers with zoom (CSS var — no marker rebuild)
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
     const el = map.getContainer();
 
-    const syncWindArrowSize = () => {
-      const px = windArrowPxForZoom(map.getZoom());
-      el.style.setProperty('--ventu-wind-arrow-px', `${px}px`);
-      el.querySelectorAll<HTMLElement>('.ventu-spot-wind').forEach((node) => {
-        node.style.width = `${px}px`;
-        node.style.height = `${px}px`;
+    const syncMarkerSize = () => {
+      const px = markerPxForZoom(map.getZoom());
+      el.style.setProperty('--ventu-marker-px', `${px}px`);
+      el.querySelectorAll<HTMLElement>('.ventu-compound-marker-wrap').forEach((node) => {
+        const w = px;
+        const h = Math.round((px / 88) * 94);
+        node.style.width = `${w}px`;
+        node.style.height = `${h}px`;
       });
     };
 
-    syncWindArrowSize();
-    map.on('zoom zoomend', syncWindArrowSize);
+    syncMarkerSize();
+    map.on('zoom zoomend', syncMarkerSize);
     return () => {
-      map.off('zoom zoomend', syncWindArrowSize);
+      map.off('zoom zoomend', syncMarkerSize);
     };
   }, [isReady]);
 
@@ -784,7 +799,7 @@ export default function SpotMapInteractive({
 
     const bounds = Leaflet.latLngBounds([]);
     const useMobileSheet = isMobile;
-    const arrowPx = showWindOnMarkers ? windArrowPxForZoom(map.getZoom()) : WIND_ARROW_MIN_PX;
+    const markerPx = showWindOnMarkers ? markerPxForZoom(map.getZoom()) : MARKER_MIN_PX;
 
     visibleSpots.forEach((data) => {
       const cacheKey = buildMarkerCacheKey(
@@ -802,7 +817,7 @@ export default function SpotMapInteractive({
           marker.remove();
           cache.delete(data.spot.id);
         }
-        marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, arrowPx, {
+        marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, markerPx, {
           useMobileSheet,
           onMobileTap: setSheetSpot,
           onSpotSelect,

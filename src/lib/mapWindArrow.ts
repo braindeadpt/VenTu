@@ -1,51 +1,65 @@
 /**
- * Spot wind arrows on the map — Windy-inspired, VenTu spots only.
+ * Compound spot marker — score pin + wind ray (Option A).
  *
- * - Meteorological FROM → arrow points WHERE wind blows.
- * - Colour ramp ≈ wind speed; shaft length scales with speed (~22–28px).
+ * Single SVG: wind vector emerges from the score circle rim (not a floating arrow).
+ * VenTu “wind ray”: slim stem + open chevron tip, colour/length ∝ speed.
  */
 
 import { getCardinalLabel } from '@/lib/wind';
 
-export const WIND_ARROW_VIEWBOX = 56;
-export const WIND_ARROW_MIN_PX = 52;
-export const WIND_ARROW_MAX_PX = 72;
-const WIND_ARROW_BASE_ZOOM = 8;
-const WIND_OUTLINE = 'rgba(15, 23, 42, 0.9)';
+export const MARKER_VIEWBOX_W = 88;
+export const MARKER_VIEWBOX_H = 94;
+export const MARKER_MIN_PX = 56;
+export const MARKER_MAX_PX = 76;
+const MARKER_BASE_ZOOM = 8;
+const PIN_R = 17;
+const PIN_CX = MARKER_VIEWBOX_W / 2;
+const PIN_CY = 38;
+const TAIL_H = 8;
+const HALO = 'rgba(255,255,255,0.92)';
+const OUTLINE = 'rgba(15,23,42,0.88)';
 
 export function windBlowsToDegrees(fromDeg: number): number {
   return ((fromDeg + 180) % 360 + 360) % 360;
 }
 
-/** Windy-style speed → colour (legible on satellite and dark tiles). */
+/** Windy-inspired speed ramp — legible on dark + satellite tiles. */
 export function windArrowColorRgb(speedKt: number): [number, number, number] {
-  if (speedKt < 8) return [14, 165, 233];
-  if (speedKt < 14) return [34, 197, 94];
-  if (speedKt < 22) return [6, 182, 212];
-  if (speedKt < 30) return [245, 158, 11];
-  return [239, 68, 68];
+  if (speedKt < 8) return [56, 189, 248];
+  if (speedKt < 14) return [52, 211, 153];
+  if (speedKt < 22) return [34, 211, 238];
+  if (speedKt < 30) return [251, 191, 36];
+  return [248, 113, 113];
 }
 
-/** Shaft length in viewBox units (~22–28px when rendered at default size). */
-export function windArrowShaftLength(speedKt: number): number {
-  if (speedKt < 5) return 18;
-  if (speedKt < 12) return 22;
-  if (speedKt < 20) return 25;
-  if (speedKt < 30) return 28;
-  return 32;
+/** Ray length beyond the score circle (viewBox px). */
+export function windRayLength(speedKt: number): number {
+  if (speedKt < 5) return 14;
+  if (speedKt < 12) return 20;
+  if (speedKt < 20) return 26;
+  if (speedKt < 30) return 32;
+  return 38;
 }
 
-export function windArrowPxForZoom(zoom: number): number {
-  if (zoom <= WIND_ARROW_BASE_ZOOM) return WIND_ARROW_MIN_PX;
-  const t = Math.min(1, (zoom - WIND_ARROW_BASE_ZOOM) / 5);
-  return Math.round(WIND_ARROW_MIN_PX + t * (WIND_ARROW_MAX_PX - WIND_ARROW_MIN_PX));
+export function markerPxForZoom(zoom: number): number {
+  if (zoom <= MARKER_BASE_ZOOM) return MARKER_MIN_PX;
+  const t = Math.min(1, (zoom - MARKER_BASE_ZOOM) / 5);
+  return Math.round(MARKER_MIN_PX + t * (MARKER_MAX_PX - MARKER_MIN_PX));
 }
 
-export function markerWindArrowLayout(showWind: boolean, arrowPx = WIND_ARROW_MAX_PX): {
+/** @deprecated alias */
+export const windArrowPxForZoom = markerPxForZoom;
+export const windArrowShaftLength = windRayLength;
+
+export function markerWindArrowLayout(showWind: boolean, markerPx = MARKER_MAX_PX): {
   iconSize: [number, number];
   iconAnchor: [number, number];
   popupAnchor: [number, number];
 } {
+  const scale = markerPx / MARKER_VIEWBOX_W;
+  const w = Math.round(MARKER_VIEWBOX_W * scale);
+  const h = Math.round(MARKER_VIEWBOX_H * scale);
+
   if (!showWind) {
     return {
       iconSize: [34, 44],
@@ -53,9 +67,6 @@ export function markerWindArrowLayout(showWind: boolean, arrowPx = WIND_ARROW_MA
       popupAnchor: [0, -46],
     };
   }
-
-  const w = Math.max(40, arrowPx);
-  const h = arrowPx + 4 + 34 + 8;
 
   return {
     iconSize: [w, h],
@@ -68,8 +79,8 @@ export function buildMapWindArrowTitle(fromDeg: number, speedKt: number, locale:
   const card = getCardinalLabel(fromDeg);
   const kt = Math.round(speedKt);
   return locale === 'pt'
-    ? `${kt} kt de ${card} · seta = para onde sopra · cor = intensidade`
-    : `${kt} kt from ${card} · arrow = flow · color = strength`;
+    ? `${kt} kt de ${card} · raio = para onde sopra · cor = intensidade`
+    : `${kt} kt from ${card} · ray = flow · color = strength`;
 }
 
 function escapeHtmlAttr(value: string): string {
@@ -79,41 +90,129 @@ function escapeHtmlAttr(value: string): string {
     .replace(/</g, '&lt;');
 }
 
-/** Windy-style stem + head + origin dot. Pivot at bottom centre (sits above score pin). */
-export function buildSpotWindArrowSvg(fromDeg: number, speedKt: number): string {
-  const rot = windBlowsToDegrees(fromDeg);
-  const shaft = windArrowShaftLength(speedKt);
+/** Unit vector (SVG coords): meteo blow direction → screen. */
+export function blowUnitVector(blowDeg: number): { ux: number; uy: number } {
+  const rad = (blowDeg * Math.PI) / 180;
+  return { ux: Math.sin(rad), uy: -Math.cos(rad) };
+}
+
+export interface WindRayGeometry {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  chevron: string;
+}
+
+/** Ray from circle rim along blow direction + open chevron tip. */
+export function windRayGeometry(
+  blowDeg: number,
+  rayLen: number,
+  cx = PIN_CX,
+  cy = PIN_CY,
+  r = PIN_R,
+): WindRayGeometry {
+  const { ux, uy } = blowUnitVector(blowDeg);
+  const x1 = cx + ux * r;
+  const y1 = cy + uy * r;
+  const x2 = cx + ux * (r + rayLen);
+  const y2 = cy + uy * (r + rayLen);
+  const head = 7;
+  const half = 4.2;
+  const bx = x2 - ux * head;
+  const by = y2 - uy * head;
+  const px = -uy;
+  const py = ux;
+  const chevron = [
+    `M${x2.toFixed(2)} ${y2.toFixed(2)}`,
+    `L${(bx + px * half).toFixed(2)} ${(by + py * half).toFixed(2)}`,
+    `M${x2.toFixed(2)} ${y2.toFixed(2)}`,
+    `L${(bx - px * half).toFixed(2)} ${(by - py * half).toFixed(2)}`,
+  ].join(' ');
+
+  return { x1, y1, x2, y2, chevron };
+}
+
+function buildWindRaySvg(blowDeg: number, speedKt: number): string {
+  const rayLen = windRayLength(speedKt);
   const [r, g, b] = windArrowColorRgb(speedKt);
   const stroke = `rgb(${r},${g},${b})`;
-  const size = WIND_ARROW_VIEWBOX;
-  const cx = size / 2;
-  const yBase = size - 6;
-  const yTip = yBase - shaft;
-  const headW = 7;
+  const { x1, y1, x2, y2, chevron } = windRayGeometry(blowDeg, rayLen);
 
   return `
-    <svg class="ventu-spot-wind-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" aria-hidden="true">
-      <g transform="rotate(${rot} ${cx} ${yBase})">
-        <circle cx="${cx}" cy="${yBase}" r="4.5" fill="${WIND_OUTLINE}"/>
-        <circle cx="${cx}" cy="${yBase}" r="3.25" fill="${stroke}"/>
-        <line x1="${cx}" y1="${yBase - 3}" x2="${cx}" y2="${yTip + 4}" stroke="${WIND_OUTLINE}" stroke-width="6" stroke-linecap="round"/>
-        <line x1="${cx}" y1="${yBase - 3}" x2="${cx}" y2="${yTip + 4}" stroke="${stroke}" stroke-width="3.5" stroke-linecap="round"/>
-        <path d="M${cx} ${yTip - 1} L${cx - headW} ${yTip + 7} L${cx + headW} ${yTip + 7} Z" fill="${WIND_OUTLINE}"/>
-        <path d="M${cx} ${yTip} L${cx - headW + 0.8} ${yTip + 5.8} L${cx + headW - 0.8} ${yTip + 5.8} Z" fill="${stroke}"/>
-      </g>
+    <g class="ventu-wind-ray" data-speed-kt="${Math.round(speedKt)}">
+      <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${OUTLINE}" stroke-width="5" stroke-linecap="round"/>
+      <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${HALO}" stroke-width="3.2" stroke-linecap="round"/>
+      <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="2.4" stroke-linecap="round"/>
+      <path d="${chevron}" stroke="${OUTLINE}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <path d="${chevron}" stroke="${stroke}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+  `.trim();
+}
+
+function buildPinSvg(score: number, scoreRgb: string): string {
+  const tailTop = PIN_CY + PIN_R;
+  const tailTip = tailTop + TAIL_H;
+  const scoreLabel = Math.round(score);
+
+  return `
+    <g class="ventu-marker-pin">
+      <path d="M${PIN_CX - 6} ${tailTop} L${PIN_CX} ${tailTip} L${PIN_CX + 6} ${tailTop} Z" fill="${scoreRgb}"/>
+      <circle cx="${PIN_CX}" cy="${PIN_CY}" r="${PIN_R + 2.5}" fill="${OUTLINE}"/>
+      <circle cx="${PIN_CX}" cy="${PIN_CY}" r="${PIN_R}" fill="${scoreRgb}" stroke="${HALO}" stroke-width="2"/>
+      <text x="${PIN_CX}" y="${PIN_CY + 4.5}" text-anchor="middle"
+        font-family="var(--font-geist-mono, 'Geist Mono', ui-monospace, monospace)"
+        font-size="13" font-weight="700" fill="#fff"
+        font-variant-numeric="tabular-nums">${scoreLabel}</text>
+    </g>
+  `.trim();
+}
+
+/** Compound marker: wind ray under score pin (single glyph). */
+export function buildCompoundSpotMarkerSvg(
+  score: number,
+  scoreRgb: string,
+  fromDeg: number,
+  speedKt: number,
+  showWind: boolean,
+): string {
+  const blow = windBlowsToDegrees(fromDeg);
+  const windLayer = showWind ? buildWindRaySvg(blow, speedKt) : '';
+  const pinLayer = buildPinSvg(score, scoreRgb);
+
+  return `
+    <svg class="ventu-compound-marker" xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 ${MARKER_VIEWBOX_W} ${MARKER_VIEWBOX_H}" aria-hidden="true">
+      ${windLayer}
+      ${pinLayer}
     </svg>
   `.trim();
 }
 
-export const buildMarkerWindOverlaySvg = buildSpotWindArrowSvg;
-export const buildMapWindArrowSvg = buildSpotWindArrowSvg;
-
-export function buildMapWindArrowHtml(
+export function buildCompoundSpotMarkerHtml(
+  score: number,
+  scoreRgb: string,
   fromDeg: number,
   speedKt: number,
+  showWind: boolean,
   locale: string,
-  arrowPx = WIND_ARROW_MIN_PX,
+  markerPx = MARKER_MIN_PX,
 ): string {
-  const title = escapeHtmlAttr(buildMapWindArrowTitle(fromDeg, speedKt, locale));
-  return `<div class="ventu-spot-wind" style="width:${arrowPx}px;height:${arrowPx}px" title="${title}">${buildSpotWindArrowSvg(fromDeg, speedKt)}</div>`;
+  const title = showWind
+    ? escapeHtmlAttr(buildMapWindArrowTitle(fromDeg, speedKt, locale))
+    : '';
+  const svg = buildCompoundSpotMarkerSvg(score, scoreRgb, fromDeg, speedKt, showWind);
+  const w = Math.round((markerPx / MARKER_VIEWBOX_W) * MARKER_VIEWBOX_W);
+  const h = Math.round((markerPx / MARKER_VIEWBOX_W) * MARKER_VIEWBOX_H);
+
+  return `
+    <div class="ventu-spot-marker-wrap ventu-marker-enter ventu-compound-marker-wrap"
+      style="width:${w}px;height:${h}px;cursor:pointer"${title ? ` title="${title}"` : ''}>
+      ${svg}
+    </div>
+  `.trim();
 }
+
+/** @deprecated */
+export const buildSpotWindArrowSvg = buildCompoundSpotMarkerSvg;
+export const buildMapWindArrowHtml = buildCompoundSpotMarkerHtml;
