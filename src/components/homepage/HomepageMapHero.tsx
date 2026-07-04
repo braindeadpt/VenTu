@@ -2,7 +2,7 @@
 
 
 
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -13,8 +13,6 @@ import FilterPill from '@/components/ui/FilterPill';
 import Button from '@/components/ui/Button';
 
 import HomepageSearch from '@/components/ui/HomepageSearch';
-
-import FreshnessIndicator from '@/components/ui/FreshnessIndicator';
 
 import { DEFAULT_REGION } from '@/lib/gridFilters';
 
@@ -127,26 +125,6 @@ export default function HomepageMapHero({
   const regions = useMemo(() => [...MACRO_REGIONS], []);
 
   const sport = useUrlGridSport(regions, 'surf');
-
-  const [hoursAgo, setHoursAgo] = useState<number | null>(null);
-
-
-
-  useEffect(() => {
-
-    if (!maxTs) {
-
-      setHoursAgo(null);
-
-      return;
-
-    }
-
-    setHoursAgo(Math.max(0, Math.floor((Date.now() - maxTs) / 3600000)));
-
-  }, [maxTs]);
-
-
 
   const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
 
@@ -420,45 +398,11 @@ export default function HomepageMapHero({
 
 
 
-            <p
-
-              className="text-body-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-1 stagger-fade-in motion-reduce:animate-none"
-
-              style={{ '--stagger-delay': 240 } as React.CSSProperties}
-
-            >
-
-              <span className="font-medium text-fg" suppressHydrationWarning>
-
-                {liveLine}
-
-              </span>
-
-              {maxTs !== null && (
-
-                <>
-
-                  <span aria-hidden className="text-fg-subtle">
-
-                    ·
-
-                  </span>
-
-                  <FreshnessIndicator size="sm" hoursAgo={hoursAgo} updatedAtTs={maxTs} locale={locale} />
-
-                </>
-
-              )}
-
-            </p>
-
-
-
             <div
 
               className="flex flex-col sm:flex-row flex-wrap gap-2 pt-0.5 stagger-fade-in motion-reduce:animate-none"
 
-              style={{ '--stagger-delay': 320 } as React.CSSProperties}
+              style={{ '--stagger-delay': 240 } as React.CSSProperties}
 
             >
 
@@ -509,6 +453,8 @@ export default function HomepageMapHero({
               locale={locale}
 
               updatedAtTs={maxTs}
+
+              statusLine={liveLine}
 
             />
 

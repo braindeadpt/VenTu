@@ -10,6 +10,8 @@ import {
 interface HeroTickerProps {
   updatedAtTs?: number | null;
   locale: string;
+  /** e.g. "6 spots firing" — live count for current sport filter */
+  statusLine?: string;
 }
 
 const SEP = <span aria-hidden className="text-fg-subtle/40">·</span>;
@@ -21,7 +23,7 @@ function freshnessDotClass(ageHours: number | null): string {
   return 'bg-score-poor';
 }
 
-function TickerItems({ updatedAtTs, locale }: HeroTickerProps) {
+function TickerItems({ updatedAtTs, locale, statusLine }: HeroTickerProps) {
   const isPt = locale === 'pt';
   const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
   const updated =
@@ -29,6 +31,14 @@ function TickerItems({ updatedAtTs, locale }: HeroTickerProps) {
 
   return (
     <>
+      {statusLine ? (
+        <>
+          <span className="text-meta font-medium text-fg shrink-0" suppressHydrationWarning>
+            {statusLine}
+          </span>
+          {SEP}
+        </>
+      ) : null}
       <span
         className="inline-flex items-center gap-1.5 shrink-0"
         title={updatedAtTs != null ? getHeroFreshnessTitle(locale, updatedAtTs) : undefined}
@@ -75,9 +85,13 @@ export default function HeroTicker(props: HeroTickerProps) {
       role="status"
       aria-live="polite"
       aria-label={
-        props.locale === 'pt'
-          ? 'Actualização das previsões e fontes de dados'
-          : 'Forecast update time and data sources'
+        props.statusLine
+          ? props.locale === 'pt'
+            ? `${props.statusLine}. Actualização das previsões e fontes de dados`
+            : `${props.statusLine}. Forecast update time and data sources`
+          : props.locale === 'pt'
+            ? 'Actualização das previsões e fontes de dados'
+            : 'Forecast update time and data sources'
       }
       className="pointer-events-auto w-full flex items-center px-0 sm:px-1 py-0 overflow-hidden [text-shadow:0_1px_12px_rgb(var(--bg-base)/0.85)]"
     >
