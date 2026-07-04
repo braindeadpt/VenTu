@@ -53,6 +53,35 @@ test.describe('/pt/mapa fullscreen map', () => {
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog')).toBeHidden({ timeout: 5000 });
   });
+
+  test('exit and re-enter map without freezing', async ({ page }) => {
+    test.setTimeout(90_000);
+
+    await page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i }).click();
+    await page.waitForURL(/\/pt\/?$/, { timeout: 15_000 });
+
+    const bodyOverflow = await page.evaluate(() => document.body.style.overflow);
+    expect(bodyOverflow).toBe('');
+
+    const mainOpacity = await page.evaluate(() => {
+      const main = document.getElementById('main-content');
+      return main ? getComputedStyle(main).opacity : '1';
+    });
+    expect(Number(mainOpacity)).toBeGreaterThan(0.9);
+
+    await page.getByRole('banner').getByRole('button', { name: /Pesquisar|Search/i }).first().click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await page.goto('/pt/mapa/');
+    await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
+    await expect(page.locator('[data-map-fullscreen="true"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('.leaflet-marker-icon').first()).toBeVisible({ timeout: 20_000 });
+
+    await page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i }).click();
+    await page.waitForURL(/\/pt\/?$/, { timeout: 15_000 });
+    await expect(page.getByRole('banner')).toBeVisible();
+  });
 });
 
 test.describe('/pt/mapa SEO', () => {

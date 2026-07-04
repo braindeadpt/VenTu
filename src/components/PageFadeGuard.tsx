@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import { usePathname } from 'next/navigation';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
 
 /**
@@ -12,6 +13,13 @@ import { unlockPageInteraction } from '@/lib/mapFullscreen';
  * hard timeout fallback.
  */
 export default function PageFadeGuard() {
+  const pathname = usePathname();
+
+  // Leaving /mapa/ (or toggling fullscreen) can leave body locks; reset on route change.
+  useEffect(() => {
+    unlockPageInteraction();
+  }, [pathname]);
+
   useEffect(() => {
     const main = document.getElementById('main-content');
     if (!main) return;
