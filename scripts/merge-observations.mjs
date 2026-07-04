@@ -17,6 +17,7 @@ const {
 } = require('./lib/ipma.js');
 const { fetchEcowittSnapshot, buildEcowittObservedForSpot, getEcowittCredentials } = require('./lib/ecowitt.js');
 const { pickBestObservation } = require('./lib/observationPick.js');
+const { writePipelineMeta } = require('./lib/pipelineMeta.js');
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
@@ -112,6 +113,7 @@ export async function mergeObservations() {
   }
 
   fs.writeFileSync(conditionsPath, JSON.stringify(conditions, null, 2));
+  writePipelineMeta('observations', new Date(), root);
   console.log(
     `✅ observed on ${withObserved} spots (≤${MAX_STATION_DISTANCE_KM} km, ≤3h) — IPMA: ${ipmaWins}, Ecowitt: ${ecowittWins}`,
   );
@@ -126,6 +128,6 @@ const isDirectRun =
 if (isDirectRun) {
   mergeObservations().catch((err) => {
     console.error('❌ merge-observations failed:', err.message);
-    process.exit(0);
+    process.exit(1);
   });
 }

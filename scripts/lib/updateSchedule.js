@@ -12,6 +12,10 @@ const DAY_END = 20;
 const DAY_INTERVAL_H = 2;
 const NIGHT_INTERVAL_H = 4;
 
+/** Aligned with src/lib/dataFreshness.ts STALE_THRESHOLD_HOURS */
+const STALE_FULL_HOURS_DAY = 2.5;
+const STALE_FULL_HOURS_NIGHT = 4.5;
+
 /** @typedef {'full' | 'observations' | 'skip'} UpdateMode */
 
 /**
@@ -74,6 +78,36 @@ function describeSchedule(locale = 'pt') {
   return 'Open-Meteo: every 2h (06:00–20:00, multi-model) · every 4h at night (00:00/04:00, best_match only) · IH/IPMA on odd daytime hours.';
 }
 
+/**
+ * Escalate to full when the last Open-Meteo run is overdue (missed cron / failed job).
+ * @param {Date} now
+ * @param {string | null | undefined} lastFullUpdatedAt ISO timestamp
+ * @returns {boolean}
+ */
+function needsFullCatchUp(now = new Date(), lastFullUpdatedAt) {
+  if (!lastFullUpdatedAt) return false;
+  const lastTs = new Date(lastFullUpdatedAt).getTime();
+  if (Number.isNaN(lastTs)) return false;
+
+  const ageHours = (now.getTime() - lastTs) / 3600000;
+  const { hour } = getLisbonParts(now);
+  const isDaytime = hour >= DAY_START && hour <= DAY_END;
+  const threshold = isDaytime ? STALE_FULL_HOURS_DAY : STALE_FULL_HOURS_NIGHT;
+  return ageHours > threshold;
+}
+
+/**
+ * @param {Date} [now]
+ * @param {string | null | undefined} [lastFullUpdatedAt]
+ * @returns {UpdateMode}
+ */
+function resolveUpdateMode(now = new Date(), lastFullUpdatedAt) {
+  const scheduled = getUpdateMode(now);
+  if (scheduled === 'full') return 'full';
+  if (needsFullCatchUp(now, lastFullUpdatedAt)) return 'full';
+  return scheduled;
+}
+
 function nextFullRunHint(now = new Date()) {
   for (let i = 0; i < 48; i++) {
     const d = new Date(now.getTime() + i * 60 * 60 * 1000);
@@ -92,8 +126,12 @@ module.exports = {
   DAY_END,
   DAY_INTERVAL_H,
   NIGHT_INTERVAL_H,
+  STALE_FULL_HOURS_DAY,
+  STALE_FULL_HOURS_NIGHT,
   getLisbonParts,
   getUpdateMode,
+  needsFullCatchUp,
+  resolveUpdateMode,
   isMultiModelEnabled,
   describeSchedule,
   nextFullRunHint,

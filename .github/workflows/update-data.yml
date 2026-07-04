@@ -57,11 +57,19 @@ jobs:
         env:
           VENTU_MULTIMODEL: ${{ steps.gate.outputs.multimodel }}
         run: |
-          node scripts/update-conditions.js || {
-            echo "First fetch failed — waiting 90s and retrying once..."
-            sleep 90
-            node scripts/update-conditions.js
-          }
+          for attempt in 1 2 3; do
+            echo "=== Open-Meteo fetch attempt ${attempt}/3 ==="
+            if node scripts/update-conditions.js; then
+              exit 0
+            fi
+            if [ "$attempt" -lt 3 ]; then
+              wait=$((attempt * 90))
+              echo "Fetch failed — waiting ${wait}s before retry..."
+              sleep "$wait"
+            fi
+          done
+          echo "::error::Open-Meteo update failed after 3 attempts"
+          exit 1
 
       - name: Merge IPMA + Ecowitt observations
         if: steps.gate.outputs.mode != 'skip'
@@ -74,6 +82,10 @@ jobs:
       - name: Build spots index
         if: steps.gate.outputs.mode != 'skip'
         run: npm run spots:index && npm run spots:lite
+
+      - name: Verify Open-Meteo freshness
+        if: steps.gate.outputs.mode == 'full'
+        run: node scripts/verify-pipeline-freshness.js
 
       - name: Commit and Push
         if: steps.gate.outputs.mode != 'skip'

@@ -2,6 +2,7 @@ import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { loadSpotData } from '@/lib/load-spot-data';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
 
 export default async function HomePage({
@@ -19,7 +20,9 @@ export default async function HomePage({
     .map((d) => d.conditions.updatedAt)
     .filter((ts): ts is string => Boolean(ts))
     .map((ts) => new Date(ts).getTime());
-  const maxTs = timestamps.length > 0 ? Math.max(...timestamps) : null;
+  const spotMaxTs = timestamps.length > 0 ? Math.max(...timestamps) : null;
+  const pipelineMeta = loadPipelineMeta();
+  const maxTs = resolveDisplayUpdatedTs(pipelineMeta, spotMaxTs);
 
   return (
     <div className="min-h-screen bg-bg-base">

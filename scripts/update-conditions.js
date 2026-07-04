@@ -21,6 +21,7 @@ const {
   findCurrentHourIndex,
 } = require('./lib/forecastConfidence');
 const { isMultiModelEnabled: scheduleIsMultiModelEnabled } = require('./lib/updateSchedule');
+const { writePipelineMeta } = require('./lib/pipelineMeta');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -499,6 +500,7 @@ async function updateConditions() {
   console.log(`📈 Forecasts saved to ${forecastsPath}`);
   console.log(`📊 Per-spot forecasts: ${perSpotCount} files in ${perSpotDir}`);
   console.log(`📊 Updated ${spotCount} spots`);
+  writePipelineMeta('full', new Date(), path.join(__dirname, '..'));
 }
 
 updateConditions().catch((err) => {
