@@ -5,10 +5,10 @@ import {
   windArrowPxForZoom,
   windArrowColorRgb,
   markerWindArrowLayout,
-  buildMapWindArrowSvg,
+  buildMarkerWindOverlaySvg,
   buildMapWindArrowTitle,
   buildMapWindArrowHtml,
-  WIND_ARROW_VIEWBOX,
+  WIND_OVERLAY_VIEWBOX,
 } from '../mapWindArrow';
 
 describe('mapWindArrow', () => {
@@ -30,17 +30,17 @@ describe('mapWindArrow', () => {
     expect(windArrowPxForZoom(15)).toBe(windArrowPxForZoom(20));
   });
 
-  it('marker layout reserves space for max arrow when wind is on', () => {
+  it('marker layout keeps pin size — wind overflows', () => {
     const withWind = markerWindArrowLayout(true);
     const withoutWind = markerWindArrowLayout(false);
-    expect(withWind.iconSize[1]).toBeGreaterThan(withoutWind.iconSize[1]);
+    expect(withWind.iconSize).toEqual(withoutWind.iconSize);
   });
 
-  it('builds high-contrast svg with pivot rotation', () => {
-    const svg = buildMapWindArrowSvg(0, 15);
-    expect(svg).toContain(`rotate(180 ${WIND_ARROW_VIEWBOX / 2}`);
-    expect(svg).toContain(`width="${WIND_ARROW_VIEWBOX}"`);
-    expect(svg).toContain('<circle');
+  it('overlay svg has no origin dot — single vector on pin', () => {
+    const svg = buildMarkerWindOverlaySvg(0, 15);
+    expect(svg).toContain(`rotate(180 ${WIND_OVERLAY_VIEWBOX / 2}`);
+    expect(svg).toContain('ventu-marker-wind');
+    expect(svg).not.toContain('<circle');
   });
 
   it('title uses meteorological from-direction', () => {
@@ -51,6 +51,6 @@ describe('mapWindArrow', () => {
   it('html wrapper includes accessible title', () => {
     const html = buildMapWindArrowHtml(90, 10, 'pt');
     expect(html).toContain('title=');
-    expect(html).toContain('ventu-wind-arrow');
+    expect(html).toContain('ventu-marker-wind');
   });
 });

@@ -34,7 +34,7 @@ import {
   MAP_ONLY_ON_LS_KEY,
   getScoreRgb,
 } from '@/lib/map-constants';
-import { buildMapWindArrowHtml, markerWindArrowLayout, windArrowPxForZoom } from '@/lib/mapWindArrow';
+import { buildMarkerWindOverlaySvg, buildMapWindArrowTitle, markerWindArrowLayout, windArrowPxForZoom } from '@/lib/mapWindArrow';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
@@ -126,16 +126,22 @@ function buildMarkerIcon(
   const score = getBestScore(data, selectedSport);
   const scoreRgb = getScoreRgb(score);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
-
-  const windArrowHtml = showWind
-    ? buildMapWindArrowHtml(conditions.windDirection, windKtNum, locale)
+  const windTitle = showWind
+    ? buildMapWindArrowTitle(conditions.windDirection, windKtNum, locale)
+      .replace(/&/g, '&amp;')
+      .replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;')
     : '';
 
-  // Drop marker: circle + CSS tail, score number in Geist Mono
+  const windOverlayHtml = showWind
+    ? buildMarkerWindOverlaySvg(conditions.windDirection, windKtNum)
+    : '';
+
+  // Drop marker: wind vector rooted on score circle + pin tail
   const markerHtml = `
     <div class="ventu-spot-marker-wrap ventu-marker-enter" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-      ${windArrowHtml}
-      <div class="ventu-marker-drop" style="position:relative;">
+      <div class="ventu-marker-drop"${windTitle ? ` title="${windTitle}"` : ''} style="position:relative;width:34px;">
+        ${windOverlayHtml}
         <div class="ventu-marker-drop-circle" style="
           width:34px;height:34px;border-radius:50%;
           background:${scoreRgb};
