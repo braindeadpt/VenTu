@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 'react';
 import { Menu, X, Wind, Globe, Search, User } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
-import HeaderFreshness from './HeaderFreshness';
 import MegaMenu from './MegaMenu';
 import SearchPalette from '@/components/search/SearchPalette';
 import { getTranslation } from '@/lib/i18n';
@@ -213,7 +212,6 @@ export default function Header({ locale }: HeaderProps) {
                   {isMac ? '⌘K' : 'Ctrl+K'}
                 </span>
               </button>
-              <HeaderFreshness locale={locale} compact />
               <ThemeToggle locale={locale} />
               <Link
                 href={switchPath}
