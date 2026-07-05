@@ -120,6 +120,19 @@ export const translations = {
       quickPanel: 'Painel rápido',
       windNeedsShowAll: 'Desligue cluster para ver vento',
       windArrowHint: 'Arco = para onde sopra · cor = offshore/onshore/cross · score no centro',
+      windRingLegend: {
+        title: 'Ler o arco de vento',
+        position: 'Posição do arco = para onde o vento sopra',
+        colors: 'Verde offshore · vermelho onshore · cinza cross',
+        length: 'Comprimento = força (curto <8kt · médio 8–18 · longo >18)',
+        tip: 'Ponta = sentido do fluxo',
+        rule: 'Arco verde do lado do mar = dia bom.',
+        dismiss: 'Percebi',
+        help: 'Como ler o vento no mapa',
+        offshore: 'offshore',
+        onshore: 'onshore',
+        cross: 'cross',
+      },
       onlyOn: 'Só ON',
       onlyOnOff: 'Todos os spots',
       onlyOnHint: 'Score ≥ 60 para a modalidade seleccionada',
@@ -235,7 +248,7 @@ export const translations = {
       watchLive: 'Ver ao vivo',
       viewSpot: 'Ver spot',
       provider: 'Fonte',
-    }
+    },
   },
   en: {
     nav: {
@@ -342,6 +355,19 @@ export const translations = {
       quickPanel: 'Quick panel',
       windNeedsShowAll: 'Turn off clustering to see wind',
       windArrowHint: 'Arc = flow direction · color = coast relation · score at center',
+      windRingLegend: {
+        title: 'Reading the wind ring',
+        position: 'Arc position = where the wind blows to',
+        colors: 'Green offshore · red onshore · grey cross-shore',
+        length: 'Arc length = strength (short <8kt · medium 8–18 · long >18)',
+        tip: 'Tip = flow direction',
+        rule: 'Green arc on the sea side = good day.',
+        dismiss: 'Got it',
+        help: 'How to read wind on the map',
+        offshore: 'offshore',
+        onshore: 'onshore',
+        cross: 'cross-shore',
+      },
       onlyOn: 'ON only',
       onlyOnOff: 'All spots',
       onlyOnHint: 'Score ≥ 60 for selected sport',
@@ -457,7 +483,7 @@ export const translations = {
       watchLive: 'Watch live',
       viewSpot: 'View spot',
       provider: 'Source',
-    }
+    },
   }
 };
 

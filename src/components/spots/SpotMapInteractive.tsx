@@ -5,7 +5,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css';
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Layers, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
+import { Layers, HelpCircle, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
@@ -20,6 +20,7 @@ import MapExploreHud, { type MapExploreHudProps } from './MapExploreHud';
 import MapSpotSheet, { type MapSpotSheetData } from './MapSpotSheet';
 import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
+import WindRingLegend from './WindRingLegend';
 import type { BasemapMode } from './MapLayerToggle';
 import { createClusterIconFunction } from './MapClusterIcon';
 import {
@@ -39,6 +40,7 @@ import {
   markerIconLayout,
 } from '@/lib/mapWindArrow';
 import { getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
+import { hasSeenWindRingLegend } from '@/lib/windRingLegend';
 import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
@@ -89,6 +91,9 @@ type MapHudProps = Omit<
   | 'clusterLabel'
   | 'windLabel'
   | 'exitLabel'
+  | 'windLegendHelpLabel'
+  | 'onOpenWindLegend'
+  | 'windButtonRef'
 >;
 
 interface SpotMapInteractiveProps {
@@ -212,6 +217,7 @@ function buildMarkerPopupContent(
     windDirection: getCardinalLabel(conditions.windDirection),
     windRelation: windRelationLabel?.label,
     windRelationClass: windRelationLabel?.className,
+    windRelationType: windRelation,
     waterTemp: conditions.waterTemp.toFixed(1),
     wavePowerKw: powerKw.toFixed(1),
     imageUrl: (() => {
@@ -535,6 +541,9 @@ export default function SpotMapInteractive({
   }, []);
 
   const fullscreenBtnRef = useRef<HTMLButtonElement>(null);
+  const windButtonRef = useRef<HTMLButtonElement>(null);
+  const windLegendAutoQueuedRef = useRef(false);
+  const [windLegendOpen, setWindLegendOpen] = useState(false);
   const prevFocusRef = useRef<Element | null>(null);
 
   const enterFullscreen = useCallback(() => {
@@ -607,6 +616,23 @@ export default function SpotMapInteractive({
 
   const showWindOnMarkers = windEnabled && !clusterEnabled && !isHeroEmbed;
   const activeCluster = isHeroEmbed ? true : clusterEnabled;
+
+  const openWindLegend = useCallback(() => {
+    setWindLegendOpen(true);
+  }, []);
+
+  const closeWindLegend = useCallback(() => {
+    setWindLegendOpen(false);
+  }, []);
+
+  // First-time coach when wind rings become visible
+  useEffect(() => {
+    if (!isReady || !showWindOnMarkers || isHeroEmbed) return;
+    if (windLegendAutoQueuedRef.current || hasSeenWindRingLegend()) return;
+    windLegendAutoQueuedRef.current = true;
+    const t = window.setTimeout(() => setWindLegendOpen(true), 500);
+    return () => window.clearTimeout(t);
+  }, [isReady, showWindOnMarkers, isHeroEmbed]);
 
   // Performance measurement — marker creation timing
   const perfMeasure = useCallback((label: string) => {
@@ -886,6 +912,7 @@ export default function SpotMapInteractive({
         : null;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
+  const windLegendHelpLabel = t.map.windRingLegend.help;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
   return (
@@ -954,23 +981,36 @@ export default function SpotMapInteractive({
                 )}
                 <span className="hidden sm:inline">{clusterLabel}</span>
               </button>
-              <button
-                type="button"
-                onClick={toggleWind}
-                title={windHint ?? undefined}
-                className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
-                  showWindOnMarkers
-                    ? 'border-data-wind/40 bg-data-wind/15 text-fg'
-                    : windEnabled && clusterEnabled
-                      ? 'border-divider bg-bg-elevated text-fg-muted opacity-80'
-                      : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1/[0.04]'
-                }`}
-                aria-label={windLabel}
-                aria-pressed={showWindOnMarkers}
-              >
-                <Wind className="w-4 h-4 shrink-0 text-data-wind" aria-hidden />
-                <span className="hidden sm:inline">{windLabel}</span>
-              </button>
+              <div className="inline-flex flex-col gap-1">
+                <div className="inline-flex items-center gap-0.5">
+                  <button
+                    ref={windButtonRef}
+                    type="button"
+                    onClick={toggleWind}
+                    title={windHint ?? undefined}
+                    className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
+                      showWindOnMarkers
+                        ? 'border-data-wind/40 bg-data-wind/15 text-fg'
+                        : windEnabled && clusterEnabled
+                          ? 'border-divider bg-bg-elevated text-fg-muted opacity-80'
+                          : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1/[0.04]'
+                    }`}
+                    aria-label={windLabel}
+                    aria-pressed={showWindOnMarkers}
+                  >
+                    <Wind className="w-4 h-4 shrink-0 text-data-wind" aria-hidden />
+                    <span className="hidden sm:inline">{windLabel}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={openWindLegend}
+                    className="flex items-center justify-center min-h-[36px] min-w-[36px] rounded-input border border-divider bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg transition-colors duration-150"
+                    aria-label={windLegendHelpLabel}
+                  >
+                    <HelpCircle className="w-3.5 h-3.5" aria-hidden />
+                  </button>
+                </div>
+              </div>
               <button
                 type="button"
                 onClick={toggleOnlyOn}
@@ -1041,8 +1081,18 @@ export default function SpotMapInteractive({
               clusterLabel={clusterLabel}
               windLabel={windLabel}
               exitLabel={exitFullscreenLabel}
+              windLegendHelpLabel={windLegendHelpLabel}
+              onOpenWindLegend={openWindLegend}
+              windButtonRef={windButtonRef}
             />
           )}
+
+          <WindRingLegend
+            open={windLegendOpen}
+            onClose={closeWindLegend}
+            anchorRef={windButtonRef}
+            locale={locale}
+          />
 
           {isMobile && (
             <MapSpotSheet

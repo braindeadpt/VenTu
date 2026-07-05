@@ -62,6 +62,13 @@ export function getWindRelationLabel(
   };
 }
 
+/** Dot colour matching map wind-ring arc tokens. */
+export function getWindRelationDotClass(relation: WindRelation): string {
+  if (relation === 'offshore') return 'bg-windDir-offshore';
+  if (relation === 'onshore') return 'bg-windDir-onshore';
+  return 'bg-windDir-cross';
+}
+
 /**
  * Map a direction in degrees to its nearest cardinal / intercardinal label.
  */

@@ -9,6 +9,8 @@ import type { SportScore } from '@/lib/sportScore';
 import { getScoreTokens } from '@/lib/sportScore';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
+import type { WindRelation } from '@/lib/wind';
+import { getWindRelationDotClass } from '@/lib/wind';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { getSpotImageAlt } from '@/lib/spotImage';
 
@@ -23,6 +25,7 @@ export interface SpotPopupContentProps {
   windDirection: string;
   windRelation?: string;
   windRelationClass?: string;
+  windRelationType?: WindRelation;
   waterTemp: string;
   wavePowerKw: string;
   imageUrl?: string;
@@ -41,6 +44,7 @@ export function SpotPopupContent({
   windDirection,
   windRelation,
   windRelationClass,
+  windRelationType,
   waterTemp,
   wavePowerKw,
   imageUrl,
@@ -117,23 +121,39 @@ export function SpotPopupContent({
         </p>
       </div>
 
-      {/* 3 metrics in mono */}
+      {/* Wind reading — cardinal + kt + relation dot (matches map ring colour) */}
+      <div className="px-2.5 pb-2">
+        <p
+          className="inline-flex flex-wrap items-center gap-1.5 text-[11px] font-mono tabular-nums text-fg"
+          aria-label={
+            windRelation
+              ? `${windKnots} kt ${windDirection} ${windRelation}`
+              : `${windKnots} kt ${windDirection}`
+          }
+        >
+          <Wind className="w-3 h-3 text-data-wind shrink-0" aria-hidden />
+          <span>{windKnots}kt {windDirection}</span>
+          {windRelation && windRelationType ? (
+            <>
+              <span
+                className={`w-2 h-2 rounded-full shrink-0 ${getWindRelationDotClass(windRelationType)}`}
+                aria-hidden
+              />
+              <span
+                className={`font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-pill border ${windRelationClass ?? ''}`}
+              >
+                {windRelation}
+              </span>
+            </>
+          ) : null}
+        </p>
+      </div>
+
+      {/* Legacy metrics row */}
       <div className="px-2.5 pb-2 flex items-center gap-2 text-[11px] font-mono tabular-nums">
         <span className="inline-flex items-center gap-1 text-fg">
           <Waves className="w-3 h-3 text-data-waves" aria-hidden />
           {swellHeight}m · {swellPeriod}s
-        </span>
-        <span aria-hidden className="text-fg-subtle/40">|</span>
-        <span className="inline-flex items-center gap-1 text-fg flex-wrap">
-          <Wind className="w-3 h-3 text-data-wind shrink-0" aria-hidden />
-          <span className="font-mono tabular-nums">{windKnots}kt {windDirection}</span>
-          {windRelation ? (
-            <span
-              className={`font-sans text-[10px] font-medium px-1.5 py-0.5 rounded-pill border ${windRelationClass ?? ''}`}
-            >
-              {windRelation}
-            </span>
-          ) : null}
         </span>
         <span aria-hidden className="text-fg-subtle/40">|</span>
         <span className="inline-flex items-center gap-1 text-fg">

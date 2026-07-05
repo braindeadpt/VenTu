@@ -7,7 +7,7 @@ import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { resolveWavePowerKw } from '@/lib/waveEnergy';
-import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
+import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, getWindRelationDotClass } from '@/lib/wind';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
@@ -138,12 +138,18 @@ export default function MapSpotPreview({
           </div>
           <p className="font-mono tabular-nums text-fg font-semibold flex flex-wrap items-center gap-1.5">
             <span>{windKt}kt {getCardinalLabel(conditions.windDirection)}</span>
-            {windRelationMeta ? (
-              <span
-                className={`text-[10px] font-sans font-medium px-1.5 py-0.5 rounded-pill border ${windRelationMeta.className}`}
-              >
-                {windRelationMeta.label}
-              </span>
+            {windRelationMeta && windRelation ? (
+              <>
+                <span
+                  className={`w-2 h-2 rounded-full shrink-0 ${getWindRelationDotClass(windRelation)}`}
+                  aria-hidden
+                />
+                <span
+                  className={`text-[10px] font-sans font-medium px-1.5 py-0.5 rounded-pill border ${windRelationMeta.className}`}
+                >
+                  {windRelationMeta.label}
+                </span>
+              </>
             ) : null}
           </p>
         </div>

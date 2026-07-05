@@ -189,6 +189,14 @@ function buildPinSvg(score: number, scoreRgb: string): string {
   `.trim();
 }
 
+/** Demo marker for WindRingLegend — offshore, medium strength. */
+export const WIND_RING_LEGEND_SAMPLE = {
+  score: 78,
+  fromDeg: 90,
+  speedKt: 14,
+  coastOrientation: 270,
+} as const;
+
 export function buildWindRingMarkerSvg(
   score: number,
   scoreRgb: string,

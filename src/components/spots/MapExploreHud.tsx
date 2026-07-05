@@ -1,6 +1,6 @@
 'use client';
 
-import { Filter, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
+import { Filter, HelpCircle, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -27,6 +27,9 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   clusterLabel: string;
   windLabel: string;
   exitLabel: string;
+  windLegendHelpLabel: string;
+  onOpenWindLegend: () => void;
+  windButtonRef?: React.Ref<HTMLButtonElement>;
 }
 
 export default function MapExploreHud({
@@ -65,6 +68,9 @@ export default function MapExploreHud({
   clusterLabel,
   windLabel,
   exitLabel,
+  windLegendHelpLabel,
+  onOpenWindLegend,
+  windButtonRef,
 }: MapExploreHudProps) {
   if (!visible) return null;
 
@@ -128,17 +134,28 @@ export default function MapExploreHud({
             )}
           </MapControlButton>
 
-          <MapControlButton
-            onClick={onToggleWind}
-            aria-label={windLabel}
-            pressed={showWindOnMarkers}
-            title={windHint ?? undefined}
-            className={
-              showWindOnMarkers ? 'border-data-wind/40 bg-data-wind/15 text-fg' : undefined
-            }
-          >
-            <Wind className="w-4 h-4 text-data-wind" aria-hidden />
-          </MapControlButton>
+          <div className="inline-flex items-center gap-0.5 shrink-0">
+            <MapControlButton
+              ref={windButtonRef}
+              onClick={onToggleWind}
+              aria-label={windLabel}
+              pressed={showWindOnMarkers}
+              title={windHint ?? undefined}
+              className={
+                showWindOnMarkers ? 'border-data-wind/40 bg-data-wind/15 text-fg' : undefined
+              }
+            >
+              <Wind className="w-4 h-4 text-data-wind" aria-hidden />
+            </MapControlButton>
+            <button
+              type="button"
+              onClick={onOpenWindLegend}
+              className="flex items-center justify-center min-h-[32px] min-w-[32px] rounded-input border border-divider bg-surface-1/[0.04] text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg transition-colors duration-150 text-meta-sm font-bold"
+              aria-label={windLegendHelpLabel}
+            >
+              <HelpCircle className="w-3.5 h-3.5" aria-hidden />
+            </button>
+          </div>
 
           <MapControlButton
             onClick={onToggleOnlyOn}
