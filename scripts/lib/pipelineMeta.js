@@ -55,9 +55,8 @@ function writePipelineMeta(mode, now = new Date(), rootDir) {
     next.displayUpdatedAt = iso;
   } else {
     next.observationsUpdatedAt = iso;
-    if (!next.displayUpdatedAt && prev.fullUpdatedAt) {
-      next.displayUpdatedAt = prev.fullUpdatedAt;
-    }
+    // Hero ticker: reflect latest publish (obs merge or full forecast).
+    next.displayUpdatedAt = iso;
   }
 
   const metaPath = getMetaPath(rootDir);

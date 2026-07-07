@@ -19,15 +19,21 @@ export function loadPipelineMeta(): PipelineMeta | null {
   }
 }
 
-/** Hero ticker: last Open-Meteo (full) run; fall back to per-spot max. */
+/** Hero ticker: most recent pipeline publish (full forecast or obs refresh). */
 export function resolveDisplayUpdatedTs(
   pipelineMeta: PipelineMeta | null,
   spotMaxTs: number | null,
 ): number | null {
-  const fromMeta = pipelineMeta?.displayUpdatedAt ?? pipelineMeta?.fullUpdatedAt;
-  if (fromMeta) {
-    const ts = new Date(fromMeta).getTime();
-    if (!Number.isNaN(ts)) return ts;
+  const candidates = [
+    pipelineMeta?.displayUpdatedAt,
+    pipelineMeta?.observationsUpdatedAt,
+    pipelineMeta?.fullUpdatedAt,
+  ]
+    .map((iso) => (iso ? new Date(iso).getTime() : NaN))
+    .filter((ts) => !Number.isNaN(ts));
+
+  if (candidates.length > 0) {
+    return Math.max(...candidates);
   }
   return spotMaxTs;
 }
