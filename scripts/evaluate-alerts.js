@@ -127,12 +127,40 @@ async function fetchUserFavorites(userId) {
   return rows.map((r) => r.spot_id);
 }
 
-async function sendEmail(to, subject, html) {
+/** Plain-text fallback from HTML — filters penalise HTML-only bulk mail. */
+function htmlToText(html) {
+  return html
+    .replace(/<a\s+[^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/gi, '$2 ($1)')
+    .replace(/<\/(p|li|div)>/gi, '\n')
+    .replace(/<[^>]+>/g, '')
+    .replace(/&amp;/g, '&')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+/**
+ * @param {string} to
+ * @param {string} subject
+ * @param {string} html
+ * @param {{ unsubscribeUrl?: string }} [opts] - unsubscribeUrl adds a
+ *   List-Unsubscribe header (RFC 8058). Gmail/Yahoo bulk-sender rules
+ *   penalise mail without it regardless of SPF/DKIM — an in-body link alone
+ *   isn't enough, filters read the header.
+ */
+async function sendEmail(to, subject, html, opts = {}) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.warn('  ⚠️ RESEND_API_KEY missing — dry run only');
     console.log(`  → Would email ${to}: ${subject}`);
     return false;
+  }
+
+  const payload = { from: FROM_EMAIL, to: [to], subject, html, text: htmlToText(html) };
+  if (opts.unsubscribeUrl) {
+    payload.headers = {
+      'List-Unsubscribe': `<${opts.unsubscribeUrl}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    };
   }
 
   const res = await fetch('https://api.resend.com/emails', {
@@ -141,7 +169,7 @@ async function sendEmail(to, subject, html) {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ from: FROM_EMAIL, to: [to], subject, html }),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) {
     const body = await res.text();
@@ -179,17 +207,19 @@ async function markUserPrefsSent(userId) {
 async function sendLegacyVerification(sub) {
   const isPt = sub.locale !== 'en';
   const link = `${SITE_URL}/${sub.locale || 'pt'}/alerts/confirm/?token=${sub.verify_token}`;
+  const unsub = `${SITE_URL}/${sub.locale || 'pt'}/alerts/unsubscribe/?token=${sub.verify_token}`;
   const subject = isPt ? 'Confirma o teu alerta VenTu' : 'Confirm your VenTu alert';
   const html = isPt
     ? `<p>Confirma o alerta para <strong>${sub.spot_slug}</strong> (${sub.sport}, score ≥ ${sub.min_score}):</p><p><a href="${link}">Confirmar alerta</a></p>`
     : `<p>Confirm alert for <strong>${sub.spot_slug}</strong> (${sub.sport}, score ≥ ${sub.min_score}):</p><p><a href="${link}">Confirm alert</a></p>`;
-  await sendEmail(sub.email, subject, html);
+  await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
 }
 
 async function sendUserVerification(pref, favoriteCount) {
   const isPt = pref.locale !== 'en';
   const mode = normalizeAlertMode(pref.alert_mode);
   const link = `${SITE_URL}/${pref.locale || 'pt'}/alerts/confirm/?token=${pref.verify_token}`;
+  const unsub = `${SITE_URL}/${pref.locale || 'pt'}/alerts/unsubscribe/?token=${pref.verify_token}`;
   const subject = isPt
     ? 'Confirma alertas VenTu nos teus favoritos'
     : 'Confirm VenTu alerts on your favorites';
@@ -203,7 +233,7 @@ async function sendUserVerification(pref, favoriteCount) {
   const html = isPt
     ? `<p>Confirma alertas por email para <strong>${favoriteCount}</strong> spot(s) favorito(s) (${pref.sport}, score ≥ ${pref.min_score}, ${freqNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
     : `<p>Confirm email alerts for <strong>${favoriteCount}</strong> favorite spot(s) (${pref.sport}, score ≥ ${pref.min_score}, ${freqNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
-  await sendEmail(pref.email, subject, html);
+  await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
 }
 
 async function evaluateLegacySubscriptions(slugToId, conditions) {
@@ -237,7 +267,7 @@ async function evaluateLegacySubscriptions(slugToId, conditions) {
       ? `<p>Condições boas em <strong>${sub.spot_slug}</strong>!</p><p>Score ${sub.sport}: <strong>${score}</strong>/100 (limiar ${sub.min_score})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
       : `<p>Good conditions at <strong>${sub.spot_slug}</strong>!</p><p>${sub.sport} score: <strong>${score}</strong>/100 (threshold ${sub.min_score})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
 
-    const ok = await sendEmail(sub.email, subject, html);
+    const ok = await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
     if (ok) {
       await markLegacySent(sub.id);
       sent++;
@@ -328,7 +358,7 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
 
     const html = `${intro}<ul>${items}</ul><p><a href="${unsub}">${isPt ? 'Cancelar alertas' : 'Unsubscribe'}</a></p>`;
 
-    const ok = await sendEmail(pref.email, subject, html);
+    const ok = await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
     if (ok) {
       await markUserPrefsSent(pref.user_id);
       sent++;
