@@ -33,7 +33,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          ref: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
+          # Data/Dawn jobs push new commits with GITHUB_TOKEN (no push trigger).
+          # workflow_run.head_sha is the commit *before* that push — always use main.
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || github.sha }}
+          fetch-depth: 1
 
       - name: Setup Node.js
         uses: actions/setup-node@v5

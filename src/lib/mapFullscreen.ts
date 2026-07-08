@@ -1,4 +1,15 @@
 /**
+ * Remove Leaflet's internal container id so a remounted div can host a new map.
+ */
+export function clearLeafletContainer(el: HTMLDivElement | null): void {
+  if (!el) return;
+  // Leaflet stores `_leaflet_id` on the container; stale ids block re-init.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  delete (el as any)._leaflet_id;
+  el.replaceChildren();
+}
+
+/**
  * Restore page scroll / pointer interaction after map fullscreen.
  * Leaflet and body overflow locks can survive a fullscreen exit without this.
  */

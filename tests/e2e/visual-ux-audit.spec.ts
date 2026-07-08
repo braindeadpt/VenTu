@@ -4,6 +4,7 @@
  */
 import { test, expect, type Page, type BrowserContext } from '@playwright/test';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
+import { expandMapHudFilters } from './helpers/map-hud';
 import { openMapSpotSheet } from './helpers/map-sheet';
 
 type Viewport = 'desktop' | 'mobile';
@@ -88,6 +89,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/mapa/');
       await page.waitForSelector('[data-map-hud="visible"]', { timeout: 25_000 });
+      await expandMapHudFilters(page);
 
       await page.getByRole('button', { name: 'Kitesurf', exact: true }).click();
       await expect(page).toHaveURL(/sport=kitesurf/);
@@ -95,7 +97,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(page).toHaveURL(/region=Algarve/);
 
       await page.reload();
+      await page.waitForSelector('[data-map-hud="visible"]', { timeout: 25_000 });
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
+      await expandMapHudFilters(page);
       await expect(page.getByRole('button', { name: 'Kitesurf', exact: true })).toHaveAttribute(
         'aria-pressed',
         'true',

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Layers, HelpCircle, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
-import { unlockPageInteraction } from '@/lib/mapFullscreen';
+import { clearLeafletContainer, unlockPageInteraction } from '@/lib/mapFullscreen';
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
@@ -94,6 +94,9 @@ type MapHudProps = Omit<
   | 'windLegendHelpLabel'
   | 'onOpenWindLegend'
   | 'windButtonRef'
+  | 'collapseHudLabel'
+  | 'expandHudLabel'
+  | 'onCollapsedChange'
 >;
 
 interface SpotMapInteractiveProps {
@@ -372,6 +375,14 @@ export default function SpotMapInteractive({
   const filterBoundsKeyRef = useRef('');
   const onSpotSelectRef = useRef(onSpotSelect);
   const LRef = useRef<typeof L | null>(null);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     onSpotSelectRef.current = onSpotSelect;
@@ -388,8 +399,13 @@ export default function SpotMapInteractive({
     return window.matchMedia('(max-width: 767px)').matches;
   });
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
+  const [hudCollapsed, setHudCollapsed] = useState(true);
   const isPt = locale === 'pt';
   const t = getTranslation(validateLocale(locale));
+
+  useEffect(() => {
+    if (!isFullscreen) setHudCollapsed(true);
+  }, [isFullscreen]);
 
   // Mobile viewport — bottom sheet instead of Leaflet popup
   useEffect(() => {
@@ -431,15 +447,44 @@ export default function SpotMapInteractive({
     if (mapInstanceRef.current) return;
 
     let cancelled = false;
+    const container = mapRef.current;
+
+    const teardownMap = () => {
+      if (mapInstanceRef.current) {
+        try {
+          mapInstanceRef.current.remove();
+        } catch {
+          /* noop */
+        }
+        mapInstanceRef.current = null;
+      }
+      markersCacheRef.current.forEach((marker) => {
+        try {
+          marker.remove();
+        } catch {
+          /* noop */
+        }
+      });
+      markersCacheRef.current.clear();
+      clusterGroupRef.current = null;
+      markersGroupRef.current = null;
+      tileLayerRef.current = null;
+      LRef.current = null;
+      didFitBoundsRef.current = false;
+      filterBoundsKeyRef.current = '';
+      clearLeafletContainer(container);
+      if (mountedRef.current) setIsReady(false);
+    };
 
     (async () => {
       const Leaflet = (await import('leaflet')).default;
       await import('leaflet.markercluster');
-      if (cancelled) return;
+      if (cancelled || !mapRef.current) return;
 
+      clearLeafletContainer(container);
       LRef.current = Leaflet;
 
-      const map = Leaflet.map(mapRef.current!, {
+      const map = Leaflet.map(container, {
         center: DEFAULT_CENTER,
         zoom: DEFAULT_ZOOM,
         zoomControl: false,
@@ -455,6 +500,12 @@ export default function SpotMapInteractive({
             }
           : {}),
       });
+
+      if (cancelled) {
+        map.remove();
+        clearLeafletContainer(container);
+        return;
+      }
 
       const darkOnInit = !document.documentElement.classList.contains('theme-ocean');
       const tileUrl = darkOnInit ? TILE_URLS.dark : TILE_URLS.light;
@@ -478,20 +529,19 @@ export default function SpotMapInteractive({
       markersGroupRef.current = lg;
       map.addLayer(mcg);
 
+      if (cancelled) {
+        map.remove();
+        clearLeafletContainer(container);
+        return;
+      }
+
       mapInstanceRef.current = map;
-      setIsReady(true);
+      if (mountedRef.current) setIsReady(true);
     })();
 
     return () => {
       cancelled = true;
-      if (mapInstanceRef.current) {
-        mapInstanceRef.current.remove();
-        mapInstanceRef.current = null;
-        clusterGroupRef.current = null;
-        markersGroupRef.current = null;
-        didFitBoundsRef.current = false;
-        tileLayerRef.current = null;
-      }
+      teardownMap();
     };
   }, [isHeroEmbed]);
 
@@ -1038,7 +1088,11 @@ export default function SpotMapInteractive({
           )}
 
           {!isHeroEmbed && (
-            <MapLegend locale={locale} reserveHudSpace={isFullscreen} />
+            <MapLegend
+              locale={locale}
+              reserveHudSpace={isFullscreen}
+              hudCompact={isFullscreen && hudCollapsed}
+            />
           )}
 
           {!isFullscreen && !isHeroEmbed && (
@@ -1084,6 +1138,9 @@ export default function SpotMapInteractive({
               windLegendHelpLabel={windLegendHelpLabel}
               onOpenWindLegend={openWindLegend}
               windButtonRef={windButtonRef}
+              collapseHudLabel={t.map.collapseHud}
+              expandHudLabel={t.map.expandHud}
+              onCollapsedChange={setHudCollapsed}
             />
           )}
 
