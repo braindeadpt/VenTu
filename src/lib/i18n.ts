@@ -249,6 +249,33 @@ export const translations = {
       viewSpot: 'Ver spot',
       provider: 'Fonte',
     },
+    moonTide: {
+      title: 'Maré e lua',
+      tidesForecast: 'Marés (previsão)',
+      regime: {
+        vivas: 'Marés vivas',
+        mortas: 'Marés mortas',
+        'transição': 'Transição',
+      },
+      meaning: {
+        vivas: 'Amplitude maior — baixa-mar expõe mais fundo; correntes mais fortes.',
+        mortas: 'Amplitude menor — marés estáveis; menos exposição do fundo.',
+        'transição': 'Entre vivas e mortas — condições intermédias.',
+      },
+      amplitudeToday: 'Amplitude hoje: {value} m',
+      monthStripTitle: 'Marés vivas e mortas este mês',
+      monthStripHint: 'Sombreado por regime de maré (lua)',
+      phase: {
+        nova: 'Lua nova',
+        crescente: 'Lua crescente',
+        'quarto-crescente': 'Quarto crescente',
+        'gibosa-crescente': 'Gibosa crescente',
+        cheia: 'Lua cheia',
+        'gibosa-minguante': 'Gibosa minguante',
+        'quarto-minguante': 'Quarto minguante',
+        minguante: 'Lua minguante',
+      },
+    },
   },
   en: {
     nav: {
@@ -483,6 +510,33 @@ export const translations = {
       watchLive: 'Watch live',
       viewSpot: 'View spot',
       provider: 'Source',
+    },
+    moonTide: {
+      title: 'Tides & moon',
+      tidesForecast: 'Tides (forecast)',
+      regime: {
+        vivas: 'Spring tides',
+        mortas: 'Neap tides',
+        'transição': 'Transition',
+      },
+      meaning: {
+        vivas: 'Larger range — low tide exposes more bottom; stronger currents.',
+        mortas: 'Smaller range — steadier tides; less bottom exposure.',
+        'transição': 'Between spring and neap — intermediate conditions.',
+      },
+      amplitudeToday: "Today's range: {value} m",
+      monthStripTitle: 'Spring and neap tides this month',
+      monthStripHint: 'Shaded by tidal regime (moon)',
+      phase: {
+        nova: 'New moon',
+        crescente: 'Waxing crescent',
+        'quarto-crescente': 'First quarter',
+        'gibosa-crescente': 'Waxing gibbous',
+        cheia: 'Full moon',
+        'gibosa-minguante': 'Waning gibbous',
+        'quarto-minguante': 'Last quarter',
+        minguante: 'Waning crescent',
+      },
     },
   }
 };

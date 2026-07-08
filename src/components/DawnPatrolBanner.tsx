@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle } from 'lucide-react';
+import MoonIcon from '@/components/ui/MoonIcon';
+import { getMoonPhase } from '@/lib/moonPhase';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { getAssetPath } from '@/lib/paths';
@@ -18,6 +20,7 @@ interface DawnPatrolData {
     bestTime: string;
     wetsuit: string;
     crowdTip: string;
+    moonTideLine?: string;
   };
   en: {
     headline: string;
@@ -25,6 +28,7 @@ interface DawnPatrolData {
     bestTime: string;
     wetsuit: string;
     crowdTip: string;
+    moonTideLine?: string;
   };
   spots: Array<{
     name: string;
@@ -134,6 +138,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
   const content = isPt ? data.pt : data.en;
   const stale = isDawnPatrolStale(data.date);
+  const moon = getMoonPhase(new Date(`${data.date}T12:00:00`));
   const dateLabel = new Date(`${data.date}T12:00:00`).toLocaleDateString(
     isPt ? 'pt-PT' : 'en-GB',
     { weekday: 'short', day: 'numeric', month: 'short' },
@@ -222,6 +227,17 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             <Users className="w-4 h-4 text-data-waves shrink-0" />
             <span>{content.crowdTip}</span>
           </div>
+          {content.moonTideLine ? (
+            <div className="flex items-center gap-2 text-sm text-fg-muted w-full sm:w-auto">
+              <MoonIcon
+                illumination={moon.illumination}
+                waxing={moon.waxing}
+                size={18}
+                className="opacity-90"
+              />
+              <span className="text-fg-muted">{content.moonTideLine}</span>
+            </div>
+          ) : null}
         </div>
       </div>
 

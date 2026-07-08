@@ -2,6 +2,8 @@
 
 import { Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
 import { cn } from '@/lib/cn';
+import { getTranslation } from '@/lib/i18n';
+import type { Locale } from '@/lib/i18n';
 import type { Spot } from '@/types';
 import type { SportScore } from '@/lib/sportScore';
 import { getScoreTokens } from '@/lib/sportScore';
@@ -14,11 +16,12 @@ import SwellRadar from '@/components/ui/SwellRadar';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
 import ObservedNow from '@/components/spots/ObservedNow';
 import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
+import MoonTideCard from '@/components/spots/MoonTideCard';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import ScoreBadge from '@/components/ui/ScoreBadge';
 import type { ObservedConditions } from '@/lib/observations';
 import type { SportType } from '@/lib/sportRatings';
-import type { TideSchedule } from '@/lib/tideSchedule';
+import type { TideSchedule, TideHourPoint } from '@/lib/tideSchedule';
 
 export interface SpotDashboardConditions {
   waveHeight: number;
@@ -63,6 +66,7 @@ interface SpotConditionsDashboardProps {
   };
   conditions: SpotDashboardConditions;
   tideSchedule: TideSchedule | null;
+  tideHourly?: TideHourPoint[];
   selectedSport: SportType;
   score: SportScore;
 }
@@ -73,10 +77,12 @@ export default function SpotConditionsDashboard({
   copy,
   conditions,
   tideSchedule,
+  tideHourly,
   selectedSport,
   score,
 }: SpotConditionsDashboardProps) {
   const isPt = locale === 'pt';
+  const moonTideCopy = getTranslation((isPt ? 'pt' : 'en') as Locale).moonTide;
   const scoreTokens = getScoreTokens(score.score);
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
@@ -250,7 +256,7 @@ export default function SpotConditionsDashboard({
             <h3 className="text-h3 text-fg">{copy.verificationTitle}</h3>
             <div
               className={
-                showObservedBlock && tideSchedule
+                showObservedBlock
                   ? 'grid grid-cols-1 md:grid-cols-2 gap-3'
                   : 'grid grid-cols-1 gap-3'
               }
@@ -264,14 +270,17 @@ export default function SpotConditionsDashboard({
                   lon={spot.lon}
                 />
               ) : null}
-              {tideSchedule ? (
-                <div className="rounded-card border border-divider bg-surface-1/[0.03] px-3 py-3">
-                  <p className="text-meta-sm font-semibold text-fg-muted mb-2">
-                    {isPt ? 'Marés (previsão)' : 'Tides (forecast)'}
-                  </p>
-                  <TideScheduleStrip schedule={tideSchedule} locale={locale} />
-                </div>
-              ) : null}
+              <div className="space-y-3 min-w-0">
+                {tideSchedule ? (
+                  <div className="rounded-card border border-divider bg-surface-1/[0.03] px-3 py-3">
+                    <p className="text-meta-sm font-semibold text-fg-muted mb-2">
+                      {moonTideCopy.tidesForecast}
+                    </p>
+                    <TideScheduleStrip schedule={tideSchedule} locale={locale} />
+                  </div>
+                ) : null}
+                <MoonTideCard locale={locale} tideHourly={tideHourly} />
+              </div>
             </div>
             {!freshObserved && conditions.observed && (
               <p className="text-meta-sm text-fg-subtle">

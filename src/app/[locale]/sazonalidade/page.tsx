@@ -4,6 +4,7 @@ import { getTranslation } from '@/lib/i18n'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft, Calendar, Waves, Wind, Thermometer, Sun, CloudRain } from 'lucide-react'
+import MoonTideMonthStrip from '@/components/sazonalidade/MoonTideMonthStrip'
 
 interface Props {
   params: Promise<{ locale: string }>
@@ -87,6 +88,8 @@ export default async function SazonalidadePage({ params }: Props) {
             </p>
           </div>
         </div>
+
+        <MoonTideMonthStrip locale={locale} />
 
         <div className="grid gap-6">
           {seasonData.map((s) => {

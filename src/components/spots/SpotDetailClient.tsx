@@ -17,7 +17,7 @@ import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getTranslation } from '@/lib/i18n';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { getWindguruUrl } from '@/lib/windguru';
-import { buildTideSchedule, phaseFromConditionsStatus } from '@/lib/tideSchedule';
+import { buildTideSchedule, phaseFromConditionsStatus, type TideHourPoint } from '@/lib/tideSchedule';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import SeoHead from '@/components/SeoHead';
 import ForecastTable from '@/components/weather/ForecastTable';
@@ -126,6 +126,14 @@ export default function SpotDetailClient({
       phaseOverride: phaseFromConditionsStatus(spotData.conditions.tideStatus),
     });
   }, [spotData, isPt]);
+
+  const tideHourly: TideHourPoint[] = useMemo(() => {
+    if (!spotData?.forecast?.length) return [];
+    return spotData.forecast.map((h) => ({
+      time: h.time,
+      tideHeight: h.tideHeight,
+    }));
+  }, [spotData]);
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)');
@@ -523,6 +531,7 @@ export default function SpotDetailClient({
             locale={locale}
             conditions={conditions}
             tideSchedule={tideSchedule}
+            tideHourly={tideHourly}
             selectedSport={selectedSport}
             score={score}
             copy={{

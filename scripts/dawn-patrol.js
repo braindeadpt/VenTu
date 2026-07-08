@@ -10,6 +10,7 @@
 const fs = require('fs');
 const path = require('path');
 const { callLLM } = require('./llm-fallback');
+const { attachMoonTideLines } = require('./lib/attachMoonTide');
 
 const TOP_SPOTS = [
   { name: 'Supertubos', slug: 'supertubos', lat: 39.336, lon: -9.364, region: 'Peniche', type: 'surf' },
@@ -256,6 +257,7 @@ function generateBasicAdvice(spotsData) {
         bestTime: '--:--',
         wetsuit: '3/2mm',
         crowdTip: 'Chega cedo para evitar crowd!',
+        moonTideLine: '',
       },
       en: {
         headline: 'Data temporarily unavailable 🌊',
@@ -263,6 +265,7 @@ function generateBasicAdvice(spotsData) {
         bestTime: '--:--',
         wetsuit: '3/2mm',
         crowdTip: 'Get there early to beat the crowd!',
+        moonTideLine: '',
       },
       spots: [],
     };
@@ -397,6 +400,7 @@ async function generateDawnPatrol() {
       ...spot,
       bestWindow,
       allConditions: morningConditions,
+      hourly,
     });
   }
 
@@ -404,6 +408,7 @@ async function generateDawnPatrol() {
 
   let advice = await generateDawnPatrolWithLLM(spotsData);
   advice = validateAdviceSlugs(advice, validSlugs, spotsData);
+  advice = attachMoonTideLines(advice, spotsData);
 
   const outputPath = path.join(__dirname, '../public/data/dawn-patrol.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
