@@ -16,8 +16,7 @@ import {
   PIN_CX,
   PIN_CY,
   MARKER_VIEWBOX_W,
-  MARKER_TAIL_TIP_Y,
-  PIN_R,
+  MARKER_VIEWBOX_H,
 } from '../mapWindArrow';
 
 describe('wind ring marker', () => {
@@ -74,20 +73,30 @@ describe('wind ring marker', () => {
     expect(svg).toContain('>78<');
   });
 
-  it('icon anchor sits on pin tail tip', () => {
+  it('pin has no tail — dense clusters must not overlap tail triangles', () => {
+    const svg = buildWindRingMarkerSvg(78, 'rgb(16,185,129)', 270, 18, false, 270);
+    expect(svg).not.toContain('ventu-marker-drop-tail');
+    // Only the two rim circles + score text inside the pin group — no <path>
+    // (the tail used to be the only <path> in buildPinSvg).
+    const pinGroup = svg.slice(svg.indexOf('ventu-marker-pin'));
+    expect(pinGroup).not.toContain('<path');
+  });
+
+  it('icon anchor sits at the marker centre (no tail)', () => {
     const layout = markerIconLayout(true);
-    expect(MARKER_TAIL_TIP_Y).toBe(PIN_CY + PIN_R + 8);
-    expect(MARKER_TAIL_TIP_Y).toBe(47);
-    expect(layout.iconAnchor).toEqual([Math.round(MARKER_VIEWBOX_W / 2), MARKER_TAIL_TIP_Y]);
-    expect(layout.iconSize[1]).toBe(MARKER_TAIL_TIP_Y);
-    expect(layout.popupAnchor[1]).toBeLessThan(-MARKER_TAIL_TIP_Y);
+    expect(layout.iconAnchor).toEqual([MARKER_VIEWBOX_W / 2, MARKER_VIEWBOX_H / 2]);
+    expect(layout.iconSize).toEqual([MARKER_VIEWBOX_W, MARKER_VIEWBOX_H]);
+    expect(layout.popupAnchor[1]).toBeLessThan(-(MARKER_VIEWBOX_H / 2));
+  });
+
+  it('layout is identical with wind on or off — only the rim arc changes', () => {
+    expect(markerIconLayout(true)).toEqual(markerIconLayout(false));
   });
 
   it('compact icon layout — no oversized compound marker', () => {
-    const withWind = markerIconLayout(true);
-    expect(withWind.iconSize[0]).toBeLessThanOrEqual(56);
-    expect(withWind.iconSize[1]).toBe(47);
-    expect(markerIconLayout(false).iconSize).toEqual([34, 44]);
+    const layout = markerIconLayout(true);
+    expect(layout.iconSize[0]).toBeLessThanOrEqual(60);
+    expect(layout.iconSize[1]).toBeLessThanOrEqual(60);
   });
 
   it('html title includes relation label', () => {

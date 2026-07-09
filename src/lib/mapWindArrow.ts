@@ -12,15 +12,16 @@ import {
   type WindRelation,
 } from '@/lib/wind';
 
-export const MARKER_VIEWBOX_W = 56;
+// Square viewBox, pin dead-centred — no tail. At map density (many spots a
+// few hundred metres apart) a pin's tail visually overlaps a neighbour's
+// tail/arc and reads as a second, unrelated direction. A centred dot (the
+// convention in Windy/Zoom Earth for dense point data) removes that
+// ambiguity and simplifies the Leaflet anchor to the icon's centre.
+export const MARKER_VIEWBOX_W = 60;
 export const MARKER_VIEWBOX_H = 60;
 export const PIN_R = 17;
 export const PIN_CX = MARKER_VIEWBOX_W / 2;
-export const PIN_CY = 22;
-export const PIN_TAIL_H = 8;
-/** Y coordinate of the pin tail tip in the marker viewBox (Leaflet anchor). */
-export const MARKER_TAIL_TIP_Y = PIN_CY + PIN_R + PIN_TAIL_H;
-const TAIL_H = PIN_TAIL_H;
+export const PIN_CY = MARKER_VIEWBOX_H / 2;
 const HALO = 'rgba(255,255,255,0.95)';
 const OUTLINE = 'rgba(8,15,30,0.92)';
 /** Arc centreline ~5px outside the white score rim. */
@@ -172,13 +173,10 @@ export function buildWindRingSvg(
 }
 
 function buildPinSvg(score: number, scoreRgb: string): string {
-  const tailTop = PIN_CY + PIN_R;
-  const tailTip = tailTop + TAIL_H;
   const scoreLabel = Math.round(score);
 
   return `
     <g class="ventu-marker-pin">
-      <path d="M${PIN_CX - 6} ${tailTop} L${PIN_CX} ${tailTip} L${PIN_CX + 6} ${tailTop} Z" fill="${scoreRgb}" stroke="${OUTLINE}" stroke-width="1"/>
       <circle cx="${PIN_CX}" cy="${PIN_CY}" r="${PIN_R + 2.5}" fill="${OUTLINE}"/>
       <circle cx="${PIN_CX}" cy="${PIN_CY}" r="${PIN_R}" fill="${scoreRgb}" stroke="${HALO}" stroke-width="2.5"/>
       <text x="${PIN_CX}" y="${PIN_CY + 5}" text-anchor="middle"
@@ -240,30 +238,28 @@ export function buildWindRingMarkerHtml(
 
   return `
     <div class="ventu-spot-marker-wrap ventu-marker-enter ventu-wind-ring-marker-wrap"
-      style="width:${MARKER_VIEWBOX_W}px;height:${MARKER_TAIL_TIP_Y}px;cursor:pointer"${title ? ` title="${title}"` : ''}>
+      style="width:${MARKER_VIEWBOX_W}px;height:${MARKER_VIEWBOX_H}px;cursor:pointer"${title ? ` title="${title}"` : ''}>
       ${svg}
     </div>
   `.trim();
 }
 
-export function markerIconLayout(showWind: boolean): {
+/**
+ * Same layout whether or not wind is shown — the pin is centre-anchored
+ * (no tail), so toggling wind only adds/removes the rim arc, never
+ * resizes or re-anchors the marker.
+ */
+export function markerIconLayout(_showWind: boolean): {
   iconSize: [number, number];
   iconAnchor: [number, number];
   popupAnchor: [number, number];
 } {
   const w = MARKER_VIEWBOX_W;
-  const anchorY = MARKER_TAIL_TIP_Y;
-  if (!showWind) {
-    return {
-      iconSize: [34, 44],
-      iconAnchor: [17, 44],
-      popupAnchor: [0, -46],
-    };
-  }
+  const h = MARKER_VIEWBOX_H;
   return {
-    iconSize: [w, anchorY],
-    iconAnchor: [Math.round(w / 2), anchorY],
-    popupAnchor: [0, -(anchorY + 2)],
+    iconSize: [w, h],
+    iconAnchor: [w / 2, h / 2],
+    popupAnchor: [0, -(h / 2 + 6)],
   };
 }
 

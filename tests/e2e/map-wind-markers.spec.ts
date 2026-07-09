@@ -41,7 +41,7 @@ test.describe('Map wind ring markers', () => {
     expect(sample!.legacyWedge).toBe(0);
     expect(sample!.legacyArrow).toBe(0);
     expect(sample!.wrapW).toBeLessThanOrEqual(60);
-    expect(sample!.wrapH).toBeLessThanOrEqual(50);
+    expect(sample!.wrapH).toBeLessThanOrEqual(60);
     expect(sample!.pinR).toBeCloseTo(17, 0);
   });
 

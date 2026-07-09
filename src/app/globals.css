@@ -336,28 +336,19 @@
   }
 
   /* ── Map marker motion (CSS only) ── */
+  /* Centre-anchored dot marker (no tail) — scale animations pivot from
+     the middle so growth reads as "this point", not a lean in one
+     direction. */
   .ventu-spot-marker-wrap {
-    transform-origin: center bottom;
-  }
-  /* Inner marker elements must not intercept clicks — Leaflet's pane
-     event system requires the `click` to reach the .leaflet-marker-icon
-     element (or a child with no pointer-events override). */
-  .ventu-marker-drop * {
-    pointer-events: none;
+    transform-origin: center center;
   }
 
-  .ventu-marker-drop-circle,
   .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2) {
     transition:
       transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
       box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .ventu-marker-drop-tail {
-    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
-  }
 
-  .leaflet-marker-icon:hover .ventu-marker-drop-circle,
-  .leaflet-marker-icon:focus-visible .ventu-marker-drop-circle,
   .leaflet-marker-icon:hover .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2),
   .leaflet-marker-icon:focus-visible .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2) {
     transform: scale(1.1);
@@ -367,13 +358,8 @@
   }
 
   /* Spring scale on selected marker */
-  .ventu-marker-selected .ventu-marker-drop-circle,
   .ventu-marker-selected .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2) {
     transform: scale(1.2);
-    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  .ventu-marker-selected .ventu-marker-drop-tail {
-    transform: scaleX(1.2);
     transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 

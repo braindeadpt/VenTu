@@ -140,41 +140,18 @@ function buildMarkerIcon(
   const scoreRgb = getScoreRgb(score);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
 
-  const markerHtml = showWind
-    ? buildWindRingMarkerHtml(
-        score,
-        scoreRgb,
-        conditions.windDirection,
-        windKtNum,
-        true,
-        locale,
-        spot.coastOrientation,
-      )
-    : `
-    <div class="ventu-spot-marker-wrap ventu-marker-enter" style="display:flex;flex-direction:column;align-items:center;cursor:pointer;">
-      <div class="ventu-marker-drop" style="position:relative;width:34px;">
-        <div class="ventu-marker-drop-circle" style="
-          width:34px;height:34px;border-radius:50%;
-          background:${scoreRgb};
-          border:2.5px solid rgb(var(--bg-elevated));
-          box-shadow:0 3px 6px rgba(0,0,0,0.35);
-          display:flex;align-items:center;justify-content:center;
-        ">
-          <span style="
-            font-family:var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace;
-            font-variant-numeric:tabular-nums;
-            font-size:13px;font-weight:700;color:#fff;
-            line-height:1;white-space:nowrap;
-          ">${Math.round(score)}</span>
-        </div>
-        <div class="ventu-marker-drop-tail" aria-hidden style="
-          width:0;height:0;margin:0 auto -1px;
-          border-left:6px solid transparent;border-right:6px solid transparent;
-          border-top:8px solid ${scoreRgb};
-        "></div>
-      </div>
-    </div>
-  `;
+  // Always the same centre-anchored dot marker (buildWindRingMarkerSvg
+  // already no-ops the rim arc when showWind is false) — a separate
+  // tailed-pin fallback used to exist here and diverge visually.
+  const markerHtml = buildWindRingMarkerHtml(
+    score,
+    scoreRgb,
+    conditions.windDirection,
+    windKtNum,
+    showWind,
+    locale,
+    spot.coastOrientation,
+  );
 
   const layout = markerIconLayout(showWind);
 
