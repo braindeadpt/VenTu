@@ -324,13 +324,14 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await page.getByRole('button', { name: /Entrar para guardar Guincho|Sign in to save Guincho/i }).click();
       await expect(page.getByRole('dialog', { name: /Entrar|Sign in/i })).toBeVisible({ timeout: 10_000 });
 
-      await page.goto('/pt/favorites/');
+      await gotoHealthy(page, health, '/pt/favorites/');
       const favHeading = page.getByRole('heading', { name: /Meus Favoritos|My Favorites/i });
-      if (await favHeading.isVisible().catch(() => false)) {
-        await expect(page.getByRole('button', { name: /Entrar com magic link|Sign in with magic link/i })).toBeVisible();
-      } else {
+      const unavailable = page.getByText(/Favoritos indisponíveis|Favorites unavailable/i);
+      await expect(favHeading.or(unavailable)).toBeVisible({ timeout: 15_000 });
+      if (await unavailable.isVisible().catch(() => false)) {
         // Supabase não configurado — feature indisponível é esperado
-        await expect(page.getByText(/Favoritos indisponíveis|Favorites unavailable/i)).toBeVisible();
+      } else {
+        await expect(page.getByRole('button', { name: /Entrar com magic link|Sign in with magic link/i })).toBeVisible();
       }
       await context.close();
     });
