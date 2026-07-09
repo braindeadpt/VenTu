@@ -8,6 +8,7 @@ import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { cn } from '@/lib/cn';
 import FavoriteButton from '@/components/FavoriteButton';
+import CheckInButton from '@/components/CheckInButton';
 import SocialShare from '@/components/ui/SocialShare';
 import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
 import SpotImage from '@/components/ui/SpotImage';
@@ -127,6 +128,7 @@ export default function SpotDetailHero({
               </h1>
               <div className="flex items-center gap-2 shrink-0 lg:hidden">
                 <SocialShare title={`${title} — ${region}`} locale={locale} />
+                <CheckInButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
                 <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
               </div>
             </div>
@@ -181,6 +183,7 @@ export default function SpotDetailHero({
           <div className="flex flex-col gap-2 shrink-0 w-full sm:w-auto sm:items-end">
             <div className="hidden lg:flex items-center gap-2 sm:justify-end">
               <SocialShare title={`${title} — ${region}`} locale={locale} />
+              <CheckInButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
             <div className="spot-hero-card spot-hero-card--dissolved rounded-card border p-3 sm:p-4 w-full sm:w-[270px] shadow-card">
