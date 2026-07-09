@@ -27,11 +27,19 @@ function getLisbonParts(now = new Date()) {
     timeZone: LISBON_TZ,
     hour: 'numeric',
     minute: 'numeric',
+    month: 'numeric',
     hour12: false,
   }).formatToParts(now);
   const hour = Number(parts.find((p) => p.type === 'hour')?.value ?? 0);
   const minute = Number(parts.find((p) => p.type === 'minute')?.value ?? 0);
-  return { hour, minute };
+  const month = Number(parts.find((p) => p.type === 'month')?.value ?? 0);
+  return { hour, minute, month };
+}
+
+/** Apr–Oct: extra Open-Meteo run at 17h (thermal / nortada window). */
+function isKiteSeasonMonth(now = new Date()) {
+  const { month } = getLisbonParts(now);
+  return month >= 4 && month <= 10;
 }
 
 /**
@@ -40,6 +48,11 @@ function getLisbonParts(now = new Date()) {
  */
 function getUpdateMode(now = new Date()) {
   const { hour } = getLisbonParts(now);
+
+  // Abr–Out: corrida extra às 17h (janela térmica / nortada)
+  if (isKiteSeasonMonth(now) && hour === 17) {
+    return 'full';
+  }
 
   // Dia: 06, 08, 10, 12, 14, 16, 18, 20
   if (hour >= DAY_START && hour <= DAY_END && (hour - DAY_START) % DAY_INTERVAL_H === 0) {
@@ -73,9 +86,9 @@ function isMultiModelEnabled(now = new Date()) {
 function describeSchedule(locale = 'pt') {
   const isPt = locale === 'pt';
   if (isPt) {
-    return 'Open-Meteo: 2h (06h–20h, com multi-modelo) · 4h de noite (00h/04h, só best_match) · IH/IPMA nas horas ímpares de dia.';
+    return 'Open-Meteo: 2h (06h–20h, com multi-modelo) · 4h de noite (00h/04h, só best_match) · IH/IPMA nas horas ímpares de dia · extra 17h abr–out.';
   }
-  return 'Open-Meteo: every 2h (06:00–20:00, multi-model) · every 4h at night (00:00/04:00, best_match only) · IH/IPMA on odd daytime hours.';
+  return 'Open-Meteo: every 2h (06:00–20:00, multi-model) · every 4h at night (00:00/04:00, best_match only) · IH/IPMA on odd daytime hours · extra 17:00 Apr–Oct.';
 }
 
 /**

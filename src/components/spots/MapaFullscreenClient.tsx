@@ -25,6 +25,7 @@ import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
+import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -56,6 +57,7 @@ export default function MapaFullscreenClient({
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
   const regionList = useMemo(() => regions as readonly string[], [regions]);
+  const liveSpotsData = useLiveGridSpotData(spotsData);
 
   const [sport, setSport] = useState<GridSportFilter>(DEFAULT_SPORT);
   const [region, setRegion] = useState<string>(DEFAULT_REGION);
@@ -95,12 +97,12 @@ export default function MapaFullscreenClient({
   }, []);
 
   const filtered = useMemo(() => {
-    let list = filterGridSpots(spotsData, sport, region);
+    let list = filterGridSpots(liveSpotsData, sport, region);
     if (difficulty !== 'all') {
       list = list.filter((d) => spotMatchesDifficultyFilter(d.spot, difficulty));
     }
     return list;
-  }, [spotsData, sport, region, difficulty]);
+  }, [liveSpotsData, sport, region, difficulty]);
 
   const handleSportChange = useCallback((next: GridSportFilter) => setSport(next), []);
   const handleRegionChange = useCallback((next: string) => setRegion(next), []);
@@ -119,13 +121,13 @@ export default function MapaFullscreenClient({
 
   const handleSpotSelect = useCallback(
     (spotId: string) => {
-      const row = spotsData.find((d) => d.spot.id === spotId);
+      const row = liveSpotsData.find((d) => d.spot.id === spotId);
       if (!row) return;
       const sportParam = sport !== 'all' && sport !== 'big-wave' ? sport : undefined;
       unlockPageInteraction();
       router.push(getSpotDetailHref(locale, row.spot.slug, sportParam));
     },
-    [spotsData, sport, locale, router],
+    [liveSpotsData, sport, locale, router],
   );
 
   const showClearFilters =
