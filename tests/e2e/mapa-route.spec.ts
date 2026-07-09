@@ -8,6 +8,9 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 
   test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
+    });
     await page.goto('/pt/mapa/');
     await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
   });
@@ -27,16 +30,7 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 
   test('marker opens sheet with directions and view spot', async ({ page }) => {
-    const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i });
-    if (await showAll.isVisible()) {
-      await showAll.click();
-    }
-    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 25_000 });
-    const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
-    await marker.click({ position: { x: 14, y: 14 }, force: true });
-
-    const sheet = page.getByRole('dialog');
-    await expect(sheet).toBeVisible({ timeout: 10_000 });
+    const sheet = await openMapSpotSheet(page);
 
     const directions = sheet.getByRole('link', { name: /Como chegar/i });
     await expect(directions).toBeVisible();
