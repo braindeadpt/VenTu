@@ -19,6 +19,12 @@ import {
   notifyFavoritesChanged,
   removeUserFavorite,
 } from '@/lib/userFavorites';
+import {
+  addUserCheckin,
+  migrateLegacyCheckins,
+  notifyCheckinsChanged,
+  removeUserCheckin,
+} from '@/lib/userCheckins';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
 import LoginModal from '@/components/auth/LoginModal';
 
@@ -31,12 +37,17 @@ interface AuthContextValue {
   favorites: string[];
   favoritesLoading: boolean;
   favoritesReady: boolean;
+  checkins: string[];
+  checkinsLoading: boolean;
+  checkinsReady: boolean;
   isSupabaseReady: boolean;
   requestLogin: (reason?: LoginReason) => void;
   signInWithEmail: (email: string) => Promise<{ ok: boolean; error?: string }>;
   signOut: () => Promise<void>;
   toggleFavorite: (spotId: string) => Promise<void>;
   isFavorite: (spotId: string) => boolean;
+  toggleCheckin: (spotId: string) => Promise<void>;
+  isCheckedIn: (spotId: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -63,6 +74,21 @@ export function useFavorites() {
   };
 }
 
+export function useCheckins() {
+  const { checkins, checkinsLoading, checkinsReady, toggleCheckin, isCheckedIn, requestLogin, isSupabaseReady, session } = useAuth();
+  return {
+    checkins,
+    toggleCheckin,
+    isCheckedIn,
+    loaded: checkinsReady,
+    count: checkins.length,
+    loading: checkinsLoading,
+    requestLogin,
+    isSupabaseReady,
+    isLoggedIn: !!session,
+  };
+}
+
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const params = useParams();
   const locale = (params?.locale as string) || 'pt';
@@ -73,6 +99,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [favoritesLoading, setFavoritesLoading] = useState(false);
   const [favoritesReady, setFavoritesReady] = useState(!isSupabaseConfigured());
+  const [checkins, setCheckins] = useState<string[]>([]);
+  const [checkinsLoading, setCheckinsLoading] = useState(false);
+  const [checkinsReady, setCheckinsReady] = useState(!isSupabaseConfigured());
   const [loginOpen, setLoginOpen] = useState(false);
   const [loginReason, setLoginReason] = useState<LoginReason>('general');
 
@@ -89,6 +118,22 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       setFavoritesLoading(false);
       setFavoritesReady(true);
+    }
+  }, []);
+
+  const loadCheckins = useCallback(async (userId: string) => {
+    const sb = getSupabaseClient();
+    if (!sb) return;
+    setCheckinsLoading(true);
+    try {
+      const ids = await migrateLegacyCheckins(sb, userId);
+      setCheckins(ids);
+      notifyCheckinsChanged(ids);
+    } catch {
+      setCheckins([]);
+    } finally {
+      setCheckinsLoading(false);
+      setCheckinsReady(true);
     }
   }, []);
 
@@ -129,10 +174,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     if (!session?.user) {
       setFavorites([]);
       setFavoritesReady(true);
+      setCheckins([]);
+      setCheckinsReady(true);
       return;
     }
     void loadFavorites(session.user.id);
-  }, [session?.user?.id, loadFavorites]);
+    void loadCheckins(session.user.id);
+  }, [session?.user?.id, loadFavorites, loadCheckins]);
 
   const requestLogin = useCallback((reason: LoginReason = 'general') => {
     setLoginReason(reason);
@@ -194,6 +242,35 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
   const isFavorite = useCallback((spotId: string) => favorites.includes(spotId), [favorites]);
 
+  const toggleCheckin = useCallback(async (spotId: string) => {
+    const sb = getSupabaseClient();
+    if (!sb || !session?.user) return;
+
+    const userId = session.user.id;
+    const wasCheckedIn = checkins.includes(spotId);
+
+    if (wasCheckedIn) {
+      setCheckins((prev) => prev.filter((id) => id !== spotId));
+      try {
+        await removeUserCheckin(sb, userId, spotId);
+        notifyCheckinsChanged(checkins.filter((id) => id !== spotId));
+      } catch {
+        await loadCheckins(userId);
+      }
+      return;
+    }
+
+    setCheckins((prev) => [...prev, spotId]);
+    try {
+      await addUserCheckin(sb, userId, spotId);
+      notifyCheckinsChanged([...checkins, spotId]);
+    } catch {
+      await loadCheckins(userId);
+    }
+  }, [checkins, loadCheckins, session]);
+
+  const isCheckedIn = useCallback((spotId: string) => checkins.includes(spotId), [checkins]);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       session,
@@ -202,12 +279,17 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       favorites,
       favoritesLoading,
       favoritesReady,
+      checkins,
+      checkinsLoading,
+      checkinsReady,
       isSupabaseReady: isSupabaseConfigured(),
       requestLogin,
       signInWithEmail,
       signOut,
       toggleFavorite,
       isFavorite,
+      toggleCheckin,
+      isCheckedIn,
     }),
     [
       session,
@@ -215,11 +297,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
       favorites,
       favoritesLoading,
       favoritesReady,
+      checkins,
+      checkinsLoading,
+      checkinsReady,
       requestLogin,
       signInWithEmail,
       signOut,
       toggleFavorite,
       isFavorite,
+      toggleCheckin,
+      isCheckedIn,
     ],
   );
 

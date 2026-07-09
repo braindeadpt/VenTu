@@ -11,3 +11,4 @@ export function getAuthCallbackUrl(locale: string): string {
 }
 
 export const FAVORITES_MIGRATED_KEY = 'ventu:favorites-migrated';
+export const CHECKINS_MIGRATED_KEY = 'ventu:checkins-migrated';
