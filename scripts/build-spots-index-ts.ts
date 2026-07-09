@@ -61,17 +61,7 @@ function isWakeboardOnly(spot: (typeof spots)[0]) {
   );
 }
 
-function toScoreInput(cond: ConditionsJson[string]) {
-  return {
-    waveHeight: cond.waveHeight ?? 0,
-    wavePeriod: cond.wavePeriod ?? 0,
-    waveDirection: cond.waveDirection ?? 0,
-    windSpeed: cond.windSpeed ?? 0,
-    windDirection: cond.windDirection ?? 0,
-    windGust: cond.windGust ?? 0,
-    waterTemp: cond.waterTemp ?? 0,
-  };
-}
+import { rawToScoreInput } from '../src/lib/scoreConditions';
 
 function build() {
   const conditionsPath = join(process.cwd(), 'public', 'data', 'conditions.json');
@@ -123,7 +113,7 @@ function build() {
       };
     }
 
-    const scoreInput = cond ? toScoreInput(cond) : CALM_LAKE;
+    const scoreInput = cond ? rawToScoreInput(cond as Record<string, unknown>) : CALM_LAKE;
     const rawCond = (cond ?? {}) as Record<string, unknown>;
     const conditions = {
       ...scoreInput,

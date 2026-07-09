@@ -1,5 +1,5 @@
 /**
- * Merge IPMA + Ecowitt into conditions.json (observed layer only; scores unchanged).
+ * Merge IPMA + Ecowitt into conditions.json (observed layer; scores use it when fresh).
  * Rule: nearest station within 30 km and ≤3 h fresh wins; tie → freshest.
  */
 import fs from 'fs';

@@ -39,6 +39,7 @@ import {
 import { buildGridFiltersSearch, syncGridFiltersToUrl } from '@/lib/gridFilters';
 
 import { useUrlGridSport } from '@/hooks/useUrlGridSport';
+import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 
 import { MACRO_REGIONS } from '@/lib/regions';
 
@@ -128,19 +129,21 @@ export default function HomepageMapHero({
 
   const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
 
+  const liveSpotsData = useLiveGridSpotData(spotsData as GridSpotData[]);
+
 
 
   const filtered = useMemo(
 
-    () => filterGridSpots(spotsData as GridSpotData[], sport, DEFAULT_REGION),
+    () => filterGridSpots(liveSpotsData, sport, DEFAULT_REGION),
 
-    [spotsData, sport],
+    [liveSpotsData, sport],
 
   );
 
 
 
-  const onCount = useMemo(() => getOnCount(spotsData, sport), [spotsData, sport]);
+  const onCount = useMemo(() => getOnCount(liveSpotsData, sport), [liveSpotsData, sport]);
 
   const liveLine = heroStatusLine(onCount, isPt);
 
@@ -148,11 +151,11 @@ export default function HomepageMapHero({
 
   const topSpot = useMemo(() => {
 
-    const ts = getTopSpotForSport(spotsData, sport as 'surf' | 'kitesurf' | 'windsurf' | 'bodyboard');
+    const ts = getTopSpotForSport(liveSpotsData, sport as 'surf' | 'kitesurf' | 'windsurf' | 'bodyboard');
 
     return ts;
 
-  }, [spotsData, sport]);
+  }, [liveSpotsData, sport]);
 
 
 

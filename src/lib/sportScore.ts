@@ -61,6 +61,8 @@ const KITE_CONFIG = {
   WIND_PTS_PER_KT: 2,
   /** Marginal band 12–14 kt before session minimum; no secondary bonuses. */
   WIND_PTS_MIN_KT: 12,
+  /** Below 12 kt: linear scale (not flat 15) — still capped below «Razoável». */
+  WIND_MARGINAL_PTS_PER_KT: 2.5,
   GUST_LOW_MAX: 10,
   GUST_LOW_PTS: 15,
   GUST_MED_MAX: 20,
@@ -201,7 +203,14 @@ function scoreKitesurf(spot: Spot, c: Conditions): SportScore {
   const windKt = c.windSpeed * 1.94384
 
   if (windKt < KITE_CONFIG.WIND_PTS_MIN_KT) {
-    score = Math.round(Math.min(15, windKt * 3))
+    score = Math.round(windKt * KITE_CONFIG.WIND_MARGINAL_PTS_PER_KT)
+    if (windKt >= 8) {
+      const kiteWindCat = classifyWind(spot, c.windDirection)
+      const dirPts = Math.round(windDirFactor(kiteWindCat, KITE_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
+      score += dirPts
+      if (dirPts > 0) factors.push(`Vento ${windCategoryLabel(kiteWindCat)}`)
+    }
+    score = Math.min(score, SCORE_TIER_THRESHOLDS.fair - 1)
     factors.push('Vento insuficiente')
   } else if (windKt < KITE_CONFIG.WIND_SESSION_MIN_KT) {
     score = Math.round(windKt * KITE_CONFIG.WIND_PTS_PER_KT)

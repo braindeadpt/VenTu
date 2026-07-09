@@ -17,6 +17,14 @@ describe('getUpdateMode (Europe/Lisbon)', () => {
     assert.equal(getUpdateMode(new Date('2026-07-03T08:00:00Z')), 'observations');
   });
 
+  it('full at 17:00 Lisbon during kite season (Apr–Oct)', () => {
+    assert.equal(getUpdateMode(new Date('2026-07-09T16:00:00Z')), 'full');
+  });
+
+  it('observations at 17:00 Lisbon in winter', () => {
+    assert.equal(getUpdateMode(new Date('2026-02-09T17:00:00Z')), 'observations');
+  });
+
   it('full at 00:00 Lisbon', () => {
     assert.equal(getUpdateMode(new Date('2026-07-02T23:00:00Z')), 'full');
   });

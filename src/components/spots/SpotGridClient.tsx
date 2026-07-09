@@ -15,6 +15,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import SpotGridRankedList from './SpotGridRankedList';
 import { useSpotGridFilters } from './hooks/useSpotGridFilters';
+import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
@@ -75,6 +76,7 @@ export function SpotGridClient({
 }) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
+  const liveSpotsData = useLiveGridSpotData(spotsData);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [mapFullscreen, setMapFullscreen] = useState(false);
   const [mapDifficulty, setMapDifficulty] = useState<MapDifficultyFilter>('all');
@@ -107,7 +109,7 @@ export function SpotGridClient({
     latitude,
     geoLoading,
     requestLocation,
-  } = useSpotGridFilters({ spotsData, regions, initialSport, initialRegion });
+  } = useSpotGridFilters({ spotsData: liveSpotsData, regions, initialSport, initialRegion });
 
   const mapSpotsData = useMemo(() => {
     if (mapDifficulty === 'all') return filtered;
@@ -121,8 +123,8 @@ export function SpotGridClient({
 
   const selectedSpotData = useMemo(() => {
     if (!selectedSpotId) return null;
-    return spotsData.find(d => d.spot.id === selectedSpotId) || null;
-  }, [selectedSpotId, spotsData]);
+    return liveSpotsData.find(d => d.spot.id === selectedSpotId) || null;
+  }, [selectedSpotId, liveSpotsData]);
 
   const sportIcon = getSportIcon(selectedSport);
   const sportColor = getSportColor(selectedSport);
