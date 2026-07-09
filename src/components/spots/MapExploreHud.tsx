@@ -98,7 +98,7 @@ export default function MapExploreHud({
       aria-label={isPt ? 'Modo explorar' : 'Explore mode'}
       data-map-hud-collapsed={collapsed ? 'true' : 'false'}
     >
-      <div className="pointer-events-auto mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card px-2.5 py-2 flex flex-col gap-2 md:py-2.5">
+      <div className="pointer-events-auto mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card px-3 py-2 flex flex-col gap-2 sm:px-3.5 md:px-4 md:py-2.5">
         <button
           type="button"
           onClick={toggleCollapsed}
@@ -225,13 +225,13 @@ export default function MapExploreHud({
 
         <div className={`flex flex-col gap-2 ${collapsed ? 'hidden md:flex' : 'flex'}`}>
           {windHint && (
-            <p role="status" className="text-meta-sm text-score-fair px-0.5">
+            <p role="status" className="text-meta-sm text-score-fair">
               {windHint}
             </p>
           )}
 
           <div
-            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x pb-0.5"
+            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x-end pb-0.5"
             role="group"
             aria-label={isPt ? 'Modalidade' : 'Sport'}
           >
@@ -252,7 +252,7 @@ export default function MapExploreHud({
           </div>
 
           <div
-            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x pb-0.5"
+            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x-end pb-0.5"
             role="group"
             aria-label={difficultyGroupLabel}
           >
@@ -279,7 +279,7 @@ export default function MapExploreHud({
               </span>
             </div>
             <div
-              className="flex items-center gap-1 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x flex-1 min-w-0"
+              className="flex items-center gap-1 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x-end flex-1 min-w-0"
               role="group"
               aria-label={isPt ? 'Região' : 'Region'}
             >

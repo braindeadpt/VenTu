@@ -445,6 +445,16 @@
     );
   }
 
+  /* Trailing edge only — rows that start flush with the container (map HUD, etc.) */
+  .edge-fade-x-end {
+    mask-image: linear-gradient(
+      to right,
+      black,
+      black calc(100% - 24px),
+      transparent
+    );
+  }
+
   /* Staggered fade-up for list items — use CSS var --stagger-delay (ms) */
   .stagger-fade-in {
     animation: fade-up 400ms cubic-bezier(0.16, 1, 0.3, 1) both;
