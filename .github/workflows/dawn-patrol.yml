@@ -28,9 +28,15 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS }}
         run: node scripts/dawn-patrol.js
 
-      - name: Commit and push
+      - name: Commit and push (with retry)
         run: |
           git config user.name "VenTu Bot"
           git config user.email "bot@ventu.surf"
           git add -f public/data/dawn-patrol.json
-          git diff --staged --quiet || (git commit -m "auto: dawn patrol $(date +%Y-%m-%d)" && git push)
+          git diff --staged --quiet || (
+            git commit -m "auto: dawn patrol $(date +%Y-%m-%d)"
+            for i in 1 2 3 4 5; do
+              git push && break
+              sleep $((i * 10))
+            done
+          )

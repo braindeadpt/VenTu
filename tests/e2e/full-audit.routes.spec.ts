@@ -7,6 +7,11 @@ const allRoutes = discoverAllRoutes();
 test.describe.configure({ mode: 'parallel' });
 
 test.describe('Full route audit', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
+    });
+  });
   for (const { path, group } of allRoutes) {
     test(`${group}: ${path}`, async ({ page }) => {
       const health = attachPageHealthCollectors(page);

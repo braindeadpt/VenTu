@@ -1,6 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Critical routes', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
+    });
+  });
   test('homepage PT loads', async ({ page }) => {
     await page.goto('/pt/');
     await expect(page.getByRole('banner')).toContainText('Ven');

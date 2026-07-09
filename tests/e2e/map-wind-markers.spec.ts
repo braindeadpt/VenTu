@@ -5,6 +5,7 @@ test.describe('Map wind ring markers', () => {
     await page.addInitScript(() => {
       localStorage.setItem('ventu.map.wind', '1');
       localStorage.setItem('ventu.map.cluster', '0');
+      localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });

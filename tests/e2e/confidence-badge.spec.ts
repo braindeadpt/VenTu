@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 import { openMapSpotSheet } from './helpers/map-sheet';
 
 test.describe('Forecast confidence badge', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
+    });
+  });
   test.use({
     viewport: { width: 390, height: 844 },
     hasTouch: true,

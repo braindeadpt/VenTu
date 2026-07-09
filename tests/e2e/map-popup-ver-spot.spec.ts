@@ -4,6 +4,7 @@ test.describe('Map popup Ver spot', () => {
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
       localStorage.setItem('ventu.map.cluster', '0');
+      localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
