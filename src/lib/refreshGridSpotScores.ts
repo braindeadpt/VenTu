@@ -5,10 +5,10 @@ import { getAllSportScores } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 
 /** Recompute grid/map scores from fresh conditions.json (incl. observed wind). */
-export function refreshGridSpotScores(
-  spotsData: GridSpotData[],
+export function refreshGridSpotScores<T extends GridSpotData>(
+  spotsData: T[],
   conditionsJson: Record<string, unknown>,
-): GridSpotData[] {
+): T[] {
   return spotsData.map((row) => {
     const raw = resolveConditionsEntry(row.spot, conditionsJson);
     if (!raw || typeof raw !== 'object') return row;

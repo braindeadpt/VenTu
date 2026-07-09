@@ -129,7 +129,7 @@ export default function HomepageMapHero({
 
   const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
 
-  const liveSpotsData = useLiveGridSpotData(spotsData as GridSpotData[]);
+  const liveSpotsData = useLiveGridSpotData(spotsData);
 
 
 
