@@ -124,6 +124,14 @@ export default function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <Link
+                  href={`/${locale}/ferramentas/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {isPt ? 'Ferramentas' : 'Tools'}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={`/${locale}/favorites/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >

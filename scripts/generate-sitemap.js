@@ -76,6 +76,9 @@ const staticPages = [
   { path: '/news/', priority: '0.8', changefreq: 'daily' },
   { path: '/about/', priority: '0.5', changefreq: 'monthly' },
   { path: '/sazonalidade/', priority: '0.6', changefreq: 'monthly' },
+  { path: '/ferramentas/', priority: '0.7', changefreq: 'monthly' },
+  { path: '/ferramentas/calculadora-kite/', priority: '0.75', changefreq: 'monthly' },
+  { path: '/ferramentas/calculadora-fato/', priority: '0.75', changefreq: 'monthly' },
 ];
 
 for (const page of staticPages) {
