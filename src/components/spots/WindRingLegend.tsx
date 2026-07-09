@@ -142,7 +142,6 @@ export default function WindRingLegend({
     { id: 'position', text: copy.position },
     { id: 'colors', text: copy.colors, swatches: true },
     { id: 'length', text: copy.length },
-    { id: 'tip', text: copy.tip },
   ] as const;
 
   const panel = (
