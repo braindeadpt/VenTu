@@ -1,78 +1,80 @@
 {
-  "date": "2026-07-08",
-  "topSpot": "Coxos",
-  "topSpotSlug": "coxos",
+  "date": "2026-07-10",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Surfe em Coxos!",
-    "advice": "As condições em Coxos estão ótimas para surfar, com ondas de 0.9m e vento moderado. É um bom dia para pegar algumas ondasconsistentes. A temperatura da água é agradável, então não se esqueça do seu fato de surfe.",
+    "headline": "Ondas médias",
+    "advice": "As condições matinais são razoáveis, com ondas de 0.8m e vento leve. É uma boa oportunidade para surfar em Nazaré, que apresenta o melhor score do dia. A temperatura da água é agradável, mas é recomendado usar um fato de 3/2mm.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue cedo para evitar a multidão"
+    "crowdTip": "Chegue cedo para evitar a multidão",
+    "moonTideLine": "Lua minguante · Marés mortas · baixa-mar 18:00"
   },
   "en": {
-    "headline": "Surf Coxos!",
-    "advice": "Conditions at Coxos are great for surfing, with 0.9m waves and moderate wind. It's a good day to catch some consistent waves. The water temperature is pleasant, so don't forget your wetsuit.",
+    "headline": "Medium waves",
+    "advice": "Morning conditions are reasonable, with 0.8m waves and light wind. It's a good opportunity to surf in Nazaré, which has the best score of the day. The water temperature is pleasant, but a 3/2mm wetsuit is recommended.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Arrive early to avoid the crowd"
+    "crowdTip": "Arrive early to avoid the crowd",
+    "moonTideLine": "Waning crescent · Neap tides · low tide 18:00"
   },
   "spots": [
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 48,
-      "verdict": "maybe",
-      "ptReason": "As ondas são pequenas, mas ainda assim é possível pegar algumas boas ondas.",
-      "enReason": "The waves are small, but it's still possible to catch some good ones."
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 56,
+      "verdict": "go",
+      "ptReason": "Melhor score do dia e condições razoáveis",
+      "enReason": "Best score of the day and reasonable conditions"
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 49,
+      "score": 55,
       "verdict": "maybe",
-      "ptReason": "As condições são razoáveis, mas o vento pode ser um problema.",
-      "enReason": "The conditions are reasonable, but the wind might be an issue."
+      "ptReason": "Condições semelhantes a Nazaré, mas com score ligeiramente inferior",
+      "enReason": "Similar conditions to Nazaré, but with a slightly lower score"
     },
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 49,
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 53,
       "verdict": "maybe",
-      "ptReason": "As ondas são pequenas, mas a temperatura da água é agradável.",
-      "enReason": "The waves are small, but the water temperature is pleasant."
+      "ptReason": "Condições razoáveis, mas com score inferior a Nazaré e Guincho",
+      "enReason": "Reasonable conditions, but with a lower score than Nazaré and Guincho"
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 49,
+      "score": 54,
       "verdict": "maybe",
-      "ptReason": "As condições são razoáveis, mas o vento pode ser um problema.",
-      "enReason": "The conditions are reasonable, but the wind might be an issue."
+      "ptReason": "Condições semelhantes a Supertubos, com score ligeiramente superior",
+      "enReason": "Similar conditions to Supertubos, with a slightly higher score"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 50,
-      "verdict": "go",
-      "ptReason": "As condições são ótimas, com ondas consistentes e vento moderado.",
-      "enReason": "The conditions are great, with consistent waves and moderate wind."
+      "score": 54,
+      "verdict": "maybe",
+      "ptReason": "Condições semelhantes a Ribeira d'Ilhas, com score igual",
+      "enReason": "Similar conditions to Ribeira d'Ilhas, with the same score"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 49,
-      "verdict": "maybe",
-      "ptReason": "As ondas são pequenas, mas a temperatura da água é agradável.",
-      "enReason": "The waves are small, but the water temperature is pleasant."
+      "score": 51,
+      "verdict": "skip",
+      "ptReason": "Condições inferiores às outras praias, com score mais baixo",
+      "enReason": "Worse conditions than the other beaches, with a lower score"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 47,
-      "verdict": "skip",
-      "ptReason": "As ondas são muito pequenas e o vento pode ser um problema.",
-      "enReason": "The waves are too small and the wind might be an issue."
+      "score": 53,
+      "verdict": "maybe",
+      "ptReason": "Condições razoáveis, mas com ondas mais pequenas",
+      "enReason": "Reasonable conditions, but with smaller waves"
     }
   ],
-  "generatedAt": "2026-07-08T07:32:11.879Z"
+  "generatedAt": "2026-07-10T08:26:58.290Z"
 }
