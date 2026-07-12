@@ -32,7 +32,7 @@ export interface MarineConditionsFields {
   confidence?: ConfidenceTier;
   confidenceDetail?: ConfidenceDetail;
   dailyConfidence?: DailyConfidence[];
-  /** Ground-truth snapshot (IPMA station); does not affect score. */
+  /** Ground-truth snapshot (IPMA/Ecowitt); used in score when fresh via scoreConditions. */
   observed?: ObservedConditions;
 }
 

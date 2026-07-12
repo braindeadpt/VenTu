@@ -33,6 +33,7 @@ import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
+import { rawToScoreInput } from '@/lib/scoreConditions';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
 import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
@@ -219,7 +220,7 @@ export default function SpotDetailClient({
 
             forecast = spotFc;
 
-            const allScores = getAllSportScores(spot, conditions);
+            const allScores = getAllSportScores(spot, rawToScoreInput(spotCond));
             if (cancelled || spot.slug !== loadSlug) return;
 
             setSpotData({ spot, conditions, allScores, forecast });
@@ -243,7 +244,6 @@ export default function SpotDetailClient({
         if (cancelled || spot.slug !== loadSlug) return;
 
         conditions = getCurrentConditions(marineResult);
-        const allScores = getAllSportScores(spot, conditions);
         forecast = getForecastData(marineResult).slice(0, 120);
 
         if (condJson) {
@@ -258,12 +258,27 @@ export default function SpotDetailClient({
               windDirection: Number(spotCond.windDirection) || 0,
               windGust: Number(spotCond.windGust) || 0,
               waterTemp: Number(spotCond.waterTemp) || 0,
+              observed: spotCond.observed as ObservedConditions | undefined,
               source: 'real',
               updatedAt:
                 typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
             };
           }
         }
+
+        const allScores = getAllSportScores(
+          spot,
+          rawToScoreInput({
+            waveHeight: conditions.waveHeight,
+            wavePeriod: conditions.wavePeriod,
+            waveDirection: conditions.waveDirection,
+            windSpeed: conditions.windSpeed,
+            windDirection: conditions.windDirection,
+            windGust: conditions.windGust,
+            waterTemp: conditions.waterTemp,
+            observed: conditions.observed,
+          }),
+        );
 
         if (cancelled || spot.slug !== loadSlug) return;
 

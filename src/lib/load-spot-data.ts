@@ -9,6 +9,7 @@ import { pickConfidenceFields } from '@/lib/forecastConfidence'
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions'
 import type { ObservedConditions } from '@/lib/observations'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
+import { rawToScoreInput } from '@/lib/scoreConditions'
 import type { BestWindowToday, BestWindowsBySport } from '@/lib/bestWindowToday'
 import { computeBestWindowsForSpot } from '@/lib/bestWindowToday'
 
@@ -32,15 +33,7 @@ function isWakeboardOnly(spot: Spot): boolean {
 type RawConditions = Record<string, unknown>
 
 function toScoreInput(raw: RawConditions) {
-  return {
-    waveHeight: Number(raw.waveHeight) || 0,
-    wavePeriod: Number(raw.wavePeriod) || 0,
-    waveDirection: Number(raw.waveDirection) || 0,
-    windSpeed: Number(raw.windSpeed) || 0,
-    windDirection: Number(raw.windDirection) || 0,
-    windGust: Number(raw.windGust) || 0,
-    waterTemp: Number(raw.waterTemp) || 0,
-  }
+  return rawToScoreInput(raw as Record<string, unknown>)
 }
 
 function loadForecastsJson(): Record<string, Array<Record<string, unknown>>> {
