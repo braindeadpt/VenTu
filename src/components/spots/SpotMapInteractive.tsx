@@ -299,6 +299,38 @@ function createSpotMarker(
   return marker;
 }
 
+const MARKER_ADD_CHUNK_SIZE = 40;
+
+/**
+ * Add markers to a Leaflet layer in small batches spread across animation
+ * frames — never blocks the main thread for more than one frame's worth
+ * of work, regardless of total marker count.
+ *
+ * Looping `.addLayer()` one marker at a time on a MarkerClusterGroup
+ * triggers a full spatial-index recompute per call and was the cause of a
+ * multi-second unresponsive freeze on mobile when opening the map (185
+ * markers, each individually inserted). leaflet.markercluster's own
+ * `addLayers()` bulk method IS chunk-aware (`CLUSTER_CONFIG.chunkedLoading`),
+ * but its internal check only fires every 200 items — below that, a single
+ * `addLayers()` call still runs as one synchronous pass. Chunking
+ * explicitly here guarantees a small, fixed batch per frame either way.
+ */
+function addMarkersChunked(
+  markers: L.Marker[],
+  addBatch: (batch: L.Marker[]) => void,
+  cancelRef: { current: boolean },
+): void {
+  let i = 0;
+  const step = () => {
+    if (cancelRef.current) return;
+    const batch = markers.slice(i, i + MARKER_ADD_CHUNK_SIZE);
+    if (batch.length > 0) addBatch(batch);
+    i += MARKER_ADD_CHUNK_SIZE;
+    if (i < markers.length) requestAnimationFrame(step);
+  };
+  step();
+}
+
 function readClusterPref(): boolean {
   if (typeof window === 'undefined') return false;
   try {
@@ -348,6 +380,7 @@ export default function SpotMapInteractive({
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markersGroupRef = useRef<L.LayerGroup | null>(null);
   const markersCacheRef = useRef<Map<string, L.Marker>>(new Map());
+  const markerChunkCancelRef = useRef(false);
   const didFitBoundsRef = useRef(false);
   const filterBoundsKeyRef = useRef('');
   const onSpotSelectRef = useRef(onSpotSelect);
@@ -856,6 +889,12 @@ export default function SpotMapInteractive({
     const bounds = Leaflet.latLngBounds([]);
     const useMobileSheet = isMobile;
 
+    // Constructing marker objects here is cheap (no DOM insertion happens
+    // until a marker is added to a map-attached layer) — only the add-to-
+    // layer step below is chunked.
+    const toCluster: L.Marker[] = [];
+    const toPlain: L.Marker[] = [];
+
     visibleSpots.forEach((data) => {
       const cacheKey = buildMarkerCacheKey(
         data,
@@ -882,14 +921,26 @@ export default function SpotMapInteractive({
       }
 
       if (activeCluster) {
-        mcg.addLayer(marker);
+        toCluster.push(marker);
       } else {
-        lg.addLayer(marker);
+        toPlain.push(marker);
       }
       if (includeSpotInViewportBounds(data.spot, selectedRegion)) {
         bounds.extend([data.spot.lat, data.spot.lon]);
       }
     });
+
+    markerChunkCancelRef.current = false;
+    if (toCluster.length > 0) {
+      addMarkersChunked(toCluster, (batch) => mcg.addLayers(batch), markerChunkCancelRef);
+    }
+    if (toPlain.length > 0) {
+      addMarkersChunked(
+        toPlain,
+        (batch) => batch.forEach((m) => lg.addLayer(m)),
+        markerChunkCancelRef,
+      );
+    }
 
     if (!didFitBoundsRef.current && bounds.isValid()) {
       map.invalidateSize({ animate: false });
@@ -913,6 +964,12 @@ export default function SpotMapInteractive({
 
     // TODO(perf): diff marker event handlers when toggling mobile/desktop without full cache bust;
     // popup vs sheet mode still requires recreate today when isMobile changes.
+    return () => {
+      // Stop a still-running chunked add sequence from a previous run
+      // (filters/deps changed, or unmount) — the groups it was targeting
+      // are about to be cleared or torn down.
+      markerChunkCancelRef.current = true;
+    };
   }, [
     visibleSpots,
     onlyOnEnabled,
