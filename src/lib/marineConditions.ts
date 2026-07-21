@@ -70,7 +70,6 @@ export function pickObservedField(
   const obs = o as Record<string, unknown>;
   if (
     typeof obs.windSpeedKt !== 'number' ||
-    typeof obs.windDirDeg !== 'number' ||
     typeof obs.windCardinal !== 'string' ||
     typeof obs.stationName !== 'string' ||
     typeof obs.distanceKm !== 'number' ||
@@ -79,9 +78,11 @@ export function pickObservedField(
   ) {
     return undefined;
   }
+  const hasDir = typeof obs.windDirDeg === 'number' && Number.isFinite(obs.windDirDeg);
   return {
     windSpeedKt: obs.windSpeedKt,
-    windDirDeg: obs.windDirDeg,
+    windDirDeg: hasDir ? obs.windDirDeg : 0,
+    windDirMissing: !hasDir,
     windCardinal: obs.windCardinal,
     windCardinalEn:
       typeof obs.windCardinalEn === 'string' ? obs.windCardinalEn : undefined,

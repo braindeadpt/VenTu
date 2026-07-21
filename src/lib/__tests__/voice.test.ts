@@ -20,6 +20,7 @@ describe('voice', () => {
   it('tierPhrase maps score tiers to short phrases', () => {
     expect(tierPhrase(85, true)).toBe('dia épico');
     expect(tierPhrase(65, true)).toBe('dá uns sets fáceis');
+    expect(tierPhrase(45, true)).toBe('mar limpo');
     expect(tierPhrase(10, true)).toBe('flat');
   });
 });

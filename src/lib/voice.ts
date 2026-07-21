@@ -30,7 +30,7 @@ export function tierPhrase(score: number, isPt: boolean): string {
   const phrases: Record<typeof tier, { pt: string; en: string }> = {
     epic: { pt: 'dia épico', en: 'epic day' },
     good: { pt: 'dá uns sets fáceis', en: 'fun, friendly sets' },
-    fair: { pt: 'glassy', en: 'clean faces' },
+    fair: { pt: 'mar limpo', en: 'clean faces' },
     poor: { pt: 'mar calmo', en: 'slow session' },
     closed: { pt: 'flat', en: 'flat' },
   };

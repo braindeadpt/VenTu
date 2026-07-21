@@ -42,16 +42,16 @@ CREATE POLICY "Allow anonymous alert insert" ON alert_subscriptions
     )
   );
 
+-- Unsubscribe ONLY via SECURITY DEFINER RPCs (token). No broad anon UPDATE.
 DROP POLICY IF EXISTS "Allow anonymous alert unsubscribe" ON alert_subscriptions;
-CREATE POLICY "Allow anonymous alert unsubscribe" ON alert_subscriptions
-  FOR UPDATE TO anon
-  USING (active = true)
-  WITH CHECK (active = false);
 
 DROP POLICY IF EXISTS "Allow authenticated select alerts" ON alert_subscriptions;
-CREATE POLICY "Allow authenticated select alerts" ON alert_subscriptions
+DROP POLICY IF EXISTS "Allow authenticated select own alerts" ON alert_subscriptions;
+CREATE POLICY "Allow authenticated select own alerts" ON alert_subscriptions
   FOR SELECT TO authenticated
-  USING (true);
+  USING (
+    lower(email) = lower(COALESCE(auth.jwt() ->> 'email', ''))
+  );
 
 -- Verify subscription via token (called from static confirm page)
 CREATE OR REPLACE FUNCTION verify_alert_subscription(p_token TEXT)

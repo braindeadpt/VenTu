@@ -29,11 +29,14 @@ export function applyObservedWindForScore(
 
   const windSpeedMs = ktToMs(observed.windSpeedKt);
   const gustMs = Math.max(conditions.windGust, windSpeedMs * 1.1);
+  const windDirection = observed.windDirMissing
+    ? conditions.windDirection
+    : observed.windDirDeg;
 
   return {
     ...conditions,
     windSpeed: windSpeedMs,
-    windDirection: observed.windDirDeg,
+    windDirection,
     windGust: gustMs,
   };
 }

@@ -52,27 +52,42 @@ CREATE POLICY "Allow anonymous insert with rate limit" ON contributions
     )
   );
 
--- Admin: utilizadores autenticados (Supabase Auth)
+-- Admin: only users with app_metadata.role = 'admin'
 DROP POLICY IF EXISTS "Allow authenticated select" ON contributions;
 DROP POLICY IF EXISTS "Allow authenticated update" ON contributions;
 DROP POLICY IF EXISTS "Allow authenticated delete" ON contributions;
+DROP POLICY IF EXISTS "Allow admin select contributions" ON contributions;
+DROP POLICY IF EXISTS "Allow admin update contributions" ON contributions;
+DROP POLICY IF EXISTS "Allow admin delete contributions" ON contributions;
 
-CREATE POLICY "Allow authenticated select" ON contributions
+CREATE OR REPLACE FUNCTION public.is_ventu_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+STABLE
+SECURITY DEFINER
+SET search_path = public
+AS $$
+  SELECT COALESCE((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin', false);
+$$;
+
+REVOKE ALL ON FUNCTION public.is_ventu_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_ventu_admin() TO authenticated;
+
+CREATE POLICY "Allow admin select contributions" ON contributions
   FOR SELECT TO authenticated
-  USING (true);
+  USING (public.is_ventu_admin());
 
-CREATE POLICY "Allow authenticated update" ON contributions
+CREATE POLICY "Allow admin update contributions" ON contributions
   FOR UPDATE TO authenticated
-  USING (true)
-  WITH CHECK (true);
+  USING (public.is_ventu_admin())
+  WITH CHECK (public.is_ventu_admin());
 
-CREATE POLICY "Allow authenticated delete" ON contributions
+CREATE POLICY "Allow admin delete contributions" ON contributions
   FOR DELETE TO authenticated
-  USING (true);
+  USING (public.is_ventu_admin());
 
 -- ============================================================
 -- Admin setup:
--- 1. Authentication → Users → Add user (email + password)
--- 2. Abrir /pt/admin/contributions/ no site e fazer login
--- 3. Não há link público — só admins conhecem o URL
+-- 1. Auth → Users → App Metadata: { "role": "admin" }
+-- 2. Abrir /pt/admin/contributions/ e entrar com esse user
 -- ============================================================

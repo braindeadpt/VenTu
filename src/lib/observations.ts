@@ -15,6 +15,8 @@ export interface ObservedConditions {
   distanceKm: number;
   observedAt: string;
   source: ObservedSource;
+  /** True when station omitted direction; score should keep forecast dir. */
+  windDirMissing?: boolean;
 }
 
 export type WindVerificationAgreement = 'match' | 'near' | 'off';

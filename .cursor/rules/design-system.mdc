@@ -7,17 +7,18 @@ alwaysApply: true
 
 ## Principles
 - Clarity over effects; animation/gradient only when it aids reading or feedback
-- Use base components (`Button`, `Card`, `FilterPill`, `ScoreBadge`, `StatChip`, `EmptyState`); no ad-hoc page CSS
+- Use base components (`Button`, `Card`, `FilterPill`, `ScoreBadge`, `StatChip`, `EmptyState`, `SpotListCard`); no ad-hoc page CSS
 - Performance: prefer opacity/transform; avoid heavy blur on mobile
 - A11y: visible focus (globals.css), AA contrast, 44px touch targets on mobile
 - Score is product language: always use `getScoreTokens(score)` / `--score-*` tokens
 - **Stoke inclusivo**: energia e comunidade (todas as idades e níveis) — sem tom de festa, sexualização ou exclusão de género
+- Atmosphere = Atlantic clarity (cool cyan water, slate fog, mono data) — never purple gradients, cream+serif terracotta, or broadsheet density
 
 ## Tokens (globals.css)
 - Surfaces: `bg-base`, `bg-elevated`, `surface-1/2/3`, `divider`, `divider-strong`
 - Text: `fg`, `fg-muted` (meta/legends), `fg-subtle` (secondary)
 - Sport accents: `--sport-*` / `text-sport-*`
-- **Sunset accent** (intencional, poucos sítios): `--accent-sunset-1/2/3`, `colors.sunset.{1,2,3}`, `.bg-sunset`, `.text-sunset` (gradiente 135°)
+- **Ocean accent** (cyan): `--accent` / `bg-accent` / `text-accent` — primary actions, Dawn Patrol, epic badge
 - Spacing scale only: 4, 8, 12, 16, 24, 32, 48 px
 
 ## Typography
@@ -25,48 +26,51 @@ alwaysApply: true
 - **Data**: Geist Mono (`font-mono`, tabular) — scores em tabela, métricas numéricas
 - **Display**: Space Grotesk (`font-display`, `--font-display` via `next/font`) — headlines hero, nomes de spot, label épico no `ScoreBadge`
 
-## Sunset accent — onde usar (e onde NÃO)
-Usar **apenas**:
-- CTA primário do hero homepage (`bg-sunset` no `Button` “Explorar mapa”)
-- Label de tier **épico** no `ScoreBadge` (`text-sunset` + `font-display`)
+## Accent — onde usar (e onde NÃO)
+Usar `text-accent` / `bg-accent` **apenas**:
+- CTA primário do hero homepage (`Button` “Explorar mapa”)
+- Label de tier **épico** no `ScoreBadge` (`text-accent` + `font-display`)
 - Dawn Patrol (barra lateral, badge, CTA “Ver spot”)
 
 Não usar em: cards de lista, mapa, filtros, scores não-épicos, footer, nav.
 
 ## Voice (PT-PT) — `src/lib/voice.ts`
 - **“a bombar”** / “firing” — nunca “ON” como copy de produto
-- **“mar de espelho”** — mar calmo
+- **“mar de espelho”** — mar calmo; fair → “mar limpo”
 - `tierPhrase(score)` — micro-copy em cards (não altera `getScoreTierLabel` / scoring)
 - Tom: comunidade real, sem clichés de género
 
 ## Imagens de spot — `getSpotImage` + `SpotImage`
-- `src/lib/spotImage.ts` — URL curada ou gradiente determinístico por `hash(region)` (praia/oceano/sunset)
+- `src/lib/spotImage.ts` — URL curada ou gradiente determinístico por `hash(region)` (praia/oceano)
 - `src/components/ui/SpotImage.tsx` — `aspect`: `video` | `square` | `hero`; `next/image` `unoptimized`; fallback mantém aspect ratio (layout estável)
 
 ## Components
-- **Button**: `primary` | `secondary` | `ghost`; sizes `sm`(36) `md`(44) `lg`(48+); hero map CTA pode usar `className="bg-sunset …"`
+- **Button**: `primary` | `secondary` | `ghost`; sizes `sm`(36) `md`(44) `lg`(48+)
 - **Card**: `card-1` | `card-2` | `card-hero`; clickable → `hover:-translate-y-px`, `hover:border-divider-strong`, light shadow
 - **Pill**: `pill-ghost` (inactive) / `pill-active` (active) via `FilterPill`
-- **ScoreBadge**: `getScoreTokens`; glow epic/good; label épico → `text-sunset`
+- **ScoreBadge**: `getScoreTokens`; glow epic/good; label épico → `text-accent` + `font-display`
 - **StatChip**: icon + mono value + short label (spot hero metrics)
 - **WaveDivider**: separador SVG entre zonas; `motion-safe:animate-wave-drift` (respeita `prefers-reduced-motion`)
+- **MapControlButton**: 44×44, `aria-pressed` when toggled
 
 ## Motion
 - 150ms hover/focus; 200ms filter/list; 300ms map fullscreen/drawers
 - Respect `prefers-reduced-motion`
+- No continuous marquee / looping chrome on home
 
 ## Do not
 - Invent colors outside tokens
 - Multiple button styles per page
-- Continuous animations on home (no marquee loops)
+- Continuous animations on home
 - Heavy backdrop-blur on long mobile sections
-- Espalhar gradiente sunset fora dos 3 pontos acima
+- Custom favorite/compare cards — use `SpotListCard`
 
 ## Page patterns
-- **Home**: Map hero (`font-display` h2, `bg-sunset` CTA) → Top agora → Dawn Patrol → footer; `WaveDivider` entre zonas
+- **Home**: Map hero (`font-display` h2, accent CTA) → Top agora → Dawn Patrol → footer; `WaveDivider` entre zonas; ticker estático (wrap), sem marquee
 - **Spot**: `font-display` no nome; `SpotImage` hero; score + chips + forecast (dados em mono)
-- **Map fullscreen**: HUD + sheet; dados claros, sem sunset decorativo
+- **Map fullscreen**: HUD + sheet; dados claros; touch ≥44px; focus trap no sheet
+- **Favoritos**: `SpotListCard` + scores via `rawToScoreInput`
 
 ## Shared list UI
 - **`SpotListCard`**: `Card` + `ScoreBadge` + `SpotImage` opcional + hover via `tierPhrase`
-- **Scores**: `getScoreTokens` / `scoreThresholds.ts` — map markers must match badges (80/60/40/20)
+- **Scores**: `getScoreTokens` / `scoreThresholds.ts` — map markers must match badges (80/60/40/20); alerts/favorites/compare usam o mesmo scorer

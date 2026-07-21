@@ -3,22 +3,25 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { Heart, MapPin, ArrowLeft, Wind, Waves, Thermometer, Share2, Check, LogIn } from 'lucide-react';
+import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
-import { getSportScore, getScoreColor } from '@/lib/sportScore';
+import { getSportScore } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
+import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
 import { useAuth } from '@/contexts/AuthProvider';
-import FavoriteButton from '@/components/FavoriteButton';
-import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
+import { rawToScoreInput } from '@/lib/scoreConditions';
 import Skeleton from '@/components/ui/Skeleton';
 import FavoritesAlertsPanel from '@/components/alerts/FavoritesAlertsPanel';
+import SpotListCard from '@/components/spots/SpotListCard';
+import FavoriteButton from '@/components/FavoriteButton';
+import { cn } from '@/lib/cn';
 
 interface SpotConditions {
   waveHeight: number;
@@ -36,6 +39,7 @@ export default function FavoritesClient() {
   const params = useParams();
   const loc = (params?.locale as string) || 'pt';
   const pt = loc === 'pt';
+  const locale = (loc === 'en' ? 'en' : 'pt') as 'pt' | 'en';
   const {
     session,
     authLoading,
@@ -65,20 +69,16 @@ export default function FavoritesClient() {
             const spot = spots.find((s) => s.id === id);
             if (!spot) continue;
 
-            const cond = precomputed[getConditionsDataId(spot)];
-            if (cond) {
-              const current = {
-                waveHeight: cond.waveHeight || 0,
-                wavePeriod: cond.wavePeriod || 0,
-                waveDirection: cond.waveDirection || 0,
-                windSpeed: cond.windSpeed || 0,
-                windDirection: cond.windDirection || 0,
-                windGust: cond.windGust || 0,
-                waterTemp: cond.waterTemp || 0,
+            const cond = precomputed[getConditionsDataId(spot)] ?? precomputed[spot.id];
+            if (cond && typeof cond === 'object') {
+              const scoreInput = rawToScoreInput(cond as Record<string, unknown>);
+              results[id] = {
+                ...scoreInput,
+                source: 'real',
+                updatedAt: typeof cond.updatedAt === 'string' ? cond.updatedAt : undefined,
               };
-              results[id] = { ...current, source: 'real', updatedAt: cond.updatedAt };
               const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
-              scores[id] = getSportScore(spot, primarySport, current);
+              scores[id] = getSportScore(spot, primarySport, scoreInput);
             }
           }
 
@@ -127,7 +127,9 @@ export default function FavoritesClient() {
   };
 
   const loading = authLoading || (session?.user && !favoritesReady) || favoritesLoading;
-  const favoriteSpots = spots.filter((s) => favorites.includes(s.id));
+  const favoriteSpots = spots
+    .filter((s) => favorites.includes(s.id))
+    .sort((a, b) => (sportScores[b.id]?.score ?? 0) - (sportScores[a.id]?.score ?? 0));
 
   if (!isSupabaseReady) {
     return (
@@ -148,7 +150,7 @@ export default function FavoritesClient() {
             <Skeleton className="h-10 w-48" />
             <Skeleton className="h-5 w-24" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[...Array(4)].map((_, i) => (
               <Skeleton key={i} className="h-40 rounded-card" />
             ))}
@@ -162,9 +164,11 @@ export default function FavoritesClient() {
     return (
       <div className="min-h-screen bg-bg-base pb-20">
         <div className="max-w-md mx-auto px-4 py-16 text-center space-y-6">
-          <LogIn className="w-10 h-10 mx-auto text-data-waves" aria-hidden />
-          <h1 className="text-h2 text-fg">{pt ? 'Meus Favoritos' : 'My Favorites'}</h1>
-          <p className="text-sm text-fg-muted">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-divider bg-surface-1/[0.04]">
+            <LogIn className="w-6 h-6 text-data-waves" aria-hidden />
+          </div>
+          <h1 className="font-display text-h2 text-fg">{pt ? 'Meus Favoritos' : 'My Favorites'}</h1>
+          <p className="text-sm text-fg-muted leading-relaxed">
             {pt
               ? 'Entra com o teu email para guardar spots e vê-los em qualquer dispositivo.'
               : 'Sign in with your email to save spots and see them on any device.'}
@@ -172,7 +176,7 @@ export default function FavoritesClient() {
           <Button size="lg" onClick={() => requestLogin('favorites-page')}>
             {pt ? 'Entrar com magic link' : 'Sign in with magic link'}
           </Button>
-          <Button href={`/${loc}/spots/`} variant="secondary" size="md" locale={loc as 'pt' | 'en'}>
+          <Button href={`/${loc}/spots/`} variant="secondary" size="md" locale={locale}>
             {pt ? 'Explorar spots' : 'Explore spots'}
           </Button>
         </div>
@@ -184,29 +188,36 @@ export default function FavoritesClient() {
     <div className="min-h-screen bg-bg-base pb-20">
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
         <div className="space-y-4">
-          <Link href={`/${loc}/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg">
-            <ArrowLeft className="w-4 h-4" />
+          <Link
+            href={`/${loc}/`}
+            className="inline-flex items-center gap-2 text-fg-muted hover:text-fg min-h-[44px] transition-colors duration-150"
+          >
+            <ArrowLeft className="w-4 h-4" aria-hidden />
             {pt ? 'Voltar' : 'Back'}
           </Link>
 
-          <PageHeader
-            icon={<Heart className="w-8 h-8 text-windDir-onshore fill-current" aria-hidden />}
-            title={pt ? 'Meus Favoritos' : 'My Favorites'}
-            subtitle={`${favoriteSpots.length} spots`}
-          />
-          {favoriteSpots.length > 0 && (
-            <div className="flex justify-end -mt-4">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <PageHeader
+              icon={<Heart className="w-7 h-7 text-data-waves" aria-hidden />}
+              title={pt ? 'Meus Favoritos' : 'My Favorites'}
+              subtitle={
+                pt
+                  ? `${favoriteSpots.length} spot${favoriteSpots.length === 1 ? '' : 's'} · ordenados por score`
+                  : `${favoriteSpots.length} spot${favoriteSpots.length === 1 ? '' : 's'} · sorted by score`
+              }
+            />
+            {favoriteSpots.length > 0 && (
               <Button
                 variant="secondary"
                 size="sm"
                 onClick={handleShare}
-                className={shareCopied ? 'text-score-good border-score-good/30' : ''}
+                className={cn(shareCopied && 'text-score-good border-score-good/30')}
               >
                 {shareCopied ? <Check className="w-4 h-4" aria-hidden /> : <Share2 className="w-4 h-4" aria-hidden />}
                 {shareCopied ? (pt ? 'Copiado!' : 'Copied!') : pt ? 'Partilhar' : 'Share'}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {favoriteSpots.length > 0 && (
@@ -219,81 +230,58 @@ export default function FavoritesClient() {
             title={getPlayfulEmptyCopy('no-favorites', pt).title}
             description={getPlayfulEmptyCopy('no-favorites', pt).description}
             action={
-              <Button href={`/${loc}/spots/`} size="lg" locale={loc as 'pt' | 'en'}>
+              <Button href={`/${loc}/spots/`} size="lg" locale={locale}>
                 {pt ? 'Explorar Spots' : 'Explore Spots'}
               </Button>
             }
           />
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {favoriteSpots.map((spot) => {
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none m-0 p-0">
+            {favoriteSpots.map((spot, index) => {
               const current = conditions[spot.id];
-              const score = sportScores[spot.id];
-              const colors = score ? getScoreColor(score.score) : { bg: 'bg-surface-2/[0.08]', text: 'text-fg-subtle' };
+              const score = sportScores[spot.id]?.score ?? 0;
+              const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
+              const sportLabel = SPORT_LABELS[primarySport]
+                ? pt
+                  ? SPORT_LABELS[primarySport].pt
+                  : SPORT_LABELS[primarySport].en
+                : undefined;
 
               return (
-                <Link key={spot.id} href={`/${loc}/spots/${spot.slug}/`} className="block">
-                  <div className="bg-surface-1/[0.04] backdrop-blur-sm border border-divider rounded-2xl overflow-hidden hover:bg-surface-2/[0.08] transition-all duration-300 hover:-translate-y-1">
-                    <div className="relative h-40 bg-gradient-to-br from-bg-elevated to-bg-base">
-                      <div className="absolute inset-0 bg-gradient-to-t from-bg-base/80 to-transparent" />
-                      <div className="absolute top-3 right-3">
-                        <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={loc} />
-                      </div>
-                      <div className="absolute bottom-3 left-3 right-3">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-xl font-bold text-fg">{spot.name}</h3>
-                          <DataSourceBadge
-                            source={current?.source}
-                            updatedAt={current?.updatedAt}
-                            locale={loc}
-                          />
-                        </div>
-                        <div className="flex items-center gap-1 text-sm text-fg-muted">
-                          <MapPin className="w-3 h-3" />
-                          {spot.region}
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="p-4 space-y-3">
-                      {current ? (
-                        <>
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="flex items-center gap-1.5 text-fg-muted">
-                              <Waves className="w-4 h-4 text-data-waves" />
-                              {current.waveHeight.toFixed(1)}m
-                            </span>
-                            <span className="flex items-center gap-1.5 text-fg-muted">
-                              <Wind className="w-4 h-4 text-data-wind" />
-                              {(current.windSpeed * 1.94384).toFixed(0)}kt
-                            </span>
-                            <span className="flex items-center gap-1.5 text-fg-muted">
-                              <Thermometer className="w-4 h-4 text-data-water" />
-                              {current.waterTemp.toFixed(0)}°C
-                            </span>
-                          </div>
-                          {score && (
-                            <div className="pt-2 border-t border-divider">
-                              <div className="flex items-center justify-between">
-                                <span className="text-sm text-fg-muted">Score</span>
-                                <span className={`font-bold ${colors.text}`}>{score.score}/100</span>
-                              </div>
-                              <p className={`text-sm mt-1 ${colors.text}`}>{pt ? score.rating : score.ratingEn}</p>
-                            </div>
-                          )}
-                        </>
-                      ) : (
-                        <div className="flex items-center gap-2 text-fg-subtle text-sm">
-                          <Wind className="w-4 h-4 animate-pulse" />
-                          {pt ? 'A carregar...' : 'Loading...'}
-                        </div>
-                      )}
-                    </div>
+                <li key={spot.id} className="relative">
+                  <div className="absolute top-3 right-3 z-10">
+                    <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={loc} />
                   </div>
-                </Link>
+                  <SpotListCard
+                    name={pt ? spot.name : spot.nameEn}
+                    region={pt ? spot.region : spot.regionEn}
+                    score={score}
+                    conditions={{
+                      waveHeight: current?.waveHeight ?? 0,
+                      wavePeriod: current?.wavePeriod ?? 0,
+                      windSpeed: current?.windSpeed ?? 0,
+                    }}
+                    href={`/${loc}/spots/${spot.slug}/`}
+                    locale={locale}
+                    sportLabel={sportLabel}
+                    sportAccent={primarySport}
+                    rank={index + 1}
+                    withImage
+                    spot={spot}
+                    statusLine={
+                      current
+                        ? pt
+                          ? sportScores[spot.id]?.rating
+                          : sportScores[spot.id]?.ratingEn
+                        : pt
+                          ? 'A carregar…'
+                          : 'Loading…'
+                    }
+                  />
+                </li>
               );
             })}
-          </div>
+          </ul>
         )}
       </div>
     </div>

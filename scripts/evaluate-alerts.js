@@ -59,29 +59,8 @@ function loadSpotMaps() {
   return { slugToId, idToSlug };
 }
 
-function computeScore(spotId, sport, conditions) {
-  const c = conditions[spotId];
-  if (!c) return null;
-  const windKt = (c.windSpeed || 0) * 1.94384;
-  const wave = c.waveHeight || 0;
-
-  switch (sport) {
-    case 'kitesurf':
-      if (windKt >= 15 && windKt <= 30 && wave < 1.5) return 85;
-      if (windKt >= 10) return Math.min(75, Math.round(windKt * 2.5));
-      return 20;
-    case 'windsurf':
-      if (windKt >= 15 && windKt <= 28) return 80;
-      return windKt >= 10 ? Math.round(windKt * 2) : 15;
-    case 'surf':
-      return Math.min(100, Math.round(wave * 15 + Math.max(0, (c.wavePeriod || 0) - 5) * 3));
-    case 'foil':
-      if (windKt >= 10 && windKt <= 25 && wave < 0.5) return 80;
-      return 40;
-    default:
-      return 50;
-  }
-}
+/** Same scorer as the web app (sportScore + observed wind when fresh). */
+const { computeScore } = require('./lib/scoreSpotConditions');
 
 function supabaseHeaders(key) {
   return {

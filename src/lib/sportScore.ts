@@ -83,8 +83,9 @@ const WIND_CONFIG = {
   WIND_IDEAL_MAX_KT: 28,
   WIND_IDEAL_PTS: 55,
   WIND_PTS_PER_KT: 2,
-  /** Windsurf planing threshold — no score from waves/temp below this. */
+  /** Below session min: linear scale (not flat 15). */
   WIND_PTS_MIN_KT: 15,
+  WIND_MARGINAL_PTS_PER_KT: 2.2,
   WAVE_IDEAL_MIN: 1,
   WAVE_IDEAL_MAX: 3,
   WAVE_IDEAL_PTS: 20,
@@ -272,7 +273,14 @@ function scoreWindsurf(spot: Spot, c: Conditions): SportScore {
   const windKt = c.windSpeed * 1.94384
 
   if (windKt < WIND_CONFIG.WIND_PTS_MIN_KT) {
-    score = Math.round(Math.min(15, windKt * 3))
+    score = Math.round(windKt * WIND_CONFIG.WIND_MARGINAL_PTS_PER_KT)
+    if (windKt >= 10) {
+      const windCategory = classifyWind(spot, c.windDirection)
+      const dirPts = Math.round(windDirFactor(windCategory, WIND_CONFIG.WIND_DIR_PTS_MAX) * 0.5)
+      score += dirPts
+      if (dirPts > 0) factors.push(`Vento ${windCategoryLabel(windCategory)}`)
+    }
+    score = Math.min(score, SCORE_TIER_THRESHOLDS.fair - 1)
     factors.push('Vento insuficiente')
   } else {
     if (windKt >= WIND_CONFIG.WIND_IDEAL_MIN_KT && windKt <= WIND_CONFIG.WIND_IDEAL_MAX_KT) {
