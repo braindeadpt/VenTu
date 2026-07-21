@@ -41,6 +41,7 @@ const MapControlButton = forwardRef<HTMLButtonElement, MapControlButtonProps>(
           disabled && 'opacity-50 cursor-not-allowed',
           className,
         )}
+        aria-pressed={pressed !== undefined || active ? isOn : undefined}
         {...rest}
       >
         {children}

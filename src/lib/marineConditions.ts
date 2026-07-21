@@ -70,7 +70,6 @@ export function pickObservedField(
   const obs = o as Record<string, unknown>;
   if (
     typeof obs.windSpeedKt !== 'number' ||
-    typeof obs.windDirDeg !== 'number' ||
     typeof obs.windCardinal !== 'string' ||
     typeof obs.stationName !== 'string' ||
     typeof obs.distanceKm !== 'number' ||
@@ -79,16 +78,18 @@ export function pickObservedField(
   ) {
     return undefined;
   }
+  const hasDir = typeof obs.windDirDeg === 'number' && Number.isFinite(obs.windDirDeg);
   return {
-    windSpeedKt: obs.windSpeedKt,
-    windDirDeg: obs.windDirDeg,
-    windCardinal: obs.windCardinal,
+    windSpeedKt: obs.windSpeedKt as number,
+    windDirDeg: hasDir ? (obs.windDirDeg as number) : 0,
+    windDirMissing: !hasDir,
+    windCardinal: obs.windCardinal as string,
     windCardinalEn:
       typeof obs.windCardinalEn === 'string' ? obs.windCardinalEn : undefined,
     tempC: typeof obs.tempC === 'number' ? obs.tempC : undefined,
-    stationName: obs.stationName,
-    distanceKm: obs.distanceKm,
-    observedAt: obs.observedAt,
+    stationName: obs.stationName as string,
+    distanceKm: obs.distanceKm as number,
+    observedAt: obs.observedAt as string,
     source: obs.source as 'ipma' | 'ecowitt',
   };
 }

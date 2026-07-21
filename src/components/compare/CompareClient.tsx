@@ -17,6 +17,7 @@ import Input from '@/components/ui/Input';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
+import { rawToScoreInput } from '@/lib/scoreConditions';
 
 interface SpotBattleData {
   spot: typeof spots[0];
@@ -34,6 +35,7 @@ interface PrecomputedCondition {
   windGust?: number;
   waterTemp?: number;
   updatedAt?: string;
+  observed?: unknown;
 }
 
 const COMPARE_SPORTS: SportType[] = ['surf', 'kitesurf', 'windsurf', 'bodyboard'];
@@ -50,21 +52,16 @@ async function loadSpotBattleData(
   const dataId = getConditionsDataId(spot);
   const cond = precomputed?.[dataId] ?? precomputed?.[spot.id];
   if (cond) {
+    const scoreInput = rawToScoreInput(cond as Record<string, unknown>);
     const conditions = {
-      waveHeight: cond.waveHeight || 0,
-      wavePeriod: cond.wavePeriod || 0,
-      waveDirection: cond.waveDirection || 0,
-      windSpeed: cond.windSpeed || 0,
-      windDirection: cond.windDirection || 0,
-      windGust: cond.windGust || 0,
-      waterTemp: cond.waterTemp || 0,
+      ...scoreInput,
       source: 'real' as const,
       updatedAt: cond.updatedAt,
     };
     return {
       spot,
       conditions,
-      allScores: getAllSportScores(spot, conditions),
+      allScores: getAllSportScores(spot, scoreInput),
       driveTime,
     };
   }

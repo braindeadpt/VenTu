@@ -100,3 +100,22 @@ describe('kitesurf marginal wind differentiation', () => {
     expect(ten).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
   });
 });
+
+describe('windsurf marginal wind differentiation', () => {
+  it('8kt and 12kt produce different scores (not flat 15)', () => {
+    const guincho = spotBySlug('guincho');
+    const base = {
+      waveHeight: 0.5,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windDirection: 270,
+      windGust: ktToMs(14),
+      waterTemp: 18,
+    };
+    const eight = getSportScore(guincho, 'windsurf', { ...base, windSpeed: ktToMs(8) }).score;
+    const twelve = getSportScore(guincho, 'windsurf', { ...base, windSpeed: ktToMs(12) }).score;
+    expect(eight).not.toEqual(twelve);
+    expect(eight).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
+    expect(twelve).toBeLessThan(SCORE_TIER_THRESHOLDS.fair);
+  });
+});

@@ -339,6 +339,13 @@ export default function HomepageMapHero({
 
             )}
 
+            <p
+              className="font-display text-meta font-semibold tracking-[0.18em] uppercase text-accent stagger-fade-in motion-reduce:animate-none"
+              style={{ '--stagger-delay': 40 } as React.CSSProperties}
+            >
+              VenTu
+            </p>
+
             <h2
 
               id="home-map-hero-heading"
@@ -357,7 +364,7 @@ export default function HomepageMapHero({
 
             <div
 
-              className="flex gap-2 overflow-x-auto no-scrollbar edge-fade-x pb-0.5 -mx-1 px-1 touch-pan-x stagger-fade-in motion-reduce:animate-none"
+              className="flex gap-2 overflow-x-auto no-scrollbar edge-fade-x-end pb-0.5 -mx-1 px-1 touch-pan-x stagger-fade-in motion-reduce:animate-none"
 
               role="group"
 
