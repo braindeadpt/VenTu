@@ -30,6 +30,7 @@
     "conditions:update": "node scripts/update-conditions.js",
     "obs:map": "node scripts/build-station-map.mjs",
     "obs:update": "node scripts/build-station-map.mjs && node scripts/merge-observations.mjs",
+    "wind:validate": "node scripts/validate-coastal-wind.mjs",
     "update-ecowitt": "node scripts/update-ecowitt.mjs",
     "data:update": "npm run conditions:update && npm run obs:update && npm run spots:index && npm run spots:lite && npm run news:generate",
     "spots:index": "tsx scripts/build-spots-index-ts.ts",
