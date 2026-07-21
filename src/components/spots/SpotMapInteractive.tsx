@@ -9,13 +9,9 @@ import { Layers, HelpCircle, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { clearLeafletContainer, unlockPageInteraction } from '@/lib/mapFullscreen';
-import type { Spot } from '@/types';
-import type { SportType, GridSportFilter } from '@/lib/sportRatings';
-import type { SportScore } from '@/lib/sportScore';
-import type { MarineConditionsFields } from '@/lib/marineConditions';
-import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
+import type { GridSportFilter } from '@/lib/sportRatings';
+import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
-import { renderSpotPopup } from './SpotPopupContent';
 import MapExploreHud, { type MapExploreHudProps } from './MapExploreHud';
 import MapSpotSheet, { type MapSpotSheetData } from './MapSpotSheet';
 import MapLegend from './MapLegend';
@@ -33,40 +29,23 @@ import {
   MAP_CLUSTER_LS_KEY,
   MAP_WIND_LS_KEY,
   MAP_ONLY_ON_LS_KEY,
-  getScoreRgb,
 } from '@/lib/map-constants';
-import {
-  buildWindRingMarkerHtml,
-  markerIconLayout,
-} from '@/lib/mapWindArrow';
 import { getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { hasSeenWindRingLegend } from '@/lib/windRingLegend';
-import { getMacroRegion } from '@/lib/regions';
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
-import { DEFAULT_REGION } from '@/lib/gridFilters';
 import { spotMeetsOnFilter } from '@/lib/gridSpotFilters';
+import type { MapSpotData } from './mapSpotData';
+import { getBestScore } from './mapSpotData';
+import { includeSpotInViewportBounds } from './mapViewportBounds';
+import { readClusterPref, readWindPref, readOnlyOnPref } from './mapHudPrefs';
+import {
+  buildMarkerCacheKey,
+  createSpotMarker,
+  addMarkersChunked,
+} from './mapMarkers';
 
-const ISLAND_MACRO_REGIONS = new Set(['Açores', 'Madeira']);
-
-/** Keep initial fitBounds on continental PT unless the user filters to islands. */
-function includeSpotInViewportBounds(spot: Spot, selectedRegion: string): boolean {
-  const macro = getMacroRegion(spot.region);
-  if (selectedRegion === 'Açores' || selectedRegion === 'Madeira') {
-    return macro === selectedRegion;
-  }
-  if (selectedRegion !== DEFAULT_REGION && selectedRegion !== 'Todos') {
-    return macro === selectedRegion;
-  }
-  return !ISLAND_MACRO_REGIONS.has(macro);
-}
-
-// ─── Types ───
-interface SpotData {
-  spot: Spot;
-  conditions: MarineConditionsFields;
-  allScores: Record<SportType, SportScore>;
-}
+type SpotData = MapSpotData;
 
 type MapHudProps = Omit<
   MapExploreHudProps,
@@ -115,248 +94,6 @@ interface SpotMapInteractiveProps {
   fullscreenBelowHeader?: boolean;
   /** Override exit fullscreen (e.g. navigate home). */
   onExitFullscreen?: () => void;
-}
-
-// ─── Helpers ───
-function getBestScore(data: SpotData, sport: GridSportFilter): number {
-  if (sport === 'all') {
-    return Math.max(...Object.values(data.allScores).map((s) => s?.score || 0));
-  }
-  if (sport === 'big-wave') {
-    return data.allScores.surf?.score || 0;
-  }
-  return data.allScores[sport]?.score || 0;
-}
-
-function buildMarkerIcon(
-  Leaflet: typeof L,
-  data: SpotData,
-  selectedSport: GridSportFilter,
-  showWind: boolean,
-  locale: string,
-): L.DivIcon {
-  const { spot, conditions } = data;
-  const score = getBestScore(data, selectedSport);
-  const scoreRgb = getScoreRgb(score);
-  const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
-
-  // Always the same centre-anchored dot marker (buildWindRingMarkerSvg
-  // already no-ops the rim arc when showWind is false) — a separate
-  // tailed-pin fallback used to exist here and diverge visually.
-  const markerHtml = buildWindRingMarkerHtml(
-    score,
-    scoreRgb,
-    conditions.windDirection,
-    windKtNum,
-    showWind,
-    locale,
-    spot.coastOrientation,
-  );
-
-  const layout = markerIconLayout(showWind);
-
-  return Leaflet.divIcon({
-    className: 'spot-marker',
-    html: markerHtml,
-    iconSize: layout.iconSize,
-    iconAnchor: layout.iconAnchor,
-    popupAnchor: layout.popupAnchor,
-  });
-}
-
-function buildMarkerPopupContent(
-  data: SpotData,
-  locale: string,
-  selectedSport: GridSportFilter,
-): string {
-  const { spot, conditions, allScores } = data;
-  const swellH = conditions.swellHeight ?? conditions.waveHeight;
-  const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
-  const powerKw = resolveWavePowerKw(conditions);
-  const sportParam =
-    selectedSport !== 'all' && selectedSport !== 'big-wave' ? selectedSport : undefined;
-
-  const windKt = (conditions.windSpeed * MS_TO_KNOTS).toFixed(0);
-  const windRelation =
-    spot.coastOrientation !== undefined
-      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
-      : undefined;
-  const windRelationLabel =
-    windRelation != null
-      ? getWindRelationLabel(windRelation, locale === 'pt' ? 'pt' : 'en')
-      : undefined;
-
-  return renderSpotPopup({
-    spot,
-    locale,
-    detailHref: getSpotDetailHref(locale, spot.slug, sportParam),
-    allScores,
-    swellHeight: swellH.toFixed(1),
-    swellPeriod: swellT.toFixed(0),
-    windKnots: windKt,
-    windDirection: getCardinalLabel(conditions.windDirection),
-    windRelation: windRelationLabel?.label,
-    windRelationClass: windRelationLabel?.className,
-    windRelationType: windRelation,
-    waterTemp: conditions.waterTemp.toFixed(1),
-    wavePowerKw: powerKw.toFixed(1),
-    imageUrl: (() => {
-      const src = getSpotImage(spot);
-      return src.kind === 'image' ? src.src : undefined;
-    })(),
-    confidence: conditions.confidence,
-    confidenceDetail: conditions.confidenceDetail,
-  });
-}
-
-function buildMarkerCacheKey(
-  data: SpotData,
-  selectedSport: GridSportFilter,
-  showWind: boolean,
-  locale: string,
-  useMobileSheet: boolean,
-): string {
-  const score = getBestScore(data, selectedSport);
-  const windKey = showWind
-    ? `${Math.round(data.conditions.windDirection)}:${Math.round(data.conditions.windSpeed * MS_TO_KNOTS)}`
-    : '';
-  return [data.spot.id, selectedSport, score, showWind, windKey, locale, useMobileSheet].join(':');
-}
-
-function createSpotMarker(
-  Leaflet: typeof L,
-  data: SpotData,
-  selectedSport: GridSportFilter,
-  locale: string,
-  showWind: boolean,
-  options: {
-    useMobileSheet: boolean;
-    onMobileTap?: (data: SpotData) => void;
-    onSpotSelect?: (spotId: string) => void;
-  },
-): L.Marker {
-  const { spot } = data;
-  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale);
-  const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
-  (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
-
-  if (!options.useMobileSheet) {
-    marker.bindPopup(buildMarkerPopupContent(data, locale, selectedSport), {
-      className: 'spot-popup',
-      maxWidth: 280,
-      closeButton: true,
-      autoClose: true,
-      closeOnClick: false,
-    });
-
-    marker.on('popupopen', () => {
-      // Spring scale on selected marker
-      const el = marker.getElement();
-      if (el) {
-        const wrap = el.querySelector('.ventu-spot-marker-wrap') as HTMLElement | null;
-        if (wrap) wrap.classList.add('ventu-marker-selected');
-      }
-
-      const root = marker.getPopup()?.getElement();
-      if (!root) return;
-
-      const detailBtn = root.querySelector('.ventu-popup-detail');
-      if (detailBtn) {
-        detailBtn.addEventListener(
-          'click',
-          (ev) => {
-            if (!options.onSpotSelect) return;
-            ev.preventDefault();
-            ev.stopPropagation();
-            options.onSpotSelect(spot.id);
-            marker.closePopup();
-          },
-          { once: true },
-        );
-      }
-
-      root.querySelectorAll('a[href], .ventu-popup-directions').forEach((anchor) => {
-        anchor.addEventListener('click', (ev) => ev.stopPropagation());
-      });
-    });
-
-    marker.on('popupclose', () => {
-      const el = marker.getElement();
-      if (el) {
-        const wrap = el.querySelector('.ventu-spot-marker-wrap') as HTMLElement | null;
-        if (wrap) wrap.classList.remove('ventu-marker-selected');
-      }
-    });
-  }
-
-  marker.on('click', (e) => {
-    Leaflet.DomEvent.stopPropagation(e);
-    if (options.useMobileSheet) {
-      options.onMobileTap?.(data);
-    }
-  });
-
-  return marker;
-}
-
-const MARKER_ADD_CHUNK_SIZE = 40;
-
-/**
- * Add markers to a Leaflet layer in small batches spread across animation
- * frames — never blocks the main thread for more than one frame's worth
- * of work, regardless of total marker count.
- *
- * Looping `.addLayer()` one marker at a time on a MarkerClusterGroup
- * triggers a full spatial-index recompute per call and was the cause of a
- * multi-second unresponsive freeze on mobile when opening the map (185
- * markers, each individually inserted). leaflet.markercluster's own
- * `addLayers()` bulk method IS chunk-aware (`CLUSTER_CONFIG.chunkedLoading`),
- * but its internal check only fires every 200 items — below that, a single
- * `addLayers()` call still runs as one synchronous pass. Chunking
- * explicitly here guarantees a small, fixed batch per frame either way.
- */
-function addMarkersChunked(
-  markers: L.Marker[],
-  addBatch: (batch: L.Marker[]) => void,
-  cancelRef: { current: boolean },
-): void {
-  let i = 0;
-  const step = () => {
-    if (cancelRef.current) return;
-    const batch = markers.slice(i, i + MARKER_ADD_CHUNK_SIZE);
-    if (batch.length > 0) addBatch(batch);
-    i += MARKER_ADD_CHUNK_SIZE;
-    if (i < markers.length) requestAnimationFrame(step);
-  };
-  step();
-}
-
-function readClusterPref(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    const v = localStorage.getItem(MAP_CLUSTER_LS_KEY);
-    if (v === '1') return true;
-    if (v === '0') return false;
-  } catch { /* noop */ }
-  return false;
-}
-
-function readWindPref(): boolean {
-  if (typeof window === 'undefined') return true;
-  try {
-    const v = localStorage.getItem(MAP_WIND_LS_KEY);
-    if (v === '0') return false;
-    if (v === '1') return true;
-  } catch { /* noop */ }
-  return true;
-}
-
-function readOnlyOnPref(): boolean {
-  if (typeof window === 'undefined') return false;
-  try {
-    return localStorage.getItem(MAP_ONLY_ON_LS_KEY) === '1';
-  } catch { /* noop */ }
-  return false;
 }
 
 // ─── Component ───
