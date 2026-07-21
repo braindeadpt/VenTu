@@ -9,6 +9,26 @@ const { haversineKm, MAX_STATION_DISTANCE_KM, MAX_OBS_AGE_MS } = require('./ipma
 const METAR_API =
   'https://aviationweather.gov/api/data/metar?format=json&hours=2&ids=';
 
+/**
+ * Mainland METAR stays at 30 km (same as IPMA).
+ * Madeira / Açores: slightly wider so west-coast Madeira (e.g. Seixal) can use LPMA.
+ */
+const MAX_METAR_DISTANCE_KM_MAINLAND = MAX_STATION_DISTANCE_KM;
+const MAX_METAR_DISTANCE_KM_ISLANDS = 35;
+
+function isIslandCoords(lat, lon) {
+  const madeira = lat > 32 && lat < 34 && lon > -18 && lon < -15;
+  const azores = lat > 36 && lat < 40 && lon > -32 && lon < -24;
+  return madeira || azores;
+}
+
+/** Max METAR radius for a spot (km). */
+function metarMaxDistanceKm(lat, lon) {
+  return isIslandCoords(lat, lon)
+    ? MAX_METAR_DISTANCE_KM_ISLANDS
+    : MAX_METAR_DISTANCE_KM_MAINLAND;
+}
+
 /** Coastal / island ICAO useful for VenTu spots (lat/lon from AWC when known). */
 const PT_METAR_STATIONS = [
   { icao: 'LPPT', name: 'Lisboa (METAR)', lat: 38.781, lon: -9.136 },
@@ -73,12 +93,14 @@ async function fetchMetarByIcao() {
  * @param {number} lon
  * @param {number} [maxKm]
  */
-function nearestMetarStations(lat, lon, maxKm = MAX_STATION_DISTANCE_KM) {
+function nearestMetarStations(lat, lon, maxKm) {
+  const limit =
+    maxKm != null && Number.isFinite(maxKm) ? maxKm : metarMaxDistanceKm(lat, lon);
   return PT_METAR_STATIONS.map((s) => ({
     ...s,
     distanceKm: Math.round(haversineKm(lat, lon, s.lat, s.lon) * 10) / 10,
   }))
-    .filter((s) => s.distanceKm <= maxKm)
+    .filter((s) => s.distanceKm <= limit)
     .sort((a, b) => a.distanceKm - b.distanceKm);
 }
 
@@ -86,8 +108,9 @@ function nearestMetarStations(lat, lon, maxKm = MAX_STATION_DISTANCE_KM) {
  * Build ObservedConditions-shaped payload from a METAR row.
  * @param {object} row
  * @param {{ name: string; distanceKm: number; icao: string }} station
+ * @param {number} [maxKm]
  */
-function buildMetarObservedPayload(row, station) {
+function buildMetarObservedPayload(row, station, maxKm = MAX_METAR_DISTANCE_KM_MAINLAND) {
   const wspd = Number(row.wspd);
   if (!Number.isFinite(wspd) || wspd < 0) return null;
 
@@ -96,7 +119,7 @@ function buildMetarObservedPayload(row, station) {
   const observedAt = new Date(obsSec * 1000).toISOString();
   if (Date.now() - obsSec * 1000 > MAX_OBS_AGE_MS) return null;
 
-  if (station.distanceKm > MAX_STATION_DISTANCE_KM) return null;
+  if (station.distanceKm > maxKm) return null;
 
   const wdir = Number(row.wdir);
   const hasDir = Number.isFinite(wdir) && wdir >= 0 && wdir <= 360;
@@ -124,10 +147,11 @@ function buildMetarObservedPayload(row, station) {
  */
 function buildMetarObservedForSpot(spot, metarByIcao) {
   if (!metarByIcao) return null;
-  for (const st of nearestMetarStations(spot.lat, spot.lon)) {
+  const maxKm = metarMaxDistanceKm(spot.lat, spot.lon);
+  for (const st of nearestMetarStations(spot.lat, spot.lon, maxKm)) {
     const row = metarByIcao[st.icao];
     if (!row) continue;
-    const payload = buildMetarObservedPayload(row, st);
+    const payload = buildMetarObservedPayload(row, st, maxKm);
     if (payload) return payload;
   }
   return null;
@@ -135,6 +159,10 @@ function buildMetarObservedForSpot(spot, metarByIcao) {
 
 module.exports = {
   PT_METAR_STATIONS,
+  MAX_METAR_DISTANCE_KM_MAINLAND,
+  MAX_METAR_DISTANCE_KM_ISLANDS,
+  isIslandCoords,
+  metarMaxDistanceKm,
   fetchMetarByIcao,
   nearestMetarStations,
   buildMetarObservedPayload,

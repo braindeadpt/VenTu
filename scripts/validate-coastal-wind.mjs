@@ -70,7 +70,13 @@ async function weatherBundle(lat, lon) {
   };
 }
 
-const wanted = new Set(['nova-vaga', 'guincho', 'costa-da-caparica']);
+const wanted = new Set([
+  'nova-vaga',
+  'guincho',
+  'seixal-madeira',
+  'machico',
+  'ponta-delgada',
+]);
 const spots = parseSpotsFromFile(path.join(root, 'src/lib/spots.ts')).filter(
   (s) => wanted.has(s.slug) || wanted.has(s.id),
 );

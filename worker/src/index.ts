@@ -9,6 +9,7 @@ export interface Env {
 }
 
 const MAX_DIST_KM = 30;
+const MAX_METAR_DIST_KM_ISLANDS = 35;
 const MAX_AGE_H = 3;
 const SOURCE_TIE_KM = 8;
 const IPMA_OBS =
@@ -257,11 +258,15 @@ async function metarObserved(
     if (!prev || t >= prevT) byIcao.set(row.icaoId, row);
   }
 
+  const madeira = lat > 32 && lat < 34 && lon > -18 && lon < -15;
+  const azores = lat > 36 && lat < 40 && lon > -32 && lon < -24;
+  const maxDist = madeira || azores ? MAX_METAR_DIST_KM_ISLANDS : MAX_DIST_KM;
+
   const nearby = METAR_STATIONS.map((s) => ({
     ...s,
     dist: hav(lat, lon, s.lat, s.lon),
   }))
-    .filter((s) => s.dist <= MAX_DIST_KM)
+    .filter((s) => s.dist <= maxDist)
     .sort((a, b) => a.dist - b.dist);
 
   for (const st of nearby) {
@@ -291,8 +296,11 @@ async function metarObserved(
 }
 
 function pickBestObs(cands: Obs[]): Obs | null {
-  if (!cands.length) return null;
-  cands.sort((a, b) => {
+  const eligible = cands.filter(
+    (c) => c.distanceKm <= maxDistForSource(c.source),
+  );
+  if (!eligible.length) return null;
+  eligible.sort((a, b) => {
     const dist = a.distanceKm - b.distanceKm;
     if (Math.abs(dist) > SOURCE_TIE_KM) return dist;
     const rank =
@@ -301,7 +309,11 @@ function pickBestObs(cands: Obs[]): Obs | null {
     if (Math.abs(dist) > 0.05) return dist;
     return new Date(b.observedAt).getTime() - new Date(a.observedAt).getTime();
   });
-  return cands[0];
+  return eligible[0];
+}
+
+function maxDistForSource(source: Obs['source']): number {
+  return source === 'metar' ? MAX_METAR_DIST_KM_ISLANDS : MAX_DIST_KM;
 }
 
 function cors(origin: string | null, allowed: string): Record<string, string> {
