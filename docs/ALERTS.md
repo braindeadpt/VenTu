@@ -33,6 +33,7 @@ Subscrições antigas em `alert_subscriptions` continuam a funcionar. O evaluato
 4. Executa [`supabase/supabase-alerts-e1c.sql`](../supabase/supabase-alerts-e1c.sql) (E1c).
 5. Executa [`supabase/supabase-alerts-e1b-frequency.sql`](../supabase/supabase-alerts-e1b-frequency.sql) (E1b — digest vs imediato).
 6. Confirma tabelas `alert_subscriptions` e `user_alert_prefs`.
+7. Se já tinhas E1c aplicado: re-executa as funções `verify_user_alerts` / `verify_alert_token` de `supabase-alerts-e1c.sql` (confirmação idempotente).
 
 ### 2. Resend
 
@@ -91,6 +92,6 @@ npm run alerts:evaluate
 | Sintoma | Causa provável |
 |---------|----------------|
 | Formulário diz Supabase não configurado | Faltam `NEXT_PUBLIC_SUPABASE_*` no build |
-| Sem email de confirmação | `RESEND_API_KEY` em falta no workflow ou domínio não verificado |
+| Sem email de confirmação | `RESEND_API_KEY` em falta no workflow ou domínio não verificado; confirmação só é enviada no cron `evaluate-alerts` (até ~3h), não no submit |
 | Confirm link 404 / falha | SQL não aplicado ou token inválido |
-| Alertas nunca chegam | Subscrição não confirmada, score abaixo do limiar, digest fora da janela 7h, ou cooldown 3h (imediato) |
+| Alertas nunca chegam | Subscrição não confirmada, score abaixo do limiar, digest antes das 7h Lisboa / já enviado hoje, ou cooldown 3h (imediato) |

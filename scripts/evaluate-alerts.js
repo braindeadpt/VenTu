@@ -33,8 +33,13 @@ function lisbonDateTimeParts(date = new Date()) {
   };
 }
 
+/**
+ * Digest after DIGEST_HOUR_LISBON (inclusive). Do not require exact hour === 7:
+ * GitHub Actions schedules often slip past :30, and a strict hour match would
+ * skip the daily digest until the next day.
+ */
 function isDigestWindow() {
-  return lisbonDateTimeParts().hour === DIGEST_HOUR_LISBON;
+  return lisbonDateTimeParts().hour >= DIGEST_HOUR_LISBON;
 }
 
 function alreadySentDigestToday(lastSentAt) {
@@ -122,9 +127,9 @@ function htmlToText(html) {
  * @param {string} subject
  * @param {string} html
  * @param {{ unsubscribeUrl?: string }} [opts] - unsubscribeUrl adds a
- *   List-Unsubscribe header (RFC 8058). Gmail/Yahoo bulk-sender rules
- *   penalise mail without it regardless of SPF/DKIM — an in-body link alone
- *   isn't enough, filters read the header.
+ *   List-Unsubscribe header. Prefer HTTPS unsubscribe over HTML-body-only.
+ *   Do not set List-Unsubscribe-Post: site is static export and cannot
+ *   handle RFC 8058 one-click POST.
  */
 async function sendEmail(to, subject, html, opts = {}) {
   const apiKey = process.env.RESEND_API_KEY;
@@ -135,10 +140,11 @@ async function sendEmail(to, subject, html, opts = {}) {
   }
 
   const payload = { from: FROM_EMAIL, to: [to], subject, html, text: htmlToText(html) };
+  // Static export (output: 'export') — no server to handle RFC 8058 one-click POST.
+  // Keep List-Unsubscribe (HTTPS link) only; do not advertise List-Unsubscribe-Post.
   if (opts.unsubscribeUrl) {
     payload.headers = {
       'List-Unsubscribe': `<${opts.unsubscribeUrl}>`,
-      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
     };
   }
 

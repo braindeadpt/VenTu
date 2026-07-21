@@ -132,7 +132,17 @@ BEGIN
   WHERE verify_token = p_token
     AND verified = false
     AND active = true;
-  RETURN FOUND;
+  IF FOUND THEN
+    RETURN true;
+  END IF;
+
+  -- Idempotent: already-confirmed link still succeeds
+  RETURN EXISTS (
+    SELECT 1 FROM user_alert_prefs
+    WHERE verify_token = p_token
+      AND verified = true
+      AND active = true
+  );
 END;
 $$;
 
@@ -191,8 +201,16 @@ BEGIN
   WHERE verify_token = p_token
     AND verified = false
     AND active = true;
+  IF FOUND THEN
+    RETURN true;
+  END IF;
 
-  RETURN FOUND;
+  RETURN EXISTS (
+    SELECT 1 FROM alert_subscriptions
+    WHERE verify_token = p_token
+      AND verified = true
+      AND active = true
+  );
 END;
 $$;
 

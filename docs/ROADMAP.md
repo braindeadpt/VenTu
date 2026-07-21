@@ -73,7 +73,7 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 - [ ] Subscrição teste → email recebido → link confirm/unsubscribe funciona
 - [x] Documentar fluxo em [`docs/ALERTS.md`](./ALERTS.md) + `npm run alerts:preflight`
 
-**Ref:** `supabase/supabase-alerts.sql`, `AlertSubscribeForm`, `.github/workflows/evaluate-alerts.yml`
+**Ref:** `supabase/supabase-alerts.sql`, `FavoritesAlertsPanel` / `SpotAlertPopover`, `.github/workflows/evaluate-alerts.yml`
 
 ---
 

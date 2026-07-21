@@ -43,7 +43,7 @@ export default function SpotAlertPopover({
   const [alertMode, setAlertMode] = useState<AlertMode>('digest');
   const [existing, setExisting] = useState<UserAlertPrefs | null>(null);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState<false | 'active' | 'pending'>(false);
   const [savedCount, setSavedCount] = useState<number | null>(null);
   const [error, setError] = useState('');
 
@@ -100,7 +100,7 @@ export default function SpotAlertPopover({
         return;
       }
       setSavedCount(result.favorite_count ?? null);
-      setSaved(true);
+      setSaved(result.verified === true ? 'active' : 'pending');
       setTimeout(() => {
         setSaved(false);
         setOpen(false);
@@ -143,12 +143,18 @@ export default function SpotAlertPopover({
                   <Check className="w-4 h-4" aria-hidden />
                 </span>
                 <p className="text-body-sm text-fg font-semibold">
-                  {isPt ? 'Alerta ativo!' : 'Alert active!'}
+                  {saved === 'pending'
+                    ? (isPt ? 'Subscrição registada' : 'Subscription saved')
+                    : (isPt ? 'Alerta activo!' : 'Alert active!')}
                 </p>
                 <p className="text-meta-sm text-fg-muted">
-                  {isPt
-                    ? `Recebes email quando um dos teus ${savedCount ?? ''} favoritos bater o score definido.`
-                    : `You'll get an email when one of your ${savedCount ?? ''} favorites meets your score.`}
+                  {saved === 'pending'
+                    ? (isPt
+                      ? 'Confirma o link no email antes dos alertas começarem.'
+                      : 'Confirm the link in your email before alerts start.')
+                    : (isPt
+                      ? `Recebes email quando um dos teus ${savedCount ?? ''} favoritos bater o score definido.`
+                      : `You'll get an email when one of your ${savedCount ?? ''} favorites meets your score.`)}
                 </p>
               </div>
             ) : (
