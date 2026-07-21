@@ -168,9 +168,9 @@ export default function Header({ locale }: HeaderProps) {
               </span>
             </Link>
 
-            {/* Desktop nav — xl+ only; minmax(0,1fr) prevents overlap with logo/actions */}
+            {/* Desktop nav — xl+ only; overflow-visible so MegaMenu is not clipped */}
             <nav
-              className="hidden xl:flex items-center justify-center gap-0 min-w-0 overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-0.5"
+              className="hidden xl:flex items-center justify-center gap-0 min-w-0 overflow-visible px-0.5"
               aria-label={navLabel.home}
             >
               <MegaMenu

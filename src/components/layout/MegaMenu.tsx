@@ -52,12 +52,22 @@ export default function MegaMenu({ locale, isOpen, onOpen, onClose }: MegaMenuPr
     };
   }, [isOpen, handleClickOutside, handleEscape]);
 
+  const handleToggle = useCallback(() => {
+    if (isOpen) onClose();
+    else onOpen();
+  }, [isOpen, onOpen, onClose]);
+
   return (
-    <div ref={menuRef} className="relative">
+    <div
+      ref={menuRef}
+      className="relative"
+      onMouseEnter={onOpen}
+      onMouseLeave={onClose}
+    >
       <button
         ref={triggerRef}
-        onClick={onOpen}
-        onMouseEnter={onOpen}
+        type="button"
+        onClick={handleToggle}
         className="inline-flex items-center gap-1 shrink-0 whitespace-nowrap px-2 2xl:px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
         aria-expanded={isOpen}
         aria-haspopup="true"
@@ -71,7 +81,7 @@ export default function MegaMenu({ locale, isOpen, onOpen, onClose }: MegaMenuPr
         <div
           id="mega-menu-modalidades"
           role="menu"
-          className="absolute top-full left-0 pt-1 w-[480px] z-[1300]"
+          className="absolute top-full left-0 pt-1 w-[min(480px,calc(100vw-2rem))] z-[1300]"
         >
           <div className="rounded-modal border border-divider bg-bg-elevated shadow-modal backdrop-blur-xl p-4">
             <Link

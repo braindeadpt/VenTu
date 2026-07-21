@@ -1,4 +1,5 @@
 import type { SportScore } from '@/lib/sportScore'
+import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore'
 import type { SportType, GridSportFilter } from '@/lib/sportRatings'
 import { getCompatibleSports, SPORT_LABELS } from '@/lib/sportRatings'
 import type { Spot } from '@/types'
@@ -94,16 +95,23 @@ export function getSportLabel(sport: GridSportFilter, isPt: boolean): string {
   return SPORT_LABELS[sport][isPt ? 'pt' : 'en']
 }
 
-/** Sports shown in the home "Top agora" row. */
+/** Sports shown in the home "Top agora" / «A bombar agora» row. */
 export const TOP_NOW_SPORTS = ['surf', 'kitesurf', 'windsurf', 'bodyboard'] as const
 export type TopNowSport = (typeof TOP_NOW_SPORTS)[number]
+
+/**
+ * Minimum score to appear under «A bombar agora».
+ * Same bar as map «Só a bombar» — never show Fraco/Mau as “firing”.
+ */
+export const TOP_NOW_MIN_SCORE = SCORE_TIER_THRESHOLDS.good
 
 export function getTopSpotForSport(
   spotsData: HomepageSpotData[],
   sport: TopNowSport,
+  minScore: number = TOP_NOW_MIN_SCORE,
 ): HomepageSpotData | null {
   const sorted = sortSpotsBySport(spotsData, sport)
-  return sorted.find((d) => getScoreForFilter(d, sport) > 0) ?? null
+  return sorted.find((d) => getScoreForFilter(d, sport) >= minScore) ?? null
 }
 
 /** Spot slugs featured in home "Top agora" — exclude from ranked list below map. */

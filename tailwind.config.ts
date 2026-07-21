@@ -199,14 +199,15 @@ const config: Config = {
         },
         'wave-drift': {
           '0%':   { transform: 'translateX(0)' },
-          '100%': { transform: 'translateX(-2%)' },
+          '100%': { transform: 'translateX(-50%)' },
         },
       },
       animation: {
         'marquee':  'marquee 30s linear infinite',
         'fade-up':  'fade-up 400ms cubic-bezier(0.16, 1, 0.3, 1) both',
         'shimmer':  'shimmer 1.6s linear infinite',
-        'wave-drift': 'wave-drift 10s ease-in-out infinite alternate',
+        /* Seamless tile scroll — WaveDivider SVG is 200% wide with duplicated crest */
+        'wave-drift': 'wave-drift 22s linear infinite',
       },
     },
   },

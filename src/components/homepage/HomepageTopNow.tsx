@@ -1,4 +1,3 @@
-import { getTranslation } from '@/lib/i18n';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import Button from '@/components/ui/Button';
@@ -31,30 +30,33 @@ const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
 
 export default function HomepageTopNow({ spotsData, locale, maxCards }: HomepageTopNowProps) {
   const isPt = locale === 'pt';
-  const t = getTranslation(locale as 'pt' | 'en');
   const cardLocale = isPt ? 'pt' : 'en';
 
-  const sportsList = maxCards
-    ? TOP_NOW_SPORTS.slice(0, maxCards)
-    : [...TOP_NOW_SPORTS];
-
-  const cards = sportsList
-    .map((sport) => ({
-      sport,
-      data: getTopSpotForSport(spotsData, sport),
-    }))
-    .filter((entry): entry is { sport: TopNowSport; data: HomepageSpotData } => entry.data !== null);
+  // Only sports that are actually «a bombar» (≥ Bom / 60) — never Fraco under that title
+  const cards = TOP_NOW_SPORTS.map((sport) => {
+    const data = getTopSpotForSport(spotsData, sport);
+    if (!data) return null;
+    return { sport, data };
+  })
+    .filter((entry): entry is { sport: TopNowSport; data: HomepageSpotData } => entry !== null)
+    .slice(0, maxCards ?? TOP_NOW_SPORTS.length);
 
   return (
     <section
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2"
       aria-labelledby="top-now-heading"
     >
       <h2 id="top-now-heading" className="font-display text-display-lg font-bold text-fg tracking-tight mb-1">
         {isPt ? 'A bombar agora' : 'Firing now'}
       </h2>
       <p className="text-meta text-fg-muted mb-4">
-        {isPt ? 'Melhor spot por desporto · Portugal' : 'Best spot per sport · Portugal'}
+        {cards.length === 0
+          ? isPt
+            ? 'Nenhum desporto a bombar neste momento'
+            : 'No sports firing right now'
+          : isPt
+            ? 'Só spots a bombar · por desporto'
+            : 'Only firing spots · by sport'}
       </p>
 
       {cards.length === 0 ? (
@@ -69,7 +71,11 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
           }
         />
       ) : (
-        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 list-none p-0 m-0">
+        <ul
+          className={`grid grid-cols-1 sm:grid-cols-2 gap-2 list-none p-0 m-0 ${
+            cards.length >= 4 ? 'lg:grid-cols-4' : cards.length === 3 ? 'lg:grid-cols-3' : ''
+          }`}
+        >
           {cards.map(({ sport, data }, i) => {
             const score = getScoreForFilter(data, sport);
             const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];

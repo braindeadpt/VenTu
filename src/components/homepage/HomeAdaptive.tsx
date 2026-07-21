@@ -65,12 +65,8 @@ export default function HomeAdaptive({
         maxCards={isReturning ? 4 : undefined}
       />
 
-      {!isReturning && (
-        <>
-          <WaveDivider flip />
-          <DawnPatrolTopSlot locale={locale} />
-        </>
-      )}
+      {/* Dawn Patrol owns its own divider — avoids empty double-waves outside morning hours */}
+      {!isReturning && <DawnPatrolTopSlot locale={locale} />}
 
       <WaveDivider />
 

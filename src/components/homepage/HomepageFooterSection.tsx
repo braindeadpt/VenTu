@@ -15,7 +15,7 @@ export default function HomepageFooterSection({
 }: HomepageFooterSectionProps) {
   return (
     <section
-      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 border-t border-divider"
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8"
       aria-label={locale === 'pt' ? 'Mais ferramentas' : 'More tools'}
     >
       <HomepageSecondaryCta locale={locale} compact />

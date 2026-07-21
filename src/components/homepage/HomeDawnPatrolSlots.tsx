@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import DawnPatrolBanner from '@/components/DawnPatrolBannerWrapper';
+import WaveDivider from '@/components/ui/WaveDivider';
 import { isDawnPatrolWindow } from '@/lib/dawnPatrolHours';
 
 export function DawnPatrolTopSlot({ locale }: { locale: string }) {
@@ -17,9 +18,12 @@ export function DawnPatrolTopSlot({ locale }: { locale: string }) {
   if (isMorning === null || !isMorning) return null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
-      <DawnPatrolBanner locale={locale} />
-    </div>
+    <>
+      <WaveDivider flip />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+        <DawnPatrolBanner locale={locale} />
+      </div>
+    </>
   );
 }
 

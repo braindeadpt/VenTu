@@ -1,13 +1,16 @@
 'use client';
 
 import { useSyncExternalStore } from 'react';
-import { DEFAULT_SPORT, readGridFiltersFromWindow } from '@/lib/gridFilters';
+import { readGridFiltersFromWindow } from '@/lib/gridFilters';
 import { SPORT_CHANGE_EVENT } from '@/lib/homepageSport';
 import type { GridSportFilter } from '@/lib/sportRatings';
 
 /**
  * Sport filter synced to `?sport=` without hydration mismatch:
  * server/static HTML uses `fallback`; client reads URL after subscribe.
+ *
+ * Missing `?sport=` → fallback (homepage defaults to surf).
+ * Explicit `?sport=all` → «Todos» (must not remap to fallback).
  */
 export function useUrlGridSport(
   regions: readonly string[],
@@ -27,8 +30,7 @@ export function useUrlGridSport(
     () => {
       const params = new URLSearchParams(window.location.search);
       if (!params.has('sport')) return fallback;
-      const { sport } = readGridFiltersFromWindow(regions);
-      return sport === DEFAULT_SPORT ? fallback : sport;
+      return readGridFiltersFromWindow(regions).sport;
     },
     () => fallback,
   );

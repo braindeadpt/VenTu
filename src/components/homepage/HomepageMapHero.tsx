@@ -150,11 +150,13 @@ export default function HomepageMapHero({
 
 
   const topSpot = useMemo(() => {
-
-    const ts = getTopSpotForSport(liveSpotsData, sport as 'surf' | 'kitesurf' | 'windsurf' | 'bodyboard');
-
+    // Best available for hero tip — not the «A bombar» threshold
+    const ts = getTopSpotForSport(
+      liveSpotsData,
+      sport as 'surf' | 'kitesurf' | 'windsurf' | 'bodyboard',
+      1,
+    );
     return ts;
-
   }, [liveSpotsData, sport]);
 
 

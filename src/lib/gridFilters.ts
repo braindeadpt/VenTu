@@ -37,9 +37,9 @@ export function buildGridFiltersSearch(
 ): string {
   const params = new URLSearchParams();
 
-  if (sport !== DEFAULT_SPORT) {
-    params.set('sport', sport);
-  }
+  // Always persist sport — including `all` — so homepage can distinguish
+  // explicit «Todos» from a missing param (which falls back to surf).
+  params.set('sport', sport);
   if (region !== DEFAULT_REGION && regions.includes(region)) {
     params.set('region', region);
   }
