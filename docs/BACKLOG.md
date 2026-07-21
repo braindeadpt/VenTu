@@ -12,7 +12,7 @@ Registo de ideias, melhorias e features identificadas mas não agendadas. Cada i
 
 ### Marés (IH OGC API)
 
-✅ **Feito.** Sistema de marés integrado via OGC API do Instituto Hidrográfico (hidrografico.pt). Cobertura: 33 estações, 135/167 spots mapeados. Display duplo: previsão Open-Meteo + observado IH.
+✅ **Feito.** Sistema de marés integrado via OGC API do Instituto Hidrográfico (hidrografico.pt). Cobertura: 33 estações, maioria dos spots continentais mapeados. Display duplo: previsão Open-Meteo + observado IH.
 
 **Fluxo actual:** `fetch-ih-tides.js` → `ih-tides.json` → `update-conditions.js` lê e integra → `conditions.json` com fields tideHeight, tideObservedHeight, tideStation → SpotDetailClient (StatCard + nota IH observed) + ForecastTable (row condicional "Maré").
 
@@ -36,7 +36,7 @@ Tens waterTemp (Open-Meteo) mas não qualidade bacteriológica. APA (Agência Po
 
 ### Imagens reais por spot
 
-Audit original (Fase 1) identificou: `images: []` vazio em todos os 167 spots. Decidido manter porque não há fotos curadas e o tema Coast compensa visualmente.
+Audit original (Fase 1) identificou: `images: []` vazio em todos os spots. Decidido manter porque não há fotos curadas e o tema Coast compensa visualmente.
 
 **Fontes potenciais**:
 - Wikimedia Commons — fotos CC0 da maior parte das praias portuguesas
@@ -63,7 +63,7 @@ Audit original (Fase 1) identificou: `images: []` vazio em todos os 167 spots. D
 
 ### Fase 5b — compatibleSports manual
 
-**Estado actual (2026-05-25):** 167/167 preenchidos ✅
+**Estado actual:** 185/185 preenchidos ✅
 
 **Agendado em:** [ROADMAP.md § A4](./ROADMAP.md#a4--completar-compatiblesports) — concluído
 

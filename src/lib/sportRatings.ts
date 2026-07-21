@@ -40,7 +40,7 @@ export const TYPE_TO_SPORTS: Record<string, SportType[]> = {
  * Prefers explicit spot.compatibleSports override; falls back to
  * a heuristic mapping from spot.type.
  *
- * All 167 spots have explicit compatibleSports; TYPE_TO_SPORTS is fallback only.
+ * All spots have explicit compatibleSports; TYPE_TO_SPORTS is fallback only.
  */
 export function getCompatibleSports(spot: Spot): SportType[] {
   if (spot.compatibleSports && spot.compatibleSports.length > 0) {

@@ -2,9 +2,9 @@
 
 Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do projecto e as restrições técnicas que limitam que soluções são viáveis.
 
-> **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) — Fase **E** activa (E1 alertas prod → E2 polish → E3 notícias v2)
+> **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) — Fase **E** / **C4b** (calibração scores com feedback)
 
-Última actualização: 2026-06-03 (SEO/social OG PNG; 173 spots; schemas em `supabase/`).
+Última actualização: 2026-07-21 (185 spots; METAR/ICON-EU; E1 alertas; mapa split).
 
 ## Identidade
 
@@ -57,7 +57,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 **Testes:** `src/lib/__tests__/sportScore.test.ts` (20+ casos). Correr `npm test`.
 
-**`compatibleSports`:** 167/167 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
+**`compatibleSports`:** 185/185 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
 
 ## Maré (Instituto Hidrográfico)
 
@@ -67,7 +67,7 @@ scripts/update-conditions.js → conditions.json (tide fields)
 SpotDetailClient + ForecastTable (row condicional)
 ```
 
-- 33 estações IH · ~135/167 spots mapeados
+- 33 estações IH · maioria dos spots continentais mapeados
 - Dados observados (não previsão horária IH); previsão MSL via Open-Meteo
 
 ## Estrutura do repo (resumo)
@@ -76,7 +76,7 @@ SpotDetailClient + ForecastTable (row condicional)
 src/
 ├── app/[locale]/          Home, spots, favorites, compare, news, about, modalidades, sazonalidade
 ├── components/            UI, spots, weather, layout, DawnPatrolBanner, DataSourceBadge
-├── lib/                   spots.ts (167), sportScore, openmeteo, i18n, homepageSport, gridFilters
+├── lib/                   spots.ts (185), sportScore, openmeteo, i18n, homepageSport, gridFilters
 └── types/
 
 public/data/               conditions.json, forecasts.json, news.json, dawn-patrol.json, ih-tides.json
@@ -103,24 +103,24 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 | `deploy.yml` | push main | test, sitemap, build, GitHub Pages |
 | `evaluate-alerts.yml` | */3h + manual | email alerts (Resend + Supabase) |
 
-## Estado actual (2026-05-25)
+## Estado actual (2026-07-21)
 
 ### ✅ Fases A + B + C concluídas
 
-- Confiança: copy honesto, badges, Dawn Patrol guards, `compatibleSports` 167/167
+- Confiança: copy honesto, badges, Dawn Patrol guards, `compatibleSports` 185/185
 - Coerência: homepage multi-desporto, URL sync filtros, unit tests scoring, docs, sitemap completo
 - Diferenciação: notícias PT (ANS, Notícias do Mar, FPS), alertas email, feedback scores, dicas comunidade, PWA
 
 ### ⚠️ Dívida conhecida (não bloqueante)
 
 1. `SecurityHeaders.tsx` — CSP via JS sem efeito real em static export
-2. Calibração automática de scores (C4) — recolhe feedback; ajuste de pesos manual/contínuo
+2. Calibração scores (C4b) — `npm run scores:analyze`; pesos só com N≥30/modalidade
 3. Livecams curadas — links externos Surftotal/MEO em 31 spots (`src/lib/spotLivecams.ts`); sem embeds
-4. Alertas email — código pronto; validação produção → [`ALERTS.md`](./ALERTS.md) (E1)
+4. Alertas email — ✅ E1 em produção → [`ALERTS.md`](./ALERTS.md)
 
 ### Distribuição de spots
 
-**167 spots:** surf, multisport, kitesurf, foil, wakeboard, windsurf, big-wave (ver `spots.ts`).
+**185 spots:** surf, multisport, kitesurf, foil, wakeboard, windsurf, big-wave (ver `spots.ts`).
 
 ## Convenções
 
