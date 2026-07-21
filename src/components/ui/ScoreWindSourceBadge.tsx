@@ -9,7 +9,7 @@ interface ScoreWindSourceBadgeProps {
   className?: string;
 }
 
-/** Honest label: whether the score used IPMA, gust session proxy, or forecast mean. */
+/** Honest label: whether the score used measured wind, gust session proxy, or forecast (ICON-EU blend). */
 export default function ScoreWindSourceBadge({
   source,
   locale,
@@ -21,8 +21,8 @@ export default function ScoreWindSourceBadge({
       ? {
           label: isPt ? 'Vento observado' : 'Observed wind',
           title: isPt
-            ? 'Score usa vento medido (IPMA/Ecowitt) fresco'
-            : 'Score uses fresh measured wind (IPMA/Ecowitt)',
+            ? 'Score usa vento medido (IPMA / Ecowitt / METAR) fresco'
+            : 'Score uses fresh measured wind (IPMA / Ecowitt / METAR)',
           className: 'border-score-good/40 bg-score-good/10 text-score-good',
         }
       : source === 'session-gust'
@@ -36,8 +36,8 @@ export default function ScoreWindSourceBadge({
         : {
             label: isPt ? 'Só previsão' : 'Forecast only',
             title: isPt
-              ? 'Sem observação fresca — score só com previsão'
-              : 'No fresh observation — forecast-only score',
+              ? 'Sem observação fresca — score com previsão (ICON-EU / multi-modelo quando disponível)'
+              : 'No fresh observation — forecast score (ICON-EU / multi-model when available)',
             className: 'border-divider bg-surface-1/[0.04] text-fg-muted',
           };
 

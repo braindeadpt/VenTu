@@ -1,6 +1,6 @@
 /**
- * Merge IPMA + Ecowitt into conditions.json (observed layer; scores use it when fresh).
- * Rule: nearest station within 30 km and ≤3 h fresh wins; tie → freshest.
+ * Merge IPMA + Ecowitt + METAR into conditions.json (observed layer; scores use it when fresh).
+ * Rule: within ~8 km prefer Ecowitt > IPMA > METAR; else nearest ≤30 km and ≤3 h; tie → freshest.
  */
 import fs from 'fs';
 import path from 'path';
@@ -16,6 +16,7 @@ const {
   MAX_STATION_DISTANCE_KM,
 } = require('./lib/ipma.js');
 const { fetchEcowittSnapshot, buildEcowittObservedForSpot, getEcowittCredentials } = require('./lib/ecowitt.js');
+const { fetchMetarByIcao, buildMetarObservedForSpot } = require('./lib/metar.js');
 const { pickBestObservation } = require('./lib/observationPick.js');
 const { writePipelineMeta } = require('./lib/pipelineMeta.js');
 
@@ -26,7 +27,7 @@ const conditionsPath = path.join(root, 'public/data/conditions.json');
 const spotsPath = path.join(root, 'src/lib/spots.ts');
 
 export async function mergeObservations() {
-  console.log('🌡️ Observations — IPMA + Ecowitt → conditions.json...');
+  console.log('🌡️ Observations — IPMA + Ecowitt + METAR → conditions.json...');
 
   if (!fs.existsSync(conditionsPath)) {
     console.error('❌ conditions.json missing — run npm run conditions:update first');
@@ -43,7 +44,6 @@ export async function mergeObservations() {
   const spots = parseSpotsFromFile(spotsPath);
   const slugById = Object.fromEntries(spots.map((s) => [s.id, s.slug]));
   const aliasSpots = spots.filter((s) => s.conditionsSource);
-  const spotById = Object.fromEntries(spots.map((s) => [s.id, s]));
 
   let ipmaSnapshots = null;
   try {
@@ -67,9 +67,18 @@ export async function mergeObservations() {
     console.log('   Ecowitt: skipped (ECOWITT_* env not set)');
   }
 
+  let metarByIcao = null;
+  try {
+    metarByIcao = await fetchMetarByIcao();
+    console.log(`   METAR: ${Object.keys(metarByIcao).length} airports with reports`);
+  } catch (err) {
+    console.warn(`⚠️ METAR fetch failed: ${err.message}`);
+  }
+
   let withObserved = 0;
   let ecowittWins = 0;
   let ipmaWins = 0;
+  let metarWins = 0;
 
   for (const spot of spots) {
     if (spot.conditionsSource) continue;
@@ -97,11 +106,14 @@ export async function mergeObservations() {
       ecowittCandidate = buildEcowittObservedForSpot(spot, ecowittSnapshot);
     }
 
-    const picked = pickBestObservation(ipmaCandidate, ecowittCandidate);
+    const metarCandidate = buildMetarObservedForSpot(spot, metarByIcao);
+
+    const picked = pickBestObservation(ipmaCandidate, ecowittCandidate, metarCandidate);
     if (picked) {
       conditions[spot.id].observed = picked;
       withObserved++;
       if (picked.source === 'ecowitt') ecowittWins++;
+      else if (picked.source === 'metar') metarWins++;
       else ipmaWins++;
     } else {
       delete conditions[spot.id].observed;
@@ -123,10 +135,10 @@ export async function mergeObservations() {
   fs.writeFileSync(conditionsPath, JSON.stringify(conditions, null, 2));
   writePipelineMeta('observations', new Date(), root);
   console.log(
-    `✅ observed on ${withObserved} spots (≤${MAX_STATION_DISTANCE_KM} km, ≤3h) — IPMA: ${ipmaWins}, Ecowitt: ${ecowittWins}`,
+    `✅ observed on ${withObserved} spots (≤${MAX_STATION_DISTANCE_KM} km, ≤3h) — IPMA: ${ipmaWins}, Ecowitt: ${ecowittWins}, METAR: ${metarWins}`,
   );
 
-  return { withObserved, ecowittWins, ipmaWins, ecowittSnapshot };
+  return { withObserved, ecowittWins, ipmaWins, metarWins, ecowittSnapshot };
 }
 
 const isDirectRun =

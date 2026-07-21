@@ -82,6 +82,26 @@ describe('scoreConditions', () => {
     expect(score).toBeGreaterThan(60);
   });
 
+  it('rawToScoreInput accepts METAR observed source', () => {
+    const guincho = spotBySlug('guincho');
+    const raw = {
+      waveHeight: 0.8,
+      wavePeriod: 9,
+      waveDirection: 270,
+      windSpeed: ktToMs(7),
+      windDirection: 270,
+      windGust: ktToMs(9),
+      waterTemp: 18,
+      observed: {
+        ...freshObserved(16, 330),
+        source: 'metar' as const,
+        stationName: 'Cascais (METAR)',
+      },
+    };
+    expect(resolveScoreWindSource(raw)).toBe('observed');
+    expect(getSportScore(guincho, 'kitesurf', rawToScoreInput(raw)).score).toBeGreaterThan(60);
+  });
+
   it('gust session proxy lifts Caparica-style mean≪gust without inventing wind', () => {
     const nova = spotBySlug('nova-vaga');
     const raw = {

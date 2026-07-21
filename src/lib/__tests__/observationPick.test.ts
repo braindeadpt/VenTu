@@ -37,6 +37,26 @@ describe('pickBestObservation', () => {
     expect(pickBestObservation(older, newer)?.source).toBe('ecowitt');
   });
 
+  it('within 8 km prefers IPMA over slightly closer METAR', () => {
+    const ipma = obs({ source: 'ipma', distanceKm: 12 });
+    const metar = obs({
+      source: 'metar',
+      distanceKm: 10,
+      stationName: 'Lisboa (METAR)',
+    });
+    expect(pickBestObservation(ipma, metar)?.source).toBe('ipma');
+  });
+
+  it('uses METAR when clearly closer than IPMA', () => {
+    const ipma = obs({ source: 'ipma', distanceKm: 28 });
+    const metar = obs({
+      source: 'metar',
+      distanceKm: 8,
+      stationName: 'Faro (METAR)',
+    });
+    expect(pickBestObservation(ipma, metar)?.source).toBe('metar');
+  });
+
   it('rejects observations beyond 30 km or stale', () => {
     const far = obs({ source: 'ecowitt', distanceKm: 35 });
     const stale = obs({

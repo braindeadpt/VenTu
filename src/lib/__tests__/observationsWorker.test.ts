@@ -28,4 +28,21 @@ describe('parseWorkerObservedResponse', () => {
     expect(parseWorkerObservedResponse({ observed: null })).toBeNull();
     expect(parseWorkerObservedResponse({})).toBeNull();
   });
+
+  it('parses METAR worker payload', () => {
+    const raw = parseWorkerObservedResponse({
+      observed: {
+        windSpeedKt: 11,
+        windDirDeg: 280,
+        windCardinal: 'W',
+        tempC: 20,
+        stationName: 'Lisboa (METAR)',
+        distanceKm: 17.2,
+        observedAt: new Date().toISOString(),
+        source: 'metar',
+      },
+    });
+    expect(raw?.source).toBe('metar');
+    expect(normalizeWorkerObserved(raw!).source).toBe('metar');
+  });
 });

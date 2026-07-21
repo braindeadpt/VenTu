@@ -54,7 +54,7 @@ export function applyGustSessionProxy(conditions: Conditions): {
 }
 
 /**
- * Prefer fresh IPMA/Ecowitt wind for sport scores when available.
+ * Prefer fresh IPMA / Ecowitt / METAR wind for sport scores when available.
  * Waves and water temp stay from forecast; gust uses max(forecast, observed × 1.1).
  */
 export function applyObservedWindForScore(

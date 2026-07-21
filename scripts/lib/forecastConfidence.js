@@ -19,7 +19,13 @@ const CONFIDENCE_CONFIG = {
 };
 
 const WAVE_MODELS = ['ecmwf_wam025', 'ncep_gfswave025', 'gwam'];
-const WIND_MODELS = ['ecmwf_ifs025', 'gfs_seamless', 'meteofrance_arpege_europe'];
+/** ICON-EU (~7 km) first — also used by windBlend for scoring wind. */
+const WIND_MODELS = [
+  'icon_eu',
+  'ecmwf_ifs025',
+  'gfs_seamless',
+  'meteofrance_arpege_europe',
+];
 
 function readModelValues(hourly, baseKey, models, index) {
   const values = [];

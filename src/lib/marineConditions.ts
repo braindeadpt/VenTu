@@ -74,7 +74,7 @@ export function pickObservedField(
     typeof obs.stationName !== 'string' ||
     typeof obs.distanceKm !== 'number' ||
     typeof obs.observedAt !== 'string' ||
-    (obs.source !== 'ipma' && obs.source !== 'ecowitt')
+    (obs.source !== 'ipma' && obs.source !== 'ecowitt' && obs.source !== 'metar')
   ) {
     return undefined;
   }
@@ -82,7 +82,7 @@ export function pickObservedField(
   return {
     windSpeedKt: obs.windSpeedKt as number,
     windDirDeg: hasDir ? (obs.windDirDeg as number) : 0,
-    windDirMissing: !hasDir,
+    windDirMissing: !hasDir || obs.windDirMissing === true,
     windCardinal: obs.windCardinal as string,
     windCardinalEn:
       typeof obs.windCardinalEn === 'string' ? obs.windCardinalEn : undefined,
@@ -90,6 +90,7 @@ export function pickObservedField(
     stationName: obs.stationName as string,
     distanceKm: obs.distanceKm as number,
     observedAt: obs.observedAt as string,
-    source: obs.source as 'ipma' | 'ecowitt',
+    source: obs.source as 'ipma' | 'ecowitt' | 'metar',
+    metarIcao: typeof obs.metarIcao === 'string' ? obs.metarIcao : undefined,
   };
 }
