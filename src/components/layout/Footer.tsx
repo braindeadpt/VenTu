@@ -171,7 +171,7 @@ export default function Footer({ locale }: FooterProps) {
             </h4>
             <ul className="space-y-2 text-sm text-fg-muted">
               <li>{isPt ? 'Ondas: Open-Meteo Marine' : 'Waves: Open-Meteo Marine'}</li>
-              <li>{isPt ? 'Vento: ECMWF / GFS' : 'Wind: ECMWF / GFS'}</li>
+              <li>{isPt ? 'Vento: ICON-EU / ECMWF / GFS' : 'Wind: ICON-EU / ECMWF / GFS'}</li>
               <li>
                 {isPt ? (
                   <>
@@ -193,6 +193,15 @@ export default function Footer({ locale }: FooterProps) {
                     >
                       Ecowitt
                     </a>
+                    {' · '}
+                    <a
+                      href="https://aviationweather.gov/"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      METAR
+                    </a>
                   </>
                 ) : (
                   <>
@@ -213,6 +222,15 @@ export default function Footer({ locale }: FooterProps) {
                       rel="noopener noreferrer"
                     >
                       Ecowitt
+                    </a>
+                    {' · '}
+                    <a
+                      href="https://aviationweather.gov/"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      METAR
                     </a>
                   </>
                 )}

@@ -52,7 +52,7 @@ export function parseWorkerObservedResponse(
 
   const o = observed as Record<string, unknown>;
   const source = o.source;
-  if (source !== 'ipma' && source !== 'ecowitt') return null;
+  if (source !== 'ipma' && source !== 'ecowitt' && source !== 'metar') return null;
 
   const windSpeedKt = Number(o.windSpeedKt);
   if (!Number.isFinite(windSpeedKt)) return null;

@@ -10,10 +10,37 @@ export interface Env {
 
 const MAX_DIST_KM = 30;
 const MAX_AGE_H = 3;
+const SOURCE_TIE_KM = 8;
 const IPMA_OBS =
   'https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json';
 const IPMA_ST =
   'https://api.ipma.pt/open-data/observation/meteorology/stations/stations.json';
+const METAR_IDS =
+  'LPPT,LPCS,LPMT,LPPR,LPOV,LPFR,LPMA,LPPS,LPPD,LPLA,LPHR,LPFL,LPGR,LPSJ,LPPI,LPAZ';
+const METAR_API =
+  'https://aviationweather.gov/api/data/metar?format=json&hours=2&ids=' + METAR_IDS;
+
+/** Static coastal/island airports (same catalog as scripts/lib/metar.js). */
+const METAR_STATIONS: { icao: string; name: string; lat: number; lon: number }[] = [
+  { icao: 'LPPT', name: 'Lisboa (METAR)', lat: 38.781, lon: -9.136 },
+  { icao: 'LPCS', name: 'Cascais (METAR)', lat: 38.725, lon: -9.355 },
+  { icao: 'LPMT', name: 'Montijo (METAR)', lat: 38.704, lon: -9.036 },
+  { icao: 'LPPR', name: 'Porto (METAR)', lat: 41.235, lon: -8.684 },
+  { icao: 'LPOV', name: 'Ovar (METAR)', lat: 40.916, lon: -8.646 },
+  { icao: 'LPFR', name: 'Faro (METAR)', lat: 37.014, lon: -7.966 },
+  { icao: 'LPMA', name: 'Madeira (METAR)', lat: 32.698, lon: -16.774 },
+  { icao: 'LPPS', name: 'Porto Santo (METAR)', lat: 33.073, lon: -16.35 },
+  { icao: 'LPPD', name: 'Ponta Delgada (METAR)', lat: 37.741, lon: -25.698 },
+  { icao: 'LPLA', name: 'Lajes (METAR)', lat: 38.762, lon: -27.091 },
+  { icao: 'LPHR', name: 'Horta (METAR)', lat: 38.52, lon: -28.716 },
+  { icao: 'LPFL', name: 'Flores (METAR)', lat: 39.455, lon: -31.131 },
+  { icao: 'LPGR', name: 'Graciosa (METAR)', lat: 39.092, lon: -28.03 },
+  { icao: 'LPSJ', name: 'São Jorge (METAR)', lat: 38.666, lon: -28.176 },
+  { icao: 'LPPI', name: 'Pico (METAR)', lat: 38.554, lon: -28.441 },
+  { icao: 'LPAZ', name: 'Santa Maria (METAR)', lat: 36.971, lon: -25.171 },
+];
+
+const SOURCE_RANK: Record<string, number> = { ecowitt: 0, ipma: 1, metar: 2 };
 
 function hav(la1: number, lo1: number, la2: number, lo2: number): number {
   const R = 6371;
@@ -106,7 +133,7 @@ type Obs = {
   stationName: string;
   distanceKm: number;
   observedAt: string;
-  source: 'ipma' | 'ecowitt';
+  source: 'ipma' | 'ecowitt' | 'metar';
 };
 
 async function ipmaObserved(
@@ -204,6 +231,79 @@ async function ecowittObserved(
   };
 }
 
+type MetarRow = {
+  icaoId?: string;
+  obsTime?: number;
+  wspd?: number;
+  wdir?: number;
+  temp?: number;
+};
+
+async function metarObserved(
+  lat: number,
+  lon: number,
+  ctx: ExecutionContext,
+): Promise<Obs | null> {
+  const rows = (await cachedJson(METAR_API, 600, 'metar-pt', ctx, (x) =>
+    Array.isArray(x),
+  )) as MetarRow[];
+
+  const byIcao = new Map<string, MetarRow>();
+  for (const row of rows) {
+    if (!row?.icaoId) continue;
+    const prev = byIcao.get(row.icaoId);
+    const t = Number(row.obsTime) || 0;
+    const prevT = prev ? Number(prev.obsTime) || 0 : 0;
+    if (!prev || t >= prevT) byIcao.set(row.icaoId, row);
+  }
+
+  const nearby = METAR_STATIONS.map((s) => ({
+    ...s,
+    dist: hav(lat, lon, s.lat, s.lon),
+  }))
+    .filter((s) => s.dist <= MAX_DIST_KM)
+    .sort((a, b) => a.dist - b.dist);
+
+  for (const st of nearby) {
+    const row = byIcao.get(st.icao);
+    if (!row) continue;
+    const wspd = Number(row.wspd);
+    if (!Number.isFinite(wspd) || wspd < 0) continue;
+    const obsSec = Number(row.obsTime);
+    if (!Number.isFinite(obsSec)) continue;
+    const observedAt = new Date(obsSec * 1000).toISOString();
+    if (ageH(observedAt) > MAX_AGE_H) continue;
+    const wdir = Number(row.wdir);
+    const hasDir = Number.isFinite(wdir) && wdir >= 0 && wdir <= 360;
+    const tempC = Number(row.temp);
+    return {
+      windSpeedKt: Math.round(wspd),
+      windDirDeg: hasDir ? wdir : null,
+      windCardinal: hasDir ? cardinal(wdir) : null,
+      tempC: Number.isFinite(tempC) ? tempC : null,
+      stationName: st.name,
+      distanceKm: Math.round(st.dist * 10) / 10,
+      observedAt,
+      source: 'metar',
+    };
+  }
+  return null;
+}
+
+function pickBestObs(cands: Obs[]): Obs | null {
+  if (!cands.length) return null;
+  cands.sort((a, b) => {
+    const dist = a.distanceKm - b.distanceKm;
+    if (Math.abs(dist) > SOURCE_TIE_KM) return dist;
+    const rank =
+      (SOURCE_RANK[a.source] ?? 9) - (SOURCE_RANK[b.source] ?? 9);
+    if (rank !== 0) return rank;
+    if (Math.abs(dist) > 0.05) return dist;
+    return new Date(b.observedAt).getTime() - new Date(a.observedAt).getTime();
+  });
+  return cands[0];
+}
+
 function cors(origin: string | null, allowed: string): Record<string, string> {
   const list = allowed.split(',');
   const ok = origin && list.includes(origin);
@@ -264,7 +364,7 @@ export default {
       });
     }
 
-    const [ipma, eco] = await Promise.all([
+    const [ipma, eco, metar] = await Promise.all([
       ipmaObserved(lat, lon, ctx).catch((e) => {
         console.log('ipma err', String(e));
         return null;
@@ -273,10 +373,13 @@ export default {
         console.log('eco err', String(e));
         return null;
       }),
+      metarObserved(lat, lon, ctx).catch((e) => {
+        console.log('metar err', String(e));
+        return null;
+      }),
     ]);
 
-    const cands = [ipma, eco].filter(Boolean) as Obs[];
-    cands.sort((a, b) => a.distanceKm - b.distanceKm);
-    return new Response(JSON.stringify({ observed: cands[0] ?? null }), { headers: h });
+    const cands = [ipma, eco, metar].filter(Boolean) as Obs[];
+    return new Response(JSON.stringify({ observed: pickBestObs(cands) }), { headers: h });
   },
 };

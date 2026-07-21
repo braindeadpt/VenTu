@@ -34,6 +34,7 @@ import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
 import { rawToScoreInput } from '@/lib/scoreConditions';
+import { resolveScoreWindSource } from '@/lib/scoreConditions';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
 import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
@@ -412,6 +413,16 @@ export default function SpotDetailClient({
   const { conditions, allScores, forecast } = spotData;
   const relevantSports = getRelevantSports(spot, allScores);
   const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
+  const scoreWindSource = resolveScoreWindSource({
+    waveHeight: conditions.waveHeight,
+    wavePeriod: conditions.wavePeriod,
+    waveDirection: conditions.waveDirection,
+    windSpeed: conditions.windSpeed,
+    windDirection: conditions.windDirection,
+    windGust: conditions.windGust,
+    waterTemp: conditions.waterTemp,
+    observed: conditions.observed,
+  });
   const mergedLocalTipsRaw = mergeLocalTips(
     spot,
     getLocalTips(spot.slug),
@@ -481,6 +492,7 @@ export default function SpotDetailClient({
           rating={score.rating}
           ratingEn={score.ratingEn}
           conditions={conditions}
+          scoreWindSource={scoreWindSource}
           heroRef={heroRef}
         />
 

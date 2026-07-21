@@ -20,6 +20,7 @@ const {
   confidenceByDay,
   findCurrentHourIndex,
 } = require('./lib/forecastConfidence');
+const { blendWindAtIndex, readModelMap, applyWindBlendToHours } = require('./lib/windBlend');
 const { isMultiModelEnabled: scheduleIsMultiModelEnabled } = require('./lib/updateSchedule');
 const { writePipelineMeta } = require('./lib/pipelineMeta');
 
@@ -206,12 +207,12 @@ async function fetchMarineWaveModels(lat, lon) {
   return fetchWithRetry(`${MARINE_API}?${params}`);
 }
 
-/** Multi-model wind_speed_10m only — spread/confidence. */
+/** Multi-model wind (speed/dir/gust) — confidence spread + ICON-EU score blend. */
 async function fetchWindModels(lat, lon) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
-    hourly: 'wind_speed_10m',
+    hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m',
     models: WIND_MODELS.join(','),
     timezone: 'Europe/Lisbon',
     forecast_days: '7',
@@ -352,6 +353,47 @@ async function updateConditions() {
         const timeIndex = findCurrentHourIndex(marineWaveModels.hourly.time);
         confidenceDetail = confidenceAtIndex(marineWaveModels, windModels, timeIndex);
         dailyConfidence = confidenceByDay(marineWaveModels, windModels);
+
+        // ICON-EU / multi-model blend into best_match current wind (scoring).
+        const weatherIdx = Math.min(
+          findCurrentHourIndex(weatherData.hourly.time),
+          weatherData.hourly.wind_speed_10m.length - 1,
+        );
+        const windIdx = Math.min(
+          findCurrentHourIndex(windModels.hourly.time),
+          (windModels.hourly.time?.length ?? 1) - 1,
+        );
+        const blend = blendWindAtIndex(
+          weatherData.hourly.wind_speed_10m[weatherIdx] || 0,
+          weatherData.hourly.wind_direction_10m[weatherIdx] || 0,
+          weatherData.hourly.wind_gusts_10m[weatherIdx] || 0,
+          readModelMap(windModels.hourly, 'wind_speed_10m', WIND_MODELS, windIdx),
+          readModelMap(windModels.hourly, 'wind_direction_10m', WIND_MODELS, windIdx),
+          readModelMap(windModels.hourly, 'wind_gusts_10m', WIND_MODELS, windIdx),
+        );
+        weatherData = {
+          ...weatherData,
+          hourly: {
+            ...weatherData.hourly,
+            wind_speed_10m: weatherData.hourly.wind_speed_10m.map((v, i) =>
+              i === weatherIdx ? blend.windSpeed : v,
+            ),
+            wind_direction_10m: weatherData.hourly.wind_direction_10m.map((v, i) =>
+              i === weatherIdx ? blend.windDirection : v,
+            ),
+            wind_gusts_10m: weatherData.hourly.wind_gusts_10m.map((v, i) =>
+              i === weatherIdx ? blend.windGust : v,
+            ),
+          },
+          _windBlend: {
+            method: blend.method,
+            blended: blend.blended,
+            modelCount: blend.modelCount,
+            iconEuMs: blend.iconEuMs,
+            medianMs: blend.medianMs,
+          },
+          _windModelsHourly: windModels.hourly,
+        };
       } else {
         [marineData, weatherData] = await Promise.all([
           fetchMarineData(spot.lat, spot.lon),
@@ -378,9 +420,10 @@ async function updateConditions() {
           };
         }
       }
-      
+
+      const current = getCurrentConditions(marineData, weatherData, ihTideObs);
       allConditions[spot.id] = {
-        ...getCurrentConditions(marineData, weatherData, ihTideObs),
+        ...current,
         confidence: confidenceDetail.confidence,
         confidenceDetail: {
           waveSpread: confidenceDetail.waveSpread,
@@ -391,6 +434,15 @@ async function updateConditions() {
           degraded: confidenceDetail.degraded ?? !useMultiModel,
         },
         dailyConfidence,
+        ...(weatherData._windBlend
+          ? {
+              windBlend: {
+                method: weatherData._windBlend.method,
+                blended: weatherData._windBlend.blended,
+                modelCount: weatherData._windBlend.modelCount,
+              },
+            }
+          : {}),
         updatedAt: new Date().toISOString(),
       };
 
@@ -423,6 +475,9 @@ async function updateConditions() {
           waterTemp: marineData.hourly.sea_surface_temperature[i] || 0,
           tideHeight: marineData.hourly.sea_level_height_msl[i] || 0,
         });
+      }
+      if (weatherData._windModelsHourly) {
+        applyWindBlendToHours(mergedForecast, weatherData._windModelsHourly, WIND_MODELS);
       }
       allForecasts[spot.id] = mergedForecast;
       

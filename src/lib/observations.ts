@@ -1,9 +1,9 @@
 /**
- * Ground-truth observations layer (IPMA today; Ecowitt/APDL later).
+ * Ground-truth observations layer (IPMA, Ecowitt, METAR airports).
  * Independent from sport score and multi-model confidence.
  */
 
-export type ObservedSource = 'ipma' | 'ecowitt';
+export type ObservedSource = 'ipma' | 'ecowitt' | 'metar';
 
 export interface ObservedConditions {
   windSpeedKt: number;
@@ -17,6 +17,8 @@ export interface ObservedConditions {
   source: ObservedSource;
   /** True when station omitted direction; score should keep forecast dir. */
   windDirMissing?: boolean;
+  /** ICAO when source is metar */
+  metarIcao?: string;
 }
 
 export type WindVerificationAgreement = 'match' | 'near' | 'off';
@@ -124,6 +126,7 @@ export function forecastWindKtFromMs(windSpeedMs: number): number {
 
 export function observedSourceLabel(source: ObservedSource, locale: string): string {
   if (source === 'ecowitt') return 'Ecowitt';
+  if (source === 'metar') return 'METAR';
   return locale === 'pt' ? 'IPMA' : 'IPMA';
 }
 
@@ -145,6 +148,11 @@ export function observedWindDisclaimer(source: ObservedSource, locale: string): 
     return isPt
       ? 'Estação Ecowitt (PWS) — vento medido na costa; pode diferir do line-up.'
       : 'Ecowitt PWS — measured on the coast; may differ from the lineup.';
+  }
+  if (source === 'metar') {
+    return isPt
+      ? 'METAR de aeroporto — vento observado, mas não é o térmico da praia.'
+      : 'Airport METAR — observed wind, not beach thermal.';
   }
   return isPt
     ? 'Estação terrestre IPMA — pode diferir do vento no line-up.'
