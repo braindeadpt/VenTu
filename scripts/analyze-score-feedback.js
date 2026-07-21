@@ -2,6 +2,7 @@
  * VenTu — Aggregate score feedback for calibration review (Phase C4b)
  *
  * Env: SUPABASE_URL (or NEXT_PUBLIC_SUPABASE_URL), SUPABASE_SERVICE_ROLE_KEY
+ * Loads .env.local from repo root when present.
  *
  * Usage:
  *   npm run scores:analyze
@@ -9,6 +10,8 @@
  *
  * Does NOT change sportScore weights — review output before editing.
  */
+
+const { loadEnvLocal } = require('./lib/loadEnvLocal');
 
 const MIN_N_PER_SPORT = 30;
 const MIN_N_PER_SPOT = 5;
@@ -108,36 +111,45 @@ function flagCandidates(rows) {
   );
 }
 
-function loadEnvLocal() {
-  const fs = require('fs');
-  const path = require('path');
-  const envPath = path.join(__dirname, '../.env.local');
-  if (!fs.existsSync(envPath)) return;
-  for (const line of fs.readFileSync(envPath, 'utf-8').split('\n')) {
-    const t = line.trim();
-    if (!t || t.startsWith('#')) continue;
-    const i = t.indexOf('=');
-    if (i < 1) continue;
-    const key = t.slice(0, i).trim();
-    const val = t.slice(i + 1).trim().replace(/^["']|["']$/g, '');
-    if (!process.env[key]) process.env[key] = val;
-  }
-}
-
-async function fetchFeedbackRows() {
+function assertSupabaseEnv() {
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) {
     throw new Error(
-      'Missing SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY',
+      'Missing SUPABASE_URL / NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY — add to .env.local (see .env.example)',
     );
   }
+
+  let apiHost;
+  try {
+    apiHost = new URL(url).hostname;
+  } catch {
+    throw new Error('Invalid SUPABASE URL in .env.local');
+  }
+  if (!apiHost.endsWith('.supabase.co')) {
+    throw new Error(
+      'SUPABASE URL must be the Project URL (https://<ref>.supabase.co), not the dashboard link. Supabase → Settings → API → Project URL',
+    );
+  }
+
+  return { url, key };
+}
+
+async function fetchFeedbackRows() {
+  const { url, key } = assertSupabaseEnv();
 
   const res = await fetch(
     `${url}/rest/v1/score_feedback?select=spot_slug,sport,verdict,predicted_score,created_at&order=created_at.desc&limit=2000`,
     { headers: { apikey: key, Authorization: `Bearer ${key}` } },
   );
-  if (!res.ok) throw new Error(`Supabase ${res.status}`);
+  if (!res.ok) {
+    if (res.status === 404) {
+      throw new Error(
+        'Supabase 404 — table score_feedback missing? Run supabase/supabase-score-feedback.sql in the SQL Editor.',
+      );
+    }
+    throw new Error(`Supabase ${res.status}`);
+  }
   return res.json();
 }
 
@@ -240,6 +252,7 @@ module.exports = {
   aggregateFeedback,
   summarizeBySport,
   flagCandidates,
+  assertSupabaseEnv,
 };
 
 if (require.main === module) {
