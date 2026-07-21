@@ -17,6 +17,19 @@ const FROM_EMAIL = process.env.RESEND_FROM || 'VenTu <alerts@ventu.surf>';
 const COOLDOWN_MS = 3 * 60 * 60 * 1000;
 const DIGEST_HOUR_LISBON = 7;
 
+const { escapeHtml, safeLocale } = require('./lib/htmlEscape');
+const { computeScore } = require('./lib/scoreSpotConditions');
+
+function alertPath(locale, page, token) {
+  const loc = safeLocale(locale);
+  return `${SITE_URL}/${loc}/alerts/${page}/?token=${encodeURIComponent(token || '')}`;
+}
+
+function spotPath(locale, slug) {
+  const loc = safeLocale(locale);
+  return `${SITE_URL}/${loc}/spots/${encodeURIComponent(slug)}/`;
+}
+
 function lisbonDateTimeParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Lisbon',
@@ -64,9 +77,6 @@ function loadSpotMaps() {
   return { slugToId, idToSlug };
 }
 
-/** Same scorer as the web app (sportScore + observed wind when fresh). */
-const { computeScore } = require('./lib/scoreSpotConditions');
-
 function supabaseHeaders(key) {
   return {
     apikey: key,
@@ -103,7 +113,7 @@ async function fetchUserAlertPrefs() {
 async function fetchUserFavorites(userId) {
   const { url, key } = getSupabaseConfig();
   const res = await fetch(
-    `${url}/rest/v1/user_favorites?user_id=eq.${userId}&select=spot_id`,
+    `${url}/rest/v1/user_favorites?user_id=eq.${encodeURIComponent(userId)}&select=spot_id`,
     { headers: supabaseHeaders(key) },
   );
   if (!res.ok) return [];
@@ -165,7 +175,9 @@ async function sendEmail(to, subject, html, opts = {}) {
 
 async function markLegacySent(id) {
   const { url, key } = getSupabaseConfig();
-  await fetch(`${url}/rest/v1/alert_subscriptions?id=eq.${id}`, {
+  const safeId = Number(id);
+  if (!Number.isFinite(safeId)) throw new Error(`Invalid subscription id: ${id}`);
+  await fetch(`${url}/rest/v1/alert_subscriptions?id=eq.${safeId}`, {
     method: 'PATCH',
     headers: {
       ...supabaseHeaders(key),
@@ -178,33 +190,45 @@ async function markLegacySent(id) {
 
 async function markUserPrefsSent(userId) {
   const { url, key } = getSupabaseConfig();
-  await fetch(`${url}/rest/v1/user_alert_prefs?user_id=eq.${userId}`, {
-    method: 'PATCH',
-    headers: {
-      ...supabaseHeaders(key),
-      'Content-Type': 'application/json',
-      Prefer: 'return=minimal',
+  await fetch(
+    `${url}/rest/v1/user_alert_prefs?user_id=eq.${encodeURIComponent(userId)}`,
+    {
+      method: 'PATCH',
+      headers: {
+        ...supabaseHeaders(key),
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({
+        last_sent_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }),
     },
-    body: JSON.stringify({ last_sent_at: new Date().toISOString(), updated_at: new Date().toISOString() }),
-  });
+  );
 }
 
 async function sendLegacyVerification(sub) {
   const isPt = sub.locale !== 'en';
-  const link = `${SITE_URL}/${sub.locale || 'pt'}/alerts/confirm/?token=${sub.verify_token}`;
-  const unsub = `${SITE_URL}/${sub.locale || 'pt'}/alerts/unsubscribe/?token=${sub.verify_token}`;
+  const link = alertPath(sub.locale, 'confirm', sub.verify_token);
+  const unsub = alertPath(sub.locale, 'unsubscribe', sub.verify_token);
+  const slug = escapeHtml(sub.spot_slug);
+  const sport = escapeHtml(sub.sport);
+  const minScore = escapeHtml(sub.min_score);
   const subject = isPt ? 'Confirma o teu alerta VenTu' : 'Confirm your VenTu alert';
   const html = isPt
-    ? `<p>Confirma o alerta para <strong>${sub.spot_slug}</strong> (${sub.sport}, score ≥ ${sub.min_score}):</p><p><a href="${link}">Confirmar alerta</a></p>`
-    : `<p>Confirm alert for <strong>${sub.spot_slug}</strong> (${sub.sport}, score ≥ ${sub.min_score}):</p><p><a href="${link}">Confirm alert</a></p>`;
+    ? `<p>Confirma o alerta para <strong>${slug}</strong> (${sport}, score ≥ ${minScore}):</p><p><a href="${link}">Confirmar alerta</a></p>`
+    : `<p>Confirm alert for <strong>${slug}</strong> (${sport}, score ≥ ${minScore}):</p><p><a href="${link}">Confirm alert</a></p>`;
   await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
 }
 
 async function sendUserVerification(pref, favoriteCount) {
   const isPt = pref.locale !== 'en';
   const mode = normalizeAlertMode(pref.alert_mode);
-  const link = `${SITE_URL}/${pref.locale || 'pt'}/alerts/confirm/?token=${pref.verify_token}`;
-  const unsub = `${SITE_URL}/${pref.locale || 'pt'}/alerts/unsubscribe/?token=${pref.verify_token}`;
+  const link = alertPath(pref.locale, 'confirm', pref.verify_token);
+  const unsub = alertPath(pref.locale, 'unsubscribe', pref.verify_token);
+  const sport = escapeHtml(pref.sport);
+  const minScore = escapeHtml(pref.min_score);
+  const count = escapeHtml(favoriteCount);
   const subject = isPt
     ? 'Confirma alertas VenTu nos teus favoritos'
     : 'Confirm VenTu alerts on your favorites';
@@ -216,8 +240,8 @@ async function sendUserVerification(pref, favoriteCount) {
       ? 'immediate alerts (max once per 3h)'
       : 'daily digest (~7:30 AM)';
   const html = isPt
-    ? `<p>Confirma alertas por email para <strong>${favoriteCount}</strong> spot(s) favorito(s) (${pref.sport}, score ≥ ${pref.min_score}, ${freqNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
-    : `<p>Confirm email alerts for <strong>${favoriteCount}</strong> favorite spot(s) (${pref.sport}, score ≥ ${pref.min_score}, ${freqNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
+    ? `<p>Confirma alertas por email para <strong>${count}</strong> spot(s) favorito(s) (${sport}, score ≥ ${minScore}, ${freqNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
+    : `<p>Confirm email alerts for <strong>${count}</strong> favorite spot(s) (${sport}, score ≥ ${minScore}, ${freqNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
   await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
 }
 
@@ -245,12 +269,15 @@ async function evaluateLegacySubscriptions(slugToId, conditions) {
     if (score === null || score < sub.min_score) continue;
 
     const isPt = sub.locale !== 'en';
-    const spotUrl = `${SITE_URL}/${sub.locale || 'pt'}/spots/${sub.spot_slug}/`;
-    const unsub = `${SITE_URL}/${sub.locale || 'pt'}/alerts/unsubscribe/?token=${sub.verify_token}`;
+    const spotUrl = spotPath(sub.locale, sub.spot_slug);
+    const unsub = alertPath(sub.locale, 'unsubscribe', sub.verify_token);
+    const slug = escapeHtml(sub.spot_slug);
+    const sport = escapeHtml(sub.sport);
+    const minScore = escapeHtml(sub.min_score);
     const subject = `VenTu — ${sub.spot_slug}: score ${score} (${sub.sport})`;
     const html = isPt
-      ? `<p>Condições boas em <strong>${sub.spot_slug}</strong>!</p><p>Score ${sub.sport}: <strong>${score}</strong>/100 (limiar ${sub.min_score})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
-      : `<p>Good conditions at <strong>${sub.spot_slug}</strong>!</p><p>${sub.sport} score: <strong>${score}</strong>/100 (threshold ${sub.min_score})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
+      ? `<p>Condições boas em <strong>${slug}</strong>!</p><p>Score ${sport}: <strong>${score}</strong>/100 (limiar ${minScore})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
+      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} score: <strong>${score}</strong>/100 (threshold ${minScore})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
 
     const ok = await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
     if (ok) {
@@ -315,7 +342,7 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
     }
 
     const isPt = pref.locale !== 'en';
-    const unsub = `${SITE_URL}/${pref.locale || 'pt'}/alerts/unsubscribe/?token=${pref.verify_token}`;
+    const unsub = alertPath(pref.locale, 'unsubscribe', pref.verify_token);
     const subject =
       mode === 'digest'
         ? isPt
@@ -336,8 +363,8 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
 
     const items = firing
       .map(({ slug, score }) => {
-        const spotUrl = `${SITE_URL}/${pref.locale || 'pt'}/spots/${slug}/`;
-        return `<li><a href="${spotUrl}"><strong>${slug}</strong></a> — score ${score}/100</li>`;
+        const spotUrl = spotPath(pref.locale, slug);
+        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100</li>`;
       })
       .join('');
 
