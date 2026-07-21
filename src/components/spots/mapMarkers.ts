@@ -176,24 +176,39 @@ export function createSpotMarker(
   return marker;
 }
 
-export const MARKER_ADD_CHUNK_SIZE = 40;
+export const MARKER_ADD_CHUNK_SIZE = 25;
 
 /**
- * Add markers in small batches across animation frames so MarkerCluster
- * never freezes the main thread on mobile (185 spots).
+ * Process items in small batches across animation frames so marker
+ * construction and layer adds never freeze the main thread on mobile.
  */
+export function runChunked<T>(
+  items: T[],
+  processBatch: (batch: T[]) => void,
+  cancelRef: { current: boolean },
+  onDone?: () => void,
+  chunkSize = MARKER_ADD_CHUNK_SIZE,
+): void {
+  let i = 0;
+  const step = () => {
+    if (cancelRef.current) return;
+    const batch = items.slice(i, i + chunkSize);
+    if (batch.length > 0) processBatch(batch);
+    i += chunkSize;
+    if (i < items.length) {
+      requestAnimationFrame(step);
+    } else {
+      onDone?.();
+    }
+  };
+  step();
+}
+
+/** @deprecated Use runChunked — kept for callers that only add pre-built markers */
 export function addMarkersChunked(
   markers: L.Marker[],
   addBatch: (batch: L.Marker[]) => void,
   cancelRef: { current: boolean },
 ): void {
-  let i = 0;
-  const step = () => {
-    if (cancelRef.current) return;
-    const batch = markers.slice(i, i + MARKER_ADD_CHUNK_SIZE);
-    if (batch.length > 0) addBatch(batch);
-    i += MARKER_ADD_CHUNK_SIZE;
-    if (i < markers.length) requestAnimationFrame(step);
-  };
-  step();
+  runChunked(markers, addBatch, cancelRef);
 }

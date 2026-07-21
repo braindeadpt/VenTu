@@ -7,11 +7,20 @@ import { loadConditionsJson } from '@/lib/spotDataCache';
 
 const REFRESH_MS = 15 * 60 * 1000;
 
+export interface UseLiveGridSpotDataOptions {
+  /** Delay first refresh so map can paint (e.g. fullscreen /mapa on mobile). */
+  deferRefreshMs?: number;
+}
+
 /**
  * Hydrates grid/map spot rows with fresh conditions.json.
  * Re-fetches on mount, when the tab becomes visible, and every 15 min.
  */
-export function useLiveGridSpotData<T extends GridSpotData>(initial: T[]): T[] {
+export function useLiveGridSpotData<T extends GridSpotData>(
+  initial: T[],
+  options?: UseLiveGridSpotDataOptions,
+): T[] {
+  const deferRefreshMs = options?.deferRefreshMs ?? 0;
   const [data, setData] = useState<T[]>(initial);
 
   useEffect(() => {
@@ -20,6 +29,8 @@ export function useLiveGridSpotData<T extends GridSpotData>(initial: T[]): T[] {
 
   useEffect(() => {
     let cancelled = false;
+    let intervalId: number | undefined;
+    let deferId: number | undefined;
 
     const refresh = () => {
       loadConditionsJson({ force: true })
@@ -32,8 +43,21 @@ export function useLiveGridSpotData<T extends GridSpotData>(initial: T[]): T[] {
         });
     };
 
-    refresh();
-    const id = window.setInterval(refresh, REFRESH_MS);
+    const startPolling = () => {
+      intervalId = window.setInterval(refresh, REFRESH_MS);
+    };
+
+    if (deferRefreshMs > 0) {
+      deferId = window.setTimeout(() => {
+        if (cancelled) return;
+        refresh();
+        startPolling();
+      }, deferRefreshMs);
+    } else {
+      refresh();
+      startPolling();
+    }
+
     const onVis = () => {
       if (document.visibilityState === 'visible') refresh();
     };
@@ -41,10 +65,11 @@ export function useLiveGridSpotData<T extends GridSpotData>(initial: T[]): T[] {
 
     return () => {
       cancelled = true;
-      window.clearInterval(id);
+      if (deferId !== undefined) window.clearTimeout(deferId);
+      if (intervalId !== undefined) window.clearInterval(intervalId);
       document.removeEventListener('visibilitychange', onVis);
     };
-  }, []);
+  }, [deferRefreshMs]);
 
   return data;
 }

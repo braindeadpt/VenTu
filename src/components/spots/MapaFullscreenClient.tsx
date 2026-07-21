@@ -57,23 +57,29 @@ export default function MapaFullscreenClient({
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
   const regionList = useMemo(() => regions as readonly string[], [regions]);
-  const liveSpotsData = useLiveGridSpotData(spotsData);
+  const liveSpotsData = useLiveGridSpotData(spotsData, { deferRefreshMs: 5000 });
 
-  const [sport, setSport] = useState<GridSportFilter>(DEFAULT_SPORT);
-  const [region, setRegion] = useState<string>(DEFAULT_REGION);
-  const [difficulty, setDifficulty] = useState<MapDifficultyFilter>('all');
-  const [mounted, setMounted] = useState(false);
+  const [sport, setSport] = useState<GridSportFilter>(() => {
+    if (typeof window === 'undefined') return DEFAULT_SPORT;
+    return readGridFiltersFromWindow(regions as readonly string[]).sport;
+  });
+  const [region, setRegion] = useState<string>(() => {
+    if (typeof window === 'undefined') return DEFAULT_REGION;
+    return readGridFiltersFromWindow(regions as readonly string[]).region;
+  });
+  const [difficulty, setDifficulty] = useState<MapDifficultyFilter>(() => {
+    if (typeof window === 'undefined') return 'all';
+    return readMapDifficultyFromStorage();
+  });
 
   useEffect(() => {
     const { sport: urlSport, region: urlRegion } = readGridFiltersFromWindow(regionList);
     setSport(urlSport);
     setRegion(urlRegion);
     setDifficulty(readMapDifficultyFromStorage());
-    setMounted(true);
   }, [regionList]);
 
   useEffect(() => {
-    if (!mounted) return;
     try {
       localStorage.setItem(LS_SPORT_KEY, sport);
       localStorage.setItem(MAP_DIFFICULTY_LS_KEY, difficulty);
@@ -82,7 +88,7 @@ export default function MapaFullscreenClient({
     }
     syncGridFiltersToUrl(sport, region, regionList);
     dispatchSportChange(sport);
-  }, [sport, region, difficulty, mounted, regionList]);
+  }, [sport, region, difficulty, regionList]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -161,19 +167,17 @@ export default function MapaFullscreenClient({
   return (
     <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={isPt ? 'Mapa fullscreen' : 'Fullscreen map'}>
       <h1 className="sr-only">{isPt ? 'Mapa de spots — VenTu' : 'Spots map — VenTu'}</h1>
-      {mounted && (
-        <SpotMapInteractive
-          spotsData={filtered}
-          selectedSport={sport}
-          selectedRegion={region}
-          locale={locale}
-          initialFullscreen
-          fullscreenBelowHeader
-          onExitFullscreen={handleExit}
-          onSpotSelect={handleSpotSelect}
-          mapHud={mapHud}
-        />
-      )}
+      <SpotMapInteractive
+        spotsData={filtered}
+        selectedSport={sport}
+        selectedRegion={region}
+        locale={locale}
+        initialFullscreen
+        fullscreenBelowHeader
+        onExitFullscreen={handleExit}
+        onSpotSelect={handleSpotSelect}
+        mapHud={mapHud}
+      />
     </div>
   );
 }

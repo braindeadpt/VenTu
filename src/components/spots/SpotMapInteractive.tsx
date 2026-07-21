@@ -42,7 +42,7 @@ import { readClusterPref, readWindPref, readOnlyOnPref } from './mapHudPrefs';
 import {
   buildMarkerCacheKey,
   createSpotMarker,
-  addMarkersChunked,
+  runChunked,
 } from './mapMarkers';
 
 type SpotData = MapSpotData;
@@ -422,13 +422,23 @@ export default function SpotMapInteractive({
     setWindLegendOpen(false);
   }, []);
 
-  // First-time coach when wind rings become visible
+  // First-time coach when wind rings become visible — defer until browser is idle
   useEffect(() => {
     if (!isReady || !showWindOnMarkers || isHeroEmbed) return;
     if (windLegendAutoQueuedRef.current || hasSeenWindRingLegend()) return;
     windLegendAutoQueuedRef.current = true;
-    const t = window.setTimeout(() => setWindLegendOpen(true), 500);
-    return () => window.clearTimeout(t);
+    const open = () => setWindLegendOpen(true);
+    let idleId: number | undefined;
+    let timeoutId: number | undefined;
+    if (typeof window.requestIdleCallback === 'function') {
+      idleId = window.requestIdleCallback(open, { timeout: 4000 });
+    } else {
+      timeoutId = window.setTimeout(open, 2000);
+    }
+    return () => {
+      if (idleId !== undefined) window.cancelIdleCallback(idleId);
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
   }, [isReady, showWindOnMarkers, isHeroEmbed]);
 
   // Performance measurement — marker creation timing
@@ -607,7 +617,7 @@ export default function SpotMapInteractive({
       if (!map.hasLayer(lg)) map.addLayer(lg);
     }
 
-    const boundsKey = `${visibleSpots.length}:${onlyOnEnabled}:${selectedSport}:${selectedRegion}:${visibleSpots.map((d) => d.spot.id).join(',')}`;
+    const boundsKey = `${visibleSpots.length}:${onlyOnEnabled}:${selectedSport}:${selectedRegion}`;
     if (filterBoundsKeyRef.current !== boundsKey) {
       filterBoundsKeyRef.current = boundsKey;
       didFitBoundsRef.current = false;
@@ -626,64 +636,13 @@ export default function SpotMapInteractive({
     const bounds = Leaflet.latLngBounds([]);
     const useMobileSheet = isMobile;
 
-    // Constructing marker objects here is cheap (no DOM insertion happens
-    // until a marker is added to a map-attached layer) — only the add-to-
-    // layer step below is chunked.
-    const toCluster: L.Marker[] = [];
-    const toPlain: L.Marker[] = [];
-
-    visibleSpots.forEach((data) => {
-      const cacheKey = buildMarkerCacheKey(
-        data,
-        selectedSport,
-        showWindOnMarkers,
-        locale,
-        useMobileSheet,
-      );
-      let marker = cache.get(data.spot.id);
-      const meta = marker as (L.Marker & { ventuKey?: string }) | undefined;
-
-      if (!marker || meta?.ventuKey !== cacheKey) {
-        if (marker) {
-          marker.remove();
-          cache.delete(data.spot.id);
-        }
-        marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, {
-          useMobileSheet,
-          onMobileTap: setSheetSpot,
-          onSpotSelect,
-        });
-        (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
-        cache.set(data.spot.id, marker);
-      }
-
-      if (activeCluster) {
-        toCluster.push(marker);
-      } else {
-        toPlain.push(marker);
-      }
-      if (includeSpotInViewportBounds(data.spot, selectedRegion)) {
-        bounds.extend([data.spot.lat, data.spot.lon]);
-      }
-    });
-
-    markerChunkCancelRef.current = false;
-    if (toCluster.length > 0) {
-      addMarkersChunked(toCluster, (batch) => mcg.addLayers(batch), markerChunkCancelRef);
-    }
-    if (toPlain.length > 0) {
-      addMarkersChunked(
-        toPlain,
-        (batch) => batch.forEach((m) => lg.addLayer(m)),
-        markerChunkCancelRef,
-      );
-    }
-
-    if (!didFitBoundsRef.current && bounds.isValid()) {
-      map.invalidateSize({ animate: false });
+    const fitBoundsIfNeeded = () => {
+      if (didFitBoundsRef.current || !bounds.isValid() || !mapInstanceRef.current) return;
+      const fitMap = mapInstanceRef.current;
+      fitMap.invalidateSize({ animate: false });
       if (isHeroEmbed) {
         const leftPad = isMobile ? 20 : 300;
-        map.fitBounds(bounds, {
+        fitMap.fitBounds(bounds, {
           paddingTopLeft: Leaflet.point(leftPad, 48),
           paddingBottomRight: Leaflet.point(40, 96),
           maxZoom: isMobile ? 8 : 10,
@@ -691,20 +650,64 @@ export default function SpotMapInteractive({
         });
       } else {
         const fitMaxZoom = isMobile ? 9 : 11;
-        map.fitBounds(bounds, {
+        fitMap.fitBounds(bounds, {
           padding: isMobile ? [16, 16] : [40, 40],
           maxZoom: fitMaxZoom,
         });
       }
       didFitBoundsRef.current = true;
-    }
+    };
 
-    // TODO(perf): diff marker event handlers when toggling mobile/desktop without full cache bust;
-    // popup vs sheet mode still requires recreate today when isMobile changes.
+    markerChunkCancelRef.current = false;
+    runChunked(
+      visibleSpots,
+      (batch) => {
+        const toCluster: L.Marker[] = [];
+        const toPlain: L.Marker[] = [];
+
+        for (const data of batch) {
+          const cacheKey = buildMarkerCacheKey(
+            data,
+            selectedSport,
+            showWindOnMarkers,
+            locale,
+            useMobileSheet,
+          );
+          let marker = cache.get(data.spot.id);
+          const meta = marker as (L.Marker & { ventuKey?: string }) | undefined;
+
+          if (!marker || meta?.ventuKey !== cacheKey) {
+            if (marker) {
+              marker.remove();
+              cache.delete(data.spot.id);
+            }
+            marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, {
+              useMobileSheet,
+              onMobileTap: setSheetSpot,
+              onSpotSelect,
+            });
+            (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
+            cache.set(data.spot.id, marker);
+          }
+
+          if (activeCluster) {
+            toCluster.push(marker);
+          } else {
+            toPlain.push(marker);
+          }
+          if (includeSpotInViewportBounds(data.spot, selectedRegion)) {
+            bounds.extend([data.spot.lat, data.spot.lon]);
+          }
+        }
+
+        if (toCluster.length > 0) mcg.addLayers(toCluster);
+        if (toPlain.length > 0) toPlain.forEach((m) => lg.addLayer(m));
+      },
+      markerChunkCancelRef,
+      fitBoundsIfNeeded,
+    );
+
     return () => {
-      // Stop a still-running chunked add sequence from a previous run
-      // (filters/deps changed, or unmount) — the groups it was targeting
-      // are about to be cleared or torn down.
       markerChunkCancelRef.current = true;
     };
   }, [

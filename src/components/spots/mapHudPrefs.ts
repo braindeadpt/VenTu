@@ -4,6 +4,13 @@ import {
   MAP_ONLY_ON_LS_KEY,
 } from '@/lib/map-constants';
 
+const MOBILE_MQ = '(max-width: 767px)';
+
+function isMobileViewport(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.matchMedia(MOBILE_MQ).matches;
+}
+
 export function readClusterPref(): boolean {
   if (typeof window === 'undefined') return false;
   try {
@@ -13,7 +20,8 @@ export function readClusterPref(): boolean {
   } catch {
     /* noop */
   }
-  return false;
+  // Mobile: cluster by default — 185 wind-ring markers freeze the main thread
+  return isMobileViewport();
 }
 
 export function readWindPref(): boolean {
@@ -25,7 +33,8 @@ export function readWindPref(): boolean {
   } catch {
     /* noop */
   }
-  return true;
+  // Mobile: plain score pins first; user can enable wind rings after map is idle
+  return !isMobileViewport();
 }
 
 export function readOnlyOnPref(): boolean {

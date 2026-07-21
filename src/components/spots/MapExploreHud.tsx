@@ -98,7 +98,7 @@ export default function MapExploreHud({
       aria-label={isPt ? 'Modo explorar' : 'Explore mode'}
       data-map-hud-collapsed={collapsed ? 'true' : 'false'}
     >
-      <div className="pointer-events-auto mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card px-3 py-2 flex flex-col gap-2 sm:px-3.5 md:px-4 md:py-2.5">
+      <div className="pointer-events-auto mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated md:bg-bg-elevated/95 md:backdrop-blur-md shadow-card px-3 py-2 flex flex-col gap-2 sm:px-3.5 md:px-4 md:py-2.5">
         <button
           type="button"
           onClick={toggleCollapsed}
