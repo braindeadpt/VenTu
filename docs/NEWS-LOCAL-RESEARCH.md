@@ -18,7 +18,7 @@ Pipeline em 4 etapas (`scripts/update-news.js`):
 | Etapa | Ficheiro | Papel |
 |-------|----------|--------|
 | 1 | `scripts/news/fetch-rss.js` | RSS → stubs + spam filter |
-| 2 | `scripts/news/detect-events.js` | Eventos a partir de `conditions.json` + `forecasts.json` (167 spots PT) |
+| 2 | `scripts/news/detect-events.js` | Eventos a partir de `conditions.json` + `forecasts.json` (185 spots PT) |
 | 3 | `scripts/news/llm-tasks.js` | Categorizar, traduzir PT/EN, sintetizar eventos |
 | 4 | `scripts/news/merge-persist.js` | Merge, TTL 7 dias, dedup, cap 100 |
 
@@ -72,7 +72,7 @@ Melhorias UX já aplicadas:
 
 ### 2. Eventos VenTu (dados próprios) — **feito (E3)**
 
-Gerados a partir dos **167 spots** — isto é o conteúdo mais «local» possível:
+Gerados a partir dos **185 spots** — isto é o conteúdo mais «local» possível:
 
 - Ondas ≥3m **agora** ou **previsão 72h**
 - Vento ≥25kt **agora** ou **previsão 24h**

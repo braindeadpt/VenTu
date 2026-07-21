@@ -54,11 +54,11 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 | E1 | Alertas email em produção | P0 | 1h | ✅ done |
 | E2 | Polish audit visual (quick wins) | P1 | 2–3h | ✅ done |
 | E3 | Notícias v2 | P1 | 4–6h | ✅ done |
-| C4b | Calibração scores (pesos empíricos) | P2 | contínuo | ⬜ pending |
+| C4b | Calibração scores (pesos empíricos) | P2 | contínuo | 🟡 tooling ready — aguardar N≥30/modalidade |
 | E5 | Mapa / UX mapa (vento legível) | P1 | 1h | ✅ done |
 | E6 | Livecams embed + expansão | P2 | 4h+ | ✅ done |
 
-**Fase activa:** pós-E1 — cobertura obs ilhas / calibração scores · vento costeiro METAR/ICON-EU (#15)
+**Fase activa:** **C4b** (recolher feedback → `npm run scores:analyze`) · vento/METAR/ilhas/mapa split feitos
 
 ---
 
@@ -121,8 +121,9 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 **Tarefas:**
 
 - [ ] Aguardar N≥30 feedbacks por modalidade antes de mudar pesos
-- [ ] Correr `analyze-score-feedback.js` e rever sugestões
-- [ ] Ajustar `sportScore.ts` com evidência (Nazaré ≠ Lagoa)
+- [x] Relatório C4b: `npm run scores:analyze` (por sport, flags de bias, `--json`)
+- [ ] Correr analyze com service role e rever sugestões
+- [ ] Ajustar `sportScore.ts` só com evidência (Nazaré ≠ Lagoa)
 - [ ] Registar alterações e re-correr `npm test`
 
 **Nota:** tuning sem dados = especulativo ([`BACKLOG.md`](./BACKLOG.md)).
@@ -239,17 +240,23 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 |---------|----------------|
 | Dawn Patrol freshness | ≤ 24h (workflow) |
 | Copy “tempo real” no UI | 0 |
-| `compatibleSports` | 167/167 ✅ |
-| Unit tests scoring | 31+ (incl. map/search/livecams) |
+| `compatibleSports` | 185/185 ✅ |
+| Unit tests scoring | 220+ |
 | Sitemap URLs | ~448 ✅ |
 | Livecams curadas | 31 spots |
-| Alertas email prod | ⬜ validar E1 |
-| Feedback scores → tuning | ⬜ aguardar volume (C4b) |
+| Alertas email prod | ✅ E1 done |
+| Feedback scores → tuning | 🟡 tooling ready (C4b — N≥30/modalidade) |
 | Notícias Cena PT | 3 feeds PT + intl |
 
 ---
 
 ## Notas de sessão
+
+### 2026-07-21 — Vento, E1, security, mapa, C4b tooling
+
+- METAR + ICON-EU + Caparica + ilhas (Seixal 35 km); E1 alertas confirmado; security HTML/CORS; SpotMapInteractive split
+- Docs 185 spots; `scores:analyze` relatório C4b (sport ready / bias flags)
+- **Próximo:** recolher feedback → `npm run scores:analyze` quando N≥30/modalidade
 
 ### 2026-05-25 — E2, E3, E6
 
