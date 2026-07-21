@@ -78,9 +78,17 @@ export async function mergeObservations() {
     const mapping = stationMap[spot.slug];
     let ipmaCandidate = null;
     if (mapping && ipmaSnapshots) {
-      const obs = findLatestObservationForStation(ipmaSnapshots, mapping.idEstacao);
-      if (obs) {
-        ipmaCandidate = buildObservedPayload(obs, mapping.stationName, mapping.distanceKm);
+      const stationTries = [
+        { idEstacao: mapping.idEstacao, stationName: mapping.stationName, distanceKm: mapping.distanceKm },
+        ...(Array.isArray(mapping.alternates) ? mapping.alternates : []),
+      ];
+      for (const trySt of stationTries) {
+        if (trySt.distanceKm > MAX_STATION_DISTANCE_KM) continue;
+        const obs = findLatestObservationForStation(ipmaSnapshots, trySt.idEstacao);
+        if (obs) {
+          ipmaCandidate = buildObservedPayload(obs, trySt.stationName, trySt.distanceKm);
+          break;
+        }
       }
     }
 

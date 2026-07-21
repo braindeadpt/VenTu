@@ -459,25 +459,29 @@
     "spotId": "nova-vaga",
     "idEstacao": 1210773,
     "stationName": "Almada, P.Rainha",
-    "distanceKm": 5.3
+    "distanceKm": 5.3,
+    "alternates": []
   },
   "sao-joao-caparica": {
     "spotId": "sao-joao-caparica",
     "idEstacao": 1210773,
     "stationName": "Almada, P.Rainha",
-    "distanceKm": 5.7
+    "distanceKm": 5.7,
+    "alternates": []
   },
   "costa-caparica": {
     "spotId": "costa-caparica",
     "idEstacao": 1210773,
     "stationName": "Almada, P.Rainha",
-    "distanceKm": 3.7
+    "distanceKm": 3.7,
+    "alternates": []
   },
   "fonte-telha": {
     "spotId": "fonte-telha",
     "idEstacao": 1210773,
     "stationName": "Almada, P.Rainha",
-    "distanceKm": 4.1
+    "distanceKm": 4.1,
+    "alternates": []
   },
   "ponta-dos-corvos": {
     "spotId": "ponta-dos-corvos",
@@ -489,19 +493,28 @@
     "spotId": "trafaria",
     "idEstacao": 1210773,
     "stationName": "Almada, P.Rainha",
-    "distanceKm": 6.5
+    "distanceKm": 6.5,
+    "alternates": []
   },
   "cova-do-vapor": {
     "spotId": "cova-do-vapor",
-    "idEstacao": 6215360,
-    "stationName": "Oeiras / Vila Fria (CMO)",
-    "distanceKm": 7
+    "idEstacao": 1210773,
+    "stationName": "Almada, P.Rainha",
+    "distanceKm": 7.1,
+    "alternates": [
+      {
+        "idEstacao": 6215360,
+        "stationName": "Oeiras / Vila Fria (CMO)",
+        "distanceKm": 7
+      }
+    ]
   },
   "praia-da-rainha": {
     "spotId": "praia-da-rainha",
     "idEstacao": 1210773,
     "stationName": "Almada, P.Rainha",
-    "distanceKm": 2.7
+    "distanceKm": 2.7,
+    "alternates": []
   },
   "almoxarife": {
     "spotId": "almoxarife",

@@ -16,6 +16,8 @@ import ScoreGauge from '@/components/ui/ScoreGauge';
 import ScoreBadge from '@/components/ui/ScoreBadge';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
+import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
+import type { ScoreWindSource } from '@/lib/scoreConditions';
 import SpotLevelToday from '@/components/spots/SpotLevelToday';
 import StatChip from '@/components/ui/StatChip';
 import WindFlowGlyph, { windFlowAriaLabel } from '@/components/ui/WindFlowGlyph';
@@ -45,6 +47,7 @@ interface SpotDetailHeroProps {
     confidence?: ConfidenceTier;
     confidenceDetail?: ConfidenceDetail;
   };
+  scoreWindSource?: ScoreWindSource;
   /** Optional ref pointing to the hero root — used by the sticky condensed bar. */
   heroRef?: React.Ref<HTMLElement>;
 }
@@ -60,6 +63,7 @@ export default function SpotDetailHero({
   rating,
   ratingEn,
   conditions,
+  scoreWindSource = 'forecast',
   heroRef,
 }: SpotDetailHeroProps) {
   const isPt = locale === 'pt';
@@ -191,6 +195,7 @@ export default function SpotDetailHero({
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
                   <ScoreBadge score={score} locale={locale as 'pt' | 'en'} size="md" showLabel />
+                  <ScoreWindSourceBadge source={scoreWindSource} locale={locale} />
                   <ConfidenceBadge
                     confidence={conditions.confidence}
                     detail={conditions.confidenceDetail}

@@ -313,32 +313,6 @@ export default function HomepageMapHero({
 
           <div className="pointer-events-auto flex flex-col gap-2 sm:gap-3 max-w-xl">
 
-            {bestWindow && topSpot && (
-
-              <div
-
-                className="stagger-fade-in motion-reduce:animate-none"
-
-                style={{ '--stagger-delay': 0 } as React.CSSProperties}
-
-              >
-
-                <BestWindowBanner
-
-                  window={bestWindow}
-
-                  spotSlug={topSpot.spot.slug}
-
-                  spotName={isPt ? topSpot.spot.name : topSpot.spot.nameEn}
-
-                  locale={locale}
-
-                />
-
-              </div>
-
-            )}
-
             <p
               className="font-display text-meta font-semibold tracking-[0.18em] uppercase text-accent stagger-fade-in motion-reduce:animate-none"
               style={{ '--stagger-delay': 40 } as React.CSSProperties}
@@ -441,6 +415,20 @@ export default function HomepageMapHero({
               </div>
 
             </div>
+
+            {bestWindow && topSpot && (
+              <div
+                className="stagger-fade-in motion-reduce:animate-none pt-1"
+                style={{ '--stagger-delay': 280 } as React.CSSProperties}
+              >
+                <BestWindowBanner
+                  window={bestWindow}
+                  spotSlug={topSpot.spot.slug}
+                  spotName={isPt ? topSpot.spot.name : topSpot.spot.nameEn}
+                  locale={locale}
+                />
+              </div>
+            )}
 
           </div>
 

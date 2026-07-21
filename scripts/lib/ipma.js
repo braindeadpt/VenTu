@@ -163,23 +163,28 @@ function findLatestObservationForStation(observations, idEstacao, maxAgeMs = MAX
   return null;
 }
 
-function nearestStation(stations, lat, lon) {
-  let best = null;
-  let bestKm = Infinity;
+function nearestStations(stations, lat, lon, limit = 3) {
+  const ranked = [];
   for (const st of stations) {
     if (st.idEstacao == null) continue;
     const km = haversineKm(lat, lon, st.lat, st.lon);
-    if (km < bestKm) {
-      bestKm = km;
-      best = st;
-    }
+    ranked.push({
+      idEstacao: st.idEstacao,
+      stationName: st.stationName,
+      distanceKm: Math.round(km * 10) / 10,
+    });
   }
-  if (!best) return null;
-  return {
-    idEstacao: best.idEstacao,
-    stationName: best.stationName,
-    distanceKm: Math.round(bestKm * 10) / 10,
-  };
+  ranked.sort((a, b) => a.distanceKm - b.distanceKm);
+  return ranked.slice(0, limit);
+}
+
+function nearestStation(stations, lat, lon) {
+  const [best] = nearestStations(stations, lat, lon, 1);
+  return best ?? null;
+}
+
+function stationById(stations, idEstacao) {
+  return stations.find((s) => String(s.idEstacao) === String(idEstacao)) ?? null;
 }
 
 function buildObservedPayload(obs, stationName, distanceKm) {
@@ -210,6 +215,8 @@ module.exports = {
   fetchIpmaObservations,
   findLatestObservationForStation,
   nearestStation,
+  nearestStations,
+  stationById,
   buildObservedPayload,
   haversineKm,
 };

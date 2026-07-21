@@ -6,6 +6,7 @@ import {
   ktToMs,
   msToKt,
   rawToScoreInput,
+  resolveScoreWindSource,
 } from '@/lib/scoreConditions';
 import type { ObservedConditions } from '@/lib/observations';
 
@@ -79,6 +80,32 @@ describe('scoreConditions', () => {
     };
     const score = getSportScore(guincho, 'kitesurf', rawToScoreInput(raw)).score;
     expect(score).toBeGreaterThan(60);
+  });
+
+  it('gust session proxy lifts Caparica-style mean≪gust without inventing wind', () => {
+    const nova = spotBySlug('nova-vaga');
+    const raw = {
+      waveHeight: 0.5,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windSpeed: ktToMs(8),
+      windDirection: 315,
+      windGust: ktToMs(20),
+      waterTemp: 18,
+    };
+    const forecastOnly = getSportScore(nova, 'kitesurf', {
+      waveHeight: 0.5,
+      wavePeriod: 8,
+      waveDirection: 270,
+      windSpeed: ktToMs(8),
+      windDirection: 315,
+      windGust: ktToMs(20),
+      waterTemp: 18,
+    }).score;
+    const withProxy = getSportScore(nova, 'kitesurf', rawToScoreInput(raw)).score;
+    expect(withProxy).toBeGreaterThan(forecastOnly);
+    expect(withProxy).toBeGreaterThanOrEqual(SCORE_TIER_THRESHOLDS.fair);
+    expect(resolveScoreWindSource(raw)).toBe('session-gust');
   });
 });
 
