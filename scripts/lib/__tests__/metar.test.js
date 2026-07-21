@@ -61,4 +61,20 @@ describe('buildMetarObservedForSpot', () => {
     expect(out?.source).toBe('metar');
     expect(out?.windSpeedKt).toBeGreaterThan(0);
   });
+
+  it('reaches Seixal Madeira with island 35 km radius', () => {
+    const nowSec = Math.floor(Date.now() / 1000);
+    const byIcao = {
+      LPMA: { icaoId: 'LPMA', wspd: 10, wdir: 20, obsTime: nowSec },
+    };
+    // Seixal ~33.7 km from LPMA
+    const out = buildMetarObservedForSpot(
+      { lat: 32.825, lon: -17.108 },
+      byIcao,
+    );
+    expect(out?.source).toBe('metar');
+    expect(out?.metarIcao).toBe('LPMA');
+    expect(out?.distanceKm).toBeGreaterThan(30);
+    expect(out?.distanceKm).toBeLessThanOrEqual(35);
+  });
 });

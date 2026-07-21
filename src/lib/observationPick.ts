@@ -1,6 +1,8 @@
 import { OBSERVED_FRESH_MAX_HOURS, type ObservedConditions } from '@/lib/observations';
 
 export const MAX_OBSERVATION_DISTANCE_KM = 30;
+/** METAR may reach island spots slightly farther (e.g. Seixal–LPMA). */
+export const MAX_METAR_OBSERVATION_DISTANCE_KM = 35;
 
 /** Within this km, prefer Ecowitt > IPMA > METAR over raw distance. */
 export const SOURCE_DISTANCE_TIE_KM = 8;
@@ -20,6 +22,12 @@ function sourceRank(source: string): number {
   return SOURCE_RANK[source] ?? 9;
 }
 
+function maxDistanceForSource(source: string): number {
+  return source === 'metar'
+    ? MAX_METAR_OBSERVATION_DISTANCE_KM
+    : MAX_OBSERVATION_DISTANCE_KM;
+}
+
 /**
  * Nearest station wins when clearly closer; within ~8 km prefer better source type;
  * equal → freshest snapshot.
@@ -30,7 +38,8 @@ export function pickBestObservation(
   const eligible = candidates.filter((o): o is ObservedConditions => {
     if (!o) return false;
     return (
-      o.distanceKm <= MAX_OBSERVATION_DISTANCE_KM && isFreshObservation(o.observedAt)
+      o.distanceKm <= maxDistanceForSource(o.source) &&
+      isFreshObservation(o.observedAt)
     );
   });
 

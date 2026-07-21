@@ -57,6 +57,20 @@ describe('pickBestObservation', () => {
     expect(pickBestObservation(ipma, metar)?.source).toBe('metar');
   });
 
+  it('allows island METAR up to 35 km', () => {
+    const metar = obs({
+      source: 'metar',
+      distanceKm: 33.7,
+      stationName: 'Madeira (METAR)',
+    });
+    expect(pickBestObservation(metar)?.source).toBe('metar');
+  });
+
+  it('rejects mainland-range IPMA beyond 30 km', () => {
+    const ipma = obs({ source: 'ipma', distanceKm: 33.7 });
+    expect(pickBestObservation(ipma)).toBeNull();
+  });
+
   it('rejects observations beyond 30 km or stale', () => {
     const far = obs({ source: 'ecowitt', distanceKm: 35 });
     const stale = obs({

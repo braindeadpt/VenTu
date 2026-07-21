@@ -5,6 +5,7 @@
  */
 
 const { MAX_STATION_DISTANCE_KM, MAX_OBS_AGE_MS } = require('./ipma.js');
+const { MAX_METAR_DISTANCE_KM_ISLANDS } = require('./metar.js');
 
 /** Distance epsilon (km) below which source quality ranks first. */
 const SOURCE_DISTANCE_TIE_KM = 8;
@@ -21,6 +22,11 @@ function sourceRank(source) {
   return SOURCE_RANK[source] ?? 9;
 }
 
+/** IPMA/Ecowitt ≤30 km; METAR ≤35 km (island Madeira/Açores edge cases). */
+function maxDistanceForSource(source) {
+  return source === 'metar' ? MAX_METAR_DISTANCE_KM_ISLANDS : MAX_STATION_DISTANCE_KM;
+}
+
 /**
  * @param {Array<Record<string, unknown> | null | undefined>} candidates ObservedConditions-shaped
  * @returns {object | null}
@@ -31,7 +37,7 @@ function pickBestObservation(...candidates) {
     .filter(
       (o) =>
         typeof o.distanceKm === 'number' &&
-        o.distanceKm <= MAX_STATION_DISTANCE_KM &&
+        o.distanceKm <= maxDistanceForSource(o.source) &&
         isFreshObservedAt(o.observedAt),
     );
 
