@@ -51,27 +51,29 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 | ID | Título | Prioridade | Est. | Status |
 |----|--------|------------|------|--------|
-| E1 | Alertas email em produção | P0 | 1h | ⬜ pending |
+| E1 | Alertas email em produção | P0 | 1h | 🟡 code ready — falta secrets + smoke test |
 | E2 | Polish audit visual (quick wins) | P1 | 2–3h | ✅ done |
 | E3 | Notícias v2 | P1 | 4–6h | ✅ done |
 | C4b | Calibração scores (pesos empíricos) | P2 | contínuo | ⬜ pending |
 | E5 | Mapa / UX mapa (vento legível) | P1 | 1h | ✅ done |
 | E6 | Livecams embed + expansão | P2 | 4h+ | ✅ done |
 
-**Fase activa:** **E1** (alertas produção) · E2/E3/E6 concluídos 2026-05-25
+**Fase activa:** **E1** (secrets + smoke test) · vento costeiro METAR/ICON-EU merged (#15)
 
 ---
 
 ### E1 — Alertas email em produção
 
-**Estado:** código + workflows existem; falta validação com secrets reais.
+**Estado:** código + workflow + harden digest/confirm (2026-07-21). Falta só infra + smoke test.
 
 **Tarefas:**
 
-- [ ] Confirmar `SUPABASE_SERVICE_ROLE_KEY` e `RESEND_API_KEY` nos GitHub Secrets
+- [ ] Confirmar `SUPABASE_SERVICE_ROLE_KEY` e `RESEND_API_KEY` nos GitHub Secrets (+ `RESEND_FROM`)
+- [ ] Re-aplicar `supabase/supabase-alerts-e1c.sql` (verify RPC idempotente) no Supabase SQL Editor
 - [ ] Correr `evaluate-alerts` manualmente (workflow_dispatch) sem erro
 - [ ] Subscrição teste → email recebido → link confirm/unsubscribe funciona
 - [x] Documentar fluxo em [`docs/ALERTS.md`](./ALERTS.md) + `npm run alerts:preflight`
+- [x] Harden digest window (Lisboa `hour >= 7`) + empty-token UX + popover copy
 
 **Ref:** `supabase/supabase-alerts.sql`, `FavoritesAlertsPanel` / `SpotAlertPopover`, `.github/workflows/evaluate-alerts.yml`
 
