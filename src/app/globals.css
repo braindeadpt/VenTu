@@ -409,6 +409,13 @@
     }
   }
 
+  /* Mobile map: skip marker drop-in — 185 animations jank hard */
+  @media (max-width: 767px) {
+    .ventu-spot-marker-wrap.ventu-marker-enter {
+      animation: none !important;
+    }
+  }
+
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

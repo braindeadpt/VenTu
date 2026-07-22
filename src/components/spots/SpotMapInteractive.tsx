@@ -1,9 +1,5 @@
 'use client';
 
-import 'leaflet/dist/leaflet.css';
-import 'leaflet.markercluster/dist/MarkerCluster.css';
-import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
-
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { Layers, HelpCircle, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
@@ -43,6 +39,9 @@ import {
   buildMarkerCacheKey,
   createSpotMarker,
   runChunked,
+  MARKER_ADD_CHUNK_SIZE,
+  MARKER_ADD_CHUNK_SIZE_MOBILE,
+  MARKER_CHUNK_YIELD_MS_MOBILE,
 } from './mapMarkers';
 
 type SpotData = MapSpotData;
@@ -135,6 +134,8 @@ export default function SpotMapInteractive({
     onSpotSelectRef.current = onSpotSelect;
   }, [onSpotSelect]);
   const [isReady, setIsReady] = useState(false);
+  /** Delay marker build so the map is pan/zoomable first (esp. mobile). */
+  const [allowMarkers, setAllowMarkers] = useState(false);
   const [isDark, setIsDark] = useState(false);
   const [basemapMode, setBasemapMode] = useState<BasemapMode>('map');
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
@@ -224,6 +225,14 @@ export default function SpotMapInteractive({
     };
 
     (async () => {
+      const mobileInit =
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+
+      await Promise.all([
+        import('leaflet/dist/leaflet.css'),
+        import('leaflet.markercluster/dist/MarkerCluster.css'),
+        import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
+      ]);
       const Leaflet = (await import('leaflet')).default;
       await import('leaflet.markercluster');
       if (cancelled || !mapRef.current) return;
@@ -236,6 +245,8 @@ export default function SpotMapInteractive({
         zoom: DEFAULT_ZOOM,
         zoomControl: false,
         attributionControl: false,
+        // Canvas renderer on mobile — fewer DOM nodes while panning
+        ...(mobileInit ? { renderer: Leaflet.canvas() } : {}),
         ...(isHeroEmbed
           ? {
               scrollWheelZoom: false,
@@ -269,7 +280,10 @@ export default function SpotMapInteractive({
 
       const mcg = Leaflet.markerClusterGroup({
         ...CLUSTER_CONFIG,
-        iconCreateFunction: createClusterIconFunction(Leaflet),
+        ...(mobileInit
+          ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 }
+          : {}),
+        iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit }),
       });
       const lg = Leaflet.layerGroup();
       clusterGroupRef.current = mcg;
@@ -468,16 +482,28 @@ export default function SpotMapInteractive({
     if (!isReady || !mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
     const raf = requestAnimationFrame(() => {
-      if (mapInstanceRef.current) map.invalidateSize();
+      if (mapInstanceRef.current) map.invalidateSize({ animate: false });
     });
+    // One delayed sync is enough — cascading 0/150/300 timers jank mobile
     const t = window.setTimeout(() => {
-      if (mapInstanceRef.current) map.invalidateSize();
-    }, 300);
+      if (mapInstanceRef.current) map.invalidateSize({ animate: false });
+    }, isMobile ? 100 : 300);
     return () => {
       cancelAnimationFrame(raf);
       window.clearTimeout(t);
     };
-  }, [isFullscreen, isReady]);
+  }, [isFullscreen, isReady, isMobile]);
+
+  // Map paints first; markers load after a beat so touch isn't blocked
+  useEffect(() => {
+    if (!isReady) {
+      setAllowMarkers(false);
+      return;
+    }
+    const delay = isMobile ? 280 : 0;
+    const t = window.setTimeout(() => setAllowMarkers(true), delay);
+    return () => window.clearTimeout(t);
+  }, [isReady, isMobile]);
 
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
@@ -548,17 +574,11 @@ export default function SpotMapInteractive({
     const map = mapInstanceRef.current;
     const sync = () => map.invalidateSize({ animate: false });
     sync();
-    const raf = requestAnimationFrame(sync);
-    const t1 = window.setTimeout(sync, 0);
-    const t2 = window.setTimeout(sync, 150);
-    const t3 = window.setTimeout(sync, 320);
+    const t = window.setTimeout(sync, isMobile ? 100 : 150);
     return () => {
-      cancelAnimationFrame(raf);
-      window.clearTimeout(t1);
-      window.clearTimeout(t2);
-      window.clearTimeout(t3);
+      window.clearTimeout(t);
     };
-  }, [isFullscreen, isReady]);
+  }, [isFullscreen, isReady, isMobile]);
 
   // Escape: close sheet first, then exit fullscreen
   useEffect(() => {
@@ -593,9 +613,17 @@ export default function SpotMapInteractive({
     return () => container.removeEventListener('click', onClick, true);
   }, [isReady]);
 
-  // Markers: reuse cached Leaflet markers when possible (see TODO below).
+  // Markers: reuse cached Leaflet markers when possible.
   useEffect(() => {
-    if (!isReady || !mapInstanceRef.current || !clusterGroupRef.current || !markersGroupRef.current) return;
+    if (
+      !allowMarkers ||
+      !isReady ||
+      !mapInstanceRef.current ||
+      !clusterGroupRef.current ||
+      !markersGroupRef.current
+    ) {
+      return;
+    }
     const Leaflet = LRef.current;
     if (!Leaflet) return;
 
@@ -635,6 +663,8 @@ export default function SpotMapInteractive({
 
     const bounds = Leaflet.latLngBounds([]);
     const useMobileSheet = isMobile;
+    const chunkSize = isMobile ? MARKER_ADD_CHUNK_SIZE_MOBILE : MARKER_ADD_CHUNK_SIZE;
+    const yieldMs = isMobile ? MARKER_CHUNK_YIELD_MS_MOBILE : 0;
 
     const fitBoundsIfNeeded = () => {
       if (didFitBoundsRef.current || !bounds.isValid() || !mapInstanceRef.current) return;
@@ -653,6 +683,7 @@ export default function SpotMapInteractive({
         fitMap.fitBounds(bounds, {
           padding: isMobile ? [16, 16] : [40, 40],
           maxZoom: fitMaxZoom,
+          animate: false,
         });
       }
       didFitBoundsRef.current = true;
@@ -705,12 +736,15 @@ export default function SpotMapInteractive({
       },
       markerChunkCancelRef,
       fitBoundsIfNeeded,
+      chunkSize,
+      yieldMs,
     );
 
     return () => {
       markerChunkCancelRef.current = true;
     };
   }, [
+    allowMarkers,
     visibleSpots,
     onlyOnEnabled,
     selectedSport,

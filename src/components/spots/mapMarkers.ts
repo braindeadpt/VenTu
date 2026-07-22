@@ -177,6 +177,9 @@ export function createSpotMarker(
 }
 
 export const MARKER_ADD_CHUNK_SIZE = 25;
+/** Mobile: tiny batches + yield so touch stays responsive while markers load */
+export const MARKER_ADD_CHUNK_SIZE_MOBILE = 8;
+export const MARKER_CHUNK_YIELD_MS_MOBILE = 40;
 
 /**
  * Process items in small batches across animation frames so marker
@@ -188,6 +191,7 @@ export function runChunked<T>(
   cancelRef: { current: boolean },
   onDone?: () => void,
   chunkSize = MARKER_ADD_CHUNK_SIZE,
+  yieldMs = 0,
 ): void {
   let i = 0;
   const step = () => {
@@ -196,7 +200,11 @@ export function runChunked<T>(
     if (batch.length > 0) processBatch(batch);
     i += chunkSize;
     if (i < items.length) {
-      requestAnimationFrame(step);
+      if (yieldMs > 0) {
+        window.setTimeout(() => requestAnimationFrame(step), yieldMs);
+      } else {
+        requestAnimationFrame(step);
+      }
     } else {
       onDone?.();
     }

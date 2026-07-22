@@ -225,7 +225,7 @@ export default function MapExploreHud({
 
         <div className={`flex flex-col gap-2 ${collapsed ? 'hidden md:flex' : 'flex'}`}>
           {windHint && (
-            <p role="status" className="text-meta-sm text-score-fair">
+            <p role="status" className="hidden md:block text-meta-sm text-score-fair">
               {windHint}
             </p>
           )}

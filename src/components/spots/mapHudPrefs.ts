@@ -6,13 +6,18 @@ import {
 
 const MOBILE_MQ = '(max-width: 767px)';
 
-function isMobileViewport(): boolean {
+export function isMobileViewport(): boolean {
   if (typeof window === 'undefined') return false;
   return window.matchMedia(MOBILE_MQ).matches;
 }
 
+/**
+ * Mobile always starts clustered — ignore localStorage.
+ * (Persisted wind-on + cluster-off freezes /mapa for seconds.)
+ */
 export function readClusterPref(): boolean {
   if (typeof window === 'undefined') return false;
+  if (isMobileViewport()) return true;
   try {
     const v = localStorage.getItem(MAP_CLUSTER_LS_KEY);
     if (v === '1') return true;
@@ -20,12 +25,15 @@ export function readClusterPref(): boolean {
   } catch {
     /* noop */
   }
-  // Mobile: cluster by default — 185 wind-ring markers freeze the main thread
-  return isMobileViewport();
+  return false;
 }
 
+/**
+ * Mobile always starts with wind rings off — ignore localStorage.
+ */
 export function readWindPref(): boolean {
   if (typeof window === 'undefined') return true;
+  if (isMobileViewport()) return false;
   try {
     const v = localStorage.getItem(MAP_WIND_LS_KEY);
     if (v === '0') return false;
@@ -33,8 +41,7 @@ export function readWindPref(): boolean {
   } catch {
     /* noop */
   }
-  // Mobile: plain score pins first; user can enable wind rings after map is idle
-  return !isMobileViewport();
+  return true;
 }
 
 export function readOnlyOnPref(): boolean {
