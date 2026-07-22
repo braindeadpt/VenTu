@@ -1,19 +1,16 @@
-name: Evaluate Alerts
+name: Telegram Link Poll
 
+# Lightweight poll so /start deep-links activate within ~15 min (no always-on server).
 on:
   schedule:
-    # Immediate alerts — every 3h (with conditions update)
-    - cron: '15 */3 * * *'
-    # Daily digest — ~7:30 Europe/Lisbon
-    - cron: '30 7 * * *'
-      timezone: 'Europe/Lisbon'
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 permissions:
   contents: read
 
 jobs:
-  alerts:
+  poll:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -25,11 +22,9 @@ jobs:
 
       - run: npm ci
 
-      - name: Evaluate alert subscriptions
+      - name: Poll Telegram /start links
         env:
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
-          RESEND_FROM: ${{ secrets.RESEND_FROM }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        run: npm run alerts:evaluate
+        run: npm run telegram:poll

@@ -7,6 +7,7 @@ import { getSupabaseClient } from '@/lib/supabase';
 import { fetchUserAlertPrefs, alertModeLabel, type UserAlertPrefs } from '@/lib/userAlerts';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import TelegramLinkCard from '@/components/account/TelegramLinkCard';
 
 export default function AccountClient({ locale }: { locale: string }) {
   const isPt = locale === 'pt';
@@ -108,6 +109,8 @@ export default function AccountClient({ locale }: { locale: string }) {
           {isPt ? 'Gerir alertas' : 'Manage alerts'}
         </Button>
       </Card>
+
+      <TelegramLinkCard locale={locale} />
 
       <Button
         variant="ghost"

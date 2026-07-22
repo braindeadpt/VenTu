@@ -1,10 +1,12 @@
 /**
- * VenTu — Evaluate email alerts (Phase C2 + E1c)
+ * VenTu — Evaluate email alerts (Phase C2 + E1c) + Telegram (MVP)
  *
  * E1: per-spot alert_subscriptions (legacy)
  * E1c: user_alert_prefs + user_favorites digest (one email per user)
+ * Telegram: same E1c firing list → Bot API if chat linked
  *
  * Env: SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY
+ * Optional: TELEGRAM_BOT_TOKEN
  */
 
 const fs = require('fs');
@@ -19,6 +21,27 @@ const DIGEST_HOUR_LISBON = 7;
 
 const { escapeHtml, safeLocale } = require('./lib/htmlEscape');
 const { computeScore } = require('./lib/scoreSpotConditions');
+const {
+  sendTelegramMessage,
+  processTelegramLinkUpdates,
+  fetchTelegramChatId,
+} = require('./lib/telegram');
+
+function loadEnvLocal() {
+  const envPath = path.join(__dirname, '../.env.local');
+  if (!fs.existsSync(envPath)) return;
+  for (const line of fs.readFileSync(envPath, 'utf-8').split('\n')) {
+    const t = line.trim();
+    if (!t || t.startsWith('#')) continue;
+    const i = t.indexOf('=');
+    if (i < 1) continue;
+    const key = t.slice(0, i).trim();
+    const val = t.slice(i + 1).trim().replace(/^["']|["']$/g, '');
+    if (!process.env[key]) process.env[key] = val;
+  }
+}
+
+loadEnvLocal();
 
 function alertPath(locale, page, token) {
   const loc = safeLocale(locale);
@@ -371,7 +394,24 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
     const html = `${intro}<ul>${items}</ul><p><a href="${unsub}">${isPt ? 'Cancelar alertas' : 'Unsubscribe'}</a></p>`;
 
     const ok = await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
-    if (ok) {
+
+    // Same firing list → Telegram if account linked (best-effort)
+    const { url, key } = getSupabaseConfig();
+    const chatId = await fetchTelegramChatId(url, key, pref.user_id);
+    let tgOk = false;
+    if (chatId) {
+      const tgLines = firing.map(({ slug, score }) => `• ${slug} — ${score}/100`).join('\n');
+      const tgText = isPt
+        ? `VenTu — ${firing.length} favorito(s) a bombar\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`
+        : `VenTu — ${firing.length} favorite(s) firing\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`;
+      try {
+        tgOk = await sendTelegramMessage(chatId, tgText);
+      } catch (err) {
+        console.warn(`  ⚠️ Telegram failed for ${pref.user_id}: ${err.message}`);
+      }
+    }
+
+    if (ok || tgOk) {
       await markUserPrefsSent(pref.user_id);
       sent++;
     }
@@ -387,6 +427,16 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
 
 async function main() {
   console.log('🔔 VenTu — Evaluate alerts\n');
+
+  const { url, key } = getSupabaseConfig();
+  try {
+    const tg = await processTelegramLinkUpdates(url, key);
+    if (tg.processed > 0 || tg.linked > 0) {
+      console.log(`  Telegram links: ${tg.linked} linked (${tg.processed} updates)`);
+    }
+  } catch (err) {
+    console.warn(`  ⚠️ Telegram poll skipped: ${err.message}`);
+  }
 
   const { slugToId, idToSlug } = loadSpotMaps();
   const conditions = JSON.parse(fs.readFileSync(CONDITIONS_PATH, 'utf-8'));

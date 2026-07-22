@@ -41,6 +41,7 @@
     "spots:validate": "node scripts/validate-spots.js",
     "alerts:evaluate": "node scripts/evaluate-alerts.js",
     "alerts:preflight": "node scripts/alerts-preflight.js",
+    "telegram:poll": "node scripts/telegram-poll.js",
     "contributions:apply": "node scripts/apply-contributions.js",
     "scores:analyze": "node scripts/analyze-score-feedback.js",
     "dawn-patrol:generate": "node scripts/dawn-patrol.js",

@@ -252,6 +252,12 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-07-22 — Telegram alerts MVP
+
+- Canal opcional: `user_telegram` + poll `/start` + mesmo digest E1c via Bot API
+- UI em `/conta`; feature flag `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME`
+- **Ops:** correr `supabase-telegram.sql` + secrets `TELEGRAM_BOT_TOKEN`
+
 ### 2026-07-21 — Vento, E1, security, mapa, C4b tooling
 
 - METAR + ICON-EU + Caparica + ilhas (Seixal 35 km); E1 alertas confirmado; security HTML/CORS; SpotMapInteractive split

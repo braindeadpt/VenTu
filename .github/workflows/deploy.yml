@@ -70,6 +70,8 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_GOATCOUNTER_CODE: ${{ secrets.NEXT_PUBLIC_GOATCOUNTER_CODE }}
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
+          # Public bot username (no @) — enables «Ligar Telegram» on /conta
+          NEXT_PUBLIC_TELEGRAM_BOT_USERNAME: ${{ vars.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || secrets.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME }}
         run: |
           set -o pipefail
           npm run build 2>&1 | tee build.log || {

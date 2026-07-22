@@ -70,6 +70,31 @@ npm run alerts:evaluate
 
 `alerts:preflight` valida ficheiros, variáveis e ligação à tabela. Sem `RESEND_API_KEY` o evaluate faz dry-run (só log).
 
+## Telegram (MVP)
+
+Mesmo digest/imediato dos favoritos (E1c), enviado também via Bot API se a conta estiver ligada.
+
+### Setup (uma vez)
+
+1. Cria bot com [@BotFather](https://t.me/BotFather) → guarda o token.
+2. Executa [`supabase/supabase-telegram.sql`](../supabase/supabase-telegram.sql) no SQL Editor.
+3. GitHub (o site é **GitHub Pages**, não Vercel):
+   - **Secret** `TELEGRAM_BOT_TOKEN` — token do BotFather (Settings → Secrets → Actions)
+   - **Variable** `NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` — username sem `@`  
+     (Settings → Secrets and variables → **Actions** → separador **Variables** → New repository variable)  
+     Ex.: `VenTuAlertsBot`
+4. Commit/push do código Telegram + novo deploy (Actions → Deploy to GitHub Pages).
+5. Workflows: `evaluate-alerts` (envia avisos) + `telegram-poll` (liga `/start` a cada 15 min).
+
+### Fluxo utilizador
+
+1. Activar alertas por email em `/favorites` e confirmar.
+2. Em `/conta` → **Ligar Telegram** → abrir bot → **Start**.
+3. Em até ~15 min o poll confirma; mensagem «Ligado ✅».
+4. Quando favoritos ≥ limiar → email + Telegram.
+
+Sem `TELEGRAM_BOT_TOKEN` o evaluate ignora Telegram (dry-run no log).
+
 ## Teste end-to-end (produção, E1c)
 
 1. Entra em https://ventu.surf com magic link.

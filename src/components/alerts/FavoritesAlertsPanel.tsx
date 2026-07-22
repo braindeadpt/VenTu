@@ -122,8 +122,8 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           </h2>
           <p className="text-meta-sm text-fg-muted mt-1">
             {isPt
-              ? `Avisa-te quando algum dos teus ${favoriteCount} favorito${favoriteCount === 1 ? '' : 's'} atingir o score mínimo. Por defeito: resumo diário (~7h30); opcional: alerta imediato (máx. 1×/3h).`
-              : `Get notified when any of your ${favoriteCount} favorite${favoriteCount === 1 ? '' : 's'} hits the minimum score. Default: daily digest (~7:30 AM); optional: immediate alert (max once per 3h).`}
+              ? `Avisa-te quando algum dos teus ${favoriteCount} favorito${favoriteCount === 1 ? '' : 's'} atingir o score mínimo. Por defeito: resumo diário (~7h30); opcional: alerta imediato (máx. 1×/3h). Podes também ligar o Telegram em Conta.`
+              : `Get notified when any of your ${favoriteCount} favorite${favoriteCount === 1 ? '' : 's'} hits the minimum score. Default: daily digest (~7:30 AM); optional: immediate alert (max once per 3h). You can also link Telegram in Account.`}
           </p>
         </div>
       </div>

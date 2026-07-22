@@ -67,6 +67,17 @@ async function main() {
 
   ok(`RESEND_FROM default: ${from}`);
 
+  const tgSql = path.join(__dirname, '../supabase/supabase-telegram.sql');
+  if (fs.existsSync(tgSql)) ok('supabase/supabase-telegram.sql present');
+  else warn('Missing supabase/supabase-telegram.sql');
+
+  const tgToken = process.env.TELEGRAM_BOT_TOKEN;
+  const tgBot = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME;
+  if (tgToken) ok('TELEGRAM_BOT_TOKEN set');
+  else warn('TELEGRAM_BOT_TOKEN not set — Telegram channel disabled');
+  if (tgBot) ok(`NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=${tgBot}`);
+  else warn('NEXT_PUBLIC_TELEGRAM_BOT_USERNAME not set — Conta UI hides Telegram card');
+
   if (url && serviceKey) {
     try {
       const res = await fetch(`${url}/rest/v1/alert_subscriptions?select=id&limit=1`, {
@@ -93,6 +104,18 @@ async function main() {
         ok('Supabase table user_alert_prefs reachable (E1c)');
       } else if (e1cRes.status === 404 || e1cRes.status === 406) {
         warn('user_alert_prefs not found — run supabase/supabase-alerts-e1c.sql for E1c');
+      }
+
+      const tgRes = await fetch(`${url}/rest/v1/user_telegram?select=user_id&limit=1`, {
+        headers: {
+          apikey: serviceKey,
+          Authorization: `Bearer ${serviceKey}`,
+        },
+      });
+      if (tgRes.ok) {
+        ok('Supabase table user_telegram reachable');
+      } else if (tgRes.status === 404 || tgRes.status === 406) {
+        warn('user_telegram not found — run supabase/supabase-telegram.sql for Telegram MVP');
       }
     } catch (e) {
       pass = fail(`Supabase request error: ${e.message}`);
