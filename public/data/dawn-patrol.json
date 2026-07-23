@@ -1,80 +1,80 @@
 {
-  "date": "2026-07-22",
-  "topSpot": "Ribeira d'Ilhas",
-  "topSpotSlug": "ribeira-ilhas",
+  "date": "2026-07-23",
+  "topSpot": "Coxos",
+  "topSpotSlug": "coxos",
   "pt": {
-    "headline": "Ondas médias",
-    "advice": "As condições matinais são razoáveis em vários spots, com ondas médias de 0.9m em Ribeira d'Ilhas e Coxos. O vento é moderado, o que pode afetar a qualidade das ondas. É uma boa ideia chegar cedo para aproveitar as melhores condições.",
+    "headline": "Surfe em Coxos!",
+    "advice": "As condições em Coxos estão excelentes, com ondas de 1.0m e vento moderado. É um dia perfeito para surfar em Ericeira. Certifique-se de chegar cedo para aproveitar as melhores ondas.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Evite os spots mais populares, como Supertubos e Guincho, se você está procurando por menos multidão.",
-    "moonTideLine": "Quarto crescente · Transição · baixa-mar 16:00"
+    "crowdTip": "Chegue cedo para evitar a multidão",
+    "moonTideLine": "Quarto crescente · Transição · baixa-mar 06:00"
   },
   "en": {
-    "headline": "Medium waves",
-    "advice": "Morning conditions are reasonable at several spots, with medium waves of 0.9m at Ribeira d'Ilhas and Coxos. The wind is moderate, which may affect wave quality. It's a good idea to arrive early to take advantage of the best conditions.",
+    "headline": "Surf Coxos!",
+    "advice": "The conditions at Coxos are excellent, with waves of 1.0m and moderate wind. It's a perfect day to surf in Ericeira. Make sure to arrive early to catch the best waves.",
     "bestTime": "08:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Avoid more popular spots like Supertubos and Guincho if you're looking for smaller crowds.",
-    "moonTideLine": "First quarter · Transition · low tide 16:00"
+    "crowdTip": "Arrive early to avoid the crowd",
+    "moonTideLine": "First quarter · Transition · low tide 06:00"
   },
   "spots": [
     {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 53,
+      "score": 52,
       "verdict": "maybe",
-      "ptReason": "Ondas médias, mas vento moderado pode afetar a qualidade.",
-      "enReason": "Medium waves, but moderate wind may affect quality."
+      "ptReason": "As ondas estão um pouco baixas, mas o vento é moderado.",
+      "enReason": "The waves are a bit small, but the wind is moderate."
     },
     {
       "name": "Guincho",
       "slug": "guincho",
       "score": 53,
       "verdict": "maybe",
-      "ptReason": "Condições semelhantes a Supertubos, com ondas médias e vento moderado.",
-      "enReason": "Similar conditions to Supertubos, with medium waves and moderate wind."
+      "ptReason": "As ondas estão um pouco baixas, mas o vento é moderado.",
+      "enReason": "The waves are a bit small, but the wind is moderate."
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 53,
-      "verdict": "maybe",
-      "ptReason": "Ondas um pouco menores, mas vento mais leve pode ser uma vantagem.",
-      "enReason": "Slightly smaller waves, but lighter wind may be an advantage."
+      "score": 51,
+      "verdict": "skip",
+      "ptReason": "As ondas estão muito baixas e o vento é leve.",
+      "enReason": "The waves are too small and the wind is light."
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 54,
-      "verdict": "go",
-      "ptReason": "Melhor spot do dia, com ondas médias e vento moderado.",
-      "enReason": "Best spot of the day, with medium waves and moderate wind."
+      "score": 52,
+      "verdict": "maybe",
+      "ptReason": "As ondas estão um pouco baixas, mas o vento é moderado.",
+      "enReason": "The waves are a bit small, but the wind is moderate."
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 54,
+      "score": 71,
       "verdict": "go",
-      "ptReason": "Condições semelhantes a Ribeira d'Ilhas, com ondas médias e vento moderado.",
-      "enReason": "Similar conditions to Ribeira d'Ilhas, with medium waves and moderate wind."
+      "ptReason": "As ondas estão excelentes e o vento é moderado.",
+      "enReason": "The waves are excellent and the wind is moderate."
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 52,
-      "verdict": "maybe",
-      "ptReason": "Ondas médias, mas vento mais forte pode afetar a qualidade.",
-      "enReason": "Medium waves, but stronger wind may affect quality."
+      "score": 51,
+      "verdict": "skip",
+      "ptReason": "As ondas estão muito baixas e o vento é moderado.",
+      "enReason": "The waves are too small and the wind is moderate."
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
       "score": 50,
       "verdict": "skip",
-      "ptReason": "Ondas menores e condições menos favoráveis.",
-      "enReason": "Smaller waves and less favorable conditions."
+      "ptReason": "As ondas estão muito baixas e o vento é leve.",
+      "enReason": "The waves are too small and the wind is light."
     }
   ],
-  "generatedAt": "2026-07-22T07:37:18.696Z"
+  "generatedAt": "2026-07-23T07:35:26.679Z"
 }
