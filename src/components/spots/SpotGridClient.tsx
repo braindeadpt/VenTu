@@ -78,7 +78,6 @@ export function SpotGridClient({
   const t = getTranslation(locale as Locale);
   const liveSpotsData = useLiveGridSpotData(spotsData);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
-  const [mapFullscreen, setMapFullscreen] = useState(false);
   const [mapDifficulty, setMapDifficulty] = useState<MapDifficultyFilter>('all');
 
   useEffect(() => {
@@ -244,38 +243,33 @@ export function SpotGridClient({
           selectedRegion={selectedRegion}
           locale={locale}
           onSpotSelect={setSelectedSpotId}
-          onFullscreenChange={setMapFullscreen}
-          mapHud={
-            mapFullscreen
-              ? {
-                  sports: SPORTS.map((s) => ({
-                    id: s.id,
-                    label: (isPt ? s.labelPt : s.labelEn) ?? s.id,
-                    icon: s.icon,
-                    color: s.color,
-                  })),
-                  regions,
-                  selectedSport,
-                  selectedRegion,
-                  spotCount: mapSpotsData.length,
-                  onSportChange: handleSportChange,
-                  onRegionChange: handleRegionChange,
-                  onResetFilters: handleMapReset,
-                  clearFiltersLabel: t.hero.clearFilters,
-                  showClearFilters:
-                    selectedSport !== DEFAULT_SPORT ||
-                    selectedRegion !== DEFAULT_REGION ||
-                    mapDifficulty !== 'all',
-                  difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
-                    id: d.id,
-                    label: isPt ? d.labelPt : d.labelEn,
-                  })),
-                  selectedDifficulty: mapDifficulty,
-                  onDifficultyChange: setMapDifficulty,
-                  difficultyGroupLabel: isPt ? 'Nível' : 'Level',
-                }
-              : undefined
-          }
+          mapHud={{
+            sports: SPORTS.map((s) => ({
+              id: s.id,
+              label: (isPt ? s.labelPt : s.labelEn) ?? s.id,
+              icon: s.icon,
+              color: s.color,
+            })),
+            regions,
+            selectedSport,
+            selectedRegion,
+            spotCount: mapSpotsData.length,
+            onSportChange: handleSportChange,
+            onRegionChange: handleRegionChange,
+            onResetFilters: handleMapReset,
+            clearFiltersLabel: t.hero.clearFilters,
+            showClearFilters:
+              selectedSport !== DEFAULT_SPORT ||
+              selectedRegion !== DEFAULT_REGION ||
+              mapDifficulty !== 'all',
+            difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
+              id: d.id,
+              label: isPt ? d.labelPt : d.labelEn,
+            })),
+            selectedDifficulty: mapDifficulty,
+            onDifficultyChange: setMapDifficulty,
+            difficultyGroupLabel: isPt ? 'Nível' : 'Level',
+          }}
         />
       </div>
 

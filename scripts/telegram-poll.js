@@ -28,8 +28,12 @@ async function main() {
   console.log('📱 VenTu — Telegram link poll\n');
 
   if (!getToken()) {
-    console.warn('TELEGRAM_BOT_TOKEN missing — nothing to do');
-    process.exit(0);
+    console.error(
+      '❌ TELEGRAM_BOT_TOKEN missing.\n' +
+        '   Add it to .env.local (local) and GitHub Actions secret TELEGRAM_BOT_TOKEN.\n' +
+        '   BotFather → /token → paste the value.',
+    );
+    process.exit(1);
   }
 
   const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;

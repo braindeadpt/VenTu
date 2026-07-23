@@ -762,12 +762,9 @@ export default function SpotMapInteractive({
   const exitFullscreenLabel = t.map.exitFullscreen;
   const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
   const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
+  // Only when cluster blocks wind rings — legend copy lives behind "?"
   const windHint =
-    clusterEnabled && windEnabled
-      ? t.map.windNeedsShowAll
-      : showWindOnMarkers
-        ? t.map.windArrowHint
-        : null;
+    clusterEnabled && windEnabled ? t.map.windNeedsShowAll : null;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
   const windLegendHelpLabel = t.map.windRingLegend.help;
@@ -778,8 +775,8 @@ export default function SpotMapInteractive({
       className={
         isFullscreen
           ? fullscreenBelowHeader
-            ? 'fixed left-0 right-0 bottom-0 z-40 w-full overflow-hidden bg-surface-1/[0.04] top-16'
-            : 'fixed inset-0 z-[1100] w-full overflow-hidden bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
+            ? 'fixed left-0 right-0 bottom-0 z-40 w-full overflow-visible bg-surface-1/[0.04] top-16'
+            : 'fixed inset-0 z-[1100] w-full overflow-visible bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
           : isHeroEmbed
             ? 'absolute inset-0 overflow-hidden bg-bg-base'
             : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
@@ -812,7 +809,7 @@ export default function SpotMapInteractive({
 
       {isReady && (
         <>
-          {!isFullscreen && !isHeroEmbed && (
+          {!isHeroEmbed && (!isFullscreen || !mapHud) && (
             <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
               <button
                 ref={fullscreenBtnRef}
@@ -906,15 +903,6 @@ export default function SpotMapInteractive({
           {!isFullscreen && !isHeroEmbed && (
             <p className="absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-meta-sm text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none max-md:hidden bottom-14 left-1/2 -translate-x-1/2">
               {t.map.mapDataHint}
-            </p>
-          )}
-
-          {windHint && !isFullscreen && !isHeroEmbed && (
-            <p
-              role="status"
-              className="absolute top-3 left-3 mt-[148px] z-[1000] max-w-[220px] px-2 py-1 rounded-input text-meta-sm text-score-fair bg-bg-elevated/95 border border-score-fair/30 shadow-sm pointer-events-none sm:max-w-xs"
-            >
-              {windHint}
             </p>
           )}
 

@@ -119,7 +119,6 @@ export const translations = {
       viewSpot: 'Ver spot',
       quickPanel: 'Painel rápido',
       windNeedsShowAll: 'Desligue cluster para ver vento',
-      windArrowHint: 'Arco = para onde sopra · cor = offshore/onshore/cross · score no centro',
       windRingLegend: {
         title: 'Ler o arco de vento',
         position: 'Arco + ponta apontam para onde o vento sopra',
@@ -382,7 +381,6 @@ export const translations = {
       viewSpot: 'View spot',
       quickPanel: 'Quick panel',
       windNeedsShowAll: 'Turn off clustering to see wind',
-      windArrowHint: 'Arc = flow direction · color = coast relation · score at center',
       windRingLegend: {
         title: 'Reading the wind ring',
         position: 'Arc + tip point to where the wind blows',

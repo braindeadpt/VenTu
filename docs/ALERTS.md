@@ -84,13 +84,14 @@ Mesmo digest/imediato dos favoritos (E1c), enviado também via Bot API se a cont
      (Settings → Secrets and variables → **Actions** → separador **Variables** → New repository variable)  
      Ex.: `VenTuAlertsBot`
 4. Commit/push do código Telegram + novo deploy (Actions → Deploy to GitHub Pages).
-5. Workflows: `evaluate-alerts` (envia avisos) + `telegram-poll` (liga `/start` a cada 15 min).
+5. Workflows: `evaluate-alerts` (envia avisos) + `telegram-poll` (liga `/start` a cada ~5 min).
+   Sem o secret, o poll **falha** de propósito — o bot não responde sozinho.
 
 ### Fluxo utilizador
 
 1. Activar alertas por email em `/favorites` e confirmar.
 2. Em `/conta` → **Ligar Telegram** → abrir bot → **Start**.
-3. Em até ~15 min o poll confirma; mensagem «Ligado ✅».
+3. Em até ~5 min o poll confirma; mensagem «Ligado ✅» (ou corre `npm run telegram:poll` com o token no `.env.local` para resposta imediata).
 4. Quando favoritos ≥ limiar → email + Telegram.
 
 Sem `TELEGRAM_BOT_TOKEN` o evaluate ignora Telegram (dry-run no log).

@@ -1,9 +1,9 @@
 name: Telegram Link Poll
 
-# Lightweight poll so /start deep-links activate within ~15 min (no always-on server).
+# Lightweight poll so /start deep-links activate within ~5 min (no always-on server).
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -21,6 +21,13 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+
+      - name: Require TELEGRAM_BOT_TOKEN
+        run: |
+          if [ -z "${{ secrets.TELEGRAM_BOT_TOKEN }}" ]; then
+            echo "::error::Secret TELEGRAM_BOT_TOKEN is missing. Add it in Settings → Secrets → Actions (BotFather token)."
+            exit 1
+          fi
 
       - name: Poll Telegram /start links
         env:

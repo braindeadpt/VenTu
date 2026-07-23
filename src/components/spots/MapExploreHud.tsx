@@ -79,7 +79,11 @@ export default function MapExploreHud({
   expandHudLabel,
   onCollapsedChange,
 }: MapExploreHudProps) {
-  const [collapsed, setCollapsed] = useState(true);
+  // Mobile: start collapsed (more map). Desktop: filters always open.
+  const [collapsed, setCollapsed] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return !window.matchMedia('(min-width: 768px)').matches;
+  });
 
   if (!visible) return null;
 
@@ -93,7 +97,7 @@ export default function MapExploreHud({
 
   return (
     <div
-      className="absolute inset-x-0 bottom-0 z-[1000] pointer-events-none pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+      className="absolute inset-x-0 bottom-0 z-[1100] pointer-events-none pb-[max(0.5rem,env(safe-area-inset-bottom))]"
       role="region"
       aria-label={isPt ? 'Modo explorar' : 'Explore mode'}
       data-map-hud-collapsed={collapsed ? 'true' : 'false'}
@@ -224,12 +228,6 @@ export default function MapExploreHud({
         </div>
 
         <div className={`flex flex-col gap-2 ${collapsed ? 'hidden md:flex' : 'flex'}`}>
-          {windHint && (
-            <p role="status" className="hidden md:block text-meta-sm text-score-fair">
-              {windHint}
-            </p>
-          )}
-
           <div
             className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x-end pb-0.5"
             role="group"
