@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { DirectoryEntry, DirectoryFile } from '@/types/directory';
 import { entriesNearSpot } from '@/lib/directory';
+import { fetchDirectoryListings, mergeDirectoryEntries } from '@/lib/directoryListings';
+import { getSupabaseClient } from '@/lib/supabase';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
 
 type Props = {
@@ -21,20 +23,33 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }
 
   useEffect(() => {
     let cancelled = false;
-    void fetch('/data/directory.json')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((file: DirectoryFile | null) => {
-        if (cancelled || !file?.entries) return;
-        setNearby(
-          entriesNearSpot(file.entries, spotId, spotLat, spotLon, {
-            maxKm: 12,
-            limit: 6,
-          }),
-        );
-      })
-      .catch(() => {
-        /* offline / missing file */
-      });
+    void (async () => {
+      let seed: DirectoryEntry[] = [];
+      try {
+        const r = await fetch('/data/directory.json');
+        if (r.ok) {
+          const file = (await r.json()) as DirectoryFile;
+          seed = file.entries || [];
+        }
+      } catch {
+        /* ignore */
+      }
+      let live: DirectoryEntry[] = [];
+      try {
+        const sb = getSupabaseClient();
+        if (sb) live = await fetchDirectoryListings(sb);
+      } catch {
+        /* ignore */
+      }
+      if (cancelled) return;
+      const merged = mergeDirectoryEntries(seed, live);
+      setNearby(
+        entriesNearSpot(merged, spotId, spotLat, spotLon, {
+          maxKm: 12,
+          limit: 6,
+        }),
+      );
+    })();
     return () => {
       cancelled = true;
     };
@@ -51,8 +66,8 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }
           </h2>
           <p className="text-body text-fg-muted mt-1">
             {isPt
-              ? 'Dados OSM / curados — ainda não verificados. És a escola? Reclama o perfil.'
-              : 'OSM / curated data — unverified. Own the school? Claim the profile.'}
+              ? 'Dados públicos — ainda podem estar por verificar. És a escola? Reclama ou regista em Directório.'
+              : 'Public data — may be unverified. Own the school? Claim or register in Directory.'}
           </p>
         </div>
         <Link

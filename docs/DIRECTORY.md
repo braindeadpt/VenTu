@@ -12,7 +12,7 @@ Directório nacional de escolas/lojas/kite centers no mapa e nas páginas de spo
 | Fase | Entrega | Estado |
 |------|---------|--------|
 | **F1** Seed + stubs públicos | OSM → `directory.json`, página `/diretorio`, bloco no spot, CTA claim | 🟡 em curso |
-| **F2** Claim + edição | SQL claims, verificação, owner edita perfil | ⬜ schema SQL pronto; UI aprovação admin TBD |
+| **F2** Claim + registo + verificação | SQL listings, form «não está listada», admin aprova → Verificado | 🟡 em curso |
 | **F3** Camada mapa | Toggle “Escolas” no mapa explorar (markers + clusters) | ⬜ |
 | **F4** Premium B2B | Destaque, widget, leads, eventos da escola | ⬜ |
 
@@ -31,12 +31,16 @@ Directório nacional de escolas/lojas/kite centers no mapa e nas páginas de spo
 
 **Critério de saída:** build verde; ≥1 página listagem; ≥1 spot com escolas próximas se houver seed; CTA claim sem crash.
 
-### F2 — Claim + edição
+### F2 — Claim + registo + verificação
 
-- Aprovar/rejeitar claim (admin `is_ventu_admin`).
-- Owner edita nome, bio, desportos, contactos, spots servidos.
-- Badge **Verificado**.
-- Overrides em Supabase sobrepõem seed OSM (merge na leitura).
+- [x] `directory_listings` — registo novo (público já, `verified=false`)
+- [x] Form em `/diretorio` («A tua escola não está?»)
+- [x] Admin `/admin/diretorio` — aprovar → `verified=true`
+- [ ] Owner edita perfil após verificação
+- Claim de seed JSON (já em F1 CTA)
+
+**Ops:** re-correr [`supabase/supabase-directory.sql`](../supabase/supabase-directory.sql). Conta admin: `app_metadata.role = admin`.
+
 
 ### F3 — Mapa
 

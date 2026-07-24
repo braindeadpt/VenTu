@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { distanceKm, entriesNearSpot } from '../directory';
+import { mergeDirectoryEntries } from '../directoryListings';
 import type { DirectoryEntry } from '@/types/directory';
 
 const base = (over: Partial<DirectoryEntry>): DirectoryEntry => ({
@@ -28,5 +29,23 @@ describe('directory geo', () => {
     const near = entriesNearSpot(entries, 'guincho', 38.7, -9.4, { maxKm: 15, limit: 5 });
     expect(near.map((e) => e.id)).toEqual(['near']);
     expect(near[0].distanceKm).toBeLessThan(2);
+  });
+});
+
+describe('mergeDirectoryEntries', () => {
+  it('prefers live submitted over seed same slug', () => {
+    const seed = [base({ id: 'seed-1', slug: 'escola-x', name: 'Old' })];
+    const live = [
+      base({
+        id: 'sub-1',
+        slug: 'escola-x',
+        name: 'New Submitted',
+        source: 'submitted',
+        verified: false,
+      }),
+    ];
+    const merged = mergeDirectoryEntries(seed, live);
+    expect(merged).toHaveLength(1);
+    expect(merged[0].name).toBe('New Submitted');
   });
 });

@@ -1,7 +1,6 @@
 -- ============================================================
--- VenTu — Directório: claims (reclamar perfil escola/loja)
+-- VenTu — Directório: claims + registo novo (não verificado → admin verifica)
 -- Execute no SQL Editor do Supabase Dashboard
--- Depende de: is_ventu_admin() (supabase-contributions.sql) ou redefine abaixo
 -- ============================================================
 
 CREATE OR REPLACE FUNCTION public.is_ventu_admin()
@@ -17,7 +16,72 @@ $$;
 REVOKE ALL ON FUNCTION public.is_ventu_admin() FROM PUBLIC;
 GRANT EXECUTE ON FUNCTION public.is_ventu_admin() TO authenticated;
 
--- Perfis reclamados / overrides (F2 edita estes campos)
+-- Listagens submetidas (aparecem logo; verified = false até admin)
+CREATE TABLE IF NOT EXISTS directory_listings (
+  id TEXT PRIMARY KEY,
+  slug TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL CHECK (length(name) >= 2 AND length(name) <= 120),
+  kind TEXT NOT NULL CHECK (kind IN (
+    'surf_school', 'kite_center', 'windsurf', 'shop', 'club', 'rental', 'other'
+  )),
+  sports TEXT[] NOT NULL DEFAULT '{}',
+  lat DOUBLE PRECISION NOT NULL CHECK (lat BETWEEN 32 AND 43),
+  lon DOUBLE PRECISION NOT NULL CHECK (lon BETWEEN -32 AND -5),
+  region TEXT,
+  region_en TEXT,
+  spot_ids TEXT[] NOT NULL DEFAULT '{}',
+  website TEXT,
+  phone TEXT,
+  email TEXT,
+  address TEXT,
+  source TEXT NOT NULL DEFAULT 'submitted'
+    CHECK (source IN ('submitted', 'claimed', 'curated', 'osm')),
+  owner_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  verified BOOLEAN NOT NULL DEFAULT false,
+  verified_at TIMESTAMPTZ,
+  verified_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_directory_listings_verified
+  ON directory_listings(verified, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_directory_listings_owner
+  ON directory_listings(owner_user_id);
+CREATE INDEX IF NOT EXISTS idx_directory_listings_slug
+  ON directory_listings(slug);
+
+ALTER TABLE directory_listings ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "directory_listings_public_read" ON directory_listings;
+CREATE POLICY "directory_listings_public_read" ON directory_listings
+  FOR SELECT TO anon, authenticated
+  USING (true);
+
+DROP POLICY IF EXISTS "directory_listings_insert_own" ON directory_listings;
+CREATE POLICY "directory_listings_insert_own" ON directory_listings
+  FOR INSERT TO authenticated
+  WITH CHECK (
+    auth.uid() = owner_user_id
+    AND verified = false
+    AND source = 'submitted'
+  );
+
+DROP POLICY IF EXISTS "directory_listings_owner_update" ON directory_listings;
+CREATE POLICY "directory_listings_owner_update" ON directory_listings
+  FOR UPDATE TO authenticated
+  USING (auth.uid() = owner_user_id AND verified = false)
+  WITH CHECK (auth.uid() = owner_user_id AND verified = false);
+
+DROP POLICY IF EXISTS "directory_listings_admin_all" ON directory_listings;
+CREATE POLICY "directory_listings_admin_all" ON directory_listings
+  FOR ALL TO authenticated
+  USING (public.is_ventu_admin())
+  WITH CHECK (public.is_ventu_admin());
+
+GRANT SELECT ON directory_listings TO anon, authenticated;
+GRANT INSERT, UPDATE ON directory_listings TO authenticated;
+
 CREATE TABLE IF NOT EXISTS directory_profiles (
   entry_id TEXT PRIMARY KEY,
   owner_user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
@@ -57,7 +121,6 @@ CREATE POLICY "directory_profiles_admin_all" ON directory_profiles
   USING (public.is_ventu_admin())
   WITH CHECK (public.is_ventu_admin());
 
--- Pedidos de claim
 CREATE TABLE IF NOT EXISTS directory_claims (
   id BIGSERIAL PRIMARY KEY,
   entry_id TEXT NOT NULL,

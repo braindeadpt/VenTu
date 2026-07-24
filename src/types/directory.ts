@@ -9,7 +9,7 @@ export type DirectoryKind =
   | 'rental'
   | 'other';
 
-export type DirectorySource = 'osm' | 'curated' | 'claimed';
+export type DirectorySource = 'osm' | 'curated' | 'claimed' | 'submitted';
 
 export type DirectorySport =
   | 'surf'

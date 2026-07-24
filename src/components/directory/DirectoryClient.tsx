@@ -1,12 +1,15 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { DirectoryEntry, DirectoryKind } from '@/types/directory';
 import { DIRECTORY_KIND_LABELS } from '@/lib/directory';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
+import DirectoryRegisterForm from '@/components/directory/DirectoryRegisterForm';
 import FilterPill from '@/components/ui/FilterPill';
 import EmptyState from '@/components/ui/EmptyState';
 import { GraduationCap } from 'lucide-react';
+import { getSupabaseClient } from '@/lib/supabase';
+import { fetchDirectoryListings, mergeDirectoryEntries } from '@/lib/directoryListings';
 
 type Props = {
   locale: string;
@@ -25,10 +28,31 @@ const KINDS: Array<DirectoryKind | 'all'> = [
   'other',
 ];
 
-export default function DirectoryClient({ locale, entries, generatedAt }: Props) {
+export default function DirectoryClient({ locale, entries: seedEntries, generatedAt }: Props) {
   const isPt = locale === 'pt';
+  const [live, setLive] = useState<DirectoryEntry[]>([]);
   const [kind, setKind] = useState<DirectoryKind | 'all'>('all');
   const [q, setQ] = useState('');
+  const [region, setRegion] = useState<string>('all');
+
+  const reloadLive = useCallback(async () => {
+    const sb = getSupabaseClient();
+    if (!sb) return;
+    try {
+      setLive(await fetchDirectoryListings(sb));
+    } catch {
+      /* table missing / offline */
+    }
+  }, []);
+
+  useEffect(() => {
+    void reloadLive();
+  }, [reloadLive]);
+
+  const entries = useMemo(
+    () => mergeDirectoryEntries(seedEntries, live),
+    [seedEntries, live],
+  );
 
   const regions = useMemo(() => {
     const set = new Set<string>();
@@ -38,8 +62,6 @@ export default function DirectoryClient({ locale, entries, generatedAt }: Props)
     }
     return [...set].sort((a, b) => a.localeCompare(b, locale));
   }, [entries, isPt, locale]);
-
-  const [region, setRegion] = useState<string>('all');
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -61,14 +83,20 @@ export default function DirectoryClient({ locale, entries, generatedAt }: Props)
         </h1>
         <p className="text-body text-fg-muted">
           {isPt
-            ? 'Escolas, kite centers e lojas em Portugal — seed OpenStreetMap + curado. Grátis para riders; escolas podem reclamar o perfil.'
-            : 'Schools, kite centers and shops in Portugal — OpenStreetMap seed + curated. Free for riders; businesses can claim their profile.'}
+            ? 'Escolas, kite centers e lojas em Portugal. Grátis para riders — escolas podem reclamar ou registar o perfil (aparece logo; verificação depois).'
+            : 'Schools, kite centers and shops in Portugal. Free for riders — businesses can claim or register (live immediately; verification follows).'}
         </p>
-        {generatedAt && (
-          <p className="text-meta-sm text-fg-subtle font-mono">
-            {entries.length} · {new Date(generatedAt).toLocaleString(locale)}
-          </p>
-        )}
+        <p className="text-meta-sm text-fg-subtle font-mono">
+          {entries.length}
+          {generatedAt ? ` · seed ${new Date(generatedAt).toLocaleString(locale)}` : ''}
+          {live.length ? ` · +${live.length} ${isPt ? 'registos' : 'submitted'}` : ''}
+        </p>
+        <a
+          href="#registar-escola"
+          className="inline-flex text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
+        >
+          {isPt ? 'A tua escola não está? Regista-a ↓' : 'School missing? Register ↓'}
+        </a>
       </header>
 
       <div className="flex flex-col gap-3">
@@ -129,17 +157,24 @@ export default function DirectoryClient({ locale, entries, generatedAt }: Props)
           title={isPt ? 'Nada encontrado' : 'Nothing found'}
           description={
             isPt
-              ? 'Ajusta filtros ou corre o seed OSM (directory:fetch).'
-              : 'Adjust filters or run the OSM seed (directory:fetch).'
+              ? 'Ajusta filtros ou regista a tua escola abaixo.'
+              : 'Adjust filters or register your school below.'
           }
         />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((e) => (
-            <DirectoryEntryCard key={e.id} entry={e} locale={locale} />
+            <DirectoryEntryCard
+              key={e.id}
+              entry={e}
+              locale={locale}
+              showClaim={e.source !== 'submitted'}
+            />
           ))}
         </div>
       )}
+
+      <DirectoryRegisterForm locale={locale} onCreated={() => void reloadLive()} />
     </div>
   );
 }
