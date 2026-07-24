@@ -1,6 +1,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { DirectoryEntry, DirectoryKind, DirectorySport, DirectoryTier } from '@/types/directory';
 import { sortDirectoryEntries } from '@/lib/directoryClient';
+import { safeExternalUrl } from '@/lib/safeUrl';
 
 export type DirectoryListingRow = {
   id: string;
@@ -209,6 +210,12 @@ export async function submitDirectoryListing(
     updated_at: new Date().toISOString(),
   };
 
+  const safeSite = safeExternalUrl(row.website);
+  row.website = safeSite;
+  if (input.website?.trim() && !safeSite) {
+    return { ok: false, error: 'Invalid website URL — use http:// or https://' };
+  }
+
   const { data, error } = await sb.from('directory_listings').insert(row).select('*').single();
 
   if (error) {
@@ -334,7 +341,16 @@ export async function updateDirectoryListing(
   if (fields.name !== undefined) patch.name = fields.name.trim().slice(0, 120);
   if (fields.kind !== undefined) patch.kind = fields.kind;
   if (fields.sports !== undefined) patch.sports = fields.sports;
-  if (fields.website !== undefined) patch.website = fields.website?.trim() || null;
+  if (fields.website !== undefined) {
+    const raw = fields.website?.trim() || null;
+    if (raw) {
+      const safe = safeExternalUrl(raw);
+      if (!safe) return { ok: false, error: 'Invalid website URL — use http:// or https://' };
+      patch.website = safe;
+    } else {
+      patch.website = null;
+    }
+  }
   if (fields.phone !== undefined) patch.phone = fields.phone?.trim() || null;
   if (fields.email !== undefined) patch.email = fields.email?.trim() || null;
   if (fields.address !== undefined) patch.address = fields.address?.trim() || null;
@@ -399,7 +415,16 @@ export async function updateDirectoryProfile(
     patch.display_name = fields.displayName?.trim().slice(0, 120) || null;
   }
   if (fields.bio !== undefined) patch.bio = fields.bio?.trim().slice(0, 1000) || null;
-  if (fields.website !== undefined) patch.website = fields.website?.trim() || null;
+  if (fields.website !== undefined) {
+    const raw = fields.website?.trim() || null;
+    if (raw) {
+      const safe = safeExternalUrl(raw);
+      if (!safe) return { ok: false, error: 'Invalid website URL — use http:// or https://' };
+      patch.website = safe;
+    } else {
+      patch.website = null;
+    }
+  }
   if (fields.phone !== undefined) patch.phone = fields.phone?.trim() || null;
   if (fields.email !== undefined) patch.email = fields.email?.trim() || null;
   if (fields.sports !== undefined) patch.sports = fields.sports;

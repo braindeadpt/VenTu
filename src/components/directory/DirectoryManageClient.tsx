@@ -14,6 +14,7 @@ import {
 } from '@/lib/directoryListings';
 import type { DirectoryEntry, DirectoryKind, DirectorySport } from '@/types/directory';
 import { spots } from '@/lib/spots';
+import { safeExternalUrl } from '@/lib/safeUrl';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -180,6 +181,21 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                 setBusyId(entry.id);
                 setError(null);
                 setOkMsg(null);
+                const websiteRaw = fields.website.trim();
+                let websiteNorm: string | null = null;
+                if (websiteRaw) {
+                  const safe = safeExternalUrl(websiteRaw);
+                  if (!safe) {
+                    setBusyId(null);
+                    setError(
+                      isPt
+                        ? 'URL inválido — usa https://… (só http/https).'
+                        : 'Invalid URL — use https://… (http/https only).',
+                    );
+                    return;
+                  }
+                  websiteNorm = safe;
+                }
                 const spot = fields.spotId
                   ? spots.find((s) => s.id === fields.spotId)
                   : undefined;
@@ -187,7 +203,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                   name: fields.name,
                   kind: fields.kind,
                   sports: fields.sports,
-                  website: fields.website,
+                  website: websiteNorm,
                   phone: fields.phone,
                   address: fields.address,
                   spotIds: fields.spotId ? [fields.spotId] : entry.spotIds,
@@ -229,10 +245,25 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                   setBusyId(row.entry_id);
                   setError(null);
                   setOkMsg(null);
+                  const websiteRaw = fields.website.trim();
+                  let websiteNorm: string | null = null;
+                  if (websiteRaw) {
+                    const safe = safeExternalUrl(websiteRaw);
+                    if (!safe) {
+                      setBusyId(null);
+                      setError(
+                        isPt
+                          ? 'URL inválido — usa https://… (só http/https).'
+                          : 'Invalid URL — use https://… (http/https only).',
+                      );
+                      return;
+                    }
+                    websiteNorm = safe;
+                  }
                   const res = await updateDirectoryProfile(sb, row.entry_id, {
                     displayName: fields.name,
                     bio: fields.bio,
-                    website: fields.website,
+                    website: websiteNorm,
                     phone: fields.phone,
                     sports: fields.sports,
                     spotIds: fields.spotId ? [fields.spotId] : undefined,

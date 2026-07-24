@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { submitDirectoryListing } from '@/lib/directoryListings';
 import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
+import { safeExternalUrl } from '@/lib/safeUrl';
 import type { DirectoryKind, DirectorySport } from '@/types/directory';
 import { spots } from '@/lib/spots';
 import Button from '@/components/ui/Button';
@@ -79,6 +80,20 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
       setError(isPt ? 'Escolhe pelo menos um desporto.' : 'Pick at least one sport.');
       return;
     }
+    const websiteRaw = website.trim();
+    let websiteNorm: string | undefined;
+    if (websiteRaw) {
+      const safe = safeExternalUrl(websiteRaw);
+      if (!safe) {
+        setError(
+          isPt
+            ? 'URL inválido — usa https://… (só http/https).'
+            : 'Invalid URL — use https://… (http/https only).',
+        );
+        return;
+      }
+      websiteNorm = safe;
+    }
     const spot = spots.find((s) => s.id === spotId);
     if (!spot) {
       setError(isPt ? 'Escolhe um spot VenTu perto.' : 'Pick a nearby VenTu spot.');
@@ -98,7 +113,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
       region: spot.region,
       regionEn: spot.regionEn,
       spotIds: [spot.id],
-      website: website.trim() || undefined,
+      website: websiteNorm,
       phone: phone.trim() || undefined,
       email: session.user.email || undefined,
       address: address.trim() || undefined,

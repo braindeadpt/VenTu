@@ -14,6 +14,7 @@ import { getSupabaseClient } from '@/lib/supabase';
 import { spots } from '@/lib/spots';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
 import Card from '@/components/ui/Card';
+import { safeExternalUrl, safeTelHref } from '@/lib/safeUrl';
 
 type Props = {
   locale: string;
@@ -51,6 +52,8 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
   const nearbySpots = entry.spotIds
     .map((id) => spots.find((s) => s.id === id))
     .filter(Boolean);
+  const websiteHref = safeExternalUrl(entry.website);
+  const telHref = safeTelHref(entry.phone);
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-8 sm:py-10 space-y-6">
@@ -96,9 +99,9 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
       )}
 
       <div className="flex flex-wrap gap-3 text-meta-sm">
-        {entry.website && (
+        {websiteHref && (
           <a
-            href={entry.website}
+            href={websiteHref}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
@@ -106,8 +109,8 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
             Website ↗
           </a>
         )}
-        {entry.phone && (
-          <a href={`tel:${entry.phone}`} className="font-semibold text-fg-muted hover:text-fg">
+        {telHref && entry.phone && (
+          <a href={telHref} className="font-semibold text-fg-muted hover:text-fg">
             {entry.phone}
           </a>
         )}

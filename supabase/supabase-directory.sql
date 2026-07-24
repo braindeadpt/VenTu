@@ -42,7 +42,11 @@ CREATE TABLE IF NOT EXISTS directory_listings (
   verified_by UUID REFERENCES auth.users(id),
   tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'featured', 'pro')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT directory_listings_website_http_check CHECK (
+    website IS NULL
+    OR website ~* '^https?://'
+  )
 );
 
 -- Migração se a tabela já existir sem tier
@@ -58,6 +62,25 @@ BEGIN
     ALTER TABLE directory_listings
       ADD CONSTRAINT directory_listings_tier_check
       CHECK (tier IN ('free', 'featured', 'pro'));
+  END IF;
+END $$;
+
+-- Website: só http(s) — bloqueia javascript:/data: (XSS)
+-- Corre isolado no SQL Editor se a tabela já existir:
+--   ALTER TABLE directory_listings DROP CONSTRAINT IF EXISTS directory_listings_website_http_check;
+--   ALTER TABLE directory_listings ADD CONSTRAINT directory_listings_website_http_check
+--     CHECK (website IS NULL OR website ~* '^https?://');
+--   ALTER TABLE directory_profiles DROP CONSTRAINT IF EXISTS directory_profiles_website_http_check;
+--   ALTER TABLE directory_profiles ADD CONSTRAINT directory_profiles_website_http_check
+--     CHECK (website IS NULL OR website ~* '^https?://');
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_listings_website_http_check'
+  ) THEN
+    ALTER TABLE directory_listings
+      ADD CONSTRAINT directory_listings_website_http_check
+      CHECK (website IS NULL OR website ~* '^https?://');
   END IF;
 END $$;
 
@@ -147,13 +170,28 @@ CREATE TABLE IF NOT EXISTS directory_profiles (
   verified BOOLEAN NOT NULL DEFAULT false,
   verified_at TIMESTAMPTZ,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  CONSTRAINT directory_profiles_website_http_check CHECK (
+    website IS NULL
+    OR website ~* '^https?://'
+  )
 );
 
 CREATE INDEX IF NOT EXISTS idx_directory_profiles_owner
   ON directory_profiles(owner_user_id);
 
 ALTER TABLE directory_profiles ENABLE ROW LEVEL SECURITY;
+
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_profiles_website_http_check'
+  ) THEN
+    ALTER TABLE directory_profiles
+      ADD CONSTRAINT directory_profiles_website_http_check
+      CHECK (website IS NULL OR website ~* '^https?://');
+  END IF;
+END $$;
 
 DROP POLICY IF EXISTS "directory_profiles_public_read" ON directory_profiles;
 CREATE POLICY "directory_profiles_public_read" ON directory_profiles

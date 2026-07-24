@@ -5,6 +5,7 @@ import { kindLabel, sportLabel, DIRECTORY_TIER_LABELS } from '@/lib/directoryCli
 import type { DirectoryEntry } from '@/types/directory';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
 import { buildEmbedSnippet } from '@/lib/directoryListings';
+import { safeExternalUrl } from '@/lib/safeUrl';
 
 type Props = {
   entry: DirectoryEntry;
@@ -29,6 +30,7 @@ export default function DirectoryEntryCard({
   const tier = entry.tier ?? 'free';
   const featured = tier === 'featured' || tier === 'pro';
   const spotForEmbed = entry.spotIds[0];
+  const websiteHref = safeExternalUrl(entry.website);
 
   return (
     <div id={entry.slug}>
@@ -86,14 +88,14 @@ export default function DirectoryEntryCard({
       )}
 
       <div className="flex flex-wrap gap-2">
-        {entry.website && (
+        {websiteHref && (
           <a
-            href={entry.website}
+            href={websiteHref}
             target="_blank"
             rel="noopener noreferrer"
             className="text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
           >
-            {isPt ? 'Website' : 'Website'} ↗
+            Website ↗
           </a>
         )}
         {entry.spotIds[0] && (
