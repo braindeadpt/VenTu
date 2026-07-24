@@ -43,7 +43,7 @@ export default function RootPage() {
             Condições náuticas em Portugal — surf, kitesurf, windsurf. Grátis e open source.
           </p>
           <p style={{ marginTop: '2rem', fontSize: '0.875rem', opacity: 0.6 }}>Escolhe o teu idioma:</p>
-          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
             <Link
               href="/pt/"
               style={{
@@ -73,6 +73,21 @@ export default function RootPage() {
               }}
             >
               English
+            </Link>
+            <Link
+              href="/es/"
+              style={{
+                display: 'inline-block',
+                padding: '0.75rem 1.5rem',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: '#F1F5F9',
+                fontWeight: 600,
+                borderRadius: '6px',
+                textDecoration: 'none',
+                minWidth: '140px',
+              }}
+            >
+              Español
             </Link>
           </div>
         </div>

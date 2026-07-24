@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { GraduationCap, MapPin, Store } from 'lucide-react';
 import Card from '@/components/ui/Card';
-import { kindLabel, sportLabel, DIRECTORY_TIER_LABELS } from '@/lib/directory';
+import { kindLabel, sportLabel, DIRECTORY_TIER_LABELS } from '@/lib/directoryClient';
 import type { DirectoryEntry } from '@/types/directory';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
 import { buildEmbedSnippet } from '@/lib/directoryListings';

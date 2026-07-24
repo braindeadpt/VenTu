@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { DirectoryEntry, DirectoryKind } from '@/types/directory';
-import { DIRECTORY_KIND_LABELS } from '@/lib/directory';
+import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
 import DirectoryRegisterForm from '@/components/directory/DirectoryRegisterForm';
 import FilterPill from '@/components/ui/FilterPill';

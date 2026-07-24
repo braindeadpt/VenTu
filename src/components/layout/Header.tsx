@@ -1,13 +1,20 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState, useCallback, useEffect, useRef, type KeyboardEvent } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState, useCallback, useEffect, useRef, type KeyboardEvent, type ChangeEvent } from 'react';
 import { Menu, X, Wind, Globe, Search, User } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import MegaMenu from './MegaMenu';
 import SearchPalette from '@/components/search/SearchPalette';
-import { getTranslation } from '@/lib/i18n';
+import {
+  getTranslation,
+  locales,
+  LOCALE_LABELS,
+  LOCALE_NATIVE_NAMES,
+  validateLocale,
+  type Locale,
+} from '@/lib/i18n';
 import { OPEN_SEARCH_EVENT } from '@/lib/searchEvents';
 import { useAuth } from '@/contexts/AuthProvider';
 
@@ -21,8 +28,10 @@ export default function Header({ locale }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
   const pathname = usePathname() || '';
-  const t = getTranslation(locale as 'pt' | 'en');
-  const isPt = locale === 'pt';
+  const router = useRouter();
+  const loc = validateLocale(locale);
+  const t = getTranslation(loc);
+  const isPt = loc === 'pt';
   const { session, authLoading, requestLogin, isSupabaseReady } = useAuth();
 
   useEffect(() => {
@@ -83,22 +92,41 @@ export default function Header({ locale }: HeaderProps) {
 
   const isActive = (href: string) => pathname === href.split('?')[0];
 
-  const switchLocale = isPt ? 'en' : 'pt';
-  // Only swap the leading /<locale> segment, not arbitrary later occurrences.
-  const switchPath =
-    (pathname || '/').replace(
-      new RegExp(`^/${locale}(?=/|$)`),
-      `/${switchLocale}`,
-    ) || `/${switchLocale}/`;
+  const handleLocaleChange = useCallback(
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      const next = validateLocale(e.target.value);
+      try {
+        localStorage.setItem('ventu:locale', next);
+      } catch {
+        /* noop */
+      }
+      const nextPath =
+        (pathname || '/').replace(new RegExp(`^/${locale}(?=/|$)`), `/${next}`) || `/${next}/`;
+      router.push(nextPath);
+    },
+    [locale, pathname, router],
+  );
 
-  // Persist user choice so the root inline-redirect script uses it.
-  const handleSwitchLocale = useCallback(() => {
-    try {
-      localStorage.setItem('ventu:locale', switchLocale);
-    } catch {
-      /* noop */
-    }
-  }, [switchLocale]);
+  const localeSelect = (
+    <label className="inline-flex items-center gap-1 min-h-[44px] px-2 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all cursor-pointer">
+      <Globe className="w-3.5 h-3.5 shrink-0" aria-hidden />
+      <span className="sr-only">
+        {isPt ? 'Idioma' : loc === 'es' ? 'Idioma' : 'Language'}
+      </span>
+      <select
+        value={loc}
+        onChange={handleLocaleChange}
+        className="appearance-none bg-transparent border-0 text-xs font-semibold text-fg-subtle hover:text-fg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm pr-1 min-h-[36px]"
+        aria-label={isPt ? 'Escolher idioma' : loc === 'es' ? 'Elegir idioma' : 'Choose language'}
+      >
+        {locales.map((l) => (
+          <option key={l} value={l}>
+            {LOCALE_LABELS[l as Locale]} — {LOCALE_NATIVE_NAMES[l as Locale]}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 
   const handleMegaOpen = useCallback(() => {
     setOpenMega(true);
@@ -213,15 +241,7 @@ export default function Header({ locale }: HeaderProps) {
                 </span>
               </button>
               <ThemeToggle locale={locale} />
-              <Link
-                href={switchPath}
-                onClick={handleSwitchLocale}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
-                aria-label={isPt ? 'Switch to English' : 'Mudar para Português'}
-              >
-                <Globe className="w-3.5 h-3.5" />
-                <span className="text-xs">{isPt ? 'EN' : 'PT'}</span>
-              </Link>
+              {localeSelect}
               {isSupabaseReady && (
                 session?.user ? (
                   <Link
@@ -258,15 +278,7 @@ export default function Header({ locale }: HeaderProps) {
                 <Search className="w-5 h-5" />
               </button>
               <ThemeToggle locale={locale} />
-              <Link
-                href={switchPath}
-                onClick={handleSwitchLocale}
-                className="inline-flex items-center justify-center gap-1 min-w-11 h-11 px-2 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
-                aria-label={isPt ? 'Switch to English' : 'Mudar para Português'}
-              >
-                <Globe className="w-4 h-4" aria-hidden />
-                <span className="text-xs font-semibold">{isPt ? 'EN' : 'PT'}</span>
-              </Link>
+              {localeSelect}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"

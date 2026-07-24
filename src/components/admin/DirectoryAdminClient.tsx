@@ -18,7 +18,7 @@ import {
   type DirectoryClaimRow,
 } from '@/lib/directoryClaims';
 import type { DirectoryEntry, DirectoryTier } from '@/types/directory';
-import { DIRECTORY_TIER_LABELS } from '@/lib/directory';
+import { DIRECTORY_TIER_LABELS } from '@/lib/directoryClient';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 

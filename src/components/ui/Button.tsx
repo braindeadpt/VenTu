@@ -31,7 +31,7 @@ type ButtonBaseProps = {
   loadingLabel?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
-  locale?: 'pt' | 'en';
+  locale?: 'pt' | 'en' | 'es';
 };
 
 type ButtonAsButton = ButtonBaseProps &

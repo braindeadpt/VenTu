@@ -1,6 +1,12 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import { locales, validateLocale } from '@/lib/i18n'
+import {
+  locales,
+  validateLocale,
+  LOCALE_HTML_LANG,
+  pickLocale,
+  type Locale,
+} from '@/lib/i18n'
 import { buildHomeMetadata, buildOrganizationJsonLd, buildWebApplicationJsonLd } from '@/lib/seo'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
@@ -17,8 +23,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const valid = locale === 'pt' || locale === 'en' ? locale : 'pt'
-  return buildHomeMetadata(valid)
+  return buildHomeMetadata(validateLocale(locale))
 }
 
 export default async function LocaleLayout({
@@ -34,9 +39,9 @@ export default async function LocaleLayout({
     notFound()
   }
 
-  const isPt = locale === 'pt'
-  const htmlLang = isPt ? 'pt-PT' : 'en'
-  const jsonLd = [buildWebApplicationJsonLd(isPt ? 'pt' : 'en'), buildOrganizationJsonLd()]
+  const loc = validLocale as Locale
+  const htmlLang = LOCALE_HTML_LANG[loc]
+  const jsonLd = [buildWebApplicationJsonLd(loc), buildOrganizationJsonLd()]
 
   return (
     <ClientProviders>
@@ -52,7 +57,11 @@ export default async function LocaleLayout({
           href="#main-content"
           className="skip-link sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[9999] focus:px-4 focus:py-2 focus:bg-bg-elevated focus:text-fg focus:rounded-card focus:shadow-lg focus:outline-2 focus:outline-score-good"
         >
-          {isPt ? 'Ir para o conteúdo' : 'Skip to content'}
+          {pickLocale(loc, {
+            pt: 'Ir para o conteúdo',
+            en: 'Skip to content',
+            es: 'Saltar al contenido',
+          })}
         </a>
         <Header locale={locale} />
         <main id="main-content" className="pt-16">{children}</main>

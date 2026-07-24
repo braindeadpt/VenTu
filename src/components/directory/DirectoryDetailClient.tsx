@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { DirectoryEntry } from '@/types/directory';
-import { kindLabel, sportLabel } from '@/lib/directory';
+import { kindLabel, sportLabel } from '@/lib/directoryClient';
 import {
   applyDirectoryProfiles,
   fetchDirectoryListings,

@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { DirectoryEntry, DirectoryKind, DirectorySport, DirectoryTier } from '@/types/directory';
-import { sortDirectoryEntries } from '@/lib/directory';
+import { sortDirectoryEntries } from '@/lib/directoryClient';
 
 export type DirectoryListingRow = {
   id: string;

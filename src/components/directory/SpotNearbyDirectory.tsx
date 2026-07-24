@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { DirectoryEntry, DirectoryFile } from '@/types/directory';
-import { entriesNearSpot } from '@/lib/directory';
+import { entriesNearSpot } from '@/lib/directoryClient';
 import {
   applyDirectoryProfiles,
   fetchDirectoryListings,
@@ -12,7 +12,7 @@ import {
 } from '@/lib/directoryListings';
 import { getSupabaseClient } from '@/lib/supabase';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
-import { sortDirectoryEntries } from '@/lib/directory';
+import { sortDirectoryEntries } from '@/lib/directoryClient';
 
 type Props = {
   spotId: string;

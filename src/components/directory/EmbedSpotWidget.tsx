@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { getSpotBySlug, spots } from '@/lib/spots';
 import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
-import { SITE_URL } from '@/lib/seo';
+import { SITE_URL } from '@/lib/site';
 
 type ConditionsFile = Record<
   string,

@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('UI interactions audit', () => {
   test('locale switch PT → EN on homepage', async ({ page }) => {
     await page.goto('/pt/');
-    await page.getByRole('link', { name: /Switch to English/i }).click();
+    await page.getByRole('banner').getByLabel(/Escolher idioma|Choose language|Elegir idioma/i).selectOption('en');
     await expect(page).toHaveURL(/\/en\/?$/);
     await expect(page.getByRole('banner')).toContainText('Ven');
   });

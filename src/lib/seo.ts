@@ -3,9 +3,18 @@ import { existsSync } from 'fs';
 import path from 'path';
 import { spots } from '@/lib/spots';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import {
+  locales,
+  localePathPattern,
+  LOCALE_OG,
+  pickLocale,
+  type Locale,
+  validateLocale,
+} from '@/lib/i18n';
+import { SITE_NAME, SITE_URL } from '@/lib/site';
 
-export const SITE_URL = 'https://ventu.surf';
-export const SITE_NAME = 'VenTu';
+export { SITE_NAME, SITE_URL };
+
 export const SPOT_COUNT = spots.length;
 
 /** Default share image — PNG 1200×630 (WhatsApp / Facebook / X require raster). */
@@ -44,6 +53,18 @@ export const DEFAULT_KEYWORDS_EN = [
   'water sports',
 ];
 
+export const DEFAULT_KEYWORDS_ES = [
+  'surf portugal',
+  'kitesurf portugal',
+  'windsurf portugal',
+  'previsión olas',
+  'condiciones surf',
+  'guincho',
+  'peniche',
+  'nazaré',
+  'deportes náuticos',
+];
+
 export function absoluteUrl(path: string): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return `${SITE_URL}${normalized}`;
@@ -52,7 +73,7 @@ export function absoluteUrl(path: string): string {
 export type PageSeoInput = {
   title: string;
   description: string;
-  locale: 'pt' | 'en';
+  locale: Locale;
   /** Path without domain, e.g. `/pt/mapa/` */
   path: string;
   /** Override OG/Twitter image path (relative). */
@@ -63,11 +84,19 @@ export type PageSeoInput = {
   noIndex?: boolean;
 };
 
+function defaultKeywords(locale: Locale): string[] {
+  return pickLocale(locale, {
+    pt: DEFAULT_KEYWORDS_PT,
+    en: DEFAULT_KEYWORDS_EN,
+    es: DEFAULT_KEYWORDS_ES,
+  });
+}
+
 export function buildPageMetadata(input: PageSeoInput): Metadata {
   const {
     title,
     description,
-    locale,
+    locale: rawLocale,
     path,
     imagePath = DEFAULT_OG_IMAGE_PATH,
     imageAlt = DEFAULT_OG_IMAGE.alt,
@@ -76,12 +105,20 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
     noIndex = false,
   } = input;
 
-  const isPt = locale === 'pt';
+  const locale = validateLocale(rawLocale);
   const canonicalPath = path.endsWith('/') ? path : `${path}/`;
-  const ogLocale = isPt ? 'pt_PT' : 'en_US';
-  const altLocale = isPt ? 'en_US' : 'pt_PT';
-  const pathWithoutLocale = canonicalPath.replace(/^\/(pt|en)/, '');
-  const altLocalePath = `/${isPt ? 'en' : 'pt'}${pathWithoutLocale}`;
+  const ogLocale = LOCALE_OG[locale];
+  const pathWithoutLocale = canonicalPath.replace(localePathPattern, '') || '/';
+  const normalizedPath = pathWithoutLocale.startsWith('/')
+    ? pathWithoutLocale
+    : `/${pathWithoutLocale}`;
+
+  const languages: Record<string, string> = {};
+  for (const loc of locales) {
+    languages[loc] = `/${loc}${normalizedPath === '/' ? '/' : normalizedPath}`;
+  }
+
+  const alternateLocales = locales.filter((l) => l !== locale).map((l) => LOCALE_OG[l]);
 
   const image = {
     url: imagePath,
@@ -96,13 +133,10 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
   return {
     title,
     description,
-    keywords: keywords ?? (isPt ? DEFAULT_KEYWORDS_PT : DEFAULT_KEYWORDS_EN),
+    keywords: keywords ?? defaultKeywords(locale),
     alternates: {
       canonical: canonicalPath,
-      languages: {
-        pt: `/pt${pathWithoutLocale}`,
-        en: `/en${pathWithoutLocale}`,
-      },
+      languages,
     },
     openGraph: {
       title,
@@ -110,7 +144,7 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
       url: canonicalPath,
       siteName: SITE_NAME,
       locale: ogLocale,
-      alternateLocale: [altLocale],
+      alternateLocale: alternateLocales,
       type,
       images: [image],
     },
@@ -137,17 +171,21 @@ export function buildRootMetadata(): Metadata {
 }
 
 /** Homepage metadata per locale. */
-export function buildHomeMetadata(locale: 'pt' | 'en'): Metadata {
-  const isPt = locale === 'pt';
+export function buildHomeMetadata(locale: Locale): Metadata {
+  const loc = validateLocale(locale);
   return buildPageMetadata({
-    title: isPt
-      ? `VenTu — ${SPOT_COUNT} spots · Condições Náuticas em Portugal`
-      : `VenTu — ${SPOT_COUNT} spots · Water Sports in Portugal`,
-    description: isPt
-      ? `${SPOT_COUNT} spots em Portugal — scores por modalidade, mapa interactivo e previsão ${pipelineSchedule('pt')}. Surf, kitesurf, windsurf, foil, SUP. Grátis.`
-      : `${SPOT_COUNT} spots in Portugal — sport scores, interactive map and forecast ${pipelineSchedule('en')}. Surf, kitesurf, windsurf, foil, SUP. Free.`,
-    locale,
-    path: `/${locale}/`,
+    title: pickLocale(loc, {
+      pt: `VenTu — ${SPOT_COUNT} spots · Condições Náuticas em Portugal`,
+      en: `VenTu — ${SPOT_COUNT} spots · Water Sports in Portugal`,
+      es: `VenTu — ${SPOT_COUNT} spots · Deportes náuticos en Portugal`,
+    }),
+    description: pickLocale(loc, {
+      pt: `${SPOT_COUNT} spots em Portugal — scores por modalidade, mapa interactivo e previsão ${pipelineSchedule('pt')}. Surf, kitesurf, windsurf, foil, SUP. Grátis.`,
+      en: `${SPOT_COUNT} spots in Portugal — sport scores, interactive map and forecast ${pipelineSchedule('en')}. Surf, kitesurf, windsurf, foil, SUP. Free.`,
+      es: `${SPOT_COUNT} spots en Portugal — scores por modalidad, mapa interactivo y previsión ${pipelineSchedule('es')}. Surf, kitesurf, windsurf, foil, SUP. Gratis.`,
+    }),
+    locale: loc,
+    path: `/${loc}/`,
   });
 }
 
@@ -162,41 +200,49 @@ export function resolveSpotOgImagePath(slug: string): string {
 }
 
 export function buildSpotMetadata(
-  locale: 'pt' | 'en',
+  locale: Locale,
   slug: string,
   spotName: string,
   regionName: string,
 ): Metadata {
-  const isPt = locale === 'pt';
+  const loc = validateLocale(locale);
   const title = `${spotName} — Condições | VenTu`;
-  const description = isPt
-    ? `Condições em ${spotName}, ${regionName}. Ondas, vento e temperatura da água — ${pipelineSchedule('pt')}.`
-    : `Conditions at ${spotName}, ${regionName}. Waves, wind and water temperature — ${pipelineSchedule('en')}.`;
+  const description = pickLocale(loc, {
+    pt: `Condições em ${spotName}, ${regionName}. Ondas, vento e temperatura da água — ${pipelineSchedule('pt')}.`,
+    en: `Conditions at ${spotName}, ${regionName}. Waves, wind and water temperature — ${pipelineSchedule('en')}.`,
+    es: `Condiciones en ${spotName}, ${regionName}. Olas, viento y temperatura del agua — ${pipelineSchedule('es')}.`,
+  });
 
   return buildPageMetadata({
     title,
     description,
-    locale,
-    path: `/${locale}/spots/${slug}/`,
+    locale: loc,
+    path: `/${loc}/spots/${slug}/`,
     imagePath: resolveSpotOgImagePath(slug),
-    imageAlt: isPt ? `Condições em ${spotName} — VenTu` : `${spotName} conditions — VenTu`,
-    keywords: ['surf', spotName, regionName, 'Portugal', ...(isPt ? DEFAULT_KEYWORDS_PT : DEFAULT_KEYWORDS_EN)],
+    imageAlt: pickLocale(loc, {
+      pt: `Condições em ${spotName} — VenTu`,
+      en: `${spotName} conditions — VenTu`,
+      es: `Condiciones en ${spotName} — VenTu`,
+    }),
+    keywords: ['surf', spotName, regionName, 'Portugal', ...defaultKeywords(loc)],
   });
 }
 
-export function buildWebApplicationJsonLd(locale: 'pt' | 'en') {
-  const isPt = locale === 'pt';
+export function buildWebApplicationJsonLd(locale: Locale) {
+  const loc = validateLocale(locale);
   return {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: SITE_NAME,
     applicationCategory: 'SportsApplication',
     operatingSystem: 'Web',
-    url: absoluteUrl(`/${locale}/`),
-    description: isPt
-      ? `Condições para surf, kitesurf, windsurf e big wave em Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('pt')}`
-      : `Water sports conditions in Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('en')}`,
-    inLanguage: isPt ? 'pt-PT' : 'en',
+    url: absoluteUrl(`/${loc}/`),
+    description: pickLocale(loc, {
+      pt: `Condições para surf, kitesurf, windsurf e big wave em Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('pt')}`,
+      en: `Water sports conditions in Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('en')}`,
+      es: `Condiciones de surf, kitesurf, windsurf y big wave en Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('es')}`,
+    }),
+    inLanguage: pickLocale(loc, { pt: 'pt-PT', en: 'en', es: 'es' }),
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
     author: {
       '@type': 'Organization',

@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { submitDirectoryListing } from '@/lib/directoryListings';
-import { DIRECTORY_KIND_LABELS } from '@/lib/directory';
+import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
 import type { DirectoryKind, DirectorySport } from '@/types/directory';
 import { spots } from '@/lib/spots';
 import Button from '@/components/ui/Button';

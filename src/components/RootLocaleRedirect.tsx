@@ -2,9 +2,10 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { resolvePreferredLocale } from '@/lib/i18n';
 
 /**
- * Auto-redirect humans to /pt/ or /en/ at the root `/`.
+ * Auto-redirect humans to a locale prefix at the root `/`.
  *
  * Pre-paint: a synchronous inline script in `src/app/layout.tsx` `<head>`
  * does the same redirect (priority: localStorage 'ventu:locale' →
@@ -19,8 +20,7 @@ export default function RootLocaleRedirect() {
     try {
       const stored = localStorage.getItem('ventu:locale');
       const navLang = (navigator.language || '').toLowerCase();
-      const pick = stored || navLang || 'pt';
-      const locale = pick.startsWith('pt') ? 'pt' : 'en';
+      const locale = resolvePreferredLocale(stored, navLang);
       const target = `/${locale}/`;
       if (
         typeof window !== 'undefined' &&

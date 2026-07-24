@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
-import { DIRECTORY_KIND_LABELS } from '@/lib/directory';
+import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
 import {
   fetchMyDirectoryListings,
   fetchMyDirectoryProfiles,

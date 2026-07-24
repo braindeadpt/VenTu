@@ -31,8 +31,16 @@ describe('mapa page SEO', () => {
 
     expect(pt.alternates?.canonical).toBe('/pt/mapa/');
     expect(en.alternates?.canonical).toBe('/en/mapa/');
-    expect(pt.alternates?.languages).toEqual({ pt: '/pt/mapa/', en: '/en/mapa/' });
-    expect(en.alternates?.languages).toEqual({ pt: '/pt/mapa/', en: '/en/mapa/' });
+    expect(pt.alternates?.languages).toEqual({
+      pt: '/pt/mapa/',
+      en: '/en/mapa/',
+      es: '/es/mapa/',
+    });
+    expect(en.alternates?.languages).toEqual({
+      pt: '/pt/mapa/',
+      en: '/en/mapa/',
+      es: '/es/mapa/',
+    });
     const images = pt.openGraph?.images;
     const first = Array.isArray(images) ? images[0] : images;
     const url = typeof first === 'object' && first && 'url' in first ? first.url : first;

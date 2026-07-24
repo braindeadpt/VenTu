@@ -252,6 +252,11 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-07-24 — Locale ES (shell)
+
+- `/es/` + `translations.es` + SEO hreflang/sitemap + Header picker; inline `isPt` ainda EN
+- Segue DE, FR
+
 ### 2026-07-24 — Directório escolas F1–F2; F3 mapa saltada
 
 - Plano [`DIRECTORY.md`](./DIRECTORY.md): F1 seed AESP + `/diretorio` + bloco spot; F2 registo não verificado + admin verifica
