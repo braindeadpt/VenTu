@@ -1,7 +1,8 @@
-import { locales, getTranslation } from '@/lib/i18n';
+import { locales } from '@/lib/i18n';
 import type { Metadata } from 'next';
 import PassaporteClient from '@/components/passaporte/PassaporteClient';
 
+// es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
 interface Props {
   params: Promise<{ locale: string }>;
 }

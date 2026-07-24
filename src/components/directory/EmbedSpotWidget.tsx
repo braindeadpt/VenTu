@@ -58,7 +58,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
 
   if (!spot) {
     return (
-      <div className="p-4 text-sm text-fg-muted">
+      <div data-embed-widget className="p-4 text-sm text-fg-muted">
         {isPt ? 'Spot não encontrado.' : 'Spot not found.'}
       </div>
     );
@@ -69,7 +69,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
   const name = school || (isPt ? spot.name : spot.nameEn);
 
   return (
-    <div className="min-h-screen bg-bg-base text-fg p-3 font-sans">
+    <div data-embed-widget className="box-border bg-bg-base text-fg p-2 font-sans">
       <a
         href={spotHref}
         target="_blank"

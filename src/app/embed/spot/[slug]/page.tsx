@@ -19,7 +19,7 @@ export default async function EmbedSpotPage({
 }) {
   const { slug } = await params;
   return (
-    <Suspense fallback={<div className="p-4 text-sm text-fg-muted">…</div>}>
+    <Suspense fallback={<div data-embed-widget className="p-4 text-sm text-fg-muted">…</div>}>
       <EmbedSpotWidget slug={slug} />
     </Suspense>
   );

@@ -1,15 +1,16 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
+import { locales } from '@/lib/i18n'
 import { buildSpotMetadata } from '@/lib/seo'
 import SpotDetailClient from '@/components/spots/SpotDetailClient'
 import type { Metadata } from 'next'
 
+// Body copy for es/de/fr falls through to EN (shell/hreflang MVP — see [locale]/layout.tsx).
 export async function generateStaticParams() {
-  return spots.flatMap((spot) => [
-    { locale: 'pt', slug: spot.slug },
-    { locale: 'en', slug: spot.slug },
-  ])
+  return spots.flatMap((spot) =>
+    locales.map((locale) => ({ locale, slug: spot.slug })),
+  )
 }
 
 // FIX SEO2: Dynamic metadata per spot

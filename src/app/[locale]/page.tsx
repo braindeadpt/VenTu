@@ -1,9 +1,14 @@
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, locales } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
 import { loadSpotData } from '@/lib/load-spot-data';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
+
+// es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 export default async function HomePage({
   params,

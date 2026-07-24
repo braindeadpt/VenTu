@@ -617,6 +617,7 @@ export const translations = {
 };
 
 export function getTranslation(locale: string): (typeof translations)['pt'] {
+  // Shell keys exist for es/de/fr; many page UIs still branch isPt→EN (SEO MVP).
   const loc = validateLocale(locale);
   const block = translations[loc as keyof typeof translations];
   return (block ?? translations.en ?? translations.pt) as (typeof translations)['pt'];

@@ -4,6 +4,7 @@ import { loadDirectoryFile } from '@/lib/directory';
 import DirectoryClient from '@/components/directory/DirectoryClient';
 import { buildPageMetadata } from '@/lib/seo';
 
+// es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
 interface Props {
   params: Promise<{ locale: string }>;
 }

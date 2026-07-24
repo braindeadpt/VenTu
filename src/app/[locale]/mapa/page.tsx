@@ -5,6 +5,7 @@ import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo';
 import MapaFullscreenClient from '@/components/spots/MapaFullscreenClient';
 import type { Metadata } from 'next';
 
+// es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }

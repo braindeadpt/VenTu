@@ -1,12 +1,18 @@
 # VenTu — Security & Performance HTTP Headers
 # Works on Netlify / Cloudflare Pages (both read _headers in public/).
-# For GitHub Pages, use a Cloudflare proxy or meta tags (CSPMeta.tsx).
+# GitHub Pages IGNORES this file (widget embed works there today for that reason).
+#
+# FOOTGUN — /embed/* MUST stay iframeable (B2B school widget):
+#   The catch-all below sets X-Frame-Options: DENY. If you migrate off GitHub Pages
+#   to Netlify/Cloudflare without an /embed override, school iframes break silently.
+#   Always keep the /embed/* block below (omit X-Frame-Options; allow frame-ancestors).
+#   Modern browsers honour CSP frame-ancestors over X-Frame-Options when both exist.
 
 /*
   # Prevent MIME-sniffing
   X-Content-Type-Options: nosniff
 
-  # Clickjacking protection (redundant with CSP frame-ancestors, but belt & braces)
+  # Clickjacking protection for the main app (NOT for /embed — see override below)
   X-Frame-Options: DENY
 
   # XSS filter (legacy browsers)
@@ -20,6 +26,13 @@
 
   # HSTS — 1 year, include subdomains
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Embed widget — allow framing (Netlify / Cloudflare Pages path overrides)
+# Do not set X-Frame-Options here. frame-ancestors * permits school sites to iframe.
+/embed/*
+  Content-Security-Policy: frame-ancestors *
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
 
 # Cache immutable static assets aggressively
 /_next/static/*

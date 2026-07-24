@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/* B2B embed (/embed/spot/*): root body uses min-h-screen for the app shell;
+   that fills school iframes (~120–160px). Collapse when the widget mounts. */
+html:has([data-embed-widget]),
+html:has([data-embed-widget]) body {
+  min-height: 0;
+  height: auto;
+  background: transparent;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
  *  CSS CUSTOM PROPERTIES
  *  Defined here so they're available to both Tailwind utilities AND

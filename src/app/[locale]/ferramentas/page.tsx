@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Shirt, Wind } from 'lucide-react'
 
+// es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
 interface Props {
   params: Promise<{ locale: string }>
 }
