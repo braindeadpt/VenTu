@@ -35,11 +35,13 @@ describe('mapa page SEO', () => {
       pt: '/pt/mapa/',
       en: '/en/mapa/',
       es: '/es/mapa/',
+      de: '/de/mapa/',
     });
     expect(en.alternates?.languages).toEqual({
       pt: '/pt/mapa/',
       en: '/en/mapa/',
       es: '/es/mapa/',
+      de: '/de/mapa/',
     });
     const images = pt.openGraph?.images;
     const first = Array.isArray(images) ? images[0] : images;

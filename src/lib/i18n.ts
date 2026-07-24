@@ -1,32 +1,37 @@
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { translationsEs } from '@/lib/translations/es';
+import { translationsDe } from '@/lib/translations/de';
 
 export const defaultLocale = 'pt';
-export const locales = ['pt', 'en', 'es'] as const;
+export const locales = ['pt', 'en', 'es', 'de'] as const;
 export type Locale = (typeof locales)[number];
 
 export const LOCALE_LABELS: Record<Locale, string> = {
   pt: 'PT',
   en: 'EN',
   es: 'ES',
+  de: 'DE',
 };
 
 export const LOCALE_NATIVE_NAMES: Record<Locale, string> = {
   pt: 'Português',
   en: 'English',
   es: 'Español',
+  de: 'Deutsch',
 };
 
 export const LOCALE_HTML_LANG: Record<Locale, string> = {
   pt: 'pt-PT',
   en: 'en',
   es: 'es',
+  de: 'de',
 };
 
 export const LOCALE_OG: Record<Locale, string> = {
   pt: 'pt_PT',
   en: 'en_US',
   es: 'es_ES',
+  de: 'de_DE',
 };
 
 /** Regex that matches a leading locale segment, e.g. `/pt` or `/es/`. */
@@ -602,6 +607,7 @@ export const translations = {
     },
   },
   es: translationsEs,
+  de: translationsDe,
 };
 
 export function getTranslation(locale: string): (typeof translations)['pt'] {

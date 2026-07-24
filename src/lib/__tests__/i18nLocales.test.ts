@@ -8,8 +8,8 @@ import {
 } from '@/lib/i18n';
 
 describe('i18n locales', () => {
-  it('includes pt, en, es', () => {
-    expect([...locales]).toEqual(['pt', 'en', 'es']);
+  it('includes pt, en, es, de', () => {
+    expect([...locales]).toEqual(['pt', 'en', 'es', 'de']);
   });
 
   it('validateLocale falls back to pt', () => {
@@ -34,5 +34,12 @@ describe('i18n locales', () => {
     expect(t.hero.exploreMap).toBe('Explorar mapa');
     expect(t.nav.home).toBe('Inicio');
     expect(t.hero.onCount).toBe('a tope');
+  });
+
+  it('getTranslation returns German shell for de', () => {
+    const t = getTranslation('de');
+    expect(t.hero.exploreMap).toBe('Karte erkunden');
+    expect(t.nav.home).toBe('Startseite');
+    expect(t.hero.onCount).toBe('laufen');
   });
 });

@@ -61,6 +61,7 @@ export default async function LocaleLayout({
             pt: 'Ir para o conteúdo',
             en: 'Skip to content',
             es: 'Saltar al contenido',
+            de: 'Zum Inhalt springen',
           })}
         </a>
         <Header locale={locale} />

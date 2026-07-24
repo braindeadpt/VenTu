@@ -252,6 +252,11 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-07-24 — Locale DE (shell)
+
+- `/de/` + `translations.de` + SEO; inline `isPt` ainda EN
+- Segue FR
+
 ### 2026-07-24 — Locale ES (shell)
 
 - `/es/` + `translations.es` + SEO hreflang/sitemap + Header picker; inline `isPt` ainda EN

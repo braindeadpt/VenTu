@@ -65,6 +65,18 @@ export const DEFAULT_KEYWORDS_ES = [
   'deportes náuticos',
 ];
 
+export const DEFAULT_KEYWORDS_DE = [
+  'surf portugal',
+  'kitesurf portugal',
+  'windsurf portugal',
+  'wellenprognose',
+  'surfbedingungen',
+  'guincho',
+  'peniche',
+  'nazare',
+  'wassersport',
+];
+
 export function absoluteUrl(path: string): string {
   const normalized = path.startsWith('/') ? path : `/${path}`;
   return `${SITE_URL}${normalized}`;
@@ -89,6 +101,7 @@ function defaultKeywords(locale: Locale): string[] {
     pt: DEFAULT_KEYWORDS_PT,
     en: DEFAULT_KEYWORDS_EN,
     es: DEFAULT_KEYWORDS_ES,
+    de: DEFAULT_KEYWORDS_DE,
   });
 }
 
@@ -178,11 +191,13 @@ export function buildHomeMetadata(locale: Locale): Metadata {
       pt: `VenTu — ${SPOT_COUNT} spots · Condições Náuticas em Portugal`,
       en: `VenTu — ${SPOT_COUNT} spots · Water Sports in Portugal`,
       es: `VenTu — ${SPOT_COUNT} spots · Deportes náuticos en Portugal`,
+      de: `VenTu — ${SPOT_COUNT} Spots · Wassersport in Portugal`,
     }),
     description: pickLocale(loc, {
       pt: `${SPOT_COUNT} spots em Portugal — scores por modalidade, mapa interactivo e previsão ${pipelineSchedule('pt')}. Surf, kitesurf, windsurf, foil, SUP. Grátis.`,
       en: `${SPOT_COUNT} spots in Portugal — sport scores, interactive map and forecast ${pipelineSchedule('en')}. Surf, kitesurf, windsurf, foil, SUP. Free.`,
       es: `${SPOT_COUNT} spots en Portugal — scores por modalidad, mapa interactivo y previsión ${pipelineSchedule('es')}. Surf, kitesurf, windsurf, foil, SUP. Gratis.`,
+      de: `${SPOT_COUNT} Spots in Portugal — Sport-Scores, interaktive Karte und Vorhersage ${pipelineSchedule('de')}. Surf, Kitesurf, Windsurf, Foil, SUP. Kostenlos.`,
     }),
     locale: loc,
     path: `/${loc}/`,
@@ -211,6 +226,7 @@ export function buildSpotMetadata(
     pt: `Condições em ${spotName}, ${regionName}. Ondas, vento e temperatura da água — ${pipelineSchedule('pt')}.`,
     en: `Conditions at ${spotName}, ${regionName}. Waves, wind and water temperature — ${pipelineSchedule('en')}.`,
     es: `Condiciones en ${spotName}, ${regionName}. Olas, viento y temperatura del agua — ${pipelineSchedule('es')}.`,
+    de: `Bedingungen in ${spotName}, ${regionName}. Wellen, Wind und Wassertemperatur — ${pipelineSchedule('de')}.`,
   });
 
   return buildPageMetadata({
@@ -223,6 +239,7 @@ export function buildSpotMetadata(
       pt: `Condições em ${spotName} — VenTu`,
       en: `${spotName} conditions — VenTu`,
       es: `Condiciones en ${spotName} — VenTu`,
+      de: `Bedingungen in ${spotName} — VenTu`,
     }),
     keywords: ['surf', spotName, regionName, 'Portugal', ...defaultKeywords(loc)],
   });
@@ -241,8 +258,9 @@ export function buildWebApplicationJsonLd(locale: Locale) {
       pt: `Condições para surf, kitesurf, windsurf e big wave em Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('pt')}`,
       en: `Water sports conditions in Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('en')}`,
       es: `Condiciones de surf, kitesurf, windsurf y big wave en Portugal — ${SPOT_COUNT} spots, ${pipelineSchedule('es')}`,
+      de: `Bedingungen für Surf, Kitesurf, Windsurf und Big Wave in Portugal — ${SPOT_COUNT} Spots, ${pipelineSchedule('de')}`,
     }),
-    inLanguage: pickLocale(loc, { pt: 'pt-PT', en: 'en', es: 'es' }),
+    inLanguage: pickLocale(loc, { pt: 'pt-PT', en: 'en', es: 'es', de: 'de' }),
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
     author: {
       '@type': 'Organization',

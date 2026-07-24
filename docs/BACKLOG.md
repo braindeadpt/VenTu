@@ -153,7 +153,7 @@ Actualmente PT/EN. Audiences potenciais não cobertas:
 
 ### URLs por idioma
 
-Routes actuais: `/pt/`, `/en/`, `/es/` (shell i18n + SEO; copy inline `isPt` ainda cai em EN). Segue `/de/`, `/fr/`.
+Routes actuais: `/pt/`, `/en/`, `/es/`, `/de/` (shell i18n + SEO; copy inline `isPt` ainda cai em EN). Segue `/fr/`.
 
 ---
 

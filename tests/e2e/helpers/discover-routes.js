@@ -5,7 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const { getSeoLandingSlugs } = require('../../../scripts/seo-landings-slugs');
 
-const LOCALES = ['pt', 'en', 'es'];
+const LOCALES = ['pt', 'en', 'es', 'de'];
 const MODALITY_SLUGS = [
   'surf', 'kitesurf', 'windsurf', 'big-wave', 'bodyboard', 'sup', 'foil', 'wakeboard',
 ];

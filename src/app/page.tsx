@@ -89,6 +89,21 @@ export default function RootPage() {
             >
               Español
             </Link>
+            <Link
+              href="/de/"
+              style={{
+                display: 'inline-block',
+                padding: '0.75rem 1.5rem',
+                border: '1px solid rgba(255,255,255,0.2)',
+                color: '#F1F5F9',
+                fontWeight: 600,
+                borderRadius: '6px',
+                textDecoration: 'none',
+                minWidth: '140px',
+              }}
+            >
+              Deutsch
+            </Link>
           </div>
         </div>
       </noscript>
