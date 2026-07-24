@@ -27,8 +27,29 @@ export type DirectoryListingRow = {
 
 export type DirectoryProfileRow = {
   entry_id: string;
+  owner_user_id: string | null;
+  display_name: string | null;
+  bio: string | null;
+  website: string | null;
+  phone: string | null;
+  email: string | null;
+  sports: string[] | null;
+  spot_ids: string[] | null;
   tier: string;
   verified: boolean;
+};
+
+export type DirectoryProfileOverlay = {
+  ownerUserId?: string;
+  tier: DirectoryTier;
+  verified: boolean;
+  displayName?: string;
+  bio?: string;
+  website?: string;
+  phone?: string;
+  email?: string;
+  sports?: DirectorySport[];
+  spotIds?: string[];
 };
 
 function parseTier(raw: string | null | undefined): DirectoryTier {
@@ -75,12 +96,27 @@ export async function fetchDirectoryListings(
   return ((data as DirectoryListingRow[]) || []).map(listingToEntry);
 }
 
-/** Premium overrides for seed entry ids (aesp-*, osm-*, …). */
+function profileRowToOverlay(row: DirectoryProfileRow): DirectoryProfileOverlay {
+  return {
+    ownerUserId: row.owner_user_id || undefined,
+    tier: parseTier(row.tier),
+    verified: !!row.verified,
+    displayName: row.display_name || undefined,
+    bio: row.bio || undefined,
+    website: row.website || undefined,
+    phone: row.phone || undefined,
+    email: row.email || undefined,
+    sports: (row.sports || undefined) as DirectorySport[] | undefined,
+    spotIds: row.spot_ids || undefined,
+  };
+}
+
+/** Premium + owner overlays for seed entry ids (aesp-*, osm-*, …). */
 export async function fetchDirectoryProfiles(
   sb: SupabaseClient,
-): Promise<Map<string, { tier: DirectoryTier; verified: boolean }>> {
-  const map = new Map<string, { tier: DirectoryTier; verified: boolean }>();
-  const { data, error } = await sb.from('directory_profiles').select('entry_id, tier, verified');
+): Promise<Map<string, DirectoryProfileOverlay>> {
+  const map = new Map<string, DirectoryProfileOverlay>();
+  const { data, error } = await sb.from('directory_profiles').select('*');
   if (error) {
     if (/relation .*directory_profiles.* does not exist|Could not find the table/i.test(error.message)) {
       return map;
@@ -88,17 +124,14 @@ export async function fetchDirectoryProfiles(
     throw error;
   }
   for (const row of (data as DirectoryProfileRow[]) || []) {
-    map.set(row.entry_id, {
-      tier: parseTier(row.tier),
-      verified: !!row.verified,
-    });
+    map.set(row.entry_id, profileRowToOverlay(row));
   }
   return map;
 }
 
 export function applyDirectoryProfiles(
   entries: DirectoryEntry[],
-  profiles: Map<string, { tier: DirectoryTier; verified: boolean }>,
+  profiles: Map<string, DirectoryProfileOverlay>,
 ): DirectoryEntry[] {
   if (profiles.size === 0) return entries;
   return entries.map((e) => {
@@ -106,8 +139,16 @@ export function applyDirectoryProfiles(
     if (!p) return { ...e, tier: e.tier ?? 'free' };
     return {
       ...e,
+      name: p.displayName || e.name,
+      bio: p.bio ?? e.bio,
+      website: p.website ?? e.website,
+      phone: p.phone ?? e.phone,
+      email: p.email ?? e.email,
+      sports: p.sports && p.sports.length > 0 ? p.sports : e.sports,
+      spotIds: p.spotIds && p.spotIds.length > 0 ? p.spotIds : e.spotIds,
       tier: p.tier,
       verified: p.verified || e.verified,
+      source: p.verified ? 'claimed' : e.source,
     };
   });
 }
@@ -244,6 +285,127 @@ export async function upsertDirectoryProfileTier(
     },
     { onConflict: 'entry_id' },
   );
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+export type OwnerListingFields = {
+  name?: string;
+  kind?: DirectoryKind;
+  sports?: DirectorySport[];
+  website?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  address?: string | null;
+  spotIds?: string[];
+  lat?: number;
+  lon?: number;
+  region?: string | null;
+  regionEn?: string | null;
+};
+
+export async function fetchMyDirectoryListings(
+  sb: SupabaseClient,
+  userId: string,
+): Promise<DirectoryEntry[]> {
+  const { data, error } = await sb
+    .from('directory_listings')
+    .select('*')
+    .eq('owner_user_id', userId)
+    .order('updated_at', { ascending: false });
+
+  if (error) {
+    if (/relation .*directory_listings.* does not exist|Could not find the table/i.test(error.message)) {
+      return [];
+    }
+    throw error;
+  }
+  return ((data as DirectoryListingRow[]) || []).map(listingToEntry);
+}
+
+export async function updateDirectoryListing(
+  sb: SupabaseClient,
+  listingId: string,
+  fields: OwnerListingFields,
+): Promise<{ ok: true; entry: DirectoryEntry } | { ok: false; error: string }> {
+  const patch: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
+  if (fields.name !== undefined) patch.name = fields.name.trim().slice(0, 120);
+  if (fields.kind !== undefined) patch.kind = fields.kind;
+  if (fields.sports !== undefined) patch.sports = fields.sports;
+  if (fields.website !== undefined) patch.website = fields.website?.trim() || null;
+  if (fields.phone !== undefined) patch.phone = fields.phone?.trim() || null;
+  if (fields.email !== undefined) patch.email = fields.email?.trim() || null;
+  if (fields.address !== undefined) patch.address = fields.address?.trim() || null;
+  if (fields.spotIds !== undefined) patch.spot_ids = fields.spotIds;
+  if (fields.lat !== undefined) patch.lat = fields.lat;
+  if (fields.lon !== undefined) patch.lon = fields.lon;
+  if (fields.region !== undefined) patch.region = fields.region;
+  if (fields.regionEn !== undefined) patch.region_en = fields.regionEn;
+
+  const { data, error } = await sb
+    .from('directory_listings')
+    .update(patch)
+    .eq('id', listingId)
+    .select('*')
+    .single();
+
+  if (error) return { ok: false, error: error.message };
+  return { ok: true, entry: listingToEntry(data as DirectoryListingRow) };
+}
+
+export type OwnerProfileFields = {
+  displayName?: string | null;
+  bio?: string | null;
+  website?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  sports?: DirectorySport[];
+  spotIds?: string[];
+};
+
+export async function fetchMyDirectoryProfiles(
+  sb: SupabaseClient,
+  userId: string,
+): Promise<Array<DirectoryProfileRow & { overlay: DirectoryProfileOverlay }>> {
+  const { data, error } = await sb
+    .from('directory_profiles')
+    .select('*')
+    .eq('owner_user_id', userId)
+    .order('updated_at', { ascending: false });
+
+  if (error) {
+    if (/relation .*directory_profiles.* does not exist|Could not find the table/i.test(error.message)) {
+      return [];
+    }
+    throw error;
+  }
+  return ((data as DirectoryProfileRow[]) || []).map((row) => ({
+    ...row,
+    overlay: profileRowToOverlay(row),
+  }));
+}
+
+export async function updateDirectoryProfile(
+  sb: SupabaseClient,
+  entryId: string,
+  fields: OwnerProfileFields,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const patch: Record<string, unknown> = {
+    updated_at: new Date().toISOString(),
+  };
+  if (fields.displayName !== undefined) {
+    patch.display_name = fields.displayName?.trim().slice(0, 120) || null;
+  }
+  if (fields.bio !== undefined) patch.bio = fields.bio?.trim().slice(0, 1000) || null;
+  if (fields.website !== undefined) patch.website = fields.website?.trim() || null;
+  if (fields.phone !== undefined) patch.phone = fields.phone?.trim() || null;
+  if (fields.email !== undefined) patch.email = fields.email?.trim() || null;
+  if (fields.sports !== undefined) patch.sports = fields.sports;
+  if (fields.spotIds !== undefined) patch.spot_ids = fields.spotIds;
+
+  const { error } = await sb.from('directory_profiles').update(patch).eq('entry_id', entryId);
   if (error) return { ok: false, error: error.message };
   return { ok: true };
 }

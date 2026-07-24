@@ -9,7 +9,13 @@ import FilterPill from '@/components/ui/FilterPill';
 import EmptyState from '@/components/ui/EmptyState';
 import { GraduationCap } from 'lucide-react';
 import { getSupabaseClient } from '@/lib/supabase';
-import { fetchDirectoryListings, fetchDirectoryProfiles, applyDirectoryProfiles, mergeDirectoryEntries } from '@/lib/directoryListings';
+import {
+  fetchDirectoryListings,
+  fetchDirectoryProfiles,
+  applyDirectoryProfiles,
+  mergeDirectoryEntries,
+  type DirectoryProfileOverlay,
+} from '@/lib/directoryListings';
 
 type Props = {
   locale: string;
@@ -31,9 +37,7 @@ const KINDS: Array<DirectoryKind | 'all'> = [
 export default function DirectoryClient({ locale, entries: seedEntries, generatedAt }: Props) {
   const isPt = locale === 'pt';
   const [live, setLive] = useState<DirectoryEntry[]>([]);
-  const [profiles, setProfiles] = useState<
-    Map<string, { tier: import('@/types/directory').DirectoryTier; verified: boolean }>
-  >(new Map());
+  const [profiles, setProfiles] = useState<Map<string, DirectoryProfileOverlay>>(new Map());
   const [kind, setKind] = useState<DirectoryKind | 'all'>('all');
   const [q, setQ] = useState('');
   const [region, setRegion] = useState<string>('all');
@@ -104,6 +108,13 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
           className="inline-flex text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
         >
           {isPt ? 'A tua escola não está? Regista-a ↓' : 'School missing? Register ↓'}
+        </a>
+        {' · '}
+        <a
+          href={`/${locale}/diretorio/gerir/`}
+          className="inline-flex text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
+        >
+          {isPt ? 'Gerir o teu perfil' : 'Manage your profile'}
         </a>
       </header>
 

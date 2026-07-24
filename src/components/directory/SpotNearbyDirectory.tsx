@@ -41,10 +41,7 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }
         /* ignore */
       }
       let live: DirectoryEntry[] = [];
-      let profiles = new Map<
-        string,
-        { tier: import('@/types/directory').DirectoryTier; verified: boolean }
-      >();
+      let profiles = new Map<string, import('@/lib/directoryListings').DirectoryProfileOverlay>();
       try {
         const sb = getSupabaseClient();
         if (sb) {

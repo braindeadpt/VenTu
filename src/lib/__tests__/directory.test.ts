@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { distanceKm, entriesNearSpot } from '../directory';
-import { mergeDirectoryEntries } from '../directoryListings';
+import { applyDirectoryProfiles, mergeDirectoryEntries } from '../directoryListings';
 import type { DirectoryEntry } from '@/types/directory';
 
 const base = (over: Partial<DirectoryEntry>): DirectoryEntry => ({
@@ -59,5 +59,30 @@ describe('mergeDirectoryEntries', () => {
       [],
     );
     expect(merged.map((e) => e.id)).toEqual(['b', 'c', 'a']);
+  });
+});
+
+describe('applyDirectoryProfiles', () => {
+  it('overlays owner contact fields and verified on seed', () => {
+    const seed = [base({ id: 'aesp-1', slug: 'escola', website: 'https://old.example' })];
+    const profiles = new Map([
+      [
+        'aesp-1',
+        {
+          tier: 'featured' as const,
+          verified: true,
+          displayName: 'Escola Nova',
+          website: 'https://new.example',
+          phone: '910000000',
+        },
+      ],
+    ]);
+    const [out] = applyDirectoryProfiles(seed, profiles);
+    expect(out.name).toBe('Escola Nova');
+    expect(out.website).toBe('https://new.example');
+    expect(out.phone).toBe('910000000');
+    expect(out.verified).toBe(true);
+    expect(out.tier).toBe('featured');
+    expect(out.source).toBe('claimed');
   });
 });

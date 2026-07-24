@@ -87,17 +87,48 @@ CREATE POLICY "directory_listings_insert_own" ON directory_listings
     AND tier = 'free'
   );
 
+-- Owner can edit after verify; trigger locks admin-only columns
 DROP POLICY IF EXISTS "directory_listings_owner_update" ON directory_listings;
 CREATE POLICY "directory_listings_owner_update" ON directory_listings
   FOR UPDATE TO authenticated
-  USING (auth.uid() = owner_user_id AND verified = false)
-  WITH CHECK (auth.uid() = owner_user_id AND verified = false);
+  USING (auth.uid() = owner_user_id)
+  WITH CHECK (auth.uid() = owner_user_id);
 
 DROP POLICY IF EXISTS "directory_listings_admin_all" ON directory_listings;
 CREATE POLICY "directory_listings_admin_all" ON directory_listings
   FOR ALL TO authenticated
   USING (public.is_ventu_admin())
   WITH CHECK (public.is_ventu_admin());
+
+CREATE OR REPLACE FUNCTION public.directory_listings_protect_admin_fields()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF public.is_ventu_admin() THEN
+    RETURN NEW;
+  END IF;
+  NEW.id := OLD.id;
+  NEW.slug := OLD.slug;
+  NEW.source := OLD.source;
+  NEW.owner_user_id := OLD.owner_user_id;
+  NEW.verified := OLD.verified;
+  NEW.verified_at := OLD.verified_at;
+  NEW.verified_by := OLD.verified_by;
+  NEW.tier := OLD.tier;
+  NEW.created_at := OLD.created_at;
+  NEW.updated_at := now();
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_directory_listings_protect ON directory_listings;
+CREATE TRIGGER trg_directory_listings_protect
+  BEFORE UPDATE ON directory_listings
+  FOR EACH ROW
+  EXECUTE FUNCTION public.directory_listings_protect_admin_fields();
 
 GRANT SELECT ON directory_listings TO anon, authenticated;
 GRANT INSERT, UPDATE ON directory_listings TO authenticated;
@@ -140,6 +171,33 @@ CREATE POLICY "directory_profiles_admin_all" ON directory_profiles
   FOR ALL TO authenticated
   USING (public.is_ventu_admin())
   WITH CHECK (public.is_ventu_admin());
+
+CREATE OR REPLACE FUNCTION public.directory_profiles_protect_admin_fields()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+  IF public.is_ventu_admin() THEN
+    RETURN NEW;
+  END IF;
+  NEW.entry_id := OLD.entry_id;
+  NEW.owner_user_id := OLD.owner_user_id;
+  NEW.tier := OLD.tier;
+  NEW.verified := OLD.verified;
+  NEW.verified_at := OLD.verified_at;
+  NEW.created_at := OLD.created_at;
+  NEW.updated_at := now();
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_directory_profiles_protect ON directory_profiles;
+CREATE TRIGGER trg_directory_profiles_protect
+  BEFORE UPDATE ON directory_profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION public.directory_profiles_protect_admin_fields();
 
 CREATE TABLE IF NOT EXISTS directory_claims (
   id BIGSERIAL PRIMARY KEY,
@@ -190,7 +248,7 @@ CREATE POLICY "directory_claims_admin_update" ON directory_claims
   WITH CHECK (public.is_ventu_admin());
 
 GRANT SELECT ON directory_profiles TO anon, authenticated;
-GRANT UPDATE ON directory_profiles TO authenticated;
+GRANT INSERT, UPDATE ON directory_profiles TO authenticated;
 
 GRANT SELECT, INSERT, UPDATE ON directory_claims TO authenticated;
 GRANT USAGE, SELECT ON SEQUENCE directory_claims_id_seq TO authenticated;

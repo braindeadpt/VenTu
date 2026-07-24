@@ -1,7 +1,8 @@
-import DirectoryAdminClient from '@/components/admin/DirectoryAdminClient';
+import type { Metadata } from 'next';
 import { locales } from '@/lib/i18n';
 import { loadDirectoryEntries } from '@/lib/directory';
-import type { Metadata } from 'next';
+import DirectoryManageClient from '@/components/directory/DirectoryManageClient';
+import type { DirectoryEntry } from '@/types/directory';
 
 export async function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -15,20 +16,20 @@ export async function generateMetadata({
   const { locale } = await params;
   const isPt = locale === 'pt';
   return {
-    title: isPt ? 'Admin — Directório' : 'Admin — Directory',
+    title: isPt ? 'Gerir escolas — VenTu' : 'Manage schools — VenTu',
     robots: { index: false, follow: false },
   };
 }
 
-export default async function AdminDiretorioPage({
+export default async function DiretorioGerirPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const seedNames: Record<string, string> = {};
+  const seedById: Record<string, DirectoryEntry> = {};
   for (const e of loadDirectoryEntries()) {
-    seedNames[e.id] = e.name;
+    seedById[e.id] = e;
   }
-  return <DirectoryAdminClient locale={locale} seedNames={seedNames} />;
+  return <DirectoryManageClient locale={locale} seedById={seedById} />;
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LogOut, Heart, User, Bell } from 'lucide-react';
+import { LogOut, Heart, User, Bell, GraduationCap } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { fetchUserAlertPrefs, alertModeLabel, type UserAlertPrefs } from '@/lib/userAlerts';
@@ -107,6 +107,30 @@ export default function AccountClient({ locale }: { locale: string }) {
           locale={locale as 'pt' | 'en'}
         >
           {isPt ? 'Gerir alertas' : 'Manage alerts'}
+        </Button>
+      </Card>
+
+      <Card variant="card-1" className="p-4 space-y-3">
+        <div className="flex items-center gap-3">
+          <GraduationCap className="w-5 h-5 text-fg-muted" aria-hidden />
+          <div>
+            <p className="text-sm font-semibold text-fg">
+              {isPt ? 'Escolas / lojas' : 'Schools / shops'}
+            </p>
+            <p className="text-meta-sm text-fg-muted">
+              {isPt
+                ? 'Editar perfis que geres no directório'
+                : 'Edit directory profiles you manage'}
+            </p>
+          </div>
+        </div>
+        <Button
+          href={`/${locale}/diretorio/gerir/`}
+          variant="secondary"
+          size="md"
+          locale={locale as 'pt' | 'en'}
+        >
+          {isPt ? 'Gerir perfis' : 'Manage profiles'}
         </Button>
       </Card>
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import { Check, LogIn, LogOut, RefreshCw, ShieldOff } from 'lucide-react';
+import { Check, LogIn, LogOut, RefreshCw, ShieldOff, X } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
 import {
@@ -11,26 +11,45 @@ import {
   verifyDirectoryListing,
   buildEmbedSnippet,
 } from '@/lib/directoryListings';
+import {
+  approveDirectoryClaim,
+  fetchPendingClaims,
+  rejectDirectoryClaim,
+  type DirectoryClaimRow,
+} from '@/lib/directoryClaims';
 import type { DirectoryEntry, DirectoryTier } from '@/types/directory';
 import { DIRECTORY_TIER_LABELS } from '@/lib/directory';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
-export default function DirectoryAdminClient({ locale }: { locale: string }) {
+export default function DirectoryAdminClient({
+  locale,
+  seedNames = {},
+}: {
+  locale: string;
+  seedNames?: Record<string, string>;
+}) {
   const isPt = locale === 'pt';
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [session, setSession] = useState<Session | null>(null);
   const [items, setItems] = useState<DirectoryEntry[]>([]);
+  const [claims, setClaims] = useState<DirectoryClaimRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
+  const [tab, setTab] = useState<'listings' | 'claims'>('listings');
   const [filter, setFilter] = useState<'unverified' | 'verified' | 'all'>('unverified');
 
   const load = useCallback(async () => {
     const sb = getSupabaseClient();
     if (!sb) return;
-    setItems(await fetchDirectoryListings(sb));
+    const [listings, pending] = await Promise.all([
+      fetchDirectoryListings(sb),
+      fetchPendingClaims(sb),
+    ]);
+    setItems(listings);
+    setClaims(pending);
   }, []);
 
   useEffect(() => {
@@ -120,6 +139,38 @@ export default function DirectoryAdminClient({ locale }: { locale: string }) {
     setBusy(false);
   };
 
+  const onApproveClaim = async (claim: DirectoryClaimRow) => {
+    if (!session?.user) return;
+    setBusy(true);
+    setError('');
+    const sb = getSupabaseClient();
+    if (!sb) return;
+    const res = await approveDirectoryClaim(sb, {
+      claimId: claim.id,
+      entryId: claim.entry_id,
+      claimantUserId: claim.user_id,
+      adminUserId: session.user.id,
+    });
+    if (!res.ok) setError(res.error);
+    else await load();
+    setBusy(false);
+  };
+
+  const onRejectClaim = async (claim: DirectoryClaimRow) => {
+    if (!session?.user) return;
+    setBusy(true);
+    setError('');
+    const sb = getSupabaseClient();
+    if (!sb) return;
+    const res = await rejectDirectoryClaim(sb, {
+      claimId: claim.id,
+      adminUserId: session.user.id,
+    });
+    if (!res.ok) setError(res.error);
+    else await load();
+    setBusy(false);
+  };
+
   const visible = items.filter((e) => {
     if (filter === 'unverified') return !e.verified;
     if (filter === 'verified') return !!e.verified;
@@ -204,107 +255,171 @@ export default function DirectoryAdminClient({ locale }: { locale: string }) {
 
       <p className="text-meta-sm text-fg-muted">
         {isPt
-          ? 'Admin: verificar + tier (free / destaque / pro). Pro mostra snippet de widget embed.'
-          : 'Admin: verify + tier (free / featured / pro). Pro shows embed widget snippet.'}
+          ? 'Verificar registos, aprovar claims e definir tier. Owner edita em /diretorio/gerir.'
+          : 'Verify submissions, approve claims, set tier. Owner edits at /diretorio/gerir.'}
       </p>
 
       <div className="flex gap-2">
-        {(['unverified', 'verified', 'all'] as const).map((f) => (
-          <button
-            key={f}
-            type="button"
-            onClick={() => setFilter(f)}
-            className={`pill min-h-[36px] px-3 ${filter === f ? 'pill-active' : 'pill-ghost'}`}
-          >
-            {f === 'unverified'
-              ? isPt
-                ? 'Por verificar'
-                : 'Unverified'
-              : f === 'verified'
-                ? isPt
-                  ? 'Verificados'
-                  : 'Verified'
-                : isPt
-                  ? 'Todos'
-                  : 'All'}
-          </button>
-        ))}
+        <button
+          type="button"
+          onClick={() => setTab('listings')}
+          className={`pill min-h-[36px] px-3 ${tab === 'listings' ? 'pill-active' : 'pill-ghost'}`}
+        >
+          {isPt ? 'Registos' : 'Listings'} ({items.length})
+        </button>
+        <button
+          type="button"
+          onClick={() => setTab('claims')}
+          className={`pill min-h-[36px] px-3 ${tab === 'claims' ? 'pill-active' : 'pill-ghost'}`}
+        >
+          Claims ({claims.length})
+        </button>
       </div>
 
       {error && <p className="text-meta-sm text-score-poor">{error}</p>}
 
-      <div className="space-y-3">
-        {visible.length === 0 ? (
-          <p className="text-body text-fg-muted">{isPt ? 'Nada nesta lista.' : 'Nothing in this list.'}</p>
-        ) : (
-          visible.map((e) => (
-            <Card key={e.id} variant="card-1" className="space-y-2">
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="font-display text-h3 text-fg">{e.name}</h2>
-                <span className={`text-meta-sm ${e.verified ? 'text-score-good' : 'text-fg-subtle'}`}>
-                  {e.verified ? (isPt ? 'Verificado' : 'Verified') : isPt ? 'Não verificado' : 'Unverified'}
-                </span>
-              </div>
-              <p className="text-meta-sm text-fg-muted">
-                {e.kind} · {e.region || '—'} · tier {(e.tier ?? 'free')} · {e.phone || e.website || e.address || '—'}
-              </p>
-              <div className="flex flex-wrap gap-2 items-center">
-                <label className="text-meta-sm text-fg-muted flex items-center gap-1.5">
-                  {isPt ? 'Tier' : 'Tier'}
-                  <select
-                    value={e.tier ?? 'free'}
-                    disabled={busy}
-                    onChange={(ev) => void onTier(e.id, ev.target.value as DirectoryTier)}
-                    className="min-h-[36px] rounded-input border border-divider bg-bg-elevated px-2 text-body text-fg"
-                  >
-                    {(['free', 'featured', 'pro'] as const).map((t) => (
-                      <option key={t} value={t}>
-                        {isPt ? DIRECTORY_TIER_LABELS[t].pt : DIRECTORY_TIER_LABELS[t].en}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                {!e.verified ? (
+      {tab === 'claims' ? (
+        <div className="space-y-3">
+          {claims.length === 0 ? (
+            <p className="text-body text-fg-muted">
+              {isPt ? 'Sem claims pendentes.' : 'No pending claims.'}
+            </p>
+          ) : (
+            claims.map((c) => (
+              <Card key={c.id} variant="card-1" className="space-y-2">
+                <h2 className="font-display text-h3 text-fg">
+                  {seedNames[c.entry_id] || c.entry_id}
+                </h2>
+                <p className="text-meta-sm text-fg-muted font-mono">{c.entry_id}</p>
+                <p className="text-meta-sm text-fg-muted">
+                  {c.contact_email || c.user_id}
+                  {c.evidence ? ` · ${c.evidence.slice(0, 160)}` : ''}
+                </p>
+                <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"
                     variant="secondary"
                     size="sm"
                     disabled={busy}
-                    onClick={() => void onVerify(e.id)}
+                    onClick={() => void onApproveClaim(c)}
                     leftIcon={<Check className="w-4 h-4" />}
                   >
-                    {isPt ? 'Aprovar / verificar' : 'Approve / verify'}
+                    {isPt ? 'Aprovar claim' : 'Approve claim'}
                   </Button>
-                ) : (
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
                     disabled={busy}
-                    onClick={() => void onUnverify(e.id)}
-                    leftIcon={<ShieldOff className="w-4 h-4" />}
+                    onClick={() => void onRejectClaim(c)}
+                    leftIcon={<X className="w-4 h-4" />}
                   >
-                    {isPt ? 'Remover verificação' : 'Unverify'}
+                    {isPt ? 'Rejeitar' : 'Reject'}
                   </Button>
-                )}
-              </div>
-              {e.tier === 'pro' && e.spotIds[0] && (
-                <textarea
-                  readOnly
-                  rows={2}
-                  className="w-full rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1.5 font-mono text-meta-sm text-fg-muted"
-                  value={buildEmbedSnippet({
-                    spotId: e.spotIds[0],
-                    locale,
-                    schoolName: e.name,
-                  })}
-                  onFocus={(ev) => ev.target.select()}
-                />
-              )}
-            </Card>
-          ))
-        )}
-      </div>
+                </div>
+              </Card>
+            ))
+          )}
+        </div>
+      ) : (
+        <>
+          <div className="flex gap-2">
+            {(['unverified', 'verified', 'all'] as const).map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFilter(f)}
+                className={`pill min-h-[36px] px-3 ${filter === f ? 'pill-active' : 'pill-ghost'}`}
+              >
+                {f === 'unverified'
+                  ? isPt
+                    ? 'Por verificar'
+                    : 'Unverified'
+                  : f === 'verified'
+                    ? isPt
+                      ? 'Verificados'
+                      : 'Verified'
+                    : isPt
+                      ? 'Todos'
+                      : 'All'}
+              </button>
+            ))}
+          </div>
+
+          <div className="space-y-3">
+            {visible.length === 0 ? (
+              <p className="text-body text-fg-muted">{isPt ? 'Nada nesta lista.' : 'Nothing in this list.'}</p>
+            ) : (
+              visible.map((e) => (
+                <Card key={e.id} variant="card-1" className="space-y-2">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <h2 className="font-display text-h3 text-fg">{e.name}</h2>
+                    <span className={`text-meta-sm ${e.verified ? 'text-score-good' : 'text-fg-subtle'}`}>
+                      {e.verified ? (isPt ? 'Verificado' : 'Verified') : isPt ? 'Não verificado' : 'Unverified'}
+                    </span>
+                  </div>
+                  <p className="text-meta-sm text-fg-muted">
+                    {e.kind} · {e.region || '—'} · tier {(e.tier ?? 'free')} · {e.phone || e.website || e.address || '—'}
+                  </p>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <label className="text-meta-sm text-fg-muted flex items-center gap-1.5">
+                      {isPt ? 'Tier' : 'Tier'}
+                      <select
+                        value={e.tier ?? 'free'}
+                        disabled={busy}
+                        onChange={(ev) => void onTier(e.id, ev.target.value as DirectoryTier)}
+                        className="min-h-[36px] rounded-input border border-divider bg-bg-elevated px-2 text-body text-fg"
+                      >
+                        {(['free', 'featured', 'pro'] as const).map((t) => (
+                          <option key={t} value={t}>
+                            {isPt ? DIRECTORY_TIER_LABELS[t].pt : DIRECTORY_TIER_LABELS[t].en}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    {!e.verified ? (
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        size="sm"
+                        disabled={busy}
+                        onClick={() => void onVerify(e.id)}
+                        leftIcon={<Check className="w-4 h-4" />}
+                      >
+                        {isPt ? 'Aprovar / verificar' : 'Approve / verify'}
+                      </Button>
+                    ) : (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        disabled={busy}
+                        onClick={() => void onUnverify(e.id)}
+                        leftIcon={<ShieldOff className="w-4 h-4" />}
+                      >
+                        {isPt ? 'Remover verificação' : 'Unverify'}
+                      </Button>
+                    )}
+                  </div>
+                  {e.tier === 'pro' && e.spotIds[0] && (
+                    <textarea
+                      readOnly
+                      rows={2}
+                      className="w-full rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1.5 font-mono text-meta-sm text-fg-muted"
+                      value={buildEmbedSnippet({
+                        spotId: e.spotIds[0],
+                        locale,
+                        schoolName: e.name,
+                      })}
+                      onFocus={(ev) => ev.target.select()}
+                    />
+                  )}
+                </Card>
+              ))
+            )}
+          </div>
+        </>
+      )}
     </main>
   );
 }

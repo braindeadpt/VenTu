@@ -40,6 +40,8 @@ export interface DirectoryEntry {
   phone?: string;
   email?: string;
   address?: string;
+  /** Short owner-written blurb (from profile overlay). */
+  bio?: string;
   source: DirectorySource;
   osmType?: 'node' | 'way' | 'relation';
   osmId?: number;

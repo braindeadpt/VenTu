@@ -72,9 +72,14 @@ export default function DirectoryClaimButton({ entryId, entryName, locale }: Pro
 
   if (status === 'approved') {
     return (
-      <p className="text-meta-sm text-score-good">
-        {isPt ? 'Perfil verificado — és o dono.' : 'Verified profile — you own this.'}
-      </p>
+      <div className="space-y-2">
+        <p className="text-meta-sm text-score-good">
+          {isPt ? 'Perfil verificado — és o dono.' : 'Verified profile — you own this.'}
+        </p>
+        <Button href={`/${locale}/diretorio/gerir/`} variant="secondary" size="sm" locale={locale as 'pt' | 'en'}>
+          {isPt ? 'Editar perfil' : 'Edit profile'}
+        </Button>
+      </div>
     );
   }
 

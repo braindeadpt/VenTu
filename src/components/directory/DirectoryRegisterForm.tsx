@@ -120,8 +120,8 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
 
     setMessage(
       isPt
-        ? 'Perfil criado e público como «Não verificado». Quando aprovarmos, passa a Verificado.'
-        : 'Profile created and public as “Unverified”. When we approve it, it becomes Verified.',
+        ? 'Perfil criado e público como «Não verificado». Quando aprovarmos, passa a Verificado — podes editar em Gerir perfil.'
+        : 'Profile created and public as “Unverified”. After we approve it becomes Verified — edit under Manage profile.',
     );
     setName('');
     setWebsite('');

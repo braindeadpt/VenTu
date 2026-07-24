@@ -257,7 +257,7 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 - Plano [`DIRECTORY.md`](./DIRECTORY.md): F1 seed AESP + `/diretorio` + bloco spot; F2 registo não verificado + admin verifica
 - **F3** (escolas no mapa de condições) **saltada** — descoberta via directório + spot; opcional F3b mapa só em `/diretorio`
 - **F4** MVP: tier free/featured/pro, destaque na lista, widget `/embed/spot/[slug]/`
-- SQL `supabase-directory.sql` (inclui `tier`) · próxima: owner-edit, pagamento Stripe, alertas white-label
+- SQL `supabase-directory.sql` (inclui `tier`) · **owner-edit** `/diretorio/gerir` + admin claims · próxima: pagamento Stripe, alertas white-label
 
 ### 2026-07-22 — Telegram alerts MVP
 

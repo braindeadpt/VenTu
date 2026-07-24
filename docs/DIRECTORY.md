@@ -18,6 +18,7 @@ Directório nacional de escolas/lojas/kite centers em `/diretorio` e nas página
 | **F3** Camada no mapa de condições | Toggle escolas no explorar | ⏭️ **saltada** (decisão 2026-07-24) |
 | **F3b** (opcional) | Mapa **só** em `/diretorio` se faltar descoberta geo | ⬜ |
 | **F4** Premium B2B | Destaque + Pro widget embed | ✅ MVP |
+| **F2b** Owner edita | `/diretorio/gerir` + admin claims | ✅ |
 
 ---
 
@@ -39,10 +40,11 @@ Directório nacional de escolas/lojas/kite centers em `/diretorio` e nas página
 - [x] `directory_listings` — registo novo (público já, `verified=false`)
 - [x] Form em `/diretorio` («A tua escola não está?»)
 - [x] Admin `/admin/diretorio` — aprovar → `verified=true`
-- [ ] Owner edita perfil após verificação
+- [x] Owner edita perfil após verificação (`/diretorio/gerir`)
+- [x] Admin aprova claims de seed → `directory_profiles` com owner
 - Claim de seed JSON (já em F1 CTA)
 
-**Ops:** re-correr [`supabase/supabase-directory.sql`](../supabase/supabase-directory.sql). Conta admin: `app_metadata.role = admin`.
+**Ops:** re-correr [`supabase/supabase-directory.sql`](../supabase/supabase-directory.sql) (RLS owner update + triggers). Conta admin: `app_metadata.role = admin`.
 
 
 ### F4 — Premium B2B ✅ MVP
@@ -74,10 +76,18 @@ OSM/curated → stub público (não verificado)
      → CTA “Reclama”
      → login + pedido (+ evidência opcional)
      → admin aprova
-     → owner edita
+     → owner edita (`/diretorio/gerir`)
      → (opcional) upgrade premium
 ```
 
+## Owner edit
+
+| Origem | Tabela | Onde edita |
+|--------|--------|------------|
+| Registo novo | `directory_listings` | `/diretorio/gerir` (sempre que és owner) |
+| Claim de seed | `directory_profiles` overlay | idem, após admin aprovar claim |
+
+Owner **não** altera `verified` / `tier` (trigger SQL).
 ## Fontes de dados
 
 | Fonte | Uso |
