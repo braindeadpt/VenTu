@@ -57,7 +57,9 @@ export default function Header({ locale }: HeaderProps) {
   useEffect(() => {
     if (mobileMenuOpen && mobileNavRef.current) {
       const firstLink = mobileNavRef.current.querySelector<HTMLAnchorElement>('a');
-      firstLink?.focus();
+      // preventScroll: focusing the first link must not scroll the drawer
+      // and hide the locale/theme row at the top.
+      firstLink?.focus({ preventScroll: true });
     }
   }, [mobileMenuOpen]);
 
@@ -108,7 +110,7 @@ export default function Header({ locale }: HeaderProps) {
   );
 
   const localeSelect = (
-    <label className="inline-flex items-center gap-1 min-h-[44px] px-2 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all cursor-pointer">
+    <label className="inline-flex items-center gap-1 min-h-[44px] px-2 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all cursor-pointer shrink-0">
       <Globe className="w-3.5 h-3.5 shrink-0" aria-hidden />
       <span className="sr-only">
         {isPt ? 'Idioma' : loc === 'es' ? 'Idioma' : 'Language'}
@@ -183,15 +185,15 @@ export default function Header({ locale }: HeaderProps) {
         className="site-header fixed top-0 left-0 right-0 z-50 bg-bg-base/95 md:bg-bg-base/90 md:backdrop-blur-md border-b border-divider transition-[background,border-color] duration-slow"
         onKeyDown={handleKeyDown}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2 xl:gap-x-3 h-16">
+        <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
+          <div className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)_minmax(0,auto)] items-center gap-x-1.5 sm:gap-x-2 xl:gap-x-3 h-16">
             {/* Logo — isolated so centre nav never paints over it */}
             <Link
               href={`/${locale}/`}
-              className="flex items-center gap-2.5 group shrink-0 relative z-10 pr-1"
+              className="flex items-center gap-2 group min-w-0 relative z-10 pr-0.5"
             >
-              <Wind className="w-8 h-8 text-accent group-hover:text-accent-hover transition-colors" />
-              <span className="text-xl font-bold text-fg tracking-tight">
+              <Wind className="w-7 h-7 sm:w-8 sm:h-8 text-accent group-hover:text-accent-hover transition-colors shrink-0" />
+              <span className="text-lg sm:text-xl font-bold text-fg tracking-tight truncate">
                 Ven<span className="text-accent">Tu</span>
               </span>
             </Link>
@@ -268,20 +270,18 @@ export default function Header({ locale }: HeaderProps) {
               )}
             </div>
 
-            {/* Mobile / tablet actions (até xl) */}
-            <div className="flex items-center gap-1 xl:hidden shrink-0 col-start-3 justify-end">
+            {/* Mobile / tablet — only search + menu in the bar (theme/locale in drawer) */}
+            <div className="flex items-center gap-0.5 xl:hidden shrink-0 col-start-3 justify-end">
               <button
                 onClick={openSearch}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
                 aria-label={navLabel.search}
               >
                 <Search className="w-5 h-5" />
               </button>
-              <ThemeToggle locale={locale} />
-              {localeSelect}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
+                className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
                 aria-label={mobileMenuOpen ? navLabel.closeMenu : navLabel.openMenu}
                 aria-expanded={mobileMenuOpen}
                 aria-controls="mobile-nav"
@@ -309,6 +309,10 @@ export default function Header({ locale }: HeaderProps) {
           aria-hidden={!mobileMenuOpen}
         >
           <div className="px-4 py-3 space-y-1">
+            <div className="flex items-center justify-between gap-2 px-1 pb-2 border-b border-divider mb-2">
+              {localeSelect}
+              <ThemeToggle locale={locale} />
+            </div>
             <p className="px-0 pt-0 pb-1 text-meta-sm font-semibold text-fg-muted">
               {navLabel.modalidades}
             </p>
