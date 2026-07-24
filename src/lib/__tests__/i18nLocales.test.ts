@@ -8,8 +8,8 @@ import {
 } from '@/lib/i18n';
 
 describe('i18n locales', () => {
-  it('includes pt, en, es, de', () => {
-    expect([...locales]).toEqual(['pt', 'en', 'es', 'de']);
+  it('includes pt, en, es, de, fr', () => {
+    expect([...locales]).toEqual(['pt', 'en', 'es', 'de', 'fr']);
   });
 
   it('validateLocale falls back to pt', () => {
@@ -20,7 +20,8 @@ describe('i18n locales', () => {
   it('resolvePreferredLocale prefers stored then navigator prefix', () => {
     expect(resolvePreferredLocale('es', 'en-US')).toBe('es');
     expect(resolvePreferredLocale(null, 'es-ES')).toBe('es');
-    expect(resolvePreferredLocale(null, 'fr-FR')).toBe('en');
+    expect(resolvePreferredLocale(null, 'fr-FR')).toBe('fr');
+    expect(resolvePreferredLocale(null, 'it-IT')).toBe('en');
     expect(resolvePreferredLocale(null, null)).toBe('pt');
   });
 
@@ -41,5 +42,12 @@ describe('i18n locales', () => {
     expect(t.hero.exploreMap).toBe('Karte erkunden');
     expect(t.nav.home).toBe('Startseite');
     expect(t.hero.onCount).toBe('laufen');
+  });
+
+  it('getTranslation returns French shell for fr', () => {
+    const t = getTranslation('fr');
+    expect(t.hero.exploreMap).toBe('Explorer la carte');
+    expect(t.nav.home).toBe('Accueil');
+    expect(t.hero.onCount).toBe('à fond');
   });
 });

@@ -46,6 +46,19 @@ test.describe('Critical routes', () => {
     await expect(page.locator('h1.sr-only')).toBeAttached();
   });
 
+  test('homepage FR loads', async ({ page }) => {
+    await page.goto('/fr/');
+    await expect(page.getByRole('banner')).toContainText('Ven');
+    await expect(
+      page.getByRole('region', {
+        name: /Carte interactive|Interactive map|Mapa interactivo|Interaktive Karte/i,
+      }),
+    ).toBeVisible({
+      timeout: 20_000,
+    });
+    await expect(page.locator('h1.sr-only')).toBeAttached();
+  });
+
   test('spot detail page loads', async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
     await expect(page.locator('main')).toContainText(/Guincho/i, { timeout: 15_000 });

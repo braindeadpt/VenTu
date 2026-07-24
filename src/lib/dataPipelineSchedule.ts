@@ -20,6 +20,11 @@ export const PIPELINE_SCHEDULE = {
     medium: 'alle 2h (tagsüber) und alle 4h (nachts) aktualisiert',
     long: 'Open-Meteo-Vorhersagen alle 2h (06:00–20:00) und alle 4h nachts (Lissabon-Zeit). IH/IPMA-Beobachtungen dazwischen.',
   },
+  fr: {
+    short: '2h jour · 4h nuit',
+    medium: 'mises à jour toutes les 2h (jour) et 4h (nuit)',
+    long: 'Prévisions Open-Meteo toutes les 2h (06:00–20:00) et toutes les 4h la nuit (heure de Lisbonne). Observations IH/IPMA entre-temps.',
+  },
 } as const;
 
 export function pipelineSchedule(locale: string, variant: 'short' | 'medium' | 'long' = 'medium'): string {

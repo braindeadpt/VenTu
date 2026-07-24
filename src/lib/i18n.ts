@@ -1,9 +1,10 @@
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { translationsEs } from '@/lib/translations/es';
 import { translationsDe } from '@/lib/translations/de';
+import { translationsFr } from '@/lib/translations/fr';
 
 export const defaultLocale = 'pt';
-export const locales = ['pt', 'en', 'es', 'de'] as const;
+export const locales = ['pt', 'en', 'es', 'de', 'fr'] as const;
 export type Locale = (typeof locales)[number];
 
 export const LOCALE_LABELS: Record<Locale, string> = {
@@ -11,6 +12,7 @@ export const LOCALE_LABELS: Record<Locale, string> = {
   en: 'EN',
   es: 'ES',
   de: 'DE',
+  fr: 'FR',
 };
 
 export const LOCALE_NATIVE_NAMES: Record<Locale, string> = {
@@ -18,6 +20,7 @@ export const LOCALE_NATIVE_NAMES: Record<Locale, string> = {
   en: 'English',
   es: 'Español',
   de: 'Deutsch',
+  fr: 'Français',
 };
 
 export const LOCALE_HTML_LANG: Record<Locale, string> = {
@@ -25,6 +28,7 @@ export const LOCALE_HTML_LANG: Record<Locale, string> = {
   en: 'en',
   es: 'es',
   de: 'de',
+  fr: 'fr',
 };
 
 export const LOCALE_OG: Record<Locale, string> = {
@@ -32,6 +36,7 @@ export const LOCALE_OG: Record<Locale, string> = {
   en: 'en_US',
   es: 'es_ES',
   de: 'de_DE',
+  fr: 'fr_FR',
 };
 
 /** Regex that matches a leading locale segment, e.g. `/pt` or `/es/`. */
@@ -608,6 +613,7 @@ export const translations = {
   },
   es: translationsEs,
   de: translationsDe,
+  fr: translationsFr,
 };
 
 export function getTranslation(locale: string): (typeof translations)['pt'] {

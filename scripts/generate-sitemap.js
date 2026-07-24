@@ -3,7 +3,7 @@ const path = require('path');
 const { getSeoLandingSlugs } = require('./seo-landings-slugs');
 
 const BASE_URL = 'https://ventu.surf';
-const LOCALES = ['pt', 'en', 'es', 'de'];
+const LOCALES = ['pt', 'en', 'es', 'de', 'fr'];
 const MODALITY_SLUGS = ['surf', 'kitesurf', 'windsurf', 'big-wave', 'bodyboard', 'sup', 'foil', 'wakeboard'];
 
 function slugify(text) {

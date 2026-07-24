@@ -89,4 +89,4 @@ export interface NewsItem {
   sourceRegion?: 'pt' | 'intl';
 }
 
-export type Locale = 'pt' | 'en' | 'es' | 'de';
+export type Locale = 'pt' | 'en' | 'es' | 'de' | 'fr';

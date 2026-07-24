@@ -85,7 +85,7 @@ const themeScript = `
 /**
  * Pre-paint locale redirect. Only runs on the root `/` (any other path is
  * already locale-prefixed). Priority: localStorage('ventu:locale') →
- * navigator.language → 'pt'. Supported: pt, en, es, de.
+ * navigator.language → 'pt'. Supported: pt, en, es, de, fr.
  */
 const localeRedirectScript = `
   (function () {
@@ -96,7 +96,7 @@ const localeRedirectScript = `
       try { stored = localStorage.getItem('ventu:locale'); } catch (e) {}
       var navLang = (navigator && (navigator.language || navigator.userLanguage)) || '';
       var pick = String(stored || navLang || 'pt').toLowerCase();
-      var supported = { pt: 1, en: 1, es: 1, de: 1 };
+      var supported = { pt: 1, en: 1, es: 1, de: 1, fr: 1 };
       var locale = 'pt';
       var hasPick = !!(stored || navLang);
       if (supported[pick]) locale = pick;
