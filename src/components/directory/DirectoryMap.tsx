@@ -38,8 +38,6 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
   const clusterRef = useRef<import('leaflet').MarkerClusterGroup | null>(null);
   const LRef = useRef<typeof import('leaflet') | null>(null);
   const [ready, setReady] = useState(false);
-  const entriesRef = useRef(entries);
-  entriesRef.current = entries;
 
   useEffect(() => {
     const container = containerRef.current;
