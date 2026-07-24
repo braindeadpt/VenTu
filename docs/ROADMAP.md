@@ -252,6 +252,15 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-07-24 — Security + integridade directório; embed; header mobile
+
+- **XSS stored** `website`: `safeExternalUrl` + CHECK SQL + validação forms (`0a4d198e`)
+- **Claims atómicos:** RPC `approve_directory_claim` (`45335f3f`)
+- **Field length** CHECKs + `maxLength` (`f5321edc`)
+- Embed compacto + docs `_headers` framing; locales es/de/fr = shell traduzido / body EN (SEO MVP)
+- Header mobile: só search + menu na barra; idioma/tema no drawer; `focus({ preventScroll: true })`
+- **Ops:** re-correr blocos SQL comentados em `supabase-directory.sql` (Dashboard)
+
 ### 2026-07-24 — Directório F3b mapa
 
 - Mapa só em `/diretorio` (Lista/Mapa); fora do mapa de condições

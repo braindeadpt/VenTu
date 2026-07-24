@@ -46,6 +46,31 @@ Directório nacional de escolas/lojas/kite centers em `/diretorio` e nas página
 
 **Ops:** re-correr [`supabase/supabase-directory.sql`](../supabase/supabase-directory.sql) (RLS owner update + triggers). Conta admin: `app_metadata.role = admin`.
 
+### Segurança e integridade (must-run no Dashboard)
+
+Static export + Supabase client-side — defesa em profundidade no campo `website` e nos writes de claim:
+
+| Camada | O quê |
+|--------|--------|
+| **Render** | `safeExternalUrl` (`src/lib/safeUrl.ts`) — só `http:`/`https:`; esconde o link se inválido (detalhe + card). `safeTelHref` para `tel:`. |
+| **SQL** | CHECK `website` só `NULL` ou `^https?://` em `directory_listings` / `directory_profiles`. Caps: website 300, phone 40, email 160, address 300; bio 2000, display_name 120. |
+| **Form** | Registo + gerir validam com `safeExternalUrl` e `DIRECTORY_FIELD_LIMITS`; guardam URL normalizada. |
+| **Claims** | `approve_directory_claim` RPC (transaccional) — claim + profile + listing `sub-*` na mesma função; `approveDirectoryClaim` chama `sb.rpc(...)`. |
+
+**Ops (SQL Editor)** — se as tabelas já existem, corre os blocos comentados em `supabase-directory.sql`:
+
+1. Website http CHECK (+ limpar rows `javascript:` se houver).
+2. Length CHECKs (`*_len_check`).
+3. `CREATE OR REPLACE FUNCTION public.approve_directory_claim` + `REVOKE`/`GRANT`.
+
+Limites de form: `src/lib/directoryFieldLimits.ts`.
+
+### Embed widget (F4 Pro)
+
+- URL: `/embed/spot/{slug}/?school=…&lang=pt|en`
+- Compacto (altura pelo conteúdo) — `data-embed-widget` + CSS em `globals.css` (body sem `min-h-screen` no iframe).
+- **Footgun hosting:** `public/_headers` tem `X-Frame-Options: DENY` no catch-all (ignorado no GitHub Pages). Em Netlify/Cloudflare, o override `/embed/*` com `frame-ancestors *` **tem** de permanecer — senão o widget B2B deixa de iframear.
+
 
 ### F4 — Premium B2B ✅ MVP
 
