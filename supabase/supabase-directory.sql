@@ -46,6 +46,18 @@ CREATE TABLE IF NOT EXISTS directory_listings (
   CONSTRAINT directory_listings_website_http_check CHECK (
     website IS NULL
     OR website ~* '^https?://'
+  ),
+  CONSTRAINT directory_listings_website_len_check CHECK (
+    website IS NULL OR length(website) <= 300
+  ),
+  CONSTRAINT directory_listings_phone_len_check CHECK (
+    phone IS NULL OR length(phone) <= 40
+  ),
+  CONSTRAINT directory_listings_email_len_check CHECK (
+    email IS NULL OR length(email) <= 160
+  ),
+  CONSTRAINT directory_listings_address_len_check CHECK (
+    address IS NULL OR length(address) <= 300
   )
 );
 
@@ -81,6 +93,52 @@ BEGIN
     ALTER TABLE directory_listings
       ADD CONSTRAINT directory_listings_website_http_check
       CHECK (website IS NULL OR website ~* '^https?://');
+  END IF;
+END $$;
+
+-- Field length caps (listings) — NULL ok
+-- Corre isolado no SQL Editor se a tabela já existir:
+--   ALTER TABLE directory_listings DROP CONSTRAINT IF EXISTS directory_listings_website_len_check;
+--   ALTER TABLE directory_listings ADD CONSTRAINT directory_listings_website_len_check
+--     CHECK (website IS NULL OR length(website) <= 300);
+--   ALTER TABLE directory_listings DROP CONSTRAINT IF EXISTS directory_listings_phone_len_check;
+--   ALTER TABLE directory_listings ADD CONSTRAINT directory_listings_phone_len_check
+--     CHECK (phone IS NULL OR length(phone) <= 40);
+--   ALTER TABLE directory_listings DROP CONSTRAINT IF EXISTS directory_listings_email_len_check;
+--   ALTER TABLE directory_listings ADD CONSTRAINT directory_listings_email_len_check
+--     CHECK (email IS NULL OR length(email) <= 160);
+--   ALTER TABLE directory_listings DROP CONSTRAINT IF EXISTS directory_listings_address_len_check;
+--   ALTER TABLE directory_listings ADD CONSTRAINT directory_listings_address_len_check
+--     CHECK (address IS NULL OR length(address) <= 300);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_listings_website_len_check'
+  ) THEN
+    ALTER TABLE directory_listings
+      ADD CONSTRAINT directory_listings_website_len_check
+      CHECK (website IS NULL OR length(website) <= 300);
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_listings_phone_len_check'
+  ) THEN
+    ALTER TABLE directory_listings
+      ADD CONSTRAINT directory_listings_phone_len_check
+      CHECK (phone IS NULL OR length(phone) <= 40);
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_listings_email_len_check'
+  ) THEN
+    ALTER TABLE directory_listings
+      ADD CONSTRAINT directory_listings_email_len_check
+      CHECK (email IS NULL OR length(email) <= 160);
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_listings_address_len_check'
+  ) THEN
+    ALTER TABLE directory_listings
+      ADD CONSTRAINT directory_listings_address_len_check
+      CHECK (address IS NULL OR length(address) <= 300);
   END IF;
 END $$;
 
@@ -174,6 +232,12 @@ CREATE TABLE IF NOT EXISTS directory_profiles (
   CONSTRAINT directory_profiles_website_http_check CHECK (
     website IS NULL
     OR website ~* '^https?://'
+  ),
+  CONSTRAINT directory_profiles_display_name_len_check CHECK (
+    display_name IS NULL OR length(display_name) <= 120
+  ),
+  CONSTRAINT directory_profiles_bio_len_check CHECK (
+    bio IS NULL OR length(bio) <= 2000
   )
 );
 
@@ -190,6 +254,32 @@ BEGIN
     ALTER TABLE directory_profiles
       ADD CONSTRAINT directory_profiles_website_http_check
       CHECK (website IS NULL OR website ~* '^https?://');
+  END IF;
+END $$;
+
+-- Field length caps (profiles) — NULL ok
+-- Corre isolado no SQL Editor se a tabela já existir:
+--   ALTER TABLE directory_profiles DROP CONSTRAINT IF EXISTS directory_profiles_display_name_len_check;
+--   ALTER TABLE directory_profiles ADD CONSTRAINT directory_profiles_display_name_len_check
+--     CHECK (display_name IS NULL OR length(display_name) <= 120);
+--   ALTER TABLE directory_profiles DROP CONSTRAINT IF EXISTS directory_profiles_bio_len_check;
+--   ALTER TABLE directory_profiles ADD CONSTRAINT directory_profiles_bio_len_check
+--     CHECK (bio IS NULL OR length(bio) <= 2000);
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_profiles_display_name_len_check'
+  ) THEN
+    ALTER TABLE directory_profiles
+      ADD CONSTRAINT directory_profiles_display_name_len_check
+      CHECK (display_name IS NULL OR length(display_name) <= 120);
+  END IF;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_profiles_bio_len_check'
+  ) THEN
+    ALTER TABLE directory_profiles
+      ADD CONSTRAINT directory_profiles_bio_len_check
+      CHECK (bio IS NULL OR length(bio) <= 2000);
   END IF;
 END $$;
 

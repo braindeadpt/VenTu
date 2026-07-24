@@ -15,6 +15,7 @@ import {
 import type { DirectoryEntry, DirectoryKind, DirectorySport } from '@/types/directory';
 import { spots } from '@/lib/spots';
 import { safeExternalUrl } from '@/lib/safeUrl';
+import { DIRECTORY_FIELD_LIMITS as L } from '@/lib/directoryFieldLimits';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -200,12 +201,12 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                   ? spots.find((s) => s.id === fields.spotId)
                   : undefined;
                 const res = await updateDirectoryListing(sb, entry.id, {
-                  name: fields.name,
+                  name: fields.name.trim().slice(0, L.name),
                   kind: fields.kind,
                   sports: fields.sports,
-                  website: websiteNorm,
-                  phone: fields.phone,
-                  address: fields.address,
+                  website: websiteNorm?.slice(0, L.website) ?? null,
+                  phone: fields.phone.trim().slice(0, L.phone) || null,
+                  address: fields.address.trim().slice(0, L.address) || null,
                   spotIds: fields.spotId ? [fields.spotId] : entry.spotIds,
                   lat: spot?.lat,
                   lon: spot?.lon,
@@ -261,10 +262,10 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                     websiteNorm = safe;
                   }
                   const res = await updateDirectoryProfile(sb, row.entry_id, {
-                    displayName: fields.name,
-                    bio: fields.bio,
-                    website: websiteNorm,
-                    phone: fields.phone,
+                    displayName: fields.name.trim().slice(0, L.displayName),
+                    bio: fields.bio.trim().slice(0, L.bio),
+                    website: websiteNorm?.slice(0, L.website) ?? null,
+                    phone: fields.phone.trim().slice(0, L.phone) || null,
                     sports: fields.sports,
                     spotIds: fields.spotId ? [fields.spotId] : undefined,
                   });
@@ -568,6 +569,7 @@ function OwnerFormFields({
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
+          maxLength={L.name}
           className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
         />
       </label>
@@ -634,6 +636,7 @@ function OwnerFormFields({
           type="url"
           value={website}
           onChange={(e) => setWebsite(e.target.value)}
+          maxLength={L.website}
           className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
           placeholder="https://"
         />
@@ -644,6 +647,7 @@ function OwnerFormFields({
         <input
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          maxLength={L.phone}
           className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
         />
       </label>
@@ -654,6 +658,7 @@ function OwnerFormFields({
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
+            maxLength={L.address}
             className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
           />
         </label>
@@ -666,7 +671,7 @@ function OwnerFormFields({
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={3}
-            maxLength={1000}
+            maxLength={L.bio}
             className="mt-1 w-full rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
           />
         </label>

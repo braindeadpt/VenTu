@@ -2,6 +2,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import type { DirectoryEntry, DirectoryKind, DirectorySport, DirectoryTier } from '@/types/directory';
 import { sortDirectoryEntries } from '@/lib/directoryClient';
 import { safeExternalUrl } from '@/lib/safeUrl';
+import { DIRECTORY_FIELD_LIMITS as L } from '@/lib/directoryFieldLimits';
 
 export type DirectoryListingRow = {
   id: string;
@@ -191,7 +192,7 @@ export async function submitDirectoryListing(
   const row = {
     id,
     slug,
-    name: input.name.trim().slice(0, 120),
+    name: input.name.trim().slice(0, L.name),
     kind: input.kind,
     sports: input.sports,
     lat: input.lat,
@@ -199,10 +200,10 @@ export async function submitDirectoryListing(
     region: input.region || null,
     region_en: input.regionEn || null,
     spot_ids: input.spotIds,
-    website: input.website?.trim() || null,
-    phone: input.phone?.trim() || null,
-    email: input.email?.trim() || null,
-    address: input.address?.trim() || null,
+    website: input.website?.trim().slice(0, L.website) || null,
+    phone: input.phone?.trim().slice(0, L.phone) || null,
+    email: input.email?.trim().slice(0, L.email) || null,
+    address: input.address?.trim().slice(0, L.address) || null,
     source: 'submitted',
     owner_user_id: input.userId,
     verified: false,
@@ -211,7 +212,7 @@ export async function submitDirectoryListing(
   };
 
   const safeSite = safeExternalUrl(row.website);
-  row.website = safeSite;
+  row.website = safeSite ? safeSite.slice(0, L.website) : null;
   if (input.website?.trim() && !safeSite) {
     return { ok: false, error: 'Invalid website URL — use http:// or https://' };
   }
@@ -338,7 +339,7 @@ export async function updateDirectoryListing(
   const patch: Record<string, unknown> = {
     updated_at: new Date().toISOString(),
   };
-  if (fields.name !== undefined) patch.name = fields.name.trim().slice(0, 120);
+  if (fields.name !== undefined) patch.name = fields.name.trim().slice(0, L.name);
   if (fields.kind !== undefined) patch.kind = fields.kind;
   if (fields.sports !== undefined) patch.sports = fields.sports;
   if (fields.website !== undefined) {
@@ -346,14 +347,14 @@ export async function updateDirectoryListing(
     if (raw) {
       const safe = safeExternalUrl(raw);
       if (!safe) return { ok: false, error: 'Invalid website URL — use http:// or https://' };
-      patch.website = safe;
+      patch.website = safe.slice(0, L.website);
     } else {
       patch.website = null;
     }
   }
-  if (fields.phone !== undefined) patch.phone = fields.phone?.trim() || null;
-  if (fields.email !== undefined) patch.email = fields.email?.trim() || null;
-  if (fields.address !== undefined) patch.address = fields.address?.trim() || null;
+  if (fields.phone !== undefined) patch.phone = fields.phone?.trim().slice(0, L.phone) || null;
+  if (fields.email !== undefined) patch.email = fields.email?.trim().slice(0, L.email) || null;
+  if (fields.address !== undefined) patch.address = fields.address?.trim().slice(0, L.address) || null;
   if (fields.spotIds !== undefined) patch.spot_ids = fields.spotIds;
   if (fields.lat !== undefined) patch.lat = fields.lat;
   if (fields.lon !== undefined) patch.lon = fields.lon;
@@ -412,21 +413,21 @@ export async function updateDirectoryProfile(
     updated_at: new Date().toISOString(),
   };
   if (fields.displayName !== undefined) {
-    patch.display_name = fields.displayName?.trim().slice(0, 120) || null;
+    patch.display_name = fields.displayName?.trim().slice(0, L.displayName) || null;
   }
-  if (fields.bio !== undefined) patch.bio = fields.bio?.trim().slice(0, 1000) || null;
+  if (fields.bio !== undefined) patch.bio = fields.bio?.trim().slice(0, L.bio) || null;
   if (fields.website !== undefined) {
     const raw = fields.website?.trim() || null;
     if (raw) {
       const safe = safeExternalUrl(raw);
       if (!safe) return { ok: false, error: 'Invalid website URL — use http:// or https://' };
-      patch.website = safe;
+      patch.website = safe.slice(0, L.website);
     } else {
       patch.website = null;
     }
   }
-  if (fields.phone !== undefined) patch.phone = fields.phone?.trim() || null;
-  if (fields.email !== undefined) patch.email = fields.email?.trim() || null;
+  if (fields.phone !== undefined) patch.phone = fields.phone?.trim().slice(0, L.phone) || null;
+  if (fields.email !== undefined) patch.email = fields.email?.trim().slice(0, L.email) || null;
   if (fields.sports !== undefined) patch.sports = fields.sports;
   if (fields.spotIds !== undefined) patch.spot_ids = fields.spotIds;
 

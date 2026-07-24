@@ -6,6 +6,7 @@ import { getSupabaseClient } from '@/lib/supabase';
 import { submitDirectoryListing } from '@/lib/directoryListings';
 import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
 import { safeExternalUrl } from '@/lib/safeUrl';
+import { DIRECTORY_FIELD_LIMITS as L } from '@/lib/directoryFieldLimits';
 import type { DirectoryKind, DirectorySport } from '@/types/directory';
 import { spots } from '@/lib/spots';
 import Button from '@/components/ui/Button';
@@ -105,7 +106,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
 
     setBusy(true);
     const res = await submitDirectoryListing(sb, {
-      name: name.trim(),
+      name: name.trim().slice(0, L.name),
       kind,
       sports,
       lat: spot.lat,
@@ -113,10 +114,10 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
       region: spot.region,
       regionEn: spot.regionEn,
       spotIds: [spot.id],
-      website: websiteNorm,
-      phone: phone.trim() || undefined,
-      email: session.user.email || undefined,
-      address: address.trim() || undefined,
+      website: websiteNorm?.slice(0, L.website),
+      phone: phone.trim().slice(0, L.phone) || undefined,
+      email: session.user.email?.slice(0, L.email) || undefined,
+      address: address.trim().slice(0, L.address) || undefined,
       userId: session.user.id,
     });
     setBusy(false);
@@ -166,6 +167,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
+            maxLength={L.name}
             className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
             placeholder={isPt ? 'Ex.: Escola de Surf XYZ' : 'e.g. XYZ Surf School'}
           />
@@ -231,6 +233,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
             type="url"
             value={website}
             onChange={(e) => setWebsite(e.target.value)}
+            maxLength={L.website}
             className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
             placeholder="https://"
           />
@@ -242,6 +245,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
+              maxLength={L.phone}
               className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
             />
           </label>
@@ -250,6 +254,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
             <input
               value={address}
               onChange={(e) => setAddress(e.target.value)}
+              maxLength={L.address}
               className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
             />
           </label>
