@@ -76,6 +76,14 @@ export default function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <Link
+                  href={`/${locale}/diretorio/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {isPt ? 'Directório (escolas) →' : 'Directory (schools) →'}
+                </Link>
+              </li>
+              <li>
+                <Link
                   href={`/${locale}/livecams/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >

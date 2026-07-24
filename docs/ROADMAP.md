@@ -252,6 +252,12 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-07-24 — Directório escolas F1
+
+- Plano [`DIRECTORY.md`](./DIRECTORY.md): F1 seed OSM + `/diretorio` + bloco spot + CTA claim
+- SQL `supabase-directory.sql` (correr no Dashboard para activar claims)
+- Scripts `directory:fetch` / `directory:validate` · mapa (F3) e edição owner (F2) a seguir
+
 ### 2026-07-22 — Telegram alerts MVP
 
 - Canal opcional: `user_telegram` + poll `/start` + mesmo digest E1c via Bot API

@@ -43,6 +43,7 @@ import Button from '@/components/ui/Button';
 import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard';
 import SpotStickyBar from '@/components/spots/SpotStickyBar';
 import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
+import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
 import type { ObservedConditions } from '@/lib/observations';
 import { trackSpotView } from '@/components/homepage/SignupNudge';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -657,6 +658,12 @@ export default function SpotDetailClient({
             difficultyLabel={isPt ? 'Nível' : 'Level'}
           />
           <LocalTipsSection spot={spot} tips={mergedLocalTips} locale={locale} />
+          <SpotNearbyDirectory
+            spotId={spot.id}
+            spotLat={spot.lat}
+            spotLon={spot.lon}
+            locale={locale}
+          />
           {communityOverlay[spot.slug]?.contributor && (
             <p className="text-meta-sm text-fg-subtle">
               {isPt ? 'Contribuição da comunidade' : 'Community contribution'}

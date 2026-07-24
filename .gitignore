@@ -68,6 +68,8 @@ public/data/
 !public/data/.gitkeep
 # Community tips overlay (merged from approved contributions)
 !public/data/community-tips.json
+# Schools/shops directory seed (regenerate with npm run directory:fetch)
+!public/data/directory.json
 # Precomputed scores index (regenerate with npm run spots:index)
 !public/data/spots-index.json
 # IPMA station nearest-spot map (regenerate with npm run obs:map)
