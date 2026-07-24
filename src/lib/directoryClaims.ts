@@ -74,54 +74,20 @@ export async function fetchPendingClaims(
 }
 
 /**
- * Approve claim: mark claim approved + upsert directory_profiles with owner.
- * Seed entries stay in JSON; profile overlay owns contacts + verified.
+ * Approve claim via transactional RPC (claim + profile + optional listing).
+ * `adminUserId` is unused client-side — Postgres uses auth.uid() as reviewed_by.
  */
 export async function approveDirectoryClaim(
   sb: SupabaseClient,
   opts: { claimId: number; entryId: string; claimantUserId: string; adminUserId: string },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const now = new Date().toISOString();
+  const { error } = await sb.rpc('approve_directory_claim', {
+    p_claim_id: opts.claimId,
+    p_entry_id: opts.entryId,
+    p_claimant: opts.claimantUserId,
+  });
 
-  const { error: claimError } = await sb
-    .from('directory_claims')
-    .update({
-      status: 'approved',
-      reviewed_by: opts.adminUserId,
-      reviewed_at: now,
-    })
-    .eq('id', opts.claimId);
-
-  if (claimError) return { ok: false, error: claimError.message };
-
-  const { error: profileError } = await sb.from('directory_profiles').upsert(
-    {
-      entry_id: opts.entryId,
-      owner_user_id: opts.claimantUserId,
-      verified: true,
-      verified_at: now,
-      updated_at: now,
-    },
-    { onConflict: 'entry_id' },
-  );
-
-  if (profileError) return { ok: false, error: profileError.message };
-
-  // If claim targets a submitted listing id, also verify that row and set owner
-  if (opts.entryId.startsWith('sub-')) {
-    const { error: listingError } = await sb
-      .from('directory_listings')
-      .update({
-        owner_user_id: opts.claimantUserId,
-        verified: true,
-        verified_at: now,
-        verified_by: opts.adminUserId,
-        updated_at: now,
-      })
-      .eq('id', opts.entryId);
-    if (listingError) return { ok: false, error: listingError.message };
-  }
-
+  if (error) return { ok: false, error: error.message };
   return { ok: true };
 }
 

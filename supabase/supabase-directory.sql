@@ -290,3 +290,75 @@ GRANT INSERT, UPDATE ON directory_profiles TO authenticated;
 
 GRANT SELECT, INSERT, UPDATE ON directory_claims TO authenticated;
 GRANT USAGE, SELECT ON SEQUENCE directory_claims_id_seq TO authenticated;
+
+-- ============================================================
+-- Approve claim (atomic): claim + profile + listing (se sub-)
+-- Corre isolado no SQL Editor se as tabelas já existirem:
+--   (cola a função CREATE OR REPLACE abaixo + REVOKE/GRANT)
+-- ============================================================
+CREATE OR REPLACE FUNCTION public.approve_directory_claim(
+  p_claim_id bigint,
+  p_entry_id text,
+  p_claimant uuid
+)
+RETURNS void
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+  v_updated int;
+BEGIN
+  IF NOT public.is_ventu_admin() THEN
+    RAISE EXCEPTION 'not authorized';
+  END IF;
+
+  UPDATE directory_claims
+  SET
+    status = 'approved',
+    reviewed_by = auth.uid(),
+    reviewed_at = now()
+  WHERE id = p_claim_id
+    AND entry_id = p_entry_id
+    AND user_id = p_claimant;
+
+  GET DIAGNOSTICS v_updated = ROW_COUNT;
+  IF v_updated = 0 THEN
+    RAISE EXCEPTION 'claim not found or mismatch';
+  END IF;
+
+  INSERT INTO directory_profiles (
+    entry_id,
+    owner_user_id,
+    verified,
+    verified_at,
+    updated_at
+  )
+  VALUES (
+    p_entry_id,
+    p_claimant,
+    true,
+    now(),
+    now()
+  )
+  ON CONFLICT (entry_id) DO UPDATE SET
+    owner_user_id = EXCLUDED.owner_user_id,
+    verified = true,
+    verified_at = EXCLUDED.verified_at,
+    updated_at = EXCLUDED.updated_at;
+
+  IF p_entry_id LIKE 'sub-%' THEN
+    UPDATE directory_listings
+    SET
+      owner_user_id = p_claimant,
+      verified = true,
+      verified_at = now(),
+      verified_by = auth.uid(),
+      updated_at = now()
+    WHERE id = p_entry_id;
+  END IF;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.approve_directory_claim(bigint, text, uuid) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.approve_directory_claim(bigint, text, uuid) TO authenticated;
