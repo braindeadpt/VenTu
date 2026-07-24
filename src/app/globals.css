@@ -631,6 +631,61 @@ body.ventu-signup-nudge-open footer {
   color: rgb(var(--fg-muted-rgb) / 0.8) !important;
 }
 
+/* ── Directory map (F3b — /diretorio only) ── */
+.directory-map-marker {
+  background: transparent !important;
+  border: none !important;
+}
+.directory-map-pin {
+  display: block;
+  width: 14px;
+  height: 14px;
+  margin: 2px;
+  border-radius: 50%;
+  background: rgb(var(--bg-elevated));
+  border: 2px solid rgb(var(--divider-strong));
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.18);
+}
+.directory-map-pin--featured {
+  border-color: rgb(var(--fg-muted));
+  box-shadow: 0 0 0 2px rgb(var(--bg-base)), 0 1px 4px rgb(0 0 0 / 0.2);
+}
+.leaflet-popup.directory-popup .leaflet-popup-content-wrapper {
+  background: rgb(var(--bg-elevated));
+  border: 1px solid rgb(var(--divider));
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  color: rgb(var(--fg));
+}
+.leaflet-popup.directory-popup .leaflet-popup-content {
+  margin: 10px 12px;
+}
+.directory-map-popup__kind {
+  margin: 0;
+  font-size: 0.75rem;
+  color: rgb(var(--fg-muted));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.directory-map-popup__name {
+  margin: 4px 0 8px;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgb(var(--fg));
+}
+.directory-map-popup__link {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: rgb(var(--fg-muted));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.directory-map-popup__link:hover {
+  color: rgb(var(--fg));
+}
+
 /* ── Marker Clusters ── */
 .marker-cluster-small {
   background: transparent !important;

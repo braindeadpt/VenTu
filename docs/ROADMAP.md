@@ -252,6 +252,10 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-07-24 — Directório F3b mapa
+
+- Mapa só em `/diretorio` (Lista/Mapa); fora do mapa de condições
+
 ### 2026-07-24 — Locale FR (shell)
 
 - `/fr/` + `translations.fr` + SEO; inline `isPt` ainda EN — trio ES/DE/FR completo (MVP)

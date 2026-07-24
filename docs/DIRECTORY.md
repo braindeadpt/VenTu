@@ -16,7 +16,7 @@ Directório nacional de escolas/lojas/kite centers em `/diretorio` e nas página
 | **F1** Seed + stubs públicos | AESP/OSM → `directory.json`, `/diretorio`, bloco no spot, CTA claim | ✅ |
 | **F2** Claim + registo + verificação | SQL listings, form registo, admin aprova → Verificado | ✅ |
 | **F3** Camada no mapa de condições | Toggle escolas no explorar | ⏭️ **saltada** (decisão 2026-07-24) |
-| **F3b** (opcional) | Mapa **só** em `/diretorio` se faltar descoberta geo | ⬜ |
+| **F3b** (opcional) | Mapa **só** em `/diretorio` | ✅ |
 | **F4** Premium B2B | Destaque + Pro widget embed | ✅ MVP |
 | **F2b** Owner edita | `/diretorio/gerir` + admin claims | ✅ |
 
@@ -63,9 +63,13 @@ Directório nacional de escolas/lojas/kite centers em `/diretorio` e nas página
 
 ### F3 — Mapa de condições (saltada)
 
-**Decisão:** não pôr escolas no mapa explorar/scores. Descoberta = `/diretorio` + “Escolas perto” no spot.
+**Decisão:** não pôr escolas no mapa explorar/scores. Descoberta = `/diretorio` (lista + mapa) + “Escolas perto” no spot.
 
-**Opcional mais tarde (F3b):** mapa dedicado só na página do directório, sem misturar com condições.
+### F3b — Mapa só em `/diretorio` ✅
+
+- Toggle Lista / Mapa em [`DirectoryClient`](../src/components/directory/DirectoryClient.tsx)
+- [`DirectoryMap`](../src/components/directory/DirectoryMap.tsx) — Leaflet + clusters, pins com filtros activos
+- **Não** no mapa de condições (explorar/scores)
 
 ---
 

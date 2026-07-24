@@ -1,13 +1,14 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import type { DirectoryEntry, DirectoryKind } from '@/types/directory';
 import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
 import DirectoryRegisterForm from '@/components/directory/DirectoryRegisterForm';
 import FilterPill from '@/components/ui/FilterPill';
 import EmptyState from '@/components/ui/EmptyState';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, List, Map as MapIcon } from 'lucide-react';
 import { getSupabaseClient } from '@/lib/supabase';
 import {
   fetchDirectoryListings,
@@ -16,6 +17,16 @@ import {
   mergeDirectoryEntries,
   type DirectoryProfileOverlay,
 } from '@/lib/directoryListings';
+
+const DirectoryMap = dynamic(() => import('@/components/directory/DirectoryMap'), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="h-[clamp(220px,36vh,360px)] rounded-2xl border border-divider bg-bg-base animate-pulse"
+      aria-hidden
+    />
+  ),
+});
 
 type Props = {
   locale: string;
@@ -41,6 +52,7 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
   const [kind, setKind] = useState<DirectoryKind | 'all'>('all');
   const [q, setQ] = useState('');
   const [region, setRegion] = useState<string>('all');
+  const [view, setView] = useState<'list' | 'map'>('list');
 
   const reloadLive = useCallback(async () => {
     const sb = getSupabaseClient();
@@ -133,6 +145,25 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
         <div
           className="flex gap-2 overflow-x-auto no-scrollbar touch-pan-x pb-0.5"
           role="group"
+          aria-label={isPt ? 'Vista' : 'View'}
+        >
+          <FilterPill active={view === 'list'} onClick={() => setView('list')}>
+            <span className="inline-flex items-center gap-1.5">
+              <List className="w-3.5 h-3.5" aria-hidden />
+              {isPt ? 'Lista' : 'List'}
+            </span>
+          </FilterPill>
+          <FilterPill active={view === 'map'} onClick={() => setView('map')}>
+            <span className="inline-flex items-center gap-1.5">
+              <MapIcon className="w-3.5 h-3.5" aria-hidden />
+              {isPt ? 'Mapa' : 'Map'}
+            </span>
+          </FilterPill>
+        </div>
+
+        <div
+          className="flex gap-2 overflow-x-auto no-scrollbar touch-pan-x pb-0.5"
+          role="group"
           aria-label={isPt ? 'Tipo' : 'Type'}
         >
           {KINDS.map((k) => {
@@ -180,6 +211,15 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
               : 'Adjust filters or register your school below.'
           }
         />
+      ) : view === 'map' ? (
+        <div className="space-y-3">
+          <DirectoryMap entries={filtered} locale={locale} />
+          <p className="text-meta-sm text-fg-subtle">
+            {isPt
+              ? 'Clica num pin para abrir o perfil. Filtros aplicam-se ao mapa.'
+              : 'Tap a pin to open the profile. Filters apply to the map.'}
+          </p>
+        </div>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((e) => (
