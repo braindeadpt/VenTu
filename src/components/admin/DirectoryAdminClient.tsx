@@ -6,10 +6,13 @@ import type { Session } from '@supabase/supabase-js';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
 import {
   fetchDirectoryListings,
+  setDirectoryListingTier,
   unverifyDirectoryListing,
   verifyDirectoryListing,
+  buildEmbedSnippet,
 } from '@/lib/directoryListings';
-import type { DirectoryEntry } from '@/types/directory';
+import type { DirectoryEntry, DirectoryTier } from '@/types/directory';
+import { DIRECTORY_TIER_LABELS } from '@/lib/directory';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -99,6 +102,24 @@ export default function DirectoryAdminClient({ locale }: { locale: string }) {
     setBusy(false);
   };
 
+  const onTier = async (id: string, tier: DirectoryTier) => {
+    setBusy(true);
+    setError('');
+    const sb = getSupabaseClient();
+    if (!sb) return;
+    const res = await setDirectoryListingTier(sb, id, tier);
+    if (!res.ok) {
+      setError(
+        /tier|column/i.test(res.error)
+          ? isPt
+            ? 'Falta a coluna tier — corre o SQL actualizado (supabase-directory.sql).'
+            : 'Missing tier column — run updated supabase-directory.sql.'
+          : res.error,
+      );
+    } else await load();
+    setBusy(false);
+  };
+
   const visible = items.filter((e) => {
     if (filter === 'unverified') return !e.verified;
     if (filter === 'verified') return !!e.verified;
@@ -183,8 +204,8 @@ export default function DirectoryAdminClient({ locale }: { locale: string }) {
 
       <p className="text-meta-sm text-fg-muted">
         {isPt
-          ? 'Conta com app_metadata.role = admin. Aprovar = badge Verificado no site.'
-          : 'Account needs app_metadata.role = admin. Approve = Verified badge on site.'}
+          ? 'Admin: verificar + tier (free / destaque / pro). Pro mostra snippet de widget embed.'
+          : 'Admin: verify + tier (free / featured / pro). Pro shows embed widget snippet.'}
       </p>
 
       <div className="flex gap-2">
@@ -225,9 +246,24 @@ export default function DirectoryAdminClient({ locale }: { locale: string }) {
                 </span>
               </div>
               <p className="text-meta-sm text-fg-muted">
-                {e.kind} · {e.region || '—'} · {e.phone || e.website || e.address || '—'}
+                {e.kind} · {e.region || '—'} · tier {(e.tier ?? 'free')} · {e.phone || e.website || e.address || '—'}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 items-center">
+                <label className="text-meta-sm text-fg-muted flex items-center gap-1.5">
+                  {isPt ? 'Tier' : 'Tier'}
+                  <select
+                    value={e.tier ?? 'free'}
+                    disabled={busy}
+                    onChange={(ev) => void onTier(e.id, ev.target.value as DirectoryTier)}
+                    className="min-h-[36px] rounded-input border border-divider bg-bg-elevated px-2 text-body text-fg"
+                  >
+                    {(['free', 'featured', 'pro'] as const).map((t) => (
+                      <option key={t} value={t}>
+                        {isPt ? DIRECTORY_TIER_LABELS[t].pt : DIRECTORY_TIER_LABELS[t].en}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 {!e.verified ? (
                   <Button
                     type="button"
@@ -252,6 +288,19 @@ export default function DirectoryAdminClient({ locale }: { locale: string }) {
                   </Button>
                 )}
               </div>
+              {e.tier === 'pro' && e.spotIds[0] && (
+                <textarea
+                  readOnly
+                  rows={2}
+                  className="w-full rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1.5 font-mono text-meta-sm text-fg-muted"
+                  value={buildEmbedSnippet({
+                    spotId: e.spotIds[0],
+                    locale,
+                    schoolName: e.name,
+                  })}
+                  onFocus={(ev) => ev.target.select()}
+                />
+              )}
             </Card>
           ))
         )}

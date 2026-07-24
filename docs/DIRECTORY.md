@@ -5,16 +5,19 @@
 
 ## Objectivo
 
-Directório nacional de escolas/lojas/kite centers no mapa e nas páginas de spot, com **claim** (“reclama o teu perfil”) e, mais tarde, tier pago (destaque, widget, auto-IG).
+Directório nacional de escolas/lojas/kite centers em `/diretorio` e nas páginas de spot, com **claim** / **registo** e, mais tarde, tier pago (destaque, widget, auto-IG).
+
+**Não** misturar escolas no mapa de condições (explorar/scores) — polui a leitura e o mobile.
 
 ## Fases
 
 | Fase | Entrega | Estado |
 |------|---------|--------|
-| **F1** Seed + stubs públicos | OSM → `directory.json`, página `/diretorio`, bloco no spot, CTA claim | 🟡 em curso |
-| **F2** Claim + registo + verificação | SQL listings, form «não está listada», admin aprova → Verificado | 🟡 em curso |
-| **F3** Camada mapa | Toggle “Escolas” no mapa explorar (markers + clusters) | ⬜ |
-| **F4** Premium B2B | Destaque, widget, leads, eventos da escola | ⬜ |
+| **F1** Seed + stubs públicos | AESP/OSM → `directory.json`, `/diretorio`, bloco no spot, CTA claim | ✅ |
+| **F2** Claim + registo + verificação | SQL listings, form registo, admin aprova → Verificado | ✅ |
+| **F3** Camada no mapa de condições | Toggle escolas no explorar | ⏭️ **saltada** (decisão 2026-07-24) |
+| **F3b** (opcional) | Mapa **só** em `/diretorio` se faltar descoberta geo | ⬜ |
+| **F4** Premium B2B | Destaque + Pro widget embed | ✅ MVP |
 
 ---
 
@@ -42,16 +45,25 @@ Directório nacional de escolas/lojas/kite centers no mapa e nas páginas de spo
 **Ops:** re-correr [`supabase/supabase-directory.sql`](../supabase/supabase-directory.sql). Conta admin: `app_metadata.role = admin`.
 
 
-### F3 — Mapa
+### F4 — Premium B2B ✅ MVP
 
-- Camada independente (não misturar com score clusters).
-- Toggle no HUD explorar + página directório com mapa.
-- Performance: mesmo cuidado mobile que spots (chunks, cluster default ON).
+| Tier | O que ganha |
+|------|-------------|
+| **free** | Listagem + claim/registo |
+| **featured** | Ordenação no topo + badge «Destaque» |
+| **pro** | featured + **widget embed** (`/embed/spot/{slug}/?school=…`) |
 
-### F4 — Premium
+- Coluna `directory_listings.tier` (+ `directory_profiles.tier` para seed)
+- Admin `/admin/diretorio` — selector de tier + snippet iframe
+- Riders nunca pagam
 
-- `tier: free | featured | pro`
-- Destaque lista/mapa, widget embed, alertas white-label, analytics leves.
+**Ops:** re-correr `supabase-directory.sql` (ADD COLUMN tier).
+
+### F3 — Mapa de condições (saltada)
+
+**Decisão:** não pôr escolas no mapa explorar/scores. Descoberta = `/diretorio` + “Escolas perto” no spot.
+
+**Opcional mais tarde (F3b):** mapa dedicado só na página do directório, sem misturar com condições.
 
 ---
 

@@ -11,6 +11,9 @@ export type DirectoryKind =
 
 export type DirectorySource = 'osm' | 'curated' | 'claimed' | 'submitted';
 
+/** B2B premium — riders never pay. */
+export type DirectoryTier = 'free' | 'featured' | 'pro';
+
 export type DirectorySport =
   | 'surf'
   | 'kitesurf'
@@ -42,6 +45,8 @@ export interface DirectoryEntry {
   osmId?: number;
   /** Claimed + admin-approved (runtime merge from Supabase in F2). */
   verified?: boolean;
+  /** B2B tier — default free. */
+  tier?: DirectoryTier;
 }
 
 export interface DirectoryFile {

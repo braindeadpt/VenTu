@@ -1,6 +1,6 @@
 import { readFileSync, existsSync } from 'fs';
 import path from 'path';
-import type { DirectoryEntry, DirectoryFile, DirectoryKind, DirectorySport } from '@/types/directory';
+import type { DirectoryEntry, DirectoryFile, DirectoryKind, DirectorySport, DirectoryTier } from '@/types/directory';
 
 const DIRECTORY_PATH = path.join(process.cwd(), 'public', 'data', 'directory.json');
 
@@ -16,6 +16,28 @@ export const DIRECTORY_KIND_LABELS: Record<
   rental: { pt: 'Aluguer', en: 'Rental' },
   other: { pt: 'Outro', en: 'Other' },
 };
+
+export const DIRECTORY_TIER_LABELS: Record<DirectoryTier, { pt: string; en: string }> = {
+  free: { pt: 'Grátis', en: 'Free' },
+  featured: { pt: 'Destaque', en: 'Featured' },
+  pro: { pt: 'Pro', en: 'Pro' },
+};
+
+export function tierRank(tier?: DirectoryTier): number {
+  if (tier === 'pro') return 3;
+  if (tier === 'featured') return 2;
+  return 1;
+}
+
+export function sortDirectoryEntries(entries: DirectoryEntry[]): DirectoryEntry[] {
+  return [...entries].sort((a, b) => {
+    const tr = tierRank(b.tier) - tierRank(a.tier);
+    if (tr !== 0) return tr;
+    const vr = Number(!!b.verified) - Number(!!a.verified);
+    if (vr !== 0) return vr;
+    return a.name.localeCompare(b.name, 'pt');
+  });
+}
 
 export function loadDirectoryFile(): DirectoryFile | null {
   if (!existsSync(DIRECTORY_PATH)) return null;

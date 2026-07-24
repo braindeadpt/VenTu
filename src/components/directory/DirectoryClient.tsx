@@ -9,7 +9,7 @@ import FilterPill from '@/components/ui/FilterPill';
 import EmptyState from '@/components/ui/EmptyState';
 import { GraduationCap } from 'lucide-react';
 import { getSupabaseClient } from '@/lib/supabase';
-import { fetchDirectoryListings, mergeDirectoryEntries } from '@/lib/directoryListings';
+import { fetchDirectoryListings, fetchDirectoryProfiles, applyDirectoryProfiles, mergeDirectoryEntries } from '@/lib/directoryListings';
 
 type Props = {
   locale: string;
@@ -31,6 +31,9 @@ const KINDS: Array<DirectoryKind | 'all'> = [
 export default function DirectoryClient({ locale, entries: seedEntries, generatedAt }: Props) {
   const isPt = locale === 'pt';
   const [live, setLive] = useState<DirectoryEntry[]>([]);
+  const [profiles, setProfiles] = useState<
+    Map<string, { tier: import('@/types/directory').DirectoryTier; verified: boolean }>
+  >(new Map());
   const [kind, setKind] = useState<DirectoryKind | 'all'>('all');
   const [q, setQ] = useState('');
   const [region, setRegion] = useState<string>('all');
@@ -39,7 +42,12 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
     const sb = getSupabaseClient();
     if (!sb) return;
     try {
-      setLive(await fetchDirectoryListings(sb));
+      const [listings, nextProfiles] = await Promise.all([
+        fetchDirectoryListings(sb),
+        fetchDirectoryProfiles(sb),
+      ]);
+      setProfiles(nextProfiles);
+      setLive(listings);
     } catch {
       /* table missing / offline */
     }
@@ -49,10 +57,10 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
     void reloadLive();
   }, [reloadLive]);
 
-  const entries = useMemo(
-    () => mergeDirectoryEntries(seedEntries, live),
-    [seedEntries, live],
-  );
+  const entries = useMemo(() => {
+    const merged = mergeDirectoryEntries(seedEntries, live);
+    return applyDirectoryProfiles(merged, profiles);
+  }, [seedEntries, live, profiles]);
 
   const regions = useMemo(() => {
     const set = new Set<string>();

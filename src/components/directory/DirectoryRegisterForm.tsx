@@ -131,7 +131,8 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
   };
 
   return (
-    <Card variant="card-2" className="space-y-4" as="section" id="registar-escola">
+    <div id="registar-escola">
+    <Card variant="card-2" className="space-y-4" as="section">
       <div>
         <h2 className="font-display text-h2 text-fg">
           {isPt ? 'A tua escola não está listada?' : 'School not listed?'}
@@ -258,5 +259,6 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
         {error && <p className="text-meta-sm text-score-poor">{error}</p>}
       </form>
     </Card>
+    </div>
   );
 }

@@ -48,4 +48,16 @@ describe('mergeDirectoryEntries', () => {
     expect(merged).toHaveLength(1);
     expect(merged[0].name).toBe('New Submitted');
   });
+
+  it('sorts pro/featured before free', () => {
+    const merged = mergeDirectoryEntries(
+      [
+        base({ id: 'a', slug: 'a', name: 'Zebra Free', tier: 'free' }),
+        base({ id: 'b', slug: 'b', name: 'Alpha Pro', tier: 'pro' }),
+        base({ id: 'c', slug: 'c', name: 'Mid Featured', tier: 'featured' }),
+      ],
+      [],
+    );
+    expect(merged.map((e) => e.id)).toEqual(['b', 'c', 'a']);
+  });
 });

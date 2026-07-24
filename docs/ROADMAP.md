@@ -252,11 +252,12 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
-### 2026-07-24 — Directório escolas F1
+### 2026-07-24 — Directório escolas F1–F2; F3 mapa saltada
 
-- Plano [`DIRECTORY.md`](./DIRECTORY.md): F1 seed OSM + `/diretorio` + bloco spot + CTA claim
-- SQL `supabase-directory.sql` (correr no Dashboard para activar claims)
-- Scripts `directory:fetch` / `directory:validate` · mapa (F3) e edição owner (F2) a seguir
+- Plano [`DIRECTORY.md`](./DIRECTORY.md): F1 seed AESP + `/diretorio` + bloco spot; F2 registo não verificado + admin verifica
+- **F3** (escolas no mapa de condições) **saltada** — descoberta via directório + spot; opcional F3b mapa só em `/diretorio`
+- **F4** MVP: tier free/featured/pro, destaque na lista, widget `/embed/spot/[slug]/`
+- SQL `supabase-directory.sql` (inclui `tier`) · próxima: owner-edit, pagamento Stripe, alertas white-label
 
 ### 2026-07-22 — Telegram alerts MVP
 

@@ -40,9 +40,26 @@ CREATE TABLE IF NOT EXISTS directory_listings (
   verified BOOLEAN NOT NULL DEFAULT false,
   verified_at TIMESTAMPTZ,
   verified_by UUID REFERENCES auth.users(id),
+  tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'featured', 'pro')),
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Migração se a tabela já existir sem tier
+ALTER TABLE directory_listings
+  ADD COLUMN IF NOT EXISTS tier TEXT NOT NULL DEFAULT 'free';
+
+-- Garantir CHECK (ignora se já existir constraint com outro nome)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_constraint WHERE conname = 'directory_listings_tier_check'
+  ) THEN
+    ALTER TABLE directory_listings
+      ADD CONSTRAINT directory_listings_tier_check
+      CHECK (tier IN ('free', 'featured', 'pro'));
+  END IF;
+END $$;
 
 CREATE INDEX IF NOT EXISTS idx_directory_listings_verified
   ON directory_listings(verified, created_at DESC);
@@ -50,6 +67,8 @@ CREATE INDEX IF NOT EXISTS idx_directory_listings_owner
   ON directory_listings(owner_user_id);
 CREATE INDEX IF NOT EXISTS idx_directory_listings_slug
   ON directory_listings(slug);
+CREATE INDEX IF NOT EXISTS idx_directory_listings_tier
+  ON directory_listings(tier);
 
 ALTER TABLE directory_listings ENABLE ROW LEVEL SECURITY;
 
@@ -65,6 +84,7 @@ CREATE POLICY "directory_listings_insert_own" ON directory_listings
     auth.uid() = owner_user_id
     AND verified = false
     AND source = 'submitted'
+    AND tier = 'free'
   );
 
 DROP POLICY IF EXISTS "directory_listings_owner_update" ON directory_listings;

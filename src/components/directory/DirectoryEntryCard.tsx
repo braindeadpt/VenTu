@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { GraduationCap, MapPin, Store } from 'lucide-react';
 import Card from '@/components/ui/Card';
+import { kindLabel, sportLabel, DIRECTORY_TIER_LABELS } from '@/lib/directory';
 import type { DirectoryEntry } from '@/types/directory';
-import { kindLabel, sportLabel } from '@/lib/directory';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
+import { buildEmbedSnippet } from '@/lib/directoryListings';
 
 type Props = {
   entry: DirectoryEntry;
@@ -25,9 +26,17 @@ export default function DirectoryEntryCard({
   const hasStaticProfile = entry.source !== 'submitted';
   const href = hasStaticProfile ? `/${locale}/diretorio/${entry.slug}/` : undefined;
   const Icon = entry.kind === 'shop' || entry.kind === 'rental' ? Store : GraduationCap;
+  const tier = entry.tier ?? 'free';
+  const featured = tier === 'featured' || tier === 'pro';
+  const spotForEmbed = entry.spotIds[0];
 
   return (
-    <Card variant="card-1" className="space-y-3" as="article" id={entry.slug}>
+    <div id={entry.slug}>
+    <Card
+      variant={featured ? 'card-2' : 'card-1'}
+      className={`space-y-3 ${featured ? 'ring-1 ring-divider-strong' : ''}`}
+      as="article"
+    >
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-input border border-divider bg-surface-1/[0.04]">
           <Icon className="h-5 w-5 text-fg-muted" aria-hidden />
@@ -40,6 +49,11 @@ export default function DirectoryEntryCard({
               </Link>
             ) : (
               <h3 className="font-display text-h3 text-fg truncate">{name}</h3>
+            )}
+            {tier !== 'free' && (
+              <span className="text-meta-sm font-semibold text-fg">
+                {isPt ? DIRECTORY_TIER_LABELS[tier].pt : DIRECTORY_TIER_LABELS[tier].en}
+              </span>
             )}
             {entry.verified ? (
               <span className="text-meta-sm text-score-good">
@@ -101,6 +115,26 @@ export default function DirectoryEntryCard({
       </div>
 
       {showClaim && <DirectoryClaimButton entryId={entry.id} entryName={name} locale={locale} />}
+
+      {tier === 'pro' && spotForEmbed && !compact && (
+        <div className="space-y-1 border-t border-divider pt-3">
+          <p className="text-meta-sm font-semibold text-fg-muted">
+            {isPt ? 'Widget Pro (embed)' : 'Pro widget (embed)'}
+          </p>
+          <textarea
+            readOnly
+            rows={3}
+            className="w-full rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1.5 font-mono text-meta-sm text-fg-muted"
+            value={buildEmbedSnippet({
+              spotId: spotForEmbed,
+              locale,
+              schoolName: name,
+            })}
+            onFocus={(e) => e.target.select()}
+          />
+        </div>
+      )}
     </Card>
+    </div>
   );
 }

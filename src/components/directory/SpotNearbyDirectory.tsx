@@ -4,9 +4,15 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { DirectoryEntry, DirectoryFile } from '@/types/directory';
 import { entriesNearSpot } from '@/lib/directory';
-import { fetchDirectoryListings, mergeDirectoryEntries } from '@/lib/directoryListings';
+import {
+  applyDirectoryProfiles,
+  fetchDirectoryListings,
+  fetchDirectoryProfiles,
+  mergeDirectoryEntries,
+} from '@/lib/directoryListings';
 import { getSupabaseClient } from '@/lib/supabase';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
+import { sortDirectoryEntries } from '@/lib/directory';
 
 type Props = {
   spotId: string;
@@ -35,19 +41,32 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }
         /* ignore */
       }
       let live: DirectoryEntry[] = [];
+      let profiles = new Map<
+        string,
+        { tier: import('@/types/directory').DirectoryTier; verified: boolean }
+      >();
       try {
         const sb = getSupabaseClient();
-        if (sb) live = await fetchDirectoryListings(sb);
+        if (sb) {
+          ;[live, profiles] = await Promise.all([
+            fetchDirectoryListings(sb),
+            fetchDirectoryProfiles(sb),
+          ]);
+        }
       } catch {
         /* ignore */
       }
       if (cancelled) return;
-      const merged = mergeDirectoryEntries(seed, live);
+      const merged = applyDirectoryProfiles(mergeDirectoryEntries(seed, live), profiles);
+      const near = entriesNearSpot(merged, spotId, spotLat, spotLon, {
+        maxKm: 12,
+        limit: 24,
+      });
+      const dist = new Map(near.map((n) => [n.id, n.distanceKm]));
       setNearby(
-        entriesNearSpot(merged, spotId, spotLat, spotLon, {
-          maxKm: 12,
-          limit: 6,
-        }),
+        sortDirectoryEntries(near)
+          .slice(0, 6)
+          .map((e) => ({ ...e, distanceKm: dist.get(e.id) ?? 0 })),
       );
     })();
     return () => {

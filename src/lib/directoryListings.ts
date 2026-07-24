@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
-import type { DirectoryEntry, DirectoryKind, DirectorySport } from '@/types/directory';
+import type { DirectoryEntry, DirectoryKind, DirectorySport, DirectoryTier } from '@/types/directory';
+import { sortDirectoryEntries } from '@/lib/directory';
 
 export type DirectoryListingRow = {
   id: string;
@@ -20,8 +21,20 @@ export type DirectoryListingRow = {
   owner_user_id: string | null;
   verified: boolean;
   verified_at: string | null;
+  tier?: string | null;
   created_at: string;
 };
+
+export type DirectoryProfileRow = {
+  entry_id: string;
+  tier: string;
+  verified: boolean;
+};
+
+function parseTier(raw: string | null | undefined): DirectoryTier {
+  if (raw === 'featured' || raw === 'pro') return raw;
+  return 'free';
+}
 
 export function listingToEntry(row: DirectoryListingRow): DirectoryEntry {
   return {
@@ -41,6 +54,7 @@ export function listingToEntry(row: DirectoryListingRow): DirectoryEntry {
     address: row.address || undefined,
     source: row.source === 'submitted' ? 'submitted' : 'claimed',
     verified: row.verified,
+    tier: parseTier(row.tier),
   };
 }
 
@@ -59,6 +73,43 @@ export async function fetchDirectoryListings(
     throw error;
   }
   return ((data as DirectoryListingRow[]) || []).map(listingToEntry);
+}
+
+/** Premium overrides for seed entry ids (aesp-*, osm-*, …). */
+export async function fetchDirectoryProfiles(
+  sb: SupabaseClient,
+): Promise<Map<string, { tier: DirectoryTier; verified: boolean }>> {
+  const map = new Map<string, { tier: DirectoryTier; verified: boolean }>();
+  const { data, error } = await sb.from('directory_profiles').select('entry_id, tier, verified');
+  if (error) {
+    if (/relation .*directory_profiles.* does not exist|Could not find the table/i.test(error.message)) {
+      return map;
+    }
+    throw error;
+  }
+  for (const row of (data as DirectoryProfileRow[]) || []) {
+    map.set(row.entry_id, {
+      tier: parseTier(row.tier),
+      verified: !!row.verified,
+    });
+  }
+  return map;
+}
+
+export function applyDirectoryProfiles(
+  entries: DirectoryEntry[],
+  profiles: Map<string, { tier: DirectoryTier; verified: boolean }>,
+): DirectoryEntry[] {
+  if (profiles.size === 0) return entries;
+  return entries.map((e) => {
+    const p = profiles.get(e.id);
+    if (!p) return { ...e, tier: e.tier ?? 'free' };
+    return {
+      ...e,
+      tier: p.tier,
+      verified: p.verified || e.verified,
+    };
+  });
 }
 
 export type SubmitListingInput = {
@@ -113,6 +164,7 @@ export async function submitDirectoryListing(
     source: 'submitted',
     owner_user_id: input.userId,
     verified: false,
+    tier: 'free',
     updated_at: new Date().toISOString(),
   };
 
@@ -161,23 +213,74 @@ export async function unverifyDirectoryListing(
   return { ok: true };
 }
 
-/** Seed JSON first; live submissions override same id or prepend. */
+export async function setDirectoryListingTier(
+  sb: SupabaseClient,
+  listingId: string,
+  tier: DirectoryTier,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const { error } = await sb
+    .from('directory_listings')
+    .update({
+      tier,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('id', listingId);
+
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+/** Upsert tier/verified for any entry id (seed or listing). */
+export async function upsertDirectoryProfileTier(
+  sb: SupabaseClient,
+  entryId: string,
+  tier: DirectoryTier,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const { error } = await sb.from('directory_profiles').upsert(
+    {
+      entry_id: entryId,
+      tier,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: 'entry_id' },
+  );
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+/** Seed JSON first; live submissions override; then sort by tier. */
 export function mergeDirectoryEntries(
   seed: DirectoryEntry[],
   live: DirectoryEntry[],
 ): DirectoryEntry[] {
   const byId = new Map<string, DirectoryEntry>();
-  for (const e of seed) byId.set(e.id, e);
-  for (const e of live) byId.set(e.id, e);
+  for (const e of seed) byId.set(e.id, { ...e, tier: e.tier ?? 'free' });
+  for (const e of live) byId.set(e.id, { ...e, tier: e.tier ?? 'free' });
 
-  // Also prefer live over seed when same slug
   const bySlug = new Map<string, DirectoryEntry>();
   for (const e of byId.values()) {
     const prev = bySlug.get(e.slug);
-    if (!prev || e.source === 'submitted' || e.verified) {
+    if (!prev || e.source === 'submitted' || e.verified || tierBeats(e, prev)) {
       bySlug.set(e.slug, e);
     }
   }
 
-  return [...bySlug.values()].sort((a, b) => a.name.localeCompare(b.name, 'pt'));
+  return sortDirectoryEntries([...bySlug.values()]);
+}
+
+function tierBeats(a: DirectoryEntry, b: DirectoryEntry): boolean {
+  const rank = (t?: DirectoryTier) => (t === 'pro' ? 3 : t === 'featured' ? 2 : 1);
+  return rank(a.tier) > rank(b.tier);
+}
+
+export function buildEmbedSnippet(opts: {
+  spotId: string;
+  locale: string;
+  schoolName: string;
+  siteOrigin?: string;
+}): string {
+  const origin = opts.siteOrigin || 'https://ventu.surf';
+  const school = encodeURIComponent(opts.schoolName);
+  const src = `${origin}/embed/spot/${opts.spotId}/?school=${school}&lang=${opts.locale}`;
+  return `<iframe src="${src}" title="VenTu — ${opts.schoolName}" width="320" height="200" style="border:0;border-radius:12px;max-width:100%" loading="lazy"></iframe>`;
 }
