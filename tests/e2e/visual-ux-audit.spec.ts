@@ -238,10 +238,12 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       if (viewport === 'mobile') {
         await openMobileMenu(page);
-        await page.getByRole('link', { name: /Switch to English/i }).click();
-      } else {
-        await page.getByRole('link', { name: /Switch to English/i }).click();
       }
+      await page
+        .getByRole('banner')
+        .getByLabel(/Escolher idioma|Choose language|Elegir idioma/i)
+        .first()
+        .selectOption('en');
       await expect(page).toHaveURL(/\/en\/?$/);
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
