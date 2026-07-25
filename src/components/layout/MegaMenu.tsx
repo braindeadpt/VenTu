@@ -68,7 +68,7 @@ export default function MegaMenu({ locale, isOpen, onOpen, onClose }: MegaMenuPr
         ref={triggerRef}
         type="button"
         onClick={handleToggle}
-        className="inline-flex items-center gap-1 shrink-0 whitespace-nowrap px-2 2xl:px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
+        className="inline-flex items-center gap-1 shrink-0 whitespace-nowrap px-1.5 2xl:px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-controls="mega-menu-modalidades"

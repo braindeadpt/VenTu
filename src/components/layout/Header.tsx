@@ -186,21 +186,21 @@ export default function Header({ locale }: HeaderProps) {
         onKeyDown={handleKeyDown}
       >
         <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
-          <div className="grid grid-cols-[minmax(0,auto)_minmax(0,1fr)_minmax(0,auto)] items-center gap-x-1.5 sm:gap-x-2 xl:gap-x-3 h-16">
-            {/* Logo — isolated so centre nav never paints over it */}
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 xl:gap-x-4 2xl:gap-x-6 h-16">
+            {/* Logo — never shrink; keep clear of centred nav overflow */}
             <Link
               href={`/${locale}/`}
-              className="flex items-center gap-2 group min-w-0 relative z-10 pr-0.5"
+              className="flex items-center gap-2 group shrink-0 relative z-20"
             >
               <Wind className="w-7 h-7 sm:w-8 sm:h-8 text-accent group-hover:text-accent-hover transition-colors shrink-0" />
-              <span className="text-lg sm:text-xl font-bold text-fg tracking-tight truncate">
+              <span className="text-lg sm:text-xl font-bold text-fg tracking-tight">
                 Ven<span className="text-accent">Tu</span>
               </span>
             </Link>
 
-            {/* Desktop nav — xl+ only; overflow-visible so MegaMenu is not clipped */}
+            {/* Desktop nav — start-aligned so a wide link row never spills over the logo */}
             <nav
-              className="hidden xl:flex items-center justify-center gap-0 min-w-0 overflow-visible px-0.5"
+              className="hidden xl:flex items-center justify-start gap-0 min-w-0 overflow-x-auto overflow-y-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
               aria-label={navLabel.home}
             >
               <MegaMenu
@@ -216,7 +216,7 @@ export default function Header({ locale }: HeaderProps) {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`shrink-0 px-2 2xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all ${
+                    className={`shrink-0 px-1.5 2xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all ${
                       active || featured
                         ? active
                           ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
@@ -231,7 +231,7 @@ export default function Header({ locale }: HeaderProps) {
             </nav>
 
             {/* Desktop actions */}
-            <div className="hidden xl:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-10 justify-end pl-1">
+            <div className="hidden xl:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-20 justify-end">
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center gap-2 min-w-9 h-9 px-2 2xl:px-3 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
