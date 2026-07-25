@@ -4,21 +4,15 @@ import { useRef, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import {
   ChevronDown,
-  Map,
-  List,
-  Compass,
-  Video,
-  Waves,
+  CalendarRange,
+  GitCompareArrows,
   Wind,
-  Diamond,
-  Sailboat,
-  Ship,
-  Flame,
-  Zap,
+  Thermometer,
+  Wrench,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 
-interface MegaMenuProps {
+interface PlanMegaMenuProps {
   locale: string;
   isOpen: boolean;
   isActive?: boolean;
@@ -26,25 +20,46 @@ interface MegaMenuProps {
   onClose: () => void;
 }
 
-const EXPLORE_ITEMS = [
-  { href: 'mapa', icon: Map, labelKey: 'mapa' as const, descKey: 'descMapa' as const },
-  { href: 'spots', icon: List, labelKey: 'spots' as const, descKey: 'descSpots' as const },
-  { href: 'explorar', icon: Compass, labelKey: 'explorar' as const, descKey: 'descExplorar' as const },
-  { href: 'livecams', icon: Video, labelKey: 'livecams' as const, descKey: 'descLivecams' as const },
+const PLAN_ITEMS = [
+  {
+    href: 'sazonalidade',
+    icon: CalendarRange,
+    labelKey: 'sazonalidade' as const,
+    descKey: 'descSazonalidade' as const,
+  },
+  {
+    href: 'compare',
+    icon: GitCompareArrows,
+    labelKey: 'comparar' as const,
+    descKey: 'descComparar' as const,
+  },
+  {
+    href: 'ferramentas/calculadora-kite',
+    icon: Wind,
+    labelKey: 'kiteCalc' as const,
+    descKey: 'descKite' as const,
+  },
+  {
+    href: 'ferramentas/calculadora-fato',
+    icon: Thermometer,
+    labelKey: 'wetsuitCalc' as const,
+    descKey: 'descFato' as const,
+  },
+  {
+    href: 'ferramentas',
+    icon: Wrench,
+    labelKey: 'allTools' as const,
+    descKey: 'descTools' as const,
+  },
 ] as const;
 
-const MODALIDADES_ITEMS = [
-  { id: 'surf', slug: 'surf', icon: Waves, i18nKey: 'modalidadeSurf', i18nDesc: 'modalidadesSurf' },
-  { id: 'kitesurf', slug: 'kitesurf', icon: Wind, i18nKey: 'modalidadeKite', i18nDesc: 'modalidadesKite' },
-  { id: 'windsurf', slug: 'windsurf', icon: Sailboat, i18nKey: 'modalidadeWind', i18nDesc: 'modalidadesWind' },
-  { id: 'big-wave', slug: 'big-wave', icon: Ship, i18nKey: 'modalidadeBigWave', i18nDesc: 'modalidadesBigWave' },
-  { id: 'bodyboard', slug: 'bodyboard', icon: Waves, i18nKey: 'modalidadeBodyboard', i18nDesc: 'modalidadesBodyboard' },
-  { id: 'sup', slug: 'sup', icon: Diamond, i18nKey: 'modalidadeSup', i18nDesc: 'modalidadesSup' },
-  { id: 'foil', slug: 'foil', icon: Flame, i18nKey: 'modalidadeFoil', i18nDesc: 'modalidadesFoil' },
-  { id: 'wakeboard', slug: 'wakeboard', icon: Zap, i18nKey: 'modalidadeWakeboard', i18nDesc: 'modalidadesWakeboard' },
-] as const;
-
-export default function MegaMenu({ locale, isOpen, isActive = false, onOpen, onClose }: MegaMenuProps) {
+export default function PlanMegaMenu({
+  locale,
+  isOpen,
+  isActive = false,
+  onOpen,
+  onClose,
+}: PlanMegaMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const t = getTranslation(locale as 'pt' | 'en');
@@ -129,25 +144,25 @@ export default function MegaMenu({ locale, isOpen, isActive = false, onOpen, onC
         }`}
         aria-expanded={isOpen}
         aria-haspopup="true"
-        aria-controls="mega-menu-conditions"
+        aria-controls="mega-menu-plan"
         aria-current={isActive ? 'true' : undefined}
       >
-        {t.nav.conditions}
+        {t.nav.plan}
         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-[200ms] ease-out-expo motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
         <div
-          id="mega-menu-conditions"
+          id="mega-menu-plan"
           role="menu"
-          className="absolute top-full left-0 pt-1 w-[min(560px,calc(100vw-2rem))] z-[1300]"
+          className="absolute top-full left-0 pt-1 w-[min(360px,calc(100vw-2rem))] z-[1300]"
         >
           <div className="rounded-modal border border-divider bg-bg-elevated shadow-modal backdrop-blur-xl p-4">
             <div className="text-xs font-medium text-fg-subtle uppercase tracking-wider mb-3 px-1">
-              {t.megaMenu.conditionsExplore}
+              {t.megaMenu.planTitle}
             </div>
-            <div className="grid grid-cols-2 gap-2 mb-4">
-              {EXPLORE_ITEMS.map((item) => {
+            <div className="flex flex-col gap-1">
+              {PLAN_ITEMS.map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
@@ -163,31 +178,6 @@ export default function MegaMenu({ locale, isOpen, isActive = false, onOpen, onC
                     <div className="min-w-0">
                       <div className="text-sm font-medium text-fg">{t.nav[item.labelKey]}</div>
                       <div className="text-xs text-fg-subtle leading-relaxed">{t.megaMenu[item.descKey]}</div>
-                    </div>
-                  </Link>
-                );
-              })}
-            </div>
-            <div className="text-xs font-medium text-fg-subtle uppercase tracking-wider mb-3 px-1">
-              {t.megaMenu.modalidadesTitle}
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {MODALIDADES_ITEMS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <Link
-                    key={item.id}
-                    href={`/${locale}/modalidades/${item.slug}/`}
-                    role="menuitem"
-                    onClick={onClose}
-                    className="flex items-start gap-3 p-3 rounded-card hover:bg-surface-1/[0.04] transition-colors duration-[200ms] ease-out-expo motion-reduce:transition-none group"
-                  >
-                    <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-input bg-surface-1/[0.04] text-data-waves group-hover:bg-surface-2/[0.08] transition-colors">
-                      <Icon className="w-4 h-4" aria-hidden />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="text-sm font-medium text-fg">{t.nav[item.i18nKey]}</div>
-                      <div className="text-xs text-fg-subtle leading-relaxed">{t.megaMenu[item.i18nDesc]}</div>
                     </div>
                   </Link>
                 );
