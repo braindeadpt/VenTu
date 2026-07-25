@@ -252,13 +252,20 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
 
+      // Pages reachable from the new header IA (Condições / Planear / Directório /
+      // Notícias / conta) plus Sobre via footer sitemap.
       const routes: { path: string; url: RegExp }[] = [
+        { path: '/pt/mapa/', url: /\/pt\/mapa\/?/ },
+        { path: '/pt/spots/', url: /\/pt\/spots\/?/ },
         { path: '/pt/explorar/', url: /\/pt\/explorar\/?/ },
+        { path: '/pt/livecams/', url: /\/pt\/livecams\/?/ },
         { path: '/pt/sazonalidade/', url: /\/pt\/sazonalidade\/?/ },
         { path: '/pt/compare/', url: /\/pt\/compare\/?/ },
-        { path: '/pt/livecams/', url: /\/pt\/livecams\/?/ },
-        { path: '/pt/favorites/', url: /\/pt\/favorites\/?/ },
+        { path: '/pt/ferramentas/', url: /\/pt\/ferramentas\/?/ },
+        { path: '/pt/diretorio/', url: /\/pt\/diretorio\/?/ },
         { path: '/pt/news/', url: /\/pt\/news\/?/ },
+        { path: '/pt/favorites/', url: /\/pt\/favorites\/?/ },
+        { path: '/pt/passaporte/', url: /\/pt\/passaporte\/?/ },
         { path: '/pt/about/', url: /\/pt\/about\/?/ },
       ];
 
@@ -270,29 +277,52 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await context.close();
     });
 
-    test('07 — Desktop: mega menu modalidades → Surf', async ({ browser }) => {
+    test('07 — Desktop: mega menu Condições → Surf + Planear → Sazonalidade', async ({ browser }) => {
       test.skip(viewport === 'mobile', 'Mega menu só existe em desktop');
-      const context = await createContext(browser, viewport);
+      test.setTimeout(60_000);      const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
-      await page.getByRole('button', { name: /Modalidades/i }).hover();
-      await expect(page.getByRole('button', { name: /Modalidades/i })).toHaveAttribute('aria-expanded', 'true');
-      await expect(page.locator('#mega-menu-modalidades')).toBeVisible();
-      await page.locator('#mega-menu-modalidades a[href="/pt/modalidades/surf/"]').click();
-      await expect(page).toHaveURL(/\/pt\/modalidades\/surf\/?/);
+      const banner = page.getByRole('banner');
+      const conditionsBtn = banner.getByRole('button', { name: /Condições/i });
+      await conditionsBtn.click();
+      await expect(conditionsBtn).toHaveAttribute('aria-expanded', 'true');
+      const conditionsPanel = page.locator('#mega-menu-conditions');
+      await expect(conditionsPanel).toBeVisible();
+      await Promise.all([
+        page.waitForURL(/\/pt\/modalidades\/surf\/?/, { timeout: 15_000 }),
+        conditionsPanel.locator('a[href="/pt/modalidades/surf/"]').click(),
+      ]);
       await expect(page.getByRole('heading', { level: 1, name: /Surf/i })).toBeVisible();
+      await expect(banner.getByRole('button', { name: /Condições/i })).toHaveAttribute('aria-current', 'true');
+
+      await gotoHealthy(page, health, '/pt/');
+      const planBtn = banner.getByRole('button', { name: /Planear/i });
+      await planBtn.click();
+      await expect(planBtn).toHaveAttribute('aria-expanded', 'true');
+      const planPanel = page.locator('#mega-menu-plan');
+      await expect(planPanel).toBeVisible();
+      await Promise.all([
+        page.waitForURL(/\/pt\/sazonalidade\/?/, { timeout: 15_000 }),
+        planPanel.locator('a[href="/pt/sazonalidade/"]').click(),
+      ]);
+      await expect(banner.getByRole('button', { name: /Planear/i })).toHaveAttribute('aria-current', 'true');
       await context.close();
     });
 
-    test('08 — Mobile: menu hamburger abre e fecha', async ({ browser }) => {
+    test('08 — Mobile: menu hamburger agrupado abre e fecha', async ({ browser }) => {
       test.skip(viewport === 'desktop', 'Hamburger só em mobile');
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
       await openMobileMenu(page);
-      await expect(page.locator('#mobile-nav').getByRole('link', { name: /Explorar/i })).toBeVisible();
+      const mobileNav = page.locator('#mobile-nav');
+      await expect(mobileNav.getByRole('button', { name: /Condições/i })).toBeVisible();
+      await expect(mobileNav.getByRole('link', { name: /Explorar/i })).toBeVisible();
+      await expect(mobileNav.getByRole('link', { name: /Directório|Diretório/i })).toBeVisible();
+      await mobileNav.getByRole('button', { name: /Planear/i }).click();
+      await expect(mobileNav.getByRole('link', { name: /Sazonalidade/i })).toBeVisible();
 
       await closeMobileMenu(page);
       await context.close();
