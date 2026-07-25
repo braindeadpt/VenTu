@@ -215,6 +215,10 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
+      // Theme toggle lives in the desktop action row; on mobile it's inside the drawer.
+      if (viewport === 'mobile') {
+        await openMobileMenu(page);
+      }
       const themeBtn = page.getByRole('banner').getByRole('button', {
         name: /Alternar para tema|Switch to .* theme/i,
       });
