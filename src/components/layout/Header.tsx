@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, useRef, type KeyboardEvent, type ChangeEvent } from 'react';
-import { Menu, X, Wind, Globe, Search, User } from 'lucide-react';
+import { Menu, X, Wind, Globe, Search, ChevronDown } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import MegaMenu from './MegaMenu';
+import PlanMegaMenu from './PlanMegaMenu';
+import AccountMenu from './AccountMenu';
 import SearchPalette from '@/components/search/SearchPalette';
 import {
   getTranslation,
@@ -22,17 +24,42 @@ interface HeaderProps {
   locale: string;
 }
 
+type MegaKey = 'conditions' | 'plan' | null;
+type MobileSection = 'conditions' | 'plan' | 'account' | null;
+
+function pathUnder(pathname: string, locale: string, segment: string): boolean {
+  const base = `/${locale}/${segment}`;
+  return pathname === base || pathname === `${base}/` || pathname.startsWith(`${base}/`);
+}
+
 export default function Header({ locale }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openMega, setOpenMega] = useState(false);
+  const [openMega, setOpenMega] = useState<MegaKey>(null);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [mobileSection, setMobileSection] = useState<MobileSection>('conditions');
   const [searchOpen, setSearchOpen] = useState(false);
   const [isMac, setIsMac] = useState(false);
   const pathname = usePathname() || '';
   const router = useRouter();
   const loc = validateLocale(locale);
   const t = getTranslation(loc);
-  const isPt = loc === 'pt';
   const { session, authLoading, requestLogin, isSupabaseReady } = useAuth();
+  const isSignedIn = Boolean(session?.user);
+
+  const conditionsActive =
+    pathUnder(pathname, locale, 'mapa') ||
+    pathUnder(pathname, locale, 'spots') ||
+    pathUnder(pathname, locale, 'explorar') ||
+    pathUnder(pathname, locale, 'livecams') ||
+    pathUnder(pathname, locale, 'modalidades');
+
+  const planActive =
+    pathUnder(pathname, locale, 'sazonalidade') ||
+    pathUnder(pathname, locale, 'compare') ||
+    pathUnder(pathname, locale, 'ferramentas');
+
+  const directoryActive = pathUnder(pathname, locale, 'diretorio');
+  const newsActive = pathUnder(pathname, locale, 'news');
 
   useEffect(() => {
     setIsMac(navigator.platform.includes('Mac'));
@@ -44,11 +71,10 @@ export default function Header({ locale }: HeaderProps) {
     return () => window.removeEventListener(OPEN_SEARCH_EVENT, onOpenSearch);
   }, []);
 
-  // Close any open menus / palettes when the route changes (e.g. user
-  // hits browser back/forward, or follows a link inside a mega menu).
   useEffect(() => {
     setMobileMenuOpen(false);
-    setOpenMega(false);
+    setOpenMega(null);
+    setAccountOpen(false);
     setSearchOpen(false);
   }, [pathname]);
 
@@ -56,10 +82,10 @@ export default function Header({ locale }: HeaderProps) {
 
   useEffect(() => {
     if (mobileMenuOpen && mobileNavRef.current) {
-      const firstLink = mobileNavRef.current.querySelector<HTMLAnchorElement>('a');
-      // preventScroll: focusing the first link must not scroll the drawer
-      // and hide the locale/theme row at the top.
-      firstLink?.focus({ preventScroll: true });
+      const firstFocusable = mobileNavRef.current.querySelector<HTMLElement>(
+        'button, a',
+      );
+      firstFocusable?.focus({ preventScroll: true });
     }
   }, [mobileMenuOpen]);
 
@@ -72,9 +98,9 @@ export default function Header({ locale }: HeaderProps) {
     };
   }, [mobileMenuOpen]);
 
-  // Fecha menu móvel ao passar para desktop (nav completa só em xl+).
+  // Hamburger through lg (1024px); full nav from lg up.
   useEffect(() => {
-    const mq = window.matchMedia('(min-width: 1280px)');
+    const mq = window.matchMedia('(min-width: 1024px)');
     const onChange = (e: MediaQueryListEvent) => {
       if (e.matches) setMobileMenuOpen(false);
     };
@@ -112,14 +138,12 @@ export default function Header({ locale }: HeaderProps) {
   const localeSelect = (
     <label className="inline-flex items-center gap-1 min-h-[44px] px-2 rounded-input text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all cursor-pointer shrink-0">
       <Globe className="w-3.5 h-3.5 shrink-0" aria-hidden />
-      <span className="sr-only">
-        {isPt ? 'Idioma' : loc === 'es' ? 'Idioma' : 'Language'}
-      </span>
+      <span className="sr-only">{navLabel.language}</span>
       <select
         value={loc}
         onChange={handleLocaleChange}
         className="appearance-none bg-transparent border-0 text-xs font-semibold text-fg-subtle hover:text-fg cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm pr-1 min-h-[36px]"
-        aria-label={isPt ? 'Escolher idioma' : loc === 'es' ? 'Elegir idioma' : 'Choose language'}
+        aria-label={navLabel.chooseLanguage}
       >
         {locales.map((l) => (
           <option key={l} value={l}>
@@ -130,12 +154,27 @@ export default function Header({ locale }: HeaderProps) {
     </label>
   );
 
-  const handleMegaOpen = useCallback(() => {
-    setOpenMega(true);
+  const openConditions = useCallback(() => {
+    setAccountOpen(false);
+    setOpenMega('conditions');
   }, []);
 
-  const handleMegaClose = useCallback(() => {
-    setOpenMega(false);
+  const openPlan = useCallback(() => {
+    setAccountOpen(false);
+    setOpenMega('plan');
+  }, []);
+
+  const closeMega = useCallback(() => {
+    setOpenMega(null);
+  }, []);
+
+  const openAccount = useCallback(() => {
+    setOpenMega(null);
+    setAccountOpen(true);
+  }, []);
+
+  const closeAccount = useCallback(() => {
+    setAccountOpen(false);
   }, []);
 
   const openSearch = useCallback(() => {
@@ -153,31 +192,57 @@ export default function Header({ locale }: HeaderProps) {
     }
   }, []);
 
-  const navLinks = [
-    { href: `/${locale}/mapa/`, label: navLabel.mapa, featured: true },
-    { href: `/${locale}/explorar/`, label: navLabel.explorar },
-    { href: `/${locale}/sazonalidade/`, label: navLabel.sazonalidade },
-    { href: `/${locale}/compare/`, label: navLabel.comparar },
-    { href: `/${locale}/livecams/`, label: navLabel.livecams },
-    { href: `/${locale}/favorites/`, label: navLabel.favorites },
-    { href: `/${locale}/news/`, label: navLabel.news },
-    { href: `/${locale}/about/`, label: navLabel.about },
-  ];
+  const toggleMobileSection = (section: Exclude<MobileSection, null>) => {
+    setMobileSection((prev) => (prev === section ? null : section));
+  };
 
-  const allLinks = [
-    ...navLinks,
+  const closeMobile = () => setMobileMenuOpen(false);
+
+  const linkClass = (active: boolean) =>
+    `shrink-0 px-1.5 2xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none ${
+      active
+        ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
+        : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
+    }`;
+
+  const mobileLinkClass =
+    'block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none min-h-[44px]';
+
+  const mobileSectionBtn =
+    'flex w-full items-center justify-between px-4 py-3 rounded-input text-sm font-semibold text-fg hover:bg-surface-1/[0.04] transition-all duration-[200ms] ease-out-expo motion-reduce:transition-none min-h-[44px]';
+
+  const conditionsLinks = [
+    { href: `/${locale}/mapa/`, label: navLabel.mapa },
     { href: `/${locale}/spots/`, label: navLabel.spots },
+    { href: `/${locale}/explorar/`, label: navLabel.explorar },
+    { href: `/${locale}/livecams/`, label: navLabel.livecams },
   ];
 
-  const modalidadeQuickLinks = [
+  const modalidadesLinks = [
     { slug: 'surf', label: navLabel.modalidadeSurf },
     { slug: 'kitesurf', label: navLabel.modalidadeKite },
     { slug: 'windsurf', label: navLabel.modalidadeWind },
     { slug: 'big-wave', label: navLabel.modalidadeBigWave },
+    { slug: 'bodyboard', label: navLabel.modalidadeBodyboard },
+    { slug: 'sup', label: navLabel.modalidadeSup },
+    { slug: 'foil', label: navLabel.modalidadeFoil },
+    { slug: 'wakeboard', label: navLabel.modalidadeWakeboard },
   ];
 
-  const mobileLinkClass =
-    'block px-4 py-3 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all';
+  const planLinks = [
+    { href: `/${locale}/sazonalidade/`, label: navLabel.sazonalidade },
+    { href: `/${locale}/compare/`, label: navLabel.comparar },
+    { href: `/${locale}/ferramentas/calculadora-kite/`, label: navLabel.kiteCalc },
+    { href: `/${locale}/ferramentas/calculadora-fato/`, label: navLabel.wetsuitCalc },
+    { href: `/${locale}/ferramentas/`, label: navLabel.allTools },
+  ];
+
+  const accountLinks = [
+    { href: `/${locale}/favorites/`, label: navLabel.favorites, anonOk: true },
+    { href: `/${locale}/passaporte/`, label: navLabel.passport, anonOk: true },
+    { href: `/${locale}/alerts/`, label: navLabel.alerts, anonOk: false },
+    { href: `/${locale}/conta/`, label: navLabel.account, anonOk: false },
+  ].filter((l) => l.anonOk || isSignedIn);
 
   return (
     <>
@@ -186,8 +251,7 @@ export default function Header({ locale }: HeaderProps) {
         onKeyDown={handleKeyDown}
       >
         <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 xl:gap-x-4 2xl:gap-x-6 h-16">
-            {/* Logo — never shrink; keep clear of centred nav overflow */}
+          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 lg:gap-x-4 2xl:gap-x-6 h-16">
             <Link
               href={`/${locale}/`}
               className="flex items-center gap-2 group shrink-0 relative z-20"
@@ -198,40 +262,41 @@ export default function Header({ locale }: HeaderProps) {
               </span>
             </Link>
 
-            {/* Desktop nav — start-aligned so a wide link row never spills over the logo */}
             <nav
-              className="hidden xl:flex items-center justify-start gap-0 min-w-0 overflow-x-auto overflow-y-visible [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+              className="hidden lg:flex items-center justify-start gap-0 min-w-0 overflow-visible"
               aria-label={navLabel.home}
             >
               <MegaMenu
                 locale={locale}
-                isOpen={openMega}
-                onOpen={handleMegaOpen}
-                onClose={handleMegaClose}
+                isOpen={openMega === 'conditions'}
+                isActive={conditionsActive}
+                onOpen={openConditions}
+                onClose={closeMega}
               />
-              {navLinks.map((link) => {
-                const featured = 'featured' in link && link.featured;
-                const active = isActive(link.href);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`shrink-0 px-1.5 2xl:px-3 py-1.5 rounded-input text-sm font-medium whitespace-nowrap transition-all ${
-                      active || featured
-                        ? active
-                          ? 'bg-accent/15 text-accent ring-1 ring-accent/25'
-                          : 'text-accent hover:bg-accent/10'
-                        : 'text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04]'
-                    }`}
-                  >
-                    {link.label}
-                  </Link>
-                );
-              })}
+              <PlanMegaMenu
+                locale={locale}
+                isOpen={openMega === 'plan'}
+                isActive={planActive}
+                onOpen={openPlan}
+                onClose={closeMega}
+              />
+              <Link
+                href={`/${locale}/diretorio/`}
+                className={linkClass(directoryActive)}
+                aria-current={directoryActive ? 'page' : undefined}
+              >
+                {navLabel.directory}
+              </Link>
+              <Link
+                href={`/${locale}/news/`}
+                className={linkClass(newsActive)}
+                aria-current={newsActive ? 'page' : undefined}
+              >
+                {navLabel.news}
+              </Link>
             </nav>
 
-            {/* Desktop actions */}
-            <div className="hidden xl:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-20 justify-end">
+            <div className="hidden lg:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-20 justify-end">
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center gap-2 min-w-9 h-9 px-2 2xl:px-3 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
@@ -244,34 +309,15 @@ export default function Header({ locale }: HeaderProps) {
               </button>
               <ThemeToggle locale={locale} />
               {localeSelect}
-              {isSupabaseReady && (
-                session?.user ? (
-                  <Link
-                    href={`/${locale}/conta/`}
-                    className="inline-flex items-center gap-1.5 px-2 2xl:px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all max-w-[7rem] 2xl:max-w-[10rem]"
-                    title={session.user.email ?? undefined}
-                  >
-                    <User className="w-4 h-4 shrink-0" aria-hidden />
-                    <span className="truncate text-xs">
-                      {session.user.email?.split('@')[0] ?? (isPt ? 'Conta' : 'Account')}
-                    </span>
-                  </Link>
-                ) : (
-                  <button
-                    type="button"
-                    onClick={() => requestLogin('general')}
-                    disabled={authLoading}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-input text-sm font-medium text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all min-h-[44px] disabled:opacity-50"
-                  >
-                    <User className="w-4 h-4" aria-hidden />
-                    {isPt ? 'Entrar' : 'Sign in'}
-                  </button>
-                )
-              )}
+              <AccountMenu
+                locale={locale}
+                isOpen={accountOpen}
+                onOpen={openAccount}
+                onClose={closeAccount}
+              />
             </div>
 
-            {/* Mobile / tablet — only search + menu in the bar (theme/locale in drawer) */}
-            <div className="flex items-center gap-0.5 xl:hidden shrink-0 col-start-3 justify-end">
+            <div className="flex items-center gap-0.5 lg:hidden shrink-0 col-start-3 justify-end">
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
@@ -292,18 +338,17 @@ export default function Header({ locale }: HeaderProps) {
           </div>
         </div>
 
-        {/* Mobile menu — animated slide-down via max-height transition */}
         <div
           ref={mobileNavRef}
           id="mobile-nav"
           role="navigation"
-          aria-label={isPt ? 'Navegação móvel' : 'Mobile navigation'}
+          aria-label={navLabel.mobileNav}
           onKeyDown={handleMobileKeyDown}
           className={[
-            'xl:hidden overflow-hidden transition-all duration-slow ease-out-expo',
+            'lg:hidden overflow-hidden transition-all duration-[300ms] ease-out-expo motion-reduce:transition-none',
             'bg-bg-base/95 backdrop-blur-xl',
             mobileMenuOpen
-              ? 'max-h-[min(80dvh,560px)] border-b border-divider opacity-100 overflow-y-auto'
+              ? 'max-h-[min(85dvh,640px)] border-b border-divider opacity-100 overflow-y-auto'
               : 'max-h-0 opacity-0 pointer-events-none',
           ].join(' ')}
           aria-hidden={!mobileMenuOpen}
@@ -313,57 +358,141 @@ export default function Header({ locale }: HeaderProps) {
               {localeSelect}
               <ThemeToggle locale={locale} />
             </div>
-            <p className="px-0 pt-0 pb-1 text-meta-sm font-semibold text-fg-muted">
-              {navLabel.modalidades}
-            </p>
-            {modalidadeQuickLinks.map((item) => (
-              <Link
-                key={item.slug}
-                href={`/${locale}/modalidades/${item.slug}/`}
-                onClick={() => setMobileMenuOpen(false)}
-                className={mobileLinkClass}
-              >
-                {item.label}
-              </Link>
-            ))}
+
+            <button
+              type="button"
+              className={mobileSectionBtn}
+              aria-expanded={mobileSection === 'conditions'}
+              onClick={() => toggleMobileSection('conditions')}
+            >
+              {navLabel.conditions}
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-[200ms] ease-out-expo motion-reduce:transition-none ${
+                  mobileSection === 'conditions' ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {mobileSection === 'conditions' && (
+              <div className="pb-2 space-y-0.5">
+                {conditionsLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMobile}
+                    className={`${mobileLinkClass} ${isActive(link.href) ? 'text-accent bg-accent/10' : ''}`}
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <p className="px-4 pt-2 pb-1 text-xs font-semibold uppercase tracking-wider text-fg-muted">
+                  {t.megaMenu.modalidadesTitle}
+                </p>
+                {modalidadesLinks.map((item) => (
+                  <Link
+                    key={item.slug}
+                    href={`/${locale}/modalidades/${item.slug}/`}
+                    onClick={closeMobile}
+                    className={mobileLinkClass}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <button
+              type="button"
+              className={mobileSectionBtn}
+              aria-expanded={mobileSection === 'plan'}
+              onClick={() => toggleMobileSection('plan')}
+            >
+              {navLabel.plan}
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-[200ms] ease-out-expo motion-reduce:transition-none ${
+                  mobileSection === 'plan' ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {mobileSection === 'plan' && (
+              <div className="pb-2 space-y-0.5">
+                {planLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMobile}
+                    className={`${mobileLinkClass} ${isActive(link.href) ? 'text-accent bg-accent/10' : ''}`}
+                    aria-current={isActive(link.href) ? 'page' : undefined}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+
+            <Link
+              href={`/${locale}/diretorio/`}
+              onClick={closeMobile}
+              className={`${mobileLinkClass} font-semibold text-fg ${directoryActive ? 'text-accent bg-accent/10' : ''}`}
+              aria-current={directoryActive ? 'page' : undefined}
+            >
+              {navLabel.directory}
+            </Link>
+            <Link
+              href={`/${locale}/news/`}
+              onClick={closeMobile}
+              className={`${mobileLinkClass} font-semibold text-fg ${newsActive ? 'text-accent bg-accent/10' : ''}`}
+              aria-current={newsActive ? 'page' : undefined}
+            >
+              {navLabel.news}
+            </Link>
+
             <div className="border-t border-divider my-2" role="separator" />
-            {allLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className={mobileLinkClass}
-              >
-                {link.label}
-              </Link>
-            ))}
-            {isSupabaseReady && (
-              session?.user ? (
-                <Link
-                  href={`/${locale}/conta/`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={mobileLinkClass}
-                >
-                  {isPt ? 'Conta' : 'Account'}
-                </Link>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    requestLogin('general');
-                  }}
-                  className={`${mobileLinkClass} w-full text-left`}
-                >
-                  {isPt ? 'Entrar' : 'Sign in'}
-                </button>
-              )
+
+            <button
+              type="button"
+              className={mobileSectionBtn}
+              aria-expanded={mobileSection === 'account'}
+              onClick={() => toggleMobileSection('account')}
+            >
+              {navLabel.accountMenu}
+              <ChevronDown
+                className={`w-4 h-4 transition-transform duration-[200ms] ease-out-expo motion-reduce:transition-none ${
+                  mobileSection === 'account' ? 'rotate-180' : ''
+                }`}
+              />
+            </button>
+            {mobileSection === 'account' && (
+              <div className="pb-2 space-y-0.5">
+                {isSupabaseReady && !isSignedIn && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeMobile();
+                      requestLogin('general');
+                    }}
+                    disabled={authLoading}
+                    className={`${mobileLinkClass} w-full text-left disabled:opacity-50`}
+                  >
+                    {navLabel.signIn}
+                  </button>
+                )}
+                {accountLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={closeMobile}
+                    className={mobileLinkClass}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
             )}
           </div>
         </div>
       </header>
 
-      {/* Search palette (rendered at document level) */}
       {searchOpen && <SearchPalette locale={locale} onClose={closeSearch} />}
     </>
   );
