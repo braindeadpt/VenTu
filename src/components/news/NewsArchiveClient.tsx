@@ -1,19 +1,40 @@
 'use client';
 
-import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import type { NewsItem } from '@/types';
-import { filterNews, paginateNews, groupByDay, getDefaultNewsRegion, CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter } from '@/lib/news';
+import type { VentuEvent } from '@/types/events';
+import {
+  filterNews,
+  paginateNews,
+  groupByDay,
+  getDefaultNewsRegion,
+  CATEGORIES,
+  DATE_FILTERS,
+  REGION_FILTERS,
+  type NewsCategory,
+  type DateFilter,
+  type RegionFilter,
+} from '@/lib/news';
+import { upcomingEvents } from '@/lib/events';
+import { getTranslation } from '@/lib/i18n';
 import NewsFilters from './NewsFilters';
 import NewsListGrouped from './NewsListGrouped';
 import NewsPagination from './NewsPagination';
-import { Newspaper, Search } from 'lucide-react';
+import EventCard from '@/components/events/EventCard';
+import { Newspaper, Search, CalendarDays } from 'lucide-react';
 
 interface NewsArchiveClientProps {
   news: NewsItem[];
+  events?: VentuEvent[];
   locale: string;
 }
 
-export default function NewsArchiveClient({ news, locale }: NewsArchiveClientProps) {
+export default function NewsArchiveClient({
+  news,
+  events = [],
+  locale,
+}: NewsArchiveClientProps) {
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
   const [category, setCategory] = useState<NewsCategory>('all');
   const [region, setRegion] = useState<RegionFilter>(() => getDefaultNewsRegion(locale));
@@ -22,7 +43,6 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
   const [searchInput, setSearchInput] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [hydrated, setHydrated] = useState(false);
-  const syncRef = useRef(false);
 
   // Read URL params on mount
   useEffect(() => {
@@ -38,9 +58,17 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
       if (cat && (CATEGORIES as readonly string[]).includes(cat)) setCategory(cat as NewsCategory);
       if (reg && (REGION_FILTERS as readonly string[]).includes(reg)) setRegion(reg as RegionFilter);
       if (p && (DATE_FILTERS as readonly string[]).includes(p)) setPeriod(p as DateFilter);
-      if (q) { setSearchInput(q); setDebouncedQuery(q); }
-      if (pn) { const n = parseInt(pn, 10); if (!isNaN(n) && n > 0) setPage(n); }
-    } catch { /* noop */ }
+      if (q) {
+        setSearchInput(q);
+        setDebouncedQuery(q);
+      }
+      if (pn) {
+        const n = parseInt(pn, 10);
+        if (!isNaN(n) && n > 0) setPage(n);
+      }
+    } catch {
+      /* noop */
+    }
     setHydrated(true);
   }, []);
 
@@ -66,7 +94,9 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
       if (q) url.searchParams.set('q', q);
       if (pg > 1) url.searchParams.set('page', String(pg));
       window.history.replaceState({}, '', url.toString());
-    } catch { /* noop */ }
+    } catch {
+      /* noop */
+    }
   }, []);
 
   // Sync URL after debounced query settles
@@ -75,7 +105,6 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
     syncUrl(category, region, period, debouncedQuery, page);
   }, [category, region, period, debouncedQuery, page, hydrated, syncUrl]);
 
-  // Sync URL immediately for non-debounced filters
   const handleCategoryChange = useCallback((cat: NewsCategory) => {
     setCategory(cat);
     setPage(1);
@@ -110,21 +139,26 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
     setPage(1);
   }, []);
 
-  const currentFilters = useMemo(() => ({
-    category,
-    region,
-    period,
-    query: debouncedQuery,
-    page,
-  }), [category, region, period, debouncedQuery, page]);
+  const currentFilters = useMemo(
+    () => ({
+      category,
+      region,
+      period,
+      query: debouncedQuery,
+      page,
+    }),
+    [category, region, period, debouncedQuery, page],
+  );
 
   const isDebouncing = searchInput !== debouncedQuery && searchInput !== '';
   const filteredAll = useMemo(() => filterNews(news, currentFilters), [news, currentFilters]);
-  const { items: pageItems, total, totalPages, currentPage } = useMemo(
+  const { items: pageItems, totalPages, currentPage } = useMemo(
     () => paginateNews(filteredAll, page),
     [filteredAll, page],
   );
   const groups = useMemo(() => groupByDay(pageItems, locale), [pageItems, locale]);
+
+  const liveEvents = useMemo(() => upcomingEvents(events), [events]);
 
   // Show nothing during SSR to avoid hydration mismatch with URL params
   if (!hydrated) {
@@ -141,14 +175,34 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
       <div className="flex items-center gap-4">
         <Newspaper className="w-8 h-8 text-data-waves" />
         <div>
-          <h1 className="text-4xl font-bold text-fg">{isPt ? 'Notícias' : 'News'}</h1>
-          <p className="text-fg-muted mt-1">
-            {isPt ? 'Cena PT e notícias internacionais de desportos náuticos' : 'Portuguese scene and international water sports news'}
-          </p>
+          <h1 className="text-4xl font-bold text-fg">{t.news.title}</h1>
+          <p className="text-fg-muted mt-1">{t.news.subtitle}</p>
         </div>
       </div>
 
-      {/* Filters */}
+      {/* Upcoming events — above filters/news; omit entirely when empty */}
+      {liveEvents.length > 0 && (
+        <section
+          className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4"
+          aria-labelledby="upcoming-events-heading"
+        >
+          <div className="flex items-center gap-2">
+            <CalendarDays className="w-5 h-5 text-fg-muted" aria-hidden />
+            <h2 id="upcoming-events-heading" className="font-display text-h2 text-fg font-semibold tracking-tight">
+              {t.news.eventsHeading}
+            </h2>
+          </div>
+          <ul className="space-y-3 list-none p-0 m-0">
+            {liveEvents.map((event) => (
+              <li key={event.id}>
+                <EventCard event={event} locale={locale} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Filters — news only */}
       <div className="sticky top-0 z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3">
         <div className="max-w-7xl mx-auto">
           <NewsFilters
@@ -167,22 +221,24 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
         </div>
       </div>
 
-      {/* Content */}
+      {/* News content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {pageItems.length === 0 ? (
           <div className="text-center py-16 space-y-4">
             <Search className="w-16 h-16 text-fg-subtle mx-auto" />
             <p className="text-fg-subtle text-lg">
               {isPt
-                ? (debouncedQuery
+                ? debouncedQuery
                   ? `Nenhuma notícia encontrada para "${debouncedQuery}"`
-                  : 'Nenhuma notícia com este filtro.')
-                : (debouncedQuery
+                  : 'Nenhuma notícia com este filtro.'
+                : debouncedQuery
                   ? `No news found for "${debouncedQuery}"`
-                  : 'No news matching these filters.')}
+                  : 'No news matching these filters.'}
             </p>
             <p className="text-fg-subtle/80 text-sm">
-              {isPt ? 'Tenta remover filtros ou alargar o período.' : 'Try removing filters or expanding the time period.'}
+              {isPt
+                ? 'Tenta remover filtros ou alargar o período.'
+                : 'Try removing filters or expanding the time period.'}
             </p>
             {(category !== 'all' || region !== 'all' || period !== 'all' || debouncedQuery) && (
               <button
@@ -198,7 +254,7 @@ export default function NewsArchiveClient({ news, locale }: NewsArchiveClientPro
         )}
       </div>
 
-      {/* Pagination */}
+      {/* Pagination — news only */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <NewsPagination
           currentPage={currentPage}

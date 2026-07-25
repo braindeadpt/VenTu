@@ -197,12 +197,16 @@ export const translationsDe = {
     mapDataHint: 'Spot antippen · Alle anzeigen · Wind',
   },
   news: {
-    title: 'News',
+    title: 'News und Events',
+    subtitle: 'Portugiesische Szene, Events und internationale Wassersport-News',
     latest: 'Neueste',
     readMore: 'Weiterlesen',
     source: 'Quelle',
     category: 'Kategorie',
     generatedBy: 'Zusammengefasst von KI',
+    eventsHeading: 'Kommende Events',
+    eventRegister: 'Anmeldung',
+    eventFree: 'Freier Eintritt',
   },
   megaMenu: {
     modalidadesTitle: 'Disziplinen',

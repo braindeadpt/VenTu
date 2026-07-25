@@ -197,12 +197,16 @@ export const translationsFr = {
     mapDataHint: 'Appuie sur un spot · Tout afficher · Vent',
   },
   news: {
-    title: 'Actus',
+    title: 'Actus et événements',
+    subtitle: 'Scène PT, événements et actus internationales de sports nautiques',
     latest: 'Dernières',
     readMore: 'Lire la suite',
     source: 'Source',
     category: 'Catégorie',
     generatedBy: 'Résumé par IA',
+    eventsHeading: 'Événements à venir',
+    eventRegister: 'Inscriptions',
+    eventFree: 'Entrée gratuite',
   },
   megaMenu: {
     modalidadesTitle: 'Disciplines',

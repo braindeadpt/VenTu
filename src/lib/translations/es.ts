@@ -197,12 +197,16 @@ export const translationsEs = {
     mapDataHint: 'Pulsa un spot · Mostrar todos · Viento',
   },
   news: {
-    title: 'Noticias',
+    title: 'Noticias y eventos',
+    subtitle: 'Escena PT, eventos y noticias internacionales de deportes náuticos',
     latest: 'Últimas',
     readMore: 'Leer más',
     source: 'Fuente',
     category: 'Categoría',
     generatedBy: 'Resumido por IA',
+    eventsHeading: 'Próximos eventos',
+    eventRegister: 'Inscripciones',
+    eventFree: 'Entrada gratuita',
   },
   megaMenu: {
     modalidadesTitle: 'Modalidades',
