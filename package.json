@@ -45,6 +45,7 @@
     "directory:fetch": "tsx scripts/directory/fetch-osm.ts",
     "directory:aesp": "tsx scripts/directory/build-aesp-seed.ts",
     "directory:validate": "tsx scripts/directory/validate.ts",
+    "events:validate": "tsx scripts/events/validate.ts",
     "contributions:apply": "node scripts/apply-contributions.js",
     "scores:analyze": "node scripts/analyze-score-feedback.js",
     "dawn-patrol:generate": "node scripts/dawn-patrol.js",

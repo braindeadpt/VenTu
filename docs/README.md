@@ -9,6 +9,7 @@
 | [NEWS-SYSTEM.md](NEWS-SYSTEM.md) | RSS + Gemini news pipeline |
 | [ALERTS.md](ALERTS.md) | Email alerts setup (E1) |
 | [DIRECTORY.md](DIRECTORY.md) | Schools/shops directory + claim (B2B) |
+| [EVENTS.md](EVENTS.md) | Curated community events (news feed + spot strip) |
 | [GITHUB-SETUP.md](GITHUB-SETUP.md) | Secrets and Actions setup |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | How to contribute (repo root) |
 
