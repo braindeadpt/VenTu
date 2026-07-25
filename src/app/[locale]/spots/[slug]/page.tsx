@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
 import { locales } from '@/lib/i18n'
 import { buildSpotMetadata } from '@/lib/seo'
-import { loadEvents } from '@/lib/events'
+import { loadEvents } from '@/lib/load-events'
 import SpotDetailClient from '@/components/spots/SpotDetailClient'
 import type { Metadata } from 'next'
 

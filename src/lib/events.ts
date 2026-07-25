@@ -147,18 +147,3 @@ export function parseEvents(raw: unknown): VentuEvent[] {
 
   return out;
 }
-
-/** Server/build: read public/data/events.json. Client should fetch `/data/events.json`. */
-export async function loadEvents(): Promise<VentuEvent[]> {
-  try {
-    const fs = await import('fs');
-    const path = await import('path');
-    const filePath = path.join(process.cwd(), 'public', 'data', 'events.json');
-    if (!fs.existsSync(filePath)) return [];
-    const raw = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    return parseEvents(raw);
-  } catch (err) {
-    console.warn('Failed to load events.json:', err);
-    return [];
-  }
-}

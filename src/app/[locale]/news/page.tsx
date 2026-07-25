@@ -1,6 +1,7 @@
 import type { NewsItem } from '@/types'
 import { loadNews } from '@/lib/load-news'
-import { loadEvents, upcomingEvents } from '@/lib/events'
+import { loadEvents } from '@/lib/load-events'
+import { upcomingEvents } from '@/lib/events'
 import NewsArchiveClient from '@/components/news/NewsArchiveClient'
 import { getTranslation } from '@/lib/i18n'
 import type { Metadata } from 'next'

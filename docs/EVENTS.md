@@ -14,7 +14,8 @@ Events appear **inside the news feed** (upcoming first) and as a thin strip on m
 | `public/data/events.json` | JSON **array** of events (hand-curated) |
 | `public/images/events/` | Optional images referenced by `image` |
 | `src/types/events.ts` | TypeScript schema |
-| `src/lib/events.ts` | Parse, Lisbon date rules, upcoming / per-spot helpers |
+| `src/lib/events.ts` | Parse, Lisbon date rules, upcoming / per-spot helpers (browser-safe) |
+| `src/lib/load-events.ts` | Server-only `loadEvents()` from `public/data/events.json` |
 | `scripts/events/validate.ts` | Strict validation before commit |
 
 **Never invent events.** If you do not have a real `startDate` and `location`, do not add the row. Invalid rows are skipped at render time and fail `events:validate`.
