@@ -44,7 +44,9 @@ import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard'
 import SpotStickyBar from '@/components/spots/SpotStickyBar';
 import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
 import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
+import SpotUpcomingEvents from '@/components/events/SpotUpcomingEvents';
 import type { ObservedConditions } from '@/lib/observations';
+import type { VentuEvent } from '@/types/events';
 import { trackSpotView } from '@/components/homepage/SignupNudge';
 import { useAuth } from '@/contexts/AuthProvider';
 
@@ -96,9 +98,11 @@ interface SpotData {
 export default function SpotDetailClient({
   spot,
   locale,
+  events = [],
 }: {
   spot: Spot;
   locale: string;
+  events?: VentuEvent[];
 }) {
   const searchParams = useSearchParams();
   const sportFromUrl = searchParams?.get('sport') as SportType | null;
@@ -643,6 +647,8 @@ export default function SpotDetailClient({
             <div className="card-1 p-8 text-center text-body text-fg-subtle">{td.noForecast}</div>
           )}
         </section>
+
+        <SpotUpcomingEvents spotId={spot.id} locale={locale} events={events} />
 
         <section className="max-w-6xl mx-auto px-4 py-4 space-y-4">
           <h2 className="text-h2 text-fg">{td.logistics}</h2>

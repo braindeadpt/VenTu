@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
 import { locales } from '@/lib/i18n'
 import { buildSpotMetadata } from '@/lib/seo'
+import { loadEvents } from '@/lib/events'
 import SpotDetailClient from '@/components/spots/SpotDetailClient'
 import type { Metadata } from 'next'
 
@@ -37,9 +38,11 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
     notFound()
   }
 
+  const events = await loadEvents()
+
   return (
     <Suspense fallback={null}>
-      <SpotDetailClient spot={spot} locale={locale} />
+      <SpotDetailClient spot={spot} locale={locale} events={events} />
     </Suspense>
   )
 }
