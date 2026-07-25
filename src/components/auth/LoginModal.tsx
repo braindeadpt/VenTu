@@ -62,7 +62,7 @@ export default function LoginModal({ open, reason, locale, onClose, onSignIn }: 
 
   return (
     <div
-      className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-4 bg-bg-base/70 backdrop-blur-sm"
+      className="fixed inset-0 z-[1400] flex items-end sm:items-center justify-center p-4 bg-bg-base/70 backdrop-blur-sm"
       role="presentation"
       onClick={onClose}
     >

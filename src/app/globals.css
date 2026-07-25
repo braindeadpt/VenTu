@@ -507,6 +507,13 @@ html:has([data-embed-widget]) body {
 .leaflet-container {
   background: rgb(var(--bg-base));
   font-family: inherit;
+  /*
+   * Trap Leaflet pane z-indexes (200–700+) inside the map. Without a local
+   * stacking context those panes compete at the root and paint over the
+   * site header (z-50) — clipping mega menus that extend over the map.
+   */
+  z-index: 0;
+  isolation: isolate;
 }
 
 /* Home hero map teaser: fill parent, page scroll passes through; markers stay clickable */

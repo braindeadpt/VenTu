@@ -247,7 +247,7 @@ export default function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="site-header fixed top-0 left-0 right-0 z-50 bg-bg-base/95 md:bg-bg-base/90 md:backdrop-blur-md border-b border-divider transition-[background,border-color] duration-slow"
+        className="site-header fixed top-0 left-0 right-0 z-[1300] bg-bg-base/95 md:bg-bg-base/90 md:backdrop-blur-md border-b border-divider transition-[background,border-color] duration-slow"
         onKeyDown={handleKeyDown}
       >
         <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
