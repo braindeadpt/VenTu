@@ -219,9 +219,14 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       if (viewport === 'mobile') {
         await openMobileMenu(page);
       }
-      const themeBtn = page.getByRole('banner').getByRole('button', {
-        name: /Alternar para tema|Switch to .* theme/i,
-      });
+      const themeBtn =
+        viewport === 'mobile'
+          ? page.locator('#mobile-nav').getByRole('button', {
+              name: /Alternar para tema|Switch to .* theme/i,
+            })
+          : page.getByRole('banner').getByRole('button', {
+              name: /Alternar para tema|Switch to .* theme/i,
+            });
       await expect(themeBtn).toBeVisible();
 
       const wasOcean = await page.evaluate(() => document.documentElement.classList.contains('theme-ocean'));
@@ -240,14 +245,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/');
 
+      // Desktop + mobile both mount a locale <select>; target the visible one.
       if (viewport === 'mobile') {
         await openMobileMenu(page);
+        await page.locator('#mobile-nav select').selectOption('en');
+      } else {
+        await page.locator('header select').locator('visible=true').selectOption('en');
       }
-      await page
-        .getByRole('banner')
-        .getByLabel(/Escolher idioma|Choose language|Elegir idioma/i)
-        .first()
-        .selectOption('en');
       await expect(page).toHaveURL(/\/en\/?$/);
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();

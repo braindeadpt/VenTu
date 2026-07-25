@@ -3,12 +3,8 @@ import { test, expect } from '@playwright/test';
 test.describe('UI interactions audit', () => {
   test('locale switch PT → EN on homepage', async ({ page }) => {
     await page.goto('/pt/');
-    // Desktop + mobile both render a locale <select>; drive the first in the banner.
-    await page
-      .getByRole('banner')
-      .getByLabel(/Escolher idioma|Choose language|Elegir idioma/i)
-      .first()
-      .selectOption('en');
+    // Desktop + mobile both render a locale <select>; drive the visible one.
+    await page.locator('header select').locator('visible=true').selectOption('en');
     await expect(page).toHaveURL(/\/en\/?$/);
     await expect(page.getByRole('banner')).toContainText('Ven');
   });
