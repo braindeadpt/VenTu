@@ -1,22 +1,38 @@
+/**
+ * Fetch near-real-time tide stations from Instituto Hidrográfico OGC API.
+ *
+ * Collection renamed 2026 (IH): tide_obs_stations_nrt → tide_obs_nrt
+ * Property rename: last_obs/last_data → last_sea_surface_height/last_date_time
+ *
+ * IH outages must NOT brick the Open-Meteo pipeline — on failure we keep the
+ * previous public/data/ih-tides.json (if any) and exit 0.
+ */
+
 const fs = require('fs');
 const path = require('path');
 
 const IH_API = 'https://api-features.hidrografico.pt';
+/** Current collection id (FAQ / OGC). Legacy id kept as fallback probe. */
+const COLLECTIONS = ['tide_obs_nrt', 'tide_obs_stations_nrt'];
+const OUTPUT_PATH = path.join(__dirname, '../public/data/ih-tides.json');
 
 async function fetchJson(url) {
   const response = await fetch(url, {
-    headers: { 'Accept': 'application/geo+json' },
+    headers: { Accept: 'application/geo+json, application/json' },
   });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+  if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
   return response.json();
 }
 
 function haversineDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
-  const a = Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
@@ -30,31 +46,73 @@ function parseSpotsFromFile() {
     spots.push({ id: match[1], lat: parseFloat(match[2]), lon: parseFloat(match[3]) });
   }
   const seen = new Set();
-  return spots.filter(s => { if (seen.has(s.id)) return false; seen.add(s.id); return true; });
+  return spots.filter((s) => {
+    if (seen.has(s.id)) return false;
+    seen.add(s.id);
+    return true;
+  });
+}
+
+/** Normalise IH property names (old + new schema) into our internal shape. */
+function stationFromFeature(feature) {
+  const p = feature.properties || {};
+  const lastObs = p.last_sea_surface_height ?? p.last_obs;
+  const lastData = p.last_date_time ?? p.last_data;
+  if (p.codp == null || lastObs == null || !lastData) return null;
+  return {
+    codp: p.codp,
+    title: p.title,
+    category: p.category,
+    lat: p.lat,
+    lon: p.lon,
+    lastObs,
+    lastData,
+  };
+}
+
+async function fetchStationsCollection(collectionId) {
+  const url = `${IH_API}/collections/${collectionId}/items?limit=100&f=json`;
+  console.log(`  Trying collection ${collectionId}…`);
+  const stationsData = await fetchJson(url);
+  if (!Array.isArray(stationsData.features)) {
+    throw new Error(`No features in ${collectionId}`);
+  }
+  return stationsData;
 }
 
 async function fetchIHTides() {
   console.log('🌊 IH OGC API - Fetching tide station data...\n');
 
-  const stationsData = await fetchJson(`${IH_API}/collections/tide_obs_stations_nrt/items?limit=50&f=json`);
+  let stationsData = null;
+  let usedCollection = null;
+  const errors = [];
 
-  const stations = {};
-  for (const feature of stationsData.features) {
-    const p = feature.properties;
-    if (p.last_obs != null && p.last_data) {
-      stations[p.codp] = {
-        codp: p.codp,
-        title: p.title,
-        category: p.category,
-        lat: p.lat,
-        lon: p.lon,
-        lastObs: p.last_obs,
-        lastData: p.last_data,
-      };
+  for (const id of COLLECTIONS) {
+    try {
+      stationsData = await fetchStationsCollection(id);
+      usedCollection = id;
+      break;
+    } catch (err) {
+      errors.push(`${id}: ${err.message}`);
     }
   }
 
+  if (!stationsData) {
+    throw new Error(`All IH tide collections failed — ${errors.join('; ')}`);
+  }
+
+  console.log(`📦 Using collection: ${usedCollection}\n`);
+
+  const stations = {};
+  for (const feature of stationsData.features) {
+    const station = stationFromFeature(feature);
+    if (station) stations[station.codp] = station;
+  }
+
   console.log(`📍 Found ${Object.keys(stations).length} active tide stations\n`);
+  if (Object.keys(stations).length === 0) {
+    throw new Error('IH returned features but none had usable obs fields');
+  }
 
   const spots = parseSpotsFromFile();
 
@@ -71,7 +129,7 @@ async function fetchIHTides() {
     }
     if (nearestCodp) {
       spotMapping[spot.id] = {
-        codp: parseInt(nearestCodp),
+        codp: parseInt(nearestCodp, 10),
         stationTitle: stations[nearestCodp].title,
         distanceKm: Math.round(nearestDist * 10) / 10,
       };
@@ -80,18 +138,28 @@ async function fetchIHTides() {
 
   console.log(`🗺️  Mapped ${Object.keys(spotMapping).length} spots to nearest stations\n`);
 
-  const outputDir = path.join(__dirname, '../public/data');
+  const outputDir = path.dirname(OUTPUT_PATH);
   fs.mkdirSync(outputDir, { recursive: true });
 
-  const output = { stations, spotMapping, fetchedAt: new Date().toISOString() };
-  fs.writeFileSync(path.join(outputDir, 'ih-tides.json'), JSON.stringify(output, null, 2));
+  const output = {
+    stations,
+    spotMapping,
+    fetchedAt: new Date().toISOString(),
+    sourceCollection: usedCollection,
+  };
+  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
 
   console.log(`✅ IH tide data saved to public/data/ih-tides.json`);
   console.log(`📊 Stations: ${Object.keys(stations).length}`);
   console.log(`📊 Mapped spots: ${Object.keys(spotMapping).length}`);
 }
 
-fetchIHTides().catch(err => {
-  console.error('❌ Fatal error:', err);
-  process.exit(1);
+fetchIHTides().catch((err) => {
+  console.error('❌ IH tide fetch failed:', err.message || err);
+  if (fs.existsSync(OUTPUT_PATH)) {
+    console.warn('⚠️ Keeping previous public/data/ih-tides.json — Open-Meteo pipeline continues.');
+    process.exit(0);
+  }
+  console.warn('⚠️ No previous ih-tides.json — continuing without IH observed tides.');
+  process.exit(0);
 });
