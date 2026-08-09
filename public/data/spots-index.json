@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-09T07:51:37.509Z",
+  "generatedAt": "2026-08-09T08:35:44.486Z",
   "spots": [
     {
       "id": "almoxarife",
@@ -194,212 +194,6 @@
       "bestScore": 100,
       "bestWindowToday": null,
       "bestWindowsBySport": {}
-    },
-    {
-      "id": "faja-cubres",
-      "slug": "faja-cubres",
-      "name": "Fajã dos Cubres (São Jorge)",
-      "nameEn": "Faja dos Cubres (Sao Jorge)",
-      "region": "São Jorge",
-      "regionEn": "Sao Jorge",
-      "lat": 38.633,
-      "lon": -27.967,
-      "coastOrientation": 270,
-      "type": "surf",
-      "difficulty": "intermediate",
-      "compatibleSports": [
-        "surf",
-        "bodyboard"
-      ],
-      "description": "Fajã (plataforma lávica) com point break esquerdo. Uma das ondas mais bonitas dos Açores. Lagoa interior de água salgada. Cenário único.",
-      "descriptionEn": "Lava platform with left-hand point break. One of the most beautiful waves in the Azores. Interior saltwater lagoon. Unique scenery.",
-      "facilities": [
-        "Estacionamento",
-        "Restaurante",
-        "WC"
-      ],
-      "hazards": [
-        "Acesso por estrada íngreme",
-        "Rochas"
-      ],
-      "blueFlag": false,
-      "accessibleBeach": false,
-      "conditions": {
-        "waveHeight": 0.9,
-        "wavePeriod": 6.15,
-        "waveDirection": 153,
-        "windSpeed": 9.260021400938347,
-        "windDirection": 180,
-        "windGust": 16.6,
-        "waterTemp": 22.3,
-        "swellHeight": 0.5,
-        "swellPeriod": 6.8,
-        "swellDirection": 29,
-        "secondarySwellHeight": 0.22,
-        "secondarySwellPeriod": 11.95,
-        "secondarySwellDirection": 172,
-        "windWaveHeight": 0.6,
-        "wavePowerKw": 0.85,
-        "observed": {
-          "windSpeedKt": 18,
-          "windDirDeg": 180,
-          "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 17.7,
-          "stationName": "São Jorge / Pico do Areeiro (DROTRH)",
-          "distanceKm": 8.1,
-          "observedAt": "2026-08-09T05:00:00.000Z",
-          "source": "ipma"
-        },
-        "updatedAt": "2026-08-09T07:51:31.226Z",
-        "confidence": "baixa",
-        "confidenceDetail": {
-          "waveSpread": 0.28,
-          "windSpread": 6.22,
-          "waveSpreadPct": 0.239,
-          "windSpreadPct": 1.014,
-          "combinedSpreadPct": 0.626,
-          "degraded": false
-        },
-        "dailyConfidence": [
-          {
-            "date": "2026-08-09",
-            "confidence": "baixa",
-            "waveSpread": 0.48,
-            "windSpread": 3.99,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-10",
-            "confidence": "baixa",
-            "waveSpread": 0.72,
-            "windSpread": 1.83,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-11",
-            "confidence": "baixa",
-            "waveSpread": 0.7,
-            "windSpread": 2,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-12",
-            "confidence": "média",
-            "waveSpread": 0.7,
-            "windSpread": 0.15,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-13",
-            "confidence": "baixa",
-            "waveSpread": 0.65,
-            "windSpread": 1.22,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-14",
-            "confidence": "baixa",
-            "waveSpread": 0.53,
-            "windSpread": 1.94,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-15",
-            "confidence": "baixa",
-            "waveSpread": 0.48,
-            "windSpread": 2.06,
-            "degraded": false
-          }
-        ]
-      },
-      "allScores": {
-        "surf": {
-          "score": 38,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
-          "factors": [
-            "0.9m ondas"
-          ],
-          "primaryFactor": "0.9m @ 6s"
-        },
-        "kitesurf": {
-          "score": 100,
-          "rating": "Épico!",
-          "ratingEn": "Epic!",
-          "factors": [
-            "18kt vento",
-            "Ondas pequenas",
-            "Vento side-onshore"
-          ],
-          "primaryFactor": "18kt"
-        },
-        "windsurf": {
-          "score": 77,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "18kt vento",
-            "Vento side-onshore"
-          ],
-          "primaryFactor": "18kt"
-        },
-        "wakeboard": {
-          "score": 0,
-          "rating": "N/A",
-          "ratingEn": "N/A",
-          "factors": [
-            "Sem infraestrutura wake"
-          ],
-          "warning": "Este spot não tem infraestrutura para wakeboard",
-          "primaryFactor": "N/A"
-        },
-        "bodyboard": {
-          "score": 49,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "0.9m ondas",
-            "6s período"
-          ],
-          "primaryFactor": "0.9m"
-        },
-        "sup": {
-          "score": 65,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "Ondas pequenas",
-            "22°C água"
-          ],
-          "primaryFactor": "0.9m"
-        },
-        "foil": {
-          "score": 78,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "18kt vento ideal",
-            "Vento side-onshore"
-          ],
-          "primaryFactor": "Vento ideal"
-        }
-      },
-      "bestScore": 100,
-      "bestWindowToday": {
-        "start": 6,
-        "end": 7,
-        "score": 54,
-        "sport": "surf"
-      },
-      "bestWindowsBySport": {
-        "surf": {
-          "start": 6,
-          "end": 7,
-          "score": 54
-        }
-      }
     },
     {
       "id": "vila-real-santo-antonio",
@@ -4466,6 +4260,205 @@
       "bestWindowsBySport": {}
     },
     {
+      "id": "seixal-madeira",
+      "slug": "seixal-madeira",
+      "name": "Seixal",
+      "nameEn": "Seixal",
+      "region": "Madeira",
+      "regionEn": "Madeira",
+      "lat": 32.813,
+      "lon": -17.107,
+      "coastOrientation": 270,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Praia de calhau rolado entre montanhas verdes. Ondas consistentes na costa norte. Poços naturais de água cristalina. Cenário deslumbrante.",
+      "descriptionEn": "Pebble beach between green mountains. Consistent waves on the north coast. Natural crystal clear water pools. Stunning scenery.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurante",
+        "WC"
+      ],
+      "hazards": [
+        "Mar agitado",
+        "Calhau rolado"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": {
+        "waveHeight": 0.82,
+        "wavePeriod": 7.55,
+        "waveDirection": 332,
+        "windSpeed": 5.144456333854638,
+        "windDirection": 10,
+        "windGust": 5.658901967240102,
+        "waterTemp": 24.7,
+        "swellHeight": 0.72,
+        "swellPeriod": 5.5,
+        "swellDirection": 333,
+        "secondarySwellHeight": 0.26,
+        "secondarySwellPeriod": 11.15,
+        "secondarySwellDirection": 201,
+        "windWaveHeight": 0.12,
+        "wavePowerKw": 1.4256,
+        "observed": {
+          "windSpeedKt": 10,
+          "windDirDeg": 10,
+          "windDirMissing": false,
+          "windCardinal": "N",
+          "windCardinalEn": "N",
+          "tempC": 24,
+          "stationName": "Madeira (METAR)",
+          "distanceKm": 33.7,
+          "observedAt": "2026-08-09T08:30:00.000Z",
+          "source": "metar",
+          "metarIcao": "LPMA"
+        },
+        "updatedAt": "2026-08-09T07:51:28.365Z",
+        "confidence": "baixa",
+        "confidenceDetail": {
+          "waveSpread": 0.32,
+          "windSpread": 1.92,
+          "waveSpreadPct": 0.375,
+          "windSpreadPct": 1.444,
+          "combinedSpreadPct": 0.909,
+          "degraded": false
+        },
+        "dailyConfidence": [
+          {
+            "date": "2026-08-09",
+            "confidence": "baixa",
+            "waveSpread": 0.3,
+            "windSpread": 1.67,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-10",
+            "confidence": "baixa",
+            "waveSpread": 0.28,
+            "windSpread": 1.49,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-11",
+            "confidence": "baixa",
+            "waveSpread": 0.28,
+            "windSpread": 1.33,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-12",
+            "confidence": "baixa",
+            "waveSpread": 0.24,
+            "windSpread": 1.4,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-13",
+            "confidence": "baixa",
+            "waveSpread": 0.43,
+            "windSpread": 2.38,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-14",
+            "confidence": "baixa",
+            "waveSpread": 0.59,
+            "windSpread": 2.18,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-15",
+            "confidence": "baixa",
+            "waveSpread": 0.68,
+            "windSpread": 1.23,
+            "degraded": false
+          }
+        ]
+      },
+      "allScores": {
+        "surf": {
+          "score": 52,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "0.8m ondas",
+            "Vento offshore"
+          ],
+          "primaryFactor": "0.8m @ 8s"
+        },
+        "kitesurf": {
+          "score": 30,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "Vento side-offshore",
+            "Vento insuficiente"
+          ],
+          "warning": "Vento fraco — mínimo ~15kt para kite",
+          "primaryFactor": "10kt"
+        },
+        "windsurf": {
+          "score": 27,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "Vento side-offshore",
+            "Vento insuficiente"
+          ],
+          "warning": "Mínimo ~15kt para windsurf",
+          "primaryFactor": "10kt"
+        },
+        "wakeboard": {
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
+          "factors": [
+            "Sem infraestrutura wake"
+          ],
+          "warning": "Este spot não tem infraestrutura para wakeboard",
+          "primaryFactor": "N/A"
+        },
+        "bodyboard": {
+          "score": 56,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "0.8m ondas",
+            "8s período"
+          ],
+          "primaryFactor": "0.8m"
+        },
+        "sup": {
+          "score": 81,
+          "rating": "Épico!",
+          "ratingEn": "Epic!",
+          "factors": [
+            "Ondas pequenas",
+            "Vento fraco",
+            "25°C água"
+          ],
+          "primaryFactor": "0.8m"
+        },
+        "foil": {
+          "score": 83,
+          "rating": "Épico!",
+          "ratingEn": "Epic!",
+          "factors": [
+            "10kt vento ideal",
+            "Vento side-offshore"
+          ],
+          "primaryFactor": "Vento ideal"
+        }
+      },
+      "bestScore": 83,
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
+    },
+    {
       "id": "porto-da-cruz",
       "slug": "porto-da-cruz",
       "name": "Porto da Cruz",
@@ -4661,6 +4654,202 @@
       "bestScore": 82,
       "bestWindowToday": null,
       "bestWindowsBySport": {}
+    },
+    {
+      "id": "faja-cubres",
+      "slug": "faja-cubres",
+      "name": "Fajã dos Cubres (São Jorge)",
+      "nameEn": "Faja dos Cubres (Sao Jorge)",
+      "region": "São Jorge",
+      "regionEn": "Sao Jorge",
+      "lat": 38.633,
+      "lon": -27.967,
+      "coastOrientation": 270,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Fajã (plataforma lávica) com point break esquerdo. Uma das ondas mais bonitas dos Açores. Lagoa interior de água salgada. Cenário único.",
+      "descriptionEn": "Lava platform with left-hand point break. One of the most beautiful waves in the Azores. Interior saltwater lagoon. Unique scenery.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurante",
+        "WC"
+      ],
+      "hazards": [
+        "Acesso por estrada íngreme",
+        "Rochas"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": {
+        "waveHeight": 0.9,
+        "wavePeriod": 6.15,
+        "waveDirection": 153,
+        "windSpeed": 6.58,
+        "windDirection": 174,
+        "windGust": 16.6,
+        "waterTemp": 22.3,
+        "swellHeight": 0.5,
+        "swellPeriod": 6.8,
+        "swellDirection": 29,
+        "secondarySwellHeight": 0.22,
+        "secondarySwellPeriod": 11.95,
+        "secondarySwellDirection": 172,
+        "windWaveHeight": 0.6,
+        "wavePowerKw": 0.85,
+        "updatedAt": "2026-08-09T07:51:31.226Z",
+        "confidence": "baixa",
+        "confidenceDetail": {
+          "waveSpread": 0.28,
+          "windSpread": 6.22,
+          "waveSpreadPct": 0.239,
+          "windSpreadPct": 1.014,
+          "combinedSpreadPct": 0.626,
+          "degraded": false
+        },
+        "dailyConfidence": [
+          {
+            "date": "2026-08-09",
+            "confidence": "baixa",
+            "waveSpread": 0.48,
+            "windSpread": 3.99,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-10",
+            "confidence": "baixa",
+            "waveSpread": 0.72,
+            "windSpread": 1.83,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-11",
+            "confidence": "baixa",
+            "waveSpread": 0.7,
+            "windSpread": 2,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-12",
+            "confidence": "média",
+            "waveSpread": 0.7,
+            "windSpread": 0.15,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-13",
+            "confidence": "baixa",
+            "waveSpread": 0.65,
+            "windSpread": 1.22,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-14",
+            "confidence": "baixa",
+            "waveSpread": 0.53,
+            "windSpread": 1.94,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-15",
+            "confidence": "baixa",
+            "waveSpread": 0.48,
+            "windSpread": 2.06,
+            "degraded": false
+          }
+        ]
+      },
+      "allScores": {
+        "surf": {
+          "score": 47,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "0.9m ondas",
+            "Vento offshore"
+          ],
+          "primaryFactor": "0.9m @ 6s"
+        },
+        "kitesurf": {
+          "score": 26,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "13kt vento fraco"
+          ],
+          "warning": "Vento fraco — mínimo ~15kt para kite",
+          "primaryFactor": "13kt"
+        },
+        "windsurf": {
+          "score": 33,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "Vento side-offshore",
+            "Vento insuficiente"
+          ],
+          "warning": "Mínimo ~15kt para windsurf",
+          "primaryFactor": "13kt"
+        },
+        "wakeboard": {
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
+          "factors": [
+            "Sem infraestrutura wake"
+          ],
+          "warning": "Este spot não tem infraestrutura para wakeboard",
+          "primaryFactor": "N/A"
+        },
+        "bodyboard": {
+          "score": 51,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "0.9m ondas",
+            "6s período"
+          ],
+          "primaryFactor": "0.9m"
+        },
+        "sup": {
+          "score": 80,
+          "rating": "Épico!",
+          "ratingEn": "Epic!",
+          "factors": [
+            "Ondas pequenas",
+            "Vento fraco",
+            "22°C água"
+          ],
+          "primaryFactor": "0.9m"
+        },
+        "foil": {
+          "score": 82,
+          "rating": "Épico!",
+          "ratingEn": "Epic!",
+          "factors": [
+            "13kt vento ideal",
+            "Vento side-offshore"
+          ],
+          "primaryFactor": "Vento ideal"
+        }
+      },
+      "bestScore": 82,
+      "bestWindowToday": {
+        "start": 6,
+        "end": 8,
+        "score": 56,
+        "sport": "surf"
+      },
+      "bestWindowsBySport": {
+        "surf": {
+          "start": 6,
+          "end": 8,
+          "score": 56
+        }
+      }
     },
     {
       "id": "sao-vicente-madeira",
@@ -6032,203 +6221,6 @@
       "bestWindowsBySport": {}
     },
     {
-      "id": "seixal-madeira",
-      "slug": "seixal-madeira",
-      "name": "Seixal",
-      "nameEn": "Seixal",
-      "region": "Madeira",
-      "regionEn": "Madeira",
-      "lat": 32.813,
-      "lon": -17.107,
-      "coastOrientation": 270,
-      "type": "surf",
-      "difficulty": "intermediate",
-      "compatibleSports": [
-        "surf",
-        "bodyboard"
-      ],
-      "description": "Praia de calhau rolado entre montanhas verdes. Ondas consistentes na costa norte. Poços naturais de água cristalina. Cenário deslumbrante.",
-      "descriptionEn": "Pebble beach between green mountains. Consistent waves on the north coast. Natural crystal clear water pools. Stunning scenery.",
-      "facilities": [
-        "Estacionamento",
-        "Restaurante",
-        "WC"
-      ],
-      "hazards": [
-        "Mar agitado",
-        "Calhau rolado"
-      ],
-      "blueFlag": false,
-      "accessibleBeach": false,
-      "conditions": {
-        "waveHeight": 0.82,
-        "wavePeriod": 7.55,
-        "waveDirection": 332,
-        "windSpeed": 3.6011194336982464,
-        "windDirection": 20,
-        "windGust": 5.3,
-        "waterTemp": 24.7,
-        "swellHeight": 0.72,
-        "swellPeriod": 5.5,
-        "swellDirection": 333,
-        "secondarySwellHeight": 0.26,
-        "secondarySwellPeriod": 11.15,
-        "secondarySwellDirection": 201,
-        "windWaveHeight": 0.12,
-        "wavePowerKw": 1.4256,
-        "observed": {
-          "windSpeedKt": 7,
-          "windDirDeg": 20,
-          "windDirMissing": false,
-          "windCardinal": "N",
-          "windCardinalEn": "N",
-          "tempC": 24,
-          "stationName": "Madeira (METAR)",
-          "distanceKm": 33.7,
-          "observedAt": "2026-08-09T07:30:00.000Z",
-          "source": "metar",
-          "metarIcao": "LPMA"
-        },
-        "updatedAt": "2026-08-09T07:51:28.365Z",
-        "confidence": "baixa",
-        "confidenceDetail": {
-          "waveSpread": 0.32,
-          "windSpread": 1.92,
-          "waveSpreadPct": 0.375,
-          "windSpreadPct": 1.444,
-          "combinedSpreadPct": 0.909,
-          "degraded": false
-        },
-        "dailyConfidence": [
-          {
-            "date": "2026-08-09",
-            "confidence": "baixa",
-            "waveSpread": 0.3,
-            "windSpread": 1.67,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-10",
-            "confidence": "baixa",
-            "waveSpread": 0.28,
-            "windSpread": 1.49,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-11",
-            "confidence": "baixa",
-            "waveSpread": 0.28,
-            "windSpread": 1.33,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-12",
-            "confidence": "baixa",
-            "waveSpread": 0.24,
-            "windSpread": 1.4,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-13",
-            "confidence": "baixa",
-            "waveSpread": 0.43,
-            "windSpread": 2.38,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-14",
-            "confidence": "baixa",
-            "waveSpread": 0.59,
-            "windSpread": 2.18,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-15",
-            "confidence": "baixa",
-            "waveSpread": 0.68,
-            "windSpread": 1.23,
-            "degraded": false
-          }
-        ]
-      },
-      "allScores": {
-        "surf": {
-          "score": 54,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "0.8m ondas",
-            "Vento offshore"
-          ],
-          "primaryFactor": "0.8m @ 8s"
-        },
-        "kitesurf": {
-          "score": 17,
-          "rating": "Mau",
-          "ratingEn": "Bad",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "7kt"
-        },
-        "windsurf": {
-          "score": 15,
-          "rating": "Mau",
-          "ratingEn": "Bad",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "7kt"
-        },
-        "wakeboard": {
-          "score": 0,
-          "rating": "N/A",
-          "ratingEn": "N/A",
-          "factors": [
-            "Sem infraestrutura wake"
-          ],
-          "warning": "Este spot não tem infraestrutura para wakeboard",
-          "primaryFactor": "N/A"
-        },
-        "bodyboard": {
-          "score": 57,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "0.8m ondas",
-            "8s período"
-          ],
-          "primaryFactor": "0.8m"
-        },
-        "sup": {
-          "score": 81,
-          "rating": "Épico!",
-          "ratingEn": "Epic!",
-          "factors": [
-            "Ondas pequenas",
-            "Vento fraco",
-            "25°C água"
-          ],
-          "primaryFactor": "0.8m"
-        },
-        "foil": {
-          "score": 58,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "Vento fraco",
-            "Vento side-offshore"
-          ],
-          "primaryFactor": "7kt"
-        }
-      },
-      "bestScore": 81,
-      "bestWindowToday": null,
-      "bestWindowsBySport": {}
-    },
-    {
       "id": "ponta-pargo",
       "slug": "ponta-pargo",
       "name": "Ponta do Pargo",
@@ -6420,14 +6412,14 @@
       "bestScore": 81,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -7590,15 +7582,15 @@
       "bestScore": 80,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -8400,7 +8392,7 @@
         "wavePeriod": 7.05,
         "waveDirection": 278,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 1.5,
         "waterTemp": 20.4,
         "swellHeight": 0.8,
@@ -8413,14 +8405,14 @@
         "wavePowerKw": 1.6960000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 4.1,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:33.236Z",
@@ -8548,11 +8540,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -8598,7 +8590,7 @@
         "wavePeriod": 7.05,
         "waveDirection": 278,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 1.5,
         "waterTemp": 20.4,
         "swellHeight": 0.8,
@@ -8611,14 +8603,14 @@
         "wavePowerKw": 1.6960000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 2.4,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:33.598Z",
@@ -8746,11 +8738,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -8793,7 +8785,7 @@
         "wavePeriod": 7.15,
         "waveDirection": 280,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 1.5,
         "waterTemp": 20.4,
         "swellHeight": 0.84,
@@ -8806,14 +8798,14 @@
         "wavePowerKw": 1.8698399999999997,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 2.3,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:33.959Z",
@@ -8941,11 +8933,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -8989,7 +8981,7 @@
         "wavePeriod": 7,
         "waveDirection": 277,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 2.2,
         "waterTemp": 20.3,
         "swellHeight": 0.8,
@@ -9002,14 +8994,14 @@
         "wavePowerKw": 1.7120000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 3,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:34.321Z",
@@ -9137,11 +9129,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -9184,7 +9176,7 @@
         "wavePeriod": 7,
         "waveDirection": 277,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 2.2,
         "waterTemp": 20.3,
         "swellHeight": 0.8,
@@ -9197,14 +9189,14 @@
         "wavePowerKw": 1.7120000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 4.4,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:35.043Z",
@@ -9332,11 +9324,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -9378,7 +9370,7 @@
         "wavePeriod": 7,
         "waveDirection": 277,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 2.2,
         "waterTemp": 20.3,
         "swellHeight": 0.8,
@@ -9391,14 +9383,14 @@
         "wavePowerKw": 1.7120000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 4.7,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:35.404Z",
@@ -9526,11 +9518,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -9573,7 +9565,7 @@
         "wavePeriod": 7,
         "waveDirection": 277,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 2.2,
         "waterTemp": 20.3,
         "swellHeight": 0.8,
@@ -9586,14 +9578,14 @@
         "wavePowerKw": 1.7120000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 5.2,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:35.764Z",
@@ -9721,11 +9713,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -9768,7 +9760,7 @@
         "wavePeriod": 7.1,
         "waveDirection": 280,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 2.3,
         "waterTemp": 20.5,
         "swellHeight": 0.8,
@@ -9781,14 +9773,14 @@
         "wavePowerKw": 1.7120000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 11.9,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:50:36.128Z",
@@ -9916,11 +9908,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -14424,15 +14416,15 @@
       },
       "bestScore": 79,
       "bestWindowToday": {
-        "start": 23,
-        "end": 2,
+        "start": 18,
+        "end": 21,
         "score": 64,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 23,
-          "end": 2,
+          "start": 18,
+          "end": 21,
           "score": 64
         }
       }
@@ -14678,8 +14670,8 @@
         "waveHeight": 0.96,
         "wavePeriod": 8.95,
         "waveDirection": 25,
-        "windSpeed": 1.0288912667709276,
-        "windDirection": 270,
+        "windSpeed": 4.630010700469174,
+        "windDirection": 180,
         "windGust": 6.6,
         "waterTemp": 23.2,
         "swellHeight": 0.78,
@@ -14691,15 +14683,15 @@
         "windWaveHeight": 0.08,
         "wavePowerKw": 2.06856,
         "observed": {
-          "windSpeedKt": 2,
-          "windDirDeg": 270,
+          "windSpeedKt": 9,
+          "windDirDeg": 180,
           "windDirMissing": false,
-          "windCardinal": "W",
-          "windCardinalEn": "W",
-          "tempC": 20.2,
-          "stationName": "Santa Maria / Praia Formosa (DROTRH)",
-          "distanceKm": 1.6,
-          "observedAt": "2026-08-09T05:00:00.000Z",
+          "windCardinal": "S",
+          "windCardinalEn": "S",
+          "tempC": 20.8,
+          "stationName": "Santa Maria (Aeródromo)",
+          "distanceKm": 6,
+          "observedAt": "2026-08-09T06:00:00.000Z",
           "source": "ipma"
         },
         "updatedAt": "2026-08-09T07:51:17.959Z",
@@ -14766,7 +14758,7 @@
       },
       "allScores": {
         "surf": {
-          "score": 52,
+          "score": 50,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -14777,24 +14769,25 @@
           "primaryFactor": "1.0m @ 9s"
         },
         "kitesurf": {
-          "score": 5,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 25,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
           "factors": [
+            "Vento side-onshore",
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "2kt"
+          "primaryFactor": "9kt"
         },
         "windsurf": {
-          "score": 4,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 20,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "2kt"
+          "primaryFactor": "9kt"
         },
         "wakeboard": {
           "score": 0,
@@ -14807,7 +14800,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 66,
+          "score": 63,
           "rating": "Bom",
           "ratingEn": "Good",
           "factors": [
@@ -14828,26 +14821,27 @@
           "primaryFactor": "1.0m"
         },
         "foil": {
-          "score": 30,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
+          "score": 53,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
           "factors": [
-            "Vento onshore"
+            "Vento fraco",
+            "Vento side-onshore"
           ],
-          "primaryFactor": "2kt"
+          "primaryFactor": "9kt"
         }
       },
       "bestScore": 79,
       "bestWindowToday": {
         "start": 11,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 11,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -15082,7 +15076,7 @@
         "wavePeriod": 7.2,
         "waveDirection": 275,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 1.4,
         "waterTemp": 20.2,
         "swellHeight": 0.84,
@@ -15095,14 +15089,14 @@
         "wavePowerKw": 1.8698399999999997,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 15.6,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:51:21.547Z",
@@ -15230,11 +15224,11 @@
           "primaryFactor": "1.0m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -15631,15 +15625,15 @@
       },
       "bestScore": 79,
       "bestWindowToday": {
-        "start": 23,
-        "end": 2,
+        "start": 18,
+        "end": 21,
         "score": 64,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 23,
-          "end": 2,
+          "start": 18,
+          "end": 21,
           "score": 64
         }
       }
@@ -15839,15 +15833,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -15884,8 +15878,8 @@
         "waveHeight": 0.96,
         "wavePeriod": 8.95,
         "waveDirection": 25,
-        "windSpeed": 1.0288912667709276,
-        "windDirection": 270,
+        "windSpeed": 4.630010700469174,
+        "windDirection": 180,
         "windGust": 6,
         "waterTemp": 23.2,
         "swellHeight": 0.8,
@@ -15897,15 +15891,15 @@
         "windWaveHeight": 0.08,
         "wavePowerKw": 2.1600000000000006,
         "observed": {
-          "windSpeedKt": 2,
-          "windDirDeg": 270,
+          "windSpeedKt": 9,
+          "windDirDeg": 180,
           "windDirMissing": false,
-          "windCardinal": "W",
-          "windCardinalEn": "W",
-          "tempC": 20.2,
-          "stationName": "Santa Maria / Praia Formosa (DROTRH)",
-          "distanceKm": 4.5,
-          "observedAt": "2026-08-09T05:00:00.000Z",
+          "windCardinal": "S",
+          "windCardinalEn": "S",
+          "tempC": 20.8,
+          "stationName": "Santa Maria (Aeródromo)",
+          "distanceKm": 9.3,
+          "observedAt": "2026-08-09T06:00:00.000Z",
           "source": "ipma"
         },
         "updatedAt": "2026-08-09T07:51:30.152Z",
@@ -15972,7 +15966,7 @@
       },
       "allScores": {
         "surf": {
-          "score": 52,
+          "score": 50,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -15983,24 +15977,25 @@
           "primaryFactor": "1.0m @ 9s"
         },
         "kitesurf": {
-          "score": 5,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 23,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
           "factors": [
+            "Vento onshore",
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "2kt"
+          "primaryFactor": "9kt"
         },
         "windsurf": {
-          "score": 4,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 20,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "2kt"
+          "primaryFactor": "9kt"
         },
         "wakeboard": {
           "score": 0,
@@ -16013,7 +16008,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 66,
+          "score": 63,
           "rating": "Bom",
           "ratingEn": "Good",
           "factors": [
@@ -16034,13 +16029,14 @@
           "primaryFactor": "1.0m"
         },
         "foil": {
-          "score": 33,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
+          "score": 50,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
           "factors": [
-            "Vento side-onshore"
+            "Vento fraco",
+            "Vento onshore"
           ],
-          "primaryFactor": "2kt"
+          "primaryFactor": "9kt"
         }
       },
       "bestScore": 79,
@@ -16082,9 +16078,9 @@
         "waveHeight": 0.96,
         "wavePeriod": 7.2,
         "waveDirection": 275,
-        "windSpeed": 1.0288912667709276,
-        "windDirection": 63,
-        "windGust": 1.1317803934480204,
+        "windSpeed": 1.5433369001563912,
+        "windDirection": 300,
+        "windGust": 1.6976705901720306,
         "waterTemp": 20.2,
         "swellHeight": 0.84,
         "swellPeriod": 5.3,
@@ -16095,15 +16091,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 1.8698399999999997,
         "observed": {
-          "windSpeedKt": 2,
-          "windDirDeg": 0,
-          "windDirMissing": true,
-          "windCardinal": "—",
-          "windCardinalEn": "—",
+          "windSpeedKt": 3,
+          "windDirDeg": 300,
+          "windDirMissing": false,
+          "windCardinal": "NW",
+          "windCardinalEn": "NW",
           "tempC": 21,
           "stationName": "Porto (METAR)",
           "distanceKm": 9.5,
-          "observedAt": "2026-08-09T07:30:00.000Z",
+          "observedAt": "2026-08-09T08:30:00.000Z",
           "source": "metar",
           "metarIcao": "LPPR"
         },
@@ -16171,34 +16167,34 @@
       },
       "allScores": {
         "surf": {
-          "score": 55,
+          "score": 45,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "1.0m ondas",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "1.0m @ 7s"
         },
         "kitesurf": {
-          "score": 5,
+          "score": 7,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "2kt"
+          "primaryFactor": "3kt"
         },
         "windsurf": {
-          "score": 4,
+          "score": 7,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "2kt"
+          "primaryFactor": "3kt"
         },
         "wakeboard": {
           "score": 0,
@@ -16232,13 +16228,13 @@
           "primaryFactor": "1.0m"
         },
         "foil": {
-          "score": 30,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "2kt"
+          "primaryFactor": "3kt"
         }
       },
       "bestScore": 79,
@@ -16281,7 +16277,7 @@
         "wavePeriod": 7.05,
         "waveDirection": 278,
         "windSpeed": 0,
-        "windDirection": 312,
+        "windDirection": 288,
         "windGust": 1.5,
         "waterTemp": 20.4,
         "swellHeight": 0.8,
@@ -16294,14 +16290,14 @@
         "wavePowerKw": 1.6960000000000002,
         "observed": {
           "windSpeedKt": 0,
-          "windDirDeg": 312,
+          "windDirDeg": 288,
           "windDirMissing": false,
-          "windCardinal": "NW",
-          "windCardinalEn": "NW",
-          "tempC": 20.7,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 21.1,
           "stationName": "TAP Teste 3",
           "distanceKm": 6.3,
-          "observedAt": "2026-08-09T07:51:36.000Z",
+          "observedAt": "2026-08-09T08:35:41.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-09T07:51:32.660Z",
@@ -16429,11 +16425,11 @@
           "primaryFactor": "0.9m"
         },
         "foil": {
-          "score": 32,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento onshore"
           ],
           "primaryFactor": "0kt"
         }
@@ -24971,16 +24967,16 @@
       },
       "bestScore": 78,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
-        "score": 64,
+        "start": 18,
+        "end": 8,
+        "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
-          "score": 64
+          "start": 18,
+          "end": 8,
+          "score": 73
         }
       }
     },
@@ -25179,15 +25175,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -25387,14 +25383,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 22,
-        "end": 7,
+        "end": 8,
         "score": 71,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 22,
-          "end": 7,
+          "end": 8,
           "score": 71
         }
       }
@@ -25593,14 +25589,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 22,
-        "end": 7,
+        "end": 8,
         "score": 71,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 22,
-          "end": 7,
+          "end": 8,
           "score": 71
         }
       }
@@ -26385,15 +26381,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -32072,7 +32068,7 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 68,
         "sport": "surf"
       },
@@ -32084,7 +32080,7 @@
         },
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 68
         }
       }
@@ -32856,15 +32852,223 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 68,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 68
+        }
+      }
+    },
+    {
+      "id": "praia-vitoria",
+      "slug": "praia-vitoria",
+      "name": "Praia da Vitória",
+      "nameEn": "Praia da Vitoria",
+      "region": "Terceira",
+      "regionEn": "Terceira",
+      "lat": 38.73,
+      "lon": -27.066,
+      "coastOrientation": 270,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Baía abrigada na Terceira com ondas consistentes. Praia extensa com areia clara. Cenário único dos Açores centrais.",
+      "descriptionEn": "Sheltered bay in Terceira with consistent waves. Long beach with light sand. Unique scenery of the Central Azores.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurantes",
+        "WC"
+      ],
+      "hazards": [
+        "Correntes moderadas"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": {
+        "waveHeight": 1,
+        "wavePeriod": 7.05,
+        "waveDirection": 145,
+        "windSpeed": 5.144456333854638,
+        "windDirection": 160,
+        "windGust": 11.2,
+        "waterTemp": 22.5,
+        "swellHeight": 0.64,
+        "swellPeriod": 6.6,
+        "swellDirection": 29,
+        "secondarySwellHeight": 0.38,
+        "secondarySwellPeriod": 12.15,
+        "secondarySwellDirection": 177,
+        "windWaveHeight": 0.52,
+        "wavePowerKw": 1.35168,
+        "observed": {
+          "windSpeedKt": 10,
+          "windDirDeg": 160,
+          "windDirMissing": false,
+          "windCardinal": "S",
+          "windCardinalEn": "S",
+          "tempC": 23,
+          "stationName": "Lajes (METAR)",
+          "distanceKm": 4.2,
+          "observedAt": "2026-08-09T08:00:00.000Z",
+          "source": "metar",
+          "metarIcao": "LPLA"
+        },
+        "updatedAt": "2026-08-09T07:50:51.992Z",
+        "confidence": "média",
+        "confidenceDetail": {
+          "waveSpread": 0.16,
+          "windSpread": 2.43,
+          "waveSpreadPct": 0.132,
+          "windSpreadPct": 0.456,
+          "combinedSpreadPct": 0.294,
+          "degraded": false
+        },
+        "dailyConfidence": [
+          {
+            "date": "2026-08-09",
+            "confidence": "baixa",
+            "waveSpread": 0.37,
+            "windSpread": 3.26,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-10",
+            "confidence": "baixa",
+            "waveSpread": 0.9,
+            "windSpread": 2.02,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-11",
+            "confidence": "baixa",
+            "waveSpread": 0.75,
+            "windSpread": 1.81,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-12",
+            "confidence": "baixa",
+            "waveSpread": 0.58,
+            "windSpread": 1.91,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-13",
+            "confidence": "baixa",
+            "waveSpread": 0.43,
+            "windSpread": 1.04,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-14",
+            "confidence": "média",
+            "waveSpread": 0.34,
+            "windSpread": 0.6,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-15",
+            "confidence": "média",
+            "waveSpread": 0.36,
+            "windSpread": 0.4,
+            "degraded": false
+          }
+        ]
+      },
+      "allScores": {
+        "surf": {
+          "score": 52,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "1.0m ondas",
+            "Vento offshore"
+          ],
+          "primaryFactor": "1.0m @ 7s"
+        },
+        "kitesurf": {
+          "score": 30,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "Vento side-offshore",
+            "Vento insuficiente"
+          ],
+          "warning": "Vento fraco — mínimo ~15kt para kite",
+          "primaryFactor": "10kt"
+        },
+        "windsurf": {
+          "score": 27,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
+          "factors": [
+            "Vento side-offshore",
+            "Vento insuficiente"
+          ],
+          "warning": "Mínimo ~15kt para windsurf",
+          "primaryFactor": "10kt"
+        },
+        "wakeboard": {
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
+          "factors": [
+            "Sem infraestrutura wake"
+          ],
+          "warning": "Este spot não tem infraestrutura para wakeboard",
+          "primaryFactor": "N/A"
+        },
+        "bodyboard": {
+          "score": 57,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "1.0m ondas",
+            "7s período"
+          ],
+          "primaryFactor": "1.0m"
+        },
+        "sup": {
+          "score": 65,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "Vento fraco",
+            "23°C água"
+          ],
+          "primaryFactor": "1.0m"
+        },
+        "foil": {
+          "score": 72,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "10kt vento ideal",
+            "Vento side-offshore"
+          ],
+          "primaryFactor": "Vento ideal"
+        }
+      },
+      "bestScore": 72,
+      "bestWindowToday": {
+        "start": 6,
+        "end": 8,
+        "score": 56,
+        "sport": "surf"
+      },
+      "bestWindowsBySport": {
+        "surf": {
+          "start": 6,
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -32900,8 +33104,8 @@
         "waveHeight": 1.08,
         "wavePeriod": 6.25,
         "waveDirection": 211,
-        "windSpeed": 5.144456333854638,
-        "windDirection": 180,
+        "windSpeed": 5.6589019672401015,
+        "windDirection": 225,
         "windGust": 15.8,
         "waterTemp": 22.9,
         "swellHeight": 0.64,
@@ -32913,15 +33117,15 @@
         "windWaveHeight": 0.48,
         "wavePowerKw": 0.8499200000000001,
         "observed": {
-          "windSpeedKt": 10,
-          "windDirDeg": 180,
+          "windSpeedKt": 11,
+          "windDirDeg": 225,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 18.4,
-          "stationName": "Pico / Cabeço do Teicho (DROTRH)",
-          "distanceKm": 6.7,
-          "observedAt": "2026-08-09T05:00:00.000Z",
+          "windCardinal": "SW",
+          "windCardinalEn": "SW",
+          "tempC": 23.8,
+          "stationName": "Pico (Aeródromo)",
+          "distanceKm": 12.5,
+          "observedAt": "2026-08-09T06:00:00.000Z",
           "source": "ipma"
         },
         "updatedAt": "2026-08-09T07:51:30.868Z",
@@ -32997,7 +33201,7 @@
           "primaryFactor": "1.1m @ 6s"
         },
         "kitesurf": {
-          "score": 28,
+          "score": 30,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
@@ -33005,10 +33209,10 @@
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "10kt"
+          "primaryFactor": "11kt"
         },
         "windsurf": {
-          "score": 25,
+          "score": 27,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
@@ -33016,7 +33220,7 @@
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "10kt"
+          "primaryFactor": "11kt"
         },
         "wakeboard": {
           "score": 0,
@@ -33053,7 +33257,7 @@
           "rating": "Bom",
           "ratingEn": "Good",
           "factors": [
-            "10kt vento ideal",
+            "11kt vento ideal",
             "Vento side-onshore"
           ],
           "primaryFactor": "Vento ideal"
@@ -33061,15 +33265,15 @@
       },
       "bestScore": 68,
       "bestWindowToday": {
-        "start": 8,
-        "end": 10,
+        "start": 6,
+        "end": 8,
         "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 10,
+          "start": 6,
+          "end": 8,
           "score": 56
         }
       }
@@ -33683,213 +33887,6 @@
       }
     },
     {
-      "id": "praia-vitoria",
-      "slug": "praia-vitoria",
-      "name": "Praia da Vitória",
-      "nameEn": "Praia da Vitoria",
-      "region": "Terceira",
-      "regionEn": "Terceira",
-      "lat": 38.73,
-      "lon": -27.066,
-      "coastOrientation": 270,
-      "type": "surf",
-      "difficulty": "intermediate",
-      "compatibleSports": [
-        "surf",
-        "bodyboard"
-      ],
-      "description": "Baía abrigada na Terceira com ondas consistentes. Praia extensa com areia clara. Cenário único dos Açores centrais.",
-      "descriptionEn": "Sheltered bay in Terceira with consistent waves. Long beach with light sand. Unique scenery of the Central Azores.",
-      "facilities": [
-        "Estacionamento",
-        "Restaurantes",
-        "WC"
-      ],
-      "hazards": [
-        "Correntes moderadas"
-      ],
-      "blueFlag": false,
-      "accessibleBeach": false,
-      "conditions": {
-        "waveHeight": 1,
-        "wavePeriod": 7.05,
-        "waveDirection": 145,
-        "windSpeed": 4.630010700469174,
-        "windDirection": 140,
-        "windGust": 11.2,
-        "waterTemp": 22.5,
-        "swellHeight": 0.64,
-        "swellPeriod": 6.6,
-        "swellDirection": 29,
-        "secondarySwellHeight": 0.38,
-        "secondarySwellPeriod": 12.15,
-        "secondarySwellDirection": 177,
-        "windWaveHeight": 0.52,
-        "wavePowerKw": 1.35168,
-        "observed": {
-          "windSpeedKt": 9,
-          "windDirDeg": 140,
-          "windDirMissing": false,
-          "windCardinal": "SE",
-          "windCardinalEn": "SE",
-          "tempC": 22,
-          "stationName": "Lajes (METAR)",
-          "distanceKm": 4.2,
-          "observedAt": "2026-08-09T07:00:00.000Z",
-          "source": "metar",
-          "metarIcao": "LPLA"
-        },
-        "updatedAt": "2026-08-09T07:50:51.992Z",
-        "confidence": "média",
-        "confidenceDetail": {
-          "waveSpread": 0.16,
-          "windSpread": 2.43,
-          "waveSpreadPct": 0.132,
-          "windSpreadPct": 0.456,
-          "combinedSpreadPct": 0.294,
-          "degraded": false
-        },
-        "dailyConfidence": [
-          {
-            "date": "2026-08-09",
-            "confidence": "baixa",
-            "waveSpread": 0.37,
-            "windSpread": 3.26,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-10",
-            "confidence": "baixa",
-            "waveSpread": 0.9,
-            "windSpread": 2.02,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-11",
-            "confidence": "baixa",
-            "waveSpread": 0.75,
-            "windSpread": 1.81,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-12",
-            "confidence": "baixa",
-            "waveSpread": 0.58,
-            "windSpread": 1.91,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-13",
-            "confidence": "baixa",
-            "waveSpread": 0.43,
-            "windSpread": 1.04,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-14",
-            "confidence": "média",
-            "waveSpread": 0.34,
-            "windSpread": 0.6,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-15",
-            "confidence": "média",
-            "waveSpread": 0.36,
-            "windSpread": 0.4,
-            "degraded": false
-          }
-        ]
-      },
-      "allScores": {
-        "surf": {
-          "score": 53,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "1.0m ondas",
-            "Vento offshore"
-          ],
-          "primaryFactor": "1.0m @ 7s"
-        },
-        "kitesurf": {
-          "score": 27,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
-          "factors": [
-            "Vento side-offshore",
-            "Vento insuficiente"
-          ],
-          "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "9kt"
-        },
-        "windsurf": {
-          "score": 20,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "9kt"
-        },
-        "wakeboard": {
-          "score": 0,
-          "rating": "N/A",
-          "ratingEn": "N/A",
-          "factors": [
-            "Sem infraestrutura wake"
-          ],
-          "warning": "Este spot não tem infraestrutura para wakeboard",
-          "primaryFactor": "N/A"
-        },
-        "bodyboard": {
-          "score": 58,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "1.0m ondas",
-            "7s período"
-          ],
-          "primaryFactor": "1.0m"
-        },
-        "sup": {
-          "score": 65,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "Vento fraco",
-            "23°C água"
-          ],
-          "primaryFactor": "1.0m"
-        },
-        "foil": {
-          "score": 47,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "Vento fraco",
-            "Vento side-offshore"
-          ],
-          "primaryFactor": "9kt"
-        }
-      },
-      "bestScore": 65,
-      "bestWindowToday": {
-        "start": 6,
-        "end": 7,
-        "score": 54,
-        "sport": "surf"
-      },
-      "bestWindowsBySport": {
-        "surf": {
-          "start": 6,
-          "end": 7,
-          "score": 54
-        }
-      }
-    },
-    {
       "id": "porto-martins",
       "slug": "porto-martins",
       "name": "Porto Martins (Terceira)",
@@ -34081,15 +34078,15 @@
       "bestScore": 65,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -34492,14 +34489,14 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 6,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 6,
           "score": 73
         }
@@ -34698,14 +34695,14 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 6,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 6,
           "score": 73
         }
@@ -34902,16 +34899,16 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -35107,14 +35104,14 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 6,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 6,
           "score": 73
         }
@@ -35311,16 +35308,16 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -35517,16 +35514,16 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -35726,14 +35723,14 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 6,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 6,
           "score": 73
         }
@@ -36126,16 +36123,16 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -36332,16 +36329,16 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -36534,16 +36531,16 @@
       },
       "bestScore": 63,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     }
