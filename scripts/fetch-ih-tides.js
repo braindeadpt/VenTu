@@ -17,8 +17,13 @@ const fs = require('fs');
 const path = require('path');
 
 const IH_API = 'https://api-features.hidrografico.pt';
-/** Current collection id (FAQ / OGC). Legacy id kept as fallback probe. */
-const COLLECTIONS = ['tide_obs_nrt', 'tide_obs_stations_nrt'];
+/** Current collection id (FAQ / OGC).
+ *  Legacy id `tide_obs_stations_nrt` was REMOVED from the API in 2026
+ *  (404 since 2026-08-13) — a dead fallback only adds a doomed request.
+ *  Recovery recipe when the tide backend 500s: EDR endpoints on the same
+ *  collection (radius/area, WKT coords) — see docs/BACKLOG.md "Marés".
+ */
+const COLLECTIONS = ['tide_obs_nrt'];
 const OUTPUT_PATH = path.join(__dirname, '../public/data/ih-tides.json');
 /** Max age of a reused ih-tides.json before the pipeline fails loudly. */
 const MAX_STALE_HOURS = 24;
@@ -121,7 +126,13 @@ async function fetchIHTides() {
   }
 
   if (!stationsData) {
-    throw new Error(`All IH tide collections failed — ${errors.join('; ')}`);
+    throw new Error(
+      `All IH tide collections failed — ${errors.join('; ')}. ` +
+      'Diagnóstico: se TODOS os endpoints de tide_obs_nrt (items, radius, area, locations) ' +
+      'devolvem 500/NoApplicableCode, o backend de observações IH está em baixo ' +
+      '(outras coleções como buoys_datawell continuam OK). Ver docs/BACKLOG.md "Marés" ' +
+      'para a receita de recuperação (EDR WKT).'
+    );
   }
 
   console.log(`📦 Using collection: ${usedCollection}\n`);

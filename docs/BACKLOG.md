@@ -18,6 +18,29 @@ Registo de ideias, melhorias e features identificadas mas não agendadas. Cada i
 
 **Alternativas rejeitadas:** NOAA (cobertura PT fraca), WorldTides (100 calls/dia insuficiente), Stormglass (10 calls/dia).
 
+### 🔴 Incidente 2026-08-13 — backend de marés IH em baixo (todos os endpoints 500)
+
+**Sintoma**: `tide_obs_nrt/items` devolve `500 Internal Server Error` (e `NoApplicableCode — query error` nos endpoints EDR). Persistente em todos os params testados (`limit`, `bbox`, `radius`, `properties`, `f=json|jsonld|csv`).
+
+**Diagnóstico verificado ao vivo**:
+- **Não é a API toda** — `buoys_datawell/items`, `hfr_stations/items`, `wreck_point/items` respondem 200. O que está em baixo é a fonte de observações de maré (o join com `tide_obs_data_nrt_l1`).
+- **O fallback legado morreu**: `tide_obs_stations_nrt` foi **removido da API** (404) — removido do `COLLECTIONS` do `fetch-ih-tides.js`.
+- `geoportal.hidrografico.pt` / `wms.hidrografico.pt` inacessíveis; `www.hidrografico.pt/mares` → 404 (portal web também degradado).
+- `fetch-ih-tides.js` reutiliza o ficheiro anterior até 24h; acima disso **falha com exit 1** (guard da ronda anterior) — para este incidente, o pipeline data-update vai ficar vermelho após 24h de outage, como desenhado.
+
+**Receita de recuperação (EDR — existe e documentada, mas partilha o mesmo backend em baixo)**:
+
+O `tide_obs_nrt` expõe endpoints OGC API EDR além dos items (ver `/openapi?f=json`, pygeoapi 0.23.5):
+```
+# radius — WKT POINT (lon lat, espaço!): estações a X metros de um ponto
+GET /collections/tide_obs_nrt/radius?coords=POINT(-9.4 38.7)&within=50000&f=json
+# area — WKT POLYGON (anel fechado): estações dentro do polígono
+GET /collections/tide_obs_nrt/area?coords=POLYGON((-9.5 38.5,-9.5 39.0,-9.0 39.0,-9.0 38.5,-9.5 38.5))&f=json
+# locations + locations/{locId}
+GET /collections/tide_obs_nrt/locations?f=json
+```
+Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing WKT; os 500 seguintes são o backend). **Nota**: radius/area precisam das coordenadas das estações, que hoje vêm dos items — sem items, só com coordenadas hardcoded. Quando o IH recuperar, testar primeiro `items`, depois `radius` por estação conhecida; se só o EDR voltar, o `fetch-ih-tides.js` ganha um fallback EDR (parse dos features é idêntico).
+
 ---
 
 ## 🌊 Dados em falta
