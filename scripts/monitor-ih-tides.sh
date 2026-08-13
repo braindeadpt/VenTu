@@ -74,9 +74,18 @@ if gh_available; then
   if [ -n "$issue" ]; then
     echo "ℹ️ Incidente #$issue já aberto — sem spam"
   else
-    if url=$(gh issue create --repo "$REPO" --label "$OUTAGE_LABEL" \
-      --title "🔴 IH tide backend down — tide_obs_nrt/items ($(now_utc))" \
-      --body "O endpoint \`tide_obs_nrt/items\` da OGC API do IH devolve \`HTTP $LAST_CODE\`.\n\n- Receita de recuperação (EDR WKT) e histórico: \`docs/BACKLOG.md\` → \"Marés (IH OGC API)\".\n- Gerido por \`scripts/monitor-ih-tides.sh\` (workflow \`ih-health.yml\`): será comentado e fechado automaticamente quando o backend voltar." 2>/dev/null); then
+    if url=$(
+      gh issue create --repo "$REPO" --label "$OUTAGE_LABEL" \
+        --title "IH tide backend down — tide_obs_nrt/items ($(now_utc))" \
+        --body "$(cat <<EOF
+O endpoint \`tide_obs_nrt/items\` da OGC API do IH devolve \`HTTP ${LAST_CODE}\`.
+
+- Receita de recuperação (EDR WKT) e histórico: \`docs/BACKLOG.md\` → "Marés (IH OGC API)".
+- Gerido por \`scripts/monitor-ih-tides.sh\` (workflow \`ih-health.yml\`): será comentado e fechado automaticamente quando o backend voltar.
+- Open-Meteo / observações **continuam** (o fetch de marés sai 0 com o ficheiro anterior). Não activar \`IH_EDR_FALLBACK\` enquanto o radius também devolver 500 — primeiro \`npm run ih:validate\`.
+EOF
+)"
+    ); then
       echo "🔔 ALERTA — aberto incidente: $url"
     else
       echo "⚠️ falhou a criar a issue (permissões do GITHUB_TOKEN?)"
