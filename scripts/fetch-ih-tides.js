@@ -5,12 +5,10 @@
  * Property rename: last_obs/last_data → last_sea_surface_height/last_date_time
  *
  * IH outages must NOT brick the Open-Meteo pipeline — on failure we keep the
- * previous public/data/ih-tides.json (if any) and exit 0, BUT only while that
- * file is fresher than MAX_STALE_HOURS (24h). Reusing a file older than 24h
- * means IH has been down for a full day — we fail loudly (exit 1) instead of
- * silently shipping stale observed tides. Mirrors TTL_TIDES_H in
- * validate-generated-data.js (both catch multi-day staleness like the
- * 2026-07-29 outage that left fetchedAt 14 days old).
+ * previous public/data/ih-tides.json (if any) and exit 0. Stale files (>24h)
+ * are logged loudly but still reused: observed tides stay old until IH
+ * recovers; forecasts/obs keep updating. validate-generated-data.js treats
+ * ttl.ih-tides the same way (warning, not hard-fail).
  */
 
 const fs = require('fs');
@@ -299,26 +297,53 @@ async function fetchIHTides() {
   console.log(`✅ IH tide data saved to public/data/ih-tides.json`);
   console.log(`📊 Stations: ${Object.keys(stations).length}`);
   console.log(`📊 Mapped spots: ${Object.keys(spotMapping).length}`);
+  return output;
 }
 
-fetchIHTides().catch((err) => {
-  console.error('❌ IH tide fetch failed:', err.message || err);
-  if (fs.existsSync(OUTPUT_PATH)) {
-    const age = previousFileAgeHours();
-    if (age === null || age > MAX_STALE_HOURS) {
-      console.error(
-        age === null
-          ? `❌ Previous ih-tides.json has unknown age (missing/invalid fetchedAt) — failing loudly (exit 1).`
-          : `❌ Previous ih-tides.json is ${age.toFixed(1)}h old (> ${MAX_STALE_HOURS}h) — IH unavailable too long; failing loudly (exit 1).`
-      );
-      process.exitCode = 1;
+/**
+ * Ponto de entrada do pipeline (CLI). Separado para o módulo poder ser
+ * importado nos testes unitários sem disparar o run — quando importado via
+ * require(), `require.main` é o entrypoint do runner, não este ficheiro.
+ */
+async function run() {
+  try {
+    await fetchIHTides();
+  } catch (err) {
+    console.error('❌ IH tide fetch failed:', err.message || err);
+    if (fs.existsSync(OUTPUT_PATH)) {
+      const age = previousFileAgeHours();
+      if (age === null) {
+        console.warn(
+          '⚠️ Previous ih-tides.json has unknown age (missing/invalid fetchedAt) — keeping it; Open-Meteo pipeline continues.'
+        );
+      } else if (age > MAX_STALE_HOURS) {
+        console.warn(
+          `⚠️ Previous ih-tides.json is ${age.toFixed(1)}h old (> ${MAX_STALE_HOURS}h) — IH still down; keeping stale file so Open-Meteo/obs are not blocked.`
+        );
+      } else {
+        console.warn('⚠️ Keeping previous public/data/ih-tides.json — Open-Meteo pipeline continues.');
+      }
       return;
     }
-    console.warn('⚠️ Keeping previous public/data/ih-tides.json — Open-Meteo pipeline continues.');
-    return;
+    console.warn('⚠️ No previous ih-tides.json — continuing without IH observed tides.');
   }
-  console.warn('⚠️ No previous ih-tides.json — continuing without IH observed tides.');
-});
+}
+
+// Só corre como CLI (`node scripts/fetch-ih-tides.js`); nos testes (vitest)
+// importa-se o módulo e chama-se fetchIHTides/run diretamente.
+if (require.main === module) {
+  run();
+}
+
+module.exports = {
+  fetchIHTides,
+  fetchEDRRadius,
+  edrRadiusUrl,
+  stationFromFeature,
+  run,
+  EDR_SAMPLE_STATIONS,
+  EDR_RADIUS_M,
+};
 
 // Nota: sem `process.exit()` no catch — no Windows, forçar a terminação enquanto
 // o keep-alive socket do fetch está a fechar dispara uma asserção libuv

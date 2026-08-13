@@ -34,8 +34,10 @@ if (MODE === 'skip') {
 const { STALE_FULL_HOURS_DAY, STALE_FULL_HOURS_NIGHT, getLisbonParts } = require('./lib/updateSchedule');
 
 const errors = [];
+const warnings = [];
 const checks = [];
 const fail = (msg) => errors.push(msg);
+const warn = (msg) => warnings.push(msg);
 const check = (name, cond, detail) => {
   checks.push(name);
   if (!cond) fail(`${name}: ${detail}`);
@@ -170,16 +172,18 @@ if (dawn !== undefined) {
 
 // ── 8. TTL — freshness of what THIS run must have refreshed ──
 // Both full and observations runs refresh: IH tides, spots index, observations.
-// IH tides get 24h, not 2.5h: fetch-ih-tides.js is designed to survive IH
-// outages (keeps the previous file, exits 0) and must NOT brick the whole
-// data pipeline on a short API failure. 24h still catches multi-day staleness
-// (e.g. the 2026-07-29 IH outage that left fetchedAt 14 days old).
+// IH tides: warn-only if stale. fetch-ih-tides.js keeps the previous file and
+// exits 0 so a multi-day IH outage (e.g. 2026-07-29, fetchedAt 14+ days old)
+// must NOT brick Open-Meteo / obs. Schema checks above stay hard-fail.
 const TTL_TIDES_H = 24;
 const TTL_SPOTS_INDEX_H = 2.5;
 const TTL_OBS_H = 2;
 if (tides !== undefined && isIso(tides.fetchedAt)) {
-  check('ttl.ih-tides', ageHours(tides.fetchedAt) <= TTL_TIDES_H,
-    `fetchedAt ${ageHours(tides.fetchedAt).toFixed(1)}h old (>${TTL_TIDES_H}h)`);
+  const age = ageHours(tides.fetchedAt);
+  checks.push('ttl.ih-tides');
+  if (age > TTL_TIDES_H) {
+    warn(`ttl.ih-tides: fetchedAt ${age.toFixed(1)}h old (>${TTL_TIDES_H}h) — IH outage; schema OK, pipeline continues`);
+  }
 }
 if (spotsIndex !== undefined && isIso(spotsIndex.generatedAt)) {
   check('ttl.spots-index', ageHours(spotsIndex.generatedAt) <= TTL_SPOTS_INDEX_H,
@@ -199,6 +203,10 @@ if (MODE === 'full' && meta !== undefined && isIso(meta.fullUpdatedAt)) {
 }
 
 // ── Report ──
+if (warnings.length > 0) {
+  console.warn(`⚠️ validate-generated-data (mode=${MODE}): ${warnings.length} warning(s)\n`);
+  for (const w of warnings) console.warn(`  - ${w}`);
+}
 if (errors.length > 0) {
   console.error(`❌ validate-generated-data (mode=${MODE}): ${errors.length} problem(s)\n`);
   for (const e of errors) console.error(`  - ${e}`);
