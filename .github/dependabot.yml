@@ -15,6 +15,25 @@ updates:
     ignore:
       # Sharp upgrades often carry breaking libvips changes — review manually.
       - dependency-name: "sharp"
+      # Majors need a dedicated migration PR (CI currently fails on all of these).
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "eslint"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "tailwindcss"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "lucide-react"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
 
   - package-ecosystem: github-actions
     directory: "/"
@@ -24,3 +43,8 @@ updates:
       time: "06:00"
       timezone: Europe/Lisbon
     open-pull-requests-limit: 10
+    ignore:
+      # Actions are SHA-pinned; majors (checkout 7, node 7, artifact 7, Pages 5/6)
+      # must be bumped together in one chore PR, not six Dependabot PRs.
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
