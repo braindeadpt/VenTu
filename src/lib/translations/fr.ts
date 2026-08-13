@@ -217,7 +217,7 @@ export const translationsFr = {
     modalidadesBodyboard: 'Petites vagues, beaucoup de fun. ~15 spots.',
     modalidadesSup: 'Eaux calmes, paddle. ~12 spots.',
     modalidadesFoil: 'Hydrofoil sur vagues/vent. ~8 spots.',
-    modalidadesWakeboard: 'Wake park et eau plate. 3 spots.',
+    modalidadesWakeboard: 'Wake park et eau plate sur rivière. 6 spots.',
     conditionsExplore: 'Explorer les conditions',
     planTitle: 'Planifier la session',
     descMapa: 'Carte plein écran avec filtres et conditions en direct',

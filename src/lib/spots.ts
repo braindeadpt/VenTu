@@ -256,14 +256,14 @@ export const spots: Spot[] = [
       hazards: ['Correntes na foz', 'Tráfego de barcos', 'Maré']
     },
   {
-      id: 'praia-da-lomba', slug: 'praia-da-lomba', name: 'Praia da Lomba — Wakeboard', nameEn: 'Lomba River Beach — Wakeboard',
+      id: 'praia-da-lomba', slug: 'praia-da-lomba', name: 'Praia da Lomba / Melres — Wake & Foil', nameEn: 'Lomba / Melres — Wake & Foil',
       region: 'Gondomar', regionEn: 'Gondomar', lat: 41.070, lon: -8.413,
       coastOrientation: 270,
-      type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Lagoa',
-      description: 'Wakeboard e bóia rebocada no Rio Douro, em águas calmas na margem esquerda. Praia fluvial da Lomba (~30 min do Porto) — sessões com barco e guias; não é cable park. Ideal para iniciantes em água plana.',
-      descriptionEn: 'Wakeboard and towable tube on the calm Douro River at Lomba river beach (~30 min from Porto). Boat-towed sessions with guides — not a cable park. Great for beginners on flat water.',
-      compatibleSports: ['wakeboard'],
-      facilities: ['Estacionamento', 'Praia fluvial', 'Snackbar', 'Parque de merendas', 'Salva-vidas (época balnear)'],
+      type: 'wakeboard', difficulty: 'all', bestWind: 'Vário', bestSwell: 'Rio',
+      description: 'Wakeboard, hydrofoil e bóia rebocada no Rio Douro — água plana na margem esquerda (Praia da Lomba). Acesso também pela Marina de Melres (taxi-boat ~10 min). Sessões com barco e guias; não é cable park. ~30 min do Porto.',
+      descriptionEn: 'Wakeboard, hydrofoil and towable tube on flat Douro River water at Praia da Lomba (left bank). Also reachable from Marina de Melres (taxi-boat ~10 min). Boat-towed sessions with guides — not a cable park. ~30 min from Porto.',
+      compatibleSports: ['wakeboard', 'foil'],
+      facilities: ['Estacionamento', 'Praia fluvial', 'Escola wake', 'Aluguer', 'Snackbar', 'Parque de merendas', 'Taxi-boat Melres', 'Salva-vidas (época balnear)'],
       hazards: ['Tráfego fluvial', 'Infraestrutura balnear Jun–Set']
     },
   {

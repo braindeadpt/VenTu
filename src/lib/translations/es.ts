@@ -217,7 +217,7 @@ export const translationsEs = {
     modalidadesBodyboard: 'Olas pequeñas, mucha diversión. ~15 spots.',
     modalidadesSup: 'Aguas calmadas, remo. ~12 spots.',
     modalidadesFoil: 'Hydrofoil sobre olas/viento. ~8 spots.',
-    modalidadesWakeboard: 'Wake park y agua plana. 3 spots.',
+    modalidadesWakeboard: 'Wake park y agua plana en río. 6 spots.',
     conditionsExplore: 'Explorar condiciones',
     planTitle: 'Planificar la sesión',
     descMapa: 'Mapa a pantalla completa con filtros y condiciones en vivo',
