@@ -27,6 +27,9 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
         run: npm run contributions:apply
 
+      - name: Validate data files (UTF-8 + JSON + schema)
+        run: node scripts/validate-data-files.js
+
       - name: Commit if changed
         run: |
           git config user.name "github-actions[bot]"

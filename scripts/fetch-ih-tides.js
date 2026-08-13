@@ -5,7 +5,12 @@
  * Property rename: last_obs/last_data → last_sea_surface_height/last_date_time
  *
  * IH outages must NOT brick the Open-Meteo pipeline — on failure we keep the
- * previous public/data/ih-tides.json (if any) and exit 0.
+ * previous public/data/ih-tides.json (if any) and exit 0, BUT only while that
+ * file is fresher than MAX_STALE_HOURS (24h). Reusing a file older than 24h
+ * means IH has been down for a full day — we fail loudly (exit 1) instead of
+ * silently shipping stale observed tides. Mirrors TTL_TIDES_H in
+ * validate-generated-data.js (both catch multi-day staleness like the
+ * 2026-07-29 outage that left fetchedAt 14 days old).
  */
 
 const fs = require('fs');
@@ -15,6 +20,24 @@ const IH_API = 'https://api-features.hidrografico.pt';
 /** Current collection id (FAQ / OGC). Legacy id kept as fallback probe. */
 const COLLECTIONS = ['tide_obs_nrt', 'tide_obs_stations_nrt'];
 const OUTPUT_PATH = path.join(__dirname, '../public/data/ih-tides.json');
+/** Max age of a reused ih-tides.json before the pipeline fails loudly. */
+const MAX_STALE_HOURS = 24;
+
+/**
+ * Age in hours of the previous ih-tides.json, or null if it can't be
+ * determined (unreadable, missing/invalid fetchedAt). Unknown age = fail
+ * closed: never silently reuse a file we can't prove is fresh.
+ */
+function previousFileAgeHours() {
+  try {
+    const data = JSON.parse(fs.readFileSync(OUTPUT_PATH, 'utf8'));
+    const t = data && data.fetchedAt ? new Date(data.fetchedAt).getTime() : NaN;
+    if (Number.isNaN(t)) return null;
+    return (Date.now() - t) / 3_600_000;
+  } catch {
+    return null;
+  }
+}
 
 async function fetchJson(url) {
   const response = await fetch(url, {
@@ -157,6 +180,15 @@ async function fetchIHTides() {
 fetchIHTides().catch((err) => {
   console.error('❌ IH tide fetch failed:', err.message || err);
   if (fs.existsSync(OUTPUT_PATH)) {
+    const age = previousFileAgeHours();
+    if (age === null || age > MAX_STALE_HOURS) {
+      console.error(
+        age === null
+          ? `❌ Previous ih-tides.json has unknown age (missing/invalid fetchedAt) — failing loudly (exit 1).`
+          : `❌ Previous ih-tides.json is ${age.toFixed(1)}h old (> ${MAX_STALE_HOURS}h) — IH unavailable too long; failing loudly (exit 1).`
+      );
+      process.exit(1);
+    }
     console.warn('⚠️ Keeping previous public/data/ih-tides.json — Open-Meteo pipeline continues.');
     process.exit(0);
   }
