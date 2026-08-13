@@ -246,14 +246,28 @@ export default function SwellRadar({
   const prevSwellRots = useRef<number[]>(swellTargets.map(() => 0));
   const prevWind = useRef(0);
 
+  // The animation must re-run only when the TARGET CONTENT changes (not on
+  // array identity churn from parent re-renders), so the effect keys off a
+  // joined string and reads the latest array through a ref. The ref is
+  // refreshed in an effect (never during render — react-hooks/refs).
+  const swellTargetsKey = swellTargets.join(',');
+  const swellTargetsRef = useRef(swellTargets);
+
+  // Cheap assignment; may run on every render (the array is recreated by the
+  // parent). The ANIMATION effect below is what keys off swellTargetsKey.
   useEffect(() => {
+    swellTargetsRef.current = swellTargets;
+  }, [swellTargets]);
+
+  useEffect(() => {
+    const targets = swellTargetsRef.current;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const coarse = window.matchMedia('(pointer: coarse)').matches;
     if (reduced || coarse) {
-      setSwellRots(swellTargets);
+      setSwellRots(targets);
       if (windTarget !== null) setWindRot(windTarget);
       setFadeIn(1);
-      prevSwellRots.current = [...swellTargets];
+      prevSwellRots.current = [...targets];
       if (windTarget !== null) prevWind.current = windTarget;
       return;
     }
@@ -261,7 +275,7 @@ export default function SwellRadar({
     const duration = 600;
     const start = performance.now();
     let frameId = 0;
-    const deltas = swellTargets.map((target, i) => {
+    const deltas = targets.map((target, i) => {
       let d = target - (prevSwellRots.current[i] ?? 0);
       while (d > 180) d -= 360;
       while (d < -180) d += 360;
@@ -278,7 +292,7 @@ export default function SwellRadar({
       const eased = easeOutExpo(progress);
 
       setSwellRots(
-        swellTargets.map((_, i) => (prevSwellRots.current[i] ?? 0) + deltas[i] * eased),
+        targets.map((_, i) => (prevSwellRots.current[i] ?? 0) + deltas[i] * eased),
       );
       if (windTarget !== null) {
         const windProgress = Math.max(0, Math.min((elapsed - 200) / (duration - 200), 1));
@@ -289,14 +303,14 @@ export default function SwellRadar({
       if (progress < 1) {
         frameId = requestAnimationFrame(tick);
       } else {
-        prevSwellRots.current = [...swellTargets];
+        prevSwellRots.current = [...targets];
         if (windTarget !== null) prevWind.current = windTarget;
       }
     };
 
     frameId = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frameId);
-  }, [swellTargets.join(','), windTarget]);
+  }, [swellTargetsKey, windTarget]);
 
   /* ── arrow geometry ── */
   const swellLen = R * 0.55;

@@ -25,8 +25,10 @@ async function fetchDoneTips() {
     return [];
   }
 
+  // Privacy (S4): only the fields that end up in the public overlay are
+  // fetched — the submitter's email is never read (let alone published).
   const res = await fetch(
-    `${url}/rest/v1/contributions?type=eq.tip&status=eq.done&spot_slug=not.is.null&select=spot_slug,tip_field,message,email,created_at`,
+    `${url}/rest/v1/contributions?type=eq.tip&status=eq.done&spot_slug=not.is.null&select=spot_slug,tip_field,message`,
     {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
     },

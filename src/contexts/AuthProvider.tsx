@@ -170,17 +170,19 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  const userId = session?.user?.id;
+
   useEffect(() => {
-    if (!session?.user) {
+    if (!userId) {
       setFavorites([]);
       setFavoritesReady(true);
       setCheckins([]);
       setCheckinsReady(true);
       return;
     }
-    void loadFavorites(session.user.id);
-    void loadCheckins(session.user.id);
-  }, [session?.user?.id, loadFavorites, loadCheckins]);
+    void loadFavorites(userId);
+    void loadCheckins(userId);
+  }, [userId, loadFavorites, loadCheckins]);
 
   const requestLogin = useCallback((reason: LoginReason = 'general') => {
     setLoginReason(reason);

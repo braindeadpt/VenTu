@@ -12,7 +12,10 @@
 // NOTE: 'unsafe-eval' is omitted in production (not needed for static export).
 // React dev requires eval() — this meta is skipped when NODE_ENV !== 'production'.
 // 'unsafe-inline' for scripts is still required by the pre-hydration theme script in app/layout.tsx.
-// frame-ancestors in <meta> is ignored by browsers (host HTTP headers only) — separate hardening task.
+// frame-ancestors in <meta> is ignored by browsers (host HTTP headers only).
+// S7: served as a real HTTP header via the Cloudflare proxy in front of ventu.surf
+// (docs/SECURITY-HEADERS.md). This meta stays as a same-value fallback (intersection
+// of identical policies is a no-op) — keep both in sync when editing CSP.
 const CSP_META = {
   defaultSrc: "'self'",
   scriptSrc: "'self' 'unsafe-inline' https://gc.zgo.at",

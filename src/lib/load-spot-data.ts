@@ -124,7 +124,18 @@ function buildSpotData(
   }
 }
 
+// Build-time memoization: data files are immutable during a static build, so parse
+// once per worker instead of once per page. loadSpotData() is called by home, spots
+// index, mapa, explorar (255 pages) and modalidades (40 pages) — each call re-parses
+// the ~8.2MB forecasts.json and recomputes scores for all 185 spots (~230ms).
+// Only cached in production (build): dev must see freshly regenerated data files.
+let spotDataCache: SpotData[] | null = null
+
 export function loadSpotData(): SpotData[] {
+  if (process.env.NODE_ENV === 'production' && spotDataCache) {
+    return spotDataCache
+  }
+
   const conditionsData = loadConditionsJson()
   const forecastsData = loadForecastsJson()
 
@@ -140,6 +151,10 @@ export function loadSpotData(): SpotData[] {
     const bestB = Math.max(...Object.values(b.allScores).map((s) => s.score), 0)
     return bestB - bestA
   })
+
+  if (process.env.NODE_ENV === 'production') {
+    spotDataCache = result
+  }
 
   return result
 }

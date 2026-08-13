@@ -4,7 +4,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 > **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) — Fase **E** / **C4b** (calibração scores com feedback)
 
-Última actualização: 2026-07-21 (185 spots; METAR/ICON-EU; E1 alertas; mapa split).
+Última actualização: 2026-08-13 (S7: headers HTTP reais via Cloudflare proxy — [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md)).
 
 ## Identidade
 
@@ -33,7 +33,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 ## Restrições técnicas críticas
 
 1. **Static export.** Sem API routes em runtime, sem middleware. Tudo é HTML/JS/CSS estático.
-2. **Sem headers HTTP customizáveis** no GitHub Pages (CSP só via meta, limitado).
+2. **Sem headers HTTP customizáveis** no GitHub Pages (CSP só via meta, limitado). Decisão S7: proxy Cloudflare + Transform Rules à frente do `ventu.surf` → [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md).
 3. **Deps leves.** Justificar novas dependências antes de adicionar.
 4. **Rotas dinâmicas exigem `generateStaticParams`.** Não introduzir rotas não enumeráveis.
 5. **Server components correm em build time**, não em runtime.
@@ -69,6 +69,13 @@ SpotDetailClient + ForecastTable (row condicional)
 
 - 33 estações IH · maioria dos spots continentais mapeados
 - Dados observados (não previsão horária IH); previsão MSL via Open-Meteo
+
+## Segurança HTTP — headers reais (S7)
+
+- GitHub Pages não permite headers custom; hoje só CSP via meta (`CSPMeta.tsx`) — `frame-ancestors` em meta é ignorado pelos browsers (sem anti-clickjacking real).
+- **Decisão tomada:** proxy Cloudflare (DNS proxied) + **Response Header Transform Rules** a espelhar o `public/_headers`, com o override `/embed/*` a manter o widget B2B iframeable (`frame-ancestors *`, sem `X-Frame-Options`). Remove também o `Access-Control-Allow-Origin: *` do GitHub Pages.
+- CSP do header = espelho do `CSP_META`; a meta permanece como fallback (header + meta idênticos = intersecção sem conflito).
+- **Ação manual pendente (dashboard Cloudflare):** DNS + 2 regras → passos e valores exactos em [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md).
 
 ## Estrutura do repo (resumo)
 
@@ -113,10 +120,11 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 
 ### ⚠️ Dívida conhecida (não bloqueante)
 
-1. `SecurityHeaders.tsx` — CSP via JS sem efeito real em static export
+1. Headers HTTP (CSP real, `X-Frame-Options`, `frame-ancestors`) — ✅ decisão S7 tomada; implementação manual pendente no dashboard Cloudflare (DNS proxied + Transform Rules) → [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md)
 2. Calibração scores (C4b) — `npm run scores:analyze`; pesos só com N≥30/modalidade
 3. Livecams curadas — links externos Surftotal/MEO em 31 spots (`src/lib/spotLivecams.ts`); sem embeds
 4. Alertas email — ✅ E1 em produção → [`ALERTS.md`](./ALERTS.md)
+5. `Access-Control-Allow-Origin: *` do GitHub Pages — removido pelo proxy Cloudflare (Regra 2 em `SECURITY-HEADERS.md`)
 
 ### Distribuição de spots
 

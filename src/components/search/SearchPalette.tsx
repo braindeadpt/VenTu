@@ -159,7 +159,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
 
     setAllResults(results.slice(0, 12));
     setSelectedIndex(0);
-  }, [query, locale, isPt, regions, newsCache]);
+  }, [query, locale, isPt, regions, newsCache, spotsCache]);
 
   const getTabbable = useCallback(() => {
     if (!resultsRef.current) return [];

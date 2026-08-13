@@ -4,7 +4,6 @@
 export function clearLeafletContainer(el: HTMLDivElement | null): void {
   if (!el) return;
   // Leaflet stores `_leaflet_id` on the container; stale ids block re-init.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   delete (el as any)._leaflet_id;
   el.replaceChildren();
 }
