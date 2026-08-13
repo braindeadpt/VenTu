@@ -28,3 +28,19 @@ STABLE
 AS $$
   SELECT NULLIF(current_setting('request.jwt.claims', true), '')::jsonb
 $$;
+
+-- auth.users stub (F1 profiles / E1c alert prefs FK depend on it)
+CREATE TABLE IF NOT EXISTS auth.users (
+  id UUID PRIMARY KEY,
+  email TEXT UNIQUE,
+  raw_user_meta_data JSONB DEFAULT '{}'
+);
+
+-- auth.uid() stub: JWT 'sub' claim (UUID of the authenticated caller)
+CREATE OR REPLACE FUNCTION auth.uid()
+RETURNS UUID
+LANGUAGE sql
+STABLE
+AS $$
+  SELECT (NULLIF(current_setting('request.jwt.claims', true), '')::jsonb ->> 'sub')::uuid
+$$;

@@ -15,6 +15,7 @@ export default defineConfig({
       'scripts/lib/__tests__/spamFilter.test.js',
       'scripts/lib/__tests__/safeUrl.test.js',
       'scripts/lib/__tests__/fetchRss.test.js',
+      'scripts/lib/__tests__/contributionsPrivacy.test.js',
     ],
   },
   resolve: {

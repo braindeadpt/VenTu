@@ -132,6 +132,16 @@ curl -sI https://ventu.surf/embed/spot/moledo/ | grep -iE "x-frame|frame-ancesto
 curl -sI https://ventu.surf/pt/ | grep -i "access-control" || echo "ACAO removido ✓"
 ```
 
+### 4.1 Guard automático no CI (depois do deploy)
+
+O `deploy.yml` tem um job `security-headers` que corre o verificador contra a produção **depois de cada deploy** e falha o run se algum header estiver ausente (ou se o `Access-Control-Allow-Origin: *` voltar). Está **desativado por omissão** — o checker falha de propósito contra o GitHub Pages puro, por isso só deve ser ativado depois de o proxy estar aplicado:
+
+1. Aplicar as Fases 1–5 (DNS proxied + SSL/TLS Full strict + as 2 Transform Rules).
+2. No GitHub: **Settings → Secrets and variables → Actions → Variables** → criar a repo variable `S7_PROXY_ENABLED` com valor `true`.
+3. No próximo deploy, o job corre; se os headers regredirem (proxy removido, regras desligadas, ordem trocada), o run falha com `::error::` e fica assinalado.
+
+O job faz **6 tentativas com 20s de intervalo** (absorve a propagação do edge após o deploy) e valida `https://ventu.surf` por omissão — para staging, define a repo variable `S7_HEADERS_BASE_URL` com o URL alternativo.
+
 ## 5. Notas
 
 - **CSP meta permanece** (`CSPMeta.tsx`) como fallback para origins secundários (preview em `github.io`, abrir o `out/` localmente). Não remover: header + meta idênticos = intersecção sem conflito.

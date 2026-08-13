@@ -7,6 +7,7 @@ Run these files once in the [Supabase SQL Editor](https://supabase.com/dashboard
 | [`supabase-alerts.sql`](supabase-alerts.sql) | Email alert subscriptions (E1 legacy) |
 | [`supabase-alerts-harden-legacy.sql`](supabase-alerts-harden-legacy.sql) | Harden E1 legacy subscribe RPC (server token, IP rate limit, dedup) — run after `supabase-alerts.sql` |
 | [`supabase-alerts-e1c.sql`](supabase-alerts-e1c.sql) | Bulk alerts on favorites (E1c) |
+| [`supabase-alerts-e1c-harden.sql`](supabase-alerts-e1c-harden.sql) | Harden E1c alert RPCs (per-IP rate limits via `request.headers`, direct writes on `user_alert_prefs` revoked) — run after `supabase-alerts-e1c.sql` |
 | [`supabase-auth-profiles.sql`](supabase-auth-profiles.sql) | User accounts + synced favorites (F1) |
 | [`supabase-contributions.sql`](supabase-contributions.sql) | Community contributions form |
 | [`supabase-contributions-migration-c3.sql`](supabase-contributions-migration-c3.sql) | Migration for contributions schema |

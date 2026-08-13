@@ -47,8 +47,8 @@ resource "cloudflare_ruleset" "ventu_security_headers" {
       headers {
         name      = "Content-Security-Policy"
         operation = "set"
-        # trim(): o heredoc de variables.tf preserva a indentação (<<- só tira tabs)
-        value     = trim(var.csp_embed)
+        # trimspace(): o heredoc de variables.tf preserva a indentação (<<- só tira tabs)
+        value = trimspace(var.csp_embed)
       }
       headers {
         name      = "X-Content-Type-Options"
@@ -79,8 +79,8 @@ resource "cloudflare_ruleset" "ventu_security_headers" {
       headers {
         name      = "Content-Security-Policy"
         operation = "set"
-        # trim(): o heredoc de variables.tf preserva a indentação (<<- só tira tabs)
-        value     = trim(var.csp_default)
+        # trimspace(): o heredoc de variables.tf preserva a indentação (<<- só tira tabs)
+        value = trimspace(var.csp_default)
       }
       headers {
         name      = "X-Frame-Options"

@@ -57,4 +57,15 @@ run_sql supabase/tests/test-contributions.sql
 echo "==> running score_feedback behavior assertions"
 run_sql supabase/tests/test-score-feedback.sql
 
+echo "==> applying E1c alert migrations"
+run_sql supabase/supabase-auth-profiles.sql
+run_sql supabase/supabase-alerts-e1c.sql
+run_sql supabase/supabase-alerts-e1c-harden.sql
+
+# The hardening file must also apply cleanly twice (idempotency).
+run_sql supabase/supabase-alerts-e1c-harden.sql
+
+echo "==> running E1c alert behavior assertions"
+run_sql supabase/tests/test-e1c.sql
+
 echo "OK — supabase integration tests passed"

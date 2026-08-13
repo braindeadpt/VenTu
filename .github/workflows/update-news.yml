@@ -33,6 +33,9 @@ jobs:
           CEREBRAS_API_KEY: ${{ secrets.CEREBRAS }}
         run: node scripts/update-news.js
 
+      - name: Validate data files (UTF-8 + JSON + http(s) URLs)
+        run: node scripts/validate-data-files.js
+
       - name: Commit and Push
         run: |
           git config user.name "github-actions[bot]"

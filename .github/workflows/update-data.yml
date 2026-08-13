@@ -13,14 +13,18 @@ on:
 
 permissions:
   contents: write
+  actions: read # artifact download in the validate/commit jobs
 
 concurrency:
   group: update-ventu-data
   cancel-in-progress: false
 
 jobs:
+  # ── 1. Pipeline: fetch + generate the data (no push) ──
   update-conditions:
     runs-on: ubuntu-latest
+    outputs:
+      mode: ${{ steps.gate.outputs.mode }}
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -83,14 +87,77 @@ jobs:
         if: steps.gate.outputs.mode != 'skip'
         run: npm run spots:index && npm run spots:lite
 
+      - name: Upload fresh data artifact
+        if: steps.gate.outputs.mode != 'skip'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: ventu-data
+          path: public/data
+          if-no-files-found: error
+          retention-days: 1
+
+  # ── 2. Validation gate (no build): UTF-8 + JSON + schema + TTL ──
+  validate-data:
+    if: needs.update-conditions.outputs.mode != 'skip'
+    needs: update-conditions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+
+      - name: Download fresh data artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ventu-data
+          path: /tmp/ventu-data
+
+      - name: Stage fresh data into public/data
+        run: |
+          rm -rf public/data
+          mkdir -p public/data
+          cp -a /tmp/ventu-data/. public/data/
+
+      - name: Validate data files (UTF-8 + JSON)
+        run: node scripts/validate-data-files.js
+
+      - name: Validate generated data (schema + TTL)
+        run: node scripts/validate-generated-data.js --mode=${{ needs.update-conditions.outputs.mode }}
+
       - name: Verify Open-Meteo freshness
-        if: steps.gate.outputs.mode == 'full'
+        if: needs.update-conditions.outputs.mode == 'full'
         run: node scripts/verify-pipeline-freshness.js
 
-      - name: Commit and Push
-        if: steps.gate.outputs.mode != 'skip'
+  # ── 3. Commit and push — only after the validation gate passed ──
+  commit-and-push:
+    if: needs.update-conditions.outputs.mode != 'skip'
+    needs: [update-conditions, validate-data]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          fetch-depth: 0
+
+      - name: Download fresh data artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ventu-data
+          path: /tmp/ventu-data
+
+      - name: Stage fresh data into public/data
         run: |
-          if [ "${{ steps.gate.outputs.mode }}" = "observations" ]; then
+          rm -rf public/data
+          mkdir -p public/data
+          cp -a /tmp/ventu-data/. public/data/
+
+      - name: Commit and Push
+        run: |
+          if [ "${{ needs.update-conditions.outputs.mode }}" = "observations" ]; then
             bash scripts/push-data-update.sh "auto: refresh observations [$(date -u +'%Y-%m-%d %H:%M UTC')]"
           else
             bash scripts/push-data-update.sh "auto: update conditions and spots index [$(date -u +'%Y-%m-%d %H:%M UTC')]"

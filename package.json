@@ -41,6 +41,7 @@
     "sitemap:generate": "node scripts/generate-sitemap.js",
     "og:generate": "node scripts/generate-og-image.mjs && node scripts/generate-spot-og-images.mjs",
     "spots:validate": "node scripts/validate-spots.js",
+    "data:validate": "node scripts/validate-data-files.js",
     "alerts:evaluate": "node scripts/evaluate-alerts.js",
     "alerts:preflight": "node scripts/alerts-preflight.js",
     "telegram:poll": "node scripts/telegram-poll.js",

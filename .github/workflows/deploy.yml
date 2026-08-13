@@ -192,3 +192,39 @@ jobs:
           done
           echo "::error::GitHub Pages deploy failed after 5 attempts (transient API error). Re-run this workflow from Actions."
           exit 1
+
+  security-headers:
+    # Guard S7 (docs/SECURITY-HEADERS.md §4.1) — corre o verificador após o deploy
+    # e falha o run se algum header estiver ausente. O checker falha de propósito
+    # contra o GitHub Pages puro (estado pré-S7), por isso o job é saltado enquanto
+    # a repo variable S7_PROXY_ENABLED não for 'true' (Settings → Secrets and
+    # variables → Actions → Variables) — ativar só depois do proxy estar aplicado.
+    if: vars.S7_PROXY_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          # workflow_run.head_sha é o commit *antes* do push de dados — usa main
+          ref: ${{ github.event_name == 'workflow_run' && 'main' || github.sha }}
+          fetch-depth: 1
+
+      - name: Check S7 security headers in production (retries para o edge)
+        env:
+          BASE_URL: ${{ vars.S7_HEADERS_BASE_URL || 'https://ventu.surf' }}
+        run: |
+          attempts=6
+          delay=20
+          for i in $(seq 1 "$attempts"); do
+            echo "==> Tentativa $i/$attempts — $BASE_URL"
+            if bash scripts/check-security-headers.sh "$BASE_URL"; then
+              echo "OK — headers S7 conforme em produção ($BASE_URL)"
+              exit 0
+            fi
+            [ "$i" -lt "$attempts" ] || break
+            echo "Headers ainda não presentes; a aguardar ${delay}s antes de revalidar..."
+            sleep "$delay"
+          done
+          echo "::error::Headers S7 ausentes após $attempts tentativas em $BASE_URL — proxy Cloudflare/Transform Rules não aplicados ou regrediram (docs/SECURITY-HEADERS.md §4.1)."
+          exit 1
