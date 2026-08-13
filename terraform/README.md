@@ -11,52 +11,121 @@ mesmo resultado.
 | `variables.tf` | Inputs: token, zona, e os dois CSPs (defaults = SECURITY-HEADERS.md; ⚠️ manter em sincronia com `CSPMeta.tsx`) |
 | `terraform.tfvars.example` | Template de configuração local (gitignored) |
 
-## Pré-requisitos (fazer PRIMEIRO)
+## Aplicação passo a passo (runbook)
+
+> O plano assume as fases **vazias** (0 regras) — o pré-flight da Fase 1 confirma.
+> Cada fase é independente e reversível até à Fase 5 (apply).
+
+### Fase 0 — Pré-requisitos (fazer PRIMEIRO)
 
 1. **DNS já proxied na Cloudflare** — `ventu.surf` adicionado à Cloudflare com
    o proxy ligado (nuvem laranja) e SSL/TLS em *Full (strict)*. Sem isto, o
-   ruleset não tem efeito (o tráfego nem passa pela Cloudflare).
-   Passos detalhados: `docs/SECURITY-HEADERS.md` §3.1.
+   ruleset não tem efeito (o tráfego nem passa pela Cloudflare) e o pré-flight
+   da Fase 1 devolve `zone not found`. Passos detalhados:
+   `docs/SECURITY-HEADERS.md` §3.1.
 2. **API token Cloudflare** com permissões `Zone > Transform Rules: Edit` e
    `Zone > Zone: Read` na zona `ventu.surf`.
-3. **Terraform CLI ≥ 1.5** (`terraform version`).
+3. **Terraform CLI ≥ 1.5** (`terraform version`) — o CI valida o HCL, mas o
+   `apply` corre a partir da tua máquina.
 
-## Aplicação passo a passo
+### Fase 1 — Pré-flight read-only (nada é alterado)
+
+Confirma que (a) a zona está na Cloudflare e (b) as duas fases estão **vazias**
+— se já tiverem regras (criadas no painel), o apply de um ruleset novo entra
+em conflito (ver "Se o apply falhar"):
 
 ```bash
-# 1. Config local (nunca commitar terraform.tfvars)
-cd terraform
-cp terraform.tfvars.example terraform.tfvars
-#    → preencher cloudflare_api_token e zone_name
-#    (ou: export CLOUDFLARE_API_TOKEN=... e remover a linha do tfvars)
+export CLOUDFLARE_API_TOKEN=<token>
+ZONE_ID=$(curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  "https://api.cloudflare.com/client/v4/zones?name=ventu.surf" \
+  | jq -r '.result[0].id')
+echo "zone_id=$ZONE_ID"   # vazio → a zona NÃO está na Cloudflare (voltar à Fase 0)
 
-# 2. Inicializar (descarrega o provider cloudflare/cloudflare)
-terraform init
+# Regras em uso na fase de headers (esperado: 0)
+curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_response_headers_transform/entrypoint" \
+  | jq '.result.rules | length'
 
-# 3. Rever o plano — deve criar 2 cloudflare_ruleset:
-#    1. ventu_security_headers (fase http_response_headers_transform, 2 rules)
-#    2. ventu_cache_rules (fase http_request_cache_settings, 3 rules)
-terraform plan
-#    Sem erros de expressão/fase? As expressões WAF válidas são validadas
-#    nesta fase.
-
-# 4. Aplicar
-terraform apply
+# Regras em uso na fase de cache (esperado: 0)
+curl -s -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  "https://api.cloudflare.com/client/v4/zones/$ZONE_ID/rulesets/phases/http_request_cache_settings/entrypoint" \
+  | jq '.result.rules | length'
 ```
 
-## Validação após aplicar
+### Fase 2 — Config local (nunca commitar terraform.tfvars)
 
 ```bash
-# Da raiz do repo:
-bash scripts/check-security-headers.sh        # exit 0 = tudo ok
+cd terraform
+cp terraform.tfvars.example terraform.tfvars   # gitignored (linha 87 do .gitignore)
+# preencher cloudflare_api_token e zone_name ("ventu.surf")
+# — ou: export CLOUDFLARE_API_TOKEN=... e remover a linha do tfvars
+```
+
+### Fase 3 — Inicializar
+
+```bash
+terraform init   # descarrega o provider cloudflare/cloudflare (pinned no lock file)
+```
+
+### Fase 4 — Rever o plano
+
+```bash
+terraform plan
+```
+
+Esperado: **2 a criar** (`cloudflare_ruleset.ventu_security_headers` +
+`cloudflare_ruleset.ventu_cache_rules`), **0 a alterar**, **0 a destruir**.
+O `data.cloudflare_zone` resolve a zona nesta fase — se falhar com
+`zone not found`, voltar à Fase 0 (DNS ainda nos nameservers da Namecheap).
+As expressões WAF (ex.: `starts_with(http.request.uri.path, "/embed/")`) são
+validadas aqui — um erro de expressão falha o plan, não o apply.
+
+### Fase 5 — Aplicar
+
+```bash
+terraform apply          # rever + confirmar (yes)
+# ou, depois de rever o plan na Fase 4: terraform apply -auto-approve
+```
+
+Aplica os 2 rulesets (headers + cache). A propagação é rápida (segundos), mas
+o cache edge só mostra HIT depois de um warm-up (1.º GET).
+
+### Fase 6 — Validação pós-apply (scripts/check-security-headers.sh)
+
+Da raiz do repo:
+
+```bash
+bash scripts/check-security-headers.sh     # exit 0 = tudo ok
 # ou: npm run check:headers
 ```
 
-Esperado:
-- `/pt/` (e qualquer rota fora de `/embed/*`) → `Content-Security-Policy` com
-  `frame-ancestors 'none'`, `X-Frame-Options: DENY`, `nosniff`, HSTS, e **sem**
-  `Access-Control-Allow-Origin`
-- `/embed/spot/moledo/` → CSP com `frame-ancestors *`, **sem** `X-Frame-Options`
+O checker valida as 2 frentes — headers S7 e cache edge:
+
+| Check | Esperado |
+|---|---|
+| `/pt/` Content-Security-Policy | `frame-ancestors 'none'` presente |
+| `/pt/` X-Frame-Options | `DENY` |
+| `/pt/` X-Content-Type-Options / HSTS / Referrer-Policy | presentes |
+| `/pt/` Access-Control-Allow-Origin | **ausente** (Regra 2 remove) |
+| `/embed/spot/moledo/` CSP | `frame-ancestors *` |
+| `/embed/spot/moledo/` X-Frame-Options | **ausente** (widget B2B iframeable) |
+| C1 `/_next/static/*` (asset real extraído do HTML) | `cf-cache-status: HIT` |
+| C2 `/data/news.json` | `cf-cache-status: HIT` |
+| C3 `/sw.js` | `cf-cache-status: DYNAMIC` (bypass) |
+
+Qualquer FAIL = rever `docs/SECURITY-HEADERS.md` (proxy não aplicado? regra
+errada?). Equivalências curl manuais: `docs/SECURITY-HEADERS.md` §4.
+
+### Fase 7 — Ativar o guard no CI (depois de exit 0)
+
+O job `security-headers` do `deploy.yml` (docs/SECURITY-HEADERS.md §4.1) corre o
+mesmo verificador após cada deploy e falha o run se algo regredir — está
+**desativado por omissão** (falha de propósito contra o GitHub Pages puro):
+
+1. Settings → Secrets and variables → Actions → Variables
+2. Criar `S7_PROXY_ENABLED = true`
+3. O próximo deploy passa a validar headers + cache automaticamente; se
+   regredir, o run fica vermelho.
 
 ## Rollback
 
@@ -64,6 +133,15 @@ Esperado:
 terraform destroy        # remove os 2 rulesets (headers + cache deixam de ser servidos)
 # Alternativa rápida no painel: Rules → Transform Rules / Cache Rules → desligar
 ```
+
+## Se o apply falhar
+
+| Sintoma | Causa provável | Solução |
+|---|---|---|
+| `zone not found` no plan | DNS ainda nos nameservers da Namecheap | Fase 0 — adicionar a zona e proxied (SECURITY-HEADERS.md §3.1) |
+| `409 conflict` / fase já tem ruleset | Regras criadas no painel | `terraform import cloudflare_ruleset.ventu_security_headers <RULESET_ID>` (e/ou `ventu_cache_rules`) — o ID aparece na URL quando abres o ruleset no painel |
+| `403`/`authentication error` | Token sem permissão `Transform Rules: Edit` | Refazer o token com a permissão na zona certa |
+| Erro de expressão WAF | Expressão inválida | Falha no plan (não no apply) — corrigir `expression` no `main.tf` |
 
 ## Notas
 
