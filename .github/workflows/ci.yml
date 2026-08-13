@@ -145,9 +145,10 @@ jobs:
         run: terraform validate
         working-directory: terraform
 
-      # Valida a sintaxe das expressões WAF (ruleset engine) do main.tf sem
-      # token da API — um erro de expressão só seria apanhado no apply, que
-      # aqui nunca corre (o módulo não tem backend).
+      # Valida a sintaxe das expressões WAF (ruleset engine) de todos os
+      # terraform/*.tf + docs/SECURITY-HEADERS.md (equivalências) sem token da
+      # API, e o drift entre os dois (doc = fonte de verdade) — um erro de
+      # expressão só seria apanhado no apply, que aqui nunca corre.
       - name: Validate WAF expressions (ruleset engine syntax)
         run: node scripts/validate-terraform-expressions.js
 

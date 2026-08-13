@@ -77,8 +77,11 @@ Esperado: **2 a criar** (`cloudflare_ruleset.ventu_security_headers` +
 `cloudflare_ruleset.ventu_cache_rules`), **0 a alterar**, **0 a destruir**.
 O `data.cloudflare_zone` resolve a zona nesta fase — se falhar com
 `zone not found`, voltar à Fase 0 (DNS ainda nos nameservers da Namecheap).
-As expressões WAF (ex.: `starts_with(http.request.uri.path, "/embed/")`) são
-validadas aqui — um erro de expressão falha o plan, não o apply.
+Sem token real, o plan **falha no provider** antes de gerar plano
+(`invalid value for api_token` com placeholder, ou `Invalid access token 9109`
+com token inválido) — nesse caso voltar às **Fases 1–2** (ver "Se o apply
+falhar"). As expressões WAF (ex.: `starts_with(http.request.uri.path, "/embed/")`)
+são validadas aqui — um erro de expressão falha o plan, não o apply.
 
 ### Fase 5 — Aplicar
 
@@ -138,10 +141,17 @@ terraform destroy        # remove os 2 rulesets (headers + cache deixam de ser s
 
 | Sintoma | Causa provável | Solução |
 |---|---|---|
+| `invalid value for api_token (API tokens must only contain characters…)` — falha no `provider "cloudflare"` (main.tf:29), **antes** de chegar à API | Token não preenchido / formato inválido — ex.: o placeholder `CHANGE_ME…` tem <40 chars e o provider rejeita-o na validação (verificado no dry-run) | **Fase 2** — preencher `cloudflare_api_token` real no `terraform.tfvars` (ou `export CLOUDFLARE_API_TOKEN=…` e remover a linha do tfvars) |
+| `error listing zones: Invalid access token (9109)` no `data.cloudflare_zone` (main.tf:32) | Token com formato válido mas **não autentica** (expirado/revogado/errado) | **Fase 1** — correr o pré-flight read-only com esse token; se `9109` persistir, criar um novo com `Zone > Transform Rules: Edit` + `Zone: Read` na zona `ventu.surf` |
+| `403`/`authentication error` na API | Token sem permissão `Transform Rules: Edit` na zona certa | **Fases 1/2** — validar no pré-flight; criar o token com a permissão na zona `ventu.surf` |
 | `zone not found` no plan | DNS ainda nos nameservers da Namecheap | Fase 0 — adicionar a zona e proxied (SECURITY-HEADERS.md §3.1) |
 | `409 conflict` / fase já tem ruleset | Regras criadas no painel | `terraform import cloudflare_ruleset.ventu_security_headers <RULESET_ID>` (e/ou `ventu_cache_rules`) — o ID aparece na URL quando abres o ruleset no painel |
-| `403`/`authentication error` | Token sem permissão `Transform Rules: Edit` | Refazer o token com a permissão na zona certa |
 | Erro de expressão WAF | Expressão inválida | Falha no plan (não no apply) — corrigir `expression` no `main.tf` |
+
+> **Dry-run validado (sem token):** `terraform plan` falha no provider com os dois erros acima
+> — o placeholder é rejeitado na validação (`main.tf:29`) e um token de formato válido mas
+> inválido falha na API (`Invalid access token 9109`, `main.tf:32`). Nenhum dos dois chega a
+> gerar plano — o caminho certo é concluir as **Fases 1–2** (pré-flight + token no tfvars) antes do plan.
 
 ## Notas
 

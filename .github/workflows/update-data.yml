@@ -55,6 +55,8 @@ jobs:
       # Fallback EDR (radius por estação conhecida) já implementado no script —
       # ativar quando o backend de marés voltar adicionando a este passo:
       #   env: { IH_EDR_FALLBACK: '1' }
+      # GATE: correr `npm run ih:validate` primeiro (probe real ao radius +
+      # schema das features contra o stationFromFeature) — só ativar com exit 0
       # (ver docs/BACKLOG.md "Marés" — receita de recuperação)
       - name: Fetch IH Tide Station Data
         if: steps.gate.outputs.mode != 'skip'

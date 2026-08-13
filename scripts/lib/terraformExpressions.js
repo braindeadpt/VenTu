@@ -312,6 +312,48 @@ function validateExpression(expr) {
  * Extrai as expressões `expression = ...` de um ficheiro HCL:
  * heredocs `<<-EOT ... EOT` e strings inline (com unescape de \" e \\).
  */
+/**
+ * Extrai as expressões WAF de um ficheiro markdown — as linhas
+ * `- **Filter:** `...`` e `- **Expression:** `...`` do docs/SECURITY-HEADERS.md
+ * (as equivalências curl/painel que espelham o terraform/). Devolve
+ * `[{ expression, where }]` com `where = markdown@L<linha>`.
+ */
+function extractMarkdownExpressions(md) {
+  const out = [];
+  // `^\s*` pode atravessar linhas em branco (\s inclui \n) e desviar o
+  // início do match — a linha é calculada pelo FIM do match, que é sempre a
+  // linha real da expressão (a que contém o backtick de fecho).
+  const re = /^\s*-\s+\*\*(?:Filter|Expression):\*\*\s*`([^`]+)`/gm;
+  let m;
+  while ((m = re.exec(md)) !== null) {
+    const lineNo = md.slice(0, m.index + m[0].length).split(/\r?\n/).length;
+    out.push({ expression: m[1].trim(), where: `markdown@L${lineNo}` });
+  }
+  return out;
+}
+
+/**
+ * Detecta drift entre dois conjuntos de expressões (ex.: terraform/ vs
+ * SECURITY-HEADERS.md). O doc é a fonte de verdade que o terraform replica —
+ * se uma expressão existir num lado e não no outro, é drift a reportar.
+ */
+function checkExpressionDrift(a, b) {
+  const problems = [];
+  const setA = new Set(a.map((e) => e.expression));
+  const setB = new Set(b.map((e) => e.expression));
+  for (const e of b) {
+    if (!setA.has(e.expression)) {
+      problems.push(`${e.where}: expressão não existe no terraform/ (drift): ${e.expression}`);
+    }
+  }
+  for (const e of a) {
+    if (!setB.has(e.expression)) {
+      problems.push(`${e.where}: expressão não existe no SECURITY-HEADERS.md (drift): ${e.expression}`);
+    }
+  }
+  return problems;
+}
+
 function extractExpressions(hcl) {
   const out = [];
   // `\r?` — o ficheiro em disco tem CRLF (autocrlf); sem ele o heredoc não casa.
@@ -333,8 +375,10 @@ function validateTerraformFile(filePath) {
   const hcl = fs.readFileSync(filePath, 'utf8');
   const exprs = extractExpressions(hcl);
   const problems = [];
-  if (exprs.length === 0) {
-    problems.push(`${path.basename(filePath)}: nenhuma expressão encontrada — regex de extração partiu?`);
+  // Só falha se o ficheiro contém `expression =` mas nada foi extraído
+  // (ex.: variables.tf não tem expressões — passa em silêncio).
+  if (exprs.length === 0 && /\bexpression\s*=/.test(hcl)) {
+    problems.push(`${path.basename(filePath)}: contém 'expression =' mas nenhuma expressão extraída — regex partiu?`);
   }
   for (const { expression, where } of exprs) {
     const r = validateExpression(expression);
@@ -345,4 +389,28 @@ function validateTerraformFile(filePath) {
   return { ok: problems.length === 0, problems, count: exprs.length };
 }
 
-module.exports = { validateExpression, extractExpressions, validateTerraformFile };
+/** Valida as expressões WAF de um ficheiro markdown (SECURITY-HEADERS.md). */
+function validateMarkdownFile(filePath) {
+  const md = fs.readFileSync(filePath, 'utf8');
+  const exprs = extractMarkdownExpressions(md);
+  const problems = [];
+  if (exprs.length === 0) {
+    problems.push(`${path.basename(filePath)}: nenhuma expressão WAF encontrada — regex de extração partiu?`);
+  }
+  for (const { expression, where } of exprs) {
+    const r = validateExpression(expression);
+    if (!r.ok) {
+      problems.push(`${path.basename(filePath)} ${where}: ${r.errors.join('; ')}`);
+    }
+  }
+  return { ok: problems.length === 0, problems, count: exprs.length };
+}
+
+module.exports = {
+  validateExpression,
+  extractExpressions,
+  extractMarkdownExpressions,
+  validateTerraformFile,
+  validateMarkdownFile,
+  checkExpressionDrift,
+};

@@ -4,13 +4,22 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const require = createRequire(import.meta.url);
-const { validateExpression, extractExpressions, validateTerraformFile } = require(
-  '../terraformExpressions.js',
-);
+const {
+  validateExpression,
+  extractExpressions,
+  extractMarkdownExpressions,
+  validateTerraformFile,
+  validateMarkdownFile,
+  checkExpressionDrift,
+} = require('../terraformExpressions.js');
 
 const MAIN_TF = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   '../../../terraform/main.tf',
+);
+const SECURITY_HEADERS_MD = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  '../../../docs/SECURITY-HEADERS.md',
 );
 
 // Garantia: as expressões WAF versionadas em terraform/ nunca regridem para
@@ -84,5 +93,63 @@ resource "x" {
     const r = validateExpression('starts_with(http.request.uri.path, )');
     expect(r.ok).toBe(false);
     expect(r.errors[0]).toMatch(/pos \d+:/);
+  });
+});
+
+describe('SECURITY-HEADERS.md WAF expressions (equivalências curl/painel)', () => {
+  it('valida as 5 expressões reais do docs/SECURITY-HEADERS.md', () => {
+    const result = validateMarkdownFile(SECURITY_HEADERS_MD);
+    expect(result.count).toBe(5);
+    expect(result.ok).toBe(true);
+    expect(result.problems).toEqual([]);
+  });
+
+  it('extrai as linhas **Filter:** e **Expression:** com a linha real (não atravessa linhas em branco)', () => {
+    const md =
+      '# Título\n\n' +
+      '**Regra 1:**\n' +
+      '\n' +
+      '\n' +
+      '- **Filter:** `starts_with(http.request.uri.path, "/embed/")`\n' +
+      '- **Expression:** `ends_with(http.request.uri.path, "/sw.js")`\n' +
+      '- **Expression:** `not starts_with(http.request.uri.path, "/api/")`\n' +
+      '- qualquer outra linha com `backticks` não conta\n';
+    const exprs = extractMarkdownExpressions(md);
+    expect(exprs).toHaveLength(3);
+    expect(exprs.map((e) => e.where)).toEqual(['markdown@L6', 'markdown@L7', 'markdown@L8']);
+    expect(exprs[0].expression).toBe('starts_with(http.request.uri.path, "/embed/")');
+    expect(exprs[2].expression).toBe('not starts_with(http.request.uri.path, "/api/")');
+  });
+
+  it('deteta expressão inválida no markdown com posição', () => {
+    const md =
+      '- **Expression:** `starts_with(http.request.uri.path "/x/")`\n' + // vírgula em falta
+      '- **Expression:** `ends_with(http.request.uri.path, "/sw.js")`\n';
+    const exprs = extractMarkdownExpressions(md);
+    expect(exprs).toHaveLength(2);
+    const bad = validateExpression(exprs[0].expression);
+    expect(bad.ok).toBe(false);
+    expect(bad.errors[0]).toMatch(/pos \d+:/);
+    // a expressão válida do mesmo ficheiro passa
+    expect(validateExpression(exprs[1].expression).ok).toBe(true);
+  });
+});
+
+describe('drift terraform/ ↔ SECURITY-HEADERS.md', () => {
+  it('não há drift entre o main.tf e o doc', () => {
+    const tf = extractExpressions(require('fs').readFileSync(MAIN_TF, 'utf8'));
+    const doc = extractMarkdownExpressions(require('fs').readFileSync(SECURITY_HEADERS_MD, 'utf8'));
+    expect(tf).toHaveLength(5);
+    expect(doc).toHaveLength(5);
+    expect(checkExpressionDrift(tf, doc)).toEqual([]);
+  });
+
+  it('deteta expressão que só existe num lado', () => {
+    const tf = [{ expression: 'starts_with(http.request.uri.path, "/a/")', where: 'main.tf inline@0' }];
+    const doc = [{ expression: 'ends_with(http.request.uri.path, "/b.js")', where: 'markdown@L9' }];
+    const problems = checkExpressionDrift(tf, doc);
+    expect(problems).toHaveLength(2);
+    expect(problems[0]).toContain('markdown@L9');
+    expect(problems[1]).toContain('main.tf inline@0');
   });
 });
