@@ -22,10 +22,10 @@ export const HERO_FORECAST_LAYERS = [
     key: 'tides',
     labelPt: 'Marés',
     labelEn: 'Tides',
-    sourcePt: 'IH',
-    sourceEn: 'IH',
-    detailPt: 'Maré observada · Instituto Hidrográfico',
-    detailEn: 'Observed tide · Portuguese Hydrographic Institute',
+    sourcePt: 'Open-Meteo',
+    sourceEn: 'Open-Meteo',
+    detailPt: 'Previsão MSL · Open-Meteo Marine (marégrafo IH quando online)',
+    detailEn: 'MSL forecast · Open-Meteo Marine (IH gauge when online)',
   },
 ] as const;
 
@@ -53,6 +53,6 @@ export function getHeroFreshnessTitle(locale: string, updatedAtTs: number): stri
   }).format(new Date(updatedAtTs));
 
   return isPt
-    ? `Última actualização do pipeline: ${when} (Lisboa). De dia: Open-Meteo com multi-modelo (2h). De noite: só best_match (4h). Marés via IH.`
-    : `Last pipeline update: ${when} (Lisbon). Daytime: Open-Meteo with multi-model (2h). Night: best_match only (4h). Tides via IH.`;
+    ? `Última actualização do pipeline: ${when} (Lisboa). De dia: Open-Meteo com multi-modelo (2h). De noite: só best_match (4h). Marés previstas via Open-Meteo; observações IH quando o marégrafo está online.`
+    : `Last pipeline update: ${when} (Lisbon). Daytime: Open-Meteo with multi-model (2h). Night: best_match only (4h). Forecast tides via Open-Meteo; IH observations when the gauge is online.`;
 }

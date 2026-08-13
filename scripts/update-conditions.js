@@ -23,6 +23,7 @@ const {
 const { blendWindAtIndex, readModelMap, applyWindBlendToHours } = require('./lib/windBlend');
 const { isMultiModelEnabled: scheduleIsMultiModelEnabled } = require('./lib/updateSchedule');
 const { writePipelineMeta } = require('./lib/pipelineMeta');
+const { isFreshIhObservation, MAX_OBS_AGE_HOURS } = require('./lib/ihObservedTide');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -328,6 +329,8 @@ async function updateConditions() {
     }
   }
 
+  let ihSkippedStale = 0;
+
   const aliasSpots = spots.filter((s) => s.conditionsSource);
 
   for (const spot of spots) {
@@ -412,12 +415,14 @@ async function updateConditions() {
       let ihTideObs = null;
       if (spotMapping) {
         const station = ihTides.stations[spotMapping.codp];
-        if (station) {
+        if (station && isFreshIhObservation(station.lastData)) {
           ihTideObs = {
             lastObs: station.lastObs,
             lastData: station.lastData,
             stationTitle: station.title,
           };
+        } else if (station) {
+          ihSkippedStale += 1;
         }
       }
 
@@ -499,6 +504,12 @@ async function updateConditions() {
     allConditions[spot.id] = JSON.parse(JSON.stringify(allConditions[srcId]));
     allForecasts[spot.id] = allForecasts[srcId];
     console.log(`  ↳ ${spot.id} ← ${srcId} (no API)`);
+  }
+
+  if (ihSkippedStale > 0) {
+    console.warn(
+      `⚠️ Skipped stale IH observed tide on ${ihSkippedStale} spots (lastData > ${MAX_OBS_AGE_HOURS}h) — forecast tides stay on Open-Meteo`,
+    );
   }
 
   function atomicWriteJson(filePath, content) {
