@@ -22,6 +22,7 @@
     "test:e2e:core": "playwright test home-adaptive mapa-route spot-dashboard confidence-badge",
     "test:supabase": "bash supabase/tests/run-tests.sh",
     "check:headers": "bash scripts/check-security-headers.sh",
+    "terraform:expressions": "node scripts/validate-terraform-expressions.js",
     "lighthouse:prod": "node scripts/run-lighthouse-prod.js",
     "audit:full": "node scripts/run-full-audit.js",
     "audit:ux": "node scripts/run-ux-audit.js",
