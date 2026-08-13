@@ -34,13 +34,15 @@ check_header() { # label, header_name, headers
 
 # check_value: header must exist AND match an expected value regex
 check_value() { # label, header_name, expected_regex, headers
-  local label="$1" name="$2" want="$3" hdrs="$4"
-  local line
+  local label="$1" name="$2" want="$3" hdrs="$4" line missing
   line=$(printf '%s\n' "$hdrs" | grep -iE "^${name}:" | head -1 | tr -d '\r')
   if [ -n "$line" ] && printf '%s\n' "$line" | grep -qiE "$want"; then
     echo "  ok: $label"
   else
-    echo "  FAIL: $label — ${line:-header '$name' ausente}"
+    # SC2016-avoiding form: o $name expande mesmo no default do ${line:-...}
+    # (o shellcheck perde-se com as aspas dentro do default — falso positivo).
+    missing="header '$name' ausente"
+    echo "  FAIL: $label — ${line:-$missing}"
     fail=1
   fi
 }

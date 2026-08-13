@@ -150,3 +150,21 @@ jobs:
       # aqui nunca corre (o módulo não tem backend).
       - name: Validate WAF expressions (ruleset engine syntax)
         run: node scripts/validate-terraform-expressions.js
+
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Install shellcheck
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends shellcheck
+
+      # Os 4 scripts bash do repo (checker S7, monitor IH, push-data-update,
+      # runner de testes SQL) — sem findings, o job passa.
+      - name: Lint bash scripts (shellcheck)
+        run: |
+          shellcheck scripts/check-security-headers.sh \
+            scripts/monitor-ih-tides.sh \
+            scripts/push-data-update.sh \
+            supabase/tests/run-tests.sh
