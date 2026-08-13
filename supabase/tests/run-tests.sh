@@ -54,4 +54,7 @@ run_sql supabase/supabase-contributions-harden-rpc.sql
 echo "==> running contributions/tips behavior assertions"
 run_sql supabase/tests/test-contributions.sql
 
+echo "==> running score_feedback behavior assertions"
+run_sql supabase/tests/test-score-feedback.sql
+
 echo "OK — supabase integration tests passed"
