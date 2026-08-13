@@ -79,3 +79,9 @@ public/data/
 # IPMA station nearest-spot map (regenerate with npm run obs:map)
 !public/data/ipma-station-map.json
 !public/data/ipma-station-map.meta.json
+
+# Terraform (S7 — Cloudflare ruleset; nunca commitar state/tfvars)
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars

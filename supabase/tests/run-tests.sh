@@ -39,7 +39,19 @@ run_sql supabase/supabase-alerts-harden-legacy.sql
 echo "==> applying supabase-alerts-harden-legacy.sql again (idempotency, 2/2)"
 run_sql supabase/supabase-alerts-harden-legacy.sql
 
-echo "==> running behavior assertions"
+echo "==> running subscribe_alert behavior assertions"
 run_sql supabase/tests/test-subscribe-alert.sql
+
+echo "==> applying contributions + score-feedback migrations"
+run_sql supabase/supabase-contributions.sql
+run_sql supabase/supabase-contributions-migration-c3.sql
+run_sql supabase/supabase-score-feedback.sql
+run_sql supabase/supabase-contributions-harden-rpc.sql
+
+# The hardening file must also apply cleanly twice (idempotency).
+run_sql supabase/supabase-contributions-harden-rpc.sql
+
+echo "==> running contributions/tips behavior assertions"
+run_sql supabase/tests/test-contributions.sql
 
 echo "OK — supabase integration tests passed"

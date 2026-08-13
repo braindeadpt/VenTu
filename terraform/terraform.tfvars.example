@@ -1,0 +1,8 @@
+# Copia para terraform.tfvars (gitignored) e preenche:
+#   cp terraform.tfvars.example terraform.tfvars
+#
+# Alternativa ao token no ficheiro: export CLOUDFLARE_API_TOKEN=... e remove
+# a linha cloudflare_api_token daqui.
+
+cloudflare_api_token = "CHANGE_ME__zone_edit_token"
+zone_name            = "ventu.surf"

@@ -26,7 +26,7 @@ Decisão de arquitectura para servir CSP, `X-Frame-Options` e `frame-ancestors` 
 
 | Opção | Prós | Contras | Veredicto |
 |---|---|---|---|
-| **A. DNS proxied + Transform Rules** | Sem código, sem worker no request path, sem limites de execução, gratuito, remove headers (`ACAO:*`) | Regras na UI (versionar exige Terraform/API) | ✅ **Escolhida** |
+| **A. DNS proxied + Transform Rules** | Sem worker no request path, sem limites de execução, gratuito, remove headers (`ACAO:*`); **versionável via Terraform (`terraform/`)** | Regras na UI se não usares Terraform | ✅ **Escolhida** |
 | B. Cloudflare Worker proxy em `ventu.surf/*` | Versionável no repo, controlo total | Limite free ~100k req/dia, hop extra, tem de cachear com Cache API (senão perde o cache edge), mais superfície | ❌ Sem ganho vs A para headers estáticos |
 | C. Migrar para Cloudflare Pages | `public/_headers` funciona nativamente (zero regras) | Muda o pipeline de deploy (deploy.yml → CF Pages), move DNS, perde o GitHub Pages | 🔁 Alternativa válida se um dia se migrar o hosting |
 
@@ -48,6 +48,8 @@ Nota: um Worker que faça `fetch` ao **próprio domínio** não entra em loop (o
 ### 3.2 Transform Rules (Rules → Transform Rules → Modify Response Header)
 
 Espelhar `public/_headers`. **Ordem importa** (regras correm por ordem; a última com match sobrescreve).
+
+> **Versão infra-as-code:** as mesmas 2 regras existem versionadas em [`terraform/`](../terraform/README.md) (`cloudflare_ruleset` na fase `http_response_headers_transform`) — aplica com `terraform apply` e valida com `bash scripts/check-security-headers.sh`. Os valores abaixo são a fonte de verdade; o Terraform apenas os replica.
 
 **Regra 1 — `/embed/*` (mantém o widget iframeable):**
 
@@ -72,13 +74,49 @@ Espelhar `public/_headers`. **Ordem importa** (regras correm por ordem; a últim
   - `Strict-Transport-Security` → `max-age=31536000; includeSubDomains; preload` (apenas se não ativado em Edge Certificates)
 - **Actions (Remove):** `Access-Control-Allow-Origin` (o GitHub Pages envia `*`; sem necessidade de CORS aberto — o worker `/obs` já tem CORS controlado no seu próprio domínio)
 
-### 3.3 Cache (opcional, fora do escopo deste hardening)
+### 3.3 Cache Rules (edge) — espelhar o `public/_headers`
 
-As regras de `Cache-Control` do `public/_headers` (`/_next/static/*` immutable, `/data/*` SWR) **não afectam o cache edge da Cloudflare** (a doc oficial: modificação de `cache-control` via transform rules não muda o comportamento de cache da CF). Para cache edge real, usar **Cache Rules** ou **Cloudflare Pages**. Hoje o GitHub Pages já serve `Cache-Control: max-age=600` e o service worker do site faz cache-first com TTL — suficiente.
+As regras de `Cache-Control` do `public/_headers` (`/_next/static/*` immutable, `/data/*` SWR) **não podem ser replicadas via Transform Rules**: a doc oficial da Cloudflare diz que modificar `cache-control` em response header transform rules **não muda o cache edge** (a Cloudflare avalia o caching antes de aplicar as modificações de resposta). Para cache real no CDN usa-se **Cache Rules** (Rules → Cache Rules).
+
+**Limites do plano free (confirmados na doc oficial):** máx. **10 Cache Rules** ativas (este plano usa 3) e ficheiro cacheável máx. **512 MB** (irrelevante para HTML/JSON).
+
+**Regra C1 — `/_next/static/*` (imutável, 1 ano):**
+
+- **Expression:** `starts_with(http.request.uri.path, "/_next/static/")`
+- Cache status: **Eligible for cache**
+- Edge TTL: **Override origin → 1 year**
+- Serve stale content: **While updating**
+- Browser TTL: **Respect origin headers** (o SW do site já faz cache-first immutable nestes assets — ver nota abaixo)
+
+**Regra C2 — `/data/*` (SWR, 5 min):**
+
+- **Expression:** `starts_with(http.request.uri.path, "/data/")`
+- Cache status: **Eligible for cache**
+- Edge TTL: **Override origin → 5 minutes** (o origin GitHub Pages envia `max-age=600` para tudo; aqui encurta-se o frescor dos dados)
+- Serve stale content: **While updating** — o equivalente edge do `stale-while-revalidate=3600` do `public/_headers`
+- Browser TTL: **Respect origin headers**
+
+**Regra C3 — `/sw.js` (nunca cachear no edge):**
+
+- **Expression:** `ends_with(http.request.uri.path, "/sw.js")`
+- Cache status: **Bypass cache** (o Cloudflare nem lê nem escreve no cache edge)
+- Browser TTL: o origin envia `max-age=600`; se quiseres forçar revalidação no browser, seta `Cache-Control: public, max-age=0, must-revalidate` via uma Transform Rule adicional (browser-facing — permitido) ou usa `updateViaCache: 'none'` no registo do SW. Hoje o SW do site já protege o próprio ficheiro no cliente.
+
+**Notas:**
+- O GitHub Pages já serve `Cache-Control: max-age=600` em tudo → a Cloudflare cacheia por defeito 600s; as Cache Rules **estendem/ajustam** esse comportamento (origin offload real para os assets imutáveis e frescura controlada para os dados).
+- O service worker do site continua a ser a camada principal de cache no cliente (cache-first, TTL ~2.5h nos dados); as Cache Rules atuam no CDN + browsers sem SW.
+- Versionável por Terraform (fase `http_cache_settings` do `cloudflare_ruleset`) se quiseres manter tudo em infra-as-code — ver [`terraform/README.md`](../terraform/README.md).
 
 ## 4. Validação
 
-Depois de aplicar, confirmar em produção:
+Depois de aplicar, correr o verificador (exit 0 = tudo conforme; contra o GitHub Pages puro falha todos os checks, que é exatamente o estado pré-implementação):
+
+```bash
+bash scripts/check-security-headers.sh          # https://ventu.surf
+bash scripts/check-security-headers.sh https://staging.example.com
+```
+
+Equivale manualmente a:
 
 ```bash
 # Header CSP real (já não é só meta):

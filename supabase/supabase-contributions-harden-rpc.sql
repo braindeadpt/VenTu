@@ -41,12 +41,15 @@ REVOKE INSERT ON score_feedback FROM anon;
 REVOKE USAGE, SELECT ON SEQUENCE score_feedback_id_seq FROM anon;
 
 -- ── 4. submit_contribution ──
+-- Required params first: PostgreSQL rejects a non-default param after a
+-- defaulted one. Callers use named args, so order is not observable.
+DROP FUNCTION IF EXISTS public.submit_contribution(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT);
 CREATE OR REPLACE FUNCTION public.submit_contribution(
   p_type TEXT,
   p_message TEXT,
+  p_client_id TEXT,
   p_email TEXT DEFAULT NULL,
   p_locale TEXT DEFAULT 'pt',
-  p_client_id TEXT,
   p_spot_slug TEXT DEFAULT NULL,
   p_tip_field TEXT DEFAULT NULL
 )
@@ -140,13 +143,16 @@ REVOKE ALL ON FUNCTION public.submit_contribution(TEXT, TEXT, TEXT, TEXT, TEXT, 
 GRANT EXECUTE ON FUNCTION public.submit_contribution(TEXT, TEXT, TEXT, TEXT, TEXT, TEXT, TEXT) TO anon;
 
 -- ── 5. submit_score_feedback ──
+-- Required params first (see note above). The old signature had a different
+-- arg-type order, so drop it explicitly to avoid a stale overload.
+DROP FUNCTION IF EXISTS public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, JSONB, TEXT, TEXT);
 CREATE OR REPLACE FUNCTION public.submit_score_feedback(
   p_spot_slug TEXT,
   p_sport TEXT,
   p_predicted_score INTEGER,
   p_verdict TEXT,
-  p_conditions_snapshot JSONB DEFAULT '{}',
   p_client_id TEXT,
+  p_conditions_snapshot JSONB DEFAULT '{}',
   p_locale TEXT DEFAULT 'pt'
 )
 RETURNS JSONB
@@ -244,8 +250,8 @@ BEGIN
 END;
 $$;
 
-REVOKE ALL ON FUNCTION public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, JSONB, TEXT, TEXT) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, JSONB, TEXT, TEXT) TO anon;
+REVOKE ALL ON FUNCTION public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, TEXT, JSONB, TEXT) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.submit_score_feedback(TEXT, TEXT, INTEGER, TEXT, TEXT, JSONB, TEXT) TO anon;
 
 -- ── 6. Sanity checks (keep) ──
 --   Admin policies on contributions (select/update/delete, is_ventu_admin) — untouched.
