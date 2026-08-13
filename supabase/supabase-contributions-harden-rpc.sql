@@ -16,8 +16,23 @@
 --      limits (same browser / NAT) + per-IP per-spot limits for calibration.
 --   3. Direct anonymous INSERT and sequence access revoked — the RPCs are
 --      the only anon write entry points. Admin reads/updates are untouched.
+-- Prerequisite: supabase-rate-limit-common.sql (shared request_client_ip /
+-- check_rate_limit / rate_limit_events ledger) — apply it FIRST.
 --
 -- Idempotent: safe to re-run.
+
+-- ── 0. Prerequisite guard (fail at apply time, not on first call) ──
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_proc
+    WHERE proname IN ('request_client_ip', 'check_rate_limit')
+      AND pronamespace = 'public'::regnamespace
+  ) THEN
+    RAISE EXCEPTION 'prerequisite missing: apply supabase-rate-limit-common.sql first';
+  END IF;
+END
+$$;
 
 -- ── 1. Client IP columns ──
 ALTER TABLE contributions ADD COLUMN IF NOT EXISTS client_ip TEXT;
@@ -60,7 +75,6 @@ SET search_path = public
 AS $$
 DECLARE
   v_ip TEXT;
-  v_attempts INTEGER;
 BEGIN
   -- ── Input validation (the table CHECKs stay as the hard backstop) ──
   IF p_type NOT IN ('spot', 'idea', 'bug', 'tip') THEN
@@ -84,32 +98,10 @@ BEGIN
     RETURN jsonb_build_object('ok', false, 'error', 'invalid_tip_field');
   END IF;
 
-  -- ── Client IP from request headers (NULL when unavailable, e.g. SQL editor) ──
-  BEGIN
-    v_ip := NULLIF(
-      split_part(
-        current_setting('request.headers', true)::json->>'x-forwarded-for',
-        ',', 1
-      ),
-      ''
-    );
-    -- Keep only plausible IP-ish strings; never trust the value for anything else.
-    IF v_ip IS NOT NULL AND (length(v_ip) > 64 OR v_ip !~ '^[0-9A-Fa-f:.]+$') THEN
-      v_ip := NULL;
-    END IF;
-  EXCEPTION WHEN OTHERS THEN
-    v_ip := NULL;
-  END;
-
-  -- ── Per-IP rate limit: max 5 submissions / 60 s (hard boundary) ──
-  IF v_ip IS NOT NULL THEN
-    SELECT count(*) INTO v_attempts
-    FROM contributions
-    WHERE client_ip = v_ip
-      AND created_at > now() - interval '60 seconds';
-    IF v_attempts >= 5 THEN
-      RETURN jsonb_build_object('ok', false, 'error', 'rate_limit');
-    END IF;
+  -- ── Client IP + per-IP rate limit (shared helpers — supabase-rate-limit-common.sql) ──
+  v_ip := public.request_client_ip();
+  IF NOT public.check_rate_limit(v_ip, 'submit_contribution', 5, interval '60 seconds') THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'rate_limit');
   END IF;
 
   -- ── Per-client rate limit (secondary; shared IP / NAT) ──
@@ -181,31 +173,10 @@ BEGIN
     RETURN jsonb_build_object('ok', false, 'error', 'invalid_client');
   END IF;
 
-  -- ── Client IP from request headers (same pattern as submit_contribution) ──
-  BEGIN
-    v_ip := NULLIF(
-      split_part(
-        current_setting('request.headers', true)::json->>'x-forwarded-for',
-        ',', 1
-      ),
-      ''
-    );
-    IF v_ip IS NOT NULL AND (length(v_ip) > 64 OR v_ip !~ '^[0-9A-Fa-f:.]+$') THEN
-      v_ip := NULL;
-    END IF;
-  EXCEPTION WHEN OTHERS THEN
-    v_ip := NULL;
-  END;
-
-  -- ── Per-IP rate limit: max 15 submissions / 60 s (hard boundary) ──
-  IF v_ip IS NOT NULL THEN
-    SELECT count(*) INTO v_attempts
-    FROM score_feedback
-    WHERE client_ip = v_ip
-      AND created_at > now() - interval '60 seconds';
-    IF v_attempts >= 15 THEN
-      RETURN jsonb_build_object('ok', false, 'error', 'rate_limit');
-    END IF;
+  -- ── Client IP + per-IP rate limit (shared helpers — supabase-rate-limit-common.sql) ──
+  v_ip := public.request_client_ip();
+  IF NOT public.check_rate_limit(v_ip, 'submit_score_feedback', 15, interval '60 seconds') THEN
+    RETURN jsonb_build_object('ok', false, 'error', 'rate_limit');
   END IF;
 
   -- ── Per-IP per-spot: max 5 / hour (protects calibration quality) ──

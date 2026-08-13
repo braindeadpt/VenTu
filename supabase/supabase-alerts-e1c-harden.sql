@@ -15,96 +15,29 @@
 --   * direct INSERT/UPDATE/DELETE on user_alert_prefs revoked — the RPCs are
 --     the only write paths (defense in depth even if RLS regresses).
 --
+-- Prerequisite: supabase-rate-limit-common.sql (shared request_client_ip /
+-- check_rate_limit / rate_limit_events ledger) — apply it FIRST.
+--
 -- Idempotent: safe to re-run.
 
--- ── 1. Per-IP rate-limit ledger (never exposed via the API) ──
-CREATE TABLE IF NOT EXISTS rate_limit_events (
-  id BIGSERIAL PRIMARY KEY,
-  client_ip TEXT NOT NULL,
-  action TEXT NOT NULL,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-
-CREATE INDEX IF NOT EXISTS idx_rate_limit_events_ip_action_time
-  ON rate_limit_events(client_ip, action, created_at DESC);
-
-ALTER TABLE rate_limit_events ENABLE ROW LEVEL SECURITY; -- no policies: API cannot touch it
-REVOKE ALL ON rate_limit_events FROM anon, authenticated;
-REVOKE ALL ON SEQUENCE rate_limit_events_id_seq FROM anon, authenticated;
-
--- ── 2. Client IP helper (same pattern as S2: first X-Forwarded-For hop) ──
-CREATE OR REPLACE FUNCTION public.request_client_ip()
-RETURNS TEXT
-LANGUAGE plpgsql
-STABLE
-AS $$
-DECLARE v_ip TEXT;
+-- ── 0. Prerequisite guard (fail at apply time, not on first call) ──
+DO $$
 BEGIN
-  BEGIN
-    v_ip := NULLIF(
-      split_part(
-        current_setting('request.headers', true)::json->>'x-forwarded-for',
-        ',', 1
-      ),
-      ''
-    );
-    -- Keep only plausible IP-ish strings; never trust the value for anything else.
-    IF v_ip IS NOT NULL AND (length(v_ip) > 64 OR v_ip !~ '^[0-9A-Fa-f:.]+$') THEN
-      v_ip := NULL;
-    END IF;
-  EXCEPTION WHEN OTHERS THEN
-    v_ip := NULL;
-  END;
-  RETURN v_ip;
-END;
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_proc
+    WHERE proname IN ('request_client_ip', 'check_rate_limit')
+      AND pronamespace = 'public'::regnamespace
+  ) THEN
+    RAISE EXCEPTION 'prerequisite missing: apply supabase-rate-limit-common.sql first';
+  END IF;
+END
 $$;
 
-REVOKE ALL ON FUNCTION public.request_client_ip() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.request_client_ip() TO anon, authenticated;
-
--- ── 3. Rate-limit helper: true = allowed (records the event); false = blocked ──
-CREATE OR REPLACE FUNCTION public.check_rate_limit(
-  p_ip TEXT,
-  p_action TEXT,
-  p_max INTEGER,
-  p_window INTERVAL
-)
-RETURNS BOOLEAN
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-DECLARE v_count INTEGER;
-BEGIN
-  -- IP unavailable (e.g. SQL editor) → fail open: never block legit traffic
-  -- on a missing header.
-  IF p_ip IS NULL THEN
-    RETURN true;
-  END IF;
-
-  SELECT count(*) INTO v_count
-  FROM rate_limit_events
-  WHERE client_ip = p_ip
-    AND action = p_action
-    AND created_at > now() - p_window;
-
-  IF v_count >= p_max THEN
-    RETURN false;
-  END IF;
-
-  INSERT INTO rate_limit_events (client_ip, action) VALUES (p_ip, p_action);
-  RETURN true;
-END;
-$$;
-
-REVOKE ALL ON FUNCTION public.check_rate_limit(TEXT, TEXT, INTEGER, INTERVAL) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.check_rate_limit(TEXT, TEXT, INTEGER, INTERVAL) TO anon, authenticated;
-
--- ── 4. Close direct writes on user_alert_prefs (RPCs are the only write path) ──
+-- ── 1. Close direct writes on user_alert_prefs (RPCs are the only write path) ──
 ALTER TABLE user_alert_prefs ADD COLUMN IF NOT EXISTS client_ip TEXT;
 REVOKE INSERT, UPDATE, DELETE ON user_alert_prefs FROM anon, authenticated;
 
--- ── 5. Hardened subscribe_favorites_alerts (per-IP + keeps per-user 30s) ──
+-- ── 2. Hardened subscribe_favorites_alerts (per-IP + keeps per-user 30s) ──
 CREATE OR REPLACE FUNCTION public.subscribe_favorites_alerts(
   p_min_score INTEGER,
   p_sport TEXT,
@@ -202,7 +135,7 @@ BEGIN
 END;
 $$;
 
--- ── 6. Token RPCs (anon): per-IP rate limit (brute-force / abuse guard) ──
+-- ── 3. Token RPCs (anon): per-IP rate limit (brute-force / abuse guard) ──
 CREATE OR REPLACE FUNCTION public.verify_user_alerts(p_token TEXT)
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -254,7 +187,7 @@ BEGIN
 END;
 $$;
 
--- ── 7. deactivate_user_alerts (authenticated): per-IP rate limit ──
+-- ── 4. deactivate_user_alerts (authenticated): per-IP rate limit ──
 CREATE OR REPLACE FUNCTION public.deactivate_user_alerts()
 RETURNS BOOLEAN
 LANGUAGE plpgsql
@@ -275,7 +208,7 @@ BEGIN
 END;
 $$;
 
--- ── 8. Sanity checks (keep) ──
+-- ── 5. Sanity checks (keep) ──
 --   "Users read own alert prefs" SELECT policy — untouched (authenticated self-read).
 --   verify_alert_token / unsubscribe_alert_token (combined E1c → E1 legacy) — untouched,
 --   now rate-limited per IP via the verify/unsubscribe sub-calls above.

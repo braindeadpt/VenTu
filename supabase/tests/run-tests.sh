@@ -30,6 +30,10 @@ run_sql() {
 echo "==> setup: roles + auth.jwt() stub"
 run_sql supabase/tests/setup.sql
 
+echo "==> applying supabase-rate-limit-common.sql (shared per-IP helpers)"
+run_sql supabase/supabase-rate-limit-common.sql
+run_sql supabase/supabase-rate-limit-common.sql
+
 echo "==> applying supabase-alerts.sql"
 run_sql supabase/supabase-alerts.sql
 
