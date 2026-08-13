@@ -39,7 +39,9 @@ GET /collections/tide_obs_nrt/area?coords=POLYGON((-9.5 38.5,-9.5 39.0,-9.0 39.0
 # locations + locations/{locId}
 GET /collections/tide_obs_nrt/locations?f=json
 ```
-Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing WKT; os 500 seguintes são o backend). **Nota**: radius/area precisam das coordenadas das estações, que hoje vêm dos items — sem items, só com coordenadas hardcoded. Quando o IH recuperar, testar primeiro `items`, depois `radius` por estação conhecida; se só o EDR voltar, o `fetch-ih-tides.js` ganha um fallback EDR (parse dos features é idêntico).
+Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing WKT; os 500 seguintes são o backend). **Nota**: radius/area precisam das coordenadas das estações, que hoje vêm dos items — sem items, o fallback usa as coordenadas do último `ih-tides.json` conhecido (marégrafos fixos). **O fallback EDR já está implementado** no `fetch-ih-tides.js` (radius por estação conhecida, dedup por codp, sample-probe 3 estações antes do fetch completo) — ativar com `IH_EDR_FALLBACK=1` no env do passo do `update-data.yml` (default OFF para não martelar a API enquanto o backend estiver todo em baixo). Quando o IH recuperar, testar primeiro `items`, depois `radius` por estação conhecida.
+
+**Monitorização**: o workflow `ih-health.yml` (de hora a hora) corre `scripts/monitor-ih-tides.sh`, que sonda o `items` e abre uma issue (label `ih-outage`) quando cai; quando recupera, **comenta e fecha a issue automaticamente** — a recuperação fica visível sem monitorização manual.
 
 ---
 

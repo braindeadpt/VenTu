@@ -52,6 +52,10 @@ jobs:
         if: steps.gate.outputs.mode == 'full'
         run: node scripts/should-run-data-update.js --print-audit
 
+      # Fallback EDR (radius por estação conhecida) já implementado no script —
+      # ativar quando o backend de marés voltar adicionando a este passo:
+      #   env: { IH_EDR_FALLBACK: '1' }
+      # (ver docs/BACKLOG.md "Marés" — receita de recuperação)
       - name: Fetch IH Tide Station Data
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ih-tides.js

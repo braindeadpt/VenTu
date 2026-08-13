@@ -16,7 +16,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const IH_API = 'https://api-features.hidrografico.pt';
+const IH_API = process.env.IH_API_URL || 'https://api-features.hidrografico.pt';
 /** Current collection id (FAQ / OGC).
  *  Legacy id `tide_obs_stations_nrt` was REMOVED from the API in 2026
  *  (404 since 2026-08-13) — a dead fallback only adds a doomed request.
@@ -24,9 +24,32 @@ const IH_API = 'https://api-features.hidrografico.pt';
  *  collection (radius/area, WKT coords) — see docs/BACKLOG.md "Marés".
  */
 const COLLECTIONS = ['tide_obs_nrt'];
-const OUTPUT_PATH = path.join(__dirname, '../public/data/ih-tides.json');
+const OUTPUT_PATH =
+  process.env.IH_OUTPUT_PATH || path.join(__dirname, '../public/data/ih-tides.json');
 /** Max age of a reused ih-tides.json before the pipeline fails loudly. */
 const MAX_STALE_HOURS = 24;
+
+/**
+ * EDR fallback (radius por estação conhecida) — `IH_EDR_FALLBACK=1`.
+ *
+ * Quando `items` falha (ex.: o incidente 2026-08-13 em que o backend de
+ * observações devolvia 500), a mesma coleção expõe endpoints OGC API EDR:
+ * `radius?coords=POINT(lon lat)&within=50000` devolve as estações a menos
+ * de 50km do ponto (formato WKT validado ao vivo — ver docs/BACKLOG.md).
+ * As coordenadas vêm do último ih-tides.json conhecido (as estações são
+ * marégrafos fixos — a posição não envelhece, mesmo que os dados sim).
+ *
+ * Default OFF de propósito: com o backend todo em baixo, um fetch completo
+ * por estação seria martelar a API partida. Ativar quando o EDR voltar:
+ * `IH_EDR_FALLBACK=1` no env do passo do update-data.yml (uma linha).
+ * O sample-probe mantém-se mesmo ativo: 2-3 estações primeiro, e se todas
+ * falharem o fallback desiste sem disparar N pedidos condenados.
+ */
+const EDR_FALLBACK = process.env.IH_EDR_FALLBACK === '1';
+/** Estações sondadas antes de comprometer o fetch EDR completo. */
+const EDR_SAMPLE_STATIONS = 3;
+/** Raio de busca em metros à volta de cada estação conhecida. */
+const EDR_RADIUS_M = 50_000;
 
 /**
  * Age in hours of the previous ih-tides.json, or null if it can't be
@@ -87,7 +110,7 @@ function stationFromFeature(feature) {
   const lastObs = p.last_sea_surface_height ?? p.last_obs;
   const lastData = p.last_date_time ?? p.last_data;
   if (p.codp == null || lastObs == null || !lastData) return null;
-  return {
+  const station = {
     codp: p.codp,
     title: p.title,
     category: p.category,
@@ -96,6 +119,77 @@ function stationFromFeature(feature) {
     lastObs,
     lastData,
   };
+  // Features EDR podem só trazer a posição na geometry (GeoJSON [lon, lat])
+  // — usar como fallback em vez de deixar distâncias NaN no spot mapping.
+  if (
+    !Number.isFinite(station.lat) &&
+    feature.geometry &&
+    Array.isArray(feature.geometry.coordinates)
+  ) {
+    station.lon = feature.geometry.coordinates[0];
+    station.lat = feature.geometry.coordinates[1];
+  }
+  return station;
+}
+
+/** Últimas estações conhecidas (marégrafos fixos) para o fallback EDR. */
+function lastKnownStations() {
+  try {
+    const data = JSON.parse(fs.readFileSync(OUTPUT_PATH, 'utf8'));
+    const stations = (data && data.stations) || {};
+    return Object.values(stations).filter(
+      (s) => s && Number.isFinite(s.lat) && Number.isFinite(s.lon)
+    );
+  } catch {
+    return [];
+  }
+}
+
+/** URL EDR radius — WKT `POINT(lon lat)` (espaço, verificado ao vivo). */
+function edrRadiusUrl(lat, lon) {
+  const coords = `POINT(${lon} ${lat})`;
+  return `${IH_API}/collections/tide_obs_nrt/radius?coords=${encodeURIComponent(coords)}&within=${EDR_RADIUS_M}&f=json`;
+}
+
+/**
+ * Fetch EDR radius por estação conhecida. Sample-probe primeiro (fail fast
+ * se o backend EDR também estiver em baixo), depois fetch completo com
+ * features mergeadas — a dedup por codp fica no parse da função principal.
+ */
+async function fetchEDRRadius(knownStations) {
+  const sample = knownStations.slice(0, EDR_SAMPLE_STATIONS);
+  console.log(`  Probing EDR radius (${sample.length} sample stations)…`);
+  const probes = await Promise.allSettled(
+    sample.map((s) => fetchJson(edrRadiusUrl(s.lat, s.lon)))
+  );
+  const probeOk = probes.filter(
+    (r) => r.status === 'fulfilled' && Array.isArray(r.value.features)
+  );
+  if (probeOk.length === 0) {
+    throw new Error(
+      'EDR radius probe failed for all sample stations — EDR backend down too'
+    );
+  }
+  if (probeOk.length < sample.length) {
+    console.warn(
+      `⚠️ EDR probe: ${probeOk.length}/${sample.length} sample stations OK — continuing`
+    );
+  }
+
+  console.log(`  Fetching EDR radius for ${knownStations.length} known stations…`);
+  const results = await Promise.allSettled(
+    knownStations.map((s) => fetchJson(edrRadiusUrl(s.lat, s.lon)))
+  );
+  const features = [];
+  results.forEach((r) => {
+    if (r.status === 'fulfilled' && Array.isArray(r.value.features)) {
+      features.push(...r.value.features);
+    }
+  });
+  if (features.length === 0) {
+    throw new Error('EDR radius returned no features');
+  }
+  return features;
 }
 
 async function fetchStationsCollection(collectionId) {
@@ -122,6 +216,25 @@ async function fetchIHTides() {
       break;
     } catch (err) {
       errors.push(`${id}: ${err.message}`);
+    }
+  }
+
+  // Fallback EDR (radius por estação conhecida) — apenas com IH_EDR_FALLBACK=1.
+  if (!stationsData && EDR_FALLBACK) {
+    console.log('🔀 items failed — trying EDR radius fallback…');
+    try {
+      const known = lastKnownStations();
+      if (known.length === 0) {
+        errors.push(
+          'EDR radius: no last-known station coordinates (no previous ih-tides.json)'
+        );
+      } else {
+        const features = await fetchEDRRadius(known);
+        stationsData = { features };
+        usedCollection = 'tide_obs_nrt/radius';
+      }
+    } catch (err) {
+      errors.push(`EDR radius fallback: ${err.message}`);
     }
   }
 
@@ -198,11 +311,17 @@ fetchIHTides().catch((err) => {
           ? `❌ Previous ih-tides.json has unknown age (missing/invalid fetchedAt) — failing loudly (exit 1).`
           : `❌ Previous ih-tides.json is ${age.toFixed(1)}h old (> ${MAX_STALE_HOURS}h) — IH unavailable too long; failing loudly (exit 1).`
       );
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     console.warn('⚠️ Keeping previous public/data/ih-tides.json — Open-Meteo pipeline continues.');
-    process.exit(0);
+    return;
   }
   console.warn('⚠️ No previous ih-tides.json — continuing without IH observed tides.');
-  process.exit(0);
 });
+
+// Nota: sem `process.exit()` no catch — no Windows, forçar a terminação enquanto
+// o keep-alive socket do fetch está a fechar dispara uma asserção libuv
+// (`Assertion failed: !(handle->flags & UV_HANDLE_CLOSING)`). `process.exitCode`
+// + drenagem natural do event loop preserva o exit code sem a raça (os sockets
+// idle do undici são unref'd — o processo termina sozinho com o código certo).
