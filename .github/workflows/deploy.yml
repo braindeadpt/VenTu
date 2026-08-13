@@ -116,7 +116,7 @@ jobs:
       # GitHub Pages API often fails transiently ("try again later") while build is fine.
       - name: Deploy to GitHub Pages (1/5)
         id: deployment
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
         continue-on-error: true
 
       - name: Wait before retry
@@ -126,7 +126,7 @@ jobs:
       - name: Deploy to GitHub Pages (2/5)
         id: deployment2
         if: steps.deployment.outcome == 'failure'
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
         continue-on-error: true
 
       - name: Wait before retry
@@ -136,7 +136,7 @@ jobs:
       - name: Deploy to GitHub Pages (3/5)
         id: deployment3
         if: steps.deployment.outcome == 'failure' && steps.deployment2.outcome == 'failure'
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
         continue-on-error: true
 
       - name: Wait before retry
@@ -152,7 +152,7 @@ jobs:
           steps.deployment.outcome == 'failure' &&
           steps.deployment2.outcome == 'failure' &&
           steps.deployment3.outcome == 'failure'
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
         continue-on-error: true
 
       - name: Wait before retry
@@ -170,7 +170,7 @@ jobs:
           steps.deployment2.outcome == 'failure' &&
           steps.deployment3.outcome == 'failure' &&
           steps.deployment4.outcome == 'failure'
-        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
         continue-on-error: true
 
       - name: Publish deployment URL
