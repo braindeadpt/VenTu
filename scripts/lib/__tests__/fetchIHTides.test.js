@@ -185,25 +185,31 @@ describe('fetch-ih-tides EDR fallback (receita incidente IH 2026-08-13)', () => 
     expect(radiusCalls(fetchMock)).toHaveLength(0);
   });
 
-  it('staleness: ficheiro fresco é reutilizado (exit 0) e >24h falha alto (exit 1)', async () => {
+  it('staleness: IH em baixo reutiliza o ficheiro com exit 0 (fresco e >24h), avisando a idade', async () => {
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     // Fresco → reuso silencioso, exit code intacto.
     const modFresh = loadModule();
     installFetch(async () => json({}, 500));
     await modFresh.run();
     expect(process.exitCode).toBeFalsy();
+    expect(warnSpy.mock.calls.some((c) => String(c[0]).includes('Keeping previous'))).toBe(true);
 
-    // 30h → o guard MAX_STALE_HOURS falha alto (pedido explícito: nunca
-    // publicar marés com dias de idade em silêncio).
+    // 30h → warning com a idade, mas exit 0: decisão c16802b8 (nunca bloquear
+    // o pipeline Open-Meteo/obs durante uma outage IH) — o guard MAX_STALE_HOURS
+    // tornou-se aviso, não falha alta.
     const stalePath = path.join(tmpDir, 'stale.json');
     const stale = JSON.parse(fs.readFileSync(path.join(tmpDir, 'ih-tides.json'), 'utf8'));
     stale.fetchedAt = new Date(Date.now() - 30 * 3_600_000).toISOString();
     fs.writeFileSync(stalePath, JSON.stringify(stale));
     process.exitCode = undefined;
+    warnSpy.mockClear();
 
     const modStale = loadModule({ IH_OUTPUT_PATH: stalePath });
     installFetch(async () => json({}, 500));
     await modStale.run();
-    expect(process.exitCode).toBe(1);
+    expect(process.exitCode).toBeFalsy();
+    expect(warnSpy.mock.calls.some((c) => String(c[0]).includes('keeping stale file'))).toBe(true);
+    warnSpy.mockRestore();
     process.exitCode = undefined;
   });
 });

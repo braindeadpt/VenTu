@@ -340,7 +340,9 @@ module.exports = {
   fetchEDRRadius,
   edrRadiusUrl,
   stationFromFeature,
+  lastKnownStations,
   run,
+  IH_API,
   EDR_SAMPLE_STATIONS,
   EDR_RADIUS_M,
 };
