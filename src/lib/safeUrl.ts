@@ -28,6 +28,25 @@ export function safeExternalUrl(url: string | null | undefined): string | null {
 }
 
 /**
+ * Safe image src for data/user-controlled image fields.
+ * Allows http(s) URLs AND site-relative paths rooted at `/` (same origin —
+ * the documented events convention is `/images/events/*.jpg`). Blocks
+ * javascript:, data:, vbscript:, protocol-relative `//host` and `\` tricks.
+ */
+export function safeImageUrl(url: string | null | undefined): string | null {
+  if (url == null) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  if (trimmed.startsWith('/')) {
+    // Same-origin relative path — reject protocol-relative (//host) and
+    // backslash tricks (\/evil) that browsers may treat as `//`.
+    if (trimmed.startsWith('//') || trimmed.startsWith('/\\')) return null;
+    return trimmed;
+  }
+  return safeExternalUrl(trimmed); // already guarantees http(s)
+}
+
+/**
  * Build a tel: href from user phone text. Strips characters that could
  * break out of the tel scheme; returns null if nothing usable remains.
  */

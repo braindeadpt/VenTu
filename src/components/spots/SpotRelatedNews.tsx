@@ -7,6 +7,7 @@ import type { Spot } from '@/types';
 import type { NewsItem } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
+import { safeExternalUrl } from '@/lib/safeUrl';
 import { getRelatedNewsForSpot, newsSlug } from '@/lib/news';
 
 interface SpotRelatedNewsProps {
@@ -93,9 +94,9 @@ export default function SpotRelatedNews({ spot, locale, sport }: SpotRelatedNews
                     >
                       {isPt ? 'Ler resumo' : 'Read summary'}
                     </Link>
-                    {item.url && (
+                    {safeExternalUrl(item.url) && (
                       <a
-                        href={item.url}
+                        href={safeExternalUrl(item.url) as string}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-1 text-sm text-fg-muted hover:text-fg"

@@ -11,7 +11,6 @@ export interface CommunityTipEntry {
   localRuleEn?: string;
   accommodation?: string;
   accommodationEn?: string;
-  contributor?: string;
 }
 
 let cache: Record<string, CommunityTipEntry> | null = null;
@@ -59,7 +58,6 @@ export function mergeLocalTips(
       community?.accommodation ?? fromSpotTips?.accommodation ?? base.accommodation,
     accommodationEn:
       community?.accommodationEn ?? fromSpotTips?.accommodationEn ?? base.accommodationEn,
-    contributor: community?.contributor,
   };
 
   const hasContent = Object.values(merged).some((v) => typeof v === 'string' && v.length > 0);

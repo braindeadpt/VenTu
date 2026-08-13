@@ -670,13 +670,6 @@ export default function SpotDetailClient({
             spotLon={spot.lon}
             locale={locale}
           />
-          {communityOverlay[spot.slug]?.contributor && (
-            <p className="text-meta-sm text-fg-subtle">
-              {isPt ? 'Contribuição da comunidade' : 'Community contribution'}
-              {' · '}
-              @{communityOverlay[spot.slug].contributor}
-            </p>
-          )}
         </section>
 
         <SpotWeatherlinkSection slug={spot.slug} locale={locale} />

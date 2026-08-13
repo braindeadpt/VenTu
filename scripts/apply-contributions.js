@@ -50,7 +50,17 @@ async function main() {
     if (!slug) continue;
     if (!overlay[slug]) overlay[slug] = {};
     overlay[slug][field] = row.message;
-    if (row.email) overlay[slug].contributor = row.email.split('@')[0];
+    // Privacy (S4): never publish contributor identity from the email — the
+    // `contributor` field is intentionally no longer written. Existing
+    // occurrences are stripped by the cleanup below.
+    delete overlay[slug].contributor;
+  }
+
+  // S4 cleanup: strip any `contributor` keys left in the existing overlay.
+  for (const slug of Object.keys(overlay)) {
+    if (overlay[slug] && typeof overlay[slug] === 'object') {
+      delete overlay[slug].contributor;
+    }
   }
 
   fs.writeFileSync(OUTPUT, JSON.stringify(overlay, null, 2) + '\n');

@@ -7,6 +7,7 @@
 
 const path = require('path');
 const fs = require('fs');
+const { isSafeImageUrl } = require('../lib/safeUrl');
 
 const NEWS_PATH = path.join(__dirname, '../../public/data/news.json');
 const MAX_ITEMS = 100;
@@ -86,6 +87,19 @@ function sortAndCap(items) {
 }
 
 /**
+ * Drop non-http(s) / non-site-relative image srcs before persisting (S3).
+ * @param {object} item
+ * @returns {object}
+ */
+function sanitizeItemImage(item) {
+  if (!item || !('image' in item)) return item;
+  const safe = isSafeImageUrl(item.image);
+  if (safe) return item;
+  const { image, ...rest } = item;
+  return rest;
+}
+
+/**
  * Merge new items into existing feed.
  *
  * @param {Array} newItems - Fresh items from Etapa 1 + 2 + 3
@@ -100,7 +114,7 @@ function mergeNews(newItems) {
   const afterTTL = applyTTL(existing);
   console.log(`   → After TTL (${TTL_DAYS}d): ${afterTTL.length} items`);
 
-  const combined = [...newItems, ...afterTTL];
+  const combined = [...newItems, ...afterTTL].map(sanitizeItemImage);
   console.log(`   → Combined: ${combined.length} items`);
 
   const deduped = deduplicate(combined);
@@ -132,4 +146,4 @@ function mergeAndPersist(newItems) {
   return merged;
 }
 
-module.exports = { mergeAndPersist, mergeNews, loadExisting };
+module.exports = { mergeAndPersist, mergeNews, loadExisting, sanitizeItemImage };

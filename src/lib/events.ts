@@ -1,5 +1,6 @@
 import type { EventKind, EventSport, VentuEvent } from '@/types/events';
 import { EVENT_KINDS, EVENT_SPORTS } from '@/types/events';
+import { safeExternalUrl, safeImageUrl } from '@/lib/safeUrl';
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
 const TIME_HM = /^\d{2}:\d{2}$/;
@@ -122,6 +123,8 @@ export function parseEvents(raw: unknown): VentuEvent[] {
     const titleEn = asOptionalString(e.titleEn) ?? title;
     const summary = asOptionalString(e.summary) ?? '';
     const summaryEn = asOptionalString(e.summaryEn) ?? summary;
+    // Only http(s) or site-relative `/…` image paths survive (S3 extension).
+    const image = safeImageUrl(asOptionalString(e.image));
 
     seen.add(id);
     out.push({
@@ -139,8 +142,10 @@ export function parseEvents(raw: unknown): VentuEvent[] {
       sport: e.sport,
       kind: e.kind,
       ...(asOptionalString(e.organizer) ? { organizer: asOptionalString(e.organizer) } : {}),
-      ...(asOptionalString(e.url) ? { url: asOptionalString(e.url) } : {}),
-      ...(asOptionalString(e.image) ? { image: asOptionalString(e.image) } : {}),
+      // Only http(s) URLs survive parsing — blocks javascript:/data: in the
+      // curated events file from ever reaching an <a href> (defense in depth).
+      ...(safeExternalUrl(asOptionalString(e.url)) ? { url: safeExternalUrl(asOptionalString(e.url))! } : {}),
+      ...(image ? { image } : {}),
       ...(typeof e.free === 'boolean' ? { free: e.free } : {}),
     });
   }

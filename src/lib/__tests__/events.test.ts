@@ -153,4 +153,94 @@ describe('events Lisbon dates', () => {
     ]);
     expect(parsed.map((e) => e.id)).toEqual(['ok']);
   });
+
+  it('parseEvents keeps only http(s) event URLs (S3)', () => {
+    const parsed = parseEvents([
+      {
+        id: 'safe',
+        title: 'Ok',
+        titleEn: 'Ok',
+        startDate: '2026-08-07',
+        location: 'Esposende',
+        spotIds: [],
+        sport: 'kitesurf',
+        kind: 'festival',
+        url: 'https://example.com/inscricao',
+      },
+      {
+        id: 'bad-js',
+        title: 'Bad',
+        titleEn: 'Bad',
+        startDate: '2026-08-07',
+        location: 'Esposende',
+        spotIds: [],
+        sport: 'kitesurf',
+        kind: 'festival',
+        url: 'javascript:alert(1)',
+      },
+      {
+        id: 'bad-data',
+        title: 'Bad2',
+        titleEn: 'Bad2',
+        startDate: '2026-08-07',
+        location: 'Esposende',
+        spotIds: [],
+        sport: 'kitesurf',
+        kind: 'festival',
+        url: 'data:text/html,<script>1</script>',
+      },
+    ]);
+    expect(parsed.find((e) => e.id === 'safe')?.url).toBe('https://example.com/inscricao');
+    expect(parsed.find((e) => e.id === 'bad-js')?.url).toBeUndefined();
+    expect(parsed.find((e) => e.id === 'bad-data')?.url).toBeUndefined();
+  });
+
+  it('parseEvents keeps only http(s) or site-relative event images (S3)', () => {
+    const parsed = parseEvents([
+      {
+        id: 'img-ok',
+        title: 'Ok',
+        startDate: '2026-08-07',
+        location: 'Esposende',
+        spotIds: [],
+        sport: 'kitesurf',
+        kind: 'festival',
+        image: '/images/events/nortada-kite-fest.jpg',
+      },
+      {
+        id: 'img-ext',
+        title: 'Ok2',
+        startDate: '2026-08-07',
+        location: 'Esposende',
+        spotIds: [],
+        sport: 'kitesurf',
+        kind: 'festival',
+        image: 'https://cdn.ventu.surf/flyer.jpg',
+      },
+      {
+        id: 'img-bad',
+        title: 'Bad',
+        startDate: '2026-08-07',
+        location: 'Esposende',
+        spotIds: [],
+        sport: 'kitesurf',
+        kind: 'festival',
+        image: 'data:image/svg+xml,<svg onload=alert(1)>',
+      },
+      {
+        id: 'img-rel',
+        title: 'Rel',
+        startDate: '2026-08-07',
+        location: 'Esposende',
+        spotIds: [],
+        sport: 'kitesurf',
+        kind: 'festival',
+        image: '//evil.com/x.png',
+      },
+    ]);
+    expect(parsed.find((e) => e.id === 'img-ok')?.image).toBe('/images/events/nortada-kite-fest.jpg');
+    expect(parsed.find((e) => e.id === 'img-ext')?.image).toBe('https://cdn.ventu.surf/flyer.jpg');
+    expect(parsed.find((e) => e.id === 'img-bad')?.image).toBeUndefined();
+    expect(parsed.find((e) => e.id === 'img-rel')?.image).toBeUndefined();
+  });
 });

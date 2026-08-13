@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { safeExternalUrl, safeTelHref } from '../safeUrl';
+import { safeExternalUrl, safeImageUrl, safeTelHref } from '../safeUrl';
 
 describe('safeExternalUrl', () => {
   it('blocks javascript: schemes', () => {
@@ -33,6 +33,36 @@ describe('safeExternalUrl', () => {
     expect(safeExternalUrl('   ')).toBeNull();
     expect(safeExternalUrl(null)).toBeNull();
     expect(safeExternalUrl(undefined)).toBeNull();
+  });
+});
+
+describe('safeImageUrl', () => {
+  it('keeps http(s) URLs', () => {
+    expect(safeImageUrl('https://cdn.ventu.surf/flyer.jpg')).toBe('https://cdn.ventu.surf/flyer.jpg');
+    expect(safeImageUrl('http://ok.pt/img.png')).toBe('http://ok.pt/img.png');
+  });
+
+  it('keeps site-relative /paths (events convention)', () => {
+    expect(safeImageUrl('/images/events/nortada-kite-fest.jpg')).toBe('/images/events/nortada-kite-fest.jpg');
+    expect(safeImageUrl('/og-image.png')).toBe('/og-image.png');
+  });
+
+  it('blocks javascript: / data: / vbscript: schemes', () => {
+    expect(safeImageUrl('javascript:alert(1)')).toBeNull();
+    expect(safeImageUrl('data:image/svg+xml,<svg onload=alert(1)>')).toBeNull();
+    expect(safeImageUrl('vbscript:MsgBox(1)')).toBeNull();
+  });
+
+  it('blocks protocol-relative //host and backslash tricks', () => {
+    expect(safeImageUrl('//evil.com/x.png')).toBeNull();
+    expect(safeImageUrl('/\\evil.com/x.png')).toBeNull();
+  });
+
+  it('returns null for empty/null input', () => {
+    expect(safeImageUrl('')).toBeNull();
+    expect(safeImageUrl('   ')).toBeNull();
+    expect(safeImageUrl(null)).toBeNull();
+    expect(safeImageUrl(undefined)).toBeNull();
   });
 });
 

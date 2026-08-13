@@ -131,4 +131,5 @@ npx tsx scripts/events/validate.ts
 - Every `spotIds[]` entry exists in `spots.ts`
 - `sport` / `kind` enums
 - `url` → `safeExternalUrl` (http/https only)
+- `image` → `safeImageUrl` (http(s) ou caminho relativo `/images/…`; `javascript:`/`data:`/`//host` rejeitados)
 - `image` path exists on disk under `public/`

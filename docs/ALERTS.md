@@ -23,6 +23,8 @@ Utilizador ← confirmação / alerta ← /pt/alerts/confirm|unsubscribe/?token=
 
 Subscrições antigas em `alert_subscriptions` continuam a funcionar. O evaluator trata ambos os modos.
 
+**Segurança (S2):** o `subscribe_alert` foi endurecido — token gerado no servidor (`gen_random_uuid`), rate limit por IP (`request.headers`/`x-forwarded-for`) + por `client_id`, UNIQUE `(email, spot_slug, sport)` enquanto activo, e máximo de 5 subscrições activas não verificadas por email (mata o vector de spam de emails de verificação). Os grants anon directos à tabela foram revogados — a RPC é a única via de escrita anónima. Aplicar `supabase/supabase-alerts-harden-legacy.sql` no SQL Editor.
+
 ## Pré-requisitos (uma vez)
 
 ### 1. Supabase

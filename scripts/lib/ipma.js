@@ -113,13 +113,61 @@ async function fetchIpmaObservations() {
   return data;
 }
 
+/**
+ * UTC offset (ms) of Europe/Lisbon at a given instant (handles DST via Intl).
+ * @param {Date} utcGuess
+ * @returns {number} offset in ms (positive east of UTC)
+ */
+function lisbonUtcOffsetMs(utcGuess) {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Lisbon',
+    hour12: false,
+    hourCycle: 'h23',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).formatToParts(utcGuess);
+  const get = (type) => parts.find((p) => p.type === type)?.value;
+  // 'Z' suffix keeps parsing machine-timezone-independent (CI runs UTC).
+  const wall = `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}:${get('second')}`;
+  return new Date(wall + 'Z').getTime() - utcGuess.getTime();
+}
+
+/**
+ * Interpret a Europe/Lisbon wall-clock string as a UTC Date.
+ * Handles winter (WET, UTC+0) and summer (WEST, UTC+1) correctly — a hardcoded
+ * offset used to skew winter readings by 1h (S5).
+ * @param {string} wallClockStr "YYYY-MM-DDThh:00" (or with seconds)
+ * @returns {Date}
+ */
+function parseLisbonWallClock(wallClockStr) {
+  const normalized = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(wallClockStr)
+    ? `${wallClockStr}:00`
+    : wallClockStr;
+  const wallMs = new Date(normalized + 'Z').getTime();
+  if (Number.isNaN(wallMs)) return new Date(wallClockStr);
+  // Converge: trueInstant = wall - offset(instant)
+  let guess = wallMs;
+  for (let i = 0; i < 4; i++) {
+    const offset = lisbonUtcOffsetMs(new Date(guess));
+    const next = wallMs - offset;
+    if (next === guess) break;
+    guess = next;
+  }
+  return new Date(guess);
+}
+
 function parseIpmaObservedAt(timeKey) {
-  // IPMA keys: "YYYY-MM-DDThh:00" (Europe/Lisbon wall clock)
-  const withTz = timeKey.includes('+') || timeKey.endsWith('Z')
-    ? timeKey
-    : `${timeKey}:00+01:00`;
-  const d = new Date(withTz);
-  return Number.isNaN(d.getTime()) ? new Date(timeKey) : d;
+  // IPMA keys: "YYYY-MM-DDThh:00" (Europe/Lisbon wall clock, no timezone).
+  // Keys that already carry an offset or Z are parsed as-is.
+  if (timeKey.includes('+') || timeKey.endsWith('Z')) {
+    const d = new Date(timeKey);
+    return Number.isNaN(d.getTime()) ? new Date(timeKey) : d;
+  }
+  return parseLisbonWallClock(timeKey);
 }
 
 function windFromIpmaRow(row) {
@@ -214,6 +262,7 @@ module.exports = {
   fetchIpmaStations,
   fetchIpmaObservations,
   findLatestObservationForStation,
+  parseIpmaObservedAt,
   nearestStation,
   nearestStations,
   stationById,

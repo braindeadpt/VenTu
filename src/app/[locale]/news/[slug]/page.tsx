@@ -2,6 +2,7 @@ import { getNewsBySlug, newsSlug, getRelatedNews } from '@/lib/news'
 import type { NewsItem } from '@/types'
 import { loadNews } from '@/lib/load-news'
 import { locales } from '@/lib/i18n'
+import { safeExternalUrl } from '@/lib/safeUrl'
 import NewsDetailHeader from '@/components/news/NewsDetailHeader'
 import RelatedNews from '@/components/news/RelatedNews'
 import { ExternalLink, ArrowLeft } from 'lucide-react'
@@ -67,6 +68,7 @@ export default async function NewsDetailPage({ params }: Props) {
   if (!news) notFound()
 
   const related = getRelatedNews(allNews, news)
+  const safeUrl = safeExternalUrl(news.url)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -107,18 +109,20 @@ export default async function NewsDetailPage({ params }: Props) {
         </p>
       </div>
 
-      {/* External link */}
-      <div className="mt-8">
-        <a
-          href={news.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-surface-2/[0.08] border border-divider text-fg font-medium hover:bg-surface-3/[0.12] transition-colors"
-        >
-          {isPt ? 'Ler artigo original' : 'Read original article'}
-          <ExternalLink className="w-4 h-4" />
-        </a>
-      </div>
+      {/* External link — only when the source URL is a safe http(s) link */}
+      {safeUrl && (
+        <div className="mt-8">
+          <a
+            href={safeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-surface-2/[0.08] border border-divider text-fg font-medium hover:bg-surface-3/[0.12] transition-colors"
+          >
+            {isPt ? 'Ler artigo original' : 'Read original article'}
+            <ExternalLink className="w-4 h-4" />
+          </a>
+        </div>
+      )}
 
       {/* Related news */}
       <RelatedNews items={related} locale={locale} />

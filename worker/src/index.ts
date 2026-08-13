@@ -12,6 +12,10 @@ const MAX_DIST_KM = 30;
 const MAX_METAR_DIST_KM_ISLANDS = 35;
 const MAX_AGE_H = 3;
 const SOURCE_TIE_KM = 8;
+
+/** S6: basic per-IP rate limit (best-effort, shared colo cache). */
+const RATE_LIMIT_PER_IP_PER_MIN = 120;
+const RATE_LIMIT_WINDOW_S = 60;
 const IPMA_OBS =
   'https://api.ipma.pt/open-data/observation/meteorology/stations/observations.json';
 const IPMA_ST =
@@ -93,6 +97,46 @@ function ageH(iso: string): number {
   return (Date.now() - new Date(iso).getTime()) / 3.6e6;
 }
 
+/** UTC offset (ms) of Europe/Lisbon at a given instant (DST-aware via Intl). */
+function lisbonUtcOffsetMs(utcGuess: Date): number {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Europe/Lisbon',
+    hour12: false,
+    hourCycle: 'h23',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  }).formatToParts(utcGuess);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value;
+  // 'Z' suffix keeps parsing machine-timezone-independent (CI runs UTC).
+  const wall = `${get('year')}-${get('month')}-${get('day')}T${get('hour')}:${get('minute')}:${get('second')}`;
+  return new Date(wall + 'Z').getTime() - utcGuess.getTime();
+}
+
+/**
+ * Interpret a Europe/Lisbon wall-clock string as a UTC ISO string.
+ * IPMA obs keys are "YYYY-MM-DDThh:00" in Lisbon wall time — a hardcoded
+ * offset (or bare 'Z') skews readings by 1h depending on season (S5).
+ */
+export function lisbonWallToIso(wallClockStr: string): string {
+  const normalized = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(wallClockStr)
+    ? `${wallClockStr}:00`
+    : wallClockStr;
+  const wallMs = new Date(normalized + 'Z').getTime();
+  if (Number.isNaN(wallMs)) return wallClockStr;
+  let guess = wallMs;
+  for (let i = 0; i < 4; i++) {
+    const offset = lisbonUtcOffsetMs(new Date(guess));
+    const next = wallMs - offset;
+    if (next === guess) break;
+    guess = next;
+  }
+  return new Date(guess).toISOString();
+}
+
 async function cachedJson(
   url: string,
   ttl: number,
@@ -170,7 +214,10 @@ async function ipmaObserved(
       if (!rec) continue;
       const ws = rec.intensidadeVento;
       if (ws == null || ws <= -99) continue;
-      const iso = times[i].length <= 16 ? times[i] + ':00Z' : times[i];
+      // IPMA keys are Lisbon wall clock — parse with the real Lisbon offset.
+      const iso = times[i].includes('+') || times[i].endsWith('Z')
+        ? times[i]
+        : lisbonWallToIso(times[i]);
       if (ageH(iso) > MAX_AGE_H) continue;
       const dirId = rec.idDireccVento ?? 0;
       const deg = IPMA_DIR[dirId] ?? null;
@@ -325,6 +372,48 @@ function cors(origin: string | null, allowed: string): Record<string, string> {
   };
 }
 
+/**
+ * S6: fixed-window per-IP rate limit using caches.default (shared per colo).
+ * Best-effort — a distributed limit (KV / rate-limiting rule) would be exact,
+ * but this already stops casual abuse and hammering of upstream APIs.
+ */
+async function isRateLimited(req: Request, ctx: ExecutionContext): Promise<boolean> {
+  const ip = req.headers.get('CF-Connecting-IP') || 'unknown';
+  const windowStart = Math.floor(Date.now() / (RATE_LIMIT_WINDOW_S * 1000));
+  const key = `rl:${ip}:${windowStart}`;
+  const cache = caches.default;
+  const ck = new Request('https://rate.local/' + encodeURIComponent(key));
+
+  let count = 0;
+  try {
+    const hit = await cache.match(ck);
+    if (hit) {
+      const body = (await hit.json()) as { c?: unknown };
+      const v = Number(body.c);
+      if (Number.isFinite(v)) count = v;
+    }
+  } catch {
+    // cache read failed — fail open, never block legit traffic on cache errors
+  }
+
+  if (count >= RATE_LIMIT_PER_IP_PER_MIN) return true;
+
+  ctx.waitUntil(
+    cache
+      .put(
+        ck,
+        new Response(JSON.stringify({ c: count + 1 }), {
+          headers: {
+            'Cache-Control': `max-age=${RATE_LIMIT_WINDOW_S + 5}`,
+            'Content-Type': 'application/json',
+          },
+        }),
+      )
+      .catch(() => {}),
+  );
+  return false;
+}
+
 interface IpmaStation {
   geometry: { coordinates: [number, number] };
   properties: { idEstacao: number; localEstacao: string };
@@ -368,10 +457,26 @@ export default {
 
     const lat = parseFloat(url.searchParams.get('lat') || '');
     const lon = parseFloat(url.searchParams.get('lon') || '');
-    if (Number.isNaN(lat) || Number.isNaN(lon)) {
+    // S6: bounds — reject nonsense coordinates before hitting upstream APIs
+    if (
+      !Number.isFinite(lat) ||
+      !Number.isFinite(lon) ||
+      lat < -90 ||
+      lat > 90 ||
+      lon < -180 ||
+      lon > 180
+    ) {
       return new Response(JSON.stringify({ error: 'lat/lon required' }), {
         status: 400,
         headers: h,
+      });
+    }
+
+    // S6: per-IP rate limit (best-effort)
+    if (await isRateLimited(req, ctx)) {
+      return new Response(JSON.stringify({ error: 'rate limited' }), {
+        status: 429,
+        headers: { ...h, 'Retry-After': String(RATE_LIMIT_WINDOW_S) },
       });
     }
 

@@ -1,4 +1,5 @@
 import { NewsItem } from '@/types';
+import { safeExternalUrl } from '@/lib/safeUrl';
 import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 
 interface NewsCardProps {
@@ -41,6 +42,9 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
   const isPt = locale === 'pt';
   const catColor = categoryColors[news.category] || categoryColors.general;
   const catIcon = categoryIcons[news.category] || null;
+  // Defense-in-depth: pipeline already drops non-http(s) URLs; never render a
+  // javascript:/data: href even if a feed slips through.
+  const articleUrl = safeExternalUrl(news.url);
 
   if (variant === 'compact') {
     return (
@@ -62,15 +66,17 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
             </span>
           </div>
         </div>
-        <a
-          href={news.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 text-data-waves hover:text-data-waves/80 transition-colors"
-          aria-label={isPt ? 'Ler artigo' : 'Read article'}
-        >
-          <ExternalLink className="w-3.5 h-3.5" />
-        </a>
+        {articleUrl && (
+          <a
+            href={articleUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="shrink-0 text-data-waves hover:text-data-waves/80 transition-colors"
+            aria-label={isPt ? 'Ler artigo' : 'Read article'}
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        )}
       </article>
     );
   }
@@ -105,15 +111,17 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
 
         <div className="flex items-center justify-between pt-2">
           <span className="text-xs text-fg-subtle">{news.source}</span>
-          <a
-            href={news.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-sm text-data-waves hover:text-data-waves/80 transition-colors"
-          >
-            {isPt ? 'Ler mais' : 'Read more'}
-            <ExternalLink className="w-3 h-3" />
-          </a>
+          {articleUrl && (
+            <a
+              href={articleUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1 text-sm text-data-waves hover:text-data-waves/80 transition-colors"
+            >
+              {isPt ? 'Ler mais' : 'Read more'}
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          )}
         </div>
       </div>
     </article>
