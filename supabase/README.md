@@ -10,6 +10,7 @@ Run these files once in the [Supabase SQL Editor](https://supabase.com/dashboard
 | [`supabase-auth-profiles.sql`](supabase-auth-profiles.sql) | User accounts + synced favorites (F1) |
 | [`supabase-contributions.sql`](supabase-contributions.sql) | Community contributions form |
 | [`supabase-contributions-migration-c3.sql`](supabase-contributions-migration-c3.sql) | Migration for contributions schema |
+| [`supabase-contributions-harden-rpc.sql`](supabase-contributions-harden-rpc.sql) | Harden anon writes (per-IP rate limit via RPC; direct INSERT revoked) — run after contributions + score-feedback files |
 | [`supabase-score-feedback.sql`](supabase-score-feedback.sql) | Score calibration feedback |
 
 Setup details: [docs/ALERTS.md](../docs/ALERTS.md), [docs/GITHUB-SETUP.md](../docs/GITHUB-SETUP.md).

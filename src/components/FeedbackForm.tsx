@@ -70,23 +70,31 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
       const sb = getSupabaseClient();
       if (!sb) throw new Error('Supabase not available');
 
-      // The Supabase client has no generated Database types, so
-      // `from('contributions')` infers `never`. Use explicit rpc-style
-      // cast until `supabase gen types` is wired into CI.
-       
-      const { error: insertError } = await (sb as any)
-        .from('contributions')
-        .insert({
-          type,
-          message: message.trim(),
-          email: email.trim() || null,
-          locale,
-          client_id: getClientId(),
-          spot_slug: type === 'tip' ? spotSlug.trim() || null : null,
-          tip_field: type === 'tip' ? tipField : null,
-        });
+      // Anon writes go through the hardened RPC (per-IP rate limit) — direct
+      // INSERT is revoked in supabase-contributions-harden-rpc.sql.
+      // The Supabase client has no generated Database types, so use explicit
+      // rpc-style cast until `supabase gen types` is wired into CI.
+      const { data, error: rpcError } = await (sb as any).rpc('submit_contribution', {
+        p_type: type,
+        p_message: message.trim(),
+        p_email: email.trim() || null,
+        p_locale: locale,
+        p_client_id: getClientId(),
+        p_spot_slug: type === 'tip' ? spotSlug.trim() || null : null,
+        p_tip_field: type === 'tip' ? tipField : null,
+      });
 
-      if (insertError) throw insertError;
+      if (rpcError) throw rpcError;
+      if (!data?.ok) {
+        setError(
+          data?.error === 'rate_limit'
+            ? (isPt
+              ? 'Demasiados envios — tenta novamente dentro de um minuto.'
+              : 'Too many submissions — try again in a minute.')
+            : (isPt ? 'Erro ao enviar' : 'Error sending')
+        );
+        return;
+      }
 
       setSent(true);
       setMessage('');

@@ -58,18 +58,27 @@ export default function ScoreFeedback({
       const sb = getSupabaseClient();
       if (!sb) throw new Error('Supabase unavailable');
 
-       
-      const { error: insertError } = await (sb as any).from('score_feedback').insert({
-        spot_slug: spotSlug,
-        sport,
-        predicted_score: predictedScore,
-        verdict,
-        conditions_snapshot: conditionsSnapshot,
-        client_id: getClientId(),
-        locale,
+      // Anon writes go through the hardened RPC (per-IP rate limit) — direct
+      // INSERT is revoked in supabase-contributions-harden-rpc.sql.
+      const { data, error: rpcError } = await (sb as any).rpc('submit_score_feedback', {
+        p_spot_slug: spotSlug,
+        p_sport: sport,
+        p_predicted_score: predictedScore,
+        p_verdict: verdict,
+        p_conditions_snapshot: conditionsSnapshot,
+        p_client_id: getClientId(),
+        p_locale: locale,
       });
 
-      if (insertError) throw insertError;
+      if (rpcError) throw rpcError;
+      if (!data?.ok) {
+        setError(
+          data?.error === 'rate_limit'
+            ? (isPt ? 'Demasiados votos — tenta novamente dentro de um minuto.' : 'Too many votes — try again in a minute.')
+            : (isPt ? 'Erro ao enviar feedback' : 'Error sending feedback')
+        );
+        return;
+      }
       setSent(verdict);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : String(err);

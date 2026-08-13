@@ -28,9 +28,11 @@ build_debug.log
 # Backups
 *.bak
 
-# IDE
+# IDE / local agent scratch
 .vscode/
 .idea/
+.claude/
+.freebuff/
 *.swp
 *.swo
 
