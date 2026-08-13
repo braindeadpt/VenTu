@@ -1,0 +1,28 @@
+name: IH Tide Health Monitor
+
+on:
+  schedule:
+    # Horário — mesmo cadence do update-data (o backend de marés é a fonte)
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+concurrency:
+  group: ih-tide-health
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      # Probe o tide_obs_nrt/items e gere a issue de incidente (label ih-outage):
+      # abre quando cai, comenta+fecha quando recupera (transição down→up).
+      - name: Probe IH tide backend and alert on recovery
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/monitor-ih-tides.sh
