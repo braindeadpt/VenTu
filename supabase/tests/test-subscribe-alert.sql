@@ -129,10 +129,12 @@ SELECT test_expect(
 );
 
 -- ── 6. Dedup: one ACTIVE row per (email, spot_slug, sport) ──
+-- Idempotent: ok=true + already_exists=true (not an error) so clients can
+-- treat a second subscribe as success without a special error branch.
 SET ROLE anon;
 SELECT test_set_ip('203.0.113.99');
 SELECT test_expect(
-  (public.subscribe_alert('ALICE@example.com', 'moledo', 'surf', 80, 'client-x1')::jsonb ->> 'error') = 'already_exists',
+  (public.subscribe_alert('ALICE@example.com', 'moledo', 'surf', 80, 'client-x1')::jsonb ->> 'already_exists') = 'true',
   '6a: re-subscribe (case-insensitive email) returns already_exists'
 );
 RESET ROLE;
