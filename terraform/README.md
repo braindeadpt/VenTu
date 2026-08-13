@@ -1,12 +1,13 @@
-# Terraform — S7 HTTP security headers (Cloudflare Ruleset)
+# Terraform — S7 HTTP security headers + Cache Rules (Cloudflare Ruleset)
 
 Versão **versionável** (infra-as-code) das 2 Transform Rules do
-[`docs/SECURITY-HEADERS.md`](../docs/SECURITY-HEADERS.md) §3.2 — alternativa ao
-painel do Cloudflare para o mesmo resultado.
+[`docs/SECURITY-HEADERS.md`](../docs/SECURITY-HEADERS.md) §3.2 **e** das 3
+Cache Rules C1/C2/C3 do §3.3 — alternativa ao painel do Cloudflare para o
+mesmo resultado.
 
 | Ficheiro | O que é |
 |---|---|
-| `main.tf` | `cloudflare_ruleset` na fase `http_response_headers_transform` com as 2 regras (catch-all + `/embed/*`) |
+| `main.tf` | 2 `cloudflare_ruleset`: `ventu_security_headers` (fase `http_response_headers_transform`, 2 regras: catch-all + `/embed/*`) e `ventu_cache_rules` (fase `http_request_cache_settings`, 3 regras: C1 `/_next/static/*` 1y, C2 `/data/*` 5min, C3 `/sw.js` bypass) |
 | `variables.tf` | Inputs: token, zona, e os dois CSPs (defaults = SECURITY-HEADERS.md; ⚠️ manter em sincronia com `CSPMeta.tsx`) |
 | `terraform.tfvars.example` | Template de configuração local (gitignored) |
 
@@ -32,7 +33,9 @@ cp terraform.tfvars.example terraform.tfvars
 # 2. Inicializar (descarrega o provider cloudflare/cloudflare)
 terraform init
 
-# 3. Rever o plano — deve criar 1 cloudflare_ruleset com 2 rules
+# 3. Rever o plano — deve criar 2 cloudflare_ruleset:
+#    1. ventu_security_headers (fase http_response_headers_transform, 2 rules)
+#    2. ventu_cache_rules (fase http_request_cache_settings, 3 rules)
 terraform plan
 #    Sem erros de expressão/fase? As expressões WAF válidas são validadas
 #    nesta fase.
@@ -58,8 +61,8 @@ Esperado:
 ## Rollback
 
 ```bash
-terraform destroy        # remove o ruleset (headers deixam de ser servidos)
-# Alternativa rápida no painel: Rules → Transform Rules → desligar as 2 regras
+terraform destroy        # remove os 2 rulesets (headers + cache deixam de ser servidos)
+# Alternativa rápida no painel: Rules → Transform Rules / Cache Rules → desligar
 ```
 
 ## Notas
@@ -74,6 +77,13 @@ terraform destroy        # remove o ruleset (headers deixam de ser servidos)
 - **HSTS:** se preferires gerir HSTS nas Edge Certificates da Cloudflare,
   remove o header `Strict-Transport-Security` do ruleset — nunca ter os dois
   com valores diferentes.
-- **Cache-Control:** as regras de cache do `public/_headers` não estão aqui —
-  a modificação de `cache-control` via response headers transform rules não
-  muda o cache da Cloudflare (ver `docs/SECURITY-HEADERS.md` §3.3).
+- **Cache Rules (C1/C2/C3):** agora versionadas no `ventu_cache_rules`
+  (fase `http_request_cache_settings`) — porquê ruleset e não transform rules:
+  modificar `cache-control` em response header transform rules não muda o
+  cache da Cloudflare (ver `docs/SECURITY-HEADERS.md` §3.3). Semânticas:
+  `edge_ttl.mode=override_origin` + `default` em segundos, `browser_ttl.mode=respect_origin`,
+  `cache=true/false`, e `serve_stale` **omitido** = "While updating" (default,
+  como no painel). C3 (`/sw.js`) usa `cache=false` (bypass — o serviço devolve
+  `CF-Cache-Status: DYNAMIC` de propósito).
+- **Plano free:** máx. 10 Cache Rules ativas (este módulo usa 3) e ficheiro
+  cacheável máx. 512 MB (irrelevante para HTML/JSON).

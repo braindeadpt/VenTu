@@ -105,7 +105,7 @@ As regras de `Cache-Control` do `public/_headers` (`/_next/static/*` immutable, 
 **Notas:**
 - O GitHub Pages já serve `Cache-Control: max-age=600` em tudo → a Cloudflare cacheia por defeito 600s; as Cache Rules **estendem/ajustam** esse comportamento (origin offload real para os assets imutáveis e frescura controlada para os dados).
 - O service worker do site continua a ser a camada principal de cache no cliente (cache-first, TTL ~2.5h nos dados); as Cache Rules atuam no CDN + browsers sem SW.
-- Versionável por Terraform (fase `http_cache_settings` do `cloudflare_ruleset`) se quiseres manter tudo em infra-as-code — ver [`terraform/README.md`](../terraform/README.md).
+- Versionável por Terraform (fase `http_request_cache_settings` do `cloudflare_ruleset` — o schema é `edge_ttl.mode=override_origin` + `default`, `browser_ttl.mode=respect_origin`, `cache=true/false`; `serve_stale` omitido = "While updating") se quiseres manter tudo em infra-as-code — ver [`terraform/README.md`](../terraform/README.md).
 
 ## 4. Validação
 
@@ -130,13 +130,20 @@ curl -sI https://ventu.surf/embed/spot/moledo/ | grep -iE "x-frame|frame-ancesto
 
 # ACAO:* removido:
 curl -sI https://ventu.surf/pt/ | grep -i "access-control" || echo "ACAO removido ✓"
+
+# Cache edge (Cache Rules C1/C2/C3) — warm-up (1.º GET) + verificação:
+curl -s -o /dev/null https://ventu.surf/_next/static/<asset>.js   # popula o edge
+curl -s -D - -o /dev/null https://ventu.surf/_next/static/<asset>.js | grep -i cf-cache-status  # → HIT
+curl -s -o /dev/null https://ventu.surf/data/news.json
+curl -s -D - -o /dev/null https://ventu.surf/data/news.json | grep -i cf-cache-status             # → HIT
+curl -s -D - -o /dev/null https://ventu.surf/sw.js | grep -i cf-cache-status                     # → DYNAMIC (bypass)
 ```
 
 ### 4.1 Guard automático no CI (depois do deploy)
 
-O `deploy.yml` tem um job `security-headers` que corre o verificador contra a produção **depois de cada deploy** e falha o run se algum header estiver ausente (ou se o `Access-Control-Allow-Origin: *` voltar). Está **desativado por omissão** — o checker falha de propósito contra o GitHub Pages puro, por isso só deve ser ativado depois de o proxy estar aplicado:
+O `deploy.yml` tem um job `security-headers` que corre o verificador contra a produção **depois de cada deploy** e falha o run se algum header estiver ausente, se o `Access-Control-Allow-Origin: *` voltar, ou se o cache edge não bater (`cf-cache-status` sem HIT/DYNAMIC esperado nas 3 Cache Rules). Está **desativado por omissão** — o checker falha de propósito contra o GitHub Pages puro, por isso só deve ser ativado depois de o proxy estar aplicado:
 
-1. Aplicar as Fases 1–5 (DNS proxied + SSL/TLS Full strict + as 2 Transform Rules).
+1. Aplicar as Fases 1–5 (DNS proxied + SSL/TLS Full strict + as 2 Transform Rules + as 3 Cache Rules C1/C2/C3).
 2. No GitHub: **Settings → Secrets and variables → Actions → Variables** → criar a repo variable `S7_PROXY_ENABLED` com valor `true`.
 3. No próximo deploy, o job corre; se os headers regredirem (proxy removido, regras desligadas, ordem trocada), o run falha com `::error::` e fica assinalado.
 

@@ -3,9 +3,10 @@
 # VenTu — Validate S7 HTTP security headers in production (S7)
 #
 # Runs the curl checks from docs/SECURITY-HEADERS.md against the live site.
-# Intended to be run AFTER the Cloudflare proxy + Transform Rules are applied
-# (DNS proxied + 2 rules); against raw GitHub Pages it will (correctly) fail
-# every header check — that is the pre-implementation state.
+# Intended to be run AFTER the Cloudflare proxy + Transform Rules + Cache Rules
+# are applied (DNS proxied + 2 transform rules + 3 cache rules C1/C2/C3);
+# against raw GitHub Pages it will (correctly) fail every header/cache check
+# — that is the pre-implementation state.
 #
 # Usage:
 #   bash scripts/check-security-headers.sh [BASE_URL]
@@ -69,9 +70,51 @@ else
   echo "  ok: sem X-Frame-Options em /embed/*"
 fi
 
-if [ "$fail" -eq 0 ]; then
-  echo "OK — headers S7 conforme docs/SECURITY-HEADERS.md"
+# ── Cache edge (Cache Rules C1/C2/C3 — docs/SECURITY-HEADERS.md §3.3) ──
+# Warm-up (1.º GET popula o edge) + 2.º GET a verificar o cf-cache-status.
+# Sem cf-cache-status = proxy Cloudflare não aplicado (estado pré-S7).
+echo "==> $BASE — cache edge (C1/C2/C3)"
+
+cf_cache_status() { # url → cf-cache-status (ou vazio)
+  curl -s -D - -o /dev/null "$1" 2>/dev/null | tr -d '\r' | grep -i "^cf-cache-status:" | head -1 | awk '{print $2}'
+}
+
+# check_cache_rule: label, url, expect (HIT|DYNAMIC), allow_empty(0|1)
+check_cache_rule() {
+  local label="$1" url="$2" expect="$3" allow_empty="${4:-0}" st
+  curl -s -o /dev/null "$url" || true # warm-up
+  st=$(cf_cache_status "$url")
+  if [ "$st" = "$expect" ]; then
+    echo "  ok: $label — cf-cache-status: $st"
+  elif [ -z "$st" ] && [ "$allow_empty" = "1" ]; then
+    echo "  ok: $label — sem cf-cache-status (bypass edge, comportamento esperado)"
+  elif [ -z "$st" ]; then
+    echo "  FAIL: $label — sem cf-cache-status (proxy Cloudflare não aplicado?)"
+    fail=1
+  else
+    echo "  FAIL: $label — esperado $expect, obtido ${st:-<vazio>}"
+    fail=1
+  fi
+}
+
+# C1 — /_next/static/* (imutável, 1 ano): extrai um asset real do HTML de /pt/
+asset=$(curl -s "${BASE}/pt/" 2>/dev/null | grep -oE "/_next/static/[^\"']+\.js" | head -1 || true)
+if [ -n "$asset" ]; then
+  check_cache_rule "C1 /_next/static/* (${asset}) — HIT" "${BASE}${asset}" "HIT"
 else
-  echo "FALHAS — rever docs/SECURITY-HEADERS.md (proxy Cloudflare + Transform Rules ainda não aplicados?)"
+  echo "  FAIL: C1 — não encontrei asset /_next/static no HTML de ${BASE}/pt/"
+  fail=1
+fi
+
+# C2 — /data/* (SWR 5 min)
+check_cache_rule "C2 /data/news.json — HIT" "${BASE}/data/news.json" "HIT"
+
+# C3 — /sw.js (bypass edge): DYNAMIC ou sem header; HIT/MISS = regra não aplicada
+check_cache_rule "C3 /sw.js — DYNAMIC (bypass)" "${BASE}/sw.js" "DYNAMIC" 1
+
+if [ "$fail" -eq 0 ]; then
+  echo "OK — headers S7 + cache edge conforme docs/SECURITY-HEADERS.md"
+else
+  echo "FALHAS — rever docs/SECURITY-HEADERS.md (proxy Cloudflare + Transform/Cache Rules ainda não aplicados?)"
 fi
 exit "$fail"
