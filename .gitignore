@@ -26,7 +26,14 @@ yarn-error.log*
 build_debug.log
 
 # Backups
+# `.backup` copies are written next to each data file by
+# scripts/update-conditions.js as an in-run safety net before overwriting.
+# They must never be committed: git history is already the backup, and
+# tracking them rewrote ~17 MB across 186 files on every bot data commit
+# (~15/day). Note `*.bak` alone did NOT match them — hence the explicit
+# `*.backup`. (scripts/restore-data.js uses the separate `.backup/` dir.)
 *.bak
+*.backup
 
 # IDE / local agent scratch
 .vscode/
