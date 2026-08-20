@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-20T07:38:15.245Z",
+  "generatedAt": "2026-08-20T08:31:45.494Z",
   "spots": [
     {
       "id": "ponta-sao-lourenco",
@@ -6636,15 +6636,15 @@
       "bestScore": 80,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -7059,8 +7059,8 @@
         "waveHeight": 0,
         "wavePeriod": 0,
         "waveDirection": 0,
-        "windSpeed": 0.5144456333854638,
-        "windDirection": 225,
+        "windSpeed": 1.0288912667709276,
+        "windDirection": 135,
         "windGust": 2.1,
         "waterTemp": 0,
         "swellHeight": 0,
@@ -7069,15 +7069,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0,
         "observed": {
-          "windSpeedKt": 1,
-          "windDirDeg": 225,
+          "windSpeedKt": 2,
+          "windDirDeg": 135,
           "windDirMissing": false,
-          "windCardinal": "SW",
-          "windCardinalEn": "SW",
-          "tempC": 17.8,
-          "stationName": "Cabeceiras de Basto",
-          "distanceKm": 15.2,
-          "observedAt": "2026-08-20T05:00:00.000Z",
+          "windCardinal": "SE",
+          "windCardinalEn": "SE",
+          "tempC": 16.9,
+          "stationName": "Cabril",
+          "distanceKm": 16.6,
+          "observedAt": "2026-08-20T06:00:00.000Z",
           "source": "ipma"
         },
         "updatedAt": "2026-08-20T07:37:36.245Z",
@@ -7144,33 +7144,33 @@
       },
       "allScores": {
         "surf": {
-          "score": 15,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 24,
+          "rating": "Fraco",
+          "ratingEn": "Poor",
           "factors": [
-            "Vento fraco"
+            "Vento offshore"
           ],
           "primaryFactor": "0.0m @ 0s"
         },
         "kitesurf": {
-          "score": 2,
+          "score": 5,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "1kt"
+          "primaryFactor": "2kt"
         },
         "windsurf": {
-          "score": 2,
+          "score": 4,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "1kt"
+          "primaryFactor": "2kt"
         },
         "wakeboard": {
           "score": 80,
@@ -7182,7 +7182,7 @@
           "primaryFactor": "Cable"
         },
         "bodyboard": {
-          "score": 13,
+          "score": 12,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [],
@@ -7199,14 +7199,14 @@
           "primaryFactor": "Plano"
         },
         "foil": {
-          "score": 34,
+          "score": 38,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
             "Água plana",
-            "Vento side-onshore"
+            "Vento side-offshore"
           ],
-          "primaryFactor": "1kt"
+          "primaryFactor": "2kt"
         }
       },
       "bestScore": 80,
@@ -7407,15 +7407,15 @@
       },
       "bestScore": 80,
       "bestWindowToday": {
-        "start": 8,
-        "end": 10,
+        "start": 6,
+        "end": 8,
         "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 10,
+          "start": 6,
+          "end": 8,
           "score": 56
         }
       }
@@ -7814,16 +7814,16 @@
       },
       "bestScore": 79,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -8020,16 +8020,16 @@
       },
       "bestScore": 79,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -8229,15 +8229,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 3,
-        "end": 7,
-        "score": 67,
+        "end": 8,
+        "score": 70,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 3,
-          "end": 7,
-          "score": 67
+          "end": 8,
+          "score": 70
         }
       }
     },
@@ -8435,15 +8435,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 3,
-        "end": 7,
-        "score": 67,
+        "end": 8,
+        "score": 70,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 3,
-          "end": 7,
-          "score": 67
+          "end": 8,
+          "score": 70
         }
       }
     },
@@ -8638,15 +8638,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -8843,15 +8843,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -9037,15 +9037,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -9231,15 +9231,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -9428,8 +9428,8 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 23,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
@@ -9440,8 +9440,8 @@
         },
         "surf": {
           "start": 23,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -9629,15 +9629,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -9835,15 +9835,15 @@
       },
       "bestScore": 79,
       "bestWindowToday": {
-        "start": 8,
-        "end": 10,
+        "start": 6,
+        "end": 8,
         "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 10,
+          "start": 6,
+          "end": 8,
           "score": 56
         }
       }
@@ -10226,15 +10226,15 @@
       "bestScore": 79,
       "bestWindowToday": {
         "start": 23,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 23,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -10271,8 +10271,8 @@
         "waveHeight": 0.7,
         "wavePeriod": 10.05,
         "waveDirection": 149,
-        "windSpeed": 1.0288912667709276,
-        "windDirection": 180,
+        "windSpeed": 2.12,
+        "windDirection": 8,
         "windGust": 5.1,
         "waterTemp": 24.1,
         "swellHeight": 0.46,
@@ -10283,18 +10283,6 @@
         "secondarySwellDirection": 252,
         "windWaveHeight": 0.02,
         "wavePowerKw": 1.20083,
-        "observed": {
-          "windSpeedKt": 2,
-          "windDirDeg": 180,
-          "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 16.8,
-          "stationName": "São Jorge / Pico do Areeiro (DROTRH)",
-          "distanceKm": 8.1,
-          "observedAt": "2026-08-20T05:00:00.000Z",
-          "source": "ipma"
-        },
         "updatedAt": "2026-08-20T07:38:09.134Z",
         "confidence": "baixa",
         "confidenceDetail": {
@@ -10359,35 +10347,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 52,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
+          "score": 61,
+          "rating": "Bom",
+          "ratingEn": "Good",
           "factors": [
             "0.7m ondas",
             "10s período",
-            "Vento fraco"
+            "Vento offshore"
           ],
           "primaryFactor": "0.7m @ 10s"
         },
         "kitesurf": {
-          "score": 5,
+          "score": 10,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "2kt"
+          "primaryFactor": "4kt"
         },
         "windsurf": {
-          "score": 4,
+          "score": 9,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "2kt"
+          "primaryFactor": "4kt"
         },
         "wakeboard": {
           "score": 0,
@@ -10400,7 +10388,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 65,
+          "score": 64,
           "rating": "Bom",
           "ratingEn": "Good",
           "factors": [
@@ -10421,13 +10409,13 @@
           "primaryFactor": "0.7m"
         },
         "foil": {
-          "score": 34,
+          "score": 38,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-onshore"
+            "Vento side-offshore"
           ],
-          "primaryFactor": "2kt"
+          "primaryFactor": "4kt"
         }
       },
       "bestScore": 79,
@@ -10468,8 +10456,8 @@
         "waveHeight": 0.58,
         "wavePeriod": 8.6,
         "waveDirection": 295,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.9,
         "swellHeight": 0.46,
@@ -10481,15 +10469,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.80408,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 3,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:11.367Z",
@@ -10556,35 +10544,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 44,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -10597,7 +10585,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 57,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -10618,13 +10606,13 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 78,
@@ -10664,8 +10652,8 @@
         "waveHeight": 0.58,
         "wavePeriod": 8.6,
         "waveDirection": 295,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.9,
         "swellHeight": 0.46,
@@ -10677,15 +10665,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.80408,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 4.4,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:12.086Z",
@@ -10752,35 +10740,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 44,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -10793,7 +10781,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 57,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -10814,27 +10802,27 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 59,
+        "end": 8,
+        "score": 62,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 59
+          "end": 8,
+          "score": 62
         }
       }
     },
@@ -10870,8 +10858,8 @@
         "waveHeight": 0.58,
         "wavePeriod": 8.6,
         "waveDirection": 295,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.9,
         "swellHeight": 0.46,
@@ -10883,15 +10871,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.80408,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 4.7,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:12.441Z",
@@ -10958,35 +10946,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 44,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -10999,7 +10987,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 57,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -11020,27 +11008,27 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 59,
+        "end": 8,
+        "score": 62,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 59
+          "end": 8,
+          "score": 62
         }
       }
     },
@@ -11077,8 +11065,8 @@
         "waveHeight": 0.58,
         "wavePeriod": 8.6,
         "waveDirection": 295,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.9,
         "swellHeight": 0.46,
@@ -11090,15 +11078,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.80408,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 5.2,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:12.798Z",
@@ -11165,35 +11153,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 44,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -11206,7 +11194,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 57,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -11227,27 +11215,27 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 59,
+        "end": 8,
+        "score": 62,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 59
+          "end": 8,
+          "score": 62
         }
       }
     },
@@ -11284,8 +11272,8 @@
         "waveHeight": 0.6,
         "wavePeriod": 8.55,
         "waveDirection": 297,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.9,
         "swellHeight": 0.46,
@@ -11297,15 +11285,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.80408,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 11.9,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:13.155Z",
@@ -11372,35 +11360,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 45,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -11413,7 +11401,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 57,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -11434,27 +11422,27 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 59,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 59
         }
       }
     },
@@ -11657,15 +11645,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -11862,15 +11850,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -12068,15 +12056,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -12274,15 +12262,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -12679,15 +12667,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -12887,15 +12875,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -13093,15 +13081,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -13300,15 +13288,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -13914,15 +13902,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -14120,15 +14108,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -14329,14 +14317,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 14,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 14,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -15137,8 +15125,19 @@
         }
       },
       "bestScore": 78,
-      "bestWindowToday": null,
-      "bestWindowsBySport": {}
+      "bestWindowToday": {
+        "start": 7,
+        "end": 8,
+        "score": 54,
+        "sport": "surf"
+      },
+      "bestWindowsBySport": {
+        "surf": {
+          "start": 7,
+          "end": 8,
+          "score": 54
+        }
+      }
     },
     {
       "id": "leirosa",
@@ -15333,15 +15332,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -15541,14 +15540,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 16,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 16,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -15749,14 +15748,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 15,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 15,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -16945,14 +16944,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 15,
-        "end": 7,
+        "end": 8,
         "score": 71,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 15,
-          "end": 7,
+          "end": 8,
           "score": 71
         }
       }
@@ -17536,14 +17535,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 15,
-        "end": 7,
+        "end": 8,
         "score": 71,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 15,
-          "end": 7,
+          "end": 8,
           "score": 71
         }
       }
@@ -17744,14 +17743,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 15,
-        "end": 7,
+        "end": 8,
         "score": 71,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 15,
-          "end": 7,
+          "end": 8,
           "score": 71
         }
       }
@@ -18146,14 +18145,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -18353,14 +18352,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -18558,15 +18557,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -18764,14 +18763,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -18969,15 +18968,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -19176,15 +19175,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -19386,14 +19385,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -19593,15 +19592,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -19799,15 +19798,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -20011,14 +20010,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 17,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 17,
-          "end": 7,
+          "end": 8,
           "score": 73
         },
         "windsurf": {
@@ -20810,14 +20809,14 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 20,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 20,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -21016,15 +21015,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 22,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 22,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -21225,15 +21224,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 22,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 22,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -21430,15 +21429,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -21635,15 +21634,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -21841,15 +21840,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -22048,15 +22047,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 64,
+        "end": 8,
+        "score": 66,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 64
+          "end": 8,
+          "score": 66
         }
       }
     },
@@ -22252,15 +22251,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -22459,15 +22458,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 4,
-        "end": 7,
-        "score": 66,
+        "end": 8,
+        "score": 68,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 4,
-          "end": 7,
-          "score": 66
+          "end": 8,
+          "score": 68
         }
       }
     },
@@ -22663,15 +22662,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 4,
-        "end": 7,
-        "score": 66,
+        "end": 8,
+        "score": 68,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 4,
-          "end": 7,
-          "score": 66
+          "end": 8,
+          "score": 68
         }
       }
     },
@@ -22870,15 +22869,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 23,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 23,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -23078,15 +23077,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -23282,15 +23281,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 64,
+        "end": 8,
+        "score": 66,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 64
+          "end": 8,
+          "score": 66
         }
       }
     },
@@ -23488,15 +23487,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 23,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 23,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -23697,15 +23696,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 59,
+        "end": 8,
+        "score": 62,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 59
+          "end": 8,
+          "score": 62
         }
       }
     },
@@ -23903,15 +23902,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 1,
-        "end": 7,
-        "score": 71,
+        "end": 8,
+        "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 1,
-          "end": 7,
-          "score": 71
+          "end": 8,
+          "score": 73
         }
       }
     },
@@ -24109,15 +24108,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 1,
-        "end": 7,
-        "score": 71,
+        "end": 8,
+        "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 1,
-          "end": 7,
-          "score": 71
+          "end": 8,
+          "score": 73
         }
       }
     },
@@ -24313,15 +24312,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 0,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 0,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -24518,19 +24517,8 @@
         }
       },
       "bestScore": 78,
-      "bestWindowToday": {
-        "start": 8,
-        "end": 9,
-        "score": 54,
-        "sport": "surf"
-      },
-      "bestWindowsBySport": {
-        "surf": {
-          "start": 8,
-          "end": 9,
-          "score": 54
-        }
-      }
+      "bestWindowToday": null,
+      "bestWindowsBySport": {}
     },
     {
       "id": "barra-aveiro",
@@ -24729,15 +24717,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -25731,15 +25719,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -25938,15 +25926,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -26141,15 +26129,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -26348,15 +26336,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -26945,15 +26933,15 @@
       "bestScore": 78,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -27151,15 +27139,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 0,
-        "end": 7,
-        "score": 68,
+        "end": 8,
+        "score": 69,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 0,
-          "end": 7,
-          "score": 68
+          "end": 8,
+          "score": 69
         }
       }
     },
@@ -27358,15 +27346,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 5,
-        "end": 7,
-        "score": 59,
+        "end": 8,
+        "score": 62,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 5,
-          "end": 7,
-          "score": 59
+          "end": 8,
+          "score": 62
         }
       }
     },
@@ -27964,7 +27952,7 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 13,
-        "end": 7,
+        "end": 8,
         "score": 70,
         "sport": "surf"
       },
@@ -27976,7 +27964,7 @@
         },
         "surf": {
           "start": 13,
-          "end": 7,
+          "end": 8,
           "score": 70
         }
       }
@@ -28987,14 +28975,14 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 13,
-        "end": 7,
+        "end": 8,
         "score": 69,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 13,
-          "end": 7,
+          "end": 8,
           "score": 69
         },
         "windsurf": {
@@ -29794,15 +29782,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -29844,8 +29832,8 @@
         "waveHeight": 0.62,
         "wavePeriod": 8.55,
         "waveDirection": 299,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.4,
         "swellHeight": 0.44,
@@ -29857,15 +29845,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.7308399999999999,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 4.1,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:10.277Z",
@@ -29932,35 +29920,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 45,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -29973,7 +29961,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 58,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -29994,13 +29982,13 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 77,
@@ -30043,8 +30031,8 @@
         "waveHeight": 0.62,
         "wavePeriod": 8.55,
         "waveDirection": 299,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.4,
         "swellHeight": 0.44,
@@ -30056,15 +30044,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.7308399999999999,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 2.4,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:10.652Z",
@@ -30131,35 +30119,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 45,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -30172,7 +30160,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 58,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -30193,13 +30181,13 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 77,
@@ -30239,8 +30227,8 @@
         "waveHeight": 0.66,
         "wavePeriod": 8.6,
         "waveDirection": 300,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.3,
         "swellHeight": 0.48,
@@ -30252,15 +30240,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.864,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 2.3,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:11.011Z",
@@ -30327,35 +30315,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 54,
+          "score": 45,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.7m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.7m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -30368,7 +30356,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 57,
+          "score": 58,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -30389,26 +30377,26 @@
           "primaryFactor": "0.7m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 77,
       "bestWindowToday": {
         "start": 14,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 14,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -30999,15 +30987,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -31207,14 +31195,14 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 18,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 18,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -31418,15 +31406,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 21,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 21,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -31628,14 +31616,14 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 19,
-        "end": 7,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 19,
-          "end": 7,
+          "end": 8,
           "score": 73
         }
       }
@@ -31839,15 +31827,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 21,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 21,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -32436,15 +32424,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 21,
-        "end": 7,
-        "score": 73,
+        "end": 8,
+        "score": 74,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 21,
-          "end": 7,
-          "score": 73
+          "end": 8,
+          "score": 74
         }
       }
     },
@@ -32480,8 +32468,8 @@
         "waveHeight": 0.68,
         "wavePeriod": 8.6,
         "waveDirection": 297,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.5,
         "swellHeight": 0.46,
@@ -32493,15 +32481,15 @@
         "windWaveHeight": 0.02,
         "wavePowerKw": 0.79879,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 15.6,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:37:59.322Z",
@@ -32568,35 +32556,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 54,
+          "score": 46,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.7m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.7m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -32609,7 +32597,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 58,
+          "score": 59,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -32630,27 +32618,27 @@
           "primaryFactor": "0.7m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 77,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -33045,14 +33033,14 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 13,
-        "end": 7,
+        "end": 8,
         "score": 69,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 13,
-          "end": 7,
+          "end": 8,
           "score": 69
         }
       }
@@ -33113,7 +33101,7 @@
           "tempC": 20,
           "stationName": "Porto (METAR)",
           "distanceKm": 9.5,
-          "observedAt": "2026-08-20T07:30:00.000Z",
+          "observedAt": "2026-08-20T08:00:00.000Z",
           "source": "metar",
           "metarIcao": "LPPR"
         },
@@ -33255,15 +33243,15 @@
       "bestScore": 77,
       "bestWindowToday": {
         "start": 6,
-        "end": 7,
-        "score": 54,
+        "end": 8,
+        "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
           "start": 6,
-          "end": 7,
-          "score": 54
+          "end": 8,
+          "score": 56
         }
       }
     },
@@ -33302,8 +33290,8 @@
         "waveHeight": 0.62,
         "wavePeriod": 8.55,
         "waveDirection": 299,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 171,
+        "windSpeed": 0,
+        "windDirection": 263,
         "windGust": 2.1,
         "waterTemp": 19.4,
         "swellHeight": 0.44,
@@ -33315,15 +33303,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 0.7308399999999999,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 171,
+          "windSpeedKt": 0,
+          "windDirDeg": 263,
           "windDirMissing": false,
-          "windCardinal": "S",
-          "windCardinalEn": "S",
-          "tempC": 20.3,
+          "windCardinal": "W",
+          "windCardinalEn": "W",
+          "tempC": 20.8,
           "stationName": "TAP Teste 3",
           "distanceKm": 6.3,
-          "observedAt": "2026-08-20T07:38:13.000Z",
+          "observedAt": "2026-08-20T08:31:44.000Z",
           "source": "ecowitt"
         },
         "updatedAt": "2026-08-20T07:38:10.576Z",
@@ -33390,35 +33378,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 53,
+          "score": 45,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
             "0.6m ondas",
             "9s período",
-            "Vento offshore"
+            "Vento fraco"
           ],
           "primaryFactor": "0.6m @ 9s"
         },
         "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         },
         "wakeboard": {
           "score": 0,
@@ -33431,7 +33419,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 56,
+          "score": 58,
           "rating": "Razoável",
           "ratingEn": "Fair",
           "factors": [
@@ -33452,13 +33440,13 @@
           "primaryFactor": "0.6m"
         },
         "foil": {
-          "score": 36,
+          "score": 29,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore"
+            "Vento onshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "0kt"
         }
       },
       "bestScore": 77,
@@ -33661,211 +33649,6 @@
       "bestWindowsBySport": {}
     },
     {
-      "id": "anjos",
-      "slug": "anjos",
-      "name": "Anjos",
-      "nameEn": "Anjos",
-      "region": "Santa Maria",
-      "regionEn": "Santa Maria",
-      "lat": 36.967,
-      "lon": -25.1,
-      "coastOrientation": 270,
-      "type": "surf",
-      "difficulty": "intermediate",
-      "compatibleSports": [
-        "surf",
-        "bodyboard"
-      ],
-      "description": "Reef break direito exposto na costa noroeste de Santa Maria. Ondas tubulares em dias grandes.",
-      "descriptionEn": "Exposed right reef break on the northwest coast of Santa Maria. Tubular waves on big days.",
-      "facilities": [
-        "Estacionamento limitado",
-        "WC"
-      ],
-      "hazards": [
-        "Rochas",
-        "Acesso difícil"
-      ],
-      "blueFlag": false,
-      "accessibleBeach": false,
-      "conditions": {
-        "waveHeight": 1.24,
-        "wavePeriod": 10,
-        "waveDirection": 138,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 90,
-        "windGust": 7.4,
-        "waterTemp": 23.7,
-        "swellHeight": 0.8,
-        "swellPeriod": 7.35,
-        "swellDirection": 104,
-        "secondarySwellHeight": 0.74,
-        "secondarySwellPeriod": 10.8,
-        "secondarySwellDirection": 142,
-        "windWaveHeight": 0.18,
-        "wavePowerKw": 2.3520000000000003,
-        "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 90,
-          "windDirMissing": false,
-          "windCardinal": "E",
-          "windCardinalEn": "E",
-          "tempC": 21.4,
-          "stationName": "Santa Maria / Praia Formosa (DROTRH)",
-          "distanceKm": 1.6,
-          "observedAt": "2026-08-20T05:00:00.000Z",
-          "source": "ipma"
-        },
-        "updatedAt": "2026-08-20T07:37:55.752Z",
-        "confidence": "média",
-        "confidenceDetail": {
-          "waveSpread": 0.32,
-          "windSpread": 0.95,
-          "waveSpreadPct": 0.259,
-          "windSpreadPct": 0.221,
-          "combinedSpreadPct": 0.24,
-          "degraded": false
-        },
-        "dailyConfidence": [
-          {
-            "date": "2026-08-20",
-            "confidence": "média",
-            "waveSpread": 0.28,
-            "windSpread": 1.64,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-21",
-            "confidence": "média",
-            "waveSpread": 0.29,
-            "windSpread": 1.07,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-22",
-            "confidence": "média",
-            "waveSpread": 0.46,
-            "windSpread": 1.59,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-23",
-            "confidence": "média",
-            "waveSpread": 0.14,
-            "windSpread": 3.28,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-24",
-            "confidence": "média",
-            "waveSpread": 0.18,
-            "windSpread": 3.3,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-25",
-            "confidence": "baixa",
-            "waveSpread": 0.88,
-            "windSpread": 2.08,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-26",
-            "confidence": "baixa",
-            "waveSpread": 1.32,
-            "windSpread": 1.12,
-            "degraded": false
-          }
-        ]
-      },
-      "allScores": {
-        "surf": {
-          "score": 69,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "1.2m ondas",
-            "10s período",
-            "Vento offshore"
-          ],
-          "primaryFactor": "1.2m @ 10s"
-        },
-        "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
-        },
-        "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
-        },
-        "wakeboard": {
-          "score": 0,
-          "rating": "N/A",
-          "ratingEn": "N/A",
-          "factors": [
-            "Sem infraestrutura wake"
-          ],
-          "warning": "Este spot não tem infraestrutura para wakeboard",
-          "primaryFactor": "N/A"
-        },
-        "bodyboard": {
-          "score": 74,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "1.2m ondas",
-            "10s período"
-          ],
-          "primaryFactor": "1.2m"
-        },
-        "sup": {
-          "score": 64,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "Vento fraco",
-            "24°C água"
-          ],
-          "primaryFactor": "1.2m"
-        },
-        "foil": {
-          "score": 21,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
-          "factors": [
-            "Vento offshore"
-          ],
-          "primaryFactor": "3kt"
-        }
-      },
-      "bestScore": 74,
-      "bestWindowToday": {
-        "start": 5,
-        "end": 7,
-        "score": 74,
-        "sport": "surf"
-      },
-      "bestWindowsBySport": {
-        "surf": {
-          "start": 5,
-          "end": 7,
-          "score": 74
-        }
-      }
-    },
-    {
       "id": "seixal-madeira",
       "slug": "seixal-madeira",
       "name": "Seixal",
@@ -33898,8 +33681,8 @@
         "waveHeight": 1.22,
         "wavePeriod": 9,
         "waveDirection": 356,
-        "windSpeed": 5.6589019672401015,
-        "windDirection": 30,
+        "windSpeed": 7.202238867396493,
+        "windDirection": 10,
         "windGust": 8.7,
         "waterTemp": 24.4,
         "swellHeight": 0.94,
@@ -33911,15 +33694,15 @@
         "windWaveHeight": 0.26,
         "wavePowerKw": 2.6949799999999997,
         "observed": {
-          "windSpeedKt": 11,
-          "windDirDeg": 30,
+          "windSpeedKt": 14,
+          "windDirDeg": 10,
           "windDirMissing": false,
-          "windCardinal": "NE",
-          "windCardinalEn": "NE",
+          "windCardinal": "N",
+          "windCardinalEn": "N",
           "tempC": 23,
           "stationName": "Madeira (METAR)",
           "distanceKm": 33.7,
-          "observedAt": "2026-08-20T07:30:00.000Z",
+          "observedAt": "2026-08-20T08:00:00.000Z",
           "source": "metar",
           "metarIcao": "LPMA"
         },
@@ -33987,7 +33770,7 @@
       },
       "allScores": {
         "surf": {
-          "score": 62,
+          "score": 61,
           "rating": "Bom",
           "ratingEn": "Good",
           "factors": [
@@ -33998,18 +33781,17 @@
           "primaryFactor": "1.2m @ 9s"
         },
         "kitesurf": {
-          "score": 32,
+          "score": 28,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento side-offshore",
-            "Vento insuficiente"
+            "14kt vento fraco"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "11kt"
+          "primaryFactor": "14kt"
         },
         "windsurf": {
-          "score": 29,
+          "score": 36,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
@@ -34017,7 +33799,7 @@
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "11kt"
+          "primaryFactor": "14kt"
         },
         "wakeboard": {
           "score": 0,
@@ -34030,7 +33812,7 @@
           "primaryFactor": "N/A"
         },
         "bodyboard": {
-          "score": 67,
+          "score": 66,
           "rating": "Bom",
           "ratingEn": "Good",
           "factors": [
@@ -34054,7 +33836,7 @@
           "rating": "Bom",
           "ratingEn": "Good",
           "factors": [
-            "11kt vento ideal",
+            "14kt vento ideal",
             "Vento side-offshore"
           ],
           "primaryFactor": "Vento ideal"
@@ -34062,222 +33844,16 @@
       },
       "bestScore": 73,
       "bestWindowToday": {
-        "start": 8,
-        "end": 10,
+        "start": 6,
+        "end": 8,
         "score": 56,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 10,
+          "start": 6,
+          "end": 8,
           "score": 56
-        }
-      }
-    },
-    {
-      "id": "formosa-santa-maria",
-      "slug": "formosa-santa-maria",
-      "name": "Formosa (Santa Maria)",
-      "nameEn": "Formosa (Santa Maria)",
-      "region": "Santa Maria",
-      "regionEn": "Santa Maria",
-      "lat": 36.99,
-      "lon": -25.067,
-      "coastOrientation": 180,
-      "type": "surf",
-      "difficulty": "intermediate",
-      "compatibleSports": [
-        "surf",
-        "bodyboard"
-      ],
-      "description": "A melhor onda de Santa Maria. Direita longa sobre fundo de rocha. Água cristalina e cenário tropical. Praia de areia dourada.",
-      "descriptionEn": "The best wave in Santa Maria. Long right-hander over rock bottom. Crystal clear water and tropical scenery. Golden sand beach.",
-      "facilities": [
-        "Estacionamento",
-        "Restaurante",
-        "WC"
-      ],
-      "hazards": [
-        "Rochas",
-        "Correntes"
-      ],
-      "blueFlag": false,
-      "accessibleBeach": false,
-      "conditions": {
-        "waveHeight": 1.24,
-        "wavePeriod": 9.9,
-        "waveDirection": 134,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 90,
-        "windGust": 7.5,
-        "waterTemp": 23.9,
-        "swellHeight": 0.82,
-        "swellPeriod": 6.8,
-        "swellDirection": 99,
-        "secondarySwellHeight": 0.72,
-        "secondarySwellPeriod": 11.3,
-        "secondarySwellDirection": 147,
-        "windWaveHeight": 0.16,
-        "wavePowerKw": 2.2861599999999997,
-        "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 90,
-          "windDirMissing": false,
-          "windCardinal": "E",
-          "windCardinalEn": "E",
-          "tempC": 21.4,
-          "stationName": "Santa Maria / Praia Formosa (DROTRH)",
-          "distanceKm": 4.5,
-          "observedAt": "2026-08-20T05:00:00.000Z",
-          "source": "ipma"
-        },
-        "updatedAt": "2026-08-20T07:38:07.954Z",
-        "confidence": "média",
-        "confidenceDetail": {
-          "waveSpread": 0.32,
-          "windSpread": 0.95,
-          "waveSpreadPct": 0.259,
-          "windSpreadPct": 0.221,
-          "combinedSpreadPct": 0.24,
-          "degraded": false
-        },
-        "dailyConfidence": [
-          {
-            "date": "2026-08-20",
-            "confidence": "média",
-            "waveSpread": 0.28,
-            "windSpread": 1.64,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-21",
-            "confidence": "média",
-            "waveSpread": 0.29,
-            "windSpread": 1.07,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-22",
-            "confidence": "média",
-            "waveSpread": 0.46,
-            "windSpread": 1.59,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-23",
-            "confidence": "média",
-            "waveSpread": 0.14,
-            "windSpread": 3.28,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-24",
-            "confidence": "média",
-            "waveSpread": 0.18,
-            "windSpread": 3.3,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-25",
-            "confidence": "baixa",
-            "waveSpread": 0.88,
-            "windSpread": 2.08,
-            "degraded": false
-          },
-          {
-            "date": "2026-08-26",
-            "confidence": "baixa",
-            "waveSpread": 1.32,
-            "windSpread": 1.12,
-            "degraded": false
-          }
-        ]
-      },
-      "allScores": {
-        "surf": {
-          "score": 59,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
-          "factors": [
-            "1.2m ondas",
-            "10s período",
-            "Vento fraco"
-          ],
-          "primaryFactor": "1.2m @ 10s"
-        },
-        "kitesurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
-        },
-        "windsurf": {
-          "score": 7,
-          "rating": "Mau",
-          "ratingEn": "Bad",
-          "factors": [
-            "Vento insuficiente"
-          ],
-          "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
-        },
-        "wakeboard": {
-          "score": 0,
-          "rating": "N/A",
-          "ratingEn": "N/A",
-          "factors": [
-            "Sem infraestrutura wake"
-          ],
-          "warning": "Este spot não tem infraestrutura para wakeboard",
-          "primaryFactor": "N/A"
-        },
-        "bodyboard": {
-          "score": 73,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "1.2m ondas",
-            "10s período"
-          ],
-          "primaryFactor": "1.2m"
-        },
-        "sup": {
-          "score": 64,
-          "rating": "Bom",
-          "ratingEn": "Good",
-          "factors": [
-            "Vento fraco",
-            "24°C água"
-          ],
-          "primaryFactor": "1.2m"
-        },
-        "foil": {
-          "score": 24,
-          "rating": "Fraco",
-          "ratingEn": "Poor",
-          "factors": [
-            "Vento side-onshore"
-          ],
-          "primaryFactor": "3kt"
-        }
-      },
-      "bestScore": 73,
-      "bestWindowToday": {
-        "start": 8,
-        "end": 3,
-        "score": 73,
-        "sport": "surf"
-      },
-      "bestWindowsBySport": {
-        "surf": {
-          "start": 8,
-          "end": 3,
-          "score": 73
         }
       }
     },
@@ -34473,15 +34049,15 @@
       },
       "bestScore": 72,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 80,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 80
         }
       }
@@ -34679,16 +34255,222 @@
       },
       "bestScore": 72,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 2,
         "score": 79,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 2,
           "score": 79
+        }
+      }
+    },
+    {
+      "id": "anjos",
+      "slug": "anjos",
+      "name": "Anjos",
+      "nameEn": "Anjos",
+      "region": "Santa Maria",
+      "regionEn": "Santa Maria",
+      "lat": 36.967,
+      "lon": -25.1,
+      "coastOrientation": 270,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "Reef break direito exposto na costa noroeste de Santa Maria. Ondas tubulares em dias grandes.",
+      "descriptionEn": "Exposed right reef break on the northwest coast of Santa Maria. Tubular waves on big days.",
+      "facilities": [
+        "Estacionamento limitado",
+        "WC"
+      ],
+      "hazards": [
+        "Rochas",
+        "Acesso difícil"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": {
+        "waveHeight": 1.24,
+        "wavePeriod": 10,
+        "waveDirection": 138,
+        "windSpeed": 3.0866738003127825,
+        "windDirection": 0,
+        "windGust": 7.4,
+        "waterTemp": 23.7,
+        "swellHeight": 0.8,
+        "swellPeriod": 7.35,
+        "swellDirection": 104,
+        "secondarySwellHeight": 0.74,
+        "secondarySwellPeriod": 10.8,
+        "secondarySwellDirection": 142,
+        "windWaveHeight": 0.18,
+        "wavePowerKw": 2.3520000000000003,
+        "observed": {
+          "windSpeedKt": 6,
+          "windDirDeg": 0,
+          "windDirMissing": false,
+          "windCardinal": "N",
+          "windCardinalEn": "N",
+          "tempC": 22.2,
+          "stationName": "Santa Maria (Aeródromo)",
+          "distanceKm": 6,
+          "observedAt": "2026-08-20T06:00:00.000Z",
+          "source": "ipma"
+        },
+        "updatedAt": "2026-08-20T07:37:55.752Z",
+        "confidence": "média",
+        "confidenceDetail": {
+          "waveSpread": 0.32,
+          "windSpread": 0.95,
+          "waveSpreadPct": 0.259,
+          "windSpreadPct": 0.221,
+          "combinedSpreadPct": 0.24,
+          "degraded": false
+        },
+        "dailyConfidence": [
+          {
+            "date": "2026-08-20",
+            "confidence": "média",
+            "waveSpread": 0.28,
+            "windSpread": 1.64,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-21",
+            "confidence": "média",
+            "waveSpread": 0.29,
+            "windSpread": 1.07,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-22",
+            "confidence": "média",
+            "waveSpread": 0.46,
+            "windSpread": 1.59,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-23",
+            "confidence": "média",
+            "waveSpread": 0.14,
+            "windSpread": 3.28,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-24",
+            "confidence": "média",
+            "waveSpread": 0.18,
+            "windSpread": 3.3,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-25",
+            "confidence": "baixa",
+            "waveSpread": 0.88,
+            "windSpread": 2.08,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-26",
+            "confidence": "baixa",
+            "waveSpread": 1.32,
+            "windSpread": 1.12,
+            "degraded": false
+          }
+        ]
+      },
+      "allScores": {
+        "surf": {
+          "score": 59,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "1.2m ondas",
+            "10s período",
+            "Vento fraco"
+          ],
+          "primaryFactor": "1.2m @ 10s"
+        },
+        "kitesurf": {
+          "score": 15,
+          "rating": "Mau",
+          "ratingEn": "Bad",
+          "factors": [
+            "Vento insuficiente"
+          ],
+          "warning": "Vento fraco — mínimo ~15kt para kite",
+          "primaryFactor": "6kt"
+        },
+        "windsurf": {
+          "score": 13,
+          "rating": "Mau",
+          "ratingEn": "Bad",
+          "factors": [
+            "Vento insuficiente"
+          ],
+          "warning": "Mínimo ~15kt para windsurf",
+          "primaryFactor": "6kt"
+        },
+        "wakeboard": {
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
+          "factors": [
+            "Sem infraestrutura wake"
+          ],
+          "warning": "Este spot não tem infraestrutura para wakeboard",
+          "primaryFactor": "N/A"
+        },
+        "bodyboard": {
+          "score": 72,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "1.2m ondas",
+            "10s período"
+          ],
+          "primaryFactor": "1.2m"
+        },
+        "sup": {
+          "score": 64,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "Vento fraco",
+            "24°C água"
+          ],
+          "primaryFactor": "1.2m"
+        },
+        "foil": {
+          "score": 43,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "Vento fraco",
+            "Vento side-onshore"
+          ],
+          "primaryFactor": "6kt"
+        }
+      },
+      "bestScore": 72,
+      "bestWindowToday": {
+        "start": 5,
+        "end": 8,
+        "score": 78,
+        "sport": "surf"
+      },
+      "bestWindowsBySport": {
+        "surf": {
+          "start": 5,
+          "end": 8,
+          "score": 78
         }
       }
     },
@@ -34884,14 +34666,14 @@
       },
       "bestScore": 72,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 2,
         "score": 79,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 2,
           "score": 79
         }
@@ -35090,16 +34872,223 @@
       },
       "bestScore": 72,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 0,
         "score": 88,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 0,
           "score": 88
+        }
+      }
+    },
+    {
+      "id": "formosa-santa-maria",
+      "slug": "formosa-santa-maria",
+      "name": "Formosa (Santa Maria)",
+      "nameEn": "Formosa (Santa Maria)",
+      "region": "Santa Maria",
+      "regionEn": "Santa Maria",
+      "lat": 36.99,
+      "lon": -25.067,
+      "coastOrientation": 180,
+      "type": "surf",
+      "difficulty": "intermediate",
+      "compatibleSports": [
+        "surf",
+        "bodyboard"
+      ],
+      "description": "A melhor onda de Santa Maria. Direita longa sobre fundo de rocha. Água cristalina e cenário tropical. Praia de areia dourada.",
+      "descriptionEn": "The best wave in Santa Maria. Long right-hander over rock bottom. Crystal clear water and tropical scenery. Golden sand beach.",
+      "facilities": [
+        "Estacionamento",
+        "Restaurante",
+        "WC"
+      ],
+      "hazards": [
+        "Rochas",
+        "Correntes"
+      ],
+      "blueFlag": false,
+      "accessibleBeach": false,
+      "conditions": {
+        "waveHeight": 1.24,
+        "wavePeriod": 9.9,
+        "waveDirection": 134,
+        "windSpeed": 3.0866738003127825,
+        "windDirection": 0,
+        "windGust": 7.5,
+        "waterTemp": 23.9,
+        "swellHeight": 0.82,
+        "swellPeriod": 6.8,
+        "swellDirection": 99,
+        "secondarySwellHeight": 0.72,
+        "secondarySwellPeriod": 11.3,
+        "secondarySwellDirection": 147,
+        "windWaveHeight": 0.16,
+        "wavePowerKw": 2.2861599999999997,
+        "observed": {
+          "windSpeedKt": 6,
+          "windDirDeg": 0,
+          "windDirMissing": false,
+          "windCardinal": "N",
+          "windCardinalEn": "N",
+          "tempC": 22.2,
+          "stationName": "Santa Maria (Aeródromo)",
+          "distanceKm": 9.3,
+          "observedAt": "2026-08-20T06:00:00.000Z",
+          "source": "ipma"
+        },
+        "updatedAt": "2026-08-20T07:38:07.954Z",
+        "confidence": "média",
+        "confidenceDetail": {
+          "waveSpread": 0.32,
+          "windSpread": 0.95,
+          "waveSpreadPct": 0.259,
+          "windSpreadPct": 0.221,
+          "combinedSpreadPct": 0.24,
+          "degraded": false
+        },
+        "dailyConfidence": [
+          {
+            "date": "2026-08-20",
+            "confidence": "média",
+            "waveSpread": 0.28,
+            "windSpread": 1.64,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-21",
+            "confidence": "média",
+            "waveSpread": 0.29,
+            "windSpread": 1.07,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-22",
+            "confidence": "média",
+            "waveSpread": 0.46,
+            "windSpread": 1.59,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-23",
+            "confidence": "média",
+            "waveSpread": 0.14,
+            "windSpread": 3.28,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-24",
+            "confidence": "média",
+            "waveSpread": 0.18,
+            "windSpread": 3.3,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-25",
+            "confidence": "baixa",
+            "waveSpread": 0.88,
+            "windSpread": 2.08,
+            "degraded": false
+          },
+          {
+            "date": "2026-08-26",
+            "confidence": "baixa",
+            "waveSpread": 1.32,
+            "windSpread": 1.12,
+            "degraded": false
+          }
+        ]
+      },
+      "allScores": {
+        "surf": {
+          "score": 67,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "1.2m ondas",
+            "10s período",
+            "Vento offshore"
+          ],
+          "primaryFactor": "1.2m @ 10s"
+        },
+        "kitesurf": {
+          "score": 15,
+          "rating": "Mau",
+          "ratingEn": "Bad",
+          "factors": [
+            "Vento insuficiente"
+          ],
+          "warning": "Vento fraco — mínimo ~15kt para kite",
+          "primaryFactor": "6kt"
+        },
+        "windsurf": {
+          "score": 13,
+          "rating": "Mau",
+          "ratingEn": "Bad",
+          "factors": [
+            "Vento insuficiente"
+          ],
+          "warning": "Mínimo ~15kt para windsurf",
+          "primaryFactor": "6kt"
+        },
+        "wakeboard": {
+          "score": 0,
+          "rating": "N/A",
+          "ratingEn": "N/A",
+          "factors": [
+            "Sem infraestrutura wake"
+          ],
+          "warning": "Este spot não tem infraestrutura para wakeboard",
+          "primaryFactor": "N/A"
+        },
+        "bodyboard": {
+          "score": 72,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "1.2m ondas",
+            "10s período"
+          ],
+          "primaryFactor": "1.2m"
+        },
+        "sup": {
+          "score": 64,
+          "rating": "Bom",
+          "ratingEn": "Good",
+          "factors": [
+            "Vento fraco",
+            "24°C água"
+          ],
+          "primaryFactor": "1.2m"
+        },
+        "foil": {
+          "score": 42,
+          "rating": "Razoável",
+          "ratingEn": "Fair",
+          "factors": [
+            "Vento fraco",
+            "Vento offshore"
+          ],
+          "primaryFactor": "6kt"
+        }
+      },
+      "bestScore": 72,
+      "bestWindowToday": {
+        "start": 9,
+        "end": 3,
+        "score": 73,
+        "sport": "surf"
+      },
+      "bestWindowsBySport": {
+        "surf": {
+          "start": 9,
+          "end": 3,
+          "score": 73
         }
       }
     },
@@ -35294,15 +35283,15 @@
       },
       "bestScore": 72,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 83,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 83
         }
       }
@@ -35339,8 +35328,8 @@
         "waveHeight": 1.02,
         "wavePeriod": 10.85,
         "waveDirection": 184,
-        "windSpeed": 1.5433369001563912,
-        "windDirection": 270,
+        "windSpeed": 1.0288912667709276,
+        "windDirection": 135,
         "windGust": 5.4,
         "waterTemp": 24.3,
         "swellHeight": 0.64,
@@ -35352,15 +35341,15 @@
         "windWaveHeight": 0,
         "wavePowerKw": 2.5190400000000004,
         "observed": {
-          "windSpeedKt": 3,
-          "windDirDeg": 270,
+          "windSpeedKt": 2,
+          "windDirDeg": 135,
           "windDirMissing": false,
-          "windCardinal": "W",
-          "windCardinalEn": "W",
-          "tempC": 17,
-          "stationName": "Pico / Cabeço do Teicho (DROTRH)",
-          "distanceKm": 6.7,
-          "observedAt": "2026-08-20T05:00:00.000Z",
+          "windCardinal": "SE",
+          "windCardinalEn": "SE",
+          "tempC": 22.9,
+          "stationName": "Pico (Aeródromo)",
+          "distanceKm": 12.5,
+          "observedAt": "2026-08-20T06:00:00.000Z",
           "source": "ipma"
         },
         "updatedAt": "2026-08-20T07:38:08.776Z",
@@ -35427,35 +35416,35 @@
       },
       "allScores": {
         "surf": {
-          "score": 59,
-          "rating": "Razoável",
-          "ratingEn": "Fair",
+          "score": 69,
+          "rating": "Bom",
+          "ratingEn": "Good",
           "factors": [
             "1.0m ondas",
             "11s período",
-            "Vento fraco"
+            "Vento offshore"
           ],
           "primaryFactor": "1.0m @ 11s"
         },
         "kitesurf": {
-          "score": 7,
+          "score": 5,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Vento fraco — mínimo ~15kt para kite",
-          "primaryFactor": "3kt"
+          "primaryFactor": "2kt"
         },
         "windsurf": {
-          "score": 7,
+          "score": 4,
           "rating": "Mau",
           "ratingEn": "Bad",
           "factors": [
             "Vento insuficiente"
           ],
           "warning": "Mínimo ~15kt para windsurf",
-          "primaryFactor": "3kt"
+          "primaryFactor": "2kt"
         },
         "wakeboard": {
           "score": 0,
@@ -35488,25 +35477,25 @@
           "primaryFactor": "1.0m"
         },
         "foil": {
-          "score": 21,
+          "score": 28,
           "rating": "Fraco",
           "ratingEn": "Poor",
           "factors": [
-            "Vento onshore"
+            "Vento side-offshore"
           ],
-          "primaryFactor": "3kt"
+          "primaryFactor": "2kt"
         }
       },
       "bestScore": 72,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 23,
         "score": 78,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 23,
           "score": 78
         }
@@ -35707,15 +35696,15 @@
       },
       "bestScore": 71,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 81,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 81
         }
       }
@@ -35918,14 +35907,14 @@
       },
       "bestScore": 71,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 2,
         "score": 79,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 2,
           "score": 79
         }
@@ -36126,15 +36115,15 @@
       },
       "bestScore": 71,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 79,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 79
         }
       }
@@ -36333,15 +36322,15 @@
       },
       "bestScore": 71,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 73
         }
       }
@@ -36539,15 +36528,15 @@
       },
       "bestScore": 71,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 73
         }
       }
@@ -36605,7 +36594,7 @@
           "tempC": 23,
           "stationName": "Lajes (METAR)",
           "distanceKm": 4.2,
-          "observedAt": "2026-08-20T07:27:00.000Z",
+          "observedAt": "2026-08-20T08:00:00.000Z",
           "source": "metar",
           "metarIcao": "LPLA"
         },
@@ -36746,15 +36735,15 @@
       },
       "bestScore": 70,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 84,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 84
         }
       }
@@ -36953,16 +36942,16 @@
       },
       "bestScore": 69,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
-        "score": 79,
+        "start": 9,
+        "end": 8,
+        "score": 80,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
-          "score": 79
+          "start": 9,
+          "end": 8,
+          "score": 80
         }
       }
     },
@@ -37160,16 +37149,16 @@
       },
       "bestScore": 69,
       "bestWindowToday": {
-        "start": 8,
+        "start": 9,
         "end": 10,
-        "score": 56,
+        "score": 54,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
+          "start": 9,
           "end": 10,
-          "score": 56
+          "score": 54
         }
       }
     },
@@ -37365,15 +37354,15 @@
       },
       "bestScore": 69,
       "bestWindowToday": {
-        "start": 8,
-        "end": 7,
+        "start": 9,
+        "end": 8,
         "score": 73,
         "sport": "surf"
       },
       "bestWindowsBySport": {
         "surf": {
-          "start": 8,
-          "end": 7,
+          "start": 9,
+          "end": 8,
           "score": 73
         }
       }
