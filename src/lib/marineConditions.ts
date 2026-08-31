@@ -1,5 +1,6 @@
 import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 import type { ObservedConditions } from '@/lib/observations';
+import type { ObservedWave } from '@/lib/observedWave';
 
 export type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/lib/forecastConfidenceCore';
 
@@ -34,6 +35,10 @@ export interface MarineConditionsFields {
   dailyConfidence?: DailyConfidence[];
   /** Ground-truth snapshot (IPMA/Ecowitt); used in score when fresh via scoreConditions. */
   observed?: ObservedConditions;
+  /** Measured wave (IH/WMO buoy) — lets the UI show the «Corrigido pela boia X» badge. */
+  observedWave?: ObservedWave;
+  /** Regional bias meta baked by the pipeline (VENTU_WAVE_BIAS_CORRECTION=1). */
+  waveBias?: { region: string; me: number; n: number; deltaM: number };
 }
 
 const MARINE_DISPLAY_KEYS = [

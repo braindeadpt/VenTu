@@ -1,3 +1,4 @@
+import { AlertTriangle } from 'lucide-react';
 import {
   formatForecastUpdatedParts,
   getAgeHours,
@@ -6,12 +7,15 @@ import {
   HERO_FORECAST_LAYERS,
   getHeroFreshnessTitle,
 } from '@/lib/heroDataProvenance';
+import type { BuoyLayerMeta } from '@/lib/pipelineMeta';
 
 interface HeroTickerProps {
   updatedAtTs?: number | null;
   locale: string;
   /** e.g. "6 spots firing" — live count for current sport filter */
   statusLine?: string;
+  /** IH buoy layer state from pipeline-meta.json — warning when not ok. */
+  buoyLayer?: BuoyLayerMeta | null;
 }
 
 const SEP = <span aria-hidden className="text-fg-subtle/40">·</span>;
@@ -23,11 +27,26 @@ function freshnessDotClass(ageHours: number | null): string {
   return 'bg-score-poor';
 }
 
-export default function HeroTicker({ updatedAtTs, locale, statusLine }: HeroTickerProps) {
+/** Short pt/en labels for each non-ok buoy state. */
+function buoyLayerLabel(status: NonNullable<BuoyLayerMeta>['status'], isPt: boolean): string {
+  switch (status) {
+    case 'no-key':
+      return isPt ? 'Boias: sem key' : 'Buoys: no key';
+    case 'down':
+      return isPt ? 'Boias: em baixo' : 'Buoys: down';
+    case 'stale':
+      return isPt ? 'Boias: leituras antigas' : 'Buoys: stale';
+    default:
+      return '';
+  }
+}
+
+export default function HeroTicker({ updatedAtTs, locale, statusLine, buoyLayer }: HeroTickerProps) {
   const isPt = locale === 'pt';
   const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
   const updated =
     updatedAtTs != null ? formatForecastUpdatedParts(updatedAtTs, locale) : null;
+  const buoyStatus = buoyLayer && buoyLayer.status !== 'ok' ? buoyLayer.status : null;
 
   return (
     <div
@@ -76,6 +95,28 @@ export default function HeroTicker({ updatedAtTs, locale, statusLine }: HeroTick
             </span>
           )}
         </span>
+
+        {buoyStatus ? (
+          <span
+            className="inline-flex items-center gap-1 shrink-0"
+            title={
+              isPt
+                ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo'
+                : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts'
+            }
+          >
+            {SEP}
+            <AlertTriangle
+              className={`w-3.5 h-3.5 ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor'}`}
+              aria-hidden
+            />
+            <span
+              className={`font-medium ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor'}`}
+            >
+              {buoyLayerLabel(buoyStatus, isPt)}
+            </span>
+          </span>
+        ) : null}
 
         {HERO_FORECAST_LAYERS.map((layer) => (
           <span key={layer.key} className="inline-flex items-center gap-1 shrink-0">

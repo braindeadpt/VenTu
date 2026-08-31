@@ -40,8 +40,11 @@ function readPipelineMeta(rootDir) {
  * @param {PipelineRunMode} mode
  * @param {Date} [now]
  * @param {string} [rootDir]
+ * @param {object} [extra] extra fields merged into the meta (e.g. buoyLayer
+ *   status for diagnostics). Written after the timestamps so callers can pass
+ *   values derived from the same run.
  */
-function writePipelineMeta(mode, now = new Date(), rootDir) {
+function writePipelineMeta(mode, now = new Date(), rootDir, extra = {}) {
   const iso = now.toISOString();
   const prev = readPipelineMeta(rootDir) || {};
   const next = {
@@ -58,6 +61,8 @@ function writePipelineMeta(mode, now = new Date(), rootDir) {
     // Hero ticker: reflect latest publish (obs merge or full forecast).
     next.displayUpdatedAt = iso;
   }
+
+  Object.assign(next, extra);
 
   const metaPath = getMetaPath(rootDir);
   fs.mkdirSync(path.dirname(metaPath), { recursive: true });

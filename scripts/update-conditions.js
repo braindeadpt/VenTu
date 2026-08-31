@@ -23,7 +23,17 @@ const {
 const { blendWindAtIndex, readModelMap, applyWindBlendToHours } = require('./lib/windBlend');
 const { isMultiModelEnabled: scheduleIsMultiModelEnabled } = require('./lib/updateSchedule');
 const { writePipelineMeta } = require('./lib/pipelineMeta');
+const { loadBuoyLayerStatus } = require('./lib/buoyLayerHealth');
+const {
+  HEALTH_FAMILIES,
+  countModelSlots,
+  mergeCounts,
+  buildHealthReport,
+  writeModelHealth,
+  notifyDeadModels,
+} = require('./lib/modelHealth');
 const { isFreshIhObservation, MAX_OBS_AGE_HOURS } = require('./lib/ihObservedTide');
+const { applyWaveBias, MIN_BIAS_N, MIN_BIAS_M } = require('./lib/buoyBias');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -78,11 +88,13 @@ function parseSpotsFromFile() {
     const lonMatch = body.match(/lon:\s*([0-9.\-]+)/);
     if (!latMatch || !lonMatch) continue;
     const srcMatch = body.match(/conditionsSource:\s*['"]([^'"]+)['"]/);
+    const regionMatch = body.match(/region:\s*['"]([^'"]+)['"]/);
     spots.push({
       id: match[1],
       lat: parseFloat(latMatch[1]),
       lon: parseFloat(lonMatch[1]),
       conditionsSource: srcMatch ? srcMatch[1] : undefined,
+      region: regionMatch ? regionMatch[1] : undefined,
     });
   }
 
@@ -95,6 +107,48 @@ function parseSpotsFromFile() {
 }
 
 const spots = parseSpotsFromFile();
+
+/**
+ * Apply the regional bias to a row and carry its metadata for the UI
+ * (waveHeightRaw/waveHeight corrected + waveBias meta). Returns a copy of the
+ * row without waveBias when nothing was corrected — pure, testable.
+ * @param {{ waveHeight: number }} current getCurrentConditions row
+ * @param {string | undefined} region spot region
+ * @param {object | null} waveBias wave-bias.json
+ * @param {boolean} enabled VENTU_WAVE_BIAS_CORRECTION=1
+ * @returns {{ waveHeight: number, waveHeightRaw?: number, waveBias?: object }}
+ */
+function applyWaveBiasToRow(current, region, waveBias, enabled) {
+  const clone = { ...current };
+  const meta = applyWaveBias(clone, region, waveBias, enabled);
+  if (!meta) return clone;
+  return { ...clone, waveBias: meta };
+}
+
+/**
+ * Copy conditions/forecast from each source spot to its alias spots
+ * (conditionsSource), deep-cloning the row so each alias is independent
+ * (waveBias meta included). Returns the alias ids copied.
+ * @param {Array<{ id: string, conditionsSource?: string }>} aliasSpots
+ * @param {Record<string, object>} allConditions rows by spot id (mutated)
+ * @param {Record<string, Array<object>>} allForecasts hourly series by spot id (mutated)
+ * @returns {string[]}
+ */
+function applyAliasSpots(aliasSpots, allConditions, allForecasts) {
+  const copied = [];
+  for (const spot of aliasSpots) {
+    const srcId = spot.conditionsSource;
+    if (!allConditions[srcId]) {
+      console.error(`  ✗ ${spot.id}: conditionsSource "${srcId}" not found — fetch source spot first`);
+      continue;
+    }
+    allConditions[spot.id] = JSON.parse(JSON.stringify(allConditions[srcId]));
+    allForecasts[spot.id] = allForecasts[srcId];
+    copied.push(spot.id);
+    console.log(`  ↳ ${spot.id} ← ${srcId} (no API)`);
+  }
+  return copied;
+}
 
 // Safety check: ensure we parsed a reasonable number of spots
 const MIN_SPOTS = 50;
@@ -111,12 +165,40 @@ async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function fetchWithRetry(url, retries = 3, delay = 1000) {
+/**
+ * Contador de uso real da Open-Meteo neste run (ponderado por modelo pedido).
+ *
+ * A métrica do orçamento é «1 chamada ponderada por modelo pedido» (ver
+ * docs/CONTEXT.md — Orçamento Open-Meteo): um pedido multi-modelo com 4 modelos
+ * conta 4; um best_match conta 1. `requests` conta os pedidos HTTP reais
+ * (inclui retries 429) para mostrar o overhead face ao valor teórico.
+ */
+function createUsageCounter() {
+  return {
+    /** Σ (modelos × pedidos HTTP) — a métrica comparável ao orçamento 10k/dia. */
+    weightedCalls: 0,
+    /** Pedidos HTTP reais feitos à API (retries incluídos). */
+    requests: 0,
+    /** Retries (429/erro transitório) que consumiram quota extra. */
+    retries: 0,
+    /** Spots primários com fetch completo (aliases não chamam a API). */
+    spotsFetched: 0,
+    record(weight = 1) {
+      this.requests += 1;
+      this.weightedCalls += weight;
+    },
+  };
+}
+
+async function fetchWithRetry(url, retries = 3, delay = 1000, usage, weight = 1) {
   for (let i = 0; i < retries; i++) {
     try {
+      // Cada pedido HTTP real conta para o uso (mesmo os que falham/retry).
+      usage?.record(weight);
       const response = await fetch(url);
       if (response.ok) return response.json();
       if (response.status === 429) {
+        if (usage) usage.retries += 1;
         console.log(`  ⏳ Rate limited, waiting ${delay * (i + 1)}ms...`);
         await sleep(delay * (i + 1));
         continue;
@@ -124,6 +206,7 @@ async function fetchWithRetry(url, retries = 3, delay = 1000) {
       throw new Error(`HTTP ${response.status}`);
     } catch (err) {
       if (i === retries - 1) throw err;
+      if (usage) usage.retries += 1;
       await sleep(delay * (i + 1));
     }
   }
@@ -155,7 +238,7 @@ function pickSwellTrain(height, period, direction) {
   };
 }
 
-async function fetchMarineData(lat, lon) {
+async function fetchMarineData(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -177,11 +260,12 @@ async function fetchMarineData(lat, lon) {
     forecast_days: '7',
   });
 
-  const data = await fetchWithRetry(`${MARINE_API}?${params}`);
+  // best_match marine = 1 chamada ponderada.
+  const data = await fetchWithRetry(`${MARINE_API}?${params}`, 3, 1000, usage, 1);
   return data;
 }
 
-async function fetchWeatherData(lat, lon) {
+async function fetchWeatherData(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -191,12 +275,13 @@ async function fetchWeatherData(lat, lon) {
     wind_speed_unit: 'ms',
   });
 
-  const data = await fetchWithRetry(`${WEATHER_API}?${params}`);
+  // best_match weather = 1 chamada ponderada.
+  const data = await fetchWithRetry(`${WEATHER_API}?${params}`, 3, 1000, usage, 1);
   return data;
 }
 
 /** Multi-model wave_height only — spread/confidence (best_match stays on fetchMarineData). */
-async function fetchMarineWaveModels(lat, lon) {
+async function fetchMarineWaveModels(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -205,11 +290,12 @@ async function fetchMarineWaveModels(lat, lon) {
     timezone: 'Europe/Lisbon',
     forecast_days: '7',
   });
-  return fetchWithRetry(`${MARINE_API}?${params}`);
+  // Multi-modelo: cada modelo pedido conta 1 ponderada.
+  return fetchWithRetry(`${MARINE_API}?${params}`, 3, 1000, usage, WAVE_MODELS.length);
 }
 
 /** Multi-model wind (speed/dir/gust) — confidence spread + ICON-EU score blend. */
-async function fetchWindModels(lat, lon) {
+async function fetchWindModels(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -219,7 +305,8 @@ async function fetchWindModels(lat, lon) {
     forecast_days: '7',
     wind_speed_unit: 'ms',
   });
-  return fetchWithRetry(`${WEATHER_API}?${params}`);
+  // Multi-modelo: cada modelo pedido conta 1 ponderada.
+  return fetchWithRetry(`${WEATHER_API}?${params}`, 3, 1000, usage, WIND_MODELS.length);
 }
 
 function getTideStatus(seaLevel, seaLevelNext) {
@@ -317,6 +404,15 @@ async function updateConditions() {
   const allConditions = {};
   const allForecasts = {};
 
+  // Ensemble model health — accumulate non-null counts per configured model
+  // across the whole run (multimodel mode only) to spot dead models like the
+  // old ecmwf_wam025 (all-null) instead of a silent `degraded` confidence.
+  const modelHealthRun = {
+    waveCounts: {},
+    windCounts: {},
+    sampledSpots: 0,
+  };
+
   // Load IH tide station data (if available)
   let ihTides = { stations: {}, spotMapping: {} };
   const ihTidesPath = path.join(__dirname, '../public/data/ih-tides.json');
@@ -331,7 +427,26 @@ async function updateConditions() {
 
   let ihSkippedStale = 0;
 
+  // Regional wave bias (Open-Meteo vs IH buoys, wave-bias.json). Opt-in:
+  // VENTU_WAVE_BIAS_CORRECTION=1 — see docs + scripts/fetch-wave-bias.js.
+  const waveBiasEnabled = process.env.VENTU_WAVE_BIAS_CORRECTION === '1';
+  let waveBias = null;
+  const waveBiasPath = path.join(__dirname, '../public/data/wave-bias.json');
+  if (fs.existsSync(waveBiasPath)) {
+    try {
+      waveBias = JSON.parse(fs.readFileSync(waveBiasPath, 'utf-8'));
+    } catch (e) {
+      console.warn('⚠️ Could not parse wave-bias.json, continuing without bias correction');
+    }
+  }
+  if (waveBiasEnabled && waveBias) {
+    console.log(`📏 Wave bias loaded (${Object.keys(waveBias.regions ?? {}).length} regions)\n`);
+  }
+
   const aliasSpots = spots.filter((s) => s.conditionsSource);
+
+  // Uso real da Open-Meteo neste run (ponderado por modelo) — log + meta.
+  const usage = createUsageCounter();
 
   for (const spot of spots) {
     if (spot.conditionsSource) continue;
@@ -346,13 +461,18 @@ async function updateConditions() {
 
       if (useMultiModel) {
         const [marine, weather, marineWaveModels, windModels] = await Promise.all([
-          fetchMarineData(spot.lat, spot.lon),
-          fetchWeatherData(spot.lat, spot.lon),
-          fetchMarineWaveModels(spot.lat, spot.lon),
-          fetchWindModels(spot.lat, spot.lon),
+          fetchMarineData(spot.lat, spot.lon, usage),
+          fetchWeatherData(spot.lat, spot.lon, usage),
+          fetchMarineWaveModels(spot.lat, spot.lon, usage),
+          fetchWindModels(spot.lat, spot.lon, usage),
         ]);
         marineData = marine;
         weatherData = weather;
+        // Model health: count non-null values per configured model (cheap —
+        // reuses the multimodel responses already fetched for this spot).
+        mergeCounts(modelHealthRun.waveCounts, countModelSlots(marineWaveModels.hourly, HEALTH_FAMILIES.wave.baseKey, HEALTH_FAMILIES.wave.models));
+        mergeCounts(modelHealthRun.windCounts, countModelSlots(windModels.hourly, HEALTH_FAMILIES.wind.baseKey, HEALTH_FAMILIES.wind.models));
+        modelHealthRun.sampledSpots += 1;
         const timeIndex = findCurrentHourIndex(marineWaveModels.hourly.time);
         confidenceDetail = confidenceAtIndex(marineWaveModels, windModels, timeIndex);
         dailyConfidence = confidenceByDay(marineWaveModels, windModels);
@@ -399,8 +519,8 @@ async function updateConditions() {
         };
       } else {
         [marineData, weatherData] = await Promise.all([
-          fetchMarineData(spot.lat, spot.lon),
-          fetchWeatherData(spot.lat, spot.lon),
+          fetchMarineData(spot.lat, spot.lon, usage),
+          fetchWeatherData(spot.lat, spot.lon, usage),
         ]);
         const inherited = confidenceFromPrevious(previousConditions[spot.id]);
         confidenceDetail = {
@@ -427,8 +547,18 @@ async function updateConditions() {
       }
 
       const current = getCurrentConditions(marineData, weatherData, ihTideObs);
+
+      // Regional bias correction (opt-in): corrects waveHeight from the buoy
+      // bias, keeps the raw value + metadata for the UI to stay honest.
+      const biasRow = applyWaveBiasToRow(current, spot.region, waveBias, waveBiasEnabled);
+      if (biasRow.waveBias) {
+        console.log(
+          `  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (bias ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`,
+        );
+      }
+
       allConditions[spot.id] = {
-        ...current,
+        ...biasRow,
         confidence: confidenceDetail.confidence,
         confidenceDetail: {
           waveSpread: confidenceDetail.waveSpread,
@@ -487,6 +617,9 @@ async function updateConditions() {
       allForecasts[spot.id] = mergedForecast;
       
       console.log(`  ✓ ${spot.id} updated${ihTideObs ? ` (IH tide: ${ihTideObs.lastObs}m)` : ''}`);
+
+      // Só conta spots primários com fetch completo (aliases não chamam a API).
+      usage.spotsFetched += 1;
       
       // 4 calls/spot; ~300/min with 200ms gap (under Open-Meteo 600/min)
       await sleep(MIN_REQUEST_INTERVAL);
@@ -495,21 +628,17 @@ async function updateConditions() {
     }
   }
 
-  for (const spot of aliasSpots) {
-    const srcId = spot.conditionsSource;
-    if (!allConditions[srcId]) {
-      console.error(`  ✗ ${spot.id}: conditionsSource "${srcId}" not found — fetch source spot first`);
-      continue;
-    }
-    allConditions[spot.id] = JSON.parse(JSON.stringify(allConditions[srcId]));
-    allForecasts[spot.id] = allForecasts[srcId];
-    console.log(`  ↳ ${spot.id} ← ${srcId} (no API)`);
-  }
+  applyAliasSpots(aliasSpots, allConditions, allForecasts);
 
   if (ihSkippedStale > 0) {
     console.warn(
       `⚠️ Skipped stale IH observed tide on ${ihSkippedStale} spots (lastData > ${MAX_OBS_AGE_HOURS}h) — forecast tides stay on Open-Meteo`,
     );
+  }
+
+  const biasApplied = Object.values(allConditions).filter((c) => c.waveBias).length;
+  if (waveBiasEnabled && biasApplied > 0) {
+    console.log(`📏 Bias correction applied on ${biasApplied} spots (n≥${MIN_BIAS_N}, |ME|≥${MIN_BIAS_M} m)`);
   }
 
   function atomicWriteJson(filePath, content) {
@@ -566,10 +695,79 @@ async function updateConditions() {
   console.log(`📈 Forecasts saved to ${forecastsPath}`);
   console.log(`📊 Per-spot forecasts: ${perSpotCount} files in ${perSpotDir}`);
   console.log(`📊 Updated ${spotCount} spots`);
-  writePipelineMeta('full', new Date(), path.join(__dirname, '..'));
+
+  // ── Ensemble model health (multimodel mode only) ──────────────────────────
+  if (useMultiModel) {
+    const healthReport = buildHealthReport(modelHealthRun);
+    if (healthReport.dead.length > 0) {
+      const deadList = healthReport.dead
+        .map((d) => `${d.model} (${d.family})`)
+        .join(', ');
+      console.error(`\n🚨 MODELOS MORTOS (só null): ${deadList}`);
+      console.error(`   Amostrados ${modelHealthRun.sampledSpots} spots — os modelos morrem em silêncio e degradam a confiança.`);
+      console.error('   Report: public/data/model-health.json · remove o modelo de forecastConfidence.js ou contacta a Open-Meteo.\n');
+    } else {
+      console.log(`💚 Modelos do ensemble OK (${modelHealthRun.sampledSpots} spots amostrados)`);
+    }
+    // Notifica ANTES de gravar: a transição compara com o report do run
+    // anterior em disco; depois persistimos o estado actual.
+    await notifyDeadModels(healthReport);
+    writeModelHealth(healthReport);
+  } else {
+    console.log('ℹ️ Modo noite: sem dados multi-modelo — health-check de modelos não aplicável.');
+  }
+
+  // ── Uso real da Open-Meteo ────────────────────────────────────────────────
+  const weightedPerSpot = useMultiModel
+    ? 2 + WAVE_MODELS.length + WIND_MODELS.length
+    : 2; // best_match marine + weather
+  const dailyBudgetPct = ((usage.weightedCalls / 10_000) * 100).toFixed(1);
+  console.log(
+    `\n📊 Open-Meteo usage (real): ${usage.weightedCalls} chamadas ponderadas ` +
+      `(${usage.requests} pedidos HTTP, ${usage.retries} retries) · ` +
+      `${usage.spotsFetched} spots · ${weightedPerSpot} ponderadas/spot · ` +
+      `${dailyBudgetPct}% do orçamento diário (10k)`,
+  );
+
+  const buoyLayer = loadBuoyLayerStatus(path.join(__dirname, '..'));
+  writePipelineMeta('full', new Date(), path.join(__dirname, '..'), {
+    buoyLayer,
+    openMeteoUsage: {
+      weightedCalls: usage.weightedCalls,
+      requests: usage.requests,
+      retries: usage.retries,
+      spotsFetched: usage.spotsFetched,
+      mode: useMultiModel ? 'day' : 'night',
+      weightedPerSpot,
+      waveModels: WAVE_MODELS.length,
+      windModels: WIND_MODELS.length,
+    },
+  });
+  if (buoyLayer) {
+    console.log(
+      `🌊 Camada de boias: ${buoyLayer.status} (key ${buoyLayer.apiKeyConfigured ? '✓' : '✗'}, ` +
+        `wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''})`,
+    );
+  } else {
+    console.log('🌊 Camada de boias: sem ih-buoys.json (primeiro run)');
+  }
 }
 
-updateConditions().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (require.main === module) {
+  updateConditions().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  parseSpotsFromFile,
+  applyWaveBiasToRow,
+  applyAliasSpots,
+  resolveUseMultiModel,
+  confidenceFromPrevious,
+  createUsageCounter,
+  fetchWithRetry,
+  spots,
+  MIN_SPOTS,
+};

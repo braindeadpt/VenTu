@@ -252,6 +252,13 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-08-14 — observedWave (key pendente) + boias espanholas + colecção Fugro
+
+- **observedWave: bloqueado por key.** Toda a pipeline está pronta (`fetch-ih-buoys.js` → `ih-buoys.json` → `merge-observations.mjs` → `conditions.json[spot].observedWave`), mas sem `IH_API_KEY` no secret GitHub o layer não produz leituras: estações sim (grátis, OGC API), séries hm0/tp/thtp não. Passo manual pendente: pedir a key grátis a `cedencia.dados@hidrografico.pt` e criar o secret — guia completo em [`docs/IH_API_KEY.md`](./IH_API_KEY.md). Degradação graciosa testada (exit 0, pipeline nunca bloqueia).
+- **Boias espanholas (Puertos del Estado): resultado da investigação.** Via Copernicus Marine S3 público (`wmo-buoys.json`, sem key): as 5 boias ES voltaram a reportar em 2026-08 (hourly, `IR_TS_MO_*`) — 6200024 Bilbao, 6200025 Cabo Peñas, 6200083 Villano-Sisargas, 6200084 **Cabo Silleiro** (fonte cross-border mais útil para o NW PT), 6200085 Golfo de Cádiz. Merge: IH primário (3h), WMO fallback (6h, `source: 'wmo-buoy'`), rótulo honesto «boia Cabo Silleiro a 56 km».
+- **Novo: colecção `buoys_Fugro_oceanor_wavescan` no fetch de boias.** A Boia Nazaré Costeira (CSA88/2, WMO 6200199) está **activa com dados NRT** e não tinha equivalente Datawell; sem ela, ~36 spots da costa centro (Nazaré→Guincho) caíam em Sines/Leixões a centenas de km. Agora mapeiam para a Nazaré a ~15–30 km (`last_data`/schema Fugro aceites no `normalizeStation`). 463 testes verdes.
+- **Ainda em baixo:** `tide_obs_nrt` (marés) com 500 desde 13/08 — fallback EDR documentado (`IH_EDR_FALLBACK=1`), `ih-tides.json` stale reutilizado sem bloquear.
+
 ### 2026-07-24 — Security + integridade directório; embed; header mobile
 
 - **XSS stored** `website`: `safeExternalUrl` + CHECK SQL + validação forms (`0a4d198e`)

@@ -43,6 +43,7 @@ export default async function HomePage({
         maxTs={maxTs}
         spotCount={spotsData.length}
         sportsCount={7}
+        buoyLayer={pipelineMeta?.buoyLayer ?? null}
       />
     </div>
   );

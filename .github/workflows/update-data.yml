@@ -62,10 +62,108 @@ jobs:
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ih-tides.js
 
-      - name: Update Conditions (Open-Meteo)
+      # Boias Datawell Waverider: estações via OGC API (sem key); séries de onda
+      # (hm0/tp/thtp/hmax/temp) só com IH_API_KEY. Sem key o ficheiro fica só com
+      # posições + last_sea e o merge-observations salta a camada observedWave.
+      - name: Fetch IH buoy data (Datawell Waverider)
+        if: steps.gate.outputs.mode != 'skip'
+        env:
+          IH_API_KEY: ${{ secrets.IH_API_KEY }}
+        run: node scripts/fetch-ih-buoys.js
+
+      # Isóbatas costeiras (depcnt_8_16_30): linhas de 8/16/30 m do IH (OGC API,
+      # sem key) → spot-isobaths.json com a distância da praia a cada contorno
+      # (bati­metria real perto da costa — card «Fundo perto da praia»).
+      - name: Fetch IH coastal isobaths (8/16/30 m)
+        if: steps.gate.outputs.mode != 'skip'
+        run: node scripts/fetch-ih-isobaths.js
+
+      # Boias WMO via Copernicus Marine S3 (sem key!) — fallback independente
+      # para o observedWave do IH. Cataloga as Datawell PT (6201077/79) e as
+      # espanholas do Puertos del Estado (6200024/25, 6200083–85), que voltaram
+      # a reportar à Copernicus — cobertura cross-border real (Cabo Silleiro,
+      # Villano, …). O merge-observations usa IH como primário e esta camada
+      # como fallback (gate 6h vs 3h, ver copernicusBuoys.js).
+      - name: Fetch WMO buoy data (Copernicus S3, keyless)
+        if: steps.gate.outputs.mode != 'skip'
+        run: node scripts/fetch-copernicus-buoys.js
+
+      # Coerência cross-border: boias ES (Cabo Silleiro/Villano) vs PT
+      # (Porto/Faro) nas horas sobrepostas → buoy-coherence.json. Valida que o
+      # observedWave anexado a spots do NW PT por uma boia espanhola não está a
+      # ler outra onda (ver scripts/check-buoy-coherence.js).
+      - name: Check cross-border buoy coherence (ES × PT)
+        if: steps.gate.outputs.mode != 'skip'
+        run: node scripts/check-buoy-coherence.js
+
+      # Skill/bias: Open-Meteo (ERA5) vs boias → wave-bias.json. IH Datawell
+      # (com IH_API_KEY) + boias ES da Copernicus via WMO (sem key, Silleiro/
+      # Villano/Bilbao/Peñas/Cádiz — leituras acumuladas em wmo-bias-archive.json).
+      # A correcção é aplicada pelo passo seguinte apenas com
+      # VENTU_WAVE_BIAS_CORRECTION=1 (guardas N≥30, |ME|≥0.15 m).
+      - name: Fetch wave bias (Open-Meteo vs IH buoys)
         if: steps.gate.outputs.mode == 'full'
         env:
+          IH_API_KEY: ${{ secrets.IH_API_KEY }}
+        run: node scripts/fetch-wave-bias.js
+
+      # Forecast skill REAL (best_match vs boia, arquivado run a run →
+      # forecast-skill.json) — distinto do wave-bias (ERA5/reanálise). Cada run
+      # arquiva previsões futuras + observações; os pares formam-se quando a
+      # previsão feita antes da hora encontra a leitura real (lead time > 0).
+      # Inclui as boias ES da Copernicus (sem key): ingere as leituras
+      # acumuladas do wmo-bias-archive.json (passo acima) e arquiva o best_match
+      # dos spots NW (Silleiro/Villano) e Algarve (Cádiz) — pares ES mesmo sem
+      # IH_API_KEY. Corre a seguir ao fetch-wave-bias (precisa do arquivo WMO).
+      - name: Fetch forecast skill (best_match vs IH buoys, archive)
+        if: steps.gate.outputs.mode == 'full'
+        env:
+          IH_API_KEY: ${{ secrets.IH_API_KEY }}
+        run: node scripts/fetch-forecast-skill.js
+
+      # Health-check do forecast-skill: arquiva um snapshot diário por boia
+      # (skill-regression-archive.json) e compara a janela recente (7 dias)
+      # com a baseline (21 dias) — avisa quando o RMSE/|ME| de uma boia piora
+      # acima do limiar (regressão do modelo). Report em
+      # skill-regression.json; notificação Telegram só na transição.
+      - name: Check forecast-skill regression (per-buoy health)
+        if: steps.gate.outputs.mode == 'full'
+        run: node scripts/check-skill-regression.js
+
+      # Avisos meteorológicos IPMA (warnings_www.json, grátis, sem key) —
+      # camada de segurança para surf/kite (Agitação Marítima, Vento, Trovoada).
+      # Se o IPMA estiver em baixo, o próprio script cai para o MeteoAlarm
+      # (EUMETNET, token grátis METEOALARM_API_KEY) e escreve source:
+      # 'meteoalarm' no warnings.json.
+      - name: Fetch IPMA weather warnings (MeteoAlarm fallback)
+        if: steps.gate.outputs.mode != 'skip'
+        env:
+          METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
+        run: node scripts/fetch-ipma-warnings.js
+
+      # Avisos à Navegação Costeiros do IH (nav_warning_coastal, OGC API sem
+      # key) — camada de segurança marítima complementar ao IPMA/MeteoAlarm:
+      # exercícios, perigos, restrições com cobertura por polígono →
+      # ih-coastal-warnings.json (per-spot coverage via point-in-polygon).
+      - name: Fetch IH coastal navigation warnings
+        if: steps.gate.outputs.mode != 'skip'
+        run: node scripts/fetch-ih-coastal-warnings.js
+
+      # Radar IPMA — frame PNG mais recente (manifest imgs-radar.json, 5 min)
+      # + bounds oficiais do overlay Leaflet do IPMA. Sem WMTS/tiles públicos;
+      # bake do frame para o nosso origin (ver scripts/fetch-ipma-radar.js).
+      - name: Fetch IPMA radar frame
+        if: steps.gate.outputs.mode != 'skip'
+        run: node scripts/fetch-ipma-radar.js
+
+      - name: Update Conditions (Open-Meteo)
+        if: steps.gate.outputs.mode == 'full'
+        # Para activar o AIFS (vento) quando o Open-Meteo o servir no endpoint
+        # gratuito, adicionar: VENTU_WIND_AIFS: '1' (hoje devolve null — gasta
+        # quota sem dados, por isso fica off por omissão).
+        env:
           VENTU_MULTIMODEL: ${{ steps.gate.outputs.multimodel }}
+          VENTU_WAVE_BIAS_CORRECTION: ${{ vars.VENTU_WAVE_BIAS_CORRECTION }}
         run: |
           for attempt in 1 2 3; do
             echo "=== Open-Meteo fetch attempt ${attempt}/3 ==="

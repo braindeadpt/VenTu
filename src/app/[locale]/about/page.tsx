@@ -3,7 +3,14 @@ import PageHeader from '@/components/ui/PageHeader'
 import Button from '@/components/ui/Button'
 import { buildPageMetadata } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
+import { loadForecastSkillBuoys } from '@/lib/forecastSkill'
+import WaveBiasSection from '@/components/spots/WaveBiasSection'
+import CoherenceTrendSection from '@/components/spots/CoherenceTrendSection'
 import type { Metadata } from 'next'
+
+const sign = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(2)}`
+const two = (n: number | null | undefined) => (n == null ? '—' : n.toFixed(2))
+
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
@@ -53,7 +60,9 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <Database className="w-10 h-10 text-data-waves mx-auto" />
           <h3 className="text-lg font-semibold">{isPt ? 'Dados Actualizados' : 'Updated Data'}</h3>
           <p className="text-sm text-fg-muted">
-            {isPt ? `Open-Meteo — previsões ${pipelineSchedule('pt')}` : `Open-Meteo — forecasts ${pipelineSchedule('en')}`}
+            {isPt
+              ? `Open-Meteo — previsões ${pipelineSchedule('pt')} (ensemble multi-modelo de ondas e vento)`
+              : `Open-Meteo — forecasts ${pipelineSchedule('en')} (multi-model wave & wind ensemble)`}
           </p>
         </div>
         <div className="card-1 p-6 text-center space-y-4">
@@ -81,7 +90,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             { icon: <Zap className="w-6 h-6" />, name: 'Next.js 16', desc: 'React Framework' },
             { icon: <Wind className="w-6 h-6" />, name: 'Tailwind CSS', desc: 'Styling' },
             { icon: <Waves className="w-6 h-6" />, name: 'Leaflet', desc: 'Interactive maps' },
-            { icon: <Globe className="w-6 h-6" />, name: 'Open-Meteo', desc: 'Marine API' },
+            { icon: <Globe className="w-6 h-6" />, name: 'Open-Meteo', desc: 'Marine + Weather API' },
             { icon: <Wind className="w-6 h-6" />, name: 'IPMA · Ecowitt', desc: isPt ? 'Observações' : 'Observations' },
             { icon: <Brain className="w-6 h-6" />, name: 'Gemini Flash', desc: 'AI News' },
             { icon: <Shield className="w-6 h-6" />, name: 'Supabase', desc: 'Contributions' },
@@ -99,9 +108,75 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
       <div className="card-1 p-8 space-y-4">
         <h2 className="text-2xl font-bold text-fg">
-          {isPt ? 'Imagens e atribuição' : 'Imagery & attribution'}
+          {isPt ? 'Imagens, dados e atribuição' : 'Imagery, data & attribution'}
         </h2>
         <ul className="text-sm text-fg-muted space-y-2 list-disc pl-5">
+          <li>
+            {isPt ? (
+              <>
+                Previsões:{' '}
+                <a href="https://open-meteo.com/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  Weather data by Open-Meteo.com
+                </a>{' '}
+                (licença{' '}
+                <a href="https://creativecommons.org/licenses/by/4.0/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  CC BY 4.0
+                </a>
+                ) — ensemble multi-modelo: ondas por{' '}
+                <a href="https://www.dwd.de/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  DWD EWAM
+                </a>{' '}
+                e{' '}
+                <a href="https://www.ecmwf.int/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  ECMWF WAM
+                </a>{' '}
+                (CC-BY), NOAA GFS Wave/GWAM; vento por DWD ICON-EU, ECMWF IFS, GFS e Météo-France.
+              </>
+            ) : (
+              <>
+                Forecasts:{' '}
+                <a href="https://open-meteo.com/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  Weather data by Open-Meteo.com
+                </a>{' '}
+                (licence{' '}
+                <a href="https://creativecommons.org/licenses/by/4.0/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  CC BY 4.0
+                </a>
+                ) — multi-model ensemble: waves by{' '}
+                <a href="https://www.dwd.de/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  DWD EWAM
+                </a>{' '}
+                and{' '}
+                <a href="https://www.ecmwf.int/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  ECMWF WAM
+                </a>{' '}
+                (CC-BY), NOAA GFS Wave/GWAM; wind by DWD ICON-EU, ECMWF IFS, GFS and Météo-France.
+              </>
+            )}
+          </li>
+          <li>
+            {isPt ? (
+              <>
+                Citação oficial:{' '}
+                <em className="not-italic">Zippenfenig, P. (2023). Open-Meteo.com Weather API [Computer software].</em>{' '}
+                Zenodo.{' '}
+                <a href="https://doi.org/10.5281/zenodo.7970649" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  https://doi.org/10.5281/zenodo.7970649
+                </a>
+                .
+              </>
+            ) : (
+              <>
+                Official citation:{' '}
+                <em className="not-italic">Zippenfenig, P. (2023). Open-Meteo.com Weather API [Computer software].</em>{' '}
+                Zenodo.{' '}
+                <a href="https://doi.org/10.5281/zenodo.7970649" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  https://doi.org/10.5281/zenodo.7970649
+                </a>
+                .
+              </>
+            )}
+          </li>
           <li>
             {isPt
               ? 'Miniaturas dos spots: export Esri World Imagery nas coordenadas reais de cada praia (nunca stock genérico a fingir ser o spot).'
@@ -115,8 +190,133 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               ? 'Fotos de ambiente por região (home, explorar, sobre): Unsplash e Pexels — licença livre para uso comercial. Lista em public/images/CREDITS.md.'
               : 'Regional lifestyle photos (home, explore, about): Unsplash and Pexels — free for commercial use. See public/images/CREDITS.md.'}
           </li>
+          <li>
+            {isPt ? (
+              <>
+                Todas as fontes, licenças e atribuições numa só página:{' '}
+                <a href={`/${locale}/fontes/`} className="underline hover:text-fg transition-colors">
+                  Fontes de dados
+                </a>
+                .
+              </>
+            ) : (
+              <>
+                Every source, licence and attribution in one page:{' '}
+                <a href={`/${locale}/fontes/`} className="underline hover:text-fg transition-colors">
+                  Data sources
+                </a>
+                .
+              </>
+            )}
+          </li>
         </ul>
       </div>
+
+      {(() => {
+        const skill = loadForecastSkillBuoys()
+        if (!skill.hasData) return null
+        const byOrigin = skill.byOrigin ?? { ih: null, 'wmo-es': null }
+        const originLabel = (o: string | undefined) =>
+          o === 'ih' ? 'IH' : o === 'wmo-es' ? 'WMO-ES' : '—'
+        return (
+          <div className="card-1 p-8 space-y-4">
+            <h2 className="text-2xl font-bold text-fg">
+              {isPt ? 'Skill real do forecast por boia' : 'Real forecast skill per buoy'}
+            </h2>
+            <p className="text-sm text-fg-muted leading-relaxed">
+              {isPt ? (
+                <>Skill <em className="not-italic text-fg">real</em> do forecast — a previsão best_match feita no run N para a hora H é comparada com a leitura da boia para H quando chega (lead time &gt; 0), acumulado run a run em <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = média(observado − previsão)</strong>: positivo significa que o modelo subestima a onda. Distinto do viés ERA5 acima — isto é o quão bom o forecast é, não o quão enviesado o modelo de reanálise está. As stats são separadas por plataforma: <strong className="text-fg">IH</strong> (boias Datawell, com chave) vs <strong className="text-fg">WMO-ES</strong> (Copernicus, sem chave) — o total misto esconde como cada uma se comporta.</>
+              ) : (
+                <>Real forecast skill — the best_match forecast made in run N for hour H is compared with the buoy reading for H once it arrives (lead time &gt; 0), accumulated run after run in <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = mean(observed − forecast)</strong>: positive means the model underestimates the wave. Distinct from the ERA5 bias above — this is how good the forecast is, not how biased the reanalysis model is. Stats are split by platform: <strong className="text-fg">IH</strong> (Datawell buoys, keyed) vs <strong className="text-fg">WMO-ES</strong> (Copernicus, keyless) — the mixed total alone hides how each behaves.</>
+              )}
+            </p>
+            {byOrigin.ih || byOrigin['wmo-es'] ? (
+              <div className="flex flex-col sm:flex-row gap-3">
+                {(['ih', 'wmo-es'] as const).map((origin) => {
+                  const s = byOrigin[origin]
+                  if (!s) return null
+                  return (
+                    <div
+                      key={origin}
+                      className="flex-1 rounded-lg border border-divider bg-surface-1/[0.03] px-4 py-3"
+                      data-skill-origin={origin}
+                    >
+                      <p className="text-xs font-semibold uppercase tracking-wide text-fg-subtle">
+                        {isPt
+                          ? origin === 'ih'
+                            ? 'Boias IH (Datawell)'
+                            : 'Boias ES (Copernicus WMO)'
+                          : origin === 'ih'
+                            ? 'IH buoys (Datawell)'
+                            : 'ES buoys (Copernicus WMO)'}
+                      </p>
+                      <p className="mt-1 text-sm text-fg tabular-nums">
+                        n={s.n} · ME <span className="font-medium">{sign(s.me)}</span> m · MAE {two(s.mae)} m · RMSE {two(s.rmse)} m
+                        {s.corr != null ? ` · r ${s.corr.toFixed(2)}` : ''}
+                      </p>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : null}
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[480px] border-collapse text-meta">
+                <thead>
+                  <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle">
+                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Boia' : 'Buoy'}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Origem' : 'Origin'}</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">n</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">ME (m)</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">MAE (m)</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">RMSE (m)</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">r</th>
+                    <th className="py-1.5 text-right font-semibold">
+                      {isPt ? 'Lead médio (h)' : 'Mean lead (h)'}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {skill.buoys.map((b) => (
+                    <tr key={b.id} className="border-b border-divider last:border-0">
+                      <td className="py-1.5 pr-3 font-medium text-fg">{b.name}</td>
+                      <td className="py-1.5 pr-3 text-fg-muted">{originLabel(b.origin)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{b.n}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums font-medium">{sign(b.me)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{two(b.mae)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{two(b.rmse)}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums text-fg-muted">{two(b.corr)}</td>
+                      <td className="py-1.5 text-right tabular-nums text-fg-muted">{two(b.meanLeadHours)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-fg-subtle">
+              {(() => {
+                const byOrigin = skill.pairCountByOrigin ?? { ih: 0, 'wmo-es': 0 }
+                const calib = skill.calibratedPairCount ?? 0
+                const base = isPt
+                  ? `Actualizado ${new Date(skill.fetchedAt ?? '').toLocaleDateString('pt-PT')} · ${skill.pairCount} pares previsto×medido acumulados · só boias com n≥10`
+                  : `Updated ${new Date(skill.fetchedAt ?? '').toLocaleDateString('en-GB')} · ${skill.pairCount} accumulated forecast×observed pairs · buoys with n≥10 only`
+                if (byOrigin.ih === 0 && byOrigin['wmo-es'] === 0) return base
+                const perOrigin = isPt
+                  ? `IH ${byOrigin.ih} · WMO-ES ${byOrigin['wmo-es']} pares`
+                  : `IH ${byOrigin.ih} · WMO-ES ${byOrigin['wmo-es']} pairs`
+                const calibNote =
+                  calib > 0
+                    ? isPt
+                      ? ` · ${calib} da camada calibrada ES→PT (referência PT)`
+                      : ` · ${calib} from the ES→PT calibrated layer (PT reference)`
+                    : ''
+                return `${base} · ${perOrigin}${calibNote}`
+              })()}
+            </p>
+          </div>
+        )
+      })()}
+
+      <WaveBiasSection isPt={isPt} />
+      <CoherenceTrendSection isPt={isPt} />
 
       <div className="text-center space-y-4">
         <p className="flex items-center justify-center gap-2 text-fg-muted">

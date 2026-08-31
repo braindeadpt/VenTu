@@ -3,7 +3,7 @@ import type { GridSportFilter } from '@/lib/sportRatings';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { getScoreRgb } from '@/lib/map-constants';
-import { buildWindRingMarkerHtml, markerIconLayout } from '@/lib/mapWindArrow';
+import { buildWindRingMarkerHtml, markerIconLayout, type MapMarkerWarning } from '@/lib/mapWindArrow';
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { renderSpotPopup } from './SpotPopupContent';
@@ -15,6 +15,7 @@ export function buildMarkerIcon(
   selectedSport: GridSportFilter,
   showWind: boolean,
   locale: string,
+  warning?: MapMarkerWarning | null,
 ): L.DivIcon {
   const { spot, conditions } = data;
   const score = getBestScore(data, selectedSport);
@@ -29,6 +30,7 @@ export function buildMarkerIcon(
     showWind,
     locale,
     spot.coastOrientation,
+    warning,
   );
 
   const layout = markerIconLayout(showWind);
@@ -46,6 +48,7 @@ export function buildMarkerPopupContent(
   data: MapSpotData,
   locale: string,
   selectedSport: GridSportFilter,
+  warning?: MapMarkerWarning | null,
 ): string {
   const { spot, conditions, allScores } = data;
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
@@ -84,6 +87,7 @@ export function buildMarkerPopupContent(
     })(),
     confidence: conditions.confidence,
     confidenceDetail: conditions.confidenceDetail,
+    warning: warning ?? null,
   });
 }
 
@@ -93,12 +97,13 @@ export function buildMarkerCacheKey(
   showWind: boolean,
   locale: string,
   useMobileSheet: boolean,
+  warningLevel?: string | null,
 ): string {
   const score = getBestScore(data, selectedSport);
   const windKey = showWind
     ? `${Math.round(data.conditions.windDirection)}:${Math.round(data.conditions.windSpeed * MS_TO_KNOTS)}`
     : '';
-  return [data.spot.id, selectedSport, score, showWind, windKey, locale, useMobileSheet].join(':');
+  return [data.spot.id, selectedSport, score, showWind, windKey, locale, useMobileSheet, warningLevel ?? ''].join(':');
 }
 
 export function createSpotMarker(
@@ -111,15 +116,17 @@ export function createSpotMarker(
     useMobileSheet: boolean;
     onMobileTap?: (data: MapSpotData) => void;
     onSpotSelect?: (spotId: string) => void;
+    warning?: MapMarkerWarning | null;
   },
 ): L.Marker {
   const { spot } = data;
-  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale);
+  const warning = options.warning ?? null;
+  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, warning);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
   (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
 
   if (!options.useMobileSheet) {
-    marker.bindPopup(buildMarkerPopupContent(data, locale, selectedSport), {
+    marker.bindPopup(buildMarkerPopupContent(data, locale, selectedSport, warning), {
       className: 'spot-popup',
       maxWidth: 280,
       closeButton: true,

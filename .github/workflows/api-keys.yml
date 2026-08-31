@@ -1,0 +1,59 @@
+name: API Keys Health
+
+on:
+  schedule:
+    # Semanal (segunda 06:00 UTC) — falha cedo quando uma key expira. Job
+    # opcional: nunca bloqueia PRs nem o deploy; só agenda + manual.
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-keys-health
+  cancel-in-progress: false
+
+jobs:
+  check-api-keys:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      # MeteoAlarm (EUMETNET) — token do fallback de avisos. Se estiver
+      # configurado mas inválido/expirado, o teste falha (job vermelho).
+      # Ausente → aviso em vez de falhar (a key é gratuita; guia em
+      # docs/METEOALARM_API_KEY.md).
+      - name: Test MeteoAlarm API token (EDR → CAP → payload)
+        if: env.METEOALARM_API_KEY != ''
+        env:
+          METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
+        run: node scripts/test-meteoalarm-api-key.js
+
+      - name: Warn when METEOALARM_API_KEY missing
+        if: env.METEOALARM_API_KEY == ''
+        run: echo "::warning::METEOALARM_API_KEY não configurada — fallback MeteoAlarm dos avisos indisponível (ver docs/METEOALARM_API_KEY.md)"
+
+      # IH Datawell — camada observedWave. Key configurada mas expirada →
+      # falha (job vermelho). Ausente → aviso (a key está pendente; guia em
+      # docs/IH_API_KEY.md).
+      - name: Test IH Datawell API key (stations → wave series)
+        if: env.IH_API_KEY != ''
+        env:
+          IH_API_KEY: ${{ secrets.IH_API_KEY }}
+        run: node scripts/test-ih-api-key.js
+
+      - name: Warn when IH_API_KEY missing
+        if: env.IH_API_KEY == ''
+        run: echo "::warning::IH_API_KEY não configurada — observedWave desactivado (ver docs/IH_API_KEY.md)"

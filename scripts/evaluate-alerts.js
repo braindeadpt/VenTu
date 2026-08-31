@@ -53,6 +53,24 @@ function spotPath(locale, slug) {
   return `${SITE_URL}/${loc}/spots/${encodeURIComponent(slug)}/`;
 }
 
+/**
+ * Note appended to the score when the alert score was recalibrated by the
+ * buoy layer — fresh reading («corrigido pela boia») or regional bias — so
+ * the user sees the corrected score the next morning, not just the number.
+ * @param {'observed' | 'bias-corrected' | 'forecast'} source
+ * @param {boolean} isPt
+ * @returns {string}
+ */
+function scoreSourceNote(source, isPt) {
+  if (source === 'observed') {
+    return isPt ? ' (corrigido pela boia)' : ' (buoy-corrected)';
+  }
+  if (source === 'bias-corrected') {
+    return isPt ? ' (viés regional)' : ' (regional bias)';
+  }
+  return '';
+}
+
 function lisbonDateTimeParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-GB', {
     timeZone: 'Europe/Lisbon',
@@ -288,8 +306,10 @@ async function evaluateLegacySubscriptions(slugToId, conditions) {
     const spotId = slugToId[sub.spot_slug];
     if (!spotId) continue;
 
-    const score = computeScore(spotId, sub.sport, conditions);
-    if (score === null || score < sub.min_score) continue;
+    const scored = computeScore(spotId, sub.sport, conditions);
+    if (scored === null || scored.score < sub.min_score) continue;
+    const score = scored.score;
+    const sourceNote = scoreSourceNote(scored.source, sub.locale !== 'en');
 
     const isPt = sub.locale !== 'en';
     const spotUrl = spotPath(sub.locale, sub.spot_slug);
@@ -299,8 +319,8 @@ async function evaluateLegacySubscriptions(slugToId, conditions) {
     const minScore = escapeHtml(sub.min_score);
     const subject = `VenTu — ${sub.spot_slug}: score ${score} (${sub.sport})`;
     const html = isPt
-      ? `<p>Condições boas em <strong>${slug}</strong>!</p><p>Score ${sport}: <strong>${score}</strong>/100 (limiar ${minScore})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
-      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} score: <strong>${score}</strong>/100 (threshold ${minScore})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
+      ? `<p>Condições boas em <strong>${slug}</strong>!</p><p>Score ${sport}: <strong>${score}</strong>/100${sourceNote} (limiar ${minScore})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
+      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} score: <strong>${score}</strong>/100${sourceNote} (threshold ${minScore})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
 
     const ok = await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
     if (ok) {
@@ -338,9 +358,9 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
     const firing = [];
     for (const spotId of favoriteIds) {
       const slug = idToSlug[spotId] || spotId;
-      const score = computeScore(spotId, pref.sport, conditions);
-      if (score !== null && score >= pref.min_score) {
-        firing.push({ slug, score });
+      const scored = computeScore(spotId, pref.sport, conditions);
+      if (scored !== null && scored.score >= pref.min_score) {
+        firing.push({ slug, score: scored.score, source: scored.source });
       }
     }
 
@@ -385,9 +405,10 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
           : '<p>Good conditions on your favorites:</p>';
 
     const items = firing
-      .map(({ slug, score }) => {
+      .map(({ slug, score, source }) => {
         const spotUrl = spotPath(pref.locale, slug);
-        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100</li>`;
+        const note = scoreSourceNote(source, isPt);
+        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100${note}</li>`;
       })
       .join('');
 
@@ -400,7 +421,9 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
     const chatId = await fetchTelegramChatId(url, key, pref.user_id);
     let tgOk = false;
     if (chatId) {
-      const tgLines = firing.map(({ slug, score }) => `• ${slug} — ${score}/100`).join('\n');
+      const tgLines = firing
+        .map(({ slug, score, source }) => `• ${slug} — ${score}/100${scoreSourceNote(source, isPt)}`)
+        .join('\n');
       const tgText = isPt
         ? `VenTu — ${firing.length} favorito(s) a bombar\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`
         : `VenTu — ${firing.length} favorite(s) firing\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`;

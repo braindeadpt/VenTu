@@ -6,8 +6,8 @@ export const HERO_FORECAST_LAYERS = [
     labelEn: 'Waves',
     sourcePt: 'Open-Meteo',
     sourceEn: 'Open-Meteo',
-    detailPt: 'Marine API · ECMWF WAM, GFS Wave, GWAM',
-    detailEn: 'Marine API · ECMWF WAM, GFS Wave, GWAM',
+    detailPt: 'Marine API · DWD EWAM, ECMWF WAM, GFS Wave, GWAM',
+    detailEn: 'Marine API · DWD EWAM, ECMWF WAM, GFS Wave, GWAM',
   },
   {
     key: 'wind',
@@ -15,8 +15,8 @@ export const HERO_FORECAST_LAYERS = [
     labelEn: 'Wind',
     sourcePt: 'Open-Meteo',
     sourceEn: 'Open-Meteo',
-    detailPt: 'Weather API · ECMWF IFS, GFS, Météo-France',
-    detailEn: 'Weather API · ECMWF IFS, GFS, Météo-France',
+    detailPt: 'Weather API · ICON-EU, ECMWF IFS, GFS, Météo-France',
+    detailEn: 'Weather API · ICON-EU, ECMWF IFS, GFS, Météo-France',
   },
   {
     key: 'tides',

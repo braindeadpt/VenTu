@@ -1,14 +1,18 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
+import { AlertTriangle, ArrowRight, Clock, Wind, Waves } from 'lucide-react';
+import { WARNING_LEVEL_META } from '@/lib/ipmaWarnings';
+import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
 import Card from '@/components/ui/Card';
 import ScoreBadge from '@/components/ui/ScoreBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import SpotImage from '@/components/ui/SpotImage';
+import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
 import { getSpotListCardHoverLine } from '@/lib/spotListCardDelight';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
+import type { ScoreWaveCorrection } from '@/lib/scoreConditions';
 import { cn } from '@/lib/cn';
 
 export interface SpotListCardConditions {
@@ -35,6 +39,13 @@ interface SpotListCardProps {
   withImage?: boolean;
   spot?: Pick<Spot, 'slug' | 'type' | 'images' | 'name' | 'nameEn' | 'region'>;
   statusLine?: string;
+  /** Active sea-state/wind IPMA warning — small badge on the card. */
+  warning?: MapMarkerWarning | null;
+  /**
+   * Wave correction (resolveScoreWaveCorrection) — renders the
+   * «Corrigido pela boia X» badge with ME/n in the metrics row (TopNow).
+   */
+  waveCorrection?: ScoreWaveCorrection | null;
 }
 
 export default function SpotListCard({
@@ -53,7 +64,12 @@ export default function SpotListCard({
   withImage = false,
   spot,
   statusLine,
+  warning,
+  waveCorrection,
 }: SpotListCardProps) {
+  const warningChipClass = warning
+    ? WARNING_LEVEL_META[warning.level]?.chipClass ?? 'bg-score-fair/15 text-score-fair border-score-fair/40'
+    : '';
   const isPt = locale === 'pt';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const hoverLine = getSpotListCardHoverLine(score, isPt);
@@ -130,6 +146,15 @@ export default function SpotListCard({
                 {sportLabel}
               </span>
             )}
+            {warning && (
+              <span
+                className={`pill gap-1 px-2 py-0.5 min-h-0 text-meta-sm shrink-0 ${warningChipClass}`}
+                title={`${isPt ? 'Aviso IPMA' : 'IPMA warning'}: ${warning.label}`}
+              >
+                <AlertTriangle className="w-3 h-3 shrink-0" aria-hidden />
+                {warning.label}
+              </span>
+            )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <ScoreBadge score={score} locale={locale} size="sm" />
@@ -173,6 +198,15 @@ export default function SpotListCard({
             <Wind className="w-3 h-3 text-data-wind" aria-hidden />
             {windKt}kt
           </span>
+          {waveCorrection &&
+            (waveCorrection.source === 'observed' || waveCorrection.source === 'bias-corrected') && (
+              <ScoreWaveSourceBadge
+                source={waveCorrection.source}
+                correction={waveCorrection}
+                locale={locale}
+                className="shrink-0"
+              />
+            )}
           <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>
         </p>
 

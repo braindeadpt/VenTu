@@ -17,13 +17,30 @@ import ScoreBadge from '@/components/ui/ScoreBadge';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
-import type { ScoreWindSource } from '@/lib/scoreConditions';
+import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import type {
+  ScoreWaveCorrection,
+  ScoreWaveSource,
+  ScoreWindCorrection,
+  ScoreWindSource,
+} from '@/lib/scoreConditions';
+import { waveFactorSuffix } from '@/lib/scoreConditions';
 import SpotLevelToday from '@/components/spots/SpotLevelToday';
 import StatChip from '@/components/ui/StatChip';
 import WindFlowGlyph, { windFlowAriaLabel } from '@/components/ui/WindFlowGlyph';
 import { getCardinalLabel } from '@/lib/wind';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
+import SeaStateSafetyBanner from '@/components/spots/SeaStateSafetyBanner';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
+import {
+  isObservedWaveFresh,
+  observedWaveLabel,
+  waveCalibrationTag,
+  type ObservedWave,
+  type ObservedWaveMeta,
+} from '@/lib/observedWave';
+import { formatObservedClockTime } from '@/lib/observations';
+import ObservedWaveSourcesChip from '@/components/spots/ObservedWaveSourcesChip';
 
 interface SpotDetailHeroProps {
   spot: Spot;
@@ -48,6 +65,17 @@ interface SpotDetailHeroProps {
     confidenceDetail?: ConfidenceDetail;
   };
   scoreWindSource?: ScoreWindSource;
+  /** Wind bias (ME/n from wind-bias.json) for the badge tooltip when observed. */
+  scoreWindCorrection?: ScoreWindCorrection | null;
+  scoreWaveSource?: ScoreWaveSource;
+  /** Correction details (buoy name + ME/n) for the wave badge tooltip. */
+  scoreWaveCorrection?: ScoreWaveCorrection | null;
+  /** Optional fresh buoy reading — compact «boia X a Y km» badge in the hero. */
+  observedWave?: ObservedWave | null;
+  /** Runner-up source (WMO when IH won) — side-by-side chip when both fresh. */
+  observedWaveAlt?: ObservedWave | null;
+  /** Why the winner was chosen (freshness/distance) — attached by the merge. */
+  observedWaveMeta?: ObservedWaveMeta | null;
   /** Optional ref pointing to the hero root — used by the sticky condensed bar. */
   heroRef?: React.Ref<HTMLElement>;
 }
@@ -64,6 +92,12 @@ export default function SpotDetailHero({
   ratingEn,
   conditions,
   scoreWindSource = 'forecast',
+  scoreWindCorrection = null,
+  scoreWaveSource = 'forecast',
+  scoreWaveCorrection = null,
+  observedWave,
+  observedWaveAlt,
+  observedWaveMeta,
   heroRef,
 }: SpotDetailHeroProps) {
   const isPt = locale === 'pt';
@@ -92,6 +126,8 @@ export default function SpotDetailHero({
       className="relative w-full overflow-hidden border-b border-divider"
       data-spot-slug={spotSlug}
     >
+      <SeaStateSafetyBanner spotId={spot.id} locale={locale} />
+
       <div className="absolute inset-0">
         <SpotImage
           spot={spot}
@@ -195,7 +231,18 @@ export default function SpotDetailHero({
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
                   <ScoreBadge score={score} locale={locale as 'pt' | 'en'} size="md" showLabel />
-                  <ScoreWindSourceBadge source={scoreWindSource} locale={locale} />
+                  <div className="flex flex-wrap items-center justify-center gap-1">
+                    <ScoreWindSourceBadge
+                      source={scoreWindSource}
+                      correction={scoreWindCorrection}
+                      locale={locale}
+                    />
+                    <ScoreWaveSourceBadge
+                      source={scoreWaveSource}
+                      correction={scoreWaveCorrection}
+                      locale={locale}
+                    />
+                  </div>
                   <ConfidenceBadge
                     confidence={conditions.confidence}
                     detail={conditions.confidenceDetail}
@@ -214,7 +261,15 @@ export default function SpotDetailHero({
                 <StatChip
                   className="spot-hero-stat"
                   icon={<Waves className="w-4 h-4 text-data-waves" />}
-                  value={`${conditions.waveHeight.toFixed(1)}m`}
+                  // Factor honesto: mostra a altura que o score usou — a
+                  // medição da boia quando 'observed' (a row tem a previsão),
+                  // senão a altura da row (já corrigida pelo viés quando
+                  // 'bias-corrected') — com o sufixo além do badge.
+                  value={`${(
+                    scoreWaveSource === 'observed' && observedWave
+                      ? observedWave.waveHeight
+                      : conditions.waveHeight
+                  ).toFixed(1)}m${waveFactorSuffix(scoreWaveSource, locale)}`}
                   label={isPt ? 'Ondas' : 'Waves'}
                 />
                 <StatChip
@@ -243,6 +298,47 @@ export default function SpotDetailHero({
                   label={isPt ? 'Água' : 'Water'}
                 />
               </div>
+
+              {observedWave &&
+                isObservedWaveFresh(observedWave) &&
+                (observedWaveAlt && isObservedWaveFresh(observedWaveAlt) ? (
+                  <ObservedWaveSourcesChip
+                    observedWave={observedWave}
+                    altWave={observedWaveAlt}
+                    meta={observedWaveMeta}
+                    locale={locale}
+                    className="mt-2"
+                  />
+                ) : (
+                  <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5 text-meta-sm text-score-good">
+                    <Waves className="w-3.5 h-3.5 shrink-0" aria-hidden />
+                    <span className="font-medium">
+                      {observedWaveLabel(observedWave, locale)}
+                    </span>
+                    {(() => {
+                      const calTag = waveCalibrationTag(observedWave, locale);
+                      return calTag ? (
+                        <span
+                          className="inline-flex items-center gap-1 rounded-pill border border-data-period/30 bg-data-period/10 px-2 py-0.5 font-medium whitespace-nowrap text-data-period"
+                          title={calTag.title}
+                          data-wave-calibrated="compact"
+                        >
+                          {calTag.label}
+                        </span>
+                      ) : (
+                        <>
+                          <span className="font-mono tabular-nums text-fg-subtle" data-wave-clock="true">
+                            {formatObservedClockTime(observedWave.observedAt, locale)}
+                          </span>
+                          <span className="text-fg-subtle">·</span>
+                          <span className="text-fg-muted">
+                            {isPt ? 'onda medida' : 'measured wave'}
+                          </span>
+                        </>
+                      );
+                    })()}
+                  </div>
+                ))}
 
               {(updatedLabel || conditions.source) && (
                 <div className="mt-2 flex items-center justify-center gap-1.5 text-meta-sm text-fg-muted flex-wrap">

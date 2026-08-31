@@ -74,6 +74,7 @@ export default function MapSpotSheet({
         role="dialog"
         aria-modal="true"
         aria-labelledby="map-spot-sheet-title"
+        data-testid="map-spot-sheet"
         className="absolute inset-x-0 bottom-0 z-[1050] max-h-[min(85dvh,640px)] overflow-y-auto rounded-t-2xl border-t border-divider bg-bg-elevated shadow-modal pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none transition-transform duration-200 ease-out"
       >
         <div className="flex justify-center pt-2 pb-1 sticky top-0 bg-bg-elevated z-10" aria-hidden>

@@ -33,19 +33,31 @@ import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
 import { loadConditionsJson, loadForecastForSpot } from '@/lib/spotDataCache';
-import { rawToScoreInput } from '@/lib/scoreConditions';
-import { resolveScoreWindSource } from '@/lib/scoreConditions';
+import {
+  rawToScoreInput,
+  applyRegionalBiasFallback,
+  resolveScoreWaveCorrection,
+  resolveScoreWaveSource,
+} from '@/lib/scoreConditions';
+import { loadWaveBiasRegions } from '@/lib/waveBias';
+import {
+  resolveScoreWindCorrection,
+  resolveScoreWindSource,
+} from '@/lib/scoreConditions';
+import type { ScoreWindCorrection } from '@/lib/scoreConditions';
 import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
 import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import Button from '@/components/ui/Button';
 import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard';
+import SpotWarningsSection from '@/components/spots/SpotWarningsSection';
 import SpotStickyBar from '@/components/spots/SpotStickyBar';
 import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
 import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
 import SpotUpcomingEvents from '@/components/events/SpotUpcomingEvents';
 import type { ObservedConditions } from '@/lib/observations';
+import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { VentuEvent } from '@/types/events';
 import { trackSpotView } from '@/components/homepage/SignupNudge';
 import { useAuth } from '@/contexts/AuthProvider';
@@ -74,6 +86,25 @@ interface Conditions {
   confidenceDetail?: import('@/lib/forecastConfidence').ConfidenceDetail;
   dailyConfidence?: import('@/lib/forecastConfidence').DailyConfidence[];
   observed?: ObservedConditions;
+  observedWave?: ObservedWave;
+  /** Runner-up source (WMO when IH won, IH when WMO won). */
+  observedWaveAlt?: ObservedWave;
+  /** Why the winner was chosen (freshness/distance). */
+  observedWaveMeta?: ObservedWaveMeta;
+  /** Recusa cross-border: leitura ES descartada hoje por par ES×PT incoherent. */
+  observedWaveCoherenceRefused?: { esCode: string; day?: string | null };
+  /** Confiança baixa da leitura IH: par ES×PT incoherent há N+ dias consecutivos. */
+  observedWaveCoherenceWarning?: {
+    esCode: string;
+    ptRefCode?: string;
+    days: number;
+    firstDay?: string | null;
+    lastDay?: string | null;
+  };
+  /** Regional bias meta baked by the pipeline (VENTU_WAVE_BIAS_CORRECTION=1). */
+  waveBias?: { region: string; me: number; n: number; deltaM: number };
+  /** Station wind bias baked by the merge (wind-bias.json) — badge tooltip. */
+  windBias?: { station?: string; source?: string; me?: number; mae?: number; rmse?: number; n?: number };
 }
 
 interface SpotData {
@@ -179,12 +210,17 @@ export default function SpotDetailClient({
 
         let condJson: Record<string, unknown> | null = null;
         let spotFc: SpotData['forecast'] | null = null;
+        let waveBiasFile: import('@/lib/scoreConditions').WaveBiasRegionsFile | null = null;
 
         try {
           const dataId = getConditionsDataId(spot);
-          [condJson, spotFc] = await Promise.all([
+          // wave-bias.json (client fetch, session cache) alimenta o fallback
+          // do viés regional quando a boia não está fresca (ver
+          // applyRegionalBiasFallback) — nunca bloqueia o carregamento.
+          [condJson, spotFc, waveBiasFile] = await Promise.all([
             loadConditionsJson(),
             loadForecastForSpot(dataId).then((d) => d as SpotData['forecast']).catch(() => null),
+            loadWaveBiasRegions().catch(() => null),
           ]);
         } catch {
           condJson = null;
@@ -194,7 +230,16 @@ export default function SpotDetailClient({
 
         if (condJson && spotFc) {
           const dataId = getConditionsDataId(spot);
-          const spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
+          let spotCond = (condJson[dataId] ?? condJson[spot.id]) as Record<string, unknown> | undefined;
+
+          if (spotCond) {
+            // Fallback do viés regional: quando a boia não está fresca e a
+            // região tem viés histórico no wave-bias.json, aplica a correcção
+            // à row (mesma semântica da pipeline) — o badge «Corrigido (viés
+            // regional)» e a altura mostrada reflectem o viés aplicado.
+            const biasPatch = applyRegionalBiasFallback(spotCond, spot.region, waveBiasFile);
+            if (biasPatch) spotCond = { ...spotCond, ...biasPatch };
+          }
 
           if (spotCond && spotFc) {
             conditions = {
@@ -213,6 +258,17 @@ export default function SpotDetailClient({
               secondarySwellDirection: spotCond.secondarySwellDirection as number | undefined,
               wavePowerKw: spotCond.wavePowerKw as number | undefined,
               observed: spotCond.observed as ObservedConditions | undefined,
+              observedWave: spotCond.observedWave as ObservedWave | undefined,
+              observedWaveAlt: spotCond.observedWaveAlt as ObservedWave | undefined,
+              observedWaveMeta: spotCond.observedWaveMeta as ObservedWaveMeta | undefined,
+              observedWaveCoherenceRefused: spotCond.observedWaveCoherenceRefused as
+                | Conditions['observedWaveCoherenceRefused']
+                | undefined,
+              observedWaveCoherenceWarning: spotCond.observedWaveCoherenceWarning as
+                | Conditions['observedWaveCoherenceWarning']
+                | undefined,
+              waveBias: spotCond.waveBias as Conditions['waveBias'],
+              windBias: spotCond.windBias as Conditions['windBias'],
               tideHeight: spotCond.tideHeight as number | undefined,
               tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
               tideLabel: spotCond.tideLabel as string | undefined,
@@ -265,6 +321,17 @@ export default function SpotDetailClient({
               windGust: Number(spotCond.windGust) || 0,
               waterTemp: Number(spotCond.waterTemp) || 0,
               observed: spotCond.observed as ObservedConditions | undefined,
+              observedWave: spotCond.observedWave as ObservedWave | undefined,
+              observedWaveAlt: spotCond.observedWaveAlt as ObservedWave | undefined,
+              observedWaveMeta: spotCond.observedWaveMeta as ObservedWaveMeta | undefined,
+              observedWaveCoherenceRefused: spotCond.observedWaveCoherenceRefused as
+                | Conditions['observedWaveCoherenceRefused']
+                | undefined,
+              observedWaveCoherenceWarning: spotCond.observedWaveCoherenceWarning as
+                | Conditions['observedWaveCoherenceWarning']
+                | undefined,
+              waveBias: spotCond.waveBias as Conditions['waveBias'],
+              windBias: spotCond.windBias as Conditions['windBias'],
               source: 'real',
               updatedAt:
                 typeof spotCond.updatedAt === 'string' ? spotCond.updatedAt : undefined,
@@ -283,6 +350,7 @@ export default function SpotDetailClient({
             windGust: conditions.windGust,
             waterTemp: conditions.waterTemp,
             observed: conditions.observed,
+            observedWave: conditions.observedWave,
           }),
         );
 
@@ -428,6 +496,18 @@ export default function SpotDetailClient({
     waterTemp: conditions.waterTemp,
     observed: conditions.observed,
   });
+  const scoreWindCorrection: ScoreWindCorrection | null =
+    resolveScoreWindCorrection({ ...conditions, windBias: conditions.windBias });
+  const scoreWaveSource = resolveScoreWaveSource({
+    ...conditions,
+    observedWave: conditions.observedWave,
+    waveBias: conditions.waveBias,
+  });
+  const scoreWaveCorrection = resolveScoreWaveCorrection({
+    ...conditions,
+    observedWave: conditions.observedWave,
+    waveBias: conditions.waveBias,
+  });
   const mergedLocalTipsRaw = mergeLocalTips(
     spot,
     getLocalTips(spot.slug),
@@ -498,6 +578,12 @@ export default function SpotDetailClient({
           ratingEn={score.ratingEn}
           conditions={conditions}
           scoreWindSource={scoreWindSource}
+          scoreWindCorrection={scoreWindCorrection}
+          scoreWaveSource={scoreWaveSource}
+          scoreWaveCorrection={scoreWaveCorrection}
+          observedWave={conditions.observedWave}
+          observedWaveAlt={conditions.observedWaveAlt}
+          observedWaveMeta={conditions.observedWaveMeta}
           heroRef={heroRef}
         />
 
@@ -507,6 +593,10 @@ export default function SpotDetailClient({
           conditions={conditions}
           heroRef={heroRef}
           locale={locale}
+          observedWave={conditions.observedWave}
+          observedWaveAlt={conditions.observedWaveAlt}
+          observedWaveMeta={conditions.observedWaveMeta}
+          scoreWaveCorrection={scoreWaveCorrection}
         />
 
         <section className="sticky top-16 z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm">
@@ -594,6 +684,10 @@ export default function SpotDetailClient({
               scoreFeedbackHint: td.scoreFeedbackHint,
             }}
           />
+        </section>
+
+        <section className="max-w-6xl mx-auto px-4 py-3">
+          <SpotWarningsSection spotId={spot.id} locale={locale} />
         </section>
 
         <section className="max-w-6xl mx-auto px-4 py-4 space-y-3">

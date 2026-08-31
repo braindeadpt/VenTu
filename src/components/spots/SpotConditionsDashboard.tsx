@@ -1,6 +1,6 @@
 'use client';
 
-import { Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
+import { AlertTriangle, Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
@@ -11,15 +11,21 @@ import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
 import { isObservedFresh } from '@/lib/observations';
+import { isObservedWaveFresh } from '@/lib/observedWave';
 import MetricTile from '@/components/ui/MetricTile';
 import SwellRadar from '@/components/ui/SwellRadar';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
 import ObservedNow from '@/components/spots/ObservedNow';
+import ObservedWaveCard from '@/components/spots/ObservedWaveCard';
+import BuoySkillLine from '@/components/spots/BuoySkillLine';
+import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
+import IsobathsStrip from '@/components/spots/IsobathsStrip';
 import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
 import MoonTideCard from '@/components/spots/MoonTideCard';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
 import ScoreBadge from '@/components/ui/ScoreBadge';
 import type { ObservedConditions } from '@/lib/observations';
+import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { SportType } from '@/lib/sportRatings';
 import type { TideSchedule, TideHourPoint } from '@/lib/tideSchedule';
 
@@ -38,6 +44,23 @@ export interface SpotDashboardConditions {
   secondarySwellPeriod?: number;
   secondarySwellDirection?: number;
   observed?: ObservedConditions;
+  observedWave?: ObservedWave;
+  observedWaveAlt?: ObservedWave;
+  observedWaveMeta?: ObservedWaveMeta;
+  /** Recusa cross-border: leitura ES descartada hoje por par ES×PT incoherent. */
+  observedWaveCoherenceRefused?: { esCode: string; day?: string | null };
+  /**
+   * Confiança baixa da leitura nacional (IH): o par ES×PT da região persiste
+   * incoherent há N+ dias consecutivos (arquivo diário) — mesmo a leitura IH
+   * primária fica sob suspeita, não só a rota ES. Aviso no card, sem a bloquear.
+   */
+  observedWaveCoherenceWarning?: {
+    esCode: string;
+    ptRefCode?: string;
+    days: number;
+    firstDay?: string | null;
+    lastDay?: string | null;
+  };
 }
 
 interface SpotConditionsDashboardProps {
@@ -103,10 +126,17 @@ export default function SpotConditionsDashboard({
     conditions.observed && isObservedFresh(conditions.observed.observedAt)
       ? conditions.observed
       : null;
+  const freshObservedWave =
+    conditions.observedWave && isObservedWaveFresh(conditions.observedWave)
+      ? conditions.observedWave
+      : null;
 
   const obsWorkerEnabled = Boolean(process.env.NEXT_PUBLIC_OBS_WORKER_URL?.trim());
   const showObservedBlock = Boolean(freshObserved || obsWorkerEnabled);
-  const showVerification = Boolean(showObservedBlock || tideSchedule || conditions.observed);
+  const showWaveBlock = Boolean(freshObservedWave);
+  const showVerification = Boolean(
+    showObservedBlock || showWaveBlock || tideSchedule || conditions.observed || conditions.observedWave,
+  );
 
   return (
     <section
@@ -256,7 +286,7 @@ export default function SpotConditionsDashboard({
             <h3 className="text-h3 text-fg">{copy.verificationTitle}</h3>
             <div
               className={
-                showObservedBlock
+                showObservedBlock || showWaveBlock
                   ? 'grid grid-cols-1 md:grid-cols-2 gap-3'
                   : 'grid grid-cols-1 gap-3'
               }
@@ -270,6 +300,29 @@ export default function SpotConditionsDashboard({
                   lon={spot.lon}
                 />
               ) : null}
+              {showWaveBlock ? (
+                <div className="space-y-2">
+                  <ObservedWaveCard
+                    observedWave={conditions.observedWave}
+                    altWave={conditions.observedWaveAlt}
+                    meta={conditions.observedWaveMeta}
+                    forecastWaveHeightM={conditions.waveHeight}
+                    locale={locale}
+                  />
+                  {conditions.observedWaveCoherenceWarning && (
+                    <CoherenceWarningNotice
+                      warning={conditions.observedWaveCoherenceWarning}
+                      locale={locale}
+                    />
+                  )}
+                </div>
+              ) : null}
+              {!showWaveBlock && (
+                <BuoySkillLine
+                  spotId={spot.id}
+                  locale={locale}
+                />
+              )}
               <div className="space-y-3 min-w-0">
                 {tideSchedule ? (
                   <div className="rounded-card border border-divider bg-surface-1/[0.03] px-3 py-3">
@@ -280,6 +333,9 @@ export default function SpotConditionsDashboard({
                   </div>
                 ) : null}
                 <MoonTideCard locale={locale} tideHourly={tideHourly} />
+                {/* Fundo real perto da praia (IH depcnt_8_16_30) — profundidade
+                    real do fundo, independente da maré/previsão. */}
+                <IsobathsStrip spotId={spot.id} locale={locale} />
               </div>
             </div>
             {!freshObserved && conditions.observed && (
@@ -295,6 +351,20 @@ export default function SpotConditionsDashboard({
                   ? 'Sem estação IPMA/Ecowitt próxima e fresca — usa o vento do modelo acima.'
                   : 'No fresh IPMA/Ecowitt station nearby — use model wind above.'}
               </p>
+            )}
+            {conditions.observedWave && !freshObservedWave && (
+              <p className="text-meta-sm text-fg-subtle">
+                {isPt
+                  ? 'Leitura da boia antiga — a altura de onda em cima é previsão do modelo.'
+                  : 'Stale buoy reading — wave height above is a model forecast.'}
+              </p>
+            )}
+            {!freshObservedWave && !conditions.observedWave && <BuoyLayerNotice locale={locale} />}
+            {conditions.observedWaveCoherenceRefused && (
+              <CoherenceRefusedNotice
+                esCode={conditions.observedWaveCoherenceRefused.esCode}
+                locale={locale}
+              />
             )}
           </div>
         )}
@@ -317,5 +387,73 @@ export default function SpotConditionsDashboard({
         </div>
       </div>
     </section>
+  );
+}
+
+/**
+ * Aviso de coerência cross-border: o merge recusou hoje anexar a leitura de
+ * uma boia ES (par ES×PT incoherent no buoy-coherence.json). Aparece junto do
+ * card de onda observada — mesmo quando o vencedor é o IH ou não há card — para
+ * o utilizador saber que a Fonte ES foi descartada por incoerência, não por
+ * estar em baixo.
+ */
+function CoherenceRefusedNotice({ esCode, locale }: { esCode: string; locale: string }) {
+  const isPt = locale === 'pt';
+  return (
+    <p
+      className="flex items-start gap-1.5 rounded-lg border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-meta-sm text-data-period leading-snug"
+      data-coherence-refused="true"
+      title={isPt
+        ? `Boia ES ${esCode} descartada hoje por incoerência do par ES×PT (buoy-coherence.json).`
+        : `ES buoy ${esCode} discarded today due to an incoherent ES×PT pair (buoy-coherence.json).`}
+    >
+      <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden />
+      <span>
+        {isPt
+          ? 'Leitura ES descartada hoje — o par ES×PT está incoherent; a usar só a fonte PT.'
+          : 'ES reading discarded today — the ES×PT pair is incoherent; using only the PT source.'}
+      </span>
+    </p>
+  );
+}
+
+/**
+ * Confiança baixa da leitura nacional: quando o par ES×PT da região persiste
+ * incoherent por vários dias consecutivos (arquivo diário buoy-coherence-daily),
+ * mesmo a leitura IH primária fica sob suspeita — várias fontes independentes
+ * leram o campo de onda de forma divergente ao longo do tempo, não só a rota ES
+ * de hoje. O aviso NÃO bloqueia a leitura (IH é primária): apenas baixa a
+ * confiança e mostra a divergência acumulada ao utilizador.
+ */
+function CoherenceWarningNotice({
+  warning,
+  locale,
+}: {
+  warning: {
+    esCode: string;
+    ptRefCode?: string;
+    days: number;
+    firstDay?: string | null;
+    lastDay?: string | null;
+  };
+  locale: string;
+}) {
+  const isPt = locale === 'pt';
+  const title = isPt
+    ? `Par ES×PT (${warning.esCode}${warning.ptRefCode ? ` × ${warning.ptRefCode}` : ''}) incoherent há ${warning.days} dias consecutivos (${warning.firstDay ?? '…'} → ${warning.lastDay ?? '…'}). A leitura IH primária mantém-se, mas com confiança reduzida (buoy-coherence-daily.json).`
+    : `ES×PT pair (${warning.esCode}${warning.ptRefCode ? ` × ${warning.ptRefCode}` : ''}) incoherent for ${warning.days} consecutive days (${warning.firstDay ?? '…'} → ${warning.lastDay ?? '…'}). The primary IH reading is kept but with reduced confidence (buoy-coherence-daily.json).`;
+  return (
+    <p
+      className="flex items-start gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2 py-1.5 text-meta-sm text-amber-300 leading-snug"
+      data-coherence-warning="true"
+      title={title}
+    >
+      <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden />
+      <span>
+        {isPt
+          ? `Confiabilidade da leitura nacional reduzida — o par ES×PT persiste incoherent há ${warning.days} dias.`
+          : `National reading confidence reduced — the ES×PT pair has been incoherent for ${warning.days} days.`}
+      </span>
+    </p>
   );
 }

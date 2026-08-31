@@ -89,34 +89,21 @@ const HERO_SPORT_FILTERS = MAP_SPORT_FILTERS.filter((f) =>
 
   ['all', 'surf', 'bodyboard', 'kitesurf', 'windsurf', 'foil'].includes(f.id),
 
-);
-
-
-
-interface HomepageMapHeroProps {
-
+);interface HomepageMapHeroProps {
   locale: string;
-
   spotsData: HomepageSpotData[];
-
   maxTs: number | null;
-
   variant?: 'featured' | 'compact';
-
+  /** IH buoy layer state from pipeline-meta.json (ticker diagnostics). */
+  buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
 }
 
-
-
 export default function HomepageMapHero({
-
   locale,
-
   spotsData,
-
   maxTs,
-
   variant = 'featured',
-
+  buoyLayer,
 }: HomepageMapHeroProps) {
 
   const isPt = locale === 'pt';
@@ -446,16 +433,11 @@ export default function HomepageMapHero({
 
         >
 
-          <div className="max-w-7xl mx-auto">
-
-            <HeroTicker
-
+          <div className="max-w-7xl mx-auto">            <HeroTicker
               locale={locale}
-
               updatedAtTs={maxTs}
-
               statusLine={liveLine}
-
+              buoyLayer={buoyLayer}
             />
 
           </div>

@@ -36,7 +36,7 @@ O **VenTu** (Vem + Tu) agrega condições marítimas para **173 spots** em Portu
 | App | Next.js 16, React 18, TypeScript |
 | UI | Tailwind CSS 3.4, Lucide, Geist + Space Grotesk |
 | Mapa | Leaflet, MarkerCluster |
-| Dados mar | Open-Meteo Marine API |
+| Dados mar | Open-Meteo Marine API (DWD EWAM · ECMWF WAM · GFS Wave · GWAM) |
 | Feedback / alertas | Supabase |
 | Notícias / Dawn Patrol | Gemini + Groq + Cerebras (opcional) |
 | Deploy | GitHub Pages (static export) |
@@ -114,6 +114,15 @@ docs/                 # Roadmap, contexto, design system
 
 Sem embeds de terceiros (iframes bloqueados). Nos spots curados, a secção «Câmara ao vivo» abre o stream **no site do operador**. Para adicionar um spot, edita `src/lib/spotLivecams.ts`.
 
+### Créditos e atribuição
+
+- [Open-Meteo](https://open-meteo.com/) — previsões mar e tempo, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Ensemble multi-modelo: ondas por [DWD EWAM](https://www.dwd.de/) e [ECMWF WAM](https://www.ecmwf.int/) (CC-BY), NOAA GFS Wave/GWAM; vento por DWD ICON-EU, ECMWF IFS, GFS e Météo-France.
+- [IPMA](https://www.ipma.pt/) — observações, avisos e radar (dados públicos)
+- [IH](https://www.hidrografico.pt/) — boias ondógrafo e marés (CC-BY 4.0)
+- [Google Gemini](https://ai.google.dev/) — notícias & Dawn Patrol (opcional)
+- [Lucide](https://lucide.dev/) — ícones
+- Operadores de câmaras ao vivo: [Surftotal](https://www.surftotal.com/), [MEO Beachcam](https://beachcam.meo.pt/)
+
 ### Contribuir
 
 Issues e PRs são bem-vindos. Lê [CONTRIBUTING.md](CONTRIBUTING.md) antes de submeter.
@@ -160,7 +169,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Credits
 
-- [Open-Meteo](https://open-meteo.com/) — marine weather data  
+- [Open-Meteo](https://open-meteo.com/) — marine & weather forecasts, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Multi-model ensemble: waves by [DWD EWAM](https://www.dwd.de/) & [ECMWF WAM](https://www.ecmwf.int/) (CC-BY), NOAA GFS Wave/GWAM; wind by DWD ICON-EU, ECMWF IFS, GFS & Météo-France.  
+- [IPMA](https://www.ipma.pt/) — observations, warnings & radar (public data)  
+- [IH](https://www.hidrografico.pt/) — wave buoys & tides (CC-BY 4.0)  
 - [Google Gemini](https://ai.google.dev/) — news & Dawn Patrol (optional)  
 - [Lucide](https://lucide.dev/) — icons  
 - Live camera operators: [Surftotal](https://www.surftotal.com/), [MEO Beachcam](https://beachcam.meo.pt/)

@@ -17,6 +17,7 @@ import {
   PIN_CY,
   MARKER_VIEWBOX_W,
   MARKER_VIEWBOX_H,
+  WARNING_BADGE_COLORS,
 } from '../mapWindArrow';
 
 describe('wind ring marker', () => {
@@ -104,5 +105,32 @@ describe('wind ring marker', () => {
     expect(html).toContain('ventu-wind-ring-marker-wrap');
     expect(html).toContain('Onshore');
     expect(buildMapWindRingTitle(90, 14, 270, 'en')).toContain('Offshore');
+  });
+
+  it('renders the warning badge when a sea-state/wind warning is active', () => {
+    const html = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'pt', 270, {
+      level: 'orange',
+      label: 'Agitação marítima',
+    });
+    expect(html).toContain('ventu-warning-badge');
+    expect(html).toContain('data-warning-level="orange"');
+    expect(html).toContain(WARNING_BADGE_COLORS.orange);
+    expect(html).toContain('Aviso IPMA: Agitação marítima');
+  });
+
+  it('omits the badge when there is no warning', () => {
+    const html = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'pt', 270, null);
+    expect(html).not.toContain('ventu-warning-badge');
+    const noArg = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'pt', 270);
+    expect(noArg).not.toContain('ventu-warning-badge');
+  });
+
+  it('red warning uses the red badge fill', () => {
+    const html = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, false, 'en', undefined, {
+      level: 'red',
+      label: 'Sea state',
+    });
+    expect(html).toContain(WARNING_BADGE_COLORS.red);
+    expect(html).toContain('IPMA warning: Sea state');
   });
 });

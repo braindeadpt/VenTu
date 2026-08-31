@@ -21,6 +21,8 @@ interface HomeAdaptiveProps {
   maxTs: number | null;
   spotCount: number;
   sportsCount: number;
+  /** IH buoy layer state from pipeline-meta.json (ticker diagnostics). */
+  buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
 }
 
 export default function HomeAdaptive({
@@ -29,6 +31,7 @@ export default function HomeAdaptive({
   maxTs,
   spotCount,
   sportsCount,
+  buoyLayer,
 }: HomeAdaptiveProps) {
   const hasFavorites = useHasFavorites();
   const { favorites } = useAuth();
@@ -55,6 +58,7 @@ export default function HomeAdaptive({
         spotsData={spotsData}
         maxTs={maxTs}
         variant={isReturning ? 'compact' : 'featured'}
+        buoyLayer={buoyLayer}
       />
 
       <WaveDivider />

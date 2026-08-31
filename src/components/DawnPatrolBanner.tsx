@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle } from 'lucide-react';
+import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle, Waves } from 'lucide-react';
 import MoonIcon from '@/components/ui/MoonIcon';
 import { getMoonPhase } from '@/lib/moonPhase';
 import Link from 'next/link';
@@ -9,6 +9,16 @@ import Button from '@/components/ui/Button';
 import { getAssetPath } from '@/lib/paths';
 import { spots } from '@/lib/spots';
 import { isDawnPatrolStale } from '@/lib/dataFreshness';
+import {
+  ipmaRadarUrl,
+  warningTypeLabel,
+  warningsSourceLabel,
+  seaStateWarningForSpot,
+  strongestSeaStateForSpots,
+  WARNING_LEVEL_META,
+  RELEVANT_WARNING_TYPES,
+  type IpmaWarningsData,
+} from '@/lib/ipmaWarnings';
 
 interface DawnPatrolData {
   date: string;
@@ -34,6 +44,9 @@ interface DawnPatrolData {
     name: string;
     slug: string;
     score: number;
+    scoreForecast?: number;
+    scoreSource?: 'boia' | 'viés regional' | 'previsão';
+    scoreMeta?: { stationName?: string; distanceKm?: number; region?: string; me?: number; n?: number } | null;
     verdict: 'go' | 'maybe' | 'skip';
     ptReason: string;
     enReason: string;
@@ -51,6 +64,7 @@ function resolveSpotHref(locale: string, slug: string): string {
 
 export default function DawnPatrolBanner({ locale }: { locale: string }) {
   const [data, setData] = useState<DawnPatrolData | null>(null);
+  const [warningsData, setWarningsData] = useState<IpmaWarningsData | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -71,6 +85,17 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
         setLoading(false);
         setError(true);
       });
+  }, []);
+
+  // Avisos IPMA (camada opcional — falha nunca quebra o banner).
+  useEffect(() => {
+    fetch(getAssetPath('/data/warnings.json'))
+      .then(r => {
+        if (!r.ok) throw new Error('warnings fetch failed');
+        return r.json();
+      })
+      .then(d => setWarningsData(d as IpmaWarningsData))
+      .catch(() => {});
   }, []);
 
   // Animate score bars when expanded
@@ -138,6 +163,35 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
   const content = isPt ? data.pt : data.en;
   const stale = isDawnPatrolStale(data.date);
+
+  // Avisos IPMA relevantes para a água (resumo compacto, no máx. 3).
+  const relevantWarnings = (() => {
+    if (!warningsData?.warnings) return [];
+    const seen = new Set<string>();
+    const out: typeof warningsData.warnings = [];
+    for (const w of warningsData.warnings) {
+      if (!RELEVANT_WARNING_TYPES.has(w.type)) continue;
+      const key = `${w.type}|${w.level}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(w);
+    }
+    return out.slice(0, 3);
+  })();
+  // «Mar perigoso» — o mesmo aviso de segurança do hero do spot, aplicado ao
+  // briefing: o aviso de Agitação Marítima mais forte entre os spots do Dawn
+  // Patrol (spot em destaque + lista), com o slug do spot afectado.
+  const seaState = (() => {
+    if (!warningsData) return null;
+    const slugs = [data.topSpotSlug, ...data.spots.map((s) => s.slug)];
+    const best = strongestSeaStateForSpots(warningsData, slugs);
+    if (!best) return null;
+    const slug =
+      slugs.find((s) => seaStateWarningForSpot(warningsData, s) === best) ??
+      data.topSpotSlug;
+    return { warning: best, slug };
+  })();
+
   const moon = getMoonPhase(new Date(`${data.date}T12:00:00`));
   const dateLabel = new Date(`${data.date}T12:00:00`).toLocaleDateString(
     isPt ? 'pt-PT' : 'en-GB',
@@ -159,6 +213,32 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
   return (
     <div className="w-full bg-surface-1/[0.04] border-b border-divider overflow-hidden border-l-4 border-l-accent">
+      {/* Mar perigoso — mesmo aviso de segurança do hero do spot, para o briefing */}
+      {seaState && (
+        <Link
+          href={resolveSpotHref(locale, seaState.slug)}
+          className={`flex items-center gap-2 px-4 py-2 text-sm font-medium ${
+            seaState.warning.level === 'red'
+              ? 'bg-red-500/10 text-red-500 border-b border-red-500/30'
+              : seaState.warning.level === 'orange'
+                ? 'bg-score-poor/10 text-score-poor border-b border-score-poor/30'
+                : 'bg-score-fair/10 text-score-fair border-b border-score-fair/30'
+          } hover:brightness-110 transition-all`}
+        >
+          <Waves className="w-4 h-4 shrink-0" aria-hidden />
+          <span className="font-bold">
+            {isPt ? 'Mar perigoso — não surfar' : 'Dangerous sea — do not surf'}
+          </span>
+          <span className="font-semibold">
+            {warningTypeLabel(seaState.warning.type, isPt)} ·{' '}
+            {WARNING_LEVEL_META[seaState.warning.level]?.label[isPt ? 'pt' : 'en'] ?? seaState.warning.level}
+          </span>
+          <span className="text-meta-sm text-fg-muted ml-auto shrink-0">
+            {isPt ? 'ver spot →' : 'view spot →'}
+          </span>
+        </Link>
+      )}
+
       {/* Main banner — toggle area */}
       <div
         className="p-5 cursor-pointer hover:bg-surface-2/[0.08] transition-colors select-none"
@@ -239,6 +319,28 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             </div>
           ) : null}
         </div>
+
+        {relevantWarnings.length > 0 && (
+          <a
+            href={ipmaRadarUrl(locale)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-start gap-2 text-sm mt-2 text-score-poor hover:underline"
+          >
+            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
+            <span>
+              {isPt
+                ? `Aviso ativo (${warningsSourceLabel(warningsData, true)})`
+                : `Active warning (${warningsSourceLabel(warningsData, false)})`}:{' '}
+              {relevantWarnings
+                .map(
+                  (w) =>
+                    `${warningTypeLabel(w.type, isPt)} (${WARNING_LEVEL_META[w.level]?.label[isPt ? 'pt' : 'en'] ?? w.level})`,
+                )
+                .join(' · ')}
+            </span>
+          </a>
+        )}
       </div>
 
       {/* Expanded: All spots + mobile CTA */}
@@ -277,7 +379,22 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                       style={{ width: barAnimated ? `${spot.score}%` : '0%' }}
                     />
                   </div>
-                  <span className="text-xs font-bold text-fg-muted tabular-nums">{spot.score}</span>
+                  <span
+                    className="text-xs font-bold text-fg-muted tabular-nums"
+                    title={
+                      spot.scoreSource && spot.scoreSource !== 'previsão'
+                        ? isPt
+                          ? spot.scoreSource === 'boia'
+                            ? `Score corrigido pela boia${spot.scoreMeta?.stationName ? ` ${spot.scoreMeta.stationName}` : ''} (previsão: ${spot.scoreForecast ?? spot.score})`
+                            : `Score corrigido pelo viés regional${spot.scoreMeta?.region ? ` (${spot.scoreMeta.region})` : ''} (previsão: ${spot.scoreForecast ?? spot.score})`
+                          : spot.scoreSource === 'boia'
+                            ? `Score corrected by buoy${spot.scoreMeta?.stationName ? ` ${spot.scoreMeta.stationName}` : ''} (forecast: ${spot.scoreForecast ?? spot.score})`
+                            : `Score corrected by regional bias${spot.scoreMeta?.region ? ` (${spot.scoreMeta.region})` : ''} (forecast: ${spot.scoreForecast ?? spot.score})`
+                        : undefined
+                    }
+                  >
+                    {spot.score}
+                  </span>
                 </div>
               </Link>
             ))}

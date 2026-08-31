@@ -11,6 +11,10 @@ const fs = require('fs');
 const path = require('path');
 const { callLLM } = require('./llm-fallback');
 const { attachMoonTideLines } = require('./lib/attachMoonTide');
+const { morningScore, resolveMorningRecalibration } = require('./lib/dawnPatrolScore');
+
+/** conditions.json committed by the pipeline (observedWave + waveBias meta). */
+const CONDITIONS_PATH = path.join(__dirname, '../public/data/conditions.json');
 
 const TOP_SPOTS = [
   { name: 'Supertubos', slug: 'supertubos', lat: 39.336, lon: -9.364, region: 'Peniche', type: 'surf' },
@@ -144,29 +148,7 @@ function getMorningConditions(hourly) {
 }
 
 function findBestWindow(conditions) {
-  const scored = conditions.map(c => {
-    let score = 0;
-
-    // Waves (0-50)
-    if (c.waveHeight >= 1.0 && c.waveHeight <= 2.5) score += 30 + (c.waveHeight * 8);
-    else if (c.waveHeight > 2.5) score += 40;
-    else score += c.waveHeight * 20;
-
-    // Period (0-20)
-    if (c.wavePeriod >= 10) score += 20;
-    else if (c.wavePeriod >= 8) score += 15;
-    else score += c.wavePeriod * 1.5;
-
-    // Wind - prefer offshore/light wind (0-30)
-    const windKnots = c.windSpeed * 1.94384;
-    if (windKnots < 10) score += 25;
-    else if (windKnots < 15) score += 18;
-    else if (windKnots < 20) score += 10;
-    else score += 5;
-
-    return { ...c, score: Math.round(score) };
-  });
-
+  const scored = conditions.map((c) => ({ ...c, score: morningScore(c) }));
   scored.sort((a, b) => b.score - a.score);
   return scored[0];
 }
@@ -184,7 +166,7 @@ ${s.name} (${s.region}):
 - Ondas: ${s.bestWindow.waveHeight.toFixed(1)}m @ ${s.bestWindow.wavePeriod.toFixed(0)}s
 - Vento: ${(s.bestWindow.windSpeed * 1.94384).toFixed(0)} nós
 - Água: ${s.bestWindow.waterTemp?.toFixed(1) ?? '--'}°C
-- Score: ${s.bestWindow.score}/100
+- Score: ${s.score}/100${s.scoreSource === 'previsão' ? '' : ' (corrigido: ' + s.scoreSource + ')'}
 `).join('')}
 
 Gera um JSON com esta estrutura EXACTA:
@@ -271,7 +253,7 @@ function generateBasicAdvice(spotsData) {
     };
   }
 
-  const best = spotsData.sort((a, b) => b.bestWindow.score - a.bestWindow.score)[0];
+  const best = spotsData.sort((a, b) => b.score - a.score)[0];
   const windKnots = best.bestWindow.windSpeed * 1.94384;
   const waterTemp = best.bestWindow.waterTemp;
 
@@ -322,11 +304,40 @@ function spotsFromMorningData(spotsData) {
   return spotsData.map((s) => ({
     name: s.name,
     slug: s.slug,
-    score: s.bestWindow.score,
-    verdict: s.bestWindow.score >= 70 ? 'go' : s.bestWindow.score >= 50 ? 'maybe' : 'skip',
-    ptReason: s.bestWindow.score >= 70 ? 'Condições excelentes' : s.bestWindow.score >= 50 ? 'Condições razoáveis' : 'Não vale a pena',
-    enReason: s.bestWindow.score >= 70 ? 'Excellent conditions' : s.bestWindow.score >= 50 ? 'Fair conditions' : 'Not worth it',
+    score: s.score,
+    scoreForecast: s.scoreForecast,
+    scoreSource: s.scoreSource,
+    scoreMeta: s.scoreMeta ?? null,
+    verdict: s.score >= 70 ? 'go' : s.score >= 50 ? 'maybe' : 'skip',
+    ptReason: s.score >= 70 ? 'Condições excelentes' : s.score >= 50 ? 'Condições razoáveis' : 'Não vale a pena',
+    enReason: s.score >= 70 ? 'Excellent conditions' : s.score >= 50 ? 'Fair conditions' : 'Not worth it',
   }));
+}
+
+/**
+ * Override the LLM-echoed per-spot scores with the computed recalibrated ones
+ * (score = buoy-corrected, scoreForecast = forecast-only, scoreSource/meta for
+ * the UI) — the advice data must carry what the spot page shows this morning.
+ */
+function attachScoreRecalibration(advice, spotsData) {
+  const bySlug = new Map(spotsData.map((s) => [s.slug, s]));
+  if (Array.isArray(advice.spots)) {
+    advice.spots = advice.spots.map((s) => {
+      const src = bySlug.get(s.slug);
+      if (!src) return s;
+      return {
+        ...s,
+        score: src.score,
+        scoreForecast: src.scoreForecast,
+        scoreSource: src.scoreSource,
+        scoreMeta: src.scoreMeta ?? null,
+      };
+    });
+  }
+  if (advice.topSpotSlug && bySlug.has(advice.topSpotSlug)) {
+    advice.topScore = bySlug.get(advice.topSpotSlug).score;
+  }
+  return advice;
 }
 
 function validateAdviceSlugs(advice, validSlugs, spotsData = []) {
@@ -377,6 +388,20 @@ async function generateDawnPatrol() {
   console.log('🌅 Dawn Patrol AI Advisor - Generating...');
   console.log(`   Time: ${new Date().toLocaleString('pt-PT')}`);
 
+  const conditionsJson = (() => {
+    try {
+      if (fs.existsSync(CONDITIONS_PATH)) {
+        return JSON.parse(fs.readFileSync(CONDITIONS_PATH, 'utf-8'));
+      }
+    } catch (e) {
+      console.warn(`   ⚠️ conditions.json unreadable: ${e.message} — sem recalibração por boia`);
+    }
+    return null;
+  })();
+  if (conditionsJson) {
+    console.log('   📡 conditions.json loaded — score recalibrated by buoy layer when fresh');
+  }
+
   const validSlugs = loadValidSlugs();
   const spotsData = [];
 
@@ -396,11 +421,20 @@ async function generateDawnPatrol() {
 
     const bestWindow = findBestWindow(morningConditions);
 
+    // Recalibração pela boia (leitura fresca) ou pelo viés regional da row —
+    // o score que o utilizador vê na manhã seguinte é o mesmo da página do spot.
+    const recal = resolveMorningRecalibration(spot, bestWindow, conditionsJson);
+    const recalibratedScore = recal ? morningScore({ ...bestWindow, waveHeight: recal.height }) : bestWindow.score;
+
     spotsData.push({
       ...spot,
       bestWindow,
       allConditions: morningConditions,
       hourly,
+      score: recalibratedScore,
+      scoreForecast: bestWindow.score,
+      scoreSource: recal ? recal.source : 'previsão',
+      scoreMeta: recal ? recal.meta : null,
     });
   }
 
@@ -409,6 +443,7 @@ async function generateDawnPatrol() {
   let advice = await generateDawnPatrolWithLLM(spotsData);
   advice = validateAdviceSlugs(advice, validSlugs, spotsData);
   advice = attachMoonTideLines(advice, spotsData);
+  advice = attachScoreRecalibration(advice, spotsData);
 
   const outputPath = path.join(__dirname, '../public/data/dawn-patrol.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });

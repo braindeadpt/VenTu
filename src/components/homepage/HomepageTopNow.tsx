@@ -1,3 +1,5 @@
+'use client';
+
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import Button from '@/components/ui/Button';
@@ -13,6 +15,10 @@ import {
 import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import { tierPhrase } from '@/lib/voice';
 import SpotListCard from '@/components/spots/SpotListCard';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
+import { resolveScoreWaveCorrection } from '@/lib/scoreConditions';
+import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
 
 interface HomepageTopNowProps {
   spotsData: HomepageSpotData[];
@@ -31,6 +37,7 @@ const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
 export default function HomepageTopNow({ spotsData, locale, maxCards }: HomepageTopNowProps) {
   const isPt = locale === 'pt';
   const cardLocale = isPt ? 'pt' : 'en';
+  const warningsData = useIpmaWarnings();
 
   // Only sports that are actually «a bombar» (≥ Bom / 60) — never Fraco under that title
   const cards = TOP_NOW_SPORTS.map((sport) => {
@@ -59,6 +66,13 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
             : 'Only firing spots · by sport'}
       </p>
 
+      {/* Camada de boias global desactivada/em baixo — o mesmo aviso honesto da
+          página de spot, agora na homepage (mapa + cards). Não renderiza nada
+          quando a camada está saudável (status ok). */}
+      <div className="mb-4">
+        <BuoyLayerNotice locale={locale} scope="home" />
+      </div>
+
       {cards.length === 0 ? (
         <EmptyState
           className="py-10"
@@ -80,6 +94,13 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
             const score = getScoreForFilter(data, sport);
             const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
             const statusLine = tierPhrase(score, isPt);
+
+            const warning = strongestSpotWarning(warningsData, data.spot.id);
+            const warningBadge = warning
+              ? { level: warning.level, label: warningBadgeLabel(warning, isPt) }
+              : null;
+            // «Corrigido pela boia X» (ME/n no tooltip) — mesma fonte do spot page.
+            const waveCorrection = resolveScoreWaveCorrection({ ...data.conditions });
 
             return (
               <li
@@ -105,6 +126,8 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
                     isPt,
                   )}
                   statusLine={statusLine}
+                  warning={warningBadge}
+                  waveCorrection={waveCorrection}
                 />
               </li>
             );

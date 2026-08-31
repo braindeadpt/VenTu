@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { Layers, HelpCircle, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
+import { CloudRain, Layers, HelpCircle, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { clearLeafletContainer, unlockPageInteraction } from '@/lib/mapFullscreen';
@@ -30,11 +30,23 @@ import { getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { hasSeenWindRingLegend } from '@/lib/windRingLegend';
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
+import {
+  fetchRadarData,
+  radarBoundsCorners,
+  radarFrames,
+  type IpmaRadarData,
+} from '@/lib/ipmaRadar';
+import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
+import type { MapMarkerWarning } from '@/lib/mapWindArrow';
+import RadarCarousel from './RadarCarousel';
 import { spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 import type { MapSpotData } from './mapSpotData';
 import { getBestScore } from './mapSpotData';
 import { includeSpotInViewportBounds } from './mapViewportBounds';
 import { readClusterPref, readWindPref, readOnlyOnPref } from './mapHudPrefs';
+import { readRadarPref, writeRadarPref } from '@/lib/radarPrefs';
 import {
   buildMarkerCacheKey,
   createSpotMarker,
@@ -54,6 +66,10 @@ type MapHudProps = Omit<
   | 'onBasemapChange'
   | 'clusterEnabled'
   | 'onToggleCluster'
+  | 'radarEnabled'
+  | 'onToggleRadar'
+  | 'radarLabel'
+  | 'radarHint'
   | 'windEnabled'
   | 'showWindOnMarkers'
   | 'onToggleWind'
@@ -115,6 +131,7 @@ export default function SpotMapInteractive({
   const tileLayerRef = useRef<L.TileLayer | null>(null);
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markersGroupRef = useRef<L.LayerGroup | null>(null);
+  const radarOverlayRef = useRef<L.ImageOverlay | null>(null);
   const markersCacheRef = useRef<Map<string, L.Marker>>(new Map());
   const markerChunkCancelRef = useRef(false);
   const didFitBoundsRef = useRef(false);
@@ -142,6 +159,23 @@ export default function SpotMapInteractive({
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   const [windEnabled, setWindEnabled] = useState(readWindPref);
   const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
+  /** undefined = ainda não carregado · null = indisponível · data = pronto. */
+  const [radarData, setRadarData] = useState<IpmaRadarData | null | undefined>(undefined);
+  const [radarEnabled, setRadarEnabled] = useState(false);
+  /** Frame actual do carrossel (índice em radarFrames). */
+  const [radarFrameIndex, setRadarFrameIndex] = useState(0);
+  /** Pausa manual (botão play/pause) — restaurada de localStorage (preferência). */
+  const [radarUserPaused, setRadarUserPaused] = useState<boolean>(() => readRadarPref().paused);
+  const radarUserPausedRef = useRef(radarUserPaused);
+  /** Fontes de movimento do mapa ainda activas (ex: 'drag', 'zoom') — o
+   *  carrossel pausa enquanto estiver vazio. Um Set (não um boolean) acumula
+   *  interacções sobrepostas: drag+zoom simultâneos só retomam quando a ÚLTIMA
+   *  termina, em vez de retomar cedo de mais quando uma fica idle. */
+  const [radarBusySources, setRadarBusySources] = useState<Set<string>>(new Set());
+  /** Altura do HUD inferior em fullscreen (px) — o carrossel ergue-se por cima dele. */
+  const [radarLift, setRadarLift] = useState(0);
+  /** Espelho do índice para o intervalo do carrossel (evita stale closure). */
+  const radarFrameIndexRef = useRef(0);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -150,6 +184,9 @@ export default function SpotMapInteractive({
   const [hudCollapsed, setHudCollapsed] = useState(true);
   const isPt = locale === 'pt';
   const t = getTranslation(validateLocale(locale));
+
+  // Sea-state/wind warnings (Agitação Marítima, Vento) → badge on the marker.
+  const warningsData = useIpmaWarnings();
 
   useEffect(() => {
     if (!isFullscreen) setHudCollapsed(true);
@@ -214,6 +251,7 @@ export default function SpotMapInteractive({
         }
       });
       markersCacheRef.current.clear();
+      radarOverlayRef.current = null;
       clusterGroupRef.current = null;
       markersGroupRef.current = null;
       tileLayerRef.current = null;
@@ -275,7 +313,15 @@ export default function SpotMapInteractive({
 
       if (!isHeroEmbed) {
         Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
-        Leaflet.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
+        // Atribuição obrigatória do Open-Meteo (CC BY 4.0) junto aos controlos
+        // do mapa — mesma cadeia de texto que a secção «Imagens, dados e
+        // atribuição» do About.
+        Leaflet.control
+          .attribution({ position: 'bottomleft', prefix: false })
+          .addAttribution(
+            'Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>)',
+          )
+          .addTo(map);
       }
 
       const mcg = Leaflet.markerClusterGroup({
@@ -298,6 +344,12 @@ export default function SpotMapInteractive({
 
       mapInstanceRef.current = map;
       if (mountedRef.current) setIsReady(true);
+      // Test hook: expõe o mapa só quando a página declara que quer (é2é de
+      // sobreposição de movimentos — dispara eventos Leaflet de forma
+      // determinística para provar que o carrossel só retoma no fim do último).
+      if (typeof window !== 'undefined' && (window as any).__RADAR_TEST__) {
+        (window as any).__RADAR_MAP__ = map;
+      }
     })();
 
     return () => {
@@ -425,12 +477,150 @@ export default function SpotMapInteractive({
     });
   }, []);
 
+  const toggleRadar = useCallback(() => {
+    setRadarEnabled((prev) => {
+      const next = !prev;
+      if (!next) {
+        // Desligar → grava pausa + frame para restaurar na próxima abertura.
+        writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
+      }
+      return next;
+    });
+  }, []);
+
+  /** Botão play/pause do carrossel — persiste a preferência imediatamente. */
+  const handleRadarUserPausedChange = useCallback((paused: boolean) => {
+    radarUserPausedRef.current = paused;
+    setRadarUserPaused(paused);
+    writeRadarPref(paused, radarFrameIndexRef.current);
+  }, []);
+
+  /** Move o overlay para o frame indicado (carrossel ou scrubber). */
+  const handleRadarFrameChange = useCallback((value: number) => {
+    const frames = radarFrames(radarData ?? null);
+    if (frames.length === 0) return;
+    const v = Math.max(0, Math.min(frames.length - 1, value));
+    radarFrameIndexRef.current = v;
+    setRadarFrameIndex(v);
+    radarOverlayRef.current?.setUrl(frames[v].url);
+    // Pausado → o frame escolhido fica persistido (scrub enquanto parado).
+    if (radarUserPausedRef.current) writeRadarPref(true, v);
+  }, [radarData]);
+
   const showWindOnMarkers = windEnabled && !clusterEnabled && !isHeroEmbed;
   const activeCluster = isHeroEmbed ? true : clusterEnabled;
 
   const openWindLegend = useCallback(() => {
     setWindLegendOpen(true);
   }, []);
+
+  // IPMA radar overlay — camada opcional; metadata carregada lazy na primeira
+  // activação (cache module-level) e o overlay aplicado com os bounds oficiais.
+  useEffect(() => {
+    if (!radarEnabled) {
+      if (radarOverlayRef.current) {
+        mapInstanceRef.current?.removeLayer(radarOverlayRef.current);
+        radarOverlayRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current) return;
+    const Leaflet = LRef.current;
+    if (!Leaflet) return;
+
+    if (radarData === undefined) {
+      let cancelled = false;
+      fetchRadarData().then((data) => {
+        if (!cancelled) setRadarData(data);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+    if (!radarData) return; // indisponível — nada a mostrar
+
+    const map = mapInstanceRef.current;
+    const frames = radarFrames(radarData);
+    // Restaura o frame escolhido pelo utilizador (persistido) em vez de
+    // começar sempre no mais recente.
+    const savedFrame = Math.max(0, Math.min(frames.length - 1, readRadarPref().frame));
+    radarFrameIndexRef.current = savedFrame;
+    setRadarFrameIndex(savedFrame);
+    const overlay = Leaflet.imageOverlay(frames[savedFrame].url, Leaflet.latLngBounds(radarBoundsCorners(radarData)), {
+      opacity: 0.8,
+      attribution: radarData.attribution ?? 'IPMA',
+    }).addTo(map);
+    radarOverlayRef.current = overlay;
+
+    return () => {
+      if (mapInstanceRef.current?.hasLayer(overlay)) {
+        mapInstanceRef.current.removeLayer(overlay);
+      }
+      radarOverlayRef.current = null;
+    };
+  }, [radarEnabled, isReady, radarData]);
+
+  // Pausa o carrossel durante drag/zoom do mapa (setUrl durante o movimento
+  // causa flicker/despesa desnecessária). Cada evento claro marca a sua FONTE
+  // ('move'/'drag'/'zoom') no Set; cada fim remove-a. O carrossel só retoma
+  // quando o Set fica vazio — drag+zoom sobrepostos não retomam cedo de mais
+  // porque a fonte que termina primeiro não limpa as outras ainda activas.
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!isReady || !map) return;
+    const busy = (src: string) =>
+      setRadarBusySources((prev) => {
+        if (prev.has(src)) return prev;
+        const next = new Set(prev);
+        next.add(src);
+        return next;
+      });
+    const idle = (src: string) =>
+      setRadarBusySources((prev) => {
+        if (!prev.has(src)) return prev;
+        const next = new Set(prev);
+        next.delete(src);
+        return next;
+      });
+    const onMoveStart = () => busy('move');
+    const onDragStart = () => busy('drag');
+    const onZoomStart = () => busy('zoom');
+    const onMoveEnd = () => idle('move');
+    const onDragEnd = () => idle('drag');
+    const onZoomEnd = () => idle('zoom');
+    map.on('movestart', onMoveStart);
+    map.on('dragstart', onDragStart);
+    map.on('zoomstart', onZoomStart);
+    map.on('moveend', onMoveEnd);
+    map.on('dragend', onDragEnd);
+    map.on('zoomend', onZoomEnd);
+    return () => {
+      map.off('movestart', onMoveStart);
+      map.off('dragstart', onDragStart);
+      map.off('zoomstart', onZoomStart);
+      map.off('moveend', onMoveEnd);
+      map.off('dragend', onDragEnd);
+      map.off('zoomend', onZoomEnd);
+    };
+  }, [isReady]);
+
+  // Em fullscreen, o HUD inferior (altura variável, z-1100) cobre o carrossel
+  // (que está em bottom-8) — mede a altura real do HUD e ergue o carrossel
+  // por cima dele, para o scrubber/botão não ficarem interceptados nem
+  // ocultos. ResizeObserver cobre resize e collapse/expand do HUD.
+  useEffect(() => {
+    if (!isFullscreen || !radarEnabled) return;
+    const hud = document.querySelector('[data-map-hud-collapsed]');
+    if (!hud) return;
+    const measure = () => setRadarLift(hud.getBoundingClientRect().height);
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(hud);
+    return () => ro.disconnect();
+  }, [isFullscreen, radarEnabled, mapHud]);
+
+  // A animação do carrossel vive no RadarCarousel partilhado (interval + pausa
+  // por scrubber/drag); aqui fica só o overlay e a sincronização do frame.
 
   const closeWindLegend = useCallback(() => {
     setWindLegendOpen(false);
@@ -476,6 +666,23 @@ export default function SpotMapInteractive({
     if (!onlyOnEnabled) return spotsData;
     return spotsData.filter((d) => spotMeetsOnFilter(d, selectedSport));
   }, [spotsData, onlyOnEnabled, selectedSport]);
+
+  // Strongest sea-state/wind warning per visible spot (red > orange > yellow).
+  const warningsBySpot = useMemo(() => {
+    const map = new Map<string, MapMarkerWarning>();
+    if (!warningsData) return map;
+    for (const data of visibleSpots) {
+      const w = strongestSpotWarning(warningsData, data.spot.id);
+      if (w) {
+        map.set(data.spot.id, {
+          level: w.level,
+          label: warningBadgeLabel(w, isPt),
+          seaState: SEA_STATE_WARNING_TYPES.has(w.type),
+        });
+      }
+    }
+    return map;
+  }, [warningsData, visibleSpots, isPt]);
 
   // Recalculate Leaflet size when toggling fullscreen or resizing
   useEffect(() => {
@@ -697,12 +904,14 @@ export default function SpotMapInteractive({
         const toPlain: L.Marker[] = [];
 
         for (const data of batch) {
+          const warning = warningsBySpot.get(data.spot.id) ?? null;
           const cacheKey = buildMarkerCacheKey(
             data,
             selectedSport,
             showWindOnMarkers,
             locale,
             useMobileSheet,
+            warning?.level ?? null,
           );
           let marker = cache.get(data.spot.id);
           const meta = marker as (L.Marker & { ventuKey?: string }) | undefined;
@@ -714,8 +923,10 @@ export default function SpotMapInteractive({
             }
             marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, {
               useMobileSheet,
-              onMobileTap: setSheetSpot,
+              onMobileTap: (d) =>
+                setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null }),
               onSpotSelect,
+              warning: warningsBySpot.get(data.spot.id) ?? null,
             });
             (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
             cache.set(data.spot.id, marker);
@@ -757,6 +968,7 @@ export default function SpotMapInteractive({
     isMobile,
     isHeroEmbed,
     activeCluster,
+    warningsBySpot,
   ]);
 
   const exitFullscreenLabel = t.map.exitFullscreen;
@@ -768,6 +980,10 @@ export default function SpotMapInteractive({
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
   const windLegendHelpLabel = t.map.windRingLegend.help;
+  const radarLabel = radarEnabled ? t.map.hideRadar : t.map.showRadar;
+  const radarHint = t.map.radarHint;
+  const radarUnavailable = radarData === null;
+  const radarFrameList = radarFrames(radarData ?? null);
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
   return (
@@ -868,6 +1084,24 @@ export default function SpotMapInteractive({
               </div>
               <button
                 type="button"
+                onClick={toggleRadar}
+                disabled={radarUnavailable}
+                title={radarUnavailable ? `${radarHint} — indisponível` : radarHint}
+                className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
+                  radarUnavailable
+                    ? 'border-divider bg-bg-elevated text-fg-subtle opacity-60 cursor-not-allowed'
+                    : radarEnabled
+                      ? 'border-data-waves/40 bg-data-waves/15 text-fg'
+                      : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1/[0.04]'
+                }`}
+                aria-label={radarLabel}
+                aria-pressed={radarEnabled}
+              >
+                <CloudRain className="w-4 h-4 shrink-0 text-data-waves" aria-hidden />
+                <span className="hidden sm:inline">{radarLabel}</span>
+              </button>
+              <button
+                type="button"
                 onClick={toggleOnlyOn}
                 title={onlyOnHint}
                 className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
@@ -906,6 +1140,46 @@ export default function SpotMapInteractive({
             </p>
           )}
 
+          {isHeroEmbed && (
+            <button
+              type="button"
+              onClick={toggleRadar}
+              aria-label={radarLabel}
+              aria-pressed={radarEnabled}
+              className="absolute top-3 right-3 z-[1000] inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto"
+            >
+              <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
+              <span className="hidden sm:inline">{radarLabel}</span>
+            </button>
+          )}
+
+          {radarEnabled && radarData && (
+            <RadarCarousel
+              className={
+                isHeroEmbed
+                  ? 'absolute bottom-20 right-3 z-[1000] pointer-events-auto'
+                  : isFullscreen
+                    ? 'absolute left-2 z-[1000]'
+                    : 'absolute bottom-8 left-2 z-[1000]'
+              }
+              style={isFullscreen ? { bottom: Math.max(radarLift + 12, 32) } : undefined}
+              frames={radarFrameList}
+              frameIndex={radarFrameIndex}
+              onFrameChange={handleRadarFrameChange}
+              mapBusyCount={radarBusySources.size}
+              userPaused={radarUserPaused}
+              onUserPausedChange={handleRadarUserPausedChange}
+              labels={{
+                badge: t.map.radarBadge,
+                hint: t.map.radarHint,
+                scrub: t.map.radarScrub,
+                play: t.map.radarPlay,
+                pause: t.map.radarPause,
+                paused: t.map.radarPaused,
+              }}
+            />
+          )}
+
           {mapHud && isFullscreen && (
             <MapExploreHud
               {...mapHud}
@@ -916,6 +1190,10 @@ export default function SpotMapInteractive({
               onBasemapChange={handleBasemapChange}
               clusterEnabled={clusterEnabled}
               onToggleCluster={toggleCluster}
+              radarEnabled={radarEnabled}
+              onToggleRadar={toggleRadar}
+              radarLabel={radarLabel}
+              radarHint={radarHint}
               windEnabled={windEnabled}
               showWindOnMarkers={showWindOnMarkers}
               onToggleWind={toggleWind}

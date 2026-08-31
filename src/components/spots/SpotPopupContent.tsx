@@ -1,7 +1,9 @@
 'use client';
 
 import { renderToStaticMarkup } from 'react-dom/server';
-import { Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
+import { AlertTriangle, Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
+import { WARNING_LEVEL_META } from '@/lib/ipmaWarnings';
+import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -31,6 +33,8 @@ export interface SpotPopupContentProps {
   imageUrl?: string;
   confidence?: ConfidenceTier;
   confidenceDetail?: ConfidenceDetail;
+  /** Sea-state/wind warning badge (active IPMA warning for the spot). */
+  warning?: MapMarkerWarning | null;
 }
 
 export function SpotPopupContent({
@@ -50,10 +54,14 @@ export function SpotPopupContent({
   imageUrl,
   confidence,
   confidenceDetail,
+  warning,
 }: SpotPopupContentProps) {
   const isPt = locale === 'pt';
   const name = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
+  const warningChipClass = warning
+    ? WARNING_LEVEL_META[warning.level]?.chipClass ?? 'bg-score-fair/15 text-score-fair border-score-fair/40'
+    : '';
 
   const topSport = (Object.entries(allScores) as [SportType, SportScore][])
     .filter(([, s]) => s.score > 0)
@@ -120,6 +128,17 @@ export function SpotPopupContent({
           {region} · {getDifficultyLabel(spot.difficulty, isPt)}
         </p>
       </div>
+
+      {warning && (
+        <div className="px-2.5 pb-1.5">
+          <span
+            className={`inline-flex items-center gap-1.5 rounded-pill border px-2 py-1 text-[11px] font-semibold ${warningChipClass}`}
+          >
+            <AlertTriangle className="w-3 h-3 shrink-0" aria-hidden />
+            {isPt ? 'Aviso' : 'Warning'}: {warning.label}
+          </span>
+        </div>
+      )}
 
       {/* Wind reading — cardinal + kt + relation dot (matches map ring colour) */}
       <div className="px-2.5 pb-2">

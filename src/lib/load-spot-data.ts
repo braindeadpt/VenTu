@@ -8,6 +8,7 @@ import type { SportScore } from '@/lib/sportScore'
 import { pickConfidenceFields } from '@/lib/forecastConfidence'
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions'
 import type { ObservedConditions } from '@/lib/observations'
+import type { ObservedWave } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
 import { rawToScoreInput } from '@/lib/scoreConditions'
 import type { BestWindowToday, BestWindowsBySport } from '@/lib/bestWindowToday'
@@ -79,6 +80,10 @@ export interface SpotData {
     confidenceDetail?: import('@/lib/forecastConfidence').ConfidenceDetail
     dailyConfidence?: import('@/lib/forecastConfidence').DailyConfidence[]
     observed?: ObservedConditions
+    /** Measured wave — lets the UI show the «Corrigido pela boia X» badge (TopNow). */
+    observedWave?: ObservedWave
+    /** Regional bias meta (VENTU_WAVE_BIAS_CORRECTION=1). */
+    waveBias?: { region: string; me: number; n: number; deltaM: number }
   }
   allScores: Record<SportType, SportScore>
   bestWindowToday: BestWindowToday | null
@@ -117,6 +122,8 @@ function buildSpotData(
       source: raw ? ('real' as const) : ('mock' as const),
       ...(raw ? pickConfidenceFields(raw) : {}),
       observed: raw ? pickObservedField(raw as Record<string, unknown>) : undefined,
+      observedWave: raw?.observedWave as ObservedWave | undefined,
+      waveBias: raw?.waveBias as SpotData['conditions']['waveBias'],
     },
     allScores,
     bestWindowToday,

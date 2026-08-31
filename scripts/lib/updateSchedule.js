@@ -73,22 +73,35 @@ function getUpdateMode(now = new Date()) {
 }
 
 /**
- * Multi-model spread (2 extra Open-Meteo calls/spot) only on daytime full runs (06h–20h).
- * Night full runs (00h, 04h) use best_match only to save API quota.
+ * Multi-model runs are limited to a subset of daytime hours to stay inside the
+ * Open-Meteo free quota (10k calls/day). With the current ensemble (4 wave +
+ * 4 wind models + best_match ≈ 10 weighted calls/spot × 181 spots ≈ 1.8k/run),
+ * all daytime runs at 2h would spend ~15–17k/day — 50–70% over budget. Full
+ * runs still happen every 2h (freshness preserved); only the spread/blend
+ * refresh is whitelisted to 06h, 12h, 18h (override: VENTU_MULTIMODEL_HOURS).
+ * Night full runs (00h, 04h) always use best_match only.
  * @param {Date} [now]
  */
 function isMultiModelEnabled(now = new Date()) {
   if (getUpdateMode(now) !== 'full') return false;
   const { hour } = getLisbonParts(now);
-  return hour >= DAY_START && hour <= DAY_END;
+  const raw = process.env.VENTU_MULTIMODEL_HOURS;
+  if (raw) {
+    const hours = raw
+      .split(',')
+      .map((h) => Number(h.trim()))
+      .filter((h) => Number.isInteger(h) && h >= 0 && h <= 23);
+    if (hours.length > 0) return hours.includes(hour);
+  }
+  return hour === DAY_START || hour === 12 || hour === 18;
 }
 
 function describeSchedule(locale = 'pt') {
   const isPt = locale === 'pt';
   if (isPt) {
-    return 'Open-Meteo: 2h (06h–20h, com multi-modelo) · 4h de noite (00h/04h, só best_match) · IH/IPMA nas horas ímpares de dia · extra 17h abr–out.';
+    return 'Open-Meteo: 2h (06h–20h) · multi-modelo 3×/dia (06h, 12h, 18h) · restantes runs dia best_match · noite 00h/04h best_match · extra 17h abr–out best_match · IH/IPMA nas horas ímpares de dia.';
   }
-  return 'Open-Meteo: every 2h (06:00–20:00, multi-model) · every 4h at night (00:00/04:00, best_match only) · IH/IPMA on odd daytime hours · extra 17:00 Apr–Oct.';
+  return 'Open-Meteo: every 2h (06:00–20:00) · multi-model 3×/day (06:00, 12:00, 18:00) · other daytime runs best_match only · night 00:00/04:00 best_match · extra 17:00 Apr–Oct best_match · IH/IPMA on odd daytime hours.';
 }
 
 /**

@@ -28,6 +28,41 @@ const OUTLINE = 'rgba(8,15,30,0.92)';
 export const WIND_RING_R = PIN_R + 2.5 + 5;
 export const WIND_RING_STROKE = 3.75;
 
+/** Small warning badge drawn on the marker rim (top-right, notification style). */
+export const WARNING_BADGE_CX = 46;
+export const WARNING_BADGE_CY = 13;
+export const WARNING_BADGE_R = 8;
+
+/** SVG fill for the badge per IPMA level (matches WARNING_LEVEL_META palette). */
+export const WARNING_BADGE_COLORS: Record<'yellow' | 'orange' | 'red', string> = {
+  yellow: '#eab308',
+  orange: '#f97316',
+  red: '#ef4444',
+};
+
+/** Warning summary carried into marker/popup/card rendering. */
+export interface MapMarkerWarning {
+  level: 'yellow' | 'orange' | 'red';
+  /** Badge label, e.g. «Mar perigoso» for sea state, «Vento» for wind. */
+  label: string;
+  /** Sea-state (Agitação Marítima) — card chip renders «Mar perigoso» bold. */
+  seaState?: boolean;
+}
+
+function buildWarningBadgeSvg(warning: MapMarkerWarning): string {
+  const color = WARNING_BADGE_COLORS[warning.level] ?? WARNING_BADGE_COLORS.yellow;
+  return `
+    <g class="ventu-warning-badge" data-warning-level="${warning.level}" role="img"
+      aria-label="${escapeHtmlAttr(warning.label)}">
+      <circle cx="${WARNING_BADGE_CX}" cy="${WARNING_BADGE_CY}" r="${WARNING_BADGE_R}"
+        fill="${color}" stroke="rgba(255,255,255,0.95)" stroke-width="1.8"/>
+      <text x="${WARNING_BADGE_CX}" y="${WARNING_BADGE_CY + 3.5}" text-anchor="middle"
+        font-family="var(--font-geist-mono, 'Geist Mono', ui-monospace, monospace)"
+        font-size="11" font-weight="800" fill="#fff">!</text>
+    </g>
+  `.trim();
+}
+
 export function windBlowsToDegrees(fromDeg: number): number {
   return ((fromDeg + 180) % 360 + 360) % 360;
 }
@@ -230,16 +265,25 @@ export function buildWindRingMarkerHtml(
   showWind: boolean,
   locale: string,
   coastOrientation?: number,
+  warning?: MapMarkerWarning | null,
 ): string {
-  const title = showWind
-    ? escapeHtmlAttr(buildMapWindRingTitle(fromDeg, speedKt, coastOrientation, locale))
+  const windTitle = showWind
+    ? buildMapWindRingTitle(fromDeg, speedKt, coastOrientation, locale)
     : '';
+  const warningTitle = warning
+    ? (locale === 'pt'
+        ? `Aviso IPMA: ${warning.label} (${warning.level})`
+        : `IPMA warning: ${warning.label} (${warning.level})`)
+    : '';
+  const title = escapeHtmlAttr([windTitle, warningTitle].filter(Boolean).join(' · '));
   const svg = buildWindRingMarkerSvg(score, scoreRgb, fromDeg, speedKt, showWind, coastOrientation);
+  const badge = warning ? buildWarningBadgeSvg(warning) : '';
 
   return `
     <div class="ventu-spot-marker-wrap ventu-marker-enter ventu-wind-ring-marker-wrap"
       style="width:${MARKER_VIEWBOX_W}px;height:${MARKER_VIEWBOX_H}px;cursor:pointer"${title ? ` title="${title}"` : ''}>
       ${svg}
+      ${badge}
     </div>
   `.trim();
 }

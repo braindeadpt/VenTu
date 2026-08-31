@@ -170,6 +170,14 @@ export default function Footer({ locale }: FooterProps) {
                   {t.nav.about}
                 </Link>
               </li>
+              <li>
+                <Link
+                  href={`/${locale}/fontes/`}
+                  className="text-sm text-fg-muted hover:text-fg transition-colors"
+                >
+                  {t.footer.fontes}
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -178,8 +186,8 @@ export default function Footer({ locale }: FooterProps) {
               {t.footer.data}
             </h4>
             <ul className="space-y-2 text-sm text-fg-muted">
-              <li>{isPt ? 'Ondas: Open-Meteo Marine' : 'Waves: Open-Meteo Marine'}</li>
-              <li>{isPt ? 'Vento: ICON-EU / ECMWF / GFS' : 'Wind: ICON-EU / ECMWF / GFS'}</li>
+              <li>{isPt ? 'Ondas: Open-Meteo Marine (DWD EWAM · ECMWF WAM · NOAA)' : 'Waves: Open-Meteo Marine (DWD EWAM · ECMWF WAM · NOAA)'}</li>
+              <li>{isPt ? 'Vento: DWD ICON-EU / ECMWF / GFS / Météo-France' : 'Wind: DWD ICON-EU / ECMWF / GFS / Météo-France'}</li>
               <li>
                 {isPt ? (
                   <>

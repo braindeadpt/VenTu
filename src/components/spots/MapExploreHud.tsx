@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, Filter, HelpCircle, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
+import { ChevronDown, CloudRain, Filter, HelpCircle, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -13,6 +13,10 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   onBasemapChange: (mode: BasemapMode) => void;
   clusterEnabled: boolean;
   onToggleCluster: () => void;
+  radarEnabled: boolean;
+  onToggleRadar: () => void;
+  radarLabel: string;
+  radarHint: string;
   windEnabled: boolean;
   showWindOnMarkers: boolean;
   onToggleWind: () => void;
@@ -57,6 +61,10 @@ export default function MapExploreHud({
   onBasemapChange,
   clusterEnabled,
   onToggleCluster,
+  radarEnabled,
+  onToggleRadar,
+  radarLabel,
+  radarHint,
   windEnabled,
   showWindOnMarkers,
   onToggleWind,
@@ -175,6 +183,18 @@ export default function MapExploreHud({
             ) : (
               <Layers className="w-4 h-4" aria-hidden />
             )}
+          </MapControlButton>
+
+          <MapControlButton
+            onClick={onToggleRadar}
+            aria-label={radarLabel}
+            pressed={radarEnabled}
+            title={radarHint}
+            className={
+              radarEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
+            }
+          >
+            <CloudRain className="w-4 h-4 text-data-waves" aria-hidden />
           </MapControlButton>
 
           <div className="inline-flex items-center gap-0.5 shrink-0">

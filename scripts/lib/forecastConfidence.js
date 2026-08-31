@@ -18,13 +18,27 @@ const CONFIDENCE_CONFIG = {
   minSpreadEpsilon: 0.05,
 };
 
-const WAVE_MODELS = ['ecmwf_wam025', 'ncep_gfswave025', 'gwam'];
-/** ICON-EU (~7 km) first — also used by windBlend for scoring wind. */
+/**
+ * Wave ensemble for spread/confidence.
+ * - ewam: DWD EWAM ~5 km (Europe) — higher coastal resolution for PT.
+ * - ecmwf_wam: ECMWF WAM 9 km (replaced ecmwf_wam025, which now returns null).
+ * - ncep_gfswave025 / gwam: global coverage (incl. Açores/Madeira).
+ */
+const WAVE_MODELS = ['ewam', 'ecmwf_wam', 'ncep_gfswave025', 'gwam'];
+
+/**
+ * ICON-EU (~7 km) first — also used by windBlend for scoring wind.
+ * ECMWF AIFS (ML) is opt-in via VENTU_WIND_AIFS=1: the free Open-Meteo
+ * endpoints recognise ecmwf_aifs025 but currently return null (no data), so
+ * it would cost weighted calls without contributing. Enable when it serves.
+ */
+const AIFS_MODELS = process.env.VENTU_WIND_AIFS === '1' ? ['ecmwf_aifs025'] : [];
 const WIND_MODELS = [
   'icon_eu',
   'ecmwf_ifs025',
   'gfs_seamless',
   'meteofrance_arpege_europe',
+  ...AIFS_MODELS,
 ];
 
 function readModelValues(hourly, baseKey, models, index) {
