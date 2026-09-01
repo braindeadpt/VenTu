@@ -37,11 +37,11 @@ function buildUrl(path, params) {
   return url.toString();
 }
 
-async function fetchEcowittJson(path, params, retries = 3) {
+async function fetchEcowittJson(path, params, retries = 3, fetchImpl = fetch) {
   const url = buildUrl(path, params);
   for (let i = 0; i < retries; i++) {
     try {
-      const res = await fetch(url);
+      const res = await fetchImpl(url);
       const text = await res.text();
       const json = JSON.parse(text.replace(/"-"/g, 'null'));
       if (!res.ok) {
@@ -110,13 +110,13 @@ function sensorValue(block) {
 /**
  * @returns {Promise<{ stationName: string, lat: number, lon: number, windSpeedMs: number, windDirDeg: number, windCardinal: string, windCardinalEn: string, tempC?: number, observedAt: string } | null>}
  */
-async function fetchEcowittSnapshot() {
-  const creds = getEcowittCredentials();
-  if (!creds) return null;
+async function fetchEcowittSnapshot({ fetchImpl = fetch, creds } = {}) {
+  const resolved = creds ?? getEcowittCredentials();
+  if (!resolved) return null;
 
-  const idParams = deviceQueryParams(creds);
+  const idParams = deviceQueryParams(resolved);
 
-  const infoJson = await fetchEcowittJson('/device/info', idParams);
+  const infoJson = await fetchEcowittJson('/device/info', idParams, 3, fetchImpl);
   const info = infoJson.data ?? infoJson;
   const lat = Number(info.latitude ?? info.lat);
   const lon = Number(info.longitude ?? info.lon);
@@ -126,12 +126,17 @@ async function fetchEcowittSnapshot() {
   const stationName =
     info.name ?? info.station_name ?? info.device_name ?? info.nickname ?? 'Ecowitt PWS';
 
-  const rtJson = await fetchEcowittJson('/device/real_time', {
-    ...idParams,
-    call_back: 'all',
-    temp_unitid: 1,
-    wind_speed_unitid: 6,
-  });
+  const rtJson = await fetchEcowittJson(
+    '/device/real_time',
+    {
+      ...idParams,
+      call_back: 'all',
+      temp_unitid: 1,
+      wind_speed_unitid: 6,
+    },
+    3,
+    fetchImpl,
+  );
 
   const wind = rtJson.data?.wind;
   const windSpeedMs = sensorValue(wind?.wind_speed);

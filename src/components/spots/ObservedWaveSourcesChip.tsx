@@ -7,6 +7,7 @@ import {
   type ObservedWave,
   type ObservedWaveMeta,
 } from '@/lib/observedWave';
+import { formatObservedClockTime } from '@/lib/observations';
 
 /**
  * Compact side-by-side source chip — «IH ✓ (1h) · WMO (5h, a 56 km)».
@@ -63,12 +64,22 @@ export default function ObservedWaveSourcesChip({
     // Formato compacto: o vencedor mostra só a idade («IH ✓ (1h)»); o
     // runner-up acrescenta a distância («WMO (5h, a 56 km)»).
     const km = winner ? null : fmtDistanceKm(w.distanceKm);
+    // Tooltip com a hora EXACTA da leitura (Europe/Lisbon, mesmo relógio do
+    // hero) + nome da estação — além da idade relativa mostrada no chip.
+    const srcLabel = isIh ? 'IH' : 'WMO';
+    const agePart = `(${fmtAgeHours(ageH)}${km ? (isPt ? `, a ${km}` : `, ${km} away`) : ''})`;
+    const station = w.stationName?.trim() || w.stationArea?.trim() || '';
+    const clock = formatObservedClockTime(w.observedAt, locale);
+    const title = isPt
+      ? `${srcLabel}${winner ? ' ✓' : ''} ${agePart} · ${station ? `${station} · ` : ''}leitura ${clock}`
+      : `${srcLabel}${winner ? ' ✓' : ''} ${agePart} · ${station ? `${station} · ` : ''}reading ${clock}`;
     return {
       key: w.source,
       winner,
       isIh,
       age: fmtAgeHours(ageH),
       km,
+      title,
     };
   });
 
@@ -90,6 +101,7 @@ export default function ObservedWaveSourcesChip({
               ? 'border-score-good/40 bg-score-good/10 text-score-good'
               : 'border-divider/60 bg-bg-base/40 text-fg-muted',
           )}
+          title={s.title}
         >
           <span>{s.isIh ? 'IH' : 'WMO'}</span>
           {s.winner ? <span aria-hidden>✓</span> : null}

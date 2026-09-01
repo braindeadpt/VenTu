@@ -190,6 +190,55 @@ export function clearWaveBiasRegionsCache(): void {
   waveBiasRegionsInflight = null;
 }
 
+let waveBiasRegionsBuildCache: WaveBiasRegionsFile | null | undefined;
+
+/** Injected fs surface (tests pass a mock; production uses node:fs). */
+export interface WaveBiasRegionsFs {
+  existsSync: (p: string) => boolean;
+  readFileSync: (p: string, encoding: string) => string;
+}
+
+/**
+ * Read public/data/wave-bias.json at build time (SSG) and return ONLY the
+ * `regions` shape used by the regional-bias fallback. Missing/corrupt → null
+ * (the fallback simply never applies). Module-level cache — the homepage/index
+ * pages are statically generated, so this runs once per build. Mirrors
+ * `loadWaveBiasBuoys` (same file, different projection).
+ *
+ * `fsImpl`/`filePath` are test seams only — production callers pass nothing
+ * (the dynamic `require('fs')` keeps this module client-safe).
+ */
+export function loadWaveBiasRegionsBuild(
+  fsImpl?: WaveBiasRegionsFs | null,
+  filePath?: string,
+): WaveBiasRegionsFile | null {
+  if (waveBiasRegionsBuildCache !== undefined) return waveBiasRegionsBuildCache;
+  if (typeof window !== 'undefined') {
+    waveBiasRegionsBuildCache = null;
+    return null;
+  }
+  try {
+    const fs = fsImpl ?? (require('fs') as WaveBiasRegionsFs);
+    const path = require('path');
+    const resolved = filePath ?? path.join(process.cwd(), 'public/data/wave-bias.json');
+    if (fs.existsSync(resolved)) {
+      const raw = JSON.parse(fs.readFileSync(resolved, 'utf-8'));
+      waveBiasRegionsBuildCache =
+        raw && typeof raw === 'object' ? (raw as WaveBiasRegionsFile) : null;
+      return waveBiasRegionsBuildCache;
+    }
+  } catch (e) {
+    console.warn('Failed to load wave-bias.json regions (build):', e);
+  }
+  waveBiasRegionsBuildCache = null;
+  return null;
+}
+
+/** Test hook: clear the build cache. */
+export function clearWaveBiasRegionsBuildCache(): void {
+  waveBiasRegionsBuildCache = undefined;
+}
+
 let cached: WaveBiasData | null = null;
 
 /**

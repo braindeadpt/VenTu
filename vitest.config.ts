@@ -62,6 +62,7 @@ export default defineConfig({
       'scripts/lib/__tests__/evaluateAlertsChain.test.js',
       'scripts/lib/__tests__/evaluateAlertsCoastal.test.js',
       'scripts/lib/__tests__/scoreSpotConditions.test.js',
+      'scripts/lib/__tests__/validateGeneratedData.test.js',
     ],
   },
   resolve: {

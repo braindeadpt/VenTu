@@ -55,7 +55,7 @@ export default function SpotLogisticsPanel({
           </div>
 
           <div className="relative w-full aspect-[16/10] min-h-[200px] max-h-[min(320px,40vh)] rounded-card overflow-hidden border border-divider bg-bg-base shadow-sm">
-            <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} compact hideOverlay />
+            <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} compact hideOverlay spotId={spot.id} />
           </div>
 
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:items-center sm:gap-4">

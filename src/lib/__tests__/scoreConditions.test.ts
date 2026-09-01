@@ -288,7 +288,7 @@ describe('scoreConditions', () => {
     expect(corr?.n).toBeUndefined();
   });
 
-  it('resolveScoreWaveCorrection: regional bias meta exposes ME/n/deltaM', () => {
+  it('resolveScoreWaveCorrection: regional bias meta exposes ME/n/deltaM (pipeline, sem fallback)', () => {
     const corr = resolveScoreWaveCorrection({
       waveHeight: 1.3,
       wavePeriod: 9,
@@ -304,6 +304,28 @@ describe('scoreConditions', () => {
       me: 0.4,
       n: 86,
       deltaM: 0.4,
+    });
+    // Meta baked pela pipeline não carrega `fallback` — o tooltip distingue.
+    expect(corr?.fallback).toBeUndefined();
+  });
+
+  it('resolveScoreWaveCorrection: meta do fallback client-side expõe fallback:true + deltaM', () => {
+    const corr = resolveScoreWaveCorrection({
+      waveHeight: 1.8,
+      wavePeriod: 9,
+      waveDirection: 270,
+      windSpeed: ktToMs(8),
+      windDirection: 270,
+      windGust: ktToMs(10),
+      waterTemp: 18,
+      waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3, fallback: true },
+    });
+    expect(corr).toMatchObject({
+      source: 'bias-corrected',
+      me: 0.3,
+      n: 120,
+      deltaM: 0.3,
+      fallback: true,
     });
   });
 
@@ -535,16 +557,16 @@ describe('viés regional como fallback (wave-bias.json)', () => {
     expect(resolveRegionBias('Cascais', file('Cascais', { me: 'x' }))).toBeNull();
   });
 
-  it('applyRegionalBiasFallback corrige a altura e anexa o meta (mesma aritmética da pipeline)', () => {
+  it('applyRegionalBiasFallback corrige a altura e anexa o meta com fallback:true (mesma aritmética da pipeline)', () => {
     const patch = applyRegionalBiasFallback({ waveHeight: 1.5 }, 'Cascais', file('Cascais'));
     expect(patch).toEqual({
       waveHeight: 1.8,
-      waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3 },
+      waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3, fallback: true },
     });
     // Arredondamento idêntico ao buoyBias.applyWaveBias: round1(raw + me).
     expect(applyRegionalBiasFallback({ waveHeight: 1.46 }, 'Cascais', file('Cascais'))).toEqual({
       waveHeight: 1.8,
-      waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3 },
+      waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3, fallback: true },
     });
     // Piso 0.1 para alturas negativas após a correcção (round1(0.05+1.2)=1.3).
     const low = applyRegionalBiasFallback({ waveHeight: 0.05 }, 'Cascais', file('Cascais', { me: 1.2 }));

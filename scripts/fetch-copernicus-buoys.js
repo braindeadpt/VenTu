@@ -2,11 +2,11 @@
  * Fetch Copernicus Marine WMO wave buoys (keyless S3) → public/data/wmo-buoys.json.
  *
  * This is the independent fallback for the IH observedWave layer: the same
- * Portuguese Datawell buoys the IH serves via its keyed REST API (6201077 off
- * Porto, 6201079 off Faro) ingested through the WMO/GTS → Copernicus route,
- * which needs NO API key. Spanish Puertos del Estado codes (6200083–85, …)
- * stay in the catalog and enter automatically the day the network resumes
- * reporting to Copernicus.
+ * Portuguese buoys the IH serves via its keyed REST API (6201077 off Porto,
+ * 6201079 off Faro, 6200199 Nazaré Costeira — Fugro Wavescan) ingested
+ * through the WMO/GTS → Copernicus route, which needs NO API key. Spanish
+ * Puertos del Estado codes (6200083–85, …) stay in the catalog and enter
+ * automatically the day the network resumes reporting to Copernicus.
  *
  * Degradation is identical to the other sources: on any failure (S3 down,
  * parse error, …) we keep the previous wmo-buoys.json and exit 0 — the

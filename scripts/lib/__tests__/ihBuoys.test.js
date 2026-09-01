@@ -14,7 +14,10 @@ const {
   isFreshObservation,
   mapSpotsToBuoys,
   observedWaveForSpot,
+  fetchBuoyWave,
   buildWaveRequestUrl,
+  IhAuthError,
+  isIhAuthError,
   MAX_BUOY_MAP_KM,
   MAX_BUOY_ATTACH_KM,
   MAX_OBS_AGE_HOURS,
@@ -181,6 +184,41 @@ describe('buildWaveRequestUrl', () => {
     const url = buildWaveRequestUrl(4, waveWindow(1), 'https://example.test/proxy/buoys');
     expect(url).toContain('https://example.test/proxy/buoys/getDatawellData');
     expect(url).toContain('stationId=4');
+  });
+});
+
+describe('fetchBuoyWave / IhAuthError', () => {
+  const resp = (status) =>
+    new Response(JSON.stringify({ error: 'nope' }), {
+      status,
+      headers: { 'Content-Type': 'application/json' },
+    });
+
+  it('lança IhAuthError tipado em 401 (key rejeitada)', async () => {
+    const fetchMock = vi.fn(async () => resp(401));
+    await expect(fetchBuoyWave('bad-key', 4, 'http://mock/wave', fetchMock, waveWindow(1, NOW))).rejects.toMatchObject(
+      { name: 'IhAuthError', status: 401, stationId: 4 },
+    );
+  });
+
+  it('lança IhAuthError tipado em 403', async () => {
+    const fetchMock = vi.fn(async () => resp(403));
+    await expect(fetchBuoyWave('bad-key', 19, 'http://mock/wave', fetchMock, waveWindow(1, NOW))).rejects.toMatchObject(
+      { status: 403 },
+    );
+  });
+
+  it('devolve null sem key e erro HTTP normal para outros status (outage ≠ auth)', async () => {
+    expect(await fetchBuoyWave('', 4, 'http://mock/wave', vi.fn(), waveWindow(1, NOW))).toBeNull();
+    const fetchMock = vi.fn(async () => resp(500));
+    await expect(fetchBuoyWave('key', 4, 'http://mock/wave', fetchMock, waveWindow(1, NOW))).rejects.toThrow('HTTP 500');
+  });
+
+  it('isIhAuthError distingue o erro tipado de erros comuns', () => {
+    expect(isIhAuthError(new IhAuthError(401, 4))).toBe(true);
+    expect(isIhAuthError({ name: 'IhAuthError', status: 401 })).toBe(true);
+    expect(isIhAuthError(new Error('HTTP 500 for buoy 4'))).toBe(false);
+    expect(isIhAuthError(null)).toBe(false);
   });
 });
 
@@ -382,5 +420,75 @@ describe('fetch-ih-buoys.js (caminho real do pipeline)', () => {
     expect(warnSpy.mock.calls.some((c) => String(c[0]).includes('Keeping previous'))).toBe(true);
     warnSpy.mockRestore();
     process.exitCode = undefined;
+  });
+
+  it('key rejeitada (401) → fail-early: apiKeyStatus unauthorized + ::error:: + exit 1', async () => {
+    const mod = loadModule({ IH_API_KEY: 'expired-key' });
+    delete process.env.OPS_TELEGRAM_CHAT_ID;
+    delete process.env.TELEGRAM_BOT_TOKEN;
+    const fetchMock = vi.fn(async (url) => {
+      if (String(url).includes('/collections/buoys_datawell/items')) return json(stationsDoc());
+      if (String(url).includes('/getDatawellData')) return json({ error: 'unauthorized' }, 401);
+      return json({}, 404);
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+    await mod.run();
+
+    expect(process.exitCode).toBe(1);
+    const onDisk = JSON.parse(fs.readFileSync(process.env.IH_BUOY_OUTPUT_PATH, 'utf8'));
+    expect(onDisk.apiKeyStatus).toBe('unauthorized');
+    expect(onDisk.apiKeyConfigured).toBe(true);
+    expect(onDisk.hasWaveData).toBe(false);
+    expect(onDisk.authError.status).toBe(401);
+    // Estações (OGC, sem key) continuam a ser gravadas — o diagnóstico não perde o catálogo.
+    expect(Object.keys(onDisk.stations).length).toBe(2);
+    expect(errorSpy.mock.calls.some((c) => String(c[0]).includes('::error::IH_API_KEY rejeitada'))).toBe(true);
+
+    errorSpy.mockRestore();
+    process.exitCode = undefined;
+  });
+
+  it('notifyIhAuthFailure envia Telegram na transição (primeira rejeição)', async () => {
+    const mod = loadModule();
+    const send = vi.fn(async () => true);
+    const log = vi.fn();
+    const res = await mod.notifyIhAuthFailure(
+      { name: 'IhAuthError', status: 401, previouslyUnauthorized: false },
+      { send, chatId: '123', log },
+    );
+    expect(res).toEqual({ notified: true });
+    expect(send).toHaveBeenCalledTimes(1);
+    const [chatId, text] = send.mock.calls[0];
+    expect(chatId).toBe('123');
+    expect(text).toContain('IH_API_KEY rejeitada (HTTP 401)');
+    expect(text).toContain('docs/IH_API_KEY.md');
+    expect(log).not.toHaveBeenCalled();
+  });
+
+  it('notifyIhAuthFailure NÃO re-envia quando o run anterior já estava unauthorized', async () => {
+    const mod = loadModule();
+    const send = vi.fn(async () => true);
+    const res = await mod.notifyIhAuthFailure(
+      { name: 'IhAuthError', status: 401, previouslyUnauthorized: true },
+      { send, chatId: '123' },
+    );
+    expect(res).toEqual({ notified: false, reason: 'already-reported' });
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it('notifyIhAuthFailure sem OPS_TELEGRAM_CHAT_ID → dry-run (nunca envia)', async () => {
+    const mod = loadModule();
+    delete process.env.OPS_TELEGRAM_CHAT_ID;
+    const send = vi.fn(async () => true);
+    const log = vi.fn();
+    const res = await mod.notifyIhAuthFailure(
+      { name: 'IhAuthError', status: 401, previouslyUnauthorized: false },
+      { send, log },
+    );
+    expect(res).toEqual({ notified: false, reason: 'no-chat-id' });
+    expect(send).not.toHaveBeenCalled();
+    expect(log.mock.calls.some((c) => String(c[0]).includes('dry-run'))).toBe(true);
   });
 });

@@ -73,12 +73,34 @@ async function main() {
     `   ${total} boias rastreadas · ${added} snapshot(s) novo(s) hoje · ${regressed} com regressão`,
   );
   for (const r of report.regressions) {
+    const origin =
+      r.origin === 'ih'
+        ? ' IH'
+        : r.origin === 'wmo-pt'
+          ? ' 🇵🇹 WMO-PT (keyless, Nazaré)'
+          : r.origin === 'wmo-es'
+            ? ' 🇪🇸 WMO-ES (keyless)'
+            : '';
     console.warn(
-      `   🔴 ${r.name} (${r.buoyId}): ${r.reasons.join(' · ')} — baseline RMSE ${r.baseline.rmse?.toFixed(2) ?? 'n/d'} m, recente ${r.recent.rmse?.toFixed(2) ?? 'n/d'} m`,
+      `   🔴 ${r.name} (${r.buoyId}${origin}): ${r.reasons.join(' · ')} — baseline RMSE ${r.baseline.rmse?.toFixed(2) ?? 'n/d'} m, recente ${r.recent.rmse?.toFixed(2) ?? 'n/d'} m`,
     );
   }
   if (regressed === 0) {
     console.log('   ✅ Sem regressões de skill (RMSE/|ME| dentro do limiar vs baseline).');
+  }
+
+  // Passo de health por PLATAFORMA (IH vs WMO-ES agregado) — avisa quando o n
+  // de uma plataforma colapsa (fluxo quebrado) ou o |ME| dela piora acima do
+  // limiar, que a auditoria per-boia difusa (todas piorarem um pouco) não apanha.
+  const platformAlerts = Array.isArray(report.platformAlerts) ? report.platformAlerts : [];
+  if (platformAlerts.length === 0) {
+    console.log(
+      '   ✅ Health por plataforma ok (n estável e |ME| dentro do limiar vs baseline).',
+    );
+  } else {
+    for (const a of platformAlerts) {
+      console.warn(`   🔴 Plataforma ${a.name}: ${a.reasons.join(' · ')}`);
+    }
   }
 
   // Notifica ANTES de escrever o report — a transição lê o report anterior

@@ -28,6 +28,33 @@ const DEFAULT_COLLECTIONS = ['buoys_datawell', 'buoys_Fugro_oceanor_wavescan'];
 const MAX_BUOY_MAP_KM = 250;
 /** Max distance to ATTACH a buoy reading to a spot (km). */
 const MAX_BUOY_ATTACH_KM = 200;
+
+/**
+ * Typed error for IH key rejection (HTTP 401/403 on getDatawellData).
+ *
+ * A bad/expired key fails EVERY buoy request, so the pipeline must distinguish
+ * "key rejeitada" (actionable: renew the secret) from a transient IH outage
+ * (keep the previous file, exit 0). fetch-ih-buoys.js uses this to fail the
+ * workflow early with a Telegram alert instead of silently writing
+ * hasWaveData:false forever.
+ */
+class IhAuthError extends Error {
+  /**
+   * @param {number} status HTTP status (401 | 403)
+   * @param {number} stationId idEst that first surfaced the rejection
+   */
+  constructor(status, stationId) {
+    super(`IH API key rejected (HTTP ${status}) on getDatawellData for buoy ${stationId}`);
+    this.name = 'IhAuthError';
+    this.status = status;
+    this.stationId = stationId;
+  }
+}
+
+/** @param {unknown} err @returns {err is IhAuthError} */
+function isIhAuthError(err) {
+  return err instanceof IhAuthError || (err != null && err.name === 'IhAuthError');
+}
 /** Buoy readings older than this are not attached (matches wind obs 3h). */
 const MAX_OBS_AGE_HOURS = 3;
 /** Time window (h) requested from getDatawellData — latest rows only. */
@@ -240,6 +267,9 @@ async function fetchBuoyWave(
   const res = await fetchImpl(url, {
     headers: { Accept: 'application/json', 'X-API-KEY': apiKey },
   });
+  if (res.status === 401 || res.status === 403) {
+    throw new IhAuthError(res.status, stationId);
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status} for buoy ${stationId}`);
   const json = await res.json();
   return pickLatestWave(json);
@@ -268,6 +298,9 @@ async function fetchBuoyWaveSeries(
   const res = await fetchImpl(url, {
     headers: { Accept: 'application/json', 'X-API-KEY': apiKey },
   });
+  if (res.status === 401 || res.status === 403) {
+    throw new IhAuthError(res.status, stationId);
+  }
   if (!res.ok) throw new Error(`HTTP ${res.status} for buoy ${stationId}`);
   const json = await res.json();
   return extractWaveRows(json)
@@ -367,6 +400,8 @@ function observedWaveForSpot(mapping, station, opts = {}) {
 module.exports = {
   DEFAULT_IH_API,
   DEFAULT_WAVE_API,
+  IhAuthError,
+  isIhAuthError,
   buildWaveRequestUrl,
   DEFAULT_COLLECTIONS,
   MAX_BUOY_MAP_KM,

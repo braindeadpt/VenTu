@@ -12,12 +12,84 @@ const {
   mapSpotsToWmoBuoys,
   findUnmappedEsBuoys,
   observedWaveForSpot,
+  esBridgeObservedWaveForSpot,
+  listDayWaveKeys,
+  PLATFORM_CATALOG,
+  CATALOG_BY_CODE,
+  ES_BUOY_CODES,
+  PT_KEYLESS_WMO_CODES,
+  KEYLESS_WMO_CODES,
+  wmoOriginForWmoCode,
   MAX_BUOY_MAP_KM,
   MAX_BUOY_ATTACH_KM,
   MAX_OBS_AGE_HOURS,
 } = require('../copernicusBuoys.js');
 
 const NOW = Date.UTC(2026, 7, 14, 18, 0, 0); // 2026-08-14T18:00Z
+
+describe('catálogo WMO (PLATFORM_CATALOG)', () => {
+  it('inclui a Nazaré Costeira (6200199) como PT — cobertura sem IH_API_KEY', () => {
+    const nazare = CATALOG_BY_CODE['6200199'];
+    expect(nazare).toBeDefined();
+    expect(nazare.country).toBe('PT');
+    expect(nazare.area).toBe('Nazaré');
+    // PT não é da rota ES (cross-border) — não entra no viés/skill ES.
+    expect(ES_BUOY_CODES).not.toContain('6200199');
+  });
+
+  it('cada código do catálogo é único e de 7 dígitos', () => {
+    const codes = PLATFORM_CATALOG.map((p) => p.code);
+    expect(new Set(codes).size).toBe(codes.length);
+    for (const c of codes) expect(c).toMatch(/^\d{7}$/);
+  });
+});
+
+describe('listDayWaveKeys', () => {
+  const xmlDoc = (...keys) => `<?xml version="1.0" encoding="UTF-8"?>
+<ListBucketResult xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<Name>mdl-native-01</Name><Prefix>native/</Prefix><KeyCount>${keys.length}</KeyCount>
+${keys.map((k) => `<Contents><Key>native/latest/20260831/${k}</Key></Contents>`).join('')}
+</ListBucketResult>`;
+
+  it('descobre a Nazaré (IR_TS_MO_6200199) e os códigos catalogados', async () => {
+    const fetchMock = async () =>
+      new Response(
+        xmlDoc(
+          'IR_TS_MO_6200199_20260831.nc',
+          'PT_TS_MO_6201077_20260831.nc',
+          'ES_TS_MO_6200084_20260831.nc',
+          // Não-catalogado / variante _WS_ que NÃO devem entrar (o dia é
+          // escopado pelo prefixo S3 `latest/<day>/`, por isso não há datas
+          // fora do dia dentro da pasta).
+          'IR_TS_MO_1234567_20260831.nc',
+          'PT_WS_MO_6200199_20260831.nc',
+        ),
+        { status: 200, headers: { 'Content-Type': 'application/xml' } },
+      );
+    const keys = await listDayWaveKeys('20260831', fetchMock, 'http://mock-s3', 'native/latest/');
+    const codes = keys.map((k) => k.code).sort();
+    expect(codes).toEqual(['6200084', '6200199', '6201077']);
+    const nazare = keys.find((k) => k.code === '6200199');
+    expect(nazare.key).toMatch(/IR_TS_MO_6200199_20260831\.nc$/);
+  });
+
+  it('segue o continuation token quando há mais de uma página', async () => {
+    const fetchMock = async (url) => {
+      if (String(url).includes('continuation-token')) {
+        return new Response(
+          xmlDoc('IR_TS_MO_6200199_20260831.nc'),
+          { status: 200, headers: { 'Content-Type': 'application/xml' } },
+        );
+      }
+      return new Response(
+        xmlDoc('PT_TS_MO_6201077_20260831.nc') + '<NextContinuationToken>tok-2</NextContinuationToken>',
+        { status: 200, headers: { 'Content-Type': 'application/xml' } },
+      );
+    };
+    const keys = await listDayWaveKeys('20260831', fetchMock, 'http://mock-s3', 'native/latest/');
+    expect(keys.map((k) => k.code).sort()).toEqual(['6200199', '6201077']);
+  });
+});
 
 describe('dayKey', () => {
   it('devolve YYYYMMDD em UTC', () => {
@@ -328,6 +400,71 @@ describe('observedWaveForSpot (fallback WMO)', () => {
   });
 });
 
+describe('esBridgeObservedWaveForSpot (ponte keyless Costa de Prata ← Cabo Silleiro)', () => {
+  const silleiro = {
+    code: '6200084',
+    name: 'Cabo Silleiro',
+    area: 'Galiza',
+    country: 'ES',
+    lat: 42.12,
+    lon: -9.43,
+    latest: { date: '2026-08-14T16:00:00Z', hs: 1.88, tp: 9.2, dir: 323, sst: 21.2 },
+  };
+  const nazare = { id: 'nazare', lat: 39.6, lon: -9.07 };
+  const baleal = { id: 'baleal', lat: 39.37, lon: -9.34 };
+  const moledo = { id: 'moledo', lat: 41.85, lon: -8.87 }; // fora da ponte
+  const wmo = (buoys) => ({ hasWaveData: true, buoys });
+
+  it('anexa Silleiro keyless aos spots da Costa de Prata quando a leitura ES está fresca', () => {
+    const wave = esBridgeObservedWaveForSpot(wmo({ '6200084': silleiro }), nazare, { nowMs: NOW });
+    expect(wave).not.toBeNull();
+    expect(wave.waveHeight).toBeCloseTo(1.88, 2);
+    expect(wave.source).toBe('wmo-buoy');
+    expect(wave.bridge).toBe(true);
+    expect(wave.stationCode).toBe('6200084');
+    expect(wave.stationName).toBe('Cabo Silleiro');
+    // A ponte bypassa o MAX_BUOY_ATTACH_KM (≈280 km reais) — mantém a distância honesta.
+    expect(wave.distanceKm).toBeGreaterThan(200);
+    expect(wave.bridgeNote).toContain('Cabo Silleiro');
+    expect(MAX_BUOY_ATTACH_KM).toBe(200);
+  });
+
+  it('aplica-se aos três spots da ponte (nazaré/são-martinho-porto/baleal)', () => {
+    const smp = { id: 'sao-martinho-porto', lat: 39.51, lon: -9.14 };
+    for (const spot of [nazare, smp, baleal]) {
+      expect(
+        esBridgeObservedWaveForSpot(wmo({ '6200084': silleiro }), spot, { nowMs: NOW }),
+      ).not.toBeNull();
+    }
+  });
+
+  it('recusa spots fora da ponte (ex. moledo, já servido por Silleiro via mapping)', () => {
+    expect(
+      esBridgeObservedWaveForSpot(wmo({ '6200084': silleiro }), moledo, { nowMs: NOW }),
+    ).toBeNull();
+  });
+
+  it('recusa leitura ES antiga (>6h)', () => {
+    const stale = {
+      ...silleiro,
+      latest: { date: '2026-08-14T01:00:00Z', hs: 1.1 }, // 17h antes de NOW
+    };
+    expect(
+      esBridgeObservedWaveForSpot(wmo({ '6200084': stale }), nazare, { nowMs: NOW }),
+    ).toBeNull();
+  });
+
+  it('recusa sem boia Silleiro ou sem ficheiro', () => {
+    expect(esBridgeObservedWaveForSpot(wmo({}), nazare, { nowMs: NOW })).toBeNull();
+    expect(esBridgeObservedWaveForSpot(null, nazare, { nowMs: NOW })).toBeNull();
+    expect(
+      esBridgeObservedWaveForSpot(wmo({ '6200084': { ...silleiro, latest: null } }), nazare, {
+        nowMs: NOW,
+      }),
+    ).toBeNull();
+  });
+});
+
 describe('findUnmappedEsBuoys (cobertura geográfica desperdiçada)', () => {
   const archiveWith = (buoys) => ({ fetchedAt: 'x', buoys });
   const wmoWith = (buoys, spotMapping) => ({ fetchedAt: 'x', buoys, spotMapping });
@@ -376,5 +513,23 @@ describe('findUnmappedEsBuoys (cobertura geográfica desperdiçada)', () => {
     expect(findUnmappedEsBuoys(null, null)).toEqual([]);
     expect(findUnmappedEsBuoys({ buoys: {} }, { spotMapping: {} })).toEqual([]);
     expect(findUnmappedEsBuoys({ buoys: { 1: { readings: [] } } }, { spotMapping: {} })).toEqual([]);
+  });
+});
+
+describe('Rota PT keyless (Nazaré 6200199) para o forecast-skill', () => {
+  it('classifica a boia PT como wmo-pt e as ES como wmo-es', () => {
+    expect(PT_KEYLESS_WMO_CODES).toContain('6200199');
+    expect(wmoOriginForWmoCode('6200199')).toBe('wmo-pt');
+    // Qualquer outro código WMO (ES ou desconhecido) é tratado como ES.
+    expect(wmoOriginForWmoCode('6200084')).toBe('wmo-es');
+    expect(wmoOriginForWmoCode('9999999')).toBe('wmo-es');
+  });
+
+  it('acumula a PT E as ES no conjunto keyless (wmo-bias-archive)', () => {
+    expect(KEYLESS_WMO_CODES).toEqual(
+      expect.arrayContaining(['6200199', '6200084', '6200083', '6200085', '6200024', '6200025']),
+    );
+    // A PT não anula a rota ES (tudo único, sem duplicados).
+    expect(new Set(KEYLESS_WMO_CODES).size).toBe(KEYLESS_WMO_CODES.length);
   });
 });

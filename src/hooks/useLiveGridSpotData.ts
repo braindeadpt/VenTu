@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { refreshGridSpotScores } from '@/lib/refreshGridSpotScores';
 import { loadConditionsJson } from '@/lib/spotDataCache';
+import { loadWaveBiasRegions } from '@/lib/waveBias';
 
 const REFRESH_MS = 15 * 60 * 1000;
 
@@ -33,10 +34,13 @@ export function useLiveGridSpotData<T extends GridSpotData>(
     let deferId: number | undefined;
 
     const refresh = () => {
-      loadConditionsJson({ force: true })
-        .then((json) => {
+      // wave-bias.json (client, session cache) alimenta o fallback do viés
+      // regional no refresh do mapa/grid — o mesmo gate da página de spot,
+      // nunca bloqueia o carregamento (404/corrupt → null).
+      Promise.all([loadConditionsJson({ force: true }), loadWaveBiasRegions()])
+        .then(([json, waveBiasFile]) => {
           if (cancelled) return;
-          setData((prev) => refreshGridSpotScores(prev, json));
+          setData((prev) => refreshGridSpotScores(prev, json, waveBiasFile));
         })
         .catch(() => {
           /* keep baked scores */

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { getAssetPath } from '@/lib/paths';
 import {
   loadForecastSkillForSpot,
+  forecastSkillOriginLabel,
   type ForecastSkillBuoy,
 } from '@/lib/forecastSkill';
 
@@ -51,8 +52,14 @@ export default function BuoySkillLine({ spotId, locale }: BuoySkillLineProps) {
 
   const label = skillLabel(buoy, isPt);
   if (!label) return null;
-  const originTag = buoy.origin === 'ih' ? 'IH' : buoy.origin === 'wmo-es' ? 'WMO-ES' : null;
-  const nameWithOrigin = originTag ? `${buoy.name} (${originTag})` : buoy.name;
+  // País/fonte explícito (IH · Portugal vs Copernicus-ES · Espanha) — partilhado
+  // com a tabela do About para nunca divergirem. Mostra que o skill do NW vem
+  // da rota keyless da Copernicus, mesmo sem IH_API_KEY.
+  const sourceLabel = forecastSkillOriginLabel(buoy.origin, isPt);
+  const nameWithOrigin =
+    buoy.origin === 'ih' || buoy.origin === 'wmo-pt' || buoy.origin === 'wmo-es'
+      ? `${buoy.name} (${sourceLabel})`
+      : buoy.name;
 
   return (
     <p

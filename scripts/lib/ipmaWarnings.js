@@ -191,16 +191,75 @@ function buildWarningsPayload(warningsRaw, districtsRaw, spots, now = new Date()
   };
 }
 
+const SEA_LEVEL_RANK = { red: 3, orange: 2, yellow: 1 };
+
+/**
+ * Strongest Agitação Marítima (dangerous sea) warning for a spot — the one
+ * that justifies the «Mar perigoso» safety message in alerts/Telegram.
+ * Red > orange > yellow; null when none active.
+ *
+ * @param {{ spotWarnings?: Record<string, Array<{ type: string, level: string }>> } | null | undefined} data
+ * @param {string} spotId
+ */
+function seaWarningForSpot(data, spotId) {
+  const list = data?.spotWarnings?.[spotId];
+  if (!Array.isArray(list)) return null;
+  const sea = list.filter((w) => w && w.type === 'Agitação Marítima');
+  if (sea.length === 0) return null;
+  return sea.reduce((best, w) =>
+    (SEA_LEVEL_RANK[w.level] || 0) > (SEA_LEVEL_RANK[best.level] || 0) ? w : best);
+}
+
+/**
+ * Compact «Mar perigoso» line for email/Telegram — same wording as the hero
+ * safety banner. Returns '' when there is no sea warning.
+ *
+ * @param {{ level: string } | null | undefined} warning
+ * @param {boolean} isPt
+ */
+function seaWarningLine(warning, isPt) {
+  if (!warning) return '';
+  const levelLabels = {
+    red: isPt ? 'vermelho' : 'red',
+    orange: isPt ? 'laranja' : 'orange',
+    yellow: isPt ? 'amarelo' : 'yellow',
+  };
+  const level = levelLabels[warning.level] || warning.level;
+  return isPt
+    ? `⚠️ Mar perigoso — agitação marítima (${level})`
+    : `⚠️ Dangerous sea — sea state warning (${level})`;
+}
+
+/**
+ * «Mar perigoso» line for EMAILS — the compact wording PLUS the area
+ * (ex. «Viana do Castelo») and the official IPMA text, for context beyond
+ * the label. Returns '' when there is no sea warning.
+ *
+ * @param {{ level: string, areaLabel?: string, text?: string } | null | undefined} warning
+ * @param {boolean} isPt
+ */
+function seaWarningEmailLine(warning, isPt) {
+  if (!warning) return '';
+  const base = seaWarningLine(warning, isPt);
+  const area = warning.areaLabel ? ` — ${warning.areaLabel}` : '';
+  const text = warning.text ? `: ${warning.text}` : '';
+  return `${base}${area}${text}`;
+}
+
 module.exports = {
   WARNINGS_URL,
   DISTRITS_URL,
   WATER_SPORT_TYPES,
   AREA_FALLBACK,
   SEVERITY_ORDER,
+  SEA_LEVEL_RANK,
   haversineKm,
   areaCentroids,
   normalizeWarning,
   dedupeAndSort,
   mapSpotsToAreas,
   buildWarningsPayload,
+  seaWarningForSpot,
+  seaWarningLine,
+  seaWarningEmailLine,
 };

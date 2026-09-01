@@ -11,7 +11,7 @@
  * conditions.json and resolved against the spot's buoy mapping).
  */
 
-export type ForecastSkillOrigin = 'ih' | 'wmo-es';
+export type ForecastSkillOrigin = 'ih' | 'wmo-pt' | 'wmo-es';
 
 /** Aggregated skill stats over a set of pairs (a platform or a buoy). */
 export interface ForecastSkillStats {
@@ -57,6 +57,41 @@ interface ByBuoyEntry {
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
 
+/**
+ * Human label for a buoy's platform/country — shared by the About skill table
+ * and the spot page's discreet line, so both surfaces always say the same
+ * thing about where the buoy skill comes from. The user must see that the NW
+ * is covered by the keyless Copernicus-ES route (not just a cryptic code):
+ *   - ih     → IH · Portugal (Instituto Hidrográfico, with IH_API_KEY)
+ *   - wmo-pt → Copernicus-PT · Portugal (Nazaré Costeira WMO via Copernicus, keyless)
+ *   - wmo-es → Copernicus-ES · Espanha (Puertos del Estado via Copernicus, keyless)
+ */
+export function forecastSkillOriginLabel(
+  origin: ForecastSkillOrigin | undefined,
+  isPt: boolean,
+): string {
+  if (origin === 'ih') {
+    return isPt ? 'IH · Portugal' : 'IH · Portugal';
+  }
+  if (origin === 'wmo-pt') {
+    return isPt ? 'Copernicus-PT · Portugal' : 'Copernicus-PT · Portugal';
+  }
+  if (origin === 'wmo-es') {
+    return isPt ? 'Copernicus-ES · Espanha' : 'Copernicus-ES · Spain';
+  }
+  return '—';
+}
+
+/** Compact tag variant for tight UIs (e.g. the About table column). */
+export function forecastSkillOriginTag(
+  origin: ForecastSkillOrigin | undefined,
+): string {
+  if (origin === 'ih') return 'IH';
+  if (origin === 'wmo-pt') return 'Copernicus-PT';
+  if (origin === 'wmo-es') return 'Copernicus-ES';
+  return '—';
+}
+
 /** Min pairs before a buoy's skill is reported — mirrors the producer (forecastSkill.js MIN_PAIRS). */
 const MIN_PAIRS = 10;
 
@@ -101,7 +136,7 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
     fetchedAt: null,
     pairCount: 0,
     buoys: [],
-    pairCountByOrigin: { ih: 0, 'wmo-es': 0 },
+    pairCountByOrigin: { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 },
     calibratedPairCount: 0,
     hasData: false,
   };
@@ -122,13 +157,14 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
   // Stats por plataforma (IH vs WMO-ES) — sanejadas como as de boia.
   const byOrigin: Record<ForecastSkillOrigin, ForecastSkillStats | null> = {
     ih: null,
+    'wmo-pt': null,
     'wmo-es': null,
   };
   const rawByOrigin =
     obj.byOrigin && typeof obj.byOrigin === 'object' && !Array.isArray(obj.byOrigin)
       ? (obj.byOrigin as Record<string, unknown>)
       : {};
-  for (const origin of ['ih', 'wmo-es'] as const) {
+  for (const origin of ['ih', 'wmo-pt', 'wmo-es'] as const) {
     byOrigin[origin] = sanitizeStats(rawByOrigin[origin]);
   }
 
@@ -147,7 +183,10 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
           : `Buoy ${id}`,
       n,
       me: round2(me),
-      origin: e.origin === 'ih' || e.origin === 'wmo-es' ? e.origin : undefined,
+      origin:
+        e.origin === 'ih' || e.origin === 'wmo-pt' || e.origin === 'wmo-es'
+          ? e.origin
+          : undefined,
     };
     // Guard null/undefined explícito: Number(null) === 0 corroeria o valor.
     for (const [k, to] of [
@@ -172,12 +211,16 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
 
   // Contadores por plataforma (IH vs WMO-ES) e por calibração — defaults a 0
   // quando o ficheiro antigo não os tem, para o dashboard nunca quebrar.
-  const pairCountByOrigin: Record<ForecastSkillOrigin, number> = { ih: 0, 'wmo-es': 0 };
+  const pairCountByOrigin: Record<ForecastSkillOrigin, number> = {
+    ih: 0,
+    'wmo-pt': 0,
+    'wmo-es': 0,
+  };
   const rawCounts =
     obj.pairCountByOrigin && typeof obj.pairCountByOrigin === 'object' && !Array.isArray(obj.pairCountByOrigin)
       ? (obj.pairCountByOrigin as Record<string, unknown>)
       : {};
-  for (const origin of ['ih', 'wmo-es'] as const) {
+  for (const origin of ['ih', 'wmo-pt', 'wmo-es'] as const) {
     const v = Number(rawCounts[origin]);
     pairCountByOrigin[origin] = Number.isInteger(v) && v >= 0 ? v : 0;
   }

@@ -16,6 +16,11 @@ import {
   type TidePhase,
 } from '@/lib/tideSchedule';
 import { findCurrentHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
+import {
+  waveFactorSuffix,
+  type ScoreWaveCorrection,
+  type ScoreWaveSource,
+} from '@/lib/scoreConditions';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  ForecastTable — Dense hourly forecast table (Windguru-style).
@@ -54,6 +59,15 @@ interface ForecastTableProps {
   coastOrientation?: number;
   locale: 'pt' | 'en';
   compact?: boolean;
+  /**
+   * Origem da altura de onda usada no score actual (boia fresca / viés
+   * regional / previsão). Quando é uma correcção (≠ 'forecast'), o rótulo da
+   * linha de ondas anexa o sufixo do factor e o tooltip explica que a medição
+   * é a referência para as horas seguintes — as células continuam a mostrar a
+   * previsão por hora, sem a fingir de medição.
+   */
+  waveSource?: ScoreWaveSource;
+  waveCorrection?: ScoreWaveCorrection | null;
 }
 
 /* ──────────── cap hours ──────────── */
@@ -185,8 +199,10 @@ export default function ForecastTable({
   coastOrientation,
   locale,
   compact = false,
+  waveSource = 'forecast',
+  waveCorrection = null,
 }: ForecastTableProps) {
-  const t = getTranslation(locale as 'pt' | 'en').forecastTable;
+  const t = getTranslation(locale).forecastTable;
   const isPt = locale === 'pt';
 
   /* ── cap hours ── */
@@ -343,6 +359,18 @@ export default function ForecastTable({
     ? SPORT_LABELS[sport][isPt ? 'pt' : 'en']
     : undefined;
 
+  /* ── wave-correction title for the waves row label ── */
+  const wavesRowTitle =
+    waveSource === 'observed' && waveCorrection?.buoyName
+      ? isPt
+        ? `Altura medida pela boia ${waveCorrection.buoyName} — a medição vale para as horas seguintes (as células mostram a previsão por hora).`
+        : `Height measured by buoy ${waveCorrection.buoyName} — the measurement holds for the following hours (cells show the hourly forecast).`
+      : waveSource === 'bias-corrected'
+        ? isPt
+          ? 'Altura corrigida pelo viés regional — a correcção vale para as horas seguintes (as células mostram a previsão por hora).'
+          : 'Height corrected by regional bias — the correction holds for the following hours (cells show the hourly forecast).'
+        : undefined;
+
   /* ── cell dimensions ── */
   const cellPx = compact ? 'px-0.5 py-0.5' : 'px-2 py-1';
   const labelCellPx = compact ? 'pl-2 pr-1 py-0.5' : 'px-2 py-1';
@@ -357,7 +385,7 @@ export default function ForecastTable({
 {currentHourIndex >= 0 && (
         <div className="flex items-center gap-2 text-meta text-fg-muted px-1">
           <span className="w-2 h-2 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
-          <span>{isPt ? 'Hora atual' : 'Current time'} — {isPt ? 'Arraste para ver mais' : 'Scroll to see more'}</span>
+          <span>{t.currentTime} — {t.scrollForMore}</span>
         </div>
       )}
 
@@ -420,9 +448,9 @@ export default function ForecastTable({
                       {activeDayLabel}
                     </span>
                   ) : (
-                    <span>{isPt ? 'Dia' : 'Day'}</span>
+                    <span>{t.day}</span>
                   )}
-                  <span className="text-fg-muted font-medium">{isPt ? 'Hora' : 'Hour'}</span>
+                  <span className="text-fg-muted font-medium">{t.hour}</span>
                 </div>
               </th>
               {visible.map((h, i) => {
@@ -463,7 +491,14 @@ export default function ForecastTable({
               scope="row"
               className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
             >
-              {t.waves}
+              <span
+                className="inline-flex items-center gap-1"
+                data-wave-correction={waveSource !== 'forecast' ? waveSource : undefined}
+                title={wavesRowTitle}
+              >
+                {t.waves}
+                {waveFactorSuffix(waveSource, locale)}
+              </span>
             </th>
             {visible.map((h, i) => (
               <td

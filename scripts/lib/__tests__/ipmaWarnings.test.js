@@ -9,6 +9,9 @@ const {
   mapSpotsToAreas,
   buildWarningsPayload,
   WATER_SPORT_TYPES,
+  seaWarningForSpot,
+  seaWarningLine,
+  seaWarningEmailLine,
 } = require('../ipmaWarnings.js');
 
 const DISTRICTS = {
@@ -122,5 +125,84 @@ describe('mapSpotsToAreas + buildWarningsPayload', () => {
     expect(payload.spotWarnings.peniche).toHaveLength(1);
     expect(payload.spotWarnings.peniche[0].type).toBe('Vento');
     expect(payload.spotWarnings.faro).toBeUndefined();
+  });
+});
+
+describe('seaWarningForSpot', () => {
+  const data = {
+    spotWarnings: {
+      peniche: [
+        { type: 'Vento', level: 'orange' },
+        { type: 'Agitação Marítima', level: 'yellow' },
+        { type: 'Agitação Marítima', level: 'orange' },
+      ],
+      faro: [{ type: 'Tempo Quente', level: 'red' }],
+    },
+  };
+
+  it('devolve o aviso de agitação marítima mais forte (red > orange > yellow)', () => {
+    expect(seaWarningForSpot(data, 'peniche').level).toBe('orange');
+  });
+
+  it('ignora outros tipos de aviso (Tempo Quente não é mar perigoso)', () => {
+    expect(seaWarningForSpot(data, 'faro')).toBeNull();
+  });
+
+  it('devolve null sem dados, sem spot, ou sem agitação activa', () => {
+    expect(seaWarningForSpot(null, 'peniche')).toBeNull();
+    expect(seaWarningForSpot(data, 'sem-spot')).toBeNull();
+    expect(seaWarningForSpot({ spotWarnings: {} }, 'peniche')).toBeNull();
+  });
+});
+
+describe('seaWarningLine', () => {
+  it('formata a linha «Mar perigoso» em PT com o nível', () => {
+    expect(seaWarningLine({ level: 'orange' }, true)).toBe('⚠️ Mar perigoso — agitação marítima (laranja)');
+  });
+
+  it('formata a linha «Dangerous sea» em EN com o nível', () => {
+    expect(seaWarningLine({ level: 'red' }, false)).toBe('⚠️ Dangerous sea — sea state warning (red)');
+  });
+
+  it('devolve string vazia sem aviso', () => {
+    expect(seaWarningLine(null, true)).toBe('');
+    expect(seaWarningLine(undefined, false)).toBe('');
+  });
+});
+
+describe('seaWarningEmailLine (emails: área + texto oficial do IPMA)', () => {
+  const sea = {
+    level: 'orange',
+    areaLabel: 'Viana do Castelo',
+    text: 'Ondulação de NW com ondas de 4 a 5 metros.',
+  };
+
+  it('compacto + área + texto oficial em PT', () => {
+    expect(seaWarningEmailLine(sea, true)).toBe(
+      '⚠️ Mar perigoso — agitação marítima (laranja) — Viana do Castelo: Ondulação de NW com ondas de 4 a 5 metros.',
+    );
+  });
+
+  it('EN com a mesma estrutura', () => {
+    expect(seaWarningEmailLine(sea, false)).toBe(
+      '⚠️ Dangerous sea — sea state warning (orange) — Viana do Castelo: Ondulação de NW com ondas de 4 a 5 metros.',
+    );
+  });
+
+  it('sem texto oficial → só compacto + área', () => {
+    expect(seaWarningEmailLine({ level: 'red', areaLabel: 'Lisboa' }, true)).toBe(
+      '⚠️ Mar perigoso — agitação marítima (vermelho) — Lisboa',
+    );
+  });
+
+  it('sem área nem texto → idêntico ao compacto', () => {
+    expect(seaWarningEmailLine({ level: 'yellow' }, false)).toBe(
+      '⚠️ Dangerous sea — sea state warning (yellow)',
+    );
+  });
+
+  it('devolve string vazia sem aviso', () => {
+    expect(seaWarningEmailLine(null, true)).toBe('');
+    expect(seaWarningEmailLine(undefined, false)).toBe('');
   });
 });

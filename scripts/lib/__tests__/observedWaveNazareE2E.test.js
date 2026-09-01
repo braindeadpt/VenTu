@@ -121,6 +121,70 @@ describe('observedWave da Nazaré Costeira (Fugro id_est 2) — ponta a ponta', 
     );
   }
 
+  /** ih-buoys.json sem key (o estado keyless actual) — nada de IH. */
+  function writeEmptyIhBuoys() {
+    fs.writeFileSync(
+      path.join(tmpDir, 'ih-buoys.json'),
+      JSON.stringify({
+        stations: {},
+        spotMapping: {},
+        hasWaveData: false,
+        apiKeyConfigured: false,
+        fetchedAt: new Date().toISOString(),
+      }),
+    );
+  }
+
+  /**
+   * wmo-buoys.json com a ponte keyless: a WMO nacional mapeada (6200199,
+   * Nazaré Costeira — a rota keyless da mesma Fugro) STALE, e Cabo Silleiro
+   * (6200084, ES) FRESCO. É o cenário exacto da ponte: a Fugro não está
+   * provada/fresca por nenhuma rota, mas a série ES horária está.
+   */
+  function writeBridgeWmoBuoys() {
+    const stale = new Date(Date.now() - 12 * 3_600_000).toISOString();
+    const fresh = new Date().toISOString();
+    const wmo = {
+      hasWaveData: true,
+      day: '20260831',
+      buoys: {
+        '6200199': {
+          code: '6200199',
+          name: 'Nazaré Costeira (WMO)',
+          area: 'Nazaré',
+          country: 'PT',
+          lat: 39.56,
+          lon: -9.21,
+          latest: { date: stale, hs: 1.4 },
+        },
+        '6200084': {
+          code: '6200084',
+          name: 'Cabo Silleiro',
+          area: 'Galiza',
+          country: 'ES',
+          lat: 42.12,
+          lon: -9.43,
+          latest: { date: fresh, hs: 2.1, tp: 9.2, dir: 320, sst: 20.5 },
+        },
+      },
+      spotMapping: {
+        nazare: {
+          code: '6200199',
+          stationTitle: 'Nazaré Costeira (WMO)',
+          area: 'Nazaré',
+          distanceKm: 12.4,
+        },
+        leirosa: {
+          code: '6200199',
+          stationTitle: 'Nazaré Costeira (WMO)',
+          area: 'Nazaré',
+          distanceKm: 61.7,
+        },
+      },
+    };
+    fs.writeFileSync(path.join(tmpDir, 'wmo-buoys.json'), JSON.stringify(wmo));
+  }
+
   async function runMerge() {
     process.env.CONDITIONS_PATH = path.join(tmpDir, 'conditions.json');
     process.env.IPMA_STATION_MAP_PATH = path.join(tmpDir, 'ipma-station-map.json');
@@ -174,5 +238,59 @@ describe('observedWave da Nazaré Costeira (Fugro id_est 2) — ponta a ponta', 
     const conditions = JSON.parse(fs.readFileSync(path.join(tmpDir, 'conditions.json'), 'utf-8'));
     expect(conditions.nazare.observedWave).toBeUndefined();
     expect(conditions.nazare.observedWaveMeta).toBeUndefined();
+  });
+
+  it('ponte keyless: sem key e WMO nacional stale → Cabo Silleiro (ES) no nazare', async () => {
+    writeConditions();
+    writeStationMap();
+    writeEmptyIhBuoys();
+    writeBridgeWmoBuoys();
+
+    await runMerge();
+
+    const conditions = JSON.parse(fs.readFileSync(path.join(tmpDir, 'conditions.json'), 'utf-8'));
+    const wave = conditions.nazare.observedWave;
+    expect(wave).toBeTruthy();
+    expect(wave).toMatchObject({
+      waveHeight: 2.1,
+      wavePeriod: 9.2,
+      waveDirection: 320,
+      waterTemp: 20.5,
+      stationName: 'Cabo Silleiro',
+      source: 'wmo-buoy',
+      bridge: true,
+      stationCode: '6200084',
+    });
+    // A ponte mantém a distância real (≈280 km) — nunca passa por leitura local.
+    expect(wave.distanceKm).toBeGreaterThan(200);
+    expect(conditions.nazare.observedWaveMeta).toMatchObject({
+      winner: 'wmo',
+      reason: 'wmo-only',
+    });
+    // leirosa NÃO é spot da ponte → sem observedWave (a 6200199 mapeada está stale).
+    expect(conditions.leirosa.observedWave).toBeUndefined();
+  });
+
+  it('Fugro IH fresca (key provada) → a ponte NUNCA compete (sem alt, sem bridge)', async () => {
+    writeConditions();
+    writeStationMap();
+    writeIhBuoysWithNazare({ fresh: true });
+    writeBridgeWmoBuoys();
+
+    await runMerge();
+
+    const conditions = JSON.parse(fs.readFileSync(path.join(tmpDir, 'conditions.json'), 'utf-8'));
+    const wave = conditions.nazare.observedWave;
+    expect(wave).toMatchObject({
+      stationName: 'CSA88/2',
+      source: 'ih-buoy',
+    });
+    // Bridge não anexada: nem como vencedor nem como runner-up (alt).
+    expect(wave.bridge).toBeUndefined();
+    expect(conditions.nazare.observedWaveAlt).toBeUndefined();
+    expect(conditions.nazare.observedWaveMeta).toMatchObject({
+      winner: 'ih',
+      reason: 'ih-only',
+    });
   });
 });

@@ -14,6 +14,7 @@ import {
   readReport,
   writeReport,
   notifyRegressions,
+  buildPlatformHealth,
 } from '../skillRegression.js';
 
 let tmpDir;
@@ -73,6 +74,19 @@ describe('skillRegression', () => {
     expect(a.fetchedAt).toBe('2026-08-15T12:00:00Z');
   });
 
+  it('mergeSnapshot arquiva boias WMO-ES (buoyId string) com origem — cobre o NW sem IH_API_KEY', () => {
+    const a = emptyArchive();
+    const byBuoy = {
+      // Chave numérica IH idEst + chave string WMO-ES (Cabo Silleiro, keyless).
+      4: { buoyName: 'CSA83/1D', n: 47, me: 0.1, rmse: 0.4, origin: 'ih' },
+      '6200084': { buoyName: 'Cabo Silleiro', n: 41, me: -0.3, rmse: 0.6, origin: 'wmo-es' },
+    };
+    expect(mergeSnapshot(a, byBuoy, '2026-08-15T10:00:00Z')).toBe(2);
+    const es = a.snapshots.find((s) => s.buoyId === '6200084');
+    expect(es).toMatchObject({ name: 'Cabo Silleiro', origin: 'wmo-es', n: 41 });
+    expect(a.snapshots.find((s) => s.buoyId === '4').origin).toBe('ih');
+  });
+
   it('mergeSnapshot ignora boias com n < 10 ou stats não finitas', () => {
     const a = emptyArchive();
     const byBuoy = {
@@ -103,6 +117,20 @@ describe('skillRegression', () => {
     expect(r.rmseDelta).toBeGreaterThanOrEqual(0.3);
     expect(r.reasons[0]).toMatch(/RMSE \+/);
     expect(rep.byBuoy['19'].verdict).toBe('regressed');
+  });
+
+  it('detecta regressão de uma boia WMO-ES (string) e expõe origin no report', () => {
+    // Baseline boa (RMSE 0.4) → recente má (RMSE 0.9), com buoyId string.
+    const a = emptyArchive();
+    for (let i = 15 + 7; i >= 7; i--) a.snapshots.push(snap(i, { buoyId: '6200084', name: 'Cabo Silleiro', origin: 'wmo-es', rmse: 0.4 }));
+    for (let i = 6; i >= 0; i--) a.snapshots.push(snap(i, { buoyId: '6200084', name: 'Cabo Silleiro', origin: 'wmo-es', rmse: 0.9 }));
+    const rep = buildRegressionReport(a);
+    expect(rep.regressions).toHaveLength(1);
+    const r = rep.regressions[0];
+    expect(r.buoyId).toBe('6200084');
+    expect(r.origin).toBe('wmo-es');
+    expect(r.verdict).toBe('regressed');
+    expect(rep.byBuoy['6200084'].origin).toBe('wmo-es');
   });
 
   it('detecta regressão pelo |ME| (viés a aumentar) quando o RMSE não dispara', () => {
@@ -165,5 +193,93 @@ describe('skillRegression', () => {
     const second = await notifyRegressions(rep, { send, chatId: '123', reportPath });
     expect(second.notified).toBe(false);
     expect(second.reason).toBe('already-reported');
+  });
+
+  // ── Health por PLATAFORMA (IH vs WMO-ES agregado) ────────────────────────────
+
+  /** Arquivo cujo n diário da plataforma IH colapsa (baseline 80 → recente 15). */
+  function collapsedNArchive() {
+    const a = emptyArchive();
+    for (let i = 3; i >= 0; i--)
+      a.snapshots.push(snap(i, { buoyId: 4, origin: 'ih', n: 15, me: 0.1, rmse: 0.4 }));
+    for (let i = 11; i >= 8; i--)
+      a.snapshots.push(snap(i, { buoyId: 4, origin: 'ih', n: 80, me: 0.1, rmse: 0.4 }));
+    return a;
+  }
+
+  it('buildPlatformHealth avisa quando o n da plataforma colapsa (fluxo quebrado)', () => {
+    const { platforms, alerts } = buildPlatformHealth(collapsedNArchive());
+    const ih = platforms.ih;
+    expect(ih.verdict).toBe('n-collapse');
+    // baseline diária 80 vs recente 15 → recente < baseline × 0.5.
+    expect(ih.nDeltaFraction).toBeLessThan(0.5);
+    expect(alerts).toHaveLength(1);
+    expect(alerts[0].platform).toBe('ih');
+    expect(alerts[0].reasons[0]).toMatch(/n da plataforma colapsou/);
+    // A outra plataforma sem dados → null (não entra na auditoria).
+    expect(platforms['wmo-es']).toBeNull();
+  });
+
+  it('buildPlatformHealth avisa quando o |ME| da plataforma piora (sem n a colapsar)', () => {
+    const a = emptyArchive();
+    for (let i = 3; i >= 0; i--)
+      a.snapshots.push(
+        snap(i, { buoyId: '6200084', origin: 'wmo-es', n: 50, me: 0.6, rmse: 0.5 }),
+      );
+    for (let i = 11; i >= 8; i--)
+      a.snapshots.push(
+        snap(i, { buoyId: '6200084', origin: 'wmo-es', n: 50, me: 0.1, rmse: 0.5 }),
+      );
+    const { platforms, alerts } = buildPlatformHealth(a);
+    const es = platforms['wmo-es'];
+    expect(es.verdict).toBe('me-worsened'); // n estável (50 ≈ 50) — só o ME dispara
+    expect(es.meAbsDelta).toBeGreaterThanOrEqual(0.3);
+    expect(alerts[0].reasons[0]).toMatch(/\|ME\| piorou/);
+  });
+
+  it('buildPlatformHealth não mistura boias de plataformas diferentes na agregação', () => {
+    const a = emptyArchive();
+    for (let i = 3; i >= 0; i--) {
+      a.snapshots.push(snap(i, { buoyId: 4, origin: 'ih', n: 80, me: 0.1, rmse: 0.4 }));
+      a.snapshots.push(
+        snap(i, { buoyId: '6200084', origin: 'wmo-es', n: 20, me: 0.1, rmse: 0.4 }),
+      );
+    }
+    for (let i = 11; i >= 8; i--) {
+      a.snapshots.push(snap(i, { buoyId: 4, origin: 'ih', n: 80, me: 0.1, rmse: 0.4 }));
+      a.snapshots.push(
+        snap(i, { buoyId: '6200084', origin: 'wmo-es', n: 20, me: 0.1, rmse: 0.4 }),
+      );
+    }
+    const { platforms } = buildPlatformHealth(a);
+    // IH abundante e estável → ok; WMO-ES pequeno mas dentro do limiar → ok.
+    expect(platforms.ih.verdict).toBe('ok');
+    expect(platforms['wmo-es'].verdict).toBe('ok');
+    expect(platforms.ih.recent.n).toBe(80);
+    expect(platforms['wmo-es'].recent.n).toBe(20);
+  });
+
+  it('buildRegressionReport expõe platforms + platformAlerts', () => {
+    const rep = buildRegressionReport(collapsedNArchive());
+    expect(rep.platforms.ih.verdict).toBe('n-collapse');
+    expect(rep.platformAlerts).toHaveLength(1);
+    expect(rep.platformAlerts[0].platform).toBe('ih');
+    expect(rep.platformThresholds.nCollapseFactor).toBe(0.5);
+  });
+
+  it('notifyRegressions notifica também alertas de plataforma na transição', async () => {
+    const rep = buildRegressionReport(collapsedNArchive());
+    const reportPath = tmpFile('skill-regression.json');
+    const send = vi.fn(async () => true);
+    // Sem report anterior → transição da plataforma dispara.
+    const first = await notifyRegressions(rep, { send, chatId: '123', reportPath });
+    expect(first.notified).toBe(true);
+    expect(first.newPlatformAlerts).toEqual([{ platform: 'ih', verdict: 'n-collapse' }]);
+    writeReport(rep, reportPath);
+    // Já reportado → sem novo alarme no run seguinte.
+    const second = await notifyRegressions(rep, { send, chatId: '123', reportPath });
+    expect(second.notified).toBe(false);
+    expect(second.reason).toBe('already-reported');
+    expect(second.newPlatformAlerts).toHaveLength(0);
   });
 });

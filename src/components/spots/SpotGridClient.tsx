@@ -154,7 +154,7 @@ export function SpotGridClient({
             <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
               <div className="flex items-center gap-1.5 text-fg-muted mr-1">
                 <Filter className="w-3.5 h-3.5" />
-                <span className="text-meta-sm">{isPt ? 'Região' : 'Region'}</span>
+                <span className="text-meta-sm">{t.spots.region}</span>
               </div>
               {regions.map((region, i) => {
                 const active = selectedRegion === region;
@@ -180,12 +180,12 @@ export function SpotGridClient({
                 disabled={sortBy === 'distance' && !latitude}
                 aria-label={
                   sortBy === 'score'
-                    ? (isPt ? 'Ordenar por score (clique para distância)' : 'Sort by score (click for distance)')
-                    : (isPt ? 'Ordenar por distância (clique para score)' : 'Sort by distance (click for score)')
+                    ? t.spots.sortByScoreHint
+                    : t.spots.sortByDistanceHint
                 }
                 icon={sortBy === 'distance' ? <Navigation className="w-3.5 h-3.5" /> : <Star className="w-3.5 h-3.5" />}
               >
-                <span className="hidden sm:inline">{isPt ? 'Ordenar' : 'Sort'}</span>
+                <span className="hidden sm:inline">{t.spots.sort}</span>
               </FilterPill>
 
               {sortBy === 'distance' && !latitude && (
@@ -195,26 +195,26 @@ export function SpotGridClient({
                   onClick={requestLocation}
                   loading={geoLoading}
                   leftIcon={<MapPin className="w-3.5 h-3.5" aria-hidden />}
-                  locale={isPt ? 'pt' : 'en'}
+                  locale={locale as Locale}
                   className="text-data-waves border-data-waves/20 bg-data-waves/10 hover:bg-data-waves/20"
                 >
-                  <span className="hidden sm:inline">{isPt ? 'Usar minha localização' : 'Use my location'}</span>
+                  <span className="hidden sm:inline">{t.spots.useMyLocation}</span>
                 </Button>
               )}
 
               <span className="text-meta-sm text-fg-muted">
                 <span className="font-mono tabular-nums text-fg">{sorted.length}</span>
-                {' '}{isPt ? t.hero.spotsCount : t.hero.spotsCount}
+                {' '}{t.hero.spotsCount}
                 {onCount > 0 && (
                   <span className="ml-2">
                     · <span className="font-mono tabular-nums text-score-good">{onCount}</span>{' '}
-                    {isPt ? t.hero.onCount : 'firing'}
+                    {t.hero.onCount}
                   </span>
                 )}
                 {marginalCount > 0 && (
                   <span className="ml-1">
                     · <span className="font-mono tabular-nums text-score-fair">{marginalCount}</span>{' '}
-                    {isPt ? t.hero.marginalCount : t.hero.marginalCount}
+                    {t.hero.marginalCount}
                   </span>
                 )}
               </span>
@@ -225,10 +225,10 @@ export function SpotGridClient({
                   size="sm"
                   onClick={handleReset}
                   leftIcon={<RotateCcw className="w-3.5 h-3.5" aria-hidden />}
-                  aria-label={isPt ? t.hero.clearFilters : t.hero.clearFilters}
-                  locale={isPt ? 'pt' : 'en'}
+                  aria-label={t.hero.clearFilters}
+                  locale={locale as Locale}
                 >
-                  <span className="hidden sm:inline">{isPt ? t.hero.clearFilters : t.hero.clearFilters}</span>
+                  <span className="hidden sm:inline">{t.hero.clearFilters}</span>
                 </Button>
               )}
             </div>
@@ -241,7 +241,7 @@ export function SpotGridClient({
           spotsData={mapSpotsData}
           selectedSport={selectedSport}
           selectedRegion={selectedRegion}
-          locale={locale}
+          locale={locale as Locale}
           onSpotSelect={setSelectedSpotId}
           mapHud={{
             sports: SPORTS.map((s) => ({
@@ -268,7 +268,7 @@ export function SpotGridClient({
             })),
             selectedDifficulty: mapDifficulty,
             onDifficultyChange: setMapDifficulty,
-            difficultyGroupLabel: isPt ? 'Nível' : 'Level',
+            difficultyGroupLabel: t.spots.level,
           }}
         />
       </div>
@@ -277,7 +277,7 @@ export function SpotGridClient({
         <SpotGridRankedList
           sorted={sorted}
           selectedSport={selectedSport}
-          locale={locale}
+          locale={locale as Locale}
           excludeSlugs={excludeTopNowSlugs}
         />
       )}
@@ -307,7 +307,7 @@ export function SpotGridClient({
                   <span className={getSportColor(alternativeSport as GridSportFilter)}>
                     {getSportIcon(alternativeSport as GridSportFilter)}
                   </span>
-                  {isPt ? 'Ver' : 'View'} {getSportLabel(alternativeSport, isPt)}
+                  {t.spots.view} {getSportLabel(alternativeSport, isPt)}
                 </Button>
               )}
               <Button variant="secondary" onClick={handleReset}>
@@ -326,7 +326,7 @@ export function SpotGridClient({
       <SpotDrawer
         spotData={selectedSpotData}
         onClose={() => setSelectedSpotId(null)}
-        locale={locale}
+        locale={locale as Locale}
         gridSport={selectedSport}
       />
     </section>

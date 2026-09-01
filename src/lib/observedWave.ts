@@ -24,6 +24,15 @@ export interface ObservedWave {
   observedAt: string;
   source: 'ih-buoy' | 'wmo-buoy';
   /**
+   * Keyless ES bridge (Costa de Prata ← Cabo Silleiro, scripts/lib/
+   * copernicusBuoys.js): a long-range Spanish proxy attached ONLY while the
+   * national Fugro route (IH key or WMO 6200199) has no fresh reading. The
+   * UI labels it honestly so it never passes for a local measurement.
+   */
+  bridge?: boolean;
+  /** WMO platform code the reading came from (e.g. '6200084' for the bridge). */
+  stationCode?: string;
+  /**
    * Accumulated real forecast skill at this buoy (from forecast-skill.json,
    * attached by the merge step): ME/MAE/RMSE (m) + sample size n (+ lead).
    * Lets the UI show the bias correction transparently («corrigido pela boia
@@ -37,7 +46,7 @@ export interface ObservedWave {
     corr?: number;
     meanLeadHours?: number;
     /** Platform the skill was accumulated against: IH Datawell vs WMO-ES (Copernicus). */
-    origin?: 'ih' | 'wmo-es';
+    origin?: 'ih' | 'wmo-pt' | 'wmo-es';
     /** Buoy name the skill belongs to (allows highlighting Spanish buoys like Silleiro). */
     buoyName?: string;
   };

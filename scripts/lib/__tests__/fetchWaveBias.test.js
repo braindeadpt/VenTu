@@ -329,4 +329,59 @@ describe('fetch-wave-bias (caminho completo com fetch mockado)', () => {
     // Bias per-buoy calculado, mas nenhuma região herda o viés (mapa vazio).
     expect(Object.keys(out.regions)).toHaveLength(0);
   });
+
+  it('fail-fast: getDatawellData em 401 → run() falha cedo (exitCode 1) com ::error::', async () => {
+    const archivePath = tmpFile('wmo-archive.json');
+    const outputPath = tmpFile('wave-bias.json');
+    const coherencePath = tmpFile('coherence.json');
+    fs.writeFileSync(archivePath, JSON.stringify({ fetchedAt: null, buoys: {} }));
+    fs.writeFileSync(coherencePath, JSON.stringify({ day: '2026-08-14', pairs: [] }));
+    const stations = {
+      buoys_datawell: {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {
+              id_est: 4,
+              name: 'Leixões',
+              area: 'Porto',
+              status: 'active',
+              lat: 41.32,
+              lon: -8.98,
+            },
+            geometry: { type: 'Point', coordinates: [-8.98, 41.32] },
+          },
+        ],
+      },
+      buoys_Fugro_oceanor_wavescan: { type: 'FeatureCollection', features: [] },
+    };
+    const base = makeFetchMock({ model: new Map(), stations });
+    vi.stubGlobal('fetch', async (url) => {
+      if (String(url).includes('getDatawellData')) {
+        return new Response('{"error":"unauthorized"}', { status: 401 });
+      }
+      return base(url);
+    });
+
+    const mod = await loadScript({ ihKey: 'dead-key', outputPath, archivePath, coherencePath });
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const exitBefore = process.exitCode;
+    try {
+      await mod.run();
+      expect(String(process.exitCode)).toBe('1');
+    } finally {
+      process.exitCode = exitBefore;
+    }
+    const calls = errSpy.mock.calls;
+    errSpy.mockRestore();
+    expect(
+      calls.some((c) =>
+        String(c[0]).includes('::error::IH_API_KEY rejeitada (HTTP 401) no fetch-wave-bias'),
+      ),
+    ).toBe(true);
+    // A key morta NUNCA degrada em silêncio: falha sem escrever output parcial
+    // que confunda o viés IH com ausência real de dados.
+    expect(fs.existsSync(outputPath)).toBe(false);
+  });
 });

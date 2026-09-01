@@ -24,6 +24,7 @@
 const fs = require('fs');
 const path = require('path');
 const { mapSpotsToNearestBuoy } = require('./wmoBiasArchive.js');
+const { wmoOriginForWmoCode } = require('./copernicusBuoys.js');
 
 const DEFAULT_OUTPUT_PATH = path.join(__dirname, '../../public/data/forecast-skill.json');
 
@@ -110,9 +111,9 @@ function emptyArchive() {
     observations: [],
     pairs: [],
     stats: null,
-    byOrigin: { ih: null, 'wmo-es': null },
+    byOrigin: { ih: null, 'wmo-pt': null, 'wmo-es': null },
     byBuoy: {},
-    pairCountByOrigin: { ih: 0, 'wmo-es': 0 },
+    pairCountByOrigin: { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 },
     calibratedPairCount: 0,
   };
 }
@@ -224,11 +225,13 @@ function attachWaveSkill(observedWave, byBuoy, buoyId) {
   // (ih-buoy → 'ih'; wmo-buoy → 'wmo-es'). Permite à UI destacar quando o
   // ME/n vem de uma boia ES (Copernicus, sem key) e não do IH.
   const origin =
-    skill.origin === 'ih' || skill.origin === 'wmo-es'
+    skill.origin === 'ih' || skill.origin === 'wmo-pt' || skill.origin === 'wmo-es'
       ? skill.origin
       : observedWave?.source === 'wmo-buoy'
         ? 'wmo-es'
-        : 'ih';
+        : observedWave?.source === 'wmo-copernicus'
+          ? 'wmo-pt'
+          : 'ih';
   const out = { ...observedWave, skill: { me: skill.me, n: skill.n, origin } };
   for (const k of ['mae', 'rmse', 'corr', 'meanLeadHours']) {
     if (Number.isFinite(skill[k])) out.skill[k] = skill[k];
@@ -276,7 +279,10 @@ function crossPairs(archive, opts = {}) {
       hourKey: hourKey(f.time),
       buoyId: obs.buoyId,
       buoyName: f.buoyName ?? obs.buoyName,
-      origin: f.origin ?? obs.origin ?? (typeof obs.buoyId === 'number' ? 'ih' : 'wmo-es'),
+      origin:
+        f.origin ??
+        obs.origin ??
+        (typeof obs.buoyId === 'number' ? 'ih' : wmoOriginForWmoCode(String(obs.buoyId))),
       forecastHm0: round2(f.hm0),
       observedHm0: round2(obs.hm0),
       leadTimeHours: round1(leadHours),
@@ -364,7 +370,7 @@ function buildStats(pairs) {
       byBuoy[entry.buoyId] = { ...stats, buoyName: entry.buoyName, origin: entry.origin };
     }
   }
-  const byOrigin = { ih: null, 'wmo-es': null };
+  const byOrigin = { ih: null, 'wmo-pt': null, 'wmo-es': null };
   for (const origin of Object.keys(byOrigin)) {
     byOrigin[origin] = computeSkillStats(pairs.filter((p) => originOf(p) === origin));
   }
@@ -372,14 +378,18 @@ function buildStats(pairs) {
 }
 
 /**
- * Archive ES/WMO buoy skill (keyless) into the forecast-skill archive.
+ * Archive keyless WMO buoy skill into the forecast-skill archive.
  *
  * The Copernicus NRT bucket only keeps `latest/<day>` (no dated history), so
- * fetch-wave-bias.js accumulates the ES buoy readings in wmo-bias-archive.json
- * run after run. This function ingests those accumulated readings AND archives
- * the best_match forecasts of the spots nearest to each ES buoy (Silleiro /
- * Villano / Cádiz / Bilbao / Peñas — one forecast slot per buoy per hour, the
- * nearest mapped spot as the location proxy, same convention as the IH path).
+ * fetch-wave-bias.js accumulates the keyless WMO readings in
+ * wmo-bias-archive.json run after run. This function ingests those accumulated
+ * readings AND archives the best_match forecasts of the spots nearest to each
+ * buoy — one forecast slot per buoy per hour, the nearest mapped spot as the
+ * location proxy (same convention as the IH path). Two keyless platforms:
+ * WMO-ES (Silleiro/Villano/Cádiz/Bilbao/Peñas, cross-border) and WMO-PT
+ * (Nazaré Costeira 6200199, nacional — os spots da Costa de Prata/Lisboa).
+ * A origem por boia vem de wmoOriginForWmoCode (`'wmo-pt'` para a PT,
+ * `'wmo-es'` para as outras).
  *
  * Pair formation reuses crossPairs: the forecast archived today for hour T
  * pairs with the reading for T once it lands in the WMO archive. BuoyId is the
@@ -457,7 +467,7 @@ function archiveWmoSkill(archive, inputs) {
         runAt,
         buoyId: code,
         buoyName: live[code].name,
-        origin: 'wmo-es',
+        origin: wmoOriginForWmoCode(code),
       });
       forecastRows += 1;
     }
@@ -468,6 +478,7 @@ function archiveWmoSkill(archive, inputs) {
   const newObs = [];
   for (const [code, e] of Object.entries(buoys)) {
     if (!live[code]) continue;
+    const origin = wmoOriginForWmoCode(code);
     for (const r of e.readings ?? []) {
       if (!Number.isFinite(r.hm0) || r.hm0 < 0) continue;
       newObs.push({
@@ -475,7 +486,7 @@ function archiveWmoSkill(archive, inputs) {
         hm0: r.hm0,
         buoyId: code,
         buoyName: live[code].name,
-        origin: 'wmo-es',
+        origin,
       });
       obsRows += 1;
     }
@@ -498,7 +509,10 @@ function pruneArchive(archive, nowMs = Date.now(), windowDays = SKILL_WINDOW_DAY
 }
 
 function pairOriginOf(p) {
-  return p.origin ?? (typeof p.buoyId === 'number' ? 'ih' : 'wmo-es');
+  return (
+    p.origin ??
+    (typeof p.buoyId === 'number' ? 'ih' : wmoOriginForWmoCode(String(p.buoyId)))
+  );
 }
 
 /**
@@ -522,7 +536,7 @@ function buildReport(archive, nowMs = Date.now()) {
   archive.byOrigin = stats.byOrigin;
   archive.byBuoy = stats.byBuoy;
 
-  const pairCountByOrigin = { ih: 0, 'wmo-es': 0 };
+  const pairCountByOrigin = { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
   let calibratedPairCount = 0;
   for (const p of pairs) {
     const origin = pairOriginOf(p);
@@ -533,6 +547,19 @@ function buildReport(archive, nowMs = Date.now()) {
   }
   archive.pairCountByOrigin = pairCountByOrigin;
   archive.calibratedPairCount = calibratedPairCount;
+
+  // As últimas previsões arquivadas, também separadas por origem — a mesma
+  // amostra de `lastPairs` mas filtrada por plataforma, para o dashboard poder
+  // auditar visualmente como cada plataforma (IH keyed vs WMO-ES keyless)
+  // evolui dia a dia, em vez de só ler o total misto.
+  const LAST = 10;
+  const lastBy = (origin) =>
+    pairs.filter((p) => pairOriginOf(p) === origin).slice(-LAST).reverse();
+  const lastPairsByOrigin = {
+    ih: lastBy('ih'),
+    'wmo-pt': lastBy('wmo-pt'),
+    'wmo-es': lastBy('wmo-es'),
+  };
 
   return {
     fetchedAt: archive.fetchedAt,
@@ -545,6 +572,7 @@ function buildReport(archive, nowMs = Date.now()) {
     byOrigin: stats.byOrigin,
     byBuoy: stats.byBuoy,
     lastPairs: pairs.slice(-10).reverse(),
+    lastPairsByOrigin,
   };
 }
 

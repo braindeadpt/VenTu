@@ -6,9 +6,9 @@
  * also compared, yielding ES×IH pairs alongside the ES×WMO ones.
  *
  * Downloads today's Copernicus S3 NetCDF for the ES buoys (Cabo Silleiro,
- * Villano-Sisargas) and the PT buoys (Porto/Leixões, Faro), extracts the full
- * hourly surface series, aligns both on common UTC hours and computes
- * n / mean|Δhs| / ME / max / correlation per pair. The verdict validates that
+ * Villano-Sisargas) and the PT buoys (Porto/Leixões, Faro, Nazaré Costeira),
+ * extracts the full hourly surface series, aligns both on common UTC hours
+ * and computes n / mean|Δhs| / ME / max / correlation per pair. The verdict validates that
  * the observedWave cross-border attach (a Spanish reading attached to NW
  * Portugal spots) is coherent with what the Portuguese buoys report.
  *
@@ -79,6 +79,10 @@ const API_KEY = process.env.IH_API_KEY?.trim() || null;
 const PAIRS = [
   { a: '6200084', b: '6201077' }, // Cabo Silleiro × Porto/Leixões (o par NW chave)
   { a: '6200083', b: '6201077' }, // Villano-Sisargas × Porto/Leixões
+  // Referência PT da Costa de Prata: a Nazaré Costeira WMO (6200199) valida o
+  // NW com uma boia da costa OESTE, sem depender das boias do Porto/Faro —
+  // essencial quando as Datawell do Norte reportam esparsas/stale.
+  { a: '6200084', b: '6200199' }, // Cabo Silleiro × Nazaré Costeira (Costa de Prata)
   { a: '6200084', b: '6201079' }, // Cabo Silleiro × Faro
   { a: '6200083', b: '6201079' }, // Villano-Sisargas × Faro
   // Golfo de Cádiz é a boia que o mapping anexa aos spots do Algarve/Vicentina
@@ -120,7 +124,10 @@ async function checkBuoyCoherence() {
   }
 
   const haveEs = ['6200084', '6200083', '6200085'].some((c) => series[c]);
-  const havePt = ['6201077', '6201079'].some((c) => series[c]);
+  // Referências PT válidas: as Datawell do Porto/Faro E a Nazaré Costeira (PT
+  // referencia vinda da Costa de Prata) — o NW continua validado mesmo quando
+  // só a Nazaré reporta hoje.
+  const havePt = ['6201077', '6201079', '6200199'].some((c) => series[c]);
   if (!haveEs || !havePt) {
     console.warn('⚠️ Missing ES or PT buoys — no comparison today; keeping previous report (if any).');
     return null;

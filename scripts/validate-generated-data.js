@@ -33,6 +33,7 @@ if (MODE === 'skip') {
 
 const { STALE_FULL_HOURS_DAY, STALE_FULL_HOURS_NIGHT, getLisbonParts } = require('./lib/updateSchedule');
 const { findUnmappedEsBuoys } = require('./lib/copernicusBuoys.js');
+const { auditSpotDescriptions } = require('./lib/spotDescriptionAudit.js');
 
 const errors = [];
 const warnings = [];
@@ -141,6 +142,19 @@ if (spotsIndex !== undefined) {
   check('spots-index.generatedAt', isIso(spotsIndex.generatedAt), 'missing/invalid generatedAt');
   check('spots-index.spots', Array.isArray(spotsIndex.spots) && spotsIndex.spots.length > 0,
     'missing/empty spots array');
+  // Auditoria pt/en das descrições (mesma lógica da suite unitária — ver
+  // scripts/lib/spotDescriptionAudit.js): se alguém copiar uma descrição sem
+  // traduzir (ou a EN ficar com palavras portuguesas), o CI falha aqui antes
+  // do commit, não só no vitest.
+  const desc = Array.isArray(spotsIndex.spots) ? auditSpotDescriptions(spotsIndex.spots) : null;
+  if (desc) {
+    check('spots-index.desc.missing', desc.missing.length === 0,
+      `${desc.missing.length} descrição(ões) em falta: ${desc.missing.join('; ')}`);
+    check('spots-index.desc.copy', desc.copies.length === 0,
+      `${desc.copies.length} descrição(ões) EN copiadas da PT: ${desc.copies.join('; ')}`);
+    check('spots-index.desc.pt-words', desc.ptWords.length === 0,
+      `${desc.ptWords.length} palavra(s) portuguesa(s) na EN: ${desc.ptWords.join('; ')}`);
+  }
 }
 const spotsLite = read('spots-lite.json');
 check('spots-lite', spotsLite !== undefined, 'file missing');
@@ -395,7 +409,9 @@ if (skillRegression !== undefined) {
   warn('skill-regression.json missing — regressão do forecast-skill não auditada (passo full opcional)');
 }
 
-// warnings.json é opcional (warn se ausente): avisos IPMA nunca bloqueiam o deploy.
+// warnings.json: schema (a TTL — ausência/frescura — vive na secção 8, porque
+// o evaluate-alerts consome este ficheiro e um warnings.json velho/ausente
+// faria os alertas correrem sem a linha de segurança «Mar perigoso»).
 // (nome da variável ≠ collector `warnings` — ver topo do ficheiro)
 const ipmaWarningsData = read('warnings.json');
 if (ipmaWarningsData !== undefined) {
@@ -407,8 +423,6 @@ if (ipmaWarningsData !== undefined) {
     check('warnings.source', ['ipma', 'meteoalarm'].includes(ipmaWarningsData.source),
       `unexpected source ${JSON.stringify(ipmaWarningsData.source)}`);
   }
-} else {
-  warn('warnings.json missing — IPMA/MeteoAlarm outage or first run; warnings UI skipped');
 }
 
 // radar.json + frame PNG são opcionais (warn if ausente): o radar do IPMA nunca
@@ -427,6 +441,177 @@ if (radarData !== undefined) {
     `missing frame file ${radarData.imagePath}`);
 } else {
   warn('radar.json missing — IPMA radar layer off (first run or outage)');
+}
+
+// isobaths-contours.json é opcional (warn se ausente): o overlay vectorial das
+// isóbatas 8/16/30 m é best-effort — uma falha do fetch não bloqueia a pipeline
+// (a strip de distâncias spot-isobaths.json continua a funcionar sem o overlay).
+// Quando presente, valida shape + orçamento de vértices (a geometria simplificada
+// não pode inchar o repo nem rebentar o cliente a desenhar milhares de polylines).
+const MAX_ISOBATH_VERTICES = 60_000;
+const isobathsContours = read('isobaths-contours.json');
+if (isobathsContours !== undefined) {
+  const contours = isobathsContours.contours;
+  check('isobaths.contours',
+    contours !== null && typeof contours === 'object', 'missing contours object');
+  check('isobaths.fetchedAt', isIso(isobathsContours.fetchedAt), 'missing/invalid fetchedAt');
+  check('isobaths.vertexCount', Number.isInteger(isobathsContours.vertexCount)
+    && isobathsContours.vertexCount >= 0, 'missing/invalid vertexCount');
+  // As três profundidades têm de estar presentes (o UI assume 8/16/30).
+  check('isobaths.depths', Array.isArray(isobathsContours.depths)
+    && isobathsContours.depths.length === 3
+    && [8, 16, 30].every((d) => isobathsContours.depths.includes(d)),
+    'depths deve conter 8/16/30');
+  // Shape por linha: [[lon, lat]], cada linha com >=2 vértices finitos.
+  let shapeOk = true;
+  let badDetail = '';
+  let recount = 0;
+  const presentDepths = Object.keys(contours || {});
+  for (const d of [8, 16, 30]) {
+    const lines = contours?.[String(d)];
+    if (!Array.isArray(lines)) {
+      shapeOk = false;
+      badDetail = `falta a profundidade ${d} m no contours`;
+      break;
+    }
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!Array.isArray(line) || line.length < 2) {
+        shapeOk = false;
+        badDetail = `contours.${d}[${i}] não é uma linha com >=2 vértices`;
+        break;
+      }
+      for (const pt of line) {
+        if (!Array.isArray(pt) || pt.length < 2
+          || !Number.isFinite(pt[0]) || !Number.isFinite(pt[1])) {
+          shapeOk = false;
+          badDetail = `contours.${d}[${i}] tem um vértice inválido`;
+          break;
+        }
+        recount += 1;
+      }
+      if (!shapeOk) break;
+    }
+    if (!shapeOk) break;
+  }
+  check('isobaths.shape', shapeOk, badDetail || 'shape inválida');
+  // vertexCount tem de bater com a contagem real das linhas (auditoria).
+  check('isobaths.vertexCountMatches',
+    recount === isobathsContours.vertexCount,
+    `vertexCount ${isobathsContours.vertexCount} != ${recount} (recontado)`);
+  // Orçamento: geometria que inchar demasiado degrada o cliente (ler milhares de
+  // polylines lazy) e o repo — falha para impedir um fetch fora de controlo.
+  check('isobaths.vertexBudget',
+    Number.isInteger(isobathsContours.vertexCount) && isobathsContours.vertexCount <= MAX_ISOBATH_VERTICES,
+    `vertexCount ${isobathsContours.vertexCount} > ${MAX_ISOBATH_VERTICES} (orçamento)`);
+  // Aviso informativo quando uma profundidade existe mas está vazia (coberta
+  // sem contornos perto da costa pode ser legítimo, mas raro de validar).
+  if (shapeOk) {
+    const emptyDepths = presentDepths.filter((d) => !Array.isArray(contours[d]) || contours[d].length === 0);
+    if (emptyDepths.length > 0) {
+      warn(`isobaths-contours: profundidade(s) ${emptyDepths.join('/')} m sem linhas (shape ok mas pode ser suspeito)`);
+    }
+  }
+} else {
+  warn('isobaths-contours.json missing — overlay vectorial das isóbatas ausente (mas as distâncias spot-isobaths.json seguem servidas)');
+}
+
+// ih-coastal-warnings-archive.json é opcional (warn se ausente): o histórico
+// diário dos avisos costeiros é best-effort — sem snapshots o About/fontes
+// simplesmente escondem a secção. Quando presente, valida shape + ordenação
+// das datas + janela (o fetch fixa ARCHIVE_WINDOW_DAYS = 90).
+const COASTAL_MAX_WINDOW_DAYS = 90;
+const coastalArchive = read('ih-coastal-warnings-archive.json');
+if (coastalArchive !== undefined) {
+  const isDateKey = (v) =>
+    typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v));
+  check('coastal-archive.fetchedAt', isIso(coastalArchive.fetchedAt),
+    'missing/invalid fetchedAt');
+  check('coastal-archive.windowDays',
+    Number.isInteger(coastalArchive.windowDays) && coastalArchive.windowDays >= 1
+      && coastalArchive.windowDays <= COASTAL_MAX_WINDOW_DAYS,
+    `windowDays ${coastalArchive.windowDays} fora de 1..${COASTAL_MAX_WINDOW_DAYS}`);
+  check('coastal-archive.days', Array.isArray(coastalArchive.days), 'missing days array');
+  check('coastal-archive.refs', Array.isArray(coastalArchive.refs), 'missing refs array');
+
+  // dayCount tem de bater com o número real de snapshots diários.
+  check('coastal-archive.dayCount',
+    Number.isInteger(coastalArchive.dayCount) && coastalArchive.dayCount >= 0
+      && (Array.isArray(coastalArchive.days)
+        ? coastalArchive.dayCount === coastalArchive.days.length
+        : true),
+    `dayCount ${coastalArchive.dayCount} != ${Array.isArray(coastalArchive.days) ? coastalArchive.days.length : '?'} dias`);
+
+  // days: datas YYYY-MM-DD estritamente crescentes, sem duplicados nem vazios.
+  let daysOk = true;
+  let daysDetail = '';
+  if (Array.isArray(coastalArchive.days)) {
+    let prev = '';
+    for (let i = 0; i < coastalArchive.days.length; i++) {
+      const day = coastalArchive.days[i];
+      if (!day || typeof day !== 'object' || !isDateKey(day.date)) {
+        daysOk = false;
+        daysDetail = `days[${i}] sem date válido`;
+        break;
+      }
+      if (!Array.isArray(day.warnings)) {
+        daysOk = false;
+        daysDetail = `days[${i}] sem array de warnings`;
+        break;
+      }
+      if (prev && day.date <= prev) {
+        daysOk = false;
+        daysDetail = `days[${i}].date ${day.date} não é estritamente após ${prev} (duplicado/desordenado)`;
+        break;
+      }
+      prev = day.date;
+    }
+  }
+  check('coastal-archive.daysOrder', daysOk, daysDetail || 'dias desordenados');
+
+  // refs: ref não-vazio, janela firstSeen <= lastSeen, nDays >= 1 coerente com
+  // daysInForce (datas válidas), source ih|es.
+  let refsOk = true;
+  let refsDetail = '';
+  if (Array.isArray(coastalArchive.refs)) {
+    for (let i = 0; i < coastalArchive.refs.length; i++) {
+      const r = coastalArchive.refs[i];
+      if (!r || typeof r !== 'object' || typeof r.ref !== 'string' || !r.ref) {
+        refsOk = false;
+        refsDetail = `refs[${i}] sem ref`;
+        break;
+      }
+      if (!isDateKey(r.firstSeen) || !isDateKey(r.lastSeen)) {
+        refsOk = false;
+        refsDetail = `refs[${i}] com firstSeen/lastSeen inválidos`;
+        break;
+      }
+      if (r.lastSeen < r.firstSeen) {
+        refsOk = false;
+        refsDetail = `refs[${i}] lastSeen ${r.lastSeen} < firstSeen ${r.firstSeen}`;
+        break;
+      }
+      if (!Array.isArray(r.daysInForce) || r.daysInForce.length === 0
+        || !r.daysInForce.every(isDateKey)) {
+        refsOk = false;
+        refsDetail = `refs[${i}] daysInForce vazio/inválido`;
+        break;
+      }
+      if (!Number.isInteger(r.nDays) || r.nDays < 1) {
+        refsOk = false;
+        refsDetail = `refs[${i}] nDays ${r.nDays} inválido`;
+        break;
+      }
+      if (r.source !== 'ih' && r.source !== 'es') {
+        refsOk = false;
+        refsDetail = `refs[${i}] source inesperado ${JSON.stringify(r.source)}`;
+        break;
+      }
+    }
+  }
+  check('coastal-archive.refsShape', refsOk, refsDetail || 'refs inválidas');
+} else {
+  warn('ih-coastal-warnings-archive.json missing — histórico costeiro sem snapshots (About/fontes escondem a secção)');
 }
 
 // model-health.json existe só nos runs multi-modelo (dia). Quando presente,
@@ -491,6 +676,27 @@ if (MODE === 'full' && meta !== undefined && isIso(meta.fullUpdatedAt)) {
   const max = isDaytime ? STALE_FULL_HOURS_DAY : STALE_FULL_HOURS_NIGHT;
   check('ttl.fullUpdatedAt', ageHours(meta.fullUpdatedAt) <= max,
     `fullUpdatedAt ${ageHours(meta.fullUpdatedAt).toFixed(1)}h old (>${max}h in ${isDaytime ? 'day' : 'night'})`);
+}
+
+// warnings.json TTL — segurança dos ALERTAS. O evaluate-alerts.yml corre de
+// 3 em 3h (imediato) e às 7:30 Lisboa (digest) e lê este ficheiro para a linha
+// «Mar perigoso» dos emails/Telegram. Um warnings.json velho ou ausente faz o
+// próximo ciclo de alertas correr ÀS CEGAS (sem aviso de segurança) — por isso
+// aqui FALHA (não warn): o CI pára antes do evaluate-alerts publicar.
+// TTL = 6h (dois ciclos de alerta): uma falha isolada do IPMA não rebenta o
+// deploy, mas uma indisponibilidade sustentada (mesmo limiar do
+// check-data-layer-health) é apanhada aqui. O ficheiro é refeito em CADA run
+// da pipeline (hourly), logo 6h sem refresh = ~6 runs a falhar o fetch.
+const TTL_WARNINGS_H = 6;
+if (ipmaWarningsData === undefined) {
+  checks.push('ttl.warnings');
+  fail('warnings.json missing — o próximo evaluate-alerts correria sem a linha de segurança «Mar perigoso» (IPMA/MeteoAlarm em baixo ou primeiro run sem dados)');
+} else if (isIso(ipmaWarningsData.fetchedAt)) {
+  const age = ageHours(ipmaWarningsData.fetchedAt);
+  checks.push('ttl.warnings');
+  if (age > TTL_WARNINGS_H) {
+    fail(`ttl.warnings: fetchedAt ${age.toFixed(1)}h old (>${TTL_WARNINGS_H}h) — o próximo evaluate-alerts correria sem avisos frescos (Mar perigoso)`);
+  }
 }
 
 // ── Report ──

@@ -27,9 +27,13 @@
  * (regionAttribution=false + coherenceGate block) — the buoy may be reading a
  * different wave field.
  *
- * Graceful degradation: the ES part is keyless and always runs; the IH part
- * needs IH_API_KEY. On failure (or no usable sample) we keep the previous
- * wave-bias.json and exit 0 — this layer must never block the pipeline.
+ * Graceful degradation: the ES part is keyless and always runs; on failure (or
+ * no usable sample) we keep the previous wave-bias.json and exit 0 — this
+ * layer must never block the pipeline. EXCEPT for a rejected key: a 401/403
+ * from getDatawellData fails ALL IH buoys at once (never a single-buoy fault),
+ * so it is propagated as an IhAuthError and run() fails fast with a Telegram
+ * alert (same fail-fast pattern as fetch-ih-buoys.js) — a dead key must never
+ * silently degrade just the IH side of the bias.
  */
 
 const fs = require('fs');
@@ -42,7 +46,9 @@ const {
   DEFAULT_WAVE_API,
   DEFAULT_IH_API,
   DEFAULT_COLLECTIONS,
+  isIhAuthError,
 } = require('./lib/ihBuoys.js');
+const { notifyIhAuthFailure } = require('./fetch-ih-buoys.js');
 const {
   fetchHistoricalWaveSeries,
   alignPairs,
@@ -61,6 +67,7 @@ const {
   surfaceSeries,
   CATALOG_BY_CODE,
   ES_BUOY_CODES,
+  KEYLESS_WMO_CODES,
 } = require('./lib/copernicusBuoys.js');
 const {
   readArchive,
@@ -124,7 +131,11 @@ async function fetchWmoEsBias() {
 
   const day = dayKey();
   const keys = await listDayWaveKeys(day);
-  const wanted = keys.filter((k) => ES_BUOY_CODES.includes(k.code));
+  // Acumula todos os códigos WMO keyless (ES + PT): a Nazaré 6200199 entra
+  // também aqui para o forecast-skill a usar como observações nacionais (o
+  // loop de viés ERA5 abaixo continua filtrado a ES_BUOY_CODES, por isso a
+  // leitura PT é arquivada mas não atribui viés a regiões).
+  const wanted = keys.filter((k) => KEYLESS_WMO_CODES.includes(k.code));
   let archived = 0;
   for (const { key, code } of wanted) {
     try {
@@ -283,6 +294,9 @@ async function fetchWaveBias() {
           `   ✓ ${station.idEst} ${station.name}: n=${stats.n} · ME ${stats.me >= 0 ? '+' : ''}${stats.me} m · MAE ${stats.mae} m · RMSE ${stats.rmse} m · r ${stats.corr ?? '—'}`,
         );
       } catch (err) {
+        // Key rejeitada (401/403) falha TODAS as boias — nunca uma avaria de
+        // uma só. Propagar para o run() falhar cedo com alerta (fail-fast).
+        if (isIhAuthError(err)) throw err;
         console.warn(`   ⚠️ ${station.idEst} (${station.name}): ${err.message}`);
       }
     }
@@ -327,6 +341,18 @@ async function fetchWaveBias() {
   return output;
 }
 
+/**
+ * Estado da key no ficheiro do passo anterior (fetch-ih-buoys.js corre antes
+ * no workflow) para gating da transição: se já estava `unauthorized`, a key já
+ * foi reportada — não se avisa o Telegram a cada run decorrido.
+ * @returns {boolean} true quando ih-buoys.json grava apiKeyStatus:'unauthorized'
+ */
+function readIhBuoysAuthState() {
+  return readJsonOrNull(
+    process.env.IH_BUOYS_PATH || path.join(__dirname, '../public/data/ih-buoys.json'),
+  )?.apiKeyStatus === 'unauthorized';
+}
+
 async function run() {
   try {
     const out = await fetchWaveBias();
@@ -338,6 +364,19 @@ async function run() {
       );
     }
   } catch (err) {
+    if (isIhAuthError(err)) {
+      // Fail-early: key rejeitada — o passo falha cedo com alerta, em vez de o
+      // viés IH degradar em silêncio (mesmo padrão do fetch-ih-buoys.js).
+      err.previouslyUnauthorized = readIhBuoysAuthState();
+      const res = await notifyIhAuthFailure(err, { layer: 'O viés de onda (wave-bias)' });
+      if (res.notified) console.log('   Telegram: alerta enviado.');
+      console.error(
+        `::error::IH_API_KEY rejeitada (HTTP ${err.status ?? '?'}) no fetch-wave-bias — viés IH desactivado. ` +
+          `O workflow falhou cedo de propósito; renova a key (docs/IH_API_KEY.md).`,
+      );
+      process.exitCode = 1;
+      return;
+    }
     console.error('❌ Wave bias fetch failed:', err.message || err);
     console.warn('⚠️ Mantendo o wave-bias.json anterior, se existir — a pipeline continua.');
   }

@@ -35,10 +35,15 @@ const S3_PREFIX =
   'native/INSITU_GLO_PHYBGCWAV_DISCRETE_MYNRT_013_030/' +
   'cmems_obs-ins_glo_phybgcwav_mynrt_na_irr_202311/latest/';
 
-/** WMO platform codes tracked by this layer (PT live, ES dormant-but-catalogued). */
+/** WMO platform codes tracked by this layer (PT live, ES reporting again). */
 const PLATFORM_CATALOG = [
   { code: '6201077', name: 'Datawell ao largo do Porto', area: 'Porto', country: 'PT' },
   { code: '6201079', name: 'Datawell ao largo de Faro', area: 'Faro', country: 'PT' },
+  // Nazaré Costeira (Fugro Wavescan CSA88/2, o mesmo instrumento que o IH serve
+  // via getDatawellData) — verificado a reportar à Copernicus em 2026-08-28/31
+  // (`IR_TS_MO_6200199_*.nc`, série horária com hm0/tp/hmax/sst). Dá observedWave
+  // à Costa de Prata/Lisboa sem depender da IH_API_KEY.
+  { code: '6200199', name: 'Nazaré Costeira (WMO)', area: 'Nazaré', country: 'PT' },
   { code: '6200024', name: 'Bilbao', area: 'Cantábrico', country: 'ES' },
   { code: '6200025', name: 'Cabo Peñas', area: 'Astúrias', country: 'ES' },
   { code: '6200083', name: 'Villano-Sisargas', area: 'Galiza', country: 'ES' },
@@ -48,10 +53,54 @@ const PLATFORM_CATALOG = [
   { code: '6202402', name: 'Açores (WMO)', area: 'Açores', country: 'PT' },
 ];
 
+/**
+ * Regex gerada do catálogo — um código novo no PLATFORM_CATALOG entra na
+ * descoberta automaticamente (o bug do 6200199 foi exactamente um catálogo e
+ * uma regex que divergiram; com isto é impossível).
+ */
+const PLATFORM_CODE_RE = new RegExp(
+  `_TS_MO_(${PLATFORM_CATALOG.map((p) => p.code).join('|')})_\\d{8}\\.nc$`,
+);
+
 const CATALOG_BY_CODE = Object.fromEntries(PLATFORM_CATALOG.map((p) => [p.code, p]));
 
 /** Codes of the Spanish (Puertos del Estado) route — the cross-border layer. */
 const ES_BUOY_CODES = PLATFORM_CATALOG.filter((p) => p.country === 'ES').map((p) => p.code);
+
+/**
+ * Códigos WMO nacionais (PT) keyless acumulados além da rota ES: a Nazaré
+ * Costeira 6200199 serve o forecast-skill como fonte PT (origem 'wmo-pt') sem
+ * depender da IH_API_KEY — o best_match dos spots da Costa de Prata/Lisboa
+ * cruza com as leituras WMO desta boia. Lista explícita (não derivada do
+ * país, para não arrastar 6201077/6201079/Açores que têm tratamento próprio).
+ */
+const PT_KEYLESS_WMO_CODES = ['6200199'];
+
+/** Todos os códigos WMO keyless acumulados num wmo-bias-archive.json (ES + PT). */
+const KEYLESS_WMO_CODES = [...new Set([...ES_BUOY_CODES, ...PT_KEYLESS_WMO_CODES])];
+
+/**
+ * Origem (plataforma) de um código WMO keyless no forecast-skill: PT nacional
+ * (6200199) → 'wmo-pt'; qualquer outro WMO → 'wmo-es'. Mantém os contadores
+ * por plataforma honestos (o total misto esconderia a cobertura nacional).
+ */
+function wmoOriginForWmoCode(code) {
+  return PT_KEYLESS_WMO_CODES.includes(String(code)) ? 'wmo-pt' : 'wmo-es';
+}
+
+/**
+ * Ponte keyless da Costa de Prata: enquanto a IH_API_KEY não provar a Fugro
+ * (estação 2, Nazaré Costeira — a mesma boia que a rota WMO 6200199 serve),
+ * os spots nazaré/são-martinho-porto/baleal ficariam sem observedWave quando a
+ * leitura nacional (IH ou WMO 6200199) estiver stale. Anexa a Cabo Silleiro
+ * (6200084, ES — série horária quase em tempo real) como proxy keyless quando
+ * a leitura ES estiver fresca. A distância real (≈280-300 km) é mantida — a UI
+ * mostra «a X km» honestamente — e o payload marca `bridge` para a UI distinguir
+ * o proxy da leitura nacional. Auto-desactiva: quando a Fugro (IH ou WMO 6200199)
+ * voltar a ter leitura fresca, o merge usa-a e a ponte nunca é anexada.
+ */
+const KEYLESS_BRIDGE_ES_CODE = '6200084';
+const KEYLESS_BRIDGE_SPOT_IDS = ['nazare', 'sao-martinho-porto', 'baleal'];
 
 /** Nearest-buoy mapping radius (km). Generous: only ~2 live mainland buoys. */
 const MAX_BUOY_MAP_KM = 250;
@@ -114,7 +163,7 @@ async function listDayWaveKeys(
       const key = m[1];
       // Only the time-series wave file (`_TS_MO_`) — the `_WS_MO_` sibling
       // duplicates the platform; one parse per buoy is enough.
-      const codeMatch = key.match(/_TS_MO_(62000(?:24|25|83|84|85)|62010(?:77|79)|62024(?:00|02))_\d{8}\.nc$/);
+      const codeMatch = key.match(PLATFORM_CODE_RE);
       if (codeMatch) keys.push({ key, code: codeMatch[1] });
     }
     const next = xml.match(/<NextContinuationToken>([^<]+)<\/NextContinuationToken>/);
@@ -444,12 +493,64 @@ function observedWaveForSpot(mapping, buoy, opts = {}) {
   };
 }
 
+/**
+ * observedWave keyless de ponte (Costa de Prata ← Cabo Silleiro).
+ *
+ * Fallback dentro do fallback WMO: só devolve leitura para os spots da ponte
+ * (nazaré/são-martinho-porto/baleal) e só quando a leitura ES estiver fresca
+ * (gate MAX_OBS_AGE_HOURS). Bypassa o MAX_BUOY_ATTACH_KM — é uma ponte de
+ * longa distância EXPLÍCITA, por isso mantém a distância real no payload
+ * (a UI mostra «boia Cabo Silleiro a ~280 km») e marca `bridge` para nunca
+ * passar por leitura nacional. `stationCode` permite o merge indexar skill e
+ * gate de coerência ES exactamente como uma boia ES mapeada.
+ *
+ * @param {{ buoys?: Record<string, { name?: string, area?: string, lat?: number, lon?: number, latest?: object }> } | null} wmoBuoys
+ * @param {{ id: string, lat: number, lon: number }} spot
+ * @param {{ maxAgeHours?: number, nowMs?: number }} [opts]
+ * @returns {object | null}
+ */
+function esBridgeObservedWaveForSpot(wmoBuoys, spot, opts = {}) {
+  const { maxAgeHours = MAX_OBS_AGE_HOURS, nowMs = Date.now() } = opts;
+  if (!wmoBuoys || !wmoBuoys.buoys) return null;
+  if (!KEYLESS_BRIDGE_SPOT_IDS.includes(spot.id)) return null;
+  const buoy = wmoBuoys.buoys[KEYLESS_BRIDGE_ES_CODE];
+  if (!buoy || typeof buoy !== 'object') return null;
+  const latest = buoy.latest;
+  if (!latest || typeof latest !== 'object') return null;
+  if (typeof latest.hs !== 'number' || !isFreshReading(latest.date, nowMs, maxAgeHours)) {
+    return null;
+  }
+  const distanceKm = haversineKm(spot.lat, spot.lon, buoy.lat, buoy.lon);
+  return {
+    waveHeight: latest.hs,
+    wavePeriod: typeof latest.tp === 'number' ? latest.tp : undefined,
+    waveDirection: typeof latest.dir === 'number' ? latest.dir : undefined,
+    maxWaveHeight: typeof latest.hmax === 'number' ? latest.hmax : undefined,
+    waterTemp: typeof latest.sst === 'number' ? latest.sst : undefined,
+    stationName: buoy.name,
+    stationArea: buoy.area,
+    distanceKm: Math.round(distanceKm * 10) / 10,
+    observedAt: latest.date,
+    source: 'wmo-buoy',
+    stationCode: KEYLESS_BRIDGE_ES_CODE,
+    bridge: true,
+    bridgeNote:
+      'Ponte keyless: Cabo Silleiro (ES) enquanto a Fugro nacional (IH_API_KEY) não está provada.',
+  };
+}
+
 module.exports = {
   S3_BASE,
   S3_PREFIX,
   PLATFORM_CATALOG,
+  PLATFORM_CODE_RE,
   CATALOG_BY_CODE,
   ES_BUOY_CODES,
+  PT_KEYLESS_WMO_CODES,
+  KEYLESS_WMO_CODES,
+  wmoOriginForWmoCode,
+  KEYLESS_BRIDGE_ES_CODE,
+  KEYLESS_BRIDGE_SPOT_IDS,
   MAX_BUOY_MAP_KM,
   MAX_BUOY_ATTACH_KM,
   MAX_OBS_AGE_HOURS,
@@ -467,4 +568,5 @@ module.exports = {
   findUnmappedEsBuoys,
   mapSpotsToWmoBuoys,
   observedWaveForSpot,
+  esBridgeObservedWaveForSpot,
 };

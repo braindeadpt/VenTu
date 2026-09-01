@@ -3,6 +3,7 @@ import {
   relevantWarningsForSpot,
   warningTypeLabel,
   warningBadgeLabel,
+  warningLevelLabel,
   ipmaRadarUrl,
   strongestSpotWarning,
   strongestSeaStateForSpots,
@@ -163,6 +164,20 @@ describe('strongestSpotWarning', () => {
     expect(strongestSpotWarning(undefined, 'peniche')).toBeNull();
     expect(strongestSpotWarning(base, 'faro')).toBeNull();
     expect(strongestSpotWarning({ ...base, spotWarnings: {} }, 'peniche')).toBeNull();
+  });
+});
+
+describe('warningLevelLabel (nível localizado — fonte única)', () => {
+  it('pt/en por nível, fallback para a key crua', () => {
+    expect(warningLevelLabel('yellow', 'pt')).toBe('Amarelo');
+    expect(warningLevelLabel('yellow', 'en')).toBe('Yellow');
+    expect(warningLevelLabel('orange', 'pt')).toBe('Laranja');
+    expect(warningLevelLabel('orange', 'en')).toBe('Orange');
+    expect(warningLevelLabel('red', 'pt')).toBe('Vermelho');
+    expect(warningLevelLabel('red', 'en')).toBe('Red');
+    // Locales fora de pt usam o rótulo EN; nível desconhecido → key crua.
+    expect(warningLevelLabel('orange', 'de')).toBe('Orange');
+    expect(warningLevelLabel('storm', 'pt')).toBe('storm');
   });
 });
 

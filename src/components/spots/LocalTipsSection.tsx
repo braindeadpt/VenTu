@@ -13,6 +13,7 @@ import {
 import type { Spot } from '@/types';
 import type { SpotLocalTips } from '@/lib/spotTips';
 import { getNearAccommodationUrl } from '@/lib/accommodation';
+import { spotTagEn } from '@/lib/spotTagsEn';
 import Card from '@/components/ui/Card';
 import { cn } from '@/lib/cn';
 
@@ -133,7 +134,8 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
       body: (
         <ul className="list-disc pl-4 space-y-0.5 text-fg-muted m-0">
           {spot.hazards.map((h) => (
-            <li key={h}>{h}</li>
+            /* EN: nunca o token PT verbatim — spotTagEn (dicionário auditado). */
+            <li key={h}>{isPt ? h : spotTagEn(h)}</li>
           ))}
         </ul>
       ),
@@ -145,7 +147,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
       id: 'facilities',
       icon: ShowerHead,
       label: isPt ? 'Instalações' : 'Facilities',
-      body: spot.facilities.join(isPt ? ' · ' : ' · '),
+      body: spot.facilities.map((f) => (isPt ? f : spotTagEn(f))).join(' · '),
     });
   }
 

@@ -2,6 +2,8 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   parseForecastSkillBuoys,
   resolveSpotBuoySkill,
+  forecastSkillOriginLabel,
+  forecastSkillOriginTag,
   loadForecastSkillForSpot,
   clearForecastSkillCache,
   clearForecastSkillClientCache,
@@ -52,17 +54,18 @@ describe('parseForecastSkillBuoys', () => {
     expect(data.buoys[1]).toMatchObject({ id: '19', name: 'CSA92/D', n: 47, me: 0.2, origin: 'ih' });
   });
 
-  it('parseia byOrigin separado por plataforma (IH vs WMO-ES)', () => {
+  it('parseia byOrigin separado por plataforma (IH vs WMO-PT vs WMO-ES)', () => {
     const data = parseForecastSkillBuoys(rawWithSkill);
     expect(data.byOrigin).toEqual({
       ih: expect.objectContaining({ n: 12, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12 }),
+      'wmo-pt': null,
       'wmo-es': expect.objectContaining({ n: 10, me: -0.3, mae: 0.6, rmse: 0.7, corr: 0.88, meanLeadHours: 6 }),
     });
   });
 
   it('parseia os contadores de pares por origem e por calibração', () => {
     const data = parseForecastSkillBuoys(rawWithSkill);
-    expect(data.pairCountByOrigin).toEqual({ ih: 12, 'wmo-es': 10 });
+    expect(data.pairCountByOrigin).toEqual({ ih: 12, 'wmo-pt': 0, 'wmo-es': 10 });
     expect(data.calibratedPairCount).toBe(10);
   });
 
@@ -71,9 +74,9 @@ describe('parseForecastSkillBuoys', () => {
       pairCount: 5,
       byBuoy: rawWithSkill.byBuoy,
     });
-    expect(data.pairCountByOrigin).toEqual({ ih: 0, 'wmo-es': 0 });
+    expect(data.pairCountByOrigin).toEqual({ ih: 0, 'wmo-pt': 0, 'wmo-es': 0 });
     expect(data.calibratedPairCount).toBe(0);
-    expect(parseForecastSkillBuoys(null).pairCountByOrigin).toEqual({ ih: 0, 'wmo-es': 0 });
+    expect(parseForecastSkillBuoys(null).pairCountByOrigin).toEqual({ ih: 0, 'wmo-pt': 0, 'wmo-es': 0 });
     expect(parseForecastSkillBuoys(null).calibratedPairCount).toBe(0);
   });
 
@@ -82,7 +85,7 @@ describe('parseForecastSkillBuoys', () => {
       byOrigin: { ih: { n: 'x', me: 'y' }, 'wmo-es': null },
       byBuoy: rawWithSkill.byBuoy,
     });
-    expect(data.byOrigin).toEqual({ ih: null, 'wmo-es': null });
+    expect(data.byOrigin).toEqual({ ih: null, 'wmo-pt': null, 'wmo-es': null });
   });
 
   it('devolve vazio para null/corrompido/sem stats', () => {
@@ -90,6 +93,24 @@ describe('parseForecastSkillBuoys', () => {
     expect(parseForecastSkillBuoys({ byBuoy: {} }).hasData).toBe(false);
     expect(parseForecastSkillBuoys({ byBuoy: { 19: { n: 'x', me: 'y' } } }).hasData).toBe(false);
     expect(parseForecastSkillBuoys('nope').hasData).toBe(false);
+  });
+});
+
+describe('forecastSkillOriginLabel', () => {
+  it('mostra o país/fonte explícito (IH vs Copernicus-ES), não um código enigmático', () => {
+    expect(forecastSkillOriginLabel('ih', true)).toBe('IH · Portugal');
+    expect(forecastSkillOriginLabel('wmo-pt', true)).toBe('Copernicus-PT · Portugal');
+    expect(forecastSkillOriginLabel('wmo-pt', false)).toBe('Copernicus-PT · Portugal');
+    expect(forecastSkillOriginLabel('wmo-es', true)).toBe('Copernicus-ES · Espanha');
+    expect(forecastSkillOriginLabel('wmo-es', false)).toBe('Copernicus-ES · Spain');
+    expect(forecastSkillOriginLabel(undefined, true)).toBe('—');
+  });
+
+  it('versão compacta para a tabela (tag)', () => {
+    expect(forecastSkillOriginTag('ih')).toBe('IH');
+    expect(forecastSkillOriginTag('wmo-pt')).toBe('Copernicus-PT');
+    expect(forecastSkillOriginTag('wmo-es')).toBe('Copernicus-ES');
+    expect(forecastSkillOriginTag(undefined)).toBe('—');
   });
 });
 

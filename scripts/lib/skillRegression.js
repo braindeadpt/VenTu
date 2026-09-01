@@ -34,6 +34,21 @@ const MIN_BASELINE_SNAPSHOTS = 3;
 const RMSE_WORSE_M = 0.3;
 /** |ME| worsening threshold (m) — |recent ME| ≥ |baseline ME| + this. */
 const ME_ABS_WORSE_M = 0.3;
+/**
+ * Plataforma: fracção da baseline abaixo da qual o n diário colapsou
+ * (recent < baseline × isto → colapso). Deteta quando o fluxo de uma
+ * plataforma quebrou (ex: IH_API_KEY expirou, Copernicus deixou de publicar).
+ */
+const N_COLLAPSE_FACTOR = 0.5;
+/** Baseline diária mínima (n) para o colapso ser significativo — uma plataforma
+ *  que mal começou não está a “colapsar”. */
+const MIN_BASELINE_PLATFORM_N = 10;
+/** Días recentes mínimos da plataforma antes de avaliar. */
+const MIN_RECENT_PLATFORM_DAYS = 1;
+/** Días baseline mínimos antes de comparar. */
+const MIN_BASELINE_PLATFORM_DAYS = 3;
+/** Rótulos por plataforma para o report/aviso. */
+const PLATFORM_LABELS = { ih: 'IH (Datawell)', 'wmo-es': 'WMO-ES (Copernicus)' };
 
 const round2 = (n) => Math.round(n * 100) / 100;
 
@@ -83,8 +98,14 @@ function writeArchive(archive, outputPath = DEFAULT_ARCHIVE_PATH) {
 /**
  * Add today's byBuoy snapshot to the archive (dedupe per buoy+day — the
  * recomputed rolling stats for a given day, keep the latest fetchedAt).
+ *
+ * Deals with both key types from forecast-skill.json byBuoy: numeric IH idEst
+ * (4, 19 …) and string WMO platform codes (6200084 Cabo Silleiro …). The WMO-ES
+ * buoys come from the keyless Copernicus route, so the NW regression warning
+ * fires without depending on IH_API_KEY. The `origin` ('ih' | 'wmo-es') is
+ * carried through so the audit/snapshot can tell the platforms apart.
  * @param {object} archive
- * @param {Record<string, { buoyName?: string, n?: number, me?: number, mae?: number, rmse?: number, corr?: number, meanLeadHours?: number }>} byBuoy from forecast-skill.json
+ * @param {Record<string, { buoyName?: string, n?: number, me?: number, mae?: number, rmse?: number, corr?: number, meanLeadHours?: number, origin?: string }>} byBuoy from forecast-skill.json
  * @param {string} fetchedAt ISO of the skill report
  */
 function mergeSnapshot(archive, byBuoy, fetchedAt) {
@@ -101,6 +122,9 @@ function mergeSnapshot(archive, byBuoy, fetchedAt) {
     const snap = {
       day,
       buoyId,
+      // Preserva a origem (ih | wmo-es) quando presente — as boias ES (string)
+      // são o caminho keyless que cobre o NW sem IH_API_KEY.
+      ...(e.origin === 'ih' || e.origin === 'wmo-es' ? { origin: e.origin } : {}),
       name: typeof e.buoyName === 'string' && e.buoyName ? e.buoyName : `Buoy ${buoyId}`,
       n,
       me: round2(me),
@@ -159,11 +183,18 @@ function buildRegressionReport(archive, opts = {}) {
   const minBaseline = opts.minBaselineSnapshots ?? MIN_BASELINE_SNAPSHOTS;
   const rmseWorseM = opts.rmseWorseM ?? RMSE_WORSE_M;
   const meAbsWorseM = opts.meAbsWorseM ?? ME_ABS_WORSE_M;
+  const nCollapseFactor = opts.nCollapseFactor ?? N_COLLAPSE_FACTOR;
+  const minBaselinePlatformN = opts.minBaselinePlatformN ?? MIN_BASELINE_PLATFORM_N;
+  const minRecentDays = opts.minRecentPlatformDays ?? MIN_RECENT_PLATFORM_DAYS;
+  const minBaselineDays = opts.minBaselinePlatformDays ?? MIN_BASELINE_PLATFORM_DAYS;
 
   const byBuoy = {};
   const byId = new Map();
   for (const s of archive.snapshots) {
     if (!byId.has(s.buoyId)) byId.set(s.buoyId, { buoyId: s.buoyId, name: s.name, snaps: [] });
+    // A origem (ih/wmo-es) pode variar entre snapshots legacy/posteriores —
+    // apo médio mais recente vence para o report expor fins de auditoria.
+    if (s.origin === 'ih' || s.origin === 'wmo-es') byId.get(s.buoyId).origin = s.origin;
     byId.get(s.buoyId).snaps.push(s);
   }
 
@@ -176,6 +207,7 @@ function buildRegressionReport(archive, opts = {}) {
     if (recent.length < minRecent || baseline.length < minBaseline) {
       byBuoy[entry.buoyId] = {
         name: entry.name,
+        ...(entry.origin ? { origin: entry.origin } : {}),
         recentSnapshots: recent.length,
         baselineSnapshots: baseline.length,
         verdict: 'insufficient',
@@ -188,6 +220,7 @@ function buildRegressionReport(archive, opts = {}) {
     const bMe = meanStat(baseline, 'me');
     const entryOut = {
       name: entry.name,
+      ...(entry.origin ? { origin: entry.origin } : {}),
       recent: {
         snapshots: recent.length,
         rmse: rRmse,
@@ -213,6 +246,7 @@ function buildRegressionReport(archive, opts = {}) {
       regressions.push({
         buoyId: entry.buoyId,
         name: entry.name,
+        ...(entry.origin ? { origin: entry.origin } : {}),
         ...entryOut,
         reasons: [
           ...(rmseRegressed ? [`RMSE +${round2(rmseDelta)} m (limiar +${rmseWorseM})`] : []),
@@ -225,6 +259,8 @@ function buildRegressionReport(archive, opts = {}) {
 
   regressions.sort((a, b) => b.rmseDelta - a.rmseDelta || b.meAbsDelta - a.meAbsDelta);
 
+  const platformHealth = buildPlatformHealth(archive, opts);
+
   return {
     source: 'forecast-skill-regression',
     checkedAt: new Date(nowMs).toISOString(),
@@ -232,11 +268,151 @@ function buildRegressionReport(archive, opts = {}) {
     recentDays,
     baselineDays,
     thresholds: { rmseWorseM, meAbsWorseM },
+    platformThresholds: {
+      nCollapseFactor,
+      minBaselinePlatformN,
+      minRecentPlatformDays: minRecentDays,
+      minBaselinePlatformDays: minBaselineDays,
+    },
     minRecentSnapshots: minRecent,
     minBaselineSnapshots: minBaseline,
     byBuoy,
     regressions,
+    // Health por plataforma (IH vs WMO-ES agregado) — separado do total misto
+    // para apanhar degradações difusas e quebras de fluxo que o per-buoy perde.
+    platforms: platformHealth.platforms,
+    platformAlerts: platformHealth.alerts,
   };
+}
+
+/**
+ * Origem de um snapshot — explícita quando presente, senão derivada do tipo de
+ * buoyId (numérico IH idEst vs string WMO platform code) para os legacy. As
+ * boias ES (string) são o caminho keyless que cobre o NW sem IH_API_KEY.
+ */
+function originOfSnapshot(s) {
+  if (s && (s.origin === 'ih' || s.origin === 'wmo-es')) return s.origin;
+  return s && typeof s.buoyId === 'number' ? 'ih' : 'wmo-es';
+}
+
+/**
+ * Health por PLATAFORMA (IH vs WMO-ES agregado) — não só a regressão por boia
+ * nem o total misto. Agrega os snapshots diários das boias de cada plataforma
+ * por dia (n = soma das boias; ME ponderado por n) e avisa quando:
+ *   1. o n diário da plataforma COLAPSA: recente < baseline × N_COLLAPSE_FACTOR
+ *      (o fluxo da plataforma quebrou — menos leituras a chegarem);
+ *   2. o ME da plataforma PIORA: |recent ME| ≥ |baseline ME| + ME_ABS_WORSE_M
+ *      (o viés sistemático da plataforma a crescer, mesmo sem boia individual
+ *      a saltar o limiar).
+ * A nível de plataforma isto apanha degradações difusas que o per-buoy perde
+ * (ex: todas as boias pioram 0.25 m — nenhuma regista, mas a plataforma sim).
+ * @returns {{ platforms: object, alerts: Array<object> }} platforms keyed by
+ *   'ih'|'wmo-es' (null quando sem snapshots); alerts = plataformas afetadas.
+ */
+function buildPlatformHealth(archive, opts = {}) {
+  const nowMs = opts.nowMs ?? Date.now();
+  const recentDays = opts.recentDays ?? RECENT_WINDOW_DAYS;
+  const baselineDays = opts.baselineDays ?? BASELINE_WINDOW_DAYS;
+  const collapseFactor = opts.nCollapseFactor ?? N_COLLAPSE_FACTOR;
+  const minBaselineN = opts.minBaselinePlatformN ?? MIN_BASELINE_PLATFORM_N;
+  const minRecentDays = opts.minRecentPlatformDays ?? MIN_RECENT_PLATFORM_DAYS;
+  const minBaselineDays = opts.minBaselinePlatformDays ?? MIN_BASELINE_PLATFORM_DAYS;
+  const meAbsWorseM = opts.meAbsWorseM ?? ME_ABS_WORSE_M;
+
+  const platforms = { ih: null, 'wmo-es': null };
+  const alerts = [];
+
+  for (const origin of ['ih', 'wmo-es']) {
+    const snaps = archive.snapshots.filter((s) => originOfSnapshot(s) === origin);
+    if (snaps.length === 0) {
+      platforms[origin] = null;
+      continue;
+    }
+
+    // Agrega por dia: n = soma das boias da plataforma; me ponderado por n.
+    const byDay = new Map();
+    for (const s of snaps) {
+      const n = Number(s.n);
+      if (!Number.isFinite(n) || n <= 0) continue;
+      const d = byDay.get(s.day) ?? { day: s.day, n: 0, meSum: 0 };
+      d.n += n;
+      d.meSum += (Number(s.me) || 0) * n;
+      byDay.set(s.day, d);
+    }
+    const days = [...byDay.values()];
+    const recent = days.filter((d) => daysAgo(d.day, nowMs) < recentDays);
+    const baseline = days.filter(
+      (d) =>
+        daysAgo(d.day, nowMs) >= recentDays &&
+        daysAgo(d.day, nowMs) < recentDays + baselineDays,
+    );
+
+    const recentN = meanStat(recent, 'n');
+    const baselineN = meanStat(baseline, 'n');
+    const weightedMe = (list) => {
+      if (list.length === 0) return null;
+      const sumN = list.reduce((a, d) => a + d.n, 0);
+      if (sumN <= 0) return null;
+      return list.reduce((a, d) => a + d.meSum, 0) / sumN;
+    };
+    const recentMe = weightedMe(recent);
+    const baselineMe = weightedMe(baseline);
+
+    const entry = {
+      platform: origin,
+      name: PLATFORM_LABELS[origin],
+      recent: { days: recent.length, n: round2(recentN ?? 0), me: recentMe },
+      baseline: { days: baseline.length, n: round2(baselineN ?? 0), me: baselineMe },
+    };
+
+    if (recent.length < minRecentDays || baseline.length < minBaselineDays) {
+      entry.verdict = 'insufficient';
+      platforms[origin] = entry;
+      continue;
+    }
+
+    const meAbsDelta =
+      recentMe != null && baselineMe != null
+        ? round2(Math.abs(recentMe) - Math.abs(baselineMe))
+        : null;
+    entry.meAbsDelta = meAbsDelta;
+
+    // n colapso: recente abaixo de fracção da baseline (com baseline não trivial,
+    // para não soar alarme quando a plataforma acabou de arrancar).
+    const collapsed =
+      baselineN != null &&
+      baselineN >= minBaselineN &&
+      recentN != null &&
+      recentN < baselineN * collapseFactor;
+    const nDeltaFraction =
+      collapsed && baselineN != null && recentN != null
+        ? round2(recentN / baselineN)
+        : null;
+    entry.nDeltaFraction = nDeltaFraction;
+
+    const meWorsened = meAbsDelta != null && meAbsDelta >= meAbsWorseM;
+
+    // O colapso de n é mais grave que a piora de ME — tem prioridade no verdict,
+    // mas ambos entram nos reasons/alerts.
+    entry.verdict = collapsed
+      ? 'n-collapse'
+      : meWorsened
+        ? 'me-worsened'
+        : 'ok';
+    entry.reasons = [
+      ...(collapsed
+        ? [`n da plataforma colapsou (recente ${recentN} vs baseline ${baselineN}/dia, ×${nDeltaFraction})`]
+        : []),
+      ...(meWorsened
+        ? [`|ME| piorou +${meAbsDelta} m (limiar +${meAbsWorseM})`]
+        : []),
+    ];
+
+    if (collapsed || meWorsened) alerts.push(entry);
+    platforms[origin] = entry;
+  }
+
+  return { platforms, alerts };
 }
 
 /** Read the previous report (for transition detection). */
@@ -267,7 +443,9 @@ function writeReport(report, outputPath = DEFAULT_REPORT_PATH) {
 async function notifyRegressions(report, opts = {}) {
   const log = opts.log ?? ((m) => console.log(m));
   const regressions = Array.isArray(report.regressions) ? report.regressions : [];
-  if (regressions.length === 0) {
+  // Plataforma (IH/WMO-ES agregado) — avisos de n colapsado ou ME a piorar.
+  const platformAlerts = Array.isArray(report.platformAlerts) ? report.platformAlerts : [];
+  if (regressions.length === 0 && platformAlerts.length === 0) {
     return { notified: false, newlyRegressed: [], reason: 'no-regressions' };
   }
   const prev = readReport(opts.reportPath) ?? {};
@@ -276,26 +454,61 @@ async function notifyRegressions(report, opts = {}) {
   );
   const newly = regressions.filter((r) => !prevSet.has(String(r.buoyId)));
 
-  if (newly.length === 0) {
-    return { notified: false, newlyRegressed: [], reason: 'already-reported' };
+  // Transição por plataforma: chave <platform>:<verdict>, para só avisar quando
+  // o estado da plataforma MUDOU (ex: voltou a ok no dia seguinte = sem alarme).
+  const prevPlat = new Set(
+    (Array.isArray(prev.platformAlerts) ? prev.platformAlerts : []).map(
+      (a) => `${a.platform}:${a.verdict}`,
+    ),
+  );
+  const newPlat = platformAlerts.filter((a) => !prevPlat.has(`${a.platform}:${a.verdict}`));
+
+  if (newly.length === 0 && newPlat.length === 0) {
+    return { notified: false, newlyRegressed: [], newPlatformAlerts: [], reason: 'already-reported' };
   }
 
   const list = newly
-    .map((r) => `${r.name} (${r.buoyId}): ${r.reasons.join('; ')}`)
+    .map((r) => {
+      const origin = r.origin === 'wmo-es' ? ' (WMO-ES, keyless)' : r.origin === 'ih' ? ' (IH)' : '';
+      return `${r.name} (${r.buoyId}${origin}): ${r.reasons.join('; ')}`;
+    })
     .join('\n');
-  const text =
-    `⚠️ VenTu — regressão do forecast de onda por boia:\n${list}\n` +
-    `(skill real, forecast-skill.json · verificado em ${report.checkedAt})`;
+  const platList = newPlat
+    .map((a) => {
+      const flag = a.platform === 'wmo-es' ? ' 🇪🇸 WMO-ES' : a.platform === 'ih' ? ' IH' : '';
+      return `Plataforma ${a.name}${flag}: ${a.reasons.join('; ')}`;
+    })
+    .join('\n');
+  const text = [
+    ...(list ? [`⚠️ VenTu — regressão do forecast de onda por boia:\n${list}`] : []),
+    ...(platList ? [`⚠️ VenTu — health do forecast por plataforma:\n${platList}`] : []),
+    `(skill real, forecast-skill.json · verificado em ${report.checkedAt})`,
+  ].join('\n');
 
   const chatId = opts.chatId ?? process.env.OPS_TELEGRAM_CHAT_ID?.trim();
   if (!chatId) {
-    log(`  ⚠️ Boia(s) com regressão nova: ${newly.map((r) => r.name).join(', ')} — OPS_TELEGRAM_CHAT_ID não definido (dry-run).`);
-    return { notified: false, newlyRegressed: newly.map((r) => r.name), reason: 'no-chat-id' };
+    log(
+      `  ⚠️ ${newly.length > 0 ? `Boia(s) com regressão nova: ${newly.map((r) => `${r.name}${r.origin === 'wmo-es' ? ' (WMO-ES)' : r.origin === 'ih' ? ' (IH)' : ''}`).join(', ')}; ` : ''}${
+        newPlat.length > 0
+          ? `Plataforma(s): ${newPlat.map((a) => `${a.name} (${a.verdict})`).join(', ')}; `
+          : ''
+      }OPS_TELEGRAM_CHAT_ID não definido (dry-run).`,
+    );
+    return {
+      notified: false,
+      newlyRegressed: newly.map((r) => r.name),
+      newPlatformAlerts: newPlat.map((a) => ({ platform: a.platform, verdict: a.verdict })),
+      reason: 'no-chat-id',
+    };
   }
 
   const send = opts.send ?? require('./telegram').sendTelegramMessage;
   await send(chatId, text);
-  return { notified: true, newlyRegressed: newly.map((r) => r.name) };
+  return {
+    notified: true,
+    newlyRegressed: newly.map((r) => r.name),
+    newPlatformAlerts: newPlat.map((a) => ({ platform: a.platform, verdict: a.verdict })),
+  };
 }
 
 module.exports = {
@@ -318,6 +531,13 @@ module.exports = {
   readReport,
   writeReport,
   notifyRegressions,
+  buildPlatformHealth,
+  originOfSnapshot,
   meanStat,
   daysAgo,
+  N_COLLAPSE_FACTOR,
+  MIN_BASELINE_PLATFORM_N,
+  MIN_RECENT_PLATFORM_DAYS,
+  MIN_BASELINE_PLATFORM_DAYS,
+  PLATFORM_LABELS,
 };

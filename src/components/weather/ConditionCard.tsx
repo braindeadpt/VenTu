@@ -3,6 +3,7 @@
 import { Wind, Waves, Thermometer, Gauge } from 'lucide-react';
 import WindCompass from '@/components/ui/WindCompass';
 import { getWaveRating, getWindRating } from '@/lib/openmeteo';
+import { getTranslation } from '@/lib/i18n';
 
 interface ConditionCardProps {
   waveHeight: number;
@@ -20,7 +21,7 @@ export default function ConditionCard({
 }: ConditionCardProps) {
   const waveRating = getWaveRating(waveHeight);
   const windRating = getWindRating(windSpeed);
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale);
 
   if (compact) {
     return (
@@ -47,7 +48,7 @@ export default function ConditionCard({
         <div className="flex items-center gap-3">
           <Waves className="w-5 h-5 text-data-waves" />
           <div>
-            <p className="text-xs text-fg-muted">{isPt ? 'Altura Onda' : 'Wave Height'}</p>
+            <p className="text-xs text-fg-muted">{t.spots.waveHeight}</p>
             <p className="text-2xl font-bold">{waveHeight.toFixed(1)}<span className="text-sm font-normal text-fg-subtle">m</span></p>
           </div>
         </div>
@@ -60,13 +61,13 @@ export default function ConditionCard({
         <div className="flex items-center gap-3">
           <WindCompass direction={windDirection} speed={windSpeed * 1.94384} size={48} />
           <div>
-            <p className="text-xs text-fg-muted">{isPt ? 'Vento' : 'Wind'}</p>
+            <p className="text-xs text-fg-muted">{t.spots.windSpeed}</p>
             <p className="text-2xl font-bold">{(windSpeed * 1.94384).toFixed(0)}<span className="text-sm font-normal text-fg-subtle">kt</span></p>
           </div>
         </div>
         <div className="text-right">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${windRating.className}`}>
-            {isPt ? 'Raj' : 'Gust'}: {(windGust * 1.94384).toFixed(0)}kt
+            {t.spots.gust}: {(windGust * 1.94384).toFixed(0)}kt
           </span>
         </div>
       </div>
@@ -75,14 +76,14 @@ export default function ConditionCard({
         <div className="flex items-center gap-3">
           <Thermometer className="w-5 h-5 text-data-waves" />
           <div>
-            <p className="text-xs text-fg-muted">{isPt ? 'Temp. Água' : 'Water Temp'}</p>
+            <p className="text-xs text-fg-muted">{t.spots.waterTemp}</p>
             <p className="text-lg font-bold">{waterTemp.toFixed(1)}°C</p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <Gauge className="w-5 h-5 text-data-waves" />
           <div>
-            <p className="text-xs text-fg-muted">{isPt ? 'Período' : 'Period'}</p>
+            <p className="text-xs text-fg-muted">{t.spots.period}</p>
             <p className="text-lg font-bold">{wavePeriod.toFixed(1)}s</p>
           </div>
         </div>

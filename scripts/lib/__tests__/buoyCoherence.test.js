@@ -650,3 +650,50 @@ describe('isEsCodeGated (gate puro do merge por spot)', () => {
     );
   });
 });
+
+describe('Par Silleiro×Nazaré (6200084×6200199) — referência PT da Costa de Prata', () => {
+  // O PAIRS do check-buoy-coherence agora valida o NW contra a Nazaré Costeira
+  // WMO (6200199), além das Datawell de Porto/Faro — capaz de correr mesmo sem
+  // essas (boias do Norte esparsas/stale).
+  const checkScript = require('../../check-buoy-coherence.js');
+  const ES = ['6200084', '6200083', '6200085'];
+
+  it('o PAIRS inclui Cabo Silleiro × Nazaré Costeira', () => {
+    expect(checkScript.PAIRS).toContainEqual({ a: '6200084', b: '6200199' });
+  });
+
+  it('um par incoherent Silleiro×Nazaré faz o gate disparar sobre o Silleiro (sem Porto)', () => {
+    const report = {
+      pairs: [{ codes: ['6200084', '6200199'], verdict: 'incoherent', pair: 'Cabo Silleiro × Nazaré Costeira (WMO)' }],
+    };
+    expect(incoherentEsCodes(report, ES)).toEqual(['6200084']);
+    expect(isEsCodeGated(report, ES, '6200084')).toBe(true);
+    expect(gateRefusalReason(report, '6200084')).toContain('Cabo Silleiro');
+    // A calibração ES→PT para este par fica indisponível (verdict incoherent).
+    expect(
+      crossBorderCalibration(report, '6200084', '6200199'),
+    ).toBeNull();
+  });
+
+  it('um par coerente Silleiro×Nazaré permite a calibração com a referência PT da Costa de Prata', () => {
+    const report = {
+      pairs: [
+        {
+          codes: ['6200084', '6200199'],
+          n: 12,
+          meanDeltaM: 0.4,
+          verdict: 'coherent',
+          pair: 'Cabo Silleiro × Nazaré Costeira (WMO)',
+        },
+      ],
+    };
+    expect(isEsCodeGated(report, ES, '6200084')).toBe(false);
+    expect(crossBorderCalibration(report, '6200084', '6200199')).toEqual({
+      me: 0.4,
+      n: 12,
+      verdict: 'coherent',
+      pair: 'Cabo Silleiro × Nazaré Costeira (WMO)',
+    });
+  });
+});
+

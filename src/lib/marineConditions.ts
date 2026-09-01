@@ -37,8 +37,9 @@ export interface MarineConditionsFields {
   observed?: ObservedConditions;
   /** Measured wave (IH/WMO buoy) — lets the UI show the «Corrigido pela boia X» badge. */
   observedWave?: ObservedWave;
-  /** Regional bias meta baked by the pipeline (VENTU_WAVE_BIAS_CORRECTION=1). */
-  waveBias?: { region: string; me: number; n: number; deltaM: number };
+  /** Regional bias meta — baked pela pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
+   *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
+  waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean };
 }
 
 const MARINE_DISPLAY_KEYS = [

@@ -4,7 +4,10 @@ import {
   radarFrameClock,
   radarFrameFullClock,
   radarImageUrl,
+  radarMissingFrames,
+  RADAR_CADENCE_MIN,
   type IpmaRadarData,
+  type RadarFrameAsset,
 } from '@/lib/ipmaRadar';
 
 const DATA: IpmaRadarData = {
@@ -61,6 +64,42 @@ describe('radarFrameClock', () => {
     expect(radarFrameClock(null)).toBeNull();
     expect(radarFrameClock('')).toBeNull();
     expect(radarFrameClock('nope')).toBeNull();
+  });
+});
+
+describe('radarMissingFrames', () => {
+  /** Frame asset sintético apenas com o instante (url dummy). */
+  const at = (iso: string): RadarFrameAsset => ({ url: `/data/radar/frames/x.png`, frameTime: iso });
+
+  it('cadência contígua → nenhum frame em falta', () => {
+    const frames = [at('2026-08-15T01:00:00.000Z'), at('2026-08-15T00:55:00.000Z'), at('2026-08-15T00:50:00.000Z')];
+    expect(radarMissingFrames(frames)).toEqual([0, 0, 0]);
+  });
+
+  it('um slot de 5 min em falta (gap de 10 min) → 1 frame', () => {
+    const frames = [at('2026-08-15T01:00:00.000Z'), at('2026-08-15T00:50:00.000Z')];
+    expect(radarMissingFrames(frames)).toEqual([1, 0]);
+  });
+
+  it('gap grande (25 min = 5 cadências) → 4 frames em falta consecutivos', () => {
+    const frames = [at('2026-08-15T01:00:00.000Z'), at('2026-08-15T00:35:00.000Z')];
+    expect(radarMissingFrames(frames)).toEqual([4, 0]);
+  });
+
+  it('ignora frameTime ausente/inválido e o fim da lista (0)', () => {
+    const frames = [
+      at('2026-08-15T01:00:00.000Z'),
+      { url: 'x', frameTime: null } as RadarFrameAsset, // sem hora → i0 guarda 0
+      at('2026-08-15T00:50:00.000Z'),
+      at('2026-08-15T00:40:00.000Z'),
+      at('2026-08-15T00:35:00.000Z'),
+    ];
+    // i1 a=null → 0; i2 delta 10 min → 1; i3 delta 5 min → 0; i4 último → 0.
+    expect(radarMissingFrames(frames)).toEqual([0, 0, 1, 0, 0]);
+  });
+
+  it('devia estar alinhado com a cadência oficial de 5 min', () => {
+    expect(RADAR_CADENCE_MIN).toBe(5);
   });
 });
 

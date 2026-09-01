@@ -16,16 +16,22 @@
  * This is TRUE forecast skill (model run vs later truth), distinct from
  * wave-bias.json which compares ERA5 reanalysis (a model bias).
  *
- * Since the last extension this also ingests the ES buoys (Copernicus WMO,
- * keyless): the accumulated readings from wmo-bias-archive.json (written by
- * fetch-wave-bias.js) become observations, and the best_match forecasts of the
- * spots nearest to each ES buoy (Silleiro/Villano/Cádiz/Bilbao/Peñas) are
- * archived with the WMO code as buoyId. ES pairs form even without IH_API_KEY.
+ * Since the last extension this also ingests the keyless WMO buoys
+ * (Copernicus): the accumulated readings from wmo-bias-archive.json (written
+ * by fetch-wave-bias.js) become observations, and the best_match forecasts of
+ * the spots nearest to each buoy are archived with the WMO code as buoyId.
+ * Two keyless platforms: WMO-ES (Silleiro/Villano/Cádiz/Bilbao/Peñas,
+ * cross-border) and WMO-PT (Nazaré Costeira 6200199 — os spots da Costa de
+ * Prata/Lisboa cruzam o best_match com as leituras WMO nacionais). Pares
+ * formam mesmo sem IH_API_KEY.
  *
  * Graceful degradation (like the other IH scripts): without IH_API_KEY we
  * still archive forecasts (they will pair with observations once the key is
  * set); on failure we keep the previous file and exit 0 — never blocks the
- * Open-Meteo pipeline.
+ * Open-Meteo pipeline. EXCEPT for a rejected key: a 401/403 from getDatawellData
+ * fails ALL the observation fetches at once (never a single-buoy fault), so it
+ * is propagated as an IhAuthError and run() fails fast with a Telegram alert
+ * (same fail-fast pattern as fetch-ih-buoys.js).
  */
 
 const fs = require('fs');
@@ -38,7 +44,9 @@ const {
   DEFAULT_WAVE_API,
   DEFAULT_IH_API,
   DEFAULT_COLLECTIONS,
+  isIhAuthError,
 } = require('./lib/ihBuoys.js');
+const { notifyIhAuthFailure } = require('./fetch-ih-buoys.js');
 const {
   emptyArchive,
   readArchive,
@@ -188,6 +196,11 @@ async function fetchForecastSkill() {
         fetchBuoyWaveSeries(API_KEY, s.idEst, WAVE_API, fetch, window).then((rows) => ({ s, rows })),
       ),
     );
+    // Key rejeitada (401/403) falha TODAS as boias — nunca uma avaria de uma
+    // só. Propagar como erro tipado: o run() falha cedo com alerta (fail-fast).
+    for (const r of results) {
+      if (r.status === 'rejected' && isIhAuthError(r.reason)) throw r.reason;
+    }
     const newObs = [];
     for (const r of results) {
       if (r.status !== 'fulfilled' || !r.value?.rows?.length) continue;
@@ -243,10 +256,10 @@ async function fetchForecastSkill() {
   writeArchive({ ...archive, ...report, fetchedAt: now.toISOString() }, OUTPUT_PATH);
 
   console.log(`\n✅ Forecast skill saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);
-  const byOrigin = report.pairCountByOrigin ?? { ih: 0, 'wmo-es': 0 };
+  const byOrigin = report.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
   const calib = report.calibratedPairCount ?? 0;
   console.log(
-    `📊 Pairs: ${report.pairCount} (IH ${byOrigin.ih} · WMO-ES ${byOrigin['wmo-es']}, ${calib} da camada calibrada ES→PT)`,
+    `📊 Pairs: ${report.pairCount} (IH ${byOrigin.ih} · WMO-PT ${byOrigin['wmo-pt'] ?? 0} · WMO-ES ${byOrigin['wmo-es'] ?? 0}, ${calib} da camada calibrada ES→PT)`,
   );
   if (report.stats) {
     const s = report.stats;
@@ -260,10 +273,33 @@ async function fetchForecastSkill() {
   return report;
 }
 
+/**
+ * Estado da key no ficheiro do passo anterior (fetch-ih-buoys.js corre antes
+ * no workflow) para gating da transição: se já estava `unauthorized`, a key já
+ * foi reportada — não se avisa o Telegram a cada run decorrido.
+ * @returns {boolean} true quando ih-buoys.json grava apiKeyStatus:'unauthorized'
+ */
+function readIhBuoysAuthState() {
+  return readJsonOrNull(IH_BUOYS_PATH)?.apiKeyStatus === 'unauthorized';
+}
+
 async function run() {
   try {
     await fetchForecastSkill();
   } catch (err) {
+    if (isIhAuthError(err)) {
+      // Fail-early: key rejeitada — o passo falha cedo com alerta, em vez de o
+      // skill IH degradar em silêncio (mesmo padrão do fetch-ih-buoys.js).
+      err.previouslyUnauthorized = readIhBuoysAuthState();
+      const res = await notifyIhAuthFailure(err, { layer: 'O skill do forecast (forecast-skill)' });
+      if (res.notified) console.log('   Telegram: alerta enviado.');
+      console.error(
+        `::error::IH_API_KEY rejeitada (HTTP ${err.status ?? '?'}) no fetch-forecast-skill — skill IH desactivado. ` +
+          `O workflow falhou cedo de propósito; renova a key (docs/IH_API_KEY.md).`,
+      );
+      process.exitCode = 1;
+      return;
+    }
     console.error('❌ Forecast skill fetch failed:', err.message || err);
     console.warn('⚠️ Keeping previous forecast-skill.json — pipeline continues.');
   }

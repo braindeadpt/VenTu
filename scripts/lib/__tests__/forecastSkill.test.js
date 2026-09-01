@@ -412,7 +412,11 @@ describe('stats', () => {
     ]);
     archiveObservations(a, [{ time: '2026-08-14T12:30:00Z', hm0: 1.8, buoyId: 4, origin: 'ih' }]);
     const report = buildReport(a, NOW);
-    expect(report.byOrigin).toEqual({ ih: expect.objectContaining({ n: 1 }), 'wmo-es': null });
+    expect(report.byOrigin).toEqual({
+      ih: expect.objectContaining({ n: 1 }),
+      'wmo-pt': null,
+      'wmo-es': null,
+    });
     expect(a.byOrigin).toEqual(report.byOrigin);
   });
 
@@ -436,7 +440,7 @@ describe('stats', () => {
     ]);
     const report = buildReport(a, NOW);
     expect(report.pairCount).toBe(5);
-    expect(report.pairCountByOrigin).toEqual({ ih: 2, 'wmo-es': 3 });
+    expect(report.pairCountByOrigin).toEqual({ ih: 2, 'wmo-pt': 0, 'wmo-es': 3 });
     // Todos os pares ES vêm de boias espanholas → alimentam a camada calibrada.
     expect(report.calibratedPairCount).toBe(3);
     // Os contadores ficam também no archive (persistidos no ficheiro).
@@ -447,7 +451,7 @@ describe('stats', () => {
   it('buildReport devolve contadores a zero sem pares (nunca null)', () => {
     const report = buildReport(emptyArchive(), NOW);
     expect(report.pairCount).toBe(0);
-    expect(report.pairCountByOrigin).toEqual({ ih: 0, 'wmo-es': 0 });
+    expect(report.pairCountByOrigin).toEqual({ ih: 0, 'wmo-pt': 0, 'wmo-es': 0 });
     expect(report.calibratedPairCount).toBe(0);
   });
 });
@@ -562,6 +566,45 @@ describe('persistência + prune', () => {
     expect(report.pairCount).toBe(1);
     expect(report.stats.n).toBe(1);
     expect(report.lastPairs[0].observedHm0).toBe(1.8);
+    // Pares IH (origem numérica) caem no cano `ih` de lastPairsByOrigin.
+    expect(report.lastPairsByOrigin.ih).toHaveLength(1);
+    expect(report.lastPairsByOrigin['wmo-es']).toHaveLength(0);
+    expect(report.lastPairsByOrigin.ih[0].observedHm0).toBe(1.8);
+  });
+
+  it('lastPairsByOrigin separa os pares por plataforma (IH vs WMO-ES)', () => {
+    const a = emptyArchive();
+    // Dois pares IH (origem numérica) + um WMO-ES (string, origem explícita),
+    // todos no passado relativo a NOW (2026-08-14T14:00Z) para o par se formar.
+    archiveForecastRun(a, [
+      { time: '2026-08-14T09:00:00Z', hm0: 1.5, runAt: '2026-08-14T06:00:00Z', buoyId: 4 },
+      { time: '2026-08-14T10:00:00Z', hm0: 1.6, runAt: '2026-08-14T06:00:00Z', buoyId: 4 },
+    ]);
+    archiveForecastRun(a, [
+      {
+        time: '2026-08-14T11:00:00Z',
+        hm0: 1.7,
+        runAt: '2026-08-14T07:00:00Z',
+        buoyId: '6200084',
+        origin: 'wmo-es',
+      },
+    ]);
+    archiveObservations(a, [
+      { time: '2026-08-14T09:30:00Z', hm0: 1.8, buoyId: 4 },
+      { time: '2026-08-14T10:30:00Z', hm0: 1.9, buoyId: 4 },
+      { time: '2026-08-14T11:30:00Z', hm0: 2.0, buoyId: '6200084', origin: 'wmo-es' },
+    ]);
+    const report = buildReport(a, NOW);
+    expect(report.pairCount).toBe(3);
+    expect(report.pairCountByOrigin).toEqual({ ih: 2, 'wmo-pt': 0, 'wmo-es': 1 });
+    // Canos separados: cada um só com os pares da sua origem.
+    expect(report.lastPairsByOrigin.ih).toHaveLength(2);
+    expect(report.lastPairsByOrigin['wmo-es']).toHaveLength(1);
+    expect(report.lastPairsByOrigin['wmo-es'][0].buoyId).toBe('6200084');
+    expect(report.lastPairsByOrigin.ih.some((p) => p.hourKey === '2026-08-14T10')).toBe(true);
+    expect(report.lastPairsByOrigin['wmo-es'].some((p) => p.origin === 'wmo-es')).toBe(true);
+    // O total misto não é contaminado — continua a incluir ambos.
+    expect(report.lastPairs).toHaveLength(3);
   });
 
   it('constantes de janela são 30 dias / 10 pares / 168h lead', () => {
@@ -639,7 +682,15 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
   }
 
   it('sem key arquiva previsões e escreve o arquivo (exit 0)', async () => {
-    const mod = loadModule();
+    // Fixtures frescas (não o forecasts.json real local) — o arquivo integração
+    // não pode depender da frescura dos dados de dev: se estiverem velhos (>48h)
+    // o script não arquivaria horas futuras e o teste falharia.
+    const mod = loadModule({}, (dir) => inputEnv(dir));
+    writeInputFixtures({
+      t2: new Date(Date.now() + 2 * 3_600_000).toISOString(),
+      t3: new Date(Date.now() + 3 * 3_600_000).toISOString(),
+      obsAt: new Date(Date.now() - 3_600_000).toISOString(),
+    });
     const calledUrls = [];
     const fetchMock = vi.fn(async (url) => {
       calledUrls.push(String(url));
@@ -654,6 +705,45 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
     const out = JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_OUTPUT_PATH, 'utf8'));
     expect(out.forecasts.length).toBeGreaterThan(0);
     expect(out.pairCount).toBe(0);
+  });
+
+  it('fail-fast: getDatawellData em 401 → run() falha cedo (exitCode 1) com ::error::', async () => {
+    const mod = loadModule({ IH_API_KEY: 'dead-key' }, (dir) => inputEnv(dir));
+    const t2 = new Date(Date.now() + 2 * 3_600_000).toISOString();
+    writeInputFixtures({
+      t2,
+      t3: t2,
+      obsAt: new Date(Date.now() - 3_600_000).toISOString(),
+    });
+    // getDatawellData devolve 401 (key rejeitada); o refresh público de estações
+    // falha (offline) → usa as estações arquivadas do fixture. Só o fetch de
+    // ondas com a key morta tem de rebentar.
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url) => {
+        if (String(url).includes('getDatawellData')) {
+          return new Response('{"error":"unauthorized"}', { status: 401 });
+        }
+        throw new Error('offline (só getDatawellData é 401)');
+      }),
+    );
+    const errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const exitBefore = process.exitCode;
+    try {
+      await mod.run();
+      expect(String(process.exitCode)).toBe('1');
+    } finally {
+      process.exitCode = exitBefore;
+    }
+    const calls = errSpy.mock.calls;
+    errSpy.mockRestore();
+    expect(
+      calls.some((c) =>
+        String(c[0]).includes('::error::IH_API_KEY rejeitada (HTTP 401) no fetch-forecast-skill'),
+      ),
+    ).toBe(true);
+    // A key morta NUNCA degrada em silêncio — falha cedo em vez de arquivar só
+    // previsões órfãs como se tudo estivesse bem.
   });
 
   it('com wmo-bias-archive (Silleiro) + spots NW, sem key → arquiva previsões+leituras ES no output', async () => {
@@ -715,7 +805,14 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
   });
 
   it('com key fetcha observações e cruza pares', async () => {
-    const mod = loadModule({ IH_API_KEY: 'test-key' });
+    // Fixtures frescas (igual ao caso sem key) — nunca depende do forecasts.json
+    // local, que pode estar velho e fora da janela de 48h.
+    const mod = loadModule({ IH_API_KEY: 'test-key' }, (dir) => inputEnv(dir));
+    writeInputFixtures({
+      t2: new Date(Date.now() + 3 * 3_600_000).toISOString(),
+      t3: new Date(Date.now() + 4 * 3_600_000).toISOString(),
+      obsAt: new Date(Date.now() - 3_600_000).toISOString(),
+    });
     const json = (body) =>
       new Response(JSON.stringify(body), { status: 200, headers: { 'Content-Type': 'application/json' } });
     const fetchMock = vi.fn(async (url) => {
@@ -735,5 +832,82 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
     const out = JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_OUTPUT_PATH, 'utf8'));
     expect(out.observations.length).toBeGreaterThanOrEqual(0);
     expect(out.forecasts.length).toBeGreaterThan(0);
+  });
+});
+
+describe('archiveWmoSkill (boia PT keyless 6200199 — Nazaré Costeira)', () => {
+  const RUN_AT = '2026-08-14T10:00:00Z';
+  const NOW_MS = Date.parse(RUN_AT);
+  const spots = [
+    { id: 'nazare', lat: 39.6, lon: -9.07 },
+    { id: 'sao-martinho-porto', lat: 39.51, lon: -9.14 },
+    { id: 'guincho', lat: 38.73, lon: -9.47 },
+  ];
+  const forecasts = {
+    'sao-martinho-porto': [
+      { time: '2026-08-14T15:00', waveHeight: 2.4 },
+      { time: '2026-08-14T16:00', waveHeight: 2.5 },
+    ],
+    guincho: [{ time: '2026-08-14T15:00', waveHeight: 1.4 }],
+  };
+
+  it('classifica 6200199 como origem wmo-pt e mapeia os spots da Costa de Prata/Lisboa', () => {
+    const a = emptyArchive();
+    const arc = {
+      buoys: {
+        '6200199': {
+          name: 'Nazaré Costeira (WMO)',
+          lat: 39.56,
+          lon: -9.21,
+          // 14:00Z = 15:00 Lisboa — mesma hora-chave da previsão.
+          readings: [
+            { date: '2026-08-14T14:00:00Z', hm0: 2.0 },
+            { date: '2026-08-14T15:00:00Z', hm0: 2.2 },
+          ],
+        },
+      },
+    };
+    const res = archiveWmoSkill(a, {
+      forecasts,
+      spots,
+      wmoArchive: arc,
+      wmoBuoys: null,
+      nowMs: NOW_MS,
+      runAt: RUN_AT,
+    });
+    // O slot de previsão é do spot MAIS PRÓXIMO à boia (são-martinho-porto,
+    // 8 km < nazaré 12 < guincho 95) — proxy igual à convenção IH/ES.
+    expect(res.forecastRows).toBe(2);
+    expect(res.mappedSpots).toBe(1);
+    expect(res.buoyCodes).toEqual(['6200199']);
+
+    // A previsão e a observação levam origem 'wmo-pt' (nacional keyless),
+    // não 'wmo-es' — para o dashboard/About distinguirem a plataforma.
+    expect(a.forecasts.every((f) => f.origin === 'wmo-pt' && f.buoyId === '6200199')).toBe(true);
+    expect(a.observations.every((o) => o.origin === 'wmo-pt')).toBe(true);
+
+    // Dois pares fecham (obs 14:00Z↔15h Lisboa e 15:00Z↔16h Lisboa), todos da
+    // plataforma wmo-pt — o relatório separa-a das ES mas o total misto também.
+    const pairs = crossPairs(a, { nowMs: Date.parse('2026-08-14T15:00:00Z') });
+    expect(pairs).toHaveLength(2);
+    expect(pairs.every((p) => p.buoyId === '6200199' && p.origin === 'wmo-pt')).toBe(true);
+
+    const report = buildReport(a, Date.parse('2026-08-14T15:00:00Z'));
+    expect(report.pairCountByOrigin).toEqual({ ih: 0, 'wmo-pt': 2, 'wmo-es': 0 });
+    expect(report.byOrigin['wmo-pt']).toMatchObject({ n: 2 });
+  });
+
+  it('byBuoy keyed por string 6200199 com origin wmo-pt (não colide com IH numérico)', () => {
+    const a = emptyArchive();
+    archiveForecastRun(a, [
+      { time: '2026-08-14T15:00', hm0: 2.0, runAt: '2026-08-14T06:00:00Z', buoyId: '6200199', origin: 'wmo-pt' },
+    ]);
+    archiveObservations(a, [
+      { time: '2026-08-14T14:30:00Z', hm0: 2.1, buoyId: '6200199', origin: 'wmo-pt' },
+    ]);
+    const { byBuoy } = buildStats(crossPairs(a, { nowMs: Date.parse('2026-08-14T15:00:00Z') }));
+    if (byBuoy['6200199']) {
+      expect(byBuoy['6200199'].origin).toBe('wmo-pt');
+    }
   });
 });

@@ -10,7 +10,8 @@ import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditio
 import type { ObservedConditions } from '@/lib/observations'
 import type { ObservedWave } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
-import { rawToScoreInput } from '@/lib/scoreConditions'
+import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions'
+import { loadWaveBiasRegionsBuild } from '@/lib/waveBias'
 import type { BestWindowToday, BestWindowsBySport } from '@/lib/bestWindowToday'
 import { computeBestWindowsForSpot } from '@/lib/bestWindowToday'
 
@@ -82,8 +83,9 @@ export interface SpotData {
     observed?: ObservedConditions
     /** Measured wave — lets the UI show the «Corrigido pela boia X» badge (TopNow). */
     observedWave?: ObservedWave
-    /** Regional bias meta (VENTU_WAVE_BIAS_CORRECTION=1). */
-    waveBias?: { region: string; me: number; n: number; deltaM: number }
+    /** Regional bias meta — baked pela pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
+     *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
+    waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean }
   }
   allScores: Record<SportType, SportScore>
   bestWindowToday: BestWindowToday | null
@@ -94,11 +96,23 @@ function buildSpotData(
   spot: Spot,
   raw: RawConditions | null,
   forecastsData: Record<string, Array<Record<string, unknown>>>,
+  waveBiasRegions: ReturnType<typeof loadWaveBiasRegionsBuild>,
 ): SpotData | null {
   const useLakeDefault = !raw && isWakeboardOnly(spot)
   if (!raw && !useLakeDefault) return null
 
-  const scoreInput = raw ? toScoreInput(raw) : CALM_LAKE_CONDITIONS
+  const scoreInput0 = raw ? toScoreInput(raw) : CALM_LAKE_CONDITIONS
+  // Fallback do viés regional (wave-bias.json) — o mesmo gate da página de
+  // spot: só quando a row NÃO traz o meta (pipeline sem
+  // VENTU_WAVE_BIAS_CORRECTION=1) e não há leitura de boia fresca. O patch
+  // corrige a altura usada no score E anexa o meta waveBias às conditions,
+  // para o TopNow/mapa mostrarem o sufixo «(viés regional)» honestamente.
+  const biasPatch = raw
+    ? applyRegionalBiasFallback(raw, spot.region, waveBiasRegions)
+    : null
+  const scoreInput = biasPatch
+    ? { ...scoreInput0, waveHeight: biasPatch.waveHeight }
+    : scoreInput0
   const allScores = getAllSportScores(spot, scoreInput)
 
   const dataId = spot.conditionsSource ?? spot.id
@@ -123,7 +137,8 @@ function buildSpotData(
       ...(raw ? pickConfidenceFields(raw) : {}),
       observed: raw ? pickObservedField(raw as Record<string, unknown>) : undefined,
       observedWave: raw?.observedWave as ObservedWave | undefined,
-      waveBias: raw?.waveBias as SpotData['conditions']['waveBias'],
+      waveBias:
+        (biasPatch?.waveBias ?? raw?.waveBias) as SpotData['conditions']['waveBias'],
     },
     allScores,
     bestWindowToday,
@@ -145,11 +160,12 @@ export function loadSpotData(): SpotData[] {
 
   const conditionsData = loadConditionsJson()
   const forecastsData = loadForecastsJson()
+  const waveBiasRegions = loadWaveBiasRegionsBuild()
 
   const result: SpotData[] = []
   for (const spot of spots) {
     const raw = resolveConditionsEntry(spot, conditionsData) ?? null
-    const row = buildSpotData(spot, raw, forecastsData)
+    const row = buildSpotData(spot, raw, forecastsData, waveBiasRegions)
     if (row) result.push(row)
   }
 
