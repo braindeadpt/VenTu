@@ -33,6 +33,7 @@ export default defineConfig({
       'scripts/lib/__tests__/terraformExpressions.test.js',
       'scripts/lib/__tests__/forecastSkill.test.js',
       'scripts/lib/__tests__/updateConditions.test.js',
+      'scripts/lib/__tests__/updateConditionsFetch.test.js',
       'scripts/lib/__tests__/updateConditionsArtifacts.test.js',
       'scripts/lib/__tests__/buoyCoherence.test.js',
       'scripts/lib/__tests__/observedWaveMerge.test.js',

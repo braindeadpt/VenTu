@@ -50,6 +50,7 @@ const {
   SWELL_TRAIN_MIN_HEIGHT_M,
 } = require('./lib/updateConditionsPure');
 const { readJsonIfExists, atomicWriteJson, ensureParentDir } = require('./lib/updateConditionsArtifacts');
+const { createUpdateConditionsFetcher } = require('./lib/updateConditionsFetch');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -224,23 +225,22 @@ async function fetchWithRetry_LEGACY(url, retries = 3, delay = 1000, usage, weig
 }
 */
 
-/*
 function wavePowerKwPerM_LEGACY(heightM, periodS) {
   if (!heightM || !periodS || heightM <= 0 || periodS <= 0) return 0;
   return 0.5 * heightM * heightM * periodS;
 }
 
-const SWELL_TRAIN_MIN_HEIGHT_M = 0.1;
+const SWELL_TRAIN_MIN_HEIGHT_M_LEGACY = 0.1;
 
 function wavePowerFromMarine_LEGACY({ swellHeight, swellPeriod, waveHeight, wavePeriod }) {
-  if (swellHeight > SWELL_TRAIN_MIN_HEIGHT_M && swellPeriod > 0) {
+  if (swellHeight > SWELL_TRAIN_MIN_HEIGHT_M_LEGACY && swellPeriod > 0) {
     return wavePowerKwPerM(swellHeight, swellPeriod);
   }
   return wavePowerKwPerM(waveHeight || 0, wavePeriod || 0);
 }
 
 function pickSwellTrain_LEGACY(height, period, direction) {
-  if (height == null || height < SWELL_TRAIN_MIN_HEIGHT_M || period == null || period <= 0) {
+  if (height == null || height < SWELL_TRAIN_MIN_HEIGHT_M_LEGACY || period == null || period <= 0) {
     return null;
   }
   return {
@@ -250,7 +250,8 @@ function pickSwellTrain_LEGACY(height, period, direction) {
   };
 }
 
-async function fetchMarineData(lat, lon, usage) {
+/* Legacy request builders retained below for compatibility review.
+async function fetchMarineDataLegacy(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -277,7 +278,7 @@ async function fetchMarineData(lat, lon, usage) {
   return data;
 }
 
-async function fetchWeatherData(lat, lon, usage) {
+async function fetchWeatherDataLegacy(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -293,7 +294,7 @@ async function fetchWeatherData(lat, lon, usage) {
 }
 
 /** Multi-model wave_height only — spread/confidence (best_match stays on fetchMarineData). */
-async function fetchMarineWaveModels(lat, lon, usage) {
+async function fetchMarineWaveModelsLegacy(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -307,7 +308,7 @@ async function fetchMarineWaveModels(lat, lon, usage) {
 }
 
 /** Multi-model wind (speed/dir/gust) — confidence spread + ICON-EU score blend. */
-async function fetchWindModels(lat, lon, usage) {
+async function fetchWindModelsLegacy(lat, lon, usage) {
   const params = new URLSearchParams({
     latitude: lat.toString(),
     longitude: lon.toString(),
@@ -320,6 +321,7 @@ async function fetchWindModels(lat, lon, usage) {
   // Multi-modelo: cada modelo pedido conta 1 ponderada.
   return fetchWithRetry(`${WEATHER_API}?${params}`, 3, 1000, usage, WIND_MODELS.length);
 }
+
 
 function getTideStatus_LEGACY(seaLevel, seaLevelNext) {
   const threshold = 0.3;
@@ -393,6 +395,9 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
 
   return result;
 }
+
+const sourceFetcher = createUpdateConditionsFetcher({ marineApi: MARINE_API, weatherApi: WEATHER_API, fetchWithRetry });
+const { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels } = sourceFetcher;
 
 async function updateConditions() {
   const useMultiModel = resolveUseMultiModel();
