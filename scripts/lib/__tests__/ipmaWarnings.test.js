@@ -128,6 +128,24 @@ describe('mapSpotsToAreas + buildWarningsPayload', () => {
   });
 });
 
+describe('exports usados por evaluate-alerts / dawn-patrol', () => {
+  it('exporta seaWarningForSpot, seaWarningLine e seaWarningEmailLine como funções', () => {
+    // Guard against the 31015e696 regression: evaluate-alerts imported these
+    // before they were on module.exports → "seaWarningForSpot is not a function".
+    expect(typeof seaWarningForSpot).toBe('function');
+    expect(typeof seaWarningLine).toBe('function');
+    expect(typeof seaWarningEmailLine).toBe('function');
+    // Same destructure shape as scripts/evaluate-alerts.js
+    const m = require('../ipmaWarnings.js');
+    const {
+      seaWarningForSpot: a,
+      seaWarningLine: b,
+      seaWarningEmailLine: c,
+    } = m;
+    expect([a, b, c].every((fn) => typeof fn === 'function')).toBe(true);
+  });
+});
+
 describe('seaWarningForSpot', () => {
   const data = {
     spotWarnings: {

@@ -58,11 +58,22 @@ function lisbonHourKeyFromDate(date) {
 
 /**
  * Normalise any ISO string to a Lisbon wall hour key.
- * Handles both UTC ISO (from IH) and offset-less Lisbon local (from
- * forecasts.json — `new Date(iso)` then reformat in Lisbon is a no-op there).
+ *
+ * - Offset-less (`2026-08-14T14:00` from forecasts.json / Open-Meteo) is already
+ *   Europe/Lisbon wall time — take YYYY-MM-DDTHH directly. NEVER feed these to
+ *   `new Date(iso)`: ES5 treats them as *host* local, so UTC CI runners shift
+ *   WEST (+1) hours (T14 → T15) and break pair crossing.
+ * - With Z / ±offset (IH, WMO) → convert the instant to Lisbon wall hour.
  */
 function hourKey(iso) {
-  const t = new Date(iso).getTime();
+  if (iso == null || iso === '') return null;
+  const s = String(iso).trim();
+  // Offset-less → Lisbon wall (same convention as openMeteoTime.hourKeyFromOpenMeteo)
+  if (!/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(s)) {
+    const m = /^(\d{4}-\d{2}-\d{2}T\d{2})/.exec(s);
+    return m ? m[1] : null;
+  }
+  const t = new Date(s).getTime();
   if (!Number.isFinite(t)) return null;
   return lisbonHourKeyFromDate(new Date(t));
 }

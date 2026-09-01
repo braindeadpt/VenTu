@@ -41,7 +41,15 @@ describe('hora (Europe/Lisbon)', () => {
   });
 
   it('hourKey trata horas do forecasts.json (Lisboa local, sem offset)', () => {
+    // Must be host-TZ independent — CI runners are UTC and used to shift T14→T15.
     expect(hourKey('2026-08-14T14:00')).toBe('2026-08-14T14');
+    expect(hourKey('2026-08-14T14:00:00')).toBe('2026-08-14T14');
+    expect(hourKey('2026-01-10T09:30:00.000')).toBe('2026-01-10T09');
+  });
+
+  it('hourKey com offset explícito converte o instante para parede Lisboa', () => {
+    expect(hourKey('2026-08-14T14:00:00+01:00')).toBe('2026-08-14T14');
+    expect(hourKey('2026-08-14T13:00:00+00:00')).toBe('2026-08-14T14');
   });
 
   it('hourKeyToUtcMs round-trips uma hora Lisboa', () => {
