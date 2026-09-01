@@ -92,6 +92,7 @@ import {
 // ─── Imports for hooks and sub-components ───
 import { useMapCore } from './map/hooks/useMapCore';
 import { useMapLayers } from './map/hooks/useMapLayers';
+import { useMapMarkers } from './map/hooks/useMapMarkers';
 import MapControls from './map/components/MapControls';
 
 type SpotData = MapSpotData;
@@ -179,8 +180,6 @@ export default function SpotMapInteractive({
   const fullscreenBtnRef = useRef<HTMLButtonElement>(null);
   const windButtonRef = useRef<HTMLButtonElement>(null);
   const windLegendAutoQueuedRef = useRef(false);
-  const didFitBoundsRef = useRef(false);
-  const filterBoundsKeyRef = useRef('');
   const onSpotSelectRef = useRef(onSpotSelect);
   const mountedRef = useRef(true);
   const prevFocusRef = useRef<Element | null>(null);
@@ -211,7 +210,6 @@ export default function SpotMapInteractive({
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
   const [hudCollapsed, setHudCollapsed] = useState(true);
-  const [allowMarkers, setAllowMarkers] = useState(false);
   const [windLegendOpen, setWindLegendOpen] = useState(false);
 
   const showWindOnMarkers = windEnabled && !clusterEnabled && !isHeroEmbed;
@@ -444,109 +442,18 @@ export default function SpotMapInteractive({
   const windLegendHelpLabel = t.map.windRingLegend.help;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
-  // ── Markers effect ──
-  useEffect(() => {
-    if (!allowMarkers || !isReady || !mapInstanceRef.current || !clusterGroupRef.current || !markersGroupRef.current) return;
-    if (!LRef.current) return;
-
-    const map = mapInstanceRef.current;
-    const Leaflet = LRef.current;
-    const mcg = clusterGroupRef.current;
-    const lg = markersGroupRef.current;
-    const cache = markersCacheRef.current;
-
-    map.closePopup();
+  // ── Markers (extracted hook: cache, chunked insertion, cluster switching) ──
+  const closePopupAndSheet = useCallback(() => {
+    mapInstanceRef.current?.closePopup();
     setSheetSpot(null);
-    mcg.clearLayers();
-    lg.clearLayers();
+  }, [mapInstanceRef]);
+  const { didFitBoundsRef, filterBoundsKeyRef } = useMapMarkers({
+    mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef,
+    visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady,
+    isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
+    warningsBySpot, onSpotSelect, setSheetSpot, closePopupAndSheet,
+  });
 
-    if (activeCluster) {
-      if (map.hasLayer(lg)) map.removeLayer(lg);
-      if (!map.hasLayer(mcg)) map.addLayer(mcg);
-    } else {
-      if (map.hasLayer(mcg)) map.removeLayer(mcg);
-      if (!map.hasLayer(lg)) map.addLayer(lg);
-    }
-
-    const boundsKey = `${visibleSpots.length}:${onlyOnEnabled}:${selectedSport}:${selectedRegion}`;
-    if (filterBoundsKeyRef.current !== boundsKey) {
-      filterBoundsKeyRef.current = boundsKey;
-      didFitBoundsRef.current = false;
-    }
-
-    if (visibleSpots.length === 0) return;
-
-    const nextIds = new Set(visibleSpots.map((d) => d.spot.id));
-    for (const [id, marker] of cache) {
-      if (!nextIds.has(id)) { marker.remove(); cache.delete(id); }
-    }
-
-    const bounds = Leaflet.latLngBounds([]);
-    const useMobileSheet = isMobile;
-    const chunkSize = isMobile ? MARKER_ADD_CHUNK_SIZE_MOBILE : MARKER_ADD_CHUNK_SIZE;
-    const yieldMs = isMobile ? MARKER_CHUNK_YIELD_MS_MOBILE : 0;
-
-    const fitBoundsIfNeeded = () => {
-      if (didFitBoundsRef.current || !bounds.isValid() || !mapInstanceRef.current) return;
-      const fitMap = mapInstanceRef.current!;
-      fitMap.invalidateSize({ animate: false });
-      if (isHeroEmbed) {
-        const leftPad = isMobile ? 20 : 300;
-        fitMap.fitBounds(bounds, { paddingTopLeft: Leaflet.point(leftPad, 48), paddingBottomRight: Leaflet.point(40, 96), maxZoom: isMobile ? 8 : 10, animate: false });
-      } else {
-        const fitMaxZoom = isMobile ? 9 : 11;
-        fitMap.fitBounds(bounds, { padding: isMobile ? [16, 16] : [40, 40], maxZoom: fitMaxZoom, animate: false });
-      }
-      didFitBoundsRef.current = true;
-    };
-
-    const markerChunkCancelRef = { current: false };
-    runChunked(
-      visibleSpots,
-      (batch) => {
-        const toCluster: L.Marker[] = [];
-        const toPlain: L.Marker[] = [];
-        for (const data of batch) {
-          const warning = warningsBySpot.get(data.spot.id) ?? null;
-          const cacheKey = buildMarkerCacheKey(data, selectedSport, showWindOnMarkers, locale, useMobileSheet, warning?.level ?? null);
-          let marker = cache.get(data.spot.id);
-          const meta = marker as (L.Marker & { ventuKey?: string }) | undefined;
-          if (!marker || meta?.ventuKey !== cacheKey) {
-            if (marker) { marker.remove(); cache.delete(data.spot.id); }
-            marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, {
-              useMobileSheet,
-              onMobileTap: (d) => setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null }),
-              onSpotSelect,
-              warning: warningsBySpot.get(data.spot.id) ?? null,
-            });
-            (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
-            cache.set(data.spot.id, marker);
-          }
-          if (activeCluster) toCluster.push(marker);
-          else toPlain.push(marker);
-          if (includeSpotInViewportBounds(data.spot, selectedRegion)) bounds.extend([data.spot.lat, data.spot.lon]);
-        }
-        if (toCluster.length > 0) mcg.addLayers(toCluster);
-        if (toPlain.length > 0) toPlain.forEach((m) => lg.addLayer(m));
-      },
-      markerChunkCancelRef,
-      fitBoundsIfNeeded,
-      chunkSize,
-      yieldMs,
-    );
-
-    return () => { markerChunkCancelRef.current = true; };
-  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterEnabled, showWindOnMarkers, locale, onSpotSelect, isMobile, isHeroEmbed, activeCluster, warningsBySpot, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef]);
-
-  // ── Allow markers after delay ──
-  useEffect(() => {
-    if (!isReady) { setAllowMarkers(false); return; }
-    const delay = isMobile ? 280 : 0;
-    const t = window.setTimeout(() => setAllowMarkers(true), delay);
-    return () => window.clearTimeout(t);
-  }, [isReady, isMobile]);
-
-  // ── Hero fit bounds ──
   useEffect(() => {
     if (!isHeroEmbed || !isReady || !mapInstanceRef.current || !mapRef.current) return;
     const host = mapRef.current.closest('[data-map-hero-teaser]');
