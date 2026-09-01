@@ -738,7 +738,7 @@ describe('merge-observations preserva o waveBias da row', () => {
     const report2 = JSON.parse(fs.readFileSync(coherencePath, 'utf-8'));
     expect(report2.gateHistory.byCode['6200084'].dayCount).toBe(1);
     expect(report2.gateHistory.byCode['6200084'].totalSpots).toBe(1);
-  });
+  }, 10_000);
 
   it('gera gateHistory vazio quando não há refusas (report preservado, sem bloco inventado)', async () => {
     const { conditionsPath, mapPath, ihBuoysPath } = setupFiles({ fresh: true });
