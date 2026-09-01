@@ -64,6 +64,7 @@ export default defineConfig({
       'scripts/lib/__tests__/scoreSpotConditions.test.js',
       'scripts/lib/__tests__/dataFileKinds.test.js',
       'scripts/lib/__tests__/llmFallback.test.js',
+      'scripts/lib/__tests__/obsWorkerHealth.test.js',
       'scripts/lib/__tests__/validateGeneratedData.test.js',
     ],
   },

@@ -38,6 +38,7 @@ Note the URL (e.g. `https://ventu-observations.<account>.workers.dev`) and set `
 
 | Query | Expected |
 |-------|----------|
+| `GET /` or `GET /health` | `{ ok: true, service: "ventu-observations" }` |
 | `lat=41.18&lon=-8.70` (Matosinhos) | `source: "ecowitt"` |
 | `lat=37.10&lon=-8.67` (Algarve) | `source: "ipma"` |
 | `lat=39.5&lon=-7.9` (interior) | `observed: null` |

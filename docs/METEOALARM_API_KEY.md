@@ -89,6 +89,13 @@ só com IPMA (sem fallback).
 5. **Secret:** colar o token (sem espaços à volta)
 6. **Add secret**
 
+CLI (equivalente):
+
+```bash
+gh secret set METEOALARM_API_KEY
+gh workflow run api-keys.yml
+```
+
 > **Nota:** o fallback só é exercitado quando o IPMA falha — é normal o log diário
 > não mostrar MeteoAlarm. Para forçar o teste local, corre `npm run warnings:meteoalarm`.
 

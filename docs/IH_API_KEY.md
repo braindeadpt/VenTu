@@ -186,6 +186,15 @@ O workflow `update-data.yml` lê `${{ secrets.IH_API_KEY }}` no passo
 5. **Secret:** colar a key (sem espaços à volta)
 6. **Add secret**
 
+CLI (equivalente, depois de teres a key no clipboard):
+
+```bash
+gh secret set IH_API_KEY
+# cola a key, Enter, Ctrl+D
+gh workflow run api-keys.yml
+gh workflow run update-data.yml
+```
+
 > **Nota:** como é um secret *repository-level*, funciona nos workflows do repo. Se um dia
 > moveres a pipeline para outro repo, tens de o recriar lá.
 

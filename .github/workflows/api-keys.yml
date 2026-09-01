@@ -28,6 +28,7 @@ jobs:
       ECOWITT_MAC: ${{ secrets.ECOWITT_MAC }}
       RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
       RESEND_FROM: ${{ secrets.RESEND_FROM }}
+      OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL }}
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -90,3 +91,11 @@ jobs:
       - name: Warn when RESEND_API_KEY missing
         if: env.RESEND_API_KEY == ''
         run: echo "::warning::RESEND_API_KEY não configurada — alertas por e-mail em dry-run (ver scripts/alerts-preflight.js)"
+
+      # Cloudflare Worker de observações ao vivo (IPMA/Ecowitt/METAR).
+      # Sem secret — só a URL pública. /obs tem de responder; /health
+      # pode 404 até o próximo deploy do worker (aviso, não falha).
+      - name: Probe observations worker (GET /obs)
+        env:
+          NEXT_PUBLIC_OBS_WORKER_URL: ${{ env.OBS_WORKER_URL }}
+        run: node scripts/check-obs-worker.js

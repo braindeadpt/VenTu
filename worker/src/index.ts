@@ -448,7 +448,19 @@ export default {
     if (req.method === 'OPTIONS') return new Response(null, { headers: h });
 
     const url = new URL(req.url);
-    if (url.pathname !== '/obs') {
+    const pathname = url.pathname.replace(/\/+$/, '') || '/';
+    // GET / and /health — probes used to hit 404 because only /obs is a data route.
+    if (pathname === '/' || pathname === '/health') {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          service: 'ventu-observations',
+          obs: '/obs?lat=&lon=',
+        }),
+        { headers: h },
+      );
+    }
+    if (pathname !== '/obs') {
       return new Response(JSON.stringify({ error: 'not found' }), {
         status: 404,
         headers: h,
