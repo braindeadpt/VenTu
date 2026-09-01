@@ -17,6 +17,12 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   onToggleRadar: () => void;
   radarLabel: string;
   radarHint: string;
+  /** Reinício do radar — repõe a preferência ao default (off). Opcionais: o
+   *  grid/SpotMapInteractive passam-nas explicitamente; os outros construtores
+   *  de mapHud ficam com o default (sem botão). */
+  radarResetVisible?: boolean;
+  onResetRadar?: () => void;
+  radarResetLabel?: string;
   isobathsEnabled: boolean;
   onToggleIsobaths: () => void;
   isobathsLabel: string;
@@ -46,6 +52,10 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   collapseHudLabel: string;
   expandHudLabel: string;
   onCollapsedChange?: (collapsed: boolean) => void;
+  /** Chip compacto da camada de boias no HUD (ligado ao BuoyLayerNotice).
+   *  Opcional: só o SpotMapInteractive o passa; os outros construtores de
+   *  mapHud ficam com o default (sem chip). */
+  buoyChip?: React.ReactNode;
 }
 
 export default function MapExploreHud({
@@ -102,6 +112,10 @@ export default function MapExploreHud({
   collapseHudLabel,
   expandHudLabel,
   onCollapsedChange,
+  radarResetVisible = false,
+  onResetRadar = () => {},
+  radarResetLabel = '',
+  buoyChip,
 }: MapExploreHudProps) {
   // Mobile: start collapsed (more map). Desktop: filters always open.
   const [collapsed, setCollapsed] = useState(() => {
@@ -213,6 +227,16 @@ export default function MapExploreHud({
             <CloudRain className="w-4 h-4 text-data-waves" aria-hidden />
           </MapControlButton>
 
+          {radarResetVisible && (
+            <MapControlButton
+              onClick={onResetRadar}
+              aria-label={radarResetLabel}
+              title={radarResetLabel}
+            >
+              <RotateCcw className="w-4 h-4" aria-hidden />
+            </MapControlButton>
+          )}
+
           <MapControlButton
             onClick={onToggleIsobaths}
             aria-label={isobathsLabel}
@@ -271,6 +295,8 @@ export default function MapExploreHud({
           >
             <Zap className="w-4 h-4 text-score-good" aria-hidden />
           </MapControlButton>
+
+          {buoyChip}
 
           <span className="pill pill-ghost shrink-0 px-2 py-1 min-h-0 text-meta-sm hidden sm:inline-flex">
             <span className="font-mono tabular-nums text-fg">{spotCount}</span>

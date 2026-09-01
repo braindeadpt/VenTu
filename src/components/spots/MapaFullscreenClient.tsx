@@ -82,11 +82,22 @@ export default function MapaFullscreenClient({
   // liga a camada de avisos à navegação e centra na área coberta (o estado fica
   // no SpotMapInteractive — decide com os dados se o spot está coberto).
   const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
+  // Deep link de imersão do spot (?radar=1&lat=&lon=, botão do carrossel da
+  // página de spot): centra na REGIÃO do spot de origem em vez do centro
+  // nacional. Coordenadas inválidas/ausentes → comportamento por omissão.
+  const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     setInitialRadar(params.get('radar') === '1');
     setInitialIsobaths(params.get('isobaths') === '1');
     setFocusSpotId(params.get('spot') || undefined);
+    const lat = Number.parseFloat(params.get('lat') ?? '');
+    const lon = Number.parseFloat(params.get('lon') ?? '');
+    setInitialCenter(
+      Number.isFinite(lat) && Number.isFinite(lon)
+        ? ([lat, lon] as [number, number])
+        : undefined,
+    );
   }, []);
 
   useEffect(() => {
@@ -193,6 +204,7 @@ export default function MapaFullscreenClient({
         initialRadarEnabled={initialRadar}
         initialIsobathsEnabled={initialIsobaths}
         focusSpotId={focusSpotId}
+        initialCenter={initialCenter}
         fullscreenBelowHeader
         onExitFullscreen={handleExit}
         onSpotSelect={handleSpotSelect}

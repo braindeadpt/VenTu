@@ -5,6 +5,7 @@ import {
   writeRadarPref,
   readRadarEnabledPref,
   writeRadarEnabledPref,
+  resetRadarPref,
 } from '@/lib/radarPrefs';
 
 function mockLocalStorage() {
@@ -141,6 +142,25 @@ describe('radarPrefs.enabled (ligar/desligar persistido entre visitas)', () => {
   it('JSON inválido → enabled undefined (não rebenta)', () => {
     const { store } = mockLocalStorage();
     store.set(RADAR_STATE_LS_KEY, '{lixo');
+    expect(readRadarEnabledPref()).toBeUndefined();
+  });
+
+  it('resetRadarPref remove a key → volta ao default (nunca decidiu)', () => {
+    const { store } = mockLocalStorage();
+    writeRadarEnabledPref(true);
+    writeRadarPref(true, 5);
+    expect(readRadarEnabledPref()).toBe(true);
+
+    resetRadarPref();
+
+    expect(store.has(RADAR_STATE_LS_KEY)).toBe(false);
+    expect(readRadarEnabledPref()).toBeUndefined();
+    expect(readRadarPref()).toEqual({ paused: false, frame: 0 });
+  });
+
+  it('resetRadarPref sem estado gravado não rebenta', () => {
+    mockLocalStorage();
+    expect(() => resetRadarPref()).not.toThrow();
     expect(readRadarEnabledPref()).toBeUndefined();
   });
 });

@@ -81,3 +81,19 @@ export function writeRadarPref(paused: boolean, frame: number) {
     /* noop — private mode / quota */
   }
 }
+
+/**
+ * Repõe a preferência do radar ao «nunca decidiu» (default): remove a key.
+ * No arranque o radar fica off (salvo deep link ?radar=1) e a pausa/frame
+ * voltam ao zero. Usado pelo botão de reinício do HUD — a diferença para o
+ * toggle-off é semântica: `enabled: false` grava uma decisão, este apaga a
+ * decisão toda (também limpa paused/frame persistidos).
+ */
+export function resetRadarPref() {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(RADAR_STATE_LS_KEY);
+  } catch {
+    /* noop — private mode / quota */
+  }
+}
