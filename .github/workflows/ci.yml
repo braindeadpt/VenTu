@@ -35,6 +35,12 @@ jobs:
       - name: Validate data files (UTF-8 + JSON)
         run: node scripts/validate-data-files.js
 
+      # Guard: o CITATION.cff (raiz) é o que o GitHub mostra em «Cite this
+      # repository» — valida cff-version, campos obrigatórios, authors e a
+      # preferred-citation com DOI bem formado. Pure-node, corre cedo no CI.
+      - name: Validate CITATION.cff
+        run: node scripts/check-citation-cff.js
+
       - name: Lint
         run: npm run lint
 
@@ -51,9 +57,9 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: .next/cache
-          # Key = só o lock hash (não github.sha): PRs, pushes e data-commits
-          # partilham a MESMA entrada — exact hit sempre que o lock não muda.
-          # Em mudança de dependências, o prefixo restaura o cache anterior.
+          # Key = s├│ o lock hash (n├úo github.sha): PRs, pushes e data-commits
+          # partilham a MESMA entrada ÔÇö exact hit sempre que o lock n├úo muda.
+          # Em mudan├ºa de depend├¬ncias, o prefixo restaura o cache anterior.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
@@ -73,17 +79,17 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: E2E — critical routes
+      - name: E2E ÔÇö critical routes
         run: npx playwright test critical-routes
         env:
           CI: true
 
-      - name: E2E — route audit
+      - name: E2E ÔÇö route audit
         run: npx playwright test full-audit
         env:
           CI: true
 
-      - name: E2E — visual UX audit
+      - name: E2E ÔÇö visual UX audit
         run: npx playwright test visual-ux-audit
         env:
           CI: true
@@ -136,7 +142,7 @@ jobs:
         working-directory: terraform
 
       # init -backend=false: valida os schemas do provider sem tocar em state
-      # nem aplicar nada (o módulo não tem backend; só descarrega o provider).
+      # nem aplicar nada (o m├│dulo n├úo tem backend; s├│ descarrega o provider).
       - name: Terraform init (no backend)
         run: terraform init -backend=false -input=false
         working-directory: terraform
@@ -145,10 +151,10 @@ jobs:
         run: terraform validate
         working-directory: terraform
 
-      # Valida a sintaxe das expressões WAF (ruleset engine) de todos os
-      # terraform/*.tf + docs/SECURITY-HEADERS.md (equivalências) sem token da
-      # API, e o drift entre os dois (doc = fonte de verdade) — um erro de
-      # expressão só seria apanhado no apply, que aqui nunca corre.
+      # Valida a sintaxe das express├Áes WAF (ruleset engine) de todos os
+      # terraform/*.tf + docs/SECURITY-HEADERS.md (equival├¬ncias) sem token da
+      # API, e o drift entre os dois (doc = fonte de verdade) ÔÇö um erro de
+      # express├úo s├│ seria apanhado no apply, que aqui nunca corre.
       - name: Validate WAF expressions (ruleset engine syntax)
         run: node scripts/validate-terraform-expressions.js
 
@@ -162,7 +168,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends shellcheck
 
       # Os 4 scripts bash do repo (checker S7, monitor IH, push-data-update,
-      # runner de testes SQL) — sem findings, o job passa.
+      # runner de testes SQL) ÔÇö sem findings, o job passa.
       - name: Lint bash scripts (shellcheck)
         run: |
           shellcheck scripts/check-security-headers.sh \

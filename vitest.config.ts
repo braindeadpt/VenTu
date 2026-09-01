@@ -54,6 +54,7 @@ export default defineConfig({
       'scripts/lib/__tests__/dataLayerHealth.test.js',
       'scripts/lib/__tests__/ecowittApiKeyTest.test.js',
       'scripts/lib/__tests__/resendApiKeyTest.test.js',
+      'scripts/lib/__tests__/checkCitationCff.test.js',
     ],
   },
   resolve: {

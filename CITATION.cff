@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+message: >-
+  If you use VenTu in your work, please cite the project and, importantly, the
+  data providers it aggregates — the models come from Open-Meteo (see
+  preferred-citation below) alongside IPMA / Instituto Hidrográfico /
+  MeteoAlarm observations.
+title: "VenTu — Open-source water-sports conditions for Portugal"
+abstract: >-
+  Open-source surf and water-sports conditions for Portugal: 185 spots, live
+  cams, per-sport scores, hourly forecasts, interactive map, Dawn Patrol and
+  automated AI news. Aggregates Open-Meteo marine/wind models, IPMA and
+  Instituto Hidrográfico observations (waves, buoys, warnings, radar) and
+  MeteoAlarm alerts.
+authors:
+  - name: "braindeadpt"
+    website: "https://github.com/braindeadpt"
+version: "1.0.0"
+date-released: "2026-09-01"
+license: MIT
+url: "https://github.com/braindeadpt/VenTu"
+repository-code: "https://github.com/braindeadpt/VenTu"
+keywords:
+  - surf
+  - kitesurf
+  - windsurf
+  - waves
+  - wind
+  - forecast
+  - Portugal
+  - Open-Meteo
+  - IPMA
+  - open-source
+# Citação preferida: a fonte primária das previsões agregadas pelo projecto.
+# Quem cita o VenTu por causa dos modelos deve citar também a Open-Meteo.
+preferred-citation:
+  type: software
+  authors:
+    - family-names: "Zippenfenig"
+      given-names: "Patrick"
+  title: "Open-Meteo.com Weather API"
+  version: "1.0"
+  date-released: "2023-11-01"
+  url: "https://open-meteo.com/"
+  doi: "10.5281/zenodo.7970649"
