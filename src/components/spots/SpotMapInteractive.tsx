@@ -647,7 +647,6 @@ export default function SpotMapInteractive({
           <MapControls
             isFullscreen={isFullscreen}
             isHeroEmbed={isHeroEmbed}
-            fullscreenLabel={t.map.exploreMap}
             clusterEnabled={clusterEnabled}
             showWindOnMarkers={showWindOnMarkers}
             windEnabled={windEnabled}
@@ -657,6 +656,7 @@ export default function SpotMapInteractive({
             isobathsEnabled={isobathsEnabled}
             onlyOnEnabled={onlyOnEnabled}
             coastalWarningsEnabled={coastalWarningsEnabled}
+            fullscreenLabel={t.hero.exploreMap}
             clusterLabel={clusterLabel}
             windLabel={windLabel}
             windHint={windHint}
