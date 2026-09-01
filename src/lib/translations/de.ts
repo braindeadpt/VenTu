@@ -182,6 +182,7 @@ export const translationsDe = {
     radarPaused: 'Angehalten',
     radarFullscreen: 'Radar im Vollbild',
     radarGap: '{count} Frames fehlen',
+    radarReset: 'Radar zurücksetzen',
     showIsobaths: '8/16/30-m-Isobathen',
     hideIsobaths: 'Isobathen ausblenden',
     isobathsHint: 'Küstenbathymetrie — Tiefenlinien 8/16/30 m (IH)',
@@ -371,6 +372,350 @@ export const translationsDe = {
     windguruLink: 'Auf Windguru ansehen ↗',
     nearAccommodation: 'Unterkunft in der Nähe',
     scoreFeedbackHint: 'Passt der Score?',
+  },
+  tools: {
+    yourWeight: 'Dein Gewicht',
+    discipline: 'Disziplin',
+    liveWindAria: 'Aktuellen Wind eines Spots verwenden',
+    liveWindLabel: 'Live-Wind eines Spots verwenden…',
+    noWindData: 'Keine Winddaten für diesen Spot.',
+    comfortWindow: 'bequemes Fenster {from}–{to} kt',
+    ifWindDrops: ' — falls der Wind nachlässt',
+    ifWindPicksUp: ' — falls der Wind zunimmt',
+    disclaimer:
+      'Schätzung nach typischen Herstellertabellen. Deine Kältetoleranz entscheidet.',
+    belowKiteMin: 'Unter {min} kt rettet dich kein Kite — SUP-Tag.',
+    estimateNote:
+      'Schätzung nach der Regel Gewicht × Faktor ÷ Wind. Passe sie an dein Niveau, die Kite-Marke und den Seegang an.',
+    alternative: 'Alternative: ',
+    waterTempLabel: 'Wassertemperatur',
+    liveWaterAria: 'Aktuelle Wassertemperatur eines Spots verwenden',
+    liveWaterLabel: 'Live-Wassertemperatur eines Spots verwenden…',
+    noWaterData: 'Keine Wassertemperatur-Daten für diesen Spot.',
+    windyDay: 'Windiger Tag (≥15 kt) — Windchill zählt',
+    outOfRange: 'Temperatur außerhalb des Bereichs.',
+    metaTitle: 'Nautische Tools — VenTu',
+    metaDescription:
+      'Kostenlose Rechner für Wassersport: Kitegröße nach Wind und Gewicht, Neoprenstärke nach Wassertemperatur — mit echten Daten der portugiesischen Spots.',
+    kiteTitle: 'Kitegrößen-Rechner',
+    kiteDesc:
+      'Welche Kitegröße mitnehmen? Gewicht + Wind + Disziplin, mit echtem Wind von jedem Spot.',
+    kiteMetaTitle: 'Kitegrößen-Rechner — VenTu',
+    kiteMetaDescription:
+      'Welche Kitegröße heute aufriggen? Berechne nach Gewicht, Wind in Knoten und Disziplin (Twintip, Strapless, Foil) — mit echtem Wind von 185 portugiesischen Spots.',
+    kiteIntro:
+      'Die richtige Größe hängt von deinem Gewicht, dem Wind und dem ab, was du fährst. Nutze Live-Wind von einem Spot oder stelle ihn manuell ein.',
+    kiteHowWorks: 'So funktioniert es',
+    kiteP1:
+      'Wir nutzen die Faustregel der Branche: Größe (m²) ≈ Gewicht (kg) × Faktor ÷ Wind (kt). Der Faktor hängt von der Disziplin ab — ein Twintip nutzt ~2,2, ein Waveboard ~1,9 und ein Foil ~1,4, weil das Foil viel weniger Widerstand erzeugt und viel weniger Kraft braucht.',
+    kiteP2:
+      'Jeder Kite hat ein Windfenster — den Bereich, in dem er bequem fährt. Liegt der Wind nahe am Fensterrand, nimm auch die Nachbargröße mit an den Strand.',
+    kiteP3Lead: 'Weißt du nicht, wo heute Wind ist? ',
+    kiteP3Link: 'Sieh dir die Kitesurf-Karte an',
+    kiteP3Tail: ' mit Live-Wind an jedem Spot.',
+    wetsuitTitle: 'Neopren-Rechner',
+    wetsuitDesc:
+      'Welche Neoprenstärke? Echte Wassertemperatur jedes Spots, inklusive Windchill.',
+    wetsuitMetaTitle: 'Neoprenstärken-Rechner — VenTu',
+    wetsuitMetaDescription:
+      'Welchen Neoprenanzug anziehen? Empfohlene Stärke nach echter Wassertemperatur an 185 portugiesischen Spots, mit Stiefeln, Handschuhen und Kapuze wenn nötig.',
+    wetsuitIntro:
+      'Die richtige Stärke hängt vom Wasser ab, nicht von der Luft. Wähle einen Spot für die echte Temperatur oder stelle sie manuell ein.',
+    wetsuitWaterTitle: 'Das Wasser in Portugal',
+    wetsuitP1:
+      'Die Westküste verlässt selten die 14–19°C — ein 3/2 im Sommer und ein 4/3 im Winter decken die meisten Sessions ab. Die Algarve erreicht im Spätsommer 21–22°C; der Norden fällt im März auf 13–14°C, dem kältesten Wassermonat (nicht Januar — das Meer hinkt der Luft etwa zwei Monate hinterher).',
+    wetsuitP2:
+      'Wind stiehlt mehr Wärme als das Wasser: an einem windigen Tag zieh dich an, als wäre das Wasser 1–2°C kälter.',
+    toolsHeading: 'Werkzeuge',
+    toolsIntro:
+      'Schnelle Rechner zur Vorbereitung der Session — angebunden an echte Daten aller 185 Spots.',
+    open: 'Öffnen',
+    moreSoon: 'Weitere Tools in Kürze.',
+  },
+  alerts: {
+    confirming: 'Wird bestätigt…',
+    confirmed: 'Alarm bestätigt!',
+    invalidOrExpired: 'Ungültiger oder abgelaufener Link.',
+    cancelling: 'Abmeldung…',
+    unsubscribed: 'Alarm abgemeldet.',
+    invalidLink: 'Ungültiger Link.',
+    backToVentu: '← Zurück zu VenTu',
+    emailAlerts: 'E-Mail-Alarme',
+    alertsActive: 'Aktive Alarme',
+    prefsSaved: 'Einstellungen gespeichert.',
+    minScore: 'Mindest-Score',
+    frequency: 'Häufigkeit',
+    dailyDigest: 'Tägliche Zusammenfassung (~7:30) — empfohlen',
+    immediate: 'Sofort, wenn es gut wird (max. 1×/3 h)',
+    disable: 'Deaktivieren',
+    metaTitle: 'E-Mail-Alarme — VenTu',
+    metaDescription:
+      'Aktiviere Alarme für deine Favoriten — eine E-Mail, wenn ein Spot deinen Mindest-Score erreicht.',
+    intro:
+      'Speichere Spots in Favoriten und aktiviere Alarme in einem Schritt — du bekommst eine E-Mail, wenn ein Favorit deinen Mindest-Score erreicht.',
+    step1: 'Anmelden mit Magic Link',
+    step2: 'Spots zu Favoriten hinzufügen',
+    step3: 'In /favorites Alarme aktivieren und per E-Mail bestätigen',
+    enableOnFavorites: 'In Favoriten aktivieren',
+    signIn: 'Anmelden',
+    popularSpots: 'Beliebte Spots',
+    haveALink:
+      'Hast du schon einen Bestätigungs- oder Abmeldelink? ',
+    confirmLink: 'Bestätigen',
+    unsubscribeLink: 'Abmelden',
+    invalidToken: 'Ungültiger oder unvollständiger Link (Token fehlt).',
+    confirmedNote:
+      'Du erhältst eine E-Mail, sobald einer deiner Favoriten deinen Schwellenwert erreicht.',
+    favOne: 'Favorit',
+    favMany: 'Favoriten',
+    introNotify:
+      'Benachrichtigt dich, sobald einer deiner {count} {favs} deinen Mindest-Score erreicht. Standard: tägliche Zusammenfassung (~7:30); optional: sofortige Warnung (max. 1×/3 h). Du kannst auch Telegram in Konto verknüpfen.',
+    confirmLinkFirst:
+      'Bestätige den Link, den wir dir per E-Mail geschickt haben, bevor die Alarme starten.',
+    subSavedConfirm:
+      'Abonnement gespeichert. Du erhältst eine Bestätigungs-E-Mail.',
+    saving: 'Speichern…',
+    updateAlerts: 'Alarme aktualisieren',
+    enableAlerts: 'Alarme aktivieren',
+  },
+  directory: {
+    authUnavailable: 'Auth derzeit nicht verfügbar.',
+    verifiedOwner: 'Verifiziertes Profil — du bist der Inhaber.',
+    editProfile: 'Profil bearbeiten',
+    ownerPlaceholder: 'z. B. Ich bin Inhaber von @schule…',
+    title: 'Verzeichnis',
+    searchLabel: 'Suchen',
+    regionAria: 'Region',
+    manageProfile: 'Profil verwalten',
+    loadingCurtain: 'Wird geladen…',
+    submittedCount: 'gemeldet',
+    registerCta: 'Schule fehlt? Jetzt eintragen ↓',
+    manageProfileCta: 'Profil verwalten',
+    searchPlaceholder: 'Name oder Gegend suchen…',
+    viewAria: 'Ansicht',
+    listView: 'Liste',
+    mapViewAria: 'Verzeichniskarte',
+    typeAria: 'Typ',
+    allRegions: 'Alle Regionen',
+    nothingFound: 'Nichts gefunden',
+    unverified: 'Nicht verifiziert',
+    verified: 'Verifiziert',
+    nearbySpotsTitle: 'VenTu-Spots in der Nähe',
+    yourSchool: 'Ist das deine Schule oder dein Shop?',
+    nearbySpot: 'Spot in der Nähe',
+    viewProfile: 'Profil ansehen',
+    proWidget: 'Pro-Widget (Embed)',
+    accountsUnavailable: 'Konten nicht verfügbar.',
+    manageTitle: 'Verwalten',
+    yourSchools: 'Deine Schulen',
+    goToDirectory: 'Zum Verzeichnis',
+    saved: 'Gespeichert.',
+    save: 'Speichern',
+    pending: 'Ausstehend',
+    viewPublicPage: 'Öffentliche Seite ansehen',
+    nameLabel: 'Name',
+    sportsLabel: 'Sportarten',
+    nearestSpot: 'Nächster VenTu-Spot',
+    phoneLabel: 'Telefon',
+    addressLabel: 'Adresse',
+    shortBio: 'Kurzbio',
+    inList: 'In der Liste ↓',
+    manageSchoolsTitle: 'Schulen verwalten — VenTu',
+    profile: 'Profil',
+    authUnavailableShort: 'Auth nicht verfügbar.',
+    needSchoolName: 'Gib den Namen der Schule/des Shops an.',
+    needSport: 'Wähle mindestens eine Sportart.',
+    needNearbySpot: 'Wähle einen VenTu-Spot in der Nähe.',
+    schoolNotListed: 'Schule nicht gelistet?',
+    schoolNamePlaceholder: 'z. B. XYZ Surfschule',
+    spotNotFound: 'Spot nicht gefunden.',
+    conditionsLabel: 'VenTu-Bedingungen',
+    conditionsWord: 'Bedingungen',
+    all: 'Alle',
+    intro:
+      'Schulen, Kite-Zentren und Shops in Portugal. Kostenlos für Rider — Schulen können ein Profil beanspruchen oder registrieren (sofort sichtbar; Verifikation später).',
+    nothingFoundDescription: 'Passe die Filter an oder registriere deine Schule unten.',
+    mapHint: 'Tippe auf einen Pin, um das Profil zu öffnen. Filter gelten für die Karte.',
+    claimEditableIntro:
+      'Beanspruche das Profil, um Kontakte zu bearbeiten und als verifiziert zu erscheinen. Kostenlos zum Start — B2B-Premium später (hervorgehoben, Widget, usw.).',
+    sourceNote: 'Quelle: {source}. Kann veraltet sein.',
+    signInToEditIntro: 'Melde dich an, um Schulen oder Shops zu bearbeiten, die du verwaltest.',
+    manageIntro:
+      'Aktualisiere Kontakte, Sportarten und Spot nach der Verifizierung. Premium-Tier wird von VenTu festgelegt.',
+    noProfilesYet:
+      'Du verwaltest noch kein Profil. Registriere die Schule im Verzeichnis oder beanspruche einen bestehenden Eintrag — nach der Freigabe bearbeitest du hier.',
+    invalidUrl: 'Ungültige URL — verwende https://… (nur http/https).',
+    noPermissionSql:
+      'Keine Berechtigung — führe das aktualisierte SQL (owner edit) in Supabase aus.',
+    registrationNotEnabled:
+      'Registrierung noch nicht aktiv — führe supabase-directory.sql in Supabase aus.',
+    profileCreatedUnverified:
+      'Profil erstellt und öffentlich als «Nicht verifiziert». Nach Freigabe wird es Verifiziert — bearbeite es unter Profil verwalten.',
+    registerIntro:
+      'Registriere das Profil — es wird sofort öffentlich als nicht verifiziert. Nach Freigabe erscheint es als verifiziert. Kostenlos.',
+    signInToRegister: 'Anmelden zum Registrieren',
+    publishProfile: 'Profil veröffentlichen',
+    unverifiedShort: 'Zu verifizieren',
+    verifiedPlural: 'Verifiziert',
+    onMapCount: '{count} auf der Karte',
+    nearbySchoolsTitle: 'Schulen und Shops in der Nähe',
+    nearbyNote:
+      'Öffentliche Daten — noch unbestätigt. Ist es deine Schule? Beanspruche sie oder trag sie im Verzeichnis ein.',
+    claimsNotEnabled:
+      'Claims noch nicht in der Datenbank aktiv — führe supabase-directory.sql aus.',
+    claimSent:
+      'Anfrage gesendet. Wir melden uns per E-Mail, sobald sie verifiziert ist.',
+    claimPending: 'Anspruchserklärung für „{name}“ in Prüfung.',
+    proofLabel: 'Optionale Nachweise (Webseite, IG, Steuer-ID, Telefon…)',
+    claimThisProfile: 'Profil beanspruchen',
+    signInToClaim: 'Anmelden zum Beanspruchen',
+    directoryArrow: 'Verzeichnis →',
+    metaTitle: 'Verzeichnis — Wassersportschulen und -shops',
+    metaDescription:
+      'Surfschulen, Kitecenter und Shops in Portugal. Liste und Karte — beanspruche dein Profil.',
+  },
+  compare: {
+    back: 'Zurück',
+    pickSubtitle: '2-3 Spots zum Vergleich wählen',
+    searchPlaceholder: 'Spot suchen...',
+    selectedCount: '{n}/3 ausgewählt',
+    clear: 'Leeren',
+    compare: 'Vergleichen',
+    emptySubtitle: 'Wähle 2-3 Spots, um Bedingungen zu vergleichen.',
+    chooseSpots: 'Spots wählen',
+    whoWins: 'Wer gewinnt heute?',
+    changeSpots: 'Spots ändern',
+    winner: 'Gewinner',
+    waves: 'Wellen',
+    wind: 'Wind',
+    drive: 'Anfahrt',
+    viewDetails: 'Details ansehen',
+    metaTitle: 'Spots vergleichen — VenTu',
+    metaDescription:
+      'Vergleiche Bedingungen zwischen 2-3 Surf-, Kitesurf- und Windsurf-Spots in Portugal — {schedule}.',
+  },
+  admin: {
+    supabaseNotConfigured: 'Supabase nicht konfiguriert',
+    supabaseNotConfiguredFull: 'Supabase ist nicht konfiguriert.',
+    loginFailed: 'Anmeldung fehlgeschlagen',
+    signingIn: 'Anmelden...',
+    signOut: 'Abmelden',
+    all: 'Alle',
+    contributions: 'Beiträge',
+    noContributions: 'Keine Beiträge.',
+    confirmDelete: 'Löschung bestätigen?',
+    yes: 'Ja',
+    no: 'Nein',
+    delete: 'Löschen',
+    loading: 'Wird geladen…',
+    listings: 'Einträge',
+    noPendingClaims: 'Keine ausstehenden Claims.',
+    approveClaim: 'Claim genehmigen',
+    reject: 'Ablehnen',
+    nothingInList: 'Nichts in dieser Liste.',
+    approveVerify: 'Genehmigen / verifizieren',
+    unverify: 'Verifizierung entfernen',
+    metaTitleContributions: 'Admin — Beiträge',
+    metaTitleDirectory: 'Admin — Verzeichnis',
+    loginIntro:
+      'Melde dich mit dem Supabase-Auth-Konto an (im Dashboard erstellt).',
+    missingTierColumn:
+      'Tier-Spalte fehlt — führe das aktualisierte SQL aus (supabase-directory.sql).',
+    verifyIntro:
+      'Einträge prüfen, Claims genehmigen, Tier festlegen. Der Inhaber bearbeitet unter /diretorio/gerir.',
+  },
+  passaporte: {
+    title: 'VenTu-Pass',
+    visitedSpots: 'besuchte Spots',
+    noCheckins: 'Noch keine Check-ins',
+    download: 'Herunterladen',
+    dateUpdated: 'Aktualisiert {date}',
+    metaTitle: 'VenTu-Pass — Besuchte Spots',
+    metaDescription:
+      'Dein Pass für Wassersport-Spots in Portugal. Sieh, wie viele Spots du besucht hast, die Aufschlüsselung nach Region und teile dein Abzeichen.',
+  },
+  spotVerify: {
+    next24h: 'Nächste 24 h',
+    hourlyForecast: 'Stündliche Vorhersage',
+    checkingLive: 'Live-Beobachtungen werden geprüft…',
+    checkingLiveAria: 'Live-Beobachtungen werden geprüft',
+    liveObsUnavailable:
+      'Live-Beobachtungen nicht verfügbar — der Wind oben ist die Modellvorhersage.',
+    sportTabsAria: 'Sportart',
+    radarFootnote:
+      'Blau = Dünung · Bernstein = Wind. Land/Meer im Radar sind nur Küstenreferenz.',
+    keyMetrics: 'Hauptkennzahlen',
+    vsAvg: 'vs. Ø',
+    crossLabel: 'Quer zur Küste',
+    totalSwellEnergy: 'Dünungsenergie (gesamt)',
+    staleObservation:
+      'Alte Messung (>3 h) — nutze den Modellwind oben.',
+    noStation:
+      'Keine frische IPMA/Ecowitt-Station in der Nähe — nutze den Modellwind oben.',
+    staleBuoy:
+      'Alte Bojenmessung — die Wellenhöhe oben ist eine Modellvorhersage.',
+    live: '(live)',
+    windWithSource: 'Wind ({source})',
+    modelForecast: 'Modellvorhersage',
+    observedMeta: 'Beobachtet {clock} · {station} · {dist} km · {source}',
+    deltaKtTitle: 'Abweichung {delta} kt',
+    deltaMTitle: 'Abweichung {delta} m',
+    buoySkillTitle:
+      'Echte Vorhersage-Güte an dieser Boje ({name}, n={n}) — forecast-skill.json: best_match vs Bojenmessung zu denselben Stunden, mit Vorlauf > 0. ME = Mittelwert(beobachtet − Vorhersage): positiv = Modell unterschätzt.',
+    buoySkillBody: 'Boje-Fähigkeit ({name}): {label} (n={n})',
+    buoySkillOrigins: 'Paare je Plattform: {counts} (insgesamt {total})',
+    buoySkillOriginsTitle:
+      'Kumulierte Aufteilung der Vorhersage×Messung-Paare je Plattform (forecast-skill.json). Der Ursprung dieser Boje ist {buoyOrigin}: fällt die dominante Plattform aus, kann die Fähigkeit des Spots ihre Abdeckung verlieren.',
+    observedWaveTitle: 'Beobachtete Welle (Boje)',
+    bridgeTitle:
+      'Keyless-Brücke: bis die IH_API_KEY die Fugro (Nazaré Costeira) nachweist, ist die Cabo-Silleiro-Messung (ES, Copernicus) der Wellen-Proxy — echte Entfernung bleibt. Sobald die nationale Boje wieder frisch ist, ersetzt sie diese.',
+    calibrationTitle:
+      'Grenzüberschreitende Kalibrierung: {from} · ME {me} m (n={n}) — spanische Messung an die PT-Referenz angepasst.',
+    calibrationDefaultFrom: 'ES×PT-Paar',
+    bridgeLead: 'Keyless-Brücke: verwendet ',
+    bridgeTail:
+      ' bis die nationale Fugro (IH_API_KEY) nachgewiesen ist — an der {label}.',
+    calibrationLead: 'Höhe auf die PT-Referenz neu kalibriert: gemessen',
+    calibrationTail: ' · Bias {me} m (n={n})',
+    inUse: '· in Gebrauch',
+    ageNa: 'Alter n/a',
+    ihAging:
+      'IH altert — die WMO ist frischer; IH wird verwendet, solange es die primäre Quelle ist.',
+    reasonNoMeta: 'IH und WMO mit Messungen — primäre Quelle wird verwendet.',
+    reasonWmoOnly:
+      'WMO wird verwendet — keine frische IH-Messung (Copernicus-Fallback).',
+    reasonIhOnly: 'IH wird verwendet — keine frische WMO-Messung.',
+    reasonFresherCloser:
+      'IH wird verwendet — frische Primärquelle; WMO näher und frischer, aber IH ist die offizielle Quelle.',
+    reasonFresher:
+      'IH wird verwendet — Primärquelle; WMO frischer, aber IH ist die offizielle Quelle.',
+    reasonCloser:
+      'IH wird verwendet — frische Primärquelle; WMO näher, aber IH ist die offizielle Quelle.',
+    reasonIhFresh: 'IH wird verwendet — Primärquelle mit frischer Messung (≤3 h).',
+    measuredHeight: 'Höhe (gemessen)',
+    measurementSource: 'Messquelle: ',
+    skillTitleEs:
+      'Echte Vorhersage-Güte an dieser spanischen Boje ({name}) — forecast-skill.json via WMO/Copernicus (ohne IH_API_KEY): best_match vs Bojenmessung zu denselben Stunden. ME = Mittelwert(beobachtet − Vorhersage): positiv = Modell unterschätzt.',
+    skillTitleWmoPt:
+      'Echte Vorhersage-Güte an dieser portugiesischen Boje ({name}) via Copernicus-WMO ohne IH_API_KEY — best_match vs Bojenmessung zu denselben Stunden. ME = Mittelwert(beobachtet − Vorhersage): positiv = Modell unterschätzt.',
+    skillTitleIh:
+      'Echte Vorhersage-Güte an dieser Boje (forecast-skill.json): best_match vs Bojenmessung zu denselben Stunden, mit Vorlauf > 0. ME = Mittelwert(beobachtet − Vorhersage) — positiv = Modell unterschätzt.',
+    skillBodyEs:
+      'Skill der spanischen Boje ({name}) · {parts} (n={n}) — via WMO/Copernicus (ohne IH_API_KEY)',
+    skillBodyWmoPt:
+      'Skill der portugiesischen Boje ({name}) · {parts} (n={n}) — via Copernicus-WMO (ohne IH_API_KEY)',
+    skillBodyIh: 'Skill dieser Boje: {parts} (n={n})',
+    coerRefusedTitle:
+      'ES-Boje {esCode} heute wegen inkohärentem ES×PT-Paar verworfen (buoy-coherence.json).',
+    coerRefusedBody:
+      'ES-Messung heute verworfen — das ES×PT-Paar ist inkohärent; nur die PT-Quelle wird verwendet.',
+    coerWarnTitle:
+      'ES×PT-Paar ({esCode}{ref}) seit {days} Tagen in Folge inkohärent ({first} → {last}). Die primäre IH-Messung bleibt, aber mit reduzierter Konfidenz (buoy-coherence-daily.json).',
+    coerWarnBody:
+      'Konfidenz der nationalen Messung reduziert — das ES×PT-Paar ist seit {days} Tagen inkohärent.',
+    tideAria: 'Gezeiten: {phase}',
+    tideLow: 'Niedrig',
+    tideHigh: 'Hoch',
   },
   livecams: {
     title: 'Livecams',
