@@ -39,7 +39,16 @@ const {
   notifyDeadModels,
 } = require('./lib/modelHealth');
 const { isFreshIhObservation, MAX_OBS_AGE_HOURS } = require('./lib/ihObservedTide');
-const { applyWaveBias, MIN_BIAS_N, MIN_BIAS_M } = require('./lib/buoyBias');
+const {
+  confidenceFromPrevious,
+  applyWaveBiasToRow,
+  applyAliasSpots,
+  wavePowerKwPerM,
+  wavePowerFromMarine,
+  pickSwellTrain,
+  getTideStatus,
+  SWELL_TRAIN_MIN_HEIGHT_M,
+} = require('./lib/updateConditionsPure');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -48,6 +57,8 @@ function resolveUseMultiModel() {
   return scheduleIsMultiModelEnabled();
 }
 
+/* Pure calculations live in ./lib/updateConditionsPure. */
+/* Legacy implementation retained below temporarily for line-stable review.
 function confidenceFromPrevious(prev) {
   if (!prev?.confidenceDetail) {
     return {
@@ -76,6 +87,7 @@ function confidenceFromPrevious(prev) {
     dailyConfidence: prev.dailyConfidence ?? [],
   };
 }
+*/
 
 /**
  * Parse spots from src/lib/spots.ts automatically.
@@ -124,12 +136,14 @@ const spots = parseSpotsFromFile();
  * @param {boolean} enabled VENTU_WAVE_BIAS_CORRECTION=1
  * @returns {{ waveHeight: number, waveHeightRaw?: number, waveBias?: object }}
  */
-function applyWaveBiasToRow(current, region, waveBias, enabled) {
+/*
+function applyWaveBiasToRow_LEGACY(current, region, waveBias, enabled) {
   const clone = { ...current };
   const meta = applyWaveBias(clone, region, waveBias, enabled);
   if (!meta) return clone;
   return { ...clone, waveBias: meta };
 }
+*/
 
 /**
  * Copy conditions/forecast from each source spot to its alias spots
@@ -140,7 +154,8 @@ function applyWaveBiasToRow(current, region, waveBias, enabled) {
  * @param {Record<string, Array<object>>} allForecasts hourly series by spot id (mutated)
  * @returns {string[]}
  */
-function applyAliasSpots(aliasSpots, allConditions, allForecasts) {
+/*
+function applyAliasSpots_LEGACY(aliasSpots, allConditions, allForecasts) {
   const copied = [];
   for (const spot of aliasSpots) {
     const srcId = spot.conditionsSource;
@@ -155,6 +170,7 @@ function applyAliasSpots(aliasSpots, allConditions, allForecasts) {
   }
   return copied;
 }
+*/
 
 // Safety check: ensure we parsed a reasonable number of spots
 const MIN_SPOTS = 50;
@@ -219,21 +235,22 @@ async function fetchWithRetry(url, retries = 3, delay = 1000, usage, weight = 1)
   throw new Error('Max retries exceeded');
 }
 
-function wavePowerKwPerM(heightM, periodS) {
+/*
+function wavePowerKwPerM_LEGACY(heightM, periodS) {
   if (!heightM || !periodS || heightM <= 0 || periodS <= 0) return 0;
   return 0.5 * heightM * heightM * periodS;
 }
 
 const SWELL_TRAIN_MIN_HEIGHT_M = 0.1;
 
-function wavePowerFromMarine({ swellHeight, swellPeriod, waveHeight, wavePeriod }) {
+function wavePowerFromMarine_LEGACY({ swellHeight, swellPeriod, waveHeight, wavePeriod }) {
   if (swellHeight > SWELL_TRAIN_MIN_HEIGHT_M && swellPeriod > 0) {
     return wavePowerKwPerM(swellHeight, swellPeriod);
   }
   return wavePowerKwPerM(waveHeight || 0, wavePeriod || 0);
 }
 
-function pickSwellTrain(height, period, direction) {
+function pickSwellTrain_LEGACY(height, period, direction) {
   if (height == null || height < SWELL_TRAIN_MIN_HEIGHT_M || period == null || period <= 0) {
     return null;
   }
@@ -315,7 +332,7 @@ async function fetchWindModels(lat, lon, usage) {
   return fetchWithRetry(`${WEATHER_API}?${params}`, 3, 1000, usage, WIND_MODELS.length);
 }
 
-function getTideStatus(seaLevel, seaLevelNext) {
+function getTideStatus_LEGACY(seaLevel, seaLevelNext) {
   const threshold = 0.3;
   if (seaLevel > threshold) {
     return { status: 'high', label: 'Maré Alta' };
