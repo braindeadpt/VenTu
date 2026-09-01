@@ -49,6 +49,7 @@ const {
   getTideStatus,
   SWELL_TRAIN_MIN_HEIGHT_M,
 } = require('./lib/updateConditionsPure');
+const { readJsonIfExists, atomicWriteJson, ensureParentDir } = require('./lib/updateConditionsArtifacts');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -403,14 +404,9 @@ async function updateConditions() {
   );
 
   const outputPath = path.join(__dirname, '../public/data/conditions.json');
-  let previousConditions = {};
-  if (fs.existsSync(outputPath)) {
-    try {
-      previousConditions = JSON.parse(fs.readFileSync(outputPath, 'utf-8'));
-    } catch {
-      console.warn('⚠️ Could not parse existing conditions.json — confidence will reset until daytime run');
-    }
-  }
+  const previousConditions = readJsonIfExists(outputPath, {}, () => {
+    console.warn('⚠️ Could not parse existing conditions.json — confidence will reset until daytime run');
+  });
 
   const allConditions = {};
   const allForecasts = {};
@@ -425,15 +421,12 @@ async function updateConditions() {
   };
 
   // Load IH tide station data (if available)
-  let ihTides = { stations: {}, spotMapping: {} };
   const ihTidesPath = path.join(__dirname, '../public/data/ih-tides.json');
-  if (fs.existsSync(ihTidesPath)) {
-    try {
-      ihTides = JSON.parse(fs.readFileSync(ihTidesPath, 'utf-8'));
-      console.log(`📡 IH tide data loaded (${Object.keys(ihTides.stations).length} stations, ${Object.keys(ihTides.spotMapping).length} spot mappings)\n`);
-    } catch (e) {
-      console.warn('⚠️ Could not parse ih-tides.json, continuing without IH tide data\n');
-    }
+  const ihTides = readJsonIfExists(ihTidesPath, { stations: {}, spotMapping: {} }, () => {
+    console.warn('⚠️ Could not parse ih-tides.json, continuing without IH tide data\n');
+  });
+  if (ihTides.stations && ihTides.spotMapping) {
+    console.log(`📡 IH tide data loaded (${Object.keys(ihTides.stations).length} stations, ${Object.keys(ihTides.spotMapping).length} spot mappings)\n`);
   }
 
   let ihSkippedStale = 0;
@@ -441,15 +434,10 @@ async function updateConditions() {
   // Regional wave bias (Open-Meteo vs IH buoys, wave-bias.json). Opt-in:
   // VENTU_WAVE_BIAS_CORRECTION=1 — see docs + scripts/fetch-wave-bias.js.
   const waveBiasEnabled = process.env.VENTU_WAVE_BIAS_CORRECTION === '1';
-  let waveBias = null;
   const waveBiasPath = path.join(__dirname, '../public/data/wave-bias.json');
-  if (fs.existsSync(waveBiasPath)) {
-    try {
-      waveBias = JSON.parse(fs.readFileSync(waveBiasPath, 'utf-8'));
-    } catch (e) {
-      console.warn('⚠️ Could not parse wave-bias.json, continuing without bias correction');
-    }
-  }
+  const waveBias = readJsonIfExists(waveBiasPath, null, () => {
+    console.warn('⚠️ Could not parse wave-bias.json, continuing without bias correction');
+  });
   if (waveBiasEnabled && waveBias) {
     console.log(`📏 Wave bias loaded (${Object.keys(waveBias.regions ?? {}).length} regions)\n`);
   }
@@ -652,17 +640,7 @@ async function updateConditions() {
     console.log(`📏 Bias correction applied on ${biasApplied} spots (n≥${MIN_BIAS_N}, |ME|≥${MIN_BIAS_M} m)`);
   }
 
-  function atomicWriteJson(filePath, content) {
-    const tmpPath = filePath + '.tmp';
-    fs.writeFileSync(tmpPath, JSON.stringify(content), 'utf-8');
-    const backupPath = filePath + '.backup';
-    if (fs.existsSync(filePath)) {
-      fs.copyFileSync(filePath, backupPath);
-    }
-    fs.renameSync(tmpPath, filePath);
-  }
-
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  ensureParentDir(outputPath);
   
   // Validate we have data before writing
   const spotCount = Object.keys(allConditions).length;
