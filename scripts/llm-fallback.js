@@ -1,19 +1,24 @@
 /**
- * VenTu - LLM Fallback Module
- * Cadeia de fallback: Gemini → Groq → Cerebras → Static
- * Usado por dawn-patrol.js e update-news.js
+ * VenTu — LLM fallback chain: Gemini → Groq → Cerebras → throw
+ * Used by dawn-patrol.js and update-news.js
+ *
+ * Model IDs (updated 2026-09-01 after production outage):
+ *   - Gemini: gemini-2.0-flash → 404; use gemini-2.5-flash (GA)
+ *   - Groq: llama-3.3-70b-versatile retired 2026-08-16; use openai/gpt-oss-120b
+ *   - Cerebras: gpt-oss-120b (402 = billing/quota on the account, not a bad model id)
  */
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const CEREBRAS_API_KEY = process.env.CEREBRAS_API_KEY;
 
-// Provider configs
 const PROVIDERS = {
   gemini: {
     name: 'Gemini',
     apiKey: GEMINI_API_KEY,
-    baseUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    model: 'gemini-2.5-flash',
+    baseUrl:
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
     isOpenAI: false,
   },
   groq: {
@@ -21,7 +26,8 @@ const PROVIDERS = {
     apiKey: GROQ_API_KEY,
     baseUrl: 'https://api.groq.com/openai/v1/chat/completions',
     isOpenAI: true,
-    model: 'llama-3.3-70b-versatile',
+    // llama-3.3-70b-versatile retired 2026-08-16 — Groq's replacement ID
+    model: 'openai/gpt-oss-120b',
     maxTokens: 2048,
   },
   cerebras: {
@@ -46,7 +52,8 @@ async function callGemini(prompt, maxTokens = 2048) {
   });
 
   if (!response.ok) {
-    throw new Error(`Gemini HTTP ${response.status}`);
+    const body = (await response.text()).slice(0, 200);
+    throw new Error(`Gemini HTTP ${response.status} (${PROVIDERS.gemini.model}): ${body}`);
   }
 
   const data = await response.json();
@@ -60,7 +67,7 @@ async function callOpenAIProvider(provider, prompt, maxTokens = 2048) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${provider.apiKey}`,
+      Authorization: `Bearer ${provider.apiKey}`,
     },
     body: JSON.stringify({
       model: provider.model,
@@ -72,7 +79,15 @@ async function callOpenAIProvider(provider, prompt, maxTokens = 2048) {
 
   if (!response.ok) {
     const error = await response.text();
-    throw new Error(`${provider.name} HTTP ${response.status}: ${error.substring(0, 200)}`);
+    const hint =
+      response.status === 402
+        ? ' (billing/quota — check provider console)'
+        : response.status === 404
+          ? ` (model id "${provider.model}" may be retired)`
+          : '';
+    throw new Error(
+      `${provider.name} HTTP ${response.status}${hint}: ${error.substring(0, 200)}`,
+    );
   }
 
   const data = await response.json();
@@ -83,17 +98,14 @@ async function callOpenAIProvider(provider, prompt, maxTokens = 2048) {
 
 /**
  * Call LLM with automatic fallback chain
- * @param {string} prompt - The prompt to send
- * @param {object} options
- * @param {number} options.maxTokens - Max output tokens
- * @param {string} options.extractJson - If true, extracts JSON from response
- * @returns {Promise<string>} LLM response text
+ * @param {string} prompt
+ * @param {{ maxTokens?: number, extractJson?: boolean }} [options]
+ * @returns {Promise<string|object>}
  */
 async function callLLM(prompt, options = {}) {
   const { maxTokens = 2048, extractJson = false } = options;
   const errors = [];
 
-  // Try chain: Gemini → Groq → Cerebras
   const chain = [
     { key: 'gemini', fn: () => callGemini(prompt, maxTokens) },
     { key: 'groq', fn: () => callOpenAIProvider(PROVIDERS.groq, prompt, maxTokens) },
@@ -107,11 +119,10 @@ async function callLLM(prompt, options = {}) {
       continue;
     }
 
-    // Delay between providers to avoid rate-limit bursts
-    if (errors.length > 0) await new Promise(r => setTimeout(r, 1500));
+    if (errors.length > 0) await new Promise((r) => setTimeout(r, 1500));
 
     try {
-      console.log(`   🤖 Trying ${provider.name}...`);
+      console.log(`   🤖 Trying ${provider.name} (${provider.model})...`);
       const text = await fn();
       console.log(`   ✅ ${provider.name} responded (${text.length} chars)`);
 
@@ -120,7 +131,7 @@ async function callLLM(prompt, options = {}) {
         if (jsonMatch) {
           try {
             return JSON.parse(jsonMatch[0]);
-          } catch (e) {
+          } catch {
             console.warn(`   ⚠️ ${provider.name} returned invalid JSON, using raw text`);
             return text;
           }
@@ -134,19 +145,15 @@ async function callLLM(prompt, options = {}) {
     }
   }
 
-  // All providers failed
   const errorMsg = `All LLM providers failed:\n${errors.join('\n')}`;
   console.error(`❌ ${errorMsg}`);
   throw new Error(errorMsg);
 }
 
-/**
- * Check which providers are available
- */
 function getAvailableProviders() {
   return Object.entries(PROVIDERS)
-    .filter(([_, p]) => !!p.apiKey)
-    .map(([key, p]) => ({ key, name: p.name }));
+    .filter(([, p]) => !!p.apiKey)
+    .map(([key, p]) => ({ key, name: p.name, model: p.model }));
 }
 
 module.exports = { callLLM, getAvailableProviders, PROVIDERS };

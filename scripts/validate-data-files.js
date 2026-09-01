@@ -7,6 +7,9 @@
  * the static export. Runs dependency-free (plain Node built-ins) so it works
  * in any workflow — including update-news.yml, which does not run `npm ci`.
  *
+ * Binary assets under public/data (radar/*.png, …) are skipped — they are not
+ * UTF-8 text and must not trip the encoding gate (that broke update-data).
+ *
  * The deep validators still live in scripts/ (directory/validate.ts,
  * events/validate.ts); this gate covers the structural invariants that would
  * break the static export or leak data (shape, required fields, uniqueness,
@@ -18,6 +21,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { isBinaryDataRel } = require('./lib/dataFileKinds');
 
 const dataRoot = path.join(__dirname, '../public/data');
 const errors = [];
@@ -38,8 +42,14 @@ if (fs.existsSync(dataRoot)) {
   process.exit(0);
 }
 
+let skippedBinary = 0;
 for (const file of files) {
   const rel = path.relative(dataRoot, file);
+  // Radar frames and other binaries are intentional non-UTF-8 payloads.
+  if (isBinaryDataRel(rel)) {
+    skippedBinary += 1;
+    continue;
+  }
   let buf;
   try {
     buf = fs.readFileSync(file);
@@ -303,4 +313,8 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
-console.log(`✅ validate-data-files: ${files.length} files OK — UTF-8 valid, JSON parses, schema invariants pass`);
+console.log(
+  `✅ validate-data-files: ${files.length} files OK` +
+    (skippedBinary ? ` (${skippedBinary} binary skipped)` : '') +
+    ' — UTF-8 valid, JSON parses, schema invariants pass',
+);
