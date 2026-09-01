@@ -647,6 +647,7 @@ export default function SpotMapInteractive({
           <MapControls
             isFullscreen={isFullscreen}
             isHeroEmbed={isHeroEmbed}
+            fullscreenLabel={t.map.exploreMap}
             clusterEnabled={clusterEnabled}
             showWindOnMarkers={showWindOnMarkers}
             windEnabled={windEnabled}

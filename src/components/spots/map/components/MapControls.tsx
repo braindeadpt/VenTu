@@ -26,6 +26,7 @@ interface MapControlsProps {
   onlyOnHint: string;
   windLegendHelpLabel: string;
   coastalWarningsLabel: string;
+  fullscreenLabel: string;
   // Handlers
   enterFullscreen: () => void;
   toggleCluster: () => void;
@@ -72,6 +73,7 @@ export default function MapControls({
   onlyOnHint,
   windLegendHelpLabel,
   coastalWarningsLabel,
+  fullscreenLabel,
   enterFullscreen,
   toggleCluster,
   toggleWind,
@@ -94,7 +96,7 @@ export default function MapControls({
         type="button"
         onClick={enterFullscreen}
         className={btnBase}
-        aria-label="Explorar mapa"
+        aria-label={fullscreenLabel}
         aria-expanded={false}
       >
         <Maximize2 className="w-4 h-4 shrink-0" aria-hidden />
