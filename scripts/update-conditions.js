@@ -228,6 +228,7 @@ async function fetchWithRetry_LEGACY(url, retries = 3, delay = 1000, usage, weig
 }
 */
 
+/* Legacy pure helpers moved to ./lib/updateConditionsPure.
 function wavePowerKwPerM_LEGACY(heightM, periodS) {
   if (!heightM || !periodS || heightM <= 0 || periodS <= 0) return 0;
   return 0.5 * heightM * heightM * periodS;
@@ -252,6 +253,7 @@ function pickSwellTrain_LEGACY(height, period, direction) {
     direction: direction ?? 0,
   };
 }
+*/
 
 /* Legacy request builders retained below for compatibility review.
 async function fetchMarineDataLegacy(lat, lon, usage) {
@@ -339,6 +341,7 @@ function getTideStatus_LEGACY(seaLevel, seaLevelNext) {
   }
 }
 
+/* Legacy current-condition builder retained below during staged extraction.
 function getCurrentConditions(marineData, weatherData, ihTideObs) {
   const marineTimeIndex = findCurrentHourIndex(marineData.hourly.time);
   const weatherTimeIndex = Math.min(
@@ -398,6 +401,7 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
 
   return result;
 }
+*/
 
 const sourceFetcher = createUpdateConditionsFetcher({ marineApi: MARINE_API, weatherApi: WEATHER_API, fetchWithRetry });
 const { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels } = sourceFetcher;
@@ -489,140 +493,6 @@ async function updateConditions() {
       continue;
     }
 
-    try {
-      /* Legacy per-spot implementation retained below during staged extraction. */
-      console.log(`  Fetching ${spot.id}...`);
-
-      let marineData;
-      let weatherData;
-      let confidenceDetail;
-      let dailyConfidence;
-
-      if (useMultiModel) {
-        const [marine, weather, marineWaveModels, windModels] = await Promise.all([
-          fetchMarineData(spot.lat, spot.lon, usage),
-          fetchWeatherData(spot.lat, spot.lon, usage),
-          fetchMarineWaveModels(spot.lat, spot.lon, usage),
-          fetchWindModels(spot.lat, spot.lon, usage),
-        ]);
-        marineData = marine;
-        weatherData = weather;
-        // Model health: count non-null values per configured model (cheap —
-        // reuses the multimodel responses already fetched for this spot).
-        mergeCounts(modelHealthRun.waveCounts, countModelSlots(marineWaveModels.hourly, HEALTH_FAMILIES.wave.baseKey, HEALTH_FAMILIES.wave.models));
-        mergeCounts(modelHealthRun.windCounts, countModelSlots(windModels.hourly, HEALTH_FAMILIES.wind.baseKey, HEALTH_FAMILIES.wind.models));
-        modelHealthRun.sampledSpots += 1;
-        const timeIndex = findCurrentHourIndex(marineWaveModels.hourly.time);
-        confidenceDetail = confidenceAtIndex(marineWaveModels, windModels, timeIndex);
-        dailyConfidence = confidenceByDay(marineWaveModels, windModels);
-
-        // ICON-EU / multi-model blend into best_match current wind (scoring).
-        const weatherIdx = Math.min(
-          findCurrentHourIndex(weatherData.hourly.time),
-          weatherData.hourly.wind_speed_10m.length - 1,
-        );
-        const windIdx = Math.min(
-          findCurrentHourIndex(windModels.hourly.time),
-          (windModels.hourly.time?.length ?? 1) - 1,
-        );
-        const blend = blendWindAtIndex(
-          weatherData.hourly.wind_speed_10m[weatherIdx] || 0,
-          weatherData.hourly.wind_direction_10m[weatherIdx] || 0,
-          weatherData.hourly.wind_gusts_10m[weatherIdx] || 0,
-          readModelMap(windModels.hourly, 'wind_speed_10m', WIND_MODELS, windIdx),
-          readModelMap(windModels.hourly, 'wind_direction_10m', WIND_MODELS, windIdx),
-          readModelMap(windModels.hourly, 'wind_gusts_10m', WIND_MODELS, windIdx),
-        );
-        weatherData = {
-          ...weatherData,
-          hourly: {
-            ...weatherData.hourly,
-            wind_speed_10m: weatherData.hourly.wind_speed_10m.map((v, i) =>
-              i === weatherIdx ? blend.windSpeed : v,
-            ),
-            wind_direction_10m: weatherData.hourly.wind_direction_10m.map((v, i) =>
-              i === weatherIdx ? blend.windDirection : v,
-            ),
-            wind_gusts_10m: weatherData.hourly.wind_gusts_10m.map((v, i) =>
-              i === weatherIdx ? blend.windGust : v,
-            ),
-          },
-          _windBlend: {
-            method: blend.method,
-            blended: blend.blended,
-            modelCount: blend.modelCount,
-            iconEuMs: blend.iconEuMs,
-            medianMs: blend.medianMs,
-          },
-          _windModelsHourly: windModels.hourly,
-        };
-      } else {
-        [marineData, weatherData] = await Promise.all([
-          fetchMarineData(spot.lat, spot.lon, usage),
-          fetchWeatherData(spot.lat, spot.lon, usage),
-        ]);
-        const inherited = confidenceFromPrevious(previousConditions[spot.id]);
-        confidenceDetail = {
-          confidence: inherited.confidence,
-          ...inherited.confidenceDetail,
-        };
-        dailyConfidence = inherited.dailyConfidence;
-      }
-      
-      // Check if we have IH tide data for this spot
-      const spotMapping = ihTides.spotMapping[spot.id];
-      let ihTideObs = null;
-      if (spotMapping) {
-        const station = ihTides.stations[spotMapping.codp];
-        if (station && isFreshIhObservation(station.lastData)) {
-          ihTideObs = {
-            lastObs: station.lastObs,
-            lastData: station.lastData,
-            stationTitle: station.title,
-          };
-        } else if (station) {
-          ihSkippedStale += 1;
-        }
-      }
-
-      const current = getCurrentConditions(marineData, weatherData, ihTideObs);
-
-      // Regional bias correction (opt-in): corrects waveHeight from the buoy
-      // bias, keeps the raw value + metadata for the UI to stay honest.
-      const biasRow = applyWaveBiasToRow(current, spot.region, waveBias, waveBiasEnabled);
-      if (biasRow.waveBias) {
-        console.log(
-          `  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (bias ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`,
-        );
-      }
-
-      allConditions[spot.id] = buildConditionsRow(
-        marineData,
-        weatherData,
-        current,
-        biasRow,
-        confidenceDetail,
-        dailyConfidence,
-        useMultiModel,
-      );
-
-      // Store full hourly forecast for spot detail page
-      const mergedForecast = mergeForecast(marineData, weatherData);
-      if (weatherData._windModelsHourly) {
-        applyWindBlendToHours(mergedForecast, weatherData._windModelsHourly, WIND_MODELS);
-      }
-      allForecasts[spot.id] = mergedForecast;
-      
-      console.log(`  ✓ ${spot.id} updated${ihTideObs ? ` (IH tide: ${ihTideObs.lastObs}m)` : ''}`);
-
-      // Só conta spots primários com fetch completo (aliases não chamam a API).
-      usage.spotsFetched += 1;
-      
-      // 4 calls/spot; ~300/min with 200ms gap (under Open-Meteo 600/min)
-      await sleep(MIN_REQUEST_INTERVAL);
-    } catch (error) {
-      console.error(`  ✗ ${spot.id} failed:`, error.message);
-    }
   }
 
   applyAliasSpots(aliasSpots, allConditions, allForecasts);
