@@ -23,9 +23,12 @@ import {
 export default function BuoyLayerNotice({
   locale,
   scope = 'spot',
+  overlay = false,
 }: {
   locale: string;
   scope?: 'spot' | 'home';
+  /** Over a map/image: give the card a solid backdrop + blur for readability. */
+  overlay?: boolean;
 }) {
   const isPt = locale === 'pt';
   const isHome = scope === 'home';
@@ -103,8 +106,13 @@ export default function BuoyLayerNotice({
       className={cn(
         'rounded-card border p-3 flex items-start gap-2.5 text-meta-sm',
         status === 'no-key'
-          ? 'border-score-fair/40 bg-score-fair/10 text-fg'
-          : 'border-score-poor/40 bg-score-poor/10 text-fg',
+          ? 'border-score-fair/40 text-fg'
+          : 'border-score-poor/40 text-fg',
+        overlay
+          ? 'bg-bg-elevated/95 backdrop-blur-sm shadow-card'
+          : status === 'no-key'
+            ? 'bg-score-fair/10'
+            : 'bg-score-poor/10',
       )}
     >
       <AlertTriangle

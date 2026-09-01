@@ -20,6 +20,21 @@ export type BuoyLayerMeta = {
   wmo?: WmoBuoyLayerMeta;
 };
 
+/** Coastal navigation warnings (IH) layer state recorded in pipeline-meta.json. */
+export type CoastalWarningsLayerMeta = {
+  status: 'ok' | 'down' | 'stale';
+  /** Nº de avisos em vigor no último fetch. */
+  activeWarnings?: number;
+  /** Nº de spots com cobertura no último fetch. */
+  coveredSpots?: number;
+  /** Última fetch do ih-coastal-warnings.json. */
+  fetchedAt?: string;
+  streak?: number;
+  lastStatus?: string;
+  streakUpdatedAt?: string;
+  lastOkAt?: string;
+};
+
 /** Real Open-Meteo usage recorded per full run (weighted by requested models). */
 export type OpenMeteoUsageMeta = {
   /** Σ (models × HTTP requests) — the metric comparable to the 10k/day budget. */
@@ -46,6 +61,8 @@ export type PipelineMeta = {
   displayUpdatedAt?: string;
   /** IH buoy layer state for diagnostics (no-key/down/stale/ok). */
   buoyLayer?: BuoyLayerMeta | null;
+  /** Coastal navigation warnings (IH) layer state (fetch/em vigor/cobertura). */
+  coastalWarningsLayer?: CoastalWarningsLayerMeta | null;
   /** Real Open-Meteo usage this run, for budget monitoring (logs/workflow). */
   openMeteoUsage?: OpenMeteoUsageMeta;
 };

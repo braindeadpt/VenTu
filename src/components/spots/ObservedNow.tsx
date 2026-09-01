@@ -11,6 +11,7 @@ import {
   verificationBadge,
   verifyWind,
 } from '@/lib/observations';
+import WindSourceAttributionNote from '@/components/ui/WindSourceAttributionNote';
 import { useObservedNow } from '@/hooks/useObservedNow';
 import { cn } from '@/lib/cn';
 
@@ -148,6 +149,13 @@ function ObservedNowContent({
       <p className="text-meta-sm text-fg-subtle leading-snug">
         {observedWindDisclaimer(observed.source, locale)}
       </p>
+
+      <span className="inline-flex">
+        <WindSourceAttributionNote
+          source={observed.source}
+          locale={isPt ? 'pt' : 'en'}
+        />
+      </span>
     </section>
   );
 }

@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { AlertTriangle, ArrowRight, Clock, Wind, Waves } from 'lucide-react';
-import { WARNING_LEVEL_META } from '@/lib/ipmaWarnings';
+import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
 import Card from '@/components/ui/Card';
@@ -10,9 +9,12 @@ import ScoreBadge from '@/components/ui/ScoreBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import WaveSourceAttributionNote from '@/components/ui/WaveSourceAttributionNote';
+import WarningPill from '@/components/ui/WarningPill';
 import { getSpotListCardHoverLine } from '@/lib/spotListCardDelight';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
-import type { ScoreWaveCorrection } from '@/lib/scoreConditions';
+import { waveFactorSuffix, type ScoreWaveCorrection } from '@/lib/scoreConditions';
+import { formatObservedClockTime } from '@/lib/observations';
 import { cn } from '@/lib/cn';
 
 export interface SpotListCardConditions {
@@ -46,6 +48,17 @@ interface SpotListCardProps {
    * «Corrigido pela boia X» badge with ME/n in the metrics row (TopNow).
    */
   waveCorrection?: ScoreWaveCorrection | null;
+  /**
+   * observedAt da leitura da boia — quando a correcção é 'observed', mostra o
+   * relógio HH:MM junto à altura (mesmo data-wave-clock do hero/sticky).
+   */
+  observedWaveAt?: string | null;
+  /**
+   * Tipo da leitura observada (ih-buoy | wmo-buoy) — para mostrar a nota de
+   * atribuição (ex. Copernicus quando a boia é WMO/espanhola) junto da altura
+   * da onda observada nestes cards, como no card de onda observada.
+   */
+  observedWaveSource?: 'ih-buoy' | 'wmo-buoy' | null;
 }
 
 export default function SpotListCard({
@@ -66,13 +79,15 @@ export default function SpotListCard({
   statusLine,
   warning,
   waveCorrection,
+  observedWaveAt,
+  observedWaveSource,
 }: SpotListCardProps) {
-  const warningChipClass = warning
-    ? WARNING_LEVEL_META[warning.level]?.chipClass ?? 'bg-score-fair/15 text-score-fair border-score-fair/40'
-    : '';
   const isPt = locale === 'pt';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const hoverLine = getSpotListCardHoverLine(score, isPt);
+  // Sufixo honesto da altura: «(boia)» / «(viés regional)» quando a correcção
+  // foi aplicada (a altura mostrada É a corrigida); '' para previsão pura.
+  const waveSource = waveCorrection?.source ?? 'forecast';
   const imageWrapRef = useRef<HTMLDivElement>(null);
   const [parallax, setParallax] = useState({ x: 0, y: 0 });
   const [motionOk, setMotionOk] = useState(false);
@@ -147,13 +162,7 @@ export default function SpotListCard({
               </span>
             )}
             {warning && (
-              <span
-                className={`pill gap-1 px-2 py-0.5 min-h-0 text-meta-sm shrink-0 ${warningChipClass}`}
-                title={`${isPt ? 'Aviso IPMA' : 'IPMA warning'}: ${warning.label}`}
-              >
-                <AlertTriangle className="w-3 h-3 shrink-0" aria-hidden />
-                {warning.label}
-              </span>
+              <WarningPill warning={warning} locale={locale} variant="mini" />
             )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
@@ -187,7 +196,19 @@ export default function SpotListCard({
           ) : (
             <span className="inline-flex items-center gap-1">
               <Waves className="w-3 h-3 text-data-waves" aria-hidden />
-              {conditions.waveHeight.toFixed(1)}m
+              {conditions.waveHeight.toFixed(1)}m{waveFactorSuffix(waveSource, locale)}
+              {/* Relógio da leitura (HH:MM, Europe/Lisbon) — mesmo data-wave-clock
+                  do hero, só quando a correcção é de boia fresca ('observed'). */}
+              {waveSource === 'observed' && observedWaveAt ? (
+                <>
+                  <span aria-hidden className="text-fg-subtle">
+                    ·
+                  </span>
+                  <span className="text-fg-subtle" data-wave-clock="true">
+                    {formatObservedClockTime(observedWaveAt, locale)}
+                  </span>
+                </>
+              ) : null}
             </span>
           )}
           <span className="inline-flex items-center gap-1">
@@ -208,6 +229,16 @@ export default function SpotListCard({
               />
             )}
           <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>
+          {/* Nota de atribuição junto da leitura observada WMO/boia espanhola
+              (Copernicus) — mesma cadeia da tabela de /fontes, via ATTRIBUTIONS.
+              Só quando a altura mostrada é a da boia E essa boia é WMO/Copernicus. */}
+          {waveSource === 'observed' && observedWaveSource === 'wmo-buoy' ? (
+            <WaveSourceAttributionNote
+              source="wmo-buoy"
+              locale={locale}
+              className="basis-full min-w-0"
+            />
+          ) : null}
         </p>
 
         {hoverLine && (

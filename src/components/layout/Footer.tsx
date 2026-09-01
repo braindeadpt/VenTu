@@ -11,8 +11,7 @@ interface FooterProps {
 }
 
 export default function Footer({ locale }: FooterProps) {
-  const t = getTranslation(locale as 'pt' | 'en');
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale);
   const popularLandings = getPopularLandings();
 
   return (
@@ -25,9 +24,7 @@ export default function Footer({ locale }: FooterProps) {
               <span className="text-lg font-bold text-fg">Ven<span className="text-data-waves">Tu</span></span>
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">
-              {isPt 
-                ? `Plataforma open-source para desportos náuticos em Portugal. Previsões ${pipelineSchedule('pt')}, observações IH/IPMA e notícias automáticas.`
-                : `Open-source platform for water sports in Portugal. Forecasts ${pipelineSchedule('en')}, IH/IPMA observations and automated news.`}
+              {t.footer.tagline.replace('{schedule}', pipelineSchedule(locale))}
             </p>
           </div>
 
@@ -53,7 +50,7 @@ export default function Footer({ locale }: FooterProps) {
 
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
-              {isPt ? 'Explorar' : 'Explore'}
+              {t.nav.explorar}
             </h4>
             <ul className="space-y-2">
               {popularLandings.map((landing) => (
@@ -71,7 +68,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/explorar/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Ver todas as combinações →' : 'View all combinations →'}
+                  {t.footer.allCombinations}
                 </Link>
               </li>
               <li>
@@ -79,7 +76,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/diretorio/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Directório (escolas) →' : 'Directory (schools) →'}
+                  {t.footer.directorySchools}
                 </Link>
               </li>
               <li>
@@ -87,7 +84,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/livecams/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Livecams →' : 'Live cams →'}
+                  {t.footer.livecamsArrow}
                 </Link>
               </li>
               <li>
@@ -95,7 +92,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/spots/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Todos os spots →' : 'All spots →'}
+                  {t.footer.allSpotsArrow}
                 </Link>
               </li>
             </ul>
@@ -103,7 +100,7 @@ export default function Footer({ locale }: FooterProps) {
 
           <div className="space-y-4">
             <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
-              {isPt ? 'Recursos' : 'Resources'}
+              {t.footer.resources}
             </h4>
             <ul className="space-y-2">
               <li>
@@ -135,7 +132,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/ferramentas/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Ferramentas' : 'Tools'}
+                  {t.nav.tools}
                 </Link>
               </li>
               <li>
@@ -143,7 +140,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/favorites/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Favoritos' : 'Favorites'}
+                  {t.nav.favorites}
                 </Link>
               </li>
               <li>
@@ -151,7 +148,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/passaporte/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Passaporte' : 'Passport'}
+                  {t.nav.passport}
                 </Link>
               </li>
               <li>
@@ -159,7 +156,7 @@ export default function Footer({ locale }: FooterProps) {
                   href={`/${locale}/alerts/`}
                   className="text-sm text-fg-muted hover:text-fg transition-colors"
                 >
-                  {isPt ? 'Alertas' : 'Alerts'}
+                  {t.nav.alerts}
                 </Link>
               </li>
               <li>
@@ -186,110 +183,56 @@ export default function Footer({ locale }: FooterProps) {
               {t.footer.data}
             </h4>
             <ul className="space-y-2 text-sm text-fg-muted">
-              <li>{isPt ? 'Ondas: Open-Meteo Marine (DWD EWAM · ECMWF WAM · NOAA)' : 'Waves: Open-Meteo Marine (DWD EWAM · ECMWF WAM · NOAA)'}</li>
-              <li>{isPt ? 'Vento: DWD ICON-EU / ECMWF / GFS / Météo-France' : 'Wind: DWD ICON-EU / ECMWF / GFS / Météo-France'}</li>
+              <li>{t.footer.attribWaves}</li>
+              <li>{t.footer.attribWind}</li>
               <li>
-                {isPt ? (
-                  <>
-                    Observações:{' '}
-                    <a
-                      href="https://www.ipma.pt/"
-                      className="underline hover:text-fg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      IPMA
-                    </a>
-                    {' · '}
-                    <a
-                      href="https://www.ecowitt.net/"
-                      className="underline hover:text-fg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Ecowitt
-                    </a>
-                    {' · '}
-                    <a
-                      href="https://aviationweather.gov/"
-                      className="underline hover:text-fg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      METAR
-                    </a>
-                  </>
-                ) : (
-                  <>
-                    Observations:{' '}
-                    <a
-                      href="https://www.ipma.pt/"
-                      className="underline hover:text-fg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      IPMA
-                    </a>
-                    {' · '}
-                    <a
-                      href="https://www.ecowitt.net/"
-                      className="underline hover:text-fg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Ecowitt
-                    </a>
-                    {' · '}
-                    <a
-                      href="https://aviationweather.gov/"
-                      className="underline hover:text-fg transition-colors"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      METAR
-                    </a>
-                  </>
-                )}
+                {t.footer.attribObservations}{' '}
+                <a
+                  href="https://www.ipma.pt/"
+                  className="underline hover:text-fg transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  IPMA
+                </a>
+                {' · '}
+                <a
+                  href="https://www.ecowitt.net/"
+                  className="underline hover:text-fg transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Ecowitt
+                </a>
+                {' · '}
+                <a
+                  href="https://aviationweather.gov/"
+                  className="underline hover:text-fg transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  METAR
+                </a>
               </li>
-              <li>{isPt ? 'Notícias: Gemini Flash' : 'News: Gemini Flash'}</li>
+              <li>{t.footer.attribNews}</li>
             </ul>
           </div>
         </div>
 
         <p className="mt-8 text-xs text-fg-subtle leading-relaxed max-w-3xl">
-          {isPt ? (
-            <>
-              Imagery © Esri, Maxar, Earthstar Geographics (vistas aéreas dos spots). Fotos de região:{' '}
-              <a href="https://unsplash.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
-                Unsplash
-              </a>
-              {' / '}
-              <a href="https://www.pexels.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
-                Pexels
-              </a>
-              . Ver{' '}
-              <Link href={`/${locale}/about/`} className="underline hover:text-fg-muted">
-                Sobre
-              </Link>{' '}
-              e <code className="text-meta-sm">public/images/CREDITS.md</code>.
-            </>
-          ) : (
-            <>
-              Imagery © Esri, Maxar, Earthstar Geographics (spot aerials). Region photos:{' '}
-              <a href="https://unsplash.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
-                Unsplash
-              </a>
-              {' / '}
-              <a href="https://www.pexels.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
-                Pexels
-              </a>
-              . See{' '}
-              <Link href={`/${locale}/about/`} className="underline hover:text-fg-muted">
-                About
-              </Link>{' '}
-              and <code className="text-meta-sm">public/images/CREDITS.md</code>.
-            </>
-          )}
+          {t.footer.creditsImagery} {t.footer.creditsRegionPhotos}{' '}
+          <a href="https://unsplash.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+            Unsplash
+          </a>
+          {' / '}
+          <a href="https://www.pexels.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+            Pexels
+          </a>
+          . {t.footer.creditsSee}{' '}
+          <Link href={`/${locale}/about/`} className="underline hover:text-fg-muted">
+            {t.nav.about}
+          </Link>{' '}
+          {t.footer.creditsAnd} <code className="text-meta-sm">public/images/CREDITS.md</code>.
         </p>
 
         <div className="mt-6 pt-6 border-t border-divider flex flex-col md:flex-row items-center justify-between gap-4">

@@ -62,19 +62,36 @@ export default function ScoreWaveSourceBadge({
       className: 'border-score-good/40 bg-score-good/10 text-score-good',
     };
   } else if (source === 'bias-corrected') {
+    // Δ = correcção efectivamente aplicada (deltaM) — nem sempre igual ao ME
+    // (arredondamento round1); o tooltip distingue se veio do fallback
+    // client-side (wave-bias.json em runtime) ou do meta baked pela pipeline.
+    const delta = correction?.deltaM;
+    const deltaSuffix =
+      delta != null && Number.isFinite(delta)
+        ? isPt
+          ? ` Δ ${fmtMe(delta)} aplicado à altura.`
+          : ` Δ ${fmtMe(delta)} applied to the height.`
+        : '';
+    const originSuffix = correction?.fallback
+      ? isPt
+        ? ' Correcção em tempo real (wave-bias.json, client-side).'
+        : ' Real-time correction (wave-bias.json, client-side).'
+      : isPt
+        ? ' Correcção aplicada pela pipeline (meta na row).'
+        : ' Correction applied by the pipeline (row meta).';
     const biasSuffix =
       me && n != null && Number.isFinite(n)
         ? isPt
-          ? ` Viés regional ME ${me} (n=${n}) aplicado à previsão.`
-          : ` Regional bias ME ${me} (n=${n}) applied to the forecast.`
+          ? ` Viés regional ME ${me} (n=${n}).`
+          : ` Regional bias ME ${me} (n=${n}).`
         : isPt
           ? ' Viés regional da previsão aplicado.'
           : ' Regional forecast bias applied.';
     copy = {
       label: isPt ? 'Corrigido (viés regional)' : 'Region bias corrected',
       title: isPt
-        ? `A altura mostrada é previsão do modelo corrigida pela média das boias.${biasSuffix}`
-        : `The height shown is the model forecast corrected by the buoy-average.${biasSuffix}`,
+        ? `A altura mostrada é previsão do modelo corrigida pela média das boias.${deltaSuffix}${biasSuffix}${originSuffix}`
+        : `The height shown is the model forecast corrected by the buoy-average.${deltaSuffix}${biasSuffix}${originSuffix}`,
       className: 'border-score-fair/40 bg-score-fair/10 text-score-fair',
     };
   } else {

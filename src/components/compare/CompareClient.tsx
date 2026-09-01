@@ -11,19 +11,31 @@ import { getAssetPath } from '@/lib/paths';
 import Link from 'next/link';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import FilterPill from '@/components/ui/FilterPill';
+import WaveSourceAttributionNote from '@/components/ui/WaveSourceAttributionNote';
+import WarningPill from '@/components/ui/WarningPill';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
-import { rawToScoreInput } from '@/lib/scoreConditions';
+import { rawToScoreInput, resolveScoreWaveSource, waveFactorSuffix, type ScoreWaveSource } from '@/lib/scoreConditions';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import {
+  SEA_STATE_WARNING_TYPES,
+  strongestSpotWarning,
+  warningBadgeLabel,
+} from '@/lib/ipmaWarnings';
 
 interface SpotBattleData {
   spot: typeof spots[0];
   conditions: ReturnType<typeof getCurrentConditions>;
   allScores: Record<SportType, any>;
   driveTime: string;
+  /** Onda usada no score: boia fresca / viés regional / previsão (sufixo). */
+  waveSource: ScoreWaveSource;
+  /** Tipo da leitura observada (ih-buoy | wmo-buoy) p/ a nota de atribuição. */
+  observedWaveSource: 'ih-buoy' | 'wmo-buoy' | null;
 }
 
 interface PrecomputedCondition {
@@ -63,6 +75,13 @@ async function loadSpotBattleData(
       conditions,
       allScores: getAllSportScores(spot, scoreInput),
       driveTime,
+      // A altura mostrada É a corrigida (scoreInput); o sufixo nomeia a origem
+      // da correcção a partir da row crua (observedWave/waveBias).
+      waveSource: resolveScoreWaveSource(cond as Record<string, unknown>),
+      observedWaveSource:
+        ((cond as Record<string, unknown>).observedWave as {
+          source?: 'ih-buoy' | 'wmo-buoy';
+        } | null | undefined)?.source ?? null,
     };
   }
 
@@ -74,6 +93,9 @@ async function loadSpotBattleData(
       conditions,
       allScores: getAllSportScores(spot, conditions),
       driveTime,
+      // Live Open-Meteo — sem correcção de boia/viés.
+      waveSource: 'forecast',
+      observedWaveSource: null,
     };
   } catch {
     return null;
@@ -172,6 +194,7 @@ export default function CompareClient() {
   }, []);
 
   const isPt = locale === 'pt';
+  const warningsData = useIpmaWarnings();
 
   useEffect(() => {
     if (!slugs.length) { setLoading(false); return; }
@@ -444,6 +467,9 @@ export default function CompareClient() {
             const scoreValue = data.allScores[selectedSport]?.score || 0;
             const tokens = getScoreTokens(scoreValue);
             const score = data.allScores[selectedSport];
+            // Aviso activo do spot (IPMA/MeteoAlarm) — mesmo chip partilhado
+            // do card/sticky/mapa, para o comparador nunca divergir no rótulo.
+            const warning = strongestSpotWarning(warningsData, data.spot.id);
 
             return (
               <article key={data.spot.id} className="card-1 p-6">
@@ -462,6 +488,23 @@ export default function CompareClient() {
                 <h3 className="text-h3 text-fg">{isPt ? data.spot.name : data.spot.nameEn}</h3>
                 <p className="text-meta text-fg-muted">{data.spot.region}</p>
 
+                {warning && (
+                  <div className="mt-2">
+                    <WarningPill
+                      warning={{
+                        level: warning.level,
+                        label: warningBadgeLabel(warning, isPt),
+                        seaState: SEA_STATE_WARNING_TYPES.has(warning.type),
+                        areaLabel: warning.areaLabel,
+                        type: warning.type,
+                      }}
+                      locale={locale}
+                      variant="mini"
+                      dataAttr="compare"
+                    />
+                  </div>
+                )}
+
                 <div className="text-center my-4">
                   <div className={`text-display-lg font-mono tabular-nums ${tokens.text}`}>{score?.score || 0}</div>
                   <div className="text-meta-sm text-fg-muted">/100</div>
@@ -473,7 +516,10 @@ export default function CompareClient() {
                       <Waves className="w-4 h-4" aria-hidden />
                       {isPt ? 'Ondas' : 'Waves'}
                     </dt>
-                    <dd className="font-mono tabular-nums font-semibold text-fg">{data.conditions.waveHeight.toFixed(1)}m</dd>
+                    <dd className="font-mono tabular-nums font-semibold text-fg">
+                      {data.conditions.waveHeight.toFixed(1)}m
+                      {waveFactorSuffix(data.waveSource, locale)}
+                    </dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-fg-muted flex items-center gap-1">
@@ -490,6 +536,16 @@ export default function CompareClient() {
                     <dd className="text-data-waves font-medium">{data.driveTime}</dd>
                   </div>
                 </dl>
+
+                {/* Nota de atribuição junto da leitura observada WMO/espanhola
+                    (Copernicus) no comparador — mesma cadeia da tabela /fontes. */}
+                {data.waveSource === 'observed' && data.observedWaveSource === 'wmo-buoy' ? (
+                  <WaveSourceAttributionNote
+                    source="wmo-buoy"
+                    locale={isPt ? 'pt' : 'en'}
+                    className="mt-2 block"
+                  />
+                ) : null}
 
                 <Button
                   href={`/${locale}/spots/${data.spot.slug}/?sport=${selectedSport}`}

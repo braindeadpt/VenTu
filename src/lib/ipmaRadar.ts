@@ -104,6 +104,35 @@ export function radarFrames(data: IpmaRadarData | null): RadarFrameAsset[] {
   return [{ url: radarImageUrl(data), frameTime: data?.frameTime ?? null }];
 }
 
+/** Cadência oficial do radar IPMA — um frame de 5 em 5 minutos. */
+export const RADAR_CADENCE_MIN = 5;
+
+/**
+ * Quantos frames de 5 min estão em FALTA entre cada frame e o seguinte (mais
+ * antigo) na lista newest-first. `missing[i]` = slots completos de 5 min que o
+ * IPMA não publicou entre frames[i] e frames[i+1] (0 quando há cadência
+ * contígua, fim da lista, ou frameTime ausente/inválido). Um delta > 5 min é um
+ * gap → `Math.round(delta/5) − 1` frames em falta nesse intervalo.
+ */
+export function radarMissingFrames(frames: RadarFrameAsset[]): number[] {
+  const out: number[] = [];
+  for (let i = 0; i < frames.length; i++) {
+    const a = frames[i]?.frameTime;
+    const b = frames[i + 1]?.frameTime;
+    if (i + 1 >= frames.length || !a || !b) {
+      out.push(0);
+      continue;
+    }
+    const deltaMin = (Date.parse(a) - Date.parse(b)) / 60_000;
+    if (!Number.isFinite(deltaMin) || deltaMin <= RADAR_CADENCE_MIN) {
+      out.push(0);
+      continue;
+    }
+    out.push(Math.round(deltaMin / RADAR_CADENCE_MIN) - 1);
+  }
+  return out;
+}
+
 /**
  * "18:35" from the frameTime ISO. The manifest date is Lisbon wall-clock
  * stored with a "Z" suffix, so we display it as-is (no timezone shift).

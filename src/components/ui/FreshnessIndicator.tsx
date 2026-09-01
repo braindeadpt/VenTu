@@ -1,8 +1,8 @@
 import { getTranslation } from '@/lib/i18n';
 import type { Locale } from '@/lib/i18n';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Anchor } from 'lucide-react';
 import { STALE_THRESHOLD_HOURS, formatForecastUpdatedAt } from '@/lib/dataFreshness';
-import type { BuoyLayerMeta } from '@/lib/pipelineMeta';
+import type { BuoyLayerMeta, CoastalWarningsLayerMeta } from '@/lib/pipelineMeta';
 import { cn } from '@/lib/cn';
 
 interface FreshnessIndicatorProps {
@@ -16,6 +16,8 @@ interface FreshnessIndicatorProps {
   /** IH buoy layer state from pipeline-meta.json — shows a warning when the
    *  observed-wave layer is disabled/down/stale (diagnostics surface). */
   buoyLayer?: BuoyLayerMeta | null;
+  /** Coastal navigation warnings (IH) layer — fetch/em vigor/cobertura. */
+  coastalWarningsLayer?: CoastalWarningsLayerMeta | null;
 }
 
 /** Short pt/en labels for each non-ok buoy state. */
@@ -32,6 +34,17 @@ function buoyLayerLabel(status: BuoyLayerMeta['status'], isPt: boolean): string 
   }
 }
 
+function coastalLayerLabel(status: NonNullable<CoastalWarningsLayerMeta>['status'], isPt: boolean): string {
+  switch (status) {
+    case 'down':
+      return isPt ? 'Avisos costeiros: sem dados' : 'Coastal warnings: no data';
+    case 'stale':
+      return isPt ? 'Avisos costeiros: desactualizados' : 'Coastal warnings: stale';
+    default:
+      return '';
+  }
+}
+
 export default function FreshnessIndicator({
   hoursAgo,
   updatedAtTs,
@@ -40,6 +53,7 @@ export default function FreshnessIndicator({
   size = 'md',
   compact = false,
   buoyLayer,
+  coastalWarningsLayer,
 }: FreshnessIndicatorProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
@@ -92,6 +106,51 @@ export default function FreshnessIndicator({
           <AlertTriangle className="w-3 h-3" aria-hidden />
           <span className="font-medium">{buoyLayerLabel(buoyStatus, isPt)}</span>
         </span>
+      ) : null}
+      {coastalWarningsLayer ? (
+        coastalWarningsLayer.status !== 'ok' ? (
+          <span
+            className="inline-flex items-center gap-1 shrink-0 text-score-poor"
+            title={
+              isPt
+                ? `Camada de avisos costeiros (IH) ${coastalWarningsLayer.status === 'down' ? 'sem dados' : 'desactualizada'}` +
+                  (coastalWarningsLayer.fetchedAt
+                    ? ` — última fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                    : '')
+                : `Coastal warnings (IH) layer ${coastalWarningsLayer.status === 'down' ? 'down' : 'stale'}` +
+                  (coastalWarningsLayer.fetchedAt
+                    ? ` — last fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                    : '')
+            }
+          >
+            <AlertTriangle className="w-3 h-3" aria-hidden />
+            <span className="font-medium">{coastalLayerLabel(coastalWarningsLayer.status, isPt)}</span>
+          </span>
+        ) : coastalWarningsLayer.activeWarnings != null && coastalWarningsLayer.activeWarnings > 0 ? (
+          <span
+            className="inline-flex items-center gap-1 shrink-0 text-score-fair"
+            title={
+              isPt
+                ? `${coastalWarningsLayer.activeWarnings} avisos à navegação costeiros (IH) em vigor · ` +
+                  `${coastalWarningsLayer.coveredSpots ?? 0} spots cobertos` +
+                  (coastalWarningsLayer.fetchedAt
+                    ? ` · fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                    : '')
+                : `${coastalWarningsLayer.activeWarnings} coastal navigation warnings (IH) in force · ` +
+                  `${coastalWarningsLayer.coveredSpots ?? 0} spots covered` +
+                  (coastalWarningsLayer.fetchedAt
+                    ? ` · fetched ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                    : '')
+            }
+          >
+            <Anchor className="w-3 h-3" aria-hidden />
+            <span className="font-medium">
+              {isPt
+                ? `${coastalWarningsLayer.activeWarnings} avisos · ${coastalWarningsLayer.coveredSpots ?? 0} spots`
+                : `${coastalWarningsLayer.activeWarnings} warnings · ${coastalWarningsLayer.coveredSpots ?? 0} spots`}
+            </span>
+          </span>
+        ) : null
       ) : null}
       <span className={cn('w-2 h-2 rounded-full shrink-0', dotClass)} aria-hidden />
       {timeLabel ? (

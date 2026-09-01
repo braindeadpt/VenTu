@@ -1,7 +1,6 @@
 'use client';
 
-import { AlertTriangle, Clock, Droplets, Waves, Wind, Zap } from 'lucide-react';
-import { WARNING_LEVEL_META } from '@/lib/ipmaWarnings';
+import { Clock, Droplets, Waves, Wind, Zap } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
@@ -18,6 +17,7 @@ import SpotImage from '@/components/ui/SpotImage';
 import ScoreBadge from '@/components/ui/ScoreBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import Button from '@/components/ui/Button';
+import WarningPill from '@/components/ui/WarningPill';
 
 export interface MapSpotPreviewData {
   spot: Spot;
@@ -43,9 +43,6 @@ export default function MapSpotPreview({
 }: MapSpotPreviewProps) {
   const isPt = locale === 'pt';
   const { spot, conditions, allScores, warning } = data;
-  const warningChipClass = warning
-    ? WARNING_LEVEL_META[warning.level]?.chipClass ?? 'bg-score-fair/15 text-score-fair border-score-fair/40'
-    : '';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const swellH = conditions.swellHeight ?? conditions.waveHeight;
   const swellT = conditions.swellPeriod ?? conditions.wavePeriod;
@@ -105,20 +102,7 @@ export default function MapSpotPreview({
         ) : null}
       </div>
 
-      {warning && (
-        <span
-          className={`inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1.5 text-meta-sm font-semibold ${warningChipClass}`}
-        >
-          {warning.seaState ? (
-            <Waves className="w-4 h-4 shrink-0" aria-hidden />
-          ) : (
-            <AlertTriangle className="w-4 h-4 shrink-0" aria-hidden />
-          )}
-          {warning.seaState
-            ? warning.label // «Mar perigoso» — badge directo, sem prefixo
-            : `${isPt ? 'Aviso' : 'Warning'}: ${warning.label}`}
-        </span>
-      )}
+      {warning && <WarningPill warning={warning} locale={locale} variant="default" />}
 
       <div className="flex flex-wrap gap-1.5" role="list" aria-label={isPt ? 'Scores por desporto' : 'Scores by sport'}>
         {sortedSports.map((sport) => {

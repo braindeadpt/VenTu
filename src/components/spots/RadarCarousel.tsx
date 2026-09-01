@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { CloudRain, Pause, Play } from 'lucide-react';
-import { radarFrameClock, radarFrameFullClock } from '@/lib/ipmaRadar';
+import Link from 'next/link';
+import { CloudRain, Maximize2, Pause, Play } from 'lucide-react';
+import { radarFrameClock, radarFrameFullClock, radarMissingFrames } from '@/lib/ipmaRadar';
+import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution';
+import { IPMA_URL } from '@/lib/ipmaAttribution';
 
 export interface RadarCarouselFrame {
   url: string;
@@ -34,6 +37,14 @@ interface RadarCarouselProps {
     pause: string;
     /** Rótulo de estado «Pausado» (ícone do badge quando o carrossel está parado). */
     paused: string;
+    /** Atribuição do radar (IPMA, localizada) — «Dados IPMA» / «IPMA data». */
+    ipmaAttribution: string;
+    /**
+     * Rótulo discreto quando a cadência do radar tem bruturas (frames em falta):
+     * template com `{count}` a contar os slots de 5 min consecutivos em falta
+     * (ex: '{count} frames em falta'). Vazio em cadência contígua.
+     */
+    gap: string;
   };
   /** Cadência da animação em ms (1 s no ar; test hook). */
   tickMs?: number;
@@ -41,6 +52,14 @@ interface RadarCarouselProps {
   className?: string;
   /** Estilo extra (ex: bottom dinâmico em fullscreen, acima do HUD). */
   style?: React.CSSProperties;
+  /**
+   * Link de imersão — abre o mapa fullscreen (/mapa) com o radar já ligado
+   * (`?radar=1`). Quando presente, o badge ganha um botão «ecrã inteiro» para
+   * quem quer ver o radar a ocupar o ecrã todo (ex: a partir do mapa de spot).
+   */
+  fullscreenHref?: string;
+  /** Rótulo do botão de imersão (aria-label/title — traduzido pelo pai). */
+  fullscreenLabel?: string;
 }
 
 /**
@@ -61,6 +80,8 @@ export default function RadarCarousel({
   tickMs = 1000,
   className,
   style,
+  fullscreenHref,
+  fullscreenLabel,
 }: RadarCarouselProps) {
   const [scrubbing, setScrubbing] = useState(false);
   // Separador escondido ou mapa fora do viewport → pausa (poupa rede/CPU
@@ -108,6 +129,11 @@ export default function RadarCarousel({
   const clock = radarFrameClock(frames[frameIndex]?.frameTime ?? null) ?? '';
   // Data + hora do frame actual para o tooltip (distinguir dias diferentes).
   const fullClock = radarFrameFullClock(frames[frameIndex]?.frameTime ?? null);
+  // Frames de 5 min em FALTA entre o frame actual e o seguinte (mais antigo) —
+  // o IPMA falha cadências; o carrossel salta para o próximo frame válido e o
+  // badge avisa discretamente (gaps > 5 min), em vez de mostrar saltos mudos.
+  const missingAfter = radarMissingFrames(frames)[frameIndex] ?? 0;
+  const gapLabel = missingAfter > 0 ? labels.gap.replace('{count}', String(missingAfter)) : null;
 
   return (
     <div ref={rootRef} className={className} style={style} data-radar-carousel="true">
@@ -184,17 +210,55 @@ export default function RadarCarousel({
               · {frameIndex + 1}/{frames.length}
             </span>
           )}
+          {/* Brutura na cadência (gaps > 5 min): aviso discreto com a contagem —
+              o carrossel salta para o último frame válido e explica o salto. */}
+          {gapLabel && (
+            <span
+              className="text-meta-xs text-data-waves/80"
+              data-radar-gap="true"
+              title={`${gapLabel} · ${fullClock ?? labels.hint}`}
+            >
+              · {gapLabel}
+            </span>
+          )}
         </div>
-        {/* Atribuição Open-Meteo (CC BY 4.0) junto ao overlay do radar — o link
-            é clicável mesmo com o badge em pointer-events-none. */}
-        <a
-          href="https://open-meteo.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="pointer-events-auto text-meta-xs text-fg-subtle underline hover:text-fg transition-colors"
+        {/* Atribuições lado a lado junto ao overlay do radar — os dados são do
+            IPMA por cima de previsões Open-Meteo, por isso o badge mostra as
+            DUAS obrigatórias. Links clicáveis mesmo com o badge em
+            pointer-events-none. URLs e textos vêm dos módulos partilhados. */}
+        <div
+          className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-xs text-fg-subtle"
+          data-radar-attributions="true"
         >
-          Weather data by Open-Meteo.com (CC BY 4.0)
-        </a>
+          <a
+            href={IPMA_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pointer-events-auto underline hover:text-fg transition-colors"
+          >
+            {labels.ipmaAttribution}
+          </a>
+          <span aria-hidden className="text-fg-muted">·</span>
+          {/* Fonte única da cadeia CC BY — mesmo componente do About//fontes/
+              card de onda. As duas âncoras (Open-Meteo.com + licença CC BY 4.0)
+              vêm de openMeteoAttribution.tsx e nunca divergem entre superfícies. */}
+          <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />
+        </div>
+
+        {/* Imersão: abrir o /mapa com o radar já ligado (ecrã inteiro). O link é
+            clicável mesmo com o badge em pointer-events-none. */}
+        {fullscreenHref && fullscreenLabel && (
+          <Link
+            href={fullscreenHref}
+            aria-label={fullscreenLabel}
+            title={fullscreenLabel}
+            data-radar-fullscreen="true"
+            className="pointer-events-auto mt-1 inline-flex items-center gap-1 text-meta-xs text-fg-subtle underline hover:text-fg transition-colors"
+          >
+            <Maximize2 className="w-3 h-3" aria-hidden />
+            {fullscreenLabel}
+          </Link>
+        )}
       </div>
     </div>
   );

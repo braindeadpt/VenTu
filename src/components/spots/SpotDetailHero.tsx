@@ -18,6 +18,7 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import WindSourceAttributionNote from '@/components/ui/WindSourceAttributionNote';
 import type {
   ScoreWaveCorrection,
   ScoreWaveSource,
@@ -67,6 +68,8 @@ interface SpotDetailHeroProps {
   scoreWindSource?: ScoreWindSource;
   /** Wind bias (ME/n from wind-bias.json) for the badge tooltip when observed. */
   scoreWindCorrection?: ScoreWindCorrection | null;
+  /** Source of the observed wind actually shown ('ipma' | 'ecowitt' | 'metar'). */
+  windObservedSource?: 'ipma' | 'ecowitt' | 'metar';
   scoreWaveSource?: ScoreWaveSource;
   /** Correction details (buoy name + ME/n) for the wave badge tooltip. */
   scoreWaveCorrection?: ScoreWaveCorrection | null;
@@ -93,6 +96,7 @@ export default function SpotDetailHero({
   conditions,
   scoreWindSource = 'forecast',
   scoreWindCorrection = null,
+  windObservedSource,
   scoreWaveSource = 'forecast',
   scoreWaveCorrection = null,
   observedWave,
@@ -243,6 +247,15 @@ export default function SpotDetailHero({
                       locale={locale}
                     />
                   </div>
+                  {scoreWindSource === 'observed' &&
+                    (windObservedSource ?? scoreWindCorrection?.source) && (
+                      <span className="inline-flex">
+                        <WindSourceAttributionNote
+                          source={windObservedSource ?? scoreWindCorrection!.source!}
+                          locale={isPt ? 'pt' : 'en'}
+                        />
+                      </span>
+                    )}
                   <ConfidenceBadge
                     confidence={conditions.confidence}
                     detail={conditions.confidenceDetail}

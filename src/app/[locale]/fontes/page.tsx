@@ -1,7 +1,10 @@
 import type { ReactNode } from 'react'
-import { Database, ExternalLink, ShieldCheck } from 'lucide-react'
+import { Anchor, Database, ExternalLink, ShieldCheck } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import { buildPageMetadata } from '@/lib/seo'
+import { ATTRIBUTIONS, type DataSourceId } from '@/lib/dataSources'
+import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
+import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
 import type { Metadata } from 'next'
 
 /** Link externo pequeno (atribuição obrigatória). */
@@ -34,8 +37,8 @@ type Source = {
   useEn: string
   /** Licença (com link). */
   license: { pt: ReactNode; en: ReactNode }
-  /** Cadeia de atribuição obrigatória a reproduzir. */
-  attribution: { pt: ReactNode; en: ReactNode }
+  /** ID da cadeia de atribuição no módulo partilhado (src/lib/dataSources.tsx). */
+  attributionId: DataSourceId
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -67,18 +70,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <><A href={CC_BY}>CC BY 4.0</A></>,
         en: <><A href={CC_BY}>CC BY 4.0</A></>,
       },
-      attribution: {
-        pt: (
-          <>
-            «<A href="https://open-meteo.com/">Weather data by Open-Meteo.com</A> ({<A href={CC_BY}>CC BY 4.0</A>})» — já no mapa, no About e no footer. Modelos: ondas DWD EWAM e ECMWF WAM (CC-BY), NOAA GFS Wave/GWAM; vento DWD ICON-EU, ECMWF IFS, GFS e Météo-France.
-          </>
-        ),
-        en: (
-          <>
-            “<A href="https://open-meteo.com/">Weather data by Open-Meteo.com</A> ({<A href={CC_BY}>CC BY 4.0</A>})” — already on the map, About and footer. Models: waves DWD EWAM & ECMWF WAM (CC-BY), NOAA GFS Wave/GWAM; wind DWD ICON-EU, ECMWF IFS, GFS & Météo-France.
-          </>
-        ),
-      },
+      attributionId: 'open-meteo',
     },
     {
       name: 'Instituto Hidrográfico (IH)',
@@ -89,18 +81,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <><A href={CC_BY}>CC BY 4.0</A></>,
         en: <><A href={CC_BY}>CC BY 4.0</A></>,
       },
-      attribution: {
-        pt: (
-          <>
-            «Dados © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A> (<A href={CC_BY}>CC BY 4.0</A>)» — na secção de marés, no card de isóbatas e nos avisos à navegação.
-          </>
-        ),
-        en: (
-          <>
-            “Data © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A> (<A href={CC_BY}>CC BY 4.0</A>)” — in the tides section, the isobaths card and navigation warnings.
-          </>
-        ),
-      },
+      attributionId: 'ih',
     },
     {
       name: 'IPMA',
@@ -111,18 +92,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Dados abertos IPMA (gratuito, sem key)</>,
         en: <>IPMA open data (free, no key)</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «Dados <A href="https://www.ipma.pt/">IPMA</A>» — no radar (badge «IPMA»), nos avisos e nas observações de vento.
-          </>
-        ),
-        en: (
-          <>
-            “<A href="https://www.ipma.pt/">IPMA</A> data” — on the radar (IPMA badge), warnings and wind observations.
-          </>
-        ),
-      },
+      attributionId: 'ipma',
     },
     {
       name: 'MeteoAlarm (EUMETNET)',
@@ -133,18 +103,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Termos EUMETNET (token grátis METEOALARM_API_KEY)</>,
         en: <>EUMETNET terms (free METEOALARM_API_KEY token)</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «Avisos <A href="https://www.meteoalarm.org/">MeteoAlarm</A> (EUMETNET)» — mostrado na secção de avisos quando a fonte é meteoalarm.
-          </>
-        ),
-        en: (
-          <>
-            “<A href="https://www.meteoalarm.org/">MeteoAlarm</A> (EUMETNET) warnings” — shown in the warnings section when the source is meteoalarm.
-          </>
-        ),
-      },
+      attributionId: 'meteoalarm',
     },
     {
       name: 'Copernicus Marine Service',
@@ -155,18 +114,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Free; atribuição obrigatória</>,
         en: <>Free; attribution required</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «Generated using E.U. <A href="https://marine.copernicus.eu/">Copernicus Marine Service Information</A>» — nas leituras WMO (boia Silleiro/Villano etc.).
-          </>
-        ),
-        en: (
-          <>
-            “Generated using E.U. <A href="https://marine.copernicus.eu/">Copernicus Marine Service Information</A>” — on WMO readings (Silleiro/Villano buoys, etc.).
-          </>
-        ),
-      },
+      attributionId: 'copernicus',
     },
     {
       name: 'Esri World Imagery',
@@ -177,18 +125,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Uso público gratuito com atribuição (Esri Master Agreement)</>,
         en: <>Free public use with attribution (Esri Master Agreement)</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «Imagery © <A href="https://www.esri.com/">Esri</A>, Maxar, Earthstar Geographics» — no About e no controlo de atribuição do mapa.
-          </>
-        ),
-        en: (
-          <>
-            “Imagery © <A href="https://www.esri.com/">Esri</A>, Maxar, Earthstar Geographics” — on the About page and the map attribution control.
-          </>
-        ),
-      },
+      attributionId: 'esri',
     },
     {
       name: 'OpenStreetMap / CARTO',
@@ -199,18 +136,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + termos CARTO</>,
         en: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + CARTO terms</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «© <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> contributors © <A href="https://carto.com/attributions">CARTO</A>» — no controlo de atribuição do mapa.
-          </>
-        ),
-        en: (
-          <>
-            “© <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> contributors © <A href="https://carto.com/attributions">CARTO</A>” — on the map attribution control.
-          </>
-        ),
-      },
+      attributionId: 'osm',
     },
     {
       name: 'Ecowitt',
@@ -221,18 +147,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Dados comunitários (estações privadas)</>,
         en: <>Community data (private stations)</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «<A href="https://www.ecowitt.net/">Ecowitt</A>» — na atribuição das observações de vento.
-          </>
-        ),
-        en: (
-          <>
-            “<A href="https://www.ecowitt.net/">Ecowitt</A>” — in the wind observation attribution.
-          </>
-        ),
-      },
+      attributionId: 'ecowitt',
     },
     {
       name: 'METAR (aviation weather)',
@@ -243,18 +158,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Domínio público (NOAA / WMO METAR)</>,
         en: <>Public domain (NOAA / WMO METAR)</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «METAR via <A href="https://aviationweather.gov/">aviationweather.gov</A>» — na atribuição das observações de vento.
-          </>
-        ),
-        en: (
-          <>
-            “METAR via <A href="https://aviationweather.gov/">aviationweather.gov</A>” — in the wind observation attribution.
-          </>
-        ),
-      },
+      attributionId: 'metar',
     },
     {
       name: 'WeatherLink (Davis)',
@@ -265,18 +169,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Widget oficial WeatherLink</>,
         en: <>Official WeatherLink widget</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «<A href="https://www.weatherlink.com/">WeatherLink</A> · Davis» — no embed da secção de sensores.
-          </>
-        ),
-        en: (
-          <>
-            “<A href="https://www.weatherlink.com/">WeatherLink</A> · Davis” — on the sensors embed section.
-          </>
-        ),
-      },
+      attributionId: 'weatherlink',
     },
     {
       name: 'Google Gemini',
@@ -287,18 +180,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         pt: <>Termos Google AI</>,
         en: <>Google AI terms</>,
       },
-      attribution: {
-        pt: (
-          <>
-            «Gerado com <A href="https://ai.google.dev/">Google Gemini</A>» — nas notícias e no Dawn Patrol.
-          </>
-        ),
-        en: (
-          <>
-            “Generated with <A href="https://ai.google.dev/">Google Gemini</A>” — on the news and Dawn Patrol.
-          </>
-        ),
-      },
+      attributionId: 'gemini',
     },
     {
       name: 'Unsplash / Pexels',
@@ -317,10 +199,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
           </>
         ),
       },
-      attribution: {
-        pt: <>Lista completa de créditos em <code className="text-fg">public/images/CREDITS.md</code>.</>,
-        en: <>Full credit list in <code className="text-fg">public/images/CREDITS.md</code>.</>,
-      },
+      attributionId: 'unsplash',
     },
   ]
 
@@ -408,13 +287,96 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
                   {isPt ? s.license.pt : s.license.en}
                 </td>
                 <td className="py-3 text-fg-muted leading-snug">
-                  {isPt ? s.attribution.pt : s.attribution.en}
+                  {isPt
+                    ? ATTRIBUTIONS[s.attributionId].cellPt
+                    : ATTRIBUTIONS[s.attributionId].cellEn}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+
+      {(() => {
+        const archive = loadCoastalWarningsArchive()
+        if (!archive.hasData) return null
+        const fmt = (d: string) =>
+          new Date(`${d}T12:00:00`).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')
+        return (
+          <div className="card-1 p-6 space-y-4" data-coastal-archive-fontes>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-lg font-bold text-fg">
+                {isPt
+                  ? 'Histórico — Avisos à Navegação Costeiros (IH)'
+                  : 'History — IH coastal navigation warnings'}
+              </h2>
+              <span className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted">
+                <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
+                {isPt
+                  ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} · janela ${archive.windowDays}`
+                  : `${archive.dayCount} ${archive.dayCount === 1 ? 'day' : 'days'} · ${archive.windowDays}-day window`}
+              </span>
+            </div>
+            <p className="text-sm text-fg-muted leading-relaxed">
+              {isPt
+                ? 'Registo diário dos avisos em vigor na costa portuguesa (e cross-border ES), arquivado pelo fetch — histórico auditable da camada de segurança, lado a lado com a atribuição do IH acima.'
+                : 'Daily record of warnings in force on the Portuguese coast (and cross-border ES), archived by the pipeline — an auditable history of the safety layer, next to the IH attribution above.'}
+            </p>
+
+            <CoastalDailyActiveChart dailyActive={archive.dailyActive} isPt={isPt} />
+
+            <div className="space-y-1.5">
+              <p className="text-xs uppercase tracking-wide text-fg-subtle">
+                {isPt ? 'Mais recentes' : 'Most recent'}
+              </p>
+              {archive.refs.slice(0, 6).map((r) => (
+                <div
+                  key={r.ref}
+                  data-coastal-ref={r.ref}
+                  className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 text-meta"
+                >
+                  <span className="font-medium text-fg">
+                    {r.url ? (
+                      <a
+                        href={r.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-fg transition-colors"
+                      >
+                        {r.ref}
+                      </a>
+                    ) : (
+                      r.ref
+                    )}
+                  </span>
+                  <span className="text-fg-muted tabular-nums">
+                    {fmt(r.firstSeen)} → {fmt(r.lastSeen)} · {r.nDays}d · {r.source === 'es' ? 'ES' : 'IH'}
+                  </span>
+                </div>
+              ))}
+              <p className="pt-1 text-xs text-fg-subtle">
+                {isPt ? (
+                  <>
+                    Tabela completa (janela de cada aviso) na página{' '}
+                    <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
+                      Sobre
+                    </a>
+                    .
+                  </>
+                ) : (
+                  <>
+                    Full per-warning window table on the{' '}
+                    <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
+                      About
+                    </a>{' '}
+                    page.
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+        )
+      })()}
 
       <p className="text-xs text-fg-subtle">
         {isPt ? (

@@ -63,6 +63,19 @@ export const WARNING_LEVEL_META: Record<
   },
 };
 
+/**
+ * Localized IPMA warning level — «Laranja» / «Orange». The single source for
+ * every tooltip/badge/section that shows the level (marker, popup, cards,
+ * Dawn Patrol, safety banner, spot warnings section). Fallback: the raw key.
+ */
+export function warningLevelLabel(
+  level: IpmaWarningLevel | string,
+  locale: string,
+): string {
+  const meta = WARNING_LEVEL_META[level as IpmaWarningLevel];
+  return meta?.label[locale === 'pt' ? 'pt' : 'en'] ?? level;
+}
+
 /** Water-sports relevant warning types (the spot section shows only these). */
 export const RELEVANT_WARNING_TYPES = new Set([
   'Agitação Marítima',

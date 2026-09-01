@@ -6,6 +6,7 @@ import { getAssetPath } from '@/lib/paths';
 import {
   relevantWarningsForSpot,
   ipmaRadarUrl,
+  warningLevelLabel,
   warningTypeLabel,
   warningsSourceLabel,
   WARNING_LEVEL_META,
@@ -92,7 +93,7 @@ export default function SpotWarningsSection({
                   {warningTypeLabel(w.type, isPt)}
                 </span>
                 <span className="text-xs font-bold uppercase tracking-wide">
-                  {WARNING_LEVEL_META[w.level]?.label[isPt ? 'pt' : 'en'] ?? w.level}
+                  {warningLevelLabel(w.level, locale)}
                 </span>
                 <span className="text-meta-sm text-fg-muted">
                   {w.endTime ? `${isPt ? 'até' : 'until'} ${formatEndDate(w.endTime, isPt)}` : ''}

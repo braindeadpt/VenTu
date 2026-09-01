@@ -1,9 +1,9 @@
 'use client';
 
 import { renderToStaticMarkup } from 'react-dom/server';
-import { AlertTriangle, Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
-import { WARNING_LEVEL_META } from '@/lib/ipmaWarnings';
+import { Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
+import WarningPill from '@/components/ui/WarningPill';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -58,10 +58,13 @@ export function SpotPopupContent({
 }: SpotPopupContentProps) {
   const isPt = locale === 'pt';
   const name = isPt ? spot.name : spot.nameEn;
+  const warningPill = warning ? (
+    // Nível localizado visível no chip («Mar perigoso (Laranja)») — o popup
+    // não tem tooltip fiável (HTML estático do Leaflet), por isso o nível vai
+    // no texto, não só no title.
+    <WarningPill warning={warning} locale={locale} variant="popup" showLevel />
+  ) : null;
   const region = isPt ? spot.region : spot.regionEn;
-  const warningChipClass = warning
-    ? WARNING_LEVEL_META[warning.level]?.chipClass ?? 'bg-score-fair/15 text-score-fair border-score-fair/40'
-    : '';
 
   const topSport = (Object.entries(allScores) as [SportType, SportScore][])
     .filter(([, s]) => s.score > 0)
@@ -129,16 +132,7 @@ export function SpotPopupContent({
         </p>
       </div>
 
-      {warning && (
-        <div className="px-2.5 pb-1.5">
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-pill border px-2 py-1 text-[11px] font-semibold ${warningChipClass}`}
-          >
-            <AlertTriangle className="w-3 h-3 shrink-0" aria-hidden />
-            {isPt ? 'Aviso' : 'Warning'}: {warning.label}
-          </span>
-        </div>
-      )}
+      {warningPill && <div className="px-2.5 pb-1.5">{warningPill}</div>}
 
       {/* Wind reading — cardinal + kt + relation dot (matches map ring colour) */}
       <div className="px-2.5 pb-2">

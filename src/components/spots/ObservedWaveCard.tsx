@@ -1,3 +1,5 @@
+'use client';
+
 import { AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { getCardinalLabel } from '@/lib/wind';
@@ -11,6 +13,14 @@ import {
   type ObservedWave,
   type ObservedWaveMeta,
 } from '@/lib/observedWave';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import {
+  SEA_STATE_WARNING_TYPES,
+  strongestSpotWarning,
+  warningBadgeLabel,
+} from '@/lib/ipmaWarnings';
+import { ATTRIBUTIONS, waveSourceAttributionId } from '@/lib/dataSources';
+import WarningPill from '@/components/ui/WarningPill';
 
 /**
  * Why the winner won, in plain language — freshness/distance tradeoff. The
@@ -78,6 +88,8 @@ interface ObservedWaveCardProps {
   /** Model wave height (m) for this spot — shown next to the buoy reading. */
   forecastWaveHeightM: number;
   locale: string;
+  /** Spot id — resolves the active IPMA warning badge («Mar perigoso»). */
+  spotId: string;
 }
 
 export default function ObservedWaveCard({
@@ -86,8 +98,12 @@ export default function ObservedWaveCard({
   meta,
   forecastWaveHeightM,
   locale,
+  spotId,
 }: ObservedWaveCardProps) {
   const isPt = locale === 'pt';
+  const warningsData = useIpmaWarnings();
+  const warning = strongestSpotWarning(warningsData, spotId);
+  const sourceAttributionId = waveSourceAttributionId(observedWave?.source ?? 'ih-buoy');
 
   // Source-aware honesty gate (IH 3h, WMO/Copernicus 6h): stale → not rendered.
   if (!observedWave || !isObservedWaveFresh(observedWave)) return null;
@@ -121,6 +137,52 @@ export default function ObservedWaveCard({
           {isPt ? `${label} · ${clock}` : `${clock} · ${label}`}
         </p>
       </div>
+
+      {warning && (
+        <WarningPill
+          warning={{
+            level: warning.level,
+            label: warningBadgeLabel(warning, isPt),
+            seaState: SEA_STATE_WARNING_TYPES.has(warning.type),
+            areaLabel: warning.areaLabel,
+            type: warning.type,
+          }}
+          locale={locale}
+          variant="default"
+          dataAttr="true"
+        />
+      )}
+
+      {observedWave.bridge && (
+        <p
+          className="flex items-start gap-1.5 rounded-lg border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-meta-sm text-data-period leading-snug"
+          data-wave-bridge="true"
+          title={
+            isPt
+              ? 'Ponte keyless: enquanto a IH_API_KEY não provar a Fugro (Nazaré Costeira), a leitura de Cabo Silleiro (ES, Copernicus) é o proxy da onda — distância real mantida. Quando a boia nacional voltar a estar fresca, substitui-a.'
+              : 'Keyless bridge: until IH_API_KEY proves the Fugro (Nazaré Costeira), the Cabo Silleiro (ES, Copernicus) reading is the wave proxy — real distance kept. When the national buoy is fresh again, it replaces this one.'
+          }
+        >
+          <span aria-hidden>🌉</span>
+          <span>
+            {isPt ? (
+              <>
+                Ponte keyless: a usar{' '}
+                <strong className="font-semibold">Cabo Silleiro (ES)</strong> enquanto a
+                Fugro nacional (IH_API_KEY) não está provada — a{' '}
+                {observedWaveLabel(observedWave, locale)}.
+              </>
+            ) : (
+              <>
+                Keyless bridge: using{' '}
+                <strong className="font-semibold">Cabo Silleiro (ES)</strong> until the
+                national Fugro (IH_API_KEY) is proven — at the{' '}
+                {observedWaveLabel(observedWave, locale)}.
+              </>
+            )}
+          </span>
+        </p>
+      )}
 
       {observedWave.calibration &&
         (() => {
@@ -277,36 +339,49 @@ export default function ObservedWaveCard({
           if (typeof s.meanLeadHours === 'number') {
             parts.push(`lead ${Math.round(s.meanLeadHours)}h`);
           }
-          // Skill de boia ES (WMO/Copernicus — Silleiro/Villano no NW): destaque
-          // honesto, surge mesmo sem IH_API_KEY (a cadeia ES acumula sem chave).
+          // Skill keyless WMO/Copernicus (ES Silleiro/Villano cross-border ou PT
+          // Nazaré Costeira) — destaque honesto, surge mesmo sem IH_API_KEY
+          // (ambas as cadeias acumulam sem chave).
           const isEs = s.origin === 'wmo-es';
+          const isWmoPt = s.origin === 'wmo-pt';
+          const isKeyless = isEs || isWmoPt;
+          const keylessEmoji = isEs ? '🇪🇸' : isWmoPt ? '🇵🇹' : null;
           const buoyName = s.buoyName || observedWave.stationName;
           return (
             <p
               className={cn(
                 'flex items-start gap-1.5 text-meta-sm leading-snug',
-                isEs
+                isKeyless
                   ? 'rounded-lg border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-data-period'
                   : 'text-fg-subtle',
               )}
-              data-wave-skill={isEs ? 'es' : 'true'}
+              data-wave-skill={isEs ? 'es' : isWmoPt ? 'pt' : 'true'}
               title={
-                isPt
-                  ? isEs
+                isEs ? (
+                  isPt
                     ? `Skill real do forecast nesta boia espanhola (${buoyName}) — forecast-skill.json via WMO/Copernicus (sem IH_API_KEY): best_match vs leitura da boia nas mesmas horas. ME = média(observado − previsão): positivo = modelo subestima.`
-                    : 'Skill real do forecast nesta boia (forecast-skill.json): best_match vs leitura da boia nas mesmas horas, com lead time > 0. ME = média(observado − previsão) — positivo = modelo subestima.'
-                  : isEs
-                    ? `Real forecast skill at this Spanish buoy (${buoyName}) — forecast-skill.json via WMO/Copernicus (no IH_API_KEY): best_match vs buoy reading on the same hours. ME = mean(observed − forecast): positive = model underestimates.`
-                    : 'Real forecast skill at this buoy (forecast-skill.json): best_match vs buoy reading on the same hours, with lead time > 0. ME = mean(observed − forecast) — positive = model underestimates.'
+                    : `Real forecast skill at this Spanish buoy (${buoyName}) — forecast-skill.json via WMO/Copernicus (no IH_API_KEY): best_match vs buoy reading on the same hours. ME = mean(observed − forecast): positive = model underestimates.`
+                ) : isWmoPt ? (
+                  isPt
+                    ? `Skill real do forecast nesta boia portuguesa (${buoyName}) via Copernicus-WMO sem IH_API_KEY — best_match vs leitura da boia nas mesmas horas. ME = média(observado − previsão): positivo = modelo subestima.`
+                    : `Real forecast skill at this Portuguese buoy (${buoyName}) via Copernicus-WMO without an IH_API_KEY — best_match vs buoy reading on the same hours. ME = mean(observed − forecast): positive = model underestimates.`
+                ) : isPt
+                  ? 'Skill real do forecast nesta boia (forecast-skill.json): best_match vs leitura da boia nas mesmas horas, com lead time > 0. ME = média(observado − previsão) — positivo = modelo subestima.'
+                  : 'Real forecast skill at this buoy (forecast-skill.json): best_match vs buoy reading on the same hours, with lead time > 0. ME = mean(observed − forecast) — positive = model underestimates.'
               }
             >
-              {isEs && <span aria-hidden>🇪🇸</span>}
+              {keylessEmoji && <span aria-hidden>{keylessEmoji}</span>}
               <span>
                 {isPt ? (
                   isEs ? (
                     <>
                       Skill da boia <strong className="font-semibold">espanhola</strong> ({buoyName})
                       · {parts.join(' · ')} (n={s.n}) — via WMO/Copernicus (sem IH_API_KEY)
+                    </>
+                  ) : isWmoPt ? (
+                    <>
+                      Skill da boia <strong className="font-semibold">portuguesa</strong> ({buoyName})
+                      · {parts.join(' · ')} (n={s.n}) — via Copernicus-WMO (sem IH_API_KEY)
                     </>
                   ) : (
                     <>Skill desta boia: {parts.join(' · ')} (n={s.n})</>
@@ -315,6 +390,11 @@ export default function ObservedWaveCard({
                   <>
                     Skill from <strong className="font-semibold">Spanish</strong> buoy ({buoyName})
                     : {parts.join(' · ')} (n={s.n}) — via WMO/Copernicus (no IH_API_KEY)
+                  </>
+                ) : isWmoPt ? (
+                  <>
+                    Skill from <strong className="font-semibold">Portuguese</strong> buoy ({buoyName})
+                    : {parts.join(' · ')} (n={s.n}) — via Copernicus-WMO (no IH_API_KEY)
                   </>
                 ) : (
                   <>Buoy skill: {parts.join(' · ')} (n={s.n})</>
@@ -330,9 +410,22 @@ export default function ObservedWaveCard({
         </p>
       )}
 
-      <p className="text-meta-sm text-fg-subtle leading-snug">
-        {observedWaveDisclaimer(locale, observedWave.source)}
-      </p>
+      <footer className="space-y-1 pt-0.5">
+        <p
+          className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-meta-sm text-fg-subtle leading-snug"
+          data-data-source={sourceAttributionId}
+        >
+          <span className="font-medium text-fg-muted">
+            {isPt ? 'Fonte da medição: ' : 'Measurement source: '}
+          </span>
+          {isPt
+            ? ATTRIBUTIONS[sourceAttributionId].notePt
+            : ATTRIBUTIONS[sourceAttributionId].noteEn}
+        </p>
+        <p className="text-meta-sm text-fg-subtle leading-snug">
+          {observedWaveDisclaimer(locale, observedWave.source)}
+        </p>
+      </footer>
     </section>
   );
 }
