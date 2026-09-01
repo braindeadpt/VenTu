@@ -1,10 +1,9 @@
 import { test, expect } from '@playwright/test';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 test.describe('Critical routes', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
-      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
-    });
+    await preseedWindRingLegend(page);
   });
   test('homepage PT loads', async ({ page }) => {
     await page.goto('/pt/');

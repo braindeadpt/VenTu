@@ -1,11 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { openMapSpotSheet } from './helpers/map-sheet';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 test.describe('Forecast confidence badge', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
-      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
-    });
+    await preseedWindRingLegend(page);
   });
   test.use({
     viewport: { width: 390, height: 844 },

@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { interceptData } from './helpers/conditions';
 
 /**
  * Secção de tendência de coerência ES×PT (About — data dashboard).
@@ -28,9 +29,7 @@ test.describe('About — tendência de coerência ES×PT', () => {
   test.use({ serviceWorkers: 'block' });
 
   test('mostra a barra empilhada por par com veredictos diários', async ({ page }) => {
-    await page.route('**/data/buoy-coherence-archive.json', async (route) => {
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ARCHIVE) });
-    });
+    await interceptData(page, 'buoy-coherence-archive.json', ARCHIVE);
 
     await page.goto('/pt/about/', { waitUntil: 'networkidle', timeout: 60_000 });
 
@@ -51,7 +50,7 @@ test.describe('About — tendência de coerência ES×PT', () => {
   });
 
   test('a secção não aparece quando o arquivo falta (404)', async ({ page }) => {
-    await page.route('**/data/buoy-coherence-archive.json', (route) => route.fulfill({ status: 404 }));
+    await interceptData(page, 'buoy-coherence-archive.json', {}, { status: 404 });
 
     await page.goto('/pt/about/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForTimeout(1500);

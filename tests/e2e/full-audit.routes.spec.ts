@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { discoverAllRoutes } from './helpers/discover-routes';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 const allRoutes = discoverAllRoutes();
 
@@ -8,9 +9,7 @@ test.describe.configure({ mode: 'parallel' });
 
 test.describe('Full route audit', () => {
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
-      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
-    });
+    await preseedWindRingLegend(page);
   });
   for (const { path, group } of allRoutes) {
     test(`${group}: ${path}`, async ({ page }) => {

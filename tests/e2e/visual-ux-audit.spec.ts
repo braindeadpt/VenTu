@@ -3,6 +3,7 @@
  * Simula percursos de utilizador real com verificação de erros JS/consola.
  */
 import { test, expect, type Page, type BrowserContext } from '@playwright/test';
+import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { expandMapHudFilters } from './helpers/map-hud';
 import { openMapSpotSheet } from './helpers/map-sheet';
@@ -23,9 +24,7 @@ async function createContext(browser: import('@playwright/test').Browser, viewpo
 
 async function setupPage(context: BrowserContext, viewport: Viewport) {
   const page = await context.newPage();
-  await page.addInitScript(() => {
-    try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
-  });
+  await preseedWindRingLegend(page);
   const health = attachPageHealthCollectors(page);
   return { page, health };
 }

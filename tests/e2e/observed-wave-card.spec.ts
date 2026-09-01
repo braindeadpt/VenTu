@@ -442,6 +442,62 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(calChip).toContainText(/ref\. PT \(-0\.9 m · n=4\)/);
   });
 
+  test('leitura WMO SEM calibration → o chip compacto NUNCA mostra o tag de calibração (honestidade do rótulo)', async ({
+    page,
+  }) => {
+    // Espelho do teste de calibração: aqui a leitura espanhola NÃO foi
+    // recalibrada (sem campo calibration no observedWave) — o chip compacto
+    // do hero/sticky tem de continuar honesto: mostra a boia e a distância,
+    // mas nunca o «ref. PT» nem o popover.
+    await interceptConditions(page, {
+      spots: {
+        [SPOT_KEY]: (entry) => ({
+          ...entry,
+          observedWave: {
+            waveHeight: 1.4,
+            wavePeriod: 10,
+            waveDirection: 280,
+            stationName: 'Cabo Silleiro',
+            stationArea: 'Galiza',
+            distanceKm: 96.8,
+            observedAt: new Date().toISOString(),
+            source: 'wmo-buoy',
+            // Sem calibration — o merge não recalibrou esta leitura.
+          },
+          observedWaveAlt: null,
+          observedWaveMeta: {
+            winner: 'wmo',
+            reason: 'wmo-only',
+            ihAgeHours: null,
+            wmoAgeHours: 1,
+            ihDistanceKm: null,
+            wmoDistanceKm: 96.8,
+          },
+        }),
+      },
+    });
+
+    await page.goto('/pt/spots/guincho/');
+    const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
+    await expect(card).toBeVisible({ timeout: 15_000 });
+    // O card também não mostra a pill de calibração (data-wave-calibrated=true).
+    await expect(card.locator('[data-wave-calibrated="true"]')).toHaveCount(0);
+
+    // Hero: o chip compacto existe e mostra o rótulo honesto da boia…
+    await expect(page.getByText(/boia Cabo Silleiro a 97 km/).first()).toBeVisible();
+    // …mas NENHUM tag de calibração, em superfície nenhuma da página.
+    await expect(page.locator('[data-wave-calibrated="compact"]')).toHaveCount(0);
+    await expect(page.locator('[data-wave-calibration-popover="true"]')).toHaveCount(0);
+
+    // Sticky bar (após scroll): o chip compacto também não inventa calibração.
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const stickyChip = page.getByRole('region', {
+      name: /Métricas principais|Key metrics/,
+    });
+    await expect(stickyChip).toBeVisible();
+    await expect(stickyChip.locator('[data-wave-calibrated="compact"]')).toHaveCount(0);
+  });
+
   test('mostra o skill da boia ES (Silleiro) destacado no card mesmo sem IH_API_KEY', async ({
     page,
   }) => {
@@ -768,6 +824,41 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(wavesLabel).toHaveAttribute('title', /viés regional.*horas seguintes/i);
   });
 
+  test('deltaM negativo: waveBias com me -0.4 → tooltip «Δ -0.4 m» e altura corrigida para baixo', async ({
+    page,
+  }) => {
+    // O mesmo contrato do positivo, com o sinal ao contrário: viés regional
+    // NEGATIVO (a previsão costuma sobrestimar) — o tooltip mostra «Δ -0.4 m
+    // aplicado à altura» (fmtMe mantém o sinal) e a altura exibida é a row já
+    // corrigida PARA BAIXO (1.8 - 0.4 = 1.4m), nunca a crua.
+    await interceptConditions(page, {
+      spots: {
+        [SPOT_KEY]: (entry) => ({
+          ...withoutObservedWave(entry),
+          waveHeight: 1.4, // já corrigida pela pipeline (1.8 - 0.4)
+          waveBias: { region: 'Cascais', me: -0.4, n: 120, deltaM: -0.4 },
+        }),
+      },
+    });
+
+    await page.goto('/pt/spots/guincho/');
+    const hero = page.locator('.spot-hero-card');
+    await expect(hero).toBeVisible({ timeout: 20_000 });
+
+    const badge = hero.locator('[title*="Viés regional"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+    await expect(badge).toHaveText('Corrigido (viés regional)');
+    // Δ com o sinal honesto — nunca «+» nem sem sinal para um viés negativo.
+    await expect(badge).toHaveAttribute(
+      'title',
+      /Δ -0\.4 m aplicado à altura\. Viés regional ME -0\.4 m \(n=120\)\. Correcção aplicada pela pipeline \(meta na row\)\./,
+    );
+    // Altura exibida é a corrigida para baixo, com o sufixo do factor.
+    await expect(hero.getByText('1.4m (viés regional)')).toBeVisible();
+    // Nunca a altura crua acima (1.8m) — a correcção aplicou-se.
+    await expect(hero.getByText('1.8m (viés regional)')).toHaveCount(0);
+  });
+
   test('fallback: sem viés da região no wave-bias.json → «Só previsão» (nunca inventa)', async ({
     page,
   }) => {
@@ -979,6 +1070,89 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(sticky.getByText(/\d\.\dm/).first()).toBeVisible();
   });
 
+  test('sticky desktop: com with-wave-bias → «Corrigido (viés regional)» com ME/n após scroll', async ({
+    page,
+  }) => {
+    // O estado bias-corrected na barra sticky: a row traz o meta waveBias
+    // baked pela pipeline (Cascais me +0.3 n=120) e NENHUMA leitura fresca —
+    // o viés vence e a barra mostra o mesmo badge do hero, com o ME/n do
+    // viés no tooltip e o sufixo do factor na altura.
+    await gotoSpot(page, 'with-wave-bias');
+
+    // Confirma o estado no hero primeiro (o badge do viés renderizou) antes
+    // do scroll — dados carregados de forma determinística.
+    const hero = page.locator('.spot-hero-card');
+    await expect(hero).toBeVisible({ timeout: 20_000 });
+    const heroBadge = hero.locator('[title*="Viés regional"]');
+    await expect(heroBadge).toBeVisible({ timeout: 15_000 });
+    await expect(heroBadge).toHaveText('Corrigido (viés regional)');
+
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
+    await expect(sticky).toBeVisible({ timeout: 15_000 });
+
+    // Badge na barra: rótulo honesto do viés + tooltip completo (Δ, ME/n,
+    // origem pipeline) — nunca confundido com a correcção da boia.
+    const badge = sticky.locator('[title*="Viés regional"]');
+    await expect(badge).toBeVisible({ timeout: 10_000 });
+    await expect(badge).toHaveText('Corrigido (viés regional)');
+    await expect(badge).toHaveAttribute(
+      'title',
+      /Δ \+0\.3 m aplicado à altura\. Viés regional ME \+0\.3 m \(n=120\)\. Correcção aplicada pela pipeline \(meta na row\)\./,
+    );
+
+    // A altura da Stat mostra a row já corrigida pela pipeline com o sufixo
+    // do factor («(viés regional)», nunca «(boia)»).
+    await expect(sticky.getByText('1.8m (viés regional)')).toBeVisible();
+    // Sem leitura de boia fresca → nunca linguagem de tempo real na barra.
+    await expect(sticky.getByText(/Corrigido pela boia/i)).toHaveCount(0);
+    await expect(sticky.getByLabel(/Fontes de onda observada \(IH vs WMO\)/i)).toHaveCount(0);
+  });
+
+  test('sticky EN: com boia fresca → «Corrected by CSA92/D buoy» com ME/n após scroll', async ({
+    page,
+  }) => {
+    // Variação EN do badge de correcção na barra: a mesma row (boia fresca),
+    // rótulo e tooltip traduzidos — a localização nunca diverge do PT.
+    await gotoSpot(page, 'with-observed-wave', 'en');
+
+    // Garante que os dados carregaram (chip no hero) antes do scroll.
+    await expect(
+      page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
+    ).toBeVisible({ timeout: 15_000 });
+
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
+    await expect(sticky).toBeVisible({ timeout: 15_000 });
+
+    // Badge na barra: «Corrected by CSA92/D buoy» + ME/n do skill no tooltip.
+    const badge = sticky.getByText('Corrected by CSA92/D buoy');
+    await expect(badge).toBeVisible({ timeout: 10_000 });
+    await expect(badge).toHaveAttribute('title', /ME \+0\.2 m \(n=47\)/);
+    // A altura da Stat mostra a medição com o sufixo EN do factor.
+    await expect(sticky.getByText('1.8m (buoy)')).toBeVisible();
+    // Sem resíduo pt na barra.
+    await expect(sticky.getByText(/boia|Corrigido/i)).toHaveCount(0);
+  });
+
+  test('sticky EN: sem correcção → NENHUM badge na barra (nem «Corrected» nem «Forecast only»)', async ({
+    page,
+  }) => {
+    // Variação EN do negativo: sem leitura fresca nem viés, a barra sticky não
+    // mostra o ScoreWaveSourceBadge — igual ao PT, com os rótulos EN.
+    await gotoSpot(page, 'without-observed-wave', 'en');
+
+    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
+    await expect(sticky).toBeVisible({ timeout: 15_000 });
+
+    // Nenhum badge (nem de correcção nem de previsão pura), em EN.
+    await expect(sticky.getByText(/Corrected|Forecast only/i)).toHaveCount(0);
+    // A altura da Stat aparece sem sufixo de correcção.
+    await expect(sticky.getByText(/\(buoy\)|\(regional bias\)|\(boia\)|\(viés regional\)/i)).toHaveCount(0);
+    await expect(sticky.getByText(/\d\.\dm/).first()).toBeVisible();
+  });
+
   test('sem leitura fresca (ausente) o hero e a sticky não mostram chip nem rótulo compacto', async ({
     page,
   }) => {
@@ -1180,6 +1354,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
         body: JSON.stringify({
           fetchedAt: '2026-08-15T03:52:42.802Z',
           pairCount: 47,
+          pairCountByOrigin: { ih: 12, 'wmo-es': 10 },
+          calibratedPairCount: 10,
           byBuoy: {
             19: { buoyName: 'CSA92/D', n: 47, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12 },
           },
@@ -1202,6 +1378,12 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const line = page.locator('[data-buoy-skill-line="true"]');
     await expect(line).toBeVisible({ timeout: 20_000 });
     await expect(line).toContainText(/Skill desta boia \(CSA92\/D\): ME \+0\.2 m · RMSE 0\.5 m · r 0\.91 \(n=47\)/);
+    // A repartição por plataforma (IH vs WMO-ES) da linha discreta, espelhando
+    // a linha do About — só as origens com pares, com o total.
+    const origins = page.locator('[data-buoy-skill-origins="true"]');
+    await expect(origins).toBeVisible();
+    await expect(origins).toContainText(/IH 12 · Copernicus-ES 10/);
+    await expect(origins).toContainText(/total 22/);
     // Sem card (não há leitura fresca) — a linha é a única exposição do skill.
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
   });
@@ -1535,6 +1717,30 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(wavesLabelBias).toBeVisible({ timeout: 15_000 });
     await expect(wavesLabelBias).toContainText('(regional bias)');
     await expect(wavesLabelBias).toHaveAttribute('title', /regional bias.*following hours/i);
+  });
+
+  test('EN: sem leitura fresca + waveBias → badge «Region bias corrected» com tooltip ME/n EN', async ({
+    page,
+  }) => {
+    // O outro lado da paridade EN do badge: o caso que o teste de sufixos não
+    // cobre — o ScoreWaveSourceBadge do herói com a row corrigida pela pipeline
+    // (sem leitura fresca) traduz o rótulo E o tooltip (Δ/ME/n/origem) em EN.
+    // Nunca «Corrigido (viés regional)» nem «Corrigido pela boia» residuais.
+    await gotoSpot(page, 'with-wave-bias', 'en');
+
+    const hero = page.locator('.spot-hero-card');
+    await expect(hero).toBeVisible({ timeout: 20_000 });
+    const badge = hero.locator('[title*="Regional bias"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+    await expect(badge).toHaveText('Region bias corrected');
+    // Tooltip EN completo: Δ aplicado + ME/n do viés + origem pipeline.
+    await expect(badge).toHaveAttribute(
+      'title',
+      /Δ \+0\.3 m applied to the height\. Regional bias ME \+0\.3 m \(n=120\)\. Correction applied by the pipeline \(row meta\)\./,
+    );
+    // Sem resíduo pt nem linguagem de boia.
+    await expect(hero.getByText(/Corrigido \(viés regional\)|Corrigido pela boia/i)).toHaveCount(0);
+    await expect(hero.getByText(/\(boia\)|\(viés regional\)/i)).toHaveCount(0);
   });
 
   test('ForecastTable: rótulo da linha de ondas com sufixo «(boia)» e tooltip honesto', async ({ page }) => {

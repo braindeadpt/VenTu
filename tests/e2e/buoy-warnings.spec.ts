@@ -6,6 +6,7 @@ import {
   interceptWmoBuoys,
   withoutObservedWave,
 } from './helpers/conditions';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 /**
  * Aviso de boias — BuoyLayerNotice.
@@ -327,5 +328,176 @@ test.describe('Chip de diagnóstico no ticker (pipeline-meta.json → HeroTicker
     await expect(page.getByText('Boias: sem key')).toBeVisible({ timeout: 20_000 });
     // O aviso completo da secção de cards também está presente.
     await expect(page.getByText('Onda observada desactivada')).toBeVisible();
+    // Sem streak down/stale (no-key não acumula) → o chip nunca mostra duração.
+    const chip = page.locator('[data-buoy-streak="true"]');
+    await expect(chip).not.toContainText(/~?\d+ h|runs?/);
+  });
+
+  test('ticker: strea degradado (down + streak) → «Boias: em baixo · ~X h»', async ({ page }) => {
+    await interceptWmoBuoys(page, WMO_DOWN);
+    await page.goto('/pt/');
+    // O ticker é SSG — o estado vem do pipeline-meta.json baked no build. Lê o
+    // ficheiro servido para decidir honestamente o que o build deve mostrar.
+    const res = await page.request.get(
+      new URL('/data/pipeline-meta.json', page.url()).toString(),
+    );
+    let layer: { status?: string; streak?: number } | null = null;
+    if (res.ok()) {
+      const meta = (await res.json()) as { buoyLayer?: { status?: string; streak?: number } };
+      layer = meta?.buoyLayer ?? null;
+    }
+    const degraded =
+      layer &&
+      (layer.status === 'down' || layer.status === 'stale') &&
+      Number(layer.streak) > 0;
+    test.skip(
+      !degraded,
+      'build sem streak down/stale — injectar buoyLayer {status:down, streak:3, lastOkAt:…} em pipeline-meta.json + rebuild para validar o lado positivo',
+    );
+
+    const chip = page.locator('[data-buoy-streak="true"]');
+    await expect(chip).toBeVisible();
+    // «Boias: em baixo · ~5 h» (ou «· 3 runs» quando não há lastOkAt).
+    await expect(chip).toContainText(/(em baixo|leituras antigas)/i);
+    await expect(chip).toContainText(/(~?\d+ h|runs?)/i);
+  });
+});
+
+test.describe('Aviso de boias — dispensa (localStorage)', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  const DISMISS_KEY = 'ventu.map.buoyNoticeDismissed';
+  const IH_NO_KEY = {
+    fetchedAt: new Date().toISOString(),
+    apiKeyConfigured: false,
+    hasWaveData: false,
+    stations: {},
+  };
+  const IH_OK = {
+    fetchedAt: new Date().toISOString(),
+    apiKeyConfigured: true,
+    hasWaveData: true,
+    stations: { 4: { status: 'active', latest: { date: FRESH_ISO } } },
+  };
+
+  async function gotoSpot(page: import('@playwright/test').Page) {
+    await interceptConditions(page, { spots: { guincho: withoutObservedWave } });
+    await interceptWmoBuoys(page, WMO_DOWN);
+    await page.goto('/pt/spots/guincho/');
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+  }
+
+  test('dispensar («já vi») esconde o aviso e persiste no reload', async ({ page }) => {
+    await interceptIhBuoys(page, IH_NO_KEY);
+    await gotoSpot(page);
+
+    const notice = page.getByText('Onda observada desactivada');
+    await expect(notice).toBeVisible({ timeout: 20_000 });
+
+    // «Já vi»: o botão de dispensa fecha o aviso e grava a escolha.
+    await page.getByRole('button', { name: 'Dispensar aviso das boias' }).click();
+    await expect(notice).toHaveCount(0);
+    const dismissal = await page.evaluate(
+      (k) => JSON.parse(localStorage.getItem(k) || 'null'),
+      DISMISS_KEY,
+    );
+    expect(dismissal?.reason).toBe('no-key');
+
+    // Reload (mesmas fixtures — os routes persistem) → continua escondido.
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+    await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
+    expect(
+      await page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY),
+    ).toBeTruthy();
+  });
+
+  test('camada saudável limpa a dispensa — a próxima falha volta a avisar', async ({ page }) => {
+    await interceptIhBuoys(page, IH_NO_KEY);
+    await gotoSpot(page);
+    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
+    await page.getByRole('button', { name: 'Dispensar aviso das boias' }).click();
+    await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
+    expect(await page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY)).toBeTruthy();
+
+    // A camada fica saudável (IH fresca): sem aviso E a dispensa é removida.
+    await interceptIhBuoys(page, IH_OK);
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+    await expect(
+      page.getByText(/Onda observada desactivada|Boias do IH indisponíveis|Leituras das boias antigas/),
+    ).toHaveCount(0);
+    expect(await page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY)).toBeNull();
+
+    // Volta ao no-key: a dispensa já não existe → o aviso reaparece.
+    await interceptIhBuoys(page, IH_NO_KEY);
+    await page.reload({ waitUntil: 'networkidle' });
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
+  });
+
+  test('mapa: o botão de dispensa funciona no overlay (pointer-events-auto)', async ({ page }) => {
+    // O wrapper do overlay no mapa é pointer-events-none (não bloqueia a
+    // interacção com o Leaflet); o aviso em si tem pointer-events-auto para o
+    // botão de dispensa ser clicável sobre o mapa.
+    await interceptIhBuoys(page, IH_NO_KEY);
+    await interceptWmoBuoys(page, WMO_DOWN);
+    await page.goto('/pt/mapa/');
+    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
+    await page.getByRole('button', { name: 'Dispensar aviso das boias' }).click();
+    await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
+    expect(
+      await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || 'null'), DISMISS_KEY),
+    )?.toEqual(expect.objectContaining({ reason: 'no-key' }));
+  });
+
+  test('HUD do /mapa: chip compacto ligado ao BuoyLayerNotice (estado e dispensa partilhados)', async ({
+    page,
+  }) => {
+    await interceptIhBuoys(page, IH_NO_KEY);
+    await interceptWmoBuoys(page, WMO_DOWN);
+    // O coach de primeira visita da legenda de vento abre sozinho (idle) e
+    // cobre o chip — marca a legenda como vista para o teste ser só do chip.
+    await preseedWindRingLegend(page);
+    await page.goto('/pt/mapa/');
+
+    // O chip compacto do HUD aparece quando o banner de topo também aparece
+    // (mesmo estado no-key, nenhuma fonte com leituras frescas).
+    const chip = page.locator('[data-buoy-layer-chip="true"]');
+    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
+    await expect(chip).toBeVisible({ timeout: 20_000 });
+    await expect(chip.getByText('Boias desactivadas')).toBeVisible();
+
+    // Clique abre o popover com a mensagem completa (mobile não tem hover).
+    await chip.click();
+    await expect(chip).toHaveAttribute('aria-expanded', 'true');
+    const popover = page.locator('[data-buoy-chip-popover="true"]');
+    await expect(popover).toBeVisible();
+    await expect(popover.getByText('Onda observada desactivada')).toBeVisible();
+
+    // Fechar sem dispensar: clique no chip alterna (⚠ Esc sai do fullscreen
+    // do /mapa, desmontando o HUD — por isso o fecho é por toggle).
+    await chip.click();
+    await expect(popover).toHaveCount(0);
+    await expect(chip).toHaveAttribute('aria-expanded', 'false');
+
+    // Dispensar pelo chip esconde O CHIP E O BANNER (dispensa partilhada) e
+    // grava a escolha no localStorage — o mesmo «já vi» do aviso de topo.
+    await chip.click();
+    await expect(popover).toBeVisible();
+    await popover.getByRole('button', { name: 'Dispensar este aviso' }).click();
+    await expect(chip).toHaveCount(0);
+    await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
+    expect(
+      await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || 'null'), DISMISS_KEY),
+    )?.toEqual(expect.objectContaining({ reason: 'no-key' }));
   });
 });

@@ -1,5 +1,6 @@
 import { test, expect, type Locator } from '@playwright/test';
 import { interceptRadar } from './helpers/conditions';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 // 12 frames newest-first @ 5 min (01:00 → 00:05).
 const FRAMES = Array.from({ length: 12 }, (_, i) => {
@@ -51,9 +52,9 @@ test.describe('IPMA radar carousel', () => {
     // windRingLegendSeen, a legend coach abre como modal fixo centrado (idle,
     // até 4s) e o mouse.down do drag acerta no modal — o mapa nunca arranca o
     // drag e o carrossel não pausa (flake histórico deste teste).
+    await preseedWindRingLegend(page);
     await page.addInitScript(() => {
       (window as any).__RADAR_TEST__ = true;
-      localStorage.setItem('ventu:windRingLegendSeen', '1');
       localStorage.setItem('ventu.map.cluster', '0');
     });
     await interceptRadar(page, RADAR_STUB);
@@ -349,8 +350,8 @@ test.describe('IPMA radar no mapa da homepage (hero)', () => {
   // abre como modal centrado no grid /pt/spots/ e pode cobrir o botão do radar
   // ou interceptar cliques — determinístico com o flag visto (padrão da suite).
   test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
     await page.addInitScript(() => {
-      localStorage.setItem('ventu:windRingLegendSeen', '1');
       localStorage.setItem('ventu.map.cluster', '0');
     });
   });
@@ -708,9 +709,9 @@ test.describe('IPMA radar no HUD fullscreen com viewport móvel', () => {
   // colapsado E ao expandir — sem relógio porque o lift é dirigido por layout,
   // não por timers (como a pausa por viewport).
   test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
     await page.addInitScript(() => {
       (window as any).__RADAR_TEST__ = true;
-      localStorage.setItem('ventu:windRingLegendSeen', '1');
       localStorage.setItem('ventu.map.cluster', '0');
     });
     await interceptRadar(page, RADAR_STUB);
@@ -771,5 +772,556 @@ test.describe('IPMA radar no HUD fullscreen com viewport móvel', () => {
     await toggle.click();
     await expect(toggle).toHaveAttribute('aria-label', 'Pausar radar');
     await expect(badge).not.toContainText(frozen, { timeout: 5000 });
+  });
+});
+
+test.describe('IPMA radar no mapa embebido do grid em mobile (geometria)', () => {
+  test.use({
+    serviceWorkers: 'block',
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+  });
+
+  test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ventu.map.cluster', '0');
+    });
+    await interceptRadar(page, RADAR_STUB);
+  });
+
+  test('carrossel compacto ancorrado à esquerda não cobre o canto inferior direito do grid', async ({
+    page,
+  }) => {
+    // Em ecrãs pequenos o painel esticava quase à largura toda do mapa
+    // (348px de 356px ≈ 98%) e cobria os marcadores do canto inferior
+    // direito. Agora é compacto, ancorrado à esquerda e com largura
+    // limitada — o canto fica livre (regressão guardada por geometria).
+    await page.goto('/pt/spots/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.waitForTimeout(500);
+
+    const radarBtn = page.getByRole('button', { name: 'Radar IPMA' });
+    await expect(radarBtn).toBeVisible({ timeout: 30_000 });
+    await radarBtn.click();
+    await page.waitForTimeout(300);
+
+    const carousel = page.locator('[data-radar-carousel="true"]');
+    await expect(carousel).toBeVisible({ timeout: 15_000 });
+
+    const carBox = await carousel.boundingBox();
+    const mapBox = await page.locator('.leaflet-container').boundingBox();
+    expect(carBox).not.toBeNull();
+    expect(mapBox).not.toBeNull();
+
+    // Não é uma folha full-width: largura ≤ 90% da do mapa.
+    expect(carBox!.width).toBeLessThanOrEqual(mapBox!.width * 0.9);
+    // Ancorrado à esquerda em mobile (left-2): o canto inferior direito
+    // do grid de spots fica livre (≥ 20px de mapa à direita do painel).
+    expect(carBox!.x - mapBox!.x).toBeLessThan(24);
+    expect(mapBox!.x + mapBox!.width - (carBox!.x + carBox!.width)).toBeGreaterThan(20);
+
+    // O controlo continua completo em mobile: badge com frames, scrubber e
+    // o link de imersão flutuante à direita do badge.
+    await expect(page.locator('[data-radar-scrubber="true"]')).toBeVisible();
+    await expect(page.locator('[data-radar-fullscreen="true"]')).toBeVisible();
+    await expect(page.locator('[data-radar-fullscreen="true"]')).toHaveAttribute(
+      'href',
+      '/pt/mapa/?radar=1',
+    );
+  });
+});
+
+test.describe('IPMA radar no mapa embebido do grid — locales es/fr/de', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ventu.map.cluster', '0');
+    });
+    await interceptRadar(page, RADAR_STUB);
+  });
+
+  // O aria-label do botão do radar difere por locale (o rótulo está escondido
+  // em <sm mas o aria-label é sempre o traduzido) e o href de imersão tem de
+  // levar o locale da página — es/fr/de partilham a cadeia do /mapa.
+  for (const { locale, showLabel, fullscreenHref } of [
+    { locale: 'es', showLabel: 'Radar IPMA', fullscreenHref: '/es/mapa/?radar=1' },
+    { locale: 'fr', showLabel: 'Radar IPMA', fullscreenHref: '/fr/mapa/?radar=1' },
+    { locale: 'de', showLabel: 'IPMA-Radar', fullscreenHref: '/de/mapa/?radar=1' },
+  ]) {
+    test(`carrossel embebido em ${locale}: href de imersão com o locale certo`, async ({ page }) => {
+      await page.clock.install({ time: FROZEN_TIME });
+      await page.goto(`/${locale}/spots/`, { waitUntil: 'networkidle', timeout: 60_000 });
+      // A preferência persistida de LIGAR podia entrar com o radar à mostra
+      // (o botão passaria a «ocultar» e o aria-label não bateria) — caminho
+      // explícito do botão, como no teste embebido PT.
+      await page.evaluate(() => localStorage.removeItem('ventu.radar.state'));
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+      await page.clock.runFor(500);
+
+      const radarBtn = page.getByRole('button', { name: showLabel });
+      await expect(radarBtn).toBeVisible({ timeout: 30_000 });
+      await radarBtn.click();
+      await page.clock.runFor(100);
+
+      // O mesmo carrossel partilhado: badge com frames + scrubber + atribuições.
+      const badge = page.locator('[data-radar-badge="true"]');
+      await expect(badge).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('[data-radar-scrubber="true"]')).toBeVisible();
+      await expect(badge).toContainText('/12');
+
+      // O href de imersão leva o locale da página (nunca o PT por defeito).
+      const fullscreenLink = page.locator('[data-radar-fullscreen="true"]');
+      await expect(fullscreenLink).toBeVisible();
+      await expect(fullscreenLink).toHaveAttribute('href', fullscreenHref);
+    });
+  }
+});
+
+test.describe('IPMA radar no mapa do spot (detalhe)', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ventu.map.cluster', '0');
+    });
+    await interceptRadar(page, RADAR_STUB);
+  });
+
+  test('toggle no mapa do spot liga o carrossel partilhado, com imersão no locale e a legenda de isóbatas a ceder', async ({ page }) => {
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/guincho/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.evaluate(() => localStorage.removeItem('ventu.radar.state'));
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    // O mapa do spot (SpotLogisticsPanel) tem o seu próprio toggle de radar.
+    const radarBtn = page.getByRole('button', { name: 'Radar IPMA' });
+    await expect(radarBtn).toBeVisible({ timeout: 30_000 });
+
+    // As isóbatas do spot estão desenhadas → a legenda está visível antes...
+    const legend = page.locator('[data-testid="isobaths-legend-rows"]');
+    const hasIsobaths = (await legend.count()) > 0;
+    if (hasIsobaths) await expect(legend).toBeVisible();
+
+    await radarBtn.click();
+    await page.clock.runFor(100);
+
+    // O mesmo carrossel partilhado: badge com frames + scrubber + atribuições.
+    const badge = page.locator('[data-radar-badge="true"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('[data-radar-scrubber="true"]')).toBeVisible();
+    await expect(badge).toContainText('/12');
+    const attribs = badge.locator('[data-radar-attributions="true"]');
+    await expect(attribs).toContainText('Dados IPMA');
+    await expect(attribs).toContainText('Weather data by Open-Meteo.com');
+
+    // Imersão abre o /mapa com o radar já ligado, no locale da página E
+    // centrado na região do spot (?radar=1&lat=&lon=).
+    const fullscreenLink = page.locator('[data-radar-fullscreen="true"]');
+    await expect(fullscreenLink).toBeVisible();
+    await expect(fullscreenLink).toHaveAttribute('href', '/pt/mapa/?radar=1&lat=38.732&lon=-9.472');
+
+    // A legenda de isóbatas cede enquanto o radar está ligado (o carrossel
+    // ocupa a banda inferior do mapa compacto) e volta ao desligar.
+    if (hasIsobaths) {
+      await expect(legend).not.toBeVisible();
+      await page.getByRole('button', { name: 'Ocultar radar' }).click();
+      await page.clock.runFor(100);
+      await expect(badge).not.toBeVisible();
+      await expect(legend).toBeVisible();
+    } else {
+      // Sem isóbatas no build local o resto do fluxo mantém-se.
+      await page.getByRole('button', { name: 'Ocultar radar' }).click();
+      await page.clock.runFor(100);
+      await expect(badge).not.toBeVisible();
+    }
+  });
+
+  test('ligar o radar na página do spot persiste entre visitas (reload fica ligado)', async ({ page }) => {
+    // A página do spot partilha as mesmas keys (radarPrefs) do hero e do
+    // /mapa: ligar aqui grava a preferência e o reload restaura o radar.
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/guincho/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    // Sem preferência gravada → radar off à entrada; ligar escreve a pref.
+    await expect(page.getByRole('button', { name: 'Radar IPMA' })).toBeVisible({
+      timeout: 30_000,
+    });
+    await page.getByRole('button', { name: 'Radar IPMA' }).click();
+    await page.clock.runFor(100);
+    const badge = page.locator('[data-radar-badge="true"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+
+    const saved = await page.evaluate(() => localStorage.getItem('ventu.radar.state'));
+    expect(JSON.parse(saved!)).toMatchObject({ enabled: true });
+
+    // Reload → o radar continua LIGADO sem novo clique (pref restaurada). A
+    // navegação reinicia os fake timers — fecha o relógio de novo depois.
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.clock.runFor(100);
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('button', { name: 'Ocultar radar' })).toBeVisible();
+  });
+
+  test('desligar o radar na página do spot persiste (reload fica desligado)', async ({ page }) => {
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/guincho/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    // Liga e desliga: a segunda acção grava enabled=false.
+    await page.getByRole('button', { name: 'Radar IPMA' }).click();
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).toBeVisible({ timeout: 15_000 });
+    await page.getByRole('button', { name: 'Ocultar radar' }).click();
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+
+    const saved = await page.evaluate(() => localStorage.getItem('ventu.radar.state'));
+    expect(JSON.parse(saved!)).toMatchObject({ enabled: false });
+
+    // Reload → radar off, toggle «Radar IPMA» (a pref false re-afirma-se).
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Radar IPMA' })).toBeVisible();
+  });
+
+  test('ligado na página do spot aparece ligado no /mapa (pref partilhada)', async ({ page }) => {
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/guincho/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    await page.getByRole('button', { name: 'Radar IPMA' }).click();
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).toBeVisible({ timeout: 15_000 });
+
+    // Entra no /mapa SEM deep link: a pref partilhada liga o radar lá também
+    // (a página do spot não tem preferência própria — é o estado global).
+    await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('button', { name: 'Ocultar radar' })).toBeVisible();
+  });
+});
+
+test.describe('IPMA radar no mapa do spot — locales es/fr/de', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ventu.map.cluster', '0');
+    });
+    await interceptRadar(page, RADAR_STUB);
+  });
+
+  // O aria-label do botão difere por locale (es/fr partilham o PT, de usa
+  // «IPMA-Radar») e o href de imersão do carrossel do SPOT tem de levar o
+  // locale da página — mesmas regras do grid, agora na página de detalhe.
+  for (const { locale, showLabel, fullscreenHref } of [
+    // A imersão do spot leva o locale AND as coordenadas do spot de origem
+    // (?radar=1&lat=&lon= — o /mapa centra na região em vez do centro nacional).
+    { locale: 'es', showLabel: 'Radar IPMA', fullscreenHref: '/es/mapa/?radar=1&lat=38.732&lon=-9.472' },
+    { locale: 'fr', showLabel: 'Radar IPMA', fullscreenHref: '/fr/mapa/?radar=1&lat=38.732&lon=-9.472' },
+    { locale: 'de', showLabel: 'IPMA-Radar', fullscreenHref: '/de/mapa/?radar=1&lat=38.732&lon=-9.472' },
+  ]) {
+    test(`carrossel do spot em ${locale}: href de imersão com o locale certo`, async ({ page }) => {
+      await page.clock.install({ time: FROZEN_TIME });
+      await page.goto(`/${locale}/spots/guincho/`, { waitUntil: 'networkidle', timeout: 60_000 });
+      // Caminho explícito do botão (a preferência persistida podia entrar com
+      // o radar à mostra e o aria-label já trocado para «ocultar»).
+      await page.evaluate(() => localStorage.removeItem('ventu.radar.state'));
+      await page.reload({ waitUntil: 'networkidle' });
+      await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+      await page.clock.runFor(500);
+
+      const radarBtn = page.getByRole('button', { name: showLabel });
+      await expect(radarBtn).toBeVisible({ timeout: 30_000 });
+      await radarBtn.click();
+      await page.clock.runFor(100);
+
+      // O mesmo carrossel partilhado: badge com frames + scrubber + o link de
+      // imersão (o mapa do spot também não é fullscreen, por isso expõe-no).
+      const badge = page.locator('[data-radar-badge="true"]');
+      await expect(badge).toBeVisible({ timeout: 15_000 });
+      await expect(page.locator('[data-radar-scrubber="true"]')).toBeVisible();
+      await expect(badge).toContainText('/12');
+
+      const fullscreenLink = page.locator('[data-radar-fullscreen="true"]');
+      await expect(fullscreenLink).toBeVisible();
+      await expect(fullscreenLink).toHaveAttribute('href', fullscreenHref);
+    });
+  }
+});
+
+test.describe('radar: deep link ?radar=1 vs preferência persistida', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ventu.map.cluster', '0');
+    });
+    await interceptRadar(page, RADAR_STUB);
+  });
+
+  test('preferência false + deep link ?radar=1 → o deep link vence à entrada', async ({ page }) => {
+    // O contrato: o link de imersão É a intenção explícita do utilizador
+    // (veio do carrossel num spot/hero) — liga o radar à entrada mesmo com a
+    // preferência persistida desligada. MAS não escreve a preferência: só o
+    // toggle manual grava, por isso a próxima entrada sem deep link volta ao
+    // desligado.
+    // Literal inline em vez de constante do describe: o closure do
+    // addInitScript é serializado pelo Playwright — uma constante capturada
+    // pode não chegar ao browser em todas as versões do runner.
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'ventu.radar.state',
+        JSON.stringify({ enabled: false, paused: false, frame: 0 }),
+      );
+    });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/mapa/?radar=1', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    const badge = page.locator('[data-radar-badge="true"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+    await expect(badge).toContainText('/12');
+    // O HUD reflecte o estado ligado (toggle pressionado).
+    await expect(page.getByRole('button', { name: 'Ocultar radar' })).toBeVisible();
+
+    // O deep link NÃO toca na preferência persistida: continua false.
+    const stored = await page.evaluate(() =>
+      JSON.parse(localStorage.getItem('ventu.radar.state') || '{}'),
+    );
+    expect(stored.enabled).toBe(false);
+  });
+
+  test('preferência false sem deep link → radar desligado à entrada', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'ventu.radar.state',
+        JSON.stringify({ enabled: false, paused: false, frame: 0 }),
+      );
+    });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    // Sem deep link a preferência manda: radar off, toggle em «Radar IPMA».
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Radar IPMA' })).toBeVisible();
+  });
+
+  test('a preferência volta a mandar na entrada seguinte sem deep link', async ({ page }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'ventu.radar.state',
+        JSON.stringify({ enabled: false, paused: false, frame: 0 }),
+      );
+    });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/mapa/?radar=1', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+    // Entrou ligado pelo deep link apesar da pref false...
+    await expect(page.locator('[data-radar-badge="true"]')).toBeVisible({ timeout: 15_000 });
+
+    // ...mas a pref não foi escrita: um reload SEM deep link volta a desligar.
+    await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Radar IPMA' })).toBeVisible();
+  });
+
+  test('imersão a partir do spot: o frame de scrub transitório fica persistido no clique e o /mapa entra nele', async ({
+    page,
+  }) => {
+    // O frame actual só se grava no caminho normal quando PAUSADO — um scrub
+    // transitório (sem pausa) nunca chega ao localStorage por si. O clique no
+    // link de imersão captura o estado ACTUAL (frame + pausa) antes de
+    // navegar, para o /mapa?radar=1 entrar exactamente onde o carrossel ficou.
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/guincho/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    await page.getByRole('button', { name: 'Radar IPMA' }).click();
+    await page.clock.runFor(100);
+    const badge = page.locator('[data-radar-badge="true"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+
+    // Scrub transitório para o frame 7 (00:25 · 8/12) SEM pausar.
+    const slider = page.locator('[data-radar-scrubber="true"] input[type="range"]');
+    await slider.dispatchEvent('pointerdown');
+    await slider.fill('7');
+    await slider.dispatchEvent('pointerup');
+    await page.clock.runFor(50);
+    await expect(badge).toContainText('8/12');
+    await expect(badge).toContainText('00:25');
+
+    // A pref ainda NÃO tem o frame (scrub sem pausa não grava por si) — só
+    // o enabled do ligar.
+    const before = await page.evaluate(() =>
+      JSON.parse(localStorage.getItem('ventu.radar.state') || '{}'),
+    );
+    expect(before.enabled).toBe(true);
+    expect(before.frame).not.toBe(7);
+
+    // Clique no link de imersão → o /mapa entra exactamente no frame 7, com
+    // o relógio congelado (a pausa não foi gravada, então o carrossel anima
+    // a partir DAQUELE frame — mas sem ticks fica parado nele).
+    await page.locator('[data-radar-fullscreen="true"]').click();
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+    await expect(badge).toContainText('8/12', { timeout: 15_000 });
+    await expect(badge).toContainText('00:25');
+  });
+
+  test('imersão a partir do spot centra o /mapa na região do spot, não no centro nacional', async ({
+    page,
+  }) => {
+    // O deep link de imersão inclui as coordenadas do spot (?radar=1&lat=&lon=)
+    // e o /mapa centra na região (SPOT_REGION_ZOOM=10) em vez do centro
+    // nacional (39.5, -8.0 @ zoom 6). Guincho: 38.732, -9.472.
+    // O /mapa só expõe a instância Leaflet quando a página o pede (test hook).
+    await page.addInitScript(() => {
+      (window as unknown as { __RADAR_TEST__?: boolean }).__RADAR_TEST__ = true;
+    });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/guincho/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    await page.getByRole('button', { name: 'Radar IPMA' }).click();
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).toBeVisible({ timeout: 15_000 });
+
+    // O href do botão de imersão carrega as coordenadas do spot de origem.
+    const fullscreen = page.locator('[data-radar-fullscreen="true"]');
+    await expect(fullscreen).toHaveAttribute('href', '/pt/mapa/?radar=1&lat=38.732&lon=-9.472');
+
+    await fullscreen.click();
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+    // O mapa só fica exposto para testes quando a instância está pronta E
+    // o setView da centragem de imersão já correu (deep-link center).
+    await page.waitForFunction(
+      () => Boolean((window as unknown as { __RADAR_CENTERED__?: unknown }).__RADAR_CENTERED__),
+      undefined,
+      { timeout: 15_000 },
+    );
+
+    const view = await page.evaluate(() => {
+      const map = (window as unknown as { __RADAR_MAP__?: { getCenter: () => { lat: number; lng: number }; getZoom: () => number } }).__RADAR_MAP__;
+      if (!map) return null;
+      const c = map.getCenter();
+      return { lat: c.lat, lng: c.lng, zoom: map.getZoom() };  
+    });
+    expect(view).not.toBeNull();
+    // Região do Guincho (Cascais) — tolerância de ~2 km.
+    expect(Math.abs(view!.lat - 38.732)).toBeLessThan(0.02);
+    expect(Math.abs(view!.lng - -9.472)).toBeLessThan(0.02);
+    expect(view!.zoom).toBe(10);
+    // Longe do centro nacional (39.5, -8.0 @zoom 6) — prova de que não regrediu.
+    expect(Math.abs(view!.lat - 39.5)).toBeGreaterThan(0.5);
+    expect(Math.abs(view!.lng - -8.0)).toBeGreaterThan(0.5);
+  });
+});
+
+test.describe('botão de reinício do radar (HUD)', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test.beforeEach(async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ventu.map.cluster', '0');
+    });
+    await interceptRadar(page, RADAR_STUB);
+  });
+
+  test('reinício no HUD do grid: aparece com radar ligado, repõe ao default (off) e limpa a preferência', async ({
+    page,
+  }) => {
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.evaluate(() => localStorage.removeItem('ventu.radar.state'));
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    const resetBtn = page.getByRole('button', { name: 'Repor radar para desligado' });
+
+    // Sem preferência gravada e radar off → nada a repor: botão invisível.
+    await expect(resetBtn).not.toBeVisible();
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+
+    // Liga o radar → o reinício aparece junto ao toggle.
+    await page.getByRole('button', { name: 'Radar IPMA' }).click();
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).toBeVisible({ timeout: 15_000 });
+    await expect(resetBtn).toBeVisible();
+
+    // Reiniciar: radar off, pref apagada (key removida) e botão some — volta
+    // ao «nunca decidiu» (default off na próxima entrada).
+    await resetBtn.click();
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+    const stored = await page.evaluate(() => localStorage.getItem('ventu.radar.state'));
+    expect(stored).toBeNull();
+    await expect(resetBtn).not.toBeVisible();
+    await expect(page.getByRole('button', { name: 'Radar IPMA' })).toBeVisible();
+
+    // Reload → radar continua off (o reset vale para a entrada seguinte).
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.clock.runFor(100);
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+  });
+
+  test('reinício visível com preferência gravada off (há decisão para apagar) mesmo com o radar desligado', async ({
+    page,
+  }) => {
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        'ventu.radar.state',
+        JSON.stringify({ enabled: false, paused: false, frame: 0 }),
+      );
+    });
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/spots/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    const resetBtn = page.getByRole('button', { name: 'Repor radar para desligado' });
+    // Radar off (pref false) mas o botão aparece: há uma preferência gravada.
+    await expect(page.locator('[data-radar-badge="true"]')).not.toBeVisible();
+    await expect(resetBtn).toBeVisible();
+
+    await resetBtn.click();
+    await page.clock.runFor(100);
+    const stored = await page.evaluate(() => localStorage.getItem('ventu.radar.state'));
+    expect(stored).toBeNull();
+    await expect(resetBtn).not.toBeVisible();
   });
 });

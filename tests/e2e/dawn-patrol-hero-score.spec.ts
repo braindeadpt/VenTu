@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { interceptData } from './helpers/conditions';
 
 /**
  * Dawn Patrol — score recalibrado no HERO do banner.
@@ -56,9 +57,7 @@ test.describe('Dawn Patrol — score recalibrado no hero', () => {
   test('boia fresca → hero mostra «Score: 78» com sufixo «(boia)» e tooltip da previsão', async ({
     page,
   }) => {
-    await page.route('**/data/dawn-patrol.json', async (route) => {
-      await route.fulfill({ contentType: 'application/json', body: JSON.stringify(dawnPatrolFixture()) });
-    });
+    await interceptData(page, 'dawn-patrol.json', dawnPatrolFixture());
     await page.goto('/pt/');
 
     const scoreLine = page.getByText(/Score:/i).first();
@@ -75,17 +74,10 @@ test.describe('Dawn Patrol — score recalibrado no hero', () => {
   });
 
   test('viés regional → sufixo «(viés regional)» com a região no tooltip', async ({ page }) => {
-    await page.route('**/data/dawn-patrol.json', async (route) => {
-      await route.fulfill({
-        contentType: 'application/json',
-        body: JSON.stringify(
-          dawnPatrolFixture({
-            topScoreSource: 'viés regional',
-            topScoreMeta: { region: 'Cascais', me: 0.4, n: 40 },
-          }),
-        ),
-      });
-    });
+    await interceptData(page, 'dawn-patrol.json', dawnPatrolFixture({
+      topScoreSource: 'viés regional',
+      topScoreMeta: { region: 'Cascais', me: 0.4, n: 40 },
+    }));
     await page.goto('/pt/');
 
     const scoreLine = page.getByText(/Score:/i).first();
@@ -100,17 +92,10 @@ test.describe('Dawn Patrol — score recalibrado no hero', () => {
   });
 
   test('previsão pura → score no hero sem sufixo (nada inventado)', async ({ page }) => {
-    await page.route('**/data/dawn-patrol.json', async (route) => {
-      await route.fulfill({
-        contentType: 'application/json',
-        body: JSON.stringify(
-          dawnPatrolFixture({
-            topScoreSource: 'previsão',
-            topScoreMeta: null,
-          }),
-        ),
-      });
-    });
+    await interceptData(page, 'dawn-patrol.json', dawnPatrolFixture({
+      topScoreSource: 'previsão',
+      topScoreMeta: null,
+    }));
     await page.goto('/pt/');
 
     const scoreLine = page.getByText(/Score:/i).first();

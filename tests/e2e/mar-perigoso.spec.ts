@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { interceptWarnings, readRealConditions } from './helpers/conditions';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 /**
  * Aviso «Mar perigoso» — o mesmo de segurança do hero do spot, estendido ao
@@ -103,9 +104,9 @@ test.describe('Mar perigoso — card do spot no mapa', () => {
 
   test('sheet do spot mostra o badge «Mar perigoso» quando há Agitação activa', async ({ page }) => {
     await interceptWarnings(page, warningsAllSeaState());
+    await preseedWindRingLegend(page);
     await page.addInitScript(() => {
       localStorage.setItem('ventu.map.cluster', '0');
-      localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
 
@@ -120,9 +121,9 @@ test.describe('Mar perigoso — card do spot no mapa', () => {
 
   test('sem Agitação → chip «Aviso:» ausente (nenhum aviso)', async ({ page }) => {
     await interceptWarnings(page, warningsNoSeaState());
+    await preseedWindRingLegend(page);
     await page.addInitScript(() => {
       localStorage.setItem('ventu.map.cluster', '0');
-      localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
 

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { openMapSpotSheet } from './helpers/map-sheet';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 test.describe('/pt/mapa fullscreen map', () => {
   test.use({
@@ -8,9 +9,7 @@ test.describe('/pt/mapa fullscreen map', () => {
   });
 
   test.beforeEach(async ({ page }) => {
-    await page.addInitScript(() => {
-      try { localStorage.setItem('ventu:windRingLegendSeen', '1'); } catch {}
-    });
+    await preseedWindRingLegend(page);
     await page.goto('/pt/mapa/');
     await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
   });

@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 test.describe('Homepage redesign', () => {
   test.beforeEach(async ({ page }) => {
+    // O /pt/ serve o embed map-first (SpotMapInteractive não-hero, desktop) —
+    // a legend coach de primeira visita pode abrir sobre o mapa.
+    await preseedWindRingLegend(page);
     await page.goto('/pt/');
   });
 
@@ -20,6 +24,15 @@ test.describe('Homepage redesign', () => {
 
   test('top now section with firing title', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible();
+  });
+
+  test('top now section renders firing copy in EN', async ({ page }) => {
+    await page.goto('/en/');
+    await expect(
+      page.getByRole('heading', { name: /Firing now/i }),
+    ).toBeVisible({ timeout: 15_000 });
+    // «Only firing spots · by sport» — o rótulo EN do TopNow, não o placeholder pt.
+    await expect(page.getByText('Only firing spots · by sport')).toBeVisible();
   });
 
   test('no full spot grid filters on home', async ({ page }) => {

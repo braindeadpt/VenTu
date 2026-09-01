@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 /**
  * Camada «Avisos à navegação (IH)» no mapa fullscreen (/mapa): o toggle do HUD
@@ -54,7 +55,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
   }) => {
     // O coach de primeira visita dos anéis de vento abre um modal sobre o mapa
     // e intercepta o clique no polígono — marcá-lo como visto evita a corrida.
-    await page.addInitScript((key) => localStorage.setItem(key, '1'), 'ventu:windRingLegendSeen');
+    await preseedWindRingLegend(page);
     await interceptCoastalWarnings(page);
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
@@ -182,7 +183,7 @@ test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso 
   test('?spot= de um spot coberto → liga a camada automaticamente e desenha os polígonos', async ({
     page,
   }) => {
-    await page.addInitScript((key) => localStorage.setItem(key, '1'), 'ventu:windRingLegendSeen');
+    await preseedWindRingLegend(page);
     await interceptCoastalWarnings(page);
     await page.goto('/pt/mapa/?spot=moledo', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });

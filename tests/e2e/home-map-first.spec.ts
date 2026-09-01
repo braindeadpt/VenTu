@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test';
+import { preseedWindRingLegend } from './helpers/map-setup';
 
 test.describe('Home map-first', () => {
   test.beforeEach(async ({ page }) => {
+    // A homepage serve o embed map-first (SpotMapInteractive embedMode="default",
+    // não-hero) — a legend coach de primeira visita pode abrir sobre o mapa.
+    await preseedWindRingLegend(page);
     await page.goto('/pt/');
   });
 

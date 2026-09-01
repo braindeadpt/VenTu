@@ -9,6 +9,10 @@ import { join } from 'path';
  * readings today, so specs that exercise the observed-wave / buoy / tide UI
  * transform the served JSON client-side. This module centralises that:
  *
+ *   - `interceptData` — THE single data-file interceptor (serve a crafted
+ *     JSON file for a given path). Every simple `intercept*` helper delegates
+ *     here; specs for files without a dedicated helper (e.g. dawn-patrol.json)
+ *     call it directly instead of inlining a page.route copy.
  *   - `interceptConditions` — serves conditions.json with per-spot transforms
  *     (and/or a whole-file transform), so different spots can carry different
  *     fixtures in the same test.
@@ -49,6 +53,35 @@ export interface ConditionsTransform {
   all?: (data: Record<string, Record<string, unknown>>) => Record<string, Record<string, unknown>>;
 }
 
+export interface InterceptDataOptions {
+  /** HTTP status to fulfill with (default 200). */
+  status?: number;
+}
+
+/**
+ * The single data-file interceptor: serve `file` JSON for every request
+ * matching `path`. `path` may be a full glob (a pattern starting with the
+ * double-asterisk) or a bare filename ('radar.json') — bare names get the
+ * data prefix applied automatically, so callers only name the file. All the
+ * named intercept* helpers delegate here. Pass `{ status: 404 }` to simulate
+ * a missing file (the app's fetch fallback path). Register BEFORE page.goto.
+ */
+export async function interceptData(
+  page: Page,
+  path: string,
+  file: unknown,
+  options: InterceptDataOptions = {},
+): Promise<void> {
+  const glob = path.startsWith('**') ? path : `**/data/${path}`;
+  await page.route(glob, async (route) => {
+    await route.fulfill({
+      status: options.status ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(file),
+    });
+  });
+}
+
 /**
  * Intercept every request to /data/conditions.json and serve the real build
  * data with the requested transforms. Register BEFORE page.goto.
@@ -75,13 +108,7 @@ export async function interceptConditions(page: Page, transform: ConditionsTrans
  * no-key/down/stale/ok from) and serve a crafted file.
  */
 export async function interceptIhBuoys(page: Page, file: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/ih-buoys.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(file),
-    });
-  });
+  await interceptData(page, 'ih-buoys.json', file);
 }
 
 /**
@@ -89,13 +116,7 @@ export async function interceptIhBuoys(page: Page, file: Record<string, unknown>
  * combines with the IH state — «WMO em baixo» note) and serve a crafted file.
  */
 export async function interceptWmoBuoys(page: Page, file: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/wmo-buoys.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(file),
-    });
-  });
+  await interceptData(page, 'wmo-buoys.json', file);
 }
 
 /**
@@ -103,13 +124,7 @@ export async function interceptWmoBuoys(page: Page, file: Record<string, unknown
  * serve a crafted file.
  */
 export async function interceptIsobaths(page: Page, file: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/spot-isobaths.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(file),
-    });
-  });
+  await interceptData(page, 'spot-isobaths.json', file);
 }
 
 /**
@@ -117,13 +132,7 @@ export async function interceptIsobaths(page: Page, file: Record<string, unknown
  * warnings file with per-spot coverage) and serve a crafted file.
  */
 export async function interceptCoastalNavWarnings(page: Page, file: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/ih-coastal-warnings.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(file),
-    });
-  });
+  await interceptData(page, 'ih-coastal-warnings.json', file);
 }
 
 /**
@@ -132,13 +141,7 @@ export async function interceptCoastalNavWarnings(page: Page, file: Record<strin
  * (usually missing) file 404 → fallback never applies.
  */
 export async function interceptWaveBias(page: Page, file: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/wave-bias.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(file),
-    });
-  });
+  await interceptData(page, 'wave-bias.json', file);
 }
 
 /**
@@ -148,13 +151,7 @@ export async function interceptWaveBias(page: Page, file: Record<string, unknown
  * «Mar perigoso» warning surfaces.
  */
 export async function interceptWarnings(page: Page, file: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/warnings.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(file),
-    });
-  });
+  await interceptData(page, 'warnings.json', file);
 }
 
 /**
@@ -164,13 +161,7 @@ export async function interceptWarnings(page: Page, file: Record<string, unknown
  * carousel spec — the helper removes the 7 inline page.route copies.
  */
 export async function interceptRadar(page: Page, file: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/radar.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(file),
-    });
-  });
+  await interceptData(page, 'radar.json', file);
 }
 
 /** Read the real build forecasts once per process (immutable snapshot). */

@@ -192,12 +192,57 @@ test.describe('Fontes de dados (data sources)', () => {
       await expect(wmoSub).toContainText(/Nazaré Costeira/i);
     }
 
+    // Streak down/stale («há quantas horas degradada», do pipeline-meta): com
+    // estado no-key NUNCA existe a linha — o produtor não acumula streak em
+    // no-key (é o setup keyless, não uma degradação). Com build down/stale e
+    // streak > 0 a linha tem de aparecer com a duração (runs [+ ~h]). O About
+    // é SSG — a asserção é honesta ao estado baked do build actual.
+    const downtime = card.locator('[data-ih-key-status-downtime]');
+    if (status === 'not-configured') {
+      await expect(downtime).toHaveCount(0);
+    } else if ((await downtime.count()) > 0) {
+      await expect(downtime).toContainText(/runs?/i);
+    }
+
     // O passo de obtenção — quem clonar o projecto sabe o que falta.
     await expect(
       card.getByRole('link', { name: 'cedencia.dados@hidrografico.pt' }),
     ).toBeVisible();
     await expect(card.getByText(/Settings → Secrets and variables → Actions/)).toBeVisible();
     await expect(card.getByRole('link', { name: 'docs/IH_API_KEY.md' })).toBeVisible();
+  });
+
+  test('About: linha de degradação «há ~X h» quando o pipeline-meta tem streak down/stale', async ({
+    page,
+  }) => {
+    // O About é SSG — o estado vem do pipeline-meta.json baked no build. Lê o
+    // ficheiro servido para decidir honestamente o que o build deve mostrar:
+    // só testa o lado positivo quando o build está efectivamente degradado.
+    await page.goto('/pt/about/');
+    const res = await page.request.get(
+      new URL('/data/pipeline-meta.json', page.url()).toString(),
+    );
+    let layer: { status?: string; streak?: number } | null = null;
+    if (res.ok()) {
+      const meta = (await res.json()) as { buoyLayer?: { status?: string; streak?: number } };
+      layer = meta?.buoyLayer ?? null;
+    }
+    const degraded =
+      layer &&
+      (layer.status === 'down' || layer.status === 'stale') &&
+      Number(layer.streak) > 0;
+    test.skip(
+      !degraded,
+      'build sem streak down/stale no pipeline-meta.json — injectar buoyLayer {status:down, streak:3, lastOkAt:…} e rebuild para validar o lado positivo',
+    );
+
+    const card = page.locator('[data-ih-key-status]');
+    await expect(card).toBeVisible();
+    const dt = card.locator('[data-ih-key-status-downtime]');
+    await expect(dt).toBeVisible();
+    await expect(dt).toContainText(/runs?/i);
+    // A linha é honesta: horas OU runs da degradação (nunca vazia).
+    await expect(dt).toContainText(/(~\d+ h|\d+ runs?)/i);
   });
 
   test('About: arquivo dos avisos à navegação costeiros (IH) mostra quando estiveram em vigor', async ({
