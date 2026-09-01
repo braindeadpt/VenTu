@@ -42,6 +42,7 @@
     "wmo:fetch": "node scripts/fetch-copernicus-buoys.js",
     "bias:fetch": "node scripts/fetch-wave-bias.js",
     "skill:fetch": "node scripts/fetch-forecast-skill.js",
+    "smoke:es": "node scripts/smoke-es-pipeline.js",
     "obs:coherence": "node scripts/check-buoy-coherence.js",
     "warnings:fetch": "node scripts/fetch-ipma-warnings.js",
     "warnings:nav": "node scripts/fetch-ih-coastal-warnings.js",

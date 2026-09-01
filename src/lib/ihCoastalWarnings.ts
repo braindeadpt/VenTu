@@ -14,6 +14,18 @@ export interface CoastalNavWarning {
   ref: string;
   category: string;
   url: string;
+  /**
+   * Plataforma de origem — 'ih' (Avisos à Navegação Costeiros) ou 'es'
+   * («Avisos a los navegantes», cross-border NW, quando ES_NAV_WARNINGS_URL
+   * estiver configurado). A secção agrupa e rotula por fonte.
+   */
+  source?: 'ih' | 'es';
+  /**
+   * Área coberta: anel(óis) [lon, lat] do polígono do aviso (GeoJSON-style),
+   * tal como vêm da OGC API do IH (nav_warning_coastal). Usado pelo mapa da
+   * página de spot para desenhar o overlay da zona em aviso.
+   */
+  polygons?: number[][][];
 }
 
 export type CoastalWarningsFile = {

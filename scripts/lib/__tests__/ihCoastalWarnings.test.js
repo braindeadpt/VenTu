@@ -7,15 +7,18 @@
  * fetchImpl (PASS / HTTP error / missing features).
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
 const {
   fetchCoastalWarnings,
+  fetchEsNavWarnings,
   pointInRing,
   warningCoversSpot,
   buildSpotCoverage,
+  coastalWarningsForSpot,
+  coastalWarningLine,
   DEFAULT_IH_API,
 } = require('../ihCoastalWarnings.js');
 
@@ -154,7 +157,101 @@ describe('fetchCoastalWarnings (fetch mockado)', () => {
     expect(called).toContain('https://example.test/collections/nav_warning_coastal/items');
   });
 
+  it('marca source:"ih" nos avisos do IH', async () => {
+    const fetchImpl = async () =>
+      new Response(JSON.stringify({ features: [feature()] }), { status: 200 });
+    const out = await fetchCoastalWarnings(fetchImpl);
+    expect(out[0].source).toBe('ih');
+  });
+
   it('DEFAULT_IH_API é o endpoint keyless do IH', () => {
     expect(DEFAULT_IH_API).toBe('https://api-features.hidrografico.pt');
+  });
+});
+
+describe('coastalWarningsForSpot / coastalWarningLine (linha de segurança)', () => {
+  const file = {
+    warnings: [
+      { id: 1, ref: 'ANAV NR 1/26', category: 'Exercício', url: 'https://x', source: 'ih' },
+      { id: 2, ref: 'ANAV NR 2/26', category: 'Requisitos', url: '', source: 'ih' },
+      { id: 9001, ref: 'AVISO 9001/26', category: 'Ejercicio', url: '', source: 'es' },
+    ],
+    coverage: { nazare: [1, 9001], guincho: [2] },
+  };
+
+  it('resolve coverage ids → avisos (com source preservado)', () => {
+    expect(coastalWarningsForSpot(file, 'nazare')).toEqual([
+      file.warnings[0],
+      file.warnings[2],
+    ]);
+  });
+
+  it('sem cobertura ou sem ficheiro → [] (a linha simplesmente não aparece)', () => {
+    expect(coastalWarningsForSpot(file, 'viana')).toEqual([]);
+    expect(coastalWarningsForSpot(null, 'nazare')).toEqual([]);
+    expect(coastalWarningsForSpot({}, 'nazare')).toEqual([]);
+  });
+
+  it('ignora ids sem warning correspondente (coverage stale)', () => {
+    const stale = { ...file, coverage: { nazare: [1, 999] } };
+    expect(coastalWarningsForSpot(stale, 'nazare')).toEqual([file.warnings[0]]);
+  });
+
+  it('linha pt — refs com categoria, separadas por « · »', () => {
+    expect(coastalWarningLine(coastalWarningsForSpot(file, 'nazare'), true)).toBe(
+      '⚓ Avisos à Navegação Costeiros (IH): ANAV NR 1/26 — Exercício · AVISO 9001/26 — Ejercicio',
+    );
+  });
+
+  it('linha en e fallback de ref vazia', () => {
+    expect(coastalWarningLine(coastalWarningsForSpot(file, 'guincho'), false)).toBe(
+      '⚓ Coastal navigation warnings (IH): ANAV NR 2/26 — Requisitos',
+    );
+    expect(coastalWarningLine([{ id: 7, ref: '', category: '' }], true)).toBe(
+      '⚓ Avisos à Navegação Costeiros (IH): AVISO 7',
+    );
+  });
+
+  it("sem avisos → linha vazia ('' nunca aparece no email/Telegram)", () => {
+    expect(coastalWarningLine([], true)).toBe('');
+    expect(coastalWarningLine(null, true)).toBe('');
+  });
+});
+
+describe('fetchEsNavWarnings (Avisos a los navegantes, cross-border NW)', () => {
+  const esFeature = (overrides = {}) => ({
+    type: 'Feature',
+    properties: { id: 9001, ref: 'AVISO 9001/26', category: 'Ejercicio naval', url: 'https://armada.defensa.gob.es/...' },
+    geometry: { type: 'Polygon', coordinates: [nazareRing] },
+    ...overrides,
+  });
+
+  it('sem URL → lista vazia (camada degrada sem falhar)', async () => {
+    expect(await fetchEsNavWarnings(vi.fn(), '')).toEqual([]);
+    expect(await fetchEsNavWarnings(vi.fn(), '   ')).toEqual([]);
+  });
+
+  it('GeoJSON → avisos normalizados com source:"es" (ref próprio, não coastal_warning)', async () => {
+    const fetchImpl = async (url) => {
+      expect(url).toBe('https://example.test/es.json');
+      return new Response(
+        JSON.stringify({ features: [esFeature(), esFeature({ properties: { id: 9002, ref: 'AVISO 9002/26' } })] }),
+        { status: 200, headers: { 'content-type': 'application/geo+json' } },
+      );
+    };
+    const out = await fetchEsNavWarnings(fetchImpl, 'https://example.test/es.json');
+    expect(out).toHaveLength(2);
+    expect(out[0]).toMatchObject({ id: 9001, ref: 'AVISO 9001/26', category: 'Ejercicio naval', source: 'es' });
+    expect(out[0].polygons).toEqual([nazareRing]);
+  });
+
+  it('HTTP 500 → erro (o CLI avisa e segue só com os do IH)', async () => {
+    const fetchImpl = async () => new Response('boom', { status: 500 });
+    await expect(fetchEsNavWarnings(fetchImpl, 'https://example.test/es.json')).rejects.toThrow('HTTP 500');
+  });
+
+  it('sem array features → erro', async () => {
+    const fetchImpl = async () => new Response(JSON.stringify({ foo: 1 }), { status: 200 });
+    await expect(fetchEsNavWarnings(fetchImpl, 'https://example.test/es.json')).rejects.toThrow('no features array');
   });
 });

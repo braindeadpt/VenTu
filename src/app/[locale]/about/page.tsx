@@ -1,9 +1,13 @@
-import { Wind, Waves, Database, Brain, Code, Heart, Globe, Zap, Shield } from 'lucide-react'
+import { Wind, Waves, Database, Brain, Code, Heart, Globe, Zap, Shield, KeyRound, CheckCircle2, AlertTriangle, XCircle, Anchor } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import Button from '@/components/ui/Button'
 import { buildPageMetadata } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
-import { loadForecastSkillBuoys } from '@/lib/forecastSkill'
+import { loadForecastSkillBuoys, forecastSkillOriginTag, forecastSkillOriginLabel } from '@/lib/forecastSkill'
+import { loadIhKeyStatus } from '@/lib/ihKeyStatus'
+import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
+import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
+import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution'
 import WaveBiasSection from '@/components/spots/WaveBiasSection'
 import CoherenceTrendSection from '@/components/spots/CoherenceTrendSection'
 import type { Metadata } from 'next'
@@ -114,15 +118,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <li>
             {isPt ? (
               <>
-                Previsões:{' '}
-                <a href="https://open-meteo.com/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                  Weather data by Open-Meteo.com
-                </a>{' '}
-                (licença{' '}
-                <a href="https://creativecommons.org/licenses/by/4.0/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                  CC BY 4.0
-                </a>
-                ) — ensemble multi-modelo: ondas por{' '}
+                Previsões: <OpenMeteoAttribution className="underline hover:text-fg transition-colors" />{' '}
+                — ensemble multi-modelo: ondas por{' '}
                 <a href="https://www.dwd.de/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
                   DWD EWAM
                 </a>{' '}
@@ -134,15 +131,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               </>
             ) : (
               <>
-                Forecasts:{' '}
-                <a href="https://open-meteo.com/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                  Weather data by Open-Meteo.com
-                </a>{' '}
-                (licence{' '}
-                <a href="https://creativecommons.org/licenses/by/4.0/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                  CC BY 4.0
-                </a>
-                ) — multi-model ensemble: waves by{' '}
+                Forecasts: <OpenMeteoAttribution className="underline hover:text-fg transition-colors" />{' '}
+                — multi-model ensemble: waves by{' '}
                 <a href="https://www.dwd.de/" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
                   DWD EWAM
                 </a>{' '}
@@ -174,6 +164,38 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                   https://doi.org/10.5281/zenodo.7970649
                 </a>
                 .
+              </>
+            )}
+          </li>
+          <li>
+            {isPt ? (
+              <>
+                A citação oficial do projecto (para quem usa o VenTu e quer citá-lo
+                directamente) está no{' '}
+                <a
+                  href="https://github.com/braindeadpt/VenTu/blob/main/CITATION.cff"
+                  className="underline hover:text-fg transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  CITATION.cff
+                </a>{' '}
+                do repositório — o GitHub mostra-a no botão «Cite this repository».
+              </>
+            ) : (
+              <>
+                The project&apos;s official citation (for anyone using VenTu and
+                wanting to cite it directly) lives in the{' '}
+                <a
+                  href="https://github.com/braindeadpt/VenTu/blob/main/CITATION.cff"
+                  className="underline hover:text-fg transition-colors"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  CITATION.cff
+                </a>{' '}
+                file in the repository — GitHub surfaces it via the «Cite this
+                repository» button.
               </>
             )}
           </li>
@@ -213,11 +235,143 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </div>
 
       {(() => {
+        const key = loadIhKeyStatus()
+        const conf = {
+          active: {
+            label: isPt ? 'Activa' : 'Active',
+            chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
+            icon: CheckCircle2,
+            line: isPt
+              ? 'A IH_API_KEY está configurada e o serviço de ondas do IH devolve leituras das boias (onda observada no spot).'
+              : 'The IH_API_KEY is configured and the IH wave service is returning buoy readings (observed wave on spot pages).',
+          },
+          'not-configured': {
+            label: isPt ? 'Não configurada' : 'Not configured',
+            chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
+            icon: KeyRound,
+            line: isPt
+              ? 'Sem IH_API_KEY — as estações são carregadas (OGC, grátis), mas a camada observedWave fica desligada e o fallback WMO/Copernicus é usado onde houver.'
+              : 'No IH_API_KEY — stations load (OGC, free), but the observed-wave layer stays off; the WMO/Copernicus fallback covers where available.',
+          },
+          rejected: {
+            label: isPt ? 'Expirada / rejeitada' : 'Expired / rejected',
+            chipClass: 'bg-red-500/15 text-red-500 border-red-500/40',
+            icon: XCircle,
+            line: isPt
+              ? `A API rejeitou a key (HTTP ${key.rejectedStatus ?? '401'}) — a camada observedWave parou de ser servida e o workflow falha cedo de propósito até a key ser renovada.`
+              : `The API rejected the key (HTTP ${key.rejectedStatus ?? '401'}) — the observed-wave layer stopped and the workflow fails early on purpose until the key is renewed.`,
+          },
+          down: {
+            label: isPt ? 'Activa mas sem leituras' : 'Active but no readings',
+            chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
+            icon: AlertTriangle,
+            line: isPt
+              ? 'A key está configurada mas o serviço de ondas do IH não devolveu leituras neste run (outage transitória) — não é um problema da key.'
+              : 'The key is configured but the IH wave service returned no readings this run (transient outage) — not a key problem.',
+          },
+        }[key.status]
+        const Icon = conf.icon
+        const metaLine =
+          key.status === 'active'
+            ? isPt
+              ? `${key.buoyCount} boias · última leitura ${key.newestReadingAt ? new Date(key.newestReadingAt).toLocaleString('pt-PT') : '—'}`
+              : `${key.buoyCount} buoys · newest reading ${key.newestReadingAt ? new Date(key.newestReadingAt).toLocaleString('en-GB') : '—'}`
+            : key.status === 'rejected'
+              ? isPt
+                ? `rejeitada ${key.rejectedAt ? `em ${new Date(key.rejectedAt).toLocaleString('pt-PT')}` : ''} (HTTP ${key.rejectedStatus ?? '401'}) · ${key.buoyCount} boias catalogadas`
+                : `rejected ${key.rejectedAt ? `at ${new Date(key.rejectedAt).toLocaleString('en-GB')}` : ''} (HTTP ${key.rejectedStatus ?? '401'}) · ${key.buoyCount} buoys catalogued`
+              : isPt
+                ? `${key.buoyCount} boias catalogadas (estações OGC, sem key)`
+                : `${key.buoyCount} buoys catalogued (OGC stations, no key)`
+        return (
+          <div className="card-1 p-8 space-y-4" data-ih-key-status={key.status}>
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-2xl font-bold text-fg">
+                {isPt ? 'Camada de boias IH (IH_API_KEY)' : 'IH buoy layer (IH_API_KEY)'}
+              </h2>
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
+                data-ih-key-status-badge={key.status}
+              >
+                <Icon className="w-4 h-4" aria-hidden />
+                {conf.label}
+              </span>
+            </div>
+            <p className="text-sm text-fg-muted leading-relaxed">{conf.line}</p>
+            <p className="text-xs text-fg-subtle tabular-nums">{metaLine}</p>
+            {
+              // Sub-estado keyless: mesmo sem IH_API_KEY, a boia WMO Nazaré
+              // Costeira (6200199, via Copernicus) cobre a costa central com uma
+              // leitura fresca — para o clone perceber que a camada observada
+              // não está TODA desligada (Costa de Prata/Lisboa continuam servidas).
+              key.wmoNazare?.fresh ? (
+                <p
+                  className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1.5 text-xs text-emerald-600"
+                  data-ih-key-status-wmo="nazare-fresh"
+                >
+                  <span aria-hidden>🇵🇹</span>
+                  {isPt
+                    ? <>Costa central coberta <strong className="font-semibold">sem chave</strong> pela boia WMO Nazaré Costeira (via Copernicus){key.wmoNazare.waveHeightM != null ? ` · ${key.wmoNazare.waveHeightM} m` : ''} · leitura {key.wmoNazare.readingAt ? new Date(key.wmoNazare.readingAt).toLocaleString('pt-PT') : '—'}</>
+                    : <>Central coast covered <strong className="font-semibold">keyless</strong> by the WMO Nazaré Costeira buoy (Copernicus route){key.wmoNazare.waveHeightM != null ? ` · ${key.wmoNazare.waveHeightM} m` : ''} · reading {key.wmoNazare.readingAt ? new Date(key.wmoNazare.readingAt).toLocaleString('en-GB') : '—'}</>}
+                </p>
+              ) : null
+            }
+            <div className="space-y-2 text-sm text-fg-muted leading-relaxed">
+              <p className="font-medium text-fg">
+                {isPt ? 'Como obter e configurar a chave' : 'How to get and configure the key'}
+              </p>
+              <ol className="list-decimal pl-5 space-y-1.5">
+                <li>
+                  {isPt ? (
+                    <>Pedir a chave gratuita por e-mail a{' '}
+                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
+                        cedencia.dados@hidrografico.pt
+                      </a>{' '}
+                      (Instituto Hidrográfico) — acesso à série <code className="text-fg">getDatawellData</code> (altura/período/direcção de onda em tempo real).</>
+                  ) : (
+                    <>Request the free key by e-mail to{' '}
+                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
+                        cedencia.dados@hidrografico.pt
+                      </a>{' '}
+                      (Instituto Hidrográfico) — access to the{' '}
+                      <code className="text-fg">getDatawellData</code> series (real-time wave height/period/direction).</>
+                  )}
+                </li>
+                <li>
+                  {isPt ? 'Criar o secret no GitHub: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.' : 'Create the GitHub secret: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.'}
+                </li>
+                <li>
+                  {isPt ? 'Local: `cp .env.example .env.local` e preencher `IH_API_KEY=…` (o ficheiro já está no .gitignore).' : 'Locally: `cp .env.example .env.local` and set `IH_API_KEY=…` (the file is already gitignored).'}
+                </li>
+                <li>
+                  {isPt ? 'Verificar: `npm run buoys:test-key` (teste e2e da key) e `npm run buoys:fetch`.' : 'Verify: `npm run buoys:test-key` (key e2e test) and `npm run buoys:fetch`.'}
+                </li>
+              </ol>
+              <p className="text-xs text-fg-subtle">
+                {isPt ? (
+                  <>Guia completo em{' '}
+                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                      docs/IH_API_KEY.md
+                    </a>{' '}
+                    · quando houver leituras, a onda observada aparece no card de cada spot (com rótulo «boia X a Y km»).</>
+                ) : (
+                  <>Full guide in{' '}
+                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                      docs/IH_API_KEY.md
+                    </a>{' '}
+                    · when readings exist, the observed wave shows on each spot’s card (labelled «buoy X at Y km»).</>
+                )}
+              </p>
+            </div>
+          </div>
+        )
+      })()}
+
+      {(() => {
         const skill = loadForecastSkillBuoys()
         if (!skill.hasData) return null
-        const byOrigin = skill.byOrigin ?? { ih: null, 'wmo-es': null }
-        const originLabel = (o: string | undefined) =>
-          o === 'ih' ? 'IH' : o === 'wmo-es' ? 'WMO-ES' : '—'
+        const byOrigin = skill.byOrigin ?? { ih: null, 'wmo-pt': null, 'wmo-es': null }
+        const originLabel = (o: string | undefined) => forecastSkillOriginTag(o as never)
         return (
           <div className="card-1 p-8 space-y-4">
             <h2 className="text-2xl font-bold text-fg">
@@ -225,16 +379,27 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             </h2>
             <p className="text-sm text-fg-muted leading-relaxed">
               {isPt ? (
-                <>Skill <em className="not-italic text-fg">real</em> do forecast — a previsão best_match feita no run N para a hora H é comparada com a leitura da boia para H quando chega (lead time &gt; 0), acumulado run a run em <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = média(observado − previsão)</strong>: positivo significa que o modelo subestima a onda. Distinto do viés ERA5 acima — isto é o quão bom o forecast é, não o quão enviesado o modelo de reanálise está. As stats são separadas por plataforma: <strong className="text-fg">IH</strong> (boias Datawell, com chave) vs <strong className="text-fg">WMO-ES</strong> (Copernicus, sem chave) — o total misto esconde como cada uma se comporta.</>
+                <>Skill <em className="not-italic text-fg">real</em> do forecast — a previsão best_match feita no run N para a hora H é comparada com a leitura da boia para H quando chega (lead time &gt; 0), acumulado run a run em <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = média(observado − previsão)</strong>: positivo significa que o modelo subestima a onda. Distinto do viés ERA5 acima — isto é o quão bom o forecast é, não o quão enviesado o modelo de reanálise está. As stats são separadas por plataforma: <strong className="text-fg">IH</strong> (boias Datawell, com chave) vs <strong className="text-fg">WMO-PT</strong> (Nazaré Costeira, Copernicus sem chave) vs <strong className="text-fg">WMO-ES</strong> (Copernicus sem chave, cross-border) — o total misto esconde como cada uma se comporta.</>
               ) : (
-                <>Real forecast skill — the best_match forecast made in run N for hour H is compared with the buoy reading for H once it arrives (lead time &gt; 0), accumulated run after run in <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = mean(observed − forecast)</strong>: positive means the model underestimates the wave. Distinct from the ERA5 bias above — this is how good the forecast is, not how biased the reanalysis model is. Stats are split by platform: <strong className="text-fg">IH</strong> (Datawell buoys, keyed) vs <strong className="text-fg">WMO-ES</strong> (Copernicus, keyless) — the mixed total alone hides how each behaves.</>
+                <>Real forecast skill — the best_match forecast made in run N for hour H is compared with the buoy reading for H once it arrives (lead time &gt; 0), accumulated run after run in <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = mean(observed − forecast)</strong>: positive means the model underestimates the wave. Distinct from the ERA5 bias above — this is how good the forecast is, not how biased the reanalysis model is. Stats are split by platform: <strong className="text-fg">IH</strong> (Datawell buoys, keyed) vs <strong className="text-fg">WMO-PT</strong> (Nazaré Costeira, Copernicus keyless) vs <strong className="text-fg">WMO-ES</strong> (Copernicus keyless, cross-border) — the mixed total alone hides how each behaves.</>
               )}
             </p>
-            {byOrigin.ih || byOrigin['wmo-es'] ? (
+            {byOrigin.ih || byOrigin['wmo-pt'] || byOrigin['wmo-es'] ? (
               <div className="flex flex-col sm:flex-row gap-3">
-                {(['ih', 'wmo-es'] as const).map((origin) => {
+                {(['ih', 'wmo-pt', 'wmo-es'] as const).map((origin) => {
                   const s = byOrigin[origin]
                   if (!s) return null
+                  const originName = isPt
+                    ? origin === 'ih'
+                      ? 'Boias IH (Datawell)'
+                      : origin === 'wmo-pt'
+                        ? 'Boia PT (Copernicus WMO · Nazaré)'
+                        : 'Boias ES (Copernicus WMO)'
+                    : origin === 'ih'
+                      ? 'IH buoys (Datawell)'
+                      : origin === 'wmo-pt'
+                        ? 'PT buoy (Copernicus WMO · Nazaré)'
+                        : 'ES buoys (Copernicus WMO)'
                   return (
                     <div
                       key={origin}
@@ -242,13 +407,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                       data-skill-origin={origin}
                     >
                       <p className="text-xs font-semibold uppercase tracking-wide text-fg-subtle">
-                        {isPt
-                          ? origin === 'ih'
-                            ? 'Boias IH (Datawell)'
-                            : 'Boias ES (Copernicus WMO)'
-                          : origin === 'ih'
-                            ? 'IH buoys (Datawell)'
-                            : 'ES buoys (Copernicus WMO)'}
+                        {originName}
                       </p>
                       <p className="mt-1 text-sm text-fg tabular-nums">
                         n={s.n} · ME <span className="font-medium">{sign(s.me)}</span> m · MAE {two(s.mae)} m · RMSE {two(s.rmse)} m
@@ -279,7 +438,13 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                   {skill.buoys.map((b) => (
                     <tr key={b.id} className="border-b border-divider last:border-0">
                       <td className="py-1.5 pr-3 font-medium text-fg">{b.name}</td>
-                      <td className="py-1.5 pr-3 text-fg-muted">{originLabel(b.origin)}</td>
+                      <td
+                        className="py-1.5 pr-3 text-fg-muted whitespace-nowrap"
+                        title={forecastSkillOriginLabel(b.origin, isPt)}
+                        data-skill-buoy-origin={b.origin}
+                      >
+                        {originLabel(b.origin)}
+                      </td>
                       <td className="py-1.5 pr-3 text-right tabular-nums">{b.n}</td>
                       <td className="py-1.5 pr-3 text-right tabular-nums font-medium">{sign(b.me)}</td>
                       <td className="py-1.5 pr-3 text-right tabular-nums">{two(b.mae)}</td>
@@ -293,15 +458,15 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             </div>
             <p className="text-xs text-fg-subtle">
               {(() => {
-                const byOrigin = skill.pairCountByOrigin ?? { ih: 0, 'wmo-es': 0 }
+                const byOrigin = skill.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 }
                 const calib = skill.calibratedPairCount ?? 0
                 const base = isPt
                   ? `Actualizado ${new Date(skill.fetchedAt ?? '').toLocaleDateString('pt-PT')} · ${skill.pairCount} pares previsto×medido acumulados · só boias com n≥10`
                   : `Updated ${new Date(skill.fetchedAt ?? '').toLocaleDateString('en-GB')} · ${skill.pairCount} accumulated forecast×observed pairs · buoys with n≥10 only`
-                if (byOrigin.ih === 0 && byOrigin['wmo-es'] === 0) return base
+                if (byOrigin.ih === 0 && byOrigin['wmo-pt'] === 0 && byOrigin['wmo-es'] === 0) return base
                 const perOrigin = isPt
-                  ? `IH ${byOrigin.ih} · WMO-ES ${byOrigin['wmo-es']} pares`
-                  : `IH ${byOrigin.ih} · WMO-ES ${byOrigin['wmo-es']} pairs`
+                  ? `IH ${byOrigin.ih} · WMO-PT ${byOrigin['wmo-pt']} · WMO-ES ${byOrigin['wmo-es']} pares`
+                  : `IH ${byOrigin.ih} · WMO-PT ${byOrigin['wmo-pt']} · WMO-ES ${byOrigin['wmo-es']} pairs`
                 const calibNote =
                   calib > 0
                     ? isPt
@@ -310,6 +475,96 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                     : ''
                 return `${base} · ${perOrigin}${calibNote}`
               })()}
+              {(() => {
+                if (!skill.byOrigin?.['wmo-es']) return null
+                return isPt
+                  ? ' • O Noroeste é coberto pelas boias espanholas (Copernicus-ES) mesmo sem IH_API_KEY — o skill de Cabo Silleiro/Villano não depende da chave do IH.'
+                  : ' • The northwest is covered by the Spanish buoys (Copernicus-ES) even without an IH_API_KEY — Cabo Silleiro/Villano skill does not depend on the IH key.'
+              })()}
+            </p>
+          </div>
+        )
+      })()}
+
+      {(() => {
+        const archive = loadCoastalWarningsArchive()
+        if (!archive.hasData) return null
+        return (
+          <div className="card-1 p-8 space-y-4" data-coastal-archive>
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-2xl font-bold text-fg">
+                {isPt
+                  ? 'Arquivo — Avisos à Navegação Costeiros (IH)'
+                  : 'Archive — IH coastal navigation warnings'}
+              </h2>
+              <span className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted">
+                <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
+                {isPt
+                  ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} de snapshots`
+                  : `${archive.dayCount} ${archive.dayCount === 1 ? 'day' : 'days'} of snapshots`}
+              </span>
+            </div>
+            <p className="text-sm text-fg-muted leading-relaxed">
+              {isPt ? (
+                <>Histórico diário dos avisos <em className="not-italic text-fg">em vigor</em> — o fetch arquiva um snapshot por dia e deriva a janela de cada aviso (primeiro/último dia em que foi visto). O ficheiro principal só guarda os de hoje; este arquivo lembra os que já expiraram, dentro da janela de {archive.windowDays} dias.</>
+              ) : (
+                <>Daily history of warnings <em className="not-italic text-fg">in force</em> — the fetch archives one snapshot per day and derives each warning’s window (first/last day it was seen). The live file only keeps today’s; this archive remembers expired ones, within the {archive.windowDays}-day window.</>
+              )}
+            </p>
+
+            {/* Mini-gráfico — avisos em vigor por dia na janela do arquivo.
+                Componente partilhado com a página /fontes (nunca divergir). */}
+            <CoastalDailyActiveChart dailyActive={archive.dailyActive} isPt={isPt} />
+
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[560px] border-collapse text-meta">
+                <thead>
+                  <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle">
+                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Referência' : 'Reference'}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Categoria' : 'Category'}</th>
+                    <th className="py-1.5 pr-3 font-semibold">Fonte</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">{isPt ? 'Dias' : 'Days'}</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">{isPt ? 'Desde' : 'Since'}</th>
+                    <th className="py-1.5 text-right font-semibold">{isPt ? 'Até' : 'Until'}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {archive.refs.map((r) => (
+                    <tr key={r.ref} className="border-b border-divider last:border-0">
+                      <td className="py-1.5 pr-3 font-medium text-fg whitespace-nowrap">
+                        {r.url ? (
+                          <a
+                            href={r.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline hover:text-fg transition-colors"
+                          >
+                            {r.ref}
+                          </a>
+                        ) : (
+                          r.ref
+                        )}
+                      </td>
+                      <td className="py-1.5 pr-3 text-fg-muted">{r.category || '—'}</td>
+                      <td className="py-1.5 pr-3 text-fg-muted">
+                        {r.source === 'es' ? 'ES' : 'IH'}
+                      </td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums">{r.nDays}</td>
+                      <td className="py-1.5 pr-3 text-right tabular-nums text-fg-muted">
+                        {new Date(`${r.firstSeen}T12:00:00`).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')}
+                      </td>
+                      <td className="py-1.5 text-right tabular-nums text-fg-muted">
+                        {new Date(`${r.lastSeen}T12:00:00`).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-fg-subtle">
+              {isPt
+                ? `Actualizado ${archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString('pt-PT') : '—'} · Instituto Hidrográfico · Avisos à Navegação Costeiros (CC-BY 4.0)`
+                : `Updated ${archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString('en-GB') : '—'} · Instituto Hidrográfico · Coastal Navigation Warnings (CC-BY 4.0)`}
             </p>
           </div>
         )

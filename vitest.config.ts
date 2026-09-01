@@ -55,6 +55,8 @@ export default defineConfig({
       'scripts/lib/__tests__/ecowittApiKeyTest.test.js',
       'scripts/lib/__tests__/resendApiKeyTest.test.js',
       'scripts/lib/__tests__/checkCitationCff.test.js',
+      'scripts/lib/__tests__/coastalWarningsArchive.test.js',
+      'scripts/lib/__tests__/coastalWarningsFetchES.test.js',
     ],
   },
   resolve: {
