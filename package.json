@@ -28,6 +28,7 @@
     "lighthouse:prod": "node scripts/run-lighthouse-prod.js",
     "audit:full": "node scripts/run-full-audit.js",
     "audit:ux": "node scripts/run-ux-audit.js",
+    "release:health": "node scripts/release-health-check.js",
     "test:prod-check": "node scripts/prod-manual-check.js",
     "audit:install": "playwright install chromium",
     "news:generate": "node scripts/update-news.js",
