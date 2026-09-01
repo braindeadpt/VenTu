@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { formatAnimatedNumericValue } from '@/lib/animatedNumericValue';
 import { cn } from '@/lib/cn';
 
 interface StatChipProps {
@@ -20,7 +21,6 @@ export default function StatChip({ icon, value, label, className, ariaLabel }: S
   // Extract leading numeric value for count-up animation.
   const match = value.match(/^([\d.-]+)/);
   const targetNum = match ? parseFloat(match[1]) : null;
-  const suffix = match ? value.slice(match[1].length) : value;
 
   const [displayNum, setDisplayNum] = useState<number | null>(targetNum !== null ? 0 : null);
   const hasAnimated = useRef(false);
@@ -47,7 +47,7 @@ export default function StatChip({ icon, value, label, className, ariaLabel }: S
 
   const animatedValue =
     displayNum !== null && targetNum !== null
-      ? displayNum.toFixed(targetNum % 1 === 0 ? 0 : 1) + suffix
+      ? formatAnimatedNumericValue(displayNum, value)
       : value;
 
   return (

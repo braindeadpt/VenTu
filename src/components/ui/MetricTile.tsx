@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { formatAnimatedNumericValue } from '@/lib/animatedNumericValue';
 import { cn } from '@/lib/cn';
 
 export interface MetricTileProps {
@@ -19,7 +20,6 @@ function easeOutExpo(t: number): number {
 export default function MetricTile({ label, value, hint, icon, className }: MetricTileProps) {
   const match = value.match(/^([\d.-]+)/);
   const targetNum = match ? parseFloat(match[1]) : null;
-  const suffix = match ? value.slice(match[1].length) : value;
 
   const [displayNum, setDisplayNum] = useState<number | null>(targetNum !== null ? 0 : null);
   const hasAnimated = useRef(false);
@@ -46,7 +46,7 @@ export default function MetricTile({ label, value, hint, icon, className }: Metr
 
   const animatedValue =
     displayNum !== null && targetNum !== null
-      ? displayNum.toFixed(targetNum % 1 === 0 ? 0 : 1) + suffix
+      ? formatAnimatedNumericValue(displayNum, value)
       : value;
 
   return (

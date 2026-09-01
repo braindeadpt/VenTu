@@ -6,6 +6,7 @@ import {
   interceptWarnings,
   freshObservedWave,
   withoutObservedWave,
+  withoutObservedWind,
   type ConditionsTransform,
 } from './helpers/conditions';
 
@@ -654,12 +655,15 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // wave-bias.json e aplica o viés da região (Cascais, guincho) como fallback.
     await interceptConditions(page, {
       spots: {
-        [SPOT_KEY]: (entry) => ({
-          ...entry,
-          observedWave: freshObservedWave({
-            observedAt: new Date(Date.now() - 5 * 3_600_000).toISOString(),
-          }),
-        }),
+        [SPOT_KEY]: (entry) => {
+          const { waveBias: _omit, ...rest } = entry;
+          return {
+            ...rest,
+            observedWave: freshObservedWave({
+              observedAt: new Date(Date.now() - 5 * 3_600_000).toISOString(),
+            }),
+          };
+        },
       },
     });
     await interceptWaveBias(page, {
@@ -684,7 +688,10 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     );
     // A altura mostrada é a previsão do build corrigida pelo viés regional
     // (waveHeight real + 0.3), e o factor do score indica o fallback.
-    const corrected = `${(REAL_GUINCHO_WAVE_M + 0.3).toFixed(1)}m (viés regional)`;
+    // Mesma aritmética do client (round1), não `(raw + 0.3).toFixed(1)` —
+    // e o StatChip preserva a casa de `2.0m` (não colapsa para `2m`).
+    const round1 = (n: number) => Math.round(n * 10) / 10;
+    const corrected = `${Math.max(0.1, round1(REAL_GUINCHO_WAVE_M + 0.3)).toFixed(1)}m (viés regional)`;
     await expect(hero.getByText(corrected)).toBeVisible();
     await expect(hero.locator('[title*="altura de onda medida pela boia"]')).toHaveCount(0);
   });
@@ -1146,8 +1153,11 @@ test.describe('Observed wave card (boia X a Y km)', () => {
 
     // Sem vento observado → o hero NÃO mostra nenhuma nota de estação; o vento
     // do score é da previsão (open-meteo), sem cadeia de estação na superfície.
+    // `withoutObservedWave` só tira a boia — o build pode trazer IPMA fresco.
     await interceptConditions(page, {
-      spots: { [SPOT_KEY]: withoutObservedWave },
+      spots: {
+        [SPOT_KEY]: (entry) => withoutObservedWind(withoutObservedWave(entry)),
+      },
     });
     await page.goto('/pt/spots/guincho/');
     const heroForecast = page.locator('.spot-hero-card');

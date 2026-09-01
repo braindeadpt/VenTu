@@ -15,7 +15,8 @@ import { join } from 'path';
  *   - `interceptIhBuoys` — serves ih-buoys.json (the buoy-layer health file).
  *   - `interceptWarnings` — serves warnings.json (IPMA/MeteoAlarm per-spot map).
  *   - `interceptRadar` — serves radar.json (the IPMA radar frames carousel).
- *   - `freshObservedWave` / `withoutObservedWave` — common per-spot fixtures.
+ *   - `freshObservedWave` / `withoutObservedWave` / `withoutObservedWind` —
+ *     common per-spot fixtures.
  *
  * NOTE: the site registers a service worker (public/sw.js) that serves
  * /data/* from cache and BYPASSES page.route — specs using these helpers must
@@ -249,6 +250,12 @@ export async function interceptForecasts(
 /** Strip observedWave from a spot entry — no fresh buoy reading. */
 export function withoutObservedWave(entry: Record<string, unknown>): Record<string, unknown> {
   const { observedWave: _omit, ...rest } = entry;
+  return rest;
+}
+
+/** Strip observed wind so the score uses forecast wind (no station note). */
+export function withoutObservedWind(entry: Record<string, unknown>): Record<string, unknown> {
+  const { observed: _omit, ...rest } = entry;
   return rest;
 }
 
