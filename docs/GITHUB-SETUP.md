@@ -76,6 +76,19 @@ Run locally: `npm run alerts:preflight` then `npm run alerts:evaluate`.
 
 ---
 
+## External API keys — health checks
+
+The workflow **`.github/workflows/api-keys.yml`** (semanal + manual) diagnostica
+**todas** as dependências externas com key: MeteoAlarm (`METEOALARM_API_KEY`),
+IH (`IH_API_KEY`), Ecowitt (`ECOWITT_*`) e Resend (`RESEND_API_KEY`). Uma key
+configurada mas inválida/expirada falha o job cedo; ausente → aviso (não
+bloqueia). Localmente:
+
+- `npm run warnings:test-key` · `npm run buoys:test-key` ·
+  `npm run ecowitt:test-key` · `npm run alerts:test-key`
+
+---
+
 ## Quick Setup Checklist
 
 - [ ] Enable branch protection for `main`

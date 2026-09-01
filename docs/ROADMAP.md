@@ -252,6 +252,16 @@ Templates em [`ROADMAP-ISSUES.md`](./ROADMAP-ISSUES.md). Depois de `gh auth logi
 
 ## Notas de sessão
 
+### 2026-08-31 — Dawn Patrol sequencial após update-data (04:00 Lisboa)
+
+- **`dawn-patrol.yml` deixou de ter cron próprio** e passou a disparar por `workflow_run` quando o `update-data.yml` **completa com sucesso**, restringido pela janela da corrida das **04:00 Lisboa** (o último merge antes das 06:00 — 05:00 é `skip` no schedule): a recalibração do dawn patrol apanha sempre as leituras mais frescas do merge antes das 6h, sem correr em paralelo nem acordar antes do update. `workflow_dispatch` continua a correr sempre; update-data a falhar → sem dawn patrol esse dia. Gate em `scripts/should-run-dawn-patrol.js` (`resolveDawnGate`, testado 5 casos). Consequência: o briefing passa a sair ~04:05 Lisboa (logo a seguir ao merge das 04:00) em vez das 06:00.
+
+### 2026-08-31 — Avisos à navegação cross-border (IH × ES) + boia Nazaré na Copernicus
+
+- **Avisos de navegação espanhóis («Avisos a los navegantes»): resultado da investigação — sem API keyless com geometria.** A fonte oficial (Instituto Hidrográfico de la Marina / Armada) publica boletins PDF (`Avisos_en_vigor`, acesso automatizado devolve 403) sem endpoint GeoJSON; o Salvamento Marítimo não expõe feed estável acessível; os avisos de Puertos del Estado são meteorológicos (categoria diferente, já coberta pelo IPMA/MeteoAlarm). **Fallback de texto investigado e documentado em [`docs/ES_NAV_WARNINGS.md`](./ES_NAV_WARNINGS.md)**: a melhor fonte parseável é a lista **NAVAREA III em vigor** (tabela HTML do IHM — hoje 18 avisos, todos Med/Mar Negro, nenhum no Atlântico NW), o Buscador GAN é JS-driven (correcções de cartas, não perigo em vigor) e a NAVTEX de Coruña não tem feed oficial de texto online (METAREA II é França; o IHM emite NAVAREA III).
+- **Camada cross-border pronta à espera da fonte:** o `fetch-ih-coastal-warnings.js` aceita `ES_NAV_WARNINGS_URL` (variável de repositório, feed GeoJSON com o mesmo shape do IH) — os avisos ES entram na mesma camada com `source: 'es'`, a secção (`CoastalNavWarnings`) mostra-os com rótulo próprio «Avisos a los navegantes (ES, cross-border)» ao lado dos do IH, e o mapa da página de spot desenha os polígonos ES como os do IH. Sem URL configurada degrada (es:[] + log, exit 0 — nunca bloqueia).
+- **Boia Nazaré 6200199 na Copernicus (keyless):** verificada a reportar 28→31/08 (`IR_TS_MO_6200199_*.nc`, série horária com hm0/tp/hmax/sst). Adicionada ao catálogo WMO + regex gerada do catálogo (sem drift) → 69 spots mapeiam para a Nazaré (12–99 km) e `observedWave` chega a 151 spots via WMO sem `IH_API_KEY`. Também cobriu o vazio dos dias em que Porto/Faro não reportam à Copernicus.
+
 ### 2026-08-14 — observedWave (key pendente) + boias espanholas + colecção Fugro
 
 - **observedWave: bloqueado por key.** Toda a pipeline está pronta (`fetch-ih-buoys.js` → `ih-buoys.json` → `merge-observations.mjs` → `conditions.json[spot].observedWave`), mas sem `IH_API_KEY` no secret GitHub o layer não produz leituras: estações sim (grátis, OGC API), séries hm0/tp/thtp não. Passo manual pendente: pedir a key grátis a `cedencia.dados@hidrografico.pt` e criar o secret — guia completo em [`docs/IH_API_KEY.md`](./IH_API_KEY.md). Degradação graciosa testada (exit 0, pipeline nunca bloqueia).

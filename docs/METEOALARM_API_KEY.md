@@ -59,6 +59,21 @@ token → parse do CAP Oasis 1.2 do primeiro aviso activo → `buildMeteoAlarmPa
 sobre os 185 spots reais (verifica `spotWarnings` e `source: 'meteoalarm'`).
 Exit `0` = PASS; exit `1` = FAIL (com diagnóstico no output).
 
+### Comando combinado `alerts:test-key` (espelho do `buoys:test-key`)
+
+```bash
+METEOALARM_API_KEY=xxxxxxxx npm run alerts:test-key
+```
+
+`scripts/alerts-test-key.js` corre, num único comando: (1) o **diagnóstico REAL** do token
+(`test-meteoalarm-api-key.js`, rede) e, só se passar, (2) a **verificação hermética** da
+cadeia de avisos (`meteoalarmChainE2E.test.js`, fetch mockado — sem rede): o
+`buildMeteoAlarmPayload` sobre os spots reais produz um payload `source:'meteoalarm'`
+que o verify gate (`verify-meteoalarm-warnings`) aceita, e o negativo prova que o gate
+apanha um fallback meteoalarm vazio. Sem token (ou token rejeitado) falha cedo no
+passo 1 — nunca dá falso PASS. O diagnóstico de e-mail (Resend, `alertas:test-key` antigo)
+passou a `resend:test-key` (`scripts/test-resend-api-key.js`).
+
 ---
 
 ## Passo 3 — Criar o secret `METEOALARM_API_KEY` no GitHub
@@ -129,8 +144,28 @@ Exemplo de payload:
 3. Para exercitar o fallback num run real, basta que o IPMA esteja em baixo — o log do
    passo mostra `IPMA down — falling back to MeteoAlarm (EUMETNET)...` e o commit gerado
    tem `"source": "meteoalarm"` no `public/data/warnings.json`.
-4. Para validar o secret sem depender de uma falha do IPMA, corre
+4. Logo a seguir ao fetch, o passo **Verify MeteoAlarm warnings layer (fallback empty)**
+   corre automaticamente (só com token, espelho do verify-ih-buoy-layer) e **falha o job**
+   se o `warnings.json` tiver ficado `source: 'meteoalarm'` sem avisos activos
+   (`warnings.length === 0`) — sinal de dupla falha (IPMA em baixo E fallback sem
+   conteúdo), para não ship avisos vazios por cima dos spots. `verify-meteoalarm-warnings.js`.
+5. Para validar o secret sem depender de uma falha do IPMA, corre
    `METEOALARM_API_KEY=xxxxxxxx npm run warnings:test-key` num runner local.
+
+### Validação automática semanal (api-keys.yml)
+
+O workflow **`.github/workflows/api-keys.yml`** corre **semanalmente** (segunda
+06:00 UTC, + `workflow_dispatch` manual) e diagnostica **todas** as dependências
+externas com key — MeteoAlarm, IH, Ecowitt e Resend — com o mesmo teste de ponta
+a ponta (`scripts/test-meteoalarm-api-key.js`: token → EDR → CAP → payload):
+
+- **Token configurado mas inválido/expirado** → o job **falha** (a key expirou e
+  ninguém reparou — o Actions fica vermelho sozinho);
+- **Token ausente** → só um `::warning::` (não bloqueia; o fallback fica
+  indisponível até criares o secret).
+
+Sem acção manual: depois do Passo 3, o próprio GitHub valida a key todas as
+semanas — basta ir a **Actions** → **API Keys Health** para ver o resultado.
 
 ---
 
@@ -140,7 +175,7 @@ Exemplo de payload:
 |---|---|---|
 | `METEOALARM_API_KEY not set — skipping MeteoAlarm fallback` | Secret ausente / variável não exportada | Passo 3; `echo ${#METEOALARM_API_KEY}` local para confirmar |
 | `HTTP 401` / `403 — token inválido` | Token com espaço/linha extra, expirado ou revogado | Revalidar (Passo 2, curl) e recriar o secret |
-| `MeteoAlarm OK but no active warnings` | Sem avisos activos em PT naquele momento (ou todos expirados) | Comportamento correcto — payload vazio mas válido |
+| `MeteoAlarm OK but no active warnings` | IPMA em baixo e fallback sem avisos activos | **Com o token, o job falha** no verify gate (`verify-meteoalarm-warnings.js` reconhece `source: meteoalarm` + `warnings: []` como dupla falha). Se forem avisos legitimos sem conteúdo, confirmar com `npm run warnings:meteoalarm`; senão rever IPMA/EUMETNET |
 | `spotWarnings` vazio com warnings activos | Bbox do aviso não cobre o spot (mapping mais largo que o distrito do IPMA) | Esperado para avisos costeiros estreitos; o IPMA volta a ser primário |
 | `source` ausente no warnings.json | Ficheiro antigo (pré-`source`) mantido pelo fallback | Correr `npm run warnings:fetch` (ou `warnings:meteoalarm`) |
 | CAP `HTTP 4xx/5xx` por aviso | URL assinado expirado ou storage em baixo | O aviso entra com `cap: null` (ignorado) sem bloquear o resto |
@@ -156,3 +191,7 @@ Exemplo de payload:
   nunca fica bloqueada.
 - `validate-generated-data.js` valida `source` como `'ipma' | 'meteoalarm'` e trata
   `warnings.json` como warn-only (nunca bloqueia o deploy).
+- **Gate do fallback vazio** (`scripts/verify-meteoalarm-warnings.js`): com a
+  `METEOALARM_API_KEY` configurada, o job falha quando o `warnings.json` ficou
+  `source:'meteoalarm'` mas sem avisos — espelho do `verify-ih-buoy-layer` (só corre
+  com token; sem token o passo é saltado).

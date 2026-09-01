@@ -83,6 +83,8 @@ scripts/fetch-ih-isobaths.js → public/data/spot-isobaths.json (depcnt_8_16_30,
 scripts/lib/ihIsobaths.js → distância da praia às isóbatas 8/16/30 m (CC-BY 4.0)
 scripts/fetch-ih-coastal-warnings.js → public/data/ih-coastal-warnings.json (nav_warning_coastal, sem key)
 scripts/lib/ihCoastalWarnings.js → avisos à navegação costeiros por spot (point-in-polygon, CC-BY 4.0)
+# Cross-border ES: o fetch aceita ES_NAV_WARNINGS_URL (GeoJSON, shape do IH). Fallback
+# de TEXTO (NAVAREA III em vigor / NAVTEX / METAREA II) — ver docs/ES_NAV_WARNINGS.md.
 scripts/merge-observations.mjs → conditions.json[spot].observedWave
 scripts/test-ih-api-key.js → teste de ponta a ponta da key (`npm run buoys:test-key`)
 ```
@@ -213,11 +215,23 @@ scripts/lib/skillRegression.js → snapshots diários, janelas recente/baseline,
   (byBuoy do forecast-skill.json, n≥10) e compara a janela **recente (7 dias)** com a **baseline
   (21 dias anteriores)** — o skill é uma janela de 30 dias recomputada a cada run, por isso a
   comparação recente-vs-baseline detecta REGRESSÃO (o modelo piorou naquela boia), não ruído de 1 dia.
+- **Cobre as duas plataformas de `byBuoy`:** numérica IH idEst e **string WMO-ES** (ex. 6200084
+  Cabo Silleiro, da rota keyless Copernicus) — o `origin` ('ih' | 'wmo-es') é preservado no snapshot
+  e no report, por isso uma regressão do **NW dispara o aviso sem depender da `IH_API_KEY`** (o
+  snapshot archive ambas e o operador vê «WMO-ES (keyless)» no log/Telegram).
 - Regressão: RMSE recente ≥ baseline + **0.3 m** OU |ME| recente ≥ baseline + **0.3 m** (limiares
   configuráveis na lib; exige ≥2 snapshots recentes e ≥3 de baseline). Report `skill-regression.json`
-  com `byBuoy` (verdict ok/regressed/insufficient) + `regressions` (deltas e razões); o validador avisa.
+  com `byBuoy` (verdict ok/regressed/insufficient) + `regressions` (deltas, razões e `origin`); o validador avisa.
+- **Health por PLATAFORMA (não só per-boia nem total misto):** além da regressão por boia, o
+  mesmo report expõe `platforms` (agrega as boias de **IH** vs **WMO-ES** por dia: n = soma das
+  boias, ME ponderado por n) e `platformAlerts` (um aviso por plataforma), para apanhar degradações
+  **difusas** que o per-boia perde (ex: todas as boias piorarem 0.25 m — nenhuma salta o limiar,
+  mas a plataforma sim) e **quebras de fluxo** (IH_API_KEY expirada, Copernicus a deixar de publicar).
+  Verdict da plataforma: `n-collapse` (n diário recente < baseline × **0.5**, com baseline ≥10/dia)
+  é mais grave que `me-worsened` (|ME| ≥ baseline + **0.3 m**); ambos listados em `reasons`.
 - Notificação Telegram (`OPS_TELEGRAM_CHAT_ID` + `TELEGRAM_BOT_TOKEN`) só na **transição** para
-  regressed (uma vez por boia — padrão do model-health). Report/arquivo gitignored — nunca bloqueia
+  regressed (uma vez por boia) E na transição de um alerta de plataforma (uma vez por estado,
+  `platform:verdict`) — padrão do model-health. Report/arquivo gitignored — nunca bloqueia
   o deploy; sem forecast-skill.json degrada graciosamente (exit 0).
 
 ## Exposição do forecast-skill (UI)
@@ -302,6 +316,33 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
 - Notificação: Telegram para `OPS_TELEGRAM_CHAT_ID` (opt-in) só na **transição**
   para morto (não spamma todos os runs). Ver lib/modelHealth.js.
 
+## Health-check unificado das camadas de dados
+
+- `scripts/check-data-layer-health.js` (UM passo no workflow, substitui o antigo
+  `check-buoy-layer-health.js`) lê o `pipeline-meta.json` e avisa/falha quando
+  QUALQUER camada opcional está degradada por **várias runs consecutivas**. Cada
+  run grava o streak (runs seguidas em `down`/`stale`; 0 em `ok`; boias `no-key`
+  nunca conta) nas chaves `buoyLayer` (boias IH/WMO), `radarLayer` (radar IPMA:
+  ok se o frame mais recente ≤25 min), `warningsLayer` (avisos IPMA/MeteoAlarm:
+  ok se `fetchedAt` ≤24 h — um warnings.json vazio mas fresco é ok) e
+  `coastalWarningsLayer` (avisos à navegação costeiros IH: ok se `fetchedAt`
+  ≤24 h).
+- **Fonte ES cross-border (Avisos a los navegantes):** o fetch costeiro grava
+  `esHealth` (configured/disabled + status ok|error + timestamps) no
+  `ih-coastal-warnings.json` e o `esSourceNote` marca degradação quando o feed
+  falha; os writers propagam-no ao meta como `coastalWarningsLayer.es` com o seu
+  próprio streak (`applyCoastalEsStreak`). O health-check avisa quando
+  `ES_NAV_WARNINGS_URL` está configurada mas o feed devolve erros repetidos:
+  streak ES ≥ `FAIL_AFTER` → `::error::` + exit 1, ≥ `WARN_AFTER` → `::warning::`
+  (um erro isolado não falha o CI). Ver docs/ES_NAV_WARNINGS.md para o contexto
+  da fonte.
+- `check-data-layer-health.js` − streak ≥ `FAIL_AFTER` (6) → `::error::` + exit 1;
+  ≥ `WARN_AFTER` (3) → `::warning::` + exit 0. Limiares globais env-overridable
+  (`DATA_LAYER_WARN_AFTER`/`DATA_LAYER_FAIL_AFTER`); pure `evaluateDataLayerHealth`
+  em lib/dataLayerHealth.js (testável). `obs:update`/`update-conditions` geram os
+  streaks via `applyLayerStreak` (genérico) / `buildCoastalWarningsLayer` a
+  partir dos ficheiros já fetchados.
+
 ## Radar IPMA — overlay no mapa
 
 - `radar.json` + `radar/ipma-radar.png` + `radar/frames/*.png` (fetch-ipma-radar.js) →
@@ -327,10 +368,14 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 
 ## SEO
 
-- **Sitemap:** `npm run sitemap:generate` → `public/sitemap.xml` (~448 URLs: spots, modalidades, about, sazonalidade, news)
-- **hreflang** pt/en no sitemap
+- **Sitemap:** `npm run sitemap:generate` → `public/sitemap.xml` (~2 400 URLs: 17 rotas estáticas indexáveis, modalidades, spots, news, directório; 5 hreflang pt/en/es/de/fr por URL)
+- **Cobertura de rotas:** TODAS as páginas estáticas indexáveis de `src/app/[locale]/` têm de estar no sitemap (passaporte, diretorio incl. perfis `/diretorio/{slug}/`); as noindex (admin/*, conta, diretorio/gerir, auth/callback) ficam de fora de propósito — o guard do ci.yml tranca a lista
+- **hreflang** pt/en/es/de/fr no sitemap e no `<head>` de cada página (via `buildPageMetadata` → `alternates.languages`)
 - **JSON-LD:** `SpotDetailClient` (Beach + SportsActivityLocation), artigos news
-- Geração automática no CI/deploy antes do build
+- **Geração automática no CI/deploy antes do build** — o sitemap é um ficheiro GERADO, nunca editado à mão:
+  - `deploy.yml` regenera-o antes de cada build (o sitemap publicado é sempre o do gerador);
+  - `ci.yml` regenera-o e corre o **drift guard** (`scripts/check-sitemap-drift.js`): falha quando o `public/sitemap.xml` commitado diverge estruturalmente do que o gerador produz (spot/notícia novos esquecidos, hreflang em falta, prioridade alterada) — ignora `<lastmod>` (o gerador grava a data de hoje, logo um `git diff` puro falharia todos os dias);
+  - `update-news.yml` regenera-o e commita-o junto com `news.json` (as URLs de notícias entram no sitemap — sem isto, o guard do ci.yml falharia no próximo push de código após qualquer actualização de notícias).
 
 ## Pipelines CI
 
@@ -341,6 +386,27 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 | `ci.yml` | PR + push main | lint, validate spots, unit tests, sitemap, build, E2E |
 | `deploy.yml` | push main | test, sitemap, build, GitHub Pages |
 | `evaluate-alerts.yml` | */3h + manual | email alerts (Resend + Supabase) |
+
+### E2E core — specs do CI (e o que cada um cobre)
+
+O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: homepage pt/en/es/de/fr, spot, mapa, comparador, favoritos, 404 localizados, palette de pesquisa), **`npm run test:e2e:core`** (os specs herméticos de dados/score — substituiu o antigo passo `test:e2e:data`, que era um subconjunto) e os audits `full-audit`/`visual-ux-audit`. O core agrupa os specs que correm no Actions sem rede nem `IH_API_KEY` (bloqueiam o SW e interceptam os data files client-side via `tests/e2e/helpers/conditions.ts`):
+
+| Spec | Testes | Cobre |
+|---|---|---|
+| `observed-wave-card` | 38 | Onda observada: rótulo honesto «boia X a Y km», lado a lado IH vs WMO (vencedor + razão), skill ME/n por boia, ponte keyless Costa de Prata (Cabo Silleiro), avisos de coerência ES×PT, sufixos do factor `(boia)`/`(viés regional)` em pt/en (hero, sticky, comparador, ForecastTable) e chip «Mar perigoso» |
+| `buoy-warnings` | 12 | Aviso da camada de boias (no-key/down/stale/ok) na página de spot, homepage e mapa interactivo; fallback WMO cobre (sem aviso); chip de diagnóstico no ticker via `pipeline-meta.json` |
+| `tides` | 3 | Marés (`TideScheduleStrip`): fase (a subir / alta agora / a descer) + próxima Baixa/Alta com HH:MM vindas da curva horária real |
+| `home-adaptive` | 4 | Homepage adaptativa: TopNow cards, mapa hero, sufixos/avisos consistentes |
+| `mapa-route` | 8 | Página `/pt/mapa` fullscreen: HUD, sheet mobile com direções/ver spot, filtros persistidos, Escape, sair sem congelar |
+| `spot-dashboard` | 4 | Dashboard da página de spot: métricas, score e secções-chave |
+| `confidence-badge` | 2 | Badge de confiança da previsão (multi-modelo) |
+| `mar-perigoso` | 4 | Aviso de Agitação Marítima: strip no spot, Dawn Patrol e badge no card do mapa |
+| `isobaths` | 7 | Isóbatas IH (8/16/30 m): camada no mapa, legenda de profundidade, distâncias no dashboard |
+| `data-sources` | 11 | Fontes de dados: tabela de atribuições pt/en, citação Open-Meteo (DOI) com paridade pt/en em fontes e About, cartão IH_API_KEY, sitemap + hreflang, atribuições no mapa/footer |
+
+Notas de operação:
+- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido: core de ~115 testes ≈ 2m30s) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
+- **Determinismo**: estes specs NÃO dependem da rede nem de keys — as fixtures vivem em `tests/e2e/helpers/conditions.ts` (`interceptConditions`/`interceptIhBuoys`/`interceptWmoBuoys`/`interceptWaveBias`/`interceptIsobaths`/`interceptCoastalNavWarnings`). Se um spec precisa de dados que o build não tem, intercepta client-side.
 
 ## Estado actual (2026-07-21)
 

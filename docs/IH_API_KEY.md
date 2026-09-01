@@ -144,6 +144,11 @@ A cadeia completa (key → `getDatawellData` → `ih-buoys.json` → merge → c
 sem key e sem rede: a fixture injeta no `ih-buoys.json` a leitura fresca da boia 2 (o
 que a API devolveria com a key) e o merge real anexa o `observedWave` ao spot `nazare`.
 
+> **Um comando só:** `npm run buoys:test-key` corre agora o diagnóstico da key **e** este
+teste de cadeia em sequência (`&&`) — com a key presente obténs `exit 0` só se ambos
+passarem. Sem key (ou com key rejeitada), o diagnóstico falha cedo (`exit 1`) e a
+verificação de cadeia nem chega a correr. Para correr só a cadeia:
+
 ```bash
 npx vitest run scripts/lib/__tests__/observedWaveNazareE2E.test.js
 ```
@@ -232,8 +237,34 @@ Esperado: `hasWaveData: true`, boias ativas com `latest`, e em `conditions.json`
 3. Seguir o job **update-conditions** → passo **Fetch IH buoy data (Datawell Waverider)**:
    - esperado: `Wave snapshots: N ok, 0 failed` e `hasWaveData: yes`
    - se aparecer `ℹ️ IH_API_KEY not set`, o secret não está criado/visível (volta ao Passo 3)
-4. Depois do run, confirmar no commit gerado que `public/data/ih-buoys.json` tem
-   `"hasWaveData": true`.
+4. Logo a seguir, o passo **Verify IH buoy layer (hasWaveData + Fugro 2 Nazaré)**
+   corre automaticamente (só com key) e **falha o job** se o ficheiro não tiver
+   `hasWaveData: true`, se a boia Fugro 2 (Nazaré Costeira) não tiver leitura
+   fresca, **ou se as boias Datawell costeiras Leixões (4), Sines (19) e Faro
+   (20) não tiverem leitura** — a verificação estende-se às outras Datawell
+   com a key activa, não só à Fugro (é a confirmação automática de que a Nazaré
+   e a costa oeste aparecem no commit).
+5. Depois do run, confirmar no commit gerado que `public/data/ih-buoys.json` tem
+   `"hasWaveData": true` e `stations["2"].latest` (Fugro 2, Nazaré Costeira),
+   além de `stations["4"|"19"|"20"].latest` (Leixões/Sines/Faro).
+
+### Validação automática semanal (api-keys.yml)
+
+O workflow **`.github/workflows/api-keys.yml`** corre **semanalmente** (segunda
+06:00 UTC, + `workflow_dispatch` manual) e diagnostica **todas** as dependências
+externas com key — IH, MeteoAlarm, Ecowitt e Resend. O passo do IH corre o
+**`buoys:test-key` combinado** (`node scripts/buoys-test-key.js`): estações OGC →
+`getDatawellData` com a key → parse `hm0/tp/thtp/hmax/temp` → frescura, e, só se
+o diagnóstico passar, a **cadeia hermética Fugro → observedWave da Nazaré**
+(`observedWaveNazareE2E`):
+
+- **Key configurada mas inválida/expirada** → o job **falha** (o Actions fica
+  vermelho sozinho quando a key expira);
+- **Key ausente** → só um `::warning::` (não bloqueia; o observedWave fica
+  desactivado até criares o secret).
+
+Sem acção manual: depois do Passo 3, o próprio GitHub valida a key todas as
+semanas — basta ir a **Actions** → **API Keys Health** para ver o resultado.
 
 ---
 
@@ -243,6 +274,7 @@ Esperado: `hasWaveData: true`, boias ativas com `latest`, e em `conditions.json`
 |---|---|---|
 | `IH_API_KEY not set` | Secret ausente no GitHub / variável não exportada | Passo 3; `echo ${#IH_API_KEY}` local para confirmar |
 | `HTTP 401` / `403 for buoy N` | Key inválida ou com espaço/linha extra | Revalidar key (Passo 2, curl) e recriar o secret |
+| `apiKeyStatus: "unauthorized"` no `ih-buoys.json` | Key rejeitada pela API — o workflow **falhou cedo de propósito** (exit 1) com alerta Telegram (transição, uma vez) e `::error::` no log | Recriar o secret `IH_API_KEY` e re-correr `workflow_dispatch`; o alerta não repete a cada run horário |
 | `Sem leituras na janela` | Boia inactiva, sem NRT, ou backend IH em baixo | Testar outra boia (`--station`); ver `last_sea` na estação |
 | `observedWave` ausente num spot | Leitura > 3 h, distância à boia > 200 km, ou spot sem boia mapeada | Ver `spotMapping` em `ih-buoys.json` |
 | `hasWaveData: false` | Key presente mas nenhuma boia devolveu leituras | Correr `buoys:test-key` para isolar |
@@ -257,4 +289,9 @@ Esperado: `hasWaveData: true`, boias ativas com `latest`, e em `conditions.json`
   (sem `latest`); `hasWaveData: false`; o merge salta o `observedWave` (nunca inventa leituras).
 - Em falha do IH, o script mantém o ficheiro anterior e sai com 0 — a pipeline (Open-Meteo,
   observações, avisos) nunca fica bloqueada.
+- **Excepção — key rejeitada (HTTP 401/403):** o script falha cedo (exit 1). Escreve o
+  `ih-buoys.json` com `apiKeyStatus: "unauthorized"` (o UI/`pipeline-meta` distingue de
+  `no-key`/`down`), emite `::error::` e envia alerta Telegram (só na transição, via
+  `OPS_TELEGRAM_CHAT_ID` + `TELEGRAM_BOT_TOKEN`; sem eles faz dry-run). O workflow
+  `update-data.yml` pára neste passo em vez de publicar dados sem a camada observedWave.
 - `validate-generated-data.js` trata `ih-buoys.json` como warn-only (nunca bloqueia o deploy).

@@ -68,6 +68,7 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 | `GEMINI_API_KEY` | Não | Notícias e Dawn Patrol |
 | `NEXT_PUBLIC_GOATCOUNTER_CODE` | Não | Analytics privacy-first |
 | `RESEND_API_KEY` | Não | Alertas por email |
+| `ECOWITT_APPLICATION_KEY` / `ECOWITT_API_KEY` / `ECOWITT_MAC` | Não | Vento observado de uma estação PWS Ecowitt |
 
 ### Scripts úteis
 
@@ -78,7 +79,7 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 | `npm test` | Testes unitários (Vitest) |
 | `npm run test:e2e` | E2E (Playwright) |
 | `npm run data:update` | Condições + observações + índice + notícias |
-| `npm run sitemap:generate` | Regenerar `public/sitemap.xml` |
+| `npm run sitemap:generate` | Regenerar `public/sitemap.xml` (gerado no CI: deploy regenera antes de build, ci.yml valida o drift, update-news regera com as notícias) |
 | `npm run og:generate` | Regenerar `public/og-image.png` + `public/images/og/*.png` (previews sociais) |
 | `npm run dawn-patrol:generate` | Dawn Patrol diário |
 | `npm run spots:validate` | Validar `src/lib/spots.ts` |
@@ -109,6 +110,29 @@ docs/                 # Roadmap, contexto, design system
 | [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) | Tokens, componentes, voz PT-PT |
 | [docs/ALERTS.md](docs/ALERTS.md) | Alertas por email |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Como contribuir (spots, livecams) |
+
+### Configuração (opcional) — `IH_API_KEY`
+
+A camada de **onda observada** (boias ondógrafo do IH nos spots) precisa de uma chave gratuita.
+Sem ela o projecto continua a funcionar (cai para o fallback WMO/Copernicus), mas o estado fica
+visível — na página **Sobre** (`/about`) há um cartão que mostra:
+
+- **Não configurada** — falta pedir a chave e criar o secret (passos abaixo);
+- **Activa** — a chave devolve leituras das boias (onda observada nos spots);
+- **Expirada / rejeitada** — a API devolveu HTTP 401/403; o workflow `update-data.yml` falha cedo
+  de propósito com alerta Telegram até a chave ser renovada (`apiKeyStatus: "unauthorized"` no
+  `ih-buoys.json`);
+- **Activa mas sem leituras** — outage transitória do serviço de ondas do IH, não é problema da chave.
+
+**Obtenção (5 min):**
+
+1. Pedir a chave gratuita por e-mail a [`cedencia.dados@hidrografico.pt`](mailto:cedencia.dados@hidrografico.pt)
+   (Instituto Hidrográfico) — acesso à série `getDatawellData` (altura/período/direcção de onda em tempo real).
+2. Criar o secret no GitHub: **Settings → Secrets and variables → Actions → New secret** → `IH_API_KEY`.
+3. Local: `cp .env.example .env.local` e preencher `IH_API_KEY=...` (já está no `.gitignore`).
+4. Verificar: `npm run buoys:test-key` (teste e2e da chave) e `npm run buoys:fetch`.
+
+Guia completo: [`docs/IH_API_KEY.md`](docs/IH_API_KEY.md).
 
 ### Livecams
 
@@ -152,6 +176,12 @@ npm install
 cp .env.example .env.local
 npm run dev
 ```
+
+The **observed-wave layer** (IH buoys on spot pages) needs a free `IH_API_KEY` — without it the
+site still works (WMO/Copernicus fallback) and the **About** page shows a status card
+(not configured / active / expired-rejected / down). Get the key by e-mail to
+[`cedencia.dados@hidrografico.pt`](mailto:cedencia.dados@hidrografico.pt), create the GitHub secret
+`IH_API_KEY`, and verify with `npm run buoys:test-key`. Full guide: [`docs/IH_API_KEY.md`](docs/IH_API_KEY.md).
 
 ### Documentation
 
