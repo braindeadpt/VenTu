@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { fetchMyClaimForEntry, submitDirectoryClaim } from '@/lib/directoryClaims';
+import { getTranslation } from '@/lib/i18n';
 import Button from '@/components/ui/Button';
 
 type Props = {
@@ -13,7 +14,7 @@ type Props = {
 };
 
 export default function DirectoryClaimButton({ entryId, entryName, locale }: Props) {
-  const isPt = locale === 'pt';
+  const d = getTranslation(locale).directory;
   const { session, authLoading, requestLogin, isSupabaseReady } = useAuth();
   const [status, setStatus] = useState<'idle' | 'pending' | 'approved' | 'rejected' | 'loading'>('idle');
   const [message, setMessage] = useState<string | null>(null);
@@ -30,7 +31,7 @@ export default function DirectoryClaimButton({ entryId, entryName, locale }: Pro
 
   const onClaim = async () => {
     if (!isSupabaseReady) {
-      setMessage(isPt ? 'Auth indisponível de momento.' : 'Auth unavailable right now.');
+      setMessage(d.authUnavailable);
       return;
     }
     if (!session?.user) {
@@ -53,31 +54,19 @@ export default function DirectoryClaimButton({ entryId, entryName, locale }: Pro
       setStatus('idle');
       const missingTable =
         /relation .*directory_claims.* does not exist|Could not find the table/i.test(res.error);
-      setMessage(
-        missingTable
-          ? isPt
-            ? 'Claims ainda não activos na base — corre supabase-directory.sql.'
-            : 'Claims not enabled yet — run supabase-directory.sql.'
-          : res.error,
-      );
+      setMessage(missingTable ? d.claimsNotEnabled : res.error);
       return;
     }
     setStatus('pending');
-    setMessage(
-      isPt
-        ? 'Pedido enviado. Confirmamos por email quando estiver verificado.'
-        : 'Request sent. We’ll email you when it’s verified.',
-    );
+    setMessage(d.claimSent);
   };
 
   if (status === 'approved') {
     return (
       <div className="space-y-2">
-        <p className="text-meta-sm text-score-good">
-          {isPt ? 'Perfil verificado — és o dono.' : 'Verified profile — you own this.'}
-        </p>
+        <p className="text-meta-sm text-score-good">{d.verifiedOwner}</p>
         <Button href={`/${locale}/diretorio/gerir/`} variant="secondary" size="sm" locale={locale as 'pt' | 'en'}>
-          {isPt ? 'Editar perfil' : 'Edit profile'}
+          {d.editProfile}
         </Button>
       </div>
     );
@@ -86,9 +75,7 @@ export default function DirectoryClaimButton({ entryId, entryName, locale }: Pro
   if (status === 'pending') {
     return (
       <p className="text-meta-sm text-fg-muted">
-        {isPt
-          ? `Pedido de reivindicação para «${entryName}» em análise.`
-          : `Claim for “${entryName}” under review.`}
+        {d.claimPending.replace('{name}', entryName)}
       </p>
     );
   }
@@ -96,18 +83,14 @@ export default function DirectoryClaimButton({ entryId, entryName, locale }: Pro
   return (
     <div className="space-y-2">
       <label className="block">
-        <span className="text-meta-sm text-fg-muted">
-          {isPt
-            ? 'Prova opcional (site, IG, NIF, telefone…)'
-            : 'Optional proof (site, IG, tax ID, phone…)'}
-        </span>
+        <span className="text-meta-sm text-fg-muted">{d.proofLabel}</span>
         <textarea
           value={evidence}
           onChange={(e) => setEvidence(e.target.value)}
           rows={2}
           maxLength={2000}
           className="mt-1 w-full rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
-          placeholder={isPt ? 'Ex.: sou o dono de @escola…' : 'e.g. I own @school…'}
+          placeholder={d.ownerPlaceholder}
         />
       </label>
       <Button
@@ -116,13 +99,7 @@ export default function DirectoryClaimButton({ entryId, entryName, locale }: Pro
         onClick={() => void onClaim()}
         disabled={authLoading || status === 'loading'}
       >
-        {session?.user
-          ? isPt
-            ? 'Reclamar este perfil'
-            : 'Claim this profile'
-          : isPt
-            ? 'Entrar para reclamar'
-            : 'Sign in to claim'}
+        {session?.user ? d.claimThisProfile : d.signInToClaim}
       </Button>
       {message && <p className="text-meta-sm text-fg-muted">{message}</p>}
     </div>

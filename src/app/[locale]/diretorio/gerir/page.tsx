@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { locales } from '@/lib/i18n';
+import { getTranslation, locales } from '@/lib/i18n';
 import { loadDirectoryEntries } from '@/lib/directory';
 import DirectoryManageClient from '@/components/directory/DirectoryManageClient';
 import type { DirectoryEntry } from '@/types/directory';
@@ -16,7 +16,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const isPt = locale === 'pt';
   return {
-    title: isPt ? 'Gerir escolas — VenTu' : 'Manage schools — VenTu',
+    title: getTranslation(isPt ? 'pt' : 'en').directory.manageSchoolsTitle,
     robots: { index: false, follow: false },
   };
 }

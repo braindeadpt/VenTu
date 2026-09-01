@@ -5,6 +5,11 @@ import { buildPageMetadata } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import { loadForecastSkillBuoys, forecastSkillOriginTag, forecastSkillOriginLabel } from '@/lib/forecastSkill'
 import { loadIhKeyStatus } from '@/lib/ihKeyStatus'
+import {
+  deriveBuoyLayerDowntime,
+  formatBuoyLayerDowntimeSuffix,
+  formatBuoyLayerDowntimeTitle,
+} from '@/lib/buoyLayerDowntime'
 import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
 import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
 import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution'
@@ -299,6 +304,28 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">{conf.line}</p>
             <p className="text-xs text-fg-subtle tabular-nums">{metaLine}</p>
+            {
+              // Streak down/stale (pipeline-meta buoyLayer): «há quantas horas a
+              // onda observada está degradada» — só quando efectivamente degradada
+              // com streak > 0 (no-key nunca conta). O tooltip mostra runs+horas.
+              (() => {
+                const dt = deriveBuoyLayerDowntime(key.layer ?? null)
+                if (!dt) return null
+                const full = formatBuoyLayerDowntimeTitle(dt, isPt)
+                return (
+                  <p
+                    className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
+                    data-ih-key-status-downtime="true"
+                    title={`${full}${dt.lastOkAt ? ` · ${isPt ? 'última vez ok' : 'last OK'}: ${new Date(dt.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}` : ''}`}
+                  >
+                    <span aria-hidden>⏱</span>
+                    <span className="tabular-nums">
+                      {isPt ? <>Degradada {formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')} ({dt.runs} {dt.runs === 1 ? 'run' : 'runs'})</> : <>Degraded {formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')} ({dt.runs} {dt.runs === 1 ? 'run' : 'runs'})</>}
+                    </span>
+                  </p>
+                )
+              })()
+            }
             {
               // Sub-estado keyless: mesmo sem IH_API_KEY, a boia WMO Nazaré
               // Costeira (6200199, via Copernicus) cobre a costa central com uma

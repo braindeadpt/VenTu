@@ -6,6 +6,7 @@ import { getSpotBySlug, spots } from '@/lib/spots';
 import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import { SITE_URL } from '@/lib/site';
+import { getTranslation } from '@/lib/i18n';
 
 type ConditionsFile = Record<
   string,
@@ -25,6 +26,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
   const school = search.get('school') || '';
   const lang = search.get('lang') === 'en' ? 'en' : 'pt';
   const isPt = lang === 'pt';
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
 
   const spot = useMemo(() => getSpotBySlug(slug) || spots.find((s) => s.id === slug), [slug]);
   const [score, setScore] = useState<number | null>(null);
@@ -59,7 +61,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
   if (!spot) {
     return (
       <div data-embed-widget className="p-4 text-sm text-fg-muted">
-        {isPt ? 'Spot não encontrado.' : 'Spot not found.'}
+        {d.spotNotFound}
       </div>
     );
   }
@@ -85,7 +87,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
               {isPt ? spot.name : spot.nameEn}
             </p>
             <p className="text-meta-sm text-fg-muted mt-0.5">
-              {[wave, wind].filter(Boolean).join(' · ') || (isPt ? 'Condições VenTu' : 'VenTu conditions')}
+              {[wave, wind].filter(Boolean).join(' · ') || d.conditionsLabel}
             </p>
           </div>
           {score != null && tokens && (
@@ -98,7 +100,7 @@ export default function EmbedSpotWidget({ slug }: { slug: string }) {
           )}
         </div>
         <p className="text-meta-sm text-fg-subtle mt-2">
-          {name ? `${isPt ? 'via' : 'via'} VenTu` : 'VenTu'} · {isPt ? 'condições' : 'conditions'}
+          {name ? `via VenTu` : 'VenTu'} · {d.conditionsWord}
         </p>
       </a>
     </div>

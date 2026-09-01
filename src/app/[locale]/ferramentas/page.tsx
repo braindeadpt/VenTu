@@ -1,9 +1,9 @@
-import { locales } from '@/lib/i18n'
+import { locales, getTranslation } from '@/lib/i18n'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Shirt, Wind } from 'lucide-react'
 
-// es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
+// es/de/fr: shell/nav/meta + copy translated (dicionário i18n).
 interface Props {
   params: Promise<{ locale: string }>
 }
@@ -14,35 +14,29 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
+  const tt = getTranslation(locale).tools
   return {
-    title: isPt ? 'Ferramentas náuticas — VenTu' : 'Water sports tools — VenTu',
-    description: isPt
-      ? 'Calculadoras gratuitas para desportos náuticos: tamanho de kite por vento e peso, fato de neoprene por temperatura da água — com dados reais dos spots portugueses.'
-      : 'Free water sports calculators: kite size by wind and weight, wetsuit thickness by water temperature — powered by live Portuguese spot data.',
+    title: tt.metaTitle,
+    description: tt.metaDescription,
   }
 }
 
 export default async function FerramentasPage({ params }: Props) {
   const { locale } = await params
-  const isPt = locale === 'pt'
+  const tt = getTranslation(locale).tools
 
   const tools = [
     {
       href: `/${locale}/ferramentas/calculadora-kite/`,
       icon: Wind,
-      title: isPt ? 'Calculadora de kite' : 'Kite size calculator',
-      description: isPt
-        ? 'Que tamanho de kite levar? Peso + vento + disciplina, com o vento real de qualquer spot.'
-        : 'Which kite size to rig? Weight + wind + discipline, with live wind from any spot.',
+      title: tt.kiteTitle,
+      description: tt.kiteDesc,
     },
     {
       href: `/${locale}/ferramentas/calculadora-fato/`,
       icon: Shirt,
-      title: isPt ? 'Calculadora de fato' : 'Wetsuit calculator',
-      description: isPt
-        ? 'Que espessura de neoprene? Temperatura da água real de cada spot, com windchill.'
-        : 'Which wetsuit thickness? Live water temperature per spot, wind chill included.',
+      title: tt.wetsuitTitle,
+      description: tt.wetsuitDesc,
     },
   ]
 
@@ -51,13 +45,9 @@ export default async function FerramentasPage({ params }: Props) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         <div>
           <h1 className="font-display text-display-lg font-bold text-fg tracking-tight">
-            {isPt ? 'Ferramentas' : 'Tools'}
+            {tt.toolsHeading}
           </h1>
-          <p className="text-fg-muted mt-2 max-w-2xl">
-            {isPt
-              ? 'Calculadoras rápidas para preparar a sessão — ligadas aos dados reais dos 185 spots.'
-              : 'Quick calculators to prep your session — wired to live data from all 185 spots.'}
-          </p>
+          <p className="text-fg-muted mt-2 max-w-2xl">{tt.toolsIntro}</p>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
@@ -77,7 +67,7 @@ export default async function FerramentasPage({ params }: Props) {
                 </span>
                 <span className="text-body-sm text-fg-muted flex-1">{tool.description}</span>
                 <span className="inline-flex items-center gap-1.5 text-meta-sm font-medium text-accent">
-                  {isPt ? 'Abrir' : 'Open'}
+                  {tt.open}
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" aria-hidden />
                 </span>
               </Link>
@@ -85,9 +75,7 @@ export default async function FerramentasPage({ params }: Props) {
           })}
         </div>
 
-        <p className="text-meta-sm text-fg-subtle">
-          {isPt ? 'Mais ferramentas em breve.' : 'More tools coming soon.'}
-        </p>
+        <p className="text-meta-sm text-fg-subtle">{tt.moreSoon}</p>
       </div>
     </div>
   )

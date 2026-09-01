@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { LogIn, LogOut, RefreshCw, Trash2, Check, X } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 import type { Session } from '@supabase/supabase-js';
 
 type ContributionStatus = 'new' | 'done' | 'rejected';
@@ -24,6 +25,9 @@ interface ContributionsAdminClientProps {
 
 export default function ContributionsAdminClient({ locale }: ContributionsAdminClientProps) {
   const isPt = locale === 'pt';
+  const admin = getTranslation(isPt ? 'pt' : 'en').admin;
+  const nav = getTranslation(isPt ? 'pt' : 'en').nav;
+  const common = getTranslation(isPt ? 'pt' : 'en').common;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [session, setSession] = useState<Session | null>(null);
@@ -84,12 +88,12 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
 
     try {
       const sb = getSupabaseClient();
-      if (!sb) throw new Error(isPt ? 'Supabase não configurado' : 'Supabase not configured');
+      if (!sb) throw new Error(admin.supabaseNotConfigured);
 
       const { error: signInError } = await sb.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
     } catch (err) {
-      setError(err instanceof Error ? err.message : (isPt ? 'Erro ao entrar' : 'Login failed'));
+      setError(err instanceof Error ? err.message : admin.loginFailed);
     } finally {
       setBusy(false);
     }
@@ -156,7 +160,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
   if (!isSupabaseConfigured()) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted">
-        {isPt ? 'Supabase não configurado.' : 'Supabase is not configured.'}
+        {admin.supabaseNotConfiguredFull}
       </div>
     );
   }
@@ -169,12 +173,10 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
     return (
       <div className="max-w-md mx-auto py-12 px-4">
         <h1 className="text-2xl font-bold text-fg mb-2">
-          {isPt ? 'Admin — Contribuições' : 'Admin — Contributions'}
+          {admin.metaTitleContributions}
         </h1>
         <p className="text-sm text-fg-muted mb-6">
-          {isPt
-            ? 'Entra com a conta Supabase Auth (criada no dashboard).'
-            : 'Sign in with your Supabase Auth account (created in the dashboard).'}
+          {admin.loginIntro}
         </p>
 
         <form onSubmit={handleLogin} className="space-y-4 card-2 p-6">
@@ -191,7 +193,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
           </div>
           <div>
             <label className="block text-sm text-fg-muted mb-1">
-              {isPt ? 'Password' : 'Password'}
+              Password
             </label>
             <input
               type="password"
@@ -209,7 +211,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-data-waves text-bg-base font-medium disabled:opacity-50"
           >
             <LogIn className="w-4 h-4" />
-            {busy ? (isPt ? 'A entrar...' : 'Signing in...') : (isPt ? 'Entrar' : 'Sign in')}
+            {busy ? admin.signingIn : nav.signIn}
           </button>
         </form>
       </div>
@@ -221,7 +223,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-fg">
-            {isPt ? 'Contribuições' : 'Contributions'}
+            {admin.contributions}
           </h1>
           <p className="text-sm text-fg-muted">{session.user.email}</p>
         </div>
@@ -233,7 +235,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-divider text-sm hover:bg-surface-1/[0.04]"
           >
             <RefreshCw className={`w-4 h-4 ${busy ? 'animate-spin' : ''}`} />
-            {isPt ? 'Actualizar' : 'Refresh'}
+            {common.refresh}
           </button>
           <button
             type="button"
@@ -241,7 +243,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-divider text-sm hover:bg-surface-1/[0.04]"
           >
             <LogOut className="w-4 h-4" />
-            {isPt ? 'Sair' : 'Sign out'}
+            {admin.signOut}
           </button>
         </div>
       </div>
@@ -258,7 +260,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
                 : 'border-divider text-fg-muted hover:text-fg'
             }`}
           >
-            {key === 'all' ? (isPt ? 'Todas' : 'All') : key}
+            {key === 'all' ? admin.all : key}
             {key !== 'all' && (
               <span className="ml-1 font-mono text-xs">
                 ({items.filter((i) => i.status === key).length})
@@ -272,7 +274,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
 
       {filtered.length === 0 ? (
         <p className="text-fg-muted text-center py-12">
-          {isPt ? 'Sem contribuições.' : 'No contributions.'}
+          {admin.noContributions}
         </p>
       ) : (
         <ul className="space-y-3">
@@ -324,14 +326,14 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
                 )}
                 {confirmingId === item.id ? (
                   <span className="inline-flex items-center gap-1.5 text-xs text-fg-muted">
-                    <span>{isPt ? 'Confirmar exclusão?' : 'Confirm delete?'}</span>
+                    <span>{admin.confirmDelete}</span>
                     <button
                       type="button"
                       onClick={() => deleteItem(item.id)}
                       disabled={busy}
                       className="px-2 py-1 rounded text-xs bg-score-poor/10 text-score-poor border border-score-poor/20"
                     >
-                      {isPt ? 'Sim' : 'Yes'}
+                      {admin.yes}
                     </button>
                     <button
                       type="button"
@@ -339,7 +341,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
                       disabled={busy}
                       className="px-2 py-1 rounded text-xs border border-divider text-fg-muted"
                     >
-                      {isPt ? 'Não' : 'No'}
+                      {admin.no}
                     </button>
                   </span>
                 ) : (
@@ -350,7 +352,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
                     className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs text-score-poor border border-score-poor/20 hover:bg-score-poor/10"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    {isPt ? 'Apagar' : 'Delete'}
+                    {admin.delete}
                   </button>
                 )}
               </div>

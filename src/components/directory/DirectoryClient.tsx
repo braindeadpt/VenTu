@@ -10,6 +10,7 @@ import FilterPill from '@/components/ui/FilterPill';
 import EmptyState from '@/components/ui/EmptyState';
 import { GraduationCap, List, Map as MapIcon } from 'lucide-react';
 import { getSupabaseClient } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 import {
   fetchDirectoryListings,
   fetchDirectoryProfiles,
@@ -47,6 +48,8 @@ const KINDS: Array<DirectoryKind | 'all'> = [
 
 export default function DirectoryClient({ locale, entries: seedEntries, generatedAt }: Props) {
   const isPt = locale === 'pt';
+  const nav = getTranslation(isPt ? 'pt' : 'en').nav;
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
   const [live, setLive] = useState<DirectoryEntry[]>([]);
   const [profiles, setProfiles] = useState<Map<string, DirectoryProfileOverlay>>(new Map());
   const [kind, setKind] = useState<DirectoryKind | 'all'>('all');
@@ -103,41 +106,39 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
     <div className="space-y-6">
       <header className="space-y-2 max-w-2xl">
         <h1 className="font-display text-display text-fg">
-          {isPt ? 'Directório' : 'Directory'}
+          {d.title}
         </h1>
         <p className="text-body text-fg-muted">
-          {isPt
-            ? 'Escolas, kite centers e lojas em Portugal. Grátis para riders — escolas podem reclamar ou registar o perfil (aparece logo; verificação depois).'
-            : 'Schools, kite centers and shops in Portugal. Free for riders — businesses can claim or register (live immediately; verification follows).'}
+          {d.intro}
         </p>
         <p className="text-meta-sm text-fg-subtle font-mono">
           {entries.length}
           {generatedAt ? ` · seed ${new Date(generatedAt).toLocaleString(locale)}` : ''}
-          {live.length ? ` · +${live.length} ${isPt ? 'registos' : 'submitted'}` : ''}
+          {live.length ? ` · +${live.length} ${d.submittedCount}` : ''}
         </p>
         <a
           href="#registar-escola"
           className="inline-flex text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
         >
-          {isPt ? 'A tua escola não está? Regista-a ↓' : 'School missing? Register ↓'}
+          {d.registerCta}
         </a>
         {' · '}
         <a
           href={`/${locale}/diretorio/gerir/`}
           className="inline-flex text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
         >
-          {isPt ? 'Gerir o teu perfil' : 'Manage your profile'}
+          {d.manageProfileCta}
         </a>
       </header>
 
       <div className="flex flex-col gap-3">
         <label className="block max-w-md">
-          <span className="sr-only">{isPt ? 'Pesquisar' : 'Search'}</span>
+          <span className="sr-only">{d.searchLabel}</span>
           <input
             type="search"
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder={isPt ? 'Pesquisar nome ou zona…' : 'Search name or area…'}
+            placeholder={d.searchPlaceholder}
             className="w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
           />
         </label>
@@ -145,18 +146,18 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
         <div
           className="flex gap-2 overflow-x-auto no-scrollbar touch-pan-x pb-0.5"
           role="group"
-          aria-label={isPt ? 'Vista' : 'View'}
+          aria-label={d.viewAria}
         >
           <FilterPill active={view === 'list'} onClick={() => setView('list')}>
             <span className="inline-flex items-center gap-1.5">
               <List className="w-3.5 h-3.5" aria-hidden />
-              {isPt ? 'Lista' : 'List'}
+              {d.listView}
             </span>
           </FilterPill>
           <FilterPill active={view === 'map'} onClick={() => setView('map')}>
             <span className="inline-flex items-center gap-1.5">
               <MapIcon className="w-3.5 h-3.5" aria-hidden />
-              {isPt ? 'Mapa' : 'Map'}
+              {nav.mapa}
             </span>
           </FilterPill>
         </div>
@@ -164,17 +165,13 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
         <div
           className="flex gap-2 overflow-x-auto no-scrollbar touch-pan-x pb-0.5"
           role="group"
-          aria-label={isPt ? 'Tipo' : 'Type'}
+          aria-label={d.typeAria}
         >
           {KINDS.map((k) => {
             const label =
               k === 'all'
-                ? isPt
-                  ? 'Todos'
-                  : 'All'
-                : isPt
-                  ? DIRECTORY_KIND_LABELS[k].pt
-                  : DIRECTORY_KIND_LABELS[k].en;
+                ? d.all
+                : DIRECTORY_KIND_LABELS[k][isPt ? 'pt' : 'en'];
             return (
               <FilterPill key={k} active={kind === k} onClick={() => setKind(k)}>
                 {label}
@@ -187,10 +184,10 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
           <div
             className="flex gap-2 overflow-x-auto no-scrollbar touch-pan-x pb-0.5"
             role="group"
-            aria-label={isPt ? 'Região' : 'Region'}
+            aria-label={d.regionAria}
           >
             <FilterPill active={region === 'all'} onClick={() => setRegion('all')}>
-              {isPt ? 'Todas as regiões' : 'All regions'}
+              {d.allRegions}
             </FilterPill>
             {regions.map((r) => (
               <FilterPill key={r} active={region === r} onClick={() => setRegion(r)}>
@@ -204,20 +201,14 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
       {filtered.length === 0 ? (
         <EmptyState
           icon={<GraduationCap className="w-7 h-7 text-fg-muted" aria-hidden />}
-          title={isPt ? 'Nada encontrado' : 'Nothing found'}
-          description={
-            isPt
-              ? 'Ajusta filtros ou regista a tua escola abaixo.'
-              : 'Adjust filters or register your school below.'
-          }
+          title={d.nothingFound}
+          description={d.nothingFoundDescription}
         />
       ) : view === 'map' ? (
         <div className="space-y-3">
           <DirectoryMap entries={filtered} locale={locale} />
           <p className="text-meta-sm text-fg-subtle">
-            {isPt
-              ? 'Clica num pin para abrir o perfil. Filtros aplicam-se ao mapa.'
-              : 'Tap a pin to open the profile. Filters apply to the map.'}
+            {d.mapHint}
           </p>
         </div>
       ) : (

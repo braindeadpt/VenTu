@@ -14,6 +14,7 @@ import {
 } from '@/lib/map-constants';
 import { clearLeafletContainer } from '@/lib/mapFullscreen';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
+import { getTranslation } from '@/lib/i18n';
 
 type Props = {
   entries: DirectoryEntry[];
@@ -32,6 +33,10 @@ function entryHref(entry: DirectoryEntry, locale: string): string {
 
 export default function DirectoryMap({ entries, locale, className }: Props) {
   const isPt = locale === 'pt';
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
+  const viewProfileLabel = d.viewProfile;
+  const onListLabel = d.inList;
+  const mapAria = d.mapViewAria;
   const router = useRouter();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<import('leaflet').Map | null>(null);
@@ -155,8 +160,8 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
     }
 
     const bounds: [number, number][] = [];
-    const viewProfile = isPt ? 'Ver perfil' : 'View profile';
-    const onList = isPt ? 'Na lista ↓' : 'In list ↓';
+    const viewProfile = viewProfileLabel;
+    const onList = onListLabel;
 
     for (const entry of pins) {
       const name = isPt ? entry.name : entry.nameEn || entry.name;
@@ -201,7 +206,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
     } else {
       map.fitBounds(bounds, { padding: [28, 28], maxZoom: 10 });
     }
-  }, [entries, locale, isPt, ready, router]);
+  }, [entries, locale, isPt, ready, router, viewProfileLabel, onListLabel]);
 
   return (
     <section
@@ -209,7 +214,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
         className ??
         'relative w-full h-[clamp(220px,36vh,360px)] rounded-2xl overflow-hidden border border-divider bg-bg-base'
       }
-      aria-label={isPt ? 'Mapa do directório' : 'Directory map'}
+      aria-label={mapAria}
     >
       <div ref={containerRef} className="absolute inset-0 z-0" />
       {!ready && (
@@ -219,9 +224,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
         />
       )}
       <p className="pointer-events-none absolute left-3 top-3 z-[400] rounded-input border border-divider bg-bg-elevated/95 px-2.5 py-1 text-meta-sm text-fg-muted shadow-sm">
-        {isPt
-          ? `${entries.filter((e) => isValidCoord(e.lat, e.lon)).length} no mapa`
-          : `${entries.filter((e) => isValidCoord(e.lat, e.lon)).length} on map`}
+        {d.onMapCount.replace('{count}', String(entries.filter((e) => isValidCoord(e.lat, e.lon)).length))}
       </p>
     </section>
   );

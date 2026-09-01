@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 
 export default function AlertConfirmClient({ locale, token }: { locale: string; token: string }) {
-  const isPt = locale === 'pt';
+  const a = getTranslation(locale).alerts;
   const [status, setStatus] = useState<'loading' | 'ok' | 'fail'>('loading');
 
   useEffect(() => {
@@ -31,27 +32,19 @@ export default function AlertConfirmClient({ locale, token }: { locale: string; 
   return (
     <div className="max-w-md mx-auto py-16 px-4 text-center space-y-4">
       {status === 'loading' && (
-        <p className="text-fg-muted">{isPt ? 'A confirmar…' : 'Confirming…'}</p>
+        <p className="text-fg-muted">{a.confirming}</p>
       )}
       {status === 'ok' && (
         <>
-          <p className="text-lg text-fg font-semibold">
-            {isPt ? 'Alerta confirmado!' : 'Alert confirmed!'}
-          </p>
-          <p className="text-fg-muted text-sm">
-            {isPt
-              ? 'Receberás um email quando algum dos teus favoritos atingir o limiar.'
-              : 'You will receive an email when any of your favorites hits your threshold.'}
-          </p>
+          <p className="text-lg text-fg font-semibold">{a.confirmed}</p>
+          <p className="text-fg-muted text-sm">{a.confirmedNote}</p>
         </>
       )}
       {status === 'fail' && (
-        <p className="text-score-poor">
-          {isPt ? 'Link inválido ou expirado.' : 'Invalid or expired link.'}
-        </p>
+        <p className="text-score-poor">{a.invalidOrExpired}</p>
       )}
       <Link href={`/${locale}/`} className="text-data-waves hover:underline text-sm">
-        {isPt ? '← Voltar ao VenTu' : '← Back to VenTu'}
+        {a.backToVentu}
       </Link>
     </div>
   );

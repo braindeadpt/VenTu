@@ -13,6 +13,7 @@ import {
 import { getSupabaseClient } from '@/lib/supabase';
 import DirectoryEntryCard from '@/components/directory/DirectoryEntryCard';
 import { sortDirectoryEntries } from '@/lib/directoryClient';
+import { getTranslation } from '@/lib/i18n';
 
 type Props = {
   spotId: string;
@@ -24,7 +25,7 @@ type Props = {
 type Nearby = DirectoryEntry & { distanceKm: number };
 
 export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }: Props) {
-  const isPt = locale === 'pt';
+  const d = getTranslation(locale).directory;
   const [nearby, setNearby] = useState<Nearby[]>([]);
 
   useEffect(() => {
@@ -78,19 +79,15 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }
       <div className="flex items-end justify-between gap-3">
         <div>
           <h2 id="spot-nearby-directory" className="font-display text-h2 text-fg">
-            {isPt ? 'Escolas e lojas perto' : 'Nearby schools & shops'}
+            {d.nearbySchoolsTitle}
           </h2>
-          <p className="text-body text-fg-muted mt-1">
-            {isPt
-              ? 'Dados públicos — ainda podem estar por verificar. És a escola? Reclama ou regista em Directório.'
-              : 'Public data — may be unverified. Own the school? Claim or register in Directory.'}
-          </p>
+          <p className="text-body text-fg-muted mt-1">{d.nearbyNote}</p>
         </div>
         <Link
           href={`/${locale}/diretorio/`}
           className="text-meta-sm font-semibold text-fg-muted hover:text-fg shrink-0"
         >
-          {isPt ? 'Directório →' : 'Directory →'}
+          {d.directoryArrow}
         </Link>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">

@@ -6,6 +6,7 @@ import type { DirectoryEntry } from '@/types/directory';
 import DirectoryClaimButton from '@/components/directory/DirectoryClaimButton';
 import { buildEmbedSnippet } from '@/lib/directoryListings';
 import { safeExternalUrl } from '@/lib/safeUrl';
+import { getTranslation } from '@/lib/i18n';
 
 type Props = {
   entry: DirectoryEntry;
@@ -23,6 +24,7 @@ export default function DirectoryEntryCard({
   compact = false,
 }: Props) {
   const isPt = locale === 'pt';
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
   const name = isPt ? entry.name : entry.nameEn || entry.name;
   const hasStaticProfile = entry.source !== 'submitted';
   const href = hasStaticProfile ? `/${locale}/diretorio/${entry.slug}/` : undefined;
@@ -59,11 +61,11 @@ export default function DirectoryEntryCard({
             )}
             {entry.verified ? (
               <span className="text-meta-sm text-score-good">
-                {isPt ? 'Verificado' : 'Verified'}
+                {d.verified}
               </span>
             ) : (
               <span className="text-meta-sm text-fg-subtle">
-                {isPt ? 'Não verificado' : 'Unverified'}
+                {d.unverified}
               </span>
             )}
           </div>
@@ -103,7 +105,7 @@ export default function DirectoryEntryCard({
             href={`/${locale}/spots/${entry.spotIds[0]}/`}
             className="text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
           >
-            {isPt ? 'Spot próximo' : 'Nearby spot'}
+            {d.nearbySpot}
           </Link>
         )}
         {href && (
@@ -111,7 +113,7 @@ export default function DirectoryEntryCard({
             href={href}
             className="text-meta-sm font-semibold text-fg-muted hover:text-fg underline-offset-2 hover:underline"
           >
-            {isPt ? 'Ver perfil' : 'View profile'}
+            {d.viewProfile}
           </Link>
         )}
       </div>
@@ -121,7 +123,7 @@ export default function DirectoryEntryCard({
       {tier === 'pro' && spotForEmbed && !compact && (
         <div className="space-y-1 border-t border-divider pt-3">
           <p className="text-meta-sm font-semibold text-fg-muted">
-            {isPt ? 'Widget Pro (embed)' : 'Pro widget (embed)'}
+            {d.proWidget}
           </p>
           <textarea
             readOnly

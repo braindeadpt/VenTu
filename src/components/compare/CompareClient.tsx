@@ -13,6 +13,7 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import FilterPill from '@/components/ui/FilterPill';
 import WaveSourceAttributionNote from '@/components/ui/WaveSourceAttributionNote';
 import WarningPill from '@/components/ui/WarningPill';
+import { getTranslation } from '@/lib/i18n';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
@@ -20,6 +21,8 @@ import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { rawToScoreInput, resolveScoreWaveSource, waveFactorSuffix, type ScoreWaveSource } from '@/lib/scoreConditions';
+import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
+import type { ObservedWave } from '@/lib/observedWave';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import {
   SEA_STATE_WARNING_TYPES,
@@ -36,6 +39,12 @@ interface SpotBattleData {
   waveSource: ScoreWaveSource;
   /** Tipo da leitura observada (ih-buoy | wmo-buoy) p/ a nota de atribuição. */
   observedWaveSource: 'ih-buoy' | 'wmo-buoy' | null;
+  /**
+   * Calibração cross-border (observedWave.calibration — boia ES recalibrada à
+   * referência PT): o tag compacto «ref. PT» mostra-a junto da altura, como no
+   * hero, porque o comparador não tem o contexto do card de onda observada.
+   */
+  observedWaveCalibration: ObservedWave['calibration'] | null;
 }
 
 interface PrecomputedCondition {
@@ -82,6 +91,10 @@ async function loadSpotBattleData(
         ((cond as Record<string, unknown>).observedWave as {
           source?: 'ih-buoy' | 'wmo-buoy';
         } | null | undefined)?.source ?? null,
+      observedWaveCalibration:
+        ((cond as Record<string, unknown>).observedWave as {
+          calibration?: ObservedWave['calibration'];
+        } | null | undefined)?.calibration ?? null,
     };
   }
 
@@ -96,6 +109,7 @@ async function loadSpotBattleData(
       // Live Open-Meteo — sem correcção de boia/viés.
       waveSource: 'forecast',
       observedWaveSource: null,
+      observedWaveCalibration: null,
     };
   } catch {
     return null;
@@ -194,6 +208,7 @@ export default function CompareClient() {
   }, []);
 
   const isPt = locale === 'pt';
+  const cmp = getTranslation(isPt ? 'pt' : 'en').compare;
   const warningsData = useIpmaWarnings();
 
   useEffect(() => {
@@ -265,37 +280,37 @@ export default function CompareClient() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 space-y-6">
           <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? 'Voltar' : 'Back'}
+            {cmp.back}
           </Link>
 
           <PageHeader
             align="center"
             icon={<Trophy className="w-12 h-12 text-score-epic" aria-hidden />}
             title="Spot vs Spot"
-            subtitle={isPt ? 'Escolhe 2-3 spots para comparar' : 'Pick 2-3 spots to compare'}
+            subtitle={cmp.pickSubtitle}
           />
 
           <Input
             type="search"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder={isPt ? 'Procurar spot...' : 'Search spot...'}
+            placeholder={cmp.searchPlaceholder}
             icon={<Search className="w-4 h-4" />}
           />
 
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <span className="text-meta text-fg-muted">
-              {selectedSlugs.length}/3 {isPt ? 'selecionados' : 'selected'}
+              {cmp.selectedCount.replace('{n}', String(selectedSlugs.length))}
             </span>
             <div className="flex gap-2">
               {selectedSlugs.length > 0 && (
                 <Button variant="ghost" size="sm" onClick={() => setSelectedSlugs([])}>
                   <X className="w-4 h-4" aria-hidden />
-                  {isPt ? 'Limpar' : 'Clear'}
+                  {cmp.clear}
                 </Button>
               )}
               <Button size="sm" onClick={startCompare} disabled={selectedSlugs.length < 2}>
-                {isPt ? 'Comparar' : 'Compare'}
+                {cmp.compare}
               </Button>
             </div>
           </div>
@@ -358,7 +373,7 @@ export default function CompareClient() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8 space-y-6">
           <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? 'Voltar' : 'Back'}
+            {cmp.back}
           </Link>
           <ErrorState
             locale={locale}
@@ -380,14 +395,10 @@ export default function CompareClient() {
             align="center"
             icon={<Trophy className="w-16 h-16 text-score-epic" aria-hidden />}
             title="Spot vs Spot"
-            subtitle={
-              isPt
-                ? 'Seleciona 2-3 spots para comparar condições.'
-                : 'Pick 2-3 spots to compare conditions.'
-            }
+            subtitle={cmp.emptySubtitle}
           />
           <Button size="lg" onClick={() => setPicking(true)}>
-            {isPt ? 'Escolher spots' : 'Choose spots'}
+            {cmp.chooseSpots}
           </Button>
         </div>
       </div>
@@ -409,7 +420,7 @@ export default function CompareClient() {
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <Link href={`/${locale}/spots/`} className="inline-flex items-center gap-2 text-fg-muted hover:text-fg transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? 'Voltar' : 'Back'}
+            {cmp.back}
           </Link>
           <div className="flex items-center gap-2">
             <FilterPill active={baseCity === 'lisbon'} onClick={() => setBaseCity('lisbon')}>
@@ -424,14 +435,14 @@ export default function CompareClient() {
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <PageHeader
             title="Spot vs Spot"
-            subtitle={isPt ? 'Quem ganha hoje?' : 'Who wins today?'}
+            subtitle={cmp.whoWins}
           />
           <button
             type="button"
             onClick={() => { setPicking(true); setSelectedSlugs(slugs); }}
             className="text-sm text-data-waves hover:underline shrink-0"
           >
-            {isPt ? 'Trocar spots' : 'Change spots'}
+            {cmp.changeSpots}
           </button>
         </div>
 
@@ -450,7 +461,7 @@ export default function CompareClient() {
         <div className={`card-1 p-6 text-center border ${winnerTokens.border} ${winnerTokens.glow}`}>
           <Crown className={`w-8 h-8 ${winnerTokens.text} mx-auto mb-2`} aria-hidden />
           <p className={`text-meta-sm font-bold uppercase tracking-wide ${winnerTokens.text} mb-2`}>
-            {isPt ? 'Vencedor' : 'Winner'}
+            {cmp.winner}
           </p>
           <h2 className="text-h2 text-fg">{isPt ? winner.spot.name : winner.spot.nameEn}</h2>
           <p className="text-fg-muted mt-1">
@@ -514,24 +525,33 @@ export default function CompareClient() {
                   <div className="flex justify-between">
                     <dt className="text-fg-muted flex items-center gap-1">
                       <Waves className="w-4 h-4" aria-hidden />
-                      {isPt ? 'Ondas' : 'Waves'}
+                      {cmp.waves}
                     </dt>
-                    <dd className="font-mono tabular-nums font-semibold text-fg">
+                    <dd className="font-mono tabular-nums font-semibold text-fg flex flex-wrap items-center justify-end gap-1.5">
                       {data.conditions.waveHeight.toFixed(1)}m
                       {waveFactorSuffix(data.waveSource, locale)}
+                      {data.observedWaveCalibration && (
+                        <WaveCalibrationTag
+                          wave={{
+                            calibration: data.observedWaveCalibration,
+                            waveHeight: data.conditions.waveHeight,
+                          }}
+                          locale={isPt ? 'pt' : 'en'}
+                        />
+                      )}
                     </dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-fg-muted flex items-center gap-1">
                       <Wind className="w-4 h-4" aria-hidden />
-                      {isPt ? 'Vento' : 'Wind'}
+                      {cmp.wind}
                     </dt>
                     <dd className="font-mono tabular-nums font-semibold text-fg">{(data.conditions.windSpeed * 1.94384).toFixed(0)}kt</dd>
                   </div>
                   <div className="flex justify-between">
                     <dt className="text-fg-muted flex items-center gap-1">
                       <Clock className="w-4 h-4" aria-hidden />
-                      {isPt ? 'Condução' : 'Drive'}
+                      {cmp.drive}
                     </dt>
                     <dd className="text-data-waves font-medium">{data.driveTime}</dd>
                   </div>
@@ -551,7 +571,7 @@ export default function CompareClient() {
                   href={`/${locale}/spots/${data.spot.slug}/?sport=${selectedSport}`}
                   className="mt-4 w-full"
                 >
-                  {isPt ? 'Ver detalhes' : 'View details'}
+                  {cmp.viewDetails}
                 </Button>
               </article>
             );

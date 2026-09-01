@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
 import {
   fetchMyDirectoryListings,
@@ -50,6 +51,8 @@ type OwnedProfile = DirectoryProfileRow & {
 
 export default function DirectoryManageClient({ locale, seedById }: Props) {
   const isPt = locale === 'pt';
+  const nav = getTranslation(isPt ? 'pt' : 'en').nav;
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
   const { session, authLoading, requestLogin, isSupabaseReady } = useAuth();
   const [listings, setListings] = useState<DirectoryEntry[]>([]);
   const [profiles, setProfiles] = useState<OwnedProfile[]>([]);
@@ -96,7 +99,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
     return (
       <main className="max-w-lg mx-auto px-4 py-10">
         <p className="text-body text-fg-muted">
-          {isPt ? 'Contas indisponíveis.' : 'Accounts unavailable.'}
+          {d.accountsUnavailable}
         </p>
       </main>
     );
@@ -105,7 +108,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
   if (authLoading || loading) {
     return (
       <main className="max-w-lg mx-auto px-4 py-10">
-        <p className="text-body text-fg-muted">{isPt ? 'A carregar…' : 'Loading…'}</p>
+        <p className="text-body text-fg-muted">{d.loadingCurtain}</p>
       </main>
     );
   }
@@ -114,15 +117,13 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
     return (
       <main className="max-w-lg mx-auto px-4 py-10 space-y-4">
         <h1 className="font-display text-h2 text-fg">
-          {isPt ? 'Gerir perfil' : 'Manage profile'}
+          {d.manageProfile}
         </h1>
         <p className="text-body text-fg-muted">
-          {isPt
-            ? 'Entra para editar as escolas ou lojas que geres.'
-            : 'Sign in to edit schools or shops you manage.'}
+          {d.signInToEditIntro}
         </p>
         <Button variant="secondary" onClick={() => requestLogin()}>
-          {isPt ? 'Entrar' : 'Sign in'}
+          {nav.signIn}
         </Button>
       </main>
     );
@@ -134,22 +135,20 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
     <main className="max-w-lg mx-auto px-4 py-8 sm:py-10 space-y-6">
       <nav className="text-meta-sm text-fg-muted">
         <Link href={`/${locale}/diretorio/`} className="hover:text-fg">
-          {isPt ? 'Directório' : 'Directory'}
+          {d.title}
         </Link>
         <span className="mx-1.5" aria-hidden>
           /
         </span>
-        <span className="text-fg">{isPt ? 'Gerir' : 'Manage'}</span>
+        <span className="text-fg">{d.manageTitle}</span>
       </nav>
 
       <header className="space-y-1">
         <h1 className="font-display text-display text-fg">
-          {isPt ? 'As tuas escolas' : 'Your schools'}
+          {d.yourSchools}
         </h1>
         <p className="text-body text-fg-muted">
-          {isPt
-            ? 'Actualiza contactos, desportos e spot depois de verificados. Tier premium é definido pela VenTu.'
-            : 'Update contacts, sports and spot after verification. Premium tier is set by VenTu.'}
+          {d.manageIntro}
         </p>
       </header>
 
@@ -159,12 +158,10 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
       {empty ? (
         <Card variant="card-1" className="space-y-3">
           <p className="text-body text-fg-muted">
-            {isPt
-              ? 'Ainda não geres nenhum perfil. Regista a escola no directório ou reclama um stub existente — depois de aprovarmos, editas aqui.'
-              : 'You don’t manage any profile yet. Register on the directory or claim a stub — after we approve, edit here.'}
+            {d.noProfilesYet}
           </p>
           <Button href={`/${locale}/diretorio/`} variant="secondary" locale={locale as 'pt' | 'en'}>
-            {isPt ? 'Ir ao directório' : 'Go to directory'}
+            {d.goToDirectory}
           </Button>
         </Card>
       ) : (
@@ -189,9 +186,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                   if (!safe) {
                     setBusyId(null);
                     setError(
-                      isPt
-                        ? 'URL inválido — usa https://… (só http/https).'
-                        : 'Invalid URL — use https://… (http/https only).',
+                      d.invalidUrl,
                     );
                     return;
                   }
@@ -217,14 +212,12 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                 if (!res.ok) {
                   setError(
                     /policy|permission|RLS/i.test(res.error)
-                      ? isPt
-                        ? 'Sem permissão — corre o SQL actualizado (owner edit) no Supabase.'
-                        : 'No permission — run updated supabase-directory.sql (owner edit).'
+                      ? d.noPermissionSql
                       : res.error,
                   );
                   return;
                 }
-                setOkMsg(isPt ? 'Guardado.' : 'Saved.');
+                setOkMsg(d.saved);
                 await reload();
               }}
             />
@@ -253,9 +246,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                     if (!safe) {
                       setBusyId(null);
                       setError(
-                        isPt
-                          ? 'URL inválido — usa https://… (só http/https).'
-                          : 'Invalid URL — use https://… (http/https only).',
+                        d.invalidUrl,
                       );
                       return;
                     }
@@ -274,7 +265,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
                     setError(res.error);
                     return;
                   }
-                  setOkMsg(isPt ? 'Guardado.' : 'Saved.');
+                  setOkMsg(d.saved);
                   await reload();
                 }}
               />
@@ -313,6 +304,7 @@ function ListingEditor({
   onSave: (f: FormFields) => Promise<void>;
 }) {
   const isPt = locale === 'pt';
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
   const [name, setName] = useState(entry.name);
   const [kind, setKind] = useState(entry.kind);
   const [sports, setSports] = useState(entry.sports);
@@ -340,13 +332,7 @@ function ListingEditor({
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-h3 text-fg">{entry.name}</h2>
         <span className={`text-meta-sm ${entry.verified ? 'text-score-good' : 'text-fg-subtle'}`}>
-          {entry.verified
-            ? isPt
-              ? 'Verificado'
-              : 'Verified'
-            : isPt
-              ? 'Não verificado'
-              : 'Unverified'}
+          {entry.verified ? d.verified : d.unverified}
           {' · '}
           {entry.tier ?? 'free'}
         </span>
@@ -395,7 +381,7 @@ function ListingEditor({
           })
         }
       >
-        {isPt ? 'Guardar' : 'Save'}
+        {d.save}
       </Button>
     </Card>
   );
@@ -417,6 +403,7 @@ function ProfileEditor({
   onSave: (f: FormFields) => Promise<void>;
 }) {
   const isPt = locale === 'pt';
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
   const label = row.display_name || seed?.name || row.entry_id;
   const [name, setName] = useState(row.display_name || seed?.name || '');
   const [sports, setSports] = useState<DirectorySport[]>(
@@ -447,9 +434,9 @@ function ProfileEditor({
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="font-display text-h3 text-fg">{label}</h2>
         <span className={`text-meta-sm ${row.verified ? 'text-score-good' : 'text-fg-subtle'}`}>
-          {isPt ? 'Claim' : 'Claim'}
+          Claim
           {' · '}
-          {row.verified ? (isPt ? 'Verificado' : 'Verified') : isPt ? 'Pendente' : 'Pending'}
+          {row.verified ? d.verified : d.pending}
           {' · '}
           {row.tier}
         </span>
@@ -459,7 +446,7 @@ function ProfileEditor({
           href={`/${locale}/diretorio/${seed.slug}/`}
           className="text-meta-sm text-fg-muted hover:text-fg underline-offset-2 hover:underline"
         >
-          {isPt ? 'Ver página pública' : 'View public page'}
+        {d.viewPublicPage}
         </Link>
       )}
       <OwnerFormFields
@@ -506,7 +493,7 @@ function ProfileEditor({
           })
         }
       >
-        {isPt ? 'Guardar' : 'Save'}
+        {d.save}
       </Button>
     </Card>
   );
@@ -562,10 +549,11 @@ function OwnerFormFields({
   setSpotId: (v: string) => void;
 }) {
   const isPt = locale === 'pt';
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
   return (
     <div className="space-y-3">
       <label className="block">
-        <span className="text-meta-sm text-fg-muted">{isPt ? 'Nome' : 'Name'}</span>
+        <span className="text-meta-sm text-fg-muted">{d.nameLabel}</span>
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
@@ -576,7 +564,7 @@ function OwnerFormFields({
 
       {showKind && (
         <label className="block">
-          <span className="text-meta-sm text-fg-muted">{isPt ? 'Tipo' : 'Type'}</span>
+          <span className="text-meta-sm text-fg-muted">{d.typeAria}</span>
           <select
             value={kind}
             onChange={(e) => setKind(e.target.value as DirectoryKind)}
@@ -592,7 +580,7 @@ function OwnerFormFields({
       )}
 
       <fieldset>
-        <legend className="text-meta-sm text-fg-muted">{isPt ? 'Desportos' : 'Sports'}</legend>
+        <legend className="text-meta-sm text-fg-muted">{d.sportsLabel}</legend>
         <div className="mt-1.5 flex flex-wrap gap-2">
           {sportsOptions.map((s) => {
             const active = sports.includes(s);
@@ -615,7 +603,7 @@ function OwnerFormFields({
 
       <label className="block">
         <span className="text-meta-sm text-fg-muted">
-          {isPt ? 'Spot VenTu mais perto' : 'Nearest VenTu spot'}
+          {d.nearestSpot}
         </span>
         <select
           value={spotId}
@@ -643,7 +631,7 @@ function OwnerFormFields({
       </label>
 
       <label className="block">
-        <span className="text-meta-sm text-fg-muted">{isPt ? 'Telefone' : 'Phone'}</span>
+        <span className="text-meta-sm text-fg-muted">{d.phoneLabel}</span>
         <input
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
@@ -654,7 +642,7 @@ function OwnerFormFields({
 
       {showAddress && (
         <label className="block">
-          <span className="text-meta-sm text-fg-muted">{isPt ? 'Morada' : 'Address'}</span>
+          <span className="text-meta-sm text-fg-muted">{d.addressLabel}</span>
           <input
             value={address}
             onChange={(e) => setAddress(e.target.value)}
@@ -666,7 +654,7 @@ function OwnerFormFields({
 
       {showBio && (
         <label className="block">
-          <span className="text-meta-sm text-fg-muted">{isPt ? 'Bio (curta)' : 'Short bio'}</span>
+          <span className="text-meta-sm text-fg-muted">{d.shortBio}</span>
           <textarea
             value={bio}
             onChange={(e) => setBio(e.target.value)}

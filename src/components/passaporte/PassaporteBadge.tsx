@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from 'react';
 import { Download, Share2, Check } from 'lucide-react';
 import type { Spot } from '@/types';
 import { getMacroRegion } from '@/lib/regions';
+import { getTranslation } from '@/lib/i18n';
 
 interface BadgeBreakdown {
   region: string;
@@ -59,7 +60,10 @@ function getBaseColor(): {
 
 export default function PassaporteBadge({ checkins, spots, locale, userName }: PassaporteBadgeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale);
+  const p = t.passaporte;
+  const shareLabel = t.spotDetail.share;
+  const copyLinkToast = t.spotDetail.copyLink;
   const [toast, setToast] = useState<string | null>(null);
 
   const breakdown = getBreakdown(checkins, spots);
@@ -92,7 +96,7 @@ export default function PassaporteBadge({ checkins, spots, locale, userName }: P
     ctx.fillStyle = c.accent;
     ctx.font = 'bold 28px "Inter", system-ui, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText(isPt ? 'Passaporte VenTu' : 'VenTu Passport', w / 2, 52);
+    ctx.fillText(p.title, w / 2, 52);
 
     if (userName) {
       ctx.fillStyle = c.subtle;
@@ -105,7 +109,7 @@ export default function PassaporteBadge({ checkins, spots, locale, userName }: P
     ctx.fillText(`${total}`, w / 2, 130);
     ctx.fillStyle = c.muted;
     ctx.font = '14px "Inter", system-ui, sans-serif';
-    ctx.fillText(isPt ? 'spots visitados' : 'spots visited', w / 2, 150);
+    ctx.fillText(p.visitedSpots, w / 2, 150);
 
     ctx.strokeStyle = c.divider;
     ctx.lineWidth = 1;
@@ -132,17 +136,32 @@ export default function PassaporteBadge({ checkins, spots, locale, userName }: P
       ctx.fillStyle = c.subtle;
       ctx.textAlign = 'center';
       ctx.font = '14px "Inter", system-ui, sans-serif';
-      ctx.fillText(isPt ? 'Nenhum check-in ainda' : 'No check-ins yet', w / 2, startY + 10);
+      ctx.fillText(p.noCheckins, w / 2, startY + 10);
     }
 
     ctx.fillStyle = c.subtle;
     ctx.textAlign = 'center';
     ctx.font = '10px "Inter", system-ui, sans-serif';
-    const dateLabel = isPt
-      ? `Actualizado ${new Intl.DateTimeFormat('pt-PT', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())}`
-      : `Updated ${new Intl.DateTimeFormat('en-US', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date())}`;
+    const intlLocale =
+      locale === 'pt'
+        ? 'pt-PT'
+        : locale === 'es'
+          ? 'es-ES'
+          : locale === 'de'
+            ? 'de-DE'
+            : locale === 'fr'
+              ? 'fr-FR'
+              : 'en-US';
+    const dateLabel = p.dateUpdated.replace(
+      '{date}',
+      new Intl.DateTimeFormat(intlLocale, {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }).format(new Date()),
+    );
     ctx.fillText(`${dateLabel} · ventu.surf`, w / 2, h - 20);
-  }, [checkins, spots, locale, userName, breakdown, total, isPt]);
+  }, [checkins, spots, locale, userName, breakdown, total, p]);
 
   const handleDownload = () => {
     const canvas = canvasRef.current;
@@ -160,10 +179,10 @@ export default function PassaporteBadge({ checkins, spots, locale, userName }: P
       const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'));
       if (!blob) throw new Error('No blob');
       const file = new File([blob], 'ventu-passaporte.png', { type: 'image/png' });
-      await navigator.share({ files: [file], title: isPt ? 'Passaporte VenTu' : 'VenTu Passport' });
+      await navigator.share({ files: [file], title: p.title });
     } catch {
       await navigator.clipboard.writeText(window.location.href);
-      setToast(isPt ? 'Link copiado!' : 'Link copied!');
+      setToast(copyLinkToast);
       setTimeout(() => setToast(null), 2500);
     }
   };
@@ -180,14 +199,14 @@ export default function PassaporteBadge({ checkins, spots, locale, userName }: P
           className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-input bg-accent hover:bg-accent-hover active:bg-accent-active border border-transparent transition-opacity duration-150 shadow-card min-h-[44px]"
         >
           <Download className="w-4 h-4" aria-hidden />
-          {isPt ? 'Descarregar' : 'Download'}
+          {p.download}
         </button>
         <button
           onClick={handleShare}
           className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium rounded-input border border-divider text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors min-h-[44px]"
         >
           <Share2 className="w-4 h-4" aria-hidden />
-          {isPt ? 'Partilhar' : 'Share'}
+          {shareLabel}
         </button>
       </div>
 

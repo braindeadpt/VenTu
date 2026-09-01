@@ -5,6 +5,7 @@ import { Bell, Send, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { SPORT_LABELS, ALL_SPORTS, type SportType } from '@/lib/sportRatings';
+import { getTranslation } from '@/lib/i18n';
 import {
   deactivateUserAlerts,
   fetchUserAlertPrefs,
@@ -23,6 +24,8 @@ interface FavoritesAlertsPanelProps {
 
 export default function FavoritesAlertsPanel({ locale, favoriteCount }: FavoritesAlertsPanelProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
+  const a = t.alerts;
   const { session, favoritesReady } = useAuth();
   const [prefs, setPrefs] = useState<UserAlertPrefs | null>(null);
   const [loading, setLoading] = useState(true);
@@ -117,55 +120,43 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
       <div className="flex items-start gap-3">
         <Bell className="w-5 h-5 text-data-waves shrink-0 mt-0.5" aria-hidden />
         <div className="min-w-0 flex-1">
-          <h2 className="text-sm font-semibold text-fg">
-            {isPt ? 'Alertas por email' : 'Email alerts'}
-          </h2>
+          <h2 className="text-sm font-semibold text-fg">{a.emailAlerts}</h2>
           <p className="text-meta-sm text-fg-muted mt-1">
-            {isPt
-              ? `Avisa-te quando algum dos teus ${favoriteCount} favorito${favoriteCount === 1 ? '' : 's'} atingir o score mínimo. Por defeito: resumo diário (~7h30); opcional: alerta imediato (máx. 1×/3h). Podes também ligar o Telegram em Conta.`
-              : `Get notified when any of your ${favoriteCount} favorite${favoriteCount === 1 ? '' : 's'} hits the minimum score. Default: daily digest (~7:30 AM); optional: immediate alert (max once per 3h). You can also link Telegram in Account.`}
+            {a.introNotify
+              .replace('{count}', String(favoriteCount))
+              .replace('{favs}', favoriteCount === 1 ? a.favOne : a.favMany)}
           </p>
         </div>
       </div>
 
       {isActive && isVerified && (
         <p className="text-xs text-score-good font-medium">
-          {isPt ? 'Alertas activos' : 'Alerts active'}
+          {a.alertsActive}
           {' · '}
           {SPORT_LABELS[prefs!.sport as SportType]?.[isPt ? 'pt' : 'en'] ?? prefs!.sport}
           {' · '}
-          {isPt ? 'score ≥' : 'score ≥'} {prefs!.min_score}
+          score ≥ {prefs!.min_score}
           {' · '}
           {alertModeLabel(prefs!.alert_mode, isPt)}
         </p>
       )}
 
       {pendingConfirm && (
-        <p className="text-xs text-fg-muted">
-          {isPt
-            ? 'Confirma o link que enviámos para o teu email antes dos alertas começarem.'
-            : 'Confirm the link we sent to your email before alerts start.'}
-        </p>
+        <p className="text-xs text-fg-muted">{a.confirmLinkFirst}</p>
       )}
 
       {saved && !pendingConfirm && isActive && (
-        <p className="text-xs text-fg-muted">
-          {isPt ? 'Preferências guardadas.' : 'Preferences saved.'}
-        </p>
+        <p className="text-xs text-fg-muted">{a.prefsSaved}</p>
       )}
 
       {saved && pendingConfirm && (
-        <p className="text-xs text-fg-muted">
-          {isPt
-            ? 'Subscrição registada. Receberás um email de confirmação.'
-            : 'Subscription saved. You will receive a confirmation email.'}
-        </p>
+        <p className="text-xs text-fg-muted">{a.subSavedConfirm}</p>
       )}
 
       <form onSubmit={submit} className="space-y-3">
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs text-fg-muted mb-1">{isPt ? 'Modalidade' : 'Sport'}</label>
+            <label className="block text-xs text-fg-muted mb-1">{t.spotVerify.sportTabsAria}</label>
             <select
               value={sport}
               onChange={(e) => setSport(e.target.value as SportType)}
@@ -179,7 +170,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             </select>
           </div>
           <div>
-            <label className="block text-xs text-fg-muted mb-1">{isPt ? 'Score mín.' : 'Min score'}</label>
+            <label className="block text-xs text-fg-muted mb-1">{a.minScore}</label>
             <input
               type="number"
               min={30}
@@ -193,18 +184,14 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
         </div>
 
         <div>
-          <label className="block text-xs text-fg-muted mb-1">{isPt ? 'Frequência' : 'Frequency'}</label>
+          <label className="block text-xs text-fg-muted mb-1">{a.frequency}</label>
           <select
             value={alertMode}
             onChange={(e) => setAlertMode(e.target.value as AlertMode)}
             className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-sm text-fg"
           >
-            <option value="digest">
-              {isPt ? 'Resumo diário (~7h30) — recomendado' : 'Daily digest (~7:30 AM) — recommended'}
-            </option>
-            <option value="immediate">
-              {isPt ? 'Imediato quando estiver bom (máx. 1×/3h)' : 'Immediate when conditions fire (max once per 3h)'}
-            </option>
+            <option value="digest">{a.dailyDigest}</option>
+            <option value="immediate">{a.immediate}</option>
           </select>
         </div>
 
@@ -220,16 +207,10 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           >
             <Send className="w-3.5 h-3.5" aria-hidden />
             {saving
-              ? isPt
-                ? 'A guardar…'
-                : 'Saving…'
+              ? a.saving
               : isActive
-                ? isPt
-                  ? 'Actualizar alertas'
-                  : 'Update alerts'
-                : isPt
-                  ? 'Activar alertas'
-                  : 'Enable alerts'}
+                ? a.updateAlerts
+                : a.enableAlerts}
           </Button>
           {isActive && (
             <Button
@@ -241,7 +222,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
               className="inline-flex items-center gap-1.5 text-fg-muted"
             >
               <X className="w-3.5 h-3.5" aria-hidden />
-              {isPt ? 'Desactivar' : 'Disable'}
+              {a.disable}
             </Button>
           )}
         </div>

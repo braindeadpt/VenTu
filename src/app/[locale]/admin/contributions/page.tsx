@@ -1,5 +1,5 @@
 import ContributionsAdminClient from '@/components/admin/ContributionsAdminClient';
-import { locales } from '@/lib/i18n';
+import { getTranslation, locales } from '@/lib/i18n';
 import type { Metadata } from 'next';
 
 export async function generateStaticParams() {
@@ -15,7 +15,7 @@ export async function generateMetadata({
   const isPt = locale === 'pt';
 
   return {
-    title: isPt ? 'Admin — Contribuições' : 'Admin — Contributions',
+    title: getTranslation(isPt ? 'pt' : 'en').admin.metaTitleContributions,
     robots: { index: false, follow: false },
   };
 }

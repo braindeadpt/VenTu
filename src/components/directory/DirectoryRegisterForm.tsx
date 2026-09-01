@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 import { submitDirectoryListing } from '@/lib/directoryListings';
 import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
 import { safeExternalUrl } from '@/lib/safeUrl';
@@ -39,6 +40,7 @@ type Props = {
 
 export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
   const isPt = locale === 'pt';
+  const d = getTranslation(isPt ? 'pt' : 'en').directory;
   const { session, requestLogin, isSupabaseReady, authLoading } = useAuth();
 
   const regionSpots = useMemo(() => {
@@ -66,7 +68,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
     setMessage(null);
 
     if (!isSupabaseReady) {
-      setError(isPt ? 'Auth indisponível.' : 'Auth unavailable.');
+      setError(d.authUnavailableShort);
       return;
     }
     if (!session?.user) {
@@ -74,11 +76,11 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
       return;
     }
     if (name.trim().length < 2) {
-      setError(isPt ? 'Indica o nome da escola/loja.' : 'Enter the school/shop name.');
+      setError(d.needSchoolName);
       return;
     }
     if (sports.length === 0) {
-      setError(isPt ? 'Escolhe pelo menos um desporto.' : 'Pick at least one sport.');
+      setError(d.needSport);
       return;
     }
     const websiteRaw = website.trim();
@@ -86,18 +88,14 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
     if (websiteRaw) {
       const safe = safeExternalUrl(websiteRaw);
       if (!safe) {
-        setError(
-          isPt
-            ? 'URL inválido — usa https://… (só http/https).'
-            : 'Invalid URL — use https://… (http/https only).',
-        );
+        setError(d.invalidUrl);
         return;
       }
       websiteNorm = safe;
     }
     const spot = spots.find((s) => s.id === spotId);
     if (!spot) {
-      setError(isPt ? 'Escolhe um spot VenTu perto.' : 'Pick a nearby VenTu spot.');
+      setError(d.needNearbySpot);
       return;
     }
 
@@ -126,19 +124,13 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
       const missing = /directory_listings|schema cache/i.test(res.error);
       setError(
         missing
-          ? isPt
-            ? 'Registo ainda não activo — corre supabase-directory.sql no Supabase.'
-            : 'Registration not enabled — run supabase-directory.sql.'
+          ? d.registrationNotEnabled
           : res.error,
       );
       return;
     }
 
-    setMessage(
-      isPt
-        ? 'Perfil criado e público como «Não verificado». Quando aprovarmos, passa a Verificado — podes editar em Gerir perfil.'
-        : 'Profile created and public as “Unverified”. After we approve it becomes Verified — edit under Manage profile.',
-    );
+    setMessage(d.profileCreatedUnverified);
     setName('');
     setWebsite('');
     setPhone('');
@@ -151,30 +143,28 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
     <Card variant="card-2" className="space-y-4" as="section">
       <div>
         <h2 className="font-display text-h2 text-fg">
-          {isPt ? 'A tua escola não está listada?' : 'School not listed?'}
+          {d.schoolNotListed}
         </h2>
         <p className="text-body text-fg-muted mt-1">
-          {isPt
-            ? 'Regista o perfil — fica logo público como não verificado. Depois de aprovarmos, aparece como verificado. Grátis.'
-            : 'Register the profile — it goes public immediately as unverified. After we approve, it shows as verified. Free.'}
+          {d.registerIntro}
         </p>
       </div>
 
       <form onSubmit={(e) => void onSubmit(e)} className="space-y-3">
         <label className="block">
-          <span className="text-meta-sm text-fg-muted">{isPt ? 'Nome' : 'Name'}</span>
+          <span className="text-meta-sm text-fg-muted">{d.nameLabel}</span>
           <input
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
             maxLength={L.name}
             className="mt-1 w-full min-h-[44px] rounded-input border border-divider bg-bg-elevated px-3 py-2 text-body text-fg"
-            placeholder={isPt ? 'Ex.: Escola de Surf XYZ' : 'e.g. XYZ Surf School'}
+            placeholder={d.schoolNamePlaceholder}
           />
         </label>
 
         <label className="block">
-          <span className="text-meta-sm text-fg-muted">{isPt ? 'Tipo' : 'Type'}</span>
+          <span className="text-meta-sm text-fg-muted">{d.typeAria}</span>
           <select
             value={kind}
             onChange={(e) => setKind(e.target.value as DirectoryKind)}
@@ -189,7 +179,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
         </label>
 
         <fieldset>
-          <legend className="text-meta-sm text-fg-muted">{isPt ? 'Desportos' : 'Sports'}</legend>
+          <legend className="text-meta-sm text-fg-muted">{d.sportsLabel}</legend>
           <div className="mt-1.5 flex flex-wrap gap-2">
             {SPORTS.map((s) => {
               const active = sports.includes(s);
@@ -212,7 +202,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
 
         <label className="block">
           <span className="text-meta-sm text-fg-muted">
-            {isPt ? 'Spot VenTu mais perto' : 'Nearest VenTu spot'}
+            {d.nearestSpot}
           </span>
           <select
             value={spotId}
@@ -241,7 +231,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
 
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="block">
-            <span className="text-meta-sm text-fg-muted">{isPt ? 'Telefone' : 'Phone'}</span>
+            <span className="text-meta-sm text-fg-muted">{d.phoneLabel}</span>
             <input
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -250,7 +240,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
             />
           </label>
           <label className="block">
-            <span className="text-meta-sm text-fg-muted">{isPt ? 'Morada' : 'Address'}</span>
+            <span className="text-meta-sm text-fg-muted">{d.addressLabel}</span>
             <input
               value={address}
               onChange={(e) => setAddress(e.target.value)}
@@ -266,13 +256,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
           disabled={busy || authLoading}
           loading={busy}
         >
-          {!session?.user
-            ? isPt
-              ? 'Entrar para registar'
-              : 'Sign in to register'
-            : isPt
-              ? 'Publicar perfil'
-              : 'Publish profile'}
+          {!session?.user ? d.signInToRegister : d.publishProfile}
         </Button>
 
         {message && <p className="text-meta-sm text-score-good">{message}</p>}

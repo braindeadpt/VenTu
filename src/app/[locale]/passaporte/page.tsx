@@ -1,4 +1,4 @@
-import { locales } from '@/lib/i18n';
+import { locales, getTranslation } from '@/lib/i18n';
 import type { Metadata } from 'next';
 import { buildPageMetadata } from '@/lib/seo';
 import PassaporteClient from '@/components/passaporte/PassaporteClient';
@@ -14,13 +14,11 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const isPt = locale === 'pt';
+  const p = getTranslation(locale).passaporte;
   return buildPageMetadata({
     locale: locale as 'pt' | 'en' | 'es' | 'de' | 'fr',
-    title: isPt ? 'Passaporte VenTu — Spots visitados' : 'VenTu Passport — Visited spots',
-    description: isPt
-      ? 'O teu passaporte de spots náuticos em Portugal. Vê quantos spots já visitaste, o breakdown por região e partilha o teu badge.'
-      : 'Your watersports spot passport. See how many spots you have visited, the breakdown by region, and share your badge.',
+    title: p.metaTitle,
+    description: p.metaDescription,
     path: `/${locale}/passaporte/`,
   });
 }

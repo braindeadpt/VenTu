@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Check, LogIn, LogOut, RefreshCw, ShieldOff, X } from 'lucide-react';
 import type { Session } from '@supabase/supabase-js';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 import {
   fetchDirectoryListings,
   setDirectoryListingTier,
@@ -30,6 +31,10 @@ export default function DirectoryAdminClient({
   seedNames?: Record<string, string>;
 }) {
   const isPt = locale === 'pt';
+  const admin = getTranslation(isPt ? 'pt' : 'en').admin;
+  const nav = getTranslation(isPt ? 'pt' : 'en').nav;
+  const common = getTranslation(isPt ? 'pt' : 'en').common;
+  const directory = getTranslation(isPt ? 'pt' : 'en').directory;
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [session, setSession] = useState<Session | null>(null);
@@ -83,11 +88,11 @@ export default function DirectoryAdminClient({
     setBusy(true);
     try {
       const sb = getSupabaseClient();
-      if (!sb) throw new Error(isPt ? 'Supabase não configurado' : 'Supabase not configured');
+      if (!sb) throw new Error(admin.supabaseNotConfigured);
       const { error: signInError } = await sb.auth.signInWithPassword({ email, password });
       if (signInError) throw signInError;
     } catch (err) {
-      setError(err instanceof Error ? err.message : isPt ? 'Erro ao entrar' : 'Login failed');
+      setError(err instanceof Error ? err.message : admin.loginFailed);
     } finally {
       setBusy(false);
     }
@@ -130,9 +135,7 @@ export default function DirectoryAdminClient({
     if (!res.ok) {
       setError(
         /tier|column/i.test(res.error)
-          ? isPt
-            ? 'Falta a coluna tier — corre o SQL actualizado (supabase-directory.sql).'
-            : 'Missing tier column — run updated supabase-directory.sql.'
+          ? admin.missingTierColumn
           : res.error,
       );
     } else await load();
@@ -188,7 +191,7 @@ export default function DirectoryAdminClient({
   if (loading) {
     return (
       <main className="max-w-3xl mx-auto px-4 py-10">
-        <p className="text-body text-fg-muted">{isPt ? 'A carregar…' : 'Loading…'}</p>
+        <p className="text-body text-fg-muted">{admin.loading}</p>
       </main>
     );
   }
@@ -197,7 +200,7 @@ export default function DirectoryAdminClient({
     return (
       <main className="max-w-md mx-auto px-4 py-10 space-y-4">
         <h1 className="font-display text-h2 text-fg">
-          {isPt ? 'Admin — Directório' : 'Admin — Directory'}
+          {admin.metaTitleDirectory}
         </h1>
         <form onSubmit={(e) => void handleLogin(e)} className="space-y-3">
           <input
@@ -217,7 +220,7 @@ export default function DirectoryAdminClient({
             required
           />
           <Button type="submit" variant="secondary" loading={busy} leftIcon={<LogIn className="w-4 h-4" />}>
-            {isPt ? 'Entrar' : 'Sign in'}
+            {nav.signIn}
           </Button>
           {error && <p className="text-meta-sm text-score-poor">{error}</p>}
         </form>
@@ -229,7 +232,7 @@ export default function DirectoryAdminClient({
     <main className="max-w-3xl mx-auto px-4 py-10 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-h2 text-fg">
-          {isPt ? 'Admin — Directório' : 'Admin — Directory'}
+          {admin.metaTitleDirectory}
         </h1>
         <div className="flex gap-2">
           <Button
@@ -239,7 +242,7 @@ export default function DirectoryAdminClient({
             onClick={() => void load()}
             leftIcon={<RefreshCw className="w-4 h-4" />}
           >
-            {isPt ? 'Actualizar' : 'Refresh'}
+            {common.refresh}
           </Button>
           <Button
             type="button"
@@ -254,9 +257,7 @@ export default function DirectoryAdminClient({
       </div>
 
       <p className="text-meta-sm text-fg-muted">
-        {isPt
-          ? 'Verificar registos, aprovar claims e definir tier. Owner edita em /diretorio/gerir.'
-          : 'Verify submissions, approve claims, set tier. Owner edits at /diretorio/gerir.'}
+        {admin.verifyIntro}
       </p>
 
       <div className="flex gap-2">
@@ -265,7 +266,7 @@ export default function DirectoryAdminClient({
           onClick={() => setTab('listings')}
           className={`pill min-h-[36px] px-3 ${tab === 'listings' ? 'pill-active' : 'pill-ghost'}`}
         >
-          {isPt ? 'Registos' : 'Listings'} ({items.length})
+          {admin.listings} ({items.length})
         </button>
         <button
           type="button"
@@ -282,7 +283,7 @@ export default function DirectoryAdminClient({
         <div className="space-y-3">
           {claims.length === 0 ? (
             <p className="text-body text-fg-muted">
-              {isPt ? 'Sem claims pendentes.' : 'No pending claims.'}
+              {admin.noPendingClaims}
             </p>
           ) : (
             claims.map((c) => (
@@ -304,7 +305,7 @@ export default function DirectoryAdminClient({
                     onClick={() => void onApproveClaim(c)}
                     leftIcon={<Check className="w-4 h-4" />}
                   >
-                    {isPt ? 'Aprovar claim' : 'Approve claim'}
+                    {admin.approveClaim}
                   </Button>
                   <Button
                     type="button"
@@ -314,7 +315,7 @@ export default function DirectoryAdminClient({
                     onClick={() => void onRejectClaim(c)}
                     leftIcon={<X className="w-4 h-4" />}
                   >
-                    {isPt ? 'Rejeitar' : 'Reject'}
+                    {admin.reject}
                   </Button>
                 </div>
               </Card>
@@ -332,30 +333,24 @@ export default function DirectoryAdminClient({
                 className={`pill min-h-[36px] px-3 ${filter === f ? 'pill-active' : 'pill-ghost'}`}
               >
                 {f === 'unverified'
-                  ? isPt
-                    ? 'Por verificar'
-                    : 'Unverified'
+                  ? directory.unverifiedShort
                   : f === 'verified'
-                    ? isPt
-                      ? 'Verificados'
-                      : 'Verified'
-                    : isPt
-                      ? 'Todos'
-                      : 'All'}
+                    ? directory.verifiedPlural
+                    : directory.all}
               </button>
             ))}
           </div>
 
           <div className="space-y-3">
             {visible.length === 0 ? (
-              <p className="text-body text-fg-muted">{isPt ? 'Nada nesta lista.' : 'Nothing in this list.'}</p>
+              <p className="text-body text-fg-muted">{admin.nothingInList}</p>
             ) : (
               visible.map((e) => (
                 <Card key={e.id} variant="card-1" className="space-y-2">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
                     <h2 className="font-display text-h3 text-fg">{e.name}</h2>
                     <span className={`text-meta-sm ${e.verified ? 'text-score-good' : 'text-fg-subtle'}`}>
-                      {e.verified ? (isPt ? 'Verificado' : 'Verified') : isPt ? 'Não verificado' : 'Unverified'}
+                      {e.verified ? directory.verified : directory.unverified}
                     </span>
                   </div>
                   <p className="text-meta-sm text-fg-muted">
@@ -363,7 +358,7 @@ export default function DirectoryAdminClient({
                   </p>
                   <div className="flex flex-wrap gap-2 items-center">
                     <label className="text-meta-sm text-fg-muted flex items-center gap-1.5">
-                      {isPt ? 'Tier' : 'Tier'}
+                      Tier
                       <select
                         value={e.tier ?? 'free'}
                         disabled={busy}
@@ -386,7 +381,7 @@ export default function DirectoryAdminClient({
                         onClick={() => void onVerify(e.id)}
                         leftIcon={<Check className="w-4 h-4" />}
                       >
-                        {isPt ? 'Aprovar / verificar' : 'Approve / verify'}
+                        {admin.approveVerify}
                       </Button>
                     ) : (
                       <Button
@@ -397,7 +392,7 @@ export default function DirectoryAdminClient({
                         onClick={() => void onUnverify(e.id)}
                         leftIcon={<ShieldOff className="w-4 h-4" />}
                       >
-                        {isPt ? 'Remover verificação' : 'Unverify'}
+                        {admin.unverify}
                       </Button>
                     )}
                   </div>

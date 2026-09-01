@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { locales } from '@/lib/i18n';
+import { getTranslation, locales } from '@/lib/i18n';
 import { kindLabel, loadDirectoryEntries } from '@/lib/directory';
 import { buildPageMetadata } from '@/lib/seo';
 import DirectoryDetailClient from '@/components/directory/DirectoryDetailClient';
@@ -23,8 +23,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const entry = loadDirectoryEntries().find((e) => e.slug === slug);
   const isPt = locale === 'pt';
+  const dv = getTranslation(isPt ? 'pt' : 'en').directory;
   if (!entry) {
-    return { title: isPt ? 'Perfil' : 'Profile' };
+    return { title: dv.profile };
   }
   const name = isPt ? entry.name : entry.nameEn || entry.name;
   return buildPageMetadata({

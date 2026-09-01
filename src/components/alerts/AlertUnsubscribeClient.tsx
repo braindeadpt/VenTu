@@ -3,9 +3,10 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 
 export default function AlertUnsubscribeClient({ locale, token }: { locale: string; token: string }) {
-  const isPt = locale === 'pt';
+  const a = getTranslation(locale).alerts;
   const [status, setStatus] = useState<'loading' | 'ok' | 'fail'>('loading');
 
   useEffect(() => {
@@ -31,20 +32,18 @@ export default function AlertUnsubscribeClient({ locale, token }: { locale: stri
   return (
     <div className="max-w-md mx-auto py-16 px-4 text-center space-y-4">
       {status === 'loading' && (
-        <p className="text-fg-muted">{isPt ? 'A cancelar…' : 'Unsubscribing…'}</p>
+        <p className="text-fg-muted">{a.cancelling}</p>
       )}
       {status === 'ok' && (
         <p className="text-lg text-fg font-semibold">
-          {isPt ? 'Alerta cancelado.' : 'Alert unsubscribed.'}
+          {a.unsubscribed}
         </p>
       )}
       {status === 'fail' && (
-        <p className="text-score-poor">
-          {isPt ? 'Link inválido.' : 'Invalid link.'}
-        </p>
+        <p className="text-score-poor">{a.invalidLink}</p>
       )}
       <Link href={`/${locale}/`} className="text-data-waves hover:underline text-sm">
-        {isPt ? '← Voltar ao VenTu' : '← Back to VenTu'}
+        {a.backToVentu}
       </Link>
     </div>
   );
