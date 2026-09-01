@@ -395,20 +395,25 @@ O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: 
 
 | Spec | Testes | Cobre |
 |---|---|---|
-| `observed-wave-card` | 38 | Onda observada: rótulo honesto «boia X a Y km», lado a lado IH vs WMO (vencedor + razão), skill ME/n por boia, ponte keyless Costa de Prata (Cabo Silleiro), avisos de coerência ES×PT, sufixos do factor `(boia)`/`(viés regional)` em pt/en (hero, sticky, comparador, ForecastTable) e chip «Mar perigoso» |
-| `buoy-warnings` | 12 | Aviso da camada de boias (no-key/down/stale/ok) na página de spot, homepage e mapa interactivo; fallback WMO cobre (sem aviso); chip de diagnóstico no ticker via `pipeline-meta.json` |
-| `tides` | 3 | Marés (`TideScheduleStrip`): fase (a subir / alta agora / a descer) + próxima Baixa/Alta com HH:MM vindas da curva horária real |
+| `observed-wave-card` | 46 | Onda observada: rótulo honesto «boia X a Y km», lado a lado IH vs WMO (vencedor + razão), skill ME/n por boia, ponte keyless (Cabo Silleiro), avisos de coerência ES×PT, sufixos do factor `(boia)`/`(viés regional)` e badges em pt **e** en (incl. deltaM negativo do viés e tooltip EN do bias), o trio da sticky bar (observed → nenhum → bias-corrected), comparador, ForecastTable e chip «Mar perigoso» |
+| `buoy-warnings` | 18 | Aviso da camada de boias (no-key/down/stale/ok) no spot, homepage e mapa interactivo; fallback WMO cobre (sem aviso); chip de diagnóstico no ticker via `pipeline-meta.json`; chip compacto no HUD do `/mapa` ligado ao mesmo aviso (dispensa partilhada em localStorage) |
+| `tides` | 5 | Marés (`TideScheduleStrip`): fase (a subir / alta agora / a descer) + próxima Baixa/Alta com HH:MM da curva real; ausência de schedule (curva sem `tideHeight`) e `MoonTideCard` |
 | `home-adaptive` | 4 | Homepage adaptativa: TopNow cards, mapa hero, sufixos/avisos consistentes |
 | `mapa-route` | 8 | Página `/pt/mapa` fullscreen: HUD, sheet mobile com direções/ver spot, filtros persistidos, Escape, sair sem congelar |
-| `spot-dashboard` | 4 | Dashboard da página de spot: métricas, score e secções-chave |
+| `spot-dashboard` | 5 | Dashboard da página de spot: métricas, score e secções-chave |
 | `confidence-badge` | 2 | Badge de confiança da previsão (multi-modelo) |
-| `mar-perigoso` | 4 | Aviso de Agitação Marítima: strip no spot, Dawn Patrol e badge no card do mapa |
-| `isobaths` | 7 | Isóbatas IH (8/16/30 m): camada no mapa, legenda de profundidade, distâncias no dashboard |
-| `data-sources` | 11 | Fontes de dados: tabela de atribuições pt/en, citação Open-Meteo (DOI) com paridade pt/en em fontes e About, cartão IH_API_KEY, sitemap + hreflang, atribuições no mapa/footer |
+| `mar-perigoso` | 6 | Aviso de Agitação Marítima: strip no spot, Dawn Patrol, badge no card do mapa e chip na sticky bar (desktop + mobile) |
+| `isobaths` | 11 | Isóbatas IH (8/16/30 m): camada no mapa, legenda de profundidade, distâncias no dashboard, deep link `?isobaths=1` |
+| `topnow-wave-badge` | 9 | Badge do score de onda no TopNow (homepage): correcção (boia / viés regional, incl. deltaM negativo) vs só previsão; boia fresca ganha ao viés no mesmo row; leitura velha → nenhum badge; caminho SSG baked (wave-bias.json no build) |
+| `coastal-nav-warnings` | 8 | Avisos à navegação costeiros IH + ES cross-border: secção no spot, overlay de polígonos, deep link ao detalhe |
+| `data-sources` | 13 | Fontes de dados: tabela de atribuições pt/en, citação Open-Meteo (DOI) com paridade pt/en em fontes e About, cartão IH_API_KEY (+ linha de degradação da camada de boias), sitemap + hreflang, atribuições no mapa/footer |
+| `coastal-map-layer` | 6 | /mapa fullscreen: overlay de polígonos de TODOS os avisos à navegação activos, popup → detalhe |
+| `spot-sticky-geometry` | 2 | Geometria da SpotStickyBar: não sobrepõe os sport tabs após scroll — desktop **e** mobile (390px), cota/altura pelos tokens partilhados (globals.css) |
 
 Notas de operação:
-- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido: core de ~115 testes ≈ 2m30s) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
+- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **143 testes em 14 ficheiros** (`npx playwright test <specs do core> --list`) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
 - **Determinismo**: estes specs NÃO dependem da rede nem de keys — as fixtures vivem em `tests/e2e/helpers/conditions.ts` (`interceptConditions`/`interceptIhBuoys`/`interceptWmoBuoys`/`interceptWaveBias`/`interceptIsobaths`/`interceptCoastalNavWarnings`). Se um spec precisa de dados que o build não tem, intercepta client-side.
+- **TopNow (homepage) — SSG vs re-hidratação**: o primeiro paint dos cards é SSG (`buildSpotData` em build-time), por isso o badge «Corrigido (viés regional)»/«Corrigido pela boia X» só sai baked no `out/` quando o `wave-bias.json`/`observedWave` existir em `public/data/` DURANTE o `npm run build` (teste baked-only salta com skip honesto). MAS o `HomepageTopNow` re-hidrata client-side (`useLiveGridSpotData`, mount + **15 min** + tab visível — o mesmo `refreshGridSpotScores` do grid/mapa): as rows SSG são substituídas pelas de `conditions.json` e o viés regional aplica-se em runtime, pelo que o badge aparece SEM rebuild e os testes positivos interceptam client-side (`interceptConditions` + transform `all`). Recipe local para validar o caminho baked: `node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge` (o fixture escreve `public/data/wave-bias.json` com ME +0.3/n=120 em todas as regiões; `public/data/` é gitignored, nunca é commitado).
 
 ## Estado actual (2026-07-21)
 
