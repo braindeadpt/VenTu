@@ -18,6 +18,7 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
 import WindSourceAttributionNote from '@/components/ui/WindSourceAttributionNote';
 import type {
   ScoreWaveCorrection,
@@ -331,13 +332,7 @@ export default function SpotDetailHero({
                     {(() => {
                       const calTag = waveCalibrationTag(observedWave, locale);
                       return calTag ? (
-                        <span
-                          className="inline-flex items-center gap-1 rounded-pill border border-data-period/30 bg-data-period/10 px-2 py-0.5 font-medium whitespace-nowrap text-data-period"
-                          title={calTag.title}
-                          data-wave-calibrated="compact"
-                        >
-                          {calTag.label}
-                        </span>
+                        <WaveCalibrationTag wave={observedWave} locale={locale} />
                       ) : (
                         <>
                           <span className="font-mono tabular-nums text-fg-subtle" data-wave-clock="true">

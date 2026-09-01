@@ -1,13 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
-import {
-  loadBuoyLayerHealth,
-  type BuoyLayerStatus,
-  type WmoLayerStatus,
-} from '@/lib/buoyLayerHealth';
+import { buoyLayerCopy, useBuoyLayerNotice } from '@/lib/buoyLayerNotice';
 
 /**
  * Honest notice when the measured-wave layer can't produce readings for a
@@ -16,6 +11,10 @@ import {
  * when the cross-border fallback also has no fresh data. Renders nothing when
  * either source is healthy (IH or WMO fresh) or the spot already shows a
  * fresh buoy reading (parent gates on that).
+ *
+ * Dispensable: the «já vi» choice persists in localStorage (reason-specific)
+ * until the layer heals — shared with the compact HUD chip via
+ * `useBuoyLayerNotice`, so dismissing one surface hides both.
  *
  * `scope` adapts the copy: 'spot' (default) talks about "this page", 'home'
  * about "the map and cards" — the homepage has no single spot to point at.
@@ -32,79 +31,24 @@ export default function BuoyLayerNotice({
 }) {
   const isPt = locale === 'pt';
   const isHome = scope === 'home';
-  const [status, setStatus] = useState<BuoyLayerStatus | null>(null);
-  const [wmo, setWmo] = useState<WmoLayerStatus>('down');
-
-  useEffect(() => {
-    let cancelled = false;
-    loadBuoyLayerHealth()
-      .then((h) => {
-        if (!cancelled) {
-          setStatus(h.status);
-          setWmo(h.wmo);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) setStatus('no-key');
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+  const { status, wmo, dismissed, dismiss } = useBuoyLayerNotice();
 
   // O aviso só aparece quando NENHUMA fonte tem leituras frescas (se o WMO
   // cobre, o ObservedWaveCard renderiza e não há nada a avisar).
   if (!status) return null;
+  // Dispensa persistida para EXACTAMENTE este estado: «já vi» → esconder.
+  // Um estado diferente volta a avisar (ex. dispensou no-key, IH sobe e cai
+  // depois → «down» é um problema novo).
+  if (dismissed?.reason === status) return null;
 
-  /** Nota WMO: «WMO em baixo» / «WMO com leituras antigas» (só quando também falhou). */
-  const wmoNote =
-    wmo === 'down'
-      ? isPt
-        ? ' O fallback WMO (Copernicus) também está em baixo.'
-        : ' The WMO fallback (Copernicus) is also down.'
-      : wmo === 'stale'
-        ? isPt
-          ? ' O fallback WMO (Copernicus) só tem leituras antigas.'
-          : ' The WMO fallback (Copernicus) only has stale readings.'
-        : '';
-
-  const copy: Record<BuoyLayerStatus, { title: string; body: string }> = {
-    'no-key': {
-      title: isPt ? 'Onda observada desactivada' : 'Observed wave disabled',
-      body: isPt
-        ? isHome
-          ? 'Sem leituras de boia: a IH_API_KEY não está configurada na pipeline. As alturas de onda no mapa e nos cards são previsão do modelo.'
-          : 'Sem leituras de boia: a IH_API_KEY não está configurada na pipeline. As alturas de onda nesta página são previsão do modelo.'
-        : isHome
-          ? 'No buoy readings: IH_API_KEY is not configured in the pipeline. Wave heights on the map and cards are model forecasts.'
-          : 'No buoy readings: IH_API_KEY is not configured in the pipeline. Wave heights on this page are model forecasts.',
-    },
-    down: {
-      title: isPt ? 'Boias do IH indisponíveis' : 'IH buoys unavailable',
-      body: isPt
-        ? 'O serviço de boias do Instituto Hidrográfico está em baixo — sem leituras de onda observada por agora.'
-        : 'The Instituto Hidrográfico buoy service is down — no measured wave readings right now.',
-    },
-    stale: {
-      title: isPt ? 'Leituras das boias antigas' : 'Stale buoy readings',
-      body: isPt
-        ? isHome
-          ? 'As leituras das boias têm mais de 3 h — as alturas de onda no mapa e nos cards são previsão do modelo.'
-          : 'As leituras das boias têm mais de 3 h — a altura de onda acima é previsão do modelo.'
-        : isHome
-          ? 'Buoy readings are older than 3 h — wave heights on the map and cards are model forecasts.'
-          : 'Buoy readings are older than 3 h — wave height above is a model forecast.',
-    },
-    ok: { title: '', body: '' },
-  };
-
-  const c = copy[status];
+  const dismissLabel = isPt ? 'Dispensar aviso das boias' : 'Dismiss buoy notice';
+  const c = buoyLayerCopy(status, wmo, isPt, isHome);
 
   return (
     <div
       role="status"
       className={cn(
-        'rounded-card border p-3 flex items-start gap-2.5 text-meta-sm',
+        'relative rounded-card border p-3 pr-8 flex items-start gap-2.5 text-meta-sm pointer-events-auto',
         status === 'no-key'
           ? 'border-score-fair/40 text-fg'
           : 'border-score-poor/40 text-fg',
@@ -125,8 +69,17 @@ export default function BuoyLayerNotice({
       <p className="leading-snug">
         <strong className="font-semibold">{c.title}: </strong>
         {c.body}
-        {wmoNote}
+        {c.wmoNote}
       </p>
+      <button
+        type="button"
+        aria-label={dismissLabel}
+        onClick={dismiss}
+        data-buoy-notice-dismiss="true"
+        className="absolute top-1.5 right-1.5 rounded-full p-1 text-fg-muted transition-colors hover:text-fg hover:bg-bg-base/60"
+      >
+        <X className="w-3.5 h-3.5" aria-hidden />
+      </button>
     </div>
   );
-}
+}

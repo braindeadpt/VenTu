@@ -22,6 +22,14 @@ html:has([data-embed-widget]) body {
 
 @layer base {
   :root {
+    /* ───── LAYOUT — página de spot ─────
+       Cota a que a linha de sport tabs e a SpotStickyBar pinam (header h-16),
+       e ALTURA da fila de sport tabs (SportTab min-h 44 + pb-1). Partilhadas
+       entre a secção sticky (SpotDetailClient) e a barra (SpotStickyBar) —
+       nunca divergirem: mudar aqui é mudar nas duas superfícies. */
+    --ventu-spot-sticky-top: 64px;
+    --ventu-spot-tabs-h: 48px;
+
     /* ───── DARK MODE (default) — slate-950 base ───── */
     
     /* Surfaces & backgrounds */

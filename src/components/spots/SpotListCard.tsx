@@ -9,11 +9,13 @@ import ScoreBadge from '@/components/ui/ScoreBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
 import WaveSourceAttributionNote from '@/components/ui/WaveSourceAttributionNote';
 import WarningPill from '@/components/ui/WarningPill';
 import { getSpotListCardHoverLine } from '@/lib/spotListCardDelight';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
 import { waveFactorSuffix, type ScoreWaveCorrection } from '@/lib/scoreConditions';
+import type { ObservedWave } from '@/lib/observedWave';
 import { formatObservedClockTime } from '@/lib/observations';
 import { cn } from '@/lib/cn';
 
@@ -59,6 +61,13 @@ interface SpotListCardProps {
    * da onda observada nestes cards, como no card de onda observada.
    */
   observedWaveSource?: 'ih-buoy' | 'wmo-buoy' | null;
+  /**
+   * Calibração cross-border da leitura (observedWave.calibration — boia ES
+   * recalibrada à referência PT): o tag compacto «ref. PT (-0.9 m · n=4)»
+   * mostra-o junto do score, como no hero/sticky, quando o card não tem o
+   * contexto do hero (TopNow, grid).
+   */
+  observedWaveCalibration?: ObservedWave['calibration'] | null;
 }
 
 export default function SpotListCard({
@@ -81,6 +90,7 @@ export default function SpotListCard({
   waveCorrection,
   observedWaveAt,
   observedWaveSource,
+  observedWaveCalibration,
 }: SpotListCardProps) {
   const isPt = locale === 'pt';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
@@ -228,6 +238,13 @@ export default function SpotListCard({
                 className="shrink-0"
               />
             )}
+          {observedWaveCalibration && waveSource === 'observed' && (
+            <WaveCalibrationTag
+              wave={{ calibration: observedWaveCalibration, waveHeight: conditions.waveHeight }}
+              locale={locale}
+              className="shrink-0"
+            />
+          )}
           <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>
           {/* Nota de atribuição junto da leitura observada WMO/boia espanhola
               (Copernicus) — mesma cadeia da tabela de /fontes, via ATTRIBUTIONS.

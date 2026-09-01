@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import { getAssetPath } from '@/lib/paths';
+import { getTranslation } from '@/lib/i18n';
 import {
   loadForecastSkillForSpot,
   forecastSkillOriginLabel,
+  forecastSkillOriginTag,
   type ForecastSkillBuoy,
+  type ForecastSkillSpotResult,
 } from '@/lib/forecastSkill';
 
 interface BuoySkillLineProps {
@@ -13,7 +16,7 @@ interface BuoySkillLineProps {
   locale: string;
 }
 
-function skillLabel(b: ForecastSkillBuoy, isPt: boolean): string | null {
+function skillLabel(b: ForecastSkillBuoy): string | null {
   if (!Number.isFinite(b.me) || !Number.isFinite(b.n)) return null;
   const parts = [`ME ${b.me >= 0 ? '+' : ''}${b.me.toFixed(1)} m`];
   if (typeof b.rmse === 'number') parts.push(`RMSE ${b.rmse.toFixed(1)} m`);
@@ -30,15 +33,16 @@ function skillLabel(b: ForecastSkillBuoy, isPt: boolean): string | null {
  */
 export default function BuoySkillLine({ spotId, locale }: BuoySkillLineProps) {
   const isPt = locale === 'pt';
-  const [buoy, setBuoy] = useState<ForecastSkillBuoy | null>(null);
+  const tv = getTranslation(locale).spotVerify;
+  const [result, setResult] = useState<ForecastSkillSpotResult | null>(null);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     loadForecastSkillForSpot(spotId, fetch, getAssetPath)
-      .then((b) => {
+      .then((r) => {
         if (cancelled) return;
-        setBuoy(b);
+        setResult(r);
       })
       .finally(() => {
         if (!cancelled) setDone(true);
@@ -48,9 +52,10 @@ export default function BuoySkillLine({ spotId, locale }: BuoySkillLineProps) {
     };
   }, [spotId]);
 
-  if (!done || !buoy) return null;
+  if (!done || !result || !result.buoy) return null;
+  const buoy = result.buoy;
 
-  const label = skillLabel(buoy, isPt);
+  const label = skillLabel(buoy);
   if (!label) return null;
   // País/fonte explícito (IH · Portugal vs Copernicus-ES · Espanha) — partilhado
   // com a tabela do About para nunca divergirem. Mostra que o skill do NW vem
@@ -61,21 +66,44 @@ export default function BuoySkillLine({ spotId, locale }: BuoySkillLineProps) {
       ? `${buoy.name} (${sourceLabel})`
       : buoy.name;
 
+  // Repartição de pares por plataforma (IH vs WMO-PT vs WMO-ES) — a mesma
+  // divisão que a linha do About mostra, aqui só com as origens com pares
+  // (line) e em contraste com a origem da própria boia (o leitor vê se o
+  // skill do spot vem da plataforma dominante ou da minoria).
+  const counts = result.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
+  const originParts = (['ih', 'wmo-pt', 'wmo-es'] as const)
+    .filter((o) => (counts[o] ?? 0) > 0)
+    .map((o) => `${forecastSkillOriginTag(o)} ${counts[o] ?? 0}`);
+  const totalPairs =
+    (counts.ih ?? 0) + (counts['wmo-pt'] ?? 0) + (counts['wmo-es'] ?? 0);
+
   return (
-    <p
-      className="text-meta-sm text-fg-subtle leading-snug"
-      data-buoy-skill-line="true"
-      title={
-        isPt
-          ? `Skill real do forecast nesta boia (${nameWithOrigin}, n=${buoy.n}) — forecast-skill.json: best_match vs leitura da boia nas mesmas horas, com lead time > 0. ME = média(observado − previsão): positivo = modelo subestima.`
-          : `Real forecast skill at this buoy (${nameWithOrigin}, n=${buoy.n}) — forecast-skill.json: best_match vs buoy reading on the same hours, with lead time > 0. ME = mean(observed − forecast): positive = model underestimates.`
-      }
-    >
-      {isPt ? (
-        <>Skill desta boia ({nameWithOrigin}): {label} (n={buoy.n})</>
-      ) : (
-        <>Buoy skill ({nameWithOrigin}): {label} (n={buoy.n})</>
+    <>
+      <p
+        className="text-meta-sm text-fg-subtle leading-snug"
+        data-buoy-skill-line="true"
+        title={tv.buoySkillTitle
+          .replace('{name}', nameWithOrigin)
+          .replace('{n}', String(buoy.n))}
+      >
+        {tv.buoySkillBody
+          .replace('{name}', nameWithOrigin)
+          .replace('{label}', label)
+          .replace('{n}', String(buoy.n))}
+      </p>
+      {totalPairs > 0 && (
+        <p
+          className="text-meta-sm text-fg-muted leading-snug"
+          data-buoy-skill-origins="true"
+          title={tv.buoySkillOriginsTitle
+            .replace('{buoyOrigin}', forecastSkillOriginTag(buoy.origin))
+            .replace('{total}', String(totalPairs))}
+        >
+          {tv.buoySkillOrigins
+            .replace('{counts}', originParts.join(' · '))
+            .replace('{total}', String(totalPairs))}
+        </p>
       )}
-    </p>
+    </>
   );
 }

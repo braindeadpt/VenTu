@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { CloudRain, RotateCcw } from 'lucide-react';
 import {
   loadCoastalNavWarnings,
   warningsForSpot,
@@ -11,6 +12,24 @@ import {
   ISOBATH_DEPTH_STYLE,
 } from '@/lib/isobaths';
 import IsobathLegend from './IsobathLegend';
+import RadarCarousel from './RadarCarousel';
+import {
+  fetchRadarData,
+  radarBoundsCorners,
+  radarFrames,
+  type IpmaRadarData,
+} from '@/lib/ipmaRadar';
+import {
+  IPMA_RADAR_ATTRIBUTION_LABEL_PT,
+  IPMA_RADAR_ATTRIBUTION_LABEL_EN,
+} from '@/lib/ipmaAttribution';
+import {
+  readRadarEnabledPref,
+  readRadarPref,
+  writeRadarEnabledPref,
+  writeRadarPref,
+  resetRadarPref,
+} from '@/lib/radarPrefs';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { TILE_URLS, TILE_ATTRIBUTIONS, MAX_ZOOM } from '@/lib/map-constants';
 
@@ -46,8 +65,25 @@ export default function SpotMap({
 }: SpotMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState(false);
+  /** O mapa Leaflet está criado e fitBounds feito — o radar (e futuras camadas
+   *  que precisem da instância) só arranca depois disto. Sem este flag, um
+   *  radar restaurado da preferência no mount corria ANTES do mapa existir e
+   *  nunca mais tentava (o clique funciona porque o mapa já lá está). */
+  const [mapReady, setMapReady] = useState(false);
   /** As isóbatas estão desenhadas no mapa → mostrar a legenda de profundidade. */
   const [isobathsVisible, setIsobathsVisible] = useState(false);
+  /** IPMA radar overlay — a MESMA camada partilhada do grid/hero/fullscreen. */
+  const [radarData, setRadarData] = useState<IpmaRadarData | null | undefined>(undefined);
+  const [radarEnabled, setRadarEnabled] = useState<boolean>(() => readRadarEnabledPref() === true);
+  /** O utilizador já gravou uma preferência (liga/desliga) — o botão de
+   *  reinício só aparece quando há algo para repor (o deep link não conta). */
+  const [radarPrefSet, setRadarPrefSet] = useState<boolean>(() => readRadarEnabledPref() !== undefined);
+  const [radarUserPaused, setRadarUserPaused] = useState<boolean>(() => readRadarPref().paused);
+  const [radarFrameIndex, setRadarFrameIndex] = useState(0);
+  const radarFrameIndexRef = useRef(0);
+  const radarUserPausedRef = useRef(radarUserPaused);
+  const mapInstanceRef = useRef<import('leaflet').Map | null>(null);
+  const radarOverlayRef = useRef<import('leaflet').ImageOverlay | null>(null);
   const isPt = locale === 'pt';
   const t = getTranslation(validateLocale(locale));
 
@@ -73,6 +109,9 @@ export default function SpotMap({
         }
         map = null;
       }
+      mapInstanceRef.current = null;
+      radarOverlayRef.current = null;
+      setMapReady(false);
       polygonLayer = null;
       isobathLayer = null;
       marker = null;
@@ -96,6 +135,7 @@ export default function SpotMap({
           // Compact embedded map — page scroll must not zoom the map.
           scrollWheelZoom: false,
         });
+        mapInstanceRef.current = map;
 
         const tileUrl = isDark ? TILE_URLS.dark : TILE_URLS.light;
         tileLayer = Leaflet.tileLayer(tileUrl, {
@@ -214,6 +254,7 @@ export default function SpotMap({
         // Enquadrar: polígonos (área coberta) se existirem, senão o spot.
         map.fitBounds(bounds, { padding: [28, 28], maxZoom: 15, animate: false });
         map.invalidateSize({ animate: false });
+        if (!cancelled) setMapReady(true);
       } catch {
         if (!cancelled) setError(true);
       }
@@ -221,6 +262,109 @@ export default function SpotMap({
 
     return teardown;
   }, [lat, lon, isPt, spotId]);
+
+  // ── IPMA radar overlay ──
+  // A mesma camada partilhada dos outros mapas: metadata lazy na primeira
+  // activação (cache module-level) e L.imageOverlay com os bounds oficiais do
+  // IPMA. A preferência ligar/desligar e o frame/pausa são partilhadas com o
+  // grid/hero/fullscreen (mesmas keys do localStorage), para o radar ligado na
+  // página do spot aparecer ligado nos outros mapas e vice-versa.
+  const toggleRadar = useCallback(() => {
+    setRadarPrefSet(true);
+    setRadarEnabled((prev) => {
+      const next = !prev;
+      writeRadarEnabledPref(next);
+      if (!next) {
+        writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
+      }
+      return next;
+    });
+  }, []);
+
+  /** Link de imersão (→ /mapa?radar=1): persiste o estado ACTUAL (frame +
+   *  pausa) antes de navegar, para o /mapa entrar exactamente onde o
+   *  carrossel ficou no spot — mesmo um frame de scrub transitório (que só
+   *  grava quando pausado). */
+  const handleRadarImmersionOpen = useCallback(() => {
+    writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
+  }, []);
+
+  /** Botão de reinício: repõe a preferência do radar ao default (off) e
+   *  limpa a pausa/frame persistidos — mesmo contrato do HUD do grid/hero. */
+  const handleResetRadar = useCallback(() => {
+    resetRadarPref();
+    radarUserPausedRef.current = false;
+    radarFrameIndexRef.current = 0;
+    setRadarUserPaused(false);
+    setRadarFrameIndex(0);
+    setRadarEnabled(false);
+    setRadarPrefSet(false);
+  }, []);
+
+  const handleRadarUserPausedChange = useCallback((paused: boolean) => {
+    radarUserPausedRef.current = paused;
+    setRadarUserPaused(paused);
+    writeRadarPref(paused, radarFrameIndexRef.current);
+  }, []);
+
+  const handleRadarFrameChange = useCallback((value: number) => {
+    const frames = radarFrames(radarData ?? null);
+    if (frames.length === 0) return;
+    const v = Math.max(0, Math.min(frames.length - 1, value));
+    radarFrameIndexRef.current = v;
+    setRadarFrameIndex(v);
+    radarOverlayRef.current?.setUrl(frames[v].url);
+    if (radarUserPausedRef.current) writeRadarPref(true, v);
+  }, [radarData]);
+
+  useEffect(() => {
+    if (!radarEnabled) {
+      if (radarOverlayRef.current) {
+        mapInstanceRef.current?.removeLayer(radarOverlayRef.current);
+        radarOverlayRef.current = null;
+      }
+      return;
+    }
+    // Só arranca com o mapa criado (mapReady) — um radar restaurado da
+    // preferência no mount re-corre quando o flag muda.
+    if (!mapReady || !mapInstanceRef.current) return;
+    let cancelled = false;
+
+    (async () => {
+      const Leaflet = (await import('leaflet')).default;
+      if (cancelled || !mapInstanceRef.current) return;
+      if (radarData === undefined) {
+        const data = await fetchRadarData();
+        if (!cancelled) setRadarData(data);
+        return;
+      }
+      if (!radarData) return; // indisponível — nada a mostrar
+      const frames = radarFrames(radarData);
+      if (frames.length === 0) return;
+      // Restaura o frame escolhido pelo utilizador (persistido) em vez de
+      // começar sempre no mais recente.
+      const savedFrame = Math.max(0, Math.min(frames.length - 1, readRadarPref().frame));
+      radarFrameIndexRef.current = savedFrame;
+      setRadarFrameIndex(savedFrame);
+      const overlay = Leaflet.imageOverlay(
+        frames[savedFrame].url,
+        Leaflet.latLngBounds(radarBoundsCorners(radarData)),
+        {
+          opacity: 0.8,
+          attribution: radarData.attribution ?? 'IPMA',
+        },
+      ).addTo(mapInstanceRef.current);
+      radarOverlayRef.current = overlay;
+    })();
+
+    return () => {
+      cancelled = true;
+      if (radarOverlayRef.current) {
+        mapInstanceRef.current?.removeLayer(radarOverlayRef.current);
+        radarOverlayRef.current = null;
+      }
+    };
+  }, [radarEnabled, radarData, mapReady]);
 
   if (error) {
     return (
@@ -244,10 +388,77 @@ export default function SpotMap({
     ? 'relative w-full h-full min-h-0'
     : 'relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-card ring-1 ring-divider';
 
+  const radarLabel = radarEnabled ? t.map.hideRadar : t.map.showRadar;
+  const ipmaRadarAttributionLabel = isPt
+    ? IPMA_RADAR_ATTRIBUTION_LABEL_PT
+    : IPMA_RADAR_ATTRIBUTION_LABEL_EN;
+  const radarFrameList = radarFrames(radarData ?? null);
+
   return (
     <div className={shellClass}>
       <div ref={mapRef} className="absolute inset-0 w-full h-full" />
-      {isobathsVisible && (
+      {/* Radar IPMA — o mesmo carrossel partilhado do grid/hero/fullscreen, com
+          a preferência ligar/desligar e o frame/pausa nas mesmas keys. No mapa
+          compacto do spot o carrossel ancorra em baixo à direita: a legenda de
+          isóbatas é bottom-left, a atribuição Leaflet é o strip da base e o
+          toggle fica top-right — nenhum controlo fica tapado em desktop (em
+          mobile o painel é estreito e cobre só o canto). */}
+      <div className="absolute top-3 right-3 z-[1000] flex items-center gap-1.5 pointer-events-auto">
+        <button
+          type="button"
+          onClick={toggleRadar}
+          aria-label={radarLabel}
+          aria-pressed={radarEnabled}
+          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors"
+        >
+          <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
+          <span className="hidden sm:inline">{radarLabel}</span>
+        </button>
+        {/* Reinício: repõe a preferência ao default (off) — mesmo contrato do
+            HUD do grid/hero. Visível só quando há preferência gravada. */}
+        {(radarPrefSet || radarEnabled) && (
+          <button
+            type="button"
+            onClick={handleResetRadar}
+            aria-label={t.map.radarReset}
+            title={t.map.radarReset}
+            className="inline-flex items-center justify-center w-8 h-8 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors"
+          >
+            <RotateCcw className="w-3.5 h-3.5" aria-hidden />
+          </button>
+        )}
+      </div>
+      {radarEnabled && radarData && (
+        <RadarCarousel
+          className="absolute bottom-8 right-2 z-[1000] max-w-[min(100%,320px)] sm:max-w-none"
+          frames={radarFrameList}
+          frameIndex={radarFrameIndex}
+          onFrameChange={handleRadarFrameChange}
+          userPaused={radarUserPaused}
+          onUserPausedChange={handleRadarUserPausedChange}
+          labels={{
+            badge: t.map.radarBadge,
+            hint: t.map.radarHint,
+            scrub: t.map.radarScrub,
+            play: t.map.radarPlay,
+            pause: t.map.radarPause,
+            paused: t.map.radarPaused,
+            ipmaAttribution: ipmaRadarAttributionLabel,
+            gap: t.map.radarGap,
+          }}
+          // Imersão: abrir o /mapa (ecrã inteiro) com o radar já ligado E
+          // centrado na região deste spot (?radar=1&lat=&lon=). O clique
+          // persiste o frame/pausa actuais para o deep link entrar exactamente
+          // onde o carrossel ficou no spot.
+          fullscreenHref={`/${locale}/mapa/?radar=1&lat=${lat}&lon=${lon}`}
+          fullscreenLabel={t.map.radarFullscreen}
+          onFullscreenOpen={handleRadarImmersionOpen}
+        />
+      )}
+      {/* A legenda cede enquanto o radar está ligado: o carrossel ocupa a
+          banda inferior do mapa compacto (e o overlay pinta por cima das
+          linhas) — as isóbatas continuam desenhadas, só o rótulo espera. */}
+      {isobathsVisible && !radarEnabled && (
         <IsobathLegend title={t.map.isobathsLegend} />
       )}
       {!hideOverlay && (

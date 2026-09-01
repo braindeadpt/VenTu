@@ -12,6 +12,7 @@ import {
   verifyWind,
 } from '@/lib/observations';
 import WindSourceAttributionNote from '@/components/ui/WindSourceAttributionNote';
+import { getTranslation } from '@/lib/i18n';
 import { useObservedNow } from '@/hooks/useObservedNow';
 import { cn } from '@/lib/cn';
 
@@ -39,6 +40,7 @@ export default function ObservedNow({
   const fromLive = Boolean(liveObserved && !error);
   const displayObserved = fromLive ? liveObserved : bakedFresh;
   const isPt = locale === 'pt';
+  const tv = getTranslation(locale).spotVerify;
 
   if (!displayObserved || !isObservedFresh(displayObserved.observedAt)) {
     if (loading) {
@@ -46,10 +48,10 @@ export default function ObservedNow({
         <section
           className="rounded-card border border-divider bg-surface-1/[0.04] p-3"
           aria-busy
-          aria-label={isPt ? 'A verificar observações ao vivo' : 'Checking live observations'}
+          aria-label={tv.checkingLiveAria}
         >
           <p className="text-meta text-fg-muted">
-            {isPt ? 'A verificar observações ao vivo…' : 'Checking live observations…'}
+            {tv.checkingLive}
           </p>
         </section>
       );
@@ -61,9 +63,7 @@ export default function ObservedNow({
           className="rounded-card border border-divider bg-surface-1/[0.04] p-3"
         >
           <p className="text-meta text-fg-muted">
-            {isPt
-              ? 'Observações ao vivo indisponíveis — o vento acima é previsão do modelo.'
-              : 'Live observations unavailable — wind above is the model forecast.'}
+            {tv.liveObsUnavailable}
           </p>
         </section>
       );
@@ -96,6 +96,7 @@ function ObservedNowContent({
   loadingLive: boolean;
 }) {
   const isPt = locale === 'pt';
+  const tv = getTranslation(locale).spotVerify;
   const fresh = isObservedFresh(observed.observedAt);
   const forecastKt = forecastWindKtFromMs(forecastWindSpeedMs);
   const verification = verifyWind(forecastKt, observed.windSpeedKt);
@@ -106,9 +107,11 @@ function ObservedNowContent({
   const sourceLabel = observedSourceLabel(observed.source, locale);
   const title = observedSectionTitle(observed.source, fresh, locale);
 
-  const metaLine = isPt
-    ? `Observado ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km · ${sourceLabel}`
-    : `Observed ${clock} · ${observed.stationName} · ${observed.distanceKm.toFixed(1)} km · ${sourceLabel}`;
+  const metaLine = tv.observedMeta
+    .replace('{clock}', clock)
+    .replace('{station}', observed.stationName)
+    .replace('{dist}', observed.distanceKm.toFixed(1))
+    .replace('{source}', sourceLabel);
 
   return (
     <section
@@ -126,9 +129,7 @@ function ObservedNowContent({
         <h3 className={cn('text-meta font-semibold', fresh ? 'text-fg' : 'text-fg-muted')}>
           {title}
           {fromLive && fresh && (
-            <span className="ml-1.5 text-meta-sm font-normal text-fg-subtle">
-              {isPt ? '(ao vivo)' : '(live)'}
-            </span>
+            <span className="ml-1.5 text-meta-sm font-normal text-fg-subtle">{tv.live}</span>
           )}
         </h3>
         <p className="text-meta-sm text-fg-subtle">{metaLine}</p>
@@ -137,7 +138,7 @@ function ObservedNowContent({
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-meta">
         <div className="rounded-lg border border-divider/60 bg-bg-base/40 px-2.5 py-2">
           <p className="text-meta-sm text-fg-muted mb-0.5">
-            {isPt ? `Vento (${sourceLabel})` : `Wind (${sourceLabel})`}
+            {tv.windWithSource.replace('{source}', sourceLabel)}
           </p>
           <p className="font-mono tabular-nums font-semibold text-fg">
             {observed.windSpeedKt} kt {cardinal}
@@ -149,9 +150,7 @@ function ObservedNowContent({
           )}
         </div>
         <div className="rounded-lg border border-divider/60 bg-bg-base/40 px-2.5 py-2">
-          <p className="text-meta-sm text-fg-muted mb-0.5">
-            {isPt ? 'Previsão modelo' : 'Model forecast'}
-          </p>
+          <p className="text-meta-sm text-fg-muted mb-0.5">{tv.modelForecast}</p>
           <p className="font-mono tabular-nums font-semibold text-fg">
             {verification.forecastWindKt} kt
           </p>
@@ -162,11 +161,10 @@ function ObservedNowContent({
               'inline-flex items-center justify-center gap-1 rounded-pill border px-2.5 py-1.5 text-meta-sm font-medium w-full sm:w-auto',
               badge.className,
             )}
-            title={
-              isPt
-                ? `Diferença ${verification.deltaKt >= 0 ? '+' : ''}${verification.deltaKt} kt`
-                : `Delta ${verification.deltaKt >= 0 ? '+' : ''}${verification.deltaKt} kt`
-            }
+            title={tv.deltaKtTitle.replace(
+              '{delta}',
+              `${verification.deltaKt >= 0 ? '+' : ''}${verification.deltaKt}`,
+            )}
           >
             <span aria-hidden>{badge.symbol}</span>
             {badge.label}

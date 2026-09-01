@@ -8,6 +8,7 @@ import {
   type ObservedWaveMeta,
 } from '@/lib/observedWave';
 import { formatObservedClockTime } from '@/lib/observations';
+import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
 
 /**
  * Compact side-by-side source chip — «IH ✓ (1h) · WMO (5h, a 56 km)».
@@ -115,16 +116,7 @@ export default function ObservedWaveSourcesChip({
           </span>
         </span>
       ))}
-      {calTag && (
-        <span
-          className="inline-flex items-center gap-1 rounded-pill border border-data-period/30 bg-data-period/10 px-2 py-0.5 font-medium whitespace-nowrap text-data-period"
-          title={calTag.title}
-          data-wave-calibrated="compact"
-        >
-          <span aria-hidden>🔧</span>
-          {calTag.label}
-        </span>
-      )}
+      {calTag && <WaveCalibrationTag wave={observedWave} locale={locale} />}
     </div>
   );
 }

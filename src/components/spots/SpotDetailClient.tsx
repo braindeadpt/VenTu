@@ -141,8 +141,9 @@ export default function SpotDetailClient({
   const sportFromUrl = searchParams?.get('sport') as SportType | null;
 
   const isPt = locale === 'pt';
-  const t = getTranslation(locale as 'pt' | 'en');
+  const t = getTranslation(locale);
   const td = t.spotDetail;
+  const tv = t.spotVerify;
 
   const [spotData, setSpotData] = useState<SpotData | null>(null);
   const initialSport = sportFromUrl || (spot.compatibleSports?.[0] as SportType) || 'surf';
@@ -545,7 +546,7 @@ export default function SpotDetailClient({
   return (
     <>
       <SeoHead
-        title={`${isPt ? spot.name : spot.nameEn} - ${spot.region}${isPt ? ', ' : ', '}${spot.regionEn}`}
+        title={`${isPt ? spot.name : spot.nameEn} - ${spot.region}, ${spot.regionEn}`}
         description={isPt ? spot.description : spot.descriptionEn}
         image="/og-image.png"
         type="article"
@@ -625,7 +626,10 @@ export default function SpotDetailClient({
         />
 
         <section
-          className={`sticky top-16 z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm ${
+          // Cota de pinagem partilhada com a SpotStickyBar (globals.css): a
+          // linha standalone e a barra prendem-se na mesma altura do header.
+          style={{ top: 'var(--ventu-spot-sticky-top)' }}
+          className={`sticky z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm ${
             stickyActive ? 'invisible' : ''
           }`}
           aria-hidden={stickyActive}
@@ -634,7 +638,8 @@ export default function SpotDetailClient({
             <div
               className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x scroll-smooth"
               role="tablist"
-              aria-label={isPt ? 'Modalidade' : 'Sport'}
+              aria-label={tv.sportTabsAria}
+              style={{ height: 'var(--ventu-spot-tabs-h)' }}
             >
               {tabSports.map((sport) => (
                 <SportTab
@@ -656,14 +661,14 @@ export default function SpotDetailClient({
         {(showMagicWindows || true) && (
           <section
             className="max-w-6xl mx-auto px-4 pt-3"
-            aria-label={isPt ? 'Melhores janelas' : 'Best windows'}
+            aria-label={td.bestWindows}
           >
             <header className="flex items-baseline justify-between mb-2">
               <h2 className="font-display text-h2 text-fg font-semibold tracking-tight">
                 {td.bestWindows}
               </h2>
               <span className="text-meta-sm text-fg-muted font-mono tabular-nums">
-                {isPt ? 'Próximas 24h' : 'Next 24h'}
+                {tv.next24h}
               </span>
             </header>
             <MagicWindows
@@ -705,9 +710,7 @@ export default function SpotDetailClient({
                 onshore: td.windOnshoreHint,
                 cross: td.windCrossHint,
               },
-              radarFootnote: isPt
-                ? 'Azul = ondulação · âmbar = vento. Terra/mar no radar são só referência de costa.'
-                : 'Blue = swell · amber = wind. Land/sea shading on the radar is coast reference only.',
+              radarFootnote: tv.radarFootnote,
               verificationTitle: td.verificationTitle,
               scoreFeedbackHint: td.scoreFeedbackHint,
             }}
@@ -720,9 +723,7 @@ export default function SpotDetailClient({
 
         <section className="max-w-6xl mx-auto px-4 py-4 space-y-3">
           <div className="flex flex-wrap items-end justify-between gap-2">
-            <h2 className="text-h2 text-fg">
-              {isPt ? 'Previsão horária' : 'Hourly forecast'}
-            </h2>
+            <h2 className="text-h2 text-fg">{tv.hourlyForecast}</h2>
             <a
               href={windguruUrl}
               target="_blank"
@@ -761,7 +762,7 @@ export default function SpotDetailClient({
                       <ChevronDown className="w-4 h-4" aria-hidden />
                     )
                   }
-                  locale={isPt ? 'pt' : 'en'}
+                  locale={locale as 'pt' | 'en' | 'es' | 'de' | 'fr'}
                 >
                   {forecastExpanded ? td.collapseForecast : td.expandForecast}
                 </Button>
@@ -784,8 +785,8 @@ export default function SpotDetailClient({
             directionsHref={directionsUrl}
             googleMapsLinkLabel={td.openGoogleMaps}
             openMapsLabel={td.openMapsLabel}
-            regionLabel={isPt ? 'Região' : 'Region'}
-            difficultyLabel={isPt ? 'Nível' : 'Level'}
+            regionLabel={t.spots.region}
+            difficultyLabel={t.spots.level}
           />
           <LocalTipsSection spot={spot} tips={mergedLocalTips} locale={locale} />
           <SpotNearbyDirectory

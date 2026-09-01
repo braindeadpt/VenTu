@@ -60,6 +60,11 @@ interface RadarCarouselProps {
   fullscreenHref?: string;
   /** Rótulo do botão de imersão (aria-label/title — traduzido pelo pai). */
   fullscreenLabel?: string;
+  /** Persiste o estado ACTUAL (frame + pausa do utilizador) no clique do link
+   *  de imersão — o /mapa?radar=1 entra exactamente onde o carrossel ficou,
+   *  mesmo que o frame venha de um scrub transitório sem pausa (que hoje não
+   *  fica gravado — só grava quando pausado). O pai é dono da persistência. */
+  onFullscreenOpen?: (frame: number, userPaused: boolean) => void;
 }
 
 /**
@@ -82,6 +87,7 @@ export default function RadarCarousel({
   style,
   fullscreenHref,
   fullscreenLabel,
+  onFullscreenOpen,
 }: RadarCarouselProps) {
   const [scrubbing, setScrubbing] = useState(false);
   // Separador escondido ou mapa fora do viewport → pausa (poupa rede/CPU
@@ -139,10 +145,14 @@ export default function RadarCarousel({
     <div ref={rootRef} className={className} style={style} data-radar-carousel="true">
       {frames.length > 1 && (
         <div
-          className="flex flex-col gap-1 px-2.5 pt-1.5 pb-2 rounded-md bg-bg-elevated/95 border border-divider shadow-card"
+          // Em ecrãs pequenos o scrubber dobra-se para uma linha compacta
+          // ([range][▶][hora] em vez de duas linhas) — o painel deixa de ser
+          // uma folha de largura quase total sobre o mapa e não cobre os
+          // marcadores do canto inferior direito do grid de spots.
+          className="flex flex-col gap-1 px-2.5 pt-1.5 pb-2 rounded-md bg-bg-elevated/95 border border-divider shadow-card max-md:flex-row max-md:items-center max-md:gap-2 max-md:px-2 max-md:py-0.5"
           data-radar-scrubber="true"
         >
-          <div className="flex items-center justify-between gap-3 text-meta-sm">
+          <div className="flex items-center justify-between gap-3 text-meta-sm max-md:flex-none max-md:justify-start max-md:gap-2">
             <span className="flex items-center gap-1.5 text-fg-muted">
               <button
                 type="button"
@@ -159,7 +169,8 @@ export default function RadarCarousel({
                   <Pause className="w-3.5 h-3.5" aria-hidden />
                 )}
               </button>
-              {labels.scrub}
+              {/* Rótulo só em >=sm: em mobile o scrubber é uma linha compacta. */}
+              <span className="hidden sm:inline">{labels.scrub}</span>
             </span>
             <span className="font-semibold tabular-nums">{clock}</span>
           </div>
@@ -175,13 +186,15 @@ export default function RadarCarousel({
             onPointerCancel={() => setScrubbing(false)}
             onBlur={() => setScrubbing(false)}
             aria-label={labels.scrub}
-            className="w-40 accent-data-waves cursor-pointer touch-manipulation"
+            className="w-40 accent-data-waves cursor-pointer touch-manipulation max-md:order-first max-md:w-20 max-md:flex-1"
           />
         </div>
       )}
 
       <div
-        className="mt-1.5 flex flex-col items-start gap-1 px-2.5 py-1.5 rounded-md text-meta-sm text-fg bg-bg-elevated/90 border border-divider shadow-card pointer-events-none"
+        // max-md:relative — o link de imersão flutua à direita do badge em
+        // mobile (compacto); em >=sm volta a ser uma linha própria abaixo.
+        className="mt-1.5 flex flex-col items-start gap-1 px-2.5 py-1.5 rounded-md text-meta-sm text-fg bg-bg-elevated/90 border border-divider shadow-card pointer-events-none max-md:relative max-md:mt-0.5 max-md:px-2 max-md:py-0.5"
         // O tooltip mostra sempre a data/hora exacta do frame (distinguir dias),
         // mesmo quando o carrossel está pausado — o estado «pausado» já é
         // visível no corpo do badge (ícone + rótulo), não precisa do tooltip.
@@ -191,7 +204,8 @@ export default function RadarCarousel({
         data-radar-badge="true"
         data-radar-paused={paused ? 'true' : undefined}
       >
-        <div className="flex items-center gap-1.5">
+        {/* pr-20 em mobile: reserva o espaço do link de imersão flutuante. */}
+        <div className="flex items-center gap-1.5 max-md:pr-20">
           {paused ? (
             // Ponto verde a piscar → estado âmbar «pausado»: não parece avariado,
             // está apenas parado (drag/zoom do mapa, scrubber ou pausa manual).
@@ -227,7 +241,10 @@ export default function RadarCarousel({
             DUAS obrigatórias. Links clicáveis mesmo com o badge em
             pointer-events-none. URLs e textos vêm dos módulos partilhados. */}
         <div
-          className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-xs text-fg-subtle"
+          // Em mobile o painel tem de caber na banda livre entre o HUD e a
+          // atribuição Leaflet (para não cobrir marcadores) — a fonte das
+          // atribuições encolhe um grau para caberem numa linha.
+          className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-xs text-fg-subtle max-md:gap-x-1.5 max-md:text-[10px]"
           data-radar-attributions="true"
         >
           <a
@@ -250,10 +267,11 @@ export default function RadarCarousel({
         {fullscreenHref && fullscreenLabel && (
           <Link
             href={fullscreenHref}
+            onClick={() => onFullscreenOpen?.(frameIndex, userPaused)}
             aria-label={fullscreenLabel}
             title={fullscreenLabel}
             data-radar-fullscreen="true"
-            className="pointer-events-auto mt-1 inline-flex items-center gap-1 text-meta-xs text-fg-subtle underline hover:text-fg transition-colors"
+            className="pointer-events-auto mt-1 inline-flex items-center gap-1 text-meta-xs text-fg-subtle underline hover:text-fg transition-colors max-md:absolute max-md:right-2 max-md:top-1/2 max-md:-translate-y-1/2 max-md:mt-0"
           >
             <Maximize2 className="w-3 h-3" aria-hidden />
             {fullscreenLabel}

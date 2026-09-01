@@ -1,12 +1,17 @@
 /**
  * Fixture do wave-bias.json para validar o badge do score de onda no TopNow.
  *
- * O TopNow da homepage é SSG puro: `loadSpotData()` lê conditions.json +
- * wave-bias.json em build-time e os cards NUNCA re-buscam client-side — o
- * badge «Corrigido (viés regional)» só é baked no out/ se o wave-bias.json
- * existir em public/data/ durante o `npm run build`.
+ * Dois caminhos alimentam o badge (ver docs/CONTEXT.md — secção E2E core):
+ *   1. PRIMEIRO PAINT (SSG — o que este fixture valida): `buildSpotData` lê
+ *      conditions.json + wave-bias.json em build-time; o badge «Corrigido
+ *      (viés regional)» só sai baked no out/ se o wave-bias.json existir em
+ *      public/data/ durante o `npm run build` (o spec `leitura de boia BAKED
+ *      no build` faz skip honesto quando não existe).
+ *   2. RE-HIDRATAÇÃO (sem rebuild): o `HomepageTopNow` usa `useLiveGridSpotData`
+ *      (mount + 15 min + tab visível) — o refresh aplica o viés regional em
+ *      runtime e os testes positivos do spec interceptam client-side.
  *
- * Uso (local, só validação):
+ * Uso (local, só validação do caminho baked):
  *   node tests/e2e/fixtures/write-wave-bias-fixture.mjs
  *   npm run build
  *   npx playwright test topnow-wave-badge

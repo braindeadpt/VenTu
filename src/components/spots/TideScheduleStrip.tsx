@@ -4,6 +4,7 @@ import { ArrowDown, ArrowUp, Minus, Waves } from 'lucide-react';
 import type { TideSchedule, TidePhase } from '@/lib/tideSchedule';
 import { formatTideTime } from '@/lib/tideSchedule';
 import { cn } from '@/lib/cn';
+import { getTranslation } from '@/lib/i18n';
 
 interface TideScheduleStripProps {
   schedule: TideSchedule;
@@ -27,17 +28,14 @@ const phaseTone: Record<TidePhase, string> = {
 
 export default function TideScheduleStrip({ schedule, locale, className }: TideScheduleStripProps) {
   const isPt = locale === 'pt';
+  const tv = getTranslation(locale).spotVerify;
   const PhaseIcon = phaseIcon[schedule.phase];
 
   return (
     <div
       className={cn('flex flex-wrap items-center gap-2', className)}
       role="status"
-      aria-label={
-        isPt
-          ? `Maré: ${schedule.phaseLabel}`
-          : `Tide: ${schedule.phaseLabel}`
-      }
+      aria-label={tv.tideAria.replace('{phase}', schedule.phaseLabel)}
     >
       <span
         className={cn(
@@ -52,7 +50,7 @@ export default function TideScheduleStrip({ schedule, locale, className }: TideS
 
       {schedule.nextLow && (
         <span className="text-meta-sm text-fg-muted">
-          <span className="text-fg-subtle">{isPt ? 'Baixa' : 'Low'}</span>{' '}
+          <span className="text-fg-subtle">{tv.tideLow}</span>{' '}
           <span className="font-mono tabular-nums text-fg">
             {formatTideTime(schedule.nextLow, isPt ? 'pt' : 'en')}
           </span>
@@ -61,7 +59,7 @@ export default function TideScheduleStrip({ schedule, locale, className }: TideS
 
       {schedule.nextHigh && (
         <span className="text-meta-sm text-fg-muted">
-          <span className="text-fg-subtle">{isPt ? 'Alta' : 'High'}</span>{' '}
+          <span className="text-fg-subtle">{tv.tideHigh}</span>{' '}
           <span className="font-mono tabular-nums text-fg">
             {formatTideTime(schedule.nextHigh, isPt ? 'pt' : 'en')}
           </span>

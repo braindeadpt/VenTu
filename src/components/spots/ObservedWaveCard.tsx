@@ -20,6 +20,7 @@ import {
   warningBadgeLabel,
 } from '@/lib/ipmaWarnings';
 import { ATTRIBUTIONS, waveSourceAttributionId } from '@/lib/dataSources';
+import { getTranslation } from '@/lib/i18n';
 import WarningPill from '@/components/ui/WarningPill';
 
 /**
@@ -28,44 +29,20 @@ import WarningPill from '@/components/ui/WarningPill';
  */
 function sourceReasonLine(
   meta: ObservedWaveMeta | null | undefined,
-  isPt: boolean,
+  tv: ReturnType<typeof getTranslation>['spotVerify'],
 ): string {
-  if (!meta) {
-    return isPt
-      ? 'IH e WMO com leituras — a usar a fonte primária.'
-      : 'Both IH and WMO have readings — using the primary source.';
-  }
+  if (!meta) return tv.reasonNoMeta;
   const wmoFresher =
     meta.wmoAgeHours != null && meta.ihAgeHours != null && meta.wmoAgeHours < meta.ihAgeHours;
   const wmoCloser =
     meta.wmoDistanceKm != null && meta.ihDistanceKm != null && meta.wmoDistanceKm < meta.ihDistanceKm;
-  if (meta.reason === 'wmo-only') {
-    return isPt
-      ? 'A usar WMO — IH sem leitura fresca (fallback da Copernicus).'
-      : 'Using WMO — no fresh IH reading (Copernicus fallback).';
-  }
-  if (meta.reason === 'ih-only') {
-    return isPt ? 'A usar IH — WMO sem leitura fresca.' : 'Using IH — no fresh WMO reading.';
-  }
+  if (meta.reason === 'wmo-only') return tv.reasonWmoOnly;
+  if (meta.reason === 'ih-only') return tv.reasonIhOnly;
   // 'ih-fresh' — both sources present (the side-by-side case).
-  if (wmoFresher && wmoCloser) {
-    return isPt
-      ? 'A usar IH — fonte primária fresca; WMO mais próxima e mais fresca, mas o IH é a fonte oficial.'
-      : 'Using IH — fresh primary source; WMO is closer and fresher, but IH is the official source.';
-  }
-  if (wmoFresher) {
-    return isPt
-      ? 'A usar IH — fonte primária; WMO mais fresca, mas o IH é a fonte oficial.'
-      : 'Using IH — primary source; WMO fresher, but IH is the official source.';
-  }
-  if (wmoCloser) {
-    return isPt
-      ? 'A usar IH — fonte primária fresca; WMO mais próxima, mas o IH é a fonte oficial.'
-      : 'Using IH — fresh primary source; WMO closer, but IH is the official source.';
-  }
-  return isPt
-    ? 'A usar IH — fonte primária com leitura fresca (≤3 h).'
-    : 'Using IH — fresh primary source reading (≤3 h).';
+  if (wmoFresher && wmoCloser) return tv.reasonFresherCloser;
+  if (wmoFresher) return tv.reasonFresher;
+  if (wmoCloser) return tv.reasonCloser;
+  return tv.reasonIhFresh;
 }
 
 /**
@@ -101,6 +78,7 @@ export default function ObservedWaveCard({
   spotId,
 }: ObservedWaveCardProps) {
   const isPt = locale === 'pt';
+  const tv = getTranslation(locale).spotVerify;
   const warningsData = useIpmaWarnings();
   const warning = strongestSpotWarning(warningsData, spotId);
   const sourceAttributionId = waveSourceAttributionId(observedWave?.source ?? 'ih-buoy');
@@ -127,14 +105,12 @@ export default function ObservedWaveCard({
   return (
     <section
       className="rounded-card border p-3 space-y-3 border-divider bg-surface-1/[0.04]"
-      aria-label={isPt ? 'Onda observada (boia)' : 'Observed wave (buoy)'}
+      aria-label={tv.observedWaveTitle}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-1">
-        <h3 className="text-meta font-semibold text-fg">
-          {isPt ? 'Onda observada (boia)' : 'Observed wave (buoy)'}
-        </h3>
+        <h3 className="text-meta font-semibold text-fg">{tv.observedWaveTitle}</h3>
         <p className="text-meta-sm text-fg-subtle">
-          {isPt ? `${label} · ${clock}` : `${clock} · ${label}`}
+          {locale === 'en' ? `${clock} · ${label}` : `${label} · ${clock}`}
         </p>
       </div>
 
@@ -157,29 +133,13 @@ export default function ObservedWaveCard({
         <p
           className="flex items-start gap-1.5 rounded-lg border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-meta-sm text-data-period leading-snug"
           data-wave-bridge="true"
-          title={
-            isPt
-              ? 'Ponte keyless: enquanto a IH_API_KEY não provar a Fugro (Nazaré Costeira), a leitura de Cabo Silleiro (ES, Copernicus) é o proxy da onda — distância real mantida. Quando a boia nacional voltar a estar fresca, substitui-a.'
-              : 'Keyless bridge: until IH_API_KEY proves the Fugro (Nazaré Costeira), the Cabo Silleiro (ES, Copernicus) reading is the wave proxy — real distance kept. When the national buoy is fresh again, it replaces this one.'
-          }
+          title={tv.bridgeTitle}
         >
           <span aria-hidden>🌉</span>
           <span>
-            {isPt ? (
-              <>
-                Ponte keyless: a usar{' '}
-                <strong className="font-semibold">Cabo Silleiro (ES)</strong> enquanto a
-                Fugro nacional (IH_API_KEY) não está provada — a{' '}
-                {observedWaveLabel(observedWave, locale)}.
-              </>
-            ) : (
-              <>
-                Keyless bridge: using{' '}
-                <strong className="font-semibold">Cabo Silleiro (ES)</strong> until the
-                national Fugro (IH_API_KEY) is proven — at the{' '}
-                {observedWaveLabel(observedWave, locale)}.
-              </>
-            )}
+            {tv.bridgeLead}
+            <strong className="font-semibold">Cabo Silleiro (ES)</strong>
+            {tv.bridgeTail.replace('{label}', observedWaveLabel(observedWave, locale))}
           </span>
         </p>
       )}
@@ -192,41 +152,20 @@ export default function ObservedWaveCard({
             <p
               className="flex items-start gap-1.5 rounded-lg border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-meta-sm text-data-period leading-snug"
               data-wave-calibrated="true"
-              title={
-                isPt
-                  ? `Calibração cross-border: ${cal.from ?? 'par ES×PT'} · ME ${fmtMe} m (n=${cal.n}) — leitura espanhola ajustada para a referência PT.`
-                  : `Cross-border calibration: ${cal.from ?? 'ES×PT pair'} · ME ${fmtMe} m (n=${cal.n}) — Spanish reading adjusted to the PT reference.`
-              }
+              title={tv.calibrationTitle
+                .replace('{from}', cal.from ?? tv.calibrationDefaultFrom)
+                .replace('{me}', fmtMe)
+                .replace('{n}', String(cal.n))}
             >
               <span aria-hidden>🔧</span>
               <span>
-                {isPt ? (
-                  <>
-                    Altura recalibrada para a referência PT: medido{' '}
-                    <strong className="font-semibold">
-                      {cal.rawHeight.toFixed(1)} m
-                    </strong>
-                    {' → '}
-                    <strong className="font-semibold">
-                      {observedWave.waveHeight.toFixed(1)} m
-                    </strong>
-                    {' · viés '}
-                    {fmtMe} m (n={cal.n})
-                  </>
-                ) : (
-                  <>
-                    Height recalibrated to the PT reference: measured{' '}
-                    <strong className="font-semibold">
-                      {cal.rawHeight.toFixed(1)} m
-                    </strong>
-                    {' → '}
-                    <strong className="font-semibold">
-                      {observedWave.waveHeight.toFixed(1)} m
-                    </strong>
-                    {' · bias '}
-                    {fmtMe} m (n={cal.n})
-                  </>
-                )}
+                {tv.calibrationLead}{' '}
+                <strong className="font-semibold">{cal.rawHeight.toFixed(1)} m</strong>
+                {' → '}
+                <strong className="font-semibold">
+                  {observedWave.waveHeight.toFixed(1)} m
+                </strong>
+                {tv.calibrationTail.replace('{me}', fmtMe).replace('{n}', String(cal.n))}
               </span>
             </p>
           );
@@ -255,20 +194,14 @@ export default function ObservedWaveCard({
                     <span aria-hidden>{isWinner ? '✓ ' : ''}</span>
                     {isIh ? 'IH' : 'WMO'}
                     {isWinner ? (
-                      <span className="font-normal text-fg-subtle">
-                        {isPt ? '· a usar' : '· in use'}
-                      </span>
+                      <span className="font-normal text-fg-subtle">{tv.inUse}</span>
                     ) : null}
                   </p>
                   <p>{observedWaveLabel(w, locale)}</p>
                   <p className="font-mono tabular-nums text-fg-subtle">
                     {ageH != null && Number.isFinite(ageH)
-                      ? isPt
-                        ? `${Math.round(ageH * 10) / 10} h`
-                        : `${Math.round(ageH * 10) / 10} h`
-                      : isPt
-                        ? 'idade n/d'
-                        : 'age n/a'}
+                      ? `${Math.round(ageH * 10) / 10} h`
+                      : tv.ageNa}
                   </p>
                 </div>
               );
@@ -280,30 +213,22 @@ export default function ObservedWaveCard({
               data-ih-aging="true"
             >
               <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden />
-              <span>
-                {isPt
-                  ? 'IH a envelhecer — a WMO está mais fresca; a usar o IH enquanto continua a ser a fonte primária.'
-                  : 'IH aging — the WMO reading is fresher; using IH while it remains the primary source.'}
-              </span>
+              <span>{tv.ihAging}</span>
             </p>
           )}
-          <p className="text-meta-sm text-fg-subtle leading-snug">{sourceReasonLine(meta, isPt)}</p>
+          <p className="text-meta-sm text-fg-subtle leading-snug">{sourceReasonLine(meta, tv)}</p>
         </div>
       )}
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-meta">
         <div className="rounded-lg border border-divider/60 bg-bg-base/40 px-2.5 py-2">
-          <p className="text-meta-sm text-fg-muted mb-0.5">
-            {isPt ? 'Altura (medida)' : 'Height (measured)'}
-          </p>
+          <p className="text-meta-sm text-fg-muted mb-0.5">{tv.measuredHeight}</p>
           <p className="font-mono tabular-nums font-semibold text-fg">
             {observedWave.waveHeight.toFixed(1)} m
           </p>
         </div>
         <div className="rounded-lg border border-divider/60 bg-bg-base/40 px-2.5 py-2">
-          <p className="text-meta-sm text-fg-muted mb-0.5">
-            {isPt ? 'Previsão modelo' : 'Model forecast'}
-          </p>
+          <p className="text-meta-sm text-fg-muted mb-0.5">{tv.modelForecast}</p>
           <p className="font-mono tabular-nums font-semibold text-fg">
             {forecastWaveHeightM.toFixed(1)} m
           </p>
@@ -314,11 +239,10 @@ export default function ObservedWaveCard({
               'inline-flex items-center justify-center gap-1 rounded-pill border px-2.5 py-1.5 text-meta-sm font-medium w-full sm:w-auto',
               badge.className,
             )}
-            title={
-              isPt
-                ? `Diferença ${verification.deltaM >= 0 ? '+' : ''}${verification.deltaM} m`
-                : `Delta ${verification.deltaM >= 0 ? '+' : ''}${verification.deltaM} m`
-            }
+            title={tv.deltaMTitle.replace(
+              '{delta}',
+              `${verification.deltaM >= 0 ? '+' : ''}${verification.deltaM}`,
+            )}
           >
             <span aria-hidden>{badge.symbol}</span>
             {badge.label}
@@ -357,48 +281,28 @@ export default function ObservedWaveCard({
               )}
               data-wave-skill={isEs ? 'es' : isWmoPt ? 'pt' : 'true'}
               title={
-                isEs ? (
-                  isPt
-                    ? `Skill real do forecast nesta boia espanhola (${buoyName}) — forecast-skill.json via WMO/Copernicus (sem IH_API_KEY): best_match vs leitura da boia nas mesmas horas. ME = média(observado − previsão): positivo = modelo subestima.`
-                    : `Real forecast skill at this Spanish buoy (${buoyName}) — forecast-skill.json via WMO/Copernicus (no IH_API_KEY): best_match vs buoy reading on the same hours. ME = mean(observed − forecast): positive = model underestimates.`
-                ) : isWmoPt ? (
-                  isPt
-                    ? `Skill real do forecast nesta boia portuguesa (${buoyName}) via Copernicus-WMO sem IH_API_KEY — best_match vs leitura da boia nas mesmas horas. ME = média(observado − previsão): positivo = modelo subestima.`
-                    : `Real forecast skill at this Portuguese buoy (${buoyName}) via Copernicus-WMO without an IH_API_KEY — best_match vs buoy reading on the same hours. ME = mean(observed − forecast): positive = model underestimates.`
-                ) : isPt
-                  ? 'Skill real do forecast nesta boia (forecast-skill.json): best_match vs leitura da boia nas mesmas horas, com lead time > 0. ME = média(observado − previsão) — positivo = modelo subestima.'
-                  : 'Real forecast skill at this buoy (forecast-skill.json): best_match vs buoy reading on the same hours, with lead time > 0. ME = mean(observed − forecast) — positive = model underestimates.'
+                isEs
+                  ? tv.skillTitleEs.replace('{name}', buoyName)
+                  : isWmoPt
+                    ? tv.skillTitleWmoPt.replace('{name}', buoyName)
+                    : tv.skillTitleIh
               }
             >
               {keylessEmoji && <span aria-hidden>{keylessEmoji}</span>}
               <span>
-                {isPt ? (
-                  isEs ? (
-                    <>
-                      Skill da boia <strong className="font-semibold">espanhola</strong> ({buoyName})
-                      · {parts.join(' · ')} (n={s.n}) — via WMO/Copernicus (sem IH_API_KEY)
-                    </>
-                  ) : isWmoPt ? (
-                    <>
-                      Skill da boia <strong className="font-semibold">portuguesa</strong> ({buoyName})
-                      · {parts.join(' · ')} (n={s.n}) — via Copernicus-WMO (sem IH_API_KEY)
-                    </>
-                  ) : (
-                    <>Skill desta boia: {parts.join(' · ')} (n={s.n})</>
-                  )
-                ) : isEs ? (
-                  <>
-                    Skill from <strong className="font-semibold">Spanish</strong> buoy ({buoyName})
-                    : {parts.join(' · ')} (n={s.n}) — via WMO/Copernicus (no IH_API_KEY)
-                  </>
-                ) : isWmoPt ? (
-                  <>
-                    Skill from <strong className="font-semibold">Portuguese</strong> buoy ({buoyName})
-                    : {parts.join(' · ')} (n={s.n}) — via Copernicus-WMO (no IH_API_KEY)
-                  </>
-                ) : (
-                  <>Buoy skill: {parts.join(' · ')} (n={s.n})</>
-                )}
+                {isEs
+                  ? tv.skillBodyEs
+                      .replace('{name}', buoyName)
+                      .replace('{parts}', parts.join(' · '))
+                      .replace('{n}', String(s.n))
+                  : isWmoPt
+                    ? tv.skillBodyWmoPt
+                        .replace('{name}', buoyName)
+                        .replace('{parts}', parts.join(' · '))
+                        .replace('{n}', String(s.n))
+                    : tv.skillBodyIh
+                        .replace('{parts}', parts.join(' · '))
+                        .replace('{n}', String(s.n))}
               </span>
             </p>
           );
@@ -415,9 +319,7 @@ export default function ObservedWaveCard({
           className="flex flex-wrap items-center gap-x-1.5 gap-y-1 text-meta-sm text-fg-subtle leading-snug"
           data-data-source={sourceAttributionId}
         >
-          <span className="font-medium text-fg-muted">
-            {isPt ? 'Fonte da medição: ' : 'Measurement source: '}
-          </span>
+          <span className="font-medium text-fg-muted">{tv.measurementSource}</span>
           {isPt
             ? ATTRIBUTIONS[sourceAttributionId].notePt
             : ATTRIBUTIONS[sourceAttributionId].noteEn}

@@ -9,6 +9,10 @@ import {
   type WaveBiasSource,
 } from '@/lib/waveBias';
 import { parseForecastSkillBuoys, type ForecastSkillBuoy } from '@/lib/forecastSkill';
+import {
+  parseBuoyCoherenceRefs,
+  type BuoyCoherenceRefsData,
+} from '@/lib/calibrationRefs';
 
 const sign = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(2)}`;
 const two = (n: number | null | undefined) => (n == null ? '—' : n.toFixed(2));
@@ -85,16 +89,23 @@ function BiasTableRow({
 export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
   const [bias, setBias] = useState<WaveBiasData | null>(null);
   const [skillById, setSkillById] = useState<Record<string, ForecastSkillBuoy>>({});
+  // Referência PT da calibração ES→PT por região (buoy-coherence.json) — o
+  // merge regista qual boia PT recalibrou cada leitura ES; aqui, junto da
+  // tabela de viés, o leitor vê a referência escolhida e o ME/n do par.
+  const [coherenceRefs, setCoherenceRefs] = useState<BuoyCoherenceRefsData | null>(null);
 
   useEffect(() => {
     let active = true;
     (async () => {
       try {
-        const [biasRes, skillRes] = await Promise.all([
+        const [biasRes, skillRes, coherenceRes] = await Promise.all([
           fetch(getAssetPath('/data/wave-bias.json')).then((r) =>
             r.ok ? r.json() : null,
           ),
           fetch(getAssetPath('/data/forecast-skill.json')).then((r) =>
+            r.ok ? r.json() : null,
+          ),
+          fetch(getAssetPath('/data/buoy-coherence.json')).then((r) =>
             r.ok ? r.json() : null,
           ),
         ]);
@@ -106,10 +117,12 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
         const byId: Record<string, ForecastSkillBuoy> = {};
         for (const b of skill.buoys) byId[b.id] = b;
         setSkillById(byId);
+        setCoherenceRefs(parseBuoyCoherenceRefs(coherenceRes));
       } catch {
         if (active) {
           setBias(parseWaveBiasBuoys(null));
           setSkillById({});
+          setCoherenceRefs(parseBuoyCoherenceRefs(null));
         }
       }
     })();
@@ -176,6 +189,85 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
           </tbody>
         </table>
       </div>
+      {coherenceRefs?.hasData && (
+        <div
+          className="rounded-lg border border-divider p-4 space-y-3"
+          data-coherence-refs="true"
+        >
+          <h3 className="text-sm font-bold text-fg">
+            {isPt
+              ? 'Referência PT da calibração ES→PT (por região)'
+              : 'ES→PT calibration — PT reference (per region)'}
+          </h3>
+          <p className="text-xs text-fg-muted leading-relaxed">
+            {isPt
+              ? 'O merge regista em buoy-coherence.json a boia portuguesa usada para recalibrar cada leitura espanhola (altura ajustada à referência PT). ME = média(observado PT − observado ES) no par que recalibrou.'
+              : 'The merge records in buoy-coherence.json the Portuguese buoy used to recalibrate each Spanish reading (height adjusted to the PT reference). ME = mean(observed PT − observed ES) on the pair that recalibrated.'}
+          </p>
+          <div className="space-y-2">
+            {coherenceRefs.regions.map((r) => (
+              <div key={r.region} className="space-y-1">
+                <p className="text-xs font-semibold uppercase tracking-wide text-fg-subtle">
+                  {r.region}
+                </p>
+                {r.refs.map((ref) => (
+                  <p
+                    key={ref.key}
+                    className="text-sm text-fg-muted leading-snug"
+                    title={isPt
+                      ? `Par ${ref.key} · ${ref.spots.length} spot(s) recalibrado(s): ${ref.spots.join(', ') || '—'}`
+                      : `Pair ${ref.key} · ${ref.spots.length} recalibrated spot(s): ${ref.spots.join(', ') || '—'}`}
+                  >
+                    <span className="text-fg">
+                      {ref.esName || ref.esCode}
+                    </span>
+                    {' → '}
+                    <span className="text-fg">
+                      {ref.ptRefName || ref.ptRefCode}
+                    </span>
+                    {ref.ptRefArea ? ` (${ref.ptRefArea})` : ''}
+                    {' · '}
+                    <span className="tabular-nums">
+                      ME {sign(ref.me)} m · n={ref.n}
+                    </span>
+                  </p>
+                ))}
+              {r.suboptimal.length > 0 && (
+                <div
+                  className="space-y-1 rounded-md border border-data-period/30 bg-data-period/5 px-3 py-2"
+                  data-coherence-suboptimal="true"
+                >
+                  <p className="text-xs font-semibold text-data-period">
+                    {isPt
+                      ? `⚠️ Par subóptimo em ${r.suboptimal.length} spot(s) — referência não é a boia PT mais próxima`
+                      : `⚠️ Suboptimal pair in ${r.suboptimal.length} spot(s) — reference is not the nearest PT buoy`}
+                  </p>
+                  {r.suboptimal.map((s) => (
+                    <p
+                      key={`${s.spot}·${s.esCode}→${s.ptRefCode}`}
+                      className="text-xs text-fg-muted leading-snug"
+                      title={isPt
+                        ? 'Auditoria de par: a calibração só usa boias WMO-PT (os pares ES×PT vivem lá); uma estação IH pode estar mais perto do spot. O par pode ser o único com dados de coerência.'
+                        : 'Pair audit: calibration can only use WMO-PT buoys (the ES×PT coherence pairs live there); an IH station may be closer to the spot. The pair may be the only one with coherence data.'}
+                    >
+                      {s.spot}:
+                      {' '}
+                      <span className="tabular-nums">
+                        {s.ptRefCode} {isPt ? 'a' : 'at'} {s.ptRefKm != null ? `${Math.round(s.ptRefKm)} km` : '—'}
+                      </span>
+                      {isPt ? ' → mais próxima ' : ' → nearest '}
+                      <span className="tabular-nums">
+                        {s.nearestPtName || s.nearestPtCode} {isPt ? 'a' : 'at'} {s.nearestPtKm != null ? `${Math.round(s.nearestPtKm)} km` : '—'}
+                      </span>
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          </div>
+        </div>
+      )}
       <p className="text-xs text-fg-subtle">
         {isPt
           ? `Actualizado ${new Date(bias.fetchedAt ?? '').toLocaleDateString('pt-PT')} · amostra acumulada por boia (IH ${bias.buoys.filter((b) => b.source === 'ih').length} · ES ${bias.buoys.filter((b) => b.source === 'wmo-es').length})`

@@ -3,7 +3,6 @@
 import { AlertTriangle, Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { getTranslation } from '@/lib/i18n';
-import type { Locale } from '@/lib/i18n';
 import type { Spot } from '@/types';
 import type { SportScore } from '@/lib/sportScore';
 import { getScoreTokens } from '@/lib/sportScore';
@@ -105,7 +104,8 @@ export default function SpotConditionsDashboard({
   score,
 }: SpotConditionsDashboardProps) {
   const isPt = locale === 'pt';
-  const moonTideCopy = getTranslation((isPt ? 'pt' : 'en') as Locale).moonTide;
+  const tv = getTranslation(locale).spotVerify;
+  const moonTideCopy = getTranslation(locale).moonTide;
   const scoreTokens = getScoreTokens(score.score);
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
@@ -160,7 +160,7 @@ export default function SpotConditionsDashboard({
         <div
           className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 md:gap-2.5"
           role="group"
-          aria-label={isPt ? 'Métricas principais' : 'Key metrics'}
+          aria-label={tv.keyMetrics}
         >
           <MetricTile
             icon={<Waves className="w-4 h-4 text-data-waves" />}
@@ -186,7 +186,7 @@ export default function SpotConditionsDashboard({
             value={`${gustKt} kt`}
             hint={
               gustKt > windKt + 2
-                ? `${copy.gustHint} (+${gustKt - windKt} kt ${isPt ? 'vs média' : 'vs avg'})`
+                ? `${copy.gustHint} (+${gustKt - windKt} kt ${tv.vsAvg})`
                 : copy.gustHint
             }
             className={gustKt > windKt + 2 ? 'ring-1 ring-data-wind/30' : undefined}
@@ -230,7 +230,7 @@ export default function SpotConditionsDashboard({
                     {copy.windRelationHints.onshore}
                   </li>
                   <li>
-                    <span className="font-medium text-fg">{isPt ? 'Cross' : 'Cross-shore'}</span>
+                    <span className="font-medium text-fg">{tv.crossLabel}</span>
                     <span className="text-fg-subtle"> — </span>
                     {copy.windRelationHints.cross}
                   </li>
@@ -273,7 +273,7 @@ export default function SpotConditionsDashboard({
               <SwellTrainsTable conditions={conditions} locale={locale} />
               {swellTrains.length > 0 && (
                 <p className="text-meta-sm text-fg-subtle mt-2 font-mono tabular-nums">
-                  {isPt ? 'Energia de ondulação (soma)' : 'Total swell energy'}:{' '}
+                  {tv.totalSwellEnergy}:{' '}
                   <span className="text-fg font-medium">{totalEnergy.toFixed(1)} kW/m</span>
                 </p>
               )}
@@ -340,25 +340,13 @@ export default function SpotConditionsDashboard({
               </div>
             </div>
             {!freshObserved && conditions.observed && (
-              <p className="text-meta-sm text-fg-subtle">
-                {isPt
-                  ? 'Observação antiga (>3 h) — usa o vento do modelo acima.'
-                  : 'Observation older than 3 h — use model wind above.'}
-              </p>
+              <p className="text-meta-sm text-fg-subtle">{tv.staleObservation}</p>
             )}
             {!freshObserved && !conditions.observed && (
-              <p className="text-meta-sm text-fg-subtle">
-                {isPt
-                  ? 'Sem estação IPMA/Ecowitt próxima e fresca — usa o vento do modelo acima.'
-                  : 'No fresh IPMA/Ecowitt station nearby — use model wind above.'}
-              </p>
+              <p className="text-meta-sm text-fg-subtle">{tv.noStation}</p>
             )}
             {conditions.observedWave && !freshObservedWave && (
-              <p className="text-meta-sm text-fg-subtle">
-                {isPt
-                  ? 'Leitura da boia antiga — a altura de onda em cima é previsão do modelo.'
-                  : 'Stale buoy reading — wave height above is a model forecast.'}
-              </p>
+              <p className="text-meta-sm text-fg-subtle">{tv.staleBuoy}</p>
             )}
             {!freshObservedWave && !conditions.observedWave && <BuoyLayerNotice locale={locale} />}
             {conditions.observedWaveCoherenceRefused && (
@@ -399,21 +387,15 @@ export default function SpotConditionsDashboard({
  * estar em baixo.
  */
 function CoherenceRefusedNotice({ esCode, locale }: { esCode: string; locale: string }) {
-  const isPt = locale === 'pt';
+  const tv = getTranslation(locale).spotVerify;
   return (
     <p
       className="flex items-start gap-1.5 rounded-lg border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-meta-sm text-data-period leading-snug"
       data-coherence-refused="true"
-      title={isPt
-        ? `Boia ES ${esCode} descartada hoje por incoerência do par ES×PT (buoy-coherence.json).`
-        : `ES buoy ${esCode} discarded today due to an incoherent ES×PT pair (buoy-coherence.json).`}
+      title={tv.coerRefusedTitle.replace('{esCode}', esCode)}
     >
       <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden />
-      <span>
-        {isPt
-          ? 'Leitura ES descartada hoje — o par ES×PT está incoherent; a usar só a fonte PT.'
-          : 'ES reading discarded today — the ES×PT pair is incoherent; using only the PT source.'}
-      </span>
+      <span>{tv.coerRefusedBody}</span>
     </p>
   );
 }
@@ -439,10 +421,13 @@ function CoherenceWarningNotice({
   };
   locale: string;
 }) {
-  const isPt = locale === 'pt';
-  const title = isPt
-    ? `Par ES×PT (${warning.esCode}${warning.ptRefCode ? ` × ${warning.ptRefCode}` : ''}) incoherent há ${warning.days} dias consecutivos (${warning.firstDay ?? '…'} → ${warning.lastDay ?? '…'}). A leitura IH primária mantém-se, mas com confiança reduzida (buoy-coherence-daily.json).`
-    : `ES×PT pair (${warning.esCode}${warning.ptRefCode ? ` × ${warning.ptRefCode}` : ''}) incoherent for ${warning.days} consecutive days (${warning.firstDay ?? '…'} → ${warning.lastDay ?? '…'}). The primary IH reading is kept but with reduced confidence (buoy-coherence-daily.json).`;
+  const tv = getTranslation(locale).spotVerify;
+  const title = tv.coerWarnTitle
+    .replace('{esCode}', warning.esCode)
+    .replace('{ref}', warning.ptRefCode ? ` × ${warning.ptRefCode}` : '')
+    .replace('{days}', String(warning.days))
+    .replace('{first}', warning.firstDay ?? '…')
+    .replace('{last}', warning.lastDay ?? '…');
   return (
     <p
       className="flex items-start gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2 py-1.5 text-meta-sm text-amber-300 leading-snug"
@@ -450,11 +435,7 @@ function CoherenceWarningNotice({
       title={title}
     >
       <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" aria-hidden />
-      <span>
-        {isPt
-          ? `Confiabilidade da leitura nacional reduzida — o par ES×PT persiste incoherent há ${warning.days} dias.`
-          : `National reading confidence reduced — the ES×PT pair has been incoherent for ${warning.days} days.`}
-      </span>
+      <span>{tv.coerWarnBody.replace('{days}', String(warning.days))}</span>
     </p>
   );
 }

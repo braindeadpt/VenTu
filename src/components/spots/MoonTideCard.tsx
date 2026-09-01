@@ -4,7 +4,6 @@ import MoonIcon from '@/components/ui/MoonIcon';
 import { cn } from '@/lib/cn';
 import { getMoonPhase, type TideRegime } from '@/lib/moonPhase';
 import { getTranslation } from '@/lib/i18n';
-import type { Locale } from '@/lib/i18n';
 import type { TideHourPoint } from '@/lib/tideSchedule';
 import { dailyTideAmplitudeMetres } from '@/lib/tideAmplitude';
 
@@ -29,8 +28,7 @@ export default function MoonTideCard({
   title,
   className,
 }: MoonTideCardProps) {
-  const loc = (locale === 'pt' ? 'pt' : 'en') as Locale;
-  const mt = getTranslation(loc).moonTide;
+  const mt = getTranslation(locale).moonTide;
   const moon = getMoonPhase(date);
   const amplitude =
     tideHourly && tideHourly.length > 0

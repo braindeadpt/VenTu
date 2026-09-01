@@ -13,6 +13,7 @@ import {
 } from '@/lib/observedWave';
 import ObservedWaveSourcesChip from '@/components/spots/ObservedWaveSourcesChip';
 import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
 import { waveFactorSuffix, type ScoreWaveCorrection } from '@/lib/scoreConditions';
 import { formatObservedClockTime } from '@/lib/observations';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
@@ -108,16 +109,20 @@ export default function SpotStickyBar({
       role="region"
       aria-label={isPt ? 'Métricas principais' : 'Key metrics'}
       className="fixed left-0 right-0 z-30 bg-bg-base/95 supports-[backdrop-filter]:backdrop-blur-md border-b border-divider"
-      style={{ top: '64px' }}
+      // Cota de pinagem partilhada com a secção sticky (globals.css): a barra
+      // aparece exactamente onde a linha standalone de sport tabs estaria.
+      style={{ top: 'var(--ventu-spot-sticky-top)' }}
     >
       {/* Sport tabs — substituem a linha standalone (que o pai torna invisible
           quando esta barra está activa): a troca de desporto continua acessível
-          em scroll profundo, numa única fila. */}
+          em scroll profundo, numa única fila. Altura da fila partilhada com a
+          secção sticky (--ventu-spot-tabs-h). */}
       <div className="border-b border-divider/60">
         <div
           role="tablist"
           aria-label={isPt ? 'Modalidade' : 'Sport'}
           className="max-w-6xl mx-auto px-4 flex items-center gap-2 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x"
+          style={{ height: 'var(--ventu-spot-tabs-h)' }}
         >
           {sports.map((sport) => (
             <SportTab
@@ -181,13 +186,7 @@ export default function SpotStickyBar({
           (() => {
             const calTag = waveCalibrationTag(observedWave, locale);
             return calTag ? (
-              <span
-                className="shrink-0 inline-flex items-center gap-1 rounded-pill border border-data-period/30 bg-data-period/10 px-2 py-1 font-medium whitespace-nowrap text-meta-sm text-data-period"
-                title={calTag.title}
-                data-wave-calibrated="compact"
-              >
-                {calTag.label}
-              </span>
+              <WaveCalibrationTag wave={observedWave} locale={locale} className="shrink-0 text-meta-sm" />
             ) : null;
           })()}
         {scoreWaveCorrection &&
