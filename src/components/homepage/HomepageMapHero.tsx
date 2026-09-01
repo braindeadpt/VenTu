@@ -289,12 +289,18 @@ export default function HomepageMapHero({
 
 
 
+      {/* Desktop: wash the left so copy sits on a solid pane and the map
+          reads on the right. On a phone that same L→R wash covers ~68% of
+          a 390px screen — the tiles are there, the user just cannot see them. */}
       <div
-
-        className="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-r from-bg-base from-0% via-bg-base/85 via-[36%] to-transparent to-[68%]"
-
+        className="absolute inset-0 z-[1] pointer-events-none hidden md:block bg-gradient-to-r from-bg-base from-0% via-bg-base/85 via-[36%] to-transparent to-[68%]"
         aria-hidden
-
+        data-map-hero-scrim="side"
+      />
+      <div
+        className="absolute inset-x-0 top-0 z-[1] h-[min(240px,46%)] pointer-events-none bg-gradient-to-b from-bg-base/80 via-bg-base/30 to-transparent md:hidden"
+        aria-hidden
+        data-map-hero-scrim="top"
       />
 
 

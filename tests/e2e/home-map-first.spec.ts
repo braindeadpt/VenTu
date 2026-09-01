@@ -30,3 +30,18 @@ test.describe('Home map-first', () => {
     await expect(link).toHaveAttribute('href', /\/pt\/mapa\//);
   });
 });
+
+test.describe('Home map-first (mobile)', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('featured hero map is not covered by the desktop side wash', async ({ page }) => {
+    await page.goto('/pt/');
+    const hero = page.getByRole('region', { name: /Mapa interactivo/i });
+    await expect(hero.locator('.leaflet-container')).toBeVisible({ timeout: 20_000 });
+    await expect(hero.locator('[data-map-hero-scrim="side"]')).toBeHidden();
+    await expect(hero.locator('[data-map-hero-scrim="top"]')).toBeVisible();
+    const box = await hero.locator('.leaflet-container').boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThan(300);
+    expect(box?.height ?? 0).toBeGreaterThan(200);
+  });
+});
