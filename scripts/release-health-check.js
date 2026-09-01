@@ -4,14 +4,15 @@ const path = require('path');
 
 const checks = [
   { id: 'ih', label: 'IH Datawell', env: ['IH_API_KEY'], script: 'buoys:test-key' },
-  { id: 'meteoalarm', label: 'MeteoAlarm', env: ['METEOGATE_API_KEY', 'METEOALARM_API_KEY'], script: 'alerts:test-key' },
+  { id: 'meteoalarm', label: 'MeteoAlarm', env: ['METEOGATE_API_KEY', 'METEOALARM_API_KEY'], anyOf: true, script: 'alerts:test-key' },
   { id: 'ecowitt', label: 'Ecowitt', env: ['ECOWITT_APPLICATION_KEY', 'ECOWITT_API_KEY', 'ECOWITT_MAC'], script: 'ecowitt:test-key' },
   { id: 'resend', label: 'Resend', env: ['RESEND_API_KEY'], script: 'resend:test-key' },
 ];
 
-function classifyConfigured(envNames, env = process.env) {
+function classifyConfigured(envNames, env = process.env, { anyOf = false } = {}) {
   const present = envNames.filter((name) => Boolean(env[name]));
   if (present.length === 0) return 'missing';
+  if (anyOf) return 'healthy';
   if (present.length !== envNames.length) return 'degraded';
   return 'healthy';
 }
@@ -19,7 +20,7 @@ function classifyConfigured(envNames, env = process.env) {
 function buildChecklist(env = process.env) {
   return checks.map((check) => ({
     ...check,
-    status: classifyConfigured(check.env, env),
+    status: classifyConfigured(check.env, env, { anyOf: Boolean(check.anyOf) }),
     configured: check.env.filter((name) => Boolean(env[name])).length,
     required: check.env.length,
   }));

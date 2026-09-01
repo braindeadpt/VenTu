@@ -22,6 +22,21 @@ async function processSpot(spot, options) {
     ]);
     marineData = marine;
     weatherData = weather;
+    // Reuses the multimodel payloads already fetched — empty counts would
+    // make every daytime run report "OK (0 spots amostrados)" and wipe
+    // model-health.json.
+    if (options.modelHealthRun && options.modelHealth) {
+      const { mergeCounts, countModelSlots, HEALTH_FAMILIES } = options.modelHealth;
+      mergeCounts(
+        options.modelHealthRun.waveCounts,
+        countModelSlots(marineWaveModels.hourly, HEALTH_FAMILIES.wave.baseKey, HEALTH_FAMILIES.wave.models),
+      );
+      mergeCounts(
+        options.modelHealthRun.windCounts,
+        countModelSlots(windModelData.hourly, HEALTH_FAMILIES.wind.baseKey, HEALTH_FAMILIES.wind.models),
+      );
+      options.modelHealthRun.sampledSpots += 1;
+    }
     const weatherIdx = Math.min(findCurrentHourIndex(weatherData.hourly.time), weatherData.hourly.wind_speed_10m.length - 1);
     const windIdx = Math.min(findCurrentHourIndex(windModelData.hourly.time), (windModelData.hourly.time?.length ?? 1) - 1);
     const blend = blendWindAtIndex(weatherData.hourly.wind_speed_10m[weatherIdx] || 0, weatherData.hourly.wind_direction_10m[weatherIdx] || 0, weatherData.hourly.wind_gusts_10m[weatherIdx] || 0, readModelMap(windModelData.hourly, 'wind_speed_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_direction_10m', windModels, windIdx), readModelMap(windModelData.hourly, 'wind_gusts_10m', windModels, windIdx));

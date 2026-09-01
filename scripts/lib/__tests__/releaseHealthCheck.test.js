@@ -9,6 +9,8 @@ describe('release health checklist', () => {
     expect(classifyConfigured(['A', 'B'], {})).toBe('missing');
     expect(classifyConfigured(['A', 'B'], { A: 'set' })).toBe('degraded');
     expect(classifyConfigured(['A', 'B'], { A: 'set', B: 'set' })).toBe('healthy');
+    expect(classifyConfigured(['A', 'B'], { A: 'set' }, { anyOf: true })).toBe('healthy');
+    expect(classifyConfigured(['A', 'B'], {}, { anyOf: true })).toBe('missing');
   });
 
   it('reports required integration credentials without exposing values', () => {
@@ -26,5 +28,13 @@ describe('release health checklist', () => {
     expect(items.find((item) => item.id === 'resend')).toMatchObject({ status: 'missing', configured: 0 });
     expect(JSON.stringify(items)).not.toContain('secret');
     expect(JSON.stringify(items)).not.toContain('token');
+  });
+
+  it('MeteoGate alone is healthy — METEOALARM_API_KEY is optional', () => {
+    const items = buildChecklist({ METEOGATE_API_KEY: 'token' });
+    expect(items.find((item) => item.id === 'meteoalarm')).toMatchObject({
+      status: 'healthy',
+      configured: 1,
+    });
   });
 });

@@ -155,6 +155,7 @@ async function updateConditions() {
         findCurrentHourIndex, confidenceAtIndex, confidenceByDay, blendWindAtIndex, readModelMap,
         applyWindBlendToHours, waveModels: WAVE_MODELS, windModels: WIND_MODELS, isFreshIhObservation,
         getCurrentConditions, onStaleIhTide: () => { ihSkippedStale += 1; },
+        modelHealthRun, modelHealth: { mergeCounts, countModelSlots, HEALTH_FAMILIES },
       });
       allConditions[spot.id] = result.conditions;
       allForecasts[spot.id] = result.forecast;
