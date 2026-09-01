@@ -52,7 +52,7 @@ jobs:
 
       - name: Warn when METEOALARM_API_KEY missing
         if: env.METEOALARM_API_KEY == ''
-        run: echo "::warning::METEOALARM_API_KEY não configurada — fallback MeteoAlarm dos avisos indisponível (ver docs/METEOALARM_API_KEY.md)"
+        run: echo "::warning::METEOALARM_API_KEY não configurada — fallback EDR directo indisponível. Particulares: MeteoGate (docs/METEOALARM_API_KEY.md), não api.meteoalarm.org/register."
 
       # IH Datawell — camada observedWave. Corremos o buoys:test-key COMBINADO
       # (node scripts/buoys-test-key.js): (1) diagnóstico real da key

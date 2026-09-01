@@ -2,10 +2,11 @@
  * MeteoAlarm (EUMETNET) weather warnings — secondary source, fallback when
  * the IPMA open-data API is down.
  *
- * The legacy meteoalarm.org CAP feeds were retired; the official API is the
- * OGC API EDR at api.meteoalarm.org. It requires a FREE bearer token
- * (registration at https://api.meteoalarm.org — same manual flow as the IH
- * buoy key). The endpoint used here:
+ * The legacy meteoalarm.org CAP feeds were retired. Particulars should use
+ * MeteoGate (https://meteogate.eu) — the MeteoAlarm portal still marks that
+ * public API as "Coming soon". The code below is the **re-user** OGC EDR at
+ * api.meteoalarm.org (Bearer METEOALARM_API_KEY), not the MeteoGate gateway.
+ * The endpoint used here:
  *
  *   GET /edr/v1/collections/warnings/locations/PT?active=true&language=pt-PT
  *

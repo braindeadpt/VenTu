@@ -69,8 +69,10 @@ async function runMeteoAlarmApiKeyTest({
   if (!apiKey) {
     log.error('❌ METEOALARM_API_KEY não está definida.');
     log.error('');
-    log.error('   1. Regista-te gratuitamente em https://api.meteoalarm.org');
-    log.error('      (subscription "edr" → API token; mesmo fluxo manual do IH).');
+    log.error('   1. Particulares: MeteoGate (https://meteogate.eu /');
+    log.error('      https://devportal.meteogate.eu) — não uses api.meteoalarm.org/register.');
+    log.error('   1b. Redistribuidor aprovado: Bearer token no EDR directo');
+    log.error('      (subscription "edr" em api.meteoalarm.org).');
     log.error('   2. Depois corre, ex.:');
     log.error('      METEOALARM_API_KEY=xxxxxxxx node scripts/test-meteoalarm-api-key.js');
     log.error('');

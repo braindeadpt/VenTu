@@ -97,11 +97,11 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'MeteoAlarm (EUMETNET)',
       homepage: 'https://www.meteoalarm.org/',
-      usePt: 'Fallback dos avisos meteorológicos quando o IPMA está em baixo (API OGC EDR + CAP, token grátis).',
-      useEn: 'Weather warnings fallback when IPMA is down (OGC EDR + CAP API, free token).',
+      usePt: 'Fallback dos avisos meteorológicos quando o IPMA está em baixo. Particulares: MeteoGate; redistribuidores: API OGC EDR + CAP.',
+      useEn: 'Weather warnings fallback when IPMA is down. Individuals: MeteoGate; re-users: OGC EDR + CAP.',
       license: {
-        pt: <>Termos EUMETNET (token grátis METEOALARM_API_KEY)</>,
-        en: <>EUMETNET terms (free METEOALARM_API_KEY token)</>,
+        pt: <>Termos EUMETNET (MeteoGate / CAP)</>,
+        en: <>EUMETNET terms (MeteoGate / CAP)</>,
       },
       attributionId: 'meteoalarm',
     },

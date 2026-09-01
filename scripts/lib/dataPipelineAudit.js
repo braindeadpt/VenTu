@@ -124,8 +124,8 @@ const DATA_SOURCES = [
     tier: 'free-token',
     usedFor: 'Avisos activos por bbox (Agitação Marítima, Vento, Trovoada, …) — só quando o IPMA está em baixo',
     callsPerFullRun: '1 página EDR (locations/PT) + 1 CAP por aviso activo',
-    limits: 'Token grátis (registo em api.meteoalarm.org) — chamadas apenas no fallback',
-    notes: 'API OGC EDR (Bearer token, METEOALARM_API_KEY). CAP Oasis 1.2 normalizado para o mesmo shape do IPMA com source:"meteoalarm". Mapeamento spot→aviso por point-in-bbox (mais largo que distrito — over-covering propositado).',
+    limits: 'Particulares → MeteoGate (ainda sem route de avisos listado). EDR directo só para redistribuidores (METEOALARM_API_KEY). Chamadas só no fallback.',
+    notes: 'API OGC EDR (Bearer token, METEOALARM_API_KEY) para re-users. CAP Oasis 1.2 normalizado para o mesmo shape do IPMA com source:"meteoalarm". Mapeamento spot→aviso por point-in-bbox (mais largo que distrito — over-covering propositado).',
   },
   {
     id: 'ipma-radar',

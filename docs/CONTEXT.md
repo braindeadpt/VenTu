@@ -262,7 +262,8 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
 
 - `warnings.json` (fetch-ipma-warnings.js, com fallback automático para MeteoAlarm) → secção na página de spot + linha no Dawn Patrol
 - **Fonte primária IPMA** (open data, sem key). Se a API do IPMA falhar, o script cai para o
-  **MeteoAlarm (EUMETNET)** — token grátis `METEOALARM_API_KEY` (ver docs/METEOALARM_API_KEY.md),
+  **MeteoAlarm (EUMETNET)** — particulares via MeteoGate (meteogate.eu); EDR directo
+  (`METEOALARM_API_KEY`) só para redistribuidores (ver docs/METEOALARM_API_KEY.md),
   API OGC EDR + CAP Oasis 1.2, normalizado para o mesmo shape com `source: 'ipma' | 'meteoalarm'`
   no payload; o rótulo da fonte na UI (secção de spot + Dawn Patrol) reflecte o fallback.
 - `ih-coastal-warnings.json` (fetch-ih-coastal-warnings.js, OGC API do IH sem key) → **Avisos à

@@ -10,7 +10,16 @@ rótulo da fonte muda para «MeteoAlarm (EUMETNET)».
 Sem o token, a pipeline continua a correr normalmente com o IPMA como única fonte
 (ver [Degradação graciosa](#degradação-graciosa)).
 
-Fonte oficial: [MeteoAlarm API Portal](https://api.meteoalarm.org/) · [FAQ do EDR](https://api.meteoalarm.org/edr/v1/faq)
+Fonte oficial: [MeteoAlarm API Portal](https://api.meteoalarm.org/) · [FAQ do EDR](https://api.meteoalarm.org/edr/v1/faq) · [MeteoGate](https://meteogate.eu/)
+
+O MeteoAlarm distingue dois públicos:
+
+| Quem | Onde | O que VenTu usa |
+|---|---|---|
+| **Particulares / projectos pessoais** (este repo) | **[MeteoGate](https://meteogate.eu/)** — [Developer Portal](https://devportal.meteogate.eu/) para API key | Caminho recomendado pelo próprio MeteoAlarm. A API pública de avisos ainda aparece como «Coming soon» no portal; o Data Explorer ainda não lista datasets *Warning*. Quando o route existir, ligamos `api.meteogate.eu/<route>` no fetch. |
+| **Organizações redistribuidoras** | Token Bearer em [api.meteoalarm.org/register](https://api.meteoalarm.org/register) | O código actual (`METEOALARM_API_KEY` → EDR `api.meteoalarm.org`) só faz sentido se te aprovarem neste formulário. **Não** é o caminho para um particular. |
+
+Até o MeteoGate servir avisos, a pipeline continua só com o IPMA. Não abras o formulário de re-users só porque este guia existia — o MeteoAlarm manda-te explicitamente para o MeteoGate.
 
 ---
 
@@ -31,14 +40,26 @@ dentro de `fetch-ipma-warnings.js`) → `public/data/warnings.json`.
 
 ---
 
-## Passo 1 — Obter o token (grátis, por formulário)
+## Passo 1 — Acesso (particulares: MeteoGate)
 
-1. Abrir [https://api.meteoalarm.org/register](https://api.meteoalarm.org/register)
-2. Preencher o formulário de pedido de acesso (organização / finalidade — um projecto
-   aberto de condições de surf/kite em Portugal serve; é um processo manual de revisão)
-3. Receber o **API token** por e-mail após aprovação (tal como a key do IH, não é instantâneo)
+1. Abrir [https://meteogate.eu/](https://meteogate.eu/) (Warnings → *How to get started* /
+   *How to download warning data*) e o [Developer Portal](https://devportal.meteogate.eu/)
+2. Login com um identity provider e **Create API Key**
+3. Confirmar no Data Explorer / lista de routes se já existe um endpoint de avisos
+   MeteoAlarm. Se ainda não houver datasets *Warning*, **pára aqui** — o fallback
+   continua desligado e o IPMA cobre os avisos. Não uses o formulário de
+   [api.meteoalarm.org/register](https://api.meteoalarm.org/register) (é para
+   membros e redistribuidores).
 
-Guarda o token num local seguro. **Não** o comites nem o exponhas no frontend.
+Quando o MeteoGate passar a proxyar o EDR, a key do portal **não** entra em
+`METEOALARM_API_KEY` (isso é Bearer do `api.meteoalarm.org`). O fetch terá de
+apontar a `https://api.meteogate.eu/<route>` com `apikey` em query ou header —
+isso ainda não está ligado neste repo.
+
+### Só se fores redistribuidor aprovado
+
+O resto deste guia (Passo 2 em diante) é o caminho **EDR directo**: token Bearer
+no secret `METEOALARM_API_KEY`. Ignora-o se só tens (ou vais ter) uma key MeteoGate.
 
 ---
 
