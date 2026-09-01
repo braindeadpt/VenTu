@@ -183,27 +183,14 @@ if (spots.length < MIN_SPOTS) {
 
 console.log(`📋 Parsed ${spots.length} spots from src/lib/spots.ts\n`);
 
-async function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+const { sleep, createUsageCounter, fetchWithRetry } = require('./lib/updateConditionsIo');
 
-/**
- * Contador de uso real da Open-Meteo neste run (ponderado por modelo pedido).
- *
- * A métrica do orçamento é «1 chamada ponderada por modelo pedido» (ver
- * docs/CONTEXT.md — Orçamento Open-Meteo): um pedido multi-modelo com 4 modelos
- * conta 4; um best_match conta 1. `requests` conta os pedidos HTTP reais
- * (inclui retries 429) para mostrar o overhead face ao valor teórico.
- */
+/* Legacy implementation moved to ./lib/updateConditionsIo.
 function createUsageCounter() {
   return {
-    /** Σ (modelos × pedidos HTTP) — a métrica comparável ao orçamento 10k/dia. */
     weightedCalls: 0,
-    /** Pedidos HTTP reais feitos à API (retries incluídos). */
     requests: 0,
-    /** Retries (429/erro transitório) que consumiram quota extra. */
     retries: 0,
-    /** Spots primários com fetch completo (aliases não chamam a API). */
     spotsFetched: 0,
     record(weight = 1) {
       this.requests += 1;
@@ -212,7 +199,7 @@ function createUsageCounter() {
   };
 }
 
-async function fetchWithRetry(url, retries = 3, delay = 1000, usage, weight = 1) {
+async function fetchWithRetry_LEGACY(url, retries = 3, delay = 1000, usage, weight = 1) {
   for (let i = 0; i < retries; i++) {
     try {
       // Cada pedido HTTP real conta para o uso (mesmo os que falham/retry).
@@ -234,6 +221,7 @@ async function fetchWithRetry(url, retries = 3, delay = 1000, usage, weight = 1)
   }
   throw new Error('Max retries exceeded');
 }
+*/
 
 /*
 function wavePowerKwPerM_LEGACY(heightM, periodS) {
