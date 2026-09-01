@@ -1,0 +1,1365 @@
+{
+  "stations": {
+    "1": {
+      "idEst": 1,
+      "name": "CSA88/1",
+      "area": "Boia Nazaré Oceânica",
+      "wmoId": 6200192,
+      "depth": 1897,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 39.5,
+      "lon": -9.633333333333331,
+      "lastSea": "2025-09-30T05:00:00",
+      "family": "fugro"
+    },
+    "2": {
+      "idEst": 2,
+      "name": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "wmoId": 6200199,
+      "depth": 85,
+      "status": "active",
+      "nrt": "near-real-time data available",
+      "lat": 39.550000000000004,
+      "lon": -9.200000000000001,
+      "lastSea": "2026-09-01T00:00:00",
+      "family": "fugro"
+    },
+    "3": {
+      "idEst": 3,
+      "name": "CSA89/1 ",
+      "area": "Boia Leixões Oceânica",
+      "wmoId": 6200191,
+      "depth": 1647,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 41.1333333333333,
+      "lon": -9.56666666666667,
+      "lastSea": "2025-02-12T12:00:00",
+      "family": "fugro"
+    },
+    "4": {
+      "idEst": 4,
+      "name": "CSA92/D",
+      "area": "Leixões",
+      "wmoId": 6201077,
+      "depth": 81,
+      "status": "active",
+      "nrt": "near-real-time data available",
+      "lat": 41.3155555555556,
+      "lon": -8.9825,
+      "lastPos": "2026-08-31T04:32:17+00:00",
+      "lastSea": "2026-08-31T17:02:14+00:00",
+      "family": "datawell"
+    },
+    "19": {
+      "idEst": 19,
+      "name": "CSA83/1D",
+      "area": "Sines",
+      "wmoId": 6201078,
+      "depth": 97,
+      "status": "active",
+      "nrt": "near-real-time data available",
+      "lat": 37.921111111111095,
+      "lon": -8.92861111111111,
+      "lastPos": "2026-08-31T23:26:44+00:00",
+      "lastSea": "2026-08-31T22:26:44+00:00",
+      "family": "datawell"
+    },
+    "20": {
+      "idEst": 20,
+      "name": "CSA82/D",
+      "area": "Faro",
+      "wmoId": 6201079,
+      "depth": 90,
+      "status": "active",
+      "nrt": "near-real-time data available",
+      "lat": 36.904495,
+      "lon": -7.89779,
+      "lastPos": "2026-08-31T21:55:22+00:00",
+      "lastSea": "2026-08-31T20:55:22+00:00",
+      "family": "datawell"
+    },
+    "23": {
+      "idEst": 23,
+      "name": "CSA94/D",
+      "area": "Funchal",
+      "wmoId": 1301000,
+      "depth": 100,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 32.6216666666667,
+      "lon": -16.9433333333333,
+      "lastPos": "2026-05-06T20:09:14+00:00",
+      "lastSea": "2026-03-12T11:53:11+00:00",
+      "family": "datawell"
+    },
+    "33": {
+      "idEst": 33,
+      "name": "CSA94",
+      "area": "Caniçal",
+      "wmoId": 1301001,
+      "depth": 108,
+      "status": "active",
+      "nrt": "near-real-time data available",
+      "lat": 32.727777777777796,
+      "lon": -16.723888888888897,
+      "lastPos": "2026-08-31T22:59:57+00:00",
+      "lastSea": "2026-08-31T22:59:57+00:00",
+      "family": "datawell"
+    },
+    "66": {
+      "idEst": 66,
+      "name": "BOND1",
+      "area": "Arquipélago dos Açores - Ilha Terceira",
+      "wmoId": 6202401,
+      "depth": 100,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 38.7472222222222,
+      "lon": -27.0036111111111,
+      "lastPos": "2025-06-30T00:38:10+00:00",
+      "lastSea": "2025-06-30T00:38:09+00:00",
+      "family": "datawell"
+    },
+    "83": {
+      "idEst": 83,
+      "name": "BOND2",
+      "area": "Arquipélago dos Açores - Ilha São Miguel",
+      "wmoId": 6202402,
+      "depth": 90,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 37.7269444444444,
+      "lon": -25.7216666666667,
+      "lastPos": "2025-05-26T15:13:49+00:00",
+      "lastSea": "2025-05-26T15:13:49+00:00",
+      "family": "datawell"
+    },
+    "84": {
+      "idEst": 84,
+      "name": "BOND3",
+      "area": "Arquipélago dos Açores - Ilha das Flores",
+      "wmoId": 6202403,
+      "depth": 100,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 39.370833333333294,
+      "lon": -31.1519444444444,
+      "lastPos": "2025-08-13T03:33:14+00:00",
+      "lastSea": "2025-08-13T03:33:14+00:00",
+      "family": "datawell"
+    },
+    "85": {
+      "idEst": 85,
+      "name": "BOND4",
+      "area": "Arquipélago Açores - Ilha Faial ",
+      "wmoId": 6202404,
+      "depth": 110,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 38.588333333333296,
+      "lon": -28.541111111111096,
+      "lastSea": "2022-07-28T17:29:16+00:00",
+      "family": "datawell"
+    },
+    "86": {
+      "idEst": 86,
+      "name": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "wmoId": 6202400,
+      "depth": 100,
+      "status": "active",
+      "nrt": "near-real-time data available",
+      "lat": 39.08,
+      "lon": -27.9633333333333,
+      "lastPos": "2026-08-31T23:49:02+00:00",
+      "lastSea": "2026-08-31T23:49:02+00:00",
+      "family": "datawell"
+    },
+    "88": {
+      "idEst": 88,
+      "name": "BOND6",
+      "area": "Arquipélago dos Açores - Ilha de Santa Maria",
+      "wmoId": 6202405,
+      "depth": 120,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 36.922222222222196,
+      "lon": -25.170277777777798,
+      "lastPos": "2025-08-18T16:02:24+00:00",
+      "lastSea": "2025-08-18T16:02:24+00:00",
+      "family": "datawell"
+    },
+    "1004": {
+      "idEst": 1004,
+      "name": "CSA87",
+      "area": "Zona Piloto - S. Pedro de Moel",
+      "depth": 59,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 39.8731683,
+      "lon": -9.09806,
+      "lastSea": "2013-01-19T06:00:00",
+      "family": "fugro"
+    },
+    "1005": {
+      "idEst": 1005,
+      "name": "CSA81",
+      "area": "Boia Faro Oceânica",
+      "wmoId": 6200200,
+      "depth": 1300,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 36.4833333333333,
+      "lon": -8.06666666666667,
+      "lastSea": "2026-05-01T04:00:00",
+      "family": "fugro"
+    },
+    "1007": {
+      "idEst": 1007,
+      "name": "Subeco",
+      "area": "Setúbal",
+      "depth": 1012,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 38.1666666666667,
+      "lon": -9.33333333333333,
+      "lastSea": "2019-10-30T10:00:00",
+      "family": "fugro"
+    },
+    "1008": {
+      "idEst": 1008,
+      "name": "CSA83",
+      "area": "Boia Sines Oceânica",
+      "wmoId": 6201081,
+      "depth": 1052,
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
+      "lat": 37.8833333333333,
+      "lon": -9.450000000000001,
+      "lastSea": "2025-11-28T07:00:00",
+      "family": "fugro"
+    },
+    "1010": {
+      "idEst": 1010,
+      "name": "ZLT1",
+      "area": "ZLT1",
+      "depth": 115,
+      "status": "active",
+      "nrt": "near-real-time data not available",
+      "lat": 38.3833333333333,
+      "lon": -9.06666666666667,
+      "lastSea": "2026-09-01T00:00:00",
+      "family": "fugro"
+    },
+    "1011": {
+      "idEst": 1011,
+      "name": "ZLT2",
+      "area": "ZLT2",
+      "depth": 114,
+      "status": "active",
+      "nrt": "near-real-time data not available",
+      "lat": 38.35,
+      "lon": -9,
+      "lastSea": "2026-09-01T00:00:00",
+      "family": "fugro"
+    }
+  },
+  "spotMapping": {
+    "moledo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 60
+    },
+    "vila-praia-ancora": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 56.8
+    },
+    "afife": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 52.3
+    },
+    "castelo-neiva": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 50.2
+    },
+    "amorosa": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 44.1
+    },
+    "cabedelo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 42.3
+    },
+    "foil-cabedelo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 42.3
+    },
+    "cabedelo-wakepark": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 43.6
+    },
+    "rodanho": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 41.2
+    },
+    "ofir": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 30.5
+    },
+    "esposende": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 28.9
+    },
+    "esposende-praia": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 29.4
+    },
+    "fao": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 28
+    },
+    "apulia": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 26.1
+    },
+    "povoa-varzim": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 19.8
+    },
+    "azurara": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 20.2
+    },
+    "leca-palmeira": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 27.1
+    },
+    "matosinhos": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 28.8
+    },
+    "cabedelo-douro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 32.8
+    },
+    "marina-afurada-foil": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 33.7
+    },
+    "foil-fao-cavado": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 28.4
+    },
+    "foil-esposende-piscinas": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 28.9
+    },
+    "praia-da-lomba": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 54.9
+    },
+    "salgueiros": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 34.3
+    },
+    "sereia-costa-verde": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 34.6
+    },
+    "canide-sul": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 35
+    },
+    "aguda": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 40.1
+    },
+    "espinho": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 44.7
+    },
+    "praia-37": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 44.7
+    },
+    "bairro-piscatorio": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 45.1
+    },
+    "paramos": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 47
+    },
+    "barrinha-esmoriz": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 48.2
+    },
+    "esmoriz": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 48.1
+    },
+    "cortegaca": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 49.4
+    },
+    "cortegaca-sul": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 50.3
+    },
+    "maceda": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 51.5
+    },
+    "murtosa": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 70.9
+    },
+    "ria-torreira": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 68.5
+    },
+    "praia-torreira": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 65.6
+    },
+    "muranzel": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 69.6
+    },
+    "furadouro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 55.7
+    },
+    "sao-jacinto": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 74.6
+    },
+    "costa-nova": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 79.8
+    },
+    "tocha": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 92.1
+    },
+    "quiaios": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 79.1
+    },
+    "figueira-foz": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 72.4
+    },
+    "leirosa": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 62.3
+    },
+    "praia-da-vieira": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 40.9
+    },
+    "castelo-bode": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 77.3
+    },
+    "nazare": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 12.1
+    },
+    "foz-arelho": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 13.7
+    },
+    "foil-foz-arelho": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 13.7
+    },
+    "obidos-lagoon": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 16.8
+    },
+    "obidos-lagoon-sul": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 13.9
+    },
+    "obidos-lagoon-foz": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 13.6
+    },
+    "foz-arelho-beach": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 13.5
+    },
+    "praia-del-rey": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 19.6
+    },
+    "almagreira": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 21.4
+    },
+    "baleal": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 23.1
+    },
+    "supertubos": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 26.8
+    },
+    "foz-sizandro": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 52.5
+    },
+    "coxos": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 64.3
+    },
+    "ribeira-ilhas": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 65.3
+    },
+    "empa": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 65.7
+    },
+    "sao-lourenco": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 66.2
+    },
+    "pedra-branca": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 66.6
+    },
+    "sao-sebastiao": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 67.2
+    },
+    "foz-lizandro": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 69
+    },
+    "praia-grande-sintra": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 59.9
+    },
+    "adraga": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 58.3
+    },
+    "guincho": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 52.4
+    },
+    "seixal-bay": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 41.1
+    },
+    "praia-vitoria": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 86.9
+    },
+    "santa-catarina-terceira": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 78.2
+    },
+    "parede": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 41.2
+    },
+    "carcavelos": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 40.3
+    },
+    "nova-vaga": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 34.3
+    },
+    "sao-joao-caparica": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 34.5
+    },
+    "costa-caparica": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 32.6
+    },
+    "fonte-telha": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 25.3
+    },
+    "ponta-dos-corvos": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 29.9
+    },
+    "trafaria": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 35.5
+    },
+    "cova-do-vapor": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 35.8
+    },
+    "praia-da-rainha": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 31.6
+    },
+    "almoxarife": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 84.1
+    },
+    "lagoa-albufeira": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 14.6
+    },
+    "foil-lagoa-albufeira": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 14.6
+    },
+    "praia-lagoa-albufeira": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 17.1
+    },
+    "troia": {
+      "idEst": 1011,
+      "stationTitle": "ZLT2",
+      "area": "ZLT2",
+      "distanceKm": 18.8
+    },
+    "comporta": {
+      "idEst": 1011,
+      "stationTitle": "ZLT2",
+      "area": "ZLT2",
+      "distanceKm": 19
+    },
+    "carvalhal-comporta": {
+      "idEst": 1011,
+      "stationTitle": "ZLT2",
+      "area": "ZLT2",
+      "distanceKm": 22.2
+    },
+    "alqueva": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 128.9
+    },
+    "ilha-do-ermal": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 77.5
+    },
+    "melides": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 26
+    },
+    "sines": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 6.4
+    },
+    "sao-torpes": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 10.8
+    },
+    "mosteiros": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 228.5
+    },
+    "porto-covo": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 14.4
+    },
+    "monte-verde": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 244.6
+    },
+    "santa-barbara": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 241.9
+    },
+    "malhao": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 21.1
+    },
+    "milicias": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 248.6
+    },
+    "vila-nova-milfontes": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 25.5
+    },
+    "alteirinhos": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 32.9
+    },
+    "zambujeira": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 46
+    },
+    "carvalhal": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 48.3
+    },
+    "odeceixe": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 54.5
+    },
+    "amoreira": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 63.9
+    },
+    "monte-clerigo": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 64.9
+    },
+    "arrifana": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 70.2
+    },
+    "vale-figueiras": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 74.9
+    },
+    "bordeira": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 80.3
+    },
+    "amado": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 83.9
+    },
+    "barriga": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 91.3
+    },
+    "castelejo": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 92.5
+    },
+    "luz": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 76.7
+    },
+    "burgau": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 80.5
+    },
+    "salema": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 84.2
+    },
+    "cordoama": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 94.9
+    },
+    "ferragudo": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 60.2
+    },
+    "vila-real-santo-antonio": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 53.8
+    },
+    "monte-gordo": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 50.4
+    },
+    "praia-verde": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 47
+    },
+    "altura": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 46.2
+    },
+    "praia-rocha": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 61.2
+    },
+    "alvor": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 68.3
+    },
+    "foil-alvor": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 68.3
+    },
+    "lagos": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 71
+    },
+    "lagos-wakepark": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 71.9
+    },
+    "beliche": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 96.3
+    },
+    "martinhal": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 92.2
+    },
+    "barrinha-faro": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 12.8
+    },
+    "fuseta": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 21.6
+    },
+    "ilha-faro": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 11.1
+    },
+    "faro-mar": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 14.5
+    },
+    "culatra": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 11
+    },
+    "armona": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 15.1
+    },
+    "ilha-tavira": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 33.6
+    },
+    "cabanas-tavira": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 37.2
+    },
+    "cacela-velha": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 41.9
+    },
+    "zavial": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 87.6
+    },
+    "tonel": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 94
+    },
+    "ponta-delgada": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 249.2
+    },
+    "sao-vicente-madeira": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 30
+    },
+    "porto-da-cruz": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 11.1
+    },
+    "paul-mar": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 47.8
+    },
+    "jardim-mar": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 46.2
+    },
+    "ponta-sao-lourenco": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 2.5
+    },
+    "ribeira-brava": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 32.3
+    },
+    "funchal": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 20
+    },
+    "barra-aveiro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 77.9
+    },
+    "vila-cha": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 20.5
+    },
+    "santa-cruz": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 48.3
+    },
+    "consolacao": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 29.3
+    },
+    "areia-branca": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 34.5
+    },
+    "sao-martinho-porto": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 6.9
+    },
+    "cave-ericeira": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 67.5
+    },
+    "pescadores-ericeira": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 67.9
+    },
+    "crazy-left": {
+      "idEst": 2,
+      "stationTitle": "CSA88/2",
+      "area": "Boia Nazaré Costeira",
+      "distanceKm": 68.5
+    },
+    "meco": {
+      "idEst": 1010,
+      "stationTitle": "ZLT1",
+      "area": "ZLT1",
+      "distanceKm": 14.5
+    },
+    "lagoa-santo-andre": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 22.3
+    },
+    "lagoa-sancha": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 16.3
+    },
+    "pessegueiro": {
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 15.4
+    },
+    "garrão": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 9.1
+    },
+    "falesia": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 29.6
+    },
+    "tres-irmaos": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 67
+    },
+    "canavial": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 50
+    },
+    "armacao-pera": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 46.1
+    },
+    "mareta": {
+      "idEst": 20,
+      "stationTitle": "CSA82/D",
+      "area": "Faro",
+      "distanceKm": 93.3
+    },
+    "machico": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 4.1
+    },
+    "seixal-madeira": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 37.1
+    },
+    "ponta-pargo": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 51.7
+    },
+    "madalena-mar": {
+      "idEst": 33,
+      "stationTitle": "CSA94",
+      "area": "Caniçal",
+      "distanceKm": 38.3
+    },
+    "calhetas": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 249
+    },
+    "porto-martins": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 90.3
+    },
+    "cachorro-pico": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 67.5
+    },
+    "faja-cubres": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago Açores - Ilha Graciosa",
+      "distanceKm": 49.7
+    },
+    "fao-ofir-surf": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 28.1
+    },
+    "ofir-praia": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 27.7
+    },
+    "mindelo": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 20.3
+    },
+    "aterro": {
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 25.3
+    }
+  },
+  "fetchedAt": "2026-09-01T01:12:29.168Z",
+  "sourceCollections": [
+    "buoys_datawell",
+    "buoys_Fugro_oceanor_wavescan"
+  ],
+  "apiKeyConfigured": false,
+  "hasWaveData": false
+}

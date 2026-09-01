@@ -1,0 +1,26 @@
+{
+  "source": "forecast-skill-regression",
+  "checkedAt": "2026-09-01T01:12:38.607Z",
+  "windowDays": 60,
+  "recentDays": 7,
+  "baselineDays": 21,
+  "thresholds": {
+    "rmseWorseM": 0.3,
+    "meAbsWorseM": 0.3
+  },
+  "platformThresholds": {
+    "nCollapseFactor": 0.5,
+    "minBaselinePlatformN": 10,
+    "minRecentPlatformDays": 1,
+    "minBaselinePlatformDays": 3
+  },
+  "minRecentSnapshots": 2,
+  "minBaselineSnapshots": 3,
+  "byBuoy": {},
+  "regressions": [],
+  "platforms": {
+    "ih": null,
+    "wmo-es": null
+  },
+  "platformAlerts": []
+}

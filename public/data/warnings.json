@@ -1,0 +1,790 @@
+{
+  "source": "ipma",
+  "fetchedAt": "2026-09-01T01:12:39.421Z",
+  "warnings": [
+    {
+      "areaCode": "BGC",
+      "areaLabel": "Bragança",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "VIS",
+      "areaLabel": "Viseu",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "EVR",
+      "areaLabel": "Évora",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "GDA",
+      "areaLabel": "Guarda",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "VRL",
+      "areaLabel": "Vila Real",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "STB",
+      "areaLabel": "Setúbal",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "STM",
+      "areaLabel": "Santarém",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "LSB",
+      "areaLabel": "Lisboa",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "CBO",
+      "areaLabel": "Castelo Branco",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-03T18:00:00",
+      "relevant": false
+    }
+  ],
+  "spotWarnings": {
+    "foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "obidos-lagoon": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "obidos-lagoon-sul": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "obidos-lagoon-foz": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "foz-arelho-beach": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-del-rey": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "almagreira": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "baleal": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "supertubos": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "foz-sizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "coxos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "ribeira-ilhas": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "empa": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-lourenco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "pedra-branca": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-sebastiao": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "foz-lizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-grande-sintra": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "adraga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "guincho": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "seixal-bay": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "parede": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "carcavelos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "nova-vaga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-joao-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "costa-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "fonte-telha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "ponta-dos-corvos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "trafaria": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "cova-do-vapor": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-da-rainha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "troia": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "comporta": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "carvalhal-comporta": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "alqueva": [
+      {
+        "areaCode": "BJA",
+        "areaLabel": "Beja",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "melides": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "sines": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-torpes": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "porto-covo": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "malhao": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "vila-nova-milfontes": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "alteirinhos": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "santa-cruz": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "consolacao": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "areia-branca": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "cave-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "pescadores-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "crazy-left": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "meco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "lagoa-santo-andre": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "lagoa-sancha": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ],
+    "pessegueiro": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-03T18:00:00",
+        "relevant": false
+      }
+    ]
+  }
+}

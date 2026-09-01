@@ -1,13 +1,69 @@
 {
-  "lastRunAt": "2026-08-31T03:03:22.806Z",
+  "lastRunAt": "2026-09-01T01:13:42.041Z",
   "lastRunMode": "observations",
-  "observationsUpdatedAt": "2026-08-31T03:03:22.806Z",
-  "fullUpdatedAt": "2026-08-31T03:03:19.772Z",
-  "displayUpdatedAt": "2026-08-31T03:03:22.806Z",
+  "observationsUpdatedAt": "2026-09-01T01:13:42.041Z",
+  "fullUpdatedAt": "2026-09-01T01:13:38.395Z",
+  "displayUpdatedAt": "2026-09-01T01:13:42.041Z",
   "buoyLayer": {
     "status": "no-key",
     "apiKeyConfigured": false,
     "hasWaveData": false,
-    "newestReadingAt": "2026-08-15T06:32:14.000Z"
+    "newestReadingAt": "2026-09-01T00:00:00.000Z",
+    "fugro": {
+      "status": "no-key"
+    },
+    "wmo": {
+      "status": "down",
+      "hasWaveData": false
+    },
+    "streak": 0,
+    "lastStatus": "no-key",
+    "streakUpdatedAt": "2026-09-01T01:13:42.041Z",
+    "lastOkAt": "2026-09-01T01:13:42.041Z",
+    "fugroRejectedStreak": 0
+  },
+  "radarLayer": {
+    "status": "ok",
+    "frameTime": "2026-09-01T01:00:00.000Z",
+    "streak": 0,
+    "lastStatus": "ok",
+    "streakUpdatedAt": "2026-09-01T01:13:42.041Z",
+    "lastOkAt": "2026-09-01T01:13:42.041Z"
+  },
+  "warningsLayer": {
+    "status": "ok",
+    "activeWarnings": 11,
+    "source": "ipma",
+    "fetchedAt": "2026-09-01T01:12:39.421Z",
+    "streak": 0,
+    "lastStatus": "ok",
+    "streakUpdatedAt": "2026-09-01T01:13:42.041Z",
+    "lastOkAt": "2026-09-01T01:13:42.041Z"
+  },
+  "coastalWarningsLayer": {
+    "status": "ok",
+    "activeWarnings": 9,
+    "coveredSpots": 15,
+    "fetchedAt": "2026-09-01T01:12:39.989Z",
+    "es": {
+      "configured": false,
+      "status": "disabled",
+      "streak": 0,
+      "lastStatus": "disabled"
+    },
+    "streak": 0,
+    "lastStatus": "ok",
+    "streakUpdatedAt": "2026-09-01T01:13:42.041Z",
+    "lastOkAt": "2026-09-01T01:13:42.041Z"
+  },
+  "openMeteoUsage": {
+    "weightedCalls": 362,
+    "requests": 362,
+    "retries": 0,
+    "spotsFetched": 181,
+    "mode": "night",
+    "weightedPerSpot": 2,
+    "waveModels": 4,
+    "windModels": 4
   }
 }
