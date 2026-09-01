@@ -409,6 +409,7 @@ O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: 
 | `data-sources` | 13 | Fontes de dados: tabela de atribuições pt/en, citação Open-Meteo (DOI) com paridade pt/en em fontes e About, cartão IH_API_KEY (+ linha de degradação da camada de boias), sitemap + hreflang, atribuições no mapa/footer |
 | `coastal-map-layer` | 6 | /mapa fullscreen: overlay de polígonos de TODOS os avisos à navegação activos, popup → detalhe |
 | `spot-sticky-geometry` | 2 | Geometria da SpotStickyBar: não sobrepõe os sport tabs após scroll — desktop **e** mobile (390px), cota/altura pelos tokens partilhados (globals.css) |
+| `tools-calculators` | 13 | Calculadoras de kite e fato: outputs reais (m², janela confortável, espessura mm, extras), edge cases (6 kt, 45 kt, 4 °C, 24 °C, windchill), overflow horizontal em 390px e paridade pt/en |
 
 Notas de operação:
 - **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **143 testes em 14 ficheiros** (`npx playwright test <specs do core> --list`) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
