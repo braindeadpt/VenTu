@@ -3,6 +3,11 @@ import type { Locale } from '@/lib/i18n';
 import { AlertTriangle, Anchor } from 'lucide-react';
 import { STALE_THRESHOLD_HOURS, formatForecastUpdatedAt } from '@/lib/dataFreshness';
 import type { BuoyLayerMeta, CoastalWarningsLayerMeta } from '@/lib/pipelineMeta';
+import {
+  deriveBuoyLayerDowntime,
+  formatBuoyLayerDowntimeSuffix,
+  formatBuoyLayerDowntimeTitle,
+} from '@/lib/buoyLayerDowntime';
 import { cn } from '@/lib/cn';
 
 interface FreshnessIndicatorProps {
@@ -76,6 +81,9 @@ export default function FreshnessIndicator({
     updatedAtTs != null ? formatForecastUpdatedAt(updatedAtTs, locale) : null;
 
   const buoyStatus = buoyLayer && buoyLayer.status !== 'ok' ? buoyLayer.status : null;
+  // Streak down/stale (só down/stale com streak > 0 — no-key nunca conta):
+  // «há quantas horas a onda observada está degradada», do pipeline-meta.
+  const buoyDowntime = deriveBuoyLayerDowntime(buoyLayer);
 
   return (
     <span
@@ -99,12 +107,17 @@ export default function FreshnessIndicator({
           )}
           title={
             isPt
-              ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo'
-              : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts'
+              ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo' +
+                (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, true)}` : '')
+              : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts' +
+                (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, false)}` : '')
           }
         >
           <AlertTriangle className="w-3 h-3" aria-hidden />
-          <span className="font-medium">{buoyLayerLabel(buoyStatus, isPt)}</span>
+          <span className="font-medium" data-buoy-streak="true">
+            {buoyLayerLabel(buoyStatus, isPt)}
+            {buoyDowntime ? formatBuoyLayerDowntimeSuffix(buoyDowntime, isPt) : ''}
+          </span>
         </span>
       ) : null}
       {coastalWarningsLayer ? (

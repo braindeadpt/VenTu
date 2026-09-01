@@ -21,6 +21,10 @@ export { OPEN_METEO_ATTRIBUTION_HTML as OPEN_METEO_ATTRIBUTION } from './openMet
 
 export const DEFAULT_CENTER: [number, number] = [39.5, -8.0];
 export const DEFAULT_ZOOM = 6;
+/** Zoom da «região do spot» nos deep links de imersão (?radar=1&lat=&lon=):
+ *  mostra a costa local à volta do spot de origem (o DEFAULT_ZOOM=6 é o país
+ *  inteiro; 10 é a região — o mesmo teto do fitBounds dos avisos costeiros). */
+export const SPOT_REGION_ZOOM = 10;
 export const MAX_ZOOM = 19;
 
 export const MAP_CLUSTER_LS_KEY = 'ventu.map.cluster';

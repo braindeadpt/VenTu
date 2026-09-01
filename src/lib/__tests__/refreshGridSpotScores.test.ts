@@ -159,6 +159,48 @@ describe('refreshGridSpotScores', () => {
     // A medição fresca entra no score; o viés NÃO é aplicado.
     expect(updated.conditions.waveHeight).toBe(2.2);
     expect(updated.conditions.waveBias).toBeUndefined();
+    // A leitura fresca passa às conditions do refresh — o badge «Corrigido
+    // pela boia X» e o relógio lêem conditions.observedWave (regressão:
+    // antes o refresh descartava a leitura e o badge nunca aparecia).
+    expect(updated.conditions.observedWave).toMatchObject({
+      stationName: 'CSA92/D',
+      waveHeight: 2.2,
+    });
+  });
+
+  it('preserva a leitura da row anterior quando o ficheiro servido a omite', () => {
+    const base = mockRow('guincho');
+    const row = {
+      ...base,
+      conditions: {
+        ...base.conditions,
+        observedWave: {
+          waveHeight: 2.2,
+          wavePeriod: 11,
+          waveDirection: 280,
+          stationName: 'CSA92/D',
+          distanceKm: 60,
+          observedAt: new Date().toISOString(),
+          source: 'ih-buoy' as const,
+        },
+      },
+    };
+    const json = {
+      guincho: {
+        waveHeight: 1.5,
+        wavePeriod: 8,
+        waveDirection: 270,
+        windSpeed: ktToMs(7),
+        windDirection: 270,
+        windGust: ktToMs(9),
+        waterTemp: 18,
+        // sem observedWave no ficheiro servido
+      },
+    };
+
+    const [updated] = refreshGridSpotScores([row], json, null);
+    // Nunca perder a leitura baked da row SSG (fallback para a anterior).
+    expect(updated.conditions.observedWave).toMatchObject({ stationName: 'CSA92/D' });
   });
 
   it('sem wave-bias.json (null) → nunca corrige nem inventa meta', () => {

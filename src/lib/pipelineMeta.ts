@@ -18,6 +18,14 @@ export type BuoyLayerMeta = {
   newestReadingAt?: string;
   /** Keyless Copernicus fallback state (distinguishes «WMO em baixo»). */
   wmo?: WmoBuoyLayerMeta;
+  /** Runs consecutivas em down/stale (0 em ok/no-key) — ver scripts/lib/buoyLayerHealth.js. */
+  streak?: number;
+  /** O estado (down|stale) que produziu o streak actual. */
+  lastStatus?: string;
+  /** Quando o streak foi incrementado pela última vez. */
+  streakUpdatedAt?: string;
+  /** Quando a camada esteve ok pela última vez (mantido em down) — «há quantas horas». */
+  lastOkAt?: string;
 };
 
 /** Coastal navigation warnings (IH) layer state recorded in pipeline-meta.json. */

@@ -8,6 +8,11 @@ import {
   getHeroFreshnessTitle,
 } from '@/lib/heroDataProvenance';
 import type { BuoyLayerMeta, CoastalWarningsLayerMeta } from '@/lib/pipelineMeta';
+import {
+  deriveBuoyLayerDowntime,
+  formatBuoyLayerDowntimeSuffix,
+  formatBuoyLayerDowntimeTitle,
+} from '@/lib/buoyLayerDowntime';
 
 interface HeroTickerProps {
   updatedAtTs?: number | null;
@@ -66,6 +71,9 @@ export default function HeroTicker({
   const updated =
     updatedAtTs != null ? formatForecastUpdatedParts(updatedAtTs, locale) : null;
   const buoyStatus = buoyLayer && buoyLayer.status !== 'ok' ? buoyLayer.status : null;
+  // Streak down/stale (só down/stale com streak > 0 — no-key nunca conta):
+  // «há quantas horas a onda observada está degradada», do pipeline-meta.
+  const buoyDowntime = deriveBuoyLayerDowntime(buoyLayer);
   const coastalStatus =
     coastalWarningsLayer && coastalWarningsLayer.status !== 'ok'
       ? coastalWarningsLayer.status
@@ -128,8 +136,10 @@ export default function HeroTicker({
             className="inline-flex items-center gap-1 shrink-0"
             title={
               isPt
-                ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo'
-                : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts'
+                ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo' +
+                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, true)}` : '')
+                : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts' +
+                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, false)}` : '')
             }
           >
             {SEP}
@@ -139,8 +149,10 @@ export default function HeroTicker({
             />
             <span
               className={`font-medium ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor'}`}
+              data-buoy-streak="true"
             >
               {buoyLayerLabel(buoyStatus, isPt)}
+              {buoyDowntime ? formatBuoyLayerDowntimeSuffix(buoyDowntime, isPt) : ''}
             </span>
           </span>
         ) : null}

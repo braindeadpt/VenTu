@@ -149,15 +149,21 @@ describe('loadForecastSkillForSpot (client)', () => {
       }
       throw new Error(`unexpected ${path}`);
     });
-    const b = await loadForecastSkillForSpot('guincho', fetchStub as unknown as typeof fetch, (p) => p);
-    expect(b).toMatchObject({ id: '19', name: 'CSA92/D', n: 47 });
+    const r = await loadForecastSkillForSpot('guincho', fetchStub as unknown as typeof fetch, (p) => p);
+    expect(r.buoy).toMatchObject({ id: '19', name: 'CSA92/D', n: 47 });
+    // A repartição por plataforma chega ao card (IH vs WMO-ES), para a linha
+    // do spot espelhar a do About — 'wmo-pt' ausente sanitiza para 0.
+    expect(r.pairCountByOrigin).toEqual({ ih: 12, 'wmo-pt': 0, 'wmo-es': 10 });
+    expect(r.calibratedPairCount).toBe(10);
   });
 
-  it('degrada graciosamente sem forecast-skill (null, nunca lança)', async () => {
+  it('degrada graciosamente sem forecast-skill (buoy null + contadores a zero, nunca lança)', async () => {
     const fetchStub = vi.fn(async () => {
       throw new Error('offline');
     });
-    const b = await loadForecastSkillForSpot('guincho', fetchStub as unknown as typeof fetch, (p) => p);
-    expect(b).toBeNull();
+    const r = await loadForecastSkillForSpot('guincho', fetchStub as unknown as typeof fetch, (p) => p);
+    expect(r.buoy).toBeNull();
+    expect(r.pairCountByOrigin).toEqual({ ih: 0, 'wmo-pt': 0, 'wmo-es': 0 });
+    expect(r.calibratedPairCount).toBe(0);
   });
 });

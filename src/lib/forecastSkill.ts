@@ -311,6 +311,21 @@ export function resolveSpotBuoySkill(
 
 /* ── Client side (spot page) ─────────────────────────────────────────────── */
 
+/**
+ * Result of the client-side skill resolver: the spot's own buoy stats plus the
+ * GLOBAL pair counters per platform. The card shows both the discreet
+ * «skill desta boia» line and the IH vs WMO-ES split that the About row
+ * displays, so the two surfaces never diverge on where the pairs come from.
+ */
+export interface ForecastSkillSpotResult {
+  /** The spot's own buoy skill (null = no mapped buoy / no stats yet). */
+  buoy: ForecastSkillBuoy | null;
+  /** Global pair counters per platform (IH vs WMO-PT vs WMO-ES). */
+  pairCountByOrigin: Record<ForecastSkillOrigin, number>;
+  /** Pairs whose reading is from a Spanish buoy (ES→PT calibrated layer). */
+  calibratedPairCount: number;
+}
+
 let clientCache: { ih: Record<string, unknown> | null; wmo: Record<string, unknown> | null; skill: ForecastSkillData } | null =
   null;
 let clientInflight: Promise<{
@@ -328,21 +343,35 @@ async function fetchJson(
   return (await res.json()) as Record<string, unknown>;
 }
 
+function forecastSkillSpotResult(
+  spotId: string,
+  cache: { ih: Record<string, unknown> | null; wmo: Record<string, unknown> | null; skill: ForecastSkillData },
+): ForecastSkillSpotResult {
+  const counts = cache.skill.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
+  return {
+    buoy: resolveSpotBuoySkill(spotId, cache.ih, cache.wmo, cache.skill),
+    pairCountByOrigin: {
+      ih: counts.ih ?? 0,
+      'wmo-pt': counts['wmo-pt'] ?? 0,
+      'wmo-es': counts['wmo-es'] ?? 0,
+    },
+    calibratedPairCount: cache.skill.calibratedPairCount ?? 0,
+  };
+}
+
 /**
  * Fetch forecast-skill.json + ih-buoys.json (+ wmo-buoys.json fallback) once
- * per session. Any failure degrades to an empty cache (never throws) — the
- * discreet line simply does not render.
+ * per session. Any failure degrades to an empty result (never throws) — the
+ * discreet lines simply do not render.
  */
 export async function loadForecastSkillForSpot(
   spotId: string,
   fetchImpl: typeof fetch = fetch,
   getPath: (p: string) => string = (p) => p,
-): Promise<ForecastSkillBuoy | null> {
+): Promise<ForecastSkillSpotResult> {
   if (!clientCache) {
     if (clientInflight) {
-      return clientInflight.then(() =>
-        resolveSpotBuoySkill(spotId, clientCache!.ih, clientCache!.wmo, clientCache!.skill),
-      );
+      return clientInflight.then(() => forecastSkillSpotResult(spotId, clientCache!));
     }
     clientInflight = (async () => {
       let ih: Record<string, unknown> | null = null;
@@ -372,7 +401,7 @@ export async function loadForecastSkillForSpot(
     });
   }
   await clientInflight;
-  return resolveSpotBuoySkill(spotId, clientCache!.ih, clientCache!.wmo, clientCache!.skill);
+  return forecastSkillSpotResult(spotId, clientCache!);
 }
 
 /** Test hook: clear the client cache. */

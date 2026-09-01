@@ -16,6 +16,7 @@ import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import { tierPhrase } from '@/lib/voice';
 import SpotListCard from '@/components/spots/SpotListCard';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 import { resolveScoreWaveCorrection } from '@/lib/scoreConditions';
 import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
@@ -39,9 +40,16 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
   const cardLocale = isPt ? 'pt' : 'en';
   const warningsData = useIpmaWarnings();
 
+  // Re-hidratação client-side (mount + 15 min + tab visível, mesmo
+  // refreshGridSpotScores do grid/mapa): as rows SSG são substituídas pelas de
+  // conditions.json e o fallback do viés regional (wave-bias.json) aplica-se
+  // em runtime — o badge «Corrigido (viés regional)»/«pela boia X» aparece no
+  // TopNow sem rebuild, tal como na página de spot.
+  const liveSpotsData = useLiveGridSpotData(spotsData);
+
   // Only sports that are actually «a bombar» (≥ Bom / 60) — never Fraco under that title
   const cards = TOP_NOW_SPORTS.map((sport) => {
-    const data = getTopSpotForSport(spotsData, sport);
+    const data = getTopSpotForSport(liveSpotsData, sport);
     if (!data) return null;
     return { sport, data };
   })
@@ -130,6 +138,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
                   waveCorrection={waveCorrection}
                   observedWaveAt={data.conditions.observedWave?.observedAt ?? null}
                   observedWaveSource={data.conditions.observedWave?.source ?? null}
+                  observedWaveCalibration={data.conditions.observedWave?.calibration ?? null}
                 />
               </li>
             );

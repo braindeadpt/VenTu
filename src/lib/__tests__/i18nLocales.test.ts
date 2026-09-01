@@ -38,6 +38,31 @@ const ES_COGNATES = new Set([
   'Spots filtrados', 'spots monitorizados', 'Swell ideal', 'Todos',
   'Top 1 para', 'Top 3 para', 'Últimas', 'Ver', 'Ver todos',
   'Hora', 'Ordenar', 'Recursos', 'Ver spot',
+  'Altura (medida)', // «Altura (medida)» é espanhol correcto — igual ao PT por coincidência de língua
+  'par ES×PT',       // «par ES×PT» é espanhol correcto (par de boias ES×PT)
+  'Actualizado {date}', // «Actualizado» é espanhol correcto — igual ao PT por coincidência de língua
+  'Abrir',              // «Abrir» é espanhol correcto — igual ao PT por coincidência de língua
+  'Reclamar este perfil', // espanhol correcto = PT
+  'Entrar para reclamar', // espanhol correcto = PT
+  'Comparar Spots — VenTu', // marca: «Comparar» é espanhol correcto = PT
+  'Todas',                  // espanhol correcto = PT
+  'Publicar perfil',        // espanhol correcto = PT
+  'Por verificar',          // espanhol correcto = PT
+  'Verificados',            // espanhol correcto = PT
+  'favorito',           // espanhol correcto = PT
+  'favoritos',          // espanhol correcto = PT
+  'Alertas por email',  // «email» adoptado em espanhol
+  'Score mín.',         // espanhol correcto = PT
+  'Desactivar',         // espanhol correcto = PT
+  'Alertas por email — VenTu', // título meta espanhol legítimo = PT
+  'Vista',              // espanhol correcto = PT
+  'Lista',              // espanhol correcto = PT
+  'Tipo',               // espanhol correcto = PT
+  'Nada encontrado',    // espanhol correcto = PT
+  'Verificado',         // espanhol correcto = PT
+  'Ver perfil',         // espanhol correcto = PT
+  'Guardar',            // espanhol correcto = PT
+  'condiciones',        // espanhol correcto = PT
 ]);
 
 /**
@@ -154,6 +179,92 @@ describe('i18n locales', () => {
     }
   });
 
+  /**
+   * Blocos aninhados auditados: além do `map`, os shells es/de/fr têm de levar
+   * TODAS as keys do pt e nenhum valor pode regressar ao placeholder EN (que o
+   * teste genérico NÃO apanha — ele só compara com o pt).
+   */
+  const AUDITED_NESTED_BLOCKS = [
+    ['map', ['map']],
+    ['windRingLegend', ['map', 'windRingLegend']],
+    ['alerts', ['alerts']],
+  ] as const;
+
+  it('es/de/fr: blocos aninhados (map/windRingLegend/alerts) sem fallback EN e sem vazios', () => {
+    const allowedByLocale: Record<'es' | 'de' | 'fr', Set<string>> = {
+      es: new Set([...SHARED_TOKENS, ...ES_COGNATES]),
+      de: new Set([
+        ...SHARED_TOKENS,
+        'Wind', // «Wind» é alemão — mesma palavra em EN/DE por etimologia
+      ]),
+      fr: new Set([
+        ...SHARED_TOKENS,
+        'Satellite', // «Satellite» é francês — mesma palavra em EN/FR
+      ]),
+    };
+
+    for (const [block, path] of AUDITED_NESTED_BLOCKS) {
+      const byPath = (loc: 'pt' | 'en' | 'es' | 'de' | 'fr') => {
+        let cur = getTranslation(loc) as unknown as Record<string, unknown>;
+        for (const seg of path) {
+          cur = cur[seg] as Record<string, unknown>;
+        }
+        return cur;
+      };
+      const ptBlock = byPath('pt');
+      const enBlock = byPath('en');
+
+      for (const loc of ['es', 'de', 'fr'] as const) {
+        const shell = byPath(loc);
+        const allowed = allowedByLocale[loc];
+        const violations: string[] = [];
+
+        // Compara o bloco EN (origem de fallback) contra a shell: cada leaf da
+        // shell tem de existir, não estar vazia e não repetir o valor EN.
+        const walkEnVsShell = (
+          path: string,
+          en: Record<string, unknown>,
+          sh: Record<string, unknown>,
+        ): void => {
+          for (const [k, v] of Object.entries(en)) {
+            const p = path ? `${path}.${k}` : k;
+            if (v && typeof v === 'object') {
+              const shv = sh[k];
+              if (shv && typeof shv === 'object') {
+                walkEnVsShell(p, v as Record<string, unknown>, shv as Record<string, unknown>);
+              } else {
+                violations.push(`${loc}.${block}.${p} — key aninhada em falta`);
+              }
+            } else if (typeof v === 'string') {
+              const shellVal = sh[k];
+              if (typeof shellVal !== 'string') {
+                violations.push(`${loc}.${block}.${p} — tipo errado/em falta`);
+                continue;
+              }
+              if (shellVal.trim() === '' || !/[\p{L}]/u.test(shellVal)) {
+                violations.push(`${loc}.${block}.${p} — valor vazio`);
+                continue;
+              }
+              // Shape de keys igual ao bloco pt: o genérico valida em todo o
+              // dicionário; aqui é só a detecção de fallback EN + vazios.
+              if (shellVal === v && !allowed.has(shellVal)) {
+                violations.push(
+                  `${loc}.${block}.${p} = ${JSON.stringify(shellVal)} (igual ao placeholder EN — traduzir)`,
+                );
+              }
+            }
+          }
+        };
+
+        walkEnVsShell('', enBlock, shell);
+        expect(
+          violations,
+          `${loc}.${block} regrediu para EN/vazio`,
+        ).toEqual([]);
+      }
+    }
+  });
+
   it('en/es/de/fr carry every key of pt in every block (shells never fall back)', () => {
     const ptBlock = getTranslation('pt') as unknown as Record<string, unknown>;
     for (const loc of ['en', 'es', 'de', 'fr'] as const) {
@@ -211,6 +322,65 @@ describe('i18n locales', () => {
     }
 
     expect(violations).toEqual([]);
+  });
+
+  it('pt: nenhum valor ficou igual ao placeholder EN (detecção bidireccional)', () => {
+    // Espelho do teste acima: o bloco pt é fonte canónica, mas se um valor pt
+    // ficou igual ao EN (ex. copiado sem traduzir, ou key nova criada só no EN
+    // e replicada no pt), a UI pt mostra inglês. SHARED_TOKENS + EN_COGNATES são
+    // as excepções legítimas (marcas, desportos, termos adoptados).
+    const enBlock = getTranslation('en') as unknown as Record<string, unknown>;
+    const ptBlock = getTranslation('pt') as unknown as Record<string, unknown>;
+    const violations: string[] = [];
+    const allowed = new Set([...SHARED_TOKENS, ...EN_COGNATES]);
+
+    const walk = (path: string, a: Record<string, unknown>, b: Record<string, unknown>): void => {
+      for (const [k, v] of Object.entries(a)) {
+        const p = path ? `${path}.${k}` : k;
+        if (v && typeof v === 'object') {
+          const bv = b[k];
+          if (bv && typeof bv === 'object') {
+            walk(p, v as Record<string, unknown>, bv as Record<string, unknown>);
+          }
+        } else if (typeof v === 'string' && b[k] === v) {
+          const val = v as string;
+          if (val.trim() === '' || !/[\p{L}]/u.test(val)) continue;
+          if (allowed.has(val)) continue;
+          violations.push(
+            `pt.${p} = ${JSON.stringify(val)} (igual ao placeholder EN — traduzir para português)`,
+          );
+        }
+      }
+    };
+
+    walk('', enBlock, ptBlock);
+    expect(violations).toEqual([]);
+
+    // Prova de que o detector não é vazio: sem allowlist, há valores pt que
+    // são iguais ao EN por mérito (marcas/desportos) — a allowlist é que os
+    // liberta. Uma regressão que apague a allowlist faz este expect falhar.
+    expect(() => {
+      const raw: string[] = [];
+      const rawAllowed = new Set<string>();
+      const rawWalk = (path: string, a: Record<string, unknown>, b: Record<string, unknown>) => {
+        for (const [k, v] of Object.entries(a)) {
+          const p = path ? `${path}.${k}` : k;
+          if (v && typeof v === 'object') {
+            const bv = b[k];
+            if (bv && typeof bv === 'object') {
+              rawWalk(p, v as Record<string, unknown>, bv as Record<string, unknown>);
+            }
+          } else if (typeof v === 'string' && b[k] === v) {
+            const val = v as string;
+            if (val.trim() === '' || !/[\p{L}]/u.test(val)) continue;
+            if (rawAllowed.has(val)) continue;
+            raw.push(`pt.${p} = ${JSON.stringify(val)}`);
+          }
+        }
+      };
+      rawWalk('', enBlock, ptBlock);
+      expect(raw.length).toBeGreaterThan(0);
+    }).not.toThrow();
   });
 
   it('es/de/fr: as cadeias de atribuição do footer (attrib*) nunca regressam a fallback EN', () => {

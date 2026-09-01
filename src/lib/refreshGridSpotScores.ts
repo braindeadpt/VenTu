@@ -39,6 +39,14 @@ export function refreshGridSpotScores<T extends GridSpotData>(
         ...scoreInput,
         ...pickMarineDisplayFields(record),
         observed,
+        // O refresh puxa a leitura de boia fresca do JSON servido (com que a
+        // UI resolve o badge «Corrigido pela boia X» / relógio — o SpotListCard
+        // e o TopNow leem data.conditions.observedWave). Nunca perder a do
+        // SSG quando o ficheiro a omitir (fallback para a row anterior).
+        observedWave:
+          (record.observedWave as
+            | GridSpotData['conditions']['observedWave']
+            | undefined) ?? row.conditions.observedWave,
         waveBias:
           (biasPatch?.waveBias ??
             (record.waveBias as GridSpotData['conditions']['waveBias'] | undefined)) ??

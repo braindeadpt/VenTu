@@ -18,6 +18,7 @@
  */
 import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
+import type { BuoyLayerMeta } from '@/lib/pipelineMeta';
 
 export type IhKeyStatus = 'not-configured' | 'active' | 'rejected' | 'down';
 
@@ -59,6 +60,9 @@ export interface IhKeyStatusInfo {
   newestReadingAt?: string;
   /** Keyless WMO/Copernicus Nazaré sub-state (present when derivable). */
   wmoNazare?: WmoNazareCoverage;
+  /** The pipeline-meta `buoyLayer` block (streak/lastOkAt) — for the
+   *  degradation window «há quantas horas» shown on the About card. */
+  layer?: Pick<BuoyLayerMeta, 'status' | 'streak' | 'lastOkAt' | 'streakUpdatedAt'> | null;
 }
 
 /**
@@ -160,6 +164,31 @@ export function loadIhKeyStatus(): IhKeyStatusInfo {
     }
   } catch (e) {
     console.warn('Failed to load wmo-buoys.json (keyless Nazaré sub-state):', e);
+  }
+  // Streak down/stale (pipeline-meta buoyLayer) — «há quantas horas a onda
+  // observada está degradada». Derivation live no About via the shared helper
+  // (deriveBuoyLayerDowntime), para as superfícies nunca divergirem.
+  try {
+    const metaPath = join(process.cwd(), 'public/data/pipeline-meta.json');
+    if (existsSync(metaPath)) {
+      const meta = JSON.parse(readFileSync(metaPath, 'utf-8')) as {
+        buoyLayer?: BuoyLayerMeta | null;
+      };
+      const l = meta?.buoyLayer;
+      info = {
+        ...info,
+        layer: l
+          ? {
+              status: l.status,
+              streak: l.streak,
+              lastOkAt: l.lastOkAt,
+              streakUpdatedAt: l.streakUpdatedAt,
+            }
+          : null,
+      };
+    }
+  } catch (e) {
+    console.warn('Failed to load pipeline-meta.json (buoy streak sub-state):', e);
   }
   return info;
 }
