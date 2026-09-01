@@ -5,10 +5,10 @@ const require = createRequire(import.meta.url);
 const { PROVIDERS, getAvailableProviders } = require('../../llm-fallback.js');
 
 describe('llm-fallback provider models (P0 — retired IDs broke dawn patrol)', () => {
-  it('Gemini aponta para gemini-2.5-flash (2.0-flash devolveu 404 em prod)', () => {
-    expect(PROVIDERS.gemini.model).toBe('gemini-2.5-flash');
-    expect(PROVIDERS.gemini.baseUrl).toContain('gemini-2.5-flash');
-    expect(PROVIDERS.gemini.baseUrl).not.toContain('gemini-2.0-flash');
+  it('Gemini aponta para gemini-3.6-flash (2.0/2.5 fechados a keys novas)', () => {
+    expect(PROVIDERS.gemini.model).toBe('gemini-3.6-flash');
+    expect(PROVIDERS.gemini.baseUrl).toContain('gemini-3.6-flash');
+    expect(PROVIDERS.gemini.baseUrl).not.toMatch(/gemini-2\.[05]-flash/);
   });
 
   it('Groq usa openai/gpt-oss-120b (llama-3.3-70b-versatile retired 2026-08-16)', () => {

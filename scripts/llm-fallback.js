@@ -3,8 +3,8 @@
  * Used by dawn-patrol.js and update-news.js
  *
  * Model IDs (updated 2026-09-01 after production outage):
- *   - Gemini: gemini-2.0-flash → 404; use gemini-2.5-flash (GA)
- *   - Groq: llama-3.3-70b-versatile retired 2026-08-16; use openai/gpt-oss-120b
+ *   - Gemini: gemini-2.0/2.5-flash closed to new keys → gemini-3.6-flash
+ *   - Groq: llama-3.3-70b-versatile retired 2026-08-16 → openai/gpt-oss-120b
  *   - Cerebras: gpt-oss-120b (402 = billing/quota on the account, not a bad model id)
  */
 
@@ -16,9 +16,9 @@ const PROVIDERS = {
   gemini: {
     name: 'Gemini',
     apiKey: GEMINI_API_KEY,
-    model: 'gemini-2.5-flash',
+    model: 'gemini-3.6-flash',
     baseUrl:
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent',
     isOpenAI: false,
   },
   groq: {
