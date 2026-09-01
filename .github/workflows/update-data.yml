@@ -23,6 +23,11 @@ jobs:
   # ── 1. Pipeline: fetch + generate the data (no push) ──
   update-conditions:
     runs-on: ubuntu-latest
+    # Job-level so `if: env.X != ''` sees the secrets (step-level env is
+    # invisible to that step's own `if`).
+    env:
+      IH_API_KEY: ${{ secrets.IH_API_KEY }}
+      METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
     outputs:
       mode: ${{ steps.gate.outputs.mode }}
     steps:
@@ -65,11 +70,27 @@ jobs:
       # Boias Datawell Waverider: estações via OGC API (sem key); séries de onda
       # (hm0/tp/thtp/hmax/temp) só com IH_API_KEY. Sem key o ficheiro fica só com
       # posições + last_sea e o merge-observations salta a camada observedWave.
+      # Key rejeitada (HTTP 401/403): o script falha cedo (exit 1) com alerta
+      # Telegram — o workflow pára neste passo em vez de publicar dados sem a
+      # camada observedWave silenciosamente. TELEGRAM_BOT_TOKEN +
+      # OPS_TELEGRAM_CHAT_ID só para o alerta; sem eles o script faz dry-run.
       - name: Fetch IH buoy data (Datawell Waverider)
         if: steps.gate.outputs.mode != 'skip'
         env:
           IH_API_KEY: ${{ secrets.IH_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          OPS_TELEGRAM_CHAT_ID: ${{ secrets.OPS_TELEGRAM_CHAT_ID }}
         run: node scripts/fetch-ih-buoys.js
+
+      # Com a IH_API_KEY real configurada, o job falha aqui se o ficheiro
+      # produzido não tiver a camada de onda: hasWaveData:true e a boia
+      # Fugro 2 (Nazaré Costeira, idEst 2) com leitura fresh — a Costa de
+      # Prata (36 spots mapeados) depende dela. Sem key o passo é saltado
+      # (setup keyless continua a correr sem falhar). Key rejeitada (401) já
+      # falha no passo acima por desenho.
+      - name: Verify IH buoy layer (hasWaveData + Fugro 2 Nazaré)
+        if: steps.gate.outputs.mode != 'skip' && env.IH_API_KEY != ''
+        run: node scripts/verify-ih-buoy-layer.js
 
       # Isóbatas costeiras (depcnt_8_16_30): linhas de 8/16/30 m do IH (OGC API,
       # sem key) → spot-isobaths.json com a distância da praia a cada contorno
@@ -137,16 +158,28 @@ jobs:
       # 'meteoalarm' no warnings.json.
       - name: Fetch IPMA weather warnings (MeteoAlarm fallback)
         if: steps.gate.outputs.mode != 'skip'
-        env:
-          METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
         run: node scripts/fetch-ipma-warnings.js
+
+      # Com a METEOALARM_API_KEY real configurada, o job falha aqui se o
+      # warnings.json ficou source:'meteoalarm' (IPMA em baixo → fallback)
+      # mas SEM avisos activos — dupla falha que deixaria a camada de segurança
+      # vazia por cima dos spots. Sem token o passo é saltado (mirror do
+      # verify-ih-buoy-layer). Corre DEPOIS do fetch — nunca o substitui.
+      - name: Verify MeteoAlarm warnings layer (fallback empty)
+        if: steps.gate.outputs.mode != 'skip' && env.METEOALARM_API_KEY != ''
+        run: node scripts/verify-meteoalarm-warnings.js
 
       # Avisos à Navegação Costeiros do IH (nav_warning_coastal, OGC API sem
       # key) — camada de segurança marítima complementar ao IPMA/MeteoAlarm:
       # exercícios, perigos, restrições com cobertura por polígono →
       # ih-coastal-warnings.json (per-spot coverage via point-in-polygon).
+      # Cross-border NW: ES_NAV_WARNINGS_URL (variável de repositório) aponta
+      # para um feed GeoJSON dos «Avisos a los navegantes» espanhóis quando
+      # existir — entra na mesma camada com source:'es'. Sem URL, degrada.
       - name: Fetch IH coastal navigation warnings
         if: steps.gate.outputs.mode != 'skip'
+        env:
+          ES_NAV_WARNINGS_URL: ${{ vars.ES_NAV_WARNINGS_URL }}
         run: node scripts/fetch-ih-coastal-warnings.js
 
       # Radar IPMA — frame PNG mais recente (manifest imgs-radar.json, 5 min)
@@ -186,6 +219,17 @@ jobs:
           ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
           ECOWITT_MAC: ${{ secrets.ECOWITT_MAC }}
         run: npm run obs:update
+
+      # Health-check UNIFICADO das camadas de dados: obs:update/update-conditions
+      # gravam em pipeline-meta.json o streak de runs consecutivas com cada
+      # camada em 'down'/'stale' (buoyLayer — boias IH/WMO; radarLayer — radar
+      # IPMA; warningsLayer — avisos IPMA/MeteoAlarm; 'no-key' das boias nunca
+      # conta). UM passo avisa a partir de 3 runs e falha o job a partir de 6
+      # runs (~6 h) quando QUALQUER camada esteve degradada demasiado tempo sem
+      # ninguém ver (limiares env-overridable: DATA_LAYER_WARN_AFTER/FAIL_AFTER).
+      - name: Check data layers health (down/stale streak)
+        if: steps.gate.outputs.mode != 'skip'
+        run: node scripts/check-data-layer-health.js
 
       - name: Build spots index
         if: steps.gate.outputs.mode != 'skip'

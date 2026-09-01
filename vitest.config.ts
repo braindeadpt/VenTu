@@ -47,6 +47,13 @@ export default defineConfig({
       'scripts/lib/__tests__/observedWaveNazareE2E.test.js',
       'scripts/lib/__tests__/ihIsobaths.test.js',
       'scripts/lib/__tests__/ihCoastalWarnings.test.js',
+      'scripts/lib/__tests__/verifyMeteoalarmWarnings.test.js',
+      'scripts/lib/__tests__/meteoalarmChainE2E.test.js',
+      'scripts/lib/__tests__/verifyIhBuoyLayer.test.js',
+      'scripts/lib/__tests__/checkBuoyLayerHealth.test.js',
+      'scripts/lib/__tests__/dataLayerHealth.test.js',
+      'scripts/lib/__tests__/ecowittApiKeyTest.test.js',
+      'scripts/lib/__tests__/resendApiKeyTest.test.js',
     ],
   },
   resolve: {

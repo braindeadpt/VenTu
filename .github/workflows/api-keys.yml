@@ -18,6 +18,16 @@ jobs:
   check-api-keys:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # Job-level env so `if: env.X != ''` actually sees the secrets.
+    # Step-level `env:` is NOT visible to that same step's `if` condition.
+    env:
+      METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
+      IH_API_KEY: ${{ secrets.IH_API_KEY }}
+      ECOWITT_APPLICATION_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
+      ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
+      ECOWITT_MAC: ${{ secrets.ECOWITT_MAC }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      RESEND_FROM: ${{ secrets.RESEND_FROM }}
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -37,23 +47,46 @@ jobs:
       # docs/METEOALARM_API_KEY.md).
       - name: Test MeteoAlarm API token (EDR → CAP → payload)
         if: env.METEOALARM_API_KEY != ''
-        env:
-          METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
         run: node scripts/test-meteoalarm-api-key.js
 
       - name: Warn when METEOALARM_API_KEY missing
         if: env.METEOALARM_API_KEY == ''
         run: echo "::warning::METEOALARM_API_KEY não configurada — fallback MeteoAlarm dos avisos indisponível (ver docs/METEOALARM_API_KEY.md)"
 
-      # IH Datawell — camada observedWave. Key configurada mas expirada →
-      # falha (job vermelho). Ausente → aviso (a key está pendente; guia em
-      # docs/IH_API_KEY.md).
-      - name: Test IH Datawell API key (stations → wave series)
+      # IH Datawell — camada observedWave. Corremos o buoys:test-key COMBINADO
+      # (node scripts/buoys-test-key.js): (1) diagnóstico real da key
+      # (stations → getDatawellData → frescura) e, só se passar, (2) a
+      # verificação hermética da cadeia Fugro→observedWave
+      # (observedWaveNazareE2E) — a key expirada falha cedo (job vermelho), e
+      # a Nazaré não passa silenciosamente sem leitura. Ausente → aviso (a
+      # key está pendente; guia em docs/IH_API_KEY.md).
+      - name: Test IH Datawell key + Nazaré chain (buoys:test-key)
         if: env.IH_API_KEY != ''
-        env:
-          IH_API_KEY: ${{ secrets.IH_API_KEY }}
-        run: node scripts/test-ih-api-key.js
+        run: node scripts/buoys-test-key.js
 
       - name: Warn when IH_API_KEY missing
         if: env.IH_API_KEY == ''
         run: echo "::warning::IH_API_KEY não configurada — observedWave desactivado (ver docs/IH_API_KEY.md)"
+
+      # Ecowitt PWS — vento observado (merge-observations). As três
+      # credenciais (application_key + api_key + MAC/IMEI) configuradas mas
+      # inválidas → falha (job vermelho). Ausentes → aviso (a estação é
+      # opcional; o vento cai para IPMA/METAR).
+      - name: Test Ecowitt API credentials (device info → real_time)
+        if: env.ECOWITT_API_KEY != ''
+        run: node scripts/test-ecowitt-api-key.js
+
+      - name: Warn when ECOWITT_* missing
+        if: env.ECOWITT_API_KEY == ''
+        run: echo "::warning::ECOWITT_* não configuradas — vento observado Ecowitt indisponível (estação PWS opcional)"
+
+      # Resend — e-mail de alertas (evaluate-alerts). Key configurada mas
+      # inválida/expirada → falha (job vermelho). Ausente → aviso (os alertas
+      # por e-mail ficam em dry-run).
+      - name: Test Resend API key (domains → send probe)
+        if: env.RESEND_API_KEY != ''
+        run: node scripts/test-resend-api-key.js
+
+      - name: Warn when RESEND_API_KEY missing
+        if: env.RESEND_API_KEY == ''
+        run: echo "::warning::RESEND_API_KEY não configurada — alertas por e-mail em dry-run (ver scripts/alerts-preflight.js)"

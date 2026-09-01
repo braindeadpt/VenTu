@@ -22,6 +22,7 @@ const { observedWaveForSpot } = require('./lib/ihBuoys.js');
 const {
   haversineKm,
   observedWaveForSpot: wmoObservedWaveForSpot,
+  esBridgeObservedWaveForSpot,
   ES_BUOY_CODES,
 } = require('./lib/copernicusBuoys.js');
 const {
@@ -34,8 +35,14 @@ const {
   gateRefusalReason,
 } = require('./lib/buoyCoherence.js');
 const { consecutiveIncoherentDays } = require('./lib/buoyCoherenceDaily.js');
-const { writePipelineMeta } = require('./lib/pipelineMeta.js');
-const { loadBuoyLayerStatus } = require('./lib/buoyLayerHealth.js');
+const { readPipelineMeta, writePipelineMeta } = require('./lib/pipelineMeta.js');
+const { loadBuoyLayerStatus, applyBuoyLayerStreak } = require('./lib/buoyLayerHealth.js');
+const {
+  loadRadarLayerStatus,
+  loadWarningsLayerStatus,
+  buildCoastalWarningsLayer,
+  applyLayerStreak,
+} = require('./lib/dataLayerHealth.js');
 const { attachWaveSkill } = require('./lib/forecastSkill.js');
 const {
   stationKey,
@@ -275,6 +282,7 @@ export async function mergeObservations() {
   let withWave = 0;
   let withBothSources = 0;
   let wmoFallback = 0;
+  let esBridgeAttached = 0;
   let refusedWmo = 0;
   // Recusas por boia ES (histórico do gate) — contagem de spots descartados por
   // código ES neste run, para acumular no report.gateHistory do buoy-coherence.
@@ -358,14 +366,37 @@ export async function mergeObservations() {
     const buoyStation =
       buoyMapping && ihBuoys?.stations?.[String(buoyMapping.idEst)];
     const ihWave = observedWaveForSpot(buoyMapping, buoyStation);
-    const wmoMapping = wmoBuoys?.spotMapping?.[spot.id];
-    const wmoCode = wmoMapping?.code != null ? String(wmoMapping.code) : null;
-    const wmoGated = isEsCodeGated(coherenceReport, ES_BUOY_CODES, wmoCode);
-    const wmoBuoy =
+    let wmoMapping = wmoBuoys?.spotMapping?.[spot.id];
+    let wmoCode = wmoMapping?.code != null ? String(wmoMapping.code) : null;
+    let wmoBuoy =
       wmoMapping && wmoBuoys?.buoys?.[String(wmoMapping.code)];
-    const wmoWave =
-      wmoBuoys && !wmoGated ? wmoObservedWaveForSpot(wmoMapping, wmoBuoy) : null;
-    if (wmoGated) refusedWmo += 1;
+    let wmoWave =
+      wmoBuoys && wmoMapping ? wmoObservedWaveForSpot(wmoMapping, wmoBuoy) : null;
+
+    // Ponte keyless da Costa de Prata (nazaré/são-martinho-porto/baleal):
+    // enquanto a IH_API_KEY não provar a Fugro (estação 2 — a mesma boia que a
+    // rota WMO 6200199 serve), estes spots ficariam sem observedWave quando a
+    // leitura nacional estiver stale. Anexa a Cabo Silleiro (6200084, ES) como
+    // proxy keyless quando a leitura ES estiver fresca. Só actua quando a WMO
+    // mapeada não produziu leitura — quando a Fugro (IH ou WMO) voltar a estar
+    // fresca, o vencedor é a leitura nacional e a ponte nunca é anexada.
+    // `!ihWave` fecha a porta também quando a Fugro via IH_API_KEY já está
+    // provada e fresca: a ponte não compete como runner-up com a leitura
+    // nacional (o card nunca mostra Silleiro ao lado da Fugro nacional).
+    if (!wmoWave && !ihWave && wmoBuoys) {
+      const bridge = esBridgeObservedWaveForSpot(wmoBuoys, spot);
+      if (bridge) {
+        wmoWave = bridge;
+        wmoCode = String(bridge.stationCode);
+        wmoBuoy = wmoBuoys?.buoys?.[wmoCode] ?? null;
+        esBridgeAttached += 1;
+      }
+    }
+    const wmoGated = isEsCodeGated(coherenceReport, ES_BUOY_CODES, wmoCode);
+    if (wmoGated) {
+      wmoWave = null;
+      refusedWmo += 1;
+    }
     const { wave, alt, meta } = selectObservedWave(ihWave, wmoWave);
     if (wave) {
       // Transparent bias correction: attach the accumulated per-buoy skill
@@ -376,7 +407,7 @@ export async function mergeObservations() {
         wave.source === 'ih-buoy'
           ? attachWaveSkill(wave, forecastSkill?.byBuoy, buoyMapping?.idEst)
           : wave.source === 'wmo-buoy'
-            ? attachWaveSkill(wave, forecastSkill?.byBuoy, wmoMapping?.code)
+            ? attachWaveSkill(wave, forecastSkill?.byBuoy, wmoCode)
             : wave;
       // Calibração cross-border: quando uma boia ES (Puertos del Estado) é
       // anexada a um spot PT, o viés sistemático do par ES×PT (ME do
@@ -564,12 +595,54 @@ export async function mergeObservations() {
       `🔧 ${calibratedCrossBorder} spots com leitura ES calibrada para a referência PT (viés ES×PT do buoy-coherence.json)`,
     );
   }
-  const buoyLayer = loadBuoyLayerStatus(process.env.PIPELINE_META_ROOT || root);
-  writePipelineMeta('observations', new Date(), process.env.PIPELINE_META_ROOT || root, { buoyLayer });
+  const metaRoot = process.env.PIPELINE_META_ROOT || root;
+  const prevMeta = readPipelineMeta(metaRoot);
+  const buoyLayer = applyBuoyLayerStreak(loadBuoyLayerStatus(metaRoot), prevMeta);
+  const radarLayer = applyLayerStreak(loadRadarLayerStatus(metaRoot), prevMeta, 'radarLayer');
+  const warningsLayer = applyLayerStreak(
+    loadWarningsLayerStatus(metaRoot),
+    prevMeta,
+    'warningsLayer',
+  );
+  const coastalWarningsLayer = buildCoastalWarningsLayer(metaRoot, prevMeta);
+  writePipelineMeta('observations', new Date(), metaRoot, {
+    buoyLayer,
+    radarLayer,
+    warningsLayer,
+    coastalWarningsLayer,
+  });
+  if (radarLayer) {
+    console.log(
+      `📡 Camada de radar: ${radarLayer.status}${radarLayer.frameTime ? ` · frame ${radarLayer.frameTime}` : ''}` +
+        `${radarLayer.streak > 0 ? `, streak down/stale: ${radarLayer.streak} runs` : ''}`,
+    );
+  } else {
+    console.log('📡 Camada de radar: sem radar.json (primeiro run)');
+  }
+  if (warningsLayer) {
+    console.log(
+      `⚠️  Camada de avisos: ${warningsLayer.status} · ${warningsLayer.activeWarnings ?? 0} avisos activos` +
+        ` (${warningsLayer.source ?? '?'}${warningsLayer.fetchedAt ? `, ${warningsLayer.fetchedAt}` : ''})` +
+        `${warningsLayer.streak > 0 ? `, streak down/stale: ${warningsLayer.streak} runs` : ''}`,
+    );
+  } else {
+    console.log('⚠️  Camada de avisos: sem warnings.json (primeiro run)');
+  }
+  if (coastalWarningsLayer) {
+    console.log(
+      `⚓ Camada de avisos costeiros: ${coastalWarningsLayer.status} · ${coastalWarningsLayer.activeWarnings ?? 0} avisos em vigor, ` +
+        `${coastalWarningsLayer.coveredSpots ?? 0} spots cobertos` +
+        `${coastalWarningsLayer.fetchedAt ? ` · fetch ${coastalWarningsLayer.fetchedAt}` : ''}` +
+        `${coastalWarningsLayer.streak > 0 ? `, streak down/stale: ${coastalWarningsLayer.streak} runs` : ''}`,
+    );
+  } else {
+    console.log('⚓ Camada de avisos costeiros: sem ih-coastal-warnings.json (primeiro run)');
+  }
   if (buoyLayer) {
     console.log(
       `🌊 Camada de boias: ${buoyLayer.status} (key ${buoyLayer.apiKeyConfigured ? '✓' : '✗'}, ` +
-        `wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''})`,
+        `wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''}` +
+        `${buoyLayer.streak > 0 ? `, streak down/stale: ${buoyLayer.streak} runs` : ''})`,
     );
   } else {
     console.log('🌊 Camada de boias: sem ih-buoys.json (primeiro run)');
@@ -666,8 +739,13 @@ export async function mergeObservations() {
   if (refusedWmo > 0) {
     console.warn(`🔒 ${refusedWmo} spots com WMO recusada por coerência (par ES×PT incoherent) — observedWave cai para IH-only ou fica sem leitura.`);
   }
+  if (esBridgeAttached > 0) {
+    console.log(
+      `🌉 Ponte keyless Costa de Prata: ${esBridgeAttached} spots com Cabo Silleiro (ES) como observedWave — Fugro nacional (IH_API_KEY) ainda não provada ou sem leitura fresca.`,
+    );
+  }
 
-  return { withObserved, withWave, wmoFallback, refusedWmo, ecowittWins, ipmaWins, metarWins, ecowittSnapshot };
+  return { withObserved, withWave, wmoFallback, esBridgeAttached, refusedWmo, ecowittWins, ipmaWins, metarWins, ecowittSnapshot };
 }
 
 const isDirectRun =

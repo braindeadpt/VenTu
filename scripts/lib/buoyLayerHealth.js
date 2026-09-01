@@ -23,11 +23,66 @@ const BUOY_READING_MAX_AGE_HOURS = 3;
 /** WMO/Copernicus gate is wider (6h) because NRT ingestion lags hours. */
 const WMO_READING_MAX_AGE_HOURS = 6;
 
+/**
+ * Boia Fugro nacional cujo observedWave cobre a Costa de Prata: Nazaré
+ * Costeira (idEst 2, CSA88/2, WMO 6200199). getDatawellData serve hoje a
+ * família Datawell mas pode rejeitar/sem servenv  Fugro — quando isso acontece
+ * a Costa de Prata perde a fonte IH nacional mesmo que as Datawell continuem
+ * frescas (por isso o status GLOBAL pode estar 'ok' com esta sub-camada morta).
+ */
+const FUGRO_NAZARE_KEY = '2';
+const FUGRO_FAMILY = 'fugro';
+
 function isoAgeHours(iso, nowMs) {
   if (!iso) return null;
   const t = new Date(iso).getTime();
   if (!Number.isFinite(t)) return null;
   return (nowMs - t) / 3_600_000;
+}
+
+/**
+ * Pure derivation of the Fugro (Nazaré Costeira) observedWave sub-state — the
+ * national source the Costa de Prata/Lisboa spots depend on. Distinct from the
+ * OVERALL DeriveBuoyLayerStatus: that one is 'ok' when ANY fresh active station
+ * exists, so a rejected Fugro family can hide behind fresh Datawell buoys.
+ *
+ * @param {object | null | undefined} file parsed ih-buoys.json
+ * @param {number} [nowMs]
+ * @returns {{ status: 'ok' | 'rejected' | 'no-key' | 'missing',
+ *             name?: string, latestReadingAt?: string, waveHeightM?: number } | null}
+ *   - 'ok'       — leitura fresca (≤ BUOY_READING_MAX_AGE_HOURS) do Fugro 2;
+ *   - 'rejected' — key configurada mas sem leitura fresca → getDatawellData
+ *                  rejeitou/não serviu a família Fugro (marca observedWave da
+ *                  Costa de Prata em falta na rota IH);
+ *   - 'no-key'   — IH_API_KEY não configurada (nada a validar);
+ *   - 'missing'  — key configurada mas a estação Fugro 2 não está activa no
+ *                  catálogo (inactiva/ausente — não a rejecção do serviço).
+ *   Devolve null quando não há ficheiro/estações.
+ */
+function deriveFugroState(file, nowMs = Date.now()) {
+  if (!file || !file.stations) return null;
+  if (file.apiKeyConfigured !== true) return { status: 'no-key' };
+  const station = file.stations[FUGRO_NAZARE_KEY];
+  if (!station || station.family !== FUGRO_FAMILY) {
+    return { status: 'missing' };
+  }
+  const inactive = station.status === 'inactive' || station.status === 'inativa';
+  if (inactive) return { status: 'missing', name: station.name };
+  const latest = station.latest;
+  const waveHeightM = latest ? Number(latest.hm0) : NaN;
+  if (!latest || !Number.isFinite(waveHeightM)) {
+    return { status: 'rejected', name: station.name };
+  }
+  const age = isoAgeHours(latest.date ?? station.lastSea, nowMs);
+  if (age === null || age < 0 || age > BUOY_READING_MAX_AGE_HOURS) {
+    return { status: 'rejected', name: station.name };
+  }
+  return {
+    status: 'ok',
+    name: station.name,
+    latestReadingAt: latest.date,
+    waveHeightM,
+  };
 }
 
 /**
@@ -135,13 +190,62 @@ function loadBuoyLayerStatus(rootDir = path.join(__dirname, '..', '..'), nowMs =
     ...(newestWmoReadingAt(wmoFile) ? { newestReadingAt: newestWmoReadingAt(wmoFile) } : {}),
   };
 
+  const fugro = deriveFugroState(file, nowMs);
+
   return {
     status,
     apiKeyConfigured: file.apiKeyConfigured === true,
     hasWaveData: file.hasWaveData === true,
     ...(newestReadingAt ? { newestReadingAt } : {}),
+    ...(fugro ? { fugro } : {}),
     wmo,
   };
+}
+
+/**
+ * Consecutive-run streak of a DEGRADED buoy layer (status 'down' | 'stale') —
+ * for the workflow health-check. Pure: given the current layer status and the
+ * PREVIOUS pipeline-meta (whose buoyLayer.streak travels with the committed
+ * file), returns the enriched layer with:
+ *   - streak — +1 por run consecutiva em down/stale; 0 quando ok/no-key;
+ *   - lastStatus — o estado que produziu o streak actual;
+ *   - lastOkAt — quando a camada esteve ok pela última vez (mantido em down).
+ *
+ * 'no-key' NÃO conta como degradação (é o estado configurado sem key — o
+ * setup keyless actual nunca deve acumular streak nem falhar o job).
+ *
+ * @param {object | null | undefined} buoyLayer from loadBuoyLayerStatus
+ * @param {object | null | undefined} prevMeta previous pipeline-meta.json
+ * @returns {object | null} enriched buoyLayer (null quando não há layer)
+ */
+function applyBuoyLayerStreak(buoyLayer, prevMeta) {
+  if (!buoyLayer) return null;
+  const prev = prevMeta?.buoyLayer ?? {};
+  const bad = buoyLayer.status === 'down' || buoyLayer.status === 'stale';
+  const prevStreak = Number(prev.streak);
+  const streak = bad
+    ? (Number.isFinite(prevStreak) ? prevStreak + 1 : 1)
+    : 0;
+  const lastOkAt = bad ? prev.lastOkAt ?? null : new Date().toISOString();
+  const out = {
+    ...buoyLayer,
+    streak,
+    lastStatus: buoyLayer.status,
+    streakUpdatedAt: new Date().toISOString(),
+  };
+  if (lastOkAt) out.lastOkAt = lastOkAt;
+
+  // Sub-camada Fugro (Costa de Prata): runs consecutivas em 'rejected' — para o
+  // health-check avisar/escalar quando a getDatawellData rejeita a família
+  // Fugro, mesmo que o status global esteja 'ok' (Datawell fresca). Reset em
+  // qualquer outro estado (ok/no-key/missing).
+  const fugroRejected = buoyLayer.fugro?.status === 'rejected';
+  const prevFugroStreak = Number(prev.fugroRejectedStreak);
+  out.fugroRejectedStreak = fugroRejected
+    ? (Number.isFinite(prevFugroStreak) ? prevFugroStreak + 1 : 1)
+    : 0;
+
+  return out;
 }
 
 module.exports = {
@@ -149,5 +253,9 @@ module.exports = {
   WMO_READING_MAX_AGE_HOURS,
   deriveBuoyLayerStatus,
   deriveWmoLayerStatus,
+  deriveFugroState,
   loadBuoyLayerStatus,
+  applyBuoyLayerStreak,
+  FUGRO_NAZARE_KEY,
+  FUGRO_FAMILY,
 };

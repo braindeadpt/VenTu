@@ -22,8 +22,14 @@ const {
 } = require('./lib/forecastConfidence');
 const { blendWindAtIndex, readModelMap, applyWindBlendToHours } = require('./lib/windBlend');
 const { isMultiModelEnabled: scheduleIsMultiModelEnabled } = require('./lib/updateSchedule');
-const { writePipelineMeta } = require('./lib/pipelineMeta');
-const { loadBuoyLayerStatus } = require('./lib/buoyLayerHealth');
+const { readPipelineMeta, writePipelineMeta } = require('./lib/pipelineMeta');
+const { loadBuoyLayerStatus, applyBuoyLayerStreak } = require('./lib/buoyLayerHealth');
+const {
+  loadRadarLayerStatus,
+  loadWarningsLayerStatus,
+  buildCoastalWarningsLayer,
+  applyLayerStreak,
+} = require('./lib/dataLayerHealth');
 const {
   HEALTH_FAMILIES,
   countModelSlots,
@@ -729,9 +735,21 @@ async function updateConditions() {
       `${dailyBudgetPct}% do orçamento diário (10k)`,
   );
 
-  const buoyLayer = loadBuoyLayerStatus(path.join(__dirname, '..'));
-  writePipelineMeta('full', new Date(), path.join(__dirname, '..'), {
+  const metaRoot = path.join(__dirname, '..');
+  const prevMeta = readPipelineMeta(metaRoot);
+  const buoyLayer = applyBuoyLayerStreak(loadBuoyLayerStatus(metaRoot), prevMeta);
+  const radarLayer = applyLayerStreak(loadRadarLayerStatus(metaRoot), prevMeta, 'radarLayer');
+  const warningsLayer = applyLayerStreak(
+    loadWarningsLayerStatus(metaRoot),
+    prevMeta,
+    'warningsLayer',
+  );
+  const coastalWarningsLayer = buildCoastalWarningsLayer(metaRoot, prevMeta);
+  writePipelineMeta('full', new Date(), metaRoot, {
     buoyLayer,
+    radarLayer,
+    warningsLayer,
+    coastalWarningsLayer,
     openMeteoUsage: {
       weightedCalls: usage.weightedCalls,
       requests: usage.requests,
@@ -746,10 +764,38 @@ async function updateConditions() {
   if (buoyLayer) {
     console.log(
       `🌊 Camada de boias: ${buoyLayer.status} (key ${buoyLayer.apiKeyConfigured ? '✓' : '✗'}, ` +
-        `wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''})`,
+        `wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''}` +
+        `${buoyLayer.streak > 0 ? `, streak down/stale: ${buoyLayer.streak} runs` : ''})`,
     );
   } else {
     console.log('🌊 Camada de boias: sem ih-buoys.json (primeiro run)');
+  }
+  if (radarLayer) {
+    console.log(
+      `📡 Camada de radar: ${radarLayer.status}${radarLayer.frameTime ? ` · frame ${radarLayer.frameTime}` : ''}` +
+        `${radarLayer.streak > 0 ? `, streak down/stale: ${radarLayer.streak} runs` : ''}`,
+    );
+  } else {
+    console.log('📡 Camada de radar: sem radar.json (primeiro run)');
+  }
+  if (warningsLayer) {
+    console.log(
+      `⚠️  Camada de avisos: ${warningsLayer.status} · ${warningsLayer.activeWarnings ?? 0} avisos activos` +
+        ` (${warningsLayer.source ?? '?'}${warningsLayer.fetchedAt ? `, ${warningsLayer.fetchedAt}` : ''})` +
+        `${warningsLayer.streak > 0 ? `, streak down/stale: ${warningsLayer.streak} runs` : ''}`,
+    );
+  } else {
+    console.log('⚠️  Camada de avisos: sem warnings.json (primeiro run)');
+  }
+  if (coastalWarningsLayer) {
+    console.log(
+      `⚓ Camada de avisos costeiros: ${coastalWarningsLayer.status} · ${coastalWarningsLayer.activeWarnings ?? 0} avisos em vigor, ` +
+        `${coastalWarningsLayer.coveredSpots ?? 0} spots cobertos` +
+        `${coastalWarningsLayer.fetchedAt ? ` · fetch ${coastalWarningsLayer.fetchedAt}` : ''}` +
+        `${coastalWarningsLayer.streak > 0 ? `, streak down/stale: ${coastalWarningsLayer.streak} runs` : ''}`,
+    );
+  } else {
+    console.log('⚓ Camada de avisos costeiros: sem ih-coastal-warnings.json (primeiro run)');
   }
 }
 
