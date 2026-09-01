@@ -345,3 +345,158 @@ describe('validate-generated-data — warnings.json TTL (segurança dos alertas)
     expect(out).toMatch(/warnings\.fetchedAt/);
   });
 });
+
+describe('validate-generated-data — dependência de plataforma (pares por origem)', () => {
+  const validSkill = (pairCountByOrigin) => ({
+    fetchedAt: now(),
+    forecasts: [],
+    observations: [],
+    pairs: [],
+    stats: { me: 0.1, n: 50 },
+    byOrigin: {},
+    byBuoy: {},
+    pairCountByOrigin,
+    calibratedPairCount: 0,
+    windowDays: 30,
+    minPairs: 10,
+    pairCount: Object.values(pairCountByOrigin).reduce((a, b) => a + b, 0),
+    lastPairs: [],
+    lastPairsByOrigin: {},
+  });
+
+  it('avisa no forecast-skill quando ≥80% dos pares vêm de UMA só origem (IH)', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'forecast-skill.json'), JSON.stringify(
+      validSkill({ ih: 95, 'wmo-pt': 0, 'wmo-es': 5 }),
+    ));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/dependência de plataforma/);
+    expect(out).toMatch(/95%/);
+    expect(out).toMatch(/IH \(IH_API_KEY\)/);
+  });
+
+  it('avisa no forecast-skill também quando a origem dominante é a WMO-ES (keyless)', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'forecast-skill.json'), JSON.stringify(
+      validSkill({ ih: 3, 'wmo-pt': 0, 'wmo-es': 47 }),
+    ));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/dependência de plataforma/);
+    expect(out).toMatch(/WMO-ES \(Copernicus\)/);
+  });
+
+  it('não avisa com pares equilibrados entre duas plataformas', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'forecast-skill.json'), JSON.stringify(
+      validSkill({ ih: 55, 'wmo-pt': 0, 'wmo-es': 45 }),
+    ));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/dependência de plataforma/);
+  });
+
+  it('não avisa durante a acumulação (total abaixo do mínimo, stats ainda não estáveis)', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'forecast-skill.json'), JSON.stringify(
+      validSkill({ ih: 8, 'wmo-pt': 0, 'wmo-es': 1 }),
+    ));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/dependência de plataforma/);
+  });
+
+  it('avisa no wave-bias quando todas as boias pertencem à mesma origem (wmo-es keyless)', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'wave-bias.json'), JSON.stringify({
+      fetchedAt: now(),
+      buoys: {
+        '6200084': { name: 'Cabo Silleiro', source: 'wmo-es', n: 40, me: -0.3 },
+        '6201077': { name: 'Villano', source: 'wmo-es', n: 35 },
+      },
+      regions: { norte: { n: 75 } },
+    }));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/dependência de plataforma/);
+    expect(out).toMatch(/wave-bias/);
+  });
+
+  it('não avisa no wave-bias com IH e WMO-ES misturados (sem dependência)', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'wave-bias.json'), JSON.stringify({
+      fetchedAt: now(),
+      buoys: {
+        '1': { name: 'Leixões', source: 'ih', n: 40 },
+        '6200084': { name: 'Cabo Silleiro', source: 'wmo-es', n: 30 },
+      },
+      regions: { norte: { n: 70 } },
+    }));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/dependência de plataforma/);
+  });
+});
+
+describe('validate-generated-data — par subóptimo na calibração ES→PT', () => {
+  const validBuoyCoherence = (regions) => ({
+    fetchedAt: now(),
+    day: '20260814',
+    pairs: [],
+    overall: 'coherent',
+    minAccumulatedPairs: 3,
+    regions,
+  });
+
+  it('avisa quando uma região tem spots com par subóptimo (ref não é a PT mais próxima)', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'buoy-coherence.json'), JSON.stringify(
+      validBuoyCoherence({
+        Algarve: {
+          calibrated: 2,
+          calibrationRefs: {
+            '6200084→6201079': { esCode: '6200084', ptRefCode: '6201079', me: -0.9, n: 5, spots: ['faro', 'zavial'] },
+          },
+          suboptimalRefs: 1,
+          suboptimal: [
+            {
+              spot: 'zavial',
+              esCode: '6200084',
+              ptRefCode: '6201079',
+              ptRefKm: 95,
+              nearestPtCode: '4',
+              nearestPtName: 'Sines',
+              nearestPtKm: 40,
+            },
+          ],
+        },
+      }),
+    ));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0); // informativo — nunca bloqueia o deploy
+    expect(out).toMatch(/par subóptimo/);
+    expect(out).toMatch(/Algarve/);
+    expect(out).toMatch(/zavial/);
+    expect(out).toMatch(/Sines/);
+  });
+
+  it('não avisa quando todas as refs são a PT mais próxima (ou não há sub-óptimas)', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'buoy-coherence.json'), JSON.stringify(
+      validBuoyCoherence({
+        Algarve: {
+          calibrated: 1,
+          calibrationRefs: {
+            '6200084→6201079': { esCode: '6200084', ptRefCode: '6201079', me: -0.9, n: 5, spots: ['faro'] },
+          },
+          suboptimalRefs: 0,
+          suboptimal: [],
+        },
+      }),
+    ));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/par subóptimo/);
+  });
+});

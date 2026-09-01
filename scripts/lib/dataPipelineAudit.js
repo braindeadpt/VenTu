@@ -2,7 +2,15 @@
  * VenTu data sources — limits and call budget (audit reference for workflows).
  * Open-Meteo counts weighted API calls (variables × timesteps × models), not just HTTP requests.
  * @see https://open-meteo.com/en/pricing
+ *
+ * Also exposes the LIVE forecast-skill platform counters (pairCountByOrigin +
+ * calibratedPairCount) so the audit tells how the pair archive evolves per
+ * platform (IH keyed vs WMO-ES/PT keyless) — the same numbers the About row
+ * and the spot card show, printed by the `--print-audit` workflow step.
  */
+
+const fs = require('fs');
+const path = require('path');
 
 /** @typedef {'limited' | 'generous' | 'internal'} SourceTier */
 
@@ -196,6 +204,81 @@ function estimatedOpenMeteoDaily(mix) {
   ) * PRIMARY_SPOT_COUNT_ESTIMATE;
 }
 
+// Quota da origem dominante a partir da qual o audit marca dependência de
+// plataforma — o mesmo limiar do validate-generated-data.js.
+const ORIGIN_DEPENDENCY_SHARE = 0.8;
+// Total mínimo de pares antes de o sinal de dependência fazer sentido.
+const ORIGIN_DEPENDENCY_MIN_TOTAL = 10;
+
+/** Rótulos estáveis por plataforma (iguais aos do About/spot card). */
+const ORIGIN_LABELS = Object.freeze({
+  ih: 'IH',
+  'wmo-pt': 'WMO-PT (Copernicus)',
+  'wmo-es': 'WMO-ES (Copernicus)',
+});
+
+/**
+ * Read the live forecast-skill.json platform counters (pure, never throws).
+ *
+ * @param {string} [filePath] overrides the default (env FORECAST_SKILL_PATH or
+ *   public/data/forecast-skill.json — same convention as check-skill-regression).
+ * @returns {{
+ *   fetchedAt: string|null;
+ *   pairCount: number;
+ *   pairCountByOrigin: Record<string, number>;
+ *   calibratedPairCount: number;
+ *   dominantOrigin: string|null;
+ *   dominantShare: number|null;
+ * } | null} null when missing/corrupt (audit degrades silently).
+ */
+function readForecastSkillPlatformCounters(filePath) {
+  const fp =
+    filePath ||
+    process.env.FORECAST_SKILL_PATH ||
+    path.join(__dirname, '..', '..', 'public', 'data', 'forecast-skill.json');
+  let raw;
+  try {
+    if (!fs.existsSync(fp)) return null;
+    raw = JSON.parse(fs.readFileSync(fp, 'utf8'));
+  } catch {
+    return null;
+  }
+  if (!raw || typeof raw !== 'object') return null;
+  const counts = { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
+  const rawCounts =
+    raw.pairCountByOrigin && typeof raw.pairCountByOrigin === 'object'
+      ? raw.pairCountByOrigin
+      : {};
+  let pairCount = 0;
+  for (const origin of Object.keys(counts)) {
+    const n = Number(rawCounts[origin]);
+    counts[origin] = Number.isInteger(n) && n >= 0 ? n : 0;
+    pairCount += counts[origin];
+  }
+  const calibRaw = Number(raw.calibratedPairCount);
+  const calibratedPairCount =
+    Number.isInteger(calibRaw) && calibRaw >= 0 ? calibRaw : 0;
+
+  let dominantOrigin = null;
+  let dominantShare = null;
+  if (pairCount > 0) {
+    const entries = Object.entries(counts).filter(([, n]) => n > 0);
+    const top = entries.sort((a, b) => b[1] - a[1])[0];
+    if (top) {
+      dominantOrigin = top[0];
+      dominantShare = top[1] / pairCount;
+    }
+  }
+  return {
+    fetchedAt: typeof raw.fetchedAt === 'string' ? raw.fetchedAt : null,
+    pairCount,
+    pairCountByOrigin: counts,
+    calibratedPairCount,
+    dominantOrigin,
+    dominantShare,
+  };
+}
+
 /** @type {Record<string, { dayRuns: number; multimodelDayRuns: number; nightRuns: number; obsOnlyRuns: number; winter: RunMix; summer: RunMix }>} */
 const SCHEDULE_BUDGET = {
   /** Full runs 06–20h a cada 2h + 00h/04h + obs ímpares 07–19h. Multi-modelo
@@ -220,6 +303,7 @@ function printAuditSummary() {
     console.log(`  Limites: ${row.limits}`);
     console.log(`  Notas: ${row.notes}\n`);
   }
+  printForecastSkillPlatformBlock();
   const p = SCHEDULE_BUDGET.proposed;
   const winter = estimatedOpenMeteoDaily(p.winter);
   const summer = estimatedOpenMeteoDaily(p.summer);
@@ -234,6 +318,42 @@ function printAuditSummary() {
   console.log(`  HTTP/spot (full): ${HTTP_REQUESTS_PER_SPOT_FULL} · spots primários ~${PRIMARY_SPOT_COUNT_ESTIMATE}`);
 }
 
+/**
+ * Live block: current forecast-skill.json platform counters (IH vs WMO-ES/PT)
+ * + calibrated ES→PT layer, so the audit shows how the pair archive evolves.
+ * Missing/corrupt file prints a forgiving line (first run, no key yet).
+ */
+function printForecastSkillPlatformBlock() {
+  const c = readForecastSkillPlatformCounters();
+  console.log('── Skill real por plataforma (forecast-skill.json) ──');
+  if (!c) {
+    console.log('  sem forecast-skill.json ainda (primeira run ou ficheiro ilegível)');
+    return;
+  }
+  const parts = ['ih', 'wmo-pt', 'wmo-es']
+    .filter((o) => (c.pairCountByOrigin[o] ?? 0) > 0)
+    .map((o) => `${ORIGIN_LABELS[o]} ${c.pairCountByOrigin[o] ?? 0}`);
+  console.log(`  Pares: ${parts.length ? parts.join(' · ') : 'nenhum'} (total ${c.pairCount})`);
+  if (c.calibratedPairCount > 0) {
+    console.log(`  Camada calibrada ES→PT: ${c.calibratedPairCount} pares`);
+  }
+  if (c.dominantOrigin && c.dominantShare !== null) {
+    const share = Math.round(c.dominantShare * 100);
+    const dep =
+      c.pairCount >= ORIGIN_DEPENDENCY_MIN_TOTAL &&
+      c.dominantShare >= ORIGIN_DEPENDENCY_SHARE
+        ? ' — ⚠️ DEPENDÊNCIA DE PLATAFORMA: se essa fonte falhar, o skill fica sem cobertura'
+        : '';
+    console.log(
+      `  Dominante: ${ORIGIN_LABELS[c.dominantOrigin] ?? c.dominantOrigin} (${share}%)${dep}`,
+    );
+  }
+  if (c.fetchedAt) {
+    console.log(`  Arquivo: ${c.fetchedAt}`);
+  }
+  console.log('');
+}
+
 module.exports = {
   DATA_SOURCES,
   SCHEDULE_BUDGET,
@@ -241,5 +361,6 @@ module.exports = {
   HTTP_REQUESTS_PER_SPOT_FULL,
   OPEN_METEO_WEIGHTED_PER_RUN_ESTIMATE,
   estimatedOpenMeteoDaily,
+  readForecastSkillPlatformCounters,
   printAuditSummary,
 };

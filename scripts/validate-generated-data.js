@@ -54,6 +54,35 @@ const isIso = (s) =>
   typeof s === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(s) && !Number.isNaN(Date.parse(s));
 const ageHours = (iso) => (Date.now() - new Date(iso).getTime()) / 3600000;
 
+// ── Dependência de plataforma (pares por origem) ───────────────────────────
+// Os pares de skill/viés vêm de plataformas distintas (IH com key, WMO-ES
+// keyless, WMO-PT). Quando a MAIORIA pertence a UMA só origem, a métrica
+// pendura nessa plataforma — se ela falhar (key expira, bucket S3 em baixo),
+// o ME/RMSE/viés fica sem cobertura sem ninguém dar conta. Aviso (nunca
+// bloqueia o deploy) com a origem dominante e a sua quota.
+const ORIGIN_LABELS = Object.freeze({
+  ih: 'IH (IH_API_KEY)',
+  'wmo-pt': 'WMO-PT (Copernicus)',
+  'wmo-es': 'WMO-ES (Copernicus)',
+});
+// Quota da origem dominante a partir da qual se considera dependência.
+const ORIGIN_DEPENDENCY_SHARE = 0.8;
+function warnOriginDependency(label, counts, minTotal) {
+  const entries = Object.entries(counts || {}).filter(
+    ([, n]) => typeof n === 'number' && Number.isFinite(n) && n > 0,
+  );
+  const total = entries.reduce((s, [, n]) => s + n, 0);
+  if (total < minTotal) return;
+  const top = entries.sort((a, b) => b[1] - a[1])[0];
+  const share = top[1] / total;
+  if (share < ORIGIN_DEPENDENCY_SHARE) return;
+  warn(
+    `${label}: ${Math.round(share * 100)}% dos ${total} pares vêm de ` +
+      `${ORIGIN_LABELS[top[0]] ?? top[0]} (${top[1]}/${total}) — dependência de ` +
+      `plataforma: se essa fonte falhar, a métrica fica sem cobertura`,
+  );
+}
+
 // ── 1. pipeline-meta.json — the run ledger ──
 const meta = read('pipeline-meta.json');
 check('pipeline-meta', meta !== undefined, 'file missing');
@@ -218,6 +247,15 @@ if (waveBias !== undefined) {
     warn(`wave-bias: boias ES ${waveBias.coherenceGate.gatedCodes.join(', ')} incoherentes vs PT` +
       ` (${waveBias.coherenceGate.day ?? '?'}) — bias não atribuído a regiões`);
   }
+  // Pares por origem derivados dos buoys do relatório (source + n por boia):
+  // o viés ES (keyless) e o IH (key) são plataformas distintas — se uma
+  // dominar, a correcção regional fica refém dela.
+  const wbByOrigin = {};
+  for (const b of Object.values(waveBias.buoys || {})) {
+    const o = b && b.source ? b.source : 'unknown';
+    wbByOrigin[o] = (wbByOrigin[o] || 0) + (b && Number.isFinite(b.n) ? b.n : 0);
+  }
+  warnOriginDependency('wave-bias', wbByOrigin, 30);
 } else {
   warn('wave-bias.json missing — sem viés calculado; correcção regional desligada');
 }
@@ -327,6 +365,20 @@ if (buoyCoherence !== undefined) {
         }
       }
     }
+    // Par subóptimo (auditoria de calibração): a referência PT usada não é a
+    // boia PT MAIS PRÓXIMA do spot (a calibração só usa WMO-PT; uma estação IH
+    // pode estar mais perto). Informativo — o par pode ser o único com pares de
+    // coerência — mas sinaliza cobertura geográfica imperfeita da calibração.
+    const sub = Object.entries(buoyCoherence.regions).filter(
+      ([, r]) => Number.isInteger(r.suboptimalRefs) && r.suboptimalRefs > 0,
+    );
+    for (const [region, r] of sub) {
+      const ex = (r.suboptimal ?? [])[0];
+      const detail = ex
+        ? `ex. ${ex.spot}: ref ${ex.ptRefCode}${ex.ptRefKm != null ? ` a ${Math.round(ex.ptRefKm)} km` : ''} vs mais próxima ${ex.nearestPtName || ex.nearestPtCode}${ex.nearestPtKm != null ? ` a ${Math.round(ex.nearestPtKm)} km` : ''}`
+        : '';
+      warn(`buoy-coherence.regions.${region}: ${r.suboptimalRefs} spot(s) com par subóptimo na calibração (ref não é a boia PT mais próxima) ${detail ? `(${detail})` : ''}`);
+    }
   }
   // Histórico do gate cross-border (acumulado pelo merge-observations): quantas
   // vezes cada boia ES foi recusada e porquê. Preservado pelo check quando
@@ -386,6 +438,21 @@ if (forecastSkill !== undefined) {
   // byBuoy pode conter idEst numéricos (IH) e códigos WMO string (boias ES).
   check('forecast-skill.byBuoy', typeof forecastSkill.byBuoy === 'object' && forecastSkill.byBuoy !== null,
     'missing byBuoy object');
+  // Dependência de plataforma: o skill real acumula pares de IH (key) e
+  // WMO-ES/PT (Copernicus, keyless) — quando uma origem domina, a métrica
+  // pendura nela (e o health-check de regressão também).
+  let skillByOriginCounts =
+    forecastSkill.pairCountByOrigin &&
+    typeof forecastSkill.pairCountByOrigin === 'object'
+      ? forecastSkill.pairCountByOrigin
+      : undefined;
+  if (!skillByOriginCounts && typeof forecastSkill.byOrigin === 'object' && forecastSkill.byOrigin !== null) {
+    skillByOriginCounts = {};
+    for (const [origin, stats] of Object.entries(forecastSkill.byOrigin)) {
+      skillByOriginCounts[origin] = stats && Number.isFinite(stats.n) ? stats.n : 0;
+    }
+  }
+  warnOriginDependency('forecast-skill', skillByOriginCounts, 10);
 } else {
   warn('forecast-skill.json missing — skill real não acumulado (configurar IH_API_KEY ou aguardar boias ES)');
 }

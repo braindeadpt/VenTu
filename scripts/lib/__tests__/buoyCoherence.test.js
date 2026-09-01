@@ -431,6 +431,13 @@ describe('buildRegionSourceAudit (fonte anexada vs boia mais próxima)', () => {
           pair: 'Cabo Silleiro × Faro',
           me: -0.9,
           n: 5,
+          // Auditoria de par subóptimo (escrita pelo merge): a ref escolhida
+          // (Faro 6201079) não é a PT mais próxima de zavial — a estação IH
+          // Sines (4) está mais perto da costa sul-alentejana.
+          ptRefKm: 95,
+          nearestPtCode: '4',
+          nearestPtName: 'Sines',
+          nearestPtKm: 40,
         },
       ],
     ]);
@@ -450,6 +457,50 @@ describe('buildRegionSourceAudit (fonte anexada vs boia mais próxima)', () => {
       n: 5,
     });
     expect(ref.spots).toEqual(expect.arrayContaining(['faro', 'zavial']));
+    // Par subóptimo: zavial foi calibrado com Faro (95 km) quando Sines (IH)
+    // está a 40 km — a auditoria regista o spot e as duas distâncias.
+    expect(algarve.suboptimalRefs).toBe(1);
+    expect(algarve.suboptimal).toEqual([
+      {
+        spot: 'zavial',
+        esCode: '6200084',
+        ptRefCode: '6201079',
+        ptRefKm: 95,
+        nearestPtCode: '4',
+        nearestPtName: 'Sines',
+        nearestPtKm: 40,
+      },
+    ]);
+  });
+
+  it('não marca subóptimo quando a ref é a PT mais próxima (ou sem nearest)', () => {
+    const conditions = {
+      faro: {
+        observedWave: { source: 'wmo-buoy', distanceKm: 95 },
+        observedWaveMeta: { reason: 'wmo-only', ihDistanceKm: 120, wmoDistanceKm: 95 },
+      },
+    };
+    const regions = buildRegionSourceAudit(
+      conditions,
+      spots,
+      new Map([
+        [
+          'faro',
+          {
+            esCode: '6200084',
+            ptRefCode: '6201079',
+            ptRefName: 'Faro',
+            me: -0.9,
+            n: 5,
+            nearestPtCode: '6201079', // a mesma boia → par óptimo
+            nearestPtKm: 1,
+          },
+        ],
+      ]),
+    );
+    const algarve = regions['Algarve'];
+    expect(algarve.suboptimalRefs).toBe(0);
+    expect(algarve.suboptimal).toEqual([]);
   });
 
   it('ignora refs sem ptRefCode e não cria calibrationRefs sem calibração', () => {

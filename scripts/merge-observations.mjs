@@ -109,6 +109,40 @@ function nearestPtRefCode(wmoBuoys, spot) {
 }
 
 /**
+ * Nearest PT buoy to the spot across BOTH PT platforms (Copernicus WMO PT
+ * buoys ∪ IH Datawell stations) — the THEORETICAL nearest PT reference. The
+ * cross-border calibration can only use a WMO-PT code (the ES×PT coherence
+ * pairs live only there), so when the nearest overall PT buoy is an IH
+ * station, the chosen WMO ref is a suboptimal pair — recorded per spot for
+ * the region audit (par subóptimo) and surfaced in the About/validator.
+ * @param {{ buoys?: Record<string, { country?: string, lat?: number, lon?: number, name?: string, area?: string }> } | null} wmoBuoys
+ * @param {{ stations?: Record<string, { lat?: number, lon?: number, name?: string, area?: string }> } | null} ihBuoys
+ * @param {{ lat: number, lon: number }} spot
+ * @returns {{ code: string, name: string | null, area: string | null, km: number } | null}
+ */
+function nearestPtBuoyOverall(wmoBuoys, ihBuoys, spot) {
+  let best = null;
+  let bestKm = Infinity;
+  const consider = (code, name, area, lat, lon) => {
+    if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+    const km = haversineKm(spot.lat, spot.lon, lat, lon);
+    if (km < bestKm) {
+      bestKm = km;
+      best = { code: String(code), name, area, km };
+    }
+  };
+  for (const [code, b] of Object.entries(wmoBuoys?.buoys ?? {})) {
+    if (b?.country !== 'PT') continue;
+    consider(code, b?.name ?? null, b?.area ?? null, b?.lat, b?.lon);
+  }
+  for (const [idEst, st] of Object.entries(ihBuoys?.stations ?? {})) {
+    if (st == null) continue;
+    consider(idEst, st?.name ?? null, st?.area ?? null, st?.lat, st?.lon);
+  }
+  return best;
+}
+
+/**
  * Closest ES (Puertos del Estado / Copernicus) buoy to the spot — the ES leg of
  * the ES×PT pair whose persistent incoherence lowers confidence in the IH
  * reading. Falls back to the spot's own mapped ES code when that is closer.
@@ -427,6 +461,17 @@ export async function mergeObservations() {
         waveCalibrated = applyCrossBorderCalibration(waveWithSkill, calibration);
         if (waveCalibrated !== waveWithSkill) {
           calibratedCrossBorder++;
+          // Auditoria de par subóptimo: a calibração só pode usar uma ref
+          // WMO-PT (os pares ES×PT vivem lá), mas o spot pode ter uma boia PT
+          // MAIS PRÓXIMA na união WMO∪IH (ex. estação IH Sines vs Porto 6201077
+          // para um spot do Centro/Sul). Registar a distância da ref escolhida
+          // e a PT mais próxima no geral → o audit regional marca o par.
+          const ptRefBuoy = ptRef ? wmoBuoys?.buoys?.[ptRef] : null;
+          const ptRefKm =
+            ptRefBuoy && Number.isFinite(ptRefBuoy.lat) && Number.isFinite(ptRefBuoy.lon)
+              ? haversineKm(spot.lat, spot.lon, ptRefBuoy.lat, ptRefBuoy.lon)
+              : null;
+          const nearestPt = nearestPtBuoyOverall(wmoBuoys, ihBuoys, spot);
           calibrationRefsBySpot.set(spot.id, {
             esCode: wmoCode,
             esName: wmoBuoys?.buoys?.[wmoCode]?.name ?? null,
@@ -436,6 +481,10 @@ export async function mergeObservations() {
             pair: calibration.pair ?? null,
             me: calibration.me,
             n: calibration.n,
+            ptRefKm: Number.isFinite(ptRefKm) ? ptRefKm : null,
+            nearestPtCode: nearestPt?.code ?? null,
+            nearestPtName: nearestPt?.name ?? null,
+            nearestPtKm: nearestPt?.km ?? null,
           });
         }
       }

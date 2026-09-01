@@ -445,6 +445,20 @@ describe('merge-observations preserva o waveBias da row', () => {
     writeCoherenceFile(coherencePath, [
       { codes: ['6200084', '6201077'], verdict: 'coherent', n: 5, meanDeltaM: -0.9, pair: 'Cabo Silleiro × Porto' },
     ]);
+    // Auditoria de par subóptimo: junta ao ih-buoys.json uma estação IH PT
+    // (Sines, idEst 4) MAIS PRÓXIMA do Guincho do que a ref WMO Porto 6201077
+    // (~270 km vs ~130 km). A calibração só pode usar a WMO-PT (o único par de
+    // coerência ES×PT), logo o par escolhido fica marcado subóptimo na região.
+    const ihRaw = JSON.parse(fs.readFileSync(ihBuoysPath, 'utf-8'));
+    ihRaw.stations['4'] = {
+      idEst: 4,
+      name: 'Sines',
+      area: 'Alentejo',
+      lat: 37.95,
+      lon: -8.87,
+      latest: { date: new Date(Date.now() - 5 * 3_600_000).toISOString(), hm0: 2.1, tp: 10 },
+    };
+    fs.writeFileSync(ihBuoysPath, JSON.stringify(ihRaw));
     vi.stubGlobal('fetch', () => Promise.reject(new Error('offline')));
 
     const { mergeObservations } = await loadMerge(
@@ -491,6 +505,19 @@ describe('merge-observations preserva o waveBias da row', () => {
       n: 5,
     });
     expect(ref.spots).toContain('guincho');
+    // Par subóptimo: a ref escolhida (6201077 Porto) não é a boia PT mais
+    // próxima do Guincho — a estação IH Sines (4) está a ~130 km vs ~270 km.
+    expect(calibratedRegion.suboptimalRefs).toBe(1);
+    expect(calibratedRegion.suboptimal[0]).toMatchObject({
+      spot: 'guincho',
+      esCode: '6200084',
+      ptRefCode: '6201077',
+      nearestPtCode: '4',
+      nearestPtName: 'Sines',
+    });
+    // A distância da ref registada é a real (haversine Guincho→Porto).
+    expect(calibratedRegion.suboptimal[0].ptRefKm).toBeGreaterThan(250);
+    expect(calibratedRegion.suboptimal[0].nearestPtKm).toBeLessThan(150);
   });
 
   it('IH stable + ES fresca + par incoherent → WMO recusada, sem calibração', async () => {

@@ -150,10 +150,17 @@ function verdictFor(stats, opts = {}) {
  *   pair?: string | null,
  *   me: number,
  *   n: number,
+ *   ptRefKm?: number | null,
+ *   nearestPtCode?: string | null,
+ *   nearestPtName?: string | null,
+ *   nearestPtKm?: number | null,
  * }>} [calibrationRefs] spot id → PT reference used for the cross-border
  *   ES→PT calibration (collected by merge-observations when it recalibrates
  *   a Spanish reading). Lets the regions report audit that the calibration
- *   chose the right PT reference buoy per region.
+ *   chose the right PT reference buoy per region. ptRefKm/nearestPt* are the
+ *   suboptimal-pair audit: the calibration can only use a WMO-PT ref (the
+ *   ES×PT coherence pairs live there), but an IH station may be closer to the
+ *   spot — refs where ptRefCode !== nearestPtCode are flagged per spot.
  * @returns {Record<string, {
  *   spotCount: number,
  *   withObservedWave: number,
@@ -174,6 +181,16 @@ function verdictFor(stats, opts = {}) {
  *     me: number,
  *     n: number,
  *     spots: string[],
+ *   }>,
+ *   suboptimalRefs: number,
+ *   suboptimal: Array<{
+ *     spot: string,
+ *     esCode: string,
+ *     ptRefCode: string,
+ *     ptRefKm: number | null,
+ *     nearestPtCode: string | null,
+ *     nearestPtName: string | null,
+ *     nearestPtKm: number | null,
  *   }>,
  * }>}
  */
@@ -197,6 +214,8 @@ function buildRegionSourceAudit(conditions, spots, calibrationRefs = null) {
         notClosest: [],
         calibrated: 0,
         calibrationRefs: {},
+        suboptimalRefs: 0,
+        suboptimal: [],
       };
     }
     return regions[region];
@@ -231,6 +250,21 @@ function buildRegionSourceAudit(conditions, spots, calibrationRefs = null) {
         spots: [],
       });
       entry.spots.push(spotId);
+      // Par subóptimo: a ref escolhida não é a boia PT MAIS PRÓXIMA do spot
+      // (a calibração só usa WMO-PT; uma estação IH pode estar mais perto).
+      // Auditoria informativa — o par pode ser o único com dados de coerência.
+      if (ref.ptRefCode !== ref.nearestPtCode && ref.nearestPtCode != null) {
+        r.suboptimalRefs += 1;
+        r.suboptimal.push({
+          spot: spotId,
+          esCode: ref.esCode,
+          ptRefCode: ref.ptRefCode,
+          ptRefKm: Number.isFinite(ref.ptRefKm) ? ref.ptRefKm : null,
+          nearestPtCode: ref.nearestPtCode,
+          nearestPtName: ref.nearestPtName ?? null,
+          nearestPtKm: Number.isFinite(ref.nearestPtKm) ? ref.nearestPtKm : null,
+        });
+      }
     }
 
     const attachedKm = Number(w.distanceKm);
