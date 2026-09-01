@@ -53,6 +53,7 @@ const { readJsonIfExists, atomicWriteJson, ensureParentDir } = require('./lib/up
 const { createUpdateConditionsFetcher } = require('./lib/updateConditionsFetch');
 const { buildConditionsRow, mergeForecast } = require('./lib/updateConditionsMerge');
 const { validateCoverage, assertCoverage, buildPipelineLayers } = require('./lib/updateConditionsHealth');
+const { processSpot } = require('./lib/updateConditionsPerSpot');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -458,6 +459,38 @@ async function updateConditions() {
     if (spot.conditionsSource) continue;
 
     try {
+      const result = await processSpot(spot, {
+        useMultiModel,
+        previousConditions,
+        ihTides,
+        waveBias,
+        waveBiasEnabled,
+        usage,
+        fetchers: { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels },
+        findCurrentHourIndex,
+        confidenceAtIndex,
+        confidenceByDay,
+        blendWindAtIndex,
+        readModelMap,
+        applyWindBlendToHours,
+        waveModels: WAVE_MODELS,
+        windModels: WIND_MODELS,
+        isFreshIhObservation,
+        getCurrentConditions,
+        onStaleIhTide: () => { ihSkippedStale += 1; },
+      });
+      allConditions[spot.id] = result.conditions;
+      allForecasts[spot.id] = result.forecast;
+      usage.spotsFetched += 1;
+      await sleep(MIN_REQUEST_INTERVAL);
+      continue;
+    } catch (error) {
+      console.error(`  ✗ ${spot.id} failed:`, error.message);
+      continue;
+    }
+
+    try {
+      /* Legacy per-spot implementation retained below during staged extraction. */
       console.log(`  Fetching ${spot.id}...`);
 
       let marineData;
