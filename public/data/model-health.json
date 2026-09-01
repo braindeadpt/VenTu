@@ -1,0 +1,58 @@
+{
+  "source": "open-meteo-model-health",
+  "checkedAt": "2026-09-01T17:17:43.706Z",
+  "sampledSpots": 181,
+  "wave": {
+    "ewam": {
+      "ok": 13708,
+      "total": 25872,
+      "absentCount": 27,
+      "status": "ok"
+    },
+    "ecmwf_wam": {
+      "ok": 29736,
+      "total": 30408,
+      "absentCount": 0,
+      "status": "ok"
+    },
+    "ncep_gfswave025": {
+      "ok": 29904,
+      "total": 30408,
+      "absentCount": 0,
+      "status": "ok"
+    },
+    "gwam": {
+      "ok": 30072,
+      "total": 30408,
+      "absentCount": 0,
+      "status": "ok"
+    }
+  },
+  "wind": {
+    "icon_eu": {
+      "ok": 22110,
+      "total": 27720,
+      "absentCount": 16,
+      "status": "ok"
+    },
+    "ecmwf_ifs025": {
+      "ok": 30408,
+      "total": 30408,
+      "absentCount": 0,
+      "status": "ok"
+    },
+    "gfs_seamless": {
+      "ok": 30408,
+      "total": 30408,
+      "absentCount": 0,
+      "status": "ok"
+    },
+    "meteofrance_arpege_europe": {
+      "ok": 20996,
+      "total": 30408,
+      "absentCount": 0,
+      "status": "ok"
+    }
+  },
+  "dead": []
+}
