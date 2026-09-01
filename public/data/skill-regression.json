@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-09-01T17:14:54.667Z",
+  "checkedAt": "2026-09-01T22:57:34.862Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -16,11 +16,46 @@
   },
   "minRecentSnapshots": 2,
   "minBaselineSnapshots": 3,
-  "byBuoy": {},
+  "byBuoy": {
+    "6200084": {
+      "name": "Cabo Silleiro",
+      "origin": "wmo-es",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    },
+    "6200085": {
+      "name": "Golfo de Cádiz",
+      "origin": "wmo-es",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    },
+    "6200199": {
+      "name": "Nazaré Costeira (WMO)",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    }
+  },
   "regressions": [],
   "platforms": {
     "ih": null,
-    "wmo-es": null
+    "wmo-es": {
+      "platform": "wmo-es",
+      "name": "WMO-ES (Copernicus)",
+      "recent": {
+        "days": 1,
+        "n": 41,
+        "me": 0.3480487804878049
+      },
+      "baseline": {
+        "days": 0,
+        "n": 0,
+        "me": null
+      },
+      "verdict": "insufficient"
+    }
   },
   "platformAlerts": []
 }
