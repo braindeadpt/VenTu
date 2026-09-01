@@ -130,7 +130,7 @@ test.describe('Critical routes', () => {
     const mapShell = page.locator('#explore-map [data-map-fullscreen]');
     await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'false');
 
-    await page.getByRole('button', { name: /Modo explorar|Explore mode/i }).click();
+    await page.getByRole('button', { name: /Explorar mapa|Explore map/i }).click();
     await expect(mapShell).toHaveAttribute('data-map-fullscreen', 'true', { timeout: 10_000 });
 
     await page.getByRole('button', { name: /Sair do ecrã inteiro|Exit full screen/i }).click();
