@@ -32,7 +32,9 @@ npm run dev
 npm run deploy
 ```
 
-Note the URL (e.g. `https://ventu-observations.<account>.workers.dev`) and set `NEXT_PUBLIC_OBS_WORKER_URL` in the site build (GitHub Actions / `.env.local`).
+Production URL is `https://ventu-observations.busntech-net.workers.dev`. Deploy only from the Cloudflare account that owns that workers.dev subdomain — a login on a different account will create a unused duplicate, not update the live worker.
+
+Note the URL and set `NEXT_PUBLIC_OBS_WORKER_URL` in the site build (GitHub Actions / `.env.local`).
 
 ## Verification
 

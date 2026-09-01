@@ -16,11 +16,10 @@ export type UseObservedNowState = {
 };
 
 export function useObservedNow(lat: number, lon: number): UseObservedNowState {
-  const [observed, setObserved] = useState<ObservedConditions | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   const workerUrl = buildObsWorkerUrl(lat, lon);
+  const [observed, setObserved] = useState<ObservedConditions | null>(null);
+  const [loading, setLoading] = useState(() => Boolean(workerUrl));
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!workerUrl) {

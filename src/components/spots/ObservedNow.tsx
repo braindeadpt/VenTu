@@ -38,8 +38,36 @@ export default function ObservedNow({
 
   const fromLive = Boolean(liveObserved && !error);
   const displayObserved = fromLive ? liveObserved : bakedFresh;
+  const isPt = locale === 'pt';
 
   if (!displayObserved || !isObservedFresh(displayObserved.observedAt)) {
+    if (loading) {
+      return (
+        <section
+          className="rounded-card border border-divider bg-surface-1/[0.04] p-3"
+          aria-busy
+          aria-label={isPt ? 'A verificar observações ao vivo' : 'Checking live observations'}
+        >
+          <p className="text-meta text-fg-muted">
+            {isPt ? 'A verificar observações ao vivo…' : 'Checking live observations…'}
+          </p>
+        </section>
+      );
+    }
+    if (error) {
+      return (
+        <section
+          role="status"
+          className="rounded-card border border-divider bg-surface-1/[0.04] p-3"
+        >
+          <p className="text-meta text-fg-muted">
+            {isPt
+              ? 'Observações ao vivo indisponíveis — o vento acima é previsão do modelo.'
+              : 'Live observations unavailable — wind above is the model forecast.'}
+          </p>
+        </section>
+      );
+    }
     return null;
   }
 
