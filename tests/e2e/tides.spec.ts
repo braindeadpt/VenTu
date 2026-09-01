@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { interceptConditions } from './helpers/conditions';
+import { interceptConditions, interceptForecasts } from './helpers/conditions';
 
 /**
  * Marés — TideScheduleStrip.
@@ -56,5 +56,55 @@ test.describe('Marés (TideScheduleStrip)', () => {
     await expect(page.getByRole('status', { name: /Maré: Maré a descer/i })).toBeVisible({
       timeout: 20_000,
     });
+  });
+
+  test('sem tideHeight na curva → schedule ausente (strip some) e MoonTideCard sem amplitude', async ({
+    page,
+  }) => {
+    // buildTideSchedule devolve null quando a série tem <2 pontos com
+    // tideHeight — o card de marés (TideScheduleStrip) não renderiza, mas o
+    // MoonTideCard continua (fase lunar) sem a linha de amplitude.
+    await interceptForecasts(page, {
+      spots: {
+        guincho: (series) =>
+          series.map(({ tideHeight: _omit, ...h }) => h),
+      },
+    });
+
+    await page.goto('/pt/spots/guincho/');
+
+    // Sem schedule: nem o strip nem o título «Marés (previsão)» aparecem.
+    await expect(page.getByRole('status', { name: /Maré:/i })).toHaveCount(0, {
+      timeout: 20_000,
+    });
+    await expect(page.getByText('Marés (previsão)')).toHaveCount(0);
+
+    // MoonTideCard continua visível (fase lunar), mas sem amplitude.
+    const moonCard = page.getByText('Maré e lua').locator('..');
+    await expect(moonCard).toBeVisible();
+    // Fase lunar real do build (qualquer das 8 fases em pt).
+    await expect(moonCard).toContainText(
+      /Lua (nova|cheia|crescente|minguante)|Quarto (crescente|minguante)|Gibosa (crescente|minguante)/,
+    );
+    await expect(moonCard).toContainText(/Marés (vivas|mortas)|Transição/);
+    await expect(moonCard.getByText(/Amplitude hoje:/)).toHaveCount(0);
+  });
+
+  test('MoonTideCard com curva real → mostra fase lunar, regime e amplitude hoje', async ({
+    page,
+  }) => {
+    // Sem transform: o forecast real do build tem tideHeight → a amplitude
+    // do dia é calculada (≥2 pontos) e o card mostra fase + regime + range.
+    await page.goto('/pt/spots/guincho/');
+
+    const moonCard = page.getByText('Maré e lua').locator('..');
+    await expect(moonCard).toBeVisible({ timeout: 20_000 });
+    // Fase lunar real do build (qualquer das 8 fases em pt).
+    await expect(moonCard).toContainText(
+      /Lua (nova|cheia|crescente|minguante)|Quarto (crescente|minguante)|Gibosa (crescente|minguante)/,
+    );
+    await expect(moonCard).toContainText(/Marés (vivas|mortas)|Transição/);
+    // Amplitude real do build (série 168h com tideHeight) — número sempre ≥ 0.
+    await expect(moonCard.getByText(/Amplitude hoje: \d+\.\d m/)).toBeVisible();
   });
 });

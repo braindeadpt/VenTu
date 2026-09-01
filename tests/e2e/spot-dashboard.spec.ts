@@ -28,6 +28,32 @@ test.describe('Spot detail dashboard', () => {
     await expect(page.getByText('Dormir', { exact: true })).toBeVisible();
   });
 
+  test('EN logistics block translates facilities/hazards tags (never the PT token verbatim)', async ({ page }) => {
+    await page.goto('/en/spots/guincho/');
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+
+    // Card labels translated (spans, not headings)
+    await expect(page.getByText('Facilities', { exact: true })).toBeVisible();
+    await expect(page.getByText('Hazards', { exact: true })).toBeVisible();
+
+    // Facilities body is the joined EN tokens («Parking · Restaurant · Kite school · WC»)
+    await expect(page.getByText(/Parking · Restaurant · Kite school · WC/)).toBeVisible();
+
+    // Hazards render as translated list items (listitem is not a name-from-contents
+    // role, so use a DOM locator — getByRole({ name }) never matches text here)
+    await expect(page.locator('li', { hasText: /^Strong wind$/ })).toBeVisible();
+    await expect(page.locator('li', { hasText: /^Currents$/ })).toBeVisible();
+    await expect(page.locator('li', { hasText: /^Rocks$/ })).toBeVisible();
+
+    // The PT tokens never leak into the EN UI
+    await expect(page.getByText('Estacionamento', { exact: true })).toHaveCount(0);
+    await expect(page.getByText('Escola kite', { exact: true })).toHaveCount(0);
+    await expect(page.getByText('Correntes', { exact: true })).toHaveCount(0);
+    await expect(page.getByText('Rochas', { exact: true })).toHaveCount(0);
+  });
+
   test('hero meter is visible on photo header', async ({ page }) => {
     await expect(page.getByRole('meter')).toBeVisible();
   });

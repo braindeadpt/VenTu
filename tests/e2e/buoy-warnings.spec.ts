@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import {
+  freshObservedWave,
   interceptConditions,
   interceptIhBuoys,
   interceptWmoBuoys,
@@ -143,6 +144,54 @@ test.describe('Aviso de boias (BuoyLayerNotice)', () => {
       page.getByText(/Onda observada desactivada|Boias do IH indisponíveis|Leituras das boias antigas/),
     ).toHaveCount(0);
   });
+
+  test('WMO-ES: observedWave WMO fresco na row → NENHUM aviso mesmo com apiKeyConfigured false', async ({
+    page,
+  }) => {
+    // A ponte keyless anexou a leitura WMO espanhola (Cabo Silleiro) à row do
+    // spot — há onda medida, logo o aviso IH (no-key) não tem razão de existir.
+    // O gate do pai (`!freshObservedWave && !conditions.observedWave`) bloqueia
+    // o notice antes de ele sequer montar, independentemente do estado do
+    // ih-buoys.json (aqui propositadamente no-key).
+    await interceptIhBuoys(page, {
+      fetchedAt: new Date().toISOString(),
+      apiKeyConfigured: false,
+      hasWaveData: false,
+      stations: {},
+    });
+    await interceptConditions(page, {
+      spots: {
+        guincho: (entry) => ({
+          ...entry,
+          observedWave: freshObservedWave({
+            stationName: 'Cabo Silleiro',
+            stationArea: 'Galiza',
+            distanceKm: 281,
+            source: 'wmo-buoy',
+            bridge: true,
+            stationCode: '6200084',
+            skill: undefined,
+          }),
+        }),
+      },
+    });
+    await page.goto('/pt/spots/guincho/');
+    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      timeout: 20_000,
+    });
+
+    // Nenhum dos títulos do aviso IH aparece (nem o «Onda observada desactivada»
+    // do no-key, apesar de a key não estar configurada).
+    await expect(
+      page.getByText(/Onda observada desactivada|Boias do IH indisponíveis|Leituras das boias antigas/),
+    ).toHaveCount(0);
+
+    // A prova de que não é um falso negativo: o card de onda observada renderiza
+    // com a fonte WMO espanhola e o rótulo honesto de distância.
+    const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
+    await expect(card).toBeVisible({ timeout: 15_000 });
+    await expect(card.getByText(/boia Cabo Silleiro a 281 km/i).first()).toBeVisible();
+  });
 });
 
 test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
@@ -202,12 +251,77 @@ test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
   });
 });
 
+test.describe('Aviso de boias no mapa interactivo (SpotMapInteractive overlay)', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  // O mesmo BuoyLayerNotice (scope=home, overlay com fundo sórido para
+  // legibilidade) é sobreposto ao mapa interactivo partilhado — que serve o
+  // hero da homepage (embedMode=hero), a página /pt/mapa (fullscreen) e o grid.
+  // Só renderiza quando NENHUMA fonte (IH ou WMO) tem leituras frescas.
+
+  test('no-key: aviso sobreposto à página /pt/mapa quando a camada está desactivada', async ({ page }) => {
+    await interceptIhBuoys(page, {
+      fetchedAt: new Date().toISOString(),
+      apiKeyConfigured: false,
+      hasWaveData: false,
+      stations: {},
+    });
+    await interceptWmoBuoys(page, WMO_DOWN);
+    await page.goto('/pt/mapa/');
+
+    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
+    await expect(
+      page.getByText(/alturas de onda no mapa e nos cards são previsão do modelo/),
+    ).toBeVisible();
+  });
+
+  test('ok: /pt/mapa sem aviso quando o IH tem leituras frescas', async ({ page }) => {
+    await interceptIhBuoys(page, {
+      apiKeyConfigured: true,
+      hasWaveData: true,
+      stations: {
+        4: { status: 'active', latest: { date: FRESH_ISO } },
+      },
+    });
+    await page.goto('/pt/mapa/');
+
+    await expect(
+      page.getByText(/Onda observada desactivada|Boias do IH indisponíveis|Leituras das boias antigas/),
+    ).toHaveCount(0);
+  });
+
+  test('no-key: aviso também sobre o hero do mapa da homepage (região do mapa)', async ({ page }) => {
+    await interceptIhBuoys(page, {
+      fetchedAt: new Date().toISOString(),
+      apiKeyConfigured: false,
+      hasWaveData: false,
+      stations: {},
+    });
+    await interceptWmoBuoys(page, WMO_DOWN);
+    await page.goto('/pt/');
+    await expect(page.getByRole('heading', { name: /A bombar agora/i })).toBeVisible({
+      timeout: 20_000,
+    });
+
+    // Scoped à região do mapa interactivo — não à secção de cards (a mesma
+    // string lá também existe, mas fora desta região).
+    const mapRegion = page.getByRole('region', { name: /Mapa interactivo/ });
+    await expect(mapRegion.getByText('Onda observada desactivada')).toBeVisible({
+      timeout: 20_000,
+    });
+  });
+});
+
 test.describe('Chip de diagnóstico no ticker (pipeline-meta.json → HeroTicker)', () => {
   test.use({ serviceWorkers: 'block' });
 
   // O chip vem do pipeline-meta.json (SSG, server-rendered) — o estado actual
   // do build é no-key, logo o ticker da homepage mostra «Boias: sem key».
+  // A WMO (lida em runtime pelo layer health) é interceptada como down para o
+  // aviso completo renderizar de forma determinística — quando a Copernicus
+  // tem leituras frescas (ex. Nazaré 6200199), o aviso desaparece por design.
   test('no-key no pipeline-meta.json → «Boias: sem key» no ticker do hero', async ({ page }) => {
+    await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
 
     await expect(page.getByText('Boias: sem key')).toBeVisible({ timeout: 20_000 });

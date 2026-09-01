@@ -64,6 +64,11 @@ if (fs.existsSync(newsPath)) {
 const today = new Date().toISOString().slice(0, 10);
 const urlEntries = [];
 
+// Rotas estáticas do [locale] INDEXÁVEIS (as noindex — admin/*, conta,
+// diretorio/gerir — ficam de fora de propósito). Manter em sincronia com
+// src/app/[locale]/**: cada página estática de lá que não esteja noindex
+// tem de estar aqui. Passaporte/diretorio não eram cobertos — adicionados
+// 2026-08-31; o guard do ci.yml (check-sitemap-drift.js) tranca a lista.
 const staticPages = [
   { path: '/', priority: '1.0', changefreq: 'daily' },
   { path: '/mapa/', priority: '0.95', changefreq: 'daily' },
@@ -75,10 +80,13 @@ const staticPages = [
   { path: '/compare/', priority: '0.6', changefreq: 'weekly' },
   { path: '/news/', priority: '0.8', changefreq: 'daily' },
   { path: '/about/', priority: '0.5', changefreq: 'monthly' },
+  { path: '/fontes/', priority: '0.5', changefreq: 'monthly' },
   { path: '/sazonalidade/', priority: '0.6', changefreq: 'monthly' },
   { path: '/ferramentas/', priority: '0.7', changefreq: 'monthly' },
   { path: '/ferramentas/calculadora-kite/', priority: '0.75', changefreq: 'monthly' },
   { path: '/ferramentas/calculadora-fato/', priority: '0.75', changefreq: 'monthly' },
+  { path: '/passaporte/', priority: '0.6', changefreq: 'weekly' },
+  { path: '/diretorio/', priority: '0.6', changefreq: 'weekly' },
 ];
 
 for (const page of staticPages) {
@@ -120,6 +128,33 @@ for (const item of newsItems) {
     changefreq: 'weekly',
     priority: '0.65',
     lastmod,
+  });
+}
+
+// Directório: perfil de cada escola/loja (public/data/directory.json, mesmo
+// ficheiro que o loadDirectoryEntries de src/lib/directory.ts lê). Cada entry
+// tem a rota /diretorio/{slug}/ indexável com buildPageMetadata (hreflang).
+// Sem ficheiro (dev sem dados) degrada para zero entries — como o news.json.
+const directoryPath = path.join(__dirname, '..', 'public', 'data', 'directory.json');
+let directorySlugs = [];
+if (fs.existsSync(directoryPath)) {
+  try {
+    const directory = JSON.parse(fs.readFileSync(directoryPath, 'utf-8'));
+    directorySlugs = Array.isArray(directory.entries)
+      ? directory.entries
+          .map((e) => (e && typeof e.slug === 'string' ? e.slug : null))
+          .filter(Boolean)
+      : [];
+  } catch (err) {
+    console.warn('⚠️  Could not parse directory.json:', err.message);
+  }
+}
+
+for (const slug of directorySlugs) {
+  addUrl(urlEntries, `/diretorio/${slug}/`, {
+    changefreq: 'weekly',
+    priority: '0.6',
+    lastmod: today,
   });
 }
 

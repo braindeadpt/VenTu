@@ -50,6 +50,13 @@ jobs:
       - name: Generate sitemap
         run: npm run sitemap:generate
 
+      # Guard: o sitemap é um ficheiro GERADO (scripts/generate-sitemap.js) e
+      # nunca deve ser editado à mão. Falha quando o public/sitemap.xml commitado
+      # diverge estruturalmente do gerador (novo spot/notícia/rota esquecidos,
+      # hreflang em falta) — ignora o <lastmod> (o gerador grava a data de hoje).
+      - name: Sitemap drift guard
+        run: node scripts/check-sitemap-drift.js
+
       - name: Build spots index
         run: npm run spots:index && npm run spots:lite
 
@@ -79,17 +86,26 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: E2E ÔÇö critical routes
+      - name: E2E — critical routes
         run: npx playwright test critical-routes
         env:
           CI: true
 
-      - name: E2E ÔÇö route audit
+      # Specs herméticos de dados/score (interceptam data files client-side —
+      # correm sem rede nem IH_API_KEY): core expandido com tides, buoy-warnings,
+      # topnow-wave-badge, observed-wave-card, data-sources, isobaths,
+      # coastal-nav-warnings e coastal-map-layer.
+      - name: E2E — core data/score specs (hermetic)
+        run: npm run test:e2e:core
+        env:
+          CI: true
+
+      - name: E2E — route audit
         run: npx playwright test full-audit
         env:
           CI: true
 
-      - name: E2E ÔÇö visual UX audit
+      - name: E2E — visual UX audit
         run: npx playwright test visual-ux-audit
         env:
           CI: true

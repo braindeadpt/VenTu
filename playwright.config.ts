@@ -8,7 +8,11 @@ export default defineConfig({
   fullyParallel: !process.env.CI,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  // CI: 2 workers no runner ubuntu-latest (4 vCPU) — browsers isolados por
+  // worker (page.route/localStorage), sem estado partilhado entre specs.
+  // Medido: test:e2e:core (75 testes, max 5.2s/teste) desce de ~2m51s para
+  // ~1m30s com workers=2; o timeout de 60s por teste fica folgado ~11×.
+  workers: process.env.CI ? 2 : undefined,
   timeout: process.env.CI ? 60_000 : 30_000,
   reporter: process.env.CI
     ? [['github'], ['html', { open: 'never', outputFolder: 'playwright-report' }]]

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { readRealConditions } from './helpers/conditions';
+import { interceptWarnings, readRealConditions } from './helpers/conditions';
 
 /**
  * Aviso «Mar perigoso» — o mesmo de segurança do hero do spot, estendido ao
@@ -43,15 +43,28 @@ function warningsNoSeaState(): Record<string, unknown> {
   };
 }
 
-async function interceptWarnings(page: import('@playwright/test').Page, body: Record<string, unknown>): Promise<void> {
-  await page.route('**/data/warnings.json', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(body),
-    });
-  });
+/**
+ * Abre o sheet do spot tocando num marker individual.
+ *
+ * O mapa móvel desenha os markers por chunks (runChunked, 8/batch + yield) e
+ * faz fitBounds ao primeiro batch — os icons mexem-se logo depois de aparecer.
+ * Um click({ force: true }) logo após o waitForSelector dispara numa posição
+ * pré-fitBounds e pode cair no fundo do mapa (flake sob workers paralelos).
+ * Aqui o clique é SEM force: o Playwright espera o marker estabilizar (2 frames
+ * com a mesma caixa) antes de acertar, e retries enquanto os chunks chegam.
+ * `.spot-marker` só casa singletons (não clusters), por isso qualquer one abre
+ * o sheet; um sheet reopenável é o contrato do MapSpotSheet.
+ */
+async function openSpotSheet(page: import('@playwright/test').Page) {
+  await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
+  const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
+  // Primeiro forçamos o scroll/estabilidade do target; o click() em si já o faz.
+  await marker.click();
+  const sheet = page.getByTestId('map-spot-sheet');
+  await expect(sheet).toBeVisible({ timeout: 15_000 });
+  return sheet;
 }
+
 
 test.describe('Mar perigoso — Dawn Patrol', () => {
   test.use({ serviceWorkers: 'block' });
@@ -68,8 +81,10 @@ test.describe('Mar perigoso — Dawn Patrol', () => {
     await page.goto('/pt/');
 
     await expect(page.getByText('Mar perigoso — não surfar')).toBeVisible({ timeout: 20_000 });
-    // O nível do aviso e a ligação ao spot afectado (spot em destaque).
-    await expect(page.getByText(/Agitação marítima · Laranja/)).toBeVisible();
+    // O rótulo usa o MESMO warningBadgeLabel das restantes superfícies
+    // («Mar perigoso», não «Agitação marítima») + o nível, e a ligação leva ao
+    // spot afectado (spot em destaque).
+    await expect(page.getByText(/Mar perigoso · Laranja/)).toBeVisible();
     const strip = page.getByText('Mar perigoso — não surfar').locator('..');
     await expect(strip).toHaveAttribute('href', /\/pt\/spots\/[^/]+\//);
   });
@@ -93,14 +108,14 @@ test.describe('Mar perigoso — card do spot no mapa', () => {
       localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
-    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
 
-    await page.locator('.leaflet-marker-icon.spot-marker').first().click({ force: true });
-
-    const sheet = page.getByTestId('map-spot-sheet');
-    await expect(sheet).toBeVisible({ timeout: 15_000 });
+    const sheet = await openSpotSheet(page);
     // Badge «Mar perigoso» (sem o prefixo «Aviso:» para sea state).
-    await expect(sheet.getByText('Mar perigoso')).toBeVisible();
+    await expect(sheet.getByText('Mar perigoso')).toBeVisible({ timeout: 15_000 });
+    // Tooltip do chip (MapSpotPreview) com o nível localizado, não só o rótulo.
+    const chip = sheet.locator('[title*="Aviso IPMA: Mar perigoso (Laranja)"]');
+    await expect(chip).toBeVisible({ timeout: 10_000 });
+    await expect(chip).toHaveAttribute('title', /Aviso IPMA: Mar perigoso \(Laranja\)/);
   });
 
   test('sem Agitação → chip «Aviso:» ausente (nenhum aviso)', async ({ page }) => {
@@ -110,12 +125,34 @@ test.describe('Mar perigoso — card do spot no mapa', () => {
       localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
-    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
 
-    await page.locator('.leaflet-marker-icon.spot-marker').first().click({ force: true });
-
-    const sheet = page.getByTestId('map-spot-sheet');
-    await expect(sheet).toBeVisible({ timeout: 15_000 });
+    const sheet = await openSpotSheet(page);
     await expect(sheet.getByText('Mar perigoso')).toHaveCount(0);
+  });
+});
+
+test.describe('Mar perigoso — tooltip do chip nos cards', () => {
+  test.use({ serviceWorkers: 'block' });
+
+  test('TopNow: o chip do SpotListCard tem o nível localizado no tooltip', async ({ page }) => {
+    await interceptWarnings(page, warningsAllSeaState());
+    await page.goto('/pt/');
+
+    // O chip de aviso do card da homepage (SpotListCard → WarningPill) mostra
+    // o nível localizado no tooltip, não só o rótulo «Mar perigoso».
+    const chip = page.locator('[title*="Aviso IPMA: Mar perigoso (Laranja)"]').first();
+    await expect(chip).toBeVisible({ timeout: 20_000 });
+    await expect(chip).toContainText('Mar perigoso');
+    await expect(chip).toHaveAttribute('title', /Aviso IPMA: Mar perigoso \(Laranja\)/);
+  });
+
+  test('TopNow EN: tooltip «IPMA warning: Dangerous sea (Orange)» no card', async ({ page }) => {
+    await interceptWarnings(page, warningsAllSeaState());
+    await page.goto('/en/');
+
+    const chip = page.locator('[title*="IPMA warning: Dangerous sea (Orange)"]').first();
+    await expect(chip).toBeVisible({ timeout: 20_000 });
+    await expect(chip).toContainText('Dangerous sea');
+    await expect(chip).toHaveAttribute('title', /IPMA warning: Dangerous sea \(Orange\)/);
   });
 });

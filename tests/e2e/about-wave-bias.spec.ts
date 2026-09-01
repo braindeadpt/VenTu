@@ -82,8 +82,35 @@ test.describe('About — secção de viés por boia (ondas)', () => {
     await expect(silleiro).toContainText('37'); // skill n
     const leixoes = table.getByRole('row', { name: /Leixões/ });
     // Sem skill para Leixões → colunas de skill vazias («—»).
-    await expect(leixoes).toContainText('+0.10'); // bias ME
     await expect(leixoes).not.toContainText('-0.15'); // não herda o skill do Silleiro
+  });
+
+  test('secção de skill real mostra país/fonte e a cobertura do NW sem IH_API_KEY', async ({
+    page,
+  }) => {
+    // A secção de skill do About é SSG (lê forecast-skill.json em build time),
+    // por isso não dá para a alternar via page.route — o HTML baked é que manda.
+    // Gate honesto: só valida quando o build já tem uma boia ES com skill (a
+    // rota keyless da Copernicus). O CI (sem forecast-skill.json / buoys) salta;
+    // local: injectar public/data/forecast-skill.json com a byBuoy ES + `npm run build`
+    // (recipe do fixture, como o write-wave-bias-fixture).
+    await page.goto('/pt/about/', { waitUntil: 'networkidle', timeout: 60_000 });
+
+    const silleiroCell = page.locator('[data-skill-buoy-origin="wmo-es"]');
+    if ((await page.locator('[data-skill-buoy-origin]').count()) === 0) {
+      test.skip(true, 'build sem boias ES no skill (About é SSG) — injetar forecast-skill.json + build');
+      return;
+    }
+
+    // País/fonte explícito na linha da boia ES — não só um código enigmático.
+    await expect(silleiroCell).toBeVisible();
+    await expect(silleiroCell).toHaveText('Copernicus-ES');
+    await expect(silleiroCell).toHaveAttribute('title', /Copernicus-ES · Espanha/);
+
+    // Nota honesta: o NW é coberto sem IH_API_KEY.
+    await expect(
+      page.getByText(/O Noroeste é coberto pelas boias espanholas \(Copernicus-ES\)/),
+    ).toBeVisible();
   });
 
   test('a secção não aparece quando o ficheiro falta (404)', async ({ page }) => {

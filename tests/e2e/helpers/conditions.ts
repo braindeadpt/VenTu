@@ -13,6 +13,8 @@ import { join } from 'path';
  *     (and/or a whole-file transform), so different spots can carry different
  *     fixtures in the same test.
  *   - `interceptIhBuoys` — serves ih-buoys.json (the buoy-layer health file).
+ *   - `interceptWarnings` — serves warnings.json (IPMA/MeteoAlarm per-spot map).
+ *   - `interceptRadar` — serves radar.json (the IPMA radar frames carousel).
  *   - `freshObservedWave` / `withoutObservedWave` — common per-spot fixtures.
  *
  * NOTE: the site registers a service worker (public/sw.js) that serves
@@ -22,6 +24,7 @@ import { join } from 'path';
  */
 
 export const CONDITIONS_PATH = join(process.cwd(), 'public', 'data', 'conditions.json');
+export const FORECASTS_PATH = join(process.cwd(), 'public', 'data', 'forecasts.json');
 
 /** Read the real build conditions once per process (immutable snapshot). */
 const conditionsCache = new Map<string, Record<string, Record<string, unknown>>>();
@@ -133,6 +136,112 @@ export async function interceptWaveBias(page: Page, file: Record<string, unknown
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(file),
+    });
+  });
+}
+
+/**
+ * Intercept /data/warnings.json (the IPMA/MeteoAlarm warnings file with the
+ * per-spot `spotWarnings` map the mar-perigoso chip and badge read) and serve
+ * a crafted file. Shared by the spot/map/homepage specs that exercise the
+ * «Mar perigoso» warning surfaces.
+ */
+export async function interceptWarnings(page: Page, file: Record<string, unknown>): Promise<void> {
+  await page.route('**/data/warnings.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(file),
+    });
+  });
+}
+
+/**
+ * Intercept /data/radar.json (the IPMA radar frames file the RadarCarousel
+ * animates on /mapa, the hero and the grid map) and serve a crafted file.
+ * The radar stub (12 frames newest-first) is reused verbatim by every
+ * carousel spec — the helper removes the 7 inline page.route copies.
+ */
+export async function interceptRadar(page: Page, file: Record<string, unknown>): Promise<void> {
+  await page.route('**/data/radar.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(file),
+    });
+  });
+}
+
+/** Read the real build forecasts once per process (immutable snapshot). */
+const forecastsCache = new Map<string, Record<string, Array<Record<string, unknown>>>>();
+export function readRealForecasts(): Record<string, Array<Record<string, unknown>>> {
+  if (!forecastsCache.has(FORECASTS_PATH)) {
+    forecastsCache.set(
+      FORECASTS_PATH,
+      JSON.parse(readFileSync(FORECASTS_PATH, 'utf-8')) as Record<
+        string,
+        Array<Record<string, unknown>>
+      >,
+    );
+  }
+  return forecastsCache.get(FORECASTS_PATH)!;
+}
+
+export interface ForecastTransform {
+  /**
+   * Per-spot transforms keyed by the forecasts.json spot id (e.g. 'guincho').
+   * The entry is the real build hourly series; return the transformed series.
+   */
+  spots?: Record<string, (series: Array<Record<string, unknown>>) => Array<Record<string, unknown>>>;
+  /** Whole-file transform, applied AFTER the per-spot ones. */
+  all?: (
+    data: Record<string, Array<Record<string, unknown>>>,
+  ) => Record<string, Array<Record<string, unknown>>>;
+}
+
+/**
+ * Intercept every request to /data/forecasts.json (full file) and
+ * /data/forecasts/{id}.json (per-spot cache files, the path loadForecastForSpot
+ * tries first) and serve the real build data with the requested transforms.
+ * Register BEFORE page.goto. Specs that need a tide-less series (no
+ * tideHeight → buildTideSchedule returns null) or a custom tide curve use
+ * this — deterministic without touching conditions.json.
+ */
+export async function interceptForecasts(
+  page: Page,
+  transform: ForecastTransform = {},
+): Promise<void> {
+  const serveSeries = (spotId: string, series: Array<Record<string, unknown>>) => {
+    const t = transform.spots?.[spotId];
+    return t ? t(series) : series;
+  };
+
+  // Per-spot cache files: /data/forecasts/{id}.json
+  await page.route('**/data/forecasts/*.json', async (route) => {
+    const url = new URL(route.request().url());
+    const match = url.pathname.match(/\/forecasts\/([^/]+)\.json$/);
+    const spotId = match ? decodeURIComponent(match[1]) : '';
+    const series = readRealForecasts()[spotId] ?? [];
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(serveSeries(spotId, series)),
+    });
+  });
+
+  // Full file fallback: /data/forecasts.json
+  await page.route('**/data/forecasts.json', async (route) => {
+    const data = readRealForecasts();
+    const out: Record<string, Array<Record<string, unknown>>> = {};
+    for (const [key, series] of Object.entries(data)) {
+      const t = transform.spots?.[key];
+      out[key] = t ? t(series) : series;
+    }
+    const final = transform.all ? transform.all(out) : out;
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(final),
     });
   });
 }
