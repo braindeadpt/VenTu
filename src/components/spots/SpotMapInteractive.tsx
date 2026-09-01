@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
-import { CloudRain, Layers, HelpCircle, MapPin, Maximize2, Wind, Zap } from 'lucide-react';
+import { Anchor, CloudRain, Layers, HelpCircle, MapPin, Maximize2, Waves, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { clearLeafletContainer, unlockPageInteraction } from '@/lib/mapFullscreen';
@@ -9,6 +9,7 @@ import type { GridSportFilter } from '@/lib/sportRatings';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import MapExploreHud, { type MapExploreHudProps } from './MapExploreHud';
+import BuoyLayerNotice from './BuoyLayerNotice';
 import MapSpotSheet, { type MapSpotSheetData } from './MapSpotSheet';
 import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
@@ -18,6 +19,7 @@ import { createClusterIconFunction } from './MapClusterIcon';
 import {
   TILE_URLS,
   TILE_ATTRIBUTIONS,
+  OPEN_METEO_ATTRIBUTION,
   DEFAULT_CENTER,
   DEFAULT_ZOOM,
   MAX_ZOOM,
@@ -25,11 +27,17 @@ import {
   MAP_CLUSTER_LS_KEY,
   MAP_WIND_LS_KEY,
   MAP_ONLY_ON_LS_KEY,
+  MAP_ISOBATHS_LS_KEY,
+  MAP_COASTAL_LS_KEY,
 } from '@/lib/map-constants';
 import { getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { hasSeenWindRingLegend } from '@/lib/windRingLegend';
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
+import {
+  IPMA_RADAR_ATTRIBUTION_LABEL_PT,
+  IPMA_RADAR_ATTRIBUTION_LABEL_EN,
+} from '@/lib/ipmaAttribution';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 import {
@@ -41,12 +49,34 @@ import {
 import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import RadarCarousel from './RadarCarousel';
+import {
+  loadIsobathContours,
+  ISOBATH_DEPTHS,
+  ISOBATH_DEPTH_STYLE,
+  type IsobathContoursFile,
+} from '@/lib/isobaths';
+import {
+  loadCoastalNavWarnings,
+  warningsForSpot,
+  type CoastalWarningsFile,
+} from '@/lib/ihCoastalWarnings';
 import { spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 import type { MapSpotData } from './mapSpotData';
 import { getBestScore } from './mapSpotData';
 import { includeSpotInViewportBounds } from './mapViewportBounds';
-import { readClusterPref, readWindPref, readOnlyOnPref } from './mapHudPrefs';
-import { readRadarPref, writeRadarPref } from '@/lib/radarPrefs';
+import {
+  readClusterPref,
+  readWindPref,
+  readOnlyOnPref,
+  readIsobathsPref,
+  readCoastalWarningsPref,
+} from './mapHudPrefs';
+import {
+  readRadarEnabledPref,
+  readRadarPref,
+  writeRadarEnabledPref,
+  writeRadarPref,
+} from '@/lib/radarPrefs';
 import {
   buildMarkerCacheKey,
   createSpotMarker,
@@ -70,6 +100,14 @@ type MapHudProps = Omit<
   | 'onToggleRadar'
   | 'radarLabel'
   | 'radarHint'
+  | 'isobathsEnabled'
+  | 'onToggleIsobaths'
+  | 'isobathsLabel'
+  | 'isobathsHint'
+  | 'coastalWarningsEnabled'
+  | 'onToggleCoastalWarnings'
+  | 'coastalWarningsLabel'
+  | 'coastalWarningsHint'
   | 'windEnabled'
   | 'showWindOnMarkers'
   | 'onToggleWind'
@@ -105,6 +143,17 @@ interface SpotMapInteractiveProps {
   embedMode?: 'default' | 'hero';
   /** Start in explore/fullscreen mode (e.g. /mapa page). */
   initialFullscreen?: boolean;
+  /** Start with the IPMA radar overlay ON (e.g. /mapa?radar=1 deep link). */
+  initialRadarEnabled?: boolean;
+  /** Start with isobaths ON (e.g. /mapa?isobaths=1 deep link). */
+  initialIsobathsEnabled?: boolean;
+  /**
+   * Deep link from a spot (?spot=<slug>, ex. «Ver no mapa» do bloco de avisos):
+   * quando o spot tiver um aviso à navegação activo, liga a camada costeira e
+   * centra o mapa na área coberta (a decisão usa os dados — spot sem aviso fica
+   * apenas com o comportamento por omissão).
+   */
+  focusSpotId?: string;
   /** Fullscreen map below fixed header (top offset 4rem). */
   fullscreenBelowHeader?: boolean;
   /** Override exit fullscreen (e.g. navigate home). */
@@ -122,6 +171,9 @@ export default function SpotMapInteractive({
   onFullscreenChange,
   embedMode = 'default',
   initialFullscreen = false,
+  initialRadarEnabled = false,
+  initialIsobathsEnabled = false,
+  focusSpotId,
   fullscreenBelowHeader = false,
   onExitFullscreen: onExitFullscreenOverride,
 }: SpotMapInteractiveProps) {
@@ -132,6 +184,8 @@ export default function SpotMapInteractive({
   const clusterGroupRef = useRef<L.MarkerClusterGroup | null>(null);
   const markersGroupRef = useRef<L.LayerGroup | null>(null);
   const radarOverlayRef = useRef<L.ImageOverlay | null>(null);
+  const isobathsLayerRef = useRef<L.LayerGroup | null>(null);
+  const coastalLayerRef = useRef<L.LayerGroup | null>(null);
   const markersCacheRef = useRef<Map<string, L.Marker>>(new Map());
   const markerChunkCancelRef = useRef(false);
   const didFitBoundsRef = useRef(false);
@@ -161,7 +215,56 @@ export default function SpotMapInteractive({
   const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
   /** undefined = ainda não carregado · null = indisponível · data = pronto. */
   const [radarData, setRadarData] = useState<IpmaRadarData | null | undefined>(undefined);
-  const [radarEnabled, setRadarEnabled] = useState(false);
+  // Deep link ?radar=1 (ex: botão de imersão do carrossel) liga o radar à
+  // entrada, sem tocar na preferência persistida (que só se grava ao desligar).
+  // Sem deep link, restaura a preferência de ligar/desligar entre visitas
+  // (como o vento e o cluster) — ligado/desligado, mas nunca opta por ligar
+  // o radar numa nova área se o utilizador nunca o usou aqui.
+  const [radarEnabled, setRadarEnabled] = useState<boolean>(() => {
+    if (initialRadarEnabled) return true;
+    return readRadarEnabledPref() === true;
+  });
+  // A navegação client-side (Link do carrossel → /mapa?radar=1) pode entregar
+  // a prop DEPOIS do primeiro render (o MapaFullscreenClient lê o URL num
+  // useEffect). Sincronizar: liga quando a prop inicial pede; nunca desliga
+  // por mudança de prop — o toggle manual é dono do estado a partir daqui.
+  useEffect(() => {
+    if (initialRadarEnabled) setRadarEnabled(true);
+  }, [initialRadarEnabled]);
+  /** Camada vectorial das isóbatas 8/16/30 m (IH) — off por omissão, lazy.
+   *  undefined = ainda não carregado · null = indisponível · data = pronto. */
+  // No hero da homepage (embedMode='hero') as isóbatas entram LIGADAS por
+  // omissão — mostram a batimetria real da costa no TopMap à primeira vista,
+  // reutilizando exactamente a camada partilhada (o toggle permite desligar).
+  // Precedência do estado inicial: deep link ?isobaths=1 > preferência persistida
+  // (como o vento/cluster) > default do mapa (hero LIGADO, os outros DESLIGADO).
+  // O grid de cards (embedMode default, nem hero nem fullscreen) fica sempre
+  // DESLIGADO — omitir a geometria pesada em dezenas de mini-mapas.
+  const [isobathsEnabled, setIsIsobathsEnabled] = useState<boolean>(() => {
+    if (!isHeroEmbed && !initialFullscreen) return false;
+    if (initialIsobathsEnabled) return true;
+    const saved = readIsobathsPref();
+    if (saved !== undefined) return saved;
+    return isHeroEmbed;
+  });
+  // Deep link ?isobaths=1 (imersão no /mapa) pode entregar a prop DEPOIS do
+  // primeiro render (o MapaFullscreenClient lê o URL num useEffect) — liga então;
+  // nunca desliga por mudança de prop, o toggle manual é dono a partir daqui.
+  useEffect(() => {
+    if (initialIsobathsEnabled) setIsIsobathsEnabled(true);
+  }, [initialIsobathsEnabled]);
+  const [isobathsData, setIsIsobathsData] = useState<IsobathContoursFile | null | undefined>(undefined);
+  /** Avisos à navegação costeiros (IH) — camada vectorial com os polígonos de
+   *  TODOS os avisos activos (não só os do spot), off por omissão e lazy.
+   *  A falha de rede degrada para «sem camada» (nunca quebra o mapa). */
+  const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return readCoastalWarningsPref() === true;
+  });
+  const [coastalWarningsData, setCoastalWarningsData] = useState<CoastalWarningsFile | null | undefined>(undefined);
+  /** Deep link ?spot= — guarda o auto-focus para correr só uma vez (o toggle
+   *  manual é dono do enquadramento a partir daí). */
+  const coastalFocusDoneRef = useRef(false);
   /** Frame actual do carrossel (índice em radarFrames). */
   const [radarFrameIndex, setRadarFrameIndex] = useState(0);
   /** Pausa manual (botão play/pause) — restaurada de localStorage (preferência). */
@@ -252,6 +355,7 @@ export default function SpotMapInteractive({
       });
       markersCacheRef.current.clear();
       radarOverlayRef.current = null;
+      isobathsLayerRef.current = null;
       clusterGroupRef.current = null;
       markersGroupRef.current = null;
       tileLayerRef.current = null;
@@ -313,16 +417,16 @@ export default function SpotMapInteractive({
 
       if (!isHeroEmbed) {
         Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
-        // Atribuição obrigatória do Open-Meteo (CC BY 4.0) junto aos controlos
-        // do mapa — mesma cadeia de texto que a secção «Imagens, dados e
-        // atribuição» do About.
-        Leaflet.control
-          .attribution({ position: 'bottomleft', prefix: false })
-          .addAttribution(
-            'Weather data by <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> (<a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>)',
-          )
-          .addTo(map);
       }
+      // Atribuição obrigatória do Open-Meteo (CC BY 4.0) + o crédito do basemap.
+      // Presente em TODAS as superfícies, incluindo o hero da homepage. Prefixed
+      // false: sem o prefixo «Leaflet». O crédito do basemap é regravado no
+      // controlo a cada mudança (ver o efeito de troca de basemap). O TileLayer
+      // inicial regista o Carto via onAdd (many surface) — corrigido depois.
+      Leaflet.control
+        .attribution({ position: 'bottomleft', prefix: false })
+        .addAttribution(OPEN_METEO_ATTRIBUTION)
+        .addTo(map);
 
       const mcg = Leaflet.markerClusterGroup({
         ...CLUSTER_CONFIG,
@@ -388,11 +492,46 @@ export default function SpotMapInteractive({
       attribution = TILE_ATTRIBUTIONS.carto;
     }
 
+    // O crédito do basemap troca no controlo (Esri/OSM no satélite · Carto/OSM
+    // no mapa). O AttributionControl do Leaflet mantém um CONTADOR de
+    // referências por texto (add/removeAtribution incrementa/decrementa), e o
+    // tile inicial regista o Carto no onAdd — um único removeAttribution não o
+    // levaria a 0. Por isso REGRAVA-SE exactamente o conjunto pretendido
+    // (Open-Meteo + basemap + créditos IH activos) em _attributions e chama-se
+    // _update() — determinístico, sem contadores vazados, em todas as
+    // superfícies incluindo o hero embebido com basemap satellite persistido.
+    const ac = map.attributionControl as any;
+    if (ac) {
+      const attribs: Record<string, number> = {};
+      const bump = (t: string) => {
+        attribs[t] = (attribs[t] ?? 0) + 1;
+      };
+      bump(OPEN_METEO_ATTRIBUTION);
+      bump(attribution);
+      if (isobathsEnabled && isobathsData != null) {
+        bump(
+          isPt ? 'Isóbatas © Instituto Hidrográfico (CC BY 4.0)' : 'Isobaths © Instituto Hidrográfico (CC BY 4.0)',
+        );
+      }
+      if (coastalWarningsEnabled && coastalWarningsData != null) {
+        bump(
+          isPt
+            ? 'Avisos à Navegação Costeiros © Instituto Hidrográfico (CC BY 4.0)'
+            : 'Coastal Navigation Warnings © Instituto Hidrográfico (CC BY 4.0)',
+        );
+      }
+      ac._attributions = attribs;
+      ac._update();
+    }
+
     tileLayerRef.current = Leaflet.tileLayer(url, {
       attribution,
       subdomains: 'abcd',
       maxZoom: MAX_ZOOM,
     }).addTo(map);
+    // Este efeito NÃO deve re-correr quando os toggles IH mudam (só lê o estado
+    // actual para a fotografia do controlo; os efeitos IH gerem os seus créditos).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [basemapMode, isDark, isReady]);
 
   // Handle basemap toggle
@@ -477,11 +616,38 @@ export default function SpotMapInteractive({
     });
   }, []);
 
+  const toggleIsobaths = useCallback(() => {
+    setIsIsobathsEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_ISOBATHS_LS_KEY, next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  }, []);
+
+  const toggleCoastalWarnings = useCallback(() => {
+    setCoastalWarningsEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_COASTAL_LS_KEY, next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  }, []);
+
   const toggleRadar = useCallback(() => {
     setRadarEnabled((prev) => {
       const next = !prev;
+      // Persiste a preferência de ligar/desligar (como vento/cluster) entre
+      // visitas; usar = ligar, esconder = desligar. Ao desligar grava também
+      // a pausa + frame para restaurar na próxima abertura.
+      writeRadarEnabledPref(next);
       if (!next) {
-        // Desligar → grava pausa + frame para restaurar na próxima abertura.
         writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
       }
       return next;
@@ -559,6 +725,201 @@ export default function SpotMapInteractive({
       radarOverlayRef.current = null;
     };
   }, [radarEnabled, isReady, radarData]);
+
+  // Isóbatas 8/16/30 m (IH) — camada vectorial lazy sobre os contornos
+  // simplificados nacionais; off por omissão. A falha de rede degrada para
+  // «sem camada» (nunca quebra o mapa) e a atribuição IH junta-se à do radar
+  // enquanto a camada estiver activa.
+  useEffect(() => {
+    if (!isobathsEnabled) {
+      if (isobathsLayerRef.current) {
+        mapInstanceRef.current?.removeLayer(isobathsLayerRef.current);
+        isobathsLayerRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current) return;
+    const Leaflet = LRef.current;
+    if (!Leaflet) return;
+
+    if (isobathsData === undefined) {
+      let cancelled = false;
+      loadIsobathContours().then((data) => {
+        if (!cancelled) setIsIsobathsData(data);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+    if (!isobathsData) return; // indisponível — nada a mostrar
+
+    const map = mapInstanceRef.current;
+    const group = Leaflet.layerGroup();
+    for (const depth of ISOBATH_DEPTHS) {
+      const lines = isobathsData.contours?.[String(depth)];
+      if (!lines) continue;
+      const style = ISOBATH_DEPTH_STYLE[depth];
+      for (const line of lines) {
+        const latlngs = line.map(
+          ([lon, lat]) => [lat, lon] as [number, number],
+        );
+        Leaflet.polyline(latlngs, {
+          color: style.color,
+          weight: 2,
+          opacity: 0.85,
+        }).addTo(group);
+      }
+    }
+    group.addTo(map);
+    isobathsLayerRef.current = group;
+    const attr = isPt
+      ? 'Isóbatas © Instituto Hidrográfico (CC BY 4.0)'
+      : 'Isobaths © Instituto Hidrográfico (CC BY 4.0)';
+    map.attributionControl?.addAttribution(attr);
+
+    return () => {
+      if (mapInstanceRef.current?.hasLayer(group)) {
+        mapInstanceRef.current.removeLayer(group);
+      }
+      isobathsLayerRef.current = null;
+      mapInstanceRef.current?.attributionControl?.removeAttribution(attr);
+    };
+  }, [isobathsEnabled, isReady, isobathsData, isPt]);
+
+  // Deep link ?spot=<slug> de um spot com aviso activo: liga a camada costeira
+  // automaticamente quando a leitura confirma que o spot está coberto (spot sem
+  // aviso fica com o comportamento por omissão — camada desligada). Corre uma
+  // vez; o toggle manual é dono do estado a partir daí.
+  useEffect(() => {
+    if (!focusSpotId) return;
+    if (coastalFocusDoneRef.current) return;
+    let cancelled = false;
+    loadCoastalNavWarnings().then((file) => {
+      if (cancelled || !file) return;
+      const covering =
+        warningsForSpot(file, focusSpotId)?.filter(
+          (w) => Array.isArray(w.polygons) && w.polygons.length > 0,
+        ) ?? [];
+      if (covering.length === 0) return; // spot sem polígonos → deixa desligado
+      setCoastalWarningsData(file);
+      setCoastalWarningsEnabled(true);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [focusSpotId]);
+
+  // Avisos à navegação costeiros do IH (nav_warning_coastal) — camada vectorial
+  // com os polígonos de TODOS os avisos activos (não só os do spot), lazy e off
+  // por omissão. Cada polígono tem tooltip (ref — categoria) e popup ligado ao
+  // detalhe oficial do IH (url). A falha de rede degrada para «sem camada» e a
+  // atribuição IH junta-se à do basemap enquanto a camada estiver activa.
+  useEffect(() => {
+    if (!coastalWarningsEnabled) {
+      if (coastalLayerRef.current) {
+        mapInstanceRef.current?.removeLayer(coastalLayerRef.current);
+        coastalLayerRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current) return;
+    const Leaflet = LRef.current;
+    if (!Leaflet) return;
+
+    if (coastalWarningsData === undefined) {
+      let cancelled = false;
+      loadCoastalNavWarnings().then((data) => {
+        if (!cancelled) setCoastalWarningsData(data);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+    if (!coastalWarningsData) return; // indisponível — nada a mostrar
+
+    const map = mapInstanceRef.current;
+    const warnings =
+      coastalWarningsData.warnings?.filter(
+        (w) => Array.isArray(w.polygons) && w.polygons.length > 0,
+      ) ?? [];
+    if (warnings.length === 0) return;
+
+    const escapeHtml = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const group = Leaflet.layerGroup();
+    for (const w of warnings) {
+      for (const ring of w.polygons!) {
+        // rings são [lon, lat] (GeoJSON) — Leaflet quer [lat, lon].
+        const latlngs = ring.map(
+          ([ringLon, ringLat]) => [ringLat, ringLon] as [number, number],
+        );
+        const url = w.url;
+        // Tooltip ligado ao detalhe oficial do aviso (geoanavnet.hidrografico.pt):
+        // com URL é um link clicável; sem URL fica só o texto (ref — categoria).
+        const tooltipHtml = url
+          ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''} ↗</a>`
+          : `${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''}`;
+        const poly = Leaflet.polygon(latlngs, {
+          color: '#ef4444',
+          weight: 2,
+          opacity: 0.9,
+          fillColor: '#ef4444',
+          fillOpacity: 0.18,
+        }).bindTooltip(tooltipHtml, {
+          sticky: true,
+          direction: 'top',
+          interactive: true,
+        });
+        // Clique no polígono abre o aviso no geoanavnet (nova aba) — sem URL
+        // (ex. ES sem detalhe) o clique não faz nada. stopPropagation para o
+        // mapa não reagir (fechar tooltips/popups de outros layers).
+        if (url) {
+          poly.on('click', (e) => {
+            Leaflet.DomEvent.stopPropagation(e);
+            window.open(url, '_blank', 'noopener,noreferrer');
+          });
+        }
+        poly.addTo(group);
+      }
+    }
+    group.addTo(map);
+    coastalLayerRef.current = group;
+    // Deep link ?spot=: centra o mapa na área coberta do spot (polígonos dos
+    // avisos que o cobrem), para o utilizador ver a zona em aviso — uma vez;
+    // o enquadramento manual/de outras camadas manda a partir daí.
+    if (focusSpotId && !coastalFocusDoneRef.current && isReady) {
+      const covering =
+        warningsForSpot(coastalWarningsData, focusSpotId)?.filter(
+          (w) => Array.isArray(w.polygons) && w.polygons.length > 0,
+        ) ?? [];
+      if (covering.length > 0) {
+        const focus = Leaflet.latLngBounds([]);
+        for (const w of covering) {
+          for (const ring of w.polygons!) {
+            for (const [ringLon, ringLat] of ring) focus.extend([ringLat, ringLon]);
+          }
+        }
+        if (focus.isValid()) {
+          map.fitBounds(focus.pad(0.15), { maxZoom: 10, animate: true });
+        }
+      }
+      coastalFocusDoneRef.current = true;
+    }
+    const attr = isPt
+      ? 'Avisos à Navegação Costeiros © Instituto Hidrográfico (CC BY 4.0)'
+      : 'Coastal Navigation Warnings © Instituto Hidrográfico (CC BY 4.0)';
+    map.attributionControl?.addAttribution(attr);
+    map.getContainer().dataset.coastalWarnings = 'true';
+
+    return () => {
+      if (mapInstanceRef.current?.hasLayer(group)) {
+        mapInstanceRef.current.removeLayer(group);
+      }
+      coastalLayerRef.current = null;
+      mapInstanceRef.current?.attributionControl?.removeAttribution(attr);
+      mapInstanceRef.current?.getContainer().removeAttribute('data-coastal-warnings');
+    };
+  }, [coastalWarningsEnabled, isReady, coastalWarningsData, isPt, focusSpotId]);
 
   // Pausa o carrossel durante drag/zoom do mapa (setUrl durante o movimento
   // causa flicker/despesa desnecessária). Cada evento claro marca a sua FONTE
@@ -983,6 +1344,13 @@ export default function SpotMapInteractive({
   const radarLabel = radarEnabled ? t.map.hideRadar : t.map.showRadar;
   const radarHint = t.map.radarHint;
   const radarUnavailable = radarData === null;
+  const coastalWarningsLabel = coastalWarningsEnabled
+    ? t.map.hideCoastalWarnings
+    : t.map.showCoastalWarnings;
+  // Atribuição do radar no badge (a fonte dos frames é o IPMA, não o modelo).
+  const ipmaRadarAttributionLabel = isPt
+    ? IPMA_RADAR_ATTRIBUTION_LABEL_PT
+    : IPMA_RADAR_ATTRIBUTION_LABEL_EN;
   const radarFrameList = radarFrames(radarData ?? null);
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
@@ -1025,6 +1393,15 @@ export default function SpotMapInteractive({
 
       {isReady && (
         <>
+          {/* Aviso da camada de boias (no-key/down/stale): o mesmo BuoyLayerNotice
+              do card/hero, sobreposto ao mapa — sujeito a as leituras estarem
+              globalmente desactivadas ou em baixo. Envolto num contentor absolute
+              e pointer-events-none para nunca bloquear a interacção com o mapa.
+              Renderiza nada quando uma fonte (IH ou WMO) está saudável. */}
+          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(92%,460px)] px-2 pointer-events-none">
+            <BuoyLayerNotice locale={locale} scope="home" overlay />
+          </div>
+
           {!isHeroEmbed && (!isFullscreen || !mapHud) && (
             <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
               <button
@@ -1102,6 +1479,23 @@ export default function SpotMapInteractive({
               </button>
               <button
                 type="button"
+                onClick={toggleIsobaths}
+                title={t.map.isobathsHint}
+                className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
+                  isobathsEnabled
+                    ? 'border-data-waves/40 bg-data-waves/15 text-fg'
+                    : 'border-divider bg-bg-elevated text-fg hover:bg-surface-1/[0.04]'
+                }`}
+                aria-label={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
+                aria-pressed={isobathsEnabled}
+              >
+                <Waves className="w-4 h-4 shrink-0 text-data-waves" aria-hidden />
+                <span className="hidden sm:inline">
+                  {isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
+                </span>
+              </button>
+              <button
+                type="button"
                 onClick={toggleOnlyOn}
                 title={onlyOnHint}
                 className={`flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border shadow-card transition-colors duration-150 touch-manipulation text-xs font-semibold ${
@@ -1131,6 +1525,8 @@ export default function SpotMapInteractive({
               locale={locale}
               reserveHudSpace={isFullscreen}
               hudCompact={isFullscreen && hudCollapsed}
+              isobathsTitle={t.map.isobathsLegend}
+              isobathsVisible={isobathsEnabled && isobathsData != null}
             />
           )}
 
@@ -1141,16 +1537,34 @@ export default function SpotMapInteractive({
           )}
 
           {isHeroEmbed && (
-            <button
-              type="button"
-              onClick={toggleRadar}
-              aria-label={radarLabel}
-              aria-pressed={radarEnabled}
-              className="absolute top-3 right-3 z-[1000] inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto"
-            >
-              <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-              <span className="hidden sm:inline">{radarLabel}</span>
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={toggleRadar}
+                aria-label={radarLabel}
+                aria-pressed={radarEnabled}
+                className="absolute top-3 right-3 z-[1000] inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto"
+              >
+                <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
+                <span className="hidden sm:inline">{radarLabel}</span>
+              </button>
+              {/* Isóbatas 8/16/30 m no TopMap — a mesma camada partilhada do mapa
+                  de spot, com toggle dedicado no hero (as isóbatas são o único
+                  controlo do infopanel hero escondido). Label só em >=sm. */}
+              <button
+                type="button"
+                onClick={toggleIsobaths}
+                aria-label={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
+                title={t.map.isobathsHint}
+                aria-pressed={isobathsEnabled}
+                className="absolute top-[54px] right-3 z-[1000] inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto"
+              >
+                <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
+                <span className="hidden sm:inline">
+                  {isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
+                </span>
+              </button>
+            </>
           )}
 
           {radarEnabled && radarData && (
@@ -1160,7 +1574,12 @@ export default function SpotMapInteractive({
                   ? 'absolute bottom-20 right-3 z-[1000] pointer-events-auto'
                   : isFullscreen
                     ? 'absolute left-2 z-[1000]'
-                    : 'absolute bottom-8 left-2 z-[1000]'
+                    : // Mapa embebido (grid de spots): o canto inferior ESQUERDO
+                      // colide com a pilha de controlos (top-left, 5 botões) em
+                      // mapas baixos — o carrossel fica no canto inferior
+                      // direito, longe dos controlos e do toggle de basemap
+                      // (top-right), e nunca intercepta os cliques.
+                      'absolute bottom-8 right-2 z-[1000]'
               }
               style={isFullscreen ? { bottom: Math.max(radarLift + 12, 32) } : undefined}
               frames={radarFrameList}
@@ -1176,7 +1595,13 @@ export default function SpotMapInteractive({
                 play: t.map.radarPlay,
                 pause: t.map.radarPause,
                 paused: t.map.radarPaused,
+                ipmaAttribution: ipmaRadarAttributionLabel,
+                gap: t.map.radarGap,
               }}
+              // Imersão: abrir o /mapa (ecrã inteiro) com o radar já ligado —
+              // só faz sentido fora do fullscreen (no /mapa já lá estamos).
+              fullscreenHref={isFullscreen ? undefined : `/${locale}/mapa/?radar=1`}
+              fullscreenLabel={t.map.radarFullscreen}
             />
           )}
 
@@ -1194,6 +1619,14 @@ export default function SpotMapInteractive({
               onToggleRadar={toggleRadar}
               radarLabel={radarLabel}
               radarHint={radarHint}
+              isobathsEnabled={isobathsEnabled}
+              onToggleIsobaths={toggleIsobaths}
+              isobathsLabel={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
+              isobathsHint={t.map.isobathsHint}
+              coastalWarningsEnabled={coastalWarningsEnabled}
+              onToggleCoastalWarnings={toggleCoastalWarnings}
+              coastalWarningsLabel={coastalWarningsLabel}
+              coastalWarningsHint={t.map.coastalWarningsHint}
               windEnabled={windEnabled}
               showWindOnMarkers={showWindOnMarkers}
               onToggleWind={toggleWind}

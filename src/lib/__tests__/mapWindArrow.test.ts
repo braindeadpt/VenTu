@@ -115,7 +115,51 @@ describe('wind ring marker', () => {
     expect(html).toContain('ventu-warning-badge');
     expect(html).toContain('data-warning-level="orange"');
     expect(html).toContain(WARNING_BADGE_COLORS.orange);
-    expect(html).toContain('Aviso IPMA: Agitação marítima');
+    expect(html).toContain('Aviso IPMA: Agitação marítima (Laranja)');
+  });
+
+  it('badge aria-label includes the LOCALIZED level (screen readers)', () => {
+    // O badge é um «!» sem texto — o aria-label tem de dizer o rótulo E o
+    // nível localizado, igual ao chip do popup: «Mar perigoso (Laranja)».
+    const pt = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'pt', 270, {
+      level: 'orange',
+      label: 'Mar perigoso',
+    });
+    expect(pt).toContain('aria-label="Mar perigoso (Laranja)"');
+
+    const en = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'en', 270, {
+      level: 'red',
+      label: 'Dangerous sea',
+    });
+    expect(en).toContain('aria-label="Dangerous sea (Red)"');
+
+    // Locales fora de pt usam o rótulo EN do nível, nunca a key crua.
+    const de = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'de', 270, {
+      level: 'yellow',
+      label: 'Vento',
+    });
+    expect(de).toContain('aria-label="Vento (Yellow)"');
+    expect(de).not.toContain('(yellow)');
+  });
+
+  it('tooltip shows the localized level (amarelo/laranja/vermelho) for every level', () => {
+    const pt = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'pt', 270, {
+      level: 'yellow',
+      label: 'Vento',
+    });
+    expect(pt).toContain('Aviso IPMA: Vento (Amarelo)');
+    const en = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'en', 270, {
+      level: 'red',
+      label: 'Dangerous sea',
+    });
+    expect(en).toContain('IPMA warning: Dangerous sea (Red)');
+    const de = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'de', 270, {
+      level: 'orange',
+      label: 'Mar perigoso',
+    });
+    // Locales fora de pt usam o rótulo EN do nível (Orange), nunca a key crua.
+    expect(de).toContain('IPMA warning: Mar perigoso (Orange)');
+    expect(de).not.toContain('(orange)');
   });
 
   it('omits the badge when there is no warning', () => {
@@ -131,6 +175,6 @@ describe('wind ring marker', () => {
       label: 'Sea state',
     });
     expect(html).toContain(WARNING_BADGE_COLORS.red);
-    expect(html).toContain('IPMA warning: Sea state');
+    expect(html).toContain('IPMA warning: Sea state (Red)');
   });
 });

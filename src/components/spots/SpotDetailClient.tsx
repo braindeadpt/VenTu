@@ -29,6 +29,7 @@ import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotWeatherlinkSection from '@/components/weather/SpotWeatherlinkSection';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
 import SportTab from '@/components/spots/SportTab';
+import { useSpotHeroScrolledPast } from '@/hooks/useSpotHeroScrolledPast';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
@@ -101,8 +102,9 @@ interface Conditions {
     firstDay?: string | null;
     lastDay?: string | null;
   };
-  /** Regional bias meta baked by the pipeline (VENTU_WAVE_BIAS_CORRECTION=1). */
-  waveBias?: { region: string; me: number; n: number; deltaM: number };
+  /** Regional bias meta — baked by the pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
+   *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
+  waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean };
   /** Station wind bias baked by the merge (wind-bias.json) — badge tooltip. */
   windBias?: { station?: string; source?: string; me?: number; mae?: number; rmse?: number; n?: number };
 }
@@ -155,6 +157,12 @@ export default function SpotDetailClient({
   >({});
 
   const heroRef = useRef<HTMLElement>(null);
+  // O hero saiu do viewport? Partilhado pela SpotStickyBar (mostra) e pela
+  // linha standalone de sport tabs (esconde-se quando a barra toma o lugar),
+  // para nunca divergirem. `enabled: !loading` garante que o observer só se
+  // liga quando o hero está montado (durante o loading o ref ainda é null).
+  // Chamado antes de qualquer early-return (regras dos hooks).
+  const stickyActive = useSpotHeroScrolledPast(heroRef, { enabled: !loading });
   const { session } = useAuth();
 
   const tideSchedule = useMemo(() => {
@@ -485,6 +493,11 @@ export default function SpotDetailClient({
 
   const { conditions, allScores, forecast } = spotData;
   const relevantSports = getRelevantSports(spot, allScores);
+  // A mesma lista de tabs para a linha standalone e para a barra sticky — a
+  // ordem canónica (surf → wakeboard) filtrada pelos desportos relevantes.
+  const tabSports = (
+    ['surf', 'kitesurf', 'windsurf', 'foil', 'bodyboard', 'sup', 'wakeboard'] as SportType[]
+  ).filter((s) => relevantSports.includes(s));
   const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
   const scoreWindSource = resolveScoreWindSource({
     waveHeight: conditions.waveHeight,
@@ -579,6 +592,13 @@ export default function SpotDetailClient({
           conditions={conditions}
           scoreWindSource={scoreWindSource}
           scoreWindCorrection={scoreWindCorrection}
+          windObservedSource={
+            conditions.observed?.source === 'ipma' ||
+            conditions.observed?.source === 'ecowitt' ||
+            conditions.observed?.source === 'metar'
+              ? conditions.observed.source
+              : undefined
+          }
           scoreWaveSource={scoreWaveSource}
           scoreWaveCorrection={scoreWaveCorrection}
           observedWave={conditions.observedWave}
@@ -591,33 +611,41 @@ export default function SpotDetailClient({
           score={score}
           sportLabel={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
           conditions={conditions}
-          heroRef={heroRef}
+          active={stickyActive}
           locale={locale}
+          spotId={spot.id}
+          sports={tabSports}
+          allScores={allScores}
+          selectedSport={selectedSport}
+          onSelectSport={setSelectedSport}
           observedWave={conditions.observedWave}
           observedWaveAlt={conditions.observedWaveAlt}
           observedWaveMeta={conditions.observedWaveMeta}
           scoreWaveCorrection={scoreWaveCorrection}
         />
 
-        <section className="sticky top-16 z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm">
+        <section
+          className={`sticky top-16 z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm ${
+            stickyActive ? 'invisible' : ''
+          }`}
+          aria-hidden={stickyActive}
+        >
           <div className="max-w-6xl mx-auto px-4 py-2">
             <div
               className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x scroll-smooth"
               role="tablist"
               aria-label={isPt ? 'Modalidade' : 'Sport'}
             >
-              {(['surf', 'kitesurf', 'windsurf', 'foil', 'bodyboard', 'sup', 'wakeboard'] as SportType[])
-                .filter((s) => relevantSports.includes(s))
-                .map((sport) => (
-                  <SportTab
-                    key={sport}
-                    sport={sport}
-                    score={allScores[sport].score}
-                    active={selectedSport === sport}
-                    onClick={() => setSelectedSport(sport)}
-                    locale={locale}
-                  />
-                ))}
+              {tabSports.map((sport) => (
+                <SportTab
+                  key={sport}
+                  sport={sport}
+                  score={allScores[sport].score}
+                  active={selectedSport === sport}
+                  onClick={() => setSelectedSport(sport)}
+                  locale={locale}
+                />
+              ))}
             </div>
           </div>
         </section>
@@ -717,6 +745,8 @@ export default function SpotDetailClient({
                   coastOrientation={spot.coastOrientation}
                   locale={locale as 'pt' | 'en'}
                   compact={isMobile}
+                  waveSource={scoreWaveSource}
+                  waveCorrection={scoreWaveCorrection}
                 />
               </div>
               {forecastTableData.length > (isMobile ? 36 : 48) && (

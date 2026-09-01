@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { RADAR_STATE_LS_KEY, readRadarPref, writeRadarPref } from '@/lib/radarPrefs';
+import {
+  RADAR_STATE_LS_KEY,
+  readRadarPref,
+  writeRadarPref,
+  readRadarEnabledPref,
+  writeRadarEnabledPref,
+} from '@/lib/radarPrefs';
 
 function mockLocalStorage() {
   const store = new Map<string, string>();
@@ -34,8 +40,13 @@ describe('radarPrefs (pausa + frame do radar)', () => {
   it('round-trip: writeRadarPref grava JSON e readRadarPref devolve', () => {
     const { store } = mockLocalStorage();
     writeRadarPref(true, 5);
-    expect(store.get(RADAR_STATE_LS_KEY)).toBe(JSON.stringify({ paused: true, frame: 5 }));
-    expect(readRadarPref()).toEqual({ paused: true, frame: 5 });
+    // Registo novo inclui enabled (undefined, nunca gravado pelo utilizador).
+    expect(JSON.parse(store.get(RADAR_STATE_LS_KEY) ?? '{}')).toEqual({
+      enabled: undefined,
+      paused: true,
+      frame: 5,
+    });
+    expect(readRadarPref()).toEqual({ enabled: undefined, paused: true, frame: 5 });
   });
 
   it('frame é sanejado: negativo → 0, decimal → floor', () => {
@@ -78,5 +89,58 @@ describe('radarPrefs (pausa + frame do radar)', () => {
     vi.stubGlobal('window', {});
     expect(readRadarPref()).toEqual({ paused: false, frame: 0 });
     expect(() => writeRadarPref(true, 3)).not.toThrow();
+  });
+});
+
+describe('radarPrefs.enabled (ligar/desligar persistido entre visitas)', () => {
+  beforeEach(() => {
+    vi.unstubAllGlobals();
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('sem estado gravado → enabled undefined (mapa usa os defaults)', () => {
+    mockLocalStorage();
+    expect(readRadarEnabledPref()).toBeUndefined();
+    expect(readRadarPref().enabled).toBeUndefined();
+  });
+
+  it('round-trip: writeRadarEnabledPref grava e readRadarEnabledPref devolve', () => {
+    const { store } = mockLocalStorage();
+    expect(writeRadarEnabledPref(true)).toBeUndefined();
+    expect(JSON.parse(store.get(RADAR_STATE_LS_KEY) ?? '{}')).toMatchObject({
+      enabled: true,
+      paused: false,
+      frame: 0,
+    });
+    expect(readRadarEnabledPref()).toBe(true);
+
+    writeRadarEnabledPref(false);
+    expect(readRadarEnabledPref()).toBe(false);
+  });
+
+  it('enabled preserva paused/frame já gravados', () => {
+    const { store } = mockLocalStorage();
+    writeRadarPref(true, 5);
+    writeRadarEnabledPref(false);
+    expect(JSON.parse(store.get(RADAR_STATE_LS_KEY) ?? '{}')).toEqual({
+      enabled: false,
+      paused: true,
+      frame: 5,
+    });
+  });
+
+  it('registos antigos (só paused/frame) → enabled undefined, sem quebrar', () => {
+    mockLocalStorage();
+    writeRadarPref(true, 4);
+    expect(readRadarEnabledPref()).toBeUndefined();
+    expect(readRadarPref()).toEqual({ enabled: undefined, paused: true, frame: 4 });
+  });
+
+  it('JSON inválido → enabled undefined (não rebenta)', () => {
+    const { store } = mockLocalStorage();
+    store.set(RADAR_STATE_LS_KEY, '{lixo');
+    expect(readRadarEnabledPref()).toBeUndefined();
   });
 });

@@ -64,6 +64,87 @@ async function fetchIsobathFeatures(
   return out;
 }
 
+/**
+ * Tolerância de simplificação dos contornos (graus) para o overlay vectorial
+ * dos mapas. 0.001° ≈ 110 m: a geometria completa da API tem 237K vértices
+ * (~9.5 MB); com Douglas-Peucker cai para ~2.1K vértices (~89 KB) — fidelidade
+ * visual suficiente ao nível de zoom de um mapa de spot, por uma fração do peso.
+ */
+const CONTOUR_SIMPLIFY_DEG = 0.001;
+
+/**
+ * Douglas-Peucker sobre uma linha [lon, lat] (vértices 2D) — simplificação
+ * server-side para a camada vectorial dos mapas.
+ * @param {Array<[number, number]>} line
+ * @param {number} toleranceDeg
+ * @returns {Array<[number, number]>}
+ */
+function simplifyLine(line, toleranceDeg) {
+  if (!Array.isArray(line) || line.length < 3) return (line || []).slice();
+  const keep = new Uint8Array(line.length);
+  keep[0] = 1;
+  keep[line.length - 1] = 1;
+  const stack = [[0, line.length - 1]];
+  const perpDist = (a, b, c) => {
+    const abx = b[0] - a[0];
+    const aby = b[1] - a[1];
+    const len2 = abx * abx + aby * aby;
+    if (len2 === 0) return Math.hypot(c[0] - a[0], c[1] - a[1]);
+    let t = ((c[0] - a[0]) * abx + (c[1] - a[1]) * aby) / len2;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(c[0] - (a[0] + t * abx), c[1] - (a[1] + t * aby));
+  };
+  while (stack.length > 0) {
+    const [i, j] = stack.pop();
+    if (j <= i + 1) continue;
+    let dmax = -1;
+    let idx = -1;
+    for (let k = i + 1; k < j; k++) {
+      const d = perpDist(line[i], line[j], line[k]);
+      if (d > dmax) {
+        dmax = d;
+        idx = k;
+      }
+    }
+    if (dmax > toleranceDeg && idx > 0) {
+      keep[idx] = 1;
+      stack.push([i, idx], [idx, j]);
+    }
+  }
+  return line.filter((_, i) => keep[i] === 1);
+}
+
+/**
+ * Geometria simplificada dos contornos para o overlay vectorial dos mapas
+ * (isobaths-contours.json). Por profundidade, a lista de linhas [lon, lat]
+ * (2D — o z não é preciso para desenhar) após Douglas-Peucker.
+ * @param {Array<{ depth: number, coords: Array<Array<Array<number>>> }>} features
+ * @param {number} [toleranceDeg]
+ * @returns {{ contours: Record<string, Array<Array<[number, number]>>>, vertexCount: number }}
+ *   contours keyed by depth string ('8' | '16' | '30') — JSON object keys.
+ */
+function buildContoursPayload(features, toleranceDeg = CONTOUR_SIMPLIFY_DEG) {
+  const contours = {};
+  let vertexCount = 0;
+  for (const f of features) {
+    const lines = [];
+    for (const line of f.coords ?? []) {
+      if (!Array.isArray(line) || line.length < 2) continue;
+      const flat = line.map((v) => [Number(v?.[0]), Number(v?.[1])]);
+      const simplified = simplifyLine(flat, toleranceDeg);
+      if (simplified.length >= 2) {
+        lines.push(simplified);
+        vertexCount += simplified.length;
+      }
+    }
+    if (lines.length > 0) {
+      const key = String(f.depth);
+      (contours[key] ??= []).push(...lines);
+    }
+  }
+  return { contours, vertexCount };
+}
+
 /** km per degree of latitude (equirectangular local projection). */
 function kmPerDeg(latRad) {
   const R = 6371;
@@ -158,7 +239,10 @@ module.exports = {
   COLLECTION,
   DEPTHS,
   MAX_DISTANCE_KM,
+  CONTOUR_SIMPLIFY_DEG,
   fetchIsobathFeatures,
+  simplifyLine,
+  buildContoursPayload,
   distancePointToSegmentKm,
   distanceToNearestContourKm,
   isobathDistancesForSpot,

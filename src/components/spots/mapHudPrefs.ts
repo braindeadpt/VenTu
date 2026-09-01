@@ -2,6 +2,8 @@ import {
   MAP_CLUSTER_LS_KEY,
   MAP_WIND_LS_KEY,
   MAP_ONLY_ON_LS_KEY,
+  MAP_ISOBATHS_LS_KEY,
+  MAP_COASTAL_LS_KEY,
 } from '@/lib/map-constants';
 
 const MOBILE_MQ = '(max-width: 767px)';
@@ -52,4 +54,38 @@ export function readOnlyOnPref(): boolean {
     /* noop */
   }
   return false;
+}
+
+/**
+ * Isóbatas: devolve a preferência persistida (`'1'`/`'0'`) ou `undefined` se
+ * nunca foi tocada — o default (ligado no hero, desligado nos restantes mapas)
+ * fica para o chamador encaixar, já que difere por embedMode. undefined ≠ off:
+ * assim um utilizador novo vê o default correcto do mapa em que está.
+ */
+export function readIsobathsPref(): boolean | undefined {
+  if (typeof window === 'undefined') return undefined;
+  try {
+    const v = localStorage.getItem(MAP_ISOBATHS_LS_KEY);
+    if (v === '1') return true;
+    if (v === '0') return false;
+  } catch {
+    /* noop */
+  }
+  return undefined;
+}
+
+/**
+ * Avisos à navegação costeiros (IH): preferência persistida (`'1'`/`'0'`) ou
+ * `undefined` se nunca foi tocada — o default (desligado) fica no chamador.
+ */
+export function readCoastalWarningsPref(): boolean | undefined {
+  if (typeof window === 'undefined') return undefined;
+  try {
+    const v = localStorage.getItem(MAP_COASTAL_LS_KEY);
+    if (v === '1') return true;
+    if (v === '0') return false;
+  } catch {
+    /* noop */
+  }
+  return undefined;
 }

@@ -7,6 +7,9 @@ const {
   distancePointToSegmentKm,
   isobathDistancesForSpot,
   buildSpotIsobaths,
+  simplifyLine,
+  buildContoursPayload,
+  CONTOUR_SIMPLIFY_DEG,
   DEPTHS,
   MAX_DISTANCE_KM,
 } = require('../ihIsobaths.js');
@@ -128,6 +131,59 @@ describe('fetchIsobathFeatures', () => {
   it('falha de rede/HTTP propaga o erro', async () => {
     const fetchMock = vi.fn(async () => json({}, 500));
     await expect(fetchIsobathFeatures(fetchMock)).rejects.toThrow(/HTTP 500/);
+  });
+});
+
+describe('simplifyLine (Douglas-Peucker)', () => {
+  it('linhas rectas colapsam para os extremos (vértices redundantes removidos)', () => {
+    const line = [[-9, 39], [-9.01, 39.01], [-9.02, 39.02], [-9.03, 39.03]];
+    const out = simplifyLine(line, 0.001);
+    expect(out).toEqual([[-9, 39], [-9.03, 39.03]]);
+  });
+
+  it('mantém o vértice que desvia acima da tolerância', () => {
+    const line = [[-9, 39], [-9.01, 39.02], [-9.02, 39]];
+    const out = simplifyLine(line, 0.001);
+    expect(out).toContainEqual([-9.01, 39.02]);
+  });
+
+  it('linhas curtas / vazias passam intactas', () => {
+    expect(simplifyLine([[-9, 39], [-9.01, 39]], 0.001)).toEqual([[-9, 39], [-9.01, 39]]);
+    expect(simplifyLine([], 0.001)).toEqual([]);
+    expect(simplifyLine(null, 0.001)).toEqual([]);
+  });
+});
+
+describe('buildContoursPayload', () => {
+  const features = [
+    { depth: 8, coords: [[[-9, 39, 8], [-9.01, 39.01, 8], [-9.02, 39.02, 8]]] },
+    { depth: 8, coords: [[[-9.1, 39, 8], [-9.12, 39.01, 8]]] },
+    { depth: 30, coords: [[[-9.2, 39, 30], [-9.21, 39.01, 30]]] },
+  ];
+
+  it('agrupa por profundidade e descarta o z (vértices 2D)', () => {
+    const { contours, vertexCount } = buildContoursPayload(features, 0.001);
+    // Object.keys de keys inteiras vem por ordem numérica crescente.
+    expect(Object.keys(contours)).toEqual(['8', '30']);
+    expect(contours['8']).toHaveLength(2);
+    // z removido: [lon, lat] apenas.
+    expect(contours['8'][0][0]).toEqual([-9, 39]);
+    expect(contours['8'][0][0]).not.toHaveLength(3);
+    expect(vertexCount).toBeGreaterThan(0);
+  });
+
+  it('linhas simplificadas com < 2 vértices são descartadas', () => {
+    const degenerate = [
+      { depth: 8, coords: [[[-9, 39, 8]]] },
+      { depth: 16, coords: [[[-9, 39, 16], [-9.01, 39, 16]]] },
+    ];
+    const { contours } = buildContoursPayload(degenerate, 0.001);
+    expect(contours['8']).toBeUndefined();
+    expect(contours['16']).toHaveLength(1);
+  });
+
+  it('CONTOUR_SIMPLIFY_DEG = 0.001 (≈110 m — orçamento ~89 KB no conjunto real)', () => {
+    expect(CONTOUR_SIMPLIFY_DEG).toBe(0.001);
   });
 });
 

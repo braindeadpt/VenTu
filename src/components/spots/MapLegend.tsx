@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { getLegendLabels } from '@/lib/map-constants';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import IsobathLegend from './IsobathLegend';
 
 interface MapLegendProps {
   locale: string;
@@ -10,9 +11,18 @@ interface MapLegendProps {
   reserveHudSpace?: boolean;
   /** Smaller margin when mobile HUD filters are collapsed. */
   hudCompact?: boolean;
+  /** Legenda de profundidade das isóbatas quando a camada está activa. */
+  isobathsTitle?: string;
+  isobathsVisible?: boolean;
 }
 
-export default function MapLegend({ locale, reserveHudSpace = false, hudCompact = false }: MapLegendProps) {
+export default function MapLegend({
+  locale,
+  reserveHudSpace = false,
+  hudCompact = false,
+  isobathsTitle,
+  isobathsVisible = false,
+}: MapLegendProps) {
   const isPt = locale === 'pt';
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
@@ -60,6 +70,15 @@ export default function MapLegend({ locale, reserveHudSpace = false, hudCompact 
               <span key={l.label}>{l.label}</span>
             ))}
           </div>
+
+          {isobathsVisible && isobathsTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-testid="isobaths-legend-inline">
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+                {isobathsTitle}
+              </p>
+              <IsobathLegend bare title={isobathsTitle} />
+            </div>
+          )}
         </div>
       </div>
     </div>

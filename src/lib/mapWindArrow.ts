@@ -11,6 +11,7 @@ import {
   getWindRelationToCoast,
   type WindRelation,
 } from '@/lib/wind';
+import { warningLevelLabel } from '@/lib/ipmaWarnings';
 
 // Square viewBox, pin dead-centred — no tail. At map density (many spots a
 // few hundred metres apart) a pin's tail visually overlaps a neighbour's
@@ -49,11 +50,22 @@ export interface MapMarkerWarning {
   seaState?: boolean;
 }
 
-function buildWarningBadgeSvg(warning: MapMarkerWarning): string {
+/**
+ * Screen-reader label for the tiny marker badge: label + localized level,
+ * e.g. «Mar perigoso (Laranja)» — same wording as the popup chip.
+ */
+export function warningBadgeAriaLabel(
+  warning: MapMarkerWarning,
+  locale: string,
+): string {
+  return `${warning.label} (${warningLevelLabel(warning.level, locale)})`;
+}
+
+function buildWarningBadgeSvg(warning: MapMarkerWarning, ariaLabel: string): string {
   const color = WARNING_BADGE_COLORS[warning.level] ?? WARNING_BADGE_COLORS.yellow;
   return `
     <g class="ventu-warning-badge" data-warning-level="${warning.level}" role="img"
-      aria-label="${escapeHtmlAttr(warning.label)}">
+      aria-label="${escapeHtmlAttr(ariaLabel)}">
       <circle cx="${WARNING_BADGE_CX}" cy="${WARNING_BADGE_CY}" r="${WARNING_BADGE_R}"
         fill="${color}" stroke="rgba(255,255,255,0.95)" stroke-width="1.8"/>
       <text x="${WARNING_BADGE_CX}" y="${WARNING_BADGE_CY + 3.5}" text-anchor="middle"
@@ -272,12 +284,14 @@ export function buildWindRingMarkerHtml(
     : '';
   const warningTitle = warning
     ? (locale === 'pt'
-        ? `Aviso IPMA: ${warning.label} (${warning.level})`
-        : `IPMA warning: ${warning.label} (${warning.level})`)
+        ? `Aviso IPMA: ${warning.label} (${warningLevelLabel(warning.level, locale)})`
+        : `IPMA warning: ${warning.label} (${warningLevelLabel(warning.level, locale)})`)
     : '';
   const title = escapeHtmlAttr([windTitle, warningTitle].filter(Boolean).join(' · '));
   const svg = buildWindRingMarkerSvg(score, scoreRgb, fromDeg, speedKt, showWind, coastOrientation);
-  const badge = warning ? buildWarningBadgeSvg(warning) : '';
+  const badge = warning
+    ? buildWarningBadgeSvg(warning, warningBadgeAriaLabel(warning, locale))
+    : '';
 
   return `
     <div class="ventu-spot-marker-wrap ventu-marker-enter ventu-wind-ring-marker-wrap"

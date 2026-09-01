@@ -14,6 +14,11 @@ export const TILE_ATTRIBUTIONS = {
     '&copy; <a href="https://www.esri.com/">Esri</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 } as const;
 
+// Cadeia de atribuição obrigatória do Open-Meteo (CC BY 4.0) — fonte única em
+// openMeteoAttribution.ts, re-exportada aqui para o controlo de atribuição do
+// Leaflet (string HTML) não duplicar as URLs/texto do About/fontes/radar.
+export { OPEN_METEO_ATTRIBUTION_HTML as OPEN_METEO_ATTRIBUTION } from './openMeteoAttribution';
+
 export const DEFAULT_CENTER: [number, number] = [39.5, -8.0];
 export const DEFAULT_ZOOM = 6;
 export const MAX_ZOOM = 19;
@@ -21,6 +26,8 @@ export const MAX_ZOOM = 19;
 export const MAP_CLUSTER_LS_KEY = 'ventu.map.cluster';
 export const MAP_WIND_LS_KEY = 'ventu.map.wind';
 export const MAP_ONLY_ON_LS_KEY = 'ventu.map.onlyOn';
+export const MAP_ISOBATHS_LS_KEY = 'ventu.map.isobaths';
+export const MAP_COASTAL_LS_KEY = 'ventu.map.coastalWarnings';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,

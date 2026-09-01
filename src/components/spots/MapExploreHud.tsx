@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ChevronDown, CloudRain, Filter, HelpCircle, Layers, MapPin, Minimize2, RotateCcw, Search, Wind, Zap } from 'lucide-react';
+import { Anchor, ChevronDown, CloudRain, Filter, HelpCircle, Layers, MapPin, Minimize2, RotateCcw, Search, Waves, Wind, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -17,6 +17,14 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   onToggleRadar: () => void;
   radarLabel: string;
   radarHint: string;
+  isobathsEnabled: boolean;
+  onToggleIsobaths: () => void;
+  isobathsLabel: string;
+  isobathsHint: string;
+  coastalWarningsEnabled: boolean;
+  onToggleCoastalWarnings: () => void;
+  coastalWarningsLabel: string;
+  coastalWarningsHint: string;
   windEnabled: boolean;
   showWindOnMarkers: boolean;
   onToggleWind: () => void;
@@ -65,6 +73,14 @@ export default function MapExploreHud({
   onToggleRadar,
   radarLabel,
   radarHint,
+  isobathsEnabled,
+  onToggleIsobaths,
+  isobathsLabel,
+  isobathsHint,
+  coastalWarningsEnabled,
+  onToggleCoastalWarnings,
+  coastalWarningsLabel,
+  coastalWarningsHint,
   windEnabled,
   showWindOnMarkers,
   onToggleWind,
@@ -195,6 +211,30 @@ export default function MapExploreHud({
             }
           >
             <CloudRain className="w-4 h-4 text-data-waves" aria-hidden />
+          </MapControlButton>
+
+          <MapControlButton
+            onClick={onToggleIsobaths}
+            aria-label={isobathsLabel}
+            pressed={isobathsEnabled}
+            title={isobathsHint}
+            className={
+              isobathsEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
+            }
+          >
+            <Waves className="w-4 h-4 text-data-waves" aria-hidden />
+          </MapControlButton>
+
+          <MapControlButton
+            onClick={onToggleCoastalWarnings}
+            aria-label={coastalWarningsLabel}
+            pressed={coastalWarningsEnabled}
+            title={coastalWarningsHint}
+            className={
+              coastalWarningsEnabled ? 'border-score-poor/40 bg-score-poor/15 text-fg' : undefined
+            }
+          >
+            <Anchor className="w-4 h-4 text-score-poor" aria-hidden />
           </MapControlButton>
 
           <div className="inline-flex items-center gap-0.5 shrink-0">

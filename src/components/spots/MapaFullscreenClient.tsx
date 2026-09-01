@@ -71,6 +71,23 @@ export default function MapaFullscreenClient({
     if (typeof window === 'undefined') return 'all';
     return readMapDifficultyFromStorage();
   });
+  // Deep link ?radar=1 (botão de imersão do carrossel do radar): entra no mapa
+  // com o radar já ligado. Só lido no arranque; o toggle manual continua a
+  // mandar (o estado do mapa é dono do radar depois disto).
+  const [initialRadar, setInitialRadar] = useState(false);
+  // Deep link ?isobaths=1: entra no mapa com as isóbatas já ligadas (sobrepõe
+  // a preferência persistida, como o radar) — útil para partilhar o overlay.
+  const [initialIsobaths, setInitialIsobaths] = useState(false);
+  // Deep link ?spot=<slug> (navegação da página de spot com aviso activo):
+  // liga a camada de avisos à navegação e centra na área coberta (o estado fica
+  // no SpotMapInteractive — decide com os dados se o spot está coberto).
+  const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    setInitialRadar(params.get('radar') === '1');
+    setInitialIsobaths(params.get('isobaths') === '1');
+    setFocusSpotId(params.get('spot') || undefined);
+  }, []);
 
   useEffect(() => {
     const { sport: urlSport, region: urlRegion } = readGridFiltersFromWindow(regionList);
@@ -173,6 +190,9 @@ export default function MapaFullscreenClient({
         selectedRegion={region}
         locale={locale}
         initialFullscreen
+        initialRadarEnabled={initialRadar}
+        initialIsobathsEnabled={initialIsobaths}
+        focusSpotId={focusSpotId}
         fullscreenBelowHeader
         onExitFullscreen={handleExit}
         onSpotSelect={handleSpotSelect}

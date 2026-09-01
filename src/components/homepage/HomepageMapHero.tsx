@@ -96,6 +96,8 @@ const HERO_SPORT_FILTERS = MAP_SPORT_FILTERS.filter((f) =>
   variant?: 'featured' | 'compact';
   /** IH buoy layer state from pipeline-meta.json (ticker diagnostics). */
   buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
+  /** Coastal warnings (IH) layer state from pipeline-meta.json (ticker). */
+  coastalWarningsLayer?: import('@/lib/pipelineMeta').CoastalWarningsLayerMeta | null;
 }
 
 export default function HomepageMapHero({
@@ -104,6 +106,7 @@ export default function HomepageMapHero({
   maxTs,
   variant = 'featured',
   buoyLayer,
+  coastalWarningsLayer,
 }: HomepageMapHeroProps) {
 
   const isPt = locale === 'pt';
@@ -438,6 +441,7 @@ export default function HomepageMapHero({
               updatedAtTs={maxTs}
               statusLine={liveLine}
               buoyLayer={buoyLayer}
+              coastalWarningsLayer={coastalWarningsLayer}
             />
 
           </div>

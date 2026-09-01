@@ -15,6 +15,8 @@ const path = require('path');
 const {
   fetchIsobathFeatures,
   buildSpotIsobaths,
+  buildContoursPayload,
+  CONTOUR_SIMPLIFY_DEG,
   DEPTHS,
 } = require('./lib/ihIsobaths.js');
 
@@ -22,6 +24,9 @@ const IH_API = process.env.IH_API_URL || require('./lib/ihIsobaths.js').DEFAULT_
 const OUTPUT_PATH =
   process.env.ISOBATHS_OUTPUT_PATH ||
   path.join(__dirname, '../public/data/spot-isobaths.json');
+const CONTOURS_OUTPUT_PATH =
+  process.env.ISOBATHS_CONTOURS_OUTPUT_PATH ||
+  path.join(__dirname, '../public/data/isobaths-contours.json');
 /** Max age of a reused spot-isobaths.json before the pipeline logs it loudly. */
 const MAX_STALE_HOURS = 24 * 7; // bathymetry changes slowly — weekly staleness is fine
 
@@ -77,6 +82,31 @@ async function fetchIsobaths() {
   };
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
   console.log(`✅ Isobaths saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);
+
+  // Overlay vectorial dos mapas (isobaths-contours.json, lazy): geometria
+  // simplificada por profundidade — o spot-isobaths.json só tem distâncias, os
+  // mapas precisam das linhas. Best-effort: um erro aqui nunca bloqueia a
+  // pipeline (a strip de distâncias continua a funcionar sem o overlay).
+  try {
+    const payload = buildContoursPayload(features);
+    const contoursOutput = {
+      contours: payload.contours,
+      vertexCount: payload.vertexCount,
+      toleranceDeg: CONTOUR_SIMPLIFY_DEG,
+      depths: DEPTHS,
+      fetchedAt: new Date().toISOString(),
+      sourceCollection: 'depcnt_8_16_30',
+      sourceUrl: `${IH_API}/collections/depcnt_8_16_30`,
+    };
+    fs.mkdirSync(path.dirname(CONTOURS_OUTPUT_PATH), { recursive: true });
+    fs.writeFileSync(CONTOURS_OUTPUT_PATH, JSON.stringify(contoursOutput, null, 2));
+    console.log(
+      `   🗺️  Contours: ${payload.vertexCount} vértices simplificados (${Object.keys(payload.contours).join('/')} m) → ${path.relative(process.cwd(), CONTOURS_OUTPUT_PATH)}`,
+    );
+  } catch (err) {
+    console.warn(`   ⚠️ Isobath contours failed: ${err.message} — continuando sem overlay vectorial.`);
+  }
+
   return output;
 }
 
