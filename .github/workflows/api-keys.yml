@@ -22,6 +22,7 @@ jobs:
     # Step-level `env:` is NOT visible to that same step's `if` condition.
     env:
       METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
+      METEOGATE_API_KEY: ${{ secrets.METEOGATE_API_KEY }}
       IH_API_KEY: ${{ secrets.IH_API_KEY }}
       ECOWITT_APPLICATION_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
       ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
@@ -42,17 +43,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # MeteoAlarm (EUMETNET) — token do fallback de avisos. Se estiver
-      # configurado mas inválido/expirado, o teste falha (job vermelho).
-      # Ausente → aviso em vez de falhar (a key é gratuita; guia em
-      # docs/METEOALARM_API_KEY.md).
-      - name: Test MeteoAlarm API token (EDR → CAP → payload)
-        if: env.METEOALARM_API_KEY != ''
+      # MeteoGate (particulares) ou EDR directo (redistribuidores).
+      - name: Test MeteoAlarm / MeteoGate warnings key (EDR → CAP → payload)
+        if: env.METEOGATE_API_KEY != '' || env.METEOALARM_API_KEY != ''
         run: node scripts/test-meteoalarm-api-key.js
 
-      - name: Warn when METEOALARM_API_KEY missing
-        if: env.METEOALARM_API_KEY == ''
-        run: echo "::warning::METEOALARM_API_KEY não configurada — fallback EDR directo indisponível. Particulares: MeteoGate (docs/METEOALARM_API_KEY.md), não api.meteoalarm.org/register."
+      - name: Warn when MeteoGate/MeteoAlarm keys missing
+        if: env.METEOGATE_API_KEY == '' && env.METEOALARM_API_KEY == ''
+        run: echo "::warning::METEOGATE_API_KEY não configurada — fallback de avisos indisponível (ver docs/METEOALARM_API_KEY.md)"
 
       # IH Datawell — camada observedWave. Corremos o buoys:test-key COMBINADO
       # (node scripts/buoys-test-key.js): (1) diagnóstico real da key

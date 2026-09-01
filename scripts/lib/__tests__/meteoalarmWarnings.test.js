@@ -7,10 +7,15 @@ const {
   capJsonUrl,
   capParamMap,
   capToWarning,
+  parseAwarenessCode,
   pointInFeature,
   fetchFeaturesPage,
   fetchPortugalWarnings,
   buildMeteoAlarmPayload,
+  sentDatetimeRange,
+  redactAuthFromUrl,
+  resolveWarningsAuth,
+  METEOGATE_SENT_WINDOW_MS,
 } = require('../meteoalarmWarnings.js');
 
 const NOW = Date.UTC(2026, 7, 14, 12, 0, 0); // 2026-08-14T12:00Z
@@ -177,6 +182,19 @@ describe('capToWarning', () => {
     expect(w.relevant).toBe(false);
   });
 
+  it('lê parameter no info (MeteoGate CAP) e códigos "7; coastalevent"', () => {
+    const cap = makeCap();
+    cap.info[0].area = [{ areaDesc: 'Costa Oeste', geocode: [] }];
+    cap.info[0].parameter = [
+      { valueName: 'awareness_type', value: '7; coastalevent' },
+      { valueName: 'awareness_level', value: '3; orange; Severe' },
+    ];
+    const w = capToWarning(cap, makeFeature(), 'pt-PT');
+    expect(w.type).toBe('Agitação Marítima');
+    expect(w.level).toBe('orange');
+    expect(w.relevant).toBe(true);
+  });
+
   it('cai para feature quando faltam área/parâmetros', () => {
     const cap = makeCap({ info: [{ language: 'pt-PT', event: 'Vento', severity: 'Moderate', area: [] }] });
     const w = capToWarning(cap, makeFeature(), 'pt-PT');
@@ -239,6 +257,37 @@ describe('fetchFeaturesPage', () => {
     const fetchImpl = vi.fn(async () => ({ ok: false, status: 401, json: async () => ({}) }));
     await expect(fetchFeaturesPage('bad', 'PT', 1, fetchImpl)).rejects.toThrow(/401/);
   });
+
+  it('MeteoGate: datetime < 24 h, apikey na query, sem Bearer; 204 → []', async () => {
+    const fetchImpl = vi.fn(async () => ({ ok: true, status: 204, json: async () => ({}) }));
+    const features = await fetchFeaturesPage(
+      { mode: 'meteogate', key: 'gate-secret' },
+      'PT',
+      1,
+      fetchImpl,
+      { nowMs: NOW },
+    );
+    expect(features).toEqual([]);
+    const url = fetchImpl.mock.calls[0][0];
+    expect(url).toContain('https://api.meteogate.eu/warnings/collections/warnings/locations/PT');
+    expect(url).toContain('datetime=');
+    expect(url).toContain('apikey=gate-secret');
+    expect(url).not.toContain('active=true');
+    expect(fetchImpl.mock.calls[0][1].headers.Authorization).toBeUndefined();
+    const dt = new URL(url).searchParams.get('datetime');
+    const [start, end] = dt.split('/');
+    expect(new Date(end).getTime() - new Date(start).getTime()).toBe(METEOGATE_SENT_WINDOW_MS);
+  });
+
+  it('não vaza a apikey na mensagem de erro HTTP', async () => {
+    const fetchImpl = vi.fn(async () => ({ ok: false, status: 500, json: async () => ({}) }));
+    await expect(
+      fetchFeaturesPage({ mode: 'meteogate', key: 'super-secret-key' }, 'PT', 1, fetchImpl),
+    ).rejects.toThrow(/apikey=REDACTED/);
+    await expect(
+      fetchFeaturesPage({ mode: 'meteogate', key: 'super-secret-key' }, 'PT', 1, fetchImpl),
+    ).rejects.not.toThrow(/super-secret-key/);
+  });
 });
 
 describe('fetchPortugalWarnings', () => {
@@ -298,5 +347,33 @@ describe('buildMeteoAlarmPayload', () => {
     const payload = await buildMeteoAlarmPayload('tok', spots, { fetchImpl: f, nowMs: NOW });
     expect(payload.warnings).toHaveLength(0);
     expect(payload.spotWarnings).toEqual({});
+  });
+});
+
+describe('resolveWarningsAuth / sentDatetimeRange', () => {
+  it('prefere METEOGATE_API_KEY', () => {
+    expect(resolveWarningsAuth({ METEOGATE_API_KEY: 'g', METEOALARM_API_KEY: 'a' })).toEqual({
+      mode: 'meteogate',
+      key: 'g',
+    });
+    expect(resolveWarningsAuth({ METEOALARM_API_KEY: 'a' }).mode).toBe('meteoalarm');
+    expect(resolveWarningsAuth({})).toBeNull();
+  });
+
+  it('sentDatetimeRange cobre quase 24 h', () => {
+    const range = sentDatetimeRange(NOW);
+    const [start, end] = range.split('/');
+    expect(new Date(end).getTime() - new Date(start).getTime()).toBe(METEOGATE_SENT_WINDOW_MS);
+    expect(METEOGATE_SENT_WINDOW_MS).toBeLessThan(24 * 3600 * 1000);
+  });
+
+  it('redactAuthFromUrl mascara apikey', () => {
+    expect(redactAuthFromUrl('https://x/w?apikey=secret&language=pt-PT')).toContain('apikey=REDACTED');
+    expect(redactAuthFromUrl('https://x/w?apikey=secret&language=pt-PT')).not.toContain('secret');
+  });
+
+  it('parseAwarenessCode lê o inteiro inicial', () => {
+    expect(parseAwarenessCode('7; coastalevent')).toBe('7');
+    expect(parseAwarenessCode('2')).toBe('2');
   });
 });

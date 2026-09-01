@@ -2,12 +2,12 @@
  * End-to-end test for the MeteoAlarm (EUMETNET) API token (METEOALARM_API_KEY).
  *
  * Validates the whole chain in one command:
- *   1. EDR locations query for PT with the Bearer token — token is accepted.
+ *   1. EDR locations query for PT (MeteoGate apikey or MeteoAlarm Bearer).
  *   2. CAP Oasis 1.2 payload fetch (signed URL, no auth) — parse a warning.
  *   3. buildMeteoAlarmPayload over real spots — spotWarnings mapping works.
  *
  * Usage:
- *   METEOALARM_API_KEY=... node scripts/test-meteoalarm-api-key.js
+ *   METEOGATE_API_KEY=... node scripts/test-meteoalarm-api-key.js
  *
  * Exit codes:
  *   0  — token OK and the chain works end-to-end (payload source 'meteoalarm';
@@ -27,9 +27,8 @@ const {
   capJsonUrl,
   capToWarning,
   buildMeteoAlarmPayload,
+  resolveWarningsAuth,
 } = require('./lib/meteoalarmWarnings.js');
-
-const API_KEY = process.env.METEOALARM_API_KEY?.trim() || null;
 
 function parseSpotsFromFile() {
   const fs = require('fs');
@@ -56,36 +55,49 @@ function parseSpotsFromFile() {
  * tests can exercise PASS/FAIL without network or a real token.
  *
  * @param {object} [opts]
- * @param {string|null} [opts.apiKey] — defaults to process.env.METEOALARM_API_KEY
+ * @param {string|null} [opts.apiKey] — if a string, treated as direct EDR Bearer
+ *   (tests). `null` = missing. omit = resolve METEOGATE_API_KEY then METEOALARM_API_KEY.
+ * @param {NodeJS.ProcessEnv} [opts.env]
  * @param {typeof fetch} [opts.fetchImpl] — defaults to global fetch
  * @param {object} [opts.log] — logger with log/error/warn (default console)
  * @returns {Promise<number>} exit code (0 = PASS, 1 = FAIL)
  */
 async function runMeteoAlarmApiKeyTest({
-  apiKey = API_KEY,
+  apiKey,
   fetchImpl = fetch,
   log = console,
+  env = process.env,
 } = {}) {
-  if (!apiKey) {
-    log.error('❌ METEOALARM_API_KEY não está definida.');
+  const auth =
+    apiKey === undefined
+      ? resolveWarningsAuth(env)
+      : apiKey
+        ? { mode: 'meteoalarm', key: apiKey }
+        : null;
+  if (!auth) {
+    log.error('❌ METEOGATE_API_KEY / METEOALARM_API_KEY não está definida.');
     log.error('');
     log.error('   1. Particulares: MeteoGate (https://meteogate.eu /');
-    log.error('      https://devportal.meteogate.eu) — não uses api.meteoalarm.org/register.');
+    log.error('      https://devportal.meteogate.eu) — METEOGATE_API_KEY.');
     log.error('   1b. Redistribuidor aprovado: Bearer token no EDR directo');
-    log.error('      (subscription "edr" em api.meteoalarm.org).');
+    log.error('      (api.meteoalarm.org) — METEOALARM_API_KEY.');
     log.error('   2. Depois corre, ex.:');
-    log.error('      METEOALARM_API_KEY=xxxxxxxx node scripts/test-meteoalarm-api-key.js');
+    log.error('      METEOGATE_API_KEY=xxxxxxxx node scripts/test-meteoalarm-api-key.js');
     log.error('');
     log.error('   Guia completo (obtenção + secret GitHub + teste): docs/METEOALARM_API_KEY.md');
     return 1;
   }
-  log.log('   ✓ METEOALARM_API_KEY presente (não mostra o valor)');
+  log.log(`   ✓ ${auth.mode === 'meteogate' ? 'METEOGATE_API_KEY' : 'METEOALARM_API_KEY'} presente (não mostra o valor)`);
 
   // ── 1. Locations query with the token ───────────────────────────────────
-  log.log('\n[1/3] Consulta EDR (locations/PT?active=true) com Bearer token...');
+  log.log(
+    auth.mode === 'meteogate'
+      ? '\n[1/3] Consulta MeteoGate (locations/PT?datetime=…) com apikey...'
+      : '\n[1/3] Consulta EDR (locations/PT?active=true) com Bearer token...',
+  );
   let features;
   try {
-    features = await fetchFeaturesPage(apiKey, 'PT', 1, fetchImpl);
+    features = await fetchFeaturesPage(auth, 'PT', 1, fetchImpl);
   } catch (err) {
     log.error(`❌ Falha na consulta EDR: ${err.message}`);
     log.error('   Causas comuns: token inválido (401/403), rede, ou API em baixo.');
@@ -130,7 +142,7 @@ async function runMeteoAlarmApiKeyTest({
   // ── 3. Payload over real spots ──────────────────────────────────────────
   log.log('\n[3/3] buildMeteoAlarmPayload sobre os spots reais...');
   const spots = parseSpotsFromFile();
-  const payload = await buildMeteoAlarmPayload(apiKey, spots, { fetchImpl });
+  const payload = await buildMeteoAlarmPayload(auth, spots, { fetchImpl });
   const withWarnings = Object.keys(payload.spotWarnings ?? {}).length;
   log.log(`   ✓ Payload: source=${payload.source} · warnings=${payload.warnings.length} · spots afectados=${withWarnings}/${spots.length}`);
   if (payload.source !== 'meteoalarm') {
@@ -138,8 +150,8 @@ async function runMeteoAlarmApiKeyTest({
     return 1;
   }
 
-  log.log('\n✅ PASS — a METEOALARM_API_KEY é válida e o fallback está funcional.');
-  log.log('   Próximo passo: criar o secret no GitHub (docs/METEOALARM_API_KEY.md);');
+  log.log('\n✅ PASS — a key de avisos é válida e o fallback está funcional.');
+  log.log('   Próximo passo: secret GitHub METEOGATE_API_KEY (docs/METEOALARM_API_KEY.md);');
   log.log('   o workflow usa-o automaticamente quando o IPMA estiver em baixo.');
   return 0;
 }

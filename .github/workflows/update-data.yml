@@ -28,6 +28,7 @@ jobs:
     env:
       IH_API_KEY: ${{ secrets.IH_API_KEY }}
       METEOALARM_API_KEY: ${{ secrets.METEOALARM_API_KEY }}
+      METEOGATE_API_KEY: ${{ secrets.METEOGATE_API_KEY }}
     outputs:
       mode: ${{ steps.gate.outputs.mode }}
     steps:
@@ -154,19 +155,19 @@ jobs:
       # Avisos meteorológicos IPMA (warnings_www.json, grátis, sem key) —
       # camada de segurança para surf/kite (Agitação Marítima, Vento, Trovoada).
       # Se o IPMA estiver em baixo, o próprio script cai para o MeteoAlarm
-      # (EUMETNET, token grátis METEOALARM_API_KEY) e escreve source:
-      # 'meteoalarm' no warnings.json.
+      # (MeteoGate METEOGATE_API_KEY, ou EDR directo METEOALARM_API_KEY) e
+      # escreve source: 'meteoalarm' no warnings.json.
       - name: Fetch IPMA weather warnings (MeteoAlarm fallback)
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ipma-warnings.js
 
-      # Com a METEOALARM_API_KEY real configurada, o job falha aqui se o
+      # Com METEOGATE_API_KEY ou METEOALARM_API_KEY, o job falha aqui se o
       # warnings.json ficou source:'meteoalarm' (IPMA em baixo → fallback)
       # mas SEM avisos activos — dupla falha que deixaria a camada de segurança
       # vazia por cima dos spots. Sem token o passo é saltado (mirror do
       # verify-ih-buoy-layer). Corre DEPOIS do fetch — nunca o substitui.
       - name: Verify MeteoAlarm warnings layer (fallback empty)
-        if: steps.gate.outputs.mode != 'skip' && env.METEOALARM_API_KEY != ''
+        if: steps.gate.outputs.mode != 'skip' && (env.METEOGATE_API_KEY != '' || env.METEOALARM_API_KEY != '')
         run: node scripts/verify-meteoalarm-warnings.js
 
       # Avisos à Navegação Costeiros do IH (nav_warning_coastal, OGC API sem

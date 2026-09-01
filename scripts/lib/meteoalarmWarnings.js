@@ -2,17 +2,19 @@
  * MeteoAlarm (EUMETNET) weather warnings — secondary source, fallback when
  * the IPMA open-data API is down.
  *
- * The legacy meteoalarm.org CAP feeds were retired. Particulars should use
- * MeteoGate (https://meteogate.eu) — the MeteoAlarm portal still marks that
- * public API as "Coming soon". The code below is the **re-user** OGC EDR at
- * api.meteoalarm.org (Bearer METEOALARM_API_KEY), not the MeteoGate gateway.
- * The endpoint used here:
+ * Particulars use MeteoGate (`METEOGATE_API_KEY`, query `apikey`):
  *
- *   GET /edr/v1/collections/warnings/locations/PT?active=true&language=pt-PT
+ *   GET https://api.meteogate.eu/warnings/collections/warnings/locations/PT
+ *       ?datetime=<now-24h>/<now>&language=pt-PT
  *
- * returns a GeoJSON FeatureCollection; each Feature's geometry is the warning
+ * (`datetime` is the sent window and must be < 24 h; HTTP 204 = no features.)
+ * Re-users may still use the direct EDR (`METEOALARM_API_KEY`, Bearer):
+ *
+ *   GET https://api.meteoalarm.org/edr/v1/collections/warnings/locations/PT?active=true
+ *
+ * Both return a GeoJSON FeatureCollection; each Feature's geometry is the warning
  * area bounding box and its `links` point to the full CAP Oasis 1.2 payload
- * (JSON/XML) on storage.meteoalarm.org (signed URLs, fetchable without auth).
+ * (JSON, signed URLs, fetchable without auth).
  * Warning metadata (event, severity, awareness_type/level, onset, expires,
  * areaDesc) is read from that CAP payload, normalised to the SAME shape as
  * the IPMA layer so the UI, badges and Dawn Patrol work unchanged — only the
@@ -28,6 +30,11 @@
 
 const EDR_BASE = 'https://api.meteoalarm.org/edr/v1';
 const WARNINGS_URL = `${EDR_BASE}/collections/warnings/locations`;
+/** Public MeteoGate gateway (same EDR collection, `apikey` query). */
+const METEOGATE_EDR_BASE = 'https://api.meteogate.eu/warnings';
+const METEOGATE_WARNINGS_URL = `${METEOGATE_EDR_BASE}/collections/warnings/locations`;
+/** Sent-window must be strictly under 24 h (MeteoGate `sent_range` rule). */
+const METEOGATE_SENT_WINDOW_MS = 24 * 3600 * 1000 - 1000;
 /** MeteoAlarm location code for Portugal (MQTT topics use warnings-PT). */
 const PT_LOCATION = 'PT';
 /** Language for CAP descriptions; falls back gracefully when unsupported. */
@@ -94,6 +101,51 @@ function finiteNumber(v) {
 }
 
 /**
+ * Prefer MeteoGate (particulars) over the direct EDR Bearer (re-users).
+ * @param {NodeJS.ProcessEnv} [env]
+ * @returns {{ mode: 'meteogate' | 'meteoalarm', key: string } | null}
+ */
+function resolveWarningsAuth(env = process.env) {
+  const gate = env.METEOGATE_API_KEY?.trim();
+  if (gate) return { mode: 'meteogate', key: gate };
+  const alarm = env.METEOALARM_API_KEY?.trim();
+  if (alarm) return { mode: 'meteoalarm', key: alarm };
+  return null;
+}
+
+/**
+ * @param {string | { mode: 'meteogate' | 'meteoalarm', key: string } | null | undefined} tokenOrAuth
+ * @returns {{ mode: 'meteogate' | 'meteoalarm', key: string } | null}
+ */
+function normalizeAuth(tokenOrAuth) {
+  if (tokenOrAuth && typeof tokenOrAuth === 'object' && tokenOrAuth.key) {
+    return tokenOrAuth;
+  }
+  if (typeof tokenOrAuth === 'string' && tokenOrAuth.trim()) {
+    return { mode: 'meteoalarm', key: tokenOrAuth.trim() };
+  }
+  return null;
+}
+
+/** ISO interval `start/end` covering the last ~24 h (exclusive of a full day). */
+function sentDatetimeRange(nowMs = Date.now()) {
+  const end = new Date(nowMs);
+  const start = new Date(nowMs - METEOGATE_SENT_WINDOW_MS);
+  return `${start.toISOString()}/${end.toISOString()}`;
+}
+
+function redactAuthFromUrl(url) {
+  return String(url).replace(/([?&]apikey=)[^&]*/gi, '$1REDACTED');
+}
+
+/** Leading integer from CAP `awareness_*` values (`"7"` or `"7; coastalevent"`). */
+function parseAwarenessCode(value) {
+  if (value == null) return undefined;
+  const m = String(value).trim().match(/^(\d+)/);
+  return m ? m[1] : String(value).trim();
+}
+
+/**
  * EDR Feature → CAP payload URL (signed, fetchable without auth).
  * Prefers the JSON link; falls back to hubLink.
  * @param {object} feature GeoJSON feature from the locations query
@@ -145,10 +197,17 @@ function capToWarning(cap, feature, language = CAP_LANGUAGE) {
 
   const areas = Array.isArray(info.area) ? info.area : [];
   const area = areas[0] ?? {};
-  const params = capParamMap(area?.parameter);
+  const params = {
+    ...capParamMap(info.parameter),
+    ...capParamMap(area?.parameter),
+  };
 
-  const awarenessType = params.awareness_type ?? params['awareness-type'] ?? params.type;
-  const awarenessLevel = params.awareness_level ?? params['awareness-level'];
+  const awarenessType = parseAwarenessCode(
+    params.awareness_type ?? params['awareness-type'] ?? params.type,
+  );
+  const awarenessLevel = parseAwarenessCode(
+    params.awareness_level ?? params['awareness-level'],
+  );
 
   const type =
     (awarenessType !== undefined ? AWARENESS_TYPE_MAP[String(awarenessType)] : undefined) ||
@@ -225,22 +284,37 @@ function pointInFeature(point, feature) {
 }
 
 /**
- * Fetch one page of EDR features for a location (Bearer token).
- * @param {string} token
+ * Fetch one page of EDR features for a location.
+ * A string token is treated as a direct MeteoAlarm Bearer (tests / re-users).
+ * @param {string | { mode: 'meteogate' | 'meteoalarm', key: string }} tokenOrAuth
  * @param {string} [location]
  * @param {number} [page]
  * @param {typeof fetch} [fetchImpl]
+ * @param {{ nowMs?: number }} [opts]
  * @returns {Promise<object[]>} features
  */
-async function fetchFeaturesPage(token, location = PT_LOCATION, page = 1, fetchImpl = fetch) {
-  const url = `${WARNINGS_URL}/${encodeURIComponent(location)}?active=true&language=${encodeURIComponent(CAP_LANGUAGE)}&page=${page}`;
-  const res = await fetchImpl(url, {
-    headers: { Accept: 'application/geo+json, application/json', Authorization: `Bearer ${token}` },
-  });
+async function fetchFeaturesPage(tokenOrAuth, location = PT_LOCATION, page = 1, fetchImpl = fetch, opts = {}) {
+  const auth = normalizeAuth(tokenOrAuth);
+  if (!auth) throw new Error('MeteoAlarm/MeteoGate: missing API key');
+  const nowMs = opts.nowMs ?? Date.now();
+  const base = auth.mode === 'meteogate' ? METEOGATE_WARNINGS_URL : WARNINGS_URL;
+  const u = new URL(`${base}/${encodeURIComponent(location)}`);
+  u.searchParams.set('language', CAP_LANGUAGE);
+  u.searchParams.set('page', String(page));
+  if (auth.mode === 'meteogate') {
+    u.searchParams.set('datetime', sentDatetimeRange(nowMs));
+    u.searchParams.set('apikey', auth.key);
+  } else {
+    u.searchParams.set('active', 'true');
+  }
+  const headers = { Accept: 'application/geo+json, application/json' };
+  if (auth.mode === 'meteoalarm') headers.Authorization = `Bearer ${auth.key}`;
+  const res = await fetchImpl(u.toString(), { headers });
+  if (res.status === 204) return [];
   if (res.status === 401 || res.status === 403) {
     throw new Error(`MeteoAlarm HTTP ${res.status} — token inválido ou sem permissão`);
   }
-  if (!res.ok) throw new Error(`MeteoAlarm HTTP ${res.status} para ${url}`);
+  if (!res.ok) throw new Error(`MeteoAlarm HTTP ${res.status} para ${redactAuthFromUrl(u.toString())}`);
   const data = await res.json();
   return Array.isArray(data?.features) ? data.features : [];
 }
@@ -255,7 +329,7 @@ async function fetchPortugalWarnings(token, opts = {}) {
   const { fetchImpl = fetch, nowMs = Date.now() } = opts;
   const items = [];
   for (let page = 1; page <= 10; page++) {
-    const features = await fetchFeaturesPage(token, PT_LOCATION, page, fetchImpl);
+    const features = await fetchFeaturesPage(token, PT_LOCATION, page, fetchImpl, { nowMs });
     for (const f of features) {
       items.push({ feature: f, cap: null, url: capJsonUrl(f) });
     }
@@ -326,12 +400,20 @@ async function buildMeteoAlarmPayload(token, spots, opts = {}) {
 module.exports = {
   EDR_BASE,
   WARNINGS_URL,
+  METEOGATE_EDR_BASE,
+  METEOGATE_WARNINGS_URL,
+  METEOGATE_SENT_WINDOW_MS,
   PT_LOCATION,
   CAP_LANGUAGE,
   WATER_SPORT_TYPES,
   AWARENESS_TYPE_MAP,
   CAP_SEVERITY_TO_LEVEL,
   CAP_AWARENESS_LEVEL_MAP,
+  resolveWarningsAuth,
+  normalizeAuth,
+  sentDatetimeRange,
+  redactAuthFromUrl,
+  parseAwarenessCode,
   capJsonUrl,
   capParamMap,
   capToWarning,

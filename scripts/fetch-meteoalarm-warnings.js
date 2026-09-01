@@ -3,14 +3,15 @@
  * (source: 'meteoalarm'). Secondary source — used as FALLBACK when the IPMA
  * open-data API is down (fetch-ipma-warnings.js calls tryMeteoAlarmFallback).
  *
- * Requires the free MeteoAlarm API token (METEOALARM_API_KEY) — see
- * docs/METEOALARM_API_KEY.md. Without it, or on failure, we keep the previous
- * warnings.json and exit 0: warnings never block the Open-Meteo pipeline.
+ * Requires METEOGATE_API_KEY (MeteoGate, particulars) or METEOALARM_API_KEY
+ * (direct EDR, re-users) — see docs/METEOALARM_API_KEY.md. Without either,
+ * or on failure, we keep the previous warnings.json and exit 0: warnings never
+ * block the Open-Meteo pipeline.
  */
 
 const fs = require('fs');
 const path = require('path');
-const { buildMeteoAlarmPayload } = require('./lib/meteoalarmWarnings.js');
+const { buildMeteoAlarmPayload, resolveWarningsAuth } = require('./lib/meteoalarmWarnings.js');
 
 const OUTPUT_PATH =
   process.env.IPMA_WARNINGS_OUTPUT_PATH || path.join(__dirname, '../public/data/warnings.json');
@@ -33,8 +34,8 @@ function parseSpotsFromFile() {
   });
 }
 
-function getToken() {
-  return process.env.METEOALARM_API_KEY?.trim() || null;
+function getAuth() {
+  return resolveWarningsAuth();
 }
 
 function writePayload(payload) {
@@ -53,13 +54,13 @@ function writePayload(payload) {
  * @returns {Promise<boolean>}
  */
 async function tryMeteoAlarmFallback() {
-  const token = getToken();
-  if (!token) {
-    console.warn('   ℹ️ METEOALARM_API_KEY not set — skipping MeteoAlarm fallback.');
+  const auth = getAuth();
+  if (!auth) {
+    console.warn('   ℹ️ METEOGATE_API_KEY / METEOALARM_API_KEY not set — skipping MeteoAlarm fallback.');
     return false;
   }
-  console.log('⚠️  IPMA down — falling back to MeteoAlarm (EUMETNET)...');
-  const payload = await buildMeteoAlarmPayload(token, parseSpotsFromFile());
+  console.log(`⚠️  IPMA down — falling back to MeteoAlarm via ${auth.mode}...`);
+  const payload = await buildMeteoAlarmPayload(auth, parseSpotsFromFile());
   if (!payload.warnings.length) {
     console.warn('   MeteoAlarm OK but no active warnings — writing empty meteoalarm layer.');
   }
@@ -68,9 +69,9 @@ async function tryMeteoAlarmFallback() {
 }
 
 async function run() {
-  const token = getToken();
-  if (!token) {
-    console.warn('ℹ️ METEOALARM_API_KEY not set — run fetch-ipma-warnings.js (primary).');
+  const auth = getAuth();
+  if (!auth) {
+    console.warn('ℹ️ METEOGATE_API_KEY / METEOALARM_API_KEY not set — run fetch-ipma-warnings.js (primary).');
     if (fs.existsSync(OUTPUT_PATH)) {
       console.warn('   Keeping previous warnings.json — pipeline continues.');
       return;
@@ -94,4 +95,4 @@ if (require.main === module) {
   run();
 }
 
-module.exports = { run, tryMeteoAlarmFallback, parseSpotsFromFile, getToken };
+module.exports = { run, tryMeteoAlarmFallback, parseSpotsFromFile, getAuth };

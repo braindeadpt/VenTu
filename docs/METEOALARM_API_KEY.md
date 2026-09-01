@@ -16,10 +16,12 @@ O MeteoAlarm distingue dois públicos:
 
 | Quem | Onde | O que VenTu usa |
 |---|---|---|
-| **Particulares / projectos pessoais** (este repo) | **[MeteoGate](https://meteogate.eu/)** — [Developer Portal](https://devportal.meteogate.eu/) para API key | Caminho recomendado pelo próprio MeteoAlarm. A API pública de avisos ainda aparece como «Coming soon» no portal; o Data Explorer ainda não lista datasets *Warning*. Quando o route existir, ligamos `api.meteogate.eu/<route>` no fetch. |
-| **Organizações redistribuidoras** | Token Bearer em [api.meteoalarm.org/register](https://api.meteoalarm.org/register) | O código actual (`METEOALARM_API_KEY` → EDR `api.meteoalarm.org`) só faz sentido se te aprovarem neste formulário. **Não** é o caminho para um particular. |
+| **Particulares / projectos pessoais** (este repo) | **[MeteoGate](https://meteogate.eu/)** — [Developer Portal](https://devportal.meteogate.eu/) → secret `METEOGATE_API_KEY` | `GET https://api.meteogate.eu/warnings/collections/warnings/locations/PT` (`apikey` na query; `datetime` = últimas 24 h de *sent*) |
+| **Organizações redistribuidoras** | Token Bearer em [api.meteoalarm.org/register](https://api.meteoalarm.org/register) → `METEOALARM_API_KEY` | Só se te aprovarem. Ignorado quando `METEOGATE_API_KEY` está definida. |
 
-Até o MeteoGate servir avisos, a pipeline continua só com o IPMA. Não abras o formulário de re-users só porque este guia existia — o MeteoAlarm manda-te explicitamente para o MeteoGate.
+Até teres `METEOGATE_API_KEY` no GitHub, a pipeline continua só com o IPMA. Não abras o formulário de re-users.
+
+Documentação do gateway: [MeteoGate docs](https://eumetnet.github.io/meteogate-documentation/).
 
 ---
 
@@ -42,24 +44,22 @@ dentro de `fetch-ipma-warnings.js`) → `public/data/warnings.json`.
 
 ## Passo 1 — Acesso (particulares: MeteoGate)
 
-1. Abrir [https://meteogate.eu/](https://meteogate.eu/) (Warnings → *How to get started* /
-   *How to download warning data*) e o [Developer Portal](https://devportal.meteogate.eu/)
-2. Login com um identity provider e **Create API Key**
-3. Confirmar no Data Explorer / lista de routes se já existe um endpoint de avisos
-   MeteoAlarm. Se ainda não houver datasets *Warning*, **pára aqui** — o fallback
-   continua desligado e o IPMA cobre os avisos. Não uses o formulário de
-   [api.meteoalarm.org/register](https://api.meteoalarm.org/register) (é para
-   membros e redistribuidores).
+1. Abrir o [Developer Portal](https://devportal.meteogate.eu/), login e **Create API Key**
+2. Local: `.env.local` → `METEOGATE_API_KEY=…` (já está no `.gitignore`)
+3. GitHub: `gh secret set METEOGATE_API_KEY`
+4. Verificar: `METEOGATE_API_KEY=xxxxxxxx npm run warnings:test-key`
 
-Quando o MeteoGate passar a proxyar o EDR, a key do portal **não** entra em
-`METEOALARM_API_KEY` (isso é Bearer do `api.meteoalarm.org`). O fetch terá de
-apontar a `https://api.meteogate.eu/<route>` com `apikey` em query ou header —
-isso ainda não está ligado neste repo.
+O fetch usa `https://api.meteogate.eu/warnings` (`apikey` em query; janela `datetime`
+&lt; 24 h — avisos *enviados* no último dia). HTTP 204 = nenhum aviso nesse intervalo.
+
+**Não** coloques a key do MeteoGate em `METEOALARM_API_KEY` (isso é Bearer do
+`api.meteoalarm.org`). **Não** uses o formulário de
+[api.meteoalarm.org/register](https://api.meteoalarm.org/register).
 
 ### Só se fores redistribuidor aprovado
 
-O resto deste guia (Passo 2 em diante) é o caminho **EDR directo**: token Bearer
-no secret `METEOALARM_API_KEY`. Ignora-o se só tens (ou vais ter) uma key MeteoGate.
+O resto deste guia (Passo 2 em diante) também serve o caminho **EDR directo**
+(`METEOALARM_API_KEY`). Com `METEOGATE_API_KEY` definida, o EDR directo é ignorado.
 
 ---
 
@@ -99,21 +99,21 @@ passou a `resend:test-key` (`scripts/test-resend-api-key.js`).
 
 ## Passo 3 — Criar o secret `METEOALARM_API_KEY` no GitHub
 
-O workflow `update-data.yml` lê `${{ secrets.METEOALARM_API_KEY }}` no passo
-**"Fetch IPMA weather warnings (MeteoAlarm fallback)"**. Sem o secret, esse passo corre
-só com IPMA (sem fallback).
+O workflow `update-data.yml` lê `METEOGATE_API_KEY` (e, na ausência, `METEOALARM_API_KEY`)
+no passo **"Fetch IPMA weather warnings (MeteoAlarm fallback)"**. Sem nenhum dos dois,
+esse passo corre só com IPMA.
 
 1. Abrir o repositório no GitHub → **Settings**
 2. Menu lateral: **Secrets and variables → Actions**
 3. Botão **New repository secret**
-4. **Name:** `METEOALARM_API_KEY`
-5. **Secret:** colar o token (sem espaços à volta)
+4. **Name:** `METEOGATE_API_KEY`
+5. **Secret:** colar a key do Developer Portal (sem espaços à volta)
 6. **Add secret**
 
 CLI (equivalente):
 
 ```bash
-gh secret set METEOALARM_API_KEY
+gh secret set METEOGATE_API_KEY
 gh workflow run api-keys.yml
 ```
 
@@ -121,8 +121,8 @@ gh workflow run api-keys.yml
 > não mostrar MeteoAlarm. Para forçar o teste local, corre `npm run warnings:meteoalarm`.
 
 Para desenvolvimento local, podes pôr o token num ficheiro `.env.local` e correr
-`export $(grep METEOALARM_API_KEY .env.local | xargs)` antes dos comandos — o script lê
-apenas a variável de ambiente `METEOALARM_API_KEY` (ver `.env.example`).
+`export $(grep METEOGATE_API_KEY .env.local | xargs)` antes dos comandos — o script lê
+`METEOGATE_API_KEY` (preferida) ou `METEOALARM_API_KEY` (ver `.env.example`).
 
 ---
 
@@ -212,7 +212,7 @@ semanas — basta ir a **Actions** → **API Keys Health** para ver o resultado.
 
 ## Degradação graciosa (sem token / MeteoAlarm em baixo)
 
-- Sem `METEOALARM_API_KEY`, `fetch-ipma-warnings.js` usa apenas o IPMA e avisa no log;
+- Sem `METEOGATE_API_KEY` nem `METEOALARM_API_KEY`, `fetch-ipma-warnings.js` usa apenas o IPMA e avisa no log;
   o fallback é simplesmente saltado.
 - Se o fallback falhar (token inválido, rede, API em baixo), mantém-se o `warnings.json`
   anterior (ou continua-se sem avisos) — a pipeline (Open-Meteo, boias, observações)
