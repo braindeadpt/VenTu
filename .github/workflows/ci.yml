@@ -80,6 +80,9 @@ jobs:
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
         run: npm run build
 
+      - name: Validate _headers security directives
+        run: node scripts/check-headers-file.js
+
       - name: Lighthouse audit (perf, a11y, SEO)
         run: node scripts/run-lighthouse-prod.js
 

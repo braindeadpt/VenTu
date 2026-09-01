@@ -91,6 +91,9 @@ jobs:
             exit 1
           }
 
+      - name: Validate _headers security directives
+        run: node scripts/check-headers-file.js
+
       - name: Upload build log on failure
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

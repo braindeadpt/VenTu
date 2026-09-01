@@ -2,7 +2,9 @@
 
 Decisão de arquitectura para servir CSP, `X-Frame-Options` e `frame-ancestors` como **headers HTTP reais**, impossíveis de obter no GitHub Pages (que não permite headers custom e ignora `public/_headers`).
 
-> **Estado:** decisão tomada (2026-08-13). Implementação pendente de acção manual no dashboard Cloudflare (DNS + regras) — ver [Passos](#passos-de-implementação).
+> **Estado:** decisão tomada (2026-08-13). O ficheiro `public/_headers` está completo e validado por `scripts/check-headers-file.js` (corre no CI após o build). Para deploys em Netlify/Cloudflare Pages, os headers são aplicados automaticamente. Para GitHub Pages, é necessária a acção manual no dashboard Cloudflare (DNS proxied + Transform Rules) — ver [Passos](#passos-de-implementação).
+>
+> **Fallback non-Cloudflare:** `public/_headers` é a fonte de verdade. Qualquer hosting que interprete `_headers` (Netlify, Cloudflare Pages) aplica os headers sem configuração adicional. O script `scripts/check-headers-file.js` valida que as 5 directivas obrigatórias (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security`) estão presentes — corre no CI para impedir regressões.
 
 ---
 
