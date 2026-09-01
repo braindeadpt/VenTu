@@ -308,6 +308,7 @@ export default function SpotConditionsDashboard({
                     meta={conditions.observedWaveMeta}
                     forecastWaveHeightM={conditions.waveHeight}
                     locale={locale}
+                    spotId={spot.id}
                   />
                   {conditions.observedWaveCoherenceWarning && (
                     <CoherenceWarningNotice

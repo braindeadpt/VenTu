@@ -12,9 +12,76 @@ const path = require('path');
 const { callLLM } = require('./llm-fallback');
 const { attachMoonTideLines } = require('./lib/attachMoonTide');
 const { morningScore, resolveMorningRecalibration } = require('./lib/dawnPatrolScore');
+const { coastalWarningsForSpot, coastalWarningLine } = require('./lib/ihCoastalWarnings');
+const { seaWarningForSpot, seaWarningLine } = require('./lib/ipmaWarnings');
 
 /** conditions.json committed by the pipeline (observedWave + waveBias meta). */
 const CONDITIONS_PATH = path.join(__dirname, '../public/data/conditions.json');
+/** Avisos costeiros vivos (coverage por spot) — para o prompt do LLM os mencionar. */
+const COASTAL_WARNINGS_PATH = path.join(__dirname, '../public/data/ih-coastal-warnings.json');
+/** warnings.json (IPMA/MeteoAlarm) — estado de agitação marítima por spot. */
+const WARNINGS_PATH = path.join(__dirname, '../public/data/warnings.json');
+
+/**
+ * Best-effort load do ih-coastal-warnings.json (cobertura por spot). Nunca
+ * rebenta — sem ficheiro os avisos costeiros simplesmente não entram no prompt.
+ */
+function loadCoastalWarnings() {
+  try {
+    if (fs.existsSync(COASTAL_WARNINGS_PATH)) {
+      return JSON.parse(fs.readFileSync(COASTAL_WARNINGS_PATH, 'utf-8'));
+    }
+  } catch (e) {
+    console.warn(`   ⚠️ ih-coastal-warnings.json unreadable: ${e.message} — sem avisos costeiros no prompt`);
+  }
+  return null;
+}
+
+/** slug → avisos costeiros em vigor (usa a cobertura já calculada pelo fetch). */
+function resolveCoastalBySlug(spotsData, coastalData) {
+  const map = new Map();
+  if (!coastalData) return map;
+  for (const s of spotsData) {
+    map.set(s.slug, coastalWarningsForSpot(coastalData, s.slug));
+  }
+  return map;
+}
+
+/**
+ * Best-effort load do warnings.json (IPMA/MeteoAlarm). Nunca rebenta — sem
+ * ficheiro o estado de agitação marítima simplesmente não entra no prompt.
+ */
+function loadWarnings() {
+  try {
+    if (fs.existsSync(WARNINGS_PATH)) {
+      return JSON.parse(fs.readFileSync(WARNINGS_PATH, 'utf-8'));
+    }
+  } catch (e) {
+    console.warn(`   ⚠️ warnings.json unreadable: ${e.message} — sem estado de agitação marítima no prompt`);
+  }
+  return null;
+}
+
+/** slug → aviso de agitação marítima mais forte (seaWarningForSpot) ou null. */
+function resolveSeaBySlug(spotsData, warningsData) {
+  const map = new Map();
+  if (!warningsData) return map;
+  for (const s of spotsData) {
+    map.set(s.slug, seaWarningForSpot(warningsData, s.slug) ?? null);
+  }
+  return map;
+}
+
+/** Nível por extenso (pt) para a linha do prompt. */
+const SEA_LEVEL_LABEL_PT = { red: 'Vermelho', orange: 'Laranja', yellow: 'Amarelo' };
+
+/** Linha «Mar perigoso» estruturada para o prompt do LLM (vazia sem aviso). */
+function seaWarningPromptLine(sea) {
+  if (!sea) return '';
+  const level = SEA_LEVEL_LABEL_PT[sea.level] || sea.level;
+  const area = sea.areaLabel ? ` — ${sea.areaLabel}` : '';
+  return `- ⚠️ Mar perigoso (agitação marítima): ${level}${area}`;
+}
 
 const TOP_SPOTS = [
   { name: 'Supertubos', slug: 'supertubos', lat: 39.336, lon: -9.364, region: 'Peniche', type: 'surf' },
@@ -153,21 +220,37 @@ function findBestWindow(conditions) {
   return scored[0];
 }
 
-async function generateDawnPatrolWithLLM(spotsData) {
-  if (!spotsData || spotsData.length === 0) {
-    return generateBasicAdvice([]);
-  }
-
-  const prompt = `És um surf advisor experiente para Portugal. Analisa estas condições matinais e dá conselhos curtos e úteis em português (e inglês) para surfistas.
-
-Dados:
-${spotsData.map(s => `
+/**
+ * Prompt puro do Dawn Patrol (testável). Para cada spot, inclui as condições
+ * matinais + os avisos costeiros do IH em vigor (se houver) e instrui o LLM a
+ * mencioná-los no conselho do spot em destaque, em pt e en.
+ *
+ * @param {Array} spotsData spots com bestWindow/score (shape do generateDawnPatrol)
+ * @param {Map<string, Array>} coastalBySlug slug → avisos costeiros
+ */
+function buildDawnPatrolPrompt(spotsData, coastalBySlug, seaBySlug) {
+  const spotsBlock = spotsData.map((s) => {
+    const coastal = coastalBySlug?.get(s.slug) ?? [];
+    const sea = seaBySlug?.get(s.slug) ?? null;
+    return `
 ${s.name} (${s.region}):
 - Ondas: ${s.bestWindow.waveHeight.toFixed(1)}m @ ${s.bestWindow.wavePeriod.toFixed(0)}s
 - Vento: ${(s.bestWindow.windSpeed * 1.94384).toFixed(0)} nós
 - Água: ${s.bestWindow.waterTemp?.toFixed(1) ?? '--'}°C
 - Score: ${s.score}/100${s.scoreSource === 'previsão' ? '' : ' (corrigido: ' + s.scoreSource + ')'}
-`).join('')}
+${coastal.length > 0
+  ? `- Avisos costeiros (IH): ${coastal.map((c) => `${c.ref}${c.category ? ` (${c.category})` : ''}`).join('; ')}`
+  : ''}${seaWarningPromptLine(sea)}`;
+  }).join('');
+
+  return `És um surf advisor experiente para Portugal. Analisa estas condições matinais e dá conselhos curtos e úteis em português (e inglês) para surfistas.
+
+Dados:
+${spotsBlock}
+
+Os avisos costeiros do IH (quando listados num spot) são avisos reais à navegação em vigor naquela zona. Se o spot em destaque (topSpot) tiver avisos costeiros, menciona-os de forma curta no advice em pt E en (ex: «Aviso à navegação costeira ANAV NR ... em vigor na zona»), sem entrar em pânico — é informação de segurança.
+
+O estado de AGITAÇÃO MARÍTIMA (linha «Mar perigoso» num spot) é o aviso de segurança mais importante: se o spot em destaque tiver «Mar perigoso», avisa de forma curta no advice em pt E en para não surfar (ex: «⚠️ Mar perigoso — agitação marítima (laranja)»), como o banner de segurança do site — é segurança, não pânico.
 
 Gera um JSON com esta estrutura EXACTA:
 {
@@ -202,6 +285,16 @@ Gera um JSON com esta estrutura EXACTA:
 
 IMPORTANTE: Em "spots", usa APENAS estes slugs exactos (um por spot analisado):
 ${spotsData.map((s) => `- ${s.slug} (${s.name})`).join('\n')}`;
+}
+
+async function generateDawnPatrolWithLLM(spotsData, coastalData, warningsData) {
+  if (!spotsData || spotsData.length === 0) {
+    return generateBasicAdvice([]);
+  }
+
+  const coastalBySlug = resolveCoastalBySlug(spotsData, coastalData);
+  const seaBySlug = resolveSeaBySlug(spotsData, warningsData);
+  const prompt = buildDawnPatrolPrompt(spotsData, coastalBySlug, seaBySlug);
 
   try {
     console.log('   🤖 Calling LLM with fallback chain (Gemini → Groq → Cerebras)...');
@@ -220,11 +313,11 @@ ${spotsData.map((s) => `- ${s.slug} (${s.name})`).join('\n')}`;
   } catch (e) {
     console.error('LLM error:', e.message);
     console.log('   Falling back to basic advice...');
-    return generateBasicAdvice(spotsData);
+    return generateBasicAdvice(spotsData, coastalBySlug, seaBySlug);
   }
 }
 
-function generateBasicAdvice(spotsData) {
+function generateBasicAdvice(spotsData, coastalBySlug, seaBySlug) {
   const date = lisbonDateStr();
 
   if (!spotsData || spotsData.length === 0) {
@@ -260,6 +353,19 @@ function generateBasicAdvice(spotsData) {
   const wetsuit = waterTemp > 18 ? '2mm shorty' : waterTemp > 15 ? '3/2mm' : waterTemp > 12 ? '4/3mm' : '5/4mm com capuz';
   const wetsuitEn = waterTemp > 18 ? '2mm shorty' : waterTemp > 15 ? '3/2mm' : waterTemp > 12 ? '4/3mm' : '5/4mm with hood';
 
+  // Fallback sem LLM: o melhor spot também menciona os avisos costeiros em vigor
+  // (pt/en), como o prompt pediria ao LLM — a strip já os mostra, aqui são
+  // repetidos no próprio texto do conselho.
+  const coastal = coastalBySlug?.get(best.slug) ?? [];
+  const coastalPt = coastalWarningLine(coastal, true);
+  const coastalEn = coastalWarningLine(coastal, false);
+
+  // Estado de agitação marítima do melhor spot — mesma redacção do hero/Telegram
+  // («⚠️ Mar perigoso — agitação marítima (laranja)»), repetido no conselho.
+  const sea = seaBySlug?.get(best.slug) ?? null;
+  const seaPt = seaWarningLine(sea, true);
+  const seaEn = seaWarningLine(sea, false);
+
   return {
     date,
     generatedAt: new Date().toISOString(),
@@ -267,14 +373,14 @@ function generateBasicAdvice(spotsData) {
     topSpotSlug: best.slug,
     pt: {
       headline: `Hoje é dia de ${best.name}! 🌊`,
-      advice: `Melhor janela: ${best.bestWindow.hour}:00h. Ondas de ${best.bestWindow.waveHeight.toFixed(1)}m com ${(windKnots).toFixed(0)} nós de vento.`,
+      advice: `Melhor janela: ${best.bestWindow.hour}:00h. Ondas de ${best.bestWindow.waveHeight.toFixed(1)}m com ${(windKnots).toFixed(0)} nós de vento.${coastalPt ? ` ${coastalPt}` : ''}${seaPt ? ` ${seaPt}` : ''}`,
       bestTime: `${best.bestWindow.hour}:00`,
       wetsuit,
       crowdTip: 'Chega cedo para evitar crowd!',
     },
     en: {
       headline: `Today is ${best.name} day! 🌊`,
-      advice: `Best window: ${best.bestWindow.hour}:00. ${best.bestWindow.waveHeight.toFixed(1)}m waves with ${(windKnots).toFixed(0)} knot wind.`,
+      advice: `Best window: ${best.bestWindow.hour}:00. ${best.bestWindow.waveHeight.toFixed(1)}m waves with ${(windKnots).toFixed(0)} knot wind.${coastalEn ? ` ${coastalEn}` : ''}${seaEn ? ` ${seaEn}` : ''}`,
       bestTime: `${best.bestWindow.hour}:00`,
       wetsuit: wetsuitEn,
       crowdTip: 'Get there early to beat the crowd!',
@@ -335,7 +441,14 @@ function attachScoreRecalibration(advice, spotsData) {
     });
   }
   if (advice.topSpotSlug && bySlug.has(advice.topSpotSlug)) {
-    advice.topScore = bySlug.get(advice.topSpotSlug).score;
+    const top = bySlug.get(advice.topSpotSlug);
+    // O hero do banner mostra o score recalibrado do spot em destaque — leva
+    // também a fonte/previsão/meta para a UI o rotular honestamente, igual aos
+    // vereditos da lista (nunca só o número).
+    advice.topScore = top.score;
+    advice.topScoreForecast = top.scoreForecast;
+    advice.topScoreSource = top.scoreSource;
+    advice.topScoreMeta = top.scoreMeta ?? null;
   }
   return advice;
 }
@@ -440,7 +553,23 @@ async function generateDawnPatrol() {
 
   console.log(`   Analyzed ${spotsData.length} spots`);
 
-  let advice = await generateDawnPatrolWithLLM(spotsData);
+  const coastalData = loadCoastalWarnings();
+  if (coastalData) {
+    const covered = spotsData.filter((s) => coastalWarningsForSpot(coastalData, s.slug).length > 0);
+    if (covered.length > 0) {
+      console.log(`   ⚓ Coastal warnings (IH): ${covered.length} spot(s) cobertos no prompt do LLM`);
+    }
+  }
+
+  const warningsData = loadWarnings();
+  if (warningsData) {
+    const covered = spotsData.filter((s) => seaWarningForSpot(warningsData, s.slug));
+    if (covered.length > 0) {
+      console.log(`   🌊 Sea-state warnings (Mar perigoso): ${covered.length} spot(s) no prompt do LLM`);
+    }
+  }
+
+  let advice = await generateDawnPatrolWithLLM(spotsData, coastalData, warningsData);
   advice = validateAdviceSlugs(advice, validSlugs, spotsData);
   advice = attachMoonTideLines(advice, spotsData);
   advice = attachScoreRecalibration(advice, spotsData);
@@ -455,7 +584,21 @@ async function generateDawnPatrol() {
   console.log(`🤙 ${advice.pt.headline}`);
 }
 
-generateDawnPatrol().catch(e => {
-  console.error('❌ Fatal error in dawn-patrol:', e);
-  process.exit(1);
-});
+// Guard require.main: o script só corre sozinho (CLI/workflow). Requerido por
+// testes unit (buildDawnPatrolPrompt/resolveCoastalBySlug) não dispara a rede.
+if (require.main === module) {
+  generateDawnPatrol().catch(e => {
+    console.error('❌ Fatal error in dawn-patrol:', e);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  buildDawnPatrolPrompt,
+  generateBasicAdvice,
+  resolveCoastalBySlug,
+  resolveSeaBySlug,
+  seaWarningPromptLine,
+  loadCoastalWarnings,
+  loadWarnings,
+};

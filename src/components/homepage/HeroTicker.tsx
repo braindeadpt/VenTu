@@ -1,4 +1,4 @@
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Anchor } from 'lucide-react';
 import {
   formatForecastUpdatedParts,
   getAgeHours,
@@ -7,7 +7,7 @@ import {
   HERO_FORECAST_LAYERS,
   getHeroFreshnessTitle,
 } from '@/lib/heroDataProvenance';
-import type { BuoyLayerMeta } from '@/lib/pipelineMeta';
+import type { BuoyLayerMeta, CoastalWarningsLayerMeta } from '@/lib/pipelineMeta';
 
 interface HeroTickerProps {
   updatedAtTs?: number | null;
@@ -16,6 +16,8 @@ interface HeroTickerProps {
   statusLine?: string;
   /** IH buoy layer state from pipeline-meta.json — warning when not ok. */
   buoyLayer?: BuoyLayerMeta | null;
+  /** Coastal warnings (IH) layer — fetch/em vigor/cobertura. */
+  coastalWarningsLayer?: CoastalWarningsLayerMeta | null;
 }
 
 const SEP = <span aria-hidden className="text-fg-subtle/40">·</span>;
@@ -41,12 +43,37 @@ function buoyLayerLabel(status: NonNullable<BuoyLayerMeta>['status'], isPt: bool
   }
 }
 
-export default function HeroTicker({ updatedAtTs, locale, statusLine, buoyLayer }: HeroTickerProps) {
+function coastalLayerLabel(status: NonNullable<CoastalWarningsLayerMeta>['status'], isPt: boolean): string {
+  switch (status) {
+    case 'down':
+      return isPt ? 'Avisos costeiros: sem dados' : 'Coastal warnings: no data';
+    case 'stale':
+      return isPt ? 'Avisos costeiros: desactualizados' : 'Coastal warnings: stale';
+    default:
+      return '';
+  }
+}
+
+export default function HeroTicker({
+  updatedAtTs,
+  locale,
+  statusLine,
+  buoyLayer,
+  coastalWarningsLayer,
+}: HeroTickerProps) {
   const isPt = locale === 'pt';
   const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
   const updated =
     updatedAtTs != null ? formatForecastUpdatedParts(updatedAtTs, locale) : null;
   const buoyStatus = buoyLayer && buoyLayer.status !== 'ok' ? buoyLayer.status : null;
+  const coastalStatus =
+    coastalWarningsLayer && coastalWarningsLayer.status !== 'ok'
+      ? coastalWarningsLayer.status
+      : null;
+  const coastalActive =
+    coastalWarningsLayer && coastalWarningsLayer.status === 'ok'
+      ? coastalWarningsLayer.activeWarnings
+      : 0;
 
   return (
     <div
@@ -114,6 +141,57 @@ export default function HeroTicker({ updatedAtTs, locale, statusLine, buoyLayer 
               className={`font-medium ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor'}`}
             >
               {buoyLayerLabel(buoyStatus, isPt)}
+            </span>
+          </span>
+        ) : null}
+
+        {coastalStatus ? (
+          <span
+            className="inline-flex items-center gap-1 shrink-0"
+            title={
+              isPt
+                ? `Camada de avisos costeiros (IH) ${coastalStatus === 'down' ? 'sem dados' : 'desactualizada'}` +
+                  (coastalWarningsLayer?.fetchedAt
+                    ? ` — última fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT')}`
+                    : '')
+                : `Coastal warnings (IH) layer ${coastalStatus === 'down' ? 'down' : 'stale'}` +
+                  (coastalWarningsLayer?.fetchedAt
+                    ? ` — last fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB')}`
+                    : '')
+            }
+          >
+            {SEP}
+            <AlertTriangle
+              className="w-3.5 h-3.5 text-score-poor"
+              aria-hidden
+            />
+            <span className="font-medium text-score-poor">
+              {coastalLayerLabel(coastalStatus, isPt)}
+            </span>
+          </span>
+        ) : coastalActive != null && coastalActive > 0 ? (
+          <span
+            className="inline-flex items-center gap-1 shrink-0"
+            title={
+              isPt
+                ? `${coastalActive} avisos à navegação costeiros (IH) em vigor · ` +
+                  `${coastalWarningsLayer?.coveredSpots ?? 0} spots cobertos` +
+                  (coastalWarningsLayer?.fetchedAt
+                    ? ` · fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT')}`
+                    : '')
+                : `${coastalActive} coastal navigation warnings (IH) in force · ` +
+                  `${coastalWarningsLayer?.coveredSpots ?? 0} spots covered` +
+                  (coastalWarningsLayer?.fetchedAt
+                    ? ` · fetched ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB')}`
+                    : '')
+            }
+          >
+            {SEP}
+            <Anchor className="w-3.5 h-3.5 text-score-fair" aria-hidden />
+            <span className="font-medium text-score-fair">
+              {isPt
+                ? `${coastalActive} avisos · ${coastalWarningsLayer?.coveredSpots ?? 0} spots`
+                : `${coastalActive} warnings · ${coastalWarningsLayer?.coveredSpots ?? 0} spots`}
             </span>
           </span>
         ) : null}

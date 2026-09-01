@@ -5,9 +5,9 @@ import { cn } from '@/lib/cn';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import {
   seaStateWarningForSpot,
+  warningLevelLabel,
   warningTypeLabel,
   warningsSourceLabel,
-  WARNING_LEVEL_META,
 } from '@/lib/ipmaWarnings';
 
 function formatEndDate(iso: string | undefined, isPt: boolean): string {
@@ -41,8 +41,7 @@ export default function SeaStateSafetyBanner({
   if (!warning) return null;
 
   const level = warning.level;
-  const levelMeta = WARNING_LEVEL_META[level];
-  const levelLabel = levelMeta?.label[isPt ? 'pt' : 'en'] ?? level;
+  const levelLabel = warningLevelLabel(level, locale);
 
   const bannerTone =
     level === 'red'

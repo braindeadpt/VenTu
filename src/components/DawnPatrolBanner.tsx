@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle, Waves } from 'lucide-react';
+import { Sunrise, Clock, Shirt, Users, ChevronDown, ChevronUp, Zap, AlertTriangle, Waves, Anchor } from 'lucide-react';
 import MoonIcon from '@/components/ui/MoonIcon';
 import { getMoonPhase } from '@/lib/moonPhase';
 import Link from 'next/link';
@@ -11,19 +11,39 @@ import { spots } from '@/lib/spots';
 import { isDawnPatrolStale } from '@/lib/dataFreshness';
 import {
   ipmaRadarUrl,
-  warningTypeLabel,
+  warningBadgeLabel,
+  warningLevelLabel,
   warningsSourceLabel,
   seaStateWarningForSpot,
   strongestSeaStateForSpots,
-  WARNING_LEVEL_META,
   RELEVANT_WARNING_TYPES,
   type IpmaWarningsData,
 } from '@/lib/ipmaWarnings';
+import {
+  loadCoastalNavWarnings,
+  warningsForSpot,
+  type CoastalWarningsFile,
+} from '@/lib/ihCoastalWarnings';
+
+interface DawnPatrolScoreMeta {
+  stationName?: string;
+  distanceKm?: number;
+  region?: string;
+  me?: number;
+  n?: number;
+}
+
+type DawnPatrolScoreSource = 'boia' | 'viés regional' | 'previsão';
 
 interface DawnPatrolData {
   date: string;
   topSpot: string;
   topSpotSlug: string;
+  /** Score recalibrado do spot em destaque (hero do banner) + honestidade. */
+  topScore?: number;
+  topScoreForecast?: number;
+  topScoreSource?: DawnPatrolScoreSource;
+  topScoreMeta?: DawnPatrolScoreMeta | null;
   pt: {
     headline: string;
     advice: string;
@@ -45,12 +65,35 @@ interface DawnPatrolData {
     slug: string;
     score: number;
     scoreForecast?: number;
-    scoreSource?: 'boia' | 'viés regional' | 'previsão';
-    scoreMeta?: { stationName?: string; distanceKm?: number; region?: string; me?: number; n?: number } | null;
+    scoreSource?: DawnPatrolScoreSource;
+    scoreMeta?: DawnPatrolScoreMeta | null;
     verdict: 'go' | 'maybe' | 'skip';
     ptReason: string;
     enReason: string;
   }>;
+}
+
+/**
+ * Tooltip honesto da recalibração — partilhado entre o hero (chip do spot em
+ * destaque) e os vereditos expandidos, para as duas superfícies nunca
+ * divergirem na explicação (boia vs viés regional vs previsão).
+ */
+function recalibrationTitle(
+  source: DawnPatrolScoreSource | undefined,
+  meta: DawnPatrolScoreMeta | null | undefined,
+  forecast: number | undefined,
+  score: number,
+  isPt: boolean,
+): string | undefined {
+  if (!source || source === 'previsão') return undefined;
+  if (source === 'boia') {
+    return isPt
+      ? `Score corrigido pela boia${meta?.stationName ? ` ${meta.stationName}` : ''} (previsão: ${forecast ?? score})`
+      : `Score corrected by buoy${meta?.stationName ? ` ${meta.stationName}` : ''} (forecast: ${forecast ?? score})`;
+  }
+  return isPt
+    ? `Score corrigido pelo viés regional${meta?.region ? ` (${meta.region})` : ''} (previsão: ${forecast ?? score})`
+    : `Score corrected by regional bias${meta?.region ? ` (${meta.region})` : ''} (forecast: ${forecast ?? score})`;
 }
 
 const VALID_SLUGS = new Set(spots.map(s => s.slug));
@@ -65,6 +108,7 @@ function resolveSpotHref(locale: string, slug: string): string {
 export default function DawnPatrolBanner({ locale }: { locale: string }) {
   const [data, setData] = useState<DawnPatrolData | null>(null);
   const [warningsData, setWarningsData] = useState<IpmaWarningsData | null>(null);
+  const [coastalData, setCoastalData] = useState<CoastalWarningsFile | null>(null);
   const [expanded, setExpanded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -95,6 +139,15 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
         return r.json();
       })
       .then(d => setWarningsData(d as IpmaWarningsData))
+      .catch(() => {});
+  }, []);
+
+  // Avisos à Navegação Costeiros do IH — mesma linha de segurança, ao lado
+  // dos do IPMA/MeteoAlarm. O módulo tem cache própria (o card da página de
+  // spot reutiliza-a), e a falha nunca quebra o banner.
+  useEffect(() => {
+    loadCoastalNavWarnings()
+      .then((file) => setCoastalData(file))
       .catch(() => {});
   }, []);
 
@@ -192,6 +245,20 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
     return { warning: best, slug };
   })();
 
+  // «Avisos à Navegação Costeiros (IH)» — o primeiro spot (destaque ou lista)
+  // coberto por um aviso em vigor, com ligação à página do spot (onde a secção
+  // completa vive). Junto da linha IPMA/MeteoAlarm — nunca substitui o «Mar
+  // perigoso», que continua a ser o aviso mais forte de agitação marítima.
+  const coastalState = (() => {
+    if (!coastalData) return null;
+    const slugs = [data.topSpotSlug, ...data.spots.map((s) => s.slug)];
+    for (const slug of slugs) {
+      const ws = warningsForSpot(coastalData, slug);
+      if (ws && ws.length > 0) return { warnings: ws, slug };
+    }
+    return null;
+  })();
+
   const moon = getMoonPhase(new Date(`${data.date}T12:00:00`));
   const dateLabel = new Date(`${data.date}T12:00:00`).toLocaleDateString(
     isPt ? 'pt-PT' : 'en-GB',
@@ -230,8 +297,8 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             {isPt ? 'Mar perigoso — não surfar' : 'Dangerous sea — do not surf'}
           </span>
           <span className="font-semibold">
-            {warningTypeLabel(seaState.warning.type, isPt)} ·{' '}
-            {WARNING_LEVEL_META[seaState.warning.level]?.label[isPt ? 'pt' : 'en'] ?? seaState.warning.level}
+            {warningBadgeLabel(seaState.warning, isPt)} ·{' '}
+            {warningLevelLabel(seaState.warning.level, locale)}
           </span>
           <span className="text-meta-sm text-fg-muted ml-auto shrink-0">
             {isPt ? 'ver spot →' : 'view spot →'}
@@ -295,6 +362,38 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
 
         {/* Quick stats */}
         <div className="flex flex-wrap gap-x-4 gap-y-1 mt-4 pt-3 border-t border-divider">
+          {/* Score recalibrado do spot em destaque — visível no hero, não só no
+              tooltip dos vereditos. Sufixo honesto (boia / viés regional) com a
+              previsão original no tooltip, igual à lista expandida. */}
+          {data.topScore != null && (
+            <div className="flex items-center gap-2 text-sm text-fg-muted">
+              <Zap className="w-4 h-4 text-accent shrink-0" aria-hidden />
+              <span>
+                {isPt ? 'Score:' : 'Score:'}{' '}
+                <span className="font-bold text-fg tabular-nums">{data.topScore}</span>
+                {data.topScoreSource && data.topScoreSource !== 'previsão' && (
+                  <span
+                    className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded-md text-xs font-semibold bg-accent/15 text-accent border border-accent/30 cursor-help"
+                    title={recalibrationTitle(
+                      data.topScoreSource,
+                      data.topScoreMeta,
+                      data.topScoreForecast,
+                      data.topScore,
+                      isPt,
+                    )}
+                  >
+                    {isPt
+                      ? data.topScoreSource === 'boia'
+                        ? '(boia)'
+                        : '(viés regional)'
+                      : data.topScoreSource === 'boia'
+                        ? '(buoy)'
+                        : '(regional bias)'}
+                  </span>
+                )}
+              </span>
+            </div>
+          )}
           <div className="flex items-center gap-2 text-sm text-fg-muted">
             <Clock className="w-4 h-4 text-data-waves shrink-0" />
             <span>{isPt ? 'Melhor hora:' : 'Best time:'} <span className="font-bold text-fg">{content.bestTime}</span></span>
@@ -333,13 +432,30 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                 ? `Aviso ativo (${warningsSourceLabel(warningsData, true)})`
                 : `Active warning (${warningsSourceLabel(warningsData, false)})`}:{' '}
               {relevantWarnings
-                .map(
-                  (w) =>
-                    `${warningTypeLabel(w.type, isPt)} (${WARNING_LEVEL_META[w.level]?.label[isPt ? 'pt' : 'en'] ?? w.level})`,
-                )
+                .map((w) => `${warningBadgeLabel(w, isPt)} (${warningLevelLabel(w.level, locale)})`)
                 .join(' · ')}
             </span>
           </a>
+        )}
+
+        {coastalState && (
+          <Link
+            href={resolveSpotHref(locale, coastalState.slug)}
+            className="flex items-start gap-2 text-sm mt-2 text-score-poor hover:underline"
+          >
+            <Anchor className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
+            <span>
+              {isPt
+                ? 'Aviso à navegação costeira (IH): '
+                : 'Coastal navigation warning (IH): '}
+              {coastalState.warnings
+                .map(
+                  (w) =>
+                    `${w.ref}${w.category ? ` — ${w.category}` : ''}`,
+                )
+                .join(' · ')}
+            </span>
+          </Link>
         )}
       </div>
 
@@ -381,17 +497,13 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                   </div>
                   <span
                     className="text-xs font-bold text-fg-muted tabular-nums"
-                    title={
-                      spot.scoreSource && spot.scoreSource !== 'previsão'
-                        ? isPt
-                          ? spot.scoreSource === 'boia'
-                            ? `Score corrigido pela boia${spot.scoreMeta?.stationName ? ` ${spot.scoreMeta.stationName}` : ''} (previsão: ${spot.scoreForecast ?? spot.score})`
-                            : `Score corrigido pelo viés regional${spot.scoreMeta?.region ? ` (${spot.scoreMeta.region})` : ''} (previsão: ${spot.scoreForecast ?? spot.score})`
-                          : spot.scoreSource === 'boia'
-                            ? `Score corrected by buoy${spot.scoreMeta?.stationName ? ` ${spot.scoreMeta.stationName}` : ''} (forecast: ${spot.scoreForecast ?? spot.score})`
-                            : `Score corrected by regional bias${spot.scoreMeta?.region ? ` (${spot.scoreMeta.region})` : ''} (forecast: ${spot.scoreForecast ?? spot.score})`
-                        : undefined
-                    }
+                    title={recalibrationTitle(
+                      spot.scoreSource,
+                      spot.scoreMeta,
+                      spot.scoreForecast,
+                      spot.score,
+                      isPt,
+                    )}
                   >
                     {spot.score}
                   </span>

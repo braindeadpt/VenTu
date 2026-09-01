@@ -23,6 +23,8 @@ interface HomeAdaptiveProps {
   sportsCount: number;
   /** IH buoy layer state from pipeline-meta.json (ticker diagnostics). */
   buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
+  /** Coastal warnings (IH) layer state from pipeline-meta.json (ticker). */
+  coastalWarningsLayer?: import('@/lib/pipelineMeta').CoastalWarningsLayerMeta | null;
 }
 
 export default function HomeAdaptive({
@@ -32,6 +34,7 @@ export default function HomeAdaptive({
   spotCount,
   sportsCount,
   buoyLayer,
+  coastalWarningsLayer,
 }: HomeAdaptiveProps) {
   const hasFavorites = useHasFavorites();
   const { favorites } = useAuth();
@@ -59,6 +62,7 @@ export default function HomeAdaptive({
         maxTs={maxTs}
         variant={isReturning ? 'compact' : 'featured'}
         buoyLayer={buoyLayer}
+        coastalWarningsLayer={coastalWarningsLayer}
       />
 
       <WaveDivider />

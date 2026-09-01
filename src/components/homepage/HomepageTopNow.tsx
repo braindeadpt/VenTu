@@ -128,6 +128,8 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
                   statusLine={statusLine}
                   warning={warningBadge}
                   waveCorrection={waveCorrection}
+                  observedWaveAt={data.conditions.observedWave?.observedAt ?? null}
+                  observedWaveSource={data.conditions.observedWave?.source ?? null}
                 />
               </li>
             );

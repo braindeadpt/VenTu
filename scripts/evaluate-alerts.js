@@ -14,6 +14,11 @@ const path = require('path');
 
 const CONDITIONS_PATH = path.join(__dirname, '../public/data/conditions.json');
 const SPOTS_PATH = path.join(__dirname, '../src/lib/spots.ts');
+const WARNINGS_PATH =
+  process.env.IPMA_WARNINGS_OUTPUT_PATH || path.join(__dirname, '../public/data/warnings.json');
+const COASTAL_WARNINGS_PATH =
+  process.env.IH_COASTAL_WARNINGS_OUTPUT_PATH ||
+  path.join(__dirname, '../public/data/ih-coastal-warnings.json');
 const SITE_URL = 'https://ventu.surf';
 const FROM_EMAIL = process.env.RESEND_FROM || 'VenTu <alerts@ventu.surf>';
 const COOLDOWN_MS = 3 * 60 * 60 * 1000;
@@ -21,6 +26,11 @@ const DIGEST_HOUR_LISBON = 7;
 
 const { escapeHtml, safeLocale } = require('./lib/htmlEscape');
 const { computeScore } = require('./lib/scoreSpotConditions');
+const { seaWarningForSpot, seaWarningLine, seaWarningEmailLine } = require('./lib/ipmaWarnings');
+const {
+  coastalWarningsForSpot,
+  coastalWarningLine,
+} = require('./lib/ihCoastalWarnings');
 const {
   sendTelegramMessage,
   processTelegramLinkUpdates,
@@ -42,6 +52,30 @@ function loadEnvLocal() {
 }
 
 loadEnvLocal();
+
+/** Load baked IPMA/MeteoAlarm warnings (best-effort — alerts still fire without it). */
+function loadWarnings() {
+  try {
+    if (fs.existsSync(WARNINGS_PATH)) {
+      return JSON.parse(fs.readFileSync(WARNINGS_PATH, 'utf-8'));
+    }
+  } catch (err) {
+    console.warn(`  ⚠️ Warnings not loaded (${err.message}) — «Mar perigoso» omitted.`);
+  }
+  return null;
+}
+
+/** Load baked IH coastal navigation warnings (best-effort, same as IPMA). */
+function loadCoastalWarnings() {
+  try {
+    if (fs.existsSync(COASTAL_WARNINGS_PATH)) {
+      return JSON.parse(fs.readFileSync(COASTAL_WARNINGS_PATH, 'utf-8'));
+    }
+  } catch (err) {
+    console.warn(`  ⚠️ Coastal warnings not loaded (${err.message}) — IH nav warnings omitted.`);
+  }
+  return null;
+}
 
 function alertPath(locale, page, token) {
   const loc = safeLocale(locale);
@@ -286,7 +320,7 @@ async function sendUserVerification(pref, favoriteCount) {
   await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
 }
 
-async function evaluateLegacySubscriptions(slugToId, conditions) {
+async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coastal) {
   const subs = await fetchSubscriptions();
   let sent = 0;
 
@@ -317,10 +351,20 @@ async function evaluateLegacySubscriptions(slugToId, conditions) {
     const slug = escapeHtml(sub.spot_slug);
     const sport = escapeHtml(sub.sport);
     const minScore = escapeHtml(sub.min_score);
+    const seaWarn = seaWarningForSpot(warnings, spotId);
+    // Email: linha «Mar perigoso» com área + texto oficial do IPMA (contexto
+    // além do rótulo compacto); o Telegram continua compacto.
+    const seaHtml = seaWarn
+      ? `<p><strong>${escapeHtml(seaWarningEmailLine(seaWarn, isPt))}</strong></p>`
+      : '';
+    const coastalWarn = coastalWarningsForSpot(coastal, spotId);
+    const coastalHtml = coastalWarn.length
+      ? `<p><strong>${escapeHtml(coastalWarningLine(coastalWarn, isPt))}</strong></p>`
+      : '';
     const subject = `VenTu — ${sub.spot_slug}: score ${score} (${sub.sport})`;
-    const html = isPt
+    const html = `${seaHtml}${coastalHtml}${isPt
       ? `<p>Condições boas em <strong>${slug}</strong>!</p><p>Score ${sport}: <strong>${score}</strong>/100${sourceNote} (limiar ${minScore})</p><p><a href="${spotUrl}">Ver spot</a></p><p><a href="${unsub}">Cancelar alerta</a></p>`
-      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} score: <strong>${score}</strong>/100${sourceNote} (threshold ${minScore})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`;
+      : `<p>Good conditions at <strong>${slug}</strong>!</p><p>${sport} score: <strong>${score}</strong>/100${sourceNote} (threshold ${minScore})</p><p><a href="${spotUrl}">View spot</a></p><p><a href="${unsub}">Unsubscribe</a></p>`}`;
 
     const ok = await sendEmail(sub.email, subject, html, { unsubscribeUrl: unsub });
     if (ok) {
@@ -332,7 +376,7 @@ async function evaluateLegacySubscriptions(slugToId, conditions) {
   return { legacyCount: subs.length, legacySent: sent };
 }
 
-async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
+async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal) {
   const prefs = await fetchUserAlertPrefs();
   let sent = 0;
   let digestSkipped = 0;
@@ -360,7 +404,13 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
       const slug = idToSlug[spotId] || spotId;
       const scored = computeScore(spotId, pref.sport, conditions);
       if (scored !== null && scored.score >= pref.min_score) {
-        firing.push({ slug, score: scored.score, source: scored.source });
+        firing.push({
+          slug,
+          score: scored.score,
+          source: scored.source,
+          seaWarn: seaWarningForSpot(warnings, spotId),
+          coastalWarn: coastalWarningsForSpot(coastal, spotId),
+        });
       }
     }
 
@@ -386,14 +436,17 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
 
     const isPt = pref.locale !== 'en';
     const unsub = alertPath(pref.locale, 'unsubscribe', pref.verify_token);
+    const anySea = firing.some((f) => f.seaWarn);
+    const anyCoastal = firing.some((f) => f.coastalWarn.length > 0);
     const subject =
-      mode === 'digest'
+      `${anySea ? (isPt ? '⚠️ Mar perigoso — ' : '⚠️ Dangerous sea — ') : anyCoastal ? (isPt ? '⚠️ Aviso à navegação (IH) — ' : '⚠️ Coastal warning (IH) — ') : ''}` +
+      (mode === 'digest'
         ? isPt
           ? `VenTu — bom dia: ${firing.length} favorito(s) a bombar`
           : `VenTu — morning: ${firing.length} favorite(s) firing`
         : isPt
           ? `VenTu — ${firing.length} favorito(s) a bombar`
-          : `VenTu — ${firing.length} favorite(s) firing`;
+          : `VenTu — ${firing.length} favorite(s) firing`);
 
     const intro =
       mode === 'digest'
@@ -405,10 +458,14 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
           : '<p>Good conditions on your favorites:</p>';
 
     const items = firing
-      .map(({ slug, score, source }) => {
+      .map(({ slug, score, source, seaWarn, coastalWarn }) => {
         const spotUrl = spotPath(pref.locale, slug);
         const note = scoreSourceNote(source, isPt);
-        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100${note}</li>`;
+        // Email (items do digest/imediato): linha com área + texto oficial.
+        const seaLine = seaWarningEmailLine(seaWarn, isPt);
+        const coastalLine = coastalWarningLine(coastalWarn, isPt);
+        const safetyLine = [seaLine, coastalLine].filter(Boolean).join('<br/>');
+        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100${note}${safetyLine ? `<br/><strong>${escapeHtml(safetyLine)}</strong>` : ''}</li>`;
       })
       .join('');
 
@@ -420,13 +477,21 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
     const { url, key } = getSupabaseConfig();
     const chatId = await fetchTelegramChatId(url, key, pref.user_id);
     let tgOk = false;
-    if (chatId) {
-      const tgLines = firing
-        .map(({ slug, score, source }) => `• ${slug} — ${score}/100${scoreSourceNote(source, isPt)}`)
-        .join('\n');
+    if (chatId) {    const tgLines = firing
+      .map(({ slug, score, source, seaWarn, coastalWarn }) => {
+        const line = `• ${slug} — ${score}/100${scoreSourceNote(source, isPt)}`;
+        const safetyLine = [seaWarningLine(seaWarn, isPt), coastalWarningLine(coastalWarn, isPt)]
+          .filter(Boolean)
+          .join('\n  ');
+        return safetyLine ? `${line}\n  ${safetyLine}` : line;
+      })
+      .join('\n');
+      // Resumo dos avisos costeiros no DIGEST (não só na linha de cada spot):
+      // um bloco agregado por refs distintos, antes das linhas por spot.
+      const coastalSummary = mode === 'digest' ? buildCoastalDigestSummary(firing, isPt) : '';
       const tgText = isPt
-        ? `VenTu — ${firing.length} favorito(s) a bombar\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`
-        : `VenTu — ${firing.length} favorite(s) firing\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`;
+        ? `VenTu — ${firing.length} favorito(s) a bombar${coastalSummary ? `\n\n${coastalSummary}` : ''}\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`
+        : `VenTu — ${firing.length} favorite(s) firing${coastalSummary ? `\n\n${coastalSummary}` : ''}\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`;
       try {
         tgOk = await sendTelegramMessage(chatId, tgText);
       } catch (err) {
@@ -448,6 +513,27 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions) {
   };
 }
 
+/**
+ * Resumo agregado dos avisos costeiros para o digest do Telegram — refs
+ * DISTINTOS em vigor nos spots a disparar (uma ref repetida em vários spots
+ * conta uma vez). Devolve '' sem avisos.
+ *
+ * @param {Array<{ coastalWarn: Array<{ id: number, ref?: string }> }>} firing
+ * @param {boolean} isPt
+ * @returns {string}
+ */
+function buildCoastalDigestSummary(firing, isPt) {
+  const refs = [...new Set(
+    (firing || []).flatMap((f) =>
+      (f.coastalWarn || []).map((w) => w.ref || `AVISO ${w.id}`),
+    ),
+  )];
+  if (refs.length === 0) return '';
+  return isPt
+    ? `⚓ Avisos à navegação costeiros (IH) em vigor na tua zona: ${refs.join(' · ')}`
+    : `⚓ Coastal navigation warnings (IH) in force in your area: ${refs.join(' · ')}`;
+}
+
 async function main() {
   console.log('🔔 VenTu — Evaluate alerts\n');
 
@@ -464,8 +550,10 @@ async function main() {
   const { slugToId, idToSlug } = loadSpotMaps();
   const conditions = JSON.parse(fs.readFileSync(CONDITIONS_PATH, 'utf-8'));
 
-  const legacy = await evaluateLegacySubscriptions(slugToId, conditions);
-  const e1c = await evaluateUserFavoritesAlerts(idToSlug, conditions);
+  const warnings = loadWarnings();
+  const coastal = loadCoastalWarnings();
+  const legacy = await evaluateLegacySubscriptions(slugToId, conditions, warnings, coastal);
+  const e1c = await evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal);
 
   console.log(`  Legacy subscriptions: ${legacy.legacyCount}`);
   console.log(`  User alert prefs (E1c): ${e1c.userPrefsCount}`);
@@ -478,7 +566,16 @@ async function main() {
   console.log(`\n✅ Alerts sent: ${legacy.legacySent + e1c.userDigestSent}`);
 }
 
-main().catch((e) => {
-  console.error('❌', e.message);
-  process.exit(1);
-});
+// Guard require.main: o script só corre sozinho (CLI/workflow). Requerido por
+// testes unit (buildCoastalDigestSummary) não dispara Supabase/rede.
+if (require.main === module) {
+  main().catch((e) => {
+    console.error('❌', e.message);
+    process.exit(1);
+  });
+}
+
+module.exports = {
+  buildCoastalDigestSummary,
+  evaluateUserFavoritesAlerts,
+};

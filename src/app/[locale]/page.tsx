@@ -1,11 +1,9 @@
 import { getTranslation, locales } from '@/lib/i18n';
-import type { Locale } from '@/lib/i18n';
 import { loadSpotData } from '@/lib/load-spot-data';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
 
-// es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
@@ -16,8 +14,7 @@ export default async function HomePage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const isPt = locale === 'pt';
-  getTranslation(locale as Locale);
+  const t = getTranslation(locale);
 
   const spotsData = loadSpotData();
 
@@ -32,9 +29,9 @@ export default async function HomePage({
   return (
     <div className="min-h-screen bg-bg-base">
       <h1 className="sr-only">
-        {isPt
-          ? `VenTu — ${spotsData.length} spots de surf, kitesurf e windsurf em Portugal, condições ${pipelineSchedule('pt')}`
-          : `VenTu — ${spotsData.length} surf, kitesurf and windsurf spots in Portugal, conditions ${pipelineSchedule('en')}`}
+        {t.hero.seoH1
+          .replace('{count}', String(spotsData.length))
+          .replace('{schedule}', pipelineSchedule(locale))}
       </h1>
 
       <HomeAdaptive
@@ -44,6 +41,7 @@ export default async function HomePage({
         spotCount={spotsData.length}
         sportsCount={7}
         buoyLayer={pipelineMeta?.buoyLayer ?? null}
+        coastalWarningsLayer={pipelineMeta?.coastalWarningsLayer ?? null}
       />
     </div>
   );

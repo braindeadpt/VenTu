@@ -1,30 +1,53 @@
-﻿name: Dawn Patrol AI Advisor
+name: Dawn Patrol AI Advisor
 
 on:
-  schedule:
-    # Run every day at 6:00 AM Lisbon time (5:00 UTC)
-    - cron: '0 5 * * *'
+  # Sequencial: dispara quando o update-data.yml do mesmo dia COMPLETA com
+  # sucesso — concretamente a corrida das 04:00 Lisboa, o último merge antes
+  # das 06:00 (05:00 é 'skip' no schedule). Assim a recalibração apanha sempre
+  # as leituras mais frescas do merge antes do dawn, sem correr em paralelo
+  # nem depender de um cron independente que possa acordar antes do update.
+  workflow_run:
+    workflows: [Update VenTu Data]
+    types: [completed]
   workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dawn-patrol
+  cancel-in-progress: false
 
 jobs:
   generate-dawn-patrol:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    # Só avança com o update-data concluído com SUCESSO (ou dispatch manual):
+    # update-data a falhar → sem merge fresco → sem dawn patrol esse dia.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      # O workflow_run dispara para TODAS as corridas diárias do update-data
+      # (00h, 04h, 06h, 08h, …). Este gate restringe o dawn patrol à janela da
+      # corrida das 04:00 Lisboa — a última antes das 06:00.
+      - name: Dawn window gate (Europe/Lisbon)
+        id: gate
+        run: node scripts/should-run-dawn-patrol.js
+
       - name: Setup Node.js
+        if: steps.gate.outputs.gate == 'run'
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
+        if: steps.gate.outputs.gate == 'run'
         run: npm ci
 
       - name: Generate Dawn Patrol
+        if: steps.gate.outputs.gate == 'run'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ }}
@@ -32,6 +55,7 @@ jobs:
         run: node scripts/dawn-patrol.js
 
       - name: Commit and push (with retry)
+        if: steps.gate.outputs.gate == 'run'
         run: |
           git config user.name "VenTu Bot"
           git config user.email "bot@ventu.surf"

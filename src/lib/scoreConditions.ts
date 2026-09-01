@@ -123,6 +123,13 @@ export interface ScoreWaveCorrection {
     rawHeight: number;
     deltaM: number;
   };
+  /**
+   * True when the regional bias was applied at runtime by the client-side
+   * fallback (wave-bias.json fetched by the UI) instead of being baked by the
+   * pipeline. Lets the badge tooltip distinguish «correcção em tempo real»
+   * from «meta da pipeline» honestly.
+   */
+  fallback?: boolean;
 }
 
 /**
@@ -166,7 +173,7 @@ export function resolveScoreWaveCorrection(
     };
   }
   const waveBias = raw.waveBias as
-    | { me?: unknown; n?: unknown; deltaM?: unknown }
+    | { me?: unknown; n?: unknown; deltaM?: unknown; fallback?: unknown }
     | undefined;
   if (waveBias && typeof waveBias === 'object') {
     const me = Number(waveBias.me);
@@ -177,6 +184,7 @@ export function resolveScoreWaveCorrection(
       ...(Number.isFinite(me) ? { me } : {}),
       ...(Number.isFinite(n) ? { n } : {}),
       ...(Number.isFinite(deltaM) ? { deltaM } : {}),
+      ...(waveBias.fallback === true ? { fallback: true } : {}),
     };
   }
   return null;
@@ -254,7 +262,7 @@ export function applyRegionalBiasFallback(
   spotCond: Record<string, unknown>,
   region: string | undefined,
   waveBiasFile: WaveBiasRegionsFile | null | undefined,
-): { waveHeight: number; waveBias: { region: string; me: number; n: number; deltaM: number } } | null {
+): { waveHeight: number; waveBias: { region: string; me: number; n: number; deltaM: number; fallback: true } } | null {
   // A correcção em tempo real ganha — nunca aplicar o viés com leitura fresca.
   const observedWave = spotCond.observedWave as ObservedWave | undefined;
   if (observedWave && isObservedWaveFresh(observedWave)) return null;
@@ -267,9 +275,12 @@ export function applyRegionalBiasFallback(
   const corrected = Math.max(0.1, round1(raw + bias.me));
   const deltaM = round1(corrected - raw);
   if (Math.abs(deltaM) < 0.05) return null;
+  // `fallback: true` marca que esta correcção foi aplicada em runtime pelo
+  // client (wave-bias.json) — distingue o tooltip da correcção baked pela
+  // pipeline, que não carrega o campo.
   return {
     waveHeight: corrected,
-    waveBias: { region: bias.region, me: bias.me, n: bias.n, deltaM },
+    waveBias: { region: bias.region, me: bias.me, n: bias.n, deltaM, fallback: true },
   };
 }
 

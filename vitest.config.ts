@@ -57,6 +57,11 @@ export default defineConfig({
       'scripts/lib/__tests__/checkCitationCff.test.js',
       'scripts/lib/__tests__/coastalWarningsArchive.test.js',
       'scripts/lib/__tests__/coastalWarningsFetchES.test.js',
+      'scripts/lib/__tests__/dawnPatrolPrompt.test.js',
+      'scripts/lib/__tests__/shouldRunDawnPatrol.test.js',
+      'scripts/lib/__tests__/evaluateAlertsChain.test.js',
+      'scripts/lib/__tests__/evaluateAlertsCoastal.test.js',
+      'scripts/lib/__tests__/scoreSpotConditions.test.js',
     ],
   },
   resolve: {
