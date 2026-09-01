@@ -221,8 +221,12 @@ test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
     await expect(
       page.getByText(/alturas de onda no mapa e nos cards são previsão do modelo/),
     ).toBeVisible();
-    // WMO também sem dados → nota visível na homepage.
-    await expect(page.getByText(/fallback WMO \(Copernicus\) também está em baixo/)).toBeVisible();
+    // WMO também sem dados → nota visível na homepage, na região dos cards.
+    await expect(
+      page.getByRole('region', { name: /A bombar agora/i }).getByText(
+        /fallback WMO \(Copernicus\) também está em baixo/,
+      ),
+    ).toBeVisible();
   });
 
   test('down: «Boias do IH indisponíveis» na homepage', async ({ page }) => {
