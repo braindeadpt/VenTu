@@ -52,6 +52,7 @@ const {
 const { readJsonIfExists, atomicWriteJson, ensureParentDir } = require('./lib/updateConditionsArtifacts');
 const { createUpdateConditionsFetcher } = require('./lib/updateConditionsFetch');
 const { buildConditionsRow, mergeForecast } = require('./lib/updateConditionsMerge');
+const { validateCoverage, assertCoverage, buildPipelineLayers } = require('./lib/updateConditionsHealth');
 
 function resolveUseMultiModel() {
   const raw = process.env.VENTU_MULTIMODEL;
@@ -607,22 +608,8 @@ async function updateConditions() {
   ensureParentDir(outputPath);
   
   // Validate we have data before writing
-  const spotCount = Object.keys(allConditions).length;
-  const primaryIds = spots.filter((s) => !s.conditionsSource).map((s) => s.id);
-  const failedPrimary = primaryIds.filter((id) => !allConditions[id]);
-  if (failedPrimary.length > 0) {
-    console.warn(`⚠️ ${failedPrimary.length} primary spots failed: ${failedPrimary.slice(0, 8).join(', ')}${failedPrimary.length > 8 ? '…' : ''}`);
-  }
-  const minOk = Math.ceil(primaryIds.length * 0.95);
-  const okPrimary = primaryIds.length - failedPrimary.length;
-  if (okPrimary < minOk) {
-    console.error(`\n❌ ERROR: Only ${okPrimary}/${primaryIds.length} primary spots fetched (need ≥${minOk}). Not writing.`);
-    process.exit(1);
-  }
-  if (spotCount === 0) {
-    console.error('\n❌ ERROR: No conditions fetched! Not writing empty file.');
-    process.exit(1);
-  }
+  const coverage = validateCoverage(spots, allConditions);
+  assertCoverage(coverage);
   
   atomicWriteJson(outputPath, allConditions);
 
@@ -684,14 +671,16 @@ async function updateConditions() {
 
   const metaRoot = path.join(__dirname, '..');
   const prevMeta = readPipelineMeta(metaRoot);
-  const buoyLayer = applyBuoyLayerStreak(loadBuoyLayerStatus(metaRoot), prevMeta);
-  const radarLayer = applyLayerStreak(loadRadarLayerStatus(metaRoot), prevMeta, 'radarLayer');
-  const warningsLayer = applyLayerStreak(
-    loadWarningsLayerStatus(metaRoot),
-    prevMeta,
-    'warningsLayer',
-  );
-  const coastalWarningsLayer = buildCoastalWarningsLayer(metaRoot, prevMeta);
+  const { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer } = buildPipelineLayers({
+    metaRoot,
+    previousMeta: prevMeta,
+    loadBuoyLayerStatus,
+    applyBuoyLayerStreak,
+    loadRadarLayerStatus,
+    loadWarningsLayerStatus,
+    applyLayerStreak,
+    buildCoastalWarningsLayer,
+  });
   writePipelineMeta('full', new Date(), metaRoot, {
     buoyLayer,
     radarLayer,
