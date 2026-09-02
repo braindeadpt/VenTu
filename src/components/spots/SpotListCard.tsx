@@ -254,6 +254,7 @@ export default function SpotListCard({
               source="wmo-buoy"
               locale={locale}
               className="basis-full min-w-0"
+              bare
             />
           ) : null}
         </p>

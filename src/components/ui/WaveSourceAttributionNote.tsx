@@ -8,6 +8,14 @@ interface WaveSourceAttributionNoteProps {
   source: 'ih-buoy' | 'wmo-buoy';
   locale: 'pt' | 'en';
   className?: string;
+  /**
+   * Render the attribution chain as plain text (no links). Use inside surfaces
+   * that are themselves links (e.g. SpotListCard is one <a>): an <a> nested in
+   * an <a> is invalid HTML, the browser parser restructures it (closing the
+   * outer anchor early), and React's tree then mismatches -> hydration error.
+   * Keeps the same single-source chain, just without the href.
+   */
+  bare?: boolean;
 }
 
 /**
@@ -22,14 +30,17 @@ export default function WaveSourceAttributionNote({
   source,
   locale,
   className,
+  bare = false,
 }: WaveSourceAttributionNoteProps) {
   const id = waveSourceAttributionId(source);
+  const note = locale === 'pt' ? ATTRIBUTIONS[id].notePt : ATTRIBUTIONS[id].noteEn;
+  const title = locale === 'pt' ? ATTRIBUTIONS[id].titlePt : ATTRIBUTIONS[id].titleEn;
   return (
     <span
       className={cn('text-meta-xs text-fg-subtle leading-snug', className)}
       data-wave-attribution={id}
     >
-      {locale === 'pt' ? ATTRIBUTIONS[id].notePt : ATTRIBUTIONS[id].noteEn}
+      {bare ? title : note}
     </span>
   );
 }
