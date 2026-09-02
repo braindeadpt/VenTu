@@ -34,6 +34,7 @@ interface UseMapMarkersParams {
   locale: string;
   warningsBySpot: Map<string, MapMarkerWarning>;
   onSpotSelect?: (spotId: string) => void;
+  onMarkerInteract?: () => void;
   setSheetSpot: React.Dispatch<React.SetStateAction<MapSpotSheetData | null>>;
   closePopupAndSheet: () => void;
 }
@@ -61,6 +62,7 @@ export function useMapMarkers({
   locale,
   warningsBySpot,
   onSpotSelect,
+  onMarkerInteract,
   setSheetSpot,
   closePopupAndSheet,
 }: UseMapMarkersParams) {
@@ -140,6 +142,7 @@ export function useMapMarkers({
               useMobileSheet,
               onMobileTap: (d) => setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null }),
               onSpotSelect,
+              onMarkerInteract,
               warning: warningsBySpot.get(data.spot.id) ?? null,
             });
             (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
@@ -159,7 +162,7 @@ export function useMapMarkers({
     );
 
     return () => { markerChunkCancelRef.current = true; };
-  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, isMobile, isHeroEmbed, warningsBySpot, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef]);
+  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef]);
 
   // ── Allow markers after delay ──
   useEffect(() => {

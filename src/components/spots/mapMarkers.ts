@@ -116,6 +116,7 @@ export function createSpotMarker(
     useMobileSheet: boolean;
     onMobileTap?: (data: MapSpotData) => void;
     onSpotSelect?: (spotId: string) => void;
+    onMarkerInteract?: () => void;
     warning?: MapMarkerWarning | null;
   },
 ): L.Marker {
@@ -181,6 +182,7 @@ export function createSpotMarker(
 
   marker.on('click', (e) => {
     Leaflet.DomEvent.stopPropagation(e);
+    options.onMarkerInteract?.();
     if (options.useMobileSheet) {
       options.onMobileTap?.(data);
     }

@@ -33,7 +33,7 @@ import {
   MAP_COASTAL_LS_KEY,
 } from '@/lib/map-constants';
 import { getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
-import { hasSeenWindRingLegend } from '@/lib/windRingLegend';
+import { hasSeenWindRingLegend, markWindRingLegendSeen } from '@/lib/windRingLegend';
 import { getSpotImage } from '@/lib/spotImage';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import {
@@ -188,7 +188,6 @@ export default function SpotMapInteractive({
   const mapRef = useRef<HTMLDivElement>(null);
   const fullscreenBtnRef = useRef<HTMLButtonElement>(null);
   const windButtonRef = useRef<HTMLButtonElement>(null);
-  const windLegendAutoQueuedRef = useRef(false);
   const onSpotSelectRef = useRef(onSpotSelect);
   const mountedRef = useRef(true);
   const prevFocusRef = useRef<Element | null>(null);
@@ -361,23 +360,23 @@ export default function SpotMapInteractive({
   // ── Wind legend ──
   const openWindLegend = useCallback(() => { setWindLegendOpen(true); }, []);
   const closeWindLegend = useCallback(() => { setWindLegendOpen(false); }, []);
+
+  // One-time inline teaching hint (non-modal, never blocks the map). Shows
+  // once after the user's FIRST marker interaction, then never again
+  // (persisted via the same localStorage flag the ? button honors).
+  const [windLegendHintVisible, setWindLegendHintVisible] = useState(false);
+  const windLegendHintQueuedRef = useRef(false);
+  const onMarkerInteract = useCallback(() => {
+    if (windLegendHintQueuedRef.current || hasSeenWindRingLegend()) return;
+    windLegendHintQueuedRef.current = true;
+    markWindRingLegendSeen();
+    setWindLegendHintVisible(true);
+  }, []);
   useEffect(() => {
-    if (!isReady || !showWindOnMarkers || isHeroEmbed) return;
-    if (windLegendAutoQueuedRef.current || hasSeenWindRingLegend()) return;
-    windLegendAutoQueuedRef.current = true;
-    const open = () => setWindLegendOpen(true);
-    let idleId: number | undefined;
-    let timeoutId: number | undefined;
-    if (typeof window.requestIdleCallback === 'function') {
-      idleId = window.requestIdleCallback(open, { timeout: 4000 });
-    } else {
-      timeoutId = window.setTimeout(open, 2000);
-    }
-    return () => {
-      if (idleId !== undefined) window.cancelIdleCallback(idleId);
-      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
-    };
-  }, [isReady, showWindOnMarkers, isHeroEmbed]);
+    if (!windLegendHintVisible) return;
+    const id = window.setTimeout(() => setWindLegendHintVisible(false), 12_000);
+    return () => window.clearTimeout(id);
+  }, [windLegendHintVisible]);
 
   // ── Escape key ──
   useEffect(() => {
@@ -458,7 +457,7 @@ export default function SpotMapInteractive({
     mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef,
     visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady,
     isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
-    warningsBySpot, onSpotSelect, setSheetSpot, closePopupAndSheet,
+    warningsBySpot, onSpotSelect, onMarkerInteract, setSheetSpot, closePopupAndSheet,
   });
 
   useEffect(() => {
@@ -600,6 +599,24 @@ export default function SpotMapInteractive({
             windButtonRef={windButtonRef}
             fullscreenBtnRef={fullscreenBtnRef}
           />
+
+          {windLegendHintVisible && (
+            <div
+              role="note"
+              aria-label={t.map.windRingLegend.help}
+              className="absolute z-[1150] bottom-32 left-3 right-3 sm:right-auto sm:w-[320px] rounded-card border border-divider bg-bg-elevated shadow-card px-4 py-3 motion-reduce:animate-none animate-fade-up"
+            >
+              <p className="text-body-sm font-semibold text-fg mb-1">{t.map.windRingLegend.title}</p>
+              <p className="text-meta-sm text-fg-muted leading-snug">{t.map.windRingLegend.rule}</p>
+              <button
+                type="button"
+                onClick={openWindLegend}
+                className="mt-2 text-meta-sm font-semibold text-accent hover:underline underline-offset-2"
+              >
+                {t.map.windRingLegend.help}
+              </button>
+            </div>
+          )}
 
           {!isFullscreen && !isHeroEmbed && (
             <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} isPt={isPt} />
