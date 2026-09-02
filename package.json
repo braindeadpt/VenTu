@@ -62,6 +62,7 @@
     "sitemap:generate": "node scripts/generate-sitemap.js",
     "og:generate": "node scripts/generate-og-image.mjs && node scripts/generate-spot-og-images.mjs",
     "spots:validate": "node scripts/validate-spots.js",
+    "pages:validate": "node scripts/validate-page-slugs.js",
     "data:validate": "node scripts/validate-data-files.js",
     "scan:encoding": "node scripts/scan-history-encoding.js",
     "alerts:evaluate": "node scripts/evaluate-alerts.js",
