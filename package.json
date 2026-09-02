@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "test:e2e:audit": "playwright test full-audit",
     "test:e2e:ux": "playwright test visual-ux-audit",
+    "test:e2e:axe": "playwright test axe-audit",
     "test:e2e:core": "playwright test home-adaptive mapa-route spot-dashboard confidence-badge observed-wave-card mar-perigoso isobaths buoy-warnings tides topnow-wave-badge coastal-nav-warnings data-sources coastal-map-layer spot-sticky-geometry tools-calculators",
     "test:e2e:data": "playwright test tides buoy-warnings topnow-wave-badge",
     "test:supabase": "bash supabase/tests/run-tests.sh",
@@ -93,6 +94,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@playwright/test": "^1.62.1",
     "@types/leaflet": "^1.9.22",
     "@types/leaflet.markercluster": "^1.5.6",
