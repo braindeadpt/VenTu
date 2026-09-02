@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { openMapSpotSheet } from './helpers/map-sheet';
+import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
 
 /**
  * Mobile touch playtest — permanent regression spec for the manual matrix
@@ -165,5 +166,43 @@ test.describe('mobile playtest (390×844, touch)', () => {
       await close.tap();
       await expect(sheet).toBeHidden();
     }
+  });
+
+  test('wind-ring coach: first marker tap shows the hint, sheet still opens, never re-shows', async ({ page }) => {
+    // NO preseed — first visit, seen flag unset, hint must appear on the
+    // first marker interaction (current contract: non-modal, 12s auto-hide).
+    await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('[data-map-hud="visible"]', { timeout: 35_000 });
+    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
+
+    const dialog = page.getByRole('dialog', { name: /Ler o arco de vento/i });
+    const hint = page.getByRole('note', { name: /Como ler o vento no mapa/i });
+
+    // 1) No modal and no hint before any interaction.
+    await expect(dialog).toBeHidden({ timeout: 6_000 });
+    await expect(hint).toHaveCount(0);
+
+    // 2) First marker tap → hint appears AND the sheet opens (never blocks).
+    const sheet = await openMapSpotSheet(page);
+    const viewSpot = sheet.getByRole('link', { name: /Ver spot/i });
+    await expect(hint).toBeVisible({ timeout: 5_000 });
+    await expect(viewSpot).toBeVisible();
+    await expect(viewSpot).toBeEnabled();
+
+    // 3) Hint auto-hides (12s) and the seen flag persists.
+    await expect(hint).toBeHidden({ timeout: 15_000 });
+    const seen = await page.evaluate((key) => localStorage.getItem(key), WIND_RING_LEGEND_LS_KEY);
+    expect(seen).toBe('1');
+
+    // 4) Later marker taps never re-show it.
+    const close = sheet.getByRole('button', { name: /Fechar|Close/i });
+    if (await close.isVisible().catch(() => false)) {
+      await close.tap();
+      await expect(sheet).toBeHidden();
+    }
+    await page.locator('.leaflet-marker-icon.spot-marker').first()
+      .click({ position: { x: 14, y: 14 }, force: true });
+    await page.waitForTimeout(2_000);
+    await expect(hint).toHaveCount(0);
   });
 });
