@@ -28,7 +28,7 @@ export default function AlertConfirmPage() {
     return (
       <div className="max-w-md mx-auto py-16 px-4 text-center space-y-4">
         <p className="text-score-poor text-sm">{a.invalidToken}</p>
-        <Link href={`/${locale}/`} className="text-data-waves hover:underline text-sm">
+        <Link href={`/${locale}/`} className="text-data-waves underline underline-offset-2 hover:text-data-waves/80 text-sm">
           {a.backToVentu}
         </Link>
       </div>

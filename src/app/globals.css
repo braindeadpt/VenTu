@@ -63,19 +63,22 @@ html:has([data-embed-widget]) body {
     --divider-strong-rgb: 255 255 255;
 
     /* Data viz colors */
-    --data-waves:    2 132 199;   /* sky-600 — richer ocean */
-    --data-wind:   139 92 246;    /* violet-500 */
-    --data-water:   8 145 178;    /* cyan-600  */
-    --data-period: 245 158 11;    /* amber-500 */
+    /* Data hues are also used as small text/links on base and tinted chips,
+       so each hue sits one step toward the light (dark theme) ink side:
+       sky-500 / violet-400 / cyan-400 / amber-400 (AA on slate-900 + tints). */
+    --data-waves:    14 165 233;  /* sky-500   */
+    --data-wind:    167 139 250;  /* violet-400 */
+    --data-water:    34 211 238;  /* cyan-400  */
+    --data-period:  251 191 36;   /* amber-400 */
 
     /* Sport accents (diferenciados para identificação rápida) */
     --sport-surf:       14 165 233;   /* sky-500     */
-    --sport-kitesurf:  139 92 246;    /* violet-500  */
+    --sport-kitesurf:  167 139 250;   /* violet-400 — AA on slate-900 headings */
     --sport-windsurf:  245 158 11;    /* amber-500   */
     --sport-bodyboard:  16 185 129;   /* emerald-500 */
     --sport-sup:        6 182 212;    /* cyan-500    */
     --sport-wakeboard: 236 72 153;    /* pink-500    */
-    --sport-foil:       99 102 241;   /* indigo-500  */
+    --sport-foil:      129 140 248;   /* indigo-400 — AA on slate-900 headings */
 
     /* Wind direction tints */
     --windDir-offshore:  34 197 94;    /* green-500 */
@@ -87,7 +90,7 @@ html:has([data-embed-widget]) body {
     --score-epic:   14 165 233;   /* sky-500    — 80-100 */
     --score-good:   16 185 129;   /* emerald-500 — 60-79 */
     --score-fair:   245 158 11;   /* amber-500  — 40-59 */
-    --score-poor:   239 68 68;    /* red-500    — 20-39 */
+    --score-poor:   248 113 113;  /* red-400 — AA on red score tints */
     --score-closed: 107 114 128;  /* gray-500   — 0-19  */
 
     /* Aliases used by the ScoreGauge SVG and similar */
@@ -126,7 +129,7 @@ html:has([data-embed-widget]) body {
     /* Foreground / text — light theme, AA-tuned. */
     --fg:           15 23 42 / 1.0;    /* slate-900  #0F172A */
     --fg-muted:     51 65 85 / 0.85;   /* slate-700  #334155 */
-    --fg-subtle:    71 85 105 / 0.80;  /* slate-600  #475569 */
+    --fg-subtle:    71 85 105 / 0.95;  /* slate-600  #475569 — AA on #f8fafc */
     --fg-disabled:  148 163 184 / 0.55;/* slate-400  #94A3B8 */
 
     /* Alpha-free RGB companions */
@@ -140,17 +143,18 @@ html:has([data-embed-widget]) body {
     --divider-rgb:     15 23 42;
     --divider-strong-rgb: 15 23 42;
 
-    /* Data viz — mais vibrantes para fundo claro */
-    --data-waves:    14 165 233;   /* sky-500   */
-    --data-wind:    139 92 246;    /* violet-500 */
-    --data-water:    6 182 212;    /* cyan-500  */
-    --data-period:  245 158 11;    /* amber-500 */
+    /* Data viz — mais escuros para legibilidade AA em fundo claro (texto,
+       links e chips): sky-700 / violet-700 / cyan-700 / amber-700. */
+    --data-waves:     3 105 161;  /* sky-700   */
+    --data-wind:    109 40 217;    /* violet-700 */
+    --data-water:    14 116 144;   /* cyan-700  */
+    --data-period:  180 83 9;      /* amber-700 */
 
     /* Sport accents (light-optimized) */
     --sport-surf:        7 89 133;     /* sky-700     */
     --sport-kitesurf:  126 34 206;     /* violet-700  */
-    --sport-windsurf:  217 119 6;      /* amber-600   */
-    --sport-bodyboard:  5 150 105;     /* emerald-600 */
+    --sport-windsurf:  180 83 9;       /* amber-700 — AA headings on white */
+    --sport-bodyboard:  4 120 87;      /* emerald-700 — AA headings on white */
     --sport-sup:        14 116 144;    /* cyan-700    */
     --sport-wakeboard: 190 18 60;      /* pink-700    */
     --sport-foil:       67 56 202;     /* indigo-700  */
@@ -162,13 +166,13 @@ html:has([data-embed-widget]) body {
 
     /* Score colors — mais saturados para fundo claro */
     --score-epic:     2 132 199;       /* sky-600 */
-    --score-good:     5 150 105;       /* emerald-600 */
+    --score-good:     6 95 70;         /* emerald-800 — AA on score tints */
     --score-fair:    217 119 6;        /* amber-600 */
     --score-poor:    220 38 38;        /* red-600 */
     --score-closed:  107 114 128;      /* gray-500 */
 
     /* Light accent — cyan-700 for AA contrast on slate-50 base */
-    --accent:         14 116 144;   /* cyan-700 #0E7490 — default */
+    --accent:         21 94 117;    /* cyan-800 #155E75 — AA on accent/15 tints */
     --accent-hover:   14 165 233;   /* sky-500  #0EA5E9 — hover */
     --accent-active:   6 182 212;   /* cyan-500 #06B6D4 — active */
     --accent-rgb:     14 116 144;

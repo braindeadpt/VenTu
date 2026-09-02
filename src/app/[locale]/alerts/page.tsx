@@ -88,11 +88,11 @@ export default async function AlertsPage({
 
         <p className="text-meta text-fg-muted mt-8">
           {a.haveALink}
-          <Link href={`/${locale}/alerts/confirm/`} className="text-data-waves hover:underline">
+          <Link href={`/${locale}/alerts/confirm/`} className="text-data-waves underline underline-offset-2 hover:text-data-waves/80">
             {a.confirmLink}
           </Link>
           {' · '}
-          <Link href={`/${locale}/alerts/unsubscribe/`} className="text-data-waves hover:underline">
+          <Link href={`/${locale}/alerts/unsubscribe/`} className="text-data-waves underline underline-offset-2 hover:text-data-waves/80">
             {a.unsubscribeLink}
           </Link>
         </p>

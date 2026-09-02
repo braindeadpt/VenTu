@@ -43,7 +43,7 @@ export default function AlertConfirmClient({ locale, token }: { locale: string; 
       {status === 'fail' && (
         <p className="text-score-poor">{a.invalidOrExpired}</p>
       )}
-      <Link href={`/${locale}/`} className="text-data-waves hover:underline text-sm">
+      <Link href={`/${locale}/`} className="text-data-waves underline underline-offset-2 hover:text-data-waves/80 text-sm">
         {a.backToVentu}
       </Link>
     </div>

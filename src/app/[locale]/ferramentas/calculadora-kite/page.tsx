@@ -53,7 +53,7 @@ export default async function CalculadoraKitePage({ params }: Props) {
           <p>{tt.kiteP2}</p>
           <p>
             {tt.kiteP3Lead}
-            <Link href={`/${locale}/mapa/?sport=kitesurf`} className="text-accent hover:underline">
+            <Link href={`/${locale}/mapa/?sport=kitesurf`} className="text-accent underline underline-offset-2 hover:text-accent/80">
               {tt.kiteP3Link}
             </Link>
             {tt.kiteP3Tail}

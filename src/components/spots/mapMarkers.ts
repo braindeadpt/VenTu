@@ -124,6 +124,12 @@ export function createSpotMarker(
   const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, warning);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
   (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
+  // Leaflet gives interactive markers role="button" — give them an accessible
+  // name so screen readers announce which spot the marker is (axe aria-command-name).
+  marker.on('add', () => {
+    const el = marker.getElement();
+    if (el && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', spot.name);
+  });
 
   if (!options.useMobileSheet) {
     marker.bindPopup(buildMarkerPopupContent(data, locale, selectedSport, warning), {
