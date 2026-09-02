@@ -62,7 +62,11 @@ function getNewsSlugs() {
 
 function localePath(locale, subpath) {
   const normalized = subpath.startsWith('/') ? subpath : `/${subpath}`;
-  return `/${locale}${normalized}`;
+  // Percent-encode non-ASCII slugs (e.g. /spots/garrão/ → /spots/garr%C3%A3o/):
+  // page.goto() rejects raw non-ASCII paths with "Cannot navigate to invalid
+  // URL", and the sitemap publishes the encoded form (RFC 3986). Mirrors
+  // scripts/generate-sitemap.js.
+  return encodeURI(`/${locale}${normalized}`);
 }
 
 /** @returns {{ path: string, group: string }[]} */

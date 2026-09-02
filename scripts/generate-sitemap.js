@@ -31,15 +31,26 @@ function escapeXml(value) {
     .replace(/'/g, '&apos;');
 }
 
+/**
+ * Percent-encode a URL for the sitemap (RFC 3986 / sitemaps.org protocol).
+ * Raw non-ASCII slugs (e.g. /spots/garrão/) must be published as their
+ * percent-encoded form (/spots/garr%C3%A3o/): the raw form 404s/400s on
+ * static hosts and crawlers use the sitemap URL verbatim. encodeURI leaves
+ * reserved chars (/, :, ?) intact and encodes only what RFC 3986 requires.
+ */
+function sitemapUrl(value) {
+  return encodeURI(value);
+}
+
 function hreflangLinks(localePath) {
   return LOCALES.map(
-    (loc) => `    <xhtml:link rel="alternate" hreflang="${loc}" href="${BASE_URL}/${loc}${localePath}" />`,
+    (loc) => `    <xhtml:link rel="alternate" hreflang="${loc}" href="${sitemapUrl(`${BASE_URL}/${loc}${localePath}`)}" />`,
   ).join('\n');
 }
 
 function addUrl(urls, localePath, { changefreq, priority, lastmod }) {
   for (const locale of LOCALES) {
-    const loc = `${BASE_URL}/${locale}${localePath}`;
+    const loc = sitemapUrl(`${BASE_URL}/${locale}${localePath}`);
     urls.push({ loc, changefreq, priority, lastmod, localePath });
   }
 }

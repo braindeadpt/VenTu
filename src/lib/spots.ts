@@ -1993,7 +1993,7 @@ export const spots: Spot[] = [
       hazards: ['Rochas junto ao forte', 'Correntes']
     },
   {
-      id: 'garrão', slug: 'garrão', name: 'Praia do Garrão', nameEn: 'Garrao Beach',
+      id: 'garrão', slug: 'garrao', name: 'Praia do Garrão', nameEn: 'Garrao Beach',
       region: 'Faro', regionEn: 'Faro', lat: 36.970, lon: -7.960,
       coastOrientation: 180,
       type: 'surf', difficulty: 'beginner', bestWind: 'N, NW', bestSwell: 'S, SW',
