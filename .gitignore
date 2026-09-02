@@ -52,7 +52,8 @@ Thumbs.db
 scripts/probe-*
 scripts/extract-*
 scripts/find-jwt-*
-_axe*.cjs
+_*.cjs
+_devlogs/
 
 # Local Lighthouse audit reports (run against prod: serve out/ then npx lighthouse)
 lighthouse-*.json
