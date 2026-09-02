@@ -185,14 +185,15 @@ test.describe('TopNow — badge do score de onda', () => {
   test('Baked no build (wave-bias.json no out/) → primeiro paint mostra «Corrigido (viés regional)» com ME/n', async ({
     page,
   }) => {
-    // Caminho SSG: com o wave-bias.json PRESENTE em public/data/ durante o
-    // build (o que o write-wave-bias-fixture.mjs produz), `buildSpotData` bakes
-    // o viés nas rows e o badge sai logo do HTML do primeiro paint — o spec
-    // valida-o sem intercept (o refresh client-side poderia até estar desligado).
-    // Gate honesto: lê o ficheiro SERVED pelo build. O portão é «≥ 1 região
-    // acima dos limiares» (n >= MIN_BIAS_N, |me| >= MIN_BIAS_M) — ter regiões
-    // sub-limiar não implica correcção baked; sem nada a corrigir, skip com a
-    // recipe — nunca falha no CI, mas corre localmente após a recipe.
+    // Caminho SSG: recipe local. Em produção o pipeline escreve wave-bias.json
+    // com regiões acima dos limiares E observedWave fresco (IH_API_KEY) — a
+    // boia vence o viés no TopNow, e os cards «a bombar» mudam de hora a hora.
+    // O contrato do badge vive nos testes de intercept; este spec só corre com
+    // E2E_BAKED_WAVE=1 após write-wave-bias-fixture.mjs + build.
+    test.skip(
+      process.env.E2E_BAKED_WAVE !== '1',
+      'recipe local: E2E_BAKED_WAVE=1 node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge',
+    );
     await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
     const baked = await isBakedWaveBias(page);
     test.skip(
@@ -277,11 +278,15 @@ test.describe('TopNow — badge do score de onda', () => {
   test('leitura de boia BAKED no build → primeiro paint mostra «Corrigido pela boia X», não o viés', async ({
     page,
   }) => {
-    // Primeira pintura (SSG): quando o build tem uma leitura fresca baked
-    // (observedWave + meta waveBias no mesmo row de um top spot), o badge sai
-    // logo do HTML com a boia a vencer o viés — sem depender do refresh. O
-    // build real (CI) não tem leituras baked → salta com receita (injectar
-    // observedWave fresca + waveBias num top spot + `npm run build`).
+    // Primeira pintura (SSG): recipe local. Com IH_API_KEY o conditions.json
+    // tem observedWave fresco em dezenas de spots, mas o TopNow só mostra os
+    // que estão a bombar — o portão «qualquer row fresca» abria o teste no CI
+    // e falhava quando o card visível não era um deles. Contrato do badge:
+    // intercept. Este spec: E2E_BAKED_WAVE=1 + inject + build.
+    test.skip(
+      process.env.E2E_BAKED_WAVE !== '1',
+      'recipe local: E2E_BAKED_WAVE=1 + observedWave fresco num TOP spot de conditions.json + npm run build',
+    );
     const rows = readRealConditions();
     const withFresh = Object.entries(rows).some(([, e]) => {
       const ow = e?.observedWave;
