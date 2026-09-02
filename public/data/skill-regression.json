@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-09-02T10:27:04.803Z",
+  "checkedAt": "2026-09-02T13:01:46.137Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -17,6 +17,41 @@
   "minRecentSnapshots": 2,
   "minBaselineSnapshots": 3,
   "byBuoy": {
+    "4": {
+      "name": "CSA92/D",
+      "origin": "ih",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    },
+    "19": {
+      "name": "CSA83/1D",
+      "origin": "ih",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    },
+    "20": {
+      "name": "CSA82/D",
+      "origin": "ih",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    },
+    "33": {
+      "name": "CSA94",
+      "origin": "ih",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    },
+    "86": {
+      "name": "BOND5",
+      "origin": "ih",
+      "recentSnapshots": 1,
+      "baselineSnapshots": 0,
+      "verdict": "insufficient"
+    },
     "6200084": {
       "name": "Cabo Silleiro",
       "origin": "wmo-es",
@@ -40,14 +75,28 @@
   },
   "regressions": [],
   "platforms": {
-    "ih": null,
+    "ih": {
+      "platform": "ih",
+      "name": "IH (Datawell)",
+      "recent": {
+        "days": 1,
+        "n": 168,
+        "me": 0.03267857142857141
+      },
+      "baseline": {
+        "days": 0,
+        "n": 0,
+        "me": null
+      },
+      "verdict": "insufficient"
+    },
     "wmo-es": {
       "platform": "wmo-es",
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 2,
-        "n": 54,
-        "me": 0.325
+        "n": 58.5,
+        "me": 0.31461538461538463
       },
       "baseline": {
         "days": 0,

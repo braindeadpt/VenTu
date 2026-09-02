@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-02T10:27:05.600Z",
+  "fetchedAt": "2026-09-02T13:01:46.937Z",
   "warnings": [
     {
       "areaCode": "BGC",
@@ -38,6 +38,16 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-04T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "FAR",
+      "areaLabel": "Faro",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
       "startTime": "2026-09-03T09:00:00",
       "endTime": "2026-09-04T18:00:00",
       "relevant": false
@@ -83,6 +93,16 @@
       "relevant": false
     },
     {
+      "areaCode": "LRA",
+      "areaLabel": "Leiria",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-04T18:00:00",
+      "relevant": false
+    },
+    {
       "areaCode": "BJA",
       "areaLabel": "Beja",
       "type": "Tempo Quente",
@@ -103,6 +123,16 @@
       "relevant": false
     },
     {
+      "areaCode": "CBR",
+      "areaLabel": "Coimbra",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-03T09:00:00",
+      "endTime": "2026-09-04T18:00:00",
+      "relevant": false
+    },
+    {
       "areaCode": "PTG",
       "areaLabel": "Portalegre",
       "type": "Tempo Quente",
@@ -114,6 +144,78 @@
     }
   ],
   "spotWarnings": {
+    "quiaios": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "figueira-foz": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "leirosa": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-da-vieira": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "castelo-bode": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "nazare": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
     "foz-arelho": [
       {
         "areaCode": "STM",
@@ -666,6 +768,462 @@
         "relevant": false
       }
     ],
+    "zambujeira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "carvalhal": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "odeceixe": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "amoreira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "monte-clerigo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "arrifana": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "vale-figueiras": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "bordeira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "amado": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "barriga": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "castelejo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "luz": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "burgau": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "salema": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "cordoama": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "ferragudo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "vila-real-santo-antonio": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "monte-gordo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-verde": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "altura": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-rocha": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "alvor": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-alvor": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "lagos": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "lagos-wakepark": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "beliche": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "martinhal": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "barrinha-faro": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "fuseta": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "ilha-faro": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "faro-mar": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "culatra": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "armona": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "ilha-tavira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "cabanas-tavira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "cacela-velha": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "zavial": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "tonel": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
     "santa-cruz": [
       {
         "areaCode": "LSB",
@@ -697,6 +1255,18 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-martinho-porto": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
         "startTime": "2026-09-03T09:00:00",
         "endTime": "2026-09-04T18:00:00",
         "relevant": false
@@ -781,6 +1351,78 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "garrão": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "falesia": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "tres-irmaos": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "canavial": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "armacao-pera": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-03T09:00:00",
+        "endTime": "2026-09-04T18:00:00",
+        "relevant": false
+      }
+    ],
+    "mareta": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
         "startTime": "2026-09-03T09:00:00",
         "endTime": "2026-09-04T18:00:00",
         "relevant": false
