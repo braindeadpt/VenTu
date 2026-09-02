@@ -1,0 +1,31 @@
+#!/bin/sh
+# Pre-commit guard: validates the STAGED spot slugs before a commit lands.
+#
+# Same integrity rules as CI (scripts/validate-spots.js): an accented slug
+# silently 404s client-side after hydration and a duplicated slug silently
+# overwrites another route in the static export (bug class fixed in commit
+# 63cffbcf5). Validating the staged blob (git show :path) instead of the
+# working tree means a partial `git add -p` cannot sneak a bad slug past.
+#
+# Skips fast when src/lib/spots.ts is not staged; bypass with:
+#   git commit --no-verify
+
+if ! git diff --cached --name-only --diff-filter=ACM | grep -qx 'src/lib/spots.ts'; then
+  exit 0
+fi
+
+git show ':src/lib/spots.ts' | node -e "
+const { validateSpotsContent } = require('./scripts/validate-spots.js');
+let input = '';
+process.stdin.on('data', (c) => { input += c; });
+process.stdin.on('end', () => {
+  const { errors, spotCount } = validateSpotsContent(input);
+  if (errors.length > 0) {
+    console.error('pre-commit validate-spots: ' + errors.length + ' issue(s)');
+    for (const e of errors) console.error('  - ' + e);
+    console.error('Fix the slug(s) and re-stage the file, or use git commit --no-verify to bypass.');
+    process.exit(1);
+  }
+  console.log('validate-spots: ' + spotCount + ' staged spots OK');
+});
+"

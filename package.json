@@ -15,6 +15,7 @@
     "start": "next start",
     "lint": "eslint src tests scripts",
     "test": "vitest run",
+    "prepare": "git config core.hooksPath .githooks",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:audit": "playwright test full-audit",

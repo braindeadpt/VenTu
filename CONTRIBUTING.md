@@ -113,6 +113,12 @@ npm run build
 # E se a frontpage mostra o novo spot no mapa
 ```
 
+> **Git hooks** — `npm install` ativa automaticamente o pre-commit
+> (`.githooks/`, via `core.hooksPath`), que valida os slugs dos spots
+> staged (ASCII-safe e únicos — ver `scripts/validate-spots.js`). Para
+> reativar manualmente: `git config core.hooksPath .githooks`. Para
+> contornar num caso pontual: `git commit --no-verify`.
+
 ## 📝 Checklist de PR
 
 Antes de submeter um PR:
