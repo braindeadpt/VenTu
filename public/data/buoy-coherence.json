@@ -1,11 +1,11 @@
 {
   "day": "20260902",
-  "fetchedAt": "2026-09-02T18:25:04.507Z",
+  "fetchedAt": "2026-09-02T23:48:32.060Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 61,
+    "pairHourCount": 80,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -23,28 +23,28 @@
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
-        "coherent": 0,
+        "coherent": 1,
         "review": 1,
         "incoherent": 0,
-        "insufficient": 1,
+        "insufficient": 0,
         "days": 2,
         "incoherentRatio": 0
       },
       "6200084|6201079": {
         "pair": "Cabo Silleiro × Datawell ao largo de Faro",
-        "coherent": 0,
+        "coherent": 1,
         "review": 1,
         "incoherent": 0,
-        "insufficient": 1,
+        "insufficient": 0,
         "days": 2,
         "incoherentRatio": 0
       },
       "6200085|6201079": {
         "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
-        "coherent": 1,
+        "coherent": 2,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 1,
+        "insufficient": 0,
         "days": 2,
         "incoherentRatio": 0
       },
@@ -99,7 +99,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "moledo"
           ]
@@ -186,7 +186,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "vila-praia-ancora",
             "afife",
@@ -287,7 +287,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "ofir",
             "esposende",
@@ -408,7 +408,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "povoa-varzim",
             "leca-palmeira",
@@ -431,7 +431,7 @@
           "spot": "povoa-varzim",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 19.829720922898687,
+          "ptRefKm": 19.80687662348416,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 19.790496905304767
@@ -440,7 +440,7 @@
           "spot": "leca-palmeira",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 27.154052060226874,
+          "ptRefKm": 27.131513507671542,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 27.06148173656539
@@ -449,7 +449,7 @@
           "spot": "matosinhos",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 28.85480852284269,
+          "ptRefKm": 28.832478316865892,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 28.761820414108268
@@ -458,7 +458,7 @@
           "spot": "cabedelo-douro",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 32.91552313445567,
+          "ptRefKm": 32.89407749841925,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 32.821203316238595
@@ -467,7 +467,7 @@
           "spot": "marina-afurada-foil",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 33.81169321844685,
+          "ptRefKm": 33.78991934350082,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 33.71779291391386
@@ -476,7 +476,7 @@
           "spot": "salgueiros",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 34.41800186634977,
+          "ptRefKm": 34.39722781272224,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 34.32304518611994
@@ -485,7 +485,7 @@
           "spot": "sereia-costa-verde",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 34.69519235987738,
+          "ptRefKm": 34.67450249589028,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 34.60017442005139
@@ -494,7 +494,7 @@
           "spot": "canide-sul",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 35.11724596502915,
+          "ptRefKm": 35.09670998235183,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 35.0221257772153
@@ -503,7 +503,7 @@
           "spot": "aguda",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 40.16299233169498,
+          "ptRefKm": 40.14430303340771,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 40.06746283074846
@@ -512,7 +512,7 @@
           "spot": "espinho",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 44.80820037680239,
+          "ptRefKm": 44.79045011205264,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 44.712925863975215
@@ -521,7 +521,7 @@
           "spot": "vila-cha",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 20.59794467678439,
+          "ptRefKm": 20.57279856057076,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 20.522620554873285
@@ -530,7 +530,7 @@
           "spot": "aterro",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 25.37423135066712,
+          "ptRefKm": 25.351121527687596,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 25.28307322106521
@@ -573,7 +573,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "azurara",
             "mindelo"
@@ -586,7 +586,7 @@
           "spot": "azurara",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 20.21184923672501,
+          "ptRefKm": 20.187204461412755,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 20.153952002710614
@@ -595,7 +595,7 @@
           "spot": "mindelo",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 20.336215157076783,
+          "ptRefKm": 20.31106410497726,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 20.266956897189054
@@ -631,7 +631,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "praia-da-lomba"
           ]
@@ -643,7 +643,7 @@
           "spot": "praia-da-lomba",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 55.01235772624987,
+          "ptRefKm": 54.989506063358334,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 54.92049800238453
@@ -693,7 +693,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "praia-37",
             "bairro-piscatorio",
@@ -707,7 +707,7 @@
           "spot": "praia-37",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 44.78017521877811,
+          "ptRefKm": 44.76272091285654,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 44.6850335858117
@@ -716,7 +716,7 @@
           "spot": "bairro-piscatorio",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 45.21454126953221,
+          "ptRefKm": 45.197227428341115,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 45.11947085815525
@@ -725,7 +725,7 @@
           "spot": "paramos",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 47.09617724160255,
+          "ptRefKm": 47.07956909406874,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 47.00153946794311
@@ -796,7 +796,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "barrinha-esmoriz",
             "esmoriz",
@@ -813,7 +813,7 @@
           "spot": "barrinha-esmoriz",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 48.30043296305077,
+          "ptRefKm": 48.28384418604544,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 48.20580877006854
@@ -822,7 +822,7 @@
           "spot": "esmoriz",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 48.16809493259609,
+          "ptRefKm": 48.151959785467575,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 48.07381268475458
@@ -831,7 +831,7 @@
           "spot": "cortegaca",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 49.453758946449376,
+          "ptRefKm": 49.43813411204301,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 49.359914915423275
@@ -840,7 +840,7 @@
           "spot": "cortegaca-sul",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 50.39005059696368,
+          "ptRefKm": 50.37474605636251,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 50.29650903462004
@@ -849,7 +849,7 @@
           "spot": "maceda",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 51.57245482461156,
+          "ptRefKm": 51.55748007881829,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 51.479245809333555
@@ -858,7 +858,7 @@
           "spot": "furadouro",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 55.74750574469458,
+          "ptRefKm": 55.73342504975689,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 55.655300010795735
@@ -1706,7 +1706,7 @@
           "ptRefArea": "Porto",
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "me": -0.1,
-          "n": 3,
+          "n": 4,
           "spots": [
             "ilha-do-ermal"
           ]
@@ -1718,7 +1718,7 @@
           "spot": "ilha-do-ermal",
           "esCode": "6200084",
           "ptRefCode": "6201077",
-          "ptRefKm": 77.53233953439964,
+          "ptRefKm": 77.51023339305826,
           "nearestPtCode": "4",
           "nearestPtName": "CSA92/D",
           "nearestPtKm": 77.49874642945014
@@ -2198,7 +2198,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-02T18:31:53.317Z",
+  "regionsAuditedAt": "2026-09-02T23:56:28.613Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Datawell ao largo do Porto",
@@ -2208,19 +2208,24 @@
       ],
       "distanceKm": 96.8,
       "ptSource": "wmo",
-      "n": 3,
+      "n": 4,
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.1,
       "maxAbsDeltaM": 0.1,
-      "corr": 1,
+      "corr": 0.99,
       "verdict": "insufficient",
       "firstHour": "2026-09-01T07",
-      "lastHour": "2026-09-02T05",
+      "lastHour": "2026-09-02T12",
       "hours": [
         {
           "6200084": 1.2899999618530273,
           "6201077": 1.190000057220459,
           "hour": "2026-09-02T05"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6201077": 1.0700000524520874,
+          "hour": "2026-09-02T12"
         }
       ]
     },
@@ -2232,19 +2237,24 @@
       ],
       "distanceKm": 243.5,
       "ptSource": "wmo",
-      "n": 3,
-      "meanDeltaM": 0.1,
+      "n": 4,
+      "meanDeltaM": 0.2,
       "meanAbsDeltaM": 0.2,
-      "maxAbsDeltaM": 0.3,
-      "corr": 0.97,
+      "maxAbsDeltaM": 0.5,
+      "corr": 0.98,
       "verdict": "insufficient",
       "firstHour": "2026-09-01T07",
-      "lastHour": "2026-09-02T05",
+      "lastHour": "2026-09-02T12",
       "hours": [
         {
           "6200083": 0.9399999976158142,
           "6201077": 1.190000057220459,
           "hour": "2026-09-02T05"
+        },
+        {
+          "6200083": 0.5899999737739563,
+          "6201077": 1.0700000524520874,
+          "hour": "2026-09-02T12"
         }
       ]
     },
@@ -2256,14 +2266,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 37,
-      "meanDeltaM": 0.2,
+      "n": 42,
+      "meanDeltaM": 0.1,
       "meanAbsDeltaM": 0.2,
       "maxAbsDeltaM": 0.6,
-      "corr": 0.73,
+      "corr": 0.66,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-02T15",
+      "lastHour": "2026-09-02T20",
       "hours": [
         {
           "6200084": 1.5199999809265137,
@@ -2344,6 +2354,31 @@
           "6200084": 1.1699999570846558,
           "6200199": 1.2597700357437134,
           "hour": "2026-09-02T15"
+        },
+        {
+          "6200084": 1.1699999570846558,
+          "6200199": 1.2158199548721313,
+          "hour": "2026-09-02T16"
+        },
+        {
+          "6200084": 1.2899999618530273,
+          "6200199": 1.0693399906158447,
+          "hour": "2026-09-02T17"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 1.1425800323486328,
+          "hour": "2026-09-02T18"
+        },
+        {
+          "6200084": 1.5199999809265137,
+          "6200199": 1.0986299514770508,
+          "hour": "2026-09-02T19"
+        },
+        {
+          "6200084": 1.5199999809265137,
+          "6200199": 1.010740041732788,
+          "hour": "2026-09-02T20"
         }
       ]
     },
@@ -2353,16 +2388,16 @@
         "6200084",
         "6201079"
       ],
-      "distanceKm": 594.5,
+      "distanceKm": 594.6,
       "ptSource": "wmo",
-      "n": 6,
-      "meanDeltaM": -1.1,
-      "meanAbsDeltaM": 1.1,
+      "n": 10,
+      "meanDeltaM": -0.9,
+      "meanAbsDeltaM": 0.9,
       "maxAbsDeltaM": 1.4,
-      "corr": -0.09,
-      "verdict": "insufficient",
+      "corr": 0.28,
+      "verdict": "review",
       "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-02T03",
+      "lastHour": "2026-09-02T15",
       "hours": [
         {
           "6200084": 1.409999966621399,
@@ -2373,6 +2408,26 @@
           "6200084": 1.2899999618530273,
           "6201079": 0.4699999988079071,
           "hour": "2026-09-02T03"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6201079": 0.4699999988079071,
+          "hour": "2026-09-02T12"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6201079": 0.44999998807907104,
+          "hour": "2026-09-02T13"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6201079": 0.4399999976158142,
+          "hour": "2026-09-02T14"
+        },
+        {
+          "6200084": 1.1699999570846558,
+          "6201079": 0.38999998569488525,
+          "hour": "2026-09-02T15"
         }
       ]
     },
@@ -2382,16 +2437,16 @@
         "6200083",
         "6201079"
       ],
-      "distanceKm": 741.7,
+      "distanceKm": 741.8,
       "ptSource": "wmo",
-      "n": 6,
-      "meanDeltaM": -1,
-      "meanAbsDeltaM": 1,
+      "n": 10,
+      "meanDeltaM": -0.6,
+      "meanAbsDeltaM": 0.6,
       "maxAbsDeltaM": 1.3,
-      "corr": 0.32,
-      "verdict": "insufficient",
+      "corr": 0.49,
+      "verdict": "coherent",
       "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-02T03",
+      "lastHour": "2026-09-02T15",
       "hours": [
         {
           "6200083": 1.0499999523162842,
@@ -2402,6 +2457,26 @@
           "6200083": 1.0499999523162842,
           "6201079": 0.4699999988079071,
           "hour": "2026-09-02T03"
+        },
+        {
+          "6200083": 0.5899999737739563,
+          "6201079": 0.4699999988079071,
+          "hour": "2026-09-02T12"
+        },
+        {
+          "6200083": 0.5899999737739563,
+          "6201079": 0.44999998807907104,
+          "hour": "2026-09-02T13"
+        },
+        {
+          "6200083": 0.5899999737739563,
+          "6201079": 0.4399999976158142,
+          "hour": "2026-09-02T14"
+        },
+        {
+          "6200083": 0.5899999737739563,
+          "6201079": 0.38999998569488525,
+          "hour": "2026-09-02T15"
         }
       ]
     },
@@ -2411,16 +2486,16 @@
         "6200085",
         "6201079"
       ],
-      "distanceKm": 95.5,
+      "distanceKm": 95.4,
       "ptSource": "wmo",
-      "n": 6,
-      "meanDeltaM": -0.5,
-      "meanAbsDeltaM": 0.5,
+      "n": 10,
+      "meanDeltaM": -0.4,
+      "meanAbsDeltaM": 0.4,
       "maxAbsDeltaM": 0.7,
-      "corr": -0.19,
-      "verdict": "insufficient",
+      "corr": 0.2,
+      "verdict": "coherent",
       "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-02T03",
+      "lastHour": "2026-09-02T15",
       "hours": [
         {
           "6200085": 0.699999988079071,
@@ -2431,9 +2506,29 @@
           "6200085": 0.5899999737739563,
           "6201079": 0.4699999988079071,
           "hour": "2026-09-02T03"
+        },
+        {
+          "6200085": 0.699999988079071,
+          "6201079": 0.4699999988079071,
+          "hour": "2026-09-02T12"
+        },
+        {
+          "6200085": 0.699999988079071,
+          "6201079": 0.44999998807907104,
+          "hour": "2026-09-02T13"
+        },
+        {
+          "6200085": 0.699999988079071,
+          "6201079": 0.4399999976158142,
+          "hour": "2026-09-02T14"
+        },
+        {
+          "6200085": 0.5899999737739563,
+          "6201079": 0.38999998569488525,
+          "hour": "2026-09-02T15"
         }
       ]
     }
   ],
-  "overall": "insufficient"
+  "overall": "review"
 }

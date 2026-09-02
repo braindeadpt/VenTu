@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-02T18:25:04.505Z",
+  "fetchedAt": "2026-09-02T23:48:32.058Z",
   "windowDays": 180,
   "days": [
     {
@@ -82,10 +82,10 @@
             "6201079"
           ],
           "pair": "Villano-Sisargas × Datawell ao largo de Faro",
-          "verdict": "insufficient",
-          "n": 2,
-          "meanAbsDeltaM": 0.6,
-          "meanDeltaM": -0.6
+          "verdict": "coherent",
+          "n": 6,
+          "meanAbsDeltaM": 0.3,
+          "meanDeltaM": -0.3
         },
         {
           "codes": [
@@ -94,9 +94,9 @@
           ],
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "verdict": "coherent",
-          "n": 16,
+          "n": 21,
           "meanAbsDeltaM": 0.2,
-          "meanDeltaM": 0.2
+          "meanDeltaM": 0.1
         },
         {
           "codes": [
@@ -104,10 +104,10 @@
             "6201079"
           ],
           "pair": "Cabo Silleiro × Datawell ao largo de Faro",
-          "verdict": "insufficient",
-          "n": 2,
-          "meanAbsDeltaM": 0.9,
-          "meanDeltaM": -0.9
+          "verdict": "coherent",
+          "n": 6,
+          "meanAbsDeltaM": 0.7,
+          "meanDeltaM": -0.7
         },
         {
           "codes": [
@@ -115,8 +115,8 @@
             "6201079"
           ],
           "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
-          "verdict": "insufficient",
-          "n": 2,
+          "verdict": "coherent",
+          "n": 6,
           "meanAbsDeltaM": 0.2,
           "meanDeltaM": -0.2
         },
@@ -127,9 +127,9 @@
           ],
           "pair": "Villano-Sisargas × Datawell ao largo do Porto",
           "verdict": "insufficient",
-          "n": 1,
-          "meanAbsDeltaM": 0.3,
-          "meanDeltaM": 0.3
+          "n": 2,
+          "meanAbsDeltaM": 0.4,
+          "meanDeltaM": 0.4
         },
         {
           "codes": [
@@ -138,9 +138,9 @@
           ],
           "pair": "Cabo Silleiro × Datawell ao largo do Porto",
           "verdict": "insufficient",
-          "n": 1,
+          "n": 2,
           "meanAbsDeltaM": 0.1,
-          "meanDeltaM": -0.1
+          "meanDeltaM": 0
         }
       ]
     }
