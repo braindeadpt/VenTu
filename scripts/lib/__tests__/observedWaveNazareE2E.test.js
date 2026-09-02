@@ -55,6 +55,7 @@ describe('observedWave da Nazaré Costeira (Fugro id_est 2) — ponta a ponta', 
     delete process.env.SPOTS_PATH;
     delete process.env.FORECAST_SKILL_PATH;
     delete process.env.BUOY_COHERENCE_PATH;
+    delete process.env.BUOY_COHERENCE_DAILY_PATH;
     delete process.env.WIND_BIAS_PATH;
     delete process.env.PIPELINE_META_ROOT;
   });
@@ -191,6 +192,13 @@ describe('observedWave da Nazaré Costeira (Fugro id_est 2) — ponta a ponta', 
     process.env.IH_BUOYS_PATH = path.join(tmpDir, 'ih-buoys.json');
     process.env.WMO_BUOYS_PATH = path.join(tmpDir, 'wmo-buoys.json');
     process.env.PIPELINE_META_ROOT = tmpDir;
+    // Sem ficheiros reais: o merge defaulta para public/data/*.json. O
+    // buoy-coherence.json do repo tem o par Silleiro×Nazaré (ME +0.1) e
+    // recalibra a ponte 2.1 → 2.2 — o e2e da ponte tem de ser hermético.
+    process.env.FORECAST_SKILL_PATH = path.join(tmpDir, 'forecast-skill-missing.json');
+    process.env.BUOY_COHERENCE_PATH = path.join(tmpDir, 'buoy-coherence-missing.json');
+    process.env.BUOY_COHERENCE_DAILY_PATH = path.join(tmpDir, 'buoy-coherence-daily-missing.json');
+    process.env.WIND_BIAS_PATH = path.join(tmpDir, 'wind-bias-missing.json');
     const mod = await loadModule();
     return mod.mergeObservations();
   }
