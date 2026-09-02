@@ -84,12 +84,12 @@ jobs:
         run: node scripts/fetch-ih-buoys.js
 
       # Com a IH_API_KEY real configurada, o job falha aqui se o ficheiro
-      # produzido não tiver a camada de onda: hasWaveData:true e a boia
-      # Fugro 2 (Nazaré Costeira, idEst 2) com leitura fresh — a Costa de
-      # Prata (36 spots mapeados) depende dela. Sem key o passo é saltado
-      # (setup keyless continua a correr sem falhar). Key rejeitada (401) já
-      # falha no passo acima por desenho.
-      - name: Verify IH buoy layer (hasWaveData + Fugro 2 Nazaré)
+      # produzido não tiver a camada de onda: hasWaveData:true e pelo menos
+      # UMA das Datawell costeiras (Leixões 4 / Sines 19 / Faro 20 / Caniçal 33)
+      # com leitura fresca. A Fugro 2 (Nazaré) é aviso — getDatawellData não
+      # a serve (2026-09-02). Sem key o passo é saltado. Key rejeitada (401)
+      # já falha no passo acima por desenho.
+      - name: Verify IH buoy layer (hasWaveData + ≥1 Datawell fresca)
         if: steps.gate.outputs.mode != 'skip' && env.IH_API_KEY != ''
         run: node scripts/verify-ih-buoy-layer.js
 

@@ -154,6 +154,67 @@ describe('runIhApiKeyTest — caminho PASS', () => {
     expect(waveCalls.length).toBeGreaterThan(0);
     for (const [u] of waveCalls) expect(String(u)).toContain('stationId=2');
   });
+
+  it('sem --family: Fugro activa mais recente mas série vazia → tenta Datawell e PASS', async () => {
+    // O cenário real do api-keys.yml (2026-09-02): 2/1010/1011 Fugro à frente
+    // por last_data, série vazia; Leixões/Sines/Faro/Caniçal respondem.
+    const now = Date.now();
+    const mixedDoc = () => ({
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {
+            id_est: 4, name: 'CSA92/D', area: 'Leixões', wmo_id: 6201077,
+            status: 'active', nrt: 'near-real-time data available',
+            last_sea: new Date(now - 3_600_000).toISOString(),
+          },
+          geometry: { type: 'Point', coordinates: [-8.9825, 41.3156] },
+        },
+        {
+          type: 'Feature',
+          properties: {
+            id_est: 2, name: 'CSA88/2', area: 'Boia Nazaré Costeira', wmo_id: 6200199,
+            status: 'active', nrt: 'near-real-time data available',
+            last_data: new Date(now).toISOString(),
+          },
+          geometry: { type: 'Point', coordinates: [-9.2, 39.55] },
+        },
+      ],
+    });
+    const fetchMock = vi.fn(async (url) => {
+      const u = String(url);
+      if (u.includes('/collections/buoys_datawell/items')) {
+        return json({
+          type: 'FeatureCollection',
+          features: mixedDoc().features.filter((f) => f.properties.id_est === 4),
+        });
+      }
+      if (u.includes('/collections/buoys_Fugro_oceanor_wavescan/items')) {
+        return json({
+          type: 'FeatureCollection',
+          features: mixedDoc().features.filter((f) => f.properties.id_est === 2),
+        });
+      }
+      if (u.includes('/getDatawellData')) {
+        if (u.includes('stationId=2')) return json([]);
+        if (u.includes('stationId=4')) return json(freshWaveDoc());
+        return json([]);
+      }
+      return json({}, 404);
+    });
+
+    const code = await runIhApiKeyTest({
+      apiKey: 'test-key',
+      fetchImpl: fetchMock,
+      log: silentLog,
+    });
+
+    expect(code).toBe(0);
+    const waveCalls = fetchMock.mock.calls.filter(([u]) => String(u).includes('/getDatawellData'));
+    expect(waveCalls.some(([u]) => String(u).includes('stationId=4'))).toBe(true);
+    expect(waveCalls.some(([u]) => String(u).includes('stationId=2'))).toBe(false);
+  });
 });
 
 describe('runIhApiKeyTest — caminho FAIL', () => {

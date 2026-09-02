@@ -54,11 +54,10 @@ jobs:
 
       # IH Datawell — camada observedWave. Corremos o buoys:test-key COMBINADO
       # (node scripts/buoys-test-key.js): (1) diagnóstico real da key
-      # (stations → getDatawellData → frescura) e, só se passar, (2) a
-      # verificação hermética da cadeia Fugro→observedWave
-      # (observedWaveNazareE2E) — a key expirada falha cedo (job vermelho), e
-      # a Nazaré não passa silenciosamente sem leitura. Ausente → aviso (a
-      # key está pendente; guia em docs/IH_API_KEY.md).
+      # (stations → getDatawellData nas Datawell, não nas Fugro — a API não
+      # as serve) e, só se passar, (2) a verificação hermética da cadeia
+      # Nazaré (observedWaveNazareE2E). Key expirada → job vermelho. Ausente
+      # → aviso (guia em docs/IH_API_KEY.md).
       - name: Test IH Datawell key + Nazaré chain (buoys:test-key)
         if: env.IH_API_KEY != ''
         run: node scripts/buoys-test-key.js

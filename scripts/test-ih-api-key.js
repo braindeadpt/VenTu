@@ -123,6 +123,14 @@ async function runIhApiKeyTest({
   let candidates = stationId != null
     ? active.filter((s) => s.idEst === stationId)
     : active;
+  // getDatawellData só serve Datawell. Sem --family/--station, as Fugro
+  // activas (last_data mais recente que last_sea) vinham primeiro no slice
+  // de 3 — série vazia em 2/1010/1011 → FAIL com uma key válida. Preferir
+  // Datawell no diagnóstico default (o mesmo contrato do verify-ih-buoy-layer).
+  if (family == null && stationId == null) {
+    const datawell = candidates.filter((s) => s.family === 'datawell');
+    if (datawell.length > 0) candidates = datawell;
+  }
   if (family != null) {
     candidates = candidates.filter((s) => s.family === family);
     if (candidates.length === 0) {
