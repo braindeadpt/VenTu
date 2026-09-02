@@ -1,12 +1,16 @@
 name: Deploy to GitHub Pages
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
-  # Bot data commits use GITHUB_TOKEN — they do not trigger `push` workflows.
+  # A push a main JÁ NÃO publica directamente: publicar exige que um workflow
+  # registado termine com sucesso no commit alvo (workflow_run abaixo). O CI
+  # é um deles, por isso um push com testes vermelhos nunca chega a produção.
+  # Bot data commits usam GITHUB_TOKEN — não disparam `push` nem o CI
+  # (paths-ignore em public/data/**) e continuam a publicar via workflow_run
+  # dos próprios workflows de dados, sem fricção.
   workflow_run:
     workflows:
+      - CI
       - Update VenTu Data
       - Dawn Patrol AI Advisor
     types:
@@ -25,9 +29,15 @@ concurrency:
 
 jobs:
   build:
+    # Gate real de publicação: workflow_dispatch é decisão humana explícita;
+    # qualquer outro caminho (push → CI, data/Dawn bots) só publica com o
+    # workflow_run concluído como success — CI vermelho ⇒ sem deploy. Runs
+    # desencadeados por pull_request nunca publicam (o workflow_run event
+    # original é pull_request, mesmo quando o filtro branches casa em main).
     if: >-
-      github.event_name != 'workflow_run' ||
-      github.event.workflow_run.conclusion == 'success'
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event != 'pull_request')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
