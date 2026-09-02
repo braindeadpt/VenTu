@@ -168,7 +168,7 @@ describe('refreshGridSpotScores', () => {
     });
   });
 
-  it('preserva a leitura da row anterior quando o ficheiro servido a omite', () => {
+  it('row EXISTENTE no ficheiro servido SEM observedWave → a leitura é dropada (o ficheiro é autoritativo)', () => {
     const base = mockRow('guincho');
     const row = {
       ...base,
@@ -194,13 +194,43 @@ describe('refreshGridSpotScores', () => {
         windDirection: 270,
         windGust: ktToMs(9),
         waterTemp: 18,
-        // sem observedWave no ficheiro servido
+        // sem observedWave no ficheiro servido → a pipeline decidiu «sem leitura»
       },
     };
 
     const [updated] = refreshGridSpotScores([row], json, null);
-    // Nunca perder a leitura baked da row SSG (fallback para a anterior).
+    // Ficheiro novo é autoritativo: ressuscitar a leitura de um snapshot
+    // anterior mostrá-la-ia como «fresca» com um dado velho — mentira honesta
+    // que o badge/sufixo never pode fazer. A row sem leitura fica sem leitura.
+    expect(updated.conditions.observedWave).toBeUndefined();
+    // A previsão continua (só a leitura caiu).
+    expect(updated.conditions.waveHeight).toBe(1.5);
+  });
+
+  it('spot AUSENTE do ficheiro servido → a row SSG inteira é preservada', () => {
+    const base = mockRow('guincho');
+    const row = {
+      ...base,
+      conditions: {
+        ...base.conditions,
+        observedWave: {
+          waveHeight: 2.2,
+          wavePeriod: 11,
+          waveDirection: 280,
+          stationName: 'CSA92/D',
+          distanceKm: 60,
+          observedAt: new Date().toISOString(),
+          source: 'ih-buoy' as const,
+        },
+      },
+    };
+    // O ficheiro servido nem conhece o spot (ex. per-spot cache parcial).
+    const json: Record<string, unknown> = {};
+
+    const [updated] = refreshGridSpotScores([row], json, null);
+    // Sem entrada nenhuma, não há decisão nova: a row hídrica mantém-se.
     expect(updated.conditions.observedWave).toMatchObject({ stationName: 'CSA92/D' });
+    expect(updated).toBe(row);
   });
 
   it('sem wave-bias.json (null) → nunca corrige nem inventa meta', () => {

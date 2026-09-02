@@ -41,12 +41,13 @@ export function refreshGridSpotScores<T extends GridSpotData>(
         observed,
         // O refresh puxa a leitura de boia fresca do JSON servido (com que a
         // UI resolve o badge «Corrigido pela boia X» / relógio — o SpotListCard
-        // e o TopNow leem data.conditions.observedWave). Nunca perder a do
-        // SSG quando o ficheiro a omitir (fallback para a row anterior).
-        observedWave:
-          (record.observedWave as
-            | GridSpotData['conditions']['observedWave']
-            | undefined) ?? row.conditions.observedWave,
+        // e o TopNow leem data.conditions.observedWave). O ficheiro servido é
+        // AUTORITATIVO por spot: quando a row existe nele SEM observedWave, a
+        // pipeline decidiu que não há leitura nesta run — nunca ressuscitar a
+        // do SSG (mostrar como «fresca» uma leitura de um snapshot anterior
+        // mentiria sobre o dado). Spots ausentes do ficheiro (return row acima)
+        // mantêm o SSG intacto.
+        observedWave: record.observedWave as GridSpotData['conditions']['observedWave'] | undefined,
         waveBias:
           (biasPatch?.waveBias ??
             (record.waveBias as GridSpotData['conditions']['waveBias'] | undefined)) ??
