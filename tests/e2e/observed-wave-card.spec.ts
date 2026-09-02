@@ -4,6 +4,8 @@ import {
   interceptConditions,
   interceptWaveBias,
   interceptWarnings,
+  interceptIhBuoys,
+  interceptWmoBuoys,
   freshObservedWave,
   withoutObservedWave,
   withoutObservedWind,
@@ -1593,6 +1595,18 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // altura já corrigida (boia/viés) — o sufixo nomeia a origem da correcção
     // a partir da row crua. Interceptar para os dois spots: guincho com leitura
     // fresca (→ «(boia)»), carcavelos com meta waveBias (→ «(viés regional)»).
+    //
+    // Hermeticidade: o build actual BAKES observedWave em 155/185 rows e o
+    // wmo-buoys.json vazio/leituras vivas anexaria leituras client-side. As
+    // boias são bloqueadas (sem fonte viva) e a row do carcavelos é LIMPA de
+    // observedWave — o único caminho para «(boia)» é o fixture do guincho.
+    await interceptIhBuoys(page, {
+      fetchedAt: new Date().toISOString(),
+      apiKeyConfigured: false,
+      hasWaveData: false,
+      stations: {},
+    });
+    await interceptWmoBuoys(page, { buoys: {}, hasWaveData: false, day: '20260815' });
     await interceptConditions(page, {
       spots: {
         // Guincho: leitura boia WMO/espanhola fresca → sufixo «(boia)» E a nota
@@ -1605,11 +1619,16 @@ test.describe('Observed wave card (boia X a Y km)', () => {
             stationArea: 'Galiza',
           }),
         }),
-        carcavelos: (entry) => ({
-          ...entry,
-          waveHeight: 1.8, // já corrigida pela pipeline (rawToScoreInput não aplica waveBias)
-          waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3 },
-        }),
+        carcavelos: (entry) => {
+          // Caso de viés: SEM leitura de boia na row (o observedWave baked do
+          // build daria «(boia)» — strip explícito para o cenário ser puro).
+          const { observedWave: _omit, ...rest } = entry;
+          return {
+            ...rest,
+            waveHeight: 1.8, // já corrigida pela pipeline (rawToScoreInput não aplica waveBias)
+            waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3 },
+          };
+        },
       },
     });
 
