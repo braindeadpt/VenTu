@@ -16,9 +16,13 @@ fi
 
 git show ':src/lib/spots.ts' | node -e "
 const { validateSpotsContent } = require('./scripts/validate-spots.js');
-let input = '';
-process.stdin.on('data', (c) => { input += c; });
+// Acumula Buffers e concatena no fim: 'input += chunk' descodificaria cada
+// chunk isoladamente e um caractere multi-byte partido na fronteira dos 64 KB
+// viraria U+FFFD (spots.ts ja passa dos 160 KB, sao 3 chunks).
+const chunks = [];
+process.stdin.on('data', (c) => { chunks.push(c); });
 process.stdin.on('end', () => {
+  const input = Buffer.concat(chunks).toString('utf8');
   const { errors, spotCount } = validateSpotsContent(input);
   if (errors.length > 0) {
     console.error('pre-commit validate-spots: ' + errors.length + ' issue(s)');
