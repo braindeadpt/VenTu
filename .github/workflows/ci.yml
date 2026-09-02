@@ -35,6 +35,9 @@ jobs:
       - name: Validate page slugs (explorar/modalidades URL segments)
         run: node scripts/validate-page-slugs.js
 
+      - name: Validate news/livecam URL segments
+        run: node scripts/validate-news-livecams.js
+
       - name: Validate data files (UTF-8 + JSON)
         run: node scripts/validate-data-files.js
 
