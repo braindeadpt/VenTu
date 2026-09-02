@@ -113,7 +113,7 @@ export default function DirectoryClient({ locale, entries: seedEntries, generate
         </p>
         <p className="text-meta-sm text-fg-subtle font-mono">
           {entries.length}
-          {generatedAt ? ` · seed ${new Date(generatedAt).toLocaleString(locale)}` : ''}
+          {generatedAt ? ` · seed ${new Date(generatedAt).toLocaleString(locale, { timeZone: 'Europe/Lisbon' })}` : ''}
           {live.length ? ` · +${live.length} ${d.submittedCount}` : ''}
         </p>
         <a

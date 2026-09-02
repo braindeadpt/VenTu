@@ -58,17 +58,20 @@ export function formatForecastUpdatedAt(ts: number, locale: string): string {
   const date = new Date(ts);
   const loc = isPt ? 'pt-PT' : 'en-GB';
   const isToday = date.toDateString() === new Date().toDateString();
+  // timeZone pinned: this label is baked at build time and re-rendered during
+  // hydration — without it the clock differs per viewer tz and React throws #418.
   const time = new Intl.DateTimeFormat(loc, {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
+    timeZone: 'Europe/Lisbon',
   }).format(date);
 
   if (isToday) {
     return isPt ? `Actualizado ${time}` : `Updated ${time}`;
   }
 
-  const day = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short' }).format(date);
+  const day = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short', timeZone: 'Europe/Lisbon' }).format(date);
   return isPt ? `Actualizado ${day}, ${time}` : `Updated ${day}, ${time}`;
 }
 
