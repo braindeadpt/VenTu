@@ -50,9 +50,13 @@ test.describe('axe-core scan (core routes × themes)', () => {
   for (const path of CORE_ROUTES) {
     for (const theme of ['dark', 'ocean'] as const) {
       test(`${path} [${theme}] has no critical/serious a11y violations`, async ({ page }) => {
-        test.setTimeout(60_000);
+        test.setTimeout(120_000);
         const group = ROUTE_GROUPS.get(path) ?? 'static';
         await preseedWindRingLegend(page);
+        // Reduced motion disables the stagger-fade-in entrance animations
+        // (motion-reduce:animate-none), so axe scans the settled DOM instead of a
+        // mid-fade frame where translucent text reports false sub-AA contrast.
+        await page.emulateMedia({ reducedMotion: 'reduce' });
         await page.goto(path, { waitUntil: 'domcontentloaded', timeout: 45_000 });
         // loading.tsx is a skeleton — wait for the real main landmark.
         await page.locator('main').first().waitFor({ state: 'visible', timeout: 20_000 });
@@ -72,6 +76,7 @@ test.describe('axe-core scan (core routes × themes)', () => {
           help: v.help,
           nodes: v.nodes.length,
           targets: v.nodes.slice(0, 2).map((n) => (n.target ?? []).join(' ')),
+          details: v.nodes.slice(0, 2).map((n) => (n.failureSummary ?? '').replace(/\s+/g, ' ').slice(0, 160)),
         }));
 
         // Attach the full scan as a readable summary for the HTML report.

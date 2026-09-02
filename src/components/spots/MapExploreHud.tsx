@@ -185,8 +185,8 @@ export default function MapExploreHud({
                   onClick={() => onBasemapChange(mode)}
                   className={`px-2.5 sm:px-3 py-2 min-h-[44px] text-meta-sm font-semibold transition-colors duration-150 ${
                     active
-                      ? 'bg-surface-2/[0.08] text-fg'
-                      : 'bg-surface-1/[0.04] text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg'
+                      ? 'bg-bg-elevated text-fg' // opaque: readable over any tile
+                      : 'bg-surface-1/[0.04] text-fg-muted hover:bg-bg-elevated hover:text-fg'
                   }`}
                 >
                   <span className="hidden sm:inline">{label}</span>

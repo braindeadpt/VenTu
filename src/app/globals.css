@@ -153,8 +153,8 @@ html:has([data-embed-widget]) body {
     /* Sport accents (light-optimized) */
     --sport-surf:        7 89 133;     /* sky-700     */
     --sport-kitesurf:  126 34 206;     /* violet-700  */
-    --sport-windsurf:  180 83 9;       /* amber-700 — AA headings on white */
-    --sport-bodyboard:  4 120 87;      /* emerald-700 — AA headings on white */
+    --sport-windsurf:  146 64 14;      /* amber-800 — AA on tinted badges */
+    --sport-bodyboard:  6 78 59;      /* emerald-800 — AA on tinted pills (emerald-700 = 4.47 on #e6e8ec) */
     --sport-sup:        14 116 144;    /* cyan-700    */
     --sport-wakeboard: 190 18 60;      /* pink-700    */
     --sport-foil:       67 56 202;     /* indigo-700  */
@@ -165,10 +165,10 @@ html:has([data-embed-widget]) body {
     --windDir-cross:   100 116 139;     /* slate-500 */
 
     /* Score colors — mais saturados para fundo claro */
-    --score-epic:     2 132 199;       /* sky-600 */
+    --score-epic:     3 105 161;       /* sky-700 — AA on epic score tints */
     --score-good:     6 95 70;         /* emerald-800 — AA on score tints */
-    --score-fair:    217 119 6;        /* amber-600 */
-    --score-poor:    220 38 38;        /* red-600 */
+    --score-fair:    146 64 14;        /* amber-800 — AA on amber score tints */
+    --score-poor:    185 28 28;        /* red-700   — AA on red score tints */
     --score-closed:  107 114 128;      /* gray-500 */
 
     /* Light accent — cyan-700 for AA contrast on slate-50 base */
@@ -567,7 +567,7 @@ html:has([data-embed-widget]) body {
    --data-waves (sky-600 dark / sky-500 light) is too dim on the pill in both
    themes (≈3.7:1 dark, ≈3.2:1 light) — use theme-scoped colors. */
 .leaflet-control-attribution a {
-  color: rgb(14 165 233) !important; /* sky-500 — 4.7:1 on slate-800 */
+  color: rgb(125 211 252) !important; /* sky-300 — AA over dark tiles behind the 85% pill */
 }
 .theme-ocean .leaflet-control-attribution a {
   color: rgb(3 105 161) !important; /* sky-700 — 5.9:1 on white pill */

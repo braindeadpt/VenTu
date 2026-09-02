@@ -550,7 +550,12 @@ export default function SpotMapInteractive({
           </div>
         </div>
       )}
-      <div ref={mapRef} className="w-full h-full" aria-label={isPt ? 'Mapa dos spots' : 'Spots map'} />
+      <div
+        ref={mapRef}
+        role="region"
+        className="w-full h-full"
+        aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
+      />
 
       {isReady && (
         <>

@@ -28,7 +28,7 @@ export default function MapLayerToggle({ current, onChange, isPt }: MapLayerTogg
             onClick={() => onChange(mode)}
             className={`px-3 py-1.5 text-xs font-semibold transition-colors duration-150 ${
               active
-                ? 'bg-surface-2/[0.08] text-fg'
+                ? 'bg-bg-elevated text-fg' // opaque: readable over any tile
                 : 'bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg'
             }`}
           >

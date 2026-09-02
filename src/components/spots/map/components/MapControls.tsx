@@ -43,7 +43,7 @@ interface MapControlsProps {
 }
 
 const btnBase = 'flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1/[0.04] transition-colors duration-150 touch-manipulation';
-const btnActive = 'border-data-wind/40 bg-data-wind/15 text-fg';
+const btnActive = 'border-data-wind/40 bg-bg-elevated text-fg'; // opaque: readable over any tile
 const btnMuted = 'border-divider bg-bg-elevated text-fg-muted opacity-80';
 const btnRadarActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
 const btnRadarDisabled = 'border-divider bg-bg-elevated text-fg-subtle opacity-60 cursor-not-allowed';
