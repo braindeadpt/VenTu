@@ -1,9 +1,47 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 
+/**
+ * Fails the test if any SAME-ORIGIN, non-navigation request 404s during page
+ * load. This is the regression net for the segment-cache prefetch bug (Next 16
+ * wrote RSC payloads as dirs but the router requested dot-joined files — every
+ * route prefetch 404'd silently). Scope is deliberate:
+ *  - non-navigation: the two intentional-404 tests navigate to missing routes,
+ *    whose DOCUMENT request is 404 by design;
+ *  - same-origin: map tiles / analytics are cross-origin and must not flake.
+ *
+ * Returns an assert fn for test.afterEach, so a single broken chunk or RSC
+ * payload fails every critical route with the offending URLs listed.
+ */
+async function attachNoBrokenRequests(page: Page): Promise<() => Promise<void>> {
+  const broken404: string[] = [];
+  page.on('response', (r) => {
+    if (r.status() !== 404) return;
+    if (r.request().isNavigationRequest()) return;
+    broken404.push(r.url());
+  });
+  return async () => {
+    // Give prefetches/idle-time fetches a beat to land before judging.
+    await page.waitForTimeout(1_000);
+    const origin = new URL(page.url()).origin;
+    const sameOrigin = broken404.filter((u) => new URL(u).origin === origin);
+    expect(
+      sameOrigin,
+      `same-origin 404 during load (asset/prefetch regression):\n${sameOrigin.join('\n') || '(none)'}`,
+    ).toEqual([]);
+  };
+}
+
 test.describe('Critical routes', () => {
+  let assertNoBrokenRequests: () => Promise<void>;
+
   test.beforeEach(async ({ page }) => {
     await preseedWindRingLegend(page);
+    assertNoBrokenRequests = await attachNoBrokenRequests(page);
+  });
+
+  test.afterEach(async () => {
+    await assertNoBrokenRequests();
   });
   test('homepage PT loads', async ({ page }) => {
     await page.goto('/pt/');
