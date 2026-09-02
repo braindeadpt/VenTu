@@ -38,7 +38,11 @@ const UI_ANCHORS: Record<DataSourceId, { surface: string; anchor: RegExp }> = {
     anchor: /OPEN_METEO_ATTRIBUTION|OpenMeteoAttribution/,
   },
   ih: {
-    surface: 'card de onda observada (IdH) · marés · isóbatas · avisos navegação',
+    surface: 'marés · isóbatas · avisos navegação (CC BY)',
+    anchor: /Instituto Hidrográfico/,
+  },
+  'ih-buoys': {
+    surface: 'card/comparador de onda observada e notas compactas quando a fonte é a boia Datawell (CC BY-NC)',
     anchor: /Instituto Hidrográfico/,
   },
   ipma: { surface: 'badge do radar · avisos · observações de vento', anchor: /IPMA/i },

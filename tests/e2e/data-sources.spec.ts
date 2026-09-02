@@ -26,7 +26,8 @@ test.describe('Fontes de dados (data sources)', () => {
     // Fontes obrigatórias presentes.
     for (const source of [
       'Open-Meteo',
-      'Instituto Hidrográfico (IH)',
+      'Instituto Hidrográfico (IH) — marés, isóbatas e avisos',
+      'Instituto Hidrográfico (IH) — boias ondógrafo',
       'IPMA',
       'MeteoAlarm (EUMETNET)',
       'Copernicus Marine Service',
@@ -44,6 +45,11 @@ test.describe('Fontes de dados (data sources)', () => {
 
     // Licença CC BY 4.0 ligada ao creativecommons.
     await expect(table.locator('a[href="https://creativecommons.org/licenses/by/4.0/"]').first()).toBeVisible();
+
+    // Boias ondógrafo: CC BY-NC (processo IH 0191_2026), ligada ao creativecommons.
+    await expect(
+      table.locator('a[href="https://creativecommons.org/licenses/by-nc/4.0/"]').first(),
+    ).toBeVisible();
 
     // Histórico auditable dos avisos costeiros (arquivo IH) ao lado da entrada.
     const coastal = page.locator('[data-coastal-archive-fontes]');

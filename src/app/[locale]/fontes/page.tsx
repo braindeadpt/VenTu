@@ -28,6 +28,7 @@ function A({
 }
 
 const CC_BY = 'https://creativecommons.org/licenses/by/4.0/'
+const CC_BY_NC = 'https://creativecommons.org/licenses/by-nc/4.0/'
 
 type Source = {
   name: string
@@ -73,15 +74,26 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
       attributionId: 'open-meteo',
     },
     {
-      name: 'Instituto Hidrográfico (IH)',
+      name: 'Instituto Hidrográfico (IH) — marés, isóbatas e avisos',
       homepage: 'https://www.hidrografico.pt/',
-      usePt: 'Marés observadas (OGC API), estações de boias Datawell + Fugro (OGC API keyless; séries de onda com IH_API_KEY), isóbatas costeiras 8/16/30 m e avisos à navegação costeiros.',
-      useEn: 'Observed tides (OGC API), Datawell + Fugro buoy stations (keyless OGC API; wave series with IH_API_KEY), coastal isobaths 8/16/30 m and coastal navigation warnings.',
+      usePt: 'Marés observadas (OGC API), isóbatas costeiras 8/16/30 m e avisos à navegação costeiros.',
+      useEn: 'Observed tides (OGC API), coastal isobaths 8/16/30 m and coastal navigation warnings.',
       license: {
         pt: <><A href={CC_BY}>CC BY 4.0</A></>,
         en: <><A href={CC_BY}>CC BY 4.0</A></>,
       },
       attributionId: 'ih',
+    },
+    {
+      name: 'Instituto Hidrográfico (IH) — boias ondógrafo',
+      homepage: 'https://www.hidrografico.pt/',
+      usePt: 'Boias ondógrafo Datawell + Fugro (OGC API keyless; séries de onda com IH_API_KEY) — leituras de onda observada junto dos spots. Rede gerida pelo Instituto Hidrográfico com a Administração dos Portos da Região Autónoma da Madeira e a Associação para o Estudo do Ambiente Insular.',
+      useEn: 'Datawell + Fugro wave buoys (keyless OGC API; wave series with IH_API_KEY) — observed wave readings near the spots. Network run by Instituto Hidrográfico with Administração dos Portos da Região Autónoma da Madeira and Associação para o Estudo do Ambiente Insular.',
+      license: {
+        pt: <><A href={CC_BY_NC}>CC BY-NC 4.0</A></>,
+        en: <><A href={CC_BY_NC}>CC BY-NC 4.0</A></>,
+      },
+      attributionId: 'ih-buoys',
     },
     {
       name: 'IPMA',

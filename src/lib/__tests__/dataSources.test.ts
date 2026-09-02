@@ -14,22 +14,23 @@ import {
  * para que a nota nunca diverja da fonte verdadeiramente exibida.
  */
 describe('waveCardAttributionExpectation — nota corresponde à fonte exibida', () => {
-  it('leitura IH → presente [ih], ausente [copernicus]', () => {
+  it('leitura IH → presente [ih-buoys], ausente [copernicus]', () => {
+    // As boias do IH são CC BY-NC (processo 0191_2026) — cadeia própria 'ih-buoys'.
     expect(waveCardAttributionExpectation('ih-buoy')).toEqual({
-      present: ['ih'],
+      present: ['ih-buoys'],
       absent: ['copernicus'],
     });
   });
 
-  it('leitura WMO/Copernicus → presente [copernicus], ausente [ih]', () => {
+  it('leitura WMO/Copernicus → presente [copernicus], ausente [ih-buoys]', () => {
     expect(waveCardAttributionExpectation('wmo-buoy')).toEqual({
       present: ['copernicus'],
-      absent: ['ih'],
+      absent: ['ih-buoys'],
     });
   });
 
   it('waveSourceAttributionId é a raiz da derivação', () => {
-    expect(waveSourceAttributionId('ih-buoy')).toBe('ih');
+    expect(waveSourceAttributionId('ih-buoy')).toBe('ih-buoys');
     expect(waveSourceAttributionId('wmo-buoy')).toBe('copernicus');
     // waveCardAttributionExpectation reutiliza-o (uma só fonte de verdade).
     expect(waveCardAttributionExpectation('wmo-buoy').present[0]).toBe(

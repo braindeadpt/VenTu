@@ -24,7 +24,10 @@ interface WaveSourceAttributionNoteProps {
  * MESMA fonte da tabela (src/lib/dataSources.tsx): ATTRIBUTIONS[id].notePt/En,
  * por isso a cadeia mostrada ao lado da boia é exactamente a da página /fontes.
  * Ex.: leitura WMO/Copernicus → «Generated using E.U. Copernicus Marine
- * Service Information»; leitura IH → «Dados © Instituto Hidrográfico (CC BY 4.0)».
+ * Service Information»; leitura IH (boia Datawell) → «Dados © Instituto
+ * Hidrográfico, Administração dos Portos da Região Autónoma da Madeira e
+ * Associação para o Estudo do Ambiente Insular (CC BY-NC 4.0)» — as boias do IH
+ * são CC BY-NC (processo 0191_2026); CC BY aplica-se a marés/isóbatas/avisos.
  */
 export default function WaveSourceAttributionNote({
   source,

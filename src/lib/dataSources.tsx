@@ -30,10 +30,13 @@ function A({ href, children }: { href: string; children: ReactNode }) {
 
 // Licença CC BY — URL partilhada com o OpenMeteoAttribution (fonte única).
 const CC_BY = OPEN_METEO_LICENSE_URL;
+// Licença das boias ondógrafo do IH — CC BY-NC 4.0 (processo IH n.º 0191_2026).
+const CC_BY_NC = 'https://creativecommons.org/licenses/by-nc/4.0/';
 
 export type DataSourceId =
   | 'open-meteo'
   | 'ih'
+  | 'ih-buoys'
   | 'ipma'
   | 'meteoalarm'
   | 'copernicus'
@@ -118,18 +121,87 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
       <>
         «Dados © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A> (
         <A href={CC_BY}>CC BY 4.0</A>)» — na secção de marés, no card de isóbatas
-        e nos avisos à navegação.
+        e nos avisos à navegação (ver a entrada das boias para a licença CC BY-NC
+        da camada observedWave).
       </>
     ),
     cellEn: (
       <>
         “Data © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A> (
         <A href={CC_BY}>CC BY 4.0</A>)” — in the tides section, the isobaths card
-        and navigation warnings.
+        and navigation warnings (see the buoys entry for the observedWave layer’s
+        CC BY-NC licence).
       </>
     ),
     titlePt: 'Dados © Instituto Hidrográfico (CC BY 4.0)',
     titleEn: 'Data © Instituto Hidrográfico (CC BY 4.0)',
+  },
+  // Boias ondógrafo (Datawell Waverider) — licença CC BY-NC e entidades gestoras
+  // da rede, conforme processo IH n.º 0191_2026 e ficha de metadados
+  // metadata.hidrografico.pt/.../0205ed82-a085-4432-98f5-ff0326c4d4de (IH, APRAM
+  // na Madeira e AEAI nos Açores). Apenas as boias são CC BY-NC; marés, isóbatas
+  // e avisos mantêm CC BY (ver 'ih').
+  'ih-buoys': {
+    notePt: (
+      <>
+        «Dados © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A>,{' '}
+        <A href="https://apram.pt/">
+          Administração dos Portos da Região Autónoma da Madeira
+        </A>{' '}
+        e{' '}
+        <A href="https://climaat.angra.uac.pt/boias/">
+          Associação para o Estudo do Ambiente Insular
+        </A>{' '}
+        (<A href={CC_BY_NC}>CC BY-NC 4.0</A>)»
+      </>
+    ),
+    noteEn: (
+      <>
+        “Data © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A>,{' '}
+        <A href="https://apram.pt/">
+          Administração dos Portos da Região Autónoma da Madeira
+        </A>{' '}
+        and{' '}
+        <A href="https://climaat.angra.uac.pt/boias/">
+          Associação para o Estudo do Ambiente Insular
+        </A>{' '}
+        (<A href={CC_BY_NC}>CC BY-NC 4.0</A>)”
+      </>
+    ),
+    cellPt: (
+      <>
+        «Dados © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A>,{' '}
+        <A href="https://apram.pt/">
+          Administração dos Portos da Região Autónoma da Madeira
+        </A>{' '}
+        e{' '}
+        <A href="https://climaat.angra.uac.pt/boias/">
+          Associação para o Estudo do Ambiente Insular
+        </A>{' '}
+        (<A href={CC_BY_NC}>CC BY-NC 4.0</A>)» — na leitura de onda observada
+        (card, comparador) e nas superfícies compactas quando a fonte é a boia
+        Datawell do IH.
+      </>
+    ),
+    cellEn: (
+      <>
+        “Data © <A href="https://www.hidrografico.pt/">Instituto Hidrográfico</A>,{' '}
+        <A href="https://apram.pt/">
+          Administração dos Portos da Região Autónoma da Madeira
+        </A>{' '}
+        and{' '}
+        <A href="https://climaat.angra.uac.pt/boias/">
+          Associação para o Estudo do Ambiente Insular
+        </A>{' '}
+        (<A href={CC_BY_NC}>CC BY-NC 4.0</A>)” — on the observed wave reading
+        (card, comparator) and compact surfaces when the source is the IH
+        Datawell buoy.
+      </>
+    ),
+    titlePt:
+      'Dados das boias © Instituto Hidrográfico, Administração dos Portos da Região Autónoma da Madeira e Associação para o Estudo do Ambiente Insular (CC BY-NC 4.0)',
+    titleEn:
+      'Buoy data © Instituto Hidrográfico, Administração dos Portos da Região Autónoma da Madeira and Associação para o Estudo do Ambiente Insular (CC BY-NC 4.0)',
   },
   ipma: {
     notePt: (
@@ -408,8 +480,8 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
 /** ID de atribuição da leitura de onda observada (boia IH ou WMO/Copernicus). */
 export function waveSourceAttributionId(
   source: 'ih-buoy' | 'wmo-buoy',
-): 'ih' | 'copernicus' {
-  return source === 'ih-buoy' ? 'ih' : 'copernicus';
+): 'ih-buoys' | 'copernicus' {
+  return source === 'ih-buoy' ? 'ih-buoys' : 'copernicus';
 }
 
 /**
@@ -449,7 +521,7 @@ export function waveCardAttributionExpectation(
   const id = waveSourceAttributionId(source);
   return {
     present: [id],
-    absent: id === 'ih' ? ['copernicus'] : ['ih'],
+    absent: id === 'ih-buoys' ? ['copernicus'] : ['ih-buoys'],
   };
 }
 

@@ -203,6 +203,12 @@ GoatCounter integrado (privacy-first, sem cookies). Commit `e5675f5`. Script só
 
 ---
 
+## 🔒 Licenças de dados (confirmação pendente)
+
+- Marés observadas, isóbatas costeiras e avisos à navegação do IH: a licença de cada conjunto precisa de ser confirmada contra a respectiva ficha de metadados (as boias ondógrafo já foram confirmadas CC BY-NC — processo IH 0191_2026; marés/isóbatas/avisos continuam declarados CC BY sem confirmação individual).
+
+---
+
 ## 📝 Como usar este backlog
 
 - Items não estão por prioridade fixa — depende do contexto

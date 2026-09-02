@@ -29,6 +29,7 @@ const UI_DIRS = ['src/components', 'src/app'];
 const UI_ANCHORS: Record<DataSourceId, string[]> = {
   'open-meteo': ['Open-Meteo', 'open-meteo.com'],
   ih: ['Instituto Hidrográfico', 'hidrografico'],
+  'ih-buoys': ['Instituto Hidrográfico', 'hidrografico'],
   ipma: ['IPMA', 'ipma.pt'],
   meteoalarm: ['MeteoAlarm'],
   copernicus: ['Copernicus', 'marine.copernicus'],
@@ -54,10 +55,12 @@ function walk(files: string[], dir: string): void {
 
 describe('cadeias de atribuição (dataSources.tsx)', () => {
   it('cobre todas as fontes declaradas na página de fontes', () => {
-    // As 12 fontes esperadas (espelham a tabela de /fontes).
+    // As 13 fontes esperadas (espelham a tabela de /fontes — o IH está dividido
+    // em marés/isóbatas/avisos 'ih' e boias ondógrafo 'ih-buoys', CC BY-NC).
     const expected: DataSourceId[] = [
       'open-meteo',
       'ih',
+      'ih-buoys',
       'ipma',
       'meteoalarm',
       'copernicus',

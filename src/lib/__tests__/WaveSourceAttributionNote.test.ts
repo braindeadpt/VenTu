@@ -22,8 +22,9 @@ describe('WaveSourceAttributionNote — reutiliza ATTRIBUTIONS nas superfícies 
 
   it('leitura IH → nota IH (e NUNCA a Copernicus)', () => {
     const html = render({ source: 'ih-buoy', locale: 'en' });
-    expect(html).toContain('data-wave-attribution="ih"');
+    expect(html).toContain('data-wave-attribution="ih-buoys"');
     expect(html).toContain('Instituto Hidrográfico');
+    expect(html).toContain('CC BY-NC 4.0');
     expect(html).not.toContain('Copernicus');
   });
 });

@@ -142,7 +142,7 @@ Sem embeds de terceiros (iframes bloqueados). Nos spots curados, a secção «C�
 
 - [Open-Meteo](https://open-meteo.com/) — previsões mar e tempo, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Ensemble multi-modelo: ondas por [DWD EWAM](https://www.dwd.de/) e [ECMWF WAM](https://www.ecmwf.int/) (CC-BY), NOAA GFS Wave/GWAM; vento por DWD ICON-EU, ECMWF IFS, GFS e Météo-France.
 - [IPMA](https://www.ipma.pt/) — observações, avisos e radar (dados públicos)
-- [IH](https://www.hidrografico.pt/) — boias ondógrafo e marés (CC-BY 4.0)
+- [IH](https://www.hidrografico.pt/) — boias ondógrafo ([CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)) e marés (CC-BY 4.0)
 - [Google Gemini](https://ai.google.dev/) — notícias & Dawn Patrol (opcional)
 - [Lucide](https://lucide.dev/) — ícones
 - Operadores de câmaras ao vivo: [Surftotal](https://www.surftotal.com/), [MEO Beachcam](https://beachcam.meo.pt/)
@@ -201,7 +201,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 - [Open-Meteo](https://open-meteo.com/) — marine & weather forecasts, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Multi-model ensemble: waves by [DWD EWAM](https://www.dwd.de/) & [ECMWF WAM](https://www.ecmwf.int/) (CC-BY), NOAA GFS Wave/GWAM; wind by DWD ICON-EU, ECMWF IFS, GFS & Météo-France.  
 - [IPMA](https://www.ipma.pt/) — observations, warnings & radar (public data)  
-- [IH](https://www.hidrografico.pt/) — wave buoys & tides (CC-BY 4.0)  
+- [IH](https://www.hidrografico.pt/) — wave buoys ([CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)) & tides (CC-BY 4.0)  
 - [Google Gemini](https://ai.google.dev/) — news & Dawn Patrol (optional)  
 - [Lucide](https://lucide.dev/) — icons  
 - Live camera operators: [Surftotal](https://www.surftotal.com/), [MEO Beachcam](https://beachcam.meo.pt/)

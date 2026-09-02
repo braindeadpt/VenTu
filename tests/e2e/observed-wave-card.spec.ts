@@ -574,11 +574,12 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // Pares dinâmicos derivados do metadata (waveCardAttributionExpectation): a
     // cadeia mostrada tem de corresponder à fonte verdadeiramente exibida.
 
-    // Lado IH: só a nota «Dados © Instituto Hidrográfico» — Copernicus NUNCA.
+    // Lado IH: só a nota das boias «Dados © Instituto Hidrográfico … (CC BY-NC)»
+    // — Copernicus NUNCA.
     await gotoSpot(page, 'single-source-ih');
     const ihCard = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(ihCard).toBeVisible({ timeout: 15_000 });
-    const ihFooter = ihCard.locator('[data-data-source="ih"]');
+    const ihFooter = ihCard.locator('[data-data-source="ih-buoys"]');
     await expect(ihFooter).toBeVisible();
     await expect(ihFooter).toContainText(/Instituto Hidrográfico/);
     await expect(ihFooter).not.toContainText(/Copernicus/i);
@@ -594,7 +595,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       /Generated using E\.U\. Copernicus Marine Service Information/,
     );
     await expect(wmoFooter).not.toContainText(/Instituto Hidrográfico/);
-    await expect(wmoCard.locator('[data-data-source="ih"]')).toHaveCount(0);
+    await expect(wmoCard.locator('[data-data-source="ih-buoys"]')).toHaveCount(0);
   });
 
   test('mostra o chip compacto IH vs WMO no hero', async ({ page }) => {

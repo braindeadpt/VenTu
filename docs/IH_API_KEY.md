@@ -304,3 +304,12 @@ semanas — basta ir a **Actions** → **API Keys Health** para ver o resultado.
   `OPS_TELEGRAM_CHAT_ID` + `TELEGRAM_BOT_TOKEN`; sem eles faz dry-run). O workflow
   `update-data.yml` pára neste passo em vez de publicar dados sem a camada observedWave.
 - `validate-generated-data.js` trata `ih-buoys.json` como warn-only (nunca bloqueia o deploy).
+---
+
+## Licença das boias ondógrafo — CC BY-NC e uso comercial
+
+Registo do processo IH n.º 0191_2026 (email do Instituto Hidrográfico): «A licença de utilização dos dados das boias do Instituto Hidrográfico é CC -BY-NC.»
+
+- Os dados das boias ondógrafo (camada `observedWave`; séries de onda com `IH_API_KEY`) são **CC BY-NC 4.0** (<https://creativecommons.org/licenses/by-nc/4.0/>), não CC BY — a página /fontes declara-os separadamente.
+- Atribuição obrigatória (ficha de metadados da Rede de Boias Datawell Waverider, `0205ed82-a085-4432-98f5-ff0326c4d4de`): Instituto Hidrográfico, Administração dos Portos da Região Autónoma da Madeira e Associação para o Estudo do Ambiente Insular.
+- Questão em aberto: o roteiro do VenTu inclui usos comerciais (directório de escolas, B2B, patrocínios, marketplace). CC BY-NC exclui o uso comercial, pelo que o uso comercial da camada observedWave exigirá uma licença diferente a negociar com o IH. Este documento regista o facto e a questão — não constitui avaliação legal.
