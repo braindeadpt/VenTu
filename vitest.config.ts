@@ -72,6 +72,7 @@ export default defineConfig({
       'scripts/lib/__tests__/llmFallback.test.js',
       'scripts/lib/__tests__/obsWorkerHealth.test.js',
       'scripts/lib/__tests__/validateGeneratedData.test.js',
+      'scripts/lib/__tests__/validateSpots.test.js',
       'scripts/lib/__tests__/releaseHealthCheck.test.js',
     ],
   },
