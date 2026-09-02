@@ -66,10 +66,9 @@ jobs:
         if: env.IH_API_KEY == ''
         run: echo "::warning::IH_API_KEY não configurada — observedWave desactivado (ver docs/IH_API_KEY.md)"
 
-      # Ecowitt PWS — vento observado (merge-observations). As três
-      # credenciais (application_key + api_key + MAC/IMEI) configuradas mas
-      # inválidas → falha (job vermelho). Ausentes → aviso (a estação é
-      # opcional; o vento cai para IPMA/METAR).
+      # Ecowitt PWS — vento observado (merge-observations). Key/MAC inválidos
+      # → falha (job vermelho). Estação sem vento / leitura velha → aviso (o
+      # vento cai para IPMA/METAR). Ausentes → aviso (estação opcional).
       - name: Test Ecowitt API credentials (device info → real_time)
         if: env.ECOWITT_API_KEY != ''
         run: node scripts/test-ecowitt-api-key.js

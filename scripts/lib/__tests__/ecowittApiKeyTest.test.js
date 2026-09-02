@@ -89,6 +89,36 @@ describe('runEcowittApiKeyTest — caminho PASS', () => {
     });
     expect(code).toBe(0);
   });
+
+  it('real_time sem vento → exit 0 (key válida; estação sem sensor de vento)', async () => {
+    const realTime = { code: 0, time: NOW, data: { outdoor: { temperature: { value: 19 } } } };
+    const warn = vi.fn();
+    const code = await runEcowittApiKeyTest({
+      creds: CREDS,
+      fetchImpl: ecowittFetchMock({ realTime }),
+      log: { ...silentLog, warn },
+    });
+    expect(code).toBe(0);
+    expect(warn).toHaveBeenCalled();
+  });
+
+  it('leitura antiga (>3h) → exit 0 (key válida; payload velho, fallback IPMA/METAR)', async () => {
+    const stale = new Date(Date.now() - 6 * 3_600_000).toISOString();
+    const warn = vi.fn();
+    const code = await runEcowittApiKeyTest({
+      creds: CREDS,
+      fetchImpl: ecowittFetchMock({
+        realTime: {
+          code: 0,
+          time: stale,
+          data: { wind: { wind_speed: { value: 3 }, wind_direction: { value: 90 } } },
+        },
+      }),
+      log: { ...silentLog, warn },
+    });
+    expect(code).toBe(0);
+    expect(warn).toHaveBeenCalled();
+  });
 });
 
 describe('runEcowittApiKeyTest — caminho FAIL', () => {
@@ -110,32 +140,6 @@ describe('runEcowittApiKeyTest — caminho FAIL', () => {
     const code = await runEcowittApiKeyTest({
       creds: CREDS,
       fetchImpl: ecowittFetchMock({ info: json({}, 401) }),
-      log: silentLog,
-    });
-    expect(code).toBe(1);
-  });
-
-  it('real_time sem vento → exit 1', async () => {
-    const realTime = { code: 0, time: NOW, data: { outdoor: { temperature: { value: 19 } } } };
-    const code = await runEcowittApiKeyTest({
-      creds: CREDS,
-      fetchImpl: ecowittFetchMock({ realTime }),
-      log: silentLog,
-    });
-    expect(code).toBe(1);
-  });
-
-  it('leitura antiga (>3h) → exit 1 (gate de frescura do observed)', async () => {
-    const stale = new Date(Date.now() - 6 * 3_600_000).toISOString();
-    const code = await runEcowittApiKeyTest({
-      creds: CREDS,
-      fetchImpl: ecowittFetchMock({
-        realTime: {
-          code: 0,
-          time: stale,
-          data: { wind: { wind_speed: { value: 3 }, wind_direction: { value: 90 } } },
-        },
-      }),
       log: silentLog,
     });
     expect(code).toBe(1);

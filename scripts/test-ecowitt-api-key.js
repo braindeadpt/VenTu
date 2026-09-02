@@ -6,16 +6,15 @@
  *   1. Credentials present (all three env vars — none is shown).
  *   2. GET /device/info with application_key + api_key + MAC/IMEI — the
  *      credentials are accepted and resolve the station.
- *   3. GET /device/real_time — a live wind reading exists and is FRESH
- *      (≤ MAX_OBS_AGE_MS), which is exactly what the observed layer uses.
+ *   3. GET /device/real_time — live wind if the station reports it.
  *
  * Usage:
  *   ECOWITT_APPLICATION_KEY=... ECOWITT_API_KEY=... ECOWITT_MAC=... \
  *     node scripts/test-ecowitt-api-key.js
  *
  * Exit codes:
- *   0  — credentials valid and the station is serving fresh data.
- *   1  — credentials missing/invalid, or no fresh reading (see output).
+ *   0  — credentials valid (station may lack wind; that is a warning).
+ *   1  — credentials missing/invalid (see output).
  *
  * The chain logic lives in `runEcowittApiKeyTest()` (exported, testable with
  * a mocked fetch); the CLI wrapper maps its exit code to process.exit.
@@ -65,7 +64,21 @@ async function runEcowittApiKeyTest({
   try {
     snapshot = await fetchEcowittSnapshot({ fetchImpl, creds });
   } catch (err) {
-    log.error(`❌ Falha na consulta Ecowitt: ${err.message}`);
+    const msg = String(err?.message || err);
+    // device/info already succeeded inside fetchEcowittSnapshot — the key
+    // and MAC are valid. Missing wind / a stale reading is a station payload
+    // issue: merge-observations already falls back to IPMA/METAR.
+    if (/missing wind_speed or wind_direction/.test(msg)) {
+      log.warn('⚠️  Credenciais válidas, mas a estação não reporta vento (real_time sem wind_speed/wind_direction).');
+      log.warn('   O vento observado cai para IPMA/METAR. Não é uma falha de key.');
+      return 0;
+    }
+    if (/older than/.test(msg)) {
+      log.warn(`⚠️  Credenciais válidas, mas a leitura está velha: ${msg}`);
+      log.warn('   O vento observado cai para IPMA/METAR. Não é uma falha de key.');
+      return 0;
+    }
+    log.error(`❌ Falha na consulta Ecowitt: ${msg}`);
     log.error('   Causas comuns: application_key/api_key inválidas (code ≠ 0), MAC/IMEI errado,');
     log.error('   ou a API em baixo. Confirma as chaves na consola OpenAPI da Ecowitt.');
     return 1;
@@ -75,9 +88,6 @@ async function runEcowittApiKeyTest({
     return 1;
   }
 
-  // ── 3. Frescura ─────────────────────────────────────────────────────────
-  // fetchEcowittSnapshot já lança quando a leitura é mais antiga que
-  // MAX_OBS_AGE_MS — chegar aqui significa dados frescos + estação válida.
   log.log(`   ✓ Estação: ${snapshot.stationName} (${snapshot.lat.toFixed(3)}, ${snapshot.lon.toFixed(3)})`);
   log.log(`   ✓ Vento: ${snapshot.windSpeedMs.toFixed(1)} m/s ${snapshot.windCardinal} (${snapshot.windDirDeg}°)`);
   if (snapshot.tempC != null) log.log(`   ✓ Temperatura: ${snapshot.tempC.toFixed(1)}°C`);
