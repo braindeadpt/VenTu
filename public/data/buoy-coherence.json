@@ -1,11 +1,11 @@
 {
   "day": "20260902",
-  "fetchedAt": "2026-09-02T13:01:34.164Z",
+  "fetchedAt": "2026-09-02T14:55:45.082Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 56,
+    "pairHourCount": 57,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -1457,7 +1457,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-02T13:04:23.682Z",
+  "regionsAuditedAt": "2026-09-02T14:55:56.336Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Datawell ao largo do Porto",
@@ -1515,14 +1515,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 32,
+      "n": 33,
       "meanDeltaM": 0.2,
       "meanAbsDeltaM": 0.2,
       "maxAbsDeltaM": 0.6,
-      "corr": 0.59,
+      "corr": 0.64,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-02T10",
+      "lastHour": "2026-09-02T11",
       "hours": [
         {
           "6200084": 1.5199999809265137,
@@ -1578,6 +1578,11 @@
           "6200084": 1.0499999523162842,
           "6200199": 1.333009958267212,
           "hour": "2026-09-02T10"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 1.157230019569397,
+          "hour": "2026-09-02T11"
         }
       ]
     },
