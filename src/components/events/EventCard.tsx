@@ -87,7 +87,7 @@ export default function EventCard({ event, locale, compact = false }: Props) {
     >
       <div className={`flex ${compact ? 'gap-3 p-3' : 'gap-4 p-4 sm:p-5'}`}>
         <div
-          className="shrink-0 w-14 sm:w-16 rounded-input bg-surface-2 border border-divider flex flex-col items-center justify-center py-2 px-1"
+          className="shrink-0 w-14 sm:w-16 rounded-input bg-bg-elevated border border-divider flex flex-col items-center justify-center py-2 px-1"
           aria-hidden
         >
           <span className="font-mono tabular-nums text-xl sm:text-2xl font-semibold text-fg leading-none">

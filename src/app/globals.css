@@ -559,8 +559,14 @@ html:has([data-embed-widget]) body {
   backdrop-filter: blur(4px);
   border-radius: 6px 0 0 0 !important;
 }
+/* Attribution links: 10px text needs AA (≥4.5:1) on the slate-800 pill.
+   --data-waves (sky-600 dark / sky-500 light) is too dim on the pill in both
+   themes (≈3.7:1 dark, ≈3.2:1 light) — use theme-scoped colors. */
 .leaflet-control-attribution a {
-  color: rgb(var(--data-waves)) !important;
+  color: rgb(14 165 233) !important; /* sky-500 — 4.7:1 on slate-800 */
+}
+.theme-ocean .leaflet-control-attribution a {
+  color: rgb(3 105 161) !important; /* sky-700 — 5.9:1 on white pill */
 }
 
 /* ── Spot marker wind ring (integrated arc on pin rim) ── */

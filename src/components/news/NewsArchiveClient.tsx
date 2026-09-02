@@ -202,7 +202,10 @@ export default function NewsArchiveClient({
         </section>
       )}
 
-      {/* Filters — news only */}
+      {/* Filters — news only. The -mx-* full-bleed needs a padded parent (see events
+          section above); without it the bar overflows the viewport by 32px and
+          creates a horizontal scrollbar. */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div className="sticky top-0 z-40 bg-bg-base/90 backdrop-blur-md border-b border-divider -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-8 lg:px-8 py-3">
         <div className="max-w-7xl mx-auto">
           <NewsFilters
@@ -219,6 +222,7 @@ export default function NewsArchiveClient({
             debouncing={isDebouncing}
           />
         </div>
+      </div>
       </div>
 
       {/* News content */}
