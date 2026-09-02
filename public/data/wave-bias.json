@@ -1,0 +1,370 @@
+{
+  "fetchedAt": "2026-09-02T10:27:03.639Z",
+  "window": {
+    "startDate": "2026-08-20",
+    "endDate": "2026-09-02"
+  },
+  "models": {
+    "observed": "IH Datawell Waverider — hm0 (altura significativa espectral, m) + Puertos del Estado WMO via Copernicus Marine S3 (sem key) — hm0",
+    "reference": "Open-Meteo Historical Marine — ERA5 hourly wave_height (m)",
+    "note": "Open-Meteo Historical Marine devolve ERA5 (reanálise). past_days da API de previsão devolve o mesmo backfill ERA5 — não existem previsões arquivadas para medir skill real do forecast; o que se mede aqui é o viés do modelo ERA5 face à boia. A correcção é aplicada ao best_match como primeiro passo de calibração (flag VENTU_WAVE_BIAS_CORRECTION=1) e deve ser validada contra o card de onda observada antes de ligar em produção."
+  },
+  "thresholds": {
+    "minN": 30,
+    "minBiasM": 0.15
+  },
+  "buoys": {
+    "6200024": {
+      "name": "Bilbao",
+      "area": "Cantábrico",
+      "lat": 43.63999938964844,
+      "lon": -3.0399999618530273,
+      "source": "wmo-es",
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.92
+    },
+    "6200025": {
+      "name": "Cabo Peñas",
+      "area": "Astúrias",
+      "lat": 43.75,
+      "lon": -6.179999828338623,
+      "source": "wmo-es",
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.95
+    },
+    "6200083": {
+      "name": "Villano-Sisargas",
+      "area": "Galiza",
+      "lat": 43.5,
+      "lon": -9.210000038146973,
+      "source": "wmo-es",
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.92
+    },
+    "6200084": {
+      "name": "Cabo Silleiro",
+      "area": "Galiza",
+      "lat": 42.119998931884766,
+      "lon": -9.430000305175781,
+      "source": "wmo-es",
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85
+    },
+    "6200085": {
+      "name": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "lat": 36.4900016784668,
+      "lon": -6.960000038146973,
+      "source": "wmo-es",
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79
+    }
+  },
+  "regions": {
+    "Caminha": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Viana do Castelo": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Esposende": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Porto": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Vila do Conde": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Gondomar": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Espinho": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Ovar": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Aveiro": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Cantanhede": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Figueira da Foz": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Alentejo": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Vieira do Minho": {
+      "n": 31,
+      "me": 0,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.85,
+      "buoys": [
+        "6200084"
+      ]
+    },
+    "Sines": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Zambujeira do Mar": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Aljezur": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Algarve": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Carrapateira": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Vila do Bispo": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Lagos": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Lagoa": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Portimão": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Sagres": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Olhão": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Faro": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Tavira": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Vila Real de Santo António": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Albufeira": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    },
+    "Alvor": {
+      "n": 31,
+      "me": -0.1,
+      "mae": 0.1,
+      "rmse": 0.1,
+      "corr": 0.79,
+      "buoys": [
+        "6200085"
+      ]
+    }
+  }
+}
