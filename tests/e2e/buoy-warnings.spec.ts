@@ -321,14 +321,36 @@ test.describe('Aviso de boias no mapa interactivo (SpotMapInteractive overlay)',
 test.describe('Chip de diagnóstico no ticker (pipeline-meta.json → HeroTicker)', () => {
   test.use({ serviceWorkers: 'block' });
 
-  // O chip vem do pipeline-meta.json (SSG, server-rendered) — o estado actual
-  // do build é no-key, logo o ticker da homepage mostra «Boias: sem key».
-  // A WMO (lida em runtime pelo layer health) é interceptada como down para o
-  // aviso completo renderizar de forma determinística — quando a Copernicus
-  // tem leituras frescas (ex. Nazaré 6200199), o aviso desaparece por design.
+  // O chip vem do pipeline-meta.json (SSG, server-rendered) — o rótulo depende
+  // do estado do BUILD: «Boias: sem key» só existe num build no-key; com a key
+  // configurada e a camada saudável (status 'ok') o chip nem renderiza (o
+  // Healthy state não tem chip). O teste lê o ficheiro SERVED para decidir
+  // honestamente o que o build deve mostrar — quando o build tem key activa,
+  // salta com receita em vez de assumir um estado que já não é o do CI.
+  // A parte do aviso (client-side) é interceptada como no-key para ser
+  // determinística (a WMO também, para o aviso completo renderizar).
   test('no-key no pipeline-meta.json → «Boias: sem key» no ticker do hero', async ({ page }) => {
+    await interceptIhBuoys(page, {
+      fetchedAt: new Date().toISOString(),
+      apiKeyConfigured: false,
+      hasWaveData: false,
+      stations: {},
+    });
     await interceptWmoBuoys(page, WMO_DOWN);
     await page.goto('/pt/');
+
+    const res = await page.request.get(
+      new URL('/data/pipeline-meta.json', page.url()).toString(),
+    );
+    let noKeyBuild = false;
+    if (res.ok()) {
+      const meta = (await res.json()) as { buoyLayer?: { status?: string } };
+      noKeyBuild = meta?.buoyLayer?.status === 'no-key';
+    }
+    test.skip(
+      !noKeyBuild,
+      'build com IH_API_KEY configurada (pipeline-meta.buoyLayer.status != no-key — o chip mostra o estado real) — para validar «Boias: sem key»: injetar {status:"no-key", apiKeyConfigured:false} em pipeline-meta.json (ou remover o secret) + npm run build',
+    );
 
     await expect(page.getByText('Boias: sem key')).toBeVisible({ timeout: 20_000 });
     // O aviso completo da secção de cards também está presente.
