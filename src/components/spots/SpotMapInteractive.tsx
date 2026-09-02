@@ -234,6 +234,7 @@ export default function SpotMapInteractive({
     isHeroEmbed,
     focusSpotId,
     initialRadarEnabled,
+    initialIsobathsEnabled,
     radarOverlayRef,
     isobathsLayerRef,
     coastalLayerRef,
@@ -249,13 +250,10 @@ export default function SpotMapInteractive({
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
   } = layers;
 
-  // Deep link ?radar=1 handled by useMapLayers initial state —
-  // sem tocar na preferência persistida (que só se grava ao desligar
-  // ou ao toggle manual).
-  useEffect(() => {
-    if (initialIsobathsEnabled) toggleIsobaths();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // Deep links ?radar=1 / ?isobaths=1 handled by useMapLayers initial state —
+  // sem efeitos de mount nem toque na preferência persistida (que só se grava
+  // ao desligar ou ao toggle manual). Um efeito aqui seria uma corrida com o
+  // mount do mapa (chunk dinâmico) e poderia nunca correr ou togglar duas vezes.
 
   // O crédito do basemap troca no controlo (Esri/OSM no satélite · Carto/OSM
   // no mapa). O AttributionControl do Leaflet mantém um CONTADOR de

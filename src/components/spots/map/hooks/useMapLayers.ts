@@ -44,6 +44,7 @@ interface UseMapLayersOptions {
   isHeroEmbed: boolean;
   focusSpotId?: string;
   initialRadarEnabled: boolean;
+  initialIsobathsEnabled: boolean;
   radarOverlayRef: React.MutableRefObject<L.ImageOverlay | null>;
   isobathsLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
@@ -91,6 +92,7 @@ export function useMapLayers({
   isHeroEmbed,
   focusSpotId,
   initialRadarEnabled,
+  initialIsobathsEnabled,
   radarOverlayRef,
   isobathsLayerRef,
   coastalLayerRef,
@@ -280,6 +282,10 @@ export function useMapLayers({
   // ── Isobaths ──
   const [isobathsEnabled, setIsIsobathsEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
+    // Deep link ?isobaths=1 (partilhar o overlay) liga as isóbatas à entrada,
+    // sobrepondo a preferência persistida SEM a gravar — o toggle manual é o
+    // único dono da preferência depois disto (mesmo padrão do deep link ?radar=1).
+    if (initialIsobathsEnabled) return true;
     if (!isHeroEmbed && !isFullscreen) return false;
     const saved = (() => {
       try {
