@@ -6,6 +6,11 @@ import {
   freshObservedWave,
   readRealConditions,
 } from './helpers/conditions';
+// Limiares da correcção regional — fonte única (scripts/lib/buoyBias.js). Ter
+// regiões no wave-bias.json NÃO implica viés aplicado: uma região só produz
+// waveBias numa row quando n >= MIN_BIAS_N e |me| >= MIN_BIAS_M (e o deltaM
+// resultante ≥ 0.05 m). O portão dos testes baked usa exactamente estes valores.
+import { MIN_BIAS_N, MIN_BIAS_M } from '../../scripts/lib/buoyBias.js';
 
 /**
  * Badge do score de onda no TopNow da homepage (SpotListCard).
@@ -31,18 +36,30 @@ test.describe('TopNow — badge do score de onda', () => {
     page.getByRole('region', { name: 'A bombar agora' });
 
   /**
-   * Build está baked com wave-bias.json (recipe write-wave-bias-fixture.mjs)?
-   * Lê o ficheiro SERVIDO pelo out/: quando tem regiões utilizáveis, os negativos
-   * de «sem correcção» não são válidos (o SSG bakes o viés e o refresh preserva
-   * o meta da row) — o contrato passa para o teste Baked.
+   * Build está baked com wave-bias.json APLICÁVEL (recipe
+   * write-wave-bias-fixture.mjs)? Lê o ficheiro SERVIDO pelo out/. O critério é
+   * «≥ 1 região ATRAVESSA os limiares» (n >= MIN_BIAS_N e |me| >= MIN_BIAS_M) —
+   * não «tem regiões»: uma região sub-limiar nunca produz o campo waveBias numa
+   * row (applyWaveBias devolve null), logo nada é baked e os negativos de «sem
+   * correcção» continuam válidos. Quando o portão abre, o SSG bakes o viés e o
+   * refresh preserva o meta da row — o contrato passa para o teste Baked.
    */
   async function isBakedWaveBias(page: import('@playwright/test').Page): Promise<boolean> {
     const res = await page.request.get(
       new URL('/data/wave-bias.json', page.url()).toString(),
     );
     if (!res.ok()) return false;
-    const file = (await res.json()) as { regions?: Record<string, unknown> };
-    return !!file?.regions && Object.keys(file.regions).length > 0;
+    const file = (await res.json()) as {
+      regions?: Record<string, { n?: number; me?: number }>;
+    };
+    return Object.values(file?.regions ?? {}).some(
+      (r) =>
+        !!r &&
+        Number.isFinite(r.n) &&
+        Number.isFinite(r.me) &&
+        (r.n ?? 0) >= MIN_BIAS_N &&
+        Math.abs(r.me ?? 0) >= MIN_BIAS_M,
+    );
   }
 
   /** Transform `all`: aplica `fn` a TODAS as rows (top spot de cada desporto). */
@@ -172,20 +189,15 @@ test.describe('TopNow — badge do score de onda', () => {
     // build (o que o write-wave-bias-fixture.mjs produz), `buildSpotData` bakes
     // o viés nas rows e o badge sai logo do HTML do primeiro paint — o spec
     // valida-o sem intercept (o refresh client-side poderia até estar desligado).
-    // Gate honesto: lê o ficheiro SERVED pelo build; sem as regiões, skip com a
+    // Gate honesto: lê o ficheiro SERVED pelo build. O portão é «≥ 1 região
+    // acima dos limiares» (n >= MIN_BIAS_N, |me| >= MIN_BIAS_M) — ter regiões
+    // sub-limiar não implica correcção baked; sem nada a corrigir, skip com a
     // recipe — nunca falha no CI, mas corre localmente após a recipe.
     await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    const res = await page.request.get(
-      new URL('/data/wave-bias.json', page.url()).toString(),
-    );
-    let baked = false;
-    if (res.ok()) {
-      const file = (await res.json()) as { regions?: Record<string, unknown> };
-      baked = !!file?.regions && Object.keys(file.regions).length > 0;
-    }
+    const baked = await isBakedWaveBias(page);
     test.skip(
       !baked,
-      'build sem wave-bias.json baked — recipe: node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge',
+      `build sem wave-bias.json aplicável (nenhuma região com n >= ${MIN_BIAS_N} e |ME| >= ${MIN_BIAS_M} m — wave-bias.json presente mas todas sub-limiar, nada a corrigir) — recipe: node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge`,
     );
 
     const section = topNow(page);
@@ -366,7 +378,7 @@ test.describe('TopNow — badge do score de onda', () => {
     // a leitura velha (a frescura da boia não apaga um viés baked) — o teste
     // só é válido sem wave-bias.json (CI).
     if (await isBakedWaveBias(page)) {
-      test.skip(true, 'build COM wave-bias.json baked (fixture) — a leitura velha não apaga o viés baked; validar a frescura no build sem fixture');
+      test.skip(true, 'build COM wave-bias.json baked (≥ 1 região acima dos limiares n/MIN_BIAS_M) — a leitura velha não apaga o viés baked; validar a frescura no build sem fixture');
       return;
     }
     const section = topNow(page);
@@ -379,4 +391,4 @@ test.describe('TopNow — badge do score de onda', () => {
     // A altura continua a aparecer como previsão pura (a row mantém-se).
     await expect(section.getByText(/\d\.\dm/).first()).toBeVisible();
   });
-});
+});
