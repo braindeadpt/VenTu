@@ -56,6 +56,20 @@ Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing
 
 ## 🌊 Dados em falta
 
+### observedWave da Costa de Prata (boia Fugro 2 — Nazaré Costeira)
+
+Confirmado a 2026-09-02 com a key real: `getDatawellData` **não serve a família
+Fugro** (série vazia em 48 h com as estações 2/1010/1011 vivas na OGC keyless).
+Os **36 spots da Costa de Prata** mapeados à boia 2 no `spotMapping` ficam sem
+`observedWave` de origem IH mesmo com key. O merge degrada graciosamente
+(`observedWaveMerge.js` devolve `wave: null` ou cai para a WMO — nunca inventa
+leituras), mas a camada fica vazia nesses spots.
+
+**Alternativa apontada em docs/IH_API_KEY.md**: fallback WMO ES — Cabo Silleiro
+(6200084, Copernicus sem key) cobre os spots do NW dentro do alcance. Estimar o
+mapeamento spot→WMO para a Costa de Prata (e, se viável, sugerir ao IH a
+inclusão da família Fugro no endpoint de séries — nova OGC API EDR já anunciada).
+
 ### Qualidade da água
 
 Tens waterTemp (Open-Meteo) mas não qualidade bacteriológica. APA (Agência Portuguesa do Ambiente) publica boletins semanais.

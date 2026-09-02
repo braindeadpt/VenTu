@@ -23,18 +23,17 @@ da Costa de Prata (nazaré a 12 km, são-martinho-porto a 7 km, baleal a 23 km) 
 no `spotMapping` de `ih-buoys.json` (36 spots). Se a `getDatawellData` servir a família
 Fugro, o `observedWave` desses spots passa a vir desta boia.
 
-> **Estado da verificação (2026-08-15):** o FAQ oficial documenta `getDatawellData` só
-> para as **Datawell Waverider**; os metadados Fugro só publicam posições (WMS/WFS/OGC).
-> Reconfirmado ao vivo sem key: (1) o servidor de séries
-> `supportserver1.hidrografico.pt/geodata/buoys` responde **401 «Invalid API KEY» em todos
-> os caminhos** — incluindo `/openapi.json` e `/swagger`, por isso nem o spec que listaria
-> as estações servidas é legível sem key; (2) a OGC API keyless tem 44 colecções, mas
-> **nenhuma de observações de onda** (só posições de boias; `tide_obs_nrt` e `hfr_*` são
-> marés e correntes HF-radar) — a única rota para séries de onda é mesmo `getDatawellData`.
-> A resposta definitiva («a API serve ou não a Fugro 2?») só é verificável com a key — o
-> modo `--url` abaixo imprime o pedido exacto para o verificares com um curl. A fallback
-> WMO (Copernicus, sem key) **não** cobre a 6200199 (só 6201077/79 PT + as 5 ES) — sem a
-> key da IH, a Nazaré fica sem observedWave.
+> **Estado da verificação (2026-09-02, key real):** a pergunta está respondida — a
+> `getDatawellData` **não serve a família Fugro**. Testes com a key: Datawell 4 (Leixões),
+> 19 (Sines), 20 (Faro) e 33 (Caniçal) devolvem leituras frescas (≤ 2 h); as estações
+> Fugro 2 (CSA88/2, Nazaré Costeira), 1010 (ZLT1) e 1011 (ZLT2) devolvem **série vazia
+> numa janela de 48 h** — sem erro HTTP, sem 401/403. Não é falta de NRT: a OGC API
+> keyless `buoys_Fugro_oceanor_wavescan/items` mostra as três com
+> `last_data = 2026-09-02T11:00` (vivas à hora do teste). Estações vivas + série vazia =
+> o endpoint não cobre esta família. Consequência: a boia 2 não tem observedWave mesmo
+> com key — a Costa de Prata (36 spots mapeados) fica sem observedWave de origem IH; o
+> merge degrada graciosamente (não inventa leituras — ver observedWaveMerge.js) e a
+> fallback WMO ES (Cabo Silleiro 6200084) cobre os spots do NW dentro do alcance.
 
 ---
 
@@ -125,14 +124,17 @@ IH_API_KEY=xxxxxxxx node scripts/test-ih-api-key.js --family fugro
 IH_API_KEY=xxxxxxxx node scripts/test-ih-api-key.js --station 2
 ```
 
-- **Exit 0** → a API serve a Fugro: o `observedWave` da Costa de Prata passa a funcionar
-  com a key (merge-observations anexa a boia 2 aos 36 spots mapeados).
-- **Exit 1 com «Erro na boia 2: HTTP …»** → a `getDatawellData` rejeita a família Fugro
-  (a API é só Datawell): a Nazaré fica sem observedWave mesmo com key — nesse caso o
-  caminho honesto é a fallback WMO ES (Cabo Silleiro 6200084) para os spots do NW.
-- **Exit 1 com «Sem leituras na janela»** → a key funciona e a API aceita a boia 2, mas
-  não há NRT na janela — ver `last_data` na estação (OGC API, sem key) para confirmar
-  que a boia reporta.
+- **Exit 0 com «Sem leituras na janela»/série vazia na boia 2** → resultado real de
+  2026-09-02: a key é válida e a API aceita o pedido, mas **não devolve séries da família
+  Fugro** — as estações 2/1010/1011 aparecem vivas na OGC keyless (`last_data` recente)
+  e mesmo assim a série vem vazia. A API é só Datawell (`getDatawellData` documentado
+  para as Waverider): a Costa de Prata fica sem observedWave de origem IH e o gate de
+  verificação trata isto como **aviso**, não falha.
+- **Exit 1 com «Erro na boia 2: HTTP …»** → problema de autenticação/permissão: validar a
+  key (Passo 2). Não significa Fugro ausente — a ausência da família é silenciosa (série
+  vazia) e detecta-se pelo aviso do gate.
+- **Fallback**: para os spots do NW, a WMO ES (Cabo Silleiro 6200084, Copernicus sem key)
+  cobre os spots dentro do alcance — registado em docs/BACKLOG.md.
 
 O campo `family` (`datawell`/`fugro`) é gravado em cada estação de `ih-buoys.json` —
 podes confirmar a origem de cada boia no ficheiro gerado.
@@ -246,16 +248,15 @@ Esperado: `hasWaveData: true`, boias ativas com `latest`, e em `conditions.json`
 3. Seguir o job **update-conditions** → passo **Fetch IH buoy data (Datawell Waverider)**:
    - esperado: `Wave snapshots: N ok, 0 failed` e `hasWaveData: yes`
    - se aparecer `ℹ️ IH_API_KEY not set`, o secret não está criado/visível (volta ao Passo 3)
-4. Logo a seguir, o passo **Verify IH buoy layer (hasWaveData + Fugro 2 Nazaré)**
-   corre automaticamente (só com key) e **falha o job** se o ficheiro não tiver
-   `hasWaveData: true`, se a boia Fugro 2 (Nazaré Costeira) não tiver leitura
-   fresca, **ou se as boias Datawell costeiras Leixões (4), Sines (19) e Faro
-   (20) não tiverem leitura** — a verificação estende-se às outras Datawell
-   com a key activa, não só à Fugro (é a confirmação automática de que a Nazaré
-   e a costa oeste aparecem no commit).
+4. Logo a seguir, o passo **Verify IH buoy layer** corre automaticamente (só com
+   key) e **falha o job** só se `hasWaveData !== true` **ou se nenhuma das boias
+   Datawell Leixões (4), Sines (19), Faro (20) e Caniçal (33) tiver leitura
+   fresca** — o sinal honesto de «a camada não está a funcionar». A boia Fugro 2
+   (Nazaré Costeira) é agora **aviso** (a `getDatawellData` não serve a família
+   Fugro, provado em 2026-09-02): se algum dia passar a servir, o aviso some.
 5. Depois do run, confirmar no commit gerado que `public/data/ih-buoys.json` tem
-   `"hasWaveData": true` e `stations["2"].latest` (Fugro 2, Nazaré Costeira),
-   além de `stations["4"|"19"|"20"].latest` (Leixões/Sines/Faro).
+   `"hasWaveData": true` e pelo menos um de `stations["4"|"19"|"20"|"33"].latest`
+   (Leixões/Sines/Faro/Caniçal).
 
 ### Validação automática semanal (api-keys.yml)
 

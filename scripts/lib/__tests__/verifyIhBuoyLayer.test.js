@@ -1,14 +1,15 @@
 /**
  * Unit tests for scripts/verify-ih-buoy-layer.js — o gate do workflow que
  * falha o job quando IH_API_KEY está configurada mas a camada de ondas não
- * ficou no ih-buoys.json (hasWaveData false), a boia Fugro 2 (Nazaré
- * Costeira) não devolveu leituras, OU (com a key activa) as boias Datawell
- * costeiras Leixões/Sines/Faro não têm leitura.
+ * ficou no ih-buoys.json.
  *
- * Cobre a função pura verifyIhBuoyLayer (PASS/FAIL por condição) — o exit 1
- * do CLI é derivado directamente dela.
+ * Contrato (validado em 2026-09-02 com a key real): `getDatawellData` só
+ * serve a família Datawell — a Fugro (2/1010/1011) devolve série vazia com
+ * as estações vivas na OGC keyless. Logo:
+ *   - FALHA só se `hasWaveData !== true` OU se NENHUMA Datawell costeira
+ *     (Leixões 4, Sines 19, Faro 20, Caniçal 33) tiver `latest` fresco.
+ *   - A Fugro 2 e cada Datawell individual em falta são AVISOS (não falham).
  */
-
 import { describe, expect, it } from 'vitest';
 import { createRequire } from 'module';
 
@@ -21,22 +22,28 @@ const {
   DATAWELL_COASTAL_BUOYS,
 } = require('../../verify-ih-buoy-layer.js');
 
-const FUGRO_2_WITH_LATEST = {
+/** Estação Fugro — hoje SEM leitura esperada (família não servida por getDatawellData). */
+const FUGRO_2_NO_LATEST = {
   idEst: 2,
   name: 'CSA88/2',
   family: 'fugro',
   area: 'Boia Nazaré Costeira',
-  latest: { hm0: 1.8, tp: 11, thtp: 315, hmax: 2.4, temp: 18.5, date: '2026-08-31T02:00:00Z' },
+  last_data: '2026-09-02T11:00:00Z',
 };
 
-/** Leixões (4) / Sines (19) / Faro (20) — boias Datawell costeiras esperadas. */
+/**
+ * Leixões (4) / Sines (19) / Faro (20) / Caniçal (33) — boias Datawell
+ * costeiras; uma fresca basta para a camada estar viva.
+ */
 const DATAWELL_WITH_LATEST = {
-  '4': { idEst: 4, name: 'CSA92/D', family: 'datawell', area: 'Leixões', latest: { hm0: 1.9, tp: 10, date: '2026-08-31T02:00:00Z' } },
-  '19': { idEst: 19, name: 'CSA83/1D', family: 'datawell', area: 'Sines', latest: { hm0: 2.1, tp: 9, date: '2026-08-31T02:00:00Z' } },
-  '20': { idEst: 20, name: 'CSA82/D', family: 'datawell', area: 'Faro', latest: { hm0: 1.2, tp: 12, date: '2026-08-31T02:00:00Z' } },
+  '4': { idEst: 4, name: 'CSA92/D', family: 'datawell', area: 'Leixões', latest: { hm0: 1.01, tp: 7.7, date: '2026-09-02T10:32:15Z' } },
+  '19': { idEst: 19, name: 'CSA83/1D', family: 'datawell', area: 'Sines', latest: { hm0: 0.95, tp: 6.7, date: '2026-09-02T10:26:43Z' } },
+  '20': { idEst: 20, name: 'CSA82/D', family: 'datawell', area: 'Faro', latest: { hm0: 0.5, tp: 7.1, date: '2026-09-02T10:25:21Z' } },
+  '33': { idEst: 33, name: 'CSA94', family: 'datawell', area: 'Caniçal', latest: { hm0: 0.92, tp: 7.1, date: '2026-09-02T10:29:57Z' } },
 };
 
-const keyedFile = (station2 = FUGRO_2_WITH_LATEST, stationOverrides = {}) => ({
+/** Ficheiro keyed típico: estação 2 catalogada SEM latest (realidade de hoje). */
+const keyedFile = (station2 = FUGRO_2_NO_LATEST, stationOverrides = {}) => ({
   stations: {
     '1': { idEst: 1, family: 'datawell' },
     [FUGRO_2_KEY]: station2,
@@ -48,23 +55,51 @@ const keyedFile = (station2 = FUGRO_2_WITH_LATEST, stationOverrides = {}) => ({
   hasWaveData: true,
 });
 
+const stripLatest = (entries) =>
+  Object.fromEntries(
+    Object.entries(entries).map(([k, v]) => [k, { ...v, latest: undefined }]),
+  );
+
 describe('verifyIhBuoyLayer', () => {
-  it('PASS: hasWaveData true + Fugro 2 E as boias Datawell costeiras com leitura', () => {
-    const { ok, problems, fugro2, datawell } = verifyIhBuoyLayer(keyedFile());
+  it('PASS: cenário real de 2026-09-02 — Datawell frescas, Fugro 2 sem latest → aviso, exit ok', () => {
+    const { ok, problems, warnings, freshDatawell } = verifyIhBuoyLayer(keyedFile());
     expect(ok).toBe(true);
     expect(problems).toEqual([]);
-    expect(fugro2).toMatchObject({ idEst: 2, family: 'fugro' });
-    // As 3 Datawell (Leixões/Sines/Faro) estão ok e têm leitura.
-    expect(datawell).toHaveLength(3);
-    expect(datawell.every((d) => d.ok)).toBe(true);
-    expect(datawell.map((d) => d.key)).toEqual(['4', '19', '20']);
+    // A Fugro não é servida por getDatawellData → aviso, não falha.
+    expect(warnings.some((w) => w.includes('Fugro') && w.includes('sem leitura'))).toBe(true);
+    expect(freshDatawell.map((d) => d.key)).toEqual(['4', '19', '20', '33']);
   });
 
   it('PASS: hm0 = 0 (mar chato) é uma leitura válida — só exige finito', () => {
     const { ok } = verifyIhBuoyLayer(
-      keyedFile({ ...FUGRO_2_WITH_LATEST, latest: { ...FUGRO_2_WITH_LATEST.latest, hm0: 0 } }),
+      keyedFile(FUGRO_2_NO_LATEST, {
+        '20': { ...DATAWELL_WITH_LATEST['20'], latest: { ...DATAWELL_WITH_LATEST['20'].latest, hm0: 0 } },
+      }),
     );
     expect(ok).toBe(true);
+  });
+
+  it('PASS com avisos: Faro (20) em baixo, as outras três frescas → exit ok', () => {
+    const { ok, problems, warnings } = verifyIhBuoyLayer(
+      keyedFile(FUGRO_2_NO_LATEST, stripLatest({ '20': DATAWELL_WITH_LATEST['20'] })),
+    );
+    expect(ok).toBe(true);
+    expect(problems).toEqual([]);
+    expect(warnings.some((w) => w.includes('Faro') && w.includes('estação 20'))).toBe(true);
+    expect(warnings.filter((w) => w.includes('AVISO Datawell')).length).toBe(1);
+  });
+
+  it('PASS: só uma Datawell fresca basta (Leixões 4) — as outras são avisos', () => {
+    const { ok, warnings } = verifyIhBuoyLayer(
+      keyedFile(FUGRO_2_NO_LATEST, {
+        '19': { ...DATAWELL_WITH_LATEST['19'], latest: undefined },
+        '20': { ...DATAWELL_WITH_LATEST['20'], latest: undefined },
+        '33': { ...DATAWELL_WITH_LATEST['33'], latest: undefined },
+      }),
+    );
+    expect(ok).toBe(true);
+    const datawellWarnings = warnings.filter((w) => w.includes('AVISO Datawell'));
+    expect(datawellWarnings.length).toBe(3);
   });
 
   it('FAIL: hasWaveData false (key aceite mas sem séries de onda)', () => {
@@ -73,68 +108,60 @@ describe('verifyIhBuoyLayer', () => {
     expect(problems.join('\n')).toContain('hasWaveData=false');
   });
 
-  it('FAIL: Fugro 2 sem latest (ficheiro keyless — exactamente o caso a detectar)', () => {
+  it('FAIL: nenhuma Datawell fresca com a key activa — a camada não está a funcionar', () => {
     const { ok, problems } = verifyIhBuoyLayer(
-      keyedFile({ idEst: 2, name: 'CSA88/2', family: 'fugro', area: 'Boia Nazaré Costeira' }),
+      keyedFile(FUGRO_2_NO_LATEST, stripLatest(DATAWELL_WITH_LATEST)),
     );
     expect(ok).toBe(false);
-    expect(problems.join('\n')).toContain('sem leitura fresca');
-  });
-
-  it('FAIL: estação 2 ausente do catálogo', () => {
-    const { ok, problems } = verifyIhBuoyLayer({ stations: {}, hasWaveData: true });
-    expect(ok).toBe(false);
-    expect(problems.join('\n')).toContain('não está catalogada');
-  });
-
-  it('FAIL: estação 2 com family errada (o gate é específico da Fugro)', () => {
-    const { ok, problems } = verifyIhBuoyLayer(
-      keyedFile({ ...FUGRO_2_WITH_LATEST, family: 'datawell' }),
+    expect(problems.join('\n')).toContain(
+      'Nenhuma boia Datawell costeira (Leixões 4, Sines 19, Faro 20, Caniçal 33) tem leitura fresca',
     );
-    expect(ok).toBe(false);
-    expect(problems.join('\n')).toContain("family 'datawell'");
   });
 
-  it('FAIL: Leixões (4) sem latest com a key activa — Datawell também é validada', () => {
-    const { ok, problems, datawell } = verifyIhBuoyLayer(
-      keyedFile(FUGRO_2_WITH_LATEST, {
-        '4': { idEst: 4, name: 'CSA92/D', family: 'datawell', area: 'Leixões' },
-      }),
+  it('FAIL: payload sem stations com key activa (nenhuma boia fresca contável)', () => {
+    const { ok, problems } = verifyIhBuoyLayer({ ...keyedFile(), stations: undefined });
+    expect(ok).toBe(false);
+    expect(problems.join('\n')).toContain('Nenhuma boia Datawell costeira');
+  });
+
+  it('AVISO (não falha): estação 2 ausente do catálogo', () => {
+    const { ok, warnings } = verifyIhBuoyLayer(keyedFile(FUGRO_2_NO_LATEST, { '2': undefined }));
+    // '2': undefined põe a estação fora do catálogo; as Datawell continuam frescas.
+    expect(ok).toBe(true);
+    expect(warnings.some((w) => w.includes('AVISO Fugro') && w.includes('2'))).toBe(true);
+  });
+
+  it('AVISO (não falha): estação 2 com family errada', () => {
+    const { ok, warnings } = verifyIhBuoyLayer(
+      keyedFile({ ...FUGRO_2_NO_LATEST, family: 'datawell' }),
     );
-    expect(ok).toBe(false);
-    expect(problems.join('\n')).toContain('Boia Datawell Leixões (CSA92/D) (estação 4) sem leitura fresca');
-    expect(datawell.find((d) => d.key === '4').ok).toBe(false);
-    expect(datawell.find((d) => d.key === '4').reason).toBe('no-latest');
+    expect(ok).toBe(true);
+    expect(warnings.some((w) => w.includes("family 'datawell'"))).toBe(true);
   });
 
-  it('FAIL: Sines (19) com family errada (esperado datawell)', () => {
-    const { ok, problems } = verifyIhBuoyLayer(
-      keyedFile(FUGRO_2_WITH_LATEST, {
+  it('AVISO (não falha): Datawell com family errada ou ausente do catálogo, se houver ≥1 fresca', () => {
+    const { ok, warnings } = verifyIhBuoyLayer(
+      keyedFile(FUGRO_2_NO_LATEST, {
         '19': { idEst: 19, name: 'CSA83/1D', family: 'fugro', area: 'Sines', latest: { hm0: 2.1 } },
+        '33': undefined,
       }),
     );
-    expect(ok).toBe(false);
-    expect(problems.join('\n')).toContain("Estação 19 (Sines (CSA83/1D)) tem family 'fugro'");
+    expect(ok).toBe(true);
+    expect(warnings.some((w) => w.includes("station 19") || w.includes("estação 19"))).toBe(true);
+    expect(warnings.some((w) => w.includes('Caniçal') && w.includes('estação 33'))).toBe(true);
   });
 
-  it('FAIL: Faro (20) ausente do catálogo com a key activa', () => {
-    const { problems } = verifyIhBuoyLayer(
-      keyedFile(FUGRO_2_WITH_LATEST, { '20': undefined }),
-    );
-    expect(problems.join('\n')).toContain('Boia Datawell Faro (CSA82/D) (estação 20) não está catalogada');
-    expect(problems.join('\n')).not.toContain('Boia Datawell Leixões');
-  });
-
-  it('keyless (hasWaveData false) NÃO valida as Datawell — só o hasWaveData falha', () => {
-    // Sem key, as Datawell não têm latest; o gate não se aplica (evita falso-pass no setup keyless).
-    const data = keyedFile(FUGRO_2_WITH_LATEST);
+  it('keyless (hasWaveData false) NÃO adiciona avisos Datawell/Fugro — só o hasWaveData falha', () => {
+    const data = keyedFile();
     delete data.stations['4'].latest;
     delete data.stations['19'].latest;
     delete data.stations['20'].latest;
-    const { ok, problems } = verifyIhBuoyLayer({ ...data, hasWaveData: false });
+    delete data.stations['33'].latest;
+    const { ok, problems, warnings } = verifyIhBuoyLayer({ ...data, hasWaveData: false });
     expect(ok).toBe(false);
     expect(problems.join('\n')).toContain('hasWaveData=false');
-    expect(problems.join('\n')).not.toContain('Boia Datawell');
+    expect(problems.join('\n')).not.toContain('Nenhuma boia Datawell');
+    expect(warnings).toEqual([]);
   });
 
   it('FAIL: payload null/ilegível (nunca rebenta — devolve problemas)', () => {
@@ -142,10 +169,10 @@ describe('verifyIhBuoyLayer', () => {
     expect(verifyIhBuoyLayer(undefined).ok).toBe(false);
   });
 
-  it('constantes do gate: Fugro 2 (fugro) + Leixões/Sines/Faro (datawell)', () => {
+  it('constantes do gate: Fugro 2 (fugro) + Leixões/Sines/Faro/Caniçal (datawell)', () => {
     expect(FUGRO_2_KEY).toBe('2');
     expect(FUGRO_2_FAMILY).toBe('fugro');
     expect(DATAWELL_FAMILY).toBe('datawell');
-    expect(DATAWELL_COASTAL_BUOYS.map((b) => b.key)).toEqual(['4', '19', '20']);
+    expect(DATAWELL_COASTAL_BUOYS.map((b) => b.key)).toEqual(['4', '19', '20', '33']);
   });
-});
+});
