@@ -65,6 +65,7 @@
     "spots:validate": "node scripts/validate-spots.js",
     "pages:validate": "node scripts/validate-page-slugs.js",
     "news:validate-slugs": "node scripts/validate-news-livecams.js",
+    "test:guard-counts": "node scripts/check-guard-test-counts.js",
     "data:validate": "node scripts/validate-data-files.js",
     "scan:encoding": "node scripts/scan-history-encoding.js",
     "alerts:evaluate": "node scripts/evaluate-alerts.js",

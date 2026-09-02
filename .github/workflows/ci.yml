@@ -53,6 +53,13 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # Guard: re-runs ONLY the three slug-guard suites (few seconds) and
+      # asserts their exact test counts — deleting a guard test file, its
+      # vitest.config entry, or the validator it covers would otherwise
+      # shrink the suite with CI still green.
+      - name: Guard suites ran with expected counts
+        run: node scripts/check-guard-test-counts.js
+
       - name: Generate sitemap
         run: npm run sitemap:generate
 
