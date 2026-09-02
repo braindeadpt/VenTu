@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
 import {
   interceptConditions,
+  interceptIhBuoys,
+  interceptWmoBuoys,
   freshObservedWave,
   readRealConditions,
 } from './helpers/conditions';
@@ -53,16 +55,29 @@ test.describe('TopNow — badge do score de onda', () => {
       return out;
     };
 
-  test('sem correcção → NENHUM badge (dados reais, pós-refresh client-side)', async ({ page }) => {
+  test('sem correcção → NENHUM badge (rows servidas sem correcções, pós-refresh client-side)', async ({
+    page,
+  }) => {
+    // Hermético por construção: o build serve conditions.json REAL que hoje
+    // bakes observedWave em 155/185 spots (e as boias WMO vivas estão frescas)
+    // — «dados reais sem correcção» deixou de existir em CI. As rows servidas
+    // são transformadas SEM observedWave/waveBias e as boias (IH e WMO) são
+    // bloqueadas: nenhuma fonte pode produzir correcção, o negativo é sempre
+    // válido em qualquer build (o refresh client-side substitui o SSG).
+    await interceptIhBuoys(page, {
+      fetchedAt: new Date().toISOString(),
+      apiKeyConfigured: false,
+      hasWaveData: false,
+      stations: {},
+    });
+    await interceptWmoBuoys(page, { buoys: {}, hasWaveData: false, day: '20260815' });
+    await interceptConditions(page, {
+      all: allSpots((entry) => {
+        const { observedWave: _ow, observedWaveAlt: _alt, waveBias: _wb, ...rest } = entry;
+        return rest;
+      }),
+    });
     await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    // Gate honesto: num build baked (fixture), o SSG bakes o viés e o refresh
-    // preserva o meta da row (`?? row.conditions.waveBias`) — o negativo só é
-    // válido no build SEM wave-bias.json (CI); quem valida o baked é o teste
-    // «Baked no build». O refresh serve o real (sem transform).
-    if (await isBakedWaveBias(page)) {
-      test.skip(true, 'build COM wave-bias.json baked (fixture) — o negativo não é válido; o contrato «baked» é validado pelo teste Baked');
-      return;
-    }
     const section = topNow(page);
     await expect(section).toBeVisible({ timeout: 20_000 });
 
@@ -80,9 +95,19 @@ test.describe('TopNow — badge do score de onda', () => {
     // Mesma row corrigida pela pipeline que o spec do spot usa: meta waveBias
     // baked (Cascais me +0.3 n=120) e SEM leitura de boia — o viés vence. O
     // refresh client-side traz o meta → o badge aparece sem rebuild.
+    // Bloqueia boias IH/WMO vivas: sem leituras reais, nenhuma ponte anexa
+    // «Corrigido pela boia» às rows — a única correcção possível é o viés
+    // regional do transform (o wmo-buoys.json do build está fresco em CI).
+    await interceptIhBuoys(page, {
+      fetchedAt: new Date().toISOString(),
+      apiKeyConfigured: false,
+      hasWaveData: false,
+      stations: {},
+    });
+    await interceptWmoBuoys(page, { buoys: {}, hasWaveData: false, day: '20260815' });
     await interceptConditions(page, {
       all: allSpots((entry) => {
-        const { observedWave, ...rest } = entry;
+        const { observedWave: _ow, observedWaveAlt: _alt, ...rest } = entry;
         return {
           ...rest,
           waveHeight: 1.8, // já corrigida pela pipeline
