@@ -32,11 +32,6 @@ jobs:
       - name: Validate spots
         run: node scripts/validate-spots.js
 
-      # Mesma classe de bug, nas superficies de URL fora de /spots/[slug]:
-      # os segmentos das landings SEO e das paginas de modalidade.
-      - name: Validate page slugs (SEO landings + modalidades)
-        run: node scripts/validate-page-slugs.js
-
       - name: Validate page slugs (explorar/modalidades URL segments)
         run: node scripts/validate-page-slugs.js
 
