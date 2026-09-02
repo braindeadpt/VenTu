@@ -5,8 +5,11 @@ set -euo pipefail
 
 COMMIT_MSG="${1:-auto: update conditions and spots index [$(date -u +'%Y-%m-%d %H:%M UTC')]}"
 
-git config user.name "github-actions[bot]"
-git config user.email "github-actions[bot]@users.noreply.github.com"
+# Bot identity is passed per-commit with `git -c`, never written to
+# .git/config — a local run would otherwise poison the clone's identity
+# forever (this repo already got stuck as github-actions[bot] that way).
+BOT_NAME="github-actions[bot]"
+BOT_EMAIL="github-actions[bot]@users.noreply.github.com"
 
 if [ ! -d public/data ]; then
   echo "::error::public/data missing — nothing to publish"
@@ -33,7 +36,7 @@ for attempt in $(seq 1 10); do
     exit 0
   fi
 
-  git commit -m "$COMMIT_MSG"
+  git -c "user.name=$BOT_NAME" -c "user.email=$BOT_EMAIL" commit -m "$COMMIT_MSG"
 
   if git push origin main; then
     echo "✅ Data published to main"
