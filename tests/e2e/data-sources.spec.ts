@@ -304,11 +304,11 @@ test.describe('Fontes de dados (data sources)', () => {
     await expect(page.locator('.leaflet-control-attribution')).toContainText('CC BY 4.0');
   });
 
-  test('controlo de atribuição mostra Esri no mapa (Canvas) e no satélite', async ({
+  test('controlo de atribuição mostra Carto/OSM no mapa e Esri no satélite', async ({
     page,
   }) => {
-    // Sem NEXT_PUBLIC_CARTO_API_KEY o modo mapa usa Esri World Canvas (Carto
-    // watermarked os tiles anónimos). Satélite continua Esri imagery.
+    // Com NEXT_PUBLIC_CARTO_API_KEY no build: modo mapa = Carto dark/light.
+    // Satélite continua Esri imagery.
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     const attribution = page.locator('.leaflet-control-attribution');
@@ -316,8 +316,8 @@ test.describe('Fontes de dados (data sources)', () => {
       timeout: 15_000,
     });
     await expect(attribution).toContainText('OpenStreetMap');
-    await expect(attribution).toContainText(/Esri/);
-    await expect(attribution).not.toContainText('CARTO');
+    await expect(attribution).toContainText('CARTO');
+    await expect(attribution).not.toContainText(/Esri/);
     await page.getByRole('radio', { name: 'Satélite' }).click();
     await expect(attribution).toContainText(/Esri/, { timeout: 15_000 });
     await expect(attribution).toContainText('OpenStreetMap');
