@@ -1,20 +1,26 @@
 #!/bin/sh
-# Pre-commit guard: validates the STAGED spot slugs before a commit lands.
+# Pre-commit guard: validates the STAGED URL-segment slugs before a commit
+# lands.
 #
-# Same integrity rules as CI (scripts/validate-spots.js): an accented slug
-# silently 404s client-side after hydration and a duplicated slug silently
-# overwrites another route in the static export (bug class fixed in commit
-# 63cffbcf5). Validating the staged blob (git show :path) instead of the
-# working tree means a partial `git add -p` cannot sneak a bad slug past.
+# Two checks, both reading the staged blobs (git show :path) instead of the
+# working tree, so a partial `git add -p` cannot sneak a bad slug past:
 #
-# Skips fast when src/lib/spots.ts is not staged; bypass with:
+# 1. Spot slugs (scripts/validate-spots.js): an accented slug silently 404s
+#    client-side after hydration and a duplicated slug silently overwrites
+#    another route in the static export (bug class fixed in 63cffbcf5).
+# 2. Page slugs (scripts/validate-page-slugs.js): sport/region literals in
+#    src/lib/seoLandings.ts and the modalidades page must stay ASCII-safe,
+#    unique, and in sync — same bug class, other routes. When only one of
+#    the two files is staged, the other side is read from HEAD so the check
+#    validates exactly what the commit will contain.
+#
+# Skips fast when none of the guarded files are staged; bypass with:
 #   git commit --no-verify
 
-if ! git diff --cached --name-only --diff-filter=ACM | grep -qx 'src/lib/spots.ts'; then
-  exit 0
-fi
+changed=$(git diff --cached --name-only --diff-filter=ACM)
 
-git show ':src/lib/spots.ts' | node -e "
+if echo "$changed" | grep -Fxq 'src/lib/spots.ts'; then
+  git show ':src/lib/spots.ts' | node -e "
 const { validateSpotsContent } = require('./scripts/validate-spots.js');
 // Acumula Buffers e concatena no fim: 'input += chunk' descodificaria cada
 // chunk isoladamente e um caractere multi-byte partido na fronteira dos 64 KB
@@ -32,4 +38,35 @@ process.stdin.on('end', () => {
   }
   console.log('validate-spots: ' + spotCount + ' staged spots OK');
 });
-"
+" || exit 1
+fi
+
+if echo "$changed" | grep -Fxq 'src/lib/seoLandings.ts' \
+  || echo "$changed" | grep -Fxq 'src/app/[locale]/modalidades/[slug]/page.tsx'; then
+  node -e "
+const { execFileSync } = require('child_process');
+const { validatePageSlugsContent } = require('./scripts/validate-page-slugs.js');
+const files = [
+  'src/lib/seoLandings.ts',
+  'src/app/[locale]/modalidades/[slug]/page.tsx',
+];
+const staged = execFileSync('git', ['diff', '--cached', '--name-only', '--diff-filter=ACM'], { encoding: 'utf8' }).split(/\r?\n/);
+function readFrom(ref, file) {
+  return execFileSync('git', ['show', ref + ':' + file], { encoding: 'utf8' });
+}
+function contentFor(file) {
+  return staged.includes(file) ? readFrom('', file) : readFrom('HEAD', file);
+}
+const { errors, sportCount, regionSlugCount } = validatePageSlugsContent(
+  contentFor(files[0]),
+  contentFor(files[1]),
+);
+if (errors.length > 0) {
+  console.error('pre-commit validate-page-slugs: ' + errors.length + ' issue(s)');
+  for (const e of errors) console.error('  - ' + e);
+  console.error('Fix the slug(s) and re-stage the file, or use git commit --no-verify to bypass.');
+  process.exit(1);
+}
+console.log('validate-page-slugs: ' + sportCount + ' sport slugs, ' + regionSlugCount + ' region slugs OK');
+" || exit 1
+fi
