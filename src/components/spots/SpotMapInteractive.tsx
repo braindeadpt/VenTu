@@ -149,6 +149,14 @@ interface SpotMapInteractiveProps {
   mapHud?: MapHudProps;
   onFullscreenChange?: (isFullscreen: boolean) => void;
   embedMode?: 'default' | 'hero';
+  /**
+   * Render the BuoyLayerNotice overlay (scope="home") over this map. Default
+   * true. Surfaces that coexist on the same page as another home-scope notice
+   * (the homepage hero/compact maps sit next to the TopNow notice) pass false
+   * so the page never repeats the banner — the real /mapa/ page and the
+   * explorer grid keep the overlay (no TopNow there).
+   */
+  showBuoyNotice?: boolean;
   initialFullscreen?: boolean;
   initialRadarEnabled?: boolean;
   initialIsobathsEnabled?: boolean;
@@ -167,6 +175,7 @@ export default function SpotMapInteractive({
   mapHud,
   onFullscreenChange,
   embedMode = 'default',
+  showBuoyNotice = true,
   initialFullscreen = false,
   initialRadarEnabled = false,
   initialIsobathsEnabled = false,
@@ -547,9 +556,11 @@ export default function SpotMapInteractive({
 
       {isReady && (
         <>
-          <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(92%,460px)] px-2 pointer-events-none">
-            <BuoyLayerNotice locale={locale} scope="home" overlay />
-          </div>
+          {showBuoyNotice && (
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(92%,460px)] px-2 pointer-events-none">
+              <BuoyLayerNotice locale={locale} scope="home" overlay />
+            </div>
+          )}
 
           <MapControls
             isFullscreen={isFullscreen}

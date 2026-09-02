@@ -295,7 +295,7 @@ test.describe('Aviso de boias no mapa interactivo (SpotMapInteractive overlay)',
     ).toHaveCount(0);
   });
 
-  test('no-key: aviso também sobre o hero do mapa da homepage (região do mapa)', async ({ page }) => {
+  test('no-key: homepage tem UM aviso (TopNow), nunca no overlay do mapa', async ({ page }) => {
     await interceptIhBuoys(page, {
       fetchedAt: new Date().toISOString(),
       apiKeyConfigured: false,
@@ -308,12 +308,13 @@ test.describe('Aviso de boias no mapa interactivo (SpotMapInteractive overlay)',
       timeout: 20_000,
     });
 
-    // Scoped à região do mapa interactivo — não à secção de cards (a mesma
-    // string lá também existe, mas fora desta região).
-    const mapRegion = page.getByRole('region', { name: /Mapa interactivo/ });
-    await expect(mapRegion.getByText('Onda observada desactivada')).toBeVisible({
-      timeout: 20_000,
-    });
+    // O aviso da homepage é único e vive na secção TopNow. O mapa do hero
+    // (embedMode=hero) e o mapa compacto coexistem com ela — nenhum repete o
+    // banner (showBuoyNotice=false em HomepageMapHero).
+    await expect(
+      page.getByRole('region', { name: /Mapa interactivo/ }).getByText('Onda observada desactivada'),
+    ).toHaveCount(0);
+    await expect(page.getByText('Onda observada desactivada')).toHaveCount(1);
   });
 });
 

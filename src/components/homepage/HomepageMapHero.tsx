@@ -219,6 +219,10 @@ export default function HomepageMapHero({
 
             embedMode="default"
 
+            // The homepage already shows the single buoy notice above the
+            // TopNow cards — never duplicate it over this map.
+            showBuoyNotice={false}
+
           />
 
         </div>
@@ -282,6 +286,11 @@ export default function HomepageMapHero({
           locale={locale}
 
           embedMode="hero"
+
+          // Same decision as the compact variant: the TopNow notice is the
+          // homepage's single buoy banner; the map overlay only renders on
+          // surfaces without TopNow (real /mapa/, explorer grid).
+          showBuoyNotice={false}
 
         />
 
