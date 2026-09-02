@@ -12,6 +12,7 @@ import {
   DEFAULT_ZOOM,
   MAX_ZOOM,
   CLUSTER_CONFIG,
+  rasterTileLayerOptions,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
 
@@ -151,12 +152,8 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       if (cancelled) { map.remove(); clearLeafletContainer(container); return; }
 
       const darkOnInit = !document.documentElement.classList.contains('theme-ocean');
-      const tileUrl = darkOnInit ? TILE_URLS.dark : TILE_URLS.light;
-      tileLayerRef.current = Leaflet.tileLayer(tileUrl, {
-        attribution: TILE_ATTRIBUTIONS.carto,
-        subdomains: 'abcd',
-        maxZoom: MAX_ZOOM,
-      }).addTo(map);
+      const { url, ...opts } = rasterTileLayerOptions(darkOnInit);
+      tileLayerRef.current = Leaflet.tileLayer(url, opts).addTo(map);
 
       if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -207,21 +204,16 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       tileLayerRef.current = null;
     }
 
-    let url: string;
-    let attribution: string;
     if (basemapMode === 'satellite') {
-      url = TILE_URLS.satellite;
-      attribution = TILE_ATTRIBUTIONS.esri;
+      tileLayerRef.current = Leaflet.tileLayer(TILE_URLS.satellite, {
+        attribution: TILE_ATTRIBUTIONS.esri,
+        maxZoom: MAX_ZOOM,
+      }).addTo(map);
     } else {
-      url = isDark ? TILE_URLS.dark : TILE_URLS.light;
-      attribution = TILE_ATTRIBUTIONS.carto;
+      const raster = rasterTileLayerOptions(isDark);
+      const { url, ...opts } = raster;
+      tileLayerRef.current = Leaflet.tileLayer(url, opts).addTo(map);
     }
-
-    tileLayerRef.current = Leaflet.tileLayer(url, {
-      attribution,
-      subdomains: 'abcd',
-      maxZoom: MAX_ZOOM,
-    }).addTo(map);
   }, [basemapMode, isDark, isReady]);
 
   // Handle basemap toggle

@@ -18,9 +18,9 @@ import WindRingLegend from './WindRingLegend';
 import type { BasemapMode } from './MapLayerToggle';
 import { createClusterIconFunction } from './MapClusterIcon';
 import {
-  TILE_URLS,
   TILE_ATTRIBUTIONS,
   OPEN_METEO_ATTRIBUTION,
+  getMapRasterBasemap,
   DEFAULT_CENTER,
   DEFAULT_ZOOM,
   SPOT_REGION_ZOOM,
@@ -254,18 +254,17 @@ export default function SpotMapInteractive({
   // ao desligar ou ao toggle manual). Um efeito aqui seria uma corrida com o
   // mount do mapa (chunk dinâmico) e poderia nunca correr ou togglar duas vezes.
 
-  // O crédito do basemap troca no controlo (Esri/OSM no satélite · Carto/OSM
-  // no mapa). O AttributionControl do Leaflet mantém um CONTADOR de
-  // referências por texto (add/removeAttribution incrementa/decrementa), e o
-  // tile inicial regista o Carto no onAdd — um único removeAttribution não o
-  // levaria a 0. Por isso REGRAVA-SE exactamente o conjunto pretendido
-  // (Open-Meteo + basemap + créditos IH activos) em _attributions e chama-se
-  // _update() — determinístico, sem contadores vazados, em todas as
-  // superfícies incluindo o hero embebido com basemap satellite persistido.
+  // O crédito do basemap troca no controlo (Esri imagery no satélite ·
+  // Carto/OSM ou Esri Canvas no mapa). O AttributionControl do Leaflet mantém
+  // um CONTADOR de referências por texto; o tile inicial regista o crédito
+  // no onAdd — um único removeAttribution não o levaria a 0. Por isso
+  // REGRAVA-SE exactamente o conjunto pretendido (Open-Meteo + basemap +
+  // créditos IH activos) em _attributions e chama-se _update().
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
-    const attribution = basemapMode === 'satellite' ? TILE_ATTRIBUTIONS.esri : TILE_ATTRIBUTIONS.carto;
+    const attribution =
+      basemapMode === 'satellite' ? TILE_ATTRIBUTIONS.esri : getMapRasterBasemap(isDark).attribution;
     const ac = map.attributionControl as any;
     if (ac) {
       const attribs: Record<string, number> = {};

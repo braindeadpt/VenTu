@@ -140,13 +140,13 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
       attributionId: 'esri',
     },
     {
-      name: 'OpenStreetMap / CARTO',
+      name: 'OpenStreetMap / Esri Canvas',
       homepage: 'https://www.openstreetmap.org/copyright',
-      usePt: 'Basemap vector claro/escuro do mapa de spots.',
-      useEn: 'Light/dark vector basemap for the spots map.',
+      usePt: 'Basemap claro/escuro do mapa de spots (World Dark/Light Gray). CARTO com NEXT_PUBLIC_CARTO_API_KEY.',
+      useEn: 'Light/dark spots-map basemap (World Dark/Light Gray). CARTO when NEXT_PUBLIC_CARTO_API_KEY is set.',
       license: {
-        pt: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + termos CARTO</>,
-        en: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + CARTO terms</>,
+        pt: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + Esri Master Agreement</>,
+        en: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + Esri Master Agreement</>,
       },
       attributionId: 'osm',
     },

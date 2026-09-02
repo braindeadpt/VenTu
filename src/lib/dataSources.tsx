@@ -5,6 +5,7 @@ import {
   OPEN_METEO_LICENSE_URL,
 } from '@/lib/openMeteoAttribution';
 import { IPMA_URL } from '@/lib/ipmaAttribution';
+import { cartoBasemapKey } from '@/lib/map-constants';
 
 /**
  * Fonte de verdade das cadeias de atribuição de dados — a mesma tabela da
@@ -316,32 +317,36 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
   osm: {
     notePt: (
       <>
-        «© <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A>{' '}
-        contributors © <A href="https://carto.com/attributions">CARTO</A>»
+        «© <A href="https://www.esri.com/">Esri</A>, ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> contributors»
+        — tiles World Canvas; com <code>NEXT_PUBLIC_CARTO_API_KEY</code> o
+        fundo volta a ser CARTO dark/light.
       </>
     ),
     noteEn: (
       <>
-        “© <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A>{' '}
-        contributors © <A href="https://carto.com/attributions">CARTO</A>”
+        “© <A href="https://www.esri.com/">Esri</A>, ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> contributors”
+        — World Canvas tiles; with <code>NEXT_PUBLIC_CARTO_API_KEY</code> the
+        basemap is CARTO dark/light.
       </>
     ),
     cellPt: (
       <>
-        «© <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A>{' '}
-        contributors © <A href="https://carto.com/attributions">CARTO</A>» — no
-        controlo de atribuição do mapa.
+        «© <A href="https://www.esri.com/">Esri</A>, ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> contributors»
+        — no controlo de atribuição do mapa (modo mapa). CARTO só com key.
       </>
     ),
     cellEn: (
       <>
-        “© <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A>{' '}
-        contributors © <A href="https://carto.com/attributions">CARTO</A>” — on
-        the map attribution control.
+        “© <A href="https://www.esri.com/">Esri</A>, ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> contributors”
+        — on the map attribution control (map mode). CARTO only with a key.
       </>
     ),
-    titlePt: '© OpenStreetMap contributors © CARTO',
-    titleEn: '© OpenStreetMap contributors © CARTO',
+    titlePt: '© Esri, © OpenStreetMap contributors',
+    titleEn: '© Esri, © OpenStreetMap contributors',
   },
   ecowitt: {
     notePt: (
@@ -526,16 +531,18 @@ export function waveCardAttributionExpectation(
 }
 
 /**
- * Auditoria dinâmica do basemap do mapa: a cadeia Esri/OSM só aparece no modo
- * satélite; o Carto/OSM só no modo mapa. Nunca as duas ao mesmo tempo.
- * @param basemap modo do basemap no momento
+ * Auditoria dinâmica do basemap: satélite é sempre Esri imagery.
+ * Modo mapa: Carto/OSM se houver NEXT_PUBLIC_CARTO_API_KEY, senão Esri Canvas.
  */
 export function basemapAttributionExpectation(
   basemap: 'map' | 'satellite',
 ): AttributionExpectation {
-  return basemap === 'satellite'
-    ? { present: ['esri'], absent: ['osm'] }
-    : { present: ['osm'], absent: ['esri'] };
+  if (basemap === 'satellite') {
+    return { present: ['esri'], absent: ['osm'] };
+  }
+  return cartoBasemapKey()
+    ? { present: ['osm'], absent: ['esri'] }
+    : { present: ['esri'], absent: ['osm'] };
 }
 
 /**

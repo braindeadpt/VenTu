@@ -55,7 +55,7 @@ const UI_ANCHORS: Record<DataSourceId, { surface: string; anchor: RegExp }> = {
     surface: 'controlo de atribuição do mapa em modo satélite + About',
     anchor: /TILE_ATTRIBUTIONS\.esri|\bEsri\b/,
   },
-  osm: { surface: 'controlo de atribuição do mapa (modo mapa)', anchor: /OpenStreetMap|CARTO/ },
+  osm: { surface: 'controlo de atribuição do mapa (modo mapa)', anchor: /OpenStreetMap|getMapRasterBasemap|rasterTileLayerOptions/ },
   ecowitt: { surface: 'atribuição das observações de vento', anchor: /Ecowitt/i },
   metar: { surface: 'atribuição das observações de vento', anchor: /METAR|aviationweather/i },
   weatherlink: { surface: 'embebido de sensores da página do spot', anchor: /SpotWeatherlinkSection/ },

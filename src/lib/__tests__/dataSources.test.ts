@@ -39,11 +39,11 @@ describe('waveCardAttributionExpectation — nota corresponde à fonte exibida',
   });
 });
 
-describe('basemapAttributionExpectation — Esri só no satélite', () => {
-  it('modo mapa → presente [osm], ausente [esri]', () => {
+describe('basemapAttributionExpectation', () => {
+  it('modo mapa sem key Carto → Esri Canvas (presente [esri], ausente [osm])', () => {
     expect(basemapAttributionExpectation('map')).toEqual({
-      present: ['osm'],
-      absent: ['esri'],
+      present: ['esri'],
+      absent: ['osm'],
     });
   });
 
@@ -52,13 +52,6 @@ describe('basemapAttributionExpectation — Esri só no satélite', () => {
       present: ['esri'],
       absent: ['osm'],
     });
-  });
-
-  it('os dois modos são mutuamente exclusivos (nunca Esri e OSM juntas)', () => {
-    const map = basemapAttributionExpectation('map');
-    const sat = basemapAttributionExpectation('satellite');
-    expect(map.present[0]).toBe(sat.absent[0]);
-    expect(sat.present[0]).toBe(map.absent[0]);
   });
 });
 

@@ -31,7 +31,7 @@ import {
   resetRadarPref,
 } from '@/lib/radarPrefs';
 import { getTranslation, validateLocale } from '@/lib/i18n';
-import { TILE_URLS, TILE_ATTRIBUTIONS, MAX_ZOOM } from '@/lib/map-constants';
+import { rasterTileLayerOptions } from '@/lib/map-constants';
 
 interface SpotMapProps {
   lat: number;
@@ -137,12 +137,8 @@ export default function SpotMap({
         });
         mapInstanceRef.current = map;
 
-        const tileUrl = isDark ? TILE_URLS.dark : TILE_URLS.light;
-        tileLayer = Leaflet.tileLayer(tileUrl, {
-          attribution: TILE_ATTRIBUTIONS.carto,
-          subdomains: 'abcd',
-          maxZoom: MAX_ZOOM,
-        }).addTo(map);
+        const { url, ...opts } = rasterTileLayerOptions(isDark);
+        tileLayer = Leaflet.tileLayer(url, opts).addTo(map);
 
         attributionControl = Leaflet.control
           .attribution({ prefix: false })

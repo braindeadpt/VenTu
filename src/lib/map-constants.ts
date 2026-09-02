@@ -2,8 +2,6 @@ import type { SportType } from './sportRatings';
 import { getScoreCssVar, getScoreRgb, SCORE_THRESHOLD_STEPS } from '@/lib/scoreThresholds';
 
 export const TILE_URLS = {
-  light: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
-  dark: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
   satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
 } as const;
 
@@ -13,6 +11,40 @@ export const TILE_ATTRIBUTIONS = {
   esri:
     '&copy; <a href="https://www.esri.com/">Esri</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 } as const;
+
+export type RasterBasemap = {
+  url: string;
+  attribution: string;
+  subdomains?: string;
+};
+
+/** Carto raster tiles require `?key=` (watermark otherwise). Free key: carto.com/basemaps/apikey */
+export function cartoBasemapKey(): string {
+  return (process.env.NEXT_PUBLIC_CARTO_API_KEY ?? '').trim();
+}
+
+/**
+ * Light/dark raster basemap for Leaflet.
+ * With NEXT_PUBLIC_CARTO_API_KEY → original Carto dark/light tiles.
+ * Without it → Esri World Canvas (already allowed by CSP; no watermark).
+ */
+export function getMapRasterBasemap(isDark: boolean): RasterBasemap {
+  const key = cartoBasemapKey();
+  if (key) {
+    const style = isDark ? 'dark_all' : 'light_all';
+    return {
+      url: `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(key)}`,
+      attribution: TILE_ATTRIBUTIONS.carto,
+      subdomains: 'abcd',
+    };
+  }
+  return {
+    url: isDark
+      ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
+      : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    attribution: TILE_ATTRIBUTIONS.esri,
+  };
+}
 
 // Cadeia de atribuição obrigatória do Open-Meteo (CC BY 4.0) — fonte única em
 // openMeteoAttribution.ts, re-exportada aqui para o controlo de atribuição do
@@ -26,6 +58,11 @@ export const DEFAULT_ZOOM = 6;
  *  inteiro; 10 é a região — o mesmo teto do fitBounds dos avisos costeiros). */
 export const SPOT_REGION_ZOOM = 10;
 export const MAX_ZOOM = 19;
+
+export function rasterTileLayerOptions(isDark: boolean): RasterBasemap & { maxZoom: number } {
+  const basemap = getMapRasterBasemap(isDark);
+  return { ...basemap, maxZoom: MAX_ZOOM };
+}
 
 export const MAP_CLUSTER_LS_KEY = 'ventu.map.cluster';
 export const MAP_WIND_LS_KEY = 'ventu.map.wind';

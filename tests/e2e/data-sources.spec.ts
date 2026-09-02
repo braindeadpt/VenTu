@@ -304,29 +304,24 @@ test.describe('Fontes de dados (data sources)', () => {
     await expect(page.locator('.leaflet-control-attribution')).toContainText('CC BY 4.0');
   });
 
-  test('controlo de atribuição mostra Esri/OSM no modo satélite e Carto/OSM no mapa', async ({
+  test('controlo de atribuição mostra Esri no mapa (Canvas) e no satélite', async ({
     page,
   }) => {
-    // /mapa — o controlo degrada para o crédito de basemap correcto por modo:
-    // Carto/OSM no 'map' (primeiro paint) e Esri/OSM em 'satellite' (troca via
-    // HUD). O crédito é adicionado à camada/controlo, por isso não depende de
-    // os tiles de satélite carregarem na rede do teste.
+    // Sem NEXT_PUBLIC_CARTO_API_KEY o modo mapa usa Esri World Canvas (Carto
+    // watermarked os tiles anónimos). Satélite continua Esri imagery.
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     const attribution = page.locator('.leaflet-control-attribution');
-    // Open-Meteo (obrigatório) + Carto/OSM do basemap 'map' no primeiro paint.
     await expect(attribution).toContainText('Weather data by Open-Meteo.com', {
       timeout: 15_000,
     });
     await expect(attribution).toContainText('OpenStreetMap');
-    await expect(attribution).toContainText('CARTO');
-    // Auditoria dinâmica do basemap (basemapAttributionExpectation): a Esri
-    // NUNCA aparece no modo mapa — só no satélite.
-    await expect(attribution).not.toContainText(/Esri/);
-    // Basemap → satélite: entra o crédito Esri/OSM (a licença nunca fica sem créditos).
+    await expect(attribution).toContainText(/Esri/);
+    await expect(attribution).not.toContainText('CARTO');
     await page.getByRole('radio', { name: 'Satélite' }).click();
     await expect(attribution).toContainText(/Esri/, { timeout: 15_000 });
     await expect(attribution).toContainText('OpenStreetMap');
+    await expect(attribution).not.toContainText('CARTO');
   });
 
   test('sitemap.xml inclui /pt/fontes/ com os 5 hreflang (pt/en/es/de/fr)', async ({

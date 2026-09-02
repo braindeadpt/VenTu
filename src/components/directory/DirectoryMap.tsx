@@ -8,9 +8,7 @@ import {
   CLUSTER_CONFIG,
   DEFAULT_CENTER,
   DEFAULT_ZOOM,
-  MAX_ZOOM,
-  TILE_ATTRIBUTIONS,
-  TILE_URLS,
+  rasterTileLayerOptions,
 } from '@/lib/map-constants';
 import { clearLeafletContainer } from '@/lib/mapFullscreen';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
@@ -94,11 +92,8 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
       }
 
       const dark = !document.documentElement.classList.contains('theme-ocean');
-      Leaflet.tileLayer(dark ? TILE_URLS.dark : TILE_URLS.light, {
-        attribution: TILE_ATTRIBUTIONS.carto,
-        subdomains: 'abcd',
-        maxZoom: MAX_ZOOM,
-      }).addTo(map);
+      const { url, ...opts } = rasterTileLayerOptions(dark);
+      Leaflet.tileLayer(url, opts).addTo(map);
 
       Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
       Leaflet.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
@@ -133,11 +128,8 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
           map.removeLayer(layer);
         }
       });
-      L.tileLayer(dark ? TILE_URLS.dark : TILE_URLS.light, {
-        attribution: TILE_ATTRIBUTIONS.carto,
-        subdomains: 'abcd',
-        maxZoom: MAX_ZOOM,
-      }).addTo(map);
+      const { url, ...opts } = rasterTileLayerOptions(dark);
+      L.tileLayer(url, opts).addTo(map);
     };
 
     const obs = new MutationObserver(applyTheme);
