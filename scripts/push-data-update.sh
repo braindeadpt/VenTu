@@ -23,6 +23,10 @@ for attempt in $(seq 1 10); do
   git checkout -B main origin/main
   cp -a "$DATA_BACKUP/." public/data/
   git add -f public/data/
+  # The -f above is required (public/data/ is gitignored) but it also
+  # overrides the *.backup rule — unstage the write-only sidecars so the
+  # ~15x/day bot commits never track them again (.gitignore line 36).
+  git reset -q -- '*.backup'
 
   if git diff --staged --quiet; then
     echo "Data already matches origin/main — nothing to publish"
