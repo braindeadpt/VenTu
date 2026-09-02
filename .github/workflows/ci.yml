@@ -93,6 +93,9 @@ jobs:
           NEXT_PUBLIC_OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL || 'https://ventu-observations.busntech-net.workers.dev' }}
         run: npm run build
 
+      - name: Assert no nested segment-cache payload dirs remain
+        run: node scripts/check-segment-paths.js
+
       - name: Validate _headers security directives
         run: node scripts/check-headers-file.js
 
