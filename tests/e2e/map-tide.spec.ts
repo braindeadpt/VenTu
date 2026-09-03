@@ -60,6 +60,7 @@ test.describe('Map tide chip', () => {
   test.describe.configure({ timeout: 60_000 });
 
   test('no trilho: 08h→17h muda fase e hora da próxima extrema', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapTide(page);
 
     const track = page.locator('[data-map-time-track-mode="hours"]');

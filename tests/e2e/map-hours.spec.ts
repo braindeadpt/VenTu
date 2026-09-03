@@ -54,6 +54,7 @@ test.describe('Map 48h score timeline', () => {
   test.describe.configure({ timeout: 60_000 });
 
   test('deep link ?hours=1 liga o trilho; 08h→17h muda o score da Nazaré', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapHours(page);
 
     await expect(page.locator('[data-map-hours="true"]')).toBeVisible();
@@ -70,6 +71,7 @@ test.describe('Map 48h score timeline', () => {
   });
 
   test('deep link ?t=18 parte no passo mais próximo (17h)', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapHours(page, '?hours=1&t=18');
 
     const track = page.locator('[data-map-time-track-mode="hours"]');
@@ -114,6 +116,7 @@ test.describe('Map 48h: mobile', () => {
   test.describe.configure({ timeout: 60_000 });
 
   test('HUD no telemóvel: 08h→17h muda o mapa', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapHours(page);
 
     await expect(page.locator('[data-map-hours-toggle]')).toBeVisible({ timeout: 15_000 });

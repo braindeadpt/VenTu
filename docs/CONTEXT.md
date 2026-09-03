@@ -256,7 +256,7 @@ src/
 ├── lib/                   spots.ts (185), sportScore, openmeteo, i18n, homepageSport, gridFilters
 └── types/
 
-public/data/               conditions.json, forecasts.json, news.json, dawn-patrol.json, ih-tides.json, ih-buoys.json, spot-isobaths.json, ih-coastal-warnings.json, wmo-buoys.json, warnings.json, radar.json, radar/ipma-radar.png, radar/frames/*.png, model-health.json
+public/data/               conditions.json, forecasts.json, news.json, dawn-patrol.json, ih-tides.json, ih-buoys.json, spot-isobaths.json, ih-coastal-warnings.json, wmo-buoys.json, warnings.json, radar.json, radar/ipma-radar.png, radar/frames/*.png, model-health.json, map-hours.json
 
 ## Avisos IPMA / MeteoAlarm — UI
 
@@ -358,6 +358,11 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   `pcr-*.png`, com alpha — só os ecos) e os **bounds oficiais** do overlay Leaflet do
   próprio IPMA (mapbuilder-pt.js): SW (34.011513, -12.454795) → NE (43.792862, -4.345465).
   Bake do frame mais recente para o nosso origin (sem CORS/hotlink); falha → camada off.
+- **Hs no mar + correntes:** `map-hours.json` (build-map-hours.js, no fim de update-conditions)
+  leva `hs` (m) e `currents` `{spd, dir}` por spot nos mesmos 16 passos de 3 h. O mapa interpola
+  IDW entre spots (campo raster, pane 350/360, abaixo do radar). Correntes = Open-Meteo SMOC
+  (~8 km, m/s, setas para onde a água vai); toggle `?currents=1` / `ventu.map.currents`. Não
+  substitui almanaque náutico — resolução costeira limitada.
 - **Badge de aviso** (Agitação Marítima/Vento, nível mais forte) no mapa (hero da homepage + /mapa)
   e nos cards da homepage (`SpotListCard`): `strongestSpotWarning` em lib/ipmaWarnings.ts,
   fetch partilhado por página em hooks/useIpmaWarnings.ts (cache module-level), chip no popup

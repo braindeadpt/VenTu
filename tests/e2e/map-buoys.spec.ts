@@ -149,6 +149,7 @@ test.describe('Map buoy dots: prefers-reduced-motion', () => {
   test.describe.configure({ timeout: 60_000 });
 
   test('ponto fresco sem pulse CSS', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapBuoys(page);
 
     const marker = buoyMarker(page, 'ih-4');

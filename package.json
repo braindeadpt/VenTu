@@ -21,7 +21,7 @@
     "test:e2e:audit": "playwright test full-audit",
     "test:e2e:ux": "playwright test visual-ux-audit",
     "test:e2e:axe": "playwright test axe-audit",
-    "test:e2e:core": "playwright test home-adaptive mapa-route spot-dashboard confidence-badge observed-wave-card mar-perigoso isobaths buoy-warnings tides topnow-wave-badge coastal-nav-warnings data-sources coastal-map-layer spot-sticky-geometry tools-calculators mobile-playtest map-hours map-buoys map-tide map-hs",
+    "test:e2e:core": "playwright test home-adaptive mapa-route spot-dashboard confidence-badge observed-wave-card mar-perigoso isobaths buoy-warnings tides topnow-wave-badge coastal-nav-warnings data-sources coastal-map-layer spot-sticky-geometry tools-calculators mobile-playtest map-hours map-buoys map-tide map-hs map-currents",
     "test:e2e:data": "playwright test tides buoy-warnings topnow-wave-badge",
     "test:supabase": "bash supabase/tests/run-tests.sh",
     "check:headers": "bash scripts/check-security-headers.sh",

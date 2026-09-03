@@ -22,7 +22,8 @@ function spotRow(at: Record<number, number>) {
   return row;
 }
 
-const hs = TIMES.map((_, i) => (i === 0 ? 0.4 : i === 3 ? 2.4 : 1.0));
+const spd = TIMES.map((_, i) => (i === 0 ? 0.08 : i === 3 ? 0.27 : 0.12));
+const dir = TIMES.map((_, i) => (i === 0 ? 180 : i === 3 ? 200 : 190));
 
 const MAP_HOURS_STUB = {
   generatedAt: '2026-09-03T07:00:00.000Z',
@@ -32,37 +33,38 @@ const MAP_HOURS_STUB = {
   spots: {
     nazare: spotRow({ 0: 20, 3: 88 }),
   },
-  hs: {
-    nazare: hs,
+  currents: {
+    nazare: { spd, dir },
   },
 };
 
-async function openMapHs(page: import('@playwright/test').Page) {
+async function openMapCurrents(page: import('@playwright/test').Page) {
   await preseedWindRingLegend(page);
   await page.addInitScript(() => {
     localStorage.setItem('ventu.map.cluster', '0');
+    localStorage.setItem('ventu.map.hours', JSON.stringify({ paused: true, frame: 0 }));
   });
   await interceptMapHours(page, MAP_HOURS_STUB);
-  await page.goto('/pt/mapa/?hours=1&hs=1', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto('/pt/mapa/?hours=1&currents=1', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 }
 
-test.describe('Map Hs field', () => {
+test.describe('Map currents field', () => {
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
   test.describe.configure({ timeout: 60_000 });
 
-  test('deep link ?hs=1 liga o campo; 08h→17h muda o Hs interpolado', async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await openMapHs(page);
+  test('deep link ?currents=1 liga o campo; 08h→17h muda a velocidade interpolada', async ({ page }) => {
+    await openMapCurrents(page);
 
-    await expect(page.locator('[data-map-hs-toggle]').first()).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('[data-map-currents-toggle]').first()).toBeVisible({ timeout: 15_000 });
     const map = page.locator('.leaflet-container');
-    await expect(map).toHaveAttribute('data-map-hs', 'true', { timeout: 15_000 });
-    await expect(map).toHaveAttribute('data-map-hs-max', '0.4');
+    await expect(map).toHaveAttribute('data-map-currents', 'true', { timeout: 15_000 });
+    await expect(map).toHaveAttribute('data-map-currents-frame', '0');
+    await expect(map).toHaveAttribute('data-map-currents-max', '0.08');
 
     const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
     await slider.fill('3');
     await expect(page.locator('[data-map-time-track-mode="hours"]')).toContainText('17h');
-    await expect(map).toHaveAttribute('data-map-hs-max', '2.4');
+    await expect(map).toHaveAttribute('data-map-currents-max', '0.27');
   });
 });
