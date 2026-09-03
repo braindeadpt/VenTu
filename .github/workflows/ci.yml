@@ -145,7 +145,7 @@ jobs:
       - name: Check visual baselines exist (Linux)
         id: visual_baselines
         run: |
-          count=$(find tests/e2e/visual-regression.spec.ts-snapshots -name '*--linux.png' 2>/dev/null | wc -l)
+          count=$(find tests/e2e/visual-regression.spec.ts-snapshots -name '*-linux.png' 2>/dev/null | wc -l)
           echo "baselines=$count" >> "$GITHUB_OUTPUT"
           echo "Linux visual baselines: $count"
 
