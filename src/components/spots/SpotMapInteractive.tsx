@@ -568,12 +568,15 @@ export default function SpotMapInteractive({
           </div>
         </div>
       )}
-      <div
-        ref={mapRef}
-        role="region"
-        className="w-full h-full"
-        aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
-      />
+      {/* Trap Leaflet panes (z 200–700) so HUD / MapControls paint above tiles. */}
+      <div className="absolute inset-0 z-0">
+        <div
+          ref={mapRef}
+          role="region"
+          className="w-full h-full"
+          aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
+        />
+      </div>
 
       {isReady && (
         <>

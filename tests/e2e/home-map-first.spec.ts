@@ -3,8 +3,8 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 
 test.describe('Home map-first', () => {
   test.beforeEach(async ({ page }) => {
-    // A homepage serve o embed map-first (SpotMapInteractive embedMode="default",
-    // não-hero) — a legend coach de primeira visita pode abrir sobre o mapa.
+    // Featured homepage hero uses embedMode="hero". The wind-ring legend
+    // coach can still open if a returning-user compact map is on screen.
     await preseedWindRingLegend(page);
     await page.goto('/pt/');
   });

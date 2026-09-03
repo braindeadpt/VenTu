@@ -192,71 +192,39 @@ export default function HomepageMapHero({
 
 
   if (!isFeatured) {
-
+    // Returning-user teaser: the map is the picture, not a second
+    // fullscreen chrome. A display heading over the tiles sat behind
+    // Leaflet panes and the MapControls stack was clipped in a 360px box.
     return (
-
       <section
-
         role="region"
-
         aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
-
         className="relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y bg-bg-base"
-
       >
-
-        <div className="absolute inset-0 [&_.leaflet-marker-icon]:pointer-events-auto">
-
+        <h2 className="sr-only">{isPt ? 'Mapa ao vivo' : 'Live map'}</h2>
+        <div className="absolute inset-0 z-0 [&_.leaflet-marker-icon]:pointer-events-auto">
           <SpotMapInteractive
-
             spotsData={filtered}
-
             selectedSport={sport}
-
             selectedRegion={DEFAULT_REGION}
-
             locale={locale}
-
-            embedMode="default"
-
-            // The homepage already shows the single buoy notice above the
-            // TopNow cards — never duplicate it over this map.
+            embedMode="hero"
             showBuoyNotice={false}
-
           />
-
         </div>
-
-        <div className="absolute inset-x-0 top-0 z-10 flex flex-col pointer-events-none pb-2">
-
-          <div
-
-            className="absolute inset-x-0 top-0 bottom-0 bg-gradient-to-b from-bg-base/92 via-bg-base/50 to-transparent pointer-events-none"
-
-            aria-hidden
-
-          />
-
-          <div className="w-full px-4 pt-3 pb-2 flex flex-col gap-2 pointer-events-none relative">
-
-            <div className="pointer-events-auto flex flex-col gap-2 max-w-xl">
-
-              <h2 className="font-display text-h2 font-semibold text-fg tracking-tight">
-
-                {isPt ? 'Mapa ao vivo' : 'Live map'}
-
-              </h2>
-
-            </div>
-
-          </div>
-
+        <div className="absolute top-3 left-3 z-20 pointer-events-auto">
+          <Button
+            href={`/${locale}/mapa/${buildGridFiltersSearch(sport, DEFAULT_REGION, regions)}`}
+            size="md"
+            locale={isPt ? 'pt' : 'en'}
+            className="shadow-card"
+            rightIcon={<Maximize2 className="w-4 h-4" aria-hidden />}
+          >
+            {isPt ? 'Explorar mapa' : 'Explore map'}
+          </Button>
         </div>
-
       </section>
-
     );
-
   }
 
 
