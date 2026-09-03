@@ -43,6 +43,8 @@ export interface MapHoursFile {
   tides?: Record<string, MapTideCurve>;
   /** Optional: Hs (m) per spot, same length as `times`. Hs field overlay. */
   hs?: Record<string, number[]>;
+  /** Optional: surface current (m/s + towards °) per spot. Currents field overlay. */
+  currents?: Record<string, { spd: number[]; dir: number[] }>;
 }
 
 export function pickMapHourTimes(
@@ -210,6 +212,20 @@ export function hsAtHour(
   return Number.isFinite(n) ? n : undefined;
 }
 
+export function currentAtHour(
+  file: MapHoursFile | null | undefined,
+  spotId: string,
+  index: number,
+): { spd: number; dir: number } | undefined {
+  if (!file?.currents) return undefined;
+  const row = file.currents[spotId];
+  if (!row || index < 0 || index >= row.spd.length) return undefined;
+  const spd = row.spd[index];
+  const dir = row.dir[index];
+  if (!Number.isFinite(spd) || !Number.isFinite(dir)) return undefined;
+  return { spd, dir };
+}
+
 export function buildMapHoursFile(opts: {
   forecasts: Record<string, Array<Record<string, unknown>>>;
   conditions: Record<string, Record<string, unknown>>;
@@ -229,6 +245,8 @@ export function buildMapHoursFile(opts: {
   const spots: MapHoursFile['spots'] = {};
   const hs: Record<string, number[]> = {};
   let hsFinite = 0;
+  const currents: Record<string, { spd: number[]; dir: number[] }> = {};
+  let currentFinite = 0;
 
   for (const spot of opts.spots) {
     const series = forecastSeries(spot, opts.forecasts);
@@ -237,6 +255,8 @@ export function buildMapHoursFile(opts: {
     for (const sport of ALL_SPORTS) bySport[sport] = [];
     bySport.best = [];
     const hsSeries: number[] = [];
+    const currentSpd: number[] = [];
+    const currentDir: number[] = [];
 
     for (const time of times) {
       const isNow = hourKeyFromOpenMeteo(time) === nowKey;
@@ -245,6 +265,8 @@ export function buildMapHoursFile(opts: {
         for (const sport of ALL_SPORTS) bySport[sport].push(0);
         bySport.best.push(0);
         hsSeries.push(0);
+        currentSpd.push(0);
+        currentDir.push(0);
         continue;
       }
       const scores = getAllSportScores(spot, rawToScoreInput(raw));
@@ -259,10 +281,18 @@ export function buildMapHoursFile(opts: {
       const rounded = Number.isFinite(wh) ? Math.round(Math.max(0, wh) * 10) / 10 : 0;
       hsSeries.push(rounded);
       if (rounded > 0) hsFinite += 1;
+      const spdRaw = Number(raw.currentSpeed);
+      const dirRaw = Number(raw.currentDir);
+      const spd = Number.isFinite(spdRaw) && spdRaw > 0 ? Math.round(spdRaw * 100) / 100 : 0;
+      const dir = Number.isFinite(dirRaw) ? ((Math.round(dirRaw) % 360) + 360) % 360 : 0;
+      currentSpd.push(spd);
+      currentDir.push(dir);
+      if (spd > 0.01) currentFinite += 1;
     }
 
     spots[spot.id] = bySport;
     hs[spot.id] = hsSeries;
+    currents[spot.id] = { spd: currentSpd, dir: currentDir };
   }
 
   const tides = buildMapTides(opts.spots, opts.forecasts, now);
@@ -275,6 +305,7 @@ export function buildMapHoursFile(opts: {
     spots,
     ...(tides ? { tides } : {}),
     ...(hsFinite > 0 ? { hs } : {}),
+    ...(currentFinite > 0 ? { currents } : {}),
   };
 }
 
@@ -306,6 +337,25 @@ function parseHs(raw: unknown, timesLen: number): Record<string, number[]> | und
   return Object.keys(out).length ? out : undefined;
 }
 
+function parseCurrents(
+  raw: unknown,
+  timesLen: number,
+): Record<string, { spd: number[]; dir: number[] }> | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw) || timesLen < 2) return undefined;
+  const out: Record<string, { spd: number[]; dir: number[] }> = {};
+  for (const [spotId, row] of Object.entries(raw as Record<string, unknown>)) {
+    if (!row || typeof row !== 'object' || Array.isArray(row)) continue;
+    const c = row as { spd?: unknown; dir?: unknown };
+    if (!Array.isArray(c.spd) || !Array.isArray(c.dir)) continue;
+    if (c.spd.length !== timesLen || c.dir.length !== timesLen) continue;
+    const spd = c.spd.map(Number);
+    const dir = c.dir.map(Number);
+    if (spd.some((n) => !Number.isFinite(n)) || dir.some((n) => !Number.isFinite(n))) continue;
+    out[spotId] = { spd, dir };
+  }
+  return Object.keys(out).length ? out : undefined;
+}
+
 let hoursCache: MapHoursFile | null | undefined;
 let hoursInflight: Promise<MapHoursFile | null> | null = null;
 
@@ -324,6 +374,7 @@ export async function fetchMapHours(): Promise<MapHoursFile | null> {
         ...data,
         tides: parseTides(data.tides),
         hs: parseHs(data.hs, data.times.length),
+        currents: parseCurrents(data.currents, data.times.length),
       };
     } catch {
       return null;

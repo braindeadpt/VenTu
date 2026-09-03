@@ -8,6 +8,7 @@ import {
   pickMapHourTimes,
   scoreAtHour,
   hsAtHour,
+  currentAtHour,
   fetchMapHours,
   clearMapHoursCache,
 } from '@/lib/mapHours';
@@ -103,6 +104,7 @@ describe('mapHours', () => {
     expect(afternoon).toBeGreaterThan(morning!);
     expect(hsAtHour(file, 'nazare', 0)).toBe(0.4);
     expect(hsAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))).toBe(2.4);
+    expect(file.currents).toBeUndefined();
     expect(scoreAtHour(file, 'nazare', 'all', 3)!).toBeGreaterThanOrEqual(
       scoreAtHour(file, 'nazare', 'surf', 3)!,
     );
@@ -126,6 +128,25 @@ describe('mapHours', () => {
     expect(file.tides!.Lisboa.times).toHaveLength(48);
     expect(file.tides!.Lisboa.height).toHaveLength(48);
     expect(file.tides!.Lisboa.times[0]).toBe('2026-09-03T08:00');
+  });
+
+  it('bakes surface currents when the forecast has them', () => {
+    const nazare = spot('nazare');
+    const file = buildMapHoursFile({
+      now,
+      generatedAt: '2026-09-03T07:00:00.000Z',
+      spots: [nazare],
+      conditions: {},
+      forecasts: {
+        nazare: times.map((t) => ({
+          ...hour(t, 1.2),
+          currentSpeed: t.endsWith('T08:00') ? 0.08 : 0.27,
+          currentDir: t.endsWith('T08:00') ? 350 : 10,
+        })),
+      },
+    });
+    expect(currentAtHour(file, 'nazare', 0)).toEqual({ spd: 0.08, dir: 350 });
+    expect(currentAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))?.spd).toBe(0.27);
   });
 });
 

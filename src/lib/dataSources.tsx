@@ -81,7 +81,7 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
         «<OpenMeteoAttribution className="underline hover:text-fg transition-colors" />» —
         já no mapa, no About e no footer. Modelos: ondas DWD EWAM e ECMWF WAM
         (CC-BY), NOAA GFS Wave/GWAM; vento DWD ICON-EU, ECMWF IFS, GFS e
-        Météo-France. Citação oficial:{' '}
+        Météo-France; correntes de superfície Météo-France SMOC (~8 km). Citação oficial:{' '}
         <A href="https://doi.org/10.5281/zenodo.7970649">
           Zippenfenig, P. (2023). Open-Meteo.com Weather API. Zenodo
           (10.5281/zenodo.7970649)
@@ -94,7 +94,7 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
         “<OpenMeteoAttribution className="underline hover:text-fg transition-colors" />” —
         already on the map, About and footer. Models: waves DWD EWAM & ECMWF WAM
         (CC-BY), NOAA GFS Wave/GWAM; wind DWD ICON-EU, ECMWF IFS, GFS &
-        Météo-France. Citation:{' '}
+        Météo-France; surface currents Météo-France SMOC (~8 km). Citation:{' '}
         <A href="https://doi.org/10.5281/zenodo.7970649">
           Zippenfenig, P. (2023). Open-Meteo.com Weather API. Zenodo
           (10.5281/zenodo.7970649)

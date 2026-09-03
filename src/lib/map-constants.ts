@@ -53,9 +53,65 @@ export function getMapRasterBasemap(isDark: boolean): RasterBasemap {
   return getEsriRasterBasemap(isDark);
 }
 
-/** First Carto tileerror → swap to Esri so the map never stays blank. */
+/** Watchdog do Carto primário: só troca para Esri quando nada carregou E nada
+ *  respondeu durante CARTO_TILE_HANG_MS. Uma ligação lenta mas viva (primeiro
+ *  tile depois de 3.5s) NÃO deve ser rasgada a meio do carregamento. */
 export const CARTO_TILE_FALLBACK_MS = 3500;
+export const CARTO_TILE_HANG_MS = 8000;
 
+export type BasemapLoadState = 'loading' | 'ok' | 'failed';
+
+/**
+ * Watch a tile layer and report its load state:
+ *  - 'ok'     after the FIRST tileload — one painted tile makes the layer
+ *             usable, so later per-tile errors are ignored (healthy layer);
+ *  - 'failed' when no tile ever painted: the first tileerror with zero
+ *             loaded tiles, or the hang timer firing with zero loaded (all
+ *             requests stalled — throttled/CDN down, nothing in flight).
+ * Returns a dispose that unsubscribes and silences the timer.
+ */
+export function watchTileLayer(
+  layer: {
+    on: (type: string, fn: () => void) => void;
+    off?: (type: string, fn: () => void) => void;
+  },
+  onState: (state: BasemapLoadState) => void,
+  hangMs = CARTO_TILE_FALLBACK_MS,
+): () => void {
+  let loaded = false;
+  let settled = false;
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const emit = (state: BasemapLoadState) => {
+    if (settled) return;
+    settled = true;
+    if (timer != null) clearTimeout(timer);
+    timer = null;
+    onState(state);
+  };
+  const onTileLoad = () => {
+    if (loaded) return;
+    loaded = true;
+    emit('ok');
+  };
+  const onTileError = () => {
+    if (loaded) return;
+    emit('failed');
+  };
+  layer.on('tileload', onTileLoad);
+  layer.on('tileerror', onTileError);
+  timer = setTimeout(() => {
+    timer = null;
+    if (!loaded) emit('failed');
+  }, hangMs);
+  return () => {
+    settled = true;
+    if (timer != null) clearTimeout(timer);
+    layer.off?.('tileload', onTileLoad);
+    layer.off?.('tileerror', onTileError);
+  };
+}
+
+/** Primeiro tileerror Carto (ou stall total) → troca para Esri: o mapa nunca fica em branco. */
 export function bindRasterTileFallback(
   layer: {
     on: (type: string, fn: () => void) => void;
@@ -64,26 +120,9 @@ export function bindRasterTileFallback(
   swapToEsri: () => void,
 ): () => void {
   if (!cartoBasemapKey()) return () => {};
-  let swapped = false;
-  let timer: ReturnType<typeof setTimeout> | null = null;
-  const swap = () => {
-    if (swapped) return;
-    swapped = true;
-    if (timer != null) clearTimeout(timer);
-    swapToEsri();
-  };
-  const onTileLoad = () => {
-    if (timer != null) clearTimeout(timer);
-    timer = null;
-  };
-  layer.on('tileerror', swap);
-  layer.on('tileload', onTileLoad);
-  timer = setTimeout(swap, CARTO_TILE_FALLBACK_MS);
-  return () => {
-    if (timer != null) clearTimeout(timer);
-    layer.off?.('tileerror', swap);
-    layer.off?.('tileload', onTileLoad);
-  };
+  return watchTileLayer(layer, (state) => {
+    if (state === 'failed') swapToEsri();
+  });
 }
 
 // Cadeia de atribuição obrigatória do Open-Meteo (CC BY 4.0) — fonte única em
@@ -111,6 +150,7 @@ export const MAP_ISOBATHS_LS_KEY = 'ventu.map.isobaths';
 export const MAP_COASTAL_LS_KEY = 'ventu.map.coastalWarnings';
 export const MAP_BUOYS_LS_KEY = 'ventu.map.buoys';
 export const MAP_HS_LS_KEY = 'ventu.map.hs';
+export const MAP_CURRENTS_LS_KEY = 'ventu.map.currents';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,
