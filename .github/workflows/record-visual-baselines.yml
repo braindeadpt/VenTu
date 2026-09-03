@@ -83,7 +83,10 @@ jobs:
       - name: Commit refreshed baselines
         id: commit
         run: |
-          if git diff --quiet tests/e2e/visual-regression.spec.ts-snapshots; then
+          # git diff --quiet would MISS newly-recorded baselines: the first
+          # recording produces UNTRACKED files, and git diff only reports
+          # tracked changes. git status --porcelain sees both.
+          if [ -z "$(git status --porcelain -- tests/e2e/visual-regression.spec.ts-snapshots)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "Baselines unchanged."
             exit 0
