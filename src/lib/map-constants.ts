@@ -54,17 +54,36 @@ export function getMapRasterBasemap(isDark: boolean): RasterBasemap {
 }
 
 /** First Carto tileerror → swap to Esri so the map never stays blank. */
+export const CARTO_TILE_FALLBACK_MS = 3500;
+
 export function bindRasterTileFallback(
-  layer: { on: (type: string, fn: () => void) => void },
+  layer: {
+    on: (type: string, fn: () => void) => void;
+    off?: (type: string, fn: () => void) => void;
+  },
   swapToEsri: () => void,
-): void {
-  if (!cartoBasemapKey()) return;
+): () => void {
+  if (!cartoBasemapKey()) return () => {};
   let swapped = false;
-  layer.on('tileerror', () => {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  const swap = () => {
     if (swapped) return;
     swapped = true;
+    if (timer != null) clearTimeout(timer);
     swapToEsri();
-  });
+  };
+  const onTileLoad = () => {
+    if (timer != null) clearTimeout(timer);
+    timer = null;
+  };
+  layer.on('tileerror', swap);
+  layer.on('tileload', onTileLoad);
+  timer = setTimeout(swap, CARTO_TILE_FALLBACK_MS);
+  return () => {
+    if (timer != null) clearTimeout(timer);
+    layer.off?.('tileerror', swap);
+    layer.off?.('tileload', onTileLoad);
+  };
 }
 
 // Cadeia de atribuição obrigatória do Open-Meteo (CC BY 4.0) — fonte única em

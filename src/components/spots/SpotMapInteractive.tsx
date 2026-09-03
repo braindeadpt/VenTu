@@ -240,7 +240,7 @@ export default function SpotMapInteractive({
   // ── Core map ──
   const core = useMapCore({ containerRef: mapRef, isHeroEmbed });
   const {
-    mapInstanceRef, LRef, isReady, isDark, basemapMode, isMobile,
+    mapInstanceRef, LRef, isReady, clusterReady, isDark, basemapMode, isMobile,
     handleBasemapChange, tileLayerRef, clusterGroupRef, markersGroupRef,
     radarOverlayRef, isobathsLayerRef, coastalLayerRef, buoyLayerRef, markersCacheRef,
   } = core;
@@ -628,7 +628,7 @@ export default function SpotMapInteractive({
   }, [mapInstanceRef]);
   const { didFitBoundsRef, filterBoundsKeyRef } = useMapMarkers({
     mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef,
-    visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady,
+    visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady,
     isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
     warningsBySpot, hourScores, onSpotSelect, onMarkerInteract, setSheetSpot, closePopupAndSheet,
   });

@@ -27,6 +27,7 @@ interface UseMapCoreReturn {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
   LRef: React.MutableRefObject<typeof L | null>;
   isReady: boolean;
+  clusterReady: boolean;
   isDark: boolean;
   basemapMode: BasemapMode;
   isMobile: boolean;
@@ -61,13 +62,45 @@ function tileSignature(mode: BasemapMode, dark: boolean): string {
   return mode === 'satellite' ? 'satellite' : `map:${dark ? 'dark' : 'light'}`;
 }
 
+function waitForMapBox(
+  el: HTMLElement,
+  isCancelled: () => boolean,
+): Promise<boolean> {
+  const sized = () => el.clientWidth >= 32 && el.clientHeight >= 32;
+  if (sized()) return Promise.resolve(true);
+  return new Promise((resolve) => {
+    let settled = false;
+    const finish = (ok: boolean) => {
+      if (settled) return;
+      settled = true;
+      ro.disconnect();
+      window.clearInterval(poll);
+      window.clearTimeout(maxWait);
+      resolve(ok);
+    };
+    const ro = new ResizeObserver(() => {
+      if (isCancelled()) finish(false);
+      else if (sized()) finish(true);
+    });
+    ro.observe(el);
+    const poll = window.setInterval(() => {
+      if (isCancelled()) finish(false);
+      else if (sized()) finish(true);
+    }, 50);
+    const maxWait = window.setTimeout(() => finish(sized()), 4000);
+  });
+}
+
 function attachBasemap(
   Leaflet: typeof L,
   map: L.Map,
   mode: BasemapMode,
   dark: boolean,
   tileLayerRef: React.MutableRefObject<L.TileLayer | null>,
+  fallbackCleanupRef: React.MutableRefObject<(() => void) | null>,
 ): void {
+  fallbackCleanupRef.current?.();
+  fallbackCleanupRef.current = null;
   if (tileLayerRef.current) {
     try {
       map.removeLayer(tileLayerRef.current);
@@ -87,7 +120,8 @@ function attachBasemap(
 
   const { url, ...opts } = rasterTileLayerOptions(dark);
   const rasterLayer = Leaflet.tileLayer(url, opts);
-  bindRasterTileFallback(rasterLayer, () => {
+  const swapToEsri = () => {
+    if (tileLayerRef.current !== rasterLayer) return;
     try {
       map.removeLayer(rasterLayer);
     } catch {
@@ -98,7 +132,8 @@ function attachBasemap(
       attribution: esri.attribution,
       maxZoom: MAX_ZOOM,
     }).addTo(map);
-  });
+  };
+  fallbackCleanupRef.current = bindRasterTileFallback(rasterLayer, swapToEsri);
   tileLayerRef.current = rasterLayer.addTo(map);
 }
 
@@ -115,8 +150,10 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
   const markersCacheRef = useRef<Map<string, L.Marker>>(new Map());
   const mountedRef = useRef(true);
   const tileSignatureRef = useRef<string | null>(null);
+  const tileFallbackCleanupRef = useRef<(() => void) | null>(null);
 
   const [isReady, setIsReady] = useState(false);
+  const [clusterReady, setClusterReady] = useState(false);
   const [isDark, setIsDark] = useState(readIsDark);
   const [basemapMode, setBasemapMode] = useState<BasemapMode>(readBasemapPref);
   const [isMobile, setIsMobile] = useState(() => {
@@ -158,22 +195,25 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
   // Initialize Leaflet map
   useEffect(() => {
     if (typeof window === 'undefined' || !containerRef.current) return;
-    if (mapInstanceRef.current) return;
 
     let cancelled = false;
     const container = containerRef.current;
     const initialBasemap = basemapMode;
     const initialDark = isDark;
+    // Shared with teardown so Strict Mode never calls remove() on a map whose
+    // container was already reused (that left iOS Safari with a grey canvas).
+    let created: L.Map | null = null;
 
     const teardownMap = () => {
-      if (mapInstanceRef.current) {
+      if (created) {
         try {
-          mapInstanceRef.current.remove();
+          created.remove();
         } catch {
           /* noop */
         }
-        mapInstanceRef.current = null;
+        created = null;
       }
+      mapInstanceRef.current = null;
       markersCacheRef.current.forEach((marker) => {
         try {
           marker.remove();
@@ -190,91 +230,94 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       markersGroupRef.current = null;
       tileLayerRef.current = null;
       tileSignatureRef.current = null;
+      tileFallbackCleanupRef.current?.();
+      tileFallbackCleanupRef.current = null;
       LRef.current = null;
       clearLeafletContainer(container);
-      if (mountedRef.current) setIsReady(false);
+      if (mountedRef.current) {
+        setIsReady(false);
+        setClusterReady(false);
+      }
     };
 
     (async () => {
-      const mobileInit =
-        typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+      const mobileInit = window.matchMedia('(max-width: 767px)').matches;
 
-      // CSS + Leaflet in parallel so tiles can start before markercluster.
-      const [, leafletMod] = await Promise.all([
-        import('leaflet/dist/leaflet.css'),
-        import('leaflet'),
-      ]);
-      const Leaflet = leafletMod.default;
-      if (cancelled || !containerRef.current) return;
+      try {
+        await import('leaflet/dist/leaflet.css');
+        const leafletMod = await import('leaflet');
+        const Leaflet = leafletMod.default;
+        if (cancelled || !containerRef.current) return;
 
-      clearLeafletContainer(container);
-      LRef.current = Leaflet;
+        const hasBox = await waitForMapBox(container, () => cancelled);
+        if (cancelled || !hasBox) return;
 
-      const map = Leaflet.map(container, {
-        center: DEFAULT_CENTER,
-        zoom: DEFAULT_ZOOM,
-        zoomControl: false,
-        attributionControl: false,
-        ...(mobileInit ? { renderer: Leaflet.canvas() } : {}),
-        ...(isHeroEmbed
-          ? {
-              scrollWheelZoom: false,
-              dragging: false,
-              touchZoom: false,
-              doubleClickZoom: false,
-              boxZoom: false,
-              keyboard: false,
-            }
-          : {}),
-      });
-
-      if (cancelled) {
-        map.remove();
         clearLeafletContainer(container);
-        return;
-      }
+        LRef.current = Leaflet;
 
-      attachBasemap(Leaflet, map, initialBasemap, initialDark, tileLayerRef);
-      tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
+        const mapOptions = {
+          center: DEFAULT_CENTER,
+          zoom: DEFAULT_ZOOM,
+          zoomControl: false,
+          attributionControl: false,
+          ...(mobileInit ? { renderer: Leaflet.canvas() } : {}),
+          ...(isHeroEmbed
+            ? {
+                scrollWheelZoom: false,
+                dragging: false,
+                touchZoom: false,
+                doubleClickZoom: false,
+                boxZoom: false,
+                keyboard: false,
+              }
+            : {}),
+        };
+        try {
+          created = Leaflet.map(container, mapOptions);
+        } catch {
+          clearLeafletContainer(container);
+          created = Leaflet.map(container, mapOptions);
+        }
+        mapInstanceRef.current = created;
+        created.invalidateSize({ animate: false });
 
-      if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
+        if (cancelled) return;
 
-      Leaflet.control
-        .attribution({ position: 'bottomleft', prefix: false })
-        .addAttribution(OPEN_METEO_ATTRIBUTION)
-        .addTo(map);
+        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef);
+        tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
 
-      await Promise.all([
-        import('leaflet.markercluster/dist/MarkerCluster.css'),
-        import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
-        import('leaflet.markercluster'),
-      ]);
-      if (cancelled) {
-        map.remove();
-        clearLeafletContainer(container);
-        return;
-      }
+        if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(created);
 
-      const mcg = Leaflet.markerClusterGroup({
-        ...CLUSTER_CONFIG,
-        ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 } : {}),
-        iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit }),
-      });
-      const lg = Leaflet.layerGroup();
-      clusterGroupRef.current = mcg;
-      markersGroupRef.current = lg;
-      map.addLayer(mcg);
+        Leaflet.control
+          .attribution({ position: 'bottomleft', prefix: false })
+          .addAttribution(OPEN_METEO_ATTRIBUTION)
+          .addTo(created);
 
-      if (cancelled) {
-        map.remove();
-        clearLeafletContainer(container);
-        return;
-      }
+        if (mountedRef.current) setIsReady(true);
+        created.invalidateSize({ animate: false });
+        if (typeof window !== 'undefined' && (window as any).__RADAR_TEST__) {
+          (window as any).__RADAR_MAP__ = created;
+        }
 
-      mapInstanceRef.current = map;
-      if (mountedRef.current) setIsReady(true);
-      if (typeof window !== 'undefined' && (window as any).__RADAR_TEST__) {
-        (window as any).__RADAR_MAP__ = map;
+        await Promise.all([
+          import('leaflet.markercluster/dist/MarkerCluster.css'),
+          import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
+          import('leaflet.markercluster'),
+        ]);
+        if (cancelled || !created) return;
+
+        const mcg = Leaflet.markerClusterGroup({
+          ...CLUSTER_CONFIG,
+          ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 } : {}),
+          iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit }),
+        });
+        const lg = Leaflet.layerGroup();
+        clusterGroupRef.current = mcg;
+        markersGroupRef.current = lg;
+        created.addLayer(mcg);
+        if (!cancelled && mountedRef.current) setClusterReady(true);
+      } catch {
+        if (!cancelled) teardownMap();
       }
     })();
 
@@ -304,7 +347,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     const next = tileSignature(basemapMode, isDark);
     if (tileSignatureRef.current === next && tileLayerRef.current) return;
 
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef);
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef);
     tileSignatureRef.current = next;
   }, [basemapMode, isDark, isReady]);
 
@@ -337,15 +380,32 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
     const map = mapInstanceRef.current;
-    const onResize = () => map.invalidateSize();
+    const onResize = () => map.invalidateSize({ animate: false });
     window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    const vv = window.visualViewport;
+    vv?.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('resize', onResize);
+      vv?.removeEventListener('resize', onResize);
+    };
   }, [isReady]);
+
+  useEffect(() => {
+    if (!isReady || !mapInstanceRef.current || !containerRef.current) return;
+    const map = mapInstanceRef.current;
+    const el = containerRef.current;
+    const ro = new ResizeObserver(() => {
+      map.invalidateSize({ animate: false });
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [isReady, containerRef]);
 
   return {
     mapInstanceRef,
     LRef,
     isReady,
+    clusterReady,
     isDark,
     basemapMode,
     isMobile,

@@ -27,6 +27,7 @@ interface UseMapMarkersParams {
   selectedSport: GridSportFilter;
   selectedRegion: string | null;
   isReady: boolean;
+  clusterReady: boolean;
   isMobile: boolean;
   isHeroEmbed: boolean;
   activeCluster: boolean;
@@ -57,6 +58,7 @@ export function useMapMarkers({
   selectedSport,
   selectedRegion,
   isReady,
+  clusterReady,
   isMobile,
   isHeroEmbed,
   activeCluster,
@@ -75,7 +77,7 @@ export function useMapMarkers({
 
   // ── Markers effect ──
   useEffect(() => {
-    if (!allowMarkers || !isReady || !mapInstanceRef.current || !clusterGroupRef.current || !markersGroupRef.current) return;
+    if (!allowMarkers || !isReady || !clusterReady || !mapInstanceRef.current || !clusterGroupRef.current || !markersGroupRef.current) return;
     if (!LRef.current) return;
 
     const map = mapInstanceRef.current;
@@ -167,7 +169,7 @@ export function useMapMarkers({
     );
 
     return () => { markerChunkCancelRef.current = true; };
-  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, hourScores, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef]);
+  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, hourScores, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef]);
 
   // ── Allow markers after delay ──
   useEffect(() => {
