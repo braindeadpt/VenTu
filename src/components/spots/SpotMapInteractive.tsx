@@ -52,6 +52,7 @@ import {
   type IpmaRadarData,
 } from '@/lib/ipmaRadar';
 import MapTimeTrack from './map/MapTimeTrack';
+import MapTideChip from './map/MapTideChip';
 import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import RadarCarousel from './RadarCarousel';
@@ -104,6 +105,7 @@ import {
   mapHoursClock,
   scoreAtHour,
 } from '@/lib/mapHours';
+import { mapTideChipAt, pickMapTideCurve } from '@/lib/mapTideChip';
 import { MAP_ON_THRESHOLD, spotMatchesSportFilter, spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 
 type SpotData = MapSpotData;
@@ -318,6 +320,51 @@ export default function SpotMapInteractive({
     observeRef: mapRef,
   });
   const hoursClock = hoursTimes[hoursFrame] ? mapHoursClock(hoursTimes[hoursFrame]) : '';
+  const tideChip = useMemo(() => {
+    const curve = pickMapTideCurve(hoursFile?.tides, selectedRegion);
+    if (!curve) return undefined;
+    const at = hoursLive && hoursTimes[hoursFrame]
+      ? new Date(hoursTimes[hoursFrame])
+      : new Date();
+    const model = mapTideChipAt(curve, at, isPt ? 'pt' : 'en');
+    if (!model) return undefined;
+    const phaseLabel =
+      model.phase === 'rising' ? t.map.tideChipRising
+        : model.phase === 'falling' ? t.map.tideChipFalling
+          : model.phase === 'high' ? t.map.tideChipHigh
+            : t.map.tideChipLow;
+    const kindLabel = model.nextKind === 'high'
+      ? t.map.tideChipHigh
+      : model.nextKind === 'low' ? t.map.tideChipLow
+        : '';
+    const ariaLabel = model.nextTime && kindLabel
+      ? t.map.tideChipAriaNext
+        .replace('{phase}', phaseLabel)
+        .replace('{kind}', kindLabel)
+        .replace('{time}', model.nextTime)
+      : t.map.tideChipAria.replace('{phase}', phaseLabel);
+    return (
+      <MapTideChip
+        phase={model.phase}
+        phaseLabel={phaseLabel}
+        nextTime={model.nextTime}
+        ariaLabel={ariaLabel}
+      />
+    );
+  }, [
+    hoursFile,
+    selectedRegion,
+    hoursLive,
+    hoursTimes,
+    hoursFrame,
+    isPt,
+    t.map.tideChipRising,
+    t.map.tideChipFalling,
+    t.map.tideChipHigh,
+    t.map.tideChipLow,
+    t.map.tideChipAria,
+    t.map.tideChipAriaNext,
+  ]);
 
   useEffect(() => {
     if (!radarEnabled) setRadarScrubbing(false);
@@ -869,6 +916,7 @@ export default function SpotMapInteractive({
                     onUserPausedChange={handleHoursUserPausedChange}
                     onScrubbingChange={setHoursScrubbing}
                     clock={hoursClock}
+                    tideChip={tideChip}
                     labels={{
                       scrub: t.map.hoursScrub,
                       play: t.map.hoursPlay,
@@ -887,6 +935,7 @@ export default function SpotMapInteractive({
                     onUserPausedChange={handleRadarUserPausedChange}
                     onScrubbingChange={setRadarScrubbing}
                     clock={radarClock}
+                    tideChip={tideChip}
                     labels={{
                       scrub: t.map.radarScrub,
                       play: t.map.radarPlay,

@@ -34,8 +34,11 @@ function buildMapHours(dataDir = path.join(__dirname, '../public/data')) {
   const out = path.join(dataDir, 'map-hours.json');
   fs.writeFileSync(out, `${JSON.stringify(file)}\n`);
   const bytes = fs.statSync(out).size;
+  const nTides = file.tides ? Object.keys(file.tides).length : 0;
   console.log(
-    `⏱ map-hours.json: ${file.times.length} passos × ${Object.keys(file.spots).length} spots (${(bytes / 1024).toFixed(0)} KB)`,
+    `⏱ map-hours.json: ${file.times.length} passos × ${Object.keys(file.spots).length} spots`
+      + (nTides ? ` + ${nTides} regiões de maré` : '')
+      + ` (${(bytes / 1024).toFixed(0)} KB)`,
   );
   return file;
 }

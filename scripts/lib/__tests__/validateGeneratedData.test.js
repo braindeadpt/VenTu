@@ -534,4 +534,16 @@ describe('validate-generated-data — map-hours.json', () => {
     expect(code).toBe(0);
     expect(out).toMatch(/map-hours.json missing/);
   });
+
+  it('falha quando uma curva de maré tem times ≠ height', () => {
+    const dir = makeDataDir();
+    const file = validHours();
+    file.tides = {
+      Lisboa: { spotId: 'guincho', times: Array(24).fill('2026-09-03T08:00'), height: [0.1] },
+    };
+    fs.writeFileSync(path.join(dir, 'map-hours.json'), JSON.stringify(file));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/mapHours.tides/);
+  });
 });

@@ -8,12 +8,16 @@ import {
   lisbonHourKeyFromDate,
 } from '@/lib/openMeteoTime';
 import { getAssetPath } from '@/lib/paths';
+import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
 
 export const MAP_HOURS_STEP = 3;
 export const MAP_HOURS_COUNT = 16;
 export const MAP_HOURS_PATH = '/data/map-hours.json';
 /** Autoplay cadence for the 48 h score track (slower than radar's 1 s). */
 export const MAP_HOURS_TICK_MS = 1500;
+/** Hourly tide samples per macro-region (next extrema need ~1 h, not 3 h). */
+export const MAP_TIDE_HOURS = 48;
+export const MAP_TIDE_DEFAULT_REGION = 'Lisboa';
 
 /** Deep link `?t=18` — hour of day in Lisbon (0–23). */
 export function parseHourOfDayParam(raw: string | null | undefined): number | null {
@@ -23,12 +27,20 @@ export function parseHourOfDayParam(raw: string | null | undefined): number | nu
   return n;
 }
 
+export interface MapTideCurve {
+  spotId: string;
+  times: string[];
+  height: number[];
+}
+
 export interface MapHoursFile {
   generatedAt: string;
   stepHours: number;
   times: string[];
   sports: SportType[];
   spots: Record<string, Record<string, number[]>>;
+  /** Optional: older caches / e2e stubs omit this; the HUD chip hides. */
+  tides?: Record<string, MapTideCurve>;
 }
 
 export function pickMapHourTimes(
@@ -46,6 +58,16 @@ export function pickMapHourTimes(
     out.push(times[idx]);
   }
   return out;
+}
+
+export function pickMapTideHourTimes(
+  times: string[],
+  now = new Date(),
+  count = MAP_TIDE_HOURS,
+): string[] {
+  if (!times.length) return [];
+  const start = findCurrentHourIndex(times, now);
+  return times.slice(start, start + count);
 }
 
 function forecastSeries(
@@ -80,6 +102,59 @@ function hourRowForTime(
   const key = hourKeyFromOpenMeteo(time);
   const hit = series.find((h) => hourKeyFromOpenMeteo(String(h.time ?? '')) === key);
   return hit ?? null;
+}
+
+function finiteTideHeight(row: Record<string, unknown> | null): number | null {
+  if (!row) return null;
+  const n = Number(row.tideHeight);
+  return Number.isFinite(n) ? n : null;
+}
+
+function curveForSpot(
+  spot: Spot,
+  forecasts: Record<string, Array<Record<string, unknown>>>,
+  hourlyTimes: string[],
+): MapTideCurve | null {
+  const series = forecastSeries(spot, forecasts);
+  const times: string[] = [];
+  const height: number[] = [];
+  for (const time of hourlyTimes) {
+    const h = finiteTideHeight(hourRowForTime(series, time));
+    if (h === null) continue;
+    times.push(time);
+    height.push(h);
+  }
+  if (height.length < 24) return null;
+  return { spotId: spot.id, times, height };
+}
+
+function buildMapTides(
+  spots: Spot[],
+  forecasts: Record<string, Array<Record<string, unknown>>>,
+  now: Date,
+): Record<string, MapTideCurve> | undefined {
+  const sample = spots
+    .map((s) => forecastSeries(s, forecasts))
+    .find((series) => series.length > 0);
+  const hourlyTimes = pickMapTideHourTimes(
+    (sample ?? []).map((h) => String(h.time ?? '')),
+    now,
+  );
+  if (hourlyTimes.length < 24) return undefined;
+
+  const tides: Record<string, MapTideCurve> = {};
+  for (const region of MACRO_REGIONS) {
+    if (region === 'Todos') continue;
+    let best: MapTideCurve | null = null;
+    for (const spot of spots) {
+      if (getMacroRegion(spot.region) !== region) continue;
+      const curve = curveForSpot(spot, forecasts, hourlyTimes);
+      if (!curve) continue;
+      if (!best || curve.height.length > best.height.length) best = curve;
+    }
+    if (best) tides[region] = best;
+  }
+  return Object.keys(tides).length ? tides : undefined;
 }
 
 export function mapHoursClock(time: string): string {
@@ -167,13 +242,32 @@ export function buildMapHoursFile(opts: {
     spots[spot.id] = bySport;
   }
 
+  const tides = buildMapTides(opts.spots, opts.forecasts, now);
+
   return {
     generatedAt: opts.generatedAt ?? now.toISOString(),
     stepHours: MAP_HOURS_STEP,
     times,
     sports: [...ALL_SPORTS],
     spots,
+    ...(tides ? { tides } : {}),
   };
+}
+
+function parseTides(raw: unknown): Record<string, MapTideCurve> | undefined {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return undefined;
+  const out: Record<string, MapTideCurve> = {};
+  for (const [region, curve] of Object.entries(raw as Record<string, unknown>)) {
+    if (!curve || typeof curve !== 'object' || Array.isArray(curve)) continue;
+    const c = curve as { spotId?: unknown; times?: unknown; height?: unknown };
+    if (typeof c.spotId !== 'string' || !Array.isArray(c.times) || !Array.isArray(c.height)) continue;
+    if (c.times.length !== c.height.length || c.times.length < 2) continue;
+    const times = c.times.map(String);
+    const height = c.height.map(Number);
+    if (height.some((n) => !Number.isFinite(n))) continue;
+    out[region] = { spotId: c.spotId, times, height };
+  }
+  return Object.keys(out).length ? out : undefined;
 }
 
 export async function fetchMapHours(): Promise<MapHoursFile | null> {
@@ -183,7 +277,8 @@ export async function fetchMapHours(): Promise<MapHoursFile | null> {
     const data = (await res.json()) as MapHoursFile;
     if (!Array.isArray(data.times) || data.times.length < 2) return null;
     if (!data.spots || typeof data.spots !== 'object') return null;
-    return data;
+    const tides = parseTides(data.tides);
+    return tides ? { ...data, tides } : { ...data, tides: undefined };
   } catch {
     return null;
   }

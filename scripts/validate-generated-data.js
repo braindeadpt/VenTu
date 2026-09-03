@@ -177,6 +177,18 @@ if (mapHours !== undefined) {
     });
     check('mapHours.series', bad.length === 0, `${bad.length} spot(s) with series ≠ times.length`);
   }
+  if (mapHours.tides && typeof mapHours.tides === 'object' && !Array.isArray(mapHours.tides)) {
+    const bad = Object.entries(mapHours.tides).filter(([, curve]) => {
+      if (!curve || typeof curve !== 'object') return true;
+      const times = curve.times;
+      const height = curve.height;
+      return !Array.isArray(times) || !Array.isArray(height)
+        || times.length !== height.length || times.length < 24;
+    });
+    check('mapHours.tides', bad.length === 0, `${bad.length} tide curve(s) malformed`);
+  } else if (MODE === 'full') {
+    warn('map-hours.json tides missing — tide chip off');
+  }
 } else if (MODE === 'full') {
   fail('map-hours.json missing after full run');
 } else {

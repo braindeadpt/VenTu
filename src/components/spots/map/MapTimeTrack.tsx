@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { Pause, Play } from 'lucide-react';
 
 export interface MapTimeTrackLabels {
@@ -22,6 +23,8 @@ interface MapTimeTrackProps {
   variant?: 'floating' | 'hud';
   /** Radar keeps `data-radar-*` selectors; hours uses `data-map-hours-*`. */
   mode?: 'radar' | 'hours';
+  /** HUD only — tide phase chip beside the clock. */
+  tideChip?: ReactNode;
 }
 
 /**
@@ -40,6 +43,7 @@ export default function MapTimeTrack({
   labels,
   variant = 'floating',
   mode = 'radar',
+  tideChip,
 }: MapTimeTrackProps) {
   if (length <= 1) return null;
 
@@ -91,6 +95,7 @@ export default function MapTimeTrack({
         </span>
         <span className="font-semibold tabular-nums font-mono text-meta-sm text-fg">{clock}</span>
       </div>
+      {isHud && tideChip}
       <input
         type="range"
         min={0}

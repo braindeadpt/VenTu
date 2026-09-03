@@ -32,7 +32,7 @@ function spot(id: string): Spot {
   };
 }
 
-function hour(time: string, waveHeight: number): Record<string, unknown> {
+function hour(time: string, waveHeight: number, tideHeight?: number): Record<string, unknown> {
   return {
     time,
     waveHeight,
@@ -42,6 +42,7 @@ function hour(time: string, waveHeight: number): Record<string, unknown> {
     windDirection: 90,
     windGust: 3,
     waterTemp: 18,
+    ...(tideHeight !== undefined ? { tideHeight } : {}),
   };
 }
 
@@ -100,5 +101,25 @@ describe('mapHours', () => {
     expect(scoreAtHour(file, 'nazare', 'all', 3)!).toBeGreaterThanOrEqual(
       scoreAtHour(file, 'nazare', 'surf', 3)!,
     );
+  });
+
+  it('emits hourly Lisboa tide from the Cascais spot with the most samples', () => {
+    const guincho = spot('guincho');
+    guincho.region = 'Cascais';
+    const file = buildMapHoursFile({
+      now,
+      generatedAt: '2026-09-03T07:00:00.000Z',
+      spots: [guincho],
+      conditions: {},
+      forecasts: {
+        guincho: times.map((t, i) => hour(t, 1.2, Math.sin((i / 12) * Math.PI))),
+      },
+    });
+    expect(file.times).toHaveLength(16);
+    expect(file.tides?.Lisboa).toBeDefined();
+    expect(file.tides!.Lisboa.spotId).toBe('guincho');
+    expect(file.tides!.Lisboa.times).toHaveLength(48);
+    expect(file.tides!.Lisboa.height).toHaveLength(48);
+    expect(file.tides!.Lisboa.times[0]).toBe('2026-09-03T08:00');
   });
 });
