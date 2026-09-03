@@ -19,6 +19,8 @@ interface MapLegendProps {
   /** Legenda de profundidade das isóbatas quando a camada está activa. */
   isobathsTitle?: string;
   isobathsVisible?: boolean;
+  hsTitle?: string;
+  hsVisible?: boolean;
 }
 
 export default function MapLegend({
@@ -28,14 +30,16 @@ export default function MapLegend({
   placement = 'map',
   isobathsTitle,
   isobathsVisible = false,
+  hsTitle,
+  hsVisible = false,
 }: MapLegendProps) {
   const isPt = locale === 'pt';
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    if (isobathsVisible) setCollapsed(false);
-  }, [isobathsVisible]);
+    if (isobathsVisible || hsVisible) setCollapsed(false);
+  }, [isobathsVisible, hsVisible]);
 
   const isHero = placement === 'hero';
   const bottomPx = !isHero && reserveHudSpace
@@ -91,6 +95,24 @@ export default function MapLegend({
                 {isobathsTitle}
               </p>
               <IsobathLegend bare title={isobathsTitle} />
+            </div>
+          )}
+          {hsVisible && hsTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-map-hs-legend>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+                {hsTitle}
+              </p>
+              <div
+                className="h-2 rounded mb-1"
+                style={{
+                  background: 'linear-gradient(to right, rgb(14 165 233 / 0.12), rgb(14 165 233 / 0.65))',
+                }}
+              />
+              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+                <span>0.5</span>
+                <span>1.5</span>
+                <span>3+</span>
+              </div>
             </div>
           )}
         </div>

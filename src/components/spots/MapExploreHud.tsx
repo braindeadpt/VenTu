@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, RotateCcw, Search, Waves, Wind, Zap } from 'lucide-react';
+import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, RotateCcw, Search, Waves, Wind, Zap, Activity } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -31,6 +31,11 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   hoursResetVisible?: boolean;
   onResetHours?: () => void;
   hoursResetLabel?: string;
+  hsEnabled: boolean;
+  onToggleHs: () => void;
+  hsLabel: string;
+  hsHint: string;
+  hsUnavailable?: boolean;
   buoysEnabled: boolean;
   onToggleBuoys: () => void;
   buoysLabel: string;
@@ -140,6 +145,11 @@ export default function MapExploreHud({
   hoursResetVisible = false,
   onResetHours = () => {},
   hoursResetLabel = '',
+  hsEnabled,
+  onToggleHs,
+  hsLabel,
+  hsHint,
+  hsUnavailable = false,
   buoysEnabled,
   onToggleBuoys,
   buoysLabel,
@@ -289,6 +299,20 @@ export default function MapExploreHud({
               <RotateCcw className="w-4 h-4" aria-hidden />
             </MapControlButton>
           )}
+
+          <MapControlButton
+            onClick={onToggleHs}
+            aria-label={hsLabel}
+            pressed={hsEnabled}
+            title={hsHint}
+            disabled={hsUnavailable}
+            data-map-hs-toggle
+            className={
+              hsEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
+            }
+          >
+            <Activity className="w-4 h-4" aria-hidden />
+          </MapControlButton>
 
           <MapControlButton
             onClick={onToggleBuoys}

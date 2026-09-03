@@ -613,6 +613,19 @@ html:has([data-embed-widget]) body {
   isolation: isolate;
 }
 
+.leaflet-hs-pane,
+.ventu-hs-overlay {
+  pointer-events: none;
+}
+.ventu-hs-overlay {
+  transition: opacity 200ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ventu-hs-overlay {
+    transition: none;
+  }
+}
+
 /* Home hero map teaser: fill parent, page scroll passes through; markers stay clickable */
 [data-map-hero-teaser='true'] {
   height: 100%;

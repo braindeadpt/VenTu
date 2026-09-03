@@ -7,6 +7,7 @@ import {
   parseHourOfDayParam,
   pickMapHourTimes,
   scoreAtHour,
+  hsAtHour,
 } from '@/lib/mapHours';
 
 function spot(id: string): Spot {
@@ -98,6 +99,8 @@ describe('mapHours', () => {
     expect(morning).toBeDefined();
     expect(afternoon).toBeDefined();
     expect(afternoon).toBeGreaterThan(morning!);
+    expect(hsAtHour(file, 'nazare', 0)).toBe(0.4);
+    expect(hsAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))).toBe(2.4);
     expect(scoreAtHour(file, 'nazare', 'all', 3)!).toBeGreaterThanOrEqual(
       scoreAtHour(file, 'nazare', 'surf', 3)!,
     );

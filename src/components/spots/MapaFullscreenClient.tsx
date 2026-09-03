@@ -49,6 +49,7 @@ function readMapSearchParams(): {
   hours: boolean;
   hourOfDay: number | null;
   buoys: boolean;
+  hs: boolean;
   spot: string | undefined;
   center: [number, number] | undefined;
 } {
@@ -59,6 +60,7 @@ function readMapSearchParams(): {
       hours: false,
       hourOfDay: null,
       buoys: false,
+      hs: false,
       spot: undefined,
       center: undefined,
     };
@@ -73,6 +75,7 @@ function readMapSearchParams(): {
     hours: params.get('hours') === '1' || hourOfDay != null,
     hourOfDay,
     buoys: params.get('buoys') === '1',
+    hs: params.get('hs') === '1',
     spot: params.get('spot') || undefined,
     center:
       Number.isFinite(lat) && Number.isFinite(lon)
@@ -109,6 +112,7 @@ export default function MapaFullscreenClient({
   const [initialHours, setInitialHours] = useState(false);
   const [initialHourOfDay, setInitialHourOfDay] = useState<number | null>(null);
   const [initialBuoys, setInitialBuoys] = useState(false);
+  const [initialHs, setInitialHs] = useState(false);
   const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
 
@@ -120,6 +124,7 @@ export default function MapaFullscreenClient({
     setInitialHours(s.hours);
     setInitialHourOfDay(s.hourOfDay);
     setInitialBuoys(s.buoys);
+    setInitialHs(s.hs);
     setFocusSpotId(s.spot);
     setInitialCenter(s.center);
   }, []);
@@ -230,6 +235,7 @@ export default function MapaFullscreenClient({
         initialHoursEnabled={initialHours}
         initialHourOfDay={initialHourOfDay}
         initialBuoysEnabled={initialBuoys}
+        initialHsEnabled={initialHs}
         focusSpotId={focusSpotId}
         initialCenter={initialCenter}
         fullscreenBelowHeader

@@ -98,6 +98,7 @@ import { useMapLayers } from './map/hooks/useMapLayers';
 import { useMapMarkers } from './map/hooks/useMapMarkers';
 import { useMapHours } from './map/hooks/useMapHours';
 import { useMapBuoyDots } from './map/hooks/useMapBuoyDots';
+import { useMapHsField } from './map/hooks/useMapHsField';
 import MapControls from './map/components/MapControls';
 import { useMapTimeTrack } from './map/useMapTimeTrack';
 import {
@@ -130,6 +131,10 @@ type MapHudProps = Omit<
   | 'onToggleBuoys'
   | 'buoysLabel'
   | 'buoysHint'
+  | 'hsEnabled'
+  | 'onToggleHs'
+  | 'hsLabel'
+  | 'hsHint'
   | 'isobathsEnabled'
   | 'onToggleIsobaths'
   | 'isobathsLabel'
@@ -184,6 +189,7 @@ interface SpotMapInteractiveProps {
   initialHoursEnabled?: boolean;
   initialHourOfDay?: number | null;
   initialBuoysEnabled?: boolean;
+  initialHsEnabled?: boolean;
   focusSpotId?: string;
   initialCenter?: [number, number] | undefined;
   fullscreenBelowHeader?: boolean;
@@ -206,6 +212,7 @@ export default function SpotMapInteractive({
   initialHoursEnabled = false,
   initialHourOfDay = null,
   initialBuoysEnabled = false,
+  initialHsEnabled = false,
   focusSpotId,
   initialCenter,
   fullscreenBelowHeader = false,
@@ -571,6 +578,24 @@ export default function SpotMapInteractive({
     return spotsData.filter((d) => spotMeetsOnFilter(d, selectedSport));
   }, [spotsData, onlyOnEnabled, selectedSport, hourScores]);
 
+  const hsSpots = useMemo(
+    () => visibleSpots.map((d) => ({ id: d.spot.id, lat: d.spot.lat, lon: d.spot.lon })),
+    [visibleSpots],
+  );
+  const { hsEnabled, hsUnavailable, toggleHs } = useMapHsField({
+    mapInstanceRef,
+    LRef,
+    isReady,
+    isFullscreen,
+    isHeroEmbed,
+    isMobile,
+    initialEnabled: initialHsEnabled,
+    hoursFile,
+    hoursLive,
+    hoursFrame,
+    spots: hsSpots,
+  });
+
   // ── Warnings by spot ──
   const warningsBySpot = useMemo(() => {
     const map = new Map<string, MapMarkerWarning>();
@@ -592,6 +617,7 @@ export default function SpotMapInteractive({
   const hoursLabel = hoursOn ? t.map.hideHours : t.map.showHours;
   const hoursHint = t.map.hoursHint;
   const buoysLabel = buoysEnabled ? t.map.hideBuoys : t.map.showBuoys;
+  const hsLabel = hsEnabled ? t.map.hideHs : t.map.showHs;
   const windLegendHelpLabel = t.map.windRingLegend.help;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
@@ -688,6 +714,7 @@ export default function SpotMapInteractive({
       data-map-only-on={onlyOnEnabled ? 'true' : 'false'}
       data-map-hours={hoursLive ? 'true' : 'false'}
       data-map-buoys={buoysEnabled ? 'true' : 'false'}
+      data-map-hs={hsEnabled ? 'true' : 'false'}
       data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
     >
       {!isReady && (
@@ -745,6 +772,10 @@ export default function SpotMapInteractive({
             buoysEnabled={buoysEnabled}
             buoysLabel={buoysLabel}
             buoysHint={t.map.buoysHint}
+            hsEnabled={hsEnabled}
+            hsUnavailable={hsUnavailable}
+            hsLabel={hsLabel}
+            hsHint={t.map.hsHint}
             onlyOnLabel={onlyOnLabel}
             onlyOnHint={onlyOnHint}
             windLegendHelpLabel={windLegendHelpLabel}
@@ -760,6 +791,7 @@ export default function SpotMapInteractive({
             toggleHours={toggleHours}
             handleResetHours={handleResetHours}
             toggleBuoys={toggleBuoys}
+            toggleHs={toggleHs}
             toggleIsobaths={toggleIsobaths}
             toggleOnlyOn={toggleOnlyOn}
             toggleCoastalWarnings={toggleCoastalWarnings}
@@ -797,6 +829,8 @@ export default function SpotMapInteractive({
               placement={isHeroEmbed ? 'hero' : 'map'}
               isobathsTitle={t.map.isobathsLegend}
               isobathsVisible={isobathsEnabled && isobathsData != null}
+              hsTitle={t.map.hsLegend}
+              hsVisible={hsEnabled}
             />
           )}
 
@@ -870,6 +904,11 @@ export default function SpotMapInteractive({
               hoursResetVisible={hoursPrefSet || hoursOn}
               onResetHours={handleResetHours}
               hoursResetLabel={t.map.hoursReset}
+              hsEnabled={hsEnabled}
+              onToggleHs={toggleHs}
+              hsLabel={hsLabel}
+              hsHint={t.map.hsHint}
+              hsUnavailable={hsUnavailable}
               buoysEnabled={buoysEnabled}
               onToggleBuoys={toggleBuoys}
               buoysLabel={buoysLabel}

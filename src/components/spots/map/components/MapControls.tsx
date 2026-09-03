@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity } from 'lucide-react';
 
 interface MapControlsProps {
   isFullscreen: boolean;
@@ -31,6 +31,10 @@ interface MapControlsProps {
   buoysEnabled: boolean;
   buoysLabel: string;
   buoysHint: string;
+  hsEnabled: boolean;
+  hsUnavailable: boolean;
+  hsLabel: string;
+  hsHint: string;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -48,6 +52,7 @@ interface MapControlsProps {
   toggleHours: () => void;
   handleResetHours: () => void;
   toggleBuoys: () => void;
+  toggleHs: () => void;
   toggleIsobaths: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
@@ -94,6 +99,10 @@ export default function MapControls({
   buoysEnabled,
   buoysLabel,
   buoysHint,
+  hsEnabled,
+  hsUnavailable,
+  hsLabel,
+  hsHint,
   onlyOnLabel,
   onlyOnHint,
   windLegendHelpLabel,
@@ -110,6 +119,7 @@ export default function MapControls({
   toggleHours,
   handleResetHours,
   toggleBuoys,
+  toggleHs,
   toggleIsobaths,
   toggleOnlyOn,
   toggleCoastalWarnings,
@@ -232,6 +242,22 @@ export default function MapControls({
             )}
           </div>
         </div>
+      )}
+
+      {isFullscreen && (
+        <button
+          type="button"
+          onClick={toggleHs}
+          disabled={hsUnavailable}
+          title={hsUnavailable ? `${hsHint} — indisponível` : hsHint}
+          className={`${btnBase} ${hsUnavailable ? btnRadarDisabled : hsEnabled ? btnIsobathsActive : ''}`}
+          aria-label={hsLabel}
+          aria-pressed={hsEnabled}
+          data-map-hs-toggle
+        >
+          <Activity className="w-4 h-4 shrink-0" aria-hidden />
+          <span className="hidden sm:inline">{hsLabel}</span>
+        </button>
       )}
 
       {isFullscreen && (

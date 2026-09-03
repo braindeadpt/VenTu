@@ -177,6 +177,13 @@ if (mapHours !== undefined) {
     });
     check('mapHours.series', bad.length === 0, `${bad.length} spot(s) with series ≠ times.length`);
   }
+  if (Array.isArray(mapHours.times) && mapHours.hs && typeof mapHours.hs === 'object' && !Array.isArray(mapHours.hs)) {
+    const n = mapHours.times.length;
+    const bad = Object.entries(mapHours.hs).filter(([, series]) => !Array.isArray(series) || series.length !== n);
+    check('mapHours.hs', bad.length === 0, `${bad.length} hs series ≠ times.length`);
+  } else if (MODE === 'full') {
+    warn('map-hours.json hs missing — Hs field off');
+  }
   if (mapHours.tides && typeof mapHours.tides === 'object' && !Array.isArray(mapHours.tides)) {
     const bad = Object.entries(mapHours.tides).filter(([, curve]) => {
       if (!curve || typeof curve !== 'object') return true;
