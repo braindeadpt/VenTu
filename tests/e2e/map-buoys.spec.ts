@@ -91,6 +91,10 @@ async function openMapBuoys(
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 }
 
+function buoyMarker(page: import('@playwright/test').Page, id: string) {
+  return page.locator('.ventu-buoy-marker').filter({ has: page.locator(`[data-buoy-id="${id}"]`) });
+}
+
 test.describe('Map buoy dots', () => {
   test.use({ serviceWorkers: 'block' });
   test.describe.configure({ timeout: 60_000 });
@@ -99,15 +103,14 @@ test.describe('Map buoy dots', () => {
     await openMapBuoys(page);
 
     await expect(page.locator('[data-map-buoys="true"]')).toBeVisible();
-    await expect(page.locator('[data-buoy-dot]').first()).toBeVisible({ timeout: 15_000 });
-    const leixoes = page.locator('[data-buoy-id="ih-4"]');
+    const leixoes = buoyMarker(page, 'ih-4');
     await expect(leixoes).toBeVisible({ timeout: 15_000 });
-    await expect(leixoes).toHaveAttribute('data-buoy-fresh', 'true');
-    await expect(leixoes).toHaveAttribute('data-buoy-hs', '1.4');
+    await expect(page.locator('[data-buoy-id="ih-4"]')).toHaveAttribute('data-buoy-fresh', 'true');
+    await expect(page.locator('[data-buoy-id="ih-4"]')).toHaveAttribute('data-buoy-hs', '1.4');
 
-    const silleiro = page.locator('[data-buoy-id="wmo-6200084"]');
+    const silleiro = buoyMarker(page, 'wmo-6200084');
     await expect(silleiro).toBeVisible();
-    await expect(silleiro).toHaveAttribute('data-buoy-fresh', 'false');
+    await expect(page.locator('[data-buoy-id="wmo-6200084"]')).toHaveAttribute('data-buoy-fresh', 'false');
 
     await expect(page.locator('[data-buoy-id="wmo-6201077"]')).toHaveCount(0);
     await expect(page.locator('[data-buoy-id="ih-1"]')).toHaveCount(0);
@@ -116,7 +119,7 @@ test.describe('Map buoy dots', () => {
   test('popup da boia mostra Hs e a fonte IH', async ({ page }) => {
     await openMapBuoys(page);
 
-    const marker = page.locator('.ventu-buoy-marker').filter({ has: page.locator('[data-buoy-id="ih-4"]') });
+    const marker = buoyMarker(page, 'ih-4');
     await expect(marker).toBeVisible({ timeout: 15_000 });
     await marker.click();
     const popup = page.locator('.ventu-buoy-popup');
@@ -135,10 +138,9 @@ test.describe('Map buoy dots', () => {
     await page.locator('[data-buoy-show-on-map]').click();
 
     await expect(page.locator('[data-map-buoys="true"]')).toBeVisible();
-    await expect(page.locator('[data-buoy-dot]').first()).toBeVisible({ timeout: 15_000 });
-    const leixoes = page.locator('[data-buoy-id="ih-4"]');
+    const leixoes = buoyMarker(page, 'ih-4');
     await expect(leixoes).toBeVisible({ timeout: 15_000 });
-    await expect(leixoes).toHaveAttribute('data-buoy-fresh', 'false');
+    await expect(page.locator('[data-buoy-id="ih-4"]')).toHaveAttribute('data-buoy-fresh', 'false');
   });
 });
 
@@ -149,8 +151,10 @@ test.describe('Map buoy dots: prefers-reduced-motion', () => {
   test('ponto fresco sem pulse CSS', async ({ page }) => {
     await openMapBuoys(page);
 
-    await expect(page.locator('[data-buoy-id="ih-4"] .ventu-buoy-ring')).toBeVisible({ timeout: 15_000 });
+    const marker = buoyMarker(page, 'ih-4');
+    await expect(marker).toBeVisible({ timeout: 15_000 });
     const ring = page.locator('[data-buoy-id="ih-4"] .ventu-buoy-ring');
+    await expect(ring).toBeAttached();
     const animation = await ring.evaluate((el) => getComputedStyle(el).animationName);
     expect(animation === 'none' || animation === '').toBe(true);
   });

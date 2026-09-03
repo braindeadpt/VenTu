@@ -5,12 +5,13 @@ import { useEffect, useState } from 'react';
 const QUERY = '(prefers-reduced-motion: reduce)';
 
 /**
- * Client `prefers-reduced-motion`. Starts `false` so SSR / first paint match
- * (no `matchMedia` in `useState`). The first effect applies the real value
- * before a 1 s radar tick, so autoplay never starts for reduced-motion users.
+ * Client `prefers-reduced-motion`. Starts unknown (`null`) so SSR and the
+ * first client paint both treat motion as reduced — autoplay stays off until
+ * `matchMedia` resolves. Returning `false` before that let the 48 h track
+ * tick once in CI (`reducedMotion: 'reduce'`).
  */
 export function usePrefersReducedMotion(): boolean {
-  const [reduced, setReduced] = useState(false);
+  const [reduced, setReduced] = useState<boolean | null>(null);
 
   useEffect(() => {
     const mq = window.matchMedia(QUERY);
@@ -20,5 +21,5 @@ export function usePrefersReducedMotion(): boolean {
     return () => mq.removeEventListener('change', apply);
   }, []);
 
-  return reduced;
+  return reduced !== false;
 }
