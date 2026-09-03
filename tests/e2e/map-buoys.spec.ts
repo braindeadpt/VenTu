@@ -99,6 +99,7 @@ test.describe('Map buoy dots', () => {
     await openMapBuoys(page);
 
     await expect(page.locator('[data-map-buoys="true"]')).toBeVisible();
+    await expect(page.locator('[data-buoy-dot]').first()).toBeVisible({ timeout: 15_000 });
     const leixoes = page.locator('[data-buoy-id="ih-4"]');
     await expect(leixoes).toBeVisible({ timeout: 15_000 });
     await expect(leixoes).toHaveAttribute('data-buoy-fresh', 'true');
@@ -134,6 +135,7 @@ test.describe('Map buoy dots', () => {
     await page.locator('[data-buoy-show-on-map]').click();
 
     await expect(page.locator('[data-map-buoys="true"]')).toBeVisible();
+    await expect(page.locator('[data-buoy-dot]').first()).toBeVisible({ timeout: 15_000 });
     const leixoes = page.locator('[data-buoy-id="ih-4"]');
     await expect(leixoes).toBeVisible({ timeout: 15_000 });
     await expect(leixoes).toHaveAttribute('data-buoy-fresh', 'false');
@@ -147,8 +149,8 @@ test.describe('Map buoy dots: prefers-reduced-motion', () => {
   test('ponto fresco sem pulse CSS', async ({ page }) => {
     await openMapBuoys(page);
 
+    await expect(page.locator('[data-buoy-id="ih-4"] .ventu-buoy-ring')).toBeVisible({ timeout: 15_000 });
     const ring = page.locator('[data-buoy-id="ih-4"] .ventu-buoy-ring');
-    await expect(ring).toBeVisible({ timeout: 15_000 });
     const animation = await ring.evaluate((el) => getComputedStyle(el).animationName);
     expect(animation === 'none' || animation === '').toBe(true);
   });

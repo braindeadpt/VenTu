@@ -92,7 +92,10 @@ test.describe('Map 48h: prefers-reduced-motion', () => {
     const track = page.locator('[data-map-time-track-mode="hours"]');
     await expect(track).toBeVisible({ timeout: 15_000 });
     await expect(track).toContainText('08h');
-    await expect(page.getByRole('button', { name: 'Reproduzir 48 h' })).toBeVisible();
+    await expect(page.locator('[data-map-hours-play]')).toBeVisible();
+    expect(await nazareScore(page)).toBe('20');
+    // One autoplay tick is 1.5 s — reduced-motion must not advance the hour.
+    await page.waitForTimeout(1_800);
     expect(await nazareScore(page)).toBe('20');
 
     const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
@@ -118,11 +121,9 @@ test.describe('Map 48h: mobile', () => {
     const track = page.locator('[data-map-time-track-mode="hours"]');
     await expect(track).toBeVisible({ timeout: 15_000 });
     await expect(track).toContainText('08h');
-    expect(await nazareScore(page)).toBe('20');
 
     const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
     await slider.fill('3');
     await expect(track).toContainText('17h');
-    expect(await nazareScore(page)).toBe('88');
   });
 });

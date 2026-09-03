@@ -35,6 +35,7 @@ interface MapControlsProps {
   hsUnavailable: boolean;
   hsLabel: string;
   hsHint: string;
+  isobathsLabel: string;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -103,6 +104,7 @@ export default function MapControls({
   hsUnavailable,
   hsLabel,
   hsHint,
+  isobathsLabel,
   onlyOnLabel,
   onlyOnHint,
   windLegendHelpLabel,
@@ -131,7 +133,10 @@ export default function MapControls({
   if (isFullscreen && isMobile) return null;
 
   return (
-    <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2" data-map-controls="true">
+    <div
+      className="absolute top-3 left-3 z-[1000] flex max-h-[calc(100%-16rem)] flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-width:thin]"
+      data-map-controls="true"
+    >
       <button
         ref={fullscreenBtnRef}
         type="button"
@@ -280,11 +285,11 @@ export default function MapControls({
         onClick={toggleIsobaths}
         title="Mostrar/ocultar isóbatas 8/16/30 m"
         className={`${btnBase} ${isobathsEnabled ? btnIsobathsActive : ''}`}
-        aria-label={isobathsEnabled ? 'Ocultar isóbatas' : 'Mostrar isóbatas'}
+        aria-label={isobathsLabel}
         aria-pressed={isobathsEnabled}
       >
         <Waves className="w-4 h-4 shrink-0 text-data-waves" aria-hidden />
-        <span className="hidden sm:inline">{isobathsEnabled ? 'Ocultar isóbatas' : 'Mostrar isóbatas'}</span>
+        <span className="hidden sm:inline">{isobathsLabel}</span>
       </button>
 
       <button

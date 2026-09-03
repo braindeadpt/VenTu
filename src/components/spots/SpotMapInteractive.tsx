@@ -776,6 +776,7 @@ export default function SpotMapInteractive({
             hsUnavailable={hsUnavailable}
             hsLabel={hsLabel}
             hsHint={t.map.hsHint}
+            isobathsLabel={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
             onlyOnLabel={onlyOnLabel}
             onlyOnHint={onlyOnHint}
             windLegendHelpLabel={windLegendHelpLabel}

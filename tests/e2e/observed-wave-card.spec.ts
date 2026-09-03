@@ -1247,18 +1247,22 @@ test.describe('Observed wave card (boia X a Y km)', () => {
   test('badge «Vento observado» sem windBias não inventa viés', async ({ page }) => {
     await interceptConditions(page, {
       spots: {
-        [SPOT_KEY]: (entry) => ({
-          ...entry,
-          observed: {
-            windSpeedKt: 16,
-            windDirDeg: 337,
-            windCardinal: 'NW',
-            stationName: 'Cascais',
-            distanceKm: 5,
-            observedAt: new Date().toISOString(),
-            source: 'ipma',
-          },
-        }),
+        [SPOT_KEY]: (entry) => {
+          const next: Record<string, unknown> = {
+            ...entry,
+            observed: {
+              windSpeedKt: 16,
+              windDirDeg: 337,
+              windCardinal: 'NW',
+              stationName: 'Cascais',
+              distanceKm: 5,
+              observedAt: new Date().toISOString(),
+              source: 'ipma',
+            },
+          };
+          delete next.windBias;
+          return next;
+        },
       },
     });
 
