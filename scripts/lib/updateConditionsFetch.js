@@ -3,8 +3,8 @@ const { WAVE_MODELS, WIND_MODELS } = require('./forecastConfidence');
 function buildMarineParams(lat, lon) {
   return new URLSearchParams({
     latitude: lat.toString(), longitude: lon.toString(),
-    hourly: ['wave_height','wave_direction','wave_period','swell_wave_height','swell_wave_direction','swell_wave_period','secondary_swell_wave_height','secondary_swell_wave_period','secondary_swell_wave_direction','wind_wave_height','sea_surface_temperature','sea_level_height_msl'].join(','),
-    timezone: 'Europe/Lisbon', forecast_days: '7',
+    hourly: ['wave_height','wave_direction','wave_period','swell_wave_height','swell_wave_direction','swell_wave_period','secondary_swell_wave_height','secondary_swell_wave_period','secondary_swell_wave_direction','wind_wave_height','sea_surface_temperature','sea_level_height_msl','ocean_current_velocity','ocean_current_direction'].join(','),
+    timezone: 'Europe/Lisbon', forecast_days: '7', wind_speed_unit: 'ms',
   });
 }
 function buildWeatherParams(lat, lon) {

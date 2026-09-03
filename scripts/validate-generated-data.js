@@ -184,6 +184,18 @@ if (mapHours !== undefined) {
   } else if (MODE === 'full') {
     warn('map-hours.json hs missing — Hs field off');
   }
+  if (Array.isArray(mapHours.times) && mapHours.currents && typeof mapHours.currents === 'object' && !Array.isArray(mapHours.currents)) {
+    const n = mapHours.times.length;
+    const bad = Object.entries(mapHours.currents).filter(([, row]) => {
+      if (!row || typeof row !== 'object') return true;
+      const spd = row.spd;
+      const dir = row.dir;
+      return !Array.isArray(spd) || !Array.isArray(dir) || spd.length !== n || dir.length !== n;
+    });
+    check('mapHours.currents', bad.length === 0, `${bad.length} current series ≠ times.length`);
+  } else if (MODE === 'full') {
+    warn('map-hours.json currents missing — currents field off');
+  }
   if (mapHours.tides && typeof mapHours.tides === 'object' && !Array.isArray(mapHours.tides)) {
     const bad = Object.entries(mapHours.tides).filter(([, curve]) => {
       if (!curve || typeof curve !== 'object') return true;

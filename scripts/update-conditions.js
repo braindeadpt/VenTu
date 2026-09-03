@@ -113,6 +113,7 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
     windGust: weatherData.hourly.wind_gusts_10m[weatherTimeIndex] || 0,
     waterTemp: marineData.hourly.sea_surface_temperature[marineTimeIndex] || 0,
     tideHeight: seaLevel, tideStatus: tide.status, tideLabel: tide.label,
+    ...require('./lib/updateConditionsMerge').readOceanCurrent(marineData.hourly, marineTimeIndex),
   };
   if (secondary) {
     result.secondarySwellHeight = secondary.height;

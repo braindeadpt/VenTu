@@ -13,6 +13,9 @@ const { WAVE_MODELS, WIND_MODELS } = require('../forecastConfidence.js');
 describe('updateConditionsFetch', () => {
   it('preserves the source query contracts', () => {
     expect(buildMarineParams(41.2, -8.7).get('hourly')).toContain('wave_height');
+    expect(buildMarineParams(41.2, -8.7).get('hourly')).toContain('ocean_current_velocity');
+    expect(buildMarineParams(41.2, -8.7).get('hourly')).toContain('ocean_current_direction');
+    expect(buildMarineParams(41.2, -8.7).get('wind_speed_unit')).toBe('ms');
     expect(buildMarineParams(41.2, -8.7).get('timezone')).toBe('Europe/Lisbon');
     expect(buildWeatherParams(41.2, -8.7).get('wind_speed_unit')).toBe('ms');
     expect(buildMarineModelsParams(41.2, -8.7).get('models')).toBe(WAVE_MODELS.join(','));

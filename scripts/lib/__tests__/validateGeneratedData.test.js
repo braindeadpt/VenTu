@@ -556,4 +556,14 @@ describe('validate-generated-data — map-hours.json', () => {
     expect(code).toBe(1);
     expect(out).toMatch(/mapHours.hs/);
   });
+
+  it('falha quando correntes de um spot não têm o mesmo comprimento que times', () => {
+    const dir = makeDataDir();
+    const file = validHours();
+    file.currents = { nazare: { spd: [0.1, 0.2], dir: [180] } };
+    fs.writeFileSync(path.join(dir, 'map-hours.json'), JSON.stringify(file));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/mapHours.currents/);
+  });
 });

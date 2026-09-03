@@ -1,5 +1,14 @@
-const { findCurrentHourIndex } = require('./forecastConfidence');
 const { wavePowerFromMarine } = require('./updateConditionsPure');
+
+/** SMOC surface current. Missing arrays (tests, older payloads) → slack water. */
+function readOceanCurrent(hourly, i) {
+  const spd = Number(hourly?.ocean_current_velocity?.[i]);
+  const dir = Number(hourly?.ocean_current_direction?.[i]);
+  return {
+    currentSpeed: Number.isFinite(spd) && spd > 0 ? Math.round(spd * 100) / 100 : 0,
+    currentDir: Number.isFinite(dir) ? ((Math.round(dir) % 360) + 360) % 360 : 0,
+  };
+}
 
 function buildConditionsRow(marineData, weatherData, current, biasRow, confidenceDetail, dailyConfidence, useMultiModel) {
   return {
@@ -43,9 +52,10 @@ function mergeForecast(marineData, weatherData) {
       windGust: weatherData.hourly.wind_gusts_10m[i] || 0,
       waterTemp: marineData.hourly.sea_surface_temperature[i] || 0,
       tideHeight: marineData.hourly.sea_level_height_msl[i] || 0,
+      ...readOceanCurrent(marineData.hourly, i),
     });
   }
   return result;
 }
 
-module.exports = { buildConditionsRow, mergeForecast };
+module.exports = { buildConditionsRow, mergeForecast, readOceanCurrent };
