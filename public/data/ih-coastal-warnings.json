@@ -468,6 +468,37 @@
           ]
         ]
       ]
+    },
+    {
+      "id": 18467,
+      "ref": "ANAV NR 1953/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a603ac2b-53f4-484e-a318-14ab0d41acd5",
+      "source": "ih",
+      "polygons": [
+        [
+          [
+            -8.466827,
+            37.064273
+          ],
+          [
+            -8.466827,
+            37.090568
+          ],
+          [
+            -8.362492,
+            37.090568
+          ],
+          [
+            -8.362492,
+            37.064273
+          ],
+          [
+            -8.466827,
+            37.064273
+          ]
+        ]
+      ]
     }
   ],
   "coverage": {
@@ -530,7 +561,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-03T12:30:36.546Z",
+  "fetchedAt": "2026-09-03T16:52:18.180Z",
   "sourceCollection": "nav_warning_coastal",
   "sourceUrl": "https://api-features.hidrografico.pt/collections/nav_warning_coastal"
 }
