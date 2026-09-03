@@ -8,6 +8,8 @@ import {
   pickMapHourTimes,
   scoreAtHour,
   hsAtHour,
+  sstAtHour,
+  thermalAtHour,
   currentAtHour,
   fetchMapHours,
   clearMapHoursCache,
@@ -104,6 +106,8 @@ describe('mapHours', () => {
     expect(afternoon).toBeGreaterThan(morning!);
     expect(hsAtHour(file, 'nazare', 0)).toBe(0.4);
     expect(hsAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))).toBe(2.4);
+    expect(sstAtHour(file, 'nazare', 0)).toBe(18);
+    expect(file.thermal).toBeUndefined();
     expect(file.currents).toBeUndefined();
     expect(scoreAtHour(file, 'nazare', 'all', 3)!).toBeGreaterThanOrEqual(
       scoreAtHour(file, 'nazare', 'surf', 3)!,
@@ -147,6 +151,30 @@ describe('mapHours', () => {
     });
     expect(currentAtHour(file, 'nazare', 0)).toEqual({ spd: 0.08, dir: 350 });
     expect(currentAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))?.spd).toBe(0.27);
+  });
+
+  it('bakes SST and sea-breeze thermal when airTemp + ΔT are present', () => {
+    const nazare = spot('nazare');
+    nazare.coastOrientation = 270;
+    const file = buildMapHoursFile({
+      now,
+      generatedAt: '2026-09-03T07:00:00.000Z',
+      spots: [nazare],
+      conditions: {},
+      forecasts: {
+        nazare: times.map((t) => ({
+          ...hour(t, 1.2),
+          waterTemp: t.endsWith('T08:00') ? 14 : 18,
+          airTemp: t.endsWith('T17:00') ? 28 : 16,
+          windSpeed: t.endsWith('T17:00') ? 8 : 2,
+          windDirection: t.endsWith('T17:00') ? 270 : 90,
+        })),
+      },
+    });
+    expect(sstAtHour(file, 'nazare', 0)).toBe(14);
+    expect(sstAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))).toBe(18);
+    expect(thermalAtHour(file, 'nazare', 0)).toBe(0);
+    expect(thermalAtHour(file, 'nazare', indexForHourOfDay(file.times, 17))).toBe(1);
   });
 });
 

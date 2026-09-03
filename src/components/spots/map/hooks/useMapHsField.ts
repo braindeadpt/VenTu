@@ -97,6 +97,15 @@ export function useMapHsField({
     });
   }, []);
 
+  const disableHs = useCallback(() => {
+    setEnabled(false);
+    try {
+      localStorage.setItem(MAP_HS_LS_KEY, '0');
+    } catch {
+      /* noop */
+    }
+  }, []);
+
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!hsOn) {
@@ -180,6 +189,7 @@ export function useMapHsField({
     hsEnabled: hsOn,
     hsUnavailable: fetchedFile === null || (!!file && !file.hs),
     toggleHs,
+    disableHs,
     hsMax: sampleMax,
   };
 }

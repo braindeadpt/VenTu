@@ -9,6 +9,7 @@ import {
 } from '@/lib/openMeteoTime';
 import { getAssetPath } from '@/lib/paths';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
+import { detectThermal, lisbonHourFromMapTime, thermalCode } from '@/lib/mapThermal';
 
 export const MAP_HOURS_STEP = 3;
 export const MAP_HOURS_COUNT = 16;
@@ -43,6 +44,10 @@ export interface MapHoursFile {
   tides?: Record<string, MapTideCurve>;
   /** Optional: Hs (m) per spot, same length as `times`. Hs field overlay. */
   hs?: Record<string, number[]>;
+  /** Optional: SST (°C) per spot — water-temp coastal ribbon. */
+  sst?: Record<string, number[]>;
+  /** Optional: 0 none / 1 sea breeze / 2 land breeze. HUD chip only. */
+  thermal?: Record<string, number[]>;
   /** Optional: surface current (m/s + towards °) per spot. Currents field overlay. */
   currents?: Record<string, { spd: number[]; dir: number[] }>;
 }
@@ -226,6 +231,30 @@ export function currentAtHour(
   return { spd, dir };
 }
 
+export function sstAtHour(
+  file: MapHoursFile | null | undefined,
+  spotId: string,
+  index: number,
+): number | undefined {
+  if (!file?.sst) return undefined;
+  const series = file.sst[spotId];
+  if (!series || index < 0 || index >= series.length) return undefined;
+  const n = series[index];
+  return Number.isFinite(n) ? n : undefined;
+}
+
+export function thermalAtHour(
+  file: MapHoursFile | null | undefined,
+  spotId: string,
+  index: number,
+): number | undefined {
+  if (!file?.thermal) return undefined;
+  const series = file.thermal[spotId];
+  if (!series || index < 0 || index >= series.length) return undefined;
+  const n = series[index];
+  return Number.isFinite(n) ? n : undefined;
+}
+
 export function buildMapHoursFile(opts: {
   forecasts: Record<string, Array<Record<string, unknown>>>;
   conditions: Record<string, Record<string, unknown>>;
@@ -245,6 +274,10 @@ export function buildMapHoursFile(opts: {
   const spots: MapHoursFile['spots'] = {};
   const hs: Record<string, number[]> = {};
   let hsFinite = 0;
+  const sst: Record<string, number[]> = {};
+  let sstFinite = 0;
+  const thermal: Record<string, number[]> = {};
+  let thermalFinite = 0;
   const currents: Record<string, { spd: number[]; dir: number[] }> = {};
   let currentFinite = 0;
 
@@ -255,6 +288,8 @@ export function buildMapHoursFile(opts: {
     for (const sport of ALL_SPORTS) bySport[sport] = [];
     bySport.best = [];
     const hsSeries: number[] = [];
+    const sstSeries: number[] = [];
+    const thermalSeries: number[] = [];
     const currentSpd: number[] = [];
     const currentDir: number[] = [];
 
@@ -265,6 +300,8 @@ export function buildMapHoursFile(opts: {
         for (const sport of ALL_SPORTS) bySport[sport].push(0);
         bySport.best.push(0);
         hsSeries.push(0);
+        sstSeries.push(0);
+        thermalSeries.push(0);
         currentSpd.push(0);
         currentDir.push(0);
         continue;
@@ -281,6 +318,23 @@ export function buildMapHoursFile(opts: {
       const rounded = Number.isFinite(wh) ? Math.round(Math.max(0, wh) * 10) / 10 : 0;
       hsSeries.push(rounded);
       if (rounded > 0) hsFinite += 1;
+      const sstRaw = Number(raw.waterTemp);
+      const sstRounded = Number.isFinite(sstRaw) ? Math.round(sstRaw * 10) / 10 : 0;
+      sstSeries.push(sstRounded);
+      if (sstRounded >= 8) sstFinite += 1;
+      const airRaw = Number(raw.airTemp);
+      const kind = Number.isFinite(airRaw) && Number.isFinite(sstRaw)
+        ? detectThermal({
+            lisbonHour: lisbonHourFromMapTime(time),
+            airTemp: airRaw,
+            sst: sstRaw,
+            windSpeedMs: Number(raw.windSpeed) || 0,
+            windDirection: Number(raw.windDirection) || 0,
+            coastOrientation: spot.coastOrientation,
+          })
+        : null;
+      thermalSeries.push(thermalCode(kind));
+      if (kind) thermalFinite += 1;
       const spdRaw = Number(raw.currentSpeed);
       const dirRaw = Number(raw.currentDir);
       const spd = Number.isFinite(spdRaw) && spdRaw > 0 ? Math.round(spdRaw * 100) / 100 : 0;
@@ -292,6 +346,8 @@ export function buildMapHoursFile(opts: {
 
     spots[spot.id] = bySport;
     hs[spot.id] = hsSeries;
+    sst[spot.id] = sstSeries;
+    thermal[spot.id] = thermalSeries;
     currents[spot.id] = { spd: currentSpd, dir: currentDir };
   }
 
@@ -305,6 +361,8 @@ export function buildMapHoursFile(opts: {
     spots,
     ...(tides ? { tides } : {}),
     ...(hsFinite > 0 ? { hs } : {}),
+    ...(sstFinite > 0 ? { sst } : {}),
+    ...(thermalFinite > 0 ? { thermal } : {}),
     ...(currentFinite > 0 ? { currents } : {}),
   };
 }
@@ -374,6 +432,8 @@ export async function fetchMapHours(): Promise<MapHoursFile | null> {
         ...data,
         tides: parseTides(data.tides),
         hs: parseHs(data.hs, data.times.length),
+        sst: parseHs(data.sst, data.times.length),
+        thermal: parseHs(data.thermal, data.times.length),
         currents: parseCurrents(data.currents, data.times.length),
       };
     } catch {

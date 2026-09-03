@@ -196,6 +196,18 @@ if (mapHours !== undefined) {
   } else if (MODE === 'full') {
     warn('map-hours.json currents missing — currents field off');
   }
+  if (Array.isArray(mapHours.times) && mapHours.sst && typeof mapHours.sst === 'object' && !Array.isArray(mapHours.sst)) {
+    const n = mapHours.times.length;
+    const bad = Object.entries(mapHours.sst).filter(([, series]) => !Array.isArray(series) || series.length !== n);
+    check('mapHours.sst', bad.length === 0, `${bad.length} sst series ≠ times.length`);
+  } else if (MODE === 'full') {
+    warn('map-hours.json sst missing — water-temp field off');
+  }
+  if (Array.isArray(mapHours.times) && mapHours.thermal && typeof mapHours.thermal === 'object' && !Array.isArray(mapHours.thermal)) {
+    const n = mapHours.times.length;
+    const bad = Object.entries(mapHours.thermal).filter(([, series]) => !Array.isArray(series) || series.length !== n);
+    check('mapHours.thermal', bad.length === 0, `${bad.length} thermal series ≠ times.length`);
+  }
   if (mapHours.tides && typeof mapHours.tides === 'object' && !Array.isArray(mapHours.tides)) {
     const bad = Object.entries(mapHours.tides).filter(([, curve]) => {
       if (!curve || typeof curve !== 'object') return true;

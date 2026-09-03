@@ -21,6 +21,8 @@ interface MapLegendProps {
   isobathsVisible?: boolean;
   hsTitle?: string;
   hsVisible?: boolean;
+  sstTitle?: string;
+  sstVisible?: boolean;
   currentsTitle?: string;
   currentsVisible?: boolean;
 }
@@ -34,6 +36,8 @@ export default function MapLegend({
   isobathsVisible = false,
   hsTitle,
   hsVisible = false,
+  sstTitle,
+  sstVisible = false,
   currentsTitle,
   currentsVisible = false,
 }: MapLegendProps) {
@@ -41,9 +45,16 @@ export default function MapLegend({
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
+  // Auto-expand when a data layer activates — except the homepage hero:
+  // there the expanded box (≈156px tall) lands on the sport filter chips and
+  // CTA on mobile. Desktop is unaffected either way (`sm:block` keeps the
+  // content visible regardless of `collapsed`); on mobile hero the user taps
+  // the legend to expand it.
   useEffect(() => {
-    if (isobathsVisible || hsVisible || currentsVisible) setCollapsed(false);
-  }, [isobathsVisible, hsVisible, currentsVisible]);
+    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible)) {
+      setCollapsed(false);
+    }
+  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible]);
 
   const isHero = placement === 'hero';
   const bottomPx = !isHero && reserveHudSpace
@@ -109,13 +120,33 @@ export default function MapLegend({
               <div
                 className="h-2 rounded mb-1"
                 style={{
-                  background: 'linear-gradient(to right, rgb(var(--data-waves) / 0.14), rgb(var(--data-waves) / 0.78))',
+                  background:
+                    'linear-gradient(to right, rgb(3 105 161 / 0.48), rgb(14 165 233 / 0.78) 42%, rgb(14 165 233 / 0.92) 70%, rgb(241 245 249 / 0.88))',
                 }}
               />
               <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
-                <span>0.4</span>
-                <span>1.2</span>
+                <span>0.5</span>
+                <span>0.9</span>
                 <span>2.4+</span>
+              </div>
+            </div>
+          )}
+          {sstVisible && sstTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-map-sst-legend>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+                {sstTitle}
+              </p>
+              <div
+                className="h-2 rounded mb-1"
+                style={{
+                  background:
+                    'linear-gradient(to right, rgb(var(--data-water) / 0.55), rgb(var(--data-water) / 0.8) 48%, rgb(var(--data-period) / 0.92))',
+                }}
+              />
+              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+                <span>14</span>
+                <span>18</span>
+                <span>22+</span>
               </div>
             </div>
           )}
@@ -124,23 +155,30 @@ export default function MapLegend({
               <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
                 {currentsTitle}
               </p>
-              <div className="flex items-end justify-between h-5 mb-1 px-0.5" aria-hidden>
-                {[0.55, 0.78, 1].map((s) => (
+              <div className="flex items-end justify-between h-6 mb-1 px-0.5" aria-hidden>
+                {[
+                  { w: 1.15, op: 0.48 },
+                  { w: 1.7, op: 0.72 },
+                  { w: 2.35, op: 0.96 },
+                ].map((s) => (
                   <svg
-                    key={s}
-                    width={10 + s * 4}
-                    height={12 + s * 6}
-                    viewBox="0 0 12 16"
+                    key={s.w}
+                    width={22}
+                    height={22}
+                    viewBox="0 0 22 22"
                     className="text-data-water"
                   >
                     <path
-                      d="M6 15 V3 M6 3 L3.2 7.2 M6 3 L8.8 7.2"
+                      d="M3.8 17.6 C8.2 12.2, 12.4 7.2, 16.6 4.3"
                       fill="none"
                       stroke="currentColor"
-                      strokeWidth="1.5"
+                      strokeWidth={Math.max(0.8, s.w * 0.55)}
                       strokeLinecap="round"
-                      strokeLinejoin="round"
+                      opacity={s.op * 0.4}
                     />
+                    <circle cx="3.8" cy="17.6" r={0.7 + s.w * 0.12} fill="currentColor" opacity={s.op * 0.45} />
+                    <circle cx="8.2" cy="11.4" r={1.05 + s.w * 0.18} fill="currentColor" opacity={s.op * 0.7} />
+                    <circle cx="16.6" cy="4.3" r={1.55 + s.w * 0.28} fill="currentColor" opacity={s.op} />
                   </svg>
                 ))}
               </div>

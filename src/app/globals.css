@@ -529,12 +529,15 @@ html:has([data-embed-widget]) body {
 }
 
 .leaflet-hs-pane,
+.leaflet-sst-pane,
 .leaflet-currents-pane,
 .ventu-hs-overlay,
+.ventu-sst-overlay,
 .ventu-current-overlay {
   pointer-events: none;
 }
 .ventu-hs-overlay,
+.ventu-sst-overlay,
 .ventu-current-overlay {
   transition: opacity 200ms ease;
   image-rendering: auto;
@@ -656,6 +659,7 @@ html:has([data-embed-widget]) body {
 }
 @media (prefers-reduced-motion: reduce) {
   .ventu-hs-overlay,
+  .ventu-sst-overlay,
   .ventu-current-overlay {
     transition: none;
   }

@@ -8,7 +8,7 @@ function buildMarineParams(lat, lon) {
   });
 }
 function buildWeatherParams(lat, lon) {
-  return new URLSearchParams({ latitude: lat.toString(), longitude: lon.toString(), hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m', timezone: 'Europe/Lisbon', forecast_days: '7', wind_speed_unit: 'ms' });
+  return new URLSearchParams({ latitude: lat.toString(), longitude: lon.toString(), hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m,temperature_2m', timezone: 'Europe/Lisbon', forecast_days: '7', wind_speed_unit: 'ms' });
 }
 function buildMarineModelsParams(lat, lon) {
   return new URLSearchParams({ latitude: lat.toString(), longitude: lon.toString(), hourly: 'wave_height', models: WAVE_MODELS.join(','), timezone: 'Europe/Lisbon', forecast_days: '7' });

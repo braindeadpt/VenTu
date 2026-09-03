@@ -51,6 +51,9 @@ function mergeForecast(marineData, weatherData) {
       windDirection: weatherData.hourly.wind_direction_10m[i] || 0,
       windGust: weatherData.hourly.wind_gusts_10m[i] || 0,
       waterTemp: marineData.hourly.sea_surface_temperature[i] || 0,
+      ...(Number.isFinite(Number(weatherData.hourly.temperature_2m?.[i]))
+        ? { airTemp: Math.round(Number(weatherData.hourly.temperature_2m[i]) * 10) / 10 }
+        : {}),
       tideHeight: marineData.hourly.sea_level_height_msl[i] || 0,
       ...readOceanCurrent(marineData.hourly, i),
     });

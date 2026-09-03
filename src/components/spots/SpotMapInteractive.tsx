@@ -100,7 +100,9 @@ import { useMapHours } from './map/hooks/useMapHours';
 import { useMapBuoyDots } from './map/hooks/useMapBuoyDots';
 import { useMapHsField } from './map/hooks/useMapHsField';
 import { useMapCurrentsField } from './map/hooks/useMapCurrentsField';
+import { useMapSstField } from './map/hooks/useMapSstField';
 import MapControls from './map/components/MapControls';
+import MapThermalChip from './map/MapThermalChip';
 import { useMapTimeTrack } from './map/useMapTimeTrack';
 import {
   MAP_HOURS_TICK_MS,
@@ -108,6 +110,7 @@ import {
   scoreAtHour,
 } from '@/lib/mapHours';
 import { mapTideChipAt, pickMapTideCurve } from '@/lib/mapTideChip';
+import { thermalHudAt } from '@/lib/mapThermal';
 import { MAP_ON_THRESHOLD, spotMatchesSportFilter, spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 
 type SpotData = MapSpotData;
@@ -136,6 +139,10 @@ type MapHudProps = Omit<
   | 'onToggleHs'
   | 'hsLabel'
   | 'hsHint'
+  | 'sstEnabled'
+  | 'onToggleSst'
+  | 'sstLabel'
+  | 'sstHint'
   | 'currentsEnabled'
   | 'onToggleCurrents'
   | 'currentsLabel'
@@ -195,6 +202,7 @@ interface SpotMapInteractiveProps {
   initialHourOfDay?: number | null;
   initialBuoysEnabled?: boolean;
   initialHsEnabled?: boolean;
+  initialSstEnabled?: boolean;
   initialCurrentsEnabled?: boolean;
   focusSpotId?: string;
   initialCenter?: [number, number] | undefined;
@@ -219,6 +227,7 @@ export default function SpotMapInteractive({
   initialHourOfDay = null,
   initialBuoysEnabled = false,
   initialHsEnabled = false,
+  initialSstEnabled = false,
   initialCurrentsEnabled = false,
   focusSpotId,
   initialCenter,
@@ -380,6 +389,37 @@ export default function SpotMapInteractive({
     t.map.tideChipAria,
     t.map.tideChipAriaNext,
   ]);
+
+  const thermalChip = useMemo(() => {
+    const summary = thermalHudAt(hoursFile, hoursLive ? hoursFrame : 0);
+    if (!summary) return undefined;
+    const kindLabel = summary.kind === 'sea' ? t.map.thermalSea : t.map.thermalLand;
+    const ariaLabel = t.map.thermalChipAria
+      .replace('{kind}', kindLabel)
+      .replace('{count}', String(summary.count));
+    return (
+      <MapThermalChip
+        kind={summary.kind}
+        kindLabel={kindLabel}
+        count={summary.count}
+        ariaLabel={ariaLabel}
+      />
+    );
+  }, [
+    hoursFile,
+    hoursLive,
+    hoursFrame,
+    t.map.thermalSea,
+    t.map.thermalLand,
+    t.map.thermalChipAria,
+  ]);
+
+  const timeTrackChips = tideChip || thermalChip ? (
+    <span className="inline-flex items-center gap-1.5 shrink-0">
+      {tideChip}
+      {thermalChip}
+    </span>
+  ) : undefined;
 
   useEffect(() => {
     if (!radarEnabled) setRadarScrubbing(false);
@@ -597,7 +637,7 @@ export default function SpotMapInteractive({
       })),
     [visibleSpots],
   );
-  const { hsEnabled, hsUnavailable, toggleHs } = useMapHsField({
+  const { hsEnabled, hsUnavailable, toggleHs: toggleHsRaw, disableHs } = useMapHsField({
     mapInstanceRef,
     LRef,
     isReady,
@@ -605,6 +645,19 @@ export default function SpotMapInteractive({
     isHeroEmbed,
     isMobile,
     initialEnabled: initialHsEnabled,
+    hoursFile,
+    hoursLive,
+    hoursFrame,
+    spots: hsSpots,
+  });
+  const { sstEnabled, sstUnavailable, toggleSst: toggleSstRaw, disableSst } = useMapSstField({
+    mapInstanceRef,
+    LRef,
+    isReady,
+    isFullscreen,
+    isHeroEmbed,
+    isMobile,
+    initialEnabled: initialSstEnabled,
     hoursFile,
     hoursLive,
     hoursFrame,
@@ -623,6 +676,20 @@ export default function SpotMapInteractive({
     hoursFrame,
     spots: hsSpots,
   });
+
+  useEffect(() => {
+    if (sstEnabled && hsEnabled) disableHs();
+  }, [sstEnabled, hsEnabled, disableHs]);
+
+  const toggleHs = useCallback(() => {
+    if (!hsEnabled && sstEnabled) disableSst();
+    toggleHsRaw();
+  }, [hsEnabled, sstEnabled, toggleHsRaw, disableSst]);
+
+  const toggleSst = useCallback(() => {
+    if (!sstEnabled && hsEnabled) disableHs();
+    toggleSstRaw();
+  }, [sstEnabled, hsEnabled, toggleSstRaw, disableHs]);
 
   // ── Warnings by spot ──
   const warningsBySpot = useMemo(() => {
@@ -646,6 +713,7 @@ export default function SpotMapInteractive({
   const hoursHint = t.map.hoursHint;
   const buoysLabel = buoysEnabled ? t.map.hideBuoys : t.map.showBuoys;
   const hsLabel = hsEnabled ? t.map.hideHs : t.map.showHs;
+  const sstLabel = sstEnabled ? t.map.hideSst : t.map.showSst;
   const currentsLabel = currentsEnabled ? t.map.hideCurrents : t.map.showCurrents;
   const windLegendHelpLabel = t.map.windRingLegend.help;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
@@ -744,6 +812,7 @@ export default function SpotMapInteractive({
       data-map-hours={hoursLive ? 'true' : 'false'}
       data-map-buoys={buoysEnabled ? 'true' : 'false'}
       data-map-hs={hsEnabled ? 'true' : 'false'}
+      data-map-sst={sstEnabled ? 'true' : 'false'}
       data-map-currents={currentsEnabled ? 'true' : 'false'}
       data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
     >
@@ -806,6 +875,10 @@ export default function SpotMapInteractive({
             hsUnavailable={hsUnavailable}
             hsLabel={hsLabel}
             hsHint={t.map.hsHint}
+            sstEnabled={sstEnabled}
+            sstUnavailable={sstUnavailable}
+            sstLabel={sstLabel}
+            sstHint={t.map.sstHint}
             currentsEnabled={currentsEnabled}
             currentsUnavailable={currentsUnavailable}
             currentsLabel={currentsLabel}
@@ -827,6 +900,7 @@ export default function SpotMapInteractive({
             handleResetHours={handleResetHours}
             toggleBuoys={toggleBuoys}
             toggleHs={toggleHs}
+            toggleSst={toggleSst}
             toggleCurrents={toggleCurrents}
             toggleIsobaths={toggleIsobaths}
             toggleOnlyOn={toggleOnlyOn}
@@ -900,6 +974,8 @@ export default function SpotMapInteractive({
               isobathsVisible={isobathsEnabled && isobathsData != null}
               hsTitle={t.map.hsLegend}
               hsVisible={hsEnabled}
+              sstTitle={t.map.sstLegend}
+              sstVisible={sstEnabled}
               currentsTitle={t.map.currentsLegend}
               currentsVisible={currentsEnabled}
             />
@@ -980,6 +1056,11 @@ export default function SpotMapInteractive({
               hsLabel={hsLabel}
               hsHint={t.map.hsHint}
               hsUnavailable={hsUnavailable}
+              sstEnabled={sstEnabled}
+              onToggleSst={toggleSst}
+              sstLabel={sstLabel}
+              sstHint={t.map.sstHint}
+              sstUnavailable={sstUnavailable}
               currentsEnabled={currentsEnabled}
               onToggleCurrents={toggleCurrents}
               currentsLabel={currentsLabel}
@@ -1031,7 +1112,7 @@ export default function SpotMapInteractive({
                     onUserPausedChange={handleHoursUserPausedChange}
                     onScrubbingChange={setHoursScrubbing}
                     clock={hoursClock}
-                    tideChip={tideChip}
+                    tideChip={timeTrackChips}
                     labels={{
                       scrub: t.map.hoursScrub,
                       play: t.map.hoursPlay,
@@ -1050,7 +1131,7 @@ export default function SpotMapInteractive({
                     onUserPausedChange={handleRadarUserPausedChange}
                     onScrubbingChange={setRadarScrubbing}
                     clock={radarClock}
-                    tideChip={tideChip}
+                    tideChip={timeTrackChips}
                     labels={{
                       scrub: t.map.radarScrub,
                       play: t.map.radarPlay,

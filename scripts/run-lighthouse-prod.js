@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
+const { evaluateLighthouseBudgets } = require('./lib/lighthouseBudgets');
 
 const PORT = process.env.LIGHTHOUSE_PORT || '4180';
 const BASE = `http://127.0.0.1:${PORT}`;
@@ -16,11 +17,6 @@ const ROUTES = [
 ];
 
 const OUT_DIR = path.join(__dirname, '..', 'out');
-const THRESHOLDS = {
-  seo: 90,
-  accessibility: 85,
-  performance: 50,
-};
 
 function waitForServer(url, attempts = 60) {
   return new Promise((resolve, reject) => {
@@ -92,6 +88,7 @@ async function main() {
   try {
     await waitForServer(`${BASE}/pt/`);
     const summary = [];
+    const allBreaches = [];
 
     for (const route of ROUTES) {
       const tmp = path.join(__dirname, '..', `lighthouse-${route.name}.tmp.json`);
@@ -108,6 +105,14 @@ async function main() {
       console.log(
         `[${route.name}] Perf ${row.performance} | A11y ${row.accessibility} | SEO ${row.seo}`,
       );
+
+      const { breaches, tracked } = evaluateLighthouseBudgets(report);
+      for (const breach of breaches) allBreaches.push(`[${route.name}] ${breach}`);
+      for (const m of tracked) {
+        console.log(
+          `[${route.name}] tracked: ${m.id}=${m.value} (not gated — hydration CLS fix tracked separately)`,
+        );
+      }
     }
 
     const worst = {
@@ -118,17 +123,12 @@ async function main() {
 
     console.log('\nWorst scores across routes:', worst);
 
-    const failed =
-      worst.seo < THRESHOLDS.seo ||
-      worst.accessibility < THRESHOLDS.accessibility ||
-      worst.performance < THRESHOLDS.performance;
-
-    if (failed) {
-      console.warn(
-        `Below targets (SEO≥${THRESHOLDS.seo}, A11y≥${THRESHOLDS.accessibility}, Perf≥${THRESHOLDS.performance})`,
-      );
+    if (allBreaches.length > 0) {
+      console.warn(`Budget breaches (${allBreaches.length}):`);
+      for (const b of allBreaches) console.warn(`  - ${b}`);
       process.exit(1);
     }
+    console.log('All Lighthouse budgets met.');
   } finally {
     try {
       process.kill(-serve.pid);

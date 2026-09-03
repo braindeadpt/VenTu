@@ -18,6 +18,7 @@ describe('updateConditionsFetch', () => {
     expect(buildMarineParams(41.2, -8.7).get('wind_speed_unit')).toBe('ms');
     expect(buildMarineParams(41.2, -8.7).get('timezone')).toBe('Europe/Lisbon');
     expect(buildWeatherParams(41.2, -8.7).get('wind_speed_unit')).toBe('ms');
+    expect(buildWeatherParams(41.2, -8.7).get('hourly')).toContain('temperature_2m');
     expect(buildMarineModelsParams(41.2, -8.7).get('models')).toBe(WAVE_MODELS.join(','));
     expect(buildWindModelsParams(41.2, -8.7).get('models')).toBe(WIND_MODELS.join(','));
   });

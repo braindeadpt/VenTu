@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { distKm, hsFill, idwHs, collectHsSamples, coastFalloff, landAwareFalloff, fieldMaxDistKm, isOceanFieldSpot, MAP_HS_BOUNDS, MAP_HS_STEP_DEG } from '@/lib/mapHsField';
+import { distKm, hsFill, hsNorm, idwHs, collectHsSamples, coastFalloff, landAwareFalloff, fieldMaxDistKm, isOceanFieldSpot, MAP_HS_BOUNDS, MAP_HS_STEP_DEG } from '@/lib/mapHsField';
 import type { MapHoursFile } from '@/lib/mapHours';
 
 describe('mapHsField', () => {
@@ -19,12 +19,28 @@ describe('mapHsField', () => {
     expect(idwHs(samples, 32.6, -16.9, 80)).toBeNull();
   });
 
-  it('hsFill stays cyan and transparent at ~0 m', () => {
+  it('hsFill maps 0.4 / 1.2 / 2.4 to distinct hues, not one cyan with opacity', () => {
     expect(hsFill(0).a).toBe(0);
-    const mid = hsFill(2);
-    expect(mid.r).toBe(14);
-    expect(mid.b).toBe(233);
-    expect(mid.a).toBeGreaterThan(hsFill(0.5).a);
+    const low = hsFill(0.4);
+    const mid = hsFill(1.2);
+    const high = hsFill(2.4);
+    const luma = (c: { r: number; g: number; b: number }) =>
+      0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b;
+    expect(luma(low)).toBeLessThan(luma(mid) - 18);
+    expect(luma(mid)).toBeLessThan(luma(high) - 18);
+    expect(high.r).toBeGreaterThan(mid.r + 20);
+    expect(low.g).toBeLessThan(mid.g);
+    expect(mid.a).toBeGreaterThan(low.a);
+    expect(high.a).toBeGreaterThan(mid.a);
+    expect(luma(hsFill(0.6))).toBeLessThan(luma(hsFill(0.9)) - 8);
+  });
+
+  it('hsNorm spreads typical summer 0.6–1.1 m, not a 2.4 m linear wash', () => {
+    expect(hsNorm(0.45)).toBeCloseTo(0.12, 5);
+    expect(hsNorm(0.75)).toBeCloseTo(0.5, 5);
+    expect(hsNorm(1.1)).toBeCloseTo(0.72, 5);
+    expect(hsNorm(2.4)).toBe(1);
+    expect(hsNorm(0.9) - hsNorm(0.6)).toBeGreaterThan(0.2);
   });
 
   it('collectHsSamples follows the hour index', () => {

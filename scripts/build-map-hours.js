@@ -40,6 +40,8 @@ function buildMapHours(dataDir = path.join(__dirname, '../public/data')) {
     `⏱ map-hours.json: ${file.times.length} passos × ${Object.keys(file.spots).length} spots`
       + (nTides ? ` + ${nTides} regiões de maré` : '')
       + (file.hs ? ' + Hs' : '')
+      + (file.sst ? ' + SST' : '')
+      + (file.thermal ? ' + térmico' : '')
       + (nCurrents ? ' + correntes' : '')
       + ` (${(bytes / 1024).toFixed(0)} KB)`,
   );

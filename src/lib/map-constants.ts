@@ -151,6 +151,7 @@ export const MAP_COASTAL_LS_KEY = 'ventu.map.coastalWarnings';
 export const MAP_BUOYS_LS_KEY = 'ventu.map.buoys';
 export const MAP_HS_LS_KEY = 'ventu.map.hs';
 export const MAP_CURRENTS_LS_KEY = 'ventu.map.currents';
+export const MAP_SST_LS_KEY = 'ventu.map.sst';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,

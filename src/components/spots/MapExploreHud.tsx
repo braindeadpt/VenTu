@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, Navigation, RotateCcw, Search, Waves, Wind, Zap, Activity } from 'lucide-react';
+import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, Navigation, RotateCcw, Search, Waves, Wind, Zap, Activity, Thermometer } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -36,6 +36,11 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   hsLabel: string;
   hsHint: string;
   hsUnavailable?: boolean;
+  sstEnabled: boolean;
+  onToggleSst: () => void;
+  sstLabel: string;
+  sstHint: string;
+  sstUnavailable?: boolean;
   currentsEnabled: boolean;
   onToggleCurrents: () => void;
   currentsLabel: string;
@@ -155,6 +160,11 @@ export default function MapExploreHud({
   hsLabel,
   hsHint,
   hsUnavailable = false,
+  sstEnabled,
+  onToggleSst,
+  sstLabel,
+  sstHint,
+  sstUnavailable = false,
   currentsEnabled,
   onToggleCurrents,
   currentsLabel,
@@ -322,6 +332,20 @@ export default function MapExploreHud({
             }
           >
             <Activity className="w-4 h-4" aria-hidden />
+          </MapControlButton>
+
+          <MapControlButton
+            onClick={onToggleSst}
+            aria-label={sstLabel}
+            pressed={sstEnabled}
+            title={sstHint}
+            disabled={sstUnavailable}
+            data-map-sst-toggle
+            className={
+              sstEnabled ? 'border-data-period/40 bg-data-period/15 text-fg' : undefined
+            }
+          >
+            <Thermometer className="w-4 h-4 text-data-period" aria-hidden />
           </MapControlButton>
 
           <MapControlButton

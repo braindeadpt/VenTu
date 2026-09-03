@@ -100,8 +100,14 @@ jobs:
       - name: Validate _headers security directives
         run: node scripts/check-headers-file.js
 
-      - name: Lighthouse audit (perf, a11y, SEO)
-        run: node scripts/run-lighthouse-prod.js
+      # Blocking perf/a11y/SEO gate: category floors (SEO≥90, A11y≥85,
+      # Perf≥50) AND audit-level Core Web Vitals budgets (FCP≤900ms, LCP≤3.5s,
+      # SI≤3.2s, TBT≤250ms, ≤2MB page weight) — calibrated from measured runs,
+      # evaluated in scripts/lib/lighthouseBudgets.js (unit-tested, pure).
+      # CLS is tracked+printed but not gated until the spot-page hydration
+      # shift (0.44) is fixed.
+      - name: Lighthouse budgets (perf, a11y, SEO, CWV)
+        run: npm run lighthouse:prod
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
@@ -127,6 +133,25 @@ jobs:
 
       - name: E2E — visual UX audit
         run: npx playwright test visual-ux-audit
+        env:
+          CI: true
+
+      # Visual regression (toHaveScreenshot, zero-diff). Baselines are
+      # platform-bound: CI runs on ubuntu-latest, so baselines must be
+      # recorded on Linux (`npm run test:visual:update` in a Linux checkout
+      # or via act) before this step can gate. The step self-skips when no
+      # Linux baselines are committed yet so a new contributor's first build
+      # isn't red for missing PNGs.
+      - name: Check visual baselines exist (Linux)
+        id: visual_baselines
+        run: |
+          count=$(find tests/e2e/visual-regression.spec.ts-snapshots -name '*--linux.png' 2>/dev/null | wc -l)
+          echo "baselines=$count" >> "$GITHUB_OUTPUT"
+          echo "Linux visual baselines: $count"
+
+      - name: E2E — visual regression (pixel gate)
+        if: steps.visual_baselines.outputs.baselines != '0'
+        run: npm run test:visual
         env:
           CI: true
 

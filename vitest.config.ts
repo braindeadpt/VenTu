@@ -76,6 +76,7 @@ export default defineConfig({
       'scripts/lib/__tests__/validatePageSlugs.test.js',
       'scripts/lib/__tests__/validateSpots.test.js',
       'scripts/lib/__tests__/releaseHealthCheck.test.js',
+      'scripts/lib/__tests__/lighthouseBudgets.test.js',
     ],
   },
   resolve: {

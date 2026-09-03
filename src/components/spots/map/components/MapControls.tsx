@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer } from 'lucide-react';
 
 interface MapControlsProps {
   isFullscreen: boolean;
@@ -35,6 +35,10 @@ interface MapControlsProps {
   hsUnavailable: boolean;
   hsLabel: string;
   hsHint: string;
+  sstEnabled: boolean;
+  sstUnavailable: boolean;
+  sstLabel: string;
+  sstHint: string;
   currentsEnabled: boolean;
   currentsUnavailable: boolean;
   currentsLabel: string;
@@ -58,6 +62,7 @@ interface MapControlsProps {
   handleResetHours: () => void;
   toggleBuoys: () => void;
   toggleHs: () => void;
+  toggleSst: () => void;
   toggleCurrents: () => void;
   toggleIsobaths: () => void;
   toggleOnlyOn: () => void;
@@ -74,6 +79,7 @@ const btnRadarActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
 const btnRadarDisabled = 'border-divider bg-bg-elevated text-fg-subtle opacity-60 cursor-not-allowed';
 const btnIsobathsActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
 const btnCurrentsActive = 'border-data-water/40 bg-data-water/15 text-fg';
+const btnSstActive = 'border-data-period/40 bg-data-period/15 text-fg';
 const btnHoursActive = 'border-score-good/40 bg-score-good/15 text-fg';
 const btnOnlyOnActive = btnHoursActive;
 const iconBtnBase = 'flex items-center justify-center min-h-[36px] min-w-[36px] rounded-input border border-divider bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg transition-colors duration-150';
@@ -110,6 +116,10 @@ export default function MapControls({
   hsUnavailable,
   hsLabel,
   hsHint,
+  sstEnabled,
+  sstUnavailable,
+  sstLabel,
+  sstHint,
   currentsEnabled,
   currentsUnavailable,
   currentsLabel,
@@ -132,6 +142,7 @@ export default function MapControls({
   handleResetHours,
   toggleBuoys,
   toggleHs,
+  toggleSst,
   toggleCurrents,
   toggleIsobaths,
   toggleOnlyOn,
@@ -273,6 +284,22 @@ export default function MapControls({
         >
           <Activity className="w-4 h-4 shrink-0" aria-hidden />
           <span className="hidden sm:inline">{hsLabel}</span>
+        </button>
+      )}
+
+      {isFullscreen && (
+        <button
+          type="button"
+          onClick={toggleSst}
+          disabled={sstUnavailable}
+          title={sstUnavailable ? `${sstHint} — indisponível` : sstHint}
+          className={`${btnBase} ${sstUnavailable ? btnRadarDisabled : sstEnabled ? btnSstActive : ''}`}
+          aria-label={sstLabel}
+          aria-pressed={sstEnabled}
+          data-map-sst-toggle
+        >
+          <Thermometer className="w-4 h-4 shrink-0 text-data-period" aria-hidden />
+          <span className="hidden sm:inline">{sstLabel}</span>
         </button>
       )}
 

@@ -50,6 +50,7 @@ function readMapSearchParams(): {
   hourOfDay: number | null;
   buoys: boolean;
   hs: boolean;
+  sst: boolean;
   currents: boolean;
   spot: string | undefined;
   center: [number, number] | undefined;
@@ -62,6 +63,7 @@ function readMapSearchParams(): {
       hourOfDay: null,
       buoys: false,
       hs: false,
+      sst: false,
       currents: false,
       spot: undefined,
       center: undefined,
@@ -77,7 +79,8 @@ function readMapSearchParams(): {
     hours: params.get('hours') === '1' || hourOfDay != null,
     hourOfDay,
     buoys: params.get('buoys') === '1',
-    hs: params.get('hs') === '1',
+    hs: params.get('hs') === '1' && params.get('sst') !== '1',
+    sst: params.get('sst') === '1',
     currents: params.get('currents') === '1',
     spot: params.get('spot') || undefined,
     center:
@@ -116,6 +119,7 @@ export default function MapaFullscreenClient({
   const [initialHourOfDay, setInitialHourOfDay] = useState<number | null>(null);
   const [initialBuoys, setInitialBuoys] = useState(false);
   const [initialHs, setInitialHs] = useState(false);
+  const [initialSst, setInitialSst] = useState(false);
   const [initialCurrents, setInitialCurrents] = useState(false);
   const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
@@ -129,6 +133,7 @@ export default function MapaFullscreenClient({
     setInitialHourOfDay(s.hourOfDay);
     setInitialBuoys(s.buoys);
     setInitialHs(s.hs);
+    setInitialSst(s.sst);
     setInitialCurrents(s.currents);
     setFocusSpotId(s.spot);
     setInitialCenter(s.center);
@@ -152,6 +157,11 @@ export default function MapaFullscreenClient({
     dispatchSportChange(sport);
   }, [sport, region, difficulty, regionList]);
 
+  // Scroll lock for the fullscreen map page. The cleanup intentionally does
+  // NOT unlock: reactStrictMode double-invokes effects in dev, and the
+  // first mount's cleanup would undo the second mount's lock (the /mapa
+  // footer would scroll back in). unlockPageInteraction() runs explicitly on
+  // the exit path and via PageFadeGuard on route change instead.
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     const onPageShow = (e: PageTransitionEvent) => {
@@ -160,7 +170,6 @@ export default function MapaFullscreenClient({
     window.addEventListener('pageshow', onPageShow);
     return () => {
       window.removeEventListener('pageshow', onPageShow);
-      unlockPageInteraction();
     };
   }, []);
 
@@ -241,6 +250,7 @@ export default function MapaFullscreenClient({
         initialHourOfDay={initialHourOfDay}
         initialBuoysEnabled={initialBuoys}
         initialHsEnabled={initialHs}
+        initialSstEnabled={initialSst}
         initialCurrentsEnabled={initialCurrents}
         focusSpotId={focusSpotId}
         initialCenter={initialCenter}

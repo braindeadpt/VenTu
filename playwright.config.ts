@@ -22,6 +22,21 @@ export default defineConfig({
     trace: 'on-first-retry',
     screenshot: 'only-on-failure',
   },
+  // Visual regression (tests/e2e/visual-regression.spec.ts): zero-diff by
+  // default. Baselines are platform-bound — record on the same OS as the
+  // CI gate (Linux). Thresholds stay at 0: a deliberate visual change must
+  // re-record baselines consciously via `npm run test:visual:update`.
+  expect: {
+    toHaveScreenshot: {
+      // Per-pixel YIQ tolerance: absorbs subpixel anti-aliasing jitter (the
+      // same text can AA slightly differently run-to-run) while any real
+      // layout shift or color change still differs far above 0.3. Contrast
+      // regressions are gated separately by the axe-audit suite.
+      threshold: 0.3,
+      animations: 'disabled',
+      caret: 'hide',
+    },
+  },
   projects: [
     {
       name: 'chromium',

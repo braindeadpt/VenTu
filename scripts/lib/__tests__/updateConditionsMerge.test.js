@@ -34,4 +34,12 @@ describe('updateConditionsMerge', () => {
     const weather = { hourly: { time: ['a'], wind_speed_10m: [3], wind_direction_10m: [180], wind_gusts_10m: [6] } };
     expect(mergeForecast(marine, weather)[0]).toEqual(expect.objectContaining({ currentSpeed: 0.22, currentDir: 180 }));
   });
+
+  it('merges air temperature when the weather series has temperature_2m', () => {
+    const marine = { hourly: { time: ['a'], wave_height: [1], wave_period: [10], wave_direction: [90], swell_wave_height: [0.5], swell_wave_period: [12], swell_wave_direction: [80], wind_wave_height: [0.2], sea_surface_temperature: [17], sea_level_height_msl: [0.1] } };
+    const weather = { hourly: { time: ['a'], wind_speed_10m: [3], wind_direction_10m: [180], wind_gusts_10m: [6], temperature_2m: [24.16] } };
+    expect(mergeForecast(marine, weather)[0]).toEqual(expect.objectContaining({ airTemp: 24.2, waterTemp: 17 }));
+    const noAir = { hourly: { time: ['a'], wind_speed_10m: [3], wind_direction_10m: [180], wind_gusts_10m: [6] } };
+    expect(mergeForecast(marine, noAir)[0].airTemp).toBeUndefined();
+  });
 });
