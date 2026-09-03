@@ -114,9 +114,15 @@ export function useMapSstField({
         groupRef.current = null;
       }
       overlaysRef.current.clear();
-      map?.getContainer().removeAttribute('data-map-sst');
-      map?.getContainer().removeAttribute('data-map-sst-frame');
-      map?.getContainer().removeAttribute('data-map-sst-max');
+      // Hook owns data-map-sst for BOTH states ('true'/'false') — see
+      // useMapHsField for the rationale. Removing the attribute breaks
+      // off-state consumers.
+      const el = map?.getContainer();
+      if (el) {
+        el.setAttribute('data-map-sst', 'false');
+        el.removeAttribute('data-map-sst-frame');
+        el.removeAttribute('data-map-sst-max');
+      }
       return;
     }
     if (!isReady || !map || !LRef.current) return;

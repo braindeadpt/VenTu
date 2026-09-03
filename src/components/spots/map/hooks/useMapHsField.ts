@@ -114,9 +114,16 @@ export function useMapHsField({
         groupRef.current = null;
       }
       overlaysRef.current.clear();
-      map?.getContainer().removeAttribute('data-map-hs');
-      map?.getContainer().removeAttribute('data-map-hs-frame');
-      map?.getContainer().removeAttribute('data-map-hs-max');
+      // The hook owns data-map-hs on the Leaflet container for BOTH states:
+      // 'true' when the ribbon is on, 'false' when off. removeAttribute here
+      // left the attribute absent while off, breaking consumers (and e2e)
+      // that read the off state — e.g. the ?sst=1&hs=1 no-stack contract.
+      const el = map?.getContainer();
+      if (el) {
+        el.setAttribute('data-map-hs', 'false');
+        el.removeAttribute('data-map-hs-frame');
+        el.removeAttribute('data-map-hs-max');
+      }
       return;
     }
     if (!isReady || !map || !LRef.current) return;

@@ -105,9 +105,15 @@ export function useMapCurrentsField({
         groupRef.current = null;
       }
       overlaysRef.current.clear();
-      map?.getContainer().removeAttribute('data-map-currents');
-      map?.getContainer().removeAttribute('data-map-currents-frame');
-      map?.getContainer().removeAttribute('data-map-currents-max');
+      // Hook owns data-map-currents for BOTH states ('true'/'false') — see
+      // useMapHsField for the rationale. Removing the attribute breaks
+      // off-state consumers.
+      const el = map?.getContainer();
+      if (el) {
+        el.setAttribute('data-map-currents', 'false');
+        el.removeAttribute('data-map-currents-frame');
+        el.removeAttribute('data-map-currents-max');
+      }
       return;
     }
     if (!isReady || !map || !LRef.current) return;
