@@ -207,6 +207,38 @@ describe('refreshGridSpotScores', () => {
     expect(updated.conditions.waveHeight).toBe(1.5);
   });
 
+  it('row EXISTENTE no ficheiro servido SEM waveBias → o meta SSG é dropado (o ficheiro é autoritativo)', () => {
+    const base = mockRow('guincho');
+    const row = {
+      ...base,
+      conditions: {
+        ...base.conditions,
+        // Correcção baked pela pipeline num build anterior (SSG).
+        waveBias: { region: 'Cascais', me: 0.3, n: 120, deltaM: 0.3 },
+      },
+    };
+    const json = {
+      guincho: {
+        waveHeight: 1.5,
+        wavePeriod: 8,
+        waveDirection: 270,
+        windSpeed: ktToMs(7),
+        windDirection: 270,
+        windGust: ktToMs(9),
+        waterTemp: 18,
+        // sem waveBias no ficheiro servido → a pipeline decidiu «sem correcção»
+      },
+    };
+
+    const [updated] = refreshGridSpotScores([row], json, null);
+    // Nunca ressuscitar o meta de um snapshot de build anterior: o badge
+    // «Corrigido (viés regional)» com tooltip «correcção em tempo real» sobre
+    // um dado velho é uma mentira — o ficheiro servido manda (mesma política
+    // do observedWave).
+    expect(updated.conditions.waveBias).toBeUndefined();
+    expect(updated.conditions.waveHeight).toBe(1.5);
+  });
+
   it('spot AUSENTE do ficheiro servido → a row SSG inteira é preservada', () => {
     const base = mockRow('guincho');
     const row = {

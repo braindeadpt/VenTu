@@ -48,10 +48,15 @@ export function refreshGridSpotScores<T extends GridSpotData>(
         // mentiria sobre o dado). Spots ausentes do ficheiro (return row acima)
         // mantêm o SSG intacto.
         observedWave: record.observedWave as GridSpotData['conditions']['observedWave'] | undefined,
-        waveBias:
-          (biasPatch?.waveBias ??
-            (record.waveBias as GridSpotData['conditions']['waveBias'] | undefined)) ??
-          row.conditions.waveBias,
+        // O ficheiro servido é AUTORITATIVO também para waveBias: sem meta na
+        // row servida, a correcção da pipeline não existe nesta run — nunca
+        // ressuscitar o meta SSG da row anterior (mostrar «Corrigido (viés
+        // regional)» de um snapshot de build anterior mentiria sobre o dado,
+        // e o refreshGridSpotScores até o rotularia como correcção em tempo
+        // real). O fallback do viés (wave-bias.json client-side) dispara a
+        // partir do ficheiro servido, não do SSG.
+        waveBias: biasPatch?.waveBias ??
+          (record.waveBias as GridSpotData['conditions']['waveBias'] | undefined),
         updatedAt:
           typeof record.updatedAt === 'string' ? record.updatedAt : row.conditions.updatedAt,
       },
