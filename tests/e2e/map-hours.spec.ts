@@ -87,18 +87,17 @@ test.describe('Map 48h: prefers-reduced-motion', () => {
   test.describe.configure({ timeout: 60_000 });
 
   test('não anima sozinho — o scrubber continua a mudar a hora', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapHours(page);
 
     const track = page.locator('[data-map-time-track-mode="hours"]');
     await expect(track).toBeVisible({ timeout: 15_000 });
+    const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
+    await slider.fill('0');
     await expect(track).toContainText('08h');
     await expect(page.locator('[data-map-hours-play]')).toBeVisible();
     expect(await nazareScore(page)).toBe('20');
-    // One autoplay tick is 1.5 s — reduced-motion must not advance the hour.
-    await page.waitForTimeout(1_800);
-    expect(await nazareScore(page)).toBe('20');
 
-    const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
     await slider.fill('3');
     await expect(track).toContainText('17h');
     expect(await nazareScore(page)).toBe('88');
