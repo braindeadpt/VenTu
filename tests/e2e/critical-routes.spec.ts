@@ -2,6 +2,19 @@ import { test, expect, type Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 
 /**
+ * Pipeline JSON that the client treats as optional (404 → feature off).
+ * Gitignored, written by update-conditions; CI's static `out/` export does
+ * not include it. Must not trip the prefetch-404 net below.
+ */
+function isOptionalGeneratedData(url: string): boolean {
+  try {
+    return new URL(url).pathname.endsWith('/data/map-hours.json');
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Fails the test if any SAME-ORIGIN, non-navigation request 404s during page
  * load. This is the regression net for the segment-cache prefetch bug (Next 16
  * wrote RSC payloads as dirs but the router requested dot-joined files — every
@@ -9,6 +22,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
  *  - non-navigation: the two intentional-404 tests navigate to missing routes,
  *    whose DOCUMENT request is 404 by design;
  *  - same-origin: map tiles / analytics are cross-origin and must not flake.
+ *  - optional generated data: 404 is the documented empty state, not a broken chunk.
  *
  * Returns an assert fn for test.afterEach, so a single broken chunk or RSC
  * payload fails every critical route with the offending URLs listed.
@@ -24,7 +38,10 @@ async function attachNoBrokenRequests(page: Page): Promise<() => Promise<void>> 
     // Give prefetches/idle-time fetches a beat to land before judging.
     await page.waitForTimeout(1_000);
     const origin = new URL(page.url()).origin;
-    const sameOrigin = broken404.filter((u) => new URL(u).origin === origin);
+    const sameOrigin = broken404.filter((u) => {
+      const parsed = new URL(u);
+      return parsed.origin === origin && !isOptionalGeneratedData(u);
+    });
     expect(
       sameOrigin,
       `same-origin 404 during load (asset/prefetch regression):\n${sameOrigin.join('\n') || '(none)'}`,
