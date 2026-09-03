@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Waves, Zap } from 'lucide-react';
@@ -26,6 +26,7 @@ import { unlockPageInteraction } from '@/lib/mapFullscreen';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
+import { parseHourOfDayParam } from '@/lib/mapHours';
 
 const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInteractive'), {
   ssr: false,
@@ -41,6 +42,44 @@ const HUD_SPORTS = [
   { id: 'sup' as const, labelPt: 'SUP', labelEn: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
   { id: 'wakeboard' as const, labelPt: 'Wakeboard', labelEn: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
 ];
+
+function readMapSearchParams(): {
+  radar: boolean;
+  isobaths: boolean;
+  hours: boolean;
+  hourOfDay: number | null;
+  buoys: boolean;
+  spot: string | undefined;
+  center: [number, number] | undefined;
+} {
+  if (typeof window === 'undefined') {
+    return {
+      radar: false,
+      isobaths: false,
+      hours: false,
+      hourOfDay: null,
+      buoys: false,
+      spot: undefined,
+      center: undefined,
+    };
+  }
+  const params = new URLSearchParams(window.location.search);
+  const hourOfDay = parseHourOfDayParam(params.get('t'));
+  const lat = Number.parseFloat(params.get('lat') ?? '');
+  const lon = Number.parseFloat(params.get('lon') ?? '');
+  return {
+    radar: params.get('radar') === '1',
+    isobaths: params.get('isobaths') === '1',
+    hours: params.get('hours') === '1' || hourOfDay != null,
+    hourOfDay,
+    buoys: params.get('buoys') === '1',
+    spot: params.get('spot') || undefined,
+    center:
+      Number.isFinite(lat) && Number.isFinite(lon)
+        ? ([lat, lon] as [number, number])
+        : undefined,
+  };
+}
 
 interface MapaFullscreenClientProps {
   spotsData: GridSpotData[];
@@ -66,29 +105,23 @@ export default function MapaFullscreenClient({
   // com o radar já ligado. Só lido no arranque; o toggle manual continua a
   // mandar (o estado do mapa é dono do radar depois disto).
   const [initialRadar, setInitialRadar] = useState(false);
-  // Deep link ?isobaths=1: entra no mapa com as isóbatas já ligadas (sobrepõe
-  // a preferência persistida, como o radar) — útil para partilhar o overlay.
   const [initialIsobaths, setInitialIsobaths] = useState(false);
-  // Deep link ?spot=<slug> (navegação da página de spot com aviso activo):
-  // liga a camada de avisos à navegação e centra na área coberta (o estado fica
-  // no SpotMapInteractive — decide com os dados se o spot está coberto).
+  const [initialHours, setInitialHours] = useState(false);
+  const [initialHourOfDay, setInitialHourOfDay] = useState<number | null>(null);
+  const [initialBuoys, setInitialBuoys] = useState(false);
   const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
-  // Deep link de imersão do spot (?radar=1&lat=&lon=, botão do carrossel da
-  // página de spot): centra na REGIÃO do spot de origem em vez do centro
-  // nacional. Coordenadas inválidas/ausentes → comportamento por omissão.
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    setInitialRadar(params.get('radar') === '1');
-    setInitialIsobaths(params.get('isobaths') === '1');
-    setFocusSpotId(params.get('spot') || undefined);
-    const lat = Number.parseFloat(params.get('lat') ?? '');
-    const lon = Number.parseFloat(params.get('lon') ?? '');
-    setInitialCenter(
-      Number.isFinite(lat) && Number.isFinite(lon)
-        ? ([lat, lon] as [number, number])
-        : undefined,
-    );
+
+  // Capture deep links before syncGridFiltersToUrl rewrites the query.
+  useLayoutEffect(() => {
+    const s = readMapSearchParams();
+    setInitialRadar(s.radar);
+    setInitialIsobaths(s.isobaths);
+    setInitialHours(s.hours);
+    setInitialHourOfDay(s.hourOfDay);
+    setInitialBuoys(s.buoys);
+    setFocusSpotId(s.spot);
+    setInitialCenter(s.center);
   }, []);
 
   useEffect(() => {
@@ -194,6 +227,9 @@ export default function MapaFullscreenClient({
         initialFullscreen
         initialRadarEnabled={initialRadar}
         initialIsobathsEnabled={initialIsobaths}
+        initialHoursEnabled={initialHours}
+        initialHourOfDay={initialHourOfDay}
+        initialBuoysEnabled={initialBuoys}
         focusSpotId={focusSpotId}
         initialCenter={initialCenter}
         fullscreenBelowHeader

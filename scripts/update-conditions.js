@@ -188,6 +188,12 @@ async function updateConditions() {
   }
   console.log(`\n✅ Conditions saved to ${outputPath}`);
   console.log(`📈 Forecasts saved to ${forecastsPath}`);
+  const { buildMapHours } = require('./build-map-hours');
+  try {
+    buildMapHours(path.join(__dirname, '../public/data'));
+  } catch (err) {
+    console.warn('⚠️ map-hours.json skipped:', err.message);
+  }
   console.log(`📊 Per-spot forecasts: ${perSpotCount} files in ${perSpotDir}`);
   console.log(`📊 Updated ${Object.keys(allConditions).length} spots`);
   if (useMultiModel) {

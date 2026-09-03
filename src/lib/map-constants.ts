@@ -90,6 +90,7 @@ export const MAP_WIND_LS_KEY = 'ventu.map.wind';
 export const MAP_ONLY_ON_LS_KEY = 'ventu.map.onlyOn';
 export const MAP_ISOBATHS_LS_KEY = 'ventu.map.isobaths';
 export const MAP_COASTAL_LS_KEY = 'ventu.map.coastalWarnings';
+export const MAP_BUOYS_LS_KEY = 'ventu.map.buoys';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,

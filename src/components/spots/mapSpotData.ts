@@ -10,7 +10,14 @@ export interface MapSpotData {
   allScores: Record<SportType, SportScore>;
 }
 
-export function getBestScore(data: MapSpotData, sport: GridSportFilter): number {
+export function getBestScore(
+  data: MapSpotData,
+  sport: GridSportFilter,
+  scoreOverride?: number,
+): number {
+  if (typeof scoreOverride === 'number' && Number.isFinite(scoreOverride)) {
+    return scoreOverride;
+  }
   if (sport === 'all') {
     return Math.max(...Object.values(data.allScores).map((s) => s?.score || 0));
   }

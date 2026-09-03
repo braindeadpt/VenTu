@@ -16,9 +16,10 @@ export function buildMarkerIcon(
   showWind: boolean,
   locale: string,
   warning?: MapMarkerWarning | null,
+  scoreOverride?: number,
 ): L.DivIcon {
   const { spot, conditions } = data;
-  const score = getBestScore(data, selectedSport);
+  const score = getBestScore(data, selectedSport, scoreOverride);
   const scoreRgb = getScoreRgb(score);
   const windKtNum = conditions.windSpeed * MS_TO_KNOTS;
 
@@ -98,8 +99,9 @@ export function buildMarkerCacheKey(
   locale: string,
   useMobileSheet: boolean,
   warningLevel?: string | null,
+  scoreOverride?: number,
 ): string {
-  const score = getBestScore(data, selectedSport);
+  const score = getBestScore(data, selectedSport, scoreOverride);
   const windKey = showWind
     ? `${Math.round(data.conditions.windDirection)}:${Math.round(data.conditions.windSpeed * MS_TO_KNOTS)}`
     : '';
@@ -118,13 +120,15 @@ export function createSpotMarker(
     onSpotSelect?: (spotId: string) => void;
     onMarkerInteract?: () => void;
     warning?: MapMarkerWarning | null;
+    scoreOverride?: number;
   },
 ): L.Marker {
   const { spot } = data;
   const warning = options.warning ?? null;
-  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, warning);
+  const scoreOverride = options.scoreOverride;
+  const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, warning, scoreOverride);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
-  (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport);
+  (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport, scoreOverride);
   // Leaflet gives interactive markers role="button" — give them an accessible
   // name so screen readers announce which spot the marker is (axe aria-command-name).
   marker.on('add', () => {

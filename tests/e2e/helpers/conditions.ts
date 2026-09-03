@@ -164,6 +164,13 @@ export async function interceptRadar(page: Page, file: Record<string, unknown>):
   await interceptData(page, 'radar.json', file);
 }
 
+/**
+ * Intercept /data/map-hours.json (48 h score timeline for /mapa).
+ */
+export async function interceptMapHours(page: Page, file: unknown): Promise<void> {
+  await interceptData(page, 'map-hours.json', file);
+}
+
 /** Read the real build forecasts once per process (immutable snapshot). */
 const forecastsCache = new Map<string, Record<string, Array<Record<string, unknown>>>>();
 export function readRealForecasts(): Record<string, Array<Record<string, unknown>>> {

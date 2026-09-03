@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Anchor, ChevronDown, CloudRain, Filter, HelpCircle, Layers, MapPin, Minimize2, RotateCcw, Search, Waves, Wind, Zap } from 'lucide-react';
+import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, RotateCcw, Search, Waves, Wind, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -23,6 +23,18 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   radarResetVisible?: boolean;
   onResetRadar?: () => void;
   radarResetLabel?: string;
+  hoursEnabled: boolean;
+  onToggleHours: () => void;
+  hoursLabel: string;
+  hoursHint: string;
+  hoursUnavailable?: boolean;
+  hoursResetVisible?: boolean;
+  onResetHours?: () => void;
+  hoursResetLabel?: string;
+  buoysEnabled: boolean;
+  onToggleBuoys: () => void;
+  buoysLabel: string;
+  buoysHint: string;
   isobathsEnabled: boolean;
   onToggleIsobaths: () => void;
   isobathsLabel: string;
@@ -57,9 +69,8 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
    *  mapHud ficam com o default (sem chip). */
   buoyChip?: React.ReactNode;
   /**
-   * Shared time track (radar scrubber today; later score hours). Always
-   * visible — not inside the collapsible filter rows — so mobile can scrub
-   * without expanding filters.
+   * Shared time track (radar or 48 h scores). Always visible — not inside
+   * the collapsible filter rows — so mobile can scrub without expanding filters.
    */
   timeTrack?: React.ReactNode;
 }
@@ -121,6 +132,18 @@ export default function MapExploreHud({
   radarResetVisible = false,
   onResetRadar = () => {},
   radarResetLabel = '',
+  hoursEnabled,
+  onToggleHours,
+  hoursLabel,
+  hoursHint,
+  hoursUnavailable = false,
+  hoursResetVisible = false,
+  onResetHours = () => {},
+  hoursResetLabel = '',
+  buoysEnabled,
+  onToggleBuoys,
+  buoysLabel,
+  buoysHint,
   buoyChip,
   timeTrack,
 }: MapExploreHudProps) {
@@ -242,6 +265,43 @@ export default function MapExploreHud({
               <RotateCcw className="w-4 h-4" aria-hidden />
             </MapControlButton>
           )}
+
+          <MapControlButton
+            onClick={onToggleHours}
+            aria-label={hoursLabel}
+            pressed={hoursEnabled}
+            title={hoursHint}
+            disabled={hoursUnavailable}
+            data-map-hours-toggle
+            className={
+              hoursEnabled ? 'border-score-good/40 bg-score-good/15 text-fg' : undefined
+            }
+          >
+            <Clock className="w-4 h-4" aria-hidden />
+          </MapControlButton>
+
+          {hoursResetVisible && (
+            <MapControlButton
+              onClick={onResetHours}
+              aria-label={hoursResetLabel}
+              title={hoursResetLabel}
+            >
+              <RotateCcw className="w-4 h-4" aria-hidden />
+            </MapControlButton>
+          )}
+
+          <MapControlButton
+            onClick={onToggleBuoys}
+            aria-label={buoysLabel}
+            pressed={buoysEnabled}
+            title={buoysHint}
+            data-map-buoys-toggle
+            className={
+              buoysEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
+            }
+          >
+            <LifeBuoy className="w-4 h-4" aria-hidden />
+          </MapControlButton>
 
           <MapControlButton
             onClick={onToggleIsobaths}

@@ -20,13 +20,13 @@ interface MapTimeTrackProps {
   labels: MapTimeTrackLabels;
   /** `hud` = fullscreen chrome (44px). `floating` = on-map compact panel. */
   variant?: 'floating' | 'hud';
-  /** Radar e2e selectors (`data-radar-scrubber` / `data-radar-toggle`). */
-  mode?: 'radar';
+  /** Radar keeps `data-radar-*` selectors; hours uses `data-map-hours-*`. */
+  mode?: 'radar' | 'hours';
 }
 
 /**
- * Shared map time track (play / pause / range / clock). Radar is the first
- * mode; later sessions can drive score hours from the same control.
+ * Shared map time track (play / pause / range / clock). Radar and 48 h
+ * scores share the control; `mode` only switches e2e selectors.
  */
 export default function MapTimeTrack({
   length,
@@ -45,6 +45,7 @@ export default function MapTimeTrack({
 
   const isHud = variant === 'hud';
   const radarAttrs = mode === 'radar';
+  const hoursAttrs = mode === 'hours';
 
   return (
     <div
@@ -56,6 +57,7 @@ export default function MapTimeTrack({
       data-map-time-track="true"
       data-map-time-track-mode={mode}
       data-radar-scrubber={radarAttrs ? 'true' : undefined}
+      data-map-hours-scrubber={hoursAttrs ? 'true' : undefined}
     >
       <div
         className={
@@ -72,6 +74,7 @@ export default function MapTimeTrack({
             aria-pressed={userPaused}
             title={paused ? labels.play : labels.pause}
             data-radar-toggle={radarAttrs ? 'true' : undefined}
+            data-map-hours-play={hoursAttrs ? 'true' : undefined}
             className={
               isHud
                 ? 'flex items-center justify-center min-h-[44px] min-w-[44px] rounded-input text-fg bg-surface-1/[0.04] border border-divider hover:bg-surface-2/[0.08] active:scale-95 transition-colors duration-150'

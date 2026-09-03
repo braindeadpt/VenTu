@@ -20,6 +20,7 @@ const SHARED_TOKENS = new Set([
   'Chat', 'Feedback', 'Links', 'Livecams', 'Livecams →', 'Powered by', 'Rankings', 'Reset',
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
+  'Hs', 'Copernicus', 'Instituto Hidrográfico',
 ]);
 
 /**
@@ -80,6 +81,7 @@ const EN_COGNATES = new Set([
   'Reset', 'Score', 'spots', 'Spots', 'SUP', 'Surf', 'Swell', 'Top score',
   'VenTu', 'VenTu. Open Source Project.', 'Ver spot', 'Wakeboard', 'Windsurf',
   '{count} spots',
+  'Hs', 'Copernicus', 'Instituto Hidrográfico',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

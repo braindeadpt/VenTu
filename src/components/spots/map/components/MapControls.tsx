@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy } from 'lucide-react';
 
 interface MapControlsProps {
   isFullscreen: boolean;
@@ -22,6 +22,15 @@ interface MapControlsProps {
   radarLabel: string;
   radarHint: string;
   radarResetLabel: string;
+  hoursEnabled: boolean;
+  hoursUnavailable: boolean;
+  hoursPrefSet: boolean;
+  hoursLabel: string;
+  hoursHint: string;
+  hoursResetLabel: string;
+  buoysEnabled: boolean;
+  buoysLabel: string;
+  buoysHint: string;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -36,6 +45,9 @@ interface MapControlsProps {
   openWindLegend: () => void;
   toggleRadar: () => void;
   handleResetRadar: () => void;
+  toggleHours: () => void;
+  handleResetHours: () => void;
+  toggleBuoys: () => void;
   toggleIsobaths: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
@@ -50,7 +62,8 @@ const btnMuted = 'border-divider bg-bg-elevated text-fg-muted opacity-80';
 const btnRadarActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
 const btnRadarDisabled = 'border-divider bg-bg-elevated text-fg-subtle opacity-60 cursor-not-allowed';
 const btnIsobathsActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
-const btnOnlyOnActive = 'border-score-good/40 bg-score-good/15 text-fg';
+const btnHoursActive = 'border-score-good/40 bg-score-good/15 text-fg';
+const btnOnlyOnActive = btnHoursActive;
 const iconBtnBase = 'flex items-center justify-center min-h-[36px] min-w-[36px] rounded-input border border-divider bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg transition-colors duration-150';
 
 export default function MapControls({
@@ -72,6 +85,15 @@ export default function MapControls({
   radarLabel,
   radarHint,
   radarResetLabel,
+  hoursEnabled,
+  hoursUnavailable,
+  hoursPrefSet,
+  hoursLabel,
+  hoursHint,
+  hoursResetLabel,
+  buoysEnabled,
+  buoysLabel,
+  buoysHint,
   onlyOnLabel,
   onlyOnHint,
   windLegendHelpLabel,
@@ -85,6 +107,9 @@ export default function MapControls({
   openWindLegend,
   toggleRadar,
   handleResetRadar,
+  toggleHours,
+  handleResetHours,
+  toggleBuoys,
   toggleIsobaths,
   toggleOnlyOn,
   toggleCoastalWarnings,
@@ -177,6 +202,52 @@ export default function MapControls({
           )}
         </div>
       </div>
+
+      {isFullscreen && (
+        <div className="inline-flex flex-col gap-1">
+          <div className="inline-flex items-center gap-0.5">
+            <button
+              type="button"
+              onClick={toggleHours}
+              disabled={hoursUnavailable}
+              title={hoursUnavailable ? `${hoursHint} — indisponível` : hoursHint}
+              className={`${btnBase} ${hoursUnavailable ? btnRadarDisabled : hoursEnabled ? btnHoursActive : ''}`}
+              aria-label={hoursLabel}
+              aria-pressed={hoursEnabled}
+              data-map-hours-toggle
+            >
+              <Clock className="w-4 h-4 shrink-0" aria-hidden />
+              <span className="hidden sm:inline">{hoursLabel}</span>
+            </button>
+            {(hoursPrefSet || hoursEnabled) && (
+              <button
+                type="button"
+                onClick={handleResetHours}
+                aria-label={hoursResetLabel}
+                title={hoursResetLabel}
+                className={`${iconBtnBase} touch-manipulation`}
+              >
+                <RotateCcw className="w-3.5 h-3.5" aria-hidden />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {isFullscreen && (
+        <button
+          type="button"
+          onClick={toggleBuoys}
+          title={buoysHint}
+          className={`${btnBase} ${buoysEnabled ? btnIsobathsActive : ''}`}
+          aria-label={buoysLabel}
+          aria-pressed={buoysEnabled}
+          data-map-buoys-toggle
+        >
+          <LifeBuoy className="w-4 h-4 shrink-0" aria-hidden />
+          <span className="hidden sm:inline">{buoysLabel}</span>
+        </button>
+      )}
 
       <button
         type="button"

@@ -28,11 +28,11 @@ function hourKeyToMinuteOffset(key: string): number {
   return (y * 372 + m) * 31 * 24 + d * 24 + h;
 }
 
-/** Index of the hourly slot closest to "now" in Europe/Lisbon. */
-export function findCurrentHourIndex(times: string[]): number {
+/** Index of the hourly slot closest to `now` in Europe/Lisbon. */
+export function findCurrentHourIndex(times: string[], now = new Date()): number {
   if (!times.length) return 0;
 
-  const nowKey = lisbonHourKeyFromDate(new Date());
+  const nowKey = lisbonHourKeyFromDate(now);
   const exact = times.findIndex((t) => hourKeyFromOpenMeteo(t) === nowKey);
   if (exact >= 0) return exact;
 

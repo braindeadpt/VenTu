@@ -33,6 +33,8 @@ interface UseMapMarkersParams {
   showWindOnMarkers: boolean;
   locale: string;
   warningsBySpot: Map<string, MapMarkerWarning>;
+  /** Score at the HUD hour (48 h mode). Missing ids keep live conditions. */
+  hourScores?: Map<string, number> | null;
   onSpotSelect?: (spotId: string) => void;
   onMarkerInteract?: () => void;
   setSheetSpot: React.Dispatch<React.SetStateAction<MapSpotSheetData | null>>;
@@ -61,6 +63,7 @@ export function useMapMarkers({
   showWindOnMarkers,
   locale,
   warningsBySpot,
+  hourScores = null,
   onSpotSelect,
   onMarkerInteract,
   setSheetSpot,
@@ -133,7 +136,8 @@ export function useMapMarkers({
         const toPlain: L.Marker[] = [];
         for (const data of batch) {
           const warning = warningsBySpot.get(data.spot.id) ?? null;
-          const cacheKey = buildMarkerCacheKey(data, selectedSport, showWindOnMarkers, locale, useMobileSheet, warning?.level ?? null);
+          const scoreOverride = hourScores?.get(data.spot.id);
+          const cacheKey = buildMarkerCacheKey(data, selectedSport, showWindOnMarkers, locale, useMobileSheet, warning?.level ?? null, scoreOverride);
           let marker = cache.get(data.spot.id);
           const meta = marker as (L.Marker & { ventuKey?: string }) | undefined;
           if (!marker || meta?.ventuKey !== cacheKey) {
@@ -144,6 +148,7 @@ export function useMapMarkers({
               onSpotSelect,
               onMarkerInteract,
               warning: warningsBySpot.get(data.spot.id) ?? null,
+              scoreOverride,
             });
             (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
             cache.set(data.spot.id, marker);
@@ -162,7 +167,7 @@ export function useMapMarkers({
     );
 
     return () => { markerChunkCancelRef.current = true; };
-  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef]);
+  }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, hourScores, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef]);
 
   // ── Allow markers after delay ──
   useEffect(() => {

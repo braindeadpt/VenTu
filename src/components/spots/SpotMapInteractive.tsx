@@ -66,9 +66,7 @@ import {
   warningsForSpot,
   type CoastalWarningsFile,
 } from '@/lib/ihCoastalWarnings';
-import { spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 import type { MapSpotData } from './mapSpotData';
-import { getBestScore } from './mapSpotData';
 import { includeSpotInViewportBounds } from './mapViewportBounds';
 import {
   readClusterPref,
@@ -97,7 +95,16 @@ import {
 import { useMapCore } from './map/hooks/useMapCore';
 import { useMapLayers } from './map/hooks/useMapLayers';
 import { useMapMarkers } from './map/hooks/useMapMarkers';
+import { useMapHours } from './map/hooks/useMapHours';
+import { useMapBuoyDots } from './map/hooks/useMapBuoyDots';
 import MapControls from './map/components/MapControls';
+import { useMapTimeTrack } from './map/useMapTimeTrack';
+import {
+  MAP_HOURS_TICK_MS,
+  mapHoursClock,
+  scoreAtHour,
+} from '@/lib/mapHours';
+import { MAP_ON_THRESHOLD, spotMatchesSportFilter, spotMeetsOnFilter } from '@/lib/gridSpotFilters';
 
 type SpotData = MapSpotData;
 
@@ -113,6 +120,14 @@ type MapHudProps = Omit<
   | 'onToggleRadar'
   | 'radarLabel'
   | 'radarHint'
+  | 'hoursEnabled'
+  | 'onToggleHours'
+  | 'hoursLabel'
+  | 'hoursHint'
+  | 'buoysEnabled'
+  | 'onToggleBuoys'
+  | 'buoysLabel'
+  | 'buoysHint'
   | 'isobathsEnabled'
   | 'onToggleIsobaths'
   | 'isobathsLabel'
@@ -164,6 +179,9 @@ interface SpotMapInteractiveProps {
   initialFullscreen?: boolean;
   initialRadarEnabled?: boolean;
   initialIsobathsEnabled?: boolean;
+  initialHoursEnabled?: boolean;
+  initialHourOfDay?: number | null;
+  initialBuoysEnabled?: boolean;
   focusSpotId?: string;
   initialCenter?: [number, number] | undefined;
   fullscreenBelowHeader?: boolean;
@@ -183,6 +201,9 @@ export default function SpotMapInteractive({
   initialFullscreen = false,
   initialRadarEnabled = false,
   initialIsobathsEnabled = false,
+  initialHoursEnabled = false,
+  initialHourOfDay = null,
+  initialBuoysEnabled = false,
   focusSpotId,
   initialCenter,
   fullscreenBelowHeader = false,
@@ -212,7 +233,7 @@ export default function SpotMapInteractive({
   const {
     mapInstanceRef, LRef, isReady, isDark, basemapMode, isMobile,
     handleBasemapChange, tileLayerRef, clusterGroupRef, markersGroupRef,
-    radarOverlayRef, isobathsLayerRef, coastalLayerRef, markersCacheRef,
+    radarOverlayRef, isobathsLayerRef, coastalLayerRef, buoyLayerRef, markersCacheRef,
   } = core;
 
   // ── Toggle state ──
@@ -252,15 +273,58 @@ export default function SpotMapInteractive({
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
   } = layers;
 
+  const hours = useMapHours({
+    isFullscreen,
+    initialEnabled: initialHoursEnabled,
+    initialHourOfDay,
+  });
+  const {
+    hoursFile, hoursOn, hoursLive, hoursFrame, hoursUserPaused, hoursPrefSet,
+    hoursUnavailable, hoursTimes, toggleHours, handleHoursFrameChange,
+    handleHoursUserPausedChange, handleResetHours,
+  } = hours;
+
+  const { buoysEnabled, toggleBuoys } = useMapBuoyDots({
+    mapInstanceRef,
+    LRef,
+    buoyLayerRef,
+    isReady,
+    isFullscreen,
+    isHeroEmbed,
+    initialEnabled: initialBuoysEnabled,
+    labels: {
+      hs: t.map.buoyHs,
+      stale: t.map.buoyStale,
+      sourceIh: t.map.buoySourceIh,
+      sourceWmo: t.map.buoySourceWmo,
+      noHs: t.map.buoyNoHs,
+    },
+  });
+
   const reducedMotion = usePrefersReducedMotion();
   const [radarScrubbing, setRadarScrubbing] = useState(false);
+  const [hoursScrubbing, setHoursScrubbing] = useState(false);
   const radarHudPaused =
-    radarScrubbing || radarBusySources.size > 0 || radarUserPaused || reducedMotion;
+    radarScrubbing || radarBusySources.size > 0 || radarUserPaused || reducedMotion || hoursOn;
   const radarClock = radarFrameClock(radarFrameList[radarFrameIndex]?.frameTime ?? null) ?? '';
+  const { paused: hoursHudPaused } = useMapTimeTrack({
+    length: hoursLive ? hoursTimes.length : 0,
+    index: hoursFrame,
+    onIndexChange: handleHoursFrameChange,
+    mapBusyCount: radarBusySources.size,
+    userPaused: hoursUserPaused,
+    externalScrubbing: hoursScrubbing,
+    tickMs: MAP_HOURS_TICK_MS,
+    observeRef: mapRef,
+  });
+  const hoursClock = hoursTimes[hoursFrame] ? mapHoursClock(hoursTimes[hoursFrame]) : '';
 
   useEffect(() => {
     if (!radarEnabled) setRadarScrubbing(false);
   }, [radarEnabled]);
+  useEffect(() => {
+    if (!hoursOn) setHoursScrubbing(false);
+  }, [hoursOn]);
 
   // Deep links ?radar=1 / ?isobaths=1 handled by useMapLayers initial state —
   // sem efeitos de mount nem toque na preferência persistida (que só se grava
@@ -436,10 +500,29 @@ export default function SpotMapInteractive({
   }, [initialCenter, isReady, mapInstanceRef]);
 
   // ── Visible spots ──
+  const hourScores = useMemo(() => {
+    if (!hoursLive || !hoursFile) return null;
+    const map = new Map<string, number>();
+    for (const d of spotsData) {
+      const n = scoreAtHour(hoursFile, d.spot.id, selectedSport, hoursFrame);
+      if (n != null) map.set(d.spot.id, n);
+    }
+    return map;
+  }, [hoursLive, hoursFile, selectedSport, hoursFrame, spotsData]);
+
   const visibleSpots = useMemo(() => {
     if (!onlyOnEnabled) return spotsData;
+    if (hourScores) {
+      return spotsData.filter((d) => {
+        if (!spotMatchesSportFilter(d, selectedSport)) return false;
+        if (selectedSport === 'big-wave' && d.spot.type !== 'big-wave') return false;
+        const hour = hourScores.get(d.spot.id);
+        if (hour == null) return spotMeetsOnFilter(d, selectedSport);
+        return hour >= MAP_ON_THRESHOLD;
+      });
+    }
     return spotsData.filter((d) => spotMeetsOnFilter(d, selectedSport));
-  }, [spotsData, onlyOnEnabled, selectedSport]);
+  }, [spotsData, onlyOnEnabled, selectedSport, hourScores]);
 
   // ── Warnings by spot ──
   const warningsBySpot = useMemo(() => {
@@ -459,6 +542,9 @@ export default function SpotMapInteractive({
   const windHint = clusterEnabled && windEnabled ? t.map.windNeedsShowAll : null;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
+  const hoursLabel = hoursOn ? t.map.hideHours : t.map.showHours;
+  const hoursHint = t.map.hoursHint;
+  const buoysLabel = buoysEnabled ? t.map.hideBuoys : t.map.showBuoys;
   const windLegendHelpLabel = t.map.windRingLegend.help;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
@@ -471,7 +557,7 @@ export default function SpotMapInteractive({
     mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef,
     visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady,
     isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
-    warningsBySpot, onSpotSelect, onMarkerInteract, setSheetSpot, closePopupAndSheet,
+    warningsBySpot, hourScores, onSpotSelect, onMarkerInteract, setSheetSpot, closePopupAndSheet,
   });
 
   useEffect(() => {
@@ -553,6 +639,8 @@ export default function SpotMapInteractive({
       data-map-cluster={clusterEnabled ? 'true' : 'false'}
       data-map-wind={showWindOnMarkers ? 'true' : 'false'}
       data-map-only-on={onlyOnEnabled ? 'true' : 'false'}
+      data-map-hours={hoursLive ? 'true' : 'false'}
+      data-map-buoys={buoysEnabled ? 'true' : 'false'}
       data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
     >
       {!isReady && (
@@ -601,6 +689,15 @@ export default function SpotMapInteractive({
             radarLabel={radarLabel}
             radarHint={radarHint}
             radarResetLabel={t.map.radarReset}
+            hoursEnabled={hoursOn}
+            hoursUnavailable={hoursUnavailable}
+            hoursPrefSet={hoursPrefSet}
+            hoursLabel={hoursLabel}
+            hoursHint={hoursHint}
+            hoursResetLabel={t.map.hoursReset}
+            buoysEnabled={buoysEnabled}
+            buoysLabel={buoysLabel}
+            buoysHint={t.map.buoysHint}
             onlyOnLabel={onlyOnLabel}
             onlyOnHint={onlyOnHint}
             windLegendHelpLabel={windLegendHelpLabel}
@@ -613,6 +710,9 @@ export default function SpotMapInteractive({
             openWindLegend={openWindLegend}
             toggleRadar={toggleRadar}
             handleResetRadar={handleResetRadar}
+            toggleHours={toggleHours}
+            handleResetHours={handleResetHours}
+            toggleBuoys={toggleBuoys}
             toggleIsobaths={toggleIsobaths}
             toggleOnlyOn={toggleOnlyOn}
             toggleCoastalWarnings={toggleCoastalWarnings}
@@ -687,7 +787,7 @@ export default function SpotMapInteractive({
               frameIndex={radarFrameIndex}
               onFrameChange={handleRadarFrameChange}
               mapBusyCount={radarBusySources.size}
-              userPaused={radarUserPaused}
+              userPaused={radarUserPaused || hoursOn}
               onUserPausedChange={handleRadarUserPausedChange}
               labels={{ badge: t.map.radarBadge, hint: t.map.radarHint, scrub: t.map.radarScrub, play: t.map.radarPlay, pause: t.map.radarPause, paused: t.map.radarPaused, ipmaAttribution: radarAttributionLabel, gap: t.map.radarGap }}
               fullscreenHref={isFullscreen ? undefined : `/${locale}/mapa/?radar=1`}
@@ -715,6 +815,18 @@ export default function SpotMapInteractive({
               radarResetVisible={radarPrefSet || radarEnabled}
               onResetRadar={handleResetRadar}
               radarResetLabel={t.map.radarReset}
+              hoursEnabled={hoursOn}
+              onToggleHours={toggleHours}
+              hoursLabel={hoursLabel}
+              hoursHint={hoursHint}
+              hoursUnavailable={hoursUnavailable}
+              hoursResetVisible={hoursPrefSet || hoursOn}
+              onResetHours={handleResetHours}
+              hoursResetLabel={t.map.hoursReset}
+              buoysEnabled={buoysEnabled}
+              onToggleBuoys={toggleBuoys}
+              buoysLabel={buoysLabel}
+              buoysHint={t.map.buoysHint}
               isobathsEnabled={isobathsEnabled}
               onToggleIsobaths={toggleIsobaths}
               isobathsLabel={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
@@ -745,7 +857,25 @@ export default function SpotMapInteractive({
               expandHudLabel={t.map.expandHud}
               buoyChip={<BuoyLayerChip locale={locale} />}
               timeTrack={
-                radarEnabled && radarFrameList.length > 1 ? (
+                hoursLive ? (
+                  <MapTimeTrack
+                    variant="hud"
+                    mode="hours"
+                    length={hoursTimes.length}
+                    index={hoursFrame}
+                    onIndexChange={handleHoursFrameChange}
+                    paused={hoursHudPaused}
+                    userPaused={hoursUserPaused}
+                    onUserPausedChange={handleHoursUserPausedChange}
+                    onScrubbingChange={setHoursScrubbing}
+                    clock={hoursClock}
+                    labels={{
+                      scrub: t.map.hoursScrub,
+                      play: t.map.hoursPlay,
+                      pause: t.map.hoursPause,
+                    }}
+                  />
+                ) : radarEnabled && radarFrameList.length > 1 ? (
                   <MapTimeTrack
                     variant="hud"
                     mode="radar"

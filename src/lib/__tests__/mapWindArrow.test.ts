@@ -103,6 +103,7 @@ describe('wind ring marker', () => {
   it('html title includes relation label', () => {
     const html = buildWindRingMarkerHtml(80, 'rgb(1,2,3)', 270, 12, true, 'pt', 270);
     expect(html).toContain('ventu-wind-ring-marker-wrap');
+    expect(html).toContain('data-spot-score="80"');
     expect(html).toContain('Onshore');
     expect(buildMapWindRingTitle(90, 14, 270, 'en')).toContain('Offshore');
   });

@@ -5,6 +5,8 @@ import { AlertTriangle, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { buoyLayerCopy, useBuoyLayerNotice } from '@/lib/buoyLayerNotice';
 import type { BuoyLayerStatus } from '@/lib/buoyLayerHealth';
+import { dispatchEnableMapBuoys } from '@/lib/mapBuoyDots';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 
 /**
  * Compact buoy-layer status for the explore-mode HUD of /mapa — the full
@@ -18,6 +20,7 @@ import type { BuoyLayerStatus } from '@/lib/buoyLayerHealth';
  */
 export default function BuoyLayerChip({ locale }: { locale: string }) {
   const isPt = locale === 'pt';
+  const t = getTranslation(validateLocale(locale));
   const { status, wmo, dismissed, dismiss } = useBuoyLayerNotice();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -91,15 +94,30 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
             {c.body}
             {c.wmoNote}
           </p>
+          <div className="mt-2 flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={dismiss}
             data-buoy-chip-dismiss="true"
-            className="mt-2 inline-flex items-center gap-1 rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1 text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150"
+            className="inline-flex items-center gap-1 rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1 text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 min-h-[44px]"
           >
             <X className="w-3.5 h-3.5" aria-hidden />
             {isPt ? 'Dispensar este aviso' : 'Dismiss this notice'}
           </button>
+          {status === 'stale' && (
+            <button
+              type="button"
+              onClick={() => {
+                dispatchEnableMapBuoys();
+                setOpen(false);
+              }}
+              data-buoy-show-on-map="true"
+              className="inline-flex items-center gap-1 rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1 text-meta-sm font-medium text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 min-h-[44px]"
+            >
+              {t.map.buoysShowOnMap}
+            </button>
+          )}
+          </div>
         </div>
       )}
     </div>

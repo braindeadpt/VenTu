@@ -70,4 +70,9 @@ describe('getBestScore', () => {
   it('returns max when sport is all', () => {
     expect(getBestScore(data, 'all')).toBe(80);
   });
+
+  it('uses scoreOverride when provided', () => {
+    expect(getBestScore(data, 'kitesurf', 12)).toBe(12);
+    expect(getBestScore(data, 'all', 99)).toBe(99);
+  });
 });

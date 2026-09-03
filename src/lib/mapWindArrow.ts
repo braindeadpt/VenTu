@@ -295,6 +295,7 @@ export function buildWindRingMarkerHtml(
 
   return `
     <div class="ventu-spot-marker-wrap ventu-marker-enter ventu-wind-ring-marker-wrap"
+      data-spot-score="${Math.round(score)}"
       style="width:${MARKER_VIEWBOX_W}px;height:${MARKER_VIEWBOX_H}px;cursor:pointer"${title ? ` title="${title}"` : ''}>
       ${svg}
       ${badge}

@@ -154,6 +154,35 @@ if (forecasts !== undefined) {
   }
 }
 
+// ── 3b. map-hours.json — 16 passos de 3 h × score por spot (derivado de forecasts)
+const mapHours = read('map-hours.json');
+if (mapHours !== undefined) {
+  check('mapHours.stepHours', mapHours.stepHours === 3, `stepHours ${mapHours.stepHours}`);
+  check(
+    'mapHours.times',
+    Array.isArray(mapHours.times) && mapHours.times.length >= 8 && mapHours.times.length <= 16,
+    `expected 8–16 times, got ${mapHours.times?.length}`,
+  );
+  check(
+    'mapHours.spots',
+    mapHours.spots && typeof mapHours.spots === 'object' && !Array.isArray(mapHours.spots)
+      && Object.keys(mapHours.spots).length > 0,
+    'no spots',
+  );
+  if (Array.isArray(mapHours.times) && mapHours.spots && typeof mapHours.spots === 'object') {
+    const n = mapHours.times.length;
+    const bad = Object.entries(mapHours.spots).filter(([, row]) => {
+      const best = row && typeof row === 'object' ? row.best : null;
+      return !Array.isArray(best) || best.length !== n;
+    });
+    check('mapHours.series', bad.length === 0, `${bad.length} spot(s) with series ≠ times.length`);
+  }
+} else if (MODE === 'full') {
+  fail('map-hours.json missing after full run');
+} else {
+  warn('map-hours.json missing — 48h map scores off (observations run or first run)');
+}
+
 // ── 4. Cross-file integrity: conditions and forecasts cover the same spots ──
 if (conditions !== undefined && forecasts !== undefined) {
   const cKeys = Object.keys(conditions);

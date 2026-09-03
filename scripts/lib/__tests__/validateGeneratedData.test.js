@@ -500,3 +500,38 @@ describe('validate-generated-data — par subóptimo na calibração ES→PT', (
     expect(out).not.toMatch(/par subóptimo/);
   });
 });
+
+describe('validate-generated-data — map-hours.json', () => {
+  const validHours = () => ({
+    generatedAt: now(),
+    stepHours: 3,
+    times: Array.from({ length: 16 }, (_, i) => `2026-09-03T${String(8 + i * 3).padStart(2, '0')}:00`),
+    sports: ['surf'],
+    spots: { nazare: { best: Array(16).fill(40), surf: Array(16).fill(40) } },
+  });
+
+  it('aceita um map-hours.json válido em observations', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'map-hours.json'), JSON.stringify(validHours()));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/mapHours/);
+  });
+
+  it('falha quando a série de um spot não tem o mesmo comprimento que times', () => {
+    const dir = makeDataDir();
+    const file = validHours();
+    file.spots.nazare.best = [1, 2, 3];
+    fs.writeFileSync(path.join(dir, 'map-hours.json'), JSON.stringify(file));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/mapHours.series/);
+  });
+
+  it('avisa (não falha) quando falta o ficheiro em observations', () => {
+    const dir = makeDataDir();
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/map-hours.json missing/);
+  });
+});

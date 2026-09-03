@@ -37,6 +37,7 @@ interface UseMapCoreReturn {
   radarOverlayRef: React.MutableRefObject<L.ImageOverlay | null>;
   isobathsLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
+  buoyLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   markersCacheRef: React.MutableRefObject<Map<string, L.Marker>>;
 }
 
@@ -49,6 +50,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
   const radarOverlayRef = useRef<L.ImageOverlay | null>(null);
   const isobathsLayerRef = useRef<L.LayerGroup | null>(null);
   const coastalLayerRef = useRef<L.LayerGroup | null>(null);
+  const buoyLayerRef = useRef<L.LayerGroup | null>(null);
   const markersCacheRef = useRef<Map<string, L.Marker>>(new Map());
   const mountedRef = useRef(true);
 
@@ -117,6 +119,8 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       markersCacheRef.current.clear();
       radarOverlayRef.current = null;
       isobathsLayerRef.current = null;
+      coastalLayerRef.current = null;
+      buoyLayerRef.current = null;
       clusterGroupRef.current = null;
       markersGroupRef.current = null;
       tileLayerRef.current = null;
@@ -277,6 +281,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     radarOverlayRef,
     isobathsLayerRef,
     coastalLayerRef,
+    buoyLayerRef,
     markersCacheRef,
   };
 }
