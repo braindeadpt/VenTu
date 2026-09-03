@@ -107,10 +107,10 @@ export function useMapBuoyDots({
     const group = Leaflet.layerGroup();
     for (const dot of dots) {
       const icon = Leaflet.divIcon({
-        className: 'ventu-buoy-marker',
+        className: 'leaflet-div-icon ventu-buoy-marker',
         html: buoyDotHtml(dot),
-        iconSize: [32, 32],
-        iconAnchor: [16, 16],
+        iconSize: [40, 24],
+        iconAnchor: [20, 12],
         popupAnchor: [0, -12],
       });
       Leaflet.marker([dot.lat, dot.lon], {

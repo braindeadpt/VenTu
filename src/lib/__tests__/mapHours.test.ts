@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi, afterEach } from 'vitest';
 import type { Spot } from '@/types';
 import {
   buildMapHoursFile,
@@ -8,6 +8,8 @@ import {
   pickMapHourTimes,
   scoreAtHour,
   hsAtHour,
+  fetchMapHours,
+  clearMapHoursCache,
 } from '@/lib/mapHours';
 
 function spot(id: string): Spot {
@@ -124,5 +126,54 @@ describe('mapHours', () => {
     expect(file.tides!.Lisboa.times).toHaveLength(48);
     expect(file.tides!.Lisboa.height).toHaveLength(48);
     expect(file.tides!.Lisboa.times[0]).toBe('2026-09-03T08:00');
+  });
+});
+
+describe('fetchMapHours', () => {
+  afterEach(() => {
+    clearMapHoursCache();
+    vi.unstubAllGlobals();
+  });
+
+  const validFile = {
+    generatedAt: '2026-09-03T07:00:00.000Z',
+    stepHours: 3,
+    times: ['2026-09-03T08:00', '2026-09-03T11:00'],
+    sports: ['surf'],
+    spots: { nazare: { surf: [40, 70], best: [40, 70] } },
+  };
+
+  it('caches a successful fetch for the session', async () => {
+    const fetchImpl = vi.fn(async () => new Response(JSON.stringify(validFile), { status: 200 }));
+    vi.stubGlobal('fetch', fetchImpl);
+    const a = await fetchMapHours();
+    const b = await fetchMapHours();
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    expect(a?.times).toHaveLength(2);
+    expect(b).toBe(a);
+  });
+
+  it('caches a 404 as null (no retry storm on Pages)', async () => {
+    const fetchImpl = vi.fn(async () => new Response('', { status: 404 }));
+    vi.stubGlobal('fetch', fetchImpl);
+    expect(await fetchMapHours()).toBeNull();
+    expect(await fetchMapHours()).toBeNull();
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it('shares an in-flight request', async () => {
+    let resolve!: (v: Response) => void;
+    const fetchImpl = vi.fn(
+      () =>
+        new Promise<Response>((r) => {
+          resolve = r;
+        }),
+    );
+    vi.stubGlobal('fetch', fetchImpl);
+    const a = fetchMapHours();
+    const b = fetchMapHours();
+    expect(fetchImpl).toHaveBeenCalledTimes(1);
+    resolve(new Response(JSON.stringify(validFile), { status: 200 }));
+    expect((await a)?.times).toEqual((await b)?.times);
   });
 });

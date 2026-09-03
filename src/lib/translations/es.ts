@@ -207,7 +207,7 @@ export const translationsEs = {
     buoysShowOnMap: 'Ver en el mapa',
     showHs: 'Hs en el mar',
     hideHs: 'Ocultar el Hs',
-    hsHint: 'Altura de ola prevista — malla gruesa entre spots',
+    hsHint: 'Altura de ola prevista, interpolada entre spots',
     hsLegend: 'Hs — altura (m)',
     showIsobaths: 'Isobata 8/16/30 m',
     hideIsobaths: 'Ocultar isobatas',

@@ -156,10 +156,12 @@ export function buoyPopupHtml(dot: MapBuoyDot, labels: MapBuoyPopupLabels): stri
 
 export function buoyDotHtml(dot: MapBuoyDot): string {
   const hsAttr = dot.hs != null ? dot.hs.toFixed(1) : '';
+  const hsLabel =
+    dot.hs != null ? `<span class="ventu-buoy-hs">${escapeHtml(dot.hs.toFixed(1))}</span>` : '';
   const label = [dot.name, dot.hs != null ? `Hs ${dot.hs.toFixed(1)} m` : '']
     .filter(Boolean)
     .join(', ');
-  return `<div class="ventu-buoy-dot" data-buoy-dot data-buoy-id="${escapeHtml(dot.id)}" data-buoy-fresh="${dot.fresh ? 'true' : 'false'}" data-buoy-hs="${escapeHtml(hsAttr)}" data-buoy-source="${dot.source}" role="img" aria-label="${escapeHtml(label)}"><span class="ventu-buoy-ring" aria-hidden="true"></span></div>`;
+  return `<div class="ventu-buoy-dot" data-buoy-dot data-buoy-id="${escapeHtml(dot.id)}" data-buoy-fresh="${dot.fresh ? 'true' : 'false'}" data-buoy-hs="${escapeHtml(hsAttr)}" data-buoy-source="${dot.source}" role="img" aria-label="${escapeHtml(label)}"><span class="ventu-buoy-ring" aria-hidden="true">${hsLabel}</span></div>`;
 }
 
 /**

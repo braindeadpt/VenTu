@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { distKm, hsFill, idwHs, collectHsSamples } from '@/lib/mapHsField';
+import { distKm, hsFill, idwHs, collectHsSamples, MAP_HS_BOUNDS, MAP_HS_STEP_DEG } from '@/lib/mapHsField';
 import type { MapHoursFile } from '@/lib/mapHours';
 
 describe('mapHsField', () => {
@@ -44,5 +44,13 @@ describe('mapHsField', () => {
   it('distKm of a point to itself is 0', () => {
     const p = { lat: 38.73, lon: -9.47 };
     expect(distKm(p, p)).toBe(0);
+  });
+
+  it('mainland grid is fine enough not to render as stacked coins', () => {
+    const box = MAP_HS_BOUNDS[0];
+    const cols = Math.ceil((box.east - box.west) / MAP_HS_STEP_DEG);
+    const rows = Math.ceil((box.north - box.south) / MAP_HS_STEP_DEG);
+    expect(cols).toBeGreaterThanOrEqual(40);
+    expect(rows).toBeGreaterThanOrEqual(60);
   });
 });

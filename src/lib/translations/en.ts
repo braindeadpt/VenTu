@@ -150,7 +150,7 @@ export const translationsEn = {
     buoysShowOnMap: 'Show on the map',
     showHs: 'Hs at sea',
     hideHs: 'Hide Hs',
-    hsHint: 'Forecast wave height — coarse field between spots',
+    hsHint: 'Forecast wave height, interpolated between spots',
     hsLegend: 'Hs — metres',
     showIsobaths: '8/16/30 m isobaths',
     hideIsobaths: 'Hide isobaths',

@@ -119,7 +119,8 @@ export default function HomepageMapHero({
 
   const sportFilters = isFeatured ? HERO_SPORT_FILTERS : MAP_SPORT_FILTERS;
 
-  const liveSpotsData = useLiveGridSpotData(spotsData);
+  // Let the hero map paint tiles before re-scoring from conditions.json.
+  const liveSpotsData = useLiveGridSpotData(spotsData, { deferRefreshMs: 4000 });
 
 
 

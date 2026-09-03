@@ -8,8 +8,11 @@ export const MAP_HS_PANE_Z = '350';
 
 export const MAP_HS_MAX_DIST_KM = 80;
 export const MAP_HS_MAX_DIST_KM_MOBILE = 55;
-export const MAP_HS_STEP_DEG = 0.2;
-export const MAP_HS_STEP_DEG_MOBILE = 0.32;
+/** ~7 km on the mainland — coarse enough to stay cheap, fine enough not to look like coins. */
+export const MAP_HS_STEP_DEG = 0.07;
+export const MAP_HS_STEP_DEG_MOBILE = 0.12;
+/** Extra canvas pixels per IDW cell so Leaflet stretch stays smooth. */
+export const MAP_HS_PIXEL_SCALE = 2;
 export const MAP_HS_OPACITY = 0.85;
 export const MAP_HS_OPACITY_MOBILE = 0.5;
 
@@ -126,12 +129,14 @@ export function renderHsFieldTiles(
 
     const cols = Math.max(2, Math.ceil((box.east - box.west) / step));
     const rows = Math.max(2, Math.ceil((box.north - box.south) / step));
+    const scale = MAP_HS_PIXEL_SCALE;
     const canvas = document.createElement('canvas');
-    canvas.width = cols;
-    canvas.height = rows;
+    canvas.width = cols * scale;
+    canvas.height = rows * scale;
     const ctx = canvas.getContext('2d');
     if (!ctx) continue;
-    const img = ctx.createImageData(cols, rows);
+    const img = ctx.createImageData(cols * scale, rows * scale);
+    const w = cols * scale;
 
     for (let y = 0; y < rows; y++) {
       const lat = box.north - ((y + 0.5) / rows) * (box.north - box.south);
@@ -139,11 +144,16 @@ export function renderHsFieldTiles(
         const lon = box.west + ((x + 0.5) / cols) * (box.east - box.west);
         const hs = idwHs(nearby, lat, lon, maxDist);
         const fill = hsFill(hs ?? 0, opacityScale);
-        const i = (y * cols + x) * 4;
-        img.data[i] = fill.r;
-        img.data[i + 1] = fill.g;
-        img.data[i + 2] = fill.b;
-        img.data[i + 3] = Math.round(Math.min(1, fill.a) * 255);
+        const a = Math.round(Math.min(1, fill.a) * 255);
+        for (let sy = 0; sy < scale; sy++) {
+          for (let sx = 0; sx < scale; sx++) {
+            const i = ((y * scale + sy) * w + (x * scale + sx)) * 4;
+            img.data[i] = fill.r;
+            img.data[i + 1] = fill.g;
+            img.data[i + 2] = fill.b;
+            img.data[i + 3] = a;
+          }
+        }
       }
     }
     ctx.putImageData(img, 0, 0);

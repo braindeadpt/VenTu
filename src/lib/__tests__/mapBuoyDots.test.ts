@@ -4,6 +4,7 @@ import {
   WMO_READING_MAX_AGE_HOURS,
 } from '@/lib/buoyLayerHealth';
 import {
+  buoyDotHtml,
   buoyPopupHtml,
   collectMapBuoyDots,
   formatBuoyClock,
@@ -185,6 +186,25 @@ describe('buoyPopupHtml', () => {
     expect(html).toContain('1.4 m');
     expect(html).toContain('Instituto Hidrográfico');
     expect(html).not.toContain('Leitura antiga');
+  });
+});
+
+describe('buoyDotHtml', () => {
+  it('pinta o Hs no ponto para o anel não desaparecer no mapa', () => {
+    const html = buoyDotHtml({
+      id: 'ih-4',
+      name: 'Leixões',
+      lat: 41,
+      lon: -9,
+      hs: 1.4,
+      observedAt: null,
+      fresh: false,
+      source: 'ih',
+    });
+    expect(html).toContain('data-buoy-id="ih-4"');
+    expect(html).toContain('data-buoy-fresh="false"');
+    expect(html).toContain('ventu-buoy-hs');
+    expect(html).toContain('1.4');
   });
 });
 

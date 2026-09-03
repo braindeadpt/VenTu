@@ -207,7 +207,7 @@ export const translationsFr = {
     buoysShowOnMap: 'Voir sur la carte',
     showHs: 'Hs en mer',
     hideHs: 'Masquer Hs',
-    hsHint: 'Hauteur de vague prévue — maille grossière entre spots',
+    hsHint: 'Hauteur de vague prévue, interpolée entre spots',
     hsLegend: 'Hs — mètres',
     showIsobaths: 'Isobaths 8/16/30 m',
     hideIsobaths: 'Masquer les isobathes',

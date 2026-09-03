@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type L from 'leaflet';
-import type { MapHoursFile } from '@/lib/mapHours';
+import { fetchMapHours, type MapHoursFile } from '@/lib/mapHours';
 import { MAP_HS_LS_KEY } from '@/lib/map-constants';
 import {
   MAP_HS_OPACITY,
@@ -55,16 +55,31 @@ export function useMapHsField({
   });
   const groupRef = useRef<L.LayerGroup | null>(null);
   const overlaysRef = useRef<Map<string, L.ImageOverlay>>(new Map());
+  const [fetchedFile, setFetchedFile] = useState<MapHoursFile | null | undefined>(undefined);
 
   useEffect(() => {
     if (initialEnabled) setEnabled(true);
   }, [initialEnabled]);
 
-  const hsOn = isFullscreen && !isHeroEmbed && enabled && !!hoursFile?.hs;
+  useEffect(() => {
+    if (!enabled || !isFullscreen || isHeroEmbed) return;
+    if (fetchedFile !== undefined) return;
+    if (hoursFile?.hs) return;
+    let cancelled = false;
+    fetchMapHours().then((data) => {
+      if (!cancelled) setFetchedFile(data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, isFullscreen, isHeroEmbed, hoursFile, fetchedFile]);
+
+  const file = hoursFile ?? fetchedFile ?? null;
+  const hsOn = isFullscreen && !isHeroEmbed && enabled && !!file?.hs;
   const frame = hoursLive ? hoursFrame : 0;
   const samples = useMemo(
-    () => (hsOn ? collectHsSamples(hoursFile, spots, frame) : []),
-    [hsOn, hoursFile, spots, frame],
+    () => (hsOn && file ? collectHsSamples(file, spots, frame) : []),
+    [hsOn, file, spots, frame],
   );
   const sampleMax = maxHs(samples);
   const opacity = isMobile ? MAP_HS_OPACITY_MOBILE : MAP_HS_OPACITY;
@@ -162,7 +177,7 @@ export function useMapHsField({
 
   return {
     hsEnabled: hsOn,
-    hsUnavailable: !hoursFile?.hs,
+    hsUnavailable: fetchedFile === null || (!!file && !file.hs),
     toggleHs,
     hsMax: sampleMax,
   };

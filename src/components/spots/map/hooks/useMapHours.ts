@@ -26,6 +26,8 @@ interface UseMapHoursOptions {
 /**
  * 48 h score timeline for the fullscreen map. Same persist shape as radar
  * (`enabled` / `paused` / `frame`). Deep links do not write the pref.
+ * `map-hours.json` is fetched only when the layer is on (toggle, persist,
+ * or `?hours=1` / `?t=`), so the first map paint is not blocked by it.
  */
 export function useMapHours({
   isFullscreen,
@@ -60,7 +62,7 @@ export function useMapHours({
   }, [initialEnabled]);
 
   useEffect(() => {
-    if (!isFullscreen || file !== undefined) return;
+    if (!isFullscreen || file !== undefined || !enabled) return;
     let cancelled = false;
     fetchMapHours().then((data) => {
       if (!cancelled) setFile(data);
@@ -68,7 +70,7 @@ export function useMapHours({
     return () => {
       cancelled = true;
     };
-  }, [isFullscreen, file]);
+  }, [isFullscreen, file, enabled]);
 
   useEffect(() => {
     if (!file || restoredRef.current) return;

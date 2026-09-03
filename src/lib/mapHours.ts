@@ -306,21 +306,43 @@ function parseHs(raw: unknown, timesLen: number): Record<string, number[]> | und
   return Object.keys(out).length ? out : undefined;
 }
 
+let hoursCache: MapHoursFile | null | undefined;
+let hoursInflight: Promise<MapHoursFile | null> | null = null;
+
 export async function fetchMapHours(): Promise<MapHoursFile | null> {
-  try {
-    const res = await fetch(getAssetPath(MAP_HOURS_PATH));
-    if (!res.ok) return null;
-    const data = (await res.json()) as MapHoursFile;
-    if (!Array.isArray(data.times) || data.times.length < 2) return null;
-    if (!data.spots || typeof data.spots !== 'object') return null;
-    const tides = parseTides(data.tides);
-    const hs = parseHs(data.hs, data.times.length);
-    return {
-      ...data,
-      tides,
-      hs,
-    };
-  } catch {
-    return null;
-  }
+  if (hoursCache !== undefined) return hoursCache;
+  if (hoursInflight) return hoursInflight;
+
+  const promise = (async () => {
+    try {
+      const res = await fetch(getAssetPath(MAP_HOURS_PATH));
+      if (!res.ok) return null;
+      const data = (await res.json()) as MapHoursFile;
+      if (!Array.isArray(data.times) || data.times.length < 2) return null;
+      if (!data.spots || typeof data.spots !== 'object') return null;
+      return {
+        ...data,
+        tides: parseTides(data.tides),
+        hs: parseHs(data.hs, data.times.length),
+      };
+    } catch {
+      return null;
+    }
+  })()
+    .then((v) => {
+      hoursCache = v;
+      return v;
+    })
+    .finally(() => {
+      hoursInflight = null;
+    });
+
+  hoursInflight = promise;
+  return promise;
+}
+
+/** Test hook: clear the module cache. */
+export function clearMapHoursCache(): void {
+  hoursCache = undefined;
+  hoursInflight = null;
 }

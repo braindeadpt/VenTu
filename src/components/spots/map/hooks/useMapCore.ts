@@ -41,6 +41,67 @@ interface UseMapCoreReturn {
   markersCacheRef: React.MutableRefObject<Map<string, L.Marker>>;
 }
 
+function readBasemapPref(): BasemapMode {
+  if (typeof window === 'undefined') return 'map';
+  try {
+    const saved = localStorage.getItem('ventu.map.basemap');
+    if (saved === 'map' || saved === 'satellite') return saved;
+  } catch {
+    /* noop */
+  }
+  return 'map';
+}
+
+function readIsDark(): boolean {
+  if (typeof document === 'undefined') return false;
+  return !document.documentElement.classList.contains('theme-ocean');
+}
+
+function tileSignature(mode: BasemapMode, dark: boolean): string {
+  return mode === 'satellite' ? 'satellite' : `map:${dark ? 'dark' : 'light'}`;
+}
+
+function attachBasemap(
+  Leaflet: typeof L,
+  map: L.Map,
+  mode: BasemapMode,
+  dark: boolean,
+  tileLayerRef: React.MutableRefObject<L.TileLayer | null>,
+): void {
+  if (tileLayerRef.current) {
+    try {
+      map.removeLayer(tileLayerRef.current);
+    } catch {
+      /* noop */
+    }
+    tileLayerRef.current = null;
+  }
+
+  if (mode === 'satellite') {
+    tileLayerRef.current = Leaflet.tileLayer(TILE_URLS.satellite, {
+      attribution: TILE_ATTRIBUTIONS.esri,
+      maxZoom: MAX_ZOOM,
+    }).addTo(map);
+    return;
+  }
+
+  const { url, ...opts } = rasterTileLayerOptions(dark);
+  const rasterLayer = Leaflet.tileLayer(url, opts);
+  bindRasterTileFallback(rasterLayer, () => {
+    try {
+      map.removeLayer(rasterLayer);
+    } catch {
+      /* noop */
+    }
+    const esri = getEsriRasterBasemap(dark);
+    tileLayerRef.current = Leaflet.tileLayer(esri.url, {
+      attribution: esri.attribution,
+      maxZoom: MAX_ZOOM,
+    }).addTo(map);
+  });
+  tileLayerRef.current = rasterLayer.addTo(map);
+}
+
 export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
@@ -53,10 +114,11 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
   const buoyLayerRef = useRef<L.LayerGroup | null>(null);
   const markersCacheRef = useRef<Map<string, L.Marker>>(new Map());
   const mountedRef = useRef(true);
+  const tileSignatureRef = useRef<string | null>(null);
 
   const [isReady, setIsReady] = useState(false);
-  const [isDark, setIsDark] = useState(false);
-  const [basemapMode, setBasemapMode] = useState<BasemapMode>('map');
+  const [isDark, setIsDark] = useState(readIsDark);
+  const [basemapMode, setBasemapMode] = useState<BasemapMode>(readBasemapPref);
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.matchMedia('(max-width: 767px)').matches;
@@ -65,7 +127,9 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
   // Mounted tracking
   useEffect(() => {
     mountedRef.current = true;
-    return () => { mountedRef.current = false; };
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
   // Mobile viewport detection
@@ -76,15 +140,6 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     update();
     mq.addEventListener('change', update);
     return () => mq.removeEventListener('change', update);
-  }, []);
-
-  // Restore persisted basemap preference
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    try {
-      const saved = localStorage.getItem('ventu.map.basemap');
-      if (saved === 'map' || saved === 'satellite') setBasemapMode(saved);
-    } catch { /* noop */ }
   }, []);
 
   // Detect theme
@@ -107,14 +162,24 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
 
     let cancelled = false;
     const container = containerRef.current;
+    const initialBasemap = basemapMode;
+    const initialDark = isDark;
 
     const teardownMap = () => {
       if (mapInstanceRef.current) {
-        try { mapInstanceRef.current.remove(); } catch { /* noop */ }
+        try {
+          mapInstanceRef.current.remove();
+        } catch {
+          /* noop */
+        }
         mapInstanceRef.current = null;
       }
       markersCacheRef.current.forEach((marker) => {
-        try { marker.remove(); } catch { /* noop */ }
+        try {
+          marker.remove();
+        } catch {
+          /* noop */
+        }
       });
       markersCacheRef.current.clear();
       radarOverlayRef.current = null;
@@ -124,21 +189,22 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       clusterGroupRef.current = null;
       markersGroupRef.current = null;
       tileLayerRef.current = null;
+      tileSignatureRef.current = null;
       LRef.current = null;
       clearLeafletContainer(container);
       if (mountedRef.current) setIsReady(false);
     };
 
     (async () => {
-      const mobileInit = typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
+      const mobileInit =
+        typeof window !== 'undefined' && window.matchMedia('(max-width: 767px)').matches;
 
-      await Promise.all([
+      // CSS + Leaflet in parallel so tiles can start before markercluster.
+      const [, leafletMod] = await Promise.all([
         import('leaflet/dist/leaflet.css'),
-        import('leaflet.markercluster/dist/MarkerCluster.css'),
-        import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
+        import('leaflet'),
       ]);
-      const Leaflet = (await import('leaflet')).default;
-      await import('leaflet.markercluster');
+      const Leaflet = leafletMod.default;
       if (cancelled || !containerRef.current) return;
 
       clearLeafletContainer(container);
@@ -151,24 +217,25 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
         attributionControl: false,
         ...(mobileInit ? { renderer: Leaflet.canvas() } : {}),
         ...(isHeroEmbed
-          ? { scrollWheelZoom: false, dragging: false, touchZoom: false, doubleClickZoom: false, boxZoom: false, keyboard: false }
+          ? {
+              scrollWheelZoom: false,
+              dragging: false,
+              touchZoom: false,
+              doubleClickZoom: false,
+              boxZoom: false,
+              keyboard: false,
+            }
           : {}),
       });
 
-      if (cancelled) { map.remove(); clearLeafletContainer(container); return; }
+      if (cancelled) {
+        map.remove();
+        clearLeafletContainer(container);
+        return;
+      }
 
-      const darkOnInit = !document.documentElement.classList.contains('theme-ocean');
-      const { url, ...opts } = rasterTileLayerOptions(darkOnInit);
-      const rasterLayer = Leaflet.tileLayer(url, opts);
-      bindRasterTileFallback(rasterLayer, () => {
-        try { map.removeLayer(rasterLayer); } catch { /* noop */ }
-        const esri = getEsriRasterBasemap(darkOnInit);
-        tileLayerRef.current = Leaflet.tileLayer(esri.url, {
-          attribution: esri.attribution,
-          maxZoom: MAX_ZOOM,
-        }).addTo(map);
-      });
-      tileLayerRef.current = rasterLayer.addTo(map);
+      attachBasemap(Leaflet, map, initialBasemap, initialDark, tileLayerRef);
+      tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
 
       if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -176,6 +243,17 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
         .attribution({ position: 'bottomleft', prefix: false })
         .addAttribution(OPEN_METEO_ATTRIBUTION)
         .addTo(map);
+
+      await Promise.all([
+        import('leaflet.markercluster/dist/MarkerCluster.css'),
+        import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
+        import('leaflet.markercluster'),
+      ]);
+      if (cancelled) {
+        map.remove();
+        clearLeafletContainer(container);
+        return;
+      }
 
       const mcg = Leaflet.markerClusterGroup({
         ...CLUSTER_CONFIG,
@@ -187,7 +265,11 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       markersGroupRef.current = lg;
       map.addLayer(mcg);
 
-      if (cancelled) { map.remove(); clearLeafletContainer(container); return; }
+      if (cancelled) {
+        map.remove();
+        clearLeafletContainer(container);
+        return;
+      }
 
       mapInstanceRef.current = map;
       if (mountedRef.current) setIsReady(true);
@@ -196,7 +278,13 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       }
     })();
 
-    return () => { cancelled = true; teardownMap(); };
+    return () => {
+      cancelled = true;
+      teardownMap();
+    };
+    // basemapMode / isDark are snapshotted for the first tile layer; later
+    // changes go through the sync effect (same signature → no second fetch).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHeroEmbed, containerRef]);
 
   // Basemap + theme on Leaflet container
@@ -207,43 +295,27 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     el.dataset.mapTheme = isDark ? 'dark' : 'light';
   }, [basemapMode, isDark, isReady]);
 
-  // Switch basemap tiles
+  // Switch basemap tiles only when mode/theme actually changed
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
     const Leaflet = LRef.current;
     if (!Leaflet) return;
     const map = mapInstanceRef.current;
+    const next = tileSignature(basemapMode, isDark);
+    if (tileSignatureRef.current === next && tileLayerRef.current) return;
 
-    if (tileLayerRef.current) {
-      map.removeLayer(tileLayerRef.current);
-      tileLayerRef.current = null;
-    }
-
-    if (basemapMode === 'satellite') {
-      tileLayerRef.current = Leaflet.tileLayer(TILE_URLS.satellite, {
-        attribution: TILE_ATTRIBUTIONS.esri,
-        maxZoom: MAX_ZOOM,
-      }).addTo(map);
-    } else {
-      const raster = rasterTileLayerOptions(isDark);
-      const { url, ...opts } = raster;
-      const rasterLayer = Leaflet.tileLayer(url, opts);
-      bindRasterTileFallback(rasterLayer, () => {
-        try { map.removeLayer(rasterLayer); } catch { /* noop */ }
-        const esri = getEsriRasterBasemap(isDark);
-        tileLayerRef.current = Leaflet.tileLayer(esri.url, {
-          attribution: esri.attribution,
-          maxZoom: MAX_ZOOM,
-        }).addTo(map);
-      });
-      tileLayerRef.current = rasterLayer.addTo(map);
-    }
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef);
+    tileSignatureRef.current = next;
   }, [basemapMode, isDark, isReady]);
 
   // Handle basemap toggle
   const handleBasemapChange = useCallback((mode: BasemapMode) => {
     setBasemapMode(mode);
-    try { localStorage.setItem('ventu.map.basemap', mode); } catch { /* noop */ }
+    try {
+      localStorage.setItem('ventu.map.basemap', mode);
+    } catch {
+      /* noop */
+    }
   }, []);
 
   // Resize handling
@@ -256,7 +328,10 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     const t = window.setTimeout(() => {
       if (mapInstanceRef.current) map.invalidateSize({ animate: false });
     }, isMobile ? 100 : 300);
-    return () => { cancelAnimationFrame(raf); window.clearTimeout(t); };
+    return () => {
+      cancelAnimationFrame(raf);
+      window.clearTimeout(t);
+    };
   }, [isReady, isMobile]);
 
   useEffect(() => {

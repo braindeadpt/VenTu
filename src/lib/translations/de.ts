@@ -207,7 +207,7 @@ export const translationsDe = {
     buoysShowOnMap: 'Auf der Karte zeigen',
     showHs: 'Hs auf See',
     hideHs: 'Hs ausblenden',
-    hsHint: 'Vorhergesagte Wellenhöhe — grobes Feld zwischen Spots',
+    hsHint: 'Vorhergesagte Wellenhöhe, interpoliert zwischen Spots',
     hsLegend: 'Hs — Meter',
     showIsobaths: '8/16/30-m-Isobathen',
     hideIsobaths: 'Isobathen ausblenden',
