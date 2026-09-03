@@ -1,11 +1,11 @@
 {
   "day": "20260903",
-  "fetchedAt": "2026-09-03T07:40:12.257Z",
+  "fetchedAt": "2026-09-03T12:30:25.808Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 85,
+    "pairHourCount": 93,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -26,8 +26,8 @@
         "coherent": 1,
         "review": 1,
         "incoherent": 0,
-        "insufficient": 0,
-        "days": 2,
+        "insufficient": 1,
+        "days": 3,
         "incoherentRatio": 0
       },
       "6200084|6201079": {
@@ -35,8 +35,8 @@
         "coherent": 1,
         "review": 1,
         "incoherent": 0,
-        "insufficient": 0,
-        "days": 2,
+        "insufficient": 1,
+        "days": 3,
         "incoherentRatio": 0
       },
       "6200085|6201079": {
@@ -44,8 +44,8 @@
         "coherent": 2,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 0,
-        "days": 2,
+        "insufficient": 1,
+        "days": 3,
         "incoherentRatio": 0
       },
       "6200083|6201077": {
@@ -1457,7 +1457,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-03T07:41:37.771Z",
+  "regionsAuditedAt": "2026-09-03T12:31:38.140Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -1467,14 +1467,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 47,
+      "n": 52,
       "meanDeltaM": 0.1,
       "meanAbsDeltaM": 0.2,
       "maxAbsDeltaM": 0.6,
-      "corr": 0.73,
+      "corr": 0.8,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-03T04",
+      "lastHour": "2026-09-03T09",
       "hours": [
         {
           "6200084": 1.1699999570846558,
@@ -1500,9 +1500,106 @@
           "6200084": 1.0499999523162842,
           "6200199": 0.9814500212669373,
           "hour": "2026-09-03T04"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 0.9814500212669373,
+          "hour": "2026-09-03T05"
+        },
+        {
+          "6200084": 0.9399999976158142,
+          "6200199": 0.8056600093841553,
+          "hour": "2026-09-03T06"
+        },
+        {
+          "6200084": 0.8199999928474426,
+          "6200199": 0.8203099966049194,
+          "hour": "2026-09-03T07"
+        },
+        {
+          "6200084": 0.8199999928474426,
+          "6200199": 0.8349599838256836,
+          "hour": "2026-09-03T08"
+        },
+        {
+          "6200084": 0.8199999928474426,
+          "6200199": 0.8349599838256836,
+          "hour": "2026-09-03T09"
+        }
+      ]
+    },
+    {
+      "pair": "Cabo Silleiro × Datawell ao largo de Faro",
+      "codes": [
+        "6200084",
+        "6201079"
+      ],
+      "distanceKm": 594.6,
+      "ptSource": "wmo",
+      "n": 11,
+      "meanDeltaM": -0.9,
+      "meanAbsDeltaM": 0.9,
+      "maxAbsDeltaM": 1.4,
+      "corr": 0.3,
+      "verdict": "review",
+      "firstHour": "2026-09-01T04",
+      "lastHour": "2026-09-03T02",
+      "hours": [
+        {
+          "6200084": 1.0499999523162842,
+          "6201079": 0.4399999976158142,
+          "hour": "2026-09-03T02"
+        }
+      ]
+    },
+    {
+      "pair": "Villano-Sisargas × Datawell ao largo de Faro",
+      "codes": [
+        "6200083",
+        "6201079"
+      ],
+      "distanceKm": 741.7,
+      "ptSource": "wmo",
+      "n": 11,
+      "meanDeltaM": -0.6,
+      "meanAbsDeltaM": 0.6,
+      "maxAbsDeltaM": 1.3,
+      "corr": 0.5,
+      "verdict": "coherent",
+      "firstHour": "2026-09-01T04",
+      "lastHour": "2026-09-03T02",
+      "hours": [
+        {
+          "6200083": 0.9399999976158142,
+          "6201079": 0.4399999976158142,
+          "hour": "2026-09-03T02"
+        }
+      ]
+    },
+    {
+      "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
+      "codes": [
+        "6200085",
+        "6201079"
+      ],
+      "distanceKm": 95.5,
+      "ptSource": "wmo",
+      "n": 11,
+      "meanDeltaM": -0.4,
+      "meanAbsDeltaM": 0.4,
+      "maxAbsDeltaM": 0.7,
+      "corr": 0.2,
+      "verdict": "coherent",
+      "firstHour": "2026-09-01T04",
+      "lastHour": "2026-09-03T02",
+      "hours": [
+        {
+          "6200085": 0.8199999928474426,
+          "6201079": 0.4399999976158142,
+          "hour": "2026-09-03T02"
         }
       ]
     }
   ],
-  "overall": "coherent"
+  "overall": "review"
 }

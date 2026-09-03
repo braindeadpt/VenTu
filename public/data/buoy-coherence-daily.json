@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-03T07:40:12.248Z",
+  "fetchedAt": "2026-09-03T12:30:25.806Z",
   "windowDays": 180,
   "days": [
     {
@@ -154,9 +154,42 @@
           ],
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "verdict": "coherent",
-          "n": 5,
+          "n": 10,
           "meanAbsDeltaM": 0.1,
           "meanDeltaM": -0.1
+        },
+        {
+          "codes": [
+            "6200083",
+            "6201079"
+          ],
+          "pair": "Villano-Sisargas × Datawell ao largo de Faro",
+          "verdict": "insufficient",
+          "n": 1,
+          "meanAbsDeltaM": 0.5,
+          "meanDeltaM": -0.5
+        },
+        {
+          "codes": [
+            "6200084",
+            "6201079"
+          ],
+          "pair": "Cabo Silleiro × Datawell ao largo de Faro",
+          "verdict": "insufficient",
+          "n": 1,
+          "meanAbsDeltaM": 0.6,
+          "meanDeltaM": -0.6
+        },
+        {
+          "codes": [
+            "6200085",
+            "6201079"
+          ],
+          "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
+          "verdict": "insufficient",
+          "n": 1,
+          "meanAbsDeltaM": 0.4,
+          "meanDeltaM": -0.4
         }
       ]
     }
