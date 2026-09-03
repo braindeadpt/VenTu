@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-09-02T23:48:43.533Z",
+  "checkedAt": "2026-09-03T07:40:23.347Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -80,8 +80,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 2,
-        "n": 205,
-        "me": 0.02041463414634146
+        "n": 228,
+        "me": 0.2412719298245614
       },
       "baseline": {
         "days": 0,
@@ -95,8 +95,8 @@
       "name": "WMO-ES (Copernicus)",
       "recent": {
         "days": 3,
-        "n": 79.33,
-        "me": 0.3035294117647059
+        "n": 85,
+        "me": 0.30560784313725486
       },
       "baseline": {
         "days": 0,

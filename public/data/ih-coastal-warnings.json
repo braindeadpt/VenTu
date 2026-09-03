@@ -346,33 +346,6 @@
       ]
     },
     {
-      "id": 18385,
-      "ref": "ANAV NR 1888/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=9f2c7559-8a80-41f6-a316-f9744fc24f00",
-      "source": "ih",
-      "polygons": [
-        [
-          [
-            -25.663231,
-            37.737157
-          ],
-          [
-            -25.660571,
-            37.738447
-          ],
-          [
-            -25.660013,
-            37.737836
-          ],
-          [
-            -25.663231,
-            37.737157
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18431,
       "ref": "ANAV NR 1925/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -495,9 +468,46 @@
           ]
         ]
       ]
+    },
+    {
+      "id": 18465,
+      "ref": "ANAV NR 1950/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=752ca36b-7893-45fe-b14b-d30477029858",
+      "source": "ih",
+      "polygons": [
+        [
+          [
+            -9.422658,
+            38.670098
+          ],
+          [
+            -9.422658,
+            38.698506
+          ],
+          [
+            -9.326379,
+            38.698506
+          ],
+          [
+            -9.326379,
+            38.670098
+          ],
+          [
+            -9.422658,
+            38.670098
+          ]
+        ]
+      ]
     }
   ],
   "coverage": {
+    "parede": [
+      18465
+    ],
+    "carcavelos": [
+      18465
+    ],
     "fonte-telha": [
       18431
     ],
@@ -551,7 +561,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-02T23:48:44.881Z",
+  "fetchedAt": "2026-09-03T07:40:24.880Z",
   "sourceCollection": "nav_warning_coastal",
   "sourceUrl": "https://api-features.hidrografico.pt/collections/nav_warning_coastal"
 }
