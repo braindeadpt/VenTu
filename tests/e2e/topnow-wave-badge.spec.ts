@@ -3,6 +3,7 @@ import {
   interceptConditions,
   interceptIhBuoys,
   interceptWmoBuoys,
+  interceptWaveBias,
   freshObservedWave,
   readRealConditions,
 } from './helpers/conditions';
@@ -88,6 +89,10 @@ test.describe('TopNow — badge do score de onda', () => {
       stations: {},
     });
     await interceptWmoBuoys(page, { buoys: {}, hasWaveData: false, day: '20260815' });
+    // Serve wave-bias.json sem regiões para que applyRegionalBiasFallback
+    // nunca produza waveBias no refresh client-side (o fallback só dispara
+    // quando há regiões acima dos limiares n/MIN_BIAS_M no ficheiro servido).
+    await interceptWaveBias(page, { regions: {} });
     await interceptConditions(page, {
       all: allSpots((entry) => {
         const { observedWave: _ow, observedWaveAlt: _alt, waveBias: _wb, ...rest } = entry;
@@ -366,6 +371,10 @@ test.describe('TopNow — badge do score de onda', () => {
     // leitura VELHA (5h, fora do gate IH de 3h), resolveScoreWaveCorrection
     // devolve null em runtime e o card não mostra badge, sufixo nem relógio —
     // mesmo com o observedWave presente no JSON servido.
+    // Intercept wave-bias.json sem regiões: garante que applyRegionalBiasFallback
+    // nunca produz waveBias no refresh client-side, tornando o teste hermético
+    // em qualquer build (incluindo builds com wave-bias.json de produção).
+    await interceptWaveBias(page, { regions: {} });
     await interceptConditions(page, {
       all: allSpots((entry) => {
         const { waveBias, ...rest } = entry;
@@ -379,13 +388,6 @@ test.describe('TopNow — badge do score de onda', () => {
       }),
     });
     await page.goto('/pt/', { waitUntil: 'networkidle', timeout: 60_000 });
-    // Gate honesto: num build baked o refresh preserva o viés da row mesmo com
-    // a leitura velha (a frescura da boia não apaga um viés baked) — o teste
-    // só é válido sem wave-bias.json (CI).
-    if (await isBakedWaveBias(page)) {
-      test.skip(true, 'build COM wave-bias.json baked (≥ 1 região acima dos limiares n/MIN_BIAS_M) — a leitura velha não apaga o viés baked; validar a frescura no build sem fixture');
-      return;
-    }
     const section = topNow(page);
     await expect(section).toBeVisible({ timeout: 20_000 });
 
