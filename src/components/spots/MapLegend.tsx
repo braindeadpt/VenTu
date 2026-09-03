@@ -1,16 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getLegendLabels } from '@/lib/map-constants';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import IsobathLegend from './IsobathLegend';
 
 interface MapLegendProps {
   locale: string;
-  /** Extra bottom margin when fullscreen filter bar is visible. */
+  /** Extra bottom offset when fullscreen filter bar is visible. */
   reserveHudSpace?: boolean;
-  /** Smaller margin when mobile HUD filters are collapsed. */
-  hudCompact?: boolean;
+  /** Measured HUD height (px). Legend sits just above it in fullscreen. */
+  hudLift?: number;
+  /**
+   * `hero` = under the homepage isobaths chip (top-right), clear of the
+   * heading and ticker. `map` = bottom-right (fullscreen / embed).
+   */
+  placement?: 'map' | 'hero';
   /** Legenda de profundidade das isóbatas quando a camada está activa. */
   isobathsTitle?: string;
   isobathsVisible?: boolean;
@@ -19,7 +24,8 @@ interface MapLegendProps {
 export default function MapLegend({
   locale,
   reserveHudSpace = false,
-  hudCompact = false,
+  hudLift = 0,
+  placement = 'map',
   isobathsTitle,
   isobathsVisible = false,
 }: MapLegendProps) {
@@ -27,15 +33,23 @@ export default function MapLegend({
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
-  const bottomMargin = !reserveHudSpace
-    ? 'mb-3'
-    : hudCompact
-      ? 'mb-[88px] md:mb-[60px]'
-      : 'mb-[240px] md:mb-[60px]';
+  useEffect(() => {
+    if (isobathsVisible) setCollapsed(false);
+  }, [isobathsVisible]);
+
+  const isHero = placement === 'hero';
+  const bottomPx = !isHero && reserveHudSpace
+    ? (hudLift > 0 ? hudLift + 12 : 220)
+    : undefined;
 
   return (
     <div
-      className={`absolute bottom-0 right-0 z-[1000] mr-3 ${bottomMargin}`}
+      className={
+        isHero
+          ? 'absolute top-[6.75rem] right-3 z-[1000]'
+          : `absolute z-[1000] right-0 mr-3 ${bottomPx == null ? 'bottom-0 mb-3' : ''}`
+      }
+      style={bottomPx != null ? { bottom: bottomPx } : undefined}
       role="region"
       aria-label={isPt ? 'Legenda do mapa' : 'Map legend'}
     >

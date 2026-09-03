@@ -221,9 +221,12 @@ export function useMapLayers({
     };
   }, [isReady, mapInstanceRef]);
 
-  // HUD lift measurement for radar carousel
+  // Lift overlay chips (radar carousel, score legend) above the HUD.
   useEffect(() => {
-    if (!isFullscreen || !radarEnabled) return;
+    if (!isFullscreen || !isReady) {
+      if (!isFullscreen) setRadarLift(0);
+      return;
+    }
     const hud = document.querySelector('[data-map-hud-collapsed]');
     if (!hud) return;
     const measure = () => setRadarLift(hud.getBoundingClientRect().height);
@@ -231,7 +234,7 @@ export function useMapLayers({
     const ro = new ResizeObserver(measure);
     ro.observe(hud);
     return () => ro.disconnect();
-  }, [isFullscreen, radarEnabled]);
+  }, [isFullscreen, isReady]);
 
   const toggleRadar = useCallback(() => {
     setRadarPrefSet(true);

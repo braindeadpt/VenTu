@@ -221,7 +221,6 @@ export default function SpotMapInteractive({
   const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
-  const [hudCollapsed, setHudCollapsed] = useState(true);
   const [windLegendOpen, setWindLegendOpen] = useState(false);
 
   const showWindOnMarkers = windEnabled && !clusterEnabled && !isHeroEmbed;
@@ -345,10 +344,6 @@ export default function SpotMapInteractive({
     document.body.style.overflow = 'hidden';
     return () => { unlockPageInteraction(); };
   }, [isFullscreen]);
-  useEffect(() => {
-    if (isFullscreen) setHudCollapsed(true);
-  }, [isFullscreen]);
-
   // ── Toggle handlers ──
   const toggleCluster = useCallback(() => {
     setClusterEnabled((prev) => {
@@ -647,8 +642,15 @@ export default function SpotMapInteractive({
             <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} isPt={isPt} />
           )}
 
-          {!isHeroEmbed && (
-            <MapLegend locale={locale} reserveHudSpace={isFullscreen} hudCompact={isFullscreen && hudCollapsed} isobathsTitle={t.map.isobathsLegend} isobathsVisible={isobathsEnabled && isobathsData != null} />
+          {(!isHeroEmbed || (isobathsEnabled && isobathsData != null)) && (
+            <MapLegend
+              locale={locale}
+              reserveHudSpace={isFullscreen}
+              hudLift={isFullscreen ? radarLift : 0}
+              placement={isHeroEmbed ? 'hero' : 'map'}
+              isobathsTitle={t.map.isobathsLegend}
+              isobathsVisible={isobathsEnabled && isobathsData != null}
+            />
           )}
 
           {!isFullscreen && !isHeroEmbed && (
@@ -741,7 +743,6 @@ export default function SpotMapInteractive({
               windButtonRef={windButtonRef}
               collapseHudLabel={t.map.collapseHud}
               expandHudLabel={t.map.expandHud}
-              onCollapsedChange={setHudCollapsed}
               buoyChip={<BuoyLayerChip locale={locale} />}
               timeTrack={
                 radarEnabled && radarFrameList.length > 1 ? (
