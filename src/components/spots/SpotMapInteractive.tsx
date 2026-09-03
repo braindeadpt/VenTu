@@ -42,13 +42,16 @@ import {
   IPMA_RADAR_ATTRIBUTION_LABEL_EN,
 } from '@/lib/ipmaAttribution';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 import {
   fetchRadarData,
   radarBoundsCorners,
+  radarFrameClock,
   radarFrames,
   type IpmaRadarData,
 } from '@/lib/ipmaRadar';
+import MapTimeTrack from './map/MapTimeTrack';
 import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import RadarCarousel from './RadarCarousel';
@@ -249,6 +252,16 @@ export default function SpotMapInteractive({
     isobathsEnabled, isobathsData, toggleIsobaths,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
   } = layers;
+
+  const reducedMotion = usePrefersReducedMotion();
+  const [radarScrubbing, setRadarScrubbing] = useState(false);
+  const radarHudPaused =
+    radarScrubbing || radarBusySources.size > 0 || radarUserPaused || reducedMotion;
+  const radarClock = radarFrameClock(radarFrameList[radarFrameIndex]?.frameTime ?? null) ?? '';
+
+  useEffect(() => {
+    if (!radarEnabled) setRadarScrubbing(false);
+  }, [radarEnabled]);
 
   // Deep links ?radar=1 / ?isobaths=1 handled by useMapLayers initial state —
   // sem efeitos de mount nem toque na preferência persistida (que só se grava
@@ -675,6 +688,8 @@ export default function SpotMapInteractive({
               fullscreenHref={isFullscreen ? undefined : `/${locale}/mapa/?radar=1`}
               fullscreenLabel={t.map.radarFullscreen}
               onFullscreenOpen={handleRadarImmersionOpen}
+              hideScrubber={isFullscreen}
+              externalScrubbing={radarScrubbing}
             />
           )}
 
@@ -725,6 +740,27 @@ export default function SpotMapInteractive({
               expandHudLabel={t.map.expandHud}
               onCollapsedChange={setHudCollapsed}
               buoyChip={<BuoyLayerChip locale={locale} />}
+              timeTrack={
+                radarEnabled && radarFrameList.length > 1 ? (
+                  <MapTimeTrack
+                    variant="hud"
+                    mode="radar"
+                    length={radarFrameList.length}
+                    index={radarFrameIndex}
+                    onIndexChange={handleRadarFrameChange}
+                    paused={radarHudPaused}
+                    userPaused={radarUserPaused}
+                    onUserPausedChange={handleRadarUserPausedChange}
+                    onScrubbingChange={setRadarScrubbing}
+                    clock={radarClock}
+                    labels={{
+                      scrub: t.map.radarScrub,
+                      play: t.map.radarPlay,
+                      pause: t.map.radarPause,
+                    }}
+                  />
+                ) : undefined
+              }
             />
           )}
 

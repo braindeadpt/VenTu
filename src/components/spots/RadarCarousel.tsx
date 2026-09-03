@@ -1,11 +1,13 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useRef } from 'react';
 import Link from 'next/link';
-import { CloudRain, Maximize2, Pause, Play } from 'lucide-react';
+import { CloudRain, Maximize2, Pause } from 'lucide-react';
 import { radarFrameClock, radarFrameFullClock, radarMissingFrames } from '@/lib/ipmaRadar';
 import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution';
 import { IPMA_URL } from '@/lib/ipmaAttribution';
+import MapTimeTrack from './map/MapTimeTrack';
+import { useMapTimeTrack } from './map/useMapTimeTrack';
 
 export interface RadarCarouselFrame {
   url: string;
@@ -65,6 +67,14 @@ interface RadarCarouselProps {
    *  mesmo que o frame venha de um scrub transitório sem pausa (que hoje não
    *  fica gravado — só grava quando pausado). O pai é dono da persistência. */
   onFullscreenOpen?: (frame: number, userPaused: boolean) => void;
+  /**
+   * Fullscreen HUD owns the scrubber. Badge + attribution stay on the map;
+   * ticks still run here so HUD and overlay share one clock.
+   */
+  hideScrubber?: boolean;
+  /** HUD range is dragging — pause ticks without flipping userPaused. */
+  externalScrubbing?: boolean;
+  onScrubbingChange?: (scrubbing: boolean) => void;
 }
 
 /**
@@ -72,7 +82,8 @@ interface RadarCarouselProps {
  * ecrã inteiro e o mapa da homepage (hero). Controlado: o pai é dono do
  * índice e do overlay (L.imageOverlay setUrl); este componente trata da
  * animação, do scrubber (pausa enquanto se interage) e do badge com a hora
- * do frame + atribuição Open-Meteo.
+ * do frame + atribuição Open-Meteo. Em fullscreen o HUD aloja o track
+ * (`hideScrubber`); o radar é um modo da linha do tempo, não o dono exclusivo.
  */
 export default function RadarCarousel({
   frames,
@@ -88,47 +99,26 @@ export default function RadarCarousel({
   fullscreenHref,
   fullscreenLabel,
   onFullscreenOpen,
+  hideScrubber = false,
+  externalScrubbing = false,
+  onScrubbingChange,
 }: RadarCarouselProps) {
-  const [scrubbing, setScrubbing] = useState(false);
-  // Separador escondido ou mapa fora do viewport → pausa (poupa rede/CPU
-  // quando ninguém está a ver). A IntersectionObserver cobre o scroll;
-  // o visibilitychange cobre o tab em background.
-  const [offScreen, setOffScreen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
-  const paused = scrubbing || mapBusyCount > 0 || offScreen || userPaused;
+  const { paused, setScrubbing } = useMapTimeTrack({
+    length: frames.length,
+    index: frameIndex,
+    onIndexChange: onFrameChange,
+    mapBusyCount,
+    userPaused,
+    externalScrubbing,
+    tickMs,
+    observeRef: rootRef,
+  });
 
-  // Tab invisível (visibilitychange) — pausa o carrossel até voltar ao foco.
-  useEffect(() => {
-    const onVisibility = () => {
-      setOffScreen(document.visibilityState === 'hidden');
-    };
-    document.addEventListener('visibilitychange', onVisibility);
-    return () => document.removeEventListener('visibilitychange', onVisibility);
-  }, []);
-
-  // Mapa fora do viewport (scroll) — deixa de animar (e de trocar o overlay)
-  // enquanto não está visível; retoma automaticamente quando volta.
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el || typeof IntersectionObserver === 'undefined') return;
-    const observer = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      if (entry) setOffScreen(!entry.isIntersecting);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  // Carrossel 5-min — um frame por segundo (volta completa ≈ 12 s). Pausa
-  // durante scrubber/mapa, tab escondido ou fora do viewport para não
-  // disparar setUrl (rede) nem o intervalo (CPU) quando ninguém está a ver.
-  useEffect(() => {
-    if (paused || frames.length <= 1) return;
-    const intervalId = window.setInterval(() => {
-      onFrameChange((frameIndex + 1) % frames.length);
-    }, tickMs);
-    return () => window.clearInterval(intervalId);
-  }, [paused, frames.length, frameIndex, onFrameChange, tickMs]);
+  const handleScrubbingChange = (next: boolean) => {
+    setScrubbing(next);
+    onScrubbingChange?.(next);
+  };
 
   if (frames.length === 0) return null;
 
@@ -143,52 +133,20 @@ export default function RadarCarousel({
 
   return (
     <div ref={rootRef} className={className} style={style} data-radar-carousel="true">
-      {frames.length > 1 && (
-        <div
-          // Em ecrãs pequenos o scrubber dobra-se para uma linha compacta
-          // ([range][▶][hora] em vez de duas linhas) — o painel deixa de ser
-          // uma folha de largura quase total sobre o mapa e não cobre os
-          // marcadores do canto inferior direito do grid de spots.
-          className="flex flex-col gap-1 px-2.5 pt-1.5 pb-2 rounded-md bg-bg-elevated/95 border border-divider shadow-card max-md:flex-row max-md:items-center max-md:gap-2 max-md:px-2 max-md:py-0.5"
-          data-radar-scrubber="true"
-        >
-          <div className="flex items-center justify-between gap-3 text-meta-sm max-md:flex-none max-md:justify-start max-md:gap-2">
-            <span className="flex items-center gap-1.5 text-fg-muted">
-              <button
-                type="button"
-                onClick={() => onUserPausedChange?.(!paused)}
-                aria-label={paused ? labels.play : labels.pause}
-                aria-pressed={userPaused}
-                title={paused ? labels.play : labels.pause}
-                data-radar-toggle="true"
-                className="flex items-center justify-center w-6 h-6 rounded-md text-fg bg-bg-elevated border border-divider shadow-sm hover:bg-bg-elevated/60 active:scale-95 transition-colors"
-              >
-                {paused ? (
-                  <Play className="w-3.5 h-3.5" aria-hidden />
-                ) : (
-                  <Pause className="w-3.5 h-3.5" aria-hidden />
-                )}
-              </button>
-              {/* Rótulo só em >=sm: em mobile o scrubber é uma linha compacta. */}
-              <span className="hidden sm:inline">{labels.scrub}</span>
-            </span>
-            <span className="font-semibold tabular-nums">{clock}</span>
-          </div>
-          <input
-            type="range"
-            min={0}
-            max={frames.length - 1}
-            step={1}
-            value={frameIndex}
-            onChange={(e) => onFrameChange(Number(e.target.value))}
-            onPointerDown={() => setScrubbing(true)}
-            onPointerUp={() => setScrubbing(false)}
-            onPointerCancel={() => setScrubbing(false)}
-            onBlur={() => setScrubbing(false)}
-            aria-label={labels.scrub}
-            className="w-40 accent-data-waves cursor-pointer touch-manipulation max-md:order-first max-md:w-20 max-md:flex-1"
-          />
-        </div>
+      {!hideScrubber && (
+        <MapTimeTrack
+          length={frames.length}
+          index={frameIndex}
+          onIndexChange={onFrameChange}
+          paused={paused}
+          userPaused={userPaused}
+          onUserPausedChange={onUserPausedChange}
+          onScrubbingChange={handleScrubbingChange}
+          clock={clock}
+          labels={{ scrub: labels.scrub, play: labels.play, pause: labels.pause }}
+          variant="floating"
+          mode="radar"
+        />
       )}
 
       <div
@@ -214,7 +172,7 @@ export default function RadarCarousel({
               <span className="text-[10px] font-semibold uppercase tracking-wide">{labels.paused}</span>
             </span>
           ) : (
-            <span className="w-1.5 h-1.5 rounded-full bg-data-waves animate-pulse" aria-hidden />
+            <span className="w-1.5 h-1.5 rounded-full bg-data-waves motion-reduce:animate-none animate-pulse" aria-hidden />
           )}
           <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
           <span>{labels.badge}</span>

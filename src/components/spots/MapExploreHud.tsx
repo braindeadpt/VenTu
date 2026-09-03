@@ -56,6 +56,12 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
    *  Opcional: só o SpotMapInteractive o passa; os outros construtores de
    *  mapHud ficam com o default (sem chip). */
   buoyChip?: React.ReactNode;
+  /**
+   * Shared time track (radar scrubber today; later score hours). Always
+   * visible — not inside the collapsible filter rows — so mobile can scrub
+   * without expanding filters.
+   */
+  timeTrack?: React.ReactNode;
 }
 
 export default function MapExploreHud({
@@ -116,6 +122,7 @@ export default function MapExploreHud({
   onResetRadar = () => {},
   radarResetLabel = '',
   buoyChip,
+  timeTrack,
 }: MapExploreHudProps) {
   // Always start collapsed so SSR and the first client paint match. Desktop
   // still shows the filter rows via `hidden md:flex` below.
@@ -312,6 +319,8 @@ export default function MapExploreHud({
             <Minimize2 className="w-4 h-4" aria-hidden />
           </MapControlButton>
         </div>
+
+        {timeTrack}
 
         <div className={`flex flex-col gap-2 ${collapsed ? 'hidden md:flex' : 'flex'}`}>
           <div

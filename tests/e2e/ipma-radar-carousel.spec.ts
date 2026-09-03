@@ -729,6 +729,9 @@ test.describe('IPMA radar no HUD fullscreen com viewport móvel', () => {
     // Liga o radar pelo toggle dentro do HUD colapsado.
     await page.click('button[aria-label="Radar IPMA"]');
     await expect(carousel).toBeVisible({ timeout: 15_000 });
+    // Sessão A: o scrubber vive no HUD; o carrossel fica só com o badge.
+    await expect(hud.locator('[data-map-time-track="true"]')).toBeVisible();
+    await expect(carousel.locator('[data-radar-scrubber="true"]')).toHaveCount(0);
 
     // Guarda honesta do lift: o carrossel fica erguido por cima do HUD (bottom
     // do carrossel acima do topo do HUD), não sobreposto nem interceptado.
@@ -1324,4 +1327,43 @@ test.describe('botão de reinício do radar (HUD)', () => {
     expect(stored).toBeNull();
     await expect(resetBtn).not.toBeVisible();
   });
-});
+});
+
+test.describe('IPMA radar: prefers-reduced-motion', () => {
+  test.use({
+    serviceWorkers: 'block',
+    reducedMotion: 'reduce',
+  });
+
+  test('não anima sozinho — o scrubber continua a mudar o frame', async ({ page }) => {
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      (window as any).__RADAR_TEST__ = true;
+      localStorage.setItem('ventu.map.cluster', '0');
+    });
+    await interceptRadar(page, RADAR_STUB);
+    await page.clock.install({ time: FROZEN_TIME });
+    await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
+    await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await page.clock.runFor(500);
+
+    await page.click('button[aria-label="Radar IPMA"]');
+    await page.clock.runFor(100);
+
+    const badge = page.locator('[data-radar-badge="true"]');
+    await expect(badge).toBeVisible({ timeout: 15_000 });
+    await expect(badge).toHaveAttribute('data-radar-paused', 'true');
+    await expect(badge).toContainText('1/12');
+    await expect(badge).toContainText('01:00');
+
+    // Três ticks de relógio — reduced-motion não dispara autoplay.
+    await page.clock.runFor(3000);
+    await expect(badge).toContainText('1/12');
+    await expect(badge).toContainText('01:00');
+
+    const slider = page.locator('[data-radar-scrubber="true"] input[type="range"]');
+    await slider.fill('5');
+    await expect(badge).toContainText('6/12');
+    await expect(badge).toContainText('00:35');
+  });
+});
