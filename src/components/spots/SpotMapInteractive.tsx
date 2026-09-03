@@ -99,6 +99,7 @@ import { useMapMarkers } from './map/hooks/useMapMarkers';
 import { useMapHours } from './map/hooks/useMapHours';
 import { useMapBuoyDots } from './map/hooks/useMapBuoyDots';
 import { useMapHsField } from './map/hooks/useMapHsField';
+import { useMapCurrentsField } from './map/hooks/useMapCurrentsField';
 import MapControls from './map/components/MapControls';
 import { useMapTimeTrack } from './map/useMapTimeTrack';
 import {
@@ -135,6 +136,10 @@ type MapHudProps = Omit<
   | 'onToggleHs'
   | 'hsLabel'
   | 'hsHint'
+  | 'currentsEnabled'
+  | 'onToggleCurrents'
+  | 'currentsLabel'
+  | 'currentsHint'
   | 'isobathsEnabled'
   | 'onToggleIsobaths'
   | 'isobathsLabel'
@@ -190,6 +195,7 @@ interface SpotMapInteractiveProps {
   initialHourOfDay?: number | null;
   initialBuoysEnabled?: boolean;
   initialHsEnabled?: boolean;
+  initialCurrentsEnabled?: boolean;
   focusSpotId?: string;
   initialCenter?: [number, number] | undefined;
   fullscreenBelowHeader?: boolean;
@@ -213,6 +219,7 @@ export default function SpotMapInteractive({
   initialHourOfDay = null,
   initialBuoysEnabled = false,
   initialHsEnabled = false,
+  initialCurrentsEnabled = false,
   focusSpotId,
   initialCenter,
   fullscreenBelowHeader = false,
@@ -241,6 +248,7 @@ export default function SpotMapInteractive({
   const core = useMapCore({ containerRef: mapRef, isHeroEmbed });
   const {
     mapInstanceRef, LRef, isReady, clusterReady, isDark, basemapMode, isMobile,
+    tileState, retryBasemap,
     handleBasemapChange, tileLayerRef, clusterGroupRef, markersGroupRef,
     radarOverlayRef, isobathsLayerRef, coastalLayerRef, buoyLayerRef, markersCacheRef,
   } = core;
@@ -595,6 +603,19 @@ export default function SpotMapInteractive({
     hoursFrame,
     spots: hsSpots,
   });
+  const { currentsEnabled, currentsUnavailable, toggleCurrents } = useMapCurrentsField({
+    mapInstanceRef,
+    LRef,
+    isReady,
+    isFullscreen,
+    isHeroEmbed,
+    isMobile,
+    initialEnabled: initialCurrentsEnabled,
+    hoursFile,
+    hoursLive,
+    hoursFrame,
+    spots: hsSpots,
+  });
 
   // ── Warnings by spot ──
   const warningsBySpot = useMemo(() => {
@@ -618,6 +639,7 @@ export default function SpotMapInteractive({
   const hoursHint = t.map.hoursHint;
   const buoysLabel = buoysEnabled ? t.map.hideBuoys : t.map.showBuoys;
   const hsLabel = hsEnabled ? t.map.hideHs : t.map.showHs;
+  const currentsLabel = currentsEnabled ? t.map.hideCurrents : t.map.showCurrents;
   const windLegendHelpLabel = t.map.windRingLegend.help;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
@@ -715,6 +737,7 @@ export default function SpotMapInteractive({
       data-map-hours={hoursLive ? 'true' : 'false'}
       data-map-buoys={buoysEnabled ? 'true' : 'false'}
       data-map-hs={hsEnabled ? 'true' : 'false'}
+      data-map-currents={currentsEnabled ? 'true' : 'false'}
       data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
     >
       {!isReady && (
@@ -776,6 +799,10 @@ export default function SpotMapInteractive({
             hsUnavailable={hsUnavailable}
             hsLabel={hsLabel}
             hsHint={t.map.hsHint}
+            currentsEnabled={currentsEnabled}
+            currentsUnavailable={currentsUnavailable}
+            currentsLabel={currentsLabel}
+            currentsHint={t.map.currentsHint}
             isobathsLabel={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
             onlyOnLabel={onlyOnLabel}
             onlyOnHint={onlyOnHint}
@@ -793,6 +820,7 @@ export default function SpotMapInteractive({
             handleResetHours={handleResetHours}
             toggleBuoys={toggleBuoys}
             toggleHs={toggleHs}
+            toggleCurrents={toggleCurrents}
             toggleIsobaths={toggleIsobaths}
             toggleOnlyOn={toggleOnlyOn}
             toggleCoastalWarnings={toggleCoastalWarnings}
@@ -818,6 +846,39 @@ export default function SpotMapInteractive({
             </div>
           )}
 
+          {tileState === 'loading' && (
+            <div
+              role="status"
+              aria-live="polite"
+              className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[1002] flex items-center gap-2 rounded-full border border-divider bg-bg-elevated/90 backdrop-blur-sm px-3 py-1.5 shadow-card pointer-events-none"
+            >
+              <span
+                className="w-3.5 h-3.5 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin"
+                aria-hidden
+              />
+              <span className="text-meta-sm text-fg-muted">{t.map.loading}</span>
+            </div>
+          )}
+
+          {tileState === 'failed' && (
+            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-[1002] flex justify-center px-4 pointer-events-none">
+              <div
+                role="alert"
+                className="pointer-events-auto flex flex-col items-center gap-2.5 rounded-card border border-divider bg-bg-elevated shadow-card px-5 py-4 max-w-xs text-center"
+              >
+                <p className="text-meta-sm font-semibold text-fg">{t.map.mapUnavailable}</p>
+                <button
+                  type="button"
+                  onClick={retryBasemap}
+                  className="inline-flex items-center gap-1.5 rounded-input border border-divider bg-surface-1/[0.06] px-3 py-1.5 text-meta-sm font-semibold text-fg hover:bg-surface-1/[0.12] transition-colors duration-150 touch-manipulation"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" aria-hidden />
+                  {t.common.refresh}
+                </button>
+              </div>
+            </div>
+          )}
+
           {!isFullscreen && !isHeroEmbed && (
             <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} isPt={isPt} />
           )}
@@ -832,6 +893,8 @@ export default function SpotMapInteractive({
               isobathsVisible={isobathsEnabled && isobathsData != null}
               hsTitle={t.map.hsLegend}
               hsVisible={hsEnabled}
+              currentsTitle={t.map.currentsLegend}
+              currentsVisible={currentsEnabled}
             />
           )}
 
@@ -910,6 +973,11 @@ export default function SpotMapInteractive({
               hsLabel={hsLabel}
               hsHint={t.map.hsHint}
               hsUnavailable={hsUnavailable}
+              currentsEnabled={currentsEnabled}
+              onToggleCurrents={toggleCurrents}
+              currentsLabel={currentsLabel}
+              currentsHint={t.map.currentsHint}
+              currentsUnavailable={currentsUnavailable}
               buoysEnabled={buoysEnabled}
               onToggleBuoys={toggleBuoys}
               buoysLabel={buoysLabel}

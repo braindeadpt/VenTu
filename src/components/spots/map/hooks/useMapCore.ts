@@ -14,7 +14,10 @@ import {
   CLUSTER_CONFIG,
   rasterTileLayerOptions,
   getEsriRasterBasemap,
-  bindRasterTileFallback,
+  cartoBasemapKey,
+  watchTileLayer,
+  CARTO_TILE_HANG_MS,
+  type BasemapLoadState,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
 
@@ -40,6 +43,10 @@ interface UseMapCoreReturn {
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   buoyLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   markersCacheRef: React.MutableRefObject<Map<string, L.Marker>>;
+  /** Estado de carregamento dos tiles do basemap ('loading' | 'ok' | 'failed'). */
+  tileState: BasemapLoadState;
+  /** Re-anexa o basemap actual — usado pelo botão «Atualizar» do estado failed. */
+  retryBasemap: () => void;
 }
 
 function readBasemapPref(): BasemapMode {
@@ -98,6 +105,7 @@ function attachBasemap(
   dark: boolean,
   tileLayerRef: React.MutableRefObject<L.TileLayer | null>,
   fallbackCleanupRef: React.MutableRefObject<(() => void) | null>,
+  onTileState: (state: BasemapLoadState) => void,
 ): void {
   fallbackCleanupRef.current?.();
   fallbackCleanupRef.current = null;
@@ -109,12 +117,22 @@ function attachBasemap(
     }
     tileLayerRef.current = null;
   }
+  onTileState('loading');
+
+  const watch = (layer: L.TileLayer, onFail?: () => void, hangMs?: number) => {
+    fallbackCleanupRef.current = watchTileLayer(layer, (state) => {
+      if (state === 'ok') onTileState('ok');
+      else onFail?.();
+    }, hangMs);
+  };
 
   if (mode === 'satellite') {
-    tileLayerRef.current = Leaflet.tileLayer(TILE_URLS.satellite, {
+    const layer = Leaflet.tileLayer(TILE_URLS.satellite, {
       attribution: TILE_ATTRIBUTIONS.esri,
       maxZoom: MAX_ZOOM,
     }).addTo(map);
+    tileLayerRef.current = layer;
+    watch(layer, () => onTileState('failed'));
     return;
   }
 
@@ -128,13 +146,24 @@ function attachBasemap(
       /* noop */
     }
     const esri = getEsriRasterBasemap(dark);
-    tileLayerRef.current = Leaflet.tileLayer(esri.url, {
+    const esriLayer = Leaflet.tileLayer(esri.url, {
       attribution: esri.attribution,
       maxZoom: MAX_ZOOM,
     }).addTo(map);
+    tileLayerRef.current = esriLayer;
+    watch(esriLayer, () => onTileState('failed'));
   };
-  fallbackCleanupRef.current = bindRasterTileFallback(rasterLayer, swapToEsri);
   tileLayerRef.current = rasterLayer.addTo(map);
+  if (cartoBasemapKey()) {
+    // Carto é o primário; troca para Esri apenas numa falha definitiva
+    // (tileerror sem nenhum tile, ou stall total em CARTO_TILE_HANG_MS).
+    // Uma ligação lenta mas viva não é rasgada a meio do carregamento.
+    watch(rasterLayer, swapToEsri, CARTO_TILE_HANG_MS);
+  } else {
+    // Sem key o raster já é Esri — uma falha definitiva é o estado final
+    // ('failed'), que o UI expõe com o botão de retry.
+    watch(rasterLayer, () => onTileState('failed'));
+  }
 }
 
 export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): UseMapCoreReturn {
@@ -154,6 +183,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
 
   const [isReady, setIsReady] = useState(false);
   const [clusterReady, setClusterReady] = useState(false);
+  const [tileState, setTileState] = useState<BasemapLoadState>('loading');
   const [isDark, setIsDark] = useState(readIsDark);
   const [basemapMode, setBasemapMode] = useState<BasemapMode>(readBasemapPref);
   const [isMobile, setIsMobile] = useState(() => {
@@ -283,7 +313,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
 
         if (cancelled) return;
 
-        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef);
+        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, setTileState);
         tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
 
         if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(created);
@@ -330,13 +360,14 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHeroEmbed, containerRef]);
 
-  // Basemap + theme on Leaflet container
+  // Basemap + theme + tile state on Leaflet container
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
     const el = mapInstanceRef.current.getContainer();
     el.dataset.basemap = basemapMode;
     el.dataset.mapTheme = isDark ? 'dark' : 'light';
-  }, [basemapMode, isDark, isReady]);
+    el.dataset.mapTiles = tileState;
+  }, [basemapMode, isDark, tileState, isReady]);
 
   // Switch basemap tiles only when mode/theme actually changed
   useEffect(() => {
@@ -347,7 +378,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     const next = tileSignature(basemapMode, isDark);
     if (tileSignatureRef.current === next && tileLayerRef.current) return;
 
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef);
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, setTileState);
     tileSignatureRef.current = next;
   }, [basemapMode, isDark, isReady]);
 
@@ -360,6 +391,15 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       /* noop */
     }
   }, []);
+
+  // Re-tenta o basemap actual depois de uma falha (botão «Atualizar» do UI).
+  const retryBasemap = useCallback(() => {
+    const Leaflet = LRef.current;
+    const map = mapInstanceRef.current;
+    if (!Leaflet || !map) return;
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, setTileState);
+    tileSignatureRef.current = tileSignature(basemapMode, isDark);
+  }, [basemapMode, isDark, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef]);
 
   // Resize handling
   useEffect(() => {
@@ -409,6 +449,8 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     isDark,
     basemapMode,
     isMobile,
+    tileState,
+    retryBasemap,
     handleBasemapChange,
     tileLayerRef,
     clusterGroupRef,

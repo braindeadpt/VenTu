@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation } from 'lucide-react';
 
 interface MapControlsProps {
   isFullscreen: boolean;
@@ -35,6 +35,10 @@ interface MapControlsProps {
   hsUnavailable: boolean;
   hsLabel: string;
   hsHint: string;
+  currentsEnabled: boolean;
+  currentsUnavailable: boolean;
+  currentsLabel: string;
+  currentsHint: string;
   isobathsLabel: string;
   onlyOnLabel: string;
   onlyOnHint: string;
@@ -54,6 +58,7 @@ interface MapControlsProps {
   handleResetHours: () => void;
   toggleBuoys: () => void;
   toggleHs: () => void;
+  toggleCurrents: () => void;
   toggleIsobaths: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
@@ -68,6 +73,7 @@ const btnMuted = 'border-divider bg-bg-elevated text-fg-muted opacity-80';
 const btnRadarActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
 const btnRadarDisabled = 'border-divider bg-bg-elevated text-fg-subtle opacity-60 cursor-not-allowed';
 const btnIsobathsActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
+const btnCurrentsActive = 'border-data-water/40 bg-data-water/15 text-fg';
 const btnHoursActive = 'border-score-good/40 bg-score-good/15 text-fg';
 const btnOnlyOnActive = btnHoursActive;
 const iconBtnBase = 'flex items-center justify-center min-h-[36px] min-w-[36px] rounded-input border border-divider bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg transition-colors duration-150';
@@ -104,6 +110,10 @@ export default function MapControls({
   hsUnavailable,
   hsLabel,
   hsHint,
+  currentsEnabled,
+  currentsUnavailable,
+  currentsLabel,
+  currentsHint,
   isobathsLabel,
   onlyOnLabel,
   onlyOnHint,
@@ -122,6 +132,7 @@ export default function MapControls({
   handleResetHours,
   toggleBuoys,
   toggleHs,
+  toggleCurrents,
   toggleIsobaths,
   toggleOnlyOn,
   toggleCoastalWarnings,
@@ -262,6 +273,22 @@ export default function MapControls({
         >
           <Activity className="w-4 h-4 shrink-0" aria-hidden />
           <span className="hidden sm:inline">{hsLabel}</span>
+        </button>
+      )}
+
+      {isFullscreen && (
+        <button
+          type="button"
+          onClick={toggleCurrents}
+          disabled={currentsUnavailable}
+          title={currentsUnavailable ? `${currentsHint} — indisponível` : currentsHint}
+          className={`${btnBase} ${currentsUnavailable ? btnRadarDisabled : currentsEnabled ? btnCurrentsActive : ''}`}
+          aria-label={currentsLabel}
+          aria-pressed={currentsEnabled}
+          data-map-currents-toggle
+        >
+          <Navigation className="w-4 h-4 shrink-0 text-data-water" aria-hidden />
+          <span className="hidden sm:inline">{currentsLabel}</span>
         </button>
       )}
 

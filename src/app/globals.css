@@ -529,10 +529,13 @@ html:has([data-embed-widget]) body {
 }
 
 .leaflet-hs-pane,
-.ventu-hs-overlay {
+.leaflet-currents-pane,
+.ventu-hs-overlay,
+.ventu-current-overlay {
   pointer-events: none;
 }
-.ventu-hs-overlay {
+.ventu-hs-overlay,
+.ventu-current-overlay {
   transition: opacity 200ms ease;
 }
 /*
@@ -651,7 +654,8 @@ html:has([data-embed-widget]) body {
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  .ventu-hs-overlay {
+  .ventu-hs-overlay,
+  .ventu-current-overlay {
     transition: none;
   }
 }

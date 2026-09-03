@@ -21,6 +21,8 @@ interface MapLegendProps {
   isobathsVisible?: boolean;
   hsTitle?: string;
   hsVisible?: boolean;
+  currentsTitle?: string;
+  currentsVisible?: boolean;
 }
 
 export default function MapLegend({
@@ -32,14 +34,16 @@ export default function MapLegend({
   isobathsVisible = false,
   hsTitle,
   hsVisible = false,
+  currentsTitle,
+  currentsVisible = false,
 }: MapLegendProps) {
   const isPt = locale === 'pt';
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
   useEffect(() => {
-    if (isobathsVisible || hsVisible) setCollapsed(false);
-  }, [isobathsVisible, hsVisible]);
+    if (isobathsVisible || hsVisible || currentsVisible) setCollapsed(false);
+  }, [isobathsVisible, hsVisible, currentsVisible]);
 
   const isHero = placement === 'hero';
   const bottomPx = !isHero && reserveHudSpace
@@ -112,6 +116,24 @@ export default function MapLegend({
                 <span>0.5</span>
                 <span>1.5</span>
                 <span>3+</span>
+              </div>
+            </div>
+          )}
+          {currentsVisible && currentsTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-map-currents-legend>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+                {currentsTitle}
+              </p>
+              <div
+                className="h-2 rounded mb-1"
+                style={{
+                  background: 'linear-gradient(to right, rgb(var(--data-water) / 0.12), rgb(var(--data-water) / 0.65))',
+                }}
+              />
+              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+                <span>0.1</span>
+                <span>0.2</span>
+                <span>0.4+</span>
               </div>
             </div>
           )}
