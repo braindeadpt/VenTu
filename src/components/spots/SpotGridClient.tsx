@@ -243,6 +243,7 @@ export function SpotGridClient({
           selectedRegion={selectedRegion}
           locale={locale as Locale}
           onSpotSelect={setSelectedSpotId}
+          fullscreenBelowHeader
           mapHud={{
             sports: SPORTS.map((s) => ({
               id: s.id,
