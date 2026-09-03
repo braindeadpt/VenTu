@@ -537,6 +537,7 @@ html:has([data-embed-widget]) body {
 .ventu-hs-overlay,
 .ventu-current-overlay {
   transition: opacity 200ms ease;
+  image-rendering: auto;
 }
 /*
  * Tailwind preflight sets `img { max-width: 100% }`. Leaflet ImageOverlay

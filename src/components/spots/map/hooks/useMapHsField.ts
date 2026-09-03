@@ -12,6 +12,7 @@ import {
   collectHsSamples,
   maxHs,
   renderHsFieldTiles,
+  type FieldSpot,
 } from '@/lib/mapHsField';
 
 interface UseMapHsFieldOptions {
@@ -25,7 +26,7 @@ interface UseMapHsFieldOptions {
   hoursFile: MapHoursFile | null;
   hoursLive: boolean;
   hoursFrame: number;
-  spots: Array<{ id: string; lat: number; lon: number }>;
+  spots: FieldSpot[];
 }
 
 export function useMapHsField({

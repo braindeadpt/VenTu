@@ -13,6 +13,7 @@ import {
   maxCurrentSpd,
   renderCurrentFieldTiles,
 } from '@/lib/mapCurrentsField';
+import type { FieldSpot } from '@/lib/mapHsField';
 
 interface UseMapCurrentsFieldOptions {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -25,7 +26,7 @@ interface UseMapCurrentsFieldOptions {
   hoursFile: MapHoursFile | null;
   hoursLive: boolean;
   hoursFrame: number;
-  spots: Array<{ id: string; lat: number; lon: number }>;
+  spots: FieldSpot[];
 }
 
 export function useMapCurrentsField({

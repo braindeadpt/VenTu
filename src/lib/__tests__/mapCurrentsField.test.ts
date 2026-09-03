@@ -59,4 +59,28 @@ describe('mapCurrentsField', () => {
     expect(collectCurrentSamples(file, spots, 0)[0]?.spd).toBe(0.08);
     expect(collectCurrentSamples(file, spots, 3)[0]?.dir).toBe(200);
   });
+
+  it('skips inland wake spots when collecting currents', () => {
+    const file = {
+      generatedAt: '2026-09-03T07:00:00.000Z',
+      stepHours: 3,
+      times: ['2026-09-03T08:00'],
+      sports: ['surf'],
+      spots: {},
+      currents: {
+        alqueva: { spd: [0.2], dir: [90] },
+        guincho: { spd: [0.2], dir: [180] },
+      },
+    } as unknown as MapHoursFile;
+    const samples = collectCurrentSamples(
+      file,
+      [
+        { id: 'alqueva', lat: 38.2, lon: -7.5, type: 'wakeboard', bestSwell: 'Lagoa' },
+        { id: 'guincho', lat: 38.73, lon: -9.47, type: 'surf' },
+      ],
+      0,
+    );
+    expect(samples).toHaveLength(1);
+    expect(samples[0].dir).toBe(180);
+  });
 });

@@ -587,7 +587,14 @@ export default function SpotMapInteractive({
   }, [spotsData, onlyOnEnabled, selectedSport, hourScores]);
 
   const hsSpots = useMemo(
-    () => visibleSpots.map((d) => ({ id: d.spot.id, lat: d.spot.lat, lon: d.spot.lon })),
+    () =>
+      visibleSpots.map((d) => ({
+        id: d.spot.id,
+        lat: d.spot.lat,
+        lon: d.spot.lon,
+        type: d.spot.type,
+        bestSwell: d.spot.bestSwell,
+      })),
     [visibleSpots],
   );
   const { hsEnabled, hsUnavailable, toggleHs } = useMapHsField({

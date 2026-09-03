@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { distKm, hsFill, idwHs, collectHsSamples, MAP_HS_BOUNDS, MAP_HS_STEP_DEG } from '@/lib/mapHsField';
+import { distKm, hsFill, idwHs, collectHsSamples, coastFalloff, landAwareFalloff, fieldMaxDistKm, isOceanFieldSpot, MAP_HS_BOUNDS, MAP_HS_STEP_DEG } from '@/lib/mapHsField';
 import type { MapHoursFile } from '@/lib/mapHours';
 
 describe('mapHsField', () => {
@@ -52,5 +52,45 @@ describe('mapHsField', () => {
     const rows = Math.ceil((box.north - box.south) / MAP_HS_STEP_DEG);
     expect(cols).toBeGreaterThanOrEqual(40);
     expect(rows).toBeGreaterThanOrEqual(60);
+  });
+
+  it('coastFalloff is 1 near samples and 0 at max distance', () => {
+    expect(coastFalloff(0, 38)).toBe(1);
+    expect(coastFalloff(8, 38)).toBe(1);
+    expect(coastFalloff(38, 38)).toBe(0);
+    expect(coastFalloff(30, 38)).toBeGreaterThan(0);
+    expect(coastFalloff(30, 38)).toBeLessThan(coastFalloff(20, 38));
+  });
+
+  it('landAwareFalloff keeps ocean and kills inland cells', () => {
+    const guincho = { lat: 38.73, lon: -9.47 };
+    const ocean = landAwareFalloff(38.73, -9.95, guincho, 8, 38, 'mainland');
+    const inland = landAwareFalloff(38.73, -8.55, guincho, 8, 38, 'mainland');
+    expect(ocean).toBeGreaterThan(0.9);
+    expect(inland).toBeLessThan(0.35);
+    expect(fieldMaxDistKm('madeira')).toBeLessThan(fieldMaxDistKm('mainland'));
+  });
+
+  it('skips inland wake/lagoa spots in the ocean field', () => {
+    expect(isOceanFieldSpot({ type: 'surf', bestSwell: 'NW' })).toBe(true);
+    expect(isOceanFieldSpot({ type: 'wakeboard', bestSwell: 'Lagoa' })).toBe(false);
+    const file = {
+      generatedAt: '2026-09-03T07:00:00.000Z',
+      stepHours: 3,
+      times: ['2026-09-03T08:00'],
+      sports: ['surf'],
+      spots: {},
+      hs: { alqueva: [1.2], guincho: [1.2] },
+    } as unknown as MapHoursFile;
+    const samples = collectHsSamples(
+      file,
+      [
+        { id: 'alqueva', lat: 38.2, lon: -7.5, type: 'wakeboard', bestSwell: 'Lagoa' },
+        { id: 'guincho', lat: 38.73, lon: -9.47, type: 'surf', bestSwell: 'NW' },
+      ],
+      0,
+    );
+    expect(samples).toHaveLength(1);
+    expect(samples[0].lat).toBe(38.73);
   });
 });

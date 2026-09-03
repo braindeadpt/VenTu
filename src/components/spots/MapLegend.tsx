@@ -87,7 +87,7 @@ export default function MapLegend({
             }}
           />
 
-          <div className="flex justify-between text-[9px] text-fg-subtle">
+          <div className="grid grid-cols-5 gap-0.5 text-center text-[8px] leading-tight text-fg-subtle">
             {labels.map((l) => (
               <span key={l.label}>{l.label}</span>
             ))}
@@ -109,13 +109,13 @@ export default function MapLegend({
               <div
                 className="h-2 rounded mb-1"
                 style={{
-                  background: 'linear-gradient(to right, rgb(14 165 233 / 0.12), rgb(14 165 233 / 0.65))',
+                  background: 'linear-gradient(to right, rgb(var(--data-waves) / 0.14), rgb(var(--data-waves) / 0.78))',
                 }}
               />
               <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
-                <span>0.5</span>
-                <span>1.5</span>
-                <span>3+</span>
+                <span>0.4</span>
+                <span>1.2</span>
+                <span>2.4+</span>
               </div>
             </div>
           )}
@@ -124,12 +124,26 @@ export default function MapLegend({
               <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
                 {currentsTitle}
               </p>
-              <div
-                className="h-2 rounded mb-1"
-                style={{
-                  background: 'linear-gradient(to right, rgb(var(--data-water) / 0.12), rgb(var(--data-water) / 0.65))',
-                }}
-              />
+              <div className="flex items-end justify-between h-5 mb-1 px-0.5" aria-hidden>
+                {[0.55, 0.78, 1].map((s) => (
+                  <svg
+                    key={s}
+                    width={10 + s * 4}
+                    height={12 + s * 6}
+                    viewBox="0 0 12 16"
+                    className="text-data-water"
+                  >
+                    <path
+                      d="M6 15 V3 M6 3 L3.2 7.2 M6 3 L8.8 7.2"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                ))}
+              </div>
               <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
                 <span>0.1</span>
                 <span>0.2</span>

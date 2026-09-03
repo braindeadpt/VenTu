@@ -107,11 +107,6 @@ export function createClusterIconFunction(
           clip-path="url(#cluster-clip-${total}-${goodCount})"
         >${total}</text>
       </svg>
-      <div style="display:none;">
-        <span class="ventu-cluster-good">${goodCount}</span>
-        <span class="ventu-cluster-fair">${fairCount}</span>
-        <span class="ventu-cluster-poor">${poorCount}</span>
-      </div>
     `;
 
     return L.divIcon({
