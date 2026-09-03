@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { Anchor, CloudRain, Layers, HelpCircle, MapPin, Maximize2, RotateCcw, Waves, Wind, Zap } from 'lucide-react';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
@@ -297,10 +298,16 @@ export default function SpotMapInteractive({
   const warningsData = useIpmaWarnings();
 
   // ── Fullscreen ──
+  const router = useRouter();
   const enterFullscreen = useCallback(() => {
+    if (!mapHud) {
+      const search = typeof window !== 'undefined' ? window.location.search : '';
+      router.push(`/${locale}/mapa/${search}`);
+      return;
+    }
     prevFocusRef.current = document.activeElement;
     setIsFullscreen(true);
-  }, []);
+  }, [mapHud, locale, router]);
   const exitFullscreen = useCallback(() => {
     setSheetSpot(null);
     if (onExitFullscreenOverride) onExitFullscreenOverride();
@@ -518,7 +525,7 @@ export default function SpotMapInteractive({
       className={
         isFullscreen
           ? fullscreenBelowHeader
-            ? 'fixed left-0 right-0 bottom-0 z-40 w-full overflow-visible bg-surface-1/[0.04] top-16'
+            ? 'fixed left-0 right-0 bottom-0 z-[1050] w-full overflow-visible bg-surface-1/[0.04] top-16'
             : 'fixed inset-0 z-[1100] w-full overflow-visible bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
           : isHeroEmbed
             ? 'absolute inset-0 overflow-hidden bg-bg-base'
@@ -565,6 +572,7 @@ export default function SpotMapInteractive({
 
           <MapControls
             isFullscreen={isFullscreen}
+            isMobile={isMobile}
             isHeroEmbed={isHeroEmbed}
             clusterEnabled={clusterEnabled}
             showWindOnMarkers={showWindOnMarkers}
@@ -587,6 +595,8 @@ export default function SpotMapInteractive({
             windLegendHelpLabel={windLegendHelpLabel}
             coastalWarningsLabel={coastalWarningsLabel}
             enterFullscreen={enterFullscreen}
+            exitFullscreen={exitFullscreen}
+            exitLabel={exitFullscreenLabel}
             toggleCluster={toggleCluster}
             toggleWind={toggleWind}
             openWindLegend={openWindLegend}

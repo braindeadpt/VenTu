@@ -627,6 +627,11 @@ body.ventu-signup-nudge-open footer {
   padding-bottom: 5.5rem;
 }
 
+body.ventu-map-fullscreen-open footer,
+body.ventu-map-fullscreen-open .ventu-signup-nudge {
+  display: none;
+}
+
 /* ── Popup ── */
 .leaflet-popup.spot-popup {
   z-index: 1200 !important;

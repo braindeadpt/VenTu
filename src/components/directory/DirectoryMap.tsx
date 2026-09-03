@@ -8,7 +8,10 @@ import {
   CLUSTER_CONFIG,
   DEFAULT_CENTER,
   DEFAULT_ZOOM,
+  MAX_ZOOM,
   rasterTileLayerOptions,
+  getEsriRasterBasemap,
+  bindRasterTileFallback,
 } from '@/lib/map-constants';
 import { clearLeafletContainer } from '@/lib/mapFullscreen';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
@@ -93,7 +96,13 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
 
       const dark = !document.documentElement.classList.contains('theme-ocean');
       const { url, ...opts } = rasterTileLayerOptions(dark);
-      Leaflet.tileLayer(url, opts).addTo(map);
+      const rasterLayer = Leaflet.tileLayer(url, opts);
+      bindRasterTileFallback(rasterLayer, () => {
+        try { map.removeLayer(rasterLayer); } catch { /* noop */ }
+        const esri = getEsriRasterBasemap(dark);
+        Leaflet.tileLayer(esri.url, { attribution: esri.attribution, maxZoom: MAX_ZOOM }).addTo(map);
+      });
+      rasterLayer.addTo(map);
 
       Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
       Leaflet.control.attribution({ position: 'bottomleft', prefix: false }).addTo(map);
@@ -129,7 +138,13 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
         }
       });
       const { url, ...opts } = rasterTileLayerOptions(dark);
-      L.tileLayer(url, opts).addTo(map);
+      const rasterLayer = L.tileLayer(url, opts);
+      bindRasterTileFallback(rasterLayer, () => {
+        try { map.removeLayer(rasterLayer); } catch { /* noop */ }
+        const esri = getEsriRasterBasemap(dark);
+        L.tileLayer(esri.url, { attribution: esri.attribution, maxZoom: MAX_ZOOM }).addTo(map);
+      });
+      rasterLayer.addTo(map);
     };
 
     const obs = new MutationObserver(applyTheme);

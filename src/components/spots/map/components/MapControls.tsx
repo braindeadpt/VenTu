@@ -1,10 +1,10 @@
 'use client';
 
-import { Maximize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor } from 'lucide-react';
-import type { BasemapMode } from '@/components/spots/MapLayerToggle';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor } from 'lucide-react';
 
 interface MapControlsProps {
   isFullscreen: boolean;
+  isMobile: boolean;
   isHeroEmbed: boolean;
   clusterEnabled: boolean;
   showWindOnMarkers: boolean;
@@ -27,8 +27,10 @@ interface MapControlsProps {
   windLegendHelpLabel: string;
   coastalWarningsLabel: string;
   fullscreenLabel: string;
+  exitLabel: string;
   // Handlers
   enterFullscreen: () => void;
+  exitFullscreen: () => void;
   toggleCluster: () => void;
   toggleWind: () => void;
   openWindLegend: () => void;
@@ -53,6 +55,7 @@ const iconBtnBase = 'flex items-center justify-center min-h-[36px] min-w-[36px] 
 
 export default function MapControls({
   isFullscreen,
+  isMobile,
   isHeroEmbed,
   clusterEnabled,
   showWindOnMarkers,
@@ -74,7 +77,9 @@ export default function MapControls({
   windLegendHelpLabel,
   coastalWarningsLabel,
   fullscreenLabel,
+  exitLabel,
   enterFullscreen,
+  exitFullscreen,
   toggleCluster,
   toggleWind,
   openWindLegend,
@@ -87,20 +92,26 @@ export default function MapControls({
   fullscreenBtnRef,
 }: MapControlsProps) {
   if (isHeroEmbed) return null;
-  if (isFullscreen) return null;
+  // Mobile fullscreen uses the bottom HUD; desktop keeps these labelled menus.
+  if (isFullscreen && isMobile) return null;
 
   return (
-    <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2">
+    <div className="absolute top-3 left-3 z-[1000] flex flex-col gap-2" data-map-controls="true">
       <button
         ref={fullscreenBtnRef}
         type="button"
-        onClick={enterFullscreen}
+        onClick={isFullscreen ? exitFullscreen : enterFullscreen}
         className={btnBase}
-        aria-label={fullscreenLabel}
-        aria-expanded={false}
+        aria-label={isFullscreen ? exitLabel : fullscreenLabel}
+        aria-expanded={isFullscreen}
+        data-map-exit-fullscreen={isFullscreen ? true : undefined}
       >
-        <Maximize2 className="w-4 h-4 shrink-0" aria-hidden />
-        <span className="hidden sm:inline">Explorar</span>
+        {isFullscreen ? (
+          <Minimize2 className="w-4 h-4 shrink-0" aria-hidden />
+        ) : (
+          <Maximize2 className="w-4 h-4 shrink-0" aria-hidden />
+        )}
+        <span className="hidden sm:inline">{isFullscreen ? exitLabel : 'Explorar'}</span>
       </button>
 
       <button

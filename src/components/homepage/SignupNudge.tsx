@@ -65,7 +65,7 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
   return (
     <div
       role="status"
-      className="fixed bottom-0 left-0 right-0 z-40 bg-bg-elevated border-t border-divider shadow-modal motion-reduce:transition-none transition-transform duration-300 ease-out"
+      className="ventu-signup-nudge fixed bottom-0 left-0 right-0 z-40 bg-bg-elevated border-t border-divider shadow-modal motion-reduce:transition-none transition-transform duration-300 ease-out"
     >
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
         <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-pill bg-accent/15 text-accent" aria-hidden>

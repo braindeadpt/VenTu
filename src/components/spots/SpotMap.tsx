@@ -31,7 +31,7 @@ import {
   resetRadarPref,
 } from '@/lib/radarPrefs';
 import { getTranslation, validateLocale } from '@/lib/i18n';
-import { rasterTileLayerOptions } from '@/lib/map-constants';
+import { rasterTileLayerOptions, getEsriRasterBasemap, bindRasterTileFallback, MAX_ZOOM } from '@/lib/map-constants';
 
 interface SpotMapProps {
   lat: number;
@@ -138,7 +138,17 @@ export default function SpotMap({
         mapInstanceRef.current = map;
 
         const { url, ...opts } = rasterTileLayerOptions(isDark);
-        tileLayer = Leaflet.tileLayer(url, opts).addTo(map);
+        tileLayer = Leaflet.tileLayer(url, opts);
+        bindRasterTileFallback(tileLayer, () => {
+          if (!map || !Leaflet) return;
+          try { map.removeLayer(tileLayer!); } catch { /* noop */ }
+          const esri = getEsriRasterBasemap(isDark);
+          tileLayer = Leaflet.tileLayer(esri.url, {
+            attribution: esri.attribution,
+            maxZoom: MAX_ZOOM,
+          }).addTo(map);
+        });
+        tileLayer.addTo(map);
 
         attributionControl = Leaflet.control
           .attribution({ prefix: false })

@@ -59,18 +59,9 @@ export default function MapaFullscreenClient({
   const regionList = useMemo(() => regions as readonly string[], [regions]);
   const liveSpotsData = useLiveGridSpotData(spotsData, { deferRefreshMs: 5000 });
 
-  const [sport, setSport] = useState<GridSportFilter>(() => {
-    if (typeof window === 'undefined') return DEFAULT_SPORT;
-    return readGridFiltersFromWindow(regions as readonly string[]).sport;
-  });
-  const [region, setRegion] = useState<string>(() => {
-    if (typeof window === 'undefined') return DEFAULT_REGION;
-    return readGridFiltersFromWindow(regions as readonly string[]).region;
-  });
-  const [difficulty, setDifficulty] = useState<MapDifficultyFilter>(() => {
-    if (typeof window === 'undefined') return 'all';
-    return readMapDifficultyFromStorage();
-  });
+  const [sport, setSport] = useState<GridSportFilter>(DEFAULT_SPORT);
+  const [region, setRegion] = useState<string>(DEFAULT_REGION);
+  const [difficulty, setDifficulty] = useState<MapDifficultyFilter>('all');
   // Deep link ?radar=1 (botão de imersão do carrossel do radar): entra no mapa
   // com o radar já ligado. Só lido no arranque; o toggle manual continua a
   // mandar (o estado do mapa é dono do radar depois disto).

@@ -23,27 +23,48 @@ export function cartoBasemapKey(): string {
   return (process.env.NEXT_PUBLIC_CARTO_API_KEY ?? '').trim();
 }
 
-/**
- * Light/dark raster basemap for Leaflet.
- * With NEXT_PUBLIC_CARTO_API_KEY → original Carto dark/light tiles.
- * Without it → Esri World Canvas (already allowed by CSP; no watermark).
- */
-export function getMapRasterBasemap(isDark: boolean): RasterBasemap {
-  const key = cartoBasemapKey();
-  if (key) {
-    const style = isDark ? 'dark_all' : 'light_all';
-    return {
-      url: `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(key)}`,
-      attribution: TILE_ATTRIBUTIONS.carto,
-      subdomains: 'abcd',
-    };
-  }
+export function getEsriRasterBasemap(isDark: boolean): RasterBasemap {
   return {
     url: isDark
       ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
       : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
     attribution: TILE_ATTRIBUTIONS.esri,
   };
+}
+
+/**
+ * Light/dark raster basemap for Leaflet.
+ * With NEXT_PUBLIC_CARTO_API_KEY → original Carto dark/light tiles.
+ * Without it → Esri World Canvas (already allowed by CSP; no watermark).
+ *
+ * Carto `{r}` (`@2x`) is omitted: retina suffixes 404/fail with the free key
+ * and leave Leaflet on the grey empty canvas.
+ */
+export function getMapRasterBasemap(isDark: boolean): RasterBasemap {
+  const key = cartoBasemapKey();
+  if (key) {
+    const style = isDark ? 'dark_all' : 'light_all';
+    return {
+      url: `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}.png?key=${encodeURIComponent(key)}`,
+      attribution: TILE_ATTRIBUTIONS.carto,
+      subdomains: 'abcd',
+    };
+  }
+  return getEsriRasterBasemap(isDark);
+}
+
+/** First Carto tileerror → swap to Esri so the map never stays blank. */
+export function bindRasterTileFallback(
+  layer: { on: (type: string, fn: () => void) => void },
+  swapToEsri: () => void,
+): void {
+  if (!cartoBasemapKey()) return;
+  let swapped = false;
+  layer.on('tileerror', () => {
+    if (swapped) return;
+    swapped = true;
+    swapToEsri();
+  });
 }
 
 // Cadeia de atribuição obrigatória do Open-Meteo (CC BY 4.0) — fonte única em

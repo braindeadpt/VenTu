@@ -25,11 +25,13 @@ describe('getMapRasterBasemap', () => {
     const dark = getMapRasterBasemap(true);
     expect(dark.url).toContain('basemaps.cartocdn.com/dark_all/');
     expect(dark.url).toContain('key=test-key');
+    expect(dark.url).not.toContain('{r}');
     expect(dark.attribution).toBe(TILE_ATTRIBUTIONS.carto);
     expect(dark.subdomains).toBe('abcd');
 
     const light = getMapRasterBasemap(false);
     expect(light.url).toContain('light_all');
     expect(light.url).toContain('key=test-key');
+    expect(light.url).not.toContain('{r}');
   });
 });

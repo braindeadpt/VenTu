@@ -13,6 +13,8 @@ import {
   MAX_ZOOM,
   CLUSTER_CONFIG,
   rasterTileLayerOptions,
+  getEsriRasterBasemap,
+  bindRasterTileFallback,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
 
@@ -153,7 +155,16 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
 
       const darkOnInit = !document.documentElement.classList.contains('theme-ocean');
       const { url, ...opts } = rasterTileLayerOptions(darkOnInit);
-      tileLayerRef.current = Leaflet.tileLayer(url, opts).addTo(map);
+      const rasterLayer = Leaflet.tileLayer(url, opts);
+      bindRasterTileFallback(rasterLayer, () => {
+        try { map.removeLayer(rasterLayer); } catch { /* noop */ }
+        const esri = getEsriRasterBasemap(darkOnInit);
+        tileLayerRef.current = Leaflet.tileLayer(esri.url, {
+          attribution: esri.attribution,
+          maxZoom: MAX_ZOOM,
+        }).addTo(map);
+      });
+      tileLayerRef.current = rasterLayer.addTo(map);
 
       if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -212,7 +223,16 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     } else {
       const raster = rasterTileLayerOptions(isDark);
       const { url, ...opts } = raster;
-      tileLayerRef.current = Leaflet.tileLayer(url, opts).addTo(map);
+      const rasterLayer = Leaflet.tileLayer(url, opts);
+      bindRasterTileFallback(rasterLayer, () => {
+        try { map.removeLayer(rasterLayer); } catch { /* noop */ }
+        const esri = getEsriRasterBasemap(isDark);
+        tileLayerRef.current = Leaflet.tileLayer(esri.url, {
+          attribution: esri.attribution,
+          maxZoom: MAX_ZOOM,
+        }).addTo(map);
+      });
+      tileLayerRef.current = rasterLayer.addTo(map);
     }
   }, [basemapMode, isDark, isReady]);
 

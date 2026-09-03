@@ -186,6 +186,21 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(mapShell).toBeVisible({ timeout: 30_000 });
       await expect(mapShell).toHaveAttribute('data-map-hud', 'visible');
 
+      await expect
+        .poll(
+          async () =>
+            page.locator('.leaflet-tile').evaluateAll((imgs) =>
+              imgs.some((img) => img instanceof HTMLImageElement && img.naturalWidth > 0),
+            ),
+          { timeout: 15_000 },
+        )
+        .toBe(true);
+
+      if (viewport === 'desktop') {
+        await expect(page.locator('[data-map-controls="true"]')).toBeVisible();
+        await expect(page.getByRole('button', { name: /Agrupar spots|Cluster spots|Mostrar todos|Show all/i })).toBeVisible();
+      }
+
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
     });

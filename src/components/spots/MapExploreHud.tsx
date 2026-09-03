@@ -117,11 +117,9 @@ export default function MapExploreHud({
   radarResetLabel = '',
   buoyChip,
 }: MapExploreHudProps) {
-  // Mobile: start collapsed (more map). Desktop: filters always open.
-  const [collapsed, setCollapsed] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    return !window.matchMedia('(min-width: 768px)').matches;
-  });
+  // Always start collapsed so SSR and the first client paint match. Desktop
+  // still shows the filter rows via `hidden md:flex` below.
+  const [collapsed, setCollapsed] = useState(true);
 
   if (!visible) return null;
 
@@ -203,6 +201,7 @@ export default function MapExploreHud({
             <Search className="w-4 h-4" aria-hidden />
           </MapControlButton>
 
+          <div className="flex items-center gap-0.5 shrink-0 md:hidden">
           <MapControlButton
             onClick={onToggleCluster}
             aria-label={clusterLabel}
@@ -295,6 +294,7 @@ export default function MapExploreHud({
           >
             <Zap className="w-4 h-4 text-score-good" aria-hidden />
           </MapControlButton>
+          </div>
 
           {buoyChip}
 
@@ -306,7 +306,7 @@ export default function MapExploreHud({
           <MapControlButton
             onClick={onExitFullscreen}
             aria-label={exitLabel}
-            className="ml-auto sm:ml-0"
+            className="ml-auto sm:ml-0 md:hidden"
             data-map-exit-fullscreen
           >
             <Minimize2 className="w-4 h-4" aria-hidden />
