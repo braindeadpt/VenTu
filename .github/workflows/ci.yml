@@ -27,7 +27,14 @@ jobs:
         run: npm ci
 
       - name: Audit dependencies (high+)
-        run: npm audit --audit-level=high
+        # npm 10 hits the retiring /security/audits/quick endpoint, which the
+        # registry now answers with 400/503 intermittently (retirement notice:
+        # "use the bulk advisory endpoint instead"). npm 11 audits via the bulk
+        # endpoint — proven working locally (0 vulnerabilities). The gate stays
+        # honest: a real high+ finding still fails the step.
+        run: |
+          npm install -g npm@11 >/dev/null 2>&1
+          npm audit --audit-level=high
 
       - name: Validate spots
         run: node scripts/validate-spots.js
