@@ -1,5 +1,5 @@
 import { locales } from '@/lib/i18n';
-import { loadSpotData } from '@/lib/load-spot-data';
+import { loadSpotListings } from '@/lib/load-spot-data';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo';
 import MapaFullscreenClient from '@/components/spots/MapaFullscreenClient';
@@ -38,7 +38,7 @@ export default async function MapaPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const spotsData = loadSpotData();
+  const spotsData = loadSpotListings();
 
   return (
     <MapaFullscreenClient

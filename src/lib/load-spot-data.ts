@@ -83,9 +83,6 @@ export interface SpotData {
     observed?: ObservedConditions
     /** Measured wave — lets the UI show the «Corrigido pela boia X» badge (TopNow). */
     observedWave?: ObservedWave
-    /** Regional bias meta — baked pela pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
-     *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
-    waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean }
     /** Runner-up source (WMO when IH won, IH when WMO won). */
     observedWaveAlt?: ObservedWave
     /** Why the winner was chosen (freshness/distance). */
@@ -105,10 +102,18 @@ export interface SpotData {
     tideHeight?: number
     tideStatus?: 'high' | 'low' | 'rising' | 'falling'
     tideLabel?: string
+    /** Regional bias meta — baked pela pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
+     *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
+    waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean }
   }
   allScores: Record<SportType, SportScore>
-  /** Hourly forecast rows for this spot (same array the client fetch serves). */
-  forecast: Array<{
+  /**
+   * Hourly forecast rows for this spot (same array the client fetch serves).
+   * Detail rows only: `loadSpotData()` attaches it for the spot-page bake;
+   * `loadSpotListings()` rows omit it — listing pages render a card and would
+   * otherwise pay ~10 MB of serialized forecast across ~300 static pages.
+   */
+  forecast?: Array<{
     time: string
     waveHeight?: number
     wavePeriod?: number
@@ -121,11 +126,20 @@ export interface SpotData {
   bestWindowsBySport: BestWindowsBySport
 }
 
+/**
+ * Build one spot row. `detail` rows serve the spot page (which bakes them into
+ * the static HTML — see src/app/[locale]/spots/[slug]/page.tsx) and therefore
+ * carry the full conditions incl. observed-source coherence, station wind bias
+ * and tide context, plus the hourly forecast. Listing rows skip exactly those
+ * fields — they were added to this shared loader for the spot-page bake in
+ * 847350f9c, and no listing component reads them.
+ */
 function buildSpotData(
   spot: Spot,
   raw: RawConditions | null,
   forecastsData: Record<string, Array<Record<string, unknown>>>,
   waveBiasRegions: ReturnType<typeof loadWaveBiasRegionsBuild>,
+  detail: boolean,
 ): SpotData | null {
   const useLakeDefault = !raw && isWakeboardOnly(spot)
   if (!raw && !useLakeDefault) return null
@@ -144,60 +158,64 @@ function buildSpotData(
     : scoreInput0
   const allScores = getAllSportScores(spot, scoreInput)
 
+  const conditions: SpotData['conditions'] = {
+    ...scoreInput,
+    ...pickMarineDisplayFields((raw ?? {}) as Record<string, unknown>),
+    updatedAt: (raw?.updatedAt as string) || undefined,
+    source: raw ? ('real' as const) : ('mock' as const),
+    ...(raw ? pickConfidenceFields(raw) : {}),
+    observed: raw ? pickObservedField(raw as Record<string, unknown>) : undefined,
+    observedWave: raw?.observedWave as ObservedWave | undefined,
+    ...(detail
+      ? {
+          observedWaveAlt: raw?.observedWaveAlt as ObservedWave | undefined,
+          observedWaveMeta: raw?.observedWaveMeta as ObservedWaveMeta | undefined,
+          observedWaveCoherenceRefused: raw?.observedWaveCoherenceRefused as
+            | SpotData['conditions']['observedWaveCoherenceRefused']
+            | undefined,
+          observedWaveCoherenceWarning: raw?.observedWaveCoherenceWarning as
+            | SpotData['conditions']['observedWaveCoherenceWarning']
+            | undefined,
+          windBias: raw?.windBias as SpotData['conditions']['windBias'],
+          tideHeight: raw?.tideHeight as number | undefined,
+          tideStatus: raw?.tideStatus as SpotData['conditions']['tideStatus'],
+          tideLabel: raw?.tideLabel as string | undefined,
+        }
+      : {}),
+    waveBias:
+      (biasPatch?.waveBias ?? raw?.waveBias) as SpotData['conditions']['waveBias'],
+  }
+
   const dataId = spot.conditionsSource ?? spot.id
-  const forecast = (forecastsData[dataId] ?? forecastsData[spot.id] ?? []) as Array<{
-    time: string
-    waveHeight?: number
-    wavePeriod?: number
-    windSpeed?: number
-    windDirection?: number
-    windGust?: number
-    waterTemp?: number
-  }>
+  const forecast = (forecastsData[dataId] ?? forecastsData[spot.id] ?? []) as NonNullable<SpotData['forecast']>
   const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast)
 
-  return {
+  const row: SpotData = {
     spot,
-    conditions: {
-      ...scoreInput,
-      ...pickMarineDisplayFields((raw ?? {}) as Record<string, unknown>),
-      updatedAt: (raw?.updatedAt as string) || undefined,
-      source: raw ? ('real' as const) : ('mock' as const),
-      ...(raw ? pickConfidenceFields(raw) : {}),
-      observed: raw ? pickObservedField(raw as Record<string, unknown>) : undefined,
-      observedWave: raw?.observedWave as ObservedWave | undefined,
-      observedWaveAlt: raw?.observedWaveAlt as ObservedWave | undefined,
-      observedWaveMeta: raw?.observedWaveMeta as ObservedWaveMeta | undefined,
-      observedWaveCoherenceRefused: raw?.observedWaveCoherenceRefused as
-        | SpotData['conditions']['observedWaveCoherenceRefused']
-        | undefined,
-      observedWaveCoherenceWarning: raw?.observedWaveCoherenceWarning as
-        | SpotData['conditions']['observedWaveCoherenceWarning']
-        | undefined,
-      windBias: raw?.windBias as SpotData['conditions']['windBias'],
-      tideHeight: raw?.tideHeight as number | undefined,
-      tideStatus: raw?.tideStatus as SpotData['conditions']['tideStatus'],
-      tideLabel: raw?.tideLabel as string | undefined,
-      waveBias:
-        (biasPatch?.waveBias ?? raw?.waveBias) as SpotData['conditions']['waveBias'],
-    },
+    conditions,
     allScores,
-    forecast,
     bestWindowToday,
     bestWindowsBySport,
   }
+  if (detail) {
+    row.forecast = forecast
+  }
+  return row
 }
 
 // Build-time memoization: data files are immutable during a static build, so parse
-// once per worker instead of once per page. loadSpotData() is called by home, spots
-// index, mapa, explorar (255 pages) and modalidades (40 pages) — each call re-parses
-// the ~8.2MB forecasts.json and recomputes scores for all 185 spots (~230ms).
-// Only cached in production (build): dev must see freshly regenerated data files.
-let spotDataCache: SpotData[] | null = null
+// once per worker instead of once per page. loadSpotData()/loadSpotListings() are
+// called by home, spots index, mapa, explorar (255 pages) and modalidades (40
+// pages) — each call re-parses the ~8.2MB forecasts.json and recomputes scores for
+// all 185 spots (~230ms). Only cached in production (build): dev must see freshly
+// regenerated data files.
+let listingCache: SpotData[] | null = null
+let detailCache: SpotData[] | null = null
 
-export function loadSpotData(): SpotData[] {
-  if (process.env.NODE_ENV === 'production' && spotDataCache) {
-    return spotDataCache
+function loadRows(detail: boolean): SpotData[] {
+  if (process.env.NODE_ENV === 'production') {
+    const cached = detail ? detailCache : listingCache
+    if (cached) return cached
   }
 
   const conditionsData = loadConditionsJson()
@@ -207,7 +225,7 @@ export function loadSpotData(): SpotData[] {
   const result: SpotData[] = []
   for (const spot of spots) {
     const raw = resolveConditionsEntry(spot, conditionsData) ?? null
-    const row = buildSpotData(spot, raw, forecastsData, waveBiasRegions)
+    const row = buildSpotData(spot, raw, forecastsData, waveBiasRegions, detail)
     if (row) result.push(row)
   }
 
@@ -218,8 +236,22 @@ export function loadSpotData(): SpotData[] {
   })
 
   if (process.env.NODE_ENV === 'production') {
-    spotDataCache = result
+    if (detail) {
+      detailCache = result
+    } else {
+      listingCache = result
+    }
   }
 
   return result
+}
+
+/** Detail rows (full conditions + forecast) — the spot page bakes one into its HTML. */
+export function loadSpotData(): SpotData[] {
+  return loadRows(true)
+}
+
+/** Lean rows for card/grid/map listings — no forecast, no spot-page-only condition fields. */
+export function loadSpotListings(): SpotData[] {
+  return loadRows(false)
 }

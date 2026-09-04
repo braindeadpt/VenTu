@@ -1,4 +1,4 @@
-import { loadSpotData } from '@/lib/load-spot-data'
+import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
 import PageHeader from '@/components/ui/PageHeader'
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function SpotsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const isPt = locale === 'pt'
-  const spotsData = loadSpotData()
+  const spotsData = loadSpotListings()
 
   return (
     <div className="min-h-screen">

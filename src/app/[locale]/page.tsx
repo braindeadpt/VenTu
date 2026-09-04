@@ -1,5 +1,5 @@
 import { getTranslation, locales } from '@/lib/i18n';
-import { loadSpotData } from '@/lib/load-spot-data';
+import { loadSpotListings } from '@/lib/load-spot-data';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
@@ -16,7 +16,7 @@ export default async function HomePage({
   const { locale } = await params;
   const t = getTranslation(locale);
 
-  const spotsData = loadSpotData();
+  const spotsData = loadSpotListings();
 
   const timestamps = spotsData
     .map((d) => d.conditions.updatedAt)

@@ -1,4 +1,4 @@
-import { loadSpotData } from '@/lib/load-spot-data'
+import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
 import { locales } from '@/lib/i18n'
@@ -49,7 +49,7 @@ export default async function ExplorarPage({ params }: Props) {
   const landing = getSeoLanding(slug)
   if (!landing) notFound()
 
-  const spotsData = loadSpotData()
+  const spotsData = loadSpotListings()
   const title = landingTitle(landing, locale)
   const description = landingDescription(landing, locale)
 
