@@ -120,6 +120,12 @@ jobs:
       - name: Validate _headers security directives
         run: node scripts/check-headers-file.js
 
+      # Per-route payload budgets: listing pages must never re-serialize the
+      # spot-detail forecast bake (847350f9c → ~22 MB/route; fixed by
+      # cb6fb1806). Fails the build if any route dir exceeds 5 MB raw.
+      - name: Check per-route payload budgets
+        run: node scripts/check-payload-budgets.js
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
