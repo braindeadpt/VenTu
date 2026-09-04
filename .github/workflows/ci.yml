@@ -30,11 +30,24 @@ jobs:
         # npm 10 hits the retiring /security/audits/quick endpoint, which the
         # registry now answers with 400/503 intermittently (retirement notice:
         # "use the bulk advisory endpoint instead"). npm 11 audits via the bulk
-        # endpoint — proven working locally (0 vulnerabilities). The gate stays
-        # honest: a real high+ finding still fails the step.
+        # endpoint — proven working locally (0 vulnerabilities). The registry
+        # has also been flaky today (503 / network timeouts), so endpoint
+        # errors are retried with backoff. The gate stays honest: a real high+
+        # finding fails immediately, and 5 endpoint failures still fail the step.
         run: |
-          npm install -g npm@11 >/dev/null 2>&1
-          npm audit --audit-level=high
+          npm install -g npm@11 >/dev/null 2>&1 || true
+          for i in 1 2 3 4 5; do
+            out=$(npm audit --audit-level=high 2>&1) && { printf '%s\n' "$out"; exit 0; }
+            if printf '%s\n' "$out" | grep -qE "audit endpoint returned an error|network timeout|Service Unavailable|Bad Request|ECONNRESET|ETIMEDOUT"; then
+              echo "registry audit endpoint flake (attempt ${i}/5) — retrying"
+              sleep 20
+            else
+              printf '%s\n' "$out"
+              exit 1
+            fi
+          done
+          echo "npm audit could not reach the registry after 5 attempts (no vulnerability findings)"
+          exit 1
 
       - name: Validate spots
         run: node scripts/validate-spots.js
