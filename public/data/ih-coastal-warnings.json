@@ -439,32 +439,63 @@
       ]
     },
     {
-      "id": 18471,
-      "ref": "ANAV NR 1955/26",
+      "id": 18473,
+      "ref": "ANAV NR 1956/26",
       "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=8c3bf068-098c-4cdf-9669-1c6750d10009",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=06f8decb-f607-468c-92b8-984a80a59a39",
       "source": "ih",
       "polygons": [
         [
           [
-            -8.892732,
-            38.520756
+            -28.620322,
+            38.528092
           ],
           [
-            -8.892732,
-            38.521142
+            -28.620322,
+            38.535343
           ],
           [
-            -8.892067,
-            38.521142
+            -28.61496,
+            38.535343
           ],
           [
-            -8.892067,
-            38.520756
+            -28.61496,
+            38.528092
           ],
           [
-            -8.892732,
-            38.520756
+            -28.620322,
+            38.528092
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18475,
+      "ref": "ANAV NR 1957/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4634810f-f05d-4f02-8fab-d4391f89a71a",
+      "source": "ih",
+      "polygons": [
+        [
+          [
+            -8.766667,
+            38.233333
+          ],
+          [
+            -8.825,
+            38.233333
+          ],
+          [
+            -8.766667,
+            38.291667
+          ],
+          [
+            -8.825,
+            38.291667
+          ],
+          [
+            -8.766667,
+            38.233333
           ]
         ]
       ]
@@ -530,7 +561,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-04T00:46:46.317Z",
+  "fetchedAt": "2026-09-04T10:25:18.491Z",
   "sourceCollection": "nav_warning_coastal",
   "sourceUrl": "https://api-features.hidrografico.pt/collections/nav_warning_coastal"
 }
