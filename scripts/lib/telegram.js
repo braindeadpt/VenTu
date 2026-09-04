@@ -7,19 +7,70 @@ function getToken() {
   return process.env.TELEGRAM_BOT_TOKEN || '';
 }
 
+/**
+ * Telegram API failure carrying the HTTP status so the caller can decide how
+ * to react. `actionable` means the failure is permanent and fix-required:
+ * a revoked/invalid bot token, an auth rejection, or a request-shape bug that
+ * will repeat every tick. `status === 0` marks a network-level failure
+ * (fetch threw: DNS/timeout/connreset) which is transient.
+ */
+class TelegramApiError extends Error {
+  constructor(message, { status = 0, actionable = false, cause } = {}) {
+    super(message, cause !== undefined ? { cause } : undefined);
+    this.name = 'TelegramApiError';
+    this.status = status;
+    this.actionable = actionable;
+  }
+}
+
+// Token rejeitado: revogado, inválido, ou bot inexistente (o Telegram devolve
+// 404 para tokens desconhecidos). Sempre acionável — nunca transitório.
+const AUTH_STATUSES = new Set([401, 403, 404]);
+// Transitório por natureza: pedidos concorrentes (409), rate-limit (429),
+// timeout de leitura (408). 5xx é transitório por definição.
+const TRANSIENT_STATUSES = new Set([408, 409, 429]);
+const AUTH_DESC_RE = /unauthor|forbidden|invalid.*token|not found/i;
+
+/**
+ * Decide whether a failed Telegram API response is actionable (permanent) or
+ * transient. The classification lives HERE — the error carries `actionable`
+ * to the caller, which never has to guess from the message text.
+ */
+function isActionableFailure(status, desc) {
+  if (AUTH_STATUSES.has(status)) return true;
+  if (AUTH_DESC_RE.test(desc)) return true;
+  if (status >= 500 || TRANSIENT_STATUSES.has(status)) return false;
+  // Restante (outros 4xx, ou ok:false com HTTP 200): erro permanente do
+  // pedido/código — repete todos os ticks e parte o fluxo em silêncio.
+  return true;
+}
+
 async function telegramApi(method, body) {
   const token = getToken();
   if (!token) return { ok: false, dryRun: true };
 
-  const res = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
+  let res;
+  try {
+    res = await fetch(`https://api.telegram.org/bot${token}/${method}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch (cause) {
+    // fetch rejeitou: DNS/timeout/reset — transitório por natureza.
+    throw new TelegramApiError(
+      `Telegram ${method}: network error — ${cause.message}`,
+      { status: 0, actionable: false, cause },
+    );
+  }
   const data = await res.json().catch(() => ({}));
   if (!res.ok || !data.ok) {
-    const desc = data.description || res.statusText;
-    throw new Error(`Telegram ${method}: ${desc}`);
+    const status = res.status || 0;
+    const desc = data.description || res.statusText || `HTTP ${status}`;
+    throw new TelegramApiError(`Telegram ${method}: ${desc}`, {
+      status,
+      actionable: isActionableFailure(status, desc),
+    });
   }
   return data;
 }
@@ -194,4 +245,7 @@ module.exports = {
   processTelegramLinkUpdates,
   fetchTelegramChatId,
   getToken,
+  telegramApi,
+  TelegramApiError,
+  isActionableFailure,
 };
