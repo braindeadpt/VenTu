@@ -175,7 +175,7 @@ export default function SpotListCard({
               <WarningPill warning={warning} locale={locale} variant="mini" />
             )}
           </div>
-          <div className="flex items-center gap-1.5 shrink-0">
+          <div className="flex items-center gap-1.5 shrink-0" data-visual-dynamic>
             <ScoreBadge score={score} locale={locale} size="sm" />
             {conditions.confidence && (
               <ConfidenceBadge
@@ -193,11 +193,11 @@ export default function SpotListCard({
           <h3 className="font-display font-semibold text-fg truncate text-body">{name}</h3>
           <p className="text-meta-sm text-fg-muted truncate">{region}</p>
           {statusLine && (
-            <p className="text-meta-sm text-fg-subtle mt-0.5 capitalize">{statusLine}</p>
+            <p className="text-meta-sm text-fg-subtle mt-0.5 capitalize" data-visual-dynamic>{statusLine}</p>
           )}
         </div>
 
-        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto" data-visual-dynamic>
           {calmWaterLabel ? (
             <span className="inline-flex items-center gap-1 text-fg-subtle normal-case font-sans">
               <Waves className="w-3 h-3 text-data-waves" aria-hidden />

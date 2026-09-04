@@ -369,7 +369,7 @@ export default function SwellRadar({
     <div role="img" aria-label={ariaLabel} className="inline-flex flex-col items-center gap-3">
       {/* ── SVG canvas ── */}
       <div className="relative" style={{ width: cfg.px, height: cfg.px }}>
-        <svg viewBox={`0 0 ${cfg.viewBox} ${cfg.viewBox}`} className="w-full h-full" aria-hidden="true">
+        <svg viewBox={`0 0 ${cfg.viewBox} ${cfg.viewBox}`} className="w-full h-full" aria-hidden="true" data-visual-dynamic>
           <defs>
             {/* Clip paths for coast semicircles */}
             {hasCoast && (

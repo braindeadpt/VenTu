@@ -76,7 +76,7 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
   });
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3" data-visual-dynamic>
       {windows.map((w, i) => {
         const startTime = pickWindowTime(hourly, w.start);
         const endTime = pickWindowTime(hourly, w.end);

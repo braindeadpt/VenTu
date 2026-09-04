@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect, type Locator, type Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 
 /**
@@ -26,6 +26,18 @@ import { preseedWindRingLegend } from './helpers/map-setup';
  *    fold would otherwise be missing → guaranteed diff).
  *  - animations: 'disabled' + a global freeze style make pixels deterministic
  *    without changing layout.
+ *
+ * Data drift: the data pipeline commits ~15×/day and every commit rebuilds
+ * the export, so data-derived TEXT (scores, wave heights, dates, counts,
+ * buoy clocks) differs between the baseline run and the gate run even though
+ * no code changed — a raw pixel gate would fail on data churn, not regressions.
+ * Policy (same spirit as the live-canvas rule): data-derived text leaves are
+ * marked data-visual-dynamic in the components and masked; zones whose content
+ * is 100%% data output (forecast table body, charts, radar, warning lists,
+ * month strip) are masked as units — their frames/headers/position stay gated,
+ * exactly like /mapa gates the live canvas strictly while hero embeds mask it.
+ * A layout regression (clipped card, missing section, broken spacing) still
+ * moves pixels OUTSIDE the masks and fails.
  */
 
 /**
@@ -244,6 +256,26 @@ async function normalizeVolatileText(page: Page): Promise<void> {
   });
 }
 
+/**
+ * Mask selectors for data-derived content. Everything matched is painted over
+ * in the comparison (see the data-drift policy in the header). Stable selectors
+ * only: component-authored data-visual-dynamic attributes plus pre-existing
+ * semantic hooks (wave clock, coastal chart/refs, buoy streak) — never Tailwind
+ * utility classes, which change with styling.
+ */
+const DATA_MASK_SELECTORS = [
+  '[data-visual-dynamic]',
+  '[data-wave-clock="true"]',
+  '[data-daily-active-chart]',
+  '[data-coastal-ref]',
+  '[data-buoy-streak="true"]',
+];
+
+/** Resolve the data-drift masks against the current page. */
+async function collectDataMasks(page: Page): Promise<Locator[]> {
+  return DATA_MASK_SELECTORS.map((sel) => page.locator(sel));
+}
+
 /** Wait until the basemap has actually painted tiles (not mid-fade). */
 async function waitForMapSettled(page: Page): Promise<void> {
   const map = page.locator('.leaflet-container');
@@ -343,6 +375,7 @@ for (const viewport of Object.keys(VIEWPORTS) as Array<keyof typeof VIEWPORTS>) 
             fullPage: route.name !== 'mapa',
             animations: 'disabled',
             caret: 'hide',
+            mask: await collectDataMasks(page),
             ...(isMap
               ? { maxDiffPixelRatio: 0.02, timeout: 30_000 }
               // Zero-diff except a 64px allowance: sub-pixel font AA specks on
@@ -384,6 +417,7 @@ test.describe('visual: smoke (rest of sitemap)', () => {
         fullPage: route.name !== 'smoke-mapa-en',
         animations: 'disabled',
         caret: 'hide',
+        mask: await collectDataMasks(page),
         ...(MAP_ROUTES.has(route.name)
           ? { maxDiffPixelRatio: 0.05, timeout: 30_000 }
           : { maxDiffPixelRatio: 0.05, timeout: 10_000 }),

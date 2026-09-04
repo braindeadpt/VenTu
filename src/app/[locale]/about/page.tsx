@@ -483,7 +483,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 </tbody>
               </table>
             </div>
-            <p className="text-xs text-fg-subtle">
+            <p className="text-xs text-fg-subtle" data-visual-dynamic>
               {(() => {
                 const byOrigin = skill.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 }
                 const calib = skill.calibratedPairCount ?? 0
@@ -524,7 +524,10 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                   ? 'Arquivo — Avisos à Navegação Costeiros (IH)'
                   : 'Archive — IH coastal navigation warnings'}
               </h2>
-              <span className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
+                data-visual-dynamic
+              >
                 <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
                 {isPt
                   ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} de snapshots`
@@ -555,7 +558,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                     <th className="py-1.5 text-right font-semibold">{isPt ? 'Até' : 'Until'}</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody data-visual-dynamic>
                   {archive.refs.map((r) => (
                     <tr key={r.ref} className="border-b border-divider last:border-0">
                       <td className="py-1.5 pr-3 font-medium text-fg whitespace-nowrap">

@@ -322,7 +322,10 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
                   ? 'Histórico — Avisos à Navegação Costeiros (IH)'
                   : 'History — IH coastal navigation warnings'}
               </h2>
-              <span className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted">
+              <span
+                className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
+                data-visual-dynamic
+              >
                 <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
                 {isPt
                   ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} · janela ${archive.windowDays}`

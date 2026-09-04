@@ -32,7 +32,7 @@ export default function ScoreBadge({
         className,
       )}
     >
-      <span>{score}</span>
+      <span data-visual-dynamic>{score}</span>
       {showLabel && (
         <span
           className={cn(

@@ -484,7 +484,7 @@ export default function ForecastTable({
             </tr>
           </thead>
 
-        <tbody>
+        <tbody data-visual-dynamic>
           {/* ── WAVES ── */}
           <tr>
             <th

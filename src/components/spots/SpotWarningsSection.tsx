@@ -82,7 +82,7 @@ export default function SpotWarningsSection({
             : 'No active warnings relevant to this region.'}
         </p>
       ) : (
-        <ul className="space-y-2 list-none p-0 m-0">
+        <ul className="space-y-2 list-none p-0 m-0" data-visual-dynamic>
           {warnings.map((w) => (
             <li
               key={`${w.areaCode}-${w.type}-${w.level}`}

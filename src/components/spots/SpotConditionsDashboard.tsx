@@ -274,7 +274,7 @@ export default function SpotConditionsDashboard({
               {swellTrains.length > 0 && (
                 <p className="text-meta-sm text-fg-subtle mt-2 font-mono tabular-nums">
                   {tv.totalSwellEnergy}:{' '}
-                  <span className="text-fg font-medium">{totalEnergy.toFixed(1)} kW/m</span>
+                  <span className="text-fg font-medium" data-visual-dynamic>{totalEnergy.toFixed(1)} kW/m</span>
                 </p>
               )}
             </div>

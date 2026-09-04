@@ -58,7 +58,7 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody data-visual-dynamic>
             {trains.map((train) => (
               <tr
                 key={train.key}

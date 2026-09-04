@@ -132,7 +132,7 @@ function ObservedNowContent({
             <span className="ml-1.5 text-meta-sm font-normal text-fg-subtle">{tv.live}</span>
           )}
         </h3>
-        <p className="text-meta-sm text-fg-subtle">{metaLine}</p>
+        <p className="text-meta-sm text-fg-subtle" data-visual-dynamic>{metaLine}</p>
       </div>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-meta">
@@ -140,11 +140,11 @@ function ObservedNowContent({
           <p className="text-meta-sm text-fg-muted mb-0.5">
             {tv.windWithSource.replace('{source}', sourceLabel)}
           </p>
-          <p className="font-mono tabular-nums font-semibold text-fg">
+          <p className="font-mono tabular-nums font-semibold text-fg" data-visual-dynamic>
             {observed.windSpeedKt} kt {cardinal}
           </p>
           {observed.tempC != null && (
-            <p className="text-meta-sm text-fg-subtle font-mono tabular-nums mt-0.5">
+            <p className="text-meta-sm text-fg-subtle font-mono tabular-nums mt-0.5" data-visual-dynamic>
               {observed.tempC.toFixed(1)}°C
             </p>
           )}

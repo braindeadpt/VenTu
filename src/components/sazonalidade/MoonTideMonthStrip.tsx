@@ -57,11 +57,11 @@ export default function MoonTideMonthStrip({ locale, yearMonth }: MoonTideMonthS
       aria-label={mt.monthStripTitle}
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-lg font-semibold text-fg capitalize">{monthLabel}</h2>
+        <h2 className="text-lg font-semibold text-fg capitalize" data-visual-dynamic>{monthLabel}</h2>
         <p className="text-meta-sm text-fg-muted">{mt.monthStripHint}</p>
       </div>
 
-      <div className="flex flex-wrap gap-1" role="list">
+      <div className="flex flex-wrap gap-1" role="list" data-visual-dynamic>
         {days.map(({ day, key, regime }) => {
           const isToday = key === todayKey;
           return (

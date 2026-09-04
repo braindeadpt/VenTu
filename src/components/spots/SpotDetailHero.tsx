@@ -326,7 +326,7 @@ export default function SpotDetailHero({
                 ) : (
                   <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5 text-meta-sm text-score-good">
                     <Waves className="w-3.5 h-3.5 shrink-0" aria-hidden />
-                    <span className="font-medium">
+                    <span className="font-medium" data-visual-dynamic>
                       {observedWaveLabel(observedWave, locale)}
                     </span>
                     {(() => {

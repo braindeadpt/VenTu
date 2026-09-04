@@ -17,12 +17,17 @@ name: Record Visual Baselines
 # but CI on the baseline commit validates the new baselines, which is exactly
 # what we want: red gate on a bad record run is caught by the next CI run).
 #
-# KNOWN CAVEAT: data-only commits don't run CI (paths-ignore), so if baked
-# SSG text (e.g. the news list) changes between code commits, the next code
-# commit's pixel gate can fail on data drift. Fix: run this workflow manually
-# (workflow_dispatch) — one click re-records and CI greens on the baseline
-# commit. Deliberate trade: automatic recording on every data refresh would
-# burn a build+record+CI cycle ~15×/day for marginal benefit.
+# KNOWN CAVEAT: data-derived TEXT is masked in the spec (data-visual-dynamic
+# attributes + bulk-data zones), so routine data commits no longer move pixels
+# and the gate stays green without re-recording. Re-record only when:
+#  - the masks or any component layout change (a deliberate visual change);
+#  - a data commit alters LAYOUT, not text (list lengths, card counts, chart
+#    presence) — masks are boxes around stable text leaves, so structural
+#    growth still shifts pixels and can fail the next code commit's gate.
+# Run this workflow manually (workflow_dispatch) in that case — one click
+# re-records and CI greens on the baseline commit. Deliberate trade: automatic
+# recording on every data refresh would burn a build+record+CI cycle ~15×/day
+# for marginal benefit.
 
 on:
   workflow_dispatch:

@@ -61,7 +61,7 @@ export default function StatChip({ icon, value, label, className, ariaLabel }: S
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="font-mono text-num-sm text-fg tabular-nums leading-tight" aria-label={ariaLabel ?? value}>
+        <p className="font-mono text-num-sm text-fg tabular-nums leading-tight" aria-label={ariaLabel ?? value} data-visual-dynamic>
           {animatedValue}
         </p>
         <p className="text-meta-sm text-fg-subtle leading-tight">{label}</p>
