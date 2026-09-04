@@ -120,15 +120,6 @@ jobs:
       - name: Validate _headers security directives
         run: node scripts/check-headers-file.js
 
-      # Blocking perf/a11y/SEO gate: category floors (SEO≥90, A11y≥85,
-      # Perf≥50) AND audit-level Core Web Vitals budgets (FCP≤900ms, LCP≤3.5s,
-      # SI≤3.2s, TBT≤250ms, ≤2MB page weight) — calibrated from measured runs,
-      # evaluated in scripts/lib/lighthouseBudgets.js (unit-tested, pure).
-      # CLS is tracked+printed but not gated until the spot-page hydration
-      # shift (0.44) is fixed.
-      - name: Lighthouse budgets (perf, a11y, SEO, CWV)
-        run: npm run lighthouse:prod
-
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
@@ -174,6 +165,15 @@ jobs:
         run: npm run test:visual
         env:
           CI: true
+
+      # Blocking perf/a11y/SEO gate: category floors (SEO≥90, A11y≥85,
+      # Perf≥50) AND audit-level Core Web Vitals budgets (FCP≤900ms, LCP≤3.5s,
+      # SI≤3.2s, TBT≤250ms, ≤2MB page weight) — calibrated from measured runs,
+      # evaluated in scripts/lib/lighthouseBudgets.js (unit-tested, pure).
+      # Correctness gates (unit, lint, E2E, pixel) run BEFORE this perf gate —
+      # a slow-but-correct app ships behind a fast-but-broken one.
+      - name: Lighthouse budgets (perf, a11y, SEO, CWV)
+        run: npm run lighthouse:prod
 
   supabase-sql:
     runs-on: ubuntu-latest
