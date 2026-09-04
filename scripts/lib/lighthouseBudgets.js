@@ -10,25 +10,21 @@
  * value for cheap/stable metrics (FCP, TBT), ~1.5× for the noisiest (LCP, SI,
  * bytes) — CI runners are slower and noisier than a dev machine, and a budget
  * that is red on landing day gates nothing.
+ *
+ * CLS is gated since 2026-09-04: the spot page baked its data into the static
+ * HTML (skeleton → content swap was CLS 0.44), and 0.1 is the standard "good"
+ * boundary. Keep it gated — a regression back to client-only loading must fail.
  */
 
-/** Audit-id → budget. ms / bytes / dimensionless (CLS). */
+/** Audit-id → budget. ms / bytes / dimensionless ratio (CLS). */
 const METRIC_BUDGETS = {
   'first-contentful-paint': { limit: 900, unit: 'ms' },
   'largest-contentful-paint': { limit: 3500, unit: 'ms' },
   'speed-index': { limit: 3200, unit: 'ms' },
   'total-blocking-time': { limit: 250, unit: 'ms' },
   'total-byte-weight': { limit: 2097152, unit: 'bytes' },
+  'cumulative-layout-shift': { limit: 0.1, unit: 'ratio' },
 };
-
-/**
- * Measured but NOT gated: /pt/spots/ hydration shifts the layout after the
- * baked HTML (CLS 0.44 desktop). Any honest CLS budget fails from day one;
- * gating nothing would hide the regression. So CLS is collected, printed by
- * the CLI, and its fix is tracked separately. When the shift is fixed, move
- * CLS into METRIC_BUDGETS (limit 0.1, the standard "good" boundary).
- */
-const TRACKED_ONLY_METRICS = ['cumulative-layout-shift'];
 
 /** Category-score floors (unchanged from the original gate). */
 const CATEGORY_BUDGETS = { seo: 90, accessibility: 85, performance: 50 };
@@ -64,18 +60,19 @@ function evaluateLighthouseBudgets(report) {
     }
     worst[id] = audit.numericValue;
     if (audit.numericValue > limit) {
-      const shown = unit === 'bytes' ? `${Math.round(audit.numericValue / 1024)}KB` : `${Math.round(audit.numericValue)}ms`;
-      const cap = unit === 'bytes' ? `${Math.round(limit / 1024)}KB` : `${limit}ms`;
+      const shown =
+        unit === 'bytes'
+          ? `${Math.round(audit.numericValue / 1024)}KB`
+          : unit === 'ratio'
+            ? `${Math.round(audit.numericValue * 1000) / 1000}`
+            : `${Math.round(audit.numericValue)}ms`;
+      const cap =
+        unit === 'bytes' ? `${Math.round(limit / 1024)}KB` : unit === 'ratio' ? `${limit}` : `${limit}ms`;
       breaches.push(`audit ${id}: ${shown} > ${cap}`);
     }
   }
 
-  for (const id of TRACKED_ONLY_METRICS) {
-    const value = audits[id]?.numericValue;
-    if (value != null) tracked.push({ id, value: Math.round(value * 10000) / 10000 });
-  }
-
-  return { breaches, tracked, worst };
+  return { breaches, worst };
 }
 
-module.exports = { METRIC_BUDGETS, TRACKED_ONLY_METRICS, CATEGORY_BUDGETS, evaluateLighthouseBudgets };
+module.exports = { METRIC_BUDGETS, CATEGORY_BUDGETS, evaluateLighthouseBudgets };

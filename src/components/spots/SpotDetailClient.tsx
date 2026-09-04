@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 
 import type { Spot } from '@/types';
@@ -132,23 +131,50 @@ export default function SpotDetailClient({
   spot,
   locale,
   events = [],
+  initialData,
 }: {
   spot: Spot;
   locale: string;
   events?: VentuEvent[];
+  /** Baked at build (static export) — skips the client fetch, kills the hydration layout shift. */
+  initialData?: SpotData;
 }) {
-  const searchParams = useSearchParams();
-  const sportFromUrl = searchParams?.get('sport') as SportType | null;
+  // ?sport= deep links are read after hydration: useSearchParams() would make
+  // Next's static export bail the whole page to client-side rendering (empty
+  // <main> in the baked HTML → the content mounts after load → CLS 0.4+).
+  const [sportFromUrl, setSportFromUrl] = useState<SportType | null>(null);
+  useEffect(() => {
+    const s = new URLSearchParams(window.location.search).get('sport');
+    if (
+      s &&
+      ['surf', 'kitesurf', 'windsurf', 'foil', 'bodyboard', 'sup', 'wakeboard'].includes(s)
+    ) {
+      setSportFromUrl(s as SportType);
+    }
+  }, []);
 
   const isPt = locale === 'pt';
   const t = getTranslation(locale);
   const td = t.spotDetail;
   const tv = t.spotVerify;
 
-  const [spotData, setSpotData] = useState<SpotData | null>(null);
+  const [spotData, setSpotData] = useState<SpotData | null>(initialData ?? null);
   const initialSport = sportFromUrl || (spot.compatibleSports?.[0] as SportType) || 'surf';
-  const [selectedSport, setSelectedSport] = useState<SportType>(initialSport);
-  const [loading, setLoading] = useState(true);
+  // Same selection policy the fetch path applies after loadData: prefer the URL
+  // sport when it scores, else the highest-scoring sport.
+  const [selectedSport, setSelectedSport] = useState<SportType>(() => {
+    if (sportFromUrl && initialData?.allScores[sportFromUrl]?.score) {
+      return sportFromUrl;
+    }
+    if (initialData) {
+      const best = (
+        Object.entries(initialData.allScores) as [SportType, { score: number }][]
+      ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
+      if (best) return best;
+    }
+    return initialSport;
+  });
+  const [loading, setLoading] = useState(!initialData);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -207,7 +233,20 @@ export default function SpotDetailClient({
     }
   }, [spot, spotData, selectedSport]);
 
+  // Late ?sport= deep link (read after hydration): select it once data is
+  // ready and it scores, matching the old pre-hydration behaviour.
   useEffect(() => {
+    if (!sportFromUrl || !spotData) return;
+    if (spotData.allScores[sportFromUrl]?.score > 0) {
+      setSelectedSport(sportFromUrl);
+    }
+  }, [sportFromUrl, spotData]);
+
+  // Baked pages skip the fetch: static-export data is immutable per build, so a
+  // refetch can only re-read the same files (and would re-swap the page after
+  // paint — the CLS the bake fixes).
+  useEffect(() => {
+    if (initialData) return;
     let cancelled = false;
     const loadSlug = spot.slug;
 
@@ -390,7 +429,14 @@ export default function SpotDetailClient({
     return () => {
       cancelled = true;
     };
-  }, [spot, sportFromUrl, retryCount]);
+  }, [spot, sportFromUrl, retryCount, initialData]);
+
+  // Baked pages don't run loadData; keep the freshness heuristic fed.
+  useEffect(() => {
+    if (initialData?.conditions.updatedAt) {
+      rememberDataUpdate(initialData.conditions.updatedAt);
+    }
+  }, [initialData]);
 
   const hourlyScores = useMemo(() => {
     if (!spotData || !spotData.forecast.length) return [];

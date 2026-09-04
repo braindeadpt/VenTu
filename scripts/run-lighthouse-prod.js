@@ -106,13 +106,8 @@ async function main() {
         `[${route.name}] Perf ${row.performance} | A11y ${row.accessibility} | SEO ${row.seo}`,
       );
 
-      const { breaches, tracked } = evaluateLighthouseBudgets(report);
+      const { breaches } = evaluateLighthouseBudgets(report);
       for (const breach of breaches) allBreaches.push(`[${route.name}] ${breach}`);
-      for (const m of tracked) {
-        console.log(
-          `[${route.name}] tracked: ${m.id}=${m.value} (not gated — hydration CLS fix tracked separately)`,
-        );
-      }
     }
 
     const worst = {

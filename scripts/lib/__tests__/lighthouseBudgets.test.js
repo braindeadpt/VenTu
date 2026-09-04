@@ -22,6 +22,7 @@ const PASSING = report(
     'speed-index': { numericValue: 2161 },
     'total-blocking-time': { numericValue: 70 },
     'total-byte-weight': { numericValue: 1310000 },
+    'cumulative-layout-shift': { numericValue: 0.02 },
   },
 );
 
@@ -82,12 +83,18 @@ describe('evaluateLighthouseBudgets', () => {
     expect(breaches[0]).toContain('fail-closed');
   });
 
-  it('collects tracked-only metrics without gating them', () => {
+  it('flags cumulative-layout-shift over the 0.1 gate', () => {
     const r = structuredClone(PASSING);
     r.audits['cumulative-layout-shift'] = { numericValue: 0.4396 };
-    const { breaches, tracked } = evaluateLighthouseBudgets(r);
+    const { breaches } = evaluateLighthouseBudgets(r);
+    expect(breaches).toEqual(['audit cumulative-layout-shift: 0.44 > 0.1']);
+  });
+
+  it('passes cumulative-layout-shift at exactly the 0.1 gate (inclusive)', () => {
+    const r = structuredClone(PASSING);
+    r.audits['cumulative-layout-shift'] = { numericValue: 0.1 };
+    const { breaches } = evaluateLighthouseBudgets(r);
     expect(breaches).toEqual([]);
-    expect(tracked).toEqual([{ id: 'cumulative-layout-shift', value: 0.4396 }]);
   });
 
   it('ignores categories and audits that have no budget', () => {

@@ -8,7 +8,7 @@ import type { SportScore } from '@/lib/sportScore'
 import { pickConfidenceFields } from '@/lib/forecastConfidence'
 import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditions'
 import type { ObservedConditions } from '@/lib/observations'
-import type { ObservedWave } from '@/lib/observedWave'
+import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions'
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias'
@@ -86,8 +86,37 @@ export interface SpotData {
     /** Regional bias meta — baked pela pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
      *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
     waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean }
+    /** Runner-up source (WMO when IH won, IH when WMO won). */
+    observedWaveAlt?: ObservedWave
+    /** Why the winner was chosen (freshness/distance). */
+    observedWaveMeta?: ObservedWaveMeta
+    /** Recusa cross-border: leitura ES descartada por par ES×PT incoherent. */
+    observedWaveCoherenceRefused?: { esCode: string; day?: string | null }
+    /** Confiança baixa da leitura IH: par ES×PT incoherent há N+ dias consecutivos. */
+    observedWaveCoherenceWarning?: {
+      esCode: string
+      ptRefCode?: string
+      days: number
+      firstDay?: string | null
+      lastDay?: string | null
+    }
+    /** Station wind bias baked by the merge (wind-bias.json) — badge tooltip. */
+    windBias?: { station?: string; source?: string; me?: number; mae?: number; rmse?: number; n?: number }
+    tideHeight?: number
+    tideStatus?: 'high' | 'low' | 'rising' | 'falling'
+    tideLabel?: string
   }
   allScores: Record<SportType, SportScore>
+  /** Hourly forecast rows for this spot (same array the client fetch serves). */
+  forecast: Array<{
+    time: string
+    waveHeight?: number
+    wavePeriod?: number
+    windSpeed?: number
+    windDirection?: number
+    windGust?: number
+    waterTemp?: number
+  }>
   bestWindowToday: BestWindowToday | null
   bestWindowsBySport: BestWindowsBySport
 }
@@ -137,10 +166,23 @@ function buildSpotData(
       ...(raw ? pickConfidenceFields(raw) : {}),
       observed: raw ? pickObservedField(raw as Record<string, unknown>) : undefined,
       observedWave: raw?.observedWave as ObservedWave | undefined,
+      observedWaveAlt: raw?.observedWaveAlt as ObservedWave | undefined,
+      observedWaveMeta: raw?.observedWaveMeta as ObservedWaveMeta | undefined,
+      observedWaveCoherenceRefused: raw?.observedWaveCoherenceRefused as
+        | SpotData['conditions']['observedWaveCoherenceRefused']
+        | undefined,
+      observedWaveCoherenceWarning: raw?.observedWaveCoherenceWarning as
+        | SpotData['conditions']['observedWaveCoherenceWarning']
+        | undefined,
+      windBias: raw?.windBias as SpotData['conditions']['windBias'],
+      tideHeight: raw?.tideHeight as number | undefined,
+      tideStatus: raw?.tideStatus as SpotData['conditions']['tideStatus'],
+      tideLabel: raw?.tideLabel as string | undefined,
       waveBias:
         (biasPatch?.waveBias ?? raw?.waveBias) as SpotData['conditions']['waveBias'],
     },
     allScores,
+    forecast,
     bestWindowToday,
     bestWindowsBySport,
   }
