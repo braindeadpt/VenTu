@@ -1,6 +1,7 @@
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
+import MapTilePreconnect from '@/components/MapTilePreconnect'
 import { locales } from '@/lib/i18n'
 import {
   SEO_LANDINGS,
@@ -65,6 +66,7 @@ export default async function ExplorarPage({ params }: Props) {
 
   return (
     <div className="min-h-screen">
+      <MapTilePreconnect />
       {regionHero ?? (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
           <Link

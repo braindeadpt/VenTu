@@ -3,6 +3,7 @@ import { loadSpotListings } from '@/lib/load-spot-data';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
+import MapTilePreconnect from '@/components/MapTilePreconnect';
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -28,6 +29,7 @@ export default async function HomePage({
 
   return (
     <div className="min-h-screen bg-bg-base">
+      <MapTilePreconnect />
       <h1 className="sr-only">
         {t.hero.seoH1
           .replace('{count}', String(spotsData.length))

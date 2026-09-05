@@ -1,6 +1,7 @@
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
+import MapTilePreconnect from '@/components/MapTilePreconnect'
 import PageHeader from '@/components/ui/PageHeader'
 import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
@@ -26,6 +27,7 @@ export default async function SpotsPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="min-h-screen">
+      <MapTilePreconnect />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <PageHeader
           title={isPt ? 'Todos os Spots' : 'All Spots'}

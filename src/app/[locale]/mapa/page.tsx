@@ -3,6 +3,7 @@ import { loadSpotListings } from '@/lib/load-spot-data';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo';
 import MapaFullscreenClient from '@/components/spots/MapaFullscreenClient';
+import MapTilePreconnect from '@/components/MapTilePreconnect';
 import type { Metadata } from 'next';
 
 // es/de/fr: EN body via isPt branch; shell/nav/meta translated (SEO hreflang MVP).
@@ -41,10 +42,13 @@ export default async function MapaPage({
   const spotsData = loadSpotListings();
 
   return (
-    <MapaFullscreenClient
-      spotsData={spotsData}
-      regions={[...MACRO_REGIONS]}
-      locale={locale}
-    />
+    <>
+      <MapTilePreconnect />
+      <MapaFullscreenClient
+        spotsData={spotsData}
+        regions={[...MACRO_REGIONS]}
+        locale={locale}
+      />
+    </>
   );
 }
