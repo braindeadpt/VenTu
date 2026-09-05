@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-05T13:13:19.604Z",
+  "fetchedAt": "2026-09-05T16:30:05.294Z",
   "warnings": [
     {
       "areaCode": "AOC",
@@ -33,6 +33,16 @@
       "relevant": true
     },
     {
+      "areaCode": "PTO",
+      "areaLabel": "Porto",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-05T21:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "GDA",
       "areaLabel": "Guarda",
       "type": "Trovoada",
@@ -53,12 +63,52 @@
       "relevant": true
     },
     {
+      "areaCode": "LRA",
+      "areaLabel": "Leiria",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-05T21:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "CBO",
       "areaLabel": "Castelo Branco",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; rajadas entre 70 e 90 km/h.",
       "startTime": "2026-09-05T15:00:00",
+      "endTime": "2026-09-05T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "AVR",
+      "areaLabel": "Aveiro",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-05T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "CBR",
+      "areaLabel": "Coimbra",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-05T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BRG",
+      "areaLabel": "Braga",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T21:00:00",
       "relevant": true
     },
@@ -68,7 +118,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
@@ -78,7 +128,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
@@ -88,8 +138,8 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
-      "endTime": "2026-09-06T18:00:00",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-07T21:00:00",
       "relevant": false
     },
     {
@@ -98,7 +148,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
@@ -108,8 +158,8 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
-      "endTime": "2026-09-05T18:00:00",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-07T21:00:00",
       "relevant": false
     },
     {
@@ -118,7 +168,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
@@ -128,8 +178,8 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
-      "endTime": "2026-09-05T18:00:00",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-07T21:00:00",
       "relevant": false
     },
     {
@@ -138,7 +188,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
@@ -148,8 +198,8 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
-      "endTime": "2026-09-05T18:00:00",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-07T21:00:00",
       "relevant": false
     },
     {
@@ -158,7 +208,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
@@ -168,8 +218,8 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
-      "endTime": "2026-09-06T18:00:00",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-07T21:00:00",
       "relevant": false
     },
     {
@@ -178,8 +228,8 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
-      "endTime": "2026-09-05T18:00:00",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-07T21:00:00",
       "relevant": false
     },
     {
@@ -188,7 +238,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
+      "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
@@ -198,20 +248,366 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-04T23:45:00",
-      "endTime": "2026-09-05T18:00:00",
+      "startTime": "2026-09-05T12:28:00",
+      "endTime": "2026-09-07T21:00:00",
       "relevant": false
     }
   ],
   "spotWarnings": {
+    "povoa-varzim": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "azurara": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "leca-palmeira": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "matosinhos": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cabedelo-douro": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "marina-afurada-foil": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-da-lomba": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "salgueiros": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sereia-costa-verde": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "canide-sul": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "aguda": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "espinho": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-37": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "bairro-piscatorio": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "paramos": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "barrinha-esmoriz": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "esmoriz": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cortegaca": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cortegaca-sul": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "maceda": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "murtosa": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ria-torreira": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-torreira": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "muranzel": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "furadouro": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-jacinto": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "costa-nova": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "tocha": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
     "quiaios": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      },
       {
         "areaCode": "CBR",
         "areaLabel": "Coimbra",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -220,10 +616,20 @@
       {
         "areaCode": "CBR",
         "areaLabel": "Coimbra",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -232,10 +638,20 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -244,10 +660,20 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -256,10 +682,20 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -268,10 +704,20 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -283,7 +729,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -295,7 +741,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -307,7 +753,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -319,7 +765,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -331,7 +777,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -343,7 +789,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -355,7 +801,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -367,7 +813,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -379,7 +825,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -391,7 +837,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -403,8 +849,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -415,8 +861,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -427,8 +873,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -439,8 +885,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -451,8 +897,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -463,8 +909,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -475,8 +921,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -487,8 +933,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -499,8 +945,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -511,8 +957,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -523,8 +969,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -535,8 +981,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -547,8 +993,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -559,8 +1005,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -571,8 +1017,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -583,8 +1029,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -595,8 +1041,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -607,8 +1053,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -619,8 +1065,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -631,8 +1077,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -643,8 +1089,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -655,8 +1101,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -667,8 +1113,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -679,8 +1125,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -691,8 +1137,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -703,8 +1149,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -715,8 +1161,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -727,8 +1173,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -739,9 +1185,21 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-06T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
+      }
+    ],
+    "ilha-do-ermal": [
+      {
+        "areaCode": "BRG",
+        "areaLabel": "Braga",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
       }
     ],
     "melides": [
@@ -751,8 +1209,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -763,8 +1221,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -775,8 +1233,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -787,8 +1245,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -799,8 +1257,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -811,8 +1269,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -823,8 +1281,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -835,8 +1293,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -847,8 +1305,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -859,8 +1317,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -871,8 +1329,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -883,8 +1341,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -895,8 +1353,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -907,8 +1365,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -919,8 +1377,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -931,8 +1389,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -943,8 +1401,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -955,8 +1413,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -967,8 +1425,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -979,8 +1437,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -991,8 +1449,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1003,8 +1461,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1015,8 +1473,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1027,8 +1485,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1039,8 +1497,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1051,8 +1509,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1063,8 +1521,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1075,8 +1533,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1087,8 +1545,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1099,8 +1557,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1111,8 +1569,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1123,8 +1581,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1135,8 +1593,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1147,8 +1605,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1159,8 +1617,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1171,8 +1629,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1183,8 +1641,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1195,8 +1653,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1207,8 +1665,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1219,8 +1677,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1231,8 +1689,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1243,8 +1701,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1255,8 +1713,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1267,8 +1725,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1279,9 +1737,33 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
+      }
+    ],
+    "barra-aveiro": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "vila-cha": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
       }
     ],
     "santa-cruz": [
@@ -1291,8 +1773,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1303,7 +1785,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -1315,7 +1797,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -1324,10 +1806,20 @@
       {
         "areaCode": "LRA",
         "areaLabel": "Leiria",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      },
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
+        "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T18:00:00",
         "relevant": false
       }
@@ -1339,8 +1831,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1351,8 +1843,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1363,8 +1855,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1375,8 +1867,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1387,8 +1879,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1399,8 +1891,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1411,8 +1903,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1423,8 +1915,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1435,8 +1927,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1447,8 +1939,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1459,8 +1951,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1471,8 +1963,8 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
       }
     ],
@@ -1483,9 +1975,33 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-04T23:45:00",
-        "endTime": "2026-09-05T18:00:00",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-07T21:00:00",
         "relevant": false
+      }
+    ],
+    "mindelo": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
+      }
+    ],
+    "aterro": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Trovoada",
+        "level": "yellow",
+        "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+        "startTime": "2026-09-05T12:28:00",
+        "endTime": "2026-09-05T21:00:00",
+        "relevant": true
       }
     ]
   }
