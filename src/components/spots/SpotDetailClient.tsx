@@ -143,6 +143,19 @@ export default function SpotDetailClient({
   // Next's static export bail the whole page to client-side rendering (empty
   // <main> in the baked HTML → the content mounts after load → CLS 0.4+).
   const [sportFromUrl, setSportFromUrl] = useState<SportType | null>(null);
+
+  // `ventu_live=1` (set by the hermetic e2e helpers whenever they intercept
+  // /data/* files) forces the client-fetch path. When it is set the page must
+  // NOT seed from the baked snapshot: two value-bearing sources (baked
+  // initialData + the live fetch) racing each other during the swap produced
+  // torn renders — the score badge from one snapshot, the stat value from the
+  // other. Seeding null makes the client render ONE source (the fetched one),
+  // so a mixed frame is structurally impossible. In production nobody sets the
+  // cookie, so the bake (and its CLS win) stays the default.
+  const [forceLive] = useState(() =>
+    typeof document !== 'undefined' &&
+    document.cookie.split(';').some((c) => c.trim() === 'ventu_live=1'),
+  );
   useEffect(() => {
     const s = new URLSearchParams(window.location.search).get('sport');
     if (
@@ -158,15 +171,17 @@ export default function SpotDetailClient({
   const td = t.spotDetail;
   const tv = t.spotVerify;
 
-  const [spotData, setSpotData] = useState<SpotData | null>(initialData ?? null);
+  const [spotData, setSpotData] = useState<SpotData | null>(
+    forceLive ? null : (initialData ?? null),
+  );
   const initialSport = sportFromUrl || (spot.compatibleSports?.[0] as SportType) || 'surf';
   // Same selection policy the fetch path applies after loadData: prefer the URL
   // sport when it scores, else the highest-scoring sport.
   const [selectedSport, setSelectedSport] = useState<SportType>(() => {
-    if (sportFromUrl && initialData?.allScores[sportFromUrl]?.score) {
+    if (sportFromUrl && !forceLive && initialData?.allScores[sportFromUrl]?.score) {
       return sportFromUrl;
     }
-    if (initialData) {
+    if (!forceLive && initialData) {
       const best = (
         Object.entries(initialData.allScores) as [SportType, { score: number }][]
       ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
@@ -174,7 +189,7 @@ export default function SpotDetailClient({
     }
     return initialSport;
   });
-  const [loading, setLoading] = useState(!initialData);
+  const [loading, setLoading] = useState(forceLive ? true : !initialData);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
@@ -244,15 +259,14 @@ export default function SpotDetailClient({
 
   // Baked pages skip the fetch: static-export data is immutable per build, so a
   // refetch can only re-read the same files (and would re-swap the page after
-  // paint — the CLS the bake fixes). The `ventu_live=1` cookie (set by hermetic
-  // e2e via interceptConditions when they craft /data/* files) forces the
-  // client-fetch path anyway — the same production code used when no bake
-  // exists — so tests can control the served data. In production nobody sets
-  // the cookie, so the bake stays the default.
+  // paint — the CLS the bake fixes). `forceLive` (the `ventu_live=1` cookie set
+  // by hermetic e2e when they craft /data/* files) forces the client-fetch path
+  // anyway — the same production code used when no bake exists — so tests can
+  // control the served data. With the cookie set, spotData is seeded null
+  // above, so the fetch is the page's ONLY data source (no baked snapshot to
+  // tear against). In production nobody sets the cookie, so the bake stays the
+  // default.
   useEffect(() => {
-    const forceLive = document.cookie
-      .split(';')
-      .some((c) => c.trim() === 'ventu_live=1')
     if (initialData && !forceLive) return;
     let cancelled = false;
     const loadSlug = spot.slug;
@@ -436,7 +450,7 @@ export default function SpotDetailClient({
     return () => {
       cancelled = true;
     };
-  }, [spot, sportFromUrl, retryCount, initialData]);
+  }, [spot, sportFromUrl, retryCount, initialData, forceLive]);
 
   // Baked pages don't run loadData; keep the freshness heuristic fed.
   useEffect(() => {
