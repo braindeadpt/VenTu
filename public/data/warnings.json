@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-05T16:30:05.294Z",
+  "fetchedAt": "2026-09-05T18:46:10.393Z",
   "warnings": [
     {
       "areaCode": "AOC",
@@ -113,26 +113,6 @@
       "relevant": true
     },
     {
-      "areaCode": "BGC",
-      "areaLabel": "Bragança",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-05T12:28:00",
-      "endTime": "2026-09-05T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "VIS",
-      "areaLabel": "Viseu",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-05T12:28:00",
-      "endTime": "2026-09-05T18:00:00",
-      "relevant": false
-    },
-    {
       "areaCode": "EVR",
       "areaLabel": "Évora",
       "type": "Tempo Quente",
@@ -140,16 +120,6 @@
       "text": "Valores elevados da temperatura máxima.",
       "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-07T21:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "GDA",
-      "areaLabel": "Guarda",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-05T12:28:00",
-      "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
     {
@@ -163,16 +133,6 @@
       "relevant": false
     },
     {
-      "areaCode": "VRL",
-      "areaLabel": "Vila Real",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-05T12:28:00",
-      "endTime": "2026-09-05T18:00:00",
-      "relevant": false
-    },
-    {
       "areaCode": "STB",
       "areaLabel": "Setúbal",
       "type": "Tempo Quente",
@@ -183,16 +143,6 @@
       "relevant": false
     },
     {
-      "areaCode": "STM",
-      "areaLabel": "Santarém",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Valores elevados da temperatura máxima.",
-      "startTime": "2026-09-05T12:28:00",
-      "endTime": "2026-09-05T18:00:00",
-      "relevant": false
-    },
-    {
       "areaCode": "LSB",
       "areaLabel": "Lisboa",
       "type": "Tempo Quente",
@@ -200,16 +150,6 @@
       "text": "Valores elevados da temperatura máxima.",
       "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-07T21:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "LRA",
-      "areaLabel": "Leiria",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-05T12:28:00",
-      "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
     {
@@ -230,16 +170,6 @@
       "text": "Valores elevados da temperatura máxima.",
       "startTime": "2026-09-05T12:28:00",
       "endTime": "2026-09-07T21:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "CBR",
-      "areaLabel": "Coimbra",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-05T12:28:00",
-      "endTime": "2026-09-05T18:00:00",
       "relevant": false
     },
     {
@@ -600,16 +530,6 @@
         "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
       }
     ],
     "figueira-foz": [
@@ -622,16 +542,6 @@
         "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "CBR",
-        "areaLabel": "Coimbra",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
       }
     ],
     "leirosa": [
@@ -644,16 +554,6 @@
         "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
       }
     ],
     "praia-da-vieira": [
@@ -666,16 +566,6 @@
         "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
       }
     ],
     "castelo-bode": [
@@ -688,16 +578,6 @@
         "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
       }
     ],
     "nazare": [
@@ -710,136 +590,6 @@
         "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "foz-arelho": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "foil-foz-arelho": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "obidos-lagoon": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "obidos-lagoon-sul": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "obidos-lagoon-foz": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "foz-arelho-beach": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "praia-del-rey": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "almagreira": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "baleal": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "supertubos": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
       }
     ],
     "foz-sizandro": [
@@ -1778,30 +1528,6 @@
         "relevant": false
       }
     ],
-    "consolacao": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
-    "areia-branca": [
-      {
-        "areaCode": "STM",
-        "areaLabel": "Santarém",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
-      }
-    ],
     "sao-martinho-porto": [
       {
         "areaCode": "LRA",
@@ -1812,16 +1538,6 @@
         "startTime": "2026-09-05T12:28:00",
         "endTime": "2026-09-05T21:00:00",
         "relevant": true
-      },
-      {
-        "areaCode": "LRA",
-        "areaLabel": "Leiria",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-05T12:28:00",
-        "endTime": "2026-09-05T18:00:00",
-        "relevant": false
       }
     ],
     "cave-ericeira": [
