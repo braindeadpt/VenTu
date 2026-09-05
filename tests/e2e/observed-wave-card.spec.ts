@@ -857,7 +857,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       /Δ -0\.4 m aplicado à altura\. Viés regional ME -0\.4 m \(n=120\)\. Correcção aplicada pela pipeline \(meta na row\)\./,
     );
     // Altura exibida é a corrigida para baixo, com o sufixo do factor.
-    await expect(hero.getByText('1.4m (viés regional)')).toBeVisible();
+    // 15s: mesma janela do resto do spec — a página baked troca para o
+    // estado live (post-hydration) e o commit demora >5s ocasionalmente.
+    await expect(hero.getByText('1.4m (viés regional)')).toBeVisible({ timeout: 15_000 });
     // Nunca a altura crua acima (1.8m) — a correcção aplicou-se.
     await expect(hero.getByText('1.8m (viés regional)')).toHaveCount(0);
   });

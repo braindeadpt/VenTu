@@ -244,9 +244,16 @@ export default function SpotDetailClient({
 
   // Baked pages skip the fetch: static-export data is immutable per build, so a
   // refetch can only re-read the same files (and would re-swap the page after
-  // paint — the CLS the bake fixes).
+  // paint — the CLS the bake fixes). The `ventu_live=1` cookie (set by hermetic
+  // e2e via interceptConditions when they craft /data/* files) forces the
+  // client-fetch path anyway — the same production code used when no bake
+  // exists — so tests can control the served data. In production nobody sets
+  // the cookie, so the bake stays the default.
   useEffect(() => {
-    if (initialData) return;
+    const forceLive = document.cookie
+      .split(';')
+      .some((c) => c.trim() === 'ventu_live=1')
+    if (initialData && !forceLive) return;
     let cancelled = false;
     const loadSlug = spot.slug;
 

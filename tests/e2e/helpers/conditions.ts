@@ -66,12 +66,28 @@ export interface InterceptDataOptions {
  * named intercept* helpers delegate here. Pass `{ status: 404 }` to simulate
  * a missing file (the app's fetch fallback path). Register BEFORE page.goto.
  */
+/**
+ * Spot pages bake the build snapshot and skip the client data fetch (since
+ * 847350f9c). Hermetic specs craft /data/* files, which only works if the
+ * page actually fetches them — set `ventu_live=1` so the spot page takes its
+ * client-fetch path (the same production code used when no bake exists),
+ * making the interception hermetic again. Inert on home/mapa (they always
+ * fetch live) and in production (nobody sets the cookie). Persists across
+ * reloads, so dismiss/reload tests keep their fixtures.
+ */
+async function forceLiveSpotMode(page: Page): Promise<void> {
+  const baseUrl = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1';
+  await page.context().addCookies([{ name: 'ventu_live', value: '1', url: baseUrl }]);
+}
+
 export async function interceptData(
   page: Page,
   path: string,
   file: unknown,
   options: InterceptDataOptions = {},
 ): Promise<void> {
+  await forceLiveSpotMode(page);
+
   const glob = path.startsWith('**') ? path : `**/data/${path}`;
   await page.route(glob, async (route) => {
     await route.fulfill({
@@ -87,6 +103,7 @@ export async function interceptData(
  * data with the requested transforms. Register BEFORE page.goto.
  */
 export async function interceptConditions(page: Page, transform: ConditionsTransform = {}): Promise<void> {
+  await forceLiveSpotMode(page);
   await page.route('**/data/conditions.json', async (route) => {
     const data = readRealConditions();
     const out: Record<string, Record<string, unknown>> = {};
@@ -210,6 +227,7 @@ export async function interceptForecasts(
   page: Page,
   transform: ForecastTransform = {},
 ): Promise<void> {
+  await forceLiveSpotMode(page);
   const serveSeries = (spotId: string, series: Array<Record<string, unknown>>) => {
     const t = transform.spots?.[spotId];
     return t ? t(series) : series;
