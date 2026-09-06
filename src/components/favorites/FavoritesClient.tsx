@@ -17,6 +17,7 @@ import EmptyState from '@/components/ui/EmptyState';
 import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { rawToScoreInput } from '@/lib/scoreConditions';
+import { hasTestSupabaseClient } from '@/lib/supabase';
 import Skeleton from '@/components/ui/Skeleton';
 import FavoritesAlertsPanel from '@/components/alerts/FavoritesAlertsPanel';
 import SpotListCard from '@/components/spots/SpotListCard';
@@ -52,6 +53,16 @@ export default function FavoritesClient() {
   const [conditions, setConditions] = useState<Record<string, SpotConditions>>({});
   const [sportScores, setSportScores] = useState<Record<string, { score: number; rating: string; ratingEn: string }>>({});
   const [shareCopied, setShareCopied] = useState(false);
+  // The Supabase-configured state is baked at build time, so a keyless build
+  // and a keyed build disagree about it between server render and the first
+  // client paint (the E2E mock flips it client-side on purpose). Staying on
+  // the skeleton until mount keeps the hydrated subtree identical in every
+  // build; the readiness branch below is stable afterwards.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!session?.user || !favorites.length) return;
@@ -127,21 +138,15 @@ export default function FavoritesClient() {
   };
 
   const loading = authLoading || (session?.user && !favoritesReady) || favoritesLoading;
+  // The E2E seam installs a fake Supabase client in test builds only; it must
+  // not flip the global isSupabaseConfigured (the layout reads it during
+  // render), so readiness is resolved locally on this page.
+  const supabaseReady = isSupabaseReady || hasTestSupabaseClient();
   const favoriteSpots = spots
     .filter((s) => favorites.includes(s.id))
     .sort((a, b) => (sportScores[b.id]?.score ?? 0) - (sportScores[a.id]?.score ?? 0));
 
-  if (!isSupabaseReady) {
-    return (
-      <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
-        <p className="text-sm text-fg-muted text-center">
-          {pt ? 'Favoritos indisponíveis (Supabase não configurado).' : 'Favorites unavailable (Supabase not configured).'}
-        </p>
-      </div>
-    );
-  }
-
-  if (loading) {
+  if (!mounted || loading) {
     return (
       <div className="min-h-screen bg-bg-base p-4">
         <div className="max-w-4xl mx-auto space-y-8 pt-8">
@@ -156,6 +161,16 @@ export default function FavoritesClient() {
             ))}
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (!supabaseReady) {
+    return (
+      <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
+        <p className="text-sm text-fg-muted text-center">
+          {pt ? 'Favoritos indisponíveis (Supabase não configurado).' : 'Favorites unavailable (Supabase not configured).'}
+        </p>
       </div>
     );
   }

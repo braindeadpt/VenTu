@@ -142,6 +142,24 @@ test.describe('mobile playtest (390×844, touch)', () => {
   });
 
   test('alerts gate: signed-out shows the magic-link gate', async ({ page }) => {
+    // Hermetic: install a fake Supabase client before any page script runs, so
+    // the signed-out gate renders without CI secrets (the local keyless build
+    // has none and would otherwise show "Supabase não configurado"). The mock
+    // only answers auth.getSession/onAuthStateChange with a null session — it
+    // never touches the network, and production never sets this global.
+    await page.addInitScript(() => {
+      const testClient = {
+        auth: {
+          getSession: async () => ({ data: { session: null }, error: null }),
+          onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+          signInWithOtp: async () => ({ error: null }),
+          signOut: async () => {},
+        },
+      };
+      (window as unknown as { __VENTU_TEST_SUPABASE_CLIENT__?: unknown }).__VENTU_TEST_SUPABASE_CLIENT__ =
+        testClient;
+    });
+
     await page.goto('/pt/favorites/', { waitUntil: 'domcontentloaded' });
 
     await expect(
