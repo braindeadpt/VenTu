@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-06T13:55:03.364Z",
+  "fetchedAt": "2026-09-06T16:40:52.384Z",
   "warnings": [
     {
       "areaCode": "EVR",
@@ -70,6 +70,26 @@
       "text": "Valores elevados da temperatura máxima.",
       "startTime": "2026-09-06T11:37:00",
       "endTime": "2026-09-07T21:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-07T09:00:00",
+      "endTime": "2026-09-08T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-07T09:00:00",
+      "endTime": "2026-09-08T18:00:00",
       "relevant": false
     }
   ],
@@ -962,6 +982,30 @@
         "relevant": false
       }
     ],
+    "ponta-sao-lourenco": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-07T09:00:00",
+        "endTime": "2026-09-08T18:00:00",
+        "relevant": false
+      }
+    ],
+    "funchal": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-07T09:00:00",
+        "endTime": "2026-09-08T18:00:00",
+        "relevant": false
+      }
+    ],
     "santa-cruz": [
       {
         "areaCode": "LSB",
@@ -1127,6 +1171,18 @@
         "text": "Persistência de valores elevados da temperatura máxima.",
         "startTime": "2026-09-06T11:37:00",
         "endTime": "2026-09-07T21:00:00",
+        "relevant": false
+      }
+    ],
+    "machico": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-07T09:00:00",
+        "endTime": "2026-09-08T18:00:00",
         "relevant": false
       }
     ]
