@@ -659,7 +659,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     ).toBeVisible({ timeout: 15_000 });
 
     // Scroll até sair do hero → a sticky bar (md:hidden) aparece.
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -938,7 +938,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // A barra NÃO está visível com o hero em vista.
     await expect(page.getByRole('region', { name: /Métricas principais|Key metrics/i })).toHaveCount(0);
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -974,7 +974,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1016,7 +1016,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const hero = page.locator('.spot-hero-card');
     await expect(hero.getByText(/boia CSA92\/D a 60 km/)).toBeVisible({ timeout: 15_000 });
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1047,7 +1047,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // Sem runner-up → nunca o chip lado a lado.
     await expect(page.getByLabel(/Fontes de onda observada \(IH vs WMO\)/i)).toHaveCount(0);
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1072,7 +1072,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1092,7 +1092,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // previsão»), a sticky só renderiza o badge quando há correcção.
     await gotoSpot(page, 'without-observed-wave');
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1120,7 +1120,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(heroBadge).toBeVisible({ timeout: 15_000 });
     await expect(heroBadge).toHaveText('Corrigido (viés regional)');
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1154,7 +1154,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1175,7 +1175,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // mostra o ScoreWaveSourceBadge — igual ao PT, com os rótulos EN.
     await gotoSpot(page, 'without-observed-wave', 'en');
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
@@ -1198,7 +1198,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(hero.getByText(/onda medida/)).toHaveCount(0);
     await expect(page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i)).toHaveCount(0);
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
     await expect(sticky.getByText(/boia .+ a \d+ km/)).toHaveCount(0);
@@ -1231,7 +1231,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(hero.locator('[data-wave-clock="true"]')).toHaveCount(0);
     await expect(hero.getByText(/onda medida/)).toHaveCount(0);
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
     await expect(sticky.getByText(/boia .+ a \d+ km/)).toHaveCount(0);
@@ -1550,7 +1550,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     );
 
     // Sticky bar desktop: mesmo chip compacto quando o hero sai de vista.
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
     const compact = sticky.locator('[data-map-warning="compact"]');
@@ -1596,7 +1596,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
 
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const sticky = page.getByRole('region', { name: /Métricas principais|Key metrics/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
 
