@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-05T22:37:03.871Z",
+  "fetchedAt": "2026-09-06T10:08:09.883Z",
   "windowDays": 180,
   "days": [
     {
@@ -352,6 +352,22 @@
           "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
           "verdict": "coherent",
           "n": 5,
+          "meanAbsDeltaM": 0.2,
+          "meanDeltaM": -0.2
+        }
+      ]
+    },
+    {
+      "day": "2026-09-06",
+      "pairs": [
+        {
+          "codes": [
+            "6200084",
+            "6200199"
+          ],
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "verdict": "coherent",
+          "n": 8,
           "meanAbsDeltaM": 0.2,
           "meanDeltaM": -0.2
         }
