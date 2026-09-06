@@ -214,6 +214,33 @@ function guinchoTransform(
   };
 }
 
+/**
+ * Scroll to the true bottom AFTER the layout settles. The spot page keeps
+ * growing after the data fetch lands (measured: scrollHeight grows ~580px
+ * after the observed-wave card appears — late images/sections below the
+ * hero). Scrolling against a moving `document.body.scrollHeight` targets a
+ * page that is still growing, so the hero may not be fully out of view when
+ * the sticky bar's IntersectionObserver first fires. Wait for two
+ * consecutive stable height samples (250ms apart), then scroll — the hero is
+ * then genuinely out of view and the sticky bar activates on merit.
+ */
+async function scrollToSettledBottom(page: import('@playwright/test').Page) {
+  await page.waitForFunction(
+    () => {
+      const h = document.body.scrollHeight;
+      // Sample twice: resolve only when the height is identical across the
+      // two reads (layout stopped growing), not merely stable once.
+      return new Promise<boolean>((resolve) => {
+        const first = h;
+        setTimeout(() => resolve(document.body.scrollHeight === first), 250);
+      });
+    },
+    undefined,
+    { timeout: 10_000 },
+  );
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+}
+
 async function gotoSpot(
   page: import('@playwright/test').Page,
   mode:
@@ -433,12 +460,13 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
 
-    // Sticky bar só aparece quando o hero sai de vista — rolar até ao fim.
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    // Sticky bar só aparece quando o hero sai de vista — rolar até ao fim
+    // (depois de o layout assentar; o resto do ficheiro usa 15s nesta espera).
+    await scrollToSettledBottom(page);
     const stickyChip = page.getByRole('region', {
       name: /Métricas principais|Key metrics/,
     });
-    await expect(stickyChip).toBeVisible();
+    await expect(stickyChip).toBeVisible({ timeout: 15_000 });
     const calChip = stickyChip.locator('[data-wave-calibrated="compact"]');
     await expect(calChip).toBeVisible();
     await expect(calChip).toContainText(/ref\. PT \(-0\.9 m · n=4\)/);
@@ -492,11 +520,11 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(page.locator('[data-wave-calibration-popover="true"]')).toHaveCount(0);
 
     // Sticky bar (após scroll): o chip compacto também não inventa calibração.
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await scrollToSettledBottom(page);
     const stickyChip = page.getByRole('region', {
       name: /Métricas principais|Key metrics/,
     });
-    await expect(stickyChip).toBeVisible();
+    await expect(stickyChip).toBeVisible({ timeout: 15_000 });
     await expect(stickyChip.locator('[data-wave-calibrated="compact"]')).toHaveCount(0);
   });
 
