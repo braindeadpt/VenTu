@@ -4,15 +4,18 @@ export const VERY_STALE_THRESHOLD_HOURS = 12;
 
 export type DataFreshness = 'fresh' | 'stale' | 'very-stale';
 
-export function getAgeHours(updatedAt?: string | number | null): number | null {
+export function getAgeHours(
+  updatedAt?: string | number | null,
+  nowMs?: number,
+): number | null {
   if (updatedAt === null || updatedAt === undefined) return null;
   const ts = typeof updatedAt === 'number' ? updatedAt : new Date(updatedAt).getTime();
   if (Number.isNaN(ts)) return null;
-  return (Date.now() - ts) / 3600000;
+  return ((nowMs ?? Date.now()) - ts) / 3600000;
 }
 
-export function getDataFreshness(updatedAt?: string | number | null): DataFreshness | null {
-  const ageHours = getAgeHours(updatedAt);
+export function getDataFreshness(updatedAt?: string | number | null, nowMs?: number): DataFreshness | null {
+  const ageHours = getAgeHours(updatedAt, nowMs);
   if (ageHours === null) return null;
   if (ageHours < STALE_THRESHOLD_HOURS) return 'fresh';
   if (ageHours < VERY_STALE_THRESHOLD_HOURS) return 'stale';
@@ -53,11 +56,13 @@ export function formatForecastUpdatedParts(ts: number, locale: string): Forecast
 }
 
 /** Clock time (and short date if not today) of the last pipeline update. */
-export function formatForecastUpdatedAt(ts: number, locale: string): string {
+export function formatForecastUpdatedAt(ts: number, locale: string, nowMs?: number): string {
   const isPt = locale === 'pt';
   const date = new Date(ts);
   const loc = isPt ? 'pt-PT' : 'en-GB';
-  const isToday = date.toDateString() === new Date().toDateString();
+  // nowMs pin: the isToday check is baked at build — the client must
+  // reproduce it on first paint (React #418 guard), then live after mount.
+  const isToday = date.toDateString() === new Date(nowMs ?? Date.now()).toDateString();
   // timeZone pinned: this label is baked at build time and re-rendered during
   // hydration — without it the clock differs per viewer tz and React throws #418.
   const time = new Intl.DateTimeFormat(loc, {
@@ -75,8 +80,8 @@ export function formatForecastUpdatedAt(ts: number, locale: string): string {
   return isPt ? `Actualizado ${day}, ${time}` : `Updated ${day}, ${time}`;
 }
 
-export function formatStaleAge(updatedAt: string, isPt: boolean): string {
-  const ageHours = getAgeHours(updatedAt);
+export function formatStaleAge(updatedAt: string, isPt: boolean, nowMs?: number): string {
+  const ageHours = getAgeHours(updatedAt, nowMs);
   if (ageHours === null) return isPt ? 'Data desconhecida' : 'Unknown date';
 
   if (ageHours < 1) {

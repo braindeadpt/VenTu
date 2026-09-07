@@ -48,6 +48,13 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
   // first, then swapped in the real page after hydration + fetch (CLS 0.44).
   // Static export data is immutable per build, so the baked snapshot is the
   // same data the client fetch would serve.
+  // Build-time clock: the freshness gates (isObservedWaveFresh /
+  // isObservedFresh) are evaluated at SSG with Date.now() = build time.
+  // Thread the reference down so the client reproduces the exact baked
+  // verdict on first paint; after mount SpotDetailClient switches to the
+  // live clock (React #418 guard — see SpotDetailClient).
+  const bakedAtMs = Date.now()
+
   const baked = loadSpotData().find((d) => d.spot.id === spot.id) ?? null
   const initialData: InitialData | null = baked
     ? {
@@ -67,6 +74,7 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
         locale={locale}
         events={events}
         initialData={initialData ?? undefined}
+        bakedAtMs={bakedAtMs}
       />
     </Suspense>
   )

@@ -67,6 +67,8 @@ interface ObservedWaveCardProps {
   locale: string;
   /** Spot id — resolves the active IPMA warning badge («Mar perigoso»). */
   spotId: string;
+  /** Baked build-time clock (React #418 guard) — see SpotConditionsDashboard. */
+  freshnessNowMs?: number;
 }
 
 export default function ObservedWaveCard({
@@ -76,6 +78,7 @@ export default function ObservedWaveCard({
   forecastWaveHeightM,
   locale,
   spotId,
+  freshnessNowMs,
 }: ObservedWaveCardProps) {
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotVerify;
@@ -84,7 +87,7 @@ export default function ObservedWaveCard({
   const sourceAttributionId = waveSourceAttributionId(observedWave?.source ?? 'ih-buoy');
 
   // Source-aware honesty gate (IH 3h, WMO/Copernicus 6h): stale → not rendered.
-  if (!observedWave || !isObservedWaveFresh(observedWave)) return null;
+  if (!observedWave || !isObservedWaveFresh(observedWave, freshnessNowMs)) return null;
 
   const clock = formatObservedClockTime(observedWave.observedAt, locale);
   const label = observedWaveLabel(observedWave, locale);
@@ -179,7 +182,7 @@ export default function ObservedWaveCard({
               const isIh = w.source === 'ih-buoy';
               const ageH =
                 (isIh ? meta?.ihAgeHours : meta?.wmoAgeHours) ??
-                (new Date().getTime() - new Date(w.observedAt).getTime()) / 3_600_000;
+                ((freshnessNowMs ?? Date.now()) - new Date(w.observedAt).getTime()) / 3_600_000;
               return (
                 <div
                   key={w.source}

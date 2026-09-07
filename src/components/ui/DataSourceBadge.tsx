@@ -1,6 +1,8 @@
 import { getDataFreshness, formatStaleAge } from '@/lib/dataFreshness';
 
 interface DataSourceBadgeProps {
+  /** Baked build-time clock (React #418 guard) — see the spot page callers. */
+  nowMs?: number;
   source?: 'real' | 'mock';
   updatedAt?: string | null;
   locale?: string;
@@ -16,6 +18,7 @@ const sizeClasses = {
 export default function DataSourceBadge({
   source,
   updatedAt,
+  nowMs,
   locale = 'pt',
   size = 'sm',
   className = '',
@@ -33,12 +36,12 @@ export default function DataSourceBadge({
     );
   }
 
-  const freshness = getDataFreshness(updatedAt);
+  const freshness = getDataFreshness(updatedAt, nowMs);
   if (!freshness || freshness === 'fresh') return null;
 
   const isVeryStale = freshness === 'very-stale';
   const label = updatedAt
-    ? formatStaleAge(updatedAt, isPt)
+    ? formatStaleAge(updatedAt, isPt, nowMs)
     : isPt ? 'Desactualizado' : 'Outdated';
 
   return (

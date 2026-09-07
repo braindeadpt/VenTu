@@ -91,9 +91,12 @@ export type ScoreWaveSource = 'observed' | 'bias-corrected' | 'forecast';
  *                      forecast by the pipeline (VENTU_WAVE_BIAS_CORRECTION=1);
  * - 'forecast'       — raw model value, no correction.
  */
-export function resolveScoreWaveSource(raw: Record<string, unknown>): ScoreWaveSource {
+export function resolveScoreWaveSource(
+  raw: Record<string, unknown>,
+  nowMs?: number,
+): ScoreWaveSource {
   const observedWave = raw.observedWave as ObservedWave | undefined;
-  if (observedWave && isObservedWaveFresh(observedWave)) return 'observed';
+  if (observedWave && isObservedWaveFresh(observedWave, nowMs)) return 'observed';
   const waveBias = raw.waveBias;
   if (waveBias && typeof waveBias === 'object') return 'bias-corrected';
   return 'forecast';
@@ -153,9 +156,10 @@ export function waveFactorSuffix(source: ScoreWaveSource, locale: string): strin
  */
 export function resolveScoreWaveCorrection(
   raw: Record<string, unknown>,
+  nowMs?: number,
 ): ScoreWaveCorrection | null {
   const observedWave = raw.observedWave as ObservedWave | undefined;
-  if (observedWave && isObservedWaveFresh(observedWave)) {
+  if (observedWave && isObservedWaveFresh(observedWave, nowMs)) {
     const skill = observedWave.skill;
     const me = skill && Number.isFinite(skill.me) ? skill.me : undefined;
     const n = skill && Number.isFinite(skill.n) ? skill.n : undefined;
@@ -351,9 +355,12 @@ export function resolveScoreWindCorrection(
   return out;
 }
 
-export function resolveScoreWindSource(raw: Record<string, unknown>): ScoreWindSource {
+export function resolveScoreWindSource(
+  raw: Record<string, unknown>,
+  nowMs?: number,
+): ScoreWindSource {
   const observed = pickObservedField(raw);
-  if (observed && isObservedFresh(observed.observedAt)) return 'observed';
+  if (observed && isObservedFresh(observed.observedAt, undefined, nowMs)) return 'observed';
   const base: Conditions = {
     waveHeight: Number(raw.waveHeight) || 0,
     wavePeriod: Number(raw.wavePeriod) || 0,

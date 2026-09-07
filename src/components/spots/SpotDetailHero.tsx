@@ -82,6 +82,12 @@ interface SpotDetailHeroProps {
   observedWaveMeta?: ObservedWaveMeta | null;
   /** Optional ref pointing to the hero root — used by the sticky condensed bar. */
   heroRef?: React.Ref<HTMLElement>;
+  /**
+   * Baked build-time clock (spot page SSG). Freshness is evaluated against it
+   * until mount so hydration reproduces the bake (React #418 guard); the live
+   * clock takes over afterwards. Undefined = live clock (non-baked callers).
+   */
+  freshnessNowMs?: number;
 }
 
 export default function SpotDetailHero({
@@ -104,6 +110,7 @@ export default function SpotDetailHero({
   observedWaveAlt,
   observedWaveMeta,
   heroRef,
+  freshnessNowMs,
 }: SpotDetailHeroProps) {
   const isPt = locale === 'pt';
   const title = isPt ? spot.name : spot.nameEn;
@@ -113,12 +120,16 @@ export default function SpotDetailHero({
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const windCardinal = getCardinalLabel(conditions.windDirection);
 
+  // The timestamp label is baked and re-rendered on hydration — pin the
+  // locale AND the timeZone so server and client produce the same string
+  // regardless of the viewer's timezone (React #418 guard).
   const updatedLabel = conditions.updatedAt
-    ? new Intl.DateTimeFormat(locale, {
+    ? new Intl.DateTimeFormat(isPt ? 'pt-PT' : 'en-GB', {
         hour: '2-digit',
         minute: '2-digit',
         day: 'numeric',
         month: 'short',
+        timeZone: 'Europe/Lisbon',
       }).format(new Date(conditions.updatedAt))
     : null;
 
@@ -314,14 +325,15 @@ export default function SpotDetailHero({
               </div>
 
               {observedWave &&
-                isObservedWaveFresh(observedWave) &&
-                (observedWaveAlt && isObservedWaveFresh(observedWaveAlt) ? (
+                isObservedWaveFresh(observedWave, freshnessNowMs) &&
+                (observedWaveAlt && isObservedWaveFresh(observedWaveAlt, freshnessNowMs) ? (
                   <ObservedWaveSourcesChip
                     observedWave={observedWave}
                     altWave={observedWaveAlt}
                     meta={observedWaveMeta}
                     locale={locale}
                     className="mt-2"
+                    freshnessNowMs={freshnessNowMs}
                   />
                 ) : (
                   <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5 text-meta-sm text-score-good">
@@ -366,6 +378,7 @@ export default function SpotDetailHero({
                     updatedAt={conditions.updatedAt}
                     locale={locale}
                     size="sm"
+                    nowMs={freshnessNowMs}
                   />
                 </div>
               )}

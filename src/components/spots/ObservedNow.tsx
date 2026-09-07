@@ -23,6 +23,8 @@ interface ObservedNowProps {
   locale: string;
   lat: number;
   lon: number;
+  /** Baked build-time clock (React #418 guard) — see SpotConditionsDashboard. */
+  freshnessNowMs?: number;
 }
 
 export default function ObservedNow({
@@ -31,18 +33,21 @@ export default function ObservedNow({
   locale,
   lat,
   lon,
+  freshnessNowMs,
 }: ObservedNowProps) {
   const { observed: liveObserved, loading, error } = useObservedNow(lat, lon);
 
   const bakedFresh =
-    bakedObserved && isObservedFresh(bakedObserved.observedAt) ? bakedObserved : null;
+    bakedObserved && isObservedFresh(bakedObserved.observedAt, undefined, freshnessNowMs)
+      ? bakedObserved
+      : null;
 
   const fromLive = Boolean(liveObserved && !error);
   const displayObserved = fromLive ? liveObserved : bakedFresh;
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotVerify;
 
-  if (!displayObserved || !isObservedFresh(displayObserved.observedAt)) {
+  if (!displayObserved || !isObservedFresh(displayObserved.observedAt, undefined, freshnessNowMs)) {
     if (loading) {
       return (
         <section
@@ -78,6 +83,7 @@ export default function ObservedNow({
       locale={locale}
       fromLive={fromLive}
       loadingLive={loading && !fromLive && Boolean(bakedFresh)}
+      freshnessNowMs={freshnessNowMs}
     />
   );
 }
@@ -88,16 +94,18 @@ function ObservedNowContent({
   locale,
   fromLive,
   loadingLive,
+  freshnessNowMs,
 }: {
   observed: ObservedConditions;
   forecastWindSpeedMs: number;
   locale: string;
   fromLive: boolean;
   loadingLive: boolean;
+  freshnessNowMs?: number;
 }) {
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotVerify;
-  const fresh = isObservedFresh(observed.observedAt);
+  const fresh = isObservedFresh(observed.observedAt, undefined, freshnessNowMs);
   const forecastKt = forecastWindKtFromMs(forecastWindSpeedMs);
   const verification = verifyWind(forecastKt, observed.windSpeedKt);
   const badge = verificationBadge(verification.agreement, locale);

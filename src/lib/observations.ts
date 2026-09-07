@@ -80,14 +80,18 @@ export function verificationBadge(
 
 export const OBSERVED_FRESH_MAX_HOURS = 3;
 
-export function getObservedAgeHours(observedAt: string): number | null {
-  const ms = Date.now() - new Date(observedAt).getTime();
+export function getObservedAgeHours(observedAt: string, nowMs?: number): number | null {
+  const ms = (nowMs ?? Date.now()) - new Date(observedAt).getTime();
   if (!Number.isFinite(ms) || ms < 0) return null;
   return ms / 3_600_000;
 }
 
-export function isObservedFresh(observedAt: string, maxHours = OBSERVED_FRESH_MAX_HOURS): boolean {
-  const age = getObservedAgeHours(observedAt);
+export function isObservedFresh(
+  observedAt: string,
+  maxHours = OBSERVED_FRESH_MAX_HOURS,
+  nowMs?: number,
+): boolean {
+  const age = getObservedAgeHours(observedAt, nowMs);
   return age !== null && age <= maxHours;
 }
 

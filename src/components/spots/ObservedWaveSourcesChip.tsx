@@ -41,6 +41,8 @@ export interface ObservedWaveSourcesChipProps {
   meta?: ObservedWaveMeta | null;
   locale: string;
   className?: string;
+  /** Baked build-time clock (React #418 guard) — see the spot page callers. */
+  freshnessNowMs?: number;
 }
 
 export default function ObservedWaveSourcesChip({
@@ -49,10 +51,12 @@ export default function ObservedWaveSourcesChip({
   meta,
   locale,
   className,
+  freshnessNowMs,
 }: ObservedWaveSourcesChipProps) {
   const isPt = locale === 'pt';
   if (!observedWave || !altWave) return null;
-  if (!isObservedWaveFresh(observedWave) || !isObservedWaveFresh(altWave)) return null;
+  if (!isObservedWaveFresh(observedWave, freshnessNowMs) || !isObservedWaveFresh(altWave, freshnessNowMs))
+    return null;
 
   const calTag = waveCalibrationTag(observedWave, locale);
 
@@ -61,7 +65,7 @@ export default function ObservedWaveSourcesChip({
     const isIh = w.source === 'ih-buoy';
     const ageH =
       (isIh ? meta?.ihAgeHours : meta?.wmoAgeHours) ??
-      (new Date().getTime() - new Date(w.observedAt).getTime()) / 3_600_000;
+      ((freshnessNowMs ?? Date.now()) - new Date(w.observedAt).getTime()) / 3_600_000;
     // Formato compacto: o vencedor mostra só a idade («IH ✓ (1h)»); o
     // runner-up acrescenta a distância («WMO (5h, a 56 km)»).
     const km = winner ? null : fmtDistanceKm(w.distanceKm);

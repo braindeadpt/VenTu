@@ -60,6 +60,11 @@ interface SpotStickyBarProps {
    * «Corrigido pela boia X» com ME/n, mesmo caminho do hero.
    */
   scoreWaveCorrection?: ScoreWaveCorrection | null;
+  /**
+   * Baked build-time clock (spot page SSG). Freshness is evaluated against it
+   * until mount so hydration reproduces the bake (React #418 guard).
+   */
+  freshnessNowMs?: number;
 }
 
 /**
@@ -87,6 +92,7 @@ export default function SpotStickyBar({
   observedWaveAlt,
   observedWaveMeta,
   scoreWaveCorrection,
+  freshnessNowMs,
 }: SpotStickyBarProps) {
   const isPt = locale === 'pt';
   const warningsData = useIpmaWarnings();
@@ -158,13 +164,14 @@ export default function SpotStickyBar({
         <Stat icon={<Wind className="w-3 h-3 text-data-wind" />} value={`${windKt}kt`} label={isPt ? 'Vento' : 'Wind'} />
         <Stat icon={<Droplets className="w-3 h-3 text-data-water" />} value={`${conditions.waterTemp.toFixed(1)}°`} label={isPt ? 'Água' : 'Water'} />
         {observedWave &&
-          isObservedWaveFresh(observedWave) &&
-          (observedWaveAlt && isObservedWaveFresh(observedWaveAlt) ? (
+          isObservedWaveFresh(observedWave, freshnessNowMs) &&
+          (observedWaveAlt && isObservedWaveFresh(observedWaveAlt, freshnessNowMs) ? (
             <ObservedWaveSourcesChip
               observedWave={observedWave}
               altWave={observedWaveAlt}
               meta={observedWaveMeta}
               locale={locale}
+              freshnessNowMs={freshnessNowMs}
             />
           ) : (
             <Stat
@@ -181,8 +188,8 @@ export default function SpotStickyBar({
             />
           ))}
         {observedWave &&
-          isObservedWaveFresh(observedWave) &&
-          !(observedWaveAlt && isObservedWaveFresh(observedWaveAlt)) &&
+          isObservedWaveFresh(observedWave, freshnessNowMs) &&
+          !(observedWaveAlt && isObservedWaveFresh(observedWaveAlt, freshnessNowMs)) &&
           (() => {
             const calTag = waveCalibrationTag(observedWave, locale);
             return calTag ? (

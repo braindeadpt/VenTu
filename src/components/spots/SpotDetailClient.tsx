@@ -132,12 +132,20 @@ export default function SpotDetailClient({
   locale,
   events = [],
   initialData,
+  bakedAtMs,
 }: {
   spot: Spot;
   locale: string;
   events?: VentuEvent[];
   /** Baked at build (static export) — skips the client fetch, kills the hydration layout shift. */
   initialData?: SpotData;
+  /**
+   * Build-time clock captured by the server page (SSG). Freshness gates are
+   * evaluated against it until mount so the first client paint reproduces the
+   * baked verdict exactly (React #418 guard); after mount the live clock takes
+   * over. Undefined when the page is rendered without a bake (e2e fetch path).
+   */
+  bakedAtMs?: number;
 }) {
   // ?sport= deep links are read after hydration: useSearchParams() would make
   // Next's static export bail the whole page to client-side rendering (empty
@@ -192,6 +200,21 @@ export default function SpotDetailClient({
   const [loading, setLoading] = useState(forceLive ? true : !initialData);
   const [loadError, setLoadError] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
+
+  // Baked pages render the freshness verdicts (buoy + wind observed blocks)
+  // with the BUILD clock. The first client paint must reproduce the bake
+  // exactly, or a reading crossing the 3h/6h gate between bake and
+  // hydration flips the subtree after hydration -> React #418. Until
+  // mount we evaluate freshness against the baked reference; after mount
+  // the live clock takes over (same mounted+useEffect pattern as
+  // AccountClient/PassaporteClient).
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const freshnessNowMs = mounted ? undefined : bakedAtMs;
   const [isMobile, setIsMobile] = useState(false);
   const [forecastExpanded, setForecastExpanded] = useState(false);
   const [communityOverlay, setCommunityOverlay] = useState<
@@ -494,7 +517,10 @@ export default function SpotDetailClient({
 
   const magicWindowsHourly = useMemo(() => {
     const HOUR_MS = 3_600_000;
-    const now = Date.now();
+    // Same baked-clock pin as the freshness gates: the next-24h window list
+    // must be identical on first paint (React #418 guard) — after mount the
+    // live clock re-filters it.
+    const now = freshnessNowMs ?? Date.now();
     const cutoff = now + 24 * HOUR_MS;
     return (spotData?.forecast ?? [])
       .map((f) => ({
@@ -510,7 +536,7 @@ export default function SpotDetailClient({
         const t = new Date(h.time).getTime();
         return t >= now && t < cutoff;
       });
-  }, [spotData?.forecast]);
+  }, [spotData?.forecast, freshnessNowMs]);
 
   const showMagicWindows = useMemo(
     () =>
@@ -567,7 +593,8 @@ export default function SpotDetailClient({
     ['surf', 'kitesurf', 'windsurf', 'foil', 'bodyboard', 'sup', 'wakeboard'] as SportType[]
   ).filter((s) => relevantSports.includes(s));
   const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
-  const scoreWindSource = resolveScoreWindSource({
+  const scoreWindSource = resolveScoreWindSource(
+    {
     waveHeight: conditions.waveHeight,
     wavePeriod: conditions.wavePeriod,
     waveDirection: conditions.waveDirection,
@@ -576,19 +603,27 @@ export default function SpotDetailClient({
     windGust: conditions.windGust,
     waterTemp: conditions.waterTemp,
     observed: conditions.observed,
-  });
+    },
+    freshnessNowMs,
+  );
   const scoreWindCorrection: ScoreWindCorrection | null =
     resolveScoreWindCorrection({ ...conditions, windBias: conditions.windBias });
-  const scoreWaveSource = resolveScoreWaveSource({
-    ...conditions,
-    observedWave: conditions.observedWave,
-    waveBias: conditions.waveBias,
-  });
-  const scoreWaveCorrection = resolveScoreWaveCorrection({
-    ...conditions,
-    observedWave: conditions.observedWave,
-    waveBias: conditions.waveBias,
-  });
+  const scoreWaveSource = resolveScoreWaveSource(
+    {
+      ...conditions,
+      observedWave: conditions.observedWave,
+      waveBias: conditions.waveBias,
+    },
+    freshnessNowMs,
+  );
+  const scoreWaveCorrection = resolveScoreWaveCorrection(
+    {
+      ...conditions,
+      observedWave: conditions.observedWave,
+      waveBias: conditions.waveBias,
+    },
+    freshnessNowMs,
+  );
   const mergedLocalTipsRaw = mergeLocalTips(
     spot,
     getLocalTips(spot.slug),
@@ -673,6 +708,7 @@ export default function SpotDetailClient({
           observedWaveAlt={conditions.observedWaveAlt}
           observedWaveMeta={conditions.observedWaveMeta}
           heroRef={heroRef}
+          freshnessNowMs={freshnessNowMs}
         />
 
         <SpotStickyBar
@@ -690,6 +726,7 @@ export default function SpotDetailClient({
           observedWaveAlt={conditions.observedWaveAlt}
           observedWaveMeta={conditions.observedWaveMeta}
           scoreWaveCorrection={scoreWaveCorrection}
+          freshnessNowMs={freshnessNowMs}
         />
 
         <section
@@ -781,6 +818,7 @@ export default function SpotDetailClient({
               verificationTitle: td.verificationTitle,
               scoreFeedbackHint: td.scoreFeedbackHint,
             }}
+            freshnessNowMs={freshnessNowMs}
           />
         </section>
 

@@ -91,6 +91,11 @@ interface SpotConditionsDashboardProps {
   tideHourly?: TideHourPoint[];
   selectedSport: SportType;
   score: SportScore;
+  /**
+   * Baked build-time clock (spot page SSG). Freshness is evaluated against it
+   * until mount so hydration reproduces the bake (React #418 guard).
+   */
+  freshnessNowMs?: number;
 }
 
 export default function SpotConditionsDashboard({
@@ -102,6 +107,7 @@ export default function SpotConditionsDashboard({
   tideHourly,
   selectedSport,
   score,
+  freshnessNowMs,
 }: SpotConditionsDashboardProps) {
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotVerify;
@@ -123,11 +129,11 @@ export default function SpotConditionsDashboard({
     : null;
 
   const freshObserved =
-    conditions.observed && isObservedFresh(conditions.observed.observedAt)
+    conditions.observed && isObservedFresh(conditions.observed.observedAt, undefined, freshnessNowMs)
       ? conditions.observed
       : null;
   const freshObservedWave =
-    conditions.observedWave && isObservedWaveFresh(conditions.observedWave)
+    conditions.observedWave && isObservedWaveFresh(conditions.observedWave, freshnessNowMs)
       ? conditions.observedWave
       : null;
 
@@ -298,6 +304,7 @@ export default function SpotConditionsDashboard({
                   locale={locale}
                   lat={spot.lat}
                   lon={spot.lon}
+                  freshnessNowMs={freshnessNowMs}
                 />
               ) : null}
               {showWaveBlock ? (
@@ -309,6 +316,7 @@ export default function SpotConditionsDashboard({
                     forecastWaveHeightM={conditions.waveHeight}
                     locale={locale}
                     spotId={spot.id}
+                    freshnessNowMs={freshnessNowMs}
                   />
                   {conditions.observedWaveCoherenceWarning && (
                     <CoherenceWarningNotice
@@ -333,7 +341,11 @@ export default function SpotConditionsDashboard({
                     <TideScheduleStrip schedule={tideSchedule} locale={locale} />
                   </div>
                 ) : null}
-                <MoonTideCard locale={locale} tideHourly={tideHourly} />
+                <MoonTideCard
+                  locale={locale}
+                  tideHourly={tideHourly}
+                  date={freshnessNowMs !== undefined ? new Date(freshnessNowMs) : undefined}
+                />
                 {/* Fundo real perto da praia (IH depcnt_8_16_30) — profundidade
                     real do fundo, independente da maré/previsão. */}
                 <IsobathsStrip spotId={spot.id} locale={locale} />
