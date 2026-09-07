@@ -4,7 +4,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 > **Prioridades de trabalho:** [`ROADMAP.md`](./ROADMAP.md) — Fase **E** / **C4b** (calibração scores com feedback)
 
-Última actualização: 2026-08-13 (S7: headers HTTP reais via Cloudflare proxy — [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md)).
+> Última actualização: 2026-09-07 (mapa: teardown com guards + proveniência unificada).
 
 ## Identidade
 
@@ -63,6 +63,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 **`compatibleSports`:** 185/185 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
 
+**Proveniência (gramática única, 2026-09-07):** cada número mostra de onde vem (tier `measured` | `adjusted` | `modeled` | `degraded`, eixo `wave`→`wind`→`calibration`→`confidence`→`freshness`) através de UM componente — `ProvenanceChip` (`title` no hover + popover portalizado para toque/teclado; `interactive={false}` = span estático dentro de cards-link) — definido em `src/lib/provenance.ts` e `src/components/ui/ProvenanceChip.tsx`. Convertidos: `ConfidenceBadge`, `DataSourceBadge`, `ScoreWaveSourceBadge`, `ScoreWindSourceBadge`, `WaveCalibrationTag`; selectores `data-*` antigos preservados via `chipAttrs`/`popoverAttrs`. Ao mexer em chips de origem/frescura/calibração, usar este componente — não criar um oitavo dialecto.
 ## Maré (Instituto Hidrográfico)
 
 ```
@@ -344,6 +345,16 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   em lib/dataLayerHealth.js (testável). `obs:update`/`update-conditions` geram os
   streaks via `applyLayerStreak` (genérico) / `buildCoastalWarningsLayer` a
   partir dos ficheiros já fetchados.
+
+## Mapa (Leaflet) — teardown com guards (2026-09-07)
+
+- **Regra:** nenhum frame/`requestAnimationFrame`/listener pode sobreviver ao desmonte do mapa — corria contra o renderer de canvas já destruído (`Cannot read properties of undefined (reading 'save')`, crash real no CI mobile).
+- Guards instalados em `8326a7bd0` e protegidos por testes (tirar um guard falha o CI — `scripts/check-guard-test-counts.js`):
+  - `useMapCurrentsField` — rAF aninhados do `onZoomEnd` cancelados (via `zoomRafRef`); `paint()` sai cedo sem mapa/canvas.
+  - `useMapLayers` — isóbatas com flag `unload`; `useMapCore` varre os overlays ANTES de `map.remove()` (`mapOverlaySweep.ts`, ordem remove-antes-de-destroy).
+  - Guard de nível prototype em `Canvas._redraw`/`_update` quando `_ctx` já não existe (`leafletCanvasGuard.ts`) — o ponto único que cobre qualquer caminho de agendamento.
+  - Spec e2e `map-unmount-race` (no `test:e2e:core`): desmonta o mapa do hero da homepage em mobile e exige zero erros de página.
+- Stacking: a sheet mobile do `/mapa` é `z-1200`/`z-1201` — acima do HUD (`z-1100`) e dos controls (`z-1200`); nunca voltar a pôr uma camada do mapa acima da sheet aberta.
 
 ## Radar IPMA — overlay no mapa
 
