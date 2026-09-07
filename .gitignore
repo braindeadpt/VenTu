@@ -56,6 +56,7 @@ scripts/extract-*
 scripts/find-jwt-*
 _*.cjs
 _devlogs/
+freebuff-restore-*.py
 
 # Local Lighthouse audit reports (run against prod: serve out/ then npx lighthouse)
 lighthouse-*.json
