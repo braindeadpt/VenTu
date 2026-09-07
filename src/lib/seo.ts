@@ -4,6 +4,7 @@ import path from 'path';
 import { spots } from '@/lib/spots';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import {
+  defaultLocale,
   locales,
   localePathPattern,
   LOCALE_OG,
@@ -143,6 +144,8 @@ export function buildPageMetadata(input: PageSeoInput): Metadata {
   for (const loc of locales) {
     languages[loc] = `/${loc}${normalizedPath === '/' ? '/' : normalizedPath}`;
   }
+  // Product default locale (pt) — matches sitemap x-default policy.
+  languages['x-default'] = `/${defaultLocale}${normalizedPath === '/' ? '/' : normalizedPath}`;
 
   const alternateLocales = locales.filter((l) => l !== locale).map((l) => LOCALE_OG[l]);
 

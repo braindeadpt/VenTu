@@ -44,6 +44,8 @@ import {
 } from '@/lib/observedWave';
 import { formatObservedClockTime } from '@/lib/observations';
 import ObservedWaveSourcesChip from '@/components/spots/ObservedWaveSourcesChip';
+import { getTranslation, validateLocale } from '@/lib/i18n';
+import { getDifficultyLabel } from '@/lib/mapDifficulty';
 
 interface SpotDetailHeroProps {
   spot: Spot;
@@ -113,7 +115,9 @@ export default function SpotDetailHero({
   heroRef,
   freshnessNowMs,
 }: SpotDetailHeroProps) {
-  const isPt = locale === 'pt';
+  const loc = validateLocale(locale);
+  const td = getTranslation(loc).spotDetail;
+  const isPt = loc === 'pt';
   const title = isPt ? spot.name : spot.nameEn;
   const region = isPt ? spot.region : spot.regionEn;
   const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
@@ -149,7 +153,7 @@ export default function SpotDetailHero({
         <SpotImage
           spot={spot}
           aspect="hero"
-          locale={isPt ? 'pt' : 'en'}
+          locale={loc}
           priority
           scrim={false}
           className="h-full min-h-[200px] md:min-h-[240px]"
@@ -194,7 +198,7 @@ export default function SpotDetailHero({
               <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
               <span>{region}</span>
               <span aria-hidden>·</span>
-              <span className="capitalize">{spot.difficulty}</span>
+              <span>{getDifficultyLabel(spot.difficulty, loc)}</span>
               {spot.type && (
                 <>
                   <span aria-hidden>·</span>
@@ -247,7 +251,7 @@ export default function SpotDetailHero({
               <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
-                  <ScoreBadge score={score} locale={locale as 'pt' | 'en'} size="md" showLabel />
+                  <ScoreBadge score={score} locale={loc} size="md" showLabel />
                   <ProvenanceRow align="center">
                     <ScoreWaveSourceBadge
                       source={scoreWaveSource}
@@ -271,7 +275,7 @@ export default function SpotDetailHero({
                       <span className="inline-flex">
                         <WindSourceAttributionNote
                           source={windObservedSource ?? scoreWindCorrection!.source!}
-                          locale={isPt ? 'pt' : 'en'}
+                          locale={loc}
                         />
                       </span>
                     )}
@@ -296,13 +300,13 @@ export default function SpotDetailHero({
                       ? observedWave.waveHeight
                       : conditions.waveHeight
                   ).toFixed(1)}m${waveFactorSuffix(scoreWaveSource, locale)}`}
-                  label={isPt ? 'Ondas' : 'Waves'}
+                  label={td.wavesShort}
                 />
                 <StatChip
                   className="spot-hero-stat"
                   icon={<Clock className="w-4 h-4 text-data-period" />}
                   value={`${Math.round(conditions.wavePeriod)}s`}
-                  label={isPt ? 'Período' : 'Period'}
+                  label={td.periodShort}
                 />
                 <StatChip
                   className="spot-hero-stat"
@@ -314,14 +318,14 @@ export default function SpotDetailHero({
                     />
                   }
                   value={`${windKt}kt`}
-                  label={isPt ? `Vento · ${windCardinal}` : `Wind · ${windCardinal}`}
+                  label={`${td.windShort} · ${windCardinal}`}
                   ariaLabel={windFlowAriaLabel(conditions.windDirection, windKt, locale)}
                 />
                 <StatChip
                   className="spot-hero-stat"
                   icon={<Droplets className="w-4 h-4 text-data-water" />}
                   value={`${conditions.waterTemp.toFixed(1)}°C`}
-                  label={isPt ? 'Água' : 'Water'}
+                  label={td.waterShort}
                 />
               </div>
 
@@ -353,7 +357,7 @@ export default function SpotDetailHero({
                           </span>
                           <span className="text-fg-subtle">·</span>
                           <span className="text-fg-muted">
-                            {isPt ? 'onda medida' : 'measured wave'}
+                            {td.measuredWave}
                           </span>
                         </>
                       );
@@ -366,7 +370,7 @@ export default function SpotDetailHero({
                   {updatedLabel && (
                     <>
                       <span className="w-1.5 h-1.5 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
-                      <span>{isPt ? 'Actualizado' : 'Updated'} {updatedLabel}</span>
+                      <span>{td.updatedShort} {updatedLabel}</span>
                     </>
                   )}
                   {conditions.source && (

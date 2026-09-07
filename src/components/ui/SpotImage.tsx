@@ -11,7 +11,7 @@ export type SpotImageAspect = 'video' | 'square' | 'hero';
 export type SpotImageProps = {
   spot: Pick<Spot, 'slug' | 'name' | 'nameEn' | 'region' | 'type' | 'images'>;
   aspect?: SpotImageAspect;
-  locale?: 'pt' | 'en';
+  locale?: 'pt' | 'en' | 'es' | 'de' | 'fr';
   className?: string;
   priority?: boolean;
   /** Bottom scrim for legibility on cards (default true for video/hero). */

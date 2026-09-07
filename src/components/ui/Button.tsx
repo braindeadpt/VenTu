@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { cn } from '@/lib/cn';
 import { Loader2 } from 'lucide-react';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -54,7 +55,7 @@ export default function Button({
   locale = 'pt',
   ...props
 }: ButtonProps) {
-  const defaultLoadingLabel = locale === 'pt' ? 'A carregar…' : 'Loading…';
+  const defaultLoadingLabel = getTranslation(validateLocale(locale)).common.loading;
   const label = loadingLabel ?? defaultLoadingLabel;
 
   const classes = cn(

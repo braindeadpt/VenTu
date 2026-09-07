@@ -33,7 +33,7 @@ interface SpotListCardProps {
   score: number;
   conditions: SpotListCardConditions;
   href: string;
-  locale: 'pt' | 'en';
+  locale: 'pt' | 'en' | 'es' | 'de' | 'fr';
   sportLabel?: string;
   sportAccent?: string;
   rank?: number;

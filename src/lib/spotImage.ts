@@ -54,7 +54,10 @@ export function getSpotImage(spot: SpotImagePick): SpotImageSource {
 }
 
 /** PT/EN alt for aerial thumbnails. */
-export function getSpotImageAlt(spot: SpotImagePick, locale: 'pt' | 'en' = 'pt'): string {
+export function getSpotImageAlt(
+  spot: SpotImagePick,
+  locale: 'pt' | 'en' | 'es' | 'de' | 'fr' = 'pt',
+): string {
   const name = locale === 'pt' ? spot.name : spot.nameEn || spot.name;
   return locale === 'pt' ? `Vista aérea de ${name}` : `Aerial view of ${name}`;
 }

@@ -593,16 +593,23 @@ export function getScoreTokens(score: number): ScoreTokens {
   }
 }
 
-const SCORE_TIER_LABELS: Record<ScoreTier, { pt: string; en: string }> = {
-  epic: { pt: 'Épico', en: 'Epic' },
-  good: { pt: 'Bom', en: 'Good' },
-  fair: { pt: 'Razoável', en: 'Fair' },
-  poor: { pt: 'Fraco', en: 'Poor' },
-  closed: { pt: 'Fechado', en: 'Closed' },
+const SCORE_TIER_LABELS: Record<
+  ScoreTier,
+  { pt: string; en: string; es: string; de: string; fr: string }
+> = {
+  epic: { pt: 'Épico', en: 'Epic', es: 'Épico', de: 'Episch', fr: 'Épique' },
+  good: { pt: 'Bom', en: 'Good', es: 'Bueno', de: 'Gut', fr: 'Bon' },
+  fair: { pt: 'Razoável', en: 'Fair', es: 'Regular', de: 'Mäßig', fr: 'Correct' },
+  poor: { pt: 'Fraco', en: 'Poor', es: 'Flojo', de: 'Schwach', fr: 'Faible' },
+  closed: { pt: 'Fechado', en: 'Closed', es: 'Cerrado', de: 'Geschlossen', fr: 'Fermé' },
 }
 
-export function getScoreTierLabel(tier: ScoreTier, locale: 'pt' | 'en' = 'pt'): string {
-  return SCORE_TIER_LABELS[tier][locale]
+export function getScoreTierLabel(
+  tier: ScoreTier,
+  locale: 'pt' | 'en' | 'es' | 'de' | 'fr' = 'pt',
+): string {
+  const labels = SCORE_TIER_LABELS[tier]
+  return labels[locale] ?? labels.en
 }
 
 /** @deprecated Use getScoreTokens — kept for existing imports. */

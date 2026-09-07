@@ -20,6 +20,7 @@ import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 import { resolveScoreWaveCorrection } from '@/lib/scoreConditions';
 import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 
 interface HomepageTopNowProps {
   spotsData: HomepageSpotData[];
@@ -36,8 +37,10 @@ const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
 };
 
 export default function HomepageTopNow({ spotsData, locale, maxCards }: HomepageTopNowProps) {
-  const isPt = locale === 'pt';
-  const cardLocale = isPt ? 'pt' : 'en';
+  const loc = validateLocale(locale);
+  const t = getTranslation(loc);
+  const isPt = loc === 'pt';
+  const cardLocale = loc;
   const warningsData = useIpmaWarnings();
 
   // Re-hidratação client-side (mount + 15 min + tab visível, mesmo
@@ -62,16 +65,10 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
       aria-labelledby="top-now-heading"
     >
       <h2 id="top-now-heading" className="font-display text-display-lg font-bold text-fg tracking-tight mb-1">
-        {isPt ? 'A bombar agora' : 'Firing now'}
+        {t.hero.firingNow}
       </h2>
       <p className="text-meta text-fg-muted mb-4">
-        {cards.length === 0
-          ? isPt
-            ? 'Nenhum desporto a bombar neste momento'
-            : 'No sports firing right now'
-          : isPt
-            ? 'Só spots a bombar · por desporto'
-            : 'Only firing spots · by sport'}
+        {cards.length === 0 ? t.hero.firingNowEmpty : t.hero.firingNowSub}
       </p>
 
       {/* Camada de boias global desactivada/em baixo — o mesmo aviso honesto da
@@ -84,11 +81,11 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
       {cards.length === 0 ? (
         <EmptyState
           className="py-10"
-          title={getPlayfulEmptyCopy('no-top-now', isPt).title}
-          description={getPlayfulEmptyCopy('no-top-now', isPt).description}
+          title={getPlayfulEmptyCopy('no-top-now', loc).title}
+          description={getPlayfulEmptyCopy('no-top-now', loc).description}
           action={
             <Button variant="secondary" href={`/${locale}/explorar/`} locale={cardLocale}>
-              {isPt ? 'Ver previsões' : 'View forecasts'}
+              {t.hero.viewForecasts}
             </Button>
           }
         />

@@ -324,37 +324,48 @@ test.describe('Fontes de dados (data sources)', () => {
     await expect(attribution).not.toContainText('CARTO');
   });
 
-  test('sitemap.xml inclui /pt/fontes/ com os 5 hreflang (pt/en/es/de/fr)', async ({
+  test('sitemap index + static split incluem /pt/fontes/ com hreflang (+ x-default)', async ({
     page,
   }) => {
-    // Lê o ficheiro estático (public/sitemap.xml — o mesmo que o CI gera e o
-    // deploy publica; o servidor e2e serve o copy em out/sitemap.xml). O
-    // bloco do /pt/fontes tem de existir com o <loc> e os 5 alternates.
-    const sitemap = readFileSync('public/sitemap.xml', 'utf-8');
-    const fontesEntry = sitemap.match(
+    // Index aponta para os splits; o bloco /pt/fontes vive em sitemap-static.xml
+    // (gerado por scripts/generate-sitemap.js — o mesmo que o CI/deploy publicam).
+    const index = readFileSync('public/sitemap.xml', 'utf-8');
+    expect(index).toContain('<sitemapindex');
+    expect(index).toContain(`${SITE_URL}/sitemap-static.xml`);
+
+    const staticSitemap = readFileSync('public/sitemap-static.xml', 'utf-8');
+    const fontesEntry = staticSitemap.match(
       /<url>\s*<loc>https:\/\/ventu\.surf\/pt\/fontes\/<\/loc>[\s\S]*?<\/url>/,
     );
     expect(
       fontesEntry,
-      'o sitemap.xml deve conter um <url> com <loc>https://ventu.surf/pt/fontes/</loc>',
+      'sitemap-static.xml deve conter <loc>https://ventu.surf/pt/fontes/</loc>',
     ).not.toBeNull();
 
-    // Cada um dos 5 hreflang aponta para a variante localizada da página.
     for (const loc of HREFLANG_LOCALES) {
       expect(
         fontesEntry![0],
         `o bloco do /pt/fontes deve ter hreflang="${loc}"`,
       ).toContain(`hreflang="${loc}" href="${SITE_URL}/${loc}/fontes/"`);
     }
+    expect(fontesEntry![0]).toContain(
+      `hreflang="x-default" href="${SITE_URL}/pt/fontes/"`,
+    );
 
-    // E2E sobre o servidor: o /sitemap.xml servido também o tem (não só o
-    // ficheiro em disco) — o crawler que chegar ao site encontra a página.
+    // Served index (crawler entry point) + child static urlset.
     const served = await page.request.get('/sitemap.xml');
     expect(served.status()).toBe(200);
     const servedBody = await served.text();
-    expect(servedBody).toContain(`<loc>${SITE_URL}/pt/fontes/</loc>`);
-    expect(servedBody).toContain(`hreflang="pt" href="${SITE_URL}/pt/fontes/"`);
-    expect(servedBody).toContain(`hreflang="fr" href="${SITE_URL}/fr/fontes/"`);
+    expect(servedBody).toContain('<sitemapindex');
+    expect(servedBody).toContain(`${SITE_URL}/sitemap-static.xml`);
+
+    const servedStatic = await page.request.get('/sitemap-static.xml');
+    expect(servedStatic.status()).toBe(200);
+    const staticBody = await servedStatic.text();
+    expect(staticBody).toContain(`<loc>${SITE_URL}/pt/fontes/</loc>`);
+    expect(staticBody).toContain(`hreflang="pt" href="${SITE_URL}/pt/fontes/"`);
+    expect(staticBody).toContain(`hreflang="fr" href="${SITE_URL}/fr/fontes/"`);
+    expect(staticBody).toContain(`hreflang="x-default" href="${SITE_URL}/pt/fontes/"`);
   });
 
   test('cabeça do /pt/fontes emite os 5 hreflang (pt/en/es/de/fr) com canonical', async ({
@@ -365,15 +376,19 @@ test.describe('Fontes de dados (data sources)', () => {
       page.getByRole('heading', { level: 1, name: 'Fontes de dados' }),
     ).toBeVisible({ timeout: 20_000 });
 
-    // Alternates localizados no <head> (o Next emite o atributo como hrefLang).
+    // Alternates localizados no <head> (o Next emite o atributo como hrefLang)
+    // + x-default → pt (product default).
     const alternates = page.locator('link[rel="alternate"]');
-    await expect(alternates).toHaveCount(HREFLANG_LOCALES.length);
+    await expect(alternates).toHaveCount(HREFLANG_LOCALES.length + 1);
     for (const loc of HREFLANG_LOCALES) {
       const link = page.locator(
         `link[rel="alternate"][href="${SITE_URL}/${loc}/fontes/"]`,
       );
       await expect(link).toHaveAttribute('hreflang', loc);
     }
+    await expect(
+      page.locator(`link[rel="alternate"][hreflang="x-default"]`),
+    ).toHaveAttribute('href', `${SITE_URL}/pt/fontes/`);
 
     // O canonical aponta para a própria página (pt).
     const canonical = page.locator('link[rel="canonical"]');

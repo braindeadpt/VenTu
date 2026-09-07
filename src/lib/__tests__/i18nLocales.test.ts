@@ -21,6 +21,7 @@ const SHARED_TOKENS = new Set([
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  'MIT · Open source', // marca/licença — igual em PT/EN/ES/FR
 ]);
 
 /**
@@ -64,6 +65,9 @@ const ES_COGNATES = new Set([
   'Ver perfil',         // espanhol correcto = PT
   'Guardar',            // espanhol correcto = PT
   'condiciones',        // espanhol correcto = PT
+  'Mapa interactivo',   // espanhol correcto = PT
+  'Mapa de spots — VenTu', // espanhol correcto = PT
+  'Comparar spots',     // espanhol correcto = PT
 ]);
 
 /**
@@ -82,6 +86,7 @@ const EN_COGNATES = new Set([
   'VenTu', 'VenTu. Open Source Project.', 'Ver spot', 'Wakeboard', 'Windsurf',
   '{count} spots',
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  'MIT · Open source',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
@@ -144,6 +149,21 @@ describe('i18n locales', () => {
   it('pickLocale uses es when present else en', () => {
     expect(pickLocale('es', { pt: 'A', en: 'B', es: 'C' })).toBe('C');
     expect(pickLocale('es', { pt: 'A', en: 'B' })).toBe('B');
+  });
+
+
+  it('es/de/fr home + spot chrome keys are localized (not EN fallback)', () => {
+    expect(getTranslation('es').hero.firingNow).toBe('A tope ahora');
+    expect(getTranslation('de').hero.firingNow).toBe('Laufen jetzt');
+    expect(getTranslation('fr').hero.firingNow).toBe('À fond maintenant');
+    expect(getTranslation('es').home.moreToExplore).toMatch(/explorar/i);
+    expect(getTranslation('de').home.moreToExplore).toMatch(/entdecken/i);
+    expect(getTranslation('fr').home.moreToExplore).toMatch(/explorer/i);
+    expect(getTranslation('es').spotDetail.wavesShort).toBe('Olas');
+    expect(getTranslation('de').spotDetail.wavesShort).toBe('Wellen');
+    expect(getTranslation('fr').spotDetail.wavesShort).toBe('Vagues');
+    expect(getTranslation('es').spots.pageTitle).toMatch(/Spots/);
+    expect(getTranslation('de').map.metaTitle).toMatch(/Karte/);
   });
 
   it('getTranslation returns Spanish shell for es', () => {

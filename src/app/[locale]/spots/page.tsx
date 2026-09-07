@@ -5,37 +5,39 @@ import MapTilePreconnect from '@/components/MapTilePreconnect'
 import PageHeader from '@/components/ui/PageHeader'
 import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
+import { getTranslation, validateLocale } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
-  const loc = isPt ? 'pt' : 'en'
+  const loc = validateLocale(locale)
+  const t = getTranslation(loc).spots
+  const schedule = pipelineSchedule(loc)
 
-  const title = isPt ? `Todos os Spots — VenTu` : `All Spots — VenTu`
-  const description = isPt
-    ? `Explora os ${SPOT_COUNT} spots de surf, kitesurf e windsurf em Portugal — condições ${pipelineSchedule('pt')}.`
-    : `Browse all ${SPOT_COUNT} surf, kitesurf and windsurf spots in Portugal — conditions ${pipelineSchedule('en')}.`
+  const title = t.metaTitle
+  const description = t.metaDescription
+    .replace('{count}', String(SPOT_COUNT))
+    .replace('{schedule}', schedule)
 
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/spots/` })
 }
 
 export default async function SpotsPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
-  const isPt = locale === 'pt'
+  const loc = validateLocale(locale)
+  const t = getTranslation(loc).spots
   const spotsData = loadSpotListings()
+  const schedule = pipelineSchedule(loc)
 
   return (
     <div className="min-h-screen">
       <MapTilePreconnect />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <PageHeader
-          title={isPt ? 'Todos os Spots' : 'All Spots'}
-          subtitle={
-            isPt
-              ? `${SPOT_COUNT} spots em Portugal — dados ${pipelineSchedule('pt')}`
-              : `${SPOT_COUNT} spots in Portugal — data ${pipelineSchedule('en')}`
-          }
+          title={t.pageTitle}
+          subtitle={t.pageSubtitle
+            .replace('{count}', String(SPOT_COUNT))
+            .replace('{schedule}', schedule)}
         />
       </div>
 

@@ -1,4 +1,5 @@
 import { Activity, Clock, Github, Globe, MapPin } from 'lucide-react';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 
 interface TrustStripProps {
   spotCount: number;
@@ -14,7 +15,7 @@ export default function TrustStrip({
   locale,
   variant = 'default',
 }: TrustStripProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(validateLocale(locale)).home;
 
   const items: { icon: typeof MapPin; label: React.ReactNode }[] = [
     {
@@ -30,7 +31,7 @@ export default function TrustStrip({
       label: (
         <>
           <span className="font-mono tabular-nums text-fg">{sportsCount}</span>{' '}
-          {isPt ? 'desportos' : 'sports'}
+          {t.trustSports}
         </>
       ),
     },
@@ -40,20 +41,17 @@ export default function TrustStrip({
     },
     {
       icon: Clock,
-      label: isPt ? 'Previsão: 2h dia · 4h noite' : 'Forecast: 2h day · 4h night',
+      label: t.trustForecast,
     },
     {
       icon: Github,
-      label: isPt ? 'MIT · Open source' : 'MIT · Open source',
+      label: t.trustOpenSource,
     },
   ];
 
   if (variant === 'inline') {
     return (
-      <div
-        className="mt-6 pt-4 border-t border-divider"
-        aria-label={isPt ? 'Prova social' : 'Trust indicators'}
-      >
+      <div className="mt-6 pt-4 border-t border-divider" aria-label={t.trustAria}>
         <ul className="flex items-center gap-2 overflow-x-auto no-scrollbar list-none p-0 m-0">
           {items.map((item, index) => {
             const Icon = item.icon;
@@ -73,7 +71,7 @@ export default function TrustStrip({
   return (
     <section
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 border-b border-divider"
-      aria-label={isPt ? 'Prova social' : 'Trust indicators'}
+      aria-label={t.trustAria}
     >
       <ul className="flex items-center gap-2 overflow-x-auto overscroll-x-contain touch-pan-x no-scrollbar edge-fade-x list-none p-0 m-0">
         {items.map((item, index) => {

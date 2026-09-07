@@ -9,12 +9,12 @@ import { filterGridSpots } from '@/lib/gridSpotFilters';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import {
   MAP_DIFFICULTY_LS_KEY,
-  MAP_DIFFICULTY_OPTIONS,
   readMapDifficultyFromStorage,
   spotMatchesDifficultyFilter,
+  getMapDifficultyOptions,
   type MapDifficultyFilter,
 } from '@/lib/mapDifficulty';
-import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
+import { MAP_SPORT_FILTERS, mapSportFilterLabel } from '@/lib/mapSportFilters';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
@@ -102,8 +102,8 @@ export default function MapaFullscreenClient({
   locale,
 }: MapaFullscreenClientProps) {
   const router = useRouter();
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
-  const t = getTranslation(locale as 'pt' | 'en');
   const regionList = useMemo(() => regions as readonly string[], [regions]);
   const liveSpotsData = useLiveGridSpotData(spotsData, { deferRefreshMs: 5000 });
 
@@ -213,7 +213,7 @@ export default function MapaFullscreenClient({
   const mapHud = {
     sports: HUD_SPORTS.map((s) => ({
       id: s.id,
-      label: isPt ? s.labelPt : s.labelEn,
+      label: mapSportFilterLabel(s.id, locale),
       icon: s.icon,
       color: s.color,
     })),
@@ -226,18 +226,15 @@ export default function MapaFullscreenClient({
     onResetFilters: handleReset,
     clearFiltersLabel: t.hero.clearFilters,
     showClearFilters,
-    difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
-      id: d.id,
-      label: isPt ? d.labelPt : d.labelEn,
-    })),
+    difficulties: getMapDifficultyOptions(locale),
     selectedDifficulty: difficulty,
     onDifficultyChange: handleDifficultyChange,
-    difficultyGroupLabel: isPt ? 'Nível' : 'Level',
+    difficultyGroupLabel: t.spots.level,
   };
 
   return (
-    <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={isPt ? 'Mapa fullscreen' : 'Fullscreen map'}>
-      <h1 className="sr-only">{isPt ? 'Mapa de spots — VenTu' : 'Spots map — VenTu'}</h1>
+    <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={t.map.fullscreenMapAria}>
+      <h1 className="sr-only">{t.map.metaTitle}</h1>
       <SpotMapInteractive
         spotsData={filtered}
         selectedSport={sport}

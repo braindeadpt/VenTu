@@ -22,7 +22,7 @@ import type { GridSpotData } from '@/lib/gridSpotFilters';
 
 import type { GridSportFilter } from '@/lib/sportRatings';
 
-import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
+import { MAP_SPORT_FILTERS, mapSportFilterLabel } from '@/lib/mapSportFilters';
 
 import {
 
@@ -44,6 +44,7 @@ import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import { MACRO_REGIONS } from '@/lib/regions';
 
 import { heroStatusLine } from '@/lib/voice';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 
 import BestWindowBanner from '@/components/homepage/BestWindowBanner';
 
@@ -111,7 +112,9 @@ export default function HomepageMapHero({
   coastalWarningsLayer,
 }: HomepageMapHeroProps) {
 
-  const isPt = locale === 'pt';
+  const loc = validateLocale(locale);
+  const t = getTranslation(loc);
+  const isPt = loc === 'pt';
 
   const isFeatured = variant === 'featured';
 
@@ -201,10 +204,10 @@ export default function HomepageMapHero({
     return (
       <section
         role="region"
-        aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
+        aria-label={t.hero.interactiveMap}
         className="relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y bg-bg-base"
       >
-        <h2 className="sr-only">{isPt ? 'Mapa ao vivo' : 'Live map'}</h2>
+        <h2 className="sr-only">{t.hero.liveMap}</h2>
         <div className="absolute inset-0 z-0 [&_.leaflet-marker-icon]:pointer-events-auto">
           <SpotMapInteractive
             spotsData={filtered}
@@ -219,11 +222,11 @@ export default function HomepageMapHero({
           <Button
             href={`/${locale}/mapa/${buildGridFiltersSearch(sport, DEFAULT_REGION, regions)}`}
             size="md"
-            locale={isPt ? 'pt' : 'en'}
+            locale={loc}
             className="shadow-card"
             rightIcon={<Maximize2 className="w-4 h-4" aria-hidden />}
           >
-            {isPt ? 'Explorar mapa' : 'Explore map'}
+            {t.hero.exploreMap}
           </Button>
         </div>
       </section>
@@ -238,7 +241,7 @@ export default function HomepageMapHero({
 
       role="region"
 
-      aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
+      aria-label={t.hero.interactiveMap}
 
       className="relative w-full min-h-[480px] h-[min(760px,72vh)] bg-bg-base overflow-hidden rounded-b-3xl border-b border-divider touch-pan-y"
 
@@ -313,7 +316,7 @@ export default function HomepageMapHero({
 
             >
 
-              {isPt ? 'Onde está bom hoje?' : "Where's it firing today?"}
+              {t.hero.heroHeadline}
 
             </h2>
 
@@ -325,7 +328,7 @@ export default function HomepageMapHero({
 
               role="group"
 
-              aria-label={isPt ? 'Filtrar por desporto' : 'Filter by sport'}
+              aria-label={t.hero.filterBySport}
 
               style={{ '--stagger-delay': 160 } as React.CSSProperties}
 
@@ -353,7 +356,7 @@ export default function HomepageMapHero({
 
                   >
 
-                    {isPt ? item.labelPt : item.labelEn}
+                    {mapSportFilterLabel(item.id, loc)}
 
                   </FilterPill>
 
@@ -379,7 +382,7 @@ export default function HomepageMapHero({
 
                 size="lg"
 
-                locale={isPt ? 'pt' : 'en'}
+                locale={loc}
 
                 className="shadow-card shrink-0"
 
@@ -387,7 +390,7 @@ export default function HomepageMapHero({
 
               >
 
-                {isPt ? 'Explorar mapa' : 'Explore map'}
+                {t.hero.exploreMap}
 
               </Button>
 

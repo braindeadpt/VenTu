@@ -1,5 +1,6 @@
 import { ArrowRight, Calendar, Columns3, Heart } from 'lucide-react';
 import Card from '@/components/ui/Card';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 
 interface HomepageSecondaryCtaProps {
   locale: string;
@@ -8,43 +9,33 @@ interface HomepageSecondaryCtaProps {
 }
 
 export default function HomepageSecondaryCta({ locale, compact = false }: HomepageSecondaryCtaProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(validateLocale(locale)).home;
 
   const cards = [
     {
       href: `/${locale}/sazonalidade/`,
       icon: Calendar,
-      title: isPt ? 'Sazonalidade' : 'Seasonality',
-      body: isPt
-        ? 'Quando ir a cada spot — vento e ondas por mês'
-        : 'When to go to each spot — wind and waves by month',
+      title: t.seasonalityTitle,
+      body: t.seasonalityBody,
     },
     {
       href: `/${locale}/compare/`,
       icon: Columns3,
-      title: isPt ? 'Comparar spots' : 'Compare spots',
-      body: isPt ? 'Lado a lado, mesmo timeframe' : 'Side by side, same timeframe',
+      title: t.compareTitle,
+      body: t.compareBody,
     },
     {
       href: `/${locale}/favorites/`,
       icon: Heart,
-      title: isPt ? 'Favoritos' : 'Favorites',
-      body: isPt
-        ? 'Sincroniza spots e activa alertas por email'
-        : 'Sync spots and enable email alerts',
+      title: t.favoritesTitle,
+      body: t.favoritesBody,
     },
   ] as const;
 
   const inner = (
     <>
-      <h2 className="text-h3 text-fg mb-1">
-        {isPt ? 'Mais para explorar' : 'More to explore'}
-      </h2>
-      <p className="text-meta text-fg-muted mb-4">
-        {isPt
-          ? 'Ferramentas para planear a próxima sessão'
-          : 'Tools to plan your next session'}
-      </p>
+      <h2 className="text-h3 text-fg mb-1">{t.moreToExplore}</h2>
+      <p className="text-meta text-fg-muted mb-4">{t.moreToExploreSub}</p>
       <div className="grid md:grid-cols-3 gap-3">
         {cards.map(({ href, icon: Icon, title, body }) => (
           <Card

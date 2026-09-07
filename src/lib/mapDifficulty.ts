@@ -57,16 +57,93 @@ export function getDifficultyMarkerColor(difficulty: Spot['difficulty']): string
   }
 }
 
+type DifficultyLocale = 'pt' | 'en' | 'es' | 'de' | 'fr';
+
+const DIFFICULTY_LABELS: Record<
+  Spot['difficulty'],
+  Record<DifficultyLocale, string>
+> = {
+  beginner: {
+    pt: 'Iniciante',
+    en: 'Beginner',
+    es: 'Principiante',
+    de: 'Anfänger',
+    fr: 'Débutant',
+  },
+  intermediate: {
+    pt: 'Intermédio',
+    en: 'Intermediate',
+    es: 'Intermedio',
+    de: 'Fortgeschritten',
+    fr: 'Intermédiaire',
+  },
+  advanced: {
+    pt: 'Avançado',
+    en: 'Advanced',
+    es: 'Avanzado',
+    de: 'Erfahren',
+    fr: 'Avancé',
+  },
+  expert: {
+    pt: 'Expert',
+    en: 'Expert',
+    es: 'Experto',
+    de: 'Experte',
+    fr: 'Expert',
+  },
+  all: {
+    pt: 'Todos os níveis',
+    en: 'All levels',
+    es: 'Todos los niveles',
+    de: 'Alle Level',
+    fr: 'Tous les niveaux',
+  },
+};
+
+/**
+ * Localized difficulty label. Accepts boolean (legacy isPt) or locale string.
+ * ES/DE/FR keys mirror `spots.*` in translations/.
+ */
 export function getDifficultyLabel(
   difficulty: Spot['difficulty'],
-  isPt: boolean,
+  localeOrIsPt: boolean | string = 'pt',
 ): string {
-  const labels: Record<Spot['difficulty'], { pt: string; en: string }> = {
-    beginner: { pt: 'Iniciante', en: 'Beginner' },
-    intermediate: { pt: 'Intermédio', en: 'Intermediate' },
-    advanced: { pt: 'Avançado', en: 'Advanced' },
-    expert: { pt: 'Expert', en: 'Expert' },
-    all: { pt: 'Todos os níveis', en: 'All levels' },
+  const locale: DifficultyLocale =
+    typeof localeOrIsPt === 'boolean'
+      ? localeOrIsPt
+        ? 'pt'
+        : 'en'
+      : localeOrIsPt === 'es' ||
+          localeOrIsPt === 'de' ||
+          localeOrIsPt === 'fr' ||
+          localeOrIsPt === 'en' ||
+          localeOrIsPt === 'pt'
+        ? localeOrIsPt
+        : 'en';
+  return DIFFICULTY_LABELS[difficulty]?.[locale] ?? difficulty;
+}
+
+/** Localized map HUD difficulty filter options (id + label). */
+export function getMapDifficultyOptions(locale: string): {
+  id: MapDifficultyFilter;
+  label: string;
+}[] {
+  const loc =
+    locale === 'pt' || locale === 'en' || locale === 'es' || locale === 'de' || locale === 'fr'
+      ? locale
+      : 'en';
+  const allShort: Record<DifficultyLocale, string> = {
+    pt: 'Todos',
+    en: 'All levels',
+    es: 'Todos',
+    de: 'Alle',
+    fr: 'Tous',
   };
-  return labels[difficulty]?.[isPt ? 'pt' : 'en'] ?? difficulty;
+  return MAP_DIFFICULTY_OPTIONS.map((o) => ({
+    id: o.id,
+    label:
+      o.id === 'all'
+        ? allShort[loc]
+        : DIFFICULTY_LABELS[o.id as Spot['difficulty']][loc],
+  }));
 }

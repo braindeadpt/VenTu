@@ -830,7 +830,7 @@ export default function SpotMapInteractive({
           ref={mapRef}
           role="region"
           className="w-full h-full"
-          aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
+          aria-label={t.map.spotsMapAria}
         />
       </div>
 

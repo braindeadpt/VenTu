@@ -1,9 +1,9 @@
 /**
  * Locale shell layout (pt | en | es | de | fr).
  *
- * SEO MVP: /es /de /fr ship translated nav/meta/hreflang (shell), but most page
- * body copy still uses the EN branch of `isPt ? … : …` until full localization.
- * Do not treat missing ES/DE/FR body strings as bugs — intentional for now.
+ * Locales pt/en/es/de/fr: nav/footer + high-traffic surfaces (home, spots list,
+ * mapa, spot detail chrome) use getTranslation(locale). Deeper pages (about body,
+ * news articles, directory dump) may still fall through to EN.
  */
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'

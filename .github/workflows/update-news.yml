@@ -58,7 +58,7 @@ jobs:
           # e commita os dois juntos. Só aqui: sem news diffs, o sitemap
           # existente já está correcto (só lastmod envelhece, que é ignorado).
           node scripts/generate-sitemap.js
-          git add -f public/sitemap.xml
+          git add -f public/sitemap.xml public/sitemap-*.xml
           git commit -m "auto: update news feed + sitemap [$(date +'%Y-%m-%d %H:%M')]"
           for attempt in 1 2 3 4 5; do
             git pull --rebase origin main && git push origin HEAD:main && exit 0

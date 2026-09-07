@@ -10,7 +10,7 @@ interface WindSourceAttributionNoteProps {
    * mostrada. 'forecast' → nota Open-Meteo (o vento do score veio do modelo).
    */
   source: 'ipma' | 'ecowitt' | 'metar' | 'forecast';
-  locale: 'pt' | 'en';
+  locale: 'pt' | 'en' | 'es' | 'de' | 'fr';
   className?: string;
 }
 

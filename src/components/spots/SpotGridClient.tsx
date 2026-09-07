@@ -22,11 +22,12 @@ import {
 } from '@/lib/gridFilters';
 import {
   MAP_DIFFICULTY_LS_KEY,
-  MAP_DIFFICULTY_OPTIONS,
+  getMapDifficultyOptions,
   readMapDifficultyFromStorage,
   spotMatchesDifficultyFilter,
   type MapDifficultyFilter,
 } from '@/lib/mapDifficulty';
+import { mapSportFilterLabel } from '@/lib/mapSportFilters';
 
 const SpotMapInteractive = dynamic(() => import('./SpotMapInteractive'), { ssr: false });
 
@@ -52,10 +53,9 @@ function getSportColor(sport: GridSportFilter) {
   return SPORTS.find(s => s.id === sport)?.color || 'text-fg';
 }
 
-function getSportLabel(sport: unknown, isPt: boolean): string {
+function getSportLabel(sport: unknown, locale: string): string {
   if (typeof sport !== 'string') return '';
-  const s = SPORTS.find(x => x.id === sport);
-  return isPt ? s?.labelPt || '' : s?.labelEn || '';
+  return mapSportFilterLabel(sport as GridSportFilter, locale);
 }
 
 export function SpotGridClient({
@@ -74,8 +74,8 @@ export function SpotGridClient({
   /** Home: exclude spots already in Top agora */
   excludeTopNowSlugs?: string[];
 }) {
-  const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
+  const isPt = locale === 'pt';
   const liveSpotsData = useLiveGridSpotData(spotsData);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [mapDifficulty, setMapDifficulty] = useState<MapDifficultyFilter>('all');
@@ -127,7 +127,7 @@ export function SpotGridClient({
 
   const sportIcon = getSportIcon(selectedSport);
   const sportColor = getSportColor(selectedSport);
-  const sportLabel = getSportLabel(selectedSport, isPt);
+  const sportLabel = getSportLabel(selectedSport, locale);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" suppressHydrationWarning>
@@ -143,7 +143,7 @@ export function SpotGridClient({
                     onClick={() => handleSportChange(sport.id)}
                     icon={<span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>}
                   >
-                    {isPt ? sport.labelPt : sport.labelEn}
+                    {mapSportFilterLabel(sport.id, locale)}
                   </FilterPill>
                 </span>
               );
@@ -247,7 +247,7 @@ export function SpotGridClient({
           mapHud={{
             sports: SPORTS.map((s) => ({
               id: s.id,
-              label: (isPt ? s.labelPt : s.labelEn) ?? s.id,
+              label: mapSportFilterLabel(s.id, locale),
               icon: s.icon,
               color: s.color,
             })),
@@ -263,10 +263,7 @@ export function SpotGridClient({
               selectedSport !== DEFAULT_SPORT ||
               selectedRegion !== DEFAULT_REGION ||
               mapDifficulty !== 'all',
-            difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
-              id: d.id,
-              label: isPt ? d.labelPt : d.labelEn,
-            })),
+            difficulties: getMapDifficultyOptions(locale),
             selectedDifficulty: mapDifficulty,
             onDifficultyChange: setMapDifficulty,
             difficultyGroupLabel: t.spots.level,
@@ -293,10 +290,11 @@ export function SpotGridClient({
           }
           description={
             alternativeSport
-              ? (isPt
-                ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt))
-                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt)))
-              : getPlayfulEmptyCopy('no-spots-filter', isPt).description
+              ? t.hero.tryAlternative.replace(
+                  '{suggestion}',
+                  getSportLabel(alternativeSport, locale),
+                )
+              : getPlayfulEmptyCopy('no-spots-filter', locale).description
           }
           action={
             <div className="flex items-center gap-3 flex-wrap justify-center">
@@ -308,7 +306,7 @@ export function SpotGridClient({
                   <span className={getSportColor(alternativeSport as GridSportFilter)}>
                     {getSportIcon(alternativeSport as GridSportFilter)}
                   </span>
-                  {t.spots.view} {getSportLabel(alternativeSport, isPt)}
+                  {t.spots.view} {getSportLabel(alternativeSport, locale)}
                 </Button>
               )}
               <Button variant="secondary" onClick={handleReset}>
