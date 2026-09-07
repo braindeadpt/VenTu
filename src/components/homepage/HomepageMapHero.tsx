@@ -47,8 +47,6 @@ import { heroStatusLine } from '@/lib/voice';
 
 import BestWindowBanner from '@/components/homepage/BestWindowBanner';
 
-import HeroBathymetry from '@/components/homepage/HeroBathymetry';
-
 import HeroTicker from '@/components/homepage/HeroTicker';
 
 import {
@@ -282,11 +280,6 @@ export default function HomepageMapHero({
         aria-hidden
         data-map-hero-scrim="top"
       />
-
-      {/* Textura batimétrica ENTRE o scrim e a copy: por cima do wash chapado
-          que antes era todo o lado esquerdo, por baixo do texto que tem de
-          continuar a ser a coisa mais legível do ecrã. */}
-      <HeroBathymetry className="z-[2]" />
 
 
 

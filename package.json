@@ -63,7 +63,6 @@
     "data:update": "npm run buoys:fetch && npm run isobaths:fetch && npm run wmo:fetch && npm run bias:fetch && npm run conditions:update && npm run obs:update && npm run radar:fetch && npm run warnings:fetch && npm run warnings:nav && npm run spots:index && npm run spots:lite && npm run news:generate",
     "spots:index": "tsx scripts/build-spots-index-ts.ts",
     "spots:lite": "tsx scripts/generate-spots-lite.ts",
-    "hero:bathymetry": "node scripts/generate-hero-bathymetry.mjs",
     "spots:aerials": "node scripts/generate-spot-aerials.mjs",
     "sitemap:generate": "node scripts/generate-sitemap.js",
     "og:generate": "node scripts/generate-og-image.mjs && node scripts/generate-spot-og-images.mjs",
