@@ -191,6 +191,70 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     return window.matchMedia('(max-width: 767px)').matches;
   });
 
+  // Espelhos em refs: as callbacks estáveis (handleTileState / auto-recover)
+  // usam sempre o modo/tema mais recentes sem se re-criarem.
+  const basemapModeRef = useRef<BasemapMode>(basemapMode);
+  const isDarkRef = useRef(isDark);
+  useEffect(() => {
+    basemapModeRef.current = basemapMode;
+    isDarkRef.current = isDark;
+  });
+
+  // Recuperação automática do basemap. O watchdog declara 'failed' quando
+  // nenhum tile pintou (stall ou rajada de tileerrors — reset de ligação,
+  // QUIC/HTTP3 a cair, glitch do CDN). Sem isto, uma falha transitória deixa
+  // o mapa cinzento com «Não foi possível carregar o mapa» até o utilizador
+  // clicar em «Atualizar». Com isto, o basemap é re-anexado em segundo plano
+  // (limitado e espaçado), mantendo a UI de erro visível até um tile pintar —
+  // aí volta a 'ok' e a mensagem desaparece sozinha.
+  const AUTO_RECOVER_ATTEMPTS = 4;
+  const AUTO_RECOVER_INTERVAL_MS = 15_000;
+  const autoRecoverRef = useRef<{ attempts: number }>({ attempts: 0 });
+  const [autoRecoverTick, setAutoRecoverTick] = useState(0);
+
+  useEffect(() => {
+    if (tileState !== 'failed') return;
+    if (autoRecoverRef.current.attempts >= AUTO_RECOVER_ATTEMPTS) return;
+    const timer = setTimeout(() => {
+      // Conta apenas re-anexos reais: o incremento vive aqui, dentro do
+      // setTimeout, não no corpo do efeito — uma re-corrida do efeito (nova
+      // tentativa agendada) não deve gastar uma tentativa sem tentar nada.
+      autoRecoverRef.current.attempts += 1;
+      const Leaflet = LRef.current;
+      const map = mapInstanceRef.current;
+      if (!Leaflet || !map) return;
+      // Re-anexa em silêncio: a UI de erro ('failed') permanece até um tile
+      // pintar; os estados intermédios ('loading') são ignorados.
+      const onSilent = (state: BasemapLoadState) => {
+        if (state === 'ok') {
+          autoRecoverRef.current.attempts = 0;
+          setTileState('ok');
+        } else if (state === 'failed') {
+          setAutoRecoverTick((t) => t + 1); // nova tentativa limitada
+        }
+      };
+      attachBasemap(Leaflet, map, basemapModeRef.current, isDarkRef.current, tileLayerRef, tileFallbackCleanupRef, onSilent);
+      tileSignatureRef.current = tileSignature(basemapModeRef.current, isDarkRef.current);
+    }, AUTO_RECOVER_INTERVAL_MS);
+    return () => clearTimeout(timer);
+  }, [tileState, autoRecoverTick, tileLayerRef, tileFallbackCleanupRef]);
+
+  const stopAutoRecover = useCallback(() => {
+    autoRecoverRef.current.attempts = 0;
+  }, []);
+
+  // Encaminha os estados do watchdog; 'failed' arma a recuperação automática
+  // (limitada) mantendo a UI de erro até um tile pintar.
+  const handleTileState = useCallback((state: BasemapLoadState) => {
+    if (state === 'ok') {
+      stopAutoRecover();
+      setTileState('ok');
+      return;
+    }
+    setTileState(state);
+  }, [stopAutoRecover]);
+
+
   // Mounted tracking
   useEffect(() => {
     mountedRef.current = true;
@@ -262,6 +326,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
       tileSignatureRef.current = null;
       tileFallbackCleanupRef.current?.();
       tileFallbackCleanupRef.current = null;
+      stopAutoRecover();
       LRef.current = null;
       clearLeafletContainer(container);
       if (mountedRef.current) {
@@ -313,7 +378,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
 
         if (cancelled) return;
 
-        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, setTileState);
+        attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
         tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
 
         if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(created);
@@ -378,9 +443,10 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     const next = tileSignature(basemapMode, isDark);
     if (tileSignatureRef.current === next && tileLayerRef.current) return;
 
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, setTileState);
+    stopAutoRecover();
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
     tileSignatureRef.current = next;
-  }, [basemapMode, isDark, isReady]);
+  }, [basemapMode, isDark, isReady, handleTileState, stopAutoRecover]);
 
   // Handle basemap toggle
   const handleBasemapChange = useCallback((mode: BasemapMode) => {
@@ -397,9 +463,10 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     const Leaflet = LRef.current;
     const map = mapInstanceRef.current;
     if (!Leaflet || !map) return;
-    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, setTileState);
+    stopAutoRecover();
+    attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
     tileSignatureRef.current = tileSignature(basemapMode, isDark);
-  }, [basemapMode, isDark, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef]);
+  }, [basemapMode, isDark, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef, handleTileState, stopAutoRecover]);
 
   // Resize handling
   useEffect(() => {
