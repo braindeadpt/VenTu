@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
 
 import { guardLeafletCanvas } from '@/components/spots/map/leafletCanvasGuard';
+import { sweepOverlaysBeforeMapRemove } from '@/components/spots/map/mapOverlaySweep';
 import { clearLeafletContainer } from '@/lib/mapFullscreen';
 import type { BasemapMode } from '@/components/spots/MapLayerToggle';
 import {
@@ -303,27 +304,10 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     const teardownMap = () => {
       if (created) {
         try {
-          // Remove every overlay BEFORE map.remove(): Leaflet's remove()
-          // iterates layers by insertion id, so the shared canvas renderer
-          // (lowest id) is destroyed BEFORE the vector overlays. Each Path
-          // removed afterwards schedules a renderer redraw
-          // (_removePath -> _requestRedraw) on the already-destroyed canvas
-          // (_ctx deleted but _map still set) and the frame throws
-          // "Cannot read properties of undefined (reading 'save')" on the
-          // next animation frame (leaflet#8373 class). Sweeping overlays
-          // first lets the renderer's own _destroyContainer cancel any
-          // pending redraw frame.
-          const overlays: L.Layer[] = [];
-          created.eachLayer((layer) => overlays.push(layer));
-          for (const layer of overlays) {
-            if (LRef.current && layer instanceof LRef.current.Renderer) continue;
-            try {
-              created.removeLayer(layer);
-            } catch {
-              /* noop */
-            }
-          }
-          created.remove();
+          sweepOverlaysBeforeMapRemove(created, (layer) => {
+            const LActive = LRef.current;
+            return !!LActive && layer instanceof LActive.Renderer;
+          });
         } catch {
           /* noop */
         }
