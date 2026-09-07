@@ -166,9 +166,21 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(
         sheet.getByRole('link', { name: /Como chegar|Get directions/i }),
       ).toBeVisible({ timeout: 15_000 });
-      await expect(sheet.getByRole('link', { name: /Ver spot|View spot/i })).toBeVisible({
-        timeout: 15_000,
+      const verSpot = sheet.getByRole('link', { name: /Ver spot|View spot/i });
+      await expect(verSpot).toBeVisible({ timeout: 15_000 });
+
+      // Regression (53940e3b7): Ver spot must be reachable by a REAL pointer
+      // tap. The map HUD card (z-[1100]) used to layer above the sheet
+      // (z-[1050]), so every pointer event on the button hit the HUD instead
+      // and taps never navigated. The navigation is the assertion — a plain
+      // visible check would not catch a re-introduced overlay.
+      const tap = verSpot.click().catch(() => undefined);
+      await page.waitForURL(/\/pt\/spots\/[a-z0-9-]+\/?/, { timeout: 15_000 }).catch((err) => {
+        throw new Error(
+          `Ver spot real-tap regression: the tap did not navigate to a spot page (sheet likely covered again) — ${err.message}`,
+        );
       });
+      await tap;
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await context.close();
