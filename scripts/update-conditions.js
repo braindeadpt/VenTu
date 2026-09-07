@@ -187,6 +187,23 @@ async function updateConditions() {
       console.error(`  ⚠️ Failed to write per-spot forecast for ${dataId}:`, err.message);
     }
   }
+  // Espelha o directorio ao indice: um spot cujo fetch falhou (o gate de
+  // coverage tolera ate 5%) fica fora de forecasts.json, mas o ficheiro do
+  // run anterior - commitado - ficava no disco e o validador
+  // (forecasts.splitFiles) falhava com "N file(s) without key", matando o
+  // pipeline em loop (2026-09-07: castelo-neiva, anjos). O indice e a
+  // verdade; cada remocao e nomeada para ser auditavel.
+  let staleRemoved = 0;
+  for (const file of fs.readdirSync(perSpotDir)) {
+    if (!file.endsWith('.json')) continue;
+    const id = file.replace(/\.json$/, '');
+    if (!Object.prototype.hasOwnProperty.call(allForecasts, id)) {
+      fs.unlinkSync(path.join(perSpotDir, file));
+      staleRemoved++;
+      console.warn(`  🗑 Removed stale per-spot forecast ${file} - spot absent from this run's forecasts.json (fetch failed or spot removed)`);
+    }
+  }
+  if (staleRemoved > 0) console.warn(`⚠️ Removed ${staleRemoved} stale per-spot forecast file(s) - index/dir now consistent`);
   console.log(`\n✅ Conditions saved to ${outputPath}`);
   console.log(`📈 Forecasts saved to ${forecastsPath}`);
   const { buildMapHours } = require('./build-map-hours');

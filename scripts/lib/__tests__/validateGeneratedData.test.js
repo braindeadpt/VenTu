@@ -577,3 +577,51 @@ describe('validate-generated-data — map-hours.json', () => {
     expect(out).toMatch(/mapHours.sst/);
   });
 });
+
+describe('validate-generated-data - splitFiles nomeia os orfaos (nao so conta)', () => {
+  const series = () =>
+    Array.from({ length: 24 }, () => ({ time: new Date(Date.now() + 3_600_000).toISOString(), waveHeight: 1.2, windSpeed: 10 }));
+
+  it('ficheiro sem chave: o NOME do ficheiro orfao aparece no erro', () => {
+    const dir = makeDataDir();
+    fs.writeFileSync(path.join(dir, 'forecasts', 'orphan-spot.json'), JSON.stringify(series()));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/forecasts\.splitFiles/);
+    expect(out).toMatch(/1 file\(s\) without key: orphan-spot/);
+  });
+
+  it('chave sem ficheiro: o NOME da chave aparece no erro', () => {
+    const dir = makeDataDir();
+    const f = JSON.parse(fs.readFileSync(path.join(dir, 'forecasts.json'), 'utf8'));
+    f['missing-spot'] = series();
+    fs.writeFileSync(path.join(dir, 'forecasts.json'), JSON.stringify(f));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/1 key\(s\) without file: missing-spot/);
+  });
+
+  it('conditions.entries: o slug sem waveHeight numerico aparece no erro', () => {
+    const dir = makeDataDir();
+    const c = JSON.parse(fs.readFileSync(path.join(dir, 'conditions.json'), 'utf8'));
+    c['bad-spot'] = {};
+    fs.writeFileSync(path.join(dir, 'conditions.json'), JSON.stringify(c));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/bad-spot/);
+  });
+
+  it('cap de 10: lista 10 e diz "and N more" em vez de inundar o log', () => {
+    const dir = makeDataDir();
+    for (let i = 0; i < 13; i += 1) {
+      fs.writeFileSync(path.join(dir, 'forecasts', `orphan-${i}.json`), JSON.stringify(series()));
+    }
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    // readdirSync é lexicográfico (orphan-0, orphan-1, orphan-10, …) — o
+    // contrato é: 10 nomes listados + "... and N more", não a ordem numérica.
+    expect(out).toMatch(/13 file\(s\) without key: /);
+    expect(out).toMatch(/\.\.\. and 3 more/);
+    expect(out.match(/orphan-\d+/g)).toHaveLength(10);
+  });
+});

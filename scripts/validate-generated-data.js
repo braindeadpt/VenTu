@@ -45,6 +45,12 @@ const check = (name, cond, detail) => {
   if (!cond) fail(`${name}: ${detail}`);
 };
 
+// Nomeia os problemas em vez de so contar: um unico orfao no forecasts/
+// custou uma investigacao inteira (update-data.yml validate-data,
+// 2026-09-07). Cap de 10 + "and N more" para nao inundar o log do CI.
+const fmtNames = (names, cap = 10) =>
+  names.length <= cap ? names.join(', ') : `${names.slice(0, cap).join(', ')} ... and ${names.length - cap} more`;
+
 const read = (p) => {
   const file = path.join(DATA, p);
   if (!fs.existsSync(file)) return undefined;
@@ -111,7 +117,7 @@ if (conditions !== undefined) {
     const v = conditions[s];
     return typeof v !== 'object' || v === null || typeof v.waveHeight !== 'number';
   });
-  check('conditions.entries', bad.length === 0, `${bad.length} spot(s) without a numeric waveHeight`);
+  check('conditions.entries', bad.length === 0, `${bad.length} spot(s) without a numeric waveHeight: ${fmtNames(bad)}`);
 }
 
 // ── 3. forecasts.json + forecasts/<slug>.json — hourly arrays ──
@@ -132,24 +138,27 @@ if (forecasts !== undefined) {
     check(`forecasts.${k}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
       `expected array of ≥${FORECAST_MIN_HOURS} hours`);
     if (Array.isArray(arr)) {
-      const bad = arr.filter((h) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
+      const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
       check(`forecasts.${k}.entries`, bad.length === 0,
-        `${bad.length} hour(s) missing time/waveHeight/windSpeed`);
+        `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}`);
     }
   }
-  // split-file integrity: every key has a file and vice versa
+  // split-file integrity: every key has a file and vice versa. Ficheiro
+  // sem chave = spot cujo fetch falhou nesta corrida (o gate de coverage
+  // tolera ate 5% de falhas): o ficheiro commitado do run anterior fica
+  // no disco. update-conditions.js remove-o; isto e o cinto de seguranca.
   const noFile = keys.filter((k) => !forecastFiles.includes(k));
   const orphan = forecastFiles.filter((f) => !keys.includes(f));
   check('forecasts.splitFiles', noFile.length === 0 && orphan.length === 0,
-    `${noFile.length} key(s) without file, ${orphan.length} file(s) without key`);
+    `${noFile.length} key(s) without file${noFile.length ? `: ${fmtNames(noFile)}` : ''}, ${orphan.length} file(s) without key${orphan.length ? `: ${fmtNames(orphan)}` : ''}`);
   for (const f of forecastFiles) {
     const arr = read(`forecasts/${f}.json`);
     check(`forecasts/${f}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
       `expected array of ≥${FORECAST_MIN_HOURS} hours`);
     if (Array.isArray(arr)) {
-      const bad = arr.filter((h) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
+      const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
       check(`forecasts/${f}.entries`, bad.length === 0,
-        `${bad.length} hour(s) missing time/waveHeight/windSpeed`);
+        `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}`);
     }
   }
 }
@@ -175,12 +184,12 @@ if (mapHours !== undefined) {
       const best = row && typeof row === 'object' ? row.best : null;
       return !Array.isArray(best) || best.length !== n;
     });
-    check('mapHours.series', bad.length === 0, `${bad.length} spot(s) with series ≠ times.length`);
+    check('mapHours.series', bad.length === 0, `${bad.length} spot(s) with series ≠ times.length: ${fmtNames(bad.map(([k]) => k))}`);
   }
   if (Array.isArray(mapHours.times) && mapHours.hs && typeof mapHours.hs === 'object' && !Array.isArray(mapHours.hs)) {
     const n = mapHours.times.length;
     const bad = Object.entries(mapHours.hs).filter(([, series]) => !Array.isArray(series) || series.length !== n);
-    check('mapHours.hs', bad.length === 0, `${bad.length} hs series ≠ times.length`);
+    check('mapHours.hs', bad.length === 0, `${bad.length} hs series ≠ times.length: ${fmtNames(bad.map(([k]) => k))}`);
   } else if (MODE === 'full') {
     warn('map-hours.json hs missing — Hs field off');
   }
@@ -192,21 +201,21 @@ if (mapHours !== undefined) {
       const dir = row.dir;
       return !Array.isArray(spd) || !Array.isArray(dir) || spd.length !== n || dir.length !== n;
     });
-    check('mapHours.currents', bad.length === 0, `${bad.length} current series ≠ times.length`);
+    check('mapHours.currents', bad.length === 0, `${bad.length} current series ≠ times.length: ${fmtNames(bad.map(([k]) => k))}`);
   } else if (MODE === 'full') {
     warn('map-hours.json currents missing — currents field off');
   }
   if (Array.isArray(mapHours.times) && mapHours.sst && typeof mapHours.sst === 'object' && !Array.isArray(mapHours.sst)) {
     const n = mapHours.times.length;
     const bad = Object.entries(mapHours.sst).filter(([, series]) => !Array.isArray(series) || series.length !== n);
-    check('mapHours.sst', bad.length === 0, `${bad.length} sst series ≠ times.length`);
+    check('mapHours.sst', bad.length === 0, `${bad.length} sst series ≠ times.length: ${fmtNames(bad.map(([k]) => k))}`);
   } else if (MODE === 'full') {
     warn('map-hours.json sst missing — water-temp field off');
   }
   if (Array.isArray(mapHours.times) && mapHours.thermal && typeof mapHours.thermal === 'object' && !Array.isArray(mapHours.thermal)) {
     const n = mapHours.times.length;
     const bad = Object.entries(mapHours.thermal).filter(([, series]) => !Array.isArray(series) || series.length !== n);
-    check('mapHours.thermal', bad.length === 0, `${bad.length} thermal series ≠ times.length`);
+    check('mapHours.thermal', bad.length === 0, `${bad.length} thermal series ≠ times.length: ${fmtNames(bad.map(([k]) => k))}`);
   }
   if (mapHours.tides && typeof mapHours.tides === 'object' && !Array.isArray(mapHours.tides)) {
     const bad = Object.entries(mapHours.tides).filter(([, curve]) => {
@@ -216,7 +225,7 @@ if (mapHours !== undefined) {
       return !Array.isArray(times) || !Array.isArray(height)
         || times.length !== height.length || times.length < 24;
     });
-    check('mapHours.tides', bad.length === 0, `${bad.length} tide curve(s) malformed`);
+    check('mapHours.tides', bad.length === 0, `${bad.length} tide curve(s) malformed: ${fmtNames(bad.map(([k]) => k))}`);
   } else if (MODE === 'full') {
     warn('map-hours.json tides missing — tide chip off');
   }
@@ -233,7 +242,7 @@ if (conditions !== undefined && forecasts !== undefined) {
   const onlyC = cKeys.filter((k) => !fKeys.includes(k));
   const onlyF = fKeys.filter((k) => !cKeys.includes(k));
   check('crossFile.spotSets', onlyC.length === 0 && onlyF.length === 0,
-    `spot set mismatch: ${onlyC.length} only in conditions, ${onlyF.length} only in forecasts`);
+    `spot set mismatch: ${onlyC.length} only in conditions${onlyC.length ? `: ${fmtNames(onlyC)}` : ''}, ${onlyF.length} only in forecasts${onlyF.length ? `: ${fmtNames(onlyF)}` : ''}`);
 }
 
 // ── 5. spots-index.json + spots-lite.json ──
@@ -261,8 +270,8 @@ const spotsLite = read('spots-lite.json');
 check('spots-lite', spotsLite !== undefined, 'file missing');
 if (spotsLite !== undefined) {
   check('spots-lite.shape', Array.isArray(spotsLite) && spotsLite.length > 0, 'must be a non-empty array');
-  const bad = spotsLite.filter((s) => !s || typeof s.slug !== 'string' || typeof s.name !== 'string');
-  check('spots-lite.entries', bad.length === 0, `${bad.length} entr(ies) missing slug/name`);
+  const bad = spotsLite.map((s, i) => ({ s, i })).filter(({ s }) => !s || typeof s.slug !== 'string' || typeof s.name !== 'string');
+  check('spots-lite.entries', bad.length === 0, `${bad.length} entr(ies) missing slug/name: ${fmtNames(bad.map(({ s, i }) => `#${i}${s && s.slug ? ` (${s.slug})` : ''}`))}`);
 }
 
 // ── 6. ih-tides.json + ipma-station-map.json ──
