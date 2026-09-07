@@ -155,19 +155,24 @@ export function createSpotMarker(
       const root = marker.getPopup()?.getElement();
       if (!root) return;
 
+      // Leaflet reuses the same popup element across open/close cycles, so
+      // re-attaching here on every popupopen would stack duplicate click
+      // listeners on the persistent anchor nodes (unbounded growth over a
+      // long session of browsing spots). Bind each popup's DOM listeners
+      // exactly once; the detail handler stays active for every future open
+      // and closes the popup when clicked, so behaviour is unchanged.
+      if (root.dataset.ventuPopupBound) return;
+      root.dataset.ventuPopupBound = '1';
+
       const detailBtn = root.querySelector('.ventu-popup-detail');
       if (detailBtn) {
-        detailBtn.addEventListener(
-          'click',
-          (ev) => {
-            if (!options.onSpotSelect) return;
-            ev.preventDefault();
-            ev.stopPropagation();
-            options.onSpotSelect(spot.id);
-            marker.closePopup();
-          },
-          { once: true },
-        );
+        detailBtn.addEventListener('click', (ev) => {
+          if (!options.onSpotSelect) return;
+          ev.preventDefault();
+          ev.stopPropagation();
+          options.onSpotSelect(spot.id);
+          marker.closePopup();
+        });
       }
 
       root.querySelectorAll('a[href], .ventu-popup-directions').forEach((anchor) => {
