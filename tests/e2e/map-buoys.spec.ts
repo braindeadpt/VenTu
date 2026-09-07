@@ -95,6 +95,32 @@ function buoyMarker(page: import('@playwright/test').Page, id: string) {
   return page.locator('.ventu-buoy-marker').filter({ has: page.locator(`[data-buoy-id="${id}"]`) });
 }
 
+/**
+ * Click a buoy marker until its popup opens (bounded retry, same convention
+ * as openMapSpotSheet). Under parallel load the map can rebuild the buoy
+ * divIcon layer between Playwright's hit-test and the input dispatch — the
+ * click then lands on a stale/detached node and opens nothing. A second
+ * click on the current marker is exactly what a user does (tap again); the
+ * content assertions below still enforce the contract, so a systematic
+ * failure fails loudly after the retries.
+ */
+async function openBuoyPopup(page: import('@playwright/test').Page, id: string) {
+  const marker = buoyMarker(page, id);
+  const popup = page.locator('.ventu-buoy-popup');
+  await expect(marker).toBeVisible({ timeout: 15_000 });
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    await marker.click({ force: true });
+    try {
+      await popup.waitFor({ state: 'visible', timeout: 4_000 });
+      return popup;
+    } catch {
+      // Try again on the freshly resolved marker.
+    }
+  }
+  await expect(popup).toBeVisible({ timeout: 10_000 });
+  return popup;
+}
+
 test.describe('Map buoy dots', () => {
   test.use({ serviceWorkers: 'block' });
   test.describe.configure({ timeout: 60_000 });
@@ -119,11 +145,7 @@ test.describe('Map buoy dots', () => {
   test('popup da boia mostra Hs e a fonte IH', async ({ page }) => {
     await openMapBuoys(page);
 
-    const marker = buoyMarker(page, 'ih-4');
-    await expect(marker).toBeVisible({ timeout: 15_000 });
-    await marker.click();
-    const popup = page.locator('.ventu-buoy-popup');
-    await expect(popup).toBeVisible();
+    const popup = await openBuoyPopup(page, 'ih-4');
     await expect(popup).toContainText('Leixões');
     await expect(popup).toContainText('1.4');
     await expect(popup).toContainText('Instituto Hidrográfico');
