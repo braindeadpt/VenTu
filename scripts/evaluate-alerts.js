@@ -537,7 +537,15 @@ function buildCoastalDigestSummary(firing, isPt) {
 async function main() {
   console.log('🔔 VenTu — Evaluate alerts\n');
 
-  const { url, key } = getSupabaseConfig();
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) {
+    console.log(
+      '⏭️  Supabase not configured (SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY) — skip alerts.',
+    );
+    return;
+  }
+
   try {
     const tg = await processTelegramLinkUpdates(url, key);
     if (tg.processed > 0 || tg.linked > 0) {

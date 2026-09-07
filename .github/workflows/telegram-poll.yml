@@ -25,11 +25,21 @@ jobs:
       - name: Require TELEGRAM_BOT_TOKEN
         run: |
           if [ -z "${{ secrets.TELEGRAM_BOT_TOKEN }}" ]; then
-            echo "::error::Secret TELEGRAM_BOT_TOKEN is missing. Add it in Settings → Secrets → Actions (BotFather token)."
-            exit 1
+            echo "TELEGRAM_BOT_TOKEN missing — skip poll (no-op)."
+            echo "skip=true" >> "$GITHUB_ENV"
+          fi
+
+      - name: Skip if Supabase is not configured
+        # Only evaluated when the token exists — never overrides a token skip.
+        if: env.skip != 'true'
+        run: |
+          if [ -z "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}" ] || [ -z "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}" ]; then
+            echo "Supabase secrets missing — telegram link poll is a no-op (exit 0)."
+            echo "skip=true" >> "$GITHUB_ENV"
           fi
 
       - name: Poll Telegram /start links
+        if: env.skip != 'true'
         env:
           SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
