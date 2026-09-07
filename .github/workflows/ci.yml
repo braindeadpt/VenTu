@@ -137,7 +137,7 @@ jobs:
       # Specs herméticos de dados/score (interceptam data files client-side —
       # correm sem rede nem IH_API_KEY): core expandido com tides, buoy-warnings,
       # topnow-wave-badge, observed-wave-card, data-sources, isobaths,
-      # coastal-nav-warnings e coastal-map-layer.
+      # coastal-nav-warnings, coastal-map-layer e map-unmount-race.
       - name: E2E — core data/score specs (hermetic)
         run: npm run test:e2e:core
         env:
