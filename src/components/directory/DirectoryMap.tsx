@@ -110,7 +110,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
       const mcg = Leaflet.markerClusterGroup({
         ...CLUSTER_CONFIG,
         ...(mobile ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 } : {}),
-        iconCreateFunction: createClusterIconFunction(Leaflet, { simple: true }),
+        iconCreateFunction: createClusterIconFunction(Leaflet, { simple: true, locale, kind: 'places' }),
       });
       map.addLayer(mcg);
       clusterRef.current = mcg;
@@ -122,6 +122,10 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
       cancelled = true;
       teardown();
     };
+    // Init unico, de proposito: a `locale` so muda por navegacao (/en/diretorio/),
+    // que remonta este componente. Inclui-la nas deps reconstruiria o mapa inteiro
+    // para trocar o texto de uma etiqueta que ja vem correcta no mount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Theme tile swap

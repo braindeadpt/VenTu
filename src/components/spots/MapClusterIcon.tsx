@@ -17,6 +17,36 @@ function describeArc(cx: number, cy: number, r: number, startAngle: number, endA
 export interface ClusterIconOptions {
   /** Skip score arcs — much cheaper on mobile (count only). */
   simple?: boolean;
+  locale?: string;
+  /** O que o cluster agrupa — spots de surf ou locais do directorio. */
+  kind?: 'spots' | 'places';
+}
+
+/**
+ * Estilo inline de texto so-para-leitores-de-ecra.
+ *
+ * O HTML do cluster e injectado pelo Leaflet via innerHTML, portanto o JIT do
+ * Tailwind nunca o le: depender da classe `sr-only` seria depender de outro
+ * componente a continuar a usa-la. Inline nao tem esse acoplamento.
+ */
+const SR_ONLY_STYLE =
+  'position:absolute;width:1px;height:1px;padding:0;margin:-1px;' +
+  'overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
+
+/**
+ * Nome acessivel do cluster.
+ *
+ * O leaflet.markercluster da role="button" ao icone, e um botao precisa de
+ * nome. A contagem vive num <text> de SVG (que o axe nao conta como texto
+ * acessivel) ou num <div> onde o nome seria so «12» — sem dizer 12 do que,
+ * nem que ha uma accao. Dai a etiqueta explicita, escondida visualmente.
+ */
+function clusterLabel(total: number, locale: string, kind: 'spots' | 'places'): string {
+  const isPt = locale === 'pt' || locale.startsWith('pt');
+  const noun = kind === 'places' ? (isPt ? 'locais' : 'places') : 'spots';
+  return isPt
+    ? `${total} ${noun} nesta zona — ampliar`
+    : `${total} ${noun} in this area — zoom in`;
 }
 
 export function createClusterIconFunction(
@@ -24,6 +54,8 @@ export function createClusterIconFunction(
   options: ClusterIconOptions = {},
 ): (cluster: L.MarkerCluster) => L.DivIcon {
   const simple = options.simple === true;
+  const locale = options.locale ?? 'pt';
+  const kind = options.kind ?? 'spots';
 
   return function (cluster: L.MarkerCluster) {
     const markers = cluster.getAllChildMarkers();
@@ -34,7 +66,8 @@ export function createClusterIconFunction(
 
     if (simple) {
       const html = `
-        <div style="width:${size}px;height:${size}px;border-radius:50%;
+        <span style="${SR_ONLY_STYLE}">${clusterLabel(total, locale, kind)}</span>
+        <div aria-hidden="true" style="width:${size}px;height:${size}px;border-radius:50%;
           display:flex;align-items:center;justify-content:center;
           background:rgb(var(--bg-elevated));border:2px solid rgb(var(--divider-strong));
           font-family:var(--font-geist-mono),'Geist Mono',ui-monospace,monospace;
@@ -91,7 +124,8 @@ export function createClusterIconFunction(
       .join('');
 
     const html = `
-      <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
+      <span style="${SR_ONLY_STYLE}">${clusterLabel(total, locale, kind)}</span>
+      <svg aria-hidden="true" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <clipPath id="cluster-clip-${total}-${goodCount}">
             <circle cx="${c}" cy="${c}" r="${innerR}" />

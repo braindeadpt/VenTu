@@ -254,7 +254,7 @@ export default function SpotMapInteractive({
   const t = getTranslation(validateLocale(locale));
 
   // ── Core map ──
-  const core = useMapCore({ containerRef: mapRef, isHeroEmbed });
+  const core = useMapCore({ containerRef: mapRef, isHeroEmbed, locale });
   const {
     mapInstanceRef, LRef, isReady, clusterReady, isDark, basemapMode, isMobile,
     tileState, retryBasemap,

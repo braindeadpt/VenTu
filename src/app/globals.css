@@ -144,11 +144,16 @@ html:has([data-embed-widget]) body {
     --divider-strong-rgb: 15 23 42;
 
     /* Data viz — mais escuros para legibilidade AA em fundo claro (texto,
-       links e chips): sky-700 / violet-700 / cyan-700 / amber-700. */
+       links e chips): sky-700 / violet-700 / cyan-700 / amber-800.
+       O âmbar é o hue mais claro dos quatro: a amber-700 (#b45309) os chips
+       tintados do NewsCard/EventCard davam 4.43:1 sobre a superfície card-1
+       (#eff1f4) — falha AA por 0.07 e o axe-audit apanha-a. amber-800 leva-o
+       a 6.3:1. Os outros três já passam nesta superfície (5.2 / 6.3 / 4.7),
+       por isso só este desce um degrau — o mesmo que --sport-windsurf. */
     --data-waves:     3 105 161;  /* sky-700   */
     --data-wind:    109 40 217;    /* violet-700 */
     --data-water:    14 116 144;   /* cyan-700  */
-    --data-period:  180 83 9;      /* amber-700 */
+    --data-period:  146 64 14;     /* amber-800 — AA on tinted chips */
 
     /* Sport accents (light-optimized) */
     --sport-surf:        7 89 133;     /* sky-700     */

@@ -27,6 +27,8 @@ import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
 interface UseMapCoreOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
   isHeroEmbed: boolean;
+  /** Idioma do nome acessivel dos clusters (role="button" precisa de nome). */
+  locale?: string;
 }
 
 interface UseMapCoreReturn {
@@ -169,7 +171,7 @@ function attachBasemap(
   }
 }
 
-export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -411,7 +413,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
         const mcg = Leaflet.markerClusterGroup({
           ...CLUSTER_CONFIG,
           ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 } : {}),
-          iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit }),
+          iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit, locale }),
         });
         const lg = Leaflet.layerGroup();
         clusterGroupRef.current = mcg;
