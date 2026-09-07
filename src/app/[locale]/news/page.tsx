@@ -3,25 +3,21 @@ import { loadNews } from '@/lib/load-news'
 import { loadEvents } from '@/lib/load-events'
 import { upcomingEvents } from '@/lib/events'
 import NewsArchiveClient from '@/components/news/NewsArchiveClient'
-import { getTranslation } from '@/lib/i18n'
+import { getTranslation, validateLocale, locales } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const t = getTranslation(locale)
+  const loc = validateLocale(locale)
+  const t = getTranslation(loc)
+  const languages = Object.fromEntries(locales.map((l) => [l, `/${l}/news/`]))
 
   return {
     title: `${t.news.title} — VenTu`,
     description: t.news.subtitle,
     alternates: {
-      canonical: `/${locale}/news/`,
-      languages: {
-        pt: '/pt/news/',
-        en: '/en/news/',
-        es: '/es/news/',
-        de: '/de/news/',
-        fr: '/fr/news/',
-      },
+      canonical: `/${loc}/news/`,
+      languages,
     },
   }
 }

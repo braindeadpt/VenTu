@@ -3,6 +3,7 @@ import PageHeader from '@/components/ui/PageHeader'
 import Button from '@/components/ui/Button'
 import { buildPageMetadata } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
+import { validateLocale, pickLocale } from '@/lib/i18n'
 import { loadForecastSkillBuoys, forecastSkillOriginTag, forecastSkillOriginLabel } from '@/lib/forecastSkill'
 import { loadIhKeyStatus } from '@/lib/ihKeyStatus'
 import {
@@ -23,14 +24,23 @@ const two = (n: number | null | undefined) => (n == null ? '—' : n.toFixed(2))
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
-  const loc = isPt ? 'pt' : 'en'
+  const loc = validateLocale(locale)
 
   return buildPageMetadata({
-    title: isPt ? 'Sobre — VenTu' : 'About — VenTu',
-    description: isPt
-      ? 'Plataforma open-source de condições náuticas em Portugal — missão, dados e como contribuir.'
-      : 'Open-source water sports conditions platform for Portugal — mission, data and how to contribute.',
+    title: pickLocale(loc, {
+      pt: 'Sobre — VenTu',
+      en: 'About — VenTu',
+      es: 'Acerca de — VenTu',
+      de: 'Über uns — VenTu',
+      fr: 'À propos — VenTu',
+    }),
+    description: pickLocale(loc, {
+      pt: 'Plataforma open-source de condições náuticas em Portugal — missão, dados e como contribuir.',
+      en: 'Open-source water sports conditions platform for Portugal — mission, data and how to contribute.',
+      es: 'Plataforma open-source de condiciones náuticas en Portugal — misión, datos y cómo contribuir.',
+      de: 'Open-Source-Plattform für Wassersportbedingungen in Portugal — Mission, Daten und Mitmachen.',
+      fr: 'Plateforme open-source de conditions nautiques au Portugal — mission, données et contribution.',
+    }),
     locale: loc,
     path: `/${loc}/about/`,
   })

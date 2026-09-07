@@ -1,7 +1,7 @@
 import { Suspense, type ComponentProps } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
-import { locales } from '@/lib/i18n'
+import { locales, validateLocale } from '@/lib/i18n'
 import { buildSpotMetadata } from '@/lib/seo'
 import { loadEvents } from '@/lib/load-events'
 import { loadSpotData } from '@/lib/load-spot-data'
@@ -10,14 +10,12 @@ import type { Metadata } from 'next'
 
 type InitialData = NonNullable<ComponentProps<typeof SpotDetailClient>['initialData']>
 
-// Body copy for es/de/fr falls through to EN (shell/hreflang MVP — see [locale]/layout.tsx).
 export async function generateStaticParams() {
   return spots.flatMap((spot) =>
     locales.map((locale) => ({ locale, slug: spot.slug })),
   )
 }
 
-// FIX SEO2: Dynamic metadata per spot
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params
   const spot = getSpotBySlug(slug)
@@ -26,11 +24,12 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     return { title: 'Spot Not Found — VenTu' }
   }
 
-  const isPt = locale === 'pt'
+  const loc = validateLocale(locale)
+  const isPt = loc === 'pt'
   const spotName = isPt ? spot.name : spot.nameEn
   const regionName = isPt ? spot.region : spot.regionEn
 
-  return buildSpotMetadata(isPt ? 'pt' : 'en', slug, spotName, regionName)
+  return buildSpotMetadata(loc, slug, spotName, regionName)
 }
 
 export default async function SpotDetailPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {

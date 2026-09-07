@@ -5,17 +5,27 @@ import MapTilePreconnect from '@/components/MapTilePreconnect'
 import PageHeader from '@/components/ui/PageHeader'
 import { buildPageMetadata, SPOT_COUNT } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
+import { validateLocale, pickLocale } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
-  const loc = isPt ? 'pt' : 'en'
+  const loc = validateLocale(locale)
 
-  const title = isPt ? `Todos os Spots — VenTu` : `All Spots — VenTu`
-  const description = isPt
-    ? `Explora os ${SPOT_COUNT} spots de surf, kitesurf e windsurf em Portugal — condições ${pipelineSchedule('pt')}.`
-    : `Browse all ${SPOT_COUNT} surf, kitesurf and windsurf spots in Portugal — conditions ${pipelineSchedule('en')}.`
+  const title = pickLocale(loc, {
+    pt: `Todos os Spots — VenTu`,
+    en: `All Spots — VenTu`,
+    es: `Todos los spots — VenTu`,
+    de: `Alle Spots — VenTu`,
+    fr: `Tous les spots — VenTu`,
+  })
+  const description = pickLocale(loc, {
+    pt: `Explora os ${SPOT_COUNT} spots de surf, kitesurf e windsurf em Portugal — condições ${pipelineSchedule('pt')}.`,
+    en: `Browse all ${SPOT_COUNT} surf, kitesurf and windsurf spots in Portugal — conditions ${pipelineSchedule('en')}.`,
+    es: `Explora los ${SPOT_COUNT} spots de surf, kitesurf y windsurf en Portugal — condiciones ${pipelineSchedule('es')}.`,
+    de: `Entdecke alle ${SPOT_COUNT} Surf-, Kitesurf- und Windsurf-Spots in Portugal — Bedingungen ${pipelineSchedule('de')}.`,
+    fr: `Parcours les ${SPOT_COUNT} spots de surf, kitesurf et windsurf au Portugal — conditions ${pipelineSchedule('fr')}.`,
+  })
 
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/spots/` })
 }

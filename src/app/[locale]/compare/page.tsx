@@ -1,6 +1,6 @@
 import CompareClient from '@/components/compare/CompareClient';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale, locales } from '@/lib/i18n';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({
@@ -9,18 +9,16 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const isPt = locale === 'pt';
-  const cmp = getTranslation(isPt ? 'pt' : 'en').compare;
+  const loc = validateLocale(locale);
+  const cmp = getTranslation(loc).compare;
+  const languages = Object.fromEntries(locales.map((l) => [l, `/${l}/compare/`]));
 
   return {
     title: cmp.metaTitle,
-    description: cmp.metaDescription.replace(
-      '{schedule}',
-      pipelineSchedule(isPt ? 'pt' : 'en'),
-    ),
+    description: cmp.metaDescription.replace('{schedule}', pipelineSchedule(loc)),
     alternates: {
-      canonical: `/${locale}/compare/`,
-      languages: { pt: '/pt/compare/', en: '/en/compare/' },
+      canonical: `/${loc}/compare/`,
+      languages,
     },
   };
 }

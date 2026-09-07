@@ -5,6 +5,7 @@ import { buildPageMetadata } from '@/lib/seo'
 import { ATTRIBUTIONS, type DataSourceId } from '@/lib/dataSources'
 import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
 import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
+import { validateLocale, pickLocale } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 /** Link externo pequeno (atribuição obrigatória). */
@@ -44,14 +45,23 @@ type Source = {
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
-  const isPt = locale === 'pt'
-  const loc = isPt ? 'pt' : 'en'
+  const loc = validateLocale(locale)
 
   return buildPageMetadata({
-    title: isPt ? 'Fontes de dados — VenTu' : 'Data sources — VenTu',
-    description: isPt
-      ? 'Todas as fontes de dados do VenTu, com licença e atribuição obrigatória (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).'
-      : 'Every VenTu data source, with license and mandatory attribution (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).',
+    title: pickLocale(loc, {
+      pt: 'Fontes de dados — VenTu',
+      en: 'Data sources — VenTu',
+      es: 'Fuentes de datos — VenTu',
+      de: 'Datenquellen — VenTu',
+      fr: 'Sources de données — VenTu',
+    }),
+    description: pickLocale(loc, {
+      pt: 'Todas as fontes de dados do VenTu, com licença e atribuição obrigatória (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).',
+      en: 'Every VenTu data source, with license and mandatory attribution (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).',
+      es: 'Todas las fuentes de datos de VenTu, con licencia y atribución obligatoria (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).',
+      de: 'Alle VenTu-Datenquellen mit Lizenz und Pflichtattribution (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).',
+      fr: 'Toutes les sources de données VenTu, avec licence et attribution obligatoire (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).',
+    }),
     locale: loc,
     path: `/${loc}/fontes/`,
   })

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
-import { locales } from '@/lib/i18n';
+import { locales, validateLocale, pickLocale } from '@/lib/i18n';
 import {
   SEO_LANDINGS,
   SPORT_LABELS,
@@ -28,18 +28,27 @@ const SPORT_ACCENT: Record<string, string> = {
   'big-wave': 'border-l-windDir-offshore',
 };
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const isPt = locale === 'pt';
-  const loc = isPt ? 'pt' : 'en';
-  const title = isPt ? 'Explorar spots por desporto e região — VenTu' : 'Explore spots by sport and region — VenTu';
-  const description = isPt
-    ? `${SEO_LANDINGS.length} combinações de desporto e região em Portugal — condições ${pipelineSchedule('pt')}.`
-    : `${SEO_LANDINGS.length} sport and region combinations in Portugal — conditions ${pipelineSchedule('en')}.`;
+  const loc = validateLocale(locale);
+  const title = pickLocale(loc, {
+    pt: 'Explorar spots por desporto e região — VenTu',
+    en: 'Explore spots by sport and region — VenTu',
+    es: 'Explorar spots por deporte y región — VenTu',
+    de: 'Spots nach Sport und Region erkunden — VenTu',
+    fr: 'Explorer les spots par sport et région — VenTu',
+  });
+  const description = pickLocale(loc, {
+    pt: `${SEO_LANDINGS.length} combinações de desporto e região em Portugal — condições ${pipelineSchedule('pt')}.`,
+    en: `${SEO_LANDINGS.length} sport and region combinations in Portugal — conditions ${pipelineSchedule('en')}.`,
+    es: `${SEO_LANDINGS.length} combinaciones de deporte y región en Portugal — condiciones ${pipelineSchedule('es')}.`,
+    de: `${SEO_LANDINGS.length} Sport- und Regionskombinationen in Portugal — Bedingungen ${pipelineSchedule('de')}.`,
+    fr: `${SEO_LANDINGS.length} combinaisons sport et région au Portugal — conditions ${pipelineSchedule('fr')}.`,
+  });
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/explorar/` });
 }
 

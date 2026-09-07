@@ -160,15 +160,9 @@ export default function NewsArchiveClient({
 
   const liveEvents = useMemo(() => upcomingEvents(events), [events]);
 
-  // Show nothing during SSR to avoid hydration mismatch with URL params
-  if (!hydrated) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
-      </div>
-    );
-  }
-
+  // Show default-filtered list on SSR/static HTML (crawlers + no-JS).
+  // URL params are applied after mount — deep-link filters may flash once.
+  // Previously a spinner until hydrated left the news index with 0 article links.
   return (
     <div className="space-y-8">
       {/* Header */}

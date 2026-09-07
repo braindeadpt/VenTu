@@ -11,6 +11,8 @@ import { cartoBasemapKey } from '@/lib/map-constants';
  *  - `server.arcgisonline.com` is always possible — the raster basemap in
  *    keyless builds, plus the satellite layer and the Carto→Esri failure
  *    fallback in keyed builds.
+ *  - OSM (`*.tile.openstreetmap.org`) is the tertiary fallback when Esri
+ *    Canvas is unreachable — preconnect a–c so recovery is faster.
  *  - The four Carto subdomains (`{s}` = a–d rotation) only exist when the
  *    Carto key is configured; a keyless build would never contact them, so
  *    they are only preconnected when the key is present.
@@ -20,15 +22,18 @@ import { cartoBasemapKey } from '@/lib/map-constants';
  * that no-cors image loads cannot reuse.
  */
 const CARTO_SUBDOMAINS = ['a', 'b', 'c', 'd'] as const;
+const OSM_SUBDOMAINS = ['a', 'b', 'c'] as const;
 const ESRI_ORIGIN = 'https://server.arcgisonline.com';
 
 export default function MapTilePreconnect() {
+  const osmOrigins = OSM_SUBDOMAINS.map((s) => `https://${s}.tile.openstreetmap.org`);
   const origins = cartoBasemapKey()
     ? [
         ...CARTO_SUBDOMAINS.map((s) => `https://${s}.basemaps.cartocdn.com`),
         ESRI_ORIGIN,
+        ...osmOrigins,
       ]
-    : [ESRI_ORIGIN];
+    : [ESRI_ORIGIN, ...osmOrigins];
 
   return (
     <>

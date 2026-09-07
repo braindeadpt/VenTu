@@ -119,9 +119,15 @@ export default function HeroTicker({
             <time
               dateTime={new Date(updatedAtTs!).toISOString()}
               className="inline-flex items-baseline gap-1"
+              title={updated.combined}
             >
+              {/* Real whitespace text nodes so textContent / OCR / a11y
+                  extract "Actualizado 7 Sept 22:57", not "Actualizado7 Sept22:57".
+                  Visual gap stays via gap-1. */}
               <span className="text-fg-muted font-medium">{updated.prefix}</span>
+              {' '}
               <span className="font-mono tabular-nums text-fg">{updated.datePart}</span>
+              {' '}
               <span className="font-mono tabular-nums text-fg">{updated.timePart}</span>
             </time>
           ) : (

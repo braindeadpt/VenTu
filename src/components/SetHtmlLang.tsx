@@ -4,15 +4,21 @@ import { useEffect } from 'react';
 
 /**
  * Sets `<html lang>` for the current locale. The root layout hardcodes
- * `lang="pt-PT"` (static export — it can't know the locale at build time
- * for a shared root). An executable `<script>` inside the React tree is not
- * run on client renders and triggers a React DOM warning, so this runs as a
- * plain effect instead.
+ * `lang="pt-PT"` (static export — nested layouts cannot change `<html>`).
+ * A blocking inline script runs before paint; the effect covers soft
+ * client navigations. Crawlers / no-JS get the correct lang from the
+ * post-build rewrite in scripts/fixup-html-lang.js.
  */
 export default function SetHtmlLang({ lang }: { lang: string }) {
   useEffect(() => {
     document.documentElement.lang = lang;
   }, [lang]);
 
-  return null;
+  return (
+    <script
+      dangerouslySetInnerHTML={{
+        __html: `document.documentElement.lang=${JSON.stringify(lang)};`,
+      }}
+    />
+  );
 }

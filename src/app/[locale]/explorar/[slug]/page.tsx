@@ -2,13 +2,14 @@ import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
 import MapTilePreconnect from '@/components/MapTilePreconnect'
-import { locales } from '@/lib/i18n'
+import { locales, validateLocale } from '@/lib/i18n'
 import {
   SEO_LANDINGS,
   getSeoLanding,
   landingDescription,
   landingTitle,
 } from '@/lib/seoLandings'
+import { buildPageMetadata } from '@/lib/seo'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -34,14 +35,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const landing = getSeoLanding(slug)
   if (!landing) return {}
 
+  const loc = validateLocale(locale)
   const title = `${landingTitle(landing, locale)} — VenTu`
   const description = landingDescription(landing, locale)
 
-  return {
+  return buildPageMetadata({
     title,
     description,
-    openGraph: { title, description },
-  }
+    locale: loc,
+    path: `/${loc}/explorar/${slug}/`,
+  })
 }
 
 export default async function ExplorarPage({ params }: Props) {

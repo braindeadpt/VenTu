@@ -28,9 +28,16 @@ describe('mapa page SEO', () => {
       locale: 'en',
       path: '/en/mapa/',
     });
+    const es = buildPageMetadata({
+      title: 'Mapa de spots — VenTu',
+      description: 'Mapa interactivo',
+      locale: 'es',
+      path: '/es/mapa/',
+    });
 
     expect(pt.alternates?.canonical).toBe('/pt/mapa/');
     expect(en.alternates?.canonical).toBe('/en/mapa/');
+    expect(es.alternates?.canonical).toBe('/es/mapa/');
     expect(pt.alternates?.languages).toEqual({
       pt: '/pt/mapa/',
       en: '/en/mapa/',
@@ -49,5 +56,14 @@ describe('mapa page SEO', () => {
     const first = Array.isArray(images) ? images[0] : images;
     const url = typeof first === 'object' && first && 'url' in first ? first.url : first;
     expect(url).toBe('/og-image.png');
+  });
+
+  it('mapa page uses validateLocale (not isPt→en collapse) for canonical locale', () => {
+    const source = readFileSync(
+      path.join(process.cwd(), 'src/app/[locale]/mapa/page.tsx'),
+      'utf-8',
+    );
+    expect(source).toContain('validateLocale');
+    expect(source).not.toMatch(/isPt\s*\?\s*['"]pt['"]\s*:\s*['"]en['"]/);
   });
 });

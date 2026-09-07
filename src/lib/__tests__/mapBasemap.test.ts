@@ -4,6 +4,7 @@ import {
   bindRasterTileFallback,
   cartoBasemapKey,
   getMapRasterBasemap,
+  getOsmRasterBasemap,
   watchTileLayer,
 } from '@/lib/map-constants';
 
@@ -39,6 +40,15 @@ describe('getMapRasterBasemap', () => {
     expect(light.url).toContain('light_all');
     expect(light.url).toContain('key=test-key');
     expect(light.url).not.toContain('{r}');
+  });
+});
+
+describe('getOsmRasterBasemap', () => {
+  it('usa tiles OSM com subdomains abc', () => {
+    const osm = getOsmRasterBasemap();
+    expect(osm.url).toContain('tile.openstreetmap.org');
+    expect(osm.subdomains).toBe('abc');
+    expect(osm.attribution).toBe(TILE_ATTRIBUTIONS.osm);
   });
 });
 

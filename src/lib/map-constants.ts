@@ -3,6 +3,8 @@ import { getScoreCssVar, getScoreRgb, SCORE_THRESHOLD_STEPS } from '@/lib/scoreT
 
 export const TILE_URLS = {
   satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  /** Last-resort raster when Carto + Esri Canvas both fail (already in CSP). */
+  osm: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 } as const;
 
 export const TILE_ATTRIBUTIONS = {
@@ -10,6 +12,7 @@ export const TILE_ATTRIBUTIONS = {
     '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
   esri:
     '&copy; <a href="https://www.esri.com/">Esri</a>, &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  osm: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 } as const;
 
 export type RasterBasemap = {
@@ -29,6 +32,15 @@ export function getEsriRasterBasemap(isDark: boolean): RasterBasemap {
       ? 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}'
       : 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}',
     attribution: TILE_ATTRIBUTIONS.esri,
+  };
+}
+
+/** OSM tiles — tertiary fallback when Esri Canvas is unreachable. */
+export function getOsmRasterBasemap(): RasterBasemap {
+  return {
+    url: TILE_URLS.osm,
+    attribution: TILE_ATTRIBUTIONS.osm,
+    subdomains: 'abc',
   };
 }
 

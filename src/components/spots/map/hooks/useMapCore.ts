@@ -17,6 +17,7 @@ import {
   CLUSTER_CONFIG,
   rasterTileLayerOptions,
   getEsriRasterBasemap,
+  getOsmRasterBasemap,
   cartoBasemapKey,
   watchTileLayer,
   CARTO_TILE_HANG_MS,
@@ -131,22 +132,27 @@ function attachBasemap(
     }, hangMs);
   };
 
-  if (mode === 'satellite') {
-    const layer = Leaflet.tileLayer(TILE_URLS.satellite, {
-      attribution: TILE_ATTRIBUTIONS.esri,
+  const swapToOsm = (from: L.TileLayer) => {
+    if (tileLayerRef.current !== from) return;
+    try {
+      map.removeLayer(from);
+    } catch {
+      /* noop */
+    }
+    const osm = getOsmRasterBasemap();
+    const osmLayer = Leaflet.tileLayer(osm.url, {
+      attribution: osm.attribution,
+      subdomains: osm.subdomains,
       maxZoom: MAX_ZOOM,
     }).addTo(map);
-    tileLayerRef.current = layer;
-    watch(layer, () => onTileState('failed'));
-    return;
-  }
+    tileLayerRef.current = osmLayer;
+    watch(osmLayer, () => onTileState('failed'));
+  };
 
-  const { url, ...opts } = rasterTileLayerOptions(dark);
-  const rasterLayer = Leaflet.tileLayer(url, opts);
-  const swapToEsri = () => {
-    if (tileLayerRef.current !== rasterLayer) return;
+  const swapToEsri = (from: L.TileLayer) => {
+    if (tileLayerRef.current !== from) return;
     try {
-      map.removeLayer(rasterLayer);
+      map.removeLayer(from);
     } catch {
       /* noop */
     }
@@ -156,18 +162,47 @@ function attachBasemap(
       maxZoom: MAX_ZOOM,
     }).addTo(map);
     tileLayerRef.current = esriLayer;
-    watch(esriLayer, () => onTileState('failed'));
+    // Esri fail → OSM tertiary so the product is never a blank grey canvas
+    // when at least one public tile host is reachable.
+    watch(esriLayer, () => swapToOsm(esriLayer));
   };
+
+  if (mode === 'satellite') {
+    const layer = Leaflet.tileLayer(TILE_URLS.satellite, {
+      attribution: TILE_ATTRIBUTIONS.esri,
+      maxZoom: MAX_ZOOM,
+    }).addTo(map);
+    tileLayerRef.current = layer;
+    // Imagery fail → raster map chain (Esri Canvas → OSM), not a dead end.
+    watch(layer, () => {
+      if (tileLayerRef.current !== layer) return;
+      try {
+        map.removeLayer(layer);
+      } catch {
+        /* noop */
+      }
+      const esri = getEsriRasterBasemap(dark);
+      const esriLayer = Leaflet.tileLayer(esri.url, {
+        attribution: esri.attribution,
+        maxZoom: MAX_ZOOM,
+      }).addTo(map);
+      tileLayerRef.current = esriLayer;
+      watch(esriLayer, () => swapToOsm(esriLayer));
+    });
+    return;
+  }
+
+  const { url, ...opts } = rasterTileLayerOptions(dark);
+  const rasterLayer = Leaflet.tileLayer(url, opts);
   tileLayerRef.current = rasterLayer.addTo(map);
   if (cartoBasemapKey()) {
     // Carto é o primário; troca para Esri apenas numa falha definitiva
     // (tileerror sem nenhum tile, ou stall total em CARTO_TILE_HANG_MS).
     // Uma ligação lenta mas viva não é rasgada a meio do carregamento.
-    watch(rasterLayer, swapToEsri, CARTO_TILE_HANG_MS);
+    watch(rasterLayer, () => swapToEsri(rasterLayer), CARTO_TILE_HANG_MS);
   } else {
-    // Sem key o raster já é Esri — uma falha definitiva é o estado final
-    // ('failed'), que o UI expõe com o botão de retry.
-    watch(rasterLayer, () => onTileState('failed'));
+    // Sem key o raster já é Esri — falha → OSM antes do estado 'failed'.
+    watch(rasterLayer, () => swapToOsm(rasterLayer));
   }
 }
 
@@ -473,6 +508,13 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
     const map = mapInstanceRef.current;
     if (!Leaflet || !map) return;
     stopAutoRecover();
+    // Size glitches (fullscreen/hero) leave tiles unpainted even when the CDN
+    // is fine — invalidate before re-attaching so retry actually recovers.
+    try {
+      map.invalidateSize({ animate: false });
+    } catch {
+      /* noop */
+    }
     attachBasemap(Leaflet, map, basemapMode, isDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
     tileSignatureRef.current = tileSignature(basemapMode, isDark);
   }, [basemapMode, isDark, mapInstanceRef, LRef, tileLayerRef, tileFallbackCleanupRef, handleTileState, stopAutoRecover]);

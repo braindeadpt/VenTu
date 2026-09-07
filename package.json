@@ -11,7 +11,8 @@
   "homepage": "https://ventu.surf",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run og:generate && npm run spots:lite && next build && node scripts/fixup-next-segment-paths.js",
+    "build": "npm run og:generate && npm run spots:lite && npm run manifest:generate && next build && node scripts/fixup-next-segment-paths.js && node scripts/fixup-html-lang.js",
+    "manifest:generate": "node scripts/generate-manifest.js",
     "build:e2e": "node scripts/build-e2e.mjs",
     "start": "next start",
     "lint": "eslint src tests scripts",

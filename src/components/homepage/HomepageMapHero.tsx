@@ -43,6 +43,7 @@ import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 
 import { MACRO_REGIONS } from '@/lib/regions';
 
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { heroStatusLine } from '@/lib/voice';
 
 import BestWindowBanner from '@/components/homepage/BestWindowBanner';
@@ -110,6 +111,7 @@ export default function HomepageMapHero({
 }: HomepageMapHeroProps) {
 
   const isPt = locale === 'pt';
+  const t = getTranslation(validateLocale(locale));
 
   const isFeatured = variant === 'featured';
 
@@ -306,7 +308,7 @@ export default function HomepageMapHero({
 
             >
 
-              {isPt ? 'Onde está bom hoje?' : "Where's it firing today?"}
+              {t.hero.heroHeadline}
 
             </h2>
 
@@ -318,7 +320,7 @@ export default function HomepageMapHero({
 
               role="group"
 
-              aria-label={isPt ? 'Filtrar por desporto' : 'Filter by sport'}
+              aria-label={t.hero.filterBySport}
 
               style={{ '--stagger-delay': 160 } as React.CSSProperties}
 
@@ -380,7 +382,7 @@ export default function HomepageMapHero({
 
               >
 
-                {isPt ? 'Explorar mapa' : 'Explore map'}
+                {t.hero.exploreMap}
 
               </Button>
 

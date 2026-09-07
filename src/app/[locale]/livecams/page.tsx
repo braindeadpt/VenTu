@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { ExternalLink, Video } from 'lucide-react';
-import { locales, getTranslation } from '@/lib/i18n';
+import { locales, getTranslation, validateLocale, pickLocale } from '@/lib/i18n';
 import { listAllLivecams, getLivecamSpotCount } from '@/lib/spotLivecams';
 import { spots } from '@/lib/spots';
 import { buildPageMetadata } from '@/lib/seo';
@@ -17,20 +17,29 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const isPt = locale === 'pt';
-  const loc = isPt ? 'pt' : 'en';
+  const loc = validateLocale(locale);
   const count = getLivecamSpotCount();
-  const title = isPt ? `Livecams — ${count} spots — VenTu` : `Live cams — ${count} spots — VenTu`;
-  const description = isPt
-    ? `${count} links para câmaras em direto nos spots mais populares — Surftotal e MEO Beachcam.`
-    : `${count} links to live cameras at popular spots — Surftotal and MEO Beachcam.`;
+  const title = pickLocale(loc, {
+    pt: `Livecams — ${count} spots — VenTu`,
+    en: `Live cams — ${count} spots — VenTu`,
+    es: `Cámaras en vivo — ${count} spots — VenTu`,
+    de: `Livecams — ${count} Spots — VenTu`,
+    fr: `Cams en direct — ${count} spots — VenTu`,
+  });
+  const description = pickLocale(loc, {
+    pt: `${count} links para câmaras em direto nos spots mais populares — Surftotal e MEO Beachcam.`,
+    en: `${count} links to live cameras at popular spots — Surftotal and MEO Beachcam.`,
+    es: `${count} enlaces a cámaras en directo en los spots más populares — Surftotal y MEO Beachcam.`,
+    de: `${count} Links zu Live-Kameras an beliebten Spots — Surftotal und MEO Beachcam.`,
+    fr: `${count} liens vers des cams en direct sur les spots populaires — Surftotal et MEO Beachcam.`,
+  });
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/livecams/` });
 }
 
 export default async function LivecamsPage({ params }: Props) {
   const { locale } = await params;
   const isPt = locale === 'pt';
-  const t = getTranslation(locale as 'pt' | 'en');
+  const t = getTranslation(validateLocale(locale));
   const livecams = listAllLivecams();
 
   return (

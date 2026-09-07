@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Anchor, CloudRain, Layers, HelpCircle, MapPin, Maximize2, RotateCcw, Waves, Wind, Zap } from 'lucide-react';
+import Link from 'next/link';
 import type L from 'leaflet';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { clearLeafletContainer, unlockPageInteraction } from '@/lib/mapFullscreen';
@@ -948,14 +949,23 @@ export default function SpotMapInteractive({
                 className="pointer-events-auto flex flex-col items-center gap-2.5 rounded-card border border-divider bg-bg-elevated shadow-card px-5 py-4 max-w-xs text-center"
               >
                 <p className="text-meta-sm font-semibold text-fg">{t.map.mapUnavailable}</p>
-                <button
-                  type="button"
-                  onClick={retryBasemap}
-                  className="inline-flex items-center gap-1.5 rounded-input border border-divider bg-surface-1/[0.06] px-3 py-1.5 text-meta-sm font-semibold text-fg hover:bg-surface-1/[0.12] transition-colors duration-150 touch-manipulation"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" aria-hidden />
-                  {t.common.refresh}
-                </button>
+                <p className="text-meta text-fg-muted">{t.map.mapUnavailableHint}</p>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={retryBasemap}
+                    className="inline-flex items-center gap-1.5 rounded-input border border-divider bg-surface-1/[0.06] px-3 py-1.5 text-meta-sm font-semibold text-fg hover:bg-surface-1/[0.12] transition-colors duration-150 touch-manipulation min-h-[44px]"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" aria-hidden />
+                    {t.common.refresh}
+                  </button>
+                  <Link
+                    href={`/${locale}/spots/`}
+                    className="inline-flex items-center gap-1.5 rounded-input border border-divider bg-surface-1/[0.06] px-3 py-1.5 text-meta-sm font-semibold text-fg hover:bg-surface-1/[0.12] transition-colors duration-150 touch-manipulation min-h-[44px]"
+                  >
+                    {t.map.viewSpotsList}
+                  </Link>
+                </div>
               </div>
             </div>
           )}

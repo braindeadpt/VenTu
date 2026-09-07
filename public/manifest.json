@@ -1,7 +1,7 @@
 {
   "name": "VenTu — Condições Náuticas",
   "short_name": "VenTu",
-  "description": "174 spots em Portugal — surf, kitesurf, windsurf. Scores, mapa e previsão a cada 3 horas. Grátis e open source.",
+  "description": "185 spots em Portugal — surf, kitesurf, windsurf. Scores, mapa e previsão actualizadas de 2h em 2h (dia) e de 4h em 4h (noite). Grátis e open source.",
   "start_url": "/pt/",
   "scope": "/",
   "display": "standalone",
@@ -9,7 +9,11 @@
   "theme_color": "#0F172A",
   "orientation": "any",
   "lang": "pt-PT",
-  "categories": ["sports", "weather", "navigation"],
+  "categories": [
+    "sports",
+    "weather",
+    "navigation"
+  ],
   "icons": [
     {
       "src": "/favicon.svg",
