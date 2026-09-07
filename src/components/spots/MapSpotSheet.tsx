@@ -60,12 +60,16 @@ export default function MapSpotSheet({
   }, [data, onClose]);
 
   if (!data) return null;
+  // The sheet is a modal: it must stack ABOVE the map HUD card (z-[1100], MapExploreHud)
+  // and the HUD filter panel (z-[1200]) — otherwise the bottom action row
+  // (Como chegar / Ver spot) slides up underneath the HUD bar and taps land on
+  // the HUD instead of the buttons. Backdrop z-[1200], panel z-[1201].
 
   return (
     <>
       <button
         type="button"
-        className="absolute inset-0 z-[1040] bg-black/30 motion-reduce:transition-none transition-opacity duration-200"
+        className="absolute inset-0 z-[1200] bg-black/30 motion-reduce:transition-none transition-opacity duration-200"
         aria-label={isPt ? 'Fechar' : 'Close'}
         onClick={onClose}
       />
@@ -75,7 +79,7 @@ export default function MapSpotSheet({
         aria-modal="true"
         aria-labelledby="map-spot-sheet-title"
         data-testid="map-spot-sheet"
-        className="absolute inset-x-0 bottom-0 z-[1050] max-h-[min(85dvh,640px)] overflow-y-auto rounded-t-2xl border-t border-divider bg-bg-elevated shadow-modal pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none transition-transform duration-200 ease-out"
+        className="absolute inset-x-0 bottom-0 z-[1201] max-h-[min(85dvh,640px)] overflow-y-auto rounded-t-2xl border-t border-divider bg-bg-elevated shadow-modal pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none transition-transform duration-200 ease-out"
       >
         <div className="flex justify-center pt-2 pb-1 sticky top-0 bg-bg-elevated z-10" aria-hidden>
           <div className="w-8 h-1 rounded-full bg-fg-subtle/30" />
