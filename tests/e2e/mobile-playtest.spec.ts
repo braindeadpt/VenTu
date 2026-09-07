@@ -4,6 +4,30 @@ import { openMapSpotSheet } from './helpers/map-sheet';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
 
 /**
+ * Hermetic signed-out state for account-gated pages: install a fake Supabase
+ * client before any page script runs, so the gate renders without CI secrets
+ * (a keyless local build would otherwise show "Supabase não configurado").
+ * The mock only answers auth.getSession/onAuthStateChange with a null session
+ * — it never touches the network, and production never sets this global.
+ * Read by src/lib/supabase.ts (getSupabaseClient/hasTestSupabaseClient) and
+ * the gated pages (FavoritesClient, AccountClient, PassaporteClient).
+ */
+async function installSupabaseMock(page: import('@playwright/test').Page) {
+  await page.addInitScript(() => {
+    const testClient = {
+      auth: {
+        getSession: async () => ({ data: { session: null }, error: null }),
+        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+        signInWithOtp: async () => ({ error: null }),
+        signOut: async () => {},
+      },
+    };
+    (window as unknown as { __VENTU_TEST_SUPABASE_CLIENT__?: unknown }).__VENTU_TEST_SUPABASE_CLIENT__ =
+      testClient;
+  });
+}
+
+/**
  * Mobile touch playtest — permanent regression spec for the manual matrix
  * driven at 390×844 (iPhone-ish) with real touch taps:
  *
@@ -142,28 +166,37 @@ test.describe('mobile playtest (390×844, touch)', () => {
   });
 
   test('alerts gate: signed-out shows the magic-link gate', async ({ page }) => {
-    // Hermetic: install a fake Supabase client before any page script runs, so
-    // the signed-out gate renders without CI secrets (the local keyless build
-    // has none and would otherwise show "Supabase não configurado"). The mock
-    // only answers auth.getSession/onAuthStateChange with a null session — it
-    // never touches the network, and production never sets this global.
-    await page.addInitScript(() => {
-      const testClient = {
-        auth: {
-          getSession: async () => ({ data: { session: null }, error: null }),
-          onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-          signInWithOtp: async () => ({ error: null }),
-          signOut: async () => {},
-        },
-      };
-      (window as unknown as { __VENTU_TEST_SUPABASE_CLIENT__?: unknown }).__VENTU_TEST_SUPABASE_CLIENT__ =
-        testClient;
-    });
-
+    await installSupabaseMock(page);
     await page.goto('/pt/favorites/', { waitUntil: 'domcontentloaded' });
 
     await expect(
       page.getByRole('heading', { name: /Meus Favoritos|My Favorites/i }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /Entrar com magic link/i }).or(
+        page.getByRole('link', { name: /Entrar com magic link/i }),
+      ),
+    ).toBeVisible();
+  });
+
+  test('account gate: signed-out shows the sign-in prompt on /conta', async ({ page }) => {
+    await installSupabaseMock(page);
+    await page.goto('/pt/conta/', { waitUntil: 'domcontentloaded' });
+
+    await expect(page.getByRole('heading', { name: /A tua conta|Your account/i })).toBeVisible();
+    await expect(
+      page.getByRole('button', { name: /Entrar com email|Sign in with email/i }).or(
+        page.getByRole('link', { name: /Entrar com email|Sign in with email/i }),
+      ),
+    ).toBeVisible();
+  });
+
+  test('passport gate: signed-out shows the sign-in prompt on /passaporte', async ({ page }) => {
+    await installSupabaseMock(page);
+    await page.goto('/pt/passaporte/', { waitUntil: 'domcontentloaded' });
+
+    await expect(
+      page.getByRole('heading', { name: /Passaporte VenTu|VenTu Passport/i }),
     ).toBeVisible();
     await expect(
       page.getByRole('button', { name: /Entrar com magic link/i }).or(

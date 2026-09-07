@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { LogOut, Heart, User, Bell, GraduationCap } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
-import { getSupabaseClient } from '@/lib/supabase';
+import { getSupabaseClient, hasTestSupabaseClient } from '@/lib/supabase';
 import { fetchUserAlertPrefs, alertModeLabel, type UserAlertPrefs } from '@/lib/userAlerts';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
@@ -12,6 +12,17 @@ import TelegramLinkCard from '@/components/account/TelegramLinkCard';
 export default function AccountClient({ locale }: { locale: string }) {
   const isPt = locale === 'pt';
   const { session, authLoading, favorites, signOut, requestLogin, isSupabaseReady } = useAuth();
+  // The Supabase-configured state is baked at build time, so a keyless build
+  // and a keyed build disagree about it between server render and the first
+  // client paint (the E2E mock flips readiness client-side on purpose).
+  // Staying on the loading state until mount keeps the hydrated subtree
+  // identical in every build; the branches below are stable afterwards.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const [alertPrefs, setAlertPrefs] = useState<UserAlertPrefs | null>(null);
 
   useEffect(() => {
@@ -23,18 +34,20 @@ export default function AccountClient({ locale }: { locale: string }) {
     void fetchUserAlertPrefs(sb, session.user.id).then(setAlertPrefs);
   }, [session?.user]);
 
-  if (!isSupabaseReady) {
+  const supabaseReady = isSupabaseReady || hasTestSupabaseClient();
+
+  if (!mounted || authLoading) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted text-sm">
-        {isPt ? 'Contas indisponíveis (Supabase não configurado).' : 'Accounts unavailable (Supabase not configured).'}
+        {isPt ? 'A carregar…' : 'Loading…'}
       </div>
     );
   }
 
-  if (authLoading) {
+  if (!supabaseReady) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted text-sm">
-        {isPt ? 'A carregar…' : 'Loading…'}
+        {isPt ? 'Contas indisponíveis (Supabase não configurado).' : 'Accounts unavailable (Supabase not configured).'}
       </div>
     );
   }

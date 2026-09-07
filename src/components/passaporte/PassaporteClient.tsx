@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, MapPin, LogIn, BookOpen, MapPinCheck } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { useAuth } from '@/contexts/AuthProvider';
+import { hasTestSupabaseClient } from '@/lib/supabase';
 import PassaporteBadge from '@/components/passaporte/PassaporteBadge';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
@@ -30,17 +31,16 @@ export default function PassaporteClient({ locale }: Props) {
 
   const loading = authLoading || (session?.user && !checkinsReady) || checkinsLoading;
 
-  if (!isSupabaseReady) {
-    return (
-      <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
-        <p className="text-sm text-fg-muted text-center">
-          {pt ? 'Passaporte indisponível (Supabase não configurado).' : 'Passport unavailable (Supabase not configured).'}
-        </p>
-      </div>
-    );
-  }
+  // Same seam as FavoritesClient/AccountClient: the E2E mock flips readiness
+  // client-side in keyless builds, so stay on the skeleton until mount to
+  // keep the server bake and the first client paint identical.
+  const [mounted, setMounted] = useState(false);
 
-  if (loading) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || loading) {
     return (
       <div className="min-h-screen bg-bg-base p-4">
         <div className="max-w-4xl mx-auto space-y-8 pt-8">
@@ -51,6 +51,18 @@ export default function PassaporteClient({ locale }: Props) {
           </div>
           <Skeleton className="h-[380px] w-full max-w-[520px] rounded-card mx-auto" />
         </div>
+      </div>
+    );
+  }
+
+  const supabaseReady = isSupabaseReady || hasTestSupabaseClient();
+
+  if (!supabaseReady) {
+    return (
+      <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
+        <p className="text-sm text-fg-muted text-center">
+          {pt ? 'Passaporte indisponível (Supabase não configurado).' : 'Passport unavailable (Supabase not configured).'}
+        </p>
       </div>
     );
   }
