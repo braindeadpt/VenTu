@@ -1,13 +1,16 @@
 'use client';
 
 import type { ScoreWaveCorrection, ScoreWaveSource } from '@/lib/scoreConditions';
-import { cn } from '@/lib/cn';
+import ProvenanceChip from '@/components/ui/ProvenanceChip';
+import type { ProvenanceTier } from '@/lib/provenance';
 
 interface ScoreWaveSourceBadgeProps {
   source: ScoreWaveSource;
   /** Correction details (buoy name, ME/n) for the tooltip — see scoreConditions. */
   correction?: ScoreWaveCorrection | null;
   locale: string;
+  /** `false` inside link-cards, where a button would be invalid HTML. */
+  interactive?: boolean;
   className?: string;
 }
 
@@ -25,6 +28,7 @@ export default function ScoreWaveSourceBadge({
   source,
   correction,
   locale,
+  interactive = true,
   className,
 }: ScoreWaveSourceBadgeProps) {
   const isPt = locale === 'pt';
@@ -45,7 +49,7 @@ export default function ScoreWaveSourceBadge({
         : ` Spanish buoy reading recalibrated to the PT reference (bias ME ${fmtMe(cal.me)}, n=${cal.n}).`
       : '';
 
-  let copy: { label: string; title: string; className: string };
+  let copy: { label: string; title: string; tier: ProvenanceTier };
   if (source === 'observed') {
     const name = correction?.buoyName;
     copy = {
@@ -59,7 +63,7 @@ export default function ScoreWaveSourceBadge({
       title: isPt
         ? `Score usa a altura de onda medida pela boia (fresca) — correcção em tempo real da previsão.${skillSuffix}${calSuffix}`
         : `Score uses the measured buoy wave height (fresh) — real-time forecast correction.${skillSuffix}${calSuffix}`,
-      className: 'border-score-good/40 bg-score-good/10 text-score-good',
+      tier: 'measured',
     };
   } else if (source === 'bias-corrected') {
     // Δ = correcção efectivamente aplicada (deltaM) — nem sempre igual ao ME
@@ -92,7 +96,7 @@ export default function ScoreWaveSourceBadge({
       title: isPt
         ? `A altura mostrada é previsão do modelo corrigida pela média das boias.${deltaSuffix}${biasSuffix}${originSuffix}`
         : `The height shown is the model forecast corrected by the buoy-average.${deltaSuffix}${biasSuffix}${originSuffix}`,
-      className: 'border-score-fair/40 bg-score-fair/10 text-score-fair',
+      tier: 'adjusted',
     };
   } else {
     copy = {
@@ -100,20 +104,19 @@ export default function ScoreWaveSourceBadge({
       title: isPt
         ? 'Sem correcção de boia — score com a previsão do modelo'
         : 'No buoy correction — forecast score',
-      className: 'border-divider bg-surface-1/[0.04] text-fg-muted',
+      tier: 'modeled',
     };
   }
 
   return (
-    <span
-      title={copy.title}
-      className={cn(
-        'inline-flex items-center rounded-full border px-2 py-0.5 text-meta-sm font-medium',
-        copy.className,
-        className,
-      )}
-    >
-      {copy.label}
-    </span>
+    <ProvenanceChip
+      axis="wave"
+      tier={copy.tier}
+      label={copy.label}
+      detail={copy.title}
+      locale={locale}
+      interactive={interactive}
+      className={className}
+    />
   );
 }

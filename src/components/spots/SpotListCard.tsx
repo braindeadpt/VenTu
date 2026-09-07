@@ -5,7 +5,7 @@ import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
 import Card from '@/components/ui/Card';
-import ScoreBadge from '@/components/ui/ScoreBadge';
+import { getScoreTierLabel, getScoreTokens } from '@/lib/sportScore';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
@@ -94,6 +94,10 @@ export default function SpotListCard({
 }: SpotListCardProps) {
   const isPt = locale === 'pt';
   const windKt = Math.round(conditions.windSpeed * 1.94384);
+  // O score é a razão de existir do card — deixa de ser uma pílula de 11px no
+  // canto e passa a ser a âncora visual, em numeral tabular grande.
+  const scoreTokens = getScoreTokens(score);
+  const scoreTierLabel = getScoreTierLabel(scoreTokens.tier, locale);
   const hoverLine = getSpotListCardHoverLine(score, isPt);
   // Sufixo honesto da altura: «(boia)» / «(viés regional)» quando a correcção
   // foi aplicada (a altura mostrada É a corrigida); '' para previsão pura.
@@ -148,7 +152,15 @@ export default function SpotListCard({
                   : undefined
               }
             >
-              <SpotImage spot={spot} aspect="video" locale={locale} className="w-full" scrim />
+              <SpotImage
+                spot={spot}
+                aspect="video"
+                locale={locale}
+                // Faixa, não painel: a aérea dá contexto ao spot, mas não pode
+                // ser o maior elemento de um card cujo assunto é um número.
+                className="w-full max-h-24 sm:max-h-28"
+                scrim
+              />
             </div>
           </div>
         )}
@@ -176,7 +188,6 @@ export default function SpotListCard({
             )}
           </div>
           <div className="flex items-center gap-1.5 shrink-0" data-visual-dynamic>
-            <ScoreBadge score={score} locale={locale} size="sm" />
             {conditions.confidence && (
               <ConfidenceBadge
                 confidence={conditions.confidence}
@@ -184,17 +195,36 @@ export default function SpotListCard({
                 locale={locale}
                 size="sm"
                 withTooltip={false}
+                interactive={false}
               />
             )}
           </div>
         </div>
 
-        <div className="min-w-0">
-          <h3 className="font-display font-semibold text-fg truncate text-body">{name}</h3>
-          <p className="text-meta-sm text-fg-muted truncate">{region}</p>
-          {statusLine && (
-            <p className="text-meta-sm text-fg-subtle mt-0.5 capitalize" data-visual-dynamic>{statusLine}</p>
-          )}
+        <div className="flex items-start gap-3 min-w-0">
+          <div
+            className="shrink-0 flex flex-col items-center leading-none pt-0.5"
+            data-visual-dynamic
+          >
+            <span
+              className={cn(
+                'font-mono font-semibold tabular-nums text-num-lg',
+                scoreTokens.text,
+              )}
+            >
+              {score}
+            </span>
+            <span className={cn('mt-1 text-meta-sm font-medium', scoreTokens.text)}>
+              {scoreTierLabel}
+            </span>
+          </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-display font-semibold text-fg truncate text-body-lg">{name}</h3>
+            <p className="text-meta-sm text-fg-muted truncate">{region}</p>
+            {statusLine && (
+              <p className="text-meta-sm text-fg-subtle mt-0.5 capitalize" data-visual-dynamic>{statusLine}</p>
+            )}
+          </div>
         </div>
 
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 text-meta-sm text-fg-muted font-mono tabular-nums mt-auto" data-visual-dynamic>
@@ -235,6 +265,7 @@ export default function SpotListCard({
                 source={waveCorrection.source}
                 correction={waveCorrection}
                 locale={locale}
+                interactive={false}
                 className="shrink-0"
               />
             )}

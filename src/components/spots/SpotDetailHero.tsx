@@ -18,6 +18,7 @@ import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import ProvenanceRow from '@/components/ui/ProvenanceRow';
 import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
 import WindSourceAttributionNote from '@/components/ui/WindSourceAttributionNote';
 import type {
@@ -247,18 +248,24 @@ export default function SpotDetailHero({
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
                   <ScoreBadge score={score} locale={locale as 'pt' | 'en'} size="md" showLabel />
-                  <div className="flex flex-wrap items-center justify-center gap-1">
-                    <ScoreWindSourceBadge
-                      source={scoreWindSource}
-                      correction={scoreWindCorrection}
-                      locale={locale}
-                    />
+                  <ProvenanceRow align="center">
                     <ScoreWaveSourceBadge
                       source={scoreWaveSource}
                       correction={scoreWaveCorrection}
                       locale={locale}
                     />
-                  </div>
+                    <ScoreWindSourceBadge
+                      source={scoreWindSource}
+                      correction={scoreWindCorrection}
+                      locale={locale}
+                    />
+                    <ConfidenceBadge
+                      confidence={conditions.confidence}
+                      detail={conditions.confidenceDetail}
+                      locale={locale}
+                      size="sm"
+                    />
+                  </ProvenanceRow>
                   {scoreWindSource === 'observed' &&
                     (windObservedSource ?? scoreWindCorrection?.source) && (
                       <span className="inline-flex">
@@ -268,12 +275,6 @@ export default function SpotDetailHero({
                         />
                       </span>
                     )}
-                  <ConfidenceBadge
-                    confidence={conditions.confidence}
-                    detail={conditions.confidenceDetail}
-                    locale={locale}
-                    size="sm"
-                  />
                   <SpotAlertPopover
                     spotId={spot.id}
                     sport={sport}

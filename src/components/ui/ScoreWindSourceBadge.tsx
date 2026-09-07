@@ -1,13 +1,16 @@
 'use client';
 
 import type { ScoreWindCorrection, ScoreWindSource } from '@/lib/scoreConditions';
-import { cn } from '@/lib/cn';
+import ProvenanceChip from '@/components/ui/ProvenanceChip';
+import type { ProvenanceTier } from '@/lib/provenance';
 
 interface ScoreWindSourceBadgeProps {
   source: ScoreWindSource;
   /** Station wind bias (ME/n from wind-bias.json) — tooltip when observed. */
   correction?: ScoreWindCorrection | null;
   locale: string;
+  /** `false` inside link-cards, where a button would be invalid HTML. */
+  interactive?: boolean;
   className?: string;
 }
 
@@ -21,6 +24,7 @@ export default function ScoreWindSourceBadge({
   source,
   correction,
   locale,
+  interactive = true,
   className,
 }: ScoreWindSourceBadgeProps) {
   const isPt = locale === 'pt';
@@ -32,14 +36,14 @@ export default function ScoreWindSourceBadge({
         ? ` Viés desta estação: ME ${me} (n=${n}).`
         : ` Station bias: ME ${me} (n=${n}).`
       : '';
-  const copy =
+  const copy: { label: string; title: string; tier: ProvenanceTier } =
     source === 'observed'
       ? {
           label: isPt ? 'Vento observado' : 'Observed wind',
           title: isPt
             ? `Score usa vento medido (IPMA / Ecowitt / METAR) fresco${biasSuffix}`
             : `Score uses fresh measured wind (IPMA / Ecowitt / METAR)${biasSuffix}`,
-          className: 'border-score-good/40 bg-score-good/10 text-score-good',
+          tier: 'measured',
         }
       : source === 'session-gust'
         ? {
@@ -47,26 +51,25 @@ export default function ScoreWindSourceBadge({
             title: isPt
               ? 'Média modelo fraca; score usa proxy de rajada Open-Meteo (thermal)'
               : 'Weak model mean; score uses Open-Meteo gust proxy (thermal)',
-            className: 'border-score-fair/40 bg-score-fair/10 text-score-fair',
+            tier: 'adjusted',
           }
         : {
             label: isPt ? 'Só previsão' : 'Forecast only',
             title: isPt
               ? 'Sem observação fresca — score com previsão (ICON-EU / multi-modelo quando disponível)'
               : 'No fresh observation — forecast score (ICON-EU / multi-model when available)',
-            className: 'border-divider bg-surface-1/[0.04] text-fg-muted',
+            tier: 'modeled',
           };
 
   return (
-    <span
-      title={copy.title}
-      className={cn(
-        'inline-flex items-center rounded-full border px-2 py-0.5 text-meta-sm font-medium',
-        copy.className,
-        className,
-      )}
-    >
-      {copy.label}
-    </span>
+    <ProvenanceChip
+      axis="wind"
+      tier={copy.tier}
+      label={copy.label}
+      detail={copy.title}
+      locale={locale}
+      interactive={interactive}
+      className={className}
+    />
   );
 }
