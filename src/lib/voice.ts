@@ -28,7 +28,10 @@ export function heroStatusLine(onCount: number, isPt: boolean): string {
 export function tierPhrase(score: number, isPt: boolean): string {
   const { tier } = getScoreTokens(score);
   const phrases: Record<typeof tier, { pt: string; en: string }> = {
-    epic: { pt: 'dia épico', en: 'epic day' },
+    // O card imprime o rótulo do tier («Épico») por baixo do score: a frase
+    // não pode repeti-lo. «Um clássico» é como se fala de um dia que se
+    // conta depois — diz o que o tier significa sem lhe chamar o nome.
+    epic: { pt: 'dia clássico', en: 'classic day' },
     good: { pt: 'dá uns sets fáceis', en: 'fun, friendly sets' },
     fair: { pt: 'mar limpo', en: 'clean faces' },
     poor: { pt: 'mar calmo', en: 'slow session' },
