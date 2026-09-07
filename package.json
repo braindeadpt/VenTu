@@ -87,7 +87,7 @@
     "skill:regression": "node scripts/check-skill-regression.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.112.4",
+    "@supabase/supabase-js": "^2.115.0",
     "geist": "^1.7.2",
     "leaflet": "^1.9.4",
     "leaflet.markercluster": "^1.5.3",
@@ -109,7 +109,7 @@
     "eslint-config-next": "^16.3.3",
     "h5wasm": "^0.10.3",
     "lighthouse": "^13.3.0",
-    "postcss": "^8.5.15",
+    "postcss": "^8.5.28",
     "postcss-import": "^16.1.1",
     "serve": "^14.2.6",
     "sharp": "^0.35.3",
