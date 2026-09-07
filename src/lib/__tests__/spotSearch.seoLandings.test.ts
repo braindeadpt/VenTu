@@ -73,4 +73,10 @@ describe('spotLivecams', () => {
   it('returns null for spots without livecam', () => {
     expect(getSpotLivecam('not-a-spot')).toBeNull()
   })
+
+  it('Peniche HD links to an existing spot (locality + Ver spot)', () => {
+    const cam = getSpotLivecam('peniche')
+    expect(cam?.linkSlug).toBe('supertubos')
+    expect(cam?.labelPt).toMatch(/Peniche/i)
+  })
 })

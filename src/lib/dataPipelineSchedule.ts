@@ -2,7 +2,7 @@
 export const PIPELINE_SCHEDULE = {
   pt: {
     short: '2h dia · 4h noite',
-    medium: 'actualizadas de 2h em 2h (dia) e de 4h em 4h (noite)',
+    medium: 'actualizados de 2h em 2h (dia) e de 4h em 4h (noite)',
     long: 'Previsões Open-Meteo de 2h em 2h (06h–20h) e de 4h em 4h de noite (hora Lisboa). Observações IH/IPMA nas horas intermédias.',
   },
   en: {
@@ -12,7 +12,7 @@ export const PIPELINE_SCHEDULE = {
   },
   es: {
     short: '2h día · 4h noche',
-    medium: 'actualizadas cada 2h (día) y cada 4h (noche)',
+    medium: 'actualizados cada 2h (día) y cada 4h (noche)',
     long: 'Previsiones Open-Meteo cada 2h (06:00–20:00) y cada 4h por la noche (hora de Lisboa). Observaciones IH/IPMA entre medias.',
   },
   de: {

@@ -247,16 +247,16 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
             icon: CheckCircle2,
             line: isPt
-              ? 'A IH_API_KEY está configurada e o serviço de ondas do IH devolve leituras das boias (onda observada no spot).'
-              : 'The IH_API_KEY is configured and the IH wave service is returning buoy readings (observed wave on spot pages).',
+              ? 'A chave IH está configurada e o serviço de ondas do IH devolve leituras das boias (onda observada no spot).'
+              : 'The IH key is configured and the IH wave service is returning buoy readings (observed wave on spot pages).',
           },
           'not-configured': {
             label: isPt ? 'Não configurada' : 'Not configured',
             chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
             icon: KeyRound,
             line: isPt
-              ? 'Sem IH_API_KEY — as estações são carregadas (OGC, grátis), mas a camada observedWave fica desligada e o fallback WMO/Copernicus é usado onde houver.'
-              : 'No IH_API_KEY — stations load (OGC, free), but the observed-wave layer stays off; the WMO/Copernicus fallback covers where available.',
+              ? 'Sem chave IH — as estações são carregadas (OGC, grátis), mas a camada observedWave fica desligada e o fallback WMO/Copernicus é usado onde houver.'
+              : 'No IH key — stations load (OGC, free), but the observed-wave layer stays off; the WMO/Copernicus fallback covers where available.',
           },
           rejected: {
             label: isPt ? 'Expirada / rejeitada' : 'Expired / rejected',
@@ -292,7 +292,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           <div className="card-1 p-8 space-y-4" data-ih-key-status={key.status}>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold text-fg">
-                {isPt ? 'Camada de boias IH (IH_API_KEY)' : 'IH buoy layer (IH_API_KEY)'}
+                {isPt ? 'Camada de boias IH' : 'IH buoy layer'}
               </h2>
               <span
                 className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
@@ -344,49 +344,56 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
               ) : null
             }
             <div className="space-y-2 text-sm text-fg-muted leading-relaxed">
-              <p className="font-medium text-fg">
-                {isPt ? 'Como obter e configurar a chave' : 'How to get and configure the key'}
+              <p>
+                {isPt
+                  ? 'Quando há leituras, a onda observada aparece no card de cada spot (rótulo «boia X a Y km»).'
+                  : 'When readings exist, the observed wave shows on each spot’s card (labelled «buoy X at Y km»).'}
               </p>
-              <ol className="list-decimal pl-5 space-y-1.5">
-                <li>
-                  {isPt ? (
-                    <>Pedir a chave gratuita por e-mail a{' '}
-                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
-                        cedencia.dados@hidrografico.pt
-                      </a>{' '}
-                      (Instituto Hidrográfico) — acesso à série <code className="text-fg">getDatawellData</code> (altura/período/direcção de onda em tempo real).</>
-                  ) : (
-                    <>Request the free key by e-mail to{' '}
-                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
-                        cedencia.dados@hidrografico.pt
-                      </a>{' '}
-                      (Instituto Hidrográfico) — access to the{' '}
-                      <code className="text-fg">getDatawellData</code> series (real-time wave height/period/direction).</>
-                  )}
-                </li>
-                <li>
-                  {isPt ? 'Criar o secret no GitHub: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.' : 'Create the GitHub secret: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.'}
-                </li>
-                <li>
-                  {isPt ? 'Local: `cp .env.example .env.local` e preencher `IH_API_KEY=…` (o ficheiro já está no .gitignore).' : 'Locally: `cp .env.example .env.local` and set `IH_API_KEY=…` (the file is already gitignored).'}
-                </li>
-                <li>
-                  {isPt ? 'Verificar: `npm run buoys:test-key` (teste e2e da key) e `npm run buoys:fetch`.' : 'Verify: `npm run buoys:test-key` (key e2e test) and `npm run buoys:fetch`.'}
-                </li>
-              </ol>
               <p className="text-xs text-fg-subtle">
                 {isPt ? (
-                  <>Guia completo em{' '}
-                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  <>
+                    Contribuidores: guia de setup da camada IH em{' '}
+                    <a
+                      href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       docs/IH_API_KEY.md
-                    </a>{' '}
-                    · quando houver leituras, a onda observada aparece no card de cada spot (com rótulo «boia X a Y km»).</>
+                    </a>
+                    {' '}·{' '}
+                    <a
+                      href="https://github.com/braindeadpt/VenTu/blob/main/CONTRIBUTING.md"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      CONTRIBUTING.md
+                    </a>
+                    .
+                  </>
                 ) : (
-                  <>Full guide in{' '}
-                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  <>
+                    Contributors: IH layer setup guide in{' '}
+                    <a
+                      href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       docs/IH_API_KEY.md
-                    </a>{' '}
-                    · when readings exist, the observed wave shows on each spot’s card (labelled «buoy X at Y km»).</>
+                    </a>
+                    {' '}·{' '}
+                    <a
+                      href="https://github.com/braindeadpt/VenTu/blob/main/CONTRIBUTING.md"
+                      className="underline hover:text-fg transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      CONTRIBUTING.md
+                    </a>
+                    .
+                  </>
                 )}
               </p>
             </div>

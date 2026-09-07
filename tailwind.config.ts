@@ -138,6 +138,7 @@ const config: Config = {
         // Meta — labels, units, captions
         'meta':       ['0.75rem', { lineHeight: '1.4',  letterSpacing: '0.005em' }],
         'meta-sm':    ['0.6875rem',{ lineHeight: '1.4', letterSpacing: '0.04em',  fontWeight: '500' }],
+        'meta-xs':    ['0.625rem', { lineHeight: '1.35', letterSpacing: '0.04em', fontWeight: '500' }],
 
         // Numeric — pair with font-mono for alignment
         'num-xl':     ['3rem',    { lineHeight: '1', fontWeight: '600' }],

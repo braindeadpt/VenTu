@@ -8,15 +8,22 @@ const VISITS_KEY = 'ventu:visit-count';
 const DISMISS_KEY = 'ventu:install-dismissed-until';
 const MIN_VISITS = 3;
 const DISMISS_DAYS = 14;
+/** Wait for scroll so the banner never covers a spot-detail hero (score/metrics). */
+const SCROLL_REVEAL_PX = 280;
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
 }
 
+function isSpotDetailPath(pathname: string): boolean {
+  return /\/spots\/[^/]+\/?$/.test(pathname);
+}
+
 export default function InstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
-  const [visible, setVisible] = useState(false);
+  const [eligible, setEligible] = useState(false);
+  const [scrolledEnough, setScrolledEnough] = useState(false);
   const [locale, setLocale] = useState<'pt' | 'en'>('pt');
 
   useEffect(() => {
@@ -36,21 +43,43 @@ export default function InstallPrompt() {
       return;
     }
 
+    setEligible(true);
+
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);
-      setVisible(true);
     };
 
     window.addEventListener('beforeinstallprompt', handler);
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
+  useEffect(() => {
+    if (!eligible) return;
+
+    const path = window.location.pathname;
+    const needsScroll = isSpotDetailPath(path);
+
+    const reveal = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0;
+      if (!needsScroll || y >= SCROLL_REVEAL_PX) {
+        setScrolledEnough(true);
+      }
+    };
+
+    reveal();
+    if (scrolledEnough) return;
+
+    window.addEventListener('scroll', reveal, { passive: true });
+    return () => window.removeEventListener('scroll', reveal);
+  }, [eligible, scrolledEnough]);
+
   const dismiss = () => {
     try {
       localStorage.setItem(DISMISS_KEY, String(Date.now() + DISMISS_DAYS * 86400000));
     } catch { /* noop */ }
-    setVisible(false);
+    setDeferred(null);
+    setEligible(false);
   };
 
   const install = async () => {
@@ -58,18 +87,20 @@ export default function InstallPrompt() {
     await deferred.prompt();
     await deferred.userChoice;
     setDeferred(null);
-    setVisible(false);
+    setEligible(false);
   };
 
-  if (!visible || !deferred) return null;
+  const visible = eligible && scrolledEnough && deferred;
+  if (!visible) return null;
 
   const isPt = locale === 'pt';
 
   return (
     <div
-      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-50 card-2 p-4 shadow-lg border border-divider-strong"
+      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-40 card-2 p-4 shadow-lg border border-divider-strong mb-[env(safe-area-inset-bottom)]"
       role="dialog"
       aria-label={isPt ? 'Instalar VenTu' : 'Install VenTu'}
+      data-install-prompt="true"
     >
       <div className="flex gap-3">
         <div className="shrink-0 w-10 h-10 rounded-lg bg-data-waves/15 flex items-center justify-center">

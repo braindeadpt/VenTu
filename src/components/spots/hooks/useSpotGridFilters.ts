@@ -22,7 +22,25 @@ import {
 
 type SortOption = 'score' | 'distance';
 
-const LS_REGION_KEY = 'windspot:region';
+const LS_REGION_KEY = 'ventu:region';
+const LEGACY_REGION_KEY = 'windspot:region';
+
+function readRegionFromStorage(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const current = localStorage.getItem(LS_REGION_KEY);
+    if (current) return current;
+    const legacy = localStorage.getItem(LEGACY_REGION_KEY);
+    if (legacy) {
+      localStorage.setItem(LS_REGION_KEY, legacy);
+      localStorage.removeItem(LEGACY_REGION_KEY);
+      return legacy;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 const SPORT_IDS: GridSportFilter[] = [
   'all', 'surf', 'bodyboard', 'kitesurf', 'windsurf', 'big-wave', 'foil', 'sup', 'wakeboard',
@@ -38,7 +56,7 @@ function resolveInitialFilters(
     : { sport: DEFAULT_SPORT as GridSportFilter, region: DEFAULT_REGION };
 
   const lsSport = typeof window !== 'undefined' ? readSportFromStorage() : null;
-  const lsRegion = typeof window !== 'undefined' ? localStorage.getItem(LS_REGION_KEY) : null;
+  const lsRegion = typeof window !== 'undefined' ? readRegionFromStorage() : null;
 
   const hasUrlSport = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('sport');
   const hasUrlRegion = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('region');
@@ -70,8 +88,16 @@ export function useSpotGridFilters({
   initialRegion?: string;
 }) {
   const skipUrlSync = useRef(false);
-  const [selectedSport, setSelectedSport] = useState<GridSportFilter>(DEFAULT_SPORT);
-  const [selectedRegion, setSelectedRegion] = useState<string>(DEFAULT_REGION);
+  const [selectedSport, setSelectedSport] = useState<GridSportFilter>(() => {
+    if (initialSport && SPORT_IDS.includes(initialSport as GridSportFilter)) {
+      return initialSport as GridSportFilter;
+    }
+    return DEFAULT_SPORT;
+  });
+  const [selectedRegion, setSelectedRegion] = useState<string>(() => {
+    if (initialRegion && regions.includes(initialRegion)) return initialRegion;
+    return DEFAULT_REGION;
+  });
   const [sortBy, setSortBy] = useState<SortOption>('score');
   const [mounted, setMounted] = useState(false);
   const { latitude, longitude, loading: geoLoading, requestLocation } = useGeolocation();

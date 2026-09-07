@@ -12,6 +12,11 @@ export interface SpotLivecam {
   youtubeId?: string
   /** Full embed URL when kind is surfline. */
   embedUrl?: string
+  /**
+   * When the livecam catalog key is not itself a spot slug (e.g. regional
+   * «Peniche HD»), point «Ver spot» + locality at this existing spot.
+   */
+  linkSlug?: string
 }
 
 const SURFTOTAL = 'Surftotal'
@@ -130,6 +135,7 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     provider: SURFTOTAL,
     labelPt: 'Peniche HD',
     labelEn: 'Peniche HD',
+    linkSlug: 'supertubos',
   },
   supertubos: {
     url: 'https://beachcam.meo.pt/livecams/peniche-supertubos/',

@@ -3,8 +3,11 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import WaveSourceAttributionNote from '@/components/ui/WaveSourceAttributionNote';
 
-const render = (props: { source: 'ih-buoy' | 'wmo-buoy'; locale: 'pt' | 'en' }) =>
-  renderToStaticMarkup(createElement(WaveSourceAttributionNote, props));
+const render = (props: {
+  source: 'ih-buoy' | 'wmo-buoy';
+  locale: 'pt' | 'en';
+  bare?: boolean;
+}) => renderToStaticMarkup(createElement(WaveSourceAttributionNote, props));
 
 /**
  * A nota de atribuição das superfícies compactas (TopNow, mapa, comparador)
@@ -26,5 +29,13 @@ describe('WaveSourceAttributionNote — reutiliza ATTRIBUTIONS nas superfícies 
     expect(html).toContain('Instituto Hidrográfico');
     expect(html).toContain('CC BY-NC 4.0');
     expect(html).not.toContain('Copernicus');
+  });
+
+  it('bare: rótulo curto + tooltip com a cadeia legal completa (pt)', () => {
+    const html = render({ source: 'wmo-buoy', locale: 'pt', bare: true });
+    expect(html).toContain('data-wave-attribution="copernicus"');
+    expect(html).toContain('>Copernicus<');
+    expect(html).toContain('title="Gerado com informação do Serviço Marinho Copernicus da UE"');
+    expect(html).not.toContain('>Generated using E.U.');
   });
 });

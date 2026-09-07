@@ -175,7 +175,7 @@ test.describe('Fontes de dados (data sources)', () => {
     }
   });
 
-  test('About: cartão de estado da IH_API_KEY com o passo de obtenção', async ({ page }) => {
+  test('About: cartão de estado da camada IH sem passos de ops', async ({ page }) => {
     await page.goto('/pt/about/');
     await expect(
       page.getByRole('heading', { level: 1, name: 'Sobre o VenTu' }),
@@ -210,12 +210,13 @@ test.describe('Fontes de dados (data sources)', () => {
       await expect(downtime).toContainText(/runs?/i);
     }
 
-    // O passo de obtenção — quem clonar o projecto sabe o que falta.
-    await expect(
-      card.getByRole('link', { name: 'cedencia.dados@hidrografico.pt' }),
-    ).toBeVisible();
-    await expect(card.getByText(/Settings → Secrets and variables → Actions/)).toBeVisible();
+    // Contributors get the setup guide off the public product page (no GitHub
+    // secrets / .env.local / npm ops steps on /about).
     await expect(card.getByRole('link', { name: 'docs/IH_API_KEY.md' })).toBeVisible();
+    await expect(card.getByRole('link', { name: 'CONTRIBUTING.md' })).toBeVisible();
+    await expect(card.getByText(/Settings → Secrets and variables → Actions/)).toHaveCount(0);
+    await expect(card.getByText(/\.env\.local/)).toHaveCount(0);
+    await expect(card.getByText(/buoys:test-key/)).toHaveCount(0);
   });
 
   test('About: linha de degradação «há ~X h» quando o pipeline-meta tem streak down/stale', async ({

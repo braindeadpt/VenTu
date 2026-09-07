@@ -44,8 +44,9 @@ export default async function LivecamsPage({ params }: Props) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {livecams.map(({ slug, cam }) => {
-            const spot = spots.find(s => s.slug === slug);
-            const name = spot ? (isPt ? spot.name : spot.nameEn) : (isPt ? cam.labelPt : cam.labelEn);
+            const spotSlug = cam.linkSlug ?? slug;
+            const spot = spots.find(s => s.slug === spotSlug);
+            const name = isPt ? cam.labelPt : cam.labelEn;
             const region = spot ? (isPt ? spot.region : spot.regionEn) : null;
 
             return (
@@ -73,14 +74,14 @@ export default async function LivecamsPage({ params }: Props) {
                     href={cam.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-data-waves text-bg-base hover:bg-data-waves/80 transition-colors min-h-[36px]"
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-data-waves text-bg-base hover:bg-data-waves/80 transition-colors min-h-[36px]"
                   >
                     {t.livecams.watchLive}
                     <ExternalLink className="w-3.5 h-3.5" aria-hidden />
                   </a>
                   {spot && (
                     <Link
-                      href={`/${locale}/spots/${slug}/`}
+                      href={`/${locale}/spots/${spotSlug}/`}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-surface-2/[0.08] text-fg border border-divider hover:bg-surface-3/[0.12] transition-colors min-h-[36px]"
                     >
                       {t.livecams.viewSpot}

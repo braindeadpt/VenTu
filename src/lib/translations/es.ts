@@ -291,6 +291,8 @@ export const translationsEs = {
     descLivecams: 'Cámaras en vivo en spots curados',
     descSazonalidade: 'Cuándo ir a cada región a lo largo del año',
     descComparar: 'Compara hasta 3 spots lado a lado',
+    descFavoritos: 'Tus spots guardados con condiciones en vivo',
+    descAlertas: 'Email cuando un favorito alcanza tu score mínimo',
     descKite: 'Tamaño de kite por viento, peso y disciplina',
     descFato: 'Grosor de neopreno según temperatura del agua',
     descTools: 'Todas las calculadoras náuticas',

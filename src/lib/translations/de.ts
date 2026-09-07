@@ -291,6 +291,8 @@ export const translationsDe = {
     descLivecams: 'Livekameras an kuratierten Spots',
     descSazonalidade: 'Wann welche Region im Jahresverlauf',
     descComparar: 'Vergleiche bis zu 3 Spots nebeneinander',
+    descFavoritos: 'Deine gespeicherten Spots mit Live-Bedingungen',
+    descAlertas: 'E-Mail, wenn ein Favorit deinen Score erreicht',
     descKite: 'Kitegröße nach Wind, Gewicht und Disziplin',
     descFato: 'Neoprendicke nach Wassertemperatur',
     descTools: 'Alle Wassersport-Rechner',

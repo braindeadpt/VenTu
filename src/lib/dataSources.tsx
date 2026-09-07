@@ -56,9 +56,15 @@ export interface DataSourceAttribution {
   /** Célula completa da tabela de fontes — cadeia + onde o VenTu a mostra. */
   cellPt: ReactNode;
   cellEn: ReactNode;
-  /** Texto simples (sem links) para tooltip/aria. */
+  /** Texto simples (sem links) para tooltip/aria / página /fontes. */
   titlePt: string;
   titleEn: string;
+  /**
+   * Rótulo curto para superfícies compactas (SpotListCard, etc.).
+   * A cadeia legal completa fica em `title*` (tooltip) e na página /fontes.
+   */
+  shortTitlePt?: string;
+  shortTitleEn?: string;
 }
 
 export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
@@ -283,8 +289,10 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
         on WMO readings (Silleiro/Villano buoys, etc.).
       </>
     ),
-    titlePt: 'Generated using E.U. Copernicus Marine Service Information',
+    titlePt: 'Gerado com informação do Serviço Marinho Copernicus da UE',
     titleEn: 'Generated using E.U. Copernicus Marine Service Information',
+    shortTitlePt: 'Copernicus',
+    shortTitleEn: 'Copernicus',
   },
   esri: {
     notePt: (

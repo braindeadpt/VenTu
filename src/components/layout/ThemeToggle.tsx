@@ -3,7 +3,26 @@
 import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 
-const THEME_KEY = 'windspot:theme';
+export const THEME_KEY = 'ventu:theme';
+const LEGACY_THEME_KEY = 'windspot:theme';
+
+/** Read theme; migrates legacy `windspot:theme` → `ventu:theme`. */
+export function readThemeFromStorage(): 'light' | 'dark' | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const current = localStorage.getItem(THEME_KEY);
+    if (current === 'light' || current === 'dark') return current;
+    const legacy = localStorage.getItem(LEGACY_THEME_KEY);
+    if (legacy === 'light' || legacy === 'dark') {
+      localStorage.setItem(THEME_KEY, legacy);
+      localStorage.removeItem(LEGACY_THEME_KEY);
+      return legacy;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 interface ThemeToggleProps {
   locale: string;
@@ -25,6 +44,7 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
     document.documentElement.classList.toggle('theme-ocean', next);
     try {
       localStorage.setItem(THEME_KEY, next ? 'light' : 'dark');
+      localStorage.removeItem(LEGACY_THEME_KEY);
     } catch {
       /* ignore */
     }

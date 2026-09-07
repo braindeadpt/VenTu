@@ -338,6 +338,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(planBtn).toHaveAttribute('aria-expanded', 'true');
       const planPanel = page.locator('#mega-menu-plan');
       await expect(planPanel).toBeVisible();
+      await expect(planPanel.locator('a[href="/pt/favorites/"]')).toBeVisible();
+      await expect(planPanel.locator('a[href="/pt/alerts/"]')).toBeVisible();
+      await expect(planPanel.locator('a[href="/pt/ferramentas/"]')).toBeVisible();
       await Promise.all([
         page.waitForURL(/\/pt\/sazonalidade\/?/, { timeout: 15_000 }),
         planPanel.locator('a[href="/pt/sazonalidade/"]').click(),
@@ -359,6 +362,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(mobileNav.getByRole('link', { name: /Directório|Diretório/i })).toBeVisible();
       await mobileNav.getByRole('button', { name: /Planear/i }).click();
       await expect(mobileNav.getByRole('link', { name: /Sazonalidade/i })).toBeVisible();
+      await expect(mobileNav.getByRole('link', { name: /Favoritos/i })).toBeVisible();
+      await expect(mobileNav.getByRole('link', { name: /Alertas/i })).toBeVisible();
+      await expect(mobileNav.getByRole('link', { name: /ferramentas/i })).toBeVisible();
 
       await closeMobileMenu(page);
       await context.close();

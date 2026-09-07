@@ -6,9 +6,9 @@ import {
   ChevronDown,
   CalendarRange,
   GitCompareArrows,
-  Wind,
-  Thermometer,
+  Heart,
   Wrench,
+  Bell,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 
@@ -20,6 +20,7 @@ interface PlanMegaMenuProps {
   onClose: () => void;
 }
 
+/** Planning tools only — calculators live under Ferramentas to keep chrome narrow at 1280px. */
 const PLAN_ITEMS = [
   {
     href: 'sazonalidade',
@@ -34,22 +35,22 @@ const PLAN_ITEMS = [
     descKey: 'descComparar' as const,
   },
   {
-    href: 'ferramentas/calculadora-kite',
-    icon: Wind,
-    labelKey: 'kiteCalc' as const,
-    descKey: 'descKite' as const,
-  },
-  {
-    href: 'ferramentas/calculadora-fato',
-    icon: Thermometer,
-    labelKey: 'wetsuitCalc' as const,
-    descKey: 'descFato' as const,
+    href: 'favorites',
+    icon: Heart,
+    labelKey: 'favorites' as const,
+    descKey: 'descFavoritos' as const,
   },
   {
     href: 'ferramentas',
     icon: Wrench,
     labelKey: 'allTools' as const,
     descKey: 'descTools' as const,
+  },
+  {
+    href: 'alerts',
+    icon: Bell,
+    labelKey: 'alerts' as const,
+    descKey: 'descAlertas' as const,
   },
 ] as const;
 

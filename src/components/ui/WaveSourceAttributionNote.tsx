@@ -14,6 +14,9 @@ interface WaveSourceAttributionNoteProps {
    * an <a> is invalid HTML, the browser parser restructures it (closing the
    * outer anchor early), and React's tree then mismatches -> hydration error.
    * Keeps the same single-source chain, just without the href.
+   *
+   * On compact/list surfaces (`bare`), prefer `shortTitle*` when present and put
+   * the full legal title in the native `title` tooltip — full chain stays on /fontes.
    */
   bare?: boolean;
 }
@@ -23,11 +26,8 @@ interface WaveSourceAttributionNoteProps {
  * homepage, mapa e comparador) — não só no card de onda observada. Reutiliza a
  * MESMA fonte da tabela (src/lib/dataSources.tsx): ATTRIBUTIONS[id].notePt/En,
  * por isso a cadeia mostrada ao lado da boia é exactamente a da página /fontes.
- * Ex.: leitura WMO/Copernicus → «Generated using E.U. Copernicus Marine
- * Service Information»; leitura IH (boia Datawell) → «Dados © Instituto
- * Hidrográfico, Administração dos Portos da Região Autónoma da Madeira e
- * Associação para o Estudo do Ambiente Insular (CC BY-NC 4.0)» — as boias do IH
- * são CC BY-NC (processo 0191_2026); CC BY aplica-se a marés/isóbatas/avisos.
+ * Em `bare` (listas), usa o rótulo curto (ex. «Copernicus») + tooltip com a
+ * cadeia legal completa.
  */
 export default function WaveSourceAttributionNote({
   source,
@@ -36,14 +36,32 @@ export default function WaveSourceAttributionNote({
   bare = false,
 }: WaveSourceAttributionNoteProps) {
   const id = waveSourceAttributionId(source);
-  const note = locale === 'pt' ? ATTRIBUTIONS[id].notePt : ATTRIBUTIONS[id].noteEn;
-  const title = locale === 'pt' ? ATTRIBUTIONS[id].titlePt : ATTRIBUTIONS[id].titleEn;
+  const attr = ATTRIBUTIONS[id];
+  const note = locale === 'pt' ? attr.notePt : attr.noteEn;
+  const fullTitle = locale === 'pt' ? attr.titlePt : attr.titleEn;
+  const shortTitle =
+    locale === 'pt'
+      ? (attr.shortTitlePt ?? attr.titlePt)
+      : (attr.shortTitleEn ?? attr.titleEn);
+
+  if (bare) {
+    return (
+      <span
+        className={cn('text-meta-xs text-fg-subtle leading-snug truncate', className)}
+        data-wave-attribution={id}
+        title={fullTitle}
+      >
+        {shortTitle}
+      </span>
+    );
+  }
+
   return (
     <span
       className={cn('text-meta-xs text-fg-subtle leading-snug', className)}
       data-wave-attribution={id}
     >
-      {bare ? title : note}
+      {note}
     </span>
   );
 }

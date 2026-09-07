@@ -233,6 +233,8 @@ export const translationsEn = {
     descLivecams: 'Live cameras at curated spots',
     descSazonalidade: 'When to go to each region through the year',
     descComparar: 'Compare up to 3 spots side by side',
+    descFavoritos: 'Your saved spots with live conditions',
+    descAlertas: 'Email when a favorite hits your score threshold',
     descKite: 'Kite size by wind, weight and discipline',
     descFato: 'Wetsuit thickness from water temperature',
     descTools: 'All water-sports calculators',

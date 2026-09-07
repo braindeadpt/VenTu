@@ -74,9 +74,13 @@ export const metadata: Metadata = {
 const themeScript = `
   (function() {
     try {
-      var t = localStorage.getItem('windspot:theme');
+      var t = localStorage.getItem('ventu:theme') || localStorage.getItem('windspot:theme');
       if (t === 'light') {
         document.documentElement.classList.add('theme-ocean');
+      }
+      if (localStorage.getItem('windspot:theme') && !localStorage.getItem('ventu:theme') && t) {
+        localStorage.setItem('ventu:theme', t);
+        localStorage.removeItem('windspot:theme');
       }
     } catch (e) {}
   })();

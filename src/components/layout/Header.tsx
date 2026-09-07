@@ -56,7 +56,9 @@ export default function Header({ locale }: HeaderProps) {
   const planActive =
     pathUnder(pathname, locale, 'sazonalidade') ||
     pathUnder(pathname, locale, 'compare') ||
-    pathUnder(pathname, locale, 'ferramentas');
+    pathUnder(pathname, locale, 'favorites') ||
+    pathUnder(pathname, locale, 'ferramentas') ||
+    pathUnder(pathname, locale, 'alerts');
 
   const directoryActive = pathUnder(pathname, locale, 'diretorio');
   const newsActive = pathUnder(pathname, locale, 'news');
@@ -232,9 +234,9 @@ export default function Header({ locale }: HeaderProps) {
   const planLinks = [
     { href: `/${locale}/sazonalidade/`, label: navLabel.sazonalidade },
     { href: `/${locale}/compare/`, label: navLabel.comparar },
-    { href: `/${locale}/ferramentas/calculadora-kite/`, label: navLabel.kiteCalc },
-    { href: `/${locale}/ferramentas/calculadora-fato/`, label: navLabel.wetsuitCalc },
+    { href: `/${locale}/favorites/`, label: navLabel.favorites },
     { href: `/${locale}/ferramentas/`, label: navLabel.allTools },
+    { href: `/${locale}/alerts/`, label: navLabel.alerts },
   ];
 
   const accountLinks = [

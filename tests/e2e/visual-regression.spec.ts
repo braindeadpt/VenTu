@@ -42,15 +42,19 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 
 /**
  * Set the light theme BEFORE navigation: the app switches theme via a
- * pre-paint script reading localStorage('windspot:theme'), so colorScheme
+ * pre-paint script reading localStorage('ventu:theme') (with legacy
+ * windspot:theme fallback), so colorScheme
  * emulation alone never produces the light theme (dark is the default).
  * Baselines must match the real user path — a click on the theme toggle.
  */
 async function setTheme(page: Page, theme: 'dark' | 'ocean'): Promise<void> {
   await page.addInitScript((t) => {
     try {
-      if (t === 'ocean') localStorage.setItem('windspot:theme', 'light');
-      else localStorage.removeItem('windspot:theme');
+      if (t === 'ocean') localStorage.setItem('ventu:theme', 'light');
+      else {
+        localStorage.removeItem('ventu:theme');
+        localStorage.removeItem('windspot:theme');
+      }
     } catch {
       /* storage disabled */
     }
