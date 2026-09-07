@@ -359,7 +359,19 @@ export function useMapLayers({
     addLines();
     group.addTo(map);
     isobathsLayerRef.current = group;
+    // Leaflet fires 'unload' synchronously at the START of map.remove(),
+    // before layers/renderer teardown. React unmount order runs useMapCore's
+    // map.remove() BEFORE this hook's cleanup detaches the zoomend handler,
+    // and a zoomend can fire mid-removal from Leaflet's own zoom-animation
+    // timer (onZoomTransitionEnd setTimeout) - after Canvas._destroyContainer
+    // deleted _ctx but while our handler is still attached. Restyling then
+    // schedules a renderer redraw whose rAF throws (reading 'save').
+    // 'unload' is the earliest reliable teardown signal.
+    let mapRemoved = false;
+    const markRemoved = () => { mapRemoved = true; };
+    map.once('unload', markRemoved);
     const onZoom = () => {
+      if (mapRemoved || !mapInstanceRef.current) return;
       const weight = isobathLineWeight(map.getZoom());
       group.eachLayer((layer) => {
         const path = layer as L.Polyline;
@@ -374,6 +386,8 @@ export function useMapLayers({
     map.attributionControl?.addAttribution(attr);
 
     return () => {
+      mapRemoved = true;
+      map.off('unload', markRemoved);
       map.off('zoomend', onZoom);
       if (map.hasLayer(group)) map.removeLayer(group);
       isobathsLayerRef.current = null;

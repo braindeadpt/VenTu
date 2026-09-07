@@ -2,6 +2,33 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
+
+// Leaflet 1.9.4 dereferences Canvas this._ctx without checking it exists.
+// During map teardown, _destroyContainer deletes _ctx, but redraw frames that
+// were already scheduled (and late moveend-driven updates) can still fire
+// against the destroyed renderer, throwing "Cannot read properties of
+// undefined (reading 'save'/'clearRect')" (CI run 34075896616; leaflet#8373
+// class). Guard both entry points at the prototype level: it covers every
+// scheduling path, not just the frames our hooks cancel themselves.
+let leafletCanvasGuarded = false;
+function guardLeafletCanvas(Leaflet: typeof L): void {
+  if (leafletCanvasGuarded) return;
+  leafletCanvasGuarded = true;
+  const proto = Leaflet.Canvas.prototype as unknown as {
+    _redraw: (this: { _ctx?: CanvasRenderingContext2D | null }) => void;
+    _update: (this: { _ctx?: CanvasRenderingContext2D | null }) => void;
+  };
+  const origRedraw = proto._redraw;
+  proto._redraw = function () {
+    if (!this._ctx) return;
+    origRedraw.call(this);
+  };
+  const origUpdate = proto._update;
+  proto._update = function () {
+    if (!this._ctx) return;
+    origUpdate.call(this);
+  };
+}
 import { clearLeafletContainer } from '@/lib/mapFullscreen';
 import type { BasemapMode } from '@/components/spots/MapLayerToggle';
 import {
@@ -301,6 +328,26 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
     const teardownMap = () => {
       if (created) {
         try {
+          // Remove every overlay BEFORE map.remove(): Leaflet's remove()
+          // iterates layers by insertion id, so the shared canvas renderer
+          // (lowest id) is destroyed BEFORE the vector overlays. Each Path
+          // removed afterwards schedules a renderer redraw
+          // (_removePath -> _requestRedraw) on the already-destroyed canvas
+          // (_ctx deleted but _map still set) and the frame throws
+          // "Cannot read properties of undefined (reading 'save')" on the
+          // next animation frame (leaflet#8373 class). Sweeping overlays
+          // first lets the renderer's own _destroyContainer cancel any
+          // pending redraw frame.
+          const overlays: L.Layer[] = [];
+          created.eachLayer((layer) => overlays.push(layer));
+          for (const layer of overlays) {
+            if (LRef.current && layer instanceof LRef.current.Renderer) continue;
+            try {
+              created.removeLayer(layer);
+            } catch {
+              /* noop */
+            }
+          }
           created.remove();
         } catch {
           /* noop */
@@ -349,6 +396,7 @@ export function useMapCore({ containerRef, isHeroEmbed }: UseMapCoreOptions): Us
 
         clearLeafletContainer(container);
         LRef.current = Leaflet;
+        guardLeafletCanvas(Leaflet);
 
         const mapOptions = {
           center: DEFAULT_CENTER,

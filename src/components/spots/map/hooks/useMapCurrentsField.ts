@@ -68,6 +68,9 @@ export function useMapCurrentsField({
   });
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef(0);
+  // Handles of the nested onZoomEnd repaint pair — cancelled on cleanup so
+  // the frames never outlive the map (React #418-free unmount, CI 34075896616).
+  const zoomRafRef = useRef(0);
   const [fetchedFile, setFetchedFile] = useState<MapHoursFile | null | undefined>(undefined);
 
   useEffect(() => {
@@ -149,7 +152,9 @@ export function useMapCurrentsField({
 
     const paint = () => {
       const layer = canvasRef.current;
-      if (!layer) return;
+      // Defence in depth: a scheduled frame can fire between cancelAnimationFrame
+      // and the unmount — the map (and its canvas) may already be destroyed.
+      if (!layer || !mapInstanceRef.current) return;
       if (isZoomAnimating(map)) {
         layer.style.visibility = 'hidden';
         return;
@@ -220,8 +225,13 @@ export function useMapCurrentsField({
     };
 
     const onZoomEnd = () => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
+      // Nested rAF pair that repaints after the zoom animation settles. The
+      // handles are stored so the effect cleanup cancels both — otherwise the
+      // frames survive unmount, run against the destroyed map and throw
+      // «Cannot read properties of undefined (reading 'save')» (CI 34075896616).
+      zoomRafRef.current = requestAnimationFrame(() => {
+        zoomRafRef.current = requestAnimationFrame(() => {
+          zoomRafRef.current = 0;
           if (canvasRef.current) canvasRef.current.style.visibility = '';
           paint();
         });
@@ -247,6 +257,10 @@ export function useMapCurrentsField({
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = 0;
+      }
+      if (zoomRafRef.current) {
+        cancelAnimationFrame(zoomRafRef.current);
+        zoomRafRef.current = 0;
       }
     };
   }, [
