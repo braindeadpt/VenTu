@@ -157,7 +157,7 @@ export const translationsPt = {
     hsLegend: 'Hs — metros',
     showCurrents: 'Correntes',
     hideCurrents: 'Ocultar correntes',
-    currentsHint: 'Corrente de superfície prevista (SMOC, ~8 km) — filamentos no sentido da água',
+    currentsHint: 'Corrente de superfície prevista (SMOC, ~8 km) — traços no sentido da água',
     currentsLegend: 'Corrente — m/s',
     showSst: 'Temp. água',
     hideSst: 'Ocultar temp. água',

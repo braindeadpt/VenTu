@@ -157,28 +157,34 @@ export default function MapLegend({
               </p>
               <div className="flex items-end justify-between h-6 mb-1 px-0.5" aria-hidden>
                 {[
-                  { w: 1.15, op: 0.48 },
-                  { w: 1.7, op: 0.72 },
-                  { w: 2.35, op: 0.96 },
+                  { len: 7, op: 0.5 },
+                  { len: 11, op: 0.72 },
+                  { len: 15, op: 0.96 },
                 ].map((s) => (
                   <svg
-                    key={s.w}
+                    key={s.len}
                     width={22}
                     height={22}
                     viewBox="0 0 22 22"
                     className="text-data-water"
                   >
-                    <path
-                      d="M3.8 17.6 C8.2 12.2, 12.4 7.2, 16.6 4.3"
-                      fill="none"
+                    <line
+                      x1="5"
+                      y1="16.5"
+                      x2={5 + s.len * 0.62}
+                      y2={16.5 - s.len * 0.62}
                       stroke="currentColor"
-                      strokeWidth={Math.max(0.8, s.w * 0.55)}
+                      strokeWidth="1.7"
                       strokeLinecap="round"
-                      opacity={s.op * 0.4}
+                      opacity={s.op}
                     />
-                    <circle cx="3.8" cy="17.6" r={0.7 + s.w * 0.12} fill="currentColor" opacity={s.op * 0.45} />
-                    <circle cx="8.2" cy="11.4" r={1.05 + s.w * 0.18} fill="currentColor" opacity={s.op * 0.7} />
-                    <circle cx="16.6" cy="4.3" r={1.55 + s.w * 0.28} fill="currentColor" opacity={s.op} />
+                    <circle
+                      cx={5 + s.len * 0.62}
+                      cy={16.5 - s.len * 0.62}
+                      r="1.55"
+                      fill="currentColor"
+                      opacity={s.op}
+                    />
                   </svg>
                 ))}
               </div>

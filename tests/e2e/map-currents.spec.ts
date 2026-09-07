@@ -61,6 +61,7 @@ test.describe('Map currents field', () => {
     await expect(map).toHaveAttribute('data-map-currents', 'true', { timeout: 15_000 });
     await expect(map).toHaveAttribute('data-map-currents-frame', '0');
     await expect(map).toHaveAttribute('data-map-currents-max', '0.08');
+    await expect(page.locator('.ventu-current-canvas')).toHaveCount(1);
 
     const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
     await slider.fill('3');

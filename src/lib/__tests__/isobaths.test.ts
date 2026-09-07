@@ -3,6 +3,7 @@ import {
   loadIsobathContours,
   clearIsobathContoursCache,
   contoursWithinRadius,
+  isobathLineWeight,
   ISOBATH_DEPTHS,
   ISOBATH_DEPTH_STYLE,
   type IsobathContoursFile,
@@ -53,6 +54,13 @@ describe('contoursWithinRadius', () => {
   it('ficheiro null/sem contours → [] (nunca rebenta)', () => {
     expect(contoursWithinRadius(null, 39.55, -9.2, 15)).toEqual([]);
     expect(contoursWithinRadius({}, 39.55, -9.2, 15)).toEqual([]);
+  });
+});
+
+describe('isobathLineWeight', () => {
+  it('is heavier at country zoom than at region zoom', () => {
+    expect(isobathLineWeight(6)).toBeGreaterThan(isobathLineWeight(10));
+    expect(isobathLineWeight(6)).toBeGreaterThanOrEqual(3);
   });
 });
 

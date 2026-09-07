@@ -5,6 +5,12 @@ import {
   idwCurrent,
   uvFromSpdDir,
   collectCurrentSamples,
+  collectCurrentParticles,
+  currentParticleStepDeg,
+  currentTickMetrics,
+  currentTickOnWater,
+  isOpenOceanCurrentSpot,
+  type CurrentFieldGrid,
 } from '@/lib/mapCurrentsField';
 import type { MapHoursFile } from '@/lib/mapHours';
 
@@ -82,5 +88,96 @@ describe('mapCurrentsField', () => {
     );
     expect(samples).toHaveLength(1);
     expect(samples[0].dir).toBe(180);
+  });
+
+  it('skips Tagus/river spots so ticks stay on open ocean', () => {
+    const file = {
+      generatedAt: '2026-09-03T07:00:00.000Z',
+      stepHours: 3,
+      times: ['2026-09-03T08:00'],
+      sports: ['surf'],
+      spots: {},
+      currents: {
+        'seixal-bay': { spd: [0.2], dir: [90] },
+        guincho: { spd: [0.2], dir: [180] },
+      },
+    } as unknown as MapHoursFile;
+    const samples = collectCurrentSamples(
+      file,
+      [
+        { id: 'seixal-bay', lat: 38.746, lon: -8.978, type: 'kitesurf', bestSwell: 'Rio' },
+        { id: 'guincho', lat: 38.73, lon: -9.47, type: 'surf', bestSwell: 'NW' },
+      ],
+      0,
+    );
+    expect(samples).toHaveLength(1);
+    expect(samples[0].dir).toBe(180);
+    expect(isOpenOceanCurrentSpot({ type: 'kitesurf', bestSwell: 'Rio' })).toBe(false);
+    expect(isOpenOceanCurrentSpot({ type: 'surf', bestSwell: 'NW' })).toBe(true);
+  });
+
+  it('currentParticleStepDeg is coarser at country zoom than close-up', () => {
+    expect(currentParticleStepDeg(6)).toBeGreaterThan(currentParticleStepDeg(10));
+    expect(currentParticleStepDeg(6)).toBeLessThanOrEqual(0.18);
+    expect(currentParticleStepDeg(12)).toBeGreaterThanOrEqual(0.018);
+  });
+
+  it('currentTickMetrics grows with speed', () => {
+    expect(currentTickMetrics(0.4).length).toBeGreaterThan(currentTickMetrics(0.08).length);
+    expect(currentTickMetrics(0.4).alpha).toBeGreaterThan(currentTickMetrics(0.08).alpha);
+  });
+
+  it('collectCurrentParticles places ticks on flowing cells and skips slack', () => {
+    const flowing: CurrentFieldGrid = {
+      id: 'mainland',
+      south: 38.6,
+      west: -9.6,
+      north: 38.8,
+      east: -9.3,
+      cols: 6,
+      rows: 6,
+      grid: Array.from({ length: 36 }, () => ({
+        u: 0,
+        v: 0.2,
+        spd: 0.2,
+        falloff: 1,
+        nlat: 38.73,
+        nlon: -9.47,
+      })),
+    };
+    const pts = collectCurrentParticles(
+      [flowing],
+      { south: 38.62, west: -9.55, north: 38.78, east: -9.35 },
+      0.04,
+    );
+    expect(pts.length).toBeGreaterThan(8);
+    expect(pts[0].dir).toBeCloseTo(0, 0);
+
+    const slack: CurrentFieldGrid = {
+      ...flowing,
+      grid: Array.from({ length: 36 }, () => ({
+        u: 0,
+        v: 0,
+        spd: 0,
+        falloff: 1,
+        nlat: 38.73,
+        nlon: -9.47,
+      })),
+    };
+    expect(
+      collectCurrentParticles(
+        [slack],
+        { south: 38.62, west: -9.55, north: 38.78, east: -9.35 },
+        0.04,
+      ),
+    ).toEqual([]);
+  });
+
+  it('currentTickOnWater keeps west-coast ocean and drops Lisbon inland', () => {
+    const guincho = { lat: 38.73, lon: -9.47 };
+    expect(currentTickOnWater(38.73, -9.55, guincho, 0.9, 'mainland')).toBe(true);
+    expect(currentTickOnWater(38.72, -9.14, guincho, 0.9, 'mainland')).toBe(false);
+    expect(currentTickOnWater(38.94, -9.33, { lat: 38.96, lon: -9.42 }, 0.9, 'mainland')).toBe(false);
+    expect(currentTickOnWater(38.73, -9.55, guincho, 0.2, 'mainland')).toBe(false);
   });
 });

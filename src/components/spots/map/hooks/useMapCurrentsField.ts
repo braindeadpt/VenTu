@@ -9,9 +9,12 @@ import {
   MAP_CURRENT_OPACITY_MOBILE,
   MAP_CURRENT_PANE,
   MAP_CURRENT_PANE_Z,
+  buildCurrentFieldGrids,
+  collectCurrentParticles,
   collectCurrentSamples,
+  currentParticleStepDeg,
+  drawCurrentTicks,
   maxCurrentSpd,
-  renderCurrentFieldTiles,
 } from '@/lib/mapCurrentsField';
 import type { FieldSpot } from '@/lib/mapHsField';
 
@@ -27,6 +30,15 @@ interface UseMapCurrentsFieldOptions {
   hoursLive: boolean;
   hoursFrame: number;
   spots: FieldSpot[];
+}
+
+function isZoomAnimating(map: L.Map): boolean {
+  return Boolean((map as L.Map & { _animatingZoom?: boolean })._animatingZoom);
+}
+
+function cssRgbToken(el: Element, name: string, fallback: string): string {
+  const raw = getComputedStyle(el).getPropertyValue(name).trim();
+  return raw || fallback;
 }
 
 export function useMapCurrentsField({
@@ -54,8 +66,8 @@ export function useMapCurrentsField({
     }
     return false;
   });
-  const groupRef = useRef<L.LayerGroup | null>(null);
-  const overlaysRef = useRef<Map<string, L.ImageOverlay>>(new Map());
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rafRef = useRef(0);
   const [fetchedFile, setFetchedFile] = useState<MapHoursFile | null | undefined>(undefined);
 
   useEffect(() => {
@@ -83,6 +95,10 @@ export function useMapCurrentsField({
     [currentsOn, file, spots, frame],
   );
   const sampleMax = maxCurrentSpd(samples);
+  const grids = useMemo(
+    () => (currentsOn ? buildCurrentFieldGrids(samples, { mobile: isMobile }) : []),
+    [currentsOn, samples, isMobile],
+  );
   const opacity = isMobile ? MAP_CURRENT_OPACITY_MOBILE : MAP_CURRENT_OPACITY;
 
   const toggleCurrents = useCallback(() => {
@@ -100,14 +116,10 @@ export function useMapCurrentsField({
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!currentsOn) {
-      if (groupRef.current) {
-        map?.removeLayer(groupRef.current);
-        groupRef.current = null;
+      if (canvasRef.current) {
+        canvasRef.current.remove();
+        canvasRef.current = null;
       }
-      overlaysRef.current.clear();
-      // Hook owns data-map-currents for BOTH states ('true'/'false') — see
-      // useMapHsField for the rationale. Removing the attribute breaks
-      // off-state consumers.
       const el = map?.getContainer();
       if (el) {
         el.setAttribute('data-map-currents', 'false');
@@ -119,45 +131,108 @@ export function useMapCurrentsField({
     if (!isReady || !map || !LRef.current) return;
 
     const Leaflet = LRef.current;
-    if (!map.getPane(MAP_CURRENT_PANE)) {
-      const pane = map.createPane(MAP_CURRENT_PANE);
-      pane.style.zIndex = MAP_CURRENT_PANE_Z;
-      pane.style.pointerEvents = 'none';
+    let pane = map.getPane(MAP_CURRENT_PANE);
+    if (!pane) pane = map.createPane(MAP_CURRENT_PANE);
+    pane.style.zIndex = MAP_CURRENT_PANE_Z;
+    pane.style.pointerEvents = 'none';
+    pane.classList.remove('leaflet-zoom-animated');
+    pane.classList.add('leaflet-zoom-hide');
+
+    let canvas = canvasRef.current;
+    if (!canvas) {
+      canvas = Leaflet.DomUtil.create('canvas', 'ventu-current-canvas', pane) as HTMLCanvasElement;
+      canvas.setAttribute('aria-hidden', 'true');
+      canvasRef.current = canvas;
+    } else if (canvas.parentElement !== pane) {
+      pane.appendChild(canvas);
     }
 
-    let group = groupRef.current;
-    if (!group) {
-      group = Leaflet.layerGroup();
-      group.addTo(map);
-      groupRef.current = group;
-    }
-
-    const tiles = renderCurrentFieldTiles(samples, { mobile: isMobile, opacityScale: 1 });
-    const seen = new Set<string>();
-    for (const tile of tiles) {
-      seen.add(tile.id);
-      const bounds = Leaflet.latLngBounds(tile.bounds);
-      let overlay = overlaysRef.current.get(tile.id);
-      if (!overlay) {
-        overlay = Leaflet.imageOverlay(tile.url, bounds, {
-          opacity,
-          interactive: false,
-          pane: MAP_CURRENT_PANE,
-          className: 'ventu-current-overlay',
-        });
-        overlay.addTo(group);
-        overlaysRef.current.set(tile.id, overlay);
-      } else {
-        overlay.setUrl(tile.url);
-        overlay.setBounds(bounds);
-        overlay.setOpacity(opacity);
+    const paint = () => {
+      const layer = canvasRef.current;
+      if (!layer) return;
+      if (isZoomAnimating(map)) {
+        layer.style.visibility = 'hidden';
+        return;
       }
-    }
-    for (const [id, overlay] of overlaysRef.current) {
-      if (seen.has(id)) continue;
-      group.removeLayer(overlay);
-      overlaysRef.current.delete(id);
-    }
+      layer.style.visibility = '';
+      const size = map.getSize();
+      if (size.x < 2 || size.y < 2) return;
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const w = Math.round(size.x * dpr);
+      const h = Math.round(size.y * dpr);
+      if (layer.width !== w || layer.height !== h) {
+        layer.width = w;
+        layer.height = h;
+        layer.style.width = `${size.x}px`;
+        layer.style.height = `${size.y}px`;
+      }
+      Leaflet.DomUtil.setPosition(layer, map.containerPointToLayerPoint([0, 0]));
+      const origin = map.containerPointToLayerPoint([0, 0]);
+      const ctx = layer.getContext('2d');
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, size.x, size.y);
+
+      const b = map.getBounds();
+      const step = currentParticleStepDeg(map.getZoom(), isMobile);
+      const pad = step * 2;
+      const particles = collectCurrentParticles(
+        grids,
+        {
+          south: b.getSouth() - pad,
+          west: b.getWest() - pad,
+          north: b.getNorth() + pad,
+          east: b.getEast() + pad,
+        },
+        step,
+      );
+      const host = map.getContainer();
+      drawCurrentTicks(
+        ctx,
+        particles,
+        (lat, lon) => {
+          const p = map.latLngToLayerPoint([lat, lon]);
+          return { x: p.x - origin.x, y: p.y - origin.y };
+        },
+        {
+          water: cssRgbToken(host, '--data-water', '34 211 238'),
+          halo: cssRgbToken(host, '--bg-base', '2 6 23'),
+        },
+        opacity,
+        { width: size.x, height: size.y },
+      );
+    };
+
+    const schedule = () => {
+      if (isZoomAnimating(map)) {
+        if (canvasRef.current) canvasRef.current.style.visibility = 'hidden';
+        return;
+      }
+      if (rafRef.current) return;
+      rafRef.current = requestAnimationFrame(() => {
+        rafRef.current = 0;
+        paint();
+      });
+    };
+
+    const onZoomStart = () => {
+      if (canvasRef.current) canvasRef.current.style.visibility = 'hidden';
+    };
+
+    const onZoomEnd = () => {
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          if (canvasRef.current) canvasRef.current.style.visibility = '';
+          paint();
+        });
+      });
+    };
+
+    map.on('zoomstart', onZoomStart);
+    map.on('zoomend', onZoomEnd);
+    map.on('moveend viewreset', schedule);
+    map.on('move', schedule);
+    paint();
 
     const el = map.getContainer();
     el.setAttribute('data-map-currents', 'true');
@@ -165,12 +240,19 @@ export function useMapCurrentsField({
     el.setAttribute('data-map-currents-max', sampleMax.toFixed(2));
 
     return () => {
-      /* keep group until currents off — cleanup in the !currentsOn branch */
+      map.off('zoomstart', onZoomStart);
+      map.off('zoomend', onZoomEnd);
+      map.off('moveend viewreset', schedule);
+      map.off('move', schedule);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = 0;
+      }
     };
   }, [
     currentsOn,
     isReady,
-    samples,
+    grids,
     sampleMax,
     frame,
     isMobile,

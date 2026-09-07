@@ -17,7 +17,7 @@ export { MAP_SST_LS_KEY, distKm, MAP_HS_BOUNDS as MAP_SST_BOUNDS };
 export type { FieldSpot, HsBounds };
 
 export const MAP_SST_PANE = 'sst';
-/** Below Hs (350) so the two never stack; currents filaments stay on top (360). */
+/** Below Hs (350) so the two never stack; current ticks stay on top (360). */
 export const MAP_SST_PANE_Z = '348';
 
 export const MAP_SST_OPACITY = 0.88;

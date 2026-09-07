@@ -212,7 +212,7 @@ export const translationsDe = {
     hsLegend: 'Hs — Meter',
     showCurrents: 'Strömung',
     hideCurrents: 'Strömung ausblenden',
-    currentsHint: 'Vorhergesagte Oberflächenströmung (SMOC, ~8 km) — Filamente zeigen die Fließrichtung',
+    currentsHint: 'Vorhergesagte Oberflächenströmung (SMOC, ~8 km) — Striche zeigen die Fließrichtung',
     currentsLegend: 'Strömung — m/s',
     showSst: 'Wassertemp.',
     hideSst: 'Wassertemp. ausblenden',

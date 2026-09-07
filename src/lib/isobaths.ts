@@ -28,12 +28,22 @@ export const ISOBATH_DEPTHS = [8, 16, 30] as const;
 /** Depth styles shared by every surface (spot map + interactive map legend). */
 export const ISOBATH_DEPTH_STYLE: Record<
   number,
-  { color: string; label: string }
+  { color: string; label: '8 m' | '16 m' | '30 m' }
 > = {
   8: { color: '#14b8a6', label: '8 m' },
   16: { color: '#f59e0b', label: '16 m' },
   30: { color: '#3b82f6', label: '30 m' },
 };
+
+/**
+ * Country zoom (DEFAULT_ZOOM=6) packed the west coast into ~200 px — a 2 px
+ * stroke vanished into the shoreline. Heavier at low zoom, hairline in close.
+ */
+export function isobathLineWeight(zoom: number): number {
+  if (zoom <= 6) return 3.5;
+  if (zoom <= 8) return 2.75;
+  return 2;
+}
 
 let contoursCache: IsobathContoursFile | null = null;
 let contoursInflight: Promise<IsobathContoursFile | null> | null = null;

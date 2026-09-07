@@ -17,6 +17,7 @@ import {
 } from '@/lib/radarPrefs';
 import {
   loadIsobathContours,
+  isobathLineWeight,
   ISOBATH_DEPTHS,
   ISOBATH_DEPTH_STYLE,
   type IsobathContoursFile,
@@ -326,23 +327,54 @@ export function useMapLayers({
     if (!isobathsData) return;
 
     const group = Leaflet.layerGroup();
-    for (const depth of ISOBATH_DEPTHS) {
-      const lines = isobathsData.contours?.[String(depth)];
-      if (!lines) continue;
-      const style = ISOBATH_DEPTH_STYLE[depth];
-      for (const line of lines) {
-        const latlngs = line.map(([lon, lat]) => [lat, lon] as [number, number]);
-        Leaflet.polyline(latlngs, { color: style.color, weight: 2, opacity: 0.85 }).addTo(group);
+    const addLines = () => {
+      const weight = isobathLineWeight(map.getZoom());
+      for (const depth of ISOBATH_DEPTHS) {
+        const lines = isobathsData.contours?.[String(depth)];
+        if (!lines) continue;
+        const style = ISOBATH_DEPTH_STYLE[depth];
+        for (const line of lines) {
+          const latlngs = line.map(([lon, lat]) => [lat, lon] as [number, number]);
+          Leaflet.polyline(latlngs, {
+            color: '#020617',
+            weight: weight + 2.5,
+            opacity: 0.55,
+            lineJoin: 'round',
+            lineCap: 'round',
+            interactive: false,
+            className: 'ventu-isobath-halo',
+          }).addTo(group);
+          Leaflet.polyline(latlngs, {
+            color: style.color,
+            weight,
+            opacity: 0.95,
+            lineJoin: 'round',
+            lineCap: 'round',
+            interactive: false,
+            className: 'ventu-isobath-line',
+          }).addTo(group);
+        }
       }
-    }
+    };
+    addLines();
     group.addTo(map);
     isobathsLayerRef.current = group;
+    const onZoom = () => {
+      const weight = isobathLineWeight(map.getZoom());
+      group.eachLayer((layer) => {
+        const path = layer as L.Polyline;
+        const halo = path.options.className === 'ventu-isobath-halo';
+        path.setStyle({ weight: halo ? weight + 2.5 : weight });
+      });
+    };
+    map.on('zoomend', onZoom);
     const attr = isPt
       ? 'Isóbatas © Instituto Hidrográfico (CC BY 4.0)'
       : 'Isobaths © Instituto Hidrográfico (CC BY 4.0)';
     map.attributionControl?.addAttribution(attr);
 
     return () => {
+      map.off('zoomend', onZoom);
       if (map.hasLayer(group)) map.removeLayer(group);
       isobathsLayerRef.current = null;
       map.attributionControl?.removeAttribution(attr);

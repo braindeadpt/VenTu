@@ -155,7 +155,7 @@ export const translationsEn = {
     hsLegend: 'Hs — metres',
     showCurrents: 'Currents',
     hideCurrents: 'Hide currents',
-    currentsHint: 'Forecast surface current (SMOC, ~8 km) — filaments show where the water goes',
+    currentsHint: 'Forecast surface current (SMOC, ~8 km) — ticks show where the water goes',
     currentsLegend: 'Current — m/s',
     showSst: 'Water temp',
     hideSst: 'Hide water temp',

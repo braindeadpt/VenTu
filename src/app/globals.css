@@ -519,6 +519,7 @@ html:has([data-embed-widget]) body {
 .leaflet-container {
   background: rgb(var(--bg-base));
   font-family: inherit;
+  overflow: hidden;
   /*
    * Trap Leaflet pane z-indexes (200–700+) inside the map. Without a local
    * stacking context those panes compete at the root and paint over the
@@ -533,14 +534,18 @@ html:has([data-embed-widget]) body {
 .leaflet-currents-pane,
 .ventu-hs-overlay,
 .ventu-sst-overlay,
-.ventu-current-overlay {
+.ventu-current-canvas {
   pointer-events: none;
 }
 .ventu-hs-overlay,
-.ventu-sst-overlay,
-.ventu-current-overlay {
+.ventu-sst-overlay {
   transition: opacity 200ms ease;
   image-rendering: auto;
+}
+.ventu-current-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 /*
  * Tailwind preflight sets `img { max-width: 100% }`. Leaflet ImageOverlay
@@ -659,8 +664,7 @@ html:has([data-embed-widget]) body {
 }
 @media (prefers-reduced-motion: reduce) {
   .ventu-hs-overlay,
-  .ventu-sst-overlay,
-  .ventu-current-overlay {
+  .ventu-sst-overlay {
     transition: none;
   }
 }

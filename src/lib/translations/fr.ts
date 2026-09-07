@@ -212,7 +212,7 @@ export const translationsFr = {
     hsLegend: 'Hs — mètres',
     showCurrents: 'Courants',
     hideCurrents: 'Masquer les courants',
-    currentsHint: 'Courant de surface prévu (SMOC, ~8 km) — filaments dans le sens de l’eau',
+    currentsHint: 'Courant de surface prévu (SMOC, ~8 km) — tirets dans le sens de l’eau',
     currentsLegend: 'Courant — m/s',
     showSst: 'Temp. eau',
     hideSst: 'Masquer temp. eau',

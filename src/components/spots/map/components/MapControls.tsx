@@ -75,12 +75,12 @@ interface MapControlsProps {
 const btnBase = 'flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-3 py-2 rounded-input border border-divider bg-bg-elevated text-fg text-xs font-semibold shadow-card hover:bg-surface-1/[0.04] transition-colors duration-150 touch-manipulation';
 const btnActive = 'border-data-wind/40 bg-bg-elevated text-fg'; // opaque: readable over any tile
 const btnMuted = 'border-divider bg-bg-elevated text-fg-muted opacity-80';
-const btnRadarActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
+const btnRadarActive = 'border-data-waves/40 bg-bg-elevated text-fg';
 const btnRadarDisabled = 'border-divider bg-bg-elevated text-fg-subtle opacity-60 cursor-not-allowed';
-const btnIsobathsActive = 'border-data-waves/40 bg-data-waves/15 text-fg';
-const btnCurrentsActive = 'border-data-water/40 bg-data-water/15 text-fg';
-const btnSstActive = 'border-data-period/40 bg-data-period/15 text-fg';
-const btnHoursActive = 'border-score-good/40 bg-score-good/15 text-fg';
+const btnIsobathsActive = 'border-data-waves/40 bg-bg-elevated text-fg';
+const btnCurrentsActive = 'border-data-water/40 bg-bg-elevated text-fg';
+const btnSstActive = 'border-data-period/40 bg-bg-elevated text-fg';
+const btnHoursActive = 'border-score-good/40 bg-bg-elevated text-fg';
 const btnOnlyOnActive = btnHoursActive;
 const iconBtnBase = 'flex items-center justify-center min-h-[36px] min-w-[36px] rounded-input border border-divider bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg transition-colors duration-150';
 
@@ -156,7 +156,7 @@ export default function MapControls({
 
   return (
     <div
-      className="absolute top-3 left-3 z-[1000] flex max-h-[calc(100%-16rem)] flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-width:thin]"
+      className="absolute top-3 left-3 z-[1200] flex max-h-[calc(100%-16rem)] flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-width:thin] isolation-isolate"
       data-map-controls="true"
     >
       <button

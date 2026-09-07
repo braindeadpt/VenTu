@@ -5,11 +5,10 @@ import {
   landAwareFalloff,
   distKm,
   isOceanFieldSpot,
-  softenFieldCanvas,
   MAP_HS_BOUNDS,
-  MAP_HS_PIXEL_SCALE,
   MAP_HS_STEP_DEG,
   MAP_HS_STEP_DEG_MOBILE,
+  MAINLAND_INLAND,
   type FieldSpot,
 } from '@/lib/mapHsField';
 
@@ -23,9 +22,10 @@ export const MAP_CURRENT_OPACITY = 0.96;
 export const MAP_CURRENT_OPACITY_MOBILE = 0.82;
 /** PT west-coast SMOC is typically 0.05–0.3 m/s; 0.4 m/s saturates the scale. */
 export const MAP_CURRENT_SPEED_MAX = 0.4;
-/** Seed stride for Jobard–Lefer filaments (cells). */
-export const MAP_CURRENT_SEED_EVERY = 4;
-export const MAP_CURRENT_SEED_EVERY_MOBILE = 5;
+/** Aim this many CSS pixels between ticks — stays sharp at every zoom. */
+export const MAP_CURRENT_TICK_PX = 12;
+export const MAP_CURRENT_TICK_PX_MOBILE = 15;
+export const MAP_CURRENT_TICK_LIMIT = 2500;
 
 /** `--data-water` cyan-400. */
 const CURRENT_RGB = { r: 34, g: 211, b: 238 } as const;
@@ -102,6 +102,31 @@ export function currentFill(
   return { ...CURRENT_RGB, a: (0.018 + t * 0.1) * opacityScale };
 }
 
+export function isOpenOceanCurrentSpot(spot: Pick<FieldSpot, 'type' | 'bestSwell'>): boolean {
+  if (!isOceanFieldSpot(spot)) return false;
+  const swell = (spot.bestSwell ?? '').toLowerCase();
+  if (swell.includes('oceano')) return true;
+  return !/(rio|estu[aá]rio|douro|\btejo\b|\bria\b)/i.test(swell);
+}
+
+export function currentTickOnWater(
+  lat: number,
+  lon: number,
+  nearest: { lat: number; lon: number },
+  falloff: number,
+  tileId: string,
+): boolean {
+  if (falloff < 0.62) return false;
+  if (tileId !== 'mainland') return true;
+  const dCell = distKm({ lat, lon }, MAINLAND_INLAND);
+  const dCoast = distKm(nearest, MAINLAND_INLAND);
+  if (dCell < dCoast - 0.25) return false;
+  // West coast: land is east of the beach. South Algarve: land is north.
+  if (nearest.lat > 37.15 && nearest.lon < -8.6 && lon > nearest.lon + 0.012) return false;
+  if (nearest.lat < 37.15 && lat > nearest.lat + 0.012) return false;
+  return true;
+}
+
 export function collectCurrentSamples(
   file: MapHoursFile | null | undefined,
   spots: FieldSpot[],
@@ -109,7 +134,7 @@ export function collectCurrentSamples(
 ): CurrentSample[] {
   const out: CurrentSample[] = [];
   for (const spot of spots) {
-    if (!isOceanFieldSpot(spot)) continue;
+    if (!isOpenOceanCurrentSpot(spot)) continue;
     const cur = currentAtHour(file, spot.id, index);
     if (!cur || cur.spd <= 0.02) continue;
     out.push({ lat: spot.lat, lon: spot.lon, spd: cur.spd, dir: cur.dir });
@@ -123,34 +148,38 @@ export function maxCurrentSpd(samples: CurrentSample[]): number {
   return m;
 }
 
-export interface CurrentFieldTile {
-  id: string;
-  url: string;
-  bounds: [[number, number], [number, number]];
+export interface CurrentParticle {
+  lat: number;
+  lon: number;
+  spd: number;
+  dir: number;
 }
 
-type CurrentCell = { u: number; v: number; spd: number; falloff: number };
+type CurrentCell = {
+  u: number;
+  v: number;
+  spd: number;
+  falloff: number;
+  nlat: number;
+  nlon: number;
+};
 
-function stampCell(
-  img: ImageData,
-  colsScale: number,
-  x: number,
-  y: number,
-  scale: number,
-  fill: { r: number; g: number; b: number; a: number },
-): void {
-  const a = Math.round(Math.min(1, Math.max(0, fill.a)) * 255);
-  if (a <= 0) return;
-  const w = colsScale;
-  for (let sy = 0; sy < scale; sy++) {
-    for (let sx = 0; sx < scale; sx++) {
-      const i = ((y * scale + sy) * w + (x * scale + sx)) * 4;
-      img.data[i] = fill.r;
-      img.data[i + 1] = fill.g;
-      img.data[i + 2] = fill.b;
-      img.data[i + 3] = a;
-    }
-  }
+export interface CurrentFieldGrid {
+  id: string;
+  south: number;
+  west: number;
+  north: number;
+  east: number;
+  cols: number;
+  rows: number;
+  grid: Array<CurrentCell | null>;
+}
+
+export interface CurrentTickMetrics {
+  length: number;
+  width: number;
+  alpha: number;
+  head: number;
 }
 
 function sampleCurrentGrid(
@@ -183,109 +212,54 @@ function sampleCurrentGrid(
     v,
     spd: Math.hypot(u, v),
     falloff: a.falloff * s00 + b.falloff * s10 + c.falloff * s01 + d.falloff * s11,
+    nlat: a.nlat,
+    nlon: a.nlon,
   };
 }
 
-function integrateFilament(
-  grid: Array<CurrentCell | null>,
-  cols: number,
-  rows: number,
-  x0: number,
-  y0: number,
-  steps: number,
-  sign: 1 | -1,
-): Array<{ x: number; y: number; spd: number }> {
-  const pts: Array<{ x: number; y: number; spd: number }> = [];
-  let x = x0;
-  let y = y0;
-  const step = 0.4;
-  for (let i = 0; i < steps; i++) {
-    const s = sampleCurrentGrid(grid, cols, rows, x, y);
-    if (!s || s.spd < 0.028 || s.falloff < 0.32) break;
-    pts.push({ x, y, spd: s.spd });
-    const mag = Math.hypot(s.u, s.v);
-    if (mag < 1e-5) break;
-    const xMid = x + sign * (s.u / mag) * (step * 0.5);
-    const yMid = y - sign * (s.v / mag) * (step * 0.5);
-    const m = sampleCurrentGrid(grid, cols, rows, xMid, yMid) ?? s;
-    const mm = Math.hypot(m.u, m.v);
-    if (mm < 1e-5) break;
-    x += sign * (m.u / mm) * step;
-    y -= sign * (m.v / mm) * step;
-    if (x < 0.6 || y < 0.6 || x > cols - 1.6 || y > rows - 1.6) break;
-  }
-  return pts;
+function sampleGridAtLonLat(g: CurrentFieldGrid, lat: number, lon: number): CurrentCell | null {
+  const spanX = g.east - g.west;
+  const spanY = g.north - g.south;
+  if (!(spanX > 0) || !(spanY > 0)) return null;
+  const fx = ((lon - g.west) / spanX) * g.cols - 0.5;
+  const fy = ((g.north - lat) / spanY) * g.rows - 0.5;
+  return sampleCurrentGrid(g.grid, g.cols, g.rows, fx, fy);
 }
 
-function markOccupied(
-  occ: Uint8Array,
-  cols: number,
-  rows: number,
-  pts: Array<{ x: number; y: number }>,
-  radius: number,
-): void {
-  const r = Math.max(1, Math.round(radius));
-  const r2 = r * r;
-  for (const p of pts) {
-    const cx = Math.round(p.x);
-    const cy = Math.round(p.y);
-    for (let dy = -r; dy <= r; dy++) {
-      for (let dx = -r; dx <= r; dx++) {
-        if (dx * dx + dy * dy > r2) continue;
-        const x = cx + dx;
-        const y = cy + dy;
-        if (x >= 0 && y >= 0 && x < cols && y < rows) occ[y * cols + x] = 1;
-      }
-    }
-  }
+function hash01(a: number, b: number): number {
+  const s = Math.sin(a * 12.9898 + b * 78.233) * 43758.5453;
+  return s - Math.floor(s);
 }
 
-function drawFilament(
-  ctx: CanvasRenderingContext2D,
-  pts: Array<{ x: number; y: number; spd: number }>,
-  scale: number,
-): void {
-  if (pts.length < 6) return;
-  let spdSum = 0;
-  for (const p of pts) spdSum += p.spd;
-  const t = Math.min(1, spdSum / pts.length / MAP_CURRENT_SPEED_MAX);
-  const last = pts.length - 1;
-  ctx.save();
-  for (let i = 0; i <= last; i++) {
-    const along = i / last;
-    const ease = along * along * (3 - 2 * along);
-    const r = (0.45 + ease * (2.6 + t * 2.1)) * (0.85 + t * 0.25);
-    const a = 0.08 + ease * (0.55 + t * 0.32);
-    ctx.beginPath();
-    ctx.arc(pts[i].x * scale, pts[i].y * scale, r, 0, Math.PI * 2);
-    ctx.fillStyle = `rgb(34 211 238 / ${a})`;
-    ctx.fill();
-  }
-  const head = pts[last];
-  const headR = 2.4 + t * 1.8;
-  ctx.beginPath();
-  ctx.arc(head.x * scale, head.y * scale, headR, 0, Math.PI * 2);
-  ctx.fillStyle = `rgb(34 211 238 / ${0.72 + t * 0.22})`;
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(head.x * scale, head.y * scale, headR * 0.42, 0, Math.PI * 2);
-  ctx.fillStyle = `rgb(241 245 249 / ${0.45 + t * 0.3})`;
-  ctx.fill();
-  ctx.restore();
+/**
+ * Geographic spacing so neighbouring ticks sit ~12 px apart at this zoom.
+ * Clamped so country view stays readable and close-up does not explode.
+ */
+export function currentParticleStepDeg(zoom: number, mobile = false): number {
+  const z = Math.max(4, Math.min(14, zoom));
+  const targetPx = mobile ? MAP_CURRENT_TICK_PX_MOBILE : MAP_CURRENT_TICK_PX;
+  const mPerPx = (156543.03392 * Math.cos((39 * Math.PI) / 180)) / 2 ** z;
+  const deg = (mPerPx * targetPx) / 111320;
+  return Math.min(0.18, Math.max(0.018, deg));
 }
 
-export function renderCurrentFieldTiles(
+export function currentTickMetrics(spd: number): CurrentTickMetrics {
+  const t = Math.min(1, Math.max(0, spd / MAP_CURRENT_SPEED_MAX));
+  return {
+    length: 3.2 + t * 5.2,
+    width: 1.15 + t * 0.7,
+    alpha: 0.4 + t * 0.5,
+    head: 1.05 + t * 0.55,
+  };
+}
+
+export function buildCurrentFieldGrids(
   samples: CurrentSample[],
-  opts: { mobile?: boolean; opacityScale?: number },
-): CurrentFieldTile[] {
-  if (typeof document === 'undefined' || !samples.length) return [];
+  opts: { mobile?: boolean } = {},
+): CurrentFieldGrid[] {
+  if (!samples.length) return [];
   const step = opts.mobile ? MAP_HS_STEP_DEG_MOBILE : MAP_HS_STEP_DEG;
-  const seedEvery = opts.mobile ? MAP_CURRENT_SEED_EVERY_MOBILE : MAP_CURRENT_SEED_EVERY;
-  const sep = opts.mobile ? 5.5 : 4.5;
-  const fwdSteps = opts.mobile ? 16 : 24;
-  const backSteps = opts.mobile ? 11 : 18;
-  const opacityScale = opts.opacityScale ?? 1;
-  const tiles: CurrentFieldTile[] = [];
+  const out: CurrentFieldGrid[] = [];
 
   for (const box of MAP_HS_BOUNDS) {
     const maxDist = fieldMaxDistKm(box.id, opts.mobile);
@@ -301,15 +275,7 @@ export function renderCurrentFieldTiles(
 
     const cols = Math.max(2, Math.ceil((box.east - box.west) / step));
     const rows = Math.max(2, Math.ceil((box.north - box.south) / step));
-    const scale = MAP_HS_PIXEL_SCALE;
-    const canvas = document.createElement('canvas');
-    canvas.width = cols * scale;
-    canvas.height = rows * scale;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) continue;
     const grid: Array<CurrentCell | null> = new Array(cols * rows);
-    const img = ctx.createImageData(cols * scale, rows * scale);
-    const w = cols * scale;
 
     for (let y = 0; y < rows; y++) {
       const lat = box.north - ((y + 0.5) / rows) * (box.north - box.south);
@@ -325,43 +291,123 @@ export function renderCurrentFieldTiles(
           grid[y * cols + x] = null;
           continue;
         }
+        if (!currentTickOnWater(lat, lon, at.nearest, falloff, box.id)) {
+          grid[y * cols + x] = null;
+          continue;
+        }
         const { u, v } = uvFromSpdDir(at.spd, at.dir);
-        grid[y * cols + x] = { u, v, spd: at.spd, falloff };
-        stampCell(img, w, x, y, scale, currentFill(at.spd, opacityScale * falloff));
+        grid[y * cols + x] = {
+          u,
+          v,
+          spd: at.spd,
+          falloff,
+          nlat: at.nearest.lat,
+          nlon: at.nearest.lon,
+        };
       }
     }
 
-    ctx.putImageData(img, 0, 0);
-    softenFieldCanvas(canvas, Math.max(0.8, scale * 0.3));
-
-    const occ = new Uint8Array(cols * rows);
-    const stagger = Math.max(1, Math.floor(seedEvery / 2));
-    for (let y = seedEvery; y < rows - 1; y += seedEvery) {
-      const xOff = (Math.floor(y / seedEvery) % 2) * stagger;
-      for (let x = seedEvery + xOff; x < cols - 1; x += seedEvery) {
-        if (occ[y * cols + x]) continue;
-        const cur = grid[y * cols + x];
-        if (!cur || cur.spd < 0.04 || cur.falloff < 0.5) continue;
-        const x0 = x + 0.5;
-        const y0 = y + 0.5;
-        const fwd = integrateFilament(grid, cols, rows, x0, y0, fwdSteps, 1);
-        const back = integrateFilament(grid, cols, rows, x0, y0, backSteps, -1);
-        if (fwd.length + back.length < 6) continue;
-        const backRev = back.slice(1).reverse();
-        const pts = backRev.concat(fwd);
-        drawFilament(ctx, pts, scale);
-        markOccupied(occ, cols, rows, pts, sep);
-      }
-    }
-
-    tiles.push({
+    out.push({
       id: box.id,
-      url: canvas.toDataURL('image/png'),
-      bounds: [
-        [box.south, box.west],
-        [box.north, box.east],
-      ],
+      south: box.south,
+      west: box.west,
+      north: box.north,
+      east: box.east,
+      cols,
+      rows,
+      grid,
     });
   }
-  return tiles;
+  return out;
+}
+
+export function collectCurrentParticles(
+  grids: CurrentFieldGrid[],
+  view: { south: number; west: number; north: number; east: number },
+  stepDeg: number,
+  limit = MAP_CURRENT_TICK_LIMIT,
+): CurrentParticle[] {
+  const out: CurrentParticle[] = [];
+  if (!(stepDeg > 0) || stepDeg > 5) return out;
+
+  let steps = 0;
+  const maxSteps = 8000;
+  for (const g of grids) {
+    const south = Math.max(g.south, view.south);
+    const north = Math.min(g.north, view.north);
+    const west = Math.max(g.west, view.west);
+    const east = Math.min(g.east, view.east);
+    if (south >= north || west >= east) continue;
+
+    const lat0 = Math.ceil(south / stepDeg) * stepDeg;
+    for (let lat = lat0; lat <= north; lat += stepDeg) {
+      const row = Math.round(lat / stepDeg);
+      const lonOff = (row % 2) * (stepDeg * 0.5);
+      const lon0 = Math.ceil((west - lonOff) / stepDeg) * stepDeg + lonOff;
+      for (let lon = lon0; lon <= east; lon += stepDeg) {
+        if (++steps > maxSteps) return out;
+        const jLat = (hash01(lat, lon) - 0.5) * stepDeg * 0.22;
+        const jLon = (hash01(lon, lat) - 0.5) * stepDeg * 0.22;
+        const slat = lat + jLat;
+        const slon = lon + jLon;
+        const cell = sampleGridAtLonLat(g, slat, slon);
+        if (!cell || cell.spd < 0.028) continue;
+        if (
+          !currentTickOnWater(slat, slon, { lat: cell.nlat, lon: cell.nlon }, cell.falloff, g.id)
+        ) {
+          continue;
+        }
+        out.push({ lat: slat, lon: slon, spd: cell.spd, dir: dirFromUv(cell.u, cell.v) });
+        if (out.length >= limit) return out;
+      }
+    }
+  }
+  return out;
+}
+
+export function drawCurrentTicks(
+  ctx: CanvasRenderingContext2D,
+  particles: CurrentParticle[],
+  project: (lat: number, lon: number) => { x: number; y: number },
+  colors: { water: string; halo: string },
+  opacityScale = 1,
+  view?: { width: number; height: number },
+): void {
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  const maxX = view ? view.width + 6 : 8192;
+  const maxY = view ? view.height + 6 : 8192;
+  for (const p of particles) {
+    const { x, y } = project(p.lat, p.lon);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+    if (x < -6 || y < -6 || x > maxX || y > maxY) continue;
+    const m = currentTickMetrics(p.spd);
+    const rad = (p.dir * Math.PI) / 180;
+    const dx = Math.sin(rad) * m.length;
+    const dy = -Math.cos(rad) * m.length;
+    const x0 = x - dx * 0.35;
+    const y0 = y - dy * 0.35;
+    const x1 = x + dx * 0.65;
+    const y1 = y + dy * 0.65;
+    const alpha = m.alpha * opacityScale;
+
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.strokeStyle = `rgb(${colors.halo} / ${Math.min(0.55, alpha * 0.7)})`;
+    ctx.lineWidth = m.width + 1.35;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.strokeStyle = `rgb(${colors.water} / ${alpha})`;
+    ctx.lineWidth = m.width;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(x1, y1, m.head, 0, Math.PI * 2);
+    ctx.fillStyle = `rgb(${colors.water} / ${Math.min(1, alpha + 0.12)})`;
+    ctx.fill();
+  }
 }
