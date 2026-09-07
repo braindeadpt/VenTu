@@ -79,6 +79,10 @@ export default function ConfidenceBadge({
       locale={locale}
       size={size}
       interactive={interactive}
+      // O badge de confiança é uma LIVE REGION: `role="status"` faz o leitor de
+      // ecrã anunciar quando a confiança muda. É o papel que o badge expunha
+      // antes da unificação — o chip não pode fixar `note` por cima dele.
+      role="status"
       // O escudo muda com o nível — é o único eixo cujo glifo é gradativo.
       icon={<Icon className={PROVENANCE_ICON_CLASS[size]} aria-hidden />}
       ariaLabel={

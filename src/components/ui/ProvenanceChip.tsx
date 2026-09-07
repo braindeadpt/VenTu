@@ -43,6 +43,12 @@ export interface ProvenanceChipProps {
    * rouba o alvo de toque ao card.
    */
   interactive?: boolean;
+  /**
+   * Papel semântico do chip (só os dois usados pelo domínio). Sem `role`, o
+   * chip estático com detalhe é uma `note`. A confiança passa `'status'`: é
+   * uma live region — o leitor de ecrã anuncia quando o valor muda.
+   */
+  role?: 'note' | 'status';
   /** Substitui o nome acessível (quando o detalhe não deve virar tooltip). */
   ariaLabel?: string;
   className?: string;
@@ -74,6 +80,7 @@ export default function ProvenanceChip({
   size = 'sm',
   icon,
   interactive = true,
+  role: roleProp,
   ariaLabel: ariaLabelProp,
   className,
   chipAttrs,
@@ -154,10 +161,17 @@ export default function ProvenanceChip({
     ariaLabelProp ??
     `${provenanceAxisAria(axis, isPt)}: ${label}${detail ? `. ${detail}` : ''}`;
 
+  // O texto do rótulo vive DIRECTO no elemento-raiz (com o title), não num
+  // span aninhado: era essa a forma do DOM antes da unificação, e é o que
+  // mantém selectores de texto (getByText), de atributo ([title*=]) e de papel
+  // a resolverem todos para O MESMO elemento com title. Um span interno
+  // partiria getByText (achava um nó sem title) ou, com title, duplicava o nó
+  // acessível dentro do <button> (getByRole strict mode). O espaçamento
+  // ícone↔texto vem do `gap` do flex na raiz.
   const body = (
     <>
       {icon ?? <Icon className={PROVENANCE_ICON_CLASS[size]} aria-hidden />}
-      <span>{label}</span>
+      {label}
     </>
   );
 
@@ -174,7 +188,7 @@ export default function ProvenanceChip({
         className={shape}
         title={detail ?? undefined}
         aria-label={ariaLabel}
-        role={detail ? 'note' : undefined}
+        role={roleProp ?? (detail ? 'note' : undefined)}
       >
         {body}
       </span>
@@ -195,6 +209,7 @@ export default function ProvenanceChip({
         {...dataAttrs}
         type="button"
         ref={buttonRef}
+        role={roleProp ?? undefined}
         aria-expanded={open}
         aria-controls={`${id}-popover`}
         aria-label={ariaLabel}
