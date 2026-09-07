@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/cn';
+import { svgUnit } from '@/lib/svgUnit';
 
 interface MoonIconProps {
   illumination: number;
@@ -28,7 +29,9 @@ export function moonTerminatorPath(
   }
 
   const phi = lit * Math.PI;
-  const dx = (waxing ? 1 : -1) * r * Math.cos(phi);
+  // Arredondado: o path e SSR-ado e o cos do servidor difere do do browser
+  // no ultimo bit (ver lib/svgUnit).
+  const dx = svgUnit((waxing ? 1 : -1) * r * Math.cos(phi));
   const sweepOuter = waxing ? 1 : 0;
   const sweepInner = waxing ? 0 : 1;
 
