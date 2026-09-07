@@ -1,4 +1,30 @@
 import { defineConfig, devices } from '@playwright/test';
+import { existsSync, readFileSync } from 'node:fs';
+
+/**
+ * Local E2E with Supabase-gated pages (/pt/favorites/ gate, the magic-link
+ * login dialog, account UI): the site config is baked at build time, so the
+ * served `out/` must be built with `npm run build:e2e` — that script exports
+ * the hermetic placeholders from `.env.e2e.example` (or your real project
+ * from `.env.e2e`) into the build, making the artifact match CI's keyed
+ * build. Loading the same file here keeps the values visible to this config
+ * and to spec helpers. CI builds with real secrets and needs none of this.
+ */
+function loadE2eEnv(): void {
+  const file = existsSync('.env.e2e') ? '.env.e2e' : '.env.e2e.example';
+  if (!existsSync(file)) return;
+  for (const raw of readFileSync(file, 'utf8').split(/\r?\n/)) {
+    const line = raw.trim();
+    if (!line || line.startsWith('#')) continue;
+    const eq = line.indexOf('=');
+    if (eq < 1) continue;
+    const key = line.slice(0, eq).trim();
+    if (key.startsWith('NEXT_PUBLIC_') && process.env[key] === undefined) {
+      process.env[key] = line.slice(eq + 1).trim();
+    }
+  }
+}
+loadE2eEnv();
 
 const PORT = process.env.PLAYWRIGHT_PORT || '4173';
 const baseURL = process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${PORT}`;
@@ -43,6 +69,13 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  // Serves the prebuilt static export (`out/`). Supabase config is baked at
+  // build time, so Supabase-gated specs need the site built with
+  // `npm run build:e2e` (hermetic placeholders — see .env.e2e.example) or
+  // with real secrets in `.env.e2e`; a plain keyless `npm run build` shows
+  // the "Supabase não configurado" fallback on those pages instead. CI
+  // always builds with real secrets, so the gate specs only run there unless
+  // you use the e2e build locally.
   webServer: {
     command: `npx serve out -l ${PORT}`,
     url: baseURL,

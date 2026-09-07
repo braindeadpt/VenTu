@@ -76,6 +76,7 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 |---------|-----------|
 | `npm run dev` | Servidor de desenvolvimento |
 | `npm run build` | OG PNG + build estático |
+| `npm run build:e2e` | Build estático com Supabase hermético — para E2E locais de páginas com conta (ver abaixo) |
 | `npm test` | Testes unitários (Vitest) |
 | `npm run test:e2e` | E2E (Playwright) |
 | `npm run data:update` | Condições + observações + índice + notícias |
@@ -84,6 +85,22 @@ Copia `.env.example` para `.env.local`. O site funciona sem secrets (dados em `p
 | `npm run dawn-patrol:generate` | Dawn Patrol diário |
 | `npm run spots:validate` | Validar `src/lib/spots.ts` |
 | `npm run alerts:preflight` | Verificar setup alertas email |
+
+### E2E locais de páginas com conta (Supabase)
+
+Páginas protegidas por conta — o gate de `/pt/favorites/`, o diálogo
+"Entrar com magic link" e a UI de conta — só renderizam a UI real quando o
+build tem Supabase configurado (no CI os secrets fazem-no; num build keyless
+aparece "Supabase não configurado"). Para as exercer localmente sem conta:
+
+    npm run build:e2e        # bake hermético (placeholders de .env.e2e.example)
+    npm run test:e2e:core    # ou: npx playwright test <spec>
+
+Os placeholders são seguros: o cliente só exige um host `https://<project>.supabase.co`
+e os fluxos signed-out (o que os E2E exercem) nunca contactam a rede — o host
+fictício nunca é chamado. Tens um projecto Supabase real? Copia
+`.env.e2e.example` para `.env.e2e` (gitignored) e põe os valores reais — o
+`build:e2e` usa-os. O CI ignora isto tudo (usa os secrets reais).
 
 ### Estrutura do projecto
 
