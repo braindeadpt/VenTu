@@ -1,14 +1,22 @@
 /**
- * CI guard: the URL-segment validator suites must run with their expected
- * test counts. Each validator has (a) a script wired into ci.yml, (b) an
- * entry in the vitest.config include list, and (c) a fixture test file.
- * Deleting any of the three would silently shrink the suite — this fails
- * the build instead of letting a dropped guard pass unnoticed.
+ * CI guard: protected suites must run with their expected test counts. Each
+ * protected area has (a) source wired into the app/CI, (b) an entry in the
+ * vitest.config include list, and (c) a unit test file covering it. Deleting
+ * a guard test file — or the code it guards — would silently shrink the
+ * suite; this fails the build instead of letting a dropped guard pass
+ * unnoticed.
  *
- * Runs ONLY the three small slug-guard suites (a few seconds) through
- * vitest's JSON reporter and asserts, per file: present, zero failures,
- * and the exact expected number of tests. Expected counts change only when
- * a guard suite intentionally grows — bump them here in that commit.
+ * Two families are asserted:
+ *  - URL-segment validator suites (validate-spots / validate-page-slugs /
+ *    validate-news-livecams fixtures);
+ *  - map teardown guards (Leaflet canvas teardown guard + the teardownMap
+ *    overlay-sweep ordering), which lock in the unmount-race fixes of commit
+ *    8326a7bd0 and its follow-ups.
+ *
+ * Runs ONLY these small suites (a few seconds) through vitest's JSON
+ * reporter and asserts, per file: present, zero failures, and the exact
+ * expected number of tests. Expected counts change only when a guard suite
+ * intentionally grows — bump them here in that commit.
  *
  * Usage: node scripts/check-guard-test-counts.js
  *   exit 0 = all guard suites green with expected counts
@@ -24,6 +32,8 @@ const EXPECTED = {
   'scripts/lib/__tests__/validateSpots.test.js': 5,
   'scripts/lib/__tests__/validatePageSlugs.test.js': 7,
   'scripts/lib/__tests__/validateNewsLivecams.test.js': 6,
+  'src/components/spots/map/__tests__/leafletCanvasGuard.test.ts': 6,
+  'src/components/spots/map/__tests__/mapOverlaySweep.test.ts': 6,
 };
 
 const files = Object.keys(EXPECTED);
