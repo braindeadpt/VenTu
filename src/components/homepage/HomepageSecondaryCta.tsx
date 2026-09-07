@@ -52,15 +52,19 @@ export default function HomepageSecondaryCta({ locale, compact = false }: Homepa
             href={href}
             hoverable
             padding={false}
-            className="group p-4 flex flex-col h-full"
+            className="group p-4 flex flex-col h-full border-divider hover:border-divider-strong"
           >
             <Icon className="w-6 h-6 text-data-waves shrink-0" aria-hidden />
-            <h3 className="text-h3 text-fg mt-3">{title}</h3>
+            <h3 className="text-h3 text-fg mt-3 group-hover:underline underline-offset-2 decoration-divider-strong">
+              {title}
+            </h3>
             <p className="text-body-sm text-fg-muted mt-1 flex-1">{body}</p>
-            <ArrowRight
-              className="w-4 h-4 text-fg-subtle mt-2 group-hover:text-fg group-hover:translate-x-0.5 transition-[color,transform] duration-150 motion-reduce:transition-none"
+            <span
+              className="mt-3 inline-flex items-center gap-1 text-meta font-medium text-fg-muted group-hover:text-fg transition-colors duration-150"
               aria-hidden
-            />
+            >
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-150 motion-reduce:transition-none" />
+            </span>
           </Card>
         ))}
       </div>

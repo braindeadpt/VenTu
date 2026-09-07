@@ -7,6 +7,7 @@ import {
   warningsForSpot,
   type CoastalNavWarning,
 } from '@/lib/ihCoastalWarnings';
+import { formatCoastalCategory } from '@/lib/formatCoastalCategory';
 
 interface CoastalNavWarningsProps {
   spotId: string;
@@ -69,7 +70,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
           {ih.map((w) => (
             <li key={`ih-${w.id}`} className="text-meta-sm leading-snug">
               <span className="font-medium text-fg">{w.ref}</span>
-              {w.category ? <span className="text-fg-muted"> — {w.category}</span> : null}
+              {w.category ? <span className="text-fg-muted"> — {formatCoastalCategory(w.category)}</span> : null}
               {w.url ? (
                 <a
                   href={w.url}
@@ -95,7 +96,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
             {es.map((w) => (
               <li key={`es-${w.id}`} className="text-meta-sm leading-snug">
                 <span className="font-medium text-fg">{w.ref}</span>
-                {w.category ? <span className="text-fg-muted"> — {w.category}</span> : null}
+                {w.category ? <span className="text-fg-muted"> — {formatCoastalCategory(w.category)}</span> : null}
                 {w.url ? (
                   <a
                     href={w.url}

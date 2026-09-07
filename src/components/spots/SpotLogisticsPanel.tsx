@@ -3,6 +3,7 @@
 import { ExternalLink, MapPin } from 'lucide-react';
 import type { Spot } from '@/types';
 import SpotMap from '@/components/spots/SpotMap';
+import { getDifficultyLabel } from '@/lib/mapDifficulty';
 
 interface SpotLogisticsPanelProps {
   spot: Spot;
@@ -89,7 +90,7 @@ export default function SpotLogisticsPanel({
               <span className="capitalize">{region}</span>
               <span aria-hidden>·</span>
               <span>{difficultyLabel}</span>
-              <span className="capitalize">{spot.difficulty}</span>
+              <span>{getDifficultyLabel(spot.difficulty, isPt)}</span>
             </p>
           </div>
           <p className="text-body text-fg-muted leading-relaxed flex-1">{description}</p>

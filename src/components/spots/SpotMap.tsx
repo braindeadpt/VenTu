@@ -6,6 +6,7 @@ import {
   loadCoastalNavWarnings,
   warningsForSpot,
 } from '@/lib/ihCoastalWarnings';
+import { formatCoastalCategory } from '@/lib/formatCoastalCategory';
 import {
   loadIsobathContours,
   contoursWithinRadius,
@@ -189,9 +190,10 @@ export default function SpotMap({
                 const url = w.url;
                 // Tooltip ligado ao detalhe oficial (geoanavnet.hidrografico.pt):
                 // com URL é um link clicável; sem URL fica só o texto.
+                const categoryLabel = w.category ? formatCoastalCategory(w.category) : '';
                 const tooltipHtml = url
-                  ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''} ↗</a>`
-                  : `${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''}`;
+                  ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(w.ref)}${categoryLabel ? ` — ${escapeHtml(categoryLabel)}` : ''} ↗</a>`
+                  : `${escapeHtml(w.ref)}${categoryLabel ? ` — ${escapeHtml(categoryLabel)}` : ''}`;
                 const poly = Leaflet.polygon(latlngs, {
                   color: '#ef4444',
                   weight: 2,

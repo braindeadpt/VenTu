@@ -20,6 +20,12 @@ export const SPORT_LABELS: Record<SportType, { pt: string; en: string }> = {
 export const ALL_SPORTS: SportType[] = ['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil']
 
 /**
+ * Modalities exposed in nav / SEO / grid filters: scored sports + big-wave.
+ * Trust-strip and marketing copy should use this count (truth over “7”).
+ */
+export const EXPOSED_MODALITY_COUNT = ALL_SPORTS.length + 1
+
+/**
  * Maps spot.type → compatible sports when spot.compatibleSports is not set.
  * Multisport = most water sports except wakeboard (cable park, different geo).
  */

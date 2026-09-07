@@ -2,6 +2,7 @@ import { getTranslation, locales } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 import { loadPipelineMeta, resolveDisplayUpdatedTs } from '@/lib/pipelineMeta';
+import { EXPOSED_MODALITY_COUNT } from '@/lib/sportRatings';
 import HomeAdaptive from '@/components/homepage/HomeAdaptive';
 import MapTilePreconnect from '@/components/MapTilePreconnect';
 
@@ -41,7 +42,7 @@ export default async function HomePage({
         spotsData={spotsData}
         maxTs={maxTs}
         spotCount={spotsData.length}
-        sportsCount={7}
+        sportsCount={EXPOSED_MODALITY_COUNT}
         buoyLayer={pipelineMeta?.buoyLayer ?? null}
         coastalWarningsLayer={pipelineMeta?.coastalWarningsLayer ?? null}
       />

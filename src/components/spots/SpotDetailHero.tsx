@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, Droplets, MapPin, Navigation, Waves } from 'lucide-re
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
+import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { cn } from '@/lib/cn';
 import FavoriteButton from '@/components/FavoriteButton';
@@ -194,7 +195,7 @@ export default function SpotDetailHero({
               <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
               <span>{region}</span>
               <span aria-hidden>·</span>
-              <span className="capitalize">{spot.difficulty}</span>
+              <span>{getDifficultyLabel(spot.difficulty, isPt)}</span>
               {spot.type && (
                 <>
                   <span aria-hidden>·</span>

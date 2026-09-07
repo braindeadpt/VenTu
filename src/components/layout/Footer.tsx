@@ -16,9 +16,9 @@ export default function Footer({ locale }: FooterProps) {
 
   return (
     <footer className="border-t border-divider bg-bg-base/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          <div className="space-y-4">
+          <div className="space-y-3">
             <div className="flex items-center gap-2">
               <Wind className="w-6 h-6 text-data-waves" />
               <span className="text-lg font-bold text-fg">Ven<span className="text-data-waves">Tu</span></span>
@@ -28,7 +28,7 @@ export default function Footer({ locale }: FooterProps) {
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
               {t.footer.links}
             </h4>
@@ -48,7 +48,7 @@ export default function Footer({ locale }: FooterProps) {
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
               {t.nav.explorar}
             </h4>
@@ -98,7 +98,7 @@ export default function Footer({ locale }: FooterProps) {
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
               {t.footer.resources}
             </h4>
@@ -178,7 +178,7 @@ export default function Footer({ locale }: FooterProps) {
             </ul>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             <h4 className="text-sm font-semibold text-fg uppercase tracking-wider">
               {t.footer.data}
             </h4>
@@ -219,17 +219,17 @@ export default function Footer({ locale }: FooterProps) {
           </div>
         </div>
 
-        <p className="mt-8 text-xs text-fg-subtle leading-relaxed max-w-3xl">
+        <p className="mt-8 text-meta text-fg-muted leading-relaxed max-w-3xl">
           {t.footer.creditsImagery} {t.footer.creditsRegionPhotos}{' '}
-          <a href="https://unsplash.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+          <a href="https://unsplash.com" className="underline hover:text-fg" target="_blank" rel="noopener noreferrer">
             Unsplash
           </a>
           {' / '}
-          <a href="https://www.pexels.com" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+          <a href="https://www.pexels.com" className="underline hover:text-fg" target="_blank" rel="noopener noreferrer">
             Pexels
           </a>
           . {t.footer.creditsSee}{' '}
-          <Link href={`/${locale}/about/`} className="underline hover:text-fg-muted">
+          <Link href={`/${locale}/about/`} className="underline hover:text-fg">
             {t.nav.about}
           </Link>{' '}
           {t.footer.creditsAnd} <code className="text-meta-sm">public/images/CREDITS.md</code>.
@@ -237,14 +237,14 @@ export default function Footer({ locale }: FooterProps) {
 
         <div className="mt-6 pt-6 border-t border-divider flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <p className="text-xs text-fg-subtle inline-flex items-center gap-2">
+            <p className="text-meta text-fg-muted inline-flex items-center gap-2">
               © {new Date().getFullYear()} VenTu. MIT License. Open Source Project.
               <DailyStreak />
             </p>
             <FeedbackForm locale={locale} />
           </div>
           <div className="flex items-center gap-4">
-            <p className="flex items-center gap-1 text-xs text-fg-subtle">
+            <p className="flex items-center gap-1 text-meta text-fg-muted">
               {t.footer.madeWith} <Heart className="w-3 h-3 text-windDir-onshore" /> {t.footer.forCommunity}
             </p>
           </div>

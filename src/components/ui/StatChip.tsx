@@ -22,20 +22,36 @@ export default function StatChip({ icon, value, label, className, ariaLabel }: S
   const match = value.match(/^([\d.-]+)/);
   const targetNum = match ? parseFloat(match[1]) : null;
 
-  const [displayNum, setDisplayNum] = useState<number | null>(targetNum !== null ? 0 : null);
-  const hasAnimated = useRef(false);
+  // Start at the real value so SSR / first paint never flash 0.0 before data.
+  const [displayNum, setDisplayNum] = useState<number | null>(targetNum);
+  const hasMounted = useRef(false);
+  const prevTarget = useRef<number | null>(targetNum);
 
   useEffect(() => {
-    if (targetNum === null || hasAnimated.current) return;
+    if (targetNum === null) {
+      setDisplayNum(null);
+      prevTarget.current = null;
+      return;
+    }
+
+    // First mount: keep hydrated/SSR value (no count-up from zero).
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      prevTarget.current = targetNum;
+      setDisplayNum(targetNum);
+      return;
+    }
+
+    if (prevTarget.current === targetNum) return;
+    prevTarget.current = targetNum;
+
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) {
       setDisplayNum(targetNum);
-      hasAnimated.current = true;
       return;
     }
     const duration = 400;
     const start = performance.now();
-    hasAnimated.current = true;
     const tick = (now: number) => {
       const progress = Math.min((now - start) / duration, 1);
       setDisplayNum(targetNum * easeOutExpo(progress));

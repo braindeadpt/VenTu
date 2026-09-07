@@ -1105,7 +1105,7 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
 /* Forecast table horizontal scroll — fade only the trailing edge so the
    sticky label column stays fully opaque (left fade breaks sticky cells). */
 .forecast-table-scroll {
-  --fade-size: 20px;
+  --fade-size: 28px;
   mask-image: linear-gradient(
     to right,
     black 0,

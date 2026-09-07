@@ -235,7 +235,7 @@ export default function ForecastTable({
 
   /* ── scroll container ref ── */
   const scrollRef = useRef<HTMLDivElement>(null);
-  const labelWidthPx = compact ? 72 : 96;
+  const labelWidthPx = compact ? 72 : 88;
 
   /* ── find current hour index ── */
   const currentHourIndex = useMemo(() => {
@@ -248,8 +248,8 @@ export default function ForecastTable({
     [currentHourIndex],
   );
 
-  const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[96px] min-w-[96px]';
-  const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[40px]';
+  const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[88px] min-w-[88px]';
+  const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[34px] md:min-w-[36px]';
 
   /* ── scroll to current hour on mount ── */
   useEffect(() => {
@@ -372,22 +372,29 @@ export default function ForecastTable({
         : undefined;
 
   /* ── cell dimensions ── */
-  const cellPx = compact ? 'px-0.5 py-0.5' : 'px-2 py-1';
+  const cellPx = compact ? 'px-0.5 py-0.5' : 'px-1 py-1 md:px-1.5';
   const labelCellPx = compact ? 'pl-2 pr-1 py-0.5' : 'px-2 py-1';
   const numText = compact ? 'text-[10px] leading-tight' : 'text-num-xs md:text-num';
   const metaText = compact ? 'text-[9px] leading-tight' : 'text-meta-xs md:text-meta-sm';
-  const tableMinW = compact ? 'w-max' : 'min-w-[600px] md:min-w-[800px]';
+  const tableMinW = compact ? 'w-max' : 'min-w-[560px] md:min-w-[720px]';
   const activeDayLabel = dayGroups[activeDayGroupIndex]?.dayLabel ?? '';
 
   return (
     <div className="space-y-2">
-      {/* Current time indicator */}
-{currentHourIndex >= 0 && (
-        <div className="flex items-center gap-2 text-meta text-fg-muted px-1">
-          <span className="w-2 h-2 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
-          <span>{t.currentTime} — {t.scrollForMore}</span>
-        </div>
-      )}
+      {/* Current time + scroll affordance (always visible on wide tables) */}
+      <div className="flex items-center justify-between gap-2 text-meta text-fg-muted px-1">
+        {currentHourIndex >= 0 ? (
+          <span className="inline-flex items-center gap-2 min-w-0">
+            <span className="w-2 h-2 rounded-full bg-score-good motion-reduce:animate-none animate-pulse shrink-0" />
+            <span className="truncate">{t.currentTime}</span>
+          </span>
+        ) : (
+          <span />
+        )}
+        <span className="shrink-0 text-fg-muted font-medium" aria-hidden={false}>
+          → {t.scrollForMore}
+        </span>
+      </div>
 
       {dayGroups.length > 1 && (
         <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
@@ -416,7 +423,7 @@ export default function ForecastTable({
 <div className="rounded-card max-w-full">
       <div
         ref={scrollRef}
-        className={`forecast-table-scroll overflow-x-auto overscroll-x-contain border border-divider bg-bg-base relative rounded-card max-w-full max-md:snap-x max-md:snap-proximity [scrollbar-color:rgb(var(--fg-disabled))_transparent]`}
+        className={`forecast-table-scroll overflow-x-auto overscroll-x-contain border border-divider bg-bg-base relative rounded-card max-w-full max-md:snap-x max-md:snap-proximity [scrollbar-width:thin] [scrollbar-color:rgb(var(--fg-muted-rgb)/0.55)_transparent]`}
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
@@ -444,7 +451,7 @@ export default function ForecastTable({
               >
                 <div className="flex flex-col gap-0.5">
                   {dayGroups.length > 1 ? (
-                    <span className="text-fg truncate max-w-[68px]" title={activeDayLabel}>
+                    <span className="text-fg truncate max-w-[60px]" title={activeDayLabel}>
                       {activeDayLabel}
                     </span>
                   ) : (
