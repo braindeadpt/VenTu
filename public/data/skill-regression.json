@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-09-06T22:52:30.566Z",
+  "checkedAt": "2026-09-07T05:37:27.754Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -20,55 +20,55 @@
     "4": {
       "name": "CSA92/D",
       "origin": "ih",
-      "recentSnapshots": 5,
+      "recentSnapshots": 6,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     },
     "19": {
       "name": "CSA83/1D",
       "origin": "ih",
-      "recentSnapshots": 5,
+      "recentSnapshots": 6,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     },
     "20": {
       "name": "CSA82/D",
       "origin": "ih",
-      "recentSnapshots": 5,
+      "recentSnapshots": 6,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     },
     "33": {
       "name": "CSA94",
       "origin": "ih",
-      "recentSnapshots": 5,
+      "recentSnapshots": 6,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     },
     "86": {
       "name": "BOND5",
       "origin": "ih",
-      "recentSnapshots": 5,
+      "recentSnapshots": 6,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     },
     "6200084": {
       "name": "Cabo Silleiro",
       "origin": "wmo-es",
-      "recentSnapshots": 6,
+      "recentSnapshots": 7,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     },
     "6200085": {
       "name": "Golfo de Cádiz",
       "origin": "wmo-es",
-      "recentSnapshots": 6,
+      "recentSnapshots": 7,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     },
     "6200199": {
       "name": "Nazaré Costeira (WMO)",
-      "recentSnapshots": 6,
+      "recentSnapshots": 7,
       "baselineSnapshots": 0,
       "verdict": "insufficient"
     }
@@ -79,9 +79,9 @@
       "platform": "ih",
       "name": "IH (Datawell)",
       "recent": {
-        "days": 5,
-        "n": 447.4,
-        "me": 0.6250916405900759
+        "days": 6,
+        "n": 494.83,
+        "me": 0.6392152239811384
       },
       "baseline": {
         "days": 0,
@@ -94,9 +94,9 @@
       "platform": "wmo-es",
       "name": "WMO-ES (Copernicus)",
       "recent": {
-        "days": 6,
-        "n": 189.5,
-        "me": 0.25366754617414244
+        "days": 7,
+        "n": 213.29,
+        "me": 0.2527595445411922
       },
       "baseline": {
         "days": 0,
