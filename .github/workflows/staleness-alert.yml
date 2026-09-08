@@ -1,0 +1,42 @@
+name: Pipeline Staleness Alert
+
+# Heartbeat independente do pipeline: o TTL validator do pipeline só corre
+# QUANDO o pipeline corre, por isso um pipeline morto (schedule perdido,
+# job a falhar) é invisível para os próprios checks. Este workflow corre no
+# seu próprio schedule e alerta quando pipeline-meta.json deixa de ser
+# refrescado — mesmo entre janelas agendadas.
+#
+# A entrega do alerta usa GitHub Issues (label data-stale, aberta em stale,
+# comentada+fechada na recuperação — o estado é a própria issue, sem state
+# externo) + Telegram ops na transição (OPS_TELEGRAM_CHAT_ID). Exit 0
+# sempre: durante uma outage longa, runs vermelhos seriam spam — a issue e
+# o Telegram são o canal, não o exit code.
+on:
+  schedule:
+    # A cada 30 min, fora dos crons de dados (:17/:47) e da cadência do
+    # keep-alive (:05/:35). Mesmo com entrega de schedule atrasada, o
+    # limiar de 3 h (dia) / 5 h (noite) absorve o jitter — um alerta
+    # atrasado é melhor que nenhum.
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+concurrency:
+  group: staleness-alert
+  cancel-in-progress: false
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Check pipeline staleness and alert
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          OPS_TELEGRAM_CHAT_ID: ${{ secrets.OPS_TELEGRAM_CHAT_ID }}
+        run: node scripts/check-pipeline-staleness.js

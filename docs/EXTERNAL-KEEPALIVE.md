@@ -92,6 +92,32 @@ over-engineering unless cron-job.org itself becomes the concern.
   minute and either runs the pipeline or exits at the gate with `mode:
   skip` (a healthy-hour ping).
 
+## Companion: staleness alert (independent heartbeat)
+
+The keep-alive *resurrects* the pipeline; the **staleness alert**
+(`staleness-alert.yml` + `scripts/check-pipeline-staleness.js`) is the
+*pair of eyes* that makes a missed slot visible. They are complementary:
+
+- The pipeline's own TTL validator only runs **when the pipeline runs**,
+  so a dead pipeline is invisible to every check it owns. The heartbeat
+  runs on its **own** schedule (every 30 min) and compares
+  `pipeline-meta.json` age against a threshold — **3 h daytime / 5 h
+  night**, deliberately *above* the keep-alive resurrection margins
+  (2.5/4.5 h), so a successful silent resurrection is not an incident.
+  The alert fires exactly when the gap outlived the resurrection (or no
+  keep-alive is configured): normal max gaps are 2 h day / 4 h night, so
+  the threshold only trips on a definitively missed slot.
+- Alert delivery mirrors `monitor-ih-tides.sh`: state = the open issue
+  with label `data-stale` (opened on stale, commented + closed on
+  recovery, no external state, no spam on long outages), plus an ops
+  Telegram message on the down/up transitions when
+  `OPS_TELEGRAM_CHAT_ID` + `TELEGRAM_BOT_TOKEN` are configured. Exit 0
+  always — the issue/Telegram are the channel, not red runs.
+- Even a delayed GitHub schedule delivery still alerts eventually; the
+  3 h threshold absorbs the jitter. If you want the alert itself on a
+  non-GitHub scheduler, point the same external cron at a
+  `workflow_dispatch` of `staleness-alert.yml`.
+
 ## Why not just remove the GitHub crons?
 
 Two independent triggers are the point: GitHub `schedule` + external ping
