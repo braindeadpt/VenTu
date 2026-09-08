@@ -113,6 +113,7 @@ export default function HeroTicker({
         >
           <span
             aria-hidden
+            suppressHydrationWarning
             className={`inline-block w-1.5 h-1.5 rounded-full ${freshnessDotClass(ageHours)}`}
           />
           {updated ? (

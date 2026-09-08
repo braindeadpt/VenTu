@@ -422,14 +422,14 @@ export default function HomepageMapHero({
 
         >
 
-          <div className="max-w-7xl mx-auto">            <HeroTicker
+          <div className="max-w-7xl mx-auto">
+            <HeroTicker
               locale={locale}
               updatedAtTs={maxTs}
               statusLine={liveLine}
               buoyLayer={buoyLayer}
               coastalWarningsLayer={coastalWarningsLayer}
             />
-
           </div>
 
         </div>

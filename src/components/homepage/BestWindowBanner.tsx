@@ -75,14 +75,15 @@ export default function BestWindowBanner({
       >
         {rounded}
       </span>
-      <div aria-hidden className="flex flex-col min-w-0">
+      {/* span not div — keeps flow content valid inside <Link>/<a> for hydration */}
+      <span aria-hidden className="inline-flex flex-col min-w-0">
         <span className="text-body-sm font-semibold text-fg truncate">
           {tierLabel} {hours}
         </span>
         <span className="text-meta text-fg-muted truncate font-mono tabular-nums">
           {atWord} {spotName}
         </span>
-      </div>
+      </span>
     </Link>
   );
 }

@@ -113,23 +113,6 @@ const localeRedirectScript = `
   })();
 `;
 
-/**
- * Pre-paint <html lang> from the locale path segment. Static export shares
- * one root layout (`lang="pt-PT"`); nested layouts cannot change <html>.
- * Keep in sync with LOCALE_HTML_LANG in src/lib/i18n.ts and
- * scripts/fixup-html-lang.js (post-build rewrite for crawlers).
- */
-const htmlLangScript = `
-  (function () {
-    try {
-      var m = location.pathname.match(/^\\/(pt|en|es|de|fr)(?=\\/|$)/);
-      if (!m) return;
-      var map = { pt: 'pt-PT', en: 'en', es: 'es', de: 'de', fr: 'fr' };
-      document.documentElement.lang = map[m[1]] || 'pt-PT';
-    } catch (e) {}
-  })();
-`;
-
 export default function RootLayout({
   children,
 }: {
@@ -143,7 +126,6 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: localeRedirectScript }} />
-        <script dangerouslySetInnerHTML={{ __html: htmlLangScript }} />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="min-h-screen bg-bg-base text-fg font-sans antialiased">
