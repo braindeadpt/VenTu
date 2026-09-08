@@ -235,8 +235,13 @@ export default function SpotDetailClient({
     return buildTideSchedule(spotData.forecast, {
       locale: isPt ? 'pt' : 'en',
       phaseOverride: phaseFromConditionsStatus(spotData.conditions.tideStatus),
+      // Same baked-clock pin as the freshness gates (React #418 guard): the
+      // next high/low tide times and the phase label are relative to `now`.
+      // Until mount we evaluate against the baked reference so the first paint
+      // reproduces the build exactly; after mount the live clock takes over.
+      now: freshnessNowMs != null ? new Date(freshnessNowMs) : undefined,
     });
-  }, [spotData, isPt]);
+  }, [spotData, isPt, freshnessNowMs]);
 
   const tideHourly: TideHourPoint[] = useMemo(() => {
     if (!spotData?.forecast?.length) return [];
@@ -853,6 +858,7 @@ export default function SpotDetailClient({
                   compact={isMobile}
                   waveSource={scoreWaveSource}
                   waveCorrection={scoreWaveCorrection}
+                  nowMs={freshnessNowMs}
                 />
               </div>
               {forecastTableData.length > (isMobile ? 36 : 48) && (

@@ -68,6 +68,13 @@ interface ForecastTableProps {
    */
   waveSource?: ScoreWaveSource;
   waveCorrection?: ScoreWaveCorrection | null;
+  /**
+   * Baked build-time clock (React #418 guard) — the current-hour column and
+   * its indicator must reproduce the SSG render on first paint; pass the
+   * spot page's freshnessNowMs and leave undefined to use the live clock
+   * (e2e fetch path / after mount).
+   */
+  nowMs?: number;
 }
 
 /* ──────────── cap hours ──────────── */
@@ -201,6 +208,7 @@ export default function ForecastTable({
   compact = false,
   waveSource = 'forecast',
   waveCorrection = null,
+  nowMs,
 }: ForecastTableProps) {
   const t = getTranslation(locale).forecastTable;
   const isPt = locale === 'pt';
@@ -228,7 +236,7 @@ export default function ForecastTable({
   }, [hourly, startTime, visibleCount]);
 
   /* ── current hour ref ── */
-  const now = useMemo(() => new Date(), []);
+  const now = useMemo(() => (nowMs != null ? new Date(nowMs) : new Date()), [nowMs]);
 
   /* ── hover column state ── */
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
