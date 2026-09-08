@@ -52,9 +52,14 @@ export default function MoonTideMonthStrip({ locale, yearMonth }: MoonTideMonthS
   });
 
   return (
+    // Estável para o pixel gate: a faixa inteira é dado do mês (etiqueta +
+    // grelha). O anel do dia atual (ring-2) sobressai 2px acima da grelha
+    // mascarada e muda de tile conforme o wrap flex — mascarar a secção
+    // cobre o anel e mantém a faixa fora do gate (ver DATA_MASK_SELECTORS).
     <section
       className="rounded-2xl border border-divider bg-surface-1/[0.04] p-4 sm:p-5 space-y-3"
       aria-label={mt.monthStripTitle}
+      data-moon-tide-strip
     >
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 className="text-lg font-semibold text-fg capitalize" data-visual-dynamic>{monthLabel}</h2>

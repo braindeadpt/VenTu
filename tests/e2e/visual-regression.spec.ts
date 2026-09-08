@@ -289,6 +289,11 @@ const DATA_MASK_SELECTORS = [
   '[data-daily-active-chart]',
   '[data-coastal-ref]',
   '[data-buoy-streak="true"]',
+  // Moon-tide strip (sazonalidade): the today-ring (ring-2) protrudes 2px
+  // above the masked day grid and lands on a different tile run-to-run as
+  // the flex wrap shifts by a pixel — mask the whole section so the month
+  // data never gates (the strip's height/layout is month-driven by design).
+  '[data-moon-tide-strip]',
 ];
 
 /** Resolve the data-drift masks against the current page. */
