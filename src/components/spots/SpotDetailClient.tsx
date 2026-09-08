@@ -849,7 +849,7 @@ export default function SpotDetailClient({
                   hours={forecastHours}
                   sport={selectedSport}
                   coastOrientation={spot.coastOrientation}
-                  locale={locale as 'pt' | 'en'}
+                  locale={locale as 'pt' | 'en' | 'es' | 'de' | 'fr'}
                   compact={isMobile}
                   waveSource={scoreWaveSource}
                   waveCorrection={scoreWaveCorrection}
