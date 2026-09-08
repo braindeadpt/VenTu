@@ -2,13 +2,15 @@
 
 Decisão de arquitectura para servir CSP, `X-Frame-Options` e `frame-ancestors` como **headers HTTP reais**, impossíveis de obter no GitHub Pages (que não permite headers custom e ignora `public/_headers`).
 
-> **Estado:** decisão tomada (2026-08-13). O ficheiro `public/_headers` está completo e validado por `scripts/check-headers-file.js` (corre no CI após o build). Para deploys em Netlify/Cloudflare Pages, os headers são aplicados automaticamente. Para GitHub Pages, é necessária a acção manual no dashboard Cloudflare (DNS proxied + Transform Rules) — ver [Passos](#passos-de-implementação).
+> **Estado: aplicado e verificado em produção (2026-09-08).** DNS proxied (Cloudflare), as 2 Transform Rules e as 3 Cache Rules estão activas em `ventu.surf`/`www.ventu.surf`, e `bash scripts/check-security-headers.sh` passa (exit 0) contra produção — CSP header real com `frame-ancestors 'none'`, `X-Frame-Options: DENY`, HSTS, `ACAO:*` removido, `/embed/*` mantém-se iframeable. O guard do CI (`security-headers` no deploy.yml) está activo desde 2026-09-08 (`S7_PROXY_ENABLED=true`). Evidência em [§6 Estado actual](#6-estado-actual-verificado-2026-09-08). O ficheiro `public/_headers` permanece como fonte de verdade e fallback para Netlify/Cloudflare Pages.
 >
 > **Fallback non-Cloudflare:** `public/_headers` é a fonte de verdade. Qualquer hosting que interprete `_headers` (Netlify, Cloudflare Pages) aplica os headers sem configuração adicional. O script `scripts/check-headers-file.js` valida que as 5 directivas obrigatórias (`X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy`, `Strict-Transport-Security`) estão presentes — corre no CI para impedir regressões.
 
 ---
 
-## 1. Contexto verificado (2026-08-13)
+## 1. Linha de base pré-implementação (HISTÓRICO — verificada em 2026-08-13)
+
+> ⚠️ Esta secção descreve o estado do site **antes** da implementação S7 (2026-08-13). Não reflecte o estado actual — ver [§6](#6-estado-actual-verificado-2026-09-08).
 
 - **DNS actual:** `ventu.surf` e `www.ventu.surf` apontam directamente para os IPs do GitHub Pages (`185.199.108-111.153`) — **sem proxy**.
 - **Headers servidos hoje:** nenhum header de segurança. O GitHub Pages envia até `Access-Control-Allow-Origin: *` em todas as respostas.
@@ -146,7 +148,7 @@ curl -s -D - -o /dev/null https://ventu.surf/sw.js | grep -i cf-cache-status    
 O `deploy.yml` tem um job `security-headers` que corre o verificador contra a produção **depois de cada deploy** e falha o run se algum header estiver ausente, se o `Access-Control-Allow-Origin: *` voltar, ou se o cache edge não bater (`cf-cache-status` sem HIT/DYNAMIC esperado nas 3 Cache Rules). Está **desativado por omissão** — o checker falha de propósito contra o GitHub Pages puro, por isso só deve ser ativado depois de o proxy estar aplicado:
 
 1. Aplicar as Fases 1–5 (DNS proxied + SSL/TLS Full strict + as 2 Transform Rules + as 3 Cache Rules C1/C2/C3).
-2. No GitHub: **Settings → Secrets and variables → Actions → Variables** → criar a repo variable `S7_PROXY_ENABLED` com valor `true`.
+2. No GitHub: **Settings → Secrets and variables → Actions → Variables** → criar a repo variable `S7_PROXY_ENABLED` com valor `true`. ✅ **Feito em 2026-09-08** (`gh variable set S7_PROXY_ENABLED true`) — o guard corre no próximo deploy.
 3. No próximo deploy, o job corre; se os headers regredirem (proxy removido, regras desligadas, ordem trocada), o run falha com `::error::` e fica assinalado.
 
 O job faz **6 tentativas com 20s de intervalo** (absorve a propagação do edge após o deploy) e valida `https://ventu.surf` por omissão — para staging, define a repo variable `S7_HEADERS_BASE_URL` com o URL alternativo.
@@ -156,3 +158,25 @@ O job faz **6 tentativas com 20s de intervalo** (absorve a propagação do edge 
 - **CSP meta permanece** (`CSPMeta.tsx`) como fallback para origins secundários (preview em `github.io`, abrir o `out/` localmente). Não remover: header + meta idênticos = intersecção sem conflito.
 - **Fonte de verdade do design:** `public/_headers`. Se um dia houver migração para Netlify/Cloudflare Pages (Opção C), o ficheiro passa a valer nativamente e as Transform Rules podem ser removidas.
 - Achado associado (corrigido por esta decisão): o `Access-Control-Allow-Origin: *` do GitHub Pages desaparece do response.
+
+## 6. Estado actual (verificado 2026-09-08)
+
+Implementação **aplicada e verificada ao vivo** (curl + `scripts/check-security-headers.sh`, exit 0):
+
+| Verificação | Resultado |
+|---|---|
+| DNS | `ventu.surf` / `www.ventu.surf` → Cloudflare proxied (`Server: cloudflare`) |
+| CSP header real | `frame-ancestors 'none'` fora de `/embed/*` (já não é só meta) |
+| `X-Frame-Options` | `DENY` fora de `/embed/*` |
+| HSTS | `max-age=31536000; includeSubDomains; preload` |
+| `Access-Control-Allow-Origin` | removido (o `*` do GitHub Pages já não aparece) |
+| `/embed/*` | continua iframeable (`frame-ancestors *`, sem `X-Frame-Options`) |
+| Cache edge C1/C2/C3 | `/_next/static/*` HIT · `/data/*` HIT · `/sw.js` DYNAMIC |
+| Guard CI | `S7_PROXY_ENABLED=true` (2026-09-08) — job `security-headers` activo no próximo deploy |
+
+Re-verificação manual:
+
+```bash
+bash scripts/check-security-headers.sh          # exit 0 = conforme
+curl -sI https://ventu.surf/pt/ | grep -iE "content-security|x-frame|access-control|strict-transport"
+```

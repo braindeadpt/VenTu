@@ -246,7 +246,7 @@ scripts/lib/skillRegression.js → snapshots diários, janelas recente/baseline,
 - GitHub Pages não permite headers custom; hoje só CSP via meta (`CSPMeta.tsx`) — `frame-ancestors` em meta é ignorado pelos browsers (sem anti-clickjacking real).
 - **Decisão tomada:** proxy Cloudflare (DNS proxied) + **Response Header Transform Rules** a espelhar o `public/_headers`, com o override `/embed/*` a manter o widget B2B iframeable (`frame-ancestors *`, sem `X-Frame-Options`). Remove também o `Access-Control-Allow-Origin: *` do GitHub Pages.
 - CSP do header = espelho do `CSP_META`; a meta permanece como fallback (header + meta idênticos = intersecção sem conflito).
-- **Ação manual pendente (dashboard Cloudflare):** DNS + 2 regras → passos e valores exactos em [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md).
+- **Aplicado (2026-09-08):** DNS proxied + 2 Transform Rules + 3 Cache Rules activas; guard do CI ligado (`S7_PROXY_ENABLED=true`). Passos e valores exactos em [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md).
 
 ## Estrutura do repo (resumo)
 
@@ -442,7 +442,7 @@ Notas de operação:
 
 ### ⚠️ Dívida conhecida (não bloqueante)
 
-1. Headers HTTP (CSP real, `X-Frame-Options`, `frame-ancestors`) — ✅ decisão S7 tomada; implementação manual pendente no dashboard Cloudflare (DNS proxied + Transform Rules) → [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md)
+1. Headers HTTP (CSP real, `X-Frame-Options`, `frame-ancestors`) — ✅ decisão S7 **implementada e verificada** (2026-09-08: DNS proxied + Transform Rules + Cache Rules activas; guard do CI ligado com `S7_PROXY_ENABLED=true`) → [`SECURITY-HEADERS.md`](./SECURITY-HEADERS.md)
 2. Calibração scores (C4b) — `npm run scores:analyze`; pesos só com N≥30/modalidade
 3. Livecams curadas — links externos Surftotal/MEO em 31 spots (`src/lib/spotLivecams.ts`); sem embeds
 4. Alertas email — ✅ E1 em produção → [`ALERTS.md`](./ALERTS.md)
