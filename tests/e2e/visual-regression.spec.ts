@@ -2,6 +2,15 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
+import { forceLiveSpotMode } from './helpers/conditions';
+
+// The site's service worker (public/sw.js) serves /data/* from its own cache
+// and BYPASSES page.route — late spot-page fetches (the hydration cascade)
+// would silently get the BUILD's data instead of the fixture, reintroducing
+// drift exactly where the fixture is supposed to pin. Same documented trap as
+// tests/e2e/helpers/conditions.ts; blocking the SW routes every /data/
+// request through the fixture.
+test.use({ serviceWorkers: 'block' });
 
 /**
  * Visual regression — golden-baseline pixel diffing (toHaveScreenshot).
@@ -27,17 +36,28 @@ import { preseedWindRingLegend } from './helpers/map-setup';
  *  - animations: 'disabled' + a global freeze style make pixels deterministic
  *    without changing layout.
  *
- * Data drift: the data pipeline commits ~15×/day and every commit rebuilds
- * the export, so data-derived TEXT (scores, wave heights, dates, counts,
- * buoy clocks) differs between the baseline run and the gate run even though
- * no code changed — a raw pixel gate would fail on data churn, not regressions.
- * Policy (same spirit as the live-canvas rule): data-derived text leaves are
- * marked data-visual-dynamic in the components and masked; zones whose content
- * is 100%% data output (forecast table body, charts, radar, warning lists,
- * month strip) are masked as units — their frames/headers/position stay gated,
- * exactly like /mapa gates the live canvas strictly while hero embeds mask it.
- * A layout regression (clipped card, missing section, broken spacing) still
- * moves pixels OUTSIDE the masks and fails.
+ * Data drift: the data pipeline commits ~15×/day and rebuilds the export, so
+ * data-derived content (scores, wave heights, dates, counts, buoy clocks, AND
+ * structure such as list heights) differs between the baseline run and the
+ * gate run even though no code changed — a raw pixel gate would fail on data
+ * churn, not regressions.
+ *
+ * The FIXTURE, not the build, drives every capture: gotoStable sets the
+ * ventu_live=1 cookie (the same seam the hermetic specs use — see
+ * tests/e2e/helpers/conditions.ts) so baked pages take their client-fetch
+ * path, and serves every /data/** request from the COMMITTED fixture at
+ * tests/e2e/fixtures/data (a snapshot of out/data, refreshed deliberately
+ * via scripts/sync-visual-fixture.mjs when the data SHAPE changes — a new
+ * spot, a new data file). The build's own data is never rendered, so a data
+ * commit can move zero pixels: captures measure LAYOUT against the fixture,
+ * not CONTENT against the day's data.
+ *
+ * Masks stay as a second belt (same spirit as the live-canvas rule):
+ * data-derived text leaves are marked data-visual-dynamic and masked; zones
+ * whose content is 100%% data output (forecast table body, charts, radar,
+ * warning lists, month strip) are masked as units. A layout regression
+ * (clipped card, missing section, broken spacing) still moves pixels OUTSIDE
+ * the masks and fails.
  */
 
 /**
@@ -294,26 +314,45 @@ async function waitForMapSettled(page: Page): Promise<void> {
 
 async function gotoStable(page: Page, path: string, isMap = false): Promise<void> {
   await page.emulateMedia({ reducedMotion: 'reduce' });
+  // The hermetic-spec seam: forces baked spot/listing pages onto their
+  // client-fetch path so the route below (which serves the committed FIXTURE,
+  // not the build's data) actually drives the render. Inert on routes that
+  // fetch unconditionally (maps, home grid) and in production (nobody sets
+  // the cookie) — the bake stays the default.
+  await forceLiveSpotMode(page);
   // Pin client time BEFORE navigation (see FIXED_NOW above).
   await page.clock.install({ time: FIXED_NOW });
-  // Freeze ALL client-fetched live data: spot pages fetch ~10 files
-  // (conditions, map-hours, forecasts, buoys, radar, warnings…) and the data
-  // pipeline rewrites them mid-run — scores/labels drift between the baseline
-  // run and the gate run. Serve every /data/ request from the immutable
-  // build snapshot (out/data) so layout is judged, not the pipeline.
-  const dataDir = join(process.cwd(), 'out', 'data');
+  // Freeze ALL client-fetched live data from the COMMITTED fixture
+  // (tests/e2e/fixtures/data — a snapshot of out/data) so captures render
+  // the same layout on every run and every build, regardless of what the
+  // pipeline committed today. Fixture-first, build-snapshot fallback: files
+  // added to the data set after the last deliberate fixture sync still get
+  // served deterministically per-build (documented gap; sync the fixture
+  // deliberately when a NEW data file becomes layout-relevant).
+  const fixtureDir = join(process.cwd(), 'tests', 'e2e', 'fixtures', 'data');
+  const buildDir = join(process.cwd(), 'out', 'data');
   await page.route('**/data/**', async (route) => {
-    const name = new URL(route.request().url()).pathname.split('/').pop() ?? '';
-    const file = join(dataDir, name);
-    if (existsSync(file)) {
+    const pathname = new URL(route.request().url()).pathname;
+    const rel = pathname.replace(/^\/data\//, '');
+    const fixtureFile = join(fixtureDir, rel);
+    if (existsSync(fixtureFile)) {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: readFileSync(file, 'utf-8'),
+        body: readFileSync(fixtureFile, 'utf-8'),
       });
-    } else {
-      await route.continue();
+      return;
     }
+    const buildFile = join(buildDir, rel);
+    if (existsSync(buildFile)) {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: readFileSync(buildFile, 'utf-8'),
+      });
+      return;
+    }
+    await route.continue();
   });
   // Freeze the live OBS-worker observation (outside /data/**).
   await page.route('**/obs?**', async (route) => {
@@ -347,6 +386,26 @@ async function gotoStable(page: Page, path: string, isMap = false): Promise<void
   }
   await sweepLazyImages(page);
   await normalizeVolatileText(page);
+  // Live-mode pages mount empty and fill from the fetched fixture — the CLS
+  // the bake eliminated is back on the fetch path. Capture only after the
+  // layout STOPPED growing (two equal height samples, 250 ms apart — the
+  // scrollToSettledBottom pattern from observed-wave-card.spec.ts), so the
+  // gate measures layout, not fetch timing.
+  await page
+    .waitForFunction(
+      () => {
+        const first = document.body.scrollHeight;
+        return new Promise<boolean>((resolve) => {
+          setTimeout(() => resolve(document.body.scrollHeight === first), 250);
+        });
+      },
+      undefined,
+      { timeout: 15_000 },
+    )
+    .catch(() => {
+      /* a page that never stops growing (live charts) is already gated by the
+         map/canvas tolerances — never fail the settle itself */
+    });
   await page.evaluate(() => document.fonts?.ready);
   await page.waitForTimeout(500);
 }

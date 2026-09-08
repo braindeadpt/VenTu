@@ -75,7 +75,7 @@ export interface InterceptDataOptions {
  * fetch live) and in production (nobody sets the cookie). Persists across
  * reloads, so dismiss/reload tests keep their fixtures.
  */
-async function forceLiveSpotMode(page: Page): Promise<void> {
+export async function forceLiveSpotMode(page: Page): Promise<void> {
   const baseUrl = process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1';
   await page.context().addCookies([{ name: 'ventu_live', value: '1', url: baseUrl }]);
 }
