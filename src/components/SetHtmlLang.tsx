@@ -3,13 +3,13 @@
 import { useEffect } from 'react';
 
 /**
- * Keeps `<html lang>` in sync on client navigations. The root layout
- * hardcodes `lang="pt-PT"` (static export — nested layouts cannot change
- * `<html>`). A head script in `app/layout.tsx` sets lang from the path
- * before paint; `scripts/fixup-html-lang.js` rewrites the attribute in
- * `out/` for crawlers / no-JS. Do NOT render a `<script>` from this
- * client component — that caused React #418 hydration failures on every
- * locale page in CI.
+ * Sets `<html lang>` for the current locale. The root layout hardcodes
+ * `lang="pt-PT"` (static export — nested layouts cannot change `<html>`).
+ * An executable `<script>` inside the React tree (body or head via a client
+ * child) triggers React #418 hydration failures on locale pages in CI, so
+ * this runs as a plain effect for soft navigations instead. Do not reintroduce
+ * a pre-paint head script here without verifying homepage `/pt/` health —
+ * that path also threw #418 HTML in map-unmount-race / visual-ux audits.
  */
 export default function SetHtmlLang({ lang }: { lang: string }) {
   useEffect(() => {

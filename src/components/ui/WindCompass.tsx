@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { getCardinalLabel, getWindRelationToCoast } from '@/lib/wind';
+import { svgUnit } from '@/lib/svgUnit';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  WindCompass — Meteorological wind direction compass with animated needle.
@@ -331,10 +332,10 @@ export default function WindCompass({
               return (
                 <line
                   key={angle}
-                  x1={center + inner * Math.cos(rad)}
-                  y1={center + inner * Math.sin(rad)}
-                  x2={center + outer * Math.cos(rad)}
-                  y2={center + outer * Math.sin(rad)}
+                  x1={svgUnit(center + inner * Math.cos(rad))}
+                  y1={svgUnit(center + inner * Math.sin(rad))}
+                  x2={svgUnit(center + outer * Math.cos(rad))}
+                  y2={svgUnit(center + outer * Math.sin(rad))}
                   stroke="rgb(var(--divider-rgb) / 0.75)"
                   strokeWidth={cfg.strokeTick}
                 />
@@ -419,8 +420,8 @@ function describeArc(
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   const angleRad = ((angleDeg - 90) * Math.PI) / 180.0;
   return {
-    x: cx + r * Math.cos(angleRad),
-    y: cy + r * Math.sin(angleRad),
+    x: svgUnit(cx + r * Math.cos(angleRad)),
+    y: svgUnit(cy + r * Math.sin(angleRad)),
   };
 }
 

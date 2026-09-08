@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { getWindRelationToCoast, getCardinalLabel } from '@/lib/wind';
+import { svgUnit } from '@/lib/svgUnit';
 
 /* ═══════════════════════════════════════════════════════════════════════
  *  SwellRadar — Wave incidence & wind relation diagram.
@@ -184,7 +185,7 @@ function describeArc(cx: number, cy: number, r: number, startDeg: number, endDeg
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   const rad = ((angleDeg - 90) * Math.PI) / 180;
-  return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+  return { x: svgUnit(cx + r * Math.cos(rad)), y: svgUnit(cy + r * Math.sin(rad)) };
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
@@ -395,10 +396,10 @@ export default function SwellRadar({
               />
               {/* Coast line */}
               <line
-                x1={c - R * Math.cos(((coastAngle - 90) * Math.PI) / 180)}
-                y1={c - R * Math.sin(((coastAngle - 90) * Math.PI) / 180)}
-                x2={c + R * Math.cos(((coastAngle - 90) * Math.PI) / 180)}
-                y2={c + R * Math.sin(((coastAngle - 90) * Math.PI) / 180)}
+                x1={svgUnit(c - R * Math.cos(((coastAngle - 90) * Math.PI) / 180))}
+                y1={svgUnit(c - R * Math.sin(((coastAngle - 90) * Math.PI) / 180))}
+                x2={svgUnit(c + R * Math.cos(((coastAngle - 90) * Math.PI) / 180))}
+                y2={svgUnit(c + R * Math.sin(((coastAngle - 90) * Math.PI) / 180))}
                 stroke="rgb(var(--divider-strong))"
                 strokeWidth={2}
                 strokeDasharray="6 4"
@@ -423,8 +424,8 @@ export default function SwellRadar({
             const outer = R * 0.98;
             return (
               <line key={angle}
-                x1={c + inner * Math.cos(rad)} y1={c + inner * Math.sin(rad)}
-                x2={c + outer * Math.cos(rad)} y2={c + outer * Math.sin(rad)}
+                x1={svgUnit(c + inner * Math.cos(rad))} y1={svgUnit(c + inner * Math.sin(rad))}
+                x2={svgUnit(c + outer * Math.cos(rad))} y2={svgUnit(c + outer * Math.sin(rad))}
                 stroke={minor ? 'rgb(var(--divider-rgb) / 0.35)' : 'rgb(var(--divider-rgb) / 0.55)'}
                 strokeWidth={cfg.strokeTick}
               />
@@ -592,12 +593,12 @@ function chevronPoints(x: number, y: number, direction: number, size: number): s
   const angle = ((direction + 180 - 90) * Math.PI) / 180;
   const tip = polarToCartesian(x, y, size, direction + 180);
   const left = {
-    x: x + size * 0.6 * Math.cos(angle),
-    y: y + size * 0.6 * Math.sin(angle),
+    x: svgUnit(x + size * 0.6 * Math.cos(angle)),
+    y: svgUnit(y + size * 0.6 * Math.sin(angle)),
   };
   const right = {
-    x: x + size * 0.6 * Math.cos(angle + Math.PI),
-    y: y + size * 0.6 * Math.sin(angle + Math.PI),
+    x: svgUnit(x + size * 0.6 * Math.cos(angle + Math.PI)),
+    y: svgUnit(y + size * 0.6 * Math.sin(angle + Math.PI)),
   };
   return `${left.x},${left.y} ${tip.x},${tip.y} ${right.x},${right.y}`;
 }
@@ -607,12 +608,12 @@ function trianglePoints(x: number, y: number, direction: number, size: number): 
   const tip = polarToCartesian(x, y, size, direction + 180);
   const baseAngle = ((direction + 180 - 90) * Math.PI) / 180;
   const left = {
-    x: x + size * 0.5 * Math.cos(baseAngle),
-    y: y + size * 0.5 * Math.sin(baseAngle),
+    x: svgUnit(x + size * 0.5 * Math.cos(baseAngle)),
+    y: svgUnit(y + size * 0.5 * Math.sin(baseAngle)),
   };
   const right = {
-    x: x + size * 0.5 * Math.cos(baseAngle + Math.PI),
-    y: y + size * 0.5 * Math.sin(baseAngle + Math.PI),
+    x: svgUnit(x + size * 0.5 * Math.cos(baseAngle + Math.PI)),
+    y: svgUnit(y + size * 0.5 * Math.sin(baseAngle + Math.PI)),
   };
   return `${tip.x},${tip.y} ${left.x},${left.y} ${right.x},${right.y}`;
 }
