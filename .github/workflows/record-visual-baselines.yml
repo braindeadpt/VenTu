@@ -24,9 +24,9 @@ name: Record Visual Baselines
 # fetch path) — routine data commits move ZERO pixels and the gate stays green
 # without re-recording. Re-record only when:
 #  - a deliberate visual change (masks, components, layout);
-#  - the fixture SHAPE changed — a new spot, a new data file, a schema change:
-#    re-sync the fixture first (scripts/sync-visual-fixture.mjs, which copies
-#    the fresh out/data snapshot), then re-record baselines on the new shape.
+#  - the fixture SHAPE changed — a new spot, a new data file, a schema change.
+#    (This workflow re-syncs the fixture from the fresh build before recording,
+#    so baselines are always recorded on the current shape — no manual step.)
 # Run this workflow manually (workflow_dispatch) in those cases — one click
 # re-records and CI greens on the baseline commit. Deliberate trade: automatic
 # recording on every data refresh would burn a build+record+CI cycle ~15×/day
@@ -78,6 +78,13 @@ jobs:
           NEXT_PUBLIC_CARTO_API_KEY: ${{ secrets.NEXT_PUBLIC_CARTO_API_KEY }}
         run: npm run build
 
+      - name: Re-sync visual fixture from build
+        # gotoStable serves /data/** from the COMMITTED fixture, never the
+        # build. Before recording, refresh that fixture from THIS build so a
+        # data-shape change (new spot / new file / schema) can't record
+        # baselines against a stale shape — fixture and baselines stay in lockstep.
+        run: node scripts/sync-visual-fixture.mjs
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
@@ -94,15 +101,17 @@ jobs:
           # git diff --quiet would MISS newly-recorded baselines: the first
           # recording produces UNTRACKED files, and git diff only reports
           # tracked changes. git status --porcelain sees both.
-          if [ -z "$(git status --porcelain -- tests/e2e/visual-regression.spec.ts-snapshots)" ]; then
+          # The fixture may also have changed (re-synced from the build above);
+          # commit it WITH the baselines so CI gates on the exact shape recorded.
+          if [ -z "$(git status --porcelain -- tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data)" ]; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "Baselines unchanged."
+            echo "Baselines and fixture unchanged."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add tests/e2e/visual-regression.spec.ts-snapshots
-          git commit -m "chore(visual): refresh Linux baselines from CI data refresh"
+          git add tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data
+          git commit -m "chore(visual): refresh Linux baselines + fixture from CI data refresh"
           git push origin main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
