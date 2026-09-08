@@ -5,6 +5,7 @@ import { buildPageMetadata } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import { loadForecastSkillBuoys, forecastSkillOriginTag, forecastSkillOriginLabel } from '@/lib/forecastSkill'
 import { loadIhKeyStatus } from '@/lib/ihKeyStatus'
+import { loadTideLayerStatus } from '@/lib/tideLayerStatus'
 import {
   deriveBuoyLayerDowntime,
   formatBuoyLayerDowntimeSuffix,
@@ -390,6 +391,87 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                 )}
               </p>
             </div>
+          </div>
+        )
+      })()}
+
+      {(() => {
+        const tide = loadTideLayerStatus()
+        if (!tide) return null
+        const conf = {
+          ok: {
+            label: isPt ? 'Activa' : 'Active',
+            chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
+            icon: CheckCircle2,
+            line: isPt
+              ? 'O IH devolveu observações de maré nas últimas 24 h — a altura observada e a estação aparecem no card de cada spot.'
+              : 'IH returned observed tide readings within the last 24 h — the observed height and station show on each spot’s card.',
+          },
+          stale: {
+            label: isPt ? 'Sem leituras recentes' : 'No recent readings',
+            chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
+            icon: AlertTriangle,
+            line: isPt
+              ? 'O ficheiro de marés não é actualizado há mais de 24 h — o IH não devolveu observações novas e o fetch reutiliza o último ficheiro conhecido (o pipeline de previsões continua).'
+              : 'The tide file has not been refreshed for over 24 h — IH returned no new observations and the fetch reuses the last known file (the forecast pipeline keeps running).',
+          },
+          down: {
+            label: isPt ? 'Sem dados' : 'No data',
+            chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
+            icon: XCircle,
+            line: isPt
+              ? 'Sem ih-tides.json — a camada de marés observadas não tem dados.'
+              : 'No ih-tides.json — the observed-tide layer has no data.',
+          },
+        }[tide.status]
+        const Icon = conf.icon
+        const metaLine = isPt
+          ? `última fetch ${tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString('pt-PT') : '—'} · ${tide.stations} estações · ${tide.mappedSpots} spots`
+          : `last fetch ${tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString('en-GB') : '—'} · ${tide.stations} stations · ${tide.mappedSpots} spots`
+        return (
+          <div className="card-1 p-8 space-y-4" data-tide-layer-status={tide.status}>
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-2xl font-bold text-fg">
+                {isPt ? 'Camada de marés IH (observadas)' : 'IH tide layer (observed)'}
+              </h2>
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
+                data-tide-layer-status-badge={tide.status}
+              >
+                <Icon className="w-4 h-4" aria-hidden />
+                {conf.label}
+              </span>
+            </div>
+            <p className="text-sm text-fg-muted leading-relaxed">{conf.line}</p>
+            <p className="text-xs text-fg-subtle tabular-nums">{metaLine}</p>
+            {
+              // Streak down/stale (pipeline-meta tideLayer) — «há quantas runs a
+              // camada está sem leituras novas». O fetch nunca bloqueia o
+              // pipeline, por isso este badge + os logs são onde a falha vive.
+              tide.status !== 'ok' && typeof tide.streak === 'number' && tide.streak > 0 ? (
+                <p
+                  className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
+                  data-tide-layer-downtime="true"
+                  title={
+                    tide.lastOkAt
+                      ? `${isPt ? 'última vez ok' : 'last OK'}: ${new Date(tide.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                      : undefined
+                  }
+                >
+                  <span aria-hidden>⏱</span>
+                  <span className="tabular-nums">
+                    {isPt
+                      ? <>Sem observações novas há {tide.streak} {tide.streak === 1 ? 'run' : 'runs'} consecutivas</>
+                      : <>No new observations for {tide.streak} consecutive {tide.streak === 1 ? 'run' : 'runs'}</>}
+                  </span>
+                </p>
+              ) : null
+            }
+            <p className="text-xs text-fg-subtle leading-relaxed">
+              {isPt
+                ? 'Esta camada nunca bloqueia o pipeline (uma outage do IH não pára as previsões) — é aqui e nos logs do workflow que a falta de dados fica visível. Quando o IH voltar a servir observações, a próxima fetch restaura o estado.'
+                : 'This layer never blocks the pipeline (an IH outage does not stop forecasts) — this card and the workflow logs are where the missing data becomes visible. When IH serves observations again, the next fetch restores the layer.'}
+            </p>
           </div>
         )
       })()}

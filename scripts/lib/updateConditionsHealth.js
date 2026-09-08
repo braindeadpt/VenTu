@@ -20,12 +20,13 @@ function assertCoverage(coverage, exit = (code) => process.exit(code), log = con
   }
 }
 
-function buildPipelineLayers({ metaRoot, previousMeta, loadBuoyLayerStatus, applyBuoyLayerStreak, loadRadarLayerStatus, loadWarningsLayerStatus, applyLayerStreak, buildCoastalWarningsLayer }) {
+function buildPipelineLayers({ metaRoot, previousMeta, loadBuoyLayerStatus, applyBuoyLayerStreak, loadRadarLayerStatus, loadWarningsLayerStatus, applyLayerStreak, buildCoastalWarningsLayer, loadTidesLayerStatus }) {
   return {
     buoyLayer: applyBuoyLayerStreak(loadBuoyLayerStatus(metaRoot), previousMeta),
     radarLayer: applyLayerStreak(loadRadarLayerStatus(metaRoot), previousMeta, 'radarLayer'),
     warningsLayer: applyLayerStreak(loadWarningsLayerStatus(metaRoot), previousMeta, 'warningsLayer'),
     coastalWarningsLayer: buildCoastalWarningsLayer(metaRoot, previousMeta),
+    tideLayer: applyLayerStreak(loadTidesLayerStatus(metaRoot), previousMeta, 'tideLayer'),
   };
 }
 

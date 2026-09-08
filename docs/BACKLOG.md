@@ -28,6 +28,17 @@ Registo de ideias, melhorias e features identificadas mas não agendadas. Cada i
 - `geoportal.hidrografico.pt` / `wms.hidrografico.pt` inacessíveis; `www.hidrografico.pt/mares` → 404 (portal web também degradado).
 - `fetch-ih-tides.js` reutiliza o ficheiro anterior e **nunca falha** (exit 0 sempre): o guard de 24h (`MAX_STALE_HOURS`) tornou-se um warning de idade (decisão `c16802b8` — não bloquear Open-Meteo/obs durante uma outage IH).
 
+### 🔴 Incidente 2026-09-08 — schema mudou: items devolve 200 mas só metadados
+
+**Sintoma**: `tide_obs_nrt/items` voltou a responder **HTTP 200 com `features`** — mas as features já não trazem os campos de observação (`last_sea_surface_height`/`last_date_time`; os antigos `last_obs`/`last_data` desapareceram do schema). `stationFromFeature` rejeita todas as features (null) → zero estações → o fetch lança e reutiliza o `ih-tides.json` anterior. `fetchedAt` ficou em 2026-07-29 (41 dias) com o pipeline **verde**: é o estado mais perigoso — a API "responde" e o monitor antigo (HTTP 200 + features) não distinguia.
+
+**Verificado ao vivo (2026-09-08 ~11:00 UTC)**:
+- `items?limit=100` → 200, features com properties só `codp/title/category/lat/lon` — sem `last_sea_surface_height` nem `last_date_time` em nenhum param (`limit`, `bbox`, `properties`, `f=json|jsonld|csv`).
+- EDR `radius` (WKT `POINT(lon lat)`, `within=50000`) → **500 `NoApplicableCode`** — o fallback EDR continua morto; `IH_EDR_FALLBACK` fica OFF até o schema EDR passar no `npm run ih:validate`.
+- Outras colecções (`buoys_datawell`, `hfr_stations`) continuam 200 com dados — a regressão é específica da fonte de marés.
+
+**Mitigação**: camada `tideLayer` no `pipeline-meta.json` (ok/stale/down + streak, derivado do `fetchedAt` do `ih-tides.json`), chip no About «Camada de marés IH (observadas)», monitor `monitor-ih-tides.sh` agora exige os campos de observação (não só HTTP 200), e health-check unificado avisa (nunca falha o job — decisão `c16802b8`) a partir de 3 runs sem leituras novas.
+
 **Receita de recuperação (EDR — existe e documentada, mas partilha o mesmo backend em baixo)**:
 
 O `tide_obs_nrt` expõe endpoints OGC API EDR além dos items (ver `/openapi?f=json`, pygeoapi 0.23.5):

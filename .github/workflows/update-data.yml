@@ -233,10 +233,12 @@ jobs:
       # Health-check UNIFICADO das camadas de dados: obs:update/update-conditions
       # gravam em pipeline-meta.json o streak de runs consecutivas com cada
       # camada em 'down'/'stale' (buoyLayer — boias IH/WMO; radarLayer — radar
-      # IPMA; warningsLayer — avisos IPMA/MeteoAlarm; 'no-key' das boias nunca
-      # conta). UM passo avisa a partir de 3 runs e falha o job a partir de 6
-      # runs (~6 h) quando QUALQUER camada esteve degradada demasiado tempo sem
-      # ninguém ver (limiares env-overridable: DATA_LAYER_WARN_AFTER/FAIL_AFTER).
+      # IPMA; warningsLayer — avisos IPMA/MeteoAlarm; tideLayer — marés IH,
+      # warnOnly: um outage de marés nunca bloqueia o Open-Meteo, só avisa;
+      # 'no-key' das boias nunca conta). UM passo avisa a partir de 3 runs e
+      # falha o job a partir de 6 runs (~6 h) quando QUALQUER camada (não
+      # warnOnly) esteve degradada demasiado tempo sem ninguém ver (limiares
+      # env-overridable: DATA_LAYER_WARN_AFTER/FAIL_AFTER).
       - name: Check data layers health (down/stale streak)
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/check-data-layer-health.js

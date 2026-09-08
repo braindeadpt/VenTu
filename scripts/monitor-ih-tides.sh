@@ -28,10 +28,14 @@ REPO="${GITHUB_REPOSITORY:-braindeadpt/VenTu}"
 BODY_FILE="${TMPDIR:-/tmp}/ih-monitor-body.json"
 LAST_CODE="000"
 
-# probe: 0 = UP (HTTP 200 + JSON com "features"), 1 = DOWN. Grava $LAST_CODE.
+# probe: 0 = UP (HTTP 200 + features COM campos de observação), 1 = DOWN.
+# Desde 2026-09-08 o items devolve 200 com features só-metadados (sem
+# last_sea_surface_height/last_date_time) — HTTP 200 + "features" já não
+# prova que a camada está viva; foi exatamente esse estado que deixou o
+# pipeline verde durante 41 dias. Grava $LAST_CODE.
 probe() {
   LAST_CODE=$(curl -sS -m 30 -o "$BODY_FILE" -w '%{http_code}' "$IH_ITEMS_URL" 2>/dev/null) || LAST_CODE="000"
-  [ "$LAST_CODE" = "200" ] && grep -q '"features"' "$BODY_FILE" 2>/dev/null
+  [ "$LAST_CODE" = "200" ] && grep -q '"features"' "$BODY_FILE" 2>/dev/null     && grep -Eq '"last_sea_surface_height"|"last_obs"' "$BODY_FILE" 2>/dev/null
 }
 
 gh_available() {

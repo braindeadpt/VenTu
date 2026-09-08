@@ -11,8 +11,9 @@
  *   - streak >= WARN_AFTER  → ::warning:: + exit 0 (heads-up, pipeline segue);
  *   - caso contrário        → resumo ✅ por camada + exit 0.
  *
- * Substitui o check-buoy-layer-health.js: agora cobre também o radar IPMA e os
- * avisos IPMA/MeteoAlarm no mesmo passo (limiares globais env-overridable:
+ * Substitui o check-buoy-layer-health.js: agora cobre também o radar IPMA, os
+ * avisos IPMA/MeteoAlarm e as marés IH (warn-only — outage de marés nunca
+ * bloqueia o Open-Meteo) no mesmo passo (limiares globais env-overridable:
  * DATA_LAYER_WARN_AFTER / DATA_LAYER_FAIL_AFTER; por camada não é preciso —
  * o objetivo é falhar cedo quando QUALQUER camada degrada).
  *

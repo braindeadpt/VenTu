@@ -28,6 +28,8 @@ const RADAR_MAX_AGE_MINUTES = 25;
 const WARNINGS_MAX_AGE_HOURS = 24;
 /** Avisos costeiros do IH mudam devagar (nav_warning_coastal) — mesma janela. */
 const COASTAL_MAX_AGE_HOURS = 24;
+/** Marés observadas IH — fetchedAt com mais de 24 h conta como stale. */
+const TIDES_MAX_AGE_HOURS = 24;
 
 const DEFAULT_WARN_AFTER = 3;
 const DEFAULT_FAIL_AFTER = 6;
@@ -37,6 +39,11 @@ const LAYERS = [
   { key: 'buoyLayer', label: 'Boias (onda observada)' },
   { key: 'radarLayer', label: 'Radar IPMA' },
   { key: 'warningsLayer', label: 'Avisos IPMA/MeteoAlarm' },
+  // Marés IH: warnOnly de propósito — fetch-ih-tides.js NUNCA pode bloquear o
+  // Open-Meteo (decisão c16802b8: outage IH ≠ previsões paradas). A camada
+  // avisa a partir do warnAfter e fica por aí; a visibilidade é o chip do
+  // About + os logs do workflow, não o exit code do job.
+  { key: 'tideLayer', label: 'Marés IH (observadas)', warnOnly: true },
 ];
 
 function isoAgeHours(iso, nowMs) {
@@ -62,6 +69,14 @@ function deriveWarningsLayerStatus(file, nowMs = Date.now()) {
   const ageHours = isoAgeHours(file.fetchedAt, nowMs);
   if (ageHours == null || ageHours < 0) return 'down';
   return ageHours <= WARNINGS_MAX_AGE_HOURS ? 'ok' : 'stale';
+}
+
+/** Derivação pura — estado da camada de marés IH (fetch-ih-tides.js). */
+function deriveTidesLayerStatus(file, nowMs = Date.now()) {
+  if (!file) return 'down';
+  const ageHours = isoAgeHours(file.fetchedAt, nowMs);
+  if (ageHours == null || ageHours < 0) return 'down';
+  return ageHours <= TIDES_MAX_AGE_HOURS ? 'ok' : 'stale';
 }
 
 /**
@@ -153,6 +168,36 @@ function loadCoastalWarningsLayerStatus(rootDir = path.join(__dirname, '..', '..
     if (typeof file.esHealth.error === 'string') es.error = file.esHealth.error;
     out.es = es;
   }
+  return out;
+}
+
+/**
+ * Carrega ih-tides.json e deriva o estado. Null quando o ficheiro falta
+ * (primeiro run antes do fetch) — nesse caso não se deve acumular streak.
+ * @param {string} [rootDir]
+ * @param {number} [nowMs]
+ * @returns {{ status: 'ok'|'down'|'stale', fetchedAt?: string,
+ *            stations: number, mappedSpots: number } | null}
+ */
+function loadTidesLayerStatus(rootDir = path.join(__dirname, '..', '..'), nowMs = Date.now()) {
+  let file;
+  try {
+    file = JSON.parse(fs.readFileSync(path.join(rootDir, 'public', 'data', 'ih-tides.json'), 'utf-8'));
+  } catch {
+    return null;
+  }
+  const out = {
+    status: deriveTidesLayerStatus(file, nowMs),
+    stations:
+      file.stations && typeof file.stations === 'object'
+        ? Object.keys(file.stations).length
+        : 0,
+    mappedSpots:
+      file.spotMapping && typeof file.spotMapping === 'object'
+        ? Object.keys(file.spotMapping).length
+        : 0,
+  };
+  if (typeof file.fetchedAt === 'string') out.fetchedAt = file.fetchedAt;
   return out;
 }
 
@@ -256,13 +301,16 @@ function evaluateDataLayerHealth(meta, opts = {}) {
   const warnings = [];
   const oks = [];
 
-  for (const { key, label } of LAYERS) {
+  for (const { key, label, warnOnly } of LAYERS) {
     const layer = meta?.[key] ?? {};
     const status = layer.status ?? null;
     const streak = Number.isFinite(Number(layer.streak)) ? Number(layer.streak) : 0;
     const suffix = layer.lastOkAt ? ` · última vez ok: ${layer.lastOkAt}` : '';
 
-    if (streak >= failAfter) {
+    // Camadas warnOnly (marés IH) NUNCA falham o job: um outage de marés IH
+    // não pode bloquear o Open-Meteo (decisão c16802b8). Avisam a partir do
+    // warnAfter e ficam por aí — a visibilidade é o chip do About + os logs.
+    if (streak >= failAfter && !warnOnly) {
       level = 'fail';
       failures.push(
         `::error::${label} em '${status}' há ${streak} runs seguidas (limiar de falha: ${failAfter}${suffix}). ` +
@@ -271,7 +319,9 @@ function evaluateDataLayerHealth(meta, opts = {}) {
     } else if (streak >= warnAfter) {
       if (level !== 'fail') level = 'warn';
       warnings.push(
-        `::warning::${label} em '${status}' há ${streak} runs seguidas (limiar de aviso: ${warnAfter} · de falha: ${failAfter}${suffix}). Continuando — falha automática a partir de ${failAfter} runs.`,
+        warnOnly
+          ? `::warning::${label} em '${status}' há ${streak} runs seguidas (limiar de aviso: ${warnAfter}${suffix}). Camada warn-only — nunca falha o job (outage IH não bloqueia o Open-Meteo); continua a avisar enquanto não recuperar.`
+          : `::warning::${label} em '${status}' há ${streak} runs seguidas (limiar de aviso: ${warnAfter} · de falha: ${failAfter}${suffix}). Continuando — falha automática a partir de ${failAfter} runs.`,
       );
     } else {
       oks.push(`✅ ${label}: '${status}' · streak down/stale: ${streak} (limiares ${warnAfter}/${failAfter}).`);
@@ -327,14 +377,17 @@ module.exports = {
   RADAR_MAX_AGE_MINUTES,
   WARNINGS_MAX_AGE_HOURS,
   COASTAL_MAX_AGE_HOURS,
+  TIDES_MAX_AGE_HOURS,
   DEFAULT_WARN_AFTER,
   DEFAULT_FAIL_AFTER,
   deriveRadarLayerStatus,
   deriveWarningsLayerStatus,
   deriveCoastalWarningsLayerStatus,
+  deriveTidesLayerStatus,
   loadRadarLayerStatus,
   loadWarningsLayerStatus,
   loadCoastalWarningsLayerStatus,
+  loadTidesLayerStatus,
   applyLayerStreak,
   applyCoastalEsStreak,
   buildCoastalWarningsLayer,

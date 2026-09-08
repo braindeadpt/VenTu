@@ -42,6 +42,7 @@ const {
   loadWarningsLayerStatus,
   buildCoastalWarningsLayer,
   applyLayerStreak,
+  loadTidesLayerStatus,
 } = require('./lib/dataLayerHealth.js');
 const { attachWaveSkill } = require('./lib/forecastSkill.js');
 const {
@@ -654,11 +655,13 @@ export async function mergeObservations() {
     'warningsLayer',
   );
   const coastalWarningsLayer = buildCoastalWarningsLayer(metaRoot, prevMeta);
+  const tideLayer = applyLayerStreak(loadTidesLayerStatus(metaRoot), prevMeta, 'tideLayer');
   writePipelineMeta('observations', new Date(), metaRoot, {
     buoyLayer,
     radarLayer,
     warningsLayer,
     coastalWarningsLayer,
+    tideLayer,
   });
   if (radarLayer) {
     console.log(
@@ -695,6 +698,16 @@ export async function mergeObservations() {
     );
   } else {
     console.log('🌊 Camada de boias: sem ih-buoys.json (primeiro run)');
+  }
+  if (tideLayer) {
+    console.log(
+      `🌊 Camada de marés IH: ${tideLayer.status} · ${tideLayer.stations ?? 0} estações, ` +
+        `${tideLayer.mappedSpots ?? 0} spots` +
+        `${tideLayer.fetchedAt ? ` · fetch ${tideLayer.fetchedAt}` : ''}` +
+        `${tideLayer.streak > 0 ? `, streak down/stale: ${tideLayer.streak} runs` : ''}`,
+    );
+  } else {
+    console.log('🌊 Camada de marés IH: sem ih-tides.json (primeiro run)');
   }
 
   // ── Auditoria por região: fonte anexada vs boia mais próxima ─────────────

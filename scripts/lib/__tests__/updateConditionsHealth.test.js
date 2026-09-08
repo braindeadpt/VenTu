@@ -24,8 +24,8 @@ describe('updateConditionsHealth', () => {
   it('assembles all layer states through their existing owners', () => {
     const calls = [];
     const layer = (name) => (...args) => { calls.push([name, ...args]); return name; };
-    const result = buildPipelineLayers({ metaRoot: 'root', previousMeta: { old: true }, loadBuoyLayerStatus: layer('loadBuoy'), applyBuoyLayerStreak: layer('buoy'), loadRadarLayerStatus: layer('loadRadar'), loadWarningsLayerStatus: layer('loadWarnings'), applyLayerStreak: layer('apply'), buildCoastalWarningsLayer: layer('coastal') });
-    expect(result).toEqual({ buoyLayer: 'buoy', radarLayer: 'apply', warningsLayer: 'apply', coastalWarningsLayer: 'coastal' });
-    expect(calls.map(([name]) => name)).toEqual(['loadBuoy', 'buoy', 'loadRadar', 'apply', 'loadWarnings', 'apply', 'coastal']);
+    const result = buildPipelineLayers({ metaRoot: 'root', previousMeta: { old: true }, loadBuoyLayerStatus: layer('loadBuoy'), applyBuoyLayerStreak: layer('buoy'), loadRadarLayerStatus: layer('loadRadar'), loadWarningsLayerStatus: layer('loadWarnings'), applyLayerStreak: layer('apply'), buildCoastalWarningsLayer: layer('coastal'), loadTidesLayerStatus: layer('loadTides') });
+    expect(result).toEqual({ buoyLayer: 'buoy', radarLayer: 'apply', warningsLayer: 'apply', coastalWarningsLayer: 'coastal', tideLayer: 'apply' });
+    expect(calls.map(([name]) => name)).toEqual(['loadBuoy', 'buoy', 'loadRadar', 'apply', 'loadWarnings', 'apply', 'coastal', 'loadTides', 'apply']);
   });
 });

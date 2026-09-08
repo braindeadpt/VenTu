@@ -6,13 +6,16 @@ import {
   deriveRadarLayerStatus,
   deriveWarningsLayerStatus,
   deriveCoastalWarningsLayerStatus,
+  deriveTidesLayerStatus,
   loadCoastalWarningsLayerStatus,
+  loadTidesLayerStatus,
   applyLayerStreak,
   applyCoastalEsStreak,
   evaluateDataLayerHealth,
   RADAR_MAX_AGE_MINUTES,
   WARNINGS_MAX_AGE_HOURS,
   COASTAL_MAX_AGE_HOURS,
+  TIDES_MAX_AGE_HOURS,
 } from '../dataLayerHealth.js';
 
 const NOW = Date.parse('2026-08-15T12:00:00Z');
@@ -91,6 +94,28 @@ describe('deriveCoastalWarningsLayerStatus', () => {
   });
 });
 
+describe('deriveTidesLayerStatus', () => {
+  it('ok com fetchedAt fresco (≤24h)', () => {
+    expect(deriveTidesLayerStatus({ fetchedAt: agoMin(60) }, NOW)).toBe('ok');
+  });
+
+  it('stale quando fetchedAt é velho mas existe (o caso dos 41 dias)', () => {
+    expect(
+      deriveTidesLayerStatus({ fetchedAt: '2026-07-29T11:20:29.532Z' }, NOW),
+    ).toBe('stale');
+  });
+
+  it('down sem ficheiro ou sem fetchedAt', () => {
+    expect(deriveTidesLayerStatus(null, NOW)).toBe('down');
+    expect(deriveTidesLayerStatus({}, NOW)).toBe('down');
+    expect(deriveTidesLayerStatus({ fetchedAt: 'nope' }, NOW)).toBe('down');
+  });
+
+  it('a janela é de 24 h', () => {
+    expect(TIDES_MAX_AGE_HOURS).toBe(24);
+  });
+});
+
 describe('loadCoastalWarningsLayerStatus (ficheiro real)', () => {
   it('lê ih-coastal-warnings.json → status + em vigor + cobertura + esHealth', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dlh-coastal-'));
@@ -132,6 +157,42 @@ describe('loadCoastalWarningsLayerStatus (ficheiro real)', () => {
   it('devolve null sem ficheiro (primeiro run)', () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dlh-coastal-null-'));
     expect(loadCoastalWarningsLayerStatus(dir, NOW)).toBeNull();
+  });
+});
+
+describe('loadTidesLayerStatus (ficheiro real)', () => {
+  it('lê ih-tides.json → status + fetchedAt + estações + spots', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dlh-tides-'));
+    fs.mkdirSync(path.join(dir, 'public', 'data'), { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'public', 'data', 'ih-tides.json'),
+      JSON.stringify({
+        fetchedAt: agoMin(10),
+        stations: { a: {}, b: {} },
+        spotMapping: { s1: {}, s2: {} },
+      }),
+    );
+    const layer = loadTidesLayerStatus(dir, NOW);
+    expect(layer.status).toBe('ok');
+    expect(layer.stations).toBe(2);
+    expect(layer.mappedSpots).toBe(2);
+    expect(layer.fetchedAt).toBe(agoMin(10));
+  });
+
+  it('stale quando fetchedAt é velho — o ficheiro que o pipeline reutiliza', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dlh-tides-stale-'));
+    fs.mkdirSync(path.join(dir, 'public', 'data'), { recursive: true });
+    fs.writeFileSync(
+      path.join(dir, 'public', 'data', 'ih-tides.json'),
+      JSON.stringify({ fetchedAt: '2026-07-29T11:20:29.532Z', stations: {}, spotMapping: {} }),
+    );
+    const layer = loadTidesLayerStatus(dir, NOW);
+    expect(layer.status).toBe('stale');
+  });
+
+  it('devolve null sem ficheiro (primeiro run)', () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'dlh-tides-null-'));
+    expect(loadTidesLayerStatus(dir, NOW)).toBeNull();
   });
 });
 
@@ -211,13 +272,13 @@ describe('evaluateDataLayerHealth (unificado)', () => {
     warningsLayer: { status: 'ok', streak: 0 },
   };
 
-  it('todas ok → level ok com três linhas ok', () => {
+  it('todas ok → level ok com linhas ok (inclui marés warnOnly)', () => {
     const r = evaluateDataLayerHealth(allOk);
     expect(r.level).toBe('ok');
-    expect(r.oks).toHaveLength(3);
+    expect(r.oks).toHaveLength(4);
     expect(r.failures).toHaveLength(0);
     expect(r.warnings).toHaveLength(0);
-    expect(r.layers.map((l) => l.key)).toEqual(['buoyLayer', 'radarLayer', 'warningsLayer']);
+    expect(r.layers.map((l) => l.key)).toEqual(['buoyLayer', 'radarLayer', 'warningsLayer', 'tideLayer']);
   });
 
   it('uma camada no limiar de aviso → level warn com ::warning:: isolada', () => {
@@ -228,7 +289,7 @@ describe('evaluateDataLayerHealth (unificado)', () => {
     expect(r.level).toBe('warn');
     expect(r.warnings).toHaveLength(1);
     expect(r.warnings[0]).toMatch(/^::warning::Radar IPMA em 'stale' há 4 runs/);
-    expect(r.oks).toHaveLength(2);
+    expect(r.oks).toHaveLength(3);
   });
 
   it('uma camada no limiar de falha → level fail com ::error:: (e a outra a avisar)', () => {
@@ -255,7 +316,35 @@ describe('evaluateDataLayerHealth (unificado)', () => {
   it('meta null/incompleto não rebenta (camadas vazias = ok)', () => {
     const r = evaluateDataLayerHealth(null);
     expect(r.level).toBe('ok');
-    expect(r.oks).toHaveLength(3);
+    expect(r.oks).toHaveLength(4);
+  });
+
+  it('marés warnOnly: stale com streak ≥ limiar de falha → ::warning:: e NUNCA level fail', () => {
+    const r = evaluateDataLayerHealth(
+      { ...allOk, tideLayer: { status: 'stale', streak: 7 } },
+      { warnAfter: 3, failAfter: 6 },
+    );
+    expect(r.level).toBe('warn');
+    expect(r.failures).toHaveLength(0);
+    expect(r.warnings.some((w) => w.startsWith('::warning::Marés IH'))).toBe(true);
+  });
+
+  it('marés warnOnly: stale mas streak < warnAfter → linha ✅ (ainda a contar)', () => {
+    const r = evaluateDataLayerHealth(
+      { ...allOk, tideLayer: { status: 'stale', streak: 1 } },
+      { warnAfter: 3, failAfter: 6 },
+    );
+    expect(r.level).toBe('ok');
+    expect(r.oks.some((o) => o.includes('Marés IH'))).toBe(true);
+  });
+
+  it('marés warnOnly: ok → linha ✅ normal, sem aviso', () => {
+    const r = evaluateDataLayerHealth(
+      { ...allOk, tideLayer: { status: 'ok', streak: 0 } },
+      { warnAfter: 3, failAfter: 6 },
+    );
+    expect(r.level).toBe('ok');
+    expect(r.warnings.some((w) => w.includes('Marés IH'))).toBe(false);
   });
 
   it('feed ES configurado com erros repetidos (≥ limiar) → ::warning::', () => {

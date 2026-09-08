@@ -21,6 +21,7 @@ const {
   loadWarningsLayerStatus,
   buildCoastalWarningsLayer,
   applyLayerStreak,
+  loadTidesLayerStatus,
 } = require('./lib/dataLayerHealth');
 const {
   HEALTH_FAMILIES,
@@ -230,8 +231,8 @@ async function updateConditions() {
   console.log(`\n📊 Open-Meteo usage (real): ${usage.weightedCalls} chamadas ponderadas (${usage.requests} pedidos HTTP, ${usage.retries} retries) · ${usage.spotsFetched} spots · ${weightedPerSpot} ponderadas/spot · ${dailyBudgetPct}% do orçamento diário (10k)`);
   const metaRoot = path.join(__dirname, '..');
   const prevMeta = readPipelineMeta(metaRoot);
-  const { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer } = buildPipelineLayers({ metaRoot, previousMeta: prevMeta, loadBuoyLayerStatus, applyBuoyLayerStreak, loadRadarLayerStatus, loadWarningsLayerStatus, applyLayerStreak, buildCoastalWarningsLayer });
-  writePipelineMeta('full', new Date(), metaRoot, { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, openMeteoUsage: { weightedCalls: usage.weightedCalls, requests: usage.requests, retries: usage.retries, spotsFetched: usage.spotsFetched, mode: useMultiModel ? 'day' : 'night', weightedPerSpot, waveModels: WAVE_MODELS.length, windModels: WIND_MODELS.length } });
+  const { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, tideLayer } = buildPipelineLayers({ metaRoot, previousMeta: prevMeta, loadBuoyLayerStatus, applyBuoyLayerStreak, loadRadarLayerStatus, loadWarningsLayerStatus, applyLayerStreak, buildCoastalWarningsLayer, loadTidesLayerStatus });
+  writePipelineMeta('full', new Date(), metaRoot, { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, tideLayer, openMeteoUsage: { weightedCalls: usage.weightedCalls, requests: usage.requests, retries: usage.retries, spotsFetched: usage.spotsFetched, mode: useMultiModel ? 'day' : 'night', weightedPerSpot, waveModels: WAVE_MODELS.length, windModels: WIND_MODELS.length } });
   if (buoyLayer) console.log(`🌊 Camada de boias: ${buoyLayer.status} (key ${buoyLayer.apiKeyConfigured ? '✓' : '✗'}, wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''}${buoyLayer.streak > 0 ? `, streak down/stale: ${buoyLayer.streak} runs` : ''})`);
   else console.log('🌊 Camada de boias: sem ih-buoys.json (primeiro run)');
   if (radarLayer) console.log(`📡 Camada de radar: ${radarLayer.status}${radarLayer.frameTime ? ` · frame ${radarLayer.frameTime}` : ''}${radarLayer.streak > 0 ? `, streak down/stale: ${radarLayer.streak} runs` : ''}`);
@@ -240,6 +241,8 @@ async function updateConditions() {
   else console.log('⚠️  Camada de avisos: sem warnings.json (primeiro run)');
   if (coastalWarningsLayer) console.log(`⚓ Camada de avisos costeiros: ${coastalWarningsLayer.status} · ${coastalWarningsLayer.activeWarnings ?? 0} avisos em vigor, ${coastalWarningsLayer.coveredSpots ?? 0} spots cobertos${coastalWarningsLayer.fetchedAt ? ` · fetch ${coastalWarningsLayer.fetchedAt}` : ''}${coastalWarningsLayer.streak > 0 ? `, streak down/stale: ${coastalWarningsLayer.streak} runs` : ''}`);
   else console.log('⚓ Camada de avisos costeiros: sem ih-coastal-warnings.json (primeiro run)');
+  if (tideLayer) console.log(`🌊 Camada de marés IH: ${tideLayer.status} · ${tideLayer.stations ?? 0} estações, ${tideLayer.mappedSpots ?? 0} spots${tideLayer.fetchedAt ? ` · fetch ${tideLayer.fetchedAt}` : ''}${tideLayer.streak > 0 ? `, streak down/stale: ${tideLayer.streak} runs` : ''}`);
+  else console.log('🌊 Camada de marés IH: sem ih-tides.json (primeiro run)');
 }
 
 if (require.main === module) {
