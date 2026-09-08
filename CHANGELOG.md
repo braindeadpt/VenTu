@@ -3,6 +3,19 @@
 Registo cronológico das alterações relevantes do VenTu. Novo no topo.
 Datas em `YYYY-MM-DD`; SHAs de 7 caracteres referem-se a `main`.
 
+## 2026-09-08 — Suite visual imune à deriva de dados (fixture commitada)
+
+As capturas de regressão visual deixaram de depender dos dados do dia.
+`a9af30a82` faz `gotoStable` servir **todos** os pedidos `/data/**` a partir de
+uma fixture commitada em `tests/e2e/fixtures/data` (via `ventu_live=1`, o mesmo
+mecanismo dos specs herméticos — as páginas com bake desde `847350f9c` nunca
+faziam fetch e ignoravam o interceptor), bloqueia o service worker (que servia
+`/data/*` do próprio cache, contornando o `page.route`) e espera o layout assentar
+antes da captura. Provado com duas builds de dados genuinamente diferentes:
+60/60 capturas byte-idênticas. Baselines Linux re-gravadas contra a fixture pelo
+workflow `record-visual-baselines` (`0901ea4f2`); re-sincronização da fixture só
+quando a FORMA dos dados mudar: `scripts/sync-visual-fixture.mjs`.
+
 ## 2026-09-07 — Mapa: teardown à prova de corridas + gramática única de proveniência
 
 ### Correcções e estabilidade do mapa (cadeia `8326a7bd0` → `8b5556e28`)
