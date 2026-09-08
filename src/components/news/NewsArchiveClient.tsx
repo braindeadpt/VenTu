@@ -22,6 +22,8 @@ import NewsListGrouped from './NewsListGrouped';
 import NewsPagination from './NewsPagination';
 import EventCard from '@/components/events/EventCard';
 import { Newspaper, Search, CalendarDays } from 'lucide-react';
+import EmptyState from '@/components/ui/EmptyState';
+import Button from '@/components/ui/Button';
 
 interface NewsArchiveClientProps {
   news: NewsItem[];
@@ -228,31 +230,22 @@ export default function NewsArchiveClient({
       {/* News content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {pageItems.length === 0 ? (
-          <div className="text-center py-16 space-y-4">
-            <Search className="w-16 h-16 text-fg-subtle mx-auto" />
-            <p className="text-fg-subtle text-lg">
-              {isPt
-                ? debouncedQuery
-                  ? `Nenhuma notícia encontrada para "${debouncedQuery}"`
-                  : 'Nenhuma notícia com este filtro.'
-                : debouncedQuery
-                  ? `No news found for "${debouncedQuery}"`
-                  : 'No news matching these filters.'}
-            </p>
-            <p className="text-fg-subtle/80 text-sm">
-              {isPt
-                ? 'Tenta remover filtros ou alargar o período.'
-                : 'Try removing filters or expanding the time period.'}
-            </p>
-            {(category !== 'all' || region !== 'all' || period !== 'all' || debouncedQuery) && (
-              <button
-                onClick={handleClear}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-2/[0.08] border border-divider text-sm text-fg hover:bg-surface-3/[0.12] transition-colors"
-              >
-                {isPt ? 'Limpar todos os filtros' : 'Clear all filters'}
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={<Search className="w-7 h-7 text-fg-subtle" aria-hidden />}
+            title={
+              debouncedQuery
+                ? t.news.emptyFilterQuery.replace('{query}', debouncedQuery)
+                : t.news.emptyFilterTitle
+            }
+            description={t.news.emptyFilterHint}
+            action={
+              category !== 'all' || region !== 'all' || period !== 'all' || debouncedQuery ? (
+                <Button variant="secondary" size="md" onClick={handleClear}>
+                  {t.news.emptyClearFilters}
+                </Button>
+              ) : undefined
+            }
+          />
         ) : (
           <NewsListGrouped groups={groups} locale={locale} />
         )}

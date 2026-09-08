@@ -272,6 +272,14 @@ export const translationsDe = {
     eventsHeading: 'Kommende Events',
     eventRegister: 'Anmeldung',
     eventFree: 'Freier Eintritt',
+    emptyTitle: 'Noch keine News',
+    emptyDescription:
+      'Der Feed ist gerade leer. News werden automatisch per RSS aktualisiert — schau später nochmal vorbei.',
+    emptyFilterTitle: 'Keine News mit diesem Filter',
+    emptyFilterQuery: 'Keine News gefunden für „{query}“',
+    emptyFilterHint: 'Filter entfernen oder den Zeitraum erweitern.',
+    emptyClearFilters: 'Alle Filter löschen',
+    emptyBrowseSpots: 'Spots ansehen',
   },
   megaMenu: {
     modalidadesTitle: 'Disziplinen',

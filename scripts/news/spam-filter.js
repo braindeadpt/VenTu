@@ -25,6 +25,9 @@ const BLACKLIST = [
   'exclusive offer',
   'coupon',
   'save big',
+  // Narrow EN shoppy CTAs (BR "Confira" is normalised to PT-PT, not discarded)
+  'shop the new',
+  'buy the new',
 ];
 
 /**

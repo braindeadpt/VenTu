@@ -37,6 +37,7 @@
     "test:prod-check": "node scripts/prod-manual-check.js",
     "audit:install": "playwright install chromium",
     "news:generate": "node scripts/update-news.js",
+    "news:normalize": "node scripts/news/normalize-existing.js",
     "news:probe-feeds": "node scripts/news/probe-feeds.js",
     "conditions:update": "node scripts/update-conditions.js",
     "models:health": "node scripts/check-model-health.js",

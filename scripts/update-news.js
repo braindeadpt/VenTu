@@ -15,6 +15,7 @@ const { fetchAllFeeds } = require('./news/fetch-rss');
 const { detectEvents } = require('./news/detect-events');
 const { inferCategoryFromText, hasSpecificCategory } = require('./news/category-keywords');
 const { categoriseItem, ensureBilingual, synthesiseEvent } = require('./news/llm-tasks');
+const { normalizeNewsItem } = require('./news/normalize-pt-pt');
 const { mergeAndPersist, loadExisting } = require('./news/merge-persist');
 const { callLLM } = require('./llm-fallback');
 
@@ -81,6 +82,9 @@ async function updateNews() {
     } catch (e) {
       // Keep original if translation fails
     }
+
+    // Deterministic PT-PT cleanup (BR/MT artifacts, WP footers)
+    normalizeNewsItem(item);
 
     categorisedRss.push(item);
   }

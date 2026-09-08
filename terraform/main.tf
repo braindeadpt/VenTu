@@ -195,4 +195,26 @@ resource "cloudflare_ruleset" "ventu_cache_rules" {
     description = "C3: /sw.js — bypass edge cache (o SW protege-se no cliente)"
     enabled     = true
   }
+
+  # ── C4: /sitemap*.xml — cacheáveis, TTL curto (index + filhos) ──
+  # Origem GitHub Pages: max-age=600. Explicitar no edge evita 500s de
+  # objectos grandes stale e alinha com public/_headers. Após split
+  # (sitemap index + sitemap-*.xml) cada ficheiro fica bem abaixo do
+  # monolito antigo (~1.7MB).
+  rules {
+    action = "set_cache_settings"
+    action_parameters {
+      cache = true
+      edge_ttl {
+        mode    = "override_origin"
+        default = 600 # 10 minutos — alinhado com o origin GH Pages
+      }
+      browser_ttl {
+        mode = "respect_origin"
+      }
+    }
+    expression  = "(ends_with(http.request.uri.path, \".xml\") and starts_with(http.request.uri.path, \"/sitemap\"))"
+    description = "C4: /sitemap*.xml — edge TTL 10min (index + children)"
+    enabled     = true
+  }
 }

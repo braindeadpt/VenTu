@@ -102,7 +102,13 @@ async function fetchFeed(feed) {
     while ((match = itemRegex.exec(xml)) !== null) {
       const raw = match[0];
       const title = extractField(raw, 'title');
-      const description = extractField(raw, 'description').replace(/\s*The\s+post\s+.*?appeared\s+first\s+on\s+.*?\.\s*/gi, '').trim();
+      // Strip EN + PT WordPress "appeared first" footers before translate
+      const description = extractField(raw, 'description')
+        .replace(
+          /\s*(?:The\s+post|The\s+article|O\s+post|O\s+artigo|A\s+publica[cç][aã]o)\s+[\s\S]{0,200}?(?:appeared\s+first\s+on|apareceu\s+pela\s+primeira\s+vez\s+(?:no|em|na)|apareceu\s+primeiro\s+(?:no|em|na))\s+[^.]*\.?\s*/gi,
+          '',
+        )
+        .trim();
       const link = extractField(raw, 'link');
       const pubDate = extractField(raw, 'pubDate');
 

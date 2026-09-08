@@ -272,6 +272,14 @@ export const translationsFr = {
     eventsHeading: 'Événements à venir',
     eventRegister: 'Inscriptions',
     eventFree: 'Entrée gratuite',
+    emptyTitle: 'Pas encore d’actus',
+    emptyDescription:
+      'Le fil est vide pour le moment. Les actus se mettent à jour automatiquement via RSS — reviens plus tard.',
+    emptyFilterTitle: 'Aucune actu avec ce filtre',
+    emptyFilterQuery: 'Aucune actu trouvée pour « {query} »',
+    emptyFilterHint: 'Essaie de retirer des filtres ou d’élargir la période.',
+    emptyClearFilters: 'Effacer tous les filtres',
+    emptyBrowseSpots: 'Voir les spots',
   },
   megaMenu: {
     modalidadesTitle: 'Disciplines',

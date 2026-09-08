@@ -8,6 +8,7 @@
 const path = require('path');
 const fs = require('fs');
 const { isSafeImageUrl } = require('../lib/safeUrl');
+const { normalizeNewsItem } = require('./normalize-pt-pt');
 
 const NEWS_PATH = path.join(__dirname, '../../public/data/news.json');
 const MAX_ITEMS = 100;
@@ -114,8 +115,10 @@ function mergeNews(newItems) {
   const afterTTL = applyTTL(existing);
   console.log(`   → After TTL (${TTL_DAYS}d): ${afterTTL.length} items`);
 
-  const combined = [...newItems, ...afterTTL].map(sanitizeItemImage);
-  console.log(`   → Combined: ${combined.length} items`);
+  const combined = [...newItems, ...afterTTL]
+    .map(sanitizeItemImage)
+    .map(normalizeNewsItem);
+  console.log(`   → Combined + PT-PT normalise: ${combined.length} items`);
 
   const deduped = deduplicate(combined);
   console.log(`   → After dedup: ${deduped.length} items`);

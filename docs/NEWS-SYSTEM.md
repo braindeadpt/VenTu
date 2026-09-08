@@ -66,12 +66,16 @@ Fallback chain: Gemini → Groq → Cerebras. Each task has a strict prompt with
 Accumulates over time (no longer overwrite):
 1. Load existing `news.json`
 2. TTL: remove items > 7 days old
-3. Dedup: by URL (for RSS) or title+sourceType (for data/LLM)
-4. Merge new items
-5. Sort by `publishedAt` descending
-6. Cap at 100 items
-7. Write
+3. **PT-PT normalise** (`scripts/news/normalize-pt-pt.js`) on every item (new + existing) — strips WP footers, BR/MT artifacts (`Confira`→`Descobre`, `DESENGANCADO`→`UNHOOKED`), trailing hashtags
+4. Dedup: by URL (for RSS) or title+sourceType (for data/LLM)
+5. Merge new items
+6. Sort by `publishedAt` descending
+7. Cap at 100 items
+8. Write
 
+**One-shot backfill** (no LLM / no RSS): `npm run news:normalize` → `node scripts/news/normalize-existing.js`
+
+The normaliser also runs in Etapa 3 right after `ensureBilingual`, and the LLM translate prompt forbids BR CTAs / “desengancado” calques.
 ## Postura X — Proportional Honesty
 
 - Feed mirrors real market: ~60% surf, ~15% kite, ~10% big wave, ~15% others

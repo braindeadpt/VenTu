@@ -45,3 +45,12 @@
 # Service Worker must not be cached long
 /sw.js
   Cache-Control: public, max-age=0, must-revalidate
+
+# Sitemaps — cacheable, short TTL (index + children after sitemap split)
+# GitHub Pages origin already sends max-age=600; this documents intent for
+# Netlify/CF Pages. Cloudflare edge: Cache Rule C4 in terraform/ + docs.
+/sitemap.xml
+  Cache-Control: public, max-age=600, stale-while-revalidate=3600
+
+/sitemap-*.xml
+  Cache-Control: public, max-age=600, stale-while-revalidate=3600

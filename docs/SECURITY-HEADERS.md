@@ -80,7 +80,7 @@ Espelhar `public/_headers`. **Ordem importa** (regras correm por ordem; a últim
 
 As regras de `Cache-Control` do `public/_headers` (`/_next/static/*` immutable, `/data/*` SWR) **não podem ser replicadas via Transform Rules**: a doc oficial da Cloudflare diz que modificar `cache-control` em response header transform rules **não muda o cache edge** (a Cloudflare avalia o caching antes de aplicar as modificações de resposta). Para cache real no CDN usa-se **Cache Rules** (Rules → Cache Rules).
 
-**Limites do plano free (confirmados na doc oficial):** máx. **10 Cache Rules** ativas (este plano usa 3) e ficheiro cacheável máx. **512 MB** (irrelevante para HTML/JSON).
+**Limites do plano free (confirmados na doc oficial):** máx. **10 Cache Rules** ativas (este plano usa **4**: C1–C4) e ficheiro cacheável máx. **512 MB** (irrelevante para HTML/JSON).
 
 **Regra C1 — `/_next/static/*` (imutável, 1 ano):**
 
@@ -104,10 +104,66 @@ As regras de `Cache-Control` do `public/_headers` (`/_next/static/*` immutable, 
 - Cache status: **Bypass cache** (o Cloudflare nem lê nem escreve no cache edge)
 - Browser TTL: o origin envia `max-age=600`; se quiseres forçar revalidação no browser, seta `Cache-Control: public, max-age=0, must-revalidate` via uma Transform Rule adicional (browser-facing — permitido) ou usa `updateViaCache: 'none'` no registo do SW. Hoje o SW do site já protege o próprio ficheiro no cliente.
 
+**Regra C4 — `/sitemap*.xml` (index + filhos, 10 min):**
+
+- **Expression:** `(ends_with(http.request.uri.path, ".xml") and starts_with(http.request.uri.path, "/sitemap"))`
+- Cache status: **Eligible for cache**
+- Edge TTL: **Override origin → 600 seconds** (igual ao `max-age=600` do GitHub Pages / `public/_headers`)
+- Serve stale content: **While updating**
+- Browser TTL: **Respect origin headers**
+- Cobre `sitemap.xml` (index ou monolito) e `sitemap-static.xml`, `sitemap-spots.xml`, etc. após o split.
+
 **Notas:**
 - O GitHub Pages já serve `Cache-Control: max-age=600` em tudo → a Cloudflare cacheia por defeito 600s; as Cache Rules **estendem/ajustam** esse comportamento (origin offload real para os assets imutáveis e frescura controlada para os dados).
 - O service worker do site continua a ser a camada principal de cache no cliente (cache-first, TTL ~2.5h nos dados); as Cache Rules atuam no CDN + browsers sem SW.
 - Versionável por Terraform (fase `http_request_cache_settings` do `cloudflare_ruleset` — o schema é `edge_ttl.mode=override_origin` + `default`, `browser_ttl.mode=respect_origin`, `cache=true/false`; `serve_stale` omitido = "While updating") se quiseres manter tudo em infra-as-code — ver [`terraform/README.md`](../terraform/README.md).
+
+### 3.4 Sitemap CDN — checklist operacional (GitHub Pages + Cloudflare proxy)
+
+Hosting: **GitHub Pages origin** + Cloudflare DNS proxy (não Cloudflare Pages). O ficheiro `public/_headers` é ignorado no GH Pages; a Cache Rule **C4** (acima / Terraform) é a fonte de verdade no edge.
+
+**Depois de um deploy que mexe em sitemaps (split index, news update, etc.):**
+
+1. **Verificar o index** (deve ser pequeno, XML `sitemapindex` ou `urlset`):
+   ```bash
+   curl -sI https://ventu.surf/sitemap.xml | grep -iE 'HTTP/|content-type|cf-cache|content-length'
+   curl -s https://ventu.surf/sitemap.xml | head -20
+   ```
+   Esperado: `200`, `content-type` com `xml`, corpo com `<sitemapindex>` (após split) ou `<urlset>`.
+
+2. **Verificar cada filho** (após split — omitir se ainda monolito):
+   ```bash
+   for f in static explorar spots news directory; do
+     echo "=== sitemap-$f.xml ==="
+     curl -sI "https://ventu.surf/sitemap-$f.xml" | grep -iE 'HTTP/|content-type|cf-cache|content-length'
+     curl -s "https://ventu.surf/sitemap-$f.xml" | head -5
+   done
+   ```
+   Esperado: `200`, XML `<urlset>`, tamanho bem abaixo do antigo monolito (~1.7 MB). Se algum devolver `500` no edge mas `200` no origin (`curl -sI https://braindeadpt.github.io/...` ou via GH Pages raw), fazer purge (passo 3).
+
+3. **Purge no dashboard Cloudflare** (quando edge 500 / XML stale / WAF a bloquear):
+   - **Caching → Configuration → Purge Cache → Custom Purge**
+   - URLs exactas:
+     - `https://ventu.surf/sitemap.xml`
+     - `https://ventu.surf/sitemap-static.xml`
+     - `https://ventu.surf/sitemap-explorar.xml`
+     - `https://ventu.surf/sitemap-spots.xml`
+     - `https://ventu.surf/sitemap-news.xml`
+     - `https://ventu.surf/sitemap-directory.xml`
+   - Ou espera ~10 min (TTL C4 / origin `max-age=600`).
+
+4. **WAF / Bot Fight** — se XML der `403`/`1020`:
+   - **Security → WAF → Custom rules / Tools** — confirmar que não há regra a bloquear `*.xml` ou User-Agent de crawlers (`Googlebot`, `bingbot`).
+   - **Security → Bots** — se *Bot Fight Mode* estiver a interferir com crawlers de sitemap, adicionar excepção para `/sitemap*.xml` (Managed Challenge off / Skip para esses paths).
+
+5. **Cache Rule C4 no painel** (se Terraform ainda não foi aplicado nesta zona):
+   - **Rules → Cache Rules → Create rule**
+   - Name: `C4 sitemap*.xml`
+   - When: `(ends_with(http.request.uri.path, ".xml") and starts_with(http.request.uri.path, "/sitemap"))`
+   - Then: Eligible for cache · Edge TTL Override origin → 600 seconds · Browser TTL Respect origin
+   - Ordem: depois de C1–C3 (não overlapping).
+
+6. **robots.txt** continua a apontar só para `https://ventu.surf/sitemap.xml` (o index). Crawlers devem seguir o index, não bookmarks antigos do monolito.
 
 ## 4. Validação
 
@@ -133,19 +189,21 @@ curl -sI https://ventu.surf/embed/spot/moledo/ | grep -iE "x-frame|frame-ancesto
 # ACAO:* removido:
 curl -sI https://ventu.surf/pt/ | grep -i "access-control" || echo "ACAO removido ✓"
 
-# Cache edge (Cache Rules C1/C2/C3) — warm-up (1.º GET) + verificação:
+# Cache edge (Cache Rules C1/C2/C3/C4) — warm-up (1.º GET) + verificação:
 curl -s -o /dev/null https://ventu.surf/_next/static/<asset>.js   # popula o edge
 curl -s -D - -o /dev/null https://ventu.surf/_next/static/<asset>.js | grep -i cf-cache-status  # → HIT
 curl -s -o /dev/null https://ventu.surf/data/news.json
 curl -s -D - -o /dev/null https://ventu.surf/data/news.json | grep -i cf-cache-status             # → HIT
 curl -s -D - -o /dev/null https://ventu.surf/sw.js | grep -i cf-cache-status                     # → DYNAMIC (bypass)
+curl -s -o /dev/null https://ventu.surf/sitemap.xml
+curl -s -D - -o /dev/null https://ventu.surf/sitemap.xml | grep -i cf-cache-status               # → HIT (C4)
 ```
 
 ### 4.1 Guard automático no CI (depois do deploy)
 
-O `deploy.yml` tem um job `security-headers` que corre o verificador contra a produção **depois de cada deploy** e falha o run se algum header estiver ausente, se o `Access-Control-Allow-Origin: *` voltar, ou se o cache edge não bater (`cf-cache-status` sem HIT/DYNAMIC esperado nas 3 Cache Rules). Está **desativado por omissão** — o checker falha de propósito contra o GitHub Pages puro, por isso só deve ser ativado depois de o proxy estar aplicado:
+O `deploy.yml` tem um job `security-headers` que corre o verificador contra a produção **depois de cada deploy** e falha o run se algum header estiver ausente, se o `Access-Control-Allow-Origin: *` voltar, ou se o cache edge não bater (`cf-cache-status` sem HIT/DYNAMIC esperado nas Cache Rules). Está **desativado por omissão** — o checker falha de propósito contra o GitHub Pages puro, por isso só deve ser ativado depois de o proxy estar aplicado:
 
-1. Aplicar as Fases 1–5 (DNS proxied + SSL/TLS Full strict + as 2 Transform Rules + as 3 Cache Rules C1/C2/C3).
+1. Aplicar as Fases 1–5 (DNS proxied + SSL/TLS Full strict + as 2 Transform Rules + as Cache Rules C1–C4).
 2. No GitHub: **Settings → Secrets and variables → Actions → Variables** → criar a repo variable `S7_PROXY_ENABLED` com valor `true`.
 3. No próximo deploy, o job corre; se os headers regredirem (proxy removido, regras desligadas, ordem trocada), o run falha com `::error::` e fica assinalado.
 

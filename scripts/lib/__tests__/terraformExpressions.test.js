@@ -26,9 +26,9 @@ const SECURITY_HEADERS_MD = path.resolve(
 // sintaxe que o Cloudflare Ruleset Engine rejeite no apply (parêntesis,
 // strings, funções, operadores infix, sets, subscripts).
 describe('terraform WAF expressions (ruleset engine syntax)', () => {
-  it('valida as 5 expressões reais do terraform/main.tf', () => {
+  it('valida as 6 expressões reais do terraform/main.tf', () => {
     const result = validateTerraformFile(MAIN_TF);
-    expect(result.count).toBe(5);
+    expect(result.count).toBe(6);
     expect(result.ok).toBe(true);
     expect(result.problems).toEqual([]);
   });
@@ -97,9 +97,9 @@ resource "x" {
 });
 
 describe('SECURITY-HEADERS.md WAF expressions (equivalências curl/painel)', () => {
-  it('valida as 5 expressões reais do docs/SECURITY-HEADERS.md', () => {
+  it('valida as 6 expressões reais do docs/SECURITY-HEADERS.md', () => {
     const result = validateMarkdownFile(SECURITY_HEADERS_MD);
-    expect(result.count).toBe(5);
+    expect(result.count).toBe(6);
     expect(result.ok).toBe(true);
     expect(result.problems).toEqual([]);
   });
@@ -139,8 +139,8 @@ describe('drift terraform/ ↔ SECURITY-HEADERS.md', () => {
   it('não há drift entre o main.tf e o doc', () => {
     const tf = extractExpressions(require('fs').readFileSync(MAIN_TF, 'utf8'));
     const doc = extractMarkdownExpressions(require('fs').readFileSync(SECURITY_HEADERS_MD, 'utf8'));
-    expect(tf).toHaveLength(5);
-    expect(doc).toHaveLength(5);
+    expect(tf).toHaveLength(6);
+    expect(doc).toHaveLength(6);
     expect(checkExpressionDrift(tf, doc)).toEqual([]);
   });
 

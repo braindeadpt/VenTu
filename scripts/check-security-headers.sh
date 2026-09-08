@@ -4,7 +4,7 @@
 #
 # Runs the curl checks from docs/SECURITY-HEADERS.md against the live site.
 # Intended to be run AFTER the Cloudflare proxy + Transform Rules + Cache Rules
-# are applied (DNS proxied + 2 transform rules + 3 cache rules C1/C2/C3);
+# are applied (DNS proxied + 2 transform rules + 4 cache rules C1–C4);
 # against raw GitHub Pages it will (correctly) fail every header/cache check
 # — that is the pre-implementation state.
 #
@@ -72,10 +72,10 @@ else
   echo "  ok: sem X-Frame-Options em /embed/*"
 fi
 
-# ── Cache edge (Cache Rules C1/C2/C3 — docs/SECURITY-HEADERS.md §3.3) ──
+# ── Cache edge (Cache Rules C1–C4 — docs/SECURITY-HEADERS.md §3.3) ──
 # Warm-up (1.º GET popula o edge) + 2.º GET a verificar o cf-cache-status.
 # Sem cf-cache-status = proxy Cloudflare não aplicado (estado pré-S7).
-echo "==> $BASE — cache edge (C1/C2/C3)"
+echo "==> $BASE — cache edge (C1/C2/C3/C4)"
 
 cf_cache_status() { # url → cf-cache-status (ou vazio)
   curl -s -D - -o /dev/null "$1" 2>/dev/null | tr -d '\r' | grep -i "^cf-cache-status:" | head -1 | awk '{print $2}'
@@ -114,6 +114,8 @@ check_cache_rule "C2 /data/news.json — HIT" "${BASE}/data/news.json" "HIT"
 # C3 — /sw.js (bypass edge): DYNAMIC ou sem header; HIT/MISS = regra não aplicada
 check_cache_rule "C3 /sw.js — DYNAMIC (bypass)" "${BASE}/sw.js" "DYNAMIC" 1
 
+# C4 — /sitemap*.xml (TTL 10 min)
+check_cache_rule "C4 /sitemap.xml — HIT" "${BASE}/sitemap.xml" "HIT"
 if [ "$fail" -eq 0 ]; then
   echo "OK — headers S7 + cache edge conforme docs/SECURITY-HEADERS.md"
 else

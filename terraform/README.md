@@ -1,13 +1,13 @@
 # Terraform — S7 HTTP security headers + Cache Rules (Cloudflare Ruleset)
 
 Versão **versionável** (infra-as-code) das 2 Transform Rules do
-[`docs/SECURITY-HEADERS.md`](../docs/SECURITY-HEADERS.md) §3.2 **e** das 3
-Cache Rules C1/C2/C3 do §3.3 — alternativa ao painel do Cloudflare para o
+[`docs/SECURITY-HEADERS.md`](../docs/SECURITY-HEADERS.md) §3.2 **e** das 4
+Cache Rules C1–C4 do §3.3 — alternativa ao painel do Cloudflare para o
 mesmo resultado.
 
 | Ficheiro | O que é |
 |---|---|
-| `main.tf` | 2 `cloudflare_ruleset`: `ventu_security_headers` (fase `http_response_headers_transform`, 2 regras: catch-all + `/embed/*`) e `ventu_cache_rules` (fase `http_request_cache_settings`, 3 regras: C1 `/_next/static/*` 1y, C2 `/data/*` 5min, C3 `/sw.js` bypass) |
+| `main.tf` | 2 `cloudflare_ruleset`: `ventu_security_headers` (fase `http_response_headers_transform`, 2 regras: catch-all + `/embed/*`) e `ventu_cache_rules` (fase `http_request_cache_settings`, 4 regras: C1 `/_next/static/*` 1y, C2 `/data/*` 5min, C3 `/sw.js` bypass, C4 `/sitemap*.xml` 10min) |
 | `variables.tf` | Inputs: token, zona, e os dois CSPs (defaults = SECURITY-HEADERS.md; ⚠️ manter em sincronia com `CSPMeta.tsx`) |
 | `terraform.tfvars.example` | Template de configuração local (gitignored) |
 
@@ -115,6 +115,7 @@ O checker valida as 2 frentes — headers S7 e cache edge:
 | C1 `/_next/static/*` (asset real extraído do HTML) | `cf-cache-status: HIT` |
 | C2 `/data/news.json` | `cf-cache-status: HIT` |
 | C3 `/sw.js` | `cf-cache-status: DYNAMIC` (bypass) |
+| C4 `/sitemap.xml` | `cf-cache-status: HIT` |
 
 Qualquer FAIL = rever `docs/SECURITY-HEADERS.md` (proxy não aplicado? regra
 errada?). Equivalências curl manuais: `docs/SECURITY-HEADERS.md` §4.

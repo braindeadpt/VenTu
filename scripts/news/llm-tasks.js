@@ -53,10 +53,18 @@ Responde APENAS com a categoria, sem mais texto.`;
 async function translateText(text, targetLang) {
   if (!text || text.trim().length < 5) return text;
 
-  const langName = targetLang === 'pt' ? 'português europeu' : 'English';
+  const langName = targetLang === 'pt' ? 'português europeu (Portugal)' : 'English';
+  const ptHints =
+    targetLang === 'pt'
+      ? `
+Regras PT-PT: nunca uses "Confira", "você", "vocês" nem calques BR.
+Mantém jargão de kite/surf em inglês quando for termo técnico (ex.: unhooked, backroll, freestyle).
+Não traduzas "unhooked" para "desengancado".
+Não copies rodapés WordPress ("The post … appeared first on …" / "O post … apareceu pela primeira vez …").`
+      : '';
   const prompt = `Traduz para ${langName} este texto sobre desportos náuticos.
 Mantém nomes próprios, locais e termos técnicos.
-Tom factual, sem floreados.
+Tom factual, sem floreados.${ptHints}
 
 Texto: ${text.substring(0, 500)}
 
