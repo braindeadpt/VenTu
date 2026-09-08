@@ -279,7 +279,7 @@ export const translationsEs = {
     emptyFilterQuery: 'Ninguna noticia encontrada para “{query}”',
     emptyFilterHint: 'Prueba a quitar filtros o ampliar el periodo.',
     emptyClearFilters: 'Limpiar todos los filtros',
-    emptyBrowseSpots: 'Ver spots',
+    emptyBrowseSpots: 'Explorar spots',
   },
   megaMenu: {
     modalidadesTitle: 'Modalidades',
