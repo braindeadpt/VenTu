@@ -227,8 +227,11 @@ export default function ForecastTable({
     return hourly.slice(startIndex, startIndex + visibleCount);
   }, [hourly, startTime, visibleCount]);
 
-  /* ── current hour ref ── */
-  const now = useMemo(() => new Date(), []);
+  /* ── current hour ref (client-only after mount — bake/hydrate clocks diverge) ── */
+  const [now, setNow] = useState<Date | null>(null);
+  useEffect(() => {
+    setNow(new Date());
+  }, []);
 
   /* ── hover column state ── */
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
@@ -237,8 +240,9 @@ export default function ForecastTable({
   const scrollRef = useRef<HTMLDivElement>(null);
   const labelWidthPx = compact ? 72 : 96;
 
-  /* ── find current hour index ── */
+  /* ── find current hour index (null clock → no “now” chrome on SSR/hydration) ── */
   const currentHourIndex = useMemo(() => {
+    if (!now) return -1;
     return visible.findIndex((h) => isCurrentHour(h.time, now));
   }, [visible, now]);
 
@@ -269,14 +273,27 @@ export default function ForecastTable({
   const dayGroups = useMemo(() => {
     const groups: { day: string; dayLabel: string; startIndex: number }[] = [];
     let currentDay = '';
+    // Pin Lisbon TZ + BCP47 tags so Node SSR and Chromium hydrate the same
+    // weekday strings (bare `locale` + host TZ caused React #418 text diffs).
+    const dateLocale =
+      locale === 'pt' ? 'pt-PT' : locale === 'en' ? 'en-GB' : locale;
     visible.forEach((h, i) => {
       const d = new Date(h.time);
-      const dayKey = d.toDateString();
+      const dayKey = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Lisbon',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      }).format(d);
       if (dayKey !== currentDay) {
         currentDay = dayKey;
         groups.push({
           day: dayKey,
-          dayLabel: d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' }),
+          dayLabel: d.toLocaleDateString(dateLocale, {
+            weekday: 'short',
+            day: 'numeric',
+            timeZone: 'Europe/Lisbon',
+          }),
           startIndex: i,
         });
       }
@@ -381,8 +398,9 @@ export default function ForecastTable({
 
   return (
     <div className="space-y-2">
-      {/* Current time indicator */}
-{currentHourIndex >= 0 && (
+      {/* “Current time” only after mount so bake vs hydrate clocks cannot flip
+          the label (React #418 text). */}
+      {now && currentHourIndex >= 0 && (
         <div className="flex items-center gap-2 text-meta text-fg-muted px-1">
           <span className="w-2 h-2 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
           <span>{t.currentTime} — {t.scrollForMore}</span>
@@ -454,9 +472,19 @@ export default function ForecastTable({
                 </div>
               </th>
               {visible.map((h, i) => {
-                const current = isCurrentHour(h.time, now);
+                const current = now ? isCurrentHour(h.time, now) : false;
                 const d = new Date(h.time);
-                const isNewDay = i === 0 || d.toDateString() !== new Date(visible[i - 1].time).toDateString();
+                const dateLocale =
+                  locale === 'pt' ? 'pt-PT' : locale === 'en' ? 'en-GB' : locale;
+                const lisbonDay = (iso: string) =>
+                  new Intl.DateTimeFormat('en-CA', {
+                    timeZone: 'Europe/Lisbon',
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                  }).format(new Date(iso));
+                const isNewDay =
+                  i === 0 || lisbonDay(h.time) !== lisbonDay(visible[i - 1].time);
                 return (
                   <th
                     key={i}
@@ -473,7 +501,11 @@ export default function ForecastTable({
                     <div className="flex flex-col items-center">
                       {isNewDay && !compact && (
                         <span className="text-[9px] md:text-[10px] font-semibold text-fg-subtle leading-none mb-0.5">
-                          {d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}
+                          {d.toLocaleDateString(dateLocale, {
+                            weekday: 'short',
+                            day: 'numeric',
+                            timeZone: 'Europe/Lisbon',
+                          })}
                         </span>
                       )}
                       <span className={compact ? 'text-[10px]' : ''}>{parseHourLabel(h.time)}</span>
