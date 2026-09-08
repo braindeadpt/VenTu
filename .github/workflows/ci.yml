@@ -176,6 +176,10 @@ jobs:
       # Perf≥50) AND audit-level Core Web Vitals budgets (FCP≤900ms, LCP≤3.5s,
       # SI≤3.2s, TBT≤250ms, ≤2MB page weight) — calibrated from measured runs,
       # evaluated in scripts/lib/lighthouseBudgets.js (unit-tested, pure).
+      # Each route is measured 3× and budgets are evaluated on the MEDIAN
+      # report (scripts/run-lighthouse-prod.js): one contention spike on the
+      # shared 2-core runner no longer fails the build, while a genuine
+      # regression breaches the majority of runs and still fails the median.
       # Correctness gates (unit, lint, E2E, pixel) run BEFORE this perf gate —
       # a slow-but-correct app ships behind a fast-but-broken one.
       - name: Lighthouse budgets (perf, a11y, SEO, CWV)

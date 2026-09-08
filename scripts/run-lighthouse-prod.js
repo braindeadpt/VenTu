@@ -6,7 +6,7 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const http = require('http');
-const { evaluateLighthouseBudgets } = require('./lib/lighthouseBudgets');
+const { evaluateLighthouseBudgets, medianReport } = require('./lib/lighthouseBudgets');
 
 const PORT = process.env.LIGHTHOUSE_PORT || '4180';
 const BASE = `http://127.0.0.1:${PORT}`;
@@ -15,6 +15,13 @@ const ROUTES = [
   { path: '/pt/mapa/', name: 'mapa' },
   { path: '/pt/spots/guincho/', name: 'spot-guincho' },
 ];
+
+// Repeated runs per route — the gate evaluates the MEDIAN report (see
+// lighthouseBudgets.medianReport). Lab metrics on a shared 2-core CI runner
+// carry real single-run noise (TBT spikes of 500-1200ms measured on code that
+// scores 31-96ms locally); one spiked run must not fail the build, while a
+// genuine regression breaches the majority of runs and still fails the median.
+// Override the per-run count with LIGHTHOUSE_RUNS (default 3).
 
 const OUT_DIR = path.join(__dirname, '..', 'out');
 
@@ -54,14 +61,15 @@ function runLighthouse(url, outFile) {
       stdio: 'inherit',
     });
     child.on('close', (code) => {
-      if (code !== 0) {
-        reject(new Error(`lighthouse exited ${code} for ${url}`));
-        return;
-      }
+      // The report file is the source of truth. On Windows, chrome-launcher
+      // can fail (EPERM) cleaning up its own temp dir AFTER the report was
+      // written — accept a parseable report regardless of exit code, and
+      // reject only when nothing was produced (a genuine crash).
+      let report = null;
       try {
-        resolve(JSON.parse(fs.readFileSync(outFile, 'utf8')));
-      } catch (e) {
-        reject(e);
+        report = JSON.parse(fs.readFileSync(outFile, 'utf8'));
+      } catch {
+        /* fall through */
       } finally {
         try {
           fs.unlinkSync(outFile);
@@ -69,9 +77,21 @@ function runLighthouse(url, outFile) {
           /* ignore */
         }
       }
+      if (report) {
+        if (code !== 0) {
+          console.warn(
+            `  (lighthouse exited ${code} for ${url} after writing its report — Windows temp-cleanup race, report accepted)`,
+          );
+        }
+        resolve(report);
+      } else {
+        reject(new Error(`lighthouse produced no report (exit ${code}) for ${url}`));
+      }
     });
   });
 }
+
+const RUNS_PER_ROUTE = Number.parseInt(process.env.LIGHTHOUSE_RUNS || '3', 10);
 
 async function main() {
   if (!fs.existsSync(OUT_DIR)) {
@@ -91,9 +111,24 @@ async function main() {
     const allBreaches = [];
 
     for (const route of ROUTES) {
-      const tmp = path.join(__dirname, '..', `lighthouse-${route.name}.tmp.json`);
-      const report = await runLighthouse(`${BASE}${route.path}`, tmp);
-      const cats = report.categories || {};
+      const url = `${BASE}${route.path}`;
+      const reports = [];
+      for (let run = 1; run <= RUNS_PER_ROUTE; run += 1) {
+        const tmp = path.join(__dirname, '..', `lighthouse-${route.name}-${run}.tmp.json`);
+        const report = await runLighthouse(url, tmp);
+        reports.push(report);
+        const cats = report.categories || {};
+        console.log(
+          `[${route.name}] run ${run}/${RUNS_PER_ROUTE}: Perf ${Math.round((cats.performance?.score ?? 0) * 100)} | ` +
+            `A11y ${Math.round((cats.accessibility?.score ?? 0) * 100)} | SEO ${Math.round((cats.seo?.score ?? 0) * 100)} | ` +
+            `TBT ${Math.round(report.audits?.['total-blocking-time']?.numericValue ?? 0)}ms | ` +
+            `FCP ${Math.round(report.audits?.['first-contentful-paint']?.numericValue ?? 0)}ms | ` +
+            `bytes ${Math.round((report.audits?.['total-byte-weight']?.numericValue ?? 0) / 1024)}KB`,
+        );
+      }
+
+      const median = medianReport(reports);
+      const cats = median.categories || {};
       const row = {
         route: route.name,
         path: route.path,
@@ -103,10 +138,10 @@ async function main() {
       };
       summary.push(row);
       console.log(
-        `[${route.name}] Perf ${row.performance} | A11y ${row.accessibility} | SEO ${row.seo}`,
+        `[${route.name}] MEDIAN Perf ${row.performance} | A11y ${row.accessibility} | SEO ${row.seo}`,
       );
 
-      const { breaches } = evaluateLighthouseBudgets(report);
+      const { breaches } = evaluateLighthouseBudgets(median);
       for (const breach of breaches) allBreaches.push(`[${route.name}] ${breach}`);
     }
 
@@ -116,14 +151,14 @@ async function main() {
       performance: Math.min(...summary.map((r) => r.performance)),
     };
 
-    console.log('\nWorst scores across routes:', worst);
+    console.log('\nWorst MEDIAN scores across routes:', worst);
 
     if (allBreaches.length > 0) {
-      console.warn(`Budget breaches (${allBreaches.length}):`);
+      console.warn(`Budget breaches on the median report (${allBreaches.length}):`);
       for (const b of allBreaches) console.warn(`  - ${b}`);
       process.exit(1);
     }
-    console.log('All Lighthouse budgets met.');
+    console.log('All Lighthouse budgets met (median across runs).');
   } finally {
     try {
       process.kill(-serve.pid);

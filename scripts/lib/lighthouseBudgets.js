@@ -75,4 +75,47 @@ function evaluateLighthouseBudgets(report) {
   return { breaches, worst };
 }
 
-module.exports = { METRIC_BUDGETS, CATEGORY_BUDGETS, evaluateLighthouseBudgets };
+/**
+ * Median across repeated Lighthouse runs of the SAME page — the noise-robust
+ * gate for lab metrics. Google's guidance is to run several times and gate on
+ * the median: one contention spike (a noisy shared CI runner) must not fail
+ * the build, while a genuine regression breaches in the majority of runs and
+ * therefore still breaches the median. Pure — no I/O, unit-tested beside
+ * evaluateLighthouseBudgets.
+ *
+ * @param {Array<{categories?: Record<string, {score: number|null}>, audits?: Record<string, {numericValue?: number}>}>} reports
+ * @returns {{categories: Record<string, {score: number}>, audits: Record<string, {numericValue: number}>}}
+ */
+function medianReport(reports) {
+  const median = (xs) => {
+    const s = [...xs].sort((a, b) => a - b);
+    const mid = Math.floor(s.length / 2);
+    return s.length % 2 === 1 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+  };
+
+  const catValues = {};
+  const auditValues = {};
+  for (const r of reports) {
+    for (const [id, cat] of Object.entries(r.categories ?? {})) {
+      if (typeof cat?.score === 'number') {
+        (catValues[id] ??= []).push(cat.score);
+      }
+    }
+    for (const [id, audit] of Object.entries(r.audits ?? {})) {
+      if (typeof audit?.numericValue === 'number') {
+        (auditValues[id] ??= []).push(audit.numericValue);
+      }
+    }
+  }
+
+  const out = { categories: {}, audits: {} };
+  for (const [id, xs] of Object.entries(catValues)) {
+    if (xs.length > 0) out.categories[id] = { score: median(xs) };
+  }
+  for (const [id, xs] of Object.entries(auditValues)) {
+    if (xs.length > 0) out.audits[id] = { numericValue: median(xs) };
+  }
+  return out;
+}
+
+module.exports = { METRIC_BUDGETS, CATEGORY_BUDGETS, evaluateLighthouseBudgets, medianReport };

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { evaluateLighthouseBudgets, METRIC_BUDGETS } = require('../lighthouseBudgets');
+const { evaluateLighthouseBudgets, METRIC_BUDGETS, medianReport } = require('../lighthouseBudgets');
 
 /** Build a report-shaped object with the given category scores (0-1) and audit ms values. */
 function report(scores = {}, audits = {}) {
@@ -103,5 +103,68 @@ describe('evaluateLighthouseBudgets', () => {
     r.audits['some-random-audit'] = { numericValue: 999999 };
     const { breaches } = evaluateLighthouseBudgets(r);
     expect(breaches).toEqual([]);
+  });
+});
+
+describe('medianReport', () => {
+  const tbt = (v) => ({ audits: { 'total-blocking-time': { numericValue: v } } });
+
+  // A full report with the TBT overridden — the other five budgeted audits
+  // stay under their limits so fail-closed doesn't fire. Built through report()
+  // with plain numbers (the legacy PASSING fixture double-wraps values, which
+  // the old evaluator tolerated but medianReport's typeof check does not).
+  const withTbt = (tbtMs) =>
+    report(
+      { seo: 0.97, accessibility: 0.96, performance: 0.73 },
+      {
+        'first-contentful-paint': 456,
+        'largest-contentful-paint': 2315,
+        'speed-index': 2161,
+        'total-blocking-time': tbtMs,
+        'total-byte-weight': 1310000,
+        'cumulative-layout-shift': 0.02,
+      },
+    );
+
+  it('passes when only one of three runs spikes over budget', () => {
+    // One 1181ms spike among two healthy runs: the median stays under the 250ms gate.
+    const med = medianReport([withTbt(1181), withTbt(70), withTbt(90)]);
+    expect(med.audits['total-blocking-time'].numericValue).toBe(90);
+    const { breaches } = evaluateLighthouseBudgets(
+      medianReport([withTbt(1181), withTbt(70), withTbt(90)]),
+    );
+    expect(breaches).toEqual([]);
+  });
+
+  it('fails when the majority of runs breach (median over budget)', () => {
+    const med = medianReport([withTbt(1181), withTbt(506), withTbt(70)]);
+    expect(med.audits['total-blocking-time'].numericValue).toBe(506);
+    const { breaches } = evaluateLighthouseBudgets(med);
+    expect(breaches).toEqual(['audit total-blocking-time: 506ms > 250ms']);
+  });
+
+  it('mediates category scores as well as audit values', () => {
+    const med = medianReport([
+      report({ performance: 0.5, seo: 0.9 }),
+      report({ performance: 0.9, seo: 0.95 }),
+      report({ performance: 0.55, seo: 0.92 }),
+    ]);
+    expect(med.categories.performance.score).toBe(0.55);
+    expect(med.categories.seo.score).toBe(0.92);
+  });
+
+  it('handles an even run count by averaging the two middles', () => {
+    const med = medianReport([tbt(100), tbt(200)]);
+    expect(med.audits['total-blocking-time'].numericValue).toBe(150);
+  });
+
+  it('keeps audits missing from some runs when present in others', () => {
+    const med = medianReport([tbt(100), { audits: {} }]);
+    expect(med.audits['total-blocking-time'].numericValue).toBe(100);
+  });
+
+  it('returns empty categories/audits for an empty input', () => {
+    const med = medianReport([]);
+    expect(med).toEqual({ categories: {}, audits: {} });
   });
 });
