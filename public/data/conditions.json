@@ -79,29 +79,7 @@
     ],
     "updatedAt": "2026-09-08T12:04:28.501Z",
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 60,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -109,21 +87,39 @@
       "stationArea": "Galiza",
       "distanceKm": 55.8,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 60,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 55.8
     },
     "observedWaveNotClosest": {
-      "winner": "ih-buoy",
-      "reason": "ih-fresh",
-      "attachedKm": 60,
-      "altKm": 56
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 56,
+      "altKm": 0
     }
   },
   "vila-praia-ancora": {
@@ -206,29 +202,7 @@
     ],
     "updatedAt": "2026-09-08T12:04:28.805Z",
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 56.8,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -236,15 +210,39 @@
       "stationArea": "Galiza",
       "distanceKm": 58.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 56.8,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 58.6
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 59,
+      "altKm": 0
     }
   },
   "afife": {
@@ -338,29 +336,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 52.3,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -368,14 +344,32 @@
       "stationArea": "Galiza",
       "distanceKm": 59.9,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 52.3,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 59.9
     },
     "windBias": {
@@ -385,6 +379,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 60,
+      "altKm": 0
     }
   },
   "castelo-neiva": {
@@ -478,29 +478,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 50.2,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -508,14 +486,32 @@
       "stationArea": "Galiza",
       "distanceKm": 65.1,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 50.2,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 65.1
     },
     "windBias": {
@@ -525,6 +521,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 65,
+      "altKm": 0
     }
   },
   "amorosa": {
@@ -618,29 +620,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 44.1,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -648,14 +628,32 @@
       "stationArea": "Galiza",
       "distanceKm": 67,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 44.1,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 67
     },
     "windBias": {
@@ -665,6 +663,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 67,
+      "altKm": 0
     }
   },
   "cabedelo": {
@@ -758,29 +762,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 42.3,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -788,14 +770,32 @@
       "stationArea": "Galiza",
       "distanceKm": 69.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 42.3,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 69.6
     },
     "windBias": {
@@ -805,6 +805,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 70,
+      "altKm": 0
     }
   },
   "foil-cabedelo": {
@@ -898,29 +904,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 42.3,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -928,14 +912,32 @@
       "stationArea": "Galiza",
       "distanceKm": 69.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 42.3,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 69.6
     },
     "windBias": {
@@ -945,6 +947,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 70,
+      "altKm": 0
     }
   },
   "cabedelo-wakepark": {
@@ -1038,29 +1046,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 43.6,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -1068,14 +1054,32 @@
       "stationArea": "Galiza",
       "distanceKm": 68.5,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 43.6,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 68.5
     },
     "windBias": {
@@ -1085,6 +1089,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 69,
+      "altKm": 0
     }
   },
   "rodanho": {
@@ -1178,29 +1188,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 41.2,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -1208,14 +1196,32 @@
       "stationArea": "Galiza",
       "distanceKm": 71,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 41.2,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 71
     },
     "windBias": {
@@ -1225,6 +1231,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 71,
+      "altKm": 0
     }
   },
   "ofir": {
@@ -1318,29 +1330,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 30.5,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -1348,14 +1338,32 @@
       "stationArea": "Galiza",
       "distanceKm": 82.9,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 30.5,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 82.9
     },
     "windBias": {
@@ -1365,6 +1373,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 83,
+      "altKm": 0
     }
   },
   "esposende": {
@@ -1458,29 +1472,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 28.9,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -1488,14 +1480,32 @@
       "stationArea": "Galiza",
       "distanceKm": 84.3,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 28.9,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
     },
     "windBias": {
@@ -1505,6 +1515,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "esposende-praia": {
@@ -1598,29 +1614,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 29.4,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -1628,14 +1622,32 @@
       "stationArea": "Galiza",
       "distanceKm": 83.8,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 29.4,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 83.8
     },
     "windBias": {
@@ -1645,6 +1657,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "fao": {
@@ -1738,29 +1756,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 28,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -1768,14 +1764,32 @@
       "stationArea": "Galiza",
       "distanceKm": 87.1,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 28,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 87.1
     },
     "windBias": {
@@ -1785,6 +1799,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 87,
+      "altKm": 0
     }
   },
   "apulia": {
@@ -1878,29 +1898,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 26.1,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -1908,14 +1906,32 @@
       "stationArea": "Galiza",
       "distanceKm": 90.3,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 26.1,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 90.3
     },
     "windBias": {
@@ -1925,6 +1941,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 90,
+      "altKm": 0
     }
   },
   "povoa-varzim": {
@@ -2021,29 +2043,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 19.8,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -2051,14 +2051,32 @@
       "stationArea": "Galiza",
       "distanceKm": 99.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 19.8,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 99.6
     },
     "windBias": {
@@ -2068,6 +2086,12 @@
       "mae": 2.2,
       "rmse": 2.7,
       "n": 114
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 100,
+      "altKm": 0
     }
   },
   "azurara": {
@@ -2164,29 +2188,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 20.2,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -2194,14 +2196,32 @@
       "stationArea": "Galiza",
       "distanceKm": 104,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 20.2,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 104
     },
     "windBias": {
@@ -2211,6 +2231,12 @@
       "mae": 2.2,
       "rmse": 2.7,
       "n": 114
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 104,
+      "altKm": 0
     }
   },
   "leca-palmeira": {
@@ -2304,29 +2330,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 27.1,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -2334,14 +2338,32 @@
       "stationArea": "Galiza",
       "distanceKm": 119.7,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 27.1,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 119.7
     },
     "windBias": {
@@ -2351,6 +2373,12 @@
       "mae": 2.5,
       "rmse": 3.1,
       "n": 72
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 120,
+      "altKm": 0
     }
   },
   "matosinhos": {
@@ -2444,29 +2472,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 28.8,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -2474,14 +2480,32 @@
       "stationArea": "Galiza",
       "distanceKm": 121.5,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 28.8,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 121.5
     },
     "windBias": {
@@ -2491,6 +2515,12 @@
       "mae": 2.5,
       "rmse": 3.1,
       "n": 72
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 122,
+      "altKm": 0
     }
   },
   "cabedelo-douro": {
@@ -2584,29 +2614,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 32.8,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -2614,14 +2622,32 @@
       "stationArea": "Galiza",
       "distanceKm": 126.1,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 32.8,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.1
     },
     "windBias": {
@@ -2631,6 +2657,12 @@
       "mae": 2.5,
       "rmse": 3.1,
       "n": 72
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 126,
+      "altKm": 0
     }
   },
   "marina-afurada-foil": {
@@ -2724,29 +2756,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 33.7,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -2754,14 +2764,32 @@
       "stationArea": "Galiza",
       "distanceKm": 126.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 33.7,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.6
     },
     "windBias": {
@@ -2771,6 +2799,12 @@
       "mae": 3,
       "rmse": 3.6,
       "n": 96
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 127,
+      "altKm": 0
     }
   },
   "praia-da-lomba": {
@@ -2864,29 +2898,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 54.9,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -2894,14 +2906,32 @@
       "stationArea": "Galiza",
       "distanceKm": 144.2,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 54.9,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.2
     },
     "windBias": {
@@ -2911,6 +2941,12 @@
       "mae": 1.2,
       "rmse": 1.5,
       "n": 35
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "salgueiros": {
@@ -3004,29 +3040,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 34.3,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -3034,14 +3048,32 @@
       "stationArea": "Galiza",
       "distanceKm": 128.1,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 34.3,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.1
     },
     "windBias": {
@@ -3051,6 +3083,12 @@
       "mae": 3,
       "rmse": 3.6,
       "n": 96
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 128,
+      "altKm": 0
     }
   },
   "sereia-costa-verde": {
@@ -3144,29 +3182,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 34.6,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -3174,14 +3190,32 @@
       "stationArea": "Galiza",
       "distanceKm": 128.4,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 34.6,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.4
     },
     "windBias": {
@@ -3191,6 +3225,12 @@
       "mae": 3,
       "rmse": 3.6,
       "n": 96
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 128,
+      "altKm": 0
     }
   },
   "canide-sul": {
@@ -3284,29 +3324,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 35,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -3314,14 +3332,32 @@
       "stationArea": "Galiza",
       "distanceKm": 128.9,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 35,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.9
     },
     "windBias": {
@@ -3331,6 +3367,12 @@
       "mae": 3,
       "rmse": 3.6,
       "n": 96
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 129,
+      "altKm": 0
     }
   },
   "aguda": {
@@ -3424,29 +3466,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 40.1,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -3454,14 +3474,32 @@
       "stationArea": "Galiza",
       "distanceKm": 135.1,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 40.1,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 135.1
     },
     "windBias": {
@@ -3471,6 +3509,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 135,
+      "altKm": 0
     }
   },
   "espinho": {
@@ -3564,29 +3608,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 44.7,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -3594,14 +3616,32 @@
       "stationArea": "Galiza",
       "distanceKm": 140.1,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 44.7,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.1
     },
     "windBias": {
@@ -3611,6 +3651,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "praia-37": {
@@ -3704,29 +3750,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 44.7,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -3734,14 +3758,32 @@
       "stationArea": "Galiza",
       "distanceKm": 140.3,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 44.7,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.3
     },
     "windBias": {
@@ -3751,6 +3793,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "bairro-piscatorio": {
@@ -3844,29 +3892,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 45.1,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -3874,14 +3900,32 @@
       "stationArea": "Galiza",
       "distanceKm": 140.7,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 45.1,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.7
     },
     "windBias": {
@@ -3891,6 +3935,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 141,
+      "altKm": 0
     }
   },
   "paramos": {
@@ -3984,29 +4034,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 47,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -4014,14 +4042,32 @@
       "stationArea": "Galiza",
       "distanceKm": 142.9,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 47,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 142.9
     },
     "windBias": {
@@ -4031,6 +4077,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 143,
+      "altKm": 0
     }
   },
   "barrinha-esmoriz": {
@@ -4124,29 +4176,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 48.2,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -4154,14 +4184,32 @@
       "stationArea": "Galiza",
       "distanceKm": 144.1,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 48.2,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.1
     },
     "windBias": {
@@ -4171,6 +4219,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "esmoriz": {
@@ -4264,29 +4318,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 48.1,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -4294,14 +4326,32 @@
       "stationArea": "Galiza",
       "distanceKm": 144.2,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 48.1,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.2
     },
     "windBias": {
@@ -4311,6 +4361,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "cortegaca": {
@@ -4404,29 +4460,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 49.4,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -4434,14 +4468,32 @@
       "stationArea": "Galiza",
       "distanceKm": 145.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 49.4,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 145.6
     },
     "windBias": {
@@ -4451,6 +4503,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 146,
+      "altKm": 0
     }
   },
   "cortegaca-sul": {
@@ -4544,29 +4602,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 50.3,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -4574,14 +4610,32 @@
       "stationArea": "Galiza",
       "distanceKm": 146.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 50.3,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 146.6
     },
     "windBias": {
@@ -4591,6 +4645,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 147,
+      "altKm": 0
     }
   },
   "maceda": {
@@ -4684,29 +4744,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 51.5,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -4714,14 +4752,32 @@
       "stationArea": "Galiza",
       "distanceKm": 147.9,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 51.5,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 147.9
     },
     "windBias": {
@@ -4731,6 +4787,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 148,
+      "altKm": 0
     }
   },
   "murtosa": {
@@ -4824,28 +4886,6 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 70.9,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
       "waveHeight": 1.479490041732788,
       "wavePeriod": 9.96090030670166,
       "maxWaveHeight": 1.875,
@@ -4854,14 +4894,24 @@
       "stationArea": "Nazaré",
       "distanceKm": 138.6,
       "observedAt": "2026-09-08T09:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.05,
+        "n": 141,
+        "origin": "wmo-pt",
+        "mae": 0.13,
+        "rmse": 0.17,
+        "corr": 0.92,
+        "meanLeadHours": 37.7,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 3.2,
-      "ihDistanceKm": 70.9,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 3.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 138.6
     },
     "windBias": {
@@ -4871,6 +4921,12 @@
       "mae": 1.5,
       "rmse": 1.9,
       "n": 245
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 139,
+      "altKm": 0
     }
   },
   "ria-torreira": {
@@ -4964,28 +5020,6 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 68.5,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
       "waveHeight": 1.479490041732788,
       "wavePeriod": 9.96090030670166,
       "maxWaveHeight": 1.875,
@@ -4994,14 +5028,24 @@
       "stationArea": "Nazaré",
       "distanceKm": 139.2,
       "observedAt": "2026-09-08T09:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.05,
+        "n": 141,
+        "origin": "wmo-pt",
+        "mae": 0.13,
+        "rmse": 0.17,
+        "corr": 0.92,
+        "meanLeadHours": 37.7,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 3.2,
-      "ihDistanceKm": 68.5,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 3.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 139.2
     },
     "windBias": {
@@ -5011,6 +5055,12 @@
       "mae": 1.5,
       "rmse": 1.9,
       "n": 245
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 139,
+      "altKm": 0
     }
   },
   "praia-torreira": {
@@ -5104,28 +5154,6 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 65.6,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
       "waveHeight": 1.479490041732788,
       "wavePeriod": 9.96090030670166,
       "maxWaveHeight": 1.875,
@@ -5134,14 +5162,24 @@
       "stationArea": "Nazaré",
       "distanceKm": 140,
       "observedAt": "2026-09-08T09:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.05,
+        "n": 141,
+        "origin": "wmo-pt",
+        "mae": 0.13,
+        "rmse": 0.17,
+        "corr": 0.92,
+        "meanLeadHours": 37.7,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 3.2,
-      "ihDistanceKm": 65.6,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 3.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140
     },
     "windBias": {
@@ -5151,6 +5189,12 @@
       "mae": 1.5,
       "rmse": 1.9,
       "n": 245
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "muranzel": {
@@ -5244,28 +5288,6 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 69.6,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
       "waveHeight": 1.479490041732788,
       "wavePeriod": 9.96090030670166,
       "maxWaveHeight": 1.875,
@@ -5274,14 +5296,24 @@
       "stationArea": "Nazaré",
       "distanceKm": 135.3,
       "observedAt": "2026-09-08T09:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.05,
+        "n": 141,
+        "origin": "wmo-pt",
+        "mae": 0.13,
+        "rmse": 0.17,
+        "corr": 0.92,
+        "meanLeadHours": 37.7,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 3.2,
-      "ihDistanceKm": 69.6,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 3.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 135.3
     },
     "windBias": {
@@ -5291,6 +5323,12 @@
       "mae": 1.5,
       "rmse": 1.9,
       "n": 245
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 135,
+      "altKm": 0
     }
   },
   "furadouro": {
@@ -5384,29 +5422,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 55.7,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -5414,14 +5430,32 @@
       "stationArea": "Galiza",
       "distanceKm": 152.3,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 55.7,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 152.3
     },
     "windBias": {
@@ -5431,6 +5465,12 @@
       "mae": 2.3,
       "rmse": 2.8,
       "n": 374
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 152,
+      "altKm": 0
     }
   },
   "sao-jacinto": {
@@ -5524,28 +5564,6 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 74.6,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
       "waveHeight": 1.479490041732788,
       "wavePeriod": 9.96090030670166,
       "maxWaveHeight": 1.875,
@@ -5554,14 +5572,24 @@
       "stationArea": "Nazaré",
       "distanceKm": 129.4,
       "observedAt": "2026-09-08T09:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.05,
+        "n": 141,
+        "origin": "wmo-pt",
+        "mae": 0.13,
+        "rmse": 0.17,
+        "corr": 0.92,
+        "meanLeadHours": 37.7,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 3.2,
-      "ihDistanceKm": 74.6,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 3.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 129.4
     },
     "windBias": {
@@ -5571,6 +5599,12 @@
       "mae": 1.5,
       "rmse": 1.9,
       "n": 245
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 129,
+      "altKm": 0
     }
   },
   "costa-nova": {
@@ -5664,28 +5698,6 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 79.8,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
       "waveHeight": 1.479490041732788,
       "wavePeriod": 9.96090030670166,
       "maxWaveHeight": 1.875,
@@ -5694,14 +5706,24 @@
       "stationArea": "Nazaré",
       "distanceKm": 124.3,
       "observedAt": "2026-09-08T09:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.05,
+        "n": 141,
+        "origin": "wmo-pt",
+        "mae": 0.13,
+        "rmse": 0.17,
+        "corr": 0.92,
+        "meanLeadHours": 37.7,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 3.2,
-      "ihDistanceKm": 79.8,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 3.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 124.3
     },
     "windBias": {
@@ -5711,6 +5733,12 @@
       "mae": 1.5,
       "rmse": 1.9,
       "n": 245
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 124,
+      "altKm": 0
     }
   },
   "tocha": {
@@ -5828,7 +5856,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 91.3
     },
@@ -5962,7 +5990,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 78.3
     },
@@ -6096,7 +6124,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 71.7
     },
@@ -6230,7 +6258,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 61.7
     },
@@ -6364,7 +6392,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 40.3
     },
@@ -6498,7 +6526,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 78.1
     },
@@ -6632,7 +6660,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 12.4
     },
@@ -6765,7 +6793,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 14.8
     },
@@ -6898,7 +6926,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 14.8
     },
@@ -7031,7 +7059,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 17.8
     },
@@ -7164,7 +7192,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 14.5
     },
@@ -7297,7 +7325,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 20.3
     },
@@ -7430,7 +7458,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 22.1
     },
@@ -7563,7 +7591,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 23.6
     },
@@ -7696,7 +7724,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 27.4
     },
@@ -7830,7 +7858,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 53.3
     },
@@ -7967,7 +7995,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 65.1
     },
@@ -8104,7 +8132,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 66.1
     },
@@ -8241,7 +8269,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 66.6
     },
@@ -8378,7 +8406,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 67
     },
@@ -8515,7 +8543,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 67.4
     },
@@ -8652,7 +8680,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 68.1
     },
@@ -8789,7 +8817,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 71.1
     },
@@ -8926,7 +8954,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 85.3
     },
@@ -9063,7 +9091,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 89
     },
@@ -9197,7 +9225,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 94.8
     },
@@ -9331,7 +9359,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 92.7
     },
@@ -9446,15 +9474,15 @@
       "metarIcao": "LPLA"
     },
     "observedWave": {
-      "waveHeight": 0.76,
+      "waveHeight": 0.83,
       "wavePeriod": 10.5,
-      "waveDirection": 18,
-      "maxWaveHeight": 1.28,
+      "waveDirection": 28,
+      "maxWaveHeight": 1.29,
       "waterTemp": 24.1,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 86.9,
-      "observedAt": "2026-09-08T10:49:05.000Z",
+      "observedAt": "2026-09-08T11:19:05.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.27,
@@ -9470,7 +9498,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.3,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 86.9,
       "wmoDistanceKm": null
@@ -9584,15 +9612,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.76,
+      "waveHeight": 0.83,
       "wavePeriod": 10.5,
-      "waveDirection": 18,
-      "maxWaveHeight": 1.28,
+      "waveDirection": 28,
+      "maxWaveHeight": 1.29,
       "waterTemp": 24.1,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 78.2,
-      "observedAt": "2026-09-08T10:49:05.000Z",
+      "observedAt": "2026-09-08T11:19:05.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.27,
@@ -9608,7 +9636,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.3,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 78.2,
       "wmoDistanceKm": null
@@ -9743,7 +9771,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 98.6
     },
@@ -9877,7 +9905,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 98.6
     },
@@ -10011,7 +10039,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 100.1
     },
@@ -10145,7 +10173,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 100.4
     },
@@ -10279,7 +10307,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 101.8
     },
@@ -10413,7 +10441,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 109
     },
@@ -10547,7 +10575,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 101.5
     },
@@ -10681,7 +10709,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 98.9
     },
@@ -10815,7 +10843,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 99.6
     },
@@ -10949,7 +10977,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 102.8
     },
@@ -11062,15 +11090,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.76,
+      "waveHeight": 0.83,
       "wavePeriod": 10.5,
-      "waveDirection": 18,
-      "maxWaveHeight": 1.28,
+      "waveDirection": 28,
+      "maxWaveHeight": 1.29,
       "waterTemp": 24.1,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 84.1,
-      "observedAt": "2026-09-08T10:49:05.000Z",
+      "observedAt": "2026-09-08T11:19:05.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.27,
@@ -11086,7 +11114,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.3,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 84.1,
       "wmoDistanceKm": null
@@ -11221,7 +11249,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 117.9
     },
@@ -11355,7 +11383,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 117.9
     },
@@ -11489,7 +11517,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 117.1
     },
@@ -11626,7 +11654,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 121.5
     },
@@ -11763,7 +11791,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 136.3
     },
@@ -11897,7 +11925,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 149.2
     },
@@ -12007,15 +12035,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 128.9,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12043,8 +12071,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 128.9,
       "wmoDistanceKm": 196
     },
@@ -12148,29 +12176,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 77.5,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -12178,14 +12184,32 @@
       "stationArea": "Galiza",
       "distanceKm": 122.5,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 77.5,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 122.5
     },
     "windBias": {
@@ -12195,6 +12219,12 @@
       "mae": 1.8,
       "rmse": 2.1,
       "n": 35
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 123,
+      "altKm": 0
     }
   },
   "melides": {
@@ -12291,15 +12321,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 26,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12326,8 +12356,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": 26,
       "wmoDistanceKm": 163.2
     },
@@ -12434,15 +12464,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 6.4,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12469,8 +12499,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": 6.4,
       "wmoDistanceKm": 180.9
     },
@@ -12577,15 +12607,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 10.8,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12612,8 +12642,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": 10.8,
       "wmoDistanceKm": 185.5
     },
@@ -12822,15 +12852,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 14.4,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12857,8 +12887,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": 14.4,
       "wmoDistanceKm": 193.4
     },
@@ -13169,15 +13199,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 21.1,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13193,7 +13223,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 21.1,
       "wmoDistanceKm": null
@@ -13409,15 +13439,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 25.5,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13433,7 +13463,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 25.5,
       "wmoDistanceKm": null
@@ -13547,15 +13577,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 32.9,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13571,7 +13601,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 32.9,
       "wmoDistanceKm": null
@@ -13787,15 +13817,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 46,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13823,8 +13853,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 46,
       "wmoDistanceKm": 198.8
     },
@@ -13931,15 +13961,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 48.3,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13967,8 +13997,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 48.3,
       "wmoDistanceKm": 197.7
     },
@@ -14075,15 +14105,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 54.5,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14111,8 +14141,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 54.5,
       "wmoDistanceKm": 194.5
     },
@@ -14219,15 +14249,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 63.9,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14255,8 +14285,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 63.9,
       "wmoDistanceKm": 192.9
     },
@@ -14363,15 +14393,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 64.9,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14399,8 +14429,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 64.9,
       "wmoDistanceKm": 193.6
     },
@@ -14507,15 +14537,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 70.2,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14543,8 +14573,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 70.2,
       "wmoDistanceKm": 191.4
     },
@@ -14651,15 +14681,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 74.9,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14687,8 +14717,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 74.9,
       "wmoDistanceKm": 188.2
     },
@@ -14795,15 +14825,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 80.3,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14831,8 +14861,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 80.3,
       "wmoDistanceKm": 189.6
     },
@@ -14939,15 +14969,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 83.9,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14975,8 +15005,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 83.9,
       "wmoDistanceKm": 188.7
     },
@@ -15083,15 +15113,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 91.3,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15119,8 +15149,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 91.3,
       "wmoDistanceKm": 188.1
     },
@@ -15227,15 +15257,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 92.5,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15263,8 +15293,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 92.5,
       "wmoDistanceKm": 190.2
     },
@@ -15371,15 +15401,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 76.7,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -15407,8 +15437,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 76.7,
       "wmoDistanceKm": 171.1
     },
@@ -15515,15 +15545,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 80.5,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -15551,8 +15581,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 80.5,
       "wmoDistanceKm": 174.4
     },
@@ -15659,15 +15689,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 84.2,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -15695,8 +15725,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 84.2,
       "wmoDistanceKm": 177.9
     },
@@ -15792,15 +15822,15 @@
     ],
     "updatedAt": "2026-09-08T12:05:03.703Z",
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 94.9,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -15828,8 +15858,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 94.9,
       "wmoDistanceKm": 187.9
     }
@@ -15928,15 +15958,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 60.2,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -15964,8 +15994,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 60.2,
       "wmoDistanceKm": 155.6
     },
@@ -16072,15 +16102,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 53.8,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -16108,8 +16138,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 53.8,
       "wmoDistanceKm": 88.8
     },
@@ -16213,15 +16243,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 50.4,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -16249,8 +16279,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 50.4,
       "wmoDistanceKm": 88.5
     },
@@ -16354,15 +16384,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 47,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -16390,8 +16420,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 47,
       "wmoDistanceKm": 90.8
     },
@@ -16495,15 +16525,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 46.2,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -16531,8 +16561,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 46.2,
       "wmoDistanceKm": 89.5
     },
@@ -16639,15 +16669,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 61.2,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -16675,8 +16705,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 61.2,
       "wmoDistanceKm": 156.4
     },
@@ -16783,15 +16813,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 68.3,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -16819,8 +16849,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 68.3,
       "wmoDistanceKm": 163.5
     },
@@ -16927,15 +16957,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 68.3,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -16963,8 +16993,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 68.3,
       "wmoDistanceKm": 163.5
     },
@@ -17071,15 +17101,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 71,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -17107,8 +17137,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 71,
       "wmoDistanceKm": 166
     },
@@ -17215,15 +17245,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 71.9,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -17251,8 +17281,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 71.9,
       "wmoDistanceKm": 166.7
     },
@@ -17348,15 +17378,15 @@
     ],
     "updatedAt": "2026-09-08T12:05:07.016Z",
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 96.3,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -17384,8 +17414,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 96.3,
       "wmoDistanceKm": 188.9
     }
@@ -17473,15 +17503,15 @@
     ],
     "updatedAt": "2026-09-08T12:05:07.318Z",
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 92.2,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -17509,8 +17539,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 92.2,
       "wmoDistanceKm": 184.8
     }
@@ -17609,15 +17639,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 12.8,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -17645,8 +17675,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 12.8,
       "wmoDistanceKm": 104.6
     },
@@ -17753,15 +17783,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 21.6,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -17789,8 +17819,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 21.6,
       "wmoDistanceKm": 92.9
     },
@@ -17897,15 +17927,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 11.1,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -17933,8 +17963,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 11.1,
       "wmoDistanceKm": 106
     },
@@ -18041,15 +18071,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 14.5,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -18077,8 +18107,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 14.5,
       "wmoDistanceKm": 108.9
     },
@@ -18185,15 +18215,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 11,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -18221,8 +18251,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 11,
       "wmoDistanceKm": 95.6
     },
@@ -18329,15 +18359,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 15.1,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -18365,8 +18395,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 15.1,
       "wmoDistanceKm": 94.4
     },
@@ -18470,15 +18500,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 33.6,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -18506,8 +18536,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 33.6,
       "wmoDistanceKm": 90.6
     },
@@ -18611,15 +18641,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 37.2,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -18647,8 +18677,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 37.2,
       "wmoDistanceKm": 91
     },
@@ -18752,15 +18782,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 41.9,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -18788,8 +18818,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 41.9,
       "wmoDistanceKm": 90.2
     },
@@ -18896,15 +18926,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 87.6,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -18932,8 +18962,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 87.6,
       "wmoDistanceKm": 180.8
     },
@@ -19029,15 +19059,15 @@
     ],
     "updatedAt": "2026-09-08T12:05:10.631Z",
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 94,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -19065,8 +19095,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 94,
       "wmoDistanceKm": 186.2
     }
@@ -19369,15 +19399,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 30,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -19393,7 +19423,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 30,
       "wmoDistanceKm": null
@@ -19507,15 +19537,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 11.1,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -19531,7 +19561,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 11.1,
       "wmoDistanceKm": null
@@ -19645,15 +19675,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 47.8,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -19669,7 +19699,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 47.8,
       "wmoDistanceKm": null
@@ -19783,15 +19813,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 46.2,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -19807,7 +19837,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 46.2,
       "wmoDistanceKm": null
@@ -19921,15 +19951,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 2.5,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -19945,7 +19975,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 2.5,
       "wmoDistanceKm": null
@@ -20059,15 +20089,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 32.3,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -20083,7 +20113,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 32.3,
       "wmoDistanceKm": null
@@ -20197,15 +20227,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 20,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -20221,7 +20251,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 20,
       "wmoDistanceKm": null
@@ -20332,28 +20362,6 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 77.9,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
       "waveHeight": 1.479490041732788,
       "wavePeriod": 9.96090030670166,
       "maxWaveHeight": 1.875,
@@ -20362,14 +20370,24 @@
       "stationArea": "Nazaré",
       "distanceKm": 126.1,
       "observedAt": "2026-09-08T09:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.05,
+        "n": 141,
+        "origin": "wmo-pt",
+        "mae": 0.13,
+        "rmse": 0.17,
+        "corr": 0.92,
+        "meanLeadHours": 37.7,
+        "buoyName": "Nazaré Costeira (WMO)"
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 3.2,
-      "ihDistanceKm": 77.9,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 3.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.1
     },
     "windBias": {
@@ -20379,6 +20397,12 @@
       "mae": 1.5,
       "rmse": 1.9,
       "n": 245
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 126,
+      "altKm": 0
     }
   },
   "vila-cha": {
@@ -20475,29 +20499,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 20.5,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -20505,14 +20507,32 @@
       "stationArea": "Galiza",
       "distanceKm": 108.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 20.5,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 108.6
     },
     "windBias": {
@@ -20522,6 +20542,12 @@
       "mae": 2.2,
       "rmse": 2.7,
       "n": 114
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 109,
+      "altKm": 0
     }
   },
   "santa-cruz": {
@@ -20639,7 +20665,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 49
     },
@@ -20772,7 +20798,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 29.9
     },
@@ -20905,7 +20931,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 35.3
     },
@@ -21039,7 +21065,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 8.3
     },
@@ -21176,7 +21202,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 68.3
     },
@@ -21313,7 +21339,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 68.8
     },
@@ -21450,7 +21476,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 69.3
     },
@@ -21584,7 +21610,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 120.9
     },
@@ -21697,15 +21723,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 22.3,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -21732,8 +21758,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": 22.3,
       "wmoDistanceKm": 167.4
     },
@@ -21840,15 +21866,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 16.3,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -21875,8 +21901,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": 16.3,
       "wmoDistanceKm": 174.4
     },
@@ -21983,15 +22009,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.47,
+      "waveHeight": 1.38,
       "wavePeriod": 10,
-      "waveDirection": 297,
-      "maxWaveHeight": 2.14,
-      "waterTemp": 18.6,
+      "waveDirection": 293,
+      "maxWaveHeight": 2.15,
+      "waterTemp": 18.9,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 15.4,
-      "observedAt": "2026-09-08T10:26:45.000Z",
+      "observedAt": "2026-09-08T10:56:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -22018,8 +22044,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": 15.4,
       "wmoDistanceKm": 195.6
     },
@@ -22126,15 +22152,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 9.1,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -22162,8 +22188,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 9.1,
       "wmoDistanceKm": 103.9
     },
@@ -22269,15 +22295,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 29.6,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -22305,8 +22331,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 29.6,
       "wmoDistanceKm": 124.6
     },
@@ -22413,15 +22439,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 67,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -22449,8 +22475,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 67,
       "wmoDistanceKm": 162.1
     },
@@ -22557,15 +22583,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 50,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -22593,8 +22619,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 50,
       "wmoDistanceKm": 145.4
     },
@@ -22701,15 +22727,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 46.1,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -22737,8 +22763,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 46.1,
       "wmoDistanceKm": 141.5
     },
@@ -22834,15 +22860,15 @@
     ],
     "updatedAt": "2026-09-08T12:05:19.075Z",
     "observedWave": {
-      "waveHeight": 0.5,
+      "waveHeight": 0.58,
       "wavePeriod": 10.5,
-      "waveDirection": 257,
-      "maxWaveHeight": 0.73,
-      "waterTemp": 21.2,
+      "waveDirection": 263,
+      "maxWaveHeight": 0.77,
+      "waterTemp": 21.6,
       "stationName": "CSA82/D",
       "stationArea": "Faro",
       "distanceKm": 93.3,
-      "observedAt": "2026-09-08T10:25:21.000Z",
+      "observedAt": "2026-09-08T10:55:21.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.57,
@@ -22870,8 +22896,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.2,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 2.6,
       "ihDistanceKm": 93.3,
       "wmoDistanceKm": 185.5
     }
@@ -22970,15 +22996,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 4.1,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -22994,7 +23020,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 4.1,
       "wmoDistanceKm": null
@@ -23110,15 +23136,15 @@
       "metarIcao": "LPMA"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 37.1,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -23134,7 +23160,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 37.1,
       "wmoDistanceKm": null
@@ -23248,15 +23274,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 51.7,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -23272,7 +23298,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 51.7,
       "wmoDistanceKm": null
@@ -23386,15 +23412,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.45,
-      "wavePeriod": 4.8,
+      "waveHeight": 0.49,
+      "wavePeriod": 7.1,
       "waveDirection": 121,
-      "maxWaveHeight": 0.67,
-      "waterTemp": 24.3,
+      "maxWaveHeight": 0.86,
+      "waterTemp": 24.2,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 38.3,
-      "observedAt": "2026-09-08T10:29:57.000Z",
+      "observedAt": "2026-09-08T10:59:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.45,
@@ -23410,7 +23436,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 38.3,
       "wmoDistanceKm": null
@@ -23830,15 +23856,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.76,
+      "waveHeight": 0.83,
       "wavePeriod": 10.5,
-      "waveDirection": 18,
-      "maxWaveHeight": 1.28,
+      "waveDirection": 28,
+      "maxWaveHeight": 1.29,
       "waterTemp": 24.1,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 90.3,
-      "observedAt": "2026-09-08T10:49:05.000Z",
+      "observedAt": "2026-09-08T11:19:05.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.27,
@@ -23854,7 +23880,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.3,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 90.3,
       "wmoDistanceKm": null
@@ -23968,15 +23994,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.76,
+      "waveHeight": 0.83,
       "wavePeriod": 10.5,
-      "waveDirection": 18,
-      "maxWaveHeight": 1.28,
+      "waveDirection": 28,
+      "maxWaveHeight": 1.29,
       "waterTemp": 24.1,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 67.5,
-      "observedAt": "2026-09-08T10:49:05.000Z",
+      "observedAt": "2026-09-08T11:19:05.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.27,
@@ -23992,7 +24018,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.3,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 67.5,
       "wmoDistanceKm": null
@@ -24106,15 +24132,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.76,
+      "waveHeight": 0.83,
       "wavePeriod": 10.5,
-      "waveDirection": 18,
-      "maxWaveHeight": 1.28,
+      "waveDirection": 28,
+      "maxWaveHeight": 1.29,
       "waterTemp": 24.1,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 49.7,
-      "observedAt": "2026-09-08T10:49:05.000Z",
+      "observedAt": "2026-09-08T11:19:05.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.27,
@@ -24130,7 +24156,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.3,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 49.7,
       "wmoDistanceKm": null
@@ -24241,29 +24267,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 28.1,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -24271,14 +24275,32 @@
       "stationArea": "Galiza",
       "distanceKm": 84.9,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 28.1,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.9
     },
     "windBias": {
@@ -24288,6 +24310,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 85,
+      "altKm": 0
     }
   },
   "ofir-praia": {
@@ -24381,29 +24409,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 27.7,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -24411,14 +24417,32 @@
       "stationArea": "Galiza",
       "distanceKm": 85.6,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 27.7,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 85.6
     },
     "windBias": {
@@ -24428,6 +24452,12 @@
       "mae": 1.7,
       "rmse": 2.1,
       "n": 220
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 86,
+      "altKm": 0
     }
   },
   "mindelo": {
@@ -24524,29 +24554,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 20.3,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -24554,14 +24562,32 @@
       "stationArea": "Galiza",
       "distanceKm": 106.8,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 20.3,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 106.8
     },
     "windBias": {
@@ -24571,6 +24597,12 @@
       "mae": 2.2,
       "rmse": 2.7,
       "n": 114
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 107,
+      "altKm": 0
     }
   },
   "aterro": {
@@ -24664,29 +24696,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 25.3,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -24694,14 +24704,32 @@
       "stationArea": "Galiza",
       "distanceKm": 117.5,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 25.3,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 117.5
     },
     "windBias": {
@@ -24711,6 +24739,12 @@
       "mae": 2.2,
       "rmse": 2.7,
       "n": 114
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 118,
+      "altKm": 0
     }
   },
   "foil-fao-cavado": {
@@ -24804,29 +24838,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 28.9,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -24834,15 +24846,39 @@
       "stationArea": "Galiza",
       "distanceKm": 84.3,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 28.9,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "foil-esposende-piscinas": {
@@ -24936,29 +24972,7 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.27,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 2.83,
-      "waterTemp": 19.1,
-      "stationName": "CSA92/D",
-      "stationArea": "Leixões",
-      "distanceKm": 28.9,
-      "observedAt": "2026-09-08T09:32:13.000Z",
-      "source": "ih-buoy",
-      "skill": {
-        "me": 1.34,
-        "n": 176,
-        "origin": "ih",
-        "mae": 1.36,
-        "rmse": 10.58,
-        "corr": -0.05,
-        "meanLeadHours": 38.2,
-        "buoyName": "CSA92/D"
-      }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 1.409999966621399,
+      "waveHeight": 1.3,
       "wavePeriod": 9.960000038146973,
       "waveDirection": 285,
       "waterTemp": 19.5,
@@ -24966,15 +24980,39 @@
       "stationArea": "Galiza",
       "distanceKm": 84.3,
       "observedAt": "2026-09-08T10:00:00.000Z",
-      "source": "wmo-buoy"
+      "source": "wmo-buoy",
+      "skill": {
+        "me": 0.23,
+        "n": 149,
+        "origin": "wmo-es",
+        "mae": 0.26,
+        "rmse": 0.33,
+        "corr": 0.77,
+        "meanLeadHours": 37.8,
+        "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": -0.1,
+        "n": 13,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Datawell ao largo do Porto",
+        "rawHeight": 1.4,
+        "deltaM": -0.1
+      }
     },
     "observedWaveMeta": {
-      "winner": "ih",
-      "reason": "ih-fresh",
-      "ihAgeHours": 2.6,
-      "wmoAgeHours": 2.2,
-      "ihDistanceKm": 28.9,
+      "winner": "wmo",
+      "reason": "wmo-only",
+      "ihAgeHours": null,
+      "wmoAgeHours": 2.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "obidos-lagoon-sul": {
@@ -25091,7 +25129,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 17.8
     },
@@ -25216,7 +25254,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.2,
+      "wmoAgeHours": 3.6,
       "ihDistanceKm": null,
       "wmoDistanceKm": 17.8
     },
