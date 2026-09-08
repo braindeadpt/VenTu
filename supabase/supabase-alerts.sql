@@ -136,6 +136,8 @@ $$;
 
 GRANT EXECUTE ON FUNCTION subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT, TEXT) TO anon;
 
--- Required for anon inserts (SERIAL id + RLS policies above)
-GRANT USAGE, SELECT ON SEQUENCE alert_subscriptions_id_seq TO anon;
-GRANT INSERT, UPDATE ON alert_subscriptions TO anon;
+-- Direct table writes are closed: SECURITY DEFINER RPCs (subscribe_alert,
+-- verify_alert_subscription, unsubscribe_alert) are the ONLY write path.
+-- Matches the user_alert_prefs E1c pattern (supabase-alerts-e1c-harden.sql).
+REVOKE INSERT, UPDATE ON alert_subscriptions FROM anon, authenticated;
+REVOKE USAGE, SELECT ON SEQUENCE alert_subscriptions_id_seq FROM anon;

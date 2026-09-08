@@ -245,4 +245,17 @@ BEGIN
 END $$;
 RESET ROLE;
 
+-- ── 12. Direct anon UPDATE is revoked (only SECURITY DEFINER RPCs may update) ──
+SET ROLE anon;
+DO $$
+BEGIN
+  BEGIN
+    UPDATE alert_subscriptions SET active = false WHERE email = 'alice@example.com';
+    RAISE EXCEPTION '12: direct anon UPDATE should have been denied';
+  EXCEPTION WHEN insufficient_privilege THEN
+    NULL; -- expected
+  END;
+END $$;
+RESET ROLE;
+
 DO $$ BEGIN RAISE NOTICE 'ALL SUBSCRIBE_ALERT INTEGRATION TESTS PASSED'; END $$;
