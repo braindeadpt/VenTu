@@ -891,44 +891,6 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
   display: none !important;
 }
 
-/* ──────────────────────────────────────────────────────────────────
- *  Hero bathymetry texture (HeroBathymetry)
- *  As isóbatas do IH desenhadas por trás da copy do hero. Não é
- *  decoração genérica: é a mesma camada de dados que o mapa desenha.
- * ────────────────────────────────────────────────────────────────── */
-.hero-bathymetry-svg {
-  /* Desvanece para a direita (onde o mapa começa) e para o fundo, para a
-     textura nunca acabar num corte duro contra o scrim do hero. */
-  -webkit-mask-image:
-    linear-gradient(to right, rgb(0 0 0) 0%, rgb(0 0 0) 42%, transparent 82%),
-    linear-gradient(to bottom, transparent 0%, rgb(0 0 0) 14%, rgb(0 0 0) 68%, transparent 96%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to right, rgb(0 0 0) 0%, rgb(0 0 0) 42%, transparent 82%),
-    linear-gradient(to bottom, transparent 0%, rgb(0 0 0) 14%, rgb(0 0 0) 68%, transparent 96%);
-  mask-composite: intersect;
-}
-
-/* A sonda: traço curto e longo intervalo — passa, não pinta. */
-.hero-bathymetry-survey path {
-  stroke-opacity: 0.85;
-  stroke-dasharray: 10 320;
-  animation: bathymetry-survey 16s linear infinite;
-}
-
-@keyframes bathymetry-survey {
-  from { stroke-dashoffset: 0; }
-  to   { stroke-dashoffset: -330; }
-}
-
-/* Sem movimento, a sonda não tem razão de existir: um tracejado parado só
-   partia o contorno que a camada de base já desenha inteiro. */
-@media (prefers-reduced-motion: reduce) {
-  .hero-bathymetry-survey {
-    display: none;
-  }
-}
-
 /* ── Custom cluster icon (ventu-cluster-icon) ── */
 .ventu-cluster-icon {
   background: transparent !important;
