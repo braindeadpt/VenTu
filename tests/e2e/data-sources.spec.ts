@@ -368,7 +368,7 @@ test.describe('Fontes de dados (data sources)', () => {
     expect(staticBody).toContain(`hreflang="x-default" href="${SITE_URL}/pt/fontes/"`);
   });
 
-  test('cabeça do /pt/fontes emite os 5 hreflang (pt/en/es/de/fr) com canonical', async ({
+  test('cabeça do /pt/fontes emite hreflang (pt/en/es/de/fr + x-default) com canonical', async ({
     page,
   }) => {
     await page.goto('/pt/fontes/');
@@ -377,18 +377,21 @@ test.describe('Fontes de dados (data sources)', () => {
     ).toBeVisible({ timeout: 20_000 });
 
     // Alternates localizados no <head> (o Next emite o atributo como hrefLang)
-    // + x-default → pt (product default).
+    // + x-default → pt (product default). Select by hreflang: pt and x-default
+    // share the same href, so href-only locators are ambiguous (strict mode).
     const alternates = page.locator('link[rel="alternate"]');
     await expect(alternates).toHaveCount(HREFLANG_LOCALES.length + 1);
     for (const loc of HREFLANG_LOCALES) {
       const link = page.locator(
-        `link[rel="alternate"][href="${SITE_URL}/${loc}/fontes/"]`,
+        `link[rel="alternate"][hreflang="${loc}"][href="${SITE_URL}/${loc}/fontes/"]`,
       );
-      await expect(link).toHaveAttribute('hreflang', loc);
+      await expect(link).toHaveCount(1);
     }
     await expect(
-      page.locator(`link[rel="alternate"][hreflang="x-default"]`),
-    ).toHaveAttribute('href', `${SITE_URL}/pt/fontes/`);
+      page.locator(
+        `link[rel="alternate"][hreflang="x-default"][href="${SITE_URL}/pt/fontes/"]`,
+      ),
+    ).toHaveCount(1);
 
     // O canonical aponta para a própria página (pt).
     const canonical = page.locator('link[rel="canonical"]');
