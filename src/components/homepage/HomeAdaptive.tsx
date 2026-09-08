@@ -19,6 +19,8 @@ interface HomeAdaptiveProps {
   locale: string;
   spotsData: HomepageSpotData[];
   maxTs: number | null;
+  /** Build-time clock for HeroTicker freshness (React #418). */
+  bakedAtMs?: number;
   spotCount: number;
   sportsCount: number;
   /** IH buoy layer state from pipeline-meta.json (ticker diagnostics). */
@@ -31,6 +33,7 @@ export default function HomeAdaptive({
   locale,
   spotsData,
   maxTs,
+  bakedAtMs,
   spotCount,
   sportsCount,
   buoyLayer,
@@ -60,6 +63,7 @@ export default function HomeAdaptive({
         locale={locale}
         spotsData={spotsData}
         maxTs={maxTs}
+        bakedAtMs={bakedAtMs}
         variant={isReturning ? 'compact' : 'featured'}
         buoyLayer={buoyLayer}
         coastalWarningsLayer={coastalWarningsLayer}

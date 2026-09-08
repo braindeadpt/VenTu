@@ -26,6 +26,8 @@ export default async function HomePage({
   const spotMaxTs = timestamps.length > 0 ? Math.max(...timestamps) : null;
   const pipelineMeta = loadPipelineMeta();
   const maxTs = resolveDisplayUpdatedTs(pipelineMeta, spotMaxTs);
+  // Build-time clock for HeroTicker freshness (React #418) — same pattern as spot pages.
+  const bakedAtMs = Date.now();
 
   return (
     <div className="min-h-screen bg-bg-base">
@@ -40,6 +42,7 @@ export default async function HomePage({
         locale={locale}
         spotsData={spotsData}
         maxTs={maxTs}
+        bakedAtMs={bakedAtMs}
         spotCount={spotsData.length}
         sportsCount={7}
         buoyLayer={pipelineMeta?.buoyLayer ?? null}

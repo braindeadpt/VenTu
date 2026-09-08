@@ -1,3 +1,6 @@
+'use client';
+
+import { useEffect, useState } from 'react';
 import { AlertTriangle, Anchor } from 'lucide-react';
 import {
   formatForecastUpdatedParts,
@@ -23,6 +26,12 @@ interface HeroTickerProps {
   buoyLayer?: BuoyLayerMeta | null;
   /** Coastal warnings (IH) layer — fetch/em vigor/cobertura. */
   coastalWarningsLayer?: CoastalWarningsLayerMeta | null;
+  /**
+   * Build-time clock from the server page (SSG). Freshness dot / age gates use
+   * this until mount so the first client paint matches the baked HTML
+   * (React #418); after mount the live clock takes over.
+   */
+  bakedAtMs?: number;
 }
 
 const SEP = <span aria-hidden className="text-fg-subtle/40">·</span>;
@@ -65,15 +74,24 @@ export default function HeroTicker({
   statusLine,
   buoyLayer,
   coastalWarningsLayer,
+  bakedAtMs,
 }: HeroTickerProps) {
   const isPt = locale === 'pt';
-  const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
+  // Pin freshness to the bake clock until mount (same pattern as SpotDetailClient).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  const freshnessNowMs = mounted ? undefined : bakedAtMs;
+
+  const ageHours =
+    updatedAtTs != null ? getAgeHours(updatedAtTs, freshnessNowMs) : null;
   const updated =
     updatedAtTs != null ? formatForecastUpdatedParts(updatedAtTs, locale) : null;
   const buoyStatus = buoyLayer && buoyLayer.status !== 'ok' ? buoyLayer.status : null;
   // Streak down/stale (só down/stale com streak > 0 — no-key nunca conta):
   // «há quantas horas a onda observada está degradada», do pipeline-meta.
-  const buoyDowntime = deriveBuoyLayerDowntime(buoyLayer);
+  const buoyDowntime = deriveBuoyLayerDowntime(buoyLayer, freshnessNowMs);
   const coastalStatus =
     coastalWarningsLayer && coastalWarningsLayer.status !== 'ok'
       ? coastalWarningsLayer.status
@@ -113,6 +131,7 @@ export default function HeroTicker({
         >
           <span
             aria-hidden
+            suppressHydrationWarning
             className={`inline-block w-1.5 h-1.5 rounded-full ${freshnessDotClass(ageHours)}`}
           />
           {updated ? (
@@ -164,11 +183,11 @@ export default function HeroTicker({
               isPt
                 ? `Camada de avisos costeiros (IH) ${coastalStatus === 'down' ? 'sem dados' : 'desactualizada'}` +
                   (coastalWarningsLayer?.fetchedAt
-                    ? ` — última fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT')}`
+                    ? ` — última fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon' })}`
                     : '')
                 : `Coastal warnings (IH) layer ${coastalStatus === 'down' ? 'down' : 'stale'}` +
                   (coastalWarningsLayer?.fetchedAt
-                    ? ` — last fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB')}`
+                    ? ` — last fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB', { timeZone: 'Europe/Lisbon' })}`
                     : '')
             }
           >
@@ -189,12 +208,12 @@ export default function HeroTicker({
                 ? `${coastalActive} avisos à navegação costeiros (IH) em vigor · ` +
                   `${coastalWarningsLayer?.coveredSpots ?? 0} spots cobertos` +
                   (coastalWarningsLayer?.fetchedAt
-                    ? ` · fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT')}`
+                    ? ` · fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT', { timeZone: 'Europe/Lisbon' })}`
                     : '')
                 : `${coastalActive} coastal navigation warnings (IH) in force · ` +
                   `${coastalWarningsLayer?.coveredSpots ?? 0} spots covered` +
                   (coastalWarningsLayer?.fetchedAt
-                    ? ` · fetched ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB')}`
+                    ? ` · fetched ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB', { timeZone: 'Europe/Lisbon' })}`
                     : '')
             }
           >

@@ -94,6 +94,8 @@ const HERO_SPORT_FILTERS = MAP_SPORT_FILTERS.filter((f) =>
   spotsData: HomepageSpotData[];
   maxTs: number | null;
   variant?: 'featured' | 'compact';
+  /** Build-time clock for HeroTicker freshness (React #418). */
+  bakedAtMs?: number;
   /** IH buoy layer state from pipeline-meta.json (ticker diagnostics). */
   buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
   /** Coastal warnings (IH) layer state from pipeline-meta.json (ticker). */
@@ -105,6 +107,7 @@ export default function HomepageMapHero({
   spotsData,
   maxTs,
   variant = 'featured',
+  bakedAtMs,
   buoyLayer,
   coastalWarningsLayer,
 }: HomepageMapHeroProps) {
@@ -420,13 +423,16 @@ export default function HomepageMapHero({
 
         >
 
-          <div className="max-w-7xl mx-auto">            <HeroTicker
+          <div className="max-w-7xl mx-auto">
+            <HeroTicker
               locale={locale}
               updatedAtTs={maxTs}
               statusLine={liveLine}
+              bakedAtMs={bakedAtMs}
               buoyLayer={buoyLayer}
               coastalWarningsLayer={coastalWarningsLayer}
             />
+
 
           </div>
 
