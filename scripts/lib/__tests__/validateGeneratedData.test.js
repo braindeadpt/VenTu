@@ -116,12 +116,24 @@ function validIsobaths() {
   };
 }
 
-function runValidator(dir) {
-  const r = spawnSync(process.execPath, [VALIDATOR, '--mode=observations'], {
-    env: { ...process.env, VENTU_DATA_DIR: dir },
-    encoding: 'utf8',
-  });
+function runValidator(dir, extraArgs = []) {
+  const r = spawnSync(
+    process.execPath,
+    [VALIDATOR, '--mode=observations', ...extraArgs],
+    { env: { ...process.env, VENTU_DATA_DIR: dir }, encoding: 'utf8' },
+  );
   return { code: r.status ?? 1, out: `${r.stdout || ''}${r.stderr || ''}` };
+}
+
+/** Rewrites the fixture ih-tides.json fetchedAt to a given age in hours. */
+function ageTides(dir, ageHours) {
+  fs.writeFileSync(
+    path.join(dir, 'ih-tides.json'),
+    JSON.stringify({
+      fetchedAt: new Date(Date.now() - ageHours * 3_600_000).toISOString(),
+      spotMapping: { nazare: {} },
+    }),
+  );
 }
 
 describe('validate-generated-data — isobaths-contours.json', () => {
@@ -623,5 +635,41 @@ describe('validate-generated-data - splitFiles nomeia os orfaos (nao so conta)',
     expect(out).toMatch(/13 file\(s\) without key: /);
     expect(out).toMatch(/\.\.\. and 3 more/);
     expect(out.match(/orphan-\d+/g)).toHaveLength(10);
+  });
+});
+
+describe('validate-generated-data — ih-tides soft gate (--tides-soft-gate)', () => {
+  it('marés velhas (>= 7 dias) SEM a flag → warn-only, exit 0 (Open-Meteo nunca bloqueado)', () => {
+    const dir = makeDataDir();
+    ageTides(dir, 170); // 7.1 dias
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/ttl\.ih-tides: fetchedAt .* old \(>24h\)/);
+    expect(out).not.toMatch(/SOFT gate/);
+  });
+
+  it('marés velhas (>= 7 dias) COM a flag → exit 2 (run falha, push continua)', () => {
+    const dir = makeDataDir();
+    ageTides(dir, 170);
+    const { code, out } = runValidator(dir, ['--tides-soft-gate']);
+    expect(code).toBe(2);
+    expect(out).toMatch(/SOFT gate problem\(s\)/);
+    expect(out).toMatch(/>=168h = 1 semana/);
+  });
+
+  it('marés com 3 dias COM a flag → exit 0 (ainda dentro da janela do soft gate)', () => {
+    const dir = makeDataDir();
+    ageTides(dir, 72);
+    const { code, out } = runValidator(dir, ['--tides-soft-gate']);
+    expect(code).toBe(0);
+    expect(out).toMatch(/ttl\.ih-tides: fetchedAt .* old \(>24h\)/); // warn continua
+    expect(out).not.toMatch(/SOFT gate/);
+  });
+
+  it('marés frescas COM a flag → exit 0 sem warnings de TTL', () => {
+    const dir = makeDataDir();
+    const { code, out } = runValidator(dir, ['--tides-soft-gate']);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/ttl\.ih-tides/);
   });
 });

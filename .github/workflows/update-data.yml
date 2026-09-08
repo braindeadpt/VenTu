@@ -301,6 +301,40 @@ jobs:
         if: needs.update-conditions.outputs.mode == 'full'
         run: node scripts/verify-pipeline-freshness.js
 
+  # Soft gate de marés: quando o ih-tides.json está morto há >= 7 dias (168h)
+  # o run falha de propósito (visibilidade) mas o push do Open-Meteo NÃO é
+  # bloqueado — este job não é dependência de commit-and-push. O validate-data
+  # (acima) corre sem --tides-soft-gate (marés warn-only): um outage IH de dias
+  # não pára as previsões; uma semana sem leituras é problema real e fica
+  # vermelho no Actions em vez de só nos logs.
+  validate-tides-soft-gate:
+    if: needs.update-conditions.outputs.mode != 'skip'
+    needs: update-conditions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+
+      - name: Download fresh data artifact
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: ventu-data
+          path: /tmp/ventu-data
+
+      - name: Stage fresh data into public/data
+        run: |
+          rm -rf public/data
+          mkdir -p public/data
+          cp -a /tmp/ventu-data/. public/data/
+
+      - name: Validate ih-tides soft gate (7 days stale -> fail the run, not the push)
+        run: node scripts/validate-generated-data.js --mode=${{ needs.update-conditions.outputs.mode }} --tides-soft-gate
+
   # ── 3. Commit and push — only after the validation gate passed ──
   commit-and-push:
     if: needs.update-conditions.outputs.mode != 'skip'

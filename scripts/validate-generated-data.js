@@ -10,8 +10,15 @@
  *
  * Usage:
  *   node scripts/validate-generated-data.js [--mode full|observations|skip]
+ *   [--tides-soft-gate]
  * Env: VENTU_MODE overrides --mode; VENTU_DATA_DIR overrides the data root
  * (used by tests — the default is ./public/data).
+ *
+ * Exit codes: 1 = hard failure (schema/TTL — blocks the push); 2 = SOFT gate
+ * failure (--tides-soft-gate only: ih-tides stale >= 7 days — the run fails
+ * for visibility but the Open-Meteo push MUST still happen). validate-data
+ * runs WITHOUT the flag (tides warn-only); the separate validate-tides-soft-gate
+ * job in update-data.yml runs WITH it and is not a dependency of the push.
  */
 
 const fs = require('fs');
@@ -37,9 +44,11 @@ const { auditSpotDescriptions } = require('./lib/spotDescriptionAudit.js');
 
 const errors = [];
 const warnings = [];
+const softErrors = [];
 const checks = [];
 const fail = (msg) => errors.push(msg);
 const warn = (msg) => warnings.push(msg);
+const softFail = (msg) => softErrors.push(msg);
 const check = (name, cond, detail) => {
   checks.push(name);
   if (!cond) fail(`${name}: ${detail}`);
@@ -786,13 +795,20 @@ if (dawn !== undefined) {
 // exits 0 so a multi-day IH outage (e.g. 2026-07-29, fetchedAt 14+ days old)
 // must NOT brick Open-Meteo / obs. Schema checks above stay hard-fail.
 const TTL_TIDES_H = 24;
+/** Soft gate: uma semana sem leituras IH de marés (168h) falha o run. */
+const TTL_TIDES_SOFT_H = 168;
 const TTL_SPOTS_INDEX_H = 2.5;
 const TTL_OBS_H = 2;
+/** Ativado pelo job validate-tides-soft-gate (update-data.yml). */
+const TIDES_SOFT_GATE = process.argv.includes('--tides-soft-gate');
 if (tides !== undefined && isIso(tides.fetchedAt)) {
   const age = ageHours(tides.fetchedAt);
   checks.push('ttl.ih-tides');
   if (age > TTL_TIDES_H) {
     warn(`ttl.ih-tides: fetchedAt ${age.toFixed(1)}h old (>${TTL_TIDES_H}h) — IH outage; schema OK, pipeline continues`);
+  }
+  if (TIDES_SOFT_GATE && age >= TTL_TIDES_SOFT_H) {
+    softFail(`ttl.ih-tides: fetchedAt ${age.toFixed(1)}h old (>=${TTL_TIDES_SOFT_H}h = 1 semana) — camada de marés morta há uma semana; run falha de propósito (exit 2), o push do Open-Meteo NÃO é bloqueado`);
   }
 }
 if (buoys !== undefined && isIso(buoys.fetchedAt)) {
@@ -856,5 +872,10 @@ if (errors.length > 0) {
   console.error(`❌ validate-generated-data (mode=${MODE}): ${errors.length} problem(s)\n`);
   for (const e of errors) console.error(`  - ${e}`);
   process.exit(1);
+}
+if (softErrors.length > 0) {
+  console.error(`⚠️ validate-generated-data (mode=${MODE}): ${softErrors.length} SOFT gate problem(s) — exit 2 (run falha; o push do Open-Meteo continua)\n`);
+  for (const s of softErrors) console.error(`  - ${s}`);
+  process.exit(2);
 }
 console.log(`✅ validate-generated-data (mode=${MODE}): ${checks.length} checks OK — schema + TTL valid`);
