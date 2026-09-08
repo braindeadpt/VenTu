@@ -16,6 +16,13 @@ const NIGHT_INTERVAL_H = 4;
 const STALE_FULL_HOURS_DAY = 2.5;
 const STALE_FULL_HOURS_NIGHT = 4.5;
 
+/** Observations-only staleness for the external keep-alive (obs runs on odd
+ *  daytime hours, every 2h) — slightly more tolerant than full: obs is a
+ *  freshening layer on top of Open-Meteo, so losing it for a couple of hours
+ *  is a softer defect than losing the forecasts. */
+const OBS_STALE_HOURS_DAY = 3;
+const OBS_STALE_HOURS_NIGHT = 5;
+
 /** @typedef {'full' | 'observations' | 'skip'} UpdateMode */
 
 /**
@@ -123,6 +130,26 @@ function needsFullCatchUp(now = new Date(), lastFullUpdatedAt) {
 }
 
 /**
+ * Escalate to observations when the last obs merge is overdue. Used only by
+ * the external keep-alive (repository_dispatch ping) — the schedule itself
+ * picks observations by hour, so this is purely the resurrection path.
+ * @param {Date} now
+ * @param {string | null | undefined} lastObsUpdatedAt ISO timestamp
+ * @returns {boolean}
+ */
+function needsObsCatchUp(now = new Date(), lastObsUpdatedAt) {
+  if (!lastObsUpdatedAt) return false;
+  const lastTs = new Date(lastObsUpdatedAt).getTime();
+  if (Number.isNaN(lastTs)) return false;
+
+  const ageHours = (now.getTime() - lastTs) / 3600000;
+  const { hour } = getLisbonParts(now);
+  const isDaytime = hour >= DAY_START && hour <= DAY_END;
+  const threshold = isDaytime ? OBS_STALE_HOURS_DAY : OBS_STALE_HOURS_NIGHT;
+  return ageHours > threshold;
+}
+
+/**
  * @param {Date} [now]
  * @param {string | null | undefined} [lastFullUpdatedAt]
  * @returns {UpdateMode}
@@ -157,6 +184,7 @@ module.exports = {
   getLisbonParts,
   getUpdateMode,
   needsFullCatchUp,
+  needsObsCatchUp,
   resolveUpdateMode,
   isMultiModelEnabled,
   describeSchedule,

@@ -6,6 +6,7 @@ const {
   getUpdateMode,
   isMultiModelEnabled,
   needsFullCatchUp,
+  needsObsCatchUp,
   resolveUpdateMode,
   STALE_FULL_HOURS_DAY,
 } = require('../updateSchedule.js');
@@ -97,5 +98,33 @@ describe('resolveUpdateMode catch-up', () => {
 
   it('exports day stale threshold aligned with UI', () => {
     expect(STALE_FULL_HOURS_DAY).toBe(2.5);
+  });
+});
+
+describe('needsObsCatchUp (external keep-alive resurrection path)', () => {
+  it('escalates when obs merge is overdue in daytime (3h)', () => {
+    const now = new Date('2026-07-04T10:30:00Z'); // 11:30 Lisbon
+    const lastObs = '2026-07-04T07:00:00.000Z'; // 08:00 Lisbon — ~3.5h ago
+    expect(needsObsCatchUp(now, lastObs)).toBe(true);
+  });
+
+  it('does not resurrect when obs are fresh', () => {
+    const now = new Date('2026-07-04T10:30:00Z');
+    const lastObs = '2026-07-04T09:05:00.000Z'; // ~1.4h ago
+    expect(needsObsCatchUp(now, lastObs)).toBe(false);
+  });
+
+  it('uses the night threshold (5h) outside daytime', () => {
+    const now = new Date('2026-07-04T02:00:00Z'); // 03:00 Lisbon
+    const lastObs = '2026-07-03T19:30:00.000Z'; // ~6.5h ago
+    expect(needsObsCatchUp(now, lastObs)).toBe(true);
+    // just under the night threshold stays dormant
+    const lastObsNightFresh = '2026-07-03T22:30:00.000Z'; // ~3.5h ago
+    expect(needsObsCatchUp(now, lastObsNightFresh)).toBe(false);
+  });
+
+  it('treats missing timestamps as no-op (never resurrects blindly)', () => {
+    expect(needsObsCatchUp(new Date('2026-07-04T10:30:00Z'), null)).toBe(false);
+    expect(needsObsCatchUp(new Date('2026-07-04T10:30:00Z'), 'not-a-date')).toBe(false);
   });
 });

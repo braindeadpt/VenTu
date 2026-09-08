@@ -1,0 +1,101 @@
+# External keep-alive for the data pipeline
+
+GitHub Actions `schedule` delivery is best-effort: events can be delayed
+(the 2026-09-08 incident: runs stuck 07:42 → 12:31 UTC while a manual
+dispatch succeeded in seconds) and a delayed run still queued at the next
+slot is dropped (coalesced). The pipeline survives single missed slots —
+the Lisbon-aware gate plus `needsFullCatchUp` resurrect it — but **cadence
+should not depend on GitHub's scheduler at all**. This document describes
+the external keep-alive that makes it independent.
+
+## How it works
+
+The workflow `Update VenTu Data` accepts a `repository_dispatch` event of
+type `ping` (`.github/workflows/update-data.yml`). An external scheduler
+(cron-job.org, Cloudflare Workers, any HTTP cron) POSTs a dispatch to
+GitHub once per interval; the workflow's gate decides what happens next.
+
+The ping is a **safety net, never a second scheduler**:
+
+| State | Gate decision |
+|-------|---------------|
+| Open-Meteo overdue (`fullUpdatedAt` older than 2.5 h day / 4.5 h night) | `full` run |
+| Obs merge overdue (`observationsUpdatedAt` older than 3 h day / 5 h night) | `observations` run |
+| Data fresh | `skip` — cheap no-op, no fetch, no double-run |
+
+Because the gate skips when data is fresh, a ping can never double-run a
+healthy hour — the GitHub `schedule` crons (`:17`/`:47`) keep owning normal
+cadence, and the external ping only resurrects the pipeline when it is
+actually overdue. That is the whole point: normal operation is unchanged;
+the failure mode "GitHub forgot to run us" becomes impossible.
+
+The gate branch lives in `scripts/should-run-data-update.js`
+(`VENTU_KEEPALIVE=1`, set by the workflow for `repository_dispatch`
+events). An optional `client_payload.force_mode` (`full` or
+`observations`) forces a run regardless of freshness, mirroring the
+`workflow_dispatch` input — useful for remote ops.
+
+## 1. cron-job.org (recommended — zero infra)
+
+1. Create an account and a new job.
+2. **URL**: `https://api.github.com/repos/braindeadpt/VenTu/dispatches`
+3. **Method**: POST
+4. **Headers**:
+   - `Authorization: Bearer <PAT>`
+   - `Accept: application/vnd.github+json`
+   - `Content-Type: application/json`
+   - `User-Agent: cron-job.org-keepalive`
+5. **Payload**: `{"event_type": "ping"}`
+6. **Schedule**: every 30 minutes, on a minute that does not collide with
+   the `:17`/`:47` GitHub crons (e.g. `5,35`). Frequency only affects how
+   fast the pipeline resurrects after an outage — the gate prevents any
+   double-run — so 30 min is a good cost/coverage balance.
+
+### Required token
+
+A fine-grained PAT scoped to `braindeadpt/VenTu` with **Contents: Read
+and write** (repository_dispatch is a contents-write action), or a classic
+PAT with the `repo` scope. Store it as a secret in cron-job.org — never in
+the repo. A scoped, repo-limited token is strongly preferred; it can do
+nothing beyond dispatching this workflow.
+
+### Verified working
+
+```bash
+curl -sS -X POST https://api.github.com/repos/braindeadpt/VenTu/dispatches \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Accept: application/vnd.github+json" \
+  -H "Content-Type: application/json" \
+  -d '{"event_type": "ping"}' \
+  -w '%{http_code}\n'   # 204 = accepted
+```
+
+## 2. Serverless alternative (Cloudflare Workers)
+
+A Worker with a cron trigger (`0 */30 * * * *`) that runs the same POST is
+functionally identical to cron-job.org. Any HTTP scheduler works — the
+contract is just one authenticated POST per interval. The value of
+**two** independent schedulers (GitHub `schedule` + one external) is that
+they fail independently; running the keep-alive on a third platform is
+over-engineering unless cron-job.org itself becomes the concern.
+
+## Verification
+
+- `npx vitest run scripts/lib/__tests__/updateSchedule.test.js` — covers
+  `needsObsCatchUp` (day/night thresholds, fresh, missing timestamps).
+- Simulate a ping locally:
+  `VENTU_KEEPALIVE=1 node scripts/should-run-data-update.js` with a stale
+  `public/data/pipeline-meta.json` → prints `mode: full`; with a fresh one
+  → `mode: skip` with the keep-alive message.
+- End-to-end: POST the dispatch above, then
+  `gh run list --workflow=update-data.yml` — the run appears within a
+  minute and either runs the pipeline or exits at the gate with `mode:
+  skip` (a healthy-hour ping).
+
+## Why not just remove the GitHub crons?
+
+Two independent triggers are the point: GitHub `schedule` + external ping
+fail independently, and the ping's resurrection-only semantics make the
+pair idempotent — both firing at once is just one run plus one cheap
+skip. Keeping both also means the external provider can be swapped (or
+dropped) without touching cadence.

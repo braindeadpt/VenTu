@@ -19,6 +19,15 @@ on:
         description: 'auto | full | observations (force Open-Meteo or obs-only)'
         required: false
         default: auto
+  repository_dispatch:
+    # External keep-alive (cron-job.org or any serverless scheduler posting a
+    # repository_dispatch — see docs/EXTERNAL-KEEPALIVE.md). The ping itself
+    # never schedules a run: the gate treats it as a resurrection check that
+    # only fires when the pipeline is overdue, so cadence keeps working even
+    # when GitHub's schedule delivery is delayed or dropped, without ever
+    # double-running a healthy hour. Optional client_payload.force_mode
+    # (full|observations) still forces, mirroring workflow_dispatch.
+    types: [ping]
 
 permissions:
   contents: write
@@ -49,7 +58,8 @@ jobs:
       - name: Schedule gate (Europe/Lisbon)
         id: gate
         env:
-          VENTU_FORCE_MODE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force_mode != 'auto' && github.event.inputs.force_mode || '' }}
+          VENTU_FORCE_MODE: ${{ (github.event_name == 'workflow_dispatch' && github.event.inputs.force_mode != 'auto' && github.event.inputs.force_mode) || (github.event_name == 'repository_dispatch' && github.event.client_payload.force_mode != 'auto' && github.event.client_payload.force_mode) || '' }}
+          VENTU_KEEPALIVE: ${{ github.event_name == 'repository_dispatch' && '1' || '' }}
         run: node scripts/should-run-data-update.js
 
       - name: Setup Node.js
