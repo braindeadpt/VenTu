@@ -86,26 +86,16 @@
       "modelCount": 4
     },
     "updatedAt": "2026-09-08T17:51:12.820Z",
-    "observed": {
-      "windSpeedKt": 6,
-      "windDirDeg": 270,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
-      "distanceKm": 12,
-      "observedAt": "2026-09-08T16:00:00.000Z",
-      "source": "ipma"
-    },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 60,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -132,8 +122,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 60,
       "wmoDistanceKm": 55.8
     },
@@ -239,26 +229,16 @@
       "modelCount": 4
     },
     "updatedAt": "2026-09-08T17:51:24.752Z",
-    "observed": {
-      "windSpeedKt": 6,
-      "windDirDeg": 270,
-      "windCardinal": "W",
-      "windCardinalEn": "W",
-      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
-      "distanceKm": 8.4,
-      "observedAt": "2026-09-08T16:00:00.000Z",
-      "source": "ipma"
-    },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 56.8,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -285,8 +265,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 56.8,
       "wmoDistanceKm": 58.6
     },
@@ -387,25 +367,26 @@
     },
     "updatedAt": "2026-09-08T17:51:36.516Z",
     "observed": {
-      "windSpeedKt": 6,
+      "windSpeedKt": 2,
       "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
-      "distanceKm": 5.8,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 15.4,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 52.3,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -432,18 +413,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 52.3,
       "wmoDistanceKm": 59.9
     },
     "windBias": {
-      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 5.2,
-      "mae": 5.6,
-      "rmse": 7.3,
-      "n": 135
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "castelo-neiva": {
@@ -534,25 +515,26 @@
     },
     "updatedAt": "2026-09-08T17:51:48.445Z",
     "observed": {
-      "windSpeedKt": 6,
+      "windSpeedKt": 2,
       "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
-      "distanceKm": 0.6,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 11.3,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 50.2,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -579,18 +561,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 50.2,
       "wmoDistanceKm": 65.1
     },
     "windBias": {
-      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 5.2,
-      "mae": 5.6,
-      "rmse": 7.3,
-      "n": 135
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "amorosa": {
@@ -678,25 +660,26 @@
     },
     "updatedAt": "2026-09-08T17:52:00.200Z",
     "observed": {
-      "windSpeedKt": 6,
+      "windSpeedKt": 2,
       "windDirDeg": 270,
       "windCardinal": "W",
       "windCardinalEn": "W",
-      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
-      "distanceKm": 5.8,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 6.8,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 44.1,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -723,18 +706,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 44.1,
       "wmoDistanceKm": 67
     },
     "windBias": {
-      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 5.2,
-      "mae": 5.6,
-      "rmse": 7.3,
-      "n": 135
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "cabedelo": {
@@ -833,15 +816,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 42.3,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -868,8 +851,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 42.3,
       "wmoDistanceKm": 69.6
     },
@@ -877,9 +860,9 @@
       "station": "Viana Castelo, Chafé",
       "source": "ipma",
       "me": 0.2,
-      "mae": 1.7,
-      "rmse": 2.1,
-      "n": 228
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "foil-cabedelo": {
@@ -978,15 +961,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 42.3,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -1013,8 +996,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 42.3,
       "wmoDistanceKm": 69.6
     },
@@ -1022,9 +1005,9 @@
       "station": "Viana Castelo, Chafé",
       "source": "ipma",
       "me": 0.2,
-      "mae": 1.7,
-      "rmse": 2.1,
-      "n": 228
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "cabedelo-wakepark": {
@@ -1123,15 +1106,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 43.6,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -1158,8 +1141,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 43.6,
       "wmoDistanceKm": 68.5
     },
@@ -1167,9 +1150,9 @@
       "station": "Viana Castelo, Chafé",
       "source": "ipma",
       "me": 0.2,
-      "mae": 1.7,
-      "rmse": 2.1,
-      "n": 228
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "rodanho": {
@@ -1268,15 +1251,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 41.2,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -1303,8 +1286,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 41.2,
       "wmoDistanceKm": 71
     },
@@ -1312,9 +1295,9 @@
       "station": "Viana Castelo, Chafé",
       "source": "ipma",
       "me": 0.2,
-      "mae": 1.7,
-      "rmse": 2.1,
-      "n": 228
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "ofir": {
@@ -1405,26 +1388,26 @@
     },
     "updatedAt": "2026-09-08T17:52:59.555Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 2.5,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 11.3,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 30.5,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -1451,18 +1434,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 30.5,
       "wmoDistanceKm": 82.9
     },
     "windBias": {
-      "station": "Esposende (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "esposende": {
@@ -1553,26 +1536,26 @@
     },
     "updatedAt": "2026-09-08T17:53:11.736Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 1,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 13.1,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 28.9,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -1599,18 +1582,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 28.9,
       "wmoDistanceKm": 84.3
     },
     "windBias": {
-      "station": "Esposende (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "esposende-praia": {
@@ -1701,26 +1684,26 @@
     },
     "updatedAt": "2026-09-08T17:53:36.086Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 1.4,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 12.5,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 29.4,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -1747,18 +1730,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 29.4,
       "wmoDistanceKm": 83.8
     },
     "windBias": {
-      "station": "Esposende (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "fao": {
@@ -1849,26 +1832,26 @@
     },
     "updatedAt": "2026-09-08T17:53:47.917Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 2,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 15.7,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 28,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -1895,18 +1878,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 28,
       "wmoDistanceKm": 87.1
     },
     "windBias": {
-      "station": "Esposende (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "apulia": {
@@ -1994,26 +1977,26 @@
     },
     "updatedAt": "2026-09-08T17:53:59.772Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 5.4,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 19.1,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 26.1,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -2040,18 +2023,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 26.1,
       "wmoDistanceKm": 90.3
     },
     "windBias": {
-      "station": "Esposende (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "povoa-varzim": {
@@ -2139,26 +2122,28 @@
     },
     "updatedAt": "2026-09-08T17:54:00.465Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
+      "windSpeedKt": 6,
+      "windDirDeg": 200,
+      "windDirMissing": false,
       "windCardinal": "S",
       "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 16.7,
-      "observedAt": "2026-09-08T16:00:00.000Z",
-      "source": "ipma"
+      "tempC": 19,
+      "stationName": "Porto (METAR)",
+      "distanceKm": 17,
+      "observedAt": "2026-09-08T18:30:00.000Z",
+      "source": "metar",
+      "metarIcao": "LPPR"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 19.8,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -2185,18 +2170,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 19.8,
       "wmoDistanceKm": 99.6
     },
     "windBias": {
-      "station": "Esposende (CIM)",
-      "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "station": "Porto (METAR)",
+      "source": "metar",
+      "me": 0.7,
+      "mae": 1.4,
+      "rmse": 1.6,
+      "n": 16
     }
   },
   "azurara": {
@@ -2295,15 +2280,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 20.2,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -2330,8 +2315,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 20.2,
       "wmoDistanceKm": 104
     },
@@ -2429,26 +2414,26 @@
     },
     "updatedAt": "2026-09-08T17:54:01.127Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.1,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 27.1,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -2475,18 +2460,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 27.1,
       "wmoDistanceKm": 119.7
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "matosinhos": {
@@ -2574,26 +2559,26 @@
     },
     "updatedAt": "2026-09-08T17:54:01.457Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 2.4,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 28.8,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -2620,18 +2605,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 28.8,
       "wmoDistanceKm": 121.5
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "cabedelo-douro": {
@@ -2719,26 +2704,26 @@
     },
     "updatedAt": "2026-09-08T17:54:01.785Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 2.3,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 32.8,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -2765,18 +2750,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 32.8,
       "wmoDistanceKm": 126.1
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "marina-afurada-foil": {
@@ -2864,26 +2849,26 @@
     },
     "updatedAt": "2026-09-08T17:54:02.115Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 3,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 33.7,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -2910,18 +2895,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 33.7,
       "wmoDistanceKm": 126.6
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "praia-da-lomba": {
@@ -3020,15 +3005,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 54.9,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -3055,8 +3040,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 54.9,
       "wmoDistanceKm": 144.2
     },
@@ -3154,26 +3139,26 @@
     },
     "updatedAt": "2026-09-08T17:54:02.775Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.4,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 34.3,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -3200,18 +3185,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 34.3,
       "wmoDistanceKm": 128.1
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "sereia-costa-verde": {
@@ -3299,26 +3284,26 @@
     },
     "updatedAt": "2026-09-08T17:54:03.106Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.7,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 34.6,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -3345,18 +3330,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 34.6,
       "wmoDistanceKm": 128.4
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "canide-sul": {
@@ -3444,26 +3429,26 @@
     },
     "updatedAt": "2026-09-08T17:54:03.436Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 5.2,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 35,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -3490,18 +3475,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 35,
       "wmoDistanceKm": 128.9
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "aguda": {
@@ -3589,26 +3574,26 @@
     },
     "updatedAt": "2026-09-08T17:54:03.765Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 11.9,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 40.1,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -3635,18 +3620,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 40.1,
       "wmoDistanceKm": 135.1
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "espinho": {
@@ -3745,15 +3730,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 44.7,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -3780,8 +3765,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 44.7,
       "wmoDistanceKm": 140.1
     },
@@ -3890,15 +3875,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 44.7,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -3925,8 +3910,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 44.7,
       "wmoDistanceKm": 140.3
     },
@@ -4035,15 +4020,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 45.1,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -4070,8 +4055,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 45.1,
       "wmoDistanceKm": 140.7
     },
@@ -4180,15 +4165,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 47,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -4215,8 +4200,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 47,
       "wmoDistanceKm": 142.9
     },
@@ -4325,15 +4310,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 48.2,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -4360,8 +4345,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 48.2,
       "wmoDistanceKm": 144.1
     },
@@ -4470,15 +4455,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 48.1,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -4505,8 +4490,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 48.1,
       "wmoDistanceKm": 144.2
     },
@@ -4615,15 +4600,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 49.4,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -4650,8 +4635,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 49.4,
       "wmoDistanceKm": 145.6
     },
@@ -4760,15 +4745,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 50.3,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -4795,8 +4780,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 50.3,
       "wmoDistanceKm": 146.6
     },
@@ -4905,15 +4890,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 51.5,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -4940,8 +4925,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 51.5,
       "wmoDistanceKm": 147.9
     },
@@ -5050,15 +5035,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 70.9,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -5085,8 +5070,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 70.9,
       "wmoDistanceKm": 138.6
     },
@@ -5195,15 +5180,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 68.5,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -5230,8 +5215,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 68.5,
       "wmoDistanceKm": 139.2
     },
@@ -5340,15 +5325,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 65.6,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -5375,8 +5360,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 65.6,
       "wmoDistanceKm": 140
     },
@@ -5485,15 +5470,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 69.6,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -5520,8 +5505,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 69.6,
       "wmoDistanceKm": 135.3
     },
@@ -5630,15 +5615,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 55.7,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -5665,8 +5650,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 55.7,
       "wmoDistanceKm": 152.3
     },
@@ -5775,15 +5760,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 74.6,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -5810,8 +5795,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 74.6,
       "wmoDistanceKm": 129.4
     },
@@ -5920,15 +5905,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 79.8,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -5955,8 +5940,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 79.8,
       "wmoDistanceKm": 124.3
     },
@@ -6089,7 +6074,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 91.3
     },
@@ -6228,7 +6213,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 78.3
     },
@@ -6367,7 +6352,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 71.7
     },
@@ -6506,7 +6491,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 61.7
     },
@@ -6609,17 +6594,6 @@
       "modelCount": 4
     },
     "updatedAt": "2026-09-08T17:54:10.663Z",
-    "observed": {
-      "windSpeedKt": 9,
-      "windDirDeg": 315,
-      "windCardinal": "NW",
-      "windCardinalEn": "NW",
-      "tempC": 23.8,
-      "stationName": "Leiria (Aeródromo)",
-      "distanceKm": 16.5,
-      "observedAt": "2026-09-08T16:00:00.000Z",
-      "source": "ipma"
-    },
     "observedWave": {
       "waveHeight": 1.0839799642562866,
       "wavePeriod": 9.199199676513672,
@@ -6645,7 +6619,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 40.3
     },
@@ -6776,7 +6750,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 78.1
     },
@@ -6915,7 +6889,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 12.4
     },
@@ -7053,7 +7027,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 14.8
     },
@@ -7191,7 +7165,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 14.8
     },
@@ -7329,7 +7303,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 17.8
     },
@@ -7467,7 +7441,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 14.5
     },
@@ -7605,7 +7579,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 20.3
     },
@@ -7743,7 +7717,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 22.1
     },
@@ -7881,7 +7855,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 23.6
     },
@@ -8019,7 +7993,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 27.4
     },
@@ -8158,7 +8132,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 53.3
     },
@@ -8297,7 +8271,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 65.1
     },
@@ -8436,7 +8410,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 66.1
     },
@@ -8575,7 +8549,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 66.6
     },
@@ -8714,7 +8688,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 67
     },
@@ -8853,7 +8827,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 67.4
     },
@@ -8992,7 +8966,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 68.1
     },
@@ -9131,17 +9105,17 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 71.1
     },
     "windBias": {
       "station": "Sintra/Tapada do Mouco",
       "source": "ipma",
-      "me": -0.6,
+      "me": -0.5,
       "mae": 1.9,
       "rmse": 2.3,
-      "n": 38
+      "n": 39
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -9270,7 +9244,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 85.3
     },
@@ -9409,7 +9383,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 89
     },
@@ -9548,7 +9522,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 94.8
     },
@@ -9687,7 +9661,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 92.7
     },
@@ -9794,26 +9768,28 @@
     },
     "updatedAt": "2026-09-08T17:54:18.218Z",
     "observed": {
-      "windSpeedKt": 3,
-      "windDirDeg": 90,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 23.2,
-      "stationName": "Terceira / Serra do Cume (DROTRH)",
-      "distanceKm": 4.6,
-      "observedAt": "2026-09-08T16:00:00.000Z",
-      "source": "ipma"
+      "windSpeedKt": 11,
+      "windDirDeg": 320,
+      "windDirMissing": false,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 27,
+      "stationName": "Lajes (METAR)",
+      "distanceKm": 4.2,
+      "observedAt": "2026-09-08T18:00:00.000Z",
+      "source": "metar",
+      "metarIcao": "LPLA"
     },
     "observedWave": {
-      "waveHeight": 0.86,
-      "wavePeriod": 12.5,
-      "waveDirection": 17,
-      "maxWaveHeight": 1.26,
-      "waterTemp": 24.4,
+      "waveHeight": 0.83,
+      "wavePeriod": 10,
+      "waveDirection": 34,
+      "maxWaveHeight": 1.36,
+      "waterTemp": 24.6,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 86.9,
-      "observedAt": "2026-09-08T17:19:05.000Z",
+      "observedAt": "2026-09-08T17:49:06.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.78,
@@ -9829,18 +9805,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 86.9,
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Terceira / Serra do Cume (DROTRH)",
-      "source": "ipma",
-      "me": 2.5,
-      "mae": 3.4,
-      "rmse": 4.1,
-      "n": 50
+      "station": "Lajes (METAR)",
+      "source": "metar",
+      "me": 2.4,
+      "mae": 3.5,
+      "rmse": 4.4,
+      "n": 13
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -9948,15 +9924,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.86,
-      "wavePeriod": 12.5,
-      "waveDirection": 17,
-      "maxWaveHeight": 1.26,
-      "waterTemp": 24.4,
+      "waveHeight": 0.83,
+      "wavePeriod": 10,
+      "waveDirection": 34,
+      "maxWaveHeight": 1.36,
+      "waterTemp": 24.6,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 78.2,
-      "observedAt": "2026-09-08T17:19:05.000Z",
+      "observedAt": "2026-09-08T17:49:06.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.78,
@@ -9972,7 +9948,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 78.2,
       "wmoDistanceKm": null
@@ -9983,7 +9959,7 @@
       "me": -0.1,
       "mae": 1.7,
       "rmse": 2.2,
-      "n": 49
+      "n": 50
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -10077,14 +10053,14 @@
     },
     "updatedAt": "2026-09-08T17:54:18.875Z",
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 0,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 23.5,
-      "stationName": "Oeiras / Vila Fria (CMO)",
-      "distanceKm": 6.9,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 10,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 17.9,
+      "stationName": "Sintra/Tapada do Mouco",
+      "distanceKm": 12.1,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
@@ -10112,17 +10088,17 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 98.6
     },
     "windBias": {
-      "station": "Oeiras / Vila Fria (CMO)",
+      "station": "Sintra/Tapada do Mouco",
       "source": "ipma",
-      "me": 4.9,
-      "mae": 5,
-      "rmse": 5.9,
-      "n": 98
+      "me": -0.5,
+      "mae": 1.9,
+      "rmse": 2.3,
+      "n": 39
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -10216,14 +10192,14 @@
     },
     "updatedAt": "2026-09-08T17:54:19.204Z",
     "observed": {
-      "windSpeedKt": 11,
-      "windDirDeg": 0,
-      "windCardinal": "N",
-      "windCardinalEn": "N",
-      "tempC": 23.5,
-      "stationName": "Oeiras / Vila Fria (CMO)",
-      "distanceKm": 6.1,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 7,
+      "windDirDeg": 315,
+      "windCardinal": "NW",
+      "windCardinalEn": "NW",
+      "tempC": 24.1,
+      "stationName": "Almada, P.Rainha",
+      "distanceKm": 12.6,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
@@ -10251,17 +10227,17 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 98.6
     },
     "windBias": {
-      "station": "Oeiras / Vila Fria (CMO)",
+      "station": "Almada, P.Rainha",
       "source": "ipma",
-      "me": 4.9,
-      "mae": 5,
-      "rmse": 5.9,
-      "n": 98
+      "me": -0.6,
+      "mae": 1.9,
+      "rmse": 2.4,
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -10390,7 +10366,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 100.1
     },
@@ -10400,7 +10376,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -10529,7 +10505,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 100.4
     },
@@ -10539,7 +10515,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -10668,7 +10644,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 101.8
     },
@@ -10678,7 +10654,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -10810,7 +10786,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 109
     },
@@ -10820,7 +10796,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -10949,7 +10925,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 101.5
     },
@@ -11088,7 +11064,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 98.9
     },
@@ -11098,7 +11074,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -11227,7 +11203,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 99.6
     },
@@ -11237,7 +11213,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -11366,7 +11342,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 102.8
     },
@@ -11376,7 +11352,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -11484,15 +11460,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.86,
-      "wavePeriod": 12.5,
-      "waveDirection": 17,
-      "maxWaveHeight": 1.26,
-      "waterTemp": 24.4,
+      "waveHeight": 0.83,
+      "wavePeriod": 10,
+      "waveDirection": 34,
+      "maxWaveHeight": 1.36,
+      "waterTemp": 24.6,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 84.1,
-      "observedAt": "2026-09-08T17:19:05.000Z",
+      "observedAt": "2026-09-08T17:49:06.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.78,
@@ -11508,7 +11484,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 84.1,
       "wmoDistanceKm": null
@@ -11651,7 +11627,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 117.9
     },
@@ -11661,7 +11637,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -11793,7 +11769,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 117.9
     },
@@ -11803,7 +11779,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -11935,7 +11911,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 117.1
     },
@@ -11945,7 +11921,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -12077,7 +12053,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 121.5
     },
@@ -12219,7 +12195,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 136.3
     },
@@ -12361,7 +12337,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 149.2
     },
@@ -12476,15 +12452,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 128.9,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12512,8 +12488,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 128.9,
       "wmoDistanceKm": 196
     },
@@ -12622,15 +12598,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 77.5,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -12657,8 +12633,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 77.5,
       "wmoDistanceKm": 122.5
     },
@@ -12770,15 +12746,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 26,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12805,8 +12781,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 26,
       "wmoDistanceKm": 163.2
     },
@@ -12918,15 +12894,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 6.4,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -12953,8 +12929,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 6.4,
       "wmoDistanceKm": 180.9
     },
@@ -13066,15 +13042,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 10.8,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13101,8 +13077,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 10.8,
       "wmoDistanceKm": 185.5
     },
@@ -13321,15 +13297,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 14.4,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13356,8 +13332,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 14.4,
       "wmoDistanceKm": 193.4
     },
@@ -13683,15 +13659,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 21.1,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13707,7 +13683,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 21.1,
       "wmoDistanceKm": null
@@ -13933,15 +13909,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 25.5,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -13957,7 +13933,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 25.5,
       "wmoDistanceKm": null
@@ -14076,15 +14052,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 32.9,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14100,7 +14076,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.8,
+      "ihAgeHours": 1.6,
       "wmoAgeHours": null,
       "ihDistanceKm": 32.9,
       "wmoDistanceKm": null
@@ -14326,15 +14302,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 46,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14362,8 +14338,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 46,
       "wmoDistanceKm": 198.8
     },
@@ -14475,15 +14451,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 48.3,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14511,8 +14487,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 48.3,
       "wmoDistanceKm": 197.7
     },
@@ -14624,15 +14600,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 54.5,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14660,8 +14636,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 54.5,
       "wmoDistanceKm": 194.5
     },
@@ -14773,15 +14749,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 63.9,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14809,8 +14785,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 63.9,
       "wmoDistanceKm": 192.9
     },
@@ -14922,15 +14898,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 64.9,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -14958,8 +14934,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 64.9,
       "wmoDistanceKm": 193.6
     },
@@ -15071,15 +15047,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 70.2,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15107,8 +15083,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 70.2,
       "wmoDistanceKm": 191.4
     },
@@ -15220,15 +15196,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 74.9,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15256,8 +15232,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 74.9,
       "wmoDistanceKm": 188.2
     },
@@ -15369,15 +15345,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 80.3,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15405,8 +15381,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 80.3,
       "wmoDistanceKm": 189.6
     },
@@ -15518,15 +15494,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 83.9,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15554,8 +15530,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 83.9,
       "wmoDistanceKm": 188.7
     },
@@ -15667,15 +15643,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 91.3,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15703,8 +15679,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 91.3,
       "wmoDistanceKm": 188.1
     },
@@ -15816,15 +15792,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 92.5,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -15852,8 +15828,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 92.5,
       "wmoDistanceKm": 190.2
     },
@@ -16001,8 +15977,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 76.7,
       "wmoDistanceKm": 171.1
     },
@@ -16150,8 +16126,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 80.5,
       "wmoDistanceKm": 174.4
     },
@@ -16299,8 +16275,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 84.2,
       "wmoDistanceKm": 177.9
     },
@@ -16437,8 +16413,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 94.9,
       "wmoDistanceKm": 187.9
     }
@@ -16578,8 +16554,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 60.2,
       "wmoDistanceKm": 155.6
     },
@@ -16724,8 +16700,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 53.8,
       "wmoDistanceKm": 88.8
     },
@@ -16870,8 +16846,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 50.4,
       "wmoDistanceKm": 88.5
     },
@@ -17016,8 +16992,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 47,
       "wmoDistanceKm": 90.8
     },
@@ -17162,8 +17138,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 46.2,
       "wmoDistanceKm": 89.5
     },
@@ -17311,8 +17287,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 61.2,
       "wmoDistanceKm": 156.4
     },
@@ -17460,8 +17436,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 68.3,
       "wmoDistanceKm": 163.5
     },
@@ -17609,8 +17585,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 68.3,
       "wmoDistanceKm": 163.5
     },
@@ -17758,8 +17734,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 71,
       "wmoDistanceKm": 166
     },
@@ -17907,8 +17883,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 71.9,
       "wmoDistanceKm": 166.7
     },
@@ -18045,8 +18021,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 96.3,
       "wmoDistanceKm": 188.9
     }
@@ -18175,8 +18151,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 92.2,
       "wmoDistanceKm": 184.8
     }
@@ -18316,8 +18292,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 12.8,
       "wmoDistanceKm": 104.6
     },
@@ -18465,8 +18441,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 21.6,
       "wmoDistanceKm": 92.9
     },
@@ -18614,8 +18590,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 11.1,
       "wmoDistanceKm": 106
     },
@@ -18763,8 +18739,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 14.5,
       "wmoDistanceKm": 108.9
     },
@@ -18912,8 +18888,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 11,
       "wmoDistanceKm": 95.6
     },
@@ -19061,8 +19037,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 15.1,
       "wmoDistanceKm": 94.4
     },
@@ -19210,8 +19186,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 33.6,
       "wmoDistanceKm": 90.6
     },
@@ -19359,8 +19335,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 37.2,
       "wmoDistanceKm": 91
     },
@@ -19505,8 +19481,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 41.9,
       "wmoDistanceKm": 90.2
     },
@@ -19654,8 +19630,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 87.6,
       "wmoDistanceKm": 180.8
     },
@@ -19792,8 +19768,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 94,
       "wmoDistanceKm": 186.2
     }
@@ -19886,23 +19862,17 @@
     },
     "updatedAt": "2026-09-08T17:57:27.075Z",
     "observed": {
-      "windSpeedKt": 3,
-      "windDirDeg": 90,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 26.7,
-      "stationName": "Santa Maria / Praia Formosa (DROTRH)",
-      "distanceKm": 1.6,
-      "observedAt": "2026-09-08T16:00:00.000Z",
-      "source": "ipma"
-    },
-    "windBias": {
-      "station": "Santa Maria / Praia Formosa (DROTRH)",
-      "source": "ipma",
-      "me": -4.9,
-      "mae": 5.5,
-      "rmse": 6.1,
-      "n": 42
+      "windSpeedKt": 8,
+      "windDirDeg": 270,
+      "windDirMissing": false,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 26,
+      "stationName": "Santa Maria (METAR)",
+      "distanceKm": 6.3,
+      "observedAt": "2026-09-08T18:30:00.000Z",
+      "source": "metar",
+      "metarIcao": "LPAZ"
     }
   },
   "ponta-delgada": {
@@ -20111,15 +20081,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 30,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -20135,7 +20105,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 30,
       "wmoDistanceKm": null
@@ -20254,15 +20224,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 11.1,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -20278,7 +20248,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 11.1,
       "wmoDistanceKm": null
@@ -20397,15 +20367,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 47.8,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -20421,7 +20391,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 47.8,
       "wmoDistanceKm": null
@@ -20540,15 +20510,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 46.2,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -20564,7 +20534,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 46.2,
       "wmoDistanceKm": null
@@ -20683,15 +20653,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 2.5,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -20707,7 +20677,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 2.5,
       "wmoDistanceKm": null
@@ -20826,15 +20796,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 32.3,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -20850,7 +20820,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 32.3,
       "wmoDistanceKm": null
@@ -20969,15 +20939,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 20,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -20993,7 +20963,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 20,
       "wmoDistanceKm": null
@@ -21109,15 +21079,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 77.9,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -21144,8 +21114,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 77.9,
       "wmoDistanceKm": 126.1
     },
@@ -21243,26 +21213,26 @@
     },
     "updatedAt": "2026-09-08T17:57:30.316Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 15.6,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 20.5,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -21289,18 +21259,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 20.5,
       "wmoDistanceKm": 108.6
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "santa-cruz": {
@@ -21423,7 +21393,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 49
     },
@@ -21561,7 +21531,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 29.9
     },
@@ -21699,7 +21669,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 35.3
     },
@@ -21838,7 +21808,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 8.3
     },
@@ -21977,7 +21947,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 68.3
     },
@@ -22116,7 +22086,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 68.8
     },
@@ -22255,7 +22225,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 69.3
     },
@@ -22394,7 +22364,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 120.9
     },
@@ -22404,7 +22374,7 @@
       "me": -0.6,
       "mae": 1.9,
       "rmse": 2.4,
-      "n": 276
+      "n": 277
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -22512,15 +22482,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 22.3,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -22547,8 +22517,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 22.3,
       "wmoDistanceKm": 167.4
     },
@@ -22660,15 +22630,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 16.3,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -22695,8 +22665,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 16.3,
       "wmoDistanceKm": 174.4
     },
@@ -22808,15 +22778,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.58,
-      "wavePeriod": 10,
-      "waveDirection": 298,
-      "maxWaveHeight": 1.87,
-      "waterTemp": 18.8,
+      "waveHeight": 1.59,
+      "wavePeriod": 9.1,
+      "waveDirection": 295,
+      "maxWaveHeight": 2.36,
+      "waterTemp": 18.6,
       "stationName": "CSA83/1D",
       "stationArea": "Sines",
       "distanceKm": 15.4,
-      "observedAt": "2026-09-08T16:56:45.000Z",
+      "observedAt": "2026-09-08T17:26:45.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 0.01,
@@ -22843,8 +22813,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.8,
-      "wmoAgeHours": 3.7,
+      "ihAgeHours": 1.6,
+      "wmoAgeHours": 4,
       "ihDistanceKm": 15.4,
       "wmoDistanceKm": 195.6
     },
@@ -22992,8 +22962,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 9.1,
       "wmoDistanceKm": 103.9
     },
@@ -23140,8 +23110,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 29.6,
       "wmoDistanceKm": 124.6
     },
@@ -23289,8 +23259,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 67,
       "wmoDistanceKm": 162.1
     },
@@ -23435,8 +23405,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 50,
       "wmoDistanceKm": 145.4
     },
@@ -23581,8 +23551,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 46.1,
       "wmoDistanceKm": 141.5
     },
@@ -23719,8 +23689,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 2.3,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 2.6,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 93.3,
       "wmoDistanceKm": 185.5
     }
@@ -23824,15 +23794,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 4.1,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -23848,7 +23818,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 4.1,
       "wmoDistanceKm": null
@@ -23969,15 +23939,15 @@
       "metarIcao": "LPMA"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 37.1,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -23993,7 +23963,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 37.1,
       "wmoDistanceKm": null
@@ -24112,15 +24082,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 51.7,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -24136,7 +24106,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 51.7,
       "wmoDistanceKm": null
@@ -24255,15 +24225,15 @@
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.62,
-      "wavePeriod": 6.3,
-      "waveDirection": 68,
-      "maxWaveHeight": 0.9,
-      "waterTemp": 24.4,
+      "waveHeight": 0.6,
+      "wavePeriod": 7.7,
+      "waveDirection": 69,
+      "maxWaveHeight": 0.89,
+      "waterTemp": 24.3,
       "stationName": "CSA94",
       "stationArea": "Caniçal",
       "distanceKm": 38.3,
-      "observedAt": "2026-09-08T16:59:57.000Z",
+      "observedAt": "2026-09-08T17:29:57.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": -0.46,
@@ -24279,7 +24249,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 38.3,
       "wmoDistanceKm": null
@@ -24601,23 +24571,17 @@
     },
     "updatedAt": "2026-09-08T17:57:38.112Z",
     "observed": {
-      "windSpeedKt": 3,
-      "windDirDeg": 90,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 26.7,
-      "stationName": "Santa Maria / Praia Formosa (DROTRH)",
-      "distanceKm": 4.5,
-      "observedAt": "2026-09-08T16:00:00.000Z",
-      "source": "ipma"
-    },
-    "windBias": {
-      "station": "Santa Maria / Praia Formosa (DROTRH)",
-      "source": "ipma",
-      "me": -4.9,
-      "mae": 5.5,
-      "rmse": 6.1,
-      "n": 42
+      "windSpeedKt": 8,
+      "windDirDeg": 270,
+      "windDirMissing": false,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 26,
+      "stationName": "Santa Maria (METAR)",
+      "distanceKm": 9.5,
+      "observedAt": "2026-09-08T18:30:00.000Z",
+      "source": "metar",
+      "metarIcao": "LPAZ"
     }
   },
   "porto-martins": {
@@ -24708,26 +24672,26 @@
     },
     "updatedAt": "2026-09-08T17:57:38.436Z",
     "observed": {
-      "windSpeedKt": 3,
-      "windDirDeg": 90,
-      "windCardinal": "E",
-      "windCardinalEn": "E",
-      "tempC": 23.2,
-      "stationName": "Terceira / Serra do Cume (DROTRH)",
-      "distanceKm": 4.8,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 7,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 27.5,
+      "stationName": "Angra do Heroísmo",
+      "distanceKm": 13.8,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.86,
-      "wavePeriod": 12.5,
-      "waveDirection": 17,
-      "maxWaveHeight": 1.26,
-      "waterTemp": 24.4,
+      "waveHeight": 0.83,
+      "wavePeriod": 10,
+      "waveDirection": 34,
+      "maxWaveHeight": 1.36,
+      "waterTemp": 24.6,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 90.3,
-      "observedAt": "2026-09-08T17:19:05.000Z",
+      "observedAt": "2026-09-08T17:49:06.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.78,
@@ -24743,17 +24707,17 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 90.3,
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Terceira / Serra do Cume (DROTRH)",
+      "station": "Angra do Heroísmo",
       "source": "ipma",
-      "me": 2.5,
-      "mae": 3.4,
-      "rmse": 4.1,
+      "me": -0.1,
+      "mae": 1.7,
+      "rmse": 2.2,
       "n": 50
     },
     "observedWaveNotClosest": {
@@ -24852,25 +24816,25 @@
     "updatedAt": "2026-09-08T17:57:38.767Z",
     "observed": {
       "windSpeedKt": 3,
-      "windDirDeg": 225,
-      "windCardinal": "SW",
-      "windCardinalEn": "SW",
-      "tempC": 21.3,
-      "stationName": "Pico / Cabeço do Teicho (DROTRH)",
-      "distanceKm": 6.7,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windDirDeg": 0,
+      "windCardinal": "N",
+      "windCardinalEn": "N",
+      "tempC": 27,
+      "stationName": "Pico (Aeródromo)",
+      "distanceKm": 12.5,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.86,
-      "wavePeriod": 12.5,
-      "waveDirection": 17,
-      "maxWaveHeight": 1.26,
-      "waterTemp": 24.4,
+      "waveHeight": 0.83,
+      "wavePeriod": 10,
+      "waveDirection": 34,
+      "maxWaveHeight": 1.36,
+      "waterTemp": 24.6,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 67.5,
-      "observedAt": "2026-09-08T17:19:05.000Z",
+      "observedAt": "2026-09-08T17:49:06.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.78,
@@ -24886,18 +24850,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 67.5,
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "Pico / Cabeço do Teicho (DROTRH)",
+      "station": "Pico (Aeródromo)",
       "source": "ipma",
-      "me": 0.8,
-      "mae": 1.7,
-      "rmse": 2.1,
-      "n": 22
+      "me": 0.9,
+      "mae": 2.8,
+      "rmse": 3.3,
+      "n": 15
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -24994,26 +24958,26 @@
     },
     "updatedAt": "2026-09-08T17:57:39.092Z",
     "observed": {
-      "windSpeedKt": 7,
-      "windDirDeg": 225,
-      "windCardinal": "SW",
-      "windCardinalEn": "SW",
-      "tempC": 22.3,
-      "stationName": "São Jorge / Pico do Areeiro (DROTRH)",
-      "distanceKm": 8.1,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 8,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 26.9,
+      "stationName": "São Jorge",
+      "distanceKm": 17.9,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 0.86,
-      "wavePeriod": 12.5,
-      "waveDirection": 17,
-      "maxWaveHeight": 1.26,
-      "waterTemp": 24.4,
+      "waveHeight": 0.83,
+      "wavePeriod": 10,
+      "waveDirection": 34,
+      "maxWaveHeight": 1.36,
+      "waterTemp": 24.6,
       "stationName": "BOND5",
       "stationArea": "Arquipélago Açores - Ilha Graciosa",
       "distanceKm": 49.7,
-      "observedAt": "2026-09-08T17:19:05.000Z",
+      "observedAt": "2026-09-08T17:49:06.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.78,
@@ -25029,18 +24993,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.2,
       "wmoAgeHours": null,
       "ihDistanceKm": 49.7,
       "wmoDistanceKm": null
     },
     "windBias": {
-      "station": "São Jorge / Pico do Areeiro (DROTRH)",
+      "station": "São Jorge",
       "source": "ipma",
-      "me": 3.3,
-      "mae": 5,
-      "rmse": 6.3,
-      "n": 22
+      "me": -0.1,
+      "mae": 2.4,
+      "rmse": 2.8,
+      "n": 17
     },
     "observedWaveNotClosest": {
       "winner": "ih-buoy",
@@ -25137,26 +25101,26 @@
     },
     "updatedAt": "2026-09-08T17:57:39.416Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 0.9,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 14,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 28.1,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -25183,18 +25147,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 28.1,
       "wmoDistanceKm": 84.9
     },
     "windBias": {
-      "station": "Esposende (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "ofir-praia": {
@@ -25285,26 +25249,26 @@
     },
     "updatedAt": "2026-09-08T17:57:39.742Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 1.2,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 14.7,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 27.7,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -25331,18 +25295,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 27.7,
       "wmoDistanceKm": 85.6
     },
     "windBias": {
-      "station": "Esposende (CIM)",
+      "station": "Viana Castelo, Chafé",
       "source": "ipma",
-      "me": 2.7,
-      "mae": 3,
-      "rmse": 3.8,
-      "n": 216
+      "me": 0.2,
+      "mae": 1.6,
+      "rmse": 2,
+      "n": 238
     }
   },
   "mindelo": {
@@ -25443,15 +25407,15 @@
       "metarIcao": "LPPR"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 20.3,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -25478,18 +25442,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 20.3,
       "wmoDistanceKm": 106.8
     },
     "windBias": {
       "station": "Porto (METAR)",
       "source": "metar",
-      "me": 0.6,
+      "me": 0.7,
       "mae": 1.4,
       "rmse": 1.6,
-      "n": 15
+      "n": 16
     }
   },
   "aterro": {
@@ -25577,26 +25541,26 @@
     },
     "updatedAt": "2026-09-08T17:57:40.393Z",
     "observed": {
-      "windSpeedKt": 2,
-      "windDirDeg": 184,
+      "windSpeedKt": 3,
+      "windDirDeg": 174,
       "windCardinal": "S",
       "windCardinalEn": "S",
       "tempC": 19.4,
       "stationName": "TAP Teste 3",
       "distanceKm": 6.3,
-      "observedAt": "2026-09-08T18:42:08.000Z",
+      "observedAt": "2026-09-08T19:00:39.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 25.3,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -25623,18 +25587,18 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 25.3,
       "wmoDistanceKm": 117.5
     },
     "windBias": {
       "station": "TAP Teste 3",
       "source": "ecowitt",
-      "me": -0.1,
-      "mae": 1.9,
-      "rmse": 2.2,
-      "n": 120
+      "me": -0.2,
+      "mae": 1.8,
+      "rmse": 2.1,
+      "n": 130
     }
   },
   "foil-fao-cavado": {
@@ -25725,26 +25689,26 @@
     },
     "updatedAt": "2026-09-08T17:53:11.736Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 1,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 13.1,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 28.9,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -25771,8 +25735,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 28.9,
       "wmoDistanceKm": 84.3
     }
@@ -25865,26 +25829,26 @@
     },
     "updatedAt": "2026-09-08T17:53:11.736Z",
     "observed": {
-      "windSpeedKt": 4,
-      "windDirDeg": 180,
-      "windCardinal": "S",
-      "windCardinalEn": "S",
-      "tempC": 19.3,
-      "stationName": "Esposende (CIM)",
-      "distanceKm": 1,
-      "observedAt": "2026-09-08T16:00:00.000Z",
+      "windSpeedKt": 2,
+      "windDirDeg": 270,
+      "windCardinal": "W",
+      "windCardinalEn": "W",
+      "tempC": 18.3,
+      "stationName": "Viana Castelo, Chafé",
+      "distanceKm": 13.1,
+      "observedAt": "2026-09-08T17:00:00.000Z",
       "source": "ipma"
     },
     "observedWave": {
-      "waveHeight": 1.05,
+      "waveHeight": 1.09,
       "wavePeriod": 9.1,
-      "waveDirection": 301,
-      "maxWaveHeight": 1.58,
-      "waterTemp": 19,
+      "waveDirection": 304,
+      "maxWaveHeight": 1.66,
+      "waterTemp": 19.1,
       "stationName": "CSA92/D",
       "stationArea": "Leixões",
       "distanceKm": 28.9,
-      "observedAt": "2026-09-08T17:02:14.000Z",
+      "observedAt": "2026-09-08T17:32:14.000Z",
       "source": "ih-buoy",
       "skill": {
         "me": 1.83,
@@ -25911,8 +25875,8 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-fresh",
-      "ihAgeHours": 1.7,
-      "wmoAgeHours": 2.7,
+      "ihAgeHours": 1.5,
+      "wmoAgeHours": 3,
       "ihDistanceKm": 28.9,
       "wmoDistanceKm": 84.3
     }
@@ -26036,7 +26000,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 17.8
     },
@@ -26166,7 +26130,7 @@
       "winner": "wmo",
       "reason": "wmo-only",
       "ihAgeHours": null,
-      "wmoAgeHours": 3.7,
+      "wmoAgeHours": 4,
       "ihDistanceKm": null,
       "wmoDistanceKm": 17.8
     },
