@@ -5,39 +5,27 @@ name: Record Visual Baselines
 # (font anti-aliasing differs per OS), so a Windows contributor cannot
 # produce them — this workflow is the ONLY way they get refreshed.
 #
-# Triggers:
-#  - after every successful CI run on main (workflow_run): data commits
-#    (~15×/day, visible score/label text) legitimately change pixels, so
-#    baselines must chase the data or the gate would go permanently red;
-#  - manual (workflow_dispatch) after a deliberate visual change.
+# MANUAL ONLY (workflow_dispatch). The old workflow_run auto-trigger (record
+# after every successful CI run) was removed: CI never runs on data commits
+# (public/data/** is paths-ignored), so it never chased data shape changes,
+# and on code commits it burned a build+record+CI cycle per commit while
+# re-syncing the fixture by VALUE (the f8481d8f8 record committed 194 fixture
+# JSONs / 36k lines of pure value churn). The fixture sync is now shape-gated
+# (scripts/sync-visual-fixture.mjs rewrites a file only when its JSON
+# structure changed), so a manual record after a value-only data refresh
+# commits baselines WITHOUT touching the fixture.
 #
-# The record step runs the suite in --update-snapshots mode on Linux and
-# commits whatever changed. Pushing a bot commit does NOT re-trigger CI for
-# it (paths-ignore public/data/** does not cover tests/, so it does trigger —
-# but CI on the baseline commit validates the new baselines, which is exactly
-# what we want: red gate on a bad record run is caught by the next CI run).
-#
-# KNOWN CAVEAT (superseded): the spec used to render the build's own data,
-# so data commits could move pixels and forced re-recording. Since the fixture
-# change, gotoStable serves every /data/** request from the COMMITTED fixture
-# at tests/e2e/fixtures/data (ventu_live cookie forces baked pages onto the
-# fetch path) — routine data commits move ZERO pixels and the gate stays green
-# without re-recording. Re-record only when:
+# When to run:
 #  - a deliberate visual change (masks, components, layout);
 #  - the fixture SHAPE changed — a new spot, a new data file, a schema change.
 #    (This workflow re-syncs the fixture from the fresh build before recording,
-#    so baselines are always recorded on the current shape — no manual step.)
-# Run this workflow manually (workflow_dispatch) in those cases — one click
-# re-records and CI greens on the baseline commit. Deliberate trade: automatic
-# recording on every data refresh would burn a build+record+CI cycle ~15×/day
-# for marginal benefit.
+#    so baselines are always recorded on the current shape.)
+# One click re-records and CI greens on the baseline commit; a bad record run
+# is caught by the next CI run (the bot push triggers CI because tests/ is not
+# paths-ignored).
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
-    branches: [main]
 
 permissions:
   contents: write
@@ -48,8 +36,6 @@ concurrency:
 
 jobs:
   record:
-    # Only record after a SUCCESSFUL CI run — never paper over a red gate.
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -82,7 +68,9 @@ jobs:
         # gotoStable serves /data/** from the COMMITTED fixture, never the
         # build. Before recording, refresh that fixture from THIS build so a
         # data-shape change (new spot / new file / schema) can't record
-        # baselines against a stale shape — fixture and baselines stay in lockstep.
+        # baselines against a stale shape — fixture and baselines stay in
+        # lockstep. Shape-gated: value-only data churn is SKIPPED, so a
+        # routine record commits baselines without fixture churn.
         run: node scripts/sync-visual-fixture.mjs
 
       - name: Install Playwright Chromium
@@ -111,7 +99,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data
-          git commit -m "chore(visual): refresh Linux baselines + fixture from CI data refresh"
+          git commit -m "chore(visual): refresh Linux baselines (fixture only on shape change)"
           git push origin main
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
