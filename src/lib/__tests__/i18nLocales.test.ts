@@ -64,6 +64,9 @@ const ES_COGNATES = new Set([
   'Ver perfil',         // espanhol correcto = PT
   'Guardar',            // espanhol correcto = PT
   'condiciones',        // espanhol correcto = PT
+  'MODALIDADES',        // espanhol correcto = PT (cabeçalho de grupo de pesquisa)
+  'navegar',            // espanhol correcto = PT (atalho de teclado)
+  'abrir',              // espanhol correcto = PT (atalho de teclado)
 ]);
 
 /**

@@ -30,7 +30,7 @@ export default function AggregateScoreGauge({
     <div className="flex justify-center lg:justify-end shrink-0">
       <ScoreGauge
         score={avg}
-        label={getSportLabel(sport, isPt)}
+        label={getSportLabel(sport, locale)}
         sublabel={isPt ? '· média top 10' : '· top 10 avg'}
         size="lg"
       />

@@ -26,7 +26,7 @@ export default function SpotGridRankedList({
 }: SpotGridRankedListProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as 'pt' | 'en');
-  const sportLabel = getSportLabel(selectedSport, isPt);
+  const sportLabel = getSportLabel(selectedSport, locale);
 
   const exclude = excludeSlugs?.length
     ? new Set(excludeSlugs)

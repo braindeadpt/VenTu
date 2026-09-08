@@ -5,7 +5,7 @@ import { Map } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import HomepageSearch from '@/components/ui/HomepageSearch';
 import AggregateScoreGauge from '@/components/ui/AggregateScoreGauge';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { MACRO_REGIONS } from '@/lib/regions';
 import { readGridFiltersFromWindow, DEFAULT_SPORT as GRID_DEFAULT_SPORT } from '@/lib/gridFilters';
 import { type GridSportFilter } from '@/lib/sportRatings';
@@ -25,8 +25,7 @@ export default function HomepageHero({
   locale,
   spotsData,
 }: HomepageHeroProps) {
-  const isPt = locale === 'pt';
-  const t = getTranslation(locale as 'pt' | 'en');
+  const t = getTranslation(locale);
   const [sport, setSport] = useState<GridSportFilter>(GRID_DEFAULT_SPORT);
   useEffect(() => {
     const syncFromLocation = () => {
@@ -49,21 +48,15 @@ export default function HomepageHero({
   }, []);
 
   const onCount = useMemo(() => getOnCount(spotsData, sport), [spotsData, sport]);
-  const sportLabel = getSportLabel(sport, isPt);
+  const sportLabel = getSportLabel(sport, locale);
   const calmDay = onCount === 0;
 
   const headline = calmDay
-    ? isPt
-      ? 'Mar calmo hoje · ver previsões'
-      : 'Calm sea today · view forecasts'
-    : isPt
-      ? `${onCount} spots a bombar para ${sportLabel} hoje`
-      : `${onCount} spots firing for ${sportLabel} today`;
+    ? t.hero.heroCalmToday
+    : t.hero.heroFiring.replace('{count}', String(onCount)).replace('{sport}', sportLabel);
 
   const subline = calmDay
-    ? isPt
-      ? 'Ainda sem condições fortes. Vê os spots com melhor previsão para amanhã.'
-      : 'No firing spots yet. See the best forecasted spots for tomorrow.'
+    ? t.hero.heroCalmSubline
     : onCount > 0
       ? t.hero.heroSubline.replace('{count}', String(onCount))
       : t.hero.heroSublineZero;
@@ -86,7 +79,7 @@ export default function HomepageHero({
               href={`/${locale}/#explore-map`}
               size="lg"
               leftIcon={<Map className="w-4 h-4" aria-hidden />}
-              locale={isPt ? 'pt' : 'en'}
+              locale={validateLocale(locale)}
             >
               {t.hero.exploreMap}
             </Button>
@@ -94,13 +87,9 @@ export default function HomepageHero({
               href={calmDay ? `/${locale}/explorar/` : `/${locale}/spots/`}
               variant="secondary"
               size="lg"
-              locale={isPt ? 'pt' : 'en'}
+              locale={validateLocale(locale)}
             >
-              {calmDay
-                ? isPt
-                  ? 'Ver previsões'
-                  : 'View forecasts'
-                : t.hero.viewAllSpots}
+              {calmDay ? t.hero.viewForecasts : t.hero.viewAllSpots}
             </Button>
           </div>
 

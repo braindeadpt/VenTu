@@ -1,9 +1,11 @@
 /**
  * Locale shell layout (pt | en | es | de | fr).
  *
- * SEO MVP: /es /de /fr ship translated nav/meta/hreflang (shell), but most page
- * body copy still uses the EN branch of `isPt ? … : …` until full localization.
- * Do not treat missing ES/DE/FR body strings as bugs — intentional for now.
+ * Parity: nav/meta/hreflang are translated for all 5 locales, and the home
+ * hero, search palette, compare and spot-detail bodies were completed through
+ * the dict shells. The remaining page bodies still use the EN branch of
+ * `isPt ? … : …` (data strings are pt/en only) — PartialLocaleNotice is the
+ * honest, dismissible banner on es/de/fr until full localization lands.
  */
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -23,6 +25,7 @@ import SignupNudge from '@/components/homepage/SignupNudge'
 import CSPMeta from '@/components/CSPMeta'
 import SetHtmlLang from '@/components/SetHtmlLang'
 import PageFadeGuard from '@/components/PageFadeGuard'
+import PartialLocaleNotice from '@/components/layout/PartialLocaleNotice'
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }))
@@ -73,7 +76,10 @@ export default async function LocaleLayout({
           })}
         </a>
         <Header locale={locale} />
-        <main id="main-content" className="pt-16">{children}</main>
+        <main id="main-content" className="pt-16">
+          <PartialLocaleNotice locale={validLocale} />
+          {children}
+        </main>
         <Footer locale={locale} />
         <SignupNudge locale={locale} />
       </AuthProvider>

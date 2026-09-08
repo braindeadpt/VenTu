@@ -3,6 +3,8 @@
  * Uses hourly sea_level from Open-Meteo (forecasts.json / conditions).
  */
 
+import type { Locale } from '@/lib/i18n'
+
 export type TidePhase = 'high' | 'low' | 'rising' | 'falling';
 
 export interface TideHourPoint {
@@ -186,11 +188,11 @@ export function phaseFromConditionsStatus(
 }
 
 /** Short labels for hourly forecast table cells */
-export const TIDE_PHASE_CELL: Record<TidePhase, { pt: string; en: string }> = {
-  high: { pt: 'Alta', en: 'High' },
-  low: { pt: 'Baixa', en: 'Low' },
-  rising: { pt: '↑', en: '↑' },
-  falling: { pt: '↓', en: '↓' },
+export const TIDE_PHASE_CELL: Record<TidePhase, Record<Locale, string>> = {
+  high: { pt: 'Alta', en: 'High', es: 'Alta', de: 'Hoch', fr: 'Haute' },
+  low: { pt: 'Baixa', en: 'Low', es: 'Baja', de: 'Niedrig', fr: 'Basse' },
+  rising: { pt: '↑', en: '↑', es: '↑', de: '↑', fr: '↑' },
+  falling: { pt: '↓', en: '↓', es: '↓', de: '↓', fr: '↓' },
 };
 
 /** Per-hour tide phase from MSL curve (for forecast table). */

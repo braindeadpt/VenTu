@@ -8,6 +8,7 @@ import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
+import { validateLocale, localePathPattern } from '@/lib/i18n';
 import Link from 'next/link';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import FilterPill from '@/components/ui/FilterPill';
@@ -148,7 +149,7 @@ function getSpotsFromUrl(): string[] {
 function getLocaleFromPath(): string {
   if (typeof window === 'undefined') return 'pt';
   try {
-    const match = window.location.pathname.match(/^\/(pt|en)\//);
+    const match = window.location.pathname.match(localePathPattern);
     return match ? match[1] : 'pt';
   } catch { return 'pt'; }
 }
@@ -208,7 +209,7 @@ export default function CompareClient() {
   }, []);
 
   const isPt = locale === 'pt';
-  const cmp = getTranslation(isPt ? 'pt' : 'en').compare;
+  const cmp = getTranslation(validateLocale(locale)).compare;
   const warningsData = useIpmaWarnings();
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+import { validateLocale } from '@/lib/i18n'
 import type { SportScore } from '@/lib/sportScore'
 import { SCORE_TIER_THRESHOLDS } from '@/lib/sportScore'
 import type { SportType, GridSportFilter } from '@/lib/sportRatings'
@@ -89,10 +90,19 @@ export function getOnCount(
   return spotsData.filter(d => getScoreForFilter(d, sport) >= threshold).length
 }
 
-export function getSportLabel(sport: GridSportFilter, isPt: boolean): string {
-  if (sport === 'all') return isPt ? 'todos os desportos' : 'all sports'
-  if (sport === 'big-wave') return isPt ? 'Big Wave' : 'Big Wave'
-  return SPORT_LABELS[sport][isPt ? 'pt' : 'en']
+export function getSportLabel(sport: GridSportFilter, locale: string): string {
+  const loc = validateLocale(locale)
+  if (sport === 'all') {
+    return {
+      pt: 'todos os desportos',
+      en: 'all sports',
+      es: 'todos los deportes',
+      de: 'alle Sportarten',
+      fr: 'tous les sports',
+    }[loc]
+  }
+  if (sport === 'big-wave') return 'Big Wave'
+  return SPORT_LABELS[sport][loc === 'pt' ? 'pt' : 'en']
 }
 
 /** Sports shown in the home "Top agora" / «A bombar agora» row. */

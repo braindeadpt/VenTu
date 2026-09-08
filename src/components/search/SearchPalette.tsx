@@ -61,7 +61,7 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const resultsRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const t = getTranslation(locale as 'pt' | 'en');
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
 
   // Load spots index once
@@ -253,10 +253,10 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
 
   const typeLabel = (type: SearchResult['type']): string => {
     const map: Record<SearchResult['type'], string> = {
-      spot: isPt ? 'SPOTS' : 'SPOTS',
-      regiao: isPt ? 'REGIÕES' : 'REGIONS',
-      modalidade: isPt ? 'MODALIDADES' : 'MODALITIES',
-      noticia: isPt ? 'NOTÍCIAS' : 'NEWS',
+      spot: 'SPOTS',
+      regiao: t.nav.searchRegions,
+      modalidade: t.nav.searchModalities,
+      noticia: t.nav.searchNews,
     };
     return map[type];
   };
@@ -350,15 +350,15 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
         <div className="flex items-center gap-4 px-4 py-2 border-t border-divider bg-surface-1/[0.04]">
           <span className="text-xs text-fg-subtle">
             <kbd className="px-1 py-0.5 rounded bg-surface-2/[0.08] text-fg-muted font-mono text-xs">↑↓</kbd>
-            {' '}{isPt ? 'navegar' : 'navigate'}
+            {' '}{t.nav.searchNavHint}
           </span>
           <span className="text-xs text-fg-subtle">
             <kbd className="px-1 py-0.5 rounded bg-surface-2/[0.08] text-fg-muted font-mono text-xs">⏎</kbd>
-            {' '}{isPt ? 'abrir' : 'open'}
+            {' '}{t.nav.searchOpenHint}
           </span>
           <span className="text-xs text-fg-subtle">
             <kbd className="px-1 py-0.5 rounded bg-surface-2/[0.08] text-fg-muted font-mono text-xs">Esc</kbd>
-            {' '}{isPt ? 'fechar' : 'close'}
+            {' '}{t.nav.searchCloseHint}
           </span>
         </div>
       </div>

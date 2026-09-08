@@ -9,7 +9,7 @@ import {
   getWindArrow,
   getWindRelationToCoast,
 } from '@/lib/wind';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import {
   getTidePhasesForHours,
   TIDE_PHASE_CELL,
@@ -57,7 +57,7 @@ interface ForecastTableProps {
   startTime?: Date;
   sport?: SportType;
   coastOrientation?: number;
-  locale: 'pt' | 'en';
+  locale: string;
   compact?: boolean;
   /**
    * Origem da altura de onda usada no score actual (boia fresca / viés
@@ -677,7 +677,7 @@ export default function ForecastTable({
                 const phase = tidePhases[i];
                 const label =
                   phase != null
-                    ? TIDE_PHASE_CELL[phase][isPt ? 'pt' : 'en']
+                    ? TIDE_PHASE_CELL[phase][validateLocale(locale)]
                     : '—';
                 const phaseTitle =
                   phase != null
