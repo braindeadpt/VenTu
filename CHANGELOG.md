@@ -3,6 +3,15 @@
 Registo cronológico das alterações relevantes do VenTu. Novo no topo.
 Datas em `YYYY-MM-DD`; SHAs de 7 caracteres referem-se a `main`.
 
+## 2026-09-08 — Fixture e baselines em lockstep no recorder
+
+`a645ba3c0` faz o workflow `record-visual-baselines` re-sincronizar a fixture
+(`scripts/sync-visual-fixture.mjs`) a partir do build fresco **antes** de gravar,
+para que uma mudança de FORMA dos dados (spot novo, ficheiro novo, schema) nunca
+grave baselines contra uma fixture desactualizada. Fixture e baselines são
+commitadas juntas (`f8481d8f8`: 194 ficheiros de fixture + 49 PNGs Linux),
+portanto o pixel gate do CI valida exactamente a forma gravada.
+
 ## 2026-09-08 — Suite visual imune à deriva de dados (fixture commitada)
 
 As capturas de regressão visual deixaram de depender dos dados do dia.
