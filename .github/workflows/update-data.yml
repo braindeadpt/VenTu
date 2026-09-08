@@ -2,8 +2,17 @@ name: Update VenTu Data
 
 on:
   schedule:
-    # Hourly UTC; Lisbon-aware gate picks full vs observations vs skip
-    - cron: '0 * * * *'
+    # Hourly UTC, OFF the top of the hour. GitHub delays schedule events
+    # hardest at the start of every hour, and a delayed run still queued at
+    # the next slot is dropped (coalesced) — on this repo that produced 2-5h
+    # gaps (e.g. 07:42 -> 12:31 UTC on 2026-09-08, while a manual dispatch
+    # succeeded in seconds, so the pipeline was healthy). Two offsets give
+    # two chances per hour; runs are cheap (1-6 min) and the Lisbon-aware
+    # gate no-ops when nothing changed. Each execution re-fetches everything,
+    # so a missed slot degrades freshness until the next successful run —
+    # the TTL validator alerts when data goes stale.
+    - cron: '17 * * * *'
+    - cron: '47 * * * *'
   workflow_dispatch:
     inputs:
       force_mode:
