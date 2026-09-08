@@ -264,9 +264,17 @@ export default function SpotMapInteractive({
   } = core;
 
   // ── Toggle state ──
-  const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
-  const [windEnabled, setWindEnabled] = useState(readWindPref);
-  const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
+  // SSR-safe defaults must match `typeof window === 'undefined'` branches in
+  // mapHudPrefs — calling read*Pref() during useState on the client (esp.
+  // mobile forced cluster/wind) diverges from the bake and throws React #418.
+  const [clusterEnabled, setClusterEnabled] = useState(false);
+  const [windEnabled, setWindEnabled] = useState(true);
+  const [onlyOnEnabled, setOnlyOnEnabled] = useState(false);
+  useEffect(() => {
+    setClusterEnabled(readClusterPref());
+    setWindEnabled(readWindPref());
+    setOnlyOnEnabled(readOnlyOnPref());
+  }, []);
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
   const [windLegendOpen, setWindLegendOpen] = useState(false);
