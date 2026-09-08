@@ -274,6 +274,7 @@ export default function SpotListCard({
               wave={{ calibration: observedWaveCalibration, waveHeight: conditions.waveHeight }}
               locale={locale}
               className="shrink-0"
+              interactive={false}
             />
           )}
           <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>

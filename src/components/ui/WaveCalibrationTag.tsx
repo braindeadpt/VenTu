@@ -12,6 +12,11 @@ export interface WaveCalibrationTagProps {
   wave: Pick<ObservedWave, 'calibration' | 'waveHeight'> | null | undefined;
   locale: string;
   className?: string;
+  /**
+   * `false` inside link-cards (`SpotListCard` is one `<a>`): a `<button>`
+   * nested in an `<a>` is invalid HTML and triggers React #418 on hydrate.
+   */
+  interactive?: boolean;
 }
 
 /**
@@ -27,6 +32,7 @@ export default function WaveCalibrationTag({
   wave,
   locale,
   className,
+  interactive = true,
 }: WaveCalibrationTagProps) {
   const calTag = waveCalibrationTag(wave, locale);
   if (!calTag) return null;
@@ -43,6 +49,7 @@ export default function WaveCalibrationTag({
       label={label}
       detail={calTag.title}
       locale={locale}
+      interactive={interactive}
       className={className}
       chipAttrs={{ 'data-wave-calibrated': 'compact' }}
       popoverAttrs={{ 'data-wave-calibration-popover': 'true' }}
