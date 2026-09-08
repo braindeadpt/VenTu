@@ -27,6 +27,13 @@ export default async function HomePage({
   const pipelineMeta = loadPipelineMeta();
   const maxTs = resolveDisplayUpdatedTs(pipelineMeta, spotMaxTs);
 
+  // Build-time clock for hydration parity: the observed-wave freshness gates
+  // (resolveScoreWaveCorrection / isObservedWaveFresh) are evaluated at SSG
+  // with Date.now() = build time. Threading this down lets the client
+  // reproduce the exact baked verdict on first paint; after mount it switches
+  // to the live clock (React #418 guard — same pattern as the spot page).
+  const bakedAtMs = Date.now();
+
   return (
     <div className="min-h-screen bg-bg-base">
       <MapTilePreconnect />
@@ -44,6 +51,7 @@ export default async function HomePage({
         sportsCount={7}
         buoyLayer={pipelineMeta?.buoyLayer ?? null}
         coastalWarningsLayer={pipelineMeta?.coastalWarningsLayer ?? null}
+        bakedAtMs={bakedAtMs}
       />
     </div>
   );

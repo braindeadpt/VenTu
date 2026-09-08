@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import Button from '@/components/ui/Button';
@@ -26,6 +27,9 @@ interface HomepageTopNowProps {
   locale: string;
   /** Cap cards (e.g. 4 for returning visitors). Default: all TOP_NOW sports. */
   maxCards?: number;
+  /** Build-time clock (SSG) — freshness gates use it until mount, then the
+   *  live clock takes over (React #418 guard, same as the spot page). */
+  bakedAtMs: number;
 }
 
 const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
@@ -35,8 +39,14 @@ const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
   bodyboard: 'bodyboard',
 };
 
-export default function HomepageTopNow({ spotsData, locale, maxCards }: HomepageTopNowProps) {
+export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs }: HomepageTopNowProps) {
   const isPt = locale === 'pt';
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  // Hydration parity: reproduce the baked freshness verdict on first paint,
+  // switch to the live clock after mount (the chip may then drop if a reading
+  // aged out — correct behaviour, post-commit).
+  const freshnessNowMs = mounted ? undefined : bakedAtMs;
   const cardLocale = isPt ? 'pt' : 'en';
   const warningsData = useIpmaWarnings();
 
@@ -108,7 +118,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards }: Homepage
               ? { level: warning.level, label: warningBadgeLabel(warning, isPt) }
               : null;
             // «Corrigido pela boia X» (ME/n no tooltip) — mesma fonte do spot page.
-            const waveCorrection = resolveScoreWaveCorrection({ ...data.conditions });
+            const waveCorrection = resolveScoreWaveCorrection({ ...data.conditions }, freshnessNowMs);
 
             return (
               <li

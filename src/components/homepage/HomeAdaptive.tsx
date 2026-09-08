@@ -25,6 +25,8 @@ interface HomeAdaptiveProps {
   buoyLayer?: import('@/lib/pipelineMeta').BuoyLayerMeta | null;
   /** Coastal warnings (IH) layer state from pipeline-meta.json (ticker). */
   coastalWarningsLayer?: import('@/lib/pipelineMeta').CoastalWarningsLayerMeta | null;
+  /** Build-time clock (SSG) for hydration parity of freshness gates (#418 guard). */
+  bakedAtMs: number;
 }
 
 export default function HomeAdaptive({
@@ -35,6 +37,7 @@ export default function HomeAdaptive({
   sportsCount,
   buoyLayer,
   coastalWarningsLayer,
+  bakedAtMs,
 }: HomeAdaptiveProps) {
   const hasFavorites = useHasFavorites();
   const { favorites } = useAuth();
@@ -71,6 +74,7 @@ export default function HomeAdaptive({
         spotsData={spotsData}
         locale={locale}
         maxCards={isReturning ? 4 : undefined}
+        bakedAtMs={bakedAtMs}
       />
 
       {/* Dawn Patrol owns its own divider — avoids empty double-waves outside morning hours */}
