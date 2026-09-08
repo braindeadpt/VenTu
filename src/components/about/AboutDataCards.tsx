@@ -14,6 +14,7 @@ import {
   deriveTideLayerStatus,
   type TideFileLike,
   type TideLayerStatusInfo,
+  type TideObservation,
 } from '@/lib/tideLayerStatusPure'
 import {
   forecastSkillOriginLabel,
@@ -367,6 +368,9 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">{conf.line}</p>
             <p className="text-xs text-fg-subtle tabular-nums">{metaLine}</p>
+            {tide.observations && tide.observations.length > 0 ? (
+              <TideObservationsList isPt={isPt} observations={tide.observations} />
+            ) : null}
             {
               // Streak down/stale (pipeline-meta tideLayer) — «há quantas runs a
               // camada está sem leituras novas». O fetch nunca bloqueia o
@@ -397,6 +401,47 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
             </p>
           </div>
         )
+}
+
+/** Leituras observadas mais recentes (top 5 por recência) — a prova visível
+ * de que a camada está viva, e o que falta quando está down. Formata a hora
+ * local da leitura sem segundos; título vazio (EDR sem title) cai no genérico. */
+function TideObservationsList({
+  isPt,
+  observations,
+}: {
+  isPt: boolean
+  observations: TideObservation[]
+}) {
+  const fmt = (at: string) =>
+    new Date(at).toLocaleString(isPt ? 'pt-PT' : 'en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
+  return (
+    <ul
+      className="grid grid-cols-1 sm:grid-cols-2 gap-1.5"
+      data-tide-observations="true"
+      aria-label={isPt ? 'Leituras observadas recentes' : 'Recent observed readings'}
+    >
+      {observations.map((o, i) => (
+        <li
+          key={`${o.at}-${o.title || i}`}
+          className="flex items-baseline justify-between gap-2 rounded-card border border-fg/10 px-2.5 py-1.5 text-xs"
+        >
+          <span className="truncate text-fg-muted">
+            {o.title || (isPt ? 'Estação' : 'Station')}
+          </span>
+          <span className="tabular-nums text-fg whitespace-nowrap">
+            {o.heightM.toFixed(2)} m
+            <span className="ml-1.5 text-fg-subtle">{fmt(o.at)}</span>
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
 }
 
 function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData }) {

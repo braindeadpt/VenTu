@@ -28,7 +28,7 @@ const OUTPUT_PATH =
 const MAX_STALE_HOURS = 24;
 
 /**
- * EDR fallback (radius por estação conhecida) — `IH_EDR_FALLBACK=1`.
+ * EDR fallback (radius por estação conhecida) — auto-recuperação.
  *
  * Quando `items` falha (ex.: o incidente 2026-08-13 em que o backend de
  * observações devolvia 500), a mesma coleção expõe endpoints OGC API EDR:
@@ -37,13 +37,15 @@ const MAX_STALE_HOURS = 24;
  * As coordenadas vêm do último ih-tides.json conhecido (as estações são
  * marégrafos fixos — a posição não envelhece, mesmo que os dados sim).
  *
- * Default OFF de propósito: com o backend todo em baixo, um fetch completo
- * por estação seria martelar a API partida. Ativar quando o EDR voltar:
- * `IH_EDR_FALLBACK=1` no env do passo do update-data.yml (uma linha).
- * O sample-probe mantém-se mesmo ativo: 2-3 estações primeiro, e se todas
- * falharem o fallback desiste sem disparar N pedidos condenados.
+ * LIGADO POR DEFAULT — o sample-probe é o gate de segurança: 2-3 estações
+ * primeiro, e o fallback só avança para o fetch completo quando essas
+ * devolvem features com CAMPOS DE OBSERVAÇÃO utilizáveis (stationFromFeature
+ * não-nulo). Com o backend partido o probe falha e o fallback desiste sem
+ * martelar a API; no momento em que o IH volta a servir observações, a
+ * próxima run recupera sozinha — sem intervenção manual.
+ * `IH_EDR_FALLBACK=0` no env desliga (nunca sondar o EDR).
  */
-const EDR_FALLBACK = process.env.IH_EDR_FALLBACK === '1';
+const EDR_FALLBACK = process.env.IH_EDR_FALLBACK !== '0';
 /** Estações sondadas antes de comprometer o fetch EDR completo. */
 const EDR_SAMPLE_STATIONS = 3;
 /** Raio de busca em metros à volta de cada estação conhecida. */
@@ -160,12 +162,20 @@ async function fetchEDRRadius(knownStations) {
   const probes = await Promise.allSettled(
     sample.map((s) => fetchJson(edrRadiusUrl(s.lat, s.lon)))
   );
+  // "IH voltou a servir observações" = features com campos de observação
+  // utilizáveis (last_sea_surface_height/last_date_time parseáveis), não
+  // apenas qualquer resposta JSON. Um backend de volta mas sem leituras não
+  // é recuperação — é um estado intermédio que não vale N pedidos.
   const probeOk = probes.filter(
-    (r) => r.status === 'fulfilled' && Array.isArray(r.value.features)
+    (r) =>
+      r.status === 'fulfilled' &&
+      Array.isArray(r.value.features) &&
+      r.value.features.some((f) => stationFromFeature(f))
   );
   if (probeOk.length === 0) {
     throw new Error(
-      'EDR radius probe failed for all sample stations — EDR backend down too'
+      'EDR radius probe returned no stations with usable observation fields — ' +
+        'EDR backend still down (no recovery)'
     );
   }
   if (probeOk.length < sample.length) {

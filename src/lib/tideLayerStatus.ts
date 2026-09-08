@@ -18,8 +18,9 @@ export type {
   TideLayerStatus,
   TideLayerStatusInfo,
   TideFileLike,
+  TideObservation,
 } from '@/lib/tideLayerStatusPure'
-export { deriveTideLayerStatus } from '@/lib/tideLayerStatusPure'
+export { deriveTideLayerStatus, latestTideObservations } from '@/lib/tideLayerStatusPure'
 import {
   deriveTideLayerStatus,
   type TideLayerStatusInfo,

@@ -52,7 +52,11 @@ function loadModule(overrides = {}) {
   process.env.IH_API_URL = 'http://mock-ih.local';
   process.env.IH_OUTPUT_PATH = path.join(tmpDir, 'ih-tides.json');
   process.env.IH_EDR_FALLBACK = '1';
-  for (const [k, v] of Object.entries(overrides)) process.env[k] = v;
+  for (const [k, v] of Object.entries(overrides)) {
+    // `undefined` = remove o env (testar o DEFAULT do módulo).
+    if (v === undefined) delete process.env[k];
+    else process.env[k] = v;
+  }
   const resolved = require.resolve(MODULE_PATH);
   delete require.cache[resolved];
   return require(resolved);
@@ -163,17 +167,49 @@ describe('fetch-ih-tides EDR fallback (receita incidente IH 2026-08-13)', () => 
     const mod = loadModule();
     const fetchMock = installFetch(async () => json({}, 500));
 
-    await expect(mod.fetchIHTides()).rejects.toThrow(/EDR radius probe failed for all sample stations/);
+    await expect(mod.fetchIHTides()).rejects.toThrow(/no stations with usable observation fields/);
     // 3 estações sondadas; as 4 do fetch completo NUNCA são pedidas.
     expect(radiusCalls(fetchMock)).toHaveLength(3);
   });
 
-  it('T4: flag off → o radius nunca é chamado (default OFF de propósito)', async () => {
+  it('T4: IH_EDR_FALLBACK=0 desliga a sondagem EDR (opt-out explícito)', async () => {
     const mod = loadModule({ IH_EDR_FALLBACK: '0' });
     const fetchMock = installFetch(async () => json({}, 500));
 
     await expect(mod.fetchIHTides()).rejects.toThrow(/All IH tide collections failed/);
     expect(radiusCalls(fetchMock)).toHaveLength(0);
+  });
+
+  it('T6: DEFAULT (sem env) → EDR auto-ligado: items 500 recupera via radius sozinho', async () => {
+    // Nenhuma flag: a recuperação tem de acontecer sem intervenção manual.
+    const mod = loadModule({ IH_EDR_FALLBACK: undefined });
+    const fetchMock = installFetch(async (url) => {
+      if (String(url).includes('/items')) return json({}, 500);
+      if (String(url).includes('/radius')) return radiusRequestHandler(url);
+      return json({}, 404);
+    });
+
+    const output = await mod.fetchIHTides();
+    expect(output.sourceCollection).toBe('tide_obs_nrt/radius');
+    expect(Object.keys(output.stations)).toHaveLength(STATIONS.length);
+    // Sample-probe (3) + fetch completo (4).
+    expect(radiusCalls(fetchMock)).toHaveLength(3 + STATIONS.length);
+  });
+
+  it('T7: EDR responde mas SEM campos de observação → não é recuperação (probe falha, sem fetch completo)', async () => {
+    const mod = loadModule({ IH_EDR_FALLBACK: undefined });
+    const fetchMock = installFetch(async (url) => {
+      if (String(url).includes('/items')) return json({}, 500);
+      // Radius devolve features só com posição (sem last_sea_surface_height):
+      // o backend voltou mas ainda não serve leituras — não vale N pedidos.
+      if (String(url).includes('/radius'))
+        return json({ type: 'FeatureCollection', features: [{ type: 'Feature', properties: { codp: '99', title: 'X' }, geometry: { type: 'Point', coordinates: [-9, 40] } }] });
+      return json({}, 404);
+    });
+
+    await expect(mod.fetchIHTides()).rejects.toThrow(/no stations with usable observation fields/);
+    // Só as 3 sondas; as 4 do fetch completo nunca são pedidas.
+    expect(radiusCalls(fetchMock)).toHaveLength(3);
   });
 
   it('T5: sem ficheiro anterior → erro claro de coordenadas desconhecidas', async () => {

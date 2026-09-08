@@ -34,7 +34,7 @@ Registo de ideias, melhorias e features identificadas mas não agendadas. Cada i
 
 **Verificado ao vivo (2026-09-08 ~11:00 UTC)**:
 - `items?limit=100` → 200, features com properties só `codp/title/category/lat/lon` — sem `last_sea_surface_height` nem `last_date_time` em nenhum param (`limit`, `bbox`, `properties`, `f=json|jsonld|csv`).
-- EDR `radius` (WKT `POINT(lon lat)`, `within=50000`) → **500 `NoApplicableCode`** — o fallback EDR continua morto; `IH_EDR_FALLBACK` fica OFF até o schema EDR passar no `npm run ih:validate`.
+- EDR `radius` (WKT `POINT(lon lat)`, `within=50000`) → **500 `NoApplicableCode`** — o fallback EDR continua morto; o sample-probe (gate automático no `fetch-ih-tides.js`) falha e a run reutiliza o ficheiro anterior. No dia em que o EDR voltar a servir campos de observação, a próxima run recupera sozinha.
 - Outras colecções (`buoys_datawell`, `hfr_stations`) continuam 200 com dados — a regressão é específica da fonte de marés.
 
 **Mitigação**: camada `tideLayer` no `pipeline-meta.json` (ok/stale/down + streak, derivado do `fetchedAt` do `ih-tides.json`), chip no About «Camada de marés IH (observadas)», monitor `monitor-ih-tides.sh` agora exige os campos de observação (não só HTTP 200), e health-check unificado avisa (nunca falha o job — decisão `c16802b8`) a partir de 3 runs sem leituras novas.
@@ -50,14 +50,16 @@ GET /collections/tide_obs_nrt/area?coords=POLYGON((-9.5 38.5,-9.5 39.0,-9.0 39.0
 # locations + locations/{locId}
 GET /collections/tide_obs_nrt/locations?f=json
 ```
-Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing WKT; os 500 seguintes são o backend). **Nota**: radius/area precisam das coordenadas das estações, que hoje vêm dos items — sem items, o fallback usa as coordenadas do último `ih-tides.json` conhecido (marégrafos fixos). **O fallback EDR já está implementado** no `fetch-ih-tides.js` (radius por estação conhecida, dedup por codp, sample-probe 3 estações antes do fetch completo) — ativar com `IH_EDR_FALLBACK=1` no env do passo do `update-data.yml` (default OFF para não martelar a API enquanto o backend estiver todo em baixo).
+Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing WKT; os 500 seguintes são o backend). **Nota**: radius/area precisam das coordenadas das estações, que hoje vêm dos items — sem items, o fallback usa as coordenadas do último `ih-tides.json` conhecido (marégrafos fixos). **O fallback EDR está implementado e AUTO** no `fetch-ih-tides.js` (radius por estação conhecida, dedup por codp, sample-probe 3 estações antes do fetch completo). O gate de segurança é o próprio probe: só avança para o fetch completo quando as features de amostra trouxerem **campos de observação utilizáveis** (`stationFromFeature` não-nulo) — com o backend partido o probe falha e o fallback desiste sem martelar a API; `IH_EDR_FALLBACK=0` desliga a sondagem (opt-out explícito).
 
 **GATE de ativação — correr quando o IH recuperar**: `npm run ih:validate` (`scripts/validate-ih-edr-schema.js`) faz o probe real ao `radius` EDR com as coordenadas das estações conhecidas e valida que o schema das features (`codp`, `last_sea_surface_height`/`last_date_time`, `geometry.coordinates` para o fallback de posição) **bate com o `stationFromFeature`** — reutiliza o parser real do pipeline:
 ```
 # 1. o monitor (ih-health.yml) fecha a issue ih-outage quando o items voltar
-# 2. GATE: npm run ih:validate
-#    exit 0 → schema OK → ativar IH_EDR_FALLBACK=1 no update-data.yml
-#    exit 1 → schema mudou → atualizar stationFromFeature ANTES de ativar
+# 2. o pipeline recupera SOZINHO: o probe EDR no fetch-ih-tides.js valida os
+#    campos de observação em cada run (nada a ativar manualmente)
+# 3. GATE pré-flight (opcional): npm run ih:validate
+#    exit 0 → schema OK → a próxima run usa o EDR automaticamente
+#    exit 1 → schema mudou → atualizar stationFromFeature ANTES de o probe validar
 #    exit 2 → backend ainda em baixo / sem dados → voltar a correr mais tarde
 ```
 
