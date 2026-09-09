@@ -78,9 +78,20 @@ export default function WindRingLegend({
     const update = () => {
       const rect = anchorRef.current?.getBoundingClientRect();
       if (!rect) return;
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      // A âncora pode viver junto às bordas (ex.: o botão de vento do HUD do
+      // /mapa fica no canto esquerdo) — o translate(-50%,-100%) centraria o
+      // diálogo fora do ecrã (metade à esquerda, topo acima). Clamp para o
+      // diálogo (340px × ~330px) ficar sempre totalmente visível: com o
+      // translate(-100%), o TOPO do diálogo = anchorPos.top − altura, logo o
+      // anchorPos.top tem de ficar entre (altura+margem) e H−margem.
+      const HALF = 180; // metade da largura do diálogo + margem
+      const TOP_PAD = 12;
+      const DIALOG_MAX_H = 340; // altura máxima do diálogo + margem
       setAnchorPos({
-        top: rect.top - 10,
-        left: rect.left + rect.width / 2,
+        top: Math.max(DIALOG_MAX_H + TOP_PAD, Math.min(rect.top - 10, H - TOP_PAD)),
+        left: Math.max(HALF, Math.min(rect.left + rect.width / 2, W - HALF)),
       });
     };
     update();
