@@ -61,14 +61,17 @@ test.use({ serviceWorkers: 'block' });
  */
 
 /**
- * Set the light theme BEFORE navigation: the app switches theme via a
- * pre-paint script reading localStorage('windspot:theme'), so colorScheme
- * emulation alone never produces the light theme (dark is the default).
- * Baselines must match the real user path — a click on the theme toggle.
+ * Set the theme BEFORE navigation: the app switches theme via a pre-paint
+ * script reading the ventu-theme cookie (falling back to the legacy
+ * localStorage('windspot:theme') key), so colorScheme emulation alone never
+ * produces the light theme (dark is the default). Baselines must match the
+ * real user path — a click on the theme toggle.
  */
 async function setTheme(page: Page, theme: 'dark' | 'ocean'): Promise<void> {
   await page.addInitScript((t) => {
     try {
+      const value = t === 'ocean' ? 'light' : 'dark';
+      document.cookie = `ventu-theme=${value};path=/;max-age=31536000;samesite=lax`;
       if (t === 'ocean') localStorage.setItem('windspot:theme', 'light');
       else localStorage.removeItem('windspot:theme');
     } catch {

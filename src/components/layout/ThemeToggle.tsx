@@ -4,6 +4,20 @@ import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
 
 const THEME_KEY = 'windspot:theme';
+/** Portable mirror of the theme so future SSR can read it per request (the
+ * pre-paint bootstrap in layout.tsx treats the cookie as source of truth). */
+function persistTheme(light: boolean) {
+  try {
+    localStorage.setItem(THEME_KEY, light ? 'light' : 'dark');
+  } catch {
+    /* ignore */
+  }
+  try {
+    document.cookie = `ventu-theme=${light ? 'light' : 'dark'};path=/;max-age=31536000;samesite=lax`;
+  } catch {
+    /* ignore */
+  }
+}
 
 interface ThemeToggleProps {
   locale: string;
@@ -36,11 +50,7 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
   const toggle = () => {
     const next = !(isLight ?? false);
     document.documentElement.classList.toggle('theme-ocean', next);
-    try {
-      localStorage.setItem(THEME_KEY, next ? 'light' : 'dark');
-    } catch {
-      /* ignore */
-    }
+    persistTheme(next);
     setIsLight(next);
   };
 

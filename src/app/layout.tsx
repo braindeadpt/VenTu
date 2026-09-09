@@ -73,12 +73,21 @@ export const metadata: Metadata = {
 
 const themeScript = `
   (function() {
+    var light = false;
     try {
-      var t = localStorage.getItem('windspot:theme');
-      if (t === 'light') {
-        document.documentElement.classList.add('theme-ocean');
+      // Cookie is the portable source of truth (readable by future SSR per
+      // request); localStorage is the legacy store - migrated on first visit
+      // after this change and kept in sync as a fallback.
+      var m = document.cookie.match(/(?:^|; )ventu-theme=(light|dark)(?:;|$)/);
+      if (m) light = m[1] === 'light';
+      else {
+        var t = localStorage.getItem('windspot:theme');
+        if (t === 'light') light = true;
+        document.cookie = 'ventu-theme=' + (light ? 'light' : 'dark') +
+          ';path=/;max-age=31536000;samesite=lax';
       }
     } catch (e) {}
+    if (light) document.documentElement.classList.add('theme-ocean');
   })();
 `;
 
