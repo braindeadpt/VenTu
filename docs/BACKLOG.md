@@ -65,6 +65,16 @@ Formatos validados ao vivo a 2026-08-13 (o `400 invalid coords` confirma parsing
 
 **Monitorização**: o workflow `ih-health.yml` (de hora a hora) corre `scripts/monitor-ih-tides.sh`, que sonda o `items` e abre uma issue (label `ih-outage`) quando cai; quando recupera, **comenta e fecha a issue automaticamente** — a recuperação fica visível sem monitorização manual.
 
+### 🔴 Incidente 2026-09-08/09 — radar IPMA: slots publicadas sem PNGs (`path: null`)
+
+**Sintoma**: o manifest `imgs-radar.json` continua **fresco** (slots de 5 em 5 min, ex. «2026-09-09 21:50») mas **todas as entradas vêm com `path: null`** — e os PNGs reais dão 404 (o último frame válido é o de 2026-09-08 23:25). Verificado ao vivo a 2026-09-09: 37 slots publicadas, 0 com `path` .png; `parseManifest` devolve `[]` → o fetch mantém o último frame bom (exit 0).
+
+**Impacto**: o gate de health antigo contava o streak de «stale» do radar até `FAIL_AFTER` e **falhava o job ANTES do upload do artifact** — bloqueando o push de TODOS os dados (conditions/forecasts/observações de 185 spots). Produção sem dados frescos das 10:08 às ~20:45 do dia 09, apesar de o pipeline gerar tudo corretamente em todas as runs.
+
+**Mitigação (fix `f92cf42ea`)**: `radarLayer` → **warnOnly** (mesma semântica das marés IH — decisão `c16802b8`): degradação a montante avisa nos logs + chip do About, nunca mais congela o push dos dados essenciais. As camadas essenciais (boias, avisos, costeiros) mantêm a falha dura.
+
+**Monitorização**: o `ih-health.yml` corre também `scripts/monitor-ipma-radar.sh` (label `ipma-radar-outage`): sonda o manifest (≠200), as slots (0 frames válidos = `path:null`) e o PNG mais recente (≠200 = 404) — abre a issue quando degrada, comenta+fecha quando o produto recupera. Recuperação: quando o IPMA voltar a publicar paths, o próximo run do `update-data` volta a servir frames novos automaticamente.
+
 ---
 
 ## 🌊 Dados em falta

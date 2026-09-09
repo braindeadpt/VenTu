@@ -477,6 +477,10 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     // botão de dispensa ser clicável sobre o mapa.
     await interceptIhBuoys(page, IH_NO_KEY);
     await interceptWmoBuoys(page, WMO_DOWN);
+    // O coach de primeira visita da legenda de vento abre sozinho (idle) e
+    // pode cobrir UI do mapa — a regra do map-setup: specs que não testam o
+    // coach marcam-no como visto antes do primeiro goto (igual ao teste do chip).
+    await preseedWindRingLegend(page);
     await page.goto('/pt/mapa/');
     await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
     await page.getByRole('button', { name: 'Dispensar aviso das boias' }).click();
@@ -520,6 +524,30 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     // grava a escolha no localStorage — o mesmo «já vi» do aviso de topo.
     await chip.click();
     await expect(popover).toBeVisible();
+
+    // Determinístico sob carga: o dismiss só é clicado quando é mesmo o
+    // elemento de topo no seu centro. O popover depende da GEOMETRIA (âncora
+    // left-0 + posição do chip à direita da coluna de controlos) — se alguém
+    // a quebrar, este poll falha em 5s a nomear o interceptador em vez de
+    // gastar os 60s do timeout do click (flake CI 34374292405).
+    await expect
+      .poll(async () =>
+        page.evaluate(() => {
+          const el = document.querySelector('[data-buoy-chip-dismiss="true"]');
+          if (!el) return 'missing';
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 || r.height === 0) return 'not-rendered';
+          const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+          if (top === el || el.contains(top)) return 'ok';
+          const tag = (top as HTMLElement)?.dataset as Record<string, string> | undefined;
+          return tag?.['mapCurrentsToggle']
+            ? 'covered-by-controls-column'
+            : tag?.['mapControls']
+              ? 'controls-column'
+              : 'covered';
+        }),
+      )
+      .toBe('ok', { timeout: 5_000 });
     await popover.getByRole('button', { name: 'Dispensar este aviso' }).click();
     await expect(chip).toHaveCount(0);
     await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);

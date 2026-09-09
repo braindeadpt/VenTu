@@ -290,5 +290,6 @@ jobs:
         run: |
           shellcheck scripts/check-security-headers.sh \
             scripts/monitor-ih-tides.sh \
+            scripts/monitor-ipma-radar.sh \
             scripts/push-data-update.sh \
             supabase/tests/run-tests.sh

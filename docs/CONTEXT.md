@@ -336,6 +336,11 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   push dos dados essenciais (conditions/forecasts/observações), como aconteceu
   nesse dia (produção sem dados frescos das 10:08 às 20:45). A camada avisa a
   partir de `WARN_AFTER` e fica por aí; visibilidade nos logs + chip do About.
+- O `ih-health.yml` corre também `scripts/monitor-ipma-radar.sh`: sonda o
+  `imgs-radar.json` (manifest ≠200, slots sem PNGs `path:null`, ou PNG mais
+  recente ≠200 = degradado) e gere a issue `ipma-radar-outage` — abre quando
+  degrada, comenta+fecha quando o produto recupera (mesmo padrão de estado do
+  `monitor-ih-tides.sh`).
 - **Fonte ES cross-border (Avisos a los navegantes):** o fetch costeiro grava
   `esHealth` (configured/disabled + status ok|error + timestamps) no
   `ih-coastal-warnings.json` e o `esSourceNote` marca degradação quando o feed

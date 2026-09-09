@@ -24,7 +24,7 @@ set -uo pipefail
 
 IH_ITEMS_URL="${IH_ITEMS_URL:-https://api-features.hidrografico.pt/collections/tide_obs_nrt/items?limit=1&f=json}"
 OUTAGE_LABEL="${OUTAGE_LABEL:-ih-outage}"
-REPO="${GITHUB_REPOSITORY:-braindeadpt/VenTu}"
+REPO="${REPO:-${GITHUB_REPOSITORY:-braindeadpt/VenTu}}"
 BODY_FILE="${TMPDIR:-/tmp}/ih-monitor-body.json"
 LAST_CODE="000"
 

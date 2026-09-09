@@ -26,3 +26,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash scripts/monitor-ih-tides.sh
+
+      # Probe o produto radar do IPMA (manifest imgs-radar.json) e gere a
+      # issue de incidente (label ipma-radar-outage): abre quando degrada
+      # (slots path:null / PNG 404), comenta+fecha quando recupera.
+      - name: Probe IPMA radar product and alert on recovery
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: bash scripts/monitor-ipma-radar.sh
