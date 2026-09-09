@@ -16,6 +16,7 @@ import {
   type RegionFilter,
 } from '@/lib/news';
 import { upcomingEvents } from '@/lib/events';
+import { getAssetPath } from '@/lib/paths';
 import { getTranslation } from '@/lib/i18n';
 import NewsFilters from './NewsFilters';
 import NewsListGrouped from './NewsListGrouped';
@@ -24,18 +25,62 @@ import EventCard from '@/components/events/EventCard';
 import { Newspaper, Search, CalendarDays } from 'lucide-react';
 
 interface NewsArchiveClientProps {
-  news: NewsItem[];
-  events?: VentuEvent[];
+  /** Build-time baked snapshot (production default — no fetch, no CLS). */
+  bakedNews: NewsItem[];
+  /** Build-time baked events snapshot. */
+  bakedEvents?: VentuEvent[];
   locale: string;
 }
 
 export default function NewsArchiveClient({
-  news,
-  events = [],
+  bakedNews,
+  bakedEvents = [],
   locale,
 }: NewsArchiveClientProps) {
   const t = getTranslation(locale);
   const isPt = locale === 'pt';
+  // E2E seam (same pattern as AboutDataCards): with the ventu_live cookie the
+  // baked props are the BUILD's data, which page.route can never alternate on
+  // a static export. Seed null and re-derive from client-fetched /data/ JSON
+  // (served by the visual fixture) so the pixel gate measures layout, not
+  // pipeline drift. Production (no cookie) keeps the baked render verbatim.
+  const [forceLive] = useState(
+    () =>
+      typeof document !== 'undefined' &&
+      document.cookie.split(';').some((c) => c.trim() === 'ventu_live=1'),
+  );
+  const [fetchedNews, setFetchedNews] = useState<NewsItem[] | null>(null);
+  const [fetchedEvents, setFetchedEvents] = useState<VentuEvent[] | null>(null);
+
+  useEffect(() => {
+    if (!forceLive) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const [newsRes, eventsRes] = await Promise.all([
+          fetch(getAssetPath('/data/news.json')).then((r) => (r.ok ? r.json() : null)),
+          fetch(getAssetPath('/data/events.json')).then((r) => (r.ok ? r.json() : null)),
+        ]);
+        if (cancelled) return;
+        if (Array.isArray(newsRes)) {
+          const valid = (newsRes as NewsItem[]).filter(
+            (item) => item.title && item.title.trim() !== '',
+          );
+          if (valid.length > 0) setFetchedNews(valid);
+        }
+        if (Array.isArray(eventsRes)) setFetchedEvents(eventsRes as VentuEvent[]);
+      } catch (e) {
+        console.warn('News live load failed — keeping baked snapshot:', e);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [forceLive]);
+
+  const news = fetchedNews ?? bakedNews;
+  const events = fetchedEvents ?? bakedEvents;
+
   const [category, setCategory] = useState<NewsCategory>('all');
   const [region, setRegion] = useState<RegionFilter>(() => getDefaultNewsRegion(locale));
   const [period, setPeriod] = useState<DateFilter>('all');

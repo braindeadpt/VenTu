@@ -52,7 +52,7 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: s
 
   return (
     <div className="min-h-screen">
-      <NewsArchiveClient news={news as NewsItem[]} events={events} locale={locale} />
+      <NewsArchiveClient bakedNews={news as NewsItem[]} bakedEvents={events} locale={locale} />
     </div>
   )
 }
