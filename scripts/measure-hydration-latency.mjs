@@ -152,6 +152,8 @@ for (const locale of LOCALES) {
 
 await browser.close();
 if (internalServer) internalServer.close();
+// Print to stdout (greppable via `gh run view --log`) — callers can tee to
+// $GITHUB_STEP_SUMMARY themselves; do not rely on redirect-only output.
 console.log(
   JSON.stringify(
     {
