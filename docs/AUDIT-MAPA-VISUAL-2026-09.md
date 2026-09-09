@@ -1,0 +1,135 @@
+# Audit Visual do Mapa — 2026-09-09
+
+Auditor: Freebuff (Codebuff) | Âmbito: mapa interactivo (`/pt/mapa/`, embeds do grid de spots e hero da homepage) | Desktop + Tablet + Mobile
+
+---
+
+## Resumo executivo
+
+Auditoria visual completa ao mapa e a todas as suas funções, em 4 viewports
+(desktop 1440×900, laptop 1024×768, tablet 768×1024 touch, mobile 390×844 touch)
+e em 4 superfícies (fullscreen `/mapa`, grid de spots, hero da homepage, embed
+de spot). Foram medidos geometria dos overlays (controlos, legenda, HUD, zoom,
+atribuição), alvos de toque (WCAG 2.5.8, piso 44×44 CSS px), estados
+interativos (legenda expandida/colapsada, HUD expandido, sheet do spot, popup)
+e o alinhamento dinâmico legenda-vs-HUD.
+
+**Resultado pós-fix: 0 alvos <44px em todas as superfícies touch (mobile +
+tablet).** No desktop (rato) mantêm-se duas densidades intencionais e
+documentadas: cabeçalho da legenda compacto e pills de filtro a 36px.
+
+---
+
+## Método
+
+1. Leitura completa do código dos overlays (`SpotMapInteractive`, `MapLegend`,
+   `MapExploreHud`, `MapLayerToggle`, `MapControls`, `BuoyLayerNotice`,
+   `FilterPill`, `SpotPopupContent`, `MapTimeTrack`, CSS global do mapa).
+2. Auditoria ao vivo com sondas Playwright read-only
+   (`scripts/audit/audit-map-visual.mjs` — 4 viewports; `scripts/audit/audit-map-embeds.mjs` —
+   4 superfícies): `getBoundingClientRect` + `elementFromPoint` (hit-testing de
+   sobreposições) + medição de alvos de toque em todos os botões dos overlays.
+3. Verificação pós-fix das mesmas sondas (tabela "Evidência" abaixo).
+4. Spec e2e nova (`tests/e2e/map-touch-targets.spec.ts`) para impedir
+   regressões; suites existentes re-corridas na via CI (static export).
+
+---
+
+## Defeitos encontrados e corrigidos
+
+| # | Superfície | Antes | Depois | Fix |
+|---|-----------|-------|--------|-----|
+| 1 | Legenda (mobile) | toggle **105×17px** — único controlo para abrir a legenda | 44px+ | `MapLegend.tsx` — `min-h-[44px]` abaixo de `lg` |
+| 2 | Rádio "Satélite" do HUD (mobile) | **39px** de largura | ≥44×44 | `MapExploreHud.tsx` — `min-w-[44px]` nos rádios de camadas |
+| 3 | Chips do hero (mobile, homepage) | **28–36px** altura | 44×44 | `SpotMapInteractive.tsx` — `min-h-[44px]` + `min-w-[44px]` nos botões radar/isóbatas |
+| 4 | ✕ dismiss do aviso de boias (todas) | **22×22px** | 44×44 (`w-11 h-11`) | `BuoyLayerNotice.tsx` + `pr-12` no texto para não colidir |
+| 5 | `MapLayerToggle` Mapa/Satélite (embeds) | **28px** altura | 44px (`min-h-[44px]`) | `MapLayerToggle.tsx` |
+| 6 | Pills de filtro do HUD (mobile + tablet touch) | **36px** altura | 44px abaixo de `lg` | `FilterPill.tsx` — `min-h-[44px] lg:min-h-[36px]` |
+| 7 | Legenda em tablet touch | cabeçalho 17px sem função (conteúdo sempre visível) | cabeçalho 44px **com collapse funcional** abaixo de `lg` | `MapLegend.tsx` — conteúdo `lg:block` em vez de `sm:block` |
+| 8 | Botão fullscreen (grid de spots) | label hard-coded `'Explorar'` ignorava i18n | `t.hero.exploreMap` ("Explorar mapa" / "Explore map") | `MapControls.tsx` + `SpotMapInteractive.tsx` |
+| 9 | Hero da homepage (mobile) | legenda `top-[6.75rem]` colidia com os chips maiores (6px de graze) | `top-[7.5rem]` — folga 6px, nunca clipa | `MapLegend.tsx` |
+
+### Decisões de design documentadas (intencionais, não defeitos)
+
+- **Desktop (≥`lg`, rato):** cabeçalho da legenda compacto (17px) — o conteúdo
+  está **sempre visível** (`lg:block`), e pills de filtro a 36px (densidade de
+  rato). WCAG 2.5.8 aplica-se a input por ponteiro; no tablet (touch, 768–1023)
+  o piso de 44px aplica-se — daí o breakpoint em `lg`, não `sm`.
+- **Chevron da legenda:** só visível abaixo de `lg` (onde o toggle funciona).
+
+### Verificado como OK (sem intervenção)
+
+- Sem colisões de overlays em nenhum viewport (controlos × zoom × legenda ×
+  HUD × layerToggle); atribuição clicável e não sobreposta.
+- Elevação dinâmica da legenda quando o HUD expande (folga 12px, `hudLift`).
+- Sheet do spot em mobile: empilhamento correto com o HUD; botão fechar ≥44px.
+- Sem scroll de fundo em página com mapa; tiras de filtros roláveis
+  horizontalmente (touch-pan-x) com edge-fade; watchdog de tiles honesto.
+
+---
+
+## Evidência pós-fix (sondas Playwright)
+
+### `scripts/audit/audit-map-visual.mjs` — alvos <44px por viewport
+
+| Viewport | Antes | Depois |
+|----------|-------|--------|
+| desktop 1440 | 22 (pills 36px + legenda 17px — densidade intencional) | 22 (idem, inalterado) |
+| laptop 1024 | 22 (idem) | 22 (idem) |
+| tablet 768 (touch) | 22 | **0** |
+| mobile 390 (touch) | 9 (incl. HUD expandido) | **0** |
+
+### `scripts/audit/audit-map-embeds.mjs` — alvos <44px por superfície
+
+| Superfície | Antes | Depois |
+|------------|-------|--------|
+| desktop · spots-embed | 1 (legenda 17px, intencional) | 1 (idem) |
+| desktop · home-hero | 1 (idem) | 1 (idem) |
+| mobile · spots-embed | 2 | **0** |
+| mobile · home-hero | 4 (chips 28–36px) | **0** |
+
+---
+
+## Testes
+
+- **`tests/e2e/map-touch-targets.spec.ts`** (novo, 6 testes, na via CI/static
+  export): toggle da legenda ≥44px e expande ao toque; rádios Mapa/Satélite
+  ≥44px; pills de modalidade ≥44px (mobile expandido + tablet); rótulo i18n do
+  fullscreen PT/EN; chips do hero ≥44×44. **6/6 passam.**
+- **Suites existentes na via CI** (static export, `npm run build:e2e`):
+  `map-touch-targets`, `isobaths`, `map-buoys`, `mapa-route`, `home-map-first`:
+  **33/33 passam**; `visual-ux-audit`: 35/37 (2 falhas de header
+  tema/idioma — trabalho pré-existente de theme-cookie, não relacionado com o
+  mapa; passam isoladas).
+- **TypeScript:** `tsc --noEmit` limpo. **Lint:** `npm run lint` limpo.
+  **Unit:** 163 ficheiros / **1468 testes** passam.
+
+> Nota dev-server: em `next dev` com Turbopack, `localhost` é a origem de dev
+> permitida — `127.0.0.1` é bloqueada pelo Next (HMR), o que impede a
+> hidratação da página em testes Playwright. Usar `PLAYWRIGHT_BASE_URL=http://localhost:<porta>`
+> ou a via CI (static export). Algumas falhas vistas em dev (isóbatas/boias em
+> paralelo, sync de filtros após reload, "Router action dispatched before
+> initialization") são artefactos do dev server — todas passam no static export.
+
+---
+
+## Baselines visuais (CI)
+
+As alterações visuais (legenda mobile +27px, pills +8px abaixo de `lg`, chips
+do hero 44×44, ✕ das boias 44px) alteram os goldens de `visual-regression`.
+Os baselines são **bound à plataforma Linux** — um contribuidor em Windows não
+os pode produzir (`tests/e2e/visual-regression.spec.ts-snapshots/*-win32.png`
+está no `.gitignore`). Após merge, executar o workflow manual
+**Record Visual Baselines** (`.github/workflows/record-visual-baselines.yml`,
+`workflow_dispatch`) para re-gravar e o gate fica verde.
+
+---
+
+## Como re-correr a auditoria
+
+```bash
+npm run dev                     # servidor em http://localhost:<porta>
+AUDIT_BASE=http://localhost:<porta> node scripts/audit/audit-map-visual.mjs
+AUDIT_BASE=http://localhost:<porta> node scripts/audit/audit-map-embeds.mjs
+PLAYWRIGHT_BASE_URL=http://localhost:<porta> npx playwright test map-touch-targets
+```

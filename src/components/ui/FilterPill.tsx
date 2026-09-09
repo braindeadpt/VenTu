@@ -37,7 +37,9 @@ export default function FilterPill({
       className={cn(
         'pill inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap shrink-0',
         'transition-[background-color,border-color,color] duration-150',
-        compact ? 'px-2 py-1.5 min-h-[36px]' : 'px-3 py-2 min-h-[44px]',
+        // Compact pills: 44px below `lg` (mobile + touch tablets, WCAG 2.5.8);
+        // desktop (mouse) keeps the denser 36px row.
+        compact ? 'px-2 py-1.5 min-h-[44px] lg:min-h-[36px]' : 'px-3 py-2 min-h-[44px]',
         active
           ? (activeClassName ?? 'pill-active')
           : (inactiveClassName ?? 'pill-ghost'),

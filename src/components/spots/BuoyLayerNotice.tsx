@@ -65,9 +65,9 @@ export default function BuoyLayerNotice({
       className={cn(
         'relative flex items-start gap-2.5 text-meta-sm pointer-events-auto text-fg',
         quiet
-          ? 'border-l-2 border-score-fair/60 pl-3 pr-8 py-1'
+          ? 'border-l-2 border-score-fair/60 pl-3 pr-12 py-1'
           : cn(
-              'rounded-card border p-3 pr-8',
+              'rounded-card border p-3 pr-12',
               isDegraded ? 'border-score-poor/40' : 'border-score-fair/40',
               overlay
                 ? 'bg-bg-elevated/95 backdrop-blur-sm shadow-card'
@@ -89,12 +89,14 @@ export default function BuoyLayerNotice({
         {c.body}
         {c.wmoNote}
       </p>
+      {/* Alvo de toque 44×44 (WCAG 2.5.8) — o p-1 + w-3.5 rende um glifo
+          visível de ~22px centrado na zona de toque. */}
       <button
         type="button"
         aria-label={dismissLabel}
         onClick={dismiss}
         data-buoy-notice-dismiss="true"
-        className="absolute top-1.5 right-1.5 rounded-full p-1 text-fg-muted transition-colors hover:text-fg hover:bg-bg-base/60"
+        className="absolute top-0 right-0 flex items-center justify-center w-11 h-11 rounded-full text-fg-muted transition-colors hover:text-fg hover:bg-bg-base/60"
       >
         <X className="w-3.5 h-3.5" aria-hidden />
       </button>

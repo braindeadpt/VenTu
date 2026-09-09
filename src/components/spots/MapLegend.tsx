@@ -47,9 +47,9 @@ export default function MapLegend({
 
   // Auto-expand when a data layer activates — except the homepage hero:
   // there the expanded box (≈156px tall) lands on the sport filter chips and
-  // CTA on mobile. Desktop is unaffected either way (`sm:block` keeps the
-  // content visible regardless of `collapsed`); on mobile hero the user taps
-  // the legend to expand it.
+  // CTA on mobile. Desktop (lg+) is unaffected either way (`lg:block` keeps
+  // the content visible regardless of `collapsed`); below lg the user taps
+  // the header to expand it.
   useEffect(() => {
     if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible)) {
       setCollapsed(false);
@@ -65,7 +65,7 @@ export default function MapLegend({
     <div
       className={
         isHero
-          ? 'absolute top-[6.75rem] right-3 z-[1000]'
+          ? 'absolute top-[7.5rem] right-3 z-[1000]'
           : `absolute z-[1000] right-0 mr-3 ${bottomPx == null ? 'bottom-0 mb-3' : ''}`
       }
       style={bottomPx != null ? { bottom: bottomPx } : undefined}
@@ -73,18 +73,21 @@ export default function MapLegend({
       aria-label={isPt ? 'Legenda do mapa' : 'Map legend'}
     >
       <div className="bg-bg-elevated border border-divider rounded-lg px-3 py-2 shadow-lg min-w-[130px] sm:min-w-[140px]">
+        {/* Alvo de toque ≥44px abaixo de `lg` (WCAG 2.5.8) — em mobile/tablet
+            touch é o único controlo para abrir a legenda. Desktop (≥lg, rato)
+            mantém o cabeçalho compacto, onde o conteúdo está sempre visível. */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-between w-full text-[11px] font-semibold uppercase tracking-wide text-fg-muted mb-1 sm:mb-1.5 sm:cursor-default sm:hover:opacity-100"
+          className="flex items-center justify-between w-full min-h-[44px] mb-1 lg:min-h-0 lg:mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted lg:cursor-default lg:hover:opacity-100"
           aria-expanded={!collapsed}
         >
           <span>{isPt ? 'Score Náutico' : 'Nautical Score'}</span>
           <ChevronDown
-            className={`w-3 h-3 sm:hidden transition-transform ${collapsed ? '' : 'rotate-180'}`}
+            className={`w-3 h-3 lg:hidden transition-transform ${collapsed ? '' : 'rotate-180'}`}
           />
         </button>
 
-        <div className={`${collapsed ? 'hidden' : 'block'} sm:block`}>
+        <div className={`${collapsed ? 'hidden' : 'block'} lg:block`}>
           <div
             className="h-2 rounded mb-1.5"
             style={{

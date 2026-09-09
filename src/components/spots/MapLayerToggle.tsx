@@ -26,7 +26,7 @@ export default function MapLayerToggle({ current, onChange, isPt }: MapLayerTogg
             role="radio"
             aria-checked={active}
             onClick={() => onChange(mode)}
-            className={`px-3 py-1.5 text-xs font-semibold transition-colors duration-150 ${
+            className={`px-3 py-1.5 min-h-[44px] text-xs font-semibold transition-colors duration-150 ${
               active
                 ? 'bg-bg-elevated text-fg' // opaque: readable over any tile
                 : 'bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg'

@@ -178,7 +178,7 @@ export default function MapControls({
         ) : (
           <Maximize2 className="w-4 h-4 shrink-0" aria-hidden />
         )}
-        <span className="hidden sm:inline">{isFullscreen ? exitLabel : 'Explorar'}</span>
+        <span className="hidden sm:inline">{isFullscreen ? exitLabel : fullscreenLabel}</span>
       </button>
 
       <button

@@ -990,17 +990,17 @@ export default function SpotMapInteractive({
           {isHeroEmbed && (
             <>
               <div className="absolute top-3 right-3 z-[1000] flex items-center gap-1.5 pointer-events-auto">
-                <button type="button" onClick={toggleRadar} aria-label={radarLabel} aria-pressed={radarEnabled} className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors">
+                <button type="button" onClick={toggleRadar} aria-label={radarLabel} aria-pressed={radarEnabled} className="inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors">
                   <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
                   <span className="hidden sm:inline">{radarLabel}</span>
                 </button>
                 {(radarPrefSet || radarEnabled) && (
-                  <button type="button" onClick={handleResetRadar} aria-label={t.map.radarReset} title={t.map.radarReset} className="inline-flex items-center justify-center w-8 h-8 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors">
+                  <button type="button" onClick={handleResetRadar} aria-label={t.map.radarReset} title={t.map.radarReset} className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center w-8 h-8 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors">
                     <RotateCcw className="w-3.5 h-3.5" aria-hidden />
                   </button>
                 )}
               </div>
-              <button type="button" onClick={toggleIsobaths} aria-label={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths} title={t.map.isobathsHint} aria-pressed={isobathsEnabled} className="absolute top-[54px] right-3 z-[1000] inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto">
+              <button type="button" onClick={toggleIsobaths} aria-label={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths} title={t.map.isobathsHint} aria-pressed={isobathsEnabled} className="absolute top-[70px] right-3 z-[1000] inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto">
                 <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
                 <span className="hidden sm:inline">{isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}</span>
               </button>
