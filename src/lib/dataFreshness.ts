@@ -1,8 +1,31 @@
-/** Thresholds aligned with Lisbon schedule (2h day / 4h night). */
-export const STALE_THRESHOLD_HOURS = 2.5;
+/**
+ * Lisbon-hour stale thresholds, aligned with the pipeline schedule
+ * (2h day 06:00–20:00 / 4h night). A fixed 2.5h threshold made the badge
+ * report "stale" all night: data lands every 4h, so it is always older
+ * than 2.5h. The threshold follows the cadence instead — 2.5h by day,
+ * 5h at night (4h cadence + 1h margin).
+ */
+export const STALE_THRESHOLD_HOURS = 2.5; // daytime value (kept for compat)
+export const NIGHT_STALE_THRESHOLD_HOURS = 5;
 export const VERY_STALE_THRESHOLD_HOURS = 12;
 
 export type DataFreshness = 'fresh' | 'stale' | 'very-stale';
+
+/** Current hour in Lisbon (0–23), in the viewer's frame — pure, testable. */
+export function lisbonHour(nowMs?: number): number {
+  const hour = new Intl.DateTimeFormat('en-GB', {
+    hour: 'numeric',
+    hourCycle: 'h23',
+    timeZone: 'Europe/Lisbon',
+  }).format(new Date(nowMs ?? Date.now()));
+  return Number(hour);
+}
+
+/** Freshness gate matching the pipeline cadence at the given instant. */
+export function staleThresholdHours(nowMs?: number): number {
+  const h = lisbonHour(nowMs);
+  return h >= 6 && h < 20 ? STALE_THRESHOLD_HOURS : NIGHT_STALE_THRESHOLD_HOURS;
+}
 
 export function getAgeHours(
   updatedAt?: string | number | null,
@@ -17,7 +40,7 @@ export function getAgeHours(
 export function getDataFreshness(updatedAt?: string | number | null, nowMs?: number): DataFreshness | null {
   const ageHours = getAgeHours(updatedAt, nowMs);
   if (ageHours === null) return null;
-  if (ageHours < STALE_THRESHOLD_HOURS) return 'fresh';
+  if (ageHours < staleThresholdHours(nowMs)) return 'fresh';
   if (ageHours < VERY_STALE_THRESHOLD_HOURS) return 'stale';
   return 'very-stale';
 }

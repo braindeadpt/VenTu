@@ -45,7 +45,7 @@ export interface ForecastHour {
   wavePeriod: number;
   windSpeed: number;
   windDirection: number;
- windGust?: number;
+  windGust?: number;
   waterTemp?: number;
   tideHeight?: number;
   score?: number;
@@ -105,7 +105,7 @@ function windBg(kt: number): string {
   if (kt < 14) return 'bg-data-wind/8';
   if (kt < 20) return 'bg-data-wind/14';
   if (kt < 28) return 'bg-data-wind/21';
-return 'bg-data-wind/25';
+  return 'bg-data-wind/25';
 }
 
 /** Wind speed text colour for alarming values (knots). */
@@ -128,7 +128,7 @@ function waterBg(t: number): string {
   if (t < 14) return 'bg-surface-1/[0.02]';
   if (t < 18) return 'bg-data-water/8';
   if (t < 22) return 'bg-data-water/14';
-return 'bg-data-water/20';
+  return 'bg-data-water/20';
 }
 
 /** Water temperature text colour. */

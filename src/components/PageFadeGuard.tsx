@@ -24,12 +24,11 @@ export default function PageFadeGuard() {
   useEffect(() => {
     if (isMapRoute) return;
     unlockPageInteraction();
-  }, [pathname]);
+  }, [pathname, isMapRoute]);
 
   useEffect(() => {
     const main = document.getElementById('main-content');
     if (!main) return;
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- isMapRoute is a derived constant, stable for the mount that created this main.
 
     // On /mapa we must NOT clear the body scroll-lock (the map owns it), but
     // we still guarantee the fade-in content becomes visible — so only the
@@ -60,7 +59,7 @@ export default function PageFadeGuard() {
       window.removeEventListener('pageshow', onPageShow);
       window.clearTimeout(fallback);
     };
-  }, []);
+  }, [isMapRoute]);
 
   return null;
 }

@@ -169,8 +169,10 @@ export default function SpotDetailHero({
       </div>
 
       <div className="spot-hero-ink relative max-w-6xl mx-auto px-4 pt-3 pb-4">
+        {/* Preserve the sport the user was viewing: /spots/ reads ?sport=
+            on mount (gridFilters), so the back link must not drop it. */}
         <Link
-          href={`/${locale}/spots/`}
+          href={`/${locale}/spots/?sport=${sport}`}
           className="inline-flex items-center gap-1.5 text-meta-sm text-fg-muted hover:text-fg transition-colors duration-150 mb-2"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden />

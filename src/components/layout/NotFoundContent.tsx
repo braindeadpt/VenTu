@@ -7,7 +7,10 @@ import Button from '@/components/ui/Button';
 
 export default function NotFoundContent() {
   const pathname = usePathname() || '';
-  const locale = pathname.startsWith('/en') ? 'en' : 'pt';
+  // 404 body copy is pt/en only (the partial-locale convention): /pt/ gets
+  // the Portuguese copy, every other locale (en/es/de/fr) gets English —
+  // never the PT copy for es/de/fr.
+  const locale = pathname.startsWith('/pt') ? 'pt' : 'en';
   const isPt = locale === 'pt';
 
   return (

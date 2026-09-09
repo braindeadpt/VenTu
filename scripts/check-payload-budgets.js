@@ -85,9 +85,24 @@ function listingDirs(localeDir) {
   return dirs;
 }
 
+// Public data blobs in out/data/*.json — the client fetches these on every
+// page load, so a size regression (like the 10 MB forecasts.json bake) is a
+// download regression for every visitor even though no route dir changes.
+// Budgets sit ~1.2x current sizes (forecasts 10.2 MB, wind-bias 2.0 MB,
+// spots-index 1.0 MB, forecast-skill 1.3 MB, conditions 0.5 MB) — room for
+// organic growth (more spots/hours), nowhere near enough for a doubling.
+const DATA_FILE_BUDGETS_MB = {
+  'forecasts.json': 12,
+  'conditions.json': 1,
+  'spots-index.json': 1.5,
+  'wind-bias.json': 2.5,
+  'forecast-skill.json': 1.5,
+};
+
 const budgetBytes = BUDGET_MB * 1024 * 1024;
 const breaches = [];
 let checked = 0;
+let dataChecked = 0;
 let locales = [];
 try {
   locales = fs.readdirSync(outDir);
@@ -113,16 +128,31 @@ for (const locale of locales) {
   }
 }
 
+const dataDir = path.join(outDir, 'data');
+if (fs.existsSync(dataDir)) {
+  for (const [name, budgetMb] of Object.entries(DATA_FILE_BUDGETS_MB)) {
+    const full = path.join(dataDir, name);
+    if (!fs.existsSync(full)) continue;
+    dataChecked += 1;
+    const mb = fs.statSync(full).size / (1024 * 1024);
+    if (mb > budgetMb) {
+      breaches.push(`data/${name}: ${mb.toFixed(1)} MB > ${budgetMb} MB budget`);
+    }
+  }
+}
+
 if (breaches.length > 0) {
   console.error(
-    `check-payload-budgets: ${breaches.length} listing route(s) over budget — ` +
-      'listing pages are re-serializing spot-detail data (forecast rows?):\n' +
+    `check-payload-budgets: ${breaches.length} breach(es) — ` +
+      'a route dir re-serializing spot-detail data (forecast rows?) or a ' +
+      'data blob bloating client downloads:\n' +
       breaches.slice(0, 12).join('\n') +
       '\nDo NOT raise the budget to mask this: trim the loader (see ' +
-      'src/lib/load-spot-data.ts — listings must use loadSpotListings, not loadSpotData).',
+      'src/lib/load-spot-data.ts — listings must use loadSpotListings, not loadSpotData) ' +
+      'or the data generator that writes the oversized file.',
   );
   process.exit(1);
 }
 console.log(
-  `check-payload-budgets: OK — ${checked} route dirs under ${BUDGET_MB} MB each`,
+  `check-payload-budgets: OK — ${checked} route dirs under ${BUDGET_MB} MB each, ${dataChecked} data file(s) within budget`,
 );

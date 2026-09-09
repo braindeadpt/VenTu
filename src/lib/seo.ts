@@ -236,7 +236,13 @@ export function buildSpotMetadata(
   regionName: string,
 ): Metadata {
   const loc = validateLocale(locale);
-  const title = `${spotName} — Condições | VenTu`;
+  const title = pickLocale(loc, {
+    pt: `${spotName} — Condições | VenTu`,
+    en: `${spotName} — Conditions | VenTu`,
+    es: `${spotName} — Condiciones | VenTu`,
+    de: `${spotName} — Bedingungen | VenTu`,
+    fr: `${spotName} — Conditions | VenTu`,
+  });
   const description = pickLocale(loc, {
     pt: `Condições em ${spotName}, ${regionName}. Ondas, vento e temperatura da água — ${pipelineSchedule('pt')}.`,
     en: `Conditions at ${spotName}, ${regionName}. Waves, wind and water temperature — ${pipelineSchedule('en')}.`,

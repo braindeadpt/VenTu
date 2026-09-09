@@ -118,11 +118,13 @@ async function main() {
         const report = await runLighthouse(url, tmp);
         reports.push(report);
         const cats = report.categories || {};
+        const cls = report.audits?.['cumulative-layout-shift']?.numericValue ?? 0;
         console.log(
           `[${route.name}] run ${run}/${RUNS_PER_ROUTE}: Perf ${Math.round((cats.performance?.score ?? 0) * 100)} | ` +
             `A11y ${Math.round((cats.accessibility?.score ?? 0) * 100)} | SEO ${Math.round((cats.seo?.score ?? 0) * 100)} | ` +
             `TBT ${Math.round(report.audits?.['total-blocking-time']?.numericValue ?? 0)}ms | ` +
             `FCP ${Math.round(report.audits?.['first-contentful-paint']?.numericValue ?? 0)}ms | ` +
+            `CLS ${Math.round(cls * 1000) / 1000} | ` +
             `bytes ${Math.round((report.audits?.['total-byte-weight']?.numericValue ?? 0) / 1024)}KB`,
         );
       }
@@ -137,8 +139,10 @@ async function main() {
         seo: Math.round((cats.seo?.score ?? 0) * 100),
       };
       summary.push(row);
+      const medianCls = Math.round((median.audits?.['cumulative-layout-shift']?.numericValue ?? 0) * 1000) / 1000;
       console.log(
-        `[${route.name}] MEDIAN Perf ${row.performance} | A11y ${row.accessibility} | SEO ${row.seo}`,
+        `[${route.name}] MEDIAN Perf ${row.performance} | A11y ${row.accessibility} | SEO ${row.seo} | ` +
+          `CLS ${medianCls} (budget 0.1)`,
       );
 
       const { breaches } = evaluateLighthouseBudgets(median);

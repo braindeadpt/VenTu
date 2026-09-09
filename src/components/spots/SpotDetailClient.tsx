@@ -228,6 +228,32 @@ export default function SpotDetailClient({
   // liga quando o hero está montado (durante o loading o ref ainda é null).
   // Chamado antes de qualquer early-return (regras dos hooks).
   const stickyActive = useSpotHeroScrolledPast(heroRef, { enabled: !loading });
+
+  // Standalone tabs row: when the sticky bar takes over (scrolled past the
+  // hero), the row is invisible but its buttons stay focusable — a11y trap
+  // (aria-hidden + focusable children). `inert` (DOM property — React 18 has
+  // no JSX prop for it) removes it from the tab order AND the a11y tree.
+  // Kept before any early return (rules of hooks).
+  const tabsRowRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (tabsRowRef.current) tabsRowRef.current.inert = stickyActive;
+  }, [stickyActive]);
+
+  // Arrow-key navigation on the tablist: ←/→ cycle the selection like a
+  // roving tablist and move focus to the newly selected tab. tabSports is
+  // declared later but initialized before any keydown can fire.
+  const handleTabsKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const idx = tabSports.indexOf(selectedSport);
+    const dir = e.key === 'ArrowRight' ? 1 : -1;
+    const next = tabSports[(idx + dir + tabSports.length) % tabSports.length];
+    setSelectedSport(next);
+    tabsRowRef.current
+      ?.querySelector<HTMLButtonElement>(`#sport-tab-${next}`)
+      ?.focus();
+  };
+
   const { session } = useAuth();
 
   const tideSchedule = useMemo(() => {
@@ -597,6 +623,7 @@ export default function SpotDetailClient({
   const tabSports = (
     ['surf', 'kitesurf', 'windsurf', 'foil', 'bodyboard', 'sup', 'wakeboard'] as SportType[]
   ).filter((s) => relevantSports.includes(s));
+
   const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
   const scoreWindSource = resolveScoreWindSource(
     {
@@ -737,6 +764,7 @@ export default function SpotDetailClient({
         <section
           // Cota de pinagem partilhada com a SpotStickyBar (globals.css): a
           // linha standalone e a barra prendem-se na mesma altura do header.
+          ref={tabsRowRef}
           style={{ top: 'var(--ventu-spot-sticky-top)' }}
           className={`sticky z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm ${
             stickyActive ? 'invisible' : ''
@@ -748,6 +776,7 @@ export default function SpotDetailClient({
               className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x scroll-smooth"
               role="tablist"
               aria-label={tv.sportTabsAria}
+              onKeyDown={handleTabsKeyDown}
               style={{ height: 'var(--ventu-spot-tabs-h)' }}
             >
               {tabSports.map((sport) => (

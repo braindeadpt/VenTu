@@ -46,7 +46,7 @@ export default function SpotDrawerTabs({
               aria-selected={active}
               onClick={() => onTabChange(tab.id)}
               className={[
-                'flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-all whitespace-nowrap',
+                'flex items-center gap-1.5 px-3 py-2.5 min-h-[44px] text-xs font-medium border-b-2 transition-all whitespace-nowrap',
                 active
                   ? 'border-data-waves text-fg'
                   : 'border-transparent text-fg-subtle hover:text-fg hover:border-divider-strong',

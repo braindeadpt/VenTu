@@ -49,6 +49,9 @@ async function main() {
     process.exit(1);
   }
 
+  // Run first so an idempotent re-run (no nested dirs) still fixes lang.
+  fixHtmlLangPerLocale();
+
   const nestedDirs = [];
   walk(OUT_DIR, nestedDirs);
   if (nestedDirs.length === 0) {
@@ -80,6 +83,31 @@ async function main() {
   }
 
   console.log(`fixup-next-segment-paths: flattened ${moved} RSC payload(s) into dot-joined filenames`);
+}
+
+/**
+ * The root layout hardcodes <html lang="pt-PT"> (a shared static root cannot
+ * know the locale at build time). Fix the baked HTML per locale directory so
+ * the lang attribute is correct server-side — no client-side SetHtmlLang
+ * dependency for crawlers or no-JS users.
+ */
+function fixHtmlLangPerLocale() {
+  const LANG_BY_LOCALE = { pt: 'pt-PT', en: 'en', es: 'es', de: 'de', fr: 'fr' };
+  let fixed = 0;
+  for (const locale of Object.keys(LANG_BY_LOCALE)) {
+    const indexHtml = path.join(OUT_DIR, locale, 'index.html');
+    if (!fs.existsSync(indexHtml)) continue;
+    const html = fs.readFileSync(indexHtml, 'utf8');
+    const target = `lang="${LANG_BY_LOCALE[locale]}"`;
+    if (html.includes(target)) continue;
+    // First <html ...> tag only; lang may appear anywhere in it.
+    const fixedHtml = html.replace(/<html([^>]*)\blang="[^"]*"([^>]*)>/, `<html$1 ${target}$2>`);
+    if (fixedHtml !== html) {
+      fs.writeFileSync(indexHtml, fixedHtml);
+      fixed += 1;
+    }
+  }
+  console.log(`fixup-next-segment-paths: set <html lang> for ${fixed} locale root(s)`);
 }
 
 function* walkFiles(dir) {

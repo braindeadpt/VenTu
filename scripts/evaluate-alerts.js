@@ -53,6 +53,18 @@ function loadEnvLocal() {
 
 loadEnvLocal();
 
+// Local runs must never send real e-mail/Telegram: .env.local carries the
+// production keys (Resend, Telegram bot). CI provides its own secrets via the
+// environment; outside CI, sends require an explicit opt-in so a local
+// debugging run degrades to dry-run instead of mailing real subscribers.
+if (!process.env.CI && process.env.VENTU_ALERTS_ALLOW_SEND !== '1') {
+  console.warn(
+    '  ⚠️ Local run without VENTU_ALERTS_ALLOW_SEND=1 — send credentials ignored (dry-run).',
+  );
+  delete process.env.RESEND_API_KEY;
+  delete process.env.TELEGRAM_BOT_TOKEN;
+}
+
 /** Load baked IPMA/MeteoAlarm warnings (best-effort — alerts still fire without it). */
 function loadWarnings() {
   try {
@@ -141,14 +153,24 @@ function normalizeAlertMode(value) {
 
 function loadSpotMaps() {
   const content = fs.readFileSync(SPOTS_PATH, 'utf-8');
-  const ids = [...content.matchAll(/id:\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
-  const slugs = [...content.matchAll(/slug:\s*['"]([^'"]+)['"]/g)].map((m) => m[1]);
+  // id and slug are always declared on the same line (`id: 'x', slug: 'y',`);
+  // capture both in ONE match so the pairing can never diverge by index (the
+  // old code collected all ids then all slugs and paired them by order, which
+  // silently mispairs if a spot ever declares slug before id).
+  const pairs = [
+    ...content.matchAll(/id:\s*['"]([^'"]+)['"],\s*slug:\s*['"]([^'"]+)['"]/g),
+  ];
+  if (pairs.length === 0) {
+    throw new Error(
+      `loadSpotMaps: no id/slug pairs found in ${SPOTS_PATH} — format changed, regex drift?`,
+    );
+  }
   const slugToId = {};
   const idToSlug = {};
-  ids.forEach((id, i) => {
-    slugToId[slugs[i]] = id;
-    idToSlug[id] = slugs[i];
-  });
+  for (const [, id, slug] of pairs) {
+    slugToId[slug] = id;
+    idToSlug[id] = slug;
+  }
   return { slugToId, idToSlug };
 }
 

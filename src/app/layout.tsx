@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: SITE_NAME,
     locale: 'pt_PT',
-    alternateLocale: ['en_US'],
+    alternateLocale: ['en_US', 'es_ES', 'de_DE', 'fr_FR'],
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {

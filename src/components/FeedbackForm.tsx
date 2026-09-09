@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Send, X, MapPin, Lightbulb, Bug, MessageSquare } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
 import { getTranslation } from '@/lib/i18n';
@@ -26,6 +26,9 @@ const TIP_FIELDS = [
 ];
 
 const CLIENT_ID_KEY = 'ventu:client_id';
+
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 function getClientId(): string {
   if (typeof window === 'undefined') return '';
@@ -110,6 +113,19 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
     }
   };
 
+  // Modal a11y (declared before the `!open` early return — rules of hooks):
+  // role=dialog above the header (z-[1300]) and drawer (z-[1200]); focus
+  // starts inside and Tab is trapped so keyboard users can't escape into the
+  // page behind the modal.
+  const modalRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const el = modalRef.current;
+    if (!el) return;
+    const focusable = el.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    (focusable[0] as HTMLElement | undefined)?.focus();
+  }, [open]);
+
   if (!open) {
     return (
       <button
@@ -123,12 +139,30 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
   }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') setOpen(false)
+    if (e.key === 'Escape') {
+      setOpen(false);
+      return;
+    }
+    if (e.key !== 'Tab') return;
+    // Trap Tab inside the dialog.
+    const el = modalRef.current;
+    if (!el) return;
+    const focusable = el.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
   }
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="fixed inset-0 z-[1500] flex items-center justify-center p-4"
       onKeyDown={handleKeyDown}
     >
       {/* Backdrop */}
@@ -138,10 +172,16 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
         aria-hidden="true"
       />
 
-      {/* Modal */}
-      <div className="relative w-full max-w-md card-2 p-6 space-y-4">
+      {/* Modal — role=dialog above the header (z-[1300]) and drawer (z-[1200]) */}
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feedback-title"
+        className="relative w-full max-w-md card-2 p-6 space-y-4"
+      >
         <div className="flex items-center justify-between">
-          <h3 className="text-h3 text-fg">
+          <h3 id="feedback-title" className="text-h3 text-fg">
             {isPt ? 'Contribuir para o VenTu' : 'Contribute to VenTu'}
           </h3>
       <button
