@@ -87,6 +87,11 @@ export default function NewsArchiveClient({
   const [page, setPage] = useState(1);
   const [searchInput, setSearchInput] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+  // Pre-hydration flash removed: the shell SSRs for real (baked data, no
+  // URL params yet — the default-view markup is identical on server and
+  // client) and CSS hides it until HydrationBeacon stamps .is-hydrated on
+  // <html> (see globals.css). URL-param deep links still restore correctly
+  // in the effect below, just without a placeholder spin first.
   const [hydrated, setHydrated] = useState(false);
 
   // Read URL params on mount
@@ -205,17 +210,8 @@ export default function NewsArchiveClient({
 
   const liveEvents = useMemo(() => upcomingEvents(events), [events]);
 
-  // Show nothing during SSR to avoid hydration mismatch with URL params
-  if (!hydrated) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" data-hydration-gate="news">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Newspaper className="w-8 h-8 text-data-waves" />

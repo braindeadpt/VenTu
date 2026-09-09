@@ -20,7 +20,7 @@ export default function CheckInButton({
   showLabel = false,
   locale = 'pt',
 }: CheckInButtonProps) {
-  const { isCheckedIn, toggleCheckin, loaded, requestLogin, isSupabaseReady, isLoggedIn } = useCheckins();
+  const { isCheckedIn, toggleCheckin, requestLogin, isSupabaseReady, isLoggedIn } = useCheckins();
   const { showToast } = useToast();
   const active = isCheckedIn(spotId);
   const isPt = locale === 'pt';
@@ -32,9 +32,7 @@ export default function CheckInButton({
     lg: 'w-6 h-6',
   };
 
-  if (!loaded) {
-    return <div className={`${sizeClasses[size]} animate-pulse bg-surface-1/[0.04] rounded`} />;
-  }
+  // Pre-hydration flash removed: CSS-gated like FavoriteButton (see globals.css).
 
   const handleClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
@@ -77,6 +75,7 @@ export default function CheckInButton({
     <button
       type="button"
       onClick={handleClick}
+      data-hydration-gate="heart"
       aria-pressed={isLoggedIn ? active : undefined}
       aria-label={label}
       title={label}

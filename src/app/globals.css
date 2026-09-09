@@ -132,6 +132,25 @@ html:has([data-embed-widget]) body {
   }
 
   /* ═══════════════════════════════════════════════════════════════
+   * HYDRATION GATES — no placeholder flash on mounted-gated UI.
+   * HydrationBeacon stamps .is-hydrated on <html> when React commits;
+   * gated elements render for real in the SSR markup but stay hidden
+   * until that class lands. Replaces per-component placeholder spins
+   * and pulses (ThemeToggle pattern: class-driven, not state-driven).
+   * ═══════════════════════════════════════════════════════════════ */
+  html:not(.is-hydrated) [data-hydration-gate='heart'] {
+    display: none;
+  }
+
+  html:not(.is-hydrated) [data-hydration-gate='news'] {
+    display: none;
+  }
+
+  html:not(.is-hydrated) .hydration-dawn-slot {
+    display: none;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
    * THEME OCEAN — Light mode (white-sand base)
    * Aplica-se ao elemento <html> com class="theme-ocean".
    * ═══════════════════════════════════════════════════════════════ */

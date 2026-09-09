@@ -22,7 +22,7 @@ export default function FavoriteButton({
   showLabel = false,
   locale = 'pt',
 }: FavoriteButtonProps) {
-  const { isFavorite, toggleFavorite, loaded, mounted, requestLogin, isSupabaseReady, isLoggedIn } = useFavorites();
+  const { isFavorite, toggleFavorite, requestLogin, isSupabaseReady, isLoggedIn } = useFavorites();
   const { showToast } = useToast();
   const active = isFavorite(spotId);
   const isPt = locale === 'pt';
@@ -34,9 +34,10 @@ export default function FavoriteButton({
     lg: 'w-6 h-6',
   };
 
-  if (!mounted || !loaded) {
-    return <div className={`${sizeClasses[size]} animate-pulse bg-surface-1/[0.04] rounded`} />;
-  }
+  // Pre-hydration flash removed: the button SSRs for real and CSS hides it
+  // until HydrationBeacon stamps .is-hydrated on <html> (see globals.css).
+  // Auth state (isLoggedIn/favorites) still resolves async — until then the
+  // resting state shows, identical in server and client markup.
 
   const handleClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
     e.preventDefault();
@@ -77,6 +78,7 @@ export default function FavoriteButton({
     <button
       type="button"
       onClick={handleClick}
+      data-hydration-gate="heart"
       aria-pressed={isLoggedIn ? active : undefined}
       aria-label={label}
       title={label}
