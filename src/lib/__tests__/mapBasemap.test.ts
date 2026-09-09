@@ -112,7 +112,34 @@ describe('watchTileLayer', () => {
     dispose();
   });
 
-  it('tileerror sem nenhum tile carregado emite failed imediatamente', () => {
+  it('todos os tiles pedidos em erro falha imediatamente (definitivo)', () => {
+    const { handlers, fake } = layer();
+    const onState = vi.fn();
+    const dispose = watchTileLayer(fake, onState);
+    for (let i = 0; i < 12; i += 1) handlers.tileloadstart();
+    for (let i = 0; i < 12; i += 1) handlers.tileerror();
+    expect(onState).toHaveBeenLastCalledWith('failed');
+    expect(onState).toHaveBeenCalledTimes(1);
+    dispose();
+  });
+
+  it('um tileerror isolado com irmãos em voo NÃO falha — o hang timer decide', () => {
+    vi.useFakeTimers();
+    const { handlers, fake } = layer();
+    const onState = vi.fn();
+    const dispose = watchTileLayer(fake, onState, 8000);
+    for (let i = 0; i < 12; i += 1) handlers.tileloadstart();
+    handlers.tileerror(); // 1 de 12 falha, 11 ainda em rede — transitório
+    vi.advanceTimersByTime(7999);
+    expect(onState).not.toHaveBeenCalled();
+    handlers.tileload(); // um irmão pinta → camada saudável
+    expect(onState).toHaveBeenLastCalledWith('ok');
+    vi.advanceTimersByTime(20_000);
+    expect(onState).toHaveBeenCalledTimes(1);
+    dispose();
+  });
+
+  it('tileerror sem nenhum tileloadstart rastreado mantém falha rápida (defensivo)', () => {
     const { handlers, fake } = layer();
     const onState = vi.fn();
     const dispose = watchTileLayer(fake, onState);

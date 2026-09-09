@@ -1,5 +1,5 @@
 // Bump CACHE_NAME on each release so stale HTML/JS clients refresh.
-const CACHE_NAME = 'ventu-static-v9';
+const CACHE_NAME = 'ventu-static-v10';
 const DATA_CACHE = 'ventu-data-v2';
 const DATA_MAX_AGE_MS = 1000 * 60 * 60 * 2.5; // 2.5h — align with dataFreshness STALE threshold
 
@@ -41,6 +41,15 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   if (request.method !== 'GET') return;
+
+  // Cross-origin (map tiles, external embeds): pass through untouched. The
+  // catch-all below must never respondWith these — on a failed fetch it
+  // falls to caches.match(request), which is undefined for cross-origin
+  // entries, and the rejected promise surfaces as a TypeError in the page.
+  // That converted transient tile errors into hard failures (the grey-map
+  // report). Tiles have their own runtime watchdog + Esri fallback chain;
+  // the SW has nothing to add here.
+  if (url.origin !== self.location.origin) return;
 
   if (url.pathname.startsWith('/data/')) {
     event.respondWith(

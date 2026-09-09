@@ -135,9 +135,13 @@ function attachBasemap(
     const layer = Leaflet.tileLayer(TILE_URLS.satellite, {
       attribution: TILE_ATTRIBUTIONS.esri,
       maxZoom: MAX_ZOOM,
-    }).addTo(map);
+    });
     tileLayerRef.current = layer;
+    // Subscribe BEFORE addTo: Leaflet fires tileloadstart synchronously during
+    // addTo, and the watchdog counts requested tiles — attaching after would
+    // miss the initial batch and skew the all-errored verdict.
     watch(layer, () => onTileState('failed'));
+    layer.addTo(map);
     return;
   }
 
@@ -154,14 +158,15 @@ function attachBasemap(
     const esriLayer = Leaflet.tileLayer(esri.url, {
       attribution: esri.attribution,
       maxZoom: MAX_ZOOM,
-    }).addTo(map);
+    });
     tileLayerRef.current = esriLayer;
     watch(esriLayer, () => onTileState('failed'));
+    esriLayer.addTo(map);
   };
-  tileLayerRef.current = rasterLayer.addTo(map);
+  tileLayerRef.current = rasterLayer;
   if (cartoBasemapKey()) {
     // Carto é o primário; troca para Esri apenas numa falha definitiva
-    // (tileerror sem nenhum tile, ou stall total em CARTO_TILE_HANG_MS).
+    // (todos os tiles pedidos falharam, ou stall total em CARTO_TILE_HANG_MS).
     // Uma ligação lenta mas viva não é rasgada a meio do carregamento.
     watch(rasterLayer, swapToEsri, CARTO_TILE_HANG_MS);
   } else {
@@ -169,6 +174,7 @@ function attachBasemap(
     // ('failed'), que o UI expõe com o botão de retry.
     watch(rasterLayer, () => onTileState('failed'));
   }
+  rasterLayer.addTo(map);
 }
 
 export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapCoreOptions): UseMapCoreReturn {
@@ -211,15 +217,20 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
   // o mapa cinzento com «Não foi possível carregar o mapa» até o utilizador
   // clicar em «Atualizar». Com isto, o basemap é re-anexado em segundo plano
   // (limitado e espaçado), mantendo a UI de erro visível até um tile pintar —
-  // aí volta a 'ok' e a mensagem desaparece sozinha.
+  // aí volta a 'ok' e a mensagem desaparece sozinha. Esgotadas as 4 tentativas
+  // rápidas, entra um batimento cardíaco lento (60s, indefinido): uma falha
+  // que sobreviva ao ciclo rápido é uma indisponibilidade real, e o mapa tem
+  // de se auto-curar quando ela passa — nunca ficar num beco sem saída que
+  // só um reload resolve.
   const AUTO_RECOVER_ATTEMPTS = 4;
   const AUTO_RECOVER_INTERVAL_MS = 15_000;
+  const AUTO_RECOVER_SLOW_MS = 60_000;
   const autoRecoverRef = useRef<{ attempts: number }>({ attempts: 0 });
   const [autoRecoverTick, setAutoRecoverTick] = useState(0);
 
   useEffect(() => {
     if (tileState !== 'failed') return;
-    if (autoRecoverRef.current.attempts >= AUTO_RECOVER_ATTEMPTS) return;
+    const exhausted = autoRecoverRef.current.attempts >= AUTO_RECOVER_ATTEMPTS;
     const timer = setTimeout(() => {
       // Conta apenas re-anexos reais: o incremento vive aqui, dentro do
       // setTimeout, não no corpo do efeito — uma re-corrida do efeito (nova
@@ -240,9 +251,22 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
       };
       attachBasemap(Leaflet, map, basemapModeRef.current, isDarkRef.current, tileLayerRef, tileFallbackCleanupRef, onSilent);
       tileSignatureRef.current = tileSignature(basemapModeRef.current, isDarkRef.current);
-    }, AUTO_RECOVER_INTERVAL_MS);
+    }, exhausted ? AUTO_RECOVER_SLOW_MS : AUTO_RECOVER_INTERVAL_MS);
     return () => clearTimeout(timer);
   }, [tileState, autoRecoverTick, tileLayerRef, tileFallbackCleanupRef]);
+
+  // Rede de volta durante um 'failed' → ciclo de recuperação fresco e
+  // imediato. O bump do tick re-corre o efeito acima, limpando qualquer
+  // timer pendente (rápido ou lento) sem dupla re-anexação.
+  useEffect(() => {
+    if (tileState !== 'failed') return;
+    const onOnline = () => {
+      autoRecoverRef.current.attempts = 0;
+      setAutoRecoverTick((t) => t + 1);
+    };
+    window.addEventListener('online', onOnline);
+    return () => window.removeEventListener('online', onOnline);
+  }, [tileState]);
 
   const stopAutoRecover = useCallback(() => {
     autoRecoverRef.current.attempts = 0;
@@ -390,7 +414,11 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
         attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
         tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
 
-        if (!isHeroEmbed) Leaflet.control.zoom({ position: 'bottomright' }).addTo(created);
+        // Top-left, NOT bottom-right: the /mapa explore HUD (and the spots
+        // page's bottom chrome) covers the bottom corners, which left the zoom
+        // buttons rendered but unclickable under the HUD card. Top-left is
+        // free on every host (layer toggle lives top-right).
+        if (!isHeroEmbed) Leaflet.control.zoom({ position: 'topleft' }).addTo(created);
 
         Leaflet.control
           .attribution({ position: 'bottomleft', prefix: false })

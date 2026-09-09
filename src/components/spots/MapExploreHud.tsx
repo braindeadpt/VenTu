@@ -193,7 +193,7 @@ export default function MapExploreHud({
 
   return (
     <div
-      className="absolute inset-x-0 bottom-0 z-[1100] pointer-events-none pb-[max(0.5rem,env(safe-area-inset-bottom))]"
+      className="absolute inset-x-0 bottom-0 z-[1100] pointer-events-none pb-[calc(max(2.75rem,env(safe-area-inset-bottom)+2.25rem))]"
       role="region"
       aria-label={isPt ? 'Modo explorar' : 'Explore mode'}
       data-map-hud-collapsed={collapsed ? 'true' : 'false'}
@@ -261,7 +261,34 @@ export default function MapExploreHud({
             <Search className="w-4 h-4" aria-hidden />
           </MapControlButton>
 
-          <div className="flex items-center gap-0.5 shrink-0 md:hidden">
+          {buoyChip}
+
+          <span className="pill pill-ghost shrink-0 px-2 py-1 min-h-0 text-meta-sm hidden sm:inline-flex">
+            <span className="font-mono tabular-nums text-fg">{spotCount}</span>
+            <span className="text-fg-muted ml-1">{isPt ? 'spots' : ''}</span>
+          </span>
+
+          <MapControlButton
+            onClick={onExitFullscreen}
+            aria-label={exitLabel}
+            className="ml-auto sm:ml-0 md:hidden"
+            data-map-exit-fullscreen
+          >
+            <Minimize2 className="w-4 h-4" aria-hidden />
+          </MapControlButton>
+        </div>
+
+
+        {/* Mobile layer toggles — dedicated full-width scrolling row on
+            mobile: ~12 x 44px buttons exceed the viewport, so a rigid
+            group overflowed the card and a flex-1 share left the strip
+            ~20px wide. Own row = full width, same pattern as the pill
+            rows below. */}
+          {/* Mobile layer toggles. Must be a self-scrolling strip, NOT
+              shrink-0: ~12 × 44px buttons exceed the 390px viewport, and a
+              rigid group overflowed the card (controls unreachable). Same
+              pattern as the sport/difficulty/region pill rows below. */}
+          <div className="flex items-center gap-0.5 md:hidden overflow-x-auto no-scrollbar touch-pan-x edge-fade-x-end w-full pb-0.5 -mx-0.5 px-0.5">
           <MapControlButton
             onClick={onToggleCluster}
             aria-label={clusterLabel}
@@ -434,23 +461,6 @@ export default function MapExploreHud({
             <Zap className="w-4 h-4 text-score-good" aria-hidden />
           </MapControlButton>
           </div>
-
-          {buoyChip}
-
-          <span className="pill pill-ghost shrink-0 px-2 py-1 min-h-0 text-meta-sm hidden sm:inline-flex">
-            <span className="font-mono tabular-nums text-fg">{spotCount}</span>
-            <span className="text-fg-muted ml-1">{isPt ? 'spots' : ''}</span>
-          </span>
-
-          <MapControlButton
-            onClick={onExitFullscreen}
-            aria-label={exitLabel}
-            className="ml-auto sm:ml-0 md:hidden"
-            data-map-exit-fullscreen
-          >
-            <Minimize2 className="w-4 h-4" aria-hidden />
-          </MapControlButton>
-        </div>
 
         {timeTrack}
 

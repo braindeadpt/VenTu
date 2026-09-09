@@ -65,9 +65,13 @@ export type BasemapLoadState = 'loading' | 'ok' | 'failed';
  * Watch a tile layer and report its load state:
  *  - 'ok'     after the FIRST tileload — one painted tile makes the layer
  *             usable, so later per-tile errors are ignored (healthy layer);
- *  - 'failed' when no tile ever painted: the first tileerror with zero
- *             loaded tiles, or the hang timer firing with zero loaded (all
- *             requests stalled — throttled/CDN down, nothing in flight).
+ *  - 'failed' when no tile ever painted AND the layer is definitively dead:
+ *             every requested tile has errored (requests == errors), or the
+ *             hang timer fired with zero loaded (total stall).
+ *             A single early tileerror with siblings still in flight is NOT a
+ *             failure — on mobile networks one tile of a dozen often fails
+ *             transiently while the rest paint (tearing that load mid-flight
+ *             caused spurious «Não foi possível carregar o mapa» flashes).
  * Returns a dispose that unsubscribes and silences the timer.
  */
 export function watchTileLayer(
@@ -80,6 +84,8 @@ export function watchTileLayer(
 ): () => void {
   let loaded = false;
   let settled = false;
+  let requested = 0;
+  let errored = 0;
   let timer: ReturnType<typeof setTimeout> | null = null;
   const emit = (state: BasemapLoadState) => {
     if (settled) return;
@@ -93,10 +99,17 @@ export function watchTileLayer(
     loaded = true;
     emit('ok');
   };
+  const onTileStart = () => {
+    requested += 1;
+  };
   const onTileError = () => {
     if (loaded) return;
-    emit('failed');
+    errored += 1;
+    // Fail fast only when nothing is left in flight — otherwise the hang
+    // timer owns the verdict (total stall → failed at hangMs).
+    if (errored >= requested) emit('failed');
   };
+  layer.on('tileloadstart', onTileStart);
   layer.on('tileload', onTileLoad);
   layer.on('tileerror', onTileError);
   timer = setTimeout(() => {
@@ -106,6 +119,7 @@ export function watchTileLayer(
   return () => {
     settled = true;
     if (timer != null) clearTimeout(timer);
+    layer.off?.('tileloadstart', onTileStart);
     layer.off?.('tileload', onTileLoad);
     layer.off?.('tileerror', onTileError);
   };
