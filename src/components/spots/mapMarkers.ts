@@ -143,6 +143,11 @@ export function createSpotMarker(
       closeButton: true,
       autoClose: true,
       closeOnClick: false,
+      // O autoPan só dispara quando o popup excederia estas margens — mantém
+      // o popup fora da coluna de controlos (topo-esquerda, ~260px) e do
+      // cartão do HUD (fundo, ~260px), onde o CTA ficava tapado/inclicável.
+      autoPanPaddingTopLeft: Leaflet.point(260, 64),
+      autoPanPaddingBottomRight: Leaflet.point(24, 260),
     });
 
     marker.on('popupopen', () => {

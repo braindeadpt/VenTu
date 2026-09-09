@@ -91,7 +91,9 @@ export function SpotPopupContent({
           <div className="w-full h-16 rounded-t-lg bg-surface-1/[0.04]" />
         )}
         {tokens && topScore > 0 && (
-          <div className="absolute top-1.5 right-1.5 flex flex-col items-end gap-0.5">
+          <div className="absolute top-1.5 right-12 flex flex-col items-end gap-0.5">
+            {/* right-12 desvia o badge do botão ✕ do popup (44px, topo-direita) —
+                antes ficava por baixo do glifo e do hover do close. */}
             <span
               className={[
                 'inline-flex items-center justify-center min-w-[36px] h-[22px] rounded-pill text-xs font-mono font-semibold tabular-nums border px-2',
@@ -179,7 +181,7 @@ export function SpotPopupContent({
       <div className="px-2.5 pb-2.5">
         <a
           href={detailHref}
-          className="ventu-popup-detail w-full text-center py-2 rounded-input text-xs font-semibold border-0 cursor-pointer inline-flex items-center justify-center gap-1.5 no-underline"
+          className="ventu-popup-detail w-full text-center py-2 min-h-[44px] rounded-input text-xs font-semibold border-0 cursor-pointer inline-flex items-center justify-center gap-1.5 no-underline"
           style={{
             backgroundColor: tokens ? `rgb(var(--score-${tokens.tier}) / 0.15)` : 'rgb(var(--surface-1) / 0.08)',
             color: tokens ? `rgb(var(--score-${tokens.tier}))` : 'rgb(var(--fg))',

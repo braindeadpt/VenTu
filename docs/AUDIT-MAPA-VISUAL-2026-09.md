@@ -131,5 +131,50 @@ está no `.gitignore`). Após merge, executar o workflow manual
 npm run dev                     # servidor em http://localhost:<porta>
 AUDIT_BASE=http://localhost:<porta> node scripts/audit/audit-map-visual.mjs
 AUDIT_BASE=http://localhost:<porta> node scripts/audit/audit-map-embeds.mjs
-PLAYWRIGHT_BASE_URL=http://localhost:<porta> npx playwright test map-touch-targets
+AUDIT_BASE=http://localhost:<porta> node scripts/audit/audit-map-popup-sheet.mjs
+PLAYWRIGHT_BASE_URL=http://localhost:<porta> npx playwright test map-touch-targets map-popup-ver-spot
 ```
+
+---
+
+# Popups de spot e bottom sheet — auditoria 2026-09-10
+
+Auditoria detalhada ao popup de spot (desktop/tablet) e à bottom sheet
+(mobile) com `scripts/audit/audit-map-popup-sheet.mjs` (geometria, tipografia,
+alvos de toque, hit-testing e stacking), mais os novos testes e2e
+(`map-popup-ver-spot.spec.ts`).
+
+## Defeitos encontrados e corrigidos
+
+| # | Superfície | Antes | Depois | Fix |
+|---|-----------|-------|--------|-----|
+| 1 | Popup (desktop) | CTA «Ver spot» **tapado pelo cartão do HUD** para spots no fundo do mapa (o `.spot-popup` z-1200 não escapa ao stacking do `leaflet-popup-pane` z-700 < HUD z-1100) — CTA inclicável | autoPan desloca o mapa até o popup assentar **acima do HUD** | `mapMarkers.ts` — `autoPanPaddingTopLeft: (260,64)` + `autoPanPaddingBottomRight: (24,260)` |
+| 2 | Popup (tablet touch) | sobrepunha a coluna de controlos (MapControls) e CTA com **32px** de altura | popup fora da coluna (x≥260) e CTA **44px** | idem + `SpotPopupContent.tsx` — `min-h-[44px]` no `.ventu-popup-detail` |
+| 3 | Popup (todas) | badge de score **por baixo do botão ✕** (44px, topo-direita) — colisão visual | badge em `right-12` (48px), livre do close | `SpotPopupContent.tsx` |
+
+### Verificado como OK
+
+- Popup dentro do viewport em desktop/tablet; close 44×44 clicável; nome/região
+  sem truncagem; CTA hit-test limpo nos 2 viewports.
+- Sheet mobile: stacking correcto (sheet 1201 > backdrop 1200 > HUD 1100),
+  backdrop tapa a área do mapa, Escape fecha, acções «Ver spot»/«Como chegar»
+  50px e **alcançáveis após scroll** (a dobra inicial é normal — a sheet faz
+  scroll; verificado scrollando até ao fim).
+
+## Testes
+
+- **Unit** (`src/components/spots/__tests__/spotPopupContent.test.ts`, 4):
+  CTA ≥44px + href; badge em `right-12` (nunca `right-1.5`); sem badge quando
+  score=0; conteúdo nome/região/vento.
+- **e2e** (`map-popup-ver-spot.spec.ts`, 3, na via CI): navegação «Ver spot»;
+  CTA clicável com o pior caso (marcador mais a sul, zona do HUD) — ≥44px,
+  dentro do viewport, topmost no hit-test; tablet — popup sem overlap com a
+  coluna de controlos e CTA ≥44px em touch.
+- **Regressões na via CI**: `mapa-route` + `mobile-playtest` 19/19;
+  `visual-ux-audit` 37 pass / 0 fail; unit 1475/1475; `tsc` e lint limpos.
+
+> Nota de flake (pré-existente, agora endurecida): o picker de marcadores da
+> spec antiga escolhia o primeiro marcador in-view, mas na vista nacional
+> muitos ficam **sob o cartão do HUD** — o clique real acertava no HUD
+> («Element is outside of the viewport»). O novo picker exige centro
+> descoberto (`elementFromPoint` = marcador) e espera o autoPan assentar.
