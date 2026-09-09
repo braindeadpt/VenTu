@@ -4,6 +4,17 @@ import { openMapSpotSheet } from './helpers/map-sheet';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
 
 /**
+ * Wait until React has hydrated the shell (burger/drawer/theme toggle
+ * handlers attached). Pre-hydration taps are silently swallowed — the
+ * onClick handlers don't exist yet — which is the CI-only flake: local
+ * hydration beats the first tap, a loaded 2-core runner does not.
+ * `domcontentloaded` says nothing about hydration; the beacon does.
+ */
+async function waitHydrated(page: import('@playwright/test').Page) {
+  await page.waitForSelector('html[data-hydrated="true"]', { timeout: 30_000 });
+}
+
+/**
  * Hermetic signed-out state for account-gated pages: install a fake Supabase
  * client before any page script runs, so the gate renders without CI secrets
  * (a keyless local build would otherwise show "Supabase não configurado").
@@ -49,6 +60,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
 
   test('drawer: opens, conditions section pre-expanded, accordion toggles', async ({ page }) => {
     await page.goto('/pt/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     const burger = page.getByRole('button', { name: 'Abrir menu' });
     await burger.tap();
@@ -69,6 +81,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
 
   test('drawer: Escape closes and focus returns to the hamburger', async ({ page }) => {
     await page.goto('/pt/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     const burger = page.getByRole('button', { name: 'Abrir menu' });
     await burger.tap();
@@ -81,6 +94,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
 
   test('theme toggle inside drawer switches to ocean and back', async ({ page }) => {
     await page.goto('/pt/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     const drawer = page.locator('#mobile-nav');
     await page.getByRole('button', { name: 'Abrir menu' }).tap();
@@ -95,6 +109,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
     await expect(page.locator('html')).toHaveClass(/theme-ocean/);
     // Persisted across reload.
     await page.reload({ waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
     await expect(page.locator('html')).toHaveClass(/theme-ocean/);
 
     // Back to dark via the (now relabelled) toggle in the reopened drawer.
@@ -107,6 +122,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
 
   test('search palette: opens from header, finds spots, Escape closes', async ({ page }) => {
     await page.goto('/pt/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     // Two triggers share the aria-label (desktop hidden lg:flex + mobile
     // lg:hidden); only the mobile one is visible at 390px — filter to it.
@@ -131,6 +147,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
 
   test('kite calculator: sliders drive the recommendation', async ({ page }) => {
     await page.goto('/pt/ferramentas/calculadora-kite/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     const weight = page.locator('#kite-weight');
     const wind = page.locator('#kite-wind');
@@ -154,6 +171,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
 
   test('wetsuit calculator: extreme temp changes the suit', async ({ page }) => {
     await page.goto('/pt/ferramentas/calculadora-fato/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     const temp = page.locator('#wetsuit-temp');
     await temp.focus();
@@ -168,6 +186,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
   test('alerts gate: signed-out shows the magic-link gate', async ({ page }) => {
     await installSupabaseMock(page);
     await page.goto('/pt/favorites/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     await expect(
       page.getByRole('heading', { name: /Meus Favoritos|My Favorites/i }),
@@ -182,6 +201,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
   test('account gate: signed-out shows the sign-in prompt on /conta', async ({ page }) => {
     await installSupabaseMock(page);
     await page.goto('/pt/conta/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     await expect(page.getByRole('heading', { name: /A tua conta|Your account/i })).toBeVisible();
     await expect(
@@ -194,6 +214,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
   test('passport gate: signed-out shows the sign-in prompt on /passaporte', async ({ page }) => {
     await installSupabaseMock(page);
     await page.goto('/pt/passaporte/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     await expect(
       page.getByRole('heading', { name: /Passaporte VenTu|VenTu Passport/i }),
@@ -208,6 +229,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
   test('map sheet: marker tap opens the spot sheet on mobile', async ({ page }) => {
     await preseedWindRingLegend(page);
     await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
 
     const sheet = await openMapSpotSheet(page);
     await expect(sheet.getByRole('link', { name: /Ver spot/i })).toBeVisible();
@@ -223,6 +245,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
     // NO preseed — first visit, seen flag unset, hint must appear on the
     // first marker interaction (current contract: non-modal, 12s auto-hide).
     await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded' });
+    await waitHydrated(page);
     await page.waitForSelector('[data-map-hud="visible"]', { timeout: 35_000 });
     await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
 

@@ -25,6 +25,7 @@ import SignupNudge from '@/components/homepage/SignupNudge'
 import CSPMeta from '@/components/CSPMeta'
 import SetHtmlLang from '@/components/SetHtmlLang'
 import PageFadeGuard from '@/components/PageFadeGuard'
+import HydrationBeacon from '@/components/HydrationBeacon'
 import PartialLocaleNotice from '@/components/layout/PartialLocaleNotice'
 
 export function generateStaticParams() {
@@ -58,6 +59,7 @@ export default async function LocaleLayout({
       <AuthProvider>
         <SetHtmlLang lang={htmlLang} />
         <PageFadeGuard />
+        <HydrationBeacon />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
