@@ -113,6 +113,25 @@ html:has([data-embed-widget]) body {
   }
 
   /* ═══════════════════════════════════════════════════════════════
+   * THEME TOGGLE — SSR-correct icon without a placeholder flash.
+   * The button SSRs with both icons; the pre-paint bootstrap script
+   * (layout.tsx) sets .theme-ocean on <html> from localStorage, and
+   * CSS below picks the visible icon from that class. No hydration
+   * mismatch: server and client render identical markup.
+   * ═══════════════════════════════════════════════════════════════ */
+  .theme-toggle .theme-toggle-icon-moon {
+    display: none;
+  }
+
+  .theme-ocean .theme-toggle .theme-toggle-icon-sun {
+    display: none;
+  }
+
+  .theme-ocean .theme-toggle .theme-toggle-icon-moon {
+    display: block;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════
    * THEME OCEAN — Light mode (white-sand base)
    * Aplica-se ao elemento <html> com class="theme-ocean".
    * ═══════════════════════════════════════════════════════════════ */
