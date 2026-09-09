@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-09T00:15:33.147Z",
+  "fetchedAt": "2026-09-09T05:21:33.957Z",
   "windowDays": 90,
   "dayCount": 9,
   "days": [
@@ -859,25 +859,11 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f7774ab7-3faf-4b8e-a86c-6983ff56998c"
         },
         {
-          "id": 18527,
-          "ref": "ANAV NR 2002/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=079736f7-c510-4a00-9694-7e363fa4e749"
-        },
-        {
           "id": 18531,
           "ref": "ANAV NR 2010/26",
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=07546cab-dc16-454b-bcce-ff671ae0a75a"
-        },
-        {
-          "id": 18533,
-          "ref": "ANAV NR 2013/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c3e20ff2-972f-4359-afbe-e0746ff71e08"
         },
         {
           "id": 18535,
@@ -1067,37 +1053,10 @@
       "nDays": 6
     },
     {
-      "ref": "ANAV NR 2002/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=079736f7-c510-4a00-9694-7e363fa4e749",
-      "firstSeen": "2026-09-07",
-      "lastSeen": "2026-09-09",
-      "daysInForce": [
-        "2026-09-07",
-        "2026-09-08",
-        "2026-09-09"
-      ],
-      "nDays": 3
-    },
-    {
       "ref": "ANAV NR 2010/26",
       "category": "Requisitos de segurança maritima",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=07546cab-dc16-454b-bcce-ff671ae0a75a",
-      "firstSeen": "2026-09-08",
-      "lastSeen": "2026-09-09",
-      "daysInForce": [
-        "2026-09-08",
-        "2026-09-09"
-      ],
-      "nDays": 2
-    },
-    {
-      "ref": "ANAV NR 2013/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c3e20ff2-972f-4359-afbe-e0746ff71e08",
       "firstSeen": "2026-09-08",
       "lastSeen": "2026-09-09",
       "daysInForce": [
@@ -1128,6 +1087,31 @@
       "lastSeen": "2026-09-09",
       "daysInForce": [
         "2026-09-09"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2002/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=079736f7-c510-4a00-9694-7e363fa4e749",
+      "firstSeen": "2026-09-07",
+      "lastSeen": "2026-09-08",
+      "daysInForce": [
+        "2026-09-07",
+        "2026-09-08"
+      ],
+      "nDays": 2
+    },
+    {
+      "ref": "ANAV NR 2013/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c3e20ff2-972f-4359-afbe-e0746ff71e08",
+      "firstSeen": "2026-09-08",
+      "lastSeen": "2026-09-08",
+      "daysInForce": [
+        "2026-09-08"
       ],
       "nDays": 1
     },

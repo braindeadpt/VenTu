@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-08T19:00:30.759Z",
+  "fetchedAt": "2026-09-09T05:21:18.871Z",
   "windowDays": 180,
   "days": [
     {
@@ -545,6 +545,22 @@
           "n": 3,
           "meanAbsDeltaM": 0.2,
           "meanDeltaM": -0.2
+        }
+      ]
+    },
+    {
+      "day": "2026-09-09",
+      "pairs": [
+        {
+          "codes": [
+            "6200084",
+            "6200199"
+          ],
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "verdict": "coherent",
+          "n": 3,
+          "meanAbsDeltaM": 0.6,
+          "meanDeltaM": -0.6
         }
       ]
     }
