@@ -24,8 +24,12 @@ test.describe('Spot detail dashboard', () => {
 
   test('logistics block shows parking and stay', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /^Logística$/i })).toBeVisible();
-    await expect(page.getByText('Estacionamento', { exact: true })).toBeVisible();
-    await expect(page.getByText('Dormir', { exact: true })).toBeVisible();
+    // Scope to main: the baked page streams content in a hidden S: container
+    // outside <main>; during the reveal window an unscoped getByText can match
+    // both the hydrated copy and the lingering streamed one (strict mode).
+    const main = page.locator('#main-content');
+    await expect(main.getByText('Estacionamento', { exact: true })).toBeVisible();
+    await expect(main.getByText('Dormir', { exact: true })).toBeVisible();
   });
 
   test('EN logistics block translates facilities/hazards tags (never the PT token verbatim)', async ({ page }) => {
@@ -34,12 +38,14 @@ test.describe('Spot detail dashboard', () => {
       timeout: 20_000,
     });
 
-    // Card labels translated (spans, not headings)
-    await expect(page.getByText('Facilities', { exact: true })).toBeVisible();
-    await expect(page.getByText('Hazards', { exact: true })).toBeVisible();
+    // Card labels translated (spans, not headings). Scoped to main for the
+    // same streaming-reveal reason as the PT logistics test.
+    const main = page.locator('#main-content');
+    await expect(main.getByText('Facilities', { exact: true })).toBeVisible();
+    await expect(main.getByText('Hazards', { exact: true })).toBeVisible();
 
     // Facilities body is the joined EN tokens («Parking · Restaurant · Kite school · WC»)
-    await expect(page.getByText(/Parking · Restaurant · Kite school · WC/)).toBeVisible();
+    await expect(main.getByText(/Parking · Restaurant · Kite school · WC/)).toBeVisible();
 
     // Hazards render as translated list items (listitem is not a name-from-contents
     // role, so use a DOM locator — getByRole({ name }) never matches text here)

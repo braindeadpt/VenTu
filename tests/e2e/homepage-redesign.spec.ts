@@ -32,7 +32,9 @@ test.describe('Homepage redesign', () => {
       page.getByRole('heading', { name: /Firing now/i }),
     ).toBeVisible({ timeout: 15_000 });
     // «Only firing spots · by sport» — o rótulo EN do TopNow, não o placeholder pt.
-    await expect(page.getByText('Only firing spots · by sport')).toBeVisible();
+    // Scoped to main: home streams the hero/TopNow in a hidden S: container;
+    // during the reveal window an unscoped getByText can match both copies.
+    await expect(page.locator('#main-content').getByText('Only firing spots · by sport')).toBeVisible();
   });
 
   test('no full spot grid filters on home', async ({ page }) => {
