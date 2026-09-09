@@ -837,7 +837,7 @@ export default function SpotMapInteractive({
       {isReady && (
         <>
           {showBuoyNotice && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(92%,460px)] px-2 pointer-events-none">
+            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(calc(100%-132px),460px)] md:max-w-[min(92%,460px)] px-2 pointer-events-none">
               <BuoyLayerNotice locale={locale} scope="home" overlay />
             </div>
           )}

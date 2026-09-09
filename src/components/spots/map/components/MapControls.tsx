@@ -82,7 +82,7 @@ const btnCurrentsActive = 'border-data-water/40 bg-bg-elevated text-fg';
 const btnSstActive = 'border-data-period/40 bg-bg-elevated text-fg';
 const btnHoursActive = 'border-score-good/40 bg-bg-elevated text-fg';
 const btnOnlyOnActive = btnHoursActive;
-const iconBtnBase = 'flex items-center justify-center min-h-[36px] min-w-[36px] rounded-input border border-divider bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg transition-colors duration-150';
+const iconBtnBase = 'flex items-center justify-center min-h-[44px] min-w-[44px] rounded-input border border-divider bg-bg-elevated text-fg-muted hover:bg-surface-1/[0.04] hover:text-fg transition-colors duration-150';
 
 export default function MapControls({
   isFullscreen,
@@ -153,10 +153,15 @@ export default function MapControls({
   if (isHeroEmbed) return null;
   // Mobile fullscreen uses the bottom HUD; desktop keeps these labelled menus.
   if (isFullscreen && isMobile) return null;
+  // Every host that renders this column also renders the Leaflet zoom
+  // control (top-left, 44px + margins): the column sat directly over it,
+  // leaving zoom rendered but unclickable. Shift right of it always — the
+  // bottom-HUD mobile fullscreen path returns null above, so no conflict.
+  const shift = 'left-[68px]';
 
   return (
     <div
-      className="absolute top-3 left-3 z-[1200] flex max-h-[calc(100%-16rem)] flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-width:thin] isolation-isolate"
+      className={`absolute top-3 z-[1200] flex max-h-[calc(100%-16rem)] flex-col gap-2 overflow-y-auto overscroll-contain [scrollbar-width:thin] isolation-isolate ${shift || "left-3"}`}
       data-map-controls="true"
     >
       <button

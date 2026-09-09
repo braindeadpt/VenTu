@@ -415,7 +415,7 @@ export default function SpotMap({
           onClick={toggleRadar}
           aria-label={radarLabel}
           aria-pressed={radarEnabled}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors"
+          className="inline-flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors"
         >
           <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
           <span className="hidden sm:inline">{radarLabel}</span>
@@ -428,7 +428,7 @@ export default function SpotMap({
             onClick={handleResetRadar}
             aria-label={t.map.radarReset}
             title={t.map.radarReset}
-            className="inline-flex items-center justify-center w-8 h-8 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors"
+            className="inline-flex items-center justify-center w-11 h-11 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors"
           >
             <RotateCcw className="w-3.5 h-3.5" aria-hidden />
           </button>
