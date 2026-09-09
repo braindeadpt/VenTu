@@ -1,0 +1,46 @@
+name: Data Cadence Alert
+
+# Heartbeat commit-based do pipeline: enquanto o staleness-alert lê os
+# timestamps internos de pipeline-meta.json, este workflow mede a verdade
+# observável — quando foi a última vez que um commit a tocar em
+# public/data/** ATERROU (committer date via API de commits do GitHub).
+# Um push que falhou depois da geração, um meta escrito mas nunca
+# commitado, ou um scheduler que deixou de disparar são invisíveis ao
+# ficheiro mas aparecem aqui assim que o último commit de dados passa o
+# limiar — ANTES de qualquer TTL validator (que só corre QUANDE o
+# pipeline corre).
+#
+# Partilha com o staleness-alert os MESMOS limiares (3 h dia / 5 h noite,
+# via scripts/lib/pipelineStaleness.js) e a MESMA label data-stale: quem
+# detetar a outage primeiro abre a issue; ambos fecham na recuperação; o
+# guard de issue-aberta torna o uso concorrente seguro (uma outage nunca
+# vira duas issues). Exit 0 sempre — a issue e o Telegram são o canal,
+# não o exit code.
+on:
+  schedule:
+    # A cada 30 min, em offsets próprios (12/42) — fora dos crons de
+    # dados (:17/:47), do keep-alive (:05/:35) e do staleness-alert
+    # (:07/:37), para nunca correrem ao mesmo tempo.
+    - cron: '12,42 * * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+
+concurrency:
+  group: data-cadence-alert
+  cancel-in-progress: false
+
+jobs:
+  heartbeat:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Check data cadence and alert
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          OPS_TELEGRAM_CHAT_ID: ${{ secrets.OPS_TELEGRAM_CHAT_ID }}
+        run: node scripts/check-data-cadence.js
