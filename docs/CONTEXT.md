@@ -404,6 +404,8 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 | `ci.yml` | PR + push main | lint, validate spots, unit tests, sitemap, build, E2E |
 | `deploy.yml` | push main | test, sitemap, build, GitHub Pages |
 | `evaluate-alerts.yml` | */3h + manual | email alerts (Resend + Supabase) |
+| `staleness-alert.yml` | :07/:37 (30 min) | Heartbeat do pipeline (por meta-file): alerta via issue `data-stale` + Telegram quando `pipeline-meta.json` deixa de refrescar (3h dia / 5h noite) |
+| `data-cadence-alert.yml` | :12/:42 (30 min) | Heartbeat do pipeline (por commit): alerta via issue `data-stale` + Telegram quando o último commit a tocar `public/data/**` passa o limiar |
 
 ### E2E core — specs do CI (e o que cada um cobre)
 
@@ -431,6 +433,44 @@ Notas de operação:
 - **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **143 testes em 14 ficheiros** (`npx playwright test <specs do core> --list`) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
 - **Determinismo**: estes specs NÃO dependem da rede nem de keys — as fixtures vivem em `tests/e2e/helpers/conditions.ts` (`interceptConditions`/`interceptIhBuoys`/`interceptWmoBuoys`/`interceptWaveBias`/`interceptIsobaths`/`interceptCoastalNavWarnings`). Se um spec precisa de dados que o build não tem, intercepta client-side.
 - **TopNow (homepage) — SSG vs re-hidratação**: o primeiro paint dos cards é SSG (`buildSpotData` em build-time), por isso o badge «Corrigido (viés regional)»/«Corrigido pela boia X» só sai baked no `out/` quando o `wave-bias.json`/`observedWave` existir em `public/data/` DURANTE o `npm run build` (teste baked-only salta com skip honesto). MAS o `HomepageTopNow` re-hidrata client-side (`useLiveGridSpotData`, mount + **15 min** + tab visível — o mesmo `refreshGridSpotScores` do grid/mapa): as rows SSG são substituídas pelas de `conditions.json` e o viés regional aplica-se em runtime, pelo que o badge aparece SEM rebuild e os testes positivos interceptam client-side (`interceptConditions` + transform `all`). Recipe local para validar o caminho baked: `node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge` (o fixture escreve `public/data/wave-bias.json` com ME +0.3/n=120 em todas as regiões; `public/data/` é gitignored, nunca é commitado).
+
+## Cadência de dados — resiliência (crons + keep-alive + heartbeats)
+
+A cadência de 30 min do `update-data.yml` (crons `:17`/`:47`) é protegida por camadas
+independentes, para um pipeline morto nunca passar despercebido — seja por schedule
+perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
+
+| Camada | Mecanismo | O que mede | Schedule |
+|---|---|---|---|
+| **Crons** | `schedule` no `update-data.yml` | — | :17/:47 (GitHub) |
+| **Keep-alive** | cron-job.org → `repository_dispatch` no `update-data.yml` (`VENTU_KEEPALIVE=1`) | — | :05/:35 (externo) |
+| **Heartbeat por meta** | `staleness-alert.yml` → `scripts/check-pipeline-staleness.js` | idade dos timestamps de `pipeline-meta.json` | :07/:37 |
+| **Heartbeat por commit** | `data-cadence-alert.yml` → `scripts/check-data-cadence.js` | committer date do último commit a tocar `public/data/**` | :12/:42 |
+
+- **Keep-alive**: um job externo (cron-job.org; PAT fine-grained com só `Contents: Read and write`)
+  faz POST a `repos/braindeadpt/VenTu/dispatches`; o workflow só passa o gate com
+  `VENTU_KEEPALIVE=1`. O gate (`scripts/should-run-data-update.js`) decide `skip` se o pipeline
+  estiver fresco (anti-duplo-run: um ping nunca dispara duas vezes a mesma hora) e
+  `full`/`observations` se estiver atrasado — a cadência deixa de depender do scheduler do GitHub.
+  Setup completo em [`EXTERNAL-KEEPALIVE.md`](./EXTERNAL-KEEPALIVE.md).
+- **Heartbeats — label `data-stale` + ciclo de vida da issue**: ambos partilham os MESMOS
+  limiares (`STALE_ALERT_HOURS_DAY=3` / `STALE_ALERT_HOURS_NIGHT=5`, em
+  `scripts/lib/pipelineStaleness.js`) e a MESMA label — quem detetar a outage primeiro abre a
+  issue; ambos fecham na recuperação; o guard de issue-aberta torna o uso concorrente seguro
+  (uma outage nunca vira duas issues). O estado É a issue aberta (sem state externo).
+  - `staleness-alert` lê os timestamps internos de `pipeline-meta.json`. Necessário porque o
+    TTL validator do pipeline só corre QUANDO o pipeline corre — um pipeline morto é invisível
+    aos próprios checks.
+  - `data-cadence-alert` mede a verdade observável: o **committer date** do último commit a
+    tocar `public/data/**` (API de commits do GitHub) — apanha um push que falhou depois da
+    geração, um meta escrito mas nunca commitado, ou um scheduler que parou, ANTES de qualquer
+    TTL validator. Falha de API → log + exit 0 (nunca fabrica uma outage).
+- **Alertas**: GitHub issue (label `data-stale`, título com a idade) + Telegram ops
+  (`OPS_TELEGRAM_CHAT_ID` + `TELEGRAM_BOT_TOKEN`) só na **transição** down/up. Exit 0 sempre —
+  durante uma outage longa, runs vermelhos seriam spam; a issue e o Telegram são o canal.
+- **Verificado live (2026-09-09)**: um dispatch manual do `staleness-alert` com o pipeline fresco
+  fechou o incidente #52 (aberto pela detecção real da outage anterior) — o ciclo
+  abrir→fechar provado fim-a-fim no repo real, com `data-stale` sem issues abertas no final.
 
 ## Estado actual (2026-07-21)
 
