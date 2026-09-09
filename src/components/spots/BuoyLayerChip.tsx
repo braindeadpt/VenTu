@@ -87,7 +87,7 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
         <div
           data-buoy-chip-popover="true"
           role="status"
-          className="absolute bottom-full right-0 mb-2 w-[min(320px,calc(100vw-2rem))] z-[1200] rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card p-3 pr-8 text-meta-sm"
+          className="absolute bottom-full left-0 mb-2 w-[min(320px,calc(100vw-2rem))] z-[1250] rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card p-3 pr-8 text-meta-sm"
         >
           <p className="leading-snug">
             <strong className="font-semibold">{c.title}: </strong>
