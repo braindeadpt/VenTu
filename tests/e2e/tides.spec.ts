@@ -80,7 +80,15 @@ test.describe('Marés (TideScheduleStrip)', () => {
     await expect(page.getByText('Marés (previsão)')).toHaveCount(0);
 
     // MoonTideCard continua visível (fase lunar), mas sem amplitude.
-    const moonCard = page.getByText('Maré e lua').locator('..');
+    // Scope to #main-content: under heavy CI load the Next.js streaming
+    // reveal ($RC/$RV) can lag past hydration, leaving a hidden duplicate of
+    // the streamed card outside <main> — the unscoped locator then resolves
+    // to 2 elements and trips strict mode. The user-visible card is the one
+    // in #main-content; the lingering copy is hidden and inert.
+    const moonCard = page
+      .locator('#main-content')
+      .getByText('Maré e lua')
+      .locator('..');
     await expect(moonCard).toBeVisible();
     // Fase lunar real do build (qualquer das 8 fases em pt).
     await expect(moonCard).toContainText(
@@ -97,7 +105,15 @@ test.describe('Marés (TideScheduleStrip)', () => {
     // do dia é calculada (≥2 pontos) e o card mostra fase + regime + range.
     await page.goto('/pt/spots/guincho/');
 
-    const moonCard = page.getByText('Maré e lua').locator('..');
+    // Scope to #main-content: under heavy CI load the Next.js streaming
+    // reveal ($RC/$RV) can lag past hydration, leaving a hidden duplicate of
+    // the streamed card outside <main> — the unscoped locator then resolves
+    // to 2 elements and trips strict mode. The user-visible card is the one
+    // in #main-content; the lingering copy is hidden and inert.
+    const moonCard = page
+      .locator('#main-content')
+      .getByText('Maré e lua')
+      .locator('..');
     await expect(moonCard).toBeVisible({ timeout: 20_000 });
     // Fase lunar real do build (qualquer das 8 fases em pt).
     await expect(moonCard).toContainText(
