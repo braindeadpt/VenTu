@@ -330,6 +330,12 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   ok se `fetchedAt` ≤24 h — um warnings.json vazio mas fresco é ok) e
   `coastalWarningsLayer` (avisos à navegação costeiros IH: ok se `fetchedAt`
   ≤24 h).
+- **radarLayer é warnOnly** (como as marés IH): o radar é um overlay OPCIONAL do
+  mapa — uma degradação a montante (ex.: 2026-09-09, IPMA a publicar slots de
+  radar sem PNGs no `imgs-radar.json`) nunca pode falhar o job e bloquear o
+  push dos dados essenciais (conditions/forecasts/observações), como aconteceu
+  nesse dia (produção sem dados frescos das 10:08 às 20:45). A camada avisa a
+  partir de `WARN_AFTER` e fica por aí; visibilidade nos logs + chip do About.
 - **Fonte ES cross-border (Avisos a los navegantes):** o fetch costeiro grava
   `esHealth` (configured/disabled + status ok|error + timestamps) no
   `ih-coastal-warnings.json` e o `esSourceNote` marca degradação quando o feed

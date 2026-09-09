@@ -283,12 +283,12 @@ describe('evaluateDataLayerHealth (unificado)', () => {
 
   it('uma camada no limiar de aviso → level warn com ::warning:: isolada', () => {
     const r = evaluateDataLayerHealth(
-      { ...allOk, radarLayer: { status: 'stale', streak: 4 } },
+      { ...allOk, warningsLayer: { status: 'stale', streak: 4 } },
       { warnAfter: 3, failAfter: 6 },
     );
     expect(r.level).toBe('warn');
     expect(r.warnings).toHaveLength(1);
-    expect(r.warnings[0]).toMatch(/^::warning::Radar IPMA em 'stale' há 4 runs/);
+    expect(r.warnings[0]).toMatch(/^::warning::Avisos IPMA\/MeteoAlarm em 'stale' há 4 runs/);
     expect(r.oks).toHaveLength(3);
   });
 
@@ -296,16 +296,35 @@ describe('evaluateDataLayerHealth (unificado)', () => {
     const r = evaluateDataLayerHealth(
       {
         ...allOk,
-        radarLayer: { status: 'stale', streak: 7 },
-        warningsLayer: { status: 'stale', streak: 4 },
+        warningsLayer: { status: 'stale', streak: 7 },
+        buoyLayer: { status: 'stale', streak: 4 },
       },
       { warnAfter: 3, failAfter: 6 },
     );
     expect(r.level).toBe('fail');
     expect(r.failures).toHaveLength(1);
-    expect(r.failures[0]).toMatch(/^::error::Radar IPMA em 'stale' há 7 runs/);
+    expect(r.failures[0]).toMatch(/^::error::Avisos IPMA\/MeteoAlarm em 'stale' há 7 runs/);
     expect(r.warnings).toHaveLength(1);
-    expect(r.warnings[0]).toMatch(/^::warning::Avisos IPMA\/MeteoAlarm/);
+    expect(r.warnings[0]).toMatch(/^::warning::Boias/);
+  });
+
+  it('radar warnOnly: stale com streak ≥ limiar de falha → ::warning:: e NUNCA level fail', () => {
+    const r = evaluateDataLayerHealth(
+      { ...allOk, radarLayer: { status: 'stale', streak: 7 } },
+      { warnAfter: 3, failAfter: 6 },
+    );
+    expect(r.level).toBe('warn');
+    expect(r.failures).toHaveLength(0);
+    expect(r.warnings.some((w) => w.startsWith('::warning::Radar IPMA'))).toBe(true);
+  });
+
+  it('radar warnOnly: stale mas streak < warnAfter → linha ✅ (ainda a contar)', () => {
+    const r = evaluateDataLayerHealth(
+      { ...allOk, radarLayer: { status: 'stale', streak: 1 } },
+      { warnAfter: 3, failAfter: 6 },
+    );
+    expect(r.level).toBe('ok');
+    expect(r.oks.some((o) => o.includes('Radar IPMA'))).toBe(true);
   });
 
   it('linhas ok incluem os limiares globais', () => {

@@ -9,7 +9,10 @@
  *   - buoyLayer      (lib/buoyLayerHealth.js) — boias IH + fallback WMO.
  *   - radarLayer     (aqui) — frames de radar IPMA; ok quando o frame mais
  *     recente está fresco (≤ RADAR_MAX_AGE_MINUTES), stale quando existe mas
- *     é velho, down quando o ficheiro/frame falta.
+ *     é velho, down quando o ficheiro/frame falta. WARN-ONLY: uma degradação
+ *     do radar (overlay opcional no mapa) nunca pode bloquear o push dos
+ *     dados essenciais — o IPMA publicou slots de radar sem PNGs (2026-09-09)
+ *     e o gate a falhar congelou conditions/forecasts/obs em produção.
  *   - warningsLayer  (aqui) — avisos IPMA/MeteoAlarm; ok quando fetchedAt está
  *     dentro da janela (≤ WARNINGS_MAX_AGE_HOURS), stale quando é velho mas
  *     existe, down quando o ficheiro falta. Um warnings.json vazio mas fresco
@@ -37,7 +40,11 @@ const DEFAULT_FAIL_AFTER = 6;
 /** Camadas avaliadas pelo health-check unificado (ordem de apresentação). */
 const LAYERS = [
   { key: 'buoyLayer', label: 'Boias (onda observada)' },
-  { key: 'radarLayer', label: 'Radar IPMA' },
+  // Radar IPMA: warnOnly de propósito — é um overlay OPCIONAL do mapa; uma
+  // degradação a montante (ex.: IPMA a publicar slots sem PNG, 2026-09-09)
+  // nunca pode falhar o job e bloquear o push dos dados essenciais
+  // (conditions/forecasts/observações). Mesma semântica das marés IH.
+  { key: 'radarLayer', label: 'Radar IPMA', warnOnly: true },
   { key: 'warningsLayer', label: 'Avisos IPMA/MeteoAlarm' },
   // Marés IH: warnOnly de propósito — fetch-ih-tides.js NUNCA pode bloquear o
   // Open-Meteo (decisão c16802b8: outage IH ≠ previsões paradas). A camada
@@ -307,9 +314,11 @@ function evaluateDataLayerHealth(meta, opts = {}) {
     const streak = Number.isFinite(Number(layer.streak)) ? Number(layer.streak) : 0;
     const suffix = layer.lastOkAt ? ` · última vez ok: ${layer.lastOkAt}` : '';
 
-    // Camadas warnOnly (marés IH) NUNCA falham o job: um outage de marés IH
-    // não pode bloquear o Open-Meteo (decisão c16802b8). Avisam a partir do
-    // warnAfter e ficam por aí — a visibilidade é o chip do About + os logs.
+    // Camadas warnOnly (marés IH, radar IPMA) NUNCA falham o job: um outage
+    // de marés IH não pode bloquear o Open-Meteo (decisão c16802b8) e uma
+    // degradação do radar (overlay opcional) não pode congelar o push dos
+    // dados essenciais. Avisam a partir do warnAfter e ficam por aí — a
+    // visibilidade é o chip do About + os logs do workflow.
     if (streak >= failAfter && !warnOnly) {
       level = 'fail';
       failures.push(
