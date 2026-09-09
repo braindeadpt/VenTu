@@ -81,6 +81,44 @@ test.describe('Map 48h score timeline', () => {
   });
 });
 
+test.describe('Map 48h — time track em ecrãs estreitos', () => {
+  test.use({
+    viewport: { width: 360, height: 800 },
+    hasTouch: true,
+    serviceWorkers: 'block',
+    reducedMotion: 'reduce',
+  });
+  test.describe.configure({ timeout: 60_000 });
+
+  test('slider das horas não ultrapassa o cartão do HUD (regressão min-w-0)', async ({ page }) => {
+    await openMapHours(page);
+    const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
+    await expect(slider).toBeVisible({ timeout: 15_000 });
+
+    // Auditoria 2026-09-10: em 360px, a linha do time track (play + relógio +
+    // chip da maré + slider) estourava o slider 7px para fora do cartão — o
+    // flex-1 não encolhia abaixo do min-content do input. Fix: min-w-0.
+    const geo = await page.evaluate(() => {
+      const region = document.querySelector('[aria-label="Modo explorar"]');
+      const card = region?.querySelector('div');
+      const s = document.querySelector<HTMLElement>(
+        '[data-map-hours-scrubber] input[type="range"]',
+      );
+      if (!card || !s) return null;
+      const cb = card.getBoundingClientRect();
+      const sb = s.getBoundingClientRect();
+      return {
+        sliderRight: Math.round(sb.right),
+        cardRight: Math.round(cb.right),
+        inside: sb.right <= cb.right + 1 && sb.left >= cb.left - 1,
+      };
+    });
+    expect(geo).not.toBeNull();
+    expect(geo!.inside).toBe(true);
+    expect(geo!.sliderRight).toBeLessThanOrEqual(geo!.cardRight + 1);
+  });
+});
+
 test.describe('Map 48h: prefers-reduced-motion', () => {
   test.use({
     serviceWorkers: 'block',

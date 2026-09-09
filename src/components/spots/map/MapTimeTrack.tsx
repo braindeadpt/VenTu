@@ -110,8 +110,8 @@ export default function MapTimeTrack({
         aria-label={labels.scrub}
         className={
           isHud
-            ? 'flex-1 min-h-[44px] accent-data-waves cursor-pointer touch-manipulation'
-            : 'w-40 accent-data-waves cursor-pointer touch-manipulation max-md:order-first max-md:w-20 max-md:flex-1'
+            ? 'flex-1 min-w-0 min-h-[44px] accent-data-waves cursor-pointer touch-manipulation'
+            : 'w-40 min-w-0 accent-data-waves cursor-pointer touch-manipulation max-md:order-first max-md:w-20 max-md:flex-1'
         }
       />
     </div>

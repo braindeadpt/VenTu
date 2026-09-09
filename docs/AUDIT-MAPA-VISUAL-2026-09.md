@@ -178,3 +178,46 @@ alvos de toque, hit-testing e stacking), mais os novos testes e2e
 > muitos ficam **sob o cartão do HUD** — o clique real acertava no HUD
 > («Element is outside of the viewport»). O novo picker exige centro
 > descoberto (`elementFromPoint` = marcador) e espera o autoPan assentar.
+
+---
+
+# HUD «Modo explorar» — auditoria 2026-09-10
+
+Auditoria em profundidade ao HUD (`MapExploreHud`) em 5 viewports (1440,
+1024, 768 touch, 390 touch, 360 touch), com `scripts/audit/audit-map-hud.mjs`:
+geometria do cartão e das linhas, overflow horizontal, alvos de toque (<lg),
+tiras de scroll (alcance do último botão + edge-fade), time track (play,
+slider, relógio, chip da maré/termal) e interações (expandir, filtrar, URL,
+limpar filtros, scrub).
+
+## Defeito encontrado e corrigido
+
+| # | Viewport | Antes | Depois | Fix |
+|---|----------|-------|--------|-----|
+| 1 | 360px (horas ligadas) | o **slider do time track estourava 7px** para fora do cartão do HUD — o `flex-1` não encolhia abaixo do min-content do `<input type="range">` (linha play + relógio + chip da maré + slider) | slider 100% dentro do cartão (109px, ≥60px mínimo de interação) | `MapTimeTrack.tsx` — `min-w-0` nas duas variantes (hud + floating/radar) |
+
+## Verificado como OK (sem intervenção)
+
+- **Alinhamento do header row** (label, rádios Mapa/Satélite, pesquisa, pill de
+  contagem, sair) — uma linha, sem overflow, rádios ≥44px em todos os
+  viewports; nenhum elemento não-scrollable fora do cartão.
+- **Tira de camadas mobile** (~12 botões 44×44): scroll horizontal com
+  edge-fade; **último botão alcançável** (verificado por scroll até ao fim)
+  em 390px e 360px.
+- **Linhas de filtro** (modalidade/nível/região): chips ≥44px abaixo de `lg`,
+  «Limpar filtros» aparece ao filtrar e reseta o URL; expansão/colapso mobile
+  correctos.
+- **Time track**: play 44×44, relógio tabular, chip da maré 44px alinhado;
+  scrub 22h→13h funciona; variante floating (radar carousel) com slider dentro
+  do track em 390px.
+- **Legenda vs HUD**: elevação dinâmica (`hudLift`) mantém a legenda acima do
+  cartão (folga ≥12px) mesmo com horas ligadas.
+- **Locale EN** em 360px: sem overflow (labels mais longas cabem).
+
+## Testes
+
+- **e2e** (`map-hours.spec.ts`, +1): slider das horas não ultrapassa o cartão
+  do HUD em 360px (regressão do `min-w-0`).
+- **Regressões na via CI**: `map-hours` + `map-currents` + `mapa-route` 14/14;
+  `mobile-playtest` + `visual-ux-audit` 48/0; unit 1475/1475; `tsc` e lint
+  limpos.
