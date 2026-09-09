@@ -258,63 +258,6 @@
       ]
     },
     {
-      "id": 18271,
-      "ref": "ANAV NR 1780/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7523800a-83ad-4e94-bf81-d031d5e3fcfb",
-      "source": "ih",
-      "polygons": [
-        [
-          [
-            -9.321333,
-            38.668
-          ],
-          [
-            -9.370333,
-            38.623
-          ],
-          [
-            -9.385167,
-            38.6455
-          ],
-          [
-            -9.349167,
-            38.675333
-          ],
-          [
-            -9.321333,
-            38.668
-          ]
-        ],
-        [
-          [
-            -9.311833,
-            38.653833
-          ],
-          [
-            -9.313333,
-            38.6605
-          ],
-          [
-            -9.287,
-            38.681667
-          ],
-          [
-            -9.229167,
-            38.6795
-          ],
-          [
-            -9.257167,
-            38.659
-          ],
-          [
-            -9.311833,
-            38.653833
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18299,
       "ref": "ANAV NR 1803/26",
       "category": "Requisitos de segurança maritima",
@@ -523,37 +466,6 @@
       ]
     },
     {
-      "id": 18535,
-      "ref": "ANAV NR 2014/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=88b4c861-22c4-4f0f-9d35-c6272a07faab",
-      "source": "ih",
-      "polygons": [
-        [
-          [
-            -8.794673,
-            41.538522
-          ],
-          [
-            -8.794673,
-            41.544369
-          ],
-          [
-            -8.786564,
-            41.544369
-          ],
-          [
-            -8.786564,
-            41.538522
-          ],
-          [
-            -8.794673,
-            41.538522
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18537,
       "ref": "ANAV NR 2015/26",
       "category": "Requisitos de segurança maritima",
@@ -625,12 +537,8 @@
     "carcavelos": [
       18465
     ],
-    "trafaria": [
-      18271
-    ],
     "cova-do-vapor": [
-      18169,
-      18271
+      18169
     ],
     "barra-aveiro": [
       18531
@@ -645,7 +553,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-09T05:21:33.941Z",
+  "fetchedAt": "2026-09-09T21:43:30.975Z",
   "sourceCollection": "nav_warning_coastal",
   "sourceUrl": "https://api-features.hidrografico.pt/collections/nav_warning_coastal"
 }
