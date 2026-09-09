@@ -224,7 +224,12 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Install psql client
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends postgresql-client
+        # apt-get update pode sair 100 por um índice de terceiros inconsistente
+        # (dl.google.com/chrome: "Hash Sum mismatch", flake 2026-09-09) — os
+        # índices Ubuntu úteis ficam atualizados na mesma; o install é que decide.
+        run: |
+          sudo apt-get update || echo "::warning::apt-get update devolveu erro de índice (flake conhecido de terceiros) — a continuar com as listas disponíveis"
+          sudo apt-get install -y --no-install-recommends postgresql-client
 
       - name: Run Supabase SQL integration tests
         env:
@@ -274,7 +279,10 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
       - name: Install shellcheck
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends shellcheck
+        # Mesmo tratamento do flake de índice de terceiros (ver job supabase-sql).
+        run: |
+          sudo apt-get update || echo "::warning::apt-get update devolveu erro de índice (flake conhecido de terceiros) — a continuar com as listas disponíveis"
+          sudo apt-get install -y --no-install-recommends shellcheck
 
       # Os 4 scripts bash do repo (checker S7, monitor IH, push-data-update,
       # runner de testes SQL) ÔÇö sem findings, o job passa.
