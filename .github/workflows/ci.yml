@@ -130,6 +130,15 @@ jobs:
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
+      # Hydration-latency metric (report-only): times html[data-hydrated]
+      # on the runner right where the E2E specs run, against the same
+      # build and 2-core hardware the suite sees. Fails nothing — data
+      # for tracking local-vs-runner hydration latency over time.
+      - name: Measure hydration latency (report only)
+        run: node scripts/measure-hydration-latency.mjs --serve out --runs 3 >> $GITHUB_STEP_SUMMARY
+        env:
+          CI: true
+
       - name: E2E — critical routes
         run: npx playwright test critical-routes
         env:
