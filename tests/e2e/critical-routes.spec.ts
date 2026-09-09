@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
+import { waitHydrated } from './helpers/hydration';
 
 /**
  * Pipeline JSON that the client treats as optional (404 → feature off).
@@ -150,6 +151,7 @@ test.describe('Critical routes', () => {
 
   test('search palette opens', async ({ page }) => {
     await page.goto('/pt/');
+    await waitHydrated(page);
     await page.getByRole('banner').getByRole('button', { name: /Pesquisar|Search/i }).first().click();
     await expect(page.getByRole('dialog')).toBeVisible();
   });
@@ -161,6 +163,7 @@ test.describe('Critical routes', () => {
 
   test('homepage sport filter syncs to URL', async ({ page }) => {
     await page.goto('/pt/');
+    await waitHydrated(page);
     const hero = page.getByRole('region', { name: /Mapa interactivo/i });
     await hero.getByRole('button', { name: 'Kitesurf', exact: true }).click();
     await expect(page).toHaveURL(/sport=kitesurf/);

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
+import { waitHydrated } from './helpers/hydration';
 
 test.describe('Home adaptive layout', () => {
   test.beforeEach(async ({ page }) => {
@@ -32,6 +33,7 @@ test.describe('Home adaptive layout', () => {
 
   test('favorite heart opens login when signed out', async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
+    await waitHydrated(page);
     await page.getByRole('button', { name: /Entrar para guardar Guincho|Sign in to save Guincho/i }).first().click();
     await expect(page.getByRole('dialog', { name: /Entrar|Sign in/i })).toBeVisible();
   });

@@ -27,6 +27,7 @@
 import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
+import { waitHydrated } from './helpers/hydration';
 
 test.describe('Map unmount race (mobile)', () => {
   test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block' });
@@ -37,6 +38,9 @@ test.describe('Map unmount race (mobile)', () => {
     await preseedWindRingLegend(page);
     const health = attachPageHealthCollectors(page);
     await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    // Drawer/search taps later in these tests need the shell hydrated
+    // (pre-hydration taps are silently swallowed — CI-only flake).
+    await waitHydrated(page);
     const hero = page.getByRole('region', { name: /Mapa interactivo/i });
     await expect(hero.locator('.leaflet-container')).toBeVisible({ timeout: 20_000 });
     await expect(hero.getByLabel(/Mapa dos spots/i)).toBeVisible({ timeout: 20_000 });

@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { waitHydrated } from './helpers/hydration';
 
 test.describe('UI interactions audit', () => {
   test('locale switch PT → EN on homepage', async ({ page }) => {
     await page.goto('/pt/');
+    await waitHydrated(page);
     // Desktop + mobile both render a locale <select>; drive the visible one.
     await page.locator('header select').locator('visible=true').selectOption('en');
     await expect(page).toHaveURL(/\/en\/?$/);
@@ -11,6 +13,7 @@ test.describe('UI interactions audit', () => {
 
   test('header navigation to explorar works', async ({ page }) => {
     await page.goto('/pt/');
+    await waitHydrated(page);
     const banner = page.getByRole('banner');
     await banner.getByRole('button', { name: /Condições/i }).click();
     await expect(page.locator('#mega-menu-conditions')).toBeVisible();
@@ -23,6 +26,7 @@ test.describe('UI interactions audit', () => {
 
   test('search palette finds Guincho and navigates', async ({ page }) => {
     await page.goto('/pt/');
+    await waitHydrated(page);
     await page.getByRole('banner').getByRole('button', { name: /Pesquisar|Search/i }).first().click();
     const dialog = page.getByRole('dialog');
     await expect(dialog).toBeVisible();
@@ -48,6 +52,7 @@ test.describe('UI interactions audit', () => {
 
   test('favorites: heart opens login when signed out (F1)', async ({ page }) => {
     await page.goto('/pt/spots/guincho/');
+    await waitHydrated(page);
     await page
       .getByRole('button', { name: /Entrar para guardar Guincho|Sign in to save Guincho/i })
       .click();

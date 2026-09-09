@@ -6,6 +6,7 @@ import { test, expect, type Page, type BrowserContext } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { expandMapHudFilters } from './helpers/map-hud';
+import { waitHydrated } from './helpers/hydration';
 import { openMapSpotSheet } from './helpers/map-sheet';
 
 type Viewport = 'desktop' | 'mobile';
@@ -31,6 +32,9 @@ async function setupPage(context: BrowserContext, viewport: Viewport) {
 
 async function gotoHealthy(page: Page, health: ReturnType<typeof attachPageHealthCollectors>, path: string) {
   await page.goto(path, { waitUntil: 'domcontentloaded' });
+  // Shell must be hydrated before any header/drawer tap (pre-hydration
+  // clicks are silently swallowed — CI-only flake on a loaded runner).
+  await waitHydrated(page);
   await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
 }
 
@@ -99,6 +103,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(page).toHaveURL(/region=Algarve/);
 
       await page.reload();
+      await waitHydrated(page);
       await page.waitForSelector('[data-map-hud="visible"]', { timeout: 25_000 });
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });
       await expandMapHudFilters(page);

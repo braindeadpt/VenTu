@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { interceptData } from './helpers/conditions';
+import { waitHydrated } from './helpers/hydration';
 
 /**
  * Gear calculators (ferramentas/calculadora-kite + calculadora-fato).
@@ -28,6 +29,7 @@ test.describe('kite calculator', () => {
 
   test('desktop: realistic inputs → correct kite size and comfort window', async ({ page }) => {
     await page.goto(KITE_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     // Defaults: 75 kg, 18 kt, twintip → ideal = 75*2.2/18 = 9.17 m² → snaps to 9 m².
     await expect(page.locator('text=9 m²').first()).toBeVisible();
@@ -40,6 +42,7 @@ test.describe('kite calculator', () => {
 
   test('slider moves update the computed size (user changes weight)', async ({ page }) => {
     await page.goto(KITE_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     // Push weight to 95 kg: ideal = 95*2.2/18 = 11.61 → snaps to 12 m².
     await page.locator('#kite-weight').fill('95');
@@ -49,6 +52,7 @@ test.describe('kite calculator', () => {
 
   test('discipline foil needs a much smaller kite than twintip', async ({ page }) => {
     await page.goto(KITE_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     // Twintip 75kg/18kt = 9 m² (baseline asserted in the first test).
     await page.getByRole('radio', { name: 'Foil' }).click();
@@ -58,6 +62,7 @@ test.describe('kite calculator', () => {
 
   test('zero-wind edge: slider at minimum (6 kt) still produces a size, no crash', async ({ page }) => {
     await page.goto(KITE_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     // 75 kg at 6 kt twintip: ideal = 75*2.2/6 = 27.5 → snaps to the largest
     // production size, 17 m² (clamped at the top of the size list).
@@ -68,6 +73,7 @@ test.describe('kite calculator', () => {
 
   test('extreme-wind edge: slider at maximum (45 kt) produces the smallest kite', async ({ page }) => {
     await page.goto(KITE_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     // 75 kg at 45 kt twintip: ideal = 75*2.2/45 = 3.67 → snaps to 4 m².
     await page.locator('#kite-wind').fill('45');
@@ -78,6 +84,7 @@ test.describe('kite calculator', () => {
   test('mobile 390px: layout renders, outputs visible, no horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(KITE_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     await expect(page.locator('text=9 m²').first()).toBeVisible();
     // No horizontal scroll on a phone width.
@@ -93,6 +100,7 @@ test.describe('wetsuit calculator', () => {
 
   test('desktop: default 17°C → 3/2 mm recommendation', async ({ page }) => {
     await page.goto(FATO_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     // Default temp is 17°C (the slider's initial value) → 3/2 band.
     await expect(page.locator('text=3/2 mm')).toBeVisible();
@@ -102,6 +110,7 @@ test.describe('wetsuit calculator', () => {
 
   test('cold water edge (11°C) → 5/4 mm with boots and hood', async ({ page }) => {
     await page.goto(FATO_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     await page.locator('#wetsuit-temp').fill('11');
     await page.locator('#wetsuit-temp').dispatchEvent('change');
@@ -113,6 +122,7 @@ test.describe('wetsuit calculator', () => {
 
   test('warm water edge (24°C) → rashguard/boardshorts, no extras', async ({ page }) => {
     await page.goto(FATO_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     await page.locator('#wetsuit-temp').fill('24');
     await page.locator('#wetsuit-temp').dispatchEvent('change');
@@ -121,6 +131,7 @@ test.describe('wetsuit calculator', () => {
 
   test('windy checkbox shifts the band down (17°C windy ≈ 15.5°C → 4/3)', async ({ page }) => {
     await page.goto(FATO_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     await page.getByText('Dia ventoso').click();
     // 17 - 1.5 = 15.5 → still 4/3 band (>=14).
@@ -129,6 +140,7 @@ test.describe('wetsuit calculator', () => {
 
   test('slider minimum (4°C) → coldest band, no crash', async ({ page }) => {
     await page.goto(FATO_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     await page.locator('#wetsuit-temp').fill('4');
     await page.locator('#wetsuit-temp').dispatchEvent('change');
@@ -139,6 +151,7 @@ test.describe('wetsuit calculator', () => {
   test('mobile 390px: outputs visible, no horizontal overflow', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto(FATO_URL, { waitUntil: 'networkidle' });
+    await waitHydrated(page);
 
     await expect(page.locator('text=3/2 mm')).toBeVisible();
     const scrollW = await page.evaluate(() => document.documentElement.scrollWidth);
