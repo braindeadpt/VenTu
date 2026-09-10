@@ -1,11 +1,11 @@
 {
   "day": "20260910",
-  "fetchedAt": "2026-09-10T05:21:43.826Z",
+  "fetchedAt": "2026-09-10T23:39:23.155Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 339,
+    "pairHourCount": 372,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -24,28 +24,28 @@
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
         "coherent": 4,
-        "review": 2,
+        "review": 3,
         "incoherent": 3,
         "insufficient": 0,
-        "days": 9,
-        "incoherentRatio": 0.333
+        "days": 10,
+        "incoherentRatio": 0.3
       },
       "6200084|6201079": {
         "pair": "Cabo Silleiro × Datawell ao largo de Faro",
         "coherent": 5,
-        "review": 4,
+        "review": 5,
         "incoherent": 0,
         "insufficient": 0,
-        "days": 9,
+        "days": 10,
         "incoherentRatio": 0
       },
       "6200085|6201079": {
         "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
-        "coherent": 9,
+        "coherent": 10,
         "review": 0,
         "incoherent": 0,
         "insufficient": 0,
-        "days": 9,
+        "days": 10,
         "incoherentRatio": 0
       },
       "6200083|6201077": {
@@ -89,10 +89,34 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 1,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "moledo"
+          ]
+        }
+      },
+      "suboptimalRefs": 1,
+      "suboptimal": [
+        {
+          "spot": "moledo",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 256.0891080060405,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 60.03361936580006
+        }
+      ]
     },
     "Viana do Castelo": {
       "spotCount": 8,
@@ -162,10 +186,104 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 8,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "vila-praia-ancora",
+            "afife",
+            "castelo-neiva",
+            "amorosa",
+            "cabedelo",
+            "foil-cabedelo",
+            "cabedelo-wakepark",
+            "rodanho"
+          ]
+        }
+      },
+      "suboptimalRefs": 8,
+      "suboptimal": [
+        {
+          "spot": "vila-praia-ancora",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 252.79494216152003,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 56.83725903037779
+        },
+        {
+          "spot": "afife",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 248.2812563816016,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 52.251954993525956
+        },
+        {
+          "spot": "castelo-neiva",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 245.7282059457399,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 50.165911186433014
+        },
+        {
+          "spot": "amorosa",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 239.8877558516748,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 44.14913998124936
+        },
+        {
+          "spot": "cabedelo",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 237.75996809176803,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 42.28768124430723
+        },
+        {
+          "spot": "foil-cabedelo",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 237.75996809176803,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 42.28768124430723
+        },
+        {
+          "spot": "cabedelo-wakepark",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 239.18095271512033,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 43.64718807946496
+        },
+        {
+          "spot": "rodanho",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 236.52988921344956,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 41.221907708056136
+        }
+      ]
     },
     "Esposende": {
       "spotCount": 9,
@@ -242,10 +360,94 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 7,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "ofir",
+            "esposende",
+            "esposende-praia",
+            "fao",
+            "apulia",
+            "fao-ofir-surf",
+            "ofir-praia"
+          ]
+        }
+      },
+      "suboptimalRefs": 7,
+      "suboptimal": [
+        {
+          "spot": "ofir",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 223.89766913681618,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 30.46765636091669
+        },
+        {
+          "spot": "esposende",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 222.08686842440406,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 28.920007732413914
+        },
+        {
+          "spot": "esposende-praia",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 222.69061389457516,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 29.437901225034324
+        },
+        {
+          "spot": "fao",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 219.9942092663957,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 27.955402159750385
+        },
+        {
+          "spot": "apulia",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 216.85515886313974,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 26.053641759189087
+        },
+        {
+          "spot": "fao-ofir-surf",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 221.17395782365344,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 28.129353547751005
+        },
+        {
+          "spot": "ofir-praia",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 220.5374724824482,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 27.692467778299093
+        }
+      ]
     },
     "Porto": {
       "spotCount": 12,
@@ -343,10 +545,144 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 12,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "povoa-varzim",
+            "leca-palmeira",
+            "matosinhos",
+            "cabedelo-douro",
+            "marina-afurada-foil",
+            "salgueiros",
+            "sereia-costa-verde",
+            "canide-sul",
+            "aguda",
+            "espinho",
+            "vila-cha",
+            "aterro"
+          ]
+        }
+      },
+      "suboptimalRefs": 12,
+      "suboptimal": [
+        {
+          "spot": "povoa-varzim",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 205.5949222655892,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 19.790496905304767
+        },
+        {
+          "spot": "leca-palmeira",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 186.09893507039772,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 27.06148173656539
+        },
+        {
+          "spot": "matosinhos",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 185.07890221168577,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 28.761820414108268
+        },
+        {
+          "spot": "cabedelo-douro",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 181.61265730829606,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 32.821203316238595
+        },
+        {
+          "spot": "marina-afurada-foil",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 182.085168935435,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 33.71779291391386
+        },
+        {
+          "spot": "salgueiros",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 179.5075086605232,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 34.32304518611994
+        },
+        {
+          "spot": "sereia-costa-verde",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 179.20730839617545,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 34.60017442005139
+        },
+        {
+          "spot": "canide-sul",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 178.69266489101423,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 35.0221257772153
+        },
+        {
+          "spot": "aguda",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 172.4244856508482,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 40.06746283074846
+        },
+        {
+          "spot": "espinho",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 168.00546277361758,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 44.712925863975215
+        },
+        {
+          "spot": "vila-cha",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 196.56300624241027,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 20.522620554873285
+        },
+        {
+          "spot": "aterro",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 187.96422184526136,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 25.28307322106521
+        }
+      ]
     },
     "Vila do Conde": {
       "spotCount": 2,
@@ -374,10 +710,44 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 2,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "azurara",
+            "mindelo"
+          ]
+        }
+      },
+      "suboptimalRefs": 2,
+      "suboptimal": [
+        {
+          "spot": "azurara",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 201.6139461897389,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 20.153952002710614
+        },
+        {
+          "spot": "mindelo",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 198.50527177887201,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 20.266956897189054
+        }
+      ]
     },
     "Gondomar": {
       "spotCount": 1,
@@ -398,10 +768,34 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 1,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "praia-da-lomba"
+          ]
+        }
+      },
+      "suboptimalRefs": 1,
+      "suboptimal": [
+        {
+          "spot": "praia-da-lomba",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 180.98966071122672,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 54.92049800238453
+        }
+      ]
     },
     "Espinho": {
       "spotCount": 3,
@@ -436,10 +830,54 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 3,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "praia-37",
+            "bairro-piscatorio",
+            "paramos"
+          ]
+        }
+      },
+      "suboptimalRefs": 3,
+      "suboptimal": [
+        {
+          "spot": "praia-37",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 167.40963152922527,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 44.6850335858117
+        },
+        {
+          "spot": "bairro-piscatorio",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 166.87734515315725,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 45.11947085815525
+        },
+        {
+          "spot": "paramos",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 164.3570950348695,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 47.00153946794311
+        }
+      ]
     },
     "Ovar": {
       "spotCount": 6,
@@ -495,10 +933,84 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 6,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "barrinha-esmoriz",
+            "esmoriz",
+            "cortegaca",
+            "cortegaca-sul",
+            "maceda",
+            "furadouro"
+          ]
+        }
+      },
+      "suboptimalRefs": 6,
+      "suboptimal": [
+        {
+          "spot": "barrinha-esmoriz",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 163.59890652961565,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 48.20580877006854
+        },
+        {
+          "spot": "esmoriz",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 162.77021293433435,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 48.07381268475458
+        },
+        {
+          "spot": "cortegaca",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 160.97084064133003,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 49.359914915423275
+        },
+        {
+          "spot": "cortegaca-sul",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 159.75248427570486,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 50.29650903462004
+        },
+        {
+          "spot": "maceda",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 158.34693470320732,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 51.479245809333555
+        },
+        {
+          "spot": "furadouro",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 153.81398636787532,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 55.655300010795735
+        }
+      ]
     },
     "Aveiro": {
       "spotCount": 7,
@@ -1055,13 +1567,37 @@
     },
     "Terceira": {
       "spotCount": 3,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 3,
+      "bySource": {
+        "ih-buoy": 3
+      },
+      "audited": 3,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 3,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "praia-vitoria",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 87,
+          "altKm": 0
+        },
+        {
+          "spot": "santa-catarina-terceira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 78,
+          "altKm": 0
+        },
+        {
+          "spot": "porto-martins",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 90,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1152,13 +1688,23 @@
     },
     "Faial": {
       "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "almoxarife",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 84,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1249,83 +1795,27 @@
     },
     "Alentejo": {
       "spotCount": 12,
-      "withObservedWave": 10,
+      "withObservedWave": 12,
       "bySource": {
-        "wmo-buoy": 10
+        "ih-buoy": 12
       },
-      "audited": 10,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 10,
+      "audited": 12,
+      "attachedIsClosest": 10,
+      "attachedNotClosest": 2,
       "onlySource": 0,
       "notClosest": [
         {
-          "spot": "alqueva",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 196,
+          "spot": "malhao",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 21,
           "altKm": 0
         },
         {
-          "spot": "melides",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 163,
-          "altKm": 0
-        },
-        {
-          "spot": "sao-torpes",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 186,
-          "altKm": 0
-        },
-        {
-          "spot": "porto-covo",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 193,
-          "altKm": 0
-        },
-        {
-          "spot": "zambujeira",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 199,
-          "altKm": 0
-        },
-        {
-          "spot": "carvalhal",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 198,
-          "altKm": 0
-        },
-        {
-          "spot": "odeceixe",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 195,
-          "altKm": 0
-        },
-        {
-          "spot": "lagoa-santo-andre",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 167,
-          "altKm": 0
-        },
-        {
-          "spot": "lagoa-sancha",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 174,
-          "altKm": 0
-        },
-        {
-          "spot": "pessegueiro",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 196,
+          "spot": "vila-nova-milfontes",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 26,
           "altKm": 0
         }
       ],
@@ -1353,30 +1843,46 @@
           "altKm": 0
         }
       ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
+      "calibrated": 1,
+      "calibrationRefs": {
+        "6200084→6200199": {
+          "esCode": "6200084",
+          "esName": "Cabo Silleiro",
+          "ptRefCode": "6200199",
+          "ptRefName": "Nazaré Costeira (WMO)",
+          "ptRefArea": "Nazaré",
+          "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
+          "me": 0.1,
+          "n": 197,
+          "spots": [
+            "ilha-do-ermal"
+          ]
+        }
+      },
+      "suboptimalRefs": 1,
+      "suboptimal": [
+        {
+          "spot": "ilha-do-ermal",
+          "esCode": "6200084",
+          "ptRefCode": "6200199",
+          "ptRefKm": 243.86443943565646,
+          "nearestPtCode": "4",
+          "nearestPtName": "CSA92/D",
+          "nearestPtKm": 77.49874642945014
+        }
+      ]
     },
     "Sines": {
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
-        "wmo-buoy": 1
+        "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "sines",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 181,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1398,13 +1904,23 @@
     },
     "Zambujeira do Mar": {
       "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "alteirinhos",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 33,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1414,35 +1930,13 @@
       "spotCount": 3,
       "withObservedWave": 3,
       "bySource": {
-        "wmo-buoy": 3
+        "ih-buoy": 3
       },
       "audited": 3,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedIsClosest": 3,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "amoreira",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 193,
-          "altKm": 0
-        },
-        {
-          "spot": "monte-clerigo",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 194,
-          "altKm": 0
-        },
-        {
-          "spot": "vale-figueiras",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 188,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1452,91 +1946,13 @@
       "spotCount": 11,
       "withObservedWave": 11,
       "bySource": {
-        "wmo-buoy": 11
+        "ih-buoy": 11
       },
       "audited": 11,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 11,
+      "attachedIsClosest": 11,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "arrifana",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 191,
-          "altKm": 0
-        },
-        {
-          "spot": "vila-real-santo-antonio",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 89,
-          "altKm": 0
-        },
-        {
-          "spot": "monte-gordo",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 89,
-          "altKm": 0
-        },
-        {
-          "spot": "praia-verde",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 91,
-          "altKm": 0
-        },
-        {
-          "spot": "altura",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 90,
-          "altKm": 0
-        },
-        {
-          "spot": "alvor",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 164,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-alvor",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 164,
-          "altKm": 0
-        },
-        {
-          "spot": "lagos-wakepark",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 167,
-          "altKm": 0
-        },
-        {
-          "spot": "barrinha-faro",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 105,
-          "altKm": 0
-        },
-        {
-          "spot": "canavial",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 145,
-          "altKm": 0
-        },
-        {
-          "spot": "armacao-pera",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 142,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1546,28 +1962,13 @@
       "spotCount": 2,
       "withObservedWave": 2,
       "bySource": {
-        "wmo-buoy": 2
+        "ih-buoy": 2
       },
       "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "bordeira",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 190,
-          "altKm": 0
-        },
-        {
-          "spot": "amado",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 189,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1577,49 +1978,13 @@
       "spotCount": 5,
       "withObservedWave": 5,
       "bySource": {
-        "wmo-buoy": 5
+        "ih-buoy": 5
       },
       "audited": 5,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 5,
+      "attachedIsClosest": 5,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "barriga",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 188,
-          "altKm": 0
-        },
-        {
-          "spot": "castelejo",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 190,
-          "altKm": 0
-        },
-        {
-          "spot": "burgau",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 174,
-          "altKm": 0
-        },
-        {
-          "spot": "salema",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 178,
-          "altKm": 0
-        },
-        {
-          "spot": "cordoama",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 188,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1629,28 +1994,13 @@
       "spotCount": 2,
       "withObservedWave": 2,
       "bySource": {
-        "wmo-buoy": 2
+        "ih-buoy": 2
       },
       "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "luz",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 171,
-          "altKm": 0
-        },
-        {
-          "spot": "lagos",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 166,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1660,21 +2010,13 @@
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
-        "wmo-buoy": 1
+        "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ferragudo",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 156,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1684,21 +2026,13 @@
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
-        "wmo-buoy": 1
+        "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "praia-rocha",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 156,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1708,49 +2042,13 @@
       "spotCount": 5,
       "withObservedWave": 5,
       "bySource": {
-        "wmo-buoy": 5
+        "ih-buoy": 5
       },
       "audited": 5,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 5,
+      "attachedIsClosest": 5,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "beliche",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 189,
-          "altKm": 0
-        },
-        {
-          "spot": "martinhal",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 185,
-          "altKm": 0
-        },
-        {
-          "spot": "zavial",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 181,
-          "altKm": 0
-        },
-        {
-          "spot": "tonel",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 186,
-          "altKm": 0
-        },
-        {
-          "spot": "mareta",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 186,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1760,21 +2058,13 @@
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
-        "wmo-buoy": 1
+        "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "fuseta",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 93,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1784,49 +2074,13 @@
       "spotCount": 5,
       "withObservedWave": 5,
       "bySource": {
-        "wmo-buoy": 5
+        "ih-buoy": 5
       },
       "audited": 5,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 5,
+      "attachedIsClosest": 5,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ilha-faro",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 106,
-          "altKm": 0
-        },
-        {
-          "spot": "faro-mar",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 109,
-          "altKm": 0
-        },
-        {
-          "spot": "culatra",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 96,
-          "altKm": 0
-        },
-        {
-          "spot": "armona",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 94,
-          "altKm": 0
-        },
-        {
-          "spot": "garrão",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 104,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1836,28 +2090,13 @@
       "spotCount": 2,
       "withObservedWave": 2,
       "bySource": {
-        "wmo-buoy": 2
+        "ih-buoy": 2
       },
       "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ilha-tavira",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 91,
-          "altKm": 0
-        },
-        {
-          "spot": "cabanas-tavira",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 91,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1867,21 +2106,13 @@
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
-        "wmo-buoy": 1
+        "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "cacela-velha",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 90,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1917,13 +2148,93 @@
     },
     "Madeira": {
       "spotCount": 11,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 11,
+      "bySource": {
+        "ih-buoy": 11
+      },
+      "audited": 11,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 11,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "sao-vicente-madeira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 30,
+          "altKm": 0
+        },
+        {
+          "spot": "porto-da-cruz",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 11,
+          "altKm": 0
+        },
+        {
+          "spot": "paul-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 48,
+          "altKm": 0
+        },
+        {
+          "spot": "jardim-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 46,
+          "altKm": 0
+        },
+        {
+          "spot": "ponta-sao-lourenco",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 3,
+          "altKm": 0
+        },
+        {
+          "spot": "ribeira-brava",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 32,
+          "altKm": 0
+        },
+        {
+          "spot": "funchal",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 20,
+          "altKm": 0
+        },
+        {
+          "spot": "machico",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 4,
+          "altKm": 0
+        },
+        {
+          "spot": "seixal-madeira",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 37,
+          "altKm": 0
+        },
+        {
+          "spot": "ponta-pargo",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 52,
+          "altKm": 0
+        },
+        {
+          "spot": "madalena-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 38,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1957,21 +2268,13 @@
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
-        "wmo-buoy": 1
+        "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "falesia",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 125,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1981,7 +2284,23 @@
       "spotCount": 1,
       "withObservedWave": 1,
       "bySource": {
-        "wmo-buoy": 1
+        "ih-buoy": 1
+      },
+      "audited": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
+      "onlySource": 0,
+      "notClosest": [],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
+    "Pico": {
+      "spotCount": 1,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
       },
       "audited": 1,
       "attachedIsClosest": 0,
@@ -1989,10 +2308,10 @@
       "onlySource": 0,
       "notClosest": [
         {
-          "spot": "tres-irmaos",
-          "winner": "wmo-buoy",
-          "reason": "wmo-only",
-          "attachedKm": 162,
+          "spot": "cachorro-pico",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 68,
           "altKm": 0
         }
       ],
@@ -2001,36 +2320,32 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
-    "Pico": {
-      "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
-      "onlySource": 0,
-      "notClosest": [],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
     "São Jorge": {
       "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "faja-cubres",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 50,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-10T23:36:15.012Z",
+  "regionsAuditedAt": "2026-09-10T23:47:31.727Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2040,14 +2355,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 179,
-      "meanDeltaM": 0,
+      "n": 197,
+      "meanDeltaM": 0.1,
       "meanAbsDeltaM": 0.2,
-      "maxAbsDeltaM": 0.8,
-      "corr": 0.75,
+      "maxAbsDeltaM": 0.9,
+      "corr": 0.71,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-10T02",
+      "lastHour": "2026-09-10T20",
       "hours": [
         {
           "6200084": 1.7599999904632568,
@@ -2063,9 +2378,231 @@
           "6200084": 1.9900000095367432,
           "6200199": 2.0068399906158447,
           "hour": "2026-09-10T02"
+        },
+        {
+          "6200084": 2.109999895095825,
+          "6200199": 1.8310500383377075,
+          "hour": "2026-09-10T03"
+        },
+        {
+          "6200084": 2.2300000190734863,
+          "6200199": 1.9189499616622925,
+          "hour": "2026-09-10T04"
+        },
+        {
+          "6200084": 1.8799999952316284,
+          "6200199": 1.8603500127792358,
+          "hour": "2026-09-10T05"
+        },
+        {
+          "6200084": 1.8799999952316284,
+          "6200199": 1.933590054512024,
+          "hour": "2026-09-10T06"
+        },
+        {
+          "6200084": 1.7599999904632568,
+          "6200199": 1.8896499872207642,
+          "hour": "2026-09-10T07"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 2.080080032348633,
+          "hour": "2026-09-10T08"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 2.036129951477051,
+          "hour": "2026-09-10T09"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 2.021480083465576,
+          "hour": "2026-09-10T10"
+        },
+        {
+          "6200084": 1.1699999570846558,
+          "6200199": 2.0947299003601074,
+          "hour": "2026-09-10T11"
+        },
+        {
+          "6200084": 1.1699999570846558,
+          "6200199": 1.8896499872207642,
+          "hour": "2026-09-10T12"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6200199": 1.933590054512024,
+          "hour": "2026-09-10T13"
+        },
+        {
+          "6200084": 1.2899999618530273,
+          "6200199": 1.933590054512024,
+          "hour": "2026-09-10T14"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 1.875,
+          "hour": "2026-09-10T15"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 1.6845699548721313,
+          "hour": "2026-09-10T16"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 1.8457000255584717,
+          "hour": "2026-09-10T17"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 1.7724599838256836,
+          "hour": "2026-09-10T18"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 1.801759958267212,
+          "hour": "2026-09-10T19"
+        },
+        {
+          "6200084": 1.2899999618530273,
+          "6200199": 1.7285200357437134,
+          "hour": "2026-09-10T20"
+        }
+      ]
+    },
+    {
+      "pair": "Cabo Silleiro × Datawell ao largo de Faro",
+      "codes": [
+        "6200084",
+        "6201079"
+      ],
+      "distanceKm": 594.6,
+      "ptSource": "wmo",
+      "n": 49,
+      "meanDeltaM": -0.8,
+      "meanAbsDeltaM": 0.8,
+      "maxAbsDeltaM": 1.7,
+      "corr": -0.17,
+      "verdict": "coherent",
+      "firstHour": "2026-09-01T04",
+      "lastHour": "2026-09-10T13",
+      "hours": [
+        {
+          "6200084": 2.2300000190734863,
+          "6201079": 0.5099999904632568,
+          "hour": "2026-09-10T04"
+        },
+        {
+          "6200084": 1.8799999952316284,
+          "6201079": 0.49000000953674316,
+          "hour": "2026-09-10T06"
+        },
+        {
+          "6200084": 1.7599999904632568,
+          "6201079": 0.5600000023841858,
+          "hour": "2026-09-10T07"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6201079": 0.5299999713897705,
+          "hour": "2026-09-10T08"
+        },
+        {
+          "6200084": 1.0499999523162842,
+          "6201079": 0.4099999964237213,
+          "hour": "2026-09-10T13"
+        }
+      ]
+    },
+    {
+      "pair": "Villano-Sisargas × Datawell ao largo de Faro",
+      "codes": [
+        "6200083",
+        "6201079"
+      ],
+      "distanceKm": 741.7,
+      "ptSource": "wmo",
+      "n": 49,
+      "meanDeltaM": -0.9,
+      "meanAbsDeltaM": 0.9,
+      "maxAbsDeltaM": 2,
+      "corr": -0.2,
+      "verdict": "review",
+      "firstHour": "2026-09-01T04",
+      "lastHour": "2026-09-10T13",
+      "hours": [
+        {
+          "6200083": 1.9900000095367432,
+          "6201079": 0.5099999904632568,
+          "hour": "2026-09-10T04"
+        },
+        {
+          "6200083": 1.6399999856948853,
+          "6201079": 0.49000000953674316,
+          "hour": "2026-09-10T06"
+        },
+        {
+          "6200083": 1.6399999856948853,
+          "6201079": 0.5600000023841858,
+          "hour": "2026-09-10T07"
+        },
+        {
+          "6200083": 1.6399999856948853,
+          "6201079": 0.5299999713897705,
+          "hour": "2026-09-10T08"
+        },
+        {
+          "6200083": 1.5199999809265137,
+          "6201079": 0.4099999964237213,
+          "hour": "2026-09-10T13"
+        }
+      ]
+    },
+    {
+      "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
+      "codes": [
+        "6200085",
+        "6201079"
+      ],
+      "distanceKm": 95.4,
+      "ptSource": "wmo",
+      "n": 49,
+      "meanDeltaM": -0.3,
+      "meanAbsDeltaM": 0.3,
+      "maxAbsDeltaM": 0.7,
+      "corr": 0.34,
+      "verdict": "coherent",
+      "firstHour": "2026-09-01T04",
+      "lastHour": "2026-09-10T13",
+      "hours": [
+        {
+          "6200085": 1.0499999523162842,
+          "6201079": 0.5099999904632568,
+          "hour": "2026-09-10T04"
+        },
+        {
+          "6200085": 1.0499999523162842,
+          "6201079": 0.49000000953674316,
+          "hour": "2026-09-10T06"
+        },
+        {
+          "6200085": 1.0499999523162842,
+          "6201079": 0.5600000023841858,
+          "hour": "2026-09-10T07"
+        },
+        {
+          "6200085": 0.9399999976158142,
+          "6201079": 0.5299999713897705,
+          "hour": "2026-09-10T08"
+        },
+        {
+          "6200085": 0.699999988079071,
+          "6201079": 0.4099999964237213,
+          "hour": "2026-09-10T13"
         }
       ]
     }
   ],
-  "overall": "coherent"
+  "overall": "review"
 }
