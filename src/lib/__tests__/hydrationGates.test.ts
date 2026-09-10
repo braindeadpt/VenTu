@@ -22,6 +22,8 @@ const favoriteButton = read('src/components/FavoriteButton.tsx');
 const checkInButton = read('src/components/CheckInButton.tsx');
 const dawnSlots = read('src/components/homepage/HomeDawnPatrolSlots.tsx');
 const news = read('src/components/news/NewsArchiveClient.tsx');
+const heroMap = read('src/components/homepage/HomepageMapHero.tsx');
+const spotMap = read('src/components/spots/SpotMapInteractive.tsx');
 
 describe('hydration gate (zero placeholder flash)', () => {
   it('HydrationBeacon carimba a classe is-hydrated no <html>', () => {
@@ -56,5 +58,19 @@ describe('hydration gate (zero placeholder flash)', () => {
   it('o arquivo de notícias SSRa o shell real (gate news) sem spin de placeholder', () => {
     expect(news).toContain('data-hydration-gate="news"');
     expect(news).not.toContain('animate-spin');
+  });
+
+  it('o hero do mapa da home mostra o poster no primeiro paint, não o anel de loading', () => {
+    // Poster estático cozido no shell + seção com data-map-ready + onReady no
+    // mapa. O anel animate-spin do dynamic loading desapareceu do hero.
+    expect(heroMap).toContain('data-map-hero-poster');
+    expect(heroMap).toContain('data-map-ready={mapReady}');
+    expect(heroMap).toContain('onReady={() => setMapReady(true)}');
+    expect(heroMap).not.toContain('animate-spin');
+    // SpotMapInteractive expõe o sinal onReady (disparado quando isReady=true).
+    expect(spotMap).toContain('onReady?: () => void;');
+    expect(spotMap).toContain('onReadyRef.current?.()');
+    // O CSS faz o desvanecimento: data-map-ready=true esconde o poster.
+    expect(css).toMatch(/\[data-map-ready='true'\]\s+\[data-map-hero-poster\]/);
   });
 });

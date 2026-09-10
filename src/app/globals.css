@@ -150,6 +150,15 @@ html:has([data-embed-widget]) body {
     display: none;
   }
 
+  /* Homepage hero map: first paint shows the static poster (HeroMapPoster)
+   * instead of a loading ring; when the Leaflet map initializes it stamps
+   * data-map-ready on the hero section and the poster fades out, revealing
+   * the interactive map beneath. The poster keeps its own transition
+   * (opacity 300ms, motion-reduce off); this rule only flips the target. */
+  [data-map-ready='true'] [data-map-hero-poster] {
+    opacity: 0;
+  }
+
   /* ═══════════════════════════════════════════════════════════════
    * THEME OCEAN — Light mode (white-sand base)
    * Aplica-se ao elemento <html> com class="theme-ocean".

@@ -184,6 +184,12 @@ interface SpotMapInteractiveProps {
   selectedRegion: string;
   locale: string;
   onSpotSelect?: (spotId: string) => void;
+  /**
+   * Fired once when the Leaflet map is initialized (container + controls)
+   * — the signal hosts use to swap a loading poster for the interactive map
+   * (homepage hero). Optional; hosts without a poster ignore it.
+   */
+  onReady?: () => void;
   mapHud?: MapHudProps;
   onFullscreenChange?: (isFullscreen: boolean) => void;
   embedMode?: 'default' | 'hero';
@@ -216,6 +222,7 @@ export default function SpotMapInteractive({
   selectedRegion,
   locale,
   onSpotSelect,
+  onReady,
   mapHud,
   onFullscreenChange,
   embedMode = 'default',
@@ -261,6 +268,19 @@ export default function SpotMapInteractive({
     handleBasemapChange, tileLayerRef, clusterGroupRef, markersGroupRef,
     radarOverlayRef, isobathsLayerRef, coastalLayerRef, buoyLayerRef, markersCacheRef,
   } = core;
+
+  // ── Ready signal (loading-poster swap) ──
+  const onReadyRef = useRef(onReady);
+  const readyFiredRef = useRef(false);
+  useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
+  useEffect(() => {
+    if (isReady && !readyFiredRef.current) {
+      readyFiredRef.current = true;
+      onReadyRef.current?.();
+    }
+  }, [isReady]);
 
   // ── Toggle state ──
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
