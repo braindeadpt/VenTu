@@ -451,6 +451,7 @@ export default function SpotMap({
             paused: t.map.radarPaused,
             ipmaAttribution: ipmaRadarAttributionLabel,
             gap: t.map.radarGap,
+            stale: t.map.radarStale,
           }}
           // Imersão: abrir o /mapa (ecrã inteiro) com o radar já ligado E
           // centrado na região deste spot (?radar=1&lat=&lon=). O clique

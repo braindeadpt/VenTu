@@ -1037,7 +1037,7 @@ export default function SpotMapInteractive({
               mapBusyCount={radarBusySources.size}
               userPaused={radarUserPaused || hoursOn}
               onUserPausedChange={handleRadarUserPausedChange}
-              labels={{ badge: t.map.radarBadge, hint: t.map.radarHint, scrub: t.map.radarScrub, play: t.map.radarPlay, pause: t.map.radarPause, paused: t.map.radarPaused, ipmaAttribution: radarAttributionLabel, gap: t.map.radarGap }}
+              labels={{ badge: t.map.radarBadge, hint: t.map.radarHint, scrub: t.map.radarScrub, play: t.map.radarPlay, pause: t.map.radarPause, paused: t.map.radarPaused, ipmaAttribution: radarAttributionLabel, gap: t.map.radarGap, stale: t.map.radarStale }}
               fullscreenHref={isFullscreen ? undefined : `/${locale}/mapa/?radar=1`}
               fullscreenLabel={t.map.radarFullscreen}
               onFullscreenOpen={handleRadarImmersionOpen}

@@ -58,6 +58,17 @@ export type TideLayerMeta = {
   lastOkAt?: string;
 };
 
+/** IPMA radar layer state recorded in pipeline-meta.json (warn-only). */
+export type RadarLayerMeta = {
+  status: 'ok' | 'down' | 'stale';
+  /** Último frame válido (a idade é o sinal de vida da camada). */
+  frameTime?: string;
+  streak?: number;
+  lastStatus?: string;
+  streakUpdatedAt?: string;
+  lastOkAt?: string;
+};
+
 /** Real Open-Meteo usage recorded per full run (weighted by requested models). */
 export type OpenMeteoUsageMeta = {
   /** Σ (models × HTTP requests) — the metric comparable to the 10k/day budget. */
@@ -88,6 +99,8 @@ export type PipelineMeta = {
   coastalWarningsLayer?: CoastalWarningsLayerMeta | null;
   /** IH observed-tides layer state (ok/stale/down + streak). */
   tideLayer?: TideLayerMeta | null;
+  /** IPMA radar layer state (ok/stale/down + streak — warn-only). */
+  radarLayer?: RadarLayerMeta | null;
   /** Real Open-Meteo usage this run, for budget monitoring (logs/workflow). */
   openMeteoUsage?: OpenMeteoUsageMeta;
 };

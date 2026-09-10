@@ -17,6 +17,13 @@ import {
   type TideObservation,
 } from '@/lib/tideLayerStatusPure'
 import {
+  deriveRadarLayerStatus,
+  formatRadarAge,
+  type RadarFileLike,
+  type RadarLayerStatusInfo,
+} from '@/lib/radarLayerStatusPure'
+import { radarFrameFullClock } from '@/lib/ipmaRadar'
+import {
   forecastSkillOriginLabel,
   forecastSkillOriginTag,
   parseForecastSkillBuoys,
@@ -48,6 +55,12 @@ interface TideLayerMetaLike {
   lastOkAt?: string
   streakUpdatedAt?: string
 }
+interface RadarLayerMetaLike {
+  streak?: number
+  lastStatus?: string
+  lastOkAt?: string
+  streakUpdatedAt?: string
+}
 
 const sign = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(2)}`
 const two = (n: number | null | undefined) => (n == null ? '—' : n.toFixed(2))
@@ -57,6 +70,7 @@ interface AboutDataCardsProps {
   /** Build-time baked snapshots (production default — no fetch, no CLS). */
   bakedKey: IhKeyStatusInfo | null
   bakedTide: TideLayerStatusInfo | null
+  bakedRadar: RadarLayerStatusInfo | null
   bakedSkill: ForecastSkillData | null
   bakedArchive: CoastalWarningsArchiveData | null
 }
@@ -80,6 +94,7 @@ export default function AboutDataCards({
   isPt,
   bakedKey,
   bakedTide,
+  bakedRadar,
   bakedSkill,
   bakedArchive,
 }: AboutDataCardsProps) {
@@ -93,6 +108,9 @@ export default function AboutDataCards({
   const [tide, setTide] = useState<TideLayerStatusInfo | null>(
     forceLive ? null : bakedTide,
   );
+  const [radar, setRadar] = useState<RadarLayerStatusInfo | null>(
+    forceLive ? null : bakedRadar,
+  );
   const [skill, setSkill] = useState<ForecastSkillData | null>(
     forceLive ? null : bakedSkill,
   );
@@ -105,11 +123,12 @@ export default function AboutDataCards({
     let cancelled = false;
     (async () => {
       try {
-        const [ihRes, wmoRes, metaRes, tideRes, skillRes, archiveRes] = await Promise.all([
+        const [ihRes, wmoRes, metaRes, tideRes, radarRes, skillRes, archiveRes] = await Promise.all([
           fetch(getAssetPath('/data/ih-buoys.json')).then((r) => (r.ok ? r.json() : null)),
           fetch(getAssetPath('/data/wmo-buoys.json')).then((r) => (r.ok ? r.json() : null)),
           fetch(getAssetPath('/data/pipeline-meta.json')).then((r) => (r.ok ? r.json() : null)),
           fetch(getAssetPath('/data/ih-tides.json')).then((r) => (r.ok ? r.json() : null)),
+          fetch(getAssetPath('/data/radar.json')).then((r) => (r.ok ? r.json() : null)),
           fetch(getAssetPath('/data/forecast-skill.json')).then((r) => (r.ok ? r.json() : null)),
           fetch(getAssetPath('/data/ih-coastal-warnings-archive.json')).then((r) => (r.ok ? r.json() : null)),
         ]);
@@ -146,6 +165,21 @@ export default function AboutDataCards({
               : null,
           ),
         );
+        const radarLayer = (metaRes as { radarLayer?: RadarLayerMetaLike | null } | null)?.radarLayer;
+        setRadar(
+          deriveRadarLayerStatus(
+            radarRes as RadarFileLike | null,
+            Date.now(),
+            radarLayer
+              ? {
+                  streak: radarLayer.streak,
+                  lastStatus: radarLayer.lastStatus,
+                  lastOkAt: radarLayer.lastOkAt,
+                  streakUpdatedAt: radarLayer.streakUpdatedAt,
+                }
+              : null,
+          ),
+        );
         setSkill(parseForecastSkillBuoys(skillRes));
         setArchive(parseCoastalWarningsArchive(archiveRes));
       } catch (e) {
@@ -161,6 +195,7 @@ export default function AboutDataCards({
     <>
       {keyInfo ? <IhKeyCard isPt={isPt} info={keyInfo} /> : null}
       {tide ? <TideCard isPt={isPt} tide={tide} /> : null}
+      {radar ? <RadarCard isPt={isPt} radar={radar} /> : null}
       {skill?.hasData ? <SkillCard isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard isPt={isPt} archive={archive} /> : null}
     </>
   )
@@ -316,6 +351,87 @@ function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
                 )}
               </p>
             </div>
+          </div>
+        )
+}
+
+function RadarCard({ isPt, radar }: { isPt: boolean; radar: RadarLayerStatusInfo }) {
+        if (!radar) return null
+        const conf = {
+          ok: {
+            label: isPt ? 'Activo' : 'Active',
+            chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
+            icon: CheckCircle2,
+            line: isPt
+              ? 'O IPMA está a publicar frames de radar novos (5 em 5 min) — a precipitação observada aparece no mapa.'
+              : 'IPMA is publishing new radar frames (every 5 min) — observed precipitation shows on the map.',
+          },
+          stale: {
+            label: isPt ? 'Atrasado' : 'Delayed',
+            chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
+            icon: AlertTriangle,
+            line: isPt
+              ? 'O último frame válido já não é actualizado há mais de 25 min — o IPMA não está a servir PNGs novos (o fetch mantém o último ficheiro conhecido e o pipeline de previsões continua).'
+              : 'The latest valid frame has not been refreshed for over 25 min — IPMA is not serving new PNGs (the fetch keeps the last known file and the forecast pipeline keeps running).',
+          },
+          down: {
+            label: isPt ? 'Sem dados' : 'No data',
+            chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
+            icon: XCircle,
+            line: isPt
+              ? 'Sem radar.json — a camada de radar não tem dados.'
+              : 'No radar.json — the radar layer has no data.',
+          },
+        }[radar.status]
+        const Icon = conf.icon
+        const frameLabel = radar.frameTime ? radarFrameFullClock(radar.frameTime) : null
+        const metaLine = isPt
+          ? `último frame ${frameLabel ?? '—'}${typeof radar.ageMin === 'number' ? ` · há ${formatRadarAge(radar.ageMin)}` : ''} · ${radar.frames} ${radar.frames === 1 ? 'frame' : 'frames'}`
+          : `last frame ${frameLabel ?? '—'}${typeof radar.ageMin === 'number' ? ` · ${formatRadarAge(radar.ageMin)} ago` : ''} · ${radar.frames} ${radar.frames === 1 ? 'frame' : 'frames'}`
+        return (
+          <div className="card-1 p-8 space-y-4" data-radar-layer-status={radar.status}>
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 className="text-2xl font-bold text-fg">
+                {isPt ? 'Radar IPMA (precipitação)' : 'IPMA radar (precipitation)'}
+              </h2>
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
+                data-radar-layer-status-badge={radar.status}
+              >
+                <Icon className="w-4 h-4" aria-hidden />
+                {conf.label}
+              </span>
+            </div>
+            <p className="text-sm text-fg-muted leading-relaxed">{conf.line}</p>
+            <p className="text-xs text-fg-subtle tabular-nums">{metaLine}</p>
+            {
+              // Streak down/stale (pipeline-meta radarLayer) — «há quantas runs a
+              // camada está sem frames novos». A camada é warn-only (decisão
+              // f92cf42ea): este badge + os logs são onde a falha vive.
+              radar.status !== 'ok' && typeof radar.streak === 'number' && radar.streak > 0 ? (
+                <p
+                  className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
+                  data-radar-layer-downtime="true"
+                  title={
+                    radar.lastOkAt
+                      ? `${isPt ? 'última vez ok' : 'last OK'}: ${new Date(radar.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                      : undefined
+                  }
+                >
+                  <span aria-hidden>⏱</span>
+                  <span className="tabular-nums">
+                    {isPt
+                      ? <>Sem frames novos há {radar.streak} {radar.streak === 1 ? 'run' : 'runs'} consecutivas</>
+                      : <>No new frames for {radar.streak} consecutive {radar.streak === 1 ? 'run' : 'runs'}</>}
+                  </span>
+                </p>
+              ) : null
+            }
+            <p className="text-xs text-fg-subtle leading-relaxed">
+              {isPt
+                ? 'Esta camada nunca bloqueia o pipeline (uma outage do radar IPMA não pára as previsões) — é aqui e nos logs do workflow que a falta de dados fica visível. O badge do radar no mapa mostra também a idade do último frame válido.'
+                : 'This layer never blocks the pipeline (an IPMA radar outage does not stop forecasts) — this card and the workflow logs are where missing data becomes visible. The radar badge on the map also shows the age of the latest valid frame.'}
+            </p>
           </div>
         )
 }

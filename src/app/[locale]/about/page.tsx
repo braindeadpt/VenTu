@@ -6,6 +6,7 @@ import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import { loadForecastSkillBuoys } from '@/lib/forecastSkill'
 import { loadIhKeyStatus } from '@/lib/ihKeyStatus'
 import { loadTideLayerStatus } from '@/lib/tideLayerStatus'
+import { loadRadarLayerStatus } from '@/lib/radarLayerStatus'
 
 import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
 
@@ -240,6 +241,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         isPt={isPt}
         bakedKey={loadIhKeyStatus()}
         bakedTide={loadTideLayerStatus()}
+        bakedRadar={loadRadarLayerStatus()}
         bakedSkill={loadForecastSkillBuoys()}
         bakedArchive={loadCoastalWarningsArchive()}
       />

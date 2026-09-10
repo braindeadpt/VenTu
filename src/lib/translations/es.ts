@@ -189,6 +189,7 @@ export const translationsEs = {
     radarPaused: 'Pausado',
     radarFullscreen: 'Radar a pantalla completa',
     radarGap: '{count} fotogramas faltantes',
+    radarStale: 'retrasado {age}',
     radarReset: 'Apagar preferencia del radar',
     showHours: 'Siguientes 48 h',
     hideHours: 'Ocultar las 48 h',

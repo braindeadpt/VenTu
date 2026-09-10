@@ -1,9 +1,10 @@
 'use client';
 
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { CloudRain, Maximize2, Pause } from 'lucide-react';
 import { radarFrameClock, radarFrameFullClock, radarMissingFrames } from '@/lib/ipmaRadar';
+import { formatRadarAge, RADAR_MAX_AGE_MINUTES } from '@/lib/radarLayerStatusPure';
 import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution';
 import { IPMA_URL } from '@/lib/ipmaAttribution';
 import MapTimeTrack from './map/MapTimeTrack';
@@ -47,6 +48,13 @@ interface RadarCarouselProps {
      * (ex: '{count} frames em falta'). Vazio em cadência contígua.
      */
     gap: string;
+    /**
+     * Rótulo quando o ÚLTIMO frame válido está atrasado (> 25 min — o IPMA
+     * publica de 5 em 5): template com `{age}` formatado (ex: 'atrasado 3h 05m').
+     * Ausente quando o radar está fresco. O atraso mede o frame mais recente
+     * (frames[0]), não o frame actualmente a ser visualizado.
+     */
+    stale: string;
   };
   /** Cadência da animação em ms (1 s no ar; test hook). */
   tickMs?: number;
@@ -104,6 +112,16 @@ export default function RadarCarousel({
   onScrubbingChange,
 }: RadarCarouselProps) {
   const rootRef = useRef<HTMLDivElement>(null);
+  // Gate de hidratação para o indicador de atraso: Date.now() no SSR vs cliente
+  // divergiria — só depois do mount é que a idade do último frame é calculada.
+  // O intervalo de 60 s mantém a idade honesta num carrossel pausado.
+  const [mounted, setMounted] = useState(false);
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    setMounted(true);
+    const t = setInterval(() => setNowMs(Date.now()), 60_000);
+    return () => clearInterval(t);
+  }, []);
   const { paused, setScrubbing } = useMapTimeTrack({
     length: frames.length,
     index: frameIndex,
@@ -130,6 +148,17 @@ export default function RadarCarousel({
   // badge avisa discretamente (gaps > 5 min), em vez de mostrar saltos mudos.
   const missingAfter = radarMissingFrames(frames)[frameIndex] ?? 0;
   const gapLabel = missingAfter > 0 ? labels.gap.replace('{count}', String(missingAfter)) : null;
+  // Idade do ÚLTIMO frame válido (frames[0] = mais recente) — não do frame a
+  // ser visualizado: o atraso é uma propriedade do produto, não da playback.
+  const newestFrameTime = frames[0]?.frameTime ?? null;
+  const newestAgeMin =
+    mounted && newestFrameTime
+      ? (nowMs - new Date(newestFrameTime).getTime()) / 60_000
+      : 0;
+  const staleLabel =
+    Number.isFinite(newestAgeMin) && newestAgeMin > RADAR_MAX_AGE_MINUTES
+      ? labels.stale.replace('{age}', formatRadarAge(newestAgeMin))
+      : null;
 
   return (
     <div ref={rootRef} className={className} style={style} data-radar-carousel="true">
@@ -191,6 +220,18 @@ export default function RadarCarousel({
               title={`${gapLabel} · ${fullClock ?? labels.hint}`}
             >
               · {gapLabel}
+            </span>
+          )}
+          {/* Radar atrasado: o último frame válido tem mais de 25 min (o IPMA
+              publica de 5 em 5). O utilizador vê a idade real — «atrasado 3h
+              05m» — em vez de um relógio fresco que engana. */}
+          {staleLabel && (
+            <span
+              className="text-meta-xs text-amber-500/90"
+              data-radar-stale="true"
+              title={`${staleLabel} · último frame ${fullClock ?? labels.hint}`}
+            >
+              · {staleLabel}
             </span>
           )}
         </div>

@@ -134,6 +134,7 @@ export const translationsPt = {
     radarPaused: 'Pausado',
     radarFullscreen: 'Radar em ecrã inteiro',
     radarGap: '{count} frames em falta',
+    radarStale: 'atrasado {age}',
     radarReset: 'Repor radar para desligado',
     showHours: 'Próximas 48 h',
     hideHours: 'Ocultar 48 h',
