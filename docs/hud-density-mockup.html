@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Densidade dos filtros do HUD — desktop (≥1024px)</title>
+<style>
+  :root {
+    --bg-page: #0f172a;
+    --bg-card: #1e293b;
+    --border: rgba(255,255,255,.08);
+    --border-strong: rgba(255,255,255,.12);
+    --fg: #f1f5f9;
+    --fg-muted: #cbd5e1;
+    --fg-subtle: #94a3b8;
+    --tint: rgba(255,255,255,.04);
+    --tint-hover: rgba(255,255,255,.08);
+    --accent: #38bdf8;
+    --muted-bg: #0b1220;
+  }
+  body.ocean {
+    --bg-page: #f1f5f9;
+    --bg-card: #ffffff;
+    --border: rgba(15,23,42,.10);
+    --border-strong: rgba(15,23,42,.18);
+    --fg: #0f172a;
+    --fg-muted: #334155;
+    --fg-subtle: #475569;
+    --tint: rgba(15,23,42,.04);
+    --tint-hover: rgba(15,23,42,.08);
+    --accent: #0ea5e9;
+    --muted-bg: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 28px 20px 80px;
+    background: var(--bg-page);
+    color: var(--fg);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14px; line-height: 1.45;
+    transition: background .2s, color .2s;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.01em; }
+  .sub { color: var(--fg-muted); margin: 0 0 18px; font-size: 13.5px; max-width: 860px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 26px; }
+  button.btn {
+    font: inherit; font-size: 12.5px; font-weight: 600;
+    padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    background: var(--tint); color: var(--fg);
+    border: 1px solid var(--border-strong);
+    transition: background .15s;
+  }
+  button.btn:hover { background: var(--tint-hover); }
+  button.btn.on { background: var(--accent); border-color: transparent; color: #fff; }
+  .slider-group { display: flex; align-items: center; gap: 10px; color: var(--fg-muted); font-size: 12.5px; }
+  input[type=range] { width: 220px; accent-color: var(--accent); }
+  .variant {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px 14px;
+    margin-bottom: 18px;
+  }
+  .variant-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  .variant-name { font-weight: 700; font-size: 14.5px; }
+  .variant-tag {
+    font-size: 11px; font-weight: 600; letter-spacing: .03em; text-transform: uppercase;
+    padding: 2px 9px; border-radius: 999px;
+    background: var(--tint); border: 1px solid var(--border); color: var(--fg-muted);
+  }
+  .variant-tag.baseline { border-style: dashed; }
+  .variant-tag.rec { background: var(--accent); border-color: transparent; color: #fff; }
+  .variant-note { color: var(--fg-muted); font-size: 12.5px; }
+  /* ── HUD mock ── */
+  .hud {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    padding: 10px 14px 12px;
+    display: flex; flex-direction: column;
+    font-size: 12px;
+    max-width: 100%;
+  }
+  body.ocean .hud { box-shadow: 0 8px 24px rgba(15,23,42,.08); }
+  .hud-header { display: flex; align-items: center; gap: 8px; min-height: 44px; flex-wrap: wrap; }
+  .hud-title { font-weight: 600; color: var(--fg); white-space: nowrap; }
+  .radios {
+    display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-left: auto;
+  }
+  .radios span { padding: 8px 10px; font-weight: 600; font-size: 11px; color: var(--fg-muted); cursor: pointer; white-space: nowrap; }
+  .radios span.on { background: var(--bg-card); color: var(--fg); }
+  .sq {
+    width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    border: 1px solid var(--border); border-radius: 6px; color: var(--fg-muted);
+    flex: none; cursor: pointer;
+  }
+  .count-pill {
+    border: 1px solid var(--border); border-radius: 999px; padding: 4px 9px;
+    font-size: 11px; color: var(--fg-muted); white-space: nowrap;
+  }
+  .count-pill b { color: var(--fg); font-variant-numeric: tabular-nums; }
+  .row { display: flex; align-items: center; gap: 6px; overflow: hidden; padding-bottom: 2px; min-width: 0; }
+  .row.gap8 { gap: 8px; }
+  .row-label {
+    display: inline-flex; align-items: center; gap: 5px; flex: none;
+    color: var(--fg-muted); font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  }
+  .row-scroll { display: flex; align-items: center; gap: 6px; overflow-x: auto; min-width: 0; scrollbar-width: none; flex: 1; }
+  .row-scroll::-webkit-scrollbar { display: none; }
+  /* pills */
+  .pill {
+    position: relative;
+    display: inline-flex; align-items: center; gap: 6px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 500; white-space: nowrap;
+    padding: 0 8px;
+    cursor: pointer; border: 1px solid transparent;
+    transition: background .15s, color .15s;
+  }
+  .pill .dot { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .pill.ghost { background: var(--tint); color: var(--fg-muted); }
+  .pill.ghost:hover { background: var(--tint-hover); color: var(--fg); }
+  .pill.active { background: var(--tint-hover); color: var(--fg); border-color: var(--border-strong); }
+  /* per-variant heights */
+  .v0 .pill { height: 36px; }
+  .v1 .pill { height: 44px; }
+  .v2 .pill { height: 40px; }
+  .v3 .pill { height: 36px; }
+  /* V3 hit-area: dashed overlay, toggle via body.show-hit */
+  body.show-hit .v3 .pill::after {
+    content: ""; position: absolute; left: 0; right: 0; top: -4px; bottom: -4px;
+    border: 1.5px dashed rgba(56,189,248,.55); border-radius: 999px; pointer-events: none;
+  }
+  body.ocean.show-hit .v3 .pill::after { border-color: rgba(14,165,233,.6); }
+  .hud .grow { flex: 1; }
+  /* metrics strip */
+  .metrics { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: 12px; color: var(--fg-muted); }
+  .metrics b { color: var(--fg); font-variant-numeric: tabular-nums; }
+  .metrics .good { color: #34d399; }
+  body.ocean .metrics .good { color: #047857; }
+  .metrics .warn { color: #fbbf24; }
+  body.ocean .metrics .warn { color: #b45309; }
+  .foot { margin-top: 26px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 10px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+  th { color: var(--fg-muted); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  td b { color: var(--fg); }
+  .rec-box {
+    margin-top: 22px; border: 1px solid var(--accent); border-radius: 10px;
+    padding: 14px 16px; background: var(--tint);
+  }
+  .rec-box h3 { margin: 0 0 6px; font-size: 14.5px; color: var(--accent); }
+  .rec-box p { margin: 4px 0; color: var(--fg-muted); font-size: 13px; }
+  .rec-box code {
+    background: var(--tint-hover); border: 1px solid var(--border); border-radius: 4px;
+    padding: 1px 5px; font-size: 12px; color: var(--fg);
+  }
+  h2 { font-size: 16px; margin: 26px 0 10px; }
+  .legend-dots { display: flex; gap: 14px; flex-wrap: wrap; color: var(--fg-muted); font-size: 12px; margin-top: 6px; }
+  .legend-dots i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+</style>
+</head>
+<body class="ocean">
+<div class="wrap">
+
+  <h1>Densidade dos filtros do HUD — desktop (≥1024px)</h1>
+  <p class="sub">Comparação visual das opções de altura das pills de filtro no «Modo explorar» (modalidade, nível, região), com os dados reais do mapa (9 modalidades · 4 níveis · 8 regiões) e os tokens de ambos os temas. Clica nas pills para alternar o estado activo; usa os controlos para trocar o tema, mostrar o alvo de toque da V3 e simular a largura do ecrã.</p>
+
+  <div class="controls">
+    <button class="btn" id="themeBtn" onclick="toggleTheme()">Tema: ocean (light)</button>
+    <button class="btn" id="hitBtn" onclick="toggleHit()">V3: mostrar alvo 44px</button>
+    <div class="slider-group">
+      <span>Largura do ecrã</span>
+      <input type="range" id="width" min="1024" max="1440" value="1180" oninput="setWidth(this.value)">
+      <span id="widthLabel">1180px</span>
+    </div>
+  </div>
+
+  <!-- ── V0 ── -->
+  <div class="variant v0">
+    <div class="variant-head">
+      <span class="variant-name">V0 · Actual — 36px compacto</span>
+      <span class="variant-tag baseline">baseline (em produção)</span>
+      <span class="variant-note">pills 36px no desktop (rato) · 44px abaixo de lg</span>
+    </div>
+    <div class="hud" id="hud0"></div>
+    <div class="metrics">
+      <span>Altura pill <b>36px</b></span>
+      <span>Alvo táctil <b>36px</b> <span class="warn">(falha o piso 44px em híbridos)</span></span>
+      <span>Bloco de filtros <b>~122px</b></span>
+      <span>Modalidades à vista <b>9/9</b> em 1024+</span>
+    </div>
+  </div>
+
+  <!-- ── V1 ── -->
+  <div class="variant v1">
+    <div class="variant-head">
+      <span class="variant-name">V1 · 44px uniforme</span>
+      <span class="variant-tag">máxima acessibilidade</span>
+      <span class="variant-note">mesmo alvo em todo o mapa e em todos os ecrãs — sem breakpoint</span>
+    </div>
+    <div class="hud" id="hud1"></div>
+    <div class="metrics">
+      <span>Altura pill <b>44px</b></span>
+      <span>Alvo táctil <b>44px</b> <span class="good">(WCAG 2.5.5 / piso do projecto)</span></span>
+      <span>Bloco de filtros <b>~146px</b> <span class="warn">(+24px vs V0)</span></span>
+      <span>Modalidades à vista <b>9/9</b> em 1024+</span>
+    </div>
+  </div>
+
+  <!-- ── V2 ── -->
+  <div class="variant v2">
+    <div class="variant-head">
+      <span class="variant-name">V2 · 40px intermédio</span>
+      <span class="variant-tag">compromisso</span>
+      <span class="variant-note">meio-termo entre densidade e alvo — ainda abaixo do piso 44px</span>
+    </div>
+    <div class="hud" id="hud2"></div>
+    <div class="metrics">
+      <span>Altura pill <b>40px</b></span>
+      <span>Alvo táctil <b>40px</b> <span class="warn">(falha o piso 44px)</span></span>
+      <span>Bloco de filtros <b>~134px</b> <span class="warn">(+12px vs V0)</span></span>
+      <span>Modalidades à vista <b>9/9</b> em 1024+</span>
+    </div>
+  </div>
+
+  <!-- ── V3 ── -->
+  <div class="variant v3">
+    <div class="variant-head">
+      <span class="variant-name">V3 · 36px visual + alvo 44px</span>
+      <span class="variant-tag rec">recomendada</span>
+      <span class="variant-note">a densidade actual mantém-se; o alvo táctil invisível estende-se a 44px (línea tracejada = alvo)</span>
+    </div>
+    <div class="hud" id="hud3"></div>
+    <div class="metrics">
+      <span>Altura visual <b>36px</b> — inalterada</span>
+      <span>Alvo táctil <b>44px</b> <span class="good">(piso do projecto, híbridos incluídos)</span></span>
+      <span>Bloco de filtros <b>~126px</b> <span class="good">(+4px só no espaçamento)</span></span>
+      <span>Modalidades à vista <b>9/9</b> em 1024+</span>
+    </div>
+  </div>
+
+  <!-- ── V4 ── -->
+  <div class="variant">
+    <div class="variant-head">
+      <span class="variant-name">V4 · Toolbar segmentada (alternativa estrutural)</span>
+      <span class="variant-tag">redesenho</span>
+      <span class="variant-note">uma única linha com separadores entre grupos — menos altura, mas muda a arquitectura dos filtros e a UX mobile (fora do âmbito desta decisão)</span>
+    </div>
+    <div class="hud" style="padding:6px 14px;">
+      <div class="row" style="gap:0; overflow:visible;">
+        <span class="count-pill" style="border:none;padding:4px 10px 4px 0;color:var(--fg-muted)">Modalidade</span>
+        <span class="pill ghost" style="height:36px;border-radius:6px 0 0 6px;border:1px solid var(--border);border-right:none;background:var(--tint-hover);color:var(--fg)"><span class="dot" style="background:var(--fg)"></span>Todos</span>
+        <span class="pill ghost" style="height:36px;border-radius:0;border:1px solid var(--border);border-right:none"><span class="dot" style="background:#0ea5e9"></span>Surf</span>
+        <span class="pill ghost" style="height:36px;border-radius:0;border:1px solid var(--border);border-right:none"><span class="dot" style="background:#10b981"></span>Bodyboard</span>
+        <span class="pill ghost" style="height:36px;border-radius:0;border:1px solid var(--border);border-right:none"><span class="dot" style="background:#a78bfa"></span>Kitesurf</span>
+        <span class="pill ghost" style="height:36px;border-radius:0 6px 6px 0;border:1px solid var(--border)"><span class="dot" style="background:#f59e0b"></span>Windsurf</span>
+        <span class="count-pill" style="border:none;padding:4px 10px;color:var(--fg-muted)">Nível</span>
+        <span class="pill ghost" style="height:36px;border-radius:6px"><span class="dot" style="background:var(--fg-subtle)"></span>Todos</span>
+        <span class="pill ghost" style="height:36px;border-radius:6px"><span class="dot" style="background:var(--fg-subtle)"></span>Iniciante</span>
+        <span class="grow"></span>
+        <span class="count-pill" style="border:none">132 <b>spots</b></span>
+      </div>
+    </div>
+    <div class="metrics">
+      <span>Bloco de filtros <b>~48px</b> (uma linha)</span>
+      <span class="warn">— requer redesenho dos estados activos, acessibilidade de agrupamento e adaptação mobile</span>
+    </div>
+  </div>
+
+  <div class="foot">
+    <h2>Comparação</h2>
+    <table>
+      <tr><th>Opção</th><th>Altura visual</th><th>Alvo táctil</th><th>Bloco filtros</th><th>Δ vs V0</th><th>WCAG 2.5.8 (AA)</th><th>Piso 44px do projecto</th></tr>
+      <tr><td><b>V0 — actual</b></td><td>36px</td><td>36px</td><td>~122px</td><td>—</td><td>✓ (≥24px)</td><td>✗ em híbridos ≥1024</td></tr>
+      <tr><td><b>V1 — 44px</b></td><td>44px</td><td>44px</td><td>~146px</td><td>+24px</td><td>✓</td><td>✓</td></tr>
+      <tr><td><b>V2 — 40px</b></td><td>40px</td><td>40px</td><td>~134px</td><td>+12px</td><td>✓</td><td>✗</td></tr>
+      <tr><td><b>V3 — 36+44</b></td><td>36px</td><td>44px</td><td>~126px</td><td>+4px (só gap)</td><td>✓</td><td>✓</td></tr>
+    </table>
+    <div class="legend-dots">
+      <span><i style="background:#0ea5e9"></i>Surf</span>
+      <span><i style="background:#10b981"></i>Bodyboard</span>
+      <span><i style="background:#a78bfa"></i>Kitesurf</span>
+      <span><i style="background:#f59e0b"></i>Windsurf</span>
+      <span><i style="background:#22c55e"></i>Big Wave</span>
+      <span><i style="background:#818cf8"></i>Foil</span>
+      <span><i style="background:#06b6d4"></i>SUP</span>
+      <span><i style="background:#ec4899"></i>Wakeboard</span>
+    </div>
+
+    <div class="rec-box">
+      <h3>Recomendação: V3 — 36px visual, 44px de alvo (hit-area invisível)</h3>
+      <p>1 · Mantém a densidade que o design escolheu para desktop — zero mudança visual.</p>
+      <p>2 · Cumpre o piso 44px do projecto (o mesmo já aplicado abaixo de lg) em portáteis com ecrã táctil e tablets em paisagem, que actualmente caem no breakpoint de rato.</p>
+      <p>3 · O alvo estende-se só na vertical com um pseudo-elemento: <code>lg:relative lg:before:absolute lg:before:-inset-y-1 lg:before:inset-x-0</code> (36+4+4 = 44px) e o espaçamento entre linhas passa de <code>gap-1.5</code> (6px) para <code>gap-2</code> (8px) para os alvos nunca se sobreporem.</p>
+      <p>4 · Em <b>1024px e 1440px as 9 modalidades cabem sem scroll em todas as variantes</b> — o trade-off é apenas vertical (+24px na V1) e táctil, não de layout. Se a equipa preferir uniformidade total sobre densidade, a V1 é a alternativa correcta; a V2 não atinge o piso e a V4 é uma mudança de arquitectura separada.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const SPORTS = [
+  ['Todos', null],
+  ['Surf', '#0ea5e9'], ['Bodyboard', '#10b981'], ['Kitesurf', '#a78bfa'],
+  ['Windsurf', '#f59e0b'], ['Big Wave', '#22c55e'], ['Foil', '#818cf8'],
+  ['SUP', '#06b6d4'], ['Wakeboard', '#ec4899'],
+];
+const LEVELS = ['Todos', 'Iniciante', 'Intermédio', 'Avançado'];
+const REGIONS = ['Todos', 'Norte', 'Centro', 'Lisboa', 'Alentejo', 'Algarve', 'Açores', 'Madeira'];
+
+function pill(label, color, active, cls) {
+  const dot = color ? `<span class="dot" style="background:${color}"></span>` : '<span class="dot" style="background:var(--fg)"></span>';
+  return `<span class="pill ${active ? 'active' : 'ghost'} ${cls || ''}" onclick="this.classList.toggle('active');this.classList.toggle('ghost')">${dot}${label}</span>`;
+}
+
+function row(children, extraCls) {
+  return `<div class="row ${extraCls || ''}">${children}</div>`;
+}
+
+function buildHud(containerId, gap8) {
+  const rowGap = gap8 ? 'gap8' : '';
+  const header = `
+    <div class="hud-header">
+      <span class="hud-title">Modo explorar</span>
+      <span class="radios"><span class="on">Mapa</span><span>Satélite</span></span>
+      <span class="sq" title="Pesquisar">⌕</span>
+      <span class="count-pill"><b>132</b> spots</span>
+    </div>`;
+  const sportRow = row(SPORTS.map(([l, c], i) => pill(l, c, i === 0)).join(''), rowGap);
+  const levelRow = row(LEVELS.map((l, i) => pill(l, null, i === 0)).join(''), rowGap);
+  const regionRow = row(
+    `<span class="row-label">⏛ Região</span>` +
+    `<div class="row-scroll">${REGIONS.map((l, i) => pill(l, null, i === 0)).join('')}</div>` +
+    `<span class="pill ghost" style="height:36px;flex:none"><span class="dot" style="background:transparent;border:1.5px solid var(--fg-subtle);border-radius:50%"></span>Limpar</span>`,
+    rowGap,
+  );
+  document.getElementById(containerId).innerHTML = header + sportRow + levelRow + regionRow;
+}
+
+buildHud('hud0');
+buildHud('hud1');
+buildHud('hud2');
+buildHud('hud3', true);
+
+function toggleTheme() {
+  document.body.classList.toggle('ocean');
+  document.getElementById('themeBtn').textContent =
+    document.body.classList.contains('ocean') ? 'Tema: ocean (light)' : 'Tema: dark (default)';
+}
+function toggleHit() {
+  document.body.classList.toggle('show-hit');
+  document.getElementById('hitBtn').classList.toggle('on');
+}
+function setWidth(v) {
+  document.getElementById('widthLabel').textContent = v + 'px';
+  document.querySelectorAll('.hud').forEach((h) => { h.style.maxWidth = v + 'px'; });
+}
+</script>
+</body>
+</html>

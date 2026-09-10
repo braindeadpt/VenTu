@@ -256,3 +256,35 @@ Duas correcções à sonda para só medir o que está realmente pintado:
 
 - **Unit** (`spotPopupContent.test.ts`, +1): o cluster do score renderiza o chip sólido (`bg-bg-elevated/95`, `backdrop-blur-sm`) e **não** o tint `bg-score-*/15` (contrato de contraste AA sobre a imagem).
 - **Regressões na via CI**: `map-popup-ver-spot` + `axe-audit` + `map-touch-targets` + `map-currents` + `map-hours` + `mapa-route` **51/51**; `visual-ux-audit` + `mobile-playtest` **48/0** (3 skipped); unit **1476/1476**; `tsc` e lint limpos.
+
+---
+
+## Decisão de design — densidade dos filtros do HUD no desktop (≥1024px)
+
+**Data:** 2026-09-10 | **Mockup interactivo:** `docs/hud-density-mockup.html` (5 variantes × 2 temas, com simulador de largura 1024–1440 e visualização do alvo de toque).
+
+### Contexto
+
+Em produção, as pills compactas dos filtros têm **36px no desktop** (`lg:min-h-[36px]`) e **44px abaixo de lg** (piso touch do projecto, WCAG 2.5.8/2.5.5). A pergunta: o desktop deve manter 36px?
+
+### Dados medidos (fiel ao HUD real)
+
+- 9 modalidades (Todos…Wakeboard) + 4 níveis + 8 regiões; **a linha de modalidades cabe sem scroll em 1024px e 1440px em todas as variantes** — o trade-off é apenas vertical e táctil, nunca de layout.
+- 36px já cumpre WCAG 2.5.8 AA (mínimo 24px); 44px é o piso opcional do projecto (2.5.5 AAA).
+
+### Variantes comparadas
+
+| Opção | Visual | Alvo | Bloco filtros | Δ vs V0 |
+|-------|--------|------|---------------|---------|
+| **V0 — actual** | 36px | 36px | ~122px | — |
+| **V1 — 44px uniforme** | 44px | 44px | ~146px | +24px |
+| **V2 — 40px intermédio** | 40px | 40px | ~134px | +12px |
+| **V3 — 36px + alvo 44px** | 36px | 44px | ~126px | +4px (só gap) |
+| **V4 — toolbar segmentada** | 36px, 1 linha | — | ~48px | redesenho estrutural |
+
+### Recomendação: **V3 — 36px visual, 44px de alvo (hit-area invisível)**
+
+1. Mantém a densidade escolhida para desktop — zero mudança visual.
+2. Cumpre o piso 44px do projecto em híbridos (portáteis touch, tablets em paisagem) que hoje caem no breakpoint de rato.
+3. Implementação: pseudo-elemento no `FilterPill` compacto (`lg:relative lg:before:absolute lg:before:-inset-y-1 lg:before:inset-x-0`, 36+4+4 = 44px) e `gap-1.5`→`gap-2` nas linhas de filtro para os alvos nunca se sobreporem.
+4. Alternativa se a equipa preferir uniformidade sobre densidade: **V1**. V2 não atinge o piso; V4 é uma mudança de arquitectura separada.
