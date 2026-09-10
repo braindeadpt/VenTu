@@ -91,13 +91,20 @@ export function SpotPopupContent({
           <div className="w-full h-16 rounded-t-lg bg-surface-1/[0.04]" />
         )}
         {tokens && topScore > 0 && (
-          <div className="absolute top-1.5 right-12 flex flex-col items-end gap-0.5">
+          <div className="absolute top-1.5 right-12 flex flex-col items-end gap-0.5 rounded-pill bg-bg-elevated/95 backdrop-blur-sm px-1.5 py-1 shadow-sm">
             {/* right-12 desvia o badge do botão ✕ do popup (44px, topo-direita) —
                 antes ficava por baixo do glifo e do hover do close. */}
+            {/* O chip opaco (bg-bg-elevated/95) garante contraste AA do badge
+                e do rótulo do desporto sobre QUALQUER imagem de spot — antes
+                o texto dark (sky-700) sobre pixels escuros dava 2.33:1 e o
+                rótulo fg-muted sobre pixels claros 3.12:1. */}
             <span
               className={[
                 'inline-flex items-center justify-center min-w-[36px] h-[22px] rounded-pill text-xs font-mono font-semibold tabular-nums border px-2',
-                tokens.bg,
+                // Sem tokens.bg (tint translúcido): sobre o chip sólido, o
+                // tint de /15 escurecia o fundo slate-800 no dark e o texto
+                // do score caía para ~4.15:1. Com o chip a dar a superfície,
+                // texto + borda na cor do score bastam (AA em ambos temas).
                 tokens.text,
                 tokens.border,
               ].join(' ')}

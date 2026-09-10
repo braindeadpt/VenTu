@@ -81,8 +81,8 @@ html:has([data-embed-widget]) body {
     --sport-foil:      129 140 248;   /* indigo-400 — AA on slate-900 headings */
 
     /* Wind direction tints */
-    --windDir-offshore:  34 197 94;    /* green-500 */
-    --windDir-onshore:  239 68 68;     /* red-500   */
+    --windDir-offshore:  34 197 94;    /* green-500  */
+    --windDir-onshore:  248 113 113;   /* red-400 — AA on slate-800 cards (red-500 = 3.89:1) */
     --windDir-cross:    148 163 184;   /* slate-400 */
 
     /* Score colors — single source of truth.
@@ -202,9 +202,13 @@ html:has([data-embed-widget]) body {
     --sport-wakeboard: 190 18 60;      /* pink-700    */
     --sport-foil:       67 56 202;     /* indigo-700  */
 
-    /* Wind direction */
-    --windDir-offshore:  22 163 74;     /* green-600 */
-    --windDir-onshore:  220 38 38;      /* red-600   */
+    /* Wind direction — mesmo tratamento dos score colors: um degrau mais
+       escuro para AA em fundo claro E nos chips tintados a /20.
+       green-600 = 3.3:1 / red-600 = 4.47:1 em branco (FAIL AA);
+       green-800 = 7.1:1 (5.2:1 no tint /20) e red-700 = 6.5:1 (4.6:1 no
+       tint /20). */
+    --windDir-offshore:  22 101 52;     /* green-800 */
+    --windDir-onshore:  185 28 28;      /* red-700   */
     --windDir-cross:   100 116 139;     /* slate-500 */
 
     /* Score colors — mais saturados para fundo claro */
