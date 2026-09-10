@@ -351,3 +351,28 @@ mapa-route, buoys/tide/hs/currents/sst, popover-hit, 30 passed). Nota: os 2
 falhas de `map-unmount-race` na mesma corrida são React #418 (hidratação do
 hero da homepage) no WIP não commitado de outra thread — ausentes no build de
 CI de `7e2e5099c`, sem relação com o HUD.
+
+## Auditoria: chip de boias + popovers de camadas — hit-testing (2026-09-10)
+
+**Método:** sonda `scripts/audit/audit-buoy-chip.mjs` (12 verificações) sobre o
+export estático — chip de boias e popover no desktop (1280×720, rato) e mobile
+(390×844, touch): alvos ≥44px, `aria-expanded` sincronizado, popover contido no
+viewport, dispensa como elemento de topo (`elementFromPoint`), Escape e
+clique-fora, persistência do dispensar, e paridade `aria-pressed`/`disabled`
+dos 4 toggles de camadas (correntes/SST/isóbatas/radar).
+
+**Resultado: 0 defeitos.** A geometria que mais se suspeitava (popover
+`left-0` a transbordar à direita em mobile) já está coberta por design —
+`w-[min(320px,calc(100vw-2rem))]` — e medido: left 21 / right 341 em 390px.
+Os fechamentos (Escape, clique-fora) e o ciclo `aria-expanded` funcionam nos
+dois viewports; o dispensar persiste.
+
+**Cobertura promovida a permanente** (`map-hud.spec.ts`, secção 5 — 2 testes):
+alvo ≥44px + `aria-expanded` + popover contido + Escape; clique-fora +
+«Ver no mapa» do estado stale (caminho nunca testado: dispatch de
+`ventu:map-buoys-enable` → `ventu.map.buoys=1`). O topmost do dispensar já
+estava coberto por `map-popover-hit-test` (desktop+mobile) e os estados do
+banner por `buoy-warnings` — nada duplicado.
+
+**Regressão:** map-hud 21/21, popover-hit 9/9 isolado (o falho em paralelo é a
+corrida de pick documentada), buoy-warnings + map-buoys verdes; tsc/lint limpos.

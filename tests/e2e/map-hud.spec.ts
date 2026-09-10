@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
-import { interceptMapHours, interceptRadar } from './helpers/conditions';
+import { interceptMapHours, interceptRadar, interceptIhBuoys, interceptWmoBuoys } from './helpers/conditions';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 import { expectTopmostHit } from './helpers/hit-test';
@@ -24,6 +24,10 @@ import { expandMapHudFilters } from './helpers/map-hud';
  *     persistem entre recargas (ventu.map.currents/sst/isobaths, ventu.radar.state).
  *  4. Time track (scrub) — deep links ?hours/?t, scrub 08h→17h muda o score,
  *     mobile incluído, e prefers-reduced-motion não anima sozinho.
+ *  5. Chip de estado da camada de boias — alvo ≥44px, aria-expanded,
+ *     popover contido no viewport, Escape/clique-fora fecham e o
+ *     «Ver no mapa» (estado stale) activa a camada. Sonda de auditoria:
+ *     scripts/audit/audit-buoy-chip.mjs (12/12).
  *
  * Absorve: map-hud-collapse (inteiro), os testes de HUD de map-touch-targets,
  * o slider estreito de map-hours e map-mobile-layer-toggles (inteiro).
@@ -84,6 +88,29 @@ const MAP_HOURS_STUB = {
   },
 };
 
+/** IH sem key + WMO em baixo → chip de estado da camada de boias visível. */
+const IH_NO_KEY = {
+  fetchedAt: new Date().toISOString(),
+  apiKeyConfigured: false,
+  hasWaveData: false,
+  stations: {},
+};
+const WMO_DOWN = { buoys: {}, hasWaveData: false, day: '20260815' };
+/** IH com leitura antiga (>3h) + WMO antigo → estado stale («Ver no mapa»). */
+const STALE_ISO = new Date(Date.now() - 12 * 3_600_000).toISOString();
+const IH_STALE = {
+  apiKeyConfigured: true,
+  hasWaveData: true,
+  stations: { 4: { status: 'active', latest: { date: STALE_ISO } } },
+};
+const WMO_STALE = {
+  buoys: {
+    6200084: { code: '6200084', name: 'Cabo Silleiro', latest: { date: STALE_ISO } },
+  },
+  hasWaveData: true,
+  day: '20260815',
+};
+
 const RADAR_STUB = {
   source: 'ipma-radar',
   fetchedAt: '2026-08-15T01:05:00.000Z',
@@ -103,7 +130,7 @@ const RADAR_STUB = {
 
 async function openMapa(
   page: Page,
-  opts: { query?: string; radar?: boolean; layers?: boolean } = {},
+  opts: { query?: string; radar?: boolean; layers?: boolean; buoy?: 'noKey' | 'stale' } = {},
 ): Promise<void> {
   await preseedWindRingLegend(page);
   await page.addInitScript(() => {
@@ -111,6 +138,13 @@ async function openMapa(
   });
   await interceptMapHours(page, opts.layers ? MAP_HOURS_STUB : MAP_HOURS_MINIMAL_STUB);
   if (opts.radar) await interceptRadar(page, RADAR_STUB);
+  if (opts.buoy === 'noKey') {
+    await interceptIhBuoys(page, IH_NO_KEY);
+    await interceptWmoBuoys(page, WMO_DOWN);
+  } else if (opts.buoy === 'stale') {
+    await interceptIhBuoys(page, IH_STALE);
+    await interceptWmoBuoys(page, WMO_STALE);
+  }
   await page.goto(`/pt/mapa/${opts.query ?? ''}`, {
     waitUntil: 'domcontentloaded',
     timeout: 60_000,
@@ -519,6 +553,73 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('3');
       await expect(track).toContainText('17h');
+    });
+  });
+
+  // ────────────────────────────────────────────────────────────────────────
+  // 5. Chip de estado da camada de boias
+  // ────────────────────────────────────────────────────────────────────────
+  test.describe('chip de estado da camada de boias', () => {
+    // O chip vive no cabeçalho do HUD; sem key IH a camada nasce em aviso.
+    test.use({
+      viewport: { width: 1280, height: 720 },
+      serviceWorkers: 'block',
+      reducedMotion: 'reduce',
+    });
+
+    test('alvo ≥44px, aria-expanded sincronizado e popover contido', async ({ page }) => {
+      await openMapa(page, { buoy: 'noKey' });
+
+      const chip = page.locator('[data-buoy-layer-chip="true"]');
+      await expect(chip).toBeVisible({ timeout: 20_000 });
+      const box = await chip.boundingBox();
+      expect(box, 'chip deveria ter caixa mensurável').not.toBeNull();
+      expect(box!.width, 'largura do chip').toBeGreaterThanOrEqual(44);
+      expect(box!.height, 'altura do chip').toBeGreaterThanOrEqual(44);
+      await expect(chip).toHaveAttribute('aria-expanded', 'false');
+
+      await chip.click();
+      const pop = page.locator('[data-buoy-chip-popover="true"]');
+      await expect(pop).toBeVisible({ timeout: 5_000 });
+      await expect(chip).toHaveAttribute('aria-expanded', 'true');
+
+      // Contido no viewport (o popover é left-0 no chip — guard min(320px, 100vw-2rem)).
+      const geo = await page.evaluate(() => {
+        const r = document
+          .querySelector('[data-buoy-chip-popover="true"]')!
+          .getBoundingClientRect();
+        return { left: r.left, right: r.right, vw: innerWidth };
+      });
+      expect(geo.left).toBeGreaterThanOrEqual(0);
+      expect(geo.right).toBeLessThanOrEqual(geo.vw);
+
+      // Escape fecha.
+      await page.keyboard.press('Escape');
+      await expect(pop).toHaveCount(0);
+    });
+
+    test('clique fora fecha e «Ver no mapa» (stale) activa a camada de boias', async ({ page }) => {
+      await openMapa(page, { buoy: 'stale' });
+
+      const chip = page.locator('[data-buoy-layer-chip="true"]');
+      await expect(chip).toBeVisible({ timeout: 20_000 });
+      await chip.click();
+      const pop = page.locator('[data-buoy-chip-popover="true"]');
+      await expect(pop).toBeVisible({ timeout: 5_000 });
+
+      // Clique fora (no mapa, longe do popover) fecha.
+      await page.mouse.click(200, 300);
+      await expect(pop).toHaveCount(0);
+
+      // Estado stale: abrir de novo e usar «Ver no mapa» → camada ligada +
+      // preferência persistida.
+      await chip.click();
+      await expect(pop).toBeVisible({ timeout: 5_000 });
+      await pop.getByRole('button', { name: 'Ver no mapa' }).click();
+      await expect(pop).toHaveCount(0);
+      expect(
+        await page.evaluate(() => localStorage.getItem('ventu.map.buoys')),
+      ).toBe('1');
     });
   });
 });
