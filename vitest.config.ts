@@ -80,6 +80,7 @@ export default defineConfig({
       'scripts/lib/__tests__/releaseHealthCheck.test.js',
       'scripts/lib/__tests__/telegram.test.js',
       'scripts/lib/__tests__/lighthouseBudgets.test.js',
+      'scripts/lib/__tests__/hydrationBeaconCheck.test.js',
     ],
   },
   resolve: {

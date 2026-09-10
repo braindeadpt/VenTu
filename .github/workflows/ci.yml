@@ -127,10 +127,18 @@ jobs:
       - name: Check per-route payload budgets
         run: node scripts/check-payload-budgets.js
 
+      # Hydration beacon in the BUILT bundle: the CSS gates and waitHydrated
+      # hang off html.is-hydrated. The vitest contract guards the source, but
+      # only the bundle proves the beacon shipped — a build that drops it
+      # leaves the favorite hearts, news shell and dawn-patrol slots hidden
+      # in prod (the gates never open) while staying green.
+      - name: Assert hydration beacon is-hydrated setter in the bundle
+        run: node scripts/check-hydration-beacon.js
+
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      # Hydration-latency metric (report-only): times html[data-hydrated]
+      # Hydration-latency metric (report-only): times html.is-hydrated
       # on the runner right where the E2E specs run, against the same
       # build and 2-core hardware the suite sees. Fails nothing — data
       # for tracking local-vs-runner hydration latency over time.
