@@ -86,6 +86,7 @@ async function fetchHistoricalWaveSeries(lat, lon, startDate, endDate, fetchImpl
   })}`;
   const res = await fetchImpl(url, {
     headers: { Accept: 'application/json' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();

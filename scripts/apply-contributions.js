@@ -31,6 +31,7 @@ async function fetchDoneTips() {
     `${url}/rest/v1/contributions?type=eq.tip&status=eq.done&spot_slug=not.is.null&select=spot_slug,tip_field,message`,
     {
       headers: { apikey: key, Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(30_000),
     },
   );
   if (!res.ok) throw new Error(`Supabase ${res.status}`);

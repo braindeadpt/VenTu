@@ -57,6 +57,7 @@ async function runResendApiKeyTest({
     domainsRes = await fetchImpl(`${RESEND_API}/domains`, {
       method: 'GET',
       headers: { Authorization: `Bearer ${apiKey}` },
+      signal: AbortSignal.timeout(30_000),
     });
   } catch (err) {
     log.error(`❌ Rede ao contactar a Resend API: ${err.message}`);
@@ -85,6 +86,7 @@ async function runResendApiKeyTest({
     try {
       sendRes = await fetchImpl(`${RESEND_API}/emails`, {
         method: 'POST',
+        signal: AbortSignal.timeout(30_000),
         headers: {
           Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',

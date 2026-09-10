@@ -126,6 +126,7 @@ async function fetchBuoyStations(
     try {
       const res = await fetchImpl(url, {
         headers: { Accept: 'application/geo+json, application/json' },
+        signal: AbortSignal.timeout(30_000),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
@@ -266,6 +267,7 @@ async function fetchBuoyWave(
   const url = buildWaveRequestUrl(stationId, window, waveBase);
   const res = await fetchImpl(url, {
     headers: { Accept: 'application/json', 'X-API-KEY': apiKey },
+    signal: AbortSignal.timeout(30_000),
   });
   if (res.status === 401 || res.status === 403) {
     throw new IhAuthError(res.status, stationId);
@@ -297,6 +299,7 @@ async function fetchBuoyWaveSeries(
   const url = buildWaveRequestUrl(stationId, window, waveBase);
   const res = await fetchImpl(url, {
     headers: { Accept: 'application/json', 'X-API-KEY': apiKey },
+    signal: AbortSignal.timeout(30_000),
   });
   if (res.status === 401 || res.status === 403) {
     throw new IhAuthError(res.status, stationId);

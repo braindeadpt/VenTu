@@ -26,7 +26,7 @@ const { pickBestObservation } = require('./lib/observationPick.js');
 const MS_TO_KT = 1.94384;
 
 async function fetchJson(url) {
-  const r = await fetch(url);
+  const r = await fetch(url, { signal: AbortSignal.timeout(30_000) });
   if (!r.ok) throw new Error(`${r.status} ${url}`);
   return r.json();
 }

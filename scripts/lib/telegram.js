@@ -55,6 +55,7 @@ async function telegramApi(method, body) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      signal: AbortSignal.timeout(30_000),
     });
   } catch (cause) {
     // fetch rejeitou: DNS/timeout/reset — transitório por natureza.
@@ -102,7 +103,7 @@ function supabaseHeaders(key) {
 async function getUpdateOffset(url, key) {
   const res = await fetch(
     `${url}/rest/v1/telegram_bot_state?key=eq.updates_offset&select=value`,
-    { headers: supabaseHeaders(key) },
+    { headers: supabaseHeaders(key), signal: AbortSignal.timeout(30_000) },
   );
   if (!res.ok) return 0;
   const rows = await res.json();
@@ -113,6 +114,7 @@ async function getUpdateOffset(url, key) {
 async function setUpdateOffset(url, key, offset) {
   await fetch(`${url}/rest/v1/telegram_bot_state?on_conflict=key`, {
     method: 'POST',
+    signal: AbortSignal.timeout(30_000),
     headers: {
       ...supabaseHeaders(key),
       'Content-Type': 'application/json',
@@ -166,7 +168,7 @@ async function processTelegramLinkUpdates(url, key) {
     // Look up pending token
     const findRes = await fetch(
       `${url}/rest/v1/user_telegram?link_token=eq.${encodeURIComponent(startPayload)}&select=user_id,link_token_expires`,
-      { headers: supabaseHeaders(key) },
+      { headers: supabaseHeaders(key), signal: AbortSignal.timeout(30_000) },
     );
     if (!findRes.ok) continue;
     const rows = await findRes.json();
@@ -183,6 +185,7 @@ async function processTelegramLinkUpdates(url, key) {
     // Clear any other row that already has this chat_id
     await fetch(`${url}/rest/v1/user_telegram?chat_id=eq.${chatId}`, {
       method: 'PATCH',
+      signal: AbortSignal.timeout(30_000),
       headers: {
         ...supabaseHeaders(key),
         'Content-Type': 'application/json',
@@ -199,6 +202,7 @@ async function processTelegramLinkUpdates(url, key) {
       `${url}/rest/v1/user_telegram?user_id=eq.${encodeURIComponent(row.user_id)}`,
       {
         method: 'PATCH',
+        signal: AbortSignal.timeout(30_000),
         headers: {
           ...supabaseHeaders(key),
           'Content-Type': 'application/json',
@@ -233,7 +237,7 @@ async function processTelegramLinkUpdates(url, key) {
 async function fetchTelegramChatId(url, key, userId) {
   const res = await fetch(
     `${url}/rest/v1/user_telegram?user_id=eq.${encodeURIComponent(userId)}&chat_id=not.is.null&select=chat_id`,
-    { headers: supabaseHeaders(key) },
+    { headers: supabaseHeaders(key), signal: AbortSignal.timeout(30_000) },
   );
   if (!res.ok) return null;
   const rows = await res.json();

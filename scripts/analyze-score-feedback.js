@@ -140,7 +140,7 @@ async function fetchFeedbackRows() {
 
   const res = await fetch(
     `${url}/rest/v1/score_feedback?select=spot_slug,sport,verdict,predicted_score,created_at&order=created_at.desc&limit=2000`,
-    { headers: { apikey: key, Authorization: `Bearer ${key}` } },
+    { headers: { apikey: key, Authorization: `Bearer ${key}` }, signal: AbortSignal.timeout(30_000) },
   );
   if (!res.ok) {
     if (res.status === 404) {

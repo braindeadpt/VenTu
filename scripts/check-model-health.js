@@ -67,11 +67,11 @@ async function fetchMultimodel(spot) {
   });
 
   const [wave, wind] = await Promise.all([
-    fetch(`${MARINE_API}?${waveParams}`).then(async (r) => {
+    fetch(`${MARINE_API}?${waveParams}`, { signal: AbortSignal.timeout(30_000) }).then(async (r) => {
       if (!r.ok) throw new Error(`marine HTTP ${r.status}`);
       return r.json();
     }),
-    fetch(`${WEATHER_API}?${windParams}`).then(async (r) => {
+    fetch(`${WEATHER_API}?${windParams}`, { signal: AbortSignal.timeout(30_000) }).then(async (r) => {
       if (!r.ok) throw new Error(`weather HTTP ${r.status}`);
       return r.json();
     }),

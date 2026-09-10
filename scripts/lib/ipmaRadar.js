@@ -120,6 +120,7 @@ function buildRadarPayload(frames, nowMs = Date.now()) {
 async function fetchRadarManifest(fetchImpl = fetch) {
   const res = await fetchImpl(MANIFEST_URL, {
     headers: { Accept: 'application/json', 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`IPMA radar manifest HTTP ${res.status}`);
   return parseManifest(await res.json());

@@ -70,6 +70,7 @@ function previousFileAgeHours() {
 async function fetchJson(url) {
   const response = await fetch(url, {
     headers: { Accept: 'application/geo+json, application/json' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
   return response.json();

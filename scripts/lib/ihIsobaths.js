@@ -39,6 +39,7 @@ async function fetchIsobathFeatures(
   const url = `${apiBase}/collections/${COLLECTION}/items?limit=300&f=json`;
   const res = await fetchImpl(url, {
     headers: { Accept: 'application/geo+json, application/json' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();

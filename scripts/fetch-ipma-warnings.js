@@ -42,6 +42,7 @@ function parseSpotsFromFile() {
 async function fetchJson(url) {
   const res = await fetch(url, {
     headers: { Accept: 'application/json', 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
   return res.json();

@@ -4,9 +4,10 @@ on:
   schedule:
     # Immediate alerts — every 3h (with conditions update)
     - cron: '15 */3 * * *'
-    # Daily digest — ~7:30 Europe/Lisbon
+    # Daily digest — 07:30 UTC (GitHub ignora a chave `timezone`: cron é sempre
+    # UTC — 08:30 no verão de Lisboa / 07:30 no inverno; se a hora local exacta
+    # interessar, usar dois crons ou aceitar o drift de 1h).
     - cron: '30 7 * * *'
-      timezone: 'Europe/Lisbon'
   workflow_dispatch:
 
 permissions:
@@ -15,6 +16,7 @@ permissions:
 jobs:
   alerts:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 

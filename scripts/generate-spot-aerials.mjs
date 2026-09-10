@@ -68,7 +68,7 @@ const delay = (ms) => new Promise((r) => setTimeout(r, ms));
 async function fetchImage(url) {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
-      const res = await fetch(url, { headers: { Accept: 'image/jpeg,image/*' } });
+      const res = await fetch(url, { headers: { Accept: 'image/jpeg,image/*' }, signal: AbortSignal.timeout(60_000) });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const ct = res.headers.get('content-type') || '';
       if (!ct.includes('image')) throw new Error(`content-type ${ct}`);

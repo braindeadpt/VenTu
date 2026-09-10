@@ -309,7 +309,7 @@ async function fetchFeaturesPage(tokenOrAuth, location = PT_LOCATION, page = 1, 
   }
   const headers = { Accept: 'application/geo+json, application/json' };
   if (auth.mode === 'meteoalarm') headers.Authorization = `Bearer ${auth.key}`;
-  const res = await fetchImpl(u.toString(), { headers });
+  const res = await fetchImpl(u.toString(), { headers, signal: AbortSignal.timeout(30_000) });
   if (res.status === 204) return [];
   if (res.status === 401 || res.status === 403) {
     throw new Error(`MeteoAlarm HTTP ${res.status} — token inválido ou sem permissão`);
@@ -341,6 +341,7 @@ async function fetchPortugalWarnings(token, opts = {}) {
       if (!item.url) return { ...item, cap: null };
       const res = await fetchImpl(item.url, {
         headers: { Accept: 'application/json', 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' },
+        signal: AbortSignal.timeout(30_000),
       });
       if (!res.ok) throw new Error(`CAP HTTP ${res.status}`);
       return { ...item, cap: await res.json() };

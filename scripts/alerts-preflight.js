@@ -85,6 +85,7 @@ async function main() {
           apikey: serviceKey,
           Authorization: `Bearer ${serviceKey}`,
         },
+        signal: AbortSignal.timeout(30_000),
       });
       if (res.ok) {
         ok('Supabase table alert_subscriptions reachable');
@@ -99,6 +100,7 @@ async function main() {
           apikey: serviceKey,
           Authorization: `Bearer ${serviceKey}`,
         },
+        signal: AbortSignal.timeout(30_000),
       });
       if (e1cRes.ok) {
         ok('Supabase table user_alert_prefs reachable (E1c)');
@@ -111,6 +113,7 @@ async function main() {
           apikey: serviceKey,
           Authorization: `Bearer ${serviceKey}`,
         },
+        signal: AbortSignal.timeout(30_000),
       });
       if (tgRes.ok) {
         ok('Supabase table user_telegram reachable');

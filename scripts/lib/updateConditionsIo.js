@@ -19,7 +19,10 @@ async function fetchWithRetry(url, retries = 3, delay = 1000, usage, weight = 1)
   for (let i = 0; i < retries; i += 1) {
     try {
       usage?.record(weight);
-      const response = await fetch(url);
+      // Timeout por pedido: sem isto um socket pendurado do Open-Meteo ficava
+      // vivo até ao timeout do job — e com ~185 spots sequenciais um hang
+      // único congelava a cadência horária inteira.
+      const response = await fetch(url, { signal: AbortSignal.timeout(30_000) });
       if (response.ok) return response.json();
       if (response.status === 429) {
         if (usage) usage.retries += 1;

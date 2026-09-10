@@ -9,9 +9,18 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # 288 runs/dia: um run pendurado não pode sobrepor-se ao tick seguinte
+  # (o offset getUpdates vive no Supabase — polls concorrentes liam o mesmo
+  # offset e reprocessavam updates). cancel-in-progress é seguro: o offset
+  # só é gravado no fim, pelo que um cancel reprocessa de forma idempotente.
+  group: telegram-poll
+  cancel-in-progress: true
+
 jobs:
   poll:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 

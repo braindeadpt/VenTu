@@ -44,6 +44,8 @@ async function run() {
     const url = FRAME_BASE_URL + frame.path;
     const res = await fetch(url, {
       headers: { 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' },
+      // PNG binário — margem maior que o default de 30s dos JSON.
+      signal: AbortSignal.timeout(60_000),
     });
     if (!res.ok) throw new Error(`IPMA radar frame HTTP ${res.status} para ${url}`);
     const buf = Buffer.from(await res.arrayBuffer());

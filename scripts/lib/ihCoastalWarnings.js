@@ -83,6 +83,7 @@ async function fetchCoastalWarnings(
   const url = `${apiBase}/collections/${COLLECTION}/items?limit=200&f=json`;
   const res = await fetchImpl(url, {
     headers: { Accept: 'application/geo+json, application/json' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();
@@ -115,6 +116,7 @@ async function fetchEsNavWarnings(fetchImpl = fetch, url = '') {
   if (!trimmed) return [];
   const res = await fetchImpl(trimmed, {
     headers: { Accept: 'application/geo+json, application/json' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const data = await res.json();

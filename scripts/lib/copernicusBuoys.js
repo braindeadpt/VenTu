@@ -156,7 +156,7 @@ async function listDayWaveKeys(
   const keys = [];
   let token = '';
   for (let i = 0; i < 10; i++) {
-    const res = await fetchImpl(url(token));
+    const res = await fetchImpl(url(token), { signal: AbortSignal.timeout(30_000) });
     if (!res.ok) throw new Error(`S3 list HTTP ${res.status}`);
     const xml = await res.text();
     for (const m of xml.matchAll(/<Key>([^<]+)<\/Key>/g)) {
@@ -183,6 +183,8 @@ async function listDayWaveKeys(
 async function fetchNetCdfBytes(key, fetchImpl = fetch, base = S3_BASE) {
   const res = await fetchImpl(`${base}/${key}`, {
     headers: { Accept: 'application/octet-stream' },
+    // NetCDF binário — margem maior que o default de 30s dos JSON.
+    signal: AbortSignal.timeout(60_000),
   });
   if (!res.ok) throw new Error(`S3 GET HTTP ${res.status}`);
   const buf = Buffer.from(await res.arrayBuffer());

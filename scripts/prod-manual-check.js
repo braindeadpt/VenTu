@@ -189,7 +189,7 @@ async function main() {
 
   // ── 6. GitHub CI (public API) ───────────────────────────────────────
   try {
-    const res = await fetch('https://api.github.com/repos/braindeadpt/VenTu/actions/runs?per_page=5');
+    const res = await fetch('https://api.github.com/repos/braindeadpt/VenTu/actions/runs?per_page=5', { signal: AbortSignal.timeout(30_000) });
     if (res.ok) {
       const data = await res.json();
       const ciRuns = (data.workflow_runs || []).filter((r) => r.name === 'CI').slice(0, 2);

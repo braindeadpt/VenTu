@@ -45,6 +45,8 @@ async function callGemini(prompt, maxTokens = 2048) {
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+    // LLM pode ser lento a gerar — 60s por provider antes de cair no próximo.
+    signal: AbortSignal.timeout(60_000),
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { maxOutputTokens: maxTokens, temperature: 0.4 },
@@ -65,6 +67,7 @@ async function callGemini(prompt, maxTokens = 2048) {
 async function callOpenAIProvider(provider, prompt, maxTokens = 2048) {
   const response = await fetch(provider.baseUrl, {
     method: 'POST',
+    signal: AbortSignal.timeout(60_000),
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${provider.apiKey}`,

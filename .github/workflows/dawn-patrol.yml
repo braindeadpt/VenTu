@@ -21,6 +21,7 @@ concurrency:
 jobs:
   generate-dawn-patrol:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     # Só avança com o update-data concluído com SUCESSO (ou dispatch manual):
     # update-data a falhar → sem merge fresco → sem dawn patrol esse dia.
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
@@ -56,14 +57,22 @@ jobs:
 
       - name: Commit and push (with retry)
         if: steps.gate.outputs.gate == 'run'
+        # Padrão dos outros bots (update-news/apply-contributions): rebase a
+        # cada tentativa (um push de dados pode aterrar entre o checkout e o
+        # push) e exit 1 se todas falharem — o loop anterior engolia a falha
+        # (o exit status do `sleep` final era 0 → step verde sem push).
         run: |
           git config user.name "VenTu Bot"
           git config user.email "bot@ventu.surf"
           git add -f public/data/dawn-patrol.json
-          git diff --staged --quiet || (
-            git commit -m "auto: dawn patrol $(date +%Y-%m-%d)"
-            for i in 1 2 3 4 5; do
-              git push && break
-              sleep $((i * 10))
-            done
-          )
+          if git diff --staged --quiet; then
+            echo "No dawn-patrol changes to commit"
+            exit 0
+          fi
+          git commit -m "auto: dawn patrol $(date +%Y-%m-%d)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            echo "Push failed (attempt $i); retrying..."
+            sleep $((i * 10))
+          done
+          exit 1

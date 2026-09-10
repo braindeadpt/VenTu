@@ -41,7 +41,7 @@ async function fetchEcowittJson(path, params, retries = 3, fetchImpl = fetch) {
   const url = buildUrl(path, params);
   for (let i = 0; i < retries; i++) {
     try {
-      const res = await fetchImpl(url);
+      const res = await fetchImpl(url, { signal: AbortSignal.timeout(30_000) });
       const text = await res.text();
       const json = JSON.parse(text.replace(/"-"/g, 'null'));
       if (!res.ok) {

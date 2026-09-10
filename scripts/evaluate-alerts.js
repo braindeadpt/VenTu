@@ -192,6 +192,7 @@ async function fetchSubscriptions() {
   const { url, key } = getSupabaseConfig();
   const res = await fetch(`${url}/rest/v1/alert_subscriptions?active=eq.true&select=*`, {
     headers: supabaseHeaders(key),
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`Supabase fetch failed: ${res.status}`);
   return res.json();
@@ -201,6 +202,7 @@ async function fetchUserAlertPrefs() {
   const { url, key } = getSupabaseConfig();
   const res = await fetch(`${url}/rest/v1/user_alert_prefs?active=eq.true&select=*`, {
     headers: supabaseHeaders(key),
+    signal: AbortSignal.timeout(30_000),
   });
   if (res.status === 404) return [];
   if (!res.ok) throw new Error(`Supabase user_alert_prefs fetch failed: ${res.status}`);
@@ -211,7 +213,7 @@ async function fetchUserFavorites(userId) {
   const { url, key } = getSupabaseConfig();
   const res = await fetch(
     `${url}/rest/v1/user_favorites?user_id=eq.${encodeURIComponent(userId)}&select=spot_id`,
-    { headers: supabaseHeaders(key) },
+    { headers: supabaseHeaders(key), signal: AbortSignal.timeout(30_000) },
   );
   if (!res.ok) return [];
   const rows = await res.json();
@@ -257,6 +259,7 @@ async function sendEmail(to, subject, html, opts = {}) {
 
   const res = await fetch('https://api.resend.com/emails', {
     method: 'POST',
+    signal: AbortSignal.timeout(30_000),
     headers: {
       Authorization: `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
@@ -276,6 +279,7 @@ async function markLegacySent(id) {
   if (!Number.isFinite(safeId)) throw new Error(`Invalid subscription id: ${id}`);
   await fetch(`${url}/rest/v1/alert_subscriptions?id=eq.${safeId}`, {
     method: 'PATCH',
+    signal: AbortSignal.timeout(30_000),
     headers: {
       ...supabaseHeaders(key),
       'Content-Type': 'application/json',
@@ -291,6 +295,7 @@ async function markUserPrefsSent(userId) {
     `${url}/rest/v1/user_alert_prefs?user_id=eq.${encodeURIComponent(userId)}`,
     {
       method: 'PATCH',
+      signal: AbortSignal.timeout(30_000),
       headers: {
         ...supabaseHeaders(key),
         'Content-Type': 'application/json',

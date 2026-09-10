@@ -75,7 +75,7 @@ function parseSpotsFromFile(spotsPath) {
 async function fetchJson(url, retries = 3) {
   for (let i = 0; i < retries; i++) {
     try {
-      const res = await fetch(url);
+      const res = await fetch(url, { signal: AbortSignal.timeout(30_000) });
       if (res.ok) return res.json();
       if (res.status === 429 && i < retries - 1) {
         await new Promise((r) => setTimeout(r, 1000 * (i + 1)));

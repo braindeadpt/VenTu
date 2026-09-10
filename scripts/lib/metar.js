@@ -69,6 +69,7 @@ async function fetchMetarByIcao() {
   const url = `${METAR_API}${encodeURIComponent(metarIcaoList())}`;
   const res = await fetch(url, {
     headers: { Accept: 'application/json', 'User-Agent': 'VenTu/1.0 (ventu.surf)' },
+    signal: AbortSignal.timeout(30_000),
   });
   if (!res.ok) throw new Error(`METAR HTTP ${res.status}`);
   const rows = await res.json();

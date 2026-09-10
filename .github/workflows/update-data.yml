@@ -41,6 +41,11 @@ jobs:
   # ── 1. Pipeline: fetch + generate the data (no push) ──
   update-conditions:
     runs-on: ubuntu-latest
+    # Backstop OS-level: nenhum fetch do pipeline tem timeout próprio a nível
+    # de job — um socket pendurado (IH/Open-Meteo) deixava o job vivo até ao
+    # default de 6h e, com cancel-in-progress:false, bloqueava todos os runs
+    # seguintes na fila. Um run normal demora 1–6 min; 30 min é folgado ~5×.
+    timeout-minutes: 30
     # Job-level so `if: env.X != ''` sees the secrets (step-level env is
     # invisible to that step's own `if`).
     env:
@@ -273,6 +278,7 @@ jobs:
     if: needs.update-conditions.outputs.mode != 'skip'
     needs: update-conditions
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -322,6 +328,7 @@ jobs:
     if: needs.update-conditions.outputs.mode != 'skip'
     needs: update-conditions
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     continue-on-error: true
     steps:
       - name: Checkout
@@ -352,6 +359,7 @@ jobs:
     if: needs.update-conditions.outputs.mode != 'skip'
     needs: [update-conditions, validate-data]
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5

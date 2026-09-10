@@ -115,6 +115,7 @@ async function runMeteoAlarmApiKeyTest({
     try {
       const res = await fetchImpl(url, {
         headers: { Accept: 'application/json', 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' },
+        signal: AbortSignal.timeout(30_000),
       });
       if (!res.ok) continue;
       const cap = await res.json();

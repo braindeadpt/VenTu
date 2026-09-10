@@ -23,7 +23,7 @@ async function main() {
   const obsUrl = buildObsProbeUrl(BASE);
   console.log(`🔭 OBS worker probe: ${obsUrl}`);
 
-  const res = await fetch(obsUrl, { cache: 'no-store' });
+  const res = await fetch(obsUrl, { cache: 'no-store', signal: AbortSignal.timeout(30_000) });
   if (!res.ok) {
     console.error(`❌ OBS /obs HTTP ${res.status}`);
     process.exit(1);
@@ -44,7 +44,7 @@ async function main() {
 
   const healthUrl = buildHealthUrl(BASE);
   try {
-    const h = await fetch(healthUrl, { cache: 'no-store' });
+    const h = await fetch(healthUrl, { cache: 'no-store', signal: AbortSignal.timeout(30_000) });
     if (h.ok) {
       console.log('✅ OBS /health OK');
     } else {

@@ -39,6 +39,9 @@ jobs:
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event != 'pull_request')
     runs-on: ubuntu-latest
+    # Build + export de ~2340 rotas: ~15–20 min normal; 45 min é o mesmo
+    # backstop do ci.yml quality (default GitHub = 6h).
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -129,6 +132,8 @@ jobs:
       url: ${{ steps.publish.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    # 5 tentativas × (deploy + 45s de espera) ≈ pior caso ~15 min.
+    timeout-minutes: 20
     steps:
       # GitHub Pages API often fails transiently ("try again later") while build is fine.
       - name: Deploy to GitHub Pages (1/5)
@@ -219,6 +224,8 @@ jobs:
     if: vars.S7_PROXY_ENABLED == 'true'
     runs-on: ubuntu-latest
     needs: deploy
+    # 6 tentativas × 20s de espera ≈ pior caso ~10 min.
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
