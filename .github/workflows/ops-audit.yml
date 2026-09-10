@@ -1,0 +1,57 @@
+name: Ops Audit (daily)
+
+# Auditoria diária determinística das ligações externas e dos crons —
+# scripts/ops-audit.js. Quatro frentes num só relatório:
+#   A. Produção: pipeline-meta.json em ventu.surf (staleness + streaks de
+#      camadas buoy/radar/warnings/coastal/tide);
+#   B. Workflows: runs recentes do update-data/deploy/api-keys, último
+#      commit de dados, issues de incidente abertas;
+#   C. Endpoints: probes directos a IH/IPMA/Open-Meteo/obs worker com
+#      latência;
+#   D. Drift: fetch novo sem AbortSignal.timeout, job sem timeout-minutes
+#      (as regressões que o audit 2026-09-11 corrigiu não podem voltar).
+#
+# Complementa — não substitui — os heartbeats de 30 min (staleness-alert,
+# data-cadence): estes apanhavam o pipeline morto mas não regressões de
+# código, falhas do deploy, nem endpoints externos degradados.
+#
+# Entrega: issue com label `ops-audit` (abre em findings, comenta+fecha na
+# recuperação) + Telegram ops na transição. Exit 0 sempre — durante um
+# incidente longo, runs vermelhos seriam spam.
+
+on:
+  schedule:
+    # 07:00 UTC (08:00 Lisboa no verão) — depois do route audit (04:40) e
+    # das keys (seg 06:00), antes do tráfego da manhã europeia.
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  actions: read # gh run list
+
+concurrency:
+  group: ops-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+
+      # Sem npm ci — o script só usa libs internas puras + fetch/gh nativos.
+      - name: Run ops audit
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          OPS_TELEGRAM_CHAT_ID: ${{ secrets.OPS_TELEGRAM_CHAT_ID }}
+          OBS_WORKER_URL: ${{ vars.NEXT_PUBLIC_OBS_WORKER_URL }}
+        run: node scripts/ops-audit.js
