@@ -177,9 +177,24 @@ export default function MapExploreHud({
   buoyChip,
   timeTrack,
 }: MapExploreHudProps) {
-  // Always start collapsed so SSR and the first client paint match. Desktop
-  // still shows the filter rows via `hidden md:flex` below.
+  // Always start collapsed so SSR and the first client paint match.
+  // Desktop (md+): the filter rows render only when expanded (same as
+  // mobile). Expanded cost the map ~30–43% of the viewport (probe
+  // 2026-09-10), so compact is the default and expansion is opt-in via the
+  // header's corner chevron. Deep links (?sport=…) intentionally keep the
+  // compact entry — the aria-label counter reports the active filters.
   const [collapsed, setCollapsed] = useState(true);
+
+  // Nº de filtros activos (para o contador no aria-label do toggle desktop).
+  // Nota: um auto re-expand quando os filtros mudam com o HUD colapsado foi
+  // avaliado e REJEITADO — hoje nenhum controlo altera filtros in-place com
+  // as rows escondidas (URL/persistência sincronizam só no mount, e deep
+  // links devem manter a entrada compacta). Se no futuro surgir um controlo
+  // desses, re-expandir aqui na transição para dirty.
+  const filterCount =
+    (selectedSport !== 'all' ? 1 : 0) +
+    (selectedRegion !== regions[0] ? 1 : 0) +
+    (selectedDifficulty !== 'all' ? 1 : 0);
 
   if (!visible) return null;
 
@@ -198,15 +213,25 @@ export default function MapExploreHud({
       aria-label={isPt ? 'Modo explorar' : 'Explore mode'}
       data-map-hud-collapsed={collapsed ? 'true' : 'false'}
     >
-      <div className="pointer-events-auto mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated md:bg-bg-elevated/95 md:backdrop-blur-md shadow-card px-3 py-2 flex flex-col gap-2 sm:px-3.5 md:px-4 md:py-2.5">
+      <div className="pointer-events-auto relative mx-2 sm:mx-3 rounded-card border border-divider bg-bg-elevated md:bg-bg-elevated/95 md:backdrop-blur-md shadow-card px-3 py-2 flex flex-col gap-2 sm:px-3.5 md:px-4 md:py-2.5">
+        {/* Collapse handle. Mobile: full-width grabber row above the header.
+            Desktop (md+): 44px icon button pinned to the header's right corner
+            (absolute, chevron-only como os restantes icon buttons) — assim o
+            cartão compacto é uma única linha (~13% do mapa vs ~30% expandido).
+            O contador de filtros activos vai no aria-label. */}
         <button
           type="button"
           onClick={toggleCollapsed}
-          className="md:hidden flex flex-col items-center justify-center gap-1 w-full min-h-[44px] -mx-0.5 px-0.5 rounded-input hover:bg-surface-1/[0.04] transition-colors duration-150"
+          className="flex items-center justify-center min-h-[44px] -mx-0.5 px-0.5 rounded-input hover:bg-surface-1/[0.04] transition-colors duration-150 max-md:w-full max-md:flex-col max-md:gap-1 md:absolute md:right-3 md:top-2.5 md:z-10 md:w-11 md:shrink-0"
           aria-expanded={!collapsed}
-          aria-label={collapsed ? expandHudLabel : collapseHudLabel}
+          aria-label={
+            collapsed
+              ? filterCount > 0
+                ? `${expandHudLabel} (${filterCount})`
+                : expandHudLabel
+              : collapseHudLabel
+          }
         >
-          <span className="w-8 h-1 rounded-full bg-fg-subtle/30" aria-hidden />
           <ChevronDown
             className={`w-4 h-4 text-fg-muted motion-reduce:transition-none transition-transform duration-200 ${
               collapsed ? '' : 'rotate-180'
@@ -215,7 +240,7 @@ export default function MapExploreHud({
           />
         </button>
 
-        <div className="flex items-center gap-2 min-h-[44px] flex-wrap">
+        <div className="flex items-center gap-2 min-h-[44px] flex-wrap md:pr-12">
           <span className="text-meta font-semibold text-fg shrink-0">
             {exploreModeLabel}
           </span>
@@ -466,7 +491,10 @@ export default function MapExploreHud({
 
         {timeTrack}
 
-        <div className={`flex flex-col gap-2 ${collapsed ? 'hidden md:flex' : 'flex'}`}>
+        {/* Mobile: filters only when expanded. Desktop: same — compact is
+            the default; no in-HUD control changes a filter while collapsed,
+            so no auto re-expand is needed. */}
+        <div className={`${collapsed ? 'hidden md:hidden' : 'flex'} flex-col gap-2`}>
           <div
             className="flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x edge-fade-x-end pb-0.5"
             role="group"

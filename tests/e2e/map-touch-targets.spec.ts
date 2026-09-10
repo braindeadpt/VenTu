@@ -95,7 +95,9 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
       const legend = page.getByRole('region', { name: 'Legenda do mapa' });
       await expectMinTargetSize(legend.getByRole('button'), 'toggle da legenda (tablet)');
 
-      // As filas de filtros estão visíveis em md+ sem expandir.
+      // O HUD arranca colapsado em todas as superfícies (decisão 2026-09-10) —
+      // expandir antes de medir as pills.
+      await expandMapHudFilters(page);
       const chips = page.getByRole('group', { name: 'Modalidade' }).getByRole('button');
       await expect(chips.first()).toBeVisible({ timeout: 10_000 });
       for (const chip of await chips.all()) {
@@ -110,6 +112,8 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
     test('rato puro (any-pointer: fine): pills mantêm a densidade de 36px', async ({ page }) => {
       await openMapa(page);
 
+      // O HUD arranca colapsado no desktop também (decisão 2026-09-10).
+      await expandMapHudFilters(page);
       const surf = page.locator('[aria-label="Modalidade"] button').nth(1); // Surf
       await expect(surf).toBeVisible();
 
@@ -127,6 +131,8 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
       const page = await ctx.newPage();
       await openMapa(page);
 
+      // O HUD arranca colapsado no desktop também (decisão 2026-09-10).
+      await expandMapHudFilters(page);
       const surf = page.locator('[aria-label="Modalidade"] button').nth(1); // Surf
       await expect(surf).toBeVisible();
       const box = await surf.boundingBox();

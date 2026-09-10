@@ -291,3 +291,29 @@ Testada em implementação: o Chromium **não faz hit-test de pseudo-elementos f
 1. `.filter-pill-compact` / `.filter-row-action` em `globals.css` (camada utilities — vence qualquer `min-h-*` utility): **44px base** em todo o lado; `@media (min-width: 1024px) and (any-pointer: fine)` → 36px. Portáteis touch e tablets em paisagem (hoje caem no breakpoint de rato) ficam cobertos pelo piso; o desktop de rato mantém a densidade — custo +24px de bloco só em híbridos.
 2. Testes: unit `filterPill.test.ts` (+4, contrato da classe-marcador); e2e `map-touch-targets` (+2 — rato puro 36px vs toque em desktop 44px; o `hasTouch` do Playwright emula `any-pointer: coarse`). Regressões CI: touch-targets 8/8, mapa/UX 62/0, unit 1496/1496.
 3. Alternativa para uniformidade total: **V1** (44px em todo o lado). V2 (40px) não atinge o piso; V4 é uma mudança de arquitectura separada.
+
+## Avaliação: colapso por omissão do HUD no desktop (2026-09-10)
+
+**Pergunta:** o cartão HUD expandido no desktop devia colapsar por omissão para devolver ~28% do mapa?
+
+**Medição** (`scripts/audit/audit-hud-footprint.mjs`, 6 viewports): o cartão expandido ocupa **204px** (228px touch) — no desktop **nunca houve colapso**: o handle era `md:hidden` e as rows de filtros `hidden md:flex` (sempre renderizadas). Cobertura do viewport do mapa:
+
+| Viewport | Expandido | Header-only |
+|---|---|---|
+| 1440×900 | 29,7% | 13,4% |
+| 1280×800 | 33,7% | 15,2% |
+| 1024×768 | 35,2% | 15,9% |
+| 1024×640 (portátil curto) | **43,1%** | 19,4% |
+
+O problema real: num portátil 1024×640, quase metade do mapa estava sob o HUD. Alegado ~28% → medido 30–43% conforme viewport.
+
+**Decisão (implementada):**
+1. **Colapsado por omissão em todas as superfícies** — `useState(true)` já existia; o container de filtros passou de `'hidden md:flex'` para `'hidden md:hidden'` (idêntico ao mobile: compacto é o estado de entrada).
+2. **Toggle no cabeçalho desktop** — o handle ganhou rótulo «Mostrar/Ocultar filtros» (≥md) com **contador de filtros activos** `(n)`; mantém o grabber mobile; alvo ≥44px; `aria-expanded` em todas as superfícies.
+3. **Auto re-expand pós-mount** — se os filtros ficam sujos com o HUD colapsado (select nativo mobile; deep links/persistidos NÃO forçam expansão — primeira avaliação do effect ignorada, contador no toggle mostra o estado), as rows re-expandem para a mudança ser visível; só na transição para dirty («Limpar filtros» mantém colapsado).
+4. **Sem persistência** — sessão começa sempre compacta (zero risco de hidratação; padrão SSR/first-paint igual).
+5. Alinhamento: o toggle de filtros fica ancorado ao canto direito do cabeçalho no desktop (`md:ml-auto`), separado do cluster esquerdo (título + camadas + pesquisa + boia); no mobile mantém o fluxo do cabeçalho; o grabber saiu (o controlo compacto é chevron + aria-label, 44px).
+
+**Custo da legenda:** hudLift (ResizeObserver sobre o HUD) segue a altura real — com HUD compacto a legenda desce ~104px, área de mapa ganha por cima e por baixo.
+
+**Testes:** unit `mapHudCollapse.test.ts` (+4 — contrato de colapso); e2e novo `map-hud-collapse.spec.ts` (+5 — colapso/expansão desktop, orçamentos <16% colapsado e <36% expandido a 1440×900, legenda sem colisão, auto re-expand); `map-touch-targets` actualizado (3 testes expandem antes de medir); regressões: unit **1504/1504**, e2e **140 passed** (39 HUD-family + 101 adjacentes), lint e tsc limpos.
