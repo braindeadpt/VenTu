@@ -221,3 +221,38 @@ limpar filtros, scrub).
 - **Regressões na via CI**: `map-hours` + `map-currents` + `mapa-route` 14/14;
   `mobile-playtest` + `visual-ux-audit` 48/0; unit 1475/1475; `tsc` e lint
   limpos.
+---
+
+## Auditoria de Contraste e Acessibilidade (axe) — overlays do mapa
+
+**Data:** 2026-09-10 | **Método:** axe-core (`scripts/audit/audit-map-axe.mjs`, 12 estados: 2 temas × 6 estados — default, popup, legenda expandida, HUD expandido, sheet, camadas) + sonda de contraste **por pixel renderizado** (`scripts/audit/audit-map-contrast.mjs`): screenshot composto e amostragem de 4 cantos do rect de cada texto dos overlays (legenda, HUD, controlos, popup, sheet, chips, atribuição), escolhendo o pixel mais distante da cor do texto, nos temas **dark** e **ocean** (light).
+
+### Defeitos de contraste reais corrigidos
+
+| # | Tema | Elemento | Antes | Depois | Fix |
+|---|------|----------|-------|--------|-----|
+| 1 | dark | Pill «Onshore» do popup (texto 10px `text-windDir-onshore` sobre cartão slate-800) | **3.89:1** (red-500) — FAIL AA | **5.27:1** (red-400) | `globals.css` — token dark `--windDir-onshore` 239 68 68 → 248 113 113 (red-400; igual ao `--score-poor` dark; usado também por ForecastTable/Compass/avisos → todos ganham) |
+| 2 | ocean | Badge de score sobre a imagem do spot (sky-700 sobre pixel escuro) | **2.33:1** — FAIL AA | ≥4.5:1 sobre o chip sólido | `SpotPopupContent.tsx` — cluster do score num chip `bg-bg-elevated/95 + backdrop-blur-sm + shadow`; sem tint translúcido (`tokens.bg` removido — o tint de /15 escurecia o chip dark para ~4.15:1) |
+| 3 | ocean | Rótulo do desporto sobre a imagem (fg-muted sobre pixel claro) | **3.12:1** — FAIL AA | ≥4.5:1 sobre o chip sólido | idem (o rótulo fica sobre o chip) |
+| 4 | ocean | Pill «Onshore» (red-600) no card branco | **4.47:1** — FAIL AA por 0.03 | **6.47:1** (red-700; 4.57:1 no tint /20) | `globals.css` — token ocean `--windDir-onshore` 220 38 38 → 185 28 28 (red-700, igual ao `--score-poor` light) |
+| 5 | ocean | Pill «Offshore» (green-600) — 3.3:1 em branco (não amostrado nos picks, mas mesmo defeito de classe) | **3.30:1** (calculado) — FAIL AA | **7.13:1** (green-800; 5.21:1 no tint /20) | `globals.css` — token ocean `--windDir-offshore` 22 163 74 → 22 101 52 (green-800; mesmo padrão «um degrau mais escuro para AA em chips tintados» já aplicado aos score colors) |
+
+**Resultado pós-fix: 0 falhas de contraste em todos os 10 estados** (dark + ocean × 5 estados da sonda de pixel).
+
+### Robustez da sonda (falhas reais vs. artefactos)
+
+Duas correcções à sonda para só medir o que está realmente pintado:
+
+1. **Subárvores `display:none`** (ex.: linhas de filtro desktop `hidden md:flex` no mobile) — textos com rect mensurável mas invisível; agora percorre ancestrais e ignora.
+2. **Cantos fora do viewport / recortados** (ex.: pills de região fora da área visível da tira `overflow-x-auto` — `getImageData` fora da imagem devolve preto transparente) — cada ponto de amostragem é validado com `elementFromPoint` e clamp ao viewport; sem pontos válidos, o elemento é ignorado.
+
+### Verificado como OK (axe + contraste)
+
+- **axe-core: 0 violações** em 12 estados (2 temas × 6 estados), incluindo popup e sheet abertos.
+- **Legenda, HUD, controlos, atribuição**: contraste AA em ambos os temas (medido por pixel sobre os tiles reais — o axe não consegue avaliar fundos de imagem).
+- **Chips tintados a /20** (NewsCard, DawnPatrolBanner, WaterQualityBadge): melhorados pelos novos tokens sem intervenção directa.
+
+### Testes
+
+- **Unit** (`spotPopupContent.test.ts`, +1): o cluster do score renderiza o chip sólido (`bg-bg-elevated/95`, `backdrop-blur-sm`) e **não** o tint `bg-score-*/15` (contrato de contraste AA sobre a imagem).
+- **Regressões na via CI**: `map-popup-ver-spot` + `axe-audit` + `map-touch-targets` + `map-currents` + `map-hours` + `mapa-route` **51/51**; `visual-ux-audit` + `mobile-playtest` **48/0** (3 skipped); unit **1476/1476**; `tsc` e lint limpos.

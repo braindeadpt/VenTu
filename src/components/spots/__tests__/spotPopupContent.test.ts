@@ -80,6 +80,19 @@ describe('SpotPopupContent (contrato de layout do popup)', () => {
     expect(html).not.toContain('aria-label="Score: 0"');
   });
 
+  it('o cluster de score assenta num chip sólido (contraste AA sobre a imagem)', () => {
+    const html = render({ allScores: makeScores(72) });
+    // O chip bg-bg-elevated/95 dá a superfície — o texto do score e o rótulo
+    // nunca ficam directamente sobre pixels arbitrários da imagem do spot
+    // (antes: sky-700 sobre pixel escuro = 2.33:1; rótulo fg-muted sobre
+    // pixel claro = 3.12:1).
+    expect(html).toContain('bg-bg-elevated/95');
+    expect(html).toContain('backdrop-blur-sm');
+    // Sem o tint translúcido (bg-score-*/15): sobre o chip, o tint escurecia
+    // o fundo slate-800 no dark e o texto caía para ~4.15:1.
+    expect(html).not.toContain('bg-score-good/15');
+  });
+
   it('inclui nome, região e leitura de vento no conteúdo', () => {
     const html = render();
     expect(html).toContain('Nazaré');
