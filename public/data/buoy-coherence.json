@@ -1,24 +1,24 @@
 {
-  "day": "20260909",
-  "fetchedAt": "2026-09-09T23:13:04.127Z",
+  "day": "20260910",
+  "fetchedAt": "2026-09-10T04:47:27.022Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 336,
+    "pairHourCount": 338,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
     "windowDays": 180,
-    "dayCount": 9,
+    "dayCount": 10,
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
         "coherent": 9,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 0,
-        "days": 9,
+        "insufficient": 1,
+        "days": 10,
         "incoherentRatio": 0
       },
       "6200083|6201079": {
@@ -89,22 +89,8 @@
           "altKm": 0
         }
       ],
-      "calibrated": 1,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "moledo"
-          ]
-        }
-      },
+      "calibrated": 0,
+      "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     },
@@ -176,29 +162,8 @@
           "altKm": 0
         }
       ],
-      "calibrated": 8,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "vila-praia-ancora",
-            "afife",
-            "castelo-neiva",
-            "amorosa",
-            "cabedelo",
-            "foil-cabedelo",
-            "cabedelo-wakepark",
-            "rodanho"
-          ]
-        }
-      },
+      "calibrated": 0,
+      "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     },
@@ -277,28 +242,8 @@
           "altKm": 0
         }
       ],
-      "calibrated": 7,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "ofir",
-            "esposende",
-            "esposende-praia",
-            "fao",
-            "apulia",
-            "fao-ofir-surf",
-            "ofir-praia"
-          ]
-        }
-      },
+      "calibrated": 0,
+      "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     },
@@ -398,144 +343,10 @@
           "altKm": 0
         }
       ],
-      "calibrated": 12,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "povoa-varzim",
-            "leca-palmeira",
-            "matosinhos",
-            "cabedelo-douro",
-            "marina-afurada-foil",
-            "salgueiros",
-            "sereia-costa-verde",
-            "canide-sul",
-            "aguda",
-            "espinho",
-            "vila-cha",
-            "aterro"
-          ]
-        }
-      },
-      "suboptimalRefs": 12,
-      "suboptimal": [
-        {
-          "spot": "povoa-varzim",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 19.82691680197496,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 19.790496905304767
-        },
-        {
-          "spot": "leca-palmeira",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 27.14868231348185,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 27.06148173656539
-        },
-        {
-          "spot": "matosinhos",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 28.84942676889081,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 28.761820414108268
-        },
-        {
-          "spot": "cabedelo-douro",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 32.910111660827795,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 32.821203316238595
-        },
-        {
-          "spot": "marina-afurada-foil",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 33.80628919503008,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 33.71779291391386
-        },
-        {
-          "spot": "salgueiros",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 34.41258588320511,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 34.32304518611994
-        },
-        {
-          "spot": "sereia-costa-verde",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 34.68977670966058,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 34.60017442005139
-        },
-        {
-          "spot": "canide-sul",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 35.11183139268263,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 35.0221257772153
-        },
-        {
-          "spot": "aguda",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 40.157630225849424,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 40.06746283074846
-        },
-        {
-          "spot": "espinho",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 44.802887356707835,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 44.712925863975215
-        },
-        {
-          "spot": "vila-cha",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 20.5933055668984,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 20.522620554873285
-        },
-        {
-          "spot": "aterro",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 25.36890744278871,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 25.28307322106521
-        }
-      ]
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
     },
     "Vila do Conde": {
       "spotCount": 2,
@@ -563,44 +374,10 @@
           "altKm": 0
         }
       ],
-      "calibrated": 2,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "azurara",
-            "mindelo"
-          ]
-        }
-      },
-      "suboptimalRefs": 2,
-      "suboptimal": [
-        {
-          "spot": "azurara",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 20.208071776879834,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 20.153952002710614
-        },
-        {
-          "spot": "mindelo",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 20.331868854454804,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 20.266956897189054
-        }
-      ]
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
     },
     "Gondomar": {
       "spotCount": 1,
@@ -621,34 +398,10 @@
           "altKm": 0
         }
       ],
-      "calibrated": 1,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "praia-da-lomba"
-          ]
-        }
-      },
-      "suboptimalRefs": 1,
-      "suboptimal": [
-        {
-          "spot": "praia-da-lomba",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 55.007010415907644,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 54.92049800238453
-        }
-      ]
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
     },
     "Espinho": {
       "spotCount": 3,
@@ -683,54 +436,10 @@
           "altKm": 0
         }
       ],
-      "calibrated": 3,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "praia-37",
-            "bairro-piscatorio",
-            "paramos"
-          ]
-        }
-      },
-      "suboptimalRefs": 3,
-      "suboptimal": [
-        {
-          "spot": "praia-37",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 44.77488020531992,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 44.6850335858117
-        },
-        {
-          "spot": "bairro-piscatorio",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 45.20925519852968,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 45.11947085815525
-        },
-        {
-          "spot": "paramos",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 47.0909397181491,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 47.00153946794311
-        }
-      ]
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
     },
     "Ovar": {
       "spotCount": 6,
@@ -786,84 +495,10 @@
           "altKm": 0
         }
       ],
-      "calibrated": 6,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "barrinha-esmoriz",
-            "esmoriz",
-            "cortegaca",
-            "cortegaca-sul",
-            "maceda",
-            "furadouro"
-          ]
-        }
-      },
-      "suboptimalRefs": 6,
-      "suboptimal": [
-        {
-          "spot": "barrinha-esmoriz",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 48.29519685996442,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 48.20580877006854
-        },
-        {
-          "spot": "esmoriz",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 48.16289312112086,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 48.07381268475458
-        },
-        {
-          "spot": "cortegaca",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 49.44859831072586,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 49.359914915423275
-        },
-        {
-          "spot": "cortegaca-sul",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 50.38491713384516,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 50.29650903462004
-        },
-        {
-          "spot": "maceda",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 51.56735036389668,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 51.479245809333555
-        },
-        {
-          "spot": "furadouro",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 55.74248484539073,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 55.655300010795735
-        }
-      ]
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
     },
     "Aveiro": {
       "spotCount": 7,
@@ -1696,34 +1331,10 @@
           "altKm": 0
         }
       ],
-      "calibrated": 1,
-      "calibrationRefs": {
-        "6200084→6201077": {
-          "esCode": "6200084",
-          "esName": "Cabo Silleiro",
-          "ptRefCode": "6201077",
-          "ptRefName": "Datawell ao largo do Porto",
-          "ptRefArea": "Porto",
-          "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-          "me": -0.1,
-          "n": 14,
-          "spots": [
-            "ilha-do-ermal"
-          ]
-        }
-      },
-      "suboptimalRefs": 1,
-      "suboptimal": [
-        {
-          "spot": "ilha-do-ermal",
-          "esCode": "6200084",
-          "ptRefCode": "6201077",
-          "ptRefKm": 77.52984370644184,
-          "nearestPtCode": "4",
-          "nearestPtName": "CSA92/D",
-          "nearestPtKm": 77.49874642945014
-        }
-      ]
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
     },
     "Sines": {
       "spotCount": 1,
@@ -2198,56 +1809,8 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-09T23:16:44.490Z",
+  "regionsAuditedAt": "2026-09-10T04:49:16.220Z",
   "pairs": [
-    {
-      "pair": "Cabo Silleiro × Datawell ao largo do Porto",
-      "codes": [
-        "6200084",
-        "6201077"
-      ],
-      "distanceKm": 96.8,
-      "ptSource": "wmo",
-      "n": 14,
-      "meanDeltaM": -0.1,
-      "meanAbsDeltaM": 0.1,
-      "maxAbsDeltaM": 0.4,
-      "corr": 0.96,
-      "verdict": "coherent",
-      "firstHour": "2026-09-01T07",
-      "lastHour": "2026-09-09T11",
-      "hours": [
-        {
-          "6200084": 1.8799999952316284,
-          "6201077": 1.899999976158142,
-          "hour": "2026-09-09T11"
-        }
-      ]
-    },
-    {
-      "pair": "Villano-Sisargas × Datawell ao largo do Porto",
-      "codes": [
-        "6200083",
-        "6201077"
-      ],
-      "distanceKm": 243.5,
-      "ptSource": "wmo",
-      "n": 14,
-      "meanDeltaM": -0.2,
-      "meanAbsDeltaM": 0.3,
-      "maxAbsDeltaM": 1.1,
-      "corr": 0.61,
-      "verdict": "coherent",
-      "firstHour": "2026-09-01T07",
-      "lastHour": "2026-09-09T11",
-      "hours": [
-        {
-          "6200083": 1.9900000095367432,
-          "6201077": 1.899999976158142,
-          "hour": "2026-09-09T11"
-        }
-      ]
-    },
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
       "codes": [
@@ -2256,254 +1819,27 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 176,
+      "n": 178,
       "meanDeltaM": 0,
       "meanAbsDeltaM": 0.2,
       "maxAbsDeltaM": 0.8,
-      "corr": 0.74,
+      "corr": 0.75,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-09T20",
+      "lastHour": "2026-09-10T01",
       "hours": [
         {
-          "6200084": 1.5199999809265137,
-          "6200199": 0.9667999744415283,
-          "hour": "2026-09-09T00"
-        },
-        {
-          "6200084": 1.5199999809265137,
-          "6200199": 0.9521499872207642,
-          "hour": "2026-09-09T01"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 0.9521499872207642,
-          "hour": "2026-09-09T02"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.0839799642562866,
-          "hour": "2026-09-09T03"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.2011699676513672,
-          "hour": "2026-09-09T04"
-        },
-        {
           "6200084": 1.7599999904632568,
-          "6200199": 1.2597700357437134,
-          "hour": "2026-09-09T05"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.479490041732788,
-          "hour": "2026-09-09T06"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.4941400289535522,
-          "hour": "2026-09-09T07"
+          "6200199": 1.9921900033950806,
+          "hour": "2026-09-10T00"
         },
         {
           "6200084": 1.8799999952316284,
-          "6200199": 1.7431600093841553,
-          "hour": "2026-09-09T08"
-        },
-        {
-          "6200084": 1.8799999952316284,
-          "6200199": 1.8896499872207642,
-          "hour": "2026-09-09T09"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.7724599838256836,
-          "hour": "2026-09-09T10"
-        },
-        {
-          "6200084": 1.8799999952316284,
-          "6200199": 1.6845699548721313,
-          "hour": "2026-09-09T11"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.625980019569397,
-          "hour": "2026-09-09T12"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.9628900289535522,
-          "hour": "2026-09-09T13"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.8603500127792358,
-          "hour": "2026-09-09T14"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.8603500127792358,
-          "hour": "2026-09-09T15"
-        },
-        {
-          "6200084": 1.8799999952316284,
-          "6200199": 2.036129951477051,
-          "hour": "2026-09-09T16"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 2.0507800579071045,
-          "hour": "2026-09-09T17"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 2.065429925918579,
-          "hour": "2026-09-09T18"
-        },
-        {
-          "6200084": 1.8799999952316284,
-          "6200199": 2.2851600646972656,
-          "hour": "2026-09-09T19"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 2.065429925918579,
-          "hour": "2026-09-09T20"
-        }
-      ]
-    },
-    {
-      "pair": "Cabo Silleiro × Datawell ao largo de Faro",
-      "codes": [
-        "6200084",
-        "6201079"
-      ],
-      "distanceKm": 594.6,
-      "ptSource": "wmo",
-      "n": 44,
-      "meanDeltaM": -0.8,
-      "meanAbsDeltaM": 0.8,
-      "maxAbsDeltaM": 1.4,
-      "corr": -0.18,
-      "verdict": "coherent",
-      "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-09T13",
-      "hours": [
-        {
-          "6200084": 1.6399999856948853,
-          "6201079": 0.49000000953674316,
-          "hour": "2026-09-09T03"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6201079": 0.5099999904632568,
-          "hour": "2026-09-09T05"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6201079": 0.5699999928474426,
-          "hour": "2026-09-09T06"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6201079": 0.4699999988079071,
-          "hour": "2026-09-09T10"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6201079": 0.6899999976158142,
-          "hour": "2026-09-09T13"
-        }
-      ]
-    },
-    {
-      "pair": "Villano-Sisargas × Datawell ao largo de Faro",
-      "codes": [
-        "6200083",
-        "6201079"
-      ],
-      "distanceKm": 741.8,
-      "ptSource": "wmo",
-      "n": 44,
-      "meanDeltaM": -0.9,
-      "meanAbsDeltaM": 0.9,
-      "maxAbsDeltaM": 2,
-      "corr": -0.2,
-      "verdict": "review",
-      "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-09T13",
-      "hours": [
-        {
-          "6200083": 1.8799999952316284,
-          "6201079": 0.49000000953674316,
-          "hour": "2026-09-09T03"
-        },
-        {
-          "6200083": 2.109999895095825,
-          "6201079": 0.5099999904632568,
-          "hour": "2026-09-09T05"
-        },
-        {
-          "6200083": 1.9900000095367432,
-          "6201079": 0.5699999928474426,
-          "hour": "2026-09-09T06"
-        },
-        {
-          "6200083": 2.2300000190734863,
-          "6201079": 0.4699999988079071,
-          "hour": "2026-09-09T10"
-        },
-        {
-          "6200083": 1.9900000095367432,
-          "6201079": 0.6899999976158142,
-          "hour": "2026-09-09T13"
-        }
-      ]
-    },
-    {
-      "pair": "Golfo de Cádiz × Datawell ao largo de Faro",
-      "codes": [
-        "6200085",
-        "6201079"
-      ],
-      "distanceKm": 95.4,
-      "ptSource": "wmo",
-      "n": 44,
-      "meanDeltaM": -0.3,
-      "meanAbsDeltaM": 0.3,
-      "maxAbsDeltaM": 0.7,
-      "corr": 0.37,
-      "verdict": "coherent",
-      "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-09T13",
-      "hours": [
-        {
-          "6200085": 1.0499999523162842,
-          "6201079": 0.49000000953674316,
-          "hour": "2026-09-09T03"
-        },
-        {
-          "6200085": 1.1699999570846558,
-          "6201079": 0.5099999904632568,
-          "hour": "2026-09-09T05"
-        },
-        {
-          "6200085": 1.0499999523162842,
-          "6201079": 0.5699999928474426,
-          "hour": "2026-09-09T06"
-        },
-        {
-          "6200085": 0.9399999976158142,
-          "6201079": 0.4699999988079071,
-          "hour": "2026-09-09T10"
-        },
-        {
-          "6200085": 0.699999988079071,
-          "6201079": 0.6899999976158142,
-          "hour": "2026-09-09T13"
+          "6200199": 2.0068399906158447,
+          "hour": "2026-09-10T01"
         }
       ]
     }
   ],
-  "overall": "review"
+  "overall": "coherent"
 }
