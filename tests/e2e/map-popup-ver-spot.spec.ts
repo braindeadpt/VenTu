@@ -42,7 +42,51 @@ async function openPopupFromMarker(page: import('@playwright/test').Page, index:
     const marker = document.querySelectorAll<HTMLElement>('.leaflet-marker-icon.spot-marker')[i];
     marker?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
   }, index);
-  await page.waitForTimeout(1200); // deixa o autoPan do popup assentar
+  await waitForPopupSettled(page);
+}
+
+/**
+ * AutoPan do popup a assentar de forma determinística — sem dormir: espera
+ * por duas leituras iguais da posição do popup a 150ms de distância (o pan
+ * do Leaflet é animado; a geometria parou quando duas amostras coincidem).
+ * Sob carga paralela do CI, um sleep fixo (1200ms) pode apanhar o pan a
+ * meio e rebentar nas medições seguintes (flake histórico deste spec).
+ */
+async function waitForPopupSettled(page: import('@playwright/test').Page): Promise<void> {
+  await expect
+    .poll(
+      async () => {
+        const rect = await page.evaluate(() => {
+          const el = document.querySelector<HTMLElement>('.spot-popup .leaflet-popup-content');
+          if (!el) return null;
+          const b = el.getBoundingClientRect();
+          return [Math.round(b.x), Math.round(b.y), Math.round(b.width), Math.round(b.height)].join(',');
+        });
+        return rect;
+      },
+      { timeout: 15_000, intervals: [150, 150, 150, 300] },
+    )
+    .not.toBeNull();
+  // Duas amostras iguais seguidas (o pan acabou de facto).
+  await expect
+    .poll(
+      async () => {
+        const r1 = await page.evaluate(() => {
+          const el = document.querySelector<HTMLElement>('.spot-popup .leaflet-popup-content');
+          return el ? el.getBoundingClientRect().y : null;
+        });
+        if (r1 === null) return 'missing';
+        await new Promise((r) => setTimeout(r, 200));
+        const r2 = await page.evaluate(() => {
+          const el = document.querySelector<HTMLElement>('.spot-popup .leaflet-popup-content');
+          return el ? el.getBoundingClientRect().y : null;
+        });
+        if (r2 === null) return 'missing';
+        return Math.abs(r1 - r2) <= 1 ? 'stable' : `moving:${Math.abs(r1 - r2).toFixed(1)}px`;
+      },
+      { timeout: 15_000, intervals: [200, 200, 300] },
+    )
+    .toBe('stable');
 }
 
 test.describe('Map popup Ver spot', () => {
@@ -143,7 +187,7 @@ test.describe('Map popup tablet — folga da coluna de controlos', () => {
 
     const link = page.locator('.ventu-popup-detail').first();
     await expect(link).toBeVisible({ timeout: 10_000 });
-    await page.waitForTimeout(1200); // pan assente antes de medir
+    await waitForPopupSettled(page); // pan assente antes de medir
 
     const geo = await page.evaluate(() => {
       const popup = document.querySelector<HTMLElement>('.spot-popup .leaflet-popup-content');

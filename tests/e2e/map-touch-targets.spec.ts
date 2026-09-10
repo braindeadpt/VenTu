@@ -104,6 +104,38 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
     });
   });
 
+  test.describe('desktop /pt/mapa/ — densidade por modalidade de input (V3′)', () => {
+    test.use({ viewport: { width: 1280, height: 800 }, serviceWorkers: 'block', reducedMotion: 'reduce' });
+
+    test('rato puro (any-pointer: fine): pills mantêm a densidade de 36px', async ({ page }) => {
+      await openMapa(page);
+
+      const surf = page.locator('[aria-label="Modalidade"] button').nth(1); // Surf
+      await expect(surf).toBeVisible();
+
+      const box = await surf.boundingBox();
+      expect(box, 'chip de modalidade deveria ter caixa mensurável').not.toBeNull();
+      // Densidade preservada no desktop de rato (decisão V3′ 2026-09): 36px.
+      expect(box!.height, 'altura visual (rato)').toBeGreaterThanOrEqual(34);
+      expect(box!.height, 'altura visual (rato)').toBeLessThanOrEqual(37);
+    });
+
+    test('toque em desktop (any-pointer: coarse): pills sobem ao piso de 44px', async ({ browser }) => {
+      // Touch laptop / tablet em paisagem a renderizar o layout lg+: o
+      // breakpoint de rato não se aplica — 44px garantidos (piso do projecto).
+      const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, hasTouch: true });
+      const page = await ctx.newPage();
+      await openMapa(page);
+
+      const surf = page.locator('[aria-label="Modalidade"] button').nth(1); // Surf
+      await expect(surf).toBeVisible();
+      const box = await surf.boundingBox();
+      expect(box, 'chip de modalidade deveria ter caixa mensurável').not.toBeNull();
+      expect(box!.height, 'altura (toque em desktop)').toBeGreaterThanOrEqual(44);
+      await ctx.close();
+    });
+  });
+
   test.describe('desktop /pt/spots/ — rótulo i18n do fullscreen', () => {
     test.use({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
