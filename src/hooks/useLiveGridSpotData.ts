@@ -32,6 +32,7 @@ export function useLiveGridSpotData<T extends GridSpotData>(
     let cancelled = false;
     let intervalId: number | undefined;
     let deferId: number | undefined;
+    const deferred = deferRefreshMs > 0;
 
     const refresh = () => {
       // wave-bias.json (client, session cache) alimenta o fallback do viés
@@ -44,6 +45,19 @@ export function useLiveGridSpotData<T extends GridSpotData>(
         })
         .catch(() => {
           /* keep baked scores */
+        })
+        .finally(() => {
+          // Deterministic e2e seam: consumers with a deferred refresh (the
+          // homepage hero, deferRefreshMs=4000, so the map can paint first)
+          // render BAKED data until this resolves. The visual-regression gate
+          // captures a few seconds in, so without a completion signal it could
+          // screenshot the bake (build data) instead of the committed fixture —
+          // the home hero's best-window score then drifted with every data
+          // commit. Stamping completion lets the spec wait for the fixture-
+          // driven render. Inert unless something reads the attribute.
+          if (deferred && !cancelled && typeof document !== 'undefined') {
+            document.documentElement.dataset.gridLiveDeferred = 'done';
+          }
         });
     };
 
@@ -52,6 +66,11 @@ export function useLiveGridSpotData<T extends GridSpotData>(
     };
 
     if (deferRefreshMs > 0) {
+      // Announce the pending deferred refresh so e2e can wait for it only when
+      // it actually exists (never on routes without a deferred consumer).
+      if (typeof document !== 'undefined') {
+        document.documentElement.dataset.gridLiveDeferred = 'pending';
+      }
       deferId = window.setTimeout(() => {
         if (cancelled) return;
         refresh();

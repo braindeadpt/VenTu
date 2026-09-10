@@ -37,25 +37,14 @@ import {
   readdirSync,
   readFileSync,
   rmSync,
+  writeFileSync,
 } from 'node:fs';
 import { dirname, join, relative } from 'node:path';
+import { mergeShape, skeleton } from './lib/visualFixtureShape.mjs';
 
 const root = process.cwd();
 const src = join(root, 'out', 'data');
 const dest = join(root, 'tests', 'e2e', 'fixtures', 'data');
-
-/** JSON structural skeleton: object keys sorted, nesting, scalar types. */
-function skeleton(v) {
-  if (Array.isArray(v)) {
-    return { t: 'array', el: v.length ? skeleton(v[0]) : null };
-  }
-  if (v && typeof v === 'object') {
-    const out = { t: 'object' };
-    for (const k of Object.keys(v).sort()) out[k] = skeleton(v[k]);
-    return out;
-  }
-  return { t: typeof v };
-}
 
 function shapeHash(text) {
   return createHash('sha1').update(JSON.stringify(skeleton(JSON.parse(text)))).digest('hex');
@@ -86,6 +75,7 @@ const isExcluded = (rel) => {
 };
 
 let copied = 0;
+let merged = 0;
 let skipped = 0;
 let deleted = 0;
 
@@ -94,13 +84,24 @@ for (const f of walk(src)) {
   if (isExcluded(rel)) continue;
   const out = join(dest, rel);
   if (f.endsWith('.json')) {
-    const buildHash = shapeHash(readFileSync(f, 'utf8'));
+    const buildText = readFileSync(f, 'utf8');
+    const buildHash = shapeHash(buildText);
     if (existsSync(out)) {
-      const fixtureHash = shapeHash(readFileSync(out, 'utf8'));
+      const fixtureText = readFileSync(out, 'utf8');
+      const fixtureHash = shapeHash(fixtureText);
       if (buildHash === fixtureHash) {
         skipped += 1;
         continue;
       }
+      // Shape changed: fold the build's skeleton into the committed fixture
+      // while KEEPING the fixture's scalar values. A value rewrite here would
+      // flip data-dependent layout (TopNow grid columns) and strand every
+      // baseline recorded against the previous values — see visualFixtureShape.
+      const mergedValue = mergeShape(JSON.parse(fixtureText), JSON.parse(buildText));
+      mkdirSync(dirname(out), { recursive: true });
+      writeFileSync(out, `${JSON.stringify(mergedValue, null, 2)}\n`);
+      merged += 1;
+      continue;
     }
   } else if (existsSync(out)) {
     // Non-JSON (binaries): keep the committed copy — byte diffs here are
@@ -126,9 +127,9 @@ for (const f of walk(dest)) {
 }
 
 console.log(
-  `✅ Fixture synced: ${copied} copied (shape change / new), ${skipped} skipped (value-only), ${deleted} deleted.`,
+  `✅ Fixture synced: ${copied} copied (new), ${merged} merged (shape change, values kept), ${skipped} skipped (value-only), ${deleted} deleted.`,
 );
-if (copied === 0 && deleted === 0) {
+if (copied === 0 && merged === 0 && deleted === 0) {
   console.log('No structural change — the committed fixture already matches this build shape.');
 }
 console.log('Next: re-record the visual baselines on Linux (record-visual-baselines workflow).');

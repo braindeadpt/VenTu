@@ -392,6 +392,26 @@ async function gotoStable(page: Page, path: string, isMap = false): Promise<void
       /* a smoke surface without a container still gets its layout gated */
     }
   }
+  // The homepage hero defers its live-data refresh by 4s (so the map paints
+  // first) and renders the BAKED build data until it resolves. Capturing a few
+  // seconds in would therefore screenshot the build, not the fixture — and the
+  // hero's best-window score/name drifted with every data commit even though
+  // the fixture pinned the rest of the page. Wait for the deferred refresh's
+  // explicit completion signal (useLiveGridSpotData), but ONLY when the page
+  // actually announced one — routes without a deferred consumer skip straight
+  // through instead of eating the timeout.
+  const hasDeferredRefresh = await page.evaluate(
+    () => typeof document !== 'undefined' && document.documentElement.dataset.gridLiveDeferred !== undefined,
+  );
+  if (hasDeferredRefresh) {
+    await page
+      .waitForFunction(() => document.documentElement.dataset.gridLiveDeferred === 'done', undefined, {
+        timeout: 15_000,
+      })
+      .catch(() => {
+        /* refresh failed — the bake stays, which is the honest fallback */
+      });
+  }
   await sweepLazyImages(page);
   await normalizeVolatileText(page);
   // Live-mode pages mount empty and fill from the fetched fixture — the CLS

@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react'
-import { Anchor, Database, ExternalLink, ShieldCheck } from 'lucide-react'
+import { Database, ExternalLink, ShieldCheck } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import { buildPageMetadata } from '@/lib/seo'
 import { ATTRIBUTIONS, type DataSourceId } from '@/lib/dataSources'
 import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
-import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
+import CoastalArchiveCard from '@/components/fontes/CoastalArchiveCard'
 import type { Metadata } from 'next'
 
 /** Link externo pequeno (atribuição obrigatória). */
@@ -60,6 +60,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function DataSourcesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const isPt = locale === 'pt'
+
+  // Baked once at build time; the client card re-derives from the committed
+  // fixture under `ventu_live` so the visual gate measures the fixture, not the
+  // day's build data (see CoastalArchiveCard).
+  const archive = loadCoastalWarningsArchive()
 
   const sources: Source[] = [
     {
@@ -309,89 +314,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         </table>
       </div>
 
-      {(() => {
-        const archive = loadCoastalWarningsArchive()
-        if (!archive.hasData) return null
-        const fmt = (d: string) =>
-          new Date(`${d}T12:00:00`).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB')
-        return (
-          <div className="card-1 p-6 space-y-4" data-coastal-archive-fontes>
-            <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-lg font-bold text-fg">
-                {isPt
-                  ? 'Histórico — Avisos à Navegação Costeiros (IH)'
-                  : 'History — IH coastal navigation warnings'}
-              </h2>
-              <span
-                className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
-                data-visual-dynamic
-              >
-                <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
-                {isPt
-                  ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} · janela ${archive.windowDays}`
-                  : `${archive.dayCount} ${archive.dayCount === 1 ? 'day' : 'days'} · ${archive.windowDays}-day window`}
-              </span>
-            </div>
-            <p className="text-sm text-fg-muted leading-relaxed">
-              {isPt
-                ? 'Registo diário dos avisos em vigor na costa portuguesa (e cross-border ES), arquivado pelo fetch — histórico auditable da camada de segurança, lado a lado com a atribuição do IH acima.'
-                : 'Daily record of warnings in force on the Portuguese coast (and cross-border ES), archived by the pipeline — an auditable history of the safety layer, next to the IH attribution above.'}
-            </p>
-
-            <CoastalDailyActiveChart dailyActive={archive.dailyActive} isPt={isPt} />
-
-            <div className="space-y-1.5">
-              <p className="text-xs uppercase tracking-wide text-fg-subtle">
-                {isPt ? 'Mais recentes' : 'Most recent'}
-              </p>
-              {archive.refs.slice(0, 6).map((r) => (
-                <div
-                  key={r.ref}
-                  data-coastal-ref={r.ref}
-                  className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5 text-meta"
-                >
-                  <span className="font-medium text-fg">
-                    {r.url ? (
-                      <a
-                        href={r.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline hover:text-fg transition-colors"
-                      >
-                        {r.ref}
-                      </a>
-                    ) : (
-                      r.ref
-                    )}
-                  </span>
-                  <span className="text-fg-muted tabular-nums">
-                    {fmt(r.firstSeen)} → {fmt(r.lastSeen)} · {r.nDays}d · {r.source === 'es' ? 'ES' : 'IH'}
-                  </span>
-                </div>
-              ))}
-              <p className="pt-1 text-xs text-fg-subtle">
-                {isPt ? (
-                  <>
-                    Tabela completa (janela de cada aviso) na página{' '}
-                    <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
-                      Sobre
-                    </a>
-                    .
-                  </>
-                ) : (
-                  <>
-                    Full per-warning window table on the{' '}
-                    <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
-                      About
-                    </a>{' '}
-                    page.
-                  </>
-                )}
-              </p>
-            </div>
-          </div>
-        )
-      })()}
+      <CoastalArchiveCard locale={locale} baked={archive} />
 
       <p className="text-xs text-fg-subtle">
         {isPt ? (
