@@ -14,6 +14,11 @@ permissions:
 jobs:
   quality:
     runs-on: ubuntu-latest
+    # Backstop de segurança (incidente 2026-09-09: e2e presos a 0s CPU): sem
+    # este limite o default do GitHub é 6h — um step preso esgota o runner.
+    # 45 min cobre folgado o normal (build + unit + e2e + perf ≈ 15–20 min)
+    # enquanto falha cedo qualquer deadlock/hang.
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -156,8 +161,12 @@ jobs:
       # correm sem rede nem IH_API_KEY): core expandido com tides, buoy-warnings,
       # topnow-wave-badge, observed-wave-card, data-sources, isobaths,
       # coastal-nav-warnings, coastal-map-layer e map-unmount-race.
+      # O `timeout 900` é a barreira OS-level (SIGTERM aos 15 min, exit 124):
+      # o globalTimeout do Playwright cobre hangs do runner, mas um processo
+      # bloqueado em I/O escapa a timers internos — este garante a morte do
+      # processo e falha o step com sinal claro (incidente 2026-09-09).
       - name: E2E — core data/score specs (hermetic)
-        run: npm run test:e2e:core
+        run: timeout 900 npm run test:e2e:core
         env:
           CI: true
 

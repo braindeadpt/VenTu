@@ -31,6 +31,14 @@ const baseURL = process.env.PLAYWRIGHT_BASE_URL || `http://127.0.0.1:${PORT}`;
 
 export default defineConfig({
   testDir: './tests/e2e',
+  // Incidente 2026-09-09: dois runs de `test:e2e:core` ficaram presos ~45 min
+  // com 0s de CPU (teardown/worker hang após os testes — os `npx serve`
+  // ficaram órfãos porque o pai foi abortado). Os timeouts por teste (30/60s)
+  // não limitam a corrida inteira: um hang no encerramento (browsers,
+  // workers, relatório) deixava o processo vivo indefinidamente. Este
+  // globalTimeout aborta QUALQUER run (local ou CI) que exceda 20 min — as
+  // suites normais acabam em ~1.5–10 min, por isso a margem é ~2×.
+  globalTimeout: 20 * 60_000,
   fullyParallel: !process.env.CI,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
