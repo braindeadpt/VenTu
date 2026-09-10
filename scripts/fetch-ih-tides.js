@@ -14,7 +14,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const IH_API = process.env.IH_API_URL || 'https://api-features.hidrografico.pt';
+const IH_API = process.env.IH_API_URL || 'https://ogcapi.hidrografico.pt';
 /** Current collection id (FAQ / OGC).
  *  Legacy id `tide_obs_stations_nrt` was REMOVED from the API in 2026
  *  (404 since 2026-08-13) — a dead fallback only adds a doomed request.
@@ -146,10 +146,12 @@ function lastKnownStations() {
   }
 }
 
-/** URL EDR radius — WKT `POINT(lon lat)` (espaço, verificado ao vivo). */
+/** URL EDR radius — WKT `POINT(lon lat)` (espaço, verificado ao vivo).
+ * Na OGC API EDR nova (ogcapi.hidrografico.pt, 2026-09) as consultas EDR
+ * vivem por instância de processamento: /instances/{l1|l2}/radius. */
 function edrRadiusUrl(lat, lon) {
   const coords = `POINT(${lon} ${lat})`;
-  return `${IH_API}/collections/tide_obs_nrt/radius?coords=${encodeURIComponent(coords)}&within=${EDR_RADIUS_M}&f=json`;
+  return `${IH_API}/collections/tide_obs_nrt/instances/l1/radius?coords=${encodeURIComponent(coords)}&within=${EDR_RADIUS_M}&f=json`;
 }
 
 /**
@@ -202,13 +204,34 @@ async function fetchEDRRadius(knownStations) {
 }
 
 async function fetchStationsCollection(collectionId) {
-  const url = `${IH_API}/collections/${collectionId}/items?limit=100&f=json`;
-  console.log(`  Trying collection ${collectionId}…`);
-  const stationsData = await fetchJson(url);
-  if (!Array.isArray(stationsData.features)) {
-    throw new Error(`No features in ${collectionId}`);
+  // Migração 2026-09: na OGC API nova (ogcapi.hidrografico.pt) o `/items`
+  // devolve só a REDE de estações — as últimas observações (o que precisamos)
+  // vivem no EDR `/instances/l1/locations`. Tentar locations primeiro; items
+  // fica como fallback para o schema antigo (obs embutidas por feature).
+  const urls = [
+    `${IH_API}/collections/${collectionId}/instances/l1/locations?limit=100&f=json`,
+    `${IH_API}/collections/${collectionId}/items?limit=100&f=json`,
+  ];
+  let lastErr = null;
+  for (const url of urls) {
+    const path = url.replace(IH_API, '');
+    try {
+      console.log(`  Trying ${path}…`);
+      const stationsData = await fetchJson(url);
+      if (!Array.isArray(stationsData.features)) {
+        throw new Error(`No features in ${path}`);
+      }
+      // Metadata pura (sem obs embutidas) não serve — aceita só se alguma
+      // feature traz campos de observação.
+      if (!stationsData.features.some((f) => stationFromFeature(f))) {
+        throw new Error(`${path}: features sem campos de observação`);
+      }
+      return stationsData;
+    } catch (err) {
+      lastErr = err;
+    }
   }
-  return stationsData;
+  throw lastErr;
 }
 
 async function fetchIHTides() {

@@ -1,7 +1,7 @@
 /**
  * IH coastal isobaths — `depcnt_8_16_30` (Linhas Isobatimétricas 8/16/30 m).
  *
- * The IH OGC API (api-features.hidrografico.pt, keyless) serves 152
+ * The IH OGC API (ogcapi.hidrografico.pt, keyless) serves 152
  * MultiLineString features, one per depth contour segment, with a `depth`
  * property (8 | 16 | 30). This lib computes, for each spot, the shortest
  * distance from the shore point to the nearest contour of each depth — i.e.
@@ -12,10 +12,10 @@
  * ~0.1% at these scales) across ALL segments of the MultiLineString. The
  * result feeds public/data/spot-isobaths.json and the IsobathsStrip UI.
  *
- * @see https://api-features.hidrografico.pt/collections/depcnt_8_16_30
+ * @see https://ogcapi.hidrografico.pt/collections/depcnt_8_16_30
  */
 
-const DEFAULT_IH_API = 'https://api-features.hidrografico.pt';
+const DEFAULT_IH_API = 'https://ogcapi.hidrografico.pt';
 const COLLECTION = 'depcnt_8_16_30';
 /** Depths served by the collection, in the order shown in the UI. */
 const DEPTHS = [8, 16, 30];

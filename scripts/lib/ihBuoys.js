@@ -20,7 +20,7 @@
  * @see https://faq.hidrografico.pt/books/hidrografico/page/servico-de-dados-boias-datawell-waverider
  */
 
-const DEFAULT_IH_API = 'https://api-features.hidrografico.pt';
+const DEFAULT_IH_API = 'https://ogcapi.hidrografico.pt';
 const DEFAULT_WAVE_API = 'https://supportserver1.hidrografico.pt/geodata/buoys';
 const DEFAULT_COLLECTIONS = ['buoys_datawell', 'buoys_Fugro_oceanor_wavescan'];
 

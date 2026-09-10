@@ -1,0 +1,28 @@
+fix(ih): migrate OGC API to ogcapi.hidrografico.pt (api-features DNS gone)
+
+O IH migrou a OGC API para https://ogcapi.hidrografico.pt — o registo DNS
+de api-features.hidrografico.pt foi eliminado (NXDOMAIN confirmado via
+Google DNS; FAQ actualizada há ~13h documenta o host novo).
+
+Mudanças:
+- DEFAULT_IH_API / IH_API → ogcapi.hidrografico.pt em ihBuoys,
+  ihCoastalWarnings, ihIsobaths, fetch-ih-tides, monitor-ih-tides.sh,
+  ops-audit, test-ih-api-key.
+- fetch-ih-tides: /items na API nova só traz a rede de estações — as
+  últimas observações vivem no EDR /instances/l1/locations; tenta esse
+  endpoint primeiro e exige campos de obs embutidos (items fica fallback
+  para o schema antigo).
+- EDR radius: path por instância /instances/l1/radius (a doc EDR define
+  locations/area/radius por instance l1|l2).
+
+Verificado ao vivo: tide_obs_nrt locations → 34 estações com obs de há
+minutos; buoys_datawell/nav_warning_coastal/depcnt_8_16_30 respondem com
+o mesmo schema. fetch real: 34 estações, 185 spots mapeados.
+
+Nota: o FAQ anuncia que a API Datawell (getDatawellData em
+supportserver1) será descontinuada e substituída por OGC API EDR —
+futura migração das séries de onda para o mesmo host EDR.
+
+Generated with [Devin](https://devin.ai)
+
+Co-Authored-By: Devin <158243242+devin-ai-integration[bot]@users.noreply.github.com>

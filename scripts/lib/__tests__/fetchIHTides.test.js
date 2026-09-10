@@ -105,7 +105,7 @@ describe('fetch-ih-tides EDR fallback (receita incidente IH 2026-08-13)', () => 
   it('edrRadiusUrl constrói WKT POINT(lon lat) com espaço (não vírgula)', () => {
     const { edrRadiusUrl, EDR_RADIUS_M } = loadModule();
     const url = edrRadiusUrl(38.7, -9.15);
-    expect(url).toContain('/collections/tide_obs_nrt/radius?');
+    expect(url).toContain('/collections/tide_obs_nrt/instances/l1/radius?');
     expect(decodeURIComponent(url)).toContain('coords=POINT(-9.15 38.7)');
     expect(url).toContain(`within=${EDR_RADIUS_M}`);
     expect(url).toContain('f=json');

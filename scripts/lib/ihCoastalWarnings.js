@@ -2,7 +2,7 @@
  * IH coastal navigation warnings — `nav_warning_coastal` (Avisos à Navegação
  * Costeiros, em vigor).
  *
- * The IH OGC API (api-features.hidrografico.pt, keyless) serves the warnings
+ * The IH OGC API (ogcapi.hidrografico.pt, keyless) serves the warnings
  * currently in force (15 features at write time), each with:
  *   - coastal_warning — ANAV reference, e.g. «ANAV NR 1577/26»;
  *   - category — e.g. «Requisitos de segurança maritima»;
@@ -13,10 +13,10 @@
  * so the spot page can show the navigation warnings that actually cover it —
  * a complement to IPMA/MeteoAlarm (meteorology) focused on maritime safety.
  *
- * @see https://api-features.hidrografico.pt/collections/nav_warning_coastal
+ * @see https://ogcapi.hidrografico.pt/collections/nav_warning_coastal
  */
 
-const DEFAULT_IH_API = 'https://api-features.hidrografico.pt';
+const DEFAULT_IH_API = 'https://ogcapi.hidrografico.pt';
 const COLLECTION = 'nav_warning_coastal';
 
 /**

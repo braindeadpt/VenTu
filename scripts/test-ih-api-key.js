@@ -107,7 +107,7 @@ async function runIhApiKeyTest({
     stations = result.stations;
   } catch (err) {
     log.error(`❌ Falha ao obter a lista de boias: ${err.message}`);
-    log.error('   Verifica a conectividade com https://api-features.hidrografico.pt');
+    log.error('   Verifica a conectividade com https://ogcapi.hidrografico.pt');
     return 1;
   }
   const active = Object.values(stations)

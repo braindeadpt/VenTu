@@ -17,7 +17,7 @@ const MODULE_URL = pathToFileURL(
   path.join(__dirname, '..', '..', 'fetch-ih-coastal-warnings.js'),
 ).href;
 
-const IH_COLLECTION_URL = 'https://api-features.hidrografico.pt/collections/nav_warning_coastal/items?limit=200&f=json';
+const IH_COLLECTION_URL = 'https://ogcapi.hidrografico.pt/collections/nav_warning_coastal/items?limit=200&f=json';
 
 function makeStubFetch(esImpl) {
   return async (url) => {

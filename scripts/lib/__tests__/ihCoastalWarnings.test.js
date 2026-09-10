@@ -165,7 +165,7 @@ describe('fetchCoastalWarnings (fetch mockado)', () => {
   });
 
   it('DEFAULT_IH_API é o endpoint keyless do IH', () => {
-    expect(DEFAULT_IH_API).toBe('https://api-features.hidrografico.pt');
+    expect(DEFAULT_IH_API).toBe('https://ogcapi.hidrografico.pt');
   });
 });
 

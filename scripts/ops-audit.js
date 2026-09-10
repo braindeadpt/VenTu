@@ -217,7 +217,7 @@ async function auditEndpoints() {
   console.log('— C. Endpoints externos —');
   await probe(
     'IH tides (tide_obs_nrt)',
-    'https://api-features.hidrografico.pt/collections/tide_obs_nrt/items?limit=1&f=json',
+    'https://ogcapi.hidrografico.pt/collections/tide_obs_nrt/items?limit=1&f=json',
     (body) => {
       try {
         const j = JSON.parse(body);
