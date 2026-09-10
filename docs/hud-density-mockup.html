@@ -230,15 +230,15 @@
   <div class="variant v3">
     <div class="variant-head">
       <span class="variant-name">V3 · 36px visual + alvo 44px</span>
-      <span class="variant-tag rec">recomendada</span>
-      <span class="variant-note">a densidade actual mantém-se; o alvo táctil invisível estende-se a 44px (línea tracejada = alvo)</span>
+      <span class="variant-tag">inviável (CSS)</span>
+      <span class="variant-note"><b>NÃO IMPLEMENTÁVEL:</b> o Chromium não faz hit-test de pseudo-elementos fora da border box do botão (verificado empiricamente) — e as linhas são <code>overflow-x-auto</code>, que recortam qualquer extensão vertical. Mantido como intenção; ver V3′ na recomendação.</span>
     </div>
     <div class="hud" id="hud3"></div>
     <div class="metrics">
-      <span>Altura visual <b>36px</b> — inalterada</span>
-      <span>Alvo táctil <b>44px</b> <span class="good">(piso do projecto, híbridos incluídos)</span></span>
-      <span>Bloco de filtros <b>~126px</b> <span class="good">(+4px só no espaçamento)</span></span>
-      <span>Modalidades à vista <b>9/9</b> em 1024+</span>
+      <span>Altura visual <b>36px</b> — pretendida</span>
+      <span>Alvo táctil <b>44px</b> — <span class="warn">impossível: hit-test confinado à border box</span></span>
+      <span>Bloco de filtros <b>~122px</b> (se fosse possível)</span>
+      <span>Alternativa real: <b>V3′</b> — 44px só em <code>any-pointer: coarse</code></span>
     </div>
   </div>
 
@@ -291,11 +291,10 @@
     </div>
 
     <div class="rec-box">
-      <h3>Recomendação: V3 — 36px visual, 44px de alvo (hit-area invisível)</h3>
-      <p>1 · Mantém a densidade que o design escolheu para desktop — zero mudança visual.</p>
-      <p>2 · Cumpre o piso 44px do projecto (o mesmo já aplicado abaixo de lg) em portáteis com ecrã táctil e tablets em paisagem, que actualmente caem no breakpoint de rato.</p>
-      <p>3 · O alvo estende-se só na vertical com um pseudo-elemento: <code>lg:relative lg:before:absolute lg:before:-inset-y-1 lg:before:inset-x-0</code> (36+4+4 = 44px) e o espaçamento entre linhas passa de <code>gap-1.5</code> (6px) para <code>gap-2</code> (8px) para os alvos nunca se sobreporem.</p>
-      <p>4 · Em <b>1024px e 1440px as 9 modalidades cabem sem scroll em todas as variantes</b> — o trade-off é apenas vertical (+24px na V1) e táctil, não de layout. Se a equipa preferir uniformidade total sobre densidade, a V1 é a alternativa correcta; a V2 não atinge o piso e a V4 é uma mudança de arquitectura separada.</p>
+      <h3>Recomendação revista: V3′ — 44px só em dispositivos de toque (any-pointer: coarse)</h3>
+      <p>1 · <b>V3 (hit-area invisível) é inviável</b>: o hit-test de pseudo-elementos está confinado à border box do botão (verificado em Chromium, caso mínimo e no HUD real) e as linhas <code>overflow-x-auto</code> recortam extensões verticais. O alvo de um chip é limitado pela própria altura da linha.</p>
+      <p>2 · A forma correcta de ter densidade E piso 44px é por <b>modalidade de input</b>: <code>@media (any-pointer: coarse)</code> → pills 44px; rato puro (fine) mantém 36px. Portáteis touch e tablets em paisagem (hoje no breakpoint de rato) ficam cobertos; o desktop de rato mantém a densidade actual — custo +24px só em híbridos.</p>
+      <p>3 · Se a equipa preferir uniformidade simples sobre densidade por dispositivo: <b>V1</b> (44px em todo o lado, +24px no bloco). A V2 (40px) não atinge o piso; a V4 é uma mudança de arquitectura separada. Em 1024px e 1440px as 9 modalidades cabem sem scroll em todas as variantes — o trade-off é só vertical.</p>
     </div>
   </div>
 </div>

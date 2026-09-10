@@ -533,7 +533,7 @@ export default function MapExploreHud({
               <button
                 type="button"
                 onClick={onResetFilters}
-                className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 rounded-input text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] transition-colors duration-150 min-h-[36px]"
+                className="shrink-0 inline-flex items-center gap-1 px-2 py-1.5 rounded-input text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] transition-colors duration-150 filter-row-action"
                 aria-label={clearFiltersLabel}
               >
                 <RotateCcw className="w-3.5 h-3.5" aria-hidden />

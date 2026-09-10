@@ -500,6 +500,25 @@ html:has([data-embed-widget]) body {
  * ═══════════════════════════════════════════════════════════════════════ */
 
 @layer utilities {
+  /* Densidade desktop dos filtros do mapa (decisão V3′ 2026-09): 44px por
+   * omissão (piso do projecto — mobile, tablets e híbridos); só desktops de
+   * RATO PURO (≥lg + any-pointer: fine) encolhem para 36px. Os híbridos
+   * (touch laptops, tablets em paisagem) renderizam o layout lg+ mas ficam
+   * com 44px. Hit-area invisível por pseudo-elemento não funciona — o
+   * hit-test está confinado à border box do botão e as linhas overflow-x-auto
+   * recortam extensões — por isso o alvo = altura real da pill (ver
+   * docs/hud-density-mockup.html). Fica aqui (camada utilities) para vencer
+   * qualquer min-h-* utility com a mesma especificidade. */
+  .filter-pill-compact,
+  .filter-row-action {
+    min-height: 44px;
+  }
+  @media (min-width: 1024px) and (any-pointer: fine) {
+    .filter-pill-compact,
+    .filter-row-action {
+      min-height: 36px;
+    }
+  }
   /* Scrollbar hide */
   .no-scrollbar,
   .scrollbar-hide {

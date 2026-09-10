@@ -279,12 +279,15 @@ Em produção, as pills compactas dos filtros têm **36px no desktop** (`lg:min-
 | **V0 — actual** | 36px | 36px | ~122px | — |
 | **V1 — 44px uniforme** | 44px | 44px | ~146px | +24px |
 | **V2 — 40px intermédio** | 40px | 40px | ~134px | +12px |
-| **V3 — 36px + alvo 44px** | 36px | 44px | ~126px | +4px (só gap) |
+| **V3 — 36px + alvo 44px** | 36px | 44px* | ~122px | *inviável — ver nota |
 | **V4 — toolbar segmentada** | 36px, 1 linha | — | ~48px | redesenho estrutural |
 
-### Recomendação: **V3 — 36px visual, 44px de alvo (hit-area invisível)**
+### V3 (hit-area invisível) — **não implementável**: correcção da recomendação
 
-1. Mantém a densidade escolhida para desktop — zero mudança visual.
-2. Cumpre o piso 44px do projecto em híbridos (portáteis touch, tablets em paisagem) que hoje caem no breakpoint de rato.
-3. Implementação: pseudo-elemento no `FilterPill` compacto (`lg:relative lg:before:absolute lg:before:-inset-y-1 lg:before:inset-x-0`, 36+4+4 = 44px) e `gap-1.5`→`gap-2` nas linhas de filtro para os alvos nunca se sobreporem.
-4. Alternativa se a equipa preferir uniformidade sobre densidade: **V1**. V2 não atinge o piso; V4 é uma mudança de arquitectura separada.
+Testada em implementação: o Chromium **não faz hit-test de pseudo-elementos fora da border box** do elemento (verificado num caso mínimo isolado e no HUD real — `elementFromPoint` a 1px do rect acerta no botão, a 3px acerta no cartão, mesmo com `overflow: visible` e o pseudo pintado). Além disso, as linhas de chips são `overflow-x-auto`, que recortam qualquer extensão vertical. **O alvo de um chip é limitado pela altura da própria linha** — 36px visuais e 44px de alvo não podem coexistir numa linha de 36px.
+
+### Implementado: **V3′ — 44px por omissão, 36px só em rato puro (`any-pointer: fine`)**
+
+1. `.filter-pill-compact` / `.filter-row-action` em `globals.css` (camada utilities — vence qualquer `min-h-*` utility): **44px base** em todo o lado; `@media (min-width: 1024px) and (any-pointer: fine)` → 36px. Portáteis touch e tablets em paisagem (hoje caem no breakpoint de rato) ficam cobertos pelo piso; o desktop de rato mantém a densidade — custo +24px de bloco só em híbridos.
+2. Testes: unit `filterPill.test.ts` (+4, contrato da classe-marcador); e2e `map-touch-targets` (+2 — rato puro 36px vs toque em desktop 44px; o `hasTouch` do Playwright emula `any-pointer: coarse`). Regressões CI: touch-targets 8/8, mapa/UX 62/0, unit 1496/1496.
+3. Alternativa para uniformidade total: **V1** (44px em todo o lado). V2 (40px) não atinge o piso; V4 é uma mudança de arquitectura separada.
