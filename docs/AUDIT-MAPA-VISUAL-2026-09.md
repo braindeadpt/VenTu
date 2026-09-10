@@ -309,11 +309,45 @@ O problema real: num portátil 1024×640, quase metade do mapa estava sob o HUD.
 
 **Decisão (implementada):**
 1. **Colapsado por omissão em todas as superfícies** — `useState(true)` já existia; o container de filtros passou de `'hidden md:flex'` para `'hidden md:hidden'` (idêntico ao mobile: compacto é o estado de entrada).
-2. **Toggle no cabeçalho desktop** — o handle ganhou rótulo «Mostrar/Ocultar filtros» (≥md) com **contador de filtros activos** `(n)`; mantém o grabber mobile; alvo ≥44px; `aria-expanded` em todas as superfícies.
-3. **Auto re-expand pós-mount** — se os filtros ficam sujos com o HUD colapsado (select nativo mobile; deep links/persistidos NÃO forçam expansão — primeira avaliação do effect ignorada, contador no toggle mostra o estado), as rows re-expandem para a mudança ser visível; só na transição para dirty («Limpar filtros» mantém colapsado).
+2. **Toggle no cabeçalho desktop** — chevron-only icon button **ancorado ao canto superior direito do cartão** (`md:absolute md:right-3`), 44px de alvo, **contador de filtros activos** `(n)` no aria-label, `aria-expanded` em todas as superfícies; o mobile mantém a linha grabber full-width (só chevron — a barra saiu).
+3. **Auto re-expand: avaliado e REJEITADO** — hoje nenhum controlo in-HUD altera filtros com as rows escondidas (URL/persistência sincronizam só no mount; deep links mantêm a entrada compacta por desenho — o contador no aria-label reporta o estado). Um effect pós-mount chegou a ser implementado e foi removido: código defensivo inalcançável + teste permanentemente skipped apodrecem. Se no futuro surgir um controlo desses, re-expandir na transição para dirty.
 4. **Sem persistência** — sessão começa sempre compacta (zero risco de hidratação; padrão SSR/first-paint igual).
-5. Alinhamento: o toggle de filtros fica ancorado ao canto direito do cabeçalho no desktop (`md:ml-auto`), separado do cluster esquerdo (título + camadas + pesquisa + boia); no mobile mantém o fluxo do cabeçalho; o grabber saiu (o controlo compacto é chevron + aria-label, 44px).
+5. Alinhamento: o toggle desktop é `absolute` no canto do cabeçalho (como os restantes icon buttons do cartão — pesquisa/boia), o título ganhou `md:pr-12` para não correr debaixo dele; no mobile o toggle continua full-width acima do cabeçalho.
 
 **Custo da legenda:** hudLift (ResizeObserver sobre o HUD) segue a altura real — com HUD compacto a legenda desce ~104px, área de mapa ganha por cima e por baixo.
 
-**Testes:** unit `mapHudCollapse.test.ts` (+4 — contrato de colapso); e2e novo `map-hud-collapse.spec.ts` (+5 — colapso/expansão desktop, orçamentos <16% colapsado e <36% expandido a 1440×900, legenda sem colisão, auto re-expand); `map-touch-targets` actualizado (3 testes expandem antes de medir); regressões: unit **1504/1504**, e2e **140 passed** (39 HUD-family + 101 adjacentes), lint e tsc limpos.
+**Testes:** unit `mapHudCollapse.test.ts` (+4 — contrato de colapso); e2e `map-hud-collapse.spec.ts` (+4 — colapso/expansão desktop, orçamentos **<18% colapsado** (medido 13,4% no 1440×900) e <36% expandido, legenda sem colisão); `map-touch-targets` actualizado (3 testes expandem antes de medir). O spec de colapso e os restantes testes de HUD foram depois consolidados em `map-hud.spec.ts` (secção seguinte).
+
+## Consolidação: `map-hud.spec.ts` (2026-09-10)
+
+As garantias do HUD «Modo explorar» estavam espalhadas por 4 specs (colapso,
+alvos de toque, overflow do slider das horas, toggles de camadas mobile) e
+nenhuma linha de pills tinha teste de scroll. Consolidadas num único ficheiro
+com 4 secções (19 testes):
+
+1. **Colapso** — arrancar colapsado em todas as superfícies; expandir/colapsar
+   por clique (aria-expanded + label); orçamentos de cobertura (colapsado <18%,
+   expandido <36% a 1440×900); legenda sem colisão (hudLift).
+2. **Alvos de toque** — rádios Mapa/Satélite ≥44px; pills ≥44px em mobile e
+   tablet; densidade V3′ (36px só em `any-pointer: fine`, 44px em coarse).
+3. **Overflow / scroll / hit-test** — NOVO: linhas de pills são roláveis em
+   360px e nunca estouram o cartão; slider das horas dentro do cartão
+   (regressão min-w-0); toggles de camadas: elemento de topo (hit-test), clique
+   persiste em localStorage e sobrevive à recarga.
+4. **Time track (scrub)** — deep links ?hours/?t; scrub 08h→17h muda o score
+   (desktop 1280 e mobile 390); prefers-reduced-motion não anima sozinho.
+
+**Método:** partilha de helpers/fixtures dentro do ficheiro (fixture mínima
+para o track, enriquecida com correntes+SST só para os toggles de camadas);
+score do marcador verificado com `toHaveAttribute` (retry elimina a corrida de
+leitura única que dava flake). Absorvidos e removidos: `map-hud-collapse.spec.ts`,
+`map-mobile-layer-toggles.spec.ts`, `map-hours.spec.ts` (os specs irmãos
+map-tide/map-hs/map-currents/map-sst mantêm os seus próprios stubs); o
+`test:e2e:core` passa a listar `map-hud`. Mantidos fora: teste URL-sync do HUD
+(visual-ux-audit) e alvos não-HUD (map-touch-targets).
+
+**Resultado:** 19/19 passed sem retries; rede de regressão verde (touch-targets,
+mapa-route, buoys/tide/hs/currents/sst, popover-hit, 30 passed). Nota: os 2
+falhas de `map-unmount-race` na mesma corrida são React #418 (hidratação do
+hero da homepage) no WIP não commitado de outra thread — ausentes no build de
+CI de `7e2e5099c`, sem relação com o HUD.
