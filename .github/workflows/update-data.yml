@@ -305,15 +305,24 @@ jobs:
         run: node scripts/verify-pipeline-freshness.js
 
   # Soft gate de marés: quando o ih-tides.json está morto há >= 7 dias (168h)
-  # o run falha de propósito (visibilidade) mas o push do Open-Meteo NÃO é
-  # bloqueado — este job não é dependência de commit-and-push. O validate-data
-  # (acima) corre sem --tides-soft-gate (marés warn-only): um outage IH de dias
-  # não pára as previsões; uma semana sem leituras é problema real e fica
-  # vermelho no Actions em vez de só nos logs.
+  # o job falha de propósito (visibilidade vermelha no Actions) mas o push do
+  # Open-Meteo NÃO é bloqueado — este job não é dependência de commit-and-push.
+  # O validate-data (acima) corre sem --tides-soft-gate (marés warn-only): um
+  # outage IH de dias não pára as previsões; uma semana sem leituras é problema
+  # real e fica vermelho no Actions em vez de só nos logs.
+  #
+  # continue-on-error: true é OBRIGATÓRIO por causa do gate de publicação: o
+  # deploy.yml publica via workflow_run do Update VenTu Data com conclusão
+  # success — se este job falhasse o run inteiro (exit 2), os dados frescos que
+  # o commit-and-push acabou de pôr no main NUNCA chegavam a produção (visto a
+  # 2026-09-09 23:18: o commit df864b7b2 com frames de radar recuperados ficou
+  # publicado em main mas sem deploy). O job continua vermelho no run — só o
+  # run deixa de concluir failure.
   validate-tides-soft-gate:
     if: needs.update-conditions.outputs.mode != 'skip'
     needs: update-conditions
     runs-on: ubuntu-latest
+    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
