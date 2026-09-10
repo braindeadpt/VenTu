@@ -26,12 +26,22 @@
  * Exit code: 0 always — the issue/Telegram are the channel, not red runs
  * (same rationale as monitor-ih-tides.sh).
  *
+ * Radar probe (2026-09-10): the same workflow also probes the IPMA radar
+ * product (manifest imgs-radar.json + newest PNG) with the SAME state-
+ * machine as scripts/monitor-ipma-radar.sh (label ipma-radar-outage).
+ * The pipeline's radarLayer is warn-only (degradation never fails the
+ * data job, so a silent IPMA outage would otherwise be invisible). This
+ * probe runs every 30 min (:12/:42) alongside the cadence check — the
+ * ih-health.yml monitor runs hourly, so worst-case detection drops from
+ * 60 min to 30 min, with no extra workflow.
+ *
  * API failures (token/network) degrade to log + exit 0 — a broken tool
  * must not fabricate an outage; the meta-based heartbeat still covers.
  *
  * Usage:
- *   node scripts/check-data-cadence.js              # produção (CI)
+ *   node scripts/check-data-cadence.js              # producao (CI)
  *   REPO=user/repo GH_TOKEN=... node scripts/check-data-cadence.js
+ *   RADAR_MANIFEST_URL=... FRAME_BASE_URL=... node scripts/check-data-cadence.js  # override (testes)
  */
 const { execFileSync } = require('child_process');
 const { evaluateDataCadence } = require('./lib/dataCadence');
@@ -41,6 +51,10 @@ const OUTAGE_LABEL = process.env.OUTAGE_LABEL || 'data-stale';
 const REPO = process.env.GITHUB_REPOSITORY || 'braindeadpt/VenTu';
 /** Path filter for the commits API — commits touching public/data only. */
 const DATA_PATH = 'public/data';
+
+const RADAR_OUTAGE_LABEL = process.env.RADAR_OUTAGE_LABEL || 'ipma-radar-outage';
+const RADAR_MANIFEST_URL = process.env.RADAR_MANIFEST_URL || 'https://www.ipma.pt/resources.www/transf/radar/imgs-radar.json';
+const RADAR_FRAME_BASE_URL = process.env.FRAME_BASE_URL || 'https://www.ipma.pt/resources.www/transf/radar/por/';
 
 const fmt = (h) => (h === null ? '—' : `${h.toFixed(1)} h`);
 const nowUtc = () => new Date().toISOString().replace('T', ' ').replace('Z', ' UTC');
@@ -120,14 +134,102 @@ function recoveryBody() {
   return `✅ Cadência de dados recuperou — voltou a aterrar um commit em \`${DATA_PATH}/**\` (${nowUtc()}). A fechar o incidente; confirmar o fim-a-fim com um run do \`update-data\`.`;
 }
 
-async function main() {
-  if (!ghAvailable()) {
-    console.log('⚠️ gh/GH_TOKEN indisponível — dry-run (sem issue/Telegram).');
+// ── Radar probe (mesma maquina de estados do monitor-ipma-radar.sh) ──
+
+function openRadarIssue() {
+  return (
+    gh(
+      'issue', 'list', '--repo', REPO, '--label', RADAR_OUTAGE_LABEL, '--state', 'open',
+      '--json', 'number', '--jq', '.[0].number // empty',
+    ) || ''
+  );
+}
+
+function ensureRadarLabel() {
+  gh(
+    'label', 'create', RADAR_OUTAGE_LABEL, '--repo', REPO, '--force', '--color', 'b60205',
+    '--description', 'Produto radar IPMA degradado (slots path:null / PNG 404)',
+  );
+}
+
+async function probeRadar() {
+  const manifestUrl = RADAR_MANIFEST_URL;
+  const frameBase = RADAR_FRAME_BASE_URL;
+  let manifestCode = '000';
+  let validPaths = 0;
+  let pngCode = '000';
+  let newestDate = '';
+  let newestPath = null;
+  let reason = '';
+  try {
+    const res = await fetch(manifestUrl, {
+      headers: { Accept: 'application/json', 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' },
+      signal: AbortSignal.timeout(30000),
+    });
+    manifestCode = String(res.status);
+    if (!res.ok) {
+      reason = `manifest HTTP ${res.status}`;
+      return { degraded: true, manifestCode, validPaths, pngCode, newestDate, reason };
+    }
+    const raw = await res.json();
+    let frames = [];
+    try {
+      const { parseManifest } = require('./lib/ipmaRadar.js');
+      frames = parseManifest(raw);
+    } catch {
+      const list = raw && Array.isArray(raw.Portugal) ? raw.Portugal : [];
+      frames = list.filter((e) => e && typeof e.path === 'string' && /\.png$/i.test(e.path));
+    }
+    validPaths = frames.length;
+    if (frames.length > 0) {
+      newestDate = frames[0].date || '';
+      newestPath = frames[0].path;
+    }
+    if (validPaths === 0) {
+      reason = '0 frames validos (path:null - manifest sem PNGs)';
+      return { degraded: true, manifestCode, validPaths, pngCode, newestDate, reason };
+    }
+    try {
+      const pngRes = await fetch(frameBase + newestPath, {
+        headers: { 'User-Agent': 'VenTu-Bot/1.0 (+https://ventu.surf)' },
+        signal: AbortSignal.timeout(30000),
+      });
+      pngCode = String(pngRes.status);
+      if (!pngRes.ok) {
+        reason = `PNG mais recente HTTP ${pngRes.status}`;
+        return { degraded: true, manifestCode, validPaths, pngCode, newestDate, reason };
+      }
+    } catch (e) {
+      pngCode = '000';
+      reason = `PNG fetch failed: ${e.message || e}`;
+      return { degraded: true, manifestCode, validPaths, pngCode, newestDate, reason };
+    }
+    return { degraded: false, manifestCode, validPaths, pngCode, newestDate, reason: '' };
+  } catch (e) {
+    reason = `manifest fetch failed: ${e.message || e}`;
+    return { degraded: true, manifestCode, validPaths, pngCode, newestDate, reason };
   }
+}
+
+function radarStaleBody(r) {
+  return [
+    `O produto radar do IPMA esta degradado: o manifest \`imgs-radar.json\` nao esta a servir os frames PNG.`,
+    '',
+    `- Manifest: HTTP ${r.manifestCode} - frames validos: ${r.validPaths} - slot mais recente: ${r.newestDate || '--'} - PNG mais recente: HTTP ${r.pngCode}`,
+    `- Razao: ${r.reason || '--'}`,
+    `- O site continua a servir o ultimo frame bom em cache (camada \`radarLayer\` e warn-only no pipeline de dados — os dados essenciais nao sao afectados).`,
+    `- Detectado tambem pelo heartbeat \`data-cadence-alert\` (a cada 30 min, alem do \`ih-health\` horario) — a camada warn-only nunca falha o job, por isso a degradacao seria invisivel sem este probe.`,
+    `- Gerido por \`scripts/check-data-cadence.js\` + \`scripts/monitor-ipma-radar.sh\` (label \`${RADAR_OUTAGE_LABEL}\`): sera comentado e fechado automaticamente quando o produto recuperar.`,
+  ].join('\n');
+}
+
+function radarRecoveryBody(r) {
+  return `Produto radar IPMA recuperou — \`imgs-radar.json\` voltou a servir frames PNG (manifest ${r.manifestCode}, ${r.validPaths} frame(s), PNG ${r.pngCode}, ${nowUtc()}). A fechar o incidente; o proximo run do \`update-data\` volta a publicar frames novos.`;
+}
+
+async function handleCadence(ghOk) {
   const lastCommitAt = lastDataCommitAt();
   if (lastCommitAt === null) {
-    // API falhou (token/rede) → não fabricar uma outage; o heartbeat por
-    // meta (staleness-alert.yml) continua a cobrir. Log alto e exit 0.
     console.log('⚠️ Não foi possível resolver o último commit de dados (API) — a saltar este ciclo; o staleness-alert cobre.');
     return;
   }
@@ -138,7 +240,7 @@ async function main() {
     console.log(
       `✅ cadência OK — último commit de dados há ${fmt(s.ageHours)} (limiar ${s.thresholdHours} h ${s.isDaytime ? 'dia' : 'noite'})`,
     );
-    if (ghAvailable()) {
+    if (ghOk) {
       const issue = openIssue();
       if (issue) {
         gh('issue', 'comment', issue, '--repo', REPO, '--body', recoveryBody());
@@ -154,22 +256,18 @@ async function main() {
     } else {
       console.log('ℹ️ fresco — gh/GH_TOKEN indisponível (sem notificação por issue)');
     }
-    process.exit(0);
+    return;
   }
 
   console.log(
     `🔴 cadência STALE — último commit de dados há ${fmt(s.ageHours)} (limiar ${s.thresholdHours} h ${s.isDaytime ? 'dia' : 'noite'})`,
   );
-  if (ghAvailable()) {
+  if (ghOk) {
     ensureLabel();
     const issue = openIssue();
     if (issue) {
       console.log(`ℹ️ Incidente #${issue} já aberto — sem spam`);
     } else {
-      // Fallback auto-resurrection (see dispatchKeepAlive): try to heal before
-      // alerting, so a dropped :17/:47 schedule slot is recovered in ~30 min
-      // even when the external keep-alive (cron-job.org) is not configured.
-      // Gate is idempotent — a fresh pipeline just skips.
       if (dispatchKeepAlive()) {
         console.log('🔄 keep-alive ping dispatched (heartbeat fallback) — gate decides full/obs/skip');
       }
@@ -191,6 +289,66 @@ async function main() {
   } else {
     console.log('ℹ️ STALE — gh/GH_TOKEN indisponível (sem notificação por issue)');
   }
+}
+
+async function handleRadar(ghOk) {
+  console.log('--- probe IPMA radar (manifest + PNG) ---');
+  const r = await probeRadar();
+  if (!r.degraded) {
+    console.log(`✅ IPMA radar — UP (manifest ${r.manifestCode}, ${r.validPaths} frame(s), PNG ${r.pngCode})`);
+    if (ghOk) {
+      const issue = openRadarIssue();
+      if (issue) {
+        gh('issue', 'comment', issue, '--repo', REPO, '--body', radarRecoveryBody(r));
+        gh('issue', 'close', issue, '--repo', REPO);
+        console.log(`🔔 RADAR RECOVERY — incidente #${issue} comentado e fechado`);
+        const chat = process.env.OPS_TELEGRAM_CHAT_ID;
+        if (chat) {
+          await sendTelegramMessage(chat, `✅ VenTu: produto radar IPMA recuperou (manifest ${r.manifestCode}, ${r.validPaths} frames, PNG ${r.pngCode}) — incidente #${issue} fechado.`);
+        }
+      } else {
+        console.log('ℹ️ radar UP sem incidente aberto — estado normal (sem notificação)');
+      }
+    } else {
+      console.log('ℹ️ radar UP — gh/GH_TOKEN indisponível (sem notificação por issue)');
+    }
+    return;
+  }
+
+  console.log(`🔴 IPMA radar — DEGRADED (manifest ${r.manifestCode}, ${r.validPaths} frame(s) validos, PNG ${r.pngCode}, slot mais recente: ${r.newestDate || '?'}) - ${r.reason}`);
+  if (ghOk) {
+    ensureRadarLabel();
+    const issue = openRadarIssue();
+    if (issue) {
+      console.log(`ℹ️ Radar incidente #${issue} já aberto — sem spam`);
+    } else {
+      const url = gh(
+        'issue', 'create', '--repo', REPO, '--label', RADAR_OUTAGE_LABEL,
+        '--title', `IPMA radar degraded — imgs-radar.json (${nowUtc()})`,
+        '--body', radarStaleBody(r),
+      );
+      if (url) {
+        console.log(`🔔 RADAR ALERTA — aberto incidente: ${url}`);
+        const chat = process.env.OPS_TELEGRAM_CHAT_ID;
+        if (chat) {
+          await sendTelegramMessage(chat, `🚨 VenTu: produto radar IPMA degradado (manifest ${r.manifestCode}, ${r.validPaths} frames, PNG ${r.pngCode}) — ${nowUtc()}. Issue aberto: ${url}`);
+        }
+      } else {
+        console.log('⚠️ radar: falhou a criar a issue (permissões do GITHUB_TOKEN?)');
+      }
+    }
+  } else {
+    console.log('ℹ️ radar DEGRADED — gh/GH_TOKEN indisponível (sem notificação por issue)');
+  }
+}
+
+async function main() {
+  const ghOk = ghAvailable();
+  if (!ghOk) {
+    console.log('⚠️ gh/GH_TOKEN indisponível — dry-run (sem issue/Telegram).');
+  }
+  await handleCadence(ghOk);
+  await handleRadar(ghOk);
   process.exit(0);
 }
 
