@@ -1,6 +1,1506 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-10T14:27:34.824Z",
-  "warnings": [],
-  "spotWarnings": {}
+  "fetchedAt": "2026-09-10T23:19:11.215Z",
+  "warnings": [
+    {
+      "areaCode": "EVR",
+      "areaLabel": "Évora",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "PTO",
+      "areaLabel": "Porto",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-13T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "STB",
+      "areaLabel": "Setúbal",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "STM",
+      "areaLabel": "Santarém",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "VCT",
+      "areaLabel": "Viana do Castelo",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-13T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "LSB",
+      "areaLabel": "Lisboa",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "LRA",
+      "areaLabel": "Leiria",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "BJA",
+      "areaLabel": "Beja",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "CBO",
+      "areaLabel": "Castelo Branco",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "AVR",
+      "areaLabel": "Aveiro",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-13T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "CBR",
+      "areaLabel": "Coimbra",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "PTG",
+      "areaLabel": "Portalegre",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-12T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "BRG",
+      "areaLabel": "Braga",
+      "type": "Tempo Quente",
+      "level": "yellow",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-13T10:00:00",
+      "endTime": "2026-09-13T17:00:00",
+      "relevant": false
+    }
+  ],
+  "spotWarnings": {
+    "moledo": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "vila-praia-ancora": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "afife": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "castelo-neiva": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "amorosa": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "cabedelo": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-cabedelo": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "cabedelo-wakepark": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "rodanho": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "ofir": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "esposende": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "esposende-praia": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "fao": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "apulia": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "povoa-varzim": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "azurara": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "leca-palmeira": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "matosinhos": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "cabedelo-douro": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "marina-afurada-foil": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-fao-cavado": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-esposende-piscinas": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-da-lomba": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "salgueiros": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sereia-costa-verde": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "canide-sul": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "aguda": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "espinho": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-37": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "bairro-piscatorio": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "paramos": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "barrinha-esmoriz": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "esmoriz": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "cortegaca": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "cortegaca-sul": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "maceda": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "murtosa": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "ria-torreira": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-torreira": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "muranzel": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "furadouro": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-jacinto": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "costa-nova": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "tocha": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "quiaios": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "figueira-foz": [
+      {
+        "areaCode": "CBR",
+        "areaLabel": "Coimbra",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "leirosa": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-da-vieira": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "castelo-bode": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "nazare": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-foz-arelho": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "obidos-lagoon": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "obidos-lagoon-sul": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "obidos-lagoon-foz": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foz-arelho-beach": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-del-rey": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "almagreira": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "baleal": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "supertubos": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foz-sizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "coxos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "ribeira-ilhas": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "empa": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-lourenco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "pedra-branca": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-sebastiao": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foz-lizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-grande-sintra": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "adraga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "guincho": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "seixal-bay": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "parede": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "carcavelos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "nova-vaga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-joao-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "costa-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "fonte-telha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "ponta-dos-corvos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "trafaria": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "cova-do-vapor": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-da-rainha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "foil-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "praia-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "troia": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "comporta": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "carvalhal-comporta": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "alqueva": [
+      {
+        "areaCode": "BJA",
+        "areaLabel": "Beja",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "ilha-do-ermal": [
+      {
+        "areaCode": "BRG",
+        "areaLabel": "Braga",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "melides": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sines": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-torpes": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "porto-covo": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "malhao": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "vila-nova-milfontes": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "alteirinhos": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "barra-aveiro": [
+      {
+        "areaCode": "AVR",
+        "areaLabel": "Aveiro",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "vila-cha": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "santa-cruz": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "consolacao": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "areia-branca": [
+      {
+        "areaCode": "STM",
+        "areaLabel": "Santarém",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "sao-martinho-porto": [
+      {
+        "areaCode": "LRA",
+        "areaLabel": "Leiria",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "cave-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "pescadores-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "crazy-left": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "meco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "lagoa-santo-andre": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "lagoa-sancha": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "pessegueiro": [
+      {
+        "areaCode": "STB",
+        "areaLabel": "Setúbal",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-12T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "fao-ofir-surf": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "ofir-praia": [
+      {
+        "areaCode": "VCT",
+        "areaLabel": "Viana do Castelo",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "mindelo": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ],
+    "aterro": [
+      {
+        "areaCode": "PTO",
+        "areaLabel": "Porto",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-13T10:00:00",
+        "endTime": "2026-09-13T17:00:00",
+        "relevant": false
+      }
+    ]
+  }
 }

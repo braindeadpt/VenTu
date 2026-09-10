@@ -8,12 +8,12 @@
       "lat": 43.63999938964844,
       "lon": -3.0399999618530273,
       "latest": {
-        "date": "2026-09-10T12:00:00.000Z",
-        "hs": 1.2899999618530273,
-        "tp": 10.739999771118164,
-        "dir": 314,
-        "hmax": 2,
-        "sst": 22.829999923706055
+        "date": "2026-09-10T21:00:00.000Z",
+        "hs": 1.0499999523162842,
+        "tp": 9.380000114440918,
+        "dir": 329,
+        "hmax": 1.9700000286102295,
+        "sst": 22.809999465942383
       }
     },
     "6200025": {
@@ -24,11 +24,11 @@
       "lat": 43.75,
       "lon": -6.179999828338623,
       "latest": {
-        "date": "2026-09-10T12:00:00.000Z",
-        "hs": 1.6399999856948853,
-        "tp": 10.550000190734863,
-        "dir": 337,
-        "sst": 20.34000015258789
+        "date": "2026-09-10T21:00:00.000Z",
+        "hs": 1.0499999523162842,
+        "tp": 9.960000038146973,
+        "dir": 340,
+        "sst": 20.510000228881836
       }
     },
     "6200083": {
@@ -39,12 +39,12 @@
       "lat": 43.5,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-09-10T12:00:00.000Z",
-        "hs": 1.6399999856948853,
-        "tp": 9.770000457763672,
-        "dir": 338,
-        "hmax": 2.630000114440918,
-        "sst": 19.40999984741211
+        "date": "2026-09-10T21:00:00.000Z",
+        "hs": 0.9399999976158142,
+        "tp": 10.15999984741211,
+        "dir": 339,
+        "hmax": 1.409999966621399,
+        "sst": 19.56999969482422
       }
     },
     "6200084": {
@@ -55,11 +55,11 @@
       "lat": 42.119998931884766,
       "lon": -9.430000305175781,
       "latest": {
-        "date": "2026-09-10T12:00:00.000Z",
+        "date": "2026-09-10T21:00:00.000Z",
         "hs": 1.1699999570846558,
-        "tp": 10.550000190734863,
-        "dir": 332,
-        "sst": 18.31999969482422
+        "tp": 9.960000038146973,
+        "dir": 335,
+        "sst": 18.389999389648438
       }
     },
     "6200085": {
@@ -70,12 +70,12 @@
       "lat": 36.4900016784668,
       "lon": -6.960000038146973,
       "latest": {
-        "date": "2026-09-10T12:00:00.000Z",
-        "hs": 0.699999988079071,
-        "tp": 4.489999771118164,
-        "dir": 289,
-        "hmax": 1.409999966621399,
-        "sst": 22.479999542236328
+        "date": "2026-09-10T21:00:00.000Z",
+        "hs": 0.4699999988079071,
+        "tp": 8.010000228881836,
+        "dir": 253,
+        "hmax": 0.6600000262260437,
+        "sst": 22.75
       }
     },
     "6200199": {
@@ -86,11 +86,11 @@
       "lat": 39.560001373291016,
       "lon": -9.210000038146973,
       "latest": {
-        "date": "2026-09-10T11:00:00.000Z",
-        "hs": 2.0947299003601074,
-        "tp": 10.781299591064453,
-        "hmax": 3.002929925918579,
-        "sst": 17.2656307220459
+        "date": "2026-09-10T20:00:00.000Z",
+        "hs": 1.7285200357437134,
+        "tp": 10.89840030670166,
+        "hmax": 2.4755899906158447,
+        "sst": 17.104490280151367
       }
     },
     "6201079": {
@@ -98,15 +98,15 @@
       "name": "Datawell ao largo de Faro",
       "area": "Faro",
       "country": "PT",
-      "lat": 36.90536117553711,
-      "lon": -7.897540092468262,
+      "lat": 36.904869079589844,
+      "lon": -7.897240161895752,
       "latest": {
-        "date": "2026-09-10T08:55:00.000Z",
-        "hs": 0.5299999713897705,
+        "date": "2026-09-10T13:54:59.999Z",
+        "hs": 0.4099999964237213,
         "tp": 7.699999809265137,
-        "dir": 245,
-        "hmax": 0.7099999785423279,
-        "sst": 20.700000762939453
+        "dir": 235,
+        "hmax": 0.5400000214576721,
+        "sst": 20.899999618530273
       }
     }
   },
@@ -640,10 +640,10 @@
       "distanceKm": 149.2
     },
     "alqueva": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 148.2
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 196
     },
     "ilha-do-ermal": {
       "code": "6200084",
@@ -652,274 +652,274 @@
       "distanceKm": 122.5
     },
     "melides": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 157.3
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 163.2
     },
     "sines": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 144.8
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 180.9
     },
     "sao-torpes": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 138.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 185.5
     },
     "porto-covo": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 131.5
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 193.4
     },
     "malhao": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 124
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 202
     },
     "vila-nova-milfontes": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 120
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 207.6
     },
     "alteirinhos": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 113.8
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 206.7
     },
     "zambujeira": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 104.5
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 198.8
     },
     "carvalhal": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 103.2
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 197.7
     },
     "odeceixe": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 99.6
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 194.5
     },
     "amoreira": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 97.5
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 192.9
     },
     "monte-clerigo": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 98.1
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 193.6
     },
     "arrifana": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 96
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 191.4
     },
     "vale-figueiras": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 92.8
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 188.2
     },
     "bordeira": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 94.6
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 189.6
     },
     "amado": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 94
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 188.7
     },
     "barriga": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 94.2
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 188.1
     },
     "castelejo": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 96.6
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 190.2
     },
     "luz": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 76.7
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 171.1
     },
     "burgau": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 80.5
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 174.4
     },
     "salema": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 84.2
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 177.9
     },
     "cordoama": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 94.9
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 187.9
     },
     "ferragudo": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 60.2
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 155.6
     },
     "vila-real-santo-antonio": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 53.7
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 88.8
     },
     "monte-gordo": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 50.3
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 88.5
     },
     "praia-verde": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 46.9
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 90.8
     },
     "altura": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 46.1
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 89.5
     },
     "praia-rocha": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 61.1
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 156.4
     },
     "alvor": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 68.3
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 163.5
     },
     "foil-alvor": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 68.3
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 163.5
     },
     "lagos": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 71
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 166
     },
     "lagos-wakepark": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 71.9
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 166.7
     },
     "beliche": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 96.3
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 188.9
     },
     "martinhal": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 92.2
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 184.8
     },
     "barrinha-faro": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 12.7
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 104.6
     },
     "fuseta": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 21.5
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 92.9
     },
     "ilha-faro": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 11.1
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 106
     },
     "faro-mar": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 14.4
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 108.9
     },
     "culatra": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 10.9
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 95.6
     },
     "armona": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 15
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 94.4
     },
     "ilha-tavira": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 33.5
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 90.6
     },
     "cabanas-tavira": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 37.1
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 91
     },
     "cacela-velha": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 41.8
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 90.2
     },
     "zavial": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 87.6
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 180.8
     },
     "tonel": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 94
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 186.2
     },
     "barra-aveiro": {
       "code": "6200199",
@@ -982,58 +982,58 @@
       "distanceKm": 120.9
     },
     "lagoa-santo-andre": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 153.6
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 167.4
     },
     "lagoa-sancha": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 147.7
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 174.4
     },
     "pessegueiro": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 130
+      "code": "6200199",
+      "stationTitle": "Nazaré Costeira (WMO)",
+      "area": "Nazaré",
+      "distanceKm": 195.6
     },
     "garrão": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 9.1
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 103.9
     },
     "falesia": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 29.5
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 124.6
     },
     "tres-irmaos": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 66.9
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 162.1
     },
     "canavial": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 49.9
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 145.4
     },
     "armacao-pera": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 46
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 141.5
     },
     "mareta": {
-      "code": "6201079",
-      "stationTitle": "Datawell ao largo de Faro",
-      "area": "Faro",
-      "distanceKm": 93.3
+      "code": "6200085",
+      "stationTitle": "Golfo de Cádiz",
+      "area": "Andaluzia",
+      "distanceKm": 185.5
     },
     "fao-ofir-surf": {
       "code": "6200084",
@@ -1061,7 +1061,7 @@
     }
   },
   "day": "20260910",
-  "fetchedAt": "2026-09-10T14:27:12.454Z",
+  "fetchedAt": "2026-09-10T23:18:49.352Z",
   "hasWaveData": true,
   "note": "Fallback independente para o observedWave do IH (via WMO/GTS → Copernicus, sem key)."
 }
