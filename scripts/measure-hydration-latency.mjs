@@ -1,9 +1,9 @@
 /* Hydration-latency metric: time from navigation start to the
- * HydrationBeacon attribute (html[data-hydrated="true"]).
+ * HydrationBeacon signal (html.is-hydrated).
  *
  * Measurement: a MutationObserver installed by addInitScript (runs before
- * any page script) records performance.now() the moment the attribute is
- * set. The beacon fires in a useEffect after the shell commits, so this
+ * any page script) records performance.now() the moment the class lands.
+ * The beacon fires in a useEffect after the shell commits, so this
  * is "when is the shell actually interactive", not "when did JS parse".
  *
  * Usage:
@@ -109,14 +109,16 @@ for (const locale of LOCALES) {
         const page = await ctx.newPage();
         await page.addInitScript(() => {
           // Runs before any page script, in the isolated world: record the
-          // attribute timestamp ON THE DOM (html[data-beacon-ms]) so the
+          // class timestamp ON THE DOM (html[data-beacon-ms]) so the
           // main world (waitForFunction) can read it cross-world. Observe
           // `document` — documentElement does not exist yet at init time.
+          // The class attribute mutates on theme apply too; only the
+          // is-hydrated class (stamped once by the beacon) counts.
           const obs = new MutationObserver(() => {
             const html = document.documentElement;
             if (
               html &&
-              html.getAttribute('data-hydrated') === 'true' &&
+              html.classList.contains('is-hydrated') &&
               html.getAttribute('data-beacon-ms') === null
             ) {
               html.setAttribute('data-beacon-ms', String(Math.round(performance.now())));
@@ -126,7 +128,7 @@ for (const locale of LOCALES) {
           obs.observe(document, {
             subtree: true,
             attributes: true,
-            attributeFilter: ['data-hydrated'],
+            attributeFilter: ['class'],
           });
         });
         const t0 = Date.now();
@@ -159,7 +161,7 @@ console.log(
     {
       base: BASE,
       runsPerRoute: RUNS,
-      note: 'inPageBeaconMs = performance.now() when data-hydrated lands (page-relative); wallTillBeaconMs = Date.now() around goto+wait',
+      note: 'inPageBeaconMs = performance.now() when html.is-hydrated lands (page-relative); wallTillBeaconMs = Date.now() around goto+wait',
       results,
     },
     null,

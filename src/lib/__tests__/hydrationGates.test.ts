@@ -26,8 +26,11 @@ const heroMap = read('src/components/homepage/HomepageMapHero.tsx');
 const spotMap = read('src/components/spots/SpotMapInteractive.tsx');
 
 describe('hydration gate (zero placeholder flash)', () => {
-  it('HydrationBeacon carimba a classe is-hydrated no <html>', () => {
+  it('HydrationBeacon carimba a classe is-hydrated no <html> — e só ela (um sinal)', () => {
     expect(beacon).toContain("classList.add('is-hydrated')");
+    // Consolidado: o atributo data-hydrated foi removido; a classe é o único
+    // sinal (testes esperam html.is-hydrated, CSS usa .is-hydrated).
+    expect(beacon).not.toContain('data-hydrated');
   });
 
   it('globals.css esconde cada gate antes da hidratação com especificidade à prova de utilitários', () => {

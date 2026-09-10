@@ -11,7 +11,7 @@ import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
  * `domcontentloaded` says nothing about hydration; the beacon does.
  */
 async function waitHydrated(page: import('@playwright/test').Page) {
-  await page.waitForSelector('html[data-hydrated="true"]', { timeout: 30_000 });
+  await page.waitForSelector('html.is-hydrated', { timeout: 30_000 });
 }
 
 /**
