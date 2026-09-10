@@ -132,6 +132,15 @@ jobs:
       - name: Check per-route payload budgets
         run: node scripts/check-payload-budgets.js
 
+      # Export-route validator (browserless): every sitemap + noindex
+      # allowlist route must have a baked index.html, none may have baked the
+      # not-found page, none near-empty, none orphaned. Replaces the HTTP
+      # half of the route audit (~14 min of per-route navigation) with a
+      # filesystem check of all ~2300 routes in seconds. The browser audit
+      # below keeps uncaught-JS coverage on a deterministic stratified sample.
+      - name: Check export routes (all, browserless)
+        run: node scripts/check-export-routes.js
+
       # Hydration beacon in the BUILT bundle: the CSS gates and waitHydrated
       # hang off html.is-hydrated. The vitest contract guards the source, but
       # only the bundle proves the beacon shipped — a build that drops it
@@ -170,7 +179,12 @@ jobs:
         env:
           CI: true
 
-      - name: E2E — route audit
+      # Deterministic stratified sample (spot 40 / news 20 / explorar 15;
+      # static + modalidade always full): catches uncaught-JS/hydration
+      # defects, which are template-wide. All-route HTTP coverage lives in
+      # the export-route check above; the full browser run is the daily
+      # full-route-audit workflow (VENTU_FULL_AUDIT=1).
+      - name: E2E — route audit (stratified sample)
         run: npx playwright test full-audit
         env:
           CI: true

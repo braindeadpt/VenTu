@@ -27,8 +27,10 @@ console.log('VenTu — auditoria completa automatizada\n');
 
 run('Build static export', 'npm', ['run', 'build']);
 run('Unit tests (Vitest)', 'npm', ['run', 'test']);
-run('Playwright E2E audit', 'npx', ['playwright', 'test'], {
-  env: { CI: '1' },
+// Local mirror of the daily full-route-audit workflow: VENTU_FULL_AUDIT=1
+// navigates the complete discovered route list, not the CI sample.
+run('Playwright E2E audit (full route list)', 'npx', ['playwright', 'test'], {
+  env: { CI: '1', VENTU_FULL_AUDIT: '1' },
 });
 
 const reportDir = path.join(root, 'playwright-report');

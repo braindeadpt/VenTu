@@ -1,0 +1,80 @@
+name: Full Route Audit (daily)
+
+# The complete browser route audit — every one of the ~1585 discovered routes
+# navigated in a real Chromium — runs here on a schedule instead of on every
+# push. Per-push CI keeps the cheap dimensions on every commit:
+#   - scripts/check-export-routes.js: all routes present in the static export,
+#     browserless, seconds (the HTTP half of the old audit);
+#   - the stratified sample (spot 40 / news 20 / explorar 15, static +
+#     modalidade full) catching uncaught-JS/hydration defects, which are
+#     template-wide.
+# Nothing loses vigilance; only the per-push critical path gets its ~14 min
+# back (measured: route-audit step 837s of a 30-min quality job, run
+# 34437712823). This workflow sets VENTU_FULL_AUDIT=1 to restore the full
+# route list inside the browser audit, plus the orphan-dir check in
+# --mode=extra form (its flat route list goes stale between runs, so MISSING
+# expectations belong to per-push CI, not here).
+# Frequency: daily is enough for whole-template defects — data-shape drift
+# is already gated per-push by the validators and the hermetic core suite.
+
+on:
+  schedule:
+    # 04:40 UTC daily — before European morning traffic, after the data
+    # pipeline's overnight slots (:17/:47 cadence), clear of CI's busiest
+    # window.
+    - cron: '40 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: full-route-audit
+  cancel-in-progress: false
+
+jobs:
+  full-audit:
+    runs-on: ubuntu-latest
+    # ~1600 navigations at CI-core speed ≈ the old 14 min, plus build.
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate sitemap
+        run: npm run sitemap:generate
+
+      - name: Build static export
+        env:
+          NODE_OPTIONS: '--max-old-space-size=4096'
+          NEXT_PUBLIC_BASE_PATH: ''
+        run: npm run build
+
+      - name: Export-route check (extra-mode orphan scan)
+        run: node scripts/check-export-routes.js --mode=extra
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E — full route audit (all routes, browser)
+        env:
+          CI: true
+          VENTU_FULL_AUDIT: '1'
+        run: npx playwright test full-audit
+
+      - name: Upload E2E artifacts (test-results)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: full-route-audit-results
+          path: test-results/
+          retention-days: 7

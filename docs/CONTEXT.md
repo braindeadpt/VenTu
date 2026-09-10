@@ -441,6 +441,20 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 | `staleness-alert.yml` | :07/:37 (30 min) | Heartbeat do pipeline (por meta-file): alerta via issue `data-stale` + Telegram quando `pipeline-meta.json` deixa de refrescar (3h dia / 5h noite) |
 | `data-cadence-alert.yml` | :12/:42 (30 min) | Heartbeat do pipeline (por commit): alerta via issue `data-stale` + Telegram quando o último commit a tocar `public/data/**` passa o limiar |
 
+### Auditoria de rotas — split custo/cobertura (2026-09-10)
+
+A auditoria de rotas deixou de ser um único teste browser de ~1585 rotas (837 s, 47 % do job `quality`, run 34437712823). Redistribuída por custo:
+
+| Dimensão | Cobertura | Onde corre | Custo |
+|---|---|---|---|
+| HTTP / rota presente no export | **todas** (~2300 URLs) | `scripts/check-export-routes.js` no ci.yml (após Build) — browserless | ~2 s |
+| Uncaught JS / hidratação | amostra estratificada determinística (spot 40, news 20, explorar 15; static + modalidade **completas** — templates distintos nunca se amostram) | `full-audit` no ci.yml | ~3–4 min |
+| Auditoria browser completa (1585 rotas) | todas | workflow diário `full-route-audit.yml` (`VENTU_FULL_AUDIT=1`) + `npm run audit:full` em local | diário, fora do caminho crítico |
+
+O validador de export deriva as expectativas de `public/sitemap.xml` (a lista autoritativa, já trancada pelo `check-sitemap-drift.js`) mais uma allowlist de rotas noindex baked (`fontes`, `passaporte`, `conta`, `auth/callback`, `diretorio/gerir`, `admin/*`, `alerts/confirm|unsubscribe`) e verifica: **missing** (rota indexada sem `index.html` — classe que nenhum outro validador cobre: `generateStaticParams` a deixar cair uma página), **not-found** (página cozida com o heading de 404 — `notFound()` atingível em build), **size** (shell < 500 bytes) e **extra** (dir cozido órfão — a classe `forecasts.splitFiles` de 2026-09-09). Cobre as classes por-rota que já tinham validador barato a montante: slugs ASCII/duplicados (`validate-spots.js`, `validate-page-slugs.js`, `validate-news-livecams.js`), orfandade de dados (`validate-generated-data.js`), peso de payload (`check-payload-budgets.js`).
+
+A amostra é por **passo fixo sobre a lista ordenada** (sem aleatoriedade — mesmo teste em todos os runs) e só corta grupos same-template: um defeito de hidratação é template-wide (o #418 do relógio disparou 3142×; qualquer amostra o teria apanhado). O contrato é fechado por um teste de integridade no próprio spec (determinismo, caps, static/modalidade intactas) e por testes unitários em `scripts/lib/__tests__/checkExportRoutes.test.js`.
+
 ### E2E core — specs do CI (e o que cada um cobre)
 
 O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: homepage pt/en/es/de/fr, spot, mapa, comparador, favoritos, 404 localizados, palette de pesquisa), **`npm run test:e2e:core`** (os specs herméticos de dados/score — substituiu o antigo passo `test:e2e:data`, que era um subconjunto) e os audits `full-audit`/`visual-ux-audit`. O core agrupa os specs que correm no Actions sem rede nem `IH_API_KEY` (bloqueiam o SW e interceptam os data files client-side via `tests/e2e/helpers/conditions.ts`):

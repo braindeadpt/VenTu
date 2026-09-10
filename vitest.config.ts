@@ -81,6 +81,7 @@ export default defineConfig({
       'scripts/lib/__tests__/telegram.test.js',
       'scripts/lib/__tests__/lighthouseBudgets.test.js',
       'scripts/lib/__tests__/hydrationBeaconCheck.test.js',
+      'scripts/lib/__tests__/checkExportRoutes.test.js',
     ],
   },
   resolve: {

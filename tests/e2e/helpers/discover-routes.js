@@ -10,6 +10,65 @@ const MODALITY_SLUGS = [
   'surf', 'kitesurf', 'windsurf', 'big-wave', 'bodyboard', 'sup', 'foil', 'wakeboard',
 ];
 
+/**
+ * Per-push browser audit only navigates a deterministic stratified sample of
+ * the dynamic-template groups (spot/news/explorar): same template, different
+ * data — a hydration defect shows on every instance (historical proof: the
+ * #418 clock-skew bug fired 3142×; any sample catches that class). Static and
+ * modalidade routes are NEVER sampled: distinct templates, each route unique.
+ * HTTP/missing-route coverage for ALL routes moved to the browserless
+ * scripts/check-export-routes.js; the unsampled full run lives in the daily
+ * full-audit workflow (VENTU_FULL_AUDIT=1) — never lose it, only ungate it
+ * from the per-push critical path.
+ */
+const SAMPLE_SIZES = {
+  static: Infinity,
+  modalidade: Infinity,
+  spot: 40,
+  news: 20,
+  explorar: 15,
+};
+
+/** Set by the daily full browser audit; CI per-push runs leave it unset. */
+function isFullAuditMode() {
+  return process.env.VENTU_FULL_AUDIT === '1';
+}
+
+/**
+ * Deterministic stratified sample: evenly spaced picks over each group's
+ * sorted route list (fixed stride from a fixed offset — no randomness, so
+ * every run tests the same routes and a failure is reproducible). Full mode
+ * returns everything, unchanged.
+ * @param {{ path: string, group: string }[]} routes
+ * @param {{ full?: boolean }} [opts]
+ * @returns {{ path: string, group: string }[]}
+ */
+function sampleRoutes(routes, opts = {}) {
+  const full = opts.full ?? isFullAuditMode();
+  if (full) return routes;
+
+  const groups = new Map();
+  for (const r of routes) {
+    if (!groups.has(r.group)) groups.set(r.group, []);
+    groups.get(r.group).push(r);
+  }
+
+  const sampled = [];
+  for (const [group, members] of groups) {
+    const ordered = [...members].sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
+    const size = SAMPLE_SIZES[group];
+    if (!size || size === Infinity || ordered.length <= size) {
+      sampled.push(...ordered);
+      continue;
+    }
+    const stride = ordered.length / size;
+    for (let i = 0; i < size; i++) {
+      sampled.push(ordered[Math.floor(i * stride)]);
+    }
+  }
+  return sampled;
+}
+
 const STATIC_PATHS = [
   '/',
   '/about/',
@@ -98,4 +157,12 @@ function discoverAllRoutes() {
   return routes;
 }
 
-module.exports = { discoverAllRoutes, LOCALES, MODALITY_SLUGS, STATIC_PATHS };
+module.exports = {
+  discoverAllRoutes,
+  sampleRoutes,
+  isFullAuditMode,
+  SAMPLE_SIZES,
+  LOCALES,
+  MODALITY_SLUGS,
+  STATIC_PATHS,
+};
