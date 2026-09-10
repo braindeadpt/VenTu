@@ -501,6 +501,12 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
   estiver fresco (anti-duplo-run: um ping nunca dispara duas vezes a mesma hora) e
   `full`/`observations` se estiver atrasado — a cadência deixa de depender do scheduler do GitHub.
   Setup completo em [`EXTERNAL-KEEPALIVE.md`](./EXTERNAL-KEEPALIVE.md).
+- **Fallback nativo (heartbeat self-healing, 2026-09-10)**: os heartbeats (`staleness-alert` + `data-cadence`)
+  disparam eles próprios um `repository_dispatch(ping)` com o `GITHUB_TOKEN` do workflow
+  (`contents:write`) quando abrem a issue `data-stale` — cadência recupera ~30 min após o limiar
+  de 3 h mesmo sem cron externo configurado (gate idempotente: fresco → `skip`). Cron externo
+  continua preferível (ressuscita aos 2,5 h vs 3 h do fallback), mas a cadência já não *depende*
+  dele.
 - **Heartbeats — label `data-stale` + ciclo de vida da issue**: ambos partilham os MESMOS
   limiares (`STALE_ALERT_HOURS_DAY=3` / `STALE_ALERT_HOURS_NIGHT=5`, em
   `scripts/lib/pipelineStaleness.js`) e a MESMA label — quem detetar a outage primeiro abre a

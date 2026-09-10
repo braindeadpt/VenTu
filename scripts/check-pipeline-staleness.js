@@ -86,6 +86,18 @@ function ensureLabel() {
   );
 }
 
+function dispatchKeepAlive() {
+  try {
+    execFileSync('gh', ['api', `repos/${REPO}/dispatches`, '--method', 'POST', '-f', 'event_type=ping'], {
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function staleBody(s) {
   return [
     `O pipeline de dados está em silêncio — \`public/data/pipeline-meta.json\` não é refrescado há **${fmt(s.fullAgeHours ?? s.obsAgeHours)}** (limiar: ${s.thresholdHours} h ${s.isDaytime ? 'dia' : 'noite'}).`,
@@ -142,6 +154,9 @@ async function main() {
     if (issue) {
       console.log(`ℹ️ Incidente #${issue} já aberto — sem spam`);
     } else {
+      if (dispatchKeepAlive()) {
+        console.log('🔄 keep-alive ping dispatched (heartbeat fallback) — gate decides full/obs/skip');
+      }
       const url = gh(
         'issue', 'create', '--repo', REPO, '--label', OUTAGE_LABEL,
         '--title', `Pipeline de dados em silêncio — pipeline-meta com ${fmt(s.fullAgeHours ?? s.obsAgeHours)} (${nowUtc()})`,

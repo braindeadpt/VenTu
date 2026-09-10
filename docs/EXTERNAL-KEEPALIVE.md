@@ -92,6 +92,23 @@ over-engineering unless cron-job.org itself becomes the concern.
   minute and either runs the pipeline or exits at the gate with `mode:
   skip` (a healthy-hour ping).
 
+## 3. Native heartbeat fallback (no config — built into the repo)
+
+The cadence heartbeats (`staleness-alert.yml` + `data-cadence-alert.yml`, every
+30 min at `:07/:37` and `:12/:42`) **themselves auto-resurrect the pipeline**
+when they open a `data-stale` issue: right before the issue is created they
+POST a `repository_dispatch(ping)` with the workflow's own `GITHUB_TOKEN`
+(`contents:write`). The gate (`VENTU_KEEPALIVE=1`) only runs when overdue, so
+a fresh pipeline just skips — cadence recovers ~30 min after the 3h alert
+threshold even when no external scheduler is configured. An external scheduler
+(cron-job.org) stays preferable — it resurrects at 2.5h instead of 3h — but
+cadence no longer *depends* on it.
+
+Only one heartbeat fires per outage (first to open the issue); the
+open-issue guard prevents a second dispatch, and a failed dispatch is logged
+without turning the run red — alerting is never blocked by a resurrection
+failure.
+
 ## Companion: staleness alert (independent heartbeat)
 
 The keep-alive *resurrects* the pipeline; the **staleness alert**
@@ -117,11 +134,14 @@ The keep-alive *resurrects* the pipeline; the **staleness alert**
   3 h threshold absorbs the jitter. If you want the alert itself on a
   non-GitHub scheduler, point the same external cron at a
   `workflow_dispatch` of `staleness-alert.yml`.
+- Since 2026-09-10 the heartbeats are **self-healing**: the fallback above
+  means a `schedule`-only repo still recovers without any external cron;
+  the external cron just heals faster (2.5h vs 3h).
 
 ## Why not just remove the GitHub crons?
 
-Two independent triggers are the point: GitHub `schedule` + external ping
-fail independently, and the ping's resurrection-only semantics make the
-pair idempotent — both firing at once is just one run plus one cheap
-skip. Keeping both also means the external provider can be swapped (or
-dropped) without touching cadence.
+Two (now three) independent triggers are the point: GitHub `schedule` +
+external ping + heartbeat self-healing fail independently, and the ping's
+resurrection-only semantics make the pair idempotent — both firing at once
+is just one run plus one cheap skip. Keeping the external ping means
+healing in 2.5h instead of 3h; dropping it still heals, just slower.

@@ -26,6 +26,7 @@ on:
 
 permissions:
   issues: write
+  contents: write # heartbeat fallback: repository_dispatch(ping) auto-resurrection
 
 concurrency:
   group: data-cadence-alert

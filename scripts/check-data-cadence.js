@@ -84,6 +84,23 @@ function ensureLabel() {
   );
 }
 
+function dispatchKeepAlive() {
+  // GitHub-native fallback: the heartbeat itself resurrects the pipeline when
+  // the GitHub schedule is dropped and no external cron is configured. Uses
+  // the same repository_dispatch(ping) the external keep-alive uses — the gate
+  // (VENTU_KEEPALIVE=1) only runs when overdue, so a fresh pipeline is a
+  // cheap skip. Guarded to fire once per outage (only when opening the issue).
+  try {
+    execFileSync('gh', ['api', `repos/${REPO}/dispatches`, '--method', 'POST', '-f', 'event_type=ping'], {
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function staleBody(s) {
   return [
     `Nenhum commit de dados (\`${DATA_PATH}/**\`) aterrou há **${fmt(s.ageHours)}** (limiar: ${s.thresholdHours} h ${s.isDaytime ? 'dia' : 'noite'}) — pipeline morto ou push a falhar.`,
@@ -149,6 +166,13 @@ async function main() {
     if (issue) {
       console.log(`ℹ️ Incidente #${issue} já aberto — sem spam`);
     } else {
+      // Fallback auto-resurrection (see dispatchKeepAlive): try to heal before
+      // alerting, so a dropped :17/:47 schedule slot is recovered in ~30 min
+      // even when the external keep-alive (cron-job.org) is not configured.
+      // Gate is idempotent — a fresh pipeline just skips.
+      if (dispatchKeepAlive()) {
+        console.log('🔄 keep-alive ping dispatched (heartbeat fallback) — gate decides full/obs/skip');
+      }
       const url = gh(
         'issue', 'create', '--repo', REPO, '--label', OUTAGE_LABEL,
         '--title', `Dados em silêncio — sem commit de dados há ${fmt(s.ageHours)} (${nowUtc()})`,
