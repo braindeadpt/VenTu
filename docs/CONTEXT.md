@@ -367,6 +367,29 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   - Spec e2e `map-unmount-race` (no `test:e2e:core`): desmonta o mapa do hero da homepage em mobile e exige zero erros de página.
 - Stacking: a sheet mobile do `/mapa` é `z-1200`/`z-1201` — acima do HUD (`z-1100`) e dos controls (`z-1200`); nunca voltar a pôr uma camada do mapa acima da sheet aberta.
 
+## Hydration gates — padrão CSS-gating (2026-09-10)
+
+- **Regra de decisão:** um componente com estado só disponível após o mount segue um de três caminhos, e só um leva CSS-gate:
+  - **(a) SSR markup revelável** — o markup final renderiza no servidor e só a *visibilidade/interactividade* depende do mount (o coração existe, o handler é que ainda não foi anexado). Aplicar o padrão: SSR markup real + escondido por CSS até o beacon + revelado com a classe. Substitui o placeholder (`animate-pulse`, anel de loading) por conteúdo real desde o primeiro paint.
+  - **(b) Dependente de dados/auth/sessão** — o markup final só existe depois de dados que o SSG não tem (sessão Supabase, favoritos, resposta de fetch). NÃO gatear: o flash é inerente; um placeholder honesto (ou nada) é o correcto. Gatear aqui só esconde conteúdo sem eliminar o salto.
+  - **(c) Gated por interação** — overlay que só existe quando aberto (`Drawer`, sheets, modais). `return null` fechado É o estado correcto, não um placeholder a eliminar.
+- **Mecânica (sinal único):** `HydrationBeacon` carimba `html.is-hydrated` no commit do shell — o mesmo instante serve os testes (`waitHydrated` espera `html.is-hydrated`) e o CSS (`html:not(.is-hydrated) [data-hydration-gate=...]` vence qualquer utilitário). Consolidado em `98b031054` (o atributo `data-hydrated` foi removido); o CI falha o build se o setter desaparecer do bundle (`scripts/check-hydration-beacon.js`, `bfa009576`).
+- **Variante map-ready:** o hero do mapa da home usa o mesmo padrão com um sinal diferente — `HeroMapPoster` (estático, sem animação) cobre a área desde o primeiro paint e desvanece quando o `SpotMapInteractive` carimba `data-map-ready` via `onReady` (`81ca7948a`). Para first-paint de mapas: poster estático, nunca anel de loading.
+- **Contratos:** `hydrationGates.test.ts` (cadeia classe→CSS→markup por componente) e o bundle check apanham uma quebra no build, sem browser.
+- **Tabela dos 7 classificados** (inventário `setMounted(true)` completo, evidência no HTML cozido):
+
+| Componente | Gate | Caminho | Resultado |
+|---|---|---|---|
+| `FavoriteButton` / `CheckInButton` | `mounted` + auth | **(a)** gateado | coração real SSR, `data-hydration-gate='heart'`, zero pulse (`aeae55712`) |
+| `NewsArchiveClient` | params no mount | **(a)** gateado | shell real SSR, `data-hydration-gate='news'`, zero spinner (`aeae55712`) |
+| `HomeDawnPatrolSlots` | relógio no mount | **(a)** gateado | slot SSR, `.hydration-dawn-slot`, decisão da janela continua no mount (`aeae55712`) |
+| `HomepageMapHero` (mapa) | chunk dinâmico | **(a) variante** | poster estático + `data-map-ready` via `onReady` (`81ca7948a`) |
+| `Drawer` | aberto/fechado | **(c)** legítimo | `data-drawer-close` em 0 páginas cozidas — `null` é o estado fechado correcto |
+| `HomeAdaptive` (`useHasFavorites`) | sessão + favoritos | **(b)** legítimo | 0 marcadores YourDay/hero no HTML cozido (flight payload); featured↔compact depende de sessão client-only |
+| `ContributionsAdminClient` | sessão + fetch | **(b)** legítimo | pulse cozido, mas 3 layouts mutuamente exclusivos (não-config/login/painel) — nenhum SSR-ável; trocar por bloco estático piorava |
+
+- **Nunca voltar a:** placeholder `animate-pulse`/`animate-spin` em UI revelável, `return null` em componente hidratável, nem um segundo sinal de hidratação para além da classe.
+
 ## Radar IPMA — overlay no mapa
 
 - `radar.json` + `radar/ipma-radar.png` + `radar/frames/*.png` (fetch-ipma-radar.js) →
