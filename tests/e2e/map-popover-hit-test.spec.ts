@@ -4,6 +4,7 @@ import { interceptIhBuoys, interceptWmoBuoys } from './helpers/conditions';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 import { expandMapHudFilters } from './helpers/map-hud';
+import { expectTopmostHit } from './helpers/hit-test';
 
 /**
  * Hit-test real das ações de dispensa/fecho dos overlays do mapa — desktop e
@@ -33,33 +34,6 @@ const IH_NO_KEY = {
   stations: {},
 };
 const WMO_DOWN = { buoys: {}, hasWaveData: false, day: '20260815' };
-
-/**
- * O alvo é clicável (hit-test) quando é o elemento de topo no seu próprio
- * centro. Retorna o identificador do interceptador para diagnóstico.
- */
-async function expectTopmostHit(page: Page, locator: Locator): Promise<void> {
-  await expect
-    .poll(async () => {
-      const handle = await locator.elementHandle().catch(() => null);
-      if (!handle) return 'missing';
-      return handle.evaluate((node) => {
-        const el = node as HTMLElement;
-        const r = el.getBoundingClientRect();
-        if (r.width === 0 || r.height === 0) return 'not-rendered';
-        const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
-        if (!top) return 'no-element';
-        if (top === el || el.contains(top)) return 'ok';
-        const t = top as HTMLElement;
-        const keys = Object.keys(t.dataset ?? {})
-          .slice(0, 2)
-          .join('|');
-        const cls = typeof t.className === 'string' ? t.className.slice(0, 40) : '';
-        return `covered-by:${t.tagName.toLowerCase()}${cls ? ` ${cls}` : ''}${keys ? ` [${keys}]` : ''}`;
-      });
-    })
-    .toBe('ok', { timeout: 5_000 });
-}
 
 async function openMapa(
   page: Page,

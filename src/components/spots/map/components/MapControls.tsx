@@ -227,6 +227,7 @@ export default function MapControls({
             className={`${btnBase} ${radarUnavailable ? btnRadarDisabled : radarEnabled ? btnRadarActive : ''}`}
             aria-label={radarLabel}
             aria-pressed={radarEnabled}
+            data-map-radar-toggle
           >
             <CloudRain className="w-4 h-4 shrink-0 text-data-waves" aria-hidden />
             <span className="hidden sm:inline">{radarLabel}</span>
@@ -346,6 +347,7 @@ export default function MapControls({
         className={`${btnBase} ${isobathsEnabled ? btnIsobathsActive : ''}`}
         aria-label={isobathsLabel}
         aria-pressed={isobathsEnabled}
+        data-map-isobaths-toggle
       >
         <Waves className="w-4 h-4 shrink-0 text-data-waves" aria-hidden />
         <span className="hidden sm:inline">{isobathsLabel}</span>

@@ -306,6 +306,7 @@ export default function MapExploreHud({
             aria-label={radarLabel}
             pressed={radarEnabled}
             title={radarHint}
+            data-map-radar-toggle
             className={
               radarEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
             }
@@ -407,6 +408,7 @@ export default function MapExploreHud({
             aria-label={isobathsLabel}
             pressed={isobathsEnabled}
             title={isobathsHint}
+            data-map-isobaths-toggle
             className={
               isobathsEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
             }
