@@ -5,6 +5,17 @@ on:
     # Horário — mesmo cadence do update-data (o backend de marés é a fonte)
     - cron: '0 * * * *'
   workflow_dispatch:
+    inputs:
+      radar_manifest_url:
+        description: "Override do manifest imgs-radar.json (simulação de degradação; https obrigatório). Vazio = produção IPMA."
+        required: false
+        default: ""
+        type: string
+      frame_base_url:
+        description: "Override da base dos frames PNG (acompanha radar_manifest_url em simulações). Vazio = produção IPMA."
+        required: false
+        default: ""
+        type: string
 
 permissions:
   issues: write
@@ -33,4 +44,17 @@ jobs:
       - name: Probe IPMA radar product and alert on recovery
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash scripts/monitor-ipma-radar.sh
+          RADAR_MANIFEST_URL: ${{ inputs.radar_manifest_url || 'https://www.ipma.pt/resources.www/transf/radar/imgs-radar.json' }}
+          FRAME_BASE_URL: ${{ inputs.frame_base_url || 'https://www.ipma.pt/resources.www/transf/radar/por/' }}
+        run: |
+          # Guard: os inputs de workflow_dispatch são controláveis por quem
+          # dispara o run — só permitir https (nunca file:// ou http://).
+          case "$RADAR_MANIFEST_URL" in
+            https://*) ;;
+            *) echo "radar_manifest_url tem de ser https:// (recebido: $RADAR_MANIFEST_URL)" >&2; exit 1 ;;
+          esac
+          case "$FRAME_BASE_URL" in
+            https://*) ;;
+            *) echo "frame_base_url tem de ser https:// (recebido: $FRAME_BASE_URL)" >&2; exit 1 ;;
+          esac
+          bash scripts/monitor-ipma-radar.sh
