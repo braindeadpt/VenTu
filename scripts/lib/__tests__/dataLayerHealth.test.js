@@ -292,7 +292,7 @@ describe('evaluateDataLayerHealth (unificado)', () => {
     expect(r.oks).toHaveLength(3);
   });
 
-  it('uma camada no limiar de falha → level fail com ::error:: (e a outra a avisar)', () => {
+  it('camadas suplementares no limiar de falha → ::warning:: e NUNCA level fail', () => {
     const r = evaluateDataLayerHealth(
       {
         ...allOk,
@@ -301,11 +301,33 @@ describe('evaluateDataLayerHealth (unificado)', () => {
       },
       { warnAfter: 3, failAfter: 6 },
     );
-    expect(r.level).toBe('fail');
-    expect(r.failures).toHaveLength(1);
-    expect(r.failures[0]).toMatch(/^::error::Avisos IPMA\/MeteoAlarm em 'stale' há 7 runs/);
-    expect(r.warnings).toHaveLength(1);
-    expect(r.warnings[0]).toMatch(/^::warning::Boias/);
+    // Invariante 2026-09-11: nenhuma camada suplementar falha o job — já
+    // congelaram o push dos dados essenciais 3× em produção.
+    expect(r.level).toBe('warn');
+    expect(r.failures).toHaveLength(0);
+    expect(r.warnings).toHaveLength(2);
+    expect(r.warnings[0]).toMatch(/^::warning::Boias.*warn-only/);
+    expect(r.warnings[1]).toMatch(/^::warning::Avisos IPMA\/MeteoAlarm.*warn-only/);
+  });
+
+  it('mesmo com TODAS as camadas degradadas ≥ failAfter → nunca falha', () => {
+    const r = evaluateDataLayerHealth(
+      {
+        buoyLayer: { status: 'down', streak: 20 },
+        radarLayer: { status: 'down', streak: 20 },
+        warningsLayer: { status: 'down', streak: 20 },
+        tideLayer: { status: 'down', streak: 20 },
+        coastalWarningsLayer: {
+          status: 'ok',
+          streak: 0,
+          es: { configured: true, status: 'error', streak: 20 },
+        },
+      },
+      { warnAfter: 3, failAfter: 6 },
+    );
+    expect(r.level).toBe('warn');
+    expect(r.failures).toHaveLength(0);
+    expect(r.warnings.length).toBeGreaterThanOrEqual(5);
   });
 
   it('radar warnOnly: stale com streak ≥ limiar de falha → ::warning:: e NUNCA level fail', () => {
@@ -383,7 +405,7 @@ describe('evaluateDataLayerHealth (unificado)', () => {
     expect(r.warnings[0]).toContain('há 4 runs');
   });
 
-  it('feed ES configurado com erros ≥ limiar de falha → ::error:: + level fail', () => {
+  it('feed ES configurado com erros ≥ limiar de falha → ::warning::, nunca fail', () => {
     const r = evaluateDataLayerHealth(
       {
         ...allOk,
@@ -395,8 +417,9 @@ describe('evaluateDataLayerHealth (unificado)', () => {
       },
       { warnAfter: 3, failAfter: 6 },
     );
-    expect(r.level).toBe('fail');
-    expect(r.failures[0]).toMatch(/^::error::Avisos ES \(Avisos a los navegantes\) em erro há 7 runs/);
+    expect(r.level).toBe('warn');
+    expect(r.failures).toHaveLength(0);
+    expect(r.warnings[0]).toMatch(/^::warning::Avisos ES \(Avisos a los navegantes\) em erro há 7 runs/);
   });
 
   it('feed ES ok (configurado) → linha ✅ sem alarme', () => {

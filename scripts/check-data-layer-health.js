@@ -6,16 +6,18 @@
  * obs:update / update-conditions write, into pipeline-meta.json, the streak of
  * each layer (count of consecutive runs with status down/stale; reset on ok;
  * boias 'no-key' nunca conta). Este passo lê o meta committed e:
- *   - streak >= FAIL_AFTER  → ::error:: para as camadas afetadas + exit 1
- *     (o job falha — a camada esteve degradada horas sem ninguém notar);
- *   - streak >= WARN_AFTER  → ::warning:: + exit 0 (heads-up, pipeline segue);
+ *   - streak >= WARN_AFTER  → ::warning:: por camada + exit 0 — sempre;
  *   - caso contrário        → resumo ✅ por camada + exit 0.
  *
+ * NENHUMA camada falha o job (invariante 2026-09-11): todas são suplementares
+ * e já congelaram o push dos dados essenciais três vezes em produção. O gate
+ * dos dados essenciais vive no validate-data (TTLs) e nos heartbeats — aqui
+ * é só visibilidade/telemetria via ::warning:: + streaks no meta.
+ *
  * Substitui o check-buoy-layer-health.js: agora cobre também o radar IPMA, os
- * avisos IPMA/MeteoAlarm e as marés IH (warn-only — outage de marés nunca
- * bloqueia o Open-Meteo) no mesmo passo (limiares globais env-overridable:
- * DATA_LAYER_WARN_AFTER / DATA_LAYER_FAIL_AFTER; por camada não é preciso —
- * o objetivo é falhar cedo quando QUALQUER camada degrada).
+ * avisos IPMA/MeteoAlarm e as marés IH no mesmo passo (limiares globais
+ * env-overridable: DATA_LAYER_WARN_AFTER / DATA_LAYER_FAIL_AFTER — o
+ * failAfter só muda o texto do aviso, nunca o exit code).
  *
  * Usage:
  *   node scripts/check-data-layer-health.js

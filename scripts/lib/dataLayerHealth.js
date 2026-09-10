@@ -1,8 +1,17 @@
 /**
- * Data-layer health (radar IPMA + avisos IPMA/MeteoAlarm) — extends the buoy
- * layer streak pattern to the other optional data layers, for a SINGLE
- * workflow health-check step that fails/warns when any layer stays degraded
- * (down/stale) for several consecutive runs.
+ * Data-layer health (boias IH + radar IPMA + avisos IPMA/MeteoAlarm + marés
+ * IH + feed ES) — extends the buoy layer streak pattern to the optional data
+ * layers, for a SINGLE workflow health-check step that WARNS when any layer
+ * stays degraded (down/stale) for several consecutive runs.
+ *
+ * INVARIANTE (2026-09-11): NENHUMA destas camadas falha o job — são todas
+ * suplementares/overlay (boias têm fallback WMO/Copernicus, avisos têm
+ * fallback MeteoAlarm, radar é overlay de mapa, marés são warn-only desde
+ * c16802b8). O hard-fail por camada degradada já congelou o push dos dados
+ * essenciais três vezes em produção (radar 2026-09-09, marés → soft-gate,
+ * boias 2026-09-10 durante ~8h). A frescura dos dados ESSENCIAIS é garantida
+ * pelo validate-data (TTLs de conditions/observations) e pelos heartbeats
+ * (staleness-alert, data-cadence-alert, ops-audit) — não por este step.
  *
  * Filas de dados cobertas (o streak é gravado em pipeline-meta.json por quem
  * escreve o meta — obs:update / update-conditions):
@@ -39,13 +48,23 @@ const DEFAULT_FAIL_AFTER = 6;
 
 /** Camadas avaliadas pelo health-check unificado (ordem de apresentação). */
 const LAYERS = [
-  { key: 'buoyLayer', label: 'Boias (onda observada)' },
+  // Boias IH: warnOnly — a camada de onda observada tem fallback WMO/
+  // Copernicus keyless que cobre os spots quando o IH/Datawell degrada
+  // (confirmado em produção 2026-09-10: IH buoys stale → gate falhou e
+  // congelou conditions/forecasts/obs ~8h, com os 151 spots ainda servidos
+  // pela via WMO). Um overlay suplementar nunca pode bloquear o push dos
+  // dados essenciais — a visibilidade é o streak no meta + os monitores
+  // (staleness-alert, ops-audit), não o exit code do job.
+  { key: 'buoyLayer', label: 'Boias (onda observada)', warnOnly: true },
   // Radar IPMA: warnOnly de propósito — é um overlay OPCIONAL do mapa; uma
   // degradação a montante (ex.: IPMA a publicar slots sem PNG, 2026-09-09)
   // nunca pode falhar o job e bloquear o push dos dados essenciais
   // (conditions/forecasts/observações). Mesma semântica das marés IH.
   { key: 'radarLayer', label: 'Radar IPMA', warnOnly: true },
-  { key: 'warningsLayer', label: 'Avisos IPMA/MeteoAlarm' },
+  // Avisos: warnOnly — têm fallback MeteoAlarm/MeteoGate e, mesmo sem fonte
+  // nenhuma, avisos em falta não podem congelar previsões/observações
+  // (mesmo princípio das boias/marés: camada suplementar ≠ gate do core).
+  { key: 'warningsLayer', label: 'Avisos IPMA/MeteoAlarm', warnOnly: true },
   // Marés IH: warnOnly de propósito — fetch-ih-tides.js NUNCA pode bloquear o
   // Open-Meteo (decisão c16802b8: outage IH ≠ previsões paradas). A camada
   // avisa a partir do warnAfter e fica por aí; a visibilidade é o chip do
@@ -329,7 +348,7 @@ function evaluateDataLayerHealth(meta, opts = {}) {
       if (level !== 'fail') level = 'warn';
       warnings.push(
         warnOnly
-          ? `::warning::${label} em '${status}' há ${streak} runs seguidas (limiar de aviso: ${warnAfter}${suffix}). Camada warn-only — nunca falha o job (outage IH não bloqueia o Open-Meteo); continua a avisar enquanto não recuperar.`
+          ? `::warning::${label} em '${status}' há ${streak} runs seguidas (limiar de aviso: ${warnAfter}${suffix}). Camada warn-only — nunca falha o job (camada suplementar não bloqueia o push dos dados essenciais); continua a avisar enquanto não recuperar.`
           : `::warning::${label} em '${status}' há ${streak} runs seguidas (limiar de aviso: ${warnAfter} · de falha: ${failAfter}${suffix}). Continuando — falha automática a partir de ${failAfter} runs.`,
       );
     } else {
@@ -340,7 +359,8 @@ function evaluateDataLayerHealth(meta, opts = {}) {
   // Fonte ES dos avisos costeiros (cross-border «Avisos a los navegantes»):
   // quando ES_NAV_WARNINGS_URL está configurada mas o feed devolve erros
   // repetidos (ou o esSourceNote/esHealth marca degradação), avisa com o mesmo
-  // limiar de runs — um erro isolado (streak < warnAfter) não falha o CI.
+  // limiar de runs — warn-only como as outras camadas suplementares: uma
+  // fonte espanhola em baixo nunca pode congelar o push dos dados essenciais.
   const coastal = meta?.coastalWarningsLayer ?? {};
   const es = coastal.es;
   if (es && es.configured && es.status && es.status !== 'ok') {
@@ -348,9 +368,9 @@ function evaluateDataLayerHealth(meta, opts = {}) {
     const suffix = es.lastOkAt ? ` · última vez ok: ${es.lastOkAt}` : '';
     const detail = es.error ? ` (${es.error})` : '';
     if (esStreak >= failAfter) {
-      level = 'fail';
-      failures.push(
-        `::error::Avisos ES (Avisos a los navegantes) em erro há ${esStreak} runs seguidas (limiar de falha: ${failAfter}${suffix})${detail}. Feed ES_NAV_WARNINGS_URL degradado — verificar a fonte espanhola.`,
+      if (level !== 'fail') level = 'warn';
+      warnings.push(
+        `::warning::Avisos ES (Avisos a los navegantes) em erro há ${esStreak} runs seguidas (≥ limiar de falha: ${failAfter}${suffix})${detail}. Feed ES_NAV_WARNINGS_URL degradado — warn-only, não bloqueia o push.`,
       );
     } else if (esStreak >= warnAfter) {
       if (level !== 'fail') level = 'warn';
