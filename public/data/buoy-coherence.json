@@ -1249,83 +1249,97 @@
     },
     "Alentejo": {
       "spotCount": 12,
-      "withObservedWave": 10,
+      "withObservedWave": 12,
       "bySource": {
-        "wmo-buoy": 10
+        "wmo-buoy": 12
       },
-      "audited": 10,
+      "audited": 12,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 10,
+      "attachedNotClosest": 12,
       "onlySource": 0,
       "notClosest": [
         {
           "spot": "alqueva",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 196,
+          "attachedKm": 148,
           "altKm": 0
         },
         {
           "spot": "melides",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 163,
+          "attachedKm": 157,
           "altKm": 0
         },
         {
           "spot": "sao-torpes",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 186,
+          "attachedKm": 139,
           "altKm": 0
         },
         {
           "spot": "porto-covo",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 193,
+          "attachedKm": 132,
+          "altKm": 0
+        },
+        {
+          "spot": "malhao",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 124,
+          "altKm": 0
+        },
+        {
+          "spot": "vila-nova-milfontes",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 120,
           "altKm": 0
         },
         {
           "spot": "zambujeira",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 199,
+          "attachedKm": 105,
           "altKm": 0
         },
         {
           "spot": "carvalhal",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 198,
+          "attachedKm": 103,
           "altKm": 0
         },
         {
           "spot": "odeceixe",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 195,
+          "attachedKm": 100,
           "altKm": 0
         },
         {
           "spot": "lagoa-santo-andre",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 167,
+          "attachedKm": 154,
           "altKm": 0
         },
         {
           "spot": "lagoa-sancha",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 174,
+          "attachedKm": 148,
           "altKm": 0
         },
         {
           "spot": "pessegueiro",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 196,
+          "attachedKm": 130,
           "altKm": 0
         }
       ],
@@ -1373,7 +1387,7 @@
           "spot": "sines",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 181,
+          "attachedKm": 145,
           "altKm": 0
         }
       ],
@@ -1398,13 +1412,23 @@
     },
     "Zambujeira do Mar": {
       "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "wmo-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "alteirinhos",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 114,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1425,21 +1449,21 @@
           "spot": "amoreira",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 193,
+          "attachedKm": 98,
           "altKm": 0
         },
         {
           "spot": "monte-clerigo",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 194,
+          "attachedKm": 98,
           "altKm": 0
         },
         {
           "spot": "vale-figueiras",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 188,
+          "attachedKm": 93,
           "altKm": 0
         }
       ],
@@ -1463,77 +1487,77 @@
           "spot": "arrifana",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 191,
+          "attachedKm": 96,
           "altKm": 0
         },
         {
           "spot": "vila-real-santo-antonio",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 89,
+          "attachedKm": 54,
           "altKm": 0
         },
         {
           "spot": "monte-gordo",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 89,
+          "attachedKm": 50,
           "altKm": 0
         },
         {
           "spot": "praia-verde",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 91,
+          "attachedKm": 47,
           "altKm": 0
         },
         {
           "spot": "altura",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 90,
+          "attachedKm": 46,
           "altKm": 0
         },
         {
           "spot": "alvor",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 164,
+          "attachedKm": 68,
           "altKm": 0
         },
         {
           "spot": "foil-alvor",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 164,
+          "attachedKm": 68,
           "altKm": 0
         },
         {
           "spot": "lagos-wakepark",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 167,
+          "attachedKm": 72,
           "altKm": 0
         },
         {
           "spot": "barrinha-faro",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 105,
+          "attachedKm": 13,
           "altKm": 0
         },
         {
           "spot": "canavial",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 145,
+          "attachedKm": 50,
           "altKm": 0
         },
         {
           "spot": "armacao-pera",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 142,
+          "attachedKm": 46,
           "altKm": 0
         }
       ],
@@ -1557,14 +1581,14 @@
           "spot": "bordeira",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 190,
+          "attachedKm": 95,
           "altKm": 0
         },
         {
           "spot": "amado",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 189,
+          "attachedKm": 94,
           "altKm": 0
         }
       ],
@@ -1588,35 +1612,35 @@
           "spot": "barriga",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 188,
+          "attachedKm": 94,
           "altKm": 0
         },
         {
           "spot": "castelejo",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 190,
+          "attachedKm": 97,
           "altKm": 0
         },
         {
           "spot": "burgau",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 174,
+          "attachedKm": 81,
           "altKm": 0
         },
         {
           "spot": "salema",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 178,
+          "attachedKm": 84,
           "altKm": 0
         },
         {
           "spot": "cordoama",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 188,
+          "attachedKm": 95,
           "altKm": 0
         }
       ],
@@ -1640,14 +1664,14 @@
           "spot": "luz",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 171,
+          "attachedKm": 77,
           "altKm": 0
         },
         {
           "spot": "lagos",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 166,
+          "attachedKm": 71,
           "altKm": 0
         }
       ],
@@ -1671,7 +1695,7 @@
           "spot": "ferragudo",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 156,
+          "attachedKm": 60,
           "altKm": 0
         }
       ],
@@ -1695,7 +1719,7 @@
           "spot": "praia-rocha",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 156,
+          "attachedKm": 61,
           "altKm": 0
         }
       ],
@@ -1719,35 +1743,35 @@
           "spot": "beliche",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 189,
+          "attachedKm": 96,
           "altKm": 0
         },
         {
           "spot": "martinhal",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 185,
+          "attachedKm": 92,
           "altKm": 0
         },
         {
           "spot": "zavial",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 181,
+          "attachedKm": 88,
           "altKm": 0
         },
         {
           "spot": "tonel",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 186,
+          "attachedKm": 94,
           "altKm": 0
         },
         {
           "spot": "mareta",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 186,
+          "attachedKm": 93,
           "altKm": 0
         }
       ],
@@ -1771,7 +1795,7 @@
           "spot": "fuseta",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 93,
+          "attachedKm": 22,
           "altKm": 0
         }
       ],
@@ -1795,35 +1819,35 @@
           "spot": "ilha-faro",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 106,
+          "attachedKm": 11,
           "altKm": 0
         },
         {
           "spot": "faro-mar",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 109,
+          "attachedKm": 14,
           "altKm": 0
         },
         {
           "spot": "culatra",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 96,
+          "attachedKm": 11,
           "altKm": 0
         },
         {
           "spot": "armona",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 94,
+          "attachedKm": 15,
           "altKm": 0
         },
         {
           "spot": "garrão",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 104,
+          "attachedKm": 9,
           "altKm": 0
         }
       ],
@@ -1847,14 +1871,14 @@
           "spot": "ilha-tavira",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 91,
+          "attachedKm": 34,
           "altKm": 0
         },
         {
           "spot": "cabanas-tavira",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 91,
+          "attachedKm": 37,
           "altKm": 0
         }
       ],
@@ -1878,7 +1902,7 @@
           "spot": "cacela-velha",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 90,
+          "attachedKm": 42,
           "altKm": 0
         }
       ],
@@ -1968,7 +1992,7 @@
           "spot": "falesia",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 125,
+          "attachedKm": 30,
           "altKm": 0
         }
       ],
@@ -1992,7 +2016,7 @@
           "spot": "tres-irmaos",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
-          "attachedKm": 162,
+          "attachedKm": 67,
           "altKm": 0
         }
       ],
@@ -2030,7 +2054,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-10T10:05:01.593Z",
+  "regionsAuditedAt": "2026-09-10T14:34:56.249Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
