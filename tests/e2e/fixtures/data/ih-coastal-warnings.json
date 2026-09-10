@@ -258,63 +258,6 @@
       ]
     },
     {
-      "id": 18271,
-      "ref": "ANAV NR 1780/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7523800a-83ad-4e94-bf81-d031d5e3fcfb",
-      "source": "ih",
-      "polygons": [
-        [
-          [
-            -9.321333,
-            38.668
-          ],
-          [
-            -9.370333,
-            38.623
-          ],
-          [
-            -9.385167,
-            38.6455
-          ],
-          [
-            -9.349167,
-            38.675333
-          ],
-          [
-            -9.321333,
-            38.668
-          ]
-        ],
-        [
-          [
-            -9.311833,
-            38.653833
-          ],
-          [
-            -9.313333,
-            38.6605
-          ],
-          [
-            -9.287,
-            38.681667
-          ],
-          [
-            -9.229167,
-            38.6795
-          ],
-          [
-            -9.257167,
-            38.659
-          ],
-          [
-            -9.311833,
-            38.653833
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18299,
       "ref": "ANAV NR 1803/26",
       "category": "Requisitos de segurança maritima",
@@ -470,173 +413,77 @@
       ]
     },
     {
-      "id": 18523,
-      "ref": "ANAV NR 2000/26",
-      "category": "Comunicações",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d0d3b53f-189d-419a-887b-2109c4a80643",
+      "id": 18537,
+      "ref": "ANAV NR 2015/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d2eef34c-bdf3-451d-8169-df837c641d66",
       "source": "ih",
       "polygons": [
         [
           [
-            -8.891431,
-            38.520856
+            -25.09425,
+            36.950433
           ],
           [
-            -8.891431,
-            38.522099
+            -25.11605,
+            36.938233
           ],
           [
-            -8.889758,
-            38.522099
+            -25.116217,
+            36.926083
           ],
           [
-            -8.889758,
-            38.520856
+            -25.094167,
+            36.925883
           ],
           [
-            -8.891431,
-            38.520856
+            -25.09425,
+            36.950433
           ]
         ]
       ]
     },
     {
-      "id": 18527,
-      "ref": "ANAV NR 2002/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=079736f7-c510-4a00-9694-7e363fa4e749",
+      "id": 18541,
+      "ref": "ANAV NR 2019/26",
+      "category": "Alterações relativas a Ajudas à Navegação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=db648e26-ecdf-44ec-88c8-b4baf08e0439",
       "source": "ih",
       "polygons": [
         [
           [
-            -8.794334,
-            41.538555
+            -8.262311,
+            37.079898
           ],
           [
-            -8.794334,
-            41.545075
+            -8.262311,
+            37.08057
           ],
           [
-            -8.787255,
-            41.545075
+            -8.261313,
+            37.08057
           ],
           [
-            -8.787255,
-            41.538555
+            -8.261313,
+            37.079898
           ],
           [
-            -8.794334,
-            41.538555
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18531,
-      "ref": "ANAV NR 2010/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=07546cab-dc16-454b-bcce-ff671ae0a75a",
-      "source": "ih",
-      "polygons": [
-        [
-          [
-            -9.725667,
-            40.642667
-          ],
-          [
-            -9.725667,
-            39.475667
-          ],
-          [
-            -8.6175,
-            39.475667
-          ],
-          [
-            -8.6175,
-            40.642667
-          ],
-          [
-            -9.725667,
-            40.642667
-          ]
-        ],
-        [
-          [
-            -10.304833,
-            40.676
-          ],
-          [
-            -10.304833,
-            39.3425
-          ],
-          [
-            -9.250833,
-            39.3425
-          ],
-          [
-            -9.250833,
-            40.676
-          ],
-          [
-            -10.304833,
-            40.676
+            -8.262311,
+            37.079898
           ]
         ]
       ]
     }
   ],
   "coverage": {
-    "costa-nova": [
-      18531
-    ],
-    "tocha": [
-      18531
-    ],
-    "quiaios": [
-      18531
-    ],
-    "figueira-foz": [
-      18531
-    ],
-    "leirosa": [
-      18531
-    ],
-    "praia-da-vieira": [
-      18531
-    ],
-    "nazare": [
-      18531
-    ],
-    "praia-del-rey": [
-      18531
-    ],
-    "almagreira": [
-      18531
-    ],
-    "baleal": [
-      18531
-    ],
-    "supertubos": [
-      18531
-    ],
     "parede": [
       18465
     ],
     "carcavelos": [
       18465
     ],
-    "trafaria": [
-      18271
-    ],
     "cova-do-vapor": [
-      18169,
-      18271
-    ],
-    "barra-aveiro": [
-      18531
-    ],
-    "sao-martinho-porto": [
-      18531
+      18169
     ]
   },
   "es": [],
@@ -645,7 +492,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-08T07:44:26.273Z",
+  "fetchedAt": "2026-09-09T23:13:19.456Z",
   "sourceCollection": "nav_warning_coastal",
   "sourceUrl": "https://api-features.hidrografico.pt/collections/nav_warning_coastal"
 }
