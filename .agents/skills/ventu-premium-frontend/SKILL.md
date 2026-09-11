@@ -57,6 +57,10 @@ Use `@skills:animate` rules:
 - Animate opacity/transform only. No layout thrash on the Leaflet map.
 - Reduce motion: respect `prefers-reduced-motion`.
 - Do not animate decorative blobs.
+- Page transitions: CSS `view-transition` / `document.startViewTransition` only.
+  This stack is React 18 — the React 19 `<ViewTransition>` component from
+  `@skills:vercel-react-view-transitions` does NOT exist here; use its CSS/DOM
+  guidance, not the component.
 
 ### UX rules specific to VenTu
 - Time is local to the spot, obvious, never UTC in the UI.

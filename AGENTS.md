@@ -39,8 +39,9 @@ House skills (load the one matching your surface):
 
 Generic skills (taste & engineering, never override the house rules):
 `frontend-design`, `web-design-guidelines`, `apple-design`, `animate`,
-`vercel-react-best-practices`, `vercel-composition-patterns`,
-`vercel-react-view-transitions`, `frontend-ui-engineering`.
+`improve-animations`, `vercel-react-best-practices`,
+`vercel-composition-patterns`, `vercel-react-view-transitions`,
+`frontend-ui-engineering`.
 
 Mention skills as `@skills:ventu-premium-frontend` when the tool supports it.
 
