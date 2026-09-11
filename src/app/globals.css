@@ -507,7 +507,7 @@ html:has([data-embed-widget]) body {
    * com 44px. Hit-area invisível por pseudo-elemento não funciona — o
    * hit-test está confinado à border box do botão e as linhas overflow-x-auto
    * recortam extensões — por isso o alvo = altura real da pill (ver
-   * docs/hud-density-mockup.html). Fica aqui (camada utilities) para vencer
+   * docs/archive/hud-density-mockup.html). Fica aqui (camada utilities) para vencer
    * qualquer min-h-* utility com a mesma especificidade. */
   .filter-pill-compact,
   .filter-row-action {
