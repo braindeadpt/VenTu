@@ -415,7 +415,12 @@ export default function SpotDetailClient({
 
             if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
               setSelectedSport(sportFromUrl);
-            } else {
+            } else if (!initialData || forceLive) {
+              // Sem baked data a selecção inicial veio do placeholder — aplica
+              // o melhor score fresco. COM baked data o swap pós-fetch muda o
+              // separador inteiro (scores/tabela/herói) = CLS ~0.6 no CI;
+              // mantém-se a escolha do bake — os dados actualizam-se dentro
+              // do separador, sem salto.
               const bestSport = (
                 Object.entries(allScores) as [SportType, { score: number }][]
               ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];
@@ -483,7 +488,7 @@ export default function SpotDetailClient({
 
         if (sportFromUrl && allScores[sportFromUrl]?.score > 0) {
           setSelectedSport(sportFromUrl);
-        } else {
+        } else if (!initialData || forceLive) {
           const bestSport = (
             Object.entries(allScores) as [SportType, { score: number }][]
           ).sort(([, a], [, b]) => b.score - a.score)[0]?.[0];

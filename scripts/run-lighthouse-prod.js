@@ -177,14 +177,24 @@ async function main() {
             : a,
         );
         const shifts =
-          worst.audits?.['layout-shift-elements']?.details?.items ?? [];
-        for (const cluster of shifts.slice(0, 3)) {
-          for (const node of (cluster.items ?? []).slice(0, 3)) {
-            console.log(
-              `  shift ${node.score?.toFixed(3)}: ${(node.node?.snippet ?? '?').slice(0, 140)}`,
-            );
-          }
+          worst.audits?.['layout-shifts']?.details?.items ?? [];
+        for (const item of shifts.slice(0, 5)) {
+          console.log(
+            `  shift ${item.score?.toFixed(3)}: ${(item.node?.snippet ?? '?').slice(0, 140)}`,
+          );
         }
+        // And the resources the bad run skipped — the ~35KB byte delta points
+        // at the resource whose late arrival triggers the shift.
+        const reqs = worst.audits?.['network-requests']?.details?.items ?? [];
+        console.log(
+          `  worst-run requests: ${reqs.length} | biggest: ` +
+            reqs
+              .slice()
+              .sort((a, b) => (b.transferSize ?? 0) - (a.transferSize ?? 0))
+              .slice(0, 5)
+              .map((r) => `${Math.round((r.transferSize ?? 0) / 1024)}KB ${(r.url ?? '').split('/').pop()?.slice(0, 60)}`)
+              .join(', '),
+        );
       }
     }
 
