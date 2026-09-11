@@ -308,7 +308,9 @@ test.describe('Fontes de dados (data sources)', () => {
     page,
   }) => {
     // Com NEXT_PUBLIC_CARTO_API_KEY no build: modo mapa = Carto dark/light.
-    // Satélite continua Esri imagery.
+    // Satélite continua Esri imagery. Builds sem key (PRs do dependabot —
+    // secrets de repo não entram nesses runs — e builds locais) caem no
+    // fallback OSM: aí a asserção verifica o modo sem Carto, não ignora-o.
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     const attribution = page.locator('.leaflet-control-attribution');
@@ -316,12 +318,15 @@ test.describe('Fontes de dados (data sources)', () => {
       timeout: 15_000,
     });
     await expect(attribution).toContainText('OpenStreetMap');
-    await expect(attribution).toContainText('CARTO');
-    await expect(attribution).not.toContainText(/Esri/);
+    const keyedBuild = (await attribution.textContent())?.includes('CARTO');
+    if (keyedBuild) {
+      await expect(attribution).toContainText('CARTO');
+      await expect(attribution).not.toContainText(/Esri/);
+    }
     await page.getByRole('radio', { name: 'Satélite' }).click();
     await expect(attribution).toContainText(/Esri/, { timeout: 15_000 });
     await expect(attribution).toContainText('OpenStreetMap');
-    await expect(attribution).not.toContainText('CARTO');
+    if (keyedBuild) await expect(attribution).not.toContainText('CARTO');
   });
 
   test('sitemap.xml inclui /pt/fontes/ com os 5 hreflang (pt/en/es/de/fr)', async ({
