@@ -50,6 +50,17 @@ Fugro, o `observedWave` desses spots passa a vir desta boia.
 | Devolve | `hm0` (altura significativa, m), `tp` (período de pico, s), `thtp` (direcção de pico, °), `hmax` (m), `temp` (SST, °C) + flags `qc_*` |
 | Custo | **Grátis** (finalidade: métricas de utilização do IH) |
 
+> **Descontinuação anunciada (FAQ IH, 2026-09):** o `getDatawellData` será
+> substituído por uma **OGC API EDR** em `https://ogcapi.hidrografico.pt`
+> (para onde a OGC API de features migrou a 2026-09 — o antigo
+> `api-features.hidrografico.pt` já não resolve DNS). Enquanto a colecção
+> `buoys_datawell` for Features-only (sem `data_queries`), a migração ainda
+> não é possível — o `ops-audit` diário detecta a publicação do EDR e avisa.
+> Nessa altura: trocar `fetchWaveSeries`/`DEFAULT_WAVE_API` em
+> `scripts/lib/ihBuoys.js` pelas consultas EDR (`/collections/…/instances/…`),
+> provavelmente keyless como as marés — e a `IH_API_KEY` deixa de ser
+> necessária para o observedWave.
+
 No código: `scripts/lib/ihBuoys.js` (parse + mapping spot→boia + frescura 3 h) →
 `scripts/fetch-ih-buoys.js` → `public/data/ih-buoys.json` →
 `scripts/merge-observations.mjs` → `conditions.json[spot].observedWave`.

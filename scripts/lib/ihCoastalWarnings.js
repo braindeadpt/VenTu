@@ -18,6 +18,11 @@
 
 const DEFAULT_IH_API = 'https://ogcapi.hidrografico.pt';
 const COLLECTION = 'nav_warning_coastal';
+/** Avisos locais (portos/barras/estuários) — mesmo schema, prop `local_warning`. */
+const LOCAL_COLLECTION = 'nav_warning_local';
+/** Offset nos ids dos avisos locais — os ids são sequências por colecção e
+ * podem colidir com os costeiros; +1M mantém unicidade no coverage/archive. */
+const LOCAL_ID_OFFSET = 1_000_000;
 
 /**
  * Normalise GeoJSON features into the internal warning shape.
@@ -26,14 +31,16 @@ const COLLECTION = 'nav_warning_coastal';
  * polygons are flattened from Polygon/MultiPolygon/GeometryCollection.
  * @param {Array<object>} features GeoJSON features
  * @param {'ih' | 'es'} source platform label
+ * @param {string} [collection] colecção de origem (default: nav_warning_coastal)
  * @returns {Array<{ id: number, ref: string, category: string, url: string,
- *   source: 'ih' | 'es', polygons: Array<Array<[number, number]>> }>}
+ *   source: 'ih' | 'es', collection: string,
+ *   polygons: Array<Array<[number, number]>> }>}
  */
-function normalizeCoastalWarnings(features, source) {
+function normalizeCoastalWarnings(features, source, collection = COLLECTION) {
   const out = [];
   for (const f of features) {
     const p = f?.properties ?? {};
-    const id = Number(p.id);
+    let id = Number(p.id);
     if (!Number.isFinite(id)) continue;
     const g = f?.geometry;
     const polygons = [];
@@ -55,12 +62,14 @@ function normalizeCoastalWarnings(features, source) {
     };
     collect(g);
     if (polygons.length === 0) continue;
+    if (collection === LOCAL_COLLECTION) id += LOCAL_ID_OFFSET;
     out.push({
       id,
-      ref: String(p.coastal_warning ?? p.ref ?? `AVISO ${id}`),
-      category: String(p.category ?? ''),
+      ref: String(p.coastal_warning ?? p.local_warning ?? p.ref ?? `AVISO ${id}`),
+      category: String(p.category ?? p.subject ?? ''),
       url: String(p.url ?? ''),
       source,
+      collection,
       polygons,
     });
   }
@@ -90,6 +99,31 @@ async function fetchCoastalWarnings(
   const features = data?.features;
   if (!Array.isArray(features)) throw new Error('no features array');
   return normalizeCoastalWarnings(features, 'ih');
+}
+
+/**
+ * Fetch in-force LOCAL navigation warnings from the IH OGC API (keyless) —
+ * `nav_warning_local` cobre portos, barras e estuários (a colecção costeira
+ * só traz a faixa costeira aberta). Mesmo schema; ref vem de
+ * `local_warning`, categoria de `subject` quando `category` falta.
+ * @param {typeof fetch} [fetchImpl]
+ * @param {string} [apiBase]
+ * @returns {Promise<Array<object>>} same shape as fetchCoastalWarnings
+ */
+async function fetchLocalWarnings(
+  fetchImpl = fetch,
+  apiBase = DEFAULT_IH_API,
+) {
+  const url = `${apiBase}/collections/${LOCAL_COLLECTION}/items?limit=200&f=json`;
+  const res = await fetchImpl(url, {
+    headers: { Accept: 'application/geo+json, application/json' },
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const data = await res.json();
+  const features = data?.features;
+  if (!Array.isArray(features)) throw new Error('no features array');
+  return normalizeCoastalWarnings(features, 'ih', LOCAL_COLLECTION);
 }
 
 /**
@@ -218,8 +252,11 @@ function coastalWarningLine(warnings, isPt) {
 module.exports = {
   DEFAULT_IH_API,
   COLLECTION,
+  LOCAL_COLLECTION,
+  LOCAL_ID_OFFSET,
   normalizeCoastalWarnings,
   fetchCoastalWarnings,
+  fetchLocalWarnings,
   fetchEsNavWarnings,
   pointInRing,
   warningCoversSpot,

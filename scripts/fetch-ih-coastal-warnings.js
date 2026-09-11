@@ -23,6 +23,7 @@ const fs = require('fs');
 const path = require('path');
 const {
   fetchCoastalWarnings,
+  fetchLocalWarnings,
   fetchEsNavWarnings,
   buildSpotCoverage,
   DEFAULT_IH_API,
@@ -81,6 +82,16 @@ async function fetchCoastalWarningsData() {
   const warnings = await fetchCoastalWarnings(fetch, IH_API);
   console.log(`   🇵🇹 ${warnings.length} IH warnings in force`);
 
+  // Avisos locais (nav_warning_local: portos, barras, estuários) — camada
+  // suplementar da mesma API; se falhar degrada sem bloquear os costeiros.
+  let localWarnings = [];
+  try {
+    localWarnings = await fetchLocalWarnings(fetch, IH_API);
+    console.log(`   🇵🇹 ${localWarnings.length} IH local warnings in force`);
+  } catch (err) {
+    console.warn(`   ⚠️ local warnings failed: ${err.message} — seguindo só com os costeiros.`);
+  }
+
   // Cross-border NW: «Avisos a los navegantes» espanhóis (opcional). Sem URL o
   // layer degrada sem falhar; se o feed existir mas falhar, avisamos e seguimos
   // com os do IH (a fonte ES nunca bloqueia a pipeline). O estado da fonte é
@@ -124,7 +135,7 @@ async function fetchCoastalWarningsData() {
     }
   }
 
-  const all = [...warnings, ...esWarnings];
+  const all = [...warnings, ...localWarnings, ...esWarnings];
   const spots = parseSpotsFromFile();
   const coverage = buildSpotCoverage(spots, all);
   const covered = Object.keys(coverage).length;
@@ -144,7 +155,7 @@ async function fetchCoastalWarningsData() {
     esSourceNote,
     esHealth,
     fetchedAt: new Date().toISOString(),
-    sourceCollection: 'nav_warning_coastal',
+    sourceCollection: 'nav_warning_coastal+nav_warning_local',
     sourceUrl: `${IH_API}/collections/nav_warning_coastal`,
   };
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));

@@ -227,6 +227,32 @@ async function auditEndpoints() {
       }
     },
   );
+  // Tripwire de migração: o IH anunciou que a API Datawell keyed
+  // (getDatawellData em supportserver1) será descontinuada e substituída por
+  // uma OGC API EDR. Enquanto buoys_datawell for Features-only não há nada a
+  // fazer; quando ganhar data_queries (EDR), avisar para planear a migração
+  // das séries de onda em scripts/lib/ihBuoys.js.
+  await probe(
+    'IH buoys EDR (migração Datawell)',
+    'https://ogcapi.hidrografico.pt/collections/buoys_datawell?f=json',
+    (body) => {
+      try {
+        const j = JSON.parse(body);
+        const queries = Object.keys(j?.data_queries ?? {});
+        if (queries.length > 0) {
+          finding(
+            'P2',
+            `EDR de boias PUBLICADO (queries: ${queries.join(', ')}) — ` +
+              'getDatawellData vai ser descontinuado: migrar as séries de onda ' +
+              'para ogcapi EDR (scripts/lib/ihBuoys.js).',
+          );
+        }
+        return null;
+      } catch {
+        return 'não é JSON';
+      }
+    },
+  );
   await probe(
     'IPMA warnings',
     'https://api.ipma.pt/open-data/forecast/warnings/warnings_www.json',
