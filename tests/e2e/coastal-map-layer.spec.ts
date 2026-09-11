@@ -77,9 +77,14 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     await expect(
       page.locator('.leaflet-container[data-coastal-warnings="true"]'),
     ).toHaveCount(1);
-    await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(
+      page.locator('.leaflet-container[data-coastal-warnings-settled="true"]'),
+    ).toHaveCount(1);
+    // Seletor próprio da camada — um `.leaflet-overlay-pane path` genérico pode
+    // resolver noutra camada (isóbatas) e dar falso verde.
+    const warningPaths = page.locator('.leaflet-overlay-pane path.ventu-coastal-warning');
+    await expect(warningPaths).toHaveCount(2);
+    await expect(warningPaths.filter({ visible: true })).not.toHaveCount(0);
     // Atribuição do IH (CC BY 4.0) junta-se à do basemap.
     await expect(page.locator('.leaflet-control-attribution')).toContainText(
       /Avisos à Navegação Costeiros © Instituto Hidrográfico/,
@@ -89,7 +94,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     // Tooltip ligado ao detalhe oficial (geoanavnet.hidrografico.pt): o tooltip
     // do polígono é um link clicável com ref + categoria. dispatchEvent
     // 'mouseover' no path abre o tooltip sticky (Leaflet escuta no elemento).
-    await page.locator('.leaflet-overlay-pane path').first().dispatchEvent('mouseover');
+    await warningPaths.first().dispatchEvent('mouseover');
     const tooltipLink = page.locator('.leaflet-tooltip-pane .leaflet-tooltip a');
     await expect(tooltipLink).toBeVisible({ timeout: 10_000 });
     await expect(tooltipLink).toContainText('ANAV NR 1670/26');
@@ -107,7 +112,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
         return null as any;
       };
     });
-    await page.locator('.leaflet-overlay-pane path').first().dispatchEvent('click');
+    await warningPaths.first().dispatchEvent('click');
     await expect
       .poll(() => page.evaluate(() => (window as any).__ventuOpenedUrl))
       .toBe(IH_DETAIL_URL);
@@ -192,11 +197,17 @@ test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso 
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
     // A camada foi ligada por deep link e desenha os polígonos (incl. o ES que
-    // cobre o Moledo) com a atribuição IH.
+    // cobre o Moledo) com a atribuição IH. O foco animado enquadra o aviso que
+    // cobre o spot: o outro polígono (Nazaré) fica fora do viewport e o Leaflet
+    // clipa-o (d="M0 0" → hidden). Esperar o sinal de assente e verificar que
+    // pelo menos um path DA camada é visível — .first() cairia no clipado.
     await expect(page.locator('.leaflet-container[data-coastal-warnings="true"]')).toHaveCount(1);
-    await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(
+      page.locator('.leaflet-container[data-coastal-warnings-settled="true"]'),
+    ).toHaveCount(1);
+    const warningPaths = page.locator('.leaflet-overlay-pane path.ventu-coastal-warning');
+    await expect(warningPaths).toHaveCount(2);
+    await expect(warningPaths.filter({ visible: true })).not.toHaveCount(0);
     await expect(page.locator('.leaflet-control-attribution')).toContainText(
       /Avisos à Navegação Costeiros © Instituto Hidrográfico/,
       { timeout: 15_000 },

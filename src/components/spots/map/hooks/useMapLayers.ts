@@ -469,6 +469,7 @@ export function useMapLayers({
           : `${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''}`;
         const poly = Leaflet.polygon(latlngs, {
           color: '#ef4444', weight: 2, opacity: 0.9, fillColor: '#ef4444', fillOpacity: 0.18,
+          className: 'ventu-coastal-warning',
         }).bindTooltip(tooltipHtml, { sticky: true, direction: 'top', interactive: true });
         if (url) {
           poly.on('click', (e: L.LeafletMouseEvent) => {
@@ -482,7 +483,15 @@ export function useMapLayers({
     group.addTo(map);
     coastalLayerRef.current = group;
 
+    const container = map.getContainer();
+    // Sinal próprio para "camada desenhada E câmara assente". O foco do deep
+    // link corre um fitBounds animado: durante a animação os paths fora do
+    // alvo ficam clipados (Leaflet escreve d="M0 0" → hidden). Marcar settled
+    // só no moveend que fecha o enquadramento evita esse falso estado.
+    const markCoastalSettled = () => { container.dataset.coastalWarningsSettled = 'true'; };
+
     // Deep link focus
+    let focusAnimated = false;
     if (focusSpotId && !coastalFocusDoneRef.current && isReady) {
       const covering = warningsForSpot(coastalWarningsData, focusSpotId)?.filter(
         (w) => Array.isArray(w.polygons) && w.polygons.length > 0,
@@ -494,22 +503,31 @@ export function useMapLayers({
             for (const [ringLon, ringLat] of ring) focus.extend([ringLat, ringLon]);
           }
         }
-        if (focus.isValid()) map.fitBounds(focus.pad(0.15), { maxZoom: 10, animate: true });
+        if (focus.isValid()) {
+          // O listener regista-se ANTES do fitBounds: se o movimento for
+          // instantâneo/no-op, o moveend dispara dentro da própria chamada.
+          map.once('moveend', markCoastalSettled);
+          focusAnimated = true;
+          map.fitBounds(focus.pad(0.15), { maxZoom: 10, animate: true });
+        }
       }
       coastalFocusDoneRef.current = true;
     }
+    if (!focusAnimated) markCoastalSettled();
 
     const attr = isPt
       ? 'Avisos à Navegação Costeiros © Instituto Hidrográfico (CC BY 4.0)'
       : 'Coastal Navigation Warnings © Instituto Hidrográfico (CC BY 4.0)';
     map.attributionControl?.addAttribution(attr);
-    map.getContainer().dataset.coastalWarnings = 'true';
+    container.dataset.coastalWarnings = 'true';
 
     return () => {
+      map.off('moveend', markCoastalSettled);
       if (map.hasLayer(group)) map.removeLayer(group);
       coastalLayerRef.current = null;
       map.attributionControl?.removeAttribution(attr);
-      map.getContainer().removeAttribute('data-coastal-warnings');
+      container.removeAttribute('data-coastal-warnings');
+      container.removeAttribute('data-coastal-warnings-settled');
     };
   }, [coastalWarningsEnabled, isReady, coastalWarningsData, isPt, focusSpotId, mapInstanceRef, LRef, coastalLayerRef]);
 
