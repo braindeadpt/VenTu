@@ -102,3 +102,9 @@ _patch_*.py
 # Local Windows visual-regression artifacts (baselines are Linux-bound)
 tests/e2e/visual-regression.spec.ts-snapshots/*-win32.png
 _commit-msg.txt
+
+# Agent Skills bridges — junctions locais para .agents/skills (Windows nao commita links)
+.cursor/skills
+.devin/skills
+.grok/skills
+.github/skills
