@@ -631,6 +631,78 @@
       ]
     },
     {
+      "id": 18559,
+      "ref": "ANAV NR 2039/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=10206def-b158-4ebc-8422-f72592e08a2e",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -16.917681,
+            32.642266
+          ],
+          [
+            -16.905324,
+            32.646313
+          ],
+          [
+            -16.905153,
+            32.641399
+          ],
+          [
+            -16.917509,
+            32.639086
+          ],
+          [
+            -16.917681,
+            32.642266
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18561,
+      "ref": "ANAV NR 2040/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e07132b0-62a3-463a-bb8a-dc792a78b7f0",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -17.10178,
+            32.82239
+          ],
+          [
+            -17.10281,
+            32.821452
+          ],
+          [
+            -17.102681,
+            32.820478
+          ],
+          [
+            -17.101501,
+            32.819757
+          ],
+          [
+            -17.100407,
+            32.819667
+          ],
+          [
+            -17.099635,
+            32.820605
+          ],
+          [
+            -17.10178,
+            32.82239
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -8114,7 +8186,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-11T09:42:27.555Z",
+  "fetchedAt": "2026-09-11T11:51:31.117Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
