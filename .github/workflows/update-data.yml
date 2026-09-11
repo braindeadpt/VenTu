@@ -303,6 +303,14 @@ jobs:
       - name: Validate data files (UTF-8 + JSON)
         run: node scripts/validate-data-files.js
 
+      # Data payload budgets — the ci.yml paths-ignore on public/data/** means
+      # data commits never run CI, so a blob crossing its budget would only
+      # surface on the next unrelated code push (seen 2026-09-11:
+      # forecast-skill.json 1.6 MB). Gating here fails the run that actually
+      # produced the oversized file, before it is pushed to main.
+      - name: Data payload budgets (public/data)
+        run: node scripts/check-payload-budgets.js --data-dir public/data
+
       - name: Validate generated data (schema + TTL)
         run: node scripts/validate-generated-data.js --mode=${{ needs.update-conditions.outputs.mode }}
 

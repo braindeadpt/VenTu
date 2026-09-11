@@ -77,7 +77,7 @@ function readArchive(outputPath = DEFAULT_OUTPUT_PATH) {
 function writeArchive(archive, outputPath = DEFAULT_OUTPUT_PATH) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   const tmpPath = `${outputPath}.tmp`;
-  fs.writeFileSync(tmpPath, `${JSON.stringify(archive, null, 2)}\n`, 'utf-8');
+  fs.writeFileSync(tmpPath, `${JSON.stringify(archive)}\n`, 'utf-8');
   fs.renameSync(tmpPath, outputPath);
 }
 

@@ -22,7 +22,12 @@
  * payload regressions, never on the detail rows each spot page legitimately
  * carries.
  *
- * Usage: node scripts/check-payload-budgets.js [--out-dir <dir>]
+ * Usage: node scripts/check-payload-budgets.js [--out-dir <dir>] [--data-dir <dir>]
+ *
+ * --data-dir <dir>: check the data-file budgets against that directory (e.g.
+ * public/data in the update-data pipeline) instead of <out>/data. Route-dir
+ * checks are skipped when out/ doesn't exist — the data pipeline never builds
+ * the export, so it can only gate the blobs it just generated.
  */
 const fs = require('fs');
 const path = require('path');
@@ -30,6 +35,9 @@ const path = require('path');
 const outDir = process.argv.includes('--out-dir')
   ? process.argv[process.argv.indexOf('--out-dir') + 1]
   : path.join(__dirname, '..', 'out');
+const dataDirOverride = process.argv.includes('--data-dir')
+  ? process.argv[process.argv.indexOf('--data-dir') + 1]
+  : null;
 
 // MB — see header comment for the calibration (lean ~2.2, regression ~22).
 const BUDGET_MB = 5;
@@ -107,8 +115,13 @@ let locales = [];
 try {
   locales = fs.readdirSync(outDir);
 } catch {
-  console.error(`check-payload-budgets: out/ not found: ${outDir}`);
-  process.exit(1);
+  // Data-only mode (update-data pipeline): no build output to check — the
+  // data budgets below are the whole point of the run.
+  if (!dataDirOverride) {
+    console.error(`check-payload-budgets: out/ not found: ${outDir}`);
+    process.exit(1);
+  }
+  console.log(`check-payload-budgets: no ${outDir} — data-file budgets only`);
 }
 
 for (const locale of locales) {
@@ -128,7 +141,7 @@ for (const locale of locales) {
   }
 }
 
-const dataDir = path.join(outDir, 'data');
+const dataDir = dataDirOverride || path.join(outDir, 'data');
 if (fs.existsSync(dataDir)) {
   for (const [name, budgetMb] of Object.entries(DATA_FILE_BUDGETS_MB)) {
     const full = path.join(dataDir, name);

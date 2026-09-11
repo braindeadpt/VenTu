@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { waitHydrated } from './helpers/hydration';
+import { installSupabaseMock } from './helpers/supabase-mock';
 
 test.describe('UI interactions audit', () => {
   test('locale switch PT → EN on homepage', async ({ page }) => {
@@ -51,6 +52,10 @@ test.describe('UI interactions audit', () => {
   });
 
   test('favorites: heart opens login when signed out (F1)', async ({ page }) => {
+    // The daily full-route audit builds keyless (no NEXT_PUBLIC_SUPABASE_*) —
+    // without the seam the favorites page renders "Supabase não configurado"
+    // instead of the signed-out gate this test asserts.
+    await installSupabaseMock(page);
     await page.goto('/pt/spots/guincho/');
     await waitHydrated(page);
     await page

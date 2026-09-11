@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { openMapSpotSheet } from './helpers/map-sheet';
+import { installSupabaseMock } from './helpers/supabase-mock';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
 
 /**
@@ -14,29 +15,7 @@ async function waitHydrated(page: import('@playwright/test').Page) {
   await page.waitForSelector('html.is-hydrated', { timeout: 30_000 });
 }
 
-/**
- * Hermetic signed-out state for account-gated pages: install a fake Supabase
- * client before any page script runs, so the gate renders without CI secrets
- * (a keyless local build would otherwise show "Supabase não configurado").
- * The mock only answers auth.getSession/onAuthStateChange with a null session
- * — it never touches the network, and production never sets this global.
- * Read by src/lib/supabase.ts (getSupabaseClient/hasTestSupabaseClient) and
- * the gated pages (FavoritesClient, AccountClient, PassaporteClient).
- */
-async function installSupabaseMock(page: import('@playwright/test').Page) {
-  await page.addInitScript(() => {
-    const testClient = {
-      auth: {
-        getSession: async () => ({ data: { session: null }, error: null }),
-        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-        signInWithOtp: async () => ({ error: null }),
-        signOut: async () => {},
-      },
-    };
-    (window as unknown as { __VENTU_TEST_SUPABASE_CLIENT__?: unknown }).__VENTU_TEST_SUPABASE_CLIENT__ =
-      testClient;
-  });
-}
+
 
 /**
  * Mobile touch playtest — permanent regression spec for the manual matrix

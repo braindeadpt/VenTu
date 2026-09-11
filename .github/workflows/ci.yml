@@ -11,6 +11,13 @@ on:
 permissions:
   contents: read
 
+# Só o commit mais recente interessa: um push novo torna o run anterior
+# obsoleto (e o deploy publica o SHA cujo CI passou — um run cancelado nunca
+# publica). Poupa minutos de runner em rajadas de pushes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   quality:
     runs-on: ubuntu-latest
@@ -148,6 +155,14 @@ jobs:
       # in prod (the gates never open) while staying green.
       - name: Assert hydration beacon is-hydrated setter in the bundle
         run: node scripts/check-hydration-beacon.js
+
+      # Browser cache: ~1-2 min saved per run. Keyed on the exact Playwright
+      # version from the lockfile — a version bump misses and re-installs.
+      - name: Cache Playwright Chromium
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
 
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium

@@ -43,7 +43,10 @@ test('route inventory matches build scale', () => {
  * silently re-expand to the full 1585-route browser run (~14 min on CI).
  */
 test('sample is deterministic and never thins distinct templates', () => {
-  const sampled = sampleRoutes(allRoutes);
+  // Force sampled mode: the daily audit sets VENTU_FULL_AUDIT=1, which makes
+  // sampleRoutes() return everything — this guard tests the sampler itself,
+  // not the ambient env.
+  const sampled = sampleRoutes(allRoutes, { full: false });
   const byGroup = (list) => {
     const m = new Map();
     for (const r of list) {
@@ -67,7 +70,7 @@ test('sample is deterministic and never thins distinct templates', () => {
     expect(new Set(strideSample).size).toBe(strideSample.length, `no duplicates in ${g}`);
   }
   // Determinism: same input → identical output.
-  expect(sampleRoutes(allRoutes)).toEqual(sampled);
+  expect(sampleRoutes(allRoutes, { full: false })).toEqual(sampled);
   // Full mode restores every route.
   expect(sampleRoutes(allRoutes, { full: true })).toEqual(allRoutes);
 });

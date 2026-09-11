@@ -441,6 +441,37 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 | `staleness-alert.yml` | :07/:37 (30 min) | Heartbeat do pipeline (por meta-file): alerta via issue `data-stale` + Telegram quando `pipeline-meta.json` deixa de refrescar (3h dia / 5h noite) |
 | `data-cadence-alert.yml` | :12/:42 (30 min) | Heartbeat do pipeline (por commit): alerta via issue `data-stale` + Telegram quando o último commit a tocar `public/data/**` passa o limiar |
 
+### Guardas CI — onde cada `scripts/check-*`/`validate-*`/`verify-*` corre
+
+Os guards vivem em `scripts/` e são invocados pelos workflows — esta tabela é o mapa (um guard novo sem workflow não corre em lado nenhum):
+
+| Guarda | Workflow (job) | O que tranca |
+|---|---|---|
+| `validate-spots.js` | ci.yml | `spots.ts`: slugs ASCII/únicos, coords, `compatibleSports` |
+| `validate-page-slugs.js` | ci.yml | segmentos de URL explorar/modalidades |
+| `validate-news-livecams.js` | ci.yml | slugs de notícias e livecams |
+| `validate-data-files.js` | ci.yml, update-data, update-news, apply-contributions | UTF-8 + JSON parseável em `public/data` |
+| `check-citation-cff.js` | ci.yml | `CITATION.cff` bem formado |
+| `check-guard-test-counts.js` | ci.yml | as 3 suites de slug-guard correm com contagens exactas |
+| `check-sitemap-drift.js` | ci.yml | `public/sitemap.xml` commitado ≡ gerador |
+| `check-segment-paths.js` | ci.yml | dirs de segment-cache aninhados no `out/` |
+| `check-headers-file.js` | ci.yml, deploy.yml | directivas de segurança em `out/_headers` |
+| `check-payload-budgets.js` | ci.yml, **update-data.yml** | rotas ≤5 MB; blobs de dados dentro do budget (`--data-dir public/data` no pipeline — é aqui que falha um blob que cresce, não no push seguinte) |
+| `check-export-routes.js` | ci.yml, full-route-audit | todas as ~2300 rotas baked têm index.html real (browserless) |
+| `check-hydration-beacon.js` | ci.yml | `is-hydrated` presente no bundle |
+| `validate-terraform-expressions.js` | ci.yml (terraform) | expressões do ruleset Cloudflare |
+| `validate-generated-data.js` | update-data | schema + TTL dos ficheiros gerados (`--tides-soft-gate` no job soft) |
+| `verify-pipeline-freshness.js` | update-data | Open-Meteo fresco em modo `full` |
+| `verify-ih-buoy-layer.js` | update-data | `ih-buoys.json` com onda real quando há key |
+| `verify-meteoalarm-warnings.js` | update-data | fallback MeteoAlarm nunca vazio com token |
+| `check-buoy-coherence.js` | update-data | coerência ES×PT das boias cross-border |
+| `check-skill-regression.js` | update-data | RMSE/|ME| por boia vs baseline |
+| `check-data-layer-health.js` | update-data | streaks down/stale das camadas (warn 3 runs, fail 6) |
+| `check-pipeline-staleness.js` | staleness-alert | `pipeline-meta.json` deixa de refrescar |
+| `check-data-cadence.js` | data-cadence-alert | último commit em `public/data/**` fora do limiar |
+| `check-obs-worker.js` | api-keys | worker de observações responde |
+| `ops-audit.js` | ops-audit | saúde operacional agregada (diário) |
+
 ### Auditoria de rotas — split custo/cobertura (2026-09-10)
 
 A auditoria de rotas deixou de ser um único teste browser de ~1585 rotas (837 s, 47 % do job `quality`, run 34437712823). Redistribuída por custo:
