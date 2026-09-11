@@ -166,6 +166,26 @@ async function main() {
 
       const { breaches } = evaluateLighthouseBudgets(median);
       for (const breach of breaches) allBreaches.push(`[${route.name}] ${breach}`);
+      // Diagnostics: when CLS breaches, name the elements that shifted in the
+      // worst run — the spot page has an intermittent ~0.64 cold-cache
+      // signature (one late ~37KB resource) that pure scores can't identify.
+      if (medianCls > 0.1) {
+        const worst = reports.reduce((a, b) =>
+          (b.audits?.['cumulative-layout-shift']?.numericValue ?? 0) >
+          (a.audits?.['cumulative-layout-shift']?.numericValue ?? 0)
+            ? b
+            : a,
+        );
+        const shifts =
+          worst.audits?.['layout-shift-elements']?.details?.items ?? [];
+        for (const cluster of shifts.slice(0, 3)) {
+          for (const node of (cluster.items ?? []).slice(0, 3)) {
+            console.log(
+              `  shift ${node.score?.toFixed(3)}: ${(node.node?.snippet ?? '?').slice(0, 140)}`,
+            );
+          }
+        }
+      }
     }
 
     const worst = {

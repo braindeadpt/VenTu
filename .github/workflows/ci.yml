@@ -246,8 +246,14 @@ jobs:
       # regression breaches the majority of runs and still fails the median.
       # Correctness gates (unit, lint, E2E, pixel) run BEFORE this perf gate —
       # a slow-but-correct app ships behind a fast-but-broken one.
+      # 5 measured runs: the spot page intermittently shows the documented
+      # ~0.64 cold-cache CLS signature on the shared runner (one resource
+      # ~37KB short → late swap/shift). A median of 5 needs a majority of bad
+      # runs to breach, so a real regression still fails the gate.
       - name: Lighthouse budgets (perf, a11y, SEO, CWV)
         run: npm run lighthouse:prod
+        env:
+          LIGHTHOUSE_RUNS: '5'
 
   supabase-sql:
     runs-on: ubuntu-latest
