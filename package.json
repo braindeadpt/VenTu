@@ -84,7 +84,8 @@
     "dawn-patrol:generate": "node scripts/dawn-patrol.js",
     "dawn-patrol:dev": "node -e \"require('dotenv').config()\" && node scripts/dawn-patrol.js",
     "data:restore": "node scripts/restore-data.js",
-    "skill:regression": "node scripts/check-skill-regression.js"
+    "skill:regression": "node scripts/check-skill-regression.js",
+    "postinstall": "node scripts/setup-agent-links.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.112.4",

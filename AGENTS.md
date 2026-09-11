@@ -28,7 +28,7 @@ that are banned, or changes the score formula without tests. Don't.
 ## Skills
 
 Skills live in `.agents/skills/` (Agent Skills standard). Same files for Claude, Cursor, Devin, Grok, Copilot.
-Tool-specific dirs (`.claude/skills`, `.cursor/skills`, `.devin/skills`, `.grok/skills`, `.github/skills`) are local junctions to `.agents/skills` — recreate on a fresh clone with `New-Item -ItemType Junction -Path <dir> -Target .agents\skills` (Windows) or `ln -sfn ../.agents/skills <dir>`.
+Tool-specific dirs (`.claude/skills`, `.cursor/skills`, `.devin/skills`, `.grok/skills`, `.github/skills`) are local junctions to `.agents/skills`, recreated automatically by `npm install` (`scripts/setup-agent-links.js`).
 
 House skills (load the one matching your surface):
 - `ventu-premium-frontend` — UI/CSS/Tailwind/components/map/copy. Overrides third-party aesthetic defaults.
