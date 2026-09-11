@@ -485,38 +485,6 @@
       ]
     },
     {
-      "id": 18551,
-      "ref": "ANAV NR 2027/26",
-      "category": "Destroços flutuantes",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7f9971e1-2132-446e-b080-a44dd51b408c",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -16.960176,
-            32.639809
-          ],
-          [
-            -16.956658,
-            32.642157
-          ],
-          [
-            -16.950222,
-            32.636737
-          ],
-          [
-            -16.954255,
-            32.634171
-          ],
-          [
-            -16.960176,
-            32.639809
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18553,
       "ref": "ANAV NR 2029/26",
       "category": "Requisitos de segurança maritima",
@@ -626,38 +594,6 @@
           [
             -28.619247,
             38.530341
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18559,
-      "ref": "ANAV NR 2039/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=10206def-b158-4ebc-8422-f72592e08a2e",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -16.917681,
-            32.642266
-          ],
-          [
-            -16.905324,
-            32.646313
-          ],
-          [
-            -16.905153,
-            32.641399
-          ],
-          [
-            -16.917509,
-            32.639086
-          ],
-          [
-            -16.917681,
-            32.642266
           ]
         ]
       ]
@@ -8186,7 +8122,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-11T16:49:51.526Z",
+  "fetchedAt": "2026-09-11T18:34:18.505Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
