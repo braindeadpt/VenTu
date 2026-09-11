@@ -17,7 +17,7 @@ Open-source surf and water-sports conditions for Portugal — scores, forecasts,
 
 ### O que é
 
-O **VenTu** (Vem + Tu) agrega condições marítimas para **173 spots** em Portugal (continental, Açores, Madeira), com scores por modalidade, previsão horária, mapa interactivo, Dawn Patrol, notícias resumidas por IA e **links para livecams** (Surftotal, MEO Beachcam) em **37 spots** curados.
+O **VenTu** (Vem + Tu) agrega condições marítimas para **185 spots** em Portugal (continental, Açores, Madeira), com scores por modalidade, previsão horária, mapa interactivo, Dawn Patrol, notícias resumidas por IA e **links para livecams** (Surftotal, MEO Beachcam) em **37 spots** curados.
 
 ### Funcionalidades
 
@@ -153,7 +153,7 @@ Guia completo: [`docs/IH_API_KEY.md`](docs/IH_API_KEY.md).
 
 ### Livecams
 
-Sem embeds de terceiros (iframes bloqueados). Nos spots curados, a secção «Câmara ao vivo» abre o stream **no site do operador**. Para adicionar um spot, edita `src/lib/spotLivecams.ts`.
+Streams de terceiros não fazem embed por defeito (iframes bloqueados) — a secção «Câmara ao vivo» abre o stream **no site do operador**. Excepção: embeds `youtube` (nocookie) e `surfline` quando o operador os disponibiliza — ver `kind` em `src/lib/spotLivecams.ts`.
 
 ### Créditos e atribuição
 
@@ -174,7 +174,7 @@ Issues e PRs são bem-vindos. Lê [CONTRIBUTING.md](CONTRIBUTING.md) antes de su
 
 ### What it is
 
-**VenTu** aggregates marine conditions for **173 spots** in Portugal, with per-sport scores, hourly forecast, interactive map, Dawn Patrol, AI-summarized news, and **curated live camera links** on **37 spots**.
+**VenTu** aggregates marine conditions for **185 spots** in Portugal, with per-sport scores, hourly forecast, interactive map, Dawn Patrol, AI-summarized news, and **curated live camera links** on **37 spots**.
 
 ### Features
 

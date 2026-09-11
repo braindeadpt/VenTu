@@ -25,12 +25,13 @@ Feel: pre-dawn harbour, wet basalt, nautical instruments, newspaper tide table.
 References in spirit (do not copy UI): Linear density + Aesop editorial restraint + a marine chart.
 One justified risk: large tabular scores as the hero, not a stock wave photo with gradient overlay.
 
-### Allowed type
+### Allowed type (already loaded — `src/lib/fonts/`)
 - UI/body: Geist Sans
-- Numbers/scores/forecast tables: Geist Mono, `tabular-nums` 
+- Numbers/scores/forecast tables: Geist Mono, `tabular-nums`
+- Display headlines (hero, spot names, epic score label): Space Grotesk via `--font-display`
 - Editorial only (news article, about): IBM Plex Serif
-- Do not introduce Inter, Roboto, Arial, Space Grotesk, Comic fonts, or random Google Display faces.
-- Do not add a third family.
+- Do not introduce Inter, Roboto, Arial, Comic fonts, or random Google Display faces.
+- Do not add another family — these four cover every surface.
 
 ### Color (tokens only)
 Use CSS variables from the design system.

@@ -20,8 +20,9 @@ those JSON files — it never calls provider APIs from the browser in production
   readings as fresh.
 - Buoy readings: IH is primary, WMO/Copernicus is the keyless fallback. If IH
   fails, the WMO path must still work (see `src/lib/buoyLayerHealth.ts`).
-- Livecams are curated outbound links in `src/lib/spotLivecams.ts` — never
-  iframes or embeds.
+- Livecams are curated outbound links in `src/lib/spotLivecams.ts`. Default is
+  `external` (no iframes); `kind: 'youtube'` (nocookie) or `'surfline'` embeds
+  are allowed only when the operator officially provides them.
 - News and Dawn Patrol content come from the pipeline; do not fabricate items.
 
 ## Verify

@@ -43,7 +43,7 @@ O modo mais fácil de contribuir é adicionar spots que conheces!
 
 ### 2. Adicionar ou corrigir livecams
 
-O VenTu **não faz embed** de streams (Windy = timelapse; MEO/Surftotal bloqueiam iframe). Usamos **links externos** para páginas com transmissão em direto.
+O VenTu usa **links externos** por defeito (Windy = timelapse; MEO/Surftotal bloqueiam iframe). Embed só quando o operador o disponibiliza oficialmente (`kind: 'youtube'` nocookie ou `'surfline'` em `spotLivecams.ts`).
 
 Edita `src/lib/spotLivecams.ts`:
 

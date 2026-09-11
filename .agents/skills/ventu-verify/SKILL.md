@@ -8,6 +8,7 @@ description: Pre-PR verification for VenTu — tests, data validation, static bu
 Run what matches the surface you touched:
 
 - `npm test` — always (Vitest).
+- `npm run lint` and `npx tsc --noEmit` — always.
 - `npm run spots:validate` — if you touched spots/scores.
 - `npm run data:validate` — if you touched generated `public/data` shapes.
 - `npm run build` — if you touched routes, i18n, or anything in the export.
