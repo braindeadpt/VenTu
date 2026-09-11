@@ -26,6 +26,12 @@ name: Record Visual Baselines
 
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch to record baselines on (default: main). Use a dependabot Playwright PR branch to re-record for a new Chromium.'
+        required: false
+        default: 'main'
+        type: string
 
 permissions:
   contents: write
@@ -42,7 +48,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          ref: main
+          ref: ${{ inputs.ref }}
           fetch-depth: 1
 
       - name: Setup Node.js
@@ -100,7 +106,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data
           git commit -m "chore(visual): refresh Linux baselines (fixture only on shape change)"
-          git push origin main
+          git push origin "HEAD:${{ inputs.ref }}"
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Summary

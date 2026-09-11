@@ -12,6 +12,17 @@ updates:
     groups:
       minor-patch:
         update-types: ["minor", "patch"]
+        exclude-patterns:
+          # Playwright bumps ship a new Chromium → visual-regression pixel
+          # gate fails until baselines are re-recorded on the PR branch via
+          # Record Visual Baselines (workflow_dispatch, ref=<branch>). A
+          # dedicated PR keeps that flow explicit instead of poisoning the
+          # routine minor-patch batch.
+          - "@playwright/test"
+      playwright:
+        update-types: ["minor", "patch"]
+        patterns:
+          - "@playwright/test"
     ignore:
       # Sharp upgrades often carry breaking libvips changes — review manually.
       - dependency-name: "sharp"
