@@ -24,6 +24,7 @@ const path = require('path');
 const {
   fetchCoastalWarnings,
   fetchLocalWarnings,
+  fetchOrcaEvents,
   fetchEsNavWarnings,
   buildSpotCoverage,
   DEFAULT_IH_API,
@@ -92,6 +93,16 @@ async function fetchCoastalWarningsData() {
     console.warn(`   ⚠️ local warnings failed: ${err.message} — seguindo só com os costeiros.`);
   }
 
+  // Eventos de orcas (orca_anavnet_point, últimos 365 dias) — segurança:
+  // interacções hostis documentadas na costa PT. Cobertura por distância.
+  let orcaEvents = [];
+  try {
+    orcaEvents = await fetchOrcaEvents(fetch, IH_API);
+    console.log(`   🐋 ${orcaEvents.length} eventos de orcas nos últimos 180 dias`);
+  } catch (err) {
+    console.warn(`   ⚠️ orca events failed: ${err.message} — seguindo sem eles.`);
+  }
+
   // Cross-border NW: «Avisos a los navegantes» espanhóis (opcional). Sem URL o
   // layer degrada sem falhar; se o feed existir mas falhar, avisamos e seguimos
   // com os do IH (a fonte ES nunca bloqueia a pipeline). O estado da fonte é
@@ -135,7 +146,7 @@ async function fetchCoastalWarningsData() {
     }
   }
 
-  const all = [...warnings, ...localWarnings, ...esWarnings];
+  const all = [...warnings, ...localWarnings, ...orcaEvents, ...esWarnings];
   const spots = parseSpotsFromFile();
   const coverage = buildSpotCoverage(spots, all);
   const covered = Object.keys(coverage).length;
@@ -155,7 +166,7 @@ async function fetchCoastalWarningsData() {
     esSourceNote,
     esHealth,
     fetchedAt: new Date().toISOString(),
-    sourceCollection: 'nav_warning_coastal+nav_warning_local',
+    sourceCollection: 'nav_warning_coastal+nav_warning_local+orca_anavnet_point',
     sourceUrl: `${IH_API}/collections/nav_warning_coastal`,
   };
   fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
