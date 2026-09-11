@@ -34,6 +34,15 @@ const IH_NO_KEY = {
   stations: {},
 };
 const WMO_DOWN = { buoys: {}, hasWaveData: false, day: '20260815' };
+/** Camada saudável → status null → nem banner nem chip. Sem isto, dados de
+ *  boias stale (local) abrem o aviso no topo do mapa e cobrem o botão de
+ *  fecho de popups abertos por marcadores altos. */
+const IH_FRESH = {
+  fetchedAt: new Date().toISOString(),
+  apiKeyConfigured: true,
+  hasWaveData: true,
+  stations: { stub: { status: 'active', latest: { date: new Date().toISOString() } } },
+};
 
 async function openMapa(
   page: Page,
@@ -46,20 +55,35 @@ async function openMapa(
   if (opts.buoyNoKey) {
     await interceptIhBuoys(page, IH_NO_KEY);
     await interceptWmoBuoys(page, WMO_DOWN);
+  } else {
+    await interceptIhBuoys(page, IH_FRESH);
   }
   await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
   await waitHydrated(page);
+  // Todos os fetches de dados (warnings, boias, condições…) resolvidos antes
+  // de tocar em marcadores: cada resposta tardia re-corre o efeito dos
+  // marcadores e reconstrói-os — um clique a meio disso apanha o elemento
+  // detached e o Playwright fica a tentar até ao timeout.
+  await page.waitForLoadState('networkidle', { timeout: 30_000 });
+  // O refresh diferido do /mapa (deferRefreshMs=5s) re-corre o efeito dos
+  // marcadores e chama closePopupAndSheet — sem esta espera fecha um
+  // popup/sheet aberto a meio do teste («not-rendered»/detach). O atributo é
+  // o sinal e2e do useLiveGridSpotData para exactamente esta corrida.
+  await page.waitForSelector('html[data-grid-live-deferred="done"]', { timeout: 30_000 });
   if (opts.mobile) await expandMapHudFilters(page);
 }
 
 /**
- * Marcador para abrir o popup/sheet. Prefere um marcador que é o elemento de
- * topo no seu centro (clique normal); se nenhum existir (pilhas densas em
- * mobile), cai para qualquer marcador no viewport e abre-o com el.click() —
- * o listener do Leaflet vive no próprio elemento, por isso abre na mesma.
+ * Abre o popup/sheet de um marcador no viewport e devolve-o JÁ aberto —
+ * quem chama NÃO deve clicar outra vez (o segundo clique cai no backdrop da
+ * sheet em mobile e fica preso até ao timeout). Prefere um marcador que é o
+ * elemento de topo no seu centro (clique normal); se nenhum existir (pilhas
+ * densas em mobile), cai para qualquer marcador no viewport e abre-o com
+ * el.click() — o listener do Leaflet vive no próprio elemento, por isso abre
+ * na mesma.
  */
-async function pickInViewportMarker(page: Page): Promise<Locator> {
+async function openInViewportMarker(page: Page): Promise<Locator> {
   const pick = await page.waitForFunction(
     () => {
       const vw = window.innerWidth;
@@ -67,31 +91,70 @@ async function pickInViewportMarker(page: Page): Promise<Locator> {
       const markers = Array.from(
         document.querySelectorAll<HTMLElement>('.leaflet-marker-icon.spot-marker'),
       );
-      for (const m of markers) {
-        const r = m.getBoundingClientRect();
-        if (r.width <= 0 || r.height <= 0) continue;
+      // O popup abre para CIMA do marcador — ordenar do mais baixo para o mais
+      // alto no ecrã mantém o popup (e o botão de fecho) fora da faixa de
+      // overlays do topo (barra de controlos, aviso de boias).
+      const inView = markers
+        .map((m, index) => ({ m, index, r: m.getBoundingClientRect() }))
+        .filter(
+          ({ r }) =>
+            r.width > 0 &&
+            r.height > 0 &&
+            r.left >= 0 &&
+            r.top >= 0 &&
+            r.right <= vw &&
+            r.bottom <= vh,
+        )
+        .sort((a, b) => b.r.top - a.r.top);
+      for (const { m, index, r } of inView) {
         const cx = r.x + r.width / 2;
         const cy = r.y + r.height / 2;
-        if (cx < 0 || cy < 0 || cx > vw || cy > vh) continue;
         const top = document.elementFromPoint(cx, cy);
-        if (top === m || m.contains(top)) return { index: markers.indexOf(m) };
+        if (top === m || m.contains(top)) return { index };
       }
-      for (const m of markers) {
-        const r = m.getBoundingClientRect();
-        if (r.width <= 0 || r.height <= 0) continue;
-        if (r.left < 0 || r.top < 0 || r.right > vw || r.bottom > vh) continue;
-        return { index: markers.indexOf(m), via: 'evaluate' };
-      }
+      if (inView.length > 0) return { index: inView[0].index, via: 'evaluate' };
       return null;
     },
     { timeout: 30_000, polling: 250 },
   );
   const info = (await pick.jsonValue()) as { index: number; via?: 'evaluate' };
   const marker = page.locator('.leaflet-marker-icon.spot-marker').nth(info.index);
+  // Em mobile o mapa corre clustered: o markercluster adiciona/remove ícones
+  // durante as animações — o elemento resolvido por índice pode ser
+  // destacado (ou o índice deixar de existir) a meio do clique. O listener
+  // do Leaflet vive no próprio elemento, por isso re-consultar o DOM fresco
+  // e fazer el.click() abre na mesma (o alvo do hit-test é o overlay, não o
+  // marcador).
+  const clickFresh = () =>
+    page.evaluate(() => {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      for (const m of document.querySelectorAll<HTMLElement>(
+        '.leaflet-marker-icon.spot-marker',
+      )) {
+        const r = m.getBoundingClientRect();
+        if (
+          r.width > 0 &&
+          r.height > 0 &&
+          r.left >= 0 &&
+          r.top >= 0 &&
+          r.right <= vw &&
+          r.bottom <= vh
+        ) {
+          m.click();
+          return;
+        }
+      }
+      throw new Error('openInViewportMarker: nenhum spot-marker no viewport');
+    });
   if (info.via === 'evaluate') {
-    await marker.evaluate((el) => (el as HTMLElement).click());
+    await clickFresh();
   } else {
-    await marker.click();
+    try {
+      await marker.click({ timeout: 8_000 });
+    } catch {
+      await clickFresh();
+    }
   }
   return marker;
 }
@@ -141,8 +204,7 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       page,
     }) => {
       await openMapa(page);
-      const marker = await pickInViewportMarker(page);
-      await marker.click();
+      await openInViewportMarker(page);
       const popup = page.locator('.leaflet-popup').last();
       await expect(popup).toBeVisible({ timeout: 10_000 });
 
@@ -212,8 +274,7 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       page,
     }) => {
       await openMapa(page, { mobile: true });
-      const marker = await pickInViewportMarker(page);
-      await marker.click();
+      await openInViewportMarker(page);
       const sheet = page.locator('[data-testid="map-spot-sheet"]');
       await expect(sheet).toBeVisible({ timeout: 10_000 });
 
@@ -231,8 +292,7 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       page,
     }) => {
       await openMapa(page, { mobile: true });
-      const marker = await pickInViewportMarker(page);
-      await marker.click();
+      await openInViewportMarker(page);
       const sheet = page.locator('[data-testid="map-spot-sheet"]');
       await expect(sheet).toBeVisible({ timeout: 10_000 });
 
