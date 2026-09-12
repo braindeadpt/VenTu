@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-12T13:11:13.769Z",
+  "fetchedAt": "2026-09-12T14:08:06.877Z",
   "windowDays": 90,
   "dayCount": 12,
   "days": [
@@ -2328,13 +2328,6 @@
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=40a67b1d-684f-4e2d-bc8f-208f5017567b"
-        },
-        {
-          "id": 18555,
-          "ref": "ANAV NR 2037/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0b38916e-6016-4551-b8a7-9174ebee2839"
         },
         {
           "id": 18557,
@@ -4756,19 +4749,6 @@
       "nDays": 2
     },
     {
-      "ref": "ANAV NR 2037/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0b38916e-6016-4551-b8a7-9174ebee2839",
-      "firstSeen": "2026-09-11",
-      "lastSeen": "2026-09-12",
-      "daysInForce": [
-        "2026-09-11",
-        "2026-09-12"
-      ],
-      "nDays": 2
-    },
-    {
       "ref": "ANAV NR 2038/26",
       "category": "Requisitos de segurança maritima",
       "source": "ih",
@@ -5832,6 +5812,18 @@
       "category": "Exercicios navais ou exercicios de tiro",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=30b10cf1-4385-4f27-b668-89473a2a0274",
+      "firstSeen": "2026-09-11",
+      "lastSeen": "2026-09-11",
+      "daysInForce": [
+        "2026-09-11"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2037/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0b38916e-6016-4551-b8a7-9174ebee2839",
       "firstSeen": "2026-09-11",
       "lastSeen": "2026-09-11",
       "daysInForce": [
