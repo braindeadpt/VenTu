@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-09-11T19:20:43.872Z",
+  "checkedAt": "2026-09-12T00:19:01.893Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -21,10 +21,10 @@
       "name": "CSA92/D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 11.91,
-        "me": 1.6642857142857144,
-        "n": 181.28571428571428
+        "snapshots": 8,
+        "rmse": 11.74625,
+        "me": 1.62625,
+        "n": 191.375
       },
       "baseline": {
         "snapshots": 3,
@@ -32,18 +32,18 @@
         "me": 1.6033333333333333,
         "n": 61.666666666666664
       },
-      "rmseDelta": 2.53,
-      "meAbsDelta": 0.06,
+      "rmseDelta": 2.37,
+      "meAbsDelta": 0.02,
       "verdict": "regressed"
     },
     "19": {
       "name": "CSA83/1D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.13714285714285715,
-        "me": 0.007142857142857143,
-        "n": 184.85714285714286
+        "snapshots": 8,
+        "rmse": 0.14,
+        "me": -8.673617379884035e-19,
+        "n": 194.375
       },
       "baseline": {
         "snapshots": 3,
@@ -52,17 +52,17 @@
         "n": 65
       },
       "rmseDelta": -0.02,
-      "meAbsDelta": -0.09,
+      "meAbsDelta": -0.1,
       "verdict": "ok"
     },
     "20": {
       "name": "CSA82/D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 7.499999999999999,
-        "me": 0.5814285714285715,
-        "n": 184.57142857142858
+        "snapshots": 8,
+        "rmse": 7.331249999999999,
+        "me": 0.55625,
+        "n": 194.125
       },
       "baseline": {
         "snapshots": 3,
@@ -70,18 +70,18 @@
         "me": 0.34,
         "n": 64.66666666666667
       },
-      "rmseDelta": 3.96,
-      "meAbsDelta": 0.24,
+      "rmseDelta": 3.79,
+      "meAbsDelta": 0.22,
       "verdict": "regressed"
     },
     "33": {
       "name": "CSA94",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.45857142857142863,
-        "me": -0.43142857142857144,
-        "n": 184.85714285714286
+        "snapshots": 8,
+        "rmse": 0.46125000000000005,
+        "me": -0.43375,
+        "n": 194.375
       },
       "baseline": {
         "snapshots": 3,
@@ -97,10 +97,10 @@
       "name": "BOND5",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 11.238571428571428,
-        "me": 1.4257142857142857,
-        "n": 185.42857142857142
+        "snapshots": 8,
+        "rmse": 11.159999999999998,
+        "me": 1.4100000000000001,
+        "n": 195
       },
       "baseline": {
         "snapshots": 3,
@@ -108,18 +108,18 @@
         "me": 0.3966666666666667,
         "n": 65.66666666666667
       },
-      "rmseDelta": 7.71,
-      "meAbsDelta": 1.03,
+      "rmseDelta": 7.63,
+      "meAbsDelta": 1.01,
       "verdict": "regressed"
     },
     "6200084": {
       "name": "Cabo Silleiro",
       "origin": "wmo-es",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.33285714285714285,
-        "me": 0.25285714285714284,
-        "n": 154.85714285714286
+        "snapshots": 8,
+        "rmse": 0.3325,
+        "me": 0.25125,
+        "n": 162.625
       },
       "baseline": {
         "snapshots": 4,
@@ -127,7 +127,7 @@
         "me": 0.36500000000000005,
         "n": 43.25
       },
-      "rmseDelta": -0.06,
+      "rmseDelta": -0.07,
       "meAbsDelta": -0.11,
       "verdict": "ok"
     },
@@ -135,10 +135,10 @@
       "name": "Golfo de Cádiz",
       "origin": "wmo-es",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.4471428571428571,
-        "me": 0.39999999999999997,
-        "n": 155.85714285714286
+        "snapshots": 8,
+        "rmse": 0.44875,
+        "me": 0.40125,
+        "n": 163.625
       },
       "baseline": {
         "snapshots": 4,
@@ -146,17 +146,17 @@
         "me": 0.47,
         "n": 43.5
       },
-      "rmseDelta": -0.06,
+      "rmseDelta": -0.05,
       "meAbsDelta": -0.07,
       "verdict": "ok"
     },
     "6200199": {
       "name": "Nazaré Costeira (WMO)",
       "recent": {
-        "snapshots": 7,
-        "rmse": 0.1642857142857143,
-        "me": 0.037142857142857144,
-        "n": 147.28571428571428
+        "snapshots": 8,
+        "rmse": 0.165,
+        "me": 0.035,
+        "n": 154.625
       },
       "baseline": {
         "snapshots": 4,
@@ -175,10 +175,10 @@
       "name": "BOND5",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 11.238571428571428,
-        "me": 1.4257142857142857,
-        "n": 185.42857142857142
+        "snapshots": 8,
+        "rmse": 11.159999999999998,
+        "me": 1.4100000000000001,
+        "n": 195
       },
       "baseline": {
         "snapshots": 3,
@@ -186,12 +186,12 @@
         "me": 0.3966666666666667,
         "n": 65.66666666666667
       },
-      "rmseDelta": 7.71,
-      "meAbsDelta": 1.03,
+      "rmseDelta": 7.63,
+      "meAbsDelta": 1.01,
       "verdict": "regressed",
       "reasons": [
-        "RMSE +7.71 m (limiar +0.3)",
-        "|ME| +1.03 m (limiar +0.3)"
+        "RMSE +7.63 m (limiar +0.3)",
+        "|ME| +1.01 m (limiar +0.3)"
       ]
     },
     {
@@ -199,10 +199,10 @@
       "name": "CSA82/D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 7.499999999999999,
-        "me": 0.5814285714285715,
-        "n": 184.57142857142858
+        "snapshots": 8,
+        "rmse": 7.331249999999999,
+        "me": 0.55625,
+        "n": 194.125
       },
       "baseline": {
         "snapshots": 3,
@@ -210,11 +210,11 @@
         "me": 0.34,
         "n": 64.66666666666667
       },
-      "rmseDelta": 3.96,
-      "meAbsDelta": 0.24,
+      "rmseDelta": 3.79,
+      "meAbsDelta": 0.22,
       "verdict": "regressed",
       "reasons": [
-        "RMSE +3.96 m (limiar +0.3)"
+        "RMSE +3.79 m (limiar +0.3)"
       ]
     },
     {
@@ -222,10 +222,10 @@
       "name": "CSA92/D",
       "origin": "ih",
       "recent": {
-        "snapshots": 7,
-        "rmse": 11.91,
-        "me": 1.6642857142857144,
-        "n": 181.28571428571428
+        "snapshots": 8,
+        "rmse": 11.74625,
+        "me": 1.62625,
+        "n": 191.375
       },
       "baseline": {
         "snapshots": 3,
@@ -233,11 +233,11 @@
         "me": 1.6033333333333333,
         "n": 61.666666666666664
       },
-      "rmseDelta": 2.53,
-      "meAbsDelta": 0.06,
+      "rmseDelta": 2.37,
+      "meAbsDelta": 0.02,
       "verdict": "regressed",
       "reasons": [
-        "RMSE +2.53 m (limiar +0.3)"
+        "RMSE +2.37 m (limiar +0.3)"
       ]
     }
   ],
@@ -246,16 +246,16 @@
       "platform": "ih",
       "name": "IH (Datawell)",
       "recent": {
-        "days": 7,
-        "n": 921,
-        "me": 0.6334682798200714
+        "days": 8,
+        "n": 969.25,
+        "me": 0.6125315965953058
       },
       "baseline": {
         "days": 3,
         "n": 322,
         "me": 0.5202484472049689
       },
-      "meAbsDelta": 0.11,
+      "meAbsDelta": 0.09,
       "nDeltaFraction": null,
       "verdict": "ok",
       "reasons": []
@@ -264,9 +264,9 @@
       "platform": "wmo-es",
       "name": "WMO-ES (Copernicus)",
       "recent": {
-        "days": 7,
-        "n": 458,
-        "me": 0.23274173424828448
+        "days": 8,
+        "n": 480.88,
+        "me": 0.23180400311931376
       },
       "baseline": {
         "days": 4,
