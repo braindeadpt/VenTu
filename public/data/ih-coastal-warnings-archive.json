@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-12T18:48:28.252Z",
+  "fetchedAt": "2026-09-12T19:22:01.282Z",
   "windowDays": 90,
   "dayCount": 12,
   "days": [
@@ -2328,13 +2328,6 @@
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=40a67b1d-684f-4e2d-bc8f-208f5017567b"
-        },
-        {
-          "id": 18557,
-          "ref": "ANAV NR 2038/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a01d876f-b0fe-49d8-a376-36c013f50f32"
         },
         {
           "id": 1000182,
@@ -4742,19 +4735,6 @@
       "nDays": 2
     },
     {
-      "ref": "ANAV NR 2038/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a01d876f-b0fe-49d8-a376-36c013f50f32",
-      "firstSeen": "2026-09-11",
-      "lastSeen": "2026-09-12",
-      "daysInForce": [
-        "2026-09-11",
-        "2026-09-12"
-      ],
-      "nDays": 2
-    },
-    {
       "ref": "ANAV NR 21/16",
       "category": "Mastro de Aviso de Temporal do Portinho da Ericeira",
       "source": "ih",
@@ -5804,6 +5784,18 @@
       "category": "Requisitos de segurança maritima",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0b38916e-6016-4551-b8a7-9174ebee2839",
+      "firstSeen": "2026-09-11",
+      "lastSeen": "2026-09-11",
+      "daysInForce": [
+        "2026-09-11"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2038/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a01d876f-b0fe-49d8-a376-36c013f50f32",
       "firstSeen": "2026-09-11",
       "lastSeen": "2026-09-11",
       "daysInForce": [
