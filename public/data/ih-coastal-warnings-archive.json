@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-12T00:19:03.948Z",
+  "fetchedAt": "2026-09-12T05:09:09.041Z",
   "windowDays": 90,
   "dayCount": 12,
   "days": [
@@ -2307,13 +2307,6 @@
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=752ca36b-7893-45fe-b14b-d30477029858"
-        },
-        {
-          "id": 18475,
-          "ref": "ANAV NR 1957/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4634810f-f05d-4f02-8fab-d4391f89a71a"
         },
         {
           "id": 18537,
@@ -4669,26 +4662,6 @@
       "nDays": 10
     },
     {
-      "ref": "ANAV NR 1957/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4634810f-f05d-4f02-8fab-d4391f89a71a",
-      "firstSeen": "2026-09-04",
-      "lastSeen": "2026-09-12",
-      "daysInForce": [
-        "2026-09-04",
-        "2026-09-05",
-        "2026-09-06",
-        "2026-09-07",
-        "2026-09-08",
-        "2026-09-09",
-        "2026-09-10",
-        "2026-09-11",
-        "2026-09-12"
-      ],
-      "nDays": 9
-    },
-    {
       "ref": "ANAV NR 197/18",
       "category": "Assinalamento marítimo",
       "source": "ih",
@@ -5834,6 +5807,25 @@
         "2026-09-12"
       ],
       "nDays": 2
+    },
+    {
+      "ref": "ANAV NR 1957/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4634810f-f05d-4f02-8fab-d4391f89a71a",
+      "firstSeen": "2026-09-04",
+      "lastSeen": "2026-09-11",
+      "daysInForce": [
+        "2026-09-04",
+        "2026-09-05",
+        "2026-09-06",
+        "2026-09-07",
+        "2026-09-08",
+        "2026-09-09",
+        "2026-09-10",
+        "2026-09-11"
+      ],
+      "nDays": 8
     },
     {
       "ref": "ANAV NR 2026/26",
