@@ -72,23 +72,13 @@
   "regions": {
     "Caminha": {
       "spotCount": 1,
-      "withObservedWave": 1,
-      "bySource": {
-        "ih-buoy": 1
-      },
-      "audited": 1,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "moledo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 60,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -96,72 +86,13 @@
     },
     "Viana do Castelo": {
       "spotCount": 8,
-      "withObservedWave": 8,
-      "bySource": {
-        "ih-buoy": 8
-      },
-      "audited": 8,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 8,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "vila-praia-ancora",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 57,
-          "altKm": 0
-        },
-        {
-          "spot": "afife",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 52,
-          "altKm": 0
-        },
-        {
-          "spot": "castelo-neiva",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 50,
-          "altKm": 0
-        },
-        {
-          "spot": "amorosa",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 44,
-          "altKm": 0
-        },
-        {
-          "spot": "cabedelo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 42,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-cabedelo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 42,
-          "altKm": 0
-        },
-        {
-          "spot": "cabedelo-wakepark",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 44,
-          "altKm": 0
-        },
-        {
-          "spot": "rodanho",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 41,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -169,79 +100,13 @@
     },
     "Esposende": {
       "spotCount": 9,
-      "withObservedWave": 9,
-      "bySource": {
-        "ih-buoy": 9
-      },
-      "audited": 9,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 9,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ofir",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 31,
-          "altKm": 0
-        },
-        {
-          "spot": "esposende",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "esposende-praia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "fao",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 28,
-          "altKm": 0
-        },
-        {
-          "spot": "apulia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 26,
-          "altKm": 0
-        },
-        {
-          "spot": "fao-ofir-surf",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 28,
-          "altKm": 0
-        },
-        {
-          "spot": "ofir-praia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 28,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-fao-cavado",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-esposende-piscinas",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -249,100 +114,13 @@
     },
     "Porto": {
       "spotCount": 12,
-      "withObservedWave": 12,
-      "bySource": {
-        "ih-buoy": 12
-      },
-      "audited": 12,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 12,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "povoa-varzim",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 20,
-          "altKm": 0
-        },
-        {
-          "spot": "leca-palmeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 27,
-          "altKm": 0
-        },
-        {
-          "spot": "matosinhos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "cabedelo-douro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 33,
-          "altKm": 0
-        },
-        {
-          "spot": "marina-afurada-foil",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 34,
-          "altKm": 0
-        },
-        {
-          "spot": "salgueiros",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 34,
-          "altKm": 0
-        },
-        {
-          "spot": "sereia-costa-verde",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 35,
-          "altKm": 0
-        },
-        {
-          "spot": "canide-sul",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 35,
-          "altKm": 0
-        },
-        {
-          "spot": "aguda",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 40,
-          "altKm": 0
-        },
-        {
-          "spot": "espinho",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 45,
-          "altKm": 0
-        },
-        {
-          "spot": "vila-cha",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 21,
-          "altKm": 0
-        },
-        {
-          "spot": "aterro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 25,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -350,30 +128,13 @@
     },
     "Vila do Conde": {
       "spotCount": 2,
-      "withObservedWave": 2,
-      "bySource": {
-        "ih-buoy": 2
-      },
-      "audited": 2,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "azurara",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 20,
-          "altKm": 0
-        },
-        {
-          "spot": "mindelo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 20,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -381,23 +142,13 @@
     },
     "Gondomar": {
       "spotCount": 1,
-      "withObservedWave": 1,
-      "bySource": {
-        "ih-buoy": 1
-      },
-      "audited": 1,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "praia-da-lomba",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 55,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -405,37 +156,13 @@
     },
     "Espinho": {
       "spotCount": 3,
-      "withObservedWave": 3,
-      "bySource": {
-        "ih-buoy": 3
-      },
-      "audited": 3,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "praia-37",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 45,
-          "altKm": 0
-        },
-        {
-          "spot": "bairro-piscatorio",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 45,
-          "altKm": 0
-        },
-        {
-          "spot": "paramos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 47,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -443,58 +170,13 @@
     },
     "Ovar": {
       "spotCount": 6,
-      "withObservedWave": 6,
-      "bySource": {
-        "ih-buoy": 6
-      },
-      "audited": 6,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 6,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "barrinha-esmoriz",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 48,
-          "altKm": 0
-        },
-        {
-          "spot": "esmoriz",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 48,
-          "altKm": 0
-        },
-        {
-          "spot": "cortegaca",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 49,
-          "altKm": 0
-        },
-        {
-          "spot": "cortegaca-sul",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 50,
-          "altKm": 0
-        },
-        {
-          "spot": "maceda",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 52,
-          "altKm": 0
-        },
-        {
-          "spot": "furadouro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 56,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -502,65 +184,13 @@
     },
     "Aveiro": {
       "spotCount": 7,
-      "withObservedWave": 7,
-      "bySource": {
-        "ih-buoy": 7
-      },
-      "audited": 7,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 7,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "murtosa",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 71,
-          "altKm": 0
-        },
-        {
-          "spot": "ria-torreira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 69,
-          "altKm": 0
-        },
-        {
-          "spot": "praia-torreira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 66,
-          "altKm": 0
-        },
-        {
-          "spot": "muranzel",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 70,
-          "altKm": 0
-        },
-        {
-          "spot": "sao-jacinto",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 75,
-          "altKm": 0
-        },
-        {
-          "spot": "costa-nova",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 80,
-          "altKm": 0
-        },
-        {
-          "spot": "barra-aveiro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 78,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -969,23 +599,13 @@
     },
     "Vieira do Minho": {
       "spotCount": 1,
-      "withObservedWave": 1,
-      "bySource": {
-        "ih-buoy": 1
-      },
-      "audited": 1,
+      "withObservedWave": 0,
+      "bySource": {},
+      "audited": 0,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ilha-do-ermal",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 78,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1763,7 +1383,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-13T06:48:37.591Z",
+  "regionsAuditedAt": "2026-09-13T11:53:08.903Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Datawell ao largo do Porto",
