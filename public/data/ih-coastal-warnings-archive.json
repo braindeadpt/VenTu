@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-14T12:16:31.706Z",
+  "fetchedAt": "2026-09-14T17:00:16.197Z",
   "windowDays": 90,
   "dayCount": 14,
   "days": [
@@ -4916,11 +4916,25 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=a7fd7520-e9b4-4c1a-b074-f8c962c42826"
         },
         {
-          "id": 18581,
-          "ref": "ANAV NR 2064/26",
+          "id": 18587,
+          "ref": "ANAV NR 2067/26",
           "category": "Requisitos de segurança maritima",
           "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c87743ee-3a8d-4d07-9b2d-3dc3d1fe6911"
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=20e7edd3-1d35-4b81-b8c3-98d94a42bbbf"
+        },
+        {
+          "id": 18589,
+          "ref": "ANAV NR 2068/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=1762fde3-4e33-4bbb-a07a-9938871d342f"
+        },
+        {
+          "id": 18591,
+          "ref": "ANAV NR 2069/26",
+          "category": "Operações de reboque",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0a086945-535a-4bb3-bb0e-c8040bb8e772"
         },
         {
           "id": 1000182,
@@ -7459,10 +7473,34 @@
       "nDays": 2
     },
     {
-      "ref": "ANAV NR 2064/26",
+      "ref": "ANAV NR 2067/26",
       "category": "Requisitos de segurança maritima",
       "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c87743ee-3a8d-4d07-9b2d-3dc3d1fe6911",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=20e7edd3-1d35-4b81-b8c3-98d94a42bbbf",
+      "firstSeen": "2026-09-14",
+      "lastSeen": "2026-09-14",
+      "daysInForce": [
+        "2026-09-14"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2068/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=1762fde3-4e33-4bbb-a07a-9938871d342f",
+      "firstSeen": "2026-09-14",
+      "lastSeen": "2026-09-14",
+      "daysInForce": [
+        "2026-09-14"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2069/26",
+      "category": "Operações de reboque",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0a086945-535a-4bb3-bb0e-c8040bb8e772",
       "firstSeen": "2026-09-14",
       "lastSeen": "2026-09-14",
       "daysInForce": [
