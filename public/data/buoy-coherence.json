@@ -1,11 +1,11 @@
 {
   "day": "20260914",
-  "fetchedAt": "2026-09-14T22:44:25.874Z",
+  "fetchedAt": "2026-09-14T23:53:16.642Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 466,
+    "pairHourCount": 469,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -2345,7 +2345,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-14T22:47:38.938Z",
+  "regionsAuditedAt": "2026-09-14T23:55:06.757Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2477,16 +2477,16 @@
         "6200084",
         "6201079"
       ],
-      "distanceKm": 594.5,
+      "distanceKm": 594.6,
       "ptSource": "wmo",
-      "n": 60,
+      "n": 61,
       "meanDeltaM": -0.7,
       "meanAbsDeltaM": 0.7,
       "maxAbsDeltaM": 1.7,
       "corr": -0.17,
       "verdict": "coherent",
       "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-14T14",
+      "lastHour": "2026-09-14T15",
       "hours": [
         {
           "6200084": 1.2899999618530273,
@@ -2512,6 +2512,11 @@
           "6200084": 1.2899999618530273,
           "6201079": 0.8500000238418579,
           "hour": "2026-09-14T14"
+        },
+        {
+          "6200084": 1.2899999618530273,
+          "6201079": 0.949999988079071,
+          "hour": "2026-09-14T15"
         }
       ]
     },
@@ -2521,16 +2526,16 @@
         "6200083",
         "6201079"
       ],
-      "distanceKm": 741.7,
+      "distanceKm": 741.8,
       "ptSource": "wmo",
-      "n": 60,
+      "n": 61,
       "meanDeltaM": -0.9,
       "meanAbsDeltaM": 0.9,
       "maxAbsDeltaM": 2,
-      "corr": 0.07,
+      "corr": 0.05,
       "verdict": "review",
       "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-14T14",
+      "lastHour": "2026-09-14T15",
       "hours": [
         {
           "6200083": 2.109999895095825,
@@ -2556,6 +2561,11 @@
           "6200083": 1.409999966621399,
           "6201079": 0.8500000238418579,
           "hour": "2026-09-14T14"
+        },
+        {
+          "6200083": 1.2899999618530273,
+          "6201079": 0.949999988079071,
+          "hour": "2026-09-14T15"
         }
       ]
     },
@@ -2567,14 +2577,14 @@
       ],
       "distanceKm": 95.6,
       "ptSource": "wmo",
-      "n": 60,
+      "n": 61,
       "meanDeltaM": -0.3,
       "meanAbsDeltaM": 0.3,
       "maxAbsDeltaM": 0.7,
-      "corr": 0.63,
+      "corr": 0.64,
       "verdict": "coherent",
       "firstHour": "2026-09-01T04",
-      "lastHour": "2026-09-14T14",
+      "lastHour": "2026-09-14T15",
       "hours": [
         {
           "6200085": 1.5199999809265137,
@@ -2600,6 +2610,11 @@
           "6200085": 1.1699999570846558,
           "6201079": 0.8500000238418579,
           "hour": "2026-09-14T14"
+        },
+        {
+          "6200085": 1.2899999618530273,
+          "6201079": 0.949999988079071,
+          "hour": "2026-09-14T15"
         }
       ]
     }
