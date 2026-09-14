@@ -169,6 +169,7 @@ function testEnv(conditionsPath, mapPath, ihBuoysPath, overrides = {}) {
     BUOY_COHERENCE_PATH: tmpFile('coherence-missing.json'),
     BUOY_COHERENCE_DAILY_PATH: tmpFile('coherence-daily-missing.json'),
     WIND_BIAS_PATH: tmpFile('wind-bias.json'),
+    WIND_BIAS_ARCHIVE_PATH: tmpFile('wind-bias-archive.json'),
     PIPELINE_META_ROOT: tmpDir,
     SPOTS_PATH: null, // usar o spots.ts real (só leitura)
     ...overrides,
@@ -328,9 +329,13 @@ describe('merge-observations preserva o waveBias da row', () => {
       n: 10,
     });
 
-    // O arquivo foi escrito com o par novo (10 pares totais).
-    const archive = JSON.parse(fs.readFileSync(windBiasPath, 'utf-8'));
+    // O arquivo (data-state) foi escrito com o par novo; o ficheiro público
+    // leva só o relatório (sem pairs — payload budget, split 2026-09-14).
+    const archive = JSON.parse(fs.readFileSync(tmpFile('wind-bias-archive.json'), 'utf-8'));
     expect(archive.pairs).toHaveLength(10);
+    const report = JSON.parse(fs.readFileSync(windBiasPath, 'utf-8'));
+    expect(report.pairs).toBeUndefined();
+    expect(report.pairCount).toBe(10);
 
     // O score usa o vento observado e o badge expõe o viés.
     expect(resolveScoreWindSource(out)).toBe('observed');

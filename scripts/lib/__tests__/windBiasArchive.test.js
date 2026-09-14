@@ -3,6 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import {
+  DEFAULT_ARCHIVE_PATH,
   DEFAULT_OUTPUT_PATH,
   WIND_WINDOW_DAYS,
   MIN_PAIRS,
@@ -11,6 +12,7 @@ import {
   emptyArchive,
   readArchive,
   writeArchive,
+  writeReport,
   mergePairs,
   pruneArchive,
   buildStationStats,
@@ -168,5 +170,37 @@ describe('windBiasArchive', () => {
 
   it('DEFAULT_OUTPUT_PATH aponta para public/data/wind-bias.json', () => {
     expect(DEFAULT_OUTPUT_PATH.endsWith(path.join('public', 'data', 'wind-bias.json'))).toBe(true);
+  });
+
+  it('DEFAULT_ARCHIVE_PATH vive em data-state (fora do payload público)', () => {
+    expect(DEFAULT_ARCHIVE_PATH.endsWith(path.join('data-state', 'wind-bias-archive.json'))).toBe(true);
+  });
+
+  it('readArchive migra pares do ficheiro público legacy quando o arquivo não existe', () => {
+    const legacy = tmpFile('legacy-public.json');
+    const state = tmpFile('missing-archive.json');
+    const archive = emptyArchive();
+    mergePairs(archive, [pair({ observedAt: '2026-08-15T10:10:00.000Z' })]);
+    writeArchive(archive, legacy);
+
+    const migrated = readArchive(state, legacy);
+    expect(migrated.pairs).toHaveLength(1);
+    expect(migrated.pairs[0].stationKey).toBe('ipma|Cascais');
+
+    // Sem pairs no legacy (shape de relatório) → não migra, fica vazio.
+    writeReport(buildReport(archive), legacy);
+    expect(readArchive(state, legacy).pairs).toHaveLength(0);
+  });
+
+  it('writeReport escreve só o relatório (sem pairs brutos)', () => {
+    const reportPath = tmpFile('wind-bias-report.json');
+    const archive = emptyArchive();
+    mergePairs(archive, [pair({ observedAt: '2026-08-15T10:10:00.000Z' })]);
+    writeReport(buildReport(archive), reportPath);
+    const written = JSON.parse(fs.readFileSync(reportPath, 'utf-8'));
+    expect(written.pairs).toBeUndefined();
+    expect(written.pairCount).toBe(1);
+    expect(written.lastPairs).toHaveLength(1);
+    expect(written.stations).toEqual({});
   });
 });

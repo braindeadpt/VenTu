@@ -269,7 +269,12 @@ jobs:
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: ventu-data
-          path: public/data
+          # data-state/ viaja junto: o arquivo de pares do wind-bias (estado
+          # da pipeline) vive fora de public/data desde o split — ver
+          # scripts/lib/windBiasArchive.js.
+          path: |
+            public/data
+            data-state
           if-no-files-found: error
           retention-days: 1
 
@@ -294,11 +299,12 @@ jobs:
           name: ventu-data
           path: /tmp/ventu-data
 
-      - name: Stage fresh data into public/data
+      - name: Stage fresh data into public/data (+ data-state)
         run: |
-          rm -rf public/data
-          mkdir -p public/data
-          cp -a /tmp/ventu-data/. public/data/
+          rm -rf public/data data-state
+          mkdir -p public/data data-state
+          cp -a /tmp/ventu-data/public/data/. public/data/
+          if [ -d /tmp/ventu-data/data-state ]; then cp -a /tmp/ventu-data/data-state/. data-state/; fi
 
       - name: Validate data files (UTF-8 + JSON)
         run: node scripts/validate-data-files.js
@@ -353,11 +359,12 @@ jobs:
           name: ventu-data
           path: /tmp/ventu-data
 
-      - name: Stage fresh data into public/data
+      - name: Stage fresh data into public/data (+ data-state)
         run: |
-          rm -rf public/data
-          mkdir -p public/data
-          cp -a /tmp/ventu-data/. public/data/
+          rm -rf public/data data-state
+          mkdir -p public/data data-state
+          cp -a /tmp/ventu-data/public/data/. public/data/
+          if [ -d /tmp/ventu-data/data-state ]; then cp -a /tmp/ventu-data/data-state/. data-state/; fi
 
       - name: Validate ih-tides soft gate (7 days stale -> fail the run, not the push)
         run: node scripts/validate-generated-data.js --mode=${{ needs.update-conditions.outputs.mode }} --tides-soft-gate
@@ -380,11 +387,12 @@ jobs:
           name: ventu-data
           path: /tmp/ventu-data
 
-      - name: Stage fresh data into public/data
+      - name: Stage fresh data into public/data (+ data-state)
         run: |
-          rm -rf public/data
-          mkdir -p public/data
-          cp -a /tmp/ventu-data/. public/data/
+          rm -rf public/data data-state
+          mkdir -p public/data data-state
+          cp -a /tmp/ventu-data/public/data/. public/data/
+          if [ -d /tmp/ventu-data/data-state ]; then cp -a /tmp/ventu-data/data-state/. data-state/; fi
 
       - name: Commit and Push
         run: |

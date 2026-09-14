@@ -57,6 +57,7 @@ describe('observedWave da Nazaré Costeira (Fugro id_est 2) — ponta a ponta', 
     delete process.env.BUOY_COHERENCE_PATH;
     delete process.env.BUOY_COHERENCE_DAILY_PATH;
     delete process.env.WIND_BIAS_PATH;
+    delete process.env.WIND_BIAS_ARCHIVE_PATH;
     delete process.env.PIPELINE_META_ROOT;
   });
 
@@ -199,6 +200,7 @@ describe('observedWave da Nazaré Costeira (Fugro id_est 2) — ponta a ponta', 
     process.env.BUOY_COHERENCE_PATH = path.join(tmpDir, 'buoy-coherence-missing.json');
     process.env.BUOY_COHERENCE_DAILY_PATH = path.join(tmpDir, 'buoy-coherence-daily-missing.json');
     process.env.WIND_BIAS_PATH = path.join(tmpDir, 'wind-bias-missing.json');
+    process.env.WIND_BIAS_ARCHIVE_PATH = path.join(tmpDir, 'wind-bias-archive-missing.json');
     const mod = await loadModule();
     return mod.mergeObservations();
   }

@@ -175,10 +175,16 @@ update-conditions.js → waveHeight corrigido + waveHeightRaw + waveBias (opt-in
 ## Wind bias por estação (observado vs previsão, arquivo run a run)
 
 ```
-scripts/lib/windBiasArchive.js → public/data/wind-bias.json (acumula no merge-observations)
+scripts/lib/windBiasArchive.js → data-state/wind-bias-archive.json (pares brutos, estado da pipeline)
+                              → public/data/wind-bias.json (só relatório: stations + lastPairs + meta)
 scripts/merge-observations.mjs → conditions.json[spot].windBias (ME/MAE/RMSE/n da estação)
 src/components/ui/ScoreWindSourceBadge.tsx → tooltip «Viés desta estação: ME +x kt (n=…)»
 ```
+
+> Split 2026-09-14: os `pairs` brutos (janela 30 dias × estações × spots)
+> cresceram além do payload budget (2.5 MB). Vivem em `data-state/`
+> (commitado pelo `push-data-update.sh`, fora do payload servido); o ficheiro
+> público leva apenas o relatório (~12 KB).
 
 - **Transparência do vento observado:** quando o score usa vento medido (IPMA/Ecowitt/METAR
   fresco), o badge «Vento observado» mostra no tooltip o viés da estação — ME/MAE/RMSE/n em kt,

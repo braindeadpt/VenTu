@@ -50,6 +50,7 @@ const {
   hourKeyOf,
   readArchive: readWindBiasArchive,
   writeArchive: writeWindBiasArchive,
+  writeReport: writeWindBiasReport,
   mergePairs: mergeWindPairs,
   pruneArchive: pruneWindArchive,
   buildReport: buildWindReport,
@@ -83,6 +84,11 @@ const dailyCoherencePath =
   path.join(root, 'public/data/buoy-coherence-daily.json');
 const windBiasPath =
   process.env.WIND_BIAS_PATH || path.join(root, 'public/data/wind-bias.json');
+// Arquivo de pares fora de public/data — o relatório público (stations +
+// lastPairs) fica pequeno; os pares brutos acumulam em data-state/ e são
+// commitados pelo update-data como o resto do estado da pipeline.
+const windBiasArchivePath =
+  process.env.WIND_BIAS_ARCHIVE_PATH || path.join(root, 'data-state/wind-bias-archive.json');
 
 /**
  * PT reference buoy for the cross-border calibration: the mainland PT
@@ -264,7 +270,9 @@ export async function mergeObservations() {
   // Viés de vento por estação (IPMA/Ecowitt/METAR): o merge acumula pares
   // previsão(kt) × observado(kt) run a run, deduplicados por estação+spot+hora,
   // e anexa o ME/n da estação à row (badge «Vento observado» com tooltip do viés).
-  let windArchive = readWindBiasArchive(windBiasPath);
+  // Lê o arquivo de data-state; se ainda não existir migra os pares do
+  // ficheiro público antigo (que os trazia dentro até ao split).
+  let windArchive = readWindBiasArchive(windBiasArchivePath, windBiasPath);
   const windPairs = [];
 
   let wmoBuoys = null;
@@ -610,9 +618,10 @@ export async function mergeObservations() {
   if (windPairs.length > 0) {
     mergeWindPairs(windArchive, windPairs);
     pruneWindArchive(windArchive);
-    const windReport = buildWindReport(windArchive);
     windArchive.fetchedAt = new Date().toISOString();
-    writeWindBiasArchive(windArchive, windBiasPath);
+    const windReport = buildWindReport(windArchive);
+    writeWindBiasArchive(windArchive, windBiasArchivePath);
+    writeWindBiasReport(windReport, windBiasPath);
     windStations = Object.keys(windReport.stations).length;
     for (const spot of spots) {
       if (spot.conditionsSource) continue;

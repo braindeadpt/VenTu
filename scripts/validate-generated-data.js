@@ -503,11 +503,16 @@ if (buoyCoherence !== undefined) {
 // wind-bias.json é opcional (warn se ausente): o viés de vento por estação
 // acumula run a run (merge-observations) e nunca bloqueia o deploy; sem
 // observações frescas o arquivo simplesmente não é escrito.
+// Desde o split (2026-09-14) o ficheiro público é só o relatório — os pares
+// brutos acumulam em data-state/wind-bias-archive.json (estado da pipeline,
+// fora do payload servido).
 const windBiasData = read('wind-bias.json');
 if (windBiasData !== undefined) {
-  check('wind-bias.pairs', Array.isArray(windBiasData.pairs), 'missing pairs array');
+  check('wind-bias.pairCount', typeof windBiasData.pairCount === 'number',
+    'missing pairCount');
   check('wind-bias.stations', typeof windBiasData.stations === 'object' && windBiasData.stations !== null,
     'missing stations object');
+  check('wind-bias.lastPairs', Array.isArray(windBiasData.lastPairs), 'missing lastPairs array');
   if (windBiasData.fetchedAt !== null && windBiasData.fetchedAt !== undefined) {
     check('wind-bias.fetchedAt', isIso(windBiasData.fetchedAt), 'missing/invalid fetchedAt');
   }

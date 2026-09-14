@@ -18,14 +18,28 @@ fi
 
 DATA_BACKUP="$(mktemp -d)"
 trap 'rm -rf "$DATA_BACKUP"' EXIT
-cp -a public/data/. "$DATA_BACKUP/"
+mkdir -p "$DATA_BACKUP/public-data"
+cp -a public/data/. "$DATA_BACKUP/public-data/"
+# Pipeline state that lives outside public/data (e.g. the wind-bias pairs
+# archive) travels in the same artifact and is committed with it.
+HAS_STATE=0
+if [ -d data-state ]; then
+  HAS_STATE=1
+  mkdir -p "$DATA_BACKUP/data-state"
+  cp -a data-state/. "$DATA_BACKUP/data-state/"
+fi
 
 for attempt in $(seq 1 10); do
   echo "=== Push attempt ${attempt}/10 ==="
   git fetch origin main
   git checkout -B main origin/main
-  cp -a "$DATA_BACKUP/." public/data/
+  cp -a "$DATA_BACKUP/public-data/." public/data/
+  if [ "$HAS_STATE" = 1 ]; then
+    mkdir -p data-state
+    cp -a "$DATA_BACKUP/data-state/." data-state/
+  fi
   git add -f public/data/
+  git add data-state/ 2>/dev/null || true
   # The -f above is required (public/data/ is gitignored) but it also
   # overrides the *.backup rule — unstage the write-only sidecars so the
   # ~15x/day bot commits never track them again (.gitignore line 36).

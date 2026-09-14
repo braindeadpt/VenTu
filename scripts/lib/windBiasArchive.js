@@ -16,6 +16,13 @@
 const fs = require('fs');
 const path = require('path');
 
+/**
+ * O ficheiro público carrega só o relatório (stations/lastPairs/meta) — os
+ * `pairs` brutos acumulam fora de public/data porque a janela de 30 dias ×
+ * estações × spots rebenta o payload budget (visto 2026-09-14: >2.5 MB).
+ * O arquivo cresce em data-state/ (commitado pelo update-data como o resto).
+ */
+const DEFAULT_ARCHIVE_PATH = path.join(__dirname, '../../data-state/wind-bias-archive.json');
 const DEFAULT_OUTPUT_PATH = path.join(__dirname, '../../public/data/wind-bias.json');
 
 /** Keep the archive trimmed to this many days of pair history. */
@@ -56,29 +63,41 @@ function emptyArchive() {
   return { fetchedAt: null, pairs: [], stations: {}, pairCount: 0, lastPairs: [] };
 }
 
-/** Read the archive from disk (missing/corrupt → empty archive). */
-function readArchive(outputPath = DEFAULT_OUTPUT_PATH) {
-  try {
-    if (fs.existsSync(outputPath)) {
-      const raw = JSON.parse(fs.readFileSync(outputPath, 'utf-8'));
-      return {
-        ...emptyArchive(),
-        ...raw,
-        pairs: Array.isArray(raw.pairs) ? raw.pairs : [],
-      };
+/** Read the archive from disk (missing/corrupt → empty archive).
+ * `legacyPath`: ficheiro público antigo que ainda tinha `pairs` dentro —
+ * usado UMA vez para migrar, depois o relatório público deixa de os levar. */
+function readArchive(outputPath = DEFAULT_ARCHIVE_PATH, legacyPath) {
+  for (const p of [outputPath, legacyPath]) {
+    if (!p) continue;
+    try {
+      if (fs.existsSync(p)) {
+        const raw = JSON.parse(fs.readFileSync(p, 'utf-8'));
+        if (Array.isArray(raw.pairs)) {
+          return { ...emptyArchive(), ...raw, pairs: raw.pairs };
+        }
+      }
+    } catch {
+      /* corrupt archive — tenta o próximo */
     }
-  } catch {
-    /* corrupt archive — start fresh */
   }
   return emptyArchive();
 }
 
-/** Write the archive atomically. */
-function writeArchive(archive, outputPath = DEFAULT_OUTPUT_PATH) {
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  const tmpPath = `${outputPath}.tmp`;
-  fs.writeFileSync(tmpPath, `${JSON.stringify(archive)}\n`, 'utf-8');
-  fs.renameSync(tmpPath, outputPath);
+function atomicWrite(filePath, json) {
+  fs.mkdirSync(path.dirname(filePath), { recursive: true });
+  const tmpPath = `${filePath}.tmp`;
+  fs.writeFileSync(tmpPath, `${json}\n`, 'utf-8');
+  fs.renameSync(tmpPath, filePath);
+}
+
+/** Write the archive atomically (state file — includes raw pairs). */
+function writeArchive(archive, outputPath = DEFAULT_ARCHIVE_PATH) {
+  atomicWrite(outputPath, JSON.stringify(archive));
+}
+
+/** Write the public report atomically (stations/lastPairs/meta — sem pairs). */
+function writeReport(report, outputPath = DEFAULT_OUTPUT_PATH) {
+  atomicWrite(outputPath, JSON.stringify(report));
 }
 
 /**
@@ -183,6 +202,7 @@ function buildReport(archive, nowMs = Date.now()) {
 }
 
 module.exports = {
+  DEFAULT_ARCHIVE_PATH,
   DEFAULT_OUTPUT_PATH,
   WIND_WINDOW_DAYS,
   MIN_PAIRS,
@@ -192,6 +212,7 @@ module.exports = {
   emptyArchive,
   readArchive,
   writeArchive,
+  writeReport,
   mergePairs,
   pruneArchive,
   buildStationStats,
