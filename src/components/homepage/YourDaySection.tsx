@@ -166,7 +166,7 @@ export default function YourDaySection({
                   <div className="flex items-center gap-2 text-meta-sm text-fg-muted font-mono tabular-nums mt-0.5">
                     {window && (
                       <>
-                        <span className="text-data-waves">{formatBestWindowHours(window)}</span>
+                        <span className="text-data-waves">{formatBestWindowHours(window, locale)}</span>
                         <span aria-hidden>·</span>
                       </>
                     )}

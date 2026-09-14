@@ -43,7 +43,7 @@ export default function BestWindowBanner({
   const tokens = getScoreTokens(score);
   const tier = window.tier ?? tokens.tier;
   const tierLabel = isPt ? TIER_LABEL_PT[tier] : TIER_LABEL_EN[tier];
-  const hours = formatBestWindowHours(window);
+  const hours = formatBestWindowHours(window, locale);
 
   return (
     <Link

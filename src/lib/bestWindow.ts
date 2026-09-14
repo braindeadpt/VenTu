@@ -14,9 +14,20 @@ export function toBestWindowWithTier(window: BestWindowToday): BestWindow {
   };
 }
 
-/** Format a window as "10h–14h" (PT/EN locale-agnostic). */
-export function formatBestWindowHours(window: Pick<BestWindowToday, 'start' | 'end'>): string {
-  return `${String(window.start).padStart(2, '0')}h–${String(window.end).padStart(2, '0')}h`;
+/**
+ * Format a window as "10h–14h". When the window crosses midnight
+ * (end < start — e.g. "23h–19h") a "(amanhã)"/"(tomorrow)" suffix keeps it
+ * from reading as a backwards range — same convention as MagicWindows.
+ */
+export function formatBestWindowHours(
+  window: Pick<BestWindowToday, 'start' | 'end'>,
+  locale?: string,
+): string {
+  const hours = `${String(window.start).padStart(2, '0')}h–${String(window.end).padStart(2, '0')}h`;
+  if (window.end < window.start) {
+    return `${hours} (${locale === 'pt' ? 'amanhã' : 'tomorrow'})`;
+  }
+  return hours;
 }
 
 /** Return the sport with the highest score from a record. */

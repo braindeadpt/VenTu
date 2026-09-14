@@ -11,7 +11,7 @@
   "homepage": "https://ventu.surf",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run og:generate && npm run spots:lite && next build && node scripts/fixup-next-segment-paths.js",
+    "build": "npm run og:generate && npm run spots:lite && npm run manifest:generate && next build && node scripts/fixup-next-segment-paths.js",
     "build:e2e": "node scripts/build-e2e.mjs",
     "start": "next start",
     "lint": "eslint src tests scripts",
@@ -85,7 +85,8 @@
     "dawn-patrol:dev": "node -e \"require('dotenv').config()\" && node scripts/dawn-patrol.js",
     "data:restore": "node scripts/restore-data.js",
     "skill:regression": "node scripts/check-skill-regression.js",
-    "postinstall": "node scripts/setup-agent-links.js"
+    "postinstall": "node scripts/setup-agent-links.js",
+    "manifest:generate": "node scripts/generate-manifest.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",
