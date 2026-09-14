@@ -325,70 +325,6 @@
       ]
     },
     {
-      "id": 18549,
-      "ref": "ANAV NR 2028/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=40a67b1d-684f-4e2d-bc8f-208f5017567b",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -9.107428,
-            38.440351
-          ],
-          [
-            -9.107428,
-            38.440889
-          ],
-          [
-            -9.095825,
-            38.440889
-          ],
-          [
-            -9.095825,
-            38.440351
-          ],
-          [
-            -9.107428,
-            38.440351
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18569,
-      "ref": "ANAV NR 2049/26",
-      "category": "Operações de reboque",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f9c5a04c-f7fb-42e5-9a90-7caf65b4a000",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.967438,
-            40.295937
-          ],
-          [
-            -8.967438,
-            40.685498
-          ],
-          [
-            -8.601314,
-            40.685498
-          ],
-          [
-            -8.601314,
-            40.295937
-          ],
-          [
-            -8.967438,
-            40.295937
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18571,
       "ref": "ANAV NR 2050/26",
       "category": "Operações de reboque",
@@ -421,83 +357,33 @@
       ]
     },
     {
-      "id": 18573,
-      "ref": "ANAV NR 2051/26",
+      "id": 18581,
+      "ref": "ANAV NR 2064/26",
       "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=94c9831f-2139-42d7-983a-96f68757a2dc",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=c87743ee-3a8d-4d07-9b2d-3dc3d1fe6911",
       "source": "ih",
       "collection": "nav_warning_coastal",
       "polygons": [
         [
           [
-            -8.892701,
-            38.520655
+            -8.466743,
+            37.073423
           ],
           [
-            -8.892701,
-            38.521217
+            -8.466743,
+            37.09369
           ],
           [
-            -8.89195,
-            38.521217
+            -8.382441,
+            37.09369
           ],
           [
-            -8.89195,
-            38.520655
+            -8.382441,
+            37.073423
           ],
           [
-            -8.892701,
-            38.520655
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 18575,
-      "ref": "ANAV NR 2052/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7d633cc1-b33b-44ea-9e8d-3299643b7890",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.467216,
-            37.097064
-          ],
-          [
-            -8.467216,
-            37.097064
-          ],
-          [
-            -8.467216,
-            37.097064
-          ],
-          [
-            -8.467216,
-            37.097064
-          ]
-        ],
-        [
-          [
-            -8.467216,
-            37.058169
-          ],
-          [
-            -8.467216,
-            37.097064
-          ],
-          [
-            -8.390337,
-            37.097064
-          ],
-          [
-            -8.390337,
-            37.058169
-          ],
-          [
-            -8.467216,
-            37.058169
+            -8.466743,
+            37.073423
           ]
         ]
       ]
@@ -7572,17 +7458,14 @@
       18571
     ],
     "sao-jacinto": [
-      18569,
       18571,
       1000711
     ],
     "costa-nova": [
-      18569,
       18571,
       1000711
     ],
     "tocha": [
-      18569,
       18571
     ],
     "quiaios": [
@@ -8088,7 +7971,6 @@
       1000459
     ],
     "barra-aveiro": [
-      18569,
       18571,
       1000711,
       1010210
@@ -8228,7 +8110,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-13T11:51:59.875Z",
+  "fetchedAt": "2026-09-14T12:16:31.688Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
