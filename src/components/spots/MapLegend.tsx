@@ -269,13 +269,14 @@ export default function MapLegend({
               <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
                 {bathymetryTitle}
               </p>
-              {/* Escala EMODnet mean_multicolour: águas baixas claras →
-                  talude/canhões em azul profundo (sobre o basemap). */}
+              {/* Escala EMODnet mean_multicolour real: rebentação em vermelho
+                  (0 m) → amarelo na plataforma → verde/ciano → azul → navy
+                  nos canhões/talude (aproximação não-linear, como nos tiles). */}
               <div
                 className="h-2 rounded mb-1"
                 style={{
                   background:
-                    'linear-gradient(to right, rgb(186 226 247), rgb(90 160 210) 45%, rgb(20 70 140) 75%, rgb(8 32 80))',
+                    'linear-gradient(to right, #ef4444 0%, #fbbf24 12%, #4ade80 30%, #22d3ee 52%, #1d4ed8 75%, #081c3f 100%)',
                 }}
               />
               <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
