@@ -180,6 +180,7 @@ export default function MapSpotPreview({
       <div className="flex flex-col sm:flex-row gap-2">
         <Button
           href={detailHref}
+          variant="secondary"
           size="lg"
           className="flex-1"
           locale={isPt ? 'pt' : 'en'}
@@ -189,6 +190,7 @@ export default function MapSpotPreview({
         </Button>
         <Button
           href={directionsUrl}
+          variant="ghost"
           size="lg"
           className="flex-1"
           locale={isPt ? 'pt' : 'en'}

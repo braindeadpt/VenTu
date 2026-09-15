@@ -150,6 +150,7 @@ export default function WindRingLegend({
   if (!mounted || !open) return null;
 
   const annotations = [
+    { id: 'field', text: copy.field },
     { id: 'position', text: copy.position },
     { id: 'colors', text: copy.colors, swatches: true },
     { id: 'length', text: copy.length },

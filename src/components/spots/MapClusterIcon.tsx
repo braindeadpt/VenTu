@@ -64,10 +64,12 @@ export function createClusterIconFunction(
     const fontSize = total < 10 ? 12 : total < 100 ? 14 : 16;
     const c = size / 2;
 
+    // Squircle (não círculo): distingue «contagem de spots» do pin de score —
+    // dois números em círculos liam-se como a mesma coisa.
     if (simple) {
       const html = `
         <span style="${SR_ONLY_STYLE}">${clusterLabel(total, locale, kind)}</span>
-        <div aria-hidden="true" style="width:${size}px;height:${size}px;border-radius:50%;
+        <div aria-hidden="true" style="width:${size}px;height:${size}px;border-radius:34%;
           display:flex;align-items:center;justify-content:center;
           background:rgb(var(--bg-elevated));border:2px solid rgb(var(--divider-strong));
           font-family:var(--font-geist-mono),'Geist Mono',ui-monospace,monospace;
@@ -95,8 +97,14 @@ export function createClusterIconFunction(
       else poorCount++;
     });
 
-    const arcR = c - 4;
-    const innerR = c * 0.72;
+    // Silhueta squircle + anel de scores interior: a forma separa o cluster
+    // («N spots») do pin circular («score»), e o donut mantém a proporção
+    // bom/razoável/fraco sem ocupar a margem.
+    const faceInset = 3;
+    const faceSize = size - faceInset * 2;
+    const faceRx = faceSize * 0.32;
+    const arcR = c - 10;
+    const innerR = arcR - 5;
     const arcs: { color: string; path: string }[] = [];
 
     if (total > 0) {
@@ -131,7 +139,9 @@ export function createClusterIconFunction(
             <circle cx="${c}" cy="${c}" r="${innerR}" />
           </clipPath>
         </defs>
-        <circle cx="${c}" cy="${c}" r="${arcR}" fill="none" stroke="rgb(var(--divider))" stroke-width="3.5" />
+        <rect x="${faceInset}" y="${faceInset}" width="${faceSize}" height="${faceSize}" rx="${faceRx}"
+          fill="rgb(var(--bg-elevated))" stroke="rgb(var(--divider-strong))" stroke-width="1.5" />
+        <circle cx="${c}" cy="${c}" r="${arcR}" fill="none" stroke="rgb(var(--divider))" stroke-width="3" />
         ${svgArcs}
         <circle cx="${c}" cy="${c}" r="${innerR}" fill="rgb(var(--surface-1-rgb) / 0.08)" />
         <text x="${c}" y="${c + 1}" text-anchor="middle" dominant-baseline="central"

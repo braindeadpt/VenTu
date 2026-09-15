@@ -21,16 +21,19 @@ test.describe('wind ring legend', () => {
     await page.waitForSelector('[data-map-wind="true"]', { timeout: 20_000 });
 
     // 1) No modal on load, and no hint before any interaction.
-    const dialog = page.getByRole('dialog', { name: /Ler o arco de vento/i });
+    const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
     await expect(dialog).toBeHidden({ timeout: 6_000 });
     const hint = page.getByRole('note', { name: /Como ler o vento no mapa/i });
     await expect(hint).toHaveCount(0);
 
     // 2) First marker interaction: desktop click opens the popup; the
     //    inline hint must appear (non-modal — the popup stays interactive).
+    // dispatchEvent em vez de click: o primeiro marker no DOM pode ficar
+    // tapado pelo aviso «Boias antigas» (hittability não é o que este teste
+    // mede — isso vive em map-popover-hit-test).
     const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
     await expect(marker).toBeVisible({ timeout: 20_000 });
-    await marker.click({ force: true });
+    await marker.dispatchEvent('click');
     await expect(hint).toBeVisible({ timeout: 5_000 });
 
     // Hint's link opens the full teaching modal on demand (force: the
@@ -47,7 +50,7 @@ test.describe('wind ring legend', () => {
     await expect(hint).toBeHidden({ timeout: 13_000 }); // auto-hide timer
     const marker2 = page.locator('.leaflet-marker-icon.spot-marker').first();
     await expect(marker2).toBeVisible({ timeout: 20_000 });
-    await marker2.click({ force: true });
+    await marker2.dispatchEvent('click');
     await page.waitForTimeout(2_000);
     await expect(hint).toBeHidden({ timeout: 3_000 });
   });
@@ -63,11 +66,13 @@ test.describe('wind ring legend', () => {
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await page.waitForSelector('[data-map-wind="true"]', { timeout: 20_000 });
 
-    const dialog = page.getByRole('dialog', { name: /Ler o arco de vento/i });
+    const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
     await expect(dialog).toBeHidden({ timeout: 5_000 });
 
+    // O botão vive na toolbar flutuante (fixed, overflow-x-auto) — nunca
+    // precisa de scroll; scrollIntoViewIfNeeded nesse contentor re-verifica
+    // estabilidade e pode demorar segundos a assentar.
     const help = page.getByRole('button', { name: /Como ler o vento no mapa/i });
-    await help.scrollIntoViewIfNeeded();
     await help.click({ force: true });
     await expect(dialog).toBeVisible({ timeout: 5_000 });
     await dialog.getByRole('button', { name: 'Percebi', exact: true }).click();

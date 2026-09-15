@@ -455,7 +455,16 @@ export function useMapLayers({
     const warnings = coastalWarningsData.warnings?.filter(
       (w) => Array.isArray(w.polygons) && w.polygons.length > 0,
     ) ?? [];
-    if (warnings.length === 0) return;
+    // Eventos de orca ANAV: ponto + raio (~25 km), sem polígono — desenham-se
+    // como círculo tracejado âmbar para se distinguirem dos avisos (vermelho).
+    const orcaEvents = coastalWarningsData.warnings?.filter(
+      (w) =>
+        w.collection === 'orca_anavnet_point' &&
+        Array.isArray(w.center) &&
+        typeof w.radiusKm === 'number' &&
+        w.radiusKm > 0,
+    ) ?? [];
+    if (warnings.length === 0 && orcaEvents.length === 0) return;
 
     const escapeHtml = (s: string) =>
       s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -479,6 +488,51 @@ export function useMapLayers({
         }
         poly.addTo(group);
       }
+    }
+    for (const w of orcaEvents) {
+      // A data do avistamento é parte da história — «há 12 dias», não só a ref.
+      const when = w.eventAt
+        ? new Intl.DateTimeFormat(isPt ? 'pt-PT' : 'en-GB', { day: 'numeric', month: 'short' }).format(new Date(w.eventAt))
+        : null;
+      const label = `${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''}${when ? ` · ${when}` : ''}`;
+      const tooltipHtml = w.url
+        ? `<a href="${escapeHtml(w.url)}" target="_blank" rel="noopener noreferrer">${label} ↗</a>`
+        : label;
+      const latlng: [number, number] = [w.center![1], w.center![0]];
+      // Zona de influência (~25 km) — quase invisível; quem conta a história
+      // é a barbatana. O círculo fica como contexto espacial discreto.
+      const circle = Leaflet.circle(latlng, {
+        radius: w.radiusKm! * 1000,
+        color: '#f59e0b', weight: 1.2, opacity: 0.45, dashArray: '4 8',
+        fillColor: '#f59e0b', fillOpacity: 0.03,
+        className: 'ventu-orca-warning',
+      }).bindTooltip(tooltipHtml, { sticky: true, direction: 'top', interactive: true });
+      circle.addTo(group);
+      // Marcador: barbatana dorsal de orca a emergir — o momento ANAV.
+      const marker = Leaflet.marker(latlng, {
+        interactive: true,
+        keyboard: false,
+        icon: Leaflet.divIcon({
+          className: 'ventu-orca-marker',
+          html:
+            '<svg viewBox="0 0 28 28" width="28" height="28" aria-hidden="true">' +
+            '<circle cx="14" cy="16" r="11" fill="rgb(245 158 11 / 0.14)"/>' +
+            '<path d="M3 21.5 q3.5 -2.6 7 0 t7 0 t7 0" fill="none" stroke="rgb(34 211 238)" stroke-width="1.3" stroke-linecap="round" opacity="0.7"/>' +
+            '<path d="M14.2 4.5 C17.4 9 18.4 14.5 17.4 21 L10 21 C9.9 14.2 11 8.6 14.2 4.5 Z" fill="rgb(15 23 42)" stroke="rgb(226 232 240)" stroke-width="1" stroke-linejoin="round"/>' +
+            '<ellipse cx="14.6" cy="15.8" rx="1.15" ry="2.1" fill="rgb(226 232 240)" transform="rotate(8 14.6 15.8)"/>' +
+            '</svg>',
+          iconSize: [28, 28],
+          iconAnchor: [14, 22],
+          tooltipAnchor: [0, -18],
+        }),
+      }).bindTooltip(tooltipHtml, { sticky: true, direction: 'top', interactive: true });
+      if (w.url) {
+        marker.on('click', (e: L.LeafletMouseEvent) => {
+          Leaflet.DomEvent.stopPropagation(e);
+          window.open(w.url, '_blank', 'noopener,noreferrer');
+        });
+      }
+      marker.addTo(group);
     }
     group.addTo(map);
     coastalLayerRef.current = group;

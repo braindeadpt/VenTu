@@ -24,7 +24,31 @@ export default function MapSpotSheet({
 }: MapSpotSheetProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const dragStartYRef = useRef<number | null>(null);
   const isPt = locale === 'pt';
+
+  // Swipe-to-dismiss no handle: arrastar para baixo ≥96px fecha o sheet;
+  // soltar antes devolve o painel com a transição CSS de volta.
+  const onHandlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    dragStartYRef.current = e.clientY;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    if (panelRef.current) panelRef.current.style.transition = 'none';
+  };
+  const onHandlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartYRef.current === null || !panelRef.current) return;
+    const dy = Math.max(0, e.clientY - dragStartYRef.current);
+    panelRef.current.style.transform = dy > 0 ? `translateY(${dy}px)` : '';
+  };
+  const onHandlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (dragStartYRef.current === null) return;
+    const dy = e.clientY - dragStartYRef.current;
+    dragStartYRef.current = null;
+    if (panelRef.current) {
+      panelRef.current.style.transform = '';
+      panelRef.current.style.transition = '';
+    }
+    if (dy > 96) onClose();
+  };
 
   useEffect(() => {
     if (!data) return;
@@ -81,7 +105,14 @@ export default function MapSpotSheet({
         data-testid="map-spot-sheet"
         className="absolute inset-x-0 bottom-0 z-[1201] max-h-[min(85dvh,640px)] overflow-y-auto rounded-t-2xl border-t border-divider bg-bg-elevated shadow-modal pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none transition-transform duration-200 ease-out"
       >
-        <div className="flex justify-center pt-2 pb-1 sticky top-0 bg-bg-elevated z-10" aria-hidden>
+        <div
+          className="flex justify-center pt-2 pb-1 sticky top-0 bg-bg-elevated z-10 touch-none cursor-grab active:cursor-grabbing"
+          aria-hidden
+          onPointerDown={onHandlePointerDown}
+          onPointerMove={onHandlePointerMove}
+          onPointerUp={onHandlePointerUp}
+          onPointerCancel={onHandlePointerUp}
+        >
           <div className="w-8 h-1 rounded-full bg-fg-subtle/30" />
         </div>
 

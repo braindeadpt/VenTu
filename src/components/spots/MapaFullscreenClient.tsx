@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Waves, Zap } from 'lucide-react';
@@ -125,7 +125,13 @@ export default function MapaFullscreenClient({
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
 
   // Capture deep links before syncGridFiltersToUrl rewrites the query.
+  // StrictMode dev: o segundo mount corre DEPOIS do primeiro useEffect ter
+  // rescrito a URL para ?sport=all — sem o guard, os deep links eram todos
+  // repostos a false (só afectava dev; a build corre efeitos uma vez).
+  const deepLinksCapturedRef = useRef(false);
   useLayoutEffect(() => {
+    if (deepLinksCapturedRef.current) return;
+    deepLinksCapturedRef.current = true;
     const s = readMapSearchParams();
     setInitialRadar(s.radar);
     setInitialIsobaths(s.isobaths);

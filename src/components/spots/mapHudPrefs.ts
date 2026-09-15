@@ -16,9 +16,12 @@ export function isMobileViewport(): boolean {
 /**
  * Mobile always starts clustered — ignore localStorage.
  * (Persisted wind-on + cluster-off freezes /mapa for seconds.)
+ * Desktop defaults clustered too: 185 pins + wind rings at country zoom are
+ * an unreadable wall — the cluster group already explodes into individual
+ * markers as the user zooms in (zoom-aware), so «Mostrar todos» is opt-in.
  */
 export function readClusterPref(): boolean {
-  if (typeof window === 'undefined') return false;
+  if (typeof window === 'undefined') return true;
   if (isMobileViewport()) return true;
   try {
     const v = localStorage.getItem(MAP_CLUSTER_LS_KEY);
@@ -27,7 +30,7 @@ export function readClusterPref(): boolean {
   } catch {
     /* noop */
   }
-  return false;
+  return true;
 }
 
 /**

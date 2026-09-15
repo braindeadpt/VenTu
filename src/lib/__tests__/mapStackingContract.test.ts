@@ -22,6 +22,11 @@ import { join } from 'path';
  * mover o chip para a esquerda ou subir a coluna, o dismiss volta a ficar
  * coberto em silêncio — estes pins apanham-no no build (padrão
  * spacingTokens / hydrationGates).
+ *
+ * UPDATE: a coluna foi substituída por uma toolbar centrada no topo
+ * (`left-1/2 -translate-x-1/2`) — já não fica encostada ao zoom nem à zona
+ * do chip. O pin continua a fixar o z-[1200] e o centrado, para ninguém a
+ * devolver à esquerda sem rever a geometria do popover.
  */
 const ROOT = join(__dirname, '..', '..', '..');
 const read = (p: string) => readFileSync(join(ROOT, p), 'utf-8');
@@ -38,9 +43,10 @@ describe('map stacking contract (chip popover vs controls column)', () => {
     expect(chip).not.toMatch(/data-buoy-chip-popover="true"[^>]*\bright-0\b/);
   });
 
-  it('a coluna de controlos mantém z-[1200] e o desvio left-[68px] (fora do zoom e da região do chip)', () => {
+  it('a toolbar de controlos mantém z-[1200] centrada no topo (fora do zoom e da região do chip)', () => {
     expect(controls).toMatch(/z-\[1200\]/);
-    expect(controls).toMatch(/left-\[68px\]/);
+    expect(controls).toMatch(/left-1\/2 -translate-x-1\/2/);
+    expect(controls).not.toMatch(/left-\[68px\]/);
   });
 
   it('o HUD fica em z-[1100] abaixo da coluna — o dismiss depende de geometria, não de z', () => {

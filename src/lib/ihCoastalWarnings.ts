@@ -26,6 +26,15 @@ export interface CoastalNavWarning {
    * página de spot para desenhar o overlay da zona em aviso.
    */
   polygons?: number[][][];
+  /**
+   * Eventos de ponto (ex.: `orca_anavnet_point` — avistamento/interacção de
+   * orcas ANAV, últimos 180 dias): vêm sem polígono — `center` [lon, lat] +
+   * `radiusKm` (≈25 km). O mapa desenha um círculo tracejado em vez de polígono.
+   */
+  collection?: string;
+  center?: [number, number];
+  radiusKm?: number;
+  eventAt?: string;
 }
 
 export type CoastalWarningsFile = {

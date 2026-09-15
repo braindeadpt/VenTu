@@ -25,6 +25,12 @@ interface MapLegendProps {
   sstVisible?: boolean;
   currentsTitle?: string;
   currentsVisible?: boolean;
+  windTitle?: string;
+  windVisible?: boolean;
+  warningsTitle?: string;
+  warningsVisible?: boolean;
+  warningsZoneLabel?: string;
+  warningsOrcaLabel?: string;
 }
 
 export default function MapLegend({
@@ -40,6 +46,12 @@ export default function MapLegend({
   sstVisible = false,
   currentsTitle,
   currentsVisible = false,
+  windTitle,
+  windVisible = false,
+  warningsTitle,
+  warningsVisible = false,
+  warningsZoneLabel,
+  warningsOrcaLabel,
 }: MapLegendProps) {
   const isPt = locale === 'pt';
   const labels = getLegendLabels(locale);
@@ -51,10 +63,10 @@ export default function MapLegend({
   // the content visible regardless of `collapsed`); below lg the user taps
   // the header to expand it.
   useEffect(() => {
-    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible)) {
+    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || warningsVisible)) {
       setCollapsed(false);
     }
-  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible]);
+  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, warningsVisible]);
 
   const isHero = placement === 'hero';
   const bottomPx = !isHero && reserveHudSpace
@@ -64,8 +76,11 @@ export default function MapLegend({
   return (
     <div
       className={
+        // Hero mobile: o canto sup. direito já leva radar+isóbatas e a fila de
+        // pills de desporto passa por baixo — a legenda (mesmo colapsada)
+        // sobrepunha-se-lhes. Em <md fica escondida; o /mapa/ mostra-a sempre.
         isHero
-          ? 'absolute top-[7.5rem] right-3 z-[1000]'
+          ? 'absolute top-[7.5rem] right-3 z-[1000] max-md:hidden'
           : `absolute z-[1000] right-0 mr-3 ${bottomPx == null ? 'bottom-0 mb-3' : ''}`
       }
       style={bottomPx != null ? { bottom: bottomPx } : undefined}
@@ -91,12 +106,15 @@ export default function MapLegend({
           <div
             className="h-2 rounded mb-1.5"
             style={{
+              // Amostra da escala — usa sempre as variantes vívidas. Em tema
+              // claro os tokens --score-* trocam para variantes AA escuras
+              // (pensadas para texto), que na barra ficam lamacentas.
               background: `linear-gradient(to right,
-                rgb(var(--score-closed)) 0%,
-                rgb(var(--score-poor)) 25%,
-                rgb(var(--score-fair)) 50%,
-                rgb(var(--score-good)) 75%,
-                rgb(var(--score-epic)) 100%
+                rgb(107 114 128) 0%,
+                rgb(248 113 113) 25%,
+                rgb(245 158 11) 50%,
+                rgb(16 185 129) 75%,
+                rgb(14 165 233) 100%
               )`,
             }}
           />
@@ -195,6 +213,66 @@ export default function MapLegend({
                 <span>0.1</span>
                 <span>0.2</span>
                 <span>0.4+</span>
+              </div>
+            </div>
+          )}
+          {windVisible && windTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-map-wind-legend>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+                {windTitle}
+              </p>
+              <div className="flex items-end justify-between h-6 mb-1 px-0.5" aria-hidden>
+                {[
+                  { len: 6, w: 1.15, op: 0.42 },
+                  { len: 11, w: 1.15, op: 0.6 },
+                  { len: 16, w: 1.7, op: 0.78 },
+                ].map((s) => (
+                  <svg
+                    key={s.len}
+                    width={22}
+                    height={22}
+                    viewBox="0 0 22 22"
+                    className="text-data-wind"
+                  >
+                    <line
+                      x1="3"
+                      y1="16"
+                      x2={3 + s.len}
+                      y2={16}
+                      stroke="currentColor"
+                      strokeWidth={s.w}
+                      strokeLinecap="round"
+                      opacity={s.op}
+                    />
+                  </svg>
+                ))}
+              </div>
+              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+                <span>5</span>
+                <span>15</span>
+                <span>25+</span>
+              </div>
+            </div>
+          )}
+          {warningsVisible && warningsTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-map-warnings-legend>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1.5">
+                {warningsTitle}
+              </p>
+              <div className="flex flex-col gap-1 text-[9px] text-fg-subtle">
+                <span className="flex items-center gap-1.5">
+                  <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden>
+                    <rect x="1.5" y="1.5" width="11" height="11" fill="rgb(239 68 68 / 0.18)" stroke="#ef4444" strokeWidth="1.4" />
+                  </svg>
+                  {warningsZoneLabel}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <svg width="14" height="14" viewBox="0 0 28 28" aria-hidden>
+                    <circle cx="14" cy="16" r="10" fill="none" stroke="#f59e0b" strokeWidth="1.4" strokeDasharray="2.5 4" opacity="0.7" />
+                    <path d="M14.2 6.5 C17.2 10.6 18.1 15.5 17.2 21.5 L10.2 21.5 C10.1 15.2 11.2 10.4 14.2 6.5 Z" fill="rgb(15 23 42)" stroke="rgb(226 232 240)" strokeWidth="1" strokeLinejoin="round" />
+                  </svg>
+                  {warningsOrcaLabel}
+                </span>
               </div>
             </div>
           )}

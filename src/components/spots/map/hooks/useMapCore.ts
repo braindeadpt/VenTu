@@ -440,6 +440,10 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
 
         const mcg = Leaflet.markerClusterGroup({
           ...CLUSTER_CONFIG,
+          // Hero embed: o mapa não tem navegação (drag/zoom off) — um cluster
+          // que faz zoomToBounds prende o utilizador nessa vista sem saída.
+          // O clique é capturado pelo SpotMapInteractive e navega para /mapa/.
+          ...(isHeroEmbed ? { zoomToBoundsOnClick: false, spiderfyOnMaxZoom: false } : {}),
           ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 } : {}),
           iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit, locale }),
         });

@@ -59,7 +59,6 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   coastalWarningsLabel: string;
   coastalWarningsHint: string;
   windEnabled: boolean;
-  showWindOnMarkers: boolean;
   onToggleWind: () => void;
   onlyOnEnabled: boolean;
   onToggleOnlyOn: () => void;
@@ -124,7 +123,6 @@ export default function MapExploreHud({
   coastalWarningsLabel,
   coastalWarningsHint,
   windEnabled,
-  showWindOnMarkers,
   onToggleWind,
   onlyOnEnabled,
   onToggleOnlyOn,
@@ -458,10 +456,10 @@ export default function MapExploreHud({
               ref={windButtonRef}
               onClick={onToggleWind}
               aria-label={windLabel}
-              pressed={showWindOnMarkers}
+              pressed={windEnabled}
               title={windHint ?? undefined}
               className={
-                showWindOnMarkers ? 'border-data-wind/40 bg-data-wind/15 text-fg' : undefined
+                windEnabled ? 'border-data-wind/40 bg-data-wind/15 text-fg' : undefined
               }
             >
               <Wind className="w-4 h-4 text-data-wind" aria-hidden />

@@ -112,7 +112,9 @@ export function useMapMarkers({
     }
 
     const bounds = Leaflet.latLngBounds([]);
-    const useMobileSheet = isMobile;
+    // No hero o sheet (85dvh) fica cortado pela caixa do hero — o popup do
+    // Leaflet cabe lá dentro e o autoPan mantém-no visível sem drag.
+    const useMobileSheet = isMobile && !isHeroEmbed;
     const chunkSize = isMobile ? MARKER_ADD_CHUNK_SIZE_MOBILE : MARKER_ADD_CHUNK_SIZE_LOCAL;
     const yieldMs = isMobile ? MARKER_CHUNK_YIELD_MS_MOBILE : 0;
 

@@ -100,6 +100,7 @@ import { useMapHours } from './map/hooks/useMapHours';
 import { useMapBuoyDots } from './map/hooks/useMapBuoyDots';
 import { useMapHsField } from './map/hooks/useMapHsField';
 import { useMapCurrentsField } from './map/hooks/useMapCurrentsField';
+import { useMapWindField } from './map/hooks/useMapWindField';
 import { useMapSstField } from './map/hooks/useMapSstField';
 import MapControls from './map/components/MapControls';
 import MapThermalChip from './map/MapThermalChip';
@@ -261,6 +262,8 @@ export default function SpotMapInteractive({
   const t = getTranslation(validateLocale(locale));
 
   // ── Core map ──
+  // Ref lida pelo iconCreateFunction dos clusters (criado uma vez no init) —
+  // espelha o estado do toggle de vento; o efeito abaixo mantém-na em sync.
   const core = useMapCore({ containerRef: mapRef, isHeroEmbed, locale });
   const {
     mapInstanceRef, LRef, isReady, clusterReady, isDark, basemapMode, isMobile,
@@ -290,7 +293,10 @@ export default function SpotMapInteractive({
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
   const [windLegendOpen, setWindLegendOpen] = useState(false);
 
-  const showWindOnMarkers = windEnabled && !clusterEnabled && !isHeroEmbed;
+  // Arcos por pin sempre que o marcador individual está visível — mesmo com
+  // cluster ligado (os pins dentro de clusters nem chegam ao mapa; ao
+  // desagrupar já nascem com o anel — o vento nunca «desaparece» a meio do zoom).
+  const showWindOnMarkers = windEnabled && !isHeroEmbed;
   const activeCluster = isHeroEmbed ? true : clusterEnabled;
 
   // ── Layers ──
@@ -539,12 +545,10 @@ export default function SpotMapInteractive({
     });
   }, []);
   const toggleWind = useCallback(() => {
+    // Independente do cluster: ligado nos pins (desagrupado) ou como seta
+    // média da zona na orla dos clusters — nunca explode a vista.
     setWindEnabled((prev) => {
       const next = !prev;
-      if (next) {
-        setClusterEnabled(false);
-        try { localStorage.setItem(MAP_CLUSTER_LS_KEY, '0'); } catch { /* noop */ }
-      }
       try { localStorage.setItem(MAP_WIND_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
       return next;
     });
@@ -696,6 +700,19 @@ export default function SpotMapInteractive({
     hoursFrame,
     spots: hsSpots,
   });
+  useMapWindField({
+    mapInstanceRef,
+    LRef,
+    isReady,
+    isFullscreen,
+    isHeroEmbed,
+    isMobile,
+    enabled: windEnabled,
+    hoursFile,
+    hoursLive,
+    hoursFrame,
+    spots: hsSpots,
+  });
 
   useEffect(() => {
     if (sstEnabled && hsEnabled) disableHs();
@@ -726,7 +743,7 @@ export default function SpotMapInteractive({
   const exitFullscreenLabel = t.map.exitFullscreen;
   const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
   const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
-  const windHint = clusterEnabled && windEnabled ? t.map.windNeedsShowAll : null;
+  const windHint = null;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
   const hoursLabel = hoursOn ? t.map.hideHours : t.map.showHours;
@@ -776,6 +793,17 @@ export default function SpotMapInteractive({
     const t3 = window.setTimeout(fitHero, 500);
     return () => { ro.disconnect(); window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
   }, [isHeroEmbed, isReady, visibleSpots, selectedRegion, isMobile, mapInstanceRef, LRef]);
+
+  // Hero: o mapa é uma imagem viva sem navegação — um clique num cluster não
+  // faz zoom (ficaria preso sem drag/controlo); leva ao /mapa/ onde tudo é
+  // explorável. Marcadores individuais continuam a abrir popup/sheet.
+  useEffect(() => {
+    if (!isHeroEmbed || !clusterReady || !clusterGroupRef.current) return;
+    const mcg = clusterGroupRef.current;
+    const onClusterClick = () => router.push(`/${locale}/mapa/`);
+    mcg.on('clusterclick', onClusterClick);
+    return () => { mcg.off('clusterclick', onClusterClick); };
+  }, [isHeroEmbed, clusterReady, clusterGroupRef, locale, router]);
 
   // ── Performance measurement ──
   const perfMeasure = useCallback((label: string) => {
@@ -827,7 +855,7 @@ export default function SpotMapInteractive({
       data-map-fullscreen={isFullscreen ? 'true' : 'false'}
       data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}
       data-map-cluster={clusterEnabled ? 'true' : 'false'}
-      data-map-wind={showWindOnMarkers ? 'true' : 'false'}
+      data-map-wind={windEnabled ? 'true' : 'false'}
       data-map-only-on={onlyOnEnabled ? 'true' : 'false'}
       data-map-hours={hoursLive ? 'true' : 'false'}
       data-map-buoys={buoysEnabled ? 'true' : 'false'}
@@ -857,7 +885,7 @@ export default function SpotMapInteractive({
       {isReady && (
         <>
           {showBuoyNotice && (
-            <div className="absolute top-3 left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(calc(100%-132px),460px)] md:max-w-[min(92%,460px)] px-2 pointer-events-none">
+            <div className="absolute top-[4.5rem] left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(calc(100%-132px),460px)] md:max-w-[min(92%,460px)] px-2 pointer-events-none">
               <BuoyLayerNotice locale={locale} scope="home" overlay />
             </div>
           )}
@@ -867,7 +895,6 @@ export default function SpotMapInteractive({
             isMobile={isMobile}
             isHeroEmbed={isHeroEmbed}
             clusterEnabled={clusterEnabled}
-            showWindOnMarkers={showWindOnMarkers}
             windEnabled={windEnabled}
             radarEnabled={radarEnabled}
             radarPrefSet={radarPrefSet}
@@ -998,6 +1025,12 @@ export default function SpotMapInteractive({
               sstVisible={sstEnabled}
               currentsTitle={t.map.currentsLegend}
               currentsVisible={currentsEnabled}
+              windTitle={t.map.windLegend}
+              windVisible={isFullscreen && !isHeroEmbed && windEnabled}
+              warningsTitle={t.map.coastalWarningsLegend}
+              warningsVisible={isFullscreen && !isHeroEmbed && coastalWarningsEnabled}
+              warningsZoneLabel={t.map.coastalWarningsLegendZone}
+              warningsOrcaLabel={t.map.coastalWarningsLegendOrca}
             />
           )}
 
@@ -1099,7 +1132,6 @@ export default function SpotMapInteractive({
               coastalWarningsLabel={coastalWarningsLabel}
               coastalWarningsHint={t.map.coastalWarningsHint}
               windEnabled={windEnabled}
-              showWindOnMarkers={showWindOnMarkers}
               onToggleWind={toggleWind}
               onlyOnEnabled={onlyOnEnabled}
               onToggleOnlyOn={toggleOnlyOn}

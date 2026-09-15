@@ -737,6 +737,26 @@ html:has([data-embed-widget]) body {
     animation: ventu-buoy-pulse 2.2s ease-in-out infinite;
   }
 }
+
+/* Avistamentos de orca (ANAV): barbatana com leve ondulação — ponto de
+   charme próprio, distinto dos avisos à navegação (polígonos vermelhos). */
+.ventu-orca-marker {
+  filter: drop-shadow(0 1px 3px rgb(0 0 0 / 0.5));
+}
+@keyframes ventu-orca-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1.6px);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ventu-orca-marker svg {
+    animation: ventu-orca-bob 3.2s ease-in-out infinite;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .ventu-hs-overlay,
   .ventu-sst-overlay {
