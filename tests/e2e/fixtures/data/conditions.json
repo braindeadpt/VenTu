@@ -84,11 +84,20 @@
       }
     ],
     "updatedAt": "2026-09-09T23:13:36.844Z",
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 12,
+      "observedAt": "2026-09-14T21:00:00.000Z",
+      "source": "ipma"
+    },
     "observedWave": {
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -104,26 +113,31 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 55.8,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 60,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 55.8
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 5,
+      "mae": 5.3,
+      "rmse": 7,
+      "n": 150
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -217,11 +231,20 @@
       }
     ],
     "updatedAt": "2026-09-09T23:13:48.937Z",
+    "observed": {
+      "windSpeedKt": 4,
+      "windDirDeg": 225,
+      "windCardinal": "SW",
+      "windCardinalEn": "SW",
+      "stationName": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "distanceKm": 8.4,
+      "observedAt": "2026-09-14T21:00:00.000Z",
+      "source": "ipma"
+    },
     "observedWave": {
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -237,26 +260,37 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 58.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 56.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 58.6
+    },
+    "windBias": {
+      "station": "Viana Do Castelo - Fonte Louçã (CIM)",
+      "source": "ipma",
+      "me": 5,
+      "mae": 5.3,
+      "rmse": 7,
+      "n": 150
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 59,
+      "altKm": 0
     }
   },
   "afife": {
@@ -349,7 +383,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 16.6,
       "stationName": "Viana Castelo, Chafé",
       "distanceKm": 15.4,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -359,7 +392,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -375,25 +407,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 59.9,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 52.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 59.9
     },
     "windBias": {
@@ -403,6 +432,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 60,
+      "altKm": 0
     }
   },
   "castelo-neiva": {
@@ -495,7 +530,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 16.6,
       "stationName": "Viana Castelo, Chafé",
       "distanceKm": 11.3,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -505,7 +539,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -521,25 +554,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 65.1,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 50.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 65.1
     },
     "windBias": {
@@ -549,6 +579,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 65,
+      "altKm": 0
     }
   },
   "amorosa": {
@@ -641,7 +677,6 @@
       "windDirDeg": 90,
       "windCardinal": "E",
       "windCardinalEn": "E",
-      "tempC": 16.6,
       "stationName": "Viana Castelo, Chafé",
       "distanceKm": 6.8,
       "observedAt": "2026-09-09T21:00:00.000Z",
@@ -651,7 +686,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -667,25 +701,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 67,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 44.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 67
     },
     "windBias": {
@@ -695,6 +726,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 67,
+      "altKm": 0
     }
   },
   "cabedelo": {
@@ -797,7 +834,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -813,25 +849,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 69.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 42.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 69.6
     },
     "windBias": {
@@ -841,6 +874,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 70,
+      "altKm": 0
     }
   },
   "foil-cabedelo": {
@@ -943,7 +982,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -959,25 +997,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 69.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 42.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 69.6
     },
     "windBias": {
@@ -987,6 +1022,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 70,
+      "altKm": 0
     }
   },
   "cabedelo-wakepark": {
@@ -1089,7 +1130,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1105,25 +1145,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 68.5,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 43.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 68.5
     },
     "windBias": {
@@ -1133,6 +1170,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 69,
+      "altKm": 0
     }
   },
   "rodanho": {
@@ -1235,7 +1278,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1251,25 +1293,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 71,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 41.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 71
     },
     "windBias": {
@@ -1279,6 +1318,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 71,
+      "altKm": 0
     }
   },
   "ofir": {
@@ -1381,7 +1426,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1397,25 +1441,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 82.9,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 30.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 82.9
     },
     "windBias": {
@@ -1425,6 +1466,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 83,
+      "altKm": 0
     }
   },
   "esposende": {
@@ -1527,7 +1574,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1543,25 +1589,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.3,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
     },
     "windBias": {
@@ -1571,6 +1614,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "esposende-praia": {
@@ -1673,7 +1722,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1689,25 +1737,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 83.8,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 29.4,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 83.8
     },
     "windBias": {
@@ -1717,6 +1762,12 @@
       "mae": 1.6,
       "rmse": 2,
       "n": 272
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "fao": {
@@ -1819,7 +1870,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1835,25 +1885,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 87.1,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 87.1
     },
     "windBias": {
@@ -1863,6 +1910,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 87,
+      "altKm": 0
     }
   },
   "apulia": {
@@ -1965,7 +2018,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -1981,25 +2033,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 90.3,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 26.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 90.3
     },
     "windBias": {
@@ -2009,6 +2058,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 90,
+      "altKm": 0
     }
   },
   "povoa-varzim": {
@@ -2099,21 +2154,18 @@
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 100,
-      "windDirMissing": false,
       "windCardinal": "E",
       "windCardinalEn": "E",
       "tempC": 16,
       "stationName": "Porto (METAR)",
       "distanceKm": 17,
       "observedAt": "2026-09-09T23:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPPR"
+      "source": "metar"
     },
     "observedWave": {
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2129,25 +2181,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 99.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 19.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 99.6
     },
     "windBias": {
@@ -2157,6 +2206,12 @@
       "mae": 1.4,
       "rmse": 1.6,
       "n": 21
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 100,
+      "altKm": 0
     }
   },
   "azurara": {
@@ -2259,7 +2314,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2275,25 +2329,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 104,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 20.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 104
     },
     "windBias": {
@@ -2303,6 +2354,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 127
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 104,
+      "altKm": 0
     }
   },
   "leca-palmeira": {
@@ -2405,7 +2462,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2421,25 +2477,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 119.7,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 27.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 119.7
     },
     "windBias": {
@@ -2449,6 +2502,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 120,
+      "altKm": 0
     }
   },
   "matosinhos": {
@@ -2551,7 +2610,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2567,25 +2625,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 121.5,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 121.5
     },
     "windBias": {
@@ -2595,6 +2650,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 122,
+      "altKm": 0
     }
   },
   "cabedelo-douro": {
@@ -2630,57 +2691,7 @@
       "combinedSpreadPct": 1.121,
       "degraded": true
     },
-    "dailyConfidence": [
-      {
-        "date": "2026-09-09",
-        "confidence": "baixa",
-        "waveSpread": 1.34,
-        "windSpread": 2.33,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-10",
-        "confidence": "baixa",
-        "waveSpread": 1.11,
-        "windSpread": 1.6,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-11",
-        "confidence": "baixa",
-        "waveSpread": 0.87,
-        "windSpread": 1.55,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-12",
-        "confidence": "baixa",
-        "waveSpread": 0.87,
-        "windSpread": 1.46,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-13",
-        "confidence": "baixa",
-        "waveSpread": 1.08,
-        "windSpread": 1.18,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-14",
-        "confidence": "baixa",
-        "waveSpread": 0.98,
-        "windSpread": 1.71,
-        "degraded": false
-      },
-      {
-        "date": "2026-09-15",
-        "confidence": "baixa",
-        "waveSpread": 1.18,
-        "windSpread": 1.47,
-        "degraded": false
-      }
-    ],
+    "dailyConfidence": [],
     "updatedAt": "2026-09-09T23:14:30.736Z",
     "observed": {
       "windSpeedKt": 0,
@@ -2697,7 +2708,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2713,25 +2723,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 126.1,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 32.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.1
     },
     "windBias": {
@@ -2741,6 +2748,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 126,
+      "altKm": 0
     }
   },
   "marina-afurada-foil": {
@@ -2843,7 +2856,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -2859,25 +2871,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 126.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 33.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.6
     },
     "windBias": {
@@ -2887,6 +2896,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 127,
+      "altKm": 0
     }
   },
   "praia-da-lomba": {
@@ -2986,7 +3001,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3002,25 +3016,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 144.2,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 54.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.2
     },
     "windBias": {
@@ -3030,6 +3041,12 @@
       "mae": 1.2,
       "rmse": 1.5,
       "n": 41
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "salgueiros": {
@@ -3132,7 +3149,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3148,25 +3164,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 128.1,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 34.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.1
     },
     "windBias": {
@@ -3176,6 +3189,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 128,
+      "altKm": 0
     }
   },
   "sereia-costa-verde": {
@@ -3278,7 +3297,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3294,25 +3312,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 128.4,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 34.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.4
     },
     "windBias": {
@@ -3322,6 +3337,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 128,
+      "altKm": 0
     }
   },
   "canide-sul": {
@@ -3424,7 +3445,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3440,25 +3460,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 128.9,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 35,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 128.9
     },
     "windBias": {
@@ -3468,6 +3485,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 129,
+      "altKm": 0
     }
   },
   "aguda": {
@@ -3570,7 +3593,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3586,25 +3608,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 135.1,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 40.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 135.1
     },
     "windBias": {
@@ -3614,6 +3633,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 135,
+      "altKm": 0
     }
   },
   "espinho": {
@@ -3716,7 +3741,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3732,25 +3756,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 140.1,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 44.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.1
     },
     "windBias": {
@@ -3760,6 +3781,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "praia-37": {
@@ -3862,7 +3889,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -3878,25 +3904,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 140.3,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 44.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.3
     },
     "windBias": {
@@ -3906,6 +3929,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "bairro-piscatorio": {
@@ -4008,7 +4037,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4024,25 +4052,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 140.7,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 45.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140.7
     },
     "windBias": {
@@ -4052,6 +4077,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 141,
+      "altKm": 0
     }
   },
   "paramos": {
@@ -4154,7 +4185,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4170,25 +4200,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 142.9,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 47,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 142.9
     },
     "windBias": {
@@ -4198,6 +4225,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 143,
+      "altKm": 0
     }
   },
   "barrinha-esmoriz": {
@@ -4300,7 +4333,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4316,25 +4348,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 144.1,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 48.2,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.1
     },
     "windBias": {
@@ -4344,6 +4373,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "esmoriz": {
@@ -4446,7 +4481,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4462,25 +4496,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 144.2,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 48.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 144.2
     },
     "windBias": {
@@ -4490,6 +4521,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 144,
+      "altKm": 0
     }
   },
   "cortegaca": {
@@ -4592,7 +4629,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4608,25 +4644,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 145.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 49.4,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 145.6
     },
     "windBias": {
@@ -4636,6 +4669,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 146,
+      "altKm": 0
     }
   },
   "cortegaca-sul": {
@@ -4738,7 +4777,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4754,25 +4792,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 146.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 50.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 146.6
     },
     "windBias": {
@@ -4782,6 +4817,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 147,
+      "altKm": 0
     }
   },
   "maceda": {
@@ -4884,7 +4925,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -4900,25 +4940,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 147.9,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 51.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 147.9
     },
     "windBias": {
@@ -4928,6 +4965,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 148,
+      "altKm": 0
     }
   },
   "murtosa": {
@@ -5029,7 +5072,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 338,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 17.302249908447266,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5048,23 +5090,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.0693399906158447,
-      "wavePeriod": 5.44920015335083,
-      "maxWaveHeight": 1.625980019569397,
-      "waterTemp": 16.97998046875,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 138.6,
-      "observedAt": "2026-09-11T11:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 3.3,
-      "ihDistanceKm": 70.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 138.6
     },
     "windBias": {
@@ -5074,6 +5105,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 139,
+      "altKm": 0
     }
   },
   "ria-torreira": {
@@ -5175,7 +5212,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 338,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 17.302249908447266,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5194,23 +5230,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.0693399906158447,
-      "wavePeriod": 5.44920015335083,
-      "maxWaveHeight": 1.625980019569397,
-      "waterTemp": 16.97998046875,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 139.2,
-      "observedAt": "2026-09-11T11:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 3.3,
-      "ihDistanceKm": 68.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 139.2
     },
     "windBias": {
@@ -5220,6 +5245,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 139,
+      "altKm": 0
     }
   },
   "praia-torreira": {
@@ -5321,7 +5352,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 338,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 17.302249908447266,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5340,23 +5370,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.0693399906158447,
-      "wavePeriod": 5.44920015335083,
-      "maxWaveHeight": 1.625980019569397,
-      "waterTemp": 16.97998046875,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 140,
-      "observedAt": "2026-09-11T11:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 3.3,
-      "ihDistanceKm": 65.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 140
     },
     "windBias": {
@@ -5366,6 +5385,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 140,
+      "altKm": 0
     }
   },
   "muranzel": {
@@ -5467,7 +5492,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 338,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 17.302249908447266,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5486,23 +5510,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.0693399906158447,
-      "wavePeriod": 5.44920015335083,
-      "maxWaveHeight": 1.625980019569397,
-      "waterTemp": 16.97998046875,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 135.3,
-      "observedAt": "2026-09-11T11:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 3.3,
-      "ihDistanceKm": 69.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 135.3
     },
     "windBias": {
@@ -5512,6 +5525,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 135,
+      "altKm": 0
     }
   },
   "furadouro": {
@@ -5614,7 +5633,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -5630,25 +5648,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 152.3,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 55.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 152.3
     },
     "windBias": {
@@ -5658,6 +5673,12 @@
       "mae": 2.1,
       "rmse": 2.6,
       "n": 440
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 152,
+      "altKm": 0
     }
   },
   "sao-jacinto": {
@@ -5759,7 +5780,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 338,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 17.302249908447266,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5778,23 +5798,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.0693399906158447,
-      "wavePeriod": 5.44920015335083,
-      "maxWaveHeight": 1.625980019569397,
-      "waterTemp": 16.97998046875,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 129.4,
-      "observedAt": "2026-09-11T11:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 3.3,
-      "ihDistanceKm": 74.6,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 129.4
     },
     "windBias": {
@@ -5804,6 +5813,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 129,
+      "altKm": 0
     }
   },
   "costa-nova": {
@@ -5905,7 +5920,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 338,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 17.302249908447266,
       "stationName": "Nazaré Costeira (WMO)",
@@ -5924,23 +5938,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.0693399906158447,
-      "wavePeriod": 5.44920015335083,
-      "maxWaveHeight": 1.625980019569397,
-      "waterTemp": 16.97998046875,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 124.3,
-      "observedAt": "2026-09-11T11:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 3.3,
-      "ihDistanceKm": 79.8,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 124.3
     },
     "windBias": {
@@ -5950,6 +5953,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 124,
+      "altKm": 0
     }
   },
   "tocha": {
@@ -6637,14 +6646,6 @@
       "ihDistanceKm": null,
       "wmoDistanceKm": 40.3
     },
-    "windBias": {
-      "station": "São Pedro de Moel",
-      "source": "ipma",
-      "me": 2.5,
-      "mae": 2.9,
-      "rmse": 3.5,
-      "n": 37
-    },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
       "reason": "wmo-only",
@@ -6773,6 +6774,14 @@
       "wmoAgeHours": 3.3,
       "ihDistanceKm": null,
       "wmoDistanceKm": 78.1
+    },
+    "windBias": {
+      "station": "Tomar, Valdonas",
+      "source": "ipma",
+      "me": 0.3,
+      "mae": 1.4,
+      "rmse": 1.8,
+      "n": 70
     },
     "observedWaveNotClosest": {
       "winner": "wmo-buoy",
@@ -9591,6 +9600,9 @@
     "tideLabel": "Maré a Descer",
     "currentSpeed": 0,
     "currentDir": 0,
+    "tideObservedHeight": 1.103,
+    "tideObservedAt": "2026-09-14T23:51:00Z",
+    "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.68,
@@ -9795,15 +9807,13 @@
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
-      "windDirMissing": true,
       "windCardinal": "—",
       "windCardinalEn": "—",
       "tempC": 24,
       "stationName": "Lajes (METAR)",
       "distanceKm": 4.2,
       "observedAt": "2026-09-09T23:00:00.000Z",
-      "source": "metar",
-      "metarIcao": "LPLA"
+      "source": "metar"
     },
     "observedWave": {
       "waveHeight": 0.73,
@@ -10572,6 +10582,9 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 13.65,
     "secondarySwellDirection": 248,
+    "tideObservedHeight": 1.103,
+    "tideObservedAt": "2026-09-14T23:51:00Z",
+    "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.58,
@@ -10709,6 +10722,9 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 13.9,
     "secondarySwellDirection": 250,
+    "tideObservedHeight": 1.103,
+    "tideObservedAt": "2026-09-14T23:51:00Z",
+    "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.8,
@@ -10846,6 +10862,9 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 13.65,
     "secondarySwellDirection": 248,
+    "tideObservedHeight": 1.103,
+    "tideObservedAt": "2026-09-14T23:51:00Z",
+    "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.42,
@@ -10980,9 +10999,6 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.1,
     "currentDir": 270,
-    "secondarySwellHeight": 0.1,
-    "secondarySwellPeriod": 11.1,
-    "secondarySwellDirection": 237,
     "tideObservedHeight": 3.907,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Lisboa - Alcântara",
@@ -11263,6 +11279,9 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 13.65,
     "secondarySwellDirection": 248,
+    "tideObservedHeight": 1.103,
+    "tideObservedAt": "2026-09-14T23:51:00Z",
+    "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
       "waveSpread": 0.58,
@@ -12601,7 +12620,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -12617,25 +12635,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 122.5,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 77.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 122.5
     },
     "windBias": {
@@ -12645,6 +12660,12 @@
       "mae": 1.8,
       "rmse": 2.1,
       "n": 41
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 123,
+      "altKm": 0
     }
   },
   "melides": {
@@ -15814,6 +15835,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.11,
     "currentDir": 153,
+    "secondarySwellHeight": 0.18,
+    "secondarySwellPeriod": 7.9,
+    "secondarySwellDirection": 312,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -16380,6 +16404,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.11,
     "currentDir": 117,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 8.25,
+    "secondarySwellDirection": 259,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -17100,6 +17127,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.11,
     "currentDir": 117,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 8.25,
+    "secondarySwellDirection": 259,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -17244,6 +17274,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 135,
+    "secondarySwellHeight": 0.12,
+    "secondarySwellPeriod": 8.35,
+    "secondarySwellDirection": 280,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -17388,6 +17421,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 135,
+    "secondarySwellHeight": 0.12,
+    "secondarySwellPeriod": 8.35,
+    "secondarySwellDirection": 280,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -17532,6 +17568,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 135,
+    "secondarySwellHeight": 0.12,
+    "secondarySwellPeriod": 8.35,
+    "secondarySwellDirection": 280,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -17676,6 +17715,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.11,
     "currentDir": 153,
+    "secondarySwellHeight": 0.18,
+    "secondarySwellPeriod": 7.9,
+    "secondarySwellDirection": 312,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -20650,15 +20692,13 @@
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 270,
-      "windDirMissing": false,
       "windCardinal": "W",
       "windCardinalEn": "W",
       "tempC": 24.5,
       "stationName": "Ponta do Sol/Lugar de Baixo",
       "distanceKm": 3.9,
       "observedAt": "2026-09-09T21:00:00.000Z",
-      "source": "ipma",
-      "metarIcao": "LPMA"
+      "source": "ipma"
     },
     "observedWave": {
       "waveHeight": 0.62,
@@ -20945,7 +20985,6 @@
     "observedWave": {
       "waveHeight": 2.065429925918579,
       "wavePeriod": 7.851600170135498,
-      "waveDirection": 338,
       "maxWaveHeight": 2.973629951477051,
       "waterTemp": 17.302249908447266,
       "stationName": "Nazaré Costeira (WMO)",
@@ -20964,23 +21003,12 @@
         "buoyName": "Nazaré Costeira (WMO)"
       }
     },
-    "observedWaveAlt": {
-      "waveHeight": 1.0693399906158447,
-      "wavePeriod": 5.44920015335083,
-      "maxWaveHeight": 1.625980019569397,
-      "waterTemp": 16.97998046875,
-      "stationName": "Nazaré Costeira (WMO)",
-      "stationArea": "Nazaré",
-      "distanceKm": 126.1,
-      "observedAt": "2026-09-11T11:00:00.000Z",
-      "source": "wmo-buoy"
-    },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 3.3,
-      "ihDistanceKm": 77.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 126.1
     },
     "windBias": {
@@ -20990,6 +21018,12 @@
       "mae": 1.4,
       "rmse": 1.8,
       "n": 280
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 126,
+      "altKm": 0
     }
   },
   "vila-cha": {
@@ -21092,7 +21126,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -21108,25 +21141,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 108.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 20.5,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 108.6
     },
     "windBias": {
@@ -21136,6 +21166,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 109,
+      "altKm": 0
     }
   },
   "santa-cruz": {
@@ -22859,6 +22895,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.21,
     "currentDir": 135,
+    "secondarySwellHeight": 0.18,
+    "secondarySwellPeriod": 7.9,
+    "secondarySwellDirection": 276,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -23002,6 +23041,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 135,
+    "secondarySwellHeight": 0.12,
+    "secondarySwellPeriod": 8.35,
+    "secondarySwellDirection": 280,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -23146,6 +23188,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.1,
     "currentDir": 90,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 7.25,
+    "secondarySwellDirection": 268,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -23290,6 +23335,9 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.1,
     "currentDir": 90,
+    "secondarySwellHeight": 0.1,
+    "secondarySwellPeriod": 7.25,
+    "secondarySwellDirection": 268,
     "tideObservedHeight": 3.934,
     "tideObservedAt": "2026-09-11T14:25:00Z",
     "tideStation": "Barra de Faro-Olhão",
@@ -24948,7 +24996,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -24964,25 +25011,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.9,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.1,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.9
     },
     "windBias": {
@@ -24992,6 +25036,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 85,
+      "altKm": 0
     }
   },
   "ofir-praia": {
@@ -25094,7 +25144,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25110,25 +25159,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 85.6,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 27.7,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 85.6
     },
     "windBias": {
@@ -25138,6 +25184,12 @@
       "mae": 1.9,
       "rmse": 2.2,
       "n": 32
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 86,
+      "altKm": 0
     }
   },
   "mindelo": {
@@ -25242,7 +25294,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25258,25 +25309,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 106.8,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 20.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 106.8
     },
     "windBias": {
@@ -25286,6 +25334,12 @@
       "mae": 1.4,
       "rmse": 1.6,
       "n": 21
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 107,
+      "altKm": 0
     }
   },
   "aterro": {
@@ -25388,7 +25442,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25404,25 +25457,22 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 117.5,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 25.3,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 117.5
     },
     "windBias": {
@@ -25432,6 +25482,12 @@
       "mae": 2,
       "rmse": 2.3,
       "n": 160
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 118,
+      "altKm": 0
     }
   },
   "foil-fao-cavado": {
@@ -25534,7 +25590,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25550,26 +25605,29 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.3,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "foil-esposende-piscinas": {
@@ -25672,7 +25730,6 @@
       "waveHeight": 1.8,
       "wavePeriod": 11.130000114440918,
       "waveDirection": 343,
-      "maxWaveHeight": 1.14,
       "waterTemp": 18.639999389648438,
       "stationName": "Cabo Silleiro",
       "stationArea": "Galiza",
@@ -25688,26 +25745,29 @@
         "corr": 0.79,
         "meanLeadHours": 38.7,
         "buoyName": "Cabo Silleiro"
+      },
+      "calibration": {
+        "me": 0.1,
+        "n": 254,
+        "verdict": "coherent",
+        "from": "Cabo Silleiro × Nazaré Costeira (WMO)",
+        "rawHeight": 1,
+        "deltaM": 0.1
       }
-    },
-    "observedWaveAlt": {
-      "waveHeight": 0.8199999928474426,
-      "wavePeriod": 9.960000038146973,
-      "waveDirection": 325,
-      "waterTemp": 18.329999923706055,
-      "stationName": "Cabo Silleiro",
-      "stationArea": "Galiza",
-      "distanceKm": 84.3,
-      "observedAt": "2026-09-11T12:00:00.000Z",
-      "source": "wmo-buoy"
     },
     "observedWaveMeta": {
       "winner": "wmo",
       "reason": "wmo-only",
-      "ihAgeHours": 2,
+      "ihAgeHours": null,
       "wmoAgeHours": 2.3,
-      "ihDistanceKm": 28.9,
+      "ihDistanceKm": null,
       "wmoDistanceKm": 84.3
+    },
+    "observedWaveNotClosest": {
+      "winner": "wmo-buoy",
+      "reason": "wmo-only",
+      "attachedKm": 84,
+      "altKm": 0
     }
   },
   "obidos-lagoon-sul": {
