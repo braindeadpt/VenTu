@@ -1,4 +1,5 @@
 import { hsAtHour, type MapHoursFile } from '@/lib/mapHours';
+import { pointOnLand } from '@/lib/landMask';
 import { MAP_HS_LS_KEY } from '@/lib/map-constants';
 
 export { MAP_HS_LS_KEY };
@@ -21,7 +22,7 @@ export const MAP_HS_FILL_MAX_M = 2.4;
 /** Crest isolines — dashed so they read as swell, not IH bathymetry. */
 export const MAP_HS_ISOLINES_M = [0.75, 1.2, 2.0] as const;
 /** Tight ring around island spots — 38 km would paint the whole island. */
-export const MAP_HS_MAX_DIST_KM_ISLAND = 16;
+export const MAP_HS_MAX_DIST_KM_ISLAND = 13;
 export const MAP_HS_MAX_DIST_KM_ISLAND_MOBILE = 12;
 /** Iberian interior — cells closer to this than the nearest coast sample are inland. */
 export const MAINLAND_INLAND = { lat: 39.82, lon: -7.28 } as const;
@@ -60,7 +61,11 @@ export interface HsBounds {
  * the overlay — never a hard west edge through the swell field.
  */
 export const MAP_HS_BOUNDS: readonly HsBounds[] = [
-  { id: 'mainland', south: 36.82, west: -10.55, north: 42.22, east: -7.12 },
+  // Margens ≥ maxDist (38 km) para lá da costa em todas as direcções — a
+  // aresta da grelha tem de ficar para lá do fim do fade, senão aparece um
+  // corte recto duro no mar (Sul a 36.82 cortava a banda a meio do fade;
+  // Este a −7.12 cortava no Guadiana).
+  { id: 'mainland', south: 36.35, west: -10.55, north: 42.6, east: -6.55 },
   { id: 'azores', south: 36.85, west: -31.55, north: 39.85, east: -24.75 },
   { id: 'madeira', south: 32.28, west: -17.55, north: 33.22, east: -16.15 },
 ];
@@ -73,6 +78,22 @@ export function distKm(a: { lat: number; lon: number }, b: { lat: number; lon: n
   const s =
     Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
   return 2 * 6371 * Math.asin(Math.min(1, Math.sqrt(s)));
+}
+
+/**
+ * Equirectangular plano — erro ~1% às escalas dos campos (≤400 km). O
+ * haversine por par (6 trig × amostras × células) era o custo dominante das
+ * grelhas; aqui um `cos` por query e o loop fica só aritmética.
+ */
+export function fastDistKm(
+  lat: number,
+  lon: number,
+  s: { lat: number; lon: number },
+  cosLat: number,
+): number {
+  const dy = (s.lat - lat) * 111.32;
+  const dx = (s.lon - lon) * 111.32 * cosLat;
+  return Math.hypot(dx, dy);
 }
 
 /** Lakes / cables stay off the ocean field. */
@@ -114,9 +135,20 @@ export function landAwareFalloff(
   maxDistKm: number,
   tileId: string,
 ): number {
+  // Raster de costa (GADM): mata terra em qualquer região — continente,
+  // Açores e Madeira — sem heurísticas por costa.
+  if (pointOnLand(lat, lon)) return 0;
   const ocean = coastFalloff(nearestKm, maxDistKm);
   if (ocean <= 0) return 0;
   if (tileId !== 'mainland') return ocean;
+  // Costa Sul: a norte do spot mais próximo é terra — o teste ao ponto
+  // interior não a apanha (o Algarve inteiro fica «a jusante» dele). O guarda
+  // de longitude poupa o mar a oeste do Cabo de S. Vicente. A rampa usa a
+  // distância a NORTE do spot (não a distância total) — senão uma célula
+  // 6 km para dentro ainda levava ~85% do alpha.
+  if (tileId === 'mainland' && nearest.lat < 37.15 && lon > -9.05 && lat > nearest.lat + 0.04) {
+    return ocean * coastFalloff((lat - nearest.lat) * 111, 5);
+  }
   const dCell = distKm({ lat, lon }, MAINLAND_INLAND);
   const dCoast = distKm(nearest, MAINLAND_INLAND);
   if (dCell >= dCoast - 1.2) return ocean;
@@ -130,12 +162,17 @@ export function idwHsAt(
   maxDistKm: number,
 ): { hs: number; nearestKm: number; nearest: { lat: number; lon: number } } | null {
   if (!samples.length) return null;
+  const cosLat = Math.cos((lat * Math.PI) / 180);
   let num = 0;
   let den = 0;
   let nearest = Infinity;
   let nearestPt = samples[0];
+  const latPad = maxDistKm / 111.32;
+  const lonPad = latPad / Math.max(0.2, cosLat);
   for (const s of samples) {
-    const d = distKm({ lat, lon }, s);
+    // Rejeição barata antes da distância — a maioria das amostras cai aqui.
+    if (Math.abs(s.lat - lat) > latPad || Math.abs(s.lon - lon) > lonPad) continue;
+    const d = fastDistKm(lat, lon, s, cosLat);
     if (d < nearest) {
       nearest = d;
       nearestPt = s;
@@ -190,7 +227,7 @@ export function hsFill(
       r: lerpChan(HS_DEEP.r, HS_WAVE.r, u),
       g: lerpChan(HS_DEEP.g, HS_WAVE.g, u),
       b: lerpChan(HS_DEEP.b, HS_WAVE.b, u),
-      a: (0.22 + u * 0.44) * opacityScale,
+      a: (0.14 + u * 0.52) * opacityScale,
     };
   }
   const u = (t - 0.55) / 0.45;
@@ -286,8 +323,8 @@ function drawHsIsolines(
   ctx.setLineDash([3.4, 2.6]);
   for (let ti = 0; ti < MAP_HS_ISOLINES_M.length; ti++) {
     const th = MAP_HS_ISOLINES_M[ti];
-    ctx.strokeStyle = ti === 0 ? 'rgb(241 245 249 / 0.32)' : 'rgb(241 245 249 / 0.52)';
-    ctx.lineWidth = ti === 0 ? 1.05 : 1.35;
+    ctx.strokeStyle = ti === 0 ? 'rgb(241 245 249 / 0.45)' : 'rgb(241 245 249 / 0.62)';
+    ctx.lineWidth = ti === 0 ? 1.15 : 1.45;
     ctx.beginPath();
     for (let y = 0; y < rows - 1; y++) {
       for (let x = 0; x < cols - 1; x++) {
@@ -296,7 +333,7 @@ function drawHsIsolines(
         const i01 = i00 + cols;
         const i11 = i01 + 1;
         const fmin = Math.min(fall[i00], fall[i10], fall[i01], fall[i11]);
-        if (!(fmin > 0.4)) continue;
+        if (!(fmin > 0.25)) continue;
         const v00 = hs[i00];
         const v10 = hs[i10];
         const v01 = hs[i01];
@@ -335,27 +372,50 @@ function drawHsIsolines(
 
 export function renderHsFieldTiles(
   samples: HsSample[],
-  opts: { mobile?: boolean; opacityScale?: number },
+  opts: {
+    mobile?: boolean;
+    opacityScale?: number;
+    /** Limites da view actual — quando presentes, o tile renderiza só essa
+     *  zona com resolução ∝ ao tamanho da view (o IDW é contínuo: a zoom
+     *  alto a banda fica suave em vez de pixelada). */
+    view?: { south: number; west: number; north: number; east: number };
+  },
 ): HsFieldTile[] {
   if (typeof document === 'undefined' || !samples.length) return [];
-  const step = opts.mobile ? MAP_HS_STEP_DEG_MOBILE : MAP_HS_STEP_DEG;
+  const baseStep = opts.mobile ? MAP_HS_STEP_DEG_MOBILE : MAP_HS_STEP_DEG;
   const opacityScale = opts.opacityScale ?? 1;
   const tiles: HsFieldTile[] = [];
 
   for (const box of MAP_HS_BOUNDS) {
-    const maxDist = fieldMaxDistKm(box.id, opts.mobile);
+    // Recorta a box da camada à view (com pad para o pan não apanhar aresta).
+    const rbox = opts.view
+      ? {
+          south: Math.max(box.south, opts.view.south),
+          west: Math.max(box.west, opts.view.west),
+          north: Math.min(box.north, opts.view.north),
+          east: Math.min(box.east, opts.view.east),
+        }
+      : box;
+    if (rbox.east - rbox.west <= 0 || rbox.north - rbox.south <= 0) continue;
+    // Resolução alvo: ~260 células de largura na view (crisp a qualquer zoom),
+    // nunca mais grosseiro que o step de base a zoom país.
+    const step = Math.min(baseStep, Math.max(0.004, (rbox.east - rbox.west) / (opts.mobile ? 150 : 260)));
+    // Banda ~constante em ecrã: a zoom alto encolhe para faixa costeira
+    // (~20 km), senão os 38 km reais inundam a view inteira.
+    const viewKm = (rbox.east - rbox.west) * 85;
+    const maxDist = Math.min(fieldMaxDistKm(box.id, opts.mobile), Math.max(9, viewKm * 0.18 + 6));
     const pad = maxDist / 111;
     const nearby = samples.filter(
       (s) =>
-        s.lat >= box.south - pad &&
-        s.lat <= box.north + pad &&
-        s.lon >= box.west - pad &&
-        s.lon <= box.east + pad,
+        s.lat >= rbox.south - pad &&
+        s.lat <= rbox.north + pad &&
+        s.lon >= rbox.west - pad &&
+        s.lon <= rbox.east + pad,
     );
     if (!nearby.length) continue;
 
-    const cols = Math.max(2, Math.ceil((box.east - box.west) / step));
-    const rows = Math.max(2, Math.ceil((box.north - box.south) / step));
+    const cols = Math.max(2, Math.ceil((rbox.east - rbox.west) / step));
+    const rows = Math.max(2, Math.ceil((rbox.north - rbox.south) / step));
     const scale = MAP_HS_PIXEL_SCALE;
     const canvas = document.createElement('canvas');
     canvas.width = cols * scale;
@@ -368,13 +428,21 @@ export function renderHsFieldTiles(
     const fallGrid = new Float32Array(cols * rows);
     hsGrid.fill(-1);
 
+    const rw = rbox.east - rbox.west;
+    const rh = rbox.north - rbox.south;
     for (let y = 0; y < rows; y++) {
-      const lat = box.north - ((y + 0.5) / rows) * (box.north - box.south);
+      const lat = rbox.north - ((y + 0.5) / rows) * rh;
       for (let x = 0; x < cols; x++) {
-        const lon = box.west + ((x + 0.5) / cols) * (box.east - box.west);
+        const lon = rbox.west + ((x + 0.5) / cols) * rw;
+        // Terra primeiro — metade da view do mainland é interior.
+        if (pointOnLand(lat, lon)) continue;
         const at = idwHsAt(nearby, lat, lon, maxDist);
         if (!at) continue;
-        const falloff = landAwareFalloff(lat, lon, at.nearest, at.nearestKm, maxDist, box.id);
+        // Feather da borda do tile — sem ela o corte da view aparece como
+        // aresta recta onde o campo ainda tem alpha.
+        const edge = Math.min((lon - rbox.west) / rw, (rbox.east - lon) / rw, (lat - rbox.south) / rh, (rbox.north - lat) / rh);
+        const edgeFade = Math.min(1, edge / 0.05);
+        const falloff = edgeFade * landAwareFalloff(lat, lon, at.nearest, at.nearestKm, maxDist, box.id);
         if (falloff <= 0.02) continue;
         const i = y * cols + x;
         hsGrid[i] = at.hs;
@@ -390,8 +458,8 @@ export function renderHsFieldTiles(
       id: box.id,
       url: canvas.toDataURL('image/png'),
       bounds: [
-        [box.south, box.west],
-        [box.north, box.east],
+        [rbox.south, rbox.west],
+        [rbox.north, rbox.east],
       ],
     });
   }

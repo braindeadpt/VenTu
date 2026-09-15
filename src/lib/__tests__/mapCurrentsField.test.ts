@@ -145,12 +145,14 @@ describe('mapCurrentsField', () => {
         nlon: -9.47,
       })),
     };
+    // View até ~−9.4: as células a E são terra e a máscara GADM mata-as —
+    // os ticks contam-se só nas células oceânicas (W de Cascais).
     const pts = collectCurrentParticles(
       [flowing],
-      { south: 38.62, west: -9.55, north: 38.78, east: -9.35 },
+      { south: 38.62, west: -9.55, north: 38.78, east: -9.4 },
       0.04,
     );
-    expect(pts.length).toBeGreaterThan(8);
+    expect(pts.length).toBeGreaterThan(5);
     expect(pts[0].dir).toBeCloseTo(0, 0);
 
     const slack: CurrentFieldGrid = {

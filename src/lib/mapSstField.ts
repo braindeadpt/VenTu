@@ -1,10 +1,12 @@
 import { sstAtHour, type MapHoursFile } from '@/lib/mapHours';
+import { pointOnLand } from '@/lib/landMask';
 import { MAP_SST_LS_KEY } from '@/lib/map-constants';
 import {
   fieldMaxDistKm,
   isOceanFieldSpot,
   landAwareFalloff,
   distKm,
+  fastDistKm,
   MAP_HS_BOUNDS,
   MAP_HS_PIXEL_SCALE,
   MAP_HS_STEP_DEG,
@@ -78,12 +80,16 @@ export function idwSstAt(
   maxDistKm: number,
 ): { sst: number; nearestKm: number; nearest: { lat: number; lon: number } } | null {
   if (!samples.length) return null;
+  const cosLat = Math.cos((lat * Math.PI) / 180);
+  const latPad = maxDistKm / 111.32;
+  const lonPad = latPad / Math.max(0.2, cosLat);
   let num = 0;
   let den = 0;
   let nearest = Infinity;
   let nearestPt = samples[0];
   for (const s of samples) {
-    const d = distKm({ lat, lon }, s);
+    if (Math.abs(s.lat - lat) > latPad || Math.abs(s.lon - lon) > lonPad) continue;
+    const d = fastDistKm(lat, lon, s, cosLat);
     if (d < nearest) {
       nearest = d;
       nearestPt = s;
@@ -166,27 +172,43 @@ function stampCell(
 
 export function renderSstFieldTiles(
   samples: SstSample[],
-  opts: { mobile?: boolean; opacityScale?: number },
+  opts: {
+    mobile?: boolean;
+    opacityScale?: number;
+    /** Limites da view actual — ver renderHsFieldTiles (resolução ∝ zoom). */
+    view?: { south: number; west: number; north: number; east: number };
+  },
 ): SstFieldTile[] {
   if (typeof document === 'undefined' || !samples.length) return [];
-  const step = opts.mobile ? MAP_HS_STEP_DEG_MOBILE : MAP_HS_STEP_DEG;
+  const baseStep = opts.mobile ? MAP_HS_STEP_DEG_MOBILE : MAP_HS_STEP_DEG;
   const opacityScale = opts.opacityScale ?? 1;
   const tiles: SstFieldTile[] = [];
 
   for (const box of MAP_HS_BOUNDS) {
-    const maxDist = fieldMaxDistKm(box.id, opts.mobile);
+    const rbox = opts.view
+      ? {
+          south: Math.max(box.south, opts.view.south),
+          west: Math.max(box.west, opts.view.west),
+          north: Math.min(box.north, opts.view.north),
+          east: Math.min(box.east, opts.view.east),
+        }
+      : box;
+    if (rbox.east - rbox.west <= 0 || rbox.north - rbox.south <= 0) continue;
+    const step = Math.min(baseStep, Math.max(0.004, (rbox.east - rbox.west) / (opts.mobile ? 150 : 260)));
+    const viewKm = (rbox.east - rbox.west) * 85;
+    const maxDist = Math.min(fieldMaxDistKm(box.id, opts.mobile), Math.max(9, viewKm * 0.18 + 6));
     const pad = maxDist / 111;
     const nearby = samples.filter(
       (s) =>
-        s.lat >= box.south - pad &&
-        s.lat <= box.north + pad &&
-        s.lon >= box.west - pad &&
-        s.lon <= box.east + pad,
+        s.lat >= rbox.south - pad &&
+        s.lat <= rbox.north + pad &&
+        s.lon >= rbox.west - pad &&
+        s.lon <= rbox.east + pad,
     );
     if (!nearby.length) continue;
 
-    const cols = Math.max(2, Math.ceil((box.east - box.west) / step));
-    const rows = Math.max(2, Math.ceil((box.north - box.south) / step));
+    const cols = Math.max(2, Math.ceil((rbox.east - rbox.west) / step));
+    const rows = Math.max(2, Math.ceil((rbox.north - rbox.south) / step));
     const scale = MAP_HS_PIXEL_SCALE;
     const canvas = document.createElement('canvas');
     canvas.width = cols * scale;
@@ -196,13 +218,18 @@ export function renderSstFieldTiles(
     const img = ctx.createImageData(cols * scale, rows * scale);
     const w = cols * scale;
 
+    const rw = rbox.east - rbox.west;
+    const rh = rbox.north - rbox.south;
     for (let y = 0; y < rows; y++) {
-      const lat = box.north - ((y + 0.5) / rows) * (box.north - box.south);
+      const lat = rbox.north - ((y + 0.5) / rows) * rh;
       for (let x = 0; x < cols; x++) {
-        const lon = box.west + ((x + 0.5) / cols) * (box.east - box.west);
+        const lon = rbox.west + ((x + 0.5) / cols) * rw;
+        if (pointOnLand(lat, lon)) continue;
         const at = idwSstAt(nearby, lat, lon, maxDist);
         if (!at) continue;
-        const falloff = landAwareFalloff(lat, lon, at.nearest, at.nearestKm, maxDist, box.id);
+        const edge = Math.min((lon - rbox.west) / rw, (rbox.east - lon) / rw, (lat - rbox.south) / rh, (rbox.north - lat) / rh);
+        const edgeFade = Math.min(1, edge / 0.05);
+        const falloff = edgeFade * landAwareFalloff(lat, lon, at.nearest, at.nearestKm, maxDist, box.id);
         if (falloff <= 0.02) continue;
         stampCell(img, w, x, y, scale, sstFill(at.sst, opacityScale * falloff));
       }
@@ -213,8 +240,8 @@ export function renderSstFieldTiles(
       id: box.id,
       url: canvas.toDataURL('image/png'),
       bounds: [
-        [box.south, box.west],
-        [box.north, box.east],
+        [rbox.south, rbox.west],
+        [rbox.north, rbox.east],
       ],
     });
   }

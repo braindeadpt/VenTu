@@ -1,9 +1,11 @@
 import { currentAtHour, type MapHoursFile } from '@/lib/mapHours';
+import { pointOnLand } from '@/lib/landMask';
 import { MAP_CURRENTS_LS_KEY } from '@/lib/map-constants';
 import {
   fieldMaxDistKm,
   landAwareFalloff,
   distKm,
+  fastDistKm,
   isOceanFieldSpot,
   MAP_HS_BOUNDS,
   MAP_HS_STEP_DEG,
@@ -22,6 +24,23 @@ export const MAP_CURRENT_OPACITY = 0.96;
 export const MAP_CURRENT_OPACITY_MOBILE = 0.82;
 /** PT west-coast SMOC is typically 0.05–0.3 m/s; 0.4 m/s saturates the scale. */
 export const MAP_CURRENT_SPEED_MAX = 0.4;
+
+/**
+ * Modo animado (flow): partículas advectadas na mesma grelha dos ticks,
+ * desenhadas com o engine do campo de vento. Corrente PT ~0.05–0.4 m/s →
+ * drift visível mas calmo (~2–18 px/s). Reduced-motion fica nos ticks.
+ */
+export const MAP_CURRENT_FLOW_PARTICLES = 360;
+export const MAP_CURRENT_FLOW_PARTICLES_MOBILE = 140;
+/**
+ * Fade mais curto que o vento: a acumulação de trails de alpha baixo criava
+ * uma «névoa» mais clara sobre toda a banda (visível em tema escuro).
+ */
+export const MAP_CURRENT_FLOW_FADE = 0.9;
+export const MAP_CURRENT_PX_PER_S_PER_MS = 85;
+/** Strength pseudo-kt para a densidade/alpha do draw partilhado (0–16). */
+export const currentFlowStrength = (spd: number): number =>
+  Math.min(1, Math.max(0, spd / MAP_CURRENT_SPEED_MAX)) * 16;
 /** Aim this many CSS pixels between ticks — stays sharp at every zoom. */
 export const MAP_CURRENT_TICK_PX = 12;
 export const MAP_CURRENT_TICK_PX_MOBILE = 15;
@@ -47,20 +66,35 @@ export function dirFromUv(u: number, v: number): number {
   return ((deg % 360) + 360) % 360;
 }
 
+export interface PreparedCurrentSample extends CurrentSample {
+  u: number;
+  v: number;
+}
+
+/** u/v por amostra uma vez por build — antes corriam 2 trig por amostra × célula. */
+export function prepareCurrentSamples(samples: CurrentSample[]): PreparedCurrentSample[] {
+  return samples.map((s) => ({ ...s, ...uvFromSpdDir(s.spd, s.dir) }));
+}
+
 export function idwCurrentAt(
-  samples: CurrentSample[],
+  samples: ReadonlyArray<CurrentSample & { u?: number; v?: number }>,
   lat: number,
   lon: number,
   maxDistKm: number,
 ): { spd: number; dir: number; nearestKm: number; nearest: { lat: number; lon: number } } | null {
   if (!samples.length) return null;
+  const cosLat = Math.cos((lat * Math.PI) / 180);
+  const latPad = maxDistKm / 111.32;
+  const lonPad = latPad / Math.max(0.2, cosLat);
   let numU = 0;
   let numV = 0;
   let den = 0;
   let nearest = Infinity;
   let nearestPt = samples[0];
   for (const s of samples) {
-    const d = distKm({ lat, lon }, s);
+    // Rejeição barata antes da distância — a maioria das amostras cai aqui.
+    if (Math.abs(s.lat - lat) > latPad || Math.abs(s.lon - lon) > lonPad) continue;
+    const d = fastDistKm(lat, lon, s, cosLat);
     if (d < nearest) {
       nearest = d;
       nearestPt = s;
@@ -68,9 +102,18 @@ export function idwCurrentAt(
     if (d > maxDistKm) continue;
     if (d < 0.05) return { spd: s.spd, dir: s.dir, nearestKm: d, nearest: { lat: s.lat, lon: s.lon } };
     const w = 1 / (d * d);
-    const { u, v } = uvFromSpdDir(s.spd, s.dir);
-    numU += u * w;
-    numV += v * w;
+    let su: number;
+    let sv: number;
+    if (s.u !== undefined && s.v !== undefined) {
+      su = s.u;
+      sv = s.v;
+    } else {
+      const uv = uvFromSpdDir(s.spd, s.dir);
+      su = uv.u;
+      sv = uv.v;
+    }
+    numU += su * w;
+    numV += sv * w;
     den += w;
   }
   if (den === 0 || nearest > maxDistKm) return null;
@@ -116,6 +159,7 @@ export function currentTickOnWater(
   falloff: number,
   tileId: string,
 ): boolean {
+  if (pointOnLand(lat, lon)) return false;
   if (falloff < 0.62) return false;
   if (tileId !== 'mainland') return true;
   const dCell = distKm({ lat, lon }, MAINLAND_INLAND);
@@ -123,7 +167,7 @@ export function currentTickOnWater(
   if (dCell < dCoast - 0.25) return false;
   // West coast: land is east of the beach. South Algarve: land is north.
   if (nearest.lat > 37.15 && nearest.lon < -8.6 && lon > nearest.lon + 0.012) return false;
-  if (nearest.lat < 37.15 && lat > nearest.lat + 0.012) return false;
+  if (nearest.lat < 37.15 && lon > -9.05 && lat > nearest.lat + 0.012) return false;
   return true;
 }
 
@@ -260,11 +304,12 @@ export function buildCurrentFieldGrids(
   if (!samples.length) return [];
   const step = opts.mobile ? MAP_HS_STEP_DEG_MOBILE : MAP_HS_STEP_DEG;
   const out: CurrentFieldGrid[] = [];
+  const prepped = prepareCurrentSamples(samples);
 
   for (const box of MAP_HS_BOUNDS) {
     const maxDist = fieldMaxDistKm(box.id, opts.mobile);
     const pad = maxDist / 111;
-    const nearby = samples.filter(
+    const nearby = prepped.filter(
       (s) =>
         s.lat >= box.south - pad &&
         s.lat <= box.north + pad &&
@@ -281,6 +326,12 @@ export function buildCurrentFieldGrids(
       const lat = box.north - ((y + 0.5) / rows) * (box.north - box.south);
       for (let x = 0; x < cols; x++) {
         const lon = box.west + ((x + 0.5) / cols) * (box.east - box.west);
+        // Terra primeiro — metade da grelha do mainland é interior e o IDW
+        // aí era trabalho deitado fora.
+        if (pointOnLand(lat, lon)) {
+          grid[y * cols + x] = null;
+          continue;
+        }
         const at = idwCurrentAt(nearby, lat, lon, maxDist);
         if (!at || at.spd <= 0.02) {
           grid[y * cols + x] = null;
@@ -363,6 +414,61 @@ export function collectCurrentParticles(
     }
   }
   return out;
+}
+
+export interface CurrentFlowParticle {
+  lat: number;
+  lon: number;
+  px: number;
+  py: number;
+  hasPrev: boolean;
+  life: number;
+  /** strength 0–16 (pseudo-kt) — thickness/alpha/density */
+  kt: number;
+  jit: number;
+}
+
+/**
+ * Segmento prev→now por partícula, com halo discreto para ler sobre o
+ * basemap claro — o mesmo papel do halo dos ticks estáticos.
+ */
+export function drawCurrentFlowParticles(
+  ctx: CanvasRenderingContext2D,
+  particles: CurrentFlowParticle[],
+  project: (lat: number, lon: number) => { x: number; y: number },
+  colors: { water: string; halo: string },
+  opacityScale = 1,
+  view?: { width: number; height: number },
+): void {
+  ctx.lineCap = 'round';
+  const maxX = view ? view.width + 8 : 8192;
+  const maxY = view ? view.height + 8 : 8192;
+  for (const p of particles) {
+    const pt = project(p.lat, p.lon);
+    if (p.hasPrev) {
+      const x = pt.x;
+      const y = pt.y;
+      if (x > -8 && y > -8 && x < maxX && y < maxY) {
+        const a = Math.min(0.55, 0.18 + p.kt / 34) * opacityScale;
+        const w = p.kt > 12 ? 1.5 : 1.05;
+        ctx.strokeStyle = `rgb(${colors.halo} / ${(a * 0.3).toFixed(3)})`;
+        ctx.lineWidth = w + 1.6;
+        ctx.beginPath();
+        ctx.moveTo(p.px, p.py);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        ctx.strokeStyle = `rgb(${colors.water} / ${a.toFixed(3)})`;
+        ctx.lineWidth = w;
+        ctx.beginPath();
+        ctx.moveTo(p.px, p.py);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+      }
+    }
+    p.px = pt.x;
+    p.py = pt.y;
+    p.hasPrev = true;
+  }
 }
 
 export function drawCurrentTicks(

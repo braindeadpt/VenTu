@@ -142,35 +142,69 @@ export function useMapHsField({
       groupRef.current = group;
     }
 
-    const tiles = renderHsFieldTiles(samples, {
-      mobile: isMobile,
-      opacityScale: 1,
-    });
-    const seen = new Set<string>();
-    for (const tile of tiles) {
-      seen.add(tile.id);
-      const bounds = Leaflet.latLngBounds(tile.bounds);
-      let overlay = overlaysRef.current.get(tile.id);
-      if (!overlay) {
-        overlay = Leaflet.imageOverlay(tile.url, bounds, {
-          opacity,
-          interactive: false,
-          pane: MAP_HS_PANE,
-          className: 'ventu-hs-overlay',
-        });
-        overlay.addTo(group);
-        overlaysRef.current.set(tile.id, overlay);
-      } else {
-        overlay.setUrl(tile.url);
-        overlay.setBounds(bounds);
-        overlay.setOpacity(opacity);
+    // O tile renderiza só a view actual (com pad) — resolução ∝ zoom, sem
+    // pixelação ao aproximar. Re-renderiza quando a câmara assenta.
+    // Caixa já renderizada + zoom em que foi feita — o overlay é
+    // geo-ancorado, por isso pans dentro do pad e micro-zooms não
+    // re-renderizam (cada render é ~100-300 ms de main thread).
+    let lastBox: { s: number; w: number; n: number; e: number } | null = null;
+    let lastZoom = NaN;
+
+    const applyTiles = () => {
+      const b = map.getBounds().pad(0.25);
+      // A banda tem ~38 km de largura real — a zoom alto inundava a view
+      // inteira. Atenua com o zoom para ficar contexto e não mancha.
+      const zFade = Math.min(1, Math.max(0.5, 1 - (map.getZoom() - 9.5) * 0.1));
+      const tiles = renderHsFieldTiles(samples, {
+        mobile: isMobile,
+        opacityScale: zFade,
+        view: { south: b.getSouth(), west: b.getWest(), north: b.getNorth(), east: b.getEast() },
+      });
+      lastBox = { s: b.getSouth(), w: b.getWest(), n: b.getNorth(), e: b.getEast() };
+      lastZoom = map.getZoom();
+      const seen = new Set<string>();
+      for (const tile of tiles) {
+        seen.add(tile.id);
+        const bounds = Leaflet.latLngBounds(tile.bounds);
+        let overlay = overlaysRef.current.get(tile.id);
+        if (!overlay) {
+          overlay = Leaflet.imageOverlay(tile.url, bounds, {
+            opacity,
+            interactive: false,
+            pane: MAP_HS_PANE,
+            className: 'ventu-hs-overlay',
+          });
+          overlay.addTo(group!);
+          overlaysRef.current.set(tile.id, overlay);
+        } else {
+          overlay.setUrl(tile.url);
+          overlay.setBounds(bounds);
+          overlay.setOpacity(opacity);
+        }
       }
-    }
-    for (const [id, overlay] of overlaysRef.current) {
-      if (seen.has(id)) continue;
-      group.removeLayer(overlay);
-      overlaysRef.current.delete(id);
-    }
+      for (const [id, overlay] of overlaysRef.current) {
+        if (seen.has(id)) continue;
+        group!.removeLayer(overlay);
+        overlaysRef.current.delete(id);
+      }
+    };
+    applyTiles();
+
+    let rerenderTimer: ReturnType<typeof setTimeout> | null = null;
+    const needsRerender = () => {
+      if (!lastBox) return true;
+      if (Math.abs(map.getZoom() - lastZoom) >= 0.6) return true;
+      const b = map.getBounds();
+      return b.getSouth() < lastBox.s || b.getWest() < lastBox.w || b.getNorth() > lastBox.n || b.getEast() > lastBox.e;
+    };
+    const scheduleRerender = () => {
+      if (rerenderTimer) clearTimeout(rerenderTimer);
+      rerenderTimer = setTimeout(() => {
+        if (needsRerender()) applyTiles();
+      }, 160);
+    };
+    map.on('moveend', scheduleRerender);
+    map.on('zoomend', scheduleRerender);
 
     const el = map.getContainer();
     el.setAttribute('data-map-hs', 'true');
@@ -178,6 +212,9 @@ export function useMapHsField({
     el.setAttribute('data-map-hs-max', sampleMax.toFixed(1));
 
     return () => {
+      if (rerenderTimer) clearTimeout(rerenderTimer);
+      map.off('moveend', scheduleRerender);
+      map.off('zoomend', scheduleRerender);
       /* keep group until hsOff — cleanup in the !hsOn branch */
     };
   }, [
