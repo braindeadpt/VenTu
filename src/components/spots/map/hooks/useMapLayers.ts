@@ -448,7 +448,7 @@ export function useMapLayers({
       layers: EMODNET_BATHYMETRY_WMS_LAYER,
       format: 'image/png',
       transparent: true,
-      opacity: 0.7,
+      opacity: 0.6,
       pane: MAP_BATHYMETRY_PANE,
       attribution: EMODNET_BATHYMETRY_ATTRIBUTION,
       className: 'ventu-bathymetry',
@@ -587,10 +587,26 @@ export function useMapLayers({
         const tooltipHtml = url
           ? `<a href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''} ↗</a>`
           : `${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''}`;
-        const poly = Leaflet.polygon(latlngs, {
-          color: '#ef4444', weight: 2, opacity: 0.9, fillColor: '#ef4444', fillOpacity: 0.18,
-          className: 'ventu-coastal-warning',
-        }).bindTooltip(tooltipHtml, { sticky: true, direction: 'top', interactive: true });
+        // Áreas de cobertura gigantes (ex.: aviso que abrange toda a costa —
+        // caixas de dezenas de graus²) só com contorno tracejado: o fill a 18%
+        // tapava o mapa inteiro e o path comia o hover/clique de todos os pins.
+        let minLa = 90, maxLa = -90, minLo = 180, maxLo = -180;
+        for (const [la, lo] of latlngs) {
+          if (la < minLa) minLa = la;
+          if (la > maxLa) maxLa = la;
+          if (lo < minLo) minLo = lo;
+          if (lo > maxLo) maxLo = lo;
+        }
+        const isCoverage = (maxLa - minLa) * (maxLo - minLo) > 2;
+        const poly = Leaflet.polygon(latlngs, isCoverage
+          ? {
+              color: '#ef4444', weight: 1.5, opacity: 0.7, fill: false,
+              dashArray: '6 6', className: 'ventu-coastal-warning',
+            }
+          : {
+              color: '#ef4444', weight: 2, opacity: 0.9, fillColor: '#ef4444', fillOpacity: 0.18,
+              className: 'ventu-coastal-warning',
+            }).bindTooltip(tooltipHtml, { sticky: true, direction: 'top', interactive: true });
         if (url) {
           poly.on('click', (e: L.LeafletMouseEvent) => {
             Leaflet.DomEvent.stopPropagation(e);
