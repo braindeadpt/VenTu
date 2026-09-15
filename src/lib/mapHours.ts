@@ -50,6 +50,8 @@ export interface MapHoursFile {
   thermal?: Record<string, number[]>;
   /** Optional: surface current (m/s + towards °) per spot. Currents field overlay. */
   currents?: Record<string, { spd: number[]; dir: number[] }>;
+  /** Optional: wind (m/s + FROM °, meteorological) per spot. Wind field overlay. */
+  wind?: Record<string, { spd: number[]; dir: number[] }>;
 }
 
 export function pickMapHourTimes(
@@ -231,6 +233,20 @@ export function currentAtHour(
   return { spd, dir };
 }
 
+export function windAtHour(
+  file: MapHoursFile | null | undefined,
+  spotId: string,
+  index: number,
+): { spd: number; dir: number } | undefined {
+  if (!file?.wind) return undefined;
+  const row = file.wind[spotId];
+  if (!row || index < 0 || index >= row.spd.length) return undefined;
+  const spd = row.spd[index];
+  const dir = row.dir[index];
+  if (!Number.isFinite(spd) || !Number.isFinite(dir)) return undefined;
+  return { spd, dir };
+}
+
 export function sstAtHour(
   file: MapHoursFile | null | undefined,
   spotId: string,
@@ -280,6 +296,8 @@ export function buildMapHoursFile(opts: {
   let thermalFinite = 0;
   const currents: Record<string, { spd: number[]; dir: number[] }> = {};
   let currentFinite = 0;
+  const wind: Record<string, { spd: number[]; dir: number[] }> = {};
+  let windFinite = 0;
 
   for (const spot of opts.spots) {
     const series = forecastSeries(spot, opts.forecasts);
@@ -292,6 +310,8 @@ export function buildMapHoursFile(opts: {
     const thermalSeries: number[] = [];
     const currentSpd: number[] = [];
     const currentDir: number[] = [];
+    const windSpd: number[] = [];
+    const windDir: number[] = [];
 
     for (const time of times) {
       const isNow = hourKeyFromOpenMeteo(time) === nowKey;
@@ -304,6 +324,8 @@ export function buildMapHoursFile(opts: {
         thermalSeries.push(0);
         currentSpd.push(0);
         currentDir.push(0);
+        windSpd.push(0);
+        windDir.push(0);
         continue;
       }
       const scores = getAllSportScores(spot, rawToScoreInput(raw));
@@ -342,6 +364,13 @@ export function buildMapHoursFile(opts: {
       currentSpd.push(spd);
       currentDir.push(dir);
       if (spd > 0.01) currentFinite += 1;
+      const wSpdRaw = Number(raw.windSpeed);
+      const wDirRaw = Number(raw.windDirection);
+      const wSpd = Number.isFinite(wSpdRaw) && wSpdRaw > 0 ? Math.round(wSpdRaw * 100) / 100 : 0;
+      const wDir = Number.isFinite(wDirRaw) ? ((Math.round(wDirRaw) % 360) + 360) % 360 : 0;
+      windSpd.push(wSpd);
+      windDir.push(wDir);
+      if (wSpd > 0.01) windFinite += 1;
     }
 
     spots[spot.id] = bySport;
@@ -349,6 +378,7 @@ export function buildMapHoursFile(opts: {
     sst[spot.id] = sstSeries;
     thermal[spot.id] = thermalSeries;
     currents[spot.id] = { spd: currentSpd, dir: currentDir };
+    wind[spot.id] = { spd: windSpd, dir: windDir };
   }
 
   const tides = buildMapTides(opts.spots, opts.forecasts, now);
@@ -364,6 +394,7 @@ export function buildMapHoursFile(opts: {
     ...(sstFinite > 0 ? { sst } : {}),
     ...(thermalFinite > 0 ? { thermal } : {}),
     ...(currentFinite > 0 ? { currents } : {}),
+    ...(windFinite > 0 ? { wind } : {}),
   };
 }
 
