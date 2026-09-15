@@ -221,7 +221,7 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       const help = page.getByRole('button', { name: /Como ler o vento no mapa/i });
       await expect(help).toBeVisible({ timeout: 20_000 });
       await help.click();
-      const dialog = page.getByRole('dialog', { name: /Ler o arco de vento/i });
+      const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
       await expect(dialog).toBeVisible({ timeout: 10_000 });
 
       const dismiss = dialog.getByRole('button');
@@ -309,7 +309,7 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       const help = page.getByRole('button', { name: /Como ler o vento no mapa/i });
       await expect(help).toBeVisible({ timeout: 20_000 });
       await help.click();
-      const dialog = page.getByRole('dialog', { name: /Ler o arco de vento/i });
+      const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
       await expect(dialog).toBeVisible({ timeout: 10_000 });
 
       const dismiss = dialog.getByRole('button');

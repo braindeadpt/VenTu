@@ -228,7 +228,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
     await page.waitForSelector('[data-map-hud="visible"]', { timeout: 35_000 });
     await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
 
-    const dialog = page.getByRole('dialog', { name: /Ler o arco de vento/i });
+    const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
     const hint = page.getByRole('note', { name: /Como ler o vento no mapa/i });
 
     // 1) No modal and no hint before any interaction.
