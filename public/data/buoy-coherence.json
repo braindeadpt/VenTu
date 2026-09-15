@@ -1,6 +1,6 @@
 {
   "day": "20260915",
-  "fetchedAt": "2026-09-15T19:05:12.543Z",
+  "fetchedAt": "2026-09-15T19:22:17.863Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -1408,30 +1408,6 @@
       "suboptimalRefs": 0,
       "suboptimal": []
     },
-    "Pico": {
-      "spotCount": 1,
-      "withObservedWave": 1,
-      "bySource": {
-        "ih-buoy": 1
-      },
-      "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
-      "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "cachorro-pico",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 68,
-          "altKm": 0
-        }
-      ],
-      "calibrated": 0,
-      "calibrationRefs": {},
-      "suboptimalRefs": 0,
-      "suboptimal": []
-    },
     "São Jorge": {
       "spotCount": 1,
       "withObservedWave": 1,
@@ -1457,7 +1433,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-15T19:07:18.052Z",
+  "regionsAuditedAt": "2026-09-15T19:28:31.695Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
