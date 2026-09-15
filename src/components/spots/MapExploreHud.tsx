@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, Navigation, RotateCcw, Search, Waves, Wind, Zap, Activity, Thermometer } from 'lucide-react';
+import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, Mountain, Navigation, RotateCcw, Search, Waves, Wind, Zap, Activity, Thermometer } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -54,6 +54,10 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   onToggleIsobaths: () => void;
   isobathsLabel: string;
   isobathsHint: string;
+  bathymetryEnabled: boolean;
+  onToggleBathymetry: () => void;
+  bathymetryLabel: string;
+  bathymetryHint: string;
   coastalWarningsEnabled: boolean;
   onToggleCoastalWarnings: () => void;
   coastalWarningsLabel: string;
@@ -118,6 +122,10 @@ export default function MapExploreHud({
   onToggleIsobaths,
   isobathsLabel,
   isobathsHint,
+  bathymetryEnabled,
+  onToggleBathymetry,
+  bathymetryLabel,
+  bathymetryHint,
   coastalWarningsEnabled,
   onToggleCoastalWarnings,
   coastalWarningsLabel,
@@ -437,6 +445,19 @@ export default function MapExploreHud({
             }
           >
             <Waves className="w-4 h-4 text-data-waves" aria-hidden />
+          </MapControlButton>
+
+          <MapControlButton
+            onClick={onToggleBathymetry}
+            aria-label={bathymetryLabel}
+            pressed={bathymetryEnabled}
+            title={bathymetryHint}
+            data-map-bathymetry-toggle
+            className={
+              bathymetryEnabled ? 'border-data-water/40 bg-data-water/15 text-fg' : undefined
+            }
+          >
+            <Mountain className="w-4 h-4 text-data-water" aria-hidden />
           </MapControlButton>
 
           <MapControlButton

@@ -9,6 +9,7 @@ rewriting the map core.
 | z-index | Pane | Layer | Notes |
 |---|---|---|---|
 | — | `tilePane` | basemap (CARTO light/dark, Esri satellite) | Leaflet default |
+| 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour`) | opt-in depth shading; host in CSP img-src (meta + terraform) |
 | 340 | — | isobaths (canvas image) | static, below fields |
 | 345 | `windfield` | **wind particle field** | ambient, animated |
 | 348 | `sst` | SST ribbon | mutually exclusive w/ Hs |
@@ -80,6 +81,8 @@ Each field = `src/lib/map*Field.ts` (pure: samples → IDW grid → draw) +
 | `notice_mariners` | — | — | skipped: regional polygons too vague (spot spam) |
 | `hycom` EDR | validation only | — | redundant with Open-Meteo SST/currents; revisit for QA |
 | `hfr_*`, `webgeo4` WFS | — | — | skipped: no JSON items / duplicates OGC buoy list |
+| OpenSeaMap seamarks | raster tiles | own pane (below markers) | `tiles.openseamap.org/seamark` — CSP img-src + attribution when added |
+| RainViewer | raster fallback | `overlayPane` | IPMA radar fallback — pipeline `radar.json` would carry source |
 
 Rule of thumb: **ambient fields** live in numbered canvas panes (345–360,
 under markers); **discrete entities** (warnings, orcas, buoys) stay in the

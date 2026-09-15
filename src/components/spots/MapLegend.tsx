@@ -27,6 +27,8 @@ interface MapLegendProps {
   currentsVisible?: boolean;
   windTitle?: string;
   windVisible?: boolean;
+  bathymetryTitle?: string;
+  bathymetryVisible?: boolean;
   warningsTitle?: string;
   warningsVisible?: boolean;
   warningsZoneLabel?: string;
@@ -48,6 +50,8 @@ export default function MapLegend({
   currentsVisible = false,
   windTitle,
   windVisible = false,
+  bathymetryTitle,
+  bathymetryVisible = false,
   warningsTitle,
   warningsVisible = false,
   warningsZoneLabel,
@@ -63,10 +67,10 @@ export default function MapLegend({
   // the content visible regardless of `collapsed`); below lg the user taps
   // the header to expand it.
   useEffect(() => {
-    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || warningsVisible)) {
+    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || bathymetryVisible || warningsVisible)) {
       setCollapsed(false);
     }
-  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, warningsVisible]);
+  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, warningsVisible]);
 
   const isHero = placement === 'hero';
   const bottomPx = !isHero && reserveHudSpace
@@ -251,6 +255,27 @@ export default function MapLegend({
                 <span>5</span>
                 <span>15</span>
                 <span>25+</span>
+              </div>
+            </div>
+          )}
+          {bathymetryVisible && bathymetryTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-map-bathymetry-legend>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+                {bathymetryTitle}
+              </p>
+              {/* Escala EMODnet mean_multicolour: águas baixas claras →
+                  talude/canhões em azul profundo (sobre o basemap). */}
+              <div
+                className="h-2 rounded mb-1"
+                style={{
+                  background:
+                    'linear-gradient(to right, rgb(186 226 247), rgb(90 160 210) 45%, rgb(20 70 140) 75%, rgb(8 32 80))',
+                }}
+              />
+              <div className="flex justify-between text-[9px] font-mono tabular-nums text-fg-subtle">
+                <span>0</span>
+                <span>500</span>
+                <span>4000+</span>
               </div>
             </div>
           )}

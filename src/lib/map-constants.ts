@@ -166,6 +166,19 @@ export const MAP_BUOYS_LS_KEY = 'ventu.map.buoys';
 export const MAP_HS_LS_KEY = 'ventu.map.hs';
 export const MAP_CURRENTS_LS_KEY = 'ventu.map.currents';
 export const MAP_SST_LS_KEY = 'ventu.map.sst';
+export const MAP_BATHYMETRY_LS_KEY = 'ventu.map.bathymetry';
+
+/** EMODnet Bathymetry WMS (Copernicus) — sombreado contínuo de profundidade.
+ *  Keyless, CC BY 4.0. mean_multicolour: azul-claro em águas baixas → azul
+ *  escuro no talude/canhões — o relevo submarino que explica a rebentação. */
+export const EMODNET_BATHYMETRY_WMS_URL = 'https://ows.emodnet-bathymetry.eu/wms';
+export const EMODNET_BATHYMETRY_WMS_LAYER = 'emodnet:mean_multicolour';
+/** Pane própria por cima do tilePane (200) e por baixo dos fields (345+) —
+ *  a batimetria é contexto de fundo, nunca tapa vento/hs/isóbatas/marcadores. */
+export const MAP_BATHYMETRY_PANE = 'ventu-bathymetry';
+export const MAP_BATHYMETRY_PANE_Z = '210';
+export const EMODNET_BATHYMETRY_ATTRIBUTION =
+  'Bathymetry © <a href="https://emodnet.ec.europa.eu/en/bathymetry">EMODnet</a> (CC BY 4.0)';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,

@@ -22,7 +22,7 @@ const CSP_META = {
   scriptSrc: "'self' 'unsafe-inline' https://gc.zgo.at",
   styleSrc: "'self' 'unsafe-inline'",
   fontSrc: "'self' data:",
-  imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co",
+  imgSrc: "'self' data: blob: https://*.tile.openstreetmap.org https://*.basemaps.cartocdn.com https://server.arcgisonline.com https://*.supabase.co https://ows.emodnet-bathymetry.eu",
   connectSrc: "'self' https://gc.zgo.at https://*.goatcounter.com https://*.supabase.co wss://*.supabase.co https://api.open-meteo.com https://marine-api.open-meteo.com https://*.workers.dev",
   frameSrc:
     "'self' https://www.openstreetmap.org https://www.youtube-nocookie.com https://www.youtube.com https://www.weatherlink.com https://embed.cdn-surfline.com",

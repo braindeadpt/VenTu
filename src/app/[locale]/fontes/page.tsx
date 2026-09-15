@@ -134,6 +134,17 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
       attributionId: 'copernicus',
     },
     {
+      name: 'EMODnet Bathymetry',
+      homepage: 'https://emodnet.ec.europa.eu/en/bathymetry',
+      usePt: 'Sombreado de profundidade (WMS) no mapa de spots — relevo submarino sob as isóbatas.',
+      useEn: 'Depth-shading WMS on the spots map — seafloor relief under the isobaths.',
+      license: {
+        pt: <><A href={CC_BY}>CC BY 4.0</A></>,
+        en: <><A href={CC_BY}>CC BY 4.0</A></>,
+      },
+      attributionId: 'emodnet',
+    },
+    {
       name: 'Esri World Imagery',
       homepage: 'https://www.esri.com/',
       usePt: 'Tiles de satélite no mapa + miniaturas dos spots exportadas nas coordenadas reais de cada praia.',

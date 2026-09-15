@@ -51,6 +51,10 @@ const UI_ANCHORS: Record<DataSourceId, { surface: string; anchor: RegExp }> = {
     surface: 'nota junto da leitura WMO no card de onda observada',
     anchor: /Copernicus/,
   },
+  emodnet: {
+    surface: 'controlo de atribuição do mapa com a camada de batimetria ligada (tileLayer.wms attribution)',
+    anchor: /EMODNET_BATHYMETRY|EMODnet/,
+  },
   esri: {
     surface: 'controlo de atribuição do mapa em modo satélite + About',
     anchor: /TILE_ATTRIBUTIONS\.esri|\bEsri\b/,

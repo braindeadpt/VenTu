@@ -41,6 +41,7 @@ export type DataSourceId =
   | 'ipma'
   | 'meteoalarm'
   | 'copernicus'
+  | 'emodnet'
   | 'esri'
   | 'osm'
   | 'ecowitt'
@@ -285,6 +286,41 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
     ),
     titlePt: 'Generated using E.U. Copernicus Marine Service Information',
     titleEn: 'Generated using E.U. Copernicus Marine Service Information',
+  },
+  emodnet: {
+    notePt: (
+      <>
+        «Batimetria ©{' '}
+        <A href="https://emodnet.ec.europa.eu/en/bathymetry">EMODnet</A> (
+        <A href={CC_BY}>CC BY 4.0</A>)»
+      </>
+    ),
+    noteEn: (
+      <>
+        “Bathymetry ©{' '}
+        <A href="https://emodnet.ec.europa.eu/en/bathymetry">EMODnet</A> (
+        <A href={CC_BY}>CC BY 4.0</A>)”
+      </>
+    ),
+    cellPt: (
+      <>
+        «Batimetria ©{' '}
+        <A href="https://emodnet.ec.europa.eu/en/bathymetry">EMODnet</A> (
+        <A href={CC_BY}>CC BY 4.0</A>)» — no controlo de atribuição do mapa
+        quando a camada de batimetria está ligada (tiles WMS
+        ows.emodnet-bathymetry.eu).
+      </>
+    ),
+    cellEn: (
+      <>
+        “Bathymetry ©{' '}
+        <A href="https://emodnet.ec.europa.eu/en/bathymetry">EMODnet</A> (
+        <A href={CC_BY}>CC BY 4.0</A>)” — on the map attribution control when
+        the bathymetry layer is on (WMS tiles ows.emodnet-bathymetry.eu).
+      </>
+    ),
+    titlePt: 'Batimetria © EMODnet (CC BY 4.0)',
+    titleEn: 'Bathymetry © EMODnet (CC BY 4.0)',
   },
   esri: {
     notePt: (

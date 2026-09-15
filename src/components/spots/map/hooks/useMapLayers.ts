@@ -30,6 +30,12 @@ import {
 import {
   MAP_ISOBATHS_LS_KEY,
   MAP_COASTAL_LS_KEY,
+  MAP_BATHYMETRY_LS_KEY,
+  EMODNET_BATHYMETRY_WMS_URL,
+  EMODNET_BATHYMETRY_WMS_LAYER,
+  EMODNET_BATHYMETRY_ATTRIBUTION,
+  MAP_BATHYMETRY_PANE,
+  MAP_BATHYMETRY_PANE_Z,
 } from '@/lib/map-constants';
 import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
@@ -77,6 +83,9 @@ interface UseMapLayersReturn {
   isobathsEnabled: boolean;
   isobathsData: IsobathContoursFile | null | undefined;
   toggleIsobaths: () => void;
+  // Bathymetry (EMODnet WMS)
+  bathymetryEnabled: boolean;
+  toggleBathymetry: () => void;
   // Coastal warnings
   coastalWarningsEnabled: boolean;
   coastalWarningsData: CoastalWarningsFile | null | undefined;
@@ -403,6 +412,54 @@ export function useMapLayers({
     });
   }, []);
 
+  // ── Bathymetry (EMODnet WMS) ──
+  // Sombreado contínuo de profundidade — relevo submarino (bancos, canhões,
+  // talude) por baixo das isóbatas. Tiles WMS keyless; camada opcional,
+  // desligada por omissão, best-effort (falhas de tile não tocam no mapa).
+  const [bathymetryEnabled, setBathymetryEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    try {
+      return localStorage.getItem(MAP_BATHYMETRY_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (!bathymetryEnabled || !isReady) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+    if (!map || !Leaflet) return;
+
+    let pane = map.getPane(MAP_BATHYMETRY_PANE);
+    if (!pane) pane = map.createPane(MAP_BATHYMETRY_PANE);
+    pane.style.zIndex = MAP_BATHYMETRY_PANE_Z;
+    pane.style.pointerEvents = 'none';
+
+    const layer = Leaflet.tileLayer.wms(EMODNET_BATHYMETRY_WMS_URL, {
+      layers: EMODNET_BATHYMETRY_WMS_LAYER,
+      format: 'image/png',
+      transparent: true,
+      opacity: 0.7,
+      pane: MAP_BATHYMETRY_PANE,
+      attribution: EMODNET_BATHYMETRY_ATTRIBUTION,
+      className: 'ventu-bathymetry',
+    });
+    layer.addTo(map);
+
+    return () => {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+    };
+  }, [bathymetryEnabled, isReady, mapInstanceRef, LRef]);
+
+  const toggleBathymetry = useCallback(() => {
+    setBathymetryEnabled((prev) => {
+      const next = !prev;
+      try { localStorage.setItem(MAP_BATHYMETRY_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+      return next;
+    });
+  }, []);
+
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
@@ -602,6 +659,7 @@ export function useMapLayers({
     handleResetRadar, handleRadarImmersionOpen,
     radarFrameList, radarLabel, radarHint, radarUnavailable, radarAttributionLabel,
     isobathsEnabled, isobathsData, toggleIsobaths,
+    bathymetryEnabled, toggleBathymetry,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
   };
 }

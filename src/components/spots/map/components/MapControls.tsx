@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain } from 'lucide-react';
 
 interface MapControlsProps {
   isFullscreen: boolean;
@@ -12,6 +12,7 @@ interface MapControlsProps {
   radarPrefSet: boolean;
   radarUnavailable: boolean;
   isobathsEnabled: boolean;
+  bathymetryEnabled: boolean;
   onlyOnEnabled: boolean;
   coastalWarningsEnabled: boolean;
   // Labels
@@ -43,6 +44,8 @@ interface MapControlsProps {
   currentsLabel: string;
   currentsHint: string;
   isobathsLabel: string;
+  bathymetryLabel: string;
+  bathymetryHint: string;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -64,6 +67,7 @@ interface MapControlsProps {
   toggleSst: () => void;
   toggleCurrents: () => void;
   toggleIsobaths: () => void;
+  toggleBathymetry: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
   // Refs
@@ -102,6 +106,7 @@ export default function MapControls({
   radarPrefSet,
   radarUnavailable,
   isobathsEnabled,
+  bathymetryEnabled,
   onlyOnEnabled,
   coastalWarningsEnabled,
   clusterLabel,
@@ -132,6 +137,8 @@ export default function MapControls({
   currentsLabel,
   currentsHint,
   isobathsLabel,
+  bathymetryLabel,
+  bathymetryHint,
   onlyOnLabel,
   onlyOnHint,
   windLegendHelpLabel,
@@ -152,6 +159,7 @@ export default function MapControls({
   toggleSst,
   toggleCurrents,
   toggleIsobaths,
+  toggleBathymetry,
   toggleOnlyOn,
   toggleCoastalWarnings,
   windButtonRef,
@@ -352,6 +360,19 @@ export default function MapControls({
         >
           <Waves className="w-4 h-4 shrink-0" aria-hidden />
           <span className={itemLabel}>{isobathsLabel}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={toggleBathymetry}
+          title={bathymetryHint}
+          className={`${item} ${bathymetryEnabled ? active.water : ''}`}
+          aria-label={bathymetryLabel}
+          aria-pressed={bathymetryEnabled}
+          data-map-bathymetry-toggle
+        >
+          <Mountain className="w-4 h-4 shrink-0" aria-hidden />
+          <span className={itemLabel}>{bathymetryLabel}</span>
         </button>
 
         <button
