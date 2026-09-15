@@ -36,6 +36,11 @@ import {
   EMODNET_BATHYMETRY_ATTRIBUTION,
   MAP_BATHYMETRY_PANE,
   MAP_BATHYMETRY_PANE_Z,
+  MAP_SEAMARKS_LS_KEY,
+  OPENSEAMAP_SEAMARKS_URL,
+  OPENSEAMAP_ATTRIBUTION,
+  MAP_SEAMARKS_PANE,
+  MAP_SEAMARKS_PANE_Z,
 } from '@/lib/map-constants';
 import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
@@ -86,6 +91,9 @@ interface UseMapLayersReturn {
   // Bathymetry (EMODnet WMS)
   bathymetryEnabled: boolean;
   toggleBathymetry: () => void;
+  // Seamarks (OpenSeaMap raster tiles)
+  seamarksEnabled: boolean;
+  toggleSeamarks: () => void;
   // Coastal warnings
   coastalWarningsEnabled: boolean;
   coastalWarningsData: CoastalWarningsFile | null | undefined;
@@ -460,6 +468,52 @@ export function useMapLayers({
     });
   }, []);
 
+  // ── Seamarks (OpenSeaMap tiles) ──
+  // Sinalização náutica (balizas, faróis, rochas, perigos, fundeadouros) —
+  // contexto cartográfico para os avisos IH e as zonas de orca. Camada
+  // opt-in: raster transparente por cima dos fields, por baixo dos markers.
+  const [seamarksEnabled, setSeamarksEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    try {
+      return localStorage.getItem(MAP_SEAMARKS_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (!seamarksEnabled || !isReady) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+    if (!map || !Leaflet) return;
+
+    let pane = map.getPane(MAP_SEAMARKS_PANE);
+    if (!pane) pane = map.createPane(MAP_SEAMARKS_PANE);
+    pane.style.zIndex = MAP_SEAMARKS_PANE_Z;
+    pane.style.pointerEvents = 'none';
+
+    const layer = Leaflet.tileLayer(OPENSEAMAP_SEAMARKS_URL, {
+      pane: MAP_SEAMARKS_PANE,
+      opacity: 0.9,
+      attribution: OPENSEAMAP_ATTRIBUTION,
+      className: 'ventu-seamarks',
+      maxZoom: 18,
+    });
+    layer.addTo(map);
+
+    return () => {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+    };
+  }, [seamarksEnabled, isReady, mapInstanceRef, LRef]);
+
+  const toggleSeamarks = useCallback(() => {
+    setSeamarksEnabled((prev) => {
+      const next = !prev;
+      try { localStorage.setItem(MAP_SEAMARKS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+      return next;
+    });
+  }, []);
+
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return false;
@@ -660,6 +714,7 @@ export function useMapLayers({
     radarFrameList, radarLabel, radarHint, radarUnavailable, radarAttributionLabel,
     isobathsEnabled, isobathsData, toggleIsobaths,
     bathymetryEnabled, toggleBathymetry,
+    seamarksEnabled, toggleSeamarks,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
   };
 }

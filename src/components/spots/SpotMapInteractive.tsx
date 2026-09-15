@@ -156,6 +156,10 @@ type MapHudProps = Omit<
   | 'onToggleBathymetry'
   | 'bathymetryLabel'
   | 'bathymetryHint'
+  | 'seamarksEnabled'
+  | 'onToggleSeamarks'
+  | 'seamarksLabel'
+  | 'seamarksHint'
   | 'coastalWarningsEnabled'
   | 'onToggleCoastalWarnings'
   | 'coastalWarningsLabel'
@@ -327,6 +331,7 @@ export default function SpotMapInteractive({
     radarFrameList, radarLabel, radarHint, radarUnavailable, radarAttributionLabel,
     isobathsEnabled, isobathsData, toggleIsobaths,
     bathymetryEnabled, toggleBathymetry,
+    seamarksEnabled, toggleSeamarks,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
   } = layers;
 
@@ -868,6 +873,7 @@ export default function SpotMapInteractive({
       data-map-sst={sstEnabled ? 'true' : 'false'}
       data-map-currents={currentsEnabled ? 'true' : 'false'}
       data-map-bathymetry={bathymetryEnabled ? 'true' : 'false'}
+      data-map-seamarks={seamarksEnabled ? 'true' : 'false'}
       data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
     >
       {!isReady && (
@@ -940,6 +946,9 @@ export default function SpotMapInteractive({
             bathymetryEnabled={bathymetryEnabled}
             bathymetryLabel={bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry}
             bathymetryHint={t.map.bathymetryHint}
+            seamarksEnabled={seamarksEnabled}
+            seamarksLabel={seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks}
+            seamarksHint={t.map.seamarksHint}
             onlyOnLabel={onlyOnLabel}
             onlyOnHint={onlyOnHint}
             windLegendHelpLabel={windLegendHelpLabel}
@@ -960,6 +969,7 @@ export default function SpotMapInteractive({
             toggleCurrents={toggleCurrents}
             toggleIsobaths={toggleIsobaths}
             toggleBathymetry={toggleBathymetry}
+            toggleSeamarks={toggleSeamarks}
             toggleOnlyOn={toggleOnlyOn}
             toggleCoastalWarnings={toggleCoastalWarnings}
             windButtonRef={windButtonRef}
@@ -1039,6 +1049,9 @@ export default function SpotMapInteractive({
               windVisible={isFullscreen && !isHeroEmbed && windEnabled}
               bathymetryTitle={t.map.bathymetryLegend}
               bathymetryVisible={bathymetryEnabled}
+              seamarksTitle={t.map.seamarksLegend}
+              seamarksVisible={seamarksEnabled}
+              seamarksMarksLabel={t.map.seamarksLegendMarks}
               warningsTitle={t.map.coastalWarningsLegend}
               warningsVisible={isFullscreen && !isHeroEmbed && coastalWarningsEnabled}
               warningsZoneLabel={t.map.coastalWarningsLegendZone}
@@ -1143,6 +1156,10 @@ export default function SpotMapInteractive({
               onToggleBathymetry={toggleBathymetry}
               bathymetryLabel={bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry}
               bathymetryHint={t.map.bathymetryHint}
+              seamarksEnabled={seamarksEnabled}
+              onToggleSeamarks={toggleSeamarks}
+              seamarksLabel={seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks}
+              seamarksHint={t.map.seamarksHint}
               coastalWarningsEnabled={coastalWarningsEnabled}
               onToggleCoastalWarnings={toggleCoastalWarnings}
               coastalWarningsLabel={coastalWarningsLabel}

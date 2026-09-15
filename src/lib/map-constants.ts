@@ -167,6 +167,7 @@ export const MAP_HS_LS_KEY = 'ventu.map.hs';
 export const MAP_CURRENTS_LS_KEY = 'ventu.map.currents';
 export const MAP_SST_LS_KEY = 'ventu.map.sst';
 export const MAP_BATHYMETRY_LS_KEY = 'ventu.map.bathymetry';
+export const MAP_SEAMARKS_LS_KEY = 'ventu.map.seamarks';
 
 /** EMODnet Bathymetry WMS (Copernicus) — sombreado contínuo de profundidade.
  *  Keyless, CC BY 4.0. mean_multicolour: azul-claro em águas baixas → azul
@@ -179,6 +180,16 @@ export const MAP_BATHYMETRY_PANE = 'ventu-bathymetry';
 export const MAP_BATHYMETRY_PANE_Z = '210';
 export const EMODNET_BATHYMETRY_ATTRIBUTION =
   'Bathymetry © <a href="https://emodnet.ec.europa.eu/en/bathymetry">EMODnet</a> (CC BY 4.0)';
+
+/** OpenSeaMap seamarks — tiles raster transparentes com sinalização náutica
+ *  (balizas, faróis, perigos, cabos). Keyless, mesmo estilo IALA das cartas. */
+export const OPENSEAMAP_SEAMARKS_URL = 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png';
+/** Por cima da batimetria (210) e dos fields (345–360), por baixo do
+ *  overlayPane (400) e dos marcadores — referência cartográfica, não dado. */
+export const MAP_SEAMARKS_PANE = 'ventu-seamarks';
+export const MAP_SEAMARKS_PANE_Z = '370';
+export const OPENSEAMAP_ATTRIBUTION =
+  'Seamarks © <a href="https://map.openseamap.org/">OpenSeaMap</a> (CC BY-SA 2.0), data © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> (ODbL)';
 
 export const CLUSTER_CONFIG = {
   chunkedLoading: true,

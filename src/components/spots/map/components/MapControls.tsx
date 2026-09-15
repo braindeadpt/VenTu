@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat } from 'lucide-react';
 
 interface MapControlsProps {
   isFullscreen: boolean;
@@ -13,6 +13,7 @@ interface MapControlsProps {
   radarUnavailable: boolean;
   isobathsEnabled: boolean;
   bathymetryEnabled: boolean;
+  seamarksEnabled: boolean;
   onlyOnEnabled: boolean;
   coastalWarningsEnabled: boolean;
   // Labels
@@ -46,6 +47,8 @@ interface MapControlsProps {
   isobathsLabel: string;
   bathymetryLabel: string;
   bathymetryHint: string;
+  seamarksLabel: string;
+  seamarksHint: string;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -68,6 +71,7 @@ interface MapControlsProps {
   toggleCurrents: () => void;
   toggleIsobaths: () => void;
   toggleBathymetry: () => void;
+  toggleSeamarks: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
   // Refs
@@ -107,6 +111,7 @@ export default function MapControls({
   radarUnavailable,
   isobathsEnabled,
   bathymetryEnabled,
+  seamarksEnabled,
   onlyOnEnabled,
   coastalWarningsEnabled,
   clusterLabel,
@@ -139,6 +144,8 @@ export default function MapControls({
   isobathsLabel,
   bathymetryLabel,
   bathymetryHint,
+  seamarksLabel,
+  seamarksHint,
   onlyOnLabel,
   onlyOnHint,
   windLegendHelpLabel,
@@ -160,6 +167,7 @@ export default function MapControls({
   toggleCurrents,
   toggleIsobaths,
   toggleBathymetry,
+  toggleSeamarks,
   toggleOnlyOn,
   toggleCoastalWarnings,
   windButtonRef,
@@ -373,6 +381,19 @@ export default function MapControls({
         >
           <Mountain className="w-4 h-4 shrink-0" aria-hidden />
           <span className={itemLabel}>{bathymetryLabel}</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={toggleSeamarks}
+          title={seamarksHint}
+          className={`${item} ${seamarksEnabled ? active.good : ''}`}
+          aria-label={seamarksLabel}
+          aria-pressed={seamarksEnabled}
+          data-map-seamarks-toggle
+        >
+          <Sailboat className="w-4 h-4 shrink-0" aria-hidden />
+          <span className={itemLabel}>{seamarksLabel}</span>
         </button>
 
         <button

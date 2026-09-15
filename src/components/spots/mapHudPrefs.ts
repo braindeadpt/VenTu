@@ -5,6 +5,7 @@ import {
   MAP_ISOBATHS_LS_KEY,
   MAP_COASTAL_LS_KEY,
   MAP_BATHYMETRY_LS_KEY,
+  MAP_SEAMARKS_LS_KEY,
 } from '@/lib/map-constants';
 
 const MOBILE_MQ = '(max-width: 767px)';
@@ -101,6 +102,21 @@ export function readBathymetryPref(): boolean | undefined {
   if (typeof window === 'undefined') return undefined;
   try {
     const v = localStorage.getItem(MAP_BATHYMETRY_LS_KEY);
+    if (v === '1') return true;
+    if (v === '0') return false;
+  } catch {
+    /* noop */
+  }
+  return undefined;
+}
+
+/**
+ * Seamarks OpenSeaMap: preferência persistida (`'1'`/`'0'`); default desligado.
+ */
+export function readSeamarksPref(): boolean | undefined {
+  if (typeof window === 'undefined') return undefined;
+  try {
+    const v = localStorage.getItem(MAP_SEAMARKS_LS_KEY);
     if (v === '1') return true;
     if (v === '0') return false;
   } catch {

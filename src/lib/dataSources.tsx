@@ -42,6 +42,7 @@ export type DataSourceId =
   | 'meteoalarm'
   | 'copernicus'
   | 'emodnet'
+  | 'openseamap'
   | 'esri'
   | 'osm'
   | 'ecowitt'
@@ -321,6 +322,50 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
     ),
     titlePt: 'Batimetria © EMODnet (CC BY 4.0)',
     titleEn: 'Bathymetry © EMODnet (CC BY 4.0)',
+  },
+  openseamap: {
+    notePt: (
+      <>
+        «Sinalização náutica ©{' '}
+        <A href="https://map.openseamap.org/">OpenSeaMap</A> (
+        <A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A>
+        ) · dados ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> (ODbL)»
+      </>
+    ),
+    noteEn: (
+      <>
+        “Nautical marks ©{' '}
+        <A href="https://map.openseamap.org/">OpenSeaMap</A> (
+        <A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A>
+        ) · data ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> (ODbL)”
+      </>
+    ),
+    cellPt: (
+      <>
+        «Sinalização náutica ©{' '}
+        <A href="https://map.openseamap.org/">OpenSeaMap</A> (
+        <A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A>
+        ) · dados ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> (ODbL)»
+        — no controlo de atribuição do mapa quando a camada de sinalização
+        náutica está ligada (tiles tiles.openseamap.org/seamark).
+      </>
+    ),
+    cellEn: (
+      <>
+        “Nautical marks ©{' '}
+        <A href="https://map.openseamap.org/">OpenSeaMap</A> (
+        <A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A>
+        ) · data ©{' '}
+        <A href="https://www.openstreetmap.org/copyright">OpenStreetMap</A> (ODbL)”
+        — on the map attribution control when the nautical-marks layer is on
+        (tiles.openseamap.org/seamark tiles).
+      </>
+    ),
+    titlePt: 'Sinalização náutica © OpenSeaMap (CC BY-SA 2.0) · dados © OpenStreetMap (ODbL)',
+    titleEn: 'Nautical marks © OpenSeaMap (CC BY-SA 2.0) · data © OpenStreetMap (ODbL)',
   },
   esri: {
     notePt: (

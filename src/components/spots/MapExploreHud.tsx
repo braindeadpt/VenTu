@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, Mountain, Navigation, RotateCcw, Search, Waves, Wind, Zap, Activity, Thermometer } from 'lucide-react';
+import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, LifeBuoy, MapPin, Minimize2, Mountain, Navigation, RotateCcw, Sailboat, Search, Waves, Wind, Zap, Activity, Thermometer } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
@@ -58,6 +58,10 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   onToggleBathymetry: () => void;
   bathymetryLabel: string;
   bathymetryHint: string;
+  seamarksEnabled: boolean;
+  onToggleSeamarks: () => void;
+  seamarksLabel: string;
+  seamarksHint: string;
   coastalWarningsEnabled: boolean;
   onToggleCoastalWarnings: () => void;
   coastalWarningsLabel: string;
@@ -126,6 +130,10 @@ export default function MapExploreHud({
   onToggleBathymetry,
   bathymetryLabel,
   bathymetryHint,
+  seamarksEnabled,
+  onToggleSeamarks,
+  seamarksLabel,
+  seamarksHint,
   coastalWarningsEnabled,
   onToggleCoastalWarnings,
   coastalWarningsLabel,
@@ -458,6 +466,19 @@ export default function MapExploreHud({
             }
           >
             <Mountain className="w-4 h-4 text-data-water" aria-hidden />
+          </MapControlButton>
+
+          <MapControlButton
+            onClick={onToggleSeamarks}
+            aria-label={seamarksLabel}
+            pressed={seamarksEnabled}
+            title={seamarksHint}
+            data-map-seamarks-toggle
+            className={
+              seamarksEnabled ? 'border-score-good/40 bg-score-good/15 text-fg' : undefined
+            }
+          >
+            <Sailboat className="w-4 h-4 text-score-good" aria-hidden />
           </MapControlButton>
 
           <MapControlButton

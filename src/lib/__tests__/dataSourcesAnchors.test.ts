@@ -55,6 +55,10 @@ const UI_ANCHORS: Record<DataSourceId, { surface: string; anchor: RegExp }> = {
     surface: 'controlo de atribuição do mapa com a camada de batimetria ligada (tileLayer.wms attribution)',
     anchor: /EMODNET_BATHYMETRY|EMODnet/,
   },
+  openseamap: {
+    surface: 'controlo de atribuição do mapa com a camada de sinalização náutica ligada (tileLayer attribution)',
+    anchor: /OPENSEAMAP|OpenSeaMap/,
+  },
   esri: {
     surface: 'controlo de atribuição do mapa em modo satélite + About',
     anchor: /TILE_ATTRIBUTIONS\.esri|\bEsri\b/,

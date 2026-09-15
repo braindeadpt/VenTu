@@ -145,6 +145,17 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
       attributionId: 'emodnet',
     },
     {
+      name: 'OpenSeaMap',
+      homepage: 'https://map.openseamap.org/',
+      usePt: 'Sinalização náutica (balizas, faróis, perigos) sobre o mapa de spots — tiles seamark keyless.',
+      useEn: 'Nautical marks (buoys, lights, hazards) over the spots map — keyless seamark tiles.',
+      license: {
+        pt: <><A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A> + <A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM)</>,
+        en: <><A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A> + <A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM)</>,
+      },
+      attributionId: 'openseamap',
+    },
+    {
       name: 'Esri World Imagery',
       homepage: 'https://www.esri.com/',
       usePt: 'Tiles de satélite no mapa + miniaturas dos spots exportadas nas coordenadas reais de cada praia.',

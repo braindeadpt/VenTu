@@ -29,6 +29,9 @@ interface MapLegendProps {
   windVisible?: boolean;
   bathymetryTitle?: string;
   bathymetryVisible?: boolean;
+  seamarksTitle?: string;
+  seamarksVisible?: boolean;
+  seamarksMarksLabel?: string;
   warningsTitle?: string;
   warningsVisible?: boolean;
   warningsZoneLabel?: string;
@@ -52,6 +55,9 @@ export default function MapLegend({
   windVisible = false,
   bathymetryTitle,
   bathymetryVisible = false,
+  seamarksTitle,
+  seamarksVisible = false,
+  seamarksMarksLabel,
   warningsTitle,
   warningsVisible = false,
   warningsZoneLabel,
@@ -67,10 +73,10 @@ export default function MapLegend({
   // the content visible regardless of `collapsed`); below lg the user taps
   // the header to expand it.
   useEffect(() => {
-    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || bathymetryVisible || warningsVisible)) {
+    if (placement !== 'hero' && (isobathsVisible || hsVisible || sstVisible || currentsVisible || windVisible || bathymetryVisible || seamarksVisible || warningsVisible)) {
       setCollapsed(false);
     }
-  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, warningsVisible]);
+  }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, seamarksVisible, warningsVisible]);
 
   const isHero = placement === 'hero';
   const bottomPx = !isHero && reserveHudSpace
@@ -276,6 +282,24 @@ export default function MapLegend({
                 <span>0</span>
                 <span>500</span>
                 <span>4000+</span>
+              </div>
+            </div>
+          )}
+          {seamarksVisible && seamarksTitle && (
+            <div className="mt-2 pt-2 border-t border-divider" data-map-seamarks-legend>
+              <p className="text-[10px] font-semibold uppercase tracking-wide text-fg-subtle mb-1">
+                {seamarksTitle}
+              </p>
+              <div className="flex items-center gap-1.5 text-[9px] text-fg-subtle">
+                {/* Marcas IALA simplificadas: baliza lateral (cilindro),
+                    cardinal (duplo cone) e perigo isolado (esferas). */}
+                <svg width="46" height="14" viewBox="0 0 46 14" aria-hidden>
+                  <rect x="2" y="3" width="6" height="8" rx="1" fill="none" stroke="#ef4444" strokeWidth="1.3" />
+                  <path d="M16 11 L20 3 L24 11 Z M16 8 L24 8" fill="none" stroke="#eab308" strokeWidth="1.3" strokeLinejoin="round" />
+                  <circle cx="34" cy="5" r="2.4" fill="none" stroke="#334155" strokeWidth="1.3" />
+                  <circle cx="34" cy="11" r="2.4" fill="#334155" />
+                </svg>
+                <span>{seamarksMarksLabel}</span>
               </div>
             </div>
           )}
