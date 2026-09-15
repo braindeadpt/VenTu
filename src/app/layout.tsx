@@ -122,6 +122,22 @@ const localeRedirectScript = `
   })();
 `;
 
+/**
+ * React warns in dev when a render produces `<script>` — the layout only
+ * re-renders client-side on hydration recovery, and there the script must
+ * not execute. `text/plain` on the client makes it inert;
+ * `suppressHydrationWarning` covers the type attribute diff.
+ */
+function InlineScript({ html }: { html: string }) {
+  return (
+    <script
+      type={typeof window === 'undefined' ? 'text/javascript' : 'text/plain'}
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -134,8 +150,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <script dangerouslySetInnerHTML={{ __html: localeRedirectScript }} />
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <InlineScript html={localeRedirectScript} />
+        <InlineScript html={themeScript} />
       </head>
       <body className="min-h-screen bg-bg-base text-fg font-sans antialiased">
         {children}
