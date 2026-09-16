@@ -103,12 +103,19 @@ _patch_*.py
 tests/e2e/visual-regression.spec.ts-snapshots/*-win32.png
 _commit-msg.txt
 
-# Agent Skills bridges — junctions locais para .agents/skills (Windows nao commita links)
+# Agent Skills bridges ï¿½ junctions locais para .agents/skills (Windows nao commita links)
 .cursor/skills
 .devin/skills
 .grok/skills
 .github/skills
 
-# Audit/trace work artifacts (screenshots, mockups) — locais, nunca commitar
+# Audit/trace work artifacts (screenshots, mockups) ï¿½ locais, nunca commitar
 _audit/
 _ci-trace/
+
+# Session scratch artifacts â€” screenshots de auditoria na raiz, output do
+# MCP Playwright, ficheiro NUL do Windows, dirs audit-YYYY-MM-DD
+/*.png
+/audit-*/
+.playwright-mcp/
+/nul
