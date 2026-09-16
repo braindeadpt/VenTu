@@ -293,38 +293,6 @@
       ]
     },
     {
-      "id": 18591,
-      "ref": "ANAV NR 2069/26",
-      "category": "Operações de reboque",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0a086945-535a-4bb3-bb0e-c8040bb8e772",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.939531,
-            40.229218
-          ],
-          [
-            -8.939531,
-            40.701464
-          ],
-          [
-            -8.621006,
-            40.701464
-          ],
-          [
-            -8.621006,
-            40.229218
-          ],
-          [
-            -8.939531,
-            40.229218
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18593,
       "ref": "ANAV NR 2070/26",
       "category": "Exercicios navais ou exercicios de tiro",
@@ -416,6 +384,38 @@
           [
             -8.892956,
             38.520504
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18603,
+      "ref": "ANAV NR 2084/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e2839d5f-184c-4a7c-9179-50279caeb34d",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.423252,
+            38.960744
+          ],
+          [
+            -9.423252,
+            38.96338
+          ],
+          [
+            -9.419433,
+            38.96338
+          ],
+          [
+            -9.419433,
+            38.960744
+          ],
+          [
+            -9.423252,
+            38.960744
           ]
         ]
       ]
@@ -7429,17 +7429,12 @@
       1000708
     ],
     "sao-jacinto": [
-      18591,
       18599,
       1000711
     ],
     "costa-nova": [
-      18591,
       18599,
       1000711
-    ],
-    "tocha": [
-      18591
     ],
     "leirosa": [
       2018335
@@ -7803,7 +7798,6 @@
       1000459
     ],
     "barra-aveiro": [
-      18591,
       18599,
       1000711,
       1010210
@@ -7911,7 +7905,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-16T00:23:20.603Z",
+  "fetchedAt": "2026-09-16T06:03:08.389Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

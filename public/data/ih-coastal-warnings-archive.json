@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-16T00:23:20.643Z",
+  "fetchedAt": "2026-09-16T06:03:08.407Z",
   "windowDays": 90,
   "dayCount": 16,
   "days": [
@@ -7502,13 +7502,6 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=265f2973-dc82-4259-9ef9-d761da6884f7"
         },
         {
-          "id": 18591,
-          "ref": "ANAV NR 2069/26",
-          "category": "Operações de reboque",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0a086945-535a-4bb3-bb0e-c8040bb8e772"
-        },
-        {
           "id": 18593,
           "ref": "ANAV NR 2070/26",
           "category": "Exercicios navais ou exercicios de tiro",
@@ -7528,6 +7521,13 @@
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=8f02dfcd-a3e0-4a24-a21b-f521baff7cdc"
+        },
+        {
+          "id": 18603,
+          "ref": "ANAV NR 2084/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e2839d5f-184c-4a7c-9179-50279caeb34d"
         },
         {
           "id": 1000182,
@@ -10200,20 +10200,6 @@
       "nDays": 6
     },
     {
-      "ref": "ANAV NR 2069/26",
-      "category": "Operações de reboque",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0a086945-535a-4bb3-bb0e-c8040bb8e772",
-      "firstSeen": "2026-09-14",
-      "lastSeen": "2026-09-16",
-      "daysInForce": [
-        "2026-09-14",
-        "2026-09-15",
-        "2026-09-16"
-      ],
-      "nDays": 3
-    },
-    {
       "ref": "ANAV NR 2070/26",
       "category": "Exercicios navais ou exercicios de tiro",
       "source": "ih",
@@ -10245,6 +10231,18 @@
       "category": "Requisitos de segurança maritima",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=8f02dfcd-a3e0-4a24-a21b-f521baff7cdc",
+      "firstSeen": "2026-09-16",
+      "lastSeen": "2026-09-16",
+      "daysInForce": [
+        "2026-09-16"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2084/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e2839d5f-184c-4a7c-9179-50279caeb34d",
       "firstSeen": "2026-09-16",
       "lastSeen": "2026-09-16",
       "daysInForce": [
@@ -11591,6 +11589,19 @@
         "2026-09-15"
       ],
       "nDays": 3
+    },
+    {
+      "ref": "ANAV NR 2069/26",
+      "category": "Operações de reboque",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=0a086945-535a-4bb3-bb0e-c8040bb8e772",
+      "firstSeen": "2026-09-14",
+      "lastSeen": "2026-09-15",
+      "daysInForce": [
+        "2026-09-14",
+        "2026-09-15"
+      ],
+      "nDays": 2
     },
     {
       "ref": "ANAV NR 2015/26",
