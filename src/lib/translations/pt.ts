@@ -182,6 +182,7 @@ export const translationsPt = {
     hideBathymetry: 'Ocultar batimetria',
     bathymetryHint: 'Relevo submarino (EMODnet) — bancos, canhões e talude sob a rebentação',
     bathymetryLegend: 'Batimetria — m (EMODnet)',
+    bathymetryContours: 'contornos 50–5000 m',
     showSeamarks: 'Sinalização náutica',
     hideSeamarks: 'Ocultar sinalização náutica',
     seamarksHint: 'Balizas, faróis e perigos das cartas náuticas (OpenSeaMap)',

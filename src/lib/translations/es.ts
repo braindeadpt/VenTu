@@ -237,6 +237,7 @@ export const translationsEs = {
     hideBathymetry: 'Ocultar batimetría',
     bathymetryHint: 'Relieve submarino (EMODnet) — bancos, cañones y talud bajo la rompiente',
     bathymetryLegend: 'Batimetría — m (EMODnet)',
+    bathymetryContours: 'isobatas 50–5000 m',
     showSeamarks: 'Señalización náutica',
     hideSeamarks: 'Ocultar señalización náutica',
     seamarksHint: 'Balizas, faros y peligros de las cartas náuticas (OpenSeaMap)',

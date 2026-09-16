@@ -237,6 +237,7 @@ export const translationsFr = {
     hideBathymetry: 'Masquer la bathymétrie',
     bathymetryHint: 'Relief sous-marin (EMODnet) — bancs, canyons et talus sous la zone de déferlement',
     bathymetryLegend: 'Bathymétrie — m (EMODnet)',
+    bathymetryContours: 'isobathes 50–5000 m',
     showSeamarks: 'Balisage nautique',
     hideSeamarks: 'Masquer le balisage nautique',
     seamarksHint: 'Balises, feux et dangers des cartes marines (OpenSeaMap)',

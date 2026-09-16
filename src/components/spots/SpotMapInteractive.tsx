@@ -1049,6 +1049,7 @@ export default function SpotMapInteractive({
               windVisible={isFullscreen && !isHeroEmbed && windEnabled}
               bathymetryTitle={t.map.bathymetryLegend}
               bathymetryVisible={bathymetryEnabled}
+              bathymetryContoursLabel={t.map.bathymetryContours}
               seamarksTitle={t.map.seamarksLegend}
               seamarksVisible={seamarksEnabled}
               seamarksMarksLabel={t.map.seamarksLegendMarks}

@@ -174,6 +174,11 @@ export const MAP_SEAMARKS_LS_KEY = 'ventu.map.seamarks';
  *  escuro no talude/canhões — o relevo submarino que explica a rebentação. */
 export const EMODNET_BATHYMETRY_WMS_URL = 'https://ows.emodnet-bathymetry.eu/wms';
 export const EMODNET_BATHYMETRY_WMS_LAYER = 'emodnet:mean_multicolour';
+/** Contornos generalizados EMODnet (50/100/200/500/1000/2000/5000 m) — linhas
+ *  tracejadas com label de profundidade. Cobrem Açores e Madeira, onde a
+ *  fonte IH das isóbatas 8/16/30 m não chega (bbox só do continente). Ligam
+ *  com o toggle «Batimetria», no mesmo pane do sombreado. */
+export const EMODNET_BATHYMETRY_CONTOURS_LAYER = 'emodnet:contours';
 /** Pane própria por cima do tilePane (200) e por baixo dos fields (345+) —
  *  a batimetria é contexto de fundo, nunca tapa vento/hs/isóbatas/marcadores. */
 export const MAP_BATHYMETRY_PANE = 'ventu-bathymetry';

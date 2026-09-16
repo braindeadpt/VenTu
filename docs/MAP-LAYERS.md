@@ -9,7 +9,7 @@ rewriting the map core.
 | z-index | Pane | Layer | Notes |
 |---|---|---|---|
 | — | `tilePane` | basemap (CARTO light/dark, Esri satellite) | Leaflet default |
-| 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour`) | opt-in depth shading; host in CSP img-src (meta + terraform) |
+| 210 | `ventu-bathymetry` | **EMODnet bathymetry WMS** (`emodnet:mean_multicolour` + `emodnet:contours`) | opt-in depth shading + 50–5000 m contours (island coverage — IH isobaths are mainland-only); host in CSP img-src (meta + terraform) |
 | 340 | — | isobaths (canvas image) | static, below fields |
 | 345 | `windfield` | **wind particle field** | ambient, animated |
 | 348 | `sst` | SST ribbon | mutually exclusive w/ Hs |

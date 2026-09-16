@@ -33,6 +33,7 @@ import {
   MAP_BATHYMETRY_LS_KEY,
   EMODNET_BATHYMETRY_WMS_URL,
   EMODNET_BATHYMETRY_WMS_LAYER,
+  EMODNET_BATHYMETRY_CONTOURS_LAYER,
   EMODNET_BATHYMETRY_ATTRIBUTION,
   MAP_BATHYMETRY_PANE,
   MAP_BATHYMETRY_PANE_Z,
@@ -455,8 +456,22 @@ export function useMapLayers({
     });
     layer.addTo(map);
 
+    // Contornos generalizados 50–5000 m no mesmo pane — adicionados DEPOIS do
+    // sombreado para desenharem por cima. É a cobertura de profundidade das
+    // ilhas (as isóbatas IH 8/16/30 m só existem no continente).
+    const contours = Leaflet.tileLayer.wms(EMODNET_BATHYMETRY_WMS_URL, {
+      layers: EMODNET_BATHYMETRY_CONTOURS_LAYER,
+      format: 'image/png',
+      transparent: true,
+      opacity: 0.85,
+      pane: MAP_BATHYMETRY_PANE,
+      className: 'ventu-bathymetry-contours',
+    });
+    contours.addTo(map);
+
     return () => {
       if (map.hasLayer(layer)) map.removeLayer(layer);
+      if (map.hasLayer(contours)) map.removeLayer(contours);
     };
   }, [bathymetryEnabled, isReady, mapInstanceRef, LRef]);
 

@@ -237,6 +237,7 @@ export const translationsDe = {
     hideBathymetry: 'Bathymetrie ausblenden',
     bathymetryHint: 'Meeresboden-Relief (EMODnet) — Bänke, Canyons und Schelfkante unter der Brandung',
     bathymetryLegend: 'Bathymetrie — m (EMODnet)',
+    bathymetryContours: 'Tiefenlinien 50–5000 m',
     showSeamarks: 'Seezeichen',
     hideSeamarks: 'Seezeichen ausblenden',
     seamarksHint: 'Bojen, Leuchtfeuer und Gefahren aus Seekarten (OpenSeaMap)',

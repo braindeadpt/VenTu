@@ -180,6 +180,7 @@ export const translationsEn = {
     hideBathymetry: 'Hide bathymetry',
     bathymetryHint: 'Seafloor relief (EMODnet) — banks, canyons and shelf breaks under the break',
     bathymetryLegend: 'Bathymetry — m (EMODnet)',
+    bathymetryContours: 'contours 50–5000 m',
     showSeamarks: 'Nautical marks',
     hideSeamarks: 'Hide nautical marks',
     seamarksHint: 'Buoys, lights and hazards from nautical charts (OpenSeaMap)',

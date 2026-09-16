@@ -29,6 +29,7 @@ interface MapLegendProps {
   windVisible?: boolean;
   bathymetryTitle?: string;
   bathymetryVisible?: boolean;
+  bathymetryContoursLabel?: string;
   seamarksTitle?: string;
   seamarksVisible?: boolean;
   seamarksMarksLabel?: string;
@@ -55,6 +56,7 @@ export default function MapLegend({
   windVisible = false,
   bathymetryTitle,
   bathymetryVisible = false,
+  bathymetryContoursLabel,
   seamarksTitle,
   seamarksVisible = false,
   seamarksMarksLabel,
@@ -284,6 +286,16 @@ export default function MapLegend({
                 <span>500</span>
                 <span>4000+</span>
               </div>
+              {bathymetryContoursLabel && (
+                <div className="flex items-center gap-1.5 mt-1 text-[9px] text-fg-subtle">
+                  {/* Linha tracejada cinzenta — o estilo dos contornos
+                      EMODnet 50–5000 m (única cobertura de isóbatas nas ilhas). */}
+                  <svg width="22" height="8" viewBox="0 0 22 8" aria-hidden>
+                    <line x1="1" y1="4" x2="21" y2="4" stroke="#cbd5e1" strokeWidth="1.2" strokeDasharray="3 2" />
+                  </svg>
+                  <span>{bathymetryContoursLabel}</span>
+                </div>
+              )}
             </div>
           )}
           {seamarksVisible && seamarksTitle && (
