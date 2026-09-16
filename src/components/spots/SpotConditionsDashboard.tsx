@@ -258,6 +258,9 @@ export default function SpotConditionsDashboard({
                 windDirection={conditions.windDirection}
                 windSpeed={conditions.windSpeed}
                 coastOrientation={spot.coastOrientation}
+                idealSwell={spot.bestSwell}
+                idealWind={spot.bestWind}
+                locale={locale === 'pt' ? 'pt' : 'en'}
                 size="md"
                 showLegend={false}
                 visualTone="dashboard"

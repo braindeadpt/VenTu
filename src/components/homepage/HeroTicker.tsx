@@ -1,4 +1,4 @@
-import { AlertTriangle, Anchor } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import {
   formatForecastUpdatedParts,
   getAgeHours,
@@ -78,10 +78,6 @@ export default function HeroTicker({
     coastalWarningsLayer && coastalWarningsLayer.status !== 'ok'
       ? coastalWarningsLayer.status
       : null;
-  const coastalActive =
-    coastalWarningsLayer && coastalWarningsLayer.status === 'ok'
-      ? coastalWarningsLayer.activeWarnings
-      : 0;
 
   return (
     <div
@@ -181,32 +177,11 @@ export default function HeroTicker({
               {coastalLayerLabel(coastalStatus, isPt)}
             </span>
           </span>
-        ) : coastalActive != null && coastalActive > 0 ? (
-          <span
-            className="inline-flex items-center gap-1 shrink-0"
-            title={
-              isPt
-                ? `${coastalActive} avisos à navegação costeiros (IH) em vigor · ` +
-                  `${coastalWarningsLayer?.coveredSpots ?? 0} spots cobertos` +
-                  (coastalWarningsLayer?.fetchedAt
-                    ? ` · fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT')}`
-                    : '')
-                : `${coastalActive} coastal navigation warnings (IH) in force · ` +
-                  `${coastalWarningsLayer?.coveredSpots ?? 0} spots covered` +
-                  (coastalWarningsLayer?.fetchedAt
-                    ? ` · fetched ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB')}`
-                    : '')
-            }
-          >
-            {SEP}
-            <Anchor className="w-3.5 h-3.5 text-score-fair" aria-hidden />
-            <span className="font-medium text-score-fair">
-              {isPt
-                ? `${coastalActive} avisos · ${coastalWarningsLayer?.coveredSpots ?? 0} spots`
-                : `${coastalActive} warnings · ${coastalWarningsLayer?.coveredSpots ?? 0} spots`}
-            </span>
-          </span>
         ) : null}
+        {/* «N avisos em vigor» não se mostra: são avisos À NAVEGAÇÃO do IH
+            (luzes apagadas, obras, requisitos) — com ~180 em vigor permanente
+            a métrica é ruído, não aviso meteorológico. Só o estado da camada
+            (down/stale) interessa ao utilizador. */}
 
         {HERO_FORECAST_LAYERS.map((layer) => (
           <span key={layer.key} className="inline-flex items-center gap-1 shrink-0">

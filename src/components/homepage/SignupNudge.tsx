@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Bell } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 
@@ -37,6 +38,11 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
       setVisible(false);
       return;
     }
+    // Suprimido onde o nudge compete com a CTA própria da página (signup já
+    // é a acção principal em /alerts /conta /auth), onde tapa listas
+    // accionáveis (/favorites /compare) e no mapa (ferramenta fullscreen).
+    const path = window.location.pathname;
+    if (/(?:^|\/)(alerts|favorites|conta|compare|auth|mapa|admin)(?:\/|$)/.test(path)) return;
     try {
       const dismissed = localStorage.getItem(LS_NUDGE_SEEN);
       if (dismissed) return;
@@ -63,10 +69,7 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
   if (!visible || session?.user) return null;
 
   return (
-    <div
-      role="status"
-      className="ventu-signup-nudge fixed bottom-0 left-0 right-0 z-40 bg-bg-elevated border-t border-divider shadow-modal motion-reduce:transition-none transition-transform duration-300 ease-out"
-    >
+    <div className="ventu-signup-nudge fixed bottom-0 left-0 right-0 z-40 bg-bg-elevated border-t border-divider shadow-modal motion-reduce:transition-none transition-transform duration-300 ease-out">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
         <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-pill bg-accent/15 text-accent" aria-hidden>
           <Bell className="w-4 h-4" />
@@ -77,16 +80,16 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
             : 'Get your spots\' conditions every morning (~7:30 AM). Create a free account.'}
         </p>
         <div className="flex items-center gap-2 shrink-0">
-          <a
+          <Link
             href={`/${locale}/conta/`}
-            className="inline-flex items-center px-3 py-1.5 rounded-input text-meta-sm font-semibold bg-accent text-bg-base hover:bg-accent-hover transition-colors motion-reduce:transition-none"
+            className="inline-flex items-center min-h-[44px] px-4 rounded-input text-meta-sm font-semibold bg-accent text-bg-base hover:bg-accent-hover transition-colors motion-reduce:transition-none"
           >
             {isPt ? 'Criar conta' : 'Sign up'}
-          </a>
+          </Link>
           <button
             type="button"
             onClick={handleDismiss}
-            className="inline-flex items-center px-2 py-1.5 rounded-input text-meta-sm text-fg-muted hover:text-fg transition-colors"
+            className="inline-flex items-center min-h-[44px] px-3 rounded-input text-meta-sm text-fg-muted hover:text-fg transition-colors"
             aria-label={isPt ? 'Fechar' : 'Close'}
           >
             {isPt ? 'Agora não' : 'Not now'}

@@ -7,17 +7,21 @@ import {
   type HourlyCondition,
 } from '@/lib/magicWindows';
 import { getScoreTokens } from '@/lib/sportScore';
+import SessionStrip from '@/components/spots/SessionStrip';
+
+interface StripHourly extends HourlyCondition {
+  tideHeight?: number;
+}
 
 interface MagicWindowsProps {
-  hourly: HourlyCondition[];
+  hourly: StripHourly[];
+  /** Score real por hora (mesmo índice que `hourly`) — alimenta a faixa. */
+  scores?: number[];
   spotType: string;
   spotBestWind: string;
   locale: string;
+  nowMs?: number;
 }
-
-const AXIS_TICKS = [0, 6, 12, 18, 24];
-const AXIS_HOURS = 24;
-const HOUR_MS = 3_600_000;
 
 function pickWindowTime(hourly: HourlyCondition[], index: number): Date {
   const t = hourly[index]?.time;
@@ -39,23 +43,28 @@ function isSameCalendarDay(a: Date, b: Date): boolean {
   );
 }
 
-export default function MagicWindows({ hourly, spotType, spotBestWind, locale }: MagicWindowsProps) {
+export default function MagicWindows({ hourly, scores, spotType, spotBestWind, locale, nowMs }: MagicWindowsProps) {
   const isPt = locale === 'pt';
 
   const windows = useMemo(
-    () => computeMagicWindows(hourly, spotType, spotBestWind),
-    [hourly, spotType, spotBestWind],
+    () => computeMagicWindows(hourly, spotType, spotBestWind, scores),
+    [hourly, scores, spotType, spotBestWind],
   );
 
-  if (!windows.length) {
-    return (
-      <div className="rounded-input border border-divider bg-surface-1/[0.04] px-3 py-2.5 text-meta-sm text-fg-muted">
-        {isPt
-          ? 'Sem janelas de score ≥ 60 nas próximas 24h. Vale confirmar Livecam.'
-          : 'No score windows ≥ 60 in the next 24h. Check the livecam to confirm.'}
-      </div>
-    );
-  }
+  const stripHours = useMemo(
+    () =>
+      hourly.map((h, i) => ({
+        time: h.time,
+        score: scores?.[i] ?? 0,
+        tideHeight: h.tideHeight,
+      })),
+    [hourly, scores],
+  );
+
+  // Rolling axis: from the first forecast hour (≈ now) to +24h. Matches the
+  // "Próximas 24h" header, so no window ever falls outside the track.
+  const axisStart = hourFloor(new Date(hourly[0]?.time ?? Date.now()));
+  const axisStartDate = new Date(axisStart);
 
   const formatHour = (idx: number) => {
     const t = hourly[idx]?.time;
@@ -66,24 +75,28 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
     });
   };
 
-  // Rolling axis: from the first forecast hour (≈ now) to +24h. Matches the
-  // "Próximas 24h" header, so no window ever falls outside the track.
-  const axisStart = hourFloor(new Date(hourly[0]?.time ?? Date.now()));
-  const axisStartDate = new Date(axisStart);
-  const tickLabels = AXIS_TICKS.map((offset) => {
-    const h = new Date(axisStart + offset * HOUR_MS).getHours();
-    return `${String(h).padStart(2, '0')}h`;
-  });
-
   return (
     <div className="space-y-3" data-visual-dynamic>
+      {scores && scores.length === hourly.length && (
+        <SessionStrip
+          hours={stripHours}
+          windows={windows}
+          isPt={isPt}
+          nowMs={nowMs ?? Date.now()}
+        />
+      )}
+
+      {!windows.length && (
+        <div className="rounded-input border border-divider bg-surface-1/[0.04] px-3 py-2.5 text-meta-sm text-fg-muted">
+          {isPt
+            ? 'Sem janelas de score ≥ 60 nas próximas 24h. Vale confirmar Livecam.'
+            : 'No score windows ≥ 60 in the next 24h. Check the livecam to confirm.'}
+        </div>
+      )}
+
       {windows.map((w, i) => {
         const startTime = pickWindowTime(hourly, w.start);
         const endTime = pickWindowTime(hourly, w.end);
-        const startH = Math.max(0, (startTime.getTime() - axisStart) / HOUR_MS);
-        const endH = Math.min(AXIS_HOURS, (endTime.getTime() - axisStart) / HOUR_MS);
-        const leftPct = (startH / AXIS_HOURS) * 100;
-        const widthPct = Math.max(2, ((endH - startH) / AXIS_HOURS) * 100);
 
         // Day hints: flag windows that start tomorrow, and ranges that cross
         // midnight, so "05:00 – 04:00" can't be read as going backwards.
@@ -150,52 +163,6 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
               </div>
             </div>
 
-            {/* 24h bar — ticks + labels BELOW the track */}
-            <div
-              className="relative"
-              role="img"
-              aria-label={
-                isPt
-                  ? `Janela entre ${formatHour(w.start)} e ${formatHour(w.end)} com score ${w.score}`
-                  : `Window between ${formatHour(w.start)} and ${formatHour(w.end)} with score ${w.score}`
-              }
-            >
-              <div className="relative h-6 rounded-pill bg-surface-1/[0.06] border border-divider overflow-hidden">
-                <div
-                  className="absolute inset-y-0 left-0 right-0 opacity-25"
-                  style={{
-                    background: `linear-gradient(90deg, ${tierBarGradient(w.score)})`,
-                  }}
-                  aria-hidden
-                />
-                <div
-                  className="absolute inset-y-1 rounded-pill border"
-                  style={{
-                    left: `${leftPct}%`,
-                    width: `${widthPct}%`,
-                    backgroundColor: `rgb(var(--score-${tokens.tier}) / 0.22)`,
-                    borderColor: `rgb(var(--score-${tokens.tier}) / 0.55)`,
-                  }}
-                  aria-hidden
-                />
-                <div className="absolute inset-0 flex pointer-events-none" aria-hidden>
-                  {AXIS_TICKS.map((tick) => (
-                    <div
-                      key={tick}
-                      className="absolute top-0 bottom-0 border-l border-divider/40"
-                      style={{ left: `${(tick / AXIS_HOURS) * 100}%` }}
-                    />
-                  ))}
-                </div>
-              </div>
-              {/* Labels below the bar, not overlapping */}
-              <div className="flex justify-between px-0.5 mt-0.5 text-[10px] font-mono tabular-nums text-fg-subtle" aria-hidden>
-                {tickLabels.map((label, li) => (
-                  <span key={li}>{label}</span>
-                ))}
-              </div>
-            </div>
-
             {reasons.length > 0 && (
               <ul className="flex flex-wrap gap-1.5 mt-4 list-none p-0 m-0">
                 {reasons.map((r, ri) => (
@@ -213,12 +180,4 @@ export default function MagicWindows({ hourly, spotType, spotBestWind, locale }:
       })}
     </div>
   );
-}
-
-/** Tier → solid bar gradient stops (cool only). */
-function tierBarGradient(score: number): string {
-  if (score >= 80) return 'rgb(var(--score-epic) / 0.4) 0%, rgb(var(--score-good) / 0.4) 100%';
-  if (score >= 60) return 'rgb(var(--score-good) / 0.3) 0%, rgb(var(--score-fair) / 0.3) 100%';
-  if (score >= 40) return 'rgb(var(--score-fair) / 0.3) 0%, rgb(var(--score-poor) / 0.3) 100%';
-  return 'rgb(var(--score-poor) / 0.3) 0%, rgb(var(--score-closed) / 0.3) 100%';
 }

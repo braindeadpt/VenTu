@@ -562,6 +562,7 @@ export const translationsEn = {
   compare: {
     back: 'Back',
     pickSubtitle: 'Pick 2-3 spots to compare',
+    sportLabel: 'Sport',
     searchPlaceholder: 'Search spot...',
     selectedCount: '{n}/3 selected',
     clear: 'Clear',

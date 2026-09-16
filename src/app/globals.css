@@ -864,8 +864,29 @@ html:has([data-embed-widget]) body {
   overflow: visible !important;
 }
 
+body.ventu-signup-nudge-open main,
 body.ventu-signup-nudge-open footer {
   padding-bottom: 5.5rem;
+}
+
+/* Footer accordions — <details> nativo. Mobile: fechado por omissão, o
+   chevron roda quando abre. md+: corpo sempre visível, summary inerte. */
+.footer-section > summary::-webkit-details-marker {
+  display: none;
+}
+.footer-section > summary {
+  list-style: none;
+}
+.footer-section[open] .footer-chevron {
+  transform: rotate(180deg);
+}
+@media (min-width: 768px) {
+  .footer-section > .footer-section-body {
+    display: block !important;
+  }
+  .footer-section > summary {
+    pointer-events: none;
+  }
 }
 
 body.ventu-map-fullscreen-open footer,

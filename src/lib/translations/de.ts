@@ -636,6 +636,7 @@ export const translationsDe = {
   compare: {
     back: 'Zurück',
     pickSubtitle: '2-3 Spots zum Vergleich wählen',
+    sportLabel: 'Sportart',
     searchPlaceholder: 'Spot suchen...',
     selectedCount: '{n}/3 ausgewählt',
     clear: 'Leeren',

@@ -430,6 +430,13 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
         if (typeof window !== 'undefined' && (window as any).__RADAR_TEST__) {
           (window as any).__RADAR_MAP__ = created;
         }
+        if (typeof window !== 'undefined') {
+          try {
+            if (localStorage.getItem('ventu.mapdebug') === '1') {
+              (window as any).__VENTU_MAP__ = created;
+            }
+          } catch { /* noop */ }
+        }
 
         await Promise.all([
           import('leaflet.markercluster/dist/MarkerCluster.css'),

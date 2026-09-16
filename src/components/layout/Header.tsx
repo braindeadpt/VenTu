@@ -353,6 +353,9 @@ export default function Header({ locale }: HeaderProps) {
           ].join(' ')}
           aria-hidden={!mobileMenuOpen}
         >
+          {/* Conteúdo só existe no DOM com o menu aberto — fechado, ~25 links
+              invisíveis ficavam na tab order (WCAG 2.4.3/4.1.2). */}
+          {mobileMenuOpen && (
           <div className="px-4 py-3 space-y-1">
             <div className="flex items-center justify-between gap-2 px-1 pb-2 border-b border-divider mb-2">
               {localeSelect}
@@ -490,6 +493,7 @@ export default function Header({ locale }: HeaderProps) {
               </div>
             )}
           </div>
+          )}
         </div>
       </header>
 

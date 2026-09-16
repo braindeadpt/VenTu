@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
 import { getTranslation } from '@/lib/i18n';
@@ -7,8 +9,9 @@ import { getSportLabel } from '@/lib/homepageSport';
 import { getGridSpotScore, spotDetailHref } from '@/lib/gridSpotScore';
 import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import SpotListCard from './SpotListCard';
+import Button from '@/components/ui/Button';
 
-const LIST_LIMIT = 12;
+const PAGE_SIZE = 12;
 
 interface SpotGridRankedListProps {
   sorted: GridSpotData[];
@@ -35,7 +38,12 @@ export default function SpotGridRankedList({
     ? sorted.filter((d) => !exclude.has(d.spot.slug))
     : sorted;
 
-  const list = filtered.slice(0, LIST_LIMIT);
+  const [pages, setPages] = useState(1);
+  // A lista muda com filtros — a paginação volta ao topo para não ficar
+  // escondida a meio de resultados novos.
+  useEffect(() => setPages(1), [sorted, selectedSport]);
+  const list = filtered.slice(0, pages * PAGE_SIZE);
+  const remaining = filtered.length - list.length;
 
   if (list.length === 0) {
     return null;
@@ -72,6 +80,8 @@ export default function SpotGridRankedList({
           >
             <SpotListCard
               compact
+              withImage
+              spot={data.spot}
               name={isPt ? data.spot.name : data.spot.nameEn}
               region={isPt ? data.spot.region : data.spot.regionEn}
               score={getGridSpotScore(data, selectedSport)}
@@ -87,6 +97,22 @@ export default function SpotGridRankedList({
           </li>
         ))}
       </ul>
+
+      {remaining > 0 && (
+        <div className="mt-4 flex justify-center">
+          <Button
+            variant="secondary"
+            size="md"
+            onClick={() => setPages((p) => p + 1)}
+            rightIcon={<ChevronDown className="w-4 h-4" aria-hidden />}
+            locale={locale as 'pt' | 'en'}
+          >
+            {isPt
+              ? `Ver mais ${Math.min(remaining, PAGE_SIZE)} de ${remaining} spots`
+              : `Show ${Math.min(remaining, PAGE_SIZE)} more of ${remaining} spots`}
+          </Button>
+        </div>
+      )}
     </section>
   );
 }

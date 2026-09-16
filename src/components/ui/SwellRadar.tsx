@@ -58,6 +58,10 @@ export interface SwellRadarTrain {
 interface SwellRadarProps {
   /** Primary + secondary swell trains (dominant first). Overrides legacy single-swell props. */
   swellTrains?: SwellRadarTrain[];
+  /** Ideal swell sector for this spot — comma list like "W, NW". Non-cardinal tokens are ignored. */
+  idealSwell?: string;
+  /** Ideal wind sector for this spot — comma list like "E, NE". Non-cardinal tokens are ignored. */
+  idealWind?: string;
   /** Swell direction in degrees (0–360), where it COMES FROM. Legacy single train. */
   swellDirection?: number;
   /** Swell height in meters (controls arrow thickness). */
@@ -84,6 +88,52 @@ interface SwellRadarProps {
    * `default` — semantic offshore/onshore wind colours.
    */
   visualTone?: 'default' | 'dashboard';
+  /** Legend language for the ideal-sector rows. Default 'en'. */
+  locale?: 'pt' | 'en';
+}
+
+/* ──────────── ideal-sector parsing ──────────── */
+
+const CARDINAL_DEG: Record<string, number> = {
+  N: 0, NNE: 22.5, NE: 45, ENE: 67.5,
+  E: 90, ESE: 112.5, SE: 135, SSE: 157.5,
+  S: 180, SSW: 202.5, SW: 225, WSW: 247.5,
+  W: 270, WNW: 292.5, NW: 315, NNW: 337.5,
+};
+
+interface SectorArc {
+  start: number;
+  end: number;
+}
+
+/**
+ * «W, NW» → arco(s) de sector ideal. Cada cardinal cobre ±22.5°; direcções
+ * adjacentes fundem-se. Tokens não-cardinais («Baía», «Ria») são ignorados.
+ */
+function parseSectorArcs(list?: string): SectorArc[] {
+  if (!list) return [];
+  const degs = list
+    .split(/[,/]/)
+    .map((s) => CARDINAL_DEG[s.trim()])
+    .filter((d): d is number => d !== undefined)
+    .sort((a, b) => a - b);
+  if (!degs.length) return [];
+
+  const arcs: SectorArc[] = [];
+  let start = degs[0] - 22.5;
+  let end = degs[0] + 22.5;
+  for (let i = 1; i < degs.length; i += 1) {
+    const d = degs[i];
+    if (d - 22.5 <= end + 1) {
+      end = d + 22.5;
+    } else {
+      arcs.push({ start, end });
+      start = d - 22.5;
+      end = d + 22.5;
+    }
+  }
+  arcs.push({ start, end });
+  return arcs;
 }
 
 /* ──────────── size presets ──────────── */
@@ -204,8 +254,13 @@ export default function SwellRadar({
   showLegend = true,
   showWind = true,
   visualTone = 'default',
+  idealSwell,
+  idealWind,
+  locale = 'en',
 }: SwellRadarProps) {
   const dashboardTone = visualTone === 'dashboard';
+  const idealSwellArcs = parseSectorArcs(idealSwell);
+  const idealWindArcs = parseSectorArcs(idealWind);
   const swellTrains = resolveSwellTrains({
     swellTrains: swellTrainsProp,
     swellDirection,
@@ -363,6 +418,8 @@ export default function SwellRadar({
     if (windRelation) ariaParts.push(windRelation);
   }
   if (hasCoast) ariaParts.push(`Coast facing ${getCardinalLabel(coastAngle)}`);
+  if (idealSwellArcs.length) ariaParts.push(`Ideal swell sector: ${idealSwell}`);
+  if (idealWindArcs.length) ariaParts.push(`Ideal wind sector: ${idealWind}`);
   if (incidenceDeg !== null) ariaParts.push(`Incidence angle: ${incidenceDeg.toFixed(0)} degrees`);
   const ariaLabel = ariaParts.join('. ');
 
@@ -431,6 +488,31 @@ export default function SwellRadar({
               />
             );
           })}
+
+          {/* Sectores ideais — anéis interiores: swell (ciano) e vento (violeta).
+              A seta actual a cair dentro do arco = condições alinhadas com o
+              que este spot precisa. */}
+          {idealSwellArcs.map((a, i) => (
+            <path
+              key={`isw-${i}`}
+              d={describeArc(c, c, R * 0.80, a.start, a.end)}
+              fill="none"
+              stroke="rgb(var(--data-waves) / 0.35)"
+              strokeWidth={R * 0.09}
+              strokeLinecap="round"
+            />
+          ))}
+          {idealWindArcs.map((a, i) => (
+            <path
+              key={`iw-${i}`}
+              d={describeArc(c, c, R * 0.64, a.start, a.end)}
+              fill="none"
+              stroke="rgb(var(--data-wind) / 0.4)"
+              strokeWidth={R * 0.07}
+              strokeLinecap="round"
+              strokeDasharray="3 5"
+            />
+          ))}
 
           {/* Swell arrows (primary + secondary) */}
           {swellTrains.map((train, idx) => {
@@ -579,6 +661,38 @@ export default function SwellRadar({
                   {windRelation}
                 </span>
               )}
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* ── Ideal-sector legend ── */}
+      {(idealSwellArcs.length > 0 || idealWindArcs.length > 0) && (
+        <div className="flex flex-col gap-1 text-meta-sm text-fg-muted">
+          {idealSwellArcs.length > 0 && (
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="inline-block w-3 h-[3px] rounded-pill shrink-0"
+                style={{ backgroundColor: 'rgb(var(--data-waves) / 0.6)' }}
+                aria-hidden
+              />
+              {locale === 'pt' ? 'Swell ideal' : 'Ideal swell'}:{' '}
+              <span className="font-mono text-fg">{idealSwell}</span>
+            </span>
+          )}
+          {idealWindArcs.length > 0 && (
+            <span className="inline-flex items-center gap-1.5">
+              <span
+                className="inline-block w-3 h-[3px] rounded-pill shrink-0"
+                style={{
+                  backgroundColor: 'rgb(var(--data-wind) / 0.6)',
+                  backgroundImage:
+                    'repeating-linear-gradient(90deg, transparent 0 2px, rgb(var(--bg-base)) 2px 4px)',
+                }}
+                aria-hidden
+              />
+              {locale === 'pt' ? 'Vento ideal' : 'Ideal wind'}:{' '}
+              <span className="font-mono text-fg">{idealWind}</span>
             </span>
           )}
         </div>

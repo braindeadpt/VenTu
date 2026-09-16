@@ -860,7 +860,7 @@ export default function SpotMapInteractive({
             : { height: '100dvh' }
           : isHeroEmbed
             ? undefined
-            : { height: 'clamp(300px, 50vh, 600px)' }
+            : { height: 'clamp(480px, 68vh, 720px)' }
       }
       data-map-fullscreen={isFullscreen ? 'true' : 'false'}
       data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}

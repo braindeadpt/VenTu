@@ -21,8 +21,17 @@ export function computeMagicWindows(
   hourly: HourlyCondition[],
   spotType: string,
   spotBestWind: string,
+  scores?: number[],
 ): MagicWindow[] {
   if (!hourly?.length) return [];
+
+  // Canonical per-hour scores (same scorer as the forecast table and the
+  // hero badge). When provided they drive window detection AND the window
+  // score — one scale everywhere, so a window can never disagree with the
+  // hourly score shown next to it. The heuristic below still runs to
+  // produce the reason chips; without `scores` it also decides detection
+  // (legacy callers like bestWindowToday).
+  const canonical = Array.isArray(scores) && scores.length === hourly.length ? scores : null;
 
   const bestWindDirs = spotBestWind
     .split(',')
@@ -53,22 +62,22 @@ export function computeMagicWindows(
     .filter((d) => d >= 0);
 
   const scored = hourly.map((h, i) => {
-    let score = 0;
+    let heuristic = 0;
     const reasons: string[] = [];
     const reasonsEn: string[] = [];
 
     if (spotType === 'surf' || spotType === 'big-wave') {
       if (h.waveHeight >= 1.0 && h.waveHeight <= 2.5) {
-        score += 25;
+        heuristic += 25;
         reasons.push('Ondas boas');
         reasonsEn.push('Good waves');
       } else if (h.waveHeight > 2.5) {
-        score += 20;
+        heuristic +=20;
         reasons.push('Ondas grandes');
         reasonsEn.push('Big waves');
       }
       if (h.wavePeriod >= 10) {
-        score += 15;
+        heuristic +=15;
         reasons.push('Período longo');
         reasonsEn.push('Long period');
       }
@@ -77,11 +86,11 @@ export function computeMagicWindows(
     if (spotType === 'kitesurf') {
       const windKnots = h.windSpeed * 1.94384;
       if (windKnots >= 15 && windKnots <= 28) {
-        score += 30;
+        heuristic +=30;
         reasons.push(`Vento ideal (${Math.round(windKnots)}kt)`);
         reasonsEn.push(`Ideal wind (${Math.round(windKnots)}kt)`);
       } else if (windKnots >= 10 && windKnots < 15) {
-        score += 15;
+        heuristic +=15;
         reasons.push(`Vento leve (${Math.round(windKnots)}kt)`);
         reasonsEn.push(`Light wind (${Math.round(windKnots)}kt)`);
       }
@@ -90,11 +99,11 @@ export function computeMagicWindows(
     if (spotType === 'windsurf') {
       const windKnots = h.windSpeed * 1.94384;
       if (windKnots >= 12 && windKnots <= 25) {
-        score += 30;
+        heuristic +=30;
         reasons.push(`Vento bom (${Math.round(windKnots)}kt)`);
         reasonsEn.push(`Good wind (${Math.round(windKnots)}kt)`);
       } else if (windKnots >= 8 && windKnots < 12) {
-        score += 15;
+        heuristic +=15;
         reasons.push(`Vento leve (${Math.round(windKnots)}kt)`);
         reasonsEn.push(`Light wind (${Math.round(windKnots)}kt)`);
       }
@@ -107,29 +116,29 @@ export function computeMagicWindows(
     });
 
     if (isOffshore) {
-      score += 25;
+      heuristic +=25;
       reasons.push('Vento offshore');
       reasonsEn.push('Offshore wind');
     } else if (h.windSpeed < 5) {
-      score += 15;
+      heuristic +=15;
       reasons.push('Vento fraco');
       reasonsEn.push('Light wind');
     }
 
     if (h.waterTemp >= 18) {
-      score += 5;
+      heuristic +=5;
     }
     const waveVariance = i > 0 ? Math.abs(h.waveHeight - (hourly[i - 1]?.waveHeight || 0)) : 0;
     const windVariance = i > 0 ? Math.abs(h.windSpeed - (hourly[i - 1]?.windSpeed || 0)) : 0;
     if (waveVariance < 0.3 && windVariance < 5) {
-      score += 3;
+      heuristic +=3;
     }
     const hourOfDay = new Date(h.time).getHours();
     if ((spotType === 'surf' || spotType === 'big-wave') && hourOfDay >= 6 && hourOfDay <= 10) {
-      score += 4;
+      heuristic +=4;
     }
 
-    return { hour: i, time: h.time, score, reasons, reasonsEn };
+    return { hour: i, time: h.time, score: canonical ? (canonical[i] ?? 0) : heuristic, reasons, reasonsEn };
   });
 
   const windows: MagicWindow[] = [];
@@ -156,7 +165,9 @@ export function computeMagicWindows(
     const windowScores = scored.slice(s, e + 1);
     const avgScore = Math.floor(windowScores.reduce((a, b) => a + b.score, 0) / windowScores.length);
     const durationBonus = Math.min((e - s) * 2, 15);
-    const finalScore = Math.min(avgScore + durationBonus, 100);
+    // Canonical path: window score = média das horas (mesma escala da
+    // tabela). Legacy path: mantém o bónus de duração.
+    const finalScore = Math.min(avgScore + (canonical ? 0 : durationBonus), 100);
     const allReasons = Array.from(new Set(windowScores.flatMap((x) => x.reasons)));
     const allReasonsEn = Array.from(new Set(windowScores.flatMap((x) => x.reasonsEn)));
     windows.push({
@@ -169,8 +180,11 @@ export function computeMagicWindows(
     });
   };
 
+  // Canonical scale: a window hour is a BOM-tier hour (≥60), matching the
+  // «janelas de score ≥ 60» copy and the table. Legacy heuristic keeps 50.
+  const minHourScore = canonical ? 60 : 50;
   for (let i = 0; i < scored.length; i++) {
-    if (scored[i].score >= 50) {
+    if (scored[i].score >= minHourScore) {
       if (start === -1) start = i;
       end = i;
     } else if (start !== -1 && end - start >= 1) {

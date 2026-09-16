@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Search, X } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
-import { getAllSportScores, getScoreTokens } from '@/lib/sportScore';
+import { getAllSportScores, getScoreTokens, getSportScore } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { getAssetPath } from '@/lib/paths';
@@ -200,6 +200,9 @@ export default function CompareClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [picking, setPicking] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
+  // Scores actuais por spot — o picker mostra o chip para o desporto
+  // seleccionado (mesma leitura que o comparador usa depois).
+  const [pickerCond, setPickerCond] = useState<Record<string, PrecomputedCondition> | null>(null);
 
   useEffect(() => {
     const urlSlugs = getSpotsFromUrl();
@@ -263,6 +266,16 @@ export default function CompareClient() {
     });
   };
 
+  useEffect(() => {
+    if (!picking || pickerCond !== null) return;
+    let cancelled = false;
+    fetch(getAssetPath('/data/conditions.json'), { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => { if (!cancelled && j) setPickerCond(j); })
+      .catch(() => { /* picker fica sem chips — a comparação recarrega */ });
+    return () => { cancelled = true; };
+  }, [picking, pickerCond]);
+
   const filteredSpots = useMemo(() => {
     if (!searchQuery.trim()) return spots;
     const q = searchQuery.toLowerCase();
@@ -273,7 +286,26 @@ export default function CompareClient() {
     );
   }, [searchQuery]);
 
-  const regionGroups = useMemo(() => groupByRegion(filteredSpots), [filteredSpots]);
+  const pickerScores = useMemo(() => {
+    if (!pickerCond) return null;
+    const m = new Map<string, number>();
+    for (const spot of filteredSpots) {
+      const cond = pickerCond[getConditionsDataId(spot)] ?? pickerCond[spot.id];
+      if (!cond) continue;
+      m.set(spot.slug, getSportScore(spot, selectedSport, rawToScoreInput(cond as Record<string, unknown>)).score);
+    }
+    return m;
+  }, [pickerCond, filteredSpots, selectedSport]);
+
+  const regionGroups = useMemo(() => {
+    const groups = groupByRegion(filteredSpots);
+    if (pickerScores) {
+      for (const arr of groups.values()) {
+        arr.sort((a, b) => (pickerScores.get(b.slug) ?? -1) - (pickerScores.get(a.slug) ?? -1));
+      }
+    }
+    return groups;
+  }, [filteredSpots, pickerScores]);
 
   if (picking) {
     return (
@@ -299,6 +331,23 @@ export default function CompareClient() {
             icon={<Search className="w-4 h-4" />}
           />
 
+          {/* Lente do desporto — o chip de score por spot segue esta escolha
+              e é o mesmo desporto que o comparador abre. */}
+          {/* role="group" (não radiogroup): as pills são toggles aria-pressed,
+              não role="radio" — radiogroup exigiria filhos radio. */}
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-1 px-1" role="group" aria-label={cmp.sportLabel}>
+            {COMPARE_SPORTS.map((sport) => (
+              <FilterPill
+                key={sport}
+                compact
+                active={selectedSport === sport}
+                onClick={() => setSelectedSport(sport)}
+              >
+                {SPORT_LABELS[sport][isPt ? 'pt' : 'en']}
+              </FilterPill>
+            ))}
+          </div>
+
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <span className="text-meta text-fg-muted">
               {cmp.selectedCount.replace('{n}', String(selectedSlugs.length))}
@@ -316,7 +365,14 @@ export default function CompareClient() {
             </div>
           </div>
 
-          <div className="space-y-6 max-h-[60vh] overflow-y-auto">
+          {/* Região com scroll focável — sem tabIndex o teclado não consegue
+              fazer scroll da lista (WCAG 2.1.1). */}
+          <div
+            className="space-y-6 max-h-[60vh] overflow-y-auto"
+            role="region"
+            tabIndex={0}
+            aria-label={cmp.chooseSpots}
+          >
             {Array.from(regionGroups.entries()).map(([region, regionSpots]) => (
               <div key={region}>
                 <h3 className="text-meta-sm font-semibold text-fg-muted uppercase tracking-wide mb-2">{region}</h3>
@@ -324,6 +380,7 @@ export default function CompareClient() {
                   {regionSpots.map(spot => {
                     const selected = selectedSlugs.includes(spot.slug);
                     const atLimit = selectedSlugs.length >= 3 && !selected;
+                    const spotScore = pickerScores?.get(spot.slug);
                     return (
                       <button
                         key={spot.id}
@@ -352,6 +409,15 @@ export default function CompareClient() {
                           <span className="block text-sm font-medium truncate">{isPt ? spot.name : spot.nameEn}</span>
                           <span className="block text-xs text-fg-subtle">{spot.region}</span>
                         </span>
+                        {/* Sem aria-hidden: o score é a razão do picker e tem
+                            de entrar no nome acessível do botão. */}
+                        {spotScore !== undefined && (
+                          <span
+                            className={`ml-auto shrink-0 font-mono text-sm font-semibold tabular-nums ${getScoreTokens(spotScore).text}`}
+                          >
+                            {spotScore}
+                          </span>
+                        )}
                       </button>
                     );
                   })}

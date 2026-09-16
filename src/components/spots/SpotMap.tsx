@@ -163,7 +163,10 @@ export default function SpotMap({
           fillOpacity: 1,
         }).addTo(map);
 
-        const bounds = Leaflet.latLngBounds([[lat, lon], [lat, lon]]);
+        // Bounds dos polígonos de aviso — separados do enquadramento final:
+        // as áreas IH cobrem centenas de km e um fitBounds directo mete
+        // Portugal inteiro no ecrã com o spot a virar um ponto.
+        const polyBounds = Leaflet.latLngBounds([]);
 
         // Overlay dos avisos à navegação costeiros do IH que cobrem o spot.
         if (spotId) {
@@ -211,7 +214,7 @@ export default function SpotMap({
                   });
                 }
                 poly.addTo(polygonLayer);
-                for (const ll of latlngs) bounds.extend(ll);
+                for (const ll of latlngs) polyBounds.extend(ll);
               }
             }
             polygonLayer.addTo(map);
@@ -257,8 +260,30 @@ export default function SpotMap({
         }
 
         if (cancelled || !map) return;
-        // Enquadrar: polígonos (área coberta) se existirem, senão o spot.
-        map.fitBounds(bounds, { padding: [28, 28], maxZoom: 15, animate: false });
+        // Enquadrar: o spot manda. O view é o polígono de aviso ∩ caixa de
+        // ~30 km à volta do spot — a parte do aviso próxima da praia fica
+        // visível e o resto desenha-se fora do ecrã, em vez de encolher o
+        // mapa até caber o aviso inteiro. Sem polígono por perto, centra no
+        // spot (maxZoom ~13).
+        const clipKm = 30;
+        const latDelta = clipKm / 111;
+        const lonDelta = clipKm / (111 * Math.max(0.2, Math.cos((lat * Math.PI) / 180)));
+        const clip = Leaflet.latLngBounds(
+          [lat - latDelta, lon - lonDelta],
+          [lat + latDelta, lon + lonDelta],
+        );
+        let view = clip;
+        if (polyBounds.isValid()) {
+          const inter = Leaflet.latLngBounds(
+            [Math.max(polyBounds.getSouth(), clip.getSouth()), Math.max(polyBounds.getWest(), clip.getWest())],
+            [Math.min(polyBounds.getNorth(), clip.getNorth()), Math.min(polyBounds.getEast(), clip.getEast())],
+          );
+          if (inter.isValid()) {
+            inter.extend([lat, lon]); // o marker fica sempre no enquadramento
+            view = inter;
+          }
+        }
+        map.fitBounds(view, { padding: [28, 28], maxZoom: 13, animate: false });
         map.invalidateSize({ animate: false });
         if (!cancelled) setMapReady(true);
       } catch {

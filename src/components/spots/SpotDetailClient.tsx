@@ -23,7 +23,11 @@ import ForecastTable from '@/components/weather/ForecastTable';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
 import MagicWindows from '@/components/MagicWindows';
+import SpotVerdict from '@/components/spots/SpotVerdict';
+import ForecastMeteogram from '@/components/spots/ForecastMeteogram';
 import { computeMagicWindows } from '@/lib/magicWindows';
+import { findCurrentHourIndex } from '@/lib/openMeteoTime';
+import { buildSpotVerdict } from '@/lib/spotVerdict';
 import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
 import SpotWeatherlinkSection from '@/components/weather/SpotWeatherlinkSection';
 import SpotDetailHero from '@/components/spots/SpotDetailHero';
@@ -520,8 +524,21 @@ export default function SpotDetailClient({
 
   const hourlyScores = useMemo(() => {
     if (!spotData || !spotData.forecast.length) return [];
-    return getHourlyScores(spot, selectedSport, spotData.forecast, spotData.conditions);
-  }, [spot, selectedSport, spotData]);
+    const scores = getHourlyScores(spot, selectedSport, spotData.forecast, spotData.conditions);
+    // A hora corrente usa os dados actuais (correcções observadas já
+    // aplicadas no allScores) — a mesma fonte do badge do herói. O modelo
+    // só pontua as horas futuras: previsão manda no futuro, dados actuais
+    // mandam no agora, e badge/tabela/strip/veredicto contam o mesmo número.
+    const nowScore = spotData.allScores[selectedSport]?.score;
+    if (typeof nowScore === 'number') {
+      const nowIdx = findCurrentHourIndex(
+        spotData.forecast.map((f) => f.time),
+        new Date(freshnessNowMs ?? Date.now()),
+      );
+      if (nowIdx >= 0) scores[nowIdx] = nowScore;
+    }
+    return scores;
+  }, [spot, selectedSport, spotData, freshnessNowMs]);
 
   const forecastTableData: ForecastHour[] = useMemo(() => {
     if (!spotData) return [];
@@ -567,6 +584,7 @@ export default function SpotDetailClient({
         windDirection: f.windDirection ?? 0,
         windGust: f.windGust ?? 0,
         waterTemp: f.waterTemp ?? 0,
+        tideHeight: f.tideHeight,
       }))
       .filter((h) => {
         const t = new Date(h.time).getTime();
@@ -574,12 +592,22 @@ export default function SpotDetailClient({
       });
   }, [spotData?.forecast, freshnessNowMs]);
 
-  const showMagicWindows = useMemo(
-    () =>
-      magicWindowsHourly.length > 0 &&
-      computeMagicWindows(magicWindowsHourly, selectedSport, spot.bestWind || '').length > 0,
-    [magicWindowsHourly, selectedSport, spot.bestWind],
+  // Scores canónicos por hora, alinhados com magicWindowsHourly (mesma
+  // janela 24h). Alimentam a detecção das janelas e a faixa — um só scorer.
+  const magicWindowsScores = useMemo(() => {
+    if (!spotData || !hourlyScores.length) return undefined;
+    const byTime = new Map(
+      spotData.forecast.map((f, i) => [f.time, hourlyScores[i] ?? 0] as const),
+    );
+    return magicWindowsHourly.map((h) => byTime.get(h.time) ?? 0);
+  }, [spotData, hourlyScores, magicWindowsHourly]);
+
+  const magicWindows = useMemo(
+    () => computeMagicWindows(magicWindowsHourly, selectedSport, spot.bestWind || '', magicWindowsScores),
+    [magicWindowsHourly, selectedSport, spot.bestWind, magicWindowsScores],
   );
+
+  const showMagicWindows = magicWindowsHourly.length > 0 && magicWindows.length > 0;
 
   if (loading) {
     return (
@@ -621,7 +649,7 @@ export default function SpotDetailClient({
     );
   }
 
-  const { conditions, allScores, forecast } = spotData;
+  const { conditions, allScores } = spotData;
   const relevantSports = getRelevantSports(spot, allScores);
   // A mesma lista de tabs para a linha standalone e para a barra sticky — a
   // ordem canónica (surf → wakeboard) filtrada pelos desportos relevantes.
@@ -630,6 +658,20 @@ export default function SpotDetailClient({
   ).filter((s) => relevantSports.includes(s));
 
   const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
+
+  // Veredicto editorial — «devo ir?» numa linha, derivado dos mesmos dados
+  // (janelas + condições + maré). Computação barata (24 iterações) — sem
+  // useMemo porque só corre depois de spotData estar carregado.
+  const verdict = buildSpotVerdict({
+    scoreNow: score.score,
+    conditions,
+    hourly: magicWindowsHourly,
+    windows: magicWindows,
+    tide: tideSchedule,
+    coastOrientation: spot.coastOrientation,
+    isPt,
+    nowMs: freshnessNowMs ?? Date.now(),
+  });
   const scoreWindSource = resolveScoreWindSource(
     {
     waveHeight: conditions.waveHeight,
@@ -798,10 +840,17 @@ export default function SpotDetailClient({
           </div>
         </section>
 
+        {/* Veredicto — «devo ir?» numa linha, logo depois das tabs. */}
+        {verdict && (
+          <section className="max-w-6xl mx-auto px-4 pt-3" aria-label={verdict.headline}>
+            <SpotVerdict verdict={verdict} />
+          </section>
+        )}
+
         {/* Best windows promoted — directly under the score, side by side with
             the "Agora" panel when there is room. This is the answer the
             practitioner is looking for. */}
-        {(showMagicWindows || true) && (
+        {showMagicWindows && (
           <section
             className="max-w-6xl mx-auto px-4 pt-3"
             aria-label={td.bestWindows}
@@ -816,9 +865,11 @@ export default function SpotDetailClient({
             </header>
             <MagicWindows
               hourly={magicWindowsHourly}
+              scores={magicWindowsScores}
               spotType={selectedSport}
               spotBestWind={spot.bestWind || ''}
               locale={locale}
+              nowMs={freshnessNowMs ?? undefined}
             />
           </section>
         )}
@@ -883,6 +934,12 @@ export default function SpotDetailClient({
           {forecastTableData.length > 0 ? (
             <>
               <div className="card-1 overflow-hidden p-3 md:p-4">
+                <ForecastMeteogram
+                  hours={forecastTableData.slice(0, forecastHours)}
+                  coastOrientation={spot.coastOrientation}
+                  isPt={isPt}
+                  nowMs={freshnessNowMs ?? Date.now()}
+                />
                 <ForecastTable
                   hourly={forecastTableData}
                   hours={forecastHours}

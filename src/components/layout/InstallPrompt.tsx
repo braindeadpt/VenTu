@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Download, X } from 'lucide-react';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
 
@@ -18,6 +18,10 @@ export default function InstallPrompt() {
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [visible, setVisible] = useState(false);
   const [locale, setLocale] = useState<'pt' | 'en'>('pt');
+  const deferredRef = useRef<BeforeInstallPromptEvent | null>(null);
+  useEffect(() => {
+    deferredRef.current = deferred;
+  }, [deferred]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -25,25 +29,44 @@ export default function InstallPrompt() {
     const path = window.location.pathname;
     setLocale(path.startsWith('/en') ? 'en' : 'pt');
 
+    // Nunca sobrepor o mapa fullscreen nem os embeds — o card tapa a legenda
+    // e o HUD; nessas superfícies o prompt perde para a ferramenta.
+    if (/(?:^|\/)mapa(?:\/|$)/.test(path) || path.includes('/embed/')) return;
+
+    // O SignupNudge ocupa a mesma faixa inferior — espera que ele feche
+    // (a classe body é o contrato público do nudge) antes de propor instalar.
+    const nudgeObs = new MutationObserver(() => {
+      const now = document.body.classList.contains('ventu-signup-nudge-open');
+      if (now) setVisible(false);
+      else if (deferredRef.current) setVisible(true);
+    });
+    nudgeObs.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
     try {
       const dismissedUntil = Number(localStorage.getItem(DISMISS_KEY) || 0);
-      if (dismissedUntil > Date.now()) return;
+      if (dismissedUntil > Date.now()) { nudgeObs.disconnect(); return; }
 
       const visits = Number(localStorage.getItem(VISITS_KEY) || 0) + 1;
       localStorage.setItem(VISITS_KEY, String(visits));
-      if (visits < MIN_VISITS) return;
+      if (visits < MIN_VISITS) { nudgeObs.disconnect(); return; }
     } catch {
+      nudgeObs.disconnect();
       return;
     }
 
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferred(e as BeforeInstallPromptEvent);
-      setVisible(true);
+      if (!document.body.classList.contains('ventu-signup-nudge-open')) {
+        setVisible(true);
+      }
     };
 
     window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handler);
+      nudgeObs.disconnect();
+    };
   }, []);
 
   const dismiss = () => {
@@ -67,7 +90,7 @@ export default function InstallPrompt() {
 
   return (
     <div
-      className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-sm z-50 card-2 p-4 shadow-lg border border-divider-strong"
+      className="fixed bottom-4 left-4 right-4 md:right-auto md:left-6 md:max-w-sm z-50 card-2 p-4 shadow-lg border border-divider-strong"
       role="dialog"
       aria-label={isPt ? 'Instalar VenTu' : 'Install VenTu'}
     >

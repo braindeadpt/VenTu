@@ -204,6 +204,12 @@ export function SpotGridClient({
 
               <span className="text-meta-sm text-fg-muted">
                 <span className="font-mono tabular-nums text-fg">{sorted.length}</span>
+                {(selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION) && (
+                  <span className="text-fg-subtle">
+                    {' '}{isPt ? 'de' : 'of'}{' '}
+                    <span className="font-mono tabular-nums">{liveSpotsData.length}</span>
+                  </span>
+                )}
                 {' '}{t.hero.spotsCount}
                 {onCount > 0 && (
                   <span className="ml-2">

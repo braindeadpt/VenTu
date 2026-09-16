@@ -5,6 +5,9 @@ import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { validateLocale, getTranslation } from '@/lib/i18n';
 import { buildPageMetadata } from '@/lib/seo';
+import { loadSpotListings } from '@/lib/load-spot-data';
+import { getScoreTokens } from '@/lib/sportScore';
+import { SPORT_LABELS } from '@/lib/sportRatings';
 
 const FEATURED_SPOTS = [
   { slug: 'guincho', namePt: 'Guincho', nameEn: 'Guincho' },
@@ -36,6 +39,18 @@ export default async function AlertsPage({
   const { locale: rawLocale } = await params;
   const locale = validateLocale(rawLocale);
   const a = getTranslation(locale).alerts;
+
+  // Score actual (baked) por spot popular — o mesmo pipeline das listas.
+  const listings = loadSpotListings();
+  const featured = FEATURED_SPOTS.map((f) => {
+    const row = listings.find((l) => l.spot.slug === f.slug);
+    if (!row) return { ...f, bestScore: null, bestSport: null };
+    const best = Object.entries(row.allScores).reduce(
+      (acc, [sport, s]) => (s.score > acc.score ? { sport, score: s.score } : acc),
+      { sport: 'surf', score: -1 },
+    );
+    return { ...f, bestScore: best.score, bestSport: best.sport };
+  });
 
   return (
     <div className="min-h-screen bg-bg-base">
@@ -71,7 +86,7 @@ export default async function AlertsPage({
 
         <h2 className="text-h3 text-fg mb-3">{a.popularSpots}</h2>
         <ul className="grid gap-2 list-none p-0 m-0 mb-8">
-          {FEATURED_SPOTS.map((spot) => (
+          {featured.map((spot) => (
             <li key={spot.slug}>
               <Card
                 href={`/${locale}/spots/${spot.slug}/`}
@@ -79,8 +94,20 @@ export default async function AlertsPage({
                 padding={false}
                 className="p-4 flex items-center justify-between gap-3"
               >
-                <span className="font-semibold text-fg">{spot.nameEn}</span>
-                <MapPin className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />
+                <span className="font-semibold text-fg">{locale === 'pt' ? spot.namePt : spot.nameEn}</span>
+                <span className="flex items-center gap-2.5 shrink-0">
+                  {spot.bestScore !== null && spot.bestSport !== null && (
+                    <span className="flex items-baseline gap-1.5 font-mono tabular-nums" aria-label={SPORT_LABELS[spot.bestSport as keyof typeof SPORT_LABELS]?.[locale === 'pt' ? 'pt' : 'en'] ?? spot.bestSport}>
+                      <span className="text-meta-sm text-fg-subtle font-sans">
+                        {SPORT_LABELS[spot.bestSport as keyof typeof SPORT_LABELS]?.[locale === 'pt' ? 'pt' : 'en'] ?? spot.bestSport}
+                      </span>
+                      <span className={`text-sm font-semibold ${getScoreTokens(spot.bestScore).text}`}>
+                        {spot.bestScore}
+                      </span>
+                    </span>
+                  )}
+                  <MapPin className="w-4 h-4 text-fg-muted" aria-hidden />
+                </span>
               </Card>
             </li>
           ))}

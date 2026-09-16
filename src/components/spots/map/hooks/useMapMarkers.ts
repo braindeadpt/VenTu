@@ -127,7 +127,27 @@ export function useMapMarkers({
         fitMap.fitBounds(bounds, { paddingTopLeft: Leaflet.point(leftPad, 48), paddingBottomRight: Leaflet.point(40, 96), maxZoom: isMobile ? 8 : 10, animate: false });
       } else {
         const fitMaxZoom = isMobile ? 9 : 11;
-        fitMap.fitBounds(bounds, { padding: isMobile ? [16, 16] : [40, 40], maxZoom: fitMaxZoom, animate: false });
+        // O HUD inferior (Modo Explorar, ~190px no mobile / ~110px desktop)
+        // tapa markers perto da borda — sem padding de fundo, spots do sul
+        // ficam por baixo do «Mostrar filtros» e não são tocáveis.
+        fitMap.fitBounds(bounds, {
+          paddingTopLeft: isMobile ? Leaflet.point(16, 16) : Leaflet.point(40, 48),
+          paddingBottomRight: isMobile ? Leaflet.point(16, 190) : Leaflet.point(40, 110),
+          maxZoom: fitMaxZoom,
+          animate: false,
+        });
+        // Enquadramento náutico: a costa PT é uma faixa vertical — centrar a
+        // bbox deixa metade do ecrã em Espanha. Shift para oeste mete a costa
+        // à direita e abre o Atlântico à esquerda (é de lá que vem o swell).
+        // ~9% da largura para oeste; em zoom baixo o bias é menor para não
+        // empurrar a costa para a borda. Só no fit inicial/filtro, nunca
+        // depois de o utilizador navegar (didFitBoundsRef: «uma vez»).
+        if (!isMobile) {
+          const degPerPx = 360 / (256 * 2 ** fitMap.getZoom());
+          const shiftPx = fitMap.getZoom() >= 7 ? 140 : 70;
+          const c = fitMap.getCenter();
+          fitMap.setView([c.lat, c.lng - shiftPx * degPerPx], fitMap.getZoom(), { animate: false });
+        }
       }
       didFitBoundsRef.current = true;
     };
