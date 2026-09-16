@@ -30,9 +30,12 @@ function formatEndDate(iso: string | undefined, isPt: boolean): string {
 export default function SpotWarningsSection({
   spotId,
   locale,
+  embedded,
 }: {
   spotId: string;
   locale: string;
+  /** Sem card nem título próprios — o hospedeiro (rail/accordion) fornece-os. */
+  embedded?: boolean;
 }) {
   const [data, setData] = useState<IpmaWarningsData | null>(null);
   const isPt = locale === 'pt';
@@ -50,13 +53,15 @@ export default function SpotWarningsSection({
 
   const warnings = relevantWarningsForSpot(data, spotId);
 
-  return (
-    <section className="card-1 rounded-card border border-divider p-3 md:p-4">
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-2.5">
-        <h2 className="text-h3 text-fg flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-score-poor shrink-0" aria-hidden />
-          {isPt ? 'Avisos e radar' : 'Warnings & radar'}
-        </h2>
+  const body = (
+    <>
+      <div className={`flex flex-wrap items-center gap-2 mb-2.5 ${embedded ? 'justify-end' : 'justify-between'}`}>
+        {!embedded && (
+          <h2 className="text-h3 text-fg flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-score-poor shrink-0" aria-hidden />
+            {isPt ? 'Avisos e radar' : 'Warnings & radar'}
+          </h2>
+        )}
         <a
           href={ipmaRadarUrl(locale)}
           target="_blank"
@@ -117,6 +122,14 @@ export default function SpotWarningsSection({
           complementar ao IPMA/MeteoAlarm. Renderiza só quando o spot está
           coberto por um aviso em vigor (nunca a secção vazia). */}
       <CoastalNavWarnings spotId={spotId} locale={locale} />
+    </>
+  );
+
+  if (embedded) return body;
+
+  return (
+    <section className="card-1 rounded-card border border-divider p-3 md:p-4">
+      {body}
     </section>
   );
 }

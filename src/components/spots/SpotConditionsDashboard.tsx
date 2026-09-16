@@ -1,17 +1,15 @@
 'use client';
 
-import { AlertTriangle, Clock, Droplets, HelpCircle, Waves, Wind } from 'lucide-react';
+import { AlertTriangle, HelpCircle, Wind } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { getTranslation } from '@/lib/i18n';
 import type { Spot } from '@/types';
 import type { SportScore } from '@/lib/sportScore';
 import { getScoreTokens } from '@/lib/sportScore';
-import { getCardinalLabel } from '@/lib/wind';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
 import { isObservedFresh } from '@/lib/observations';
 import { isObservedWaveFresh } from '@/lib/observedWave';
-import MetricTile from '@/components/ui/MetricTile';
 import SwellRadar from '@/components/ui/SwellRadar';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
 import ObservedNow from '@/components/spots/ObservedNow';
@@ -22,7 +20,6 @@ import IsobathsStrip from '@/components/spots/IsobathsStrip';
 import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
 import MoonTideCard from '@/components/spots/MoonTideCard';
 import ScoreFeedback from '@/components/spots/ScoreFeedback';
-import ScoreBadge from '@/components/ui/ScoreBadge';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { SportType } from '@/lib/sportRatings';
@@ -68,16 +65,8 @@ interface SpotConditionsDashboardProps {
   copy: {
     title: string;
     subtitle: string;
-    wavesLabel: string;
-    wavesHint: string;
-    periodLabel: string;
-    periodHint: string;
-    windLabel: string;
-    windHint: string;
     gustLabel: string;
     gustHint: string;
-    waterLabel: string;
-    waterHint: string;
     seaStateTitle: string;
     seaStateHint: string;
     windContextTitle: string;
@@ -113,10 +102,7 @@ export default function SpotConditionsDashboard({
   const tv = getTranslation(locale).spotVerify;
   const moonTideCopy = getTranslation(locale).moonTide;
   const scoreTokens = getScoreTokens(score.score);
-  const windKt = Math.round(conditions.windSpeed * 1.94384);
   const gustKt = Math.round((conditions.windGust ?? conditions.windSpeed) * 1.94384);
-  const windCardinal = getCardinalLabel(conditions.windDirection);
-  const waveCardinal = getCardinalLabel(conditions.waveDirection);
   const swellTrains = buildSwellTrains(conditions);
   const totalEnergy = totalSwellPowerKw(conditions);
 
@@ -157,56 +143,12 @@ export default function SpotConditionsDashboard({
       >
         <div className="flex items-center gap-2">
           <h2 className="text-h2 text-fg">{copy.title}</h2>
-          <ScoreBadge score={score.score} locale={locale as 'pt' | 'en'} size="sm" showLabel />
         </div>
         <p className="text-meta text-fg-muted mt-1 max-w-3xl leading-relaxed">{copy.subtitle}</p>
       </header>
 
       <div className="p-3 md:p-4 space-y-4">
-        <div
-          className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2 md:gap-2.5"
-          role="group"
-          aria-label={tv.keyMetrics}
-        >
-          <MetricTile
-            icon={<Waves className="w-4 h-4 text-data-waves" />}
-            label={copy.wavesLabel}
-            value={`${conditions.waveHeight.toFixed(1)} m`}
-            hint={`${copy.wavesHint} · ${waveCardinal}`}
-          />
-          <MetricTile
-            icon={<Clock className="w-4 h-4 text-data-period" />}
-            label={copy.periodLabel}
-            value={`${Math.round(conditions.wavePeriod)} s`}
-            hint={copy.periodHint}
-          />
-          <MetricTile
-            icon={<Wind className="w-4 h-4 text-data-wind" />}
-            label={copy.windLabel}
-            value={`${windKt} kt`}
-            hint={`${windCardinal} · ${copy.windHint}`}
-          />
-          <MetricTile
-            icon={<Wind className="w-4 h-4 text-data-wind/80" />}
-            label={copy.gustLabel}
-            value={`${gustKt} kt`}
-            hint={
-              gustKt > windKt + 2
-                ? `${copy.gustHint} (+${gustKt - windKt} kt ${tv.vsAvg})`
-                : copy.gustHint
-            }
-            className={gustKt > windKt + 2 ? 'ring-1 ring-data-wind/30' : undefined}
-          />
-          <MetricTile
-            icon={<Droplets className="w-4 h-4 text-data-waves/80" />}
-            label={copy.waterLabel}
-            value={`${conditions.waterTemp.toFixed(1)}°C`}
-            hint={copy.waterHint}
-            className="col-span-2 md:col-span-1"
-          />
-        </div>
-
-        <div className="border-t border-divider pt-4">
+        <div>
           <div className="mb-2.5 flex items-start justify-between gap-2">
             <div className="min-w-0">
               <h3 className="text-h3 text-fg">{copy.seaStateTitle}</h3>
@@ -276,6 +218,15 @@ export default function SpotConditionsDashboard({
                   </p>
                 </div>
               )}
+              {/* Rajada — único valor que o hero não mostra; fica aqui em vez
+                  de repetir a grelha de métricas. */}
+              <p
+                className="w-full max-w-xs text-center lg:text-left text-meta-sm font-mono tabular-nums text-fg-muted"
+                title={copy.gustHint}
+              >
+                {copy.gustLabel}{' '}
+                <span className="text-fg font-medium" data-visual-dynamic>{gustKt} kt</span>
+              </p>
             </div>
 
             <div className="lg:col-span-8 min-w-0">

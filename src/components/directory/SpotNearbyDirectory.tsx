@@ -20,11 +20,13 @@ type Props = {
   spotLat: number;
   spotLon: number;
   locale: string;
+  /** Dentro de um card/rail: grelha a uma coluna e cabeçalho compacto. */
+  embedded?: boolean;
 };
 
 type Nearby = DirectoryEntry & { distanceKm: number };
 
-export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }: Props) {
+export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale, embedded }: Props) {
   const d = getTranslation(locale).directory;
   const [nearby, setNearby] = useState<Nearby[]>([]);
 
@@ -78,10 +80,13 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }
     <section className="space-y-3" aria-labelledby="spot-nearby-directory">
       <div className="flex items-end justify-between gap-3">
         <div>
-          <h2 id="spot-nearby-directory" className="font-display text-h2 text-fg">
+          <h2
+            id="spot-nearby-directory"
+            className={embedded ? 'text-h3 text-fg' : 'font-display text-h2 text-fg'}
+          >
             {d.nearbySchoolsTitle}
           </h2>
-          <p className="text-body text-fg-muted mt-1">{d.nearbyNote}</p>
+          {!embedded && <p className="text-body text-fg-muted mt-1">{d.nearbyNote}</p>}
         </div>
         <Link
           href={`/${locale}/diretorio/`}
@@ -90,7 +95,7 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale }
           {d.directoryArrow}
         </Link>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className={embedded ? 'grid gap-3' : 'grid gap-3 sm:grid-cols-2'}>
         {nearby.map((e) => (
           <DirectoryEntryCard
             key={e.id}

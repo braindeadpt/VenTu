@@ -10,10 +10,12 @@ import {
 interface SpotWeatherlinkSectionProps {
   slug: string;
   locale: string;
+  /** Sem wrapper nem título — o hospedeiro (rail/accordion) fornece-os. */
+  embedded?: boolean;
 }
 
 /** Davis WeatherLink embed — local anemometer at the spot (complements Open-Meteo). */
-export default function SpotWeatherlinkSection({ slug, locale }: SpotWeatherlinkSectionProps) {
+export default function SpotWeatherlinkSection({ slug, locale, embedded }: SpotWeatherlinkSectionProps) {
   const station = getSpotWeatherlink(slug);
   if (!station) return null;
 
@@ -22,18 +24,15 @@ export default function SpotWeatherlinkSection({ slug, locale }: SpotWeatherlink
   const embedUrl = getWeatherlinkEmbedUrl(station.pageId);
   const pageUrl = getWeatherlinkPageUrl(station.pageId);
 
-  return (
-    <section className="max-w-6xl mx-auto px-4 py-6" aria-labelledby="weatherlink-heading">
-      <h2 id="weatherlink-heading" className="text-h2 text-fg mb-1">
-        {isPt ? 'Estação na praia' : 'Beach weather station'}
-      </h2>
+  const body = (
+    <>
       <p className="text-meta text-fg-muted mb-4 max-w-2xl">
         {isPt
           ? 'Sensor Davis na praia (vento, temperatura, humidade). Complementa a previsão Open-Meteo — não altera o score VenTu.'
           : 'Davis sensor on the beach (wind, temperature, humidity). Complements Open-Meteo — does not change the VenTu score.'}
       </p>
 
-      <div className="card-1 p-4 md:p-5">
+      <div className={embedded ? undefined : 'card-1 p-4 md:p-5'}>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
           <div className="flex items-start gap-3 min-w-0 flex-1">
             <div className="rounded-card bg-data-wind/10 p-2.5 text-data-wind shrink-0">
@@ -69,6 +68,17 @@ export default function SpotWeatherlinkSection({ slug, locale }: SpotWeatherlink
           />
         </div>
       </div>
+    </>
+  );
+
+  if (embedded) return body;
+
+  return (
+    <section className="max-w-6xl mx-auto px-4 py-6" aria-labelledby="weatherlink-heading">
+      <h2 id="weatherlink-heading" className="text-h2 text-fg mb-1">
+        {isPt ? 'Estação na praia' : 'Beach weather station'}
+      </h2>
+      {body}
     </section>
   );
 }

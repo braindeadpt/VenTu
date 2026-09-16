@@ -12,9 +12,11 @@ type Props = {
   locale: string;
   /** When provided (SSR/build), skip client fetch. */
   events?: VentuEvent[];
+  /** Sem wrapper de largura total — o hospedeiro (rail) controla o layout. */
+  embedded?: boolean;
 };
 
-export default function SpotUpcomingEvents({ spotId, locale, events: eventsProp }: Props) {
+export default function SpotUpcomingEvents({ spotId, locale, events: eventsProp, embedded }: Props) {
   const t = getTranslation(locale);
   const [events, setEvents] = useState<VentuEvent[]>(eventsProp ?? []);
 
@@ -42,7 +44,7 @@ export default function SpotUpcomingEvents({ spotId, locale, events: eventsProp 
 
   return (
     <section
-      className="max-w-6xl mx-auto px-4 py-4 space-y-3"
+      className={embedded ? 'space-y-3' : 'max-w-6xl mx-auto px-4 py-4 space-y-3'}
       aria-labelledby="spot-upcoming-events"
     >
       <div className="flex items-center gap-2">

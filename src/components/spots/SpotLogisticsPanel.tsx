@@ -14,6 +14,8 @@ interface SpotLogisticsPanelProps {
   openMapsLabel: string;
   regionLabel: string;
   difficultyLabel: string;
+  /** Dentro de um card/rail: sem card próprio e sempre a uma coluna. */
+  embedded?: boolean;
 }
 
 /**
@@ -29,6 +31,7 @@ export default function SpotLogisticsPanel({
   openMapsLabel,
   regionLabel,
   difficultyLabel,
+  embedded,
 }: SpotLogisticsPanelProps) {
   const isPt = locale === 'pt';
   const description = isPt ? spot.description : spot.descriptionEn;
@@ -36,9 +39,9 @@ export default function SpotLogisticsPanel({
   const osmUrl = `https://www.openstreetmap.org/?mlat=${spot.lat}&mlon=${spot.lon}#map=15/${spot.lat}/${spot.lon}`;
 
   return (
-    <div className="card-1 rounded-card border border-divider overflow-hidden">
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-[280px]">
-        <div className="flex flex-col gap-4 p-4 md:p-5 border-b border-divider lg:border-b-0 lg:border-r border-divider bg-surface-1/[0.02]">
+    <div className={embedded ? undefined : 'card-1 rounded-card border border-divider overflow-hidden'}>
+      <div className={embedded ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-1 lg:grid-cols-2 lg:min-h-[280px]'}>
+        <div className={embedded ? 'flex flex-col gap-4' : 'flex flex-col gap-4 p-4 md:p-5 border-b border-divider lg:border-b-0 lg:border-r border-divider bg-surface-1/[0.02]'}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <h3 className="text-h3 text-fg flex items-center gap-2">
@@ -80,7 +83,7 @@ export default function SpotLogisticsPanel({
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 p-4 md:p-5">
+        <div className={embedded ? 'flex flex-col gap-4 border-t border-divider pt-4' : 'flex flex-col gap-4 p-4 md:p-5'}>
           <div>
             <h3 className="text-h3 text-fg">{aboutTitle}</h3>
             <p className="text-meta-sm text-fg-muted mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
