@@ -1,6 +1,916 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-16T06:03:07.238Z",
-  "warnings": [],
-  "spotWarnings": {}
+  "fetchedAt": "2026-09-16T06:49:45.999Z",
+  "warnings": [
+    {
+      "areaCode": "FAR",
+      "areaLabel": "Faro",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "Na parte oeste: rajadas até 75 km/h.",
+      "startTime": "2026-09-16T05:56:00",
+      "endTime": "2026-09-16T21:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "LSB",
+      "areaLabel": "Lisboa",
+      "type": "Vento",
+      "level": "yellow",
+      "text": "No litoral, rajadas até 75 km/h.",
+      "startTime": "2026-09-16T05:56:00",
+      "endTime": "2026-09-16T21:00:00",
+      "relevant": true
+    }
+  ],
+  "spotWarnings": {
+    "foz-sizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "coxos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ribeira-ilhas": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "empa": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-lourenco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "pedra-branca": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-sebastiao": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foz-lizandro": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-grande-sintra": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "adraga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "guincho": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "seixal-bay": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "parede": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "carcavelos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "nova-vaga": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "sao-joao-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "costa-caparica": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "fonte-telha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-dos-corvos": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "trafaria": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cova-do-vapor": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-da-rainha": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foil-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-lagoa-albufeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "zambujeira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "carvalhal": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "odeceixe": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "amoreira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "monte-clerigo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "arrifana": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "vale-figueiras": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "bordeira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "amado": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "barriga": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "castelejo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "luz": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "burgau": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "salema": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cordoama": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ferragudo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "vila-real-santo-antonio": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "monte-gordo": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-verde": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "altura": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "praia-rocha": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "alvor": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "foil-alvor": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "lagos": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "lagos-wakepark": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "beliche": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "martinhal": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "barrinha-faro": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "fuseta": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ilha-faro": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "faro-mar": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "culatra": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "armona": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "ilha-tavira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cabanas-tavira": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cacela-velha": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "zavial": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "tonel": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "santa-cruz": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "cave-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "pescadores-ericeira": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "crazy-left": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "meco": [
+      {
+        "areaCode": "LSB",
+        "areaLabel": "Lisboa",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "No litoral, rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "garrão": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "falesia": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "tres-irmaos": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "canavial": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "armacao-pera": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ],
+    "mareta": [
+      {
+        "areaCode": "FAR",
+        "areaLabel": "Faro",
+        "type": "Vento",
+        "level": "yellow",
+        "text": "Na parte oeste: rajadas até 75 km/h.",
+        "startTime": "2026-09-16T05:56:00",
+        "endTime": "2026-09-16T21:00:00",
+        "relevant": true
+      }
+    ]
+  }
 }
