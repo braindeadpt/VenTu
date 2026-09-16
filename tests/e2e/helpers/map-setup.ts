@@ -27,3 +27,18 @@ export async function preseedWindRingLegend(page: Page): Promise<void> {
     }
   }, WIND_RING_LEGEND_LS_KEY);
 }
+
+/**
+ * Auditoria 2026-09-16 (C4): as camadas de dados do mapa vivem no menu
+ * «Camadas» — abrir o menu antes de aceder a `data-map-*-toggle` das
+ * camadas secundárias (hs, sst, correntes, boias, isóbatas, batimetria,
+ * seamarks, avisos à navegação, horas no desktop). Há dois triggers no DOM
+ * (toolbar do topo + strip do HUD) — `:visible` apanha o da superfície
+ * activa. No-op quando o popover já está aberto.
+ */
+export async function openMapLayersMenu(page: Page): Promise<void> {
+  const popover = page.locator('[data-map-layers-popover="true"]');
+  if (await popover.isVisible()) return;
+  await page.locator('[data-map-layers-menu]:visible').first().click();
+  await popover.waitFor({ state: 'visible', timeout: 10_000 });
+}

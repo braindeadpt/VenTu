@@ -112,6 +112,7 @@ export const translationsEn = {
     legendTitle: 'Overall Nautical Score',
     legendFlat: 'Closed', legendPoor: 'Poor', legendFair: 'Fair', legendGood: 'Good', legendEpic: 'Epic',
     layerMap: 'Map', layerSatellite: 'Satellite',
+    layersMenu: 'Layers',
     clusterLabel: '{count} spots',
     noData: 'No data',
     loading: 'Loading map...',

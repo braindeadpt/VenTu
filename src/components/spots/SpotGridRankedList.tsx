@@ -49,8 +49,17 @@ export default function SpotGridRankedList({
     return null;
   }
 
-  const title =
-    selectedSport === 'all'
+  // «Mais…» só faz sentido quando a lista é o resto do Top agora (home);
+  // em /spots, /explorar e /modalidades é a lista inteira — vira «Ranking».
+  const title = !excludeSlugs?.length
+    ? selectedSport === 'all'
+      ? isPt
+        ? 'Ranking de spots'
+        : 'Spot ranking'
+      : isPt
+        ? `Ranking — ${sportLabel}`
+        : `Ranking — ${sportLabel}`
+    : selectedSport === 'all'
       ? isPt
         ? 'Mais spots para explorar'
         : 'More spots to explore'

@@ -34,7 +34,11 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
       }
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setOpen(false);
+      if (e.key !== 'Escape') return;
+      // Sem stopPropagation o Escape chegava ao listener do window e saía
+      // do fullscreen além de fechar o popover.
+      e.stopPropagation();
+      setOpen(false);
     };
     document.addEventListener('pointerdown', onPointerDown);
     document.addEventListener('keydown', onKey);

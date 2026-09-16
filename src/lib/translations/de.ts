@@ -170,6 +170,7 @@ export const translationsDe = {
     legendEpic: 'Episch',
     layerMap: 'Karte',
     layerSatellite: 'Satellit',
+    layersMenu: 'Ebenen',
     clusterLabel: '{count} Spots',
     noData: 'Keine Daten',
     loading: 'Karte wird geladen...',

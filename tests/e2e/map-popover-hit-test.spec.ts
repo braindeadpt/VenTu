@@ -16,7 +16,8 @@ import { expectTopmostHit } from './helpers/hit-test';
  *
  * Cobertura (todas as superfícies com ação de dispensa/fecho no /mapa):
  *   1. Chip de boias → popover → «Dispensar este aviso»
- *   2. Banner de aviso de boias → «Dispensar aviso das boias»
+ *   2. Sem banner de boias sobre o mapa (C4: toast→chip — o aviso vive só
+ *      no popover do chip)
  *   3. Popup de marcador (desktop) → fecho do popup Leaflet
  *   4. Sheet do spot (mobile) → «Fechar» e «Ver spot» (regressão histórica:
  *      a fila de ações deslizava por baixo da barra do HUD e os toques caíam
@@ -186,18 +187,18 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       await expect(chip).toHaveCount(0);
     });
 
-    test('banner de boias: «Dispensar aviso das boias» é o elemento de topo e fecha o aviso', async ({
+    test('sem banner de boias sobre o mapa — o aviso vive só no chip do HUD (C4)', async ({
       page,
     }) => {
       await openMapa(page, { buoyNoKey: true });
-      await expect(page.getByText('Onda observada desactivada')).toBeVisible({
-        timeout: 20_000,
-      });
-
-      const dismiss = page.getByRole('button', { name: 'Dispensar aviso das boias' });
-      await expectTopmostHit(page, dismiss);
-      await dismiss.click();
+      const chip = page.locator('[data-buoy-layer-chip="true"]');
+      await expect(chip).toBeVisible({ timeout: 20_000 });
+      // O banner saiu do mapa: o título só existe dentro do popover do chip.
       await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
+      await chip.click();
+      await expect(
+        page.locator('[data-buoy-chip-popover="true"]').getByText('Onda observada desactivada'),
+      ).toBeVisible({ timeout: 10_000 });
     });
 
     test('popup de marcador: o fecho do popup Leaflet é o elemento de topo e fecha', async ({
@@ -256,18 +257,17 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       await expect(chip).toHaveCount(0);
     });
 
-    test('banner de boias: «Dispensar aviso das boias» é o elemento de topo e fecha o aviso', async ({
+    test('sem banner de boias sobre o mapa — o aviso vive só no chip do HUD (C4)', async ({
       page,
     }) => {
       await openMapa(page, { buoyNoKey: true, mobile: true });
-      await expect(page.getByText('Onda observada desactivada')).toBeVisible({
-        timeout: 20_000,
-      });
-
-      const dismiss = page.getByRole('button', { name: 'Dispensar aviso das boias' });
-      await expectTopmostHit(page, dismiss);
-      await dismiss.click();
+      const chip = page.locator('[data-buoy-layer-chip="true"]');
+      await expect(chip).toBeVisible({ timeout: 20_000 });
       await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
+      await chip.click();
+      await expect(
+        page.locator('[data-buoy-chip-popover="true"]').getByText('Onda observada desactivada'),
+      ).toBeVisible({ timeout: 10_000 });
     });
 
     test('sheet do spot: «Fechar» e «Ver spot» são o elemento de topo (regressão do HUD)', async ({

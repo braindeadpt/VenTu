@@ -11,7 +11,6 @@ import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import MapExploreHud, { type MapExploreHudProps } from './MapExploreHud';
 import BuoyLayerChip from './BuoyLayerChip';
-import BuoyLayerNotice from './BuoyLayerNotice';
 import MapSpotSheet, { type MapSpotSheetData } from './MapSpotSheet';
 import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
@@ -202,14 +201,6 @@ interface SpotMapInteractiveProps {
   mapHud?: MapHudProps;
   onFullscreenChange?: (isFullscreen: boolean) => void;
   embedMode?: 'default' | 'hero';
-  /**
-   * Render the BuoyLayerNotice overlay (scope="home") over this map. Default
-   * true. Surfaces that coexist on the same page as another home-scope notice
-   * (the homepage hero/compact maps sit next to the TopNow notice) pass false
-   * so the page never repeats the banner — the real /mapa/ page and the
-   * explorer grid keep the overlay (no TopNow there).
-   */
-  showBuoyNotice?: boolean;
   initialFullscreen?: boolean;
   initialRadarEnabled?: boolean;
   initialIsobathsEnabled?: boolean;
@@ -235,7 +226,6 @@ export default function SpotMapInteractive({
   mapHud,
   onFullscreenChange,
   embedMode = 'default',
-  showBuoyNotice = true,
   initialFullscreen = false,
   initialRadarEnabled = false,
   initialIsobathsEnabled = false,
@@ -896,12 +886,10 @@ export default function SpotMapInteractive({
 
       {isReady && (
         <>
-          {showBuoyNotice && (
-            <div className="absolute top-[4.5rem] left-1/2 -translate-x-1/2 z-[1001] w-full max-w-[min(calc(100%-132px),460px)] md:max-w-[min(92%,460px)] px-2 pointer-events-none">
-              <BuoyLayerNotice locale={locale} scope="home" overlay />
-            </div>
-          )}
-
+          {/* Auditoria 2026-09-16 (C4): o banner toast sobre o mapa saiu —
+              chrome+toast cobriam ~55% do viewport mobile. O mesmo aviso vive
+              agora só no chip compacto do HUD (BuoyLayerChip), ligado ao
+              mesmo useBuoyLayerNotice. */}
           <MapControls
             isFullscreen={isFullscreen}
             isMobile={isMobile}
@@ -953,6 +941,7 @@ export default function SpotMapInteractive({
             onlyOnHint={onlyOnHint}
             windLegendHelpLabel={windLegendHelpLabel}
             coastalWarningsLabel={coastalWarningsLabel}
+            layersLabel={t.map.layersMenu}
             enterFullscreen={enterFullscreen}
             exitFullscreen={exitFullscreen}
             exitLabel={exitFullscreenLabel}
@@ -1176,6 +1165,7 @@ export default function SpotMapInteractive({
               exploreModeLabel={t.map.exploreMode}
               layerMapLabel={t.map.layerMap}
               layerSatelliteLabel={t.map.layerSatellite}
+              layersLabel={t.map.layersMenu}
               clusterLabel={clusterLabel}
               windLabel={windLabel}
               exitLabel={exitFullscreenLabel}

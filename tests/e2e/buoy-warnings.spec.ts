@@ -257,15 +257,15 @@ test.describe('Aviso de boias na homepage (BuoyLayerNotice scope=home)', () => {
   });
 });
 
-test.describe('Aviso de boias no mapa interactivo (SpotMapInteractive overlay)', () => {
+test.describe('Aviso de boias no mapa interactivo (chip do HUD — auditoria C4)', () => {
   test.use({ serviceWorkers: 'block' });
 
-  // O mesmo BuoyLayerNotice (scope=home, overlay com fundo sórido para
-  // legibilidade) é sobreposto ao mapa interactivo partilhado — que serve o
-  // hero da homepage (embedMode=hero), a página /pt/mapa (fullscreen) e o grid.
-  // Só renderiza quando NENHUMA fonte (IH ou WMO) tem leituras frescas.
+  // C4 (2026-09-16): o banner toast sobre o mapa saiu — chrome+toast cobriam
+  // ~55% do viewport mobile. A mesma informação vive no chip compacto do HUD
+  // (BuoyLayerChip → useBuoyLayerNotice). Só aparece quando NENHUMA fonte
+  // (IH ou WMO) tem leituras frescas.
 
-  test('no-key: aviso sobreposto à página /pt/mapa quando a camada está desactivada', async ({ page }) => {
+  test('no-key: aviso no /pt/mapa vive no chip do HUD, sem banner sobre o mapa', async ({ page }) => {
     await interceptIhBuoys(page, {
       fetchedAt: new Date().toISOString(),
       apiKeyConfigured: false,
@@ -273,11 +273,20 @@ test.describe('Aviso de boias no mapa interactivo (SpotMapInteractive overlay)',
       stations: {},
     });
     await interceptWmoBuoys(page, WMO_DOWN);
+    await preseedWindRingLegend(page);
     await page.goto('/pt/mapa/');
 
-    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
+    // Sem banner: o título só existe dentro do popover do chip.
+    await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
+    const chip = page.locator('[data-buoy-layer-chip="true"]');
+    await expect(chip).toBeVisible({ timeout: 20_000 });
+
+    await chip.click();
+    const popover = page.locator('[data-buoy-chip-popover="true"]');
+    await expect(popover).toBeVisible();
+    await expect(popover.getByText('Onda observada desactivada')).toBeVisible();
     await expect(
-      page.getByText(/alturas de onda no mapa e nos cards são previsão do modelo/),
+      popover.getByText(/alturas de onda no mapa e nos cards são previsão do modelo/),
     ).toBeVisible();
   });
 
@@ -309,9 +318,9 @@ test.describe('Aviso de boias no mapa interactivo (SpotMapInteractive overlay)',
       timeout: 20_000,
     });
 
-    // O aviso da homepage é único e vive na secção TopNow. O mapa do hero
-    // (embedMode=hero) e o mapa compacto coexistem com ela — nenhum repete o
-    // banner (showBuoyNotice=false em HomepageMapHero).
+    // O aviso da homepage é único e vive na secção TopNow. Nenhum mapa
+    // repete o banner — desde a C4 o overlay nem sequer existe; nos mapas
+    // com HUD o estado das boias é o chip compacto.
     await expect(
       page.getByRole('region', { name: /Mapa interactivo/ }).getByText('Onda observada desactivada'),
     ).toHaveCount(0);
@@ -472,10 +481,9 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
   });
 
-  test('mapa: o botão de dispensa funciona no overlay (pointer-events-auto)', async ({ page }) => {
-    // O wrapper do overlay no mapa é pointer-events-none (não bloqueia a
-    // interacção com o Leaflet); o aviso em si tem pointer-events-auto para o
-    // botão de dispensa ser clicável sobre o mapa.
+  test('mapa: a dispensa funciona no chip do HUD (sem banner sobre o mapa)', async ({ page }) => {
+    // C4: o overlay foi substituído pelo chip — a dispensa faz-se no popover
+    // («Dispensar este aviso»), partilhando o mesmo «já vi» de localStorage.
     await interceptIhBuoys(page, IH_NO_KEY);
     await interceptWmoBuoys(page, WMO_DOWN);
     // O coach de primeira visita da legenda de vento abre sozinho (idle) e
@@ -483,8 +491,14 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     // coach marcam-no como visto antes do primeiro goto (igual ao teste do chip).
     await preseedWindRingLegend(page);
     await page.goto('/pt/mapa/');
-    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
-    await page.getByRole('button', { name: 'Dispensar aviso das boias' }).click();
+
+    const chip = page.locator('[data-buoy-layer-chip="true"]');
+    await expect(chip).toBeVisible({ timeout: 20_000 });
+    await chip.click();
+    const popover = page.locator('[data-buoy-chip-popover="true"]');
+    await expect(popover).toBeVisible();
+    await popover.getByRole('button', { name: 'Dispensar este aviso' }).click();
+    await expect(chip).toHaveCount(0);
     await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
     expect(
       await page.evaluate((k) => JSON.parse(localStorage.getItem(k) || 'null'), DISMISS_KEY),
@@ -501,10 +515,11 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     await preseedWindRingLegend(page);
     await page.goto('/pt/mapa/');
 
-    // O chip compacto do HUD aparece quando o banner de topo também aparece
-    // (mesmo estado no-key, nenhuma fonte com leituras frescas).
+    // O chip compacto do HUD é a ÚNICA superfície do aviso no mapa desde a
+    // C4 — o título só aparece dentro do popover, nunca num banner sobre o
+    // mapa (mesmo estado no-key, nenhuma fonte com leituras frescas).
     const chip = page.locator('[data-buoy-layer-chip="true"]');
-    await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
     await expect(chip).toBeVisible({ timeout: 20_000 });
     await expect(chip.getByText('Boias desactivadas')).toBeVisible();
 
@@ -521,8 +536,8 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     await expect(popover).toHaveCount(0);
     await expect(chip).toHaveAttribute('aria-expanded', 'false');
 
-    // Dispensar pelo chip esconde O CHIP E O BANNER (dispensa partilhada) e
-    // grava a escolha no localStorage — o mesmo «já vi» do aviso de topo.
+    // Dispensar pelo chip esconde o chip (dispensa partilhada com os outros
+    // avisos de boias da app) e grava a escolha no localStorage.
     await chip.click();
     await expect(popover).toBeVisible();
 

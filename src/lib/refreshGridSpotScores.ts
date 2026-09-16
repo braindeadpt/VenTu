@@ -57,6 +57,9 @@ export function refreshGridSpotScores<T extends GridSpotData>(
         // partir do ficheiro servido, não do SSG.
         waveBias: biasPatch?.waveBias ??
           (record.waveBias as GridSpotData['conditions']['waveBias'] | undefined),
+        // Maré: o ficheiro servido é autoritativo (coluna Maré da tabela densa).
+        tideStatus: record.tideStatus as GridSpotData['conditions']['tideStatus'],
+        tideLabel: record.tideLabel as string | undefined,
         updatedAt:
           typeof record.updatedAt === 'string' ? record.updatedAt : row.conditions.updatedAt,
       },

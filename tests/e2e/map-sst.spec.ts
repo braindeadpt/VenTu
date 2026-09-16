@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { interceptMapHours } from './helpers/conditions';
-import { preseedWindRingLegend } from './helpers/map-setup';
+import { openMapLayersMenu, preseedWindRingLegend } from './helpers/map-setup';
 
 const SPORTS = ['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as const;
 
@@ -70,6 +70,8 @@ test.describe('Map SST field', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapSst(page);
 
+    // C4: o toggle vive no menu «Camadas».
+    await openMapLayersMenu(page);
     await expect(page.locator('[data-map-sst-toggle]').first()).toBeVisible({ timeout: 15_000 });
     const map = page.locator('.leaflet-container');
     await expect(map).toHaveAttribute('data-map-sst', 'true', { timeout: 15_000 });

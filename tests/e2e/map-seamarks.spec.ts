@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { preseedWindRingLegend } from './helpers/map-setup';
+import { openMapLayersMenu, preseedWindRingLegend } from './helpers/map-setup';
 
 /**
  * OpenSeaMap seamarks overlay — toggle, pane dedicada, legenda e
@@ -30,6 +30,8 @@ test.describe('Map seamarks (OpenSeaMap)', () => {
     const map = page.locator('[data-map-seamarks]');
     await expect(map).toHaveAttribute('data-map-seamarks', 'false', { timeout: 15_000 });
 
+    // C4: o toggle vive no menu «Camadas».
+    await openMapLayersMenu(page);
     const toggle = page.locator('[data-map-seamarks-toggle]').first();
     await expect(toggle).toBeAttached({ timeout: 20_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
@@ -63,6 +65,7 @@ test.describe('Map seamarks (OpenSeaMap)', () => {
       page.locator('img.leaflet-tile[src*="tiles.openseamap.org"]').first(),
     ).toBeAttached({ timeout: 15_000 });
 
+    await openMapLayersMenu(page);
     const toggle = page.locator('[data-map-seamarks-toggle]').first();
     await toggle.dispatchEvent('click');
 

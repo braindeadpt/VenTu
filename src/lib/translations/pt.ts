@@ -114,6 +114,7 @@ export const translationsPt = {
     legendTitle: 'Score Náutico Geral',
     legendFlat: 'Fechado', legendPoor: 'Fraco', legendFair: 'Razoável', legendGood: 'Bom', legendEpic: 'Épico',
     layerMap: 'Mapa', layerSatellite: 'Satélite',
+    layersMenu: 'Camadas',
     clusterLabel: '{count} spots',
     noData: 'Sem dados',
     loading: 'A carregar mapa...',

@@ -78,6 +78,30 @@ export function getCardinalLabel(deg: number): string {
   return dirs[idx];
 }
 
+const CARDINAL_DEG: Record<string, number> = {
+  N: 0, NNE: 22.5, NE: 45, ENE: 67.5,
+  E: 90, ESE: 112.5, SE: 135, SSE: 157.5,
+  S: 180, SSW: 202.5, SW: 225, WSW: 247.5,
+  W: 270, WNW: 292.5, NW: 315, NNW: 337.5,
+};
+
+/**
+ * Does `deg` fall inside one of the cardinal sectors of `list` (each ±22.5°)?
+ * `list` is a spot's cardinal spec like «W, NW». Non-cardinal tokens («Rio»,
+ * «Lagoa») are ignored; returns null when no cardinal is present at all.
+ */
+export function directionInSectorList(deg: number, list?: string): boolean | null {
+  if (!list) return null;
+  const degs = list
+    .split(/[,/]/)
+    .map((s) => CARDINAL_DEG[s.trim().toUpperCase()])
+    .filter((d): d is number => d !== undefined);
+  if (!degs.length) return null;
+  return degs.some(
+    (d) => Math.abs(((deg - d + 540) % 360) - 180) <= 22.5 + 1,
+  );
+}
+
 /**
  * Map a wind direction (degrees, meteorological convention) to an arrow
  * pointing WHERE the wind GOES.

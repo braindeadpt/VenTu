@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { interceptMapHours } from './helpers/conditions';
-import { preseedWindRingLegend } from './helpers/map-setup';
+import { openMapLayersMenu, preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 import { expectTopmostHit } from './helpers/hit-test';
 
@@ -74,12 +74,14 @@ async function closeAndReopen(page: Page, query = ''): Promise<void> {
   await openMapaDesktop(page, query);
 }
 
+// C4 (auditoria 2026-09-16): as camadas secundárias vivem no menu «Camadas»
+// — os testes abrem-no antes de tocar no toggle. O radar ficou primário.
 const LAYERS = [
-  { name: 'correntes', param: 'currents', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents' },
-  { name: 'temperatura (SST)', param: 'sst', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst' },
-  { name: 'altura significativa (HS)', param: 'hs', attr: 'data-map-hs-toggle', lsKey: 'ventu.map.hs' },
-  { name: 'isóbatas', param: 'isobaths', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths' },
-  { name: 'radar IPMA', param: 'radar', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state' },
+  { name: 'correntes', param: 'currents', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', inMenu: true },
+  { name: 'temperatura (SST)', param: 'sst', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', inMenu: true },
+  { name: 'altura significativa (HS)', param: 'hs', attr: 'data-map-hs-toggle', lsKey: 'ventu.map.hs', inMenu: true },
+  { name: 'isóbatas', param: 'isobaths', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', inMenu: true },
+  { name: 'radar IPMA', param: 'radar', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', inMenu: false },
 ] as const;
 
 test.describe('Mapa desktop — coluna de controlos: persistência e deep links', () => {
@@ -95,6 +97,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
       page,
     }) => {
       await openMapaDesktop(page);
+      if (l.inMenu) await openMapLayersMenu(page);
 
       const toggle = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
       await expect(toggle).toBeEnabled({ timeout: 15_000 });
@@ -115,6 +118,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
 
       // Ciclo fechar/abrir (navegação real): a preferência sobrevive.
       await closeAndReopen(page);
+      if (l.inMenu) await openMapLayersMenu(page);
       const after = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
       await expect(after).toBeEnabled({ timeout: 15_000 });
       await expect(after).toHaveAttribute('aria-pressed', 'true');
@@ -125,6 +129,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
       // Garante LS desligado na camada.
       await page.evaluate((key) => localStorage.removeItem(key), l.lsKey);
       await closeAndReopen(page, `?${l.param}=1`);
+      if (l.inMenu) await openMapLayersMenu(page);
 
       const toggle = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
       await expect(toggle).toBeEnabled({ timeout: 15_000 });
@@ -134,6 +139,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
       await toggle.click();
       await expect(toggle).toHaveAttribute('aria-pressed', 'false');
       await closeAndReopen(page);
+      if (l.inMenu) await openMapLayersMenu(page);
       const after = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
       await expect(after).toBeEnabled({ timeout: 15_000 });
       await expect(after).toHaveAttribute('aria-pressed', 'false');

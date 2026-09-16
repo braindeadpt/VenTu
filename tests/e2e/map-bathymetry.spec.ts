@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { preseedWindRingLegend } from './helpers/map-setup';
+import { openMapLayersMenu, preseedWindRingLegend } from './helpers/map-setup';
 
 /**
  * EMODnet bathymetry WMS overlay — toggle, pane dedicada, legenda e
@@ -31,6 +31,8 @@ test.describe('Map bathymetry (EMODnet WMS)', () => {
     const map = page.locator('[data-map-bathymetry]');
     await expect(map).toHaveAttribute('data-map-bathymetry', 'false', { timeout: 15_000 });
 
+    // C4: o toggle vive no menu «Camadas».
+    await openMapLayersMenu(page);
     const toggle = page.locator('[data-map-bathymetry-toggle]').first();
     await expect(toggle).toBeAttached({ timeout: 20_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
@@ -65,6 +67,7 @@ test.describe('Map bathymetry (EMODnet WMS)', () => {
       page.locator('img.leaflet-tile[src*="ows.emodnet-bathymetry.eu"]').first(),
     ).toBeAttached({ timeout: 15_000 });
 
+    await openMapLayersMenu(page);
     const toggle = page.locator('[data-map-bathymetry-toggle]').first();
     await toggle.dispatchEvent('click');
 

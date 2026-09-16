@@ -3,7 +3,7 @@
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation, Mountain } from 'lucide-react';
+import { Wind, Waves, Zap, Filter, Star, RotateCcw, ArrowRight, MapPin, Navigation, Mountain, Table2, LayoutGrid, Map as MapIcon, ChevronDown } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
@@ -14,6 +14,7 @@ import Button from '@/components/ui/Button';
 import EmptyState from '@/components/ui/EmptyState';
 import { getPlayfulEmptyCopy } from '@/lib/emptyStateCopy';
 import SpotGridRankedList from './SpotGridRankedList';
+import SpotRankedTable from './SpotRankedTable';
 import { useSpotGridFilters } from './hooks/useSpotGridFilters';
 import { useLiveGridSpotData } from '@/hooks/useLiveGridSpotData';
 import {
@@ -79,10 +80,31 @@ export function SpotGridClient({
   const liveSpotsData = useLiveGridSpotData(spotsData);
   const [selectedSpotId, setSelectedSpotId] = useState<string | null>(null);
   const [mapDifficulty, setMapDifficulty] = useState<MapDifficultyFilter>('all');
+  // Auditoria 2026-09-16 (C1): a tabela densa é a vista por omissão — responde
+  // «onde ir?» sem scroll; os cards ficam como alternativa visual.
+  const [view, setView] = useState<'table' | 'cards'>('table');
+  // O mapa embebido deixa de comer o primeiro viewport em ecrãs pequenos:
+  // fechado <lg (lazy — o Leaflet nem monta), aberto em desktop.
+  const [mapOpen, setMapOpen] = useState(false);
 
   useEffect(() => {
     setMapDifficulty(readMapDifficultyFromStorage());
+    if (window.matchMedia('(min-width: 1024px)').matches) setMapOpen(true);
+    try {
+      const saved = localStorage.getItem('ventu:grid-view');
+      if (saved === 'cards' || saved === 'table') setView(saved);
+    } catch {
+      /* noop */
+    }
   }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('ventu:grid-view', view);
+    } catch {
+      /* noop */
+    }
+  }, [view]);
 
   useEffect(() => {
     try {
@@ -150,8 +172,8 @@ export function SpotGridClient({
             })}
           </div>
 
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar min-w-0 flex-1 basis-48">
               <div className="flex items-center gap-1.5 text-fg-muted mr-1">
                 <Filter className="w-3.5 h-3.5" />
                 <span className="text-meta-sm">{t.spots.region}</span>
@@ -173,6 +195,31 @@ export function SpotGridClient({
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
+              <div
+                role="group"
+                aria-label={isPt ? 'Vista da lista' : 'List view'}
+                className="flex items-center gap-1"
+              >
+                <FilterPill
+                  compact
+                  active={view === 'table'}
+                  onClick={() => setView('table')}
+                  aria-label={isPt ? 'Vista em tabela' : 'Table view'}
+                  icon={<Table2 className="w-3.5 h-3.5" />}
+                >
+                  <span className="hidden sm:inline">{isPt ? 'Tabela' : 'Table'}</span>
+                </FilterPill>
+                <FilterPill
+                  compact
+                  active={view === 'cards'}
+                  onClick={() => setView('cards')}
+                  aria-label={isPt ? 'Vista em cards' : 'Cards view'}
+                  icon={<LayoutGrid className="w-3.5 h-3.5" />}
+                >
+                  <span className="hidden sm:inline">Cards</span>
+                </FilterPill>
+              </div>
+
               <FilterPill
                 compact
                 active={sortBy === 'distance' && !!latitude}
@@ -243,6 +290,25 @@ export function SpotGridClient({
       </div>
 
       <div id="explore-map" className="mb-8 map-fullscreen-wrap scroll-mt-24">
+        <button
+          type="button"
+          onClick={() => setMapOpen((o) => !o)}
+          aria-expanded={mapOpen}
+          className="w-full flex items-center gap-2 min-h-[44px] px-3 mb-2 rounded-input border border-divider bg-surface-1/[0.03] text-meta font-medium text-fg hover:border-divider-strong transition-colors duration-150"
+        >
+          <MapIcon className="w-4 h-4 text-fg-muted" aria-hidden />
+          <span className="flex-1 text-left">
+            {isPt ? 'Mapa' : 'Map'}
+            <span className="text-fg-muted font-mono tabular-nums">
+              {' '}· {mapSpotsData.length} {t.hero.spotsCount}
+            </span>
+          </span>
+          <ChevronDown
+            className={`w-4 h-4 text-fg-muted transition-transform duration-150 ${mapOpen ? 'rotate-180' : ''}`}
+            aria-hidden
+          />
+        </button>
+        {mapOpen && (
         <SpotMapInteractive
           spotsData={mapSpotsData}
           selectedSport={selectedSport}
@@ -276,18 +342,27 @@ export function SpotGridClient({
             selectedDifficulty: mapDifficulty,
             onDifficultyChange: setMapDifficulty,
             difficultyGroupLabel: t.spots.level,
+            layersLabel: t.map.layersMenu,
           }}
         />
+        )}
       </div>
 
-      {sorted.length > 0 && (
-        <SpotGridRankedList
-          sorted={sorted}
-          selectedSport={selectedSport}
-          locale={locale as Locale}
-          excludeSlugs={excludeTopNowSlugs}
-        />
-      )}
+      {sorted.length > 0 &&
+        (view === 'table' ? (
+          <SpotRankedTable
+            sorted={sorted}
+            selectedSport={selectedSport}
+            locale={locale as Locale}
+          />
+        ) : (
+          <SpotGridRankedList
+            sorted={sorted}
+            selectedSport={selectedSport}
+            locale={locale as Locale}
+            excludeSlugs={excludeTopNowSlugs}
+          />
+        ))}
 
       {sorted.length === 0 && (
         <EmptyState

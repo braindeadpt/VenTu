@@ -1,6 +1,7 @@
 'use client';
 
 import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat } from 'lucide-react';
+import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 interface MapControlsProps {
   isFullscreen: boolean;
@@ -53,6 +54,7 @@ interface MapControlsProps {
   onlyOnHint: string;
   windLegendHelpLabel: string;
   coastalWarningsLabel: string;
+  layersLabel: string;
   fullscreenLabel: string;
   exitLabel: string;
   // Handlers
@@ -86,7 +88,6 @@ interface MapControlsProps {
  */
 const item =
   'flex h-10 min-w-10 shrink-0 items-center justify-center gap-1.5 rounded-full px-2.5 text-xs font-semibold whitespace-nowrap text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 touch-manipulation';
-const itemLabel = 'hidden 2xl:inline';
 const itemDisabled = 'opacity-40 cursor-not-allowed';
 const active = {
   wind: 'bg-data-wind/10 text-data-wind',
@@ -150,6 +151,7 @@ export default function MapControls({
   onlyOnHint,
   windLegendHelpLabel,
   coastalWarningsLabel,
+  layersLabel,
   fullscreenLabel,
   exitLabel,
   enterFullscreen,
@@ -176,6 +178,112 @@ export default function MapControls({
   if (isHeroEmbed) return null;
   // Mobile fullscreen uses the bottom HUD; desktop keeps these labelled menus.
   if (isFullscreen && isMobile) return null;
+
+  // Camadas de dados → menu «Camadas» (C4). As gated por isFullscreen só
+  // existem no /mapa — na versão embed o menu fica só com as camadas fixas.
+  const layerMenuItems: MapLayersMenuItem[] = [
+    ...(isFullscreen
+      ? ([
+          {
+            key: 'hours',
+            label: hoursLabel,
+            hint: hoursUnavailable ? `${hoursHint} — indisponível` : hoursHint,
+            icon: <Clock className="w-4 h-4" aria-hidden />,
+            pressed: hoursEnabled,
+            disabled: hoursUnavailable,
+            onToggle: toggleHours,
+            toggleAttr: 'data-map-hours-toggle',
+            iconClass: 'text-score-good',
+            resetVisible: hoursPrefSet || hoursEnabled,
+            onReset: handleResetHours,
+            resetLabel: hoursResetLabel,
+          },
+          {
+            key: 'hs',
+            label: hsLabel,
+            hint: hsUnavailable ? `${hsHint} — indisponível` : hsHint,
+            icon: <Activity className="w-4 h-4" aria-hidden />,
+            pressed: hsEnabled,
+            disabled: hsUnavailable,
+            onToggle: toggleHs,
+            toggleAttr: 'data-map-hs-toggle',
+            iconClass: 'text-data-waves',
+          },
+          {
+            key: 'sst',
+            label: sstLabel,
+            hint: sstUnavailable ? `${sstHint} — indisponível` : sstHint,
+            icon: <Thermometer className="w-4 h-4" aria-hidden />,
+            pressed: sstEnabled,
+            disabled: sstUnavailable,
+            onToggle: toggleSst,
+            toggleAttr: 'data-map-sst-toggle',
+            iconClass: 'text-data-period',
+          },
+          {
+            key: 'currents',
+            label: currentsLabel,
+            hint: currentsUnavailable ? `${currentsHint} — indisponível` : currentsHint,
+            icon: <Navigation className="w-4 h-4" aria-hidden />,
+            pressed: currentsEnabled,
+            disabled: currentsUnavailable,
+            onToggle: toggleCurrents,
+            toggleAttr: 'data-map-currents-toggle',
+            iconClass: 'text-data-water',
+          },
+          {
+            key: 'buoys',
+            label: buoysLabel,
+            hint: buoysHint,
+            icon: <LifeBuoy className="w-4 h-4" aria-hidden />,
+            pressed: buoysEnabled,
+            onToggle: toggleBuoys,
+            toggleAttr: 'data-map-buoys-toggle',
+            iconClass: 'text-data-waves',
+          },
+        ] satisfies MapLayersMenuItem[])
+      : []),
+    {
+      key: 'isobaths',
+      label: isobathsLabel,
+      hint: isobathsLabel,
+      icon: <Waves className="w-4 h-4" aria-hidden />,
+      pressed: isobathsEnabled,
+      onToggle: toggleIsobaths,
+      toggleAttr: 'data-map-isobaths-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
+      key: 'bathymetry',
+      label: bathymetryLabel,
+      hint: bathymetryHint,
+      icon: <Mountain className="w-4 h-4" aria-hidden />,
+      pressed: bathymetryEnabled,
+      onToggle: toggleBathymetry,
+      toggleAttr: 'data-map-bathymetry-toggle',
+      iconClass: 'text-data-water',
+    },
+    {
+      key: 'seamarks',
+      label: seamarksLabel,
+      hint: seamarksHint,
+      icon: <Sailboat className="w-4 h-4" aria-hidden />,
+      pressed: seamarksEnabled,
+      onToggle: toggleSeamarks,
+      toggleAttr: 'data-map-seamarks-toggle',
+      iconClass: 'text-score-good',
+    },
+    {
+      key: 'coastalWarnings',
+      label: coastalWarningsLabel,
+      hint: coastalWarningsLabel,
+      icon: <Anchor className="w-4 h-4" aria-hidden />,
+      pressed: coastalWarningsEnabled,
+      onToggle: toggleCoastalWarnings,
+      toggleAttr: 'data-map-coastal-warnings-toggle',
+      iconClass: 'text-score-poor',
+    },
+  ];
 
   return (
     // Barra de ferramentas flutuante no topo do mapa (padrão Windy/Maps):
@@ -253,7 +361,7 @@ export default function MapControls({
           data-map-radar-toggle
         >
           <CloudRain className="w-4 h-4 shrink-0" aria-hidden />
-          <span className={itemLabel}>{radarLabel}</span>
+          <span className="hidden lg:inline">{radarLabel}</span>
         </button>
         {(radarPrefSet || radarEnabled) && (
           <button
@@ -267,146 +375,15 @@ export default function MapControls({
           </button>
         )}
 
-        {isFullscreen && (
-          <button
-            type="button"
-            onClick={toggleHours}
-            disabled={hoursUnavailable}
-            title={hoursUnavailable ? `${hoursHint} — indisponível` : hoursHint}
-            className={`${item} ${hoursUnavailable ? itemDisabled : hoursEnabled ? active.hours : ''}`}
-            aria-label={hoursLabel}
-            aria-pressed={hoursEnabled}
-            data-map-hours-toggle
-          >
-            <Clock className="w-4 h-4 shrink-0" aria-hidden />
-            <span className={itemLabel}>{hoursLabel}</span>
-          </button>
-        )}
-        {isFullscreen && (hoursPrefSet || hoursEnabled) && (
-          <button
-            type="button"
-            onClick={handleResetHours}
-            aria-label={hoursResetLabel}
-            title={hoursResetLabel}
-            className={`${iconBtn} touch-manipulation`}
-          >
-            <RotateCcw className="w-3.5 h-3.5" aria-hidden />
-          </button>
-        )}
-
-        {isFullscreen && (
-          <button
-            type="button"
-            onClick={toggleHs}
-            disabled={hsUnavailable}
-            title={hsUnavailable ? `${hsHint} — indisponível` : hsHint}
-            className={`${item} ${hsUnavailable ? itemDisabled : hsEnabled ? active.waves : ''}`}
-            aria-label={hsLabel}
-            aria-pressed={hsEnabled}
-            data-map-hs-toggle
-          >
-            <Activity className="w-4 h-4 shrink-0" aria-hidden />
-            <span className={itemLabel}>{hsLabel}</span>
-          </button>
-        )}
-
-        {isFullscreen && (
-          <button
-            type="button"
-            onClick={toggleSst}
-            disabled={sstUnavailable}
-            title={sstUnavailable ? `${sstHint} — indisponível` : sstHint}
-            className={`${item} ${sstUnavailable ? itemDisabled : sstEnabled ? active.period : ''}`}
-            aria-label={sstLabel}
-            aria-pressed={sstEnabled}
-            data-map-sst-toggle
-          >
-            <Thermometer className="w-4 h-4 shrink-0" aria-hidden />
-            <span className={itemLabel}>{sstLabel}</span>
-          </button>
-        )}
-
-        {isFullscreen && (
-          <button
-            type="button"
-            onClick={toggleCurrents}
-            disabled={currentsUnavailable}
-            title={currentsUnavailable ? `${currentsHint} — indisponível` : currentsHint}
-            className={`${item} ${currentsUnavailable ? itemDisabled : currentsEnabled ? active.water : ''}`}
-            aria-label={currentsLabel}
-            aria-pressed={currentsEnabled}
-            data-map-currents-toggle
-          >
-            <Navigation className="w-4 h-4 shrink-0" aria-hidden />
-            <span className={itemLabel}>{currentsLabel}</span>
-          </button>
-        )}
-
-        {isFullscreen && (
-          <button
-            type="button"
-            onClick={toggleBuoys}
-            title={buoysHint}
-            className={`${item} ${buoysEnabled ? active.waves : ''}`}
-            aria-label={buoysLabel}
-            aria-pressed={buoysEnabled}
-            data-map-buoys-toggle
-          >
-            <LifeBuoy className="w-4 h-4 shrink-0" aria-hidden />
-            <span className={itemLabel}>{buoysLabel}</span>
-          </button>
-        )}
-
-        <button
-          type="button"
-          onClick={toggleIsobaths}
-          title={isobathsLabel}
-          className={`${item} ${isobathsEnabled ? active.waves : ''}`}
-          aria-label={isobathsLabel}
-          aria-pressed={isobathsEnabled}
-          data-map-isobaths-toggle
-        >
-          <Waves className="w-4 h-4 shrink-0" aria-hidden />
-          <span className={itemLabel}>{isobathsLabel}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={toggleBathymetry}
-          title={bathymetryHint}
-          className={`${item} ${bathymetryEnabled ? active.water : ''}`}
-          aria-label={bathymetryLabel}
-          aria-pressed={bathymetryEnabled}
-          data-map-bathymetry-toggle
-        >
-          <Mountain className="w-4 h-4 shrink-0" aria-hidden />
-          <span className={itemLabel}>{bathymetryLabel}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={toggleSeamarks}
-          title={seamarksHint}
-          className={`${item} ${seamarksEnabled ? active.good : ''}`}
-          aria-label={seamarksLabel}
-          aria-pressed={seamarksEnabled}
-          data-map-seamarks-toggle
-        >
-          <Sailboat className="w-4 h-4 shrink-0" aria-hidden />
-          <span className={itemLabel}>{seamarksLabel}</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={toggleCoastalWarnings}
-          title={coastalWarningsLabel}
-          className={`${item} ${coastalWarningsEnabled ? active.radar : ''}`}
-          aria-label={coastalWarningsLabel}
-          aria-pressed={coastalWarningsEnabled}
-        >
-          <Anchor className="w-4 h-4 shrink-0" aria-hidden />
-          <span className={itemLabel}>{coastalWarningsLabel}</span>
-        </button>
+        {/* Auditoria 2026-09-16 (C4): o pill tinha ~14 ícones sem label —
+            as camadas de dados vivem agora num menu com rótulos. Primários
+            no chrome: fullscreen, cluster, vento, radar, «só a bombar». */}
+        <MapLayersMenu
+          label={layersLabel}
+          variant="pill"
+          direction="down"
+          items={layerMenuItems}
+        />
 
         {divider}
 

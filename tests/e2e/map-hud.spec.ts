@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { interceptMapHours, interceptRadar, interceptIhBuoys, interceptWmoBuoys } from './helpers/conditions';
-import { preseedWindRingLegend } from './helpers/map-setup';
+import { openMapLayersMenu, preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 import { expectTopmostHit } from './helpers/hit-test';
 import { expandMapHudFilters } from './helpers/map-hud';
@@ -436,15 +436,19 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
         reducedMotion: 'reduce',
       });
 
+      // C4 (auditoria 2026-09-16): as camadas secundárias vivem no menu
+      // «Camadas» do strip — o teste abre-o antes de tocar no toggle.
+      // O radar ficou primário.
       for (const t of [
-        { name: 'correntes', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', lsValue: '1' },
-        { name: 'temperatura (SST)', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', lsValue: '1' },
-        { name: 'isóbatas', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', lsValue: '1' },
-        { name: 'radar IPMA', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', lsValue: null },
+        { name: 'correntes', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', lsValue: '1', inMenu: true },
+        { name: 'temperatura (SST)', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', lsValue: '1', inMenu: true },
+        { name: 'isóbatas', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', lsValue: '1', inMenu: true },
+        { name: 'radar IPMA', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', lsValue: null, inMenu: false },
       ]) {
         test(`toggle «${t.name}» é o elemento de topo no strip e persiste após recarga`, async ({ page }) => {
           await openMapa(page, { radar: true, layers: true });
           await expandMapHudFilters(page);
+          if (t.inMenu) await openMapLayersMenu(page);
 
           const toggle = page.locator(`[${t.attr}]`);
           await expect(toggle).toBeEnabled({ timeout: 15_000 });
@@ -470,6 +474,7 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
           await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
           await waitHydrated(page);
           await expandMapHudFilters(page);
+          if (t.inMenu) await openMapLayersMenu(page);
 
           const after = page.locator(`[${t.attr}]`);
           await expect(after).toBeEnabled({ timeout: 15_000 });

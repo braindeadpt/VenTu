@@ -103,6 +103,9 @@ export interface SpotListingConditions {
   /** Regional bias meta — baked pela pipeline (VENTU_WAVE_BIAS_CORRECTION=1)
    *  ou aplicado em runtime pelo fallback client-side (`fallback: true`). */
   waveBias?: { region: string; me: number; n: number; deltaM: number; fallback?: boolean }
+  /** Fase da maré — coluna Maré da tabela densa de /spots (auditoria C1). */
+  tideStatus?: 'high' | 'low' | 'rising' | 'falling'
+  tideLabel?: string
 }
 
 /** Full conditions — what the spot page bakes into its static HTML. */
@@ -124,8 +127,6 @@ export interface SpotDetailConditions extends SpotListingConditions {
   /** Station wind bias baked by the merge (wind-bias.json) — badge tooltip. */
   windBias?: { station?: string; source?: string; me?: number; mae?: number; rmse?: number; n?: number }
   tideHeight?: number
-  tideStatus?: 'high' | 'low' | 'rising' | 'falling'
-  tideLabel?: string
 }
 
 /** Shared row shell for both loaders. */
@@ -224,6 +225,8 @@ function buildSpotData(
     observedWave: raw?.observedWave as ObservedWave | undefined,
     waveBias:
       (biasPatch?.waveBias ?? raw?.waveBias) as SpotListingConditions['waveBias'],
+    tideStatus: raw?.tideStatus as SpotListingConditions['tideStatus'],
+    tideLabel: raw?.tideLabel as string | undefined,
   }
 
   const dataId = spot.conditionsSource ?? spot.id
@@ -248,8 +251,6 @@ function buildSpotData(
       | undefined,
     windBias: raw?.windBias as SpotDetailConditions['windBias'],
     tideHeight: raw?.tideHeight as number | undefined,
-    tideStatus: raw?.tideStatus as SpotDetailConditions['tideStatus'],
-    tideLabel: raw?.tideLabel as string | undefined,
   }
 
   return {

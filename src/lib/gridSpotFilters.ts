@@ -16,6 +16,9 @@ export interface GridSpotData {
   spot: Spot;
   conditions: MarineConditionsFields;
   allScores: Record<SportType, SportScore>;
+  /** Best 24h window baked into listings (loadSpotListings); absent in fixtures. */
+  bestWindowToday?: import('@/lib/bestWindowToday').BestWindowToday | null;
+  bestWindowsBySport?: import('@/lib/bestWindowToday').BestWindowsBySport;
 }
 
 /** Map + grid sport filter: show every spot where the modality makes sense (score still on marker). */

@@ -61,7 +61,15 @@ interface UseMapLayersOptions {
   radarOverlayRef: React.MutableRefObject<L.ImageOverlay | null>;
   isobathsLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
-  t: { map: { showRadar: string; hideRadar: string; radarHint: string } };
+  t: {
+    map: {
+      showRadar: string;
+      hideRadar: string;
+      radarHint: string;
+      showCoastalWarnings: string;
+      hideCoastalWarnings: string;
+    };
+  };
 }
 
 interface UseMapLayersReturn {
@@ -735,7 +743,9 @@ export function useMapLayers({
     });
   }, []);
 
-  const coastalWarningsLabel = coastalWarningsEnabled ? 'Ocultar avisos à navegação' : 'Avisos à navegação (IH)';
+  const coastalWarningsLabel = coastalWarningsEnabled
+    ? t.map.hideCoastalWarnings
+    : t.map.showCoastalWarnings;
 
   return {
     radarData, radarEnabled, radarFrameIndex, radarUserPaused, radarPrefSet,

@@ -801,6 +801,9 @@ test.describe('IPMA radar no mapa embebido do grid em mobile (geometria)', () =>
     // direito. Agora é compacto, ancorrado à esquerda e com largura
     // limitada — o canto fica livre (regressão guardada por geometria).
     await page.goto('/pt/spots/', { waitUntil: 'networkidle', timeout: 60_000 });
+    // Auditoria C1: o mapa embebido fica colapsado por omissão em <lg —
+    // expande-se antes de ligar o radar.
+    await page.locator('#explore-map > button[aria-expanded]').click();
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await page.waitForTimeout(500);
 

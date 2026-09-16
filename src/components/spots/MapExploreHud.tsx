@@ -5,6 +5,7 @@ import { Anchor, ChevronDown, Clock, CloudRain, Filter, HelpCircle, Layers, Life
 import FilterPill from '@/components/ui/FilterPill';
 import MapControlButton from '@/components/ui/MapControlButton';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
+import MapLayersMenu, { type MapLayersMenuItem } from './map/components/MapLayersMenu';
 import type { BasemapMode } from './MapLayerToggle';
 import type { MapFullscreenHudProps } from './mapHudTypes';
 
@@ -77,6 +78,7 @@ export interface MapExploreHudProps extends MapFullscreenHudProps {
   exploreModeLabel: string;
   layerMapLabel: string;
   layerSatelliteLabel: string;
+  layersLabel: string;
   clusterLabel: string;
   windLabel: string;
   exitLabel: string;
@@ -149,6 +151,7 @@ export default function MapExploreHud({
   exploreModeLabel,
   layerMapLabel,
   layerSatelliteLabel,
+  layersLabel,
   clusterLabel,
   windLabel,
   exitLabel,
@@ -211,6 +214,94 @@ export default function MapExploreHud({
     (selectedDifficulty !== 'all' ? 1 : 0);
 
   if (!visible) return null;
+
+  // Camadas de dados → menu «Camadas» (C4). Rótulos dinâmicos show/hide —
+  // o estado ligado é o ✓ à direita, coerente com os toggles do chrome.
+  const layerMenuItems: MapLayersMenuItem[] = [
+    {
+      key: 'hs',
+      label: hsLabel,
+      hint: hsHint,
+      icon: <Activity className="w-4 h-4" aria-hidden />,
+      pressed: hsEnabled,
+      disabled: hsUnavailable,
+      onToggle: onToggleHs,
+      toggleAttr: 'data-map-hs-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
+      key: 'sst',
+      label: sstLabel,
+      hint: sstHint,
+      icon: <Thermometer className="w-4 h-4" aria-hidden />,
+      pressed: sstEnabled,
+      disabled: sstUnavailable,
+      onToggle: onToggleSst,
+      toggleAttr: 'data-map-sst-toggle',
+      iconClass: 'text-data-period',
+    },
+    {
+      key: 'currents',
+      label: currentsLabel,
+      hint: currentsHint,
+      icon: <Navigation className="w-4 h-4" aria-hidden />,
+      pressed: currentsEnabled,
+      disabled: currentsUnavailable,
+      onToggle: onToggleCurrents,
+      toggleAttr: 'data-map-currents-toggle',
+      iconClass: 'text-data-water',
+    },
+    {
+      key: 'buoys',
+      label: buoysLabel,
+      hint: buoysHint,
+      icon: <LifeBuoy className="w-4 h-4" aria-hidden />,
+      pressed: buoysEnabled,
+      onToggle: onToggleBuoys,
+      toggleAttr: 'data-map-buoys-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
+      key: 'isobaths',
+      label: isobathsLabel,
+      hint: isobathsHint,
+      icon: <Waves className="w-4 h-4" aria-hidden />,
+      pressed: isobathsEnabled,
+      onToggle: onToggleIsobaths,
+      toggleAttr: 'data-map-isobaths-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
+      key: 'bathymetry',
+      label: bathymetryLabel,
+      hint: bathymetryHint,
+      icon: <Mountain className="w-4 h-4" aria-hidden />,
+      pressed: bathymetryEnabled,
+      onToggle: onToggleBathymetry,
+      toggleAttr: 'data-map-bathymetry-toggle',
+      iconClass: 'text-data-water',
+    },
+    {
+      key: 'seamarks',
+      label: seamarksLabel,
+      hint: seamarksHint,
+      icon: <Sailboat className="w-4 h-4" aria-hidden />,
+      pressed: seamarksEnabled,
+      onToggle: onToggleSeamarks,
+      toggleAttr: 'data-map-seamarks-toggle',
+      iconClass: 'text-score-good',
+    },
+    {
+      key: 'coastalWarnings',
+      label: coastalWarningsLabel,
+      hint: coastalWarningsHint,
+      icon: <Anchor className="w-4 h-4" aria-hidden />,
+      pressed: coastalWarningsEnabled,
+      onToggle: onToggleCoastalWarnings,
+      toggleAttr: 'data-map-coastal-warnings-toggle',
+      iconClass: 'text-score-poor',
+    },
+  ];
 
   const toggleCollapsed = () => {
     setCollapsed((prev) => {
@@ -387,111 +478,15 @@ export default function MapExploreHud({
             </MapControlButton>
           )}
 
-          <MapControlButton
-            onClick={onToggleHs}
-            aria-label={hsLabel}
-            pressed={hsEnabled}
-            title={hsHint}
-            disabled={hsUnavailable}
-            data-map-hs-toggle
-            className={
-              hsEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
-            }
-          >
-            <Activity className="w-4 h-4" aria-hidden />
-          </MapControlButton>
-
-          <MapControlButton
-            onClick={onToggleSst}
-            aria-label={sstLabel}
-            pressed={sstEnabled}
-            title={sstHint}
-            disabled={sstUnavailable}
-            data-map-sst-toggle
-            className={
-              sstEnabled ? 'border-data-period/40 bg-data-period/15 text-fg' : undefined
-            }
-          >
-            <Thermometer className="w-4 h-4 text-data-period" aria-hidden />
-          </MapControlButton>
-
-          <MapControlButton
-            onClick={onToggleCurrents}
-            aria-label={currentsLabel}
-            pressed={currentsEnabled}
-            title={currentsHint}
-            disabled={currentsUnavailable}
-            data-map-currents-toggle
-            className={
-              currentsEnabled ? 'border-data-water/40 bg-data-water/15 text-fg' : undefined
-            }
-          >
-            <Navigation className="w-4 h-4 text-data-water" aria-hidden />
-          </MapControlButton>
-
-          <MapControlButton
-            onClick={onToggleBuoys}
-            aria-label={buoysLabel}
-            pressed={buoysEnabled}
-            title={buoysHint}
-            data-map-buoys-toggle
-            className={
-              buoysEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
-            }
-          >
-            <LifeBuoy className="w-4 h-4" aria-hidden />
-          </MapControlButton>
-
-          <MapControlButton
-            onClick={onToggleIsobaths}
-            aria-label={isobathsLabel}
-            pressed={isobathsEnabled}
-            title={isobathsHint}
-            data-map-isobaths-toggle
-            className={
-              isobathsEnabled ? 'border-data-waves/40 bg-data-waves/15 text-fg' : undefined
-            }
-          >
-            <Waves className="w-4 h-4 text-data-waves" aria-hidden />
-          </MapControlButton>
-
-          <MapControlButton
-            onClick={onToggleBathymetry}
-            aria-label={bathymetryLabel}
-            pressed={bathymetryEnabled}
-            title={bathymetryHint}
-            data-map-bathymetry-toggle
-            className={
-              bathymetryEnabled ? 'border-data-water/40 bg-data-water/15 text-fg' : undefined
-            }
-          >
-            <Mountain className="w-4 h-4 text-data-water" aria-hidden />
-          </MapControlButton>
-
-          <MapControlButton
-            onClick={onToggleSeamarks}
-            aria-label={seamarksLabel}
-            pressed={seamarksEnabled}
-            title={seamarksHint}
-            data-map-seamarks-toggle
-            className={
-              seamarksEnabled ? 'border-score-good/40 bg-score-good/15 text-fg' : undefined
-            }
-          >
-            <Sailboat className="w-4 h-4 text-score-good" aria-hidden />
-          </MapControlButton>
-
-          <MapControlButton
-            onClick={onToggleCoastalWarnings}
-            aria-label={coastalWarningsLabel}
-            pressed={coastalWarningsEnabled}
-            title={coastalWarningsHint}
-            className={
-              coastalWarningsEnabled ? 'border-score-poor/40 bg-score-poor/15 text-fg' : undefined
-            }
-          >
-            <Anchor className="w-4 h-4 text-score-poor" aria-hidden />
-          </MapControlButton>
+          {/* Auditoria 2026-09-16 (C4): as 8 camadas de dados saíram do
+              strip para o menu «Camadas» com rótulos — o strip fica com 5
+              primários (cluster, radar, 48 h, vento, só a bombar). */}
+          <MapLayersMenu
+            label={layersLabel}
+            variant="hud"
+            direction="up"
+            items={layerMenuItems}
+          />
 
           <div className="inline-flex items-center gap-0.5 shrink-0">
             <MapControlButton

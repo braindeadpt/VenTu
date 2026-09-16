@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { preseedWindRingLegend } from './helpers/map-setup';
+import { openMapLayersMenu, preseedWindRingLegend } from './helpers/map-setup';
 
 /**
  * Camada «Avisos à navegação (IH)» no mapa fullscreen (/mapa): o toggle do HUD
@@ -61,6 +61,8 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 
     // Off por omissão — sem overlay nem atribuição.
+    // C4: o toggle vive no menu «Camadas».
+    await openMapLayersMenu(page);
     const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
@@ -130,6 +132,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     await interceptCoastalWarnings(page);
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await openMapLayersMenu(page);
 
     const active = page.getByRole('button', { name: 'Ocultar avisos à navegação' });
     await expect(active).toBeVisible({ timeout: 15_000 });
@@ -154,6 +157,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     });
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await openMapLayersMenu(page);
 
     const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
     await expect(toggle).toBeVisible({ timeout: 15_000 });
@@ -171,6 +175,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     );
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await openMapLayersMenu(page);
 
     const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
     await expect(toggle).toBeVisible({ timeout: 15_000 });
@@ -192,6 +197,7 @@ test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso 
     await interceptCoastalWarnings(page);
     await page.goto('/pt/mapa/?spot=moledo', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await openMapLayersMenu(page);
 
     const active = page.getByRole('button', { name: 'Ocultar avisos à navegação' });
     await expect(active).toBeVisible({ timeout: 15_000 });
@@ -220,6 +226,7 @@ test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso 
     await interceptCoastalWarnings(page);
     await page.goto('/pt/mapa/?spot=guincho', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+    await openMapLayersMenu(page);
 
     const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
     await expect(toggle).toBeVisible({ timeout: 15_000 });
