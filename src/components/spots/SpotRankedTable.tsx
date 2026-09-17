@@ -24,6 +24,9 @@ interface SpotRankedTableProps {
   sorted: GridSpotData[];
   selectedSport: GridSportFilter;
   locale: string;
+  /** Section heading overrides — home reuses the table as «Top 8 · Surf». */
+  title?: string;
+  subtitle?: string;
 }
 
 function windowSport(sport: GridSportFilter): SportType | 'all' {
@@ -52,6 +55,8 @@ export default function SpotRankedTable({
   sorted,
   selectedSport,
   locale,
+  title,
+  subtitle,
 }: SpotRankedTableProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale as Locale);
@@ -62,12 +67,13 @@ export default function SpotRankedTable({
     <section className="mb-10" aria-labelledby="spot-table-heading">
       <div className="mb-3">
         <h2 id="spot-table-heading" className="text-h3 text-fg">
-          {isPt ? 'Ranking de spots' : 'Spot ranking'}
+          {title ?? (isPt ? 'Ranking de spots' : 'Spot ranking')}
         </h2>
         <p className="text-meta text-fg-muted mt-1">
-          {isPt
-            ? 'Ordenados por score · filtros activos'
-            : 'Sorted by score · active filters'}
+          {subtitle ??
+            (isPt
+              ? 'Ordenados por score · filtros activos'
+              : 'Sorted by score · active filters')}
         </p>
       </div>
 

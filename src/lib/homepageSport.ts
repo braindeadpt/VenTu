@@ -20,6 +20,8 @@ export interface HomepageSpotData {
   allScores: Record<SportType, SportScore>
   bestWindowToday: import('@/lib/bestWindowToday').BestWindowToday | null
   bestWindowsBySport: import('@/lib/bestWindowToday').BestWindowsBySport
+  /** Melhor janela ≥Bom por desporto nas próximas 48h (escala canónica). */
+  upcomingWindowsBySport: import('@/lib/bestWindowToday').UpcomingWindowsBySport
 }
 
 export function parseSportFilter(value?: string | null): GridSportFilter {

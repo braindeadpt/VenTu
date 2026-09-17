@@ -1,6 +1,7 @@
 import { computeMagicWindows, type HourlyCondition } from '@/lib/magicWindows';
 import { getCompatibleSports } from '@/lib/sportRatings';
 import type { SportType } from '@/lib/sportRatings';
+import { getHourlyScores, type Conditions } from '@/lib/sportScore';
 import type { Spot } from '@/types';
 
 export interface BestWindowToday {
@@ -14,6 +15,23 @@ export interface BestWindowToday {
 export type BestWindowsBySport = Partial<
   Record<SportType, Pick<BestWindowToday, 'start' | 'end' | 'score'>>
 >;
+
+/**
+ * Upcoming magic window on the canonical score scale — the same scorer the
+ * forecast table and spot-page windows use, so a home «Próximas janelas»
+ * row can never disagree with the spot page. Unlike `BestWindowToday`
+ * (heuristic + hour-of-day), this carries the ISO timestamps needed to
+ * label «Hoje»/«Amanhã»/weekday against the reader's clock.
+ */
+export interface UpcomingWindow {
+  /** ISO forecast timestamp of the window start. */
+  startIso: string;
+  /** ISO forecast timestamp of the window end (last good hour). */
+  endIso: string;
+  score: number;
+}
+
+export type UpcomingWindowsBySport = Partial<Record<SportType, UpcomingWindow>>;
 
 export interface ForecastHourRow {
   time: string;
@@ -39,18 +57,27 @@ function toHourly(row: ForecastHourRow): HourlyCondition {
   };
 }
 
-/** Next 24h of hourly forecast — same filter as SpotDetailClient magic windows. */
-export function filterForecastNext24h(
+/** Next `hours` of hourly forecast — same filter as SpotDetailClient magic windows. */
+function filterForecastNextHours(
   forecast: ForecastHourRow[],
-  nowMs = Date.now(),
+  hours: number,
+  nowMs: number,
 ): HourlyCondition[] {
-  const cutoff = nowMs + 24 * HOUR_MS;
+  const cutoff = nowMs + hours * HOUR_MS;
   return forecast
     .map(toHourly)
     .filter((h) => {
       const t = new Date(h.time).getTime();
       return t >= nowMs && t < cutoff;
     });
+}
+
+/** Next 24h of hourly forecast — same filter as SpotDetailClient magic windows. */
+export function filterForecastNext24h(
+  forecast: ForecastHourRow[],
+  nowMs = Date.now(),
+): HourlyCondition[] {
+  return filterForecastNextHours(forecast, 24, nowMs);
 }
 
 function hourFromForecastTime(iso: string): number {
@@ -100,6 +127,36 @@ export function computeBestWindowsForSpot(
   }
 
   return { bestWindowToday, bestWindowsBySport };
+}
+
+/**
+ * Best upcoming window per compatible sport over the next 48h, scored with
+ * the canonical hourly scorer (`getHourlyScores` + `computeMagicWindows`
+ * `scores` path — the spot page's own chain). Baked at SSG from the same
+ * build-time clock as `computeBestWindowsForSpot`; the UI drops rows whose
+ * `endIso` has passed on the reader's clock after mount.
+ */
+export function computeUpcomingWindowsForSpot(
+  spot: Spot,
+  forecast: ForecastHourRow[],
+  currentConditions: Conditions,
+  nowMs = Date.now(),
+): UpcomingWindowsBySport {
+  const hourly = filterForecastNextHours(forecast, 48, nowMs);
+  const out: UpcomingWindowsBySport = {};
+  if (!hourly.length) return out;
+
+  for (const sport of getCompatibleSports(spot)) {
+    const scores = getHourlyScores(spot, sport, hourly, currentConditions);
+    const top = computeMagicWindows(hourly, sport, spot.bestWind || '', scores)[0];
+    if (!top) continue;
+    const startRow = hourly[top.start];
+    const endRow = hourly[top.end];
+    if (!startRow || !endRow) continue;
+    out[sport] = { startIso: startRow.time, endIso: endRow.time, score: top.score };
+  }
+
+  return out;
 }
 
 /** Resolve the best window for a sport filter (matches homepage / Your day). */

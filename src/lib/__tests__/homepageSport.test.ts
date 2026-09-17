@@ -44,6 +44,7 @@ function row(
     },
     bestWindowToday: null,
     bestWindowsBySport: {} as HomepageSpotData['bestWindowsBySport'],
+    upcomingWindowsBySport: {},
   };
 }
 

@@ -12,8 +12,8 @@ import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions'
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias'
-import type { BestWindowToday, BestWindowsBySport } from '@/lib/bestWindowToday'
-import { computeBestWindowsForSpot } from '@/lib/bestWindowToday'
+import type { BestWindowToday, BestWindowsBySport, UpcomingWindowsBySport } from '@/lib/bestWindowToday'
+import { computeBestWindowsForSpot, computeUpcomingWindowsForSpot } from '@/lib/bestWindowToday'
 
 const CALM_LAKE_CONDITIONS = {
   waveHeight: 0,
@@ -135,6 +135,9 @@ export interface SpotRowBase {
   allScores: Record<SportType, SportScore>
   bestWindowToday: BestWindowToday | null
   bestWindowsBySport: BestWindowsBySport
+  /** Melhor janela ≥Bom por desporto nas próximas 48h, escala canónica —
+   *  alimenta o bloco «Próximas janelas 48h» da home (auditoria C3). */
+  upcomingWindowsBySport: UpcomingWindowsBySport
 }
 
 /**
@@ -234,9 +237,10 @@ function buildSpotData(
   // loosely typed, so the assertion goes through unknown.
   const forecast = (forecastsData[dataId] ?? forecastsData[spot.id] ?? []) as unknown as ForecastRow[]
   const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast)
+  const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput)
 
   if (!detail) {
-    return { spot, conditions, allScores, bestWindowToday, bestWindowsBySport }
+    return { spot, conditions, allScores, bestWindowToday, bestWindowsBySport, upcomingWindowsBySport }
   }
 
   const detailConditions: SpotDetailConditions = {
@@ -260,6 +264,7 @@ function buildSpotData(
     forecast,
     bestWindowToday,
     bestWindowsBySport,
+    upcomingWindowsBySport,
   }
 }
 

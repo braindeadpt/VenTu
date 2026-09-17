@@ -11,6 +11,7 @@ import { MACRO_REGIONS } from '@/lib/regions';
 import HomepageMapHero from '@/components/homepage/HomepageMapHero';
 import YourDaySection from '@/components/homepage/YourDaySection';
 import HomepageTopNow from '@/components/homepage/HomepageTopNow';
+import HomepageRankedSection from '@/components/homepage/HomepageRankedSection';
 import HomepageFooterSection from '@/components/homepage/HomepageFooterSection';
 import { DawnPatrolTopSlot } from '@/components/homepage/HomeDawnPatrolSlots';
 import WaveDivider from '@/components/ui/WaveDivider';
@@ -74,6 +75,13 @@ export default function HomeAdaptive({
         spotsData={spotsData}
         locale={locale}
         maxCards={isReturning ? 4 : undefined}
+        bakedAtMs={bakedAtMs}
+      />
+
+      <HomepageRankedSection
+        spotsData={spotsData}
+        sport={activeSport}
+        locale={locale}
         bakedAtMs={bakedAtMs}
       />
 

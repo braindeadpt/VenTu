@@ -19,6 +19,8 @@ export interface GridSpotData {
   /** Best 24h window baked into listings (loadSpotListings); absent in fixtures. */
   bestWindowToday?: import('@/lib/bestWindowToday').BestWindowToday | null;
   bestWindowsBySport?: import('@/lib/bestWindowToday').BestWindowsBySport;
+  /** Best ≥Bom window per sport over the next 48h (canonical scale); absent in fixtures. */
+  upcomingWindowsBySport?: import('@/lib/bestWindowToday').UpcomingWindowsBySport;
 }
 
 /** Map + grid sport filter: show every spot where the modality makes sense (score still on marker). */

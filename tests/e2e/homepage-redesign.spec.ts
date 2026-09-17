@@ -46,8 +46,11 @@ test.describe('Homepage redesign', () => {
     await expect(page.getByLabel(/Prova social/i).getByText('Open-Meteo')).toBeVisible();
   });
 
-  test('HomepageSecondaryCta renders three cards', async ({ page }) => {
-    const section = page.getByRole('heading', { name: /Mais para explorar/i }).locator('..');
+  test('footer lists the three secondary tools as compact links (C3)', async ({ page }) => {
+    const section = page.getByLabel(/Mais ferramentas|More tools/i);
     await expect(section.getByRole('link')).toHaveCount(3);
+    await expect(section.getByRole('link', { name: /Sazonalidade/i })).toBeVisible();
+    await expect(section.getByRole('link', { name: /Comparar spots/i })).toBeVisible();
+    await expect(section.getByRole('link', { name: /Favoritos/i })).toBeVisible();
   });
 });
