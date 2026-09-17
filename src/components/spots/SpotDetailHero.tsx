@@ -190,13 +190,16 @@ export default function SpotDetailHero({
           {backLabel}
         </Link>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0 flex-1 space-y-2">
-            <div className="flex items-start justify-between gap-3">
+            {/* flex-wrap: em ~320px o título + o grupo de acções (~198px)
+                excede a linha — as acções caem para a linha seguinte
+                (ml-auto mantém-nas à direita) em vez de transbordarem. */}
+            <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
               <h1 className="font-display text-display-lg text-fg tracking-tight leading-tight pr-1">
                 {title}
               </h1>
-              <div className="flex items-center gap-2 shrink-0 lg:hidden">
+              <div className="flex items-center gap-2 shrink-0 ml-auto lg:hidden">
                 <SocialShare title={`${title} — ${region}`} locale={locale} />
                 <CheckInButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
                 <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
@@ -272,10 +275,15 @@ export default function SpotDetailHero({
               <CheckInButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
               <FavoriteButton spotId={spot.id} spotName={spot.name} size="lg" locale={locale} />
             </div>
-            <div className="spot-hero-card spot-hero-card--dissolved rounded-card border p-3 sm:p-4 w-full sm:w-[270px] shadow-card">
-              <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
+            <div className="spot-hero-card spot-hero-card--dissolved rounded-card border p-3 sm:p-4 w-full sm:w-[420px] lg:w-[460px] shadow-card">
+              {/* Card horizontal: gauge à esquerda, meta à direita — a torre
+                  vertical (sm:flex-col) esticava o hero para ~530px e deixava
+                  metade da imagem morta em desktop. Abaixo de ~480px a coluna
+                  de meta não cabe ao lado do gauge (chips de ~200px
+                  transbordavam) — empilha centrado. */}
+              <div className="flex flex-col items-center gap-4 min-[480px]:flex-row">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
-                <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
+                <div className="flex flex-col items-center min-[480px]:items-start gap-1.5 min-w-0 flex-1">
                   <span
                     className={cn(
                       'font-display text-lg font-semibold uppercase tracking-wide leading-none',
@@ -285,7 +293,7 @@ export default function SpotDetailHero({
                   >
                     {tierLabel}
                   </span>
-                  <ProvenanceRow align="center">
+                  <ProvenanceRow align="start" className="justify-center min-[480px]:justify-start">
                     <ScoreWaveSourceBadge
                       source={scoreWaveSource}
                       correction={scoreWaveCorrection}
@@ -318,14 +326,16 @@ export default function SpotDetailHero({
                     locale={locale}
                   />
                   {factors && factors.length > 0 && (
-                    <p className="text-meta-sm text-fg-muted leading-snug text-left sm:text-center">
+                    <p className="text-meta-sm text-fg-muted leading-snug text-center min-[480px]:text-left">
                       {factors.join(' · ')}
                     </p>
                   )}
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-divider grid grid-cols-2 gap-2 lg:mt-2 lg:pt-0 lg:border-t-0">
+              {/* Stats: 2×2 em mobile, 4-em-linha quando o card fica largo —
+                  a mesma informação sem a torre vertical. */}
+              <div className="mt-3 pt-3 border-t border-divider grid grid-cols-2 sm:grid-cols-4 gap-2">
                 <StatChip
                   className="spot-hero-stat"
                   icon={<Waves className="w-4 h-4 text-data-waves" />}
@@ -380,7 +390,7 @@ export default function SpotDetailHero({
                     freshnessNowMs={freshnessNowMs}
                   />
                 ) : (
-                  <div className="mt-2 flex flex-wrap items-center justify-center gap-1.5 text-meta-sm text-score-good">
+                  <div className="mt-2 flex flex-wrap items-center justify-center min-[480px]:justify-start gap-1.5 text-meta-sm text-score-good">
                     <Waves className="w-3.5 h-3.5 shrink-0" aria-hidden />
                     <span className="font-medium" data-visual-dynamic>
                       {observedWaveLabel(observedWave, locale)}
@@ -405,7 +415,7 @@ export default function SpotDetailHero({
                 ))}
 
               {(updatedLabel || conditions.source) && (
-                <div className="mt-2 flex items-center justify-center gap-1.5 text-meta-sm text-fg-muted flex-wrap">
+                <div className="mt-2 flex items-center justify-center min-[480px]:justify-start gap-1.5 text-meta-sm text-fg-muted flex-wrap">
                   {updatedLabel && (
                     <>
                       <span className="w-1.5 h-1.5 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />

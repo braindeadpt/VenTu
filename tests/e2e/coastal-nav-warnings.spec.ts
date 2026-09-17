@@ -157,10 +157,6 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     await expect(esBlock.getByRole('link', { name: /detalhe/i })).toBeVisible();
     // O aviso IH continua no seu bloco, sem se misturar com o ES.
     await expect(block.getByText('ANAV NR 18271/26')).toBeVisible();
-    // Mapa: o polígono ES também entra no overlay (mesma geometria).
-    await expect(
-      page.locator('.leaflet-container[data-coastal-polygons="true"]'),
-    ).toHaveCount(1);
   });
 
   test('cross-border real no Minho: aviso ES a cobrir o Moledo do Minho com polígono no lado espanhol da foz', async ({
@@ -211,41 +207,9 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
     // Nenhum aviso do IH na fixture — a secção não inventa um bloco IH vazio.
     await expect(block.getByText(/ANAV NR/)).toHaveCount(0);
 
-    // O overlay do mapa desenha o polígono ES (lado espanhol) que cobre o spot.
-    const map = page.locator('.leaflet-container');
-    await expect(map).toBeVisible({ timeout: 20_000 });
-    await expect(
-      page.locator('.leaflet-container[data-coastal-polygons="true"]'),
-    ).toHaveCount(1);
-    await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible({
-      timeout: 15_000,
-    });
-    // Atribuição do IH no controlo (a camada costeira entra sempre com CC BY 4.0).
-    await expect(page.locator('.leaflet-control-attribution')).toContainText(
-      /Instituto Hidrográfico/,
-      { timeout: 15_000 },
-    );
-  });
-
-  test('spot coberto → overlay dos polígonos no mapa (área em aviso)', async ({ page }) => {
-    await interceptCoastalNavWarnings(page, FILE);
-    await page.goto('/pt/spots/trafaria/');
-    await expect(page.getByRole('heading', { level: 1, name: /Trafaria/i })).toBeVisible({
-      timeout: 20_000,
-    });
-
-    // O mapa da página (Leaflet) desenha o polígono do aviso que cobre o spot
-    // (o atributo é posto no próprio container Leaflet quando há overlay).
-    const map = page.locator('.leaflet-container');
-    await expect(map).toBeVisible({ timeout: 20_000 });
-    await expect(
-      page.locator('.leaflet-container[data-coastal-polygons="true"]'),
-    ).toHaveCount(1);
-    // A atribuição do IH (CC BY 4.0) junta-se à do basemap no controlo.
-    await expect(page.locator('.leaflet-control-attribution')).toContainText(
-      /Instituto Hidrográfico/,
-      { timeout: 15_000 },
-    );
+    // O mapa de logística é mínimo (sem overlays) — a área coberta vê-se no
+    // /mapa via deep link «Ver no mapa» do bloco.
+    await expect(page.locator('.leaflet-container')).toBeVisible({ timeout: 20_000 });
   });
 
   test('spot sem cobertura → bloco ausente e mapa sem polígonos', async ({ page }) => {

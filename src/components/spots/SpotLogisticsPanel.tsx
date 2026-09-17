@@ -37,7 +37,9 @@ export default function SpotLogisticsPanel({
   const isPt = locale === 'pt';
   const description = isPt ? spot.description : spot.descriptionEn;
   const region = isPt ? spot.region : spot.regionEn;
-  const osmUrl = `https://www.openstreetmap.org/?mlat=${spot.lat}&mlon=${spot.lon}#map=15/${spot.lat}/${spot.lon}`;
+  // «Abrir mapa» vai para o /mapa interno centrado no spot — o mapa completo
+  // com as camadas (isóbatas, radar, avisos) que o card de logística não tem.
+  const fullMapUrl = `/${locale}/mapa/?lat=${spot.lat}&lon=${spot.lon}`;
 
   return (
     <div className={embedded ? undefined : 'card-1 rounded-card border border-divider overflow-hidden'}>
@@ -59,7 +61,7 @@ export default function SpotLogisticsPanel({
           </div>
 
           <div className="relative w-full aspect-[16/10] min-h-[200px] max-h-[min(320px,40vh)] rounded-card overflow-hidden border border-divider bg-bg-base shadow-sm">
-            <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} compact hideOverlay spotId={spot.id} />
+            <SpotMap lat={spot.lat} lon={spot.lon} locale={locale} compact hideOverlay />
           </div>
 
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:items-center sm:gap-4">
@@ -73,9 +75,7 @@ export default function SpotLogisticsPanel({
               <span aria-hidden>↗</span>
             </a>
             <a
-              href={osmUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={fullMapUrl}
               className="inline-flex items-center gap-1.5 text-meta-sm text-fg-muted hover:text-fg hover:underline underline-offset-2 min-h-[44px] sm:min-h-0 items-center"
             >
               {openMapsLabel}

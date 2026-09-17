@@ -173,7 +173,7 @@ function CompareLoadingSkeleton() {
           ))}
         </div>
         <Skeleton className="h-48 rounded-card" />
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           {[1, 2].map(i => (
             <Skeleton key={i} className="h-72 rounded-card" />
           ))}

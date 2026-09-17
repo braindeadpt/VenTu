@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Bell } from 'lucide-react';
+import { Bell, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 
 interface SignupNudgeProps {
@@ -70,8 +70,10 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
 
   return (
     <div className="ventu-signup-nudge fixed bottom-0 left-0 right-0 z-40 bg-bg-elevated border-t border-divider shadow-modal motion-reduce:transition-none transition-transform duration-300 ease-out">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
-        <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-pill bg-accent/15 text-accent" aria-hidden>
+      {/* <480px: coluna (texto a full-width + botões por baixo) — em linha o
+          texto espremia-se para ~150px e o nudge chegava a ~145px de altura. */}
+      <div className="max-w-7xl mx-auto px-4 py-3 flex flex-col min-[480px]:flex-row min-[480px]:items-center gap-3">
+        <div className="shrink-0 hidden min-[480px]:flex items-center justify-center w-9 h-9 rounded-pill bg-accent/15 text-accent" aria-hidden>
           <Bell className="w-4 h-4" />
         </div>
         <p className="flex-1 text-body-sm text-fg leading-snug">
@@ -79,20 +81,31 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
             ? 'Recebes as condições dos teus spots todas as manhãs (~7h30). Cria conta gratuita.'
             : 'Get your spots\' conditions every morning (~7:30 AM). Create a free account.'}
         </p>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center justify-end gap-2 shrink-0">
           <Link
             href={`/${locale}/conta/`}
             className="inline-flex items-center min-h-[44px] px-4 rounded-input text-meta-sm font-semibold bg-accent text-bg-base hover:bg-accent-hover transition-colors motion-reduce:transition-none"
           >
             {isPt ? 'Criar conta' : 'Sign up'}
           </Link>
+          {/* Dismiss: texto em sm+, × compacto em mobile — com os dois botões
+              lado a lado o nudge chegava a 132px e tapava o fundo da página
+              (o padding reservado é 88px). */}
           <button
             type="button"
             onClick={handleDismiss}
-            className="inline-flex items-center min-h-[44px] px-3 rounded-input text-meta-sm text-fg-muted hover:text-fg transition-colors"
+            className="hidden sm:inline-flex items-center min-h-[44px] px-3 rounded-input text-meta-sm text-fg-muted hover:text-fg transition-colors"
             aria-label={isPt ? 'Fechar' : 'Close'}
           >
             {isPt ? 'Agora não' : 'Not now'}
+          </button>
+          <button
+            type="button"
+            onClick={handleDismiss}
+            className="inline-flex sm:hidden items-center justify-center min-w-[44px] min-h-[44px] rounded-input text-fg-muted hover:text-fg transition-colors"
+            aria-label={isPt ? 'Agora não' : 'Not now'}
+          >
+            <X className="w-4 h-4" aria-hidden />
           </button>
         </div>
       </div>

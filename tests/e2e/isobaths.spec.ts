@@ -89,67 +89,9 @@ test.describe('IsobathsStrip (Fundo perto da praia)', () => {
   });
 });
 
-test.describe('Isóbatas — overlay vectorial (mapa da página de spot)', () => {
-  test.use({ serviceWorkers: 'block' });
-
-  test('contornos perto do spot → polylines + legenda de profundidade + atribuição IH', async ({
-    page,
-  }) => {
-    await interceptIsobaths(page, { spots: { nazare: { 8: 0.25, 16: 0.31, 30: 0.46 } } });
-    await interceptContours(page);
-    await page.goto('/pt/spots/nazare/');
-    await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({
-      timeout: 20_000,
-    });
-
-    // Camada vectorial: o container Leaflet marca as isóbatas desenhadas.
-    await expect(
-      page.locator('.leaflet-container[data-isobaths="true"]'),
-    ).toHaveCount(1);
-    // Legenda de profundidade (chip) com as três profundidades.
-    const legend = page.getByTestId('isobaths-legend');
-    await expect(legend).toBeVisible({ timeout: 15_000 });
-    await expect(legend.getByText('8 m')).toBeVisible();
-    await expect(legend.getByText('16 m')).toBeVisible();
-    await expect(legend.getByText('30 m')).toBeVisible();
-    // Atribuição do IH (CC BY 4.0) junta-se à do basemap no controlo.
-    await expect(page.locator('.leaflet-control-attribution')).toContainText(
-      /Isóbatas © Instituto Hidrográfico/,
-      { timeout: 15_000 },
-    );
-  });
-
-  test('sem contornos perto do spot → sem overlay nem legenda', async ({ page }) => {
-    await interceptIsobaths(page, { spots: { nazare: {} } });
-    await interceptContours(page);
-    await page.goto('/pt/spots/nazare/');
-    await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({
-      timeout: 20_000,
-    });
-
-    await expect(
-      page.locator('.leaflet-container[data-isobaths="true"]'),
-    ).toHaveCount(0);
-    await expect(page.getByTestId('isobaths-legend')).toHaveCount(0);
-  });
-
-  test('ficheiro de contornos ausente (404) → mapa intacto sem overlay', async ({ page }) => {
-    await interceptIsobaths(page, { spots: { nazare: { 8: 0.25 } } });
-    await page.route('**/data/isobaths-contours.json', async (route) =>
-      route.fulfill({ status: 404, body: 'nope' }),
-    );
-    await page.goto('/pt/spots/nazare/');
-    await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({
-      timeout: 20_000,
-    });
-
-    await expect(
-      page.locator('.leaflet-container[data-isobaths="true"]'),
-    ).toHaveCount(0);
-    // A strip de distâncias continua a funcionar (a falha é só do overlay).
-    await expect(page.getByTestId('isobaths-strip')).toBeVisible();
-  });
-});
+// O mapa de logística da página de spot é deliberadamente mínimo (basemap +
+// marker + atribuição): a camada vectorial de isóbatas vive só no /mapa
+// interactivo, coberta pelo describe abaixo.
 
 test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
   test.use({ serviceWorkers: 'block' });

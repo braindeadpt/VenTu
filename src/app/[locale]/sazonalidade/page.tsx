@@ -91,7 +91,7 @@ export default async function SazonalidadePage({ params }: Props) {
 
         <MoonTideMonthStrip locale={locale} />
 
-        <div className="grid gap-6">
+        <div className="grid grid-cols-1 gap-6">
           {seasonData.map((s) => {
             const Icon = s.icon
             return (

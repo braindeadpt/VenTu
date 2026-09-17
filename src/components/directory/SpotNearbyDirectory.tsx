@@ -95,7 +95,10 @@ export default function SpotNearbyDirectory({ spotId, spotLat, spotLon, locale, 
           {d.directoryArrow}
         </Link>
       </div>
-      <div className={embedded ? 'grid gap-3' : 'grid gap-3 sm:grid-cols-2'}>
+      {/* grid-cols-1 explícito (minmax(0,1fr)) — sem ele a coluna implícita
+          auto dimensiona-se a max-content (nome com truncate/nowrap) e
+          transborda do rail em vez de cortar. */}
+      <div className={embedded ? 'grid grid-cols-1 gap-3' : 'grid grid-cols-1 gap-3 sm:grid-cols-2'}>
         {nearby.map((e) => (
           <DirectoryEntryCard
             key={e.id}

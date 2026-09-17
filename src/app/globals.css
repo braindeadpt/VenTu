@@ -869,9 +869,24 @@ html:has([data-embed-widget]) body {
   overflow: visible !important;
 }
 
+/* Spot page anchors: com a SpotStickyBar activa o topo tem header (64) +
+   tabs (48) + strip de métricas (56px) — o scroll-mt-20 genérico (80px)
+   deixava o destino da âncora escondido debaixo da barra. */
+#spot-livecam {
+  scroll-margin-top: calc(var(--ventu-spot-sticky-top) + var(--ventu-spot-tabs-h) + 56px + 8px);
+}
+
 body.ventu-signup-nudge-open main,
 body.ventu-signup-nudge-open footer {
   padding-bottom: 5.5rem;
+}
+/* Em <640px o nudge mede ~97-140px (texto a 3-5 linhas) — o padding tem de
+   cobrir a altura real ou o fundo da página fica escondido atrás do banner. */
+@media (max-width: 639px) {
+  body.ventu-signup-nudge-open main,
+  body.ventu-signup-nudge-open footer {
+    padding-bottom: 8.5rem;
+  }
 }
 
 /* Footer accordions — <details> nativo. Mobile: fechado por omissão, o

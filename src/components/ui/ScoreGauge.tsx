@@ -147,11 +147,12 @@ export default function ScoreGauge({
           variant === 'epic' ? 'score-gauge-epic-pulse' : '',
         ].join(' ')}
       >
-        {/* viewBox shifted down 7 units: the arc circle sits at cy=40 with a
-            radius up to 42 (+5 half-stroke), so its top edge reaches y=-7 —
-            the old 0..85 box clipped the top of the gauge on md/lg sizes. */}
+        {/* viewBox must start above the arc: the circle sits at cy=40 with a
+            radius up to 42 (+5 half-stroke), so its top edge reaches y=-7.
+            A box starting at y=7 clips the top of the gauge flat (visible on
+            every size); y=-10 keeps the full stroke plus a small margin. */}
         <svg
-          viewBox="0 7 100 85"
+          viewBox="0 -10 100 100"
           className="w-full h-full"
           aria-hidden="true"
         >

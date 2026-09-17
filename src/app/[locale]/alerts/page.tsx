@@ -85,7 +85,7 @@ export default async function AlertsPage({
         </div>
 
         <h2 className="text-h3 text-fg mb-3">{a.popularSpots}</h2>
-        <ul className="grid gap-2 list-none p-0 m-0 mb-8">
+        <ul className="grid grid-cols-1 gap-2 list-none p-0 m-0 mb-8">
           {featured.map((spot) => (
             <li key={spot.slug}>
               <Card
