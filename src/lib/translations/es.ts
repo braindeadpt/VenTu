@@ -655,6 +655,13 @@ export const translationsEs = {
     wind: 'Viento',
     drive: 'Conducción',
     viewDetails: 'Ver detalles',
+    favoritesGroup: 'Tus favoritos',
+    selectedGroup: 'Seleccionados',
+    topNowGroup: 'A tope ahora',
+    searchAllHint: 'Busca entre todos los spots',
+    hourlyTitle: 'Próximas 24 horas',
+    hourlySub: 'Puntuación y condiciones por hora',
+    hourlyTime: 'Hora',
     metaTitle: 'Comparar Spots — VenTu',
     metaDescription:
       'Compara condiciones entre 2-3 spots de surf, kitesurf y windsurf en Portugal — {schedule}.',

@@ -25,6 +25,8 @@ import { rawToScoreInput, resolveScoreWaveSource, waveFactorSuffix, type ScoreWa
 import WaveCalibrationTag from '@/components/ui/WaveCalibrationTag';
 import type { ObservedWave } from '@/lib/observedWave';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import { useAuth } from '@/contexts/AuthProvider';
+import CompareHourlyTable from '@/components/compare/CompareHourlyTable';
 import {
   SEA_STATE_WARNING_TYPES,
   strongestSpotWarning,
@@ -154,15 +156,7 @@ function getLocaleFromPath(): string {
   } catch { return 'pt'; }
 }
 
-function groupByRegion(spotsList: typeof spots): Map<string, typeof spots> {
-  const map = new Map<string, typeof spots>();
-  for (const spot of spotsList) {
-    const region = spot.region || 'Other';
-    if (!map.has(region)) map.set(region, []);
-    map.get(region)!.push(spot);
-  }
-  return map;
-}
+
 
 function CompareLoadingSkeleton() {
   return (
@@ -200,6 +194,7 @@ export default function CompareClient() {
   const [searchQuery, setSearchQuery] = useState('');
   const [picking, setPicking] = useState(false);
   const [retryKey, setRetryKey] = useState(0);
+  const { favorites } = useAuth();
   // Scores actuais por spot — o picker mostra o chip para o desporto
   // seleccionado (mesma leitura que o comparador usa depois).
   const [pickerCond, setPickerCond] = useState<Record<string, PrecomputedCondition> | null>(null);
@@ -286,26 +281,102 @@ export default function CompareClient() {
     );
   }, [searchQuery]);
 
+  // Scores para TODOS os spots (não só os filtrados): o grupo «A bombar
+  // agora» precisa do ranking global mesmo com a pesquisa vazia.
   const pickerScores = useMemo(() => {
     if (!pickerCond) return null;
     const m = new Map<string, number>();
-    for (const spot of filteredSpots) {
+    for (const spot of spots) {
       const cond = pickerCond[getConditionsDataId(spot)] ?? pickerCond[spot.id];
       if (!cond) continue;
       m.set(spot.slug, getSportScore(spot, selectedSport, rawToScoreInput(cond as Record<string, unknown>)).score);
     }
     return m;
-  }, [pickerCond, filteredSpots, selectedSport]);
+  }, [pickerCond, selectedSport]);
 
-  const regionGroups = useMemo(() => {
-    const groups = groupByRegion(filteredSpots);
-    if (pickerScores) {
-      for (const arr of groups.values()) {
-        arr.sort((a, b) => (pickerScores.get(b.slug) ?? -1) - (pickerScores.get(a.slug) ?? -1));
-      }
-    }
-    return groups;
+  // Auditoria C2 — o picker é search + favoritos + top-agora, não um
+  // directório de 185 spots. A pesquisa continua a cobrir a cauda longa.
+  const searchResults = useMemo(() => {
+    const list = pickerScores
+      ? [...filteredSpots].sort(
+          (a, b) => (pickerScores.get(b.slug) ?? -1) - (pickerScores.get(a.slug) ?? -1),
+        )
+      : filteredSpots;
+    return list.slice(0, 18);
   }, [filteredSpots, pickerScores]);
+
+  const favoriteSpots = useMemo(
+    () =>
+      favorites
+        .map((id) => spots.find((s) => s.id === id))
+        .filter((s): s is (typeof spots)[number] => Boolean(s)),
+    [favorites],
+  );
+
+  const topNowSpots = useMemo(() => {
+    if (!pickerScores) return [];
+    return [...spots]
+      .map((s) => ({ s, score: pickerScores.get(s.slug) ?? -1 }))
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 9)
+      .map((x) => x.s);
+  }, [pickerScores]);
+
+  // Spots já escolhidos ficam sempre visíveis — sem este grupo um spot
+  // seleccionado fora dos grupos/pesquisa ficava impossível de desmarcar.
+  const selectedSpots = useMemo(
+    () =>
+      selectedSlugs
+        .map((slug) => spots.find((s) => s.slug === slug))
+        .filter((s): s is (typeof spots)[number] => Boolean(s)),
+    [selectedSlugs],
+  );
+
+  const renderSpotButton = (spot: (typeof spots)[number]) => {
+    const selected = selectedSlugs.includes(spot.slug);
+    const atLimit = selectedSlugs.length >= 3 && !selected;
+    const spotScore = pickerScores?.get(spot.slug);
+    return (
+      <button
+        key={spot.id}
+        type="button"
+        onClick={() => toggleSpot(spot.slug)}
+        aria-pressed={selected}
+        disabled={atLimit}
+        className={[
+          'flex items-center gap-3 p-3 rounded-card border text-left transition-all min-h-[44px]',
+          selected
+            ? 'bg-data-waves/10 border-data-waves text-fg'
+            : 'card-1 text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg',
+          atLimit ? 'opacity-50 cursor-not-allowed' : '',
+        ].join(' ')}
+      >
+        <span
+          className={[
+            'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all',
+            selected ? 'bg-data-waves border-data-waves' : 'border-fg-disabled',
+          ].join(' ')}
+          aria-hidden
+        >
+          {selected && <Check className="w-3 h-3 text-bg-base" />}
+        </span>
+        <span className="min-w-0">
+          <span className="block text-sm font-medium truncate">{isPt ? spot.name : spot.nameEn}</span>
+          <span className="block text-xs text-fg-subtle">{spot.region}</span>
+        </span>
+        {/* Sem aria-hidden: o score é a razão do picker e tem de entrar no
+            nome acessível do botão. */}
+        {spotScore !== undefined && (
+          <span
+            className={`ml-auto shrink-0 font-mono text-sm font-semibold tabular-nums ${getScoreTokens(spotScore).text}`}
+          >
+            {spotScore}
+          </span>
+        )}
+      </button>
+    );
+  };
 
   if (picking) {
     return (
@@ -368,62 +439,55 @@ export default function CompareClient() {
           {/* Região com scroll focável — sem tabIndex o teclado não consegue
               fazer scroll da lista (WCAG 2.1.1). */}
           <div
-            className="space-y-6 max-h-[60vh] overflow-y-auto"
+            className="space-y-5 max-h-[60vh] overflow-y-auto"
             role="region"
             tabIndex={0}
             aria-label={cmp.chooseSpots}
           >
-            {Array.from(regionGroups.entries()).map(([region, regionSpots]) => (
-              <div key={region}>
-                <h3 className="text-meta-sm font-semibold text-fg-muted uppercase tracking-wide mb-2">{region}</h3>
+            {selectedSpots.length > 0 && !searchQuery.trim() && (
+              <div>
+                <h3 className="text-meta-sm font-semibold text-fg-muted uppercase tracking-wide mb-2">
+                  {cmp.selectedGroup}
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                  {regionSpots.map(spot => {
-                    const selected = selectedSlugs.includes(spot.slug);
-                    const atLimit = selectedSlugs.length >= 3 && !selected;
-                    const spotScore = pickerScores?.get(spot.slug);
-                    return (
-                      <button
-                        key={spot.id}
-                        type="button"
-                        onClick={() => toggleSpot(spot.slug)}
-                        aria-pressed={selected}
-                        disabled={atLimit}
-                        className={[
-                          'flex items-center gap-3 p-3 rounded-card border text-left transition-all min-h-[44px]',
-                          selected
-                            ? 'bg-data-waves/10 border-data-waves text-fg'
-                            : 'card-1 text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg',
-                          atLimit ? 'opacity-50 cursor-not-allowed' : '',
-                        ].join(' ')}
-                      >
-                        <span
-                          className={[
-                            'w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all',
-                            selected ? 'bg-data-waves border-data-waves' : 'border-fg-disabled',
-                          ].join(' ')}
-                          aria-hidden
-                        >
-                          {selected && <Check className="w-3 h-3 text-bg-base" />}
-                        </span>
-                        <span className="min-w-0">
-                          <span className="block text-sm font-medium truncate">{isPt ? spot.name : spot.nameEn}</span>
-                          <span className="block text-xs text-fg-subtle">{spot.region}</span>
-                        </span>
-                        {/* Sem aria-hidden: o score é a razão do picker e tem
-                            de entrar no nome acessível do botão. */}
-                        {spotScore !== undefined && (
-                          <span
-                            className={`ml-auto shrink-0 font-mono text-sm font-semibold tabular-nums ${getScoreTokens(spotScore).text}`}
-                          >
-                            {spotScore}
-                          </span>
-                        )}
-                      </button>
-                    );
-                  })}
+                  {selectedSpots.map(renderSpotButton)}
                 </div>
               </div>
-            ))}
+            )}
+
+            {searchQuery.trim() ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {searchResults.map(renderSpotButton)}
+              </div>
+            ) : (
+              <>
+                {favoriteSpots.length > 0 && (
+                  <div>
+                    <h3 className="text-meta-sm font-semibold text-fg-muted uppercase tracking-wide mb-2">
+                      {cmp.favoritesGroup}
+                    </h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {favoriteSpots.map(renderSpotButton)}
+                    </div>
+                  </div>
+                )}
+
+                <div>
+                  <h3 className="text-meta-sm font-semibold text-fg-muted uppercase tracking-wide mb-2">
+                    {cmp.topNowGroup}
+                  </h3>
+                  {topNowSpots.length > 0 ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {topNowSpots.map(renderSpotButton)}
+                    </div>
+                  ) : (
+                    <Skeleton className="h-24 rounded-card" />
+                  )}
+                </div>
+
+                <p className="text-meta text-fg-muted">{cmp.searchAllHint}</p>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -644,6 +708,14 @@ export default function CompareClient() {
             );
           })}
         </div>
+
+        {/* Auditoria C2 — a resposta «quando» é uma tabela horária partilhada
+            (horas × spots) com o score canónico, não três previsões soltas. */}
+        <CompareHourlyTable
+          entries={sorted.map((d) => ({ spot: d.spot, conditions: d.conditions }))}
+          sport={selectedSport}
+          locale={locale}
+        />
       </div>
     </div>
   );
