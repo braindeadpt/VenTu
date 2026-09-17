@@ -194,7 +194,7 @@ export function SpotGridClient({
               })}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2 flex-wrap min-w-0">
               <div
                 role="group"
                 aria-label={isPt ? 'Vista da lista' : 'List view'}
