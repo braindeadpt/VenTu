@@ -22,6 +22,7 @@ const read = (p: string) => readFileSync(join(ROOT, p), 'utf-8');
 
 const controls = read('src/components/spots/map/components/MapControls.tsx');
 const hud = read('src/components/spots/MapExploreHud.tsx');
+const layersMenu = read('src/components/spots/map/components/MapLayersMenu.tsx');
 
 /** A lista canónica — um toggle de camada novo entra AQUI e nas duas superfícies. */
 const TOGGLES = [
@@ -48,10 +49,11 @@ describe('mapToggleAttributes (selectores estáveis dos toggles de camada)', () 
   });
 
   it('cada toggle declara o estado de pressão (aria-pressed direto ou via MapControlButton)', () => {
-    // As duas superfícies expressam o estado por caminhos diferentes:
+    // As superfícies expressam o estado por caminhos diferentes:
     //  - botões <button> crus: aria-pressed={...};
-    //  - o wrapper MapControlButton: prop pressed={...} → aria-pressed no DOM
-    //    (confirmado no componente). O que não pode faltar é O ESTADO.
+    //  - o wrapper MapControlButton: prop pressed={...} → aria-pressed no DOM;
+    //  - os items do menu «Camadas» (C4): config `pressed: ...` + `onToggle:`
+    //    que o MapLayersMenu aterra num <button aria-pressed onClick> real.
     for (const [name, src] of [
       ['MapControls', controls],
       ['MapExploreHud', hud],
@@ -60,16 +62,20 @@ describe('mapToggleAttributes (selectores estáveis dos toggles de camada)', () 
         const idx = src.indexOf(attr);
         expect(idx, `${attr} presente em ${name}`).toBeGreaterThan(-1);
         const block = src.slice(Math.max(0, idx - 600), idx + 100);
-        const hasState = block.includes('aria-pressed') || block.includes('pressed=');
+        const hasState =
+          block.includes('aria-pressed') ||
+          block.includes('pressed=') ||
+          block.includes('pressed:');
         expect(hasState, `${attr} em ${name} sem estado de pressão por perto`).toBe(true);
       }
     }
   });
 
-  it('cada toggle é um controlo interativo real (onClick por perto)', () => {
+  it('cada toggle é um controlo interativo real (onClick/onToggle por perto)', () => {
     // Pino informal de interatividade: os toggles passam onClick — direto no
-    // <button> ou via prop do MapControlButton. Garante que os atributos
-    // continuam colados a controlos reais, não a decoração órfã.
+    // <button>, via prop do MapControlButton, ou como `onToggle:` num item de
+    // config do menu «Camadas». Garante que os atributos continuam colados a
+    // controlos reais, não a decoração órfã.
     for (const [name, src] of [
       ['MapControls', controls],
       ['MapExploreHud', hud],
@@ -77,8 +83,20 @@ describe('mapToggleAttributes (selectores estáveis dos toggles de camada)', () 
       for (const attr of TOGGLES) {
         const idx = src.indexOf(attr);
         const block = src.slice(Math.max(0, idx - 600), idx + 100);
-        expect(block, `${attr} em ${name} sem onClick por perto`).toContain('onClick');
+        expect(
+          block.includes('onClick') || block.includes('onToggle'),
+          `${attr} em ${name} sem onClick/onToggle por perto`,
+        ).toBe(true);
       }
     }
+  });
+
+  it('o menu «Camadas» aterra cada item num <button> real com estado', () => {
+    // A indirecção config→menu só vale se o MapLayersMenu continuar a
+    // renderizar um controlo real: toggleAttr espalhado no botão, onToggle
+    // como onClick e pressed como aria-pressed.
+    expect(layersMenu).toContain('item.toggleAttr');
+    expect(layersMenu).toContain('onClick={item.onToggle}');
+    expect(layersMenu).toContain('aria-pressed={item.pressed}');
   });
 });
