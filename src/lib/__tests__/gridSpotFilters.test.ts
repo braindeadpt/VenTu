@@ -29,13 +29,13 @@ function data(
   scores: Partial<Record<'surf' | 'kitesurf' | 'windsurf', number>>,
 ): GridSpotData {
   const allScores = {
-    surf: { score: scores.surf ?? 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
-    kitesurf: { score: scores.kitesurf ?? 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
-    windsurf: { score: scores.windsurf ?? 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
-    wakeboard: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
-    bodyboard: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
-    sup: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
-    foil: { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' },
+    surf: { score: scores.surf ?? 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' },
+    kitesurf: { score: scores.kitesurf ?? 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' },
+    windsurf: { score: scores.windsurf ?? 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' },
+    wakeboard: { score: 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' },
+    bodyboard: { score: 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' },
+    sup: { score: 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' },
+    foil: { score: 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' },
   };
   return {
     spot: spotDef,

@@ -66,7 +66,7 @@ export default function SpotWarningsSection({
           href={ipmaRadarUrl(locale)}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1.5 text-meta-sm font-medium text-data-waves hover:text-data-waves/80 transition-colors"
+          className="inline-flex items-center gap-1.5 min-h-[44px] -my-2 text-meta-sm font-medium text-data-waves hover:text-data-waves/80 transition-colors"
         >
           <CloudRain className="w-4 h-4 shrink-0" aria-hidden />
           {isPt ? 'Radar de chuva (IPMA)' : 'Rain radar (IPMA)'}

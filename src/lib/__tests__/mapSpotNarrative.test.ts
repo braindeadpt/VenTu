@@ -6,7 +6,7 @@ import type { Spot } from '@/types';
 
 const emptyScores = Object.fromEntries(
   (['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as SportType[]).map(
-    (s) => [s, { score: 0, rating: '', ratingEn: '', factors: [], primaryFactor: '' }],
+    (s) => [s, { score: 0, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' }],
   ),
 ) as unknown as Record<SportType, SportScore>;
 
@@ -47,7 +47,7 @@ describe('getMapSpotNarrative', () => {
   it('includes tier phrase and kite context in PT', () => {
     const scores = {
       ...emptyScores,
-      kitesurf: { score: 75, rating: 'Bom', ratingEn: 'Good', factors: [], primaryFactor: 'wind' },
+      kitesurf: { score: 75, rating: 'Bom', ratingEn: 'Good', factors: [], factorsEn: [], primaryFactor: 'wind' },
     };
     const line = getMapSpotNarrative(baseSpot, conditions, scores, 'kitesurf', true);
     expect(line).toContain('dá uns sets fáceis');
@@ -64,7 +64,7 @@ describe('getMapSpotNarrative', () => {
     };
     const scores = {
       ...emptyScores,
-      surf: { score: 82, rating: 'Épico', ratingEn: 'Epic', factors: [], primaryFactor: 'waves' },
+      surf: { score: 82, rating: 'Épico', ratingEn: 'Epic', factors: [], factorsEn: [], primaryFactor: 'waves' },
     };
     const line = getMapSpotNarrative(surfSpot, conditions, scores, 'surf', false);
     expect(line).toContain('classic day');

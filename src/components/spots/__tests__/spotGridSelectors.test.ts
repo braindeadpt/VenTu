@@ -33,18 +33,18 @@ function makeData(
   region: string,
   scores: Partial<Record<SportType, number>>,
 ): GridSpotData {
-  const allScores: Record<SportType, { score: number; rating: string; ratingEn: string; factors: string[]; primaryFactor: string }> = {
-    surf: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], primaryFactor: '' },
-    kitesurf: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], primaryFactor: '' },
-    windsurf: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], primaryFactor: '' },
-    wakeboard: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], primaryFactor: '' },
-    bodyboard: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], primaryFactor: '' },
-    sup: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], primaryFactor: '' },
-    foil: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], primaryFactor: '' },
+  const allScores: Record<SportType, { score: number; rating: string; ratingEn: string; factors: string[]; factorsEn: string[]; primaryFactor: string }> = {
+    surf: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '' },
+    kitesurf: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '' },
+    windsurf: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '' },
+    wakeboard: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '' },
+    bodyboard: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '' },
+    sup: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '' },
+    foil: { score: 0, rating: 'N/A', ratingEn: 'N/A', factors: [], factorsEn: [], primaryFactor: '' },
   }
   for (const [sport, score] of Object.entries(scores)) {
     if (allScores[sport as SportType]) {
-      allScores[sport as SportType] = { score, rating: 'Bom', ratingEn: 'Good', factors: [], primaryFactor: '' }
+      allScores[sport as SportType] = { score, rating: 'Bom', ratingEn: 'Good', factors: [], factorsEn: [], primaryFactor: '' }
     }
   }
   return {

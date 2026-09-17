@@ -301,6 +301,11 @@ html:has([data-embed-widget]) body {
   .card-1 {
     @apply bg-surface-1/[0.04] border border-divider rounded-card backdrop-blur-sm;
   }
+  /* DS: no backdrop blur on long mobile sections — cards sit on bg-base,
+     so the blur is invisible and costs GPU on every scroll frame. */
+  @media (max-width: 767px) {
+    .card-1 { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  }
   .card-2 {
     @apply bg-surface-2/[0.08] border border-divider-strong rounded-card backdrop-blur-md;
   }

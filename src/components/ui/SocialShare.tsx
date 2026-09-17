@@ -112,7 +112,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       {/* Main Share Button */}
       <button
         onClick={handleNativeShare}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors border border-divider"
+        className="flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg text-sm text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors border border-divider"
         aria-label={isPt ? 'Partilhar' : 'Share'}
       >
         {copied ? <Check className="w-4 h-4 text-score-good" /> : <Share2 className="w-4 h-4" />}
@@ -122,7 +122,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       {/* Copy Link Alternative */}
       <button
         onClick={handleCopy}
-        className="p-2 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
+        className="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
         aria-label={isPt ? 'Copiar link' : 'Copy link'}
         title={isPt ? 'Copiar link' : 'Copy link'}
       >

@@ -34,7 +34,7 @@ function makeScores(score: number): Record<SportType, SportScore> {
     score,
     rating: score > 0 ? 'Bom' : 'N/A',
     ratingEn: score > 0 ? 'Good' : 'N/A',
-    factors: [],
+    factors: [], factorsEn: [],
     primaryFactor: 'Ondas',
   };
   return Object.fromEntries(SPORTS.map((s) => [s, { ...base }])) as Record<SportType, SportScore>;

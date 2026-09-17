@@ -252,7 +252,7 @@ export default function ForecastTable({
 
   const nowCol = useCallback(
     (i: number) =>
-      currentHourIndex >= 0 && i === currentHourIndex ? 'ring-1 ring-inset ring-accent/20' : '',
+      currentHourIndex >= 0 && i === currentHourIndex ? 'ring-1 ring-inset ring-accent/45' : '',
     [currentHourIndex],
   );
 

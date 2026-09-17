@@ -156,7 +156,7 @@ export default function SpotConditionsDashboard({
             </div>
             <details className="relative shrink-0 group">
               <summary
-                className="list-none flex items-center justify-center w-9 h-9 rounded-full border border-divider bg-bg-elevated text-fg-muted hover:text-fg hover:border-divider-strong cursor-pointer transition-colors [&::-webkit-details-marker]:hidden"
+                className="list-none flex items-center justify-center w-11 h-11 -m-1 rounded-full border border-divider bg-bg-elevated text-fg-muted hover:text-fg hover:border-divider-strong cursor-pointer transition-colors [&::-webkit-details-marker]:hidden"
                 aria-label={copy.windContextTitle}
               >
                 <HelpCircle className="w-4 h-4" aria-hidden />
@@ -356,7 +356,7 @@ function CoherenceRefusedNotice({ esCode, locale }: { esCode: string; locale: st
   const tv = getTranslation(locale).spotVerify;
   return (
     <p
-      className="flex items-start gap-1.5 rounded-lg border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-meta-sm text-data-period leading-snug"
+      className="flex items-start gap-1.5 rounded-card border border-data-period/30 bg-data-period/10 px-2 py-1.5 text-meta-sm text-data-period leading-snug"
       data-coherence-refused="true"
       title={tv.coerRefusedTitle.replace('{esCode}', esCode)}
     >
@@ -396,7 +396,7 @@ function CoherenceWarningNotice({
     .replace('{last}', warning.lastDay ?? '…');
   return (
     <p
-      className="flex items-start gap-1.5 rounded-lg border border-amber-500/30 bg-amber-500/10 px-2 py-1.5 text-meta-sm text-amber-300 leading-snug"
+      className="flex items-start gap-1.5 rounded-card border border-score-fair/30 bg-score-fair/10 px-2 py-1.5 text-meta-sm text-score-fair leading-snug"
       data-coherence-warning="true"
       title={title}
     >

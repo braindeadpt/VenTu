@@ -100,7 +100,7 @@ export default function ScoreWaveSourceBadge({
     };
   } else {
     copy = {
-      label: isPt ? 'Só previsão' : 'Forecast only',
+      label: isPt ? 'Onda · só previsão' : 'Wave · forecast only',
       title: isPt
         ? 'Sem correcção de boia — score com a previsão do modelo'
         : 'No buoy correction — forecast score',

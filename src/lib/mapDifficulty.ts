@@ -70,3 +70,17 @@ export function getDifficultyLabel(
   };
   return labels[difficulty]?.[isPt ? 'pt' : 'en'] ?? difficulty;
 }
+
+/** Spot classification label — the raw `spot.type` token must never render. */
+export function getSpotTypeLabel(type: Spot['type'], isPt: boolean): string {
+  const labels: Record<Spot['type'], { pt: string; en: string }> = {
+    surf: { pt: 'Surf', en: 'Surf' },
+    kitesurf: { pt: 'Kitesurf', en: 'Kitesurf' },
+    windsurf: { pt: 'Windsurf', en: 'Windsurf' },
+    'big-wave': { pt: 'Big Wave', en: 'Big wave' },
+    foil: { pt: 'Foil', en: 'Foil' },
+    multisport: { pt: 'Multisport', en: 'Multi-sport' },
+    wakeboard: { pt: 'Wakeboard', en: 'Wakeboard' },
+  };
+  return labels[type]?.[isPt ? 'pt' : 'en'] ?? type;
+}

@@ -143,7 +143,7 @@ export default function SpotStickyBar({
         </div>
       </div>
 
-      <div className="max-w-6xl mx-auto px-2 h-14 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <div className="max-w-6xl mx-auto px-2 h-14 flex items-center gap-1.5 overflow-x-auto overscroll-x-contain no-scrollbar edge-fade-x">
         <div
           className={[
             'shrink-0 flex items-center justify-center min-w-[36px] h-8 rounded-pill border font-mono font-semibold text-xs px-1.5 tabular-nums',
@@ -247,4 +247,4 @@ function Stat({
       <span className="text-meta-sm text-fg-muted hidden sm:inline">{label}</span>
     </div>
   );
-}
+}

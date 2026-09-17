@@ -13,7 +13,6 @@ import SocialShare from '@/components/ui/SocialShare';
 import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreGauge from '@/components/ui/ScoreGauge';
-import ScoreBadge from '@/components/ui/ScoreBadge';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
 import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
@@ -32,6 +31,8 @@ import SpotLevelToday from '@/components/spots/SpotLevelToday';
 import StatChip from '@/components/ui/StatChip';
 import WindFlowGlyph, { windFlowAriaLabel } from '@/components/ui/WindFlowGlyph';
 import { getCardinalLabel } from '@/lib/wind';
+import { getScoreTierLabel, getScoreTokens, windQualityTier } from '@/lib/sportScore';
+import { getDifficultyLabel, getSpotTypeLabel } from '@/lib/mapDifficulty';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import SeaStateSafetyBanner from '@/components/spots/SeaStateSafetyBanner';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
@@ -55,6 +56,8 @@ interface SpotDetailHeroProps {
   score: number;
   rating: string;
   ratingEn: string;
+  /** «Why this score» — locale-resolved factor strings from the scorer. */
+  factors?: string[];
   conditions: {
     waveHeight: number;
     wavePeriod: number;
@@ -104,6 +107,7 @@ export default function SpotDetailHero({
   score,
   rating,
   ratingEn,
+  factors,
   conditions,
   scoreWindSource = 'forecast',
   scoreWindCorrection = null,
@@ -124,6 +128,9 @@ export default function SpotDetailHero({
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
   const windKt = Math.round(conditions.windSpeed * 1.94384);
   const windCardinal = getCardinalLabel(conditions.windDirection);
+  const scoreTokens = getScoreTokens(score);
+  const tierLabel = getScoreTierLabel(scoreTokens.tier, isPt ? 'pt' : 'en');
+  const windTier = windQualityTier(spot, conditions.windDirection, sport);
 
   // The timestamp label is baked and re-rendered on hydration — pin the
   // locale AND the timeZone so server and client produce the same string
@@ -177,7 +184,7 @@ export default function SpotDetailHero({
             on mount (gridFilters), so the back link must not drop it. */}
         <Link
           href={`/${locale}/spots/?sport=${sport}`}
-          className="inline-flex items-center gap-1.5 text-meta-sm text-fg-muted hover:text-fg transition-colors duration-150 mb-2"
+          className="inline-flex items-center gap-1.5 min-h-[44px] -mt-2 text-meta-sm text-fg-muted hover:text-fg transition-colors duration-150"
         >
           <ArrowLeft className="w-4 h-4" aria-hidden />
           {backLabel}
@@ -200,11 +207,11 @@ export default function SpotDetailHero({
               <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
               <span>{region}</span>
               <span aria-hidden>·</span>
-              <span className="capitalize">{spot.difficulty}</span>
+              <span>{getDifficultyLabel(spot.difficulty, isPt)}</span>
               {spot.type && (
                 <>
                   <span aria-hidden>·</span>
-                  <span className="capitalize">{spot.type}</span>
+                  <span>{getSpotTypeLabel(spot.type, isPt)}</span>
                 </>
               )}
               {showQuality && (
@@ -269,7 +276,15 @@ export default function SpotDetailHero({
               <div className="flex flex-row sm:flex-col items-center gap-4 sm:gap-2">
                 <ScoreGauge score={score} label={sportLabel} sublabel="/100" size="lg" />
                 <div className="flex flex-col items-start sm:items-center gap-1.5 min-w-0 flex-1 sm:flex-initial">
-                  <ScoreBadge score={score} locale={locale as 'pt' | 'en'} size="md" showLabel />
+                  <span
+                    className={cn(
+                      'font-display text-lg font-semibold uppercase tracking-wide leading-none',
+                      scoreTokens.tier === 'epic' ? 'text-accent' : scoreTokens.text,
+                    )}
+                    data-visual-dynamic
+                  >
+                    {tierLabel}
+                  </span>
                   <ProvenanceRow align="center">
                     <ScoreWaveSourceBadge
                       source={scoreWaveSource}
@@ -302,6 +317,11 @@ export default function SpotDetailHero({
                     sport={sport}
                     locale={locale}
                   />
+                  {factors && factors.length > 0 && (
+                    <p className="text-meta-sm text-fg-muted leading-snug text-left sm:text-center">
+                      {factors.join(' · ')}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -338,6 +358,7 @@ export default function SpotDetailHero({
                   value={`${windKt}kt`}
                   label={isPt ? `Vento · ${windCardinal}` : `Wind · ${windCardinal}`}
                   ariaLabel={windFlowAriaLabel(conditions.windDirection, windKt, locale)}
+                  valueClassName={windTier ? `text-score-${windTier}` : undefined}
                 />
                 <StatChip
                   className="spot-hero-stat"

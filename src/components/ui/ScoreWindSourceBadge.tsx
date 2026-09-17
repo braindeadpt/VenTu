@@ -54,7 +54,7 @@ export default function ScoreWindSourceBadge({
             tier: 'adjusted',
           }
         : {
-            label: isPt ? 'Só previsão' : 'Forecast only',
+            label: isPt ? 'Vento · só previsão' : 'Wind · forecast only',
             title: isPt
               ? 'Sem observação fresca — score com previsão (ICON-EU / multi-modelo quando disponível)'
               : 'No fresh observation — forecast score (ICON-EU / multi-model when available)',

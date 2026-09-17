@@ -8,7 +8,7 @@ import type { SportScore } from '@/lib/sportScore';
 import type { Spot } from '@/types';
 
 function score(n: number): SportScore {
-  return { score: n, rating: '', ratingEn: '', factors: [], primaryFactor: '' };
+  return { score: n, rating: '', ratingEn: '', factors: [], factorsEn: [], primaryFactor: '' };
 }
 
 function row(

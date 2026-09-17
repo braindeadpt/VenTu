@@ -780,6 +780,7 @@ export default function SpotDetailClient({
           score={score.score}
           rating={score.rating}
           ratingEn={score.ratingEn}
+          factors={isPt ? score.factors : score.factorsEn}
           conditions={conditions}
           scoreWindSource={scoreWindSource}
           scoreWindCorrection={scoreWindCorrection}
@@ -903,7 +904,7 @@ export default function SpotDetailClient({
                     href={windguruUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-meta text-data-waves hover:text-data-waves/80"
+                    className="inline-flex items-center gap-1 min-h-[44px] -my-2 text-meta text-data-waves hover:text-data-waves/80"
                   >
                     {td.windguruLink}
                     <ExternalLink className="w-3.5 h-3.5" aria-hidden />
