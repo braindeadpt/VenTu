@@ -786,8 +786,8 @@ export const translationsDe = {
     coerWarnBody:
       'Konfidenz der nationalen Messung reduziert — das ES×PT-Paar ist seit {days} Tagen inkohärent.',
     tideAria: 'Gezeiten: {phase}',
-    tideLow: 'Niedrig',
-    tideHigh: 'Hoch',
+    tideLow: 'Niedrigwasser',
+    tideHigh: 'Hochwasser',
   },
   livecams: {
     title: 'Livecams',

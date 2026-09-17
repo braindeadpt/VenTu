@@ -15,7 +15,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
 
-  test('mostra a fase a subir com a Baixa/Alta seguintes (HH:MM)', async ({ page }) => {
+  test('mostra a fase a subir com a maré baixa/alta seguintes (HH:MM)', async ({ page }) => {
     await interceptConditions(page, {
       spots: {
         guincho: (entry) => ({ ...entry, tideStatus: 'rising' }),
@@ -26,8 +26,8 @@ test.describe('Marés (TideScheduleStrip)', () => {
     const strip = page.getByRole('status', { name: /Maré: Maré a subir/i });
     await expect(strip).toBeVisible({ timeout: 20_000 });
     // Próximas marés vêm da curva horária real (previsão).
-    await expect(strip).toContainText('Baixa');
-    await expect(strip).toContainText('Alta');
+    await expect(strip).toContainText('Maré baixa');
+    await expect(strip).toContainText('Maré alta');
     await expect(strip.getByText(/\d{2}:\d{2}/).first()).toBeVisible();
   });
 
@@ -42,7 +42,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
     await expect(page.getByRole('status', { name: /Maré: Maré alta agora/i })).toBeVisible({
       timeout: 20_000,
     });
-    await expect(page.getByRole('status', { name: /Maré: Maré alta agora/i })).toContainText('Baixa');
+    await expect(page.getByRole('status', { name: /Maré: Maré alta agora/i })).toContainText('Maré baixa');
   });
 
   test('mostra «Maré a descer» quando tideStatus é falling', async ({ page }) => {

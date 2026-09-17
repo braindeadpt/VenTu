@@ -796,6 +796,7 @@ export default function SpotDetailClient({
           observedWaveAlt={conditions.observedWaveAlt}
           observedWaveMeta={conditions.observedWaveMeta}
           heroRef={heroRef}
+          livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
           freshnessNowMs={freshnessNowMs}
         />
 
@@ -968,6 +969,7 @@ export default function SpotDetailClient({
 
               {getSpotLivecam(spot.slug) && (
                 <CollapsibleSection
+                  anchorId="spot-livecam"
                   title={td.livecam}
                   icon={<Video className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />}
                   collapsible={isMobile}

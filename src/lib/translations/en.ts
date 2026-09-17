@@ -708,8 +708,8 @@ export const translationsEn = {
     coerWarnBody:
       'National reading confidence reduced — the ES×PT pair has been incoherent for {days} days.',
     tideAria: 'Tide: {phase}',
-    tideLow: 'Low',
-    tideHigh: 'High',
+    tideLow: 'Low tide',
+    tideHigh: 'High tide',
   },
   livecams: {
     title: 'Live cams',

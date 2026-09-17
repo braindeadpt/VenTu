@@ -786,8 +786,8 @@ export const translationsEs = {
     coerWarnBody:
       'Confiabilidad de la lectura nacional reducida — el par ES×PT persiste incoherente desde hace {days} días.',
     tideAria: 'Marea: {phase}',
-    tideLow: 'Bajamar',
-    tideHigh: 'Pleamar',
+    tideLow: 'Marea baja',
+    tideHigh: 'Marea alta',
   },
   livecams: {
     title: 'Cámaras en vivo',

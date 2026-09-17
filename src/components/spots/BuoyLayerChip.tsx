@@ -90,10 +90,11 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
       {open && (
         <div
           data-buoy-chip-popover="true"
-          role="status"
           className="absolute bottom-full left-0 mb-2 w-[min(320px,calc(100vw-2rem))] z-[1250] rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card p-3 pr-8 text-meta-sm"
         >
-          <p className="leading-snug">
+          {/* role="status" no texto, não no popover — a live region não deve
+              embrulhar os botões de acção (audit 2026-09-16 P2). */}
+          <p role="status" className="leading-snug">
             <strong className="font-semibold">{c.title}: </strong>
             {c.body}
             {c.wmoNote}

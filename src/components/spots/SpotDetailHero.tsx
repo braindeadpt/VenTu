@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, Clock, Droplets, MapPin, Navigation, Waves } from 'lucide-react';
+import { ArrowLeft, Clock, Droplets, MapPin, Navigation, Video, Waves } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -83,6 +83,9 @@ interface SpotDetailHeroProps {
   observedWaveMeta?: ObservedWaveMeta | null;
   /** Optional ref pointing to the hero root — used by the sticky condensed bar. */
   heroRef?: React.Ref<HTMLElement>;
+  /** Chip «Câmara ao vivo» no hero (audit 2026-09-16 P2): âncora para a
+      secção do rail, que se abre sozinha em mobile. */
+  livecamLabel?: string;
   /**
    * Baked build-time clock (spot page SSG). Freshness is evaluated against it
    * until mount so hydration reproduces the bake (React #418 guard); the live
@@ -111,6 +114,7 @@ export default function SpotDetailHero({
   observedWaveAlt,
   observedWaveMeta,
   heroRef,
+  livecamLabel,
   freshnessNowMs,
 }: SpotDetailHeroProps) {
   const isPt = locale === 'pt';
@@ -223,20 +227,36 @@ export default function SpotDetailHero({
               locale={locale}
             />
 
-            <a
-              href={directionsUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                'inline-flex items-center justify-center gap-2 font-medium',
-                'px-4 py-2 text-sm rounded-input min-h-[44px]',
-                'bg-accent hover:bg-accent-hover active:bg-accent-active border border-transparent',
-                'transition-opacity duration-150 shadow-card',
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href={directionsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  'inline-flex items-center justify-center gap-2 font-medium',
+                  'px-4 py-2 text-sm rounded-input min-h-[44px]',
+                  'bg-accent hover:bg-accent-hover active:bg-accent-active border border-transparent',
+                  'transition-opacity duration-150 shadow-card',
+                )}
+              >
+                <Navigation className="w-4 h-4" aria-hidden />
+                {directionsLabel}
+              </a>
+              {livecamLabel && (
+                <a
+                  href="#spot-livecam"
+                  className={cn(
+                    'inline-flex items-center justify-center gap-2 font-medium',
+                    'px-4 py-2 text-sm rounded-input min-h-[44px]',
+                    'border border-divider-strong text-fg-muted',
+                    'hover:text-fg hover:border-fg-subtle transition-colors duration-150',
+                  )}
+                >
+                  <Video className="w-4 h-4" aria-hidden />
+                  {livecamLabel}
+                </a>
               )}
-            >
-              <Navigation className="w-4 h-4" aria-hidden />
-              {directionsLabel}
-            </a>
+            </div>
           </div>
 
           <div className="flex flex-col gap-2 shrink-0 w-full sm:w-auto sm:items-end">

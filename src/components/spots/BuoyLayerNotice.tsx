@@ -61,7 +61,6 @@ export default function BuoyLayerNotice({
 
   return (
     <div
-      role="status"
       className={cn(
         'relative flex items-start gap-2.5 text-meta-sm pointer-events-auto text-fg',
         quiet
@@ -84,7 +83,9 @@ export default function BuoyLayerNotice({
         )}
         aria-hidden
       />
-      <p className={cn('leading-snug', quiet && 'text-fg-muted')}>
+      {/* role="status" no texto, não no wrapper — a live region não deve
+          embrulhar o botão de dispensar (audit 2026-09-16 P2). */}
+      <p role="status" className={cn('leading-snug', quiet && 'text-fg-muted')}>
         <strong className={cn('font-semibold', quiet && 'text-fg')}>{c.title}: </strong>
         {c.body}
         {c.wmoNote}
