@@ -198,6 +198,7 @@ async function main() {
     process.env.WMO_BIAS_ARCHIVE_OUTPUT_PATH = path.join(tmpDir, 'wmo-bias-archive.json');
     process.env.BUOY_COHERENCE_PATH = path.join(tmpDir, 'coherence.json');
     process.env.FORECAST_SKILL_OUTPUT_PATH = path.join(tmpDir, 'forecast-skill.json');
+    process.env.FORECAST_SKILL_ARCHIVE_PATH = path.join(tmpDir, 'forecast-skill-archive.json');
     process.env.FORECASTS_PATH = path.join(tmpDir, 'forecasts.json');
     process.env.IH_BUOYS_PATH = path.join(tmpDir, 'ih-buoys.json');
     process.env.WMO_BIAS_ARCHIVE_PATH = path.join(tmpDir, 'wmo-bias-archive.json');
@@ -236,8 +237,10 @@ async function main() {
     }
     if (exists('forecast-skill.json')) {
       const fs1 = readJson('forecast-skill.json');
-      check('previsões ES arquivadas (6200084)', fs1.forecasts.some((f) => String(f.buoyId) === '6200084' && f.origin === 'wmo-es'));
-      check('observações ES arquivadas (6200084)', fs1.observations.some((o) => String(o.buoyId) === '6200084'));
+      // Séries brutas: no arquivo de estado (split data-state/), não no relatório.
+      const arch1 = exists('forecast-skill-archive.json') ? readJson('forecast-skill-archive.json') : null;
+      check('previsões ES arquivadas (6200084)', arch1 && arch1.forecasts.some((f) => String(f.buoyId) === '6200084' && f.origin === 'wmo-es'));
+      check('observações ES arquivadas (6200084)', arch1 && arch1.observations.some((o) => String(o.buoyId) === '6200084'));
       check('par ainda NÃO formado (12:00Z é futuro em T0)', fs1.pairCount === 0);
       check('contadores por origem presentes (IH 0 · WMO-ES 0)', fs1.pairCountByOrigin?.ih === 0 && fs1.pairCountByOrigin?.['wmo-es'] === 0);
     }
@@ -265,9 +268,10 @@ async function main() {
       check(`n acumulado inclui 13:00Z (n=${s?.n} ≥ 31)`, s && s.n >= READINGS);
     }
     const sk2 = exists('forecast-skill.json') ? readJson('forecast-skill.json') : null;
+    const arch2 = exists('forecast-skill-archive.json') ? readJson('forecast-skill-archive.json') : null;
     check('par ES formado no run 2 (pairCount ≥ 1)', sk2 && sk2.pairCount >= 1);
-    if (sk2) {
-      const p = sk2.pairs.find((x) => String(x.buoyId) === '6200084');
+    if (sk2 && arch2) {
+      const p = arch2.pairs.find((x) => String(x.buoyId) === '6200084');
       check('par com origem wmo-es (Sillero)', p && p.origin === 'wmo-es');
       check('par mede skill real (lead > 0)', p && p.leadTimeHours > 0);
       check(
@@ -287,6 +291,7 @@ async function main() {
       'WMO_BIAS_ARCHIVE_OUTPUT_PATH',
       'BUOY_COHERENCE_PATH',
       'FORECAST_SKILL_OUTPUT_PATH',
+      'FORECAST_SKILL_ARCHIVE_PATH',
       'FORECASTS_PATH',
       'IH_BUOYS_PATH',
       'WMO_BIAS_ARCHIVE_PATH',

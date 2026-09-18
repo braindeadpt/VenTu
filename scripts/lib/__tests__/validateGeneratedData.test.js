@@ -361,9 +361,6 @@ describe('validate-generated-data — warnings.json TTL (segurança dos alertas)
 describe('validate-generated-data — dependência de plataforma (pares por origem)', () => {
   const validSkill = (pairCountByOrigin) => ({
     fetchedAt: now(),
-    forecasts: [],
-    observations: [],
-    pairs: [],
     stats: { me: 0.1, n: 50 },
     byOrigin: {},
     byBuoy: {},

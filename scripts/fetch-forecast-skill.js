@@ -58,6 +58,7 @@ const {
   pruneArchive,
   MAX_FORECAST_LEAD_HOURS,
   DEFAULT_OUTPUT_PATH,
+  DEFAULT_ARCHIVE_PATH,
 } = require('./lib/forecastSkill.js');
 
 const IH_API = process.env.IH_API_URL || DEFAULT_IH_API;
@@ -69,6 +70,10 @@ const COLLECTIONS = (process.env.IH_BUOY_COLLECTIONS || DEFAULT_COLLECTIONS.join
   .filter(Boolean);
 const OUTPUT_PATH =
   process.env.FORECAST_SKILL_OUTPUT_PATH || DEFAULT_OUTPUT_PATH;
+// Estado bruto da acumulação (previsões/observações/pares) — fora do payload
+// servido, commitado pelo push-data-update.sh como o wind-bias-archive.
+const ARCHIVE_PATH =
+  process.env.FORECAST_SKILL_ARCHIVE_PATH || DEFAULT_ARCHIVE_PATH;
 // Inputs env-overridable (testes hermeticos — mesmo padrão do merge/fetch-wave-bias).
 const FORECASTS_PATH =
   process.env.FORECASTS_PATH || path.join(__dirname, '../public/data/forecasts.json');
@@ -147,7 +152,13 @@ async function fetchForecastSkill() {
   // ── Archive best_match forecasts for mapped spots (ahead of now) ─────────
   // One forecast slot per buoy per hour: use the NEAREST mapped spot so the
   // forecast is the closest available proxy for the buoy location.
-  const archive = readArchive(OUTPUT_PATH);
+  let archive = readArchive(ARCHIVE_PATH);
+  if (!fs.existsSync(ARCHIVE_PATH) && fs.existsSync(OUTPUT_PATH)) {
+    // Primeiro run pós-split: o público legado ainda traz as séries brutas —
+    // semeia o arquivo de estado a partir dele (migração sem perda).
+    archive = readArchive(OUTPUT_PATH);
+    console.log('   📦 Migrating forecast-skill archive → data-state/ (public file becomes report-only)');
+  }
   archive.fetchedAt = now.toISOString();
 
   const nearestSpotByBuoy = new Map();
@@ -253,9 +264,13 @@ async function fetchForecastSkill() {
   // ── Cross + stats + persist ─────────────────────────────────────────────
   pruneArchive(archive, nowMs);
   const report = buildReport(archive, nowMs);
-  writeArchive({ ...archive, ...report, fetchedAt: now.toISOString() }, OUTPUT_PATH);
+  // Split (2026-09-18): as séries brutas (forecasts/observations/pairs) vivem
+  // no arquivo de estado — o público leva só o relatório (o blob passou do
+  // budget de payload: 1.6 MB > 1.5 MB no validate-data).
+  writeArchive(archive, ARCHIVE_PATH);
+  writeArchive({ ...report, fetchedAt: now.toISOString() }, OUTPUT_PATH);
 
-  console.log(`\n✅ Forecast skill saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);
+  console.log(`\n✅ Forecast skill saved to ${path.relative(process.cwd(), OUTPUT_PATH)} (archive → ${path.relative(process.cwd(), ARCHIVE_PATH)})`);
   const byOrigin = report.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
   const calib = report.calibratedPairCount ?? 0;
   console.log(

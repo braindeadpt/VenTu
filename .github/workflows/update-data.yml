@@ -269,9 +269,10 @@ jobs:
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ventu-data
-          # data-state/ viaja junto: o arquivo de pares do wind-bias (estado
-          # da pipeline) vive fora de public/data desde o split — ver
-          # scripts/lib/windBiasArchive.js.
+          # data-state/ viaja junto: os arquivos de pares/séries (wind-bias,
+          # forecast-skill — estado da pipeline) vivem fora de public/data
+          # desde os splits — ver scripts/lib/windBiasArchive.js e
+          # scripts/lib/forecastSkill.js.
           path: |
             public/data
             data-state

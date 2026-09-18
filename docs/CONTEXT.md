@@ -200,9 +200,18 @@ src/components/ui/ScoreWindSourceBadge.tsx → tooltip «Viés desta estação: 
 ## Forecast skill real (best_match vs boias IH, arquivo run a run)
 
 ```
-scripts/fetch-forecast-skill.js → public/data/forecast-skill.json
+scripts/fetch-forecast-skill.js → public/data/forecast-skill.json (só relatório)
+                              → data-state/forecast-skill-archive.json (séries brutas)
 scripts/lib/forecastSkill.js → hora Lisboa, arquivo, cruzamento com lead, ME/MAE/RMSE/r
 ```
+
+> Split 2026-09-18: as séries brutas (`forecasts`/`observations`/`pairs`,
+> ~1.6 MB) rebentaram o budget de payload do `validate-data`. Vivem em
+> `data-state/` (commitado pelo `push-data-update.sh`, fora do payload
+> servido — mesmo padrão do wind-bias); o ficheiro público leva apenas o
+> relatório (~7 KB: stats/byBuoy/byOrigin/lastPairs/contadores). O validador
+> falha se os arrays brutos voltarem ao público; primeiro run pós-split
+> semeia o arquivo a partir do público legado.
 
 - **Distinto do wave-bias (ERA5):** aqui mede-se skill REAL — a previsão best_match feita no run N para a hora H (guardada com `runAt`) é comparada com a leitura da boia para H quando esta chega. Par só com **lead time > 0** (a previsão foi feita antes da hora) — nunca nowcasting.
 - Cada run full arquiva as previsões futuras (48 h, spot mais próximo de cada boia activa) e as observações recentes da boia (48 h, `getDatawellData`, precisa de `IH_API_KEY`). Janela do arquivo: 30 dias; stats reportados com N≥10.

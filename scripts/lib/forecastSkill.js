@@ -17,8 +17,13 @@
  * (YYYY-MM-DDTHH) — the same convention as src/lib/openMeteoTime.ts — while
  * runAt/observedAt keep real instants for lead-time and pruning maths.
  *
- * The archive lives in public/data/forecast-skill.json (same graceful
- * degradation as wave-bias: no key / failure → keep previous, exit 0).
+ * The archive lives in data-state/forecast-skill-archive.json — raw
+ * forecasts/observations/pairs grew past the public payload budget (1.6 MB,
+ * 2026-09-18), so the public file carries only the report (stats/byBuoy/
+ * lastPairs) and the raw series accumulate outside the served payload, the
+ * same split as wind-bias-archive.json (committed by push-data-update.sh).
+ * Same graceful degradation as wave-bias: no key / failure → keep previous,
+ * exit 0.
  */
 
 const fs = require('fs');
@@ -27,6 +32,7 @@ const { mapSpotsToNearestBuoy } = require('./wmoBiasArchive.js');
 const { wmoOriginForWmoCode } = require('./copernicusBuoys.js');
 
 const DEFAULT_OUTPUT_PATH = path.join(__dirname, '../../public/data/forecast-skill.json');
+const DEFAULT_ARCHIVE_PATH = path.join(__dirname, '../../data-state/forecast-skill-archive.json');
 
 /** Keep the archive trimmed to this many days of pair history. */
 const SKILL_WINDOW_DAYS = 30;
@@ -130,10 +136,10 @@ function emptyArchive() {
 }
 
 /** Read the archive from disk (missing/corrupt → empty archive). */
-function readArchive(outputPath = DEFAULT_OUTPUT_PATH) {
+function readArchive(archivePath = DEFAULT_ARCHIVE_PATH) {
   try {
-    if (fs.existsSync(outputPath)) {
-      const raw = JSON.parse(fs.readFileSync(outputPath, 'utf-8'));
+    if (fs.existsSync(archivePath)) {
+      const raw = JSON.parse(fs.readFileSync(archivePath, 'utf-8'));
       return {
         ...emptyArchive(),
         ...raw,
@@ -148,8 +154,8 @@ function readArchive(outputPath = DEFAULT_OUTPUT_PATH) {
   return emptyArchive();
 }
 
-/** Write the archive atomically. */
-function writeArchive(archive, outputPath = DEFAULT_OUTPUT_PATH) {
+/** Write a JSON file atomically (archive or report — same writer). */
+function writeArchive(archive, outputPath = DEFAULT_ARCHIVE_PATH) {
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   const tmpPath = `${outputPath}.tmp`;
   fs.writeFileSync(tmpPath, `${JSON.stringify(archive)}\n`, 'utf-8');
@@ -610,4 +616,5 @@ module.exports = {
   buildReport,
   pairOriginOf,
   DEFAULT_OUTPUT_PATH,
+  DEFAULT_ARCHIVE_PATH,
 };

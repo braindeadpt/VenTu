@@ -65,6 +65,14 @@ const read = (p) => {
   if (!fs.existsSync(file)) return undefined;
   return JSON.parse(fs.readFileSync(file, 'utf8'));
 };
+// Estado da pipeline fora do payload servido (data-state/ na raiz do repo).
+const STATE =
+  process.env.VENTU_STATE_DIR || path.join(DATA, '..', '..', 'data-state');
+const readState = (p) => {
+  const file = path.join(STATE, p);
+  if (!fs.existsSync(file)) return undefined;
+  return JSON.parse(fs.readFileSync(file, 'utf8'));
+};
 const isIso = (s) =>
   typeof s === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(s) && !Number.isNaN(Date.parse(s));
 const ageHours = (iso) => (Date.now() - new Date(iso).getTime()) / 3600000;
@@ -522,12 +530,27 @@ if (windBiasData !== undefined) {
 
 // forecast-skill.json é opcional (warn se ausente): o skill real acumula run a
 // run e nunca bloqueia o deploy; sem pares ainda o stats fica null (normal).
+// Split (2026-09-18): o público é só o relatório — as séries brutas
+// (forecasts/observations/pairs) vivem em data-state/forecast-skill-archive.json
+// porque rebentaram o budget de payload (1.6 MB > 1.5 MB no validate-data).
 const forecastSkill = read('forecast-skill.json');
 if (forecastSkill !== undefined) {
   check('forecast-skill.fetchedAt', isIso(forecastSkill.fetchedAt), 'missing/invalid fetchedAt');
-  check('forecast-skill.forecasts', Array.isArray(forecastSkill.forecasts), 'missing forecasts array');
-  check('forecast-skill.observations', Array.isArray(forecastSkill.observations),
-    'missing observations array');
+  check('forecast-skill.forecasts', forecastSkill.forecasts === undefined,
+    'forecasts voltou ao ficheiro público — pertence ao arquivo data-state/');
+  check('forecast-skill.observations', forecastSkill.observations === undefined,
+    'observations voltou ao ficheiro público — pertence ao arquivo data-state/');
+  check('forecast-skill.pairs', forecastSkill.pairs === undefined,
+    'pairs voltou ao ficheiro público — pertence ao arquivo data-state/');
+  const skillArchive = readState('forecast-skill-archive.json');
+  if (skillArchive !== undefined) {
+    check('forecast-skill-archive.forecasts', Array.isArray(skillArchive.forecasts),
+      'missing forecasts array');
+    check('forecast-skill-archive.observations', Array.isArray(skillArchive.observations),
+      'missing observations array');
+  } else {
+    warn('forecast-skill-archive.json missing — arquivo bruto do skill fora de public/data ausente (primeiro run ou split não aplicado)');
+  }
   check('forecast-skill.pairCount', Number.isInteger(forecastSkill.pairCount),
     'missing pairCount');
   // byBuoy pode conter idEst numéricos (IH) e códigos WMO string (boias ES).

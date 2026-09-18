@@ -631,6 +631,7 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
     process.env.IH_API_URL = 'http://mock-ih.local';
     process.env.IH_BUOY_WAVE_API_URL = 'http://mock-ih.local/wave';
     process.env.FORECAST_SKILL_OUTPUT_PATH = path.join(tmpDir, 'forecast-skill.json');
+    process.env.FORECAST_SKILL_ARCHIVE_PATH = path.join(tmpDir, 'forecast-skill-archive.json');
     delete process.env.IH_API_KEY;
     for (const [k, v] of Object.entries(overrides)) process.env[k] = v;
     // Inputs (forecasts/ih-buoys/wmo archive) — env tem de estar setado ANTES
@@ -646,12 +647,18 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
   afterEach(() => {
     if (tmpDir) fs.rmSync(tmpDir, { recursive: true, force: true });
     delete process.env.IH_API_KEY;
+    delete process.env.FORECAST_SKILL_ARCHIVE_PATH;
     delete process.env.FORECASTS_PATH;
     delete process.env.IH_BUOYS_PATH;
     delete process.env.WMO_BIAS_ARCHIVE_PATH;
     delete process.env.WMO_BUOYS_PATH;
     vi.useRealTimers();
   });
+
+  /** Arquivo bruto (data-state) — as séries saíram do relatório público. */
+  function readSkillArchive() {
+    return JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_ARCHIVE_PATH, 'utf8'));
+  }
 
   /** Fixtures mínimos para o caminho real do script (inputs env-overridable). */
   function writeInputFixtures({ t2, t3, obsAt }) {
@@ -711,8 +718,14 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
     // acontecer sem key é o fetch de leituras de ondas (getDatawellData).
     expect(calledUrls.some((u) => u.includes('getDatawellData'))).toBe(false);
     const out = JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_OUTPUT_PATH, 'utf8'));
-    expect(out.forecasts.length).toBeGreaterThan(0);
+    const arch = readSkillArchive();
+    expect(arch.forecasts.length).toBeGreaterThan(0);
     expect(out.pairCount).toBe(0);
+    // O relatório público não traz as séries brutas — ficam no arquivo
+    // (split data-state/, budget de payload).
+    expect(out.forecasts).toBeUndefined();
+    expect(out.observations).toBeUndefined();
+    expect(out.pairs).toBeUndefined();
   });
 
   it('fail-fast: getDatawellData em 401 → run() falha cedo (exitCode 1) com ::error::', async () => {
@@ -765,12 +778,13 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
 
     await mod.run();
     const out = JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_OUTPUT_PATH, 'utf8'));
+    const arch = readSkillArchive();
     // O spot NW (moledo, a ~59 km do Silleiro) arquiva previsões ES futuras...
-    expect(out.forecasts.some((f) => f.buoyId === '6200084' && f.buoyName === 'Cabo Silleiro')).toBe(true);
+    expect(arch.forecasts.some((f) => f.buoyId === '6200084' && f.buoyName === 'Cabo Silleiro')).toBe(true);
     // ...e as leituras acumuladas do wmo-bias-archive entram como observações.
-    expect(out.observations.some((o) => o.buoyId === '6200084' && o.hm0 === 1.6)).toBe(true);
+    expect(arch.observations.some((o) => o.buoyId === '6200084' && o.hm0 === 1.6)).toBe(true);
     // Sem IH_API_KEY o caminho IH fica só com previsões — nunca fetcha ondas.
-    expect(out.observations.every((o) => typeof o.buoyId === 'string')).toBe(true);
+    expect(arch.observations.every((o) => typeof o.buoyId === 'string')).toBe(true);
     expect(out.pairCount).toBe(0); // horas futuras — sem verdade ainda
   });
 
@@ -791,15 +805,18 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
     // Run 1 (10:00Z) — arquiva previsão ES + leitura, mas 13:00Z ainda é futuro.
     await mod.run();
     const out1 = JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_OUTPUT_PATH, 'utf8'));
+    const arch1 = readSkillArchive();
     expect(out1.pairCount).toBe(0);
-    expect(out1.forecasts.some((f) => f.buoyId === '6200084')).toBe(true);
+    expect(arch1.forecasts.some((f) => f.buoyId === '6200084')).toBe(true);
 
     // Run 2 (13:30Z) — a hora 13:00Z já passou → o par ES forma-se com lead real.
     vi.setSystemTime(Date.parse('2026-08-14T13:30:00Z'));
     await mod.run();
     const out2 = JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_OUTPUT_PATH, 'utf8'));
-    expect(out2.pairs).toHaveLength(1);
-    expect(out2.pairs[0]).toMatchObject({
+    const arch2 = readSkillArchive();
+    expect(out2.pairCount).toBe(1);
+    expect(arch2.pairs).toHaveLength(1);
+    expect(arch2.pairs[0]).toMatchObject({
       buoyId: '6200084',
       buoyName: 'Cabo Silleiro',
       forecastHm0: 1.4,
@@ -808,7 +825,7 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
     });
     // A previsão de 14:00Z mantém o runAt mais antigo (10:00Z) — a acumulação
     // não sobrescreve com o nowcast do run 2.
-    const kept = out2.forecasts.find((f) => f.buoyId === '6200084' && f.hourKey === '2026-08-14T14');
+    const kept = arch2.forecasts.find((f) => f.buoyId === '6200084' && f.hourKey === '2026-08-14T14');
     expect(kept.runAt).toBe('2026-08-14T10:00:00.000Z');
   });
 
@@ -837,9 +854,9 @@ describe('fetch-forecast-skill.js (caminho real, sem key)', () => {
     vi.stubGlobal('fetch', fetchMock);
 
     await mod.run();
-    const out = JSON.parse(fs.readFileSync(process.env.FORECAST_SKILL_OUTPUT_PATH, 'utf8'));
-    expect(out.observations.length).toBeGreaterThanOrEqual(0);
-    expect(out.forecasts.length).toBeGreaterThan(0);
+    const arch = readSkillArchive();
+    expect(arch.observations.length).toBeGreaterThanOrEqual(0);
+    expect(arch.forecasts.length).toBeGreaterThan(0);
   });
 });
 

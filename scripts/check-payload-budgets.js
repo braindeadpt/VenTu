@@ -97,14 +97,16 @@ function listingDirs(localeDir) {
 // page load, so a size regression (like the 10 MB forecasts.json bake) is a
 // download regression for every visitor even though no route dir changes.
 // Budgets sit ~1.2x current sizes (forecasts 10.2 MB, wind-bias 2.0 MB,
-// spots-index 1.0 MB, forecast-skill 1.3 MB, conditions 0.5 MB) — room for
+// spots-index 1.0 MB, forecast-skill 0.03 MB, conditions 0.5 MB) — room for
 // organic growth (more spots/hours), nowhere near enough for a doubling.
+// forecast-skill is report-only since the 2026-09-18 split (raw series live
+// in data-state/): if it ever returns near 1 MB the raw arrays leaked back.
 const DATA_FILE_BUDGETS_MB = {
   'forecasts.json': 12,
   'conditions.json': 1,
   'spots-index.json': 1.5,
   'wind-bias.json': 2.5,
-  'forecast-skill.json': 1.5,
+  'forecast-skill.json': 0.5,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;
