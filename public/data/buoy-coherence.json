@@ -1,11 +1,11 @@
 {
   "day": "20260919",
-  "fetchedAt": "2026-09-19T16:50:38.186Z",
+  "fetchedAt": "2026-09-19T18:02:02.590Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 534,
+    "pairHourCount": 535,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -99,7 +99,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "moledo"
           ]
@@ -196,7 +196,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "vila-praia-ancora",
             "afife",
@@ -370,7 +370,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "ofir",
             "esposende",
@@ -555,7 +555,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "povoa-varzim",
             "leca-palmeira",
@@ -720,7 +720,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "azurara",
             "mindelo"
@@ -778,7 +778,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "praia-da-lomba"
           ]
@@ -840,7 +840,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "praia-37",
             "bairro-piscatorio",
@@ -943,7 +943,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "barrinha-esmoriz",
             "esmoriz",
@@ -1853,7 +1853,7 @@
           "ptRefArea": "Nazaré",
           "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
           "me": 0.1,
-          "n": 313,
+          "n": 314,
           "spots": [
             "ilha-do-ermal"
           ]
@@ -2345,7 +2345,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-19T16:52:27.970Z",
+  "regionsAuditedAt": "2026-09-19T18:02:12.164Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2355,14 +2355,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 313,
+      "n": 314,
       "meanDeltaM": 0.1,
       "meanAbsDeltaM": 0.3,
       "maxAbsDeltaM": 1.3,
       "corr": 0.76,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-19T14",
+      "lastHour": "2026-09-19T15",
       "hours": [
         {
           "6200084": 3.049999952316284,
@@ -2438,6 +2438,11 @@
           "6200084": 2.4600000381469727,
           "6200199": 2.299799919128418,
           "hour": "2026-09-19T14"
+        },
+        {
+          "6200084": 2.5799999237060547,
+          "6200199": 2.3730499744415283,
+          "hour": "2026-09-19T15"
         }
       ]
     }
