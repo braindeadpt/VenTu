@@ -387,6 +387,38 @@
       ]
     },
     {
+      "id": 18625,
+      "ref": "ANAV NR 2109/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d7f91290-3f09-41fb-a0f0-4157d9c55311",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.475767,
+            37.069496
+          ],
+          [
+            -8.475767,
+            37.09579
+          ],
+          [
+            -8.382709,
+            37.09579
+          ],
+          [
+            -8.382709,
+            37.069496
+          ],
+          [
+            -8.475767,
+            37.069496
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -6839,6 +6871,38 @@
       ]
     },
     {
+      "id": 1010314,
+      "ref": "ANAV NR 44/26",
+      "category": "BARRA DE ALVOR - BARRA ABERTA.",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=3c72080e-a2e9-4744-ab0d-ef0a61dbf74a",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -8.628898,
+            37.11304
+          ],
+          [
+            -8.628898,
+            37.124538
+          ],
+          [
+            -8.606234,
+            37.124538
+          ],
+          [
+            -8.606234,
+            37.11304
+          ],
+          [
+            -8.628898,
+            37.11304
+          ]
+        ]
+      ]
+    },
+    {
       "id": 2016905,
       "ref": "ANAV NR 0743/26",
       "category": "Animais Marinhos - Interação",
@@ -7868,7 +7932,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-20T07:04:52.778Z",
+  "fetchedAt": "2026-09-20T11:31:35.801Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-20T07:04:52.798Z",
+  "fetchedAt": "2026-09-20T11:31:35.820Z",
   "windowDays": 90,
   "dayCount": 19,
   "days": [
@@ -11374,6 +11374,13 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f29008b3-1062-4a45-a20e-fec5b2140958"
         },
         {
+          "id": 18625,
+          "ref": "ANAV NR 2109/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d7f91290-3f09-41fb-a0f0-4157d9c55311"
+        },
+        {
           "id": 1000182,
           "ref": "ANAV NR 121/21",
           "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -12415,6 +12422,13 @@
           "category": "BARRA DE ALBUFEIRA - ABERTA A TODA A NAVEGAÇÃO.",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=8f5acacb-f005-4937-96af-0a75bf2e23e3"
+        },
+        {
+          "id": 1010314,
+          "ref": "ANAV NR 44/26",
+          "category": "BARRA DE ALVOR - BARRA ABERTA.",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=3c72080e-a2e9-4744-ab0d-ef0a61dbf74a"
         },
         {
           "id": 2016905,
@@ -14338,6 +14352,18 @@
       "nDays": 3
     },
     {
+      "ref": "ANAV NR 2109/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=d7f91290-3f09-41fb-a0f0-4157d9c55311",
+      "firstSeen": "2026-09-20",
+      "lastSeen": "2026-09-20",
+      "daysInForce": [
+        "2026-09-20"
+      ],
+      "nDays": 1
+    },
+    {
       "ref": "ANAV NR 22/25",
       "category": "AVISO À NAVEGAÇÃO - INSTALAÇÃO DE BOIA LiDAR FLS 200",
       "source": "ih",
@@ -15056,6 +15082,18 @@
         "2026-09-20"
       ],
       "nDays": 9
+    },
+    {
+      "ref": "ANAV NR 44/26",
+      "category": "BARRA DE ALVOR - BARRA ABERTA.",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=3c72080e-a2e9-4744-ab0d-ef0a61dbf74a",
+      "firstSeen": "2026-09-20",
+      "lastSeen": "2026-09-20",
+      "daysInForce": [
+        "2026-09-20"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 45/24",
