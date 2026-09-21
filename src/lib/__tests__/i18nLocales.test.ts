@@ -21,6 +21,10 @@ const SHARED_TOKENS = new Set([
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  // Pontos cardeais — símbolos universais (N/S/E/O válidos em pt/en/es/de/fr).
+  'N', 'S', 'E', 'O',
+  // Termo adoptado em PT, igual nas shells («score 93, ÉPICO»).
+  'score',
 ]);
 
 /**
@@ -67,6 +71,9 @@ const ES_COGNATES = new Set([
   'MODALIDADES',        // espanhol correcto = PT (cabeçalho de grupo de pesquisa)
   'navegar',            // espanhol correcto = PT (atalho de teclado)
   'abrir',              // espanhol correcto = PT (atalho de teclado)
+  'Avisos activos',     // espanhol correcto = PT (faixa de avisos do veredicto)
+  'Próximas 48 horas',  // espanhol correcto = PT (régua temporal do veredicto)
+  'Pausar',             // espanhol correcto = PT (reprodução da régua)
   'Veredicto',          // espanhol correcto = PT (secção da página de spot)
   'Instrumentos',       // espanhol correcto = PT (secção da página de spot)
   'Contexto',           // espanhol correcto = PT (secção da página de spot)
@@ -88,6 +95,8 @@ const EN_COGNATES = new Set([
   'VenTu', 'VenTu. Open Source Project.', 'Ver spot', 'Wakeboard', 'Windsurf',
   '{count} spots',
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  // Pontos cardeais e «score» — símbolos/termos universais, iguais por mérito.
+  'N', 'S', 'E', 'O', 'score',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
