@@ -1,5 +1,9 @@
 /** French shell translations — mirrors en/pt keys in i18n.ts */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsFr = {
   nav: {
@@ -824,4 +828,8 @@ export const translationsFr = {
       minguante: 'Dernier croissant',
     },
   },
+  spotPageVerdict: spotPageVerdict.fr,
+  spotPageInstruments: spotPageInstruments.fr,
+  spotPageForecast: spotPageForecast.fr,
+  spotPageContext: spotPageContext.fr,
 } as const;

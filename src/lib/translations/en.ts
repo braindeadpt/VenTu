@@ -1,5 +1,9 @@
 /** English (en) — full dictionary, mirrors pt key shape */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsEn = {
   nav: {
@@ -745,4 +749,8 @@ export const translationsEn = {
       minguante: 'Waning crescent',
     },
   },
+  spotPageVerdict: spotPageVerdict.en,
+  spotPageInstruments: spotPageInstruments.en,
+  spotPageForecast: spotPageForecast.en,
+  spotPageContext: spotPageContext.en,
 } as const;

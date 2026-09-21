@@ -15,7 +15,12 @@ const ROOT = join(__dirname, '..', '..', '..');
 
 const globalsCss = readFileSync(join(ROOT, 'src/app/globals.css'), 'utf-8');
 const stickyBar = readFileSync(join(ROOT, 'src/components/spots/SpotStickyBar.tsx'), 'utf-8');
-const detail = readFileSync(join(ROOT, 'src/components/spots/SpotDetailClient.tsx'), 'utf-8');
+// A linha standalone de tabs vive na secção de veredicto desde a S1
+// (compartimentos da página de spot v2) — é ela que partilha a cota com a barra.
+const detail = readFileSync(
+  join(ROOT, 'src/components/spots/page/SpotVerdictSection.tsx'),
+  'utf-8',
+);
 
 describe('tokens de layout sport tabs (secção sticky vs SpotStickyBar)', () => {
   it('globals.css define os dois tokens com os valores esperados', () => {

@@ -1,5 +1,9 @@
 /** Spanish shell translations — mirrors en/pt keys in i18n.ts */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsEs = {
   nav: {
@@ -824,4 +828,8 @@ export const translationsEs = {
       minguante: 'Luna menguante',
     },
   },
+  spotPageVerdict: spotPageVerdict.es,
+  spotPageInstruments: spotPageInstruments.es,
+  spotPageForecast: spotPageForecast.es,
+  spotPageContext: spotPageContext.es,
 } as const;

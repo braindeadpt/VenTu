@@ -1,5 +1,9 @@
 /** German shell translations — mirrors en/pt keys in i18n.ts */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsDe = {
   nav: {
@@ -824,4 +828,8 @@ export const translationsDe = {
       minguante: 'Abnehmender Mond',
     },
   },
+  spotPageVerdict: spotPageVerdict.de,
+  spotPageInstruments: spotPageInstruments.de,
+  spotPageForecast: spotPageForecast.de,
+  spotPageContext: spotPageContext.de,
 } as const;

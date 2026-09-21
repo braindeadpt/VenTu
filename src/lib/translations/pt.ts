@@ -1,5 +1,9 @@
 /** Portuguese (pt) — full dictionary, source of truth for key shape */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsPt = {
   nav: {
@@ -753,4 +757,8 @@ export const translationsPt = {
       minguante: 'Lua minguante',
     },
   },
+  spotPageVerdict: spotPageVerdict.pt,
+  spotPageInstruments: spotPageInstruments.pt,
+  spotPageForecast: spotPageForecast.pt,
+  spotPageContext: spotPageContext.pt,
 } as const;

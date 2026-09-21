@@ -1,17 +1,8 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import {
-  AlertTriangle,
-  ArrowLeft,
-  ChevronDown,
-  ChevronUp,
-  ExternalLink,
-  Gauge,
-  MapPin,
-  Video,
-} from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 import type { Spot } from '@/types';
 import { fetchMarineData, getCurrentConditions, getForecastData } from '@/lib/openmeteo';
@@ -28,20 +19,11 @@ import { getWindguruUrl } from '@/lib/windguru';
 import { buildTideSchedule, phaseFromConditionsStatus, type TideHourPoint } from '@/lib/tideSchedule';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import SeoHead from '@/components/SeoHead';
-import ForecastTable from '@/components/weather/ForecastTable';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
-import WhenToGoCard from '@/components/spots/WhenToGoCard';
-import CollapsibleSection from '@/components/ui/CollapsibleSection';
-import ForecastMeteogram from '@/components/spots/ForecastMeteogram';
 import { computeMagicWindows } from '@/lib/magicWindows';
 import { findCurrentHourIndex } from '@/lib/openMeteoTime';
 import { buildSpotVerdict } from '@/lib/spotVerdict';
-import SpotWebcamSection from '@/components/weather/SpotWebcamSection';
-import SpotWeatherlinkSection from '@/components/weather/SpotWeatherlinkSection';
-import SpotDetailHero from '@/components/spots/SpotDetailHero';
-import SportTab from '@/components/spots/SportTab';
-import { useSpotHeroScrolledPast } from '@/hooks/useSpotHeroScrolledPast';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
@@ -58,24 +40,19 @@ import {
   resolveScoreWindSource,
 } from '@/lib/scoreConditions';
 import type { ScoreWindCorrection } from '@/lib/scoreConditions';
-import { LocalTipsSection } from '@/components/spots/LocalTipsSection';
-import FeedbackForm from '@/components/FeedbackForm';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
-import Button from '@/components/ui/Button';
-import SpotConditionsDashboard from '@/components/spots/SpotConditionsDashboard';
-import SpotWarningsSection from '@/components/spots/SpotWarningsSection';
-import SpotStickyBar from '@/components/spots/SpotStickyBar';
-import SpotLogisticsPanel from '@/components/spots/SpotLogisticsPanel';
-import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
-import SpotUpcomingEvents from '@/components/events/SpotUpcomingEvents';
+import SpotTimelineProvider from '@/components/spots/timeline/SpotTimelineProvider';
+import SpotVerdictSection from '@/components/spots/page/SpotVerdictSection';
+import SpotInstrumentsSection from '@/components/spots/page/SpotInstrumentsSection';
+import SpotForecastSection from '@/components/spots/page/SpotForecastSection';
+import SpotContextSection from '@/components/spots/page/SpotContextSection';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { VentuEvent } from '@/types/events';
 import { trackSpotView } from '@/components/homepage/SignupNudge';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSpotLivecam } from '@/lib/spotLivecams';
-import { getSpotWeatherlink } from '@/lib/spotWeatherlink';
 
 interface Conditions {
   waveHeight: number;
@@ -231,43 +208,9 @@ export default function SpotDetailClient({
 
   const freshnessNowMs = mounted ? undefined : bakedAtMs;
   const [isMobile, setIsMobile] = useState(false);
-  const [forecastExpanded, setForecastExpanded] = useState(false);
   const [communityOverlay, setCommunityOverlay] = useState<
     Record<string, import('@/lib/communityTips').CommunityTipEntry>
   >({});
-
-  const heroRef = useRef<HTMLElement>(null);
-  // O hero saiu do viewport? Partilhado pela SpotStickyBar (mostra) e pela
-  // linha standalone de sport tabs (esconde-se quando a barra toma o lugar),
-  // para nunca divergirem. `enabled: !loading` garante que o observer só se
-  // liga quando o hero está montado (durante o loading o ref ainda é null).
-  // Chamado antes de qualquer early-return (regras dos hooks).
-  const stickyActive = useSpotHeroScrolledPast(heroRef, { enabled: !loading });
-
-  // Standalone tabs row: when the sticky bar takes over (scrolled past the
-  // hero), the row is invisible but its buttons stay focusable — a11y trap
-  // (aria-hidden + focusable children). `inert` (DOM property — React 18 has
-  // no JSX prop for it) removes it from the tab order AND the a11y tree.
-  // Kept before any early return (rules of hooks).
-  const tabsRowRef = useRef<HTMLElement>(null);
-  useEffect(() => {
-    if (tabsRowRef.current) tabsRowRef.current.inert = stickyActive;
-  }, [stickyActive]);
-
-  // Arrow-key navigation on the tablist: ←/→ cycle the selection like a
-  // roving tablist and move focus to the newly selected tab. tabSports is
-  // declared later but initialized before any keydown can fire.
-  const handleTabsKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    e.preventDefault();
-    const idx = tabSports.indexOf(selectedSport);
-    const dir = e.key === 'ArrowRight' ? 1 : -1;
-    const next = tabSports[(idx + dir + tabSports.length) % tabSports.length];
-    setSelectedSport(next);
-    tabsRowRef.current
-      ?.querySelector<HTMLButtonElement>(`#sport-tab-${next}`)
-      ?.focus();
-  };
 
   const { session } = useAuth();
 
@@ -566,11 +509,6 @@ export default function SpotDetailClient({
     }));
   }, [spotData, hourlyScores]);
 
-  const forecastHours = useMemo(() => {
-    if (forecastExpanded) return isMobile ? 72 : 120;
-    return isMobile ? 36 : 48;
-  }, [forecastExpanded, isMobile]);
-
   const directionsUrl = getGoogleMapsDirectionsUrl(spot.lat, spot.lon);
   const windguruUrl = getWindguruUrl(
     spot.slug,
@@ -616,6 +554,14 @@ export default function SpotDetailClient({
   const magicWindows = useMemo(
     () => computeMagicWindows(magicWindowsHourly, selectedSport, spot.bestWind || '', magicWindowsScores),
     [magicWindowsHourly, selectedSport, spot.bestWind, magicWindowsScores],
+  );
+
+  // Eixo de tempo partilhado (docs/design/SPOT-PAGE.md): as mesmas horas e
+  // scores canónicos que alimentam a ForecastTable — o veredicto, a régua e
+  // a tabela leem sempre o mesmo índice.
+  const timelineHours = useMemo(
+    () => spotData?.forecast.map((f) => f.time) ?? [],
+    [spotData],
   );
 
   if (loading) {
@@ -770,262 +716,128 @@ export default function SpotDetailClient({
       />
 
       <div className="min-h-screen bg-bg-base pb-10">
-        <SpotDetailHero
-          spot={spot}
-          spotSlug={spot.slug}
-          locale={locale}
-          backLabel={t.spots.backToSpots}
-          directionsLabel={td.getDirections}
-          sport={selectedSport}
-          score={score.score}
-          rating={score.rating}
-          ratingEn={score.ratingEn}
-          factors={isPt ? score.factors : score.factorsEn}
-          conditions={conditions}
-          scoreWindSource={scoreWindSource}
-          scoreWindCorrection={scoreWindCorrection}
-          windObservedSource={
-            conditions.observed?.source === 'ipma' ||
-            conditions.observed?.source === 'ecowitt' ||
-            conditions.observed?.source === 'metar'
-              ? conditions.observed.source
-              : undefined
-          }
-          scoreWaveSource={scoreWaveSource}
-          scoreWaveCorrection={scoreWaveCorrection}
-          observedWave={conditions.observedWave}
-          observedWaveAlt={conditions.observedWaveAlt}
-          observedWaveMeta={conditions.observedWaveMeta}
-          heroRef={heroRef}
-          livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
-          freshnessNowMs={freshnessNowMs}
-        />
-
-        <SpotStickyBar
-          score={score}
-          sportLabel={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
-          conditions={conditions}
-          active={stickyActive}
-          locale={locale}
-          spotId={spot.id}
-          sports={tabSports}
-          allScores={allScores}
-          selectedSport={selectedSport}
-          onSelectSport={setSelectedSport}
-          observedWave={conditions.observedWave}
-          observedWaveAlt={conditions.observedWaveAlt}
-          observedWaveMeta={conditions.observedWaveMeta}
-          scoreWaveCorrection={scoreWaveCorrection}
-          freshnessNowMs={freshnessNowMs}
-        />
-
-        <section
-          // Cota de pinagem partilhada com a SpotStickyBar (globals.css): a
-          // linha standalone e a barra prendem-se na mesma altura do header.
-          ref={tabsRowRef}
-          style={{ top: 'var(--ventu-spot-sticky-top)' }}
-          className={`sticky z-20 bg-bg-base border-b border-divider supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm ${
-            stickyActive ? 'invisible' : ''
-          }`}
-          aria-hidden={stickyActive}
+        {/* Eixo de tempo partilhado — uma hora escolhida comanda o veredicto,
+            a régua e a previsão (docs/design/SPOT-PAGE.md). */}
+        <SpotTimelineProvider
+          hours={timelineHours}
+          scores={hourlyScores}
+          nowScore={score.score}
+          mounted={mounted}
+          nowMs={freshnessNowMs}
         >
-          <div className="max-w-6xl mx-auto px-4 py-2">
-            <div
-              className="flex items-center gap-2 -mx-4 px-4 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x scroll-smooth"
-              role="tablist"
-              aria-label={tv.sportTabsAria}
-              onKeyDown={handleTabsKeyDown}
-              style={{ height: 'var(--ventu-spot-tabs-h)' }}
-            >
-              {tabSports.map((sport) => (
-                <SportTab
-                  key={sport}
-                  sport={sport}
-                  score={allScores[sport].score}
-                  active={selectedSport === sport}
-                  onClick={() => setSelectedSport(sport)}
-                  locale={locale}
-                />
-              ))}
-            </div>
+          {/* §0–3 — Veredicto + barra fixa + «Quando ir» (dona: S2A). */}
+          <SpotVerdictSection
+            spot={spot}
+            locale={locale}
+            backLabel={t.spots.backToSpots}
+            directionsLabel={td.getDirections}
+            livecamLabel={getSpotLivecam(spot.slug) ? td.livecam : undefined}
+            selectedSport={selectedSport}
+            score={score}
+            conditions={conditions}
+            scoreWindSource={scoreWindSource}
+            scoreWindCorrection={scoreWindCorrection}
+            windObservedSource={
+              conditions.observed?.source === 'ipma' ||
+              conditions.observed?.source === 'ecowitt' ||
+              conditions.observed?.source === 'metar'
+                ? conditions.observed.source
+                : undefined
+            }
+            scoreWaveSource={scoreWaveSource}
+            scoreWaveCorrection={scoreWaveCorrection}
+            observedWave={conditions.observedWave}
+            observedWaveAlt={conditions.observedWaveAlt}
+            observedWaveMeta={conditions.observedWaveMeta}
+            tabSports={tabSports}
+            allScores={allScores}
+            sportLabel={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
+            onSelectSport={setSelectedSport}
+            sportTabsAria={tv.sportTabsAria}
+            whenToGoTitle={td.whenToGo}
+            rangeLabel={tv.next24h}
+            verdict={verdict ?? null}
+            hourly={magicWindowsHourly}
+            hourlyScores={magicWindowsScores}
+            windows={magicWindows}
+            freshnessNowMs={freshnessNowMs}
+          />
+
+          {/* Coluna única — ordem do contrato: Instrumentos → Previsão →
+              Contexto (grelha 1→3 interna). */}
+          <div className="max-w-6xl mx-auto px-4 pt-4 space-y-4">
+            <SpotInstrumentsSection
+              spot={spot}
+              locale={locale}
+              conditions={conditions}
+              tideSchedule={tideSchedule}
+              tideHourly={tideHourly}
+              selectedSport={selectedSport}
+              score={score}
+              copy={{
+                title: td.now,
+                subtitle: td.nowSubtitle,
+                gustLabel: td.gustLabel,
+                gustHint: td.gustHint,
+                seaStateTitle: td.seaStateTitle,
+                seaStateHint: td.seaStateHint,
+                windContextTitle: td.windContextTitle,
+                windRelationHints: {
+                  offshore: td.windOffshoreHint,
+                  onshore: td.windOnshoreHint,
+                  cross: td.windCrossHint,
+                },
+                radarFootnote: tv.radarFootnote,
+                verificationTitle: td.verificationTitle,
+                scoreFeedbackHint: td.scoreFeedbackHint,
+              }}
+              freshnessNowMs={freshnessNowMs}
+              ariaLabel={t.spotPageInstruments.sectionTitle}
+            />
+
+            <SpotForecastSection
+              locale={locale}
+              isPt={isPt}
+              isMobile={isMobile}
+              hours={forecastTableData}
+              coastOrientation={spot.coastOrientation}
+              sport={selectedSport}
+              windguruUrl={windguruUrl}
+              waveSource={scoreWaveSource}
+              waveCorrection={scoreWaveCorrection}
+              nowMs={freshnessNowMs}
+              copy={{
+                title: tv.hourlyForecast,
+                windguruLink: td.windguruLink,
+                forecastHint: td.forecastHint,
+                expandForecast: td.expandForecast,
+                collapseForecast: td.collapseForecast,
+                noForecast: td.noForecast,
+              }}
+            />
+
+            <SpotContextSection
+              spot={spot}
+              locale={locale}
+              isMobile={isMobile}
+              events={events}
+              mergedLocalTips={mergedLocalTips}
+              directionsUrl={directionsUrl}
+              copy={{
+                warningsRadar: td.warningsRadar,
+                livecam: td.livecam,
+                beachStation: td.beachStation,
+                logistics: td.logistics,
+                location: td.location,
+                aboutSpot: td.aboutSpot,
+                openGoogleMaps: td.openGoogleMaps,
+                openMapsLabel: td.openMapsLabel,
+                region: t.spots.region,
+                level: t.spots.level,
+              }}
+            />
           </div>
-        </section>
-
-        {/* Decisão + contexto — 8+4 em lg+: a coluna principal responde
-            «quando ir?» → «como está?» → previsão; a rail leva o secundário
-            (avisos, câmara, estação, eventos, logística, feedback). Em mobile
-            a rail vira accordions pós-forecast. */}
-        <div className="max-w-6xl mx-auto px-4 pt-3">
-          <div className="lg:grid lg:grid-cols-12 lg:gap-5 lg:items-start">
-            <div className="lg:col-span-8 min-w-0 space-y-4">
-              <WhenToGoCard
-                title={td.whenToGo}
-                rangeLabel={tv.next24h}
-                verdict={verdict ?? null}
-                hourly={magicWindowsHourly}
-                scores={magicWindowsScores}
-                windows={magicWindows}
-                locale={locale}
-                nowMs={freshnessNowMs ?? undefined}
-              />
-
-              <SpotConditionsDashboard
-                spot={spot}
-                locale={locale}
-                conditions={conditions}
-                tideSchedule={tideSchedule}
-                tideHourly={tideHourly}
-                selectedSport={selectedSport}
-                score={score}
-                copy={{
-                  title: td.now,
-                  subtitle: td.nowSubtitle,
-                  gustLabel: td.gustLabel,
-                  gustHint: td.gustHint,
-                  seaStateTitle: td.seaStateTitle,
-                  seaStateHint: td.seaStateHint,
-                  windContextTitle: td.windContextTitle,
-                  windRelationHints: {
-                    offshore: td.windOffshoreHint,
-                    onshore: td.windOnshoreHint,
-                    cross: td.windCrossHint,
-                  },
-                  radarFootnote: tv.radarFootnote,
-                  verificationTitle: td.verificationTitle,
-                  scoreFeedbackHint: td.scoreFeedbackHint,
-                }}
-                freshnessNowMs={freshnessNowMs}
-              />
-
-              <section className="space-y-3">
-                <div className="flex flex-wrap items-end justify-between gap-2">
-                  <h2 className="text-h2 text-fg">{tv.hourlyForecast}</h2>
-                  <a
-                    href={windguruUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 min-h-[44px] -my-2 text-meta text-data-waves hover:text-data-waves/80"
-                  >
-                    {td.windguruLink}
-                    <ExternalLink className="w-3.5 h-3.5" aria-hidden />
-                  </a>
-                </div>
-                {/* TODO: Windguru WRF 9km iframe — pending ToS review (see src/lib/windguru.ts) */}
-                <p className="text-meta text-fg-muted md:hidden">{td.forecastHint}</p>
-                {forecastTableData.length > 0 ? (
-                  <>
-                    <div className="card-1 overflow-hidden p-3 md:p-4">
-                      <ForecastMeteogram
-                        hours={forecastTableData.slice(0, forecastHours)}
-                        coastOrientation={spot.coastOrientation}
-                        isPt={isPt}
-                        nowMs={freshnessNowMs ?? Date.now()}
-                      />
-                      <ForecastTable
-                        hourly={forecastTableData}
-                        hours={forecastHours}
-                        sport={selectedSport}
-                        coastOrientation={spot.coastOrientation}
-                        locale={locale}
-                        compact={isMobile}
-                        waveSource={scoreWaveSource}
-                        waveCorrection={scoreWaveCorrection}
-                        nowMs={freshnessNowMs}
-                      />
-                    </div>
-                    {forecastTableData.length > (isMobile ? 36 : 48) && (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setForecastExpanded((v) => !v)}
-                        rightIcon={
-                          forecastExpanded ? (
-                            <ChevronUp className="w-4 h-4" aria-hidden />
-                          ) : (
-                            <ChevronDown className="w-4 h-4" aria-hidden />
-                          )
-                        }
-                        locale={locale as 'pt' | 'en' | 'es' | 'de' | 'fr'}
-                      >
-                        {forecastExpanded ? td.collapseForecast : td.expandForecast}
-                      </Button>
-                    )}
-                  </>
-                ) : (
-                  <div className="card-1 p-8 text-center text-body text-fg-subtle">{td.noForecast}</div>
-                )}
-              </section>
-            </div>
-
-            <aside className="lg:col-span-4 min-w-0 mt-4 lg:mt-0 space-y-4">
-              {/* Segurança marítima — aberto por defeito também em mobile. */}
-              <CollapsibleSection
-                title={td.warningsRadar}
-                icon={<AlertTriangle className="w-4 h-4 text-score-poor shrink-0" aria-hidden />}
-                collapsible={isMobile}
-                defaultOpen
-              >
-                <SpotWarningsSection embedded spotId={spot.id} locale={locale} />
-              </CollapsibleSection>
-
-              {getSpotLivecam(spot.slug) && (
-                <CollapsibleSection
-                  anchorId="spot-livecam"
-                  title={td.livecam}
-                  icon={<Video className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />}
-                  collapsible={isMobile}
-                >
-                  <SpotWebcamSection embedded slug={spot.slug} locale={locale} />
-                </CollapsibleSection>
-              )}
-
-              {getSpotWeatherlink(spot.slug) && (
-                <CollapsibleSection
-                  title={td.beachStation}
-                  icon={<Gauge className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />}
-                  collapsible={isMobile}
-                >
-                  <SpotWeatherlinkSection embedded slug={spot.slug} locale={locale} />
-                </CollapsibleSection>
-              )}
-
-              <SpotUpcomingEvents embedded spotId={spot.id} locale={locale} events={events} />
-
-              <CollapsibleSection
-                title={td.logistics}
-                icon={<MapPin className="w-4 h-4 text-fg-muted shrink-0" aria-hidden />}
-                collapsible={isMobile}
-              >
-                <div className="space-y-4">
-                  <SpotLogisticsPanel
-                    embedded
-                    spot={spot}
-                    locale={locale}
-                    locationTitle={td.location}
-                    aboutTitle={td.aboutSpot}
-                    directionsHref={directionsUrl}
-                    googleMapsLinkLabel={td.openGoogleMaps}
-                    openMapsLabel={td.openMapsLabel}
-                    regionLabel={t.spots.region}
-                    difficultyLabel={t.spots.level}
-                  />
-                  <LocalTipsSection spot={spot} tips={mergedLocalTips} locale={locale} />
-                  <SpotNearbyDirectory
-                    embedded
-                    spotId={spot.id}
-                    spotLat={spot.lat}
-                    spotLon={spot.lon}
-                    locale={locale}
-                  />
-                </div>
-              </CollapsibleSection>
-
-              <div className="border-t border-divider pt-3 px-1">
-                <FeedbackForm locale={locale} defaultSpotSlug={spot.slug} />
-              </div>
-            </aside>
-          </div>
-        </div>
+        </SpotTimelineProvider>
       </div>
     </>
   );
