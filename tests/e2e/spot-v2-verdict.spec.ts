@@ -134,19 +134,25 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
       });
 
     // Aterragem em «agora» é pós-mount — espera a barra seleccionada existir.
+    // O fill computado inclui o alfa do fill-opacity (rgba) — comparam-se os
+    // canais RGB, ignorando o alfa.
+    const rgb = (c: string | null) => c?.match(/\d+/g)?.slice(0, 3).join(',') ?? null;
     await expect.poll(async () => (await probe()).barFill).not.toBeNull();
     let g = await probe();
-    expect(g.barFill).not.toBe('rgb(0, 0, 0)');
-    expect(g.barFill).toBe(g.scoreColor);
+    expect(rgb(g.barFill)).not.toBe('0,0,0');
+    expect(rgb(g.barFill)).toBe(rgb(g.scoreColor));
 
-    // Seta → outra hora: as duas superfícies continuam iguais entre si.
+    // Seta → outra hora: as duas superfícies convergem para a nova cor —
+    // o fill da barra transiciona 200 ms, por isso espera-se a igualdade.
     const rail = slider(page);
     await rail.focus();
     await rail.press('ArrowRight');
-    await expect.poll(async () => (await probe()).barFill).not.toBeNull();
-    g = await probe();
-    expect(g.barFill).not.toBe('rgb(0, 0, 0)');
-    expect(g.barFill).toBe(g.scoreColor);
+    await expect
+      .poll(async () => rgb((await probe()).barFill))
+      .not.toBe('0,0,0');
+    await expect
+      .poll(async () => rgb((await probe()).barFill))
+      .toBe(rgb((await probe()).scoreColor));
   });
 
   test('aria-valuetext descreve hora, score e banda', async ({ page }) => {

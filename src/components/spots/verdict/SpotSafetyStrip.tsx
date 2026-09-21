@@ -7,7 +7,7 @@ import {
   warningBadgeLabel,
 } from '@/lib/ipmaWarnings';
 import SeaStateSafetyBanner from '@/components/spots/SeaStateSafetyBanner';
-import CoastalNavWarnings from '@/components/spots/CoastalNavWarnings';
+import SpotSafetyCoastalWarnings from '@/components/spots/verdict/SpotSafetyCoastalWarnings';
 import WarningPill from '@/components/ui/WarningPill';
 
 /**
@@ -61,7 +61,7 @@ export default function SpotSafetyStrip({
           </div>
         </div>
       )}
-      <CoastalNavWarnings spotId={spotId} locale={locale} />
+      <SpotSafetyCoastalWarnings spotId={spotId} locale={locale} />
     </>
   );
 }
