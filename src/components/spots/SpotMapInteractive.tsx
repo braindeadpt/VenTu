@@ -2,13 +2,10 @@
 
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { Anchor, CloudRain, Layers, HelpCircle, MapPin, Maximize2, RotateCcw, Waves, Wind, Zap } from 'lucide-react';
-import type L from 'leaflet';
+import { CloudRain, RotateCcw, Waves } from 'lucide-react';
 import { getTranslation, validateLocale } from '@/lib/i18n';
-import { clearLeafletContainer, unlockPageInteraction } from '@/lib/mapFullscreen';
+import { unlockPageInteraction } from '@/lib/mapFullscreen';
 import type { GridSportFilter } from '@/lib/sportRatings';
-import { MS_TO_KNOTS } from '@/lib/waveEnergy';
-import { getCardinalLabel } from '@/lib/wind';
 import MapExploreHud, { type MapExploreHudProps } from './MapExploreHud';
 import BuoyLayerChip from './BuoyLayerChip';
 import MapSpotSheet, { type MapSpotSheetData } from './MapSpotSheet';
@@ -16,80 +13,31 @@ import MapLegend from './MapLegend';
 import MapLayerToggle from './MapLayerToggle';
 import WindRingLegend from './WindRingLegend';
 import type { BasemapMode } from './MapLayerToggle';
-import { createClusterIconFunction } from './MapClusterIcon';
 import {
-  TILE_ATTRIBUTIONS,
   OPEN_METEO_ATTRIBUTION,
-  getMapRasterBasemap,
-  DEFAULT_CENTER,
-  DEFAULT_ZOOM,
   SPOT_REGION_ZOOM,
-  MAX_ZOOM,
-  CLUSTER_CONFIG,
   MAP_CLUSTER_LS_KEY,
   MAP_WIND_LS_KEY,
   MAP_ONLY_ON_LS_KEY,
-  MAP_ISOBATHS_LS_KEY,
-  MAP_COASTAL_LS_KEY,
 } from '@/lib/map-constants';
-import { getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
+import { openMeteoAttributionHtml } from '@/lib/openMeteoAttribution';
 import { hasSeenWindRingLegend, markWindRingLegendSeen } from '@/lib/windRingLegend';
-import { getSpotImage } from '@/lib/spotImage';
-import { getSpotDetailHref } from '@/lib/mapSpotDetail';
-import {
-  IPMA_RADAR_ATTRIBUTION_LABEL_PT,
-  IPMA_RADAR_ATTRIBUTION_LABEL_EN,
-} from '@/lib/ipmaAttribution';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
-import {
-  fetchRadarData,
-  radarBoundsCorners,
-  radarFrameClock,
-  radarFrames,
-  type IpmaRadarData,
-} from '@/lib/ipmaRadar';
+import { radarFrameClock } from '@/lib/ipmaRadar';
 import MapTimeTrack from './map/MapTimeTrack';
 import MapTideChip from './map/MapTideChip';
 import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import RadarCarousel from './RadarCarousel';
-import {
-  loadIsobathContours,
-  ISOBATH_DEPTHS,
-  ISOBATH_DEPTH_STYLE,
-  type IsobathContoursFile,
-} from '@/lib/isobaths';
-import {
-  loadCoastalNavWarnings,
-  warningsForSpot,
-  type CoastalWarningsFile,
-} from '@/lib/ihCoastalWarnings';
 import type { MapSpotData } from './mapSpotData';
 import { includeSpotInViewportBounds } from './mapViewportBounds';
 import {
   readClusterPref,
   readWindPref,
   readOnlyOnPref,
-  readIsobathsPref,
-  readCoastalWarningsPref,
 } from './mapHudPrefs';
-import {
-  readRadarEnabledPref,
-  readRadarPref,
-  writeRadarEnabledPref,
-  writeRadarPref,
-  resetRadarPref,
-} from '@/lib/radarPrefs';
-import {
-  buildMarkerCacheKey,
-  createSpotMarker,
-  runChunked,
-  MARKER_ADD_CHUNK_SIZE,
-  MARKER_ADD_CHUNK_SIZE_MOBILE,
-  MARKER_CHUNK_YIELD_MS_MOBILE,
-} from './mapMarkers';
 
 // ─── Imports for hooks and sub-components ───
 import { useMapCore } from './map/hooks/useMapCore';
@@ -264,9 +212,9 @@ export default function SpotMapInteractive({
   // espelha o estado do toggle de vento; o efeito abaixo mantém-na em sync.
   const core = useMapCore({ containerRef: mapRef, isHeroEmbed, locale });
   const {
-    mapInstanceRef, LRef, isReady, clusterReady, isDark, basemapMode, isMobile,
+    mapInstanceRef, LRef, isReady, clusterReady, basemapMode, isMobile,
     tileState, retryBasemap,
-    handleBasemapChange, tileLayerRef, clusterGroupRef, markersGroupRef,
+    handleBasemapChange, clusterGroupRef, markersGroupRef,
     radarOverlayRef, isobathsLayerRef, coastalLayerRef, buoyLayerRef, markersCacheRef,
   } = core;
 
@@ -315,14 +263,14 @@ export default function SpotMapInteractive({
   });
   const {
     radarData, radarEnabled, radarFrameIndex, radarUserPaused, radarPrefSet,
-    radarBusySources, radarLift, radarFrameIndexRef, radarUserPausedRef,
+    radarBusySources, radarLift,
     toggleRadar, handleRadarFrameChange, handleRadarUserPausedChange,
     handleResetRadar, handleRadarImmersionOpen,
     radarFrameList, radarLabel, radarHint, radarUnavailable, radarAttributionLabel,
     isobathsEnabled, isobathsData, toggleIsobaths,
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
-    coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
+    coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
   } = layers;
 
   const hours = useMapHours({
@@ -459,44 +407,28 @@ export default function SpotMapInteractive({
   // ao desligar ou ao toggle manual). Um efeito aqui seria uma corrida com o
   // mount do mapa (chunk dinâmico) e poderia nunca correr ou togglar duas vezes.
 
-  // O crédito do basemap troca no controlo (Esri imagery no satélite ·
-  // Carto/OSM ou Esri Canvas no mapa). O AttributionControl do Leaflet mantém
-  // um CONTADOR de referências por texto; o tile inicial regista o crédito
-  // no onAdd — um único removeAttribution não o levaria a 0. Por isso
-  // REGRAVA-SE exactamente o conjunto pretendido (Open-Meteo + basemap +
-  // créditos IH activos) em _attributions e chama-se _update().
+  // O crédito do basemap e das camadas é gerido pelo próprio Leaflet: cada
+  // layer regista `attribution` ao entrar no mapa e o AttributionControl faz
+  // add/remove por contagem de referências (os efeitos IH em useMapLayers
+  // usam add/removeAttribution; basemap/EMODnet/OpenSeaMap/radar vão na opção
+  // `attribution` do layer). NÃO regravar `_attributions` aqui — a fotografia
+  // antiga apagava os créditos EMODnet/OpenSeaMap/radar registados pelas
+  // camadas e deixava o crédito OSM duplicado.
+  // A única excepção é o crédito do Open-Meteo: o controlo nasce em useMapCore
+  // com a cadeia canónica EN (que não conhece a tradução) e aqui troca-se pelo
+  // lead-in localizado.
+  const openMeteoCredit = openMeteoAttributionHtml(t.map.weatherCredit);
   useEffect(() => {
-    if (!isReady || !mapInstanceRef.current) return;
-    const map = mapInstanceRef.current;
-    const attribution =
-      basemapMode === 'satellite' ? TILE_ATTRIBUTIONS.esri : getMapRasterBasemap(isDark).attribution;
-    const ac = map.attributionControl as any;
-    if (ac) {
-      const attribs: Record<string, number> = {};
-      const bump = (t: string) => {
-        attribs[t] = (attribs[t] ?? 0) + 1;
-      };
-      bump(OPEN_METEO_ATTRIBUTION);
-      bump(attribution);
-      if (isobathsEnabled && isobathsData != null) {
-        bump(
-          isPt ? 'Isóbatas © Instituto Hidrográfico (CC BY 4.0)' : 'Isobaths © Instituto Hidrográfico (CC BY 4.0)',
-        );
-      }
-      if (coastalWarningsEnabled && coastalWarningsData != null) {
-        bump(
-          isPt
-            ? 'Avisos à Navegação Costeiros © Instituto Hidrográfico (CC BY 4.0)'
-            : 'Coastal Navigation Warnings © Instituto Hidrográfico (CC BY 4.0)',
-        );
-      }
-      ac._attributions = attribs;
-      ac._update();
-    }
-    // Este efeito NÃO deve re-correr quando os toggles IH mudam (só lê o estado
-    // actual para a fotografia do controlo; os efeitos IH gerem os seus créditos).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [basemapMode, isDark, isReady]);
+    if (!isReady) return;
+    const ac = mapInstanceRef.current?.attributionControl;
+    if (!ac || openMeteoCredit === OPEN_METEO_ATTRIBUTION) return;
+    ac.removeAttribution(OPEN_METEO_ATTRIBUTION);
+    ac.addAttribution(openMeteoCredit);
+    return () => {
+      ac.removeAttribution(openMeteoCredit);
+      ac.addAttribution(OPEN_METEO_ATTRIBUTION);
+    };
+  }, [isReady, openMeteoCredit, mapInstanceRef]);
 
   // ── Warnings ──
   const warningsData = useIpmaWarnings();
@@ -760,7 +692,7 @@ export default function SpotMapInteractive({
     mapInstanceRef.current?.closePopup();
     setSheetSpot(null);
   }, [mapInstanceRef]);
-  const { didFitBoundsRef, filterBoundsKeyRef } = useMapMarkers({
+  useMapMarkers({
     mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef,
     visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady,
     isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
@@ -804,18 +736,6 @@ export default function SpotMapInteractive({
     mcg.on('clusterclick', onClusterClick);
     return () => { mcg.off('clusterclick', onClusterClick); };
   }, [isHeroEmbed, clusterReady, clusterGroupRef, locale, router]);
-
-  // ── Performance measurement ──
-  const perfMeasure = useCallback((label: string) => {
-    if (typeof performance !== 'undefined') {
-      performance.mark(`ventu-map-${label}`);
-      const entries = performance.getEntriesByType('measure').filter((e) => e.name.startsWith('ventu-map-'));
-      if (entries.length > 1) {
-        const last = entries[entries.length - 1] as PerformanceMeasure;
-        if (last.duration > 0) console.log(`[map perf] ${label}: ${Math.round(last.duration)}ms`);
-      }
-    }
-  }, []);
 
   // ── Invalidate size on fullscreen/resize ──
   useEffect(() => {

@@ -411,6 +411,18 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
 
         if (cancelled) return;
 
+        // O AttributionControl tem de existir ANTES de qualquer layer entrar
+        // no mapa: o Leaflet só liga a remoção do crédito ao evento 'remove'
+        // para layers que chegam por 'layeradd' com o controlo já presente.
+        // Um layer anexado antes do controlo é contado no sweep inicial mas
+        // fica sem o listener — ao ser removido o crédito fica pendurado
+        // (era o «OpenStreetMap contributors»×2 depois do fallback
+        // Carto→Esri ou da troca para satélite).
+        Leaflet.control
+          .attribution({ position: 'bottomleft', prefix: false })
+          .addAttribution(OPEN_METEO_ATTRIBUTION)
+          .addTo(created);
+
         attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
         tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
 
@@ -419,11 +431,6 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
         // buttons rendered but unclickable under the HUD card. Top-left is
         // free on every host (layer toggle lives top-right).
         if (!isHeroEmbed) Leaflet.control.zoom({ position: 'topleft' }).addTo(created);
-
-        Leaflet.control
-          .attribution({ position: 'bottomleft', prefix: false })
-          .addAttribution(OPEN_METEO_ATTRIBUTION)
-          .addTo(created);
 
         if (mountedRef.current) setIsReady(true);
         created.invalidateSize({ animate: false });

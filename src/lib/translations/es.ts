@@ -178,6 +178,7 @@ export const translationsEs = {
     clusterLabel: '{count} spots',
     noData: 'Sin datos',
     loading: 'Cargando mapa...',
+    weatherCredit: 'Datos meteorológicos por',
     mapUnavailable: 'No se pudo cargar el mapa',
     fullscreen: 'Pantalla completa',
     exitFullscreen: 'Salir de pantalla completa',

@@ -70,7 +70,7 @@ test.describe('IPMA radar carousel', () => {
   test('atribuição Open-Meteo junto ao overlay do radar e aos controlos', async ({ page }) => {
     // Controlo de atribuição do mapa (Leaflet, bottom-left) — sempre visível.
     const attribution = page.locator('.leaflet-control-attribution');
-    await expect(attribution).toContainText('Weather data by Open-Meteo.com', {
+    await expect(attribution).toContainText('Open-Meteo.com', {
       timeout: 15_000,
     });
     await expect(attribution).toContainText('CC BY 4.0');
@@ -98,7 +98,7 @@ test.describe('IPMA radar carousel', () => {
     await page.click('button[aria-label="Ocultar radar"]');
     await page.clock.runFor(100);
     await expect(badge).not.toBeVisible();
-    await expect(attribution).toContainText('Weather data by Open-Meteo.com');
+    await expect(attribution).toContainText('Open-Meteo.com');
   });
 
   test('deep link ?radar=1 liga o radar à entrada no mapa fullscreen', async ({ page }) => {
@@ -367,7 +367,7 @@ test.describe('IPMA radar no mapa da homepage (hero)', () => {
     const attribution = page.locator('.leaflet-control-attribution');
     // Controlo de atribuição presente no hero do mapa embebido.
     await expect(attribution).toBeVisible({ timeout: 15_000 });
-    await expect(attribution).toContainText('Weather data by Open-Meteo.com');
+    await expect(attribution).toContainText('Open-Meteo.com');
     await expect(attribution).toContainText('CC BY 4.0');
     await expect(attribution.locator('a[href="https://open-meteo.com/"]')).toBeVisible();
     // O basemap Carto/OSM também aparece (atribuição do tile layer recolhida).
