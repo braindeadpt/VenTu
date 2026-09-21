@@ -1,5 +1,7 @@
 import type L from 'leaflet';
+import type { Spot } from '@/types';
 import type { GridSportFilter } from '@/lib/sportRatings';
+import { includeSpotInViewportBounds } from './mapViewportBounds';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { getScoreRgb } from '@/lib/map-constants';
@@ -248,4 +250,63 @@ export function addMarkersChunked(
   cancelRef: { current: boolean },
 ): void {
   runChunked(markers, addBatch, cancelRef);
+}
+
+/**
+ * Bounds da vista «Explorar» calculados SÓ das coordenadas — não precisa de
+ * marcadores. A regra das ilhas é a mesma do fit inicial
+ * (includeSpotInViewportBounds): continente por defeito, ilhas só quando a
+ * região filtrada as pede. Devolve null quando não há spots elegíveis.
+ */
+export function exploreViewBoundsFromSpots(
+  spots: ReadonlyArray<{ spot: Spot }>,
+  selectedRegion: string,
+): [[number, number], [number, number]] | null {
+  let minLat = Infinity;
+  let minLon = Infinity;
+  let maxLat = -Infinity;
+  let maxLon = -Infinity;
+  for (const d of spots) {
+    if (!includeSpotInViewportBounds(d.spot, selectedRegion)) continue;
+    const { lat, lon } = d.spot;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+    if (lon < minLon) minLon = lon;
+    if (lon > maxLon) maxLon = lon;
+  }
+  if (!Number.isFinite(minLat)) return null;
+  return [[minLat, minLon], [maxLat, maxLon]];
+}
+
+/**
+ * Enquadramento «Explorar» (não-hero): padding para o HUD inferior + o bias
+ * para oeste que mete a costa PT à direita e abre o Atlântico à esquerda —
+ * é de lá que vem o swell. Partilhado pelo arranque (useMapCore, antes do
+ * basemap) e pelo re-enquadre por mudança de filtro (useMapMarkers).
+ */
+export function applyExploreMapFit(
+  Leaflet: typeof L,
+  map: L.Map,
+  bounds: L.LatLngBoundsExpression,
+  isMobile: boolean,
+): void {
+  map.fitBounds(bounds, {
+    // O HUD inferior (Modo Explorar, ~190px no mobile / ~110px desktop)
+    // tapa markers perto da borda — sem padding de fundo, spots do sul
+    // ficam por baixo do «Mostrar filtros» e não são tocáveis.
+    paddingTopLeft: isMobile ? Leaflet.point(16, 16) : Leaflet.point(40, 48),
+    paddingBottomRight: isMobile ? Leaflet.point(16, 190) : Leaflet.point(40, 110),
+    maxZoom: isMobile ? 9 : 11,
+    animate: false,
+  });
+  // Enquadramento náutico: a costa PT é uma faixa vertical — centrar a
+  // bbox deixa metade do ecrã em Espanha. Shift para oeste mete a costa
+  // à direita e abre o Atlântico à esquerda. ~9% da largura para oeste;
+  // em zoom baixo o bias é menor para não empurrar a costa para a borda.
+  if (!isMobile) {
+    const degPerPx = 360 / (256 * 2 ** map.getZoom());
+    const shiftPx = map.getZoom() >= 7 ? 140 : 70;
+    const c = map.getCenter();
+    map.setView([c.lat, c.lng - shiftPx * degPerPx], map.getZoom(), { animate: false });
+  }
 }

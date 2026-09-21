@@ -5,14 +5,15 @@ import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapSpotSheetData } from '../../MapSpotSheet';
 import {
+  applyExploreMapFit,
   buildMarkerCacheKey,
   createSpotMarker,
+  exploreViewBoundsFromSpots,
   runChunked,
   MARKER_ADD_CHUNK_SIZE,
   MARKER_ADD_CHUNK_SIZE_MOBILE,
   MARKER_CHUNK_YIELD_MS_MOBILE,
 } from '../../mapMarkers';
-import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 
 const MARKER_ADD_CHUNK_SIZE_LOCAL = MARKER_ADD_CHUNK_SIZE;
 
@@ -74,6 +75,25 @@ export function useMapMarkers({
   const [allowMarkers, setAllowMarkers] = useState(false);
   const didFitBoundsRef = useRef(false);
   const filterBoundsKeyRef = useRef('');
+  // Nunca re-enquadrar depois de o utilizador navegar: drag/pinch/wheel marcam
+  // navegação própria; os fits programáticos passam pela flag e não contam
+  // (animate:false nem chega a disparar zoomstart, a flag é redundância segura).
+  const userNavigatedRef = useRef(false);
+  const programmaticViewRef = useRef(false);
+
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!isReady || !map) return;
+    const markUserNav = () => {
+      if (!programmaticViewRef.current) userNavigatedRef.current = true;
+    };
+    map.on('dragstart', markUserNav);
+    map.on('zoomstart', markUserNav);
+    return () => {
+      map.off('dragstart', markUserNav);
+      map.off('zoomstart', markUserNav);
+    };
+  }, [isReady, mapInstanceRef]);
 
   // ── Markers effect ──
   useEffect(() => {
@@ -86,9 +106,16 @@ export function useMapMarkers({
     const lg = markersGroupRef.current;
     const cache = markersCacheRef.current;
 
-    closePopupAndSheet();
-    mcg.clearLayers();
-    lg.clearLayers();
+    // Chave de filtro SEM o nº de spots — um refresh de dados que altere o
+    // count não re-enquadra por cima da vista escolhida pelo utilizador.
+    const boundsKey = `${onlyOnEnabled}:${selectedSport}:${selectedRegion}`;
+    if (filterBoundsKeyRef.current !== boundsKey) {
+      filterBoundsKeyRef.current = boundsKey;
+      didFitBoundsRef.current = false;
+      userNavigatedRef.current = false;
+      // Mudança deliberada de filtro — fecha o que estiver aberto.
+      closePopupAndSheet();
+    }
 
     if (activeCluster) {
       if (map.hasLayer(lg)) map.removeLayer(lg);
@@ -98,59 +125,67 @@ export function useMapMarkers({
       if (!map.hasLayer(lg)) map.addLayer(lg);
     }
 
-    const boundsKey = `${visibleSpots.length}:${onlyOnEnabled}:${selectedSport}:${selectedRegion}`;
-    if (filterBoundsKeyRef.current !== boundsKey) {
-      filterBoundsKeyRef.current = boundsKey;
-      didFitBoundsRef.current = false;
+    // Enquadramento calculado das coords logo aqui — imediato, sem esperar
+    // pelos marcadores (o arranque já nasce enquadrado via useMapCore; aqui
+    // fica o re-enquadre por mudança de filtro, uma vez por chave e nunca
+    // depois de o utilizador navegar).
+    if (!didFitBoundsRef.current && !userNavigatedRef.current) {
+      const boundsArr = exploreViewBoundsFromSpots(visibleSpots, selectedRegion ?? '');
+      if (boundsArr) {
+        didFitBoundsRef.current = true;
+        map.invalidateSize({ animate: false });
+        programmaticViewRef.current = true;
+        try {
+          if (isHeroEmbed) {
+            const leftPad = isMobile ? 20 : 300;
+            map.fitBounds(Leaflet.latLngBounds(boundsArr), {
+              paddingTopLeft: Leaflet.point(leftPad, 48),
+              paddingBottomRight: Leaflet.point(40, 96),
+              maxZoom: isMobile ? 8 : 10,
+              animate: false,
+            });
+          } else {
+            applyExploreMapFit(Leaflet, map, boundsArr, isMobile);
+          }
+        } finally {
+          programmaticViewRef.current = false;
+        }
+      }
+    }
+
+    const nextIds = new Set(visibleSpots.map((d) => d.spot.id));
+
+    // O sheet só fecha quando o spot aberto deixa de estar visível (mudança
+    // de filtro já fechou acima). Um refresh com os mesmos spots não o derruba.
+    setSheetSpot((cur) => (cur && !nextIds.has(cur.spot.id) ? null : cur));
+
+    // Cache diff — só saem os marcadores cujo spot deixou de estar visível.
+    // A remoção é via os grupos: `marker.remove()` sozinho não chega — o
+    // mapa não regista os filhos de um LayerGroup em map._layers.
+    for (const [id, marker] of cache) {
+      if (!nextIds.has(id)) {
+        mcg.removeLayer(marker);
+        lg.removeLayer(marker);
+        marker.remove();
+        cache.delete(id);
+      }
     }
 
     if (visibleSpots.length === 0) return;
 
-    const nextIds = new Set(visibleSpots.map((d) => d.spot.id));
-    for (const [id, marker] of cache) {
-      if (!nextIds.has(id)) { marker.remove(); cache.delete(id); }
-    }
-
-    const bounds = Leaflet.latLngBounds([]);
     // No hero o sheet (85dvh) fica cortado pela caixa do hero — o popup do
     // Leaflet cabe lá dentro e o autoPan mantém-no visível sem drag.
     const useMobileSheet = isMobile && !isHeroEmbed;
     const chunkSize = isMobile ? MARKER_ADD_CHUNK_SIZE_MOBILE : MARKER_ADD_CHUNK_SIZE_LOCAL;
     const yieldMs = isMobile ? MARKER_CHUNK_YIELD_MS_MOBILE : 0;
 
-    const fitBoundsIfNeeded = () => {
-      if (didFitBoundsRef.current || !bounds.isValid() || !mapInstanceRef.current) return;
-      const fitMap = mapInstanceRef.current!;
-      fitMap.invalidateSize({ animate: false });
-      if (isHeroEmbed) {
-        const leftPad = isMobile ? 20 : 300;
-        fitMap.fitBounds(bounds, { paddingTopLeft: Leaflet.point(leftPad, 48), paddingBottomRight: Leaflet.point(40, 96), maxZoom: isMobile ? 8 : 10, animate: false });
-      } else {
-        const fitMaxZoom = isMobile ? 9 : 11;
-        // O HUD inferior (Modo Explorar, ~190px no mobile / ~110px desktop)
-        // tapa markers perto da borda — sem padding de fundo, spots do sul
-        // ficam por baixo do «Mostrar filtros» e não são tocáveis.
-        fitMap.fitBounds(bounds, {
-          paddingTopLeft: isMobile ? Leaflet.point(16, 16) : Leaflet.point(40, 48),
-          paddingBottomRight: isMobile ? Leaflet.point(16, 190) : Leaflet.point(40, 110),
-          maxZoom: fitMaxZoom,
-          animate: false,
-        });
-        // Enquadramento náutico: a costa PT é uma faixa vertical — centrar a
-        // bbox deixa metade do ecrã em Espanha. Shift para oeste mete a costa
-        // à direita e abre o Atlântico à esquerda (é de lá que vem o swell).
-        // ~9% da largura para oeste; em zoom baixo o bias é menor para não
-        // empurrar a costa para a borda. Só no fit inicial/filtro, nunca
-        // depois de o utilizador navegar (didFitBoundsRef: «uma vez»).
-        if (!isMobile) {
-          const degPerPx = 360 / (256 * 2 ** fitMap.getZoom());
-          const shiftPx = fitMap.getZoom() >= 7 ? 140 : 70;
-          const c = fitMap.getCenter();
-          fitMap.setView([c.lat, c.lng - shiftPx * degPerPx], fitMap.getZoom(), { animate: false });
-        }
-      }
-      didFitBoundsRef.current = true;
-    };
+    // O marcador com popup aberto pode ter de ser recriado (score/vento novos)
+    // ou mudar de grupo — remover o marcador fecha o popup, por isso reabre-se
+    // na nova instância assim que ela volta ao mapa.
+    let reopenSpotId: string | null = null;
+    for (const [id, marker] of cache) {
+      if (marker.isPopupOpen()) { reopenSpotId = id; break; }
+    }
 
     const markerChunkCancelRef = { current: false };
     runChunked(
@@ -165,27 +200,48 @@ export function useMapMarkers({
           let marker = cache.get(data.spot.id);
           const meta = marker as (L.Marker & { ventuKey?: string }) | undefined;
           if (!marker || meta?.ventuKey !== cacheKey) {
-            if (marker) { marker.remove(); cache.delete(data.spot.id); }
+            // Conteúdo mudou — recria-se só esse marcador (não a camada toda).
+            if (marker) {
+              mcg.removeLayer(marker);
+              lg.removeLayer(marker);
+              marker.remove();
+              cache.delete(data.spot.id);
+            }
             marker = createSpotMarker(Leaflet, data, selectedSport, locale, showWindOnMarkers, {
               useMobileSheet,
               onMobileTap: (d) => setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null }),
               onSpotSelect,
               onMarkerInteract,
-              warning: warningsBySpot.get(data.spot.id) ?? null,
+              warning,
               scoreOverride,
             });
             (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
             cache.set(data.spot.id, marker);
           }
-          if (activeCluster) toCluster.push(marker);
-          else toPlain.push(marker);
-          if (includeSpotInViewportBounds(data.spot, selectedRegion ?? '')) bounds.extend([data.spot.lat, data.spot.lon]);
+          // Marcadores intactos ficam onde estão — só se move quem está no
+          // grupo errado (toggle de cluster) e só se inserem os novos.
+          if (activeCluster) {
+            if (lg.hasLayer(marker)) lg.removeLayer(marker);
+            if (!mcg.hasLayer(marker)) toCluster.push(marker);
+          } else {
+            if (mcg.hasLayer(marker)) mcg.removeLayer(marker);
+            if (!lg.hasLayer(marker)) toPlain.push(marker);
+          }
         }
         if (toCluster.length > 0) mcg.addLayers(toCluster);
         if (toPlain.length > 0) toPlain.forEach((m) => lg.addLayer(m));
+        if (reopenSpotId != null) {
+          const m = cache.get(reopenSpotId);
+          if (m && (mcg.hasLayer(m) || lg.hasLayer(m)) && !m.isPopupOpen()) {
+            try { m.openPopup(); } catch { /* noop */ }
+            reopenSpotId = null;
+          } else if (m && m.isPopupOpen()) {
+            reopenSpotId = null;
+          }
+        }
       },
       markerChunkCancelRef,
-      fitBoundsIfNeeded,
+      undefined,
       chunkSize,
       yieldMs,
     );

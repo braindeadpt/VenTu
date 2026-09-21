@@ -38,6 +38,7 @@ import {
   readWindPref,
   readOnlyOnPref,
 } from './mapHudPrefs';
+import { exploreViewBoundsFromSpots } from './mapMarkers';
 
 // ─── Imports for hooks and sub-components ───
 import { useMapCore } from './map/hooks/useMapCore';
@@ -210,7 +211,23 @@ export default function SpotMapInteractive({
   // ── Core map ──
   // Ref lida pelo iconCreateFunction dos clusters (criado uma vez no init) —
   // espelha o estado do toggle de vento; o efeito abaixo mantém-na em sync.
-  const core = useMapCore({ containerRef: mapRef, isHeroEmbed, locale });
+  const core = useMapCore({
+    containerRef: mapRef,
+    isHeroEmbed,
+    locale,
+    // Bounds da vista «Explorar» conhecidos logo ao montar (spots estáticos +
+    // prefs lidas do localStorage) — o mapa nasce enquadrado, sem pedir tiles
+    // do zoom default. Deep links com initialCenter enquadram o seu próprio
+    // setView, por isso ficam sem bounds aqui.
+    initialViewBounds: isHeroEmbed || initialCenter
+      ? null
+      : exploreViewBoundsFromSpots(
+          readOnlyOnPref()
+            ? spotsData.filter((d) => spotMeetsOnFilter(d, selectedSport))
+            : spotsData,
+          selectedRegion,
+        ),
+  });
   const {
     mapInstanceRef, LRef, isReady, clusterReady, basemapMode, isMobile,
     tileState, retryBasemap,

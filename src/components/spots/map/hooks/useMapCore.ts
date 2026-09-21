@@ -23,12 +23,20 @@ import {
   type BasemapLoadState,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
+import { applyExploreMapFit } from '@/components/spots/mapMarkers';
 
 interface UseMapCoreOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
   isHeroEmbed: boolean;
   /** Idioma do nome acessivel dos clusters (role="button" precisa de nome). */
   locale?: string;
+  /**
+   * Bounds da vista «Explorar» calculados das coords dos spots (dados
+   * estáticos). Com eles o mapa nasce já enquadrado — o basemap é anexado
+   * na vista final e não pede (nem aborta) tiles do zoom default.
+   * Ignorado no hero (o fit próprio vive no SpotMapInteractive).
+   */
+  initialViewBounds?: [[number, number], [number, number]] | null;
 }
 
 interface UseMapCoreReturn {
@@ -177,7 +185,7 @@ function attachBasemap(
   rasterLayer.addTo(map);
 }
 
-export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -422,6 +430,14 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
           .attribution({ position: 'bottomleft', prefix: false })
           .addAttribution(OPEN_METEO_ATTRIBUTION)
           .addTo(created);
+
+        // Nasce enquadrado: os bounds «Explorar» vêm das coords dos spots
+        // (dados estáticos), por isso o fit corre antes de anexar o basemap
+        // — os tiles pedidos são já os da vista final e não os do zoom
+        // default que seriam abortados a seguir.
+        if (!isHeroEmbed && initialViewBounds) {
+          applyExploreMapFit(Leaflet, created, initialViewBounds, mobileInit);
+        }
 
         attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
         tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
