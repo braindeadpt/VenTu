@@ -23,7 +23,7 @@
       "nrt": "near-real-time data available",
       "lat": 39.550000000000004,
       "lon": -9.200000000000001,
-      "lastSea": "2026-09-20T23:00:00",
+      "lastSea": "2026-09-21T04:00:00",
       "family": "fugro"
     },
     "3": {
@@ -63,16 +63,16 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-09-20T21:56:44+00:00",
-      "lastSea": "2026-09-20T22:26:44+00:00",
+      "lastPos": "2026-09-21T03:26:44+00:00",
+      "lastSea": "2026-09-21T02:56:44+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-20T22:26:44.000Z",
-        "hm0": 1.26,
+        "date": "2026-09-21T02:56:44.000Z",
+        "hm0": 1.13,
         "tp": 10.5,
         "thtp": 318,
-        "hmax": 1.92,
-        "temp": 17.1
+        "hmax": 1.52,
+        "temp": 16.8
       }
     },
     "20": {
@@ -85,16 +85,16 @@
       "nrt": "near-real-time data available",
       "lat": 36.904495,
       "lon": -7.89779,
-      "lastPos": "2026-09-20T22:25:24+00:00",
-      "lastSea": "2026-09-20T22:25:24+00:00",
+      "lastPos": "2026-09-21T03:25:24+00:00",
+      "lastSea": "2026-09-21T03:25:24+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-20T22:55:24.000Z",
-        "hm0": 1.43,
-        "tp": 7.1,
-        "thtp": 131,
-        "hmax": 2.95,
-        "temp": 22.4
+        "date": "2026-09-21T03:25:24.000Z",
+        "hm0": 1.25,
+        "tp": 6.7,
+        "thtp": 118,
+        "hmax": 1.88,
+        "temp": 22.7
       }
     },
     "23": {
@@ -121,16 +121,16 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-09-20T22:29:55+00:00",
-      "lastSea": "2026-09-20T22:29:55+00:00",
+      "lastPos": "2026-09-21T03:29:55+00:00",
+      "lastSea": "2026-09-21T03:29:55+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-20T22:59:55.000Z",
+        "date": "2026-09-21T03:29:55.000Z",
         "hm0": 0.45,
-        "tp": 9.1,
-        "thtp": 160,
-        "hmax": 0.6,
-        "temp": 24.1
+        "tp": 5,
+        "thtp": 70,
+        "hmax": 0.72,
+        "temp": 23.9
       }
     },
     "66": {
@@ -198,16 +198,16 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-09-20T22:49:06+00:00",
-      "lastSea": "2026-09-20T22:49:06+00:00",
+      "lastPos": "2026-09-21T03:49:06+00:00",
+      "lastSea": "2026-09-21T03:49:06+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-20T23:19:06.000Z",
-        "hm0": 1.25,
-        "tp": 11.1,
-        "thtp": 248,
-        "hmax": 1.72,
-        "temp": 22.8
+        "date": "2026-09-21T03:49:06.000Z",
+        "hm0": 1.12,
+        "tp": 11.8,
+        "thtp": 231,
+        "hmax": 1.77,
+        "temp": 22.9
       }
     },
     "88": {
@@ -283,7 +283,7 @@
       "nrt": "near-real-time data available",
       "lat": 38.3833333333333,
       "lon": -9.06666666666667,
-      "lastSea": "2026-09-20T23:00:00",
+      "lastSea": "2026-09-21T04:00:00",
       "family": "fugro"
     },
     "1011": {
@@ -295,7 +295,7 @@
       "nrt": "near-real-time data available",
       "lat": 38.35,
       "lon": -9,
-      "lastSea": "2026-09-20T23:00:00",
+      "lastSea": "2026-09-21T04:00:00",
       "family": "fugro"
     }
   },
@@ -1387,7 +1387,7 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-09-21T00:17:08.276Z",
+  "fetchedAt": "2026-09-21T05:03:43.806Z",
   "sourceCollections": [
     "buoys_datawell",
     "buoys_Fugro_oceanor_wavescan"
