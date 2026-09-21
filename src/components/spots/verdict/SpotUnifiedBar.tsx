@@ -3,7 +3,6 @@
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import { getTranslation } from '@/lib/i18n';
-import { getScoreCssVar } from '@/lib/scoreThresholds';
 import { formatHourLabel } from '@/lib/verdict/formatHourLabel';
 import { cn } from '@/lib/cn';
 import {
@@ -73,10 +72,7 @@ export default function SpotUnifiedBar({
       role="region"
       aria-label={tv.barLabel}
       className="sticky z-30 border-b border-divider bg-bg-base supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm"
-      style={{
-        top: 'var(--ventu-spot-sticky-top)',
-        '--verdict': `rgb(var(${getScoreCssVar(shownScore)}))`,
-      } as React.CSSProperties}
+      style={{ top: 'var(--ventu-spot-sticky-top)' }}
     >
       <div
         className="max-w-6xl mx-auto px-4 flex items-center gap-3"

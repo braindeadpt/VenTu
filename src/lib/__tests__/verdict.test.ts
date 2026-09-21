@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { scoreBand } from '@/lib/verdict/scoreBand';
 import { whyLine } from '@/lib/verdict/whyLine';
 import { formatHourLabel, formatHourLong, formatDayShort } from '@/lib/verdict/formatHourLabel';
+import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
 import { getScoreTierLabel } from '@/lib/sportScore';
 
 describe('scoreBand — limites canónicos (80/60/40/20)', () => {
@@ -90,5 +91,56 @@ describe('formatDayShort — marcador de dia na régua', () => {
 
   it('en: weekday curto + dia', () => {
     expect(formatDayShort('2026-09-17T12:00', 'en')).toBe('Thu 17');
+  });
+});
+
+describe('formatWindowLabel — etiqueta «melhor» da régua', () => {
+  // 96 h a partir de ter 15 set 2026, 00:00 (wall-time Open-Meteo).
+  const HOURS = Array.from({ length: 96 }, (_, i) => {
+    const d = new Date(Date.UTC(2026, 8, 15) + i * 3_600_000);
+    const p = (v: number) => String(v).padStart(2, '0');
+    return `${d.getUTCFullYear()}-${p(d.getUTCMonth() + 1)}-${p(d.getUTCDate())}T${p(d.getUTCHours())}:00`;
+  });
+  const lbl = (
+    startIdx: number,
+    endIdx: number,
+    peakIdx: number,
+    peakScore: number,
+    windowStart = 0,
+    windowEnd = 48,
+    locale = 'pt',
+  ) =>
+    formatWindowLabel(
+      HOURS, startIdx, endIdx, peakIdx, peakScore, windowStart, windowEnd, locale,
+    );
+
+  it('mesmo dia: «ter 06–14h» + pico', () => {
+    // ter 15 → índices 6..13 são ter 06h..13h; fim exclusivo = 14h.
+    expect(lbl(6, 13, 10, 78)).toBe('ter 06–14h · pico ter 10h (78)');
+  });
+
+  it('passa a meia-noite: «ter 22h – qua 14h»', () => {
+    expect(lbl(22, 37, 30, 82)).toBe('ter 22h – qua 14h · pico qua 06h (82)');
+  });
+
+  it('acaba às 23h: fim exclusivo escreve «00h» do dia seguinte, nunca «24h»', () => {
+    expect(lbl(18, 23, 20, 70)).toBe('ter 18h – qua 00h · pico ter 20h (70)');
+  });
+
+  it('janela começou antes da janela visível: início é «agora»', () => {
+    // Janela real 02h..20h mas a régua só mostra a partir de 10h.
+    expect(lbl(2, 20, 15, 90, 10, 48)).toBe('agora–21h · pico ter 15h (90)');
+  });
+
+  it('janela de 1 hora: «ter 06–07h»', () => {
+    expect(lbl(6, 6, 6, 65)).toBe('ter 06–07h · pico ter 06h (65)');
+  });
+
+  it('en: dias e palavras em inglês', () => {
+    expect(lbl(6, 13, 10, 78, 0, 48, 'en')).toBe('Tue 06–14h · peak Tue 10h (78)');
+  });
+
+  it('janela fora da parte visível → null', () => {
+    expect(lbl(60, 70, 65, 80, 0, 48)).toBeNull();
   });
 });

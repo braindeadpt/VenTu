@@ -101,14 +101,24 @@ export default function SpotTimelineProvider({
   // Recomputa em visibilitychange (página aberta durante horas) — mexer no
   // nowIndex NÃO move o índice escolhido pelo utilizador (a aterragem
   // inicial está protegida por didLandOnNow).
+  // A aterragem acontece no mesmo commit que o primeiro nowIndex — sem isso
+  // a janela saltava um render à frente do índice e a régua ficava sem
+  // barra seleccionada (e com um índice fora da janela).
   const [nowIndex, setNowIndex] = useState(-1);
+  const didLandOnNow = useRef(false);
   useEffect(() => {
     if (!mounted || hours.length === 0) {
       setNowIndex(-1);
       return;
     }
-    const compute = () =>
-      setNowIndex(findCurrentHourIndex(hours as string[], new Date(nowMs ?? Date.now())));
+    const compute = () => {
+      const i = findCurrentHourIndex(hours as string[], new Date(nowMs ?? Date.now()));
+      setNowIndex(i);
+      if (!didLandOnNow.current) {
+        didLandOnNow.current = true;
+        if (i >= 0) setIndexRaw(i);
+      }
+    };
     compute();
     const onVisible = () => {
       if (document.visibilityState === 'visible') compute();
@@ -122,14 +132,6 @@ export default function SpotTimelineProvider({
     () => spotTimelineWindow(hours.length, nowIndex),
     [hours.length, nowIndex],
   );
-
-  // Aterragem inicial na hora actual — uma vez, depois de montar.
-  const didLandOnNow = useRef(false);
-  useEffect(() => {
-    if (!mounted || didLandOnNow.current) return;
-    didLandOnNow.current = true;
-    if (nowIndex >= 0) setIndexRaw(nowIndex);
-  }, [mounted, nowIndex]);
 
   const clamp = useCallback(
     (i: number) => Math.max(0, Math.min(i, Math.max(0, hours.length - 1))),

@@ -13,6 +13,7 @@ import {
   formatHourLabel,
   formatHourLong,
 } from '@/lib/verdict/formatHourLabel';
+import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
 import { cn } from '@/lib/cn';
 import {
   useSpotTimelineData,
@@ -241,9 +242,17 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               transform: 'translateX(-50%)',
             }}
           >
-            {tv.bestTag}: {formatDayShort(hours[bestWindow.startIdx], locale)}{' '}
-            {hours[bestWindow.startIdx].slice(11, 13)}–
-            {String(Number(hours[bestWindow.endIdx].slice(11, 13)) + 1).padStart(2, '0')}h
+            {tv.bestTag}:{' '}
+            {formatWindowLabel(
+              hours,
+              bestWindow.startIdx,
+              bestWindow.endIdx,
+              bestWindow.peakIdx,
+              bestWindow.peakScore,
+              windowStart,
+              windowEnd,
+              locale,
+            )}
           </span>
         )}
         {nowLocal >= 0 && (
@@ -313,19 +322,6 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               className="text-fg-muted"
             />
           ))}
-          {/* Limiar 60 — tracejado. */}
-          <line
-            x1={0}
-            x2={n}
-            y1={thrY}
-            y2={thrY}
-            stroke="currentColor"
-            strokeWidth={1}
-            strokeDasharray="4 3"
-            strokeOpacity={0.5}
-            vectorEffect="non-scaling-stroke"
-            className="text-fg-subtle"
-          />
           {/* Barras por hora — neutras; a escolhida em --verdict. */}
           {winHours.map((h, i) => {
             const gi = windowStart + i;
@@ -352,6 +348,21 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               />
             );
           })}
+          {/* Limiar 60 — tracejado POR CIMA das barras (depois no SVG), com
+              contraste alto nos dois temas e sem capturar ponteiro. */}
+          <line
+            x1={0}
+            x2={n}
+            y1={thrY}
+            y2={thrY}
+            stroke="currentColor"
+            strokeWidth={1}
+            strokeDasharray="4 3"
+            strokeOpacity={0.6}
+            vectorEffect="non-scaling-stroke"
+            pointerEvents="none"
+            className="text-fg"
+          />
           {/* Linha «agora» — marca do relógio, não da escolha. */}
           {nowLocal >= 0 && (
             <line

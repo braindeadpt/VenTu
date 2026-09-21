@@ -27,13 +27,19 @@ export function formatHourLabel(hour: string, _locale: string): string {
   return p ? `${p.hh}:${p.mm}` : '--:--';
 }
 
+/** 'qui' — weekday de 3 letras, estável em qualquer ICU/fuso. */
+export function formatWeekday(hour: string, locale: string): string {
+  const p = parseHourParts(hour);
+  if (!p) return '';
+  const dow = new Date(Date.UTC(p.y, p.mo - 1, p.d, 12)).getUTCDay();
+  return (locale === 'pt' ? WEEKDAYS_PT : WEEKDAYS_EN)[dow];
+}
+
 /** 'qui 17' — marcador de dia na régua de 48 h. */
 export function formatDayShort(hour: string, locale: string): string {
   const p = parseHourParts(hour);
   if (!p) return '';
-  const dow = new Date(Date.UTC(p.y, p.mo - 1, p.d, 12)).getUTCDay();
-  const wd = (locale === 'pt' ? WEEKDAYS_PT : WEEKDAYS_EN)[dow];
-  return `${wd} ${p.d}`;
+  return `${formatWeekday(hour, locale)} ${p.d}`;
 }
 
 /** 'qui 17 set, 12:00' — rótulo longo para aria-valuetext e cabeçalhos. */

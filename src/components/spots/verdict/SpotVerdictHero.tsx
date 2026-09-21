@@ -7,7 +7,6 @@ import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import type { SpotVerdictConditions } from '@/components/spots/page/SpotVerdictSection';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
-import { getScoreCssVar } from '@/lib/scoreThresholds';
 import { scoreBand } from '@/lib/verdict/scoreBand';
 import { whyLine } from '@/lib/verdict/whyLine';
 import { formatHourLong } from '@/lib/verdict/formatHourLabel';
@@ -106,7 +105,6 @@ export default function SpotVerdictHero({
       id="agora"
       data-spot-slug={spot.slug}
       className="scroll-mt-32 border-b border-divider"
-      style={{ '--verdict': `rgb(var(${getScoreCssVar(target)}))` } as React.CSSProperties}
     >
       <div className="max-w-6xl mx-auto px-4 pt-2 pb-5">
         {/* Preserva a modalidade: /spots/ lê ?sport= — o voltar não a perde. */}

@@ -18,6 +18,12 @@ async function openSpot(page: Page) {
   ).toBeVisible({ timeout: 20_000 });
   // A régua só aparece quando o eixo tem horas (previsão carregada).
   await expect(page.getByRole('slider')).toBeVisible({ timeout: 20_000 });
+  // React montado (HydrationBeacon) + aterragem em «agora» concluída —
+  // antes disso os handlers de ponteiro/teclado ainda não respondem.
+  await page.waitForSelector('html.is-hydrated', { timeout: 20_000 });
+  await page.waitForSelector('[role="slider"] rect[fill="var(--verdict)"]', {
+    timeout: 20_000,
+  });
 }
 
 const slider = (page: Page) => page.getByRole('slider');
@@ -109,6 +115,38 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
     await expect(
       page.locator('#agora').getByText('Agora', { exact: true }),
     ).toBeVisible();
+  });
+
+  test('a barra escolhida herda --verdict da raiz da secção (nunca preto)', async ({ page }) => {
+    await openSpot(page);
+
+    // fill computado da barra escolhida vs. cor do score do hero — a mesma
+    // variável --verdict definida UMA vez na raiz da secção (S2A-fix #1).
+    const probe = () =>
+      page.evaluate(() => {
+        const rail = document.querySelector('[role="slider"]');
+        const selBar = rail?.querySelector('rect[fill="var(--verdict)"]');
+        const meterEl = document.querySelector('#agora [role="meter"]');
+        return {
+          barFill: selBar ? getComputedStyle(selBar).fill : null,
+          scoreColor: meterEl ? getComputedStyle(meterEl).color : null,
+        };
+      });
+
+    // Aterragem em «agora» é pós-mount — espera a barra seleccionada existir.
+    await expect.poll(async () => (await probe()).barFill).not.toBeNull();
+    let g = await probe();
+    expect(g.barFill).not.toBe('rgb(0, 0, 0)');
+    expect(g.barFill).toBe(g.scoreColor);
+
+    // Seta → outra hora: as duas superfícies continuam iguais entre si.
+    const rail = slider(page);
+    await rail.focus();
+    await rail.press('ArrowRight');
+    await expect.poll(async () => (await probe()).barFill).not.toBeNull();
+    g = await probe();
+    expect(g.barFill).not.toBe('rgb(0, 0, 0)');
+    expect(g.barFill).toBe(g.scoreColor);
   });
 
   test('aria-valuetext descreve hora, score e banda', async ({ page }) => {

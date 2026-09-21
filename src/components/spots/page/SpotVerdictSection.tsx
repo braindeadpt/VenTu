@@ -15,6 +15,8 @@ import type {
   ScoreWindSource,
 } from '@/lib/scoreConditions';
 import { getTranslation } from '@/lib/i18n';
+import { getScoreCssVar } from '@/lib/scoreThresholds';
+import { useSpotTimelineIndex } from '@/components/spots/timeline/useSpotTimeline';
 import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
 import SpotVerdictHero from '@/components/spots/verdict/SpotVerdictHero';
 import SpotUnifiedBar from '@/components/spots/verdict/SpotUnifiedBar';
@@ -121,9 +123,20 @@ export default function SpotVerdictSection({
   freshnessNowMs,
 }: SpotVerdictSectionProps) {
   const tv = getTranslation(locale).spotPageVerdict;
+  const { selectedScore } = useSpotTimelineIndex();
+  // Acento da página = tier da hora escolhida. UMA definição na raiz da
+  // secção — hero, barra e régua herdam (o fill da régua vive fora do hero
+  // e da barra; sem isto caía a preto). `contents` não cria caixa: o sticky
+  // da SpotUnifiedBar continua contido pelo mesmo ancestral de sempre.
+  const verdictScore = selectedScore ?? score.score;
 
   return (
-    <>
+    <div
+      className="contents"
+      style={
+        { '--verdict': `rgb(var(${getScoreCssVar(verdictScore)}))` } as React.CSSProperties
+      }
+    >
       {/* §0 — Faixa de segurança (só renderiza com aviso activo). */}
       <SpotSafetyStrip
         spotId={spot.id}
@@ -157,6 +170,6 @@ export default function SpotVerdictSection({
 
       {/* §3 — «Quando ir»: régua de 48 h no eixo partilhado. */}
       <SpotTimeRail spot={spot} locale={locale} title={whenToGoTitle} />
-    </>
+    </div>
   );
 }
