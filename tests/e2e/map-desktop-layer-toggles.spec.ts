@@ -76,6 +76,8 @@ async function closeAndReopen(page: Page, query = ''): Promise<void> {
 
 // C4 (auditoria 2026-09-16): as camadas secundárias vivem no menu «Camadas»
 // — os testes abrem-no antes de tocar no toggle. O radar ficou primário.
+// O popover é portalizado para document.body (data-map-layers-popover),
+// fora de [data-map-controls] — o escopo do toggle depende de `inMenu`.
 const LAYERS = [
   { name: 'correntes', param: 'currents', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', inMenu: true },
   { name: 'temperatura (SST)', param: 'sst', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', inMenu: true },
@@ -83,6 +85,19 @@ const LAYERS = [
   { name: 'isóbatas', param: 'isobaths', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', inMenu: true },
   { name: 'radar IPMA', param: 'radar', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', inMenu: false },
 ] as const;
+
+type Layer = (typeof LAYERS)[number];
+
+/** Contentor onde o toggle da camada vive: popover «Camadas» ou a barra. */
+function layerScope(page: Page, l: Layer) {
+  return l.inMenu
+    ? page.locator('[data-map-layers-popover="true"]')
+    : page.locator('[data-map-controls]');
+}
+
+function layerToggle(page: Page, l: Layer) {
+  return layerScope(page, l).locator(`[${l.attr}]`);
+}
 
 test.describe('Mapa desktop — coluna de controlos: persistência e deep links', () => {
   test.use({
@@ -99,7 +114,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
       await openMapaDesktop(page);
       if (l.inMenu) await openMapLayersMenu(page);
 
-      const toggle = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
+      const toggle = layerToggle(page, l);
       await expect(toggle).toBeEnabled({ timeout: 15_000 });
       // A coluna clipa (max-h): o último controlo pode precisar de scroll.
       await toggle.scrollIntoViewIfNeeded();
@@ -119,7 +134,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
       // Ciclo fechar/abrir (navegação real): a preferência sobrevive.
       await closeAndReopen(page);
       if (l.inMenu) await openMapLayersMenu(page);
-      const after = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
+      const after = layerToggle(page, l);
       await expect(after).toBeEnabled({ timeout: 15_000 });
       await expect(after).toHaveAttribute('aria-pressed', 'true');
     });
@@ -131,7 +146,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
       await closeAndReopen(page, `?${l.param}=1`);
       if (l.inMenu) await openMapLayersMenu(page);
 
-      const toggle = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
+      const toggle = layerToggle(page, l);
       await expect(toggle).toBeEnabled({ timeout: 15_000 });
       // O deep link liga a camada mesmo sem LS.
       await expect(toggle).toHaveAttribute('aria-pressed', 'true');
@@ -140,7 +155,7 @@ test.describe('Mapa desktop — coluna de controlos: persistência e deep links'
       await expect(toggle).toHaveAttribute('aria-pressed', 'false');
       await closeAndReopen(page);
       if (l.inMenu) await openMapLayersMenu(page);
-      const after = page.locator('[data-map-controls]').locator(`[${l.attr}]`);
+      const after = layerToggle(page, l);
       await expect(after).toBeEnabled({ timeout: 15_000 });
       await expect(after).toHaveAttribute('aria-pressed', 'false');
     });
