@@ -32,6 +32,23 @@ import { expectTopmostHit } from './helpers/hit-test';
 const STALE_ISO = new Date(Date.now() - 5 * 3_600_000).toISOString();
 const FRESH_ISO = new Date().toISOString();
 
+/**
+ * S2B: o BuoyLayerNotice/ObservedWaveCard vivem no painel de detalhe da
+ * secção Instrumentos (#instrumentos → cartão «Onda»). Abre-o antes das
+ * asserções — depois de um reload o painel está fechado outra vez.
+ */
+async function openWaveDetail(page: import('@playwright/test').Page) {
+  const detail = page.locator('#instrumentos-detalhe');
+  const button = page.locator("#instrumentos [data-instrument='wave'] button");
+  await expect(async () => {
+    const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
+    if (attr !== 'wave') {
+      await button.evaluate((el) => (el as HTMLElement).click());
+    }
+    await expect(detail).toHaveAttribute('data-detail', 'wave', { timeout: 1_000 });
+  }).toPass({ timeout: 20_000 });
+}
+
 /** WMO fallback fixture: sem wave data (em baixo) — determinístico por teste. */
 const WMO_DOWN = { buoys: {}, hasWaveData: false, day: '20260815' };
 /** WMO fallback fixture: leituras antigas (>6h). */
@@ -71,6 +88,8 @@ test.describe('Aviso de boias (BuoyLayerNotice)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
+    // S2B: o aviso está no painel de detalhe do instrumento «Onda».
+    await openWaveDetail(page);
   }
 
   test('no-key: «Onda observada desactivada» sem IH_API_KEY (+ WMO em baixo)', async ({ page }) => {
@@ -181,6 +200,8 @@ test.describe('Aviso de boias (BuoyLayerNotice)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
+    // S2B: o card de onda observada está no painel de detalhe do instrumento.
+    await openWaveDetail(page);
 
     // Nenhum dos títulos do aviso IH aparece (nem o «Onda observada desactivada»
     // do no-key, apesar de a key não estar configurada).
@@ -424,6 +445,8 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
+    // S2B: o aviso está no painel de detalhe do instrumento «Onda».
+    await openWaveDetail(page);
   }
 
   test('dispensar («já vi») esconde o aviso e persiste no reload', async ({ page }) => {
@@ -447,6 +470,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
+    await openWaveDetail(page); // S2B: o reload volta a fechar o painel
     await expect(page.getByText('Onda observada desactivada')).toHaveCount(0);
     expect(
       await page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY),
@@ -467,10 +491,17 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
+    await openWaveDetail(page); // S2B: o reload volta a fechar o painel
     await expect(
       page.getByText(/Onda observada desactivada|Boias do IH indisponíveis|Leituras das boias antigas/),
     ).toHaveCount(0);
-    expect(await page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY)).toBeNull();
+    // S2B: a limpeza corre no mount do aviso (dentro do painel) após o
+    // health-check assíncrono — poll até a dispensa ser removida.
+    await expect
+      .poll(() => page.evaluate((k) => localStorage.getItem(k), DISMISS_KEY), {
+        timeout: 20_000,
+      })
+      .toBeNull();
 
     // Volta ao no-key: a dispensa já não existe → o aviso reaparece.
     await interceptIhBuoys(page, IH_NO_KEY);
@@ -478,6 +509,7 @@ test.describe('Aviso de boias — dispensa (localStorage)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
+    await openWaveDetail(page);
     await expect(page.getByText('Onda observada desactivada')).toBeVisible({ timeout: 20_000 });
   });
 
