@@ -225,8 +225,11 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     const narrowed = await page.evaluate(async () => {
       const map = (window as any).__VENTU_MAP__;
       if (!map) return null;
+      // O moveend pode disparar sincronamente dentro do setView — o listener
+      // tem de estar registado antes.
+      const moved = new Promise((r) => map.once('moveend', r));
       map.setView([39.6, -9.07], 11);
-      await new Promise((r) => map.once('moveend', r));
+      await moved;
       await new Promise((r) => setTimeout(r, 400));
       return document.querySelectorAll('[role="option"]').length;
     });
@@ -238,7 +241,9 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
   test('atribuição visível nos três estados do sheet', async ({ page }) => {
     await openMapa(page);
     const sheet = page.locator('[data-explore-sheet]');
-    const attr = sheet.locator('[data-sheet-attribution]');
+    // Durante o cross-fade (reduced-motion) o estado anterior fica sobreposto
+    // ~240ms e há 2 atribuições no DOM — a asserção é «há atribuição visível».
+    const attr = sheet.locator('[data-sheet-attribution]').first();
     await expect(attr).toBeVisible({ timeout: 20_000 });
     await expect(attr).toContainText(/OpenStreetMap|CARTO|Open-Meteo/);
 

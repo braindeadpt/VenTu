@@ -21,7 +21,7 @@ import {
   readGridFiltersFromWindow,
   syncGridFiltersToUrl,
 } from '@/lib/gridFilters';
-import { dispatchSportChange, LS_SPORT_KEY } from '@/lib/homepageSport';
+import { dispatchSportChange, LS_SPORT_KEY, readSportFromStorage } from '@/lib/homepageSport';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
 import { getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getTranslation } from '@/lib/i18n';
@@ -54,6 +54,7 @@ function readMapSearchParams(): {
   currents: boolean;
   spot: string | undefined;
   center: [number, number] | undefined;
+  zoom: number | undefined;
 } {
   if (typeof window === 'undefined') {
     return {
@@ -67,12 +68,14 @@ function readMapSearchParams(): {
       currents: false,
       spot: undefined,
       center: undefined,
+      zoom: undefined,
     };
   }
   const params = new URLSearchParams(window.location.search);
   const hourOfDay = parseHourOfDayParam(params.get('t'));
   const lat = Number.parseFloat(params.get('lat') ?? '');
   const lon = Number.parseFloat(params.get('lon') ?? '');
+  const z = Number.parseFloat(params.get('z') ?? '');
   return {
     radar: params.get('radar') === '1',
     isobaths: params.get('isobaths') === '1',
@@ -87,6 +90,7 @@ function readMapSearchParams(): {
       Number.isFinite(lat) && Number.isFinite(lon)
         ? ([lat, lon] as [number, number])
         : undefined,
+    zoom: Number.isFinite(z) && z >= 3 && z <= 18 ? z : undefined,
   };
 }
 
@@ -123,6 +127,7 @@ export default function MapaFullscreenClient({
   const [initialCurrents, setInitialCurrents] = useState(false);
   const [focusSpotId, setFocusSpotId] = useState<string | undefined>();
   const [initialCenter, setInitialCenter] = useState<[number, number] | undefined>();
+  const [initialZoom, setInitialZoom] = useState<number | undefined>();
 
   // Capture deep links before syncGridFiltersToUrl rewrites the query.
   // StrictMode dev: o segundo mount corre DEPOIS do primeiro useEffect ter
@@ -143,11 +148,15 @@ export default function MapaFullscreenClient({
     setInitialCurrents(s.currents);
     setFocusSpotId(s.spot);
     setInitialCenter(s.center);
+    setInitialZoom(s.zoom);
   }, []);
 
   useEffect(() => {
     const { sport: urlSport, region: urlRegion } = readGridFiltersFromWindow(regionList);
-    setSport(urlSport);
+    // Sem ?sport= o /mapa lembra a modalidade guardada (a mesma key da
+    // homepage); o deep link vence sempre, mesmo ?sport=all.
+    const hasSportParam = new URLSearchParams(window.location.search).has('sport');
+    setSport(hasSportParam ? urlSport : readSportFromStorage());
     setRegion(urlRegion);
     setDifficulty(readMapDifficultyFromStorage());
   }, [regionList]);
@@ -261,6 +270,7 @@ export default function MapaFullscreenClient({
         initialCurrentsEnabled={initialCurrents}
         focusSpotId={focusSpotId}
         initialCenter={initialCenter}
+        initialZoom={initialZoom}
         fullscreenBelowHeader
         onExitFullscreen={handleExit}
         onSpotSelect={handleSpotSelect}

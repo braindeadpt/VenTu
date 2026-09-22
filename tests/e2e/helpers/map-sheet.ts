@@ -1,13 +1,33 @@
 import { expect, type Page } from '@playwright/test';
 
+/**
+ * Desfaz o cluster pelo toggle real do sheet. O mobile força cluster no
+ * arranque (ignora o LS), por isso o único caminho é a UI: peek → half →
+ * «Mostrar todos», voltando ao peek no fim.
+ */
+export async function showAllMapMarkers(page: Page) {
+  const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i }).first();
+  if (!(await showAll.isVisible().catch(() => false))) {
+    await page.locator('[data-sheet-grabber]').click();
+    await expect(page.locator('[data-explore-sheet]')).toHaveAttribute('data-explore-sheet', 'half');
+  }
+  if (await showAll.isVisible().catch(() => false)) {
+    await showAll.click();
+    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
+    const sheet = page.locator('[data-explore-sheet]');
+    const grabber = page.locator('[data-sheet-grabber]');
+    for (let i = 0; i < 3; i += 1) {
+      if ((await sheet.getAttribute('data-explore-sheet')) === 'peek') break;
+      await grabber.click();
+    }
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek');
+  }
+}
+
 /** Open mobile map spot sheet (retries marker click until dialog is visible). */
 export async function openMapSpotSheet(page: Page) {
   await page.waitForSelector('[data-map-hud="visible"]', { timeout: 35_000 });
-
-  const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i });
-  if (await showAll.isVisible()) {
-    await showAll.click();
-  }
+  await showAllMapMarkers(page);
 
   await page.waitForFunction(() => window.matchMedia('(max-width: 767px)').matches);
   await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
-import { openMapSpotSheet } from './helpers/map-sheet';
+import { openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
 import { installSupabaseMock } from './helpers/supabase-mock';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
 
@@ -226,6 +226,7 @@ test.describe('mobile playtest (390×844, touch)', () => {
     await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded' });
     await waitHydrated(page);
     await page.waitForSelector('[data-map-hud="visible"]', { timeout: 35_000 });
+    await showAllMapMarkers(page);
     await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
 
     const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
