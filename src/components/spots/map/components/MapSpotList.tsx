@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import { getScoreTokens } from '@/lib/sportScore';
+import type { ScoreFactorSegment } from '@/lib/spotScoreFactors';
+import { scoreFactorClass } from '@/lib/spotScoreFactors';
 
 /**
  * Lista sincronizada com a vista do mapa — partilhada entre o bottom sheet
@@ -17,8 +19,8 @@ export interface MapSpotListRow {
   name: string;
   region: string;
   score: number;
-  /** Linha mono de factores, ex. «1.8 m · 11 s · NW 14 kt». */
-  factors: string;
+  /** Factores do score — mesma gramática do popup/sheet (versão curta). */
+  factors: ScoreFactorSegment[];
 }
 
 interface MapSpotListProps {
@@ -123,8 +125,16 @@ export default function MapSpotList({
                   <span className="block truncate text-body-sm font-semibold text-fg">{row.name}</span>
                   <span className="block truncate text-meta-sm text-fg-muted">{row.region}</span>
                 </span>
-                <span className="shrink-0 text-right font-mono tabular-nums text-meta-sm text-fg-muted">
-                  {row.factors}
+                <span
+                  className="shrink-0 text-right font-mono tabular-nums text-meta-sm text-fg-muted"
+                  data-score-factors={row.factors.map((f) => f.label).join(' · ')}
+                >
+                  {row.factors.map((f, fi) => (
+                    <span key={fi}>
+                      {fi > 0 && <span aria-hidden className="text-fg-subtle/40"> · </span>}
+                      <span className={scoreFactorClass(f.kind)}>{f.short}</span>
+                    </span>
+                  ))}
                 </span>
                 <ChevronRight className="w-3.5 h-3.5 shrink-0 text-fg-subtle" aria-hidden />
               </button>

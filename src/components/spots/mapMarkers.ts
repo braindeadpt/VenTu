@@ -84,6 +84,8 @@ export function buildMarkerPopupContent(
     windRelationType: windRelation,
     waterTemp: conditions.waterTemp.toFixed(1),
     wavePowerKw: powerKw.toFixed(1),
+    conditions,
+    highlightSport: selectedSport,
     imageUrl: (() => {
       const src = getSpotImage(spot);
       return src.kind === 'image' ? src.src : undefined;

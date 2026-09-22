@@ -9,6 +9,7 @@ import type { MapLayersMenuItem } from './MapLayersMenu';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { BasemapMode } from '../../MapLayerToggle';
 import { getScoreTokens } from '@/lib/sportScore';
+import { scoreFactorClass } from '@/lib/spotScoreFactors';
 import { cn } from '@/lib/cn';
 
 /**
@@ -346,8 +347,16 @@ export default function MapExploreSheet({
                 <span className="text-fg-muted"> · {best.region}</span>
               </span>
             </span>
-            <span className="shrink-0 text-right font-mono tabular-nums text-meta-sm text-fg-muted">
-              {best.factors}
+            <span
+              className="shrink-0 text-right font-mono tabular-nums text-meta-sm text-fg-muted"
+              data-score-factors={best.factors.map((f) => f.label).join(' · ')}
+            >
+              {best.factors.map((f, fi) => (
+                <span key={fi}>
+                  {fi > 0 && <span aria-hidden className="text-fg-subtle/40"> · </span>}
+                  <span className={scoreFactorClass(f.kind)}>{f.short}</span>
+                </span>
+              ))}
             </span>
           </button>
         )}

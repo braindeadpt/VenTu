@@ -74,8 +74,7 @@ import {
 import { mapTideChipAt, pickMapTideCurve } from '@/lib/mapTideChip';
 import { thermalHudAt } from '@/lib/mapThermal';
 import { MAP_ON_THRESHOLD, spotMatchesSportFilter, spotMeetsOnFilter } from '@/lib/gridSpotFilters';
-import { MS_TO_KNOTS } from '@/lib/waveEnergy';
-import { getCardinalLabel } from '@/lib/wind';
+import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
 
 type SpotData = MapSpotData;
 
@@ -745,19 +744,22 @@ export default function SpotMapInteractive({
       : visibleSpots;
     return inView
       .map((d) => {
-        const c = d.conditions;
         return {
           spotId: d.spot.id,
           name: isPt ? d.spot.name : d.spot.nameEn,
           region: isPt ? d.spot.region : d.spot.regionEn,
           score: getBestScore(d, selectedSport, hourScores?.get(d.spot.id)),
-          factors:
-            `${c.waveHeight.toFixed(1)} m · ${Math.round(c.wavePeriod)} s · ` +
-            `${getCardinalLabel(c.windDirection)} ${Math.round(c.windSpeed * MS_TO_KNOTS)} kt`,
+          factors: getSpotScoreFactors({
+            spot: d.spot,
+            conditions: d.conditions,
+            allScores: d.allScores,
+            sport: selectedSport,
+            locale,
+          }),
         };
       })
       .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  }, [visibleSpots, hourScores, selectedSport, isPt, mapInstanceRef]);
+  }, [visibleSpots, hourScores, selectedSport, isPt, locale, mapInstanceRef]);
 
   const [viewRows, setViewRows] = useState<MapSpotListRow[]>([]);
   useEffect(() => {
