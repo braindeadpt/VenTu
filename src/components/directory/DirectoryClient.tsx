@@ -23,7 +23,7 @@ const DirectoryMap = dynamic(() => import('@/components/directory/DirectoryMap')
   ssr: false,
   loading: () => (
     <div
-      className="h-[clamp(220px,36vh,360px)] rounded-2xl border border-divider bg-bg-base animate-pulse"
+      className="h-[clamp(220px,36vh,360px)] rounded-surface border border-divider bg-bg-base animate-pulse"
       aria-hidden
     />
   ),

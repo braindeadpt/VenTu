@@ -242,7 +242,7 @@ export default function HomepageMapHero({
       <section
         role="region"
         aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
-        className="relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y bg-bg-base"
+        className="relative w-full h-[clamp(220px,38vh,360px)] rounded-surface overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y bg-bg-base"
         data-map-ready={mapReady}
       >
         <h2 className="sr-only">{isPt ? 'Mapa ao vivo' : 'Live map'}</h2>

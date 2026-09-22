@@ -28,6 +28,22 @@
 - [x] **Radial glow removal on low-end devices** — mesma regra
   `prefers-reduced-data` acima; nada a fazer enquanto o glow não existir.
 
+## Itens da auditoria visual fechados na revisão de 2026-09-23
+
+- [x] **`rounded-2xl` fora do design system** — os 10 usos ad-hoc (molduras de
+  mapa, skeleton, blocos da sazonalidade) passaram ao token novo
+  `rounded-surface` (16px, mesma métrica → zero mudança de pixels);
+  documentado em `DESIGN-SYSTEM.md`.
+- [x] **Skeleton do Dawn Patrol com shift de 4px** — passa a incluir a moldura
+  `border-l-4 border-l-accent` e as dimensões do banner real.
+- [x] **Homepage sem grid de `SpotCard`** — verificado: é intencional desde o
+  redesign (mapa em herói + secções ranqueadas `HomepageRankedSection`/
+  `TopNow`/`YourDay`); não há grid de cards na home por desenho, não é omissão.
+- [x] **Botão «Voltar» do spot** — já preserva o filtro
+  (`/spots/?sport=…`, com comentário no `SpotDetailHero`).
+- [x] **Pesquisa duplicada (hero vs header)** — já unificada num só
+  `SearchPalette` via `src/lib/searchEvents.ts`.
+
 ---
 
 *Generated 2026-05-18 after Lote C polish.*

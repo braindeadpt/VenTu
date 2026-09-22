@@ -110,7 +110,7 @@ export default function SpotMap({
 
   if (error) {
     return (
-      <div className="relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-card ring-1 ring-divider bg-bg-base flex items-center justify-center">
+      <div className="relative w-full h-56 md:h-72 rounded-surface overflow-hidden shadow-lg shadow-card ring-1 ring-divider bg-bg-base flex items-center justify-center">
         <div className="text-center p-4">
           <p className="text-fg-muted text-sm mb-2">{isPt ? 'Mapa não disponível' : 'Map unavailable'}</p>
           <a
@@ -128,7 +128,7 @@ export default function SpotMap({
 
   const shellClass = compact
     ? 'relative w-full h-full min-h-0'
-    : 'relative w-full h-56 md:h-72 rounded-2xl overflow-hidden shadow-lg shadow-card ring-1 ring-divider';
+    : 'relative w-full h-56 md:h-72 rounded-surface overflow-hidden shadow-lg shadow-card ring-1 ring-divider';
 
   return (
     <div className={shellClass}>

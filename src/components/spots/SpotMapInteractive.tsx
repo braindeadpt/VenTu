@@ -1141,7 +1141,7 @@ export default function SpotMapInteractive({
             : 'fixed inset-0 z-[1100] w-full overflow-visible bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
           : isHeroEmbed
             ? 'absolute inset-0 overflow-hidden bg-bg-base'
-            : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
+            : 'relative w-full rounded-surface border border-divider overflow-hidden bg-surface-1/[0.04]'
       }
       style={
         isFullscreen
