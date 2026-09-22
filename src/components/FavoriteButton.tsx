@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Heart } from 'lucide-react';
 import { useFavorites } from '@/contexts/AuthProvider';
 import { useToast } from '@/components/ui/ToastProvider';
@@ -27,6 +27,15 @@ export default function FavoriteButton({
   const active = isFavorite(spotId);
   const isPt = locale === 'pt';
   const [clickEffect, setClickEffect] = useState(false);
+  // Timer do efeito de clique — limpo no unmount para não haver setState
+  // depois de desmontar (auditoria LOW9).
+  const clickEffectTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (clickEffectTimerRef.current !== null) window.clearTimeout(clickEffectTimerRef.current);
+    },
+    [],
+  );
 
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -59,7 +68,8 @@ export default function FavoriteButton({
       showToast(isPt ? 'Adicionado aos teus spots' : 'Added to your spots');
     }
     setClickEffect(true);
-    setTimeout(() => setClickEffect(false), 300);
+    if (clickEffectTimerRef.current !== null) window.clearTimeout(clickEffectTimerRef.current);
+    clickEffectTimerRef.current = window.setTimeout(() => setClickEffect(false), 300);
   };
 
   const label = !isLoggedIn

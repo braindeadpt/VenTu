@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Bell, Check, Loader2 } from 'lucide-react';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -46,6 +46,14 @@ export default function SpotAlertPopover({
   const [saved, setSaved] = useState<false | 'active' | 'pending'>(false);
   const [savedCount, setSavedCount] = useState<number | null>(null);
   const [error, setError] = useState('');
+  // Auto-fecho após gravar (2,2 s) — limpo no unmount (auditoria LOW9).
+  const savedTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (savedTimerRef.current !== null) window.clearTimeout(savedTimerRef.current);
+    },
+    [],
+  );
 
   // If the user clicked while signed out, reopen after the login completes.
   useEffect(() => {
@@ -101,7 +109,8 @@ export default function SpotAlertPopover({
       }
       setSavedCount(result.favorite_count ?? null);
       setSaved(result.verified === true ? 'active' : 'pending');
-      setTimeout(() => {
+      if (savedTimerRef.current !== null) window.clearTimeout(savedTimerRef.current);
+      savedTimerRef.current = window.setTimeout(() => {
         setSaved(false);
         setOpen(false);
       }, 2200);

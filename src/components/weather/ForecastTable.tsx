@@ -263,7 +263,7 @@ export default function ForecastTable({
   useEffect(() => {
     if (scrollRef.current && currentHourIndex >= 0) {
       const container = scrollRef.current;
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         const labelWidth = labelWidthPx;
         const dataStart = labelWidth;
         const cellWidth = (container.scrollWidth - labelWidth) / visible.length;
@@ -271,6 +271,7 @@ export default function ForecastTable({
         const targetLeft = cellCenter - container.clientWidth / 2;
         container.scrollLeft = Math.max(0, targetLeft);
       }, 200);
+      return () => clearTimeout(timer);
     }
   }, [currentHourIndex, visible.length, labelWidthPx]);
 
