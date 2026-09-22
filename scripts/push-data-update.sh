@@ -3,6 +3,15 @@
 # other commits land while the pipeline is fetching Open-Meteo (~6 min).
 set -euo pipefail
 
+# Só corre na CI. Mais abaixo faz `git reset --hard` + `git clean` + `git checkout -f -B main`
+# para publicar os dados por cima da main mais recente: numa pasta local isso apagaria sem
+# aviso o trabalho por commitar e moveria o branch main de quem (pessoa ou agente) o corresse.
+# Os workflows (update-data.yml) correm sempre com GITHUB_ACTIONS=true.
+if [ "${GITHUB_ACTIONS:-}" != "true" ]; then
+  echo "push-data-update.sh: recusado fora do GitHub Actions (faz git reset --hard e moveria o branch main)." >&2
+  exit 1
+fi
+
 COMMIT_MSG="${1:-auto: update conditions and spots index [$(date -u +'%Y-%m-%d %H:%M UTC')]}"
 
 # Bot identity is passed per-commit with `git -c`, never written to
