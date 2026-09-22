@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const {
   buildObservedPayload,
   fetchIpmaObservations,
@@ -647,7 +648,7 @@ export async function mergeObservations() {
     );
   }
 
-  fs.writeFileSync(conditionsPath, JSON.stringify(conditions, null, 2));
+  atomicWriteJson(conditionsPath, conditions);
 
   if (calibratedCrossBorder > 0) {
     console.log(

@@ -22,6 +22,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const {
   fetchBuoyStations,
   fetchBuoyWave,
@@ -137,23 +138,16 @@ async function fetchIHBuoys() {
       const spotMapping = mapSpotsToBuoys(spots, stations);
       const outputDir = path.dirname(OUTPUT_PATH);
       fs.mkdirSync(outputDir, { recursive: true });
-      fs.writeFileSync(
-        OUTPUT_PATH,
-        JSON.stringify(
-          {
-            stations,
-            spotMapping,
-            fetchedAt: new Date().toISOString(),
-            sourceCollections,
-            apiKeyConfigured: API_KEY != null,
-            hasWaveData: false,
-            apiKeyStatus: 'unauthorized',
-            authError: { status: err.status, at: new Date().toISOString() },
-          },
-          null,
-          2,
-        ),
-      );
+      atomicWriteJson(OUTPUT_PATH, {
+        stations,
+        spotMapping,
+        fetchedAt: new Date().toISOString(),
+        sourceCollections,
+        apiKeyConfigured: API_KEY != null,
+        hasWaveData: false,
+        apiKeyStatus: 'unauthorized',
+        authError: { status: err.status, at: new Date().toISOString() },
+      });
       console.error(`🔴 IH_API_KEY rejeitada (HTTP ${err.status}) — sem séries de onda; ficheiro marcado apiKeyStatus:'unauthorized'.`);
       throw err;
     }
@@ -178,7 +172,7 @@ async function fetchIHBuoys() {
     apiKeyConfigured: API_KEY != null,
     hasWaveData: API_KEY != null && Object.keys(snapshots).length > 0,
   };
-  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
+  atomicWriteJson(OUTPUT_PATH, output);
 
   console.log(`✅ IH buoy data saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);
   console.log(`📊 Buoys: ${Object.keys(stations).length} · Mapped spots: ${Object.keys(spotMapping).length} · Wave data: ${output.hasWaveData ? 'yes' : 'no'}`);

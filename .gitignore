@@ -36,6 +36,10 @@ build_debug.log
 # `*.backup`. (scripts/restore-data.js uses the separate `.backup/` dir.)
 *.bak
 *.backup
+# `.tmp` sidecars from the atomic JSON writes (scripts/lib/atomicWriteJson.js):
+# same rule as `.backup` above — and push-data-update.sh unstages `*.tmp`
+# alongside `*.backup`, because that script commits with `git add -f`.
+*.tmp
 
 # IDE / local agent scratch
 .vscode/

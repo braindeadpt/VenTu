@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const { buildMeteoAlarmPayload, resolveWarningsAuth } = require('./lib/meteoalarmWarnings.js');
 
 const OUTPUT_PATH =
@@ -39,8 +40,7 @@ function getAuth() {
 }
 
 function writePayload(payload) {
-  fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
-  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(payload, null, 2));
+  atomicWriteJson(OUTPUT_PATH, payload);
   const withWarnings = Object.keys(payload.spotWarnings ?? {}).length;
   console.log(`✅ MeteoAlarm warnings saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);
   console.log(`📊 Active warnings: ${payload.warnings.length} · spots affected: ${withWarnings}/${parseSpotsFromFile().length} · source: meteoalarm`);

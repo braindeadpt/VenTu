@@ -60,7 +60,9 @@ for attempt in $(seq 1 10); do
   # The -f above is required (public/data/ is gitignored) but it also
   # overrides the *.backup rule — unstage the write-only sidecars so the
   # ~15x/day bot commits never track them again (.gitignore line 36).
-  git reset -q -- '*.backup'
+  # `*.tmp` is the atomic-write sidecar (scripts/lib/atomicWriteJson.js);
+  # an orphan from a killed run must not be committed either.
+  git reset -q -- '*.backup' '*.tmp'
 
   if git diff --staged --quiet; then
     echo "Data already matches origin/main — nothing to publish"
