@@ -15,13 +15,18 @@
 
 ## Hero
 
-- [ ] **`prefers-reduced-data` for radial glow** — The 600×600px radial gradient div has `opacity-[0.03]` but still loads. Consider `@media (prefers-reduced-data: reduce) { display: none }` or a data-saver variant.
-  - File: `src/app/[locale]/page.tsx` ~line 194
-  - Priority: Low (3G/2G users only)
+- [x] **`prefers-reduced-data` for radial glow** — resolvido: a regra
+  `@media (prefers-reduced-data: reduce) { .hero-radial-glow-disc { display: none } }`
+  vive em `globals.css:550-555` e o `docs/ROADMAP.md:93` marca-a como feita.
+  O elemento de glow 600×600 (`opacity-[0.03]`) foi removido do hero no
+  redesign da homepage — não há hoje nenhum nó com a classe, pelo que a regra
+  fica como rede de segurança para o caso de o glow voltar.
+  - Prioridade: n/a (obsoleto)
 
 ## Cross-Cutting
 
-- [ ] **Radial glow removal on low-end devices** — `(prefers-reduced-data: reduce)` media query.
+- [x] **Radial glow removal on low-end devices** — mesma regra
+  `prefers-reduced-data` acima; nada a fazer enquanto o glow não existir.
 
 ---
 

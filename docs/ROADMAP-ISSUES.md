@@ -46,27 +46,29 @@ Ref: [docs/ROADMAP.md#A1](docs/ROADMAP.md#a1--dawn-patrol-funcional)
 
 ## Tarefas
 
-- [ ] Regenerar JSON via `node scripts/dawn-patrol.js`
-- [ ] Validar slugs contra `src/lib/spots.ts`
-- [ ] Guard stale (>24h) e slug inválido em `DawnPatrolBanner.tsx`
-- [ ] Confirmar workflow `dawn-patrol.yml` + secrets GitHub
+- [x] Regenerar JSON via `node scripts/dawn-patrol.js`
+- [x] Validar slugs contra `src/lib/spots.ts`
+- [x] Guard stale (>24h) e slug inválido em `DawnPatrolBanner.tsx`
+- [x] Confirmar workflow `dawn-patrol.yml` + secrets GitHub
 
 ## Critérios de aceitação
 
-- [ ] Data ≤ 24h em produção
-- [ ] Links "Ver Spot" sem 404
-- [ ] Aviso visível se briefing desactualizado
+- [x] Data ≤ 24h em produção
+- [x] Links "Ver Spot" sem 404
+- [x] Aviso visível se briefing desactualizado
 
 ## Ficheiros
 
 `public/data/dawn-patrol.json`, `scripts/dawn-patrol.js`, `src/components/DawnPatrolBanner.tsx`, `.github/workflows/dawn-patrol.yml`
 ```
 
+> **✅ Resolvido (2026-09-22).** Verificado no HEAD: `public/data/dawn-patrol.json` com `date: 2026-09-22` e `generatedAt` fresco; os slugs referidos são todos válidos (`supertubos`, `guincho`, `nazare`, `ribeira-ilhas`, `coxos`, `arrifana`, `carcavelos`) e os legacy `coxos-ericeira`/`guincho-cascais` já não existem em nenhum ficheiro do repo; o `DawnPatrolBanner` tem o guard `isDawnPatrolStale` com aviso visível. Mantido como registo (o texto original já não corresponde ao estado do repo).
+
 ---
 
 ## A2 — Copy honesto sobre frescura
 
-**Title:** `A2 — Substituir "tempo real" por copy honesto (3h cadência)`
+**Title:** `A2 — Substituir "tempo real" por copy honesto (2h cadência)`
 
 **Labels:** `phase-a`, `trust`
 
@@ -75,7 +77,7 @@ Ref: [docs/ROADMAP.md#A1](docs/ROADMAP.md#a1--dawn-patrol-funcional)
 ```markdown
 ## Contexto
 
-Dados actualizam a cada 3h mas copy em ~15 ficheiros promete "tempo real". Destrói confiança na praia.
+Dados actualizam a cada 2h (06h–20h; crons de 30 min com gate de skip) mas copy em ~15 ficheiros promete "tempo real". Destrói confiança na praia.
 
 Ref: [docs/ROADMAP.md#A2](docs/ROADMAP.md#a2--copy-honesto-sobre-frescura-de-dados)
 
