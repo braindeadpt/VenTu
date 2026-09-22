@@ -6,17 +6,17 @@
 >
 > Medição reproduzível: `node scripts/i18n-debt-report.js` (ou `--json`).
 
-## Estado (2026-09-23, após news/auth + HomepageSearch + FeedbackForm)
+## Estado (2026-09-23, após account)
 
 | Métrica | Valor |
 |---|---:|
 | Ficheiros `src/**` | 526 |
-| Sem dívida (limpos) | 421 |
-| Com ternários de copy | **105** |
-| Ternários de copy | **609** |
+| Sem dívida (limpos) | 423 |
+| Com ternários de copy | **103** |
+| Ternários de copy | **577** |
 
-Progresso: 672 → 609 ternários, 116 → 105 ficheiros (superfícies `fontes`,
-`news`, `auth`, `HomepageSearch` e `FeedbackForm` fechadas).
+Progresso: 672 → 577 ternários, 116 → 103 ficheiros (superfícies `fontes`,
+`news`, `auth`, `account`, `HomepageSearch` e `FeedbackForm` fechadas).
 
 ### Por superfície (ternários)
 
@@ -27,7 +27,6 @@ Progresso: 672 → 609 ternários, 116 → 105 ficheiros (superfícies `fontes`,
 | `src/components/about` | 55 |
 | `src/components/homepage` | 52 |
 | `src/components/ui` | 42 |
-| `src/components/account` | 30 |
 | `src/components/DawnPatrolBanner.tsx` | 23 |
 | `src/components/layout` | 15 |
 | `src/lib/mapSpotNarrative.ts` | 11 |
@@ -76,6 +75,13 @@ Progresso: 672 → 609 ternários, 116 → 105 ficheiros (superfícies `fontes`,
    placeholders, erros incl. rate-limit, envio, agradecimento) e o cast
    `getTranslation(locale as 'pt' | 'en')` saiu. Ambos os ficheiros entraram em
    `MIGRATED_GLOBS` (entradas por ficheiro).
+
+5. **Superfície `account`** (30 strings em 2 ficheiros: `AccountClient`,
+   `TelegramLinkCard`) — bloco `account` novo nas 5 línguas, e o
+   `alertModeLabel` de `src/lib/userAlerts.ts` passou de `isPt: boolean` para
+   `locale: string` (usa `alerts.modeImmediate`/`modeDigest`), corrigindo
+   também o painel de alertas que ainda mostrava o modo em inglês em es/de/fr.
+   `src/components/account/**` em `MIGRATED_GLOBS`.
 
 Em todas, a copy **pt/en ficou byte-idêntica** (baselines visuais intactas) e
 es/de/fr deixaram de receber inglês.

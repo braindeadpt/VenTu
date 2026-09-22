@@ -137,7 +137,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           {' · '}
           score ≥ {prefs!.min_score}
           {' · '}
-          {alertModeLabel(prefs!.alert_mode, isPt)}
+          {alertModeLabel(prefs!.alert_mode, locale)}
         </p>
       )}
 

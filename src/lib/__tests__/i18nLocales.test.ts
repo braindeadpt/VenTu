@@ -76,6 +76,11 @@ const ES_COGNATES = new Set([
   '🌍 Internacional',    // espanhol correcto = PT (filtro de região das notícias)
   'Sugerir / Reportar',  // espanhol correcto = PT (trigger do formulário de feedback)
   'Email (opcional)',    // espanhol correcto = PT (campo opcional do feedback)
+  'spots guardados',     // espanhol correcto = PT (contador de favoritos da conta)
+  'Ver favoritos',       // espanhol correcto = PT (botão da conta)
+  'Desactivados',        // espanhol correcto = PT (estado dos alertas)
+  'Activos · score ≥ {score} · {mode}', // espanhol correcto = PT (estado activo dos alertas)
+  'abrir bot',           // espanhol correcto = PT (link do Telegram)
 ]);
 
 /**

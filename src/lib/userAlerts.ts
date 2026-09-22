@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { SportType } from '@/lib/sportRatings';
+import { getTranslation } from '@/lib/i18n';
 
 export type AlertMode = 'digest' | 'immediate';
 
@@ -25,11 +26,9 @@ export interface SubscribeFavoritesAlertsResult {
   error?: string;
 }
 
-export function alertModeLabel(mode: AlertMode, isPt: boolean): string {
-  if (mode === 'immediate') {
-    return isPt ? 'Imediato (máx. 1×/3h)' : 'Immediate (max once per 3h)';
-  }
-  return isPt ? 'Resumo diário (~7h30)' : 'Daily digest (~7:30 AM)';
+export function alertModeLabel(mode: AlertMode, locale: string): string {
+  const t = getTranslation(locale).alerts;
+  return mode === 'immediate' ? t.modeImmediate : t.modeDigest;
 }
 
 export async function fetchUserAlertPrefs(

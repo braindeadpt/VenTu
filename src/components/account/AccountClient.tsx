@@ -8,9 +8,10 @@ import { fetchUserAlertPrefs, alertModeLabel, type UserAlertPrefs } from '@/lib/
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import TelegramLinkCard from '@/components/account/TelegramLinkCard';
+import { getTranslation } from '@/lib/i18n';
 
 export default function AccountClient({ locale }: { locale: string }) {
-  const isPt = locale === 'pt';
+  const f = getTranslation(locale).account;
   const { session, authLoading, favorites, signOut, requestLogin, isSupabaseReady } = useAuth();
   // The Supabase-configured state is baked at build time, so a keyless build
   // and a keyed build disagree about it between server render and the first
@@ -39,7 +40,7 @@ export default function AccountClient({ locale }: { locale: string }) {
   if (!mounted || authLoading) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted text-sm">
-        {isPt ? 'A carregar…' : 'Loading…'}
+        {f.loading}
       </div>
     );
   }
@@ -47,7 +48,7 @@ export default function AccountClient({ locale }: { locale: string }) {
   if (!supabaseReady) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted text-sm">
-        {isPt ? 'Contas indisponíveis (Supabase não configurado).' : 'Accounts unavailable (Supabase not configured).'}
+        {f.unavailable}
       </div>
     );
   }
@@ -56,14 +57,10 @@ export default function AccountClient({ locale }: { locale: string }) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center space-y-4">
         <User className="w-10 h-10 mx-auto text-fg-subtle" aria-hidden />
-        <h1 className="text-h2 text-fg">{isPt ? 'A tua conta' : 'Your account'}</h1>
-        <p className="text-sm text-fg-muted">
-          {isPt
-            ? 'Entra com magic link para sincronizar favoritos entre dispositivos.'
-            : 'Sign in with a magic link to sync favorites across devices.'}
-        </p>
+        <h1 className="text-h2 text-fg">{f.signedOutTitle}</h1>
+        <p className="text-sm text-fg-muted">{f.signedOutBody}</p>
         <Button size="lg" onClick={() => requestLogin('general')}>
-          {isPt ? 'Entrar com email' : 'Sign in with email'}
+          {f.signInWithEmail}
         </Button>
       </div>
     );
@@ -74,7 +71,7 @@ export default function AccountClient({ locale }: { locale: string }) {
   return (
     <div className="max-w-lg mx-auto py-10 px-4 space-y-6">
       <div>
-        <h1 className="text-display-lg text-fg tracking-tight">{isPt ? 'Conta' : 'Account'}</h1>
+        <h1 className="text-display-lg text-fg tracking-tight">{f.title}</h1>
         <p className="text-meta text-fg-muted mt-1">{email}</p>
       </div>
 
@@ -82,14 +79,14 @@ export default function AccountClient({ locale }: { locale: string }) {
         <div className="flex items-center gap-3">
           <Heart className="w-5 h-5 text-windDir-onshore" aria-hidden />
           <div>
-            <p className="text-sm font-semibold text-fg">{isPt ? 'Favoritos' : 'Favorites'}</p>
+            <p className="text-sm font-semibold text-fg">{f.favorites}</p>
             <p className="text-meta-sm text-fg-muted">
-              {favorites.length} {isPt ? 'spots guardados' : 'saved spots'}
+              {favorites.length} {f.savedSpots}
             </p>
           </div>
         </div>
         <Button href={`/${locale}/favorites/`} variant="secondary" size="md" locale={locale as 'pt' | 'en'}>
-          {isPt ? 'Ver favoritos' : 'View favorites'}
+          {f.viewFavorites}
         </Button>
       </Card>
 
@@ -97,19 +94,15 @@ export default function AccountClient({ locale }: { locale: string }) {
         <div className="flex items-center gap-3">
           <Bell className="w-5 h-5 text-data-waves" aria-hidden />
           <div>
-            <p className="text-sm font-semibold text-fg">{isPt ? 'Alertas' : 'Alerts'}</p>
+            <p className="text-sm font-semibold text-fg">{f.alerts}</p>
             <p className="text-meta-sm text-fg-muted">
               {!alertPrefs || !alertPrefs.active
-                ? isPt
-                  ? 'Desactivados'
-                  : 'Disabled'
+                ? f.alertsDisabled
                 : !alertPrefs.verified
-                  ? isPt
-                    ? 'Aguarda confirmação por email'
-                    : 'Awaiting email confirmation'
-                  : isPt
-                    ? `Activos · score ≥ ${alertPrefs.min_score} · ${alertModeLabel(alertPrefs.alert_mode, true)}`
-                    : `Active · score ≥ ${alertPrefs.min_score} · ${alertModeLabel(alertPrefs.alert_mode, false)}`}
+                  ? f.alertsAwaiting
+                  : f.alertsActive
+                      .replace('{score}', String(alertPrefs.min_score))
+                      .replace('{mode}', alertModeLabel(alertPrefs.alert_mode, locale))}
             </p>
           </div>
         </div>
@@ -119,7 +112,7 @@ export default function AccountClient({ locale }: { locale: string }) {
           size="md"
           locale={locale as 'pt' | 'en'}
         >
-          {isPt ? 'Gerir alertas' : 'Manage alerts'}
+          {f.manageAlerts}
         </Button>
       </Card>
 
@@ -127,14 +120,8 @@ export default function AccountClient({ locale }: { locale: string }) {
         <div className="flex items-center gap-3">
           <GraduationCap className="w-5 h-5 text-fg-muted" aria-hidden />
           <div>
-            <p className="text-sm font-semibold text-fg">
-              {isPt ? 'Escolas / lojas' : 'Schools / shops'}
-            </p>
-            <p className="text-meta-sm text-fg-muted">
-              {isPt
-                ? 'Editar perfis que geres no directório'
-                : 'Edit directory profiles you manage'}
-            </p>
+            <p className="text-sm font-semibold text-fg">{f.schoolsShops}</p>
+            <p className="text-meta-sm text-fg-muted">{f.manageProfilesDesc}</p>
           </div>
         </div>
         <Button
@@ -143,7 +130,7 @@ export default function AccountClient({ locale }: { locale: string }) {
           size="md"
           locale={locale as 'pt' | 'en'}
         >
-          {isPt ? 'Gerir perfis' : 'Manage profiles'}
+          {f.manageProfiles}
         </Button>
       </Card>
 
@@ -156,7 +143,7 @@ export default function AccountClient({ locale }: { locale: string }) {
         onClick={() => void signOut()}
       >
         <LogOut className="w-4 h-4" aria-hidden />
-        {isPt ? 'Sair' : 'Sign out'}
+        {f.signOut}
       </Button>
     </div>
   );
