@@ -240,7 +240,21 @@ function buildSpotData(
   const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput)
 
   if (!detail) {
-    return { spot, conditions, allScores, bestWindowToday, bestWindowsBySport, upcomingWindowsBySport }
+    // D8 — a série diária de confiança (7 entradas × ~650 B por spot) só é
+    // consumida no detalhe, e esse fluxo lê conditions.json em runtime
+    // (SpotDetailClient); nenhum componente de listagem a lê (só `confidence`
+    // e `confidenceDetail`, mantidos). Omitir a campo poupa ~119 KB (15 %)
+    // em cada payload de listagem — ver scripts/check-payload-budgets.js.
+    const listingConditions = { ...conditions }
+    delete listingConditions.dailyConfidence
+    return {
+      spot,
+      conditions: listingConditions,
+      allScores,
+      bestWindowToday,
+      bestWindowsBySport,
+      upcomingWindowsBySport,
+    }
   }
 
   const detailConditions: SpotDetailConditions = {
