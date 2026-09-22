@@ -7,6 +7,7 @@ Run these files once in the [Supabase SQL Editor](https://supabase.com/dashboard
 | [`supabase-rate-limit-common.sql`](supabase-rate-limit-common.sql) | **Shared** per-IP rate-limit primitives (`request_client_ip()` + `check_rate_limit()` + `rate_limit_events` ledger) — single source of truth; apply **FIRST**, before every `*-harden-*.sql` |
 | [`supabase-alerts.sql`](supabase-alerts.sql) | Email alert subscriptions (E1 legacy) |
 | [`supabase-alerts-harden-legacy.sql`](supabase-alerts-harden-legacy.sql) | Harden E1 legacy subscribe RPC (server token, IP rate limit, dedup) — run after `supabase-alerts.sql` + `supabase-rate-limit-common.sql` |
+| [`supabase-alerts-subscribe-rpc.sql`](supabase-alerts-subscribe-rpc.sql) | **Superseded (S2/H2)** — no longer creates `subscribe_alert`; only drops the old client-rotatable relay signature |
 | [`supabase-alerts-e1c.sql`](supabase-alerts-e1c.sql) | Bulk alerts on favorites (E1c) |
 | [`supabase-alerts-e1c-harden.sql`](supabase-alerts-e1c-harden.sql) | Harden E1c alert RPCs (per-IP rate limits via `request.headers`, direct writes on `user_alert_prefs` revoked) — run after `supabase-alerts-e1c.sql` + `supabase-rate-limit-common.sql` |
 | [`supabase-auth-profiles.sql`](supabase-auth-profiles.sql) | User accounts + synced favorites (F1) |

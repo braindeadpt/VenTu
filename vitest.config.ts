@@ -68,6 +68,7 @@ export default defineConfig({
       'scripts/lib/__tests__/shouldRunDawnPatrol.test.js',
       'scripts/lib/__tests__/evaluateAlertsChain.test.js',
       'scripts/lib/__tests__/evaluateAlertsCoastal.test.js',
+      'scripts/lib/__tests__/evaluateAlertsVerification.test.js',
       'scripts/lib/__tests__/scoreSpotConditions.test.js',
       'scripts/lib/__tests__/dataFileKinds.test.js',
       'scripts/lib/__tests__/dataPipelineAudit.test.js',

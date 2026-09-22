@@ -90,51 +90,22 @@ $$;
 
 GRANT EXECUTE ON FUNCTION unsubscribe_alert(TEXT) TO anon;
 
--- Subscribe via RPC (bypasses RLS insert quirks; same pattern as verify/unsubscribe)
-CREATE OR REPLACE FUNCTION subscribe_alert(
-  p_email TEXT,
-  p_spot_slug TEXT,
-  p_sport TEXT,
-  p_min_score INTEGER,
-  p_verify_token TEXT,
-  p_client_id TEXT,
-  p_locale TEXT DEFAULT 'pt'
-)
-RETURNS BOOLEAN
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  IF length(p_client_id) < 8 OR length(trim(p_email)) < 5 THEN
-    RETURN false;
-  END IF;
-
-  IF p_min_score < 0 OR p_min_score > 100 THEN
-    RETURN false;
-  END IF;
-
-  IF EXISTS (
-    SELECT 1 FROM alert_subscriptions
-    WHERE client_id = p_client_id
-      AND created_at > NOW() - INTERVAL '30 seconds'
-  ) THEN
-    RAISE EXCEPTION 'rate_limit';
-  END IF;
-
-  INSERT INTO alert_subscriptions (
-    email, spot_slug, sport, min_score, verify_token,
-    verified, active, client_id, locale
-  ) VALUES (
-    lower(trim(p_email)), p_spot_slug, p_sport, p_min_score, p_verify_token,
-    false, true, p_client_id, COALESCE(NULLIF(trim(p_locale), ''), 'pt')
-  );
-
-  RETURN true;
-END;
-$$;
-
-GRANT EXECUTE ON FUNCTION subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT, TEXT) TO anon;
+-- subscribe_alert lives ONLY in supabase-alerts-harden-legacy.sql (S2).
+-- This file used to define an anonymous-writable RPC here whose only rate
+-- limit was a client-supplied `client_id` (rotatable by the caller in one
+-- line of JS) and whose `verify_token` came from the caller — i.e. anyone
+-- could mint unlimited pending rows and make the evaluator relay verification
+-- emails to arbitrary addresses. The hardened RPC is per-IP rate limited
+-- (supabase-rate-limit-common.sql), generates verify_token server-side, caps
+-- pending rows per address and enforces UNIQUE (lower(email), spot_slug, sport)
+-- while active.
+--
+-- Drop the legacy 7-arg signature (client-supplied verify_token) if a stale
+-- copy of this file created it, so the weak relay can never survive an
+-- out-of-order re-apply. The 6-arg signature is intentionally NOT touched
+-- here: it is also the hardened RPC's signature, and dropping it on every
+-- re-apply of this base file would break a healthy install.
+DROP FUNCTION IF EXISTS public.subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT, TEXT);
 
 -- Direct table writes are closed: SECURITY DEFINER RPCs (subscribe_alert,
 -- verify_alert_subscription, unsubscribe_alert) are the ONLY write path.
