@@ -76,11 +76,16 @@ function stripTags(raw) {
   if (raw == null) return '';
   let text = String(raw).replace(/<[^>]*>/g, '');
   text = decodeEntities(text);
-  for (let pass = 0; pass < 5; pass += 1) {
-    const next = text.replace(/<[^>]*>/g, '');
-    if (next === text) break;
-    text = next;
-  }
+  // Ponto fixo: repetir o strip ATÉ o texto parar de mudar (padrão que o
+  // CodeQL reconhece para js/incomplete-multi-character-sanitization), porque
+  // a descodificação revela tags novas (`&lt;script&gt;` → `<script>`).
+  let previous;
+  do {
+    previous = text;
+    text = text.replace(/<[^>]*>/g, '');
+  } while (text !== previous);
+  // Garantia final do contrato: nenhum `<` ou `>` sai daqui — cobre os
+  // bypasses que sobrevivem a um strip (`<<script>script>`).
   return text.replace(/[<>]/g, '').trim();
 }
 
@@ -95,10 +100,10 @@ function htmlToText(html) {
   if (html == null) return '';
   const withLinks = String(html).replace(/<a\s+[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '$2 ($1)');
   const unmarked = withLinks.replace(/<\/(p|li|div)>/gi, '\n').replace(/<[^>]+>/g, '');
-  return decodeEntities(unmarked)
-    .replace(/[<>]/g, '')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
+  // Mesmo padrão do stripTags: descodifica uma vez e remove os `<`/`>` que
+  // possam ter emergido da descodificação (contrato «sem markup»).
+  const decoded = decodeEntities(unmarked).replace(/[<>]/g, '');
+  return decoded.replace(/\n{3,}/g, '\n\n').trim();
 }
 
 module.exports = { decodeEntities, stripTags, htmlToText };
