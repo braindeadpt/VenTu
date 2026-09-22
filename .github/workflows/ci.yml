@@ -86,6 +86,17 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # M1 (auditoria): o tsconfig exclui tests/e2e e worker, pelo que nenhum
+      # dos dois era type-checkado em CI. Passa a haver um tsconfig próprio
+      # para os specs e o typecheck do worker com as suas devDeps.
+      - name: Typecheck e2e specs
+        run: npx tsc --noEmit -p tests/e2e
+
+      - name: Typecheck worker (Cloudflare)
+        run: |
+          npm ci --prefix worker --ignore-scripts
+          npx tsc --noEmit -p worker
+
       # Guard: re-runs ONLY the three slug-guard suites (few seconds) and
       # asserts their exact test counts — deleting a guard test file, its
       # vitest.config entry, or the validator it covers would otherwise

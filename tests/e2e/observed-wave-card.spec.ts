@@ -46,16 +46,19 @@ const SPOT_SLUG = 'guincho';
 const SPOT_KEY = 'guincho';
 
 /** Per-spot transform for the guincho entry (empty → no transform). */
+type ObservedScenario =
+  | 'with-observed-wave'
+  | 'without-observed-wave'
+  | 'single-source-ih'
+  | 'single-source-wmo-es'
+  | 'coherence-refused'
+  | 'coherence-warning'
+  | 'coherence-gated-wmo'
+  | 'with-wave-bias'
+  | 'bridge';
+
 function guinchoTransform(
-  mode:
-    | 'with-observed-wave'
-    | 'without-observed-wave'
-    | 'single-source-ih'
-    | 'single-source-wmo-es'
-    | 'coherence-refused'
-    | 'coherence-warning'
-    | 'coherence-gated-wmo'
-    | 'bridge',
+  mode: ObservedScenario,
 ): ConditionsTransform {
   if (mode === 'with-observed-wave') {
     return {
@@ -243,15 +246,7 @@ async function scrollToSettledBottom(page: import('@playwright/test').Page) {
 
 async function gotoSpot(
   page: import('@playwright/test').Page,
-  mode:
-    | 'with-observed-wave'
-    | 'without-observed-wave'
-    | 'single-source-ih'
-    | 'single-source-wmo-es'
-    | 'coherence-refused'
-    | 'coherence-warning'
-    | 'coherence-gated-wmo'
-    | 'with-wave-bias',
+  mode: ObservedScenario,
   locale: 'pt' | 'en' = 'pt',
 ) {
   await interceptConditions(page, guinchoTransform(mode));

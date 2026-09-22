@@ -48,7 +48,7 @@ test.describe('Map wind ring markers', () => {
 
   test('visual snapshot at Peniche zoom', async ({ page }) => {
     await page.evaluate(() => {
-      const map = window.L?.map?.get?.();
+      const map = (window as any).L?.map?.get?.();
       if (map) map.setView([39.36, -9.38], 11);
     });
     await page.waitForTimeout(2000);

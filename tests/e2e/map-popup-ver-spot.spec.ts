@@ -32,7 +32,7 @@ async function pickClickableMarker(page: import('@playwright/test').Page): Promi
     },
     { timeout: 30_000, polling: 250 },
   );
-  const { index } = await pick.jsonValue();
+  const index = (await pick.jsonValue())?.index;
   if (index === undefined || index < 0) throw new Error('sem marcador clicável');
   return index;
 }
@@ -139,7 +139,8 @@ test.describe('Map popup Ver spot', () => {
       },
       { timeout: 30_000, polling: 250 },
     );
-    const { index } = await pick.jsonValue();
+    const index = (await pick.jsonValue())?.index;
+    if (index === undefined || index < 0) throw new Error('sem marcador clicável');
     await openPopupFromMarker(page, index);
 
     const link = page.locator('.ventu-popup-detail').first();

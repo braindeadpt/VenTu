@@ -109,10 +109,10 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     // evento sintético, sem user activation para abrir uma tab real).
     await page.evaluate(() => {
       (window as any).__ventuOpenedUrl = null;
-      window.open = (url?: string) => {
+      window.open = ((url?: string | URL) => {
         (window as any).__ventuOpenedUrl = url ?? null;
-        return null as any;
-      };
+        return null;
+      }) as typeof window.open;
     });
     await warningPaths.first().dispatchEvent('click');
     await expect
