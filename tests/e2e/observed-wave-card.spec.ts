@@ -278,7 +278,7 @@ async function openWaveDetail(page: import('@playwright/test').Page) {
     // existe e o await penduraria. count() resolve de imediato.
     const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
     if (attr !== 'wave') {
-      await button.evaluate((el) => (el as HTMLElement).click());
+      await button.click({ timeout: 3_000 });
     }
     await expect(detail).toHaveAttribute('data-detail', 'wave', { timeout: 1_000 });
   }).toPass({ timeout: 20_000 });

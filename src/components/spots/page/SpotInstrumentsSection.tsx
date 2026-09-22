@@ -25,7 +25,6 @@ import {
   tidePointsFromRows,
 } from '@/components/spots/instruments/types';
 import { getTranslation } from '@/lib/i18n';
-import styles from '@/components/spots/instruments/instruments.module.css';
 
 /**
  * Secção 4 do contrato (docs/design/SPOT-PAGE.md) — dona: S2B.
@@ -151,7 +150,7 @@ export default function SpotInstrumentsSection({
       <h2 className="sr-only">{ariaLabel}</h2>
       <div
         ref={rootRef}
-        className={styles.root}
+        className="ventu-inst"
         data-tier={tier}
         data-paused={paused || undefined}
         data-instrument-rows={rows ? 'ready' : 'loading'}
@@ -159,7 +158,7 @@ export default function SpotInstrumentsSection({
           if (e.key === 'Escape' && open) setOpen(null);
         }}
       >
-        <div className={styles.cards}>
+        <div className="grid grid-cols-1 gap-4 min-[760px]:grid-cols-3">
           <WindCard
             hour={hour}
             coastOrientation={spot.coastOrientation}
@@ -179,6 +178,7 @@ export default function SpotInstrumentsSection({
           />
           <TideCard
             tideHourly={tideSeries}
+            tideSchedule={tideSchedule}
             index={index}
             locale={locale}
             open={open === 'tide'}

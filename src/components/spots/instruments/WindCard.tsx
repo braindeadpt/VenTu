@@ -8,7 +8,7 @@ import { unwrapAngle } from '@/lib/instruments/unwrapAngle';
 import CompassDial, { BeamCone, BeamSource } from './CompassDial';
 import InstrumentCard, { type InstrumentId } from './InstrumentCard';
 import { getInstrumentFmt } from './format';
-import styles from './instruments.module.css';
+import { INST_BIG, INST_SUB } from './classes';
 import type { InstrumentHour } from './types';
 
 const MS_TO_KT = 1.94384;
@@ -100,20 +100,20 @@ export default function WindCard({
             </>
           }
           rotationDeg={beamDeg}
-          beamClassName={styles.wob}
+          beamClassName="ventu-inst-wob"
           beamStyle={{ '--amp': `${ampDeg.toFixed(1)}deg` } as CSSProperties}
         />
       }
     >
-      <span className={styles.big} data-role="big">
+      <span className={INST_BIG} data-role="big">
         {speedKt !== undefined ? `${fmt.f0(speedKt)} kt` : '—'}
       </span>
-      <span className={styles.sub}>
+      <span className={INST_SUB}>
         {dir !== undefined && gustKt !== undefined
           ? ti.windSub.replace('{dir}', cardinal16(dir)).replace('{g}', fmt.f0(gustKt))
           : '—'}
       </span>
-      <span className={styles.sub}>
+      <span className={INST_SUB}>
         {sector && bestWind ? ti.idealFoot.replace('{dirs}', bestWind.replace(/\s*,\s*/g, '–')) : ' '}
       </span>
     </InstrumentCard>

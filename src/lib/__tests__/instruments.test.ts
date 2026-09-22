@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { cardinal16, idealSector, inSector } from '@/lib/instruments/sector';
 import { unwrapAngle } from '@/lib/instruments/unwrapAngle';
 import { nextTideExtremum, tideDirectionAt, tideExtrema } from '@/lib/instruments/tideExtrema';
+import {
+  alignTideEventsToSeries,
+  resolveTideExtrema,
+} from '@/lib/instruments/tideExtremaSource';
+import { findTideExtrema, type TideSchedule } from '@/lib/tideSchedule';
 
 describe('idealSector', () => {
   it('"N, NNW" → arco curto a atravessar o N', () => {
@@ -98,6 +103,110 @@ describe('tideExtrema', () => {
 
   it('série curta → sem extremos', () => {
     expect(tideExtrema([{ time: '2026-09-21T00:00', tideHeight: 0 }])).toEqual([]);
+  });
+});
+
+describe('alignTideEventsToSeries', () => {
+  const series = Array.from({ length: 10 }, (_, k) => ({
+    time: `2026-09-21T${String(k).padStart(2, '0')}:00`,
+    tideHeight: k, // rampa 0..9 m — a interpolação é linear e verificável
+  }));
+
+  it('extremo na hora cheia → índice inteiro, altura do ponto', () => {
+    const [e] = alignTideEventsToSeries(
+      [{ type: 'high', at: new Date('2026-09-21T05:00') }],
+      series,
+    );
+    expect(e).toMatchObject({ type: 'high', index: 5, height: 5, hhmm: '05:00' });
+  });
+
+  it('extremo a meio da hora → índice fraccional, altura e hhmm interpolados', () => {
+    const [e] = alignTideEventsToSeries(
+      [{ type: 'low', at: new Date('2026-09-21T05:30') }],
+      series,
+    );
+    expect(e).toMatchObject({ type: 'low', index: 5.5, height: 5.5, hhmm: '05:30' });
+  });
+
+  it('extremo fora da janela → descartado', () => {
+    expect(
+      alignTideEventsToSeries(
+        [
+          { type: 'high', at: new Date('2026-09-20T23:00') }, // antes
+          { type: 'low', at: new Date('2026-09-21T10:00') }, // depois
+        ],
+        series,
+      ),
+    ).toEqual([]);
+    // No limite exacto da janela ainda conta.
+    expect(
+      alignTideEventsToSeries([{ type: 'low', at: new Date('2026-09-21T09:00') }], series),
+    ).toHaveLength(1);
+  });
+
+  it('tábua vazia → lista vazia', () => {
+    expect(alignTideEventsToSeries([], series)).toEqual([]);
+    expect(alignTideEventsToSeries([{ type: 'high', at: new Date('2026-09-21T05:00') }], [])).toEqual(
+      [],
+    );
+  });
+});
+
+describe('resolveTideExtrema', () => {
+  // Sinusoide período 12.4 h — a tábua canónica (findTideExtrema) marca os
+  // extremos na hora cheia; a parábola refina para o vértice fraccional.
+  // Datas consecutivas reais (o caminho canónico compara timestamps).
+  const sine = Array.from({ length: 49 }, (_, k) => ({
+    time: `2026-09-${String(21 + Math.floor(k / 24)).padStart(2, '0')}T${String(
+      k % 24,
+    ).padStart(2, '0')}:00`,
+    tideHeight: Math.sin((2 * Math.PI * k) / 12.4),
+  }));
+  const schedule: TideSchedule = {
+    phase: 'rising',
+    phaseLabel: 'x',
+    nextHigh: null,
+    nextLow: null,
+  };
+
+  it('com tábua → extremos canónicos na hora cheia, fonte «ih»', () => {
+    const { extrema, source } = resolveTideExtrema({
+      schedule,
+      series: sine,
+      tableSeries: sine,
+    });
+    expect(source).toBe('ih');
+    expect(extrema.length).toBeGreaterThanOrEqual(4);
+    // Os índices são inteiros (a tábua marca a hora cheia) e as horas
+    // batem com as do findTideExtrema — a mesma leitura do TideScheduleStrip.
+    const canonical = findTideExtrema(sine);
+    expect(extrema.map((e) => e.index)).toEqual(
+      canonical
+        .map((ev) => sine.findIndex((p) => new Date(p.time).getTime() === ev.at.getTime()))
+        .filter((i) => i >= 0),
+    );
+    for (const e of extrema) expect(e.hhmm).toMatch(/^\d{2}:00$/);
+  });
+
+  it('sem tábua → parábola, fonte «model»', () => {
+    const { extrema, source } = resolveTideExtrema({
+      schedule: null,
+      series: sine,
+      tableSeries: sine,
+    });
+    expect(source).toBe('model');
+    expect(extrema.length).toBeGreaterThanOrEqual(4);
+    // A parábola refina: o primeiro PM sai da hora cheia.
+    expect(extrema.find((e) => e.type === 'high')!.index).not.toBe(3);
+  });
+
+  it('tábua que não cobre a janela → fallback «model»', () => {
+    const { source } = resolveTideExtrema({
+      schedule,
+      series: sine.slice(4, 8), // declive a meio — nenhum extremo canónico dentro
+      tableSeries: sine,
+    });
+    expect(source).toBe('model');
   });
 });
 

@@ -27,7 +27,7 @@ export interface TideExtremum {
 const EXTREMA_WINDOW = 2;
 const MIN_EXTREMA_DELTA = 0.06;
 
-function hhmmAt(time: string, offsetHours: number): string {
+export function hhmmAt(time: string, offsetHours: number): string {
   const hm = time.slice(11, 16).split(':');
   const totalMinRaw = Number(hm[0]) * 60 + Number(hm[1] ?? 0) + offsetHours * 60;
   const totalMin = ((Math.round(totalMinRaw) % 1440) + 1440) % 1440;

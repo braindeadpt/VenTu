@@ -103,6 +103,33 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
     await expect(waveBtn).toHaveAttribute('aria-expanded', 'false');
   });
 
+  test('maré: a próxima maré do cartão bate com a tábua (fonte canónica)', async ({
+    page,
+  }) => {
+    const tideCard = page.locator(`${CARDS}[data-instrument='tide']`);
+
+    // S2B-fix: a tábua canónica cobre a janela → extremos «ih», não «model».
+    await expect(tideCard.locator('svg[data-tide-extrema-source]')).toHaveAttribute(
+      'data-tide-extrema-source',
+      'ih',
+    );
+
+    // Hora da próxima maré no cartão («próxima baixa-mar às HH:MM»).
+    const nextLine = await tideCard
+      .getByText(/próxima (preia|baixa)-mar às/i)
+      .textContent();
+    const hhmm = nextLine?.match(/\d{2}:\d{2}/)?.[0];
+    expect(hhmm, 'cartão sem «próxima maré»').toBeTruthy();
+
+    // A tábua do painel de detalhe mostra a mesma hora para esse extremo.
+    await tideCard.getByRole('button').click();
+    const strip = page
+      .locator('#instrumentos-detalhe')
+      .getByRole('status', { name: /Maré:/i });
+    await expect(strip).toBeVisible({ timeout: 20_000 });
+    await expect(strip).toContainText(hhmm!);
+  });
+
   test('com prefers-reduced-motion a secção não tem animações a correr', async ({
     page,
   }) => {

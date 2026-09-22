@@ -498,6 +498,236 @@ html:has([data-embed-widget]) body {
     }
   }
 
+  /* ── Instrumentos da página de spot (S2B) ──────────────────────────────
+   * Gramática da maquete _audit/spot-v2/painel-guincho.html: cartões com
+   * marcas de corte, foco por troca de material (escuro ↔ areia #FAFAF7),
+   * feixe a rodar por transform, oscilação ∝ rajada, anéis ao ritmo do
+   * período. Um só acento: a cor do score da hora escolhida (--vi-verdict).
+   *
+   * Neste bloco fica o que o Tailwind não exprime: as variáveis da
+   * inversão de foco (--vi-*), os keyframes do feixe e do pulso, as
+   * transições de stroke/fill do SVG e o animation-play-state. Layout,
+   * espaçamento, tipografia, cores e bordas estão nas classes Tailwind
+   * dos componentes em src/components/spots/instruments/.
+   *
+   * O acento tem duas variantes: --vi-verdict segue o token --score-* do
+   * tema activo; --vi-verdict-inv é a variante do tema OPOSTO — o cartão
+   * em foco inverte o material, por isso o acento inverte com ele
+   * (≥3:1 medido em _audit/s2b/).
+   */
+
+  .ventu-inst {
+    --vi-verdict: rgb(var(--score-good));
+    --vi-verdict-inv: rgb(6 95 70); /* .theme-ocean --score-good */
+  }
+  .ventu-inst[data-tier='epic'] {
+    --vi-verdict: rgb(var(--score-epic));
+    --vi-verdict-inv: rgb(3 105 161);
+  }
+  .ventu-inst[data-tier='good'] {
+    --vi-verdict: rgb(var(--score-good));
+    --vi-verdict-inv: rgb(6 95 70);
+  }
+  .ventu-inst[data-tier='fair'] {
+    --vi-verdict: rgb(var(--score-fair));
+    --vi-verdict-inv: rgb(146 64 14);
+  }
+  .ventu-inst[data-tier='poor'] {
+    --vi-verdict: rgb(var(--score-poor));
+    --vi-verdict-inv: rgb(185 28 28);
+  }
+  .ventu-inst[data-tier='closed'] {
+    --vi-verdict: rgb(var(--score-closed));
+    --vi-verdict-inv: rgb(107 114 128);
+  }
+
+  /* Em tema claro o cartão focado fica escuro — o acento inverso passa a
+     ser o valor do tema escuro. */
+  html.theme-ocean .ventu-inst[data-tier='epic'] { --vi-verdict-inv: rgb(14 165 233); }
+  html.theme-ocean .ventu-inst[data-tier='good'] { --vi-verdict-inv: rgb(16 185 129); }
+  html.theme-ocean .ventu-inst[data-tier='fair'] { --vi-verdict-inv: rgb(245 158 11); }
+  html.theme-ocean .ventu-inst[data-tier='poor'] { --vi-verdict-inv: rgb(248 113 113); }
+  html.theme-ocean .ventu-inst[data-tier='closed'] { --vi-verdict-inv: rgb(107 114 128); }
+
+  .ventu-inst-card {
+    --vi-s: rgb(var(--fg-subtle-rgb));
+    --vi-s2: rgb(var(--fg-subtle-rgb) / 0.42);
+    --vi-m: rgb(var(--fg-muted-rgb));
+    --vi-ink: rgb(var(--fg-rgb));
+    --vi-acc: var(--vi-verdict);
+    transition:
+      background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Foco = troca de material, sem sombra. */
+  .ventu-inst-card:focus-within,
+  .ventu-inst-card[data-open='true'] {
+    background: #fafaf7;
+    color: #1e293b;
+    border-color: transparent;
+    --vi-s: #334155;
+    --vi-s2: rgb(51 65 85 / 0.42);
+    --vi-m: #475569;
+    --vi-ink: #1e293b;
+    --vi-acc: var(--vi-verdict-inv);
+    transform: scale(1.012);
+  }
+  @media (hover: hover) {
+    .ventu-inst-card:hover {
+      background: #fafaf7;
+      color: #1e293b;
+      border-color: transparent;
+      --vi-s: #334155;
+      --vi-s2: rgb(51 65 85 / 0.42);
+      --vi-m: #475569;
+      --vi-ink: #1e293b;
+      --vi-acc: var(--vi-verdict-inv);
+      transform: scale(1.012);
+    }
+  }
+
+  html.theme-ocean .ventu-inst-card:focus-within,
+  html.theme-ocean .ventu-inst-card[data-open='true'] {
+    background: #0f172a;
+    color: #f1f5f9;
+    --vi-s: #cbd5e1;
+    --vi-s2: rgb(203 213 225 / 0.42);
+    --vi-m: #a7b4c6;
+    --vi-ink: #f1f5f9;
+  }
+  @media (hover: hover) {
+    html.theme-ocean .ventu-inst-card:hover {
+      background: #0f172a;
+      color: #f1f5f9;
+      --vi-s: #cbd5e1;
+      --vi-s2: rgb(203 213 225 / 0.42);
+      --vi-m: #a7b4c6;
+      --vi-ink: #f1f5f9;
+    }
+  }
+
+  /* A SpotStickyBar (header 64 + tabs 48) tapa o cartão quando o browser
+     faz scroll até ele (âncora, foco por teclado, scrollIntoView). O
+     botão .ventu-inst-hit é o elemento que recebe o scroll — a margem
+     tem de estar nele, não só no cartão. */
+  .ventu-inst-card,
+  .ventu-inst-hit,
+  .ventu-inst-detail {
+    scroll-margin-top: calc(
+      var(--ventu-spot-sticky-top) + var(--ventu-spot-tabs-h) + 8px
+    );
+  }
+
+  /* ── SVG das rosas/curva ─────────────────────────────────────────── */
+
+  .ventu-inst-fig * {
+    transition:
+      stroke 200ms cubic-bezier(0.16, 1, 0.3, 1),
+      fill 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ventu-inst-ring { fill: none; stroke: var(--vi-s); stroke-width: 1.25; }
+  .ventu-inst-tick { stroke: var(--vi-s); stroke-width: 1; }
+  .ventu-inst-tick-min { stroke: var(--vi-s2); }
+  .ventu-inst-ideal { fill: none; stroke: var(--vi-s); stroke-width: 4; }
+  .ventu-inst-coast { stroke: var(--vi-s); stroke-width: 1.25; }
+  .ventu-inst-hatch { stroke: var(--vi-s2); stroke-width: 1; }
+  .ventu-inst-hub { fill: var(--vi-s); }
+  .ventu-inst-fig-text {
+    font-family: var(--font-geist-mono), ui-monospace, Menlo, monospace;
+    font-size: 10px;
+    fill: var(--vi-m);
+  }
+  .ventu-inst-fig-label { font-size: 9px; letter-spacing: 0.06em; }
+  .ventu-inst-cone {
+    fill: var(--vi-acc);
+    fill-opacity: 0.2;
+    stroke: var(--vi-acc);
+    stroke-width: 1.25;
+    stroke-linejoin: round;
+  }
+  .ventu-inst-src { fill: var(--vi-acc); }
+  .ventu-inst-out .ventu-inst-cone { fill-opacity: 0.07; stroke-dasharray: 3 3; }
+  .ventu-inst-curve {
+    fill: none;
+    stroke: var(--vi-s);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .ventu-inst-grid-line { stroke: var(--vi-s2); stroke-width: 1; }
+  .ventu-inst-zero { stroke: var(--vi-s2); stroke-width: 1; stroke-dasharray: 2 3; }
+  .ventu-inst-sel-line { stroke: var(--vi-s2); stroke-width: 1; }
+
+  .ventu-inst-rot {
+    transform-box: view-box;
+    transform-origin: 110px 110px;
+    transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .ventu-inst-wob {
+    transform-box: view-box;
+    transform-origin: 110px 110px;
+    animation: ventu-inst-wob 2.4s ease-in-out infinite alternate;
+  }
+  @keyframes ventu-inst-wob {
+    from { transform: rotate(calc(var(--amp, 3deg) * -1)); }
+    to { transform: rotate(var(--amp, 3deg)); }
+  }
+  .ventu-inst-pulse {
+    fill: none;
+    stroke: var(--vi-acc);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    transform-box: view-box;
+    transform-origin: 110px 110px;
+    animation: ventu-inst-pulse var(--per, 3s) linear infinite;
+  }
+  .ventu-inst-pulse-2 { animation-delay: calc(var(--per, 3s) / -3); }
+  .ventu-inst-pulse-3 { animation-delay: calc(var(--per, 3s) / -1.5); }
+  @keyframes ventu-inst-pulse {
+    from { transform: scale(1); opacity: 0.95; }
+    to { transform: scale(0.16); opacity: 0; }
+  }
+  .ventu-inst-vline,
+  .ventu-inst-tdot {
+    transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Pausa fora do ecrã / documento escondido (data-paused no .ventu-inst). */
+  .ventu-inst[data-paused='true'] .ventu-inst-wob,
+  .ventu-inst[data-paused='true'] .ventu-inst-pulse {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ventu-inst-card,
+    .ventu-inst-card:focus-within,
+    .ventu-inst-card[data-open='true'],
+    .ventu-inst-card:hover {
+      transform: none;
+      transition: none;
+    }
+    .ventu-inst-wob,
+    .ventu-inst-pulse {
+      animation: none;
+    }
+    .ventu-inst-rot,
+    .ventu-inst-vline,
+    .ventu-inst-tdot,
+    .ventu-inst-fig * {
+      transition: none;
+    }
+  }
+
+  /* Mobile (<760 px): etiquetas SVG escondidas (a leitura textual fica). */
+  @media (max-width: 759.98px) {
+    .ventu-inst-fig-text,
+    .ventu-inst-fig-label {
+      display: none;
+    }
+  }
+
 }
 
 /* ═══════════════════════════════════════════════════════════════════════

@@ -2,23 +2,24 @@
 
 import { useMemo } from 'react';
 import { getTranslation } from '@/lib/i18n';
-import type { TideHourPoint } from '@/lib/tideSchedule';
-import { nextTideExtremum, tideDirectionAt, tideExtrema } from '@/lib/instruments/tideExtrema';
+import type { TideHourPoint, TideSchedule } from '@/lib/tideSchedule';
+import { nextTideExtremum, tideDirectionAt } from '@/lib/instruments/tideExtrema';
+import { resolveTideExtrema } from '@/lib/instruments/tideExtremaSource';
 import { svgUnit } from '@/lib/svgUnit';
 import InstrumentCard, { type InstrumentId } from './InstrumentCard';
 import { getInstrumentFmt } from './format';
-import styles from './instruments.module.css';
+import { INST_BIG, INST_SUB } from './classes';
 
 /**
  * Cartão Maré: curva de 48 h da série horária (a mesma que alimenta o
- * eixo de tempo), marcas PM/BM interpoladas por parábola de 3 pontos
- * (tideExtrema), ponto na hora escolhida, «a encher»/«a vazar» e a
- * próxima preia-mar/baixa-mar.
+ * eixo de tempo), marcas PM/BM, ponto na hora escolhida, «a encher»/
+ * «a vazar» e a próxima preia-mar/baixa-mar.
  *
- * Fonte: a página não tem tábua oficial IH — `tideSchedule` e esta curva
- * vêm ambos da série `sea_level` horária da Open-Meteo (baked). Os
- * extremos são por isso calculados sobre a série horária, coerentes com
- * TideScheduleStrip (findTideExtrema, mesma série).
+ * Fonte dos extremos (resolveTideExtrema): quando `tideSchedule` existe e
+ * a tábua cobre a janela, as marcas e a «próxima PM/BM» vêm da tábua
+ * canónica (findTideExtrema — a mesma do TideScheduleStrip, por isso o
+ * cartão e a tábua dizem a mesma hora); a parábola tideExtrema fica como
+ * fallback. A fonte fica exposta em data-tide-extrema-source.
  */
 
 const X0 = 16;
@@ -31,13 +32,14 @@ const CURVE_HOURS = 48;
 interface TideCurveProps {
   /** Série já filtrada e cortada às 48 h. */
   series: TideHourPoint[];
-  extrema: ReturnType<typeof tideExtrema>;
+  extrema: ReturnType<typeof resolveTideExtrema>['extrema'];
+  source: ReturnType<typeof resolveTideExtrema>['source'];
   selectedIndex: number;
   locale: string;
   labels: { high: string; low: string; min: string; max: string };
 }
 
-function TideCurve({ series, extrema, selectedIndex, locale, labels }: TideCurveProps) {
+function TideCurve({ series, extrema, source, selectedIndex, locale, labels }: TideCurveProps) {
   const fmt = getInstrumentFmt(locale);
 
   const hs = series.map((p) => p.tideHeight as number);
@@ -60,31 +62,32 @@ function TideCurve({ series, extrema, selectedIndex, locale, labels }: TideCurve
 
   return (
     <svg
-      className={styles.fig}
+      className="ventu-inst-fig block aspect-square w-full max-w-[128px] min-[760px]:max-w-[250px] justify-self-center overflow-visible"
       viewBox="0 0 220 220"
       aria-hidden="true"
       focusable="false"
+      data-tide-extrema-source={source}
     >
       {series.map((p, k) =>
         p.time.slice(11, 13) === '00' ? (
           <g key={p.time}>
             <line
-              className={styles.gridLine}
+              className="ventu-inst-grid-line"
               x1={tx(k)}
               y1={Y0 - 34}
               x2={tx(k)}
               y2={Y1}
             />
-            <text className={styles.figLbl} x={tx(k) + 4} y={Y0 - 28}>
+            <text className="ventu-inst-fig-text ventu-inst-fig-label" x={tx(k) + 4} y={Y0 - 28}>
               {fmt.weekdayShort(p.time)}
             </text>
           </g>
         ) : null,
       )}
       {hmin < 0 && hmax > 0 && (
-        <line className={styles.zero} x1={X0} y1={ty(0)} x2={X1} y2={ty(0)} />
+        <line className="ventu-inst-zero" x1={X0} y1={ty(0)} x2={X1} y2={ty(0)} />
       )}
-      <path className={styles.curve} d={path} />
+      <path className="ventu-inst-curve" d={path} />
       {extrema.map((e) => {
         const x = tx(e.index);
         const y = ty(e.height);
@@ -92,14 +95,14 @@ function TideCurve({ series, extrema, selectedIndex, locale, labels }: TideCurve
         return (
           <g key={`${e.type}-${e.index}`}>
             <line
-              className={styles.tick}
+              className="ventu-inst-tick"
               x1={x}
               y1={svgUnit(y + (up ? -5 : 5))}
               x2={x}
               y2={svgUnit(y + (up ? -11 : 11))}
             />
             <text
-              className={styles.figLbl}
+              className="ventu-inst-fig-text ventu-inst-fig-label"
               x={x}
               y={svgUnit(y + (up ? -15 : 22))}
               textAnchor="middle"
@@ -109,22 +112,22 @@ function TideCurve({ series, extrema, selectedIndex, locale, labels }: TideCurve
           </g>
         );
       })}
-      <text className={styles.figLbl} x={X0} y={Y1 + 20}>
+      <text className="ventu-inst-fig-text ventu-inst-fig-label" x={X0} y={Y1 + 20}>
         {labels.min} {fmt.fS(hmin)} m
       </text>
-      <text className={styles.figLbl} x={X1} y={Y1 + 20} textAnchor="end">
+      <text className="ventu-inst-fig-text ventu-inst-fig-label" x={X1} y={Y1 + 20} textAnchor="end">
         {labels.max} {fmt.fS(hmax)} m
       </text>
       {selH !== undefined && (
         <>
-          <g className={styles.vline} style={{ transform: `translate(${tx(selectedIndex)}px, 0px)` }}>
-            <line className={styles.selLine} x1={0} y1={Y0 - 34} x2={0} y2={Y1} />
+          <g className="ventu-inst-vline" style={{ transform: `translate(${tx(selectedIndex)}px, 0px)` }}>
+            <line className="ventu-inst-sel-line" x1={0} y1={Y0 - 34} x2={0} y2={Y1} />
           </g>
           <g
-            className={styles.tdot}
+            className="ventu-inst-tdot"
             style={{ transform: `translate(${tx(selectedIndex)}px, ${ty(selH)}px)` }}
           >
-            <circle className={styles.src} cx={0} cy={0} r={4.5} />
+            <circle className="ventu-inst-src" cx={0} cy={0} r={4.5} />
           </g>
         </>
       )}
@@ -135,6 +138,8 @@ function TideCurve({ series, extrema, selectedIndex, locale, labels }: TideCurve
 interface TideCardProps {
   /** Série horária completa (alinhada 1:1 com o índice do eixo de tempo). */
   tideHourly: TideHourPoint[];
+  /** Tábua canónica — quando existe, PM/BM vêm dela (resolveTideExtrema). */
+  tideSchedule: TideSchedule | null;
   index: number;
   locale: string;
   open: boolean;
@@ -144,6 +149,7 @@ interface TideCardProps {
 
 export default function TideCard({
   tideHourly,
+  tideSchedule,
   index,
   locale,
   open,
@@ -160,7 +166,15 @@ export default function TideCard({
         .slice(0, CURVE_HOURS),
     [tideHourly],
   );
-  const extrema = useMemo(() => tideExtrema(series), [series]);
+  const { extrema, source } = useMemo(
+    () =>
+      resolveTideExtrema({
+        schedule: tideSchedule,
+        series,
+        tableSeries: tideHourly,
+      }),
+    [tideSchedule, series, tideHourly],
+  );
 
   const h = index >= 0 && index < series.length ? series[index].tideHeight : undefined;
   const direction = tideDirectionAt(series, index);
@@ -184,21 +198,22 @@ export default function TideCard({
         <TideCurve
           series={series}
           extrema={extrema}
+          source={source}
           selectedIndex={index}
           locale={locale}
           labels={{ high: ti.markHigh, low: ti.markLow, min: ti.minLabel, max: ti.maxLabel }}
         />
       }
     >
-      <span className={styles.big} data-role="big">
+      <span className={INST_BIG} data-role="big">
         {h !== undefined ? `${fmt.fS(h)} m` : '—'}
       </span>
-      <span className={styles.sub}>
+      <span className={INST_SUB}>
         {next
           ? (next.type === 'high' ? ti.tideNextHigh : ti.tideNextLow).replace('{t}', next.hhmm)
           : ti.tideNoExtremum}
       </span>
-      <span className={styles.sub}>{next ? `${fmt.fS(next.height)} m` : ' '}</span>
+      <span className={INST_SUB}>{next ? `${fmt.fS(next.height)} m` : ' '}</span>
     </InstrumentCard>
   );
 }

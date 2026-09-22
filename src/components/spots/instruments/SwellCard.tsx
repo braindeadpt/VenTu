@@ -7,7 +7,7 @@ import { unwrapAngle } from '@/lib/instruments/unwrapAngle';
 import CompassDial, { BeamCone, BeamSource, SwellPulses } from './CompassDial';
 import InstrumentCard, { type InstrumentId } from './InstrumentCard';
 import { getInstrumentFmt } from './format';
-import styles from './instruments.module.css';
+import { INST_BIG, INST_SUB } from './classes';
 import type { InstrumentHour } from './types';
 
 interface SwellCardProps {
@@ -83,15 +83,15 @@ export default function SwellCard({
             </>
           }
           rotationDeg={beamDeg}
-          beamClassName={inWindow ? undefined : styles.out}
+          beamClassName={inWindow ? undefined : 'ventu-inst-out'}
           beamStyle={{ '--per': `${pulseS.toFixed(2)}s` } as CSSProperties}
         />
       }
     >
-      <span className={styles.big} data-role="big">
+      <span className={INST_BIG} data-role="big">
         {hour?.waveHeightM !== undefined ? `${fmt.f1(hour.waveHeightM)} m` : '—'}
       </span>
-      <span className={styles.sub}>
+      <span className={INST_SUB}>
         {periodS !== undefined && dir !== undefined
           ? ti.swellSub
               .replace('{p}', fmt.f1(periodS))
@@ -99,7 +99,7 @@ export default function SwellCard({
               .replace('{dirs}', (bestSwell ?? '').replace(/\s*,\s*/g, '–'))
           : '—'}
       </span>
-      <span className={styles.sub}>
+      <span className={INST_SUB}>
         {hour?.swellHeightM !== undefined && hour?.swellPeriodS !== undefined
           ? ti.swellFoot
               .replace('{h}', fmt.f1(hour.swellHeightM))

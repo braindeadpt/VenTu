@@ -3,7 +3,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 import { svgUnit } from '@/lib/svgUnit';
 import type { Sector } from '@/lib/instruments/sector';
-import styles from './instruments.module.css';
 
 /**
  * Rosa dos instrumentos (secção 4 — docs/design/SPOT-PAGE.md).
@@ -67,7 +66,7 @@ export default function CompassDial({
 
   return (
     <svg
-      className={styles.fig}
+      className="ventu-inst-fig block aspect-square w-full max-w-[128px] min-[760px]:max-w-[250px] justify-self-center overflow-visible"
       viewBox="0 0 220 220"
       aria-hidden="true"
       focusable="false"
@@ -81,7 +80,7 @@ export default function CompassDial({
             patternUnits="userSpaceOnUse"
             patternTransform="rotate(45)"
           >
-            <line className={styles.hatch} x1="0" y1="0" x2="0" y2="5" />
+            <line className="ventu-inst-hatch" x1="0" y1="0" x2="0" y2="5" />
           </pattern>
         </defs>
       )}
@@ -92,9 +91,9 @@ export default function CompassDial({
         />
       )}
       {coast !== undefined && (
-        <line className={styles.coast} x1={ax} y1={ay} x2={bx} y2={by} />
+        <line className="ventu-inst-coast" x1={ax} y1={ay} x2={bx} y2={by} />
       )}
-      <circle className={styles.ring} cx={C} cy={C} r={R} />
+      <circle className="ventu-inst-ring" cx={C} cy={C} r={R} />
       {Array.from({ length: 16 }, (_, i) => {
         const d = i * 22.5;
         const major = i % 4 === 0;
@@ -103,7 +102,7 @@ export default function CompassDial({
         return (
           <line
             key={d}
-            className={major ? styles.tick : styles.tickMin}
+            className={major ? 'ventu-inst-tick' : 'ventu-inst-tick ventu-inst-tick-min'}
             x1={x1}
             y1={y1}
             x2={x2}
@@ -111,13 +110,13 @@ export default function CompassDial({
           />
         );
       })}
-      {ideal && <path className={styles.ideal} d={arcPath(R, ideal[0], ideal[1])} />}
+      {ideal && <path className="ventu-inst-ideal" d={arcPath(R, ideal[0], ideal[1])} />}
       {['N', 'E', 'S', 'W'].map((l, i) => {
         const [x, y] = pt(R + 14, i * 90);
         return (
           <text
             key={l}
-            className={styles.figText}
+            className="ventu-inst-fig-text"
             x={x}
             y={y}
             textAnchor="middle"
@@ -130,7 +129,7 @@ export default function CompassDial({
       {coast !== undefined && (
         <>
           <text
-            className={styles.figLbl}
+            className="ventu-inst-fig-text ventu-inst-fig-label"
             x={lx}
             y={ly}
             textAnchor="middle"
@@ -139,7 +138,7 @@ export default function CompassDial({
             {labels.land}
           </text>
           <text
-            className={styles.figLbl}
+            className="ventu-inst-fig-text ventu-inst-fig-label"
             x={mx}
             y={my}
             textAnchor="middle"
@@ -150,7 +149,7 @@ export default function CompassDial({
         </>
       )}
       <g
-        className={styles.rot}
+        className="ventu-inst-rot"
         style={{ transform: `rotate(${rotationDeg}deg)` }}
         data-beam
       >
@@ -158,7 +157,7 @@ export default function CompassDial({
           {beam}
         </g>
       </g>
-      <circle className={styles.hub} cx={C} cy={C} r={3.2} />
+      <circle className="ventu-inst-hub" cx={C} cy={C} r={3.2} />
     </svg>
   );
 }
@@ -170,7 +169,7 @@ export function BeamCone() {
   const [x1, y1] = pt(r, 12);
   return (
     <path
-      className={styles.cone}
+      className="ventu-inst-cone"
       d={`M${C} ${C} L${x0} ${y0} A${r} ${r} 0 0 1 ${x1} ${y1} Z`}
     />
   );
@@ -179,7 +178,7 @@ export function BeamCone() {
 /** Ponto na ponta do feixe (origem do vento/onda). */
 export function BeamSource() {
   const [x, y] = pt(R - 3, 0);
-  return <circle className={styles.src} cx={x} cy={y} r={3.2} />;
+  return <circle className="ventu-inst-src" cx={x} cy={y} r={3.2} />;
 }
 
 /** Anéis de pulso da onda (3 arcos ao ritmo do período). */
@@ -187,9 +186,9 @@ export function SwellPulses() {
   const d = arcPath(R - 3, -10, 10);
   return (
     <>
-      <path className={styles.pulse} d={d} />
-      <path className={`${styles.pulse} ${styles.pulse2}`} d={d} />
-      <path className={`${styles.pulse} ${styles.pulse3}`} d={d} />
+      <path className="ventu-inst-pulse" d={d} />
+      <path className="ventu-inst-pulse ventu-inst-pulse-2" d={d} />
+      <path className="ventu-inst-pulse ventu-inst-pulse-3" d={d} />
     </>
   );
 }

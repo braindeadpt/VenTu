@@ -22,7 +22,6 @@ import WindFlowGlyph from '@/components/ui/WindFlowGlyph';
 import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import { INSTRUMENT_DETAIL_ID, type InstrumentId } from './InstrumentCard';
 import { getInstrumentFmt } from './format';
-import styles from './instruments.module.css';
 import type { InstrumentHour } from './types';
 
 /**
@@ -122,18 +121,18 @@ export default function InstrumentDetail({
   return (
     <div
       id={INSTRUMENT_DETAIL_ID}
-      className={styles.detail}
+      className="ventu-inst-detail mt-4 rounded-lg border border-divider bg-surface-1/[0.03] p-4"
       role="region"
       aria-label={ti.detailAria.replace('{name}', name)}
       data-detail={open}
     >
-      <p className={styles.detailTitle}>{ti.detailAria.replace('{name}', name)}</p>
+      <p className="m-0 mb-3 flex flex-wrap items-center gap-2 text-[13px] font-semibold tracking-[0.02em] text-fg">{ti.detailAria.replace('{name}', name)}</p>
 
       {open === 'wind' && (
-        <div className={styles.detailGrid}>
-          <div className={styles.detailBlock}>
-            <h3 className={styles.detailHeading}>
-              {ti.obsStation} <span className={styles.nowTag}>{ti.nowTag}</span>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid min-w-0 content-start gap-2.5">
+            <h3 className="m-0 mb-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+              {ti.obsStation} <span className="rounded-full border border-divider px-2 py-1 text-[11px] leading-none text-fg-subtle">{ti.nowTag}</span>
             </h3>
             <ObservedNow
               observed={conditions.observed}
@@ -144,14 +143,14 @@ export default function InstrumentDetail({
               freshnessNowMs={freshnessNowMs}
             />
             {!freshObserved && conditions.observed && (
-              <p className={styles.prose}>{tv.staleObservation}</p>
+              <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{tv.staleObservation}</p>
             )}
             {!freshObserved && !conditions.observed && !obsWorkerEnabled && (
-              <p className={styles.prose}>{tv.noStation}</p>
+              <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{tv.noStation}</p>
             )}
           </div>
-          <div className={styles.detailBlock}>
-            <h3 className={styles.detailHeading}>{copy.windContextTitle}</h3>
+          <div className="grid min-w-0 content-start gap-2.5">
+            <h3 className="m-0 mb-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">{copy.windContextTitle}</h3>
             {windRelationMeta && (
               <span
                 className={`inline-flex items-center gap-2 rounded-pill border border-divider px-2.5 py-1 text-meta-sm font-medium ${windRelationMeta.className}`}
@@ -161,9 +160,9 @@ export default function InstrumentDetail({
               </span>
             )}
             {windRelation && (
-              <p className={styles.prose}>{copy.windRelationHints[windRelation]}</p>
+              <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{copy.windRelationHints[windRelation]}</p>
             )}
-            <ul className={styles.hintList}>
+            <ul className="m-0 grid list-none gap-1.5 p-0 text-[12px] text-fg-muted">
               <li>
                 <span>Offshore</span> — {copy.windRelationHints.offshore}
               </li>
@@ -174,8 +173,8 @@ export default function InstrumentDetail({
                 <span>Cross-shore</span> — {copy.windRelationHints.cross}
               </li>
             </ul>
-            <p className={styles.prose}>{copy.radarFootnote}</p>
-            <p className={styles.monoRow} title={copy.gustHint}>
+            <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{copy.radarFootnote}</p>
+            <p className="font-mono tabular-nums text-[13px] text-fg" title={copy.gustHint}>
               <WindFlowGlyph
                 directionDeg={windDir}
                 speedKt={Math.round(windSpeedMs * MS_TO_KT)}
@@ -183,7 +182,7 @@ export default function InstrumentDetail({
               />{' '}
               {copy.gustLabel} {fmt.f0(gustKt)} kt
             </p>
-            <p className={styles.prose}>
+            <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">
               <ScoreWindSourceBadge
                 source={scoreWindSource}
                 correction={scoreWindCorrection}
@@ -195,13 +194,13 @@ export default function InstrumentDetail({
       )}
 
       {open === 'wave' && (
-        <div className={styles.detailGrid}>
-          <div className={styles.detailBlock}>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid min-w-0 content-start gap-2.5">
             <SwellTrainsTable conditions={trainConditions} locale={locale} />
           </div>
-          <div className={styles.detailBlock}>
-            <h3 className={styles.detailHeading}>
-              {ti.obsBuoy} <span className={styles.nowTag}>{ti.nowTag}</span>
+          <div className="grid min-w-0 content-start gap-2.5">
+            <h3 className="m-0 mb-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+              {ti.obsBuoy} <span className="rounded-full border border-divider px-2 py-1 text-[11px] leading-none text-fg-subtle">{ti.nowTag}</span>
             </h3>
             {freshObservedWave ? (
               <>
@@ -220,7 +219,7 @@ export default function InstrumentDetail({
               <BuoySkillLine spotId={spot.id} locale={locale} />
             )}
             {!freshObservedWave && conditions.observedWave && (
-              <p className={styles.prose}>{tv.staleBuoy}</p>
+              <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{tv.staleBuoy}</p>
             )}
             {!freshObservedWave && !conditions.observedWave && (
               <BuoyLayerNotice locale={locale} />
@@ -228,7 +227,7 @@ export default function InstrumentDetail({
             <IsobathsStrip spotId={spot.id} locale={locale} />
             {conditions.observedWaveCoherenceWarning && (
               <p
-                className={styles.warnNote}
+                className="flex items-start gap-1.5 text-[12px] leading-[1.45] text-score-fair"
                 data-coherence-warning="true"
                 title={tv.coerWarnTitle
                   .replace('{esCode}', conditions.observedWaveCoherenceWarning.esCode)
@@ -253,7 +252,7 @@ export default function InstrumentDetail({
             )}
             {conditions.observedWaveCoherenceRefused && (
               <p
-                className={styles.refuseNote}
+                className="flex items-start gap-1.5 text-[12px] leading-[1.45] text-data-period"
                 data-coherence-refused="true"
                 title={tv.coerRefusedTitle.replace(
                   '{esCode}',
@@ -269,20 +268,20 @@ export default function InstrumentDetail({
       )}
 
       {open === 'tide' && (
-        <div className={styles.detailGrid}>
-          <div className={styles.detailBlock}>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div className="grid min-w-0 content-start gap-2.5">
             {tideSchedule ? (
               <TideScheduleStrip schedule={tideSchedule} locale={locale} />
             ) : (
-              <p className={styles.prose}>{ti.tideNoExtremum}</p>
+              <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{ti.tideNoExtremum}</p>
             )}
             {waterTemp !== undefined && (
-              <p className={styles.monoRow}>
+              <p className="font-mono tabular-nums text-[13px] text-fg">
                 {td.waterLabel}: {fmt.f1(waterTemp)} °C
               </p>
             )}
           </div>
-          <div className={styles.detailBlock}>
+          <div className="grid min-w-0 content-start gap-2.5">
             <MoonTideCard
               locale={locale}
               tideHourly={tideHourly}
@@ -292,7 +291,7 @@ export default function InstrumentDetail({
         </div>
       )}
 
-      <a className={styles.howWeKnow} href="#como-sabemos">
+      <a className="mt-3 inline-flex min-h-11 items-center gap-1.5 text-[12px] text-fg-muted transition-colors duration-200 hover:text-fg hover:underline motion-reduce:transition-none" href="#como-sabemos">
         {ti.howWeKnow}
       </a>
     </div>

@@ -25,7 +25,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
     await expect(async () => {
       const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
       if (attr !== 'tide') {
-        await button.evaluate((el) => (el as HTMLElement).click());
+        await button.click({ timeout: 3_000 });
       }
       await expect(detail).toHaveAttribute('data-detail', 'tide', { timeout: 1_000 });
     }).toPass({ timeout: 20_000 });
