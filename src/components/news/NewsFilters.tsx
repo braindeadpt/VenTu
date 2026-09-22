@@ -2,6 +2,7 @@
 
 import { Search, X } from 'lucide-react';
 import { CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter, type NewsFiltersState } from '@/lib/news';
+import { newsCategoryLabels } from '@/lib/newsCategories';
 import FilterPill from '@/components/ui/FilterPill';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -13,22 +14,6 @@ interface NewsFiltersProps {
   total: number;
   debouncing?: boolean;
 }
-
-const categoryLabels: Record<string, { pt: string; en: string }> = {
-  all:        { pt: 'Todas',       en: 'All' },
-  surf:       { pt: 'Surf',        en: 'Surf' },
-  kitesurf:   { pt: 'Kitesurf',    en: 'Kitesurf' },
-  windsurf:   { pt: 'Windsurf',    en: 'Windsurf' },
-  'big-wave': { pt: 'Big Wave',    en: 'Big Wave' },
-  sup:        { pt: 'SUP',         en: 'SUP' },
-  foil:       { pt: 'Foil',        en: 'Foil' },
-  bodyboard:  { pt: 'Bodyboard',   en: 'Bodyboard' },
-  wakeboard:  { pt: 'Wakeboard',   en: 'Wakeboard' },
-  competition:{ pt: 'Competição',  en: 'Competition' },
-  safety:     { pt: 'Segurança',   en: 'Safety' },
-  general:    { pt: 'Geral',       en: 'General' },
-  alert:      { pt: 'Alerta',      en: 'Alert' },
-};
 
 const dateLabels: Record<string, { pt: string; en: string }> = {
   today:  { pt: 'Hoje',     en: 'Today' },
@@ -101,8 +86,8 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
               ].join(' ')}
               aria-pressed={active}
             >
-              {cat !== 'all' && <span className={active ? 'opacity-100' : 'opacity-50'}>{categoryLabels[cat]?.pt[0]}</span>}
-              <span>{cat === 'all' ? (isPt ? 'Todas' : 'All') : (isPt ? categoryLabels[cat]?.pt : categoryLabels[cat]?.en)}</span>
+              {cat !== 'all' && <span className={active ? 'opacity-100' : 'opacity-50'}>{newsCategoryLabels[cat]?.pt[0]}</span>}
+              <span>{cat === 'all' ? (isPt ? 'Todas' : 'All') : (isPt ? newsCategoryLabels[cat]?.pt : newsCategoryLabels[cat]?.en)}</span>
             </button>
           );
         })}

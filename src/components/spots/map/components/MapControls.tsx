@@ -385,19 +385,24 @@ export default function MapControls({
           items={layerMenuItems}
         />
 
-        {divider}
-
-        <button
-          type="button"
-          onClick={toggleOnlyOn}
-          title={onlyOnHint}
-          className={`${item} ${onlyOnEnabled ? active.good : 'text-fg'}`}
-          aria-label={onlyOnLabel}
-          aria-pressed={onlyOnEnabled}
-        >
-          <Zap className="w-4 h-4 shrink-0" aria-hidden />
-          <span className="hidden lg:inline">{onlyOnLabel}</span>
-        </button>
+        {/* «Só a bombar» — no /mapa fullscreen vive no painel lateral (uma
+            única casa, decisão do mockup aprovado); no embed fica aqui. */}
+        {!isFullscreen && (
+          <>
+            {divider}
+            <button
+              type="button"
+              onClick={toggleOnlyOn}
+              title={onlyOnHint}
+              className={`${item} ${onlyOnEnabled ? active.good : 'text-fg'}`}
+              aria-label={onlyOnLabel}
+              aria-pressed={onlyOnEnabled}
+            >
+              <Zap className="w-4 h-4 shrink-0" aria-hidden />
+              <span className="hidden lg:inline">{onlyOnLabel}</span>
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

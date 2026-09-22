@@ -13,6 +13,12 @@ on:
 permissions:
   contents: read
 
+# Um digest em curso não deve ser cancelado nem sobreposto por uma execução
+# imediata seguinte (envio duplicado de emails/Telegram); a fila resolve-a.
+concurrency:
+  group: evaluate-alerts
+  cancel-in-progress: false
+
 jobs:
   alerts:
     runs-on: ubuntu-latest

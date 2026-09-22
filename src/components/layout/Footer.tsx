@@ -210,7 +210,10 @@ export default function Footer({ locale }: FooterProps) {
           <Link href={`/${locale}/about/`} className="underline hover:text-fg-muted">
             {t.nav.about}
           </Link>{' '}
-          {t.footer.creditsAnd} <code className="text-meta-sm">public/images/CREDITS.md</code>.
+          {t.footer.creditsAnd}{' '}
+          <a href="/images/CREDITS.md" className="underline hover:text-fg-muted" target="_blank" rel="noopener noreferrer">
+            <code className="text-meta-sm">public/images/CREDITS.md</code>
+          </a>.
         </p>
 
         <div className="mt-6 pt-6 border-t border-divider flex flex-col md:flex-row items-center justify-between gap-4">

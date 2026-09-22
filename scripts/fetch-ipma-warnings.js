@@ -11,6 +11,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const {
   WARNINGS_URL,
   DISTRITS_URL,
@@ -72,7 +73,7 @@ async function fetchIPMAWarnings() {
 
   const outputDir = path.dirname(OUTPUT_PATH);
   fs.mkdirSync(outputDir, { recursive: true });
-  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(payload, null, 2));
+  atomicWriteJson(OUTPUT_PATH, payload);
 
   const withWarnings = Object.keys(payload.spotWarnings).length;
   console.log(`✅ Warnings saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);

@@ -149,6 +149,22 @@ async function auditProduction() {
       );
     }
   }
+
+  // Quota Open-Meteo (P2 do audit 2026-09-22): uso acumulado do dia UTC
+  // guardado por update-conditions.js. >=90% é P1 (risco real de 429 no
+  // resto do dia); >=80% é P2 (a anotação ::warning:: já saiu no run).
+  const usage = meta.openMeteoUsage;
+  if (usage && Number.isFinite(Number(usage.dailyWeightedCalls))) {
+    const pct = (Number(usage.dailyWeightedCalls) / 10000) * 100;
+    console.log(`  open-meteo quota ${usage.dayUtc ?? '?'}: ${usage.dailyWeightedCalls}/10000 (${pct.toFixed(1)}%)`);
+    if (pct >= 90) {
+      finding('P1', `Open-Meteo quota diária em ${pct.toFixed(1)}% (${usage.dailyWeightedCalls}/10000) — risco de esgotar hoje`);
+    } else if (pct >= 80) {
+      finding('P2', `Open-Meteo quota diária em ${pct.toFixed(1)}% (${usage.dailyWeightedCalls}/10000)`);
+    }
+  } else {
+    console.log('  open-meteo quota: sem dailyWeightedCalls na meta (primeiro run com o acumulador)');
+  }
 }
 
 // ── B. Workflows ────────────────────────────────────────────────────────
@@ -326,7 +342,7 @@ function auditDrift() {
       const p = join(dir, e.name);
       if (e.isDirectory()) {
         if (e.name !== '__tests__' && e.name !== 'node_modules') walk(p);
-      } else if (/\.(js|mjs|cjs)$/.test(e.name)) {
+      } else if (/\.(js|mjs|cjs|ts)$/.test(e.name)) {
         files.push(p);
       }
     }

@@ -7,7 +7,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { expandMapHudFilters } from './helpers/map-hud';
 import { waitHydrated } from './helpers/hydration';
-import { openMapSpotSheet } from './helpers/map-sheet';
+import { openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
 
 type Viewport = 'desktop' | 'mobile';
 
@@ -139,11 +139,17 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       const clustered = await mapShell.getAttribute('data-map-cluster');
       if (clustered === 'true') {
-        await page.getByRole('button', { name: /Mostrar todos|Show all/i }).click();
-        await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
-      } else {
-        await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
+        // Desktop: o toggle flutua no MapControls (visível). Mobile: vive nos
+        // extras do SHEET, que só aparece em peek→half — o mesmo caminho que
+        // showAllMapMarkers() já faz (grabber, clique, volta ao peek).
+        const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i }).first();
+        if (await showAll.isVisible().catch(() => false)) {
+          await showAll.click();
+        } else {
+          await showAllMapMarkers(page);
+        }
       }
+      await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
 
       await expect(page.locator('.leaflet-marker-icon.spot-marker').first()).toBeVisible({
         timeout: 15_000,
@@ -493,6 +499,19 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await expect(
         page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
       ).toBeVisible({ timeout: 25_000 });
+
+      // Em mobile as secções do corpo são accordions (CollapsibleSection): o
+      // título vive no <summary> e o corpo SÓ monta ao abrir; em desktop é
+      // <h2> com o corpo sempre montado. Abre TODOS os accordions do <main>
+      // (o toggle dispara onToggle e o React monta o corpo) para o DOM
+      // equivaler ao desktop — é isso que as asserções de «secções presentes
+      // uma única vez» pressupõem.
+      await page.evaluate(() => {
+        for (const d of document.querySelectorAll('main details:not([open])')) {
+          (d as HTMLDetailsElement).open = true;
+        }
+      });
+      await waitHydrated(page);
       await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible({
         timeout: 15_000,
       });
@@ -507,9 +526,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         await expect(livecamHeading).toHaveCount(1);
       }
 
-      await expect(page.getByRole('heading', { name: /Logística|Logistics/i })).toBeVisible({
-        timeout: 15_000,
-      });
+      // Título da secção: <h2> em desktop, <summary> do accordion em mobile
+      // (CollapsibleSection não põe heading no summary) — em ambos o texto é
+      // único na página, que é o que «sem duplicados» quer garantir.
+      const logisticsTitle = page
+        .locator('h2, details > summary')
+        .filter({ hasText: /Logístic|Logistic/ });
+      await expect(logisticsTitle).toHaveCount(1);
 
       // Single primary directions CTA in hero; location uses text link when present
       await expect(

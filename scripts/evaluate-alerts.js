@@ -309,6 +309,63 @@ async function markUserPrefsSent(userId) {
   );
 }
 
+/**
+ * How long before an address may receive another verification email.
+ */
+const VERIFICATION_RETRY_MS = 24 * 60 * 60 * 1000;
+/**
+ * Upper bound of verification emails per run (H2). A hostile caller can mint
+ * pending rows for many distinct victim addresses in one burst; this caps how
+ * much of the Resend quota a single cron pass can burn on them. Leftover
+ * pending rows are picked up by the next pass (cron runs every 3h).
+ */
+const MAX_VERIFICATION_SENDS_PER_RUN = 100;
+
+/**
+ * Pick WHICH pending (unverified) subscriptions get a verification email.
+ *
+ * H2: verification is decided per ADDRESS, never per row. The old logic
+ * (one send per row, each row with its own `last_sent_at`) let an attacker
+ * subscribe the same victim address to N spots and turn VenTu into a relay
+ * that mailed that victim N times a day. Rules:
+ *   - one target address per run, using the MOST RECENT send across all of
+ *     that address's rows as the 24h cooldown clock;
+ *   - an address mailed in the last 24h is skipped entirely;
+ *   - at most `cap` addresses per run.
+ *
+ * Pure (no I/O) so it is unit-testable.
+ *
+ * @param {Array<{ id: number|string, email?: string, verified?: boolean, last_sent_at?: string|null }>} subs
+ * @param {number} [now] epoch ms
+ * @param {number} [cap] max addresses per run
+ * @returns {Array} one row per address, in input order
+ */
+function selectVerificationTargets(subs, now = Date.now(), cap = MAX_VERIFICATION_SENDS_PER_RUN) {
+  const rows = Array.isArray(subs) ? subs.filter((s) => s && !s.verified && s.email) : [];
+  const keyOf = (sub) => String(sub.email).trim().toLowerCase();
+
+  // Most recent verification send per address, across ALL its rows.
+  const lastSentByEmail = new Map();
+  for (const sub of rows) {
+    const at = sub.last_sent_at ? Date.parse(sub.last_sent_at) : 0;
+    const last = Number.isFinite(at) ? at : 0;
+    const key = keyOf(sub);
+    if (last > (lastSentByEmail.get(key) ?? 0)) lastSentByEmail.set(key, last);
+  }
+
+  const targets = [];
+  const picked = new Set();
+  for (const sub of rows) {
+    const key = keyOf(sub);
+    if (picked.has(key)) continue;
+    if (now - (lastSentByEmail.get(key) ?? 0) <= VERIFICATION_RETRY_MS) continue;
+    picked.add(key);
+    targets.push(sub);
+    if (targets.length >= cap) break;
+  }
+  return targets;
+}
+
 async function sendLegacyVerification(sub) {
   const isPt = sub.locale !== 'en';
   const link = alertPath(sub.locale, 'confirm', sub.verify_token);
@@ -351,12 +408,19 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
   const subs = await fetchSubscriptions();
   let sent = 0;
 
+  // H2: verification mail is selected per address (see selectVerificationTargets)
+  // so multiple pending rows for one address can never multiply into a flood.
+  const verificationTargets = new Set(
+    selectVerificationTargets(subs).map((sub) => sub.id),
+  );
+  let verificationSent = 0;
+
   for (const sub of subs) {
     if (!sub.verified) {
-      const lastSent = sub.last_sent_at ? new Date(sub.last_sent_at).getTime() : 0;
-      if (Date.now() - lastSent > 24 * 60 * 60 * 1000) {
+      if (verificationTargets.has(sub.id)) {
         await sendLegacyVerification(sub);
         await markLegacySent(sub.id);
+        verificationSent++;
       }
       continue;
     }
@@ -400,7 +464,11 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
     }
   }
 
-  return { legacyCount: subs.length, legacySent: sent };
+  return {
+    legacyCount: subs.length,
+    legacySent: sent,
+    legacyVerificationSent: verificationSent,
+  };
 }
 
 async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal) {
@@ -598,6 +666,9 @@ async function main() {
   if (e1c.immediateSkipped > 0) {
     console.log(`  Immediate skipped (3h cooldown): ${e1c.immediateSkipped}`);
   }
+  if (legacy.legacyVerificationSent > 0) {
+    console.log(`  Verification emails sent (1 per address): ${legacy.legacyVerificationSent}`);
+  }
   console.log(`\n✅ Alerts sent: ${legacy.legacySent + e1c.userDigestSent}`);
 }
 
@@ -613,4 +684,7 @@ if (require.main === module) {
 module.exports = {
   buildCoastalDigestSummary,
   evaluateUserFavoritesAlerts,
+  selectVerificationTargets,
+  VERIFICATION_RETRY_MS,
+  MAX_VERIFICATION_SENDS_PER_RUN,
 };

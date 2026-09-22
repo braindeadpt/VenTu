@@ -25,17 +25,23 @@ Subscrições antigas em `alert_subscriptions` continuam a funcionar. O evaluato
 
 **Segurança (S2):** o `subscribe_alert` foi endurecido — token gerado no servidor (`gen_random_uuid`), rate limit por IP (`request.headers`/`x-forwarded-for`) + por `client_id`, UNIQUE `(email, spot_slug, sport)` enquanto activo, e máximo de 5 subscrições activas não verificadas por email (mata o vector de spam de emails de verificação). Os grants anon directos à tabela foram revogados — a RPC é a única via de escrita anónima. Aplicar `supabase/supabase-alerts-harden-legacy.sql` no SQL Editor.
 
+**Defesa em profundidade no evaluator (H2):** mesmo com o tecto de 5 linhas pendentes, o `evaluate-alerts.js` decide os emails de confirmação **por endereço** e nunca por linha — todas as linhas do mesmo endereço partilham o cooldown de 24h (usando o envio mais recente entre elas) e passa no máximo 1 email de confirmação por endereço por janela, com tecto de 100 endereços por corrida (`selectVerificationTargets`). Assim, linhas pendentes antigas ou pré-endurecimento não voltam a virar um relay.
+
 ## Pré-requisitos (uma vez)
 
 ### 1. Supabase
 
 1. [SQL Editor](https://supabase.com/dashboard) do projecto VenTu.
-2. Executa [`supabase/supabase-alerts.sql`](../supabase/supabase-alerts.sql) (E1).
-3. Executa [`supabase/supabase-auth-profiles.sql`](../supabase/supabase-auth-profiles.sql) (F1).
-4. Executa [`supabase/supabase-alerts-e1c.sql`](../supabase/supabase-alerts-e1c.sql) (E1c).
-5. Executa [`supabase/supabase-alerts-e1b-frequency.sql`](../supabase/supabase-alerts-e1b-frequency.sql) (E1b — digest vs imediato).
-6. Confirma tabelas `alert_subscriptions` e `user_alert_prefs`.
-7. Se já tinhas E1c aplicado: re-executa as funções `verify_user_alerts` / `verify_alert_token` de `supabase-alerts-e1c.sql` (confirmação idempotente).
+2. Executa [`supabase/supabase-rate-limit-common.sql`](../supabase/supabase-rate-limit-common.sql) (helpers de rate limit partilhados — **obrigatório antes do passo 5**).
+3. Executa [`supabase/supabase-alerts.sql`](../supabase/supabase-alerts.sql) (E1).
+4. Executa [`supabase/supabase-auth-profiles.sql`](../supabase/supabase-auth-profiles.sql) (F1).
+5. Executa [`supabase/supabase-alerts-harden-legacy.sql`](../supabase/supabase-alerts-harden-legacy.sql) (S2 — `subscribe_alert` endurecido; **sem este passo não existe caminho de escrita anónima**).
+6. Executa [`supabase/supabase-alerts-e1c.sql`](../supabase/supabase-alerts-e1c.sql) (E1c).
+7. Executa [`supabase/supabase-alerts-e1b-frequency.sql`](../supabase/supabase-alerts-e1b-frequency.sql) (E1b — digest vs imediato).
+8. Confirma tabelas `alert_subscriptions` e `user_alert_prefs`.
+9. Se já tinhas E1c aplicado: re-executa as funções `verify_user_alerts` / `verify_alert_token` de `supabase-alerts-e1c.sql` (confirmação idempotente).
+
+> [`supabase/supabase-alerts-subscribe-rpc.sql`](../supabase/supabase-alerts-subscribe-rpc.sql) está **obsoleto**: já não cria `subscribe_alert`, apenas remove a assinatura antiga (era um relay de email com rate limit rotável pelo cliente). Não faças `CREATE` dele por engano — o RPC válido vive em `supabase-alerts-harden-legacy.sql`.
 
 ### 2. Resend
 

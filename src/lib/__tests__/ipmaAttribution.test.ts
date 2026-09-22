@@ -19,7 +19,7 @@ const CONSUMERS = [
     mustImport: "from '@/lib/ipmaAttribution'",
   },
   {
-    file: 'src/components/spots/SpotMapInteractive.tsx',
+    file: 'src/components/spots/map/hooks/useMapLayers.ts',
     mustImport: "from '@/lib/ipmaAttribution'",
   },
   {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { AlertTriangle, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { buoyLayerCopy, useBuoyLayerNotice } from '@/lib/buoyLayerNotice';
@@ -24,14 +25,27 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
   const { status, wmo, dismissed, dismiss } = useBuoyLayerNotice();
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
+  const popoverRef = useRef<HTMLDivElement>(null);
+  // Posição fixa calculada ao abrir — o popover sai por portal para o body
+  // porque dentro do sheet (overflow-hidden) o `bottom-full` era cortado.
+  const [anchor, setAnchor] = useState<{ left: number; bottom: number } | null>(null);
 
-  // Fecha por clique fora ou Escape (o popover vive no HUD, junto ao fundo).
+  useEffect(() => {
+    if (!open || !rootRef.current) return;
+    const rect = rootRef.current.getBoundingClientRect();
+    setAnchor({
+      left: Math.min(rect.left, Math.max(8, window.innerWidth - 320 - 16)),
+      bottom: window.innerHeight - rect.top + 8,
+    });
+  }, [open]);
+
+  // Fecha por clique fora ou Escape (o popover é portal — vive no body).
   useEffect(() => {
     if (!open) return;
     const onPointerDown = (e: PointerEvent) => {
-      if (rootRef.current && !rootRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      const t = e.target as Node;
+      if (rootRef.current?.contains(t) || popoverRef.current?.contains(t)) return;
+      setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
@@ -87,10 +101,12 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
         <span className="hidden sm:inline">{chipLabel[status]}</span>
       </button>
 
-      {open && (
+      {open && anchor && createPortal(
         <div
+          ref={popoverRef}
           data-buoy-chip-popover="true"
-          className="absolute bottom-full left-0 mb-2 w-[min(320px,calc(100vw-2rem))] z-[1250] rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card p-3 pr-8 text-meta-sm"
+          style={{ position: 'fixed', left: anchor.left, bottom: anchor.bottom }}
+          className="w-[min(320px,calc(100vw-2rem))] z-[1250] rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card p-3 pr-8 text-meta-sm"
         >
           {/* role="status" no texto, não no popover — a live region não deve
               embrulhar os botões de acção (audit 2026-09-16 P2). */}
@@ -123,7 +139,8 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
             </button>
           )}
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

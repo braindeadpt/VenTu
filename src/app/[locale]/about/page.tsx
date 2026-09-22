@@ -211,9 +211,22 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <strong className="text-fg">Imagery © Esri, Maxar, Earthstar Geographics</strong>
           </li>
           <li>
-            {isPt
-              ? 'Fotos de ambiente por região (home, explorar, sobre): Unsplash e Pexels — licença livre para uso comercial. Lista em public/images/CREDITS.md.'
-              : 'Regional lifestyle photos (home, explore, about): Unsplash and Pexels — free for commercial use. See public/images/CREDITS.md.'}
+            {isPt ? (
+              <>
+                Fotos de ambiente por região (home, explorar, sobre): Unsplash e Pexels — licença livre para uso
+                comercial. Lista em{' '}
+                <a href="/images/CREDITS.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  public/images/CREDITS.md</a
+                >.
+              </>
+            ) : (
+              <>
+                Regional lifestyle photos (home, explore, about): Unsplash and Pexels — free for commercial use. See{' '}
+                <a href="/images/CREDITS.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                  public/images/CREDITS.md</a
+                >.
+              </>
+            )}
           </li>
           <li>
             {isPt ? (

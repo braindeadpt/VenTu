@@ -256,11 +256,20 @@ export function useMapLayers({
     }
     const hud = document.querySelector('[data-map-hud-collapsed]');
     if (!hud) return;
-    const measure = () => setRadarLift(hud.getBoundingClientRect().height);
+    // A porção VISÍVEL: o bottom sheet tem altura fixa e anda por translateY
+    // (o rect.height não muda durante o arrasto — só o rect.top reflecte o
+    // quanto está à mostra). O intervalo cobre o translateY, que não dispara
+    // ResizeObserver.
+    const measure = () =>
+      setRadarLift(Math.max(0, Math.round(window.innerHeight - hud.getBoundingClientRect().top)));
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(hud);
-    return () => ro.disconnect();
+    const iv = window.setInterval(measure, 250);
+    return () => {
+      ro.disconnect();
+      window.clearInterval(iv);
+    };
   }, [isFullscreen, isReady]);
 
   const toggleRadar = useCallback(() => {

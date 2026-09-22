@@ -1,5 +1,9 @@
 /** English (en) — full dictionary, mirrors pt key shape */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsEn = {
   nav: {
@@ -116,6 +120,7 @@ export const translationsEn = {
     clusterLabel: '{count} spots',
     noData: 'No data',
     loading: 'Loading map...',
+    weatherCredit: 'Weather data by',
     mapUnavailable: 'Unable to load the map',
     fullscreen: 'Full screen',
     exitFullscreen: 'Exit full screen',
@@ -224,6 +229,13 @@ export const translationsEn = {
     updatedAt: 'Updated',
     spotsVisible: 'spots on map',
     mapDataHint: 'Tap a spot · Show all · Wind',
+    locateMe: 'Near me',
+    locateHere: 'You are here',
+    locateDenied: 'Location permission denied',
+    locateUnavailable: 'Location unavailable',
+    locateTimeout: 'Location took too long — try again',
+    shareView: 'Share view',
+    shareCopied: 'Link copied',
   },
   news: {
     title: 'News and events',
@@ -745,4 +757,8 @@ export const translationsEn = {
       minguante: 'Waning crescent',
     },
   },
+  spotPageVerdict: spotPageVerdict.en,
+  spotPageInstruments: spotPageInstruments.en,
+  spotPageForecast: spotPageForecast.en,
+  spotPageContext: spotPageContext.en,
 } as const;

@@ -1,5 +1,9 @@
 /** Portuguese (pt) — full dictionary, source of truth for key shape */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsPt = {
   nav: {
@@ -118,6 +122,7 @@ export const translationsPt = {
     clusterLabel: '{count} spots',
     noData: 'Sem dados',
     loading: 'A carregar mapa...',
+    weatherCredit: 'Dados meteorológicos por',
     mapUnavailable: 'Não foi possível carregar o mapa',
     fullscreen: 'Ecrã inteiro',
     exitFullscreen: 'Sair do ecrã inteiro',
@@ -168,8 +173,8 @@ export const translationsPt = {
     currentsHint: 'Corrente de superfície prevista (SMOC, ~8 km) — traços no sentido da água',
     currentsLegend: 'Corrente — m/s',
     windLegend: 'Vento — nós',
-    showSst: 'Temp. água',
-    hideSst: 'Ocultar temp. água',
+    showSst: 'Temperatura da água (SST)',
+    hideSst: 'Ocultar temp. da água (SST)',
     sstHint: 'Temperatura da superfície do mar, interpolada entre spots',
     sstLegend: 'Água — °C',
     thermalSea: 'Brisa de mar',
@@ -226,6 +231,13 @@ export const translationsPt = {
     updatedAt: 'Actualizado',
     spotsVisible: 'spots no mapa',
     mapDataHint: 'Clica num spot · Mostrar todos · Vento',
+    locateMe: 'Perto de mim',
+    locateHere: 'Estás aqui',
+    locateDenied: 'Permissão de localização negada',
+    locateUnavailable: 'Localização indisponível',
+    locateTimeout: 'A localização demorou demasiado — tenta outra vez',
+    shareView: 'Partilhar vista',
+    shareCopied: 'Ligação copiada',
   },
   news: {
     title: 'Notícias e eventos',
@@ -753,4 +765,8 @@ export const translationsPt = {
       minguante: 'Lua minguante',
     },
   },
+  spotPageVerdict: spotPageVerdict.pt,
+  spotPageInstruments: spotPageInstruments.pt,
+  spotPageForecast: spotPageForecast.pt,
+  spotPageContext: spotPageContext.pt,
 } as const;

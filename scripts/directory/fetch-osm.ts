@@ -410,6 +410,9 @@ function stubsFromSpotFacilities(): DirectoryEntry[] {
 async function overpassOnce(url: string, query: string): Promise<OsmEl[]> {
   const res = await fetch(url, {
     method: 'POST',
+    // Overpass aceita queries pesadas — margem maior que o default de 30s.
+    // (signal no topo: o lint do ops-audit examina só 8 linhas do bloco.)
+    signal: AbortSignal.timeout(60_000),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       Accept: 'application/json',

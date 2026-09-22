@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react';
-
 /**
  * FONTE ÚNICA da cadeia de atribuição obrigatória do Open-Meteo (CC BY 4.0).
  *
@@ -17,11 +15,19 @@ export const OPEN_METEO_ATTRIBUTION_LABEL = 'Weather data by Open-Meteo.com (CC 
 
 /**
  * Variante HTML crua para `Leaflet.control.attribution().addAttribution(...)`
- * — o controlo do mapa espera uma string, não ReactNode.
+ * — o controlo do mapa espera uma string, não ReactNode. O lead-in vem das
+ * traduções (`map.weatherCredit`); a cadeia obrigatória (site + licença CC BY
+ * 4.0) é sempre esta.
  */
-export const OPEN_METEO_ATTRIBUTION_HTML =
-  `Weather data by <a href="${OPEN_METEO_URL}" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> ` +
-  `(<a href="${OPEN_METEO_LICENSE_URL}" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>)`;
+export function openMeteoAttributionHtml(lead: string): string {
+  return (
+    `${lead} <a href="${OPEN_METEO_URL}" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> ` +
+    `(<a href="${OPEN_METEO_LICENSE_URL}" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>)`
+  );
+}
+
+/** Cadeia canónica EN — usada por useMapCore ao criar o controlo. */
+export const OPEN_METEO_ATTRIBUTION_HTML = openMeteoAttributionHtml('Weather data by');
 
 interface OpenMeteoAttributionProps {
   /** Classe aplicada aos dois <a> (ex.: estilo de link do About/fontes). */

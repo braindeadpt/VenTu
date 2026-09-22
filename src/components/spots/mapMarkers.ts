@@ -1,5 +1,7 @@
 import type L from 'leaflet';
+import type { Spot } from '@/types';
 import type { GridSportFilter } from '@/lib/sportRatings';
+import { includeSpotInViewportBounds } from './mapViewportBounds';
 import { resolveWavePowerKw, MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast } from '@/lib/wind';
 import { getScoreRgb } from '@/lib/map-constants';
@@ -82,6 +84,8 @@ export function buildMarkerPopupContent(
     windRelationType: windRelation,
     waterTemp: conditions.waterTemp.toFixed(1),
     wavePowerKw: powerKw.toFixed(1),
+    conditions,
+    highlightSport: selectedSport,
     imageUrl: (() => {
       const src = getSpotImage(spot);
       return src.kind === 'image' ? src.src : undefined;
@@ -128,7 +132,11 @@ export function createSpotMarker(
   const scoreOverride = options.scoreOverride;
   const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, warning, scoreOverride);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
-  (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport, scoreOverride);
+  const withMeta = marker as L.Marker & { spotScore?: number; ventuData?: MapSpotData };
+  withMeta.spotScore = getBestScore(data, selectedSport, scoreOverride);
+  // Dados completos do spot no próprio marcador — o clusterclick do mapa
+  // principal escolhe o melhor filho e abre o sheet sem re-buscar (D3).
+  withMeta.ventuData = data;
   // Leaflet gives interactive markers role="button" — give them an accessible
   // name so screen readers announce which spot the marker is (axe aria-command-name).
   marker.on('add', () => {
@@ -248,4 +256,108 @@ export function addMarkersChunked(
   cancelRef: { current: boolean },
 ): void {
   runChunked(markers, addBatch, cancelRef);
+}
+
+/**
+ * Bounds da vista «Explorar» calculados SÓ das coordenadas — não precisa de
+ * marcadores. A regra das ilhas é a mesma do fit inicial
+ * (includeSpotInViewportBounds): continente por defeito, ilhas só quando a
+ * região filtrada as pede. Devolve null quando não há spots elegíveis.
+ */
+export function exploreViewBoundsFromSpots(
+  spots: ReadonlyArray<{ spot: Spot }>,
+  selectedRegion: string,
+): [[number, number], [number, number]] | null {
+  let minLat = Infinity;
+  let minLon = Infinity;
+  let maxLat = -Infinity;
+  let maxLon = -Infinity;
+  for (const d of spots) {
+    if (!includeSpotInViewportBounds(d.spot, selectedRegion)) continue;
+    const { lat, lon } = d.spot;
+    if (lat < minLat) minLat = lat;
+    if (lat > maxLat) maxLat = lat;
+    if (lon < minLon) minLon = lon;
+    if (lon > maxLon) maxLon = lon;
+  }
+  if (!Number.isFinite(minLat)) return null;
+  return [[minLat, minLon], [maxLat, maxLon]];
+}
+
+/**
+ * Moldura que tapa o mapa no modo Explorar em ecrã inteiro. O enquadramento
+ * tem de a descontar: sem isso os spots das bordas nascem debaixo dela e não
+ * são tocáveis (o Alqueva ficava debaixo do sheet — spec mar-perigoso).
+ *  - 'sheet'       mobile: sheet no fundo (inset 8 px + estado fechado,
+ *                  ~220 px medidos com o chip de boias).
+ *  - 'panel-open'  desktop: painel à esquerda (inset 8 px + 348 px).
+ *  - 'panel-rail'  desktop: painel recolhido (inset 8 px + rail 48 px).
+ *  - 'none'        mapa embebido, sem sheet nem painel.
+ */
+export type ExploreChrome = 'none' | 'sheet' | 'panel-open' | 'panel-rail';
+
+export function resolveExploreChrome(
+  hasExploreChrome: boolean,
+  isMobile: boolean,
+  panelCollapsed: boolean,
+): ExploreChrome {
+  if (!hasExploreChrome) return 'none';
+  if (isMobile) return 'sheet';
+  return panelCollapsed ? 'panel-rail' : 'panel-open';
+}
+
+/** Margem livre entre a moldura e o spot mais próximo dela. */
+const CHROME_GAP_PX = 16;
+
+export function exploreFitPadding(
+  chrome: ExploreChrome,
+  isMobile: boolean,
+): { topLeft: [number, number]; bottomRight: [number, number]; westShift: boolean } {
+  switch (chrome) {
+    case 'sheet':
+      return { topLeft: [16, 16], bottomRight: [16, 8 + 220 + CHROME_GAP_PX], westShift: false };
+    case 'panel-open':
+      // O painel já ocupa o oeste: o desvio para oeste empurrava a costa
+      // para debaixo dele.
+      return { topLeft: [8 + 348 + CHROME_GAP_PX, 48], bottomRight: [40, 48], westShift: false };
+    case 'panel-rail':
+      return { topLeft: [8 + 48 + CHROME_GAP_PX, 48], bottomRight: [40, 48], westShift: true };
+    default:
+      // Mapas embebidos: mantêm as margens de sempre.
+      return isMobile
+        ? { topLeft: [16, 16], bottomRight: [16, 190], westShift: false }
+        : { topLeft: [40, 48], bottomRight: [40, 110], westShift: true };
+  }
+}
+
+/**
+ * Enquadramento «Explorar» (não-hero): padding para a moldura activa + o
+ * bias para oeste que mete a costa PT à direita e abre o Atlântico à
+ * esquerda — é de lá que vem o swell. Partilhado pelo arranque (useMapCore,
+ * antes do basemap) e pelo re-enquadre por mudança de filtro (useMapMarkers).
+ */
+export function applyExploreMapFit(
+  Leaflet: typeof L,
+  map: L.Map,
+  bounds: L.LatLngBoundsExpression,
+  isMobile: boolean,
+  chrome: ExploreChrome = 'none',
+): void {
+  const pad = exploreFitPadding(chrome, isMobile);
+  map.fitBounds(bounds, {
+    paddingTopLeft: Leaflet.point(...pad.topLeft),
+    paddingBottomRight: Leaflet.point(...pad.bottomRight),
+    maxZoom: isMobile ? 9 : 11,
+    animate: false,
+  });
+  // Enquadramento náutico: a costa PT é uma faixa vertical — centrar a
+  // bbox deixa metade do ecrã em Espanha. Shift para oeste mete a costa
+  // à direita e abre o Atlântico à esquerda. ~9% da largura para oeste;
+  // em zoom baixo o bias é menor para não empurrar a costa para a borda.
+  if (pad.westShift) {
+    const degPerPx = 360 / (256 * 2 ** map.getZoom());
+    const shiftPx = map.getZoom() >= 7 ? 140 : 70;
+    const c = map.getCenter();
+    map.setView([c.lat, c.lng - shiftPx * degPerPx], map.getZoom(), { animate: false });
+  }
 }

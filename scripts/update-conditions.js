@@ -231,8 +231,22 @@ async function updateConditions() {
   console.log(`\n📊 Open-Meteo usage (real): ${usage.weightedCalls} chamadas ponderadas (${usage.requests} pedidos HTTP, ${usage.retries} retries) · ${usage.spotsFetched} spots · ${weightedPerSpot} ponderadas/spot · ${dailyBudgetPct}% do orçamento diário (10k)`);
   const metaRoot = path.join(__dirname, '..');
   const prevMeta = readPipelineMeta(metaRoot);
+  // Quota diária (P2 do audit 2026-09-22): o log acima é por-run, mas o
+  // orçamento Open-Meteo é por dia UTC — acumula across runs na meta e
+  // avisa quando a folga desaparece (~8,2k/dia estimados de 10k).
+  const usageDayUtc = new Date().toISOString().slice(0, 10);
+  const prevUsage = prevMeta?.openMeteoUsage;
+  const prevDayUtc = typeof prevUsage?.dayUtc === 'string' ? prevUsage.dayUtc : null;
+  const dailyWeightedCalls =
+    (prevDayUtc === usageDayUtc ? Number(prevUsage?.dailyWeightedCalls) || 0 : 0) + usage.weightedCalls;
+  const dailyBudgetUsedPct = (dailyWeightedCalls / 10000) * 100;
+  if (dailyBudgetUsedPct >= 80) {
+    const line = `⚠️ Open-Meteo quota diária: ${dailyWeightedCalls}/10000 (${dailyBudgetUsedPct.toFixed(1)}%) — folga a esgotar`;
+    console.log(line);
+    console.log(`::warning title=Open-Meteo quota::${line}`);
+  }
   const { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, tideLayer } = buildPipelineLayers({ metaRoot, previousMeta: prevMeta, loadBuoyLayerStatus, applyBuoyLayerStreak, loadRadarLayerStatus, loadWarningsLayerStatus, applyLayerStreak, buildCoastalWarningsLayer, loadTidesLayerStatus });
-  writePipelineMeta('full', new Date(), metaRoot, { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, tideLayer, openMeteoUsage: { weightedCalls: usage.weightedCalls, requests: usage.requests, retries: usage.retries, spotsFetched: usage.spotsFetched, mode: useMultiModel ? 'day' : 'night', weightedPerSpot, waveModels: WAVE_MODELS.length, windModels: WIND_MODELS.length } });
+  writePipelineMeta('full', new Date(), metaRoot, { buoyLayer, radarLayer, warningsLayer, coastalWarningsLayer, tideLayer, openMeteoUsage: { weightedCalls: usage.weightedCalls, requests: usage.requests, retries: usage.retries, spotsFetched: usage.spotsFetched, mode: useMultiModel ? 'day' : 'night', weightedPerSpot, waveModels: WAVE_MODELS.length, windModels: WIND_MODELS.length, dayUtc: usageDayUtc, dailyWeightedCalls } });
   if (buoyLayer) console.log(`🌊 Camada de boias: ${buoyLayer.status} (key ${buoyLayer.apiKeyConfigured ? '✓' : '✗'}, wave data ${buoyLayer.hasWaveData ? '✓' : '✗'}${buoyLayer.newestReadingAt ? `, última leitura ${buoyLayer.newestReadingAt}` : ''}${buoyLayer.streak > 0 ? `, streak down/stale: ${buoyLayer.streak} runs` : ''})`);
   else console.log('🌊 Camada de boias: sem ih-buoys.json (primeiro run)');
   if (radarLayer) console.log(`📡 Camada de radar: ${radarLayer.status}${radarLayer.frameTime ? ` · frame ${radarLayer.frameTime}` : ''}${radarLayer.streak > 0 ? `, streak down/stale: ${radarLayer.streak} runs` : ''}`);

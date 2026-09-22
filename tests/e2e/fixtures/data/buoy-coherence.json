@@ -1064,7 +1064,43 @@
       "attachedIsClosest": 11,
       "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "vila-real-santo-antonio",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 155,
+          "altKm": 89
+        },
+        {
+          "spot": "monte-gordo",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 154,
+          "altKm": 89
+        },
+        {
+          "spot": "praia-verde",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 150,
+          "altKm": 91
+        },
+        {
+          "spot": "altura",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 151,
+          "altKm": 90
+        },
+        {
+          "spot": "barrinha-faro",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 134,
+          "altKm": 105
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1176,7 +1212,15 @@
       "attachedIsClosest": 1,
       "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "fuseta",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 143,
+          "altKm": 93
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1192,7 +1236,43 @@
       "attachedIsClosest": 5,
       "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "ilha-faro",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 134,
+          "altKm": 106
+        },
+        {
+          "spot": "faro-mar",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 131,
+          "altKm": 109
+        },
+        {
+          "spot": "culatra",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 142,
+          "altKm": 96
+        },
+        {
+          "spot": "armona",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 142,
+          "altKm": 94
+        },
+        {
+          "spot": "garrão",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 136,
+          "altKm": 104
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1208,7 +1288,22 @@
       "attachedIsClosest": 2,
       "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "ilha-tavira",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 147,
+          "altKm": 91
+        },
+        {
+          "spot": "cabanas-tavira",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 147,
+          "altKm": 91
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1224,7 +1319,15 @@
       "attachedIsClosest": 1,
       "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "cacela-velha",
+          "winner": "ih-buoy",
+          "reason": "ih-fresh",
+          "attachedKm": 149,
+          "altKm": 90
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1403,6 +1506,30 @@
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
+      "calibrated": 0,
+      "calibrationRefs": {},
+      "suboptimalRefs": 0,
+      "suboptimal": []
+    },
+    "Pico": {
+      "spotCount": 1,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
+      "attachedIsClosest": 0,
+      "attachedNotClosest": 1,
+      "onlySource": 0,
+      "notClosest": [
+        {
+          "spot": "cachorro-pico",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 68,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,

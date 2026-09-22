@@ -3,6 +3,7 @@ import type { NewsItem } from '@/types'
 import { loadNews } from '@/lib/load-news'
 import { locales } from '@/lib/i18n'
 import { safeExternalUrl } from '@/lib/safeUrl'
+import { jsonLdHtml } from '@/lib/jsonLd'
 import NewsDetailHeader from '@/components/news/NewsDetailHeader'
 import RelatedNews from '@/components/news/RelatedNews'
 import { ExternalLink, ArrowLeft } from 'lucide-react'
@@ -26,6 +27,10 @@ export async function generateStaticParams() {
 
   return params
 }
+
+// D10 — params exaustivos: slug sem notícia → 404 (produção: 404.html; dev:
+// 404 após o padrão aquecer — E443 a frio é upstream next.js#56253, dev-only).
+export const dynamicParams = false
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
@@ -87,7 +92,7 @@ export default async function NewsDetailPage({ params }: Props) {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
 
       {/* Back link */}

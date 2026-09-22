@@ -1,20 +1,12 @@
 import type { NewsItem } from '@/types';
 import { Sparkles, Calendar } from 'lucide-react';
 import Link from 'next/link';
+import { newsCategoryLabel } from '@/lib/newsCategories';
 
 interface NewsDetailHeaderProps {
   news: NewsItem;
   locale: string;
 }
-
-const categoryLabels: Record<string, { pt: string; en: string }> = {
-  surf:        { pt: 'Surf',        en: 'Surf' },
-  kitesurf:    { pt: 'Kitesurf',    en: 'Kitesurf' },
-  windsurf:    { pt: 'Windsurf',    en: 'Windsurf' },
-  competition: { pt: 'Competição',  en: 'Competition' },
-  safety:      { pt: 'Segurança',   en: 'Safety' },
-  general:     { pt: 'Geral',       en: 'General' },
-};
 
 export default function NewsDetailHeader({ news, locale }: NewsDetailHeaderProps) {
   const isPt = locale === 'pt';
@@ -28,7 +20,7 @@ export default function NewsDetailHeader({ news, locale }: NewsDetailHeaderProps
         </Link>
         <span aria-hidden="true" className="text-fg-disabled">/</span>
         <span className="text-fg-subtle">
-          {isPt ? categoryLabels[news.category]?.pt || news.category : categoryLabels[news.category]?.en || news.category}
+          {newsCategoryLabel(news.category, locale)}
         </span>
         <span aria-hidden="true" className="text-fg-disabled">/</span>
         <span className="text-fg truncate max-w-[200px] sm:max-w-[400px]">

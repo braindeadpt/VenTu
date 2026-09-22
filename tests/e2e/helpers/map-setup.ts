@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { WIND_RING_LEGEND_LS_KEY } from '../../../src/lib/windRingLegend';
 
 /**
@@ -39,6 +39,18 @@ export async function preseedWindRingLegend(page: Page): Promise<void> {
 export async function openMapLayersMenu(page: Page): Promise<void> {
   const popover = page.locator('[data-map-layers-popover="true"]');
   if (await popover.isVisible()) return;
-  await page.locator('[data-map-layers-menu]:visible').first().click();
+  const trigger = page.locator('[data-map-layers-menu]:visible');
+  if ((await trigger.count()) === 0) {
+    // Sheet mobile (MapExploreSheet): não há menu — as camadas vivem
+    // sempre visíveis no estado «half».
+    const sheet = page.locator('[data-explore-sheet]');
+    if (!(await sheet.count())) return;
+    if ((await sheet.getAttribute('data-explore-sheet')) === 'peek') {
+      await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+      await expect(sheet).toHaveAttribute('data-explore-sheet', 'half');
+    }
+    return;
+  }
+  await trigger.first().click();
   await popover.waitFor({ state: 'visible', timeout: 10_000 });
 }

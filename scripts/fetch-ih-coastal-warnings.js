@@ -21,6 +21,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const {
   fetchCoastalWarnings,
   fetchLocalWarnings,
@@ -169,7 +170,7 @@ async function fetchCoastalWarningsData() {
     sourceCollection: 'nav_warning_coastal+nav_warning_local+orca_anavnet_point',
     sourceUrl: `${IH_API}/collections/nav_warning_coastal`,
   };
-  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
+  atomicWriteJson(OUTPUT_PATH, output);
   console.log(`✅ Coastal warnings saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);
 
   // Arquivo diário (best-effort — um erro aqui nunca bloqueia a pipeline): o

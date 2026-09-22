@@ -1,47 +1,23 @@
--- VenTu — subscribe_alert RPC (run once in SQL Editor if direct insert fails with RLS)
--- Symptom: "Não foi possível guardar. Espera 1 minuto e tenta outra vez."
+-- ============================================================
+-- VenTu — subscribe_alert RPC
+--
+-- SUPERSEDED (S2 / H2). Re-run this file only to REMOVE the old relay:
+-- it used to create an anonymous subscribe_alert whose rate limit was a
+-- caller-controlled `client_id` (trivially rotated) and whose verify_token
+-- came from the caller — the combination turned VenTu into an email relay
+-- (unlimited pending rows → one verification email per row per day to any
+-- address the attacker chose).
+--
+-- The write path is now, in this order:
+--   1. supabase/supabase-rate-limit-common.sql        (request_client_ip / check_rate_limit)
+--   2. supabase/supabase-alerts-harden-legacy.sql     (per-IP limit, server-generated
+--      token, ≤5 pending rows per address, UNIQUE (lower(email), spot_slug, sport)
+--      while active, anon grants revoked)
+--
+-- Drop the weak 7-arg signature (client-supplied verify_token): neither this
+-- file nor a stale install may re-create it. The hardened RPC is also 6-arg,
+-- so only the 7-arg one is dropped here — run
+-- supabase-alerts-harden-legacy.sql to install (or reinstall) the write path.
+-- ============================================================
 
-CREATE OR REPLACE FUNCTION subscribe_alert(
-  p_email TEXT,
-  p_spot_slug TEXT,
-  p_sport TEXT,
-  p_min_score INTEGER,
-  p_verify_token TEXT,
-  p_client_id TEXT,
-  p_locale TEXT DEFAULT 'pt'
-)
-RETURNS BOOLEAN
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public
-AS $$
-BEGIN
-  IF length(p_client_id) < 8 OR length(trim(p_email)) < 5 THEN
-    RETURN false;
-  END IF;
-
-  IF p_min_score < 0 OR p_min_score > 100 THEN
-    RETURN false;
-  END IF;
-
-  IF EXISTS (
-    SELECT 1 FROM alert_subscriptions
-    WHERE client_id = p_client_id
-      AND created_at > NOW() - INTERVAL '30 seconds'
-  ) THEN
-    RAISE EXCEPTION 'rate_limit';
-  END IF;
-
-  INSERT INTO alert_subscriptions (
-    email, spot_slug, sport, min_score, verify_token,
-    verified, active, client_id, locale
-  ) VALUES (
-    lower(trim(p_email)), p_spot_slug, p_sport, p_min_score, p_verify_token,
-    false, true, p_client_id, COALESCE(NULLIF(trim(p_locale), ''), 'pt')
-  );
-
-  RETURN true;
-END;
-$$;
-
-GRANT EXECUTE ON FUNCTION subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT, TEXT) TO anon;
+DROP FUNCTION IF EXISTS public.subscribe_alert(TEXT, TEXT, TEXT, INTEGER, TEXT, TEXT, TEXT);

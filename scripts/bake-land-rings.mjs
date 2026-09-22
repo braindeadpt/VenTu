@@ -41,7 +41,7 @@ const url = (c) => `https://geodata.ucdavis.edu/gadm/gadm4.1/json/gadm41_${c}_0.
 const rings = [];
 
 for (const c of ['PRT', 'ESP']) {
-  const d = await (await fetch(url(c))).json();
+  const d = await (await fetch(url(c), { signal: AbortSignal.timeout(60_000) })).json();
   for (const f of d.features) {
     const g = f.geometry;
     const polys = g.type === 'Polygon' ? [g.coordinates] : g.type === 'MultiPolygon' ? g.coordinates : [];

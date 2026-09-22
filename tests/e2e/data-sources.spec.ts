@@ -298,7 +298,7 @@ test.describe('Fontes de dados (data sources)', () => {
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await expect(page.locator('.leaflet-control-attribution')).toContainText(
-      'Weather data by Open-Meteo.com',
+      'Open-Meteo.com',
       { timeout: 15_000 },
     );
     await expect(page.locator('.leaflet-control-attribution')).toContainText('CC BY 4.0');
@@ -314,7 +314,7 @@ test.describe('Fontes de dados (data sources)', () => {
     await page.goto('/pt/mapa/', { waitUntil: 'networkidle', timeout: 60_000 });
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     const attribution = page.locator('.leaflet-control-attribution');
-    await expect(attribution).toContainText('Weather data by Open-Meteo.com', {
+    await expect(attribution).toContainText('Open-Meteo.com', {
       timeout: 15_000,
     });
     await expect(attribution).toContainText('OpenStreetMap');
@@ -400,7 +400,7 @@ test.describe('Fontes de dados (data sources)', () => {
       '[data-map-hero-teaser="true"] .leaflet-control-attribution',
     );
     // Open-Meteo (obrigatório em todas) + o crédito Esri do satélite.
-    await expect(attribution).toContainText('Weather data by Open-Meteo.com', {
+    await expect(attribution).toContainText('Open-Meteo.com', {
       timeout: 20_000,
     });
     await expect(attribution).toContainText(/Esri/, { timeout: 15_000 });

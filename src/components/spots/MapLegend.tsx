@@ -16,6 +16,9 @@ interface MapLegendProps {
    * heading and ticker. `map` = bottom-right (fullscreen / embed).
    */
   placement?: 'map' | 'hero';
+  /** Renderiza em fluxo (sem posição absoluta nem cartão) — usado dentro do
+   *  <details> «Legenda» do bottom sheet mobile. */
+  embedded?: boolean;
   /** Legenda de profundidade das isóbatas quando a camada está activa. */
   isobathsTitle?: string;
   isobathsVisible?: boolean;
@@ -44,6 +47,7 @@ export default function MapLegend({
   reserveHudSpace = false,
   hudLift = 0,
   placement = 'map',
+  embedded = false,
   isobathsTitle,
   isobathsVisible = false,
   hsTitle,
@@ -81,40 +85,50 @@ export default function MapLegend({
   }, [placement, isobathsVisible, hsVisible, sstVisible, currentsVisible, windVisible, bathymetryVisible, seamarksVisible, warningsVisible]);
 
   const isHero = placement === 'hero';
-  const bottomPx = !isHero && reserveHudSpace
+  const bottomPx = !isHero && !embedded && reserveHudSpace
     ? (hudLift > 0 ? hudLift + 12 : 220)
     : undefined;
 
   return (
     <div
       className={
-        // Hero mobile: o canto sup. direito já leva radar+isóbatas e a fila de
-        // pills de desporto passa por baixo — a legenda (mesmo colapsada)
-        // sobrepunha-se-lhes. Em <md fica escondida; o /mapa/ mostra-a sempre.
-        isHero
-          ? 'absolute top-[7.5rem] right-3 z-[1000] max-md:hidden'
-          : `absolute z-[1000] right-0 mr-3 ${bottomPx == null ? 'bottom-0 mb-3' : ''}`
+        embedded
+          ? 'w-full'
+          // Hero mobile: o canto sup. direito já leva radar+isóbatas e a fila de
+          // pills de desporto passa por baixo — a legenda (mesmo colapsada)
+          // sobrepunha-se-lhes. Em <md fica escondida; o /mapa/ mostra-a sempre.
+          : isHero
+            ? 'absolute top-[7.5rem] right-3 z-[1000] max-md:hidden'
+            : `absolute z-[1000] right-0 mr-3 ${bottomPx == null ? 'bottom-0 mb-3' : ''}`
       }
       style={bottomPx != null ? { bottom: bottomPx } : undefined}
       role="region"
       aria-label={isPt ? 'Legenda do mapa' : 'Map legend'}
     >
-      <div className="bg-bg-elevated border border-divider rounded-lg px-3 py-2 shadow-lg min-w-[130px] sm:min-w-[140px]">
+      <div className={embedded ? 'min-w-0' : 'bg-bg-elevated border border-divider rounded-lg px-3 py-2 shadow-lg min-w-[130px] sm:min-w-[140px]'}>
         {/* Alvo de toque ≥44px abaixo de `lg` (WCAG 2.5.8) — em mobile/tablet
             touch é o único controlo para abrir a legenda. Desktop (≥lg, rato)
-            mantém o cabeçalho compacto, onde o conteúdo está sempre visível. */}
-        <button
-          onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-between w-full min-h-[44px] mb-1 lg:min-h-0 lg:mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted lg:cursor-default lg:hover:opacity-100"
-          aria-expanded={!collapsed}
-        >
-          <span>{isPt ? 'Score Náutico' : 'Nautical Score'}</span>
-          <ChevronDown
-            className={`w-3 h-3 lg:hidden transition-transform ${collapsed ? '' : 'rotate-180'}`}
-          />
-        </button>
+            mantém o cabeçalho compacto, onde o conteúdo está sempre visível.
+            Em `embedded` (sheet) o <details> já é o toggle — sem segundo. */}
+        {!embedded && (
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex items-center justify-between w-full min-h-[44px] mb-1 lg:min-h-0 lg:mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted lg:cursor-default lg:hover:opacity-100"
+            aria-expanded={!collapsed}
+          >
+            <span>{isPt ? 'Score Náutico' : 'Nautical Score'}</span>
+            <ChevronDown
+              className={`w-3 h-3 lg:hidden transition-transform ${collapsed ? '' : 'rotate-180'}`}
+            />
+          </button>
+        )}
+        {embedded && (
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted">
+            {isPt ? 'Score Náutico' : 'Nautical Score'}
+          </p>
+        )}
 
-        <div className={`${collapsed ? 'hidden' : 'block'} lg:block`}>
+        <div className={embedded ? 'block' : `${collapsed ? 'hidden' : 'block'} lg:block`}>
           <div
             className="h-2 rounded mb-1.5"
             style={{

@@ -13,6 +13,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 
 const IH_API = process.env.IH_API_URL || 'https://ogcapi.hidrografico.pt';
 /** Current collection id (FAQ / OGC).
@@ -326,7 +327,7 @@ async function fetchIHTides() {
     fetchedAt: new Date().toISOString(),
     sourceCollection: usedCollection,
   };
-  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
+  atomicWriteJson(OUTPUT_PATH, output);
 
   console.log(`✅ IH tide data saved to public/data/ih-tides.json`);
   console.log(`📊 Stations: ${Object.keys(stations).length}`);

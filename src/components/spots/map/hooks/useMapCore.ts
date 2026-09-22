@@ -23,12 +23,25 @@ import {
   type BasemapLoadState,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
+import { applyExploreMapFit, resolveExploreChrome } from '@/components/spots/mapMarkers';
 
 interface UseMapCoreOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
   isHeroEmbed: boolean;
   /** Idioma do nome acessivel dos clusters (role="button" precisa de nome). */
   locale?: string;
+  /**
+   * Bounds da vista «Explorar» calculados das coords dos spots (dados
+   * estáticos). Com eles o mapa nasce já enquadrado — o basemap é anexado
+   * na vista final e não pede (nem aborta) tiles do zoom default.
+   * Ignorado no hero (o fit próprio vive no SpotMapInteractive).
+   */
+  initialViewBounds?: [[number, number], [number, number]] | null;
+  /**
+   * O mapa nasce em ecrã inteiro com o sheet (mobile) ou o painel (desktop)
+   * do modo Explorar por cima — o enquadramento inicial desconta-os.
+   */
+  exploreChrome?: { enabled: boolean; panelCollapsed: boolean };
 }
 
 interface UseMapCoreReturn {
@@ -177,7 +190,7 @@ function attachBasemap(
   rasterLayer.addTo(map);
 }
 
-export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -360,6 +373,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
       tileFallbackCleanupRef.current = null;
       stopAutoRecover();
       LRef.current = null;
+      delete container.dataset.mapSettled;
       clearLeafletContainer(container);
       if (mountedRef.current) {
         setIsReady(false);
@@ -407,9 +421,48 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
           created = Leaflet.map(container, mapOptions);
         }
         mapInstanceRef.current = created;
+        // Sinal «mapa parado» para e2e: reposto no moveend e retirado no
+        // movestart, por isso cobre fits e flyTos animados — um clique num
+        // marcador a meio de uma animação acerta na posição errada ou num
+        // elemento já detached.
+        created.on('movestart', () => delete container.dataset.mapSettled);
+        created.on('moveend', () => {
+          container.dataset.mapSettled = 'true';
+        });
+        container.dataset.mapSettled = 'true';
         created.invalidateSize({ animate: false });
 
         if (cancelled) return;
+
+        // O AttributionControl tem de existir ANTES de qualquer layer entrar
+        // no mapa: o Leaflet só liga a remoção do crédito ao evento 'remove'
+        // para layers que chegam por 'layeradd' com o controlo já presente.
+        // Um layer anexado antes do controlo é contado no sweep inicial mas
+        // fica sem o listener — ao ser removido o crédito fica pendurado
+        // (era o «OpenStreetMap contributors»×2 depois do fallback
+        // Carto→Esri ou da troca para satélite).
+        Leaflet.control
+          .attribution({ position: 'bottomleft', prefix: false })
+          .addAttribution(OPEN_METEO_ATTRIBUTION)
+          .addTo(created);
+
+        // Nasce enquadrado: os bounds «Explorar» vêm das coords dos spots
+        // (dados estáticos), por isso o fit corre antes de anexar o basemap
+        // — os tiles pedidos são já os da vista final e não os do zoom
+        // default que seriam abortados a seguir.
+        if (!isHeroEmbed && initialViewBounds) {
+          applyExploreMapFit(
+            Leaflet,
+            created,
+            initialViewBounds,
+            mobileInit,
+            resolveExploreChrome(
+              exploreChrome?.enabled ?? false,
+              mobileInit,
+              exploreChrome?.panelCollapsed ?? false,
+            ),
+          );
+        }
 
         attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);
         tileSignatureRef.current = tileSignature(initialBasemap, initialDark);
@@ -419,11 +472,6 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt' }: UseMapC
         // buttons rendered but unclickable under the HUD card. Top-left is
         // free on every host (layer toggle lives top-right).
         if (!isHeroEmbed) Leaflet.control.zoom({ position: 'topleft' }).addTo(created);
-
-        Leaflet.control
-          .attribution({ position: 'bottomleft', prefix: false })
-          .addAttribution(OPEN_METEO_ATTRIBUTION)
-          .addTo(created);
 
         if (mountedRef.current) setIsReady(true);
         created.invalidateSize({ animate: false });

@@ -46,17 +46,35 @@ function decodeEntities(text) {
 
 /**
  * Extract text from an RSS field (handles CDATA and regular content).
+ *
+ * Order matters (H1): tags are stripped BEFORE entities are decoded, and
+ * stripped AGAIN after. Decoding first — or only once, after the strip —
+ * lets a hostile feed smuggle markup through as `&lt;/script&gt;&lt;img …&gt;`,
+ * which becomes live HTML once JSON-LD serialises the string into a
+ * `<script>` block. Text is never allowed to leave this function containing a
+ * `<` or `>`.
  */
 function extractField(itemXml, fieldName) {
   const cdataR = new RegExp(`<${fieldName}[\\s\\S]*?>\\s*<!\\[CDATA\\[([\\s\\S]*?)\\]\\]>\\s*</${fieldName}>`);
   const m = itemXml.match(cdataR);
-  if (m) return decodeEntities(m[1].replace(/<[^>]*>/g, '').trim());
+  if (m) return stripTags(m[1]);
 
   const plainR = new RegExp(`<${fieldName}[\\s\\S]*?>([\\s\\S]*?)</${fieldName}>`);
   const m2 = itemXml.match(plainR);
-  if (m2) return decodeEntities(m2[1].replace(/<[^>]*>/g, '').trim());
+  if (m2) return stripTags(m2[1]);
 
   return '';
+}
+
+/**
+ * Strip markup → decode entities → strip again, then trim.
+ * @param {string} raw
+ * @returns {string}
+ */
+function stripTags(raw) {
+  const withoutTags = String(raw).replace(/<[^>]*>/g, '');
+  const decoded = decodeEntities(withoutTags);
+  return decoded.replace(/<[^>]*>/g, '').trim();
 }
 
 /**
@@ -151,4 +169,4 @@ async function fetchAllFeeds() {
   return flat;
 }
 
-module.exports = { fetchAllFeeds, FEEDS };
+module.exports = { fetchAllFeeds, extractField, FEEDS };

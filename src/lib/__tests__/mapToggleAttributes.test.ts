@@ -7,8 +7,10 @@ import { join } from 'path';
  *
  * Cada toggle de camada em /pt/mapa/ tem de ter um atributo data-map-*-toggle
  * nas DUAS superfícies que o renderizam:
- *   - MapControls (coluna desktop, z-1200, left-[68px]);
- *   - MapExploreHud (strip mobile rolável + hero embeds).
+ *   - MapControls (toolbar desktop, z-1200, centrada no topo);
+ *   - a lista de camadas do sheet mobile — os items são construídos em
+ *     SpotMapInteractive (sheetLayers) e renderizados pelo MapExploreSheet
+ *     (estado «half»), com o toggleAttr espalhado no <button>.
  *
  * HISTÓRIA (audit mobile 2026-09, de31e9111): radar e isóbatas nasceram sem
  * atributo — só tinham aria-label DEPENDENTE DO ESTADO («Radar IPMA» ↔
@@ -21,7 +23,11 @@ const ROOT = join(__dirname, '..', '..', '..');
 const read = (p: string) => readFileSync(join(ROOT, p), 'utf-8');
 
 const controls = read('src/components/spots/map/components/MapControls.tsx');
-const hud = read('src/components/spots/MapExploreHud.tsx');
+// Os items das camadas do sheet mobile constroem-se aqui (sheetLayers) —
+// cada item leva toggleAttr + pressed + onToggle, que o MapExploreSheet
+// aterra num <button aria-pressed onClick data-*> real.
+const sheetItems = read('src/components/spots/SpotMapInteractive.tsx');
+const sheet = read('src/components/spots/map/components/MapExploreSheet.tsx');
 const layersMenu = read('src/components/spots/map/components/MapLayersMenu.tsx');
 
 /** A lista canónica — um toggle de camada novo entra AQUI e nas duas superfícies. */
@@ -36,27 +42,27 @@ const TOGGLES = [
 ] as const;
 
 describe('mapToggleAttributes (selectores estáveis dos toggles de camada)', () => {
-  it('todas as camadas têm data-map-*-toggle na coluna desktop (MapControls)', () => {
+  it('todas as camadas têm data-map-*-toggle na toolbar desktop (MapControls)', () => {
     for (const attr of TOGGLES) {
-      expect(controls, `${attr} em falta na coluna MapControls`).toContain(attr);
+      expect(controls, `${attr} em falta na toolbar MapControls`).toContain(attr);
     }
   });
 
-  it('todas as camadas têm data-map-*-toggle no strip mobile (MapExploreHud)', () => {
+  it('todas as camadas têm data-map-*-toggle nos items do sheet mobile (sheetLayers)', () => {
     for (const attr of TOGGLES) {
-      expect(hud, `${attr} em falta no strip MapExploreHud`).toContain(attr);
+      expect(sheetItems, `${attr} em falta nos sheetLayers`).toContain(attr);
     }
   });
 
-  it('cada toggle declara o estado de pressão (aria-pressed direto ou via MapControlButton)', () => {
+  it('cada toggle declara o estado de pressão (aria-pressed direto ou via pressed:)', () => {
     // As superfícies expressam o estado por caminhos diferentes:
     //  - botões <button> crus: aria-pressed={...};
     //  - o wrapper MapControlButton: prop pressed={...} → aria-pressed no DOM;
-    //  - os items do menu «Camadas» (C4): config `pressed: ...` + `onToggle:`
-    //    que o MapLayersMenu aterra num <button aria-pressed onClick> real.
+    //  - os items de config (menu «Camadas» / sheetLayers): `pressed:` +
+    //    `onToggle:` que o renderer aterra num <button aria-pressed onClick>.
     for (const [name, src] of [
       ['MapControls', controls],
-      ['MapExploreHud', hud],
+      ['sheetLayers', sheetItems],
     ] as const) {
       for (const attr of TOGGLES) {
         const idx = src.indexOf(attr);
@@ -74,11 +80,11 @@ describe('mapToggleAttributes (selectores estáveis dos toggles de camada)', () 
   it('cada toggle é um controlo interativo real (onClick/onToggle por perto)', () => {
     // Pino informal de interatividade: os toggles passam onClick — direto no
     // <button>, via prop do MapControlButton, ou como `onToggle:` num item de
-    // config do menu «Camadas». Garante que os atributos continuam colados a
-    // controlos reais, não a decoração órfã.
+    // config. Garante que os atributos continuam colados a controlos reais,
+    // não a decoração órfã.
     for (const [name, src] of [
       ['MapControls', controls],
-      ['MapExploreHud', hud],
+      ['sheetLayers', sheetItems],
     ] as const) {
       for (const attr of TOGGLES) {
         const idx = src.indexOf(attr);
@@ -98,5 +104,13 @@ describe('mapToggleAttributes (selectores estáveis dos toggles de camada)', () 
     expect(layersMenu).toContain('item.toggleAttr');
     expect(layersMenu).toContain('onClick={item.onToggle}');
     expect(layersMenu).toContain('aria-pressed={item.pressed}');
+  });
+
+  it('o sheet aterra cada item num <button> real com estado', () => {
+    // Mesma indirecção no mobile: o LayerToggle do MapExploreSheet espalha
+    // o toggleAttr, liga onToggle a onClick e pressed a aria-pressed.
+    expect(sheet).toContain('item.toggleAttr');
+    expect(sheet).toContain('onClick={item.onToggle}');
+    expect(sheet).toContain('aria-pressed={item.pressed}');
   });
 });

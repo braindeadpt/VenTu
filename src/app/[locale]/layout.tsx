@@ -17,6 +17,7 @@ import {
   type Locale,
 } from '@/lib/i18n'
 import { buildHomeMetadata, buildOrganizationJsonLd, buildWebApplicationJsonLd } from '@/lib/seo'
+import { jsonLdHtml } from '@/lib/jsonLd'
 import Header from '@/components/layout/Header'
 import Footer from '@/components/layout/Footer'
 import ClientProviders from '@/components/layout/ClientProviders'
@@ -62,7 +63,7 @@ export default async function LocaleLayout({
         <HydrationBeacon />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
         />
         <CSPMeta />
         <a

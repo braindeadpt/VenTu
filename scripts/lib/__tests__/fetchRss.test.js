@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { createRequire } from 'module';
 
 const require = createRequire(import.meta.url);
-const { fetchAllFeeds, FEEDS } = require('../../news/fetch-rss.js');
+const { fetchAllFeeds, extractField, FEEDS } = require('../../news/fetch-rss.js');
 
 // S3 guarantee: the RSS pipeline must never let a non-http(s) URL through,
 // even if a compromised/malicious feed serves one. This test mocks fetch and
@@ -83,5 +83,51 @@ describe('fetch-rss URL discard (S3) with mocked fetch', () => {
     vi.stubGlobal('fetch', vi.fn(async () => new Response('nope', { status: 503 })));
     const items = await fetchAllFeeds();
     expect(items).toHaveLength(0);
+  });
+});
+
+// H1 guarantee: RSS text is the only untrusted string that reaches the JSON-LD
+// <script> block. Entities must NEVER be decoded into live markup — the old
+// order (strip tags → decode entities) turned `&lt;/script&gt;` into a real
+// script breakout once the string was serialised into the page.
+describe('fetch-rss field extraction never yields markup (H1)', () => {
+  const FIELD = (content) =>
+    `<item><title><![CDATA[${content}]]></title><link>https://example.com/a</link></item>`;
+
+  it('strips entity-encoded tags that decode to </script><img onerror>', () => {
+    const raw = FIELD('Swell &lt;/script&gt;&lt;img src=x onerror=alert(1)&gt; alert');
+    const title = extractField(raw, 'title');
+
+    expect(title).not.toContain('<');
+    expect(title).not.toContain('>');
+    expect(title).not.toContain('onerror');
+    expect(title).toContain('Swell');
+  });
+
+  it('strips raw tags and entity-encoded tags in the same field', () => {
+    const raw = FIELD('<b>Big</b> &lt;script&gt;steal();&lt;/script&gt; waves');
+    const title = extractField(raw, 'title');
+
+    expect(title).toBe('Big steal(); waves');
+    expect(title).not.toMatch(/[<>]/);
+  });
+
+  it('still decodes the entity set it always has (behaviour unchanged)', () => {
+    const raw = FIELD('Ericeira &amp; Peniche &#8212; solid &quot;swell&quot;');
+    expect(extractField(raw, 'title')).toBe('Ericeira & Peniche -- solid "swell"');
+  });
+
+  it('keeps a whole fetched feed free of angle brackets', async () => {
+    const xml = rssWithItems(
+      item('Hostile &lt;/script&gt;&lt;script&gt;alert(1)&lt;/script&gt;', GOOD_HTTPS),
+    );
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(xml, { status: 200 })));
+
+    const items = await fetchAllFeeds();
+    expect(items.length).toBeGreaterThan(0);
+    for (const i of items) {
+      expect(i.title).not.toMatch(/[<>]/);
+      expect(i.summary).not.toMatch(/[<>]/);
+    }
   });
 });

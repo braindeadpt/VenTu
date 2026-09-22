@@ -15,6 +15,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const {
   PLATFORM_CATALOG,
   CATALOG_BY_CODE,
@@ -141,7 +142,7 @@ async function fetchWmoBuoys() {
     hasWaveData: fresh.length > 0,
     note: 'Fallback independente para o observedWave do IH (via WMO/GTS → Copernicus, sem key).',
   };
-  fs.writeFileSync(OUTPUT_PATH, JSON.stringify(output, null, 2));
+  atomicWriteJson(OUTPUT_PATH, output);
 
   console.log(`✅ WMO buoy data saved to ${path.relative(process.cwd(), OUTPUT_PATH)}`);
   console.log(

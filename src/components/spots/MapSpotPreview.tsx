@@ -12,6 +12,7 @@ import { getCardinalLabel, getWindRelationLabel, getWindRelationToCoast, getWind
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl, getSpotDetailHref } from '@/lib/mapSpotDetail';
 import { getMapSpotNarrative } from '@/lib/mapSpotNarrative';
+import { getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
 import { getMapTideLine } from '@/lib/spotTideRelevance';
 import SpotImage from '@/components/ui/SpotImage';
 import ScoreBadge from '@/components/ui/ScoreBadge';
@@ -63,6 +64,7 @@ export default function MapSpotPreview({
 
   const narrative = getMapSpotNarrative(spot, conditions, allScores, highlightSport, isPt);
   const tideLine = getMapTideLine(spot, conditions, isPt);
+  const scoreFactors = getSpotScoreFactors({ spot, conditions, allScores, sport: highlightSport, locale });
   const windRelation =
     spot.coastOrientation !== undefined
       ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
@@ -126,6 +128,21 @@ export default function MapSpotPreview({
           );
         })}
       </div>
+
+      {scoreFactors.length > 0 && (
+        <p
+          className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 font-mono tabular-nums text-meta-sm text-fg-muted"
+          data-score-factors={scoreFactors.map((f) => f.label).join(' · ')}
+          data-score-factors-sport={highlightSport}
+        >
+          {scoreFactors.map((f, i) => (
+            <span key={i} className="inline-flex items-center">
+              {i > 0 && <span aria-hidden className="mr-1.5 text-fg-subtle/40">·</span>}
+              <span className={scoreFactorClass(f.kind)}>{f.label}</span>
+            </span>
+          ))}
+        </p>
+      )}
 
       <div className="grid grid-cols-2 gap-2 text-meta-sm">
         <div className="rounded-lg bg-surface-1/[0.04] border border-divider p-2.5">

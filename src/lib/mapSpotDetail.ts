@@ -1,5 +1,3 @@
-import type { Spot } from '@/types';
-
 export function getGoogleMapsDirectionsUrl(lat: number, lon: number): string {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}`;
 }

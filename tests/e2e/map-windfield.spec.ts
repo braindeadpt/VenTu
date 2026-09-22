@@ -81,3 +81,92 @@ test.describe('Map wind field', () => {
     await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(0);
   });
 });
+
+test.describe('Map wind field — animado (sem reduced-motion)', () => {
+  test.use({ serviceWorkers: 'block', reducedMotion: 'no-preference' });
+  test.describe.configure({ timeout: 90_000 });
+
+  async function framesDrawn(page: import('@playwright/test').Page) {
+    const v = await page
+      .locator('.leaflet-container')
+      .getAttribute('data-map-windfield-frames');
+    return v ? Number(v) : 0;
+  }
+
+  test('o canvas fica a DPR 1 e o loop pinta a ~30fps', async ({ page }) => {
+    await openMap(page);
+    const map = page.locator('.leaflet-container');
+    await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
+    await expect(map).toHaveAttribute('data-map-windfield-paused', 'false');
+
+    // acorda o relógio de inactividade — a pausa de 8s não pode congelar
+    // o contador a meio da medição
+    await page.mouse.move(720, 450);
+    const canvas = page.locator('canvas.ventu-windfield-canvas');
+    const box = await canvas.boundingBox();
+    const width = await canvas.evaluate((c: HTMLCanvasElement) => c.width);
+    expect(box).not.toBeNull();
+    // DPR 1 — o backing store acompanha o tamanho CSS, não o devicePixelRatio.
+    expect(width).toBeLessThanOrEqual(Math.ceil(box!.width));
+
+    // ~30fps: mede a taxa real (frames/tempo) — independente da lentidão
+    // do CI. Sem cap seriam ~60fps; com cap nunca passa de ~30.
+    await page.waitForTimeout(2000);
+    const t0 = Date.now();
+    const f0 = await framesDrawn(page);
+    // prova que está a animar mesmo sob contenção (10 frames em até 20s)
+    await expect
+      .poll(async () => framesDrawn(page), { timeout: 20_000 })
+      .toBeGreaterThanOrEqual(f0 + 10);
+    const fps = ((await framesDrawn(page)) - f0) / ((Date.now() - t0) / 1000);
+    expect(fps).toBeLessThanOrEqual(45); // cap ~30fps + margem
+  });
+
+  test('pausa ao fim de ~8s sem interacção e acorda com gesto no mapa', async ({ page }) => {
+    await openMap(page);
+    const map = page.locator('.leaflet-container');
+    await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
+
+    // sem qualquer gesto, o campo congela e o rAF deixa de ser agendado
+    await expect(map).toHaveAttribute('data-map-windfield-paused', 'true', { timeout: 20_000 });
+    const fPaused = await framesDrawn(page);
+    await page.waitForTimeout(1200);
+    expect(await framesDrawn(page)).toBe(fPaused);
+
+    // interacção no mapa acorda o campo
+    await page.mouse.move(720, 450);
+    await page.mouse.move(760, 470);
+    await expect(map).toHaveAttribute('data-map-windfield-paused', 'false');
+    await expect
+      .poll(async () => framesDrawn(page), { timeout: 5000 })
+      .toBeGreaterThan(fPaused);
+  });
+
+  test('a cor do campo segue a mudança de tema', async ({ page }) => {
+    await openMap(page);
+    const map = page.locator('.leaflet-container');
+    await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
+    await expect(map).toHaveAttribute('data-map-windfield-color', '167 139 250');
+
+    await page.evaluate(() => document.documentElement.classList.add('theme-ocean'));
+    await expect(map).toHaveAttribute('data-map-windfield-color', '109 40 217');
+  });
+
+  test('mudar para reduced-motion a meio congela o loop', async ({ page }) => {
+    await openMap(page);
+    const map = page.locator('.leaflet-container');
+    await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
+    await page.waitForTimeout(1500);
+    const f0 = await framesDrawn(page);
+    expect(f0).toBeGreaterThan(0);
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForTimeout(1500);
+    const f1 = await framesDrawn(page);
+    await page.waitForTimeout(1200);
+    // modo estático: o contador deixa de subir (o paintStatic não incrementa)
+    expect(await framesDrawn(page)).toBe(f1);
+    // e o campo continua desenhado (canvas presente)
+    await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(1);
+  });
+});

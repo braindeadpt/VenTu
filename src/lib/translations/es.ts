@@ -1,5 +1,9 @@
 /** Spanish shell translations — mirrors en/pt keys in i18n.ts */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsEs = {
   nav: {
@@ -174,6 +178,7 @@ export const translationsEs = {
     clusterLabel: '{count} spots',
     noData: 'Sin datos',
     loading: 'Cargando mapa...',
+    weatherCredit: 'Datos meteorológicos por',
     mapUnavailable: 'No se pudo cargar el mapa',
     fullscreen: 'Pantalla completa',
     exitFullscreen: 'Salir de pantalla completa',
@@ -281,6 +286,13 @@ export const translationsEs = {
     updatedAt: 'Actualizado',
     spotsVisible: 'spots en el mapa',
     mapDataHint: 'Pulsa un spot · Mostrar todos · Viento',
+    locateMe: 'Cerca de mí',
+    locateHere: 'Estás aquí',
+    locateDenied: 'Permiso de ubicación denegado',
+    locateUnavailable: 'Ubicación no disponible',
+    locateTimeout: 'La ubicación tardó demasiado — inténtalo de nuevo',
+    shareView: 'Compartir vista',
+    shareCopied: 'Enlace copiado',
     radarBadge: 'Radar',
   },
   news: {
@@ -824,4 +836,8 @@ export const translationsEs = {
       minguante: 'Luna menguante',
     },
   },
+  spotPageVerdict: spotPageVerdict.es,
+  spotPageInstruments: spotPageInstruments.es,
+  spotPageForecast: spotPageForecast.es,
+  spotPageContext: spotPageContext.es,
 } as const;

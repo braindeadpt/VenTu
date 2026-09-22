@@ -13,6 +13,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 
 // ── helpers ──────────────────────────────────────────────────────────
 
@@ -311,7 +312,7 @@ function build() {
   index.sort((a, b) => b.bestScore - a.bestScore);
 
   const outPath = path.join(__dirname, '..', 'public', 'data', 'spots-index.json');
-  fs.writeFileSync(outPath, JSON.stringify({ generatedAt: new Date().toISOString(), spots: index }, null, 2));
+  atomicWriteJson(outPath, { generatedAt: new Date().toISOString(), spots: index });
   console.log(`[spots-index] Written ${index.length} entries to ${outPath}`);
 }
 

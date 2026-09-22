@@ -23,7 +23,7 @@
       "nrt": "near-real-time data available",
       "lat": 39.550000000000004,
       "lon": -9.200000000000001,
-      "lastSea": "2026-09-20T23:00:00",
+      "lastSea": "2026-09-22T18:00:00",
       "family": "fugro"
     },
     "3": {
@@ -49,9 +49,17 @@
       "nrt": "near-real-time data available",
       "lat": 41.3155555555556,
       "lon": -8.9825,
-      "lastPos": "2026-09-16T23:32:13+00:00",
-      "lastSea": "2026-09-17T11:32:14+00:00",
-      "family": "datawell"
+      "lastPos": "2026-09-22T16:32:15+00:00",
+      "lastSea": "2026-09-22T17:02:15+00:00",
+      "family": "datawell",
+      "latest": {
+        "date": "2026-09-22T17:02:15.000Z",
+        "hm0": 1.16,
+        "tp": 11.8,
+        "thtp": 314,
+        "hmax": 1.74,
+        "temp": 15.6
+      }
     },
     "19": {
       "idEst": 19,
@@ -63,16 +71,16 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-09-20T21:56:44+00:00",
-      "lastSea": "2026-09-20T22:26:44+00:00",
+      "lastPos": "2026-09-22T17:26:43+00:00",
+      "lastSea": "2026-09-22T17:26:43+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-20T22:26:44.000Z",
-        "hm0": 1.26,
-        "tp": 10.5,
-        "thtp": 318,
-        "hmax": 1.92,
-        "temp": 17.1
+        "date": "2026-09-22T17:26:43.000Z",
+        "hm0": 0.95,
+        "tp": 11.1,
+        "thtp": 309,
+        "hmax": 1.41,
+        "temp": 17.9
       }
     },
     "20": {
@@ -81,21 +89,13 @@
       "area": "Faro",
       "wmoId": 6201079,
       "depth": 90,
-      "status": "active",
-      "nrt": "near-real-time data available",
+      "status": "inactive",
+      "nrt": "near-real-time data not available",
       "lat": 36.904495,
       "lon": -7.89779,
-      "lastPos": "2026-09-20T22:25:24+00:00",
-      "lastSea": "2026-09-20T22:25:24+00:00",
-      "family": "datawell",
-      "latest": {
-        "date": "2026-09-20T22:55:24.000Z",
-        "hm0": 1.43,
-        "tp": 7.1,
-        "thtp": 131,
-        "hmax": 2.95,
-        "temp": 22.4
-      }
+      "lastPos": "2026-09-21T17:25:24+00:00",
+      "lastSea": "2026-09-21T17:25:24+00:00",
+      "family": "datawell"
     },
     "23": {
       "idEst": 23,
@@ -121,16 +121,16 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-09-20T22:29:55+00:00",
-      "lastSea": "2026-09-20T22:29:55+00:00",
+      "lastPos": "2026-09-22T17:29:59+00:00",
+      "lastSea": "2026-09-22T17:29:59+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-20T22:59:55.000Z",
-        "hm0": 0.45,
-        "tp": 9.1,
-        "thtp": 160,
-        "hmax": 0.6,
-        "temp": 24.1
+        "date": "2026-09-22T17:29:59.000Z",
+        "hm0": 0.33,
+        "tp": 13.3,
+        "thtp": 218,
+        "hmax": 0.48,
+        "temp": 23.6
       }
     },
     "66": {
@@ -198,16 +198,16 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-09-20T22:49:06+00:00",
-      "lastSea": "2026-09-20T22:49:06+00:00",
+      "lastPos": "2026-09-22T17:19:06+00:00",
+      "lastSea": "2026-09-22T17:49:06+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-20T23:19:06.000Z",
-        "hm0": 1.25,
-        "tp": 11.1,
-        "thtp": 248,
-        "hmax": 1.72,
-        "temp": 22.8
+        "date": "2026-09-22T17:49:06.000Z",
+        "hm0": 1.83,
+        "tp": 13.3,
+        "thtp": 228,
+        "hmax": 2.49,
+        "temp": 23.3
       }
     },
     "88": {
@@ -283,7 +283,7 @@
       "nrt": "near-real-time data available",
       "lat": 38.3833333333333,
       "lon": -9.06666666666667,
-      "lastSea": "2026-09-20T23:00:00",
+      "lastSea": "2026-09-22T18:00:00",
       "family": "fugro"
     },
     "1011": {
@@ -295,7 +295,7 @@
       "nrt": "near-real-time data available",
       "lat": 38.35,
       "lon": -9,
-      "lastSea": "2026-09-20T23:00:00",
+      "lastSea": "2026-09-22T18:00:00",
       "family": "fugro"
     }
   },
@@ -991,166 +991,166 @@
       "distanceKm": 92.5
     },
     "luz": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 76.7
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 94.4
     },
     "burgau": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 80.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 95.5
     },
     "salema": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 84.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 95.6
     },
     "cordoama": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 94.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 96.9
     },
     "ferragudo": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 60.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 96.1
     },
     "vila-real-santo-antonio": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 53.8
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 155.4
     },
     "monte-gordo": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 50.4
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 154
     },
     "praia-verde": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 47
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 150.3
     },
     "altura": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 46.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 151.3
     },
     "praia-rocha": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 61.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 96
     },
     "alvor": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 68.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 92.5
     },
     "foil-alvor": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 68.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 92.5
     },
     "lagos": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 71
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 92.9
     },
     "lagos-wakepark": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 71.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 94.1
     },
     "beliche": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 96.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 99.2
     },
     "martinhal": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 92.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 100.3
     },
     "barrinha-faro": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 12.8
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 133.6
     },
     "fuseta": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 21.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 143.2
     },
     "ilha-faro": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 11.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 134
     },
     "faro-mar": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 14.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 130.6
     },
     "culatra": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 11
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 141.7
     },
     "armona": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 15.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 142.1
     },
     "ilha-tavira": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 33.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 146.5
     },
     "cabanas-tavira": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 37.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 146.9
     },
     "cacela-velha": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 41.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 149.1
     },
     "zavial": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 87.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 97.6
     },
     "tonel": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 94
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 101.8
     },
     "ponta-delgada": {
       "idEst": 86,
@@ -1279,40 +1279,40 @@
       "distanceKm": 15.4
     },
     "garrão": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 9.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 136
     },
     "falesia": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 29.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 116.3
     },
     "tres-irmaos": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 67
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 93.4
     },
     "canavial": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 50
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 101.2
     },
     "armacao-pera": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 46.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 104.4
     },
     "mareta": {
-      "idEst": 20,
-      "stationTitle": "CSA82/D",
-      "area": "Faro",
-      "distanceKm": 93.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 101.8
     },
     "machico": {
       "idEst": 33,
@@ -1387,7 +1387,7 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-09-21T00:17:08.276Z",
+  "fetchedAt": "2026-09-22T19:14:40.663Z",
   "sourceCollections": [
     "buoys_datawell",
     "buoys_Fugro_oceanor_wavescan"

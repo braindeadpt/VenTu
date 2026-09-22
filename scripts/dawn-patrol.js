@@ -9,6 +9,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { atomicWriteJson } = require('./lib/atomicWriteJson.js');
 const { callLLM } = require('./llm-fallback');
 const { attachMoonTideLines } = require('./lib/attachMoonTide');
 const { morningScore, resolveMorningRecalibration } = require('./lib/dawnPatrolScore');
@@ -576,7 +577,7 @@ async function generateDawnPatrol() {
 
   const outputPath = path.join(__dirname, '../public/data/dawn-patrol.json');
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, JSON.stringify(advice, null, 2));
+  atomicWriteJson(outputPath, advice);
 
   console.log(`\n✅ Dawn Patrol saved to ${outputPath}`);
   console.log(`📍 Top spot: ${advice.topSpot}`);

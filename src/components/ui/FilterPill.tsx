@@ -13,6 +13,9 @@ interface FilterPillProps {
   activeClassName?: string;
   inactiveClassName?: string;
   'aria-label'?: string;
+  /** Atributo data-* no botão (ex. 'data-map-only-on-toggle') — selector
+   *  estável para e2e, mesmo padrão dos MapLayersMenuItem. */
+  toggleAttr?: string;
 }
 
 export default function FilterPill({
@@ -26,6 +29,7 @@ export default function FilterPill({
   activeClassName,
   inactiveClassName,
   'aria-label': ariaLabel,
+  toggleAttr,
 }: FilterPillProps) {
   return (
     <button
@@ -34,6 +38,7 @@ export default function FilterPill({
       disabled={disabled}
       aria-pressed={active}
       aria-label={ariaLabel}
+      {...(toggleAttr ? { [toggleAttr]: true } : {})}
       className={cn(
         'pill inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap shrink-0',
         'transition-[background-color,border-color,color] duration-150',

@@ -1,5 +1,9 @@
 /** German shell translations — mirrors en/pt keys in i18n.ts */
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
+import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
+import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
+import { spotPageContext } from '@/lib/translations/spotPage/context';
 
 export const translationsDe = {
   nav: {
@@ -174,6 +178,7 @@ export const translationsDe = {
     clusterLabel: '{count} Spots',
     noData: 'Keine Daten',
     loading: 'Karte wird geladen...',
+    weatherCredit: 'Wetterdaten von',
     mapUnavailable: 'Karte konnte nicht geladen werden',
     fullscreen: 'Vollbild',
     exitFullscreen: 'Vollbild beenden',
@@ -281,6 +286,13 @@ export const translationsDe = {
     updatedAt: 'Aktualisiert',
     spotsVisible: 'Spots auf der Karte',
     mapDataHint: 'Spot antippen · Alle anzeigen · Wind',
+    locateMe: 'In meiner Nähe',
+    locateHere: 'Du bist hier',
+    locateDenied: 'Standortfreigabe verweigert',
+    locateUnavailable: 'Standort nicht verfügbar',
+    locateTimeout: 'Standortabfrage dauerte zu lange — erneut versuchen',
+    shareView: 'Ansicht teilen',
+    shareCopied: 'Link kopiert',
     radarBadge: 'Radar',
   },
   news: {
@@ -824,4 +836,8 @@ export const translationsDe = {
       minguante: 'Abnehmender Mond',
     },
   },
+  spotPageVerdict: spotPageVerdict.de,
+  spotPageInstruments: spotPageInstruments.de,
+  spotPageForecast: spotPageForecast.de,
+  spotPageContext: spotPageContext.de,
 } as const;

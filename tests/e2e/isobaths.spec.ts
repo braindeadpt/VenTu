@@ -118,12 +118,13 @@ test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
     await expect(inline.getByText('8 m')).toBeVisible();
     await expect(inline.getByText('30 m')).toBeVisible();
     const legend = page.getByRole('region', { name: /Legenda do mapa|Map legend/i });
-    const hud = page.locator('[data-map-hud-collapsed]');
+    const panel = page.locator('[data-map-panel="open"]');
     const legendBox = await legend.boundingBox();
-    const hudBox = await hud.boundingBox();
+    const panelBox = await panel.boundingBox();
     expect(legendBox).toBeTruthy();
-    expect(hudBox).toBeTruthy();
-    expect((legendBox?.y ?? 0) + (legendBox?.height ?? 0)).toBeLessThanOrEqual((hudBox?.y ?? 0) + 2);
+    expect(panelBox).toBeTruthy();
+    // Legenda no canto inf. direito, painel na margem esquerda — sem sobreposição.
+    expect(legendBox!.x).toBeGreaterThanOrEqual(panelBox!.x + panelBox!.width - 1);
     // A camada desenha polylines no pane de overlays do Leaflet.
     await expect(page.locator('.leaflet-overlay-pane path').first()).toBeVisible({
       timeout: 15_000,
