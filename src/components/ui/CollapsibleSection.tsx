@@ -6,8 +6,8 @@ import { ChevronDown } from 'lucide-react';
 interface CollapsibleSectionProps {
   title: string;
   icon?: React.ReactNode;
-  /** Accordion behaviour (mobile). Children mount lazily on first open —
-      maps/iframes only pay their cost when the user expands the section. */
+  /** Accordion behaviour (mobile). Children are always in the DOM (native
+      <details> hides them when closed) — keeps headings/maps crawlable. */
   collapsible?: boolean;
   /** Initial open state when collapsible (e.g. safety info). */
   defaultOpen?: boolean;
@@ -62,7 +62,9 @@ export default function CollapsibleSection({
             aria-hidden
           />
         </summary>
-        {open && <div className="px-3 pb-3 pt-2 border-t border-divider">{children}</div>}
+        {/* Filhos sempre montados: o <details> nativo esconde-os quando
+            fechado, mas mantêm-se na árvore (SEO/a11y/crawler). */}
+        <div className="px-3 pb-3 pt-2 border-t border-divider">{children}</div>
       </details>
     );
   }
