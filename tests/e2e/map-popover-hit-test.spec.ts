@@ -59,7 +59,7 @@ async function openMapa(
   } else {
     await interceptIhBuoys(page, IH_FRESH);
   }
-  await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto('/pt/mapa/?sport=all', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
   await waitHydrated(page);
   // Todos os fetches de dados (warnings, boias, condições…) resolvidos antes
