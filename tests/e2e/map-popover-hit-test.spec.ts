@@ -85,40 +85,97 @@ async function openMapa(
  * na mesma.
  */
 async function openInViewportMarker(page: Page): Promise<Locator> {
-  const pick = await page.waitForFunction(
-    () => {
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
+  // O fitBounds/markercluster animam os ícones: medir a meio dá rects fora do
+  // viewport e o predicado nunca assenta. O CI #496 morreu aqui (timeout de
+  // 60 s dentro deste waitForFunction) — espera o pane do Leaflet parar antes
+  // de escolher (duas amostras iguais do transform).
+  await page
+    .waitForFunction(
+      () => {
+        const pane = document.querySelector<HTMLElement>('.leaflet-map-pane');
+        const t = pane?.style.transform ?? '';
+        const w = window as unknown as { __ventuPane?: string; __ventuPaneStable?: number };
+        if (w.__ventuPane === t) w.__ventuPaneStable = (w.__ventuPaneStable ?? 0) + 1;
+        else {
+          w.__ventuPane = t;
+          w.__ventuPaneStable = 0;
+        }
+        return (w.__ventuPaneStable ?? 0) >= 3;
+      },
+      { timeout: 20_000, polling: 150 },
+    )
+    .catch(() => {
+      /* mapa já parado (ou sem pane): seguir para a escolha */
+    });
+
+  const pick = await page
+    .waitForFunction(
+      () => {
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const markers = Array.from(
+          document.querySelectorAll<HTMLElement>('.leaflet-marker-icon.spot-marker'),
+        );
+        // Critério: o CENTRO do ícone dentro do viewport. Exigir o rect
+        // INTEIRO dentro não tinha candidatos em mobile (os ícones encostam
+        // às margens depois do enquadramento) e o waitForFunction só saía no
+        // timeout do teste — a causa do flake do CI #496.
+        const centred = markers
+          .map((m, index) => ({ m, index, r: m.getBoundingClientRect() }))
+          .filter(({ r }) => {
+            if (r.width <= 0 || r.height <= 0) return false;
+            const cx = r.x + r.width / 2;
+            const cy = r.y + r.height / 2;
+            return cx >= 0 && cx <= vw && cy >= 0 && cy <= vh;
+          });
+        // O popup abre para CIMA do marcador — preferir os mais baixos no ecrã
+        // mantém o popup (e o botão de fecho) fora da faixa de overlays do
+        // topo (barra de controlos, aviso de boias). Sem candidatos com folga,
+        // aceita qualquer marcador centrado: o teste mede o hit-test do
+        // overlay, não a posição ideal do popup.
+        const POPUP_ROOM = 170;
+        const withRoom = centred
+          .filter(({ r }) => r.top + r.height / 2 >= POPUP_ROOM)
+          .sort((a, b) => b.r.top - a.r.top);
+        const pool =
+          withRoom.length > 0 ? withRoom : [...centred].sort((a, b) => b.r.top - a.r.top);
+        for (const { m, index, r } of pool) {
+          const cx = r.x + r.width / 2;
+          const cy = r.y + r.height / 2;
+          const top = document.elementFromPoint(cx, cy);
+          if (top === m || m.contains(top)) return { index };
+        }
+        if (pool.length > 0) return { index: pool[0].index, via: 'evaluate' };
+        return null;
+      },
+      { timeout: 30_000, polling: 250 },
+    )
+    .catch(() => null);
+
+  const info = (await pick?.jsonValue().catch(() => null)) as
+    | { index: number; via?: 'evaluate' }
+    | null;
+  if (!info) {
+    // Diagnóstico em vez de um timeout mudo: quantos marcadores existem e onde.
+    const diag = await page.evaluate(() => {
       const markers = Array.from(
         document.querySelectorAll<HTMLElement>('.leaflet-marker-icon.spot-marker'),
       );
-      // O popup abre para CIMA do marcador — ordenar do mais baixo para o mais
-      // alto no ecrã mantém o popup (e o botão de fecho) fora da faixa de
-      // overlays do topo (barra de controlos, aviso de boias).
-      const inView = markers
-        .map((m, index) => ({ m, index, r: m.getBoundingClientRect() }))
-        .filter(
-          ({ r }) =>
-            r.width > 0 &&
-            r.height > 0 &&
-            r.left >= 0 &&
-            r.top >= 0 &&
-            r.right <= vw &&
-            r.bottom <= vh,
-        )
-        .sort((a, b) => b.r.top - a.r.top);
-      for (const { m, index, r } of inView) {
-        const cx = r.x + r.width / 2;
-        const cy = r.y + r.height / 2;
-        const top = document.elementFromPoint(cx, cy);
-        if (top === m || m.contains(top)) return { index };
-      }
-      if (inView.length > 0) return { index: inView[0].index, via: 'evaluate' };
-      return null;
-    },
-    { timeout: 30_000, polling: 250 },
-  );
-  const info = (await pick.jsonValue()) as { index: number; via?: 'evaluate' };
+      return {
+        total: markers.length,
+        vw: window.innerWidth,
+        vh: window.innerHeight,
+        sample: markers.slice(0, 5).map((m) => {
+          const r = m.getBoundingClientRect();
+          return `${Math.round(r.x)},${Math.round(r.y)} ${Math.round(r.width)}x${Math.round(r.height)}`;
+        }),
+      };
+    });
+    throw new Error(
+      `openInViewportMarker: nenhum spot-marker com o centro no viewport ` +
+        `(total=${diag.total}, viewport=${diag.vw}x${diag.vh}, amostra=[${diag.sample.join(' | ')}])`,
+    );
+  }
   const marker = page.locator('.leaflet-marker-icon.spot-marker').nth(info.index);
   // Em mobile o mapa corre clustered: o markercluster adiciona/remove ícones
   // durante as animações — o elemento resolvido por índice pode ser
@@ -134,14 +191,12 @@ async function openInViewportMarker(page: Page): Promise<Locator> {
         '.leaflet-marker-icon.spot-marker',
       )) {
         const r = m.getBoundingClientRect();
-        if (
-          r.width > 0 &&
-          r.height > 0 &&
-          r.left >= 0 &&
-          r.top >= 0 &&
-          r.right <= vw &&
-          r.bottom <= vh
-        ) {
+        if (r.width <= 0 || r.height <= 0) continue;
+        // Mesmo critério do pick: o CENTRO dentro do viewport chega (o rect
+        // inteiro deixava a lista vazia em mobile — flake do CI #496).
+        const cx = r.x + r.width / 2;
+        const cy = r.y + r.height / 2;
+        if (cx >= 0 && cx <= vw && cy >= 0 && cy <= vh) {
           m.click();
           return;
         }
