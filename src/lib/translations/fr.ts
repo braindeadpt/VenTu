@@ -836,6 +836,17 @@ export const translationsFr = {
       minguante: 'Dernier croissant',
     },
   },
+  coastalArchive: {
+    title: 'Historique — Avis de navigation côtière (IH)',
+    chipOne: '{n} jour · fenêtre {w}',
+    chipMany: '{n} jours · fenêtre {w}',
+    intro:
+      'Relevé quotidien des avis en vigueur sur la côte portugaise (et transfrontaliers ES), archivé par le pipeline — un historique auditable de la couche de sécurité, à côté de l’attribution IH ci-dessus.',
+    recent: 'Plus récents',
+    aboutLink: 'À propos',
+    footerBefore: 'Tableau complet (fenêtre de chaque avis) sur la page',
+    footerAfter: '.',
+  },
   spotPageVerdict: spotPageVerdict.fr,
   spotPageInstruments: spotPageInstruments.fr,
   spotPageForecast: spotPageForecast.fr,

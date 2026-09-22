@@ -836,6 +836,17 @@ export const translationsEs = {
       minguante: 'Luna menguante',
     },
   },
+  coastalArchive: {
+    title: 'Historial — Avisos a la Navegación Costera (IH)',
+    chipOne: '{n} día · ventana {w}',
+    chipMany: '{n} días · ventana {w}',
+    intro:
+      'Registro diario de los avisos en vigor en la costa portuguesa (y transfronterizos ES), archivado por el pipeline — un historial auditable de la capa de seguridad, junto a la atribución del IH de arriba.',
+    recent: 'Más recientes',
+    aboutLink: 'Acerca de',
+    footerBefore: 'Tabla completa (ventana de cada aviso) en la página',
+    footerAfter: '.',
+  },
   spotPageVerdict: spotPageVerdict.es,
   spotPageInstruments: spotPageInstruments.es,
   spotPageForecast: spotPageForecast.es,

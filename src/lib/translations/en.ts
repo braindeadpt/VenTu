@@ -757,6 +757,17 @@ export const translationsEn = {
       minguante: 'Waning crescent',
     },
   },
+  coastalArchive: {
+    title: 'History — IH coastal navigation warnings',
+    chipOne: '{n} day · {w}-day window',
+    chipMany: '{n} days · {w}-day window',
+    intro:
+      'Daily record of warnings in force on the Portuguese coast (and cross-border ES), archived by the pipeline — an auditable history of the safety layer, next to the IH attribution above.',
+    recent: 'Most recent',
+    aboutLink: 'About',
+    footerBefore: 'Full per-warning window table on the',
+    footerAfter: ' page.',
+  },
   spotPageVerdict: spotPageVerdict.en,
   spotPageInstruments: spotPageInstruments.en,
   spotPageForecast: spotPageForecast.en,

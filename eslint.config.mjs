@@ -17,6 +17,7 @@ const MIGRATED_GLOBS = [
   'src/components/passaporte/**',
   'src/components/alerts/**',
   'src/components/tools/**',
+  'src/components/fontes/**',
   'src/app/[locale]/admin/**',
   'src/app/[locale]/compare/**',
   'src/app/[locale]/diretorio/**',

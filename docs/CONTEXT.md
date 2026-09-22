@@ -596,7 +596,7 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
 
 ## Convenções
 
-- **Idioma:** PT-PT no UI; strings em `i18n.ts` (PT/EN).
+- **Idioma:** PT-PT no UI; strings em `i18n.ts` (PT/EN). Estado da migração para as 5 línguas (es/de/fr ainda recebem EN em parte das superfícies): [`I18N-MIGRATION.md`](./I18N-MIGRATION.md) — medir com `node scripts/i18n-debt-report.js`.
 - **Tom:** directo, conciso, sem exclamações excessivas.
 - **Tailwind:** utilities first; custom em `globals.css @layer components`.
 - **Componentes:** server-first; `'use client'` só quando necessário.

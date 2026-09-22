@@ -836,6 +836,17 @@ export const translationsDe = {
       minguante: 'Abnehmender Mond',
     },
   },
+  coastalArchive: {
+    title: 'Verlauf — Küsten-Navigationswarnungen (IH)',
+    chipOne: '{n} Tag · {w}-Tage-Fenster',
+    chipMany: '{n} Tage · {w}-Tage-Fenster',
+    intro:
+      'Tägliche Aufzeichnung der geltenden Warnungen an der portugiesischen Küste (und grenzüberschreitend ES), archiviert von der Pipeline — eine überprüfbare Historie der Sicherheitsschicht, neben der IH-Attribution oben.',
+    recent: 'Neueste',
+    aboutLink: 'Über',
+    footerBefore: 'Vollständige Tabelle (Fenster jeder Warnung) auf der Seite',
+    footerAfter: '.',
+  },
   spotPageVerdict: spotPageVerdict.de,
   spotPageInstruments: spotPageInstruments.de,
   spotPageForecast: spotPageForecast.de,

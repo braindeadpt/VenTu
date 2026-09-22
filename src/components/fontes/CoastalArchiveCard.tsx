@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { Anchor } from 'lucide-react'
 import { getAssetPath } from '@/lib/paths'
+import { getTranslation } from '@/lib/i18n'
 import {
   parseCoastalWarningsArchive,
   type CoastalWarningsArchiveData,
@@ -40,6 +41,7 @@ interface CoastalArchiveCardProps {
  */
 export default function CoastalArchiveCard({ locale, baked }: CoastalArchiveCardProps) {
   const isPt = locale === 'pt'
+  const t = getTranslation(locale).coastalArchive
   const [forceLive] = useState(
     () =>
       typeof document !== 'undefined' &&
@@ -74,33 +76,23 @@ export default function CoastalArchiveCard({ locale, baked }: CoastalArchiveCard
   return (
     <div className="card-1 p-6 space-y-4" data-coastal-archive-fontes>
       <div className="flex flex-wrap items-center gap-2">
-        <h2 className="text-lg font-bold text-fg">
-          {isPt
-            ? 'Histórico — Avisos à Navegação Costeiros (IH)'
-            : 'History — IH coastal navigation warnings'}
-        </h2>
+        <h2 className="text-lg font-bold text-fg">{t.title}</h2>
         <span
           className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
           data-visual-dynamic
         >
           <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
-          {isPt
-            ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} · janela ${archive.windowDays}`
-            : `${archive.dayCount} ${archive.dayCount === 1 ? 'day' : 'days'} · ${archive.windowDays}-day window`}
+          {(archive.dayCount === 1 ? t.chipOne : t.chipMany)
+            .replace('{n}', String(archive.dayCount))
+            .replace('{w}', String(archive.windowDays))}
         </span>
       </div>
-      <p className="text-sm text-fg-muted leading-relaxed">
-        {isPt
-          ? 'Registo diário dos avisos em vigor na costa portuguesa (e cross-border ES), arquivado pelo fetch — histórico auditable da camada de segurança, lado a lado com a atribuição do IH acima.'
-          : 'Daily record of warnings in force on the Portuguese coast (and cross-border ES), archived by the pipeline — an auditable history of the safety layer, next to the IH attribution above.'}
-      </p>
+      <p className="text-sm text-fg-muted leading-relaxed">{t.intro}</p>
 
       <CoastalDailyActiveChart dailyActive={archive.dailyActive} isPt={isPt} />
 
       <div className="space-y-1.5">
-        <p className="text-xs uppercase tracking-wide text-fg-subtle">
-          {isPt ? 'Mais recentes' : 'Most recent'}
-        </p>
+        <p className="text-xs uppercase tracking-wide text-fg-subtle">{t.recent}</p>
         {archive.refs.slice(0, 6).map((r) => (
           <div
             key={r.ref}
@@ -127,23 +119,11 @@ export default function CoastalArchiveCard({ locale, baked }: CoastalArchiveCard
           </div>
         ))}
         <p className="pt-1 text-xs text-fg-subtle">
-          {isPt ? (
-            <>
-              Tabela completa (janela de cada aviso) na página{' '}
-              <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
-                Sobre
-              </a>
-              .
-            </>
-          ) : (
-            <>
-              Full per-warning window table on the{' '}
-              <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
-                About
-              </a>{' '}
-              page.
-            </>
-          )}
+          {t.footerBefore}{' '}
+          <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
+            {t.aboutLink}
+          </a>
+          {t.footerAfter}
         </p>
       </div>
     </div>
