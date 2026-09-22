@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { interceptWarnings, readRealConditions } from './helpers/conditions';
 import { preseedWindRingLegend } from './helpers/map-setup';
-import { showAllMapMarkers } from './helpers/map-sheet';
+import { showAllMapMarkers, tapSpotMarker } from './helpers/map-sheet';
 
 /**
  * Aviso «Mar perigoso» — o mesmo de segurança do hero do spot, estendido ao
@@ -46,23 +46,14 @@ function warningsNoSeaState(): Record<string, unknown> {
 }
 
 /**
- * Abre o sheet do spot tocando num marker individual.
- *
- * O mapa móvel desenha os markers por chunks (runChunked, 8/batch + yield) e
- * faz fitBounds ao primeiro batch — os icons mexem-se logo depois de aparecer.
- * Um click({ force: true }) logo após o waitForSelector dispara numa posição
- * pré-fitBounds e pode cair no fundo do mapa (flake sob workers paralelos).
- * Aqui o clique é SEM force: o Playwright espera o marker estabilizar (2 frames
- * com a mesma caixa) antes de acertar, e retries enquanto os chunks chegam.
- * `.spot-marker` só casa singletons (não clusters), por isso qualquer one abre
- * o sheet; um sheet reopenável é o contrato do MapSpotSheet.
+ * Abre o sheet do spot tocando num marker individual. O cluster é desfeito
+ * pela UI do sheet e o clique usa o helper partilhado: espera o mapa
+ * parado (data-map-settled — o fit depende da altura medida do peek) e
+ * escolhe um marcador que é o elemento de topo no seu centro.
  */
 async function openSpotSheet(page: import('@playwright/test').Page) {
   await showAllMapMarkers(page);
-  await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
-  const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
-  // Force: com o cluster desfeito, outro marcador pode sobrepor o primeiro.
-  await marker.click({ position: { x: 14, y: 14 }, force: true });
+  await tapSpotMarker(page);
   const sheet = page.getByTestId('map-spot-sheet');
   await expect(sheet).toBeVisible({ timeout: 15_000 });
   return sheet;

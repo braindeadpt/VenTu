@@ -59,12 +59,19 @@ test.describe('«Perto de mim» e «Partilhar» — desktop', () => {
 
     await btn.click();
     await expect(locateDot(page)).toBeVisible({ timeout: 15_000 });
+    // O flyTo anima ~0.6s — o ponto aparece depois do movestart, por isso
+    // esperar pelo settled garante que o zoom lido já é o final.
+    await page.waitForSelector('.leaflet-container[data-map-settled="true"]', {
+      timeout: 15_000,
+    });
     await expect
       .poll(async () => (await mapCenter(page))?.lat ?? 0, { timeout: 15_000 })
       .toBeCloseTo(38.96, 1);
     const c = await mapCenter(page);
     expect(c!.lng).toBeCloseTo(-9.42, 1);
     expect(c!.zoom).toBeGreaterThanOrEqual(10);
+    // zoomSnap 1: o zoom útil (11) tem de terminar inteiro, não a meio da animação.
+    expect(Number.isInteger(c!.zoom)).toBe(true);
   });
 
   test('permissão negada mostra mensagem curta sem partir o mapa', async ({ page }) => {

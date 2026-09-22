@@ -373,6 +373,7 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
       tileFallbackCleanupRef.current = null;
       stopAutoRecover();
       LRef.current = null;
+      delete container.dataset.mapSettled;
       clearLeafletContainer(container);
       if (mountedRef.current) {
         setIsReady(false);
@@ -420,6 +421,15 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
           created = Leaflet.map(container, mapOptions);
         }
         mapInstanceRef.current = created;
+        // Sinal «mapa parado» para e2e: reposto no moveend e retirado no
+        // movestart, por isso cobre fits e flyTos animados — um clique num
+        // marcador a meio de uma animação acerta na posição errada ou num
+        // elemento já detached.
+        created.on('movestart', () => delete container.dataset.mapSettled);
+        created.on('moveend', () => {
+          container.dataset.mapSettled = 'true';
+        });
+        container.dataset.mapSettled = 'true';
         created.invalidateSize({ animate: false });
 
         if (cancelled) return;
