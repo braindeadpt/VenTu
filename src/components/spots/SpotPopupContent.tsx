@@ -9,6 +9,9 @@ import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import { getScoreTokens } from '@/lib/sportScore';
+import type { MarineConditionsFields } from '@/lib/marineConditions';
+import type { GridSportFilter } from '@/lib/sportRatings';
+import { getSpotScoreFactors, scoreFactorClass } from '@/lib/spotScoreFactors';
 import { getDifficultyLabel } from '@/lib/mapDifficulty';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import type { WindRelation } from '@/lib/wind';
@@ -35,6 +38,10 @@ export interface SpotPopupContentProps {
   confidenceDetail?: ConfidenceDetail;
   /** Sea-state/wind warning badge (active IPMA warning for the spot). */
   warning?: MapMarkerWarning | null;
+  /** Condições vivas — alimenta a linha «porquê este score». */
+  conditions?: MarineConditionsFields;
+  /** Desporto seleccionado no mapa ('all' → melhor score). */
+  highlightSport?: GridSportFilter;
 }
 
 export function SpotPopupContent({
@@ -55,6 +62,8 @@ export function SpotPopupContent({
   confidence,
   confidenceDetail,
   warning,
+  conditions,
+  highlightSport,
 }: SpotPopupContentProps) {
   const isPt = locale === 'pt';
   const name = isPt ? spot.name : spot.nameEn;
@@ -74,6 +83,15 @@ export function SpotPopupContent({
     ? SPORT_LABELS[topSport[0]]?.[isPt ? 'pt' : 'en']
     : null;
   const tokens = topScore > 0 ? getScoreTokens(topScore) : null;
+  const scoreFactors = conditions
+    ? getSpotScoreFactors({
+        spot,
+        conditions,
+        allScores,
+        sport: highlightSport ?? 'all',
+        locale,
+      })
+    : [];
 
   return (
     <div className="min-w-[240px] max-w-[280px]">
@@ -139,6 +157,19 @@ export function SpotPopupContent({
         <p className="text-[11px] text-fg-muted">
           {region} · {getDifficultyLabel(spot.difficulty, isPt)}
         </p>
+        {scoreFactors.length > 0 && (
+          <p
+            className="pt-0.5 font-mono tabular-nums text-[11px] text-fg-muted"
+            data-score-factors={scoreFactors.map((f) => f.label).join(' · ')}
+          >
+            {scoreFactors.map((f, i) => (
+              <span key={i}>
+                {i > 0 && <span aria-hidden className="text-fg-subtle/40"> · </span>}
+                <span className={scoreFactorClass(f.kind)}>{f.label}</span>
+              </span>
+            ))}
+          </p>
+        )}
       </div>
 
       {warningPill && <div className="px-2.5 pb-1.5">{warningPill}</div>}
