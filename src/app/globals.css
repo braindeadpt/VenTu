@@ -307,7 +307,7 @@ html:has([data-embed-widget]) body {
     .card-1 { backdrop-filter: none; -webkit-backdrop-filter: none; }
   }
   .card-2 {
-    @apply bg-surface-2/[0.08] border border-divider-strong rounded-card backdrop-blur-md;
+    @apply bg-surface-2/[0.08] border border-divider-strong rounded-card backdrop-blur-md shadow-card;
   }
   .card-hero {
     @apply bg-surface-1/[0.04] border border-divider-strong rounded-card backdrop-blur-md;
