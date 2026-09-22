@@ -32,7 +32,15 @@ fi
 for attempt in $(seq 1 10); do
   echo "=== Push attempt ${attempt}/10 ==="
   git fetch origin main
-  git checkout -B main origin/main
+  # Discard anything local BEFORE the checkout: under `set -e`, a dirty tree
+  # (or an untracked file in the way) makes `git checkout -B` abort before the
+  # retry loop ever runs — the 2026-09-22 incident where commits landing
+  # mid-pipeline killed the next bot push. Working-tree data is safe: it was
+  # backed up to $DATA_BACKUP above and is re-copied right after the checkout.
+  # `clean` is scoped to the generated dirs so local scripts are untouched.
+  git reset --hard -q
+  git clean -fdq -- public/data data-state
+  git checkout -f -B main origin/main
   cp -a "$DATA_BACKUP/public-data/." public/data/
   if [ "$HAS_STATE" = 1 ]; then
     mkdir -p data-state
