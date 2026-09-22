@@ -17,11 +17,11 @@ Open-source surf and water-sports conditions for Portugal — scores, forecasts,
 
 ### O que é
 
-O **VenTu** (Vem + Tu) agrega condições marítimas para **185 spots** em Portugal (continental, Açores, Madeira), com scores por modalidade, previsão horária, mapa interactivo, Dawn Patrol, notícias resumidas por IA e **links para livecams** (Surftotal, MEO Beachcam) em **37 spots** curados.
+O **VenTu** (Vem + Tu) agrega condições marítimas para **185 spots** em Portugal (continental, Açores, Madeira), com scores por modalidade, previsão horária, mapa interactivo, Dawn Patrol, notícias resumidas por IA e **links para livecams** (Surftotal, MEO Beachcam) em **119 spots** — 120 câmaras no total, contando as regionais.
 
 ### Funcionalidades
 
-- Condições actualizadas a cada **3 horas** (GitHub Actions + Open-Meteo)
+- Condições actualizadas a cada **2 horas** (06h–20h), com multi-modelo 3×/dia (06h, 12h, 18h); o pipeline corre a cada 30 min com gate de skip (GitHub Actions + Open-Meteo)
 - Scores por desporto (surf, kitesurf, windsurf, bodyboard, foil, SUP, big wave, …)
 - Mapa fullscreen com filtros por região e modalidade
 - Página de spot: condições, previsão, janelas, localização, câmara (quando curada)
@@ -174,11 +174,11 @@ Issues e PRs são bem-vindos. Lê [CONTRIBUTING.md](CONTRIBUTING.md) antes de su
 
 ### What it is
 
-**VenTu** aggregates marine conditions for **185 spots** in Portugal, with per-sport scores, hourly forecast, interactive map, Dawn Patrol, AI-summarized news, and **curated live camera links** on **37 spots**.
+**VenTu** aggregates marine conditions for **185 spots** in Portugal, with per-sport scores, hourly forecast, interactive map, Dawn Patrol, AI-summarized news, and **curated live camera links** on **119 spots** — 120 cams in total, counting the regional ones.
 
 ### Features
 
-- Conditions updated every **3 hours** (GitHub Actions + Open-Meteo)
+- Conditions updated every **2 hours** (06:00–20:00), with multi-model 3×/day (06:00, 12:00, 18:00); the pipeline runs every 30 min behind a skip gate (GitHub Actions + Open-Meteo)
 - Multi-sport scores, regional map filters, email alerts
 - Spot pages: conditions, forecast, windows, location, live cam (when curated)
 - [`/livecams`](https://ventu.surf/en/livecams/) index — verified external links

@@ -1,0 +1,37 @@
+name: Ideia / melhoria
+description: Sugestão de funcionalidade, dado novo ou melhoria de UX.
+title: '[ideia] '
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: problema
+    attributes:
+      label: Que problema resolve
+      description: Descreve a necessidade, não só a solução.
+    validations:
+      required: true
+  - type: textarea
+    id: proposta
+    attributes:
+      label: Proposta
+      description: O que gostarias de ver (comportamento, ecrã, dado, atalho).
+    validations:
+      required: true
+  - type: dropdown
+    id: superficie
+    attributes:
+      label: Superfície
+      options:
+        - Site (UI/rotas)
+        - Mapa
+        - Dados / previsões / scores
+        - Livecams / notícias
+        - Conta / favoritos / alertas
+        - Workflows / pipelines
+        - Documentação
+    validations:
+      required: true
+  - type: textarea
+    id: alternativas
+    attributes:
+      label: Alternativas consideradas
