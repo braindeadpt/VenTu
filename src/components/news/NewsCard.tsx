@@ -1,5 +1,6 @@
 import { NewsItem } from '@/types';
 import { safeExternalUrl } from '@/lib/safeUrl';
+import { newsCategoryLabel } from '@/lib/newsCategories';
 import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 
 interface NewsCardProps {
@@ -88,7 +89,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
           <div className="flex items-center gap-1">
             <span className={`${catColor.split(' ')[1]}`}>{catIcon}</span>
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${catColor}`}>
-              {news.category}
+              {newsCategoryLabel(news.category, locale)}
             </span>
           </div>
           <span className="flex items-center gap-1 text-xs text-fg-subtle">

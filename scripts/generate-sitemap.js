@@ -93,6 +93,7 @@ const staticPages = [
   { path: '/about/', priority: '0.5', changefreq: 'monthly' },
   { path: '/fontes/', priority: '0.5', changefreq: 'monthly' },
   { path: '/sazonalidade/', priority: '0.6', changefreq: 'monthly' },
+  { path: '/modalidades/', priority: '0.75', changefreq: 'weekly' },
   { path: '/ferramentas/', priority: '0.7', changefreq: 'monthly' },
   { path: '/ferramentas/calculadora-kite/', priority: '0.75', changefreq: 'monthly' },
   { path: '/ferramentas/calculadora-fato/', priority: '0.75', changefreq: 'monthly' },

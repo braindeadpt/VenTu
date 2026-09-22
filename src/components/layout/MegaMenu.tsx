@@ -169,7 +169,16 @@ export default function MegaMenu({ locale, isOpen, isActive = false, onOpen, onC
               })}
             </div>
             <div className="text-xs font-medium text-fg-subtle uppercase tracking-wider mb-3 px-1">
-              {t.megaMenu.modalidadesTitle}
+              {/* Título da secção é também o índice /modalidades/ (D9) —
+                  era um div morto, sem rota para onde apontar. */}
+              <Link
+                href={`/${locale}/modalidades/`}
+                role="menuitem"
+                onClick={onClose}
+                className="hover:text-fg transition-colors duration-[200ms] ease-out-expo motion-reduce:transition-none"
+              >
+                {t.megaMenu.modalidadesTitle}
+              </Link>
             </div>
             <div className="grid grid-cols-2 gap-2">
               {MODALIDADES_ITEMS.map((item) => {
