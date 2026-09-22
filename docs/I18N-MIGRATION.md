@@ -6,17 +6,17 @@
 >
 > Medição reproduzível: `node scripts/i18n-debt-report.js` (ou `--json`).
 
-## Estado (2026-09-22, após as superfícies news e auth)
+## Estado (2026-09-23, após news/auth + HomepageSearch + FeedbackForm)
 
 | Métrica | Valor |
 |---|---:|
 | Ficheiros `src/**` | 526 |
-| Sem dívida (limpos) | 419 |
-| Com ternários de copy | **107** |
-| Ternários de copy | **632** |
+| Sem dívida (limpos) | 421 |
+| Com ternários de copy | **105** |
+| Ternários de copy | **609** |
 
-Progresso: 672 → 632 ternários, 116 → 107 ficheiros (superfícies `fontes`,
-`news` e `auth` fechadas).
+Progresso: 672 → 609 ternários, 116 → 105 ficheiros (superfícies `fontes`,
+`news`, `auth`, `HomepageSearch` e `FeedbackForm` fechadas).
 
 ### Por superfície (ternários)
 
@@ -26,11 +26,12 @@ Progresso: 672 → 632 ternários, 116 → 107 ficheiros (superfícies `fontes`,
 | `src/app/[locale]` (páginas) | 61 |
 | `src/components/about` | 55 |
 | `src/components/homepage` | 52 |
-| `src/components/ui` | 43 |
+| `src/components/ui` | 42 |
 | `src/components/account` | 30 |
 | `src/components/DawnPatrolBanner.tsx` | 23 |
-| `src/components/FeedbackForm.tsx` | 22 |
 | `src/components/layout` | 15 |
+| `src/lib/mapSpotNarrative.ts` | 11 |
+| `src/components/weather` | 11 |
 
 ## Método (por superfície)
 
@@ -68,6 +69,13 @@ Progresso: 672 → 632 ternários, 116 → 107 ficheiros (superfícies `fontes`,
    `AuthCallbackClient`) — bloco `auth` novo nas 5 línguas (títulos por motivo,
    subtítulos, enviar/enviado, placeholders, estados do callback); o «Fechar»
    reutiliza `common.close`. `src/components/auth/**` em `MIGRATED_GLOBS`.
+
+4. **`HomepageSearch` + `FeedbackForm`** (23 strings em 2 ficheiros) — o botão
+   de busca do hero reutiliza `hero.searchPlaceholder`; o formulário de
+   feedback ganhou o bloco `feedback` (tipos/tipos-de-dica, descrições,
+   placeholders, erros incl. rate-limit, envio, agradecimento) e o cast
+   `getTranslation(locale as 'pt' | 'en')` saiu. Ambos os ficheiros entraram em
+   `MIGRATED_GLOBS` (entradas por ficheiro).
 
 Em todas, a copy **pt/en ficou byte-idêntica** (baselines visuais intactas) e
 es/de/fr deixaram de receber inglês.

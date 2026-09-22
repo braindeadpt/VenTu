@@ -74,6 +74,8 @@ const ES_COGNATES = new Set([
   'IA',                 // sigla correcta em espanhol = PT (badge de resumo IA)
   'Página anterior',    // espanhol correcto = PT (paginação das notícias)
   '🌍 Internacional',    // espanhol correcto = PT (filtro de região das notícias)
+  'Sugerir / Reportar',  // espanhol correcto = PT (trigger do formulário de feedback)
+  'Email (opcional)',    // espanhol correcto = PT (campo opcional do feedback)
 ]);
 
 /**
