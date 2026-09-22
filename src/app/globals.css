@@ -1058,6 +1058,26 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
   display: none !important;
 }
 
+/* Fallback de robustez: se o ícone custom não estiver presente (JS/CSS
+   falhou), o cluster nativo ficava invisível (fundo transparente + counter
+   escondido). Com :has() mostramos um marcador legível SÓ nesse caso — com o
+   .ventu-cluster-icon presente nada muda (baselines intactas). */
+.marker-cluster-small:not(:has(.ventu-cluster-icon)),
+.marker-cluster-medium:not(:has(.ventu-cluster-icon)),
+.marker-cluster-large:not(:has(.ventu-cluster-icon)) {
+  background: rgb(var(--data-waves) / 0.25) !important;
+  border-radius: 9999px;
+}
+.marker-cluster-small:not(:has(.ventu-cluster-icon)) div,
+.marker-cluster-medium:not(:has(.ventu-cluster-icon)) div,
+.marker-cluster-large:not(:has(.ventu-cluster-icon)) div {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  color: rgb(var(--fg));
+  font-weight: 600;
+}
+
 /* ── Custom cluster icon (ventu-cluster-icon) ── */
 .ventu-cluster-icon {
   background: transparent !important;
