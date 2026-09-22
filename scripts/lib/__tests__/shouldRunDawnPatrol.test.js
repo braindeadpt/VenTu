@@ -38,3 +38,44 @@ describe('resolveDawnGate (dawn-patrol após update-data do mesmo dia)', () => {
     expect(resolveDawnGate({ hour: 8, eventName: null })).toBe('skip');
   });
 });
+
+describe('resolveDawnGate catch-up (staleness — congelo de 2026-09-01)', () => {
+  it('patrol de dia anterior + hora > 04:00 → run (janela 04:00 perdida)', () => {
+    expect(
+      resolveDawnGate({ hour: 6, eventName: 'workflow_run', dataDate: '2026-09-01', todayDate: '2026-09-22' })
+    ).toBe('run');
+    expect(
+      resolveDawnGate({ hour: 23, eventName: 'workflow_run', dataDate: '2026-09-21', todayDate: '2026-09-22' })
+    ).toBe('run');
+  });
+
+  it('patrol de hoje → skip à mesma (não duplica no mesmo dia)', () => {
+    expect(
+      resolveDawnGate({ hour: 6, eventName: 'workflow_run', dataDate: '2026-09-22', todayDate: '2026-09-22' })
+    ).toBe('skip');
+    expect(
+      resolveDawnGate({ hour: 20, eventName: 'workflow_run', dataDate: '2026-09-22', todayDate: '2026-09-22' })
+    ).toBe('skip');
+  });
+
+  it('antes das 04:00 mesmo com patrol velha → skip (espera pelo merge pre-dawn)', () => {
+    for (const hour of [0, 1, 2, 3]) {
+      expect(
+        resolveDawnGate({ hour, eventName: 'workflow_run', dataDate: '2026-09-21', todayDate: '2026-09-22' })
+      ).toBe('skip');
+    }
+  });
+
+  it('ficheiro em falta ou datas desconhecidas → fallback para a janela 04:00', () => {
+    expect(resolveDawnGate({ hour: 6, eventName: 'workflow_run', dataDate: null, todayDate: '2026-09-22' })).toBe('skip');
+    expect(resolveDawnGate({ hour: 6, eventName: 'workflow_run', dataDate: '2026-09-01', todayDate: null })).toBe('skip');
+    expect(resolveDawnGate({ hour: 6, eventName: 'workflow_run' })).toBe('skip');
+    expect(resolveDawnGate({ hour: 4, eventName: 'workflow_run', dataDate: null, todayDate: null })).toBe('run');
+  });
+
+  it('workflow_dispatch corre sempre, mesmo com patrol de hoje', () => {
+    expect(
+      resolveDawnGate({ hour: 15, eventName: 'workflow_dispatch', dataDate: '2026-09-22', todayDate: '2026-09-22' })
+    ).toBe('run');
+  });
+});
