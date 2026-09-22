@@ -79,6 +79,33 @@ describe('validate-news-livecams — URL-segment guards', () => {
     expect(errors[0]).toMatch(/duplicate livecam key "moledo"/);
   });
 
+  it('rejects a livecam key que não é slug de spot nem está na allowlist (M7)', () => {
+    const { errors } = validateNewsLivecamsContent({
+      newsItems: [newsItem('Vento', 'news-1-abcdef')],
+      livecamsSource: livecamsSource([['moledo'], ['supertubso'], ['peniche']]),
+      spotSlugs: new Set(['moledo', 'ofir']),
+    });
+    expect(errors).toHaveLength(1);
+    expect(errors[0]).toMatch(/livecam key "supertubso".*STANDALONE_LIVECAM_KEYS/);
+  });
+
+  it('aceita cams regionais ainda que sem spot correspondente (peniche)', () => {
+    const { errors } = validateNewsLivecamsContent({
+      newsItems: [newsItem('Vento', 'news-1-abcdef')],
+      livecamsSource: livecamsSource([['peniche'], ['moledo']]),
+      spotSlugs: new Set(['moledo']),
+    });
+    expect(errors).toEqual([]);
+  });
+
+  it('sem spotSlugs mantém o comportamento antigo (sem guarda de membership)', () => {
+    const { errors } = validateNewsLivecamsContent({
+      newsItems: [newsItem('Vento', 'news-1-abcdef')],
+      livecamsSource: livecamsSource([['nao-existe-em-spots']]),
+    });
+    expect(errors).toEqual([]);
+  });
+
   it('mirrors the production news slug derivation (accents stripped, id suffix)', () => {
     expect(slugify('Praia do Garrão — Açores!')).toBe('praia-do-garrao-acores');
     expect(newsSlug(newsItem('Vento Forte no Norte', 'news-1788262316634-2'))).toBe('vento-forte-no-norte-6634-2');

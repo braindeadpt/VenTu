@@ -188,25 +188,48 @@ function getSupabaseConfig() {
   return { url, key };
 }
 
-async function fetchSubscriptions() {
+const SUPABASE_PAGE_SIZE = 1000;
+
+/**
+ * Lê uma tabela do PostgREST com paginação por `Range` (auditoria M6).
+ *
+ * Sem o header, o PostgREST corta silenciosamente ao default de 1000 rows —
+ * acima disso os alertas das linhas seguintes deixavam de ser enviados sem
+ * nenhum aviso. Pagina até vir uma página incompleta; `missing` distingue a
+ * tabela inexistente (404) da lista vazia.
+ */
+async function fetchAllRows(table, query, { allow404 = false } = {}) {
   const { url, key } = getSupabaseConfig();
-  const res = await fetch(`${url}/rest/v1/alert_subscriptions?active=eq.true&select=*`, {
-    headers: supabaseHeaders(key),
-    signal: AbortSignal.timeout(30_000),
-  });
-  if (!res.ok) throw new Error(`Supabase fetch failed: ${res.status}`);
-  return res.json();
+  const rows = [];
+  for (let from = 0; ; from += SUPABASE_PAGE_SIZE) {
+    const res = await fetch(
+      `${url}/rest/v1/${table}?${query}`,
+      {
+        headers: { ...supabaseHeaders(key), Range: `${from}-${from + SUPABASE_PAGE_SIZE - 1}` },
+        signal: AbortSignal.timeout(30_000),
+      },
+    );
+    if (allow404 && res.status === 404) return { rows, missing: true };
+    if (!res.ok) throw new Error(`Supabase fetch failed (${table}): ${res.status}`);
+    const page = await res.json();
+    if (!Array.isArray(page)) {
+      throw new Error(`Supabase fetch failed (${table}): resposta não-array`);
+    }
+    rows.push(...page);
+    if (page.length < SUPABASE_PAGE_SIZE) return { rows, missing: false };
+  }
+}
+
+async function fetchSubscriptions() {
+  const { rows } = await fetchAllRows('alert_subscriptions', 'active=eq.true&select=*');
+  return rows;
 }
 
 async function fetchUserAlertPrefs() {
-  const { url, key } = getSupabaseConfig();
-  const res = await fetch(`${url}/rest/v1/user_alert_prefs?active=eq.true&select=*`, {
-    headers: supabaseHeaders(key),
-    signal: AbortSignal.timeout(30_000),
+  const { rows, missing } = await fetchAllRows('user_alert_prefs', 'active=eq.true&select=*', {
+    allow404: true,
   });
-  if (res.status === 404) return [];
-  if (!res.ok) throw new Error(`Supabase user_alert_prefs fetch failed: ${res.status}`);
-  return res.json();
+  return missing ? [] : rows;
 }
 
 async function fetchUserFavorites(userId) {
@@ -220,16 +243,10 @@ async function fetchUserFavorites(userId) {
   return rows.map((r) => r.spot_id);
 }
 
-/** Plain-text fallback from HTML — filters penalise HTML-only bulk mail. */
-function htmlToText(html) {
-  return html
-    .replace(/<a\s+[^>]*href="([^"]+)"[^>]*>(.*?)<\/a>/gi, '$2 ($1)')
-    .replace(/<\/(p|li|div)>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/&amp;/g, '&')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim();
-}
+/** Plain-text fallback from HTML — filters penalizam HTML-only bulk mail.
+ *  Delegação na lib partilhada: uma só passagem de descodificação e contrato
+ *  «sem `<`/`>`» (CodeQL js/incomplete-multi-character-sanitization). */
+const { htmlToText } = require('./lib/sanitizeText');
 
 /**
  * @param {string} to
@@ -687,4 +704,6 @@ module.exports = {
   selectVerificationTargets,
   VERIFICATION_RETRY_MS,
   MAX_VERIFICATION_SENDS_PER_RUN,
+  fetchAllRows,
+  SUPABASE_PAGE_SIZE,
 };
