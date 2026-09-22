@@ -8,6 +8,8 @@ on:
 permissions:
   contents: write
 
+# Dois pushes do bot ao mesmo ficheiro de contribuições = race no rebase;
+# a fila (sem cancelamento) serializa as execuções como nos outros workflows.
 concurrency:
   group: apply-contributions
   cancel-in-progress: false
