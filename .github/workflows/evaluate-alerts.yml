@@ -13,6 +13,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: evaluate-alerts
+  cancel-in-progress: false
+
 jobs:
   alerts:
     runs-on: ubuntu-latest
