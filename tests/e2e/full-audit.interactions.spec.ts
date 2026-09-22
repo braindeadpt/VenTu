@@ -114,8 +114,10 @@ test.describe('UI interactions audit', () => {
     });
 
     await expect(page.getByRole('main').getByRole('meter')).toBeVisible();
+    // S2B: a secção «Agora» do dashboard foi substituída pelo landmark
+    // «Instrumentos» (h2 sr-only — getByRole apanha headings ocultos).
     await expect(
-      page.getByRole('heading', { name: /^Agora$|^Now$/i }),
+      page.getByRole('heading', { name: /^Instrumentos$|^Instruments$/i }),
     ).toBeVisible();
     await expect(
       page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),

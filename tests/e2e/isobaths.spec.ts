@@ -37,6 +37,22 @@ async function interceptContours(page: import('@playwright/test').Page): Promise
 test.describe('IsobathsStrip (Fundo perto da praia)', () => {
   test.use({ serviceWorkers: 'block' });
 
+  /**
+   * S2B: o IsobathsStrip vive no painel de detalhe do instrumento «Onda»
+   * (#instrumentos → cartão wave). Abre-o antes das asserções.
+   */
+  async function openWaveDetail(page: import('@playwright/test').Page) {
+    const detail = page.locator('#instrumentos-detalhe');
+    const button = page.locator("#instrumentos [data-instrument='wave'] button");
+    await expect(async () => {
+      const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
+      if (attr !== 'wave') {
+        await button.click({ timeout: 3_000 });
+      }
+      await expect(detail).toHaveAttribute('data-detail', 'wave', { timeout: 1_000 });
+    }).toPass({ timeout: 20_000 });
+  }
+
   const NAZARE_ISOBATHS = {
     spots: { nazare: { 8: 0.25, 16: 0.31, 30: 0.46 } },
     fetchedAt: '2026-08-15T08:00:00Z',
@@ -50,6 +66,7 @@ test.describe('IsobathsStrip (Fundo perto da praia)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({
       timeout: 20_000,
     });
+    await openWaveDetail(page);
 
     const strip = page.getByTestId('isobaths-strip');
     await expect(strip).toBeVisible({ timeout: 20_000 });
@@ -74,6 +91,7 @@ test.describe('IsobathsStrip (Fundo perto da praia)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({
       timeout: 20_000,
     });
+    await openWaveDetail(page);
 
     await expect(page.getByTestId('isobaths-strip')).toHaveCount(0);
   });
@@ -84,6 +102,7 @@ test.describe('IsobathsStrip (Fundo perto da praia)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Nazaré/i })).toBeVisible({
       timeout: 20_000,
     });
+    await openWaveDetail(page);
 
     await expect(page.getByTestId('isobaths-strip')).toHaveCount(0);
   });

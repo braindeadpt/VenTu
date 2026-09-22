@@ -25,6 +25,11 @@ const SHARED_TOKENS = new Set([
   'N', 'S', 'E', 'O',
   // Termo adoptado em PT, igual nas shells («score 93, ÉPICO»).
   'score',
+  // Siglas de maré idênticas em PT/ES/FR (preia-mar/pleamar/pleine mer,
+  // baixa-mar/bajamar/basse mer); DE usa HW/NW e EN HW/LW.
+  'PM', 'BM',
+  // «ideal» é a mesma grafia em PT/EN/ES/DE (rótulo do sector ideal).
+  'ideal {dirs}',
 ]);
 
 /**
@@ -77,6 +82,9 @@ const ES_COGNATES = new Set([
   'Veredicto',          // espanhol correcto = PT (secção da página de spot)
   'Instrumentos',       // espanhol correcto = PT (secção da página de spot)
   'Contexto',           // espanhol correcto = PT (secção da página de spot)
+  'mar',                // espanhol correcto = PT (rótulo da rosa de instrumentos)
+  'mín',                // espanhol correcto = PT (abreviatura na curva de maré)
+  'máx',                // espanhol correcto = PT (abreviatura na curva de maré)
 ]);
 
 /**
@@ -97,6 +105,7 @@ const EN_COGNATES = new Set([
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
   // Pontos cardeais e «score» — símbolos/termos universais, iguais por mérito.
   'N', 'S', 'E', 'O', 'score',
+  'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

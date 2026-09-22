@@ -260,6 +260,29 @@ async function gotoSpot(
   await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
     timeout: 20_000,
   });
+  await openWaveDetail(page);
+}
+
+/**
+ * S2B: o ObservedWaveCard, os avisos de coerência e a linha de skill vivem
+ * no painel de detalhe do instrumento «Onda» (#instrumentos → cartão wave).
+ * Abre-o (com retry — o clique pode cair antes da hidratação) e volta ao
+ * topo: o scrollIntoView do clique montaria a barra «Métricas principais»
+ * cedo e duplicaria os chips do hero nas asserções não-escopadas a seguir.
+ */
+async function openWaveDetail(page: import('@playwright/test').Page) {
+  const detail = page.locator('#instrumentos-detalhe');
+  const button = page.locator("#instrumentos [data-instrument='wave'] button");
+  await expect(async () => {
+    // getAttribute auto-espera pelo elemento — com o painel fechado ele não
+    // existe e o await penduraria. count() resolve de imediato.
+    const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
+    if (attr !== 'wave') {
+      await button.click({ timeout: 3_000 });
+    }
+    await expect(detail).toHaveAttribute('data-detail', 'wave', { timeout: 1_000 });
+  }).toPass({ timeout: 20_000 });
+  await page.evaluate(() => window.scrollTo(0, 0));
 }
 
 test.describe('Observed wave card (boia X a Y km)', () => {
@@ -340,6 +363,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openWaveDetail(page);
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
 
@@ -389,6 +413,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openWaveDetail(page);
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
 
@@ -409,7 +434,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
 
     // Chip compacto do hero (fonte única WMO recalibrada): a calibração
     // cross-border também aparece fora do card, com a razão no tooltip.
-    const heroChip = page.locator('[data-wave-calibrated="compact"]');
+    // S2B: o painel de detalhe renderiza o mesmo tag — escopo ao veredicto.
+    const heroChip = page.locator('#agora').locator('[data-wave-calibrated="compact"]');
     await expect(heroChip).toBeVisible();
     await expect(heroChip).toContainText(/ref\. PT \(-0\.9 m · n=4\)/);
     await expect(heroChip).toHaveAttribute(
@@ -457,6 +483,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openWaveDetail(page);
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
 
@@ -508,6 +535,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openWaveDetail(page);
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
     // O card também não mostra a pill de calibração (data-wave-calibrated=true).
@@ -572,6 +600,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openWaveDetail(page);
     const card = page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i);
     await expect(card).toBeVisible({ timeout: 15_000 });
 
@@ -630,7 +659,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await gotoSpot(page, 'with-observed-wave');
 
     // Hero: ambas as fontes frescas → chip compacto «IH ✓ (1h) · WMO (5h, a 56 km)».
-    const chip = page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i);
+    // S2B: escopo ao veredicto — a sticky monta no scroll e duplicaria o label.
+    const chip = page.locator('#agora').getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i);
     await expect(chip).toBeVisible({ timeout: 15_000 });
     await expect(chip).toContainText('IH');
     await expect(chip).toContainText('✓');
@@ -655,7 +685,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // Garante que os dados carregaram (chip no hero) antes de fazer scroll —
     // evita a corrida entre o fetch do conditions.json e a sticky bar.
     await expect(
-      page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
+      page.locator('#agora').getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
     // Scroll até sair do hero → a sticky bar (md:hidden) aparece.
@@ -728,7 +758,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // real estiver velha — daí o escopo pelo title exclusivo da onda.)
     const waveBadge = hero.locator('[title*="Sem correcção de boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 15_000 });
-    await expect(waveBadge).toHaveText('Só previsão');
+    // O chip de proveniência foi unificado com prefixo de eixo (8e2dbacd3):
+    // «Onda · só previsão», não «Só previsão» solto.
+    await expect(waveBadge).toHaveText('Onda · só previsão');
     await expect(waveBadge).toHaveAttribute('title', /Sem correcção de boia — score com a previsão do modelo/);
     // Nenhuma correcção de boia é apresentada (nem no hero nem no card).
     await expect(page.getByText(/Corrigido pela boia/i)).toHaveCount(0);
@@ -917,11 +949,11 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const hero = page.locator('.spot-hero-card');
     const waveBadge = hero.locator('[title*="Sem correcção de boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 20_000 });
-    await expect(waveBadge).toHaveText('Só previsão');
+    await expect(waveBadge).toHaveText('Onda · só previsão');
     await expect(hero.locator('[title*="Viés regional"]')).toHaveCount(0);
     // Altura sem correcção (valor real do build) e SEM sufixo de medição/viés
     // — o ponto do teste é a ausência da correcção, não o número exacto.
-    await expect(hero.getByText(`${REAL_GUINCHO_WAVE_M.toFixed(1)}m`)).toBeVisible();
+    await expect(hero.getByText(`${REAL_GUINCHO_WAVE_M.toFixed(1)}m`).first()).toBeVisible();
     await expect(hero.getByText(/m \(boia\)|m \(viés regional\)/)).toHaveCount(0);
   });
 
@@ -932,7 +964,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
 
     // Garante que os dados carregaram (chip no hero) antes do scroll.
     await expect(
-      page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
+      page.locator('#agora').getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
     // A barra NÃO está visível com o hero em vista.
@@ -971,7 +1003,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
 
     // Garante que os dados carregaram (chip no hero) antes do scroll.
     await expect(
-      page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
+      page.locator('#agora').getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
     await scrollToSettledBottom(page);
@@ -1069,7 +1101,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
 
     // Garante que os dados carregaram (chip no hero) antes do scroll.
     await expect(
-      page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
+      page.locator('#agora').getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
     await scrollToSettledBottom(page);
@@ -1151,7 +1183,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
 
     // Garante que os dados carregaram (chip no hero) antes do scroll.
     await expect(
-      page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
+      page.locator('#agora').getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i),
     ).toBeVisible({ timeout: 15_000 });
 
     await scrollToSettledBottom(page);
@@ -1224,6 +1256,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
       timeout: 20_000,
     });
+    await openWaveDetail(page);
     // Sem card nem compacto — nada é apresentado como onda observada fresca.
     await expect(page.getByLabel(/Onda observada \(boia\)|Observed wave \(buoy\)/i)).toHaveCount(0);
     const hero = page.locator('.spot-hero-card');
@@ -1412,6 +1445,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openWaveDetail(page);
     const line = page.locator('[data-buoy-skill-line="true"]');
     await expect(line).toBeVisible({ timeout: 20_000 });
     await expect(line).toContainText(/Skill desta boia \(CSA92\/D\): ME \+0\.2 m · RMSE 0\.5 m · r 0\.91 \(n=47\)/);
@@ -1443,6 +1477,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openWaveDetail(page);
     await page.waitForTimeout(3_000);
     await expect(page.locator('[data-buoy-skill-line="true"]')).toHaveCount(0);
   });

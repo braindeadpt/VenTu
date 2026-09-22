@@ -15,6 +15,22 @@ test.describe('Marés (TideScheduleStrip)', () => {
   // O SW serve /data/* do cache e burla o page.route — ver helpers/conditions.ts.
   test.use({ serviceWorkers: 'block' });
 
+  /**
+   * S2B: o TideScheduleStrip/MoonTideCard vivem no painel de detalhe da secção
+   * Instrumentos (#instrumentos → cartão «Maré»). Abre-o antes das asserções.
+   */
+  async function openTideDetail(page: import('@playwright/test').Page) {
+    const detail = page.locator('#instrumentos-detalhe');
+    const button = page.locator("#instrumentos [data-instrument='tide'] button");
+    await expect(async () => {
+      const attr = (await detail.count()) ? await detail.getAttribute('data-detail') : null;
+      if (attr !== 'tide') {
+        await button.click({ timeout: 3_000 });
+      }
+      await expect(detail).toHaveAttribute('data-detail', 'tide', { timeout: 1_000 });
+    }).toPass({ timeout: 20_000 });
+  }
+
   test('mostra a fase a subir com a maré baixa/alta seguintes (HH:MM)', async ({ page }) => {
     await interceptConditions(page, {
       spots: {
@@ -23,6 +39,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openTideDetail(page);
     const strip = page.getByRole('status', { name: /Maré: Maré a subir/i });
     await expect(strip).toBeVisible({ timeout: 20_000 });
     // Próximas marés vêm da curva horária real (previsão).
@@ -39,6 +56,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openTideDetail(page);
     await expect(page.getByRole('status', { name: /Maré: Maré alta agora/i })).toBeVisible({
       timeout: 20_000,
     });
@@ -53,6 +71,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openTideDetail(page);
     await expect(page.getByRole('status', { name: /Maré: Maré a descer/i })).toBeVisible({
       timeout: 20_000,
     });
@@ -72,6 +91,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
+    await openTideDetail(page);
 
     // Sem schedule: nem o strip nem o título «Marés (previsão)» aparecem.
     await expect(page.getByRole('status', { name: /Maré:/i })).toHaveCount(0, {
@@ -104,6 +124,7 @@ test.describe('Marés (TideScheduleStrip)', () => {
     // Sem transform: o forecast real do build tem tideHeight → a amplitude
     // do dia é calculada (≥2 pontos) e o card mostra fase + regime + range.
     await page.goto('/pt/spots/guincho/');
+    await openTideDetail(page);
 
     // Scope to #main-content: under heavy CI load the Next.js streaming
     // reveal ($RC/$RV) can lag past hydration, leaving a hidden duplicate of
