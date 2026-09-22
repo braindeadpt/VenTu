@@ -5,6 +5,7 @@ import { formatHourLabel, formatHourLong, formatDayShort } from '@/lib/verdict/f
 import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
 import { pickRailAxisLabels } from '@/lib/verdict/railAxisLabels';
 import { isSafetyNavWarning, safetyNavWarnings } from '@/lib/verdict/navWarningSafety';
+import ihCoastalWarnings from '../../../public/data/ih-coastal-warnings.json';
 import { getScoreTierLabel } from '@/lib/sportScore';
 
 describe('scoreBand — limites canónicos (80/60/40/20)', () => {
@@ -215,8 +216,12 @@ describe('pickRailAxisLabels — etiquetas do eixo sem colisões', () => {
   });
 });
 
-describe('isSafetyNavWarning — faixa §0 só com perigo real', () => {
+describe('isSafetyNavWarning — faixa §0 só com perigo para quem está na água', () => {
+  // Excluídos — textos reais do ih-coastal-warnings.json: avisos para
+  // embarcações (ajudas à navegação, obras portuárias, canais) e
+  // informativos/administrativos. Todos continuam na «No local».
   it.each([
+    // administrativos/informativos
     'Animais Marinhos - Interação',
     'Animais Marinhos - Avistamento',
     'Edital Nº 594/2018_Porto de Leixões',
@@ -233,67 +238,111 @@ describe('isSafetyNavWarning — faixa §0 só com perigo real', () => {
     'Aviso a Navegação',
     'BARRA DE ALBUFEIRA - ABERTA A TODA A NAVEGAÇÃO.',
     'BARRA DE ALVOR - BARRA ABERTA.',
-  ])('informativo/administrativo excluído: %s', (category) => {
-    expect(isSafetyNavWarning({ category })).toBe(false);
-  });
-
-  it.each([
+    // «segurança/perigo à navegação» genérico — sem palavra da lista não entra
     'PERIGO À NAVEGAÇÃO',
-    'Perigo à Navegação',
     'SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL',
     'SEGURANÇA À NAVEGAÇÃO - FAROLIM QUEBRA MAR APAGADO ',
     'segurança da navegação',
     'SEGURANÇA À NAVEGAÇÃO',
+    'SEGURANÇA DA NAVEGAÇÃO - CAMPANHA CIENTÍFICA',
+    'SEGURANÇA DA NAVEGAÇÃO - TRABALHOS DE PROLONGAMENTO DO QUEBRA-MAR DO PORTO DE LEIXÕES.',
+    // ajudas à navegação e canais — perigo para barcos, não para banhistas
+    'ASSINALAMENTO MARITIMO',
+    'Assinalamento marítimo',
+    'ASSINALAMENTO PROVISORIO',
     'Boia apagada',
     ' Bóia Apagada',
     'Boia 9 Canal Sul fora de posição',
     'BOIA RETIRADA',
-    'BOIA À DERIVA',
-    'Objeto à deriva (boia de navegação)',
-    'Embarcação submersa',
-    'Embarcação parcialmente submersa',
-    'Equipamento submerso',
-    'Assinalamento marítimo',
-    'ASSINALAMENTO PROVISORIO',
+    'Reposicionamento das boias no canal de Alvor',
+    'ASSINALAMENTO MARÍTIMO - BOIA Nº 1M FORA DA POSIÇÃO',
     'BAIA DE SESIMBRA - FAROLIM ENFIAMENTO',
     'Farolim desativado',
     ' Cascais - Mastro e Sinais inoperativos',
     'SINAL SONORO PRAIA DA AGUDA ANTERIOR AVARIADO',
+    'Mastro de Aviso de Temporal do Portinho da Ericeira',
+    'Entrada do Porto de Lisboa – Assinalamento Marítimo',
+    'ASSINALAMENTO MARÍTIMO - DESAPARECIMENTO DA BOIA ONDÓGRAFO NO PORTO DE PONTA DELGADA',
+    'Substituição Boias Windfloat Atlantic',
+    'AVISO À NAVEGAÇÃO - INSTALAÇÃO DE BOIA LiDAR FLS 200',
+    // assoreamento/sondas/estado de barras — calado de embarcações
     'ASSOREAMENTO DA BARRA',
     'Assoreamento da Barra',
     'ALTERAÇÃO DE SONDAS MINIMAS',
-    'INTERDIÇÃO DE ÁREA',
-    'RESTRIÇÃO DE ACESSO  À GRUTA VALE DO COVO ',
-    'ZONA EM EVOLUÇÃO',
     'BARRA DA RIA DE ALVOR – CONDICIONAMENTO  ',
-    'Interdição de fundear ou pairar no troço de canal em frente às infra-estruturas portuárias de Santa Luzia-Tavira',
-    'AVISO DE ARRIBA INSTÁVEL. ÁREA DAS GRUTAS DE BENAGIL.',
+    // obras e estruturas portuárias — aviso a embarcações
     "CAIS DA PENHA D'ÁGUIA DANIFICADO",
     'PONTÃO N.º 2 DANIFICADO',
     'PORTO DE ABRIGO DA CULATRA - QUEBRAMAR DANIFICADO',
-    'Abatimento da cabeça do molhe Leste da Barra de Tavira',
     ' EDIFICAÇÃO CONSTRUÇÃO DE NOVO CAIS',
-    'SEGURANÇA DA NAVEGAÇÃO - TRABALHOS DE PROLONGAMENTO DO QUEBRA-MAR DO PORTO DE LEIXÕES.',
-    'LANÇAMENTO DE FOGO DE ARTIFÍCIO',
-    'Plano de Salvamento Marítimo Lagos',
-    'PLANO DE SALVAMENTO MARÍTIMO ANOMALIA',
     ' Instalação de viveiro "Mar Salgado" na baía de Lagos',
     'PARQUE SUBAQUATICO OCEAN REVIVAL - ALTERAÇÃO LIMITES',
-    'AVISO À NAVEGAÇÃO - INSTALAÇÃO DE BOIA LiDAR FLS 200',
-    'SEGURANÇA DA NAVEGAÇÃO - CAMPANHA CIENTÍFICA',
     'ÁREA PILOTO PRODUÇÃO AQUÍCOLA DA ARMONA - BÓIAS APAGADAS E FORA DE POSIÇÃO',
-    'Entrada do Porto de Lisboa – Assinalamento Marítimo',
-    'Mastro de Aviso de Temporal do Portinho da Ericeira',
-    'Substituição Boias Windfloat Atlantic',
-    'ASSINALAMENTO MARÍTIMO - DESAPARECIMENTO DA BOIA ONDÓGRAFO NO PORTO DE PONTA DELGADA',
-  ])('perigo/segurança à navegação incluído: %s', (category) => {
+    'ZONA EM EVOLUÇÃO',
+    'Delimitação por boias',
+    // interdição só para embarcações (fundear/pairar) → fica fora
+    'Interdição de fundear ou pairar no troço de canal em frente às infra-estruturas portuárias de Santa Luzia-Tavira',
+    // fogo de artifício ≠ fogo real; plano de salvamento ≠ operação em curso
+    'LANÇAMENTO DE FOGO DE ARTIFÍCIO',
+    'Plano de Salvamento Marítimo Lagos',
+    'PLANO DE SALVAMENTO MARÍTIMO',
+  ])('não entra na faixa §0: %s', (category) => {
+    expect(isSafetyNavWarning({ category })).toBe(false);
+  });
+
+  // Incluídos — um caso por grupo da lista de inclusão.
+  it.each([
+    // objectos/embarcações submersos ou à deriva
+    'Embarcação submersa',
+    'Embarcação parcialmente submersa',
+    'Equipamento submerso',
+    'BOIA À DERIVA',
+    'BOIA N.5 DO CANAL PRINCIPAL À DERIVA',
+    'Objeto à deriva (boia de navegação)',
+    'NAUFRÁGIO POR ASSINALAR',
+    'Contentor à deriva',
+    'Objecto flutuante na entrada da barra',
+    // arribas e derrocadas
+    'AVISO DE ARRIBA INSTÁVEL. ÁREA DAS GRUTAS DE BENAGIL.',
+    'Abatimento da cabeça do molhe Leste da Barra de Tavira',
+    'Derrocada em falésia — zona balnear',
+    // interdições/restrições de área ou de acesso à água/costa
+    'INTERDIÇÃO DE ÁREA',
+    'RESTRIÇÃO DE ACESSO  À GRUTA VALE DO COVO ',
+    'Proibição de banhos na zona da arriba instável',
+    // exercícios militares, fogo real, explosivos, minas
+    'EXERCÍCIO MILITAR COM TIRO REAL — ZONA INTERDITA',
+    'Detonação de explosivos na praia',
+    // poluição e derrames
+    'Derrame de hidrocarbonetos ao largo de Sines',
+    'Poluição detectada na zona balnear',
+    // operações de salvamento/busca em curso
+    'Operação de busca e salvamento em curso',
+  ])('perigo real incluído: %s', (category) => {
     expect(isSafetyNavWarning({ category })).toBe(true);
+  });
+
+  it('«segurança da navegação» + palavra da lista → entra', () => {
+    expect(
+      isSafetyNavWarning({
+        category: 'SEGURANÇA DA NAVEGAÇÃO - EMBARCAÇÃO À DERIVA',
+      }),
+    ).toBe(true);
+  });
+
+  it('interdição de fundear/pairar é só para embarcações → fica fora', () => {
+    expect(
+      isSafetyNavWarning({
+        category:
+          'Interdição de fundear ou pairar no troço de canal em frente às infra-estruturas portuárias de Santa Luzia-Tavira',
+      }),
+    ).toBe(false);
   });
 
   it('collection orca_anavnet_point nunca entra, mesmo com outra categoria', () => {
     expect(
       isSafetyNavWarning({
-        category: 'PERIGO À NAVEGAÇÃO',
+        category: 'EMBARCAÇÃO À DERIVA',
         collection: 'orca_anavnet_point',
       }),
     ).toBe(false);
@@ -307,11 +356,22 @@ describe('isSafetyNavWarning — faixa §0 só com perigo real', () => {
   it('safetyNavWarnings filtra preservando a ordem', () => {
     const list = [
       { id: 1, category: 'Animais Marinhos - Interação' },
-      { id: 2, category: 'PERIGO À NAVEGAÇÃO' },
+      { id: 2, category: 'BOIA À DERIVA' },
       { id: 3, category: 'Edital Nº 1/2014' },
-      { id: 4, category: 'Boia apagada' },
+      { id: 4, category: 'INTERDIÇÃO DE ÁREA' },
     ];
     expect(safetyNavWarnings(list).map((w) => w.id)).toEqual([2, 4]);
     expect(safetyNavWarnings(null)).toEqual([]);
+  });
+
+  it('dados reais: menos de 15% dos avisos IH entram na faixa', () => {
+    const inStrip = safetyNavWarnings(ihCoastalWarnings.warnings);
+    const pct = (inStrip.length / ihCoastalWarnings.warnings.length) * 100;
+    // Contagem para o relatório S2A-fix3.
+    console.log(
+      `faixa §0: ${inStrip.length}/${ihCoastalWarnings.warnings.length} avisos (${pct.toFixed(1)}%)`,
+      inStrip.map((w) => w.category),
+    );
+    expect(pct).toBeLessThan(15);
   });
 });

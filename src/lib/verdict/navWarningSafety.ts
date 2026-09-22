@@ -1,25 +1,32 @@
 /**
  * Classificação da faixa de segurança (§0): quais avisos à navegação do IH
- * são «aviso de segurança real» — perigo físico para quem está na água —
- * vs. avisos informativos/administrativos que continuam na secção «No local».
+ * são «aviso de segurança real» — perigo físico para quem está na água
+ * (surf, kite, windsurf, SUP, natação) — vs. avisos para embarcações e
+ * informativos/administrativos que continuam na secção «No local».
  *
  * O campo `category` do ih-coastal-warnings.json é texto livre (~120 valores
- * distintos: editais, portarias, regulamentos, normas, assinalamentos, boias,
- * animais marinhos…). A classificação é por palavras-chave sobre a categoria
- * normalizada (minúsculas, sem acentos):
+ * distintos). A lógica é uma LISTA DE INCLUSÃO curta sobre a categoria
+ * normalizada (minúsculas, sem acentos) — tudo o que não corresponde fica
+ * de fora. «Segurança da navegação» genérica não entra; se vier acompanhada
+ * de uma palavra da lista (ex.: «… - EMBARCAÇÃO À DERIVA»), entra.
  *
- *  - EXCLUI primeiro: documentos administrativos permanentes (edital,
- *    portaria, regulamento, normas, requisitos, cancelamentos, pesca) e os
- *    avisos genéricos «aviso à navegação» sem mais conteúdo.
- *  - INCLUI depois: perigo/segurança à navegação, objectos e embarcações
- *    submersas ou à deriva, ajudas à navegação fora de serviço ou de posição,
- *    assinalamento, assoreamento/sondas, interdições/restrições/zonas
- *    condicionadas, obras e estruturas (cais, molhe, quebramar, viveiros,
- *    aquicultura, ODA/LiDAR), arribas instáveis, fogo de artifício e
- *    salvamento marítimo.
- *  - `collection === 'orca_anavnet_point'` (avistamentos/interacções de
- *    animais marinhos) nunca é faixa de segurança — é informação, e punha
- *    uma faixa de alarme permanente nos spots da zona.
+ * Grupos incluídos:
+ *  - objectos ou embarcações submersos ou à deriva: submers, deriva,
+ *    naufrag, contentor; «objeto/objecto» só com deriva/flutuante;
+ *  - arribas e derrocadas: arriba, falesia, derroc, desmoron, abatimento;
+ *  - interdições/restrições de ÁREA ou de ACESSO a zonas de água ou costa
+ *    (interdição de área, restrição de acesso, zona interdita, proibição
+ *    de banhos/navegação) — NÃO as de fundear/pairar, que são para barcos;
+ *  - exercícios militares, fogo real, tiro, explosivos, minas;
+ *  - poluição, derrames, hidrocarbonetos;
+ *  - operações de salvamento ou busca em curso.
+ *
+ * Ficam fora (avisos para embarcações, não para banhistas): assinalamento,
+ * boias apagadas/retiradas/reposicionadas, farolins, mastros, sinais,
+ * assoreamento e sondas, obras portuárias (cais, molhe, quebramar, pontão),
+ * viveiros/aquicultura, campanhas científicas, editais, portarias,
+ * regulamentos, normas, «aviso à navegação» genérico e animais marinhos
+ * (`collection === 'orca_anavnet_point'` nunca entra).
  */
 
 const norm = (s: string): string =>
@@ -30,13 +37,27 @@ const norm = (s: string): string =>
     .replace(/\s+/g, ' ')
     .trim();
 
-/** Documentos administrativos/estáticos — começam assim, não são incidentes. */
-const ADMIN_RE =
-  /^(\d+ª?\s*alteracao\s+ao\s+)?(edital|portaria|regulamento|normas?|requisitos|cancelamento|pesca)\b|^aviso a navegacao\s*(n[ºo.]?\s*\d|$)/;
+/** Objectos/embarcações submersos ou à deriva — obstáculo na água. */
+const FLOATING_HAZARD_RE = /(submers|deriva|naufrag|contentor)/;
+const OBJECT_RE = /obje[ct]+o/;
+const FLOATING_STATE_RE = /(deriva|flutuant)/;
 
-/** Perigo físico para a navegação/banhistas — palavras-chave na categoria. */
-const DANGER_RE =
-  /(perigo|seguranca\s+(da|de|para a|a)\s+navegacao|submers|deriva|embarca|apagad|inoperativ|desativad|avariad|retirad|fora d[ae] posi|reposicionamento|assinalamento|sinalizacao|sinal sonoro|farolim|baliza|mastro|boia|assoreamento|sondas|interdi|restri|condicionamento|zona em evol|delimita|danificad|abatimento|edifica|constru|quebramar|molhe|cais|pontao|barreira|reforco|prolongamento|viveiro|aquicol|subaquatic|armacao|windfloat|lidar|odas|instalacao|colocacao|equipamento|arriba|falesia|fogo de artif|salvamento|enfiamento|ondografo)/;
+/** Arribas instáveis e derrocadas — queda de terra/rocha sobre a água. */
+const CLIFF_RE = /(arriba|falesia|derroc|desmoron|abatimento)/;
+
+/** Interdições/restrições de área ou de acesso a zonas de água ou costa. */
+const INTERDICTION_RE = /(interdi|restric|proibi)/;
+/** …mas as que são só para embarcações ficam na «No local». */
+const VESSEL_ONLY_RE = /(fundear|pairar)/;
+
+/** Exercícios militares, fogo real, explosivos, minas. */
+const MILITARY_RE = /(militar|artilharia|\btiros?\b|fogo real|explosiv|\bminas?\b)/;
+
+/** Poluição, derrames, hidrocarbonetos. */
+const POLLUTION_RE = /(poluic|derram|hidrocarbonet|mare negra)/;
+
+/** Operações de salvamento/busca em curso (planos permanentes não entram). */
+const RESCUE_RE = /(busca|operacao de salvamento|salvamento em curso|rescue|\bsar\b)/;
 
 /**
  * true = entra na faixa §0. Decide-se só pela categoria/collection — o resto
@@ -49,8 +70,13 @@ export function isSafetyNavWarning(w: {
   if (w.collection === 'orca_anavnet_point') return false;
   const cat = norm(w.category ?? '');
   if (!cat) return false;
-  if (ADMIN_RE.test(cat)) return false;
-  return DANGER_RE.test(cat);
+  if (FLOATING_HAZARD_RE.test(cat)) return true;
+  if (OBJECT_RE.test(cat) && FLOATING_STATE_RE.test(cat)) return true;
+  if (CLIFF_RE.test(cat)) return true;
+  if (INTERDICTION_RE.test(cat) && !VESSEL_ONLY_RE.test(cat)) return true;
+  if (MILITARY_RE.test(cat)) return true;
+  if (POLLUTION_RE.test(cat)) return true;
+  return RESCUE_RE.test(cat);
 }
 
 /** Filtra uma lista de avisos para a faixa — preserva a ordem da fonte. */
