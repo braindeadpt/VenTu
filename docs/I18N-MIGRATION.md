@@ -6,17 +6,17 @@
 >
 > Medição reproduzível: `node scripts/i18n-debt-report.js` (ou `--json`).
 
-## Estado (2026-09-22, após a superfície news)
+## Estado (2026-09-22, após as superfícies news e auth)
 
 | Métrica | Valor |
 |---|---:|
 | Ficheiros `src/**` | 526 |
-| Sem dívida (limpos) | 417 |
-| Com ternários de copy | **109** |
-| Ternários de copy | **649** |
+| Sem dívida (limpos) | 419 |
+| Com ternários de copy | **107** |
+| Ternários de copy | **632** |
 
-Progresso desde o início da migração: 672 → 649 ternários, 116 → 109 ficheiros
-(superfícies `fontes` e `news` fechadas).
+Progresso: 672 → 632 ternários, 116 → 107 ficheiros (superfícies `fontes`,
+`news` e `auth` fechadas).
 
 ### Por superfície (ternários)
 
@@ -30,7 +30,6 @@ Progresso desde o início da migração: 672 → 649 ternários, 116 → 109 fic
 | `src/components/account` | 30 |
 | `src/components/DawnPatrolBanner.tsx` | 23 |
 | `src/components/FeedbackForm.tsx` | 22 |
-| `src/components/auth` | 17 |
 | `src/components/layout` | 15 |
 
 ## Método (por superfície)
@@ -65,7 +64,12 @@ Progresso desde o início da migração: 672 → 649 ternários, 116 → 109 fic
    Internacional) e o empty-state com `{query}`. `src/components/news/**` e
    `src/app/[locale]/news/**` passaram a estar em `MIGRATED_GLOBS`.
 
-Em ambas, a copy **pt/en ficou byte-idêntica** (baselines visuais intactas) e
+3. **Superfície `auth`** (17 strings em 2 ficheiros: `LoginModal`,
+   `AuthCallbackClient`) — bloco `auth` novo nas 5 línguas (títulos por motivo,
+   subtítulos, enviar/enviado, placeholders, estados do callback); o «Fechar»
+   reutiliza `common.close`. `src/components/auth/**` em `MIGRATED_GLOBS`.
+
+Em todas, a copy **pt/en ficou byte-idêntica** (baselines visuais intactas) e
 es/de/fr deixaram de receber inglês.
 
 ## Nota SEO (decisão em aberto)

@@ -16,6 +16,7 @@ const MIGRATED_GLOBS = [
   'src/components/directory/**',
   'src/components/passaporte/**',
   'src/components/alerts/**',
+  'src/components/auth/**',
   'src/components/news/**',
   'src/app/[locale]/news/**',
   'src/components/tools/**',
