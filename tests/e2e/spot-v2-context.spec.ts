@@ -114,6 +114,55 @@ test.describe('Spot context (S2C)', () => {
     const rel = await link.getAttribute('rel');
     expect(rel).toContain('noopener');
     expect(rel).toContain('noreferrer');
+
+    // S2C-fix: em «No local» o cartão da livecam usa layout="stacked"
+    // (botão em largura total, como no mobile) mesmo em desktop.
+    await page.setViewportSize({ width: 1440, height: 900 });
+    const stacked = page.locator('#spot-livecam [data-layout="stacked"]');
+    await expect(stacked).toBeVisible();
+    const btn = stacked.locator('a[href^="http"]').first();
+    const row = btn.locator('..');
+    expect(await row.evaluate((el) => getComputedStyle(el).flexDirection)).toBe(
+      'column',
+    );
+    const [btnBox, rowBox] = await Promise.all([
+      btn.boundingBox(),
+      row.boundingBox(),
+    ]);
+    expect(btnBox && rowBox).toBeTruthy();
+    // Botão esticado à largura total da linha (tolerância sub-pixel).
+    expect(btnBox!.width).toBeGreaterThanOrEqual(rowBox!.width - 1);
+  });
+
+  test('avisos costeiros em «No local» têm tone="info" (sem alarme)', async ({
+    page,
+  }) => {
+    await page.goto(`/pt/spots/${SPOT_SLUG}/`);
+    await expect(
+      page.getByRole('heading', { level: 1, name: /Guincho/i }),
+    ).toBeVisible({ timeout: 20_000 });
+
+    const block = page.locator('#no-local [data-testid="coastal-nav-warnings"]');
+    await expect(block).toBeVisible({ timeout: 15_000 });
+    await expect(block).toHaveAttribute('data-tone', 'info');
+    await expect(block).not.toHaveClass(/score-poor/);
+
+    // O background computado não é a tonalidade de alerta (score-poor 6%):
+    // lê os canais da var e compara com o backgroundColor real.
+    const [bg, poor] = await Promise.all([
+      block.evaluate((el) => getComputedStyle(el).backgroundColor),
+      page.evaluate(() =>
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--score-poor')
+          .trim(),
+      ),
+    ]);
+    const [r, g, b] = poor.split(/\s+/);
+    expect(bg).not.toBe(`rgba(${r}, ${g}, ${b}, 0.06)`);
+    // Tom neutro: o canal vermelho não domina (alerta seria r≫g,b).
+    const m = bg.match(/rgba?\((\d+)[, ]+(\d+)[, ]+(\d+)/);
+    expect(m).toBeTruthy();
+    expect(Number(m![1])).toBeLessThan(Number(m![3]) + 12);
   });
 
   test('«Perto daqui»: score muda com a hora escolhida (passo ±3 h)', async ({

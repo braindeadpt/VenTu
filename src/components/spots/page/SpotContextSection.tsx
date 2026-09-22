@@ -137,7 +137,9 @@ export default function SpotContextSection({
               {hasLivecam && (
                 <div id="spot-livecam" className="scroll-mt-32">
                   <h3 className={SUB_LABEL}>{copy.livecam}</h3>
-                  <SpotWebcamSection embedded slug={spot.slug} locale={locale} />
+                  {/* Coluna de 1/3 no desktop: «stacked» põe o botão em
+                      largura total por baixo do texto, como no mobile. */}
+                  <SpotWebcamSection embedded layout="stacked" slug={spot.slug} locale={locale} />
                 </div>
               )}
 

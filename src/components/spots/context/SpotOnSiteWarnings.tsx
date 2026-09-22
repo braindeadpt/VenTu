@@ -81,8 +81,10 @@ export default function SpotOnSiteWarnings({ spotId, locale }: SpotOnSiteWarning
         </a>
       </div>
       {/* Sem avisos IPMA a camada costeira IH continua a poder estar em
-          vigor — o componente decide sozinho se renderiza. */}
-      <CoastalNavWarnings spotId={spotId} locale={locale} />
+          vigor — o componente decide sozinho se renderiza. Em «No local»
+          estes avisos são informação (avistamentos, editais): tone="info"
+          tira o aspecto de alarme; os perigos reais vivem na faixa §0. */}
+      <CoastalNavWarnings spotId={spotId} locale={locale} tone="info" />
     </>
   );
 }
