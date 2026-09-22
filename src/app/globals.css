@@ -916,6 +916,20 @@ body.ventu-signup-nudge-open footer {
   .footer-section > .footer-section-body {
     display: block !important;
   }
+  /* Chromium 131+ / Firefox 130+ / Safari 18.2+ escondem o conteúdo de um
+     <details> fechado no pseudo-elemento ::details-content
+     (content-visibility: hidden + block-size: 0). O display acima já não lá
+     chega: o footer desktop ficava colapsado — sem NENHUM link e sem as
+     cadeias de atribuição obrigatórias (IPMA/Ecowitt/METAR/Open-Meteo Marine),
+     invisíveis também para a árvore de acessibilidade. Repor o pseudo-
+     elemento mantém o contrato «md+: corpo sempre visível». Motores sem
+     ::details-content ignoram a regra e ficam com o display acima. */
+  .footer-section::details-content {
+    content-visibility: visible !important;
+    block-size: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
   .footer-section > summary {
     pointer-events: none;
   }
