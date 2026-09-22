@@ -78,6 +78,8 @@ playwright/.cache/
 
 # OG spot share cards — generated at build (npm run og:generate)
 public/images/og/
+# OG share image da home — regenerado em cada build (og:generate)
+public/og-image.png
 
 # Auto-generated data files (updated by GitHub Actions)
 # Keep the directory structure but ignore contents
