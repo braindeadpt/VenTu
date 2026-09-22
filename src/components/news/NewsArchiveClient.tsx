@@ -272,25 +272,17 @@ export default function NewsArchiveClient({
           <div className="text-center py-16 space-y-4">
             <Search className="w-16 h-16 text-fg-subtle mx-auto" />
             <p className="text-fg-subtle text-lg">
-              {isPt
-                ? debouncedQuery
-                  ? `Nenhuma notícia encontrada para "${debouncedQuery}"`
-                  : 'Nenhuma notícia com este filtro.'
-                : debouncedQuery
-                  ? `No news found for "${debouncedQuery}"`
-                  : 'No news matching these filters.'}
+              {debouncedQuery
+                ? t.news.emptyWithQuery.replace('{query}', debouncedQuery)
+                : t.news.emptyNoMatch}
             </p>
-            <p className="text-fg-subtle/80 text-sm">
-              {isPt
-                ? 'Tenta remover filtros ou alargar o período.'
-                : 'Try removing filters or expanding the time period.'}
-            </p>
+            <p className="text-fg-subtle/80 text-sm">{t.news.emptyHint}</p>
             {(category !== 'all' || region !== 'all' || period !== 'all' || debouncedQuery) && (
               <button
                 onClick={handleClear}
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-surface-2/[0.08] border border-divider text-sm text-fg hover:bg-surface-3/[0.12] transition-colors"
               >
-                {isPt ? 'Limpar todos os filtros' : 'Clear all filters'}
+                {t.news.clearAllFilters}
               </button>
             )}
           </div>

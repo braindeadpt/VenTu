@@ -1,6 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight, MoreHorizontal } from 'lucide-react';
+import { getTranslation } from '@/lib/i18n';
 
 interface NewsPaginationProps {
   currentPage: number;
@@ -10,7 +11,7 @@ interface NewsPaginationProps {
 }
 
 export default function NewsPagination({ currentPage, totalPages, onPageChange, locale }: NewsPaginationProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).news;
 
   if (totalPages <= 1) return null;
 
@@ -42,12 +43,12 @@ export default function NewsPagination({ currentPage, totalPages, onPageChange, 
   const pageNumbers = getPageNumbers();
 
   return (
-    <nav aria-label={isPt ? 'Paginação' : 'Pagination'} className="flex items-center justify-center gap-1 py-8">
+    <nav aria-label={t.paginationAria} className="flex items-center justify-center gap-1 py-8">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
         className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
-        aria-label={isPt ? 'Página anterior' : 'Previous page'}
+        aria-label={t.prevPageAria}
       >
         <ChevronLeft className="w-4 h-4" />
       </button>
@@ -88,7 +89,7 @@ export default function NewsPagination({ currentPage, totalPages, onPageChange, 
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
         className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
-        aria-label={isPt ? 'Próxima página' : 'Next page'}
+        aria-label={t.nextPageAria}
       >
         <ChevronRight className="w-4 h-4" />
       </button>

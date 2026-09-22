@@ -70,6 +70,17 @@ const ES_COGNATES = new Set([
   'Veredicto',          // espanhol correcto = PT (secção da página de spot)
   'Instrumentos',       // espanhol correcto = PT (secção da página de spot)
   'Contexto',           // espanhol correcto = PT (secção da página de spot)
+  'Todas',              // espanhol correcto = PT (filtro «Todas» das notícias)
+  'IA',                 // sigla correcta em espanhol = PT (badge de resumo IA)
+  'Página anterior',    // espanhol correcto = PT (paginação das notícias)
+  '🌍 Internacional',    // espanhol correcto = PT (filtro de região das notícias)
+]);
+
+/**
+ * Cognatos válidos em francês — a palavra francesa é exactamente a portuguesa.
+ */
+const FR_COGNATES = new Set([
+  'IA',                 // sigla correcta em francês = PT (badge de resumo IA)
 ]);
 
 /**
@@ -95,7 +106,7 @@ const IDENTICAL_ALLOWLIST: Record<'en' | 'es' | 'de' | 'fr', Set<string>> = {
   en: EN_COGNATES,
   es: new Set([...SHARED_TOKENS, ...ES_COGNATES]),
   de: SHARED_TOKENS,
-  fr: SHARED_TOKENS,
+  fr: new Set([...SHARED_TOKENS, ...FR_COGNATES]),
 };
 
 /**

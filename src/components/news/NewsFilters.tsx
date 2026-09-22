@@ -2,7 +2,8 @@
 
 import { Search, X } from 'lucide-react';
 import { CATEGORIES, DATE_FILTERS, REGION_FILTERS, type NewsCategory, type DateFilter, type RegionFilter, type NewsFiltersState } from '@/lib/news';
-import { newsCategoryLabels } from '@/lib/newsCategories';
+import { newsCategoryLabel } from '@/lib/newsCategories';
+import { getTranslation } from '@/lib/i18n';
 import FilterPill from '@/components/ui/FilterPill';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
@@ -14,13 +15,6 @@ interface NewsFiltersProps {
   total: number;
   debouncing?: boolean;
 }
-
-const dateLabels: Record<string, { pt: string; en: string }> = {
-  today:  { pt: 'Hoje',     en: 'Today' },
-  '7d':   { pt: '7 dias',   en: '7 days' },
-  '30d':  { pt: '30 dias',  en: '30 days' },
-  all:    { pt: 'Tudo',     en: 'All' },
-};
 
 const categoryColors: Record<string, string> = {
   surf:       'bg-data-waves/12 text-data-waves border border-data-waves/25',
@@ -37,20 +31,14 @@ const categoryColors: Record<string, string> = {
   alert:      'bg-windDir-onshore/20 text-windDir-onshore border border-windDir-onshore/35',
 };
 
-const regionLabels: Record<string, { pt: string; en: string }> = {
-  all:   { pt: 'Tudo',           en: 'All' },
-  pt:    { pt: '🇵🇹 Cena PT',    en: '🇵🇹 PT Scene' },
-  intl:  { pt: '🌍 Internacional', en: '🌍 International' },
-};
-
 export default function NewsFilters({ filters, onChange, locale, total, debouncing }: NewsFiltersProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).news;
   const hasActiveFilters = filters.category !== 'all' || filters.region !== 'all' || filters.period !== 'all' || filters.query !== '';
 
   return (
     <div className="space-y-4">
       {/* Region pills (Cena PT) */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label={isPt ? 'Filtrar por origem' : 'Filter by region'}>
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label={t.filterRegionAria}>
         {REGION_FILTERS.map((reg) => {
           const active = filters.region === reg;
           return (
@@ -60,14 +48,14 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
               onClick={() => onChange({ region: reg as RegionFilter, page: 1 })}
               activeClassName="bg-data-waves/15 text-data-waves border-data-waves/30"
             >
-              {isPt ? regionLabels[reg]?.pt : regionLabels[reg]?.en}
+              {reg === 'all' ? t.regionAll : reg === 'pt' ? t.regionPt : t.regionIntl}
             </FilterPill>
           );
         })}
       </div>
 
       {/* Category pills */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label={isPt ? 'Filtrar por categoria' : 'Filter by category'}>
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" role="group" aria-label={t.filterCategoryAria}>
         {CATEGORIES.map(cat => {
           const active = filters.category === cat;
           const colorClass = cat === 'all' ? '' : categoryColors[cat];
@@ -86,8 +74,8 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
               ].join(' ')}
               aria-pressed={active}
             >
-              {cat !== 'all' && <span className={active ? 'opacity-100' : 'opacity-50'}>{newsCategoryLabels[cat]?.pt[0]}</span>}
-              <span>{cat === 'all' ? (isPt ? 'Todas' : 'All') : (isPt ? newsCategoryLabels[cat]?.pt : newsCategoryLabels[cat]?.en)}</span>
+              {cat !== 'all' && <span className={active ? 'opacity-100' : 'opacity-50'}>{newsCategoryLabel(cat, locale).charAt(0)}</span>}
+              <span>{cat === 'all' ? t.all : newsCategoryLabel(cat, locale)}</span>
             </button>
           );
         })}
@@ -95,7 +83,7 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
 
       {/* Date pills + Search + Clear */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-        <div className="flex items-center gap-1.5" role="group" aria-label={isPt ? 'Filtrar por data' : 'Filter by date'}>
+        <div className="flex items-center gap-1.5" role="group" aria-label={t.filterDateAria}>
           {DATE_FILTERS.map(period => {
             const active = filters.period === period;
             return (
@@ -111,7 +99,7 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
                 ].join(' ')}
                 aria-pressed={active}
               >
-                {isPt ? dateLabels[period]?.pt : dateLabels[period]?.en}
+                {period === 'today' ? t.dateToday : period === '7d' ? t.date7d : period === '30d' ? t.date30d : t.dateAll}
               </button>
             );
           })}
@@ -121,8 +109,8 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
           type="search"
           value={filters.query}
           onChange={e => onChange({ query: e.target.value, page: 1 })}
-          placeholder={isPt ? 'Pesquisar notícias...' : 'Search news...'}
-          aria-label={isPt ? 'Pesquisar notícias' : 'Search news'}
+          placeholder={t.searchPlaceholder}
+          aria-label={t.searchAria}
           icon={
             debouncing ? (
               <div className="w-4 h-4 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
@@ -134,7 +122,7 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
         />
 
         <span className="text-xs text-fg-subtle whitespace-nowrap">
-          {total} {isPt ? 'notícias' : 'news'}
+          {total} {t.countLabel}
         </span>
 
         {hasActiveFilters && (
@@ -144,7 +132,7 @@ export default function NewsFilters({ filters, onChange, locale, total, debounci
             onClick={() => onChange({ category: 'all', region: 'all', period: 'all', query: '', page: 1 })}
           >
             <X className="w-3.5 h-3.5" aria-hidden />
-            {isPt ? 'Limpar filtros' : 'Clear filters'}
+            {t.clearFilters}
           </Button>
         )}
       </div>

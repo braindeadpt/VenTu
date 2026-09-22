@@ -1,7 +1,7 @@
 import { getNewsBySlug, newsSlug, getRelatedNews } from '@/lib/news'
 import type { NewsItem } from '@/types'
 import { loadNews } from '@/lib/load-news'
-import { locales } from '@/lib/i18n'
+import { locales, getTranslation } from '@/lib/i18n'
 import { safeExternalUrl } from '@/lib/safeUrl'
 import { jsonLdHtml } from '@/lib/jsonLd'
 import NewsDetailHeader from '@/components/news/NewsDetailHeader'
@@ -101,7 +101,7 @@ export default async function NewsDetailPage({ params }: Props) {
         className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors mb-8"
       >
         <ArrowLeft className="w-4 h-4" />
-        {isPt ? 'Voltar às notícias' : 'Back to news'}
+        {getTranslation(locale).news.backToNews}
       </Link>
 
       {/* Header */}
@@ -123,7 +123,7 @@ export default async function NewsDetailPage({ params }: Props) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-surface-2/[0.08] border border-divider text-fg font-medium hover:bg-surface-3/[0.12] transition-colors"
           >
-            {isPt ? 'Ler artigo original' : 'Read original article'}
+            {getTranslation(locale).news.readOriginal}
             <ExternalLink className="w-4 h-4" />
           </a>
         </div>

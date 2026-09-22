@@ -6,29 +6,32 @@
 >
 > Medição reproduzível: `node scripts/i18n-debt-report.js` (ou `--json`).
 
-## Estado (2026-09-22)
+## Estado (2026-09-22, após a superfície news)
 
 | Métrica | Valor |
 |---|---:|
 | Ficheiros `src/**` | 526 |
-| Sem dívida (limpos) | 410 |
-| Com ternários de copy | **116** |
-| Ternários de copy | **672** |
+| Sem dívida (limpos) | 417 |
+| Com ternários de copy | **109** |
+| Ternários de copy | **649** |
+
+Progresso desde o início da migração: 672 → 649 ternários, 116 → 109 ficheiros
+(superfícies `fontes` e `news` fechadas).
 
 ### Por superfície (ternários)
 
 | Superfície | Dívida |
 |---|---:|
 | `src/components/spots` | 210 |
-| `src/app/[locale]` (páginas) | 63 |
+| `src/app/[locale]` (páginas) | 61 |
 | `src/components/about` | 55 |
 | `src/components/homepage` | 52 |
 | `src/components/ui` | 43 |
 | `src/components/account` | 30 |
 | `src/components/DawnPatrolBanner.tsx` | 23 |
 | `src/components/FeedbackForm.tsx` | 22 |
-| `src/components/news` | 21 |
 | `src/components/auth` | 17 |
+| `src/components/layout` | 15 |
 
 ## Método (por superfície)
 
@@ -50,12 +53,20 @@
    `npx vitest run src/lib/__tests__/i18nLocales.test.ts`, e o e2e da superfície
    (`npm run test:e2e:core` cobre as principais).
 
-## Exemplar migrado
+## Exemplares migrados
 
-`src/components/fontes/CoastalArchiveCard.tsx` — 4 strings + plural (dia/dias) +
-frase com link inline (`footerBefore`/`aboutLink`/`footerAfter`), bloco
-`coastalArchive` nas 5 línguas, superfície `src/components/fontes/**` adicionada
-a `MIGRATED_GLOBS`. Copy pt/en byte-idêntica (sem mudança de baselines).
+1. `src/components/fontes/CoastalArchiveCard.tsx` — 4 strings + plural (dia/dias) +
+   frase com link inline (`footerBefore`/`aboutLink`/`footerAfter`), bloco
+   `coastalArchive` nas 5 línguas, superfície `src/components/fontes/**`.
+2. **Superfície `news` completa** (23 strings em 7 ficheiros: `NewsCard`,
+   `NewsFilters`, `NewsDetailHeader`, `NewsPagination`, `NewsArchiveClient`,
+   `RelatedNews` e `app/[locale]/news/[slug]/page.tsx`) — bloco `news` alargado
+   nas 5 línguas, incluindo datas (Hoje/7 dias/30 dias), regiões (Cena PT /
+   Internacional) e o empty-state com `{query}`. `src/components/news/**` e
+   `src/app/[locale]/news/**` passaram a estar em `MIGRATED_GLOBS`.
+
+Em ambas, a copy **pt/en ficou byte-idêntica** (baselines visuais intactas) e
+es/de/fr deixaram de receber inglês.
 
 ## Nota SEO (decisão em aberto)
 
