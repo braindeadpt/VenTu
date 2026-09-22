@@ -34,6 +34,8 @@ const MIGRATED_GLOBS = [
   'src/components/spots/SpotConditionsDashboard.tsx',
   'src/components/spots/TideScheduleStrip.tsx',
   'src/components/spots/MoonTideCard.tsx',
+  'src/components/ui/HomepageSearch.tsx',
+  'src/components/FeedbackForm.tsx',
 ];
 
 // Apanha `isPt ? 'copy' : 'copy'` (strings literais OU templates) quando NENHUM
