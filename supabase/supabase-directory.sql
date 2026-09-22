@@ -3,18 +3,19 @@
 -- Execute no SQL Editor do Supabase Dashboard
 -- ============================================================
 
-CREATE OR REPLACE FUNCTION public.is_ventu_admin()
-RETURNS BOOLEAN
-LANGUAGE sql
-STABLE
-SECURITY DEFINER
-SET search_path = public
-AS $$
-  SELECT COALESCE((auth.jwt() -> 'app_metadata' ->> 'role') = 'admin', false);
-$$;
-
-REVOKE ALL ON FUNCTION public.is_ventu_admin() FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.is_ventu_admin() TO authenticated;
+-- is_ventu_admin() lives in supabase-admin-helpers.sql (single source of
+-- truth, LOW8). Fail fast if applied out of order.
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1
+    FROM pg_proc p
+    JOIN pg_namespace n ON n.oid = p.pronamespace
+    WHERE n.nspname = 'public' AND p.proname = 'is_ventu_admin'
+  ) THEN
+    RAISE EXCEPTION 'is_ventu_admin() missing — apply supabase/supabase-admin-helpers.sql first (see supabase/README.md)';
+  END IF;
+END $$;
 
 -- Listagens submetidas (aparecem logo; verified = false até admin)
 CREATE TABLE IF NOT EXISTS directory_listings (

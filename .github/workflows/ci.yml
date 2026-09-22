@@ -104,6 +104,11 @@ jobs:
       - name: Guard suites ran with expected counts
         run: node scripts/check-guard-test-counts.js
 
+      # LOW8: cada função public.* só pode estar definida num ficheiro SQL —
+      # is_ventu_admin() andou copiada verbatim em 3 antes do fix.
+      - name: Validate SQL function definitions (no drift)
+        run: node scripts/check-sql-function-drift.js
+
       - name: Generate sitemap
         run: npm run sitemap:generate
 
