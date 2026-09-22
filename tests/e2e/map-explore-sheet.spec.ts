@@ -238,7 +238,9 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
   test('atribuição visível nos três estados do sheet', async ({ page }) => {
     await openMapa(page);
     const sheet = page.locator('[data-explore-sheet]');
-    const attr = sheet.locator('[data-sheet-attribution]');
+    // .first() — durante o cross-fade de ~240ms (reduced-motion) o estado
+    // anterior renderiza por cima e o locator resolve 2 nós.
+    const attr = sheet.locator('[data-sheet-attribution]').first();
     await expect(attr).toBeVisible({ timeout: 20_000 });
     await expect(attr).toContainText(/OpenStreetMap|CARTO|Open-Meteo/);
 
