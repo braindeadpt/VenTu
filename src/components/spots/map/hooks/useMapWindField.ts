@@ -45,6 +45,16 @@ function prefersReducedMotion(): boolean {
   return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
+/** Cap de desenho — 30 fps chegam para um campo ambiental e cortam o
+ *  custo de pintura para metade (o gargalo é o fill de fade, não o JS). */
+const WIND_FRAME_MS = 1000 / 30;
+/** Ao fim de ~8 s sem interacção o campo congela o último frame — o mapa
+ *  parado passa a custar ~zero. Qualquer gesto/dado novo acorda-o. */
+const WIND_IDLE_PAUSE_MS = 8_000;
+/** Canvas a DPR 1: ~4× menos píxeis por frame. As trails são linhas
+ *  ambientais finas — a diferença é imperceptível até a 1440/DPR 2. */
+const WIND_CANVAS_DPR = 1;
+
 /**
  * Campo de vento costeiro — partículas advectadas numa grelha IDW dos spots,
  * num canvas num pane Leaflet por baixo dos marcadores. Segue o padrão de
@@ -69,10 +79,17 @@ export function useMapWindField({
 }: UseMapWindFieldOptions) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef(0);
-  const lastTRef = useRef(0);
   const particlesRef = useRef<WindParticle[]>([]);
   const zoomRafRef = useRef(0);
-  const [reducedMotion] = useState(prefersReducedMotion);
+  const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion);
+  // Reage a mudanças do SO/browser sem reload — antes ficava congelado no
+  // valor do mount.
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const onChange = () => setReducedMotion(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
   // O campo precisa do ficheiro mesmo sem o layer «48h» — fetchMapHours tem
   // cache+inflight dedup, por isso o segundo pedido é gratuito.
   const [selfFile, setSelfFile] = useState<MapHoursFile | null>(null);
@@ -133,13 +150,15 @@ export function useMapWindField({
     }
 
     const host = map.getContainer();
-    const color = cssRgbToken(host, '--data-wind', '167 139 250');
+    // Cor segue o tema — antes era lida uma vez no mount e ficava presa ao
+    // tema inicial até o layer ser re-ligado.
+    const colorRef = { current: cssRgbToken(host, '--data-wind', '167 139 250') };
     const budget = isMobile ? MAP_WIND_PARTICLES_MOBILE : MAP_WIND_PARTICLES;
     const particles = particlesRef.current;
 
     const sizeCanvas = () => {
       const size = map.getSize();
-      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const dpr = WIND_CANVAS_DPR;
       const w = Math.round(size.x * dpr);
       const h = Math.round(size.y * dpr);
       if (canvas.width !== w || canvas.height !== h) {
@@ -194,7 +213,7 @@ export function useMapWindField({
           if (drawn) {
             const k = s / steps;
             const a = Math.min(0.7, 0.22 + p.kt / 50) * (1 - k * k);
-            ctx.strokeStyle = `rgb(${color} / ${a.toFixed(3)})`;
+            ctx.strokeStyle = `rgb(${colorRef.current} / ${a.toFixed(3)})`;
             ctx.lineWidth = (p.kt > 19 ? 1.7 : 1.15) * (1 - k * 0.5);
             ctx.beginPath();
             ctx.moveTo(p.px, p.py);
@@ -208,16 +227,32 @@ export function useMapWindField({
       }
     };
 
+    // Pausa por inactividade — o último frame fica congelado no canvas e o
+    // rAF para de ser agendado. `wake` (gesto no mapa, zoom, dados novos)
+    // retoma o loop.
+    const idle = { lastActive: performance.now(), paused: false };
+    let frameAcc = 0;
+    let lastT = 0;
+    let framesDrawn = 0;
     const tick = (t: number) => {
       rafRef.current = 0;
+      if (idle.paused) return; // congelado — wake() retoma
       if (document.hidden || isZoomAnimating(map)) {
         // Continua a agendar — retoma quando visível/anim acabar.
         rafRef.current = requestAnimationFrame(tick);
-        lastTRef.current = t;
+        lastT = t;
         return;
       }
-      const dt = Math.min(0.05, Math.max(0.001, (t - lastTRef.current) / 1000 || 0.016));
-      lastTRef.current = t;
+      frameAcc += lastT ? t - lastT : WIND_FRAME_MS;
+      lastT = t;
+      // Cap ~30 fps: salta frames sem saltar tempo — o dt acumulado mantém
+      // a velocidade visual das partículas.
+      if (frameAcc < WIND_FRAME_MS) {
+        rafRef.current = requestAnimationFrame(tick);
+        return;
+      }
+      const dt = Math.min(0.05, frameAcc / 1000);
+      frameAcc = 0;
       const ctx = canvas.getContext('2d');
       if (!ctx) return;
       const { size, dpr } = sizeCanvas();
@@ -251,11 +286,31 @@ export function useMapWindField({
           const p = map.latLngToLayerPoint([lat, lon]);
           return { x: p.x - origin.x, y: p.y - origin.y };
         },
-        color,
+        colorRef.current,
         isMobile ? 0.8 : 1,
         { width: size.x, height: size.y },
       );
+      // Congela depois de desenhar este frame — o rasto fica visível.
+      // O contador expõe o ritmo real de pintura (debug + e2e).
+      framesDrawn += 1;
+      host.setAttribute('data-map-windfield-frames', String(framesDrawn));
+      if (t - idle.lastActive > WIND_IDLE_PAUSE_MS) {
+        idle.paused = true;
+        host.setAttribute('data-map-windfield-paused', 'true');
+        return;
+      }
       rafRef.current = requestAnimationFrame(tick);
+    };
+
+    const wake = () => {
+      idle.lastActive = performance.now();
+      if (idle.paused && !reducedMotion) {
+        idle.paused = false;
+        host.setAttribute('data-map-windfield-paused', 'false');
+        frameAcc = 0;
+        lastT = 0;
+        if (!rafRef.current) rafRef.current = requestAnimationFrame(tick);
+      }
     };
 
     const onZoomStart = () => {
@@ -292,25 +347,50 @@ export function useMapWindField({
       if (reducedMotion) paintStatic();
     };
 
+    // A cor segue a classe de tema no <html>; em modo estático repinta já.
+    const themeObs = new MutationObserver(() => {
+      colorRef.current = cssRgbToken(host, '--data-wind', '167 139 250');
+      host.setAttribute('data-map-windfield-color', colorRef.current);
+      if (reducedMotion) paintStatic();
+    });
+    themeObs.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
     respawnAll();
     map.on('zoomstart', onZoomStart);
     map.on('zoomend', onZoomEnd);
     map.on('move', onMove);
     map.on('moveend', onMoveEnd);
+    // Interacção acorda o campo da pausa por inactividade.
+    map.on('movestart', wake);
+    map.on('zoomstart', wake);
+    host.addEventListener('pointermove', wake, { passive: true });
+    host.addEventListener('pointerdown', wake, { passive: true });
+    host.addEventListener('touchstart', wake, { passive: true });
     if (reducedMotion) paintStatic();
     else {
-      lastTRef.current = 0;
+      lastT = 0;
       rafRef.current = requestAnimationFrame(tick);
     }
 
     const el = map.getContainer();
     el.setAttribute('data-map-windfield', 'true');
+    el.setAttribute('data-map-windfield-paused', 'false');
+    el.setAttribute('data-map-windfield-color', colorRef.current);
 
     return () => {
+      themeObs.disconnect();
       map.off('zoomstart', onZoomStart);
       map.off('zoomend', onZoomEnd);
       map.off('move', onMove);
       map.off('moveend', onMoveEnd);
+      map.off('movestart', wake);
+      map.off('zoomstart', wake);
+      host.removeEventListener('pointermove', wake);
+      host.removeEventListener('pointerdown', wake);
+      host.removeEventListener('touchstart', wake);
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = 0;
@@ -320,7 +400,12 @@ export function useMapWindField({
         zoomRafRef.current = 0;
       }
       const el2 = map.getContainer();
-      if (el2) el2.setAttribute('data-map-windfield', 'false');
+      if (el2) {
+        el2.setAttribute('data-map-windfield', 'false');
+        el2.removeAttribute('data-map-windfield-paused');
+        el2.removeAttribute('data-map-windfield-frames');
+        el2.removeAttribute('data-map-windfield-color');
+      }
     };
   }, [windOn, isReady, grids, isMobile, reducedMotion, mapInstanceRef, LRef]);
 
