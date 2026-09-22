@@ -28,6 +28,10 @@ export async function generateStaticParams() {
   return params
 }
 
+// D10 — params exaustivos: slug sem notícia → 404 (produção: 404.html; dev:
+// 404 após o padrão aquecer — E443 a frio é upstream next.js#56253, dev-only).
+export const dynamicParams = false
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
   const isPt = locale === 'pt'

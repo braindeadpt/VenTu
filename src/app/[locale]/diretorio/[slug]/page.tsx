@@ -19,6 +19,11 @@ export async function generateStaticParams() {
   );
 }
 
+// D10 — params exaustivos: slug sem entrada no directório (ex.: «lisboa») →
+// 404 (produção: 404.html; dev: 404 após o padrão ter servido um slug válido
+// — o guard E443 do Next a frio dá 500, limitação upstream next.js#56253).
+export const dynamicParams = false;
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const entry = loadDirectoryEntries().find((e) => e.slug === slug);
