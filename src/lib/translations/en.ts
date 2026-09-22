@@ -229,6 +229,13 @@ export const translationsEn = {
     updatedAt: 'Updated',
     spotsVisible: 'spots on map',
     mapDataHint: 'Tap a spot · Show all · Wind',
+    locateMe: 'Near me',
+    locateHere: 'You are here',
+    locateDenied: 'Location permission denied',
+    locateUnavailable: 'Location unavailable',
+    locateTimeout: 'Location took too long — try again',
+    shareView: 'Share view',
+    shareCopied: 'Link copied',
   },
   news: {
     title: 'News and events',

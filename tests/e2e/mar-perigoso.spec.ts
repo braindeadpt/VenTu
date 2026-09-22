@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { interceptWarnings, readRealConditions } from './helpers/conditions';
 import { preseedWindRingLegend } from './helpers/map-setup';
+import { showAllMapMarkers } from './helpers/map-sheet';
 
 /**
  * Aviso «Mar perigoso» — o mesmo de segurança do hero do spot, estendido ao
@@ -57,10 +58,11 @@ function warningsNoSeaState(): Record<string, unknown> {
  * o sheet; um sheet reopenável é o contrato do MapSpotSheet.
  */
 async function openSpotSheet(page: import('@playwright/test').Page) {
+  await showAllMapMarkers(page);
   await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
   const marker = page.locator('.leaflet-marker-icon.spot-marker').first();
-  // Primeiro forçamos o scroll/estabilidade do target; o click() em si já o faz.
-  await marker.click();
+  // Force: com o cluster desfeito, outro marcador pode sobrepor o primeiro.
+  await marker.click({ position: { x: 14, y: 14 }, force: true });
   const sheet = page.getByTestId('map-spot-sheet');
   await expect(sheet).toBeVisible({ timeout: 15_000 });
   return sheet;

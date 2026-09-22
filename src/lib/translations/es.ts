@@ -286,6 +286,13 @@ export const translationsEs = {
     updatedAt: 'Actualizado',
     spotsVisible: 'spots en el mapa',
     mapDataHint: 'Pulsa un spot · Mostrar todos · Viento',
+    locateMe: 'Cerca de mí',
+    locateHere: 'Estás aquí',
+    locateDenied: 'Permiso de ubicación denegado',
+    locateUnavailable: 'Ubicación no disponible',
+    locateTimeout: 'La ubicación tardó demasiado — inténtalo de nuevo',
+    shareView: 'Compartir vista',
+    shareCopied: 'Enlace copiado',
     radarBadge: 'Radar',
   },
   news: {

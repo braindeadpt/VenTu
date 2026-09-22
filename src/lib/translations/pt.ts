@@ -231,6 +231,13 @@ export const translationsPt = {
     updatedAt: 'Actualizado',
     spotsVisible: 'spots no mapa',
     mapDataHint: 'Clica num spot · Mostrar todos · Vento',
+    locateMe: 'Perto de mim',
+    locateHere: 'Estás aqui',
+    locateDenied: 'Permissão de localização negada',
+    locateUnavailable: 'Localização indisponível',
+    locateTimeout: 'A localização demorou demasiado — tenta outra vez',
+    shareView: 'Partilhar vista',
+    shareCopied: 'Ligação copiada',
   },
   news: {
     title: 'Notícias e eventos',

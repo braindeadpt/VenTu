@@ -52,6 +52,10 @@ import {
   readOnlyOnPref,
 } from './mapHudPrefs';
 import { exploreViewBoundsFromSpots, resolveExploreChrome } from './mapMarkers';
+import { useToast } from '@/components/ui/ToastProvider';
+import { useMapLocate } from './map/hooks/useMapLocate';
+import MapQuickActions from './map/components/MapQuickActions';
+import { buildMapShareUrl } from '@/lib/mapShareUrl';
 
 // ─── Imports for hooks and sub-components ───
 import { useMapCore } from './map/hooks/useMapCore';
@@ -106,6 +110,7 @@ interface SpotMapInteractiveProps {
   initialCurrentsEnabled?: boolean;
   focusSpotId?: string;
   initialCenter?: [number, number] | undefined;
+  initialZoom?: number;
   fullscreenBelowHeader?: boolean;
   onExitFullscreen?: () => void;
 }
@@ -131,6 +136,7 @@ export default function SpotMapInteractive({
   initialCurrentsEnabled = false,
   focusSpotId,
   initialCenter,
+  initialZoom,
   fullscreenBelowHeader = false,
   onExitFullscreen: onExitFullscreenOverride,
 }: SpotMapInteractiveProps) {
@@ -530,13 +536,13 @@ export default function SpotMapInteractive({
     if (!initialCenter || initialCenterDoneRef.current || !isReady) return;
     if (!mapInstanceRef.current) return;
     initialCenterDoneRef.current = true;
-    mapInstanceRef.current.setView(initialCenter, SPOT_REGION_ZOOM, { animate: false });
+    mapInstanceRef.current.setView(initialCenter, initialZoom ?? SPOT_REGION_ZOOM, { animate: false });
     // Mark centering complete so tests can wait for it instead of racing
     // the map init (which exposes __RADAR_MAP__ before setView runs).
     if (typeof window !== 'undefined' && (window as any).__RADAR_TEST__) {
       (window as any).__RADAR_CENTERED__ = true;
     }
-  }, [initialCenter, isReady, mapInstanceRef]);
+  }, [initialCenter, initialZoom, isReady, mapInstanceRef]);
 
   // ── Visible spots ──
   const hourScores = useMemo(() => {
@@ -640,6 +646,55 @@ export default function SpotMapInteractive({
     if (!sstEnabled && hsEnabled) disableHs();
     toggleSstRaw();
   }, [sstEnabled, hsEnabled, toggleSstRaw, disableHs]);
+
+  // ── «Perto de mim» + «Partilhar vista» (fullscreen /mapa) ──
+  const { showToast } = useToast();
+  const { locate, locating } = useMapLocate({
+    mapInstanceRef,
+    isReady,
+    labels: {
+      locate: t.map.locateMe,
+      here: t.map.locateHere,
+      denied: t.map.locateDenied,
+      unavailable: t.map.locateUnavailable,
+      timeout: t.map.locateTimeout,
+    },
+    onToast: showToast,
+  });
+  const handleShareView = useCallback(async () => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+    const c = map.getCenter();
+    const url = buildMapShareUrl(`${window.location.origin}/${locale}/mapa/`, {
+      center: [c.lat, c.lng],
+      zoom: map.getZoom(),
+      sport: selectedSport,
+      region: selectedRegion,
+      layers: {
+        radar: radarEnabled,
+        isobaths: isobathsEnabled,
+        hours: hoursOn,
+        buoys: buoysEnabled,
+        hs: hsEnabled,
+        sst: sstEnabled,
+        currents: currentsEnabled,
+      },
+    });
+    try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share({ title: 'VenTu', url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      showToast(t.map.shareCopied);
+    } catch {
+      // AbortError (partilha cancelada) ou clipboard negado — sem toast.
+    }
+  }, [
+    mapInstanceRef, locale, selectedSport, selectedRegion,
+    radarEnabled, isobathsEnabled, hoursOn, buoysEnabled,
+    hsEnabled, sstEnabled, currentsEnabled, showToast, t.map.shareCopied,
+  ]);
 
   // ── Warnings by spot ──
   const warningsBySpot = useMemo(() => {
@@ -1175,6 +1230,19 @@ export default function SpotMapInteractive({
             windButtonRef={windButtonRef}
             fullscreenBtnRef={fullscreenBtnRef}
           />
+
+          {/* Acções rápidas — «Perto de mim» e «Partilhar vista», mesma
+              posição flutuante em desktop e mobile (o pill de controlos
+              está centrado e o sheet em baixo). */}
+          {isFullscreen && (
+            <MapQuickActions
+              locateLabel={t.map.locateMe}
+              shareLabel={t.map.shareView}
+              locating={locating}
+              onLocate={locate}
+              onShare={handleShareView}
+            />
+          )}
 
           {windLegendHintVisible && (
             <div
