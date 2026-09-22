@@ -60,33 +60,42 @@ function decodeEntities(text) {
 }
 
 /**
- * Remove markup: strip de tags → descodifica (uma passagem) → strip repetido
- * até estabilizar → remove os `<`/`>` residuais (a garantia do contrato).
+ * Remove tudo o que esteja dentro de `<…>`, caractere a caractere.
  *
- * O strip repetido é necessário porque a descodificação revela tags novas
- * (`&lt;script&gt;` → `<script>`), e o limite de passagens evita ciclos num
- * texto patológico. A remoção final de `<`/`>` cobre os bypasses clássicos de
- * um só strip (`<<script>script>` sobrevive à primeira passagem) — CodeQL
+ * Um estado explícito (e não uma regex de substituição) é o que torna a
+ * garantia verificável de ponta a ponta: qualquer `<` abre o estado «dentro de
+ * tag» e nunca é emitido; qualquer `>` fecha-o. O resultado não pode conter
+ * `<` nem `>`, o que cobre os bypasses clássicos de um strip por regex
+ * (`<<script>script>` sobrevive a uma passagem) — CodeQL
  * `js/incomplete-multi-character-sanitization`.
+ *
+ * @param {string} text
+ * @returns {string}
+ */
+function removeTags(text) {
+  let out = '';
+  let depth = 0;
+  for (const ch of text) {
+    if (ch === '<') depth += 1;
+    else if (ch === '>') depth = Math.max(0, depth - 1);
+    else if (depth === 0) out += ch;
+  }
+  return out;
+}
+
+/**
+ * Remove markup: strip de tags → descodifica (uma passagem) → strip de novo.
+ *
+ * A ordem (strip → decode → strip) faz parte do contrato H1: descodificar
+ * primeiro deixaria `&lt;script&gt;` virar markup; descodificar e não voltar a
+ * remover deixaria esse mesmo markup passar. Nenhum `<`/`>` sai daqui.
  *
  * @param {unknown} raw
  * @returns {string}
  */
 function stripTags(raw) {
   if (raw == null) return '';
-  let text = String(raw).replace(/<[^>]*>/g, '');
-  text = decodeEntities(text);
-  // Ponto fixo: repetir o strip ATÉ o texto parar de mudar (padrão que o
-  // CodeQL reconhece para js/incomplete-multi-character-sanitization), porque
-  // a descodificação revela tags novas (`&lt;script&gt;` → `<script>`).
-  let previous;
-  do {
-    previous = text;
-    text = text.replace(/<[^>]*>/g, '');
-  } while (text !== previous);
-  // Garantia final do contrato: nenhum `<` ou `>` sai daqui — cobre os
-  // bypasses que sobrevivem a um strip (`<<script>script>`).
-  return text.replace(/[<>]/g, '').trim();
+  return removeTags(decodeEntities(removeTags(String(raw)))).trim();
 }
 
 /**
@@ -99,11 +108,10 @@ function stripTags(raw) {
 function htmlToText(html) {
   if (html == null) return '';
   const withLinks = String(html).replace(/<a\s+[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi, '$2 ($1)');
-  const unmarked = withLinks.replace(/<\/(p|li|div)>/gi, '\n').replace(/<[^>]+>/g, '');
-  // Mesmo padrão do stripTags: descodifica uma vez e remove os `<`/`>` que
-  // possam ter emergido da descodificação (contrato «sem markup»).
-  const decoded = decodeEntities(unmarked).replace(/[<>]/g, '');
-  return decoded.replace(/\n{3,}/g, '\n\n').trim();
+  const withBreaks = withLinks.replace(/<\/(p|li|div)>/gi, '\n');
+  return removeTags(decodeEntities(removeTags(withBreaks)))
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 module.exports = { decodeEntities, stripTags, htmlToText };
