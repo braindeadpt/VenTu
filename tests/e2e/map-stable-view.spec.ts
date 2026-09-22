@@ -30,7 +30,7 @@ async function openMapa(page: Page, prefs?: { cluster?: string; onlyOn?: string 
     if (p?.cluster) localStorage.setItem('ventu.map.cluster', p.cluster);
     if (p?.onlyOn) localStorage.setItem('ventu.map.onlyOn', p.onlyOn);
   }, prefs ?? null);
-  await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.goto('/pt/mapa/?sport=all', { waitUntil: 'domcontentloaded', timeout: 60_000 });
   await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 }
 
