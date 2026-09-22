@@ -37,8 +37,10 @@
 - [x] **Skeleton do Dawn Patrol com shift de 4px** — passa a incluir a moldura
   `border-l-4 border-l-accent` e as dimensões do banner real.
 - [x] **Homepage sem grid de `SpotCard`** — verificado: é intencional desde o
-  redesign (mapa em herói + secções ranqueadas `HomepageRankedSection`/
-  `TopNow`/`YourDay`); não há grid de cards na home por desenho, não é omissão.
+  redesign. A home é *map-first* e os spots aparecem em secções ranqueadas
+  (`HomepageRankedSection`) e listas (`HomepageTopNow`/`HomepageFavoritesNow`)
+  que usam o `SpotListCard`, não o antigo `SpotCard` de grelha densa. Não é
+  omissão.
 - [x] **Botão «Voltar» do spot** — já preserva o filtro
   (`/spots/?sport=…`, com comentário no `SpotDetailHero`).
 - [x] **Pesquisa duplicada (hero vs header)** — já unificada num só
