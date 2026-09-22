@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, Layers, RotateCcw } from 'lucide-react';
 import { cn } from '@/lib/cn';
@@ -56,7 +56,69 @@ export default function MapLayersMenu({
   const rootRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popRef = useRef<HTMLDivElement>(null);
+  const menuId = useId();
+  /** ↑ no trigger abre no ÚLTIMO item (menu-button WAI-ARIA). */
+  const lastFocusEdge = useRef<'start' | 'end' | null>(null);
   const activeCount = items.filter((i) => i.pressed).length;
+
+  /** Itens navegáveis do popover (toggles + resets), na ordem visual. */
+  const focusableItems = () =>
+    Array.from(
+      popRef.current?.querySelectorAll<HTMLElement>('button:not([disabled])') ?? [],
+    );
+
+  /**
+   * O popover é portalizado — Tab/Shift+Tab dentro dele fecha e retoma a
+   * ordem natural a partir do trigger (padrão menu-button WAI-ARIA).
+   */
+  const focusRelativeToTrigger = (dir: 1 | -1) => {
+    const trigger = triggerRef.current;
+    if (!trigger) return;
+    const tabbables = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]',
+      ),
+    ).filter((el) => el.tabIndex >= 0 && el.getClientRects().length > 0);
+    const i = tabbables.indexOf(trigger);
+    const next = tabbables[i + dir];
+    (next ?? trigger).focus();
+  };
+
+  // Menu-button WAI-ARIA: ↓ abre e foca o primeiro item; ↑ abre no último.
+  const onTriggerKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+    e.preventDefault();
+    if (!open) {
+      lastFocusEdge.current = e.key === 'ArrowUp' ? 'end' : 'start';
+      toggleMenu();
+    }
+  };
+
+  const onPopoverKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const focusables = focusableItems();
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      if (focusables.length === 0) return;
+      e.preventDefault();
+      const idx = focusables.indexOf(document.activeElement as HTMLElement);
+      const next =
+        e.key === 'ArrowDown'
+          ? (idx + 1) % focusables.length
+          : (idx - 1 + focusables.length) % focusables.length;
+      (idx === -1 ? focusables[0] : focusables[next]).focus();
+    } else if (e.key === 'Home') {
+      e.preventDefault();
+      focusables[0]?.focus();
+    } else if (e.key === 'End') {
+      e.preventDefault();
+      focusables[focusables.length - 1]?.focus();
+    } else if (e.key === 'Tab') {
+      // Popover portalizado — Tab natural saía para o fim do body. Fecha e
+      // retoma a ordem a partir do trigger (seguinte / anterior).
+      e.preventDefault();
+      setOpen(false);
+      focusRelativeToTrigger(e.shiftKey ? -1 : 1);
+    }
+  };
 
   const toggleMenu = () => {
     if (!open) {
@@ -90,9 +152,21 @@ export default function MapLayersMenu({
 
   useEffect(() => {
     if (!open) return;
+    // Abrir leva o foco ao primeiro item activo (ignora disabled) — sem isto
+    // o popover portalizado ficava fora da ordem de Tab e inalcançável.
+    const items = popRef.current?.querySelectorAll<HTMLElement>('button:not([disabled])');
+    const edge = lastFocusEdge.current;
+    lastFocusEdge.current = null;
+    (edge === 'end' ? items?.[items.length - 1] : items?.[0])?.focus();
+
     const onPointerDown = (e: PointerEvent) => {
       const t = e.target as Node;
       if (rootRef.current?.contains(t) || popRef.current?.contains(t)) return;
+      // O alvo do clique recebe o foco logo a seguir — devolver ao trigger
+      // só evita foco encalhado quando o alvo não é focável (canvas…).
+      if (popRef.current?.contains(document.activeElement)) {
+        triggerRef.current?.focus();
+      }
       setOpen(false);
     };
     const onKey = (e: KeyboardEvent) => {
@@ -101,9 +175,13 @@ export default function MapLayersMenu({
       // listener do window e saía do fullscreen (ou fechava o sheet).
       e.stopPropagation();
       setOpen(false);
+      triggerRef.current?.focus();
     };
     const onScroll = (e: Event) => {
       if (popRef.current?.contains(e.target as Node)) return;
+      if (popRef.current?.contains(document.activeElement)) {
+        triggerRef.current?.focus();
+      }
       setOpen(false);
     };
     document.addEventListener('pointerdown', onPointerDown);
@@ -135,8 +213,11 @@ export default function MapLayersMenu({
         <MapControlButton
           ref={triggerRef}
           onClick={toggleMenu}
+          onKeyDown={onTriggerKeyDown}
           aria-label={label}
           aria-expanded={open}
+          aria-haspopup="true"
+          aria-controls={open ? menuId : undefined}
           title={label}
           data-map-layers-menu
           className="relative"
@@ -150,8 +231,11 @@ export default function MapLayersMenu({
           ref={triggerRef}
           type="button"
           onClick={toggleMenu}
+          onKeyDown={onTriggerKeyDown}
           aria-label={label}
           aria-expanded={open}
+          aria-haspopup="true"
+          aria-controls={open ? menuId : undefined}
           title={label}
           data-map-layers-menu
           className={cn(
@@ -172,9 +256,11 @@ export default function MapLayersMenu({
         createPortal(
           <div
             ref={popRef}
+            id={menuId}
             role="group"
             aria-label={label}
             data-map-layers-popover="true"
+            onKeyDown={onPopoverKeyDown}
             style={pos}
             className="fixed z-[1250] w-[min(300px,calc(100vw-2rem))] max-h-[min(60vh,420px)] overflow-y-auto overscroll-contain rounded-card border border-divider bg-bg-elevated/95 backdrop-blur-md shadow-card p-1.5 flex flex-col gap-0.5"
           >
@@ -189,7 +275,7 @@ export default function MapLayersMenu({
                 title={item.hint}
                 {...(item.toggleAttr ? { [item.toggleAttr]: true } : {})}
                 className={cn(
-                  'flex flex-1 items-center gap-2.5 min-h-[44px] min-w-0 px-2.5 rounded-input text-meta-sm font-medium text-left transition-colors duration-150',
+                  'flex flex-1 items-center gap-2.5 min-h-[44px] min-w-0 px-2.5 rounded-input text-meta-sm font-medium text-left transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-accent',
                   item.disabled
                     ? 'opacity-40 cursor-not-allowed'
                     : 'hover:bg-surface-2/[0.08]',
@@ -215,7 +301,7 @@ export default function MapLayersMenu({
                   onClick={item.onReset}
                   aria-label={item.resetLabel}
                   title={item.resetLabel}
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-input text-fg-subtle hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150"
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-input text-fg-subtle hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-accent"
                 >
                   <RotateCcw className="w-3.5 h-3.5" aria-hidden />
                 </button>
