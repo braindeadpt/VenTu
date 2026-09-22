@@ -218,7 +218,7 @@ html:has([data-embed-widget]) body {
        tint /20). */
     --windDir-offshore:  22 101 52;     /* green-800 */
     --windDir-onshore:  185 28 28;      /* red-700   */
-    --windDir-cross:   100 116 139;     /* slate-500 */
+    --windDir-cross:   71 85 105;       /* slate-600 — AA em branco (slate-500 = 3.03:1 falha AA) */
 
     /* Score colors — mais saturados para fundo claro */
     --score-epic:     3 105 161;       /* sky-700 — AA on epic score tints */
@@ -1136,6 +1136,29 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
   --fg-subtle-rgb:   148 163 184;
   --divider:     255 255 255 / 0.14;
   --divider-rgb: 255 255 255;
+
+  /* Sobre o scrim escuro, os hues da theme-ocean (ink escuro) colapsam —
+     re-declarar os valores dark (light-on-dark, AA sobre o scrim). O card
+     opaco abaixo restaura os hues de ink claro. */
+  --data-waves:    14 165 233;   /* sky-500    */
+  --data-wind:    167 139 250;   /* violet-400 */
+  --data-water:    34 211 238;   /* cyan-400   */
+  --data-period:  251 191 36;    /* amber-400  */
+  --sport-surf:       14 165 233;
+  --sport-kitesurf:  167 139 250;
+  --sport-windsurf:  245 158 11;
+  --sport-bodyboard:  16 185 129;
+  --sport-sup:        6 182 212;
+  --sport-wakeboard: 236 72 153;
+  --sport-foil:      129 140 248;
+  --windDir-offshore:  34 197 94;
+  --windDir-onshore:  248 113 113;
+  --windDir-cross:    148 163 184;
+  --score-epic:   14 165 233;
+  --score-good:   16 185 129;
+  --score-fair:   245 158 11;
+  --score-poor:   248 113 113;
+  --score-closed: 107 114 128;
 }
 .theme-ocean .spot-hero-ink .spot-hero-card {
   --fg:           15 23 42 / 1.0;
@@ -1148,6 +1171,26 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
   --divider-rgb:  15 23 42;
   --divider-strong: 15 23 42 / 0.14;
   --divider-strong-rgb: 15 23 42;
+  /* Card opaco sobre a foto → voltar aos hues de ink claro (AA em branco) */
+  --data-waves:     3 105 161;
+  --data-wind:    109 40 217;
+  --data-water:    14 116 144;
+  --data-period:  146 64 14;
+  --sport-surf:        7 89 133;
+  --sport-kitesurf:  126 34 206;
+  --sport-windsurf:  146 64 14;
+  --sport-bodyboard: 6 78 59;
+  --sport-sup:       14 116 144;
+  --sport-wakeboard: 190 18 60;
+  --sport-foil:      67 56 202;
+  --windDir-offshore:  22 101 52;
+  --windDir-onshore:  185 28 28;
+  --windDir-cross: 71 85 105;
+  --score-epic:     3 105 161;
+  --score-good:     6 95 70;
+  --score-fair:    146 64 14;
+  --score-poor:    185 28 28;
+  --score-closed:  107 114 128;
   border-color: rgb(255 255 255 / 0.42);
   color: rgb(var(--fg));
   background-color: rgb(255 255 255 / 0.86);
@@ -1229,6 +1272,27 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
     --divider-strong: 255 255 255 / 0.18;
     --divider-strong-rgb: 255 255 255;
     color: rgb(var(--fg));
+    /* Dissolved = fundo transparente sobre o scrim escuro → manter os
+       valores dark (light-on-dark), tal como o bloco .spot-hero-ink. */
+    --data-waves:    14 165 233;
+    --data-wind:    167 139 250;
+    --data-water:    34 211 238;
+    --data-period:  251 191 36;
+    --sport-surf:       14 165 233;
+    --sport-kitesurf:  167 139 250;
+    --sport-windsurf:  245 158 11;
+    --sport-bodyboard:  16 185 129;
+    --sport-sup:        6 182 212;
+    --sport-wakeboard: 236 72 153;
+    --sport-foil:      129 140 248;
+    --windDir-offshore:  34 197 94;
+    --windDir-onshore:  248 113 113;
+    --windDir-cross:    148 163 184;
+    --score-epic:   14 165 233;
+    --score-good:   16 185 129;
+    --score-fair:   245 158 11;
+    --score-poor:   248 113 113;
+    --score-closed: 107 114 128;
   }
 
   .spot-hero-ink .spot-hero-card--dissolved .spot-hero-stat {
