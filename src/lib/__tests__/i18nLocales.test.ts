@@ -298,6 +298,36 @@ describe('i18n locales', () => {
     }
   });
 
+  /**
+   * Guard inverso do teste anterior: os shells não podem acumular keys que o pt
+   * já não tem (leftovers de UI removida). O de cima garante pt ⊆ shell; sem
+   * este, apagar uma key do pt deixa-a viva para sempre em en/es/de/fr sem
+   * nenhum teste a falhar — o padrão apontado na auditoria (LOW1).
+   * Medição no HEAD actual: 0 extras nos 4 shells.
+   */
+  it('en/es/de/fr não têm keys fora do pt (sem leftovers nos shells)', () => {
+    const ptBlock = getTranslation('pt') as unknown as Record<string, unknown>;
+    for (const loc of ['en', 'es', 'de', 'fr'] as const) {
+      const locBlock = getTranslation(loc) as unknown as Record<string, unknown>;
+      const extras: string[] = [];
+      const walk = (path: string, a: Record<string, unknown>, b: Record<string, unknown>): void => {
+        for (const [k, v] of Object.entries(a)) {
+          const p = path ? `${path}.${k}` : k;
+          if (v && typeof v === 'object') {
+            const bv = b[k];
+            if (bv && typeof bv === 'object') {
+              walk(p, v as Record<string, unknown>, bv as Record<string, unknown>);
+            }
+          } else if (!(k in b)) {
+            extras.push(p);
+          }
+        }
+      };
+      walk('', locBlock, ptBlock);
+      expect(extras, `${loc} tem keys que o pt não conhece (leftover)`).toEqual([]);
+    }
+  });
+
   it('en/es/de/fr: nenhum valor ficou igual ao placeholder português (traduções esquecidas)', () => {
     const ptBlock = getTranslation('pt') as unknown as Record<string, unknown>;
     const violations: string[] = [];
