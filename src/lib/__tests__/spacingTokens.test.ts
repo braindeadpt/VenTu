@@ -15,14 +15,14 @@ const ROOT = join(__dirname, '..', '..', '..');
 
 const globalsCss = readFileSync(join(ROOT, 'src/app/globals.css'), 'utf-8');
 const stickyBar = readFileSync(join(ROOT, 'src/components/spots/SpotStickyBar.tsx'), 'utf-8');
-// A linha standalone de tabs vive na secção de veredicto desde a S1
-// (compartimentos da página de spot v2) — é ela que partilha a cota com a barra.
+// A fila de tabs vive na barra unificada desde a S2A — é ela que partilha a
+// cota de pinagem e a altura de 48px com a SpotStickyBar legada.
 const detail = readFileSync(
-  join(ROOT, 'src/components/spots/page/SpotVerdictSection.tsx'),
+  join(ROOT, 'src/components/spots/verdict/SpotUnifiedBar.tsx'),
   'utf-8',
 );
 
-describe('tokens de layout sport tabs (secção sticky vs SpotStickyBar)', () => {
+describe('tokens de layout sport tabs (SpotUnifiedBar vs SpotStickyBar)', () => {
   it('globals.css define os dois tokens com os valores esperados', () => {
     expect(globalsCss).toMatch(/--ventu-spot-sticky-top:\s*64px/);
     expect(globalsCss).toMatch(/--ventu-spot-tabs-h:\s*48px/);
@@ -35,7 +35,7 @@ describe('tokens de layout sport tabs (secção sticky vs SpotStickyBar)', () =>
     expect(stickyBar).not.toMatch(/top:\s*'64px'|top:\s*"64px"/);
   });
 
-  it('a secção sticky usa os tokens (pin top + altura da fila) e não hard-coda top-16', () => {
+  it('a barra unificada usa os tokens (pin top + altura da fila) e não hard-coda top-16', () => {
     expect(detail).toContain("top: 'var(--ventu-spot-sticky-top)'");
     expect(detail).toContain("height: 'var(--ventu-spot-tabs-h)'");
     expect(detail).not.toMatch(/sticky\s+top-16\b/);

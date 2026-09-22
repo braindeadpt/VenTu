@@ -11,6 +11,7 @@ import {
 } from 'react';
 import { findCurrentHourIndex } from '@/lib/openMeteoTime';
 import { spotTimelineScore } from '@/lib/spotTimelineScore';
+import { spotTimelineWindow } from '@/components/spots/timeline/spotTimelineWindow';
 import { mapTimeTrackPaused } from '@/components/spots/map/mapTimeTrackPaused';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 
@@ -30,6 +31,9 @@ export interface SpotTimelineDataValue {
   nowIndex: number;
   /** Score «agora» com correcções observadas (badge do herói). */
   nowScore?: number;
+  /** Janela visível da régua/autoplay: [windowStart, windowEnd) — 48 h a partir de «agora». */
+  windowStart: number;
+  windowEnd: number;
 }
 
 export interface SpotTimelineIndexValue {
@@ -94,18 +98,40 @@ export default function SpotTimelineProvider({
 
   // Índice «agora»: só depois de montar, com o relógio real (ou o de
   // referência em testes). Antes disso -1 — nada depende da hora actual.
-  const nowIndex = useMemo(() => {
-    if (!mounted || hours.length === 0) return -1;
-    return findCurrentHourIndex(hours as string[], new Date(nowMs ?? Date.now()));
-  }, [mounted, hours, nowMs]);
-
-  // Aterragem inicial na hora actual — uma vez, depois de montar.
+  // Recomputa em visibilitychange (página aberta durante horas) — mexer no
+  // nowIndex NÃO move o índice escolhido pelo utilizador (a aterragem
+  // inicial está protegida por didLandOnNow).
+  // A aterragem acontece no mesmo commit que o primeiro nowIndex — sem isso
+  // a janela saltava um render à frente do índice e a régua ficava sem
+  // barra seleccionada (e com um índice fora da janela).
+  const [nowIndex, setNowIndex] = useState(-1);
   const didLandOnNow = useRef(false);
   useEffect(() => {
-    if (!mounted || didLandOnNow.current) return;
-    didLandOnNow.current = true;
-    if (nowIndex >= 0) setIndexRaw(nowIndex);
-  }, [mounted, nowIndex]);
+    if (!mounted || hours.length === 0) {
+      setNowIndex(-1);
+      return;
+    }
+    const compute = () => {
+      const i = findCurrentHourIndex(hours as string[], new Date(nowMs ?? Date.now()));
+      setNowIndex(i);
+      if (!didLandOnNow.current) {
+        didLandOnNow.current = true;
+        if (i >= 0) setIndexRaw(i);
+      }
+    };
+    compute();
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') compute();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    return () => document.removeEventListener('visibilitychange', onVisible);
+  }, [mounted, hours, nowMs]);
+
+  // Janela de 48 h da régua — a mesma que limita o autoplay.
+  const { start: windowStart, end: windowEnd } = useMemo(
+    () => spotTimelineWindow(hours.length, nowIndex),
+    [hours.length, nowIndex],
+  );
 
   const clamp = useCallback(
     (i: number) => Math.max(0, Math.min(i, Math.max(0, hours.length - 1))),
@@ -136,16 +162,17 @@ export default function SpotTimelineProvider({
   });
 
   useEffect(() => {
-    if (paused || hours.length <= 1) return;
+    if (paused || windowEnd - windowStart <= 1) return;
     const id = window.setInterval(() => {
-      setIndexRaw((i) => (i + 1) % hours.length);
+      // Autoplay dá a volta dentro da janela de 48 h, não no array inteiro.
+      setIndexRaw((i) => (i >= windowStart && i + 1 < windowEnd ? i + 1 : windowStart));
     }, tickMs);
     return () => window.clearInterval(id);
-  }, [paused, hours.length, tickMs]);
+  }, [paused, windowStart, windowEnd, tickMs]);
 
   const dataValue = useMemo<SpotTimelineDataValue>(
-    () => ({ hours, scores, nowIndex, nowScore }),
-    [hours, scores, nowIndex, nowScore],
+    () => ({ hours, scores, nowIndex, nowScore, windowStart, windowEnd }),
+    [hours, scores, nowIndex, nowScore, windowStart, windowEnd],
   );
 
   const indexValue = useMemo<SpotTimelineIndexValue>(
