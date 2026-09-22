@@ -699,7 +699,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(page.getByLabel(/Fontes de onda observada \(IH vs WMO\)|Observed wave sources \(IH vs WMO\)/i)).toHaveCount(0);
   });
 
-  test('badge do score: «Corrigido pela boia» com leitura fresca, nunca «Só previsão»', async ({
+  test('badge do score: «Corrigido pela boia» com leitura fresca, nunca «Onda · só previsão»', async ({
     page,
   }) => {
     await gotoSpot(page, 'with-observed-wave');
@@ -707,8 +707,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const hero = page.locator('.spot-hero-card');
     // O badge do score (ScoreWaveSourceBadge) usa a altura medida → rótulo
     // da boia vencedora + tooltip com o skill ME/n. Escopo pelo title único da
-    // fonte de ONDA (o badge de vento também usa «Só previsão» quando não há
-    // vento fresco — não deve colidir com estas asserções).
+    // fonte de ONDA (o badge de vento também usa «Vento · só previsão» quando
+    // não há vento fresco — não deve colidir com estas asserções).
     const waveBadge = hero.locator('[title*="altura de onda medida pela boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 15_000 });
     await expect(waveBadge).toHaveText('Corrigido pela boia CSA92/D');
@@ -719,16 +719,18 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(hero.getByText('1.8m (boia)')).toBeVisible();
   });
 
-  test('badge do score: «Só previsão» sem leitura fresca da boia', async ({ page }) => {
+  test('badge do score: «Onda · só previsão» sem leitura fresca da boia', async ({ page }) => {
     await gotoSpot(page, 'without-observed-wave');
 
     const hero = page.locator('.spot-hero-card');
     // Sem observedWave fresco → a onda usa a previsão do modelo, rótulo honesto.
-    // (O badge de vento pode também dizer «Só previsão» se a observação IPMA
-    // real estiver velha — daí o escopo pelo title exclusivo da onda.)
+    // (O badge de vento pode também dizer «Vento · só previsão» se a observação
+    // IPMA real estiver velha — daí o escopo pelo title exclusivo da onda.)
     const waveBadge = hero.locator('[title*="Sem correcção de boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 15_000 });
-    await expect(waveBadge).toHaveText('Só previsão');
+    // O rótulo leva o prefixo do eixo desde a unificação dos ProvenanceChip
+    // (ScoreWaveSourceBadge: `Onda · só previsão` / EN `Wave · forecast only`).
+    await expect(waveBadge).toHaveText('Onda · só previsão');
     await expect(waveBadge).toHaveAttribute('title', /Sem correcção de boia — score com a previsão do modelo/);
     // Nenhuma correcção de boia é apresentada (nem no hero nem no card).
     await expect(page.getByText(/Corrigido pela boia/i)).toHaveCount(0);
@@ -892,7 +894,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(hero.getByText('1.8m (viés regional)')).toHaveCount(0);
   });
 
-  test('fallback: sem viés da região no wave-bias.json → «Só previsão» (nunca inventa)', async ({
+  test('fallback: sem viés da região no wave-bias.json → «Onda · só previsão» (nunca inventa)', async ({
     page,
   }) => {
     await interceptConditions(page, {
@@ -917,7 +919,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     const hero = page.locator('.spot-hero-card');
     const waveBadge = hero.locator('[title*="Sem correcção de boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 20_000 });
-    await expect(waveBadge).toHaveText('Só previsão');
+    await expect(waveBadge).toHaveText('Onda · só previsão');
     await expect(hero.locator('[title*="Viés regional"]')).toHaveCount(0);
     // Altura sem correcção (valor real do build) e SEM sufixo de medição/viés
     // — o ponto do teste é a ausência da correcção, não o número exacto.
@@ -1084,12 +1086,12 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(sticky.getByText('1.8m (boia)')).toBeVisible();
   });
 
-  test('sticky desktop: sem correcção → NENHUM badge (nem «Corrigido» nem «Só previsão»)', async ({
+  test('sticky desktop: sem correcção → NENHUM badge (nem «Corrigido» nem «Onda · só previsão»)', async ({
     page,
   }) => {
     // O outro lado do par: sem leitura fresca nem viés, a barra sticky NÃO
-    // mostra o ScoreWaveSourceBadge — ao contrário do hero (que mostra «Só
-    // previsão»), a sticky só renderiza o badge quando há correcção.
+    // mostra o ScoreWaveSourceBadge — ao contrário do hero (que mostra «Onda ·
+    // só previsão»), a sticky só renderiza o badge quando há correcção.
     await gotoSpot(page, 'without-observed-wave');
 
     await scrollToSettledBottom(page);
