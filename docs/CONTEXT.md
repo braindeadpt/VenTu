@@ -48,6 +48,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 - **Nunca** “tempo real” / “real-time”. Cadência honesta: *actualizado a cada 2 horas (06h–20h)*.
 - **`DataSourceBadge`** (`src/components/ui/DataSourceBadge.tsx`) — DEMO / stale / cached em SpotDetail, Compare, Favoritos, SpotDrawer, grid.
 - **Dawn Patrol:** `public/data/dawn-patrol.json` + guard stale (>24h) e validação de slugs no banner.
+- **Histórico de dados:** política, números e orçamento do `public/data` tracked em [`DATA-HISTORY.md`](./DATA-HISTORY.md) (guard `scripts/check-data-history-budget.js` no CI).
 - **Stale threshold:** >3h amarelo, >12h vermelho (`src/lib/dataFreshness.ts`).
 
 ## Scoring multi-desporto

@@ -109,6 +109,11 @@ jobs:
       - name: Validate SQL function definitions (no drift)
         run: node scripts/check-sql-function-drift.js
 
+      # M8: tecto para a árvore trackeada de public/data (o histórico cresce
+      # ~2×/hora com forecasts + frames de radar — ver docs/DATA-HISTORY.md).
+      - name: Validate public/data history budget
+        run: node scripts/check-data-history-budget.js
+
       - name: Generate sitemap
         run: npm run sitemap:generate
 
