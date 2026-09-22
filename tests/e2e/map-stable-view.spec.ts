@@ -1,5 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
+import { waitHydrated } from './helpers/hydration';
+import { showAllMapMarkers } from './helpers/map-sheet';
 
 /**
  * Vista estável do mapa — auditoria do mapa.
@@ -183,6 +185,12 @@ test.describe('Map stable view — mobile 390×844', () => {
 
   test('sheet sobrevive a um refresh de dados (visibilitychange)', async ({ page }) => {
     await openMapa(page, { cluster: '0' });
+
+    // Mobile FORÇA o cluster no arranque (ignora o localStorage) → sem o
+    // desfazer pela UI não existe nenhum `.spot-marker` e o toBeAttached
+    // expirava (CI #499). Mesmo caminho documentado: peek → «Mostrar todos».
+    await waitHydrated(page);
+    await showAllMapMarkers(page);
 
     const marker = page.locator('.spot-marker').first();
     await expect(marker).toBeAttached({ timeout: 20_000 });

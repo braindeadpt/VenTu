@@ -5,6 +5,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
 import { expandMapHudFilters } from './helpers/map-hud';
 import { expectTopmostHit } from './helpers/hit-test';
+import { showAllMapMarkers } from './helpers/map-sheet';
 
 /**
  * Hit-test real das ações de dispensa/fecho dos overlays do mapa — desktop e
@@ -72,7 +73,17 @@ async function openMapa(
   // popup/sheet aberto a meio do teste («not-rendered»/detach). O atributo é
   // o sinal e2e do useLiveGridSpotData para exactamente esta corrida.
   await page.waitForSelector('html[data-grid-live-deferred="done"]', { timeout: 30_000 });
-  if (opts.mobile) await expandMapHudFilters(page);
+  if (opts.mobile) {
+    // O mobile FORÇA o cluster no arranque (ignora o localStorage). Sem
+    // desfazer o cluster pela UI não existem `.spot-marker` individuais para
+    // clicar — o pick ficava à espera até ao timeout de 60 s do teste (foi
+    // assim que o CI #496 e o #499 falharam, com a árvore a mostrar só
+    // «Melhor score N · X spots nesta zona»). showAllMapMarkers faz o
+    // caminho documentado: peek → «Mostrar todos» → volta ao peek, e só
+    // devolve com os marcadores montados e o mapa parado.
+    await showAllMapMarkers(page);
+    await expandMapHudFilters(page);
+  }
 }
 
 /**
@@ -102,7 +113,7 @@ async function openInViewportMarker(page: Page): Promise<Locator> {
         }
         return (w.__ventuPaneStable ?? 0) >= 3;
       },
-      { timeout: 20_000, polling: 150 },
+      { timeout: 10_000, polling: 150 },
     )
     .catch(() => {
       /* mapa já parado (ou sem pane): seguir para a escolha */
@@ -148,7 +159,7 @@ async function openInViewportMarker(page: Page): Promise<Locator> {
         if (pool.length > 0) return { index: pool[0].index, via: 'evaluate' };
         return null;
       },
-      { timeout: 30_000, polling: 250 },
+      { timeout: 20_000, polling: 250 },
     )
     .catch(() => null);
 
@@ -157,23 +168,31 @@ async function openInViewportMarker(page: Page): Promise<Locator> {
     | null;
   if (!info) {
     // Diagnóstico em vez de um timeout mudo: quantos marcadores existem e onde.
-    const diag = await page.evaluate(() => {
-      const markers = Array.from(
-        document.querySelectorAll<HTMLElement>('.leaflet-marker-icon.spot-marker'),
-      );
-      return {
-        total: markers.length,
-        vw: window.innerWidth,
-        vh: window.innerHeight,
-        sample: markers.slice(0, 5).map((m) => {
-          const r = m.getBoundingClientRect();
-          return `${Math.round(r.x)},${Math.round(r.y)} ${Math.round(r.width)}x${Math.round(r.height)}`;
-        }),
-      };
-    });
+    // Se a página já fechou (o timeout do TESTE disparou antes), não vale a
+    // pena mascarar o erro real com «Target page, context or browser closed».
+    const diag = page.isClosed()
+      ? null
+      : await page
+          .evaluate(() => {
+            const markers = Array.from(
+              document.querySelectorAll<HTMLElement>('.leaflet-marker-icon.spot-marker'),
+            );
+            return {
+              total: markers.length,
+              vw: window.innerWidth,
+              vh: window.innerHeight,
+              sample: markers.slice(0, 5).map((m) => {
+                const r = m.getBoundingClientRect();
+                return `${Math.round(r.x)},${Math.round(r.y)} ${Math.round(r.width)}x${Math.round(r.height)}`;
+              }),
+            };
+          })
+          .catch(() => null);
     throw new Error(
-      `openInViewportMarker: nenhum spot-marker com o centro no viewport ` +
-        `(total=${diag.total}, viewport=${diag.vw}x${diag.vh}, amostra=[${diag.sample.join(' | ')}])`,
+      'openInViewportMarker: nenhum spot-marker com o centro no viewport' +
+        (diag
+          ? ` (total=${diag.total}, viewport=${diag.vw}x${diag.vh}, amostra=[${diag.sample.join(' | ')}])`
+          : ' (página já fechada)'),
     );
   }
   const marker = page.locator('.leaflet-marker-icon.spot-marker').nth(info.index);
