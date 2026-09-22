@@ -50,6 +50,34 @@ async function openMapa(page: Page, query = '', debug = true): Promise<void> {
   await page.waitForLoadState('networkidle', { timeout: 30_000 }).catch(() => {});
 }
 
+/**
+ * Geometria real do ecrã: fração do mapa tapada pela moldura (sheet/painel)
+ * e marcadores (spots ou clusters) cujo centro nasce debaixo dela. O teste
+ * dos três estados só olhava para o atributo `data-explore-sheet` — um peek
+ * do tamanho do sheet inteiro passava verde.
+ */
+async function chromeCoverage(page: Page, chromeSelector: string, edge: 'bottom' | 'left') {
+  return page.evaluate(
+    ({ sel, edge }) => {
+      const c = document.querySelector('.leaflet-container')!.getBoundingClientRect();
+      const ch = document.querySelector(sel)!.getBoundingClientRect();
+      const covered = edge === 'bottom'
+        ? (c.bottom - Math.max(ch.top, c.top)) / c.height
+        : (Math.min(ch.right, c.right) - c.left) / c.width;
+      const under = [...document.querySelectorAll('.leaflet-marker-pane .leaflet-marker-icon')]
+        .map((m) => {
+          const r = m.getBoundingClientRect();
+          return { x: r.left + r.width / 2, y: r.top + r.height / 2, name: m.getAttribute('aria-label') ?? '' };
+        })
+        .filter((p) => p.x >= c.left && p.x <= c.right && p.y >= c.top && p.y <= c.bottom)
+        .filter((p) => (edge === 'bottom' ? p.y > ch.top : p.x < ch.right))
+        .map((p) => p.name);
+      return { covered, under };
+    },
+    { sel: chromeSelector, edge },
+  );
+}
+
 /** Score de uma linha da lista (chip mono à esquerda). */
 async function rowScore(row: ReturnType<Page['locator']>): Promise<number> {
   const txt = await row.locator('span').first().innerText();
@@ -97,6 +125,17 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'open');
     await grabber.click();
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek');
+  });
+
+  test('peek deixa o mapa à vista e nenhum spot nasce debaixo do sheet', async ({ page }) => {
+    await openMapa(page);
+    await expect(page.locator('[data-explore-sheet]')).toHaveAttribute('data-explore-sheet', 'peek');
+    // O peek mede-se por ResizeObserver: espera o snap assentar.
+    await expect
+      .poll(async () => (await chromeCoverage(page, '[data-explore-sheet]', 'bottom')).covered, { timeout: 10_000 })
+      .toBeLessThan(0.4);
+    const { under } = await chromeCoverage(page, '[data-explore-sheet]', 'bottom');
+    expect(under, 'marcadores tapados pelo peek').toEqual([]);
   });
 
   test('«Melhor agora» = topo da lista = marcador de maior score na vista', async ({ page }) => {
@@ -233,6 +272,13 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
     viewport: { width: 1440, height: 900 },
     serviceWorkers: 'block',
     reducedMotion: 'reduce',
+  });
+
+  test('nenhum spot nasce debaixo do painel aberto', async ({ page }) => {
+    await openMapa(page);
+    await expect(page.locator('[data-map-panel="open"]')).toBeVisible();
+    const { under } = await chromeCoverage(page, '[data-map-panel="open"]', 'left');
+    expect(under, 'marcadores tapados pelo painel').toEqual([]);
   });
 
   test('linhas ordenadas por score e iguais aos marcadores', async ({ page }) => {

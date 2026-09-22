@@ -312,14 +312,21 @@ export default function MapExploreSheet({
     </button>
   );
 
-  const renderState = (s: ExploreSheetState) =>
+  // `ghost`: a cópia do estado anterior que se esbate no cross-fade de
+  // reduced-motion. É só imagem — sem chip de boias (duplicava o botão e o
+  // seletor [data-buoy-layer-chip] resolvia para 2 elementos) e inert.
+  const renderState = (s: ExploreSheetState, ghost = false) =>
     s === 'peek' ? (
+      // SEM flex-1: o peek mede-se pela altura NATURAL do conteúdo. Com
+      // flex-1 o div esticava até à altura do estado aberto, o
+      // ResizeObserver media essa altura, e o «peek» ficava do tamanho do
+      // sheet inteiro — no iPhone 13 sobravam ~50 px de mapa visível.
       <div
-        ref={s === state ? peekContentRef : undefined}
-        className="flex min-h-0 flex-1 flex-col gap-2 px-3 pb-2"
+        ref={s === state && !ghost ? peekContentRef : undefined}
+        className="flex shrink-0 flex-col gap-2 px-3 pb-2"
         data-sheet-peek
       >
-        {warningChip}
+        {!ghost && warningChip}
         {best && bestTok && (
           <button
             type="button"
@@ -373,7 +380,7 @@ export default function MapExploreSheet({
         style={{ maxHeight: Math.max(160, halfH - GRABBER_H) }}
         data-sheet-half
       >
-        {warningChip}
+        {!ghost && warningChip}
         {timeTrack}
         <div className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
@@ -538,11 +545,17 @@ export default function MapExploreSheet({
           {renderState(state)}
         </div>
         {crossFrom && (
+          // `inert` além de aria-hidden: os botões da cópia continuavam
+          // focáveis por Tab (aria-hidden só os esconde do leitor de ecrã).
+          // String e não boolean: o React 18 só escreve o atributo `inert`
+          // se receber string (com `true` avisa e omite-o); os tipos dizem
+          // boolean, daí a asserção.
           <div
             aria-hidden
+            {...({ inert: '' } as Record<string, string>)}
             className="pointer-events-none absolute inset-0 flex flex-col overflow-hidden [animation:sheet-fade-out_220ms_ease-in_both]"
           >
-            {renderState(crossFrom)}
+            {renderState(crossFrom, true)}
           </div>
         )}
       </div>

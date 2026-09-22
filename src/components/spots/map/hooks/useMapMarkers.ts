@@ -13,6 +13,7 @@ import {
   MARKER_ADD_CHUNK_SIZE,
   MARKER_ADD_CHUNK_SIZE_MOBILE,
   MARKER_CHUNK_YIELD_MS_MOBILE,
+  type ExploreChrome,
 } from '../../mapMarkers';
 
 const MARKER_ADD_CHUNK_SIZE_LOCAL = MARKER_ADD_CHUNK_SIZE;
@@ -31,6 +32,8 @@ interface UseMapMarkersParams {
   clusterReady: boolean;
   isMobile: boolean;
   isHeroEmbed: boolean;
+  /** Moldura do modo Explorar por cima do mapa (sheet/painel) — o re-enquadre desconta-a. */
+  exploreChrome?: ExploreChrome;
   activeCluster: boolean;
   showWindOnMarkers: boolean;
   locale: string;
@@ -62,6 +65,7 @@ export function useMapMarkers({
   clusterReady,
   isMobile,
   isHeroEmbed,
+  exploreChrome = 'none',
   activeCluster,
   showWindOnMarkers,
   locale,
@@ -73,6 +77,14 @@ export function useMapMarkers({
   closePopupAndSheet,
 }: UseMapMarkersParams) {
   const [allowMarkers, setAllowMarkers] = useState(false);
+  // Ref e não dependência: recolher o painel não deve re-correr o efeito dos
+  // marcadores — só o próximo re-enquadre (mudança de filtro) usa a moldura.
+  // Sincronizado num efeito declarado ANTES do dos marcadores, para já ter o
+  // valor novo quando esse efeito corre.
+  const exploreChromeRef = useRef<ExploreChrome>(exploreChrome);
+  useEffect(() => {
+    exploreChromeRef.current = exploreChrome;
+  }, [exploreChrome]);
   const didFitBoundsRef = useRef(false);
   const filterBoundsKeyRef = useRef('');
   // Nunca re-enquadrar depois de o utilizador navegar: drag/pinch/wheel marcam
@@ -145,7 +157,7 @@ export function useMapMarkers({
               animate: false,
             });
           } else {
-            applyExploreMapFit(Leaflet, map, boundsArr, isMobile);
+            applyExploreMapFit(Leaflet, map, boundsArr, isMobile, exploreChromeRef.current);
           }
         } finally {
           programmaticViewRef.current = false;

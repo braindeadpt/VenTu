@@ -23,7 +23,7 @@ import {
   type BasemapLoadState,
 } from '@/lib/map-constants';
 import { createClusterIconFunction } from '@/components/spots/MapClusterIcon';
-import { applyExploreMapFit } from '@/components/spots/mapMarkers';
+import { applyExploreMapFit, resolveExploreChrome } from '@/components/spots/mapMarkers';
 
 interface UseMapCoreOptions {
   containerRef: React.RefObject<HTMLDivElement | null>;
@@ -37,6 +37,11 @@ interface UseMapCoreOptions {
    * Ignorado no hero (o fit próprio vive no SpotMapInteractive).
    */
   initialViewBounds?: [[number, number], [number, number]] | null;
+  /**
+   * O mapa nasce em ecrã inteiro com o sheet (mobile) ou o painel (desktop)
+   * do modo Explorar por cima — o enquadramento inicial desconta-os.
+   */
+  exploreChrome?: { enabled: boolean; panelCollapsed: boolean };
 }
 
 interface UseMapCoreReturn {
@@ -185,7 +190,7 @@ function attachBasemap(
   rasterLayer.addTo(map);
 }
 
-export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null }: UseMapCoreOptions): UseMapCoreReturn {
+export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialViewBounds = null, exploreChrome }: UseMapCoreOptions): UseMapCoreReturn {
   const mapInstanceRef = useRef<L.Map | null>(null);
   const LRef = useRef<typeof L | null>(null);
   const tileLayerRef = useRef<L.TileLayer | null>(null);
@@ -436,7 +441,17 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
         // — os tiles pedidos são já os da vista final e não os do zoom
         // default que seriam abortados a seguir.
         if (!isHeroEmbed && initialViewBounds) {
-          applyExploreMapFit(Leaflet, created, initialViewBounds, mobileInit);
+          applyExploreMapFit(
+            Leaflet,
+            created,
+            initialViewBounds,
+            mobileInit,
+            resolveExploreChrome(
+              exploreChrome?.enabled ?? false,
+              mobileInit,
+              exploreChrome?.panelCollapsed ?? false,
+            ),
+          );
         }
 
         attachBasemap(Leaflet, created, initialBasemap, initialDark, tileLayerRef, tileFallbackCleanupRef, handleTileState);

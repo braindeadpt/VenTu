@@ -51,7 +51,7 @@ import {
   readWindPref,
   readOnlyOnPref,
 } from './mapHudPrefs';
-import { exploreViewBoundsFromSpots } from './mapMarkers';
+import { exploreViewBoundsFromSpots, resolveExploreChrome } from './mapMarkers';
 
 // ─── Imports for hooks and sub-components ───
 import { useMapCore } from './map/hooks/useMapCore';
@@ -173,6 +173,8 @@ export default function SpotMapInteractive({
             : spotsData,
           selectedRegion,
         ),
+    // O painel nasce aberto (panelCollapsed=false) — o fit inicial reserva-o.
+    exploreChrome: { enabled: Boolean(mapHud) && initialFullscreen, panelCollapsed: false },
   });
   const {
     mapInstanceRef, LRef, isReady, clusterReady, basemapMode, isMobile,
@@ -677,6 +679,7 @@ export default function SpotMapInteractive({
     visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady,
     isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
     warningsBySpot, hourScores, onSpotSelect, onMarkerInteract, setSheetSpot, closePopupAndSheet,
+    exploreChrome: resolveExploreChrome(Boolean(mapHud) && isFullscreen, isMobile, panelCollapsed),
   });
 
   useEffect(() => {
