@@ -3,6 +3,7 @@ import type { NewsItem } from '@/types'
 import { loadNews } from '@/lib/load-news'
 import { locales } from '@/lib/i18n'
 import { safeExternalUrl } from '@/lib/safeUrl'
+import { jsonLdHtml } from '@/lib/jsonLd'
 import NewsDetailHeader from '@/components/news/NewsDetailHeader'
 import RelatedNews from '@/components/news/RelatedNews'
 import { ExternalLink, ArrowLeft } from 'lucide-react'
@@ -87,7 +88,7 @@ export default async function NewsDetailPage({ params }: Props) {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
       />
 
       {/* Back link */}

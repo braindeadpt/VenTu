@@ -1,6 +1,7 @@
 'use client';
 
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { jsonLdHtml } from '@/lib/jsonLd';
 // This component is for dynamic structured data that can't be generated at build time
 
 interface SeoProps {
@@ -33,7 +34,7 @@ export default function SeoHead({
       {jsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdHtml(jsonLd) }}
         />
       )}
     </>
