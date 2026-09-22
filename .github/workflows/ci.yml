@@ -200,6 +200,15 @@ jobs:
       # o globalTimeout do Playwright cobre hangs do runner, mas um processo
       # bloqueado em I/O escapa a timers internos — este garante a morte do
       # processo e falha o step com sinal claro (incidente 2026-09-09).
+      # M4 (auditoria): o core passou a incluir os 10 specs herméticos que só
+      # corriam à mão (about-coherence-trend, compare-calibration,
+      # dawn-patrol-hero-score, home-map-first, homepage-redesign,
+      # map-explore-sheet, map-score-factors, map-tiles, spot-hero-gauge,
+      # wind-ring-legend) — corridos a verde com CI=1 antes de entrar.
+      # Ficam de fora, por dependerem de dados vivos/IPMA radar e falharem sem
+      # eles (intencionalmente manuais): about-wave-bias, ipma-radar-carousel,
+      # map-wind-markers. O axe-audit é opt-in (npm run test:e2e:axe) e o
+      # audit diário corre full-audit.*.
       - name: E2E — core data/score specs (hermetic)
         run: timeout 900 npm run test:e2e:core
         env:
