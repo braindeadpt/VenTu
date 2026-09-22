@@ -45,6 +45,11 @@
   (`/spots/?sport=…`, com comentário no `SpotDetailHero`).
 - [x] **Pesquisa duplicada (hero vs header)** — já unificada num só
   `SearchPalette` via `src/lib/searchEvents.ts`.
+- [x] **Menu mobile sem animação (M1)** — já anima: `max-h` + opacidade com
+  `duration-[300ms] ease-out-expo` e `motion-reduce:transition-none` na
+  `#mobile-nav`; o conteúdo só existe no DOM com o menu aberto (WCAG 2.4.3).
+- [~] **Largura do drawer (M-2, 420px)** — aceite como está: o painel limita a
+  `maxWidth: 100vw`, pelo que não transborda em tablets estreitos.
 
 ---
 
