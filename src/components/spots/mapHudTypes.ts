@@ -25,4 +25,6 @@ export interface MapFullscreenHudProps {
   selectedDifficulty: MapDifficultyFilter;
   onDifficultyChange: (difficulty: MapDifficultyFilter) => void;
   difficultyGroupLabel: string;
+  /** Rótulo «Camadas» — usado por superfícies que agrupam as camadas de dados. */
+  layersLabel?: string;
 }

@@ -33,13 +33,17 @@ const read = (p: string) => readFileSync(join(ROOT, p), 'utf-8');
 
 const chip = read('src/components/spots/BuoyLayerChip.tsx');
 const controls = read('src/components/spots/map/components/MapControls.tsx');
-const hud = read('src/components/spots/MapExploreHud.tsx');
+const sheet = read('src/components/spots/map/components/MapExploreSheet.tsx');
 
 describe('map stacking contract (chip popover vs controls column)', () => {
-  it('o popover ancora `left-0 bottom-full` — nunca `right-0` (o bug offscreen)', () => {
+  it('o popover é portal para o body com `left` clamped ao viewport — nunca offscreen', () => {
     expect(chip).toContain('data-buoy-chip-popover="true"');
-    // A âncora vive no className do próprio popover, logo a seguir ao atributo.
-    expect(chip).toMatch(/data-buoy-chip-popover="true"[^>]*\bbottom-full left-0\b/);
+    // Dentro do sheet (overflow-hidden) o `bottom-full` era cortado — o
+    // popover sai por portal com posição fixa ancorada ao chip, com o
+    // `left` limitado para nunca sair do viewport à direita.
+    expect(chip).toContain('createPortal');
+    expect(chip).toMatch(/position:\s*'fixed'/);
+    expect(chip).toMatch(/innerWidth\s*-\s*320/);
     expect(chip).not.toMatch(/data-buoy-chip-popover="true"[^>]*\bright-0\b/);
   });
 
@@ -49,8 +53,8 @@ describe('map stacking contract (chip popover vs controls column)', () => {
     expect(controls).not.toMatch(/left-\[68px\]/);
   });
 
-  it('o HUD fica em z-[1100] abaixo da coluna — o dismiss depende de geometria, não de z', () => {
-    expect(hud).toMatch(/z-\[1100\]/);
+  it('o sheet fica em z-[1100] abaixo da toolbar — o dismiss depende de geometria, não de z', () => {
+    expect(sheet).toMatch(/z-\[1100\]/);
     expect(chip).toMatch(/z-\[1250\]/);
   });
 });

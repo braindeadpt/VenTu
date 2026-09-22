@@ -470,6 +470,18 @@ html:has([data-embed-widget]) body {
     }
   }
 
+  /* Cross-fade do bottom sheet do mapa em prefers-reduced-motion —
+     * a posição muda instantaneamente e o conteúdo esbate-se em vez de
+     * deslizar (a regra de movimento aprovada exige cross-fade). */
+  @keyframes sheet-fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes sheet-fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
   @keyframes marker-drop-in {
     0% {
       opacity: 0;

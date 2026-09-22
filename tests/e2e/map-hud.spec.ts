@@ -7,30 +7,24 @@ import { expectTopmostHit } from './helpers/hit-test';
 import { expandMapHudFilters } from './helpers/map-hud';
 
 /**
- * HUD «Modo explorar» do /mapa — garantias consolidadas num único ficheiro
- * (consolidação 2026-09-10; AUDIT-MAPA-VISUAL-2026-09).
+ * Superfícies de exploração do /mapa — garantias consolidadas num único
+ * ficheiro (substitui o spec do HUD «Modo Explorar»; a superfície mobile é
+ * agora o bottom sheet de 3 estados e a desktop o painel lateral — mockup
+ * aprovado, variante A).
  *
  * Secções:
- *  1. Colapso — o HUD arranca colapsado em TODAS as superfícies (decisão
- *     2026-09-10: as rows expandidas cobriam 30–43% do viewport do mapa no
- *     desktop, sonda scripts/audit/audit-hud-footprint.mjs). Orçamentos de
- *     cobertura e legenda sem colisão (hudLift via ResizeObserver).
- *  2. Alvos de toque (WCAG 2.5.8) — rádios Mapa/Satélite ≥44px (o «Satélite»
- *     chegou a ter 39px), pills ≥44px abaixo de lg e densidade 36px só em
- *     rato puro (`any-pointer: fine`, decisão V3′).
+ *  1. Painel desktop — nasce aberto, colapsa para o rail e volta; «Só a
+ *     bombar» existe UMA vez (saiu da toolbar); legenda única.
+ *  2. Alvos de toque (WCAG 2.5.8) — pills e toggles ≥44px nas duas
+ *     superfícies; densidade 36px só em rato puro (decisão V3′).
  *  3. Overflow / scroll / hit-test — as linhas de pills rolam dentro do
- *     cartão em 360px; o slider das horas não estoura o cartão (regressão
- *     min-w-0); os toggles de camadas são o elemento de topo do strip e
- *     persistem entre recargas (ventu.map.currents/sst/isobaths, ventu.radar.state).
+ *     sheet em 360px (edge-fade, nunca clipping); os toggles de camadas são
+ *     o elemento de topo no estado «half» e persistem entre recargas.
  *  4. Time track (scrub) — deep links ?hours/?t, scrub 08h→17h muda o score,
- *     mobile incluído, e prefers-reduced-motion não anima sozinho.
+ *     mobile incluído (o trilho vive no «half» do sheet / no painel).
  *  5. Chip de estado da camada de boias — alvo ≥44px, aria-expanded,
  *     popover contido no viewport, Escape/clique-fora fecham e o
- *     «Ver no mapa» (estado stale) activa a camada. Sonda de auditoria:
- *     scripts/audit/audit-buoy-chip.mjs (12/12).
- *
- * Absorve: map-hud-collapse (inteiro), os testes de HUD de map-touch-targets,
- * o slider estreito de map-hours e map-mobile-layer-toggles (inteiro).
+ *     «Ver no mapa» (estado stale) activa a camada.
  */
 
 const SPORTS = ['surf', 'kitesurf', 'windsurf', 'wakeboard', 'bodyboard', 'sup', 'foil'] as const;
@@ -175,13 +169,13 @@ async function expectNazareScore(page: Page, expected: string) {
   await expect(score).toHaveAttribute('data-spot-score', expected, { timeout: 15_000 });
 }
 
-test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
+test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel desktop)', () => {
   test.describe.configure({ timeout: 60_000 });
 
   // ────────────────────────────────────────────────────────────────────────
-  // 1. Colapso (desktop)
+  // 1. Painel desktop
   // ────────────────────────────────────────────────────────────────────────
-  test.describe('colapso — desktop', () => {
+  test.describe('painel desktop', () => {
     test.use({
       viewport: { width: 1440, height: 900 },
       serviceWorkers: 'block',
@@ -192,70 +186,49 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
       await openMapa(page);
     });
 
-    test('desktop arranca colapsado (rows escondidas) e expande por clique', async ({ page }) => {
-      const hud = page.locator('[data-map-hud-collapsed]');
-      await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
+    test('nasce aberto com a lista, colapsa para o rail e volta', async ({ page }) => {
+      const panel = page.locator('[data-map-panel="open"]');
+      await expect(panel).toBeVisible();
+      await expect(panel.getByRole('listbox')).toBeVisible();
 
-      // Rows de filtro escondidas no estado inicial (Iniciante = row Nível).
-      const levelRow = page.getByRole('group', { name: /Nível|Level/i });
-      await expect(levelRow).toBeHidden();
+      await panel.getByRole('button', { name: /Recolher painel|Collapse panel/i }).click();
+      const rail = page.locator('[data-map-panel="rail"]');
+      await expect(rail).toBeVisible();
+      await expect(panel).toHaveCount(0);
 
-      // O toggle de desktop é um icon button no canto do cabeçalho — localizar
-      // por aria-label/aria-expanded (o label troca com o estado).
-      const toggle = hud.getByRole('button', { name: /Mostrar filtros|Show filters/i });
-      await expect(toggle).toBeVisible();
-      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-
-      await toggle.click();
-      await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'false');
-      await expect(levelRow).toBeVisible();
-      // O nome do botão troca com o estado («Ocultar filtros») — re-localizar.
-      const toggleExpanded = hud.getByRole('button', { name: /Ocultar filtros|Hide filters/i });
-      await expect(toggleExpanded).toHaveAttribute('aria-expanded', 'true');
-
-      // Colapsar de volta esconde as rows outra vez.
-      await toggleExpanded.click();
-      await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
-      await expect(levelRow).toBeHidden();
+      await rail.getByRole('button', { name: /Abrir lista|Open spots list/i }).click();
+      await expect(panel).toBeVisible();
     });
 
-    test('HUD colapsado cobre < 18% da altura do mapa (orçamento)', async ({ page }) => {
-      const m = await page.evaluate(() => {
-        const hud = document.querySelector('[data-map-hud-collapsed]');
-        const card = hud?.firstElementChild?.getBoundingClientRect();
-        return { vh: window.innerHeight, top: card?.top ?? 0 };
-      });
-      const mapH = m.vh - 64; // fullscreen: 100dvh - header 4rem
-      const coveredPct = ((m.vh - m.top) / mapH) * 100;
-      // Cartão compacto = 1 linha (toggle no cabeçalho): ~13,4% no 1440x900;
-      // folga para viewports curtos.
-      expect(coveredPct).toBeLessThan(18);
+    test('«Só a bombar» existe uma única vez — no painel, não na toolbar', async ({ page }) => {
+      const toggles = page.locator('[data-map-only-on-toggle]');
+      await expect(toggles).toHaveCount(1);
+      await expect(page.locator('[data-map-controls] [data-map-only-on-toggle]')).toHaveCount(0);
+      await expect(
+        page.locator('[data-map-panel] [data-map-only-on-toggle]'),
+      ).toBeVisible();
     });
 
-    test('HUD expandido mantém-se dentro do orçamento de 36%', async ({ page }) => {
-      const hud = page.locator('[data-map-hud-collapsed]');
-      await hud.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
-      const m = await page.evaluate(() => {
-        const hud = document.querySelector('[data-map-hud-collapsed]');
-        const card = hud?.firstElementChild?.getBoundingClientRect();
-        return { vh: window.innerHeight, top: card?.top ?? 0 };
-      });
-      const mapH = m.vh - 64;
-      const coveredPct = ((m.vh - m.top) / mapH) * 100;
-      // Sonda 2026-09-10: expandido 29,7% no 1440x900.
-      expect(coveredPct).toBeLessThan(36);
+    test('uma só legenda de score no fullscreen desktop', async ({ page }) => {
+      await expect(page.getByRole('region', { name: /Legenda do mapa|Map legend/i })).toHaveCount(1);
     });
 
-    test('legenda fica acima do HUD colapsado (sem colisão)', async ({ page }) => {
-      // A legenda levanta via hudLift (ResizeObserver sobre o HUD).
-      const m = await page.evaluate(() => {
-        const legend = document.querySelector('[aria-label="Legenda do mapa"]');
-        const hud = document.querySelector('[data-map-hud-collapsed]');
-        const lb = legend?.getBoundingClientRect();
-        const cb = hud?.firstElementChild?.getBoundingClientRect();
-        return { legendBottom: lb?.bottom ?? 0, cardTop: cb?.top ?? 0 };
+    test('o painel não colide com a legenda (cantos opostos)', async ({ page }) => {
+      const geo = await page.evaluate(() => {
+        const panel = document.querySelector('[data-map-panel="open"]')?.getBoundingClientRect();
+        const legend = document
+          .querySelector('[aria-label="Legenda do mapa"]')
+          ?.getBoundingClientRect();
+        if (!panel || !legend) return null;
+        return {
+          disjoint:
+            panel.right <= legend.left ||
+            legend.right <= panel.left ||
+            panel.bottom <= legend.top ||
+            legend.bottom <= panel.top,
+        };
       });
-      expect(m.legendBottom).toBeLessThanOrEqual(m.cardTop + 1);
+      expect(geo?.disjoint).toBe(true);
     });
   });
 
@@ -271,20 +244,24 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
         reducedMotion: 'reduce',
       });
 
-      test('rádios Mapa/Satélite do HUD ≥44px (o "Satélite" tinha 39px)', async ({ page }) => {
-        await openMapa(page);
+      test('toggles do sheet (camadas e «Ver também») ≥44px', async ({ page }) => {
+        await openMapa(page, { layers: true });
+        await expandMapHudFilters(page); // sheet → half
 
-        const radios = page.getByRole('radiogroup', { name: 'Camadas' }).getByRole('radio');
-        await expect(radios).toHaveCount(2);
-        for (const radio of await radios.all()) {
-          await expectMinTargetSize(radio, 'rádio do HUD');
+        const layers = page.getByRole('group', { name: /Camadas|Layers/i }).getByRole('button');
+        for (const btn of await layers.all()) {
+          await expectMinTargetSize(btn, 'toggle de camada do sheet');
+        }
+        const extras = page.getByRole('group', { name: /Ver também|See also/i }).getByRole('button');
+        for (const btn of await extras.all()) {
+          await expectMinTargetSize(btn, 'toggle «Ver também» do sheet');
         }
       });
 
-      test('pills de modalidade ≥44px com filtros expandidos', async ({ page }) => {
+      test('pills de modalidade ≥44px no estado half', async ({ page }) => {
         await openMapa(page);
-
         await expandMapHudFilters(page);
+
         const chips = page.getByRole('group', { name: 'Modalidade' }).getByRole('button');
         await expect(chips.first()).toBeVisible({ timeout: 10_000 });
         for (const chip of await chips.all()) {
@@ -301,13 +278,12 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
         reducedMotion: 'reduce',
       });
 
-      test('pills ≥44px abaixo de lg', async ({ page }) => {
+      test('pills do painel ≥44px', async ({ page }) => {
         await openMapa(page);
-
-        // O HUD arranca colapsado em todas as superfícies (decisão 2026-09-10) —
-        // expandir antes de medir as pills.
-        await expandMapHudFilters(page);
-        const chips = page.getByRole('group', { name: 'Modalidade' }).getByRole('button');
+        const chips = page
+          .locator('[data-map-panel]')
+          .getByRole('group', { name: 'Modalidade' })
+          .getByRole('button');
         await expect(chips.first()).toBeVisible({ timeout: 10_000 });
         for (const chip of await chips.all()) {
           await expectMinTargetSize(chip, 'pill de modalidade (tablet)');
@@ -320,10 +296,7 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
 
       test('rato puro (any-pointer: fine): pills mantêm a densidade de 36px', async ({ page }) => {
         await openMapa(page);
-
-        // O HUD arranca colapsado no desktop também (decisão 2026-09-10).
-        await expandMapHudFilters(page);
-        const surf = page.locator('[aria-label="Modalidade"] button').nth(1); // Surf
+        const surf = page.locator('[data-map-panel] [aria-label="Modalidade"] button').nth(1); // Surf
         await expect(surf).toBeVisible();
 
         const box = await surf.boundingBox();
@@ -340,9 +313,7 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
         const page = await ctx.newPage();
         await openMapa(page);
 
-        // O HUD arranca colapsado no desktop também (decisão 2026-09-10).
-        await expandMapHudFilters(page);
-        const surf = page.locator('[aria-label="Modalidade"] button').nth(1); // Surf
+        const surf = page.locator('[data-map-panel] [aria-label="Modalidade"] button').nth(1); // Surf
         await expect(surf).toBeVisible();
         const box = await surf.boundingBox();
         expect(box, 'chip de modalidade deveria ter caixa mensurável').not.toBeNull();
@@ -364,31 +335,30 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
         reducedMotion: 'reduce',
       });
 
-      test('linhas de pills rolam horizontalmente dentro do cartão', async ({ page }) => {
+      test('linhas de pills rolam horizontalmente dentro do sheet', async ({ page }) => {
         await openMapa(page);
         await expandMapHudFilters(page);
 
         // 9 modalidades + 8 regiões em 360px não cabem: as linhas têm de ser
-        // overflow-x-auto (roláveis) — nunca overflow-x-hidden (inacessível)
-        // nem wrap infinito (cartão a crescer).
+        // overflow-x-auto (roláveis com edge-fade) — nunca overflow-x-hidden
+        // (inacessível) nem wrap infinito (sheet a crescer).
         const geo = await page.evaluate(() => {
           const region = document.querySelector('[aria-label="Modo explorar"]');
-          const card = region?.querySelector('div');
+          const card = region?.querySelector('[data-sheet-half]');
           if (!card) return null;
           const cb = card.getBoundingClientRect();
           const strips = Array.from(card.querySelectorAll('[role="group"]')).map((g) => {
             const el = g as HTMLElement;
             return {
-              label: el.getAttribute('aria-label') ?? el.getAttribute('aria-labelledby') ?? 'group',
+              label: el.getAttribute('aria-label') ?? 'group',
               scrollable: el.scrollWidth > el.clientWidth,
-              fits: el.scrollWidth <= el.clientWidth + 1,
             };
           });
           const cardRight = Math.round(cb.right);
           const stripsInside = Array.from(card.querySelectorAll('[role="group"]')).every(
             (g) => g.getBoundingClientRect().right <= cardRight + 1,
           );
-          return { strips, stripsInside, cardRight };
+          return { strips, stripsInside };
         });
         expect(geo).not.toBeNull();
         // Pelo menos a linha de modalidades transborda → tem de ser rolável.
@@ -399,17 +369,13 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
         expect(geo!.stripsInside).toBe(true);
       });
 
-      test('slider das horas não ultrapassa o cartão do HUD (regressão min-w-0)', async ({ page }) => {
+      test('slider das horas não ultrapassa o sheet (regressão min-w-0)', async ({ page }) => {
         await openMapa(page, { query: '?hours=1' });
         const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
         await expect(slider).toBeVisible({ timeout: 15_000 });
 
-        // Auditoria 2026-09-10: em 360px, a linha do time track (play + relógio +
-        // chip da maré + slider) estourava o slider 7px para fora do cartão — o
-        // flex-1 não encolhia abaixo do min-content do input. Fix: min-w-0.
         const geo = await page.evaluate(() => {
-          const region = document.querySelector('[aria-label="Modo explorar"]');
-          const card = region?.querySelector('div');
+          const card = document.querySelector('[data-sheet-half]');
           const s = document.querySelector<HTMLElement>(
             '[data-map-hours-scrubber] input[type="range"]',
           );
@@ -436,24 +402,21 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
         reducedMotion: 'reduce',
       });
 
-      // C4 (auditoria 2026-09-16): as camadas secundárias vivem no menu
-      // «Camadas» do strip — o teste abre-o antes de tocar no toggle.
-      // O radar ficou primário.
+      // As camadas vivem inline no estado «half» do sheet — sem menu.
       for (const t of [
-        { name: 'correntes', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', lsValue: '1', inMenu: true },
-        { name: 'temperatura (SST)', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', lsValue: '1', inMenu: true },
-        { name: 'isóbatas', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', lsValue: '1', inMenu: true },
-        { name: 'radar IPMA', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', lsValue: null, inMenu: false },
+        { name: 'correntes', attr: 'data-map-currents-toggle', lsKey: 'ventu.map.currents', lsValue: '1' },
+        { name: 'temperatura (SST)', attr: 'data-map-sst-toggle', lsKey: 'ventu.map.sst', lsValue: '1' },
+        { name: 'isóbatas', attr: 'data-map-isobaths-toggle', lsKey: 'ventu.map.isobaths', lsValue: '1' },
+        { name: 'radar IPMA', attr: 'data-map-radar-toggle', lsKey: 'ventu.radar.state', lsValue: null },
       ]) {
-        test(`toggle «${t.name}» é o elemento de topo no strip e persiste após recarga`, async ({ page }) => {
+        test(`toggle «${t.name}» é o elemento de topo no sheet e persiste após recarga`, async ({ page }) => {
           await openMapa(page, { radar: true, layers: true });
-          await expandMapHudFilters(page);
-          if (t.inMenu) await openMapLayersMenu(page);
+          await expandMapHudFilters(page); // sheet → half
 
           const toggle = page.locator(`[${t.attr}]`);
           await expect(toggle).toBeEnabled({ timeout: 15_000 });
-          // O strip rola horizontalmente (overflow-x-auto) — um utilizador rola até
-          // ao controlo; só depois é que tem de ser o elemento de topo.
+          // As linhas rolam — um utilizador rola até ao controlo; só depois é
+          // que tem de ser o elemento de topo.
           await toggle.scrollIntoViewIfNeeded();
           await expectTopmostHit(page, toggle);
 
@@ -474,7 +437,6 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
           await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
           await waitHydrated(page);
           await expandMapHudFilters(page);
-          if (t.inMenu) await openMapLayersMenu(page);
 
           const after = page.locator(`[${t.attr}]`);
           await expect(after).toBeEnabled({ timeout: 15_000 });
@@ -547,9 +509,15 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
       reducedMotion: 'reduce',
     });
 
-    test('HUD no telemóvel: 08h→17h muda o mapa', async ({ page }) => {
+    test('sheet no telemóvel: ?hours=1 abre no estado half e 08h→17h muda o mapa', async ({ page }) => {
       await openMapa(page, { query: '?hours=1' });
 
+      // O deep link abre o sheet no estado «half» — onde vive o trilho.
+      await expect(page.locator('[data-explore-sheet]')).toHaveAttribute(
+        'data-explore-sheet',
+        'half',
+        { timeout: 15_000 },
+      );
       await expect(page.locator('[data-map-hours-toggle]')).toBeVisible({ timeout: 15_000 });
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
@@ -565,7 +533,8 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
   // 5. Chip de estado da camada de boias
   // ────────────────────────────────────────────────────────────────────────
   test.describe('chip de estado da camada de boias', () => {
-    // O chip vive no cabeçalho do HUD; sem key IH a camada nasce em aviso.
+    // O chip vive no painel (desktop) e no peek/half do sheet (mobile); sem
+    // key IH a camada nasce em aviso.
     test.use({
       viewport: { width: 1280, height: 720 },
       serviceWorkers: 'block',
@@ -613,7 +582,7 @@ test.describe('HUD «Modo explorar» — garantias consolidadas', () => {
       await expect(pop).toBeVisible({ timeout: 5_000 });
 
       // Clique fora (no mapa, longe do popover) fecha.
-      await page.mouse.click(200, 300);
+      await page.mouse.click(700, 300);
       await expect(pop).toHaveCount(0);
 
       // Estado stale: abrir de novo e usar «Ver no mapa» → camada ligada +

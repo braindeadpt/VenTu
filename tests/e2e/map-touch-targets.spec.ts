@@ -48,18 +48,20 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
   test.describe('mobile /pt/mapa/', () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-    test('toggle da legenda: ≥44px e expande ao toque', async ({ page }) => {
+    test('legenda do sheet: <summary> ≥44px e expande ao toque', async ({ page }) => {
       await openMapa(page);
 
-      const legend = page.getByRole('region', { name: 'Legenda do mapa' });
-      const toggle = legend.getByRole('button');
-      await expectMinTargetSize(toggle, 'toggle da legenda');
+      // A legenda mobile vive no <details> do estado «half» do sheet —
+      // o <summary> é o único controlo (WCAG 2.5.8).
+      await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
+      const summary = page.locator('[data-explore-sheet] details summary');
+      await expectMinTargetSize(summary, 'summary «Legenda» do sheet');
 
-      // Por omissão colapsada em mobile; tocar no cabeçalho expande.
-      await expect(toggle).toHaveAttribute('aria-expanded', 'false');
-      await toggle.click();
-      await expect(toggle).toHaveAttribute('aria-expanded', 'true');
-      await expect(legend.locator('.h-2')).toBeVisible();
+      await summary.click();
+      await expect(page.getByRole('region', { name: 'Legenda do mapa' })).toBeVisible();
+      await expect(
+        page.getByRole('region', { name: 'Legenda do mapa' }).locator('.h-2'),
+      ).toBeVisible();
     });
   });
 
