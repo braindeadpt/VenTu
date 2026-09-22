@@ -171,7 +171,7 @@ test.describe('Fontes de dados (data sources)', () => {
       });
       // Link com o DOI do CFF e o texto do DOI no corpo.
       await expect(page.locator(`a[href="${doiHref}"]`).first()).toBeVisible();
-      await expect(page.getByText(new RegExp(cffDoi.replace('.', '\.'))).first()).toBeVisible();
+      await expect(page.getByText(new RegExp(cffDoi.replace(/\./g, '\\.'))).first()).toBeVisible();
     }
   });
 

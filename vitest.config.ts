@@ -10,6 +10,7 @@ export default defineConfig({
       'scripts/lib/__tests__/metar.test.js',
       'scripts/lib/__tests__/windBlend.test.js',
       'scripts/lib/__tests__/htmlEscape.test.js',
+      'scripts/lib/__tests__/sanitizeText.test.js',
       'scripts/lib/__tests__/analyzeScoreFeedback.test.js',
       'scripts/lib/__tests__/ipma.test.js',
       'scripts/lib/__tests__/spamFilter.test.js',

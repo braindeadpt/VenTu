@@ -87,7 +87,9 @@ describe('runMeteoAlarmApiKeyTest — caminho PASS', () => {
     const edrCall = fetchMock.mock.calls.find(([u]) => String(u).includes('/collections/warnings/locations/PT'));
     expect(edrCall).toBeTruthy();
     expect(edrCall[1]?.headers?.Authorization).toBe('Bearer test-token');
-    const capCall = fetchMock.mock.calls.find(([u]) => String(u).includes('storage.meteoalarm.org'));
+    const capCall = fetchMock.mock.calls.find(
+      ([u]) => new URL(String(u), 'https://ventu.invalid').hostname === 'storage.meteoalarm.org',
+    );
     expect(capCall).toBeTruthy();
     expect(capCall[1]?.headers?.Authorization ?? null).toBeNull();
   });
