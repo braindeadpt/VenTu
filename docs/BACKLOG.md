@@ -142,7 +142,7 @@ Audit original (Fase 1) identificou: `images: []` vazio em todos os spots. Decid
 
 > Chat por spot foi removido em 2026-05-21 por decisão de não introduzir feature social sem analytics que justifiquem.
 > Schema Supabase preservado em `supabase-schema.sql`. UI removida (SpotChat.tsx, chatModeration.ts).
-> Documentação de segurança arquivada em `docs/archive/CHAT-SECURITY.md`.
+> Documentação de segurança arquivada fora do repo (arquivo local do mantenedor: `CHAT-SECURITY.md`) — o `docs/archive/` saiu do git em 2026-09-22 (3,2 MB de scratch, sem referências de código).
 
 **Contexto**: Eventualmente, considerar chat global (não por spot) quando houver tráfego comprovado.
 - Chat por spot era frágil (abuso via username rotation, sem CAPTCHA)
