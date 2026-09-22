@@ -26,7 +26,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 | Marés (observado) | IH OGC API (hidrografico.pt) | Free, CC-BY 4.0, 33 estações |
 | Chat | Removido | UI removida 2026-05-21 |
 | IA notícias / Dawn Patrol | Gemini Flash + Groq Llama 3.3 + Cerebras | GitHub Actions (secrets no repo remoto) |
-| Previsões | Open-Meteo + `forecasts.json` precomputed | CI a cada 3h; client JSON first, live API fallback |
+| Previsões | Open-Meteo + `forecasts.json` precomputed | CI: full a cada 2h (06h–20h), multi-modelo 3×/dia (06h/12h/18h); crons de 30 min com gate de skip; client JSON first, live API fallback |
 | Testes | Vitest (unit) + Playwright (E2E) | `npm test` + `npm run test:e2e` |
 | Deploy | GitHub Pages (static export) | `output: 'export'` no `next.config.js` |
 
@@ -45,7 +45,7 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 
 ## Copy e confiança (Fase A — concluída)
 
-- **Nunca** “tempo real” / “real-time”. Cadência honesta: *actualizado a cada 3 horas*.
+- **Nunca** “tempo real” / “real-time”. Cadência honesta: *actualizado a cada 2 horas (06h–20h)*.
 - **`DataSourceBadge`** (`src/components/ui/DataSourceBadge.tsx`) — DEMO / stale / cached em SpotDetail, Compare, Favoritos, SpotDrawer, grid.
 - **Dawn Patrol:** `public/data/dawn-patrol.json` + guard stale (>24h) e validação de slugs no banner.
 - **Stale threshold:** >3h amarelo, >12h vermelho (`src/lib/dataFreshness.ts`).
@@ -448,7 +448,7 @@ docs/                      ROADMAP.md ← fonte de verdade para prioridades
 
 | Workflow | Frequência | O que faz |
 |---|---|---|
-| `update-data.yml` | 3h | conditions + forecasts + news + IH tides |
+| `update-data.yml` | 30 min (crons `:17`/`:47`, gate de skip; full a cada 2h 06h–20h) | conditions + forecasts + news + IH tides |
 | `dawn-patrol.yml` | Diário 05:00 UTC | dawn-patrol.json via LLM |
 | `ci.yml` | PR + push main | lint, validate spots, unit tests, sitemap, build, E2E |
 | `deploy.yml` | push main | test, sitemap, build, GitHub Pages |

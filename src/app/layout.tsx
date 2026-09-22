@@ -86,7 +86,9 @@ const themeScript = `
         document.cookie = 'ventu-theme=' + (light ? 'light' : 'dark') +
           ';path=/;max-age=31536000;samesite=lax';
       }
-    } catch (e) {}
+    } catch (e) {
+      // localStorage/document.cookie podem lançar em modo privado — ignorar.
+    }
     if (light) document.documentElement.classList.add('theme-ocean');
   })();
 `;
@@ -102,7 +104,8 @@ const localeRedirectScript = `
       var path = location.pathname;
       if (path !== '/' && path !== '') return;
       var stored = null;
-      try { stored = localStorage.getItem('ventu:locale'); } catch (e) {}
+      // localStorage pode lançar em modo privado — sem locale guardado.
+      try { stored = localStorage.getItem('ventu:locale'); } catch (e) { /* private mode */ }
       var navLang = (navigator && (navigator.language || navigator.userLanguage)) || '';
       var pick = String(stored || navLang || 'pt').toLowerCase();
       var supported = { pt: 1, en: 1, es: 1, de: 1, fr: 1 };
