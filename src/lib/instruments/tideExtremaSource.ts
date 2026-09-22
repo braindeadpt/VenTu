@@ -19,8 +19,10 @@ import {
 } from '@/lib/tideSchedule';
 import { hhmmAt, tideExtrema, type TideExtremum } from './tideExtrema';
 
-/** «ih» = tábua canónica (findTideExtrema); «model» = parábola sobre a série. */
-export type TideExtremaSource = 'ih' | 'model';
+/** «schedule» = tábua canónica (findTideExtrema sobre a série horária do
+ *  MODELO — não a tábua oficial IH, que hoje só alimenta a camada do mapa);
+ *  «model» = parábola sobre a série. */
+export type TideExtremaSource = 'schedule' | 'model';
 
 export interface ResolvedTideExtrema {
   extrema: TideExtremum[];
@@ -72,7 +74,7 @@ export function alignTideEventsToSeries(
 
 /**
  * Escolhe a fonte dos extremos do cartão:
- * - `schedule` existe E a tábua cobre a janela → extremos canónicos ('ih');
+ * - `schedule` existe E a tábua cobre a janela → extremos canónicos ('schedule');
  * - caso contrário → parábola sobre a série ('model').
  */
 export function resolveTideExtrema(opts: {
@@ -86,7 +88,7 @@ export function resolveTideExtrema(opts: {
   if (schedule) {
     const events = findTideExtrema(tableSeries.length ? tableSeries : series);
     const aligned = alignTideEventsToSeries(events, series);
-    if (aligned.length) return { extrema: aligned, source: 'ih' };
+    if (aligned.length) return { extrema: aligned, source: 'schedule' };
   }
   return { extrema: tideExtrema(series), source: 'model' };
 }

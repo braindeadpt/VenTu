@@ -8,7 +8,7 @@ import type { SportScore } from '@/lib/sportScore';
 import type { SpotVerdictConditions } from '@/components/spots/page/SpotVerdictSection';
 import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { scoreBand } from '@/lib/verdict/scoreBand';
-import { whyLine } from '@/lib/verdict/whyLine';
+import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
 import { formatHourLong } from '@/lib/verdict/formatHourLabel';
 import { getTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/cn';
@@ -43,6 +43,9 @@ interface SpotVerdictHeroProps {
   /** Score «agora» com correcções — fallback antes de montar (o eixo ainda está em 0). */
   score: SportScore;
   conditions: SpotVerdictConditions;
+  /** Todos os scores — o formatador canónico do «porquê» (spotScoreFactors,
+   *  o mesmo do popup do mapa) resolve o desporto explicado daqui. */
+  allScores: Record<SportType, SportScore>;
   /** Fonte da onda/vento do score «agora» (correcção por boia/estação). */
   scoreWaveSource?: ScoreWaveSource;
   scoreWaveCorrection?: ScoreWaveCorrection | null;
@@ -78,6 +81,7 @@ export default function SpotVerdictHero({
   selectedSport,
   score,
   conditions,
+  allScores,
   scoreWaveSource = 'forecast',
   scoreWaveCorrection = null,
   scoreWindSource = 'forecast',
@@ -114,8 +118,21 @@ export default function SpotVerdictHero({
   // Os factores descrevem as condições actuais — escondidos quando a hora
   // escolhida é previsão (mostrar factores de «agora» sobre uma hora futura
   // induzia em erro). Antes de montar (nowIndex<0) a hora mostrada é a do
-  // bake = «agora», por isso a linha fica.
-  const why = isNow || nowIndex < 0 ? whyLine(isPt ? score.factors : score.factorsEn, locale) : null;
+  // bake = «agora», por isso a linha fica. Uma só gramática de factores:
+  // o formatador canónico do mapa (getSpotScoreFactors), não uma linha
+  // própria — mapa e página dizem o mesmo «porquê».
+  const why =
+    isNow || nowIndex < 0
+      ? getSpotScoreFactors({
+          spot,
+          conditions,
+          allScores,
+          sport: selectedSport,
+          locale,
+        })
+          .map((s) => s.label)
+          .join(' · ') || null
+      : null;
 
   // Correcções observadas (boia/estação) só se aplicam ao «agora»: noutras
   // horas o score é previsão pura e a linha de fonte diz isso. Antes de

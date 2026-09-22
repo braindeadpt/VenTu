@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, type CSSProperties, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
@@ -21,9 +21,7 @@ import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import SeoHead from '@/components/SeoHead';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
-import { computeMagicWindows } from '@/lib/magicWindows';
 import { findCurrentHourIndex } from '@/lib/openMeteoTime';
-import { buildSpotVerdict } from '@/lib/spotVerdict';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
@@ -43,6 +41,8 @@ import type { ScoreWindCorrection } from '@/lib/scoreConditions';
 import Skeleton from '@/components/ui/Skeleton';
 import ErrorState from '@/components/ui/ErrorState';
 import SpotTimelineProvider from '@/components/spots/timeline/SpotTimelineProvider';
+import { useSpotTimelineIndex } from '@/components/spots/timeline/useSpotTimeline';
+import { getScoreCssVar } from '@/lib/scoreThresholds';
 import SpotVerdictSection from '@/components/spots/page/SpotVerdictSection';
 import SpotInstrumentsSection from '@/components/spots/page/SpotInstrumentsSection';
 import SpotForecastSection from '@/components/spots/page/SpotForecastSection';
@@ -117,6 +117,32 @@ interface SpotData {
     waterTemp: number;
     tideHeight?: number;
   }>;
+}
+
+/** Acento da página: --verdict = tier do score da hora escolhida no eixo
+ *  partilhado. UMA definição aqui — veredicto, instrumentos, previsão e
+ *  contexto herdam a mesma cor. `contents` não cria caixa: o sticky da
+ *  barra continua contido pelo mesmo ancestral de sempre. */
+function SpotPageAccent({
+  fallbackScore,
+  children,
+}: {
+  fallbackScore: number;
+  children: ReactNode;
+}) {
+  const { selectedScore } = useSpotTimelineIndex();
+  return (
+    <div
+      className="contents"
+      style={
+        {
+          '--verdict': `rgb(var(${getScoreCssVar(selectedScore ?? fallbackScore)}))`,
+        } as CSSProperties
+      }
+    >
+      {children}
+    </div>
+  );
 }
 
 export default function SpotDetailClient({
@@ -517,45 +543,6 @@ export default function SpotDetailClient({
     spot.lon,
   );
 
-  const magicWindowsHourly = useMemo(() => {
-    const HOUR_MS = 3_600_000;
-    // Same baked-clock pin as the freshness gates: the next-24h window list
-    // must be identical on first paint (React #418 guard) — after mount the
-    // live clock re-filters it.
-    const now = freshnessNowMs ?? Date.now();
-    const cutoff = now + 24 * HOUR_MS;
-    return (spotData?.forecast ?? [])
-      .map((f) => ({
-        time: f.time,
-        waveHeight: f.waveHeight ?? 0,
-        wavePeriod: f.wavePeriod ?? 0,
-        windSpeed: f.windSpeed ?? 0,
-        windDirection: f.windDirection ?? 0,
-        windGust: f.windGust ?? 0,
-        waterTemp: f.waterTemp ?? 0,
-        tideHeight: f.tideHeight,
-      }))
-      .filter((h) => {
-        const t = new Date(h.time).getTime();
-        return t >= now && t < cutoff;
-      });
-  }, [spotData?.forecast, freshnessNowMs]);
-
-  // Scores canónicos por hora, alinhados com magicWindowsHourly (mesma
-  // janela 24h). Alimentam a detecção das janelas e a faixa — um só scorer.
-  const magicWindowsScores = useMemo(() => {
-    if (!spotData || !hourlyScores.length) return undefined;
-    const byTime = new Map(
-      spotData.forecast.map((f, i) => [f.time, hourlyScores[i] ?? 0] as const),
-    );
-    return magicWindowsHourly.map((h) => byTime.get(h.time) ?? 0);
-  }, [spotData, hourlyScores, magicWindowsHourly]);
-
-  const magicWindows = useMemo(
-    () => computeMagicWindows(magicWindowsHourly, selectedSport, spot.bestWind || '', magicWindowsScores),
-    [magicWindowsHourly, selectedSport, spot.bestWind, magicWindowsScores],
-  );
-
   // Eixo de tempo partilhado (docs/design/SPOT-PAGE.md): as mesmas horas e
   // scores canónicos que alimentam a ForecastTable — o veredicto, a régua e
   // a tabela leem sempre o mesmo índice.
@@ -614,19 +601,6 @@ export default function SpotDetailClient({
 
   const score = allScores[selectedSport] ?? allScores[relevantSports[0] ?? 'surf'];
 
-  // Veredicto editorial — «devo ir?» numa linha, derivado dos mesmos dados
-  // (janelas + condições + maré). Computação barata (24 iterações) — sem
-  // useMemo porque só corre depois de spotData estar carregado.
-  const verdict = buildSpotVerdict({
-    scoreNow: score.score,
-    conditions,
-    hourly: magicWindowsHourly,
-    windows: magicWindows,
-    tide: tideSchedule,
-    coastOrientation: spot.coastOrientation,
-    isPt,
-    nowMs: freshnessNowMs ?? Date.now(),
-  });
   const scoreWindSource = resolveScoreWindSource(
     {
     waveHeight: conditions.waveHeight,
@@ -725,6 +699,7 @@ export default function SpotDetailClient({
           mounted={mounted}
           nowMs={freshnessNowMs}
         >
+          <SpotPageAccent fallbackScore={score.score}>
           {/* §0–3 — Veredicto + barra fixa + «Quando ir» (dona: S2A). */}
           <SpotVerdictSection
             spot={spot}
@@ -737,29 +712,14 @@ export default function SpotDetailClient({
             conditions={conditions}
             scoreWindSource={scoreWindSource}
             scoreWindCorrection={scoreWindCorrection}
-            windObservedSource={
-              conditions.observed?.source === 'ipma' ||
-              conditions.observed?.source === 'ecowitt' ||
-              conditions.observed?.source === 'metar'
-                ? conditions.observed.source
-                : undefined
-            }
             scoreWaveSource={scoreWaveSource}
             scoreWaveCorrection={scoreWaveCorrection}
-            observedWave={conditions.observedWave}
-            observedWaveAlt={conditions.observedWaveAlt}
-            observedWaveMeta={conditions.observedWaveMeta}
             tabSports={tabSports}
             allScores={allScores}
             sportLabel={SPORT_LABELS[selectedSport][isPt ? 'pt' : 'en']}
             onSelectSport={setSelectedSport}
             sportTabsAria={tv.sportTabsAria}
             whenToGoTitle={td.whenToGo}
-            rangeLabel={tv.next24h}
-            verdict={verdict ?? null}
-            hourly={magicWindowsHourly}
-            hourlyScores={magicWindowsScores}
-            windows={magicWindows}
             freshnessNowMs={freshnessNowMs}
           />
 
@@ -823,6 +783,10 @@ export default function SpotDetailClient({
               events={events}
               mergedLocalTips={mergedLocalTips}
               directionsUrl={directionsUrl}
+              selectedSport={selectedSport}
+              score={score}
+              conditions={conditions}
+              freshnessNowMs={freshnessNowMs}
               copy={{
                 warningsRadar: td.warningsRadar,
                 livecam: td.livecam,
@@ -837,6 +801,7 @@ export default function SpotDetailClient({
               }}
             />
           </div>
+          </SpotPageAccent>
         </SpotTimelineProvider>
       </div>
     </>

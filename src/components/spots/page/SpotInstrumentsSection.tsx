@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { getScoreTokens, type SportScore } from '@/lib/sportScore';
@@ -36,10 +36,9 @@ import { getTranslation } from '@/lib/i18n';
  * escolhida (a S2A aplica --verdict no contentor da página; aqui o
  * atributo data-tier produz o mesmo valor dentro da secção).
  *
- * Gancho E2E (spec passo 9 — nesta worktree ainda não existe o slider da
- * régua, que é S2A): o índice expõe-se pelo CustomEvent
- * «ventu:spot-timeline-set» (detail = índice) e reflecte-se em
- * data-spot-timeline-index no contentor. A S3 pode trocar pela régua.
+ * O índice escolhido reflecte-se em data-spot-timeline-index no contentor;
+ * os specs mudam a hora pelo slider da régua (role="slider"), que é o
+ * mesmo caminho do utilizador — sem ganchos de teste em produção.
  */
 export interface SpotInstrumentsSectionProps {
   spot: Spot;
@@ -82,7 +81,7 @@ export default function SpotInstrumentsSection({
 }: SpotInstrumentsSectionProps) {
   const ti = getTranslation(locale).spotPageInstruments;
   const { hours } = useSpotTimelineData();
-  const { index, isNow, setIndex, selectedScore } = useSpotTimelineIndex();
+  const { index, isNow, selectedScore } = useSpotTimelineIndex();
 
   const rows = useInstrumentRows(spot);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -122,16 +121,6 @@ export default function SpotInstrumentsSection({
     () => resolveScoreWindCorrection(conditions as unknown as Record<string, unknown>),
     [conditions],
   );
-
-  // Gancho E2E — ver comentário no cabeçalho.
-  useEffect(() => {
-    const onSet = (e: Event) => {
-      const i = (e as CustomEvent<number>).detail;
-      if (typeof i === 'number' && Number.isFinite(i)) setIndex(i);
-    };
-    document.addEventListener('ventu:spot-timeline-set', onSet);
-    return () => document.removeEventListener('ventu:spot-timeline-set', onSet);
-  }, [setIndex]);
 
   const onToggle = (id: InstrumentId) => setOpen((cur) => (cur === id ? null : id));
 

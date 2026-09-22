@@ -91,11 +91,32 @@ export default function ForecastMeteogram({
   return (
     <div className="mb-3" role="img" aria-label={ariaLabel}>
       <div ref={scrollRef} className="overflow-x-auto overscroll-x-contain no-scrollbar edge-fade-x -mx-1 px-1">
-        <div style={{ width: cols.length * COL_W }} className="min-w-full relative">
+        <div
+          style={{ width: cols.length * COL_W }}
+          className="min-w-full relative"
+          data-tl-meteogram
+          data-tl-count={cols.length}
+          data-tl-colw={COL_W}
+        >
           {/* Linha «agora» — atravessa vento, ondas e score */}
           <div
             className="absolute top-0 bottom-7 w-px bg-fg/80 pointer-events-none z-10"
             style={{ left: cols.findIndex((c) => c.isNow) * COL_W + COL_W / 2 }}
+            aria-hidden
+          />
+          {/* Coluna da hora escolhida no eixo partilhado — o sync da
+              SpotForecastSection posiciona-a por transform (índice × COL_W)
+              sem re-render do meteograma. opacity-0 até ser activada. */}
+          <div
+            data-tl-stripe
+            className="absolute top-0 bottom-0 pointer-events-none opacity-0 z-[5] rounded-[3px]"
+            style={{
+              width: COL_W,
+              background:
+                'color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent)',
+              boxShadow:
+                'inset 0 0 0 1.5px color-mix(in srgb, var(--verdict, rgb(var(--accent))) 55%, transparent)',
+            }}
             aria-hidden
           />
           {/* Setas de vento */}

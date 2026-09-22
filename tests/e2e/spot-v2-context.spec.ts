@@ -1,16 +1,14 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 import { interceptMapHours } from './helpers/conditions';
 
 /**
  * S2C — secções 6–7 da página de spot (docs/design/SPOT-PAGE.md):
  * «No local» · «Chegar e estar» · «Perto daqui» · «Como sabemos».
  *
- * «Perto daqui» lê a hora escolhida do eixo partilhado; nesta worktree a
- * régua da S2A ainda não existe — o índice move-se pelo CustomEvent
- * «ventu:spot-timeline-set» (detail = índice), a mesma convenção da S2B.
- * A S3 pode trocar pelo slider da régua.
+ * «Perto daqui» lê a hora escolhida do eixo partilhado — o spec move-a
+ * pelo slider da régua (S3), o mesmo caminho do utilizador.
  */
 
 const SPOT_SLUG = 'guincho';
@@ -194,7 +192,8 @@ test.describe('Spot context (S2C)', () => {
 
     // Dois índices da timeline cujas horas caem em passos diferentes do
     // ficheiro — derivados do forecast real (o mesmo que a página carrega
-    // em modo ventu_live).
+    // em modo ventu_live). A régua só alcança a janela de 48 h a partir de
+    // «agora»: a escolha faz-se depois da página aterrar nesse índice.
     const forecast = JSON.parse(
       readFileSync(
         join(process.cwd(), 'public/data/forecasts/guincho.json'),
@@ -210,17 +209,6 @@ test.describe('Spot context (S2C)', () => {
       }
       return best;
     };
-    let idxA = -1;
-    let idxB = -1;
-    for (let i = 0; i < forecast.length; i++) {
-      if (idxA < 0 && stepFor(forecast[i].time) === 0) idxA = i;
-      if (idxA >= 0 && stepFor(forecast[i].time) > stepFor(forecast[idxA].time)) {
-        idxB = i;
-        break;
-      }
-    }
-    expect(idxA).toBeGreaterThanOrEqual(0);
-    expect(idxB).toBeGreaterThan(idxA);
 
     await page.goto(`/pt/spots/${SPOT_SLUG}/`);
     await expect(
@@ -232,14 +220,47 @@ test.describe('Spot context (S2C)', () => {
     const firstScore = list.locator('[data-nearby-score]').first();
     await expect(firstScore).not.toHaveText('—', { timeout: 15_000 });
 
-    const setIndex = (i: number) =>
-      page.evaluate(
-        (n) =>
-          document.dispatchEvent(
-            new CustomEvent('ventu:spot-timeline-set', { detail: n }),
-          ),
-        i,
+    // Índice inicial = «agora» = início da janela da régua (48 h).
+    const start = Number(
+      await page
+        .locator('[data-spot-timeline-index]')
+        .first()
+        .getAttribute('data-spot-timeline-index'),
+    );
+    const end = Math.min(start + 48, forecast.length);
+    let idxA = -1;
+    let idxB = -1;
+    for (let i = start; i < end; i++) {
+      if (idxA < 0) idxA = i;
+      else if (stepFor(forecast[i].time) > stepFor(forecast[idxA].time)) {
+        idxB = i;
+        break;
+      }
+    }
+    expect(idxA).toBeGreaterThanOrEqual(0);
+    expect(idxB).toBeGreaterThan(idxA);
+
+    // O mesmo caminho do utilizador: clique na régua — o track mapeia a
+    // fracção horizontal → índice dentro da janela visível.
+    const setIndex = async (i: number) => {
+      const slider = page.getByRole('slider');
+      const max = Number(await slider.getAttribute('aria-valuemax'));
+      const localNow = Number(await slider.getAttribute('aria-valuenow'));
+      const globalNow = Number(
+        await page
+          .locator('[data-spot-timeline-index]')
+          .first()
+          .getAttribute('data-spot-timeline-index'),
       );
+      const local = i - (globalNow - localNow);
+      const box = await slider.boundingBox();
+      if (!box || local < 0 || local > max) {
+        throw new Error(`índice ${i} fora da janela visível da régua`);
+      }
+      await slider.click({
+        position: { x: ((local + 0.5) / (max + 1)) * box.width, y: box.height / 2 },
+      });
+    };
 
     await setIndex(idxA);
     await expect(firstScore).toHaveText(

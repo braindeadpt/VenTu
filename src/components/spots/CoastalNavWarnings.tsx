@@ -7,6 +7,7 @@ import {
   warningsForSpot,
   type CoastalNavWarning,
 } from '@/lib/ihCoastalWarnings';
+import { isSafetyNavWarning } from '@/lib/verdict/navWarningSafety';
 
 interface CoastalNavWarningsProps {
   spotId: string;
@@ -14,6 +15,9 @@ interface CoastalNavWarningsProps {
   /** 'alert' (default — fundo rosado, âncora vermelha) ou 'info'
    *  (superfície neutra — para contextos informativos como «No local»). */
   tone?: 'alert' | 'info';
+  /** Exclui os avisos de segurança real já mostrados na faixa §0
+   *  (isSafetyNavWarning) — «No local» lista só o restante. */
+  excludeSafety?: boolean;
 }
 
 /** «Avisos à Navegação Costeiros (IH)» — camada de segurança marítima
@@ -23,6 +27,7 @@ export default function CoastalNavWarnings({
   spotId,
   locale,
   tone = 'alert',
+  excludeSafety = false,
 }: CoastalNavWarningsProps) {
   const isPt = locale === 'pt';
   const isAlert = tone === 'alert';
@@ -33,7 +38,10 @@ export default function CoastalNavWarnings({
     loadCoastalNavWarnings()
       .then((file) => {
         if (cancelled) return;
-        setWarnings(warningsForSpot(file, spotId));
+        const all = warningsForSpot(file, spotId);
+        // Em «No local» os perigos à navegação já estão na faixa §0 —
+        // listar os mesmos avisos duas vezes lê-se como dois alertas.
+        setWarnings(excludeSafety ? (all ?? []).filter((w) => !isSafetyNavWarning(w)) : all);
       })
       .finally(() => {
         if (!cancelled) setWarnings((w) => w ?? null);
@@ -41,7 +49,7 @@ export default function CoastalNavWarnings({
     return () => {
       cancelled = true;
     };
-  }, [spotId]);
+  }, [spotId, excludeSafety]);
 
   if (!warnings || warnings.length === 0) return null;
 

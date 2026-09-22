@@ -169,13 +169,13 @@ describe('resolveTideExtrema', () => {
     nextLow: null,
   };
 
-  it('com tábua → extremos canónicos na hora cheia, fonte «ih»', () => {
+  it('com tábua → extremos canónicos na hora cheia, fonte «schedule»', () => {
     const { extrema, source } = resolveTideExtrema({
       schedule,
       series: sine,
       tableSeries: sine,
     });
-    expect(source).toBe('ih');
+    expect(source).toBe('schedule');
     expect(extrema.length).toBeGreaterThanOrEqual(4);
     // Os índices são inteiros (a tábua marca a hora cheia) e as horas
     // batem com as do findTideExtrema — a mesma leitura do TideScheduleStrip.

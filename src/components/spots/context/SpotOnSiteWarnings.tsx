@@ -51,8 +51,17 @@ export default function SpotOnSiteWarnings({ spotId, locale }: SpotOnSiteWarning
 
   // Só o ramo «zero avisos com fetch OK» usa o estado vazio da spec; em
   // carga/erro delega-se ao componente (que mostra os seus próprios estados).
+  // excludeSafetyNavWarnings: os perigos à navegação já estão na faixa §0 —
+  // «No local» lista só os informativos (decisão de integração S3).
   if (data == null || relevantWarningsForSpot(data, spotId).length > 0) {
-    return <SpotWarningsSection embedded spotId={spotId} locale={locale} />;
+    return (
+      <SpotWarningsSection
+        embedded
+        spotId={spotId}
+        locale={locale}
+        excludeSafetyNavWarnings
+      />
+    );
   }
 
   const hhmm = data?.fetchedAt
@@ -83,8 +92,9 @@ export default function SpotOnSiteWarnings({ spotId, locale }: SpotOnSiteWarning
       {/* Sem avisos IPMA a camada costeira IH continua a poder estar em
           vigor — o componente decide sozinho se renderiza. Em «No local»
           estes avisos são informação (avistamentos, editais): tone="info"
-          tira o aspecto de alarme; os perigos reais vivem na faixa §0. */}
-      <CoastalNavWarnings spotId={spotId} locale={locale} tone="info" />
+          tira o aspecto de alarme; os perigos reais vivem na faixa §0 e
+          são excluídos aqui (excludeSafety) para não duplicar. */}
+      <CoastalNavWarnings spotId={spotId} locale={locale} tone="info" excludeSafety />
     </>
   );
 }

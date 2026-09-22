@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { scoreBand } from '@/lib/verdict/scoreBand';
-import { whyLine } from '@/lib/verdict/whyLine';
 import { formatHourLabel, formatHourLong, formatDayShort } from '@/lib/verdict/formatHourLabel';
 import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
 import { pickRailAxisLabels } from '@/lib/verdict/railAxisLabels';
@@ -35,27 +34,6 @@ describe('scoreBand — limites canónicos (80/60/40/20)', () => {
   it('clampa scores fora de 0–100', () => {
     expect(scoreBand(-5).key).toBe('closed');
     expect(scoreBand(140).key).toBe('epic');
-  });
-});
-
-describe('whyLine — frase curta dos factores existentes', () => {
-  it('junta até 3 factores com separador', () => {
-    expect(
-      whyLine(['1.4m ondas', 'Vento offshore', '12s período', 'extra'], 'pt'),
-    ).toBe('1.4m ondas · Vento offshore · 12s período');
-  });
-
-  it('um único factor sai sem separador', () => {
-    expect(whyLine(['Vento fraco'], 'en')).toBe('Vento fraco');
-  });
-
-  it('factores vazios → null (não inventa texto)', () => {
-    expect(whyLine([], 'pt')).toBeNull();
-    expect(whyLine([], 'en')).toBeNull();
-  });
-
-  it('ignora entradas vazias/whitespace', () => {
-    expect(whyLine(['  ', '1.4m ondas', ''], 'pt')).toBe('1.4m ondas');
   });
 });
 

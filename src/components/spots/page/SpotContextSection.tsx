@@ -1,7 +1,6 @@
 'use client';
 
 import { Compass, Droplets, HelpCircle, MapPin, Navigation } from 'lucide-react';
-import { useEffect } from 'react';
 import type { Spot } from '@/types';
 import type { VentuEvent } from '@/types/events';
 import type { SpotLocalTips } from '@/lib/spotTips';
@@ -33,12 +32,9 @@ import { useSpotTimelineIndex } from '@/components/spots/timeline/useSpotTimelin
  * largura total por baixo. Mobile: «No local» aberto, restantes em
  * accordion (CollapsibleSection existente).
  *
- * Props §7 (conditions/score/selectedSport/freshnessNowMs) opcionais —
- * a S3 liga-as a partir do SpotDetailClient (ver «Dúvidas» do relatório).
- *
- * Gancho E2E (nesta worktree ainda não existe a régua da S2A): o índice
- * expõe-se pelo CustomEvent «ventu:spot-timeline-set» (detail = índice),
- * a mesma convenção da S2B — a S3 pode trocar pelo slider da régua.
+ * Props §7 (conditions/score/selectedSport/freshnessNowMs) ligadas pelo
+ * SpotDetailClient na S3 — opcionais para a secção degradar sem erros
+ * noutros contextos.
  */
 export interface SpotContextSectionProps {
   spot: Spot;
@@ -86,17 +82,7 @@ export default function SpotContextSection({
   freshnessNowMs,
 }: SpotContextSectionProps) {
   const tc = getTranslation(locale).spotPageContext;
-  const { index, setIndex } = useSpotTimelineIndex();
-
-  // Gancho E2E — ver comentário no cabeçalho.
-  useEffect(() => {
-    const onSet = (e: Event) => {
-      const i = (e as CustomEvent<number>).detail;
-      if (typeof i === 'number' && Number.isFinite(i)) setIndex(i);
-    };
-    document.addEventListener('ventu:spot-timeline-set', onSet);
-    return () => document.removeEventListener('ventu:spot-timeline-set', onSet);
-  }, [setIndex]);
+  const { index } = useSpotTimelineIndex();
 
   const hasLivecam = !!getSpotLivecam(spot.slug);
   const hasStation = !!getSpotWeatherlink(spot.slug);

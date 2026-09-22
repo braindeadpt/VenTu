@@ -3,8 +3,6 @@
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
-import type { SpotVerdict } from '@/lib/spotVerdict';
-import type { HourlyCondition, MagicWindow } from '@/lib/magicWindows';
 import type { ObservedConditions } from '@/lib/observations';
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave';
 import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence';
@@ -14,8 +12,6 @@ import type {
   ScoreWindCorrection,
   ScoreWindSource,
 } from '@/lib/scoreConditions';
-import { getScoreCssVar } from '@/lib/scoreThresholds';
-import { useSpotTimelineIndex } from '@/components/spots/timeline/useSpotTimeline';
 import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
 import SpotVerdictHero from '@/components/spots/verdict/SpotVerdictHero';
 import SpotUnifiedBar from '@/components/spots/verdict/SpotUnifiedBar';
@@ -54,11 +50,12 @@ export interface SpotVerdictConditions {
  * §3 SpotTimeRail (#quando) — régua de 48 h no eixo de tempo partilhado.
  *
  * Os componentes antigos (SpotDetailHero, SpotStickyBar, linha standalone de
- * tabs, WhenToGoCard) ficam no disco para referência até à limpeza da S3 —
- * aqui já não são compostos. Props públicas inalteradas: o SpotDetailClient
- * continua a passar o mesmo contrato; campos hoje não usados pelo novo
- * interior (verdict/hourly/windows de MagicWindow — a régua usa spotWindows
- * sobre o eixo partilhado) ficam registados para a S3.
+ * tabs, WhenToGoCard) ficam no disco para referência até à limpeza — aqui já
+ * não são compostos. As props legadas sem uso no interior novo (verdict,
+ * hourly/windows de MagicWindow, observedWave*, rangeLabel) saíram na S3:
+ * a régua usa spotWindows sobre o eixo partilhado e o hero lê as ondas
+ * observadas de `conditions`. `--verdict` é definido UMA vez no contentor
+ * da página (SpotDetailClient) — todas as secções herdam o mesmo acento.
  */
 export interface SpotVerdictSectionProps {
   spot: Spot;
@@ -75,12 +72,8 @@ export interface SpotVerdictSectionProps {
   conditions: SpotVerdictConditions;
   scoreWindSource?: ScoreWindSource;
   scoreWindCorrection?: ScoreWindCorrection | null;
-  windObservedSource?: 'ipma' | 'ecowitt' | 'metar';
   scoreWaveSource?: ScoreWaveSource;
   scoreWaveCorrection?: ScoreWaveCorrection | null;
-  observedWave?: ObservedWave | null;
-  observedWaveAlt?: ObservedWave | null;
-  observedWaveMeta?: ObservedWaveMeta | null;
   /** Tabs de modalidade — lista canónica na barra fixa única. */
   tabSports: SportType[];
   allScores: Record<SportType, SportScore>;
@@ -91,15 +84,6 @@ export interface SpotVerdictSectionProps {
   sportTabsAria: string;
   /** «Quando ir». */
   whenToGoTitle: string;
-  /** «Próximas 24h» — legado do WhenToGoCard; a régua usa tv.range48. */
-  rangeLabel: string;
-  verdict: SpotVerdict | null;
-  /** Legado do WhenToGoCard — a régua lê o eixo partilhado, não este array. */
-  hourly: Array<HourlyCondition & { tideHeight?: number }>;
-  /** Scores canónicos alinhados com `hourly` (legado WhenToGoCard). */
-  hourlyScores?: number[];
-  /** Legado do WhenToGoCard — a régua usa spotWindows sobre o eixo. */
-  windows: MagicWindow[];
   /** Relógio de frescura (bakedAtMs até montar — guarda React #418). */
   freshnessNowMs?: number;
 }
@@ -125,20 +109,11 @@ export default function SpotVerdictSection({
   whenToGoTitle,
   freshnessNowMs,
 }: SpotVerdictSectionProps) {
-  const { selectedScore } = useSpotTimelineIndex();
-  // Acento da página = tier da hora escolhida. UMA definição na raiz da
-  // secção — hero, barra e régua herdam (o fill da régua vive fora do hero
-  // e da barra; sem isto caía a preto). `contents` não cria caixa: o sticky
-  // da SpotUnifiedBar continua contido pelo mesmo ancestral de sempre.
-  const verdictScore = selectedScore ?? score.score;
-
   return (
-    <div
-      className="contents"
-      style={
-        { '--verdict': `rgb(var(${getScoreCssVar(verdictScore)}))` } as React.CSSProperties
-      }
-    >
+    // `contents` não cria caixa: o sticky da SpotUnifiedBar continua contido
+    // pelo mesmo ancestral de sempre. O acento --verdict vive no contentor
+    // da página (SpotDetailClient) — uma só fonte para todas as secções.
+    <div className="contents">
       {/* §0 — Faixa de segurança (só renderiza com aviso de segurança real). */}
       <SpotSafetyStrip spotId={spot.id} locale={locale} />
 
@@ -152,6 +127,7 @@ export default function SpotVerdictSection({
         selectedSport={selectedSport}
         score={score}
         conditions={conditions}
+        allScores={allScores}
         scoreWaveSource={scoreWaveSource}
         scoreWaveCorrection={scoreWaveCorrection}
         scoreWindSource={scoreWindSource}

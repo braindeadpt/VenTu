@@ -3,11 +3,9 @@ import { test, expect, type Page } from '@playwright/test';
 /**
  * S2B — secção Instrumentos (docs/design/SPOT-PAGE.md §4).
  *
- * A hora escolhida vem do eixo de tempo partilhado. Nesta worktree ainda
- * não existe o slider da régua (é S2A), por isso o spec usa o gancho
- * documentado na secção: CustomEvent «ventu:spot-timeline-set» com o
- * índice — reflectido em data-spot-timeline-index no contentor. Quando a
- * régua existir (S3), o mesmo teste pode passar a usar o slider.
+ * A hora escolhida vem do eixo de tempo partilhado. O spec move-a pelo
+ * slider da régua (S3 — o gancho CustomEvent saiu do código de produção);
+ * a mudança reflecte-se em data-spot-timeline-index no contentor.
  */
 
 const SECTION = '#instrumentos';
@@ -15,10 +13,22 @@ const CARDS = `${SECTION} [data-instrument]`;
 const WIND_BEAM = `${CARDS}[data-instrument='wind'] [data-beam]`;
 
 async function setTimelineIndex(page: Page, index: number) {
-  await page.evaluate(
-    (i) => document.dispatchEvent(new CustomEvent('ventu:spot-timeline-set', { detail: i })),
-    index,
+  // O mesmo caminho do utilizador: clique na régua — o track mapeia a
+  // fracção horizontal → índice global dentro da janela de 48 h.
+  const slider = page.getByRole('slider');
+  const max = Number(await slider.getAttribute('aria-valuemax'));
+  const localNow = Number(await slider.getAttribute('aria-valuenow'));
+  const globalNow = Number(
+    await page.locator(SECTION).getAttribute('data-spot-timeline-index'),
   );
+  const local = index - (globalNow - localNow);
+  const box = await slider.boundingBox();
+  if (!box || !Number.isFinite(max) || local < 0 || local > max) {
+    throw new Error(`índice ${index} fora da janela visível da régua`);
+  }
+  await slider.click({
+    position: { x: ((local + 0.5) / (max + 1)) * box.width, y: box.height / 2 },
+  });
   await expect(page.locator(SECTION)).toHaveAttribute('data-spot-timeline-index', String(index));
 }
 
@@ -108,10 +118,11 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
   }) => {
     const tideCard = page.locator(`${CARDS}[data-instrument='tide']`);
 
-    // S2B-fix: a tábua canónica cobre a janela → extremos «ih», não «model».
+    // A tábua canónica cobre a janela → extremos «schedule» (a série do
+    // modelo alinhada pela tábua), não «model» (parábola).
     await expect(tideCard.locator('svg[data-tide-extrema-source]')).toHaveAttribute(
       'data-tide-extrema-source',
-      'ih',
+      'schedule',
     );
 
     // Hora da próxima maré no cartão («próxima baixa-mar às HH:MM»).

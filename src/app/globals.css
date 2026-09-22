@@ -1525,6 +1525,22 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
   box-shadow: 4px 0 10px -6px rgb(0 0 0 / 0.1);
 }
 
+/* S3 — coluna da hora escolhida (eixo de tempo partilhado): matiz leve de
+   --verdict (14%) sobre a cor semântica da célula + contorno inset. O
+   texto fica intacto — contraste ≥4.5:1 mantém-se porque o tint não
+   substitui o fundo nem mexe na cor do texto. */
+.forecast-table-scroll [data-tl-col] {
+  cursor: pointer;
+}
+.forecast-table-scroll [data-tl-selected] {
+  background-image: linear-gradient(
+    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent),
+    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent)
+  );
+  box-shadow: inset 0 0 0 1.5px
+    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 55%, transparent);
+}
+
 /* Overflow scroll shadows: thin gradient edges to signal more data. */
 .scroll-overflow-x {
   --fade-size: 24px;
