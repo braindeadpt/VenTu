@@ -78,6 +78,7 @@ import {
 import { mapTideChipAt, pickMapTideCurve } from '@/lib/mapTideChip';
 import { thermalHudAt } from '@/lib/mapThermal';
 import { MAP_ON_THRESHOLD, spotMatchesSportFilter, spotMeetsOnFilter } from '@/lib/gridSpotFilters';
+import { DEFAULT_REGION } from '@/lib/gridFilters';
 import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
 
 type SpotData = MapSpotData;
@@ -774,6 +775,33 @@ export default function SpotMapInteractive({
     return () => { mcg.off('clusterclick', onClusterClick); };
   }, [isHeroEmbed, clusterReady, clusterGroupRef, locale, router]);
 
+  // Mapa principal (não-hero): o clique num cluster mantém o zoom padrão do
+  // Leaflet (zoomToBoundsOnClick — sem preventDefault) e, em mobile, abre o
+  // sheet do MELHOR spot do agrupamento — o utilizador vê logo o que há de
+  // melhor lá dentro. Desktop mantém só o zoom: o detalhe vive nos popups.
+  useEffect(() => {
+    if (isHeroEmbed || !isMobile || !clusterReady || !clusterGroupRef.current) return;
+    const mcg = clusterGroupRef.current;
+    const onClusterClick = (e: unknown) => {
+      const layer = (e as { layer?: { getAllChildMarkers?: () => unknown[] } }).layer;
+      const children = layer?.getAllChildMarkers?.() ?? [];
+      let best: MapSpotData | null = null;
+      let bestScore = -Infinity;
+      for (const child of children) {
+        const d = (child as { ventuData?: MapSpotData }).ventuData;
+        if (!d) continue;
+        const score = getBestScore(d, selectedSport, hourScores?.get(d.spot.id));
+        if (score > bestScore) {
+          bestScore = score;
+          best = d;
+        }
+      }
+      if (best) setSheetSpot({ ...best, warning: warningsBySpot.get(best.spot.id) ?? null });
+    };
+    mcg.on('clusterclick', onClusterClick);
+    return () => { mcg.off('clusterclick', onClusterClick); };
+  }, [isHeroEmbed, isMobile, clusterReady, clusterGroupRef, selectedSport, hourScores, warningsBySpot, setSheetSpot]);
+
   // ── Invalidate size on fullscreen/resize ──
   useEffect(() => {
     if (!isReady || !mapInstanceRef.current) return;
@@ -794,9 +822,15 @@ export default function SpotMapInteractive({
   //    por score. Alimenta o peek «Melhor agora», o sheet aberto e o painel. ──
   const buildRows = useCallback((): MapSpotListRow[] => {
     const bounds = mapInstanceRef.current?.getBounds();
-    const inView = bounds
-      ? visibleSpots.filter((d) => bounds.contains([d.spot.lat, d.spot.lon]))
-      : visibleSpots;
+    // Mesma fonte de enquadramento dos marcadores (D3: includeSpotInViewportBounds)
+    // — sem ela, uma row de ilha dentro do viewport (o fit móvel a oeste chega
+    // a enquadrar a Madeira) ficava sem marcador e quebrava o contrato
+    // «Melhor agora = topo da lista = maior marcador na vista».
+    const inView = visibleSpots.filter(
+      (d) =>
+        includeSpotInViewportBounds(d.spot, selectedRegion ?? DEFAULT_REGION) &&
+        (!bounds || bounds.contains([d.spot.lat, d.spot.lon])),
+    );
     return inView
       .map((d) => {
         return {
@@ -814,7 +848,7 @@ export default function SpotMapInteractive({
         };
       })
       .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  }, [visibleSpots, hourScores, selectedSport, isPt, locale, mapInstanceRef]);
+  }, [visibleSpots, hourScores, selectedSport, selectedRegion, isPt, locale, mapInstanceRef]);
 
   const [viewRows, setViewRows] = useState<MapSpotListRow[]>([]);
   useEffect(() => {
@@ -1402,6 +1436,7 @@ export default function SpotMapInteractive({
               onSelectRow={(row) => focusMapSpot(row.spotId)}
               layers={sheetLayers}
               extras={sheetExtras}
+              clusterItem={sheetExtras.find((i) => i.key === 'cluster')}
               basemapMode={basemapMode}
               onBasemapChange={handleBasemapChangeLocal}
               exitFullscreenLabel={exitFullscreenLabel}

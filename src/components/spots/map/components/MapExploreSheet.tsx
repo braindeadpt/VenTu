@@ -51,6 +51,11 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
    *  (mapa/satélite) é o radiogroup `MapBasemapRadio` mesmo acima e a
    *  saída do fullscreen vive no grabber (sempre visível). */
   extras: SheetToggleItem[];
+  /** Chip «Agrupar/Mostrar todos» no PEEK — o toggle vivia só no estado
+   *  half (extras), inalcançável a quem fica sempre no peek do fullscreen
+   *  mobile (D6). Mesmo item do half: label/estado/onToggle idênticos, uma
+   *  superfície por estado — nunca dois botões com o mesmo nome no DOM. */
+  clusterItem?: SheetToggleItem;
   /** Saída do fullscreen — sempre visível à esquerda do grabber (era do
    *  HUD antigo; o C4 exige uma saída que não dependa de abrir o sheet). */
   exitFullscreenLabel: string;
@@ -134,6 +139,7 @@ export default function MapExploreSheet({
   onSelectRow,
   layers,
   extras,
+  clusterItem,
   basemapMode,
   onBasemapChange,
   exitFullscreenLabel,
@@ -374,6 +380,17 @@ export default function MapExploreSheet({
           <FilterPill compact active={onlyOnEnabled} onClick={onToggleOnlyOn} aria-label={onlyOnLabel} icon={<Zap className="h-3.5 w-3.5" aria-hidden />} toggleAttr="data-map-only-on-toggle">
             {onlyOnLabel}
           </FilterPill>
+          {clusterItem && (
+            <FilterPill
+              compact
+              active={clusterItem.pressed}
+              onClick={clusterItem.onToggle}
+              aria-label={clusterItem.label}
+              icon={clusterItem.icon}
+            >
+              {clusterItem.label}
+            </FilterPill>
+          )}
           <span className="ml-auto shrink-0 font-mono tabular-nums text-meta-sm text-fg-subtle">
             {spotCount} {isPt ? 'spots' : 'spots'}
           </span>

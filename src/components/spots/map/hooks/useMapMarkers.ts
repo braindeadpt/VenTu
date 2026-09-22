@@ -4,6 +4,8 @@ import type { MapSpotData } from '../../mapSpotData';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapSpotSheetData } from '../../MapSpotSheet';
+import { includeSpotInViewportBounds } from '../../mapViewportBounds';
+import { DEFAULT_REGION } from '@/lib/gridFilters';
 import {
   applyExploreMapFit,
   buildMarkerCacheKey,
@@ -165,7 +167,14 @@ export function useMapMarkers({
       }
     }
 
-    const nextIds = new Set(visibleSpots.map((d) => d.spot.id));
+    // Marcadores só para os spots DENTRO dos bounds enquadráveis — a mesma
+    // fonte do fitBounds. Sem isto, Açores/Madeira montavam um cluster
+    // fantasma para fora do enquadramento continental (agrupamento invisível
+    // na margem do mapa que se podia clicar sem traduzir nada no ecrã).
+    const markerSpots = visibleSpots.filter((d) =>
+      includeSpotInViewportBounds(d.spot, selectedRegion ?? DEFAULT_REGION),
+    );
+    const nextIds = new Set(markerSpots.map((d) => d.spot.id));
 
     // O sheet só fecha quando o spot aberto deixa de estar visível (mudança
     // de filtro já fechou acima). Um refresh com os mesmos spots não o derruba.
@@ -183,7 +192,7 @@ export function useMapMarkers({
       }
     }
 
-    if (visibleSpots.length === 0) return;
+    if (markerSpots.length === 0) return;
 
     // No hero o sheet (85dvh) fica cortado pela caixa do hero — o popup do
     // Leaflet cabe lá dentro e o autoPan mantém-no visível sem drag.
@@ -201,7 +210,7 @@ export function useMapMarkers({
 
     const markerChunkCancelRef = { current: false };
     runChunked(
-      visibleSpots,
+      markerSpots,
       (batch) => {
         const toCluster: L.Marker[] = [];
         const toPlain: L.Marker[] = [];
