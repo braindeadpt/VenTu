@@ -14,7 +14,6 @@ import type {
   ScoreWindCorrection,
   ScoreWindSource,
 } from '@/lib/scoreConditions';
-import { getTranslation } from '@/lib/i18n';
 import { getScoreCssVar } from '@/lib/scoreThresholds';
 import { useSpotTimelineIndex } from '@/components/spots/timeline/useSpotTimeline';
 import SpotSafetyStrip from '@/components/spots/verdict/SpotSafetyStrip';
@@ -114,6 +113,10 @@ export default function SpotVerdictSection({
   selectedSport,
   score,
   conditions,
+  scoreWindSource,
+  scoreWindCorrection,
+  scoreWaveSource,
+  scoreWaveCorrection,
   tabSports,
   allScores,
   sportLabel,
@@ -122,7 +125,6 @@ export default function SpotVerdictSection({
   whenToGoTitle,
   freshnessNowMs,
 }: SpotVerdictSectionProps) {
-  const tv = getTranslation(locale).spotPageVerdict;
   const { selectedScore } = useSpotTimelineIndex();
   // Acento da página = tier da hora escolhida. UMA definição na raiz da
   // secção — hero, barra e régua herdam (o fill da régua vive fora do hero
@@ -137,12 +139,8 @@ export default function SpotVerdictSection({
         { '--verdict': `rgb(var(${getScoreCssVar(verdictScore)}))` } as React.CSSProperties
       }
     >
-      {/* §0 — Faixa de segurança (só renderiza com aviso activo). */}
-      <SpotSafetyStrip
-        spotId={spot.id}
-        locale={locale}
-        activeWarningsLabel={tv.activeWarnings}
-      />
+      {/* §0 — Faixa de segurança (só renderiza com aviso de segurança real). */}
+      <SpotSafetyStrip spotId={spot.id} locale={locale} />
 
       {/* §1 — Veredicto «posso ir?» (sem foto no topo). */}
       <SpotVerdictHero
@@ -154,12 +152,17 @@ export default function SpotVerdictSection({
         selectedSport={selectedSport}
         score={score}
         conditions={conditions}
+        scoreWaveSource={scoreWaveSource}
+        scoreWaveCorrection={scoreWaveCorrection}
+        scoreWindSource={scoreWindSource}
+        scoreWindCorrection={scoreWindCorrection}
         freshnessNowMs={freshnessNowMs}
       />
 
       {/* §2 — Barra fixa única (tabs + score/hora + âncoras). */}
       <SpotUnifiedBar
         locale={locale}
+        spotId={spot.id}
         tabSports={tabSports}
         allScores={allScores}
         selectedSport={selectedSport}

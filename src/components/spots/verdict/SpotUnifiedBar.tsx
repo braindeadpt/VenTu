@@ -5,6 +5,13 @@ import type { SportScore } from '@/lib/sportScore';
 import { getTranslation } from '@/lib/i18n';
 import { formatHourLabel } from '@/lib/verdict/formatHourLabel';
 import { cn } from '@/lib/cn';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
+import {
+  SEA_STATE_WARNING_TYPES,
+  strongestSpotWarning,
+  warningBadgeLabel,
+} from '@/lib/ipmaWarnings';
+import WarningPill from '@/components/ui/WarningPill';
 import {
   useSpotTimelineData,
   useSpotTimelineIndex,
@@ -13,6 +20,8 @@ import SportTab from '@/components/spots/SportTab';
 
 interface SpotUnifiedBarProps {
   locale: string;
+  /** Spot id — resolve o chip do aviso IPMA activo («Mar perigoso»). */
+  spotId: string;
   /** Lista canónica de modalidades (compatíveis do spot). */
   tabSports: SportType[];
   allScores: Record<SportType, SportScore>;
@@ -24,9 +33,9 @@ interface SpotUnifiedBarProps {
   nowScoreFallback: number;
 }
 
-const ANCHORS: ReadonlyArray<{ href: string; key: 'anchorNow' | 'anchorForecast' | 'anchorOnSite' | 'anchorGettingThere' }> = [
-  { href: '#agora', key: 'anchorNow' },
-  { href: '#previsao', key: 'anchorForecast' },
+const ANCHORS: ReadonlyArray<{ href: string; key: 'anchorSummary' | 'anchorHourly' | 'anchorOnSite' | 'anchorGettingThere' }> = [
+  { href: '#agora', key: 'anchorSummary' },
+  { href: '#previsao', key: 'anchorHourly' },
   { href: '#no-local', key: 'anchorOnSite' },
   { href: '#chegar', key: 'anchorGettingThere' },
 ];
@@ -40,6 +49,7 @@ const ANCHORS: ReadonlyArray<{ href: string; key: 'anchorNow' | 'anchorForecast'
  */
 export default function SpotUnifiedBar({
   locale,
+  spotId,
   tabSports,
   allScores,
   selectedSport,
@@ -47,9 +57,15 @@ export default function SpotUnifiedBar({
   sportTabsAria,
   nowScoreFallback,
 }: SpotUnifiedBarProps) {
+  const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotPageVerdict;
   const { nowIndex } = useSpotTimelineData();
   const { selectedScore, selectedHour, isNow } = useSpotTimelineIndex();
+  // Chip de segurança — a mesma resolução da SpotStickyBar antiga (aviso
+  // agitação/vento mais forte do spot). Acompanha o scroll: um «Mar
+  // perigoso» não pode desaparecer quando se desce na página.
+  const warningsData = useIpmaWarnings();
+  const warning = strongestSpotWarning(warningsData, spotId);
 
   const shownScore = selectedScore ?? nowScoreFallback;
 
@@ -118,6 +134,20 @@ export default function SpotUnifiedBar({
             >
               {isNow ? tv.nowLabel : tv.forecastLabel}
             </span>
+          )}
+          {warning && (
+            <WarningPill
+              warning={{
+                level: warning.level,
+                label: warningBadgeLabel(warning, isPt),
+                seaState: SEA_STATE_WARNING_TYPES.has(warning.type),
+                areaLabel: warning.areaLabel,
+                type: warning.type,
+              }}
+              locale={locale}
+              variant="compact"
+              dataAttr="compact"
+            />
           )}
         </div>
 

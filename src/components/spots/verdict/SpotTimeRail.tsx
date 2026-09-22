@@ -8,12 +8,9 @@ import { spotWindows } from '@/lib/spotWindows';
 import { spotTimelineScore } from '@/lib/spotTimelineScore';
 import { sunTimes } from '@/lib/verdict/sunTimes';
 import { scoreBand } from '@/lib/verdict/scoreBand';
-import {
-  formatDayShort,
-  formatHourLabel,
-  formatHourLong,
-} from '@/lib/verdict/formatHourLabel';
+import { formatHourLong } from '@/lib/verdict/formatHourLabel';
 import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
+import { pickRailAxisLabels } from '@/lib/verdict/railAxisLabels';
 import { cn } from '@/lib/cn';
 import {
   useSpotTimelineData,
@@ -396,31 +393,33 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
         </span>
       </div>
 
-      {/* Rótulos: mudança de dia («qui 17») e horas de 6 em 6. */}
-      <div className="relative h-4 mt-1 text-meta-sm text-fg-subtle" aria-hidden>
-        {winHours.map((h, i) => {
-          const dayChange = i === 0 || h.slice(0, 10) !== winHours[i - 1].slice(0, 10);
-          const label = dayChange
-            ? formatDayShort(h, locale)
-            : i % 6 === 0
-              ? `${h.slice(11, 13)}h`
-              : null;
-          if (!label) return null;
-          return (
+      {/* Rótulos do eixo — pickRailAxisLabels resolve as colisões (mudanças
+          de dia primeiro, horas redondas depois, espaço mínimo por densidade:
+          ≥4 h desktop / ≥6 h mobile). Duas camadas gémeas, o CSS escolhe. */}
+      {([
+        { gap: 4, cls: 'hidden sm:block' },
+        { gap: 6, cls: 'sm:hidden' },
+      ] as const).map(({ gap, cls }) => (
+        <div key={gap} className={cn('relative h-4 mt-1 text-meta-sm text-fg-subtle', cls)} aria-hidden>
+          {pickRailAxisLabels(winHours, locale, gap).map((l) => (
             <span
-              key={h}
+              key={`${l.kind}${l.index}`}
               className="absolute top-0 whitespace-nowrap font-mono tabular-nums"
               style={{
-                left: `${((i + 0.5) / n) * 100}%`,
+                left: `${((l.index + 0.5) / n) * 100}%`,
                 transform:
-                  i === 0 ? 'none' : i >= n - 1 ? 'translateX(-100%)' : 'translateX(-50%)',
+                  l.index === 0
+                    ? 'none'
+                    : l.index >= n - 1
+                      ? 'translateX(-100%)'
+                      : 'translateX(-50%)',
               }}
             >
-              {label}
+              {l.label}
             </span>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      ))}
 
       <p className="mt-2 text-meta-sm text-fg-muted">{tv.railHint}</p>
       <p aria-live="polite" className="sr-only">

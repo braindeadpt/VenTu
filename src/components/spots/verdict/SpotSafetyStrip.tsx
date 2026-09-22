@@ -1,66 +1,31 @@
 'use client';
 
-import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
-import {
-  relevantWarningsForSpot,
-  SEA_STATE_WARNING_TYPES,
-  warningBadgeLabel,
-} from '@/lib/ipmaWarnings';
 import SeaStateSafetyBanner from '@/components/spots/SeaStateSafetyBanner';
 import SpotSafetyCoastalWarnings from '@/components/spots/verdict/SpotSafetyCoastalWarnings';
-import WarningPill from '@/components/ui/WarningPill';
 
 /**
- * Secção 0 do contrato — faixa de segurança. Só aparece com aviso activo:
- * SeaStateSafetyBanner (Agitação Marítima) + pills dos restantes avisos IPMA
- * relevantes + avisos à navegação costeira do IH. A mesma fonte de avisos que
- * SpotWarningsSection usa (useIpmaWarnings → /data/warnings.json +
- * relevantWarningsForSpot). Nunca dentro de accordion — fora de qualquer
- * card, sempre visível no topo.
+ * Secção 0 do contrato — faixa de segurança. Só aparece com aviso de
+ * segurança REAL (S2A-fix2: avisos informativos criavam fadiga de alarme):
+ *
+ *  - SeaStateSafetyBanner: IPMA «Agitação Marítima» de amarelo para cima —
+ *    «Mar perigoso — não surfar», role=alert, nunca dentro de accordion.
+ *  - SpotSafetyCoastalWarnings: avisos IH só das categorias de perigo à
+ *    navegação (isSafetyNavWarning) — os informativos (animais marinhos,
+ *    editais, portarias, regulamentos) continuam na secção «No local».
+ *
+ * Os restantes avisos IPMA (vento, chuva, trovoada, nevoeiro) também ficam
+ * na «No local» — a faixa é só para o que ameaça a sessão.
  */
 export default function SpotSafetyStrip({
   spotId,
   locale,
-  activeWarningsLabel,
 }: {
   spotId: string;
   locale: string;
-  activeWarningsLabel: string;
 }) {
-  const isPt = locale === 'pt';
-  const warningsData = useIpmaWarnings();
-  const warnings = relevantWarningsForSpot(warningsData, spotId);
-  // Os avisos de agitação marítima já saem no banner próprio (tom + frase de
-  // segurança) — as pills cobrem os restantes tipos (vento, chuva, …).
-  const nonSea = warnings.filter((w) => !SEA_STATE_WARNING_TYPES.has(w.type));
-
   return (
     <>
       <SeaStateSafetyBanner spotId={spotId} locale={locale} />
-      {nonSea.length > 0 && (
-        <div
-          role="group"
-          aria-label={activeWarningsLabel}
-          className="border-b border-divider bg-surface-1/[0.03]"
-        >
-          <div className="max-w-6xl mx-auto px-4 py-2 flex flex-wrap items-center gap-1.5">
-            {nonSea.map((w) => (
-              <WarningPill
-                key={`${w.areaCode}-${w.type}-${w.level}`}
-                warning={{
-                  level: w.level,
-                  label: warningBadgeLabel(w, isPt),
-                  areaLabel: w.areaLabel,
-                  type: w.type,
-                }}
-                locale={locale}
-                variant="default"
-                showLevel
-              />
-            ))}
-          </div>
-        </div>
-      )}
       <SpotSafetyCoastalWarnings spotId={spotId} locale={locale} />
     </>
   );

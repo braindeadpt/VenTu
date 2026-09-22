@@ -7,6 +7,7 @@ import {
   warningsForSpot,
   type CoastalNavWarning,
 } from '@/lib/ihCoastalWarnings';
+import { safetyNavWarnings } from '@/lib/verdict/navWarningSafety';
 
 /**
  * Avisos à navegação costeira na faixa de segurança (secção 0) — versão
@@ -36,7 +37,9 @@ export default function SpotSafetyCoastalWarnings({
     loadCoastalNavWarnings()
       .then((file) => {
         if (cancelled) return;
-        setWarnings(warningsForSpot(file, spotId));
+        // Faixa §0 = só perigo à navegação (S2A-fix2): animais marinhos,
+        // editais e restantes informativos continuam na «No local».
+        setWarnings(safetyNavWarnings(warningsForSpot(file, spotId)));
       })
       .finally(() => {
         if (!cancelled) setWarnings((w) => w ?? null);

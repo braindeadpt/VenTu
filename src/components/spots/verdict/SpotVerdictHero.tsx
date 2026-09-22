@@ -24,6 +24,14 @@ import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import SpotMoreMenu from '@/components/spots/verdict/SpotMoreMenu';
 import DataSourceBadge from '@/components/ui/DataSourceBadge';
 import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
+import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
+import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
+import type {
+  ScoreWaveCorrection,
+  ScoreWaveSource,
+  ScoreWindCorrection,
+  ScoreWindSource,
+} from '@/lib/scoreConditions';
 
 interface SpotVerdictHeroProps {
   spot: Spot;
@@ -35,6 +43,11 @@ interface SpotVerdictHeroProps {
   /** Score «agora» com correcções — fallback antes de montar (o eixo ainda está em 0). */
   score: SportScore;
   conditions: SpotVerdictConditions;
+  /** Fonte da onda/vento do score «agora» (correcção por boia/estação). */
+  scoreWaveSource?: ScoreWaveSource;
+  scoreWaveCorrection?: ScoreWaveCorrection | null;
+  scoreWindSource?: ScoreWindSource;
+  scoreWindCorrection?: ScoreWindCorrection | null;
   freshnessNowMs?: number;
 }
 
@@ -65,6 +78,10 @@ export default function SpotVerdictHero({
   selectedSport,
   score,
   conditions,
+  scoreWaveSource = 'forecast',
+  scoreWaveCorrection = null,
+  scoreWindSource = 'forecast',
+  scoreWindCorrection = null,
   freshnessNowMs,
 }: SpotVerdictHeroProps) {
   const isPt = locale === 'pt';
@@ -100,11 +117,18 @@ export default function SpotVerdictHero({
   // bake = «agora», por isso a linha fica.
   const why = isNow || nowIndex < 0 ? whyLine(isPt ? score.factors : score.factorsEn, locale) : null;
 
+  // Correcções observadas (boia/estação) só se aplicam ao «agora»: noutras
+  // horas o score é previsão pura e a linha de fonte diz isso. Antes de
+  // montar (nowIndex<0) a hora mostrada é a do bake = «agora».
+  const showObservedSources = isNow || nowIndex < 0;
+
   return (
+    // `spot-hero-card` é marcador sem estilo fora de `.spot-hero-ink` — os
+    // specs legados escopam as asserções do hero por esta classe.
     <header
       id="agora"
       data-spot-slug={spot.slug}
-      className="scroll-mt-32 border-b border-divider"
+      className="spot-hero-card scroll-mt-32 border-b border-divider"
     >
       <div className="max-w-6xl mx-auto px-4 pt-2 pb-5">
         {/* Preserva a modalidade: /spots/ lê ?sport= — o voltar não a perde. */}
@@ -222,6 +246,16 @@ export default function SpotVerdictHero({
         </div>
 
         <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta-sm text-fg-muted">
+          <ScoreWaveSourceBadge
+            source={showObservedSources ? scoreWaveSource : 'forecast'}
+            correction={showObservedSources ? scoreWaveCorrection : null}
+            locale={locale}
+          />
+          <ScoreWindSourceBadge
+            source={showObservedSources ? scoreWindSource : 'forecast'}
+            correction={showObservedSources ? scoreWindCorrection : null}
+            locale={locale}
+          />
           <DataSourceBadge
             source={conditions.source}
             updatedAt={conditions.updatedAt}

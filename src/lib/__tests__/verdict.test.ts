@@ -3,6 +3,8 @@ import { scoreBand } from '@/lib/verdict/scoreBand';
 import { whyLine } from '@/lib/verdict/whyLine';
 import { formatHourLabel, formatHourLong, formatDayShort } from '@/lib/verdict/formatHourLabel';
 import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
+import { pickRailAxisLabels } from '@/lib/verdict/railAxisLabels';
+import { isSafetyNavWarning, safetyNavWarnings } from '@/lib/verdict/navWarningSafety';
 import { getScoreTierLabel } from '@/lib/sportScore';
 
 describe('scoreBand — limites canónicos (80/60/40/20)', () => {
@@ -142,5 +144,174 @@ describe('formatWindowLabel — etiqueta «melhor» da régua', () => {
 
   it('janela fora da parte visível → null', () => {
     expect(lbl(60, 70, 65, 80, 0, 48)).toBeNull();
+  });
+});
+
+describe('pickRailAxisLabels — etiquetas do eixo sem colisões', () => {
+  // 48 h de horas wall-time Open-Meteo a partir de um instante dado.
+  const hoursFrom = (iso: string, n = 48) => {
+    const d = new Date(`${iso}:00Z`);
+    const p = (v: number) => String(v).padStart(2, '0');
+    return Array.from({ length: n }, (_, i) => {
+      const t = new Date(d.getTime() + i * 3_600_000);
+      return `${t.getUTCFullYear()}-${p(t.getUTCMonth() + 1)}-${p(t.getUTCDate())}T${p(t.getUTCHours())}:00`;
+    });
+  };
+  const texts = (labels: { label: string }[]) => labels.map((l) => l.label);
+
+  it('janela que começa às 23h: a fronteira de dia posterior prevalece à parcial', () => {
+    // seg 21 set 23h → a mudança para ter 22 acontece no índice 1 — duas
+    // etiquetas de dia a 1 h de distância colidem; fica a do dia completo.
+    const labels = pickRailAxisLabels(hoursFrom('2026-09-21T23'), 'pt', 4);
+    const byIndex = new Map(labels.map((l) => [l.index, l]));
+    expect(byIndex.has(0)).toBe(false); // «seg 21» parcial sacrificado
+    expect(byIndex.get(1)).toMatchObject({ label: 'ter 22', kind: 'day' });
+    // Horas redondas seguem (06h no índice 7 — afastamento ≥4 respeitado).
+    expect(byIndex.get(7)).toMatchObject({ label: '06h', kind: 'hour' });
+    // Nenhum par fica a menos de 4 índices.
+    for (let i = 1; i < labels.length; i++) {
+      expect(labels[i].index - labels[i - 1].index).toBeGreaterThanOrEqual(4);
+    }
+  });
+
+  it('janela que começa às 00h: o dia ancora no índice 0, horas de 6 em 6', () => {
+    const labels = pickRailAxisLabels(hoursFrom('2026-09-21T00'), 'pt', 4);
+    expect(labels[0]).toMatchObject({ index: 0, label: 'seg 21', kind: 'day' });
+    expect(texts(labels)).toEqual([
+      'seg 21', '06h', '12h', '18h', 'ter 22', '06h', '12h', '18h',
+    ]);
+  });
+
+  it('mobile (minGap 6) mostra menos etiquetas que desktop (minGap 4)', () => {
+    // Começo às 02h: 06h fica a 4 índices da etiqueta de dia — desktop (≥4)
+    // mostra-a, mobile (≥6) esconde-a.
+    const win = hoursFrom('2026-09-21T02');
+    const desktop = pickRailAxisLabels(win, 'pt', 4);
+    const mobile = pickRailAxisLabels(win, 'pt', 6);
+    expect(texts(desktop)).toEqual([
+      'seg 21', '06h', '12h', '18h', 'ter 22', '06h', '12h', '18h', 'qua 23',
+    ]);
+    expect(mobile.length).toBeLessThan(desktop.length);
+    expect(texts(mobile)).toEqual([
+      'seg 21', '12h', '18h', 'ter 22', '06h', '12h', '18h', 'qua 23',
+    ]);
+    for (let i = 1; i < mobile.length; i++) {
+      expect(mobile[i].index - mobile[i - 1].index).toBeGreaterThanOrEqual(6);
+    }
+  });
+
+  it('hora redonda esconde-se quando colide com mudança de dia', () => {
+    // Começo às 05h: 06h (índice 1) fica a 1 da etiqueta de dia → escondida.
+    const labels = pickRailAxisLabels(hoursFrom('2026-09-21T05'), 'pt', 4);
+    const byIndex = new Map(labels.map((l) => [l.index, l]));
+    expect(byIndex.has(1)).toBe(false);
+    expect(byIndex.get(7)).toMatchObject({ label: '12h', kind: 'hour' });
+  });
+
+  it('en: mesmos índices, rótulos de dia em inglês', () => {
+    const labels = pickRailAxisLabels(hoursFrom('2026-09-21T00'), 'en', 4);
+    expect(labels[0].label).toBe('Mon 21');
+    expect(texts(labels)).toContain('06h');
+  });
+});
+
+describe('isSafetyNavWarning — faixa §0 só com perigo real', () => {
+  it.each([
+    'Animais Marinhos - Interação',
+    'Animais Marinhos - Avistamento',
+    'Edital Nº 594/2018_Porto de Leixões',
+    'EDITAL 653/2023 DA CAPITANIA DO PORTO DE CAMINHA',
+    '1ª ALTERAÇÃO AO EDITAL 653/2023 DA CAPITANIA DO PORTO DE CAMINHA',
+    'Normas de Segurança para a Navegação ',
+    'Normas Especiais de Segurança Maritima e Portuária',
+    'Requisitos de segurança maritima',
+    'Regulamento de Exploração',
+    'Portaria n.º 561/90 - Regulamento da Pesca no Rio Lima',
+    'Pesca com arte-xávega - Locais Autorizados',
+    'Cancelamento ANAV 200/25',
+    'Aviso à navegação nº 68/2022',
+    'Aviso a Navegação',
+    'BARRA DE ALBUFEIRA - ABERTA A TODA A NAVEGAÇÃO.',
+    'BARRA DE ALVOR - BARRA ABERTA.',
+  ])('informativo/administrativo excluído: %s', (category) => {
+    expect(isSafetyNavWarning({ category })).toBe(false);
+  });
+
+  it.each([
+    'PERIGO À NAVEGAÇÃO',
+    'Perigo à Navegação',
+    'SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL',
+    'SEGURANÇA À NAVEGAÇÃO - FAROLIM QUEBRA MAR APAGADO ',
+    'segurança da navegação',
+    'SEGURANÇA À NAVEGAÇÃO',
+    'Boia apagada',
+    ' Bóia Apagada',
+    'Boia 9 Canal Sul fora de posição',
+    'BOIA RETIRADA',
+    'BOIA À DERIVA',
+    'Objeto à deriva (boia de navegação)',
+    'Embarcação submersa',
+    'Embarcação parcialmente submersa',
+    'Equipamento submerso',
+    'Assinalamento marítimo',
+    'ASSINALAMENTO PROVISORIO',
+    'BAIA DE SESIMBRA - FAROLIM ENFIAMENTO',
+    'Farolim desativado',
+    ' Cascais - Mastro e Sinais inoperativos',
+    'SINAL SONORO PRAIA DA AGUDA ANTERIOR AVARIADO',
+    'ASSOREAMENTO DA BARRA',
+    'Assoreamento da Barra',
+    'ALTERAÇÃO DE SONDAS MINIMAS',
+    'INTERDIÇÃO DE ÁREA',
+    'RESTRIÇÃO DE ACESSO  À GRUTA VALE DO COVO ',
+    'ZONA EM EVOLUÇÃO',
+    'BARRA DA RIA DE ALVOR – CONDICIONAMENTO  ',
+    'Interdição de fundear ou pairar no troço de canal em frente às infra-estruturas portuárias de Santa Luzia-Tavira',
+    'AVISO DE ARRIBA INSTÁVEL. ÁREA DAS GRUTAS DE BENAGIL.',
+    "CAIS DA PENHA D'ÁGUIA DANIFICADO",
+    'PONTÃO N.º 2 DANIFICADO',
+    'PORTO DE ABRIGO DA CULATRA - QUEBRAMAR DANIFICADO',
+    'Abatimento da cabeça do molhe Leste da Barra de Tavira',
+    ' EDIFICAÇÃO CONSTRUÇÃO DE NOVO CAIS',
+    'SEGURANÇA DA NAVEGAÇÃO - TRABALHOS DE PROLONGAMENTO DO QUEBRA-MAR DO PORTO DE LEIXÕES.',
+    'LANÇAMENTO DE FOGO DE ARTIFÍCIO',
+    'Plano de Salvamento Marítimo Lagos',
+    'PLANO DE SALVAMENTO MARÍTIMO ANOMALIA',
+    ' Instalação de viveiro "Mar Salgado" na baía de Lagos',
+    'PARQUE SUBAQUATICO OCEAN REVIVAL - ALTERAÇÃO LIMITES',
+    'AVISO À NAVEGAÇÃO - INSTALAÇÃO DE BOIA LiDAR FLS 200',
+    'SEGURANÇA DA NAVEGAÇÃO - CAMPANHA CIENTÍFICA',
+    'ÁREA PILOTO PRODUÇÃO AQUÍCOLA DA ARMONA - BÓIAS APAGADAS E FORA DE POSIÇÃO',
+    'Entrada do Porto de Lisboa – Assinalamento Marítimo',
+    'Mastro de Aviso de Temporal do Portinho da Ericeira',
+    'Substituição Boias Windfloat Atlantic',
+    'ASSINALAMENTO MARÍTIMO - DESAPARECIMENTO DA BOIA ONDÓGRAFO NO PORTO DE PONTA DELGADA',
+  ])('perigo/segurança à navegação incluído: %s', (category) => {
+    expect(isSafetyNavWarning({ category })).toBe(true);
+  });
+
+  it('collection orca_anavnet_point nunca entra, mesmo com outra categoria', () => {
+    expect(
+      isSafetyNavWarning({
+        category: 'PERIGO À NAVEGAÇÃO',
+        collection: 'orca_anavnet_point',
+      }),
+    ).toBe(false);
+  });
+
+  it('sem categoria → false (não inventa alarme)', () => {
+    expect(isSafetyNavWarning({})).toBe(false);
+    expect(isSafetyNavWarning({ category: null })).toBe(false);
+  });
+
+  it('safetyNavWarnings filtra preservando a ordem', () => {
+    const list = [
+      { id: 1, category: 'Animais Marinhos - Interação' },
+      { id: 2, category: 'PERIGO À NAVEGAÇÃO' },
+      { id: 3, category: 'Edital Nº 1/2014' },
+      { id: 4, category: 'Boia apagada' },
+    ];
+    expect(safetyNavWarnings(list).map((w) => w.id)).toEqual([2, 4]);
+    expect(safetyNavWarnings(null)).toEqual([]);
   });
 });
