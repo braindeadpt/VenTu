@@ -123,14 +123,38 @@ Os testes de i18n (14) validam logo: shells ⊇ pt, sem placeholders iguais ao p
 (allowlists justificadas em `src/lib/__tests__/i18nLocales.test.ts`) e o guard
 inverso de leftovers.
 
-### O que falta (por ordem sugerida)
+### Estado do M5 (fecho)
 
-| Superfície | Dívida | Notas |
+**672 → 4 ternárias** (116 → 1 ficheiro). A única excepção é
+`src/components/layout/NotFoundContent.tsx` (4), que por convenção documentada
+(`docs/I18N-MIGRATION.md`, decisão de produto) fica pt/en — o 404 é a página
+que o utilizador vê quando algo falha, e não vale a pena traduzi-la.
+
+Superfícies fechadas: `ui/**`, `homepage/**`, `app/[locale]/**`,
+`components/spots/**` (todas), `components/weather`, `components/compare`,
+`components/alerts`, `components/about`, `components/fontes`, `contexts`,
+`components/*.tsx` (check-in/favoritos) e as libs de copy
+(`spotVerdict`, `observations`, `observedWave`, `buoyLayerNotice`,
+`provenance`, `forecastSkill`, `ipmaWarnings`, `dataFreshness`,
+`buoyLayerDowntime`, `forecastConfidence`, `spotImage`, `spotWaterContext`,
+`spotTideRelevance`, `seoLandings`, `geolocation`, `scoreConditions`,
+`mapDifficulty`, `voice`, `emptyStateCopy`, `mapSpotNarrative`,
+`spotListCardDelight`, `localizedText`, `localizedSpotText`).
+
+Infra nova reutilizável: `localizedText` (PT/EN com fallback EN),
+`localizedSpotName`/`localizedSpotRegion`, `DATE_LOCALE` (dataFreshness) e
+`RichText` (negritos leves via `**…**` para frases longas de atribuição).
+
+
+
+### Histórico da ronda (dívida no início, para referência)
+
+| Superfície | Dívida no início | Estado final |
 |---|---:|---|
-| `src/components/spots` | 156 | 35 ficheiros; maiores: WaveBiasSection 20, SpotAlertPopover 19, LocalTipsSection 9, SpotRankedTable 9, SpotDrawer 8, SpotStickyBar 8 |
-| libs partilhadas | ~47 | `spotVerdict` 9, `observations` 8, `observedWave` 8, `buoyLayerNotice` 6, `provenance` 5, `userAlerts` 5, `forecastSkill` 3, `ipmaWarnings` 3 |
-| botões de conta | 14 | `CheckInButton` 7, `FavoriteButton` 7 |
-| helpers restantes | ~19 | `map/hooks/useMapLayers` 2, `MapLayerToggle` 3, `MapSkeleton` 1, … |
+| `src/components/spots` | 156 | 0 |
+| libs partilhadas | ~47 | 0 |
+| botões de conta | 14 | 0 |
+| helpers restantes | ~19 | 0 |
 
 ### Fechado nesta ronda (continuação autónoma)
 
