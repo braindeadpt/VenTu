@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-23T17:30:29.978Z",
+  "fetchedAt": "2026-09-23T22:37:07.848Z",
   "window": {
     "startDate": "2026-09-10",
     "endDate": "2026-09-23"
@@ -22,9 +22,9 @@
       "source": "ih",
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79
+      "corr": 0.8
     },
     "19": {
       "name": "CSA83/1D",
@@ -32,11 +32,11 @@
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
       "source": "ih",
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86
+      "corr": 0.88
     },
     "33": {
       "name": "CSA94",
@@ -44,10 +44,10 @@
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
       "source": "ih",
-      "n": 188,
-      "me": 0.1,
+      "n": 189,
+      "me": 0.2,
       "mae": 0.9,
-      "rmse": 7.3,
+      "rmse": 7.2,
       "corr": -0.05
     },
     "86": {
@@ -60,7 +60,7 @@
       "me": 1,
       "mae": 1.2,
       "rmse": 10.1,
-      "corr": 0.01
+      "corr": 0
     },
     "6200024": {
       "name": "Bilbao",
@@ -68,7 +68,7 @@
       "lat": 43.63999938964844,
       "lon": -3.0399999618530273,
       "source": "wmo-es",
-      "n": 206,
+      "n": 207,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
@@ -80,7 +80,7 @@
       "lat": 43.75,
       "lon": -6.179999828338623,
       "source": "wmo-es",
-      "n": 206,
+      "n": 207,
       "me": 0,
       "mae": 0.2,
       "rmse": 0.2,
@@ -92,7 +92,7 @@
       "lat": 43.5,
       "lon": -9.210000038146973,
       "source": "wmo-es",
-      "n": 206,
+      "n": 207,
       "me": 0,
       "mae": 0.2,
       "rmse": 0.2,
@@ -104,7 +104,7 @@
       "lat": 42.119998931884766,
       "lon": -9.430000305175781,
       "source": "wmo-es",
-      "n": 206,
+      "n": 207,
       "me": -0.1,
       "mae": 0.2,
       "rmse": 0.2,
@@ -116,20 +116,20 @@
       "lat": 36.4900016784668,
       "lon": -6.960000038146973,
       "source": "wmo-es",
-      "n": 206,
+      "n": 207,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.9
+      "corr": 0.89
     }
   },
   "regions": {
     "Caminha": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -137,9 +137,9 @@
     "Viana do Castelo": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -147,9 +147,9 @@
     "Esposende": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -157,9 +157,9 @@
     "Porto": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -167,9 +167,9 @@
     "Vila do Conde": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -177,9 +177,9 @@
     "Gondomar": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -187,9 +187,9 @@
     "Espinho": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -197,9 +197,9 @@
     "Ovar": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -207,9 +207,9 @@
     "Aveiro": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -217,9 +217,9 @@
     "Cantanhede": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
@@ -227,19 +227,19 @@
     "Figueira da Foz": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
     },
     "Alentejo": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
@@ -247,169 +247,169 @@
     "Vieira do Minho": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
     },
     "Sines": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Zambujeira do Mar": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Aljezur": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Algarve": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Carrapateira": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Vila do Bispo": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Lagos": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Lagoa": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Portimão": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Sagres": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Olhão": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Faro": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Tavira": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Vila Real de Santo António": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Albufeira": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Alvor": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
@@ -417,109 +417,109 @@
     "Marinha Grande": {
       "n": 189,
       "me": 0,
-      "mae": 0.2,
+      "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.79,
+      "corr": 0.8,
       "buoys": [
         4
       ]
     },
     "Santarém": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Oeste": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Óbidos": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Caldas da Rainha": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Peniche": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Torres Vedras": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Ericeira": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Sintra": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Cascais": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Seixal": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
@@ -529,27 +529,27 @@
       "me": 1,
       "mae": 1.2,
       "rmse": 10.1,
-      "corr": 0.01,
+      "corr": 0,
       "buoys": [
         86
       ]
     },
     "Costa da Caparica": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Almada": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
@@ -559,27 +559,27 @@
       "me": 1,
       "mae": 1.2,
       "rmse": 10.1,
-      "corr": 0.01,
+      "corr": 0,
       "buoys": [
         86
       ]
     },
     "Sesimbra": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
     },
     "Grândola": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
@@ -589,7 +589,7 @@
       "me": 1,
       "mae": 1.2,
       "rmse": 10.1,
-      "corr": 0.01,
+      "corr": 0,
       "buoys": [
         86
       ]
@@ -599,27 +599,27 @@
       "me": 1,
       "mae": 1.2,
       "rmse": 10.1,
-      "corr": 0.01,
+      "corr": 0,
       "buoys": [
         86
       ]
     },
     "Madeira": {
-      "n": 188,
-      "me": 0.1,
+      "n": 189,
+      "me": 0.2,
       "mae": 0.9,
-      "rmse": 7.3,
+      "rmse": 7.2,
       "corr": -0.05,
       "buoys": [
         33
       ]
     },
     "Lourinhã": {
-      "n": 188,
+      "n": 189,
       "me": 0,
       "mae": 0.1,
       "rmse": 0.2,
-      "corr": 0.86,
+      "corr": 0.88,
       "buoys": [
         19
       ]
@@ -629,7 +629,7 @@
       "me": 1,
       "mae": 1.2,
       "rmse": 10.1,
-      "corr": 0.01,
+      "corr": 0,
       "buoys": [
         86
       ]
@@ -639,7 +639,7 @@
       "me": 1,
       "mae": 1.2,
       "rmse": 10.1,
-      "corr": 0.01,
+      "corr": 0,
       "buoys": [
         86
       ]
