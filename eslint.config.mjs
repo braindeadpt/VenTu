@@ -53,6 +53,8 @@ const MIGRATED_GLOBS = [
   'src/components/ui/AggregateScoreGauge.tsx',
   'src/components/ui/ErrorState.tsx',
   'src/components/ui/WarningPill.tsx',
+  'src/components/ui/ScoreWaveSourceBadge.tsx',
+  'src/components/ui/ScoreWindSourceBadge.tsx',
   'src/components/ui/HomepageSearch.tsx',
   'src/components/FeedbackForm.tsx',
   'src/components/DawnPatrolBanner.tsx',
