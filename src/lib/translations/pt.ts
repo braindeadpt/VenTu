@@ -1560,6 +1560,8 @@ export const translationsPt = {
     falling: 'Maré a descer',
     lowAt: 'Baixa às {time}',
     highAt: 'Alta às {time}',
+    highNow: 'Maré alta agora',
+    lowNow: 'Maré baixa agora',
   },
   waveBias: {
     title: 'Calibração — viés por boia (ondas)',

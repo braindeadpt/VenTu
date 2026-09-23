@@ -1631,6 +1631,8 @@ export const translationsDe = {
     falling: 'Ablaufend Wasser',
     lowAt: 'Niedrigwasser um {time}',
     highAt: 'Hochwasser um {time}',
+    highNow: 'Hochwasser jetzt',
+    lowNow: 'Niedrigwasser jetzt',
   },
   waveBias: {
     title: 'Kalibrierung — Wellen-Bias pro Boje',

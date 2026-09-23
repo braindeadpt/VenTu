@@ -156,10 +156,12 @@ export function buildTideSchedule(
 export function tidePhaseLabel(phase: TidePhase, locale: string): string {
   const t = getTranslation(locale).tideLabels;
   switch (phase) {
+    // Fase *instantânea*: a main dizia «Maré alta agora» (o mapa usa a versão
+    // curta, `t.high`/`t.low`, na linha da maré).
     case 'high':
-      return t.high;
+      return t.highNow;
     case 'low':
-      return t.low;
+      return t.lowNow;
     case 'rising':
       return t.rising;
     default:

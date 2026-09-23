@@ -1552,6 +1552,8 @@ export const translationsEn = {
     falling: 'Falling tide',
     lowAt: 'Low at {time}',
     highAt: 'High at {time}',
+    highNow: 'High tide now',
+    lowNow: 'Low tide now',
   },
   waveBias: {
     title: 'Calibration — per-buoy wave bias',

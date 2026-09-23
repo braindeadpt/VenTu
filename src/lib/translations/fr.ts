@@ -1631,6 +1631,8 @@ export const translationsFr = {
     falling: 'Marée descendante',
     lowAt: 'Marée basse à {time}',
     highAt: 'Marée haute à {time}',
+    highNow: 'Marée haute maintenant',
+    lowNow: 'Marée basse maintenant',
   },
   waveBias: {
     title: 'Calibration — biais par bouée (vagues)',

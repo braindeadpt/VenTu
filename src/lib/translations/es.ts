@@ -1631,6 +1631,8 @@ export const translationsEs = {
     falling: 'Marea bajando',
     lowAt: 'Bajamar a las {time}',
     highAt: 'Pleamar a las {time}',
+    highNow: 'Pleamar ahora',
+    lowNow: 'Bajamar ahora',
   },
   waveBias: {
     title: 'Calibración — sesgo por boya (olas)',
