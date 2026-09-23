@@ -46,8 +46,10 @@ export default function MapLayersMenu({
 }: {
   label: string;
   items: MapLayersMenuItem[];
-  /** 'up' — HUD junto ao fundo; 'down' — toolbar no topo. */
-  direction?: 'up' | 'down';
+  /** 'up' — HUD junto ao fundo; 'down' — toolbar no topo; 'left' — pilha
+      direita do /mapa (UX v3 §2): painel ancorado à esquerda do trigger,
+      alinhado ao topo deste. */
+  direction?: 'up' | 'down' | 'left';
   /** 'hud' — MapControlButton quadrado; 'pill' — item da toolbar centrada. */
   variant?: 'hud' | 'pill';
 }) {
@@ -132,6 +134,13 @@ export default function MapLayersMenu({
               16,
               Math.min(window.innerWidth - w - 16, window.innerWidth - r.right),
             ),
+          });
+        } else if (direction === 'left') {
+          // Pilha à direita (UX v3 §2): o painel abre à esquerda do trigger,
+          // topo alinhado — nunca cobre os botões restantes da pilha.
+          setPos({
+            top: Math.max(8, Math.min(window.innerHeight - 440, r.top)),
+            right: window.innerWidth - r.left + 8,
           });
         } else {
           setPos({

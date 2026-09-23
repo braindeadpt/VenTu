@@ -3,7 +3,7 @@
 import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
-interface MapControlsProps {
+export interface MapControlsProps {
   isFullscreen: boolean;
   isMobile: boolean;
   isHeroEmbed: boolean;
@@ -82,6 +82,132 @@ interface MapControlsProps {
 }
 
 /**
+ * Itens do menu «Camadas» — partilhado entre o pill dos embeds
+ * (MapControls) e a pilha direita do /mapa (MapControlStack, UX v3 §2/§8).
+ * As camadas gated por isFullscreen só existem no /mapa; no /mapa o radar
+ * entra no menu (grupo «Tempo» da maquete: «Próximas 48 h» + «Radar IPMA»).
+ */
+export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
+  return [
+    ...(p.isFullscreen
+      ? ([
+          {
+            key: 'hours',
+            label: p.hoursLabel,
+            hint: p.hoursUnavailable ? `${p.hoursHint} — indisponível` : p.hoursHint,
+            icon: <Clock className="w-4 h-4" aria-hidden />,
+            pressed: p.hoursEnabled,
+            disabled: p.hoursUnavailable,
+            onToggle: p.toggleHours,
+            toggleAttr: 'data-map-hours-toggle',
+            iconClass: 'text-score-good',
+            resetVisible: p.hoursPrefSet || p.hoursEnabled,
+            onReset: p.handleResetHours,
+            resetLabel: p.hoursResetLabel,
+          },
+          {
+            key: 'radar',
+            label: p.radarLabel,
+            hint: p.radarUnavailable ? `${p.radarHint} — indisponível` : p.radarHint,
+            icon: <CloudRain className="w-4 h-4" aria-hidden />,
+            pressed: p.radarEnabled,
+            disabled: p.radarUnavailable,
+            onToggle: p.toggleRadar,
+            toggleAttr: 'data-map-radar-toggle',
+            iconClass: 'text-data-waves',
+            resetVisible: p.radarPrefSet || p.radarEnabled,
+            onReset: p.handleResetRadar,
+            resetLabel: p.radarResetLabel,
+          },
+          {
+            key: 'hs',
+            label: p.hsLabel,
+            hint: p.hsUnavailable ? `${p.hsHint} — indisponível` : p.hsHint,
+            icon: <Activity className="w-4 h-4" aria-hidden />,
+            pressed: p.hsEnabled,
+            disabled: p.hsUnavailable,
+            onToggle: p.toggleHs,
+            toggleAttr: 'data-map-hs-toggle',
+            iconClass: 'text-data-waves',
+          },
+          {
+            key: 'sst',
+            label: p.sstLabel,
+            hint: p.sstUnavailable ? `${p.sstHint} — indisponível` : p.sstHint,
+            icon: <Thermometer className="w-4 h-4" aria-hidden />,
+            pressed: p.sstEnabled,
+            disabled: p.sstUnavailable,
+            onToggle: p.toggleSst,
+            toggleAttr: 'data-map-sst-toggle',
+            iconClass: 'text-data-period',
+          },
+          {
+            key: 'currents',
+            label: p.currentsLabel,
+            hint: p.currentsUnavailable ? `${p.currentsHint} — indisponível` : p.currentsHint,
+            icon: <Navigation className="w-4 h-4" aria-hidden />,
+            pressed: p.currentsEnabled,
+            disabled: p.currentsUnavailable,
+            onToggle: p.toggleCurrents,
+            toggleAttr: 'data-map-currents-toggle',
+            iconClass: 'text-data-water',
+          },
+          {
+            key: 'buoys',
+            label: p.buoysLabel,
+            hint: p.buoysHint,
+            icon: <LifeBuoy className="w-4 h-4" aria-hidden />,
+            pressed: p.buoysEnabled,
+            onToggle: p.toggleBuoys,
+            toggleAttr: 'data-map-buoys-toggle',
+            iconClass: 'text-data-waves',
+          },
+        ] satisfies MapLayersMenuItem[])
+      : []),
+    {
+      key: 'isobaths',
+      label: p.isobathsLabel,
+      hint: p.isobathsLabel,
+      icon: <Waves className="w-4 h-4" aria-hidden />,
+      pressed: p.isobathsEnabled,
+      onToggle: p.toggleIsobaths,
+      toggleAttr: 'data-map-isobaths-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
+      key: 'bathymetry',
+      label: p.bathymetryLabel,
+      hint: p.bathymetryHint,
+      icon: <Mountain className="w-4 h-4" aria-hidden />,
+      pressed: p.bathymetryEnabled,
+      onToggle: p.toggleBathymetry,
+      toggleAttr: 'data-map-bathymetry-toggle',
+      iconClass: 'text-data-water',
+    },
+    {
+      key: 'seamarks',
+      label: p.seamarksLabel,
+      hint: p.seamarksHint,
+      icon: <Sailboat className="w-4 h-4" aria-hidden />,
+      pressed: p.seamarksEnabled,
+      onToggle: p.toggleSeamarks,
+      toggleAttr: 'data-map-seamarks-toggle',
+      iconClass: 'text-score-good',
+    },
+    {
+      key: 'coastalWarnings',
+      label: p.coastalWarningsLabel,
+      hint: p.coastalWarningsLabel,
+      icon: <Anchor className="w-4 h-4" aria-hidden />,
+      pressed: p.coastalWarningsEnabled,
+      onToggle: p.toggleCoastalWarnings,
+      toggleAttr: 'data-map-coastal-warnings-toggle',
+      iconClass: 'text-score-poor',
+    },
+  ];
+}
+
+/**
  * Item da toolbar — chip ghost dentro do pill: sem borda própria, hover
  * discreto, tinta do token da camada quando activo. h-10 (40px) dentro do
  * pill p-1.5 → barra de ~52px; labels escondidas em ecrãs estreitos.
@@ -101,189 +227,46 @@ const active = {
 const iconBtn = 'flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-fg-subtle hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150';
 const divider = <div className="mx-1 h-5 w-px shrink-0 bg-divider" aria-hidden />;
 
-export default function MapControls({
-  isFullscreen,
-  isMobile,
-  isHeroEmbed,
-  clusterEnabled,
-  windEnabled,
-  radarEnabled,
-  radarPrefSet,
-  radarUnavailable,
-  isobathsEnabled,
-  bathymetryEnabled,
-  seamarksEnabled,
-  onlyOnEnabled,
-  coastalWarningsEnabled,
-  clusterLabel,
-  windLabel,
-  windHint,
-  radarLabel,
-  radarHint,
-  radarResetLabel,
-  hoursEnabled,
-  hoursUnavailable,
-  hoursPrefSet,
-  hoursLabel,
-  hoursHint,
-  hoursResetLabel,
-  buoysEnabled,
-  buoysLabel,
-  buoysHint,
-  hsEnabled,
-  hsUnavailable,
-  hsLabel,
-  hsHint,
-  sstEnabled,
-  sstUnavailable,
-  sstLabel,
-  sstHint,
-  currentsEnabled,
-  currentsUnavailable,
-  currentsLabel,
-  currentsHint,
-  isobathsLabel,
-  bathymetryLabel,
-  bathymetryHint,
-  seamarksLabel,
-  seamarksHint,
-  onlyOnLabel,
-  onlyOnHint,
-  windLegendHelpLabel,
-  coastalWarningsLabel,
-  layersLabel,
-  fullscreenLabel,
-  exitLabel,
-  enterFullscreen,
-  exitFullscreen,
-  toggleCluster,
-  toggleWind,
-  openWindLegend,
-  toggleRadar,
-  handleResetRadar,
-  toggleHours,
-  handleResetHours,
-  toggleBuoys,
-  toggleHs,
-  toggleSst,
-  toggleCurrents,
-  toggleIsobaths,
-  toggleBathymetry,
-  toggleSeamarks,
-  toggleOnlyOn,
-  toggleCoastalWarnings,
-  windButtonRef,
-  fullscreenBtnRef,
-}: MapControlsProps) {
-  if (isHeroEmbed) return null;
-  // Mobile fullscreen uses the bottom HUD; desktop keeps these labelled menus.
-  if (isFullscreen && isMobile) return null;
+export default function MapControls(props: MapControlsProps) {
+  const {
+    isFullscreen,
+    isHeroEmbed,
+    clusterEnabled,
+    windEnabled,
+    radarEnabled,
+    radarPrefSet,
+    radarUnavailable,
+    onlyOnEnabled,
+    clusterLabel,
+    windLabel,
+    windHint,
+    radarLabel,
+    radarHint,
+    radarResetLabel,
+    onlyOnLabel,
+    onlyOnHint,
+    windLegendHelpLabel,
+    layersLabel,
+    fullscreenLabel,
+    exitLabel,
+    enterFullscreen,
+    exitFullscreen,
+    toggleCluster,
+    toggleWind,
+    openWindLegend,
+    toggleRadar,
+    handleResetRadar,
+    toggleOnlyOn,
+    windButtonRef,
+    fullscreenBtnRef,
+  } = props;
 
-  // Camadas de dados → menu «Camadas» (C4). As gated por isFullscreen só
-  // existem no /mapa — na versão embed o menu fica só com as camadas fixas.
-  const layerMenuItems: MapLayersMenuItem[] = [
-    ...(isFullscreen
-      ? ([
-          {
-            key: 'hours',
-            label: hoursLabel,
-            hint: hoursUnavailable ? `${hoursHint} — indisponível` : hoursHint,
-            icon: <Clock className="w-4 h-4" aria-hidden />,
-            pressed: hoursEnabled,
-            disabled: hoursUnavailable,
-            onToggle: toggleHours,
-            toggleAttr: 'data-map-hours-toggle',
-            iconClass: 'text-score-good',
-            resetVisible: hoursPrefSet || hoursEnabled,
-            onReset: handleResetHours,
-            resetLabel: hoursResetLabel,
-          },
-          {
-            key: 'hs',
-            label: hsLabel,
-            hint: hsUnavailable ? `${hsHint} — indisponível` : hsHint,
-            icon: <Activity className="w-4 h-4" aria-hidden />,
-            pressed: hsEnabled,
-            disabled: hsUnavailable,
-            onToggle: toggleHs,
-            toggleAttr: 'data-map-hs-toggle',
-            iconClass: 'text-data-waves',
-          },
-          {
-            key: 'sst',
-            label: sstLabel,
-            hint: sstUnavailable ? `${sstHint} — indisponível` : sstHint,
-            icon: <Thermometer className="w-4 h-4" aria-hidden />,
-            pressed: sstEnabled,
-            disabled: sstUnavailable,
-            onToggle: toggleSst,
-            toggleAttr: 'data-map-sst-toggle',
-            iconClass: 'text-data-period',
-          },
-          {
-            key: 'currents',
-            label: currentsLabel,
-            hint: currentsUnavailable ? `${currentsHint} — indisponível` : currentsHint,
-            icon: <Navigation className="w-4 h-4" aria-hidden />,
-            pressed: currentsEnabled,
-            disabled: currentsUnavailable,
-            onToggle: toggleCurrents,
-            toggleAttr: 'data-map-currents-toggle',
-            iconClass: 'text-data-water',
-          },
-          {
-            key: 'buoys',
-            label: buoysLabel,
-            hint: buoysHint,
-            icon: <LifeBuoy className="w-4 h-4" aria-hidden />,
-            pressed: buoysEnabled,
-            onToggle: toggleBuoys,
-            toggleAttr: 'data-map-buoys-toggle',
-            iconClass: 'text-data-waves',
-          },
-        ] satisfies MapLayersMenuItem[])
-      : []),
-    {
-      key: 'isobaths',
-      label: isobathsLabel,
-      hint: isobathsLabel,
-      icon: <Waves className="w-4 h-4" aria-hidden />,
-      pressed: isobathsEnabled,
-      onToggle: toggleIsobaths,
-      toggleAttr: 'data-map-isobaths-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'bathymetry',
-      label: bathymetryLabel,
-      hint: bathymetryHint,
-      icon: <Mountain className="w-4 h-4" aria-hidden />,
-      pressed: bathymetryEnabled,
-      onToggle: toggleBathymetry,
-      toggleAttr: 'data-map-bathymetry-toggle',
-      iconClass: 'text-data-water',
-    },
-    {
-      key: 'seamarks',
-      label: seamarksLabel,
-      hint: seamarksHint,
-      icon: <Sailboat className="w-4 h-4" aria-hidden />,
-      pressed: seamarksEnabled,
-      onToggle: toggleSeamarks,
-      toggleAttr: 'data-map-seamarks-toggle',
-      iconClass: 'text-score-good',
-    },
-    {
-      key: 'coastalWarnings',
-      label: coastalWarningsLabel,
-      hint: coastalWarningsLabel,
-      icon: <Anchor className="w-4 h-4" aria-hidden />,
-      pressed: coastalWarningsEnabled,
-      onToggle: toggleCoastalWarnings,
-      toggleAttr: 'data-map-coastal-warnings-toggle',
-      iconClass: 'text-score-poor',
-    },
-  ];
+  // M2 UX v3 §2 — no /mapa fullscreen a barra do topo desaparece: os
+  // controlos vivem na pilha direita (MapControlStack, montada pela
+  // MapChromeZone). O pill mantém-se apenas nos embeds (!isFullscreen).
+  if (isHeroEmbed || isFullscreen) return null;
+
+  const layerMenuItems = buildLayerMenuItems(props);
 
   return (
     // Barra de ferramentas flutuante no topo do mapa (padrão Windy/Maps):
