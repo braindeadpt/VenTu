@@ -1,5 +1,8 @@
 'use client';
 
+import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { getTranslation } from '@/lib/i18n';
+import RichText from '@/components/ui/RichText';
 import { useEffect, useState } from 'react';
 import { getAssetPath } from '@/lib/paths';
 import {
@@ -34,12 +37,13 @@ interface SkillForBuoy {
 function BiasTableRow({
   buoy,
   skill,
-  isPt,
+  locale,
 }: {
   buoy: WaveBiasBuoy;
   skill: SkillForBuoy | null;
-  isPt: boolean;
+  locale: string;
 }) {
+  const t = getTranslation(locale).waveBias;
   const gated = buoy.regionAttribution === false;
   return (
     <tr className="border-b border-divider last:border-0">
@@ -62,11 +66,9 @@ function BiasTableRow({
         <td className="py-1.5 pl-3 text-right">
           <span
             className="inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide bg-data-period/15 text-data-period"
-            title={isPt
-              ? 'Par ES×PT incoherent no dia — bias calculado mas não atribuído a regiões'
-              : 'Incoherent ES×PT pair that day — bias computed but not attributed to regions'}
+            title={t.gateTitle}
           >
-            {isPt ? 'gate' : 'gated'}
+            {t.gateLabel}
           </span>
         </td>
       )}
@@ -86,7 +88,8 @@ function BiasTableRow({
  * Sem dados usáveis renderiza null (a secção simplesmente não aparece), por
  * isso o caso «ficheiro em falta» é coberto sem lógica especial.
  */
-export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
+export default function WaveBiasSection({ locale }: { locale: string }) {
+  const t = getTranslation(locale).waveBias;
   const [bias, setBias] = useState<WaveBiasData | null>(null);
   const [skillById, setSkillById] = useState<Record<string, ForecastSkillBuoy>>({});
   // Referência PT da calibração ES→PT por região (buoy-coherence.json) — o
@@ -136,22 +139,18 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
   return (
     <div className="card-1 p-8 space-y-4" data-wave-bias-section="true">
       <h2 className="text-2xl font-bold text-fg">
-        {isPt ? 'Calibração — viés por boia (ondas)' : 'Calibration — per-buoy wave bias'}
+        {t.title}
       </h2>
       <p className="text-sm text-fg-muted leading-relaxed">
-        {isPt ? (
-          <>Viés do modelo (ERA5, Open-Meteo Historical Marine) face às boias de onda: <strong className="text-fg">IH</strong> (Datawell, com chave) e <strong className="text-fg">ES</strong> (Puertos del Estado via Copernicus WMO, sem chave). <strong className="text-fg">ME = média(observado − previsão)</strong>: positivo significa que o modelo subestima a onda. Isto é <strong className="text-fg">viés do modelo</strong>, não skill. Ao lado, a coluna <strong className="text-fg">Skill ME</strong> mostra o <strong className="text-fg">skill real do forecast</strong> (forecast-skill, previsto×medido em horas sobrepostas) — o modelo ERA5 nunca prevê, logo o viés (colunas ME/MAE/RMSE da esquerda) e a skill real medem coisas diferentes. A correcção regional é opt-in e só é aplicada com amostra suficiente.</>
-        ) : (
-          <>Model bias (ERA5, Open-Meteo Historical Marine) vs wave buoys: <strong className="text-fg">IH</strong> (Datawell, keyed) e <strong className="text-fg">ES</strong> (Puertos del Estado via Copernicus WMO, keyless). <strong className="text-fg">ME = mean(observed − forecast)</strong>: positive means the model underestimates the wave. This is <strong className="text-fg">model bias</strong>, not skill. Beside it, the <strong className="text-fg">Skill ME</strong> column shows the <strong className="text-fg">real forecast skill</strong> (forecast-skill, forecast×observed on overlapping hours) — ERA5 never forecasts, so model bias (left ME/MAE/RMSE columns) and real skill measure different things. The regional correction is opt-in and only applied with a sufficient sample.</>
-        )}
+        <RichText text={t.intro} />
       </p>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[480px] border-collapse text-meta">
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle">
-              <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Boia' : 'Buoy'}</th>
-              <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Origem' : 'Origin'}</th>
-              <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Zona' : 'Area'}</th>
+              <th className="py-1.5 pr-3 font-semibold">{t.colBuoy}</th>
+              <th className="py-1.5 pr-3 font-semibold">{t.colOrigin}</th>
+              <th className="py-1.5 pr-3 font-semibold">{t.colArea}</th>
               <th className="py-1.5 pr-3 text-right font-semibold">n</th>
               <th className="py-1.5 pr-3 text-right font-semibold">ME (m)</th>
               <th className="py-1.5 pr-3 text-right font-semibold">MAE (m)</th>
@@ -160,19 +159,15 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
               {/* Skill real do forecast (não ERA5) — ME/n por boia */}
               <th
                 className="py-1.5 pl-3 pr-3 text-right font-semibold text-data-waves"
-                title={isPt
-                  ? 'Skill real do forecast — ME = média(medido − previsto best_match) em horas sobrepostas, não o viés ERA5'
-                  : 'Real forecast skill — ME = mean(observed − best_match forecast) on overlapping hours, not ERA5 bias'}
+                title={t.skillMeTitle}
               >
-                {isPt ? 'Skill ME (m)' : 'Skill ME (m)'}
+                Skill ME (m)
               </th>
               <th
                 className="py-1.5 text-right font-semibold text-data-waves"
-                title={isPt
-                  ? 'Skill real — n.º de pares previsto×medido acumulados'
-                  : 'Real skill — accumulated forecast×observed pairs'}
+                title={t.skillNTitle}
               >
-                {isPt ? 'Skill n' : 'Skill n'}
+                Skill n
               </th>
               {bias.gatedCodes.length > 0 && <th className="py-1.5 pl-3 text-right" />}
             </tr>
@@ -183,7 +178,7 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
                 key={b.code}
                 buoy={b}
                 skill={skillById[String(b.code)] ?? null}
-                isPt={isPt}
+                locale={locale}
               />
             ))}
           </tbody>
@@ -195,14 +190,10 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
           data-coherence-refs="true"
         >
           <h3 className="text-sm font-bold text-fg">
-            {isPt
-              ? 'Referência PT da calibração ES→PT (por região)'
-              : 'ES→PT calibration — PT reference (per region)'}
+            {t.refsTitle}
           </h3>
           <p className="text-xs text-fg-muted leading-relaxed">
-            {isPt
-              ? 'O merge regista em buoy-coherence.json a boia portuguesa usada para recalibrar cada leitura espanhola (altura ajustada à referência PT). ME = média(observado PT − observado ES) no par que recalibrou.'
-              : 'The merge records in buoy-coherence.json the Portuguese buoy used to recalibrate each Spanish reading (height adjusted to the PT reference). ME = mean(observed PT − observed ES) on the pair that recalibrated.'}
+            {t.refsBody}
           </p>
           <div className="space-y-2">
             {coherenceRefs.regions.map((r) => (
@@ -214,9 +205,10 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
                   <p
                     key={ref.key}
                     className="text-sm text-fg-muted leading-snug"
-                    title={isPt
-                      ? `Par ${ref.key} · ${ref.spots.length} spot(s) recalibrado(s): ${ref.spots.join(', ') || '—'}`
-                      : `Pair ${ref.key} · ${ref.spots.length} recalibrated spot(s): ${ref.spots.join(', ') || '—'}`}
+                    title={t.pairTitle
+                      .replace('{key}', ref.key)
+                      .replace('{n}', String(ref.spots.length))
+                      .replace('{spots}', ref.spots.join(', ') || '—')}
                   >
                     <span className="text-fg">
                       {ref.esName || ref.esCode}
@@ -238,26 +230,24 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
                   data-coherence-suboptimal="true"
                 >
                   <p className="text-xs font-semibold text-data-period">
-                    {isPt
-                      ? `⚠️ Par subóptimo em ${r.suboptimal.length} spot(s) — referência não é a boia PT mais próxima`
-                      : `⚠️ Suboptimal pair in ${r.suboptimal.length} spot(s) — reference is not the nearest PT buoy`}
+                    {t.suboptimalTitle.replace('{n}', String(r.suboptimal.length))}
                   </p>
                   {r.suboptimal.map((s) => (
                     <p
                       key={`${s.spot}·${s.esCode}→${s.ptRefCode}`}
                       className="text-xs text-fg-muted leading-snug"
-                      title={isPt
-                        ? 'Auditoria de par: a calibração só usa boias WMO-PT (os pares ES×PT vivem lá); uma estação IH pode estar mais perto do spot. O par pode ser o único com dados de coerência.'
-                        : 'Pair audit: calibration can only use WMO-PT buoys (the ES×PT coherence pairs live there); an IH station may be closer to the spot. The pair may be the only one with coherence data.'}
+                      title={t.pairAuditTitle}
                     >
                       {s.spot}:
                       {' '}
                       <span className="tabular-nums">
-                        {s.ptRefCode} {isPt ? 'a' : 'at'} {s.ptRefKm != null ? `${Math.round(s.ptRefKm)} km` : '—'}
+                        {s.ptRefCode} {t.atWord}{' '}
+                        {s.ptRefKm != null ? `${Math.round(s.ptRefKm)} km` : '—'}
                       </span>
-                      {isPt ? ' → mais próxima ' : ' → nearest '}
+                      {t.nearestArrow}
                       <span className="tabular-nums">
-                        {s.nearestPtName || s.nearestPtCode} {isPt ? 'a' : 'at'} {s.nearestPtKm != null ? `${Math.round(s.nearestPtKm)} km` : '—'}
+                        {s.nearestPtName || s.nearestPtCode} {t.atWord}{' '}
+                        {s.nearestPtKm != null ? `${Math.round(s.nearestPtKm)} km` : '—'}
                       </span>
                     </p>
                   ))}
@@ -269,15 +259,16 @@ export default function WaveBiasSection({ isPt }: { isPt: boolean }) {
         </div>
       )}
       <p className="text-xs text-fg-subtle">
-        {isPt
-          ? `Actualizado ${new Date(bias.fetchedAt ?? '').toLocaleDateString('pt-PT')} · amostra acumulada por boia (IH ${bias.buoys.filter((b) => b.source === 'ih').length} · ES ${bias.buoys.filter((b) => b.source === 'wmo-es').length})`
-          : `Updated ${new Date(bias.fetchedAt ?? '').toLocaleDateString('en-GB')} · accumulated sample per buoy (IH ${bias.buoys.filter((b) => b.source === 'ih').length} · ES ${bias.buoys.filter((b) => b.source === 'wmo-es').length})`}
+        {t.updatedSample
+          .replace('{date}', new Date(bias.fetchedAt ?? '').toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB'))
+          .replace('{ih}', String(bias.buoys.filter((b) => b.source === 'ih').length))
+          .replace('{es}', String(bias.buoys.filter((b) => b.source === 'wmo-es').length))}
         {bias.gatedCodes.length > 0 && (
           <>
             {' · '}
-            {isPt
-              ? `gate cross-border ${bias.coherenceDay ?? ''}: ${bias.gatedCodes.join(', ')}`
-              : `cross-border gate ${bias.coherenceDay ?? ''}: ${bias.gatedCodes.join(', ')}`}
+            {t.gateCodes
+              .replace('{day}', bias.coherenceDay ?? '')
+              .replace('{codes}', bias.gatedCodes.join(', '))}
           </>
         )}
       </p>

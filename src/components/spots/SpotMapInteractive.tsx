@@ -239,7 +239,7 @@ export default function SpotMapInteractive({
     mapInstanceRef,
     LRef,
     isReady,
-    isPt,
+    locale,
     isFullscreen,
     isHeroEmbed,
     focusSpotId,

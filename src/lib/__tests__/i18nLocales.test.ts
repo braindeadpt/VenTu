@@ -157,6 +157,13 @@ const ES_COGNATES = new Set([
   'Ordenados por score · filtros activos', // espanhol correcto = PT (subtítulo da lista)
   ', a {km}',                          // espanhol correcto = PT (distância à boia)
   'de',                                // espanhol correcto = PT (preposição)
+  'Zona',                              // espanhol correcto = PT (coluna de área)
+  'gate',                              // espanhol correcto = PT (etiqueta de gate)
+  'Isóbatas © Instituto Hidrográfico (CC BY 4.0)', // espanhol correcto = PT (atribuição)
+  'Skill real — n.º de pares previsto×medido acumulados', // espanhol correcto = PT (tooltip)
+  'Par {key} · {n} spot(s) recalibrado(s): {spots}', // espanhol correcto = PT (tooltip do par)
+  'a',                                 // espanhol correcto = PT (preposição)
+  'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
 ]);
 
 /**

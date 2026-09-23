@@ -1,5 +1,7 @@
 'use client';
 
+import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
 import {
@@ -52,7 +54,7 @@ interface UseMapLayersOptions {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
   LRef: React.MutableRefObject<typeof L | null>;
   isReady: boolean;
-  isPt: boolean;
+  locale: string;
   isFullscreen: boolean;
   isHeroEmbed: boolean;
   focusSpotId?: string;
@@ -114,7 +116,7 @@ export function useMapLayers({
   mapInstanceRef,
   LRef,
   isReady,
-  isPt,
+  locale,
   isFullscreen,
   isHeroEmbed,
   focusSpotId,
@@ -316,7 +318,7 @@ export function useMapLayers({
   const radarLabel = radarEnabled ? t.map.hideRadar : t.map.showRadar;
   const radarHint = t.map.radarHint;
   const radarUnavailable = radarData === null;
-  const radarAttributionLabel = isPt ? IPMA_RADAR_ATTRIBUTION_LABEL_PT : IPMA_RADAR_ATTRIBUTION_LABEL_EN;
+  const radarAttributionLabel = getTranslation(locale).spotsMap.radarAttribution;
 
   // ── Isobaths ──
   const [isobathsEnabled, setIsIsobathsEnabled] = useState<boolean>(() => {
@@ -415,9 +417,7 @@ export function useMapLayers({
       });
     };
     map.on('zoomend', onZoom);
-    const attr = isPt
-      ? 'Isóbatas © Instituto Hidrográfico (CC BY 4.0)'
-      : 'Isobaths © Instituto Hidrográfico (CC BY 4.0)';
+    const attr = getTranslation(locale).spotsMap.isobathsAttribution;
     map.attributionControl?.addAttribution(attr);
 
     return () => {
@@ -428,7 +428,7 @@ export function useMapLayers({
       isobathsLayerRef.current = null;
       map.attributionControl?.removeAttribution(attr);
     };
-  }, [isobathsEnabled, isReady, isobathsData, isPt, mapInstanceRef, LRef, isobathsLayerRef]);
+  }, [isobathsEnabled, isReady, isobathsData, locale, mapInstanceRef, LRef, isobathsLayerRef]);
 
   const toggleIsobaths = useCallback(() => {
     setIsIsobathsEnabled((prev) => {
@@ -651,7 +651,7 @@ export function useMapLayers({
     for (const w of orcaEvents) {
       // A data do avistamento é parte da história — «há 12 dias», não só a ref.
       const when = w.eventAt
-        ? new Intl.DateTimeFormat(isPt ? 'pt-PT' : 'en-GB', { day: 'numeric', month: 'short' }).format(new Date(w.eventAt))
+        ? new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', { day: 'numeric', month: 'short' }).format(new Date(w.eventAt))
         : null;
       const label = `${escapeHtml(w.ref)}${w.category ? ` — ${escapeHtml(w.category)}` : ''}${when ? ` · ${when}` : ''}`;
       const tooltipHtml = w.url
@@ -728,9 +728,7 @@ export function useMapLayers({
     }
     if (!focusAnimated) markCoastalSettled();
 
-    const attr = isPt
-      ? 'Avisos à Navegação Costeiros © Instituto Hidrográfico (CC BY 4.0)'
-      : 'Coastal Navigation Warnings © Instituto Hidrográfico (CC BY 4.0)';
+    const attr = getTranslation(locale).spotsMap.coastalWarningsAttribution;
     map.attributionControl?.addAttribution(attr);
     container.dataset.coastalWarnings = 'true';
 
@@ -742,7 +740,7 @@ export function useMapLayers({
       container.removeAttribute('data-coastal-warnings');
       container.removeAttribute('data-coastal-warnings-settled');
     };
-  }, [coastalWarningsEnabled, isReady, coastalWarningsData, isPt, focusSpotId, mapInstanceRef, LRef, coastalLayerRef]);
+  }, [coastalWarningsEnabled, isReady, coastalWarningsData, locale, focusSpotId, mapInstanceRef, LRef, coastalLayerRef]);
 
   const toggleCoastalWarnings = useCallback(() => {
     setCoastalWarningsEnabled((prev) => {
