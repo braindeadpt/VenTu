@@ -112,32 +112,34 @@ test.describe('Dawn Patrol — linha de segurança (Avisos à Navegação Costei
 test.describe('Avisos à Navegação Costeiros (IH)', () => {
   test.use({ serviceWorkers: 'block' });
 
-  test('spot coberto → bloco com ref, categoria, link de detalhe e fonte', async ({ page }) => {
+  // Contrato v2 da página de spot (S2A-fix3 + S3): um aviso de PERIGO real
+  // (aqui «Exercício militar») vive na faixa de segurança do topo
+  // (spot-safety-coastal) e NÃO se repete no bloco informativo de «No local»
+  // (coastal-nav-warnings, que exclui os de segurança). Os avisos ES
+  // informativos continuam em «No local».
+  test('aviso de segurança → faixa do topo com ref, categoria, detalhe, fonte e mapa; sem duplicar em «No local»', async ({ page }) => {
     await interceptCoastalNavWarnings(page, FILE);
     await page.goto('/pt/spots/trafaria/');
     await expect(page.getByRole('heading', { level: 1, name: /Trafaria/i })).toBeVisible({
       timeout: 20_000,
     });
 
-    const block = page.getByTestId('coastal-nav-warnings');
-    await expect(block).toBeVisible({ timeout: 20_000 });
-    await expect(block.getByText('Avisos à navegação costeira')).toBeVisible();
-    await expect(block.getByText('ANAV NR 18271/26')).toBeVisible();
-    await expect(block.getByText('Exercício militar')).toBeVisible();
-    // Com avisos ES na fixture há dois «detalhe» (IH + ES) — o do IH basta.
-    await expect(block.getByRole('link', { name: /detalhe/i }).first()).toBeVisible();
-    await expect(
-      block.getByText(/Instituto Hidrográfico · Avisos à Navegação Costeiros/),
-    ).toBeVisible();
-    // Navega para o /mapa fullscreen com a camada de avisos já ligada e
-    // centrada na área coberta (deep link ?spot=<slug>).
-    const mapLink = block.getByTestId('coastal-nav-warnings-map-link');
+    const strip = page.getByTestId('spot-safety-coastal');
+    await expect(strip).toBeVisible({ timeout: 20_000 });
+    await expect(strip.getByText('ANAV NR 18271/26')).toBeVisible();
+    await expect(strip.getByText(/Exercício militar/)).toBeVisible();
+    await expect(strip.getByRole('link', { name: /detalhe/i }).first()).toBeVisible();
+    await expect(strip.getByText(/IH · IHM/)).toBeVisible();
+    // «Ver no mapa» abre o /mapa fullscreen centrado no spot (deep link ?spot=).
+    const mapLink = strip.getByRole('link', { name: /Ver no mapa/ });
     await expect(mapLink).toBeVisible();
-    await expect(block.getByText('Ver no mapa')).toBeVisible();
     await expect(mapLink).toHaveAttribute('href', '/pt/mapa/?spot=trafaria');
+
+    // Não duplica no bloco informativo de «No local».
+    await expect(page.getByTestId('coastal-nav-warnings').getByText('ANAV NR 18271/26')).toHaveCount(0);
   });
 
-  test('cross-border: avisos espanhóis «Avisos a los navegantes» na mesma secção', async ({
+  test('cross-border: avisos espanhóis «Avisos a los navegantes» ficam em «No local»', async ({
     page,
   }) => {
     await interceptCoastalNavWarnings(page, FILE);
@@ -146,17 +148,16 @@ test.describe('Avisos à Navegação Costeiros (IH)', () => {
       timeout: 20_000,
     });
 
-    const block = page.getByTestId('coastal-nav-warnings');
-    await expect(block).toBeVisible({ timeout: 20_000 });
-    // Sub-bloco ES, separado do IH, com rótulo próprio e a ref espanhola.
+    // Sub-bloco ES, com rótulo próprio e a ref espanhola.
     const esBlock = page.getByTestId('coastal-nav-warnings-es');
-    await expect(esBlock).toBeVisible();
+    await expect(esBlock).toBeVisible({ timeout: 20_000 });
     await expect(esBlock.getByText('Avisos a los navegantes (ES, cross-border)')).toBeVisible();
     await expect(esBlock.getByText('AVISO 9001/26')).toBeVisible();
     await expect(esBlock.getByText('Ejercicio naval')).toBeVisible();
     await expect(esBlock.getByRole('link', { name: /detalhe/i })).toBeVisible();
-    // O aviso IH continua no seu bloco, sem se misturar com o ES.
-    await expect(block.getByText('ANAV NR 18271/26')).toBeVisible();
+    // O aviso IH de segurança fica na faixa do topo e não se mistura com o ES.
+    await expect(page.getByTestId('spot-safety-coastal').getByText('ANAV NR 18271/26')).toBeVisible();
+    await expect(esBlock.getByText('ANAV NR 18271/26')).toHaveCount(0);
   });
 
   test('cross-border real no Minho: aviso ES a cobrir o Moledo do Minho com polígono no lado espanhol da foz', async ({
