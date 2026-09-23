@@ -1,18 +1,24 @@
 'use client';
 
+import { useState } from 'react';
 import { getTranslation } from '@/lib/i18n';
-import { ChevronLeft, ChevronRight, Zap } from 'lucide-react';
-import FilterPill from '@/components/ui/FilterPill';
-import MapSpotList, { type MapSpotListRow } from './MapSpotList';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import MapSpotList, { type MapListJump, type MapSpotListRow } from './MapSpotList';
+import MapExploreFilters from './MapExploreFilters';
 import MapBasemapRadio from './MapBasemapRadio';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { BasemapMode } from '../../MapLayerToggle';
 
 /**
- * Painel lateral do /mapa em desktop — a lista sincronizada com a vista.
- * Docado à esquerda (a coluna de controlos fica à direita); colapsa para um
- * rail de 48px com a contagem. O «Só a bombar» vive aqui — não duplicado na
- * barra de cima.
+ * Painel lateral do /mapa em desktop — a lista sincronizada com a vista
+ * (MAP-UX-V3 §5, maquete aprovada): 360 px, colapsa num rail de 56 px com
+ * a contagem vertical. Filtros com rótulo visível (segmented de modalidade
+ * com quebra de linha, selects Região/Nível, switches «Só a bombar» e
+ * «Agrupar spots», chips activos + «Limpar»), linha neutra de boias,
+ * trilho temporal e lista «Nesta vista».
+ *
+ * Desvio registado: o «Mapa/Satélite» fica aqui até a M5 o mover para o
+ * menu «Camadas» — em fullscreen não há outro controlo de basemap.
  */
 interface MapSpotPanelProps extends MapFullscreenHudProps {
   rows: MapSpotListRow[];
@@ -23,12 +29,20 @@ interface MapSpotPanelProps extends MapFullscreenHudProps {
   onCollapsedChange: (v: boolean) => void;
   onlyOnEnabled: boolean;
   onToggleOnlyOn: () => void;
-  onlyOnLabel: string;
   onlyOnHint: string;
+  /** Switch «Agrupar spots» — estado partilhado do orquestrador. */
+  clusterEnabled: boolean;
+  onToggleCluster: () => void;
+  /** Nota de ordenação da lista («Ordenado por score · métricas de agora»). */
+  noteLabel: string;
+  /** Chips «Saltar para» no cabeçalho da lista. */
+  jumpLabel: string;
+  jumps: MapListJump[];
+  onJump: (id: string) => void;
   warningChip?: React.ReactNode;
   /** Trilho das 48h / radar — vive no painel em desktop (era do HUD). */
   timeTrack?: React.ReactNode;
-  /** Radiogroup «Mapa base» — vivia no HUD antigo; reposto no painel. */
+  /** Radiogroup «Mapa base» — fica aqui até a M5 o mover para «Camadas». */
   basemapMode: BasemapMode;
   onBasemapChange: (mode: BasemapMode) => void;
   attributionHtml: string;
@@ -42,8 +56,13 @@ export default function MapSpotPanel({
   onSelectRow,
   onlyOnEnabled,
   onToggleOnlyOn,
-  onlyOnLabel,
   onlyOnHint,
+  clusterEnabled,
+  onToggleCluster,
+  noteLabel,
+  jumpLabel,
+  jumps,
+  onJump,
   warningChip,
   timeTrack,
   basemapMode,
@@ -64,18 +83,25 @@ export default function MapSpotPanel({
   onDifficultyChange,
   difficultyGroupLabel,
   locale,
-  isPt,
 }: MapSpotPanelProps) {
   const t = getTranslation(locale);
+  // A animação de entrada só corre a partir do primeiro TOGGLE — nunca no
+  // primeiro render (o painel já nasce na posição; deslizar era ruído).
+  const [didToggle, setDidToggle] = useState(false);
+  const toggle = (v: boolean) => {
+    setDidToggle(true);
+    onCollapsedChange(v);
+  };
   if (collapsed) {
     return (
       <div
         data-map-panel="rail"
-        className="absolute left-2 top-2 z-[1100] flex w-12 flex-col items-center gap-2 rounded-card border border-divider-strong bg-bg-elevated/95 py-1.5 shadow-card backdrop-blur-md"
+        className={`absolute left-2 top-2 z-[1100] flex w-14 flex-col items-center gap-2 rounded-card border border-divider-strong bg-bg-elevated/95 py-1.5 shadow-card backdrop-blur-md ${didToggle ? 'motion-safe:[animation:map-rail-in_240ms_cubic-bezier(.16,1,.3,1)_both]' : ''}`}
       >
         <button
           type="button"
-          onClick={() => onCollapsedChange(false)}
+          onClick={() => toggle(false)}
+          aria-expanded={false}
           aria-label={t.spotsMap.openSpotsList}
           className="flex h-9 w-9 items-center justify-center rounded-input text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
         >
@@ -85,7 +111,7 @@ export default function MapSpotPanel({
           className="font-mono tabular-nums text-[11px] text-fg-subtle"
           style={{ writingMode: 'vertical-rl' }}
         >
-          {spotCount} spots
+          {t.mapUiExplore.railCount.replace('{count}', String(spotCount))}
         </span>
       </div>
     );
@@ -94,76 +120,69 @@ export default function MapSpotPanel({
   return (
     <div
       role="complementary"
-      aria-label={t.spotsMap.spotsInView}
+      aria-label={t.mapUiExplore.title}
       data-map-panel="open"
-      className="absolute bottom-2 left-2 top-2 z-[1100] flex w-[348px] max-w-[calc(100vw-1rem)] flex-col rounded-card border border-divider-strong bg-bg-elevated/95 shadow-card backdrop-blur-md"
+      className={`absolute bottom-2 left-2 top-2 z-[1100] flex w-[360px] max-w-[calc(100vw-1rem)] flex-col rounded-card border border-divider-strong bg-bg-elevated/95 shadow-card backdrop-blur-md ${didToggle ? 'motion-safe:[animation:map-panel-in_240ms_cubic-bezier(.16,1,.3,1)_both]' : ''}`}
     >
-      <div className="flex items-center gap-2 px-3 pt-2.5">
-        <span className="font-display text-body-sm font-bold text-fg">
-          {t.spotsMap.inView}
+      <div className="flex items-baseline gap-2 px-3 pb-1 pt-3">
+        <span className="font-display text-body font-semibold text-fg">
+          {t.mapUiExplore.title}
+        </span>
+        <span className="font-mono tabular-nums text-meta-sm text-fg-subtle">
+          {t.mapUiExplore.spotsInViewCount.replace('{count}', String(rows.length))}
         </span>
         <button
           type="button"
-          onClick={() => onCollapsedChange(true)}
+          onClick={() => toggle(true)}
+          aria-expanded={true}
           aria-label={t.spotsMap.collapsePanel}
-          className="ml-auto flex h-9 w-9 items-center justify-center rounded-input text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
+          className="-my-1 ml-auto flex h-9 w-9 shrink-0 items-center justify-center self-center rounded-input text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
         >
           <ChevronLeft className="h-4 w-4" aria-hidden />
         </button>
       </div>
 
-      <div className="flex flex-col gap-1.5 px-3 pt-2">
-        <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" role="group" aria-label={t.spotsMap.sportWord}>
-          {sports.map((s) => (
-            <FilterPill key={s.id} compact active={selectedSport === s.id} onClick={() => onSportChange(s.id)} icon={s.icon}>
-              {s.label}
-            </FilterPill>
-          ))}
-        </div>
-        <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" role="group" aria-label={t.spotsMap.region}>
-          {regions.map((r) => (
-            <FilterPill key={r} compact active={selectedRegion === r} onClick={() => onRegionChange(r)}>
-              {r}
-            </FilterPill>
-          ))}
-        </div>
-        <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" role="group" aria-label={difficultyGroupLabel}>
-          {difficulties.map((d) => (
-            <FilterPill key={d.id} compact active={selectedDifficulty === d.id} onClick={() => onDifficultyChange(d.id)}>
-              {d.label}
-            </FilterPill>
-          ))}
-          <FilterPill
-            compact
-            active={onlyOnEnabled}
-            onClick={onToggleOnlyOn}
-            aria-label={onlyOnHint ? `${onlyOnLabel} — ${onlyOnHint}` : onlyOnLabel}
-            icon={<Zap className="h-3.5 w-3.5" aria-hidden />}
-            toggleAttr="data-map-only-on-toggle"
-          >
-            {onlyOnLabel}
-          </FilterPill>
-        </div>
-        {showClearFilters && (
-          <FilterPill compact onClick={onResetFilters} className="self-start">
-            {clearFiltersLabel}
-          </FilterPill>
-        )}
+      <div className="flex flex-col gap-3 px-3 pt-2">
+        <MapExploreFilters
+          idPrefix="p"
+          sports={sports}
+          selectedSport={selectedSport}
+          onSportChange={onSportChange}
+          regions={regions}
+          selectedRegion={selectedRegion}
+          onRegionChange={onRegionChange}
+          difficulties={difficulties}
+          selectedDifficulty={selectedDifficulty}
+          onDifficultyChange={onDifficultyChange}
+          difficultyGroupLabel={difficultyGroupLabel}
+          onlyOnEnabled={onlyOnEnabled}
+          onToggleOnlyOn={onToggleOnlyOn}
+          onlyOnHint={onlyOnHint}
+          clusterEnabled={clusterEnabled}
+          onToggleCluster={onToggleCluster}
+          onResetFilters={onResetFilters}
+          clearFiltersLabel={clearFiltersLabel}
+          showClearFilters={showClearFilters}
+          locale={locale}
+        />
         {warningChip}
         {timeTrack}
         <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
       </div>
 
-      <div className="mt-2 flex min-h-0 flex-1 flex-col border-t border-divider px-3 pt-2">
+      <div className="mt-1 flex min-h-0 flex-1 flex-col px-3">
         <MapSpotList
           rows={rows}
-          title="Spots"
+          title={t.spotsMap.inView}
           countLabel={`${rows.length}/${spotCount}`}
-          sortLabel={t.spotsMap.byScore}
-          emptyLabel={t.spotsMap.noSpotsInView}
+          noteLabel={noteLabel}
+          emptyLabel={t.mapUiExplore.emptyView}
           focusSpotId={focusSpotId}
           onSelect={onSelectRow}
           listLabel={t.spotsMap.spotsVisibleOnMap}
+          jumpLabel={jumpLabel}
+          jumps={jumps}
+          onJump={onJump}
         />
       </div>
 

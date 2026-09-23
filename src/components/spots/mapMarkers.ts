@@ -141,7 +141,11 @@ export function createSpotMarker(
   // name so screen readers announce which spot the marker is (axe aria-command-name).
   marker.on('add', () => {
     const el = marker.getElement();
-    if (el && !el.hasAttribute('aria-label')) el.setAttribute('aria-label', spot.name);
+    if (!el) return;
+    if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', spot.name);
+    // Ponte de hover com a lista «Nesta vista» (M3 §5): a linha liga
+    // .ventu-list-hover neste elemento e o hover do marcador realça a linha.
+    el.setAttribute('data-spot-id', spot.id);
   });
 
   if (!options.useMobileSheet) {
@@ -293,8 +297,8 @@ export function exploreViewBoundsFromSpots(
  * são tocáveis (o Alqueva ficava debaixo do sheet — spec mar-perigoso).
  *  - 'sheet'       mobile: sheet no fundo (inset 8 px + estado fechado,
  *                  ~220 px medidos com o chip de boias).
- *  - 'panel-open'  desktop: painel à esquerda (inset 8 px + 348 px).
- *  - 'panel-rail'  desktop: painel recolhido (inset 8 px + rail 48 px).
+ *  - 'panel-open'  desktop: painel à esquerda (inset 8 px + 360 px — §5).
+ *  - 'panel-rail'  desktop: painel recolhido (inset 8 px + rail 56 px).
  *  - 'none'        mapa embebido, sem sheet nem painel.
  */
 export type ExploreChrome = 'none' | 'sheet' | 'panel-open' | 'panel-rail';
@@ -321,10 +325,10 @@ export function exploreFitPadding(
       return { topLeft: [16, 16], bottomRight: [16, 8 + 220 + CHROME_GAP_PX], westShift: false };
     case 'panel-open':
       // O painel já ocupa o oeste: o desvio para oeste empurrava a costa
-      // para debaixo dele.
-      return { topLeft: [8 + 348 + CHROME_GAP_PX, 48], bottomRight: [40, 48], westShift: false };
+      // para debaixo dele. Largura §5 = 360 px (era 348).
+      return { topLeft: [8 + 360 + CHROME_GAP_PX, 48], bottomRight: [40, 48], westShift: false };
     case 'panel-rail':
-      return { topLeft: [8 + 48 + CHROME_GAP_PX, 48], bottomRight: [40, 48], westShift: true };
+      return { topLeft: [8 + 56 + CHROME_GAP_PX, 48], bottomRight: [40, 48], westShift: true };
     default:
       // Mapas embebidos: mantêm as margens de sempre.
       return isMobile

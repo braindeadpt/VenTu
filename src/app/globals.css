@@ -432,7 +432,8 @@ html:has([data-embed-widget]) body {
   }
 
   .leaflet-marker-icon:hover .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2),
-  .leaflet-marker-icon:focus-visible .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2) {
+  .leaflet-marker-icon:focus-visible .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2),
+  .leaflet-marker-icon.ventu-list-hover .ventu-wind-ring-marker-wrap .ventu-marker-pin circle:nth-of-type(2) {
     transform: scale(1.1);
     box-shadow:
       0 0 12px rgb(var(--data-waves) / 0.45),
@@ -491,6 +492,18 @@ html:has([data-embed-widget]) body {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
+  }
+
+  /* Painel «Explorar» do /mapa (MAP-UX-V3 §5/§11): recolher/abrir desliza
+     * por transform em 240 ms — a maquete anima translateX do painel.
+     * O rail entra com um slide curto do mesmo lado. */
+  @keyframes map-panel-in {
+    from { transform: translateX(calc(-100% + 56px)); }
+    to { transform: translateX(0); }
+  }
+  @keyframes map-rail-in {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
   }
 
   @media (prefers-reduced-motion: no-preference) {

@@ -76,30 +76,34 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
 
   return (
     <div ref={rootRef} className="relative shrink-0">
-      <button
-        type="button"
-        data-buoy-layer-chip="true"
-        aria-expanded={open}
-        aria-label={t.spotsUi.buoyLayerStatusAria}
-        title={c.body}
-        onClick={() => setOpen((o) => !o)}
-        className={cn(
-          'flex items-center gap-1.5 min-h-[44px] min-w-[44px] px-2.5 py-2 rounded-input border text-meta-sm font-semibold transition-colors duration-150',
-          status === 'no-key'
-            ? 'border-score-fair/40 bg-score-fair/10 text-fg'
-            : 'border-score-poor/40 bg-score-poor/15 text-fg',
-          open && 'bg-surface-2/[0.08]',
-        )}
-      >
-        <AlertTriangle
+      {/* Linha de estado NEUTRA (maquete §5): ícone âmbar + texto muted +
+          «Dispensar» inline — nunca um botão vermelho. O toque na linha
+          abre o popover com a copy completa; «Dispensar» resolve logo. */}
+      <div className="flex min-h-[44px] items-center gap-1">
+        <button
+          type="button"
+          data-buoy-layer-chip="true"
+          aria-expanded={open}
+          aria-label={t.spotsUi.buoyLayerStatusAria}
+          title={c.body}
+          onClick={() => setOpen((o) => !o)}
           className={cn(
-            'w-4 h-4 shrink-0',
-            status === 'no-key' ? 'text-score-fair' : 'text-score-poor',
+            'flex min-h-[44px] min-w-[44px] flex-1 items-center gap-1.5 rounded-input px-1.5 text-left text-meta-sm text-fg-muted transition-colors duration-150 hover:text-fg',
+            open && 'bg-surface-2/[0.08] text-fg',
           )}
-          aria-hidden
-        />
-        <span className="hidden sm:inline">{chipLabel[status]}</span>
-      </button>
+        >
+          <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-score-fair" aria-hidden />
+          <span className="truncate">{chipLabel[status]}</span>
+        </button>
+        <button
+          type="button"
+          onClick={dismiss}
+          aria-label={t.mapUiExplore.dismiss}
+          className="inline-flex min-h-[44px] shrink-0 items-center px-1.5 text-meta-sm font-semibold text-fg-muted underline-offset-2 transition-colors duration-150 hover:text-fg hover:underline"
+        >
+          {t.mapUiExplore.dismiss}
+        </button>
+      </div>
 
       {open && anchor && createPortal(
         <div

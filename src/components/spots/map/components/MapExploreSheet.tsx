@@ -2,26 +2,32 @@
 
 import { getTranslation } from '@/lib/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronDown, ChevronUp, Minimize2, Zap } from 'lucide-react';
-import FilterPill from '@/components/ui/FilterPill';
-import MapSpotList, { type MapSpotListRow } from './MapSpotList';
+import { ChevronDown, Minimize2, SlidersHorizontal } from 'lucide-react';
+import MapSpotList, { type MapListJump, type MapSpotListRow } from './MapSpotList';
+import MapExploreFilters, {
+  MapFilterSwitch,
+  countActiveExploreFilters,
+} from './MapExploreFilters';
 import MapBasemapRadio from './MapBasemapRadio';
 import type { MapLayersMenuItem } from './MapLayersMenu';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { BasemapMode } from '../../MapLayerToggle';
 import { getScoreTokens } from '@/lib/sportScore';
-import { scoreFactorClass } from '@/lib/spotScoreFactors';
 import { cn } from '@/lib/cn';
 
 /**
  * Bottom sheet do /mapa em mobile — substitui o cartão «Modo Explorar».
- * Três estados com snap: peek (melhor spot + filtros essenciais), meio
- * (filtros e camadas COM rótulos) e aberto (lista sincronizada).
+ * Três estados com snap (MAP-UX-V3 §5, maquete aprovada):
+ *  - peek (~136 px): cartão «Melhor agora» + [Filtros (n)] · switch
+ *    «Só a bombar» · contagem — duas linhas de leitura, sem linhas só-ícone;
+ *  - meio: os filtros como no painel + camadas/«Ver também»/legenda;
+ *  - aberto: a lista sincronizada.
  *
  * Movimento (apple-design): o sheet tem altura fixa (estado aberto) e anda
- * por translateY — arrasto 1:1 no grabber, projeção de momentum no release,
- * snap ao estado mais próximo do ponto projetado. prefers-reduced-motion:
- * snap instantâneo e transição por cross-fade, sem slide.
+ * por translateY — arrasto 1:1 no grabber e no cabeçalho do peek,
+ * rubber-band 0.25 fora dos limites, projecção de momentum de 220 ms no
+ * release, snap 320 ms cubic-bezier(.32,.72,0,1) ao estado mais próximo.
+ * prefers-reduced-motion: snap instantâneo e cross-fade de 150 ms.
  */
 
 export type ExploreSheetState = 'peek' | 'half' | 'open';
@@ -52,11 +58,6 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
    *  (mapa/satélite) é o radiogroup `MapBasemapRadio` mesmo acima e a
    *  saída do fullscreen vive no grabber (sempre visível). */
   extras: SheetToggleItem[];
-  /** Chip «Agrupar/Mostrar todos» no PEEK — o toggle vivia só no estado
-   *  half (extras), inalcançável a quem fica sempre no peek do fullscreen
-   *  mobile (D6). Mesmo item do half: label/estado/onToggle idênticos, uma
-   *  superfície por estado — nunca dois botões com o mesmo nome no DOM. */
-  clusterItem?: SheetToggleItem;
   /** Saída do fullscreen — sempre visível à esquerda do grabber (era do
    *  HUD antigo; o C4 exige uma saída que não dependa de abrir o sheet). */
   exitFullscreenLabel: string;
@@ -66,8 +67,18 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
   onBasemapChange: (mode: BasemapMode) => void;
   onlyOnEnabled: boolean;
   onToggleOnlyOn: () => void;
-  onlyOnLabel: string;
   onlyOnHint: string;
+  /** Switch «Agrupar spots» no bloco de filtros (estado partilhado). */
+  clusterEnabled: boolean;
+  onToggleCluster: () => void;
+  /** Kicker do cartão do peek — «Melhor agora» ou «Melhor 17h» (48 h). */
+  bestLabel: string;
+  /** Nota de ordenação da lista («Ordenado por score · métricas de agora»). */
+  noteLabel: string;
+  /** Chips «Saltar para» no cabeçalho da lista aberta. */
+  jumpLabel: string;
+  jumps: MapListJump[];
+  onJump: (id: string) => void;
   /** Chip de boias (BuoyLayerChip) — popover + dispensar já resolvidos. */
   warningChip?: React.ReactNode;
   /** Seção «Legenda» — MapLegend em modo estático dentro de <details>. */
@@ -80,17 +91,22 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
   openHeight: number;
 }
 
-const GRABBER_H = 32;
-const ATTR_H = 20;
-/** Snap targets como fração da altura do sheet aberto. */
-const HALF_RATIO = 0.68;
+const GRABBER_H = 26;
+/** Snap «meio» como fração da altura aberta: a maquete usa half = 0.56·vh
+ *  e open = 0.88·vh → 0.56/0.88 ≈ 0.636. */
+const HALF_RATIO = 0.6364;
+/** Snap da maquete: 320 ms, cubic-bezier(.32,.72,0,1). */
+const SNAP_MS = 320;
+const SNAP_EASE = 'cubic-bezier(0.32,0.72,0,1)';
+/** Cross-fade com prefers-reduced-motion (maquete: 150 ms). */
+const CROSSFADE_MS = 150;
 
 function AttributionLine({ html }: { html: string }) {
   if (!html) return null;
   return (
     <div
       data-sheet-attribution
-      className="shrink-0 truncate px-1 pt-1 text-[10px] leading-tight text-fg-subtle [&_a]:text-fg-muted [&_a]:underline"
+      className="shrink-0 truncate pt-0.5 text-[10px] leading-tight text-fg-subtle [&_a]:text-fg-muted [&_a]:underline"
       // O HTML vem do controlo de atribuição do Leaflet (links de créditos
       // das camadas ativas) — mesma fonte, sem duplicação de strings.
       dangerouslySetInnerHTML={{ __html: html }}
@@ -140,15 +156,20 @@ export default function MapExploreSheet({
   onSelectRow,
   layers,
   extras,
-  clusterItem,
   basemapMode,
   onBasemapChange,
   exitFullscreenLabel,
   onExitFullscreen,
   onlyOnEnabled,
   onToggleOnlyOn,
-  onlyOnLabel,
   onlyOnHint,
+  clusterEnabled,
+  onToggleCluster,
+  bestLabel,
+  noteLabel,
+  jumpLabel,
+  jumps,
+  onJump,
   warningChip,
   legendNode,
   timeTrack,
@@ -169,7 +190,6 @@ export default function MapExploreSheet({
   onDifficultyChange,
   difficultyGroupLabel,
   locale,
-  isPt,
 }: MapExploreSheetProps) {
   const t = getTranslation(locale);
   const reduced = typeof window !== 'undefined'
@@ -177,14 +197,20 @@ export default function MapExploreSheet({
 
   // ── Geometria: sheet de altura fixa (open), translateY revela porções ──
   const sheetRef = useRef<HTMLDivElement>(null);
-  // O peek mede-se — o chip de boias e a linha de atribuição tornam a altura
-  // variável; um ResizeObserver mantém o snap exacto.
-  const [peekH, setPeekH] = useState(220);
+  // O peek mede-se — nomes de spot em duas linhas tornam a altura variável;
+  // um ResizeObserver mantém o snap exacto. A maquete fixa o peek em 136 px:
+  // o valor medido é clampado a [132,136] — abaixo há faixa morta mínima,
+  // acima o conteúdo é cortado pelo overflow-hidden do sheet (a atribuição
+  // é a última linha e absorve o corte; os controlos ficam sempre à vista).
+  const [peekH, setPeekH] = useState(136);
   const peekContentRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = peekContentRef.current;
     if (!el || state !== 'peek') return;
-    const measure = () => setPeekH(GRABBER_H + Math.ceil(el.getBoundingClientRect().height));
+    const measure = () =>
+      setPeekH(
+        Math.min(136, Math.max(132, GRABBER_H + Math.ceil(el.getBoundingClientRect().height))),
+      );
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(el);
@@ -206,67 +232,81 @@ export default function MapExploreSheet({
     snapsRef.current = [offsetFor('peek'), offsetFor('half'), 0];
   }, [dragOffset, state, offsetFor]);
 
-  const drag = useRef<{ y0: number; off0: number; hist: { t: number; y: number }[] } | null>(null);
+  const drag = useRef<{ y0: number; off0: number; t: number; y: number; v: number } | null>(null);
 
-  const onPointerDown = (e: React.PointerEvent<HTMLButtonElement>) => {
+  /** Início do arrasto — no grabber (botão) ou no cabeçalho do peek (div).
+   *  No cabeçalho ignoram-se alvos interactivos (maquete: `closest('button,
+   *  input,label')`), para o toque nos controlos não virar drag. */
+  const startDrag = (e: React.PointerEvent<HTMLElement>) => {
     const el = sheetRef.current;
     if (!el) return;
-    // Interrupção a meio da animação: lê o transform REAL no ecrã e segue
-    // daí — nunca do valor lógico (apple-design §3).
+    if (e.currentTarget instanceof HTMLDivElement) {
+      const target = e.target as HTMLElement;
+      if (target.closest('button, a, input, select, label, [role="switch"]')) return;
+    }
+    // Interrupção a meio da animação: lê o translateY REAL no ecrã e segue
+    // daí — nunca do valor lógico (apple-design §3). Ler via rect contra o
+    // offsetParent errava 8 px (o inset `bottom-2` não entra na conta).
     setAnimating(false);
-    const live = el.getBoundingClientRect();
-    const base = el.offsetParent
-      ? el.offsetParent.getBoundingClientRect().bottom - el.offsetHeight
-      : live.top;
-    const start = Math.min(Math.max(live.top - base, 0), snapsRef.current[0]);
-    drag.current = { y0: e.clientY, off0: start, hist: [{ t: performance.now(), y: e.clientY }] };
-    // Capture NO BOTÃO — no contentor re-alvoava o click para o sheet e o
-    // toque no grabber deixava de ciclar estados.
-    e.currentTarget.setPointerCapture?.(e.pointerId);
+    const m42 = new DOMMatrixReadOnly(getComputedStyle(el).transform).m42;
+    const live = Number.isFinite(m42) && m42 !== 0 ? m42 : offsetRef.current;
+    const start = Math.min(Math.max(live, 0), snapsRef.current[0]);
+    drag.current = { y0: e.clientY, off0: start, t: performance.now(), y: e.clientY, v: 0 };
+    // Capture no elemento que recebeu o pointerdown — no contentor re-alvoava
+    // o click para o sheet e o toque deixava de ciclar estados. try/catch:
+    // pointerIds sintéticos/inactivos lançam NotFoundError.
+    try {
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+    } catch {
+      /* pointer sem captura possível — o arrasto continua sem capture */
+    }
     setDragOffset(start);
   };
 
-  const onPointerMove = (e: React.PointerEvent<HTMLButtonElement>) => {
+  const moveDrag = (e: React.PointerEvent<HTMLElement>) => {
     const d = drag.current;
     if (!d) return;
-    d.hist.push({ t: performance.now(), y: e.clientY });
-    if (d.hist.length > 8) d.hist.shift();
+    // Velocidade por segmento, como na maquete (`drag.v = dy/dt` em cada
+    // pointermove): um flick mede-se pelo último impulso, não por média —
+    // uma janela curta podia ficar sem amostras sob CDP lento e o gesto
+    // caía para «half» em vez de «open».
+    const now = performance.now();
+    d.v = (e.clientY - d.y) / Math.max(1, now - d.t);
+    d.t = now;
+    d.y = e.clientY;
     const max = snapsRef.current[0];
     let next = d.off0 + (e.clientY - d.y0);
-    // Rubber-band nos limites (resistência progressiva, não hard-stop).
-    if (next < 0) next = -((-next * 0.35));
-    if (next > max) next = max + (next - max) * 0.35;
+    // Rubber-band nos limites (resistência 0.25 da maquete, não hard-stop).
+    if (next < 0) next = -((-next * 0.25));
+    if (next > max) next = max + (next - max) * 0.25;
     setDragOffset(next);
   };
 
-  // O click sintético após pointer capture + touch-action:none é re-alvo
-  // ou suprimido em alguns browsers — o toque é detetado no pointerup
-  // (distância < 8px) e o onClick serve só o teclado (guard lastTap).
-  const lastTapRef = useRef(0);
+  // O toque resolve-se no pointerup (distância < 8px); o onClick serve só o
+  // teclado/leitores de ecrã (detail === 0). Um click sintético de rato pode
+  // chegar >400 ms depois do pointerup sob carga — um guard temporal deixava
+  // esse click ciclar outra vez já com o estado novo (half→open→peek).
   const cycleState = () => {
     onStateChange(state === 'peek' ? 'half' : state === 'half' ? 'open' : 'peek');
   };
 
-  const settle = (e: React.PointerEvent<HTMLButtonElement>) => {
+  const settle = (e: React.PointerEvent<HTMLElement>) => {
     const d = drag.current;
     if (!d) return;
     drag.current = null;
     if (Math.abs(e.clientY - d.y0) < 8) {
       // Toque sem arrasto → percorre os estados (peek→half→open→peek).
-      lastTapRef.current = performance.now();
+      // Na maquete a área de arrasto inclui o cabeçalho do peek — um toque
+      // no fundo (alvos interactivos já foram excluídos no pointerdown)
+      // também cicla.
       setDragOffset(null);
       cycleState();
       return;
     }
-    const now = performance.now();
-    const recent = d.hist.filter((h) => now - h.t < 120);
-    const v = recent.length > 1
-      ? (recent[recent.length - 1].y - recent[0].y) / ((recent[recent.length - 1].t - recent[0].t) || 1) * 1000
-      : 0;
     const cur = dragOffset ?? d.off0;
-    // Projeção de momentum (decelerationRate ≈ 0.998) → snap mais próximo
-    // de onde o gesto ia parar, não de onde o dedo largou.
-    const projected = cur + (v / 1000) * 0.998 / (1 - 0.998);
+    // Projeção de momentum da maquete (220 ms): snap ao estado mais próximo
+    // de onde o gesto ia parar — um flick para cima chega sempre a «open».
+    const projected = cur + d.v * 220;
     const targets = snapsRef.current;
     let best = targets[0];
     for (const s of targets) if (Math.abs(s - projected) < Math.abs(best - projected)) best = s;
@@ -275,8 +315,10 @@ export default function MapExploreSheet({
     onStateChange(best === 0 ? 'open' : best === offsetFor('half') ? 'half' : 'peek');
   };
 
-  const onGrabberClick = () => {
-    if (performance.now() - lastTapRef.current < 400) return;
+  const onGrabberClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // detail 0 = activação por teclado/leitor de ecrã (sem pointer events);
+    // os cliques de rato/toque já foram resolvidos no pointerup (settle).
+    if (e.detail !== 0) return;
     cycleState();
   };
 
@@ -291,14 +333,18 @@ export default function MapExploreSheet({
     }
     setCrossFrom(prevStateRef.current);
     prevStateRef.current = state;
-    const t = setTimeout(() => setCrossFrom(null), 240);
+    const t = setTimeout(() => setCrossFrom(null), CROSSFADE_MS + 20);
     return () => clearTimeout(t);
   }, [state, reduced]);
 
   const translateY = dragOffset ?? offsetFor(state);
   const best = rows[0] ?? null;
   const bestTok = best ? getScoreTokens(best.score) : null;
-  const sportLabel = sports.find((s) => s.id === selectedSport)?.label ?? sports[0]?.label;
+  const activeFilters = countActiveExploreFilters({
+    sport: selectedSport,
+    region: selectedRegion,
+    difficulty: selectedDifficulty,
+  });
 
   const toggleChip = (item: SheetToggleItem) => (
     <button
@@ -331,74 +377,82 @@ export default function MapExploreSheet({
       // flex-1 o div esticava até à altura do estado aberto, o
       // ResizeObserver media essa altura, e o «peek» ficava do tamanho do
       // sheet inteiro — no iPhone 13 sobravam ~50 px de mapa visível.
+      // Duas linhas de leitura rápida (maquete §5): cartão «Melhor agora»
+      // e a linha [Filtros (n)] · «Só a bombar» · «n spots». O cabeçalho
+      // inteiro é superfície de arrasto 1:1 (excepto os controlos).
       <div
         ref={s === state && !ghost ? peekContentRef : undefined}
-        className="flex shrink-0 flex-col gap-2 px-3 pb-2"
+        className="flex shrink-0 cursor-grab flex-col gap-1 px-3 pb-1 active:cursor-grabbing touch-none"
         data-sheet-peek
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={settle}
+        onPointerCancel={settle}
       >
-        {!ghost && warningChip}
-        {best && bestTok && (
+        {/* O chip de boias não entra no peek (136 px da maquete = cartão +
+            linha de filtros) — vive no estado «half» e no painel desktop. */}
+        {best && bestTok ? (
           <button
             type="button"
             onClick={() => onSelectRow(best)}
-            className="flex min-h-[52px] items-center gap-2.5 rounded-input border border-divider bg-surface-1/[0.05] px-2.5 py-1.5 text-left"
+            className="grid min-h-[48px] grid-cols-[40px_minmax(0,1fr)] items-center gap-2.5 rounded-input border border-divider bg-surface-1/[0.05] px-2 py-1 text-left"
             data-sheet-best
           >
-            <span className={`inline-flex h-10 w-10 shrink-0 flex-col items-center justify-center rounded-lg font-mono text-sm font-bold leading-none ${bestTok.bg} ${bestTok.text}`}>
+            <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-[10px] font-mono text-sm font-semibold tabular-nums ${bestTok.bg} ${bestTok.text}`}>
               {best.score}
             </span>
-            <span className="min-w-0 flex-1">
+            <span className="min-w-0">
               <span className="block text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
-                {t.spotsMap.bestNow}
+                {bestLabel}
               </span>
-              <span className="block truncate text-body-sm">
-                <span className="font-display font-bold text-fg">{best.name}</span>
+              <span className="block text-body-sm leading-snug">
+                <span className="font-display font-semibold text-fg">{best.name}</span>
                 <span className="text-fg-muted"> · {best.region}</span>
               </span>
-            </span>
-            <span
-              className="shrink-0 text-right font-mono tabular-nums text-meta-sm text-fg-muted"
-              data-score-factors={best.factors.map((f) => f.label).join(' · ')}
-            >
-              {best.factors.map((f, fi) => (
-                <span key={fi}>
-                  {fi > 0 && <span aria-hidden className="text-fg-subtle/40"> · </span>}
-                  <span className={scoreFactorClass(f.kind)}>{f.short}</span>
-                </span>
-              ))}
+              {/* Métricas neutras (maquete .best .w — tudo fg-muted). */}
+              <span
+                className="block truncate font-mono tabular-nums text-meta-sm text-fg-muted"
+                data-score-factors={best.factors.map((f) => f.label).join(' · ')}
+              >
+                {best.factors.map((f, fi) => (
+                  <span key={fi}>
+                    {fi > 0 && <span aria-hidden className="text-fg-subtle/40"> · </span>}
+                    {f.short}
+                  </span>
+                ))}
+              </span>
             </span>
           </button>
+        ) : (
+          <p className="px-1 py-2 text-meta-sm text-fg-muted">{t.mapUiExplore.emptyView}</p>
         )}
-        <div
-          className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x"
-          role="group"
-          aria-label={t.spotsMap.essentialFilters}
-        >
-          <FilterPill compact onClick={() => onStateChange('half')}>
-            {sportLabel} <ChevronDown className="h-3 w-3" aria-hidden />
-          </FilterPill>
-          <FilterPill compact onClick={() => onStateChange('half')}>
-            {t.spotsMap.region}: {selectedRegion} <ChevronDown className="h-3 w-3" aria-hidden />
-          </FilterPill>
-          <FilterPill compact active={onlyOnEnabled} onClick={onToggleOnlyOn} aria-label={onlyOnLabel} icon={<Zap className="h-3.5 w-3.5" aria-hidden />} toggleAttr="data-map-only-on-toggle">
-            {onlyOnLabel}
-          </FilterPill>
-          {clusterItem && (
-            <FilterPill
-              compact
-              active={clusterItem.pressed}
-              onClick={clusterItem.onToggle}
-              aria-label={clusterItem.label}
-              icon={clusterItem.icon}
-            >
-              {clusterItem.label}
-            </FilterPill>
-          )}
-          <span className="ml-auto shrink-0 font-mono tabular-nums text-meta-sm text-fg-subtle">
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onStateChange('half')}
+            aria-label={t.spotsMap.showFilters}
+            className="inline-flex min-h-[40px] shrink-0 items-center gap-1.5 rounded-input border border-divider bg-surface-1/[0.04] px-2.5 text-meta-sm font-semibold text-fg transition-colors duration-150 hover:bg-surface-2/[0.08]"
+          >
+            <SlidersHorizontal className="h-3.5 w-3.5 text-fg-subtle" aria-hidden />
+            {activeFilters > 0
+              ? t.mapUiExplore.filtersWithCount.replace('{count}', String(activeFilters))
+              : t.mapUiExplore.filters}
+          </button>
+          <div className="min-w-0 flex-1">
+            <MapFilterSwitch
+              label={t.map.onlyOn}
+              checked={onlyOnEnabled}
+              onToggle={onToggleOnlyOn}
+              hint={onlyOnHint}
+              toggleAttr="data-map-only-on-toggle"
+            />
+          </div>
+          <span className="shrink-0 font-mono tabular-nums text-meta-sm text-fg-subtle">
             {spotCount} spots
           </span>
         </div>
-        <AttributionLine html={attributionHtml} />
+        {/* A atribuição do peek vive no grabber (micro-linha à direita) —
+            em flow aqui rebentava os 136 px da maquete. */}
       </div>
     ) : s === 'half' ? (
       // O sheet tem a altura do estado aberto e anda por translateY — sem
@@ -411,45 +465,29 @@ export default function MapExploreSheet({
       >
         {!ghost && warningChip}
         {timeTrack}
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
-            {t.spotsMap.sportWord}
-          </span>
-          <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x pb-0.5" role="group" aria-label={t.spotsMap.sportWord}>
-            {sports.map((sp) => (
-              <FilterPill key={sp.id} compact active={selectedSport === sp.id} onClick={() => onSportChange(sp.id)} icon={sp.icon}>
-                {sp.label}
-              </FilterPill>
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">{difficultyGroupLabel}</span>
-          <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x pb-0.5" role="group" aria-label={difficultyGroupLabel}>
-            {difficulties.map((d) => (
-              <FilterPill key={d.id} compact active={selectedDifficulty === d.id} onClick={() => onDifficultyChange(d.id)}>
-                {d.label}
-              </FilterPill>
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
-            {t.spotsMap.region}
-          </span>
-          <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x pb-0.5" role="group" aria-label={t.spotsMap.region}>
-            {regions.map((r) => (
-              <FilterPill key={r} compact active={selectedRegion === r} onClick={() => onRegionChange(r)}>
-                {r}
-              </FilterPill>
-            ))}
-          </div>
-        </div>
-        {showClearFilters && (
-          <FilterPill compact onClick={onResetFilters} className="self-start">
-            {clearFiltersLabel}
-          </FilterPill>
-        )}
+        {/* «Meio: os filtros como no painel» — mesmo bloco partilhado. */}
+        <MapExploreFilters
+          idPrefix="m"
+          sports={sports}
+          selectedSport={selectedSport}
+          onSportChange={onSportChange}
+          regions={regions}
+          selectedRegion={selectedRegion}
+          onRegionChange={onRegionChange}
+          difficulties={difficulties}
+          selectedDifficulty={selectedDifficulty}
+          onDifficultyChange={onDifficultyChange}
+          difficultyGroupLabel={difficultyGroupLabel}
+          onlyOnEnabled={onlyOnEnabled}
+          onToggleOnlyOn={onToggleOnlyOn}
+          onlyOnHint={onlyOnHint}
+          clusterEnabled={clusterEnabled}
+          onToggleCluster={onToggleCluster}
+          onResetFilters={onResetFilters}
+          clearFiltersLabel={clearFiltersLabel}
+          showClearFilters={showClearFilters}
+          locale={locale}
+        />
         <div className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
             {t.spotsMap.layers}
@@ -491,9 +529,12 @@ export default function MapExploreSheet({
           rows={rows}
           title={t.spotsMap.inView}
           countLabel={`${rows.length} spots`}
-          sortLabel={t.spotsMap.byScore}
-          emptyLabel={t.spotsMap.noSpotsInView}
+          noteLabel={noteLabel}
+          emptyLabel={t.mapUiExplore.emptyView}
           hintLabel={t.spotsMap.listFollowsPan}
+          jumpLabel={jumpLabel}
+          jumps={jumps}
+          onJump={onJump}
           focusSpotId={focusSpotId}
           onSelect={onSelectRow}
           listLabel={t.spotsMap.spotsVisibleOnMap}
@@ -515,13 +556,14 @@ export default function MapExploreSheet({
       style={{
         height: openHeight,
         transform: `translateY(${translateY}px)`,
-        transition: animating && !reduced ? 'transform 260ms cubic-bezier(0.32,0.72,0,1)' : undefined,
+        transition: animating && !reduced ? `transform ${SNAP_MS}ms ${SNAP_EASE}` : undefined,
       }}
       onTransitionEnd={() => setAnimating(false)}
     >
       {/* Grabber — alça real (não uma faixa vazia): arrasto 1:1 + toque
-          percorre os estados. O toggle de filtros (peek↔half) fica por cima,
-          à direita — mesmo contrato «Mostrar/Ocultar filtros» do HUD antigo. */}
+          percorre os estados. Em «half»/«open» o botão da direita volta ao
+          peek («Ocultar filtros»); no peek a entrada é o «Filtros (n)» da
+          2ª linha — um único «Mostrar filtros» por estado. */}
       <div className="relative shrink-0" style={{ height: GRABBER_H }}>
         <button
           type="button"
@@ -529,8 +571,8 @@ export default function MapExploreSheet({
           aria-expanded={state !== 'peek'}
           data-sheet-grabber
           className="absolute inset-0 flex w-full cursor-grab items-center justify-center active:cursor-grabbing touch-none"
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
+          onPointerDown={startDrag}
+          onPointerMove={moveDrag}
           onPointerUp={settle}
           onPointerCancel={settle}
           onClick={onGrabberClick}
@@ -547,26 +589,35 @@ export default function MapExploreSheet({
         >
           <Minimize2 className="h-4 w-4" aria-hidden />
         </button>
-        <button
-          type="button"
-          onClick={() => onStateChange(state === 'peek' ? 'half' : 'peek')}
-          aria-expanded={state !== 'peek'}
-          aria-label={state === 'peek'
-            ? t.spotsMap.showFilters
-            : t.spotsMap.hideFilters}
-          className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
-        >
-          {state === 'peek'
-            ? <ChevronUp className="h-4 w-4" aria-hidden />
-            : <ChevronDown className="h-4 w-4" aria-hidden />}
-        </button>
+        {state !== 'peek' && (
+          <button
+            type="button"
+            onClick={() => onStateChange('peek')}
+            aria-expanded={true}
+            aria-label={t.spotsMap.hideFilters}
+            className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
+          >
+            <ChevronDown className="h-4 w-4" aria-hidden />
+          </button>
+        )}
+        {/* Atribuição no peek: micro-linha truncada à direita do grabber —
+            a obrigação de licença mantém-se visível sem consumir altura
+            (nos estados half/open rende em flow no fim do conteúdo). */}
+        {state === 'peek' && attributionHtml ? (
+          <span
+            data-sheet-attribution
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 right-2 flex max-w-[46%] items-center justify-end truncate text-[9px] leading-none text-fg-subtle [&_a]:text-inherit"
+            dangerouslySetInnerHTML={{ __html: attributionHtml }}
+          />
+        ) : null}
       </div>
 
       <div className="relative flex min-h-0 flex-1 flex-col">
         <div
           className={cn(
             'flex min-h-0 flex-1 flex-col',
-            crossFrom && '[animation:sheet-fade-in_220ms_ease-out_both]',
+            crossFrom && `[animation:sheet-fade-in_${CROSSFADE_MS}ms_ease-out_both]`,
           )}
         >
           {renderState(state)}
