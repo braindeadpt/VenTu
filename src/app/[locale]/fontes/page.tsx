@@ -34,9 +34,8 @@ const CC_BY_NC = 'https://creativecommons.org/licenses/by-nc/4.0/'
 type Source = {
   name: string
   homepage: string
-  /** O que o VenTu consome desta fonte. */
-  usePt: string
-  useEn: string
+  /** Chave do «o que o VenTu consome» no dicionário (`fontesSources`). */
+  useKey: keyof ReturnType<typeof getTranslation>['fontesSources']
   /** Licença (com link). */
   license: { pt: ReactNode; en: ReactNode }
   /** ID da cadeia de atribuição no módulo partilhado (src/lib/dataSources.tsx). */
@@ -71,8 +70,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Open-Meteo',
       homepage: 'https://open-meteo.com/',
-      usePt: 'Previsões de ondas, vento e marés (MSL) para todos os spots + ERA5 (Historical Marine) para viés/skill do modelo.',
-      useEn: 'Wave, wind and tide (MSL) forecasts for every spot + ERA5 (Historical Marine) for model bias/skill.',
+      useKey: 'openMeteo',
       license: {
         pt: <><A href={CC_BY}>CC BY 4.0</A></>,
         en: <><A href={CC_BY}>CC BY 4.0</A></>,
@@ -82,8 +80,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Instituto Hidrográfico (IH) — marés, isóbatas e avisos',
       homepage: 'https://www.hidrografico.pt/',
-      usePt: 'Marés observadas (OGC API), isóbatas costeiras 8/16/30 m e avisos à navegação costeiros.',
-      useEn: 'Observed tides (OGC API), coastal isobaths 8/16/30 m and coastal navigation warnings.',
+      useKey: 'ihTides',
       license: {
         pt: <><A href={CC_BY}>CC BY 4.0</A></>,
         en: <><A href={CC_BY}>CC BY 4.0</A></>,
@@ -93,8 +90,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Instituto Hidrográfico (IH) — boias ondógrafo',
       homepage: 'https://www.hidrografico.pt/',
-      usePt: 'Boias ondógrafo Datawell + Fugro (OGC API keyless; séries de onda com IH_API_KEY) — leituras de onda observada junto dos spots. Rede gerida pelo Instituto Hidrográfico com a Administração dos Portos da Região Autónoma da Madeira e a Associação para o Estudo do Ambiente Insular.',
-      useEn: 'Datawell + Fugro wave buoys (keyless OGC API; wave series with IH_API_KEY) — observed wave readings near the spots. Network run by Instituto Hidrográfico with Administração dos Portos da Região Autónoma da Madeira and Associação para o Estudo do Ambiente Insular.',
+      useKey: 'ihBuoys',
       license: {
         pt: <><A href={CC_BY_NC}>CC BY-NC 4.0</A></>,
         en: <><A href={CC_BY_NC}>CC BY-NC 4.0</A></>,
@@ -104,8 +100,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'IPMA',
       homepage: 'https://www.ipma.pt/',
-      usePt: 'Avisos meteorológicos (warnings_www.json), radar de precipitação (frames 5 min) e observações de vento de estações.',
-      useEn: 'Weather warnings (warnings_www.json), rain radar (5-min frames) and wind observations from stations.',
+      useKey: 'ipma',
       license: {
         pt: <>Dados abertos IPMA (gratuito, sem key)</>,
         en: <>IPMA open data (free, no key)</>,
@@ -115,8 +110,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'MeteoAlarm (EUMETNET)',
       homepage: 'https://www.meteoalarm.org/',
-      usePt: 'Fallback dos avisos meteorológicos quando o IPMA está em baixo. Particulares: MeteoGate; redistribuidores: API OGC EDR + CAP.',
-      useEn: 'Weather warnings fallback when IPMA is down. Individuals: MeteoGate; re-users: OGC EDR + CAP.',
+      useKey: 'meteoalarm',
       license: {
         pt: <>Termos EUMETNET (MeteoGate / CAP)</>,
         en: <>EUMETNET terms (MeteoGate / CAP)</>,
@@ -126,8 +120,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Copernicus Marine Service',
       homepage: 'https://marine.copernicus.eu/',
-      usePt: 'Boias espanholas (Puertos del Estado) via bucket WMO/GTS público — fallback cross-border do observedWave (sem key).',
-      useEn: 'Spanish buoys (Puertos del Estado) via the public WMO/GTS bucket — keyless cross-border observedWave fallback.',
+      useKey: 'copernicus',
       license: {
         pt: <>Free; atribuição obrigatória</>,
         en: <>Free; attribution required</>,
@@ -137,8 +130,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'EMODnet Bathymetry',
       homepage: 'https://emodnet.ec.europa.eu/en/bathymetry',
-      usePt: 'Sombreado de profundidade (WMS) no mapa de spots — relevo submarino sob as isóbatas.',
-      useEn: 'Depth-shading WMS on the spots map — seafloor relief under the isobaths.',
+      useKey: 'emodnet',
       license: {
         pt: <><A href={CC_BY}>CC BY 4.0</A></>,
         en: <><A href={CC_BY}>CC BY 4.0</A></>,
@@ -148,8 +140,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'OpenSeaMap',
       homepage: 'https://map.openseamap.org/',
-      usePt: 'Sinalização náutica (balizas, faróis, perigos) sobre o mapa de spots — tiles seamark keyless.',
-      useEn: 'Nautical marks (buoys, lights, hazards) over the spots map — keyless seamark tiles.',
+      useKey: 'openseamap',
       license: {
         pt: <><A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A> + <A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM)</>,
         en: <><A href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0</A> + <A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM)</>,
@@ -159,8 +150,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Esri World Imagery',
       homepage: 'https://www.esri.com/',
-      usePt: 'Tiles de satélite no mapa + miniaturas dos spots exportadas nas coordenadas reais de cada praia.',
-      useEn: 'Satellite tiles on the map + spot thumbnails exported at each beach’s real coordinates.',
+      useKey: 'esriImagery',
       license: {
         pt: <>Uso público gratuito com atribuição (Esri Master Agreement)</>,
         en: <>Free public use with attribution (Esri Master Agreement)</>,
@@ -170,8 +160,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'OpenStreetMap / Esri Canvas',
       homepage: 'https://www.openstreetmap.org/copyright',
-      usePt: 'Basemap claro/escuro do mapa de spots (World Dark/Light Gray). CARTO com NEXT_PUBLIC_CARTO_API_KEY.',
-      useEn: 'Light/dark spots-map basemap (World Dark/Light Gray). CARTO when NEXT_PUBLIC_CARTO_API_KEY is set.',
+      useKey: 'osmEsriCanvas',
       license: {
         pt: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + Esri Master Agreement</>,
         en: <><A href="https://www.openstreetmap.org/copyright">ODbL</A> (OSM) + Esri Master Agreement</>,
@@ -181,8 +170,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Ecowitt',
       homepage: 'https://www.ecowitt.net/',
-      usePt: 'Estações meteorológicas da comunidade perto dos spots (vento, temperatura).',
-      useEn: 'Community weather stations near spots (wind, temperature).',
+      useKey: 'ecowitt',
       license: {
         pt: <>Dados comunitários (estações privadas)</>,
         en: <>Community data (private stations)</>,
@@ -192,8 +180,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'METAR (aviation weather)',
       homepage: 'https://aviationweather.gov/',
-      usePt: 'Vento de aeroportos próximos para validar/blendar o vento costeiro.',
-      useEn: 'Airport wind near the coast to validate/blend coastal wind.',
+      useKey: 'metar',
       license: {
         pt: <>Domínio público (NOAA / WMO METAR)</>,
         en: <>Public domain (NOAA / WMO METAR)</>,
@@ -203,8 +190,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'WeatherLink (Davis)',
       homepage: 'https://www.weatherlink.com/',
-      usePt: 'Sensores Davis na praia (vento, temperatura, humidade) — embed do spot.',
-      useEn: 'Davis beach sensors (wind, temperature, humidity) — spot embed.',
+      useKey: 'weatherlink',
       license: {
         pt: <>Widget oficial WeatherLink</>,
         en: <>Official WeatherLink widget</>,
@@ -214,8 +200,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Google Gemini',
       homepage: 'https://ai.google.dev/',
-      usePt: 'Resumos de notícias náuticas gerados por IA (Gemini Flash).',
-      useEn: 'AI-generated nautical news summaries (Gemini Flash).',
+      useKey: 'gemini',
       license: {
         pt: <>Termos Google AI</>,
         en: <>Google AI terms</>,
@@ -225,8 +210,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
     {
       name: 'Unsplash / Pexels',
       homepage: 'https://unsplash.com/license',
-      usePt: 'Fotografias de ambiente por região (home, explorar, sobre).',
-      useEn: 'Regional lifestyle photography (home, explore, about).',
+      useKey: 'unsplash',
       license: {
         pt: (
           <>
@@ -293,7 +277,7 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
                   </a>
                 </td>
                 <td className="py-3 pr-4 text-fg-muted leading-snug">
-                  {isPt ? s.usePt : s.useEn}
+                  {getTranslation(locale).fontesSources[s.useKey]}
                 </td>
                 <td className="py-3 pr-4 text-fg-muted leading-snug whitespace-nowrap">
                   {isPt ? s.license.pt : s.license.en}

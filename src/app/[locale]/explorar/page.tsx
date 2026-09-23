@@ -6,7 +6,7 @@ import { locales } from '@/lib/i18n';
 import {
   SEO_LANDINGS,
   SPORT_LABELS,
-  REGION_LABELS,
+  regionLabel,
   landingTitle,
   type SeoLanding,
 } from '@/lib/seoLandings';
@@ -113,7 +113,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
                       <p className="text-body font-medium text-fg group-hover:text-data-waves transition-colors flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-fg-subtle shrink-0" aria-hidden />
                         {landing.region
-                          ? localizedText(REGION_LABELS[landing.region], locale)
+                          ? regionLabel(landing.region, locale)
                           : landing.slug}
                       </p>
                       <p className="text-meta text-fg-subtle mt-1">
