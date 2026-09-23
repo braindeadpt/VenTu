@@ -43,6 +43,25 @@ function sameDay(a: Date, b: Date): boolean {
     && a.getDate() === b.getDate();
 }
 
+/**
+ * A janela atravessa a meia-noite (hora de fim anterior à de início) — a
+ * mesma regra do `formatBestWindowHours` da homepage. Sem o sufixo «(amanhã)»,
+ * «23h–03h» lê-se como se a janela andasse para trás (o #63 apanhou isto nas
+ * janelas da homepage; a manchete do veredicto tinha o mesmo defeito).
+ */
+function crossesMidnight(startIso: string, endIso: string): boolean {
+  const start = new Date(startIso);
+  const end = new Date(endIso);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return false;
+  return end.getHours() < start.getHours();
+}
+
+/** Sufixo de ambiguidade para janelas que entram pelo dia seguinte. */
+function overnightSuffix(crosses: boolean, isPt: boolean): string {
+  if (!crosses) return '';
+  return isPt ? ' (amanhã)' : ' (tomorrow)';
+}
+
 function toneForScore(score: number): VerdictTone {
   if (score >= 80) return 'epic';
   if (score >= 60) return 'good';
@@ -136,10 +155,13 @@ export function buildSpotVerdict(input: VerdictInput): SpotVerdict | null {
       };
     }
     if (next) {
-      const s = fmtHour(hourly[next.w.start]?.time ?? '', isPt);
-      const e = fmtHour(hourly[next.w.end]?.time ?? '', isPt);
+      const startIso = hourly[next.w.start]?.time ?? '';
+      const endIso = hourly[next.w.end]?.time ?? '';
+      const s = fmtHour(startIso, isPt);
+      const e = fmtHour(endIso, isPt);
+      const overnight = overnightSuffix(crossesMidnight(startIso, endIso), isPt);
       return {
-        headline: isPt ? `${lead} — janela ${s}–${e}` : `${lead} — window ${s}–${e}`,
+        headline: isPt ? `${lead} — janela ${s}–${e}${overnight}` : `${lead} — window ${s}–${e}${overnight}`,
         detail,
         tone,
       };
@@ -162,17 +184,20 @@ export function buildSpotVerdict(input: VerdictInput): SpotVerdict | null {
   }
 
   if (next) {
-    const s = fmtHour(hourly[next.w.start]?.time ?? '', isPt);
-    const e = fmtHour(hourly[next.w.end]?.time ?? '', isPt);
+    const startIso = hourly[next.w.start]?.time ?? '';
+    const endIso = hourly[next.w.end]?.time ?? '';
+    const s = fmtHour(startIso, isPt);
+    const e = fmtHour(endIso, isPt);
+    const overnight = overnightSuffix(crossesMidnight(startIso, endIso), isPt);
     if (sameDay(new Date(next.startT), now)) {
       return {
         headline: isPt
           ? next.w.score >= 60
-            ? `A próxima janela é ${s}–${e} — ainda vais a tempo`
-            : `Janela razoável ${s}–${e} — margem curta`
+            ? `A próxima janela é ${s}–${e}${overnight} — ainda vais a tempo`
+            : `Janela razoável ${s}–${e}${overnight} — margem curta`
           : next.w.score >= 60
-            ? `Next window is ${s}–${e} — still time to go`
-            : `Fair window ${s}–${e} — slim margin`,
+            ? `Next window is ${s}–${e}${overnight} — still time to go`
+            : `Fair window ${s}–${e}${overnight} — slim margin`,
         detail,
         tone: toneForScore(next.w.score),
       };

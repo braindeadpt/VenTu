@@ -103,6 +103,33 @@ describe('buildSpotVerdict', () => {
     expect(v?.headline).toContain('13h–15h');
   });
 
+  it('janela que atravessa a meia-noite (23h→03h) leva «(amanhã)» — mesma regra da homepage', () => {
+    // hourly24() começa às 10:00 locais: índice 13 = 23:00 hoje, 17 = 03:00 amanhã.
+    const windows: MagicWindow[] = [{ start: 13, end: 17, duration: 5, score: 72, reason: '', reasonEn: '' }];
+    const v = buildSpotVerdict({ ...base, hourly: hourly24(), windows });
+    expect(v?.headline).toBe('A próxima janela é 23h–03h (amanhã) — ainda vais a tempo');
+    expect(v?.tone).toBe('good');
+  });
+
+  it('janela overnight com score alto também marca «(amanhã)»', () => {
+    const windows: MagicWindow[] = [{ start: 13, end: 17, duration: 5, score: 72, reason: '', reasonEn: '' }];
+    const v = buildSpotVerdict({ ...base, scoreNow: 70, hourly: hourly24(), windows });
+    expect(v?.headline).toContain('23h–03h (amanhã)');
+  });
+
+  it('janela EN overnight usa «(tomorrow)»', () => {
+    const windows: MagicWindow[] = [{ start: 13, end: 17, duration: 5, score: 72, reason: '', reasonEn: '' }];
+    const v = buildSpotVerdict({ ...base, isPt: false, hourly: hourly24(), windows });
+    expect(v?.headline).toContain('23h–03h (tomorrow)');
+  });
+
+  it('janela no mesmo dia NÃO leva sufixo (não regride o caso normal)', () => {
+    const windows: MagicWindow[] = [{ start: 4, end: 8, duration: 5, score: 72, reason: '', reasonEn: '' }];
+    const v = buildSpotVerdict({ ...base, hourly: hourly24(), windows });
+    expect(v?.headline).toContain('14h–18h');
+    expect(v?.headline).not.toContain('amanhã');
+  });
+
   it('janela amanhã → «Hoje fraco — amanhã…»', () => {
     const hourly = hourly24();
     const windows: MagicWindow[] = [{ start: 20, end: 22, duration: 3, score: 70, reason: '', reasonEn: '' }];
