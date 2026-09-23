@@ -179,6 +179,7 @@ const ES_COGNATES = new Set([
   'Par {key} · {n} spot(s) recalibrado(s): {spots}', // espanhol correcto = PT (tooltip do par)
   'a',                                 // espanhol correcto = PT (preposição)
   'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
+  'Alerta',                            // espanhol correcto = PT (categoria de notícia)
 ]);
 
 /**

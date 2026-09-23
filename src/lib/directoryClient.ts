@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import type { DirectoryEntry, DirectoryKind, DirectorySport, DirectoryTier } from '@/types/directory';
 
 export const DIRECTORY_KIND_LABELS: Record<
@@ -13,11 +14,13 @@ export const DIRECTORY_KIND_LABELS: Record<
   other: { pt: 'Outro', en: 'Other' },
 };
 
-export const DIRECTORY_TIER_LABELS: Record<DirectoryTier, { pt: string; en: string }> = {
-  free: { pt: 'Grátis', en: 'Free' },
-  featured: { pt: 'Destaque', en: 'Featured' },
-  pro: { pt: 'Pro', en: 'Pro' },
-};
+/** Etiqueta do tier do directório — 5 línguas (bloco `directoryTiers`). */
+export function directoryTierLabel(tier: DirectoryTier, locale: string): string {
+  const t = getTranslation(locale).directoryTiers;
+  if (tier === 'free') return t.free;
+  if (tier === 'featured') return t.featured;
+  return 'Pro';
+}
 
 export function tierRank(tier?: DirectoryTier): number {
   if (tier === 'pro') return 3;

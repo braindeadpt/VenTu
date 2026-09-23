@@ -1,6 +1,7 @@
 // Sport-Specific Scoring System
 // Each sport has its own criteria — NO mixed generic score
 
+import { getTranslation } from '@/lib/i18n';
 import { Spot } from '@/types'
 import { SportType, getCompatibleSports } from './sportRatings'
 
@@ -646,16 +647,21 @@ export function getScoreTokens(score: number): ScoreTokens {
   }
 }
 
-const SCORE_TIER_LABELS: Record<ScoreTier, { pt: string; en: string }> = {
-  epic: { pt: 'Épico', en: 'Epic' },
-  good: { pt: 'Bom', en: 'Good' },
-  fair: { pt: 'Razoável', en: 'Fair' },
-  poor: { pt: 'Fraco', en: 'Poor' },
-  closed: { pt: 'Fechado', en: 'Closed' },
-}
-
+/** Etiquetas de tier do score — 5 línguas (bloco `tiers`). */
 export function getScoreTierLabel(tier: ScoreTier, locale: string = 'pt'): string {
-  return SCORE_TIER_LABELS[tier][locale === 'pt' ? 'pt' : 'en']
+  const t = getTranslation(locale).tiers
+  switch (tier) {
+    case 'epic':
+      return t.epic
+    case 'good':
+      return t.good
+    case 'fair':
+      return t.fair
+    case 'poor':
+      return t.poor
+    default:
+      return t.closed
+  }
 }
 
 /**

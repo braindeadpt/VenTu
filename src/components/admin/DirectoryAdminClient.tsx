@@ -19,7 +19,7 @@ import {
   type DirectoryClaimRow,
 } from '@/lib/directoryClaims';
 import type { DirectoryEntry, DirectoryTier } from '@/types/directory';
-import { DIRECTORY_TIER_LABELS } from '@/lib/directoryClient';
+import { directoryTierLabel } from '@/lib/directoryClient';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 
@@ -367,7 +367,7 @@ export default function DirectoryAdminClient({
                       >
                         {(['free', 'featured', 'pro'] as const).map((t) => (
                           <option key={t} value={t}>
-                            {isPt ? DIRECTORY_TIER_LABELS[t].pt : DIRECTORY_TIER_LABELS[t].en}
+                            {directoryTierLabel(t, locale)}
                           </option>
                         ))}
                       </select>
