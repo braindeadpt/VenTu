@@ -127,11 +127,19 @@ inverso de leftovers.
 
 | Superfície | Dívida | Notas |
 |---|---:|---|
-| `src/components/spots` | ~210 | a maior; faseada por componente (SpotListCard, SpotDetailHero, sections, mapa, ScoreWave/WindSourceBadge) |
-| páginas `app/[locale]` | ~61 | por página; algumas têm frases com links inline |
-| `src/components/homepage` | ~52 | homes es/de/fr estão nas baselines |
-| `src/components/ui` | ~33 | ScoreWaveSourceBadge (12, templates com sufixos), FreshnessIndicator (7), ScoreWindSourceBadge (7), DataSourceBadge (3), ConfidenceBadge (2 + lib `forecastConfidence`) |
-| outros | ~20 | `mapSpotNarrative` já feito; restam helpers pontuais |
+| `src/components/spots` | 156 | 35 ficheiros; maiores: WaveBiasSection 20, SpotAlertPopover 19, LocalTipsSection 9, SpotRankedTable 9, SpotDrawer 8, SpotStickyBar 8 |
+| libs partilhadas | ~47 | `spotVerdict` 9, `observations` 8, `observedWave` 8, `buoyLayerNotice` 6, `provenance` 5, `userAlerts` 5, `forecastSkill` 3, `ipmaWarnings` 3 |
+| botões de conta | 14 | `CheckInButton` 7, `FavoriteButton` 7 |
+| helpers restantes | ~19 | `map/hooks/useMapLayers` 2, `MapLayerToggle` 3, `MapSkeleton` 1, … |
+
+### Fechado nesta ronda (continuação autónoma)
+
+| Superfície | Commits | Notas |
+|---|---|---|
+| `ui/**` completo | `8e96deb` `6411c74` `f5828de` `cfa7a3a` | badges de fonte, frescura, confiança + libs (`dataFreshness`, `buoyLayerDowntime`, `forecastConfidence`, `spotImage`, `spotWaterContext`) |
+| `homepage/**` completo | `3640f58` | 52 → 0; `localizedSpotText`, `DATE_LOCALE` exportado, `getMapSportFilterLabel` |
+| `app/[locale]/**` completo | `6a85fef` | 13 páginas, bloco `pages`, `localizedText` para dados PT/EN |
+| `spots` (parcial) | `c0f1a0f` | `MapExploreSheet` + cluster do mapa; bloco `spotsMap` (35 keys) |
 
 Método por bloco: ler ternárias → JSON + acelerador → migrar componente →
 `npm run lint` (com o glob do ficheiro) + `npx tsc --noEmit` +
