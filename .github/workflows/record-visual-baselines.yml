@@ -106,7 +106,27 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add tests/e2e/visual-regression.spec.ts-snapshots tests/e2e/fixtures/data
           git commit -m "chore(visual): refresh Linux baselines (fixture only on shape change)"
-          git push origin "HEAD:${{ inputs.ref }}"
+          # O registo corre ~10 min: se o main avançar nesse intervalo, um
+          # `git push` simples é rejeitado (non-fast-forward) e as baselines
+          # perdem-se no runner efémero — incidente de 2026-09-23 01:45, que
+          # deixou o CI vermelho na pixel gate sem ninguém perceber porquê.
+          # Rebase sobre o main mais recente e nova tentativa, como o
+          # scripts/push-data-update.sh faz para os dados.
+          pushed=0
+          for attempt in $(seq 1 6); do
+            git fetch -q origin "${{ inputs.ref }}"
+            if git rebase "origin/${{ inputs.ref }}" && git push origin "HEAD:${{ inputs.ref }}"; then
+              pushed=1
+              break
+            fi
+            echo "Push rejeitado (tentativa ${attempt}/6) — rebase e nova tentativa…"
+            git rebase --abort 2>/dev/null || true
+            sleep $((attempt * 5))
+          done
+          if [ "$pushed" != "1" ]; then
+            echo "::error::Não foi possível publicar as baselines após 6 tentativas (main movia-se a cada rebase?)"
+            exit 1
+          fi
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
       - name: Summary
