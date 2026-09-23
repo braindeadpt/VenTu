@@ -5,17 +5,24 @@
 > [`scripts/check-data-history-budget.js`](../scripts/check-data-history-budget.js)
 > corre no job `quality` do CI e falha se a árvore trackeada passar o tecto.
 
-## Estado (2026-09-22)
+## Estado (2026-09-23)
 
 | Grupo | Ficheiros | Peso |
 |---|---:|---:|
-| `public/data/forecasts/` (1 por spot, reescrito a cada corrida) | 185 | 10,3 MB |
-| `public/data/radar/frames/` (PNG do radar IPMA) | 38 | 1,9 MB |
-| Restantes JSON de topo (`conditions.json`, `directory.json`, …) | 32 | ~14 MB |
-| **Total trackeado** | **256** | **26 MB** |
+| `public/data/forecasts/` (1 por spot, reescrito a cada corrida) | 184 | 9,7 MB |
+| `public/data/radar/frames/` (PNG do radar IPMA — carrossel + `ipma-radar.png`) | 13 | 0,9 MB |
+| Restantes JSON de topo (`conditions.json`, `directory.json`, …) | 34 | 13,4 MB |
+| **Total trackeado** | **231** | **24,1 MB** |
 
 **Orçamento actual (CI):** 300 ficheiros / 32 MB — folga para o crescimento
 normal, falha antes de se tornar um problema de histórico.
+
+> 2026-09-23: o guard disparou a **302 ficheiros** — 72 frames de radar
+> acumulados (o manifesto só usa 12). Causa: uma corrida que falhava a meio do
+> fetch deixava os PNG escritos sem correr o prune (que só existia no fim).
+> Corrigido no próprio pipeline: `fetch-ipma-radar.js` faz agora uma **limpeza
+> defensiva antes do fetch**, deixando só o que o manifesto actual referencia —
+> uma corrida falhada é limpa pela seguinte, em vez de acumular no git.
 
 ## Porque cresce
 
@@ -36,6 +43,9 @@ commita tudo o que mudou. Consequências:
 Curto prazo (feito):
 - Orçamento + guard no CI (este documento + script), para o crescimento
   anormal aparecer cedo e com mensagem accionável.
+- **Limpeza defensiva dos frames** (`fetch-ipma-radar.js`): antes do fetch,
+  remove tudo o que o manifesto actual não referencia — auto-curativa para
+  corridas falhadas (2026-09-23).
 - Excepções do `.gitignore` revistas (`!public/data/.gitkeep`,
   `!public/data/community-tips.json`; o resto é gerido pelo pipeline).
 

@@ -29,6 +29,38 @@ const META_PATH = path.join(DATA_DIR, 'radar.json');
 /** Carousel size — the last hour at the 5-min IPMA cadence. */
 const FRAME_COUNT = 12;
 
+/**
+ * Remove do directório os frames que não estão em `keep`.
+ *
+ * Corre ANTES do fetch (keep = frames do manifesto actual) e depois (keep =
+ * carrossel novo). Sem a passagem defensiva, uma corrida que falha a meio
+ * (rede) deixava os frames escritos no directório sem correr o prune —
+ * acumulavam no git para sempre. Foi assim que a árvore chegou a 84 frames
+ * quando o manifesto só usa 12 (ver docs/DATA-HISTORY.md).
+ */
+function pruneFrames(keep) {
+  let removed = 0;
+  for (const file of fs.readdirSync(FRAMES_DIR)) {
+    if (!file.endsWith('.png')) continue;
+    if (keep.has(file)) continue;
+    fs.unlinkSync(path.join(FRAMES_DIR, file));
+    removed += 1;
+  }
+  return removed;
+}
+
+/** Frames referenciados pelo manifesto actual (o que o site usa). */
+function currentManifestFrames() {
+  try {
+    const data = JSON.parse(fs.readFileSync(META_PATH, 'utf8'));
+    const paths = (data.frames ?? []).map((f) => f.framePath).filter(Boolean);
+    return new Set(paths);
+  } catch {
+    // Sem manifesto legível não apagamos nada (fail-safe).
+    return null;
+  }
+}
+
 async function run() {
   console.log('🌧️  IPMA radar — fetching latest frames...');
   const frames = await fetchRadarManifest();
@@ -38,6 +70,13 @@ async function run() {
   }
 
   fs.mkdirSync(FRAMES_DIR, { recursive: true });
+
+  // Limpeza defensiva: deixa só o que o manifesto actual referencia.
+  const manifestKeep = currentManifestFrames();
+  if (manifestKeep) {
+    const stale = pruneFrames(manifestKeep);
+    if (stale > 0) console.log(`🧹 ${stale} frame(s) fora do manifesto removido(s)`);
+  }
 
   const saved = [];
   for (const frame of picked) {
@@ -54,11 +93,7 @@ async function run() {
   }
 
   // Prune stale frames no longer in the carousel set.
-  for (const file of fs.readdirSync(FRAMES_DIR)) {
-    if (file.endsWith('.png') && !saved.includes(file)) {
-      fs.unlinkSync(path.join(FRAMES_DIR, file));
-    }
-  }
+  pruneFrames(new Set(saved));
 
   // Keep ipma-radar.png = newest frame (backward compat with the old single-frame layout).
   fs.copyFileSync(path.join(FRAMES_DIR, picked[0].path), IMAGE_PATH);
