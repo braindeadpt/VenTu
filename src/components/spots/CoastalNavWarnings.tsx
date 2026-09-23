@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { Anchor, ExternalLink, Map } from 'lucide-react';
 import {
@@ -18,6 +19,7 @@ interface CoastalNavWarningsProps {
  *  por um aviso em vigor (nunca mostra a secção vazia). */
 export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarningsProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).spotsUi;
   const [warnings, setWarnings] = useState<CoastalNavWarning[] | null | undefined>(undefined);
 
   useEffect(() => {
@@ -51,7 +53,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <p className="text-meta-sm font-semibold text-fg inline-flex items-center gap-1.5">
           <Anchor className="w-3.5 h-3.5 text-score-poor shrink-0" aria-hidden />
-          {isPt ? 'Avisos à navegação costeira' : 'Coastal navigation warnings'}
+          {t.coastalNavWarnings}
         </p>
         {/* Navega para o /mapa fullscreen com a camada de avisos já ligada e
             centrada na área coberta (deep link ?spot=). */}
@@ -61,7 +63,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
           data-testid="coastal-nav-warnings-map-link"
         >
           <Map className="w-3.5 h-3.5" aria-hidden />
-          {isPt ? 'Ver no mapa' : 'View on map'}
+          {t.viewOnMapShort}
         </a>
       </div>
       {ih.length > 0 && (
@@ -77,7 +79,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1 ml-1.5 text-data-waves hover:text-data-waves/80 transition-colors"
                 >
-                  {isPt ? 'detalhe' : 'details'}
+                  {t.detailsWord}
                   <ExternalLink className="w-3 h-3" aria-hidden />
                 </a>
               ) : null}
@@ -89,7 +91,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
         <div className="mt-2 pt-2 border-t border-score-poor/20" data-testid="coastal-nav-warnings-es">
           <p className="text-meta-sm font-semibold text-fg inline-flex items-center gap-1.5 mb-1">
             <Anchor className="w-3.5 h-3.5 text-data-waves shrink-0" aria-hidden />
-            {isPt ? 'Avisos a los navegantes (ES, cross-border)' : 'Avisos a los navegantes (ES, cross-border)'}
+            Avisos a los navegantes (ES, cross-border)
           </p>
           <ul className="space-y-1.5 list-none p-0 m-0">
             {es.map((w) => (
@@ -103,7 +105,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 ml-1.5 text-data-waves hover:text-data-waves/80 transition-colors"
                   >
-                    {isPt ? 'detalhe' : 'details'}
+                    {t.detailsWord}
                     <ExternalLink className="w-3 h-3" aria-hidden />
                   </a>
                 ) : null}
@@ -113,9 +115,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
         </div>
       )}
       <p className="text-meta-xs text-fg-subtle mt-1.5">
-        {isPt
-          ? 'Fontes: Instituto Hidrográfico · Avisos à Navegação Costeiros (CC-BY 4.0) e Instituto Hidrográfico de la Marina · Avisos a los navegantes (quando disponíveis)'
-          : 'Sources: Instituto Hidrográfico · Coastal Navigation Warnings (CC-BY 4.0) and Instituto Hidrográfico de la Marina · Avisos a los navegantes (when available)'}
+        {t.navSources}
       </p>
     </div>
   );

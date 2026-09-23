@@ -1,5 +1,6 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { useEffect, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import type { GridSportFilter } from '@/lib/sportRatings';
@@ -53,23 +54,13 @@ export default function SpotGridRankedList({
   // em /spots, /explorar e /modalidades é a lista inteira — vira «Ranking».
   const title = !excludeSlugs?.length
     ? selectedSport === 'all'
-      ? isPt
-        ? 'Ranking de spots'
-        : 'Spot ranking'
-      : isPt
-        ? `Ranking — ${sportLabel}`
-        : `Ranking — ${sportLabel}`
+      ? getTranslation(locale).ranked.spotRanking
+      : `Ranking — ${sportLabel}`
     : selectedSport === 'all'
-      ? isPt
-        ? 'Mais spots para explorar'
-        : 'More spots to explore'
-      : isPt
-        ? `Mais spots para ${sportLabel}`
-        : `More spots for ${sportLabel}`;
+      ? t.spotsUi.moreSpots
+      : t.spotsUi.moreSpotsFor.replace('{sport}', sportLabel);
 
-  const subtitle = isPt
-    ? 'Ordenados por score · filtros activos'
-    : 'Sorted by score · active filters';
+  const subtitle = t.spotsUi.sortedByScore;
 
   return (
     <section className="mb-10" aria-labelledby="spot-ranked-heading">
@@ -91,12 +82,12 @@ export default function SpotGridRankedList({
               compact
               withImage
               spot={data.spot}
-              name={isPt ? data.spot.name : data.spot.nameEn}
-              region={isPt ? data.spot.region : data.spot.regionEn}
+              name={localizedSpotName(data.spot, locale)}
+              region={localizedSpotRegion(data.spot, locale)}
               score={getGridSpotScore(data, selectedSport)}
               conditions={data.conditions}
               href={spotDetailHref(locale, data.spot.slug, selectedSport)}
-              locale={isPt ? 'pt' : 'en'}
+              locale={locale}
               calmWaterLabel={getCalmWaterMetricLabel(
                 data.spot,
                 data.conditions.waveHeight,
@@ -114,11 +105,11 @@ export default function SpotGridRankedList({
             size="md"
             onClick={() => setPages((p) => p + 1)}
             rightIcon={<ChevronDown className="w-4 h-4" aria-hidden />}
-            locale={locale as 'pt' | 'en'}
+            locale={locale}
           >
-            {isPt
-              ? `Ver mais ${Math.min(remaining, PAGE_SIZE)} de ${remaining} spots`
-              : `Show ${Math.min(remaining, PAGE_SIZE)} more of ${remaining} spots`}
+            {t.spotsUi.showMoreSpots
+              .replace('{n}', String(Math.min(remaining, PAGE_SIZE)))
+              .replace('{total}', String(remaining))}
           </Button>
         </div>
       )}

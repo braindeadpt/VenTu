@@ -93,7 +93,7 @@ export default function SpotLogisticsPanel({
               <span className="capitalize">{region}</span>
               <span aria-hidden>·</span>
               <span>{difficultyLabel}</span>
-              <span>{getDifficultyLabel(spot.difficulty, isPt)}</span>
+              <span>{getDifficultyLabel(spot.difficulty, locale)}</span>
             </p>
           </div>
           <p className="text-body text-fg-muted leading-relaxed flex-1">{description}</p>

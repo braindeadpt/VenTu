@@ -1,5 +1,6 @@
 'use client';
 
+import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { AlertTriangle, CloudRain, ExternalLink } from 'lucide-react';
@@ -15,11 +16,11 @@ import {
 } from '@/lib/ipmaWarnings';
 import CoastalNavWarnings from '@/components/spots/CoastalNavWarnings';
 
-function formatEndDate(iso: string | undefined, isPt: boolean): string {
+function formatEndDate(iso: string | undefined, locale: string): string {
   if (!iso) return '';
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(isPt ? 'pt-PT' : 'en-GB', {
+  return d.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
@@ -40,6 +41,7 @@ export default function SpotWarningsSection({
 }) {
   const [data, setData] = useState<IpmaWarningsData | null>(null);
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).spotsUi;
 
   useEffect(() => {
     // Optional layer — never break the spot page on failure.
@@ -60,7 +62,7 @@ export default function SpotWarningsSection({
         {!embedded && (
           <h2 className="text-h3 text-fg flex items-center gap-2">
             <AlertTriangle className="w-4 h-4 text-score-poor shrink-0" aria-hidden />
-            {isPt ? 'Avisos e radar' : 'Warnings & radar'}
+            {t.warningsRadar}
           </h2>
         )}
         <a
@@ -70,22 +72,18 @@ export default function SpotWarningsSection({
           className="inline-flex items-center gap-1.5 min-h-[44px] -my-2 text-meta-sm font-medium text-data-waves hover:text-data-waves/80 transition-colors"
         >
           <CloudRain className="w-4 h-4 shrink-0" aria-hidden />
-          {isPt ? 'Radar de chuva (IPMA)' : 'Rain radar (IPMA)'}
+          {t.rainRadarIpma}
           <ExternalLink className="w-3.5 h-3.5" aria-hidden />
         </a>
       </div>
 
       {data === null ? (
         <p className="text-meta-sm text-fg-muted">
-          {isPt
-            ? 'Avisos indisponíveis neste momento.'
-            : 'Warnings unavailable right now.'}
+          {t.warningsUnavailable}
         </p>
       ) : warnings.length === 0 ? (
         <p className="text-meta-sm text-fg-muted">
-          {isPt
-            ? 'Sem avisos activos relevantes para esta região.'
-            : 'No active warnings relevant to this region.'}
+          {t.noActiveWarnings}
         </p>
       ) : (
         <ul className="space-y-2 list-none p-0 m-0" data-visual-dynamic>
@@ -102,7 +100,7 @@ export default function SpotWarningsSection({
                   {warningLevelLabel(w.level, locale)}
                 </span>
                 <span className="text-meta-sm text-fg-muted">
-                  {w.endTime ? `${isPt ? 'até' : 'until'} ${formatEndDate(w.endTime, isPt)}` : ''}
+                  {w.endTime ? t.untilWord.replace('{date}', formatEndDate(w.endTime, locale)) : ''}
                 </span>
               </div>
               {w.text ? (

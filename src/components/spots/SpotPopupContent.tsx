@@ -158,7 +158,7 @@ export function SpotPopupContent({
           )}
         </div>
         <p className="text-[11px] text-fg-muted">
-          {region} · {getDifficultyLabel(spot.difficulty, isPt)}
+          {region} · {getDifficultyLabel(spot.difficulty, locale)}
         </p>
         {scoreFactors.length > 0 && (
           <p

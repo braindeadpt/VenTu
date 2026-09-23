@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/cn';
 import {
   isObservedWaveFresh,
@@ -54,6 +55,7 @@ export default function ObservedWaveSourcesChip({
   freshnessNowMs,
 }: ObservedWaveSourcesChipProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).spotsUi;
   if (!observedWave || !altWave) return null;
   if (!isObservedWaveFresh(observedWave, freshnessNowMs) || !isObservedWaveFresh(altWave, freshnessNowMs))
     return null;
@@ -72,12 +74,15 @@ export default function ObservedWaveSourcesChip({
     // Tooltip com a hora EXACTA da leitura (Europe/Lisbon, mesmo relógio do
     // hero) + nome da estação — além da idade relativa mostrada no chip.
     const srcLabel = isIh ? 'IH' : 'WMO';
-    const agePart = `(${fmtAgeHours(ageH)}${km ? (isPt ? `, a ${km}` : `, ${km} away`) : ''})`;
+    const agePart = `(${fmtAgeHours(ageH)}${km ? t.kmAway.replace('{km}', km) : ''})`;
     const station = w.stationName?.trim() || w.stationArea?.trim() || '';
     const clock = formatObservedClockTime(w.observedAt, locale);
-    const title = isPt
-      ? `${srcLabel}${winner ? ' ✓' : ''} ${agePart} · ${station ? `${station} · ` : ''}leitura ${clock}`
-      : `${srcLabel}${winner ? ' ✓' : ''} ${agePart} · ${station ? `${station} · ` : ''}reading ${clock}`;
+    const title = t.waveSourcesTitle
+      .replace('{src}', srcLabel)
+      .replace('{winner}', winner ? ' ✓' : '')
+      .replace('{age}', agePart)
+      .replace('{station}', station ? `${station} · ` : '')
+      .replace('{clock}', clock);
     return {
       key: w.source,
       winner,
@@ -95,7 +100,7 @@ export default function ObservedWaveSourcesChip({
         className,
       )}
       role="group"
-      aria-label={isPt ? 'Fontes de onda observada (IH vs WMO)' : 'Observed wave sources (IH vs WMO)'}
+      aria-label={t.waveSourcesAria}
     >
       {segments.map((s) => (
         <span
@@ -112,11 +117,7 @@ export default function ObservedWaveSourcesChip({
           {s.winner ? <span aria-hidden>✓</span> : null}
           <span className="font-mono tabular-nums text-fg-subtle">
             ({s.age}
-            {s.km
-              ? isPt
-                ? `, a ${s.km}`
-                : `, ${s.km} away`
-              : ''})
+            {s.km ? t.kmAway.replace('{km}', s.km) : ''})
           </span>
         </span>
       ))}

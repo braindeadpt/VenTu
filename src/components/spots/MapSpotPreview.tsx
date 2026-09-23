@@ -96,7 +96,7 @@ export default function MapSpotPreview({
         <p className="text-meta text-fg-muted">
           {localizedSpotRegion(spot, locale)}
           <span aria-hidden> · </span>
-          <span className="capitalize">{getDifficultyLabel(spot.difficulty, isPt)}</span>
+          <span className="capitalize">{getDifficultyLabel(spot.difficulty, locale)}</span>
         </p>
         <p className="text-body-sm text-fg leading-snug pt-1">{narrative}</p>
         {tideLine ? (

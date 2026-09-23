@@ -24,6 +24,8 @@ const SHARED_TOKENS = new Set([
   'offshore', // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Offshore', // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
   'Onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Multisport', // termo adoptado em pt/es/de/fr (tipo de spot)
+  'Expert',   // termo adoptado em pt/en/es/de/fr (nível de dificuldade)
   'onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
 ]);
@@ -152,6 +154,8 @@ const ES_COGNATES = new Set([
   'Insuficiente',                      // espanhol correcto = PT (veredicto de amostra)
   '{count} aviso',                     // espanhol correcto = PT (contagem de avisos)
   '{count} avisos',                    // espanhol correcto = PT (contagem de avisos)
+  'Ordenados por score · filtros activos', // espanhol correcto = PT (subtítulo da lista)
+  ', a {km}',                          // espanhol correcto = PT (distância à boia)
 ]);
 
 /**
@@ -185,6 +189,7 @@ const EN_COGNATES = new Set([
   ' · {n} frames',
   'flat',                // termo adoptado em PT e EN (frase de tier «flat»)
   'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
+  'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
