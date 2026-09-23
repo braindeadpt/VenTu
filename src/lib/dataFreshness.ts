@@ -47,7 +47,7 @@ export function getDataFreshness(updatedAt?: string | number | null, nowMs?: num
   return 'very-stale';
 }
 
-const DATE_LOCALE: Record<string, string> = {
+export const DATE_LOCALE: Record<string, string> = {
   pt: 'pt-PT',
   en: 'en-GB',
   es: 'es-ES',

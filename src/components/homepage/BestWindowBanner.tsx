@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { BestWindowToday } from '@/lib/bestWindowToday';
 import { formatBestWindowHours } from '@/lib/bestWindow';
@@ -12,20 +13,6 @@ interface BestWindowBannerProps {
   displayScore?: number;
 }
 
-const TIER_LABEL_PT: Record<ReturnType<typeof getScoreTokens>['tier'], string> = {
-  epic: 'Épico',
-  good: 'Bom',
-  fair: 'Médio',
-  poor: 'Fraco',
-  closed: 'Sem janela',
-};
-const TIER_LABEL_EN: Record<ReturnType<typeof getScoreTokens>['tier'], string> = {
-  epic: 'Epic',
-  good: 'Good',
-  fair: 'Fair',
-  poor: 'Poor',
-  closed: 'No window',
-};
 
 /**
  * "Onde está bom hoje?" — Best-window strip with the top spot, score and
@@ -38,22 +25,28 @@ export default function BestWindowBanner({
   locale,
   displayScore,
 }: BestWindowBannerProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).homepage;
   const score = displayScore ?? window.score;
   const tokens = getScoreTokens(score);
   const tier = window.tier ?? tokens.tier;
-  const tierLabel = isPt ? TIER_LABEL_PT[tier] : TIER_LABEL_EN[tier];
+  const tierLabel = {
+    epic: t.bwTierEpic,
+    good: t.bwTierGood,
+    fair: t.bwTierFair,
+    poor: t.bwTierPoor,
+    closed: t.bwTierClosed,
+  }[tier];
   const hours = formatBestWindowHours(window, locale);
 
   return (
     <Link
       href={`/${locale}/spots/${spotSlug}/`}
       className="group inline-flex items-center gap-3 sm:gap-4 px-3 sm:px-4 py-2 sm:py-2.5 rounded-pill bg-bg-base/55 backdrop-blur-md border border-divider hover:border-divider-strong transition-colors duration-base ease-out max-w-full"
-      aria-label={
-        isPt
-          ? `Melhor janela hoje: ${tierLabel} ${hours} em ${spotName}, score ${score}`
-          : `Best window today: ${tierLabel} ${hours} at ${spotName}, score ${score}`
-      }
+      aria-label={t.bestWindowAria
+        .replace('{tier}', tierLabel)
+        .replace('{hours}', hours)
+        .replace('{name}', spotName)
+        .replace('{score}', String(score))}
     >
       <span
         className={[
@@ -71,7 +64,7 @@ export default function BestWindowBanner({
           {tierLabel} {hours}
         </span>
         <span className="text-meta text-fg-muted truncate font-mono tabular-nums">
-          {isPt ? 'em' : 'at'} {spotName}
+          {t.bestWindowAt} {spotName}
         </span>
       </div>
     </Link>

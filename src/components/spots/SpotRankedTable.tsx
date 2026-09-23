@@ -126,7 +126,7 @@ export default function SpotRankedTable({
               const href = spotDetailHref(locale, spot.slug, selectedSport);
               const name = isPt ? spot.name : spot.nameEn;
               const region = isPt ? spot.region : spot.regionEn;
-              const calmLabel = getCalmWaterMetricLabel(spot, conditions.waveHeight, isPt);
+              const calmLabel = getCalmWaterMetricLabel(spot, conditions.waveHeight, locale);
               const swellMatch = directionInSectorList(
                 conditions.waveDirection,
                 spot.bestSwell,

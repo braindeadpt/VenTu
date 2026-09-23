@@ -1,5 +1,7 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { getTranslation } from '@/lib/i18n';
 import { useMemo } from 'react';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -8,6 +10,7 @@ import {
   getScoreForFilter,
   readSportFromStorage,
   type HomepageSpotData,
+  getSportLabel,
 } from '@/lib/homepageSport';
 import { tierPhrase } from '@/lib/voice';
 import SpotListCard from '@/components/spots/SpotListCard';
@@ -24,7 +27,8 @@ export default function HomepageFavoritesNow({
   favoriteIds,
 }: HomepageFavoritesNowProps) {
   const isPt = locale === 'pt';
-  const cardLocale = isPt ? 'pt' : 'en';
+  const t = getTranslation(locale);
+  const cardLocale = locale;
   const preferredSport = readSportFromStorage();
 
   const cards = useMemo(() => {
@@ -56,17 +60,15 @@ export default function HomepageFavoritesNow({
         id="your-spots-heading"
         className="font-display text-display-lg text-fg tracking-tight mb-1"
       >
-        {isPt ? 'Os teus spots, agora' : 'Your spots, right now'}
+        {t.homepage.yourSpotsNow}
       </h2>
       <p className="text-meta text-fg-muted mb-4">
-        {isPt
-          ? 'Favoritos com condições frescas — toca para ver o spot'
-          : 'Favorites with fresh conditions — tap to open'}
+        {t.homepage.favoritesFresh}
       </p>
 
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 list-none p-0 m-0">
         {cards.map(({ data, sport, score }, i) => {
-          const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
+          const sportLabel = getSportLabel(sport, locale);
           const statusLine = tierPhrase(score, locale);
 
           return (
@@ -78,8 +80,8 @@ export default function HomepageFavoritesNow({
               <SpotListCard
                 withImage
                 spot={data.spot}
-                name={isPt ? data.spot.name : data.spot.nameEn}
-                region={isPt ? data.spot.region : data.spot.regionEn}
+                name={localizedSpotName(data.spot, locale)}
+                region={localizedSpotRegion(data.spot, locale)}
                 score={score}
                 conditions={data.conditions}
                 href={spotDetailHref(locale, data.spot.slug, sport)}

@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Bell, X } from 'lucide-react';
@@ -30,6 +31,7 @@ export function trackSpotView(): void {
  */
 export default function SignupNudge({ locale }: SignupNudgeProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
   const { session } = useAuth();
   const [visible, setVisible] = useState(false);
 
@@ -77,16 +79,14 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
           <Bell className="w-4 h-4" />
         </div>
         <p className="flex-1 text-body-sm text-fg leading-snug">
-          {isPt
-            ? 'Recebes as condições dos teus spots todas as manhãs (~7h30). Cria conta gratuita.'
-            : 'Get your spots\' conditions every morning (~7:30 AM). Create a free account.'}
+          {t.homepage.signupNudgeBody}
         </p>
         <div className="flex items-center justify-end gap-2 shrink-0">
           <Link
             href={`/${locale}/conta/`}
             className="inline-flex items-center min-h-[44px] px-4 rounded-input text-meta-sm font-semibold bg-accent text-bg-base hover:bg-accent-hover transition-colors motion-reduce:transition-none"
           >
-            {isPt ? 'Criar conta' : 'Sign up'}
+            {t.homepage.signUp}
           </Link>
           {/* Dismiss: texto em sm+, × compacto em mobile — com os dois botões
               lado a lado o nudge chegava a 132px e tapava o fundo da página
@@ -95,15 +95,15 @@ export default function SignupNudge({ locale }: SignupNudgeProps) {
             type="button"
             onClick={handleDismiss}
             className="hidden sm:inline-flex items-center min-h-[44px] px-3 rounded-input text-meta-sm text-fg-muted hover:text-fg transition-colors"
-            aria-label={isPt ? 'Fechar' : 'Close'}
+            aria-label={t.homepage.close}
           >
-            {isPt ? 'Agora não' : 'Not now'}
+            {t.homepage.notNow}
           </button>
           <button
             type="button"
             onClick={handleDismiss}
             className="inline-flex sm:hidden items-center justify-center min-w-[44px] min-h-[44px] rounded-input text-fg-muted hover:text-fg transition-colors"
-            aria-label={isPt ? 'Agora não' : 'Not now'}
+            aria-label={t.homepage.notNow}
           >
             <X className="w-4 h-4" aria-hidden />
           </button>

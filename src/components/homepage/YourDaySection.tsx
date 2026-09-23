@@ -1,5 +1,7 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { getTranslation } from '@/lib/i18n';
 import { useMemo } from 'react';
 import Link from 'next/link';
 import { Sun, Waves, Wind, ArrowRight } from 'lucide-react';
@@ -9,6 +11,7 @@ import { spotDetailHref } from '@/lib/gridSpotScore';
 import {
   getScoreForFilter,
   type HomepageSpotData,
+  getSportLabel,
 } from '@/lib/homepageSport';
 import { getScoreTokens } from '@/lib/sportScore';
 import {
@@ -30,6 +33,7 @@ export default function YourDaySection({
   favoriteIds,
   activeSport = 'all',
 }: YourDaySectionProps) {
+  const t = getTranslation(locale).homepage;
   const isPt = locale === 'pt';
 
   const cards = useMemo(() => {
@@ -76,20 +80,18 @@ export default function YourDaySection({
             <Sun className="w-5 h-5" />
           </div>
           <h2 className="font-display text-h2 text-fg font-semibold">
-            {isPt ? 'O teu dia' : 'Your day'}
+            {t.yourDay}
           </h2>
           <p className="text-body text-fg-muted max-w-sm mx-auto">
-            {isPt
-              ? 'Adiciona spots aos favoritos e vê aqui as condições de hoje num relance.'
-              : 'Add spots to your favorites to see today\'s conditions at a glance.'}
+            {t.addFavoritesHint}
           </p>
           <Button
             variant="primary"
             size="md"
             href={`/${locale}/spots/`}
-            locale={isPt ? 'pt' : 'en'}
+            locale={locale}
           >
-            {isPt ? 'Explorar spots' : 'Explore spots'}
+            {t.exploreSpots}
           </Button>
         </div>
       </section>
@@ -108,25 +110,25 @@ export default function YourDaySection({
             id="your-day-heading"
             className="font-display text-display-lg text-fg tracking-tight"
           >
-            {isPt ? 'O teu dia' : 'Your day'}
+            {t.yourDay}
           </h2>
           <span className="text-meta-sm text-fg-muted font-mono tabular-nums">
-            · {cards.length} {isPt ? 'spot' : 'spot'}{cards.length !== 1 ? 's' : ''}
+            · {cards.length} spot{cards.length !== 1 ? 's' : ''}
           </span>
         </div>
         <Link
           href={`/${locale}/spots/`}
           className="text-meta-sm text-data-waves hover:text-data-waves/80 transition-colors"
         >
-          {isPt ? 'Editar favoritos' : 'Edit favorites'}
+          {t.editFavorites}
         </Link>
       </div>
 
       <ul className="space-y-2 list-none p-0 m-0">
         {cards.map(({ data, sport, score, window }, i) => {
-          const name = isPt ? data.spot.name : data.spot.nameEn;
+          const name = localizedSpotName(data.spot, locale);
           const tokens = getScoreTokens(score);
-          const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
+          const sportLabel = getSportLabel(sport, locale);
           const windKt = Math.round(data.conditions.windSpeed * 1.94384);
           const waveM = data.conditions.waveHeight.toFixed(1);
 

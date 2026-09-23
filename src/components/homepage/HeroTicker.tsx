@@ -1,5 +1,7 @@
+import { getTranslation } from '@/lib/i18n';
 import { AlertTriangle } from 'lucide-react';
 import {
+  DATE_LOCALE,
   formatForecastUpdatedParts,
   getAgeHours,
 } from '@/lib/dataFreshness';
@@ -34,26 +36,28 @@ function freshnessDotClass(ageHours: number | null): string {
   return 'bg-score-poor';
 }
 
-/** Short pt/en labels for each non-ok buoy state. */
-function buoyLayerLabel(status: NonNullable<BuoyLayerMeta>['status'], isPt: boolean): string {
+type UiLabels = ReturnType<typeof getTranslation>['ui'];
+
+/** Etiquetas curtas por estado não-ok (mesmas do FreshnessIndicator). */
+function buoyLayerLabel(status: NonNullable<BuoyLayerMeta>['status'], t: UiLabels): string {
   switch (status) {
     case 'no-key':
-      return isPt ? 'Boias: sem key' : 'Buoys: no key';
+      return t.buoyNoKey;
     case 'down':
-      return isPt ? 'Boias: em baixo' : 'Buoys: down';
+      return t.buoyDown;
     case 'stale':
-      return isPt ? 'Boias: leituras antigas' : 'Buoys: stale';
+      return t.buoyStale;
     default:
       return '';
   }
 }
 
-function coastalLayerLabel(status: NonNullable<CoastalWarningsLayerMeta>['status'], isPt: boolean): string {
+function coastalLayerLabel(status: NonNullable<CoastalWarningsLayerMeta>['status'], t: UiLabels): string {
   switch (status) {
     case 'down':
-      return isPt ? 'Avisos costeiros: sem dados' : 'Coastal warnings: no data';
+      return t.coastalNoData;
     case 'stale':
-      return isPt ? 'Avisos costeiros: desactualizados' : 'Coastal warnings: stale';
+      return t.coastalStale;
     default:
       return '';
   }
@@ -67,7 +71,19 @@ export default function HeroTicker({
   coastalWarningsLayer,
 }: HeroTickerProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
   const ageHours = updatedAtTs != null ? getAgeHours(updatedAtTs) : null;
+  const layerCopy = {
+    waves: {
+      label: t.homepage.layerWaves,
+      detail: 'Marine API · DWD EWAM, ECMWF WAM, GFS Wave, GWAM',
+    },
+    wind: {
+      label: t.homepage.layerWind,
+      detail: 'Weather API · ICON-EU, ECMWF IFS, GFS, Météo-France',
+    },
+    tides: { label: t.homepage.layerTides, detail: t.homepage.layerTidesDetail },
+  } as const;
   const updated =
     updatedAtTs != null ? formatForecastUpdatedParts(updatedAtTs, locale) : null;
   const buoyStatus = buoyLayer && buoyLayer.status !== 'ok' ? buoyLayer.status : null;
@@ -83,15 +99,7 @@ export default function HeroTicker({
     <div
       role="status"
       aria-live="polite"
-      aria-label={
-        statusLine
-          ? isPt
-            ? `${statusLine}. Actualização das previsões e fontes de dados`
-            : `${statusLine}. Forecast update time and data sources`
-          : isPt
-            ? 'Actualização das previsões e fontes de dados'
-            : 'Forecast update time and data sources'
-      }
+      aria-label={statusLine ? `${statusLine}. ${t.homepage.tickerAria}` : t.homepage.tickerAria}
       className="pointer-events-auto w-full px-0 sm:px-1 py-0"
     >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta">
@@ -122,7 +130,7 @@ export default function HeroTicker({
             </time>
           ) : (
             <span className="text-fg-muted">
-              {isPt ? 'Hora de actualização indisponível' : 'Update time unavailable'}
+              {t.homepage.updateTimeUnavailable}
             </span>
           )}
         </span>
@@ -130,13 +138,9 @@ export default function HeroTicker({
         {buoyStatus ? (
           <span
             className="inline-flex items-center gap-1 shrink-0"
-            title={
-              isPt
-                ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo' +
-                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, locale)}` : '')
-                : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts' +
-                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, locale)}` : '')
-            }
+            title={`${t.ui.buoyLayerTitle}${
+              buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, locale)}` : ''
+            }`}
           >
             {SEP}
             <AlertTriangle
@@ -147,7 +151,7 @@ export default function HeroTicker({
               className={`font-medium ${buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor'}`}
               data-buoy-streak="true"
             >
-              {buoyLayerLabel(buoyStatus, isPt)}
+              {buoyLayerLabel(buoyStatus, t.ui)}
               {buoyDowntime ? formatBuoyLayerDowntimeSuffix(buoyDowntime) : ''}
             </span>
           </span>
@@ -157,15 +161,15 @@ export default function HeroTicker({
           <span
             className="inline-flex items-center gap-1 shrink-0"
             title={
-              isPt
-                ? `Camada de avisos costeiros (IH) ${coastalStatus === 'down' ? 'sem dados' : 'desactualizada'}` +
-                  (coastalWarningsLayer?.fetchedAt
-                    ? ` — última fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('pt-PT')}`
-                    : '')
-                : `Coastal warnings (IH) layer ${coastalStatus === 'down' ? 'down' : 'stale'}` +
-                  (coastalWarningsLayer?.fetchedAt
-                    ? ` — last fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString('en-GB')}`
-                    : '')
+              (coastalStatus === 'down' ? t.ui.coastalDownTitle : t.ui.coastalStaleTitle) +
+              (coastalWarningsLayer?.fetchedAt
+                ? t.ui.lastFetch.replace(
+                    '{when}',
+                    new Date(coastalWarningsLayer.fetchedAt).toLocaleString(
+                      DATE_LOCALE[locale] ?? 'en-GB',
+                    ),
+                  )
+                : '')
             }
           >
             {SEP}
@@ -174,7 +178,7 @@ export default function HeroTicker({
               aria-hidden
             />
             <span className="font-medium text-score-poor">
-              {coastalLayerLabel(coastalStatus, isPt)}
+              {coastalLayerLabel(coastalStatus, t.ui)}
             </span>
           </span>
         ) : null}
@@ -186,12 +190,9 @@ export default function HeroTicker({
         {HERO_FORECAST_LAYERS.map((layer) => (
           <span key={layer.key} className="inline-flex items-center gap-1 shrink-0">
             {SEP}
-            <span
-              className="inline-flex items-center gap-1"
-              title={isPt ? layer.detailPt : layer.detailEn}
-            >
-              <span className="text-fg-muted">{isPt ? layer.labelPt : layer.labelEn}</span>
-              <span className="font-medium text-fg">{isPt ? layer.sourcePt : layer.sourceEn}</span>
+            <span className="inline-flex items-center gap-1" title={layerCopy[layer.key].detail}>
+              <span className="text-fg-muted">{layerCopy[layer.key].label}</span>
+              <span className="font-medium text-fg">{layer.source}</span>
             </span>
           </span>
         ))}

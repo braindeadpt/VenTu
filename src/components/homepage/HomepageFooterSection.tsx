@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import Link from 'next/link';
 import TrustStrip from '@/components/homepage/TrustStrip';
 
@@ -17,21 +18,22 @@ export default function HomepageFooterSection({
   sportsCount,
 }: HomepageFooterSectionProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
 
   const links = [
-    { href: `/${locale}/sazonalidade/`, label: isPt ? 'Sazonalidade' : 'Seasonality' },
-    { href: `/${locale}/compare/`, label: isPt ? 'Comparar spots' : 'Compare spots' },
-    { href: `/${locale}/favorites/`, label: isPt ? 'Favoritos' : 'Favorites' },
+    { href: `/${locale}/sazonalidade/`, label: t.homepage.seasonality },
+    { href: `/${locale}/compare/`, label: t.homepage.compareSpots },
+    { href: `/${locale}/favorites/`, label: t.homepage.favorites },
   ];
 
   return (
     <section
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-8"
-      aria-label={isPt ? 'Mais ferramentas' : 'More tools'}
+      aria-label={t.homepage.moreTools}
     >
       <ul className="flex flex-wrap items-center list-none p-0 m-0 text-meta">
         <li className="text-fg-muted pr-1 py-2">
-          {isPt ? 'Mais para explorar:' : 'More to explore:'}
+          {t.homepage.moreToExplore}
         </li>
         {links.map((l) => (
           <li key={l.href} className="flex items-center">

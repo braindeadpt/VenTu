@@ -14,7 +14,7 @@ import {
   spotMatchesDifficultyFilter,
   type MapDifficultyFilter,
 } from '@/lib/mapDifficulty';
-import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
+import { MAP_SPORT_FILTERS, getMapSportFilterLabel } from '@/lib/mapSportFilters';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
@@ -39,8 +39,8 @@ const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInter
 
 const HUD_SPORTS = [
   ...MAP_SPORT_FILTERS,
-  { id: 'sup' as const, labelPt: 'SUP', labelEn: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
-  { id: 'wakeboard' as const, labelPt: 'Wakeboard', labelEn: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
+  { id: 'sup' as const, label: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
+  { id: 'wakeboard' as const, label: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
 ];
 
 function readMapSearchParams(): {
@@ -228,7 +228,7 @@ export default function MapaFullscreenClient({
   const mapHud = {
     sports: HUD_SPORTS.map((s) => ({
       id: s.id,
-      label: isPt ? s.labelPt : s.labelEn,
+      label: getMapSportFilterLabel(s.id, locale, s.label),
       icon: s.icon,
       color: s.color,
     })),

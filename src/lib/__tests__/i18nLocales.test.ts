@@ -102,6 +102,15 @@ const ES_COGNATES = new Set([
   'Actualizado {day}, {time}',         // espanhol correcto = PT (data + hora)
   '{count} avisos · {spots} spots',    // espanhol correcto = PT (contagem de avisos costeiros)
   'Alta',                              // espanhol correcto = PT (etiqueta de confiança alta)
+  'Vista aérea de {name}',             // espanhol correcto = PT (alt da imagem aérea)
+  'Mapa interactivo',                  // espanhol correcto = PT (aria do mapa)
+  'Ver ranking completo',              // espanhol correcto = PT (CTA do ranking)
+  'Explorar spots',                    // espanhol correcto = PT (CTA de exploração)
+  'Editar favoritos',                  // espanhol correcto = PT (CTA de favoritos)
+  'Comparar spots',                    // espanhol correcto = PT (link de ferramentas)
+  'Favoritos',                         // espanhol correcto = PT (link de ferramentas)
+  'Todos',                             // espanhol correcto = PT (filtro «todos os desportos»)
+  'Épico',                             // espanhol correcto = PT (tier épico na janela)
 ]);
 
 /**

@@ -100,7 +100,7 @@ export default function SpotGridRankedList({
               calmWaterLabel={getCalmWaterMetricLabel(
                 data.spot,
                 data.conditions.waveHeight,
-                isPt,
+                locale,
               )}
             />
           </li>
