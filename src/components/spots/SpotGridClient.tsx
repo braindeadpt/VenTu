@@ -342,7 +342,7 @@ export function SpotGridClient({
             selectedDifficulty: mapDifficulty,
             onDifficultyChange: setMapDifficulty,
             difficultyGroupLabel: t.spots.level,
-            layersLabel: t.map.layersMenu,
+            layersLabel: t.mapUiLayers.layersMenu,
           }}
         />
         )}

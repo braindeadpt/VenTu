@@ -173,28 +173,32 @@ describe('i18n locales', () => {
     expect(t.hero.onCount).toBe('à fond');
   });
 
-  it('en/es/de/fr map blocks carry every key of pt (no empty radar labels)', () => {
-    const ptMap = getTranslation('pt').map;
+  it('en/es/de/fr mapUiLayers blocks carry every key of pt (no empty radar labels)', () => {
+    const ptLayers = getTranslation('pt').mapUiLayers;
     for (const loc of ['en', 'es', 'de', 'fr'] as const) {
-      const mapBlock = getTranslation(loc).map;
-      for (const key of Object.keys(ptMap)) {
-        expect(mapBlock, `${loc}.map.${key} missing`).toHaveProperty(key);
+      const layersBlock = getTranslation(loc).mapUiLayers;
+      for (const key of Object.keys(ptLayers)) {
+        expect(layersBlock, `${loc}.mapUiLayers.${key} missing`).toHaveProperty(key);
       }
-      expect(mapBlock.showRadar).toBeTruthy();
-      expect(mapBlock.hideRadar).toBeTruthy();
-      expect(mapBlock.radarHint).toBeTruthy();
-      expect(mapBlock.radarBadge).toBeTruthy();
+      expect(layersBlock.showRadar).toBeTruthy();
+      expect(layersBlock.hideRadar).toBeTruthy();
+      expect(layersBlock.radarHint).toBeTruthy();
+      expect(layersBlock.radarBadge).toBeTruthy();
     }
   });
 
   /**
    * Blocos aninhados auditados: além do `map`, os shells es/de/fr têm de levar
    * TODAS as keys do pt e nenhum valor pode regressar ao placeholder EN (que o
-   * teste genérico NÃO apanha — ele só compara com o pt).
+   * teste genérico NÃO apanha — ele só compara com o pt). Os namespaces mapUi*
+   * (M1) cobrem o que o `map` cobria antes da partilha por zonas.
    */
   const AUDITED_NESTED_BLOCKS = [
     ['map', ['map']],
-    ['windRingLegend', ['map', 'windRingLegend']],
+    ['mapUiChrome', ['mapUiChrome']],
+    ['mapUiExplore', ['mapUiExplore']],
+    ['mapUiLayers', ['mapUiLayers']],
+    ['windRingLegend', ['mapUiChrome', 'windRingLegend']],
     ['alerts', ['alerts']],
   ] as const;
 

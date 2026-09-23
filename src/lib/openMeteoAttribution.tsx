@@ -16,7 +16,7 @@ export const OPEN_METEO_ATTRIBUTION_LABEL = 'Weather data by Open-Meteo.com (CC 
 /**
  * Variante HTML crua para `Leaflet.control.attribution().addAttribution(...)`
  * — o controlo do mapa espera uma string, não ReactNode. O lead-in vem das
- * traduções (`map.weatherCredit`); a cadeia obrigatória (site + licença CC BY
+ * traduções (`mapUiLayers.weatherCredit`); a cadeia obrigatória (site + licença CC BY
  * 4.0) é sempre esta.
  */
 export function openMeteoAttributionHtml(lead: string): string {

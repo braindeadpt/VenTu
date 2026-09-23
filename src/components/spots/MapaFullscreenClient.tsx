@@ -248,7 +248,7 @@ export default function MapaFullscreenClient({
     selectedDifficulty: difficulty,
     onDifficultyChange: handleDifficultyChange,
     difficultyGroupLabel: isPt ? 'Nível' : 'Level',
-    layersLabel: t.map.layersMenu,
+    layersLabel: t.mapUiLayers.layersMenu,
   };
 
   return (

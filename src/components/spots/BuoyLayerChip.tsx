@@ -135,7 +135,7 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
               data-buoy-show-on-map="true"
               className="inline-flex items-center gap-1 rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1 text-meta-sm font-medium text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 min-h-[44px]"
             >
-              {t.map.buoysShowOnMap}
+              {t.mapUiExplore.buoysShowOnMap}
             </button>
           )}
           </div>

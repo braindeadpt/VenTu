@@ -1,84 +1,52 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo, type ComponentProps } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Activity, Anchor, Clock, CloudRain, HelpCircle, Layers, LifeBuoy,
-  MapPin, Mountain, Navigation, RotateCcw, Sailboat,
-  Thermometer, Waves, Wind,
-} from 'lucide-react';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
 import type { GridSportFilter } from '@/lib/sportRatings';
-import MapExploreSheet, {
-  type ExploreSheetState,
-  type SheetToggleItem,
-} from './map/components/MapExploreSheet';
-import MapSpotPanel from './map/components/MapSpotPanel';
-import type { MapSpotListRow } from './map/components/MapSpotList';
-import type { MapLayersMenuItem } from './map/components/MapLayersMenu';
-import { useMapAttribution } from './map/hooks/useMapAttribution';
 import type { MapFullscreenHudProps } from './mapHudTypes';
-import BuoyLayerChip from './BuoyLayerChip';
-import MapSpotSheet, { type MapSpotSheetData } from './MapSpotSheet';
-import MapLegend from './MapLegend';
-import MapLayerToggle from './MapLayerToggle';
-import WindRingLegend from './WindRingLegend';
+import type { MapSpotSheetData } from './MapSpotSheet';
 import type { BasemapMode } from './MapLayerToggle';
 import {
-  OPEN_METEO_ATTRIBUTION,
   SPOT_REGION_ZOOM,
   MAP_CLUSTER_LS_KEY,
   MAP_WIND_LS_KEY,
   MAP_ONLY_ON_LS_KEY,
 } from '@/lib/map-constants';
-import { openMeteoAttributionHtml } from '@/lib/openMeteoAttribution';
-import { hasSeenWindRingLegend, markWindRingLegendSeen } from '@/lib/windRingLegend';
-import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
-import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
-import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
-import { radarFrameClock } from '@/lib/ipmaRadar';
-import MapTimeTrack from './map/MapTimeTrack';
-import MapTideChip from './map/MapTideChip';
-import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
-import type { MapMarkerWarning } from '@/lib/mapWindArrow';
-import RadarCarousel from './RadarCarousel';
 import type { MapSpotData } from './mapSpotData';
-import { getBestScore } from './mapSpotData';
-import { includeSpotInViewportBounds } from './mapViewportBounds';
 import {
   readClusterPref,
   readWindPref,
   readOnlyOnPref,
 } from './mapHudPrefs';
-import { exploreViewBoundsFromSpots, resolveExploreChrome } from './mapMarkers';
-import { useToast } from '@/components/ui/ToastProvider';
-import { useMapLocate } from './map/hooks/useMapLocate';
-import MapQuickActions from './map/components/MapQuickActions';
-import { buildMapShareUrl } from '@/lib/mapShareUrl';
+import { exploreViewBoundsFromSpots } from './mapMarkers';
 
-// ─── Imports for hooks and sub-components ───
+// ─── Orquestrador + compartimentos (docs/design/MAP-ZONES.md) ───
 import { useMapCore } from './map/hooks/useMapCore';
-import { useMapLayers } from './map/hooks/useMapLayers';
-import { useMapMarkers } from './map/hooks/useMapMarkers';
-import { useMapHours } from './map/hooks/useMapHours';
-import { useMapBuoyDots } from './map/hooks/useMapBuoyDots';
-import { useMapHsField } from './map/hooks/useMapHsField';
-import { useMapCurrentsField } from './map/hooks/useMapCurrentsField';
-import { useMapWindField } from './map/hooks/useMapWindField';
-import { useMapSstField } from './map/hooks/useMapSstField';
-import MapControls from './map/components/MapControls';
-import MapThermalChip from './map/MapThermalChip';
-import { useMapTimeTrack } from './map/useMapTimeTrack';
+import { MapUiProvider, type MapUiActions, type MapUiData } from './map/MapUiContext';
 import {
-  MAP_HOURS_TICK_MS,
-  mapHoursClock,
+  useMapLayersBase,
+  useMapLayersFields,
+  MapLayersZone,
+} from './map/zones/MapLayersZone';
+import {
+  useMapChromeZone,
+  MapChromeZone,
+} from './map/zones/MapChromeZone';
+import {
+  useMapExploreZone,
+  MapExploreZone,
+} from './map/zones/MapExploreZone';
+import {
+  useMapMarkersZone,
+  MapMarkersZone,
+} from './map/zones/MapMarkersZone';
+import {
   scoreAtHour,
 } from '@/lib/mapHours';
-import { mapTideChipAt, pickMapTideCurve } from '@/lib/mapTideChip';
-import { thermalHudAt } from '@/lib/mapThermal';
 import { MAP_ON_THRESHOLD, spotMatchesSportFilter, spotMeetsOnFilter } from '@/lib/gridSpotFilters';
-import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
+import MapControls from './map/components/MapControls';
 
 type SpotData = MapSpotData;
 
@@ -201,41 +169,22 @@ export default function SpotMapInteractive({
     }
   }, [isReady]);
 
-  // ── Toggle state ──
+  // ── Estado partilhado (vive no orquestrador; exposto às zonas via
+  //    MapUiContext — docs/design/MAP-ZONES.md) ──
   const [clusterEnabled, setClusterEnabled] = useState(readClusterPref);
   const [windEnabled, setWindEnabled] = useState(readWindPref);
   const [onlyOnEnabled, setOnlyOnEnabled] = useState(readOnlyOnPref);
   const [isFullscreen, setIsFullscreen] = useState(initialFullscreen);
   const [sheetSpot, setSheetSpot] = useState<MapSpotSheetData | null>(null);
-  const [windLegendOpen, setWindLegendOpen] = useState(false);
-  // Sheet explorar (mobile, 3 estados) e painel desktop — substituem o HUD.
-  // ?spot= abre na lista; ?hours=/?radar= abrem no estado «half» onde vive o
-  // trilho temporal (mesma posição do HUD antigo).
-  const [exploreSheetState, setExploreSheetState] = useState<ExploreSheetState>(
-    focusSpotId ? 'open' : initialHoursEnabled || initialRadarEnabled ? 'half' : 'peek',
-  );
-  const [panelCollapsed, setPanelCollapsed] = useState(false);
-  const [openHeight, setOpenHeight] = useState(620);
-  useEffect(() => {
-    const sync = () => setOpenHeight(Math.min(Math.round(window.innerHeight * 0.82), 720));
-    sync();
-    window.addEventListener('resize', sync);
-    return () => window.removeEventListener('resize', sync);
-  }, []);
-  // Créditos do controlo Leaflet — espelhados dentro do sheet/painel, que
-  // tapam o controlo real no fullscreen (licença OSM/CARTO/Open-Meteo).
-  const attributionHtml = useMapAttribution(mapInstanceRef, isReady);
 
-  // Arcos por pin sempre que o marcador individual está visível — mesmo com
-  // cluster ligado (os pins dentro de clusters nem chegam ao mapa; ao
-  // desagrupar já nascem com o anel — o vento nunca «desaparece» a meio do zoom).
-  const showWindOnMarkers = windEnabled && !isHeroEmbed;
-  const activeCluster = isHeroEmbed ? true : clusterEnabled;
-
-  // ── Layers ──
-  const layers = useMapLayers({
+  // ── Zona de camadas: estado base (radar, 48 h, boias, isóbatas, …) ──
+  const layersBase = useMapLayersBase({
     mapInstanceRef,
     LRef,
+    radarOverlayRef,
+    isobathsLayerRef,
+    coastalLayerRef,
+    buoyLayerRef,
     isReady,
     isPt,
     isFullscreen,
@@ -243,9 +192,9 @@ export default function SpotMapInteractive({
     focusSpotId,
     initialRadarEnabled,
     initialIsobathsEnabled,
-    radarOverlayRef,
-    isobathsLayerRef,
-    coastalLayerRef,
+    initialHoursEnabled,
+    initialHourOfDay,
+    initialBuoysEnabled,
     t,
   });
   const {
@@ -258,167 +207,23 @@ export default function SpotMapInteractive({
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
-  } = layers;
-
-  const hours = useMapHours({
-    isFullscreen,
-    initialEnabled: initialHoursEnabled,
-    initialHourOfDay,
-  });
-  const {
     hoursFile, hoursOn, hoursLive, hoursFrame, hoursUserPaused, hoursPrefSet,
     hoursUnavailable, hoursTimes, toggleHours, handleHoursFrameChange,
     handleHoursUserPausedChange, handleResetHours,
-  } = hours;
+    buoysEnabled, toggleBuoys,
+    attributionHtml,
+  } = layersBase;
 
-  const { buoysEnabled, toggleBuoys } = useMapBuoyDots({
-    mapInstanceRef,
-    LRef,
-    buoyLayerRef,
-    isReady,
-    isFullscreen,
-    isHeroEmbed,
-    initialEnabled: initialBuoysEnabled,
-    labels: {
-      hs: t.map.buoyHs,
-      stale: t.map.buoyStale,
-      sourceIh: t.map.buoySourceIh,
-      sourceWmo: t.map.buoySourceWmo,
-      noHs: t.map.buoyNoHs,
-    },
-  });
-
-  const reducedMotion = usePrefersReducedMotion();
-  const [radarScrubbing, setRadarScrubbing] = useState(false);
-  const [hoursScrubbing, setHoursScrubbing] = useState(false);
-  const radarHudPaused =
-    radarScrubbing || radarBusySources.size > 0 || radarUserPaused || reducedMotion || hoursOn;
-  const radarClock = radarFrameClock(radarFrameList[radarFrameIndex]?.frameTime ?? null) ?? '';
-  const { paused: hoursHudPaused } = useMapTimeTrack({
-    length: hoursLive ? hoursTimes.length : 0,
-    index: hoursFrame,
-    onIndexChange: handleHoursFrameChange,
-    mapBusyCount: radarBusySources.size,
-    userPaused: hoursUserPaused,
-    externalScrubbing: hoursScrubbing,
-    tickMs: MAP_HOURS_TICK_MS,
-    observeRef: mapRef,
-  });
-  const hoursClock = hoursTimes[hoursFrame] ? mapHoursClock(hoursTimes[hoursFrame]) : '';
-  const tideChip = useMemo(() => {
-    const curve = pickMapTideCurve(hoursFile?.tides, selectedRegion);
-    if (!curve) return undefined;
-    const at = hoursLive && hoursTimes[hoursFrame]
-      ? new Date(hoursTimes[hoursFrame])
-      : new Date();
-    const model = mapTideChipAt(curve, at, isPt ? 'pt' : 'en');
-    if (!model) return undefined;
-    const phaseLabel =
-      model.phase === 'rising' ? t.map.tideChipRising
-        : model.phase === 'falling' ? t.map.tideChipFalling
-          : model.phase === 'high' ? t.map.tideChipHigh
-            : t.map.tideChipLow;
-    const kindLabel = model.nextKind === 'high'
-      ? t.map.tideChipHigh
-      : model.nextKind === 'low' ? t.map.tideChipLow
-        : '';
-    const ariaLabel = model.nextTime && kindLabel
-      ? t.map.tideChipAriaNext
-        .replace('{phase}', phaseLabel)
-        .replace('{kind}', kindLabel)
-        .replace('{time}', model.nextTime)
-      : t.map.tideChipAria.replace('{phase}', phaseLabel);
-    return (
-      <MapTideChip
-        phase={model.phase}
-        phaseLabel={phaseLabel}
-        nextTime={model.nextTime}
-        ariaLabel={ariaLabel}
-      />
-    );
-  }, [
-    hoursFile,
-    selectedRegion,
-    hoursLive,
-    hoursTimes,
-    hoursFrame,
-    isPt,
-    t.map.tideChipRising,
-    t.map.tideChipFalling,
-    t.map.tideChipHigh,
-    t.map.tideChipLow,
-    t.map.tideChipAria,
-    t.map.tideChipAriaNext,
-  ]);
-
-  const thermalChip = useMemo(() => {
-    const summary = thermalHudAt(hoursFile, hoursLive ? hoursFrame : 0);
-    if (!summary) return undefined;
-    const kindLabel = summary.kind === 'sea' ? t.map.thermalSea : t.map.thermalLand;
-    const ariaLabel = t.map.thermalChipAria
-      .replace('{kind}', kindLabel)
-      .replace('{count}', String(summary.count));
-    return (
-      <MapThermalChip
-        kind={summary.kind}
-        kindLabel={kindLabel}
-        count={summary.count}
-        ariaLabel={ariaLabel}
-      />
-    );
-  }, [
-    hoursFile,
-    hoursLive,
-    hoursFrame,
-    t.map.thermalSea,
-    t.map.thermalLand,
-    t.map.thermalChipAria,
-  ]);
-
-  const timeTrackChips = tideChip || thermalChip ? (
-    <span className="inline-flex items-center gap-1.5 shrink-0">
-      {tideChip}
-      {thermalChip}
-    </span>
-  ) : undefined;
-
-  useEffect(() => {
-    if (!radarEnabled) setRadarScrubbing(false);
-  }, [radarEnabled]);
-  useEffect(() => {
-    if (!hoursOn) setHoursScrubbing(false);
-  }, [hoursOn]);
+  // Arcos por pin sempre que o marcador individual está visível — mesmo com
+  // cluster ligado (os pins dentro de clusters nem chegam ao mapa; ao
+  // desagrupar já nascem com o anel — o vento nunca «desaparece» a meio do zoom).
+  const showWindOnMarkers = windEnabled && !isHeroEmbed;
+  const activeCluster = isHeroEmbed ? true : clusterEnabled;
 
   // Deep links ?radar=1 / ?isobaths=1 handled by useMapLayers initial state —
   // sem efeitos de mount nem toque na preferência persistida (que só se grava
   // ao desligar ou ao toggle manual). Um efeito aqui seria uma corrida com o
   // mount do mapa (chunk dinâmico) e poderia nunca correr ou togglar duas vezes.
-
-  // O crédito do basemap e das camadas é gerido pelo próprio Leaflet: cada
-  // layer regista `attribution` ao entrar no mapa e o AttributionControl faz
-  // add/remove por contagem de referências (os efeitos IH em useMapLayers
-  // usam add/removeAttribution; basemap/EMODnet/OpenSeaMap/radar vão na opção
-  // `attribution` do layer). NÃO regravar `_attributions` aqui — a fotografia
-  // antiga apagava os créditos EMODnet/OpenSeaMap/radar registados pelas
-  // camadas e deixava o crédito OSM duplicado.
-  // A única excepção é o crédito do Open-Meteo: o controlo nasce em useMapCore
-  // com a cadeia canónica EN (que não conhece a tradução) e aqui troca-se pelo
-  // lead-in localizado.
-  const openMeteoCredit = openMeteoAttributionHtml(t.map.weatherCredit);
-  useEffect(() => {
-    if (!isReady) return;
-    const ac = mapInstanceRef.current?.attributionControl;
-    if (!ac || openMeteoCredit === OPEN_METEO_ATTRIBUTION) return;
-    ac.removeAttribution(OPEN_METEO_ATTRIBUTION);
-    ac.addAttribution(openMeteoCredit);
-    return () => {
-      ac.removeAttribution(openMeteoCredit);
-      ac.addAttribution(OPEN_METEO_ATTRIBUTION);
-    };
-  }, [isReady, openMeteoCredit, mapInstanceRef]);
-
-  // ── Warnings ──
-  const warningsData = useIpmaWarnings();
 
   // ── Fullscreen ──
   const router = useRouter();
@@ -480,27 +285,6 @@ export default function SpotMapInteractive({
     });
   }, []);
 
-  // ── Wind legend ──
-  const openWindLegend = useCallback(() => { setWindLegendOpen(true); }, []);
-  const closeWindLegend = useCallback(() => { setWindLegendOpen(false); }, []);
-
-  // One-time inline teaching hint (non-modal, never blocks the map). Shows
-  // once after the user's FIRST marker interaction, then never again
-  // (persisted via the same localStorage flag the ? button honors).
-  const [windLegendHintVisible, setWindLegendHintVisible] = useState(false);
-  const windLegendHintQueuedRef = useRef(false);
-  const onMarkerInteract = useCallback(() => {
-    if (windLegendHintQueuedRef.current || hasSeenWindRingLegend()) return;
-    windLegendHintQueuedRef.current = true;
-    markWindRingLegendSeen();
-    setWindLegendHintVisible(true);
-  }, []);
-  useEffect(() => {
-    if (!windLegendHintVisible) return;
-    const id = window.setTimeout(() => setWindLegendHintVisible(false), 12_000);
-    return () => window.clearTimeout(id);
-  }, [windLegendHintVisible]);
-
   // ── Escape key ──
   useEffect(() => {
     if (!isFullscreen && !sheetSpot) return;
@@ -512,23 +296,6 @@ export default function SpotMapInteractive({
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [isFullscreen, sheetSpot, exitFullscreen]);
-
-  // ── Popup click handler ──
-  useEffect(() => {
-    if (!isReady || !mapInstanceRef.current) return;
-    const container = mapInstanceRef.current.getContainer();
-    const onClick = (e: MouseEvent) => {
-      const btn = (e.target as HTMLElement).closest('.ventu-popup-detail');
-      if (!btn) return;
-      if (!onSpotSelectRef.current) return;
-      e.preventDefault();
-      e.stopPropagation();
-      const spotId = btn.getAttribute('data-spot-id');
-      if (spotId) onSpotSelectRef.current(spotId);
-    };
-    container.addEventListener('click', onClick, true);
-    return () => container.removeEventListener('click', onClick, true);
-  }, [isReady, mapInstanceRef]);
 
   // ── Initial center deep link ──
   const initialCenterDoneRef = useRef(false);
@@ -544,7 +311,7 @@ export default function SpotMapInteractive({
     }
   }, [initialCenter, initialZoom, isReady, mapInstanceRef]);
 
-  // ── Visible spots ──
+  // ── Visible spots (derivação partilhada: marcadores, lista, campos) ──
   const hourScores = useMemo(() => {
     if (!hoursLive || !hoursFile) return null;
     const map = new Map<string, number>();
@@ -580,199 +347,143 @@ export default function SpotMapInteractive({
       })),
     [visibleSpots],
   );
-  const { hsEnabled, hsUnavailable, toggleHs: toggleHsRaw, disableHs } = useMapHsField({
-    mapInstanceRef,
-    LRef,
-    isReady,
-    isFullscreen,
-    isHeroEmbed,
-    isMobile,
-    initialEnabled: initialHsEnabled,
-    hoursFile,
-    hoursLive,
-    hoursFrame,
-    spots: hsSpots,
-  });
-  const { sstEnabled, sstUnavailable, toggleSst: toggleSstRaw, disableSst } = useMapSstField({
-    mapInstanceRef,
-    LRef,
-    isReady,
-    isFullscreen,
-    isHeroEmbed,
-    isMobile,
-    initialEnabled: initialSstEnabled,
-    hoursFile,
-    hoursLive,
-    hoursFrame,
-    spots: hsSpots,
-  });
-  const { currentsEnabled, currentsUnavailable, toggleCurrents } = useMapCurrentsField({
-    mapInstanceRef,
-    LRef,
-    isReady,
-    isFullscreen,
-    isHeroEmbed,
-    isMobile,
-    initialEnabled: initialCurrentsEnabled,
-    hoursFile,
-    hoursLive,
-    hoursFrame,
-    spots: hsSpots,
-  });
-  useMapWindField({
-    mapInstanceRef,
-    LRef,
-    isReady,
-    isFullscreen,
-    isHeroEmbed,
-    isMobile,
-    enabled: windEnabled,
-    hoursFile,
-    hoursLive,
-    hoursFrame,
-    spots: hsSpots,
-  });
 
+  // ── Zona de camadas: campos interpolados + itens do menu + legenda ──
+  const fields = useMapLayersFields({
+    mapInstanceRef,
+    LRef,
+    isReady,
+    isFullscreen,
+    isHeroEmbed,
+    isMobile,
+    initialHsEnabled,
+    initialSstEnabled,
+    initialCurrentsEnabled,
+    base: layersBase,
+    hsSpots,
+    windEnabled,
+    t,
+  });
+  const {
+    hsEnabled, hsUnavailable, toggleHs,
+    sstEnabled, sstUnavailable, toggleSst,
+    currentsEnabled, currentsUnavailable, toggleCurrents,
+    layerCopy, sheetLayers, legendLayerProps,
+  } = fields;
+
+  // ── Zona de cromo: localizar/partilhar, legenda de vento, trilho temporal ──
+  const chrome = useMapChromeZone({
+    mapInstanceRef,
+    observeRef: mapRef,
+    isReady,
+    locale,
+    isPt,
+    selectedSport,
+    selectedRegion,
+    windEnabled,
+    radarEnabled,
+    radarFrameList,
+    radarFrameIndex,
+    radarBusySources,
+    radarUserPaused,
+    hoursOn,
+    hoursLive,
+    hoursTimes,
+    hoursFrame,
+    hoursUserPaused,
+    hoursFile,
+    isobathsEnabled,
+    buoysEnabled,
+    hsEnabled,
+    sstEnabled,
+    currentsEnabled,
+    handleHoursFrameChange,
+    handleHoursUserPausedChange,
+    handleRadarFrameChange,
+    handleRadarUserPausedChange,
+    t,
+  });
+  const {
+    locate, locating, handleShareView,
+    windLegendOpen, openWindLegend, closeWindLegend,
+    windLegendHintVisible, onMarkerInteract,
+    radarScrubbing, timeTrackNode,
+    exitFullscreenLabel, windLabel, windHint, windLegendHelpLabel,
+  } = chrome;
+
+  // ── Zona explorar: sheet/painel, lista do viewport, extras ──
+  const explore = useMapExploreZone({
+    mapInstanceRef,
+    isReady,
+    isFullscreen,
+    mapHud,
+    visibleSpots,
+    hourScores,
+    selectedSport,
+    isPt,
+    locale,
+    focusSpotId,
+    initialHoursEnabled,
+    initialRadarEnabled,
+    onlyOnEnabled,
+    clusterEnabled,
+    toggleCluster,
+    windEnabled,
+    toggleWind,
+    openWindLegend,
+    t,
+  });
+  const {
+    exploreSheetState, setExploreSheetState,
+    panelCollapsed, setPanelCollapsed,
+    openHeight, viewRows, sheetExtras,
+    clusterLabel, onlyOnLabel, onlyOnHint, hudSpotCount,
+  } = explore;
+
+  // ── Zona de marcadores: pins, clusters, foco, sheet de detalhe ──
+  const markers = useMapMarkersZone({
+    mapInstanceRef,
+    LRef,
+    mapRef,
+    clusterGroupRef,
+    markersGroupRef,
+    markersCacheRef,
+    onSpotSelectRef,
+    visibleSpots,
+    onlyOnEnabled,
+    selectedSport,
+    selectedRegion,
+    isReady,
+    clusterReady,
+    isMobile,
+    isHeroEmbed,
+    isFullscreen,
+    activeCluster,
+    showWindOnMarkers,
+    locale,
+    isPt,
+    hourScores,
+    onSpotSelect,
+    onMarkerInteract,
+    setSheetSpot,
+    mapHud,
+    panelCollapsed,
+  });
+  const { focusMapSpot } = markers;
+
+  // Deep link ?spot= — a lista (sheet aberto no mobile / painel no desktop)
+  // ganha a linha focada e o mapa enquadra o spot. Sem popup/sheet de
+  // detalhe: o utilizador fica no contexto da lista.
+  const deepLinkFocusRef = useRef(false);
   useEffect(() => {
-    if (sstEnabled && hsEnabled) disableHs();
-  }, [sstEnabled, hsEnabled, disableHs]);
-
-  const toggleHs = useCallback(() => {
-    if (!hsEnabled && sstEnabled) disableSst();
-    toggleHsRaw();
-  }, [hsEnabled, sstEnabled, toggleHsRaw, disableSst]);
-
-  const toggleSst = useCallback(() => {
-    if (!sstEnabled && hsEnabled) disableHs();
-    toggleSstRaw();
-  }, [sstEnabled, hsEnabled, toggleSstRaw, disableHs]);
-
-  // ── «Perto de mim» + «Partilhar vista» (fullscreen /mapa) ──
-  const { showToast } = useToast();
-  const { locate, locating } = useMapLocate({
-    mapInstanceRef,
-    isReady,
-    labels: {
-      locate: t.map.locateMe,
-      here: t.map.locateHere,
-      denied: t.map.locateDenied,
-      unavailable: t.map.locateUnavailable,
-      timeout: t.map.locateTimeout,
-    },
-    onToast: showToast,
-  });
-  const handleShareView = useCallback(async () => {
+    if (!focusSpotId || deepLinkFocusRef.current || !isReady || !isFullscreen || !mapHud) return;
+    const d = visibleSpots.find((x) => x.spot.id === focusSpotId);
     const map = mapInstanceRef.current;
-    if (!map) return;
-    const c = map.getCenter();
-    const url = buildMapShareUrl(`${window.location.origin}/${locale}/mapa/`, {
-      center: [c.lat, c.lng],
-      zoom: map.getZoom(),
-      sport: selectedSport,
-      region: selectedRegion,
-      layers: {
-        radar: radarEnabled,
-        isobaths: isobathsEnabled,
-        hours: hoursOn,
-        buoys: buoysEnabled,
-        hs: hsEnabled,
-        sst: sstEnabled,
-        currents: currentsEnabled,
-      },
-    });
-    try {
-      if (typeof navigator.share === 'function') {
-        await navigator.share({ title: 'VenTu', url });
-        return;
-      }
-      await navigator.clipboard.writeText(url);
-      showToast(t.map.shareCopied);
-    } catch {
-      // AbortError (partilha cancelada) ou clipboard negado — sem toast.
-    }
-  }, [
-    mapInstanceRef, locale, selectedSport, selectedRegion,
-    radarEnabled, isobathsEnabled, hoursOn, buoysEnabled,
-    hsEnabled, sstEnabled, currentsEnabled, showToast, t.map.shareCopied,
-  ]);
-
-  // ── Warnings by spot ──
-  const warningsBySpot = useMemo(() => {
-    const map = new Map<string, MapMarkerWarning>();
-    if (!warningsData) return map;
-    for (const data of visibleSpots) {
-      const w = strongestSpotWarning(warningsData, data.spot.id);
-      if (w) map.set(data.spot.id, { level: w.level, label: warningBadgeLabel(w, isPt), seaState: SEA_STATE_WARNING_TYPES.has(w.type) });
-    }
-    return map;
-  }, [warningsData, visibleSpots, isPt]);
-
-  // ── Labels ──
-  const exitFullscreenLabel = t.map.exitFullscreen;
-  const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
-  const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
-  const windHint = null;
-  const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
-  const onlyOnHint = t.map.onlyOnHint;
-  const hoursLabel = hoursOn ? t.map.hideHours : t.map.showHours;
-  const hoursHint = t.map.hoursHint;
-  const buoysLabel = buoysEnabled ? t.map.hideBuoys : t.map.showBuoys;
-  const hsLabel = hsEnabled ? t.map.hideHs : t.map.showHs;
-  const sstLabel = sstEnabled ? t.map.hideSst : t.map.showSst;
-  const currentsLabel = currentsEnabled ? t.map.hideCurrents : t.map.showCurrents;
-  const windLegendHelpLabel = t.map.windRingLegend.help;
-  const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
-
-  // ── Markers (extracted hook: cache, chunked insertion, cluster switching) ──
-  const closePopupAndSheet = useCallback(() => {
-    mapInstanceRef.current?.closePopup();
-    setSheetSpot(null);
-  }, [mapInstanceRef]);
-  useMapMarkers({
-    mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef,
-    visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady,
-    isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
-    warningsBySpot, hourScores, onSpotSelect, onMarkerInteract, setSheetSpot, closePopupAndSheet,
-    exploreChrome: resolveExploreChrome(Boolean(mapHud) && isFullscreen, isMobile, panelCollapsed),
-  });
-
-  useEffect(() => {
-    if (!isHeroEmbed || !isReady || !mapInstanceRef.current || !mapRef.current) return;
-    const host = mapRef.current.closest('[data-map-hero-teaser]');
-    if (!host) return;
-    const map = mapInstanceRef.current;
-    if (!LRef.current) return;
-    const Leaflet = LRef.current;
-
-    const fitHero = () => {
-      const bounds = Leaflet.latLngBounds([]);
-      visibleSpots.forEach((data) => {
-        if (includeSpotInViewportBounds(data.spot, selectedRegion)) bounds.extend([data.spot.lat, data.spot.lon]);
-      });
-      if (!bounds.isValid()) return;
-      map.invalidateSize({ animate: false });
-      const leftPad = isMobile ? 20 : 300;
-      map.fitBounds(bounds, { paddingTopLeft: Leaflet.point(leftPad, 48), paddingBottomRight: Leaflet.point(40, 96), maxZoom: isMobile ? 8 : 10, animate: false });
-    };
-
-    const ro = new ResizeObserver(() => fitHero());
-    ro.observe(host);
-    const t1 = window.setTimeout(fitHero, 0);
-    const t2 = window.setTimeout(fitHero, 150);
-    const t3 = window.setTimeout(fitHero, 500);
-    return () => { ro.disconnect(); window.clearTimeout(t1); window.clearTimeout(t2); window.clearTimeout(t3); };
-  }, [isHeroEmbed, isReady, visibleSpots, selectedRegion, isMobile, mapInstanceRef, LRef]);
-
-  // Hero: o mapa é uma imagem viva sem navegação — um clique num cluster não
-  // faz zoom (ficaria preso sem drag/controlo); leva ao /mapa/ onde tudo é
-  // explorável. Marcadores individuais continuam a abrir popup/sheet.
-  useEffect(() => {
-    if (!isHeroEmbed || !clusterReady || !clusterGroupRef.current) return;
-    const mcg = clusterGroupRef.current;
-    const onClusterClick = () => router.push(`/${locale}/mapa/`);
-    mcg.on('clusterclick', onClusterClick);
-    return () => { mcg.off('clusterclick', onClusterClick); };
-  }, [isHeroEmbed, clusterReady, clusterGroupRef, locale, router]);
+    if (!d || !map) return;
+    deepLinkFocusRef.current = true;
+    if (isMobile) setExploreSheetState('open');
+    focusMapSpot(focusSpotId, false);
+  }, [focusSpotId, isReady, isFullscreen, mapHud, isMobile, visibleSpots, mapInstanceRef, focusMapSpot, setExploreSheetState]);
 
   // ── Invalidate size on fullscreen/resize ──
   useEffect(() => {
@@ -789,642 +500,253 @@ export default function SpotMapInteractive({
     handleBasemapChange(mode);
   }, [handleBasemapChange]);
 
-  // ── Lista sincronizada — mesma fonte dos marcadores (getBestScore com o
-  //    override da hora activa), restrita aos bounds do viewport e ordenada
-  //    por score. Alimenta o peek «Melhor agora», o sheet aberto e o painel. ──
-  const buildRows = useCallback((): MapSpotListRow[] => {
-    const bounds = mapInstanceRef.current?.getBounds();
-    const inView = bounds
-      ? visibleSpots.filter((d) => bounds.contains([d.spot.lat, d.spot.lon]))
-      : visibleSpots;
-    return inView
-      .map((d) => {
-        return {
-          spotId: d.spot.id,
-          name: isPt ? d.spot.name : d.spot.nameEn,
-          region: isPt ? d.spot.region : d.spot.regionEn,
-          score: getBestScore(d, selectedSport, hourScores?.get(d.spot.id)),
-          factors: getSpotScoreFactors({
-            spot: d.spot,
-            conditions: d.conditions,
-            allScores: d.allScores,
-            sport: selectedSport,
-            locale,
-          }),
-        };
-      })
-      .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  }, [visibleSpots, hourScores, selectedSport, isPt, locale, mapInstanceRef]);
-
-  const [viewRows, setViewRows] = useState<MapSpotListRow[]>([]);
-  useEffect(() => {
-    const map = mapInstanceRef.current;
-    if (!isReady || !map || !isFullscreen || !mapHud) {
-      setViewRows([]);
-      return;
-    }
-    const compute = () => setViewRows(buildRows());
-    compute();
-    map.on('moveend', compute);
-    map.on('zoomend', compute);
-    return () => {
-      map.off('moveend', compute);
-      map.off('zoomend', compute);
-    };
-  }, [isReady, isFullscreen, mapHud, buildRows, mapInstanceRef]);
-
-  // Toque numa linha: mobile abre o sheet de detalhe (mesmo do marcador),
-  // desktop voa até ao marcador e abre o popup (desagrupa se preciso).
-  const focusMapSpot = useCallback(
-    (spotId: string, openDetail = true) => {
-      const map = mapInstanceRef.current;
-      const d = visibleSpots.find((x) => x.spot.id === spotId);
-      if (!map || !d) return;
-      const ll: [number, number] = [d.spot.lat, d.spot.lon];
-      const zoom = Math.max(map.getZoom(), 9);
-      if (reducedMotion) map.setView(ll, zoom);
-      else map.flyTo(ll, zoom, { duration: 0.45 });
-      if (!openDetail) return;
-      if (isMobile) {
-        setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null });
-        return;
-      }
-      const openPopup = () => {
-        const marker = markersCacheRef.current.get(d.spot.id);
-        if (!marker) return;
-        const mcg = clusterGroupRef.current;
-        if (activeCluster && mcg) {
-          mcg.zoomToShowLayer(marker, () => {
-            if (!marker.isPopupOpen()) marker.openPopup();
-          });
-        } else if (!marker.isPopupOpen()) {
-          marker.openPopup();
-        }
-      };
-      if (reducedMotion) openPopup();
-      else map.once('moveend', openPopup);
-    },
-    [visibleSpots, warningsBySpot, isMobile, reducedMotion, activeCluster,
-      mapInstanceRef, markersCacheRef, clusterGroupRef],
-  );
-
-  // Deep link ?spot= — a lista (sheet aberto no mobile / painel no desktop)
-  // ganha a linha focada e o mapa enquadra o spot. Sem popup/sheet de
-  // detalhe: o utilizador fica no contexto da lista.
-  const deepLinkFocusRef = useRef(false);
-  useEffect(() => {
-    if (!focusSpotId || deepLinkFocusRef.current || !isReady || !isFullscreen || !mapHud) return;
-    const d = visibleSpots.find((x) => x.spot.id === focusSpotId);
-    const map = mapInstanceRef.current;
-    if (!d || !map) return;
-    deepLinkFocusRef.current = true;
-    if (isMobile) setExploreSheetState('open');
-    focusMapSpot(focusSpotId, false);
-  }, [focusSpotId, isReady, isFullscreen, mapHud, isMobile, visibleSpots, mapInstanceRef, focusMapSpot]);
-
-  // Camadas de dados do sheet (mesmas do menu «Camadas» do desktop — com
-  // rótulo, nunca ícones soltos) e primários do «Ver também».
-  const sheetLayers: MapLayersMenuItem[] = useMemo(() => [
-    {
-      key: 'radar',
-      label: radarLabel,
-      hint: radarUnavailable ? `${radarHint} — indisponível` : radarHint,
-      icon: <CloudRain className="w-4 h-4" aria-hidden />,
-      pressed: radarEnabled,
-      disabled: radarUnavailable,
-      onToggle: toggleRadar,
-      toggleAttr: 'data-map-radar-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'hours',
-      label: hoursLabel,
-      hint: hoursUnavailable ? `${hoursHint} — indisponível` : hoursHint,
-      icon: <Clock className="w-4 h-4" aria-hidden />,
-      pressed: hoursOn,
-      disabled: hoursUnavailable,
-      onToggle: toggleHours,
-      toggleAttr: 'data-map-hours-toggle',
-      iconClass: 'text-score-good',
-    },
-    {
-      key: 'hs',
-      label: hsLabel,
-      hint: hsUnavailable ? `${t.map.hsHint} — indisponível` : t.map.hsHint,
-      icon: <Activity className="w-4 h-4" aria-hidden />,
-      pressed: hsEnabled,
-      disabled: hsUnavailable,
-      onToggle: toggleHs,
-      toggleAttr: 'data-map-hs-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'sst',
-      label: sstLabel,
-      hint: sstUnavailable ? `${t.map.sstHint} — indisponível` : t.map.sstHint,
-      icon: <Thermometer className="w-4 h-4" aria-hidden />,
-      pressed: sstEnabled,
-      disabled: sstUnavailable,
-      onToggle: toggleSst,
-      toggleAttr: 'data-map-sst-toggle',
-      iconClass: 'text-data-period',
-    },
-    {
-      key: 'currents',
-      label: currentsLabel,
-      hint: currentsUnavailable ? `${t.map.currentsHint} — indisponível` : t.map.currentsHint,
-      icon: <Navigation className="w-4 h-4" aria-hidden />,
-      pressed: currentsEnabled,
-      disabled: currentsUnavailable,
-      onToggle: toggleCurrents,
-      toggleAttr: 'data-map-currents-toggle',
-      iconClass: 'text-data-water',
-    },
-    {
-      key: 'buoys',
-      label: buoysLabel,
-      hint: t.map.buoysHint,
-      icon: <LifeBuoy className="w-4 h-4" aria-hidden />,
-      pressed: buoysEnabled,
-      onToggle: toggleBuoys,
-      toggleAttr: 'data-map-buoys-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'isobaths',
-      label: isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths,
-      hint: t.map.isobathsHint,
-      icon: <Waves className="w-4 h-4" aria-hidden />,
-      pressed: isobathsEnabled,
-      onToggle: toggleIsobaths,
-      toggleAttr: 'data-map-isobaths-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'bathymetry',
-      label: bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry,
-      hint: t.map.bathymetryHint,
-      icon: <Mountain className="w-4 h-4" aria-hidden />,
-      pressed: bathymetryEnabled,
-      onToggle: toggleBathymetry,
-      toggleAttr: 'data-map-bathymetry-toggle',
-      iconClass: 'text-data-water',
-    },
-    {
-      key: 'seamarks',
-      label: seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks,
-      hint: t.map.seamarksHint,
-      icon: <Sailboat className="w-4 h-4" aria-hidden />,
-      pressed: seamarksEnabled,
-      onToggle: toggleSeamarks,
-      toggleAttr: 'data-map-seamarks-toggle',
-      iconClass: 'text-score-good',
-    },
-    {
-      key: 'coastalWarnings',
-      label: coastalWarningsLabel,
-      hint: t.map.coastalWarningsHint,
-      icon: <Anchor className="w-4 h-4" aria-hidden />,
-      pressed: coastalWarningsEnabled,
-      onToggle: toggleCoastalWarnings,
-      toggleAttr: 'data-map-coastal-warnings-toggle',
-      iconClass: 'text-score-poor',
-    },
-  ], [
-    radarLabel, radarHint, radarUnavailable, radarEnabled, toggleRadar,
-    hoursLabel, hoursHint, hoursUnavailable, hoursOn, toggleHours,
-    hsLabel, hsUnavailable, hsEnabled, toggleHs, t.map.hsHint,
-    sstLabel, sstUnavailable, sstEnabled, toggleSst, t.map.sstHint,
-    currentsLabel, currentsUnavailable, currentsEnabled, toggleCurrents, t.map.currentsHint,
-    buoysLabel, buoysEnabled, toggleBuoys, t.map.buoysHint,
-    isobathsEnabled, toggleIsobaths, t.map.hideIsobaths, t.map.showIsobaths, t.map.isobathsHint,
-    bathymetryEnabled, toggleBathymetry, t.map.hideBathymetry, t.map.showBathymetry, t.map.bathymetryHint,
-    seamarksEnabled, toggleSeamarks, t.map.hideSeamarks, t.map.showSeamarks, t.map.seamarksHint,
-    coastalWarningsLabel, coastalWarningsEnabled, toggleCoastalWarnings, t.map.coastalWarningsHint,
+  // ── Contexto partilhado (zonas consomem dados/acções via useMapUi*) ──
+  const selectSpot = useCallback((spotId: string) => {
+    onSpotSelectRef.current?.(spotId);
+  }, []);
+  const closeSpotSheet = useCallback(() => setSheetSpot(null), []);
+  const uiData = useMemo<MapUiData>(() => ({
+    sport: selectedSport,
+    region: selectedRegion,
+    locale,
+    isPt,
+    isReady,
+    clusterReady,
+    isMobile,
+    isFullscreen,
+    isHeroEmbed,
+    hoursLive,
+    hoursTimes,
+    hoursFrame,
+    hourScores,
+    visibleSpots,
+    focusSpotId,
+    sheetSpot,
+  }), [
+    selectedSport, selectedRegion, locale, isPt,
+    isReady, clusterReady, isMobile, isFullscreen, isHeroEmbed,
+    hoursLive, hoursTimes, hoursFrame, hourScores, visibleSpots,
+    focusSpotId, sheetSpot,
+  ]);
+  const uiActions = useMemo<MapUiActions>(() => ({
+    selectSpot,
+    focusSpot: focusMapSpot,
+    openSpotSheet: setSheetSpot,
+    closeSpotSheet,
+    setHoursFrame: handleHoursFrameChange,
+    toggleCluster,
+    toggleWind,
+    toggleOnlyOn,
+  }), [
+    selectSpot, focusMapSpot, closeSpotSheet, handleHoursFrameChange,
+    toggleCluster, toggleWind, toggleOnlyOn,
   ]);
 
-  const sheetExtras: SheetToggleItem[] = useMemo(() => [
-    {
-      key: 'cluster',
-      label: clusterLabel,
-      icon: clusterEnabled
-        ? <MapPin className="w-4 h-4" aria-hidden />
-        : <Layers className="w-4 h-4" aria-hidden />,
-      pressed: !clusterEnabled,
-      onToggle: toggleCluster,
-    },
-    {
-      key: 'wind',
-      label: windLabel,
-      icon: <Wind className="w-4 h-4" aria-hidden />,
-      pressed: windEnabled,
-      onToggle: toggleWind,
-    },
-    {
-      key: 'windhelp',
-      label: windLegendHelpLabel,
-      icon: <HelpCircle className="w-4 h-4" aria-hidden />,
-      onToggle: openWindLegend,
-    },
-  ], [
-    clusterLabel, clusterEnabled, toggleCluster,
-    windLabel, windEnabled, toggleWind,
-    windLegendHelpLabel, openWindLegend,
-  ]);
-
-  // Legenda — props partilhadas entre a flutuante (desktop) e a embutida
-  // no <details> do sheet (mobile). Uma só legenda por superfície.
-  const legendLayerProps = {
-    isobathsTitle: t.map.isobathsLegend,
-    isobathsVisible: isobathsEnabled && isobathsData != null,
-    hsTitle: t.map.hsLegend,
-    hsVisible: hsEnabled,
-    sstTitle: t.map.sstLegend,
-    sstVisible: sstEnabled,
-    currentsTitle: t.map.currentsLegend,
-    currentsVisible: currentsEnabled,
-    windTitle: t.map.windLegend,
-    windVisible: isFullscreen && !isHeroEmbed && windEnabled,
-    bathymetryTitle: t.map.bathymetryLegend,
-    bathymetryVisible: bathymetryEnabled,
-    bathymetryContoursLabel: t.map.bathymetryContours,
-    seamarksTitle: t.map.seamarksLegend,
-    seamarksVisible: seamarksEnabled,
-    seamarksMarksLabel: t.map.seamarksLegendMarks,
-    warningsTitle: t.map.coastalWarningsLegend,
-    warningsVisible: isFullscreen && !isHeroEmbed && coastalWarningsEnabled,
-    warningsZoneLabel: t.map.coastalWarningsLegendZone,
-    warningsOrcaLabel: t.map.coastalWarningsLegendOrca,
+  const controls: ComponentProps<typeof MapControls> = {
+    isFullscreen,
+    isMobile,
+    isHeroEmbed,
+    clusterEnabled,
+    windEnabled,
+    radarEnabled,
+    radarPrefSet,
+    radarUnavailable,
+    isobathsEnabled,
+    onlyOnEnabled,
+    coastalWarningsEnabled,
+    fullscreenLabel: t.hero.exploreMap,
+    clusterLabel,
+    windLabel,
+    windHint,
+    radarLabel,
+    radarHint,
+    radarResetLabel: layerCopy.radarResetLabel,
+    hoursEnabled: hoursOn,
+    hoursUnavailable,
+    hoursPrefSet,
+    hoursLabel: layerCopy.hoursLabel,
+    hoursHint: layerCopy.hoursHint,
+    hoursResetLabel: layerCopy.hoursResetLabel,
+    buoysEnabled,
+    buoysLabel: layerCopy.buoysLabel,
+    buoysHint: layerCopy.buoysHint,
+    hsEnabled,
+    hsUnavailable,
+    hsLabel: layerCopy.hsLabel,
+    hsHint: layerCopy.hsHint,
+    sstEnabled,
+    sstUnavailable,
+    sstLabel: layerCopy.sstLabel,
+    sstHint: layerCopy.sstHint,
+    currentsEnabled,
+    currentsUnavailable,
+    currentsLabel: layerCopy.currentsLabel,
+    currentsHint: layerCopy.currentsHint,
+    isobathsLabel: layerCopy.isobathsLabel,
+    bathymetryEnabled,
+    bathymetryLabel: layerCopy.bathymetryLabel,
+    bathymetryHint: layerCopy.bathymetryHint,
+    seamarksEnabled,
+    seamarksLabel: layerCopy.seamarksLabel,
+    seamarksHint: layerCopy.seamarksHint,
+    onlyOnLabel,
+    onlyOnHint,
+    windLegendHelpLabel,
+    coastalWarningsLabel,
+    layersLabel: layerCopy.layersMenuLabel,
+    enterFullscreen,
+    exitFullscreen,
+    exitLabel: exitFullscreenLabel,
+    toggleCluster,
+    toggleWind,
+    openWindLegend,
+    toggleRadar,
+    handleResetRadar,
+    toggleHours,
+    handleResetHours,
+    toggleBuoys,
+    toggleHs,
+    toggleSst,
+    toggleCurrents,
+    toggleIsobaths,
+    toggleBathymetry,
+    toggleSeamarks,
+    toggleOnlyOn,
+    toggleCoastalWarnings,
+    windButtonRef,
+    fullscreenBtnRef,
   };
 
-  // Time track partilhado — o mesmo nó que o HUD antigo recebia.
-  const timeTrackNode = hoursLive ? (
-    <MapTimeTrack
-      variant="hud"
-      mode="hours"
-      length={hoursTimes.length}
-      index={hoursFrame}
-      onIndexChange={handleHoursFrameChange}
-      paused={hoursHudPaused}
-      userPaused={hoursUserPaused}
-      onUserPausedChange={handleHoursUserPausedChange}
-      onScrubbingChange={setHoursScrubbing}
-      clock={hoursClock}
-      tideChip={timeTrackChips}
-      labels={{
-        scrub: t.map.hoursScrub,
-        play: t.map.hoursPlay,
-        pause: t.map.hoursPause,
-      }}
-    />
-  ) : radarEnabled && radarFrameList.length > 1 ? (
-    <MapTimeTrack
-      variant="hud"
-      mode="radar"
-      length={radarFrameList.length}
-      index={radarFrameIndex}
-      onIndexChange={handleRadarFrameChange}
-      paused={radarHudPaused}
-      userPaused={radarUserPaused}
-      onUserPausedChange={handleRadarUserPausedChange}
-      onScrubbingChange={setRadarScrubbing}
-      clock={radarClock}
-      tideChip={timeTrackChips}
-      labels={{
-        scrub: t.map.radarScrub,
-        play: t.map.radarPlay,
-        pause: t.map.radarPause,
-      }}
-    />
-  ) : undefined;
-
   return (
-    <div
-      className={
-        isFullscreen
-          ? fullscreenBelowHeader
-            ? 'fixed left-0 right-0 bottom-0 z-[1050] w-full overflow-visible bg-surface-1/[0.04] top-16'
-            : 'fixed inset-0 z-[1100] w-full overflow-visible bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
-          : isHeroEmbed
-            ? 'absolute inset-0 overflow-hidden bg-bg-base'
-            : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
-      }
-      style={
-        isFullscreen
-          ? fullscreenBelowHeader
-            ? { height: 'calc(100dvh - 4rem)' }
-            : { height: '100dvh' }
-          : isHeroEmbed
-            ? undefined
-            : { height: 'clamp(480px, 68vh, 720px)' }
-      }
-      data-map-fullscreen={isFullscreen ? 'true' : 'false'}
-      data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}
-      data-map-cluster={clusterEnabled ? 'true' : 'false'}
-      data-map-wind={windEnabled ? 'true' : 'false'}
-      data-map-only-on={onlyOnEnabled ? 'true' : 'false'}
-      data-map-hours={hoursLive ? 'true' : 'false'}
-      data-map-buoys={buoysEnabled ? 'true' : 'false'}
-      data-map-hs={hsEnabled ? 'true' : 'false'}
-      data-map-sst={sstEnabled ? 'true' : 'false'}
-      data-map-currents={currentsEnabled ? 'true' : 'false'}
-      data-map-bathymetry={bathymetryEnabled ? 'true' : 'false'}
-      data-map-seamarks={seamarksEnabled ? 'true' : 'false'}
-      data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
-    >
-      {!isReady && (
-        <div className="absolute inset-0 flex items-center justify-center bg-surface-1/[0.04] z-10">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
-            <span className="text-sm text-fg-muted">{t.map.loading}</span>
+    <MapUiProvider data={uiData} actions={uiActions}>
+      <div
+        className={
+          isFullscreen
+            ? fullscreenBelowHeader
+              ? 'fixed left-0 right-0 bottom-0 z-[1050] w-full overflow-visible bg-surface-1/[0.04] top-16'
+              : 'fixed inset-0 z-[1100] w-full overflow-visible bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
+            : isHeroEmbed
+              ? 'absolute inset-0 overflow-hidden bg-bg-base'
+              : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
+        }
+        style={
+          isFullscreen
+            ? fullscreenBelowHeader
+              ? { height: 'calc(100dvh - 4rem)' }
+              : { height: '100dvh' }
+            : isHeroEmbed
+              ? undefined
+              : { height: 'clamp(480px, 68vh, 720px)' }
+        }
+        data-map-fullscreen={isFullscreen ? 'true' : 'false'}
+        data-map-hud={isFullscreen && mapHud ? 'visible' : 'hidden'}
+        data-map-cluster={clusterEnabled ? 'true' : 'false'}
+        data-map-wind={windEnabled ? 'true' : 'false'}
+        data-map-only-on={onlyOnEnabled ? 'true' : 'false'}
+        data-map-hours={hoursLive ? 'true' : 'false'}
+        data-map-buoys={buoysEnabled ? 'true' : 'false'}
+        data-map-hs={hsEnabled ? 'true' : 'false'}
+        data-map-sst={sstEnabled ? 'true' : 'false'}
+        data-map-currents={currentsEnabled ? 'true' : 'false'}
+        data-map-bathymetry={bathymetryEnabled ? 'true' : 'false'}
+        data-map-seamarks={seamarksEnabled ? 'true' : 'false'}
+        data-map-hero-teaser={isHeroEmbed ? 'true' : undefined}
+      >
+        {!isReady && (
+          <div className="absolute inset-0 flex items-center justify-center bg-surface-1/[0.04] z-10">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
+              <span className="text-sm text-fg-muted">{t.mapUiLayers.loading}</span>
+            </div>
           </div>
-        </div>
-      )}
-      {/* Trap Leaflet panes (z 200–700) so HUD / MapControls paint above tiles. */}
-      <div className="absolute inset-0 z-0">
-        <div
-          ref={mapRef}
-          role="region"
-          className="w-full h-full"
-          aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
-        />
-      </div>
-
-      {isReady && (
-        <>
-          {/* Auditoria 2026-09-16 (C4): o banner toast sobre o mapa saiu —
-              chrome+toast cobriam ~55% do viewport mobile. O mesmo aviso vive
-              agora só no chip compacto do HUD (BuoyLayerChip), ligado ao
-              mesmo useBuoyLayerNotice. */}
-          <MapControls
-            isFullscreen={isFullscreen}
-            isMobile={isMobile}
-            isHeroEmbed={isHeroEmbed}
-            clusterEnabled={clusterEnabled}
-            windEnabled={windEnabled}
-            radarEnabled={radarEnabled}
-            radarPrefSet={radarPrefSet}
-            radarUnavailable={radarUnavailable}
-            isobathsEnabled={isobathsEnabled}
-            onlyOnEnabled={onlyOnEnabled}
-            coastalWarningsEnabled={coastalWarningsEnabled}
-            fullscreenLabel={t.hero.exploreMap}
-            clusterLabel={clusterLabel}
-            windLabel={windLabel}
-            windHint={windHint}
-            radarLabel={radarLabel}
-            radarHint={radarHint}
-            radarResetLabel={t.map.radarReset}
-            hoursEnabled={hoursOn}
-            hoursUnavailable={hoursUnavailable}
-            hoursPrefSet={hoursPrefSet}
-            hoursLabel={hoursLabel}
-            hoursHint={hoursHint}
-            hoursResetLabel={t.map.hoursReset}
-            buoysEnabled={buoysEnabled}
-            buoysLabel={buoysLabel}
-            buoysHint={t.map.buoysHint}
-            hsEnabled={hsEnabled}
-            hsUnavailable={hsUnavailable}
-            hsLabel={hsLabel}
-            hsHint={t.map.hsHint}
-            sstEnabled={sstEnabled}
-            sstUnavailable={sstUnavailable}
-            sstLabel={sstLabel}
-            sstHint={t.map.sstHint}
-            currentsEnabled={currentsEnabled}
-            currentsUnavailable={currentsUnavailable}
-            currentsLabel={currentsLabel}
-            currentsHint={t.map.currentsHint}
-            isobathsLabel={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
-            bathymetryEnabled={bathymetryEnabled}
-            bathymetryLabel={bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry}
-            bathymetryHint={t.map.bathymetryHint}
-            seamarksEnabled={seamarksEnabled}
-            seamarksLabel={seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks}
-            seamarksHint={t.map.seamarksHint}
-            onlyOnLabel={onlyOnLabel}
-            onlyOnHint={onlyOnHint}
-            windLegendHelpLabel={windLegendHelpLabel}
-            coastalWarningsLabel={coastalWarningsLabel}
-            layersLabel={t.map.layersMenu}
-            enterFullscreen={enterFullscreen}
-            exitFullscreen={exitFullscreen}
-            exitLabel={exitFullscreenLabel}
-            toggleCluster={toggleCluster}
-            toggleWind={toggleWind}
-            openWindLegend={openWindLegend}
-            toggleRadar={toggleRadar}
-            handleResetRadar={handleResetRadar}
-            toggleHours={toggleHours}
-            handleResetHours={handleResetHours}
-            toggleBuoys={toggleBuoys}
-            toggleHs={toggleHs}
-            toggleSst={toggleSst}
-            toggleCurrents={toggleCurrents}
-            toggleIsobaths={toggleIsobaths}
-            toggleBathymetry={toggleBathymetry}
-            toggleSeamarks={toggleSeamarks}
-            toggleOnlyOn={toggleOnlyOn}
-            toggleCoastalWarnings={toggleCoastalWarnings}
-            windButtonRef={windButtonRef}
-            fullscreenBtnRef={fullscreenBtnRef}
+        )}
+        {/* Trap Leaflet panes (z 200–700) so HUD / MapControls paint above tiles. */}
+        <div className="absolute inset-0 z-0">
+          <div
+            ref={mapRef}
+            role="region"
+            className="w-full h-full"
+            aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
           />
+        </div>
 
-          {/* Acções rápidas — «Perto de mim» e «Partilhar vista», mesma
-              posição flutuante em desktop e mobile (o pill de controlos
-              está centrado e o sheet em baixo). */}
-          {isFullscreen && (
-            <MapQuickActions
-              locateLabel={t.map.locateMe}
-              shareLabel={t.map.shareView}
-              locating={locating}
-              onLocate={locate}
-              onShare={handleShareView}
-            />
-          )}
-
-          {windLegendHintVisible && (
-            <div
-              role="note"
-              aria-label={t.map.windRingLegend.help}
-              className="absolute z-[1150] bottom-32 left-3 right-3 sm:right-auto sm:w-[320px] rounded-card border border-divider bg-bg-elevated shadow-card px-4 py-3 motion-reduce:animate-none animate-fade-up"
-            >
-              <p className="text-body-sm font-semibold text-fg mb-1">{t.map.windRingLegend.title}</p>
-              <p className="text-meta-sm text-fg-muted leading-snug">{t.map.windRingLegend.rule}</p>
-              <button
-                type="button"
-                onClick={openWindLegend}
-                className="mt-2 text-meta-sm font-semibold text-accent hover:underline underline-offset-2"
-              >
-                {t.map.windRingLegend.help}
-              </button>
-            </div>
-          )}
-
-          {tileState === 'loading' && (
-            <div
-              role="status"
-              aria-live="polite"
-              className="absolute bottom-20 left-1/2 -translate-x-1/2 z-[1002] flex items-center gap-2 rounded-full border border-divider bg-bg-elevated/90 backdrop-blur-sm px-3 py-1.5 shadow-card pointer-events-none"
-            >
-              <span
-                className="w-3.5 h-3.5 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin"
-                aria-hidden
-              />
-              <span className="text-meta-sm text-fg-muted">{t.map.loading}</span>
-            </div>
-          )}
-
-          {tileState === 'failed' && (
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 z-[1002] flex justify-center px-4 pointer-events-none">
-              <div
-                role="alert"
-                className="pointer-events-auto flex flex-col items-center gap-2.5 rounded-card border border-divider bg-bg-elevated shadow-card px-5 py-4 max-w-xs text-center"
-              >
-                <p className="text-meta-sm font-semibold text-fg">{t.map.mapUnavailable}</p>
-                <button
-                  type="button"
-                  onClick={retryBasemap}
-                  className="inline-flex items-center gap-1.5 rounded-input border border-divider bg-surface-1/[0.06] px-3 py-1.5 text-meta-sm font-semibold text-fg hover:bg-surface-1/[0.12] transition-colors duration-150 touch-manipulation"
-                >
-                  <RotateCcw className="w-3.5 h-3.5" aria-hidden />
-                  {t.common.refresh}
-                </button>
-              </div>
-            </div>
-          )}
-
-          {!isFullscreen && !isHeroEmbed && (
-            <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} isPt={isPt} />
-          )}
-
-          {/* Legenda flutuante — escondida no fullscreen mobile: lá vive
-              dentro do <details> do sheet (uma legenda por superfície). */}
-          {!(isFullscreen && isMobile) && (!isHeroEmbed || (isobathsEnabled && isobathsData != null)) && (
-            <MapLegend
+        {isReady && (
+          <>
+            <MapChromeZone
+              t={t}
               locale={locale}
-              reserveHudSpace={isFullscreen && isMobile}
-              hudLift={isFullscreen ? radarLift : 0}
-              placement={isHeroEmbed ? 'hero' : 'map'}
-              {...legendLayerProps}
+              isFullscreen={isFullscreen}
+              isMobile={isMobile}
+              isHeroEmbed={isHeroEmbed}
+              controls={controls}
+              locateLabel={t.mapUiChrome.locateMe}
+              shareLabel={t.mapUiChrome.shareView}
+              isobathsEnabled={isobathsEnabled}
+              isobathsData={isobathsData}
+              radarLift={radarLift}
+              legendLayerProps={legendLayerProps}
+              state={chrome}
+              windButtonRef={windButtonRef}
             />
-          )}
 
-          {!isFullscreen && !isHeroEmbed && (
-            <p className="absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-meta-sm text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none max-md:hidden bottom-14 left-1/2 -translate-x-1/2">
-              {t.map.mapDataHint}
-            </p>
-          )}
-
-          {isHeroEmbed && (
-            <>
-              <div className="absolute top-3 right-3 z-[1000] flex items-center gap-1.5 pointer-events-auto">
-                <button type="button" onClick={toggleRadar} aria-label={radarLabel} aria-pressed={radarEnabled} className="inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors">
-                  <CloudRain className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-                  <span className="hidden sm:inline">{radarLabel}</span>
-                </button>
-                {(radarPrefSet || radarEnabled) && (
-                  <button type="button" onClick={handleResetRadar} aria-label={t.map.radarReset} title={t.map.radarReset} className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center w-8 h-8 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors">
-                    <RotateCcw className="w-3.5 h-3.5" aria-hidden />
-                  </button>
-                )}
-              </div>
-              <button type="button" onClick={toggleIsobaths} aria-label={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths} title={t.map.isobathsHint} aria-pressed={isobathsEnabled} className="absolute top-[70px] right-3 z-[1000] inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto">
-                <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-                <span className="hidden sm:inline">{isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}</span>
-              </button>
-            </>
-          )}
-
-          {radarEnabled && radarData && (
-            <RadarCarousel
-              className={isHeroEmbed ? 'absolute bottom-20 right-3 z-[1000] pointer-events-auto' : isFullscreen ? 'absolute z-[1000]' : 'absolute bottom-8 left-2 sm:left-auto sm:right-2 z-[1000] max-w-[min(100%,320px)] sm:max-w-none'}
-              style={isFullscreen
-                ? {
-                    bottom: Math.max(radarLift + 12, 32),
-                    // O painel desktop ocupa a margem esquerda — o carrossel
-                    // desvia para a direita do painel (ou do rail recolhido).
-                    left: isMobile ? 8 : panelCollapsed ? 64 : 364,
-                  }
-                : undefined}
-              frames={radarFrameList}
-              frameIndex={radarFrameIndex}
-              onFrameChange={handleRadarFrameChange}
-              mapBusyCount={radarBusySources.size}
-              userPaused={radarUserPaused || hoursOn}
-              onUserPausedChange={handleRadarUserPausedChange}
-              labels={{ badge: t.map.radarBadge, hint: t.map.radarHint, scrub: t.map.radarScrub, play: t.map.radarPlay, pause: t.map.radarPause, paused: t.map.radarPaused, ipmaAttribution: radarAttributionLabel, gap: t.map.radarGap, stale: t.map.radarStale }}
-              fullscreenHref={isFullscreen ? undefined : `/${locale}/mapa/?radar=1`}
-              fullscreenLabel={t.map.radarFullscreen}
-              onFullscreenOpen={handleRadarImmersionOpen}
-              hideScrubber={isFullscreen}
-              externalScrubbing={radarScrubbing}
-            />
-          )}
-
-          {/* Painel desktop — lista sincronizada + filtros + «Só a bombar»
-              (a única casa do toggle no fullscreen; saiu da toolbar). */}
-          {mapHud && isFullscreen && !isMobile && (
-            <MapSpotPanel
-              {...mapHud}
+            <MapLayersZone
+              t={t}
+              locale={locale}
               isPt={isPt}
-              spotCount={hudSpotCount}
-              rows={viewRows}
-              focusSpotId={focusSpotId}
-              onSelectRow={(row) => focusMapSpot(row.spotId)}
-              collapsed={panelCollapsed}
-              onCollapsedChange={setPanelCollapsed}
-              onlyOnEnabled={onlyOnEnabled}
-              onToggleOnlyOn={toggleOnlyOn}
-              onlyOnLabel={onlyOnLabel}
-              onlyOnHint={onlyOnHint}
-              warningChip={<BuoyLayerChip locale={locale} />}
-              timeTrack={timeTrackNode}
+              isFullscreen={isFullscreen}
+              isHeroEmbed={isHeroEmbed}
+              isMobile={isMobile}
+              tileState={tileState}
+              retryBasemap={retryBasemap}
+              refreshLabel={t.common.refresh}
               basemapMode={basemapMode}
               onBasemapChange={handleBasemapChangeLocal}
-              attributionHtml={attributionHtml}
+              radarLabel={radarLabel}
+              radarEnabled={radarEnabled}
+              radarPrefSet={radarPrefSet}
+              radarResetLabel={layerCopy.radarResetLabel}
+              toggleRadar={toggleRadar}
+              handleResetRadar={handleResetRadar}
+              isobathsEnabled={isobathsEnabled}
+              isobathsLabel={layerCopy.isobathsLabel}
+              isobathsHint={layerCopy.isobathsHint}
+              toggleIsobaths={toggleIsobaths}
+              radarData={radarData}
+              radarFrameList={radarFrameList}
+              radarFrameIndex={radarFrameIndex}
+              radarBusyCount={radarBusySources.size}
+              radarUserPaused={radarUserPaused}
+              radarLift={radarLift}
+              radarAttributionLabel={radarAttributionLabel}
+              radarScrubbing={radarScrubbing}
+              hoursOn={hoursOn}
+              panelCollapsed={panelCollapsed}
+              handleRadarFrameChange={handleRadarFrameChange}
+              handleRadarUserPausedChange={handleRadarUserPausedChange}
+              handleRadarImmersionOpen={handleRadarImmersionOpen}
             />
-          )}
 
-          {/* Sheet mobile — peek / meio / aberto. A linha do topo do sheet
-              («Melhor agora») é a 1ª linha de viewRows, a mesma fonte de
-              score dos marcadores. */}
-          {mapHud && isFullscreen && isMobile && (
-            <MapExploreSheet
-              {...mapHud}
-              isPt={isPt}
-              spotCount={hudSpotCount}
-              state={exploreSheetState}
-              onStateChange={setExploreSheetState}
-              rows={viewRows}
-              focusSpotId={focusSpotId}
-              onSelectRow={(row) => focusMapSpot(row.spotId)}
-              layers={sheetLayers}
-              extras={sheetExtras}
+            <MapExploreZone
+              mapHud={mapHud}
+              isFullscreen={isFullscreen}
+              isMobile={isMobile}
+              state={explore}
+              sheetLayers={sheetLayers}
+              legendLayerProps={legendLayerProps}
               basemapMode={basemapMode}
               onBasemapChange={handleBasemapChangeLocal}
               exitFullscreenLabel={exitFullscreenLabel}
               onExitFullscreen={exitFullscreen}
               onlyOnEnabled={onlyOnEnabled}
               onToggleOnlyOn={toggleOnlyOn}
-              onlyOnLabel={onlyOnLabel}
-              onlyOnHint={onlyOnHint}
-              warningChip={<BuoyLayerChip locale={locale} />}
-              legendNode={<MapLegend locale={locale} embedded {...legendLayerProps} />}
               timeTrack={timeTrackNode}
               attributionHtml={attributionHtml}
-              openHeight={openHeight}
             />
-          )}
 
-          <WindRingLegend open={windLegendOpen} onClose={closeWindLegend} anchorRef={windButtonRef} locale={locale} />
-
-          {isMobile && (
-            <MapSpotSheet data={sheetSpot} selectedSport={selectedSport} locale={locale} onClose={() => setSheetSpot(null)} onViewSpot={onSpotSelect} />
-          )}
-        </>
-      )}
-    </div>
+            <MapMarkersZone />
+          </>
+        )}
+      </div>
+    </MapUiProvider>
   );
 }

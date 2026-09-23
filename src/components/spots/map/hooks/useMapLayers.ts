@@ -62,7 +62,7 @@ interface UseMapLayersOptions {
   isobathsLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   t: {
-    map: {
+    mapUiLayers: {
       showRadar: string;
       hideRadar: string;
       radarHint: string;
@@ -313,8 +313,8 @@ export function useMapLayers({
   }, []);
 
   const radarFrameList = radarFrames(radarData ?? null);
-  const radarLabel = radarEnabled ? t.map.hideRadar : t.map.showRadar;
-  const radarHint = t.map.radarHint;
+  const radarLabel = radarEnabled ? t.mapUiLayers.hideRadar : t.mapUiLayers.showRadar;
+  const radarHint = t.mapUiLayers.radarHint;
   const radarUnavailable = radarData === null;
   const radarAttributionLabel = isPt ? IPMA_RADAR_ATTRIBUTION_LABEL_PT : IPMA_RADAR_ATTRIBUTION_LABEL_EN;
 
@@ -753,8 +753,8 @@ export function useMapLayers({
   }, []);
 
   const coastalWarningsLabel = coastalWarningsEnabled
-    ? t.map.hideCoastalWarnings
-    : t.map.showCoastalWarnings;
+    ? t.mapUiLayers.hideCoastalWarnings
+    : t.mapUiLayers.showCoastalWarnings;
 
   return {
     radarData, radarEnabled, radarFrameIndex, radarUserPaused, radarPrefSet,
