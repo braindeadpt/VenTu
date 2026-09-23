@@ -1,5 +1,7 @@
 'use client';
 
+import { getSportLabel } from '@/lib/homepageSport';
+import { getTranslation } from '@/lib/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Bell, Check, Loader2 } from 'lucide-react';
 import type { SportType } from '@/lib/sportRatings';
@@ -35,6 +37,7 @@ export default function SpotAlertPopover({
   sport,
   locale,
 }: SpotAlertPopoverProps) {
+  const t = getTranslation(locale).alerts;
   const isPt = locale === 'pt';
   const { session, requestLogin, favorites, isFavorite, toggleFavorite } = useAuth();
   const [open, setOpen] = useState(false);
@@ -95,7 +98,7 @@ export default function SpotAlertPopover({
     setSaving(true);
     try {
       const sb = getSupabaseClient();
-      if (!sb) throw new Error(isPt ? 'Supabase não configurado' : 'Supabase not configured');
+      if (!sb) throw new Error(t.supabaseNotConfigured);
 
       // The alert covers favorites — make sure this spot is one of them.
       if (!isFavorite(spotId)) {
@@ -104,7 +107,7 @@ export default function SpotAlertPopover({
 
       const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode);
       if (!result.ok) {
-        setError(formatUserAlertsError(result.error ?? 'unknown', isPt));
+        setError(formatUserAlertsError(result.error ?? 'unknown', locale));
         return;
       }
       setSavedCount(result.favorite_count ?? null);
@@ -115,11 +118,11 @@ export default function SpotAlertPopover({
         setOpen(false);
       }, 2200);
     } catch (err) {
-      setError(err instanceof Error ? err.message : isPt ? 'Erro ao guardar' : 'Save failed');
+      setError(err instanceof Error ? err.message : t.saveFailed);
     } finally {
       setSaving(false);
     }
-  }, [minScore, sport, locale, alertMode, isPt, isFavorite, toggleFavorite, spotId]);
+  }, [minScore, sport, locale, alertMode, isFavorite, toggleFavorite, spotId, t.saveFailed, t.supabaseNotConfigured]);
 
   const spotIsFavorite = isFavorite(spotId);
   const favoriteCountAfterSave = spotIsFavorite ? favorites.length : favorites.length + 1;
@@ -130,10 +133,10 @@ export default function SpotAlertPopover({
         type="button"
         onClick={handleToggle}
         className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-input text-meta-sm font-medium border border-divider bg-surface-1/[0.04] text-fg-muted hover:text-fg hover:border-divider-strong transition-colors duration-150"
-        aria-label={isPt ? 'Criar alerta de condições para os teus favoritos' : 'Create a conditions alert for your favorites'}
+        aria-label={t.createAlertAria}
       >
         <Bell className="w-3.5 h-3.5" aria-hidden />
-        {isPt ? 'Avisa-me' : 'Alert me'}
+        {t.alertMe}
       </button>
 
       {open && (
@@ -144,7 +147,7 @@ export default function SpotAlertPopover({
           <div
             className="absolute right-0 top-full z-50 mt-1.5 w-64 rounded-card border border-divider bg-bg-elevated shadow-modal p-3"
             role="dialog"
-            aria-label={isPt ? 'Configurar alerta' : 'Configure alert'}
+            aria-label={t.configureAlert}
           >
             {saved ? (
               <div className="flex flex-col items-center gap-2 py-3 text-center">
@@ -153,31 +156,28 @@ export default function SpotAlertPopover({
                 </span>
                 <p className="text-body-sm text-fg font-semibold">
                   {saved === 'pending'
-                    ? (isPt ? 'Subscrição registada' : 'Subscription saved')
-                    : (isPt ? 'Alerta activo!' : 'Alert active!')}
+                    ? t.subscriptionSaved
+                    : t.alertActive}
                 </p>
                 <p className="text-meta-sm text-fg-muted">
                   {saved === 'pending'
-                    ? (isPt
-                      ? 'Confirma o link no email antes dos alertas começarem.'
-                      : 'Confirm the link in your email before alerts start.')
-                    : (isPt
-                      ? `Recebes email quando um dos teus ${savedCount ?? ''} favoritos bater o score definido.`
-                      : `You'll get an email when one of your ${savedCount ?? ''} favorites meets your score.`)}
+                    ? t.confirmEmail
+                    : t.digestEmailBody.replace('{count}', String(savedCount ?? ''))}
                 </p>
               </div>
             ) : (
               <div className="space-y-3">
                 <div>
                   <p className="text-body-sm font-semibold text-fg">
-                    {isPt ? 'Alerta de condições' : 'Conditions alert'}
+                    {t.conditionsAlert}
                   </p>
                   <p className="text-meta-sm text-fg-muted mt-0.5">
-                    {isPt
-                      ? `Cobre os teus favoritos (${favoriteCountAfterSave} ${favoriteCountAfterSave === 1 ? 'spot' : 'spots'}).`
-                      : `Covers your favorites (${favoriteCountAfterSave} ${favoriteCountAfterSave === 1 ? 'spot' : 'spots'}).`}
+                    {t.coversFavorites.replace(
+                      '{count}',
+                      `${favoriteCountAfterSave} ${favoriteCountAfterSave === 1 ? 'spot' : 'spots'}`,
+                    )}
                     {!spotIsFavorite && (
-                      <> {isPt ? 'Este spot será adicionado.' : 'This spot will be added.'}</>
+                      <> {t.thisSpotAdded}</>
                     )}
                   </p>
                 </div>
@@ -185,14 +185,14 @@ export default function SpotAlertPopover({
                 {/* Sport label */}
                 <div className="flex items-center gap-2 text-meta-sm text-fg-muted">
                   <span className="font-medium text-fg">
-                    {SPORT_LABELS[sport][isPt ? 'pt' : 'en']}
+                    {getSportLabel(sport, locale)}
                   </span>
                 </div>
 
                 {/* Score threshold */}
                 <div className="space-y-1">
                   <label className="text-meta-sm text-fg-muted">
-                    {isPt ? 'Score mínimo' : 'Min. score'}
+                    {t.minScore}
                   </label>
                   <div className="flex items-center gap-2">
                     <input
@@ -203,7 +203,7 @@ export default function SpotAlertPopover({
                       value={minScore}
                       onChange={(e) => setMinScore(Number(e.target.value))}
                       className="flex-1 accent-accent"
-                      aria-label={isPt ? 'Score mínimo' : 'Minimum score'}
+                      aria-label={t.minScoreAria}
                     />
                     <span className="font-mono tabular-nums text-meta font-semibold text-fg w-8 text-right">
                       {minScore}
@@ -214,7 +214,7 @@ export default function SpotAlertPopover({
                 {/* Frequency */}
                 <div className="space-y-1">
                   <label className="text-meta-sm text-fg-muted">
-                    {isPt ? 'Frequência' : 'Frequency'}
+                    {t.frequency}
                   </label>
                   <div className="flex gap-1.5">
                     {(['digest', 'immediate'] as const).map((mode) => (
@@ -229,8 +229,8 @@ export default function SpotAlertPopover({
                         }`}
                       >
                         {mode === 'digest'
-                          ? (isPt ? 'Resumo' : 'Digest')
-                          : (isPt ? 'Imediato' : 'Instant')}
+                          ? t.digest
+                          : t.instant}
                       </button>
                     ))}
                   </div>
@@ -238,9 +238,9 @@ export default function SpotAlertPopover({
 
                 {existing && (
                   <p className="text-meta-sm text-fg-muted border-l-2 border-score-fair/60 pl-2">
-                    {isPt
-                      ? `Substitui o alerta atual (${existing.sport} ≥ ${existing.min_score}).`
-                      : `Replaces your current alert (${existing.sport} ≥ ${existing.min_score}).`}
+                    {t.replacesCurrent
+                      .replace('{sport}', existing.sport)
+                      .replace('{score}', String(existing.min_score))}
                   </p>
                 )}
 
@@ -257,7 +257,7 @@ export default function SpotAlertPopover({
                   {saving ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden />
                   ) : null}
-                  {isPt ? 'Guardar alerta' : 'Save alert'}
+                  {t.saveAlert}
                 </button>
               </div>
             )}

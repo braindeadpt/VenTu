@@ -129,6 +129,9 @@ const ES_COGNATES = new Set([
   'Satélite',                          // espanhol correcto = PT (mapa base satélite)
   'Ver spot',                          // espanhol correcto = PT (CTA do popup)
   'Abrir mapa',                        // espanhol correcto = PT (CTA do mapa estático)
+  'Configurar alerta',                 // espanhol correcto = PT (aria do alerta)
+  'Score mínimo',                      // espanhol correcto = PT (aria do score mínimo)
+  'Guardar alerta',                    // espanhol correcto = PT (CTA de guardar alerta)
 ]);
 
 /**

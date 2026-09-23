@@ -79,14 +79,14 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
     try {
       const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode);
       if (!result.ok) {
-        setError(formatUserAlertsError(result.error, isPt));
+        setError(formatUserAlertsError(result.error, locale));
         return;
       }
 
       await loadPrefs();
       setSaved(true);
     } catch {
-      setError(formatUserAlertsError(undefined, isPt));
+      setError(formatUserAlertsError(undefined, locale));
     } finally {
       setSaving(false);
     }
@@ -103,7 +103,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
       await loadPrefs();
       setSaved(false);
     } catch {
-      setError(formatUserAlertsError(undefined, isPt));
+      setError(formatUserAlertsError(undefined, locale));
     } finally {
       setSaving(false);
     }
