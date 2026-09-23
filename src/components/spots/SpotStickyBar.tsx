@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { Waves, Wind, Droplets, Clock } from 'lucide-react';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { SportScore } from '@/lib/sportScore';
@@ -94,6 +95,7 @@ export default function SpotStickyBar({
   scoreWaveCorrection,
   freshnessNowMs,
 }: SpotStickyBarProps) {
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
   const warningsData = useIpmaWarnings();
   const warning = strongestSpotWarning(warningsData, spotId);
@@ -113,7 +115,7 @@ export default function SpotStickyBar({
   return (
     <div
       role="region"
-      aria-label={isPt ? 'Métricas principais' : 'Key metrics'}
+      aria-label={t.spotsUi.keyMetrics}
       className="fixed left-0 right-0 z-30 bg-bg-base/95 supports-[backdrop-filter]:backdrop-blur-md border-b border-divider"
       // Cota de pinagem partilhada com a secção sticky (globals.css): a barra
       // aparece exactamente onde a linha standalone de sport tabs estaria.
@@ -126,7 +128,7 @@ export default function SpotStickyBar({
       <div className="border-b border-divider/60">
         <div
           role="tablist"
-          aria-label={isPt ? 'Modalidade' : 'Sport'}
+          aria-label={t.spotsMap.sportWord}
           className="max-w-6xl mx-auto px-4 flex items-center gap-2 overflow-x-auto overscroll-x-contain no-scrollbar pb-1 edge-fade-x"
           style={{ height: 'var(--ventu-spot-tabs-h)' }}
         >
@@ -158,11 +160,11 @@ export default function SpotStickyBar({
         <Stat
           icon={<Waves className="w-3 h-3 text-data-waves" />}
           value={`${waveHeightShown.toFixed(1)}m${waveFactorSuffix(waveSource, locale)}`}
-          label={isPt ? 'Onda' : 'Wave'}
+          label={t.spotsUi.waveWord}
         />
-        <Stat icon={<Clock className="w-3 h-3 text-data-period" />} value={`${Math.round(conditions.wavePeriod)}s`} label={isPt ? 'Período' : 'Period'} />
-        <Stat icon={<Wind className="w-3 h-3 text-data-wind" />} value={`${windKt}kt`} label={isPt ? 'Vento' : 'Wind'} />
-        <Stat icon={<Droplets className="w-3 h-3 text-data-water" />} value={`${conditions.waterTemp.toFixed(1)}°`} label={isPt ? 'Água' : 'Water'} />
+        <Stat icon={<Clock className="w-3 h-3 text-data-period" />} value={`${Math.round(conditions.wavePeriod)}s`} label={t.spotsUi.period} />
+        <Stat icon={<Wind className="w-3 h-3 text-data-wind" />} value={`${windKt}kt`} label={t.homepage.layerWind} />
+        <Stat icon={<Droplets className="w-3 h-3 text-data-water" />} value={`${conditions.waterTemp.toFixed(1)}°`} label={t.spotsUi.waterWord} />
         {observedWave &&
           isObservedWaveFresh(observedWave, freshnessNowMs) &&
           (observedWaveAlt && isObservedWaveFresh(observedWaveAlt, freshnessNowMs) ? (
@@ -177,14 +179,12 @@ export default function SpotStickyBar({
             <Stat
               icon={<Waves className="w-3 h-3 text-score-good" />}
               value={observedWaveLabel(observedWave, locale)}
-              label={isPt ? 'medida' : 'measured'}
+              label={t.spotsUi.measuredWord}
               // Hora da leitura apenas no tooltip — a barra de 56px não ganha
               // espaço visual (mesmo clock do hero, Europe/Lisbon).
-              title={
-                isPt
-                  ? `${observedWaveLabel(observedWave, locale)} · leitura ${formatObservedClockTime(observedWave.observedAt, locale)}`
-                  : `${observedWaveLabel(observedWave, locale)} · reading ${formatObservedClockTime(observedWave.observedAt, locale)}`
-              }
+              title={t.spotsUi.readingAt
+                .replace('{label}', observedWaveLabel(observedWave, locale))
+                .replace('{time}', formatObservedClockTime(observedWave.observedAt, locale))}
             />
           ))}
         {observedWave &&

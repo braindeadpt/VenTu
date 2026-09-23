@@ -1,5 +1,7 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { getTranslation } from '@/lib/i18n';
 import { useState, useMemo, useEffect } from 'react';
 import type { Spot } from '@/types';
 import type { SportType, GridSportFilter } from '@/lib/sportRatings';
@@ -61,6 +63,7 @@ export default function SpotDrawer({
   gridSport = 'all',
 }: SpotDrawerProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
   const [selectedSport, setSelectedSport] = useState<SportType>('surf');
 
   const spot = spotData?.spot;
@@ -93,8 +96,8 @@ export default function SpotDrawer({
       {spotData && spot && conditions && (
         <div className="space-y-4">
           <SpotDrawerHeader
-            name={isPt ? spot.name : spot.nameEn}
-            region={isPt ? spot.region : spot.regionEn}
+            name={localizedSpotName(spot, locale)}
+            region={localizedSpotRegion(spot, locale)}
             score={currentScore}
             waveHeight={conditions.waveHeight.toFixed(1)}
             windKnots={kts(conditions.windSpeed)}
@@ -113,7 +116,7 @@ export default function SpotDrawer({
             <div
               className="flex gap-2 overflow-x-auto no-scrollbar pb-1 edge-fade-x"
               role="tablist"
-              aria-label={isPt ? 'Modalidade' : 'Sport'}
+              aria-label={t.spotsMap.sportWord}
             >
               {compatibleSports.map((sport) => (
                 <SportTab
@@ -130,41 +133,41 @@ export default function SpotDrawer({
 
           <div className="space-y-1" role="tabpanel">
             <MetricBar
-              label={isPt ? 'Altura onda' : 'Wave height'}
+              label={t.spotsUi.waveHeightLabel}
               value={conditions.waveHeight.toFixed(1)}
               unit="m"
               fillPercent={Math.min(100, conditions.waveHeight * 40)}
             />
             <MetricBar
-              label={isPt ? 'Período' : 'Period'}
+              label={t.spotsUi.period}
               value={conditions.wavePeriod.toFixed(0)}
               unit="s"
               fillPercent={Math.min(100, (conditions.wavePeriod - 3) * 12)}
               colorVar="--data-period"
             />
             <MetricBar
-              label={isPt ? 'Energia' : 'Energy'}
+              label={t.spotsUi.energy}
               value={wavePowerKw.toFixed(1)}
               unit="kW/m"
               fillPercent={Math.min(100, wavePowerKw * 2)}
               colorVar="--data-period"
             />
             <MetricBar
-              label={isPt ? 'Vento' : 'Wind'}
+              label={t.homepage.layerWind}
               value={kts(conditions.windSpeed)}
               unit="kt"
               fillPercent={Math.min(100, parseFloat(kts(conditions.windSpeed)) * 4)}
               colorVar="--data-wind"
             />
             <MetricBar
-              label={isPt ? 'Rajada' : 'Gust'}
+              label={t.spotsUi.gust}
               value={kts(conditions.windGust)}
               unit="kt"
               fillPercent={Math.min(100, parseFloat(kts(conditions.windGust)) * 4)}
               colorVar="--data-wind"
             />
             <MetricBar
-              label={isPt ? 'Temp. água' : 'Water temp'}
+              label={t.spotsUi.waterTemp}
               value={Math.round(conditions.waterTemp).toString()}
               unit="°C"
               fillPercent={Math.min(100, conditions.waterTemp * 5)}
@@ -180,7 +183,7 @@ export default function SpotDrawer({
               locale={isPt ? 'pt' : 'en'}
               rightIcon={<ArrowRight className="w-4 h-4" aria-hidden />}
             >
-              {isPt ? 'Ver página completa' : 'View full page'}
+              {t.spotsUi.viewFullPage}
             </Button>
             <FavoriteButton
               spotId={spot.id}

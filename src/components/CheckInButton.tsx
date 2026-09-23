@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useState } from 'react';
 import { MapPinCheck, MapPin } from 'lucide-react';
 import { useCheckins } from '@/contexts/AuthProvider';
@@ -23,6 +24,7 @@ export default function CheckInButton({
   const { isCheckedIn, toggleCheckin, requestLogin, isSupabaseReady, isLoggedIn } = useCheckins();
   const { showToast } = useToast();
   const active = isCheckedIn(spotId);
+  const t = getTranslation(locale).checkIn;
   const isPt = locale === 'pt';
   const [clickEffect, setClickEffect] = useState(false);
 
@@ -51,23 +53,16 @@ export default function CheckInButton({
     const wasCheckedIn = active;
     await toggleCheckin(spotId);
     if (!wasCheckedIn) {
-      showToast(isPt ? 'Check-in feito!' : 'Check-in done!');
+      showToast(t.toastDone);
     }
     setClickEffect(true);
     setTimeout(() => setClickEffect(false), 300);
   };
 
-  const label = !isLoggedIn
-    ? isPt
-      ? `Entrar para fazer check-in em ${spotName}`
-      : `Sign in to check in at ${spotName}`
-    : active
-      ? isPt
-        ? `Remover check-in de ${spotName}`
-        : `Remove check-in from ${spotName}`
-      : isPt
-        ? ` Fazer check-in em ${spotName}`
-        : `Check in at ${spotName}`;
+  const label = (!isLoggedIn ? t.ariaSignIn : active ? t.ariaRemove : t.ariaDo).replace(
+    '{name}',
+    spotName,
+  );
 
   const Icon = active ? MapPinCheck : MapPin;
 
@@ -94,16 +89,10 @@ export default function CheckInButton({
       {showLabel && (
         <span className="text-sm font-medium">
           {!isLoggedIn
-            ? isPt
-              ? 'Entrar'
-              : 'Sign in'
+            ? getTranslation(locale).actions.signIn
             : active
-              ? isPt
-                ? 'Check-in feito'
-                : 'Checked in'
-              : isPt
-                ? 'Já estive aqui'
-                : 'Been here'}
+              ? t.btnCheckedIn
+              : t.btnBeenHere}
         </span>
       )}
     </button>

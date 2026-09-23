@@ -139,6 +139,11 @@ const ES_COGNATES = new Set([
   'Diverge',                           // espanhol correcto = PT (verificação de observações)
   'Observado ({source})',              // espanhol correcto = PT (rótulo de observação)
   '🔧 ref. PT ({me} m · n={n})',        // espanhol correcto = PT (etiqueta de recalibração)
+  'Favorito',                          // espanhol correcto = PT (estado do favorito)
+  'Período',                           // espanhol correcto = PT (métrica de período)
+  'medida',                            // espanhol correcto = PT (onda medida)
+  'Ver página completa',               // espanhol correcto = PT (CTA do drawer)
+  'Entrar',                            // espanhol correcto = PT (botão de sessão)
 ]);
 
 /**
