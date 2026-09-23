@@ -1,5 +1,6 @@
 'use client';
 
+import { localizedText } from '@/lib/localizedText';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -244,17 +245,17 @@ export default function MapaFullscreenClient({
     showClearFilters,
     difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
       id: d.id,
-      label: isPt ? d.labelPt : d.labelEn,
+      label: localizedText({ pt: d.labelPt, en: d.labelEn }, locale),
     })),
     selectedDifficulty: difficulty,
     onDifficultyChange: handleDifficultyChange,
-    difficultyGroupLabel: isPt ? 'Nível' : 'Level',
+    difficultyGroupLabel: t.spotsMap.level,
     layersLabel: t.map.layersMenu,
   };
 
   return (
-    <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={isPt ? 'Mapa fullscreen' : 'Fullscreen map'}>
-      <h1 className="sr-only">{isPt ? 'Mapa de spots — VenTu' : 'Spots map — VenTu'}</h1>
+    <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={t.spotsMap.fullscreenMap}>
+      <h1 className="sr-only">{getTranslation(locale).pages.mapMetaTitle}</h1>
       <SpotMapInteractive
         spotsData={filtered}
         selectedSport={sport}

@@ -121,6 +121,14 @@ const ES_COGNATES = new Set([
   'Modo explorar',                     // espanhol correcto = PT (aria do modo explorar)
   'Mostrar filtros',                   // espanhol correcto = PT (toggle de filtros)
   'Ocultar filtros',                   // espanhol correcto = PT (toggle de filtros)
+  'Abrir lista de spots',              // espanhol correcto = PT (aria da lista no mapa)
+  'Mapa base',                         // espanhol correcto = PT (radiogroup do mapa base)
+  'Tipo de mapa',                      // espanhol correcto = PT (aria do toggle de camada)
+  'Score Náutico',                     // espanhol correcto = PT (legenda do score)
+  'Mapa',                              // espanhol correcto = PT (mapa base)
+  'Satélite',                          // espanhol correcto = PT (mapa base satélite)
+  'Ver spot',                          // espanhol correcto = PT (CTA do popup)
+  'Abrir mapa',                        // espanhol correcto = PT (CTA do mapa estático)
 ]);
 
 /**

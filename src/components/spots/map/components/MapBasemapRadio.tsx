@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import type { BasemapMode } from '../../MapLayerToggle';
 import { cn } from '@/lib/cn';
 
@@ -11,21 +12,22 @@ import { cn } from '@/lib/cn';
 export default function MapBasemapRadio({
   value,
   onChange,
-  isPt,
+  locale,
 }: {
   value: BasemapMode;
   onChange: (mode: BasemapMode) => void;
-  isPt: boolean;
+  locale: string;
 }) {
+  const t = getTranslation(locale);
   const labels: Record<BasemapMode, string> = {
-    map: isPt ? 'Mapa' : 'Map',
-    satellite: isPt ? 'Satélite' : 'Satellite',
+    map: t.spotsMap.mapWord,
+    satellite: t.spotsMap.satellite,
   };
   return (
     <div
       className="flex rounded-input overflow-hidden border border-divider"
       role="radiogroup"
-      aria-label={isPt ? 'Mapa base' : 'Basemap'}
+      aria-label={t.spotsMap.basemap}
     >
       {(['map', 'satellite'] as const).map((mode) => {
         const active = value === mode;

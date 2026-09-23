@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useRef, useState } from 'react';
 import {
   rasterTileLayerOptions,
@@ -112,14 +113,14 @@ export default function SpotMap({
     return (
       <div className="relative w-full h-56 md:h-72 rounded-surface overflow-hidden shadow-lg shadow-card ring-1 ring-divider bg-bg-base flex items-center justify-center">
         <div className="text-center p-4">
-          <p className="text-fg-muted text-sm mb-2">{isPt ? 'Mapa não disponível' : 'Map unavailable'}</p>
+          <p className="text-fg-muted text-sm mb-2">{getTranslation(locale).spotsMap.mapUnavailable}</p>
           <a
             href={`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=15/${lat}/${lon}`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-xs text-data-waves hover:text-data-waves/80 underline"
           >
-            {isPt ? 'Ver no OpenStreetMap' : 'View on OpenStreetMap'} ↗
+            {getTranslation(locale).spotsMap.viewOnOSM} ↗
           </a>
         </div>
       </div>
@@ -142,7 +143,7 @@ export default function SpotMap({
           // owns the bottom-right strip and must stay uncovered.
           className="absolute top-3 left-3 text-xs text-fg-muted hover:text-fg bg-bg-base/90 px-3 py-1.5 rounded-lg border border-divider z-10"
         >
-          {isPt ? 'Abrir mapa' : 'Open map'} ↗
+          {getTranslation(locale).spotsMap.openMap} ↗
         </a>
       )}
     </div>

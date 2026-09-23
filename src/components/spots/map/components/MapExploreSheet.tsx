@@ -466,7 +466,7 @@ export default function MapExploreSheet({
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
             {t.spotsMap.seeAlso}
           </span>
-          <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} isPt={isPt} />
+          <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
           <div
             className="grid grid-cols-2 gap-1.5"
             role="group"

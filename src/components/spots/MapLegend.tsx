@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { getLegendLabels } from '@/lib/map-constants';
 import { ChevronDown } from 'lucide-react';
@@ -70,6 +71,7 @@ export default function MapLegend({
   warningsOrcaLabel,
 }: MapLegendProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
   const labels = getLegendLabels(locale);
   const [collapsed, setCollapsed] = useState(true);
 
@@ -103,7 +105,7 @@ export default function MapLegend({
       }
       style={bottomPx != null ? { bottom: bottomPx } : undefined}
       role="region"
-      aria-label={isPt ? 'Legenda do mapa' : 'Map legend'}
+      aria-label={t.spotsMap.mapLegend}
     >
       <div className={embedded ? 'min-w-0' : 'bg-bg-elevated border border-divider rounded-lg px-3 py-2 shadow-lg min-w-[130px] sm:min-w-[140px]'}>
         {/* Alvo de toque ≥44px abaixo de `lg` (WCAG 2.5.8) — em mobile/tablet
@@ -116,7 +118,7 @@ export default function MapLegend({
             className="flex items-center justify-between w-full min-h-[44px] mb-1 lg:min-h-0 lg:mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted lg:cursor-default lg:hover:opacity-100"
             aria-expanded={!collapsed}
           >
-            <span>{isPt ? 'Score Náutico' : 'Nautical Score'}</span>
+            <span>{t.spotsMap.nauticalScore}</span>
             <ChevronDown
               className={`w-3 h-3 lg:hidden transition-transform ${collapsed ? '' : 'rotate-180'}`}
             />
@@ -124,7 +126,7 @@ export default function MapLegend({
         )}
         {embedded && (
           <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-fg-muted">
-            {isPt ? 'Score Náutico' : 'Nautical Score'}
+            {t.spotsMap.nauticalScore}
           </p>
         )}
 

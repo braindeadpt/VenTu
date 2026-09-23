@@ -1,5 +1,8 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
+import { getSportLabel } from '@/lib/homepageSport';
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Waves, Wind, Droplets, Eye, ArrowUpRight } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
@@ -66,21 +69,21 @@ export function SpotPopupContent({
   highlightSport,
 }: SpotPopupContentProps) {
   const isPt = locale === 'pt';
-  const name = isPt ? spot.name : spot.nameEn;
+  const name = localizedSpotName(spot, locale);
   const warningPill = warning ? (
     // Nível localizado visível no chip («Mar perigoso (Laranja)») — o popup
     // não tem tooltip fiável (HTML estático do Leaflet), por isso o nível vai
     // no texto, não só no title.
     <WarningPill warning={warning} locale={locale} variant="popup" showLevel />
   ) : null;
-  const region = isPt ? spot.region : spot.regionEn;
+  const region = localizedSpotRegion(spot, locale);
 
   const topSport = (Object.entries(allScores) as [SportType, SportScore][])
     .filter(([, s]) => s.score > 0)
     .sort(([, a], [, b]) => b.score - a.score)[0];
   const topScore = topSport?.[1]?.score ?? 0;
   const topSportLabel = topScore > 0 && topSport
-    ? SPORT_LABELS[topSport[0]]?.[isPt ? 'pt' : 'en']
+    ? getSportLabel(topSport[0], locale)
     : null;
   const tokens = topScore > 0 ? getScoreTokens(topScore) : null;
   const scoreFactors = conditions
@@ -101,7 +104,7 @@ export function SpotPopupContent({
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={imageUrl}
-            alt={getSpotImageAlt(spot, isPt ? 'pt' : 'en')}
+            alt={getSpotImageAlt(spot, locale)}
             className="w-full h-24 object-cover rounded-t-lg ring-1 ring-divider"
             loading="lazy"
           />
@@ -226,7 +229,7 @@ export function SpotPopupContent({
           }}
           data-spot-id={spot.id}
         >
-          {isPt ? 'Ver spot' : 'View spot'}
+          {getTranslation(locale).spotsMap.viewSpot}
           <ArrowUpRight className="w-3 h-3" aria-hidden />
         </a>
       </div>
