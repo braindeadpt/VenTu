@@ -743,9 +743,10 @@ function ArchiveCard({
               </table>
             </div>
             <p className="text-xs text-fg-subtle">
-              {isPt
-                ? `Actualizado ${archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString('pt-PT') : '—'} · Instituto Hidrográfico · Avisos à Navegação Costeiros (CC-BY 4.0)`
-                : `Updated ${archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString('en-GB') : '—'} · Instituto Hidrográfico · Coastal Navigation Warnings (CC-BY 4.0)`}
+              {t.archiveFooter.replace(
+                '{date}',
+                archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB') : '—',
+              )}
             </p>
           </div>
         )

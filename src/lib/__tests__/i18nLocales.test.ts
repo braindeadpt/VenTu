@@ -90,6 +90,8 @@ const ES_COGNATES = new Set([
   'IH {ih} · WMO-PT {pt} · WMO-ES {es} pares', // espanhol correcto = PT (contagem de pares do skill)
   'Degradada {suffix} ({runs} run)',   // espanhol correcto = PT (badge de degradação da camada)
   'Degradada {suffix} ({runs} runs)',
+  'Estilos',                           // espanhol correcto = PT (descrição de tecnologia no /about)
+  'Mapas interactivos',                // espanhol correcto = PT (descrição de tecnologia no /about)
 ]);
 
 /**
@@ -97,6 +99,7 @@ const ES_COGNATES = new Set([
  */
 const FR_COGNATES = new Set([
   'IA',                 // sigla correcta em francês = PT (badge de resumo IA)
+  'Framework React',    // termo adoptado igual em PT e FR (descrição de tecnologia no /about)
 ]);
 
 /**
