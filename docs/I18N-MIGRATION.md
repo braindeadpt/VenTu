@@ -94,28 +94,15 @@ Progresso: 672 → 554 ternários, 116 → 102 ficheiros (superfícies `fontes`,
 Em todas, a copy **pt/en ficou byte-idêntica** (baselines visuais intactas) e
 es/de/fr deixaram de receber inglês.
 
-## Próxima superfície: `about` (decomposição)
+## Superfície `about` — FECHADA (2026-09-23)
 
-A superfície `about` tem **73 ternários** e precisa de duas rondas de baselines
-(`/es/about/` está no tier smoke). Decomposição por commits (o glob em
-`MIGRATED_GLOBS` só entra quando o ficheiro estiver 100% limpo):
-
-| Bloco | Ficheiro | Ternários | Notas |
-|---|---|---:|---|
-| Skill | `src/components/about/AboutDataCards.tsx` | ~10 | tabela de skill (Boia/Origem/Bias/MAE…) |
-| Archive | idem | ~8 | usa `CoastalArchiveCard` (já migrado) |
-| Tide | idem | ~12 | inclui `TideObservationsList` e o badge de streak |
-| Radar | idem | ~13 | badges de streak + parágrafo longo |
-| IH key | idem | ~18 | o maior: 4 estados, meta com datas, lista de passos com links, sub-estado keyless |
-| Página | `src/app/[locale]/about/page.tsx` | 18 | ~28 keys (frases com links inline partidas em prefixo/ligação/sufixo) |
-
-Método igual ao das outras superfícies (secção «Método»). Atenção aos helpers
-que recebem `isPt: boolean` (`formatBuoyLayerDowntimeTitle/Suffix`,
-`TideObservationsList`) — passam a receber as etiquetas ou o `locale`, como se
-fez no `recalibrationTitle` do Dawn Patrol e no `alertModeLabel`.
-
-Em todas: **copy pt/en byte-idêntica** (só assim as baselines não mudam por
-copy) e, no fim, uma ronda de `Record Visual Baselines` para o `/es/about/`.
+Migrada em 6 blocos (commits `91fd415`, `6198ed5`, `0fd3bf4`, `19c2867`,
+`e83a57b`, `6fafae5`): Tide (14 keys), Radar (14), Archive (11), Skill (20),
+IH key (32) e página (33). `src/components/about/**` e
+`src/app/[locale]/about/**` estão em MIGRATED_GLOBS; a regra do eslint confirmou
+os ficheiros 100% limpos. Corrigidos de passagem: a coluna «Fonte» da tabela do
+arquivo (estava fixa em PT) e as 6 descrições de tecnologia da página (estavam
+fixas em EN). Ronda de baselines necessária para o `/es/about/`.
 
 ## Nota SEO (decisão em aberto)
 
