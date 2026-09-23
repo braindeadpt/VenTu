@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Sun, Moon } from 'lucide-react';
+import { getTranslation } from '@/lib/i18n';
 
 const THEME_KEY = 'windspot:theme';
 /** Portable mirror of the theme so future SSR can read it per request (the
@@ -36,6 +37,7 @@ interface ThemeToggleProps {
  * attribute divergence between server and client render, so no #418.
  */
 export default function ThemeToggle({ locale }: ThemeToggleProps) {
+  const t = getTranslation(locale).layout;
   const isPt = locale === 'pt';
   // Dark is the default (cockpit/nautical night). Light is the opt-in day mode.
   // `null` until hydration = "trust the CSS/class", which is also the SSR state.
@@ -55,8 +57,8 @@ export default function ThemeToggle({ locale }: ThemeToggleProps) {
   };
 
   const label = isLight
-    ? (isPt ? 'Alternar para tema escuro' : 'Switch to dark theme')
-    : (isPt ? 'Alternar para tema claro' : 'Switch to light theme');
+    ? t.themeSwitchDark
+    : t.themeSwitchLight;
 
   return (
     <button

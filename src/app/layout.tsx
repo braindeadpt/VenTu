@@ -49,8 +49,12 @@ export const metadata: Metadata = {
     referrer: 'strict-origin-when-cross-origin',
   },
   icons: {
-    icon: '/favicon.svg',
-    apple: '/apple-touch-icon.svg',
+    icon: [
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
   },
   manifest: '/manifest.json',
   openGraph: {
@@ -86,7 +90,9 @@ const themeScript = `
         document.cookie = 'ventu-theme=' + (light ? 'light' : 'dark') +
           ';path=/;max-age=31536000;samesite=lax';
       }
-    } catch (e) {}
+    } catch (e) {
+      // localStorage/document.cookie podem lançar em modo privado — ignorar.
+    }
     if (light) document.documentElement.classList.add('theme-ocean');
   })();
 `;
@@ -102,7 +108,8 @@ const localeRedirectScript = `
       var path = location.pathname;
       if (path !== '/' && path !== '') return;
       var stored = null;
-      try { stored = localStorage.getItem('ventu:locale'); } catch (e) {}
+      // localStorage pode lançar em modo privado — sem locale guardado.
+      try { stored = localStorage.getItem('ventu:locale'); } catch (e) { /* private mode */ }
       var navLang = (navigator && (navigator.language || navigator.userLanguage)) || '';
       var pick = String(stored || navLang || 'pt').toLowerCase();
       var supported = { pt: 1, en: 1, es: 1, de: 1, fr: 1 };

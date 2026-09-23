@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import FavoritesClient from '@/components/favorites/FavoritesClient';
 import type { Metadata } from 'next';
 
@@ -10,10 +11,8 @@ export async function generateMetadata({
   const isPt = locale === 'pt';
 
   return {
-    title: isPt ? 'Favoritos — VenTu' : 'Favorites — VenTu',
-    description: isPt
-      ? 'Os teus spots favoritos com condições actualizadas — sincronizados na tua conta.'
-      : 'Your favorite spots with updated conditions — synced to your account.',
+    title: getTranslation(locale).pages.favoritesMetaTitle,
+    description: getTranslation(locale).pages.favoritesMetaDescription,
     alternates: {
       canonical: `/${locale}/favorites/`,
       languages: { pt: '/pt/favorites/', en: '/en/favorites/' },

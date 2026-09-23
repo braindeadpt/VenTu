@@ -1,5 +1,6 @@
 'use client';
 
+import { localizedText } from '@/lib/localizedText';
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -14,7 +15,7 @@ import {
   spotMatchesDifficultyFilter,
   type MapDifficultyFilter,
 } from '@/lib/mapDifficulty';
-import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
+import { MAP_SPORT_FILTERS, getMapSportFilterLabel } from '@/lib/mapSportFilters';
 import {
   DEFAULT_REGION,
   DEFAULT_SPORT,
@@ -39,8 +40,8 @@ const SpotMapInteractive = dynamic(() => import('@/components/spots/SpotMapInter
 
 const HUD_SPORTS = [
   ...MAP_SPORT_FILTERS,
-  { id: 'sup' as const, labelPt: 'SUP', labelEn: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
-  { id: 'wakeboard' as const, labelPt: 'Wakeboard', labelEn: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
+  { id: 'sup' as const, label: 'SUP', icon: <Waves className="w-4 h-4" />, color: 'text-sport-sup' },
+  { id: 'wakeboard' as const, label: 'Wakeboard', icon: <Zap className="w-4 h-4" />, color: 'text-sport-wakeboard' },
 ];
 
 function readMapSearchParams(): {
@@ -226,9 +227,10 @@ export default function MapaFullscreenClient({
     sport !== DEFAULT_SPORT || region !== DEFAULT_REGION || difficulty !== 'all';
 
   const mapHud = {
+    locale,
     sports: HUD_SPORTS.map((s) => ({
       id: s.id,
-      label: isPt ? s.labelPt : s.labelEn,
+      label: getMapSportFilterLabel(s.id, locale, s.label),
       icon: s.icon,
       color: s.color,
     })),
@@ -243,17 +245,17 @@ export default function MapaFullscreenClient({
     showClearFilters,
     difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
       id: d.id,
-      label: isPt ? d.labelPt : d.labelEn,
+      label: localizedText({ pt: d.labelPt, en: d.labelEn }, locale),
     })),
     selectedDifficulty: difficulty,
     onDifficultyChange: handleDifficultyChange,
-    difficultyGroupLabel: isPt ? 'Nível' : 'Level',
-    layersLabel: t.mapUiLayers.layersMenu,
+    difficultyGroupLabel: t.spotsMap.level,
+    layersLabel: t.map.layersMenu,
   };
 
   return (
-    <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={isPt ? 'Mapa fullscreen' : 'Fullscreen map'}>
-      <h1 className="sr-only">{isPt ? 'Mapa de spots — VenTu' : 'Spots map — VenTu'}</h1>
+    <div className="relative h-[calc(100dvh-4rem)] w-full" aria-label={t.spotsMap.fullscreenMap}>
+      <h1 className="sr-only">{getTranslation(locale).pages.mapMetaTitle}</h1>
       <SpotMapInteractive
         spotsData={filtered}
         selectedSport={sport}

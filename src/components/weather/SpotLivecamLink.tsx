@@ -15,7 +15,7 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
   if (!cam) return null;
 
   const isPt = locale === 'pt';
-  const t = getTranslation(locale as 'pt' | 'en');
+  const t = getTranslation(locale);
   const title = isPt ? cam.labelPt : cam.labelEn;
 
   const isYoutube = cam.kind === 'youtube' && cam.youtubeId;
@@ -50,16 +50,10 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
             <p className="text-h3 text-fg">{title}</p>
             <p className="text-sm text-fg-muted mt-1">
               {isYoutube
-                ? isPt
-                  ? 'Transmissão em direto 24h no YouTube. Também podes abrir no YouTube (nova janela).'
-                  : '24h live stream on YouTube. You can also open on YouTube (new tab).'
+                ? t.layout.livecamYoutube
                 : isSurfline
-                  ? isPt
-                    ? 'Livecam Surfline do wake park. Abre o site FeelViana para horários e reservas.'
-                    : 'Surfline live cam at the wake park. Open FeelViana for hours and bookings.'
-                  : isPt
-                    ? `Transmissão em direto em ${cam.provider}. Abre no site do operador (nova janela).`
-                    : `Live stream on ${cam.provider}. Opens on the provider site (new tab).`}
+                  ? t.layout.livecamSurfline
+                  : t.layout.livecamGeneric.replace('{provider}', cam.provider)}
             </p>
           </div>
         </div>
@@ -77,7 +71,7 @@ export default function SpotLivecamLink({ slug, locale }: SpotLivecamLinkProps) 
 
       <p className="text-meta-sm text-fg-subtle mt-4 pt-3 border-t border-divider">
         <Link href={`/${locale}/livecams/`} className="text-data-waves hover:underline">
-          {isPt ? 'Ver todas as livecams' : 'Browse all live cameras'}
+          {t.layout.weatherLivecamsBrowse}
         </Link>
       </p>
     </div>

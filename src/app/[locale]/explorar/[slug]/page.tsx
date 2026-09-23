@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
@@ -28,6 +29,13 @@ export async function generateStaticParams() {
   }
   return params
 }
+
+// D10 — params exaustivos: slug fora de SEO_LANDINGS (ex.: «norte» sem
+// modalidade) → 404. Em produção o export não tem o ficheiro e a GH Pages
+// serve 404.html; em dev, o guard E443 do Next (output: export) ainda dá 500
+// só no primeiro pedido a frio do padrão (nenhum slug válido pedido ainda) —
+// limitação upstream (vercel/next.js#56253), a partir daí devolve 404.
+export const dynamicParams = false
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params
@@ -74,7 +82,7 @@ export default async function ExplorarPage({ params }: Props) {
             className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? 'Todos os spots' : 'All spots'}
+            {getTranslation(locale).pages.allSpotsLower}
           </Link>
 
           <div>
@@ -91,7 +99,7 @@ export default async function ExplorarPage({ params }: Props) {
             className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? 'Todos os spots' : 'All spots'}
+            {getTranslation(locale).pages.allSpotsLower}
           </Link>
         </div>
       )}

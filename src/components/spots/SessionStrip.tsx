@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useMemo } from 'react';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { MagicWindow } from '@/lib/magicWindows';
@@ -13,7 +14,7 @@ interface StripHour {
 interface SessionStripProps {
   hours: StripHour[];
   windows: MagicWindow[];
-  isPt: boolean;
+  locale: string;
   nowMs: number;
 }
 
@@ -25,7 +26,8 @@ const AXIS_TICKS = [0, 6, 12, 18, 24];
  * (segmentos), curva de maré (linha) e marcador «agora». Responde a
  * «quando é que vale a pena?» sem ler tabelas.
  */
-export default function SessionStrip({ hours, windows, isPt, nowMs }: SessionStripProps) {
+export default function SessionStrip({ hours, windows, locale, nowMs }: SessionStripProps) {
+  const t = getTranslation(locale).spotsUi;
   const axisStart = useMemo(() => {
     const d = new Date(hours[0]?.time ?? nowMs);
     d.setMinutes(0, 0, 0);
@@ -68,11 +70,7 @@ export default function SessionStrip({ hours, windows, isPt, nowMs }: SessionStr
   return (
     <div
       role="img"
-      aria-label={
-        isPt
-          ? 'Faixa das próximas 24 horas com score por hora, janelas boas e maré'
-          : 'Next 24 hours strip with hourly score, good windows and tide'
-      }
+      aria-label={t.sessionStripAria}
     >
       <div className="relative h-10 rounded-pill border border-divider bg-surface-1/[0.05] overflow-visible">
         {/* Score por hora */}

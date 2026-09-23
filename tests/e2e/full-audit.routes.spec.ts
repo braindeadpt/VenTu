@@ -47,11 +47,11 @@ test('sample is deterministic and never thins distinct templates', () => {
   // sampleRoutes() return everything — this guard tests the sampler itself,
   // not the ambient env.
   const sampled = sampleRoutes(allRoutes, { full: false });
-  const byGroup = (list) => {
-    const m = new Map();
+  const byGroup = (list: typeof allRoutes): Map<string, typeof allRoutes> => {
+    const m = new Map<string, typeof allRoutes>();
     for (const r of list) {
       if (!m.has(r.group)) m.set(r.group, []);
-      m.get(r.group).push(r);
+      m.get(r.group)!.push(r);
     }
     return m;
   };
@@ -60,14 +60,14 @@ test('sample is deterministic and never thins distinct templates', () => {
 
   // Distinct templates: every route, every run.
   for (const g of ['static', 'modalidade']) {
-    expect(sampledGroups.get(g).length).toBe(allGroups.get(g).length);
+    expect(sampledGroups.get(g)!.length).toBe(allGroups.get(g)!.length);
   }
   // Same-template groups: capped, deterministic.
   for (const g of ['spot', 'news', 'explorar']) {
-    const expectedSize = SAMPLE_SIZES[g];
-    expect(sampledGroups.get(g).length).toBe(Math.min(expectedSize, allGroups.get(g).length));
-    const strideSample = sampledGroups.get(g).map((r) => r.path);
-    expect(new Set(strideSample).size).toBe(strideSample.length, `no duplicates in ${g}`);
+    const expectedSize = SAMPLE_SIZES[g as keyof typeof SAMPLE_SIZES];
+    expect(sampledGroups.get(g)!.length).toBe(Math.min(expectedSize, allGroups.get(g)!.length));
+    const strideSample = sampledGroups.get(g)!.map((r) => r.path);
+    expect(new Set(strideSample).size, `no duplicates in ${g}`).toBe(strideSample.length);
   }
   // Determinism: same input → identical output.
   expect(sampleRoutes(allRoutes, { full: false })).toEqual(sampled);

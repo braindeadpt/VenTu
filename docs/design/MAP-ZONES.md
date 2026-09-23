@@ -14,7 +14,7 @@ exposto às zonas via `MapUiContext` (dados + acções, padrão do
 | **Cromo** | M2 | `map/zones/MapChromeZone.tsx`, `map/components/MapControls.tsx`, `map/components/MapQuickActions.tsx`, `MapLegend.tsx`, `WindRingLegend.tsx`, `map/MapTimeTrack.tsx`, `map/MapTideChip.tsx`, `map/MapThermalChip.tsx`, `map/useMapTimeTrack.ts`, `map/hooks/useMapLocate.ts` | `useMapChromeZone` | `controls` (props do `MapControls`), `locateLabel`/`shareLabel`, `isobaths*`/`radarLift`/`legendLayerProps` (visibilidade da legenda), `state` (locate/share/wind-legend do hook), `windButtonRef` | — | — |
 | **Explorar** | M3 | `map/zones/MapExploreZone.tsx`, `map/components/MapSpotPanel.tsx`, `map/components/MapExploreSheet.tsx`, `map/components/MapSpotList.tsx`, `BuoyLayerChip.tsx` | `useMapExploreZone` | `mapHud`, `state` (sheet/painel/rows/extras do hook), `sheetLayers` + `legendLayerProps` (montados pela M5), `basemapMode`/`onBasemapChange`, `exitFullscreenLabel`/`onExitFullscreen`, `onlyOn*`, `timeTrack` (nó da M2), `attributionHtml` | `isPt`, `locale`, `focusSpotId`, `isMobile` | `focusSpot` (clique na linha) |
 | **Marcadores** | M4 | `map/zones/MapMarkersZone.tsx`, `map/hooks/useMapMarkers.ts`, `mapMarkers.ts` (`resolveExploreChrome`, `applyExploreMapFit`), `MapClusterIcon.tsx`, `MapSpotPreview.tsx`, `MapSpotSheet.tsx`, bloco markercluster em `useMapCore.ts` | `useMapMarkersZone` | refs do núcleo (`clusterGroupRef`/`markersGroupRef`/`markersCacheRef`/`mapRef`), `visibleSpots`, `warningsBySpot` (interno), `hourScores`, `activeCluster`/`showWindOnMarkers`, `exploreChrome` (do painel), `setSheetSpot` | `isMobile`, `sheetSpot`, `sport`, `locale` | `selectSpot`, `closeSpotSheet` (e `openSpotSheet` para a pré-visualização) |
-| **Camadas** | M5 | `map/zones/MapLayersZone.tsx`, `map/hooks/useMapLayers.ts`, `map/hooks/useMap{Hours,BuoyDots,Hs,Sst,Currents,Wind}Field.ts`, `map/hooks/useMapAttribution.ts`, `map/components/MapLayersMenu.tsx`, `map/components/MapBasemapRadio.tsx`, `MapLayerToggle.tsx`, `RadarCarousel.tsx`, fit inicial em `useMapCore.ts` | `useMapLayersBase` + `useMapLayersFields` | `t` (rótulos `mapUiLayers`), tiles (`tileState`/`retryBasemap`/`refreshLabel`), `basemapMode`/`onBasemapChange`, hero (`radar*`/`isobaths*`), carrossel de radar, `panelCollapsed` (desvio do carrossel) | — | — |
+| **Camadas** | M5 | `map/zones/MapLayersZone.tsx`, `map/hooks/useMapLayers.ts`, `map/hooks/useMap{Hours,BuoyDots,Hs,Sst,Currents,Wind}Field.ts`, `map/hooks/useMapAttribution.ts`, `map/components/MapLayersMenu.tsx`, `map/components/MapBasemapRadio.tsx`, `MapLayerToggle.tsx`, `RadarCarousel.tsx`, fit inicial em `useMapCore.ts` | `useMapLayersBase` + `useMapLayersFields` | `t` (rótulos `t.map`), tiles (`tileState`/`retryBasemap`/`refreshLabel`), `basemapMode`/`onBasemapChange`, hero (`radar*`/`isobaths*`), carrossel de radar, `panelCollapsed` (desvio do carrossel) | — | — |
 
 ## `MapUiContext` (`map/MapUiContext.tsx`)
 
@@ -66,9 +66,20 @@ re-renderizem com os dados.
 |---|---|---|
 | `mapUiChrome` | M2 | `src/lib/translations/mapUi/chrome.ts` |
 | `mapUiExplore` | M3 | `src/lib/translations/mapUi/explore.ts` |
-| `mapUiMarkers` | M4 | `src/lib/translations/mapUi/markers.ts` (vazio — a M4 preenche) |
+| `mapUiMarkers` | M4 | `src/lib/translations/mapUi/markers.ts` |
+
+(Todos os `mapUi*` estão vazios — ver a regra abaixo.)
 | `mapUiLayers` | M5 | `src/lib/translations/mapUi/layers.ts` |
 
-Chaves movidas de `t.map.*` para o namespace da zona dona, sem mudar textos
-(5 locales). O que ficou em `t.map` é partilhado fora da superfície do mapa
-ou órfão — limpeza fica para a integração (M6).
+Regra de namespaces (fixada na sessão M1-sync):
+
+- **`t.map` é o bloco canónico** — todas as chaves históricas do mapa vivem
+  aqui (5 locales), tal como na `main`. Não mover chaves para `mapUi*`.
+- **`mapUi*` são shells vazios** — só recebem chaves NOVAS criadas pela
+  sessão dona (M2–M5). Quando uma sessão adiciona copy novo, põe a chave
+  no namespace da sua zona e não em `t.map`.
+- **Chaves da `main`** criadas fora da M1 (`t.spotsMap.*`, `t.spotsUi.*`)
+  ficam onde a `main` as pôs — não duplicar em `mapUi*`.
+
+Esta regra evita o estado «Frankenstein» do merge: dois namespaces a cobrir
+o mesmo texto, com metade das referências em cada um.

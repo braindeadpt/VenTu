@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { getTranslation } from '@/lib/i18n';
+import { useEffect, useRef, useState } from 'react';
 import { Heart } from 'lucide-react';
 import { useFavorites } from '@/contexts/AuthProvider';
 import { useToast } from '@/components/ui/ToastProvider';
@@ -25,8 +26,18 @@ export default function FavoriteButton({
   const { isFavorite, toggleFavorite, requestLogin, isSupabaseReady, isLoggedIn } = useFavorites();
   const { showToast } = useToast();
   const active = isFavorite(spotId);
+  const t = getTranslation(locale).favBtn;
   const isPt = locale === 'pt';
   const [clickEffect, setClickEffect] = useState(false);
+  // Timer do efeito de clique — limpo no unmount para não haver setState
+  // depois de desmontar (auditoria LOW9).
+  const clickEffectTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (clickEffectTimerRef.current !== null) window.clearTimeout(clickEffectTimerRef.current);
+    },
+    [],
+  );
 
   const sizeClasses = {
     sm: 'w-4 h-4',
@@ -56,23 +67,17 @@ export default function FavoriteButton({
     const wasFavorite = active;
     await toggleFavorite(spotId);
     if (!wasFavorite) {
-      showToast(isPt ? 'Adicionado aos teus spots' : 'Added to your spots');
+      showToast(t.toastAdded);
     }
     setClickEffect(true);
-    setTimeout(() => setClickEffect(false), 300);
+    if (clickEffectTimerRef.current !== null) window.clearTimeout(clickEffectTimerRef.current);
+    clickEffectTimerRef.current = window.setTimeout(() => setClickEffect(false), 300);
   };
 
-  const label = !isLoggedIn
-    ? isPt
-      ? `Entrar para guardar ${spotName}`
-      : `Sign in to save ${spotName}`
-    : active
-      ? isPt
-        ? `Remover ${spotName} dos favoritos`
-        : `Remove ${spotName} from favorites`
-      : isPt
-        ? `Adicionar ${spotName} aos favoritos`
-        : `Add ${spotName} to favorites`;
+  const label = (!isLoggedIn ? t.ariaSignIn : active ? t.ariaRemove : t.ariaAdd).replace(
+    '{name}',
+    spotName,
+  );
 
   return (
     <button
@@ -97,16 +102,10 @@ export default function FavoriteButton({
       {showLabel && (
         <span className="text-sm font-medium">
           {!isLoggedIn
-            ? isPt
-              ? 'Entrar'
-              : 'Sign in'
+            ? getTranslation(locale).actions.signIn
             : active
-              ? isPt
-                ? 'Favorito'
-                : 'Favorited'
-              : isPt
-                ? 'Favoritar'
-                : 'Favorite'}
+              ? t.btnFavorited
+              : t.btnFavorite}
         </span>
       )}
     </button>

@@ -10,23 +10,27 @@ import type { Locator, Page } from '@playwright/test';
  */
 export async function expectTopmostHit(page: Page, locator: Locator): Promise<void> {
   await expect
-    .poll(async () => {
-      const handle = await locator.elementHandle().catch(() => null);
-      if (!handle) return 'missing';
-      return handle.evaluate((node) => {
-        const el = node as HTMLElement;
-        const r = el.getBoundingClientRect();
-        if (r.width === 0 || r.height === 0) return 'not-rendered';
-        const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
-        if (!top) return 'no-element';
-        if (top === el || el.contains(top)) return 'ok';
-        const t = top as HTMLElement;
-        const keys = Object.keys(t.dataset ?? {})
-          .slice(0, 2)
-          .join('|');
-        const cls = typeof t.className === 'string' ? t.className.slice(0, 40) : '';
-        return `covered-by:${t.tagName.toLowerCase()}${cls ? ` ${cls}` : ''}${keys ? ` [${keys}]` : ''}`;
-      });
-    })
-    .toBe('ok', { timeout: 5_000 });
+    .poll(
+      async () => {
+        const handle = await locator.elementHandle().catch(() => null);
+        if (!handle) return 'missing';
+        return handle.evaluate((node) => {
+          const el = node as HTMLElement;
+          const r = el.getBoundingClientRect();
+          if (r.width === 0 || r.height === 0) return 'not-rendered';
+          const top = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2);
+          if (!top) return 'no-element';
+          if (top === el || el.contains(top)) return 'ok';
+          const t = top as HTMLElement;
+          const keys = Object.keys(t.dataset ?? {})
+            .slice(0, 2)
+            .join('|');
+          const cls = typeof t.className === 'string' ? t.className.slice(0, 40) : '';
+          return `covered-by:${t.tagName.toLowerCase()}${cls ? ` ${cls}` : ''}${keys ? ` [${keys}]` : ''}`;
+        });
+      },
+      // O timeout é do poll, não da asserção: `toBe(valor, opções)` não existe.
+      { timeout: 5_000 },
+    )
+    .toBe('ok');
 }

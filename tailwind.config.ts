@@ -156,6 +156,7 @@ const config: Config = {
         'input': '6px',
         'card':  '8px',
         'modal': '12px',
+        'surface': '16px',
         'pill':  '9999px',
       },
 

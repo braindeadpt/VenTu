@@ -132,7 +132,11 @@ export function createSpotMarker(
   const scoreOverride = options.scoreOverride;
   const icon = buildMarkerIcon(Leaflet, data, selectedSport, showWind, locale, warning, scoreOverride);
   const marker = Leaflet.marker([spot.lat, spot.lon], { icon });
-  (marker as L.Marker & { spotScore?: number }).spotScore = getBestScore(data, selectedSport, scoreOverride);
+  const withMeta = marker as L.Marker & { spotScore?: number; ventuData?: MapSpotData };
+  withMeta.spotScore = getBestScore(data, selectedSport, scoreOverride);
+  // Dados completos do spot no próprio marcador — o clusterclick do mapa
+  // principal escolhe o melhor filho e abre o sheet sem re-buscar (D3).
+  withMeta.ventuData = data;
   // Leaflet gives interactive markers role="button" — give them an accessible
   // name so screen readers announce which spot the marker is (axe aria-command-name).
   marker.on('add', () => {
@@ -150,7 +154,10 @@ export function createSpotMarker(
       // O autoPan só dispara quando o popup excederia estas margens — mantém
       // o popup fora da coluna de controlos (topo-esquerda, ~260px) e do
       // cartão do HUD (fundo, ~260px), onde o CTA ficava tapado/inclicável.
-      autoPanPaddingTopLeft: Leaflet.point(260, 64),
+      // Topo: 64px era exactamente o fundo da barra de controlos horizontal
+      // (top-3 + ~54px) — o popup encostava-lhe (2px de sobreposição, apanhado
+      // por map-popup-ver-spot); 84px dá folga visível sem abrir buraco.
+      autoPanPaddingTopLeft: Leaflet.point(260, 84),
       autoPanPaddingBottomRight: Leaflet.point(24, 260),
     });
 

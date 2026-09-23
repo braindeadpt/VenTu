@@ -1,6 +1,7 @@
 'use client';
 
 import { Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { getTranslation } from '@/lib/i18n';
 import ProvenanceChip from '@/components/ui/ProvenanceChip';
 import {
   PROVENANCE_ICON_CLASS,
@@ -55,19 +56,13 @@ export default function ConfidenceBadge({
   interactive = true,
   className,
 }: ConfidenceBadgeProps) {
-  const isPt = locale === 'pt' || locale.startsWith('pt');
+  const t = getTranslation(locale).confidence;
   const tier = getConfidenceTier(detail, confidence ?? undefined);
   const Icon = CONFIDENCE_ICONS[tier];
-  const label = getConfidenceLabel(tier, isPt);
-  const explain = getConfidenceExplain(tier, isPt);
+  const label = getConfidenceLabel(tier, locale);
+  const explain = getConfidenceExplain(tier, locale);
   const tooltip = withTooltip
-    ? `${getConfidenceTooltip(isPt)} ${explain}${
-        detail?.degraded
-          ? isPt
-            ? ' (menos modelos disponíveis.)'
-            : ' (fewer models available.)'
-          : ''
-      }`
+    ? `${getConfidenceTooltip(locale)} ${explain}${detail?.degraded ? t.degradedNote : ''}`
     : undefined;
 
   return (
@@ -85,11 +80,7 @@ export default function ConfidenceBadge({
       role="status"
       // O escudo muda com o nível — é o único eixo cujo glifo é gradativo.
       icon={<Icon className={PROVENANCE_ICON_CLASS[size]} aria-hidden />}
-      ariaLabel={
-        isPt
-          ? `Confiança da previsão: ${label}. ${explain}`
-          : `Forecast confidence: ${label}. ${explain}`
-      }
+      ariaLabel={t.ariaLabel.replace('{label}', label).replace('{explain}', explain)}
       className={className}
     />
   );

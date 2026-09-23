@@ -4,22 +4,22 @@ import { getCalmWaterMetricLabel } from './spotWaterContext';
 describe('getCalmWaterMetricLabel', () => {
   it('labels wakeboard spots as flat water', () => {
     expect(
-      getCalmWaterMetricLabel({ type: 'wakeboard' }, 0, true),
+      getCalmWaterMetricLabel({ type: 'wakeboard' }, 0, 'pt'),
     ).toBe('Água plana');
     expect(
-      getCalmWaterMetricLabel({ type: 'wakeboard' }, 2, false),
+      getCalmWaterMetricLabel({ type: 'wakeboard' }, 2, 'en'),
     ).toBe('Flat water');
   });
 
   it('labels low swell non-surf spots', () => {
     expect(
-      getCalmWaterMetricLabel({ type: 'kitesurf' }, 0.1, true),
+      getCalmWaterMetricLabel({ type: 'kitesurf' }, 0.1, 'pt'),
     ).toBe('Sem ondas');
   });
 
   it('returns null for ocean surf with swell', () => {
     expect(
-      getCalmWaterMetricLabel({ type: 'surf' }, 1.2, true),
+      getCalmWaterMetricLabel({ type: 'surf' }, 1.2, 'pt'),
     ).toBeNull();
   });
 });

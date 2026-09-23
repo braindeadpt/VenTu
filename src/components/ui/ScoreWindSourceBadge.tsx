@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import type { ScoreWindCorrection, ScoreWindSource } from '@/lib/scoreConditions';
 import ProvenanceChip from '@/components/ui/ProvenanceChip';
 import type { ProvenanceTier } from '@/lib/provenance';
@@ -27,37 +28,30 @@ export default function ScoreWindSourceBadge({
   interactive = true,
   className,
 }: ScoreWindSourceBadgeProps) {
+  const t = getTranslation(locale).ui;
   const isPt = locale === 'pt';
   const me = fmtMe(correction?.me);
   const n = correction?.n;
   const biasSuffix =
     me && n != null && Number.isFinite(n)
-      ? isPt
-        ? ` Viés desta estação: ME ${me} (n=${n}).`
-        : ` Station bias: ME ${me} (n=${n}).`
+      ? t.windStationBias.replace('{me}', me ?? '').replace('{n}', String(n))
       : '';
   const copy: { label: string; title: string; tier: ProvenanceTier } =
     source === 'observed'
       ? {
-          label: isPt ? 'Vento observado' : 'Observed wind',
-          title: isPt
-            ? `Score usa vento medido (IPMA / Ecowitt / METAR) fresco${biasSuffix}`
-            : `Score uses fresh measured wind (IPMA / Ecowitt / METAR)${biasSuffix}`,
+          label: t.windObservedLabel,
+          title: `${t.windObservedTitle}${biasSuffix}`,
           tier: 'measured',
         }
       : source === 'session-gust'
         ? {
-            label: isPt ? 'Vento de sessão' : 'Session wind',
-            title: isPt
-              ? 'Média modelo fraca; score usa proxy de rajada Open-Meteo (thermal)'
-              : 'Weak model mean; score uses Open-Meteo gust proxy (thermal)',
+            label: t.windSessionLabel,
+            title: t.windSessionTitle,
             tier: 'adjusted',
           }
         : {
-            label: isPt ? 'Vento · só previsão' : 'Wind · forecast only',
-            title: isPt
-              ? 'Sem observação fresca — score com previsão (ICON-EU / multi-modelo quando disponível)'
-              : 'No fresh observation — forecast score (ICON-EU / multi-model when available)',
+            label: t.windForecastLabel,
+            title: t.windForecastTitle,
             tier: 'modeled',
           };
 

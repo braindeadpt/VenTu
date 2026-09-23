@@ -2,6 +2,7 @@
 
 import { Search } from 'lucide-react';
 import { dispatchOpenSearch } from '@/lib/searchEvents';
+import { getTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/cn';
 
 interface HomepageSearchProps {
@@ -11,7 +12,7 @@ interface HomepageSearchProps {
 }
 
 export default function HomepageSearch({ locale, variant = 'default' }: HomepageSearchProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).hero;
   const onHero = variant === 'hero';
 
   return (
@@ -26,9 +27,7 @@ export default function HomepageSearch({ locale, variant = 'default' }: Homepage
       )}
     >
       <Search className="w-4 h-4 shrink-0 text-fg-muted" aria-hidden />
-      <span className={onHero ? 'font-medium' : undefined}>
-        {isPt ? 'Procurar spot...' : 'Search spot...'}
-      </span>
+      <span className={onHero ? 'font-medium' : undefined}>{t.searchPlaceholder}</span>
     </button>
   );
 }

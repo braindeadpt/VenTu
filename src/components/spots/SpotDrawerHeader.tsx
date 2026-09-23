@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import ScoreGauge from '@/components/ui/ScoreGauge';
 import { Waves, Wind, Thermometer, Zap } from 'lucide-react';
 
@@ -53,7 +54,7 @@ export default function SpotDrawerHeader({
         </div>
 
         <p className="text-meta-sm text-fg-subtle/60 mt-1">
-          {isPt ? 'Score para desporto selecionado' : 'Score for selected sport'}
+          {getTranslation(locale).spotsMap.scoreForSelectedSport}
         </p>
       </div>
     </div>

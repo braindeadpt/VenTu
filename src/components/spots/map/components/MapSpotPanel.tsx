@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapSpotList, { type MapSpotListRow } from './MapSpotList';
@@ -62,8 +63,10 @@ export default function MapSpotPanel({
   selectedDifficulty,
   onDifficultyChange,
   difficultyGroupLabel,
+  locale,
   isPt,
 }: MapSpotPanelProps) {
+  const t = getTranslation(locale);
   if (collapsed) {
     return (
       <div
@@ -73,7 +76,7 @@ export default function MapSpotPanel({
         <button
           type="button"
           onClick={() => onCollapsedChange(false)}
-          aria-label={isPt ? 'Abrir lista de spots' : 'Open spots list'}
+          aria-label={t.spotsMap.openSpotsList}
           className="flex h-9 w-9 items-center justify-center rounded-input text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
         >
           <ChevronRight className="h-4 w-4" aria-hidden />
@@ -82,7 +85,7 @@ export default function MapSpotPanel({
           className="font-mono tabular-nums text-[11px] text-fg-subtle"
           style={{ writingMode: 'vertical-rl' }}
         >
-          {spotCount} {isPt ? 'spots' : 'spots'}
+          {spotCount} spots
         </span>
       </div>
     );
@@ -91,18 +94,18 @@ export default function MapSpotPanel({
   return (
     <div
       role="complementary"
-      aria-label={isPt ? 'Spots na vista actual' : 'Spots in current view'}
+      aria-label={t.spotsMap.spotsInView}
       data-map-panel="open"
       className="absolute bottom-2 left-2 top-2 z-[1100] flex w-[348px] max-w-[calc(100vw-1rem)] flex-col rounded-card border border-divider-strong bg-bg-elevated/95 shadow-card backdrop-blur-md"
     >
       <div className="flex items-center gap-2 px-3 pt-2.5">
         <span className="font-display text-body-sm font-bold text-fg">
-          {isPt ? 'Nesta vista' : 'In view'}
+          {t.spotsMap.inView}
         </span>
         <button
           type="button"
           onClick={() => onCollapsedChange(true)}
-          aria-label={isPt ? 'Recolher painel' : 'Collapse panel'}
+          aria-label={t.spotsMap.collapsePanel}
           className="ml-auto flex h-9 w-9 items-center justify-center rounded-input text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
         >
           <ChevronLeft className="h-4 w-4" aria-hidden />
@@ -110,14 +113,14 @@ export default function MapSpotPanel({
       </div>
 
       <div className="flex flex-col gap-1.5 px-3 pt-2">
-        <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" role="group" aria-label={isPt ? 'Modalidade' : 'Sport'}>
+        <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" role="group" aria-label={t.spotsMap.sportWord}>
           {sports.map((s) => (
             <FilterPill key={s.id} compact active={selectedSport === s.id} onClick={() => onSportChange(s.id)} icon={s.icon}>
               {s.label}
             </FilterPill>
           ))}
         </div>
-        <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" role="group" aria-label={isPt ? 'Região' : 'Region'}>
+        <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" role="group" aria-label={t.spotsMap.region}>
           {regions.map((r) => (
             <FilterPill key={r} compact active={selectedRegion === r} onClick={() => onRegionChange(r)}>
               {r}
@@ -148,19 +151,19 @@ export default function MapSpotPanel({
         )}
         {warningChip}
         {timeTrack}
-        <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} isPt={isPt} />
+        <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
       </div>
 
       <div className="mt-2 flex min-h-0 flex-1 flex-col border-t border-divider px-3 pt-2">
         <MapSpotList
           rows={rows}
-          title={isPt ? 'Spots' : 'Spots'}
+          title="Spots"
           countLabel={`${rows.length}/${spotCount}`}
-          sortLabel={isPt ? 'por score' : 'by score'}
-          emptyLabel={isPt ? 'Sem spots nesta vista' : 'No spots in view'}
+          sortLabel={t.spotsMap.byScore}
+          emptyLabel={t.spotsMap.noSpotsInView}
           focusSpotId={focusSpotId}
           onSelect={onSelectRow}
-          listLabel={isPt ? 'Spots visíveis no mapa' : 'Spots visible on map'}
+          listLabel={t.spotsMap.spotsVisibleOnMap}
         />
       </div>
 

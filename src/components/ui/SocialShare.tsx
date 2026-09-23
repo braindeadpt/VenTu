@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useState, useEffect } from 'react';
 import { Share2, Check, Copy, Facebook, Twitter, Linkedin, Mail, X } from 'lucide-react';
 
@@ -20,6 +21,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
   const [copied, setCopied] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [toast, setToast] = useState<ToastState>({ show: false, message: '', type: 'success' });
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
@@ -50,7 +52,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      showToast(isPt ? 'Link copiado!' : 'Link copied!');
+      showToast(t.ui.shareCopiedToast);
       setTimeout(() => setCopied(false), 2500);
     } catch {
       // Fallback
@@ -61,7 +63,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       document.execCommand('copy');
       document.body.removeChild(input);
       setCopied(true);
-      showToast(isPt ? 'Link copiado!' : 'Link copied!');
+      showToast(t.ui.shareCopiedToast);
       setTimeout(() => setCopied(false), 2500);
     }
   };
@@ -113,18 +115,18 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       <button
         onClick={handleNativeShare}
         className="flex items-center gap-2 px-3 py-2 min-h-[44px] rounded-lg text-sm text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors border border-divider"
-        aria-label={isPt ? 'Partilhar' : 'Share'}
+        aria-label={t.ui.share}
       >
         {copied ? <Check className="w-4 h-4 text-score-good" /> : <Share2 className="w-4 h-4" />}
-        <span className="hidden sm:inline">{copied ? (isPt ? 'Copiado!' : 'Copied!') : (isPt ? 'Partilhar' : 'Share')}</span>
+        <span className="hidden sm:inline">{copied ? t.ui.shareCopied : t.ui.share}</span>
       </button>
 
       {/* Copy Link Alternative */}
       <button
         onClick={handleCopy}
         className="p-2 min-w-[44px] min-h-[44px] inline-flex items-center justify-center rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
-        aria-label={isPt ? 'Copiar link' : 'Copy link'}
-        title={isPt ? 'Copiar link' : 'Copy link'}
+        aria-label={t.ui.shareCopyLink}
+        title={t.ui.shareCopyLink}
       >
         {copied ? <Check className="w-4 h-4 text-score-good" /> : <Copy className="w-4 h-4" />}
       </button>
@@ -133,7 +135,7 @@ export default function SocialShare({ title, text, url, locale = 'pt' }: SocialS
       {showOptions && (
         <div className="absolute right-0 top-full mt-1 bg-surface-1/[0.04] border border-divider rounded-lg shadow-lg p-2 z-50 min-w-[140px]">
           <div className="text-xs text-fg-subtle px-2 py-1 mb-1">
-            {isPt ? 'Partilhar em:' : 'Share on:'}
+            {t.ui.shareOn}
           </div>
           {socialLinks.map((social) => (
             <a

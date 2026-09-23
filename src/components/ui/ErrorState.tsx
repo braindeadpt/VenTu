@@ -16,7 +16,7 @@ export default function ErrorState({
   locale = 'pt',
   className,
 }: ErrorStateProps) {
-  const t = getTranslation(locale as 'pt' | 'en');
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
 
   return (
@@ -26,9 +26,7 @@ export default function ErrorState({
       </div>
       <h3 className="text-h3 text-fg mb-2">{message ?? t.common.error}</h3>
       <p className="text-body text-fg-muted mb-6">
-        {isPt
-          ? 'Verifica a ligação à internet e tenta novamente.'
-          : 'Check your internet connection and try again.'}
+        {t.ui.connectionHint}
       </p>
       {onRetry && (
         <Button onClick={onRetry}>{t.common.refresh}</Button>

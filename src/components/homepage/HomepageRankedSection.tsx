@@ -1,5 +1,8 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { HomepageSpotData } from '@/lib/homepageSport';
@@ -72,6 +75,7 @@ export default function HomepageRankedSection({
   locale,
   bakedAtMs,
 }: HomepageRankedSectionProps) {
+  const t = getTranslation(locale).homepage;
   const isPt = locale === 'pt';
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -103,11 +107,11 @@ export default function HomepageRankedSection({
       if (!picked) continue;
       out.push({
         slug: data.spot.slug,
-        name: isPt ? data.spot.name : data.spot.nameEn,
-        region: isPt ? data.spot.region : data.spot.regionEn,
+        name: localizedSpotName(data.spot, locale),
+        region: localizedSpotRegion(data.spot, locale),
         window: picked.window,
         sportLabel:
-          sport === 'all' ? SPORT_LABELS[picked.sport]?.[isPt ? 'pt' : 'en'] ?? null : null,
+          sport === 'all' ? getSportLabel(picked.sport, locale) : null,
         href: spotDetailHref(locale, data.spot.slug, picked.sport),
       });
     }
@@ -115,21 +119,21 @@ export default function HomepageRankedSection({
       .filter((r) => new Date(r.window.endIso).getTime() > nowMs)
       .sort((a, b) => a.window.startIso.localeCompare(b.window.startIso))
       .slice(0, MAX_WINDOW_ROWS);
-  }, [liveSpotsData, sport, isPt, locale, nowMs]);
+  }, [liveSpotsData, sport, locale, nowMs]);
 
   const weekdayFmt = useMemo(
     () =>
-      new Intl.DateTimeFormat(isPt ? 'pt-PT' : 'en-GB', {
+      new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', {
         timeZone: 'Europe/Lisbon',
         weekday: 'short',
       }),
-    [isPt],
+    [locale],
   );
 
   const dayLabel = (iso: string): string => {
     const diff = dayDiff(iso, nowMs);
-    if (diff === 0) return isPt ? 'Hoje' : 'Today';
-    if (diff === 1) return isPt ? 'Amanhã' : 'Tomorrow';
+    if (diff === 0) return t.today;
+    if (diff === 1) return t.tomorrow;
     const w = weekdayFmt.format(new Date(iso)).replace('.', '');
     return w.charAt(0).toUpperCase() + w.slice(1);
   };
@@ -146,7 +150,7 @@ export default function HomepageRankedSection({
               ? `Top ${TOP_N}`
               : `Top ${TOP_N} · ${getSportLabel(sport, locale)}`
           }
-          subtitle={isPt ? 'Melhores scores agora' : 'Best scores right now'}
+          subtitle={t.bestScoresNow}
         />
 
         <aside
@@ -154,17 +158,15 @@ export default function HomepageRankedSection({
           className="min-w-0 self-start rounded-card border border-divider bg-surface-1/[0.03] p-3"
         >
           <h2 id="home-windows-heading" className="text-h3 text-fg mb-1">
-            {isPt ? 'Próximas janelas' : 'Upcoming windows'}
+            {t.upcomingWindows}
           </h2>
           <p className="text-meta text-fg-muted mb-2">
-            {isPt ? 'Melhor janela ≥ Bom · 48h' : 'Best ≥ Good window · 48h'}
+            {t.bestWindow48h}
           </p>
 
           {rows.length === 0 ? (
             <p className="text-meta text-fg-muted py-4">
-              {isPt
-                ? 'Sem janelas boas nas próximas 48h'
-                : 'No good windows in the next 48h'}
+              {t.noGoodWindows}
             </p>
           ) : (
             <ul className="list-none m-0 p-0 divide-y divide-divider/60">
@@ -204,7 +206,7 @@ export default function HomepageRankedSection({
             href={`/${locale}/spots/`}
             className="mt-2 inline-flex min-h-[44px] items-center text-meta font-medium text-accent hover:underline"
           >
-            {isPt ? 'Ver ranking completo' : 'View full ranking'} →
+            {t.viewFullRanking} →
           </Link>
         </aside>
       </div>

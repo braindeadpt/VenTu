@@ -108,7 +108,7 @@ function makeFetchMock({ model, throwOnWave = true }) {
         { status: 200, headers: { 'Content-Type': 'application/xml' } },
       );
     }
-    if (u.includes('marine-api.open-meteo.com')) {
+    if (new URL(String(u), 'https://ventu.invalid').hostname === 'marine-api.open-meteo.com') {
       const times = [...model.keys()].sort();
       return new Response(
         JSON.stringify({

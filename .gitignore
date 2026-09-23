@@ -78,6 +78,12 @@ playwright/.cache/
 
 # OG spot share cards — generated at build (npm run og:generate)
 public/images/og/
+# OG share image da home — regenerado em cada build (og:generate)
+public/og-image.png
+# Favicons PNG gerados no build a partir dos SVG (og:generate)
+public/favicon-16x16.png
+public/favicon-32x32.png
+public/apple-touch-icon.png
 
 # Auto-generated data files (updated by GitHub Actions)
 # Keep the directory structure but ignore contents
@@ -106,8 +112,10 @@ _patch_*.py
 # Local Windows visual-regression artifacts (baselines are Linux-bound)
 tests/e2e/visual-regression.spec.ts-snapshots/*-win32.png
 _commit-msg.txt
+# Lighthouse diagnostics (relatório do pior run quando um budget rebenta)
+lighthouse-reports/
 
-# Agent Skills bridges � junctions locais para .agents/skills (Windows nao commita links)
+# Agent Skills bridges — junctions locais para .agents/skills (Windows não commita links)
 .cursor/skills
 .devin/skills
 .grok/skills

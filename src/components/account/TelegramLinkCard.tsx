@@ -5,6 +5,7 @@ import { Send, Unlink } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import Button from '@/components/ui/Button';
+import { getTranslation } from '@/lib/i18n';
 import {
   createTelegramLinkToken,
   fetchUserTelegram,
@@ -16,7 +17,7 @@ import {
 } from '@/lib/userTelegram';
 
 export default function TelegramLinkCard({ locale }: { locale: string }) {
-  const isPt = locale === 'pt';
+  const f = getTranslation(locale).account;
   const { session } = useAuth();
   const [row, setRow] = useState<UserTelegramRow | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,7 +63,7 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
     try {
       const result = await createTelegramLinkToken(sb);
       if (!result.ok) {
-        setError(isPt ? 'Não foi possível gerar o link.' : 'Could not create link.');
+        setError(f.telegramErrorLink);
         return;
       }
       const url = telegramDeepLink(result.token);
@@ -70,7 +71,7 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
       window.open(url, '_blank', 'noopener,noreferrer');
       await reload();
     } catch {
-      setError(isPt ? 'Erro ao ligar Telegram.' : 'Error linking Telegram.');
+      setError(f.telegramErrorStart);
     } finally {
       setBusy(false);
     }
@@ -84,7 +85,7 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
     try {
       const result = await unlinkTelegram(sb);
       if (!result.ok) {
-        setError(isPt ? 'Não foi possível desligar.' : 'Could not unlink.');
+        setError(f.telegramErrorUnlink);
         return;
       }
       setDeepLink('');
@@ -102,33 +103,25 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
         <Send className="w-5 h-5 text-data-waves shrink-0 mt-0.5" aria-hidden />
         <div className="min-w-0 flex-1">
           <h2 className="text-sm font-semibold text-fg">Telegram</h2>
-          <p className="text-meta-sm text-fg-muted mt-1">
-            {isPt
-              ? 'Recebe o mesmo aviso dos favoritos no Telegram (após activares alertas por email).'
-              : 'Get the same favorites alert on Telegram (after enabling email alerts).'}
-          </p>
+          <p className="text-meta-sm text-fg-muted mt-1">{f.telegramIntro}</p>
         </div>
       </div>
 
       {linked ? (
         <p className="text-xs text-score-good font-medium">
-          {isPt ? 'Telegram ligado' : 'Telegram linked'}
+          {f.telegramLinked}
         </p>
       ) : (
-        <p className="text-xs text-fg-muted">
-          {isPt
-            ? '1) Clica em Ligar · 2) Abre o bot e toca Start · 3) Em ~15 min fica activo'
-            : '1) Tap Link · 2) Open the bot and tap Start · 3) Active within ~15 min'}
-        </p>
+        <p className="text-xs text-fg-muted">{f.telegramSteps}</p>
       )}
 
       {error && <p className="text-xs text-score-poor">{error}</p>}
 
       {deepLink && !linked && (
         <p className="text-xs text-fg-muted break-all">
-          {isPt ? 'Se a janela não abriu: ' : 'If the window did not open: '}
+          {f.telegramWindowHint}
           <a href={deepLink} className="text-accent underline" target="_blank" rel="noopener noreferrer">
-            {isPt ? 'abrir bot' : 'open bot'}
+            {f.telegramOpenBot}
           </a>
         </p>
       )}
@@ -144,7 +137,7 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
             className="inline-flex items-center gap-1.5"
           >
             <Send className="w-3.5 h-3.5" aria-hidden />
-            {busy ? (isPt ? 'A gerar…' : 'Working…') : isPt ? 'Ligar Telegram' : 'Link Telegram'}
+            {busy ? f.telegramWorking : f.telegramLink}
           </Button>
         ) : (
           <Button
@@ -156,7 +149,7 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
             className="inline-flex items-center gap-1.5 text-fg-muted"
           >
             <Unlink className="w-3.5 h-3.5" aria-hidden />
-            {isPt ? 'Desligar' : 'Unlink'}
+            {f.telegramUnlink}
           </Button>
         )}
         {deepLink && !linked && (
@@ -167,7 +160,7 @@ export default function TelegramLinkCard({ locale }: { locale: string }) {
             disabled={busy}
             onClick={() => void reload()}
           >
-            {isPt ? 'Já fiz Start — actualizar' : 'I tapped Start — refresh'}
+            {f.telegramRefresh}
           </Button>
         )}
       </div>

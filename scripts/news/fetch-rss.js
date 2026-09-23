@@ -9,6 +9,10 @@
 
 const { canDiscard } = require('./spam-filter');
 const { applyCategoryKeywords } = require('./category-keywords');
+// Sanitização partilhada (descodificação numa só passagem + garantia «sem
+// `<`/`>`») — ver scripts/lib/sanitizeText.js e o porquê em cada alerta do
+// CodeQL que a motivou (js/double-escaping, js/incomplete-multi-character-*).
+const { stripTags } = require('../lib/sanitizeText');
 
 const USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 
@@ -30,19 +34,10 @@ const FEEDS = [
 ];
 
 /**
- * Decode common HTML entities.
+ * As entidades e o strip de tags vivem em `scripts/lib/sanitizeText.js`
+ * (descodificação numa só passagem + contrato «sem `<`/`>`»), partilhado com
+ * o `evaluate-alerts.js`. Ver os testes em `lib/__tests__/sanitizeText.test.js`.
  */
-function decodeEntities(text) {
-  if (!text) return '';
-  return text
-    .replace(/&#8217;/g, "'").replace(/&#8216;/g, "'")
-    .replace(/&#8220;/g, '"').replace(/&#8221;/g, '"')
-    .replace(/&#8230;/g, '...').replace(/&#8211;/g, '-')
-    .replace(/&#8212;/g, '--').replace(/&#038;/g, '&')
-    .replace(/&amp;/g, '&').replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>').replace(/&quot;/g, '"')
-    .replace(/&apos;/g, "'");
-}
 
 /**
  * Extract text from an RSS field (handles CDATA and regular content).
@@ -64,17 +59,6 @@ function extractField(itemXml, fieldName) {
   if (m2) return stripTags(m2[1]);
 
   return '';
-}
-
-/**
- * Strip markup → decode entities → strip again, then trim.
- * @param {string} raw
- * @returns {string}
- */
-function stripTags(raw) {
-  const withoutTags = String(raw).replace(/<[^>]*>/g, '');
-  const decoded = decodeEntities(withoutTags);
-  return decoded.replace(/<[^>]*>/g, '').trim();
 }
 
 /**

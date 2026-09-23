@@ -6,6 +6,7 @@ import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { getGridSpotScore } from '@/lib/gridSpotScore';
 import { tierPhrase } from '@/lib/voice';
 import { getCardinalLabel } from '@/lib/wind';
+import { getTranslation } from '@/lib/i18n';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 
 function resolveNarrativeSport(
@@ -29,33 +30,31 @@ function resolveNarrativeSport(
   return best;
 }
 
-function waterContext(
-  spot: Spot,
-  swellH: number,
-  isPt: boolean,
-): string {
+type NarrativeLabels = ReturnType<typeof getTranslation>['mapNarrative'];
+
+function waterContext(spot: Spot, swellH: number, t: NarrativeLabels): string {
   const swellTag = spot.bestSwell.toLowerCase();
   if (swellTag.includes('lagoa') || swellTag.includes('rio')) {
-    return isPt ? 'água plana' : 'flat water';
+    return t.waterFlat;
   }
   if (spot.type === 'wakeboard' || swellTag.includes('lagoa')) {
-    return isPt ? 'lagoa/cable' : 'lake/cable';
+    return t.waterLake;
   }
-  if (swellH < 0.35) return isPt ? 'mar de espelho' : 'glassy';
-  if (swellH < 0.8) return isPt ? 'mar calmo' : 'calm chop';
-  if (swellH < 1.5) return isPt ? 'ondulação leve' : 'light swell';
-  return isPt ? 'ondulação' : 'swell';
+  if (swellH < 0.35) return t.waterGlassy;
+  if (swellH < 0.8) return t.waterCalmChop;
+  if (swellH < 1.5) return t.waterLightSwell;
+  return t.waterSwell;
 }
 
-function crowdHint(spot: Spot, isPt: boolean): string | null {
+function crowdHint(spot: Spot, t: NarrativeLabels): string | null {
   if (spot.secretLevel === 'secret' || spot.secretLevel === 'deep-secret') {
-    return isPt ? 'pouco crowd' : 'low crowd';
+    return t.crowdLow;
   }
   if (spot.secretLevel === 'semi-secret' || spot.localSecret) {
-    return isPt ? 'crowd moderado' : 'moderate crowd';
+    return t.crowdModerate;
   }
   if (spot.facilities.some((f) => /escola/i.test(f))) {
-    return isPt ? 'zonas de escola' : 'school zones';
+    return t.crowdSchool;
   }
   return null;
 }
@@ -66,8 +65,9 @@ export function getMapSpotNarrative(
   conditions: MarineConditionsFields,
   allScores: Record<SportType, SportScore>,
   sport: GridSportFilter,
-  isPt: boolean,
+  locale: string,
 ): string {
+  const t = getTranslation(locale).mapNarrative;
   const narrativeSport = resolveNarrativeSport(sport, spot, allScores);
   const filterScore = getGridSpotScore({ spot, conditions, allScores }, sport);
   const windKt = Math.round(conditions.windSpeed * MS_TO_KNOTS);
@@ -75,32 +75,32 @@ export function getMapSpotNarrative(
   const swellT = Math.round(conditions.swellPeriod ?? conditions.wavePeriod);
   const windCard = getCardinalLabel(conditions.windDirection);
 
-  const parts: string[] = [tierPhrase(filterScore, isPt)];
+  const parts: string[] = [tierPhrase(filterScore, locale)];
 
   switch (narrativeSport) {
     case 'kitesurf':
     case 'windsurf':
     case 'foil':
-      parts.push(waterContext(spot, swellH, isPt));
+      parts.push(waterContext(spot, swellH, t));
       parts.push(`${windKt}kt ${windCard}`);
       break;
     case 'surf':
     case 'bodyboard':
       parts.push(`${swellH.toFixed(1)}m · ${swellT}s`);
-      if (windKt >= 14) parts.push(isPt ? 'vento marcado' : 'windy');
+      if (windKt >= 14) parts.push(t.windMarked);
       break;
     case 'sup':
-      parts.push(waterContext(spot, swellH, isPt));
+      parts.push(waterContext(spot, swellH, t));
       parts.push(`${windKt}kt`);
       break;
     case 'wakeboard':
-      parts.push(isPt ? 'água plana' : 'flat water');
+      parts.push(t.waterFlat);
       break;
     default:
       break;
   }
 
-  const crowd = crowdHint(spot, isPt);
+  const crowd = crowdHint(spot, t);
   if (crowd) parts.push(crowd);
 
   return parts.slice(0, 4).join(' · ');

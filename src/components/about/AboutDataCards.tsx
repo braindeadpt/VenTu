@@ -33,9 +33,9 @@ import { parseCoastalWarningsArchive, type CoastalWarningsArchiveData } from '@/
 import {
   deriveBuoyLayerDowntime,
   formatBuoyLayerDowntimeSuffix,
-  formatBuoyLayerDowntimeTitle,
 } from '@/lib/buoyLayerDowntime'
 import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
+import { getTranslation } from '@/lib/i18n'
 
 // pipeline-meta.json shapes needed for the live re-derivation. Deliberately
 // NOT imported from @/lib/pipelineMeta — that module reads fs at module scope,
@@ -66,7 +66,7 @@ const sign = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(2)}`
 const two = (n: number | null | undefined) => (n == null ? '—' : n.toFixed(2))
 
 interface AboutDataCardsProps {
-  isPt: boolean
+  locale: string
   /** Build-time baked snapshots (production default — no fetch, no CLS). */
   bakedKey: IhKeyStatusInfo | null
   bakedTide: TideLayerStatusInfo | null
@@ -91,13 +91,17 @@ interface AboutDataCardsProps {
  * /data/** file. On failure we keep the baked snapshot (best-effort).
  */
 export default function AboutDataCards({
-  isPt,
+  locale,
   bakedKey,
   bakedTide,
   bakedRadar,
   bakedSkill,
   bakedArchive,
 }: AboutDataCardsProps) {
+  // Migração i18n bloco a bloco (M5): o bloco `about` já serve o TideCard; os
+  // restantes sub-cards ainda usam isPt e vão sendo migrados por commit.
+  const isPt = locale === 'pt'
+  const t = getTranslation(locale).about
   const [forceLive] = useState(() =>
     typeof document !== 'undefined' &&
     document.cookie.split(';').some((c) => c.trim() === 'ventu_live=1'),
@@ -193,67 +197,68 @@ export default function AboutDataCards({
 
   return (
     <>
-      {keyInfo ? <IhKeyCard isPt={isPt} info={keyInfo} /> : null}
-      {tide ? <TideCard isPt={isPt} tide={tide} /> : null}
-      {radar ? <RadarCard isPt={isPt} radar={radar} /> : null}
-      {skill?.hasData ? <SkillCard isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard isPt={isPt} archive={archive} /> : null}
+      {keyInfo ? <IhKeyCard t={t} isPt={isPt} info={keyInfo} /> : null}
+      {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
+      {radar ? <RadarCard t={t} isPt={isPt} radar={radar} /> : null}
+      {skill?.hasData ? <SkillCard t={t} isPt={isPt} locale={locale} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} locale={locale} archive={archive} /> : null}
     </>
   )
 }
 
-function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
+function IhKeyCard({
+  t,
+  isPt,
+  info,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  info: IhKeyStatusInfo
+}) {
         const conf = {
           active: {
-            label: isPt ? 'Activa' : 'Active',
+            label: t.ihLabelActive,
             chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
             icon: CheckCircle2,
-            line: isPt
-              ? 'A IH_API_KEY está configurada e o serviço de ondas do IH devolve leituras das boias (onda observada no spot).'
-              : 'The IH_API_KEY is configured and the IH wave service is returning buoy readings (observed wave on spot pages).',
+            line: t.ihLineActive,
           },
           'not-configured': {
-            label: isPt ? 'Não configurada' : 'Not configured',
+            label: t.ihLabelNotConfigured,
             chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
             icon: KeyRound,
-            line: isPt
-              ? 'Sem IH_API_KEY — as estações são carregadas (OGC, grátis), mas a camada observedWave fica desligada e o fallback WMO/Copernicus é usado onde houver.'
-              : 'No IH_API_KEY — stations load (OGC, free), but the observed-wave layer stays off; the WMO/Copernicus fallback covers where available.',
+            line: t.ihLineNotConfigured,
           },
           rejected: {
-            label: isPt ? 'Expirada / rejeitada' : 'Expired / rejected',
+            label: t.ihLabelRejected,
             chipClass: 'bg-red-500/15 text-red-500 border-red-500/40',
             icon: XCircle,
-            line: isPt
-              ? `A API rejeitou a key (HTTP ${info.rejectedStatus ?? '401'}) — a camada observedWave parou de ser servida e o workflow falha cedo de propósito até a key ser renovada.`
-              : `The API rejected the key (HTTP ${info.rejectedStatus ?? '401'}) — the observed-wave layer stopped and the workflow fails early on purpose until the key is renewed.`,
+            line: t.ihLineRejected.replace('{status}', String(info.rejectedStatus ?? '401')),
           },
           down: {
-            label: isPt ? 'Activa mas sem leituras' : 'Active but no readings',
+            label: t.ihLabelDown,
             chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
             icon: AlertTriangle,
-            line: isPt
-              ? 'A key está configurada mas o serviço de ondas do IH não devolveu leituras neste run (outage transitória) — não é um problema da info.'
-              : 'The key is configured but the IH wave service returned no readings this run (transient outage) — not a key problem.',
+            line: t.ihLineDown,
           },
         }[info.status]
         const Icon = conf.icon
+        const fmtDate = (v: string) => new Date(v).toLocaleString(isPt ? 'pt-PT' : 'en-GB')
         const metaLine =
           info.status === 'active'
-            ? isPt
-              ? `${info.buoyCount} boias · última leitura ${info.newestReadingAt ? new Date(info.newestReadingAt).toLocaleString('pt-PT') : '—'}`
-              : `${info.buoyCount} buoys · newest reading ${info.newestReadingAt ? new Date(info.newestReadingAt).toLocaleString('en-GB') : '—'}`
+            ? t.ihMetaActive
+                .replace('{n}', String(info.buoyCount))
+                .replace('{date}', info.newestReadingAt ? fmtDate(info.newestReadingAt) : '—')
             : info.status === 'rejected'
-              ? isPt
-                ? `rejeitada ${info.rejectedAt ? `em ${new Date(info.rejectedAt).toLocaleString('pt-PT')}` : ''} (HTTP ${info.rejectedStatus ?? '401'}) · ${info.buoyCount} boias catalogadas`
-                : `rejected ${info.rejectedAt ? `at ${new Date(info.rejectedAt).toLocaleString('en-GB')}` : ''} (HTTP ${info.rejectedStatus ?? '401'}) · ${info.buoyCount} buoys catalogued`
-              : isPt
-                ? `${info.buoyCount} boias catalogadas (estações OGC, sem key)`
-                : `${info.buoyCount} buoys catalogued (OGC stations, no key)`
+              ? (info.rejectedAt
+                  ? t.ihMetaRejected.replace('{date}', fmtDate(info.rejectedAt))
+                  : t.ihMetaRejectedNoDate)
+                  .replace('{status}', String(info.rejectedStatus ?? '401'))
+                  .replace('{n}', String(info.buoyCount))
+              : t.ihMetaCatalogued.replace('{n}', String(info.buoyCount))
         return (
           <div className="card-1 p-8 space-y-4" data-ih-key-status={info.status}>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold text-fg">
-                {isPt ? 'Camada de boias IH (IH_API_KEY)' : 'IH buoy layer (IH_API_KEY)'}
+                {t.ihTitle}
               </h2>
               <span
                 className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
@@ -272,17 +277,23 @@ function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
               (() => {
                 const dt = deriveBuoyLayerDowntime(info.layer ?? null)
                 if (!dt) return null
-                const full = formatBuoyLayerDowntimeTitle(dt, isPt)
+                const unit = dt.runs === 1 ? t.ihRunOne : t.ihRunMany
+                const full =
+                  dt.hours !== null
+                    ? t.ihDowntime.replace('{hours}', String(dt.hours))
+                    : t.ihDowntimeRuns.replace('{runs}', String(dt.runs)).replace('{unit}', unit)
+                const suffix = formatBuoyLayerDowntimeSuffix(dt).replace(/^· /, '')
+                const degraded = (dt.runs === 1 ? t.ihDegradedOne : t.ihDegradedMany)
+                  .replace('{suffix}', suffix)
+                  .replace('{runs}', String(dt.runs))
                 return (
                   <p
                     className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
                     data-ih-key-status-downtime="true"
-                    title={`${full}${dt.lastOkAt ? ` · ${isPt ? 'última vez ok' : 'last OK'}: ${new Date(dt.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}` : ''}`}
+                    title={`${full} (${dt.runs} ${unit})${dt.lastOkAt ? ` · ${t.lastOk}: ${new Date(dt.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}` : ''}`}
                   >
                     <span aria-hidden>⏱</span>
-                    <span className="tabular-nums">
-                      {isPt ? <>Degradada {formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')} ({dt.runs} {dt.runs === 1 ? 'run' : 'runs'})</> : <>Degraded {formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')} ({dt.runs} {dt.runs === 1 ? 'run' : 'runs'})</>}
-                    </span>
+                    <span className="tabular-nums">{degraded}</span>
                   </p>
                 )
               })()
@@ -298,101 +309,79 @@ function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
                   data-ih-key-status-wmo="nazare-fresh"
                 >
                   <span aria-hidden>🇵🇹</span>
-                  {isPt
-                    ? <>Costa central coberta <strong className="font-semibold">sem chave</strong> pela boia WMO Nazaré Costeira (via Copernicus){info.wmoNazare.waveHeightM != null ? ` · ${info.wmoNazare.waveHeightM} m` : ''} · leitura {info.wmoNazare.readingAt ? new Date(info.wmoNazare.readingAt).toLocaleString('pt-PT') : '—'}</>
-                    : <>Central coast covered <strong className="font-semibold">keyless</strong> by the WMO Nazaré Costeira buoy (Copernicus route){info.wmoNazare.waveHeightM != null ? ` · ${info.wmoNazare.waveHeightM} m` : ''} · reading {info.wmoNazare.readingAt ? new Date(info.wmoNazare.readingAt).toLocaleString('en-GB') : '—'}</>}
+                  <>{t.ihWmoA} <strong className="font-semibold">{t.ihWmoEm}</strong> {t.ihWmoB}
+                  {info.wmoNazare.waveHeightM != null ? ` · ${info.wmoNazare.waveHeightM} m` : ''}
+                  {t.ihWmoReading.replace('{date}', info.wmoNazare.readingAt ? new Date(info.wmoNazare.readingAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB') : '—')}</>
                 </p>
               ) : null
             }
             <div className="space-y-2 text-sm text-fg-muted leading-relaxed">
-              <p className="font-medium text-fg">
-                {isPt ? 'Como obter e configurar a chave' : 'How to get and configure the key'}
-              </p>
+              <p className="font-medium text-fg">{t.ihHowTo}</p>
               <ol className="list-decimal pl-5 space-y-1.5">
                 <li>
-                  {isPt ? (
-                    <>Pedir a chave gratuita por e-mail a{' '}
-                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
-                        cedencia.dados@hidrografico.pt
-                      </a>{' '}
-                      (Instituto Hidrográfico) — acesso à série <code className="text-fg">getDatawellData</code> (altura/período/direcção de onda em tempo real).</>
-                  ) : (
-                    <>Request the free key by e-mail to{' '}
-                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
-                        cedencia.dados@hidrografico.pt
-                      </a>{' '}
-                      (Instituto Hidrográfico) — access to the{' '}
-                      <code className="text-fg">getDatawellData</code> series (real-time wave height/period/direction).</>
-                  )}
+                  <>{t.ihStep1A}{' '}
+                    <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
+                      cedencia.dados@hidrografico.pt
+                    </a>{' '}
+                    {t.ihStep1B} <code className="text-fg">getDatawellData</code> {t.ihStep1C}</>
                 </li>
-                <li>
-                  {isPt ? 'Criar o secret no GitHub: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.' : 'Create the GitHub secret: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.'}
-                </li>
-                <li>
-                  {isPt ? 'Local: `cp .env.example .env.local` e preencher `IH_API_KEY=…` (o ficheiro já está no .gitignore).' : 'Locally: `cp .env.example .env.local` and set `IH_API_KEY=…` (the file is already gitignored).'}
-                </li>
-                <li>
-                  {isPt ? 'Verificar: `npm run buoys:test-key` (teste e2e da key) e `npm run buoys:fetch`.' : 'Verify: `npm run buoys:test-key` (key e2e test) and `npm run buoys:fetch`.'}
-                </li>
+                <li>{t.ihStep2}</li>
+                <li>{t.ihStep3}</li>
+                <li>{t.ihStep4}</li>
               </ol>
               <p className="text-xs text-fg-subtle">
-                {isPt ? (
-                  <>Guia completo em{' '}
-                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                      docs/IH_API_KEY.md
-                    </a>{' '}
-                    · quando houver leituras, a onda observada aparece no card de cada spot (com rótulo «boia X a Y km»).</>
-                ) : (
-                  <>Full guide in{' '}
-                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                      docs/IH_API_KEY.md
-                    </a>{' '}
-                    · when readings exist, the observed wave shows on each spot’s card (labelled «buoy X at Y km»).</>
-                )}
+                <>{t.ihDocsA}{' '}
+                  <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                    docs/IH_API_KEY.md
+                  </a>{' '}
+                  {t.ihDocsB}</>
               </p>
             </div>
           </div>
         )
 }
 
-function RadarCard({ isPt, radar }: { isPt: boolean; radar: RadarLayerStatusInfo }) {
+function RadarCard({
+  t,
+  isPt,
+  radar,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  radar: RadarLayerStatusInfo
+}) {
         if (!radar) return null
         const conf = {
           ok: {
-            label: isPt ? 'Activo' : 'Active',
+            label: t.radarStatusActive,
             chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
             icon: CheckCircle2,
-            line: isPt
-              ? 'O IPMA está a publicar frames de radar novos (5 em 5 min) — a precipitação observada aparece no mapa.'
-              : 'IPMA is publishing new radar frames (every 5 min) — observed precipitation shows on the map.',
+            line: t.radarLineActive,
           },
           stale: {
-            label: isPt ? 'Atrasado' : 'Delayed',
+            label: t.radarStatusStale,
             chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
             icon: AlertTriangle,
-            line: isPt
-              ? 'O último frame válido já não é actualizado há mais de 25 min — o IPMA não está a servir PNGs novos (o fetch mantém o último ficheiro conhecido e o pipeline de previsões continua).'
-              : 'The latest valid frame has not been refreshed for over 25 min — IPMA is not serving new PNGs (the fetch keeps the last known file and the forecast pipeline keeps running).',
+            line: t.radarLineStale,
           },
           down: {
-            label: isPt ? 'Sem dados' : 'No data',
+            label: t.radarStatusDown,
             chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
             icon: XCircle,
-            line: isPt
-              ? 'Sem radar.json — a camada de radar não tem dados.'
-              : 'No radar.json — the radar layer has no data.',
+            line: t.radarLineDown,
           },
         }[radar.status]
         const Icon = conf.icon
         const frameLabel = radar.frameTime ? radarFrameFullClock(radar.frameTime) : null
-        const metaLine = isPt
-          ? `último frame ${frameLabel ?? '—'}${typeof radar.ageMin === 'number' ? ` · há ${formatRadarAge(radar.ageMin)}` : ''} · ${radar.frames} ${radar.frames === 1 ? 'frame' : 'frames'}`
-          : `last frame ${frameLabel ?? '—'}${typeof radar.ageMin === 'number' ? ` · ${formatRadarAge(radar.ageMin)} ago` : ''} · ${radar.frames} ${radar.frames === 1 ? 'frame' : 'frames'}`
+        const metaLine =
+          t.radarMetaBase.replace('{frame}', frameLabel ?? '—') +
+          (typeof radar.ageMin === 'number' ? t.radarMetaAge.replace('{age}', formatRadarAge(radar.ageMin)) : '') +
+          (radar.frames === 1 ? t.radarFramesOne : t.radarFramesMany).replace('{n}', String(radar.frames))
         return (
           <div className="card-1 p-8 space-y-4" data-radar-layer-status={radar.status}>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold text-fg">
-                {isPt ? 'Radar IPMA (precipitação)' : 'IPMA radar (precipitation)'}
+                {t.radarTitle}
               </h2>
               <span
                 className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
@@ -414,65 +403,65 @@ function RadarCard({ isPt, radar }: { isPt: boolean; radar: RadarLayerStatusInfo
                   data-radar-layer-downtime="true"
                   title={
                     radar.lastOkAt
-                      ? `${isPt ? 'última vez ok' : 'last OK'}: ${new Date(radar.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                      ? `${t.lastOk}: ${new Date(radar.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
                       : undefined
                   }
                 >
                   <span aria-hidden>⏱</span>
                   <span className="tabular-nums">
-                    {isPt
-                      ? <>Sem frames novos há {radar.streak} {radar.streak === 1 ? 'run' : 'runs'} consecutivas</>
-                      : <>No new frames for {radar.streak} consecutive {radar.streak === 1 ? 'run' : 'runs'}</>}
+                    {(radar.streak === 1 ? t.radarStreakOne : t.radarStreakMany).replace(
+                      '{runs}',
+                      String(radar.streak),
+                    )}
                   </span>
                 </p>
               ) : null
             }
-            <p className="text-xs text-fg-subtle leading-relaxed">
-              {isPt
-                ? 'Esta camada nunca bloqueia o pipeline (uma outage do radar IPMA não pára as previsões) — é aqui e nos logs do workflow que a falta de dados fica visível. O badge do radar no mapa mostra também a idade do último frame válido.'
-                : 'This layer never blocks the pipeline (an IPMA radar outage does not stop forecasts) — this card and the workflow logs are where missing data becomes visible. The radar badge on the map also shows the age of the latest valid frame.'}
-            </p>
+            <p className="text-xs text-fg-subtle leading-relaxed">{t.radarNote}</p>
           </div>
         )
 }
 
-function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) {
+function TideCard({
+  t,
+  isPt,
+  tide,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  tide: TideLayerStatusInfo
+}) {
         if (!tide) return null
         const conf = {
           ok: {
-            label: isPt ? 'Activa' : 'Active',
+            label: t.tideStatusActive,
             chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
             icon: CheckCircle2,
-            line: isPt
-              ? 'O IH devolveu observações de maré nas últimas 24 h — a altura observada e a estação aparecem no card de cada spot.'
-              : 'IH returned observed tide readings within the last 24 h — the observed height and station show on each spot’s card.',
+            line: t.tideLineActive,
           },
           stale: {
-            label: isPt ? 'Sem leituras recentes' : 'No recent readings',
+            label: t.tideStatusStale,
             chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
             icon: AlertTriangle,
-            line: isPt
-              ? 'O ficheiro de marés não é actualizado há mais de 24 h — o IH não devolveu observações novas e o fetch reutiliza o último ficheiro conhecido (o pipeline de previsões continua).'
-              : 'The tide file has not been refreshed for over 24 h — IH returned no new observations and the fetch reuses the last known file (the forecast pipeline keeps running).',
+            line: t.tideLineStale,
           },
           down: {
-            label: isPt ? 'Sem dados' : 'No data',
+            label: t.tideStatusDown,
             chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
             icon: XCircle,
-            line: isPt
-              ? 'Sem ih-tides.json — a camada de marés observadas não tem dados.'
-              : 'No ih-tides.json — the observed-tide layer has no data.',
+            line: t.tideLineDown,
           },
         }[tide.status]
         const Icon = conf.icon
-        const metaLine = isPt
-          ? `última fetch ${tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString('pt-PT') : '—'} · ${tide.stations} estações · ${tide.mappedSpots} spots`
-          : `last fetch ${tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString('en-GB') : '—'} · ${tide.stations} stations · ${tide.mappedSpots} spots`
+        const metaLine = t.tideMeta
+          .replace('{date}', tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB') : '—')
+          .replace('{stations}', String(tide.stations))
+          .replace('{spots}', String(tide.mappedSpots))
         return (
           <div className="card-1 p-8 space-y-4" data-tide-layer-status={tide.status}>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold text-fg">
-                {isPt ? 'Camada de marés IH (observadas)' : 'IH tide layer (observed)'}
+                {t.tideTitle}
               </h2>
               <span
                 className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
@@ -485,7 +474,7 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
             <p className="text-sm text-fg-muted leading-relaxed">{conf.line}</p>
             <p className="text-xs text-fg-subtle tabular-nums">{metaLine}</p>
             {tide.observations && tide.observations.length > 0 ? (
-              <TideObservationsList isPt={isPt} observations={tide.observations} />
+              <TideObservationsList t={t} isPt={isPt} observations={tide.observations} />
             ) : null}
             {
               // Streak down/stale (pipeline-meta tideLayer) — «há quantas runs a
@@ -497,24 +486,21 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
                   data-tide-layer-downtime="true"
                   title={
                     tide.lastOkAt
-                      ? `${isPt ? 'última vez ok' : 'last OK'}: ${new Date(tide.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                      ? `${t.lastOk}: ${new Date(tide.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
                       : undefined
                   }
                 >
                   <span aria-hidden>⏱</span>
                   <span className="tabular-nums">
-                    {isPt
-                      ? <>Sem observações novas há {tide.streak} {tide.streak === 1 ? 'run' : 'runs'} consecutivas</>
-                      : <>No new observations for {tide.streak} consecutive {tide.streak === 1 ? 'run' : 'runs'}</>}
+                    {(tide.streak === 1 ? t.tideStreakOne : t.tideStreakMany).replace(
+                      '{runs}',
+                      String(tide.streak),
+                    )}
                   </span>
                 </p>
               ) : null
             }
-            <p className="text-xs text-fg-subtle leading-relaxed">
-              {isPt
-                ? 'Esta camada nunca bloqueia o pipeline (uma outage do IH não pára as previsões) — é aqui e nos logs do workflow que a falta de dados fica visível. Quando o IH voltar a servir observações, a próxima fetch restaura o estado.'
-                : 'This layer never blocks the pipeline (an IH outage does not stop forecasts) — this card and the workflow logs are where the missing data becomes visible. When IH serves observations again, the next fetch restores the layer.'}
-            </p>
+            <p className="text-xs text-fg-subtle leading-relaxed">{t.tideNote}</p>
           </div>
         )
 }
@@ -523,9 +509,11 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
  * de que a camada está viva, e o que falta quando está down. Formata a hora
  * local da leitura sem segundos; título vazio (EDR sem title) cai no genérico. */
 function TideObservationsList({
+  t,
   isPt,
   observations,
 }: {
+  t: ReturnType<typeof getTranslation>['about']
   isPt: boolean
   observations: TideObservation[]
 }) {
@@ -540,7 +528,7 @@ function TideObservationsList({
     <ul
       className="grid grid-cols-1 sm:grid-cols-2 gap-1.5"
       data-tide-observations="true"
-      aria-label={isPt ? 'Leituras observadas recentes' : 'Recent observed readings'}
+      aria-label={t.tideObsAria}
     >
       {observations.map((o, i) => (
         <li
@@ -548,7 +536,7 @@ function TideObservationsList({
           className="flex items-baseline justify-between gap-2 rounded-card border border-fg/10 px-2.5 py-1.5 text-xs"
         >
           <span className="truncate text-fg-muted">
-            {o.title || (isPt ? 'Estação' : 'Station')}
+            {o.title || t.tideStation}
           </span>
           <span className="tabular-nums text-fg whitespace-nowrap">
             {o.heightM.toFixed(2)} m
@@ -560,38 +548,43 @@ function TideObservationsList({
   )
 }
 
-function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData }) {
+function SkillCard({
+  t,
+  isPt,
+  locale,
+  skill,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  locale: string
+  skill: ForecastSkillData
+}) {
         if (!skill.hasData) return null
         const byOrigin = skill.byOrigin ?? { ih: null, 'wmo-pt': null, 'wmo-es': null }
         const originLabel = (o: string | undefined) => forecastSkillOriginTag(o as never)
         return (
           <div className="card-1 p-8 space-y-4">
-            <h2 className="text-2xl font-bold text-fg">
-              {isPt ? 'Skill real do forecast por boia' : 'Real forecast skill per buoy'}
-            </h2>
+            <h2 className="text-2xl font-bold text-fg">{t.skillTitle}</h2>
             <p className="text-sm text-fg-muted leading-relaxed">
-              {isPt ? (
-                <>Skill <em className="not-italic text-fg">real</em> do forecast — a previsão best_match feita no run N para a hora H é comparada com a leitura da boia para H quando chega (lead time &gt; 0), acumulado run a run em <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = média(observado − previsão)</strong>: positivo significa que o modelo subestima a onda. Distinto do viés ERA5 acima — isto é o quão bom o forecast é, não o quão enviesado o modelo de reanálise está. As stats são separadas por plataforma: <strong className="text-fg">IH</strong> (boias Datawell, com chave) vs <strong className="text-fg">WMO-PT</strong> (Nazaré Costeira, Copernicus sem chave) vs <strong className="text-fg">WMO-ES</strong> (Copernicus sem chave, cross-border) — o total misto esconde como cada uma se comporta.</>
-              ) : (
-                <>Real forecast skill — the best_match forecast made in run N for hour H is compared with the buoy reading for H once it arrives (lead time &gt; 0), accumulated run after run in <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = mean(observed − forecast)</strong>: positive means the model underestimates the wave. Distinct from the ERA5 bias above — this is how good the forecast is, not how biased the reanalysis model is. Stats are split by platform: <strong className="text-fg">IH</strong> (Datawell buoys, keyed) vs <strong className="text-fg">WMO-PT</strong> (Nazaré Costeira, Copernicus keyless) vs <strong className="text-fg">WMO-ES</strong> (Copernicus keyless, cross-border) — the mixed total alone hides how each behaves.</>
-              )}
+              <>{t.skillBodyLead} {t.skillBodyRest}{' '}
+              <code className="text-fg">forecast-skill.json</code>.{' '}
+              <strong className="text-fg">{t.skillBodyMe}</strong>
+              {t.skillBodyAfterMe}{' '}
+              <strong className="text-fg">IH</strong> {t.skillBodyIhDesc}{' '}
+              <strong className="text-fg">WMO-PT</strong> {t.skillBodyWmoPtDesc}{' '}
+              <strong className="text-fg">WMO-ES</strong> {t.skillBodyTail}</>
             </p>
             {byOrigin.ih || byOrigin['wmo-pt'] || byOrigin['wmo-es'] ? (
               <div className="flex flex-col sm:flex-row gap-3">
                 {(['ih', 'wmo-pt', 'wmo-es'] as const).map((origin) => {
                   const s = byOrigin[origin]
                   if (!s) return null
-                  const originName = isPt
-                    ? origin === 'ih'
-                      ? 'Boias IH (Datawell)'
+                  const originName =
+                    origin === 'ih'
+                      ? t.skillOriginIh
                       : origin === 'wmo-pt'
-                        ? 'Boia PT (Copernicus WMO · Nazaré)'
-                        : 'Boias ES (Copernicus WMO)'
-                    : origin === 'ih'
-                      ? 'IH buoys (Datawell)'
-                      : origin === 'wmo-pt'
-                        ? 'PT buoy (Copernicus WMO · Nazaré)'
-                        : 'ES buoys (Copernicus WMO)'
+                        ? t.skillOriginWmoPt
+                        : t.skillOriginWmoEs
                   return (
                     <div
                       key={origin}
@@ -614,15 +607,15 @@ function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData })
               <table className="w-full min-w-[480px] border-collapse text-meta">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle">
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Boia' : 'Buoy'}</th>
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Origem' : 'Origin'}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.skillColBuoy}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.skillColOrigin}</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">n</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">ME (m)</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">MAE (m)</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">RMSE (m)</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">r</th>
                     <th className="py-1.5 text-right font-semibold">
-                      {isPt ? 'Lead médio (h)' : 'Mean lead (h)'}
+                      {t.skillColLead}
                     </th>
                   </tr>
                 </thead>
@@ -632,7 +625,7 @@ function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData })
                       <td className="py-1.5 pr-3 font-medium text-fg">{b.name}</td>
                       <td
                         className="py-1.5 pr-3 text-fg-muted whitespace-nowrap"
-                        title={forecastSkillOriginLabel(b.origin, isPt)}
+                        title={forecastSkillOriginLabel(b.origin, locale, t.skillOriginEsCountry)}
                         data-skill-buoy-origin={b.origin}
                       >
                         {originLabel(b.origin)}
@@ -652,74 +645,72 @@ function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData })
               {(() => {
                 const byOrigin = skill.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 }
                 const calib = skill.calibratedPairCount ?? 0
-                const base = isPt
-                  ? `Actualizado ${new Date(skill.fetchedAt ?? '').toLocaleDateString('pt-PT')} · ${skill.pairCount} pares previsto×medido acumulados · só boias com n≥10`
-                  : `Updated ${new Date(skill.fetchedAt ?? '').toLocaleDateString('en-GB')} · ${skill.pairCount} accumulated forecast×observed pairs · buoys with n≥10 only`
+                const base = t.skillMeta
+                  .replace('{date}', new Date(skill.fetchedAt ?? '').toLocaleDateString(isPt ? 'pt-PT' : 'en-GB'))
+                  .replace('{pairs}', String(skill.pairCount))
                 if (byOrigin.ih === 0 && byOrigin['wmo-pt'] === 0 && byOrigin['wmo-es'] === 0) return base
-                const perOrigin = isPt
-                  ? `IH ${byOrigin.ih} · WMO-PT ${byOrigin['wmo-pt']} · WMO-ES ${byOrigin['wmo-es']} pares`
-                  : `IH ${byOrigin.ih} · WMO-PT ${byOrigin['wmo-pt']} · WMO-ES ${byOrigin['wmo-es']} pairs`
-                const calibNote =
-                  calib > 0
-                    ? isPt
-                      ? ` · ${calib} da camada calibrada ES→PT (referência PT)`
-                      : ` · ${calib} from the ES→PT calibrated layer (PT reference)`
-                    : ''
+                const perOrigin = t.skillPerOrigin
+                  .replace('{ih}', String(byOrigin.ih))
+                  .replace('{pt}', String(byOrigin['wmo-pt']))
+                  .replace('{es}', String(byOrigin['wmo-es']))
+                const calibNote = calib > 0 ? t.skillCalibNote.replace('{n}', String(calib)) : ''
                 return `${base} · ${perOrigin}${calibNote}`
               })()}
               {(() => {
                 if (!skill.byOrigin?.['wmo-es']) return null
-                return isPt
-                  ? ' • O Noroeste é coberto pelas boias espanholas (Copernicus-ES) mesmo sem IH_API_KEY — o skill de Cabo Silleiro/Villano não depende da chave do IH.'
-                  : ' • The northwest is covered by the Spanish buoys (Copernicus-ES) even without an IH_API_KEY — Cabo Silleiro/Villano skill does not depend on the IH key.'
+                return t.skillNwNote
               })()}
             </p>
           </div>
         )
 }
 
-function ArchiveCard({ isPt, archive }: { isPt: boolean; archive: CoastalWarningsArchiveData }) {
+function ArchiveCard({
+  t,
+  isPt,
+  locale,
+  archive,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  locale: string
+  archive: CoastalWarningsArchiveData
+}) {
         if (!archive.hasData) return null
         return (
           <div className="card-1 p-8 space-y-4" data-coastal-archive>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-2xl font-bold text-fg">
-                {isPt
-                  ? 'Arquivo — Avisos à Navegação Costeiros (IH)'
-                  : 'Archive — IH coastal navigation warnings'}
-              </h2>
+              <h2 className="text-2xl font-bold text-fg">{t.archiveTitle}</h2>
               <span
                 className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
                 data-visual-dynamic
               >
                 <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
-                {isPt
-                  ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} de snapshots`
-                  : `${archive.dayCount} ${archive.dayCount === 1 ? 'day' : 'days'} of snapshots`}
+                {(archive.dayCount === 1 ? t.archiveChipOne : t.archiveChipMany).replace(
+                  '{n}',
+                  String(archive.dayCount),
+                )}
               </span>
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">
-              {isPt ? (
-                <>Histórico diário dos avisos <em className="not-italic text-fg">em vigor</em> — o fetch arquiva um snapshot por dia e deriva a janela de cada aviso (primeiro/último dia em que foi visto). O ficheiro principal só guarda os de hoje; este arquivo lembra os que já expiraram, dentro da janela de {archive.windowDays} dias.</>
-              ) : (
-                <>Daily history of warnings <em className="not-italic text-fg">in force</em> — the fetch archives one snapshot per day and derives each warning’s window (first/last day it was seen). The live file only keeps today’s; this archive remembers expired ones, within the {archive.windowDays}-day window.</>
-              )}
+              <>{t.archiveBodyA} <em className="not-italic text-fg">{t.archiveBodyEm}</em>{' '}
+              {t.archiveBodyB.replace('{days}', String(archive.windowDays))}</>
             </p>
 
             {/* Mini-gráfico — avisos em vigor por dia na janela do arquivo.
                 Componente partilhado com a página /fontes (nunca divergir). */}
-            <CoastalDailyActiveChart dailyActive={archive.dailyActive} isPt={isPt} />
+            <CoastalDailyActiveChart dailyActive={archive.dailyActive} locale={locale} />
 
             <div className="overflow-x-auto">
               <table className="w-full min-w-[560px] border-collapse text-meta">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle">
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Referência' : 'Reference'}</th>
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Categoria' : 'Category'}</th>
-                    <th className="py-1.5 pr-3 font-semibold">Fonte</th>
-                    <th className="py-1.5 pr-3 text-right font-semibold">{isPt ? 'Dias' : 'Days'}</th>
-                    <th className="py-1.5 pr-3 text-right font-semibold">{isPt ? 'Desde' : 'Since'}</th>
-                    <th className="py-1.5 text-right font-semibold">{isPt ? 'Até' : 'Until'}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.archiveColRef}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.archiveColCategory}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.archiveColSource}</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">{t.archiveColDays}</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">{t.archiveColSince}</th>
+                    <th className="py-1.5 text-right font-semibold">{t.archiveColUntil}</th>
                   </tr>
                 </thead>
                 <tbody data-visual-dynamic>
@@ -756,9 +747,10 @@ function ArchiveCard({ isPt, archive }: { isPt: boolean; archive: CoastalWarning
               </table>
             </div>
             <p className="text-xs text-fg-subtle">
-              {isPt
-                ? `Actualizado ${archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString('pt-PT') : '—'} · Instituto Hidrográfico · Avisos à Navegação Costeiros (CC-BY 4.0)`
-                : `Updated ${archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString('en-GB') : '—'} · Instituto Hidrográfico · Coastal Navigation Warnings (CC-BY 4.0)`}
+              {t.archiveFooter.replace(
+                '{date}',
+                archive.fetchedAt ? new Date(archive.fetchedAt).toLocaleDateString(isPt ? 'pt-PT' : 'en-GB') : '—',
+              )}
             </p>
           </div>
         )

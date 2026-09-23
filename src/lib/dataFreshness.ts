@@ -1,3 +1,5 @@
+import { getTranslation } from '@/lib/i18n';
+
 /**
  * Lisbon-hour stale thresholds, aligned with the pipeline schedule
  * (2h day 06:00–20:00 / 4h night). A fixed 2.5h threshold made the badge
@@ -45,6 +47,14 @@ export function getDataFreshness(updatedAt?: string | number | null, nowMs?: num
   return 'very-stale';
 }
 
+export const DATE_LOCALE: Record<string, string> = {
+  pt: 'pt-PT',
+  en: 'en-GB',
+  es: 'es-ES',
+  de: 'de-DE',
+  fr: 'fr-FR',
+};
+
 export type ForecastUpdatedParts = {
   prefix: string;
   datePart: string;
@@ -54,9 +64,8 @@ export type ForecastUpdatedParts = {
 
 /** Date + clock time for trust surfaces (hero ticker, tooltips). */
 export function formatForecastUpdatedParts(ts: number, locale: string): ForecastUpdatedParts {
-  const isPt = locale === 'pt';
   const date = new Date(ts);
-  const loc = isPt ? 'pt-PT' : 'en-GB';
+  const loc = DATE_LOCALE[locale] ?? 'en-GB';
   const datePart = new Intl.DateTimeFormat(loc, {
     day: 'numeric',
     month: 'short',
@@ -68,7 +77,7 @@ export function formatForecastUpdatedParts(ts: number, locale: string): Forecast
     hour12: false,
     timeZone: 'Europe/Lisbon',
   }).format(date);
-  const prefix = isPt ? 'Actualizado' : 'Updated';
+  const prefix = getTranslation(locale).freshness.updatedPrefix;
 
   return {
     prefix,
@@ -80,9 +89,9 @@ export function formatForecastUpdatedParts(ts: number, locale: string): Forecast
 
 /** Clock time (and short date if not today) of the last pipeline update. */
 export function formatForecastUpdatedAt(ts: number, locale: string, nowMs?: number): string {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).freshness;
   const date = new Date(ts);
-  const loc = isPt ? 'pt-PT' : 'en-GB';
+  const loc = DATE_LOCALE[locale] ?? 'en-GB';
   // nowMs pin: the isToday check is baked at build — the client must
   // reproduce it on first paint (React #418 guard), then live after mount.
   const isToday = date.toDateString() === new Date(nowMs ?? Date.now()).toDateString();
@@ -96,29 +105,30 @@ export function formatForecastUpdatedAt(ts: number, locale: string, nowMs?: numb
   }).format(date);
 
   if (isToday) {
-    return isPt ? `Actualizado ${time}` : `Updated ${time}`;
+    return t.updatedAt.replace('{time}', time);
   }
 
   const day = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short', timeZone: 'Europe/Lisbon' }).format(date);
-  return isPt ? `Actualizado ${day}, ${time}` : `Updated ${day}, ${time}`;
+  return t.updatedAtDay.replace('{day}', day).replace('{time}', time);
 }
 
-export function formatStaleAge(updatedAt: string, isPt: boolean, nowMs?: number): string {
+export function formatStaleAge(updatedAt: string, locale: string, nowMs?: number): string {
+  const t = getTranslation(locale).freshness;
   const ageHours = getAgeHours(updatedAt, nowMs);
-  if (ageHours === null) return isPt ? 'Data desconhecida' : 'Unknown date';
+  if (ageHours === null) return t.staleUnknown;
 
   if (ageHours < 1) {
     const mins = Math.max(1, Math.round(ageHours * 60));
-    return isPt ? `Há ${mins} min` : `${mins}m ago`;
+    return t.staleMin.replace('{mins}', String(mins));
   }
 
   const hours = Math.round(ageHours);
   if (hours < 24) {
-    return isPt ? `Há ${hours}h` : `${hours}h ago`;
+    return t.staleHour.replace('{hours}', String(hours));
   }
 
   const days = Math.round(hours / 24);
-  return isPt ? `Há ${days}d` : `${days}d ago`;
+  return t.staleDay.replace('{days}', String(days));
 }
 
 export function isDawnPatrolStale(dateStr: string, maxAgeHours = 24): boolean {

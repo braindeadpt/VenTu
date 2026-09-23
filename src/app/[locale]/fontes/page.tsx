@@ -6,6 +6,7 @@ import { ATTRIBUTIONS, type DataSourceId } from '@/lib/dataSources'
 import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
 import CoastalArchiveCard from '@/components/fontes/CoastalArchiveCard'
 import type { Metadata } from 'next'
+import { getTranslation } from '@/lib/i18n'
 
 /** Link externo pequeno (atribuição obrigatória). */
 function A({
@@ -46,12 +47,11 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const { locale } = await params
   const isPt = locale === 'pt'
   const loc = isPt ? 'pt' : 'en'
+  const t = getTranslation(locale).fontesPage
 
   return buildPageMetadata({
-    title: isPt ? 'Fontes de dados — VenTu' : 'Data sources — VenTu',
-    description: isPt
-      ? 'Todas as fontes de dados do VenTu, com licença e atribuição obrigatória (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).'
-      : 'Every VenTu data source, with license and mandatory attribution (Open-Meteo, IPMA, IH, MeteoAlarm, Esri, Copernicus).',
+    title: t.metaTitle,
+    description: t.metaDescription,
     locale: loc,
     path: `/${loc}/fontes/`,
   })
@@ -60,6 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function DataSourcesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params
   const isPt = locale === 'pt'
+  const t = getTranslation(locale).fontesPage
 
   // Baked once at build time; the client card re-derives from the committed
   // fixture under `ventu_live` so the visual gate measures the fixture, not the
@@ -247,51 +248,23 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
       <PageHeader
         align="center"
         icon={<Database className="w-16 h-16 text-data-waves" aria-hidden />}
-        title={isPt ? 'Fontes de dados' : 'Data sources'}
-        subtitle={
-          isPt
-            ? 'Cada fonte com a respectiva licença e a atribuição obrigatória que o VenTu reproduz'
-            : 'Every source with its licence and the mandatory attribution VenTu reproduces'
-        }
+        title={t.title}
+        subtitle={t.subtitle}
       />
 
       <div className="card-1 p-6 space-y-3">
         <p className="text-sm text-fg-muted leading-relaxed">
-          {isPt ? (
-            <>
-              O VenTu agrega dados de várias entidades públicas e serviços gratuitos. As atribuições abaixo
-              são <strong className="text-fg">obrigatórias</strong> pelas respectivas licenças e aparecem onde os
-              dados são mostrados (mapa, secções de spot, About). Qualquer uso dos dados fora do VenTu deve
-              preservar estas cadeias de atribuição.
-            </>
-          ) : (
-            <>
-              VenTu aggregates data from public entities and free services. The attributions below are{' '}
-              <strong className="text-fg">mandatory</strong> under their licences and appear wherever the data is
-              shown (map, spot sections, About). Any use of the data outside VenTu must preserve these
-              attribution strings.
-            </>
-          )}
+          <>{t.introA} <strong className="text-fg">{t.introStrong}</strong> {t.introB}</>
         </p>
         <p className="flex items-start gap-2 text-xs text-fg-subtle">
           <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
-          {isPt ? (
-            <>
-              Detalhe completo dos modelos e da cadeia de previsão na página{' '}
-              <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
-                Sobre
-              </a>
-              .
-            </>
-          ) : (
-            <>
-              Full model and forecast-chain detail on the{' '}
-              <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
-                About
-              </a>{' '}
-              page.
-            </>
-          )}
+          <>
+            {t.aboutA}{' '}
+            <a href={`/${locale}/about/`} className="underline hover:text-fg transition-colors">
+              {t.aboutLink}
+            </a>
+            .
+          </>
         </p>
       </div>
 
@@ -299,10 +272,10 @@ export default async function DataSourcesPage({ params }: { params: Promise<{ lo
         <table className="w-full min-w-[720px] border-collapse text-sm" data-testid="data-sources-table">
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle border-b border-divider">
-              <th className="py-3 pr-4 font-semibold">{isPt ? 'Fonte' : 'Source'}</th>
-              <th className="py-3 pr-4 font-semibold">{isPt ? 'O que usamos' : 'What we use'}</th>
-              <th className="py-3 pr-4 font-semibold">{isPt ? 'Licença' : 'Licence'}</th>
-              <th className="py-3 font-semibold">{isPt ? 'Atribuição obrigatória' : 'Mandatory attribution'}</th>
+              <th className="py-3 pr-4 font-semibold">{t.colSource}</th>
+              <th className="py-3 pr-4 font-semibold">{t.colWhat}</th>
+              <th className="py-3 pr-4 font-semibold">{t.colLicence}</th>
+              <th className="py-3 font-semibold">{t.colAttribution}</th>
             </tr>
           </thead>
           <tbody>

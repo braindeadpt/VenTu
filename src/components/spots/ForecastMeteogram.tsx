@@ -1,7 +1,9 @@
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
+import { hourKeyFromOpenMeteo, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
 import { getScoreTokens } from '@/lib/sportScore';
+import { formatDayShort } from '@/lib/verdict/formatHourLabel';
 import { getWindRelationToCoast } from '@/lib/wind';
 
 interface MeteogramHour {
@@ -39,11 +41,16 @@ export default function ForecastMeteogram({
   isPt,
   nowMs,
 }: ForecastMeteogramProps) {
+  // As horas são wall-time Open-Meteo (Europe/Lisbon, sem offset) — nunca
+  // `new Date(h.time)`: o parse local muda com o fuso do browser e quebra a
+  // hidratação (React #418). A hora corrente compara-se por chave Lisboa,
+  // igual à régua/tabela.
   const cols = useMemo(() => {
-    const nowIdx = hours.findIndex((h) => new Date(h.time).getTime() >= nowMs);
+    const nowKey = lisbonHourKeyFromDate(new Date(nowMs));
+    const nowIdx = hours.findIndex((h) => hourKeyFromOpenMeteo(h.time) >= nowKey);
     return hours.map((h, i) => ({
       time: h.time,
-      date: new Date(h.time),
+      hour: Number(h.time.slice(11, 13)),
       waveHeight: h.waveHeight ?? 0,
       windKt: (h.windSpeed ?? 0) * 1.94384,
       windDir: h.windDirection ?? 0,
@@ -53,7 +60,7 @@ export default function ForecastMeteogram({
           : 'cross',
       score: h.score ?? 0,
       isNow: i === Math.max(0, nowIdx),
-      isMidnight: new Date(h.time).getHours() === 0,
+      isMidnight: h.time.slice(11, 13) === '00',
     }));
   }, [hours, coastOrientation, nowMs]);
 
@@ -71,31 +78,50 @@ export default function ForecastMeteogram({
 
   if (!cols.length) return null;
 
-  const dayFmt = new Intl.DateTimeFormat(isPt ? 'pt-PT' : 'en-GB', {
-    weekday: 'short',
-    day: 'numeric',
-  });
+  const locale = isPt ? 'pt' : 'en';
 
   // Screen readers: o role="img" precisa de dados, não só de um rótulo
   // genérico — resumimos agora + melhor hora do intervalo.
   const nowCol = cols[Math.max(0, nowIndex)];
   const bestCol = cols.reduce((a, b) => (b.score > a.score ? b : a), cols[0]);
+  const bestHour = String(bestCol.hour).padStart(2, '0');
   const ariaLabel = isPt
     ? `Meteograma das próximas ${cols.length} horas — vento, ondulação e score. ` +
       `Agora: ${nowCol.waveHeight.toFixed(1)} m, ${Math.round(nowCol.windKt)} kt, score ${nowCol.score}. ` +
-      `Melhor hora: ${String(bestCol.date.getHours()).padStart(2, '0')}h com score ${bestCol.score}.`
+      `Melhor hora: ${bestHour}h com score ${bestCol.score}.`
     : `Next ${cols.length} hours meteogram — wind, swell and score. ` +
       `Now: ${nowCol.waveHeight.toFixed(1)} m, ${Math.round(nowCol.windKt)} kt, score ${nowCol.score}. ` +
-      `Best hour: ${String(bestCol.date.getHours()).padStart(2, '0')}h with score ${bestCol.score}.`;
+      `Best hour: ${bestHour}h with score ${bestCol.score}.`;
 
   return (
     <div className="mb-3" role="img" aria-label={ariaLabel}>
       <div ref={scrollRef} className="overflow-x-auto overscroll-x-contain no-scrollbar edge-fade-x -mx-1 px-1">
-        <div style={{ width: cols.length * COL_W }} className="min-w-full relative">
+        <div
+          style={{ width: cols.length * COL_W }}
+          className="min-w-full relative"
+          data-tl-meteogram
+          data-tl-count={cols.length}
+          data-tl-colw={COL_W}
+        >
           {/* Linha «agora» — atravessa vento, ondas e score */}
           <div
             className="absolute top-0 bottom-7 w-px bg-fg/80 pointer-events-none z-10"
             style={{ left: cols.findIndex((c) => c.isNow) * COL_W + COL_W / 2 }}
+            aria-hidden
+          />
+          {/* Coluna da hora escolhida no eixo partilhado — o sync da
+              SpotForecastSection posiciona-a por transform (índice × COL_W)
+              sem re-render do meteograma. opacity-0 até ser activada. */}
+          <div
+            data-tl-stripe
+            className="absolute top-0 bottom-0 pointer-events-none opacity-0 z-[5] rounded-[3px]"
+            style={{
+              width: COL_W,
+              background:
+                'color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent)',
+              boxShadow:
+                'inset 0 0 0 1.5px color-mix(in srgb, var(--verdict, rgb(var(--accent))) 55%, transparent)',
+            }}
             aria-hidden
           />
           {/* Setas de vento */}
@@ -157,12 +183,12 @@ export default function ForecastMeteogram({
               <div key={i} style={{ width: COL_W }} className="relative h-7">
                 {c.isMidnight && (
                   <span className="absolute left-0 top-0 text-[9px] font-mono tabular-nums text-fg-muted whitespace-nowrap capitalize">
-                    {dayFmt.format(c.date)}
+                    {formatDayShort(c.time, locale)}
                   </span>
                 )}
-                {c.date.getHours() % 6 === 0 && (
+                {c.hour % 6 === 0 && (
                   <span className="absolute left-0 bottom-0 text-[9px] font-mono tabular-nums text-fg-subtle">
-                    {String(c.date.getHours()).padStart(2, '0')}
+                    {String(c.hour).padStart(2, '0')}
                   </span>
                 )}
               </div>

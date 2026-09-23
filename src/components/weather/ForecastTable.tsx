@@ -1,5 +1,6 @@
 'use client';
 
+import { getSportLabel } from '@/lib/homepageSport';
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 
 import type { SportType } from '@/lib/sportRatings';
@@ -16,6 +17,7 @@ import {
   type TidePhase,
 } from '@/lib/tideSchedule';
 import { findCurrentHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
+import { formatDayShort } from '@/lib/verdict/formatHourLabel';
 import {
   waveFactorSuffix,
   type ScoreWaveCorrection,
@@ -171,10 +173,12 @@ function windDirBg(
   return 'bg-surface-1/[0.04]';
 }
 
-/* ──────────── time helpers ──────────── */
+/* ──────────── time helpers ────────────
+ * As horas são wall-time Open-Meteo (Europe/Lisbon, sem offset) — nunca
+ * `new Date(iso)`: o parse local muda com o fuso do browser e quebra a
+ * hidratação (React #418). Componentes extraem-se da própria string. */
 function parseHourLabel(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getHours()}h`;
+  return `${Number(iso.slice(11, 13))}h`;
 }
 
 function isCurrentHour(iso: string, now: Date): boolean {
@@ -194,6 +198,15 @@ function buildTooltip(h: ForecastHour, sportLabel?: string): string {
   return parts.join(' · ');
 }
 
+/** Medição S3 — renders reais em `window.__ventuFtRenders` (relatório e
+ *  spec e2e): o sync da timeline é imperativo, por isso um scrub de N
+ *  passos na régua deve manter este contador estável. */
+function bumpForecastTableRenderCount() {
+  if (typeof window === 'undefined') return;
+  const w = window as unknown as { __ventuFtRenders?: number };
+  w.__ventuFtRenders = (w.__ventuFtRenders ?? 0) + 1;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════
  *  COMPONENT
  *  ═══════════════════════════════════════════════════════════════════════ */
@@ -210,6 +223,7 @@ export default function ForecastTable({
   waveCorrection = null,
   nowMs,
 }: ForecastTableProps) {
+  bumpForecastTableRenderCount();
   const t = getTranslation(locale).forecastTable;
   const isPt = locale === 'pt';
 
@@ -222,17 +236,30 @@ export default function ForecastTable({
     );
   }
 
-  /* ── slice data ── */
-  const visible = useMemo(() => {
+  /* ── slice data ──
+     visibleStart = offset da fatia dentro de `hourly` (0 sem startTime) —
+     os data-tl-col das células guardam o índice GLOBAL da timeline, que o
+     sync da SpotForecastSection usa para destaque/selecção sem re-render. */
+  const { visible, visibleStart } = useMemo(() => {
     let startIndex = 0;
     if (startTime) {
-      startIndex = hourly.findIndex((h) => {
-        const d = new Date(h.time);
-        return d >= startTime;
-      });
+      // Wall-time Lisboa de startTime (epoch real) — comparação lexicográfica
+      // com as strings naive, determinística em qualquer fuso.
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Lisbon',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+      }).formatToParts(startTime);
+      const pick = (t: Intl.DateTimeFormatPartTypes) =>
+        parts.find((p) => p.type === t)?.value ?? '00';
+      const startKey = `${pick('year')}-${pick('month')}-${pick('day')}T${pick('hour')}:${pick('minute')}:${pick('second')}`;
+      startIndex = hourly.findIndex((h) => h.time >= startKey);
       if (startIndex === -1) startIndex = 0;
     }
-    return hourly.slice(startIndex, startIndex + visibleCount);
+    return {
+      visible: hourly.slice(startIndex, startIndex + visibleCount),
+      visibleStart: startIndex,
+    };
   }, [hourly, startTime, visibleCount]);
 
   /* ── current hour ref ── */
@@ -263,7 +290,7 @@ export default function ForecastTable({
   useEffect(() => {
     if (scrollRef.current && currentHourIndex >= 0) {
       const container = scrollRef.current;
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         const labelWidth = labelWidthPx;
         const dataStart = labelWidth;
         const cellWidth = (container.scrollWidth - labelWidth) / visible.length;
@@ -271,6 +298,7 @@ export default function ForecastTable({
         const targetLeft = cellCenter - container.clientWidth / 2;
         container.scrollLeft = Math.max(0, targetLeft);
       }, 200);
+      return () => clearTimeout(timer);
     }
   }, [currentHourIndex, visible.length, labelWidthPx]);
 
@@ -278,13 +306,12 @@ export default function ForecastTable({
     const groups: { day: string; dayLabel: string; startIndex: number }[] = [];
     let currentDay = '';
     visible.forEach((h, i) => {
-      const d = new Date(h.time);
-      const dayKey = d.toDateString();
+      const dayKey = h.time.slice(0, 10);
       if (dayKey !== currentDay) {
         currentDay = dayKey;
         groups.push({
           day: dayKey,
-          dayLabel: d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' }),
+          dayLabel: formatDayShort(h.time, locale),
           startIndex: i,
         });
       }
@@ -364,19 +391,16 @@ export default function ForecastTable({
 
   /* ── sport label for score row ── */
   const sportLabel = sport
-    ? SPORT_LABELS[sport][isPt ? 'pt' : 'en']
+    ? getSportLabel(sport, locale)
     : undefined;
 
   /* ── wave-correction title for the waves row label ── */
+  const ftT = getTranslation(locale).spotsUi;
   const wavesRowTitle =
     waveSource === 'observed' && waveCorrection?.buoyName
-      ? isPt
-        ? `Altura medida pela boia ${waveCorrection.buoyName} — a medição vale para as horas seguintes (as células mostram a previsão por hora).`
-        : `Height measured by buoy ${waveCorrection.buoyName} — the measurement holds for the following hours (cells show the hourly forecast).`
+      ? ftT.wavesTitleBuoy.replace('{name}', waveCorrection.buoyName)
       : waveSource === 'bias-corrected'
-        ? isPt
-          ? 'Altura corrigida pelo viés regional — a correcção vale para as horas seguintes (as células mostram a previsão por hora).'
-          : 'Height corrected by regional bias — the correction holds for the following hours (cells show the hourly forecast).'
+        ? ftT.wavesTitleBias
         : undefined;
 
   /* ── cell dimensions ── */
@@ -425,6 +449,8 @@ export default function ForecastTable({
       <div
         ref={scrollRef}
         className={`forecast-table-scroll overflow-x-auto overscroll-x-contain border border-divider bg-bg-base relative rounded-card max-w-full max-md:snap-x max-md:snap-proximity [scrollbar-color:rgb(var(--fg-disabled))_transparent]`}
+        data-tl-start={visibleStart}
+        data-tl-count={visible.length}
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
@@ -463,12 +489,12 @@ export default function ForecastTable({
               </th>
               {visible.map((h, i) => {
                 const current = isCurrentHour(h.time, now);
-                const d = new Date(h.time);
-                const isNewDay = i === 0 || d.toDateString() !== new Date(visible[i - 1].time).toDateString();
+                const isNewDay = i === 0 || h.time.slice(0, 10) !== visible[i - 1].time.slice(0, 10);
                 return (
                   <th
                     key={i}
                     scope="col"
+                    data-tl-col={visibleStart + i}
                     className={`sticky top-0 z-20 ${hourW} ${cellPx} font-mono ${metaText} max-md:snap-start ${nowCol(i)} ${
                       current
                         ? 'bg-accent/12 text-fg font-semibold'
@@ -481,7 +507,7 @@ export default function ForecastTable({
                     <div className="flex flex-col items-center">
                       {isNewDay && !compact && (
                         <span className="text-[9px] md:text-[10px] font-semibold text-fg-subtle leading-none mb-0.5">
-                          {d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}
+                          {formatDayShort(h.time, locale)}
                         </span>
                       )}
                       <span className={compact ? 'text-[10px]' : ''}>{parseHourLabel(h.time)}</span>
@@ -511,6 +537,7 @@ export default function ForecastTable({
             {visible.map((h, i) => (
               <td
                 key={i}
+                data-tl-col={visibleStart + i}
                 className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${waveBg(h.waveHeight)} font-mono ${numText} ${
                   hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                 } transition-colors duration-fast border-b border-divider/20`}
@@ -534,6 +561,7 @@ export default function ForecastTable({
             {visible.map((h, i) => (
               <td
                 key={i}
+                data-tl-col={visibleStart + i}
                 className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${periodBg(h.wavePeriod)} font-mono ${numText} ${
                   hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                 } transition-colors duration-fast border-b border-divider/20`}
@@ -559,6 +587,7 @@ export default function ForecastTable({
               return (
                 <td
                   key={i}
+                  data-tl-col={visibleStart + i}
                   className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${windBg(windKt)} font-mono ${numText} ${windText(
                     windKt,
                   )} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
@@ -583,6 +612,7 @@ export default function ForecastTable({
             {visible.map((h, i) => (
               <td
                 key={i}
+                data-tl-col={visibleStart + i}
                   className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${windDirBg(
                   h.windDirection,
                   coastOrientation,
@@ -615,6 +645,7 @@ export default function ForecastTable({
                 return (
                   <td
                     key={i}
+                    data-tl-col={visibleStart + i}
                     className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                       gustKt !== null ? gustBg(gustKt) : 'bg-surface-1/[0.04]'
                     } font-mono ${numText} text-fg-muted ${
@@ -643,6 +674,7 @@ export default function ForecastTable({
               {visible.map((h, i) => (
                 <td
                   key={i}
+                  data-tl-col={visibleStart + i}
                   className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                     typeof h.waterTemp === 'number'
                       ? waterBg(h.waterTemp)
@@ -681,13 +713,17 @@ export default function ForecastTable({
                     : '—';
                 const phaseTitle =
                   phase != null
-                    ? isPt
-                      ? { high: 'Maré alta', low: 'Maré baixa', rising: 'Maré a subir', falling: 'Maré a descer' }[phase]
-                      : { high: 'High tide', low: 'Low tide', rising: 'Rising tide', falling: 'Falling tide' }[phase]
+                    ? {
+                        high: getTranslation(locale).tideLabels.high,
+                        low: getTranslation(locale).tideLabels.low,
+                        rising: getTranslation(locale).tideLabels.rising,
+                        falling: getTranslation(locale).tideLabels.falling,
+                      }[phase]
                     : undefined;
                 return (
                   <td
                     key={i}
+                    data-tl-col={visibleStart + i}
                     className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
                       phase ? tidePhaseBg(phase) : 'bg-surface-1/[0.04]'
                     } ${metaText} ${phase ? tidePhaseText(phase) : 'text-fg-subtle'} ${
@@ -719,6 +755,7 @@ export default function ForecastTable({
                 return (
                   <td
                     key={i}
+                    data-tl-col={visibleStart + i}
                     className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} font-mono ${numText} font-semibold ${
                       hoveredCol === i ? 'bg-surface-2/[0.08]' : ''
                     } transition-colors duration-fast border-b border-divider/20`}

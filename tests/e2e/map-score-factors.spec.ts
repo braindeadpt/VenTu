@@ -45,7 +45,7 @@ async function pickClickableMarker(page: Page): Promise<number> {
     },
     { timeout: 30_000, polling: 250 },
   );
-  const { index } = await pick.jsonValue();
+  const index = (await pick.jsonValue())?.index;
   if (index === undefined || index < 0) throw new Error('sem marcador clicável');
   return index;
 }

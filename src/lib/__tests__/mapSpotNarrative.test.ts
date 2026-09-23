@@ -49,7 +49,7 @@ describe('getMapSpotNarrative', () => {
       ...emptyScores,
       kitesurf: { score: 75, rating: 'Bom', ratingEn: 'Good', factors: [], factorsEn: [], primaryFactor: 'wind' },
     };
-    const line = getMapSpotNarrative(baseSpot, conditions, scores, 'kitesurf', true);
+    const line = getMapSpotNarrative(baseSpot, conditions, scores, 'kitesurf', 'pt');
     expect(line).toContain('dá uns sets fáceis');
     expect(line).toContain('água plana');
     expect(line).toMatch(/\d+kt/);
@@ -66,7 +66,7 @@ describe('getMapSpotNarrative', () => {
       ...emptyScores,
       surf: { score: 82, rating: 'Épico', ratingEn: 'Epic', factors: [], factorsEn: [], primaryFactor: 'waves' },
     };
-    const line = getMapSpotNarrative(surfSpot, conditions, scores, 'surf', false);
+    const line = getMapSpotNarrative(surfSpot, conditions, scores, 'surf', 'en');
     expect(line).toContain('classic day');
     expect(line).toMatch(/0\.\d+m/);
   });

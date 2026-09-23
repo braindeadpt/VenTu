@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
@@ -33,7 +34,7 @@ interface SpotListCardProps {
   score: number;
   conditions: SpotListCardConditions;
   href: string;
-  locale: 'pt' | 'en';
+  locale: string;
   sportLabel?: string;
   sportAccent?: string;
   rank?: number;
@@ -98,7 +99,7 @@ export default function SpotListCard({
   // canto e passa a ser a âncora visual, em numeral tabular grande.
   const scoreTokens = getScoreTokens(score);
   const scoreTierLabel = getScoreTierLabel(scoreTokens.tier, locale);
-  const hoverLine = getSpotListCardHoverLine(score, isPt);
+  const hoverLine = getSpotListCardHoverLine(score, locale);
   // Sufixo honesto da altura: «(boia)» / «(viés regional)» quando a correcção
   // foi aplicada (a altura mostrada É a corrigida); '' para previsão pura.
   const waveSource = waveCorrection?.source ?? 'forecast';
@@ -276,7 +277,7 @@ export default function SpotListCard({
               className="shrink-0"
             />
           )}
-          <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>
+          <span className="sr-only">{getTranslation(locale).spotsUi.cardSrSummary}</span>
           {/* Nota de atribuição junto da leitura observada WMO/boia espanhola
               (Copernicus) — mesma cadeia da tabela de /fontes, via ATTRIBUTIONS.
               Só quando a altura mostrada é a da boia E essa boia é WMO/Copernicus. */}

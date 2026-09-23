@@ -653,7 +653,7 @@ test.describe('IPMA radar no mapa da homepage (hero)', () => {
     expect(storedOff.enabled).toBe(false);
     await page.reload({ waitUntil: 'networkidle' });
     await page.clock.runFor(500);
-    await expect(badge, { timeout: 10_000 }).not.toBeVisible();
+    await expect(badge).not.toBeVisible({ timeout: 10_000 });
   });
 
   test('botão de radar liga o carrossel no mapa embebido do grid de spots', async ({ page }) => {

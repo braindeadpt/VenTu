@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { buildPageMetadata } from '@/lib/seo';
+import { getTranslation } from '@/lib/i18n';
 
 describe('mapa page SEO', () => {
   it('uses buildPageMetadata with trailing-slash paths', () => {
@@ -11,8 +12,10 @@ describe('mapa page SEO', () => {
     );
     expect(source).toContain('buildPageMetadata');
     expect(source).toContain('path: `/${loc}/mapa/`');
-    expect(source).toContain('Mapa de spots — VenTu');
-    expect(source).toContain('Spots map — VenTu');
+    // A copy vive no dicionário (5 línguas): o título deixou de ser literal.
+    expect(source).toContain('pages.mapMetaTitle');
+    expect(getTranslation('pt').pages.mapMetaTitle).toBe('Mapa de spots — VenTu');
+    expect(getTranslation('en').pages.mapMetaTitle).toBe('Spots map — VenTu');
   });
 
   it('buildPageMetadata sets canonical and hreflang for mapa', () => {

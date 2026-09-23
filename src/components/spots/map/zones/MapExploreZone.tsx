@@ -14,6 +14,9 @@ import {
   HelpCircle, Layers, MapPin, Wind,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { MapSpotData } from '../../mapSpotData';
@@ -45,7 +48,7 @@ interface UseMapExploreZoneParams {
   visibleSpots: MapSpotData[];
   hourScores: Map<string, number> | null;
   selectedSport: GridSportFilter;
-  isPt: boolean;
+  selectedRegion: string;
   locale: string;
   focusSpotId?: string;
   initialHoursEnabled: boolean;
@@ -68,7 +71,7 @@ export function useMapExploreZone({
   visibleSpots,
   hourScores,
   selectedSport,
-  isPt,
+  selectedRegion,
   locale,
   focusSpotId,
   initialHoursEnabled,
@@ -96,9 +99,9 @@ export function useMapExploreZone({
     return () => window.removeEventListener('resize', sync);
   }, []);
 
-  const clusterLabel = clusterEnabled ? t.mapUiExplore.showAllSpots : t.mapUiExplore.clusterSpots;
-  const onlyOnLabel = onlyOnEnabled ? t.mapUiExplore.onlyOnOff : t.mapUiExplore.onlyOn;
-  const onlyOnHint = t.mapUiExplore.onlyOnHint;
+  const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
+  const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
+  const onlyOnHint = t.map.onlyOnHint;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
   const sheetExtras: SheetToggleItem[] = useMemo(() => [
@@ -113,21 +116,21 @@ export function useMapExploreZone({
     },
     {
       key: 'wind',
-      label: windEnabled ? t.mapUiChrome.hideWind : t.mapUiChrome.showWind,
+      label: windEnabled ? t.map.hideWind : t.map.showWind,
       icon: <Wind className="w-4 h-4" aria-hidden />,
       pressed: windEnabled,
       onToggle: toggleWind,
     },
     {
       key: 'windhelp',
-      label: t.mapUiChrome.windRingLegend.help,
+      label: t.map.windRingLegend.help,
       icon: <HelpCircle className="w-4 h-4" aria-hidden />,
       onToggle: openWindLegend,
     },
   ], [
     clusterLabel, clusterEnabled, toggleCluster,
     windEnabled, toggleWind, openWindLegend,
-    t.mapUiChrome.hideWind, t.mapUiChrome.showWind, t.mapUiChrome.windRingLegend.help,
+    t.map.hideWind, t.map.showWind, t.map.windRingLegend.help,
   ]);
 
   // ── Lista sincronizada — mesma fonte dos marcadores (getBestScore com o
@@ -135,15 +138,21 @@ export function useMapExploreZone({
   //    por score. Alimenta o peek «Melhor agora», o sheet aberto e o painel. ──
   const buildRows = useCallback((): MapSpotListRow[] => {
     const bounds = mapInstanceRef.current?.getBounds();
-    const inView = bounds
-      ? visibleSpots.filter((d) => bounds.contains([d.spot.lat, d.spot.lon]))
-      : visibleSpots;
+    // Mesma fonte de enquadramento dos marcadores (D3: includeSpotInViewportBounds)
+    // — sem ela, uma row de ilha dentro do viewport (o fit móvel a oeste chega
+    // a enquadrar a Madeira) ficava sem marcador e quebrava o contrato
+    // «Melhor agora = topo da lista = maior marcador na vista».
+    const inView = visibleSpots.filter(
+      (d) =>
+        includeSpotInViewportBounds(d.spot, selectedRegion ?? DEFAULT_REGION) &&
+        (!bounds || bounds.contains([d.spot.lat, d.spot.lon])),
+    );
     return inView
       .map((d) => {
         return {
           spotId: d.spot.id,
-          name: isPt ? d.spot.name : d.spot.nameEn,
-          region: isPt ? d.spot.region : d.spot.regionEn,
+          name: localizedSpotName(d.spot, locale),
+          region: localizedSpotRegion(d.spot, locale),
           score: getBestScore(d, selectedSport, hourScores?.get(d.spot.id)),
           factors: getSpotScoreFactors({
             spot: d.spot,
@@ -155,7 +164,7 @@ export function useMapExploreZone({
         };
       })
       .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  }, [visibleSpots, hourScores, selectedSport, isPt, locale, mapInstanceRef]);
+  }, [visibleSpots, hourScores, selectedSport, selectedRegion, locale, mapInstanceRef]);
 
   const [viewRows, setViewRows] = useState<MapSpotListRow[]>([]);
   useEffect(() => {
@@ -239,6 +248,7 @@ export function MapExploreZone({
       {!isMobile && (
         <MapSpotPanel
           {...mapHud}
+          locale={locale}
           isPt={isPt}
           spotCount={hudSpotCount}
           rows={viewRows}
@@ -264,6 +274,7 @@ export function MapExploreZone({
       {isMobile && (
         <MapExploreSheet
           {...mapHud}
+          locale={locale}
           isPt={isPt}
           spotCount={hudSpotCount}
           state={exploreSheetState}
@@ -273,6 +284,7 @@ export function MapExploreZone({
           onSelectRow={(row) => focusSpot(row.spotId)}
           layers={sheetLayers}
           extras={sheetExtras}
+          clusterItem={sheetExtras.find((i) => i.key === 'cluster')}
           basemapMode={basemapMode}
           onBasemapChange={onBasemapChange}
           exitFullscreenLabel={exitFullscreenLabel}

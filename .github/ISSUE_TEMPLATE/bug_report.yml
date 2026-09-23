@@ -1,0 +1,62 @@
+name: Bug
+description: Algo no site, nos dados ou nos workflows não funciona como devia.
+title: '[bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Antes de abrir: confirma que não é uma **vulnerabilidade de segurança** —
+        essas reportam-se em privado (ver [SECURITY.md](../SECURITY.md)).
+  - type: textarea
+    id: descricao
+    attributes:
+      label: O que acontece
+      description: Descrição curta e concreta do problema.
+    validations:
+      required: true
+  - type: textarea
+    id: passos
+    attributes:
+      label: Passos para reproduzir
+      placeholder: |
+        1. Abrir https://ventu.surf/pt/...
+        2. Clicar em ...
+        3. Ver o erro
+    validations:
+      required: true
+  - type: input
+    id: esperado
+    attributes:
+      label: O que era esperado
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL ou spot afectado
+      placeholder: https://ventu.surf/pt/spots/guincho/
+  - type: dropdown
+    id: superficie
+    attributes:
+      label: Superfície
+      options:
+        - Site (UI/rotas)
+        - Mapa
+        - Dados / previsões / scores
+        - Livecams / notícias
+        - Conta / favoritos / alertas
+        - Workflows / pipelines
+        - Outro
+    validations:
+      required: true
+  - type: input
+    id: ambiente
+    attributes:
+      label: Ambiente
+      placeholder: 'Chrome 141 · macOS · telemóvel 390px'
+  - type: textarea
+    id: evidencia
+    attributes:
+      label: Capturas / logs / consola
+      description: Cola erros da consola ou junta capturas (arrasta para aqui).

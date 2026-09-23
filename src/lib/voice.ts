@@ -1,41 +1,41 @@
 import { getScoreTokens } from '@/lib/sportScore';
+import { getTranslation } from '@/lib/i18n';
 
 /** Energetic, inclusive PT-PT product voice (not scoring logic). */
 
-export function onLabel(isPt: boolean): string {
-  return isPt ? 'a bombar' : 'firing';
+export function onLabel(locale: string): string {
+  return getTranslation(locale).voice.onLabel;
 }
 
-export function calmLabel(isPt: boolean): string {
-  return isPt ? 'mar de espelho' : 'glassy seas';
+export function calmLabel(locale: string): string {
+  return getTranslation(locale).voice.calmLabel;
 }
 
-export function spotsOnLine(count: number, isPt: boolean): string {
+export function spotsOnLine(count: number, locale: string): string {
   const spotWord = count === 1 ? 'spot' : 'spots';
-  return `${count} ${spotWord} ${onLabel(isPt)}`;
+  return `${count} ${spotWord} ${onLabel(locale)}`;
 }
 
-export function heroStatusLine(onCount: number, isPt: boolean): string {
+export function heroStatusLine(onCount: number, locale: string): string {
   if (onCount > 0) {
-    return spotsOnLine(onCount, isPt);
+    return spotsOnLine(onCount, locale);
   }
-  return isPt
-    ? `${calmLabel(isPt)} — vê o mapa na mesma`
-    : `${calmLabel(isPt)} — still worth a look`;
+  return `${calmLabel(locale)} ${getTranslation(locale).voice.heroCalmTail}`;
 }
 
 /** Short tier phrase for cards / hover — separate from score tier labels in sportScore. */
-export function tierPhrase(score: number, isPt: boolean): string {
+export function tierPhrase(score: number, locale: string): string {
   const { tier } = getScoreTokens(score);
-  const phrases: Record<typeof tier, { pt: string; en: string }> = {
+  const t = getTranslation(locale).voice;
+  const phrases: Record<typeof tier, string> = {
     // O card imprime o rótulo do tier («Épico») por baixo do score: a frase
     // não pode repeti-lo. «Um clássico» é como se fala de um dia que se
     // conta depois — diz o que o tier significa sem lhe chamar o nome.
-    epic: { pt: 'dia clássico', en: 'classic day' },
-    good: { pt: 'dá uns sets fáceis', en: 'fun, friendly sets' },
-    fair: { pt: 'mar limpo', en: 'clean faces' },
-    poor: { pt: 'mar calmo', en: 'slow session' },
-    closed: { pt: 'flat', en: 'flat' },
+    epic: t.tierEpic,
+    good: t.tierGood,
+    fair: t.tierFair,
+    poor: t.tierPoor,
+    closed: t.tierClosed,
   };
-  return phrases[tier][isPt ? 'pt' : 'en'];
+  return phrases[tier];
 }

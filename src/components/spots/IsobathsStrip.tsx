@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { Waves } from 'lucide-react';
 import {
@@ -13,8 +14,8 @@ interface IsobathsStripProps {
   locale: string;
 }
 
-function formatKm(km: number, isPt: boolean): string {
-  if (km < 1) return isPt ? `${Math.round(km * 1000)} m` : `${Math.round(km * 1000)} m`;
+function formatKm(km: number): string {
+  if (km < 1) return `${Math.round(km * 1000)} m`;
   return `${km.toFixed(1)} km`;
 }
 
@@ -27,6 +28,7 @@ function formatKm(km: number, isPt: boolean): string {
  */
 export default function IsobathsStrip({ spotId, locale }: IsobathsStripProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).spotsUi;
   const [depths, setDepths] = useState<Record<number, number> | null | undefined>(undefined);
   const [done, setDone] = useState(false);
 
@@ -58,14 +60,14 @@ export default function IsobathsStrip({ spotId, locale }: IsobathsStripProps) {
     >
       <p className="text-meta-sm font-semibold text-fg-muted mb-2 inline-flex items-center gap-1.5">
         <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-        {isPt ? 'Fundo perto da praia' : 'Seabed near the beach'}
+        {t.seabedNearBeach}
       </p>
       <ul className="flex flex-wrap gap-x-3 gap-y-1 list-none p-0 m-0 text-meta-sm">
         {entries.map((depth) => (
           <li key={depth} className="inline-flex items-baseline gap-1">
             <span className="text-fg-muted">{depth} m</span>
             <span className="font-mono tabular-nums text-fg font-medium">
-              {formatKm(depths[depth] as number, isPt)}
+              {formatKm(depths[depth] as number)}
             </span>
           </li>
         ))}
@@ -73,14 +75,10 @@ export default function IsobathsStrip({ spotId, locale }: IsobathsStripProps) {
       <p
         className="text-meta-xs text-fg-subtle mt-1.5"
         title={
-          isPt
-            ? 'Distância da praia à isóbata (IH depcnt_8_16_30) — onde o fundo atinge 8, 16 e 30 m. Fonte: Instituto Hidrográfico, CC-BY 4.0.'
-            : 'Distance from the beach to the depth contour (IH depcnt_8_16_30) — where the seabed reaches 8, 16 and 30 m. Source: Instituto Hidrográfico, CC-BY 4.0.'
+          t.isobathTitle
         }
       >
-        {isPt
-          ? 'Isóbatas IH (CC-BY 4.0) — distância da praia a cada profundidade'
-          : 'IH isobaths (CC-BY 4.0) — distance from shore to each depth'}
+        {t.isobathSource}
       </p>
     </div>
   );

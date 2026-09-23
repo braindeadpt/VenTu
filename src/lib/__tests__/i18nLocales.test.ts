@@ -20,7 +20,23 @@ const SHARED_TOKENS = new Set([
   'Chat', 'Feedback', 'Links', 'Livecams', 'Livecams →', 'Powered by', 'Rankings', 'Reset',
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
+  'flat', // termo adoptado em pt/en/es (frase de tier «flat»)
+  'offshore', // termo adoptado em pt/en/es/de/fr (relação de vento)
+  'Offshore', // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Multisport', // termo adoptado em pt/es/de/fr (tipo de spot)
+  'Expert',   // termo adoptado em pt/en/es/de/fr (nível de dificuldade)
+  'onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  // Pontos cardeais — símbolos universais (N/S/E/O válidos em pt/en/es/de/fr).
+  'N', 'S', 'E', 'O',
+  // Termo adoptado em PT, igual nas shells («score 93, ÉPICO»).
+  'score',
+  // Siglas de maré idênticas em PT/ES/FR (preia-mar/pleamar/pleine mer,
+  // baixa-mar/bajamar/basse mer); DE usa HW/NW e EN HW/LW.
+  'PM', 'BM',
+  // «ideal» é a mesma grafia em PT/EN/ES/DE (rótulo do sector ideal).
+  'ideal {dirs}',
 ]);
 
 /**
@@ -67,9 +83,113 @@ const ES_COGNATES = new Set([
   'MODALIDADES',        // espanhol correcto = PT (cabeçalho de grupo de pesquisa)
   'navegar',            // espanhol correcto = PT (atalho de teclado)
   'abrir',              // espanhol correcto = PT (atalho de teclado)
+  'Avisos activos',     // espanhol correcto = PT (faixa de avisos do veredicto)
+  'Próximas 48 horas',  // espanhol correcto = PT (régua temporal do veredicto)
+  'Pausar',             // espanhol correcto = PT (reprodução da régua)
   'Veredicto',          // espanhol correcto = PT (secção da página de spot)
   'Instrumentos',       // espanhol correcto = PT (secção da página de spot)
   'Contexto',           // espanhol correcto = PT (secção da página de spot)
+  'Todas',              // espanhol correcto = PT (filtro «Todas» das notícias)
+  'IA',                 // sigla correcta em espanhol = PT (badge de resumo IA)
+  'Página anterior',    // espanhol correcto = PT (paginação das notícias)
+  '🌍 Internacional',    // espanhol correcto = PT (filtro de região das notícias)
+  'Sugerir / Reportar',  // espanhol correcto = PT (trigger do formulário de feedback)
+  'Email (opcional)',    // espanhol correcto = PT (campo opcional do feedback)
+  'spots guardados',     // espanhol correcto = PT (contador de favoritos da conta)
+  'Ver favoritos',       // espanhol correcto = PT (botão da conta)
+  'Desactivados',        // espanhol correcto = PT (estado dos alertas)
+  'Activos · score ≥ {score} · {mode}', // espanhol correcto = PT (estado activo dos alertas)
+  'abrir bot',           // espanhol correcto = PT (link do Telegram)
+  'ver spot →',          // espanhol correcto = PT (link do banner Dawn Patrol)
+  'Desactualizado',      // espanhol correcto = PT (selo de briefing antigo)
+  'Ver Spot',            // espanhol correcto = PT (botão do banner)
+  'Activa',              // espanhol correcto = PT (estado da camada de marés no /about)
+  'Activo',              // espanhol correcto = PT (estado da camada de radar no /about)
+  'Desde',               // espanhol correcto = PT (coluna «Desde» da tabela do arquivo)
+  'IH {ih} · WMO-PT {pt} · WMO-ES {es} pares', // espanhol correcto = PT (contagem de pares do skill)
+  'Degradada {suffix} ({runs} run)',   // espanhol correcto = PT (badge de degradação da camada)
+  'Degradada {suffix} ({runs} runs)',
+  'Estilos',                           // espanhol correcto = PT (descrição de tecnologia no /about)
+  'Mapas interactivos',                // espanhol correcto = PT (descrição de tecnologia no /about)
+  'Instalar VenTu',                    // espanhol correcto = PT (aria do prompt de instalação)
+  'Instalar',                          // espanhol correcto = PT (botão do prompt de instalação)
+  'lagoa/cable',                       // espanhol correcto = PT (contexto de água no mapa)
+  'crowd moderado',                    // espanhol correcto = PT (contexto de crowd no mapa)
+  'Aviso IPMA',                        // espanhol correcto = PT (pílula de aviso)
+  'Actualizado {time}',                // espanhol correcto = PT (hora da última actualização)
+  'Actualizado {day}, {time}',         // espanhol correcto = PT (data + hora)
+  '{count} avisos · {spots} spots',    // espanhol correcto = PT (contagem de avisos costeiros)
+  'Alta',                              // espanhol correcto = PT (etiqueta de confiança alta)
+  'Vista aérea de {name}',             // espanhol correcto = PT (alt da imagem aérea)
+  'Mapa interactivo',                  // espanhol correcto = PT (aria do mapa)
+  'Ver ranking completo',              // espanhol correcto = PT (CTA do ranking)
+  'Explorar spots',                    // espanhol correcto = PT (CTA de exploração)
+  'Editar favoritos',                  // espanhol correcto = PT (CTA de favoritos)
+  'Comparar spots',                    // espanhol correcto = PT (link de ferramentas)
+  'Favoritos',                         // espanhol correcto = PT (link de ferramentas)
+  'Todos',                             // espanhol correcto = PT (filtro «todos os desportos»)
+  'Épico',                             // espanhol correcto = PT (tier épico na janela)
+  'Temperatura',                       // espanhol correcto = PT (rótulo da temperatura)
+  '{name} — Modalidades — VenTu',      // espanhol correcto = PT (título de modalidade)
+  'Livecams — {count} spots — VenTu',  // espanhol correcto = PT (título das livecams)
+  'Mapa de spots — VenTu',             // espanhol correcto = PT (título do mapa)
+  'Favoritos — VenTu',                 // espanhol correcto = PT (título dos favoritos)
+  'Ver spots',                         // espanhol correcto = PT (CTA de modalidades)
+  'por score',                         // espanhol correcto = PT (ordenação do mapa)
+  'Modo explorar',                     // espanhol correcto = PT (aria do modo explorar)
+  'Mostrar filtros',                   // espanhol correcto = PT (toggle de filtros)
+  'Ocultar filtros',                   // espanhol correcto = PT (toggle de filtros)
+  'Abrir lista de spots',              // espanhol correcto = PT (aria da lista no mapa)
+  'Mapa base',                         // espanhol correcto = PT (radiogroup do mapa base)
+  'Tipo de mapa',                      // espanhol correcto = PT (aria do toggle de camada)
+  'Score Náutico',                     // espanhol correcto = PT (legenda do score)
+  'Mapa',                              // espanhol correcto = PT (mapa base)
+  'Satélite',                          // espanhol correcto = PT (mapa base satélite)
+  'Ver spot',                          // espanhol correcto = PT (CTA do popup)
+  'Abrir mapa',                        // espanhol correcto = PT (CTA do mapa estático)
+  'Configurar alerta',                 // espanhol correcto = PT (aria do alerta)
+  'Score mínimo',                      // espanhol correcto = PT (aria do score mínimo)
+  'Guardar alerta',                    // espanhol correcto = PT (CTA de guardar alerta)
+  'mar',                // espanhol correcto = PT (rótulo da rosa de instrumentos)
+  'mín',                // espanhol correcto = PT (abreviatura na curva de maré)
+  'máx',                // espanhol correcto = PT (abreviatura na curva de maré)
+  'lateral',                           // espanhol correcto = PT (relação de vento)
+  'Converge',                          // espanhol correcto = PT (verificação de observações)
+  'Diverge',                           // espanhol correcto = PT (verificação de observações)
+  'Observado ({source})',              // espanhol correcto = PT (rótulo de observação)
+  '🔧 ref. PT ({me} m · n={n})',        // espanhol correcto = PT (etiqueta de recalibração)
+  'Favorito',                          // espanhol correcto = PT (estado do favorito)
+  'Período',                           // espanhol correcto = PT (métrica de período)
+  'medida',                            // espanhol correcto = PT (onda medida)
+  'Ver página completa',               // espanhol correcto = PT (CTA do drawer)
+  'Entrar',                            // espanhol correcto = PT (botão de sessão)
+  'Comer',                             // espanhol correcto = PT (dica local: comer)
+  'Dormir',                            // espanhol correcto = PT/FR (dica local: dormir)
+  'Ranking de spots',                  // espanhol correcto = PT (título da tabela)
+  'Insuficiente',                      // espanhol correcto = PT (veredicto de amostra)
+  '{count} aviso',                     // espanhol correcto = PT (contagem de avisos)
+  '{count} avisos',                    // espanhol correcto = PT (contagem de avisos)
+  'Ordenados por score · filtros activos', // espanhol correcto = PT (subtítulo da lista)
+  ', a {km}',                          // espanhol correcto = PT (distância à boia)
+  'de',                                // espanhol correcto = PT (preposição)
+  'Zona',                              // espanhol correcto = PT (coluna de área)
+  'gate',                              // espanhol correcto = PT (etiqueta de gate)
+  'Isóbatas © Instituto Hidrográfico (CC BY 4.0)', // espanhol correcto = PT (atribuição)
+  'Skill real — n.º de pares previsto×medido acumulados', // espanhol correcto = PT (tooltip)
+  'Par {key} · {n} spot(s) recalibrado(s): {spots}', // espanhol correcto = PT (tooltip do par)
+  'a',                                 // espanhol correcto = PT (preposição)
+  'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
+]);
+
+/**
+ * Cognatos válidos em francês — a palavra francesa é exactamente a portuguesa.
+ */
+const FR_COGNATES = new Set([
+  'IA',                 // sigla correcta em francês = PT (badge de resumo IA)
+  'Framework React',    // termo adoptado igual em PT e FR (descrição de tecnologia no /about)
+  ' · fetch {when}',    // francês correcto = PT (timestamp de fetch no indicador de frescura)
+  'Livecams — {count} spots — VenTu', // «Livecams» é o termo adoptado em francês = PT (título)
+  'Dormir',                            // francês correcto = PT (dica local: dormir)
 ]);
 
 /**
@@ -88,6 +208,14 @@ const EN_COGNATES = new Set([
   'VenTu', 'VenTu. Open Source Project.', 'Ver spot', 'Wakeboard', 'Windsurf',
   '{count} spots',
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  ' · {n} frame',        // «frame» é o termo adoptado em PT e EN (contagem do radar)
+  ' · {n} frames',
+  'flat',                // termo adoptado em PT e EN (frase de tier «flat»)
+  // Pontos cardeais e «score» — símbolos/termos universais, iguais por mérito.
+  'N', 'S', 'E', 'O', 'score',
+  'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
+  'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
+  'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
@@ -95,7 +223,7 @@ const IDENTICAL_ALLOWLIST: Record<'en' | 'es' | 'de' | 'fr', Set<string>> = {
   en: EN_COGNATES,
   es: new Set([...SHARED_TOKENS, ...ES_COGNATES]),
   de: SHARED_TOKENS,
-  fr: SHARED_TOKENS,
+  fr: new Set([...SHARED_TOKENS, ...FR_COGNATES]),
 };
 
 /**
@@ -173,32 +301,43 @@ describe('i18n locales', () => {
     expect(t.hero.onCount).toBe('à fond');
   });
 
-  it('en/es/de/fr mapUiLayers blocks carry every key of pt (no empty radar labels)', () => {
-    const ptLayers = getTranslation('pt').mapUiLayers;
+  it('en/es/de/fr map blocks carry every key of pt (no empty radar labels)', () => {
+    const ptMap = getTranslation('pt').map;
     for (const loc of ['en', 'es', 'de', 'fr'] as const) {
-      const layersBlock = getTranslation(loc).mapUiLayers;
-      for (const key of Object.keys(ptLayers)) {
-        expect(layersBlock, `${loc}.mapUiLayers.${key} missing`).toHaveProperty(key);
+      const mapBlock = getTranslation(loc).map;
+      for (const key of Object.keys(ptMap)) {
+        expect(mapBlock, `${loc}.map.${key} missing`).toHaveProperty(key);
       }
-      expect(layersBlock.showRadar).toBeTruthy();
-      expect(layersBlock.hideRadar).toBeTruthy();
-      expect(layersBlock.radarHint).toBeTruthy();
-      expect(layersBlock.radarBadge).toBeTruthy();
+      expect(mapBlock.showRadar).toBeTruthy();
+      expect(mapBlock.hideRadar).toBeTruthy();
+      expect(mapBlock.radarHint).toBeTruthy();
+      expect(mapBlock.radarBadge).toBeTruthy();
+    }
+  });
+
+  it('en/es/de/fr mapUi* blocks carry every key of pt (zone namespaces stay in sync)', () => {
+    const pt = getTranslation('pt');
+    for (const ns of ['mapUiChrome', 'mapUiExplore', 'mapUiMarkers', 'mapUiLayers'] as const) {
+      const ptBlock = pt[ns] as Record<string, unknown> | undefined;
+      if (!ptBlock) continue;
+      for (const loc of ['en', 'es', 'de', 'fr'] as const) {
+        const locBlock = getTranslation(loc)[ns] as Record<string, unknown> | undefined;
+        expect(locBlock, `${loc}.${ns} missing`).toBeDefined();
+        for (const key of Object.keys(ptBlock)) {
+          expect(locBlock, `${loc}.${ns}.${key} missing`).toHaveProperty(key);
+        }
+      }
     }
   });
 
   /**
    * Blocos aninhados auditados: além do `map`, os shells es/de/fr têm de levar
    * TODAS as keys do pt e nenhum valor pode regressar ao placeholder EN (que o
-   * teste genérico NÃO apanha — ele só compara com o pt). Os namespaces mapUi*
-   * (M1) cobrem o que o `map` cobria antes da partilha por zonas.
+   * teste genérico NÃO apanha — ele só compara com o pt).
    */
   const AUDITED_NESTED_BLOCKS = [
     ['map', ['map']],
-    ['mapUiChrome', ['mapUiChrome']],
-    ['mapUiExplore', ['mapUiExplore']],
-    ['mapUiLayers', ['mapUiLayers']],
-    ['windRingLegend', ['mapUiChrome', 'windRingLegend']],
+    ['windRingLegend', ['map', 'windRingLegend']],
     ['alerts', ['alerts']],
   ] as const;
 
@@ -299,6 +438,36 @@ describe('i18n locales', () => {
       };
       walk('', ptBlock, locBlock);
       expect(missing, `${loc} missing keys (shell falls back to EN)`).toEqual([]);
+    }
+  });
+
+  /**
+   * Guard inverso do teste anterior: os shells não podem acumular keys que o pt
+   * já não tem (leftovers de UI removida). O de cima garante pt ⊆ shell; sem
+   * este, apagar uma key do pt deixa-a viva para sempre em en/es/de/fr sem
+   * nenhum teste a falhar — o padrão apontado na auditoria (LOW1).
+   * Medição no HEAD actual: 0 extras nos 4 shells.
+   */
+  it('en/es/de/fr não têm keys fora do pt (sem leftovers nos shells)', () => {
+    const ptBlock = getTranslation('pt') as unknown as Record<string, unknown>;
+    for (const loc of ['en', 'es', 'de', 'fr'] as const) {
+      const locBlock = getTranslation(loc) as unknown as Record<string, unknown>;
+      const extras: string[] = [];
+      const walk = (path: string, a: Record<string, unknown>, b: Record<string, unknown>): void => {
+        for (const [k, v] of Object.entries(a)) {
+          const p = path ? `${path}.${k}` : k;
+          if (v && typeof v === 'object') {
+            const bv = b[k];
+            if (bv && typeof bv === 'object') {
+              walk(p, v as Record<string, unknown>, bv as Record<string, unknown>);
+            }
+          } else if (!(k in b)) {
+            extras.push(p);
+          }
+        }
+      };
+      walk('', locBlock, ptBlock);
+      expect(extras, `${loc} tem keys que o pt não conhece (leftover)`).toEqual([]);
     }
   });
 

@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n'
 import type { Metadata } from 'next';
 import { locales, validateLocale } from '@/lib/i18n';
 import { loadDirectoryFile } from '@/lib/directory';
@@ -19,12 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const isPt = locale === 'pt';
   return buildPageMetadata({
     locale,
-    title: isPt
-      ? 'Directório — escolas e lojas de desportos náuticos'
-      : 'Directory — watersports schools and shops',
-    description: isPt
-      ? 'Escolas de surf, kite centers e lojas em Portugal. Lista e mapa — reclama o teu perfil.'
-      : 'Surf schools, kite centers and shops in Portugal. List and map — claim your profile.',
+    title: getTranslation(locale).pages.directoryMetaTitle,
+    description: getTranslation(locale).pages.directoryMetaDescription,
     path: `/${locale}/diretorio/`,
   });
 }

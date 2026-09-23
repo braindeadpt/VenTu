@@ -5,20 +5,21 @@ export type BasemapMode = 'map' | 'satellite';
 interface MapLayerToggleProps {
   current: BasemapMode;
   onChange: (mode: BasemapMode) => void;
-  isPt: boolean;
+  locale: string;
 }
 
-export default function MapLayerToggle({ current, onChange, isPt }: MapLayerToggleProps) {
+export default function MapLayerToggle({ current, onChange, locale }: MapLayerToggleProps) {
+  const t = getTranslation(locale).spotsMap;
   return (
     <div
       className="absolute top-3 right-3 z-[1000] flex rounded-lg overflow-hidden border border-divider shadow-lg"
       role="radiogroup"
-      aria-label={isPt ? 'Tipo de mapa' : 'Map type'}
+      aria-label={t.mapType}
     >
       {(['map', 'satellite'] as const).map((mode) => {
         const label = mode === 'map'
-          ? (isPt ? 'Mapa' : 'Map')
-          : (isPt ? 'Satélite' : 'Satellite');
+          ? t.mapWord
+          : t.satellite;
         const active = current === mode;
         return (
           <button
@@ -38,4 +39,5 @@ export default function MapLayerToggle({ current, onChange, isPt }: MapLayerTogg
       })}
     </div>
   );
-}
+}import { getTranslation } from '@/lib/i18n';
+

@@ -1,16 +1,17 @@
 import { tierPhrase } from '@/lib/voice';
+import { getTranslation } from '@/lib/i18n';
 
 /** Micro-copy on SpotListCard hover (inclusive PT-PT tone). */
-export function getSpotListCardHoverLine(score: number, isPt: boolean): string | null {
-  const phrase = tierPhrase(score, isPt);
+export function getSpotListCardHoverLine(score: number, locale: string): string | null {
+  const phrase = tierPhrase(score, locale);
   if (score >= 80) {
-    return isPt ? `${phrase} 🤙` : `${phrase} 🤙`;
+    return `${phrase} 🤙`;
   }
   if (score >= 60) {
-    return isPt ? `${phrase} — vale a pena` : `${phrase} — worth a look`;
+    return `${phrase} ${getTranslation(locale).mapNarrative.delightWorth}`;
   }
   if (score < 40) {
     return phrase;
   }
-  return isPt ? 'ver condições' : 'see conditions';
+  return getTranslation(locale).mapNarrative.delightSee;
 }

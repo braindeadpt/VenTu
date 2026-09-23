@@ -6,7 +6,7 @@ import { cn } from '@/lib/cn';
 interface WaveSourceAttributionNoteProps {
   /** Tipo da leitura observada ('wmo-buoy' → nota Copernicus; 'ih-buoy' → IH). */
   source: 'ih-buoy' | 'wmo-buoy';
-  locale: 'pt' | 'en';
+  locale: string;
   className?: string;
   /**
    * Render the attribution chain as plain text (no links). Use inside surfaces

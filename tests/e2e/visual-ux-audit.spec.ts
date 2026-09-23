@@ -7,7 +7,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { expandMapHudFilters } from './helpers/map-hud';
 import { waitHydrated } from './helpers/hydration';
-import { openMapSpotSheet } from './helpers/map-sheet';
+import { openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
 
 type Viewport = 'desktop' | 'mobile';
 
@@ -139,11 +139,17 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       const clustered = await mapShell.getAttribute('data-map-cluster');
       if (clustered === 'true') {
-        await page.getByRole('button', { name: /Mostrar todos|Show all/i }).click();
-        await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
-      } else {
-        await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
+        // Desktop: o toggle flutua no MapControls (visível). Mobile: vive nos
+        // extras do SHEET, que só aparece em peek→half — o mesmo caminho que
+        // showAllMapMarkers() já faz (grabber, clique, volta ao peek).
+        const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i }).first();
+        if (await showAll.isVisible().catch(() => false)) {
+          await showAll.click();
+        } else {
+          await showAllMapMarkers(page);
+        }
       }
+      await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
 
       await expect(page.locator('.leaflet-marker-icon.spot-marker').first()).toBeVisible({
         timeout: 15_000,
@@ -464,66 +470,51 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
     });
 
     test('16 — Spot detail: secções estruturadas sem duplicados', async ({ browser }) => {
+      // Contrato da página de spot v2 (docs/design/SPOT-PAGE.md): 8 secções com
+      // âncora própria, cada uma UMA vez; uma acção primária; uma régua de tempo.
       test.setTimeout(90_000);
       const context = await createContext(browser, viewport);
       const { page, health } = await setupPage(context, viewport);
       await gotoHealthy(page, health, '/pt/spots/guincho/');
 
-      const hero = page.locator('header[data-spot-slug]');
-      await expect(hero.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
+      await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
         timeout: 30_000,
       });
+      await waitHydrated(page);
 
-      // Hero score card includes compact metric chips (not duplicated in Agora)
-      await expect(hero.locator('.grid.grid-cols-2')).toHaveCount(1);
-
-      await expect(hero.getByRole('meter')).toBeVisible({ timeout: 15_000 });
-      await expect(hero.getByRole('status', { name: /Confiança da previsão/i })).toBeVisible({
-        timeout: 15_000,
-      });
-      // Hero lives inside <main> — assert badge only in hero, not duplicated in Agora
-      const agora = page.locator('section').filter({
-        has: page.getByRole('heading', { name: /^Agora$|^Now$/i }),
-      });
-      await expect(agora.getByRole('status', { name: /Confiança da previsão/i })).toHaveCount(0);
-
-      await expect(page.getByRole('heading', { name: /^Agora$|^Now$/i })).toBeVisible({
-        timeout: 25_000,
-      });
-      await expect(
-        page.getByRole('heading', { name: /Previsão horária|Hourly forecast/i }),
-      ).toBeVisible({ timeout: 25_000 });
-      await expect(page.getByRole('heading', { name: /Localização|Location/i })).toBeVisible({
-        timeout: 15_000,
+      // Em mobile as secções do contexto são accordions (o corpo só monta ao
+      // abrir) — abre-os todos para o DOM equivaler ao desktop.
+      await page.evaluate(() => {
+        for (const d of document.querySelectorAll('main details:not([open])')) {
+          (d as HTMLDetailsElement).open = true;
+        }
       });
 
-      const bestWindows = page.getByRole('heading', { name: /Melhores janelas|Best windows/i });
-      if ((await bestWindows.count()) > 0) {
-        await expect(bestWindows).toHaveCount(1);
+      for (const id of ['agora', 'quando', 'instrumentos', 'previsao', 'no-local', 'chegar', 'perto', 'como-sabemos']) {
+        await expect(page.locator(`[id="${id}"]`), `secção #${id}`).toHaveCount(1);
       }
 
-      const livecamHeading = page.getByRole('heading', { name: /Câmara ao vivo|Live camera/i });
-      if ((await livecamHeading.count()) > 0) {
-        await expect(livecamHeading).toHaveCount(1);
+      // Títulos de secção únicos: <h2> em desktop, <summary> do accordion em mobile.
+      for (const title of [/Quando ir/, /Previsão horária|Hora a hora/, /No local/, /Chegar e estar/, /Perto daqui/, /Como sabemos/]) {
+        await expect(page.locator('h2, details > summary').filter({ hasText: title }), String(title)).toHaveCount(1);
       }
 
-      await expect(page.getByRole('heading', { name: /Logística|Logistics/i })).toBeVisible({
-        timeout: 15_000,
-      });
+      // Veredicto: score da hora escolhida e UMA acção primária «Como chegar».
+      const verdict = page.locator('[id="agora"]');
+      await expect(verdict.getByText('/100')).toBeVisible();
+      await expect(verdict.getByRole('link', { name: /Como chegar|Get directions/i })).toHaveCount(1);
 
-      // Single primary directions CTA in hero; location uses text link when present
-      await expect(
-        hero.getByRole('link', { name: /Como chegar|Get directions/i }),
-      ).toHaveCount(1);
+      // Uma só régua de tempo na página.
+      await expect(page.getByRole('slider')).toHaveCount(1);
 
-      // Sport tabs switch updates active state
-      const kiteTab = page.getByRole('button', { name: /Kitesurf/i });
+      // Tabs de modalidade (tablist da barra fixa): trocar marca a tab escolhida.
+      const kiteTab = page.getByRole('tab', { name: /Kitesurf/i }).first();
       if (await kiteTab.isVisible()) {
         await kiteTab.click();
-        await expect(kiteTab).toHaveAttribute('aria-pressed', 'true');
+        await expect(kiteTab).toHaveAttribute('aria-selected', 'true');
       }
 
-      // Guincho: curated Surftotal — external live link only (map may use OSM iframe)
+      // Guincho: livecam curada (Surftotal) só como link de saída, nunca embed.
       await expect(page.getByRole('link', { name: /Ver ao vivo|Watch live/i })).toBeVisible();
       await expect(page.locator('iframe[src*="windy"], iframe[src*="webcam"], iframe[src*="beachcam"]')).toHaveCount(0);
 

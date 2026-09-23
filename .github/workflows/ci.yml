@@ -86,12 +86,33 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      # M1 (auditoria): o tsconfig exclui tests/e2e e worker, pelo que nenhum
+      # dos dois era type-checkado em CI. Passa a haver um tsconfig próprio
+      # para os specs e o typecheck do worker com as suas devDeps.
+      - name: Typecheck e2e specs
+        run: npx tsc --noEmit -p tests/e2e
+
+      - name: Typecheck worker (Cloudflare)
+        run: |
+          npm ci --prefix worker --ignore-scripts
+          npx tsc --noEmit -p worker
+
       # Guard: re-runs ONLY the three slug-guard suites (few seconds) and
       # asserts their exact test counts — deleting a guard test file, its
       # vitest.config entry, or the validator it covers would otherwise
       # shrink the suite with CI still green.
       - name: Guard suites ran with expected counts
         run: node scripts/check-guard-test-counts.js
+
+      # LOW8: cada função public.* só pode estar definida num ficheiro SQL —
+      # is_ventu_admin() andou copiada verbatim em 3 antes do fix.
+      - name: Validate SQL function definitions (no drift)
+        run: node scripts/check-sql-function-drift.js
+
+      # M8: tecto para a árvore trackeada de public/data (o histórico cresce
+      # ~2×/hora com forecasts + frames de radar — ver docs/DATA-HISTORY.md).
+      - name: Validate public/data history budget
+        run: node scripts/check-data-history-budget.js
 
       - name: Generate sitemap
         run: npm run sitemap:generate
@@ -110,9 +131,9 @@ jobs:
         uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
         with:
           path: .next/cache
-          # Key = s├│ o lock hash (n├úo github.sha): PRs, pushes e data-commits
-          # partilham a MESMA entrada ÔÇö exact hit sempre que o lock n├úo muda.
-          # Em mudan├ºa de depend├¬ncias, o prefixo restaura o cache anterior.
+          # Key = só o lock hash (não github.sha): PRs, pushes e data-commits
+          # partilham a MESMA entrada — exact hit sempre que o lock não muda.
+          # Em mudança de dependências, o prefixo restaura o cache anterior.
           key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-nextjs-
@@ -189,6 +210,15 @@ jobs:
       # o globalTimeout do Playwright cobre hangs do runner, mas um processo
       # bloqueado em I/O escapa a timers internos — este garante a morte do
       # processo e falha o step com sinal claro (incidente 2026-09-09).
+      # M4 (auditoria): o core passou a incluir os 10 specs herméticos que só
+      # corriam à mão (about-coherence-trend, compare-calibration,
+      # dawn-patrol-hero-score, home-map-first, homepage-redesign,
+      # map-explore-sheet, map-score-factors, map-tiles, spot-hero-gauge,
+      # wind-ring-legend) — corridos a verde com CI=1 antes de entrar.
+      # Ficam de fora, por dependerem de dados vivos/IPMA radar e falharem sem
+      # eles (intencionalmente manuais): about-wave-bias, ipma-radar-carousel,
+      # map-wind-markers. O axe-audit é opt-in (npm run test:e2e:axe) e o
+      # audit diário corre full-audit.*.
       - name: E2E — core data/score specs (hermetic)
         run: timeout 900 npm run test:e2e:core
         env:
@@ -254,6 +284,22 @@ jobs:
         run: npm run lighthouse:prod
         env:
           LIGHTHOUSE_RUNS: '5'
+          # 2 warm-ups: o CLS de cache fria do spot (~0.65 no <footer>)
+          # precisa de mais que uma navegação para assentar em CI (ver
+          # scripts/run-lighthouse-prod.js, evidência 2026-09-23).
+          LIGHTHOUSE_WARMUP: '2'
+
+      # Quando o gate rebenta, o relatório do pior run (com os elementos que
+      # mexeram e as requisições tardias) fica como artefacto: é o único sítio
+      # onde a assinatura de CLS do runner partilhado se reproduz.
+      - name: Upload Lighthouse diagnostics (failure only)
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lighthouse-diagnostics
+          path: lighthouse-reports/
+          if-no-files-found: ignore
+          retention-days: 7
 
   supabase-sql:
     runs-on: ubuntu-latest
@@ -310,7 +356,7 @@ jobs:
         working-directory: terraform
 
       # init -backend=false: valida os schemas do provider sem tocar em state
-      # nem aplicar nada (o m├│dulo n├úo tem backend; s├│ descarrega o provider).
+      # nem aplicar nada (o módulo não tem backend; só descarrega o provider).
       - name: Terraform init (no backend)
         run: terraform init -backend=false -input=false
         working-directory: terraform
@@ -319,10 +365,10 @@ jobs:
         run: terraform validate
         working-directory: terraform
 
-      # Valida a sintaxe das express├Áes WAF (ruleset engine) de todos os
-      # terraform/*.tf + docs/SECURITY-HEADERS.md (equival├¬ncias) sem token da
-      # API, e o drift entre os dois (doc = fonte de verdade) ÔÇö um erro de
-      # express├úo s├│ seria apanhado no apply, que aqui nunca corre.
+      # Valida a sintaxe das expressões WAF (ruleset engine) de todos os
+      # terraform/*.tf + docs/SECURITY-HEADERS.md (equivalências) sem token da
+      # API, e o drift entre os dois (doc = fonte de verdade) — um erro de
+      # expressão só seria apanhado no apply, que aqui nunca corre.
       - name: Validate WAF expressions (ruleset engine syntax)
         run: node scripts/validate-terraform-expressions.js
 
@@ -340,7 +386,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends shellcheck
 
       # Os 4 scripts bash do repo (checker S7, monitor IH, push-data-update,
-      # runner de testes SQL) ÔÇö sem findings, o job passa.
+      # runner de testes SQL) — sem findings, o job passa.
       - name: Lint bash scripts (shellcheck)
         run: |
           shellcheck scripts/check-security-headers.sh \

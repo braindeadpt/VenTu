@@ -153,6 +153,25 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     const bestScore = Number((await best.locator('span').first().innerText()).trim());
     const bestName = await best.locator('.font-display').innerText();
 
+    // A inserção de marcadores é chunked (8/batch com yield) — espera que a
+    // contagem stabilize (2 leituras iguais a250 ms de distância, acima de
+    // qualquer pausa entre batches) antes de medir o máximo. Sem isto a
+    // leitura apanha a meio e falha por timing (o topo ainda não existe),
+    // não por divergência de fonte — verificado: ao assentar, o marcador da
+    // Mareta (=64) está presente e bate certo com a row.
+    let prevMarkerCount = -1;
+    await expect
+      .poll(
+        async () => {
+          const cur = await page.locator('.leaflet-marker-icon.spot-marker').count();
+          const stable = cur === prevMarkerCount;
+          prevMarkerCount = cur;
+          return stable;
+        },
+        { timeout: 20_000, intervals: [250] },
+      )
+      .toBe(true);
+
     // O melhor score visível nos marcadores tem de bater certo.
     const maxMarker = await page.evaluate(() => {
       const scores = Array.from(

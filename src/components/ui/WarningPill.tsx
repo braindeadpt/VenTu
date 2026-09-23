@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { AlertTriangle, Waves } from 'lucide-react';
 import { warningLevelLabel, WARNING_LEVEL_META } from '@/lib/ipmaWarnings';
 import type { IpmaWarningLevel } from '@/lib/ipmaWarnings';
@@ -51,8 +52,9 @@ const ICON_CLASS: Record<WarningPillVariant, string> = {
 
 /** Single source for the chip tooltip — «Aviso IPMA: Mar perigoso (Laranja) · Lisboa». */
 export function warningPillTitle(warning: WarningPillData, locale: string): string {
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
-  const base = isPt ? 'Aviso IPMA' : 'IPMA warning';
+  const base = t.ui.ipmaWarning;
   const core = `${base}: ${warning.label} (${warningLevelLabel(warning.level, locale)})`;
   return warning.areaLabel ? `${core} · ${warning.areaLabel}` : core;
 }

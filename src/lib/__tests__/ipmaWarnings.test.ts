@@ -53,9 +53,9 @@ describe('ipmaWarnings lib', () => {
   });
 
   it('traduz o tipo de aviso pt/en', () => {
-    expect(warningTypeLabel('Vento', true)).toBe('Vento');
-    expect(warningTypeLabel('Agitação Marítima', false)).toBe('Sea state');
-    expect(warningTypeLabel('Desconhecido', true)).toBe('Desconhecido');
+    expect(warningTypeLabel('Vento', 'pt')).toBe('Vento');
+    expect(warningTypeLabel('Agitação Marítima', 'en')).toBe('Sea state');
+    expect(warningTypeLabel('Desconhecido', 'pt')).toBe('Desconhecido');
   });
 
   it('gera o URL de radar por locale', () => {
@@ -183,19 +183,19 @@ describe('warningLevelLabel (nível localizado — fonte única)', () => {
 
 describe('warningBadgeLabel (badge «Mar perigoso»)', () => {
   it('Agitação Marítima → «Mar perigoso» / «Dangerous sea» (mesma redacção do hero)', () => {
-    expect(warningBadgeLabel({ type: 'Agitação Marítima' }, true)).toBe('Mar perigoso');
-    expect(warningBadgeLabel({ type: 'Agitação Marítima' }, false)).toBe('Dangerous sea');
+    expect(warningBadgeLabel({ type: 'Agitação Marítima' }, 'pt')).toBe('Mar perigoso');
+    expect(warningBadgeLabel({ type: 'Agitação Marítima' }, 'en')).toBe('Dangerous sea');
   });
 
   it('Vento e outros tipos mantêm o rótulo do tipo', () => {
-    expect(warningBadgeLabel({ type: 'Vento' }, true)).toBe('Vento');
-    expect(warningBadgeLabel({ type: 'Vento' }, false)).toBe('Wind');
-    expect(warningBadgeLabel({ type: 'Trovoada' }, true)).toBe('Trovoada');
+    expect(warningBadgeLabel({ type: 'Vento' }, 'pt')).toBe('Vento');
+    expect(warningBadgeLabel({ type: 'Vento' }, 'en')).toBe('Wind');
+    expect(warningBadgeLabel({ type: 'Trovoada' }, 'pt')).toBe('Trovoada');
   });
 
   it('null/undefined → string vazia (nunca quebra)', () => {
-    expect(warningBadgeLabel(null, true)).toBe('');
-    expect(warningBadgeLabel(undefined, false)).toBe('');
+    expect(warningBadgeLabel(null, 'pt')).toBe('');
+    expect(warningBadgeLabel(undefined, 'en')).toBe('');
   });
 });
 

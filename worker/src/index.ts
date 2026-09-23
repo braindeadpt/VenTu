@@ -363,13 +363,22 @@ function maxDistForSource(source: Obs['source']): number {
 }
 
 function cors(origin: string | null, allowed: string): Record<string, string> {
-  const list = allowed.split(',');
+  // Allowlist pode vir vazia/por configurar (auditoria LOW12): o split de ''
+  // gerava list[0] = '' e o browser rejeita `Access-Control-Allow-Origin: ''`.
+  // Lista vazia → cai no origin pedido (API pública, sem credenciais); sem
+  // origin, omite o header em vez de emitir um valor inválido.
+  const list = allowed
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean);
   const ok = origin && list.includes(origin);
-  return {
-    'Access-Control-Allow-Origin': ok ? origin : list[0],
+  const headers: Record<string, string> = {
     'Access-Control-Allow-Methods': 'GET,OPTIONS',
     'Cache-Control': 'public, max-age=300',
   };
+  const allowOrigin = ok ? origin : (list[0] ?? origin);
+  if (allowOrigin) headers['Access-Control-Allow-Origin'] = allowOrigin;
+  return headers;
 }
 
 /**

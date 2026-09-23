@@ -17,6 +17,10 @@ export async function generateStaticParams() {
   )
 }
 
+// D10 — params exaustivos: slug sem spot → 404 (produção: 404.html; dev: 404
+// após o padrão aquecer — E443 a frio é upstream next.js#56253, dev-only).
+export const dynamicParams = false
+
 // FIX SEO2: Dynamic metadata per spot
 export async function generateMetadata({ params }: { params: Promise<{ locale: string; slug: string }> }): Promise<Metadata> {
   const { locale, slug } = await params

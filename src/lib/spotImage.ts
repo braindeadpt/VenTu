@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import type { Spot } from '@/types';
 
 export type SpotImagePick = Pick<Spot, 'slug' | 'name' | 'nameEn' | 'region' | 'images'>;
@@ -54,7 +55,7 @@ export function getSpotImage(spot: SpotImagePick): SpotImageSource {
 }
 
 /** PT/EN alt for aerial thumbnails. */
-export function getSpotImageAlt(spot: SpotImagePick, locale: 'pt' | 'en' = 'pt'): string {
+export function getSpotImageAlt(spot: SpotImagePick, locale: string = 'pt'): string {
   const name = locale === 'pt' ? spot.name : spot.nameEn || spot.name;
-  return locale === 'pt' ? `Vista aérea de ${name}` : `Aerial view of ${name}`;
+  return getTranslation(locale).ui.aerialViewAlt.replace('{name}', name);
 }

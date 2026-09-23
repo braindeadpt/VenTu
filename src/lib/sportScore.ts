@@ -654,8 +654,8 @@ const SCORE_TIER_LABELS: Record<ScoreTier, { pt: string; en: string }> = {
   closed: { pt: 'Fechado', en: 'Closed' },
 }
 
-export function getScoreTierLabel(tier: ScoreTier, locale: 'pt' | 'en' = 'pt'): string {
-  return SCORE_TIER_LABELS[tier][locale]
+export function getScoreTierLabel(tier: ScoreTier, locale: string = 'pt'): string {
+  return SCORE_TIER_LABELS[tier][locale === 'pt' ? 'pt' : 'en']
 }
 
 /**

@@ -4,8 +4,7 @@ import { HERO_FORECAST_LAYERS, getHeroFreshnessTitle } from '../heroDataProvenan
 describe('hero tide provenance', () => {
   it('attributes forecast tides to Open-Meteo, not IH gauges', () => {
     const tides = HERO_FORECAST_LAYERS.find((l) => l.key === 'tides');
-    expect(tides?.sourcePt).toBe('Open-Meteo');
-    expect(tides?.sourceEn).toBe('Open-Meteo');
+    expect(tides?.source).toBe('Open-Meteo');
   });
 
   it('does not claim live IH tides in the freshness title', () => {

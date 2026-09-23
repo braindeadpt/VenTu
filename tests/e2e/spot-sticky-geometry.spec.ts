@@ -1,118 +1,96 @@
 import { test, expect, type Page } from '@playwright/test';
 
 /**
- * SpotStickyBar — não-sobreposição com os sport tabs (geometria).
+ * SpotUnifiedBar (S2A) — geometria da barra fixa única.
  *
- * A barra fixa (SpotStickyBar, `top: var(--ventu-spot-sticky-top)` = 64px,
- * z-30) substitui a linha standalone de sport tabs quando o hero sai do
- * viewport: a secção sticky (`sticky`, mesmo token, z-20) passa a
- * `visibility: hidden` — NUNCA pode ficar visível por baixo/por cima da barra,
- * e um clique na posição dos tabs tem de cair nos tabs DA BARRA (hit-test),
- * não numa linha escondida nem em nada que a cubra. Tanto em desktop como em
- * mobile (390px) — onde a fila rola horizontalmente e o risco de cobrir a
- * linha é maior.
+ * A S2A substituiu a dupla «linha standalone + SpotStickyBar» por UMA barra
+ * (`role="region"` «Modalidade e hora escolhida») que está sempre no fluxo e
+ * pina em `top: var(--ventu-spot-sticky-top)` = 64px. Garantias:
+ *  - existe exactamente UM tablist na página e está dentro da barra;
+ *  - a barra mede 48px (`--ventu-spot-tabs-h`) e a cota computada é 64px;
+ *  - depois do scroll a barra continua a 64px do topo (pinned) e um clique no
+ *    centro do 1º tab cai num tab da própria barra (hit-test);
+ *  - igual em mobile 390px, onde a fila de tabs rola horizontalmente.
  *
- * Os tokens (cota 64px, altura da fila 48px) vêm do globals.css; a guarda
- * unitária (spacingTokens.test.ts) impede que voltem a hard-codar.
+ * Os tokens (cota 64px, altura 48px) vêm do globals.css; a guarda unitária
+ * (spacingTokens.test.ts) impede que voltem a hard-codar.
  */
-test.describe('SpotStickyBar — não cobre os sport tabs (desktop + mobile)', () => {
+const BAR_LABEL = 'Modalidade e hora escolhida';
+
+test.describe('SpotUnifiedBar — barra fixa única (desktop + mobile)', () => {
   test.use({ serviceWorkers: 'block' });
 
-  /** Navega para o guincho, rola até a barra ficar activa e devolve a geometria. */
-  async function scrollUntilSticky(page: Page) {
+  async function openSpot(page: Page) {
     await page.goto('/pt/spots/guincho/');
-    await expect(page.getByRole('heading', { level: 1, name: /Guincho/i })).toBeVisible({
-      timeout: 20_000,
-    });
-    await page.evaluate(() => window.scrollTo(0, 1500));
     await expect(
-      page.getByRole('region', { name: 'Métricas principais' }),
+      page.getByRole('heading', { level: 1, name: /Guincho/i }),
     ).toBeVisible({ timeout: 20_000 });
-    // Espera o estado estabilizar (scroll + observer do hero).
-    await page.waitForFunction(
-      () =>
-        document.querySelector('[role="region"][aria-label="Métricas principais"]') !== null,
-    );
+    await expect(
+      page.getByRole('region', { name: BAR_LABEL }),
+    ).toBeVisible({ timeout: 20_000 });
   }
 
-  /** Sonda de geometria: as duas tablists, visibilidade e hit-tests de clique. */
+  /** Sonda: nº de tablists, geometria da barra e hit-test no 1º tab. */
   async function probe(page: Page) {
-    return page.evaluate(() => {
+    return page.evaluate((label) => {
+      const barEl = document.querySelector(`[role="region"][aria-label="${label}"]`);
       const tablists = Array.from(document.querySelectorAll('[role="tablist"]'));
-      const bar = tablists.find((el) => el.closest('[role="region"]') !== null) ?? null;
-      const standalone = tablists.find((el) => el !== bar) ?? null;
-      const rect = (el: Element | null) => {
-        if (!el) return null;
-        const r = el.getBoundingClientRect();
-        return { top: Math.round(r.top), bottom: Math.round(r.bottom), h: Math.round(r.height) };
-      };
-      const hitOnFirstTab = (list: Element | null) => {
-        if (!list) return null;
-        const tab = list.querySelector('[role="tab"]');
-        if (!tab) return null;
-        const r = tab.getBoundingClientRect();
-        if (r.width <= 0 || r.height <= 0) return null;
-        const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
-        if (!el) return null;
-        const listHit = el.closest('[role="tablist"]');
-        return {
-          isTab: el.closest('[role="tab"]') !== null,
-          // 'bar' | 'standalone' | 'none' — em que tablist cai o clique
-          list: listHit ? (listHit === list ? 'this' : listHit === bar ? 'bar' : 'other') : 'none',
-          tag: el.tagName,
-        };
-      };
+      const r = barEl?.getBoundingClientRect();
+      const tl = barEl?.querySelector('[role="tablist"]');
+      const tlr = tl?.getBoundingClientRect();
+      const tab = barEl?.querySelector('[role="tab"]') ?? null;
+      const tr = tab?.getBoundingClientRect();
+      const hit =
+        tr && tr.width > 0
+          ? document.elementFromPoint(tr.left + tr.width / 2, tr.top + tr.height / 2)
+          : null;
       return {
-        barRect: rect(bar),
-        standRect: rect(standalone),
-        standVisibility: standalone ? getComputedStyle(standalone).visibility : null,
-        barTop: (() => {
-          const region = document.querySelector(
-            '[role="region"][aria-label="Métricas principais"]',
-          );
-          return region ? getComputedStyle(region).top : null;
-        })(),
-        hitStandalone: hitOnFirstTab(standalone),
-        hitBar: hitOnFirstTab(bar),
+        barTop: barEl ? getComputedStyle(barEl).top : null,
+        barRect: r ? { top: Math.round(r.top), h: Math.round(r.height) } : null,
+        tablistH: tlr ? Math.round(tlr.height) : null,
+        tablistCount: tablists.length,
+        tablistsInBar: barEl ? tablists.filter((t) => barEl.contains(t)).length : 0,
+        hitIsTabInBar:
+          hit && barEl ? barEl.contains(hit.closest('[role="tab"]')) && !!hit.closest('[role="tab"]') : null,
       };
-    });
+    }, BAR_LABEL);
   }
 
-  async function assertNoOverlap(page: Page) {
+  async function assertGeometry(page: Page, { scrolled }: { scrolled: boolean }) {
     const g = await probe(page);
 
-    // As duas tablists existem (barra + linha standalone, esta escondida).
-    expect(g.barRect).not.toBeNull();
-    expect(g.standRect).not.toBeNull();
+    // Uma só tablist na página — a linha standalone já não existe.
+    expect(g.tablistCount).toBe(1);
+    expect(g.tablistsInBar).toBe(1);
 
-    // Cota e altura pelos tokens partilhados (nunca divergem).
+    // Cota e altura pelos tokens partilhados — a fila de tabs mede 48px
+    // (--ventu-spot-tabs-h); a região soma a border-b (49px no rect).
     expect(g.barTop).toBe('64px');
-    expect(g.barRect!.h).toBe(48);
-    expect(g.standRect!.h).toBe(48);
+    expect(g.tablistH).toBe(48);
 
-    // A linha standalone fica INVISÍVEL quando a barra assume — nunca há duas
-    // filas empilhadas (o overlap visual que o fix eliminou).
-    expect(g.standVisibility).toBe('hidden');
-
-    // Hit-test no centro do 1º tab da linha standalone: o clique cai num tab
-    // DA BARRA — nada cobre os tabs da barra nem a posição da linha antiga.
-    expect(g.hitStandalone).toMatchObject({ isTab: true, list: 'bar' });
-
-    // Os tabs da barra estão realmente clicáveis (hit-test próprio).
-    expect(g.hitBar).toMatchObject({ isTab: true, list: 'this' });
+    // Depois do scroll a barra fica pinned a 64px do topo do viewport;
+    // antes do scroll pode estar mais abaixo (ainda no fluxo).
+    if (scrolled) {
+      expect(g.barRect!.top).toBe(64);
+      // Hit-test: o clique no 1º tab cai num tab desta barra — nada cobre.
+      expect(g.hitIsTabInBar).toBe(true);
+    }
   }
 
-  test('desktop: a barra não cobre os sport tabs após scroll', async ({ page }) => {
-    await scrollUntilSticky(page);
-    await assertNoOverlap(page);
+  test('desktop: uma só tablist, cota 64px, pinned após scroll', async ({ page }) => {
+    await openSpot(page);
+    await assertGeometry(page, { scrolled: false });
+    await page.evaluate(() => window.scrollTo(0, 1500));
+    await assertGeometry(page, { scrolled: true });
   });
 
   test.describe('mobile (390×844, com scroll)', () => {
     test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
 
-    test('a barra não cobre os sport tabs em ecrãs pequenos', async ({ page }) => {
-      await scrollUntilSticky(page);
-      await assertNoOverlap(page);
+    test('a barra pina e os tabs ficam clicáveis em ecrã pequeno', async ({ page }) => {
+      await openSpot(page);
+      await page.evaluate(() => window.scrollTo(0, 1500));
+      await assertGeometry(page, { scrolled: true });
     });
   });
 });

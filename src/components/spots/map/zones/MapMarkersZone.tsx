@@ -18,6 +18,7 @@ import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
 import { SEA_STATE_WARNING_TYPES } from '@/lib/ipmaWarnings';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { MapSpotData } from '../../mapSpotData';
+import { getBestScore } from '../../mapSpotData';
 import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 import { resolveExploreChrome } from '../../mapMarkers';
 import { useMapMarkers } from '../hooks/useMapMarkers';
@@ -49,7 +50,6 @@ interface UseMapMarkersZoneParams {
   activeCluster: boolean;
   showWindOnMarkers: boolean;
   locale: string;
-  isPt: boolean;
   hourScores: Map<string, number> | null;
   onSpotSelect?: (spotId: string) => void;
   onMarkerInteract: () => void;
@@ -79,7 +79,6 @@ export function useMapMarkersZone({
   activeCluster,
   showWindOnMarkers,
   locale,
-  isPt,
   hourScores,
   onSpotSelect,
   onMarkerInteract,
@@ -97,10 +96,10 @@ export function useMapMarkersZone({
     if (!warningsData) return map;
     for (const data of visibleSpots) {
       const w = strongestSpotWarning(warningsData, data.spot.id);
-      if (w) map.set(data.spot.id, { level: w.level, label: warningBadgeLabel(w, isPt), seaState: SEA_STATE_WARNING_TYPES.has(w.type) });
+      if (w) map.set(data.spot.id, { level: w.level, label: warningBadgeLabel(w, locale), seaState: SEA_STATE_WARNING_TYPES.has(w.type) });
     }
     return map;
-  }, [warningsData, visibleSpots, isPt]);
+  }, [warningsData, visibleSpots, locale]);
 
   // ── Markers (extracted hook: cache, chunked insertion, cluster switching) ──
   const closePopupAndSheet = useCallback(() => {
@@ -169,6 +168,33 @@ export function useMapMarkersZone({
     mcg.on('clusterclick', onClusterClick);
     return () => { mcg.off('clusterclick', onClusterClick); };
   }, [isHeroEmbed, clusterReady, clusterGroupRef, locale, router]);
+
+  // Mapa principal (não-hero): o clique num cluster mantém o zoom padrão do
+  // Leaflet (zoomToBoundsOnClick — sem preventDefault) e, em mobile, abre o
+  // sheet do MELHOR spot do agrupamento — o utilizador vê logo o que há de
+  // melhor lá dentro. Desktop mantém só o zoom: o detalhe vive nos popups.
+  useEffect(() => {
+    if (isHeroEmbed || !isMobile || !clusterReady || !clusterGroupRef.current) return;
+    const mcg = clusterGroupRef.current;
+    const onClusterClick = (e: unknown) => {
+      const layer = (e as { layer?: { getAllChildMarkers?: () => unknown[] } }).layer;
+      const children = layer?.getAllChildMarkers?.() ?? [];
+      let best: MapSpotData | null = null;
+      let bestScore = -Infinity;
+      for (const child of children) {
+        const d = (child as { ventuData?: MapSpotData }).ventuData;
+        if (!d) continue;
+        const score = getBestScore(d, selectedSport, hourScores?.get(d.spot.id));
+        if (score > bestScore) {
+          bestScore = score;
+          best = d;
+        }
+      }
+      if (best) setSheetSpot({ ...best, warning: warningsBySpot.get(best.spot.id) ?? null });
+    };
+    mcg.on('clusterclick', onClusterClick);
+    return () => { mcg.off('clusterclick', onClusterClick); };
+  }, [isHeroEmbed, isMobile, clusterReady, clusterGroupRef, selectedSport, hourScores, warningsBySpot, setSheetSpot]);
 
   // Toque numa linha: mobile abre o sheet de detalhe (mesmo do marcador),
   // desktop voa até ao marcador e abre o popup (desagrupa se preciso).

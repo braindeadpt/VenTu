@@ -1,20 +1,22 @@
+import { getTranslation } from '@/lib/i18n';
 import type { Spot } from '@/types';
 
 /** Spots where wave height is not the primary score signal (lagoas, wake, etc.). */
 export function getCalmWaterMetricLabel(
   spot: Pick<Spot, 'type'>,
   waveHeight: number,
-  isPt: boolean,
+  locale: string,
 ): string | null {
+  const t = getTranslation(locale).ui;
   if (spot.type === 'wakeboard') {
-    return isPt ? 'Água plana' : 'Flat water';
+    return t.calmWaterFlat;
   }
   if (
     waveHeight < 0.35 &&
     spot.type !== 'surf' &&
     spot.type !== 'big-wave'
   ) {
-    return isPt ? 'Sem ondas' : 'No swell';
+    return t.noSwell;
   }
   return null;
 }

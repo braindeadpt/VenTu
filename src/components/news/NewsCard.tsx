@@ -1,5 +1,7 @@
 import { NewsItem } from '@/types';
 import { safeExternalUrl } from '@/lib/safeUrl';
+import { newsCategoryLabel } from '@/lib/newsCategories';
+import { getTranslation } from '@/lib/i18n';
 import { ExternalLink, Clock, Sparkles, Waves, Wind, Trophy, Shield, Newspaper, Mountain, Sailboat, Monitor, Triangle, Zap, AlertTriangle } from 'lucide-react';
 
 interface NewsCardProps {
@@ -40,6 +42,7 @@ const categoryIcons: Record<string, React.ReactNode> = {
 
 export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).news;
   const catColor = categoryColors[news.category] || categoryColors.general;
   const catIcon = categoryIcons[news.category] || null;
   // Defense-in-depth: pipeline already drops non-http(s) URLs; never render a
@@ -62,7 +65,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
             </span>
             <span className="flex items-center gap-1 text-xs text-fg-subtle/80">
               <Sparkles className="w-2.5 h-2.5" />
-              {isPt ? 'IA' : 'AI'}
+              {t.aiBadge}
             </span>
           </div>
         </div>
@@ -72,7 +75,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 text-data-waves hover:text-data-waves/80 transition-colors"
-            aria-label={isPt ? 'Ler artigo' : 'Read article'}
+            aria-label={t.readArticleAria}
           >
             <ExternalLink className="w-3.5 h-3.5" />
           </a>
@@ -88,7 +91,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
           <div className="flex items-center gap-1">
             <span className={`${catColor.split(' ')[1]}`}>{catIcon}</span>
             <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium ${catColor}`}>
-              {news.category}
+              {newsCategoryLabel(news.category, locale)}
             </span>
           </div>
           <span className="flex items-center gap-1 text-xs text-fg-subtle">
@@ -97,7 +100,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
           </span>
           <span className="flex items-center gap-1 text-xs text-fg-subtle/80">
             <Sparkles className="w-3 h-3" />
-            {isPt ? 'IA' : 'AI'}
+            {t.aiBadge}
           </span>
         </div>
 
@@ -118,7 +121,7 @@ export default function NewsCard({ news, locale, variant = 'grid' }: NewsCardPro
               rel="noopener noreferrer"
               className="flex items-center gap-1 text-sm text-data-waves hover:text-data-waves/80 transition-colors"
             >
-              {isPt ? 'Ler mais' : 'Read more'}
+              {t.readMore}
               <ExternalLink className="w-3 h-3" />
             </a>
           )}

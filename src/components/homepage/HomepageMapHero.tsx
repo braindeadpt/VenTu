@@ -2,6 +2,7 @@
 
 
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useMemo, useState } from 'react';
 
 import dynamic from 'next/dynamic';
@@ -22,7 +23,7 @@ import type { GridSpotData } from '@/lib/gridSpotFilters';
 
 import type { GridSportFilter } from '@/lib/sportRatings';
 
-import { MAP_SPORT_FILTERS } from '@/lib/mapSportFilters';
+import { MAP_SPORT_FILTERS, getMapSportFilterLabel } from '@/lib/mapSportFilters';
 
 import {
 
@@ -92,7 +93,8 @@ const HERO_SPORT_FILTERS = MAP_SPORT_FILTERS.filter((f) =>
  * inicializa (data-map-ready → CSS). aria-hidden: é decoração, o mapa real
  * anuncia-se a si próprio quando revela.
  */
-function HeroMapPoster({ isPt }: { isPt: boolean }) {
+function HeroMapPoster({ locale }: { locale: string }) {
+  const t = getTranslation(locale);
   return (
     <div
       data-map-hero-poster
@@ -115,7 +117,7 @@ function HeroMapPoster({ isPt }: { isPt: boolean }) {
 
       <div className="flex flex-col items-center gap-2 text-fg-muted">
         <MapPin className="w-6 h-6" strokeWidth={1.5} aria-hidden />
-        <p className="text-sm">{isPt ? 'A preparar o mapa…' : 'Preparing the map…'}</p>
+        <p className="text-sm">{t.homepage.preparingMap}</p>
       </div>
     </div>
   );
@@ -142,6 +144,7 @@ export default function HomepageMapHero({
 }: HomepageMapHeroProps) {
 
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
 
   const isFeatured = variant === 'featured';
 
@@ -178,7 +181,7 @@ export default function HomepageMapHero({
 
   const onCount = useMemo(() => getOnCount(liveSpotsData, sport), [liveSpotsData, sport]);
 
-  const liveLine = heroStatusLine(onCount, isPt);
+  const liveLine = heroStatusLine(onCount, locale);
 
 
 
@@ -241,12 +244,12 @@ export default function HomepageMapHero({
     return (
       <section
         role="region"
-        aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
-        className="relative w-full h-[clamp(220px,38vh,360px)] rounded-2xl overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y bg-bg-base"
+        aria-label={t.homepage.interactiveMap}
+        className="relative w-full h-[clamp(220px,38vh,360px)] rounded-surface overflow-hidden border border-divider mx-4 sm:mx-6 lg:mx-auto max-w-7xl touch-pan-y bg-bg-base"
         data-map-ready={mapReady}
       >
-        <h2 className="sr-only">{isPt ? 'Mapa ao vivo' : 'Live map'}</h2>
-        <HeroMapPoster isPt={isPt} />
+        <h2 className="sr-only">{t.homepage.liveMap}</h2>
+        <HeroMapPoster locale={locale} />
         <div className="absolute inset-0 z-0 [&_.leaflet-marker-icon]:pointer-events-auto">
           <SpotMapInteractive
             spotsData={filtered}
@@ -265,7 +268,7 @@ export default function HomepageMapHero({
             className="shadow-card"
             rightIcon={<Maximize2 className="w-4 h-4" aria-hidden />}
           >
-            {isPt ? 'Explorar mapa' : 'Explore map'}
+            {t.homepage.exploreMap}
           </Button>
         </div>
       </section>
@@ -280,14 +283,14 @@ export default function HomepageMapHero({
 
       role="region"
 
-      aria-label={isPt ? 'Mapa interactivo' : 'Interactive map'}
+      aria-label={t.homepage.interactiveMap}
 
       className="relative w-full min-h-[480px] h-[min(760px,72vh)] bg-bg-base overflow-hidden rounded-b-3xl border-b border-divider touch-pan-y"
       data-map-ready={mapReady}
 
     >
 
-      <HeroMapPoster isPt={isPt} />
+      <HeroMapPoster locale={locale} />
 
       <div className="absolute inset-0 z-0 [&_.leaflet-marker-icon]:pointer-events-auto">
 
@@ -350,7 +353,7 @@ export default function HomepageMapHero({
 
             >
 
-              {isPt ? 'Onde está bom hoje?' : "Where's it firing today?"}
+              {t.homepage.whereFiring}
 
             </h2>
 
@@ -362,7 +365,7 @@ export default function HomepageMapHero({
 
               role="group"
 
-              aria-label={isPt ? 'Filtrar por desporto' : 'Filter by sport'}
+              aria-label={t.homepage.filterBySport}
 
               style={{ '--stagger-delay': 160 } as React.CSSProperties}
 
@@ -390,7 +393,7 @@ export default function HomepageMapHero({
 
                   >
 
-                    {isPt ? item.labelPt : item.labelEn}
+                    {getMapSportFilterLabel(item.id, locale)}
 
                   </FilterPill>
 
@@ -424,7 +427,7 @@ export default function HomepageMapHero({
 
               >
 
-                {isPt ? 'Explorar mapa' : 'Explore map'}
+                {t.homepage.exploreMap}
 
               </Button>
 

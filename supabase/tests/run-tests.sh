@@ -46,6 +46,10 @@ run_sql supabase/supabase-alerts-harden-legacy.sql
 echo "==> running subscribe_alert behavior assertions"
 run_sql supabase/tests/test-subscribe-alert.sql
 
+echo "==> applying admin helpers (is_ventu_admin) — shared, twice for idempotency"
+run_sql supabase/supabase-admin-helpers.sql
+run_sql supabase/supabase-admin-helpers.sql
+
 echo "==> applying contributions + score-feedback migrations"
 run_sql supabase/supabase-contributions.sql
 run_sql supabase/supabase-contributions-migration-c3.sql

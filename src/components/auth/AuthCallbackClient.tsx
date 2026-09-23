@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 
 export default function AuthCallbackClient({ locale }: { locale: string }) {
   const router = useRouter();
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).auth;
   const [status, setStatus] = useState<'loading' | 'ok' | 'fail'>('loading');
 
   useEffect(() => {
@@ -53,18 +54,18 @@ export default function AuthCallbackClient({ locale }: { locale: string }) {
   return (
     <div className="max-w-md mx-auto py-20 px-4 text-center space-y-3">
       {status === 'loading' && (
-        <p className="text-fg-muted">{isPt ? 'A confirmar entrada…' : 'Confirming sign-in…'}</p>
+        <p className="text-fg-muted">{t.confirming}</p>
       )}
       {status === 'ok' && (
-        <p className="text-fg">{isPt ? 'Entrada confirmada. A redirecionar…' : 'Signed in. Redirecting…'}</p>
+        <p className="text-fg">{t.confirmed}</p>
       )}
       {status === 'fail' && (
         <>
           <p className="text-score-poor">
-            {isPt ? 'Não foi possível confirmar a entrada.' : 'Could not confirm sign-in.'}
+            {t.failed}
           </p>
           <a href={`/${locale}/`} className="text-data-waves hover:underline text-sm">
-            {isPt ? '← Voltar ao VenTu' : '← Back to VenTu'}
+            {t.back}
           </a>
         </>
       )}

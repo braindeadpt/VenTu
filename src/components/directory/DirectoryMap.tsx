@@ -223,7 +223,7 @@ export default function DirectoryMap({ entries, locale, className }: Props) {
     <section
       className={
         className ??
-        'relative w-full h-[clamp(220px,36vh,360px)] rounded-2xl overflow-hidden border border-divider bg-bg-base'
+        'relative w-full h-[clamp(220px,36vh,360px)] rounded-surface overflow-hidden border border-divider bg-bg-base'
       }
       aria-label={mapAria}
     >

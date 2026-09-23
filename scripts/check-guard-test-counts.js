@@ -31,7 +31,7 @@ const ROOT = path.join(__dirname, '..');
 const EXPECTED = {
   'scripts/lib/__tests__/validateSpots.test.js': 5,
   'scripts/lib/__tests__/validatePageSlugs.test.js': 7,
-  'scripts/lib/__tests__/validateNewsLivecams.test.js': 6,
+  'scripts/lib/__tests__/validateNewsLivecams.test.js': 9,
   'src/components/spots/map/__tests__/leafletCanvasGuard.test.ts': 6,
   'src/components/spots/map/__tests__/mapOverlaySweep.test.ts': 6,
 };

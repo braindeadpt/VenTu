@@ -6,6 +6,7 @@
  * invented numbers: if a field is missing the phrase simply omits it.
  */
 
+import { getTranslation } from '@/lib/i18n';
 import type { Conditions } from './sportScore';
 import type { HourlyCondition, MagicWindow } from './magicWindows';
 import type { TideSchedule } from './tideSchedule';
@@ -26,13 +27,15 @@ interface VerdictInput {
   windows: MagicWindow[];
   tide: TideSchedule | null;
   coastOrientation?: number;
-  isPt: boolean;
+  locale: string;
   nowMs: number;
 }
 
+type VerdictLabels = ReturnType<typeof getTranslation>['verdict'];
+
 const HOUR_MS = 3_600_000;
 
-function fmtHour(iso: string, isPt: boolean): string {
+function fmtHour(iso: string): string {
   const d = new Date(iso);
   return `${String(d.getHours()).padStart(2, '0')}h`;
 }
@@ -43,6 +46,25 @@ function sameDay(a: Date, b: Date): boolean {
     && a.getDate() === b.getDate();
 }
 
+/**
+ * A janela atravessa a meia-noite (hora de fim anterior à de início) — a
+ * mesma regra do `formatBestWindowHours` da homepage. Sem o sufixo «(amanhã)»,
+ * «23h–03h» lê-se como se a janela andasse para trás (o #63 apanhou isto nas
+ * janelas da homepage; a manchete do veredicto tinha o mesmo defeito).
+ */
+function crossesMidnight(startIso: string, endIso: string): boolean {
+  const start = new Date(startIso);
+  const end = new Date(endIso);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return false;
+  return end.getHours() < start.getHours();
+}
+
+/** Sufixo de ambiguidade para janelas que entram pelo dia seguinte. */
+function overnightSuffix(crosses: boolean, t: VerdictLabels): string {
+  if (!crosses) return '';
+  return t.overnightTomorrow;
+}
+
 function toneForScore(score: number): VerdictTone {
   if (score >= 80) return 'epic';
   if (score >= 60) return 'good';
@@ -50,32 +72,36 @@ function toneForScore(score: number): VerdictTone {
   return 'poor';
 }
 
-const RELATION_PT: Record<WindRelation, string> = {
-  offshore: 'offshore',
-  onshore: 'onshore',
-  cross: 'lateral',
-};
-const RELATION_EN: Record<WindRelation, string> = {
-  offshore: 'offshore',
-  onshore: 'onshore',
-  cross: 'cross-shore',
-};
+function relationLabel(r: WindRelation, t: VerdictLabels): string {
+  switch (r) {
+    case 'offshore':
+      return t.relOffshore;
+    case 'onshore':
+      return t.relOnshore;
+    case 'cross':
+      return t.relCross;
+  }
+}
 
-const TIDE_PT: Record<string, string> = {
-  high: 'maré alta',
-  low: 'maré baixa',
-  rising: 'maré a subir',
-  falling: 'maré a descer',
-};
-const TIDE_EN: Record<string, string> = {
-  high: 'high tide',
-  low: 'low tide',
-  rising: 'rising tide',
-  falling: 'falling tide',
-};
+function tideLabel(phase: string, t: VerdictLabels, fallback: string): string {
+  switch (phase) {
+    case 'high':
+      return t.tideHigh;
+    case 'low':
+      return t.tideLow;
+    case 'rising':
+      return t.tideRising;
+    case 'falling':
+      return t.tideFalling;
+    default:
+      return fallback;
+  }
+}
+
 
 export function buildSpotVerdict(input: VerdictInput): SpotVerdict | null {
-  const { scoreNow, conditions, hourly, windows, tide, coastOrientation, isPt, nowMs } = input;
+  const { scoreNow, conditions, hourly, windows, tide, coastOrientation, locale, nowMs } = input;
+  const t = getTranslation(locale).verdict;
   if (!hourly.length) return null;
 
   const now = new Date(nowMs);
@@ -83,7 +109,7 @@ export function buildSpotVerdict(input: VerdictInput): SpotVerdict | null {
   // ── Detail line: measured/forecast conditions right now ──
   const parts: string[] = [];
   if (conditions.waveHeight > 0) {
-    const h = conditions.waveHeight.toFixed(1).replace('.', isPt ? ',' : '.');
+    const h = conditions.waveHeight.toFixed(1).replace('.', locale === 'pt' ? ',' : '.');
     const dir = conditions.waveDirection > 0 ? ` ${getCardinalLabel(conditions.waveDirection)}` : '';
     parts.push(`${dir.trim() ? dir + ' ' : ''}${h} m`);
     if (conditions.wavePeriod > 0) parts.push(`${Math.round(conditions.wavePeriod)} s`);
@@ -94,14 +120,14 @@ export function buildSpotVerdict(input: VerdictInput): SpotVerdict | null {
     let rel = '';
     if (typeof coastOrientation === 'number') {
       const r = getWindRelationToCoast(conditions.windDirection, coastOrientation);
-      rel = ` ${isPt ? RELATION_PT[r] : RELATION_EN[r]}`;
+      rel = ` ${relationLabel(r, t)}`;
     }
     parts.push(
-      isPt ? `vento ${cardinal} ${kt} kt${rel}` : `${cardinal} ${kt} kt${rel} wind`,
+      t.windDetail.replace('{dir}', cardinal).replace('{kt}', String(kt)).replace('{rel}', rel),
     );
   }
   if (tide) {
-    parts.push((isPt ? TIDE_PT : TIDE_EN)[tide.phase] ?? tide.phaseLabel);
+    parts.push(tideLabel(tide.phase, t, tide.phaseLabel));
   }
   const detail = parts.join(' · ');
 
@@ -124,22 +150,29 @@ export function buildSpotVerdict(input: VerdictInput): SpotVerdict | null {
 
   if (scoreNow >= 60) {
     const lead = scoreNow >= 80
-      ? isPt ? 'Está épico agora' : "It's epic right now"
-      : isPt ? 'Está a bombar agora' : "It's firing right now";
+      ? t.epicNow
+      : t.firingNow;
     const tone = scoreNow >= 80 ? 'epic' : 'good';
     if (active) {
-      const until = fmtHour(hourly[active.w.end]?.time ?? '', isPt);
+      const until = fmtHour(hourly[active.w.end]?.time ?? '');
       return {
-        headline: isPt ? `${lead} — aproveita até às ${until}` : `${lead} — window until ${until}`,
+        headline: t.untilTemplate.replace('{lead}', lead).replace('{until}', until),
         detail,
         tone,
       };
     }
     if (next) {
-      const s = fmtHour(hourly[next.w.start]?.time ?? '', isPt);
-      const e = fmtHour(hourly[next.w.end]?.time ?? '', isPt);
+      const startIso = hourly[next.w.start]?.time ?? '';
+      const endIso = hourly[next.w.end]?.time ?? '';
+      const s = fmtHour(startIso);
+      const e = fmtHour(endIso);
+      const overnight = overnightSuffix(crossesMidnight(startIso, endIso), t);
       return {
-        headline: isPt ? `${lead} — janela ${s}–${e}` : `${lead} — window ${s}–${e}`,
+        headline: t.windowTemplate
+          .replace('{lead}', lead)
+          .replace('{s}', s)
+          .replace('{e}', e)
+          .replace('{overnight}', overnight),
         detail,
         tone,
       };
@@ -151,49 +184,39 @@ export function buildSpotVerdict(input: VerdictInput): SpotVerdict | null {
   // modelo vê condições melhores que os dados actuais; reporta-se a janela
   // sem contradizer o badge (o tom segue o score actual).
   if (active) {
-    const until = fmtHour(hourly[active.w.end]?.time ?? '', isPt);
+    const until = fmtHour(hourly[active.w.end]?.time ?? '');
     return {
-      headline: isPt
-        ? `Janela prevista em curso até às ${until}`
-        : `Forecast window open until ${until}`,
+      headline: t.forecastOpenUntil.replace('{until}', until),
       detail,
       tone: toneForScore(scoreNow),
     };
   }
 
   if (next) {
-    const s = fmtHour(hourly[next.w.start]?.time ?? '', isPt);
-    const e = fmtHour(hourly[next.w.end]?.time ?? '', isPt);
+    const startIso = hourly[next.w.start]?.time ?? '';
+    const endIso = hourly[next.w.end]?.time ?? '';
+    const s = fmtHour(startIso);
+    const e = fmtHour(endIso);
+    const overnight = overnightSuffix(crossesMidnight(startIso, endIso), t);
     if (sameDay(new Date(next.startT), now)) {
       return {
-        headline: isPt
-          ? next.w.score >= 60
-            ? `A próxima janela é ${s}–${e} — ainda vais a tempo`
-            : `Janela razoável ${s}–${e} — margem curta`
-          : next.w.score >= 60
-            ? `Next window is ${s}–${e} — still time to go`
-            : `Fair window ${s}–${e} — slim margin`,
+        headline: (next.w.score >= 60 ? t.nextWindowGood : t.nextWindowFair)
+          .replace('{s}', s)
+          .replace('{e}', e)
+          .replace('{overnight}', overnight),
         detail,
         tone: toneForScore(next.w.score),
       };
     }
     return {
-      headline: isPt
-        ? `Hoje fraco — amanhã ${s}–${e} é a janela`
-        : `Weak today — tomorrow ${s}–${e} is the window`,
+      headline: t.tomorrowWeak.replace('{s}', s).replace('{e}', e),
       detail,
       tone: toneForScore(next.w.score),
     };
   }
 
   return {
-    headline: isPt
-      ? scoreNow >= 40
-        ? 'Condições marginais — sem janela clara nas próximas 24h'
-        : 'Sem janela boa nas próximas 24h'
-      : scoreNow >= 40
-        ? 'Marginal conditions — no clear window in the next 24h'
-        : 'No good window in the next 24h',
+    headline: scoreNow >= 40 ? t.marginalNoWindow : t.noGoodWindow,
     detail,
     tone: toneForScore(scoreNow),
   };

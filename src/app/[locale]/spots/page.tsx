@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n'
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
@@ -12,10 +13,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const isPt = locale === 'pt'
   const loc = isPt ? 'pt' : 'en'
 
-  const title = isPt ? `Todos os Spots — VenTu` : `All Spots — VenTu`
-  const description = isPt
-    ? `Explora os ${SPOT_COUNT} spots de surf, kitesurf e windsurf em Portugal — condições ${pipelineSchedule('pt')}.`
-    : `Browse all ${SPOT_COUNT} surf, kitesurf and windsurf spots in Portugal — conditions ${pipelineSchedule('en')}.`
+  const title = getTranslation(locale).pages.allSpotsMetaTitle
+  const description = getTranslation(locale).pages.spotsMetaDescription
+    .replace('{count}', String(SPOT_COUNT))
+    .replace('{schedule}', pipelineSchedule(loc))
 
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/spots/` })
 }
@@ -30,11 +31,11 @@ export default async function SpotsPage({ params }: { params: Promise<{ locale: 
       <MapTilePreconnect />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <PageHeader
-          title={isPt ? 'Todos os Spots' : 'All Spots'}
+          title={getTranslation(locale).pages.allSpotsTitle}
           subtitle={
-            isPt
-              ? `${SPOT_COUNT} spots em Portugal — dados ${pipelineSchedule('pt')}`
-              : `${SPOT_COUNT} spots in Portugal — data ${pipelineSchedule('en')}`
+            getTranslation(locale).pages.spotsSubtitle
+              .replace('{count}', String(SPOT_COUNT))
+              .replace('{schedule}', pipelineSchedule(locale))
           }
         />
       </div>

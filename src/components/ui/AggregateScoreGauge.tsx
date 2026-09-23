@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import ScoreGauge from '@/components/ui/ScoreGauge';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import {
@@ -20,6 +21,7 @@ export default function AggregateScoreGauge({
   sport,
   locale,
 }: AggregateScoreGaugeProps) {
+  const t = getTranslation(locale);
   const isPt = locale === 'pt';
   const top = sortSpotsBySport(spotsData, sport).slice(0, 10);
   const avg = Math.round(
@@ -31,7 +33,7 @@ export default function AggregateScoreGauge({
       <ScoreGauge
         score={avg}
         label={getSportLabel(sport, locale)}
-        sublabel={isPt ? '· média top 10' : '· top 10 avg'}
+        sublabel={t.ui.top10Avg}
         size="lg"
       />
     </div>

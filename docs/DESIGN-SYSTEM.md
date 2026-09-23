@@ -148,6 +148,7 @@ Gap scale idêntica: `gap-1` = 4px, `gap-2` = 8px, etc.
 | `rounded-input` | 6px | Inputs, botões, selects |
 | `rounded-card` | 8px | Cards padrão |
 | `rounded-modal` | 12px | Modais, drawers |
+| `rounded-surface` | 16px | Superfícies grandes: molduras de mapa, blocos de secção |
 | `rounded-pill` | 9999px | Pills, sport selectors |
 
 No tailwind: `rounded-sm` (chip), `rounded-md` (input), `rounded-lg` (card), `rounded-xl` (modal), `rounded-full` (pill).

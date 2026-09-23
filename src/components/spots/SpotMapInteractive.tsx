@@ -186,7 +186,7 @@ export default function SpotMapInteractive({
     coastalLayerRef,
     buoyLayerRef,
     isReady,
-    isPt,
+    locale,
     isFullscreen,
     isHeroEmbed,
     focusSpotId,
@@ -377,7 +377,6 @@ export default function SpotMapInteractive({
     observeRef: mapRef,
     isReady,
     locale,
-    isPt,
     selectedSport,
     selectedRegion,
     windEnabled,
@@ -420,7 +419,7 @@ export default function SpotMapInteractive({
     visibleSpots,
     hourScores,
     selectedSport,
-    isPt,
+    selectedRegion,
     locale,
     focusSpotId,
     initialHoursEnabled,
@@ -461,7 +460,6 @@ export default function SpotMapInteractive({
     activeCluster,
     showWindOnMarkers,
     locale,
-    isPt,
     hourScores,
     onSpotSelect,
     onMarkerInteract,
@@ -627,7 +625,7 @@ export default function SpotMapInteractive({
               : 'fixed inset-0 z-[1100] w-full overflow-visible bg-surface-1/[0.04] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]'
             : isHeroEmbed
               ? 'absolute inset-0 overflow-hidden bg-bg-base'
-              : 'relative w-full rounded-2xl border border-divider overflow-hidden bg-surface-1/[0.04]'
+              : 'relative w-full rounded-surface border border-divider overflow-hidden bg-surface-1/[0.04]'
         }
         style={
           isFullscreen
@@ -656,7 +654,7 @@ export default function SpotMapInteractive({
           <div className="absolute inset-0 flex items-center justify-center bg-surface-1/[0.04] z-10">
             <div className="flex flex-col items-center gap-3">
               <div className="w-8 h-8 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin" />
-              <span className="text-sm text-fg-muted">{t.mapUiLayers.loading}</span>
+              <span className="text-sm text-fg-muted">{t.map.loading}</span>
             </div>
           </div>
         )}
@@ -666,7 +664,7 @@ export default function SpotMapInteractive({
             ref={mapRef}
             role="region"
             className="w-full h-full"
-            aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
+            aria-label={t.spotsUi.spotsMapAria}
           />
         </div>
 
@@ -679,8 +677,8 @@ export default function SpotMapInteractive({
               isMobile={isMobile}
               isHeroEmbed={isHeroEmbed}
               controls={controls}
-              locateLabel={t.mapUiChrome.locateMe}
-              shareLabel={t.mapUiChrome.shareView}
+              locateLabel={t.map.locateMe}
+              shareLabel={t.map.shareView}
               isobathsEnabled={isobathsEnabled}
               isobathsData={isobathsData}
               radarLift={radarLift}
@@ -692,7 +690,6 @@ export default function SpotMapInteractive({
             <MapLayersZone
               t={t}
               locale={locale}
-              isPt={isPt}
               isFullscreen={isFullscreen}
               isHeroEmbed={isHeroEmbed}
               isMobile={isMobile}

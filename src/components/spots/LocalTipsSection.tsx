@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import {
   AlertTriangle,
   BedDouble,
@@ -39,6 +40,7 @@ function hasText(value: string | undefined | null): boolean {
 
 export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).localTips;
   const nearStayUrl = getNearAccommodationUrl(spot.lat, spot.lon);
 
   const accommodationText = isPt
@@ -67,7 +69,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     cards.push({
       id: 'parking',
       icon: Car,
-      label: isPt ? 'Estacionamento' : 'Parking',
+      label: t.parking,
       body: parkingText,
     });
   }
@@ -76,7 +78,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     cards.push({
       id: 'food',
       icon: Utensils,
-      label: isPt ? 'Comer' : 'Food',
+      label: t.food,
       body: foodText,
     });
   }
@@ -85,14 +87,14 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     cards.push({
       id: 'sleep',
       icon: BedDouble,
-      label: isPt ? 'Dormir' : 'Stay',
+      label: t.stay,
       body: accommodationText,
     });
   } else {
     cards.push({
       id: 'sleep',
       icon: BedDouble,
-      label: isPt ? 'Dormir' : 'Stay',
+      label: t.stay,
       body: (
         <a
           href={nearStayUrl}
@@ -100,7 +102,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1 text-data-waves hover:text-data-waves/80 font-medium"
         >
-          {isPt ? 'Ver alojamento perto' : 'Find nearby stays'}
+          {t.findNearbyStays}
           <ExternalLink className="w-3 h-3 shrink-0" aria-hidden />
         </a>
       ),
@@ -111,7 +113,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     cards.push({
       id: 'tide',
       icon: Waves,
-      label: isPt ? 'Melhor maré' : 'Best tide',
+      label: t.bestTide,
       body: tideText,
     });
   }
@@ -120,7 +122,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     cards.push({
       id: 'rule',
       icon: Shield,
-      label: isPt ? 'Regra local' : 'Local rule',
+      label: t.localRule,
       body: localRule,
       highlight: true,
     });
@@ -130,12 +132,12 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     cards.push({
       id: 'hazards',
       icon: AlertTriangle,
-      label: isPt ? 'Perigos' : 'Hazards',
+      label: t.hazards,
       body: (
         <ul className="list-disc pl-4 space-y-0.5 text-fg-muted m-0">
           {spot.hazards.map((h) => (
             /* EN: nunca o token PT verbatim — spotTagEn (dicionário auditado). */
-            <li key={h}>{isPt ? h : spotTagEn(h)}</li>
+            <li key={h}>{locale === 'pt' ? h : spotTagEn(h)}</li>
           ))}
         </ul>
       ),
@@ -146,7 +148,7 @@ export function LocalTipsSection({ spot, tips, locale }: LocalTipsSectionProps) 
     cards.push({
       id: 'facilities',
       icon: ShowerHead,
-      label: isPt ? 'Instalações' : 'Facilities',
+      label: t.facilities,
       body: spot.facilities.map((f) => (isPt ? f : spotTagEn(f))).join(' · '),
     });
   }

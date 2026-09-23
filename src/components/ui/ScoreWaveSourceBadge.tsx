@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import type { ScoreWaveCorrection, ScoreWaveSource } from '@/lib/scoreConditions';
 import ProvenanceChip from '@/components/ui/ProvenanceChip';
 import type { ProvenanceTier } from '@/lib/provenance';
@@ -31,38 +32,27 @@ export default function ScoreWaveSourceBadge({
   interactive = true,
   className,
 }: ScoreWaveSourceBadgeProps) {
+  const t = getTranslation(locale).ui;
   const isPt = locale === 'pt';
   const me = fmtMe(correction?.me);
   const n = correction?.n;
   const skillSuffix =
     me && n != null && Number.isFinite(n)
-      ? isPt
-        ? ` Skill desta boia: ME ${me} (n=${n}).`
-        : ` Buoy skill: ME ${me} (n=${n}).`
+      ? t.waveSkillSuffix.replace('{me}', me ?? '').replace('{n}', String(n))
       : '';
   const cal = correction?.calibration;
   // fmtMe já inclui a unidade («-0.9 m») — não repetir o «m» aqui.
   const calSuffix =
     cal && Number.isFinite(cal.me) && Number.isFinite(cal.n)
-      ? isPt
-        ? ` Leitura de boia espanhola recalibrada para a referência PT (viés ME ${fmtMe(cal.me)}, n=${cal.n}).`
-        : ` Spanish buoy reading recalibrated to the PT reference (bias ME ${fmtMe(cal.me)}, n=${cal.n}).`
+      ? t.waveCalSuffix.replace('{me}', fmtMe(cal.me) ?? '').replace('{n}', String(cal.n))
       : '';
 
   let copy: { label: string; title: string; tier: ProvenanceTier };
   if (source === 'observed') {
     const name = correction?.buoyName;
     copy = {
-      label: isPt
-        ? name
-          ? `Corrigido pela boia ${name}`
-          : 'Corrigido pela boia'
-        : name
-          ? `Corrected by ${name} buoy`
-          : 'Corrected by buoy',
-      title: isPt
-        ? `Score usa a altura de onda medida pela boia (fresca) — correcção em tempo real da previsão.${skillSuffix}${calSuffix}`
-        : `Score uses the measured buoy wave height (fresh) — real-time forecast correction.${skillSuffix}${calSuffix}`,
+      label: name ? t.waveByBuoyName.replace('{name}', name) : t.waveByBuoy,
+      title: `${t.waveObservedTitle}${skillSuffix}${calSuffix}`,
       tier: 'measured',
     };
   } else if (source === 'bias-corrected') {
@@ -72,38 +62,22 @@ export default function ScoreWaveSourceBadge({
     const delta = correction?.deltaM;
     const deltaSuffix =
       delta != null && Number.isFinite(delta)
-        ? isPt
-          ? ` Δ ${fmtMe(delta)} aplicado à altura.`
-          : ` Δ ${fmtMe(delta)} applied to the height.`
+        ? t.waveDeltaSuffix.replace('{delta}', fmtMe(delta) ?? '')
         : '';
-    const originSuffix = correction?.fallback
-      ? isPt
-        ? ' Correcção em tempo real (wave-bias.json, client-side).'
-        : ' Real-time correction (wave-bias.json, client-side).'
-      : isPt
-        ? ' Correcção aplicada pela pipeline (meta na row).'
-        : ' Correction applied by the pipeline (row meta).';
+    const originSuffix = correction?.fallback ? t.waveOriginFallback : t.waveOriginPipeline;
     const biasSuffix =
       me && n != null && Number.isFinite(n)
-        ? isPt
-          ? ` Viés regional ME ${me} (n=${n}).`
-          : ` Regional bias ME ${me} (n=${n}).`
-        : isPt
-          ? ' Viés regional da previsão aplicado.'
-          : ' Regional forecast bias applied.';
+        ? t.waveBiasSkill.replace('{me}', me ?? '').replace('{n}', String(n))
+        : t.waveBiasPlain;
     copy = {
-      label: isPt ? 'Corrigido (viés regional)' : 'Region bias corrected',
-      title: isPt
-        ? `A altura mostrada é previsão do modelo corrigida pela média das boias.${deltaSuffix}${biasSuffix}${originSuffix}`
-        : `The height shown is the model forecast corrected by the buoy-average.${deltaSuffix}${biasSuffix}${originSuffix}`,
+      label: t.waveBiasLabel,
+      title: `${t.waveBiasTitle}${deltaSuffix}${biasSuffix}${originSuffix}`,
       tier: 'adjusted',
     };
   } else {
     copy = {
-      label: isPt ? 'Onda · só previsão' : 'Wave · forecast only',
-      title: isPt
-        ? 'Sem correcção de boia — score com a previsão do modelo'
-        : 'No buoy correction — forecast score',
+      label: t.waveForecastLabel,
+      title: t.waveForecastTitle,
       tier: 'modeled',
     };
   }

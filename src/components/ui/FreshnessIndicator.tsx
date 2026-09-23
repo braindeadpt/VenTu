@@ -25,30 +25,41 @@ interface FreshnessIndicatorProps {
   coastalWarningsLayer?: CoastalWarningsLayerMeta | null;
 }
 
-/** Short pt/en labels for each non-ok buoy state. */
-function buoyLayerLabel(status: BuoyLayerMeta['status'], isPt: boolean): string {
+type UiLabels = ReturnType<typeof getTranslation>['ui'];
+
+/** Etiquetas curtas por estado não-ok da camada de boias. */
+function buoyLayerLabel(status: BuoyLayerMeta['status'], t: UiLabels): string {
   switch (status) {
     case 'no-key':
-      return isPt ? 'Boias: sem key' : 'Buoys: no key';
+      return t.buoyNoKey;
     case 'down':
-      return isPt ? 'Boias: em baixo' : 'Buoys: down';
+      return t.buoyDown;
     case 'stale':
-      return isPt ? 'Boias: leituras antigas' : 'Buoys: stale';
+      return t.buoyStale;
     default:
       return '';
   }
 }
 
-function coastalLayerLabel(status: NonNullable<CoastalWarningsLayerMeta>['status'], isPt: boolean): string {
+function coastalLayerLabel(status: NonNullable<CoastalWarningsLayerMeta>['status'], t: UiLabels): string {
   switch (status) {
     case 'down':
-      return isPt ? 'Avisos costeiros: sem dados' : 'Coastal warnings: no data';
+      return t.coastalNoData;
     case 'stale':
-      return isPt ? 'Avisos costeiros: desactualizados' : 'Coastal warnings: stale';
+      return t.coastalStale;
     default:
       return '';
   }
 }
+
+/** Tag BCP-47 para datas/horas (Intl), por locale do site. */
+const DATE_LOCALE: Record<string, string> = {
+  pt: 'pt-PT',
+  en: 'en-GB',
+  es: 'es-ES',
+  de: 'de-DE',
+  fr: 'fr-FR',
+};
 
 export default function FreshnessIndicator({
   hoursAgo,
@@ -60,7 +71,7 @@ export default function FreshnessIndicator({
   buoyLayer,
   coastalWarningsLayer,
 }: FreshnessIndicatorProps) {
-  const isPt = locale === 'pt';
+  const dateLocale = DATE_LOCALE[locale] ?? 'en-GB';
   const t = getTranslation(locale as Locale);
   const label = sourceLabel ?? t.hero.gridStatusSource;
 
@@ -94,11 +105,7 @@ export default function FreshnessIndicator({
         'pill pill-ghost inline-flex items-center gap-1.5 px-2 py-1 min-h-0',
         size === 'sm' ? 'text-meta-sm' : 'text-meta',
       )}
-      title={
-        isPt
-          ? 'Hora da última actualização de condições (Open-Meteo, 2h de dia / 4h de noite Lisboa)'
-          : 'Last conditions update (Open-Meteo, 2h daytime / 4h night Lisbon)'
-      }
+      title={t.ui.freshnessTitle}
     >
       {buoyStatus ? (
         <span
@@ -106,18 +113,14 @@ export default function FreshnessIndicator({
             'inline-flex items-center gap-1 shrink-0',
             buoyStatus === 'no-key' ? 'text-score-fair' : 'text-score-poor',
           )}
-          title={
-            isPt
-              ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo' +
-                (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, true)}` : '')
-              : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts' +
-                (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, false)}` : '')
-          }
+          title={`${t.ui.buoyLayerTitle}${
+            buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, locale)}` : ''
+          }`}
         >
           <AlertTriangle className="w-3 h-3" aria-hidden />
           <span className="font-medium" data-buoy-streak="true">
-            {buoyLayerLabel(buoyStatus, isPt)}
-            {buoyDowntime ? formatBuoyLayerDowntimeSuffix(buoyDowntime, isPt) : ''}
+            {buoyLayerLabel(buoyStatus, t.ui)}
+            {buoyDowntime ? formatBuoyLayerDowntimeSuffix(buoyDowntime) : ''}
           </span>
         </span>
       ) : null}
@@ -126,42 +129,38 @@ export default function FreshnessIndicator({
           <span
             className="inline-flex items-center gap-1 shrink-0 text-score-poor"
             title={
-              isPt
-                ? `Camada de avisos costeiros (IH) ${coastalWarningsLayer.status === 'down' ? 'sem dados' : 'desactualizada'}` +
-                  (coastalWarningsLayer.fetchedAt
-                    ? ` — última fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
-                    : '')
-                : `Coastal warnings (IH) layer ${coastalWarningsLayer.status === 'down' ? 'down' : 'stale'}` +
-                  (coastalWarningsLayer.fetchedAt
-                    ? ` — last fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
-                    : '')
+              (coastalWarningsLayer.status === 'down' ? t.ui.coastalDownTitle : t.ui.coastalStaleTitle) +
+              (coastalWarningsLayer.fetchedAt
+                ? t.ui.lastFetch.replace(
+                    '{when}',
+                    new Date(coastalWarningsLayer.fetchedAt).toLocaleString(dateLocale),
+                  )
+                : '')
             }
           >
             <AlertTriangle className="w-3 h-3" aria-hidden />
-            <span className="font-medium">{coastalLayerLabel(coastalWarningsLayer.status, isPt)}</span>
+            <span className="font-medium">{coastalLayerLabel(coastalWarningsLayer.status, t.ui)}</span>
           </span>
         ) : coastalWarningsLayer.activeWarnings != null && coastalWarningsLayer.activeWarnings > 0 ? (
           <span
             className="inline-flex items-center gap-1 shrink-0 text-score-fair"
             title={
-              isPt
-                ? `${coastalWarningsLayer.activeWarnings} avisos à navegação costeiros (IH) em vigor · ` +
-                  `${coastalWarningsLayer.coveredSpots ?? 0} spots cobertos` +
-                  (coastalWarningsLayer.fetchedAt
-                    ? ` · fetch ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
-                    : '')
-                : `${coastalWarningsLayer.activeWarnings} coastal navigation warnings (IH) in force · ` +
-                  `${coastalWarningsLayer.coveredSpots ?? 0} spots covered` +
-                  (coastalWarningsLayer.fetchedAt
-                    ? ` · fetched ${new Date(coastalWarningsLayer.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
-                    : '')
+              t.ui.coastalActiveTitle
+                .replace('{count}', String(coastalWarningsLayer.activeWarnings))
+                .replace('{spots}', String(coastalWarningsLayer.coveredSpots ?? 0)) +
+              (coastalWarningsLayer.fetchedAt
+                ? t.ui.fetchedAt.replace(
+                    '{when}',
+                    new Date(coastalWarningsLayer.fetchedAt).toLocaleString(dateLocale),
+                  )
+                : '')
             }
           >
             <Anchor className="w-3 h-3" aria-hidden />
             <span className="font-medium">
-              {isPt
-                ? `${coastalWarningsLayer.activeWarnings} avisos · ${coastalWarningsLayer.coveredSpots ?? 0} spots`
-                : `${coastalWarningsLayer.activeWarnings} warnings · ${coastalWarningsLayer.coveredSpots ?? 0} spots`}
+              {t.ui.coastalActiveLabel
+                .replace('{count}', String(coastalWarningsLayer.activeWarnings))
+                .replace('{spots}', String(coastalWarningsLayer.coveredSpots ?? 0))}
             </span>
           </span>
         ) : null

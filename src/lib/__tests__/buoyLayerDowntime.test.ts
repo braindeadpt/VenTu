@@ -70,44 +70,42 @@ describe('deriveBuoyLayerDowntime', () => {
 });
 
 describe('formatBuoyLayerDowntimeSuffix', () => {
-  it('horas: «· ~5 h» idêntico em pt/en (só números)', () => {
+  it('horas: «· ~5 h» (só números, neutro ao locale)', () => {
     const dt: BuoyLayerDowntime = { runs: 3, hours: 5 };
-    expect(formatBuoyLayerDowntimeSuffix(dt, true)).toBe('· ~5 h');
-    expect(formatBuoyLayerDowntimeSuffix(dt, false)).toBe('· ~5 h');
+    expect(formatBuoyLayerDowntimeSuffix(dt)).toBe('· ~5 h');
   });
 
   it('1 hora → «· ~1 h»', () => {
-    expect(formatBuoyLayerDowntimeSuffix({ runs: 1, hours: 1 }, true)).toBe('· ~1 h');
+    expect(formatBuoyLayerDowntimeSuffix({ runs: 1, hours: 1 })).toBe('· ~1 h');
   });
 
   it('sem horas → «· N runs»', () => {
     const dt: BuoyLayerDowntime = { runs: 3, hours: null };
-    expect(formatBuoyLayerDowntimeSuffix(dt, true)).toBe('· 3 runs');
-    expect(formatBuoyLayerDowntimeSuffix(dt, false)).toBe('· 3 runs');
+    expect(formatBuoyLayerDowntimeSuffix(dt)).toBe('· 3 runs');
   });
 });
 
 describe('formatBuoyLayerDowntimeTitle', () => {
   it('pt com horas e plural/singular de runs', () => {
-    expect(formatBuoyLayerDowntimeTitle({ runs: 4, hours: 5 }, true)).toBe(
+    expect(formatBuoyLayerDowntimeTitle({ runs: 4, hours: 5 }, 'pt')).toBe(
       'Camada de boias degradada há ~5 h (4 runs seguidos)',
     );
-    expect(formatBuoyLayerDowntimeTitle({ runs: 1, hours: 2 }, true)).toBe(
+    expect(formatBuoyLayerDowntimeTitle({ runs: 1, hours: 2 }, 'pt')).toBe(
       'Camada de boias degradada há ~2 h (1 run seguido)',
     );
   });
 
   it('en com horas', () => {
-    expect(formatBuoyLayerDowntimeTitle({ runs: 4, hours: 5 }, false)).toBe(
+    expect(formatBuoyLayerDowntimeTitle({ runs: 4, hours: 5 }, 'en')).toBe(
       'Buoy layer degraded for ~5 h (4 consecutive runs)',
     );
   });
 
   it('sem horas → só runs', () => {
-    expect(formatBuoyLayerDowntimeTitle({ runs: 7, hours: null }, true)).toBe(
+    expect(formatBuoyLayerDowntimeTitle({ runs: 7, hours: null }, 'pt')).toBe(
       'Camada de boias degradada há 7 runs seguidos',
     );
-    expect(formatBuoyLayerDowntimeTitle({ runs: 7, hours: null }, false)).toBe(
+    expect(formatBuoyLayerDowntimeTitle({ runs: 7, hours: null }, 'en')).toBe(
       'Buoy layer degraded for 7 consecutive runs',
     );
   });

@@ -171,7 +171,10 @@ test.describe('Fontes de dados (data sources)', () => {
       });
       // Link com o DOI do CFF e o texto do DOI no corpo.
       await expect(page.locator(`a[href="${doiHref}"]`).first()).toBeVisible();
-      await expect(page.getByText(new RegExp(cffDoi.replace('.', '\.'))).first()).toBeVisible();
+      // Escapa o DOI para regex por inteiro (não só os pontos: a `\` também
+      // precisa de escape — CodeQL js/incomplete-sanitization).
+      const doiPattern = cffDoi.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      await expect(page.getByText(new RegExp(doiPattern)).first()).toBeVisible();
     }
   });
 

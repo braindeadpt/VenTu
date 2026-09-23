@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { SportType } from '@/lib/sportRatings';
+import { getTranslation } from '@/lib/i18n';
 
 export type AlertMode = 'digest' | 'immediate';
 
@@ -25,11 +26,9 @@ export interface SubscribeFavoritesAlertsResult {
   error?: string;
 }
 
-export function alertModeLabel(mode: AlertMode, isPt: boolean): string {
-  if (mode === 'immediate') {
-    return isPt ? 'Imediato (máx. 1×/3h)' : 'Immediate (max once per 3h)';
-  }
-  return isPt ? 'Resumo diário (~7h30)' : 'Daily digest (~7:30 AM)';
+export function alertModeLabel(mode: AlertMode, locale: string): string {
+  const t = getTranslation(locale).alerts;
+  return mode === 'immediate' ? t.modeImmediate : t.modeDigest;
 }
 
 export async function fetchUserAlertPrefs(
@@ -101,22 +100,19 @@ export async function deactivateUserAlerts(sb: SupabaseClient): Promise<boolean>
   return !error && data === true;
 }
 
-export function formatUserAlertsError(error: string | undefined, isPt: boolean): string {
-  const fallback = isPt ? 'Não foi possível guardar. Tenta outra vez.' : 'Could not save. Please try again.';
+export function formatUserAlertsError(error: string | undefined, locale: string): string {
+  const t = getTranslation(locale).alerts;
+  const fallback = t.errFallback;
 
   switch (error) {
     case 'no_favorites':
-      return isPt
-        ? 'Guarda pelo menos um spot nos favoritos antes de activar alertas.'
-        : 'Save at least one favorite spot before enabling alerts.';
+      return t.errNoFavorites;
     case 'rate_limit':
-      return isPt
-        ? 'Demasiadas tentativas. Espera 1 minuto e tenta outra vez.'
-        : 'Too many attempts. Wait a minute and try again.';
+      return t.errRateLimited;
     case 'invalid_score':
-      return isPt ? 'Score inválido.' : 'Invalid score.';
+      return t.errInvalidScore;
     case 'not_authenticated':
-      return isPt ? 'Tens de estar logado.' : 'You must be signed in.';
+      return t.errNotAuthenticated;
     default:
       return fallback;
   }

@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import {
   createContext,
   useCallback,
@@ -192,7 +193,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
   const signInWithEmail = useCallback(async (email: string) => {
     const sb = getSupabaseClient();
     if (!sb) {
-      return { ok: false, error: isPt ? 'Conta indisponível' : 'Account unavailable' };
+      return { ok: false, error: getTranslation(locale).spotsUi.accountUnavailable };
     }
 
     const { error } = await sb.auth.signInWithOtp({
@@ -205,7 +206,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     if (error) return { ok: false, error: error.message };
     return { ok: true };
-  }, [isPt, locale]);
+  }, [locale]);
 
   const signOut = useCallback(async () => {
     const sb = getSupabaseClient();

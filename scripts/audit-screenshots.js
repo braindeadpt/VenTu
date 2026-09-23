@@ -1,3 +1,12 @@
+/**
+ * Auditoria visual manual (dev-only, nunca invocada por CI/npm).
+ *
+ * Sobe `out/` com `serve` e tira screenshots de rotas a desktop/mobile para
+ * revisão humana de regressões visuais não cobertas por baselines.
+ *
+ * Uso: `node scripts/audit-screenshots.js` (requer `npm run build` antes).
+ * As imagens ficam em `audit-screenshots/` (não versionado).
+ */
 const { chromium } = require('playwright');
 const { spawn } = require('child_process');
 const fs = require('fs');

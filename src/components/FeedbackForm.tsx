@@ -12,18 +12,18 @@ interface FeedbackFormProps {
 }
 
 const TYPES = [
-  { id: 'spot', labelPt: 'Novo spot', labelEn: 'New spot', icon: MapPin },
-  { id: 'tip', labelPt: 'Dica local', labelEn: 'Local tip', icon: MessageSquare },
-  { id: 'idea', labelPt: 'Ideia', labelEn: 'Idea', icon: Lightbulb },
-  { id: 'bug', labelPt: 'Bug / Defeito', labelEn: 'Bug / Issue', icon: Bug },
-];
+  { id: 'spot', icon: MapPin },
+  { id: 'tip', icon: MessageSquare },
+  { id: 'idea', icon: Lightbulb },
+  { id: 'bug', icon: Bug },
+] as const;
 
 const TIP_FIELDS = [
-  { id: 'bestTide', labelPt: 'Maré ideal', labelEn: 'Best tide' },
-  { id: 'parking', labelPt: 'Estacionamento', labelEn: 'Parking' },
-  { id: 'food', labelPt: 'Onde comer', labelEn: 'Food' },
-  { id: 'localRule', labelPt: 'Regra local', labelEn: 'Local rule' },
-];
+  { id: 'bestTide' },
+  { id: 'parking' },
+  { id: 'food' },
+  { id: 'localRule' },
+] as const;
 
 const CLIENT_ID_KEY = 'ventu:client_id';
 
@@ -45,8 +45,8 @@ function getClientId(): string {
 }
 
 export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormProps) {
-  const t = getTranslation(locale as 'pt' | 'en');
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale);
+  const f = t.feedback;
   const [open, setOpen] = useState(false);
   const [type, setType] = useState(defaultSpotSlug ? 'tip' : 'spot');
   const [message, setMessage] = useState('');
@@ -62,7 +62,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
     if (!message.trim()) return;
 
     if (!isSupabaseConfigured()) {
-      setError(isPt ? 'Serviço temporariamente indisponível' : 'Service temporarily unavailable');
+      setError(f.errorUnavailable);
       return;
     }
 
@@ -89,25 +89,20 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
 
       if (rpcError) throw rpcError;
       if (!data?.ok) {
-        setError(
-          data?.error === 'rate_limit'
-            ? (isPt
-              ? 'Demasiados envios — tenta novamente dentro de um minuto.'
-              : 'Too many submissions — try again in a minute.')
-            : (isPt ? 'Erro ao enviar' : 'Error sending')
-        );
+        setError(data?.error === 'rate_limit' ? f.errorRateLimit : f.errorSend);
         return;
       }
 
       setSent(true);
       setMessage('');
       setEmail('');
-      setTimeout(() => {
+      if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = window.setTimeout(() => {
         setSent(false);
         setOpen(false);
       }, 2000);
     } catch (err: any) {
-      setError(err.message || (isPt ? 'Erro ao enviar' : 'Error sending'));
+      setError(err.message || f.errorSend);
     } finally {
       setSending(false);
     }
@@ -118,6 +113,15 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
   // starts inside and Tab is trapped so keyboard users can't escape into the
   // page behind the modal.
   const modalRef = useRef<HTMLDivElement>(null);
+  // Auto-fecho após enviar (2 s) — limpo no unmount para não haver setState
+  // depois de desmontar.
+  const closeTimerRef = useRef<number | null>(null);
+  useEffect(
+    () => () => {
+      if (closeTimerRef.current !== null) window.clearTimeout(closeTimerRef.current);
+    },
+    [],
+  );
   useEffect(() => {
     if (!open) return;
     const el = modalRef.current;
@@ -130,10 +134,10 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
     return (
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
+        className="inline-flex items-center gap-2 rounded-lg border border-divider-strong bg-surface-1/[0.06] px-3.5 py-2 min-h-[44px] text-sm font-medium text-fg hover:bg-surface-2/[0.10] transition-colors"
       >
-        <Send className="w-3.5 h-3.5" />
-        {isPt ? 'Sugerir / Reportar' : 'Suggest / Report'}
+        <MessageSquare className="w-4 h-4 shrink-0 text-data-waves" aria-hidden />
+        {f.trigger}
       </button>
     );
   }
@@ -182,12 +186,12 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
       >
         <div className="flex items-center justify-between">
           <h3 id="feedback-title" className="text-h3 text-fg">
-            {isPt ? 'Contribuir para o VenTu' : 'Contribute to VenTu'}
+            {f.title}
           </h3>
       <button
         onClick={() => setOpen(false)}
         className="p-1 rounded-md text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors"
-        aria-label={isPt ? 'Fechar' : 'Close'}
+        aria-label={t.common.close}
       >
         <X className="w-5 h-5" />
       </button>
@@ -196,22 +200,20 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
         {sent ? (
           <div className="py-8 text-center space-y-2">
             <div className="text-4xl">✅</div>
-            <p className="text-body text-fg">
-              {isPt ? 'Obrigado! Recebemos a tua contribuição.' : 'Thank you! We received your contribution.'}
-            </p>
+            <p className="text-body text-fg">{f.thanks}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Type selector */}
             <div className="flex gap-2">
-              {TYPES.map((t) => {
-                const Icon = t.icon;
-                const active = type === t.id;
+              {TYPES.map((entry) => {
+                const Icon = entry.icon;
+                const active = type === entry.id;
                 return (
                   <button
-                    key={t.id}
+                    key={entry.id}
                     type="button"
-                    onClick={() => setType(t.id)}
+                    onClick={() => setType(entry.id)}
                     className={`
                       flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium
                       transition-all duration-fast
@@ -222,7 +224,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     `}
                   >
                     <Icon className="w-4 h-4" />
-                    <span className="hidden sm:inline">{isPt ? t.labelPt : t.labelEn}</span>
+                    <span className="hidden sm:inline">{f.types[entry.id]}</span>
                   </button>
                 );
               })}
@@ -232,12 +234,12 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
             <div>
               <label htmlFor="ff-message" className="block text-meta-sm text-fg-muted mb-1.5">
                 {type === 'spot'
-                  ? (isPt ? 'Descrição do spot' : 'Spot description')
+                  ? f.describeSpot
                   : type === 'tip'
-                    ? (isPt ? 'A tua dica' : 'Your tip')
+                    ? f.describeTip
                   : type === 'idea'
-                    ? (isPt ? 'A tua ideia' : 'Your idea')
-                    : (isPt ? 'Descrição do problema' : 'Issue description')}
+                    ? f.describeIdea
+                    : f.describeBug}
               </label>
               <textarea
                 id="ff-message"
@@ -245,12 +247,12 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                 onChange={(e) => setMessage(e.target.value)}
                 placeholder={
                   type === 'spot'
-                    ? (isPt ? 'Nome, localização, condições ideais, acesso...' : 'Name, location, ideal conditions, access...')
+                    ? f.placeholderSpot
                     : type === 'tip'
-                      ? (isPt ? 'Partilha conhecimento local (maré, estacionamento, regras...)' : 'Share local knowledge (tide, parking, rules...)')
+                      ? f.placeholderTip
                     : type === 'idea'
-                      ? (isPt ? 'Descreve a tua sugestão...' : 'Describe your suggestion...')
-                      : (isPt ? 'O que não está a funcionar?' : 'What is not working?')
+                      ? f.placeholderIdea
+                      : f.placeholderBug
                 }
                 rows={4}
                 maxLength={2000}
@@ -263,7 +265,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
               <>
                 <div>
                   <label htmlFor="ff-spot-slug" className="block text-meta-sm text-fg-muted mb-1.5">
-                    {isPt ? 'Slug do spot' : 'Spot slug'}
+                    {f.spotSlug}
                   </label>
                   <input
                     id="ff-spot-slug"
@@ -277,7 +279,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                 </div>
                 <div>
                   <label htmlFor="ff-tip-field" className="block text-meta-sm text-fg-muted mb-1.5">
-                    {isPt ? 'Tipo de dica' : 'Tip type'}
+                    {f.tipType}
                   </label>
                   <select
                     id="ff-tip-field"
@@ -285,9 +287,9 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
                     onChange={(e) => setTipField(e.target.value)}
                     className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg"
                   >
-                    {TIP_FIELDS.map((f) => (
-                      <option key={f.id} value={f.id}>
-                        {isPt ? f.labelPt : f.labelEn}
+                    {TIP_FIELDS.map((field) => (
+                      <option key={field.id} value={field.id}>
+                        {f.tips[field.id]}
                       </option>
                     ))}
                   </select>
@@ -298,14 +300,14 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
             {/* Email */}
             <div>
               <label htmlFor="ff-email" className="block text-meta-sm text-fg-muted mb-1.5">
-                {isPt ? 'Email (opcional)' : 'Email (optional)'}
+                {f.emailOptional}
               </label>
               <input
                 id="ff-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={isPt ? 'Para te contactarmos de volta' : 'So we can reach you back'}
+                placeholder={f.emailPlaceholder}
                 className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-body text-fg placeholder:text-fg-subtle focus:outline-none focus:ring-2 focus:ring-score-good/50"
               />
             </div>
@@ -320,9 +322,7 @@ export default function FeedbackForm({ locale, defaultSpotSlug }: FeedbackFormPr
               className="w-full flex items-center justify-center gap-2 h-11 px-4 bg-surface-2/[0.08] border border-divider-strong rounded-lg text-fg font-medium hover:bg-surface-3/[0.12] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Send className="w-4 h-4" />
-              {sending
-                ? (isPt ? 'A enviar...' : 'Sending...')
-                : (isPt ? 'Enviar contribuição' : 'Send contribution')}
+              {sending ? f.submitting : f.submit}
             </button>
           </form>
         )}

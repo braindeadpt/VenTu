@@ -1,5 +1,7 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
+import { localizedSpotName } from '@/lib/localizedSpotText';
 import { useEffect, useRef } from 'react';
 import { X } from 'lucide-react';
 import type { GridSportFilter } from '@/lib/sportRatings';
@@ -94,7 +96,7 @@ export default function MapSpotSheet({
       <button
         type="button"
         className="absolute inset-0 z-[1200] bg-black/30 motion-reduce:transition-none transition-opacity duration-200"
-        aria-label={isPt ? 'Fechar' : 'Close'}
+        aria-label={getTranslation(locale).homepage.close}
         onClick={onClose}
       />
       <div
@@ -123,14 +125,14 @@ export default function MapSpotSheet({
               type="button"
               onClick={onClose}
               className="p-2 rounded-input hover:bg-surface-1/[0.04] text-fg-muted hover:text-fg transition-colors duration-150 min-h-[44px] min-w-[44px] flex items-center justify-center"
-              aria-label={isPt ? 'Fechar' : 'Close'}
+              aria-label={getTranslation(locale).homepage.close}
             >
               <X className="w-4 h-4" aria-hidden />
             </button>
           </div>
 
           <div id="map-spot-sheet-title" className="sr-only">
-            {isPt ? data.spot.name : data.spot.nameEn}
+            {localizedSpotName(data.spot, locale)}
           </div>
 
           <MapSpotPreview

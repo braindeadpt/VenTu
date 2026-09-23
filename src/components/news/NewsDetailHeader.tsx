@@ -1,34 +1,28 @@
 import type { NewsItem } from '@/types';
 import { Sparkles, Calendar } from 'lucide-react';
 import Link from 'next/link';
+import { newsCategoryLabel } from '@/lib/newsCategories';
+import { getTranslation } from '@/lib/i18n';
 
 interface NewsDetailHeaderProps {
   news: NewsItem;
   locale: string;
 }
 
-const categoryLabels: Record<string, { pt: string; en: string }> = {
-  surf:        { pt: 'Surf',        en: 'Surf' },
-  kitesurf:    { pt: 'Kitesurf',    en: 'Kitesurf' },
-  windsurf:    { pt: 'Windsurf',    en: 'Windsurf' },
-  competition: { pt: 'Competição',  en: 'Competition' },
-  safety:      { pt: 'Segurança',   en: 'Safety' },
-  general:     { pt: 'Geral',       en: 'General' },
-};
-
 export default function NewsDetailHeader({ news, locale }: NewsDetailHeaderProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).news;
 
   return (
     <header className="space-y-6">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-fg-muted">
         <Link href={`/${locale}/news/`} className="hover:text-fg transition-colors">
-          {isPt ? 'Notícias' : 'News'}
+          {t.breadcrumb}
         </Link>
         <span aria-hidden="true" className="text-fg-disabled">/</span>
         <span className="text-fg-subtle">
-          {isPt ? categoryLabels[news.category]?.pt || news.category : categoryLabels[news.category]?.en || news.category}
+          {newsCategoryLabel(news.category, locale)}
         </span>
         <span aria-hidden="true" className="text-fg-disabled">/</span>
         <span className="text-fg truncate max-w-[200px] sm:max-w-[400px]">
@@ -53,10 +47,10 @@ export default function NewsDetailHeader({ news, locale }: NewsDetailHeaderProps
         </span>
         <span className="flex items-center gap-1.5">
           <Sparkles className="w-4 h-4" />
-          {isPt ? 'Gerado por IA' : 'AI-generated'}
+          {t.aiGenerated}
         </span>
         <span className="text-fg-subtle">
-          {isPt ? 'Fonte:' : 'Source:'} {news.source}
+          {t.sourcePrefix} {news.source}
         </span>
       </div>
     </header>

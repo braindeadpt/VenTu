@@ -101,17 +101,19 @@ export const PROVENANCE_ICON_CLASS: Record<ProvenanceSize, string> = {
 };
 
 /** Prefixo do `aria-label` — diz ao leitor de ecrã de que eixo se trata. */
-export function provenanceAxisAria(axis: ProvenanceAxis, isPt: boolean): string {
+export function provenanceAxisAria(axis: ProvenanceAxis, locale: string): string {
+  const t = getTranslation(locale).provenance;
   switch (axis) {
     case 'wave':
-      return isPt ? 'Fonte da onda' : 'Wave source';
+      return t.axisWave;
     case 'wind':
-      return isPt ? 'Fonte do vento' : 'Wind source';
+      return t.axisWind;
     case 'calibration':
-      return isPt ? 'Calibração da leitura' : 'Reading calibration';
+      return t.axisCalibration;
     case 'confidence':
-      return isPt ? 'Confiança da previsão' : 'Forecast confidence';
+      return t.axisConfidence;
     case 'freshness':
-      return isPt ? 'Frescura dos dados' : 'Data freshness';
+      return t.axisFreshness;
   }
-}
+}import { getTranslation } from '@/lib/i18n';
+

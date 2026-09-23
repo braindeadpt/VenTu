@@ -548,12 +548,20 @@ export const ATTRIBUTIONS: Record<DataSourceId, DataSourceAttribution> = {
     ),
     cellPt: (
       <>
-        Lista completa de créditos em <code className="text-fg">public/images/CREDITS.md</code>.
+        Lista completa de créditos em{' '}
+        <a href="/images/CREDITS.md" className="underline" target="_blank" rel="noopener noreferrer">
+          <code className="text-fg">public/images/CREDITS.md</code>
+        </a>
+        .
       </>
     ),
     cellEn: (
       <>
-        Full credit list in <code className="text-fg">public/images/CREDITS.md</code>.
+        Full credit list in{' '}
+        <a href="/images/CREDITS.md" className="underline" target="_blank" rel="noopener noreferrer">
+          <code className="text-fg">public/images/CREDITS.md</code>
+        </a>
+        .
       </>
     ),    titlePt: 'Créditos de fotografia em public/images/CREDITS.md',
     titleEn: 'Photo credits in public/images/CREDITS.md',

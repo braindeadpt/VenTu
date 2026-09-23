@@ -46,7 +46,6 @@ interface UseMapChromeZoneParams {
   observeRef: React.RefObject<HTMLElement | null>;
   isReady: boolean;
   locale: string;
-  isPt: boolean;
   selectedSport: GridSportFilter;
   selectedRegion: string;
   windEnabled: boolean;
@@ -79,7 +78,6 @@ export function useMapChromeZone({
   observeRef,
   isReady,
   locale,
-  isPt,
   selectedSport,
   selectedRegion,
   windEnabled,
@@ -128,23 +126,23 @@ export function useMapChromeZone({
     const at = hoursLive && hoursTimes[hoursFrame]
       ? new Date(hoursTimes[hoursFrame])
       : new Date();
-    const model = mapTideChipAt(curve, at, isPt ? 'pt' : 'en');
+    const model = mapTideChipAt(curve, at, locale);
     if (!model) return undefined;
     const phaseLabel =
-      model.phase === 'rising' ? t.mapUiChrome.tideChipRising
-        : model.phase === 'falling' ? t.mapUiChrome.tideChipFalling
-          : model.phase === 'high' ? t.mapUiChrome.tideChipHigh
-            : t.mapUiChrome.tideChipLow;
+      model.phase === 'rising' ? t.map.tideChipRising
+        : model.phase === 'falling' ? t.map.tideChipFalling
+          : model.phase === 'high' ? t.map.tideChipHigh
+            : t.map.tideChipLow;
     const kindLabel = model.nextKind === 'high'
-      ? t.mapUiChrome.tideChipHigh
-      : model.nextKind === 'low' ? t.mapUiChrome.tideChipLow
+      ? t.map.tideChipHigh
+      : model.nextKind === 'low' ? t.map.tideChipLow
         : '';
     const ariaLabel = model.nextTime && kindLabel
-      ? t.mapUiChrome.tideChipAriaNext
+      ? t.map.tideChipAriaNext
         .replace('{phase}', phaseLabel)
         .replace('{kind}', kindLabel)
         .replace('{time}', model.nextTime)
-      : t.mapUiChrome.tideChipAria.replace('{phase}', phaseLabel);
+      : t.map.tideChipAria.replace('{phase}', phaseLabel);
     return (
       <MapTideChip
         phase={model.phase}
@@ -159,20 +157,20 @@ export function useMapChromeZone({
     hoursLive,
     hoursTimes,
     hoursFrame,
-    isPt,
-    t.mapUiChrome.tideChipRising,
-    t.mapUiChrome.tideChipFalling,
-    t.mapUiChrome.tideChipHigh,
-    t.mapUiChrome.tideChipLow,
-    t.mapUiChrome.tideChipAria,
-    t.mapUiChrome.tideChipAriaNext,
+    locale,
+    t.map.tideChipRising,
+    t.map.tideChipFalling,
+    t.map.tideChipHigh,
+    t.map.tideChipLow,
+    t.map.tideChipAria,
+    t.map.tideChipAriaNext,
   ]);
 
   const thermalChip = useMemo(() => {
     const summary = thermalHudAt(hoursFile, hoursLive ? hoursFrame : 0);
     if (!summary) return undefined;
-    const kindLabel = summary.kind === 'sea' ? t.mapUiChrome.thermalSea : t.mapUiChrome.thermalLand;
-    const ariaLabel = t.mapUiChrome.thermalChipAria
+    const kindLabel = summary.kind === 'sea' ? t.map.thermalSea : t.map.thermalLand;
+    const ariaLabel = t.map.thermalChipAria
       .replace('{kind}', kindLabel)
       .replace('{count}', String(summary.count));
     return (
@@ -187,9 +185,9 @@ export function useMapChromeZone({
     hoursFile,
     hoursLive,
     hoursFrame,
-    t.mapUiChrome.thermalSea,
-    t.mapUiChrome.thermalLand,
-    t.mapUiChrome.thermalChipAria,
+    t.map.thermalSea,
+    t.map.thermalLand,
+    t.map.thermalChipAria,
   ]);
 
   const timeTrackChips = tideChip || thermalChip ? (
@@ -221,9 +219,9 @@ export function useMapChromeZone({
       clock={hoursClock}
       tideChip={timeTrackChips}
       labels={{
-        scrub: t.mapUiChrome.hoursScrub,
-        play: t.mapUiChrome.hoursPlay,
-        pause: t.mapUiChrome.hoursPause,
+        scrub: t.map.hoursScrub,
+        play: t.map.hoursPlay,
+        pause: t.map.hoursPause,
       }}
     />
   ) : radarEnabled && radarFrameList.length > 1 ? (
@@ -240,9 +238,9 @@ export function useMapChromeZone({
       clock={radarClock}
       tideChip={timeTrackChips}
       labels={{
-        scrub: t.mapUiChrome.radarScrub,
-        play: t.mapUiChrome.radarPlay,
-        pause: t.mapUiChrome.radarPause,
+        scrub: t.map.radarScrub,
+        play: t.map.radarPlay,
+        pause: t.map.radarPause,
       }}
     />
   ) : undefined;
@@ -253,11 +251,11 @@ export function useMapChromeZone({
     mapInstanceRef,
     isReady,
     labels: {
-      locate: t.mapUiChrome.locateMe,
-      here: t.mapUiChrome.locateHere,
-      denied: t.mapUiChrome.locateDenied,
-      unavailable: t.mapUiChrome.locateUnavailable,
-      timeout: t.mapUiChrome.locateTimeout,
+      locate: t.map.locateMe,
+      here: t.map.locateHere,
+      denied: t.map.locateDenied,
+      unavailable: t.map.locateUnavailable,
+      timeout: t.map.locateTimeout,
     },
     onToast: showToast,
   });
@@ -286,14 +284,14 @@ export function useMapChromeZone({
         return;
       }
       await navigator.clipboard.writeText(url);
-      showToast(t.mapUiChrome.shareCopied);
+      showToast(t.map.shareCopied);
     } catch {
       // AbortError (partilha cancelada) ou clipboard negado — sem toast.
     }
   }, [
     mapInstanceRef, locale, selectedSport, selectedRegion,
     radarEnabled, isobathsEnabled, hoursOn, buoysEnabled,
-    hsEnabled, sstEnabled, currentsEnabled, showToast, t.mapUiChrome.shareCopied,
+    hsEnabled, sstEnabled, currentsEnabled, showToast, t.map.shareCopied,
   ]);
 
   // ── Wind legend ──
@@ -318,10 +316,10 @@ export function useMapChromeZone({
     return () => window.clearTimeout(id);
   }, [windLegendHintVisible]);
 
-  const exitFullscreenLabel = t.mapUiChrome.exitFullscreen;
-  const windLabel = windEnabled ? t.mapUiChrome.hideWind : t.mapUiChrome.showWind;
+  const exitFullscreenLabel = t.map.exitFullscreen;
+  const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
   const windHint = null;
-  const windLegendHelpLabel = t.mapUiChrome.windRingLegend.help;
+  const windLegendHelpLabel = t.map.windRingLegend.help;
 
   return {
     locate, locating, handleShareView,
@@ -406,17 +404,17 @@ export function MapChromeZone({
       {windLegendHintVisible && (
         <div
           role="note"
-          aria-label={t.mapUiChrome.windRingLegend.help}
+          aria-label={t.map.windRingLegend.help}
           className="absolute z-[1150] bottom-32 left-3 right-3 sm:right-auto sm:w-[320px] rounded-card border border-divider bg-bg-elevated shadow-card px-4 py-3 motion-reduce:animate-none animate-fade-up"
         >
-          <p className="text-body-sm font-semibold text-fg mb-1">{t.mapUiChrome.windRingLegend.title}</p>
-          <p className="text-meta-sm text-fg-muted leading-snug">{t.mapUiChrome.windRingLegend.rule}</p>
+          <p className="text-body-sm font-semibold text-fg mb-1">{t.map.windRingLegend.title}</p>
+          <p className="text-meta-sm text-fg-muted leading-snug">{t.map.windRingLegend.rule}</p>
           <button
             type="button"
             onClick={openWindLegend}
             className="mt-2 text-meta-sm font-semibold text-accent hover:underline underline-offset-2"
           >
-            {t.mapUiChrome.windRingLegend.help}
+            {t.map.windRingLegend.help}
           </button>
         </div>
       )}
@@ -435,7 +433,7 @@ export function MapChromeZone({
 
       {!isFullscreen && !isHeroEmbed && (
         <p className="absolute z-[1000] max-w-[min(100%,280px)] px-2.5 py-1 rounded-md text-meta-sm text-fg-muted bg-bg-elevated/90 border border-divider shadow-sm pointer-events-none max-md:hidden bottom-14 left-1/2 -translate-x-1/2">
-          {t.mapUiChrome.mapDataHint}
+          {t.map.mapDataHint}
         </p>
       )}
 

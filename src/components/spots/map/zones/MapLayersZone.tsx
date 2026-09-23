@@ -50,7 +50,7 @@ interface UseMapLayersBaseParams {
   coastalLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   buoyLayerRef: React.MutableRefObject<L.LayerGroup | null>;
   isReady: boolean;
-  isPt: boolean;
+  locale: string;
   isFullscreen: boolean;
   isHeroEmbed: boolean;
   focusSpotId?: string;
@@ -70,7 +70,7 @@ export function useMapLayersBase({
   coastalLayerRef,
   buoyLayerRef,
   isReady,
-  isPt,
+  locale,
   isFullscreen,
   isHeroEmbed,
   focusSpotId,
@@ -85,7 +85,7 @@ export function useMapLayersBase({
     mapInstanceRef,
     LRef,
     isReady,
-    isPt,
+    locale,
     isFullscreen,
     isHeroEmbed,
     focusSpotId,
@@ -112,11 +112,11 @@ export function useMapLayersBase({
     isHeroEmbed,
     initialEnabled: initialBuoysEnabled,
     labels: {
-      hs: t.mapUiLayers.buoyHs,
-      stale: t.mapUiLayers.buoyStale,
-      sourceIh: t.mapUiLayers.buoySourceIh,
-      sourceWmo: t.mapUiLayers.buoySourceWmo,
-      noHs: t.mapUiLayers.buoyNoHs,
+      hs: t.map.buoyHs,
+      stale: t.map.buoyStale,
+      sourceIh: t.map.buoySourceIh,
+      sourceWmo: t.map.buoySourceWmo,
+      noHs: t.map.buoyNoHs,
     },
   });
 
@@ -134,7 +134,7 @@ export function useMapLayersBase({
   // A única excepção é o crédito do Open-Meteo: o controlo nasce em useMapCore
   // com a cadeia canónica EN (que não conhece a tradução) e aqui troca-se pelo
   // lead-in localizado.
-  const openMeteoCredit = openMeteoAttributionHtml(t.mapUiLayers.weatherCredit);
+  const openMeteoCredit = openMeteoAttributionHtml(t.map.weatherCredit);
   useEffect(() => {
     if (!isReady) return;
     const ac = mapInstanceRef.current?.attributionControl;
@@ -297,27 +297,27 @@ export function useMapLayersFields({
   const layerCopy = useMemo<MapLayerCopy>(() => ({
     radarLabel,
     radarHint,
-    radarResetLabel: t.mapUiLayers.radarReset,
-    hoursLabel: hoursOn ? t.mapUiLayers.hideHours : t.mapUiLayers.showHours,
-    hoursHint: t.mapUiLayers.hoursHint,
-    hoursResetLabel: t.mapUiLayers.hoursReset,
-    buoysLabel: buoysEnabled ? t.mapUiLayers.hideBuoys : t.mapUiLayers.showBuoys,
-    buoysHint: t.mapUiLayers.buoysHint,
-    hsLabel: hsEnabled ? t.mapUiLayers.hideHs : t.mapUiLayers.showHs,
-    hsHint: t.mapUiLayers.hsHint,
-    sstLabel: sstEnabled ? t.mapUiLayers.hideSst : t.mapUiLayers.showSst,
-    sstHint: t.mapUiLayers.sstHint,
-    currentsLabel: currentsEnabled ? t.mapUiLayers.hideCurrents : t.mapUiLayers.showCurrents,
-    currentsHint: t.mapUiLayers.currentsHint,
-    isobathsLabel: isobathsEnabled ? t.mapUiLayers.hideIsobaths : t.mapUiLayers.showIsobaths,
-    isobathsHint: t.mapUiLayers.isobathsHint,
-    bathymetryLabel: bathymetryEnabled ? t.mapUiLayers.hideBathymetry : t.mapUiLayers.showBathymetry,
-    bathymetryHint: t.mapUiLayers.bathymetryHint,
-    seamarksLabel: seamarksEnabled ? t.mapUiLayers.hideSeamarks : t.mapUiLayers.showSeamarks,
-    seamarksHint: t.mapUiLayers.seamarksHint,
+    radarResetLabel: t.map.radarReset,
+    hoursLabel: hoursOn ? t.map.hideHours : t.map.showHours,
+    hoursHint: t.map.hoursHint,
+    hoursResetLabel: t.map.hoursReset,
+    buoysLabel: buoysEnabled ? t.map.hideBuoys : t.map.showBuoys,
+    buoysHint: t.map.buoysHint,
+    hsLabel: hsEnabled ? t.map.hideHs : t.map.showHs,
+    hsHint: t.map.hsHint,
+    sstLabel: sstEnabled ? t.map.hideSst : t.map.showSst,
+    sstHint: t.map.sstHint,
+    currentsLabel: currentsEnabled ? t.map.hideCurrents : t.map.showCurrents,
+    currentsHint: t.map.currentsHint,
+    isobathsLabel: isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths,
+    isobathsHint: t.map.isobathsHint,
+    bathymetryLabel: bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry,
+    bathymetryHint: t.map.bathymetryHint,
+    seamarksLabel: seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks,
+    seamarksHint: t.map.seamarksHint,
     coastalWarningsLabel,
-    coastalWarningsHint: t.mapUiLayers.coastalWarningsHint,
-    layersMenuLabel: t.mapUiLayers.layersMenu,
+    coastalWarningsHint: t.map.coastalWarningsHint,
+    layersMenuLabel: t.map.layersMenu,
   }), [
     radarLabel, radarHint,
     hoursOn, buoysEnabled, hsEnabled, sstEnabled, currentsEnabled,
@@ -450,26 +450,26 @@ export function useMapLayersFields({
   // Legenda — props partilhadas entre a flutuante (desktop) e a embutida
   // no <details> do sheet (mobile). Uma só legenda por superfície.
   const legendLayerProps = {
-    isobathsTitle: t.mapUiLayers.isobathsLegend,
+    isobathsTitle: t.map.isobathsLegend,
     isobathsVisible: isobathsEnabled && isobathsData != null,
-    hsTitle: t.mapUiLayers.hsLegend,
+    hsTitle: t.map.hsLegend,
     hsVisible: hsEnabled,
-    sstTitle: t.mapUiLayers.sstLegend,
+    sstTitle: t.map.sstLegend,
     sstVisible: sstEnabled,
-    currentsTitle: t.mapUiLayers.currentsLegend,
+    currentsTitle: t.map.currentsLegend,
     currentsVisible: currentsEnabled,
-    windTitle: t.mapUiLayers.windLegend,
+    windTitle: t.map.windLegend,
     windVisible: isFullscreen && !isHeroEmbed && windEnabled,
-    bathymetryTitle: t.mapUiLayers.bathymetryLegend,
+    bathymetryTitle: t.map.bathymetryLegend,
     bathymetryVisible: bathymetryEnabled,
-    bathymetryContoursLabel: t.mapUiLayers.bathymetryContours,
-    seamarksTitle: t.mapUiLayers.seamarksLegend,
+    bathymetryContoursLabel: t.map.bathymetryContours,
+    seamarksTitle: t.map.seamarksLegend,
     seamarksVisible: seamarksEnabled,
-    seamarksMarksLabel: t.mapUiLayers.seamarksLegendMarks,
-    warningsTitle: t.mapUiLayers.coastalWarningsLegend,
+    seamarksMarksLabel: t.map.seamarksLegendMarks,
+    warningsTitle: t.map.coastalWarningsLegend,
     warningsVisible: isFullscreen && !isHeroEmbed && coastalWarningsEnabled,
-    warningsZoneLabel: t.mapUiLayers.coastalWarningsLegendZone,
-    warningsOrcaLabel: t.mapUiLayers.coastalWarningsLegendOrca,
+    warningsZoneLabel: t.map.coastalWarningsLegendZone,
+    warningsOrcaLabel: t.map.coastalWarningsLegendOrca,
   };
 
   return {
@@ -488,7 +488,6 @@ export type MapLayersFields = ReturnType<typeof useMapLayersFields>;
 interface MapLayersZoneProps {
   t: MapTranslation;
   locale: string;
-  isPt: boolean;
   isFullscreen: boolean;
   isHeroEmbed: boolean;
   isMobile: boolean;
@@ -528,7 +527,6 @@ interface MapLayersZoneProps {
 export function MapLayersZone({
   t,
   locale,
-  isPt,
   isFullscreen,
   isHeroEmbed,
   isMobile,
@@ -573,7 +571,7 @@ export function MapLayersZone({
             className="w-3.5 h-3.5 rounded-full border-2 border-data-waves/30 border-t-data-waves animate-spin"
             aria-hidden
           />
-          <span className="text-meta-sm text-fg-muted">{t.mapUiLayers.loading}</span>
+          <span className="text-meta-sm text-fg-muted">{t.map.loading}</span>
         </div>
       )}
 
@@ -583,7 +581,7 @@ export function MapLayersZone({
             role="alert"
             className="pointer-events-auto flex flex-col items-center gap-2.5 rounded-card border border-divider bg-bg-elevated shadow-card px-5 py-4 max-w-xs text-center"
           >
-            <p className="text-meta-sm font-semibold text-fg">{t.mapUiLayers.mapUnavailable}</p>
+            <p className="text-meta-sm font-semibold text-fg">{t.map.mapUnavailable}</p>
             <button
               type="button"
               onClick={retryBasemap}
@@ -597,7 +595,7 @@ export function MapLayersZone({
       )}
 
       {!isFullscreen && !isHeroEmbed && (
-        <MapLayerToggle current={basemapMode} onChange={onBasemapChange} isPt={isPt} />
+        <MapLayerToggle current={basemapMode} onChange={onBasemapChange} locale={locale} />
       )}
 
       {isHeroEmbed && (
@@ -637,9 +635,9 @@ export function MapLayersZone({
           mapBusyCount={radarBusyCount}
           userPaused={radarUserPaused || hoursOn}
           onUserPausedChange={handleRadarUserPausedChange}
-          labels={{ badge: t.mapUiLayers.radarBadge, hint: t.mapUiLayers.radarHint, scrub: t.mapUiChrome.radarScrub, play: t.mapUiChrome.radarPlay, pause: t.mapUiChrome.radarPause, paused: t.mapUiLayers.radarPaused, ipmaAttribution: radarAttributionLabel, gap: t.mapUiLayers.radarGap, stale: t.mapUiLayers.radarStale }}
+          labels={{ badge: t.map.radarBadge, hint: t.map.radarHint, scrub: t.map.radarScrub, play: t.map.radarPlay, pause: t.map.radarPause, paused: t.map.radarPaused, ipmaAttribution: radarAttributionLabel, gap: t.map.radarGap, stale: t.map.radarStale }}
           fullscreenHref={isFullscreen ? undefined : `/${locale}/mapa/?radar=1`}
-          fullscreenLabel={t.mapUiLayers.radarFullscreen}
+          fullscreenLabel={t.map.radarFullscreen}
           onFullscreenOpen={handleRadarImmersionOpen}
           hideScrubber={isFullscreen}
           externalScrubbing={radarScrubbing}

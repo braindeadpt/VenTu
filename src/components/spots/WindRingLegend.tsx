@@ -36,7 +36,7 @@ export default function WindRingLegend({
   locale,
 }: WindRingLegendProps) {
   const loc = (locale === 'pt' ? 'pt' : 'en') as Locale;
-  const copy = getTranslation(loc).mapUiChrome.windRingLegend;
+  const copy = getTranslation(loc).map.windRingLegend;
   const titleId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);

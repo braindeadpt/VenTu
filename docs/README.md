@@ -11,6 +11,7 @@ at the repo root.
 | [CONTEXT.md](CONTEXT.md) | Architecture, CI workflows, conventions |
 | [ROADMAP.md](ROADMAP.md) | Phases, priorities, session notes |
 | [BACKLOG.md](BACKLOG.md) | Deferred ideas and tech debt |
+| [audits/2026-09-22-auditoria.md](audits/2026-09-22-auditoria.md) | Full audit (security, data, repo hygiene) — 2026-09-22 |
 | [POLISH-BACKLOG.md](POLISH-BACKLOG.md) | Deferred UI polish items |
 | [ROADMAP-ISSUES.md](ROADMAP-ISSUES.md) | GitHub issue templates for roadmap work |
 | [DESIGN-SYSTEM.md](DESIGN-SYSTEM.md) | Tokens, components, patterns, voice |

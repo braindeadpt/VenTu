@@ -1,44 +1,21 @@
-/** mapUiExplore — painel/sheet (M3): filtros, lista, aviso de boias. */
+/** mapUiExplore — painel/sheet de exploração e lista do viewport (M3). Criado pelo M1; a M3 preenche.
+ *  Regra de namespaces (docs/design/MAP-ZONES.md): aqui só entram chaves NOVAS — as chaves
+ *  históricas do mapa vivem em `t.map` e as da Diana em `t.spotsMap`/`t.spotsUi`. */
 export const mapUiExplore = {
   pt: {
-    showAllSpots: 'Mostrar todos',
-    clusterSpots: 'Agrupar spots',
-    buoysShowOnMap: 'Ver no mapa',
-    onlyOn: 'Só a bombar',
-    onlyOnOff: 'Todos os spots',
-    onlyOnHint: 'Score ≥ 60 — só spots a bombar para a modalidade seleccionada',
+    // (vazio — as chaves chegam na sessão dona)
   },
   en: {
-    showAllSpots: 'Show all',
-    clusterSpots: 'Cluster spots',
-    buoysShowOnMap: 'Show on the map',
-    onlyOn: 'Firing only',
-    onlyOnOff: 'All spots',
-    onlyOnHint: 'Score ≥ 60 — only spots firing for the selected sport',
+    // (vazio — as chaves chegam na sessão dona)
   },
   es: {
-    showAllSpots: 'Mostrar todos',
-    clusterSpots: 'Agrupar spots',
-    buoysShowOnMap: 'Ver en el mapa',
-    onlyOn: 'Solo a tope',
-    onlyOnOff: 'Todos los spots',
-    onlyOnHint: 'Score ≥ 60 — solo spots a tope para la modalidad seleccionada',
+    // (vazio — as chaves chegam na sessão dona)
   },
   de: {
-    showAllSpots: 'Alle anzeigen',
-    clusterSpots: 'Spots gruppieren',
-    buoysShowOnMap: 'Auf der Karte zeigen',
-    onlyOn: 'Nur laufende',
-    onlyOnOff: 'Alle Spots',
-    onlyOnHint: 'Score ≥ 60 — nur laufende Spots für die gewählte Disziplin',
+    // (vazio — as chaves chegam na sessão dona)
   },
   fr: {
-    showAllSpots: 'Tout afficher',
-    clusterSpots: 'Regrouper les spots',
-    buoysShowOnMap: 'Voir sur la carte',
-    onlyOn: 'Uniquement à fond',
-    onlyOnOff: 'Tous les spots',
-    onlyOnHint: 'Score ≥ 60 — uniquement les spots à fond pour la discipline sélectionnée',
+    // (vazio — as chaves chegam na sessão dona)
   },
 } as const;
 

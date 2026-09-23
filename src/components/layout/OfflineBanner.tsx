@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { WifiOff } from 'lucide-react';
+import { getTranslation } from '@/lib/i18n';
 
 const LAST_UPDATE_KEY = 'ventu:last-data-update';
 
@@ -71,8 +72,8 @@ export default function OfflineBanner() {
 
   if (!offline) return null;
 
-  const isPt = locale === 'pt';
-  const timeLabel = lastUpdate ? formatTime(lastUpdate, locale) : (isPt ? 'desconhecida' : 'unknown');
+  const t = getTranslation(locale).layout;
+  const timeLabel = lastUpdate ? formatTime(lastUpdate, locale) : t.offlineUnknown;
 
   return (
     <div
@@ -81,9 +82,7 @@ export default function OfflineBanner() {
     >
       <span className="inline-flex items-center gap-2">
         <WifiOff className="w-4 h-4 shrink-0" />
-        {isPt
-          ? `Offline — a mostrar dados de ${timeLabel}`
-          : `Offline — showing data from ${timeLabel}`}
+        {t.offlineBody.replace('{time}', timeLabel)}
       </span>
     </div>
   );

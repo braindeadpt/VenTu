@@ -65,13 +65,23 @@ function enumerate(cb) {
 // Minimal un-quoter for git's C-style paths (e.g. "garr\u00e3o.json").
 function unquote(p) {
   if (p[0] !== '"' || p[p.length - 1] !== '"') return p;
-  return p
-    .slice(1, -1)
-    .replace(/\\"/g, '"')
-    .replace(/\\\\/g, '\\')
-    .replace(/\\n/g, '\n')
-    .replace(/\\t/g, '\t')
-    .replace(/\\u([0-9a-fA-F]{4})/g, (_, hex) => String.fromCharCode(parseInt(hex, 16)));
+  // Uma só passagem, da esquerda para a direita: cada sequência de escape é
+  // consumida uma única vez. Cadeias de replace descodificam duas vezes
+  // (CodeQL js/double-escaping) — com elas, `\\"` num nome de ficheiro virava
+  // `"` em vez do `\"` correcto.
+  return p.slice(1, -1).replace(/\\(u[0-9a-fA-F]{4}|[\s\S])/g, (_, esc) => {
+    if (esc[0] === 'u') return String.fromCharCode(Number.parseInt(esc.slice(1), 16));
+    switch (esc) {
+      case 'n':
+        return '\n';
+      case 't':
+        return '\t';
+      case 'r':
+        return '\r';
+      default:
+        return esc; // \" → " · \\ → \ · git só emite o que escapa
+    }
+  });
 }
 
 // ── 2. Stream every blob through git cat-file --batch and analyze content ──

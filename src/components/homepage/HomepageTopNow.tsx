@@ -1,5 +1,7 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { SPORT_LABELS } from '@/lib/sportRatings';
 import { spotDetailHref } from '@/lib/gridSpotScore';
@@ -12,6 +14,7 @@ import {
   getTopSpotForSport,
   type HomepageSpotData,
   type TopNowSport,
+  getSportLabel,
 } from '@/lib/homepageSport';
 import { getCalmWaterMetricLabel } from '@/lib/spotWaterContext';
 import { tierPhrase } from '@/lib/voice';
@@ -41,13 +44,14 @@ const SPORT_ACCENTS: Record<TopNowSport, TopNowSport> = {
 
 export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs }: HomepageTopNowProps) {
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   // Hydration parity: reproduce the baked freshness verdict on first paint,
   // switch to the live clock after mount (the chip may then drop if a reading
   // aged out — correct behaviour, post-commit).
   const freshnessNowMs = mounted ? undefined : bakedAtMs;
-  const cardLocale = isPt ? 'pt' : 'en';
+  const cardLocale = locale;
   const warningsData = useIpmaWarnings();
 
   // Re-hidratação client-side (mount + 15 min + tab visível, mesmo
@@ -72,16 +76,10 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
       aria-labelledby="top-now-heading"
     >
       <h2 id="top-now-heading" className="font-display text-display-lg font-bold text-fg tracking-tight mb-1">
-        {isPt ? 'A bombar agora' : 'Firing now'}
+        {t.homepage.firingNow}
       </h2>
       <p className="text-meta text-fg-muted mb-4">
-        {cards.length === 0
-          ? isPt
-            ? 'Nenhum desporto a bombar neste momento'
-            : 'No sports firing right now'
-          : isPt
-            ? 'Só spots a bombar · por desporto'
-            : 'Only firing spots · by sport'}
+        {cards.length === 0 ? t.homepage.noSportsFiring : t.homepage.onlyFiringSpots}
       </p>
 
       {/* Camada de boias global desactivada/em baixo — o mesmo aviso honesto da
@@ -94,11 +92,11 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
       {cards.length === 0 ? (
         <EmptyState
           className="py-10"
-          title={getPlayfulEmptyCopy('no-top-now', isPt).title}
-          description={getPlayfulEmptyCopy('no-top-now', isPt).description}
+          title={getPlayfulEmptyCopy('no-top-now', locale).title}
+          description={getPlayfulEmptyCopy('no-top-now', locale).description}
           action={
             <Button variant="secondary" href={`/${locale}/explorar/`} locale={cardLocale}>
-              {isPt ? 'Ver previsões' : 'View forecasts'}
+              {t.homepage.viewForecasts}
             </Button>
           }
         />
@@ -110,12 +108,12 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
         >
           {cards.map(({ sport, data }, i) => {
             const score = getScoreForFilter(data, sport);
-            const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
-            const statusLine = tierPhrase(score, isPt);
+            const sportLabel = getSportLabel(sport, locale);
+            const statusLine = tierPhrase(score, locale);
 
             const warning = strongestSpotWarning(warningsData, data.spot.id);
             const warningBadge = warning
-              ? { level: warning.level, label: warningBadgeLabel(warning, isPt) }
+              ? { level: warning.level, label: warningBadgeLabel(warning, locale) }
               : null;
             // «Corrigido pela boia X» (ME/n no tooltip) — mesma fonte do spot page.
             const waveCorrection = resolveScoreWaveCorrection({ ...data.conditions }, freshnessNowMs);
@@ -130,8 +128,8 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
                   compact
                   withImage
                   spot={data.spot}
-                  name={isPt ? data.spot.name : data.spot.nameEn}
-                  region={isPt ? data.spot.region : data.spot.regionEn}
+                  name={localizedSpotName(data.spot, locale)}
+                  region={localizedSpotRegion(data.spot, locale)}
                   score={score}
                   conditions={data.conditions}
                   href={spotDetailHref(locale, data.spot.slug, sport)}
@@ -141,7 +139,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
                   calmWaterLabel={getCalmWaterMetricLabel(
                     data.spot,
                     data.conditions.waveHeight,
-                    isPt,
+                    locale,
                   )}
                   statusLine={statusLine}
                   warning={warningBadge}
