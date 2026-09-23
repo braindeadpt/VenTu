@@ -210,7 +210,7 @@ export default function SpotStickyBar({
           <WarningPill
             warning={{
               level: warning.level,
-              label: warningBadgeLabel(warning, isPt),
+              label: warningBadgeLabel(warning, locale),
               seaState: SEA_STATE_WARNING_TYPES.has(warning.type),
               areaLabel: warning.areaLabel,
               type: warning.type,

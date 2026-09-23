@@ -113,7 +113,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
 
             const warning = strongestSpotWarning(warningsData, data.spot.id);
             const warningBadge = warning
-              ? { level: warning.level, label: warningBadgeLabel(warning, isPt) }
+              ? { level: warning.level, label: warningBadgeLabel(warning, locale) }
               : null;
             // «Corrigido pela boia X» (ME/n no tooltip) — mesma fonte do spot page.
             const waveCorrection = resolveScoreWaveCorrection({ ...data.conditions }, freshnessNowMs);

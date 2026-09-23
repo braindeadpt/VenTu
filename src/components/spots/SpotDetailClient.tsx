@@ -624,7 +624,7 @@ export default function SpotDetailClient({
     windows: magicWindows,
     tide: tideSchedule,
     coastOrientation: spot.coastOrientation,
-    isPt,
+    locale,
     nowMs: freshnessNowMs ?? Date.now(),
   });
   const scoreWindSource = resolveScoreWindSource(

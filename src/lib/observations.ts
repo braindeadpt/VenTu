@@ -55,24 +55,24 @@ export function verificationBadge(
   agreement: WindVerificationAgreement,
   locale: string,
 ): { label: string; className: string; symbol: string } {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).observed;
   switch (agreement) {
     case 'match':
       return {
         symbol: '✓',
-        label: isPt ? 'Converge' : 'Match',
+        label: t.agMatch,
         className: 'border-score-good/40 bg-score-good/10 text-score-good',
       };
     case 'near':
       return {
         symbol: '~',
-        label: isPt ? 'Próximo' : 'Near',
+        label: t.agNear,
         className: 'border-score-fair/40 bg-score-fair/10 text-score-fair',
       };
     default:
       return {
         symbol: '⚠',
-        label: isPt ? 'Diverge' : 'Off',
+        label: t.agOff,
         className: 'border-score-poor/40 bg-score-poor/10 text-score-poor',
       };
   }
@@ -139,26 +139,17 @@ export function observedSectionTitle(
   fresh: boolean,
   locale: string,
 ): string {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).observed;
   if (!fresh) {
-    return isPt ? `Observado (${observedSourceLabel(source, locale)})` : `Observed (${observedSourceLabel(source, locale)})`;
+    return t.observedWithSource.replace('{source}', observedSourceLabel(source, locale));
   }
-  return isPt ? 'Observado agora' : 'Observed now';
+  return t.observedNow;
 }
 
 export function observedWindDisclaimer(source: ObservedSource, locale: string): string {
-  const isPt = locale === 'pt';
-  if (source === 'ecowitt') {
-    return isPt
-      ? 'Estação Ecowitt (PWS) — vento medido na costa; pode diferir do line-up.'
-      : 'Ecowitt PWS — measured on the coast; may differ from the lineup.';
-  }
-  if (source === 'metar') {
-    return isPt
-      ? 'METAR de aeroporto — vento observado, mas não é o térmico da praia.'
-      : 'Airport METAR — observed wind, not beach thermal.';
-  }
-  return isPt
-    ? 'Estação terrestre IPMA — pode diferir do vento no line-up.'
-    : 'Land IPMA station — may differ from wind on the water.';
-}
+  const t = getTranslation(locale).observed;
+  if (source === 'ecowitt') return t.disclaimerEcowitt;
+  if (source === 'metar') return t.disclaimerMetar;
+  return t.disclaimerIpmaLand;
+}import { getTranslation } from '@/lib/i18n';
+

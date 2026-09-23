@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { AlertTriangle, Waves } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
@@ -78,7 +79,7 @@ export default function SeaStateSafetyBanner({
         <span className="text-meta-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <span className="inline-flex items-center gap-1 font-medium">
             <AlertTriangle className="w-3.5 h-3.5 shrink-0" aria-hidden />
-            {warningTypeLabel(warning.type, isPt)} · {levelLabel}
+            {warningTypeLabel(warning.type, locale)} · {levelLabel}
           </span>
           {warning.endTime && (
             <span>
@@ -86,7 +87,7 @@ export default function SeaStateSafetyBanner({
             </span>
           )}
           <span>
-            {isPt ? 'Fonte' : 'Source'}: {warningsSourceLabel(warningsData, isPt)}
+            {getTranslation(locale).ipmaWarnings.sourceWord}: {warningsSourceLabel(warningsData, locale)}
           </span>
         </span>
       </div>

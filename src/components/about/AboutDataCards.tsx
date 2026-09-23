@@ -200,7 +200,7 @@ export default function AboutDataCards({
       {keyInfo ? <IhKeyCard t={t} isPt={isPt} info={keyInfo} /> : null}
       {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
       {radar ? <RadarCard t={t} isPt={isPt} radar={radar} /> : null}
-      {skill?.hasData ? <SkillCard t={t} isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} archive={archive} /> : null}
+      {skill?.hasData ? <SkillCard t={t} isPt={isPt} locale={locale} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} archive={archive} /> : null}
     </>
   )
 }
@@ -551,10 +551,12 @@ function TideObservationsList({
 function SkillCard({
   t,
   isPt,
+  locale,
   skill,
 }: {
   t: ReturnType<typeof getTranslation>['about']
   isPt: boolean
+  locale: string
   skill: ForecastSkillData
 }) {
         if (!skill.hasData) return null
@@ -623,7 +625,7 @@ function SkillCard({
                       <td className="py-1.5 pr-3 font-medium text-fg">{b.name}</td>
                       <td
                         className="py-1.5 pr-3 text-fg-muted whitespace-nowrap"
-                        title={forecastSkillOriginLabel(b.origin, isPt, t.skillOriginEsCountry)}
+                        title={forecastSkillOriginLabel(b.origin, locale, t.skillOriginEsCountry)}
                         data-skill-buoy-origin={b.origin}
                       >
                         {originLabel(b.origin)}

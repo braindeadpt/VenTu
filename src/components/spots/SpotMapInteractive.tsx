@@ -703,10 +703,10 @@ export default function SpotMapInteractive({
     if (!warningsData) return map;
     for (const data of visibleSpots) {
       const w = strongestSpotWarning(warningsData, data.spot.id);
-      if (w) map.set(data.spot.id, { level: w.level, label: warningBadgeLabel(w, isPt), seaState: SEA_STATE_WARNING_TYPES.has(w.type) });
+      if (w) map.set(data.spot.id, { level: w.level, label: warningBadgeLabel(w, locale), seaState: SEA_STATE_WARNING_TYPES.has(w.type) });
     }
     return map;
-  }, [warningsData, visibleSpots, isPt]);
+  }, [warningsData, visibleSpots, locale]);
 
   // ── Labels ──
   const exitFullscreenLabel = t.map.exitFullscreen;

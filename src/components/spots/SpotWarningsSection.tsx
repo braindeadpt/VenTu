@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { AlertTriangle, CloudRain, ExternalLink } from 'lucide-react';
 import { getAssetPath } from '@/lib/paths';
@@ -95,7 +96,7 @@ export default function SpotWarningsSection({
             >
               <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
                 <span className="font-semibold text-fg">
-                  {warningTypeLabel(w.type, isPt)}
+                  {warningTypeLabel(w.type, locale)}
                 </span>
                 <span className="text-xs font-bold uppercase tracking-wide">
                   {warningLevelLabel(w.level, locale)}
@@ -113,9 +114,10 @@ export default function SpotWarningsSection({
       )}
 
       <p className="text-meta-sm text-fg-subtle mt-2.5">
-        {isPt
-          ? `Fonte: ${warningsSourceLabel(data, true)} · avisos por área${data?.source === 'meteoalarm' ? ' (EUMETNET, fallback)' : ' (distrito/ilhas)'}.`
-          : `Source: ${warningsSourceLabel(data, false)} · warnings by area${data?.source === 'meteoalarm' ? ' (EUMETNET fallback)' : ''}.`}
+        {(data?.source === 'meteoalarm'
+          ? getTranslation(locale).ipmaWarnings.sourceByAreaEumetnet
+          : getTranslation(locale).ipmaWarnings.sourceByAreaDistrict
+        ).replace('{source}', warningsSourceLabel(data, locale))}
       </p>
 
       {/* Avisos à Navegação Costeiros (IH) — camada de segurança marítima

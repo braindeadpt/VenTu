@@ -66,7 +66,7 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
   // dispensada para EXACTAMENTE este estado.
   if (!status || dismissed?.reason === status) return null;
 
-  const c = buoyLayerCopy(status, wmo, isPt, true);
+  const c = buoyLayerCopy(status, wmo, locale, true);
   const chipLabel: Record<BuoyLayerStatus, string> = {
     'no-key': isPt ? 'Boias desactivadas' : 'Buoys disabled',
     down: isPt ? 'Boias em baixo' : 'Buoys down',

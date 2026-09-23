@@ -116,13 +116,12 @@ export function observedWaveLabel(
   wave: Pick<ObservedWave, 'stationName' | 'stationArea' | 'distanceKm'>,
   locale: string,
 ): string {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).waveObs;
   const name = wave.stationName?.trim() || wave.stationArea?.trim() || '';
   const dist = Math.round(wave.distanceKm);
-  if (isPt) {
-    return name ? `boia ${name} a ${dist} km` : `boia a ${dist} km`;
-  }
-  return name ? `buoy ${name}, ${dist} km away` : `buoy, ${dist} km away`;
+  return (name ? t.labelWithName : t.labelNoName)
+    .replace('{name}', name)
+    .replace('{dist}', String(dist));
 }
 
 /**
@@ -136,16 +135,17 @@ export function waveCalibrationTag(
 ): { label: string; title: string } | null {
   const cal = wave?.calibration;
   if (!cal || !Number.isFinite(cal.me) || !Number.isFinite(cal.n)) return null;
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).waveObs;
   const fmtMe = `${cal.me >= 0 ? '+' : ''}${cal.me.toFixed(1)}`;
-  const from = cal.from ?? (isPt ? 'par ES×PT' : 'ES×PT pair');
+  const from = cal.from ?? t.esPtPair;
   return {
-    label: isPt
-      ? `🔧 ref. PT (${fmtMe} m · n=${cal.n})`
-      : `🔧 PT ref (${fmtMe} m · n=${cal.n})`,
-    title: isPt
-      ? `Leitura espanhola recalibrada para a referência PT (${from}) · ME ${fmtMe} m (n=${cal.n}): altura = ${cal.rawHeight.toFixed(1)} m → ${wave?.waveHeight?.toFixed(1) ?? '…'} m.`
-      : `Spanish reading recalibrated to the PT reference (${from}) · ME ${fmtMe} m (n=${cal.n}): height = ${cal.rawHeight.toFixed(1)} m → ${wave?.waveHeight?.toFixed(1) ?? '…'} m.`,
+    label: t.calTagLabel.replace('{me}', fmtMe).replace('{n}', String(cal.n)),
+    title: t.calTagTitle
+      .replace('{from}', from)
+      .replace('{me}', fmtMe)
+      .replace('{n}', String(cal.n))
+      .replace('{raw}', cal.rawHeight.toFixed(1))
+      .replace('{cal}', wave?.waveHeight?.toFixed(1) ?? '…'),
   };
 }
 
@@ -153,15 +153,9 @@ export function observedWaveDisclaimer(
   locale: string,
   source: ObservedWave['source'] = 'ih-buoy',
 ): string {
-  const isPt = locale === 'pt';
-  if (source === 'wmo-buoy') {
-    return isPt
-      ? 'Boia ondógrafo (WMO/Copernicus Marine) — altura/período/direcção medidos ao largo; a onda na praia pode diferir.'
-      : 'WMO waverider buoy (Copernicus Marine) — height/period/direction measured offshore; the wave at the beach may differ.';
-  }
-  return isPt
-    ? 'Boia ondógrafo do IH (Instituto Hidrográfico) — altura/período/direcção medidos ao largo; a onda na praia pode diferir.'
-    : 'IH waverider buoy (Instituto Hidrográfico) — height/period/direction measured offshore; the wave at the beach may differ.';
+  const t = getTranslation(locale).waveObs;
+  if (source === 'wmo-buoy') return t.disclaimerWmo;
+  return t.disclaimerIh;
 }
 
 export type WaveVerificationAgreement = 'match' | 'near' | 'off';
@@ -191,25 +185,26 @@ export function waveVerificationBadge(
   agreement: WaveVerificationAgreement,
   locale: string,
 ): { label: string; className: string; symbol: string } {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).observed;
   switch (agreement) {
     case 'match':
       return {
         symbol: '✓',
-        label: isPt ? 'Converge' : 'Match',
+        label: t.agMatch,
         className: 'border-score-good/40 bg-score-good/10 text-score-good',
       };
     case 'near':
       return {
         symbol: '~',
-        label: isPt ? 'Próximo' : 'Near',
+        label: t.agNear,
         className: 'border-score-fair/40 bg-score-fair/10 text-score-fair',
       };
     default:
       return {
         symbol: '⚠',
-        label: isPt ? 'Diverge' : 'Off',
+        label: t.agOff,
         className: 'border-score-poor/40 bg-score-poor/10 text-score-poor',
       };
   }
-}
+}import { getTranslation } from '@/lib/i18n';
+

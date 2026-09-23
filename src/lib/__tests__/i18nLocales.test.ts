@@ -21,6 +21,8 @@ const SHARED_TOKENS = new Set([
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
   'flat', // termo adoptado em pt/en/es (frase de tier «flat»)
+  'offshore', // termo adoptado em pt/en/de (relação de vento)
+  'onshore',  // termo adoptado em pt/en/de (relação de vento)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
 ]);
 
@@ -132,6 +134,11 @@ const ES_COGNATES = new Set([
   'Configurar alerta',                 // espanhol correcto = PT (aria do alerta)
   'Score mínimo',                      // espanhol correcto = PT (aria do score mínimo)
   'Guardar alerta',                    // espanhol correcto = PT (CTA de guardar alerta)
+  'lateral',                           // espanhol correcto = PT (relação de vento)
+  'Converge',                          // espanhol correcto = PT (verificação de observações)
+  'Diverge',                           // espanhol correcto = PT (verificação de observações)
+  'Observado ({source})',              // espanhol correcto = PT (rótulo de observação)
+  '🔧 ref. PT ({me} m · n={n})',        // espanhol correcto = PT (etiqueta de recalibração)
 ]);
 
 /**

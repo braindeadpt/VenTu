@@ -11,6 +11,7 @@
  * the next reload — and the choice persists in localStorage (reason-specific)
  * until the layer heals.
  */
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import {
   loadBuoyLayerHealth,
@@ -94,47 +95,25 @@ function subscribeDismissal(listener: () => void): () => void {
 export function buoyLayerCopy(
   status: BuoyLayerStatus,
   wmo: WmoLayerStatus,
-  isPt: boolean,
+  locale: string,
   isHome: boolean,
 ): { title: string; body: string; wmoNote: string } {
+  const t = getTranslation(locale).buoyNotice;
   /** Nota WMO: «WMO em baixo» / «WMO com leituras antigas» (só quando também falhou). */
-  const wmoNote =
-    wmo === 'down'
-      ? isPt
-        ? ' O fallback WMO (Copernicus) também está em baixo.'
-        : ' The WMO fallback (Copernicus) is also down.'
-      : wmo === 'stale'
-        ? isPt
-          ? ' O fallback WMO (Copernicus) só tem leituras antigas.'
-          : ' The WMO fallback (Copernicus) only has stale readings.'
-        : '';
+  const wmoNote = wmo === 'down' ? t.wmoDownNote : wmo === 'stale' ? t.wmoStaleNote : '';
 
   const copy: Record<BuoyLayerStatus, { title: string; body: string }> = {
     'no-key': {
-      title: isPt ? 'Onda observada desactivada' : 'Observed wave disabled',
-      body: isPt
-        ? isHome
-          ? 'Sem leituras de boia: a IH_API_KEY não está configurada na pipeline. As alturas de onda no mapa e nos cards são previsão do modelo.'
-          : 'Sem leituras de boia: a IH_API_KEY não está configurada na pipeline. As alturas de onda nesta página são previsão do modelo.'
-        : isHome
-          ? 'No buoy readings: IH_API_KEY is not configured in the pipeline. Wave heights on the map and cards are model forecasts.'
-          : 'No buoy readings: IH_API_KEY is not configured in the pipeline. Wave heights on this page are model forecasts.',
+      title: t.noKeyTitle,
+      body: isHome ? t.noKeyBodyHome : t.noKeyBodyPage,
     },
     down: {
-      title: isPt ? 'Boias do IH indisponíveis' : 'IH buoys unavailable',
-      body: isPt
-        ? 'O serviço de boias do Instituto Hidrográfico está em baixo — sem leituras de onda observada por agora.'
-        : 'The Instituto Hidrográfico buoy service is down — no measured wave readings right now.',
+      title: t.downTitle,
+      body: t.downBody,
     },
     stale: {
-      title: isPt ? 'Leituras das boias antigas' : 'Stale buoy readings',
-      body: isPt
-        ? isHome
-          ? 'As leituras das boias têm mais de 3 h — as alturas de onda no mapa e nos cards são previsão do modelo.'
-          : 'As leituras das boias têm mais de 3 h — a altura de onda acima é previsão do modelo.'
-        : isHome
-          ? 'Buoy readings are older than 3 h — wave heights on the map and cards are model forecasts.'
-          : 'Buoy readings are older than 3 h — wave height above is a model forecast.',
+      title: t.staleTitle,
+      body: isHome ? t.staleBodyHome : t.staleBodyPage,
     },
     ok: { title: '', body: '' },
   };

@@ -42,7 +42,7 @@ const base = {
   conditions,
   tide: tideRising,
   coastOrientation: 270, // costa virada a W → vento E = offshore
-  isPt: true,
+  locale: 'pt',
   nowMs: T0,
 };
 
@@ -119,7 +119,7 @@ describe('buildSpotVerdict', () => {
 
   it('janela EN overnight usa «(tomorrow)»', () => {
     const windows: MagicWindow[] = [{ start: 13, end: 17, duration: 5, score: 72, reason: '', reasonEn: '' }];
-    const v = buildSpotVerdict({ ...base, isPt: false, hourly: hourly24(), windows });
+    const v = buildSpotVerdict({ ...base, locale: 'en', hourly: hourly24(), windows });
     expect(v?.headline).toContain('23h–03h (tomorrow)');
   });
 
@@ -154,7 +154,7 @@ describe('buildSpotVerdict', () => {
   });
 
   it('EN: relação de vento e maré em inglês', () => {
-    const v = buildSpotVerdict({ ...base, isPt: false, hourly: hourly24(), windows: [] });
+    const v = buildSpotVerdict({ ...base, locale: 'en', hourly: hourly24(), windows: [] });
     expect(v?.detail).toContain('E 10 kt offshore wind');
     expect(v?.detail).toContain('rising tide');
   });

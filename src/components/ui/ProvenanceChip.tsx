@@ -159,7 +159,7 @@ export default function ProvenanceChip({
 
   const ariaLabel =
     ariaLabelProp ??
-    `${provenanceAxisAria(axis, isPt)}: ${label}${detail ? `. ${detail}` : ''}`;
+    `${provenanceAxisAria(axis, locale)}: ${label}${detail ? `. ${detail}` : ''}`;
 
   // O texto do rótulo vive DIRECTO no elemento-raiz (com o title), não num
   // span aninhado: era essa a forma do DOM antes da unificação, e é o que
