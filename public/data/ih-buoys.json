@@ -1,44 +1,5 @@
 {
   "stations": {
-    "1": {
-      "idEst": 1,
-      "name": "CSA88/1",
-      "area": "Boia Nazaré Oceânica",
-      "wmoId": 6200192,
-      "depth": 1897,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 39.5,
-      "lon": -9.633333333333331,
-      "lastSea": "2025-09-30T05:00:00",
-      "family": "fugro"
-    },
-    "2": {
-      "idEst": 2,
-      "name": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "wmoId": 6200199,
-      "depth": 85,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 39.550000000000004,
-      "lon": -9.200000000000001,
-      "lastSea": "2026-09-23T13:00:00",
-      "family": "fugro"
-    },
-    "3": {
-      "idEst": 3,
-      "name": "CSA89/1 ",
-      "area": "Boia Leixões Oceânica",
-      "wmoId": 6200191,
-      "depth": 1647,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 41.1333333333333,
-      "lon": -9.56666666666667,
-      "lastSea": "2025-02-12T12:00:00",
-      "family": "fugro"
-    },
     "4": {
       "idEst": 4,
       "name": "CSA92/D",
@@ -50,15 +11,15 @@
       "lat": 41.3155555555556,
       "lon": -8.9825,
       "lastPos": "2026-09-22T23:32:14+00:00",
-      "lastSea": "2026-09-23T12:02:14+00:00",
+      "lastSea": "2026-09-23T15:02:14+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-23T12:02:14.000Z",
-        "hm0": 2.09,
-        "tp": 12.5,
-        "thtp": 295,
-        "hmax": 3.36,
-        "temp": 15.6
+        "date": "2026-09-23T15:02:14.000Z",
+        "hm0": 1.93,
+        "tp": 13.3,
+        "thtp": 294,
+        "hmax": 3.33,
+        "temp": 16.1
       }
     },
     "19": {
@@ -71,16 +32,16 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-09-23T12:26:43+00:00",
-      "lastSea": "2026-09-23T12:26:43+00:00",
+      "lastPos": "2026-09-23T14:26:43+00:00",
+      "lastSea": "2026-09-23T14:56:43+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-23T12:26:43.000Z",
-        "hm0": 2.22,
-        "tp": 15.4,
-        "thtp": 308,
-        "hmax": 3.21,
-        "temp": 19
+        "date": "2026-09-23T15:26:43.000Z",
+        "hm0": 2.17,
+        "tp": 14.3,
+        "thtp": 300,
+        "hmax": 2.86,
+        "temp": 20.2
       }
     },
     "20": {
@@ -121,16 +82,16 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-09-23T12:29:58+00:00",
-      "lastSea": "2026-09-23T12:29:58+00:00",
+      "lastPos": "2026-09-23T14:59:59+00:00",
+      "lastSea": "2026-09-23T14:59:59+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-23T12:29:58.000Z",
-        "hm0": 0.3,
-        "tp": 12.5,
-        "thtp": 197,
-        "hmax": 0.45,
-        "temp": 23.6
+        "date": "2026-09-23T15:29:59.000Z",
+        "hm0": 0.44,
+        "tp": 15.4,
+        "thtp": 218,
+        "hmax": 0.63,
+        "temp": 24.1
       }
     },
     "66": {
@@ -198,16 +159,15 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-09-23T12:19:06+00:00",
-      "lastSea": "2026-09-23T12:49:06+00:00",
+      "lastPos": "2026-09-23T14:49:06+00:00",
+      "lastSea": "2026-09-23T15:19:06+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-23T12:49:06.000Z",
-        "hm0": 2,
-        "tp": 11.8,
-        "thtp": 100,
-        "hmax": 2.82,
-        "temp": 23
+        "date": "2026-09-23T15:49:06.000Z",
+        "hm0": 99.99,
+        "tp": 99.9,
+        "hmax": 99.9,
+        "temp": 99.9
       }
     },
     "88": {
@@ -223,80 +183,6 @@
       "lastPos": "2025-08-18T16:02:24+00:00",
       "lastSea": "2025-08-18T16:02:24+00:00",
       "family": "datawell"
-    },
-    "1004": {
-      "idEst": 1004,
-      "name": "CSA87",
-      "area": "Zona Piloto - S. Pedro de Moel",
-      "depth": 59,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 39.8731683,
-      "lon": -9.09806,
-      "lastSea": "2013-01-19T06:00:00",
-      "family": "fugro"
-    },
-    "1005": {
-      "idEst": 1005,
-      "name": "CSA81",
-      "area": "Boia Faro Oceânica",
-      "wmoId": 6200200,
-      "depth": 1300,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 36.4833333333333,
-      "lon": -8.06666666666667,
-      "lastSea": "2026-05-01T04:00:00",
-      "family": "fugro"
-    },
-    "1007": {
-      "idEst": 1007,
-      "name": "Subeco",
-      "area": "Setúbal",
-      "depth": 1012,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 38.1666666666667,
-      "lon": -9.33333333333333,
-      "lastSea": "2019-10-30T10:00:00",
-      "family": "fugro"
-    },
-    "1008": {
-      "idEst": 1008,
-      "name": "CSA83",
-      "area": "Boia Sines Oceânica",
-      "wmoId": 6201081,
-      "depth": 1052,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 37.8833333333333,
-      "lon": -9.450000000000001,
-      "lastSea": "2025-11-28T07:00:00",
-      "family": "fugro"
-    },
-    "1010": {
-      "idEst": 1010,
-      "name": "ZLT1",
-      "area": "ZLT1",
-      "depth": 115,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 38.3833333333333,
-      "lon": -9.06666666666667,
-      "lastSea": "2026-09-23T13:00:00",
-      "family": "fugro"
-    },
-    "1011": {
-      "idEst": 1011,
-      "name": "ZLT2",
-      "area": "ZLT2",
-      "depth": 114,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 38.35,
-      "lon": -9,
-      "lastSea": "2026-09-23T13:00:00",
-      "family": "fugro"
     }
   },
   "spotMapping": {
@@ -559,178 +445,178 @@
       "distanceKm": 79.8
     },
     "tocha": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 92.1
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 110.1
     },
     "quiaios": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 79.1
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 122.1
     },
     "figueira-foz": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 72.4
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 130
     },
     "leirosa": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 62.3
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 140.2
     },
     "praia-da-vieira": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 40.9
+      "idEst": 4,
+      "stationTitle": "CSA92/D",
+      "area": "Leixões",
+      "distanceKm": 160.5
     },
     "castelo-bode": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 77.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 194.5
     },
     "nazare": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 12.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 186.8
     },
     "foz-arelho": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 13.7
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 169.2
     },
     "foil-foz-arelho": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 13.7
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 169.2
     },
     "obidos-lagoon": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 16.8
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 166.4
     },
     "obidos-lagoon-sul": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 13.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 169.5
     },
     "obidos-lagoon-foz": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 13.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 169.6
     },
     "foz-arelho-beach": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 13.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 169.9
     },
     "praia-del-rey": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 19.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 165.8
     },
     "almagreira": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 21.4
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 165.5
     },
     "baleal": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 23.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 165.2
     },
     "supertubos": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 26.8
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 162.7
     },
     "foz-sizandro": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 52.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 137.8
     },
     "coxos": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 64.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 127.4
     },
     "ribeira-ilhas": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 65.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 126.1
     },
     "empa": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 65.7
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 125.9
     },
     "sao-lourenco": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 66.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 125.3
     },
     "pedra-branca": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 66.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 124.6
     },
     "sao-sebastiao": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 67.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 124.2
     },
     "foz-lizandro": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 69
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 121.1
     },
     "praia-grande-sintra": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 59.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 110.5
     },
     "adraga": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 58.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 108.3
     },
     "guincho": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 52.4
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 101.9
     },
     "seixal-bay": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 41.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 91.8
     },
     "praia-vitoria": {
       "idEst": 86,
@@ -745,64 +631,64 @@
       "distanceKm": 78.2
     },
     "parede": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 41.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 92
     },
     "carcavelos": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 40.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 91.4
     },
     "nova-vaga": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 34.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 86.5
     },
     "sao-joao-caparica": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 34.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 86.7
     },
     "costa-caparica": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 32.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 84.8
     },
     "fonte-telha": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 25.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 77.3
     },
     "ponta-dos-corvos": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 29.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 82.6
     },
     "trafaria": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 35.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 87.8
     },
     "cova-do-vapor": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 35.8
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 87.8
     },
     "praia-da-rainha": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 31.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 83.8
     },
     "almoxarife": {
       "idEst": 86,
@@ -811,40 +697,40 @@
       "distanceKm": 84.1
     },
     "lagoa-albufeira": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 14.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 67.1
     },
     "foil-lagoa-albufeira": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 14.6
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 67.1
     },
     "praia-lagoa-albufeira": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 17.1
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 68.8
     },
     "troia": {
-      "idEst": 1011,
-      "stationTitle": "ZLT2",
-      "area": "ZLT2",
-      "distanceKm": 18.8
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 64
     },
     "comporta": {
-      "idEst": 1011,
-      "stationTitle": "ZLT2",
-      "area": "ZLT2",
-      "distanceKm": 19
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 52.5
     },
     "carvalhal-comporta": {
-      "idEst": 1011,
-      "stationTitle": "ZLT2",
-      "area": "ZLT2",
-      "distanceKm": 22.2
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 40.3
     },
     "alqueva": {
       "idEst": 19,
@@ -1213,52 +1099,52 @@
       "distanceKm": 20.5
     },
     "santa-cruz": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 48.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 141
     },
     "consolacao": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 29.3
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 160.1
     },
     "areia-branca": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 34.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 152.8
     },
     "sao-martinho-porto": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 6.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 178
     },
     "cave-ericeira": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 67.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 124.1
     },
     "pescadores-ericeira": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 67.9
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 123.5
     },
     "crazy-left": {
-      "idEst": 2,
-      "stationTitle": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "distanceKm": 68.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 122.9
     },
     "meco": {
-      "idEst": 1010,
-      "stationTitle": "ZLT1",
-      "area": "ZLT1",
-      "distanceKm": 14.5
+      "idEst": 19,
+      "stationTitle": "CSA83/1D",
+      "area": "Sines",
+      "distanceKm": 65.4
     },
     "lagoa-santo-andre": {
       "idEst": 19,
@@ -1387,10 +1273,9 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-09-23T14:09:58.433Z",
+  "fetchedAt": "2026-09-23T16:58:26.400Z",
   "sourceCollections": [
-    "buoys_datawell",
-    "buoys_Fugro_oceanor_wavescan"
+    "buoys_datawell"
   ],
   "apiKeyConfigured": true,
   "hasWaveData": true
