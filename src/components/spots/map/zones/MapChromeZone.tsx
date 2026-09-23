@@ -126,7 +126,7 @@ export function useMapChromeZone({
     const at = hoursLive && hoursTimes[hoursFrame]
       ? new Date(hoursTimes[hoursFrame])
       : new Date();
-    const model = mapTideChipAt(curve, at, locale);
+    const model = mapTideChipAt(curve, at, locale === 'pt' ? 'pt' : 'en');
     if (!model) return undefined;
     const phaseLabel =
       model.phase === 'rising' ? t.map.tideChipRising
