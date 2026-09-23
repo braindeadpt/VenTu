@@ -138,6 +138,7 @@ async function main() {
     }
     const summary = [];
     const allBreaches = [];
+    const breachReports = [];
 
     for (const route of ROUTES) {
       const url = `${BASE}${route.path}`;
@@ -176,16 +177,24 @@ async function main() {
 
       const { breaches } = evaluateLighthouseBudgets(median);
       for (const breach of breaches) allBreaches.push(`[${route.name}] ${breach}`);
+      // Pior run por CLS (é a métrica que oscila no runner partilhado). Guardado
+      // como artefacto sempre que a rota rebenta um budget, para o diagnóstico
+      // sair do próprio runner — foi o único sítio onde a assinatura apareceu
+      // (localmente, mesmo com CPU 8× e máquina carregada, o CLS fica ~0.00003).
+      const worstRun = reports.reduce((a, b) =>
+        (b.audits?.['cumulative-layout-shift']?.numericValue ?? 0) >
+        (a.audits?.['cumulative-layout-shift']?.numericValue ?? 0)
+          ? b
+          : a,
+      );
+      if (breaches.length > 0) {
+        breachReports.push({ route: route.name, path: route.path, breaches, worstRun });
+      }
       // Diagnostics: when CLS breaches, name the elements that shifted in the
       // worst run — the spot page has an intermittent ~0.64 cold-cache
       // signature (one late ~37KB resource) that pure scores can't identify.
       if (medianCls > 0.1) {
-        const worst = reports.reduce((a, b) =>
-          (b.audits?.['cumulative-layout-shift']?.numericValue ?? 0) >
-          (a.audits?.['cumulative-layout-shift']?.numericValue ?? 0)
-            ? b
-            : a,
-        );
+        const worst = worstRun;
         const shifts =
           worst.audits?.['layout-shifts']?.details?.items ?? [];
         for (const item of shifts.slice(0, 5)) {
@@ -219,6 +228,19 @@ async function main() {
     if (allBreaches.length > 0) {
       console.warn(`Budget breaches on the median report (${allBreaches.length}):`);
       for (const b of allBreaches) console.warn(`  - ${b}`);
+      if (breachReports.length > 0) {
+        const dir = path.join(__dirname, '..', 'lighthouse-reports');
+        fs.mkdirSync(dir, { recursive: true });
+        for (const r of breachReports) {
+          fs.writeFileSync(
+            path.join(dir, `${r.route}-worst.json`),
+            JSON.stringify({ path: r.path, breaches: r.breaches, report: r.worstRun }),
+          );
+        }
+        console.warn(
+          `  relatórios do pior run guardados em lighthouse-reports/ (${breachReports.length}) — o CI publica-os como artefacto`,
+        );
+      }
       process.exit(1);
     }
     console.log('All Lighthouse budgets met (median across runs).');

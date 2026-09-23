@@ -285,6 +285,18 @@ jobs:
         env:
           LIGHTHOUSE_RUNS: '5'
 
+      # Quando o gate rebenta, o relatório do pior run (com os elementos que
+      # mexeram e as requisições tardias) fica como artefacto: é o único sítio
+      # onde a assinatura de CLS do runner partilhado se reproduz.
+      - name: Upload Lighthouse diagnostics (failure only)
+        if: failure()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lighthouse-diagnostics
+          path: lighthouse-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
   supabase-sql:
     runs-on: ubuntu-latest
     timeout-minutes: 15
