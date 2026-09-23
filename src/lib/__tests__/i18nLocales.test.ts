@@ -81,6 +81,9 @@ const ES_COGNATES = new Set([
   'Desactivados',        // espanhol correcto = PT (estado dos alertas)
   'Activos · score ≥ {score} · {mode}', // espanhol correcto = PT (estado activo dos alertas)
   'abrir bot',           // espanhol correcto = PT (link do Telegram)
+  'ver spot →',          // espanhol correcto = PT (link do banner Dawn Patrol)
+  'Desactualizado',      // espanhol correcto = PT (selo de briefing antigo)
+  'Ver Spot',            // espanhol correcto = PT (botão do banner)
 ]);
 
 /**

@@ -7,6 +7,7 @@ import { getMoonPhase } from '@/lib/moonPhase';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { getAssetPath } from '@/lib/paths';
+import { getTranslation } from '@/lib/i18n';
 import { spots } from '@/lib/spots';
 import { isDawnPatrolStale } from '@/lib/dataFreshness';
 import {
@@ -83,17 +84,16 @@ function recalibrationTitle(
   meta: DawnPatrolScoreMeta | null | undefined,
   forecast: number | undefined,
   score: number,
-  isPt: boolean,
+  labels: { scoreByBuoy: string; scoreByBias: string; scoreForecastSuffix: string },
 ): string | undefined {
   if (!source || source === 'previsão') return undefined;
+  const suffix = labels.scoreForecastSuffix.replace('{forecast}', String(forecast ?? score));
   if (source === 'boia') {
-    return isPt
-      ? `Score corrigido pela boia${meta?.stationName ? ` ${meta.stationName}` : ''} (previsão: ${forecast ?? score})`
-      : `Score corrected by buoy${meta?.stationName ? ` ${meta.stationName}` : ''} (forecast: ${forecast ?? score})`;
+    const station = meta?.stationName ? ` ${meta.stationName}` : '';
+    return `${labels.scoreByBuoy}${station}${suffix}`;
   }
-  return isPt
-    ? `Score corrigido pelo viés regional${meta?.region ? ` (${meta.region})` : ''} (previsão: ${forecast ?? score})`
-    : `Score corrected by regional bias${meta?.region ? ` (${meta.region})` : ''} (forecast: ${forecast ?? score})`;
+  const region = meta?.region ? ` (${meta.region})` : '';
+  return `${labels.scoreByBias}${region}${suffix}`;
 }
 
 const VALID_SLUGS = new Set(spots.map(s => s.slug));
@@ -114,6 +114,8 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
   const [error, setError] = useState(false);
   const [barAnimated, setBarAnimated] = useState(false);
   const isPt = locale === 'pt';
+  const tr = getTranslation(locale);
+  const t = tr.dawnPatrol;
 
   useEffect(() => {
     fetch(getAssetPath('/data/dawn-patrol.json'))
@@ -198,14 +200,14 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
       <div className="w-full bg-surface-1/[0.04] border-b border-divider px-4 py-3">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-sm text-fg-muted">
           <span>
-            {isPt ? 'Dawn Patrol indisponível' : 'Dawn Patrol unavailable'}
+            {t.unavailable}
           </span>
           <button
             type="button"
             onClick={handleRetry}
             className="px-3 py-1 rounded-lg bg-surface-2/[0.08] hover:bg-surface-3/[0.12] transition-colors text-fg-muted text-xs font-medium"
           >
-            {isPt ? 'Tentar de novo' : 'Retry'}
+            {t.retry}
           </button>
         </div>
       </div>
@@ -273,9 +275,9 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
   };
 
   const verdictLabels = {
-    go: isPt ? 'VAI!' : 'GO!',
-    maybe: isPt ? 'TALVEZ' : 'MAYBE',
-    skip: isPt ? 'SKIP' : 'SKIP',
+    go: t.verdictGo,
+    maybe: t.verdictMaybe,
+    skip: 'SKIP',
   };
 
   return (
@@ -294,14 +296,14 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
         >
           <Waves className="w-4 h-4 shrink-0" aria-hidden />
           <span className="font-bold">
-            {isPt ? 'Mar perigoso — não surfar' : 'Dangerous sea — do not surf'}
+            {t.dangerousSea}
           </span>
           <span className="font-semibold">
             {warningBadgeLabel(seaState.warning, isPt)} ·{' '}
             {warningLevelLabel(seaState.warning.level, locale)}
           </span>
           <span className="text-meta-sm text-fg-muted ml-auto shrink-0">
-            {isPt ? 'ver spot →' : 'view spot →'}
+            {t.viewSpotArrow}
           </span>
         </Link>
       )}
@@ -324,16 +326,16 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
                 <span className="text-xs font-bold text-accent uppercase tracking-wider font-display">
-                  {isPt ? 'Dawn Patrol' : 'Dawn Patrol'}
+                  Dawn Patrol
                 </span>
                 <span className="text-xs text-fg-subtle whitespace-nowrap">{dateLabel}</span>
                 {stale && (
                   <span
                     className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-score-fair/15 text-score-fair border border-score-fair/30"
-                    title={isPt ? 'Briefing com mais de 24 horas — a aguardar actualização' : 'Briefing older than 24 hours — awaiting update'}
+                    title={t.staleTitle}
                   >
                     <AlertTriangle className="w-3 h-3" />
-                    {isPt ? 'Desactualizado' : 'Outdated'}
+                    {t.stale}
                   </span>
                 )}
               </div>
@@ -353,8 +355,8 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
               onClick={(e) => e.stopPropagation()}
             >
               {topSpotLinkValid
-                ? (isPt ? 'Ver Spot' : 'View Spot')
-                : (isPt ? 'Ver Spots' : 'View Spots')}
+                ? t.viewSpot
+                : tr.hero.cta}
             </Button>
             {expanded ? <ChevronUp className="w-5 h-5 text-fg-subtle" /> : <ChevronDown className="w-5 h-5 text-fg-subtle" />}
           </div>
@@ -369,7 +371,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             <div className="flex items-center gap-2 text-sm text-fg-muted">
               <Zap className="w-4 h-4 text-accent shrink-0" aria-hidden />
               <span>
-                {isPt ? 'Score:' : 'Score:'}{' '}
+                Score:{' '}
                 <span className="font-bold text-fg tabular-nums">{data.topScore}</span>
                 {data.topScoreSource && data.topScoreSource !== 'previsão' && (
                   <span
@@ -379,16 +381,10 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                       data.topScoreMeta,
                       data.topScoreForecast,
                       data.topScore,
-                      isPt,
+                      t,
                     )}
                   >
-                    {isPt
-                      ? data.topScoreSource === 'boia'
-                        ? '(boia)'
-                        : '(viés regional)'
-                      : data.topScoreSource === 'boia'
-                        ? '(buoy)'
-                        : '(regional bias)'}
+                    {data.topScoreSource === 'boia' ? t.sourceBuoyTag : t.sourceBiasTag}
                   </span>
                 )}
               </span>
@@ -396,11 +392,11 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           )}
           <div className="flex items-center gap-2 text-sm text-fg-muted">
             <Clock className="w-4 h-4 text-data-waves shrink-0" />
-            <span>{isPt ? 'Melhor hora:' : 'Best time:'} <span className="font-bold text-fg">{content.bestTime}</span></span>
+            <span>{t.bestTime} <span className="font-bold text-fg">{content.bestTime}</span></span>
           </div>
           <div className="flex items-center gap-2 text-sm text-fg-muted">
             <Shirt className="w-4 h-4 text-data-waves shrink-0" />
-            <span>{isPt ? 'Fato:' : 'Wetsuit:'} <span className="font-bold text-fg">{content.wetsuit}</span></span>
+            <span>{t.wetsuit} <span className="font-bold text-fg">{content.wetsuit}</span></span>
           </div>
           <div className="flex items-center gap-2 text-sm text-fg-muted">
             <Users className="w-4 h-4 text-data-waves shrink-0" />
@@ -428,9 +424,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           >
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
             <span>
-              {isPt
-                ? `Aviso ativo (${warningsSourceLabel(warningsData, true)})`
-                : `Active warning (${warningsSourceLabel(warningsData, false)})`}:{' '}
+              {t.activeWarning.replace('{source}', warningsSourceLabel(warningsData, isPt) ?? '')}:{' '}
               {relevantWarnings
                 .map((w) => `${warningBadgeLabel(w, isPt)} (${warningLevelLabel(w.level, locale)})`)
                 .join(' · ')}
@@ -445,9 +439,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           >
             <Anchor className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
             <span>
-              {isPt
-                ? 'Aviso à navegação costeira (IH): '
-                : 'Coastal navigation warning (IH): '}
+              {t.coastalWarning}
               {coastalState.warnings
                 .map(
                   (w) =>
@@ -463,13 +455,11 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
       {expanded && (
         <div className="border-t border-divider p-5">
           <h4 className="text-sm font-bold text-fg-muted uppercase tracking-wider mb-3">
-            {isPt ? 'Vereditos de hoje' : "Today's Verdicts"}
+            {t.verdictsHeading}
           </h4>
           {data.spots.length === 0 ? (
             <p className="text-sm text-fg-muted mb-4">
-              {isPt
-                ? 'Ainda não há vereditos por spot para hoje. Consulta o mapa ou o spot em destaque.'
-                : 'No per-spot verdicts for today yet. Check the map or the featured spot.'}
+              {t.noVerdicts}
             </p>
           ) : (
           <div className="space-y-2">
@@ -502,7 +492,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
                       spot.scoreMeta,
                       spot.scoreForecast,
                       spot.score,
-                      isPt,
+                      t,
                     )}
                   >
                     {spot.score}
@@ -522,8 +512,8 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             leftIcon={<Zap className="w-4 h-4" aria-hidden />}
           >
             {topSpotLinkValid
-              ? (isPt ? 'Ver Spot em destaque' : 'View featured spot')
-              : (isPt ? 'Ver todos os spots' : 'View all spots')}
+              ? t.featuredViewSpot
+              : t.allSpots}
           </Button>
         </div>
       )}

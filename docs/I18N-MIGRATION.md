@@ -6,17 +6,18 @@
 >
 > Medição reproduzível: `node scripts/i18n-debt-report.js` (ou `--json`).
 
-## Estado (2026-09-23, após account)
+## Estado (2026-09-23, após account + DawnPatrolBanner)
 
 | Métrica | Valor |
 |---|---:|
 | Ficheiros `src/**` | 526 |
-| Sem dívida (limpos) | 423 |
-| Com ternários de copy | **103** |
-| Ternários de copy | **577** |
+| Sem dívida (limpos) | 425 |
+| Com ternários de copy | **102** |
+| Ternários de copy | **554** |
 
-Progresso: 672 → 577 ternários, 116 → 103 ficheiros (superfícies `fontes`,
-`news`, `auth`, `account`, `HomepageSearch` e `FeedbackForm` fechadas).
+Progresso: 672 → 554 ternários, 116 → 102 ficheiros (superfícies `fontes`,
+`news`, `auth`, `account`, `DawnPatrolBanner`, `HomepageSearch` e
+`FeedbackForm` fechadas).
 
 ### Por superfície (ternários)
 
@@ -27,7 +28,6 @@ Progresso: 672 → 577 ternários, 116 → 103 ficheiros (superfícies `fontes`,
 | `src/components/about` | 55 |
 | `src/components/homepage` | 52 |
 | `src/components/ui` | 42 |
-| `src/components/DawnPatrolBanner.tsx` | 23 |
 | `src/components/layout` | 15 |
 | `src/lib/mapSpotNarrative.ts` | 11 |
 | `src/components/weather` | 11 |
@@ -82,6 +82,14 @@ Progresso: 672 → 577 ternários, 116 → 103 ficheiros (superfícies `fontes`,
    `locale: string` (usa `alerts.modeImmediate`/`modeDigest`), corrigindo
    também o painel de alertas que ainda mostrava o modo em inglês em es/de/fr.
    `src/components/account/**` em `MIGRATED_GLOBS`.
+
+6. **`DawnPatrolBanner`** (23 strings) — bloco `dawnPatrol` novo nas 5 línguas
+   (indisponível/retry, vereditos, aviso de mar perigoso, selo «desactualizado»
+   + tooltip, «Ver Spot/Spots» — este reutiliza `hero.cta` —, melhor hora, fato,
+   vereditos de hoje, spot em destaque/todos) e o helper
+   `recalibrationTitle` passa a receber as etiquetas em vez do booleano `isPt`.
+   Os casos com ramos iguais (`Dawn Patrol`, `Score:`, `SKIP`) deixam de ser
+   ternários; `src/components/DawnPatrolBanner.tsx` entra em MIGRATED_GLOBS.
 
 Em todas, a copy **pt/en ficou byte-idêntica** (baselines visuais intactas) e
 es/de/fr deixaram de receber inglês.
