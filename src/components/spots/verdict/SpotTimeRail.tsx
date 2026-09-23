@@ -8,9 +8,15 @@ import { spotWindows } from '@/lib/spotWindows';
 import { spotTimelineScore } from '@/lib/spotTimelineScore';
 import { sunTimes } from '@/lib/verdict/sunTimes';
 import { scoreBand } from '@/lib/verdict/scoreBand';
-import { formatHourLong } from '@/lib/verdict/formatHourLabel';
+import { getScoreRgb } from '@/lib/scoreThresholds';
+import { formatHourLabel, formatHourLong } from '@/lib/verdict/formatHourLabel';
 import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
-import { pickRailAxisLabels } from '@/lib/verdict/railAxisLabels';
+import { pickRailAxisLabelsPx, railAxisCandidates } from '@/lib/verdict/railAxisLabels';
+import { getWindArrow } from '@/lib/wind';
+import { MS_TO_KNOTS } from '@/lib/waveEnergy';
+import { getConditionsDataId } from '@/lib/spotConditionsSource';
+import { loadForecastForSpot } from '@/lib/spotDataCache';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { cn } from '@/lib/cn';
 import {
   useSpotTimelineData,
@@ -18,7 +24,7 @@ import {
   useSpotTimelineVisibility,
 } from '@/components/spots/timeline/useSpotTimeline';
 
-/** Altura do viewBox da régua (px de render = h-16). */
+/** Altura do viewBox da régua (px de render: 104 mobile / 128 desktop). */
 const TRACK_H = 64;
 /** PageUp/PageDown saltam ±6 h (contrato). */
 const PAGE_STEP = 6;
@@ -26,6 +32,12 @@ const PAGE_STEP = 6;
 const ANNOUNCE_MS = 450;
 /** Limiar «Bom» — tracejado e janelas partilham este corte. */
 const GOOD_THRESHOLD = 60;
+/** Gap mínimo entre rótulos do eixo, em píxeis (spec §3). */
+const AXIS_GAP_PX = 8;
+/** Stagger por barra ao mudar de modalidade: 6 ms, teto de 80 ms de delay
+ *  (160 ms de animação + 80 = máximo 240 ms no total — spec §7). */
+const STAGGER_MS = 6;
+const STAGGER_CAP_MS = 80;
 /** Horas do eixo são wall-time Europe/Lisbon (Open-Meteo). */
 const SPOT_TZ = 'Europe/Lisbon';
 
@@ -38,12 +50,24 @@ interface SpotTimeRailProps {
 
 const clampN = (v: number, n: number) => Math.max(0, Math.min(v, Math.max(0, n - 1)));
 
+/** Métricas por hora para o tooltip da régua (onda/vento da previsão).
+ *  `windSpeed` é m/s no ficheiro — converte-se para kt no render. */
+interface RailHourMetrics {
+  waveHeight: number;
+  wavePeriod: number;
+  windSpeed: number;
+  windDirection: number;
+}
+
 /**
- * §3 do contrato — régua de 48 h. Barras neutras por hora (a escolhida em
- * --verdict), tracejado no 60, noite sombreada por nascer/pôr real (NOAA),
- * janelas de spotWindows com parêntese fino + etiqueta «melhor». Um único
- * slider acessível comanda o eixo partilhado: pointer (capture + pan-y),
- * setas/Home/End/PageUp/PageDown, «Agora» e «Reproduzir 48 h».
+ * §3 da spec v3 — a régua de 48 h é a espinha da página. Barras na cor do
+ * escalão de cada hora a 28 % (a escolhida a 100 % em --verdict; a hora
+ * «agora» com um traço de 1 px em fg), noite sombreada (nascer/pôr NOAA),
+ * a janela ≥60 mais forte como faixa --verdict/8 % por trás das barras com
+ * a etiqueta «melhor» (pico só dentro da janela visível; «bom quase todo o
+ * período» acima de 70 %), tooltip que segue o cursor no desktop
+ * (pointer:fine), eixo com anti-colisão em píxeis (canvas measureText) e
+ * scaleY com stagger de 6 ms ao mudar de modalidade.
  */
 export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps) {
   const isPt = locale === 'pt';
@@ -59,9 +83,12 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
     setPlaying,
     setScrubbing,
   } = useSpotTimelineIndex();
+  const reducedMotion = usePrefersReducedMotion();
 
   const rootRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
+  const axisRef = useRef<HTMLDivElement>(null);
+  const tipRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
   useSpotTimelineVisibility(rootRef);
 
@@ -79,11 +106,20 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   // previsão — S3). Nesse caso nenhuma barra fica marcada — nunca se
   // acende a barra errada com um índice clampado.
   const selInWindow = index >= windowStart && index < windowEnd;
+  const nowLocal = nowIndex >= windowStart && nowIndex < windowEnd ? nowIndex - windowStart : -1;
 
   // Score mostrado por barra — «agora» usa o score corrigido (o mesmo número
   // que o veredicto mostra), as outras horas o score canónico.
   const barScore = (gi: number) =>
     spotTimelineScore({ index: gi, nowIndex, scores, nowScore }) ?? 0;
+
+  // Scores mostrados, alinhados com `hours` — a etiqueta da janela procura
+  // o pico neste array (bate com a barra que se vê, inclui o «agora»).
+  const displayScores = useMemo(
+    () => hours.map((_, i) => barScore(i)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [hours, scores, nowIndex, nowScore],
+  );
 
   const selScore = spotTimelineScore({ index, nowIndex, scores, nowScore });
   const selHour = hours[index];
@@ -129,19 +165,153 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
     });
   }, [winHours, spot.lat, spot.lon]);
 
-  // Janelas ≥60 sobre o eixo completo, cortadas à janela visível.
+  // Janelas ≥60 sobre o eixo completo, cortadas à janela visível. A mais
+  // forte (primeira — spotWindows ordena por pico) fica como faixa por
+  // trás das barras; as restantes mantêm o parêntese fino.
   const visibleWindows = useMemo(
     () =>
-      spotWindows(scores, GOOD_THRESHOLD)
+      spotWindows(displayScores, GOOD_THRESHOLD)
         .filter((w) => w.endIdx >= windowStart && w.startIdx < windowEnd)
         .map((w) => ({
           ...w,
           s: Math.max(w.startIdx, windowStart) - windowStart,
           e: Math.min(w.endIdx, windowEnd - 1) - windowStart,
         })),
-    [scores, windowStart, windowEnd],
+    [displayScores, windowStart, windowEnd],
   );
   const bestWindow = visibleWindows[0];
+
+  // ── Métricas por hora para o tooltip (onda/vento da previsão) ────────
+  // Lê o mesmo ficheiro por-spot que o SpotDetailClient (cache partilhada
+  // em spotDataCache) — no caminho live é dedup, no bake é +1 fetch de
+  // ~50 KB pós-mount. Se falhar, o tooltip fica só com hora · score.
+  const [metrics, setMetrics] = useState<Map<string, RailHourMetrics> | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    loadForecastForSpot(getConditionsDataId(spot))
+      .then((rows) => {
+        if (cancelled) return;
+        const m = new Map<string, RailHourMetrics>();
+        for (const r of rows) {
+          m.set(String(r.time), {
+            waveHeight: Number(r.waveHeight) || 0,
+            wavePeriod: Number(r.wavePeriod) || 0,
+            windSpeed: Number(r.windSpeed) || 0,
+            windDirection: Number(r.windDirection) || 0,
+          });
+        }
+        setMetrics(m);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [spot]);
+
+  // ── Tooltip que segue o cursor (só pointer:fine — spec §3) ───────────
+  const [tip, setTip] = useState<{ x: number; gi: number } | null>(null);
+
+  // ── Eixo: anti-colisão em píxeis ─────────────────────────────────────
+  // measureText com o font real do eixo (canvas). Antes de montar usa-se
+  // uma estimativa mono (6,6 px/caractere a 11 px) — determinístico no SSR.
+  const axisCandidates = useMemo(
+    () => railAxisCandidates(winHours, locale),
+    [winHours, locale],
+  );
+  const [trackW, setTrackW] = useState(0);
+  const [measure, setMeasure] = useState<((s: string) => number) | null>(null);
+  // A linha do topo («melhor: …» / «Agora») é sans — medida própria, senão
+  // o canvas mono sobrestima e o «Agora» cede sem necessidade.
+  const topRowRef = useRef<HTMLDivElement>(null);
+  const [measureTop, setMeasureTop] = useState<((s: string) => number) | null>(null);
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!track || typeof ResizeObserver === 'undefined') return;
+    const canvas = document.createElement('canvas').getContext('2d');
+    const update = () => {
+      setTrackW(track.getBoundingClientRect().width);
+      if (canvas && axisRef.current) {
+        const cs = getComputedStyle(axisRef.current);
+        canvas.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        const ctx = canvas;
+        setMeasure(() => (s: string) => ctx.measureText(s).width);
+      }
+      if (canvas && topRowRef.current) {
+        const cs = getComputedStyle(topRowRef.current);
+        canvas.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        const ctx = canvas;
+        setMeasureTop(() => (s: string) => ctx.measureText(s).width);
+      }
+    };
+    update();
+    // O Geist Mono carrega async — medir de novo quando os fonts chegarem.
+    let cancelled = false;
+    document.fonts?.ready.then(() => {
+      if (!cancelled) update();
+    });
+    const ro = new ResizeObserver(update);
+    ro.observe(track);
+    return () => {
+      cancelled = true;
+      ro.disconnect();
+    };
+  }, [locale]);
+
+  const axisLabels = useMemo(() => {
+    const w = trackW || 720; // estimativa pré-mount — o observer corrige
+    const m = measure ?? ((s: string) => s.length * 6.6);
+    return pickRailAxisLabelsPx(
+      axisCandidates,
+      n,
+      (i) => ((i + 0.5) / n) * w,
+      m,
+      AXIS_GAP_PX,
+    );
+  }, [axisCandidates, n, trackW, measure]);
+
+  // Etiquetas da linha do topo («melhor: …» + «Agora») — posição em píxeis
+  // com a mesma medida do eixo. A etiqueta da janela fica clampada às bordas
+  // (centrada na janela mas nunca fora da régua) e o marcador «Agora» cede
+  // quando as caixas colidem — o traço de 1 px na régua já marca o «agora».
+  const topRow = useMemo(() => {
+    const w = trackW || 720;
+    const m = measureTop ?? ((s: string) => s.length * 6.2);
+    let win: { text: string; left: number; right: number } | null = null;
+    if (bestWindow) {
+      const lbl = formatWindowLabel(
+        hours,
+        displayScores,
+        bestWindow,
+        windowStart,
+        windowEnd,
+        locale,
+      );
+      if (lbl) {
+        const text = `${tv.bestTag}: ${lbl}`;
+        const lw = m(text);
+        const cx = (((bestWindow.s + bestWindow.e + 1) / 2) / n) * w;
+        const left = Math.max(0, Math.min(cx - lw / 2, Math.max(0, w - lw)));
+        win = { text, left, right: left + lw };
+      }
+    }
+    let now: { left: number } | null = null;
+    if (nowLocal >= 0) {
+      const lw = m(tv.nowLabel);
+      const cx = ((nowLocal + 0.5) / n) * w;
+      const left =
+        nowLocal === 0
+          ? cx
+          : nowLocal >= n - 1
+            ? cx - lw
+            : Math.max(0, Math.min(cx - lw / 2, w - lw));
+      const right = left + lw;
+      if (!win || right + 4 <= win.left || win.right + 4 <= left) {
+        now = { left };
+      }
+    }
+    return { win, now };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackW, measureTop, bestWindow, displayScores, windowStart, windowEnd, locale, n, nowLocal]);
 
   const indexFromClientX = (clientX: number) => {
     const el = trackRef.current;
@@ -160,6 +330,16 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
     trackRef.current?.focus();
   };
   const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Tooltip: só pointer:fine (rato/caneta) — nunca em touch.
+    if (e.pointerType === 'mouse' || e.pointerType === 'pen') {
+      const el = trackRef.current;
+      if (el) {
+        const r = el.getBoundingClientRect();
+        const x = Math.min(Math.max(e.clientX - r.left, 0), r.width);
+        const gi = indexFromClientX(e.clientX);
+        setTip({ x, gi });
+      }
+    }
     if (!draggingRef.current) return;
     setIndex(indexFromClientX(e.clientX));
   };
@@ -188,8 +368,13 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   };
 
   if (n <= 0) return null;
-  const nowLocal = nowIndex >= windowStart && nowIndex < windowEnd ? nowIndex - windowStart : -1;
   const thrY = TRACK_H * (1 - GOOD_THRESHOLD / 100);
+
+  const tipHour = tip ? hours[tip.gi] : undefined;
+  const tipMetrics = tipHour ? metrics?.get(tipHour) : undefined;
+  const nf1 = new Intl.NumberFormat(isPt ? 'pt-PT' : 'en-GB', {
+    maximumFractionDigits: 1,
+  });
 
   return (
     <section
@@ -229,41 +414,25 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
         </div>
       </div>
 
-      {/* Etiqueta «melhor» + marcador Agora — faixa por cima da régua. */}
-      <div className="relative h-5 mt-1 text-meta-sm" aria-hidden>
-        {bestWindow && (
+      {/* Etiqueta «melhor» + marcador Agora — faixa por cima da régua,
+          posicionada em píxeis (clamp às bordas; «Agora» cede em colisão). */}
+      <div
+        ref={topRowRef}
+        className="relative h-5 mt-1 text-meta-sm font-medium"
+        aria-hidden
+      >
+        {topRow.win && (
           <span
             className="absolute top-0 whitespace-nowrap font-medium text-fg-muted"
-            style={{
-              left: `${(((bestWindow.s + bestWindow.e + 1) / 2) / n) * 100}%`,
-              transform: 'translateX(-50%)',
-            }}
+            style={{ left: topRow.win.left }}
           >
-            {tv.bestTag}:{' '}
-            {formatWindowLabel(
-              hours,
-              bestWindow.startIdx,
-              bestWindow.endIdx,
-              bestWindow.peakIdx,
-              bestWindow.peakScore,
-              windowStart,
-              windowEnd,
-              locale,
-            )}
+            {topRow.win.text}
           </span>
         )}
-        {nowLocal >= 0 && (
+        {topRow.now && (
           <span
             className="absolute top-0 whitespace-nowrap font-medium text-fg"
-            style={{
-              left: `${((nowLocal + 0.5) / n) * 100}%`,
-              transform:
-                nowLocal === 0
-                  ? 'none'
-                  : nowLocal >= n - 1
-                    ? 'translateX(-100%)'
-                    : 'translateX(-50%)',
-            }}
+            style={{ left: topRow.now.left }}
           >
             {tv.nowLabel}
           </span>
@@ -283,8 +452,9 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onPointerLeave={() => setTip(null)}
         onKeyDown={onKeyDown}
-        className="relative h-16 cursor-ew-resize select-none touch-pan-y rounded-input"
+        className="relative h-[104px] lg:h-[128px] cursor-ew-resize select-none touch-pan-y rounded-input"
       >
         <svg
           viewBox={`0 0 ${n} ${TRACK_H}`}
@@ -306,8 +476,20 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               />
             ) : null,
           )}
-          {/* Janelas ≥60: parêntese fino no topo da régua. */}
-          {visibleWindows.map((w) => (
+          {/* Faixa da melhor janela ≥60 — por trás das barras, --verdict a
+              8 % (a janela mais forte; as outras ficam com parêntese). */}
+          {bestWindow && (
+            <rect
+              x={bestWindow.s}
+              y={0}
+              width={bestWindow.e - bestWindow.s + 1}
+              height={TRACK_H}
+              fill="var(--verdict)"
+              fillOpacity={0.08}
+            />
+          )}
+          {/* Janelas ≥60 não-melhores: parêntese fino no topo da régua. */}
+          {visibleWindows.slice(1).map((w) => (
             <path
               key={`w${w.startIdx}-${w.endIdx}`}
               d={`M ${w.s + 0.08} 6.5 L ${w.s + 0.08} 3 L ${w.e + 0.92} 3 L ${w.e + 0.92} 6.5`}
@@ -319,7 +501,10 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               className="text-fg-muted"
             />
           ))}
-          {/* Barras por hora — neutras; a escolhida em --verdict. */}
+          {/* Barras por hora — cor do escalão a 28 %; a escolhida a 100 % em
+              --verdict. scaleY anima 160 ms com stagger de 6 ms/barra
+              (teto 80 ms) ao mudar de modalidade — instantâneo em
+              reduced-motion. */}
           {winHours.map((h, i) => {
             const gi = windowStart + i;
             const s = barScore(gi);
@@ -331,16 +516,19 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
                 y={0}
                 width={0.76}
                 height={TRACK_H}
-                fill={selected ? 'var(--verdict)' : 'currentColor'}
-                fillOpacity={selected ? 0.95 : s >= GOOD_THRESHOLD ? 0.5 : 0.28}
-                className={cn(
-                  'text-fg-subtle',
-                  'transition-[transform,fill] duration-200 motion-reduce:transition-none',
-                )}
+                fill={selected ? 'var(--verdict)' : getScoreRgb(s)}
+                fillOpacity={selected ? 1 : 0.28}
+                className={cn('motion-reduce:transition-none')}
                 style={{
                   transform: `scaleY(${Math.max(0.02, s / 100)})`,
                   transformOrigin: '50% 100%',
                   transformBox: 'fill-box',
+                  transition: reducedMotion
+                    ? 'none'
+                    : `transform 160ms cubic-bezier(0.16,1,0.3,1) ${Math.min(
+                        i * STAGGER_MS,
+                        STAGGER_CAP_MS,
+                      )}ms, fill 150ms ease-out`,
                 }}
               />
             );
@@ -360,7 +548,8 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
             pointerEvents="none"
             className="text-fg"
           />
-          {/* Linha «agora» — marca do relógio, não da escolha. */}
+          {/* Linha «agora» — traço vertical de 1 px em fg (marca do relógio,
+              não da escolha). */}
           {nowLocal >= 0 && (
             <line
               x1={nowLocal + 0.5}
@@ -368,7 +557,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               y1={0}
               y2={TRACK_H}
               stroke="currentColor"
-              strokeWidth={1.5}
+              strokeWidth={1}
               vectorEffect="non-scaling-stroke"
               className="text-fg"
             />
@@ -391,35 +580,57 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
         >
           {GOOD_THRESHOLD}
         </span>
+
+        {/* Tooltip — só pointer:fine (setTip ignora touch); segue o cursor
+            por transform (left fica em 0 — o movimento é translateX, 120 ms).
+            hora · score · onda m/s · vento kt dir (windSpeed é m/s → kt). */}
+        {tip && tipHour && (
+          <div
+            ref={tipRef}
+            aria-hidden
+            data-testid="spot-rail-tooltip"
+            className="pointer-events-none absolute left-0 bottom-full mb-1.5 z-10 whitespace-nowrap rounded-input border border-divider bg-bg-elevated px-2 py-1 font-mono text-meta-sm tabular-nums text-fg shadow-card"
+            style={{
+              transform: `translateX(${Math.min(
+                Math.max(tip.x, 72),
+                Math.max(trackW - 72, 72),
+              )}px) translateX(-50%)`,
+              transition: reducedMotion ? 'none' : 'transform 120ms ease-out',
+            }}
+          >
+            {formatHourLabel(tipHour, locale)} · {displayScores[tip.gi] ?? 0}
+            {tipMetrics && (
+              <>
+                {' · '}
+                {nf1.format(tipMetrics.waveHeight)} m · {Math.round(tipMetrics.wavePeriod)} s ·{' '}
+                {Math.round(tipMetrics.windSpeed * MS_TO_KNOTS)} kt{' '}
+                {getWindArrow(tipMetrics.windDirection)}
+              </>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Rótulos do eixo — pickRailAxisLabels resolve as colisões (mudanças
-          de dia primeiro, horas redondas depois, espaço mínimo por densidade:
-          ≥4 h desktop / ≥6 h mobile). Duas camadas gémeas, o CSS escolhe. */}
-      {([
-        { gap: 4, cls: 'hidden sm:block' },
-        { gap: 6, cls: 'sm:hidden' },
-      ] as const).map(({ gap, cls }) => (
-        <div key={gap} className={cn('relative h-4 mt-1 text-meta-sm text-fg-subtle', cls)} aria-hidden>
-          {pickRailAxisLabels(winHours, locale, gap).map((l) => (
-            <span
-              key={`${l.kind}${l.index}`}
-              className="absolute top-0 whitespace-nowrap font-mono tabular-nums"
-              style={{
-                left: `${((l.index + 0.5) / n) * 100}%`,
-                transform:
-                  l.index === 0
-                    ? 'none'
-                    : l.index >= n - 1
-                      ? 'translateX(-100%)'
-                      : 'translateX(-50%)',
-              }}
-            >
-              {l.label}
-            </span>
-          ))}
-        </div>
-      ))}
+      {/* Rótulos do eixo — anti-colisão em PÍXEIS (canvas measureText; gap
+          mínimo 8 px; prioridade mudança de dia > 12h > 6h). O font-mono
+          fica no contentor: o canvas mede com o computed style DESTE div —
+          sem ele mede sans e subestima a largura real dos rótulos mono. */}
+      <div
+        ref={axisRef}
+        className="relative h-6 mt-1 font-mono tabular-nums text-meta-sm text-fg-subtle"
+        aria-hidden
+      >
+        {axisLabels.map((l) => (
+          <span
+            key={`${l.kind}${l.index}`}
+            className="absolute top-0 whitespace-nowrap font-mono tabular-nums"
+            // `left` vem da decisão em píxeis — a caixa medida é a renderizada.
+            style={{ left: l.left }}
+          >
+            {l.label}
+          </span>
+        ))}
+      </div>
 
       <p className="mt-2 text-meta-sm text-fg-muted">{tv.railHint}</p>
       <p aria-live="polite" className="sr-only">

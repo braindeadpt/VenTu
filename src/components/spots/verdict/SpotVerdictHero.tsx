@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, MapPin, Navigation, Video } from 'lucide-react';
 import type { Spot } from '@/types';
@@ -10,6 +11,8 @@ import { getGoogleMapsDirectionsUrl } from '@/lib/mapSpotDetail';
 import { scoreBand } from '@/lib/verdict/scoreBand';
 import { getSpotScoreFactors } from '@/lib/spotScoreFactors';
 import { formatHourLong } from '@/lib/verdict/formatHourLabel';
+import { getDataFreshness, formatStaleAge } from '@/lib/dataFreshness';
+import { getConfidenceLabel, getConfidenceTier } from '@/lib/forecastConfidence';
 import { getTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/cn';
 import {
@@ -22,10 +25,6 @@ import SpotLevelToday from '@/components/spots/SpotLevelToday';
 import FavoriteButton from '@/components/FavoriteButton';
 import SpotAlertPopover from '@/components/spots/SpotAlertPopover';
 import SpotMoreMenu from '@/components/spots/verdict/SpotMoreMenu';
-import DataSourceBadge from '@/components/ui/DataSourceBadge';
-import ConfidenceBadge from '@/components/ui/ConfidenceBadge';
-import ScoreWaveSourceBadge from '@/components/ui/ScoreWaveSourceBadge';
-import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import type {
   ScoreWaveCorrection,
   ScoreWaveSource,
@@ -64,13 +63,22 @@ function formatCoord(
   return `${nf.format(Math.abs(v))}° ${v >= 0 ? pos : neg}`;
 }
 
+/** Primeira letra minúscula — o segmento fica a meio de frase («…há 12h»). */
+const lowerFirst = (s: string) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : s);
+
 /**
- * §1 do contrato — «posso ir?». Sem foto no topo: meta (região ·
- * coordenadas), nome em Space Grotesk, hora escolhida + rótulo
- * Agora/Previsão, score grande em Geist Mono na cor --verdict, banda,
- * frase de porquê (factores do scorer), nível hoje, linha de fonte e
- * confiança que liga a #como-sabemos, e as acções Favorito · Alerta ·
- * Direcções + menu «Mais» (Partilhar, Check-in).
+ * §1 da spec v3 — «posso ir?». Grelha de 12 colunas no desktop: 1–7 levam
+ * voltar/região·coords/nome/linha de tempo; 8–12 levam o score (mono,
+ * --verdict), «/100», a banda e a frase de porquê. No mobile o nome e o
+ * score partilham a mesma linha (o nome quebra, o score nunca sai).
+ *
+ * Hierarquia de acções: 1 primária («Como chegar», flex-1 no mobile) +
+ * fantasmas de 44 px (♡ · Alerta · Câmara) + menu «Mais». Os fantasmas
+ * mostram rótulo a partir de 640 px e só ícone abaixo, sempre com
+ * aria-label. Os chips de proveniência saíram do hero: ficam só em
+ * «Como sabemos» — aqui fica UMA linha calma (fonte · confiança · frescura
+ * · link), com âmbar em texto só para confiança baixa e frescura fora do
+ * TTL (getDataFreshness — 2,5 h de dia / 5 h de noite, Lisboa).
  */
 export default function SpotVerdictHero({
   spot,
@@ -139,6 +147,58 @@ export default function SpotVerdictHero({
   // montar (nowIndex<0) a hora mostrada é a do bake = «agora».
   const showObservedSources = isNow || nowIndex < 0;
 
+  // ── Linha de proveniência única ─────────────────────────────────────
+  // «Onda corrigida pela boia CSA92 · vento da estação Cabo Raso ·
+  //  confiança baixa · actualizado há 12 h · Como sabemos →»
+  const provenance: ReactNode[] = [];
+  if (showObservedSources && scoreWaveSource === 'observed' && scoreWaveCorrection?.buoyName) {
+    provenance.push(
+      <span key="wave">{tv.waveFromBuoy.replace('{name}', scoreWaveCorrection.buoyName)}</span>,
+    );
+  } else if (showObservedSources && scoreWaveSource === 'bias-corrected') {
+    provenance.push(<span key="wave">{tv.waveBiasCorrected}</span>);
+  } else {
+    provenance.push(<span key="wave">{tv.modelLabel}</span>);
+  }
+  if (showObservedSources && scoreWindSource === 'observed') {
+    provenance.push(
+      <span key="wind">
+        {scoreWindCorrection?.station
+          ? tv.windFromStation.replace('{name}', scoreWindCorrection.station)
+          : tv.windObserved}
+      </span>,
+    );
+  }
+  const confTier =
+    conditions.confidence || conditions.confidenceDetail
+      ? getConfidenceTier(conditions.confidenceDetail ?? null, conditions.confidence ?? null)
+      : null;
+  if (confTier) {
+    // Âmbar em texto (sem fundo) só quando a confiança é baixa — spec §0.4.
+    provenance.push(
+      <span key="conf" className={confTier === 'baixa' ? 'text-score-fair' : undefined}>
+        {tv.confidenceInline.replace(
+          '{tier}',
+          lowerFirst(getConfidenceLabel(confTier, locale)),
+        )}
+      </span>,
+    );
+  }
+  if (conditions.updatedAt) {
+    // «há 12 h» em âmbar só quando passa o TTL de frescura do projecto
+    // (getDataFreshness — 2,5 h de dia / 5 h de noite, hora de Lisboa).
+    const freshness = getDataFreshness(conditions.updatedAt, freshnessNowMs);
+    const age = formatStaleAge(conditions.updatedAt, locale, freshnessNowMs);
+    provenance.push(
+      <span
+        key="age"
+        className={freshness && freshness !== 'fresh' ? 'text-score-fair' : undefined}
+      >
+        {tv.updatedAgo.replace('{age}', lowerFirst(age))}
+      </span>,
+    );
+  }
+
   return (
     // `spot-hero-card` é marcador sem estilo fora de `.spot-hero-ink` — os
     // specs legados escopam as asserções do hero por esta classe.
@@ -157,15 +217,16 @@ export default function SpotVerdictHero({
           {backLabel}
         </Link>
 
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="min-w-0 flex-1 space-y-1.5">
+        {/* Grelha: [nome | score] no mobile; 1–7 | 8–12 a partir de lg. */}
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4 lg:grid-cols-12 lg:gap-8">
+          <div className="min-w-0 lg:col-span-7 space-y-1.5">
             <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-sm text-fg-muted">
               <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
               <span>{region}</span>
               <span aria-hidden>·</span>
               <span className="font-mono tabular-nums">{coords}</span>
             </p>
-            <h1 className="font-display text-display-lg text-fg tracking-tight leading-tight">
+            <h1 className="font-display text-[clamp(40px,5vw,64px)] leading-[1.05] tracking-tight text-fg">
               {title}
             </h1>
             <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta-sm text-fg-muted">
@@ -188,7 +249,7 @@ export default function SpotVerdictHero({
             <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
           </div>
 
-          <div className="flex flex-col gap-1 shrink-0 lg:items-end lg:text-right">
+          <div className="flex flex-col gap-1 items-end text-right justify-self-end lg:col-span-5">
             <div className="flex items-baseline gap-1.5">
               <span
                 role="meter"
@@ -206,30 +267,37 @@ export default function SpotVerdictHero({
               <span className="font-mono text-num-lg text-fg-subtle">/100</span>
             </div>
             <span
-              className="font-display text-lg font-semibold uppercase tracking-wide leading-none"
+              className="font-display text-meta-sm lg:text-lg font-semibold uppercase tracking-[0.18em] leading-none"
               style={{ color: 'var(--verdict)' }}
               data-visual-dynamic
             >
               {bandLabel}
             </span>
             {why && (
-              <p className="text-meta-sm text-fg-muted leading-snug max-w-[42ch] lg:ml-auto">
+              <p className="hidden lg:block text-meta-sm text-fg-muted leading-snug max-w-[42ch] truncate">
                 {why}
               </p>
             )}
           </div>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
-          <SpotAlertPopover spotId={spot.id} sport={selectedSport} locale={locale} />
+        {/* Porquê — fora da coluna do score em <lg (linha própria, 1 linha). */}
+        {why && (
+          <p className="mt-1 text-meta-sm text-fg-muted leading-snug truncate lg:hidden">
+            {why}
+          </p>
+        )}
+
+        {/* Hierarquia de acções: 1 primária; fantasmas 44 px com rótulo
+            ≥640 px (só ícone abaixo, sempre com aria-label); «Mais» fecha. */}
+        <div className="mt-3 flex items-center gap-2">
           <a
             href={directionsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
-              'inline-flex items-center justify-center gap-2 font-medium',
-              'px-4 py-2 text-sm rounded-input min-h-[44px]',
+              'inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-medium',
+              'px-4 min-h-[44px] h-11 text-sm rounded-input',
               'bg-accent hover:bg-accent-hover active:bg-accent-active border border-transparent',
               'transition-opacity duration-150 shadow-card',
             )}
@@ -237,62 +305,64 @@ export default function SpotVerdictHero({
             <Navigation className="w-4 h-4" aria-hidden />
             {directionsLabel}
           </a>
+          {/* Fantasma 44×44: a borda vem do wrapper (FavoriteButton é
+              partilhado — o ícone é sempre só o coração). */}
+          <span className="inline-flex [&>button]:h-11 [&>button]:w-11 [&>button]:rounded-input [&>button]:border [&>button]:border-divider-strong [&>button]:bg-transparent [&>button]:text-fg-muted [&>button]:hover:text-fg [&>button]:hover:border-fg-subtle [&>button]:hover:scale-100">
+            <FavoriteButton spotId={spot.id} spotName={spot.name} size="md" locale={locale} />
+          </span>
+          {/* Fantasma «Alerta»: rótulo a partir de 640 px; abaixo disso o
+              botão fica quadrado (texto a 0 px — o aria-label mantém-se). */}
+          <span className="inline-flex [&>div>button]:h-11 [&>div>button]:min-h-[44px] [&>div>button]:rounded-input [&>div>button]:border-divider-strong [&>div>button]:text-fg-muted [&>div>button]:hover:text-fg [&>div>button]:hover:border-fg-subtle max-sm:[&>div>button]:w-11 max-sm:[&>div>button]:px-0 max-sm:[&>div>button]:justify-center max-sm:[&>div>button]:gap-0 max-sm:[&>div>button]:text-[0px]">
+            <SpotAlertPopover spotId={spot.id} sport={selectedSport} locale={locale} />
+          </span>
           {livecamLabel && (
             <a
               href="#spot-livecam"
+              aria-label={livecamLabel}
               className={cn(
                 'inline-flex items-center justify-center gap-2 font-medium',
-                'px-4 py-2 text-sm rounded-input min-h-[44px]',
+                'w-11 sm:w-auto sm:px-3 min-h-[44px] h-11 rounded-input',
                 'border border-divider-strong text-fg-muted',
                 'hover:text-fg hover:border-fg-subtle transition-colors duration-150',
               )}
             >
               <Video className="w-4 h-4" aria-hidden />
-              {livecamLabel}
+              <span className="hidden sm:inline text-sm">{livecamLabel}</span>
             </a>
           )}
-          <SpotMoreMenu
-            label={tv.moreLabel}
-            menuLabel={tv.moreMenuLabel}
-            shareLabel={tv.shareLabel}
-            shareTitle={`${title} — ${region}`}
-            spotId={spot.id}
-            spotName={spot.name}
-            locale={locale}
-          />
+          {/* «Mais» com o mesmo contrato dos fantasmas — rótulo ≥640 px,
+              só ícone abaixo (aria-label mantém-se no botão interno). */}
+          <span className="inline-flex max-sm:[&>div>button]:w-11 max-sm:[&>div>button]:px-0 max-sm:[&>div>button]:gap-0 max-sm:[&>div>button]:text-[0px]">
+            <SpotMoreMenu
+              label={tv.moreLabel}
+              menuLabel={tv.moreMenuLabel}
+              shareLabel={tv.shareLabel}
+              shareTitle={`${title} — ${region}`}
+              spotId={spot.id}
+              spotName={spot.name}
+              locale={locale}
+            />
+          </span>
         </div>
 
-        <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta-sm text-fg-muted">
-          <ScoreWaveSourceBadge
-            source={showObservedSources ? scoreWaveSource : 'forecast'}
-            correction={showObservedSources ? scoreWaveCorrection : null}
-            locale={locale}
-          />
-          <ScoreWindSourceBadge
-            source={showObservedSources ? scoreWindSource : 'forecast'}
-            correction={showObservedSources ? scoreWindCorrection : null}
-            locale={locale}
-          />
-          <DataSourceBadge
-            source={conditions.source}
-            updatedAt={conditions.updatedAt}
-            locale={locale}
-            size="sm"
-            nowMs={freshnessNowMs}
-          />
-          <ConfidenceBadge
-            confidence={conditions.confidence}
-            detail={conditions.confidenceDetail}
-            locale={locale}
-            size="sm"
-          />
+        {/* Linha de proveniência única — os chips vivem em #como-sabemos. */}
+        <p className="mt-3 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-meta-sm text-fg-muted">
+          {provenance.map((seg, i) => (
+            <span key={i} className="inline-flex items-center gap-x-1.5">
+              {i > 0 && <span aria-hidden>·</span>}
+              {seg}
+            </span>
+          ))}
           <a
             href="#como-sabemos"
-            className="inline-flex items-center min-h-[44px] -my-2 text-fg-muted hover:text-fg underline underline-offset-2 decoration-divider-strong transition-colors duration-150"
+            className="inline-flex items-center gap-x-1.5 min-h-[44px] -my-3 text-fg-muted hover:text-fg transition-colors duration-150"
           >
-            {tv.howWeKnow} →
+            <span aria-hidden>·</span>
+            <span className="underline underline-offset-2 decoration-divider-strong">
+              {tv.howWeKnow} →
+            </span>
           </a>
-        </div>
+        </p>
       </div>
     </header>
   );

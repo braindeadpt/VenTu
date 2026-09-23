@@ -507,7 +507,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       // Uma só régua de tempo na página.
       await expect(page.getByRole('slider')).toHaveCount(1);
 
-      // Tabs de modalidade (tablist da barra fixa): trocar marca a tab escolhida.
+      // Tabs de modalidade (tablist da barra fixa): trocar marca a tab
+      // escolhida. v3: a barra só aparece quando o hero sai do ecrã — scroll.
+      await page.evaluate(() => window.scrollTo(0, 1600));
       const kiteTab = page.getByRole('tab', { name: /Kitesurf/i }).first();
       if (await kiteTab.isVisible()) {
         await kiteTab.click();

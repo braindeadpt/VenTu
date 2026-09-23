@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
 import { getTranslation } from '@/lib/i18n';
@@ -41,11 +42,15 @@ const ANCHORS: ReadonlyArray<{ href: string; key: 'anchorSummary' | 'anchorHourl
 ];
 
 /**
- * §2 do contrato — UMA barra fixa: tabs de modalidade com mini-score
- * (roving ←/→ igual à linha antiga), score e hora da hora escolhida no
- * eixo partilhado, e âncoras para as secções. Pina na cota partilhada
- * `--ventu-spot-sticky-top` com altura `--ventu-spot-tabs-h`. Substitui a
- * dupla SpotStickyBar + linha standalone — só existe um tablist na página.
+ * §2 da spec v3 — UMA barra fixa: tabs de modalidade com mini-score
+ * (roving ←/→ igual à linha antiga), chip score+hora fixo à direita e
+ * âncoras. Pina na cota partilhada `--ventu-spot-sticky-top`.
+ *
+ * v3: a barra APARECE quando o hero (#agora) sai do ecrã — translateY
+ * (-100% → 0) + opacity em 200 ms, ease-out (tabela de movimento §7). No
+ * mobile as tabs deslizam por baixo do chip: ele tem fundo sólido bg-base
+ * e um gradiente de 24 px à esquerda, e o tablist ganha padding-right
+ * medido (ResizeObserver) para a última tab ficar alcançável.
  */
 export default function SpotUnifiedBar({
   locale,
@@ -57,7 +62,6 @@ export default function SpotUnifiedBar({
   sportTabsAria,
   nowScoreFallback,
 }: SpotUnifiedBarProps) {
-  const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotPageVerdict;
   const { nowIndex } = useSpotTimelineData();
   const { selectedScore, selectedHour, isNow } = useSpotTimelineIndex();
@@ -68,6 +72,43 @@ export default function SpotUnifiedBar({
   const warning = strongestSpotWarning(warningsData, spotId);
 
   const shownScore = selectedScore ?? nowScoreFallback;
+
+  // Aparece quando o hero sai do ecrã. Escondido de início (SSR incluído —
+  // o estado inicial é sempre «hero visível»), o observer decide depois de
+  // montar; sem hero/observer a barra fica sempre visível (fallback seguro).
+  const [heroGone, setHeroGone] = useState(false);
+  useEffect(() => {
+    const hero = document.getElementById('agora');
+    if (!hero || typeof IntersectionObserver === 'undefined') {
+      setHeroGone(true);
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry) setHeroGone(!entry.isIntersecting);
+      },
+      { threshold: 0 },
+    );
+    io.observe(hero);
+    return () => io.disconnect();
+  }, []);
+
+  // Largura do grupo da direita (chip + âncoras) → padding-right do
+  // tablist, para a última tab poder sair debaixo do chip no mobile.
+  const rowRef = useRef<HTMLDivElement>(null);
+  const chipRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const chip = chipRef.current;
+    const row = rowRef.current;
+    if (!chip || !row || typeof ResizeObserver === 'undefined') return;
+    const update = () =>
+      row.style.setProperty('--spot-bar-chip-w', `${Math.ceil(chip.offsetWidth)}px`);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(chip);
+    return () => ro.disconnect();
+  }, []);
 
   // ←/→ na tablist: roving tabs, foco segue a selecção (mesma semântica da
   // linha standalone que esta barra substitui).
@@ -87,19 +128,34 @@ export default function SpotUnifiedBar({
     <div
       role="region"
       aria-label={tv.barLabel}
-      className="sticky z-30 border-b border-divider bg-bg-base supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm"
+      className={cn(
+        'sticky z-30 border-b border-divider bg-bg-base supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm',
+        // Entrada/saída: translateY(-100% → 0) + opacity em 200 ms ease-out.
+        // `visibility` na lista de transição faz o fade-out completar antes
+        // de esconder (e tira os tabs da ordem de foco enquanto escondidos).
+        'transition-[transform,opacity,visibility] duration-200 ease-out motion-reduce:transition-none',
+        heroGone
+          ? 'translate-y-0 opacity-100 visible'
+          : '-translate-y-full opacity-0 invisible pointer-events-none',
+      )}
       style={{ top: 'var(--ventu-spot-sticky-top)' }}
     >
       <div
-        className="max-w-6xl mx-auto px-4 flex items-center gap-3"
+        ref={rowRef}
+        className="max-w-6xl mx-auto px-4 relative"
         style={{ height: 'var(--ventu-spot-tabs-h)' }}
       >
         <div
           role="tablist"
           aria-label={sportTabsAria}
           onKeyDown={handleTabsKeyDown}
-          style={{ height: 'var(--ventu-spot-tabs-h)' }}
-          className="flex items-center gap-1.5 -mx-4 px-4 min-w-0 flex-1 overflow-x-auto overscroll-x-contain no-scrollbar edge-fade-x"
+          style={{
+            height: 'var(--ventu-spot-tabs-h)',
+            // Espaço reservado à direita = largura do chip + gradiente de
+            // 24 px — a última tab desliza até ficar visível à esquerda dele.
+            paddingRight: 'calc(var(--spot-bar-chip-w, 0px) + 24px)',
+          }}
+          className="flex items-center gap-1.5 -mx-4 px-4 min-w-0 overflow-x-auto overscroll-x-contain no-scrollbar edge-fade-x-end"
         >
           {tabSports.map((sport) => (
             <SportTab
@@ -113,7 +169,17 @@ export default function SpotUnifiedBar({
           ))}
         </div>
 
-        <div className="flex items-center gap-2 shrink-0">
+        {/* Chip fixo à direita: fundo sólido + gradiente de 24 px à esquerda
+            — as tabs desaparecem por baixo dele (mobile) e as âncoras vivem
+            aqui no desktop. */}
+        <div
+          ref={chipRef}
+          className="absolute inset-y-0 right-4 flex items-center gap-2 bg-bg-base"
+        >
+          <span
+            aria-hidden
+            className="pointer-events-none absolute inset-y-0 -left-6 w-6 bg-gradient-to-r from-transparent to-bg-base"
+          />
           <span
             data-testid="spot-bar-score"
             className="font-mono text-num-sm font-semibold tabular-nums rounded-pill border border-divider-strong px-1.5 py-0.5"
@@ -149,22 +215,22 @@ export default function SpotUnifiedBar({
               dataAttr="compact"
             />
           )}
-        </div>
 
-        <nav
-          aria-label={tv.navLabel}
-          className="hidden lg:flex items-center gap-1 shrink-0"
-        >
-          {ANCHORS.map((a) => (
-            <a
-              key={a.href}
-              href={a.href}
-              className="inline-flex items-center px-2 min-h-[44px] -my-2 text-meta-sm text-fg-muted hover:text-fg transition-colors duration-150"
-            >
-              {tv[a.key]}
-            </a>
-          ))}
-        </nav>
+          <nav
+            aria-label={tv.navLabel}
+            className="hidden lg:flex items-center gap-1 shrink-0"
+          >
+            {ANCHORS.map((a) => (
+              <a
+                key={a.href}
+                href={a.href}
+                className="inline-flex items-center px-2 min-h-[44px] -my-2 text-meta-sm text-fg-muted hover:text-fg transition-colors duration-150"
+              >
+                {tv[a.key]}
+              </a>
+            ))}
+          </nav>
+        </div>
       </div>
     </div>
   );
