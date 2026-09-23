@@ -60,7 +60,7 @@ export default function BuoySkillLine({ spotId, locale }: BuoySkillLineProps) {
   // País/fonte explícito (IH · Portugal vs Copernicus-ES · Espanha) — partilhado
   // com a tabela do About para nunca divergirem. Mostra que o skill do NW vem
   // da rota keyless da Copernicus, mesmo sem IH_API_KEY.
-  const sourceLabel = forecastSkillOriginLabel(buoy.origin, isPt);
+  const sourceLabel = forecastSkillOriginLabel(buoy.origin, locale);
   const nameWithOrigin =
     buoy.origin === 'ih' || buoy.origin === 'wmo-pt' || buoy.origin === 'wmo-es'
       ? `${buoy.name} (${sourceLabel})`

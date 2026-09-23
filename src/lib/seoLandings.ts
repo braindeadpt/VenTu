@@ -1,3 +1,5 @@
+import { localizedText } from '@/lib/localizedText';
+import { getTranslation } from '@/lib/i18n';
 import { spots } from '@/lib/spots'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
 import { getCompatibleSports, type GridSportFilter, type SportType } from '@/lib/sportRatings'
@@ -108,24 +110,20 @@ export function parseLandingSlug(slug: string): { sport: GridSportFilter; region
 }
 
 export function landingTitle(landing: SeoLanding, locale: string): string {
-  const isPt = locale === 'pt'
-  const sport = SPORT_LABELS[landing.sport]
+  const t = getTranslation(locale).seoLandings
+  const sport = localizedText(SPORT_LABELS[landing.sport], locale)
   if (!landing.region) {
-    return isPt ? `${sport.pt} em Portugal` : `${sport.en} in Portugal`
+    return t.inPortugal.replace('{sport}', sport)
   }
-  const region = REGION_LABELS[landing.region]
-  return isPt
-    ? `${sport.pt} no ${region.pt}`
-    : `${sport.en} in ${region.en}`
+  const region = localizedText(REGION_LABELS[landing.region], locale)
+  return t.inRegion.replace('{sport}', sport).replace('{region}', region)
 }
 
 export function landingDescription(landing: SeoLanding, locale: string): string {
-  const isPt = locale === 'pt'
-  const title = landingTitle(landing, locale)
-  if (isPt) {
-    return `${title} — ${landing.spotCount} spots com condições ${pipelineSchedule('pt')}, scores e previsões no VenTu.`
-  }
-  return `${title} — ${landing.spotCount} spots with conditions ${pipelineSchedule('en')}, scores and forecasts on VenTu.`
+  return getTranslation(locale)
+    .seoLandings.description.replace('{title}', landingTitle(landing, locale))
+    .replace('{count}', String(landing.spotCount))
+    .replace('{schedule}', pipelineSchedule(locale))
 }
 
 export const POPULAR_LANDING_SLUGS = [

@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import type { Conditions } from '@/lib/sportScore';
 import type { ObservedConditions } from '@/lib/observations';
 import { isObservedFresh } from '@/lib/observations';
@@ -142,9 +143,9 @@ export interface ScoreWaveCorrection {
  * regional)»; raw forecast → no suffix.
  */
 export function waveFactorSuffix(source: ScoreWaveSource, locale: string): string {
-  const isPt = locale === 'pt';
-  if (source === 'observed') return isPt ? ' (boia)' : ' (buoy)';
-  if (source === 'bias-corrected') return isPt ? ' (viés regional)' : ' (regional bias)';
+  const t = getTranslation(locale).spotsUi;
+  if (source === 'observed') return t.suffixBuoy;
+  if (source === 'bias-corrected') return t.suffixRegionalBias;
   return '';
 }
 

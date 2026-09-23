@@ -395,7 +395,7 @@ export default function MapExploreSheet({
             </FilterPill>
           )}
           <span className="ml-auto shrink-0 font-mono tabular-nums text-meta-sm text-fg-subtle">
-            {spotCount} {isPt ? 'spots' : 'spots'}
+            {spotCount} spots
           </span>
         </div>
         <AttributionLine html={attributionHtml} />
@@ -490,7 +490,7 @@ export default function MapExploreSheet({
         <MapSpotList
           rows={rows}
           title={t.spotsMap.inView}
-          countLabel={`${rows.length} ${isPt ? 'spots' : 'spots'}`}
+          countLabel={`${rows.length} spots`}
           sortLabel={t.spotsMap.byScore}
           emptyLabel={t.spotsMap.noSpotsInView}
           hintLabel={t.spotsMap.listFollowsPan}

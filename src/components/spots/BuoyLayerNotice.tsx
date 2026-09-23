@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { AlertTriangle, Info, X } from 'lucide-react';
 import { cn } from '@/lib/cn';
 import { buoyLayerCopy, useBuoyLayerNotice } from '@/lib/buoyLayerNotice';
@@ -48,8 +49,8 @@ export default function BuoyLayerNotice({
   // depois → «down» é um problema novo).
   if (dismissed?.reason === status) return null;
 
-  const dismissLabel = isPt ? 'Dispensar aviso das boias' : 'Dismiss buoy notice';
-  const c = buoyLayerCopy(status, wmo, isPt, isHome);
+  const dismissLabel = getTranslation(locale).spotsMap.dismissBuoyNotice;
+  const c = buoyLayerCopy(status, wmo, locale, isHome);
   // Ver o bloco de SEVERIDADE acima: só `down` é uma avaria.
   const isDegraded = status === 'down';
 

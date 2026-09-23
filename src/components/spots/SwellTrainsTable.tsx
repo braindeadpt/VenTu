@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { buildSwellTrains, totalSwellPowerKw, type SwellTrainConditions } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
 import { cn } from '@/lib/cn';
@@ -14,27 +15,22 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
   if (trains.length === 0) return null;
 
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).swellTrains;
   const total = totalSwellPowerKw(conditions);
 
   const trainLabel = (key: (typeof trains)[0]['key']) =>
     key === 'primary'
-      ? isPt
-        ? 'Primário'
-        : 'Primary'
-      : isPt
-        ? 'Secundário'
-        : 'Secondary';
+      ? getTranslation(locale).spotsUi.swellPrimary
+      : getTranslation(locale).spotsUi.swellSecondary;
 
   return (
     <div className="w-full min-w-0 space-y-2">
       <div>
         <h3 className="text-meta font-semibold text-fg uppercase tracking-wide">
-          {isPt ? 'Feixes de ondulação' : 'Swell trains'}
+          {t.title}
         </h3>
         <p className="text-meta-sm text-fg-muted mt-0.5">
-          {isPt
-            ? 'Primário e secundário — altura, período, direcção e energia (kW/m).'
-            : 'Primary and secondary — height, period, direction and energy (kW/m).'}
+          {getTranslation(locale).spotsUi.swellDescription}
         </p>
       </div>
       <div className="overflow-x-auto -mx-1 px-1 rounded-card border border-divider">
@@ -42,10 +38,10 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
           <thead>
             <tr className="text-fg-muted text-meta-sm bg-surface-1/[0.04]">
               <th scope="col" className="text-left font-medium py-1 pr-2">
-                {isPt ? 'Feixe' : 'Train'}
+                {t.train}
               </th>
               <th scope="col" className="text-left font-medium py-1 pr-2">
-                {isPt ? 'Dir.' : 'Dir.'}
+                Dir.
               </th>
               <th scope="col" className="text-right font-medium py-1 pr-2">
                 H
@@ -134,7 +130,7 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
       </div>
       {trains.length === 1 && (
         <p className="text-meta-sm text-fg-subtle font-mono tabular-nums">
-          {isPt ? 'Energia' : 'Energy'}:{' '}
+          {getTranslation(locale).spotsUi.energy}:{' '}
           <span className="text-fg font-medium">{total.toFixed(1)} kW/m</span>
         </p>
       )}

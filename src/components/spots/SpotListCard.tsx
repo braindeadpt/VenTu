@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Clock, Wind, Waves } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
@@ -276,7 +277,7 @@ export default function SpotListCard({
               className="shrink-0"
             />
           )}
-          <span className="sr-only">{isPt ? 'ondas, período, vento' : 'waves, period, wind'}</span>
+          <span className="sr-only">{getTranslation(locale).spotsUi.cardSrSummary}</span>
           {/* Nota de atribuição junto da leitura observada WMO/boia espanhola
               (Copernicus) — mesma cadeia da tabela de /fontes, via ATTRIBUTIONS.
               Só quando a altura mostrada é a da boia E essa boia é WMO/Copernicus. */}

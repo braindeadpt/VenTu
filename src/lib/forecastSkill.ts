@@ -68,18 +68,18 @@ const round2 = (n: number) => Math.round(n * 100) / 100;
  */
 export function forecastSkillOriginLabel(
   origin: ForecastSkillOrigin | undefined,
-  isPt: boolean,
+  locale: string,
   /** Nome do país de Espanha no idioma activo (as restantes partes são marcas). */
   esCountry?: string,
 ): string {
   if (origin === 'ih') {
-    return isPt ? 'IH · Portugal' : 'IH · Portugal';
+    return 'IH · Portugal';
   }
   if (origin === 'wmo-pt') {
-    return isPt ? 'Copernicus-PT · Portugal' : 'Copernicus-PT · Portugal';
+    return 'Copernicus-PT · Portugal';
   }
   if (origin === 'wmo-es') {
-    return isPt ? `Copernicus-ES · ${esCountry ?? 'Espanha'}` : `Copernicus-ES · ${esCountry ?? 'Spain'}`;
+    return `Copernicus-ES · ${esCountry ?? getTranslation(locale).ipmaWarnings.countrySpain}`;
   }
   return '—';
 }
@@ -410,4 +410,5 @@ export async function loadForecastSkillForSpot(
 export function clearForecastSkillClientCache(): void {
   clientCache = null;
   clientInflight = null;
-}
+}import { getTranslation } from '@/lib/i18n';
+

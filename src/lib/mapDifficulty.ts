@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import type { Spot } from '@/types';
 
 export const MAP_DIFFICULTY_LS_KEY = 'ventu:map:difficulty';
@@ -59,28 +60,30 @@ export function getDifficultyMarkerColor(difficulty: Spot['difficulty']): string
 
 export function getDifficultyLabel(
   difficulty: Spot['difficulty'],
-  isPt: boolean,
+  locale: string,
 ): string {
-  const labels: Record<Spot['difficulty'], { pt: string; en: string }> = {
-    beginner: { pt: 'Iniciante', en: 'Beginner' },
-    intermediate: { pt: 'Intermédio', en: 'Intermediate' },
-    advanced: { pt: 'Avançado', en: 'Advanced' },
-    expert: { pt: 'Expert', en: 'Expert' },
-    all: { pt: 'Todos os níveis', en: 'All levels' },
+  const t = getTranslation(locale).spotMeta;
+  const labels: Record<Spot['difficulty'], string> = {
+    beginner: t.diffBeginner,
+    intermediate: t.diffIntermediate,
+    advanced: t.diffAdvanced,
+    expert: t.diffExpert,
+    all: t.diffAllLevels,
   };
-  return labels[difficulty]?.[isPt ? 'pt' : 'en'] ?? difficulty;
+  return labels[difficulty] ?? difficulty;
 }
 
 /** Spot classification label — the raw `spot.type` token must never render. */
-export function getSpotTypeLabel(type: Spot['type'], isPt: boolean): string {
-  const labels: Record<Spot['type'], { pt: string; en: string }> = {
-    surf: { pt: 'Surf', en: 'Surf' },
-    kitesurf: { pt: 'Kitesurf', en: 'Kitesurf' },
-    windsurf: { pt: 'Windsurf', en: 'Windsurf' },
-    'big-wave': { pt: 'Big Wave', en: 'Big wave' },
-    foil: { pt: 'Foil', en: 'Foil' },
-    multisport: { pt: 'Multisport', en: 'Multi-sport' },
-    wakeboard: { pt: 'Wakeboard', en: 'Wakeboard' },
+export function getSpotTypeLabel(type: Spot['type'], locale: string): string {
+  const t = getTranslation(locale).spotMeta;
+  const labels: Record<Spot['type'], string> = {
+    surf: 'Surf',
+    kitesurf: 'Kitesurf',
+    windsurf: 'Windsurf',
+    'big-wave': t.typeBigWave,
+    foil: 'Foil',
+    multisport: t.typeMultisport,
+    wakeboard: 'Wakeboard',
   };
-  return labels[type]?.[isPt ? 'pt' : 'en'] ?? type;
+  return labels[type] ?? type;
 }

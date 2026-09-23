@@ -21,6 +21,12 @@ const SHARED_TOKENS = new Set([
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
   'flat', // termo adoptado em pt/en/es (frase de tier «flat»)
+  'offshore', // termo adoptado em pt/en/es/de/fr (relação de vento)
+  'Offshore', // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Multisport', // termo adoptado em pt/es/de/fr (tipo de spot)
+  'Expert',   // termo adoptado em pt/en/es/de/fr (nível de dificuldade)
+  'onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
   // Pontos cardeais — símbolos universais (N/S/E/O válidos em pt/en/es/de/fr).
   'N', 'S', 'E', 'O',
@@ -147,6 +153,32 @@ const ES_COGNATES = new Set([
   'mar',                // espanhol correcto = PT (rótulo da rosa de instrumentos)
   'mín',                // espanhol correcto = PT (abreviatura na curva de maré)
   'máx',                // espanhol correcto = PT (abreviatura na curva de maré)
+  'lateral',                           // espanhol correcto = PT (relação de vento)
+  'Converge',                          // espanhol correcto = PT (verificação de observações)
+  'Diverge',                           // espanhol correcto = PT (verificação de observações)
+  'Observado ({source})',              // espanhol correcto = PT (rótulo de observação)
+  '🔧 ref. PT ({me} m · n={n})',        // espanhol correcto = PT (etiqueta de recalibração)
+  'Favorito',                          // espanhol correcto = PT (estado do favorito)
+  'Período',                           // espanhol correcto = PT (métrica de período)
+  'medida',                            // espanhol correcto = PT (onda medida)
+  'Ver página completa',               // espanhol correcto = PT (CTA do drawer)
+  'Entrar',                            // espanhol correcto = PT (botão de sessão)
+  'Comer',                             // espanhol correcto = PT (dica local: comer)
+  'Dormir',                            // espanhol correcto = PT/FR (dica local: dormir)
+  'Ranking de spots',                  // espanhol correcto = PT (título da tabela)
+  'Insuficiente',                      // espanhol correcto = PT (veredicto de amostra)
+  '{count} aviso',                     // espanhol correcto = PT (contagem de avisos)
+  '{count} avisos',                    // espanhol correcto = PT (contagem de avisos)
+  'Ordenados por score · filtros activos', // espanhol correcto = PT (subtítulo da lista)
+  ', a {km}',                          // espanhol correcto = PT (distância à boia)
+  'de',                                // espanhol correcto = PT (preposição)
+  'Zona',                              // espanhol correcto = PT (coluna de área)
+  'gate',                              // espanhol correcto = PT (etiqueta de gate)
+  'Isóbatas © Instituto Hidrográfico (CC BY 4.0)', // espanhol correcto = PT (atribuição)
+  'Skill real — n.º de pares previsto×medido acumulados', // espanhol correcto = PT (tooltip)
+  'Par {key} · {n} spot(s) recalibrado(s): {spots}', // espanhol correcto = PT (tooltip do par)
+  'a',                                 // espanhol correcto = PT (preposição)
+  'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
 ]);
 
 /**
@@ -157,6 +189,7 @@ const FR_COGNATES = new Set([
   'Framework React',    // termo adoptado igual em PT e FR (descrição de tecnologia no /about)
   ' · fetch {when}',    // francês correcto = PT (timestamp de fetch no indicador de frescura)
   'Livecams — {count} spots — VenTu', // «Livecams» é o termo adoptado em francês = PT (título)
+  'Dormir',                            // francês correcto = PT (dica local: dormir)
 ]);
 
 /**
@@ -181,6 +214,8 @@ const EN_COGNATES = new Set([
   // Pontos cardeais e «score» — símbolos/termos universais, iguais por mérito.
   'N', 'S', 'E', 'O', 'score',
   'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
+  'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
+  'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

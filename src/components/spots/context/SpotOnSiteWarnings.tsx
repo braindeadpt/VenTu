@@ -75,7 +75,7 @@ export default function SpotOnSiteWarnings({ spotId, locale }: SpotOnSiteWarning
     <>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-meta-sm text-fg-muted" data-testid="on-site-no-warnings">
-          {tc.noWarnings} · {warningsSourceLabel(data, isPt)}
+          {tc.noWarnings} · {warningsSourceLabel(data, locale)}
           {hhmm ? ` · ${hhmm}` : ''}
         </p>
         <a

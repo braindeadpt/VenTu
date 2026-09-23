@@ -25,12 +25,16 @@ export interface IpmaWarningsData {
 }
 
 /** Human label for the warnings source (spot section + Dawn Patrol). */
-export function warningsSourceLabel(data: IpmaWarningsData | null | undefined, isPt: boolean): string {
+export function warningsSourceLabel(
+  data: IpmaWarningsData | null | undefined,
+  locale: string,
+): string {
+  void locale;
   const source = data?.source ?? 'ipma';
   if (source === 'meteoalarm') {
-    return isPt ? 'MeteoAlarm (EUMETNET)' : 'MeteoAlarm (EUMETNET)';
+    return 'MeteoAlarm (EUMETNET)';
   }
-  return isPt ? 'IPMA' : 'IPMA';
+  return 'IPMA';
 }
 
 /** IPMA PT type name → { pt, en } label. */
@@ -128,13 +132,13 @@ export function seaStateWarningForSpot(
  */
 export function warningBadgeLabel(
   warning: { type: string } | null | undefined,
-  isPt: boolean,
+  locale: string,
 ): string {
   if (!warning) return '';
   if (SEA_STATE_WARNING_TYPES.has(warning.type)) {
-    return isPt ? 'Mar perigoso' : 'Dangerous sea';
+    return getTranslation(locale).ipmaWarnings.dangerousSea;
   }
-  return warningTypeLabel(warning.type, isPt);
+  return warningTypeLabel(warning.type, locale);
 }
 
 /**
@@ -183,8 +187,28 @@ export function ipmaRadarUrl(locale: string): string {
     : 'https://www.ipma.pt/en/otempo/obs.radar/';
 }
 
-export function warningTypeLabel(type: string, isPt: boolean): string {
-  return WARNING_TYPE_LABELS[type]?.[isPt ? 'pt' : 'en'] ?? type;
+export function warningTypeLabel(type: string, locale: string): string {
+  const t = getTranslation(locale).ipmaWarnings;
+  switch (type) {
+    case 'Agitação Marítima':
+      return t.wtSeaState;
+    case 'Vento':
+      return t.wtWind;
+    case 'Trovoada':
+      return t.wtThunderstorms;
+    case 'Precipitação':
+      return t.wtPrecipitation;
+    case 'Nevoeiro':
+      return t.wtFog;
+    case 'Tempo Quente':
+      return t.wtHotWeather;
+    case 'Tempo Frio':
+      return t.wtColdWeather;
+    case 'Neve':
+      return t.wtSnow;
+    default:
+      return type;
+  }
 }
 
 export function relevantWarningsForSpot(
@@ -194,4 +218,5 @@ export function relevantWarningsForSpot(
   const list = data?.spotWarnings?.[spotId];
   if (!Array.isArray(list)) return [];
   return list.filter((w) => RELEVANT_WARNING_TYPES.has(w.type));
-}
+}import { getTranslation } from '@/lib/i18n';
+

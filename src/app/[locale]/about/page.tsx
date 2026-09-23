@@ -161,8 +161,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         bakedArchive={loadCoastalWarningsArchive()}
       />
 
-      <WaveBiasSection isPt={isPt} />
-      <CoherenceTrendSection isPt={isPt} />
+      <WaveBiasSection locale={locale} />
+      <CoherenceTrendSection locale={locale} />
 
       <div className="text-center space-y-4">
         <p className="flex items-center justify-center gap-2 text-fg-muted">

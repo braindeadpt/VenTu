@@ -98,12 +98,12 @@ describe('parseForecastSkillBuoys', () => {
 
 describe('forecastSkillOriginLabel', () => {
   it('mostra o país/fonte explícito (IH vs Copernicus-ES), não um código enigmático', () => {
-    expect(forecastSkillOriginLabel('ih', true)).toBe('IH · Portugal');
-    expect(forecastSkillOriginLabel('wmo-pt', true)).toBe('Copernicus-PT · Portugal');
-    expect(forecastSkillOriginLabel('wmo-pt', false)).toBe('Copernicus-PT · Portugal');
-    expect(forecastSkillOriginLabel('wmo-es', true)).toBe('Copernicus-ES · Espanha');
-    expect(forecastSkillOriginLabel('wmo-es', false)).toBe('Copernicus-ES · Spain');
-    expect(forecastSkillOriginLabel(undefined, true)).toBe('—');
+    expect(forecastSkillOriginLabel('ih', 'pt')).toBe('IH · Portugal');
+    expect(forecastSkillOriginLabel('wmo-pt', 'pt')).toBe('Copernicus-PT · Portugal');
+    expect(forecastSkillOriginLabel('wmo-pt', 'en')).toBe('Copernicus-PT · Portugal');
+    expect(forecastSkillOriginLabel('wmo-es', 'pt')).toBe('Copernicus-ES · Espanha');
+    expect(forecastSkillOriginLabel('wmo-es', 'en')).toBe('Copernicus-ES · Spain');
+    expect(forecastSkillOriginLabel(undefined, 'pt')).toBe('—');
   });
 
   it('versão compacta para a tabela (tag)', () => {

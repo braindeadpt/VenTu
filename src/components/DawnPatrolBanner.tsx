@@ -299,7 +299,7 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
             {t.dangerousSea}
           </span>
           <span className="font-semibold">
-            {warningBadgeLabel(seaState.warning, isPt)} ·{' '}
+            {warningBadgeLabel(seaState.warning, locale)} ·{' '}
             {warningLevelLabel(seaState.warning.level, locale)}
           </span>
           <span className="text-meta-sm text-fg-muted ml-auto shrink-0">
@@ -424,9 +424,9 @@ export default function DawnPatrolBanner({ locale }: { locale: string }) {
           >
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden />
             <span>
-              {t.activeWarning.replace('{source}', warningsSourceLabel(warningsData, isPt) ?? '')}:{' '}
+              {t.activeWarning.replace('{source}', warningsSourceLabel(warningsData, locale) ?? '')}:{' '}
               {relevantWarnings
-                .map((w) => `${warningBadgeLabel(w, isPt)} (${warningLevelLabel(w.level, locale)})`)
+                .map((w) => `${warningBadgeLabel(w, locale)} (${warningLevelLabel(w.level, locale)})`)
                 .join(' · ')}
             </span>
           </a>

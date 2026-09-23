@@ -1,5 +1,6 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
@@ -238,7 +239,7 @@ export default function SpotMapInteractive({
     mapInstanceRef,
     LRef,
     isReady,
-    isPt,
+    locale,
     isFullscreen,
     isHeroEmbed,
     focusSpotId,
@@ -312,7 +313,7 @@ export default function SpotMapInteractive({
     const at = hoursLive && hoursTimes[hoursFrame]
       ? new Date(hoursTimes[hoursFrame])
       : new Date();
-    const model = mapTideChipAt(curve, at, isPt ? 'pt' : 'en');
+    const model = mapTideChipAt(curve, at, locale === 'pt' ? 'pt' : 'en');
     if (!model) return undefined;
     const phaseLabel =
       model.phase === 'rising' ? t.map.tideChipRising
@@ -343,7 +344,7 @@ export default function SpotMapInteractive({
     hoursLive,
     hoursTimes,
     hoursFrame,
-    isPt,
+    locale,
     t.map.tideChipRising,
     t.map.tideChipFalling,
     t.map.tideChipHigh,
@@ -703,10 +704,10 @@ export default function SpotMapInteractive({
     if (!warningsData) return map;
     for (const data of visibleSpots) {
       const w = strongestSpotWarning(warningsData, data.spot.id);
-      if (w) map.set(data.spot.id, { level: w.level, label: warningBadgeLabel(w, isPt), seaState: SEA_STATE_WARNING_TYPES.has(w.type) });
+      if (w) map.set(data.spot.id, { level: w.level, label: warningBadgeLabel(w, locale), seaState: SEA_STATE_WARNING_TYPES.has(w.type) });
     }
     return map;
-  }, [warningsData, visibleSpots, isPt]);
+  }, [warningsData, visibleSpots, locale]);
 
   // ── Labels ──
   const exitFullscreenLabel = t.map.exitFullscreen;
@@ -835,8 +836,8 @@ export default function SpotMapInteractive({
       .map((d) => {
         return {
           spotId: d.spot.id,
-          name: isPt ? d.spot.name : d.spot.nameEn,
-          region: isPt ? d.spot.region : d.spot.regionEn,
+          name: localizedSpotName(d.spot, locale),
+          region: localizedSpotRegion(d.spot, locale),
           score: getBestScore(d, selectedSport, hourScores?.get(d.spot.id)),
           factors: getSpotScoreFactors({
             spot: d.spot,
@@ -848,7 +849,7 @@ export default function SpotMapInteractive({
         };
       })
       .sort((a, b) => b.score - a.score || a.name.localeCompare(b.name));
-  }, [visibleSpots, hourScores, selectedSport, selectedRegion, isPt, locale, mapInstanceRef]);
+  }, [visibleSpots, hourScores, selectedSport, selectedRegion, locale, mapInstanceRef]);
 
   const [viewRows, setViewRows] = useState<MapSpotListRow[]>([]);
   useEffect(() => {
@@ -1180,7 +1181,7 @@ export default function SpotMapInteractive({
           ref={mapRef}
           role="region"
           className="w-full h-full"
-          aria-label={isPt ? 'Mapa dos spots' : 'Spots map'}
+          aria-label={t.spotsUi.spotsMapAria}
         />
       </div>
 
@@ -1330,7 +1331,7 @@ export default function SpotMapInteractive({
           )}
 
           {!isFullscreen && !isHeroEmbed && (
-            <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} isPt={isPt} />
+            <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} locale={locale} />
           )}
 
           {/* Legenda flutuante — escondida no fullscreen mobile: lá vive

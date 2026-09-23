@@ -1,5 +1,7 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
+import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { useMemo } from 'react';
 import { Clock } from 'lucide-react';
 import type { HourlyCondition, MagicWindow } from '@/lib/magicWindows';
@@ -81,7 +83,7 @@ export default function WhenToGoCard({
   const formatHour = (idx: number) => {
     const t = hourly[idx]?.time;
     if (!t) return '--:--';
-    return new Date(t).toLocaleTimeString(isPt ? 'pt-PT' : 'en-GB', {
+    return new Date(t).toLocaleTimeString(DATE_LOCALE[locale] ?? 'en-GB', {
       hour: '2-digit',
       minute: '2-digit',
     });
@@ -108,16 +110,14 @@ export default function WhenToGoCard({
           <SessionStrip
             hours={stripHours}
             windows={windows}
-            isPt={isPt}
+            locale={locale}
             nowMs={nowMs ?? Date.now()}
           />
         )}
 
         {hourly.length > 0 && !windows.length && (
           <div className="rounded-input border border-divider bg-surface-1/[0.04] px-3 py-2.5 text-meta-sm text-fg-muted">
-            {isPt
-              ? 'Sem janelas de score ≥ 60 nas próximas 24h. Vale confirmar Livecam.'
-              : 'No score windows ≥ 60 in the next 24h. Check the livecam to confirm.'}
+            {getTranslation(locale).spotsUi.noWindows24h}
           </div>
         )}
 
@@ -129,10 +129,10 @@ export default function WhenToGoCard({
           // midnight, so "05:00 – 04:00" can't be read as going backwards.
           const startsTomorrow = !isSameCalendarDay(startTime, axisStartDate);
           const crossesMidnight = !isSameCalendarDay(startTime, endTime);
-          const tomorrowLabel = isPt ? 'amanhã' : 'tomorrow';
+          const tomorrowLabel = getTranslation(locale).spotsUi.tomorrowLower;
 
           const tokens = getScoreTokens(w.score);
-          const reasons = (isPt ? w.reason : w.reasonEn).split(' + ').filter(Boolean);
+          const reasons = (locale === 'pt' ? w.reason : w.reasonEn).split(' + ').filter(Boolean);
 
           return (
             <div
@@ -169,9 +169,10 @@ export default function WhenToGoCard({
                       )}
                     </div>
                     <div className="text-meta-sm text-fg-muted">
-                      {isPt
-                        ? `${w.duration}h de condições boas`
-                        : `${w.duration}h of good conditions`}
+                      {getTranslation(locale).spotsUi.goodConditionsHours.replace(
+                        '{n}',
+                        String(w.duration),
+                      )}
                     </div>
                   </div>
                 </div>
