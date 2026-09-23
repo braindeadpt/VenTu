@@ -126,6 +126,7 @@ docs/                 # Roadmap, contexto, design system
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Prioridades e estado das fases |
 | [docs/DESIGN-SYSTEM.md](docs/DESIGN-SYSTEM.md) | Tokens, componentes, voz PT-PT |
 | [docs/ALERTS.md](docs/ALERTS.md) | Alertas por email |
+| [docs/audits/2026-09-22-auditoria.md](docs/audits/2026-09-22-auditoria.md) | Auditoria completa (segurança, dados, higiene) |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Como contribuir (spots, livecams) |
 
 ### Configuração (opcional) — `IH_API_KEY`
