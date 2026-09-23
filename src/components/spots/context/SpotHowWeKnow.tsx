@@ -195,7 +195,7 @@ export default function SpotHowWeKnow({
                       )}
                     </span>
                     {' · '}
-                    {getConfidenceLabel(d.confidence, isPt)}
+                    {getConfidenceLabel(d.confidence, locale)}
                   </li>
                 ))}
               </ul>
