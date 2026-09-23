@@ -200,7 +200,7 @@ export default function AboutDataCards({
     <>
       {keyInfo ? <IhKeyCard isPt={isPt} info={keyInfo} /> : null}
       {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
-      {radar ? <RadarCard isPt={isPt} radar={radar} /> : null}
+      {radar ? <RadarCard t={t} isPt={isPt} radar={radar} /> : null}
       {skill?.hasData ? <SkillCard isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard isPt={isPt} archive={archive} /> : null}
     </>
   )
@@ -360,44 +360,47 @@ function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
         )
 }
 
-function RadarCard({ isPt, radar }: { isPt: boolean; radar: RadarLayerStatusInfo }) {
+function RadarCard({
+  t,
+  isPt,
+  radar,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  radar: RadarLayerStatusInfo
+}) {
         if (!radar) return null
         const conf = {
           ok: {
-            label: isPt ? 'Activo' : 'Active',
+            label: t.radarStatusActive,
             chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
             icon: CheckCircle2,
-            line: isPt
-              ? 'O IPMA está a publicar frames de radar novos (5 em 5 min) — a precipitação observada aparece no mapa.'
-              : 'IPMA is publishing new radar frames (every 5 min) — observed precipitation shows on the map.',
+            line: t.radarLineActive,
           },
           stale: {
-            label: isPt ? 'Atrasado' : 'Delayed',
+            label: t.radarStatusStale,
             chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
             icon: AlertTriangle,
-            line: isPt
-              ? 'O último frame válido já não é actualizado há mais de 25 min — o IPMA não está a servir PNGs novos (o fetch mantém o último ficheiro conhecido e o pipeline de previsões continua).'
-              : 'The latest valid frame has not been refreshed for over 25 min — IPMA is not serving new PNGs (the fetch keeps the last known file and the forecast pipeline keeps running).',
+            line: t.radarLineStale,
           },
           down: {
-            label: isPt ? 'Sem dados' : 'No data',
+            label: t.radarStatusDown,
             chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
             icon: XCircle,
-            line: isPt
-              ? 'Sem radar.json — a camada de radar não tem dados.'
-              : 'No radar.json — the radar layer has no data.',
+            line: t.radarLineDown,
           },
         }[radar.status]
         const Icon = conf.icon
         const frameLabel = radar.frameTime ? radarFrameFullClock(radar.frameTime) : null
-        const metaLine = isPt
-          ? `último frame ${frameLabel ?? '—'}${typeof radar.ageMin === 'number' ? ` · há ${formatRadarAge(radar.ageMin)}` : ''} · ${radar.frames} ${radar.frames === 1 ? 'frame' : 'frames'}`
-          : `last frame ${frameLabel ?? '—'}${typeof radar.ageMin === 'number' ? ` · ${formatRadarAge(radar.ageMin)} ago` : ''} · ${radar.frames} ${radar.frames === 1 ? 'frame' : 'frames'}`
+        const metaLine =
+          t.radarMetaBase.replace('{frame}', frameLabel ?? '—') +
+          (typeof radar.ageMin === 'number' ? t.radarMetaAge.replace('{age}', formatRadarAge(radar.ageMin)) : '') +
+          (radar.frames === 1 ? t.radarFramesOne : t.radarFramesMany).replace('{n}', String(radar.frames))
         return (
           <div className="card-1 p-8 space-y-4" data-radar-layer-status={radar.status}>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold text-fg">
-                {isPt ? 'Radar IPMA (precipitação)' : 'IPMA radar (precipitation)'}
+                {t.radarTitle}
               </h2>
               <span
                 className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
@@ -419,24 +422,21 @@ function RadarCard({ isPt, radar }: { isPt: boolean; radar: RadarLayerStatusInfo
                   data-radar-layer-downtime="true"
                   title={
                     radar.lastOkAt
-                      ? `${isPt ? 'última vez ok' : 'last OK'}: ${new Date(radar.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                      ? `${t.lastOk}: ${new Date(radar.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
                       : undefined
                   }
                 >
                   <span aria-hidden>⏱</span>
                   <span className="tabular-nums">
-                    {isPt
-                      ? <>Sem frames novos há {radar.streak} {radar.streak === 1 ? 'run' : 'runs'} consecutivas</>
-                      : <>No new frames for {radar.streak} consecutive {radar.streak === 1 ? 'run' : 'runs'}</>}
+                    {(radar.streak === 1 ? t.radarStreakOne : t.radarStreakMany).replace(
+                      '{runs}',
+                      String(radar.streak),
+                    )}
                   </span>
                 </p>
               ) : null
             }
-            <p className="text-xs text-fg-subtle leading-relaxed">
-              {isPt
-                ? 'Esta camada nunca bloqueia o pipeline (uma outage do radar IPMA não pára as previsões) — é aqui e nos logs do workflow que a falta de dados fica visível. O badge do radar no mapa mostra também a idade do último frame válido.'
-                : 'This layer never blocks the pipeline (an IPMA radar outage does not stop forecasts) — this card and the workflow logs are where missing data becomes visible. The radar badge on the map also shows the age of the latest valid frame.'}
-            </p>
+            <p className="text-xs text-fg-subtle leading-relaxed">{t.radarNote}</p>
           </div>
         )
 }

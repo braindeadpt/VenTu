@@ -85,6 +85,7 @@ const ES_COGNATES = new Set([
   'Desactualizado',      // espanhol correcto = PT (selo de briefing antigo)
   'Ver Spot',            // espanhol correcto = PT (botão do banner)
   'Activa',              // espanhol correcto = PT (estado da camada de marés no /about)
+  'Activo',              // espanhol correcto = PT (estado da camada de radar no /about)
 ]);
 
 /**
@@ -110,6 +111,8 @@ const EN_COGNATES = new Set([
   'VenTu', 'VenTu. Open Source Project.', 'Ver spot', 'Wakeboard', 'Windsurf',
   '{count} spots',
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  ' · {n} frame',        // «frame» é o termo adoptado em PT e EN (contagem do radar)
+  ' · {n} frames',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
