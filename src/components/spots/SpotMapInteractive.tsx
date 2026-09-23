@@ -313,7 +313,7 @@ export default function SpotMapInteractive({
     const at = hoursLive && hoursTimes[hoursFrame]
       ? new Date(hoursTimes[hoursFrame])
       : new Date();
-    const model = mapTideChipAt(curve, at, locale === 'pt' ? 'pt' : 'en');
+    const model = mapTideChipAt(curve, at, locale);
     if (!model) return undefined;
     const phaseLabel =
       model.phase === 'rising' ? t.map.tideChipRising

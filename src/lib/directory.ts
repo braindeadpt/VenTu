@@ -3,7 +3,6 @@ import path from 'path';
 import type { DirectoryEntry, DirectoryFile } from '@/types/directory';
 
 export {
-  DIRECTORY_KIND_LABELS,
   directoryTierLabel,
   tierRank,
   sortDirectoryEntries,

@@ -34,7 +34,7 @@ export function getRegionLifestylePath(slug: RegionImageSlug): string {
 /** Default coastal band for home hero (continental presence). */
 export const HOME_HERO_REGION_SLUG: RegionImageSlug = 'centro';
 
-export function getRegionLifestyleAlt(slug: RegionImageSlug, locale: 'pt' | 'en'): string {
+export function getRegionLifestyleAlt(slug: RegionImageSlug, locale: string): string {
   const names: Record<RegionImageSlug, { pt: string; en: string }> = {
     norte: { pt: 'Costa norte de Portugal', en: 'Northern coast of Portugal' },
     centro: { pt: 'Costa centro de Portugal', en: 'Central coast of Portugal' },

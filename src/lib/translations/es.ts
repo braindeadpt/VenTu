@@ -1625,6 +1625,8 @@ export const translationsEs = {
     mid: 'Marea media',
     rising: 'Marea subiendo',
     falling: 'Marea bajando',
+    lowAt: 'Bajamar a las {time}',
+    highAt: 'Pleamar a las {time}',
   },
   waveBias: {
     title: 'Calibración — sesgo por boya (olas)',
@@ -1668,6 +1670,19 @@ export const translationsEs = {
   directoryTiers: {
     free: 'Gratis',
     featured: 'Destacado',
+  },
+  warningLevels: {
+    yellow: 'Amarillo',
+    orange: 'Naranja',
+    red: 'Rojo',
+  },
+  directoryKinds: {
+    surfSchool: 'Escuela de surf',
+    kiteCenter: 'Centro de kite',
+    shop: 'Tienda',
+    club: 'Club',
+    rental: 'Alquiler',
+    other: 'Otro',
   },
   spotPageVerdict: spotPageVerdict.es,
   spotPageInstruments: spotPageInstruments.es,

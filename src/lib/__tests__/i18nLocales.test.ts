@@ -180,6 +180,7 @@ const ES_COGNATES = new Set([
   'a',                                 // espanhol correcto = PT (preposição)
   'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
   'Alerta',                            // espanhol correcto = PT (categoria de notícia)
+  'Centro de kite',                    // espanhol correcto = PT (tipo de estabelecimento)
 ]);
 
 /**

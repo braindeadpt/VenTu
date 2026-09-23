@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { getTranslation } from '@/lib/i18n';
-import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
+import { kindLabel } from '@/lib/directoryClient';
 import {
   fetchMyDirectoryListings,
   fetchMyDirectoryProfiles,
@@ -572,7 +572,7 @@ function OwnerFormFields({
           >
             {kinds.map((k) => (
               <option key={k} value={k}>
-                {isPt ? DIRECTORY_KIND_LABELS[k].pt : DIRECTORY_KIND_LABELS[k].en}
+                {kindLabel(k, locale)}
               </option>
             ))}
           </select>

@@ -25,7 +25,7 @@ export function pickMapTideCurve(
 export function mapTideChipAt(
   curve: MapTideCurve,
   at: Date,
-  locale: 'pt' | 'en' = 'pt',
+  locale: string = 'pt',
 ): MapTideChipModel | null {
   const hourly = curve.times.map((time, i) => ({ time, tideHeight: curve.height[i] }));
   const schedule = buildTideSchedule(hourly, { now: at, locale });

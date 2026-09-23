@@ -202,7 +202,7 @@ export default function SpotConditionsDashboard({
                 coastOrientation={spot.coastOrientation}
                 idealSwell={spot.bestSwell}
                 idealWind={spot.bestWind}
-                locale={locale === 'pt' ? 'pt' : 'en'}
+                locale={locale}
                 size="md"
                 showLegend={false}
                 visualTone="dashboard"

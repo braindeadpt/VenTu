@@ -186,7 +186,7 @@ export function buildMapWindRingTitle(
   const relation = windRingRelation(fromDeg, coastOrientation);
   const relLabel =
     relation != null
-      ? getWindRelationLabel(relation, locale === 'pt' ? 'pt' : 'en').label
+      ? getWindRelationLabel(relation, locale).label
       : null;
   if (locale === 'pt') {
     return relLabel

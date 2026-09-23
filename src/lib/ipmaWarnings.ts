@@ -49,22 +49,10 @@ export const WARNING_TYPE_LABELS: Record<string, { pt: string; en: string }> = {
   Neve: { pt: 'Neve', en: 'Snow' },
 };
 
-export const WARNING_LEVEL_META: Record<
-  IpmaWarningLevel,
-  { label: { pt: string; en: string }; chipClass: string }
-> = {
-  yellow: {
-    label: { pt: 'Amarelo', en: 'Yellow' },
-    chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
-  },
-  orange: {
-    label: { pt: 'Laranja', en: 'Orange' },
-    chipClass: 'bg-score-poor/15 text-score-poor border-score-poor/40',
-  },
-  red: {
-    label: { pt: 'Vermelho', en: 'Red' },
-    chipClass: 'bg-red-500/15 text-red-500 border-red-500/40',
-  },
+export const WARNING_LEVEL_META: Record<IpmaWarningLevel, { chipClass: string }> = {
+  yellow: { chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40' },
+  orange: { chipClass: 'bg-score-poor/15 text-score-poor border-score-poor/40' },
+  red: { chipClass: 'bg-red-500/15 text-red-500 border-red-500/40' },
 };
 
 /**
@@ -76,8 +64,11 @@ export function warningLevelLabel(
   level: IpmaWarningLevel | string,
   locale: string,
 ): string {
-  const meta = WARNING_LEVEL_META[level as IpmaWarningLevel];
-  return meta?.label[locale === 'pt' ? 'pt' : 'en'] ?? level;
+  const t = getTranslation(locale).warningLevels;
+  if (level === 'yellow') return t.yellow;
+  if (level === 'orange') return t.orange;
+  if (level === 'red') return t.red;
+  return level;
 }
 
 /** Water-sports relevant warning types (the spot section shows only these). */

@@ -1546,6 +1546,8 @@ export const translationsEn = {
     mid: 'Mid tide',
     rising: 'Rising tide',
     falling: 'Falling tide',
+    lowAt: 'Low at {time}',
+    highAt: 'High at {time}',
   },
   waveBias: {
     title: 'Calibration — per-buoy wave bias',
@@ -1589,6 +1591,19 @@ export const translationsEn = {
   directoryTiers: {
     free: 'Free',
     featured: 'Featured',
+  },
+  warningLevels: {
+    yellow: 'Yellow',
+    orange: 'Orange',
+    red: 'Red',
+  },
+  directoryKinds: {
+    surfSchool: 'Surf school',
+    kiteCenter: 'Kite center',
+    shop: 'Shop',
+    club: 'Club',
+    rental: 'Rental',
+    other: 'Other',
   },
   spotPageVerdict: spotPageVerdict.en,
   spotPageInstruments: spotPageInstruments.en,

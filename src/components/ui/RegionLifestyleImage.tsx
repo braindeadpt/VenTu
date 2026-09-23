@@ -10,7 +10,7 @@ import {
 
 type RegionLifestyleImageProps = {
   slug: RegionImageSlug;
-  locale?: 'pt' | 'en';
+  locale?: string;
   className?: string;
   priority?: boolean;
   decorative?: boolean;

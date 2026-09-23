@@ -1554,6 +1554,8 @@ export const translationsPt = {
     mid: 'Maré média',
     rising: 'Maré a subir',
     falling: 'Maré a descer',
+    lowAt: 'Baixa às {time}',
+    highAt: 'Alta às {time}',
   },
   waveBias: {
     title: 'Calibração — viés por boia (ondas)',
@@ -1597,6 +1599,19 @@ export const translationsPt = {
   directoryTiers: {
     free: 'Grátis',
     featured: 'Destaque',
+  },
+  warningLevels: {
+    yellow: 'Amarelo',
+    orange: 'Laranja',
+    red: 'Vermelho',
+  },
+  directoryKinds: {
+    surfSchool: 'Escola de surf',
+    kiteCenter: 'Centro de kite',
+    shop: 'Loja',
+    club: 'Clube',
+    rental: 'Aluguer',
+    other: 'Outro',
   },
   spotPageVerdict: spotPageVerdict.pt,
   spotPageInstruments: spotPageInstruments.pt,

@@ -188,7 +188,7 @@ export default function SpotContextSection({
               <SpotImage
                 spot={spot}
                 aspect="video"
-                locale={locale === 'pt' ? 'pt' : 'en'}
+                locale={locale}
                 className="rounded-card overflow-hidden"
               />
             </div>

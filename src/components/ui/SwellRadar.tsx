@@ -89,7 +89,7 @@ interface SwellRadarProps {
    */
   visualTone?: 'default' | 'dashboard';
   /** Legend language for the ideal-sector rows. Default 'en'. */
-  locale?: 'pt' | 'en';
+  locale?: string;
 }
 
 /* ──────────── ideal-sector parsing ──────────── */

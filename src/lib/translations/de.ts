@@ -1625,6 +1625,8 @@ export const translationsDe = {
     mid: 'Mittelwasser',
     rising: 'Auflaufend Wasser',
     falling: 'Ablaufend Wasser',
+    lowAt: 'Niedrigwasser um {time}',
+    highAt: 'Hochwasser um {time}',
   },
   waveBias: {
     title: 'Kalibrierung — Wellen-Bias pro Boje',
@@ -1668,6 +1670,19 @@ export const translationsDe = {
   directoryTiers: {
     free: 'Kostenlos',
     featured: 'Hervorgehoben',
+  },
+  warningLevels: {
+    yellow: 'Gelb',
+    orange: 'Orange',
+    red: 'Rot',
+  },
+  directoryKinds: {
+    surfSchool: 'Surfschule',
+    kiteCenter: 'Kite-Center',
+    shop: 'Shop',
+    club: 'Club',
+    rental: 'Verleih',
+    other: 'Andere',
   },
   spotPageVerdict: spotPageVerdict.de,
   spotPageInstruments: spotPageInstruments.de,

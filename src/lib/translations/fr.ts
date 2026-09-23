@@ -1625,6 +1625,8 @@ export const translationsFr = {
     mid: 'Marée moyenne',
     rising: 'Marée montante',
     falling: 'Marée descendante',
+    lowAt: 'Marée basse à {time}',
+    highAt: 'Marée haute à {time}',
   },
   waveBias: {
     title: 'Calibration — biais par bouée (vagues)',
@@ -1668,6 +1670,19 @@ export const translationsFr = {
   directoryTiers: {
     free: 'Gratuit',
     featured: 'À la une',
+  },
+  warningLevels: {
+    yellow: 'Jaune',
+    orange: 'Orange',
+    red: 'Rouge',
+  },
+  directoryKinds: {
+    surfSchool: 'École de surf',
+    kiteCenter: 'Centre de kite',
+    shop: 'Magasin',
+    club: 'Club',
+    rental: 'Location',
+    other: 'Autre',
   },
   spotPageVerdict: spotPageVerdict.fr,
   spotPageInstruments: spotPageInstruments.fr,

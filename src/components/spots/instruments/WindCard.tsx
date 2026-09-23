@@ -52,7 +52,7 @@ export default function WindCard({
       ? getWindRelationToCoast(dir, coastOrientation)
       : null;
   const relationMeta = relation
-    ? getWindRelationLabel(relation, locale === 'pt' ? 'pt' : 'en')
+    ? getWindRelationLabel(relation, locale)
     : null;
 
   // Feixe por transform com ângulo unwrapped (359→1 roda +2, nunca −358).
