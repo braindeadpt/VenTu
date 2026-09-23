@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Download, X } from 'lucide-react';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
+import { getTranslation } from '@/lib/i18n';
 
 const VISITS_KEY = 'ventu:visit-count';
 const DISMISS_KEY = 'ventu:install-dismissed-until';
@@ -87,25 +88,23 @@ export default function InstallPrompt() {
   if (!visible || !deferred) return null;
 
   const isPt = locale === 'pt';
+  const tr = getTranslation(locale);
+  const t = tr.layout;
 
   return (
     <div
       className="fixed bottom-4 left-4 right-4 md:right-auto md:left-6 md:max-w-sm z-50 card-2 p-4 shadow-lg border border-divider-strong"
       role="dialog"
-      aria-label={isPt ? 'Instalar VenTu' : 'Install VenTu'}
+      aria-label={t.installAria}
     >
       <div className="flex gap-3">
         <div className="shrink-0 w-10 h-10 rounded-lg bg-data-waves/15 flex items-center justify-center">
           <Download className="w-5 h-5 text-data-waves" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-fg">
-            {isPt ? 'Instala o VenTu' : 'Install VenTu'}
-          </p>
+          <p className="text-sm font-semibold text-fg">{t.installTitle}</p>
           <p className="text-xs text-fg-muted mt-0.5">
-            {isPt
-              ? `Acesso rápido às condições — previsões ${pipelineSchedule('pt')}.`
-              : `Quick access to conditions — forecasts ${pipelineSchedule('en')}.`}
+            {t.installBody.replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'))}
           </p>
           <div className="flex gap-2 mt-3">
             <button
@@ -113,14 +112,14 @@ export default function InstallPrompt() {
               onClick={install}
               className="flex-1 h-9 px-3 rounded-lg bg-data-waves/20 text-data-waves text-sm font-medium hover:bg-data-waves/30 transition-colors"
             >
-              {isPt ? 'Instalar' : 'Install'}
+              {t.installCta}
             </button>
             <button
               type="button"
               onClick={dismiss}
               className="h-9 px-3 rounded-lg text-fg-muted text-sm hover:bg-surface-2/[0.08] transition-colors"
             >
-              {isPt ? 'Agora não' : 'Not now'}
+              {t.installLater}
             </button>
           </div>
         </div>
@@ -128,7 +127,7 @@ export default function InstallPrompt() {
           type="button"
           onClick={dismiss}
           className="shrink-0 p-1 text-fg-subtle hover:text-fg"
-          aria-label={isPt ? 'Fechar' : 'Close'}
+          aria-label={tr.common.close}
         >
           <X className="w-4 h-4" />
         </button>

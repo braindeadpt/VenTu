@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Waves } from 'lucide-react';
+import { getTranslation } from '@/lib/i18n';
 
 const LS_STREAK = 'ventu:dailyStreak';
 
@@ -47,14 +48,12 @@ export default function DailyStreak() {
   if (streak < 2) return null;
 
   const label = streak >= 7 ? '7+' : String(streak);
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).layout;
 
   return (
     <span className="inline-flex items-center gap-1 text-meta-sm text-fg-subtle">
       <Waves className="w-3 h-3" aria-hidden />
-      {isPt
-        ? `${label} ${streak === 1 ? 'dia' : 'dias'} seguidos`
-        : `${label}-day streak`}
+      {(streak === 1 ? t.streakOne : t.streakMany).replace('{label}', label)}
     </span>
   );
 }

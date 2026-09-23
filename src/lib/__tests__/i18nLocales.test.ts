@@ -92,6 +92,8 @@ const ES_COGNATES = new Set([
   'Degradada {suffix} ({runs} runs)',
   'Estilos',                           // espanhol correcto = PT (descrição de tecnologia no /about)
   'Mapas interactivos',                // espanhol correcto = PT (descrição de tecnologia no /about)
+  'Instalar VenTu',                    // espanhol correcto = PT (aria do prompt de instalação)
+  'Instalar',                          // espanhol correcto = PT (botão do prompt de instalação)
 ]);
 
 /**
