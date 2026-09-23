@@ -98,6 +98,9 @@ const ES_COGNATES = new Set([
   'lagoa/cable',                       // espanhol correcto = PT (contexto de água no mapa)
   'crowd moderado',                    // espanhol correcto = PT (contexto de crowd no mapa)
   'Aviso IPMA',                        // espanhol correcto = PT (pílula de aviso)
+  'Actualizado {time}',                // espanhol correcto = PT (hora da última actualização)
+  'Actualizado {day}, {time}',         // espanhol correcto = PT (data + hora)
+  '{count} avisos · {spots} spots',    // espanhol correcto = PT (contagem de avisos costeiros)
 ]);
 
 /**
@@ -106,6 +109,7 @@ const ES_COGNATES = new Set([
 const FR_COGNATES = new Set([
   'IA',                 // sigla correcta em francês = PT (badge de resumo IA)
   'Framework React',    // termo adoptado igual em PT e FR (descrição de tecnologia no /about)
+  ' · fetch {when}',    // francês correcto = PT (timestamp de fetch no indicador de frescura)
 ]);
 
 /**

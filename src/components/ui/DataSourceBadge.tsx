@@ -1,6 +1,7 @@
 import ProvenanceChip from '@/components/ui/ProvenanceChip';
 import type { ProvenanceSize } from '@/lib/provenance';
 import { getDataFreshness, formatStaleAge } from '@/lib/dataFreshness';
+import { getTranslation } from '@/lib/i18n';
 
 interface DataSourceBadgeProps {
   /** Baked build-time clock (React #418 guard) — see the spot page callers. */
@@ -30,7 +31,7 @@ export default function DataSourceBadge({
   interactive = true,
   className = '',
 }: DataSourceBadgeProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).ui;
 
   if (source === 'mock') {
     return (
@@ -38,7 +39,7 @@ export default function DataSourceBadge({
         axis="freshness"
         tier="adjusted"
         label="DEMO"
-        detail={isPt ? 'Dados estimados — API indisponível' : 'Estimated data — API unavailable'}
+        detail={t.estimatedData}
         locale={locale}
         size={size}
         interactive={interactive}
@@ -50,20 +51,14 @@ export default function DataSourceBadge({
   const freshness = getDataFreshness(updatedAt, nowMs);
   if (!freshness || freshness === 'fresh') return null;
 
-  const label = updatedAt
-    ? formatStaleAge(updatedAt, isPt, nowMs)
-    : isPt ? 'Desactualizado' : 'Outdated';
+  const label = updatedAt ? formatStaleAge(updatedAt, locale, nowMs) : t.outdated;
 
   return (
     <ProvenanceChip
       axis="freshness"
       tier={freshness === 'very-stale' ? 'degraded' : 'adjusted'}
       label={label}
-      detail={
-        isPt
-          ? 'Condições via Open-Meteo (2h de dia, 4h de noite, hora Lisboa)'
-          : 'Conditions via Open-Meteo (2h daytime, 4h night, Lisbon time)'
-      }
+      detail={t.openMeteoDetail}
       locale={locale}
       size={size}
       interactive={interactive}

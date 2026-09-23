@@ -1,3 +1,5 @@
+import { getTranslation } from '@/lib/i18n';
+
 /**
  * Buoy-layer degradation streak — «há quantas horas a onda observada está
  * degradada». Pure derivation from the pipeline-meta `buoyLayer` block (the
@@ -45,33 +47,19 @@ export function deriveBuoyLayerDowntime(
   return { runs, hours, ...(lastOkAt ? { lastOkAt } : {}) };
 }
 
-/** Suffixo compacto para pills/labels: «· ~5 h» ou «· 3 runs». */
-export function formatBuoyLayerDowntimeSuffix(dt: BuoyLayerDowntime, isPt: boolean): string {
-  if (dt.hours !== null) {
-    return dt.hours === 1
-      ? isPt
-        ? '· ~1 h'
-        : '· ~1 h'
-      : isPt
-        ? `· ~${dt.hours} h`
-        : `· ~${dt.hours} h`;
-  }
-  return isPt ? `· ${dt.runs} runs` : `· ${dt.runs} runs`;
+/** Suffixo compacto para pills/labels: «· ~5 h» ou «· 3 runs» (só números). */
+export function formatBuoyLayerDowntimeSuffix(dt: BuoyLayerDowntime): string {
+  if (dt.hours !== null) return `· ~${dt.hours} h`;
+  return `· ${dt.runs} runs`;
 }
 
 /** Texto completo para tooltips/linhas de diagnóstico (runs + horas). */
-export function formatBuoyLayerDowntimeTitle(dt: BuoyLayerDowntime, isPt: boolean): string {
-  const runsWord = dt.runs === 1 ? 'run' : 'runs';
-  // pt: o adjectivo concorda («1 run seguido» vs «4 runs seguidos»).
-  const ptParen = isPt
-    ? ` (${dt.runs} ${runsWord} seguido${dt.runs === 1 ? '' : 's'})`
-    : ` (${dt.runs} consecutive ${runsWord})`;
+export function formatBuoyLayerDowntimeTitle(dt: BuoyLayerDowntime, locale: string): string {
+  const t = getTranslation(locale).buoyDowntime;
+  const runsLabel =
+    dt.runs === 1 ? t.dtRunsOne : t.dtRunsMany.replace('{runs}', String(dt.runs));
   if (dt.hours !== null) {
-    return isPt
-      ? `Camada de boias degradada há ~${dt.hours} h${ptParen}`
-      : `Buoy layer degraded for ~${dt.hours} h${ptParen}`;
+    return t.dtTitleHours.replace('{hours}', String(dt.hours)).replace('{runs}', runsLabel);
   }
-  return isPt
-    ? `Camada de boias degradada há ${dt.runs} ${runsWord} seguido${dt.runs === 1 ? '' : 's'}`
-    : `Buoy layer degraded for ${dt.runs} consecutive ${runsWord}`;
+  return t.dtTitleRuns.replace('{runs}', runsLabel);
 }

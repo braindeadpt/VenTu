@@ -282,7 +282,7 @@ function IhKeyCard({
                   dt.hours !== null
                     ? t.ihDowntime.replace('{hours}', String(dt.hours))
                     : t.ihDowntimeRuns.replace('{runs}', String(dt.runs)).replace('{unit}', unit)
-                const suffix = formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')
+                const suffix = formatBuoyLayerDowntimeSuffix(dt).replace(/^· /, '')
                 const degraded = (dt.runs === 1 ? t.ihDegradedOne : t.ihDegradedMany)
                   .replace('{suffix}', suffix)
                   .replace('{runs}', String(dt.runs))

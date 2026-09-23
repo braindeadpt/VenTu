@@ -133,9 +133,9 @@ export default function HeroTicker({
             title={
               isPt
                 ? 'Camada de onda observada (boias IH) indisponível — alturas de onda são previsão do modelo' +
-                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, true)}` : '')
+                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, locale)}` : '')
                 : 'Observed-wave layer (IH buoys) unavailable — wave heights are model forecasts' +
-                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, false)}` : '')
+                  (buoyDowntime ? ` · ${formatBuoyLayerDowntimeTitle(buoyDowntime, locale)}` : '')
             }
           >
             {SEP}
@@ -148,7 +148,7 @@ export default function HeroTicker({
               data-buoy-streak="true"
             >
               {buoyLayerLabel(buoyStatus, isPt)}
-              {buoyDowntime ? formatBuoyLayerDowntimeSuffix(buoyDowntime, isPt) : ''}
+              {buoyDowntime ? formatBuoyLayerDowntimeSuffix(buoyDowntime) : ''}
             </span>
           </span>
         ) : null}
