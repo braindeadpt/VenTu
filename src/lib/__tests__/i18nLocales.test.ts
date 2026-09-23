@@ -88,6 +88,8 @@ const ES_COGNATES = new Set([
   'Activo',              // espanhol correcto = PT (estado da camada de radar no /about)
   'Desde',               // espanhol correcto = PT (coluna «Desde» da tabela do arquivo)
   'IH {ih} · WMO-PT {pt} · WMO-ES {es} pares', // espanhol correcto = PT (contagem de pares do skill)
+  'Degradada {suffix} ({runs} run)',   // espanhol correcto = PT (badge de degradação da camada)
+  'Degradada {suffix} ({runs} runs)',
 ]);
 
 /**

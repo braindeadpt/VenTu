@@ -33,7 +33,6 @@ import { parseCoastalWarningsArchive, type CoastalWarningsArchiveData } from '@/
 import {
   deriveBuoyLayerDowntime,
   formatBuoyLayerDowntimeSuffix,
-  formatBuoyLayerDowntimeTitle,
 } from '@/lib/buoyLayerDowntime'
 import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
 import { getTranslation } from '@/lib/i18n'
@@ -198,7 +197,7 @@ export default function AboutDataCards({
 
   return (
     <>
-      {keyInfo ? <IhKeyCard isPt={isPt} info={keyInfo} /> : null}
+      {keyInfo ? <IhKeyCard t={t} isPt={isPt} info={keyInfo} /> : null}
       {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
       {radar ? <RadarCard t={t} isPt={isPt} radar={radar} /> : null}
       {skill?.hasData ? <SkillCard t={t} isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} archive={archive} /> : null}
@@ -206,59 +205,60 @@ export default function AboutDataCards({
   )
 }
 
-function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
+function IhKeyCard({
+  t,
+  isPt,
+  info,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  info: IhKeyStatusInfo
+}) {
         const conf = {
           active: {
-            label: isPt ? 'Activa' : 'Active',
+            label: t.ihLabelActive,
             chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
             icon: CheckCircle2,
-            line: isPt
-              ? 'A IH_API_KEY está configurada e o serviço de ondas do IH devolve leituras das boias (onda observada no spot).'
-              : 'The IH_API_KEY is configured and the IH wave service is returning buoy readings (observed wave on spot pages).',
+            line: t.ihLineActive,
           },
           'not-configured': {
-            label: isPt ? 'Não configurada' : 'Not configured',
+            label: t.ihLabelNotConfigured,
             chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
             icon: KeyRound,
-            line: isPt
-              ? 'Sem IH_API_KEY — as estações são carregadas (OGC, grátis), mas a camada observedWave fica desligada e o fallback WMO/Copernicus é usado onde houver.'
-              : 'No IH_API_KEY — stations load (OGC, free), but the observed-wave layer stays off; the WMO/Copernicus fallback covers where available.',
+            line: t.ihLineNotConfigured,
           },
           rejected: {
-            label: isPt ? 'Expirada / rejeitada' : 'Expired / rejected',
+            label: t.ihLabelRejected,
             chipClass: 'bg-red-500/15 text-red-500 border-red-500/40',
             icon: XCircle,
-            line: isPt
-              ? `A API rejeitou a key (HTTP ${info.rejectedStatus ?? '401'}) — a camada observedWave parou de ser servida e o workflow falha cedo de propósito até a key ser renovada.`
-              : `The API rejected the key (HTTP ${info.rejectedStatus ?? '401'}) — the observed-wave layer stopped and the workflow fails early on purpose until the key is renewed.`,
+            line: t.ihLineRejected.replace('{status}', String(info.rejectedStatus ?? '401')),
           },
           down: {
-            label: isPt ? 'Activa mas sem leituras' : 'Active but no readings',
+            label: t.ihLabelDown,
             chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
             icon: AlertTriangle,
-            line: isPt
-              ? 'A key está configurada mas o serviço de ondas do IH não devolveu leituras neste run (outage transitória) — não é um problema da info.'
-              : 'The key is configured but the IH wave service returned no readings this run (transient outage) — not a key problem.',
+            line: t.ihLineDown,
           },
         }[info.status]
         const Icon = conf.icon
+        const fmtDate = (v: string) => new Date(v).toLocaleString(isPt ? 'pt-PT' : 'en-GB')
         const metaLine =
           info.status === 'active'
-            ? isPt
-              ? `${info.buoyCount} boias · última leitura ${info.newestReadingAt ? new Date(info.newestReadingAt).toLocaleString('pt-PT') : '—'}`
-              : `${info.buoyCount} buoys · newest reading ${info.newestReadingAt ? new Date(info.newestReadingAt).toLocaleString('en-GB') : '—'}`
+            ? t.ihMetaActive
+                .replace('{n}', String(info.buoyCount))
+                .replace('{date}', info.newestReadingAt ? fmtDate(info.newestReadingAt) : '—')
             : info.status === 'rejected'
-              ? isPt
-                ? `rejeitada ${info.rejectedAt ? `em ${new Date(info.rejectedAt).toLocaleString('pt-PT')}` : ''} (HTTP ${info.rejectedStatus ?? '401'}) · ${info.buoyCount} boias catalogadas`
-                : `rejected ${info.rejectedAt ? `at ${new Date(info.rejectedAt).toLocaleString('en-GB')}` : ''} (HTTP ${info.rejectedStatus ?? '401'}) · ${info.buoyCount} buoys catalogued`
-              : isPt
-                ? `${info.buoyCount} boias catalogadas (estações OGC, sem key)`
-                : `${info.buoyCount} buoys catalogued (OGC stations, no key)`
+              ? (info.rejectedAt
+                  ? t.ihMetaRejected.replace('{date}', fmtDate(info.rejectedAt))
+                  : t.ihMetaRejectedNoDate)
+                  .replace('{status}', String(info.rejectedStatus ?? '401'))
+                  .replace('{n}', String(info.buoyCount))
+              : t.ihMetaCatalogued.replace('{n}', String(info.buoyCount))
         return (
           <div className="card-1 p-8 space-y-4" data-ih-key-status={info.status}>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold text-fg">
-                {isPt ? 'Camada de boias IH (IH_API_KEY)' : 'IH buoy layer (IH_API_KEY)'}
+                {t.ihTitle}
               </h2>
               <span
                 className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
@@ -277,17 +277,23 @@ function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
               (() => {
                 const dt = deriveBuoyLayerDowntime(info.layer ?? null)
                 if (!dt) return null
-                const full = formatBuoyLayerDowntimeTitle(dt, isPt)
+                const unit = dt.runs === 1 ? t.ihRunOne : t.ihRunMany
+                const full =
+                  dt.hours !== null
+                    ? t.ihDowntime.replace('{hours}', String(dt.hours))
+                    : t.ihDowntimeRuns.replace('{runs}', String(dt.runs)).replace('{unit}', unit)
+                const suffix = formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')
+                const degraded = (dt.runs === 1 ? t.ihDegradedOne : t.ihDegradedMany)
+                  .replace('{suffix}', suffix)
+                  .replace('{runs}', String(dt.runs))
                 return (
                   <p
                     className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-0.5 rounded-lg border border-score-poor/25 bg-score-poor/10 px-2.5 py-1.5 text-xs text-score-poor"
                     data-ih-key-status-downtime="true"
-                    title={`${full}${dt.lastOkAt ? ` · ${isPt ? 'última vez ok' : 'last OK'}: ${new Date(dt.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}` : ''}`}
+                    title={`${full} (${dt.runs} ${unit})${dt.lastOkAt ? ` · ${t.lastOk}: ${new Date(dt.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}` : ''}`}
                   >
                     <span aria-hidden>⏱</span>
-                    <span className="tabular-nums">
-                      {isPt ? <>Degradada {formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')} ({dt.runs} {dt.runs === 1 ? 'run' : 'runs'})</> : <>Degraded {formatBuoyLayerDowntimeSuffix(dt, isPt).replace(/^· /, '')} ({dt.runs} {dt.runs === 1 ? 'run' : 'runs'})</>}
-                    </span>
+                    <span className="tabular-nums">{degraded}</span>
                   </p>
                 )
               })()
@@ -303,57 +309,32 @@ function IhKeyCard({ isPt, info }: { isPt: boolean; info: IhKeyStatusInfo }) {
                   data-ih-key-status-wmo="nazare-fresh"
                 >
                   <span aria-hidden>🇵🇹</span>
-                  {isPt
-                    ? <>Costa central coberta <strong className="font-semibold">sem chave</strong> pela boia WMO Nazaré Costeira (via Copernicus){info.wmoNazare.waveHeightM != null ? ` · ${info.wmoNazare.waveHeightM} m` : ''} · leitura {info.wmoNazare.readingAt ? new Date(info.wmoNazare.readingAt).toLocaleString('pt-PT') : '—'}</>
-                    : <>Central coast covered <strong className="font-semibold">keyless</strong> by the WMO Nazaré Costeira buoy (Copernicus route){info.wmoNazare.waveHeightM != null ? ` · ${info.wmoNazare.waveHeightM} m` : ''} · reading {info.wmoNazare.readingAt ? new Date(info.wmoNazare.readingAt).toLocaleString('en-GB') : '—'}</>}
+                  <>{t.ihWmoA} <strong className="font-semibold">{t.ihWmoEm}</strong> {t.ihWmoB}
+                  {info.wmoNazare.waveHeightM != null ? ` · ${info.wmoNazare.waveHeightM} m` : ''}
+                  {t.ihWmoReading.replace('{date}', info.wmoNazare.readingAt ? new Date(info.wmoNazare.readingAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB') : '—')}</>
                 </p>
               ) : null
             }
             <div className="space-y-2 text-sm text-fg-muted leading-relaxed">
-              <p className="font-medium text-fg">
-                {isPt ? 'Como obter e configurar a chave' : 'How to get and configure the key'}
-              </p>
+              <p className="font-medium text-fg">{t.ihHowTo}</p>
               <ol className="list-decimal pl-5 space-y-1.5">
                 <li>
-                  {isPt ? (
-                    <>Pedir a chave gratuita por e-mail a{' '}
-                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
-                        cedencia.dados@hidrografico.pt
-                      </a>{' '}
-                      (Instituto Hidrográfico) — acesso à série <code className="text-fg">getDatawellData</code> (altura/período/direcção de onda em tempo real).</>
-                  ) : (
-                    <>Request the free key by e-mail to{' '}
-                      <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
-                        cedencia.dados@hidrografico.pt
-                      </a>{' '}
-                      (Instituto Hidrográfico) — access to the{' '}
-                      <code className="text-fg">getDatawellData</code> series (real-time wave height/period/direction).</>
-                  )}
+                  <>{t.ihStep1A}{' '}
+                    <a href="mailto:cedencia.dados@hidrografico.pt" className="underline hover:text-fg transition-colors">
+                      cedencia.dados@hidrografico.pt
+                    </a>{' '}
+                    {t.ihStep1B} <code className="text-fg">getDatawellData</code> {t.ihStep1C}</>
                 </li>
-                <li>
-                  {isPt ? 'Criar o secret no GitHub: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.' : 'Create the GitHub secret: Settings → Secrets and variables → Actions → New secret → `IH_API_KEY`.'}
-                </li>
-                <li>
-                  {isPt ? 'Local: `cp .env.example .env.local` e preencher `IH_API_KEY=…` (o ficheiro já está no .gitignore).' : 'Locally: `cp .env.example .env.local` and set `IH_API_KEY=…` (the file is already gitignored).'}
-                </li>
-                <li>
-                  {isPt ? 'Verificar: `npm run buoys:test-key` (teste e2e da key) e `npm run buoys:fetch`.' : 'Verify: `npm run buoys:test-key` (key e2e test) and `npm run buoys:fetch`.'}
-                </li>
+                <li>{t.ihStep2}</li>
+                <li>{t.ihStep3}</li>
+                <li>{t.ihStep4}</li>
               </ol>
               <p className="text-xs text-fg-subtle">
-                {isPt ? (
-                  <>Guia completo em{' '}
-                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                      docs/IH_API_KEY.md
-                    </a>{' '}
-                    · quando houver leituras, a onda observada aparece no card de cada spot (com rótulo «boia X a Y km»).</>
-                ) : (
-                  <>Full guide in{' '}
-                    <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
-                      docs/IH_API_KEY.md
-                    </a>{' '}
-                    · when readings exist, the observed wave shows on each spot’s card (labelled «buoy X at Y km»).</>
-                )}
+                <>{t.ihDocsA}{' '}
+                  <a href="https://github.com/braindeadpt/VenTu/blob/main/docs/IH_API_KEY.md" className="underline hover:text-fg transition-colors" target="_blank" rel="noopener noreferrer">
+                    docs/IH_API_KEY.md
+                  </a>{' '}
+                  {t.ihDocsB}</>
               </p>
             </div>
           </div>
