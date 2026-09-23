@@ -211,7 +211,9 @@ frentes (spot v2, dados/pipeline) e nada pode interferir.
   (`src/components/spots/verdict/SpotSafetyCoastalWarnings.tsx`, spot v2)
 - `node scripts/validate-page-slugs.js` · `node scripts/check-sitemap-drift.js`
 - Build + `grep canonical out/es/mapa/index.html` (deve ser `/es/mapa/`) e
-  `hreflang="x-default"` → `/pt/mapa/`
+  `hreflang="x-default"` → `/pt/mapa/`; idem em `/de/ferramentas`,
+  `/es/sazonalidade`, `/de/explorar/surf-norte`, `/en/news`, `/es/compare`,
+  `/de/favorites` e uma notícia (todas declaravam a **home** antes do fix)
 - Ratchet: `scripts/lib/__tests__/i18nDebt.test.js` — quando a dívida descer,
   baixar o `BASELINE` (só desce; nunca subir sem justificar)
 
