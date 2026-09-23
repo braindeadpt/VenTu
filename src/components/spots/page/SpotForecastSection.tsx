@@ -1,6 +1,13 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import {
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type RefObject,
+} from 'react';
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
 import ForecastMeteogram from '@/components/spots/ForecastMeteogram';
 import ForecastTable, {
@@ -12,6 +19,128 @@ import type {
   ScoreWaveCorrection,
   ScoreWaveSource,
 } from '@/lib/scoreConditions';
+import { SpotTimelineIndexContext } from '@/components/spots/timeline/SpotTimelineProvider';
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
+import { timelineIndexToColumn } from '@/lib/forecastTimeline';
+
+/**
+ * Liga a previsão ao eixo de tempo partilhado SEM re-renderizar a tabela:
+ * subscreve o índice mas renderiza `null` — destaque da coluna
+ * (`data-tl-selected`), stripe do meteograma e scrollIntoView aplicam-se
+ * por DOM. Um scrub de N passos custa N querySelectorAll, não N renders
+ * de ~400 células. Sem provider (outras páginas) é um no-op.
+ */
+function ForecastTimelineSync({
+  containerRef,
+  epoch,
+}: {
+  containerRef: RefObject<HTMLDivElement | null>;
+  /** Muda quando o conjunto visível muda (expandir/colapsar) — reaplica. */
+  epoch: number;
+}) {
+  const ctx = useContext(SpotTimelineIndexContext);
+  const index = ctx?.index ?? -1;
+  const setIndex = ctx?.setIndex;
+  const reducedMotion = usePrefersReducedMotion();
+  const indexRef = useRef(index);
+  const selfChange = useRef(false);
+
+  // Clique numa coluna da tabela (data-tl-col = índice global) ou no
+  // meteograma (colunas de largura fixa — índice por posição x).
+  useEffect(() => {
+    const root = containerRef.current;
+    if (!root || !setIndex) return;
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const cell = target.closest('[data-tl-col]');
+      if (cell && root.contains(cell)) {
+        const i = Number(cell.getAttribute('data-tl-col'));
+        if (Number.isFinite(i) && i !== indexRef.current) {
+          selfChange.current = true;
+          setIndex(i);
+        }
+        return;
+      }
+      const mg = target.closest<HTMLElement>('[data-tl-meteogram]');
+      if (mg && root.contains(mg)) {
+        const colW = Number(mg.getAttribute('data-tl-colw')) || 15;
+        const count = Number(mg.getAttribute('data-tl-count')) || 0;
+        const i = Math.floor((e.clientX - mg.getBoundingClientRect().left) / colW);
+        if (i >= 0 && i < count && i !== indexRef.current) {
+          selfChange.current = true;
+          setIndex(i);
+        }
+      }
+    };
+    root.addEventListener('click', onClick);
+    return () => root.removeEventListener('click', onClick);
+  }, [containerRef, setIndex]);
+
+  // Destaque + scroll — corre a cada mudança de índice e quando o conjunto
+  // visível muda (expandir/colapsar). Custo por passo: DOM, não render.
+  useEffect(() => {
+    indexRef.current = index;
+    const root = containerRef.current;
+    if (!root || index < 0) return;
+
+    // Índice na raiz da secção — a mesma convenção de instrumentos/contexto
+    // (specs e debug lêem a hora escolhida sem React).
+    root.closest('section')?.setAttribute('data-spot-timeline-index', String(index));
+
+    root.querySelectorAll('[data-tl-selected]').forEach((n) =>
+      n.removeAttribute('data-tl-selected'),
+    );
+
+    const scroller = root.querySelector<HTMLElement>('[data-tl-start]');
+    const start = Number(scroller?.getAttribute('data-tl-start')) || 0;
+    const count = Number(scroller?.getAttribute('data-tl-count')) || 0;
+    const col = timelineIndexToColumn(index, start, count);
+    if (col !== null) {
+      root
+        .querySelectorAll(`[data-tl-col="${index}"]`)
+        .forEach((n) => n.setAttribute('data-tl-selected', ''));
+    }
+
+    const mg = root.querySelector<HTMLElement>('[data-tl-meteogram]');
+    const stripe = root.querySelector<HTMLElement>('[data-tl-stripe]');
+    const mgColW = Number(mg?.getAttribute('data-tl-colw')) || 15;
+    const mgCount = Number(mg?.getAttribute('data-tl-count')) || 0;
+    if (stripe) {
+      stripe.style.transform = `translateX(${index * mgColW}px)`;
+      stripe.style.opacity = index < mgCount ? '1' : '0';
+    }
+
+    // Índice mudado noutra secção (régua, setas, autoplay): traz a coluna
+    // para a vista — só se a tabela estiver visível no ecrã. Clique na
+    // própria tabela (selfChange) não precisa de scroll — já está à vista.
+    if (!selfChange.current) {
+      const behavior: ScrollBehavior = reducedMotion ? 'auto' : 'smooth';
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const inViewport = (el: HTMLElement) => {
+        const r = el.getBoundingClientRect();
+        return r.bottom > 0 && r.top < vh;
+      };
+      if (col !== null && scroller && inViewport(scroller)) {
+        root
+          .querySelector<HTMLElement>(`[data-tl-col="${index}"]`)
+          ?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior });
+      }
+      const mgScroll = mg?.parentElement;
+      if (mg && mgScroll && index < mgCount && inViewport(mgScroll)) {
+        const left = index * mgColW;
+        if (
+          left < mgScroll.scrollLeft ||
+          left + mgColW > mgScroll.scrollLeft + mgScroll.clientWidth
+        ) {
+          mgScroll.scrollTo({ left: Math.max(0, left - mgScroll.clientWidth / 2), behavior });
+        }
+      }
+    }
+    selfChange.current = false;
+  }, [index, containerRef, epoch, reducedMotion]);
+
+  return null;
+}
 
 /**
  * Secção 5 do contrato (docs/design/SPOT-PAGE.md) — dona: S3.
@@ -58,6 +187,7 @@ export default function SpotForecastSection({
   copy,
 }: SpotForecastSectionProps) {
   const [expanded, setExpanded] = useState(false);
+  const syncRef = useRef<HTMLDivElement>(null);
   const forecastHours = useMemo(() => {
     if (expanded) return isMobile ? 72 : 120;
     return isMobile ? 36 : 48;
@@ -81,7 +211,7 @@ export default function SpotForecastSection({
       <p className="text-meta text-fg-muted md:hidden">{copy.forecastHint}</p>
       {hours.length > 0 ? (
         <>
-          <div className="card-1 overflow-hidden p-3 md:p-4">
+          <div ref={syncRef} className="card-1 overflow-hidden p-3 md:p-4">
             <ForecastMeteogram
               hours={hours.slice(0, forecastHours)}
               coastOrientation={coastOrientation}
@@ -99,6 +229,7 @@ export default function SpotForecastSection({
               waveCorrection={waveCorrection}
               nowMs={nowMs}
             />
+            <ForecastTimelineSync containerRef={syncRef} epoch={forecastHours} />
           </div>
           {hours.length > (isMobile ? 36 : 48) && (
             <Button

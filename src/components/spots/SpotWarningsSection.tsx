@@ -31,11 +31,15 @@ export default function SpotWarningsSection({
   spotId,
   locale,
   embedded,
+  excludeSafetyNavWarnings = false,
 }: {
   spotId: string;
   locale: string;
   /** Sem card nem título próprios — o hospedeiro (rail/accordion) fornece-os. */
   embedded?: boolean;
+  /** «No local»: os perigos à navegação já aparecem na faixa §0 — exclui-os
+   *  do bloco costeiro para não duplicar (passa a CoastalNavWarnings). */
+  excludeSafetyNavWarnings?: boolean;
 }) {
   const [data, setData] = useState<IpmaWarningsData | null>(null);
   const isPt = locale === 'pt';
@@ -121,7 +125,11 @@ export default function SpotWarningsSection({
       {/* Avisos à Navegação Costeiros (IH) — camada de segurança marítima
           complementar ao IPMA/MeteoAlarm. Renderiza só quando o spot está
           coberto por um aviso em vigor (nunca a secção vazia). */}
-      <CoastalNavWarnings spotId={spotId} locale={locale} />
+      <CoastalNavWarnings
+        spotId={spotId}
+        locale={locale}
+        excludeSafety={excludeSafetyNavWarnings}
+      />
     </>
   );
 

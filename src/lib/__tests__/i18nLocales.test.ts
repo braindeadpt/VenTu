@@ -22,6 +22,15 @@ const SHARED_TOKENS = new Set([
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
   'flat', // termo adoptado em pt/en/es (frase de tier «flat»)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
+  // Pontos cardeais — símbolos universais (N/S/E/O válidos em pt/en/es/de/fr).
+  'N', 'S', 'E', 'O',
+  // Termo adoptado em PT, igual nas shells («score 93, ÉPICO»).
+  'score',
+  // Siglas de maré idênticas em PT/ES/FR (preia-mar/pleamar/pleine mer,
+  // baixa-mar/bajamar/basse mer); DE usa HW/NW e EN HW/LW.
+  'PM', 'BM',
+  // «ideal» é a mesma grafia em PT/EN/ES/DE (rótulo do sector ideal).
+  'ideal {dirs}',
 ]);
 
 /**
@@ -68,6 +77,9 @@ const ES_COGNATES = new Set([
   'MODALIDADES',        // espanhol correcto = PT (cabeçalho de grupo de pesquisa)
   'navegar',            // espanhol correcto = PT (atalho de teclado)
   'abrir',              // espanhol correcto = PT (atalho de teclado)
+  'Avisos activos',     // espanhol correcto = PT (faixa de avisos do veredicto)
+  'Próximas 48 horas',  // espanhol correcto = PT (régua temporal do veredicto)
+  'Pausar',             // espanhol correcto = PT (reprodução da régua)
   'Veredicto',          // espanhol correcto = PT (secção da página de spot)
   'Instrumentos',       // espanhol correcto = PT (secção da página de spot)
   'Contexto',           // espanhol correcto = PT (secção da página de spot)
@@ -132,6 +144,9 @@ const ES_COGNATES = new Set([
   'Configurar alerta',                 // espanhol correcto = PT (aria do alerta)
   'Score mínimo',                      // espanhol correcto = PT (aria do score mínimo)
   'Guardar alerta',                    // espanhol correcto = PT (CTA de guardar alerta)
+  'mar',                // espanhol correcto = PT (rótulo da rosa de instrumentos)
+  'mín',                // espanhol correcto = PT (abreviatura na curva de maré)
+  'máx',                // espanhol correcto = PT (abreviatura na curva de maré)
 ]);
 
 /**
@@ -163,6 +178,9 @@ const EN_COGNATES = new Set([
   ' · {n} frame',        // «frame» é o termo adoptado em PT e EN (contagem do radar)
   ' · {n} frames',
   'flat',                // termo adoptado em PT e EN (frase de tier «flat»)
+  // Pontos cardeais e «score» — símbolos/termos universais, iguais por mérito.
+  'N', 'S', 'E', 'O', 'score',
+  'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

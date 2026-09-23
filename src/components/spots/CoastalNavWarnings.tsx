@@ -7,17 +7,30 @@ import {
   warningsForSpot,
   type CoastalNavWarning,
 } from '@/lib/ihCoastalWarnings';
+import { isSafetyNavWarning } from '@/lib/verdict/navWarningSafety';
 
 interface CoastalNavWarningsProps {
   spotId: string;
   locale: string;
+  /** 'alert' (default — fundo rosado, âncora vermelha) ou 'info'
+   *  (superfície neutra — para contextos informativos como «No local»). */
+  tone?: 'alert' | 'info';
+  /** Exclui os avisos de segurança real já mostrados na faixa §0
+   *  (isSafetyNavWarning) — «No local» lista só o restante. */
+  excludeSafety?: boolean;
 }
 
 /** «Avisos à Navegação Costeiros (IH)» — camada de segurança marítima
  *  complementar ao IPMA/MeteoAlarm. Renderiza só quando o spot está coberto
  *  por um aviso em vigor (nunca mostra a secção vazia). */
-export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarningsProps) {
+export default function CoastalNavWarnings({
+  spotId,
+  locale,
+  tone = 'alert',
+  excludeSafety = false,
+}: CoastalNavWarningsProps) {
   const isPt = locale === 'pt';
+  const isAlert = tone === 'alert';
   const [warnings, setWarnings] = useState<CoastalNavWarning[] | null | undefined>(undefined);
 
   useEffect(() => {
@@ -25,7 +38,10 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
     loadCoastalNavWarnings()
       .then((file) => {
         if (cancelled) return;
-        setWarnings(warningsForSpot(file, spotId));
+        const all = warningsForSpot(file, spotId);
+        // Em «No local» os perigos à navegação já estão na faixa §0 —
+        // listar os mesmos avisos duas vezes lê-se como dois alertas.
+        setWarnings(excludeSafety ? (all ?? []).filter((w) => !isSafetyNavWarning(w)) : all);
       })
       .finally(() => {
         if (!cancelled) setWarnings((w) => w ?? null);
@@ -33,7 +49,7 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
     return () => {
       cancelled = true;
     };
-  }, [spotId]);
+  }, [spotId, excludeSafety]);
 
   if (!warnings || warnings.length === 0) return null;
 
@@ -45,12 +61,20 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
 
   return (
     <div
-      className="rounded-card border border-score-poor/30 bg-score-poor/[0.06] px-3 py-2.5 mt-3"
+      className={`rounded-card border px-3 py-2.5 mt-3 ${
+        isAlert
+          ? 'border-score-poor/30 bg-score-poor/[0.06]'
+          : 'border-divider bg-surface-1/[0.04]'
+      }`}
       data-testid="coastal-nav-warnings"
+      data-tone={tone}
     >
       <div className="flex items-center justify-between gap-2 mb-1.5">
         <p className="text-meta-sm font-semibold text-fg inline-flex items-center gap-1.5">
-          <Anchor className="w-3.5 h-3.5 text-score-poor shrink-0" aria-hidden />
+          <Anchor
+            className={`w-3.5 h-3.5 shrink-0 ${isAlert ? 'text-score-poor' : 'text-fg-muted'}`}
+            aria-hidden
+          />
           {isPt ? 'Avisos à navegação costeira' : 'Coastal navigation warnings'}
         </p>
         {/* Navega para o /mapa fullscreen com a camada de avisos já ligada e
@@ -86,7 +110,10 @@ export default function CoastalNavWarnings({ spotId, locale }: CoastalNavWarning
         </ul>
       )}
       {es.length > 0 && (
-        <div className="mt-2 pt-2 border-t border-score-poor/20" data-testid="coastal-nav-warnings-es">
+        <div
+          className={`mt-2 pt-2 border-t ${isAlert ? 'border-score-poor/20' : 'border-divider'}`}
+          data-testid="coastal-nav-warnings-es"
+        >
           <p className="text-meta-sm font-semibold text-fg inline-flex items-center gap-1.5 mb-1">
             <Anchor className="w-3.5 h-3.5 text-data-waves shrink-0" aria-hidden />
             {isPt ? 'Avisos a los navegantes (ES, cross-border)' : 'Avisos a los navegantes (ES, cross-border)'}
