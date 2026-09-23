@@ -2,6 +2,9 @@ import { test, expect } from '@playwright/test';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
 
 test.describe('wind ring legend', () => {
+  // O cenário tem esperas sequenciais reais (auto-hide de 12 s do hint) —
+  // o default de 30 s rebenta sob paralelismo do CI.
+  test.describe.configure({ timeout: 90_000 });
   // Wind rings are desktop-default-on (readWindPref ignores localStorage on
   // mobile by design), so the coach scenario is exercised at desktop size.
   test.use({ viewport: { width: 1280, height: 800 } });

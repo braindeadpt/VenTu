@@ -48,6 +48,9 @@ async function interceptCoastalWarnings(page: import('@playwright/test').Page): 
 }
 
 test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)', () => {
+  // /mapa carrega ~158 marcadores + camadas — sob paralelismo do CI o default
+  // de 30 s não chega para goto+menu+toggle (flakes observados).
+  test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block' });
 
   test('toggle desenha os polígonos de TODOS os avisos e abre o popup de detalhe', async ({
@@ -188,6 +191,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
 });
 
 test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso activo)', () => {
+  test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block' });
 
   test('?spot= de um spot coberto → liga a camada automaticamente e desenha os polígonos', async ({

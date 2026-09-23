@@ -33,6 +33,7 @@ import MapSpotPanel from '../components/MapSpotPanel';
 import type { MapSpotListRow } from '../components/MapSpotList';
 import type { MapLayersMenuItem } from '../components/MapLayersMenu';
 import type { MapLayersFields } from './MapLayersZone';
+import { VENTU_OPEN_EXPLORE_SHEET } from '../../mapMarkers';
 import { useMapUiActions, useMapUiData } from '../MapUiContext';
 
 type MapTranslation = ReturnType<typeof getTranslation>;
@@ -92,6 +93,17 @@ export function useMapExploreZone({
   );
   const [panelCollapsed, setPanelCollapsed] = useState(false);
   const [openHeight, setOpenHeight] = useState(620);
+
+  // UX v3 (M4): o «←» do sheet de spot volta à lista — o pedido chega por
+  // evento partilhado (`VENTU_OPEN_EXPLORE_SHEET`, declarado em
+  // mapMarkers.ts) porque o estado do sheet não está no contexto. Bloco
+  // aditivo mínimo — registado para a revisão da M6.
+  useEffect(() => {
+    const open = () => setExploreSheetState('open');
+    window.addEventListener(VENTU_OPEN_EXPLORE_SHEET, open);
+    return () => window.removeEventListener(VENTU_OPEN_EXPLORE_SHEET, open);
+  }, []);
+
   useEffect(() => {
     const sync = () => setOpenHeight(Math.min(Math.round(window.innerHeight * 0.82), 720));
     sync();

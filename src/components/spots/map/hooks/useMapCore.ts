@@ -499,11 +499,16 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
 
         const mcg = Leaflet.markerClusterGroup({
           ...CLUSTER_CONFIG,
+          // UX v3 (M4): raio de agrupamento da maquete — 40 px desktop /
+          // 52 px mobile (o LOD por colisão do modo Explorar usa os mesmos
+          // valores abaixo de z8.5). Só se aplica a hero/embeds: no Explorar
+          // o markercluster nunca entra no mapa.
+          maxClusterRadius: mobileInit ? 52 : 40,
           // Hero embed: o mapa não tem navegação (drag/zoom off) — um cluster
           // que faz zoomToBounds prende o utilizador nessa vista sem saída.
           // O clique é capturado pelo SpotMapInteractive e navega para /mapa/.
           ...(isHeroEmbed ? { zoomToBoundsOnClick: false, spiderfyOnMaxZoom: false } : {}),
-          ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80, maxClusterRadius: 72 } : {}),
+          ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80 } : {}),
           iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit, locale }),
         });
         const lg = Leaflet.layerGroup();

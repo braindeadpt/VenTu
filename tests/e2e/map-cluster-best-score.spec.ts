@@ -2,15 +2,97 @@ import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { waitHydrated } from './helpers/hydration';
+import { waitMapSettled } from './helpers/map-sheet';
 
 /**
- * Clusters mostram o MELHOR score da zona — não a contagem.
+ * Agrupamentos mostram o MELHOR score da zona — não a contagem.
  *
- * Prova contra o estado real do Leaflet (handle __VENTU_MAP__ via
- * ventu.mapdebug=1): para cada cluster visível, o número grande é o máximo
- * dos spotScore dos filhos e o badge é a contagem. A etiqueta acessível
- * (span sr-only — o markercluster dá role=button ao ícone) inclui ambos.
+ * UX v3 (M4): no /mapa o markercluster foi substituído pelo LOD por colisão
+ * (recluster() da maquete aprovada) — os spots que colidem ficam pontos e o
+ * melhor do grupo fica marcador completo com badge «+N». A invariante é a
+ * mesma: o número visível no representante é o MÁXIMO dos membros e o badge
+ * é a contagem escondida.
+ *
+ * Os clusters clássicos `.ventu-cluster-icon` continuam nos embeds (hero da
+ * homepage) — o último teste mantém a prova original nessa superfície.
  */
+
+interface GroupProbe {
+  id: string;
+  score: number;
+  members: number[];
+  badge: string;
+  label: string;
+}
+
+async function openMapa(page: Page): Promise<void> {
+  await preseedWindRingLegend(page);
+  await page.goto('/pt/mapa/?sport=all', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+  await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
+  await waitHydrated(page);
+  await page.waitForFunction(
+    () => document.querySelectorAll('[data-v3spot]').length > 0,
+    { timeout: 30_000, polling: 250 },
+  );
+  await waitMapSettled(page);
+}
+
+/** Grupos «+N»: representante + score de cada membro (pontos incluídos). */
+async function probeGroups(page: Page): Promise<GroupProbe[]> {
+  return page.evaluate(() => {
+    const scoreOf = (id: string) =>
+      Number(
+        document.querySelector<HTMLElement>(`[data-v3spot="${CSS.escape(id)}"]`)?.dataset
+          .spotScore,
+      );
+    return Array.from(document.querySelectorAll<HTMLElement>('.v3more')).map((el) => {
+      const host = el.closest<HTMLElement>('[data-v3spot]');
+      const ids = (el.dataset.v3members ?? '').split(',').filter(Boolean);
+      return {
+        id: host?.dataset.v3spot ?? '',
+        score: Number(host?.dataset.spotScore),
+        members: ids.map(scoreOf),
+        badge: el.textContent ?? '',
+        label: el.getAttribute('aria-label') ?? '',
+      };
+    });
+  });
+}
+
+function expectGroupMatchesMembers(groups: GroupProbe[]) {
+  expect(groups.length).toBeGreaterThan(0);
+  for (const g of groups) {
+    // número do marcador = máximo dos membros; badge = nº de pontos
+    expect(Math.max(...g.members), `grupo de ${g.id}`).toBe(g.score);
+    expect(g.badge.trim()).toBe(`+${g.members.length - 1}`);
+    // etiqueta acessível: «Mais N spots perto — ampliar»
+    expect(g.label).toMatch(/Mais \d+ spots|\d+ more spots/);
+    expect(g.label).toContain(String(g.members.length - 1));
+  }
+}
+
+test.describe('Grupos «+N» do mapa v3 — melhor score da zona', () => {
+  test.describe.configure({ timeout: 90_000 });
+  test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
+
+  test('desktop: o representante tem o máximo dos membros e o badge a contagem', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await openMapa(page);
+    await expect(page.locator('.v3more').first()).toBeVisible({ timeout: 20_000 });
+    expectGroupMatchesMembers(await probeGroups(page));
+  });
+
+  test('mobile: o representante tem o máximo dos membros e o badge a contagem', async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    await openMapa(page);
+    await expect(page.locator('.v3more').first()).toBeVisible({ timeout: 20_000 });
+    expectGroupMatchesMembers(await probeGroups(page));
+  });
+});
 
 interface ClusterProbe {
   total: number;
@@ -18,16 +100,6 @@ interface ClusterProbe {
   score: string | null;
   count: string | null;
   label: string;
-}
-
-async function openMapa(page: Page): Promise<void> {
-  await preseedWindRingLegend(page);
-  await page.addInitScript(() => {
-    localStorage.setItem('ventu.mapdebug', '1');
-  });
-  await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
-  await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
-  await waitHydrated(page);
 }
 
 async function probeClusters(page: Page): Promise<ClusterProbe[]> {
@@ -55,43 +127,33 @@ async function probeClusters(page: Page): Promise<ClusterProbe[]> {
   });
 }
 
-function expectClusterMatchesChildren(clusters: ClusterProbe[], scoreWord: RegExp) {
-  expect(clusters.length).toBeGreaterThan(0);
-  let scored = 0;
-  for (const c of clusters) {
-    if (c.max === null) continue; // zona sem scores → fallback de contagem
-    scored++;
-    // número principal = máximo dos filhos; badge = nº de filhos
-    expect(Number(c.score), `cluster de ${c.total} spots`).toBe(c.max);
-    expect(Number(c.count), `cluster de ${c.total} spots`).toBe(c.total);
-    // etiqueta acessível: «Melhor score 80 · 12 spots nesta zona — ampliar»
-    expect(c.label).toMatch(scoreWord);
-    expect(c.label).toContain(String(c.max));
-    expect(c.label).toContain(String(c.total));
-  }
-  // há-de haver pelo menos um cluster com scores na vista de país
-  expect(scored).toBeGreaterThan(0);
-}
-
-test.describe('Clusters do mapa — melhor score da zona', () => {
+test.describe('Clusters clássicos — embeds fora do modo Explorar (hero)', () => {
   test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-  test('desktop (variante arcos): número visível = máximo dos filhos; etiqueta inclui score e contagem', async ({
+  test('hero da homepage: número visível = máximo dos filhos; etiqueta com score e contagem', async ({
     page,
   }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await openMapa(page);
-    await expect(page.locator('.ventu-cluster-icon').first()).toBeVisible({ timeout: 20_000 });
-    expectClusterMatchesChildren(await probeClusters(page), /Melhor score|Best score/);
-  });
-
-  test('mobile (variante simples): número visível = máximo dos filhos; etiqueta inclui score e contagem', async ({
-    page,
-  }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
-    await openMapa(page);
-    await expect(page.locator('.ventu-cluster-icon').first()).toBeVisible({ timeout: 20_000 });
-    expectClusterMatchesChildren(await probeClusters(page), /Melhor score|Best score/);
+    await preseedWindRingLegend(page);
+    await page.addInitScript(() => {
+      localStorage.setItem('ventu.mapdebug', '1');
+    });
+    await page.goto('/pt/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await waitHydrated(page);
+    await expect(page.locator('.ventu-cluster-icon').first()).toBeVisible({ timeout: 30_000 });
+    const clusters = await probeClusters(page);
+    expect(clusters.length).toBeGreaterThan(0);
+    let scored = 0;
+    for (const c of clusters) {
+      if (c.max === null) continue;
+      scored++;
+      expect(Number(c.score), `cluster de ${c.total} spots`).toBe(c.max);
+      expect(Number(c.count), `cluster de ${c.total} spots`).toBe(c.total);
+      expect(c.label).toMatch(/Melhor score|Best score/);
+      expect(c.label).toContain(String(c.max));
+      expect(c.label).toContain(String(c.total));
+    }
+    expect(scored).toBeGreaterThan(0);
   });
 });
