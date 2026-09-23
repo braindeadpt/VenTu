@@ -1,5 +1,8 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
+import { getSportLabel } from '@/lib/homepageSport';
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { Clock, Droplets, Waves, Wind, Zap } from 'lucide-react';
 import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { Spot } from '@/types';
@@ -71,17 +74,17 @@ export default function MapSpotPreview({
       : undefined;
   const windRelationMeta =
     windRelation != null
-      ? getWindRelationLabel(windRelation, isPt ? 'pt' : 'en')
+      ? getWindRelationLabel(windRelation, locale)
       : undefined;
 
   return (
     <div className="space-y-4">
-      <SpotImage spot={spot} aspect="video" locale={isPt ? 'pt' : 'en'} className="rounded-xl w-full" />
+      <SpotImage spot={spot} aspect="video" locale={locale} className="rounded-xl w-full" />
 
       <div className="space-y-1">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="font-display text-h3 text-fg font-semibold">
-            {isPt ? spot.name : spot.nameEn}
+            {localizedSpotName(spot, locale)}
           </h2>
           <ConfidenceBadge
             confidence={conditions.confidence}
@@ -91,7 +94,7 @@ export default function MapSpotPreview({
           />
         </div>
         <p className="text-meta text-fg-muted">
-          {isPt ? spot.region : spot.regionEn}
+          {localizedSpotRegion(spot, locale)}
           <span aria-hidden> · </span>
           <span className="capitalize">{getDifficultyLabel(spot.difficulty, isPt)}</span>
         </p>
@@ -106,10 +109,10 @@ export default function MapSpotPreview({
 
       {warning && <WarningPill warning={warning} locale={locale} variant="default" />}
 
-      <div className="flex flex-wrap gap-1.5" role="list" aria-label={isPt ? 'Scores por desporto' : 'Scores by sport'}>
+      <div className="flex flex-wrap gap-1.5" role="list" aria-label={getTranslation(locale).ranked.scoresBySport}>
         {sortedSports.map((sport) => {
           const score = allScores[sport]?.score ?? 0;
-          const label = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
+          const label = getSportLabel(sport, locale);
           const active = highlightSport === sport || (highlightSport === 'big-wave' && sport === 'surf');
           return (
             <span
@@ -123,7 +126,7 @@ export default function MapSpotPreview({
               <span className="sport-accent" data-sport={sport}>
                 {label}
               </span>
-              <ScoreBadge score={score} locale={isPt ? 'pt' : 'en'} size="sm" />
+              <ScoreBadge score={score} locale={locale} size="sm" />
             </span>
           );
         })}
@@ -148,7 +151,7 @@ export default function MapSpotPreview({
         <div className="rounded-lg bg-surface-1/[0.04] border border-divider p-2.5">
           <div className="flex items-center gap-1.5 text-fg-muted mb-1">
             <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-            <span>{isPt ? 'Ondas' : 'Waves'}</span>
+            <span>{getTranslation(locale).homepage.layerWaves}</span>
           </div>
           <p className="font-mono tabular-nums text-fg font-semibold">
             {swellH.toFixed(1)}m · {Math.round(swellT)}s
@@ -157,7 +160,7 @@ export default function MapSpotPreview({
         <div className="rounded-lg bg-surface-1/[0.04] border border-divider p-2.5">
           <div className="flex items-center gap-1.5 text-fg-muted mb-1">
             <Wind className="w-3.5 h-3.5 text-data-wind" aria-hidden />
-            <span>{isPt ? 'Vento' : 'Wind'}</span>
+            <span>{getTranslation(locale).homepage.layerWind}</span>
           </div>
           <p className="font-mono tabular-nums text-fg font-semibold flex flex-wrap items-center gap-1.5">
             <span>{windKt}kt {getCardinalLabel(conditions.windDirection)}</span>
@@ -179,7 +182,7 @@ export default function MapSpotPreview({
         <div className="rounded-lg bg-surface-1/[0.04] border border-divider p-2.5">
           <div className="flex items-center gap-1.5 text-fg-muted mb-1">
             <Droplets className="w-3.5 h-3.5 text-data-water" aria-hidden />
-            <span>{isPt ? 'Água' : 'Water'}</span>
+            <span>{getTranslation(locale).spotsUi.waterWord}</span>
           </div>
           <p className="font-mono tabular-nums text-fg font-semibold">
             {conditions.waterTemp.toFixed(1)}°C

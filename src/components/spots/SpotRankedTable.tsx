@@ -1,5 +1,6 @@
 'use client';
 
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import type { GridSpotData } from '@/lib/gridSpotFilters';
@@ -67,7 +68,7 @@ export default function SpotRankedTable({
     <section className="mb-10" aria-labelledby="spot-table-heading">
       <div className="mb-3">
         <h2 id="spot-table-heading" className="text-h3 text-fg">
-          {title ?? (isPt ? 'Ranking de spots' : 'Spot ranking')}
+          {title ?? t.ranked.spotRanking}
         </h2>
         <p className="text-meta text-fg-muted mt-1">
           {subtitle ??
@@ -79,7 +80,7 @@ export default function SpotRankedTable({
 
       <div
         role="region"
-        aria-label={isPt ? 'Tabela de spots por score' : 'Spots by score table'}
+        aria-label={t.ranked.tableAria}
         tabIndex={0}
         className="overflow-x-auto rounded-card border border-divider bg-surface-1/[0.03] edge-fade-x"
       >
@@ -93,7 +94,7 @@ export default function SpotRankedTable({
             <tr className="border-b border-divider text-left text-meta-sm text-fg-subtle">
               <th scope="col" className="py-2 pl-3 pr-1 font-medium w-8">
                 <span aria-hidden>#</span>
-                <span className="sr-only">{isPt ? 'Posição' : 'Rank'}</span>
+                <span className="sr-only">{t.ranked.rank}</span>
               </th>
               <th scope="col" className="py-2 px-2 font-medium">
                 Score
@@ -102,19 +103,19 @@ export default function SpotRankedTable({
                 Spot
               </th>
               <th scope="col" className="py-2 px-2 font-medium whitespace-nowrap">
-                {isPt ? 'Ondas' : 'Waves'}
+                {getTranslation(locale).homepage.layerWaves}
               </th>
               <th scope="col" className="py-2 px-2 font-medium hidden md:table-cell">
                 <span title={t.spots.idealSwell}>Dir.</span>
               </th>
               <th scope="col" className="py-2 px-2 font-medium whitespace-nowrap">
-                {isPt ? 'Vento' : 'Wind'}
+                {getTranslation(locale).homepage.layerWind}
               </th>
               <th scope="col" className="py-2 px-2 font-medium hidden lg:table-cell">
-                {isPt ? 'Maré' : 'Tide'}
+                {t.ranked.tideWord}
               </th>
               <th scope="col" className="py-2 pl-2 pr-3 font-medium whitespace-nowrap">
-                {isPt ? 'Janela' : 'Window'}
+                {t.ranked.windowWord}
               </th>
             </tr>
           </thead>
@@ -124,8 +125,8 @@ export default function SpotRankedTable({
               const score = getGridSpotScore(data, selectedSport);
               const tokens = getScoreTokens(score);
               const href = spotDetailHref(locale, spot.slug, selectedSport);
-              const name = isPt ? spot.name : spot.nameEn;
-              const region = isPt ? spot.region : spot.regionEn;
+              const name = localizedSpotName(spot, locale);
+              const region = localizedSpotRegion(spot, locale);
               const calmLabel = getCalmWaterMetricLabel(spot, conditions.waveHeight, locale);
               const swellMatch = directionInSectorList(
                 conditions.waveDirection,
@@ -158,7 +159,7 @@ export default function SpotRankedTable({
                   <td className="py-2 px-2">
                     <span
                       className={cn('font-mono font-semibold tabular-nums', tokens.text)}
-                      title={getScoreTierLabel(tokens.tier, isPt ? 'pt' : 'en')}
+                      title={getScoreTierLabel(tokens.tier, locale)}
                     >
                       {score}
                     </span>

@@ -21,8 +21,10 @@ const SHARED_TOKENS = new Set([
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
   'flat', // termo adoptado em pt/en/es (frase de tier «flat»)
-  'offshore', // termo adoptado em pt/en/de (relação de vento)
-  'onshore',  // termo adoptado em pt/en/de (relação de vento)
+  'offshore', // termo adoptado em pt/en/es/de/fr (relação de vento)
+  'Offshore', // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
 ]);
 
@@ -144,6 +146,10 @@ const ES_COGNATES = new Set([
   'medida',                            // espanhol correcto = PT (onda medida)
   'Ver página completa',               // espanhol correcto = PT (CTA do drawer)
   'Entrar',                            // espanhol correcto = PT (botão de sessão)
+  'Comer',                             // espanhol correcto = PT (dica local: comer)
+  'Dormir',                            // espanhol correcto = PT/FR (dica local: dormir)
+  'Ranking de spots',                  // espanhol correcto = PT (título da tabela)
+  'Insuficiente',                      // espanhol correcto = PT (veredicto de amostra)
 ]);
 
 /**
@@ -154,6 +160,7 @@ const FR_COGNATES = new Set([
   'Framework React',    // termo adoptado igual em PT e FR (descrição de tecnologia no /about)
   ' · fetch {when}',    // francês correcto = PT (timestamp de fetch no indicador de frescura)
   'Livecams — {count} spots — VenTu', // «Livecams» é o termo adoptado em francês = PT (título)
+  'Dormir',                            // francês correcto = PT (dica local: dormir)
 ]);
 
 /**
@@ -175,6 +182,7 @@ const EN_COGNATES = new Set([
   ' · {n} frame',        // «frame» é o termo adoptado em PT e EN (contagem do radar)
   ' · {n} frames',
   'flat',                // termo adoptado em PT e EN (frase de tier «flat»)
+  'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

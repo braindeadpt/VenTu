@@ -46,18 +46,18 @@ const WIND_RELATION_STYLES: Record<WindRelation, string> = {
   cross: 'text-windDir-cross border-divider bg-surface-2/[0.08]',
 };
 
-const WIND_RELATION_LABELS: Record<WindRelation, { pt: string; en: string }> = {
-  offshore: { pt: 'Offshore', en: 'Offshore' },
-  onshore: { pt: 'Onshore', en: 'Onshore' },
-  cross: { pt: 'Cross-shore', en: 'Cross-shore' },
-};
-
 export function getWindRelationLabel(
   relation: WindRelation,
-  locale: 'pt' | 'en',
+  locale: string,
 ): { label: string; className: string } {
+  const t = getTranslation(locale).wind;
   return {
-    label: WIND_RELATION_LABELS[relation][locale],
+    label:
+      relation === 'offshore'
+        ? t.relOffshoreCap
+        : relation === 'onshore'
+          ? t.relOnshoreCap
+          : t.relCrossCap,
     className: WIND_RELATION_STYLES[relation],
   };
 }
@@ -118,4 +118,5 @@ export function getWindArrow(direction: number): string {
   const snapped = ((Math.round(direction / 45) * 45) % 360 + 360) % 360;
   const index = snapped / 45;
   return arrows[index];
-}
+}import { getTranslation } from '@/lib/i18n';
+

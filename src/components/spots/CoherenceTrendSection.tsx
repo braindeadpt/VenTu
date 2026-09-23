@@ -1,5 +1,7 @@
 'use client';
 
+import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { getTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { Waves } from 'lucide-react';
 import { getAssetPath } from '@/lib/paths';
@@ -35,6 +37,7 @@ function dayLabel(day: string, locale: string): string {
 function PairTrendBars({ pair, locale }: { pair: CoherencePairTrend; locale: string }) {
   const totalHours = pair.days.reduce((s, d) => s + d.n, 0) || 1;
   const isPt = locale === 'pt';
+  const t = getTranslation(locale).coherence;
   const firstDay = pair.days[0]?.day;
   const lastDay = pair.days[pair.days.length - 1]?.day;
 
@@ -56,8 +59,8 @@ function PairTrendBars({ pair, locale }: { pair: CoherencePairTrend; locale: str
         </p>
         <p className="text-meta-sm text-fg-subtle tabular-nums">
           {firstDay && lastDay
-            ? `${dayLabel(firstDay, locale)}→${dayLabel(lastDay, locale)} · ${pair.days.length} ${isPt ? 'dias' : 'days'}`
-            : `${pair.days.length} ${isPt ? 'dias' : 'days'}`}
+            ? `${dayLabel(firstDay, locale)}→${dayLabel(lastDay, locale)} · ${t.daysCount.replace('{n}', String(pair.days.length))}`
+            : t.daysCount.replace('{n}', String(pair.days.length))}
         </p>
       </div>
 
@@ -105,7 +108,8 @@ function PairTrendBars({ pair, locale }: { pair: CoherencePairTrend; locale: str
  * horas sobrepostas (coherent/review/incoherent/insufficient), largura ∝ nº de
  * horas — mostra SE e QUANDO cada par ES×PT divergiu na janela.
  */
-export default function CoherenceTrendSection({ isPt }: { isPt: boolean }) {
+export default function CoherenceTrendSection({ locale }: { locale: string }) {
+  const t = getTranslation(locale).coherence;
   const [data, setData] = useState<CoherenceTrendData | null>(null);
 
   useEffect(() => {
@@ -131,19 +135,21 @@ export default function CoherenceTrendSection({ isPt }: { isPt: boolean }) {
       <div className="flex items-center gap-2">
         <Waves className="w-5 h-5 text-data-waves" aria-hidden />
         <h2 className="text-2xl font-bold text-fg">
-          {isPt ? 'Tendência de coerência ES×PT' : 'ES×PT coherence trend'}
+          {t.trendTitle}
         </h2>
       </div>
       <p className="text-sm text-fg-muted leading-relaxed">
-        {isPt ? (
-          <>Coerência entre boias espanholas (Puertos del Estado) e portuguesas nas horas sobrepostas, dia a dia na janela de <strong className="text-fg">{data.windowDays || 30} dias</strong>. Cada segmento é um dia; cor = veredicto (verde = coherent, ambar = review, vermelho = incoherent, cinza = amostra insuficiente) e largura ∝ horas comparadas. Detecta divergência sazonal recorrente, não só o dia actual.</>
-        ) : (
-          <>Coherence between Spanish (Puertos del Estado) and Portuguese buoys on overlapping hours, day by day over the <strong className="text-fg">{data.windowDays || 30}-day</strong> window. Each segment is a day; colour = verdict (green = coherent, amber = review, red = incoherent, grey = insufficient sample) and width ∝ hours compared. Catches recurring seasonal divergence, not just today.</>
-        )}
+        <>
+          {t.bodyA}
+          <strong className="text-fg">
+            {t.daysCount.replace('{n}', String(data.windowDays || 30))}
+          </strong>
+          {t.bodyB}
+        </>
       </p>
       <div className="space-y-4">
         {data.pairs.map((pair) => (
-          <PairTrendBars key={pair.key} pair={pair} locale={isPt ? 'pt' : 'en'} />
+          <PairTrendBars key={pair.key} pair={pair} locale={locale} />
         ))}
       </div>
       {/* Legenda global + braquete de dias. */}
@@ -151,16 +157,21 @@ export default function CoherenceTrendSection({ isPt }: { isPt: boolean }) {
         {VERDICT_KEYS.map((k) => (
           <span key={k} className="flex items-center gap-1">
             <span className={`inline-block w-2 h-2 rounded-sm ${VERDICT_STYLE[k].bar}`} aria-hidden />
-            {isPt
-              ? k === 'coherent' ? 'Coerente' : k === 'review' ? 'Revisão' : k === 'incoherent' ? 'Incoerente' : 'Insuficiente'
-              : VERDICT_STYLE[k].key}
+            {k === 'coherent'
+              ? t.verdictCoherent
+              : k === 'review'
+                ? t.verdictReview
+                : k === 'incoherent'
+                  ? t.verdictIncoherent
+                  : t.verdictInsufficient}
           </span>
         ))}
       </div>
       <p className="text-xs text-fg-subtle">
-        {isPt
-          ? `Actualizado ${new Date(data.fetchedAt ?? '').toLocaleDateString('pt-PT')} · arquivo de pares-hora (buoy-coherence-archive.json)`
-          : `Updated ${new Date(data.fetchedAt ?? '').toLocaleDateString('en-GB')} · hourly-pair archive (buoy-coherence-archive.json)`}
+        {t.updatedArchive.replace(
+          '{date}',
+          new Date(data.fetchedAt ?? '').toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB'),
+        )}
       </p>
     </div>
   );

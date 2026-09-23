@@ -3,7 +3,7 @@ import { getScoreTokens, getScoreTierLabel } from '@/lib/sportScore';
 
 interface ScoreBadgeProps {
   score: number;
-  locale?: 'pt' | 'en';
+  locale?: string;
   showLabel?: boolean;
   size?: 'sm' | 'md';
   className?: string;
