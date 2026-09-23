@@ -104,6 +104,40 @@ os ficheiros 100% limpos. Corrigidos de passagem: a coluna «Fonte» da tabela d
 arquivo (estava fixa em PT) e as 6 descrições de tecnologia da página (estavam
 fixas em EN). Ronda de baselines necessária para o `/es/about/`.
 
+## Estado da migração (2026-09-23) — sessão grande
+
+**672 → 420 ternários · 116 → 85 ficheiros** (12 superfícies fechadas):
+`fontes`, `news`, `auth`, `account`, `DawnPatrolBanner`, `HomepageSearch`,
+`FeedbackForm`, `about` (6 blocos), `layout` (4 ficheiros por glob),
+`weather` (3 ficheiros), as cópias do cluster de libs (`voice`,
+`emptyStateCopy`, `mapSpotNarrative`, `spotListCardDelight`), `ScoreFeedback`
+e a página `/fontes` + 4 ficheiros de `ui` (SocialShare,
+AggregateScoreGauge, ErrorState, WarningPill).
+
+### Acelerador (usar na próxima ronda)
+
+`node /tmp/add-i18n-keys.js <bloco> <ficheiro.json>` insere keys nas 5 línguas
+de uma vez (cria o bloco se não existir, âncora `spotPageVerdict`). JSON no
+formato `{ "chave": { "pt": "…", "en": "…", "es": "…", "de": "…", "fr": "…" } }`.
+Os testes de i18n (14) validam logo: shells ⊇ pt, sem placeholders iguais ao pt
+(allowlists justificadas em `src/lib/__tests__/i18nLocales.test.ts`) e o guard
+inverso de leftovers.
+
+### O que falta (por ordem sugerida)
+
+| Superfície | Dívida | Notas |
+|---|---:|---|
+| `src/components/spots` | ~210 | a maior; faseada por componente (SpotListCard, SpotDetailHero, sections, mapa, ScoreWave/WindSourceBadge) |
+| páginas `app/[locale]` | ~61 | por página; algumas têm frases com links inline |
+| `src/components/homepage` | ~52 | homes es/de/fr estão nas baselines |
+| `src/components/ui` | ~33 | ScoreWaveSourceBadge (12, templates com sufixos), FreshnessIndicator (7), ScoreWindSourceBadge (7), DataSourceBadge (3), ConfidenceBadge (2 + lib `forecastConfidence`) |
+| outros | ~20 | `mapSpotNarrative` já feito; restam helpers pontuais |
+
+Método por bloco: ler ternárias → JSON + acelerador → migrar componente →
+`npm run lint` (com o glob do ficheiro) + `npx tsc --noEmit` +
+`vitest run src/lib/__tests__/i18nLocales.test.ts` → commit → e, no fim de cada
+superfície capturada, `Record Visual Baselines`.
+
 ## Nota SEO (decisão em aberto)
 
 Enquanto a migração não fechar, `/es/ /de/ /fr/` servem EN em parte das
