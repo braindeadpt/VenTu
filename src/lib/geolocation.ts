@@ -82,9 +82,8 @@ function toRad(deg: number): number {
 }
 
 export function formatDistance(km: number, locale: string = 'pt'): string {
-  const isPt = locale === 'pt';
   if (km < 1) {
-    return `${Math.round(km * 1000)} ${isPt ? 'm' : 'm'}`;
+    return `${Math.round(km * 1000)} m`;
   }
-  return `${km.toFixed(1)} ${isPt ? 'km' : 'km'}`;
+  return `${km.toFixed(1)} km`;
 }

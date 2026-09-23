@@ -156,6 +156,7 @@ const ES_COGNATES = new Set([
   '{count} avisos',                    // espanhol correcto = PT (contagem de avisos)
   'Ordenados por score · filtros activos', // espanhol correcto = PT (subtítulo da lista)
   ', a {km}',                          // espanhol correcto = PT (distância à boia)
+  'de',                                // espanhol correcto = PT (preposição)
 ]);
 
 /**

@@ -20,12 +20,8 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
 
   const trainLabel = (key: (typeof trains)[0]['key']) =>
     key === 'primary'
-      ? isPt
-        ? 'Primário'
-        : 'Primary'
-      : isPt
-        ? 'Secundário'
-        : 'Secondary';
+      ? getTranslation(locale).spotsUi.swellPrimary
+      : getTranslation(locale).spotsUi.swellSecondary;
 
   return (
     <div className="w-full min-w-0 space-y-2">
@@ -34,9 +30,7 @@ export default function SwellTrainsTable({ conditions, locale }: SwellTrainsTabl
           {t.title}
         </h3>
         <p className="text-meta-sm text-fg-muted mt-0.5">
-          {isPt
-            ? 'Primário e secundário — altura, período, direcção e energia (kW/m).'
-            : 'Primary and secondary — height, period, direction and energy (kW/m).'}
+          {getTranslation(locale).spotsUi.swellDescription}
         </p>
       </div>
       <div className="overflow-x-auto -mx-1 px-1 rounded-card border border-divider">

@@ -1330,7 +1330,7 @@ export default function SpotMapInteractive({
           )}
 
           {!isFullscreen && !isHeroEmbed && (
-            <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} isPt={isPt} />
+            <MapLayerToggle current={basemapMode} onChange={handleBasemapChangeLocal} locale={locale} />
           )}
 
           {/* Legenda flutuante — escondida no fullscreen mobile: lá vive

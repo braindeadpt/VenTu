@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getSportLabel } from '@/lib/homepageSport';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
@@ -351,13 +352,13 @@ export default function SpotDetailHero({
                       ? observedWave.waveHeight
                       : conditions.waveHeight
                   ).toFixed(1)}m${waveFactorSuffix(scoreWaveSource, locale)}`}
-                  label={isPt ? 'Ondas' : 'Waves'}
+                  label={getTranslation(locale).homepage.layerWaves}
                 />
                 <StatChip
                   className="spot-hero-stat"
                   icon={<Clock className="w-4 h-4 text-data-period" />}
                   value={`${Math.round(conditions.wavePeriod)}s`}
-                  label={isPt ? 'Período' : 'Period'}
+                  label={getTranslation(locale).spotsUi.period}
                 />
                 <StatChip
                   className="spot-hero-stat"
@@ -369,7 +370,7 @@ export default function SpotDetailHero({
                     />
                   }
                   value={`${windKt}kt`}
-                  label={isPt ? `Vento · ${windCardinal}` : `Wind · ${windCardinal}`}
+                  label={getTranslation(locale).spotsUi.windWithCardinal.replace('{card}', windCardinal)}
                   ariaLabel={windFlowAriaLabel(conditions.windDirection, windKt, locale)}
                   valueClassName={windTier ? `text-score-${windTier}` : undefined}
                 />
@@ -377,7 +378,7 @@ export default function SpotDetailHero({
                   className="spot-hero-stat"
                   icon={<Droplets className="w-4 h-4 text-data-water" />}
                   value={`${conditions.waterTemp.toFixed(1)}°C`}
-                  label={isPt ? 'Água' : 'Water'}
+                  label={getTranslation(locale).spotsUi.waterWord}
                 />
               </div>
 
@@ -409,7 +410,7 @@ export default function SpotDetailHero({
                           </span>
                           <span className="text-fg-subtle">·</span>
                           <span className="text-fg-muted">
-                            {isPt ? 'onda medida' : 'measured wave'}
+                            {getTranslation(locale).spotsUi.measuredWave}
                           </span>
                         </>
                       );
@@ -422,7 +423,7 @@ export default function SpotDetailHero({
                   {updatedLabel && (
                     <>
                       <span className="w-1.5 h-1.5 rounded-full bg-score-good motion-reduce:animate-none animate-pulse" />
-                      <span>{isPt ? 'Actualizado' : 'Updated'} {updatedLabel}</span>
+                      <span>{getTranslation(locale).freshness.updatedAt.replace('{time}', updatedLabel)}</span>
                     </>
                   )}
                   {conditions.source && (

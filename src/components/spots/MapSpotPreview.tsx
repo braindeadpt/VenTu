@@ -66,7 +66,7 @@ export default function MapSpotPreview({
   });
 
   const narrative = getMapSpotNarrative(spot, conditions, allScores, highlightSport, locale);
-  const tideLine = getMapTideLine(spot, conditions, isPt);
+  const tideLine = getMapTideLine(spot, conditions, locale);
   const scoreFactors = getSpotScoreFactors({ spot, conditions, allScores, sport: highlightSport, locale });
   const windRelation =
     spot.coastOrientation !== undefined
@@ -191,7 +191,7 @@ export default function MapSpotPreview({
         <div className="rounded-lg bg-surface-1/[0.04] border border-divider p-2.5">
           <div className="flex items-center gap-1.5 text-fg-muted mb-1">
             <Zap className="w-3.5 h-3.5 text-score-fair" aria-hidden />
-            <span>{isPt ? 'Energia' : 'Power'}</span>
+            <span>{getTranslation(locale).spotsUi.powerWord}</span>
           </div>
           <p className="font-mono tabular-nums text-fg font-semibold">{powerKw.toFixed(1)} kW/m</p>
         </div>
@@ -203,21 +203,21 @@ export default function MapSpotPreview({
           variant="secondary"
           size="lg"
           className="flex-1"
-          locale={isPt ? 'pt' : 'en'}
+          locale={locale}
           onClick={onViewSpot}
         >
-          {isPt ? 'Ver spot' : 'View spot'}
+          {getTranslation(locale).spotsMap.viewSpot}
         </Button>
         <Button
           href={directionsUrl}
           variant="ghost"
           size="lg"
           className="flex-1"
-          locale={isPt ? 'pt' : 'en'}
+          locale={locale}
           target="_blank"
           rel="noopener noreferrer"
         >
-          {isPt ? 'Como chegar' : 'Get directions'}
+          {getTranslation(locale).spotsUi.getDirections}
         </Button>
       </div>
     </div>

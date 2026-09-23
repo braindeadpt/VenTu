@@ -54,10 +54,10 @@ function getSportColor(sport: GridSportFilter) {
   return SPORTS.find(s => s.id === sport)?.color || 'text-fg';
 }
 
-function getSportLabel(sport: unknown, isPt: boolean): string {
+function getSportLabel(sport: unknown, locale: string): string {
   if (typeof sport !== 'string') return '';
   const s = SPORTS.find(x => x.id === sport);
-  return isPt ? s?.labelPt || '' : s?.labelEn || '';
+  return s ? getMapSportFilterLabel(s.id, locale, s.labelPt) : '';
 }
 
 export function SpotGridClient({
@@ -150,7 +150,7 @@ export function SpotGridClient({
 
   const sportIcon = getSportIcon(selectedSport);
   const sportColor = getSportColor(selectedSport);
-  const sportLabel = getSportLabel(selectedSport, isPt);
+  const sportLabel = getSportLabel(selectedSport, locale);
 
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6" suppressHydrationWarning>
@@ -166,7 +166,7 @@ export function SpotGridClient({
                     onClick={() => handleSportChange(sport.id)}
                     icon={<span className={active ? sport.color : 'text-fg-muted'}>{sport.icon}</span>}
                   >
-                    {isPt ? sport.labelPt : sport.labelEn}
+                    {getMapSportFilterLabel(sport.id, locale, sport.labelPt)}
                   </FilterPill>
                 </span>
               );
@@ -198,23 +198,23 @@ export function SpotGridClient({
             <div className="flex items-center gap-2 flex-wrap min-w-0">
               <div
                 role="group"
-                aria-label={isPt ? 'Vista da lista' : 'List view'}
+                aria-label={t.spotsUi.listView}
                 className="flex items-center gap-1"
               >
                 <FilterPill
                   compact
                   active={view === 'table'}
                   onClick={() => setView('table')}
-                  aria-label={isPt ? 'Vista em tabela' : 'Table view'}
+                  aria-label={t.spotsUi.tableView}
                   icon={<Table2 className="w-3.5 h-3.5" />}
                 >
-                  <span className="hidden sm:inline">{isPt ? 'Tabela' : 'Table'}</span>
+                  <span className="hidden sm:inline">{t.spotsUi.tableWord}</span>
                 </FilterPill>
                 <FilterPill
                   compact
                   active={view === 'cards'}
                   onClick={() => setView('cards')}
-                  aria-label={isPt ? 'Vista em cards' : 'Cards view'}
+                  aria-label={t.spotsUi.cardsView}
                   icon={<LayoutGrid className="w-3.5 h-3.5" />}
                 >
                   <span className="hidden sm:inline">Cards</span>
@@ -254,7 +254,7 @@ export function SpotGridClient({
                 <span className="font-mono tabular-nums text-fg">{sorted.length}</span>
                 {(selectedSport !== DEFAULT_SPORT || selectedRegion !== DEFAULT_REGION) && (
                   <span className="text-fg-subtle">
-                    {' '}{isPt ? 'de' : 'of'}{' '}
+                    {' '}{t.spotsUi.ofWord}{' '}
                     <span className="font-mono tabular-nums">{liveSpotsData.length}</span>
                   </span>
                 )}
@@ -377,8 +377,8 @@ export function SpotGridClient({
           description={
             alternativeSport
               ? (isPt
-                ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt))
-                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt)))
+                ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, locale))
+                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, locale)))
               : getPlayfulEmptyCopy('no-spots-filter', locale).description
           }
           action={
@@ -391,7 +391,7 @@ export function SpotGridClient({
                   <span className={getSportColor(alternativeSport as GridSportFilter)}>
                     {getSportIcon(alternativeSport as GridSportFilter)}
                   </span>
-                  {t.spots.view} {getSportLabel(alternativeSport, isPt)}
+                  {t.spots.view} {getSportLabel(alternativeSport, locale)}
                 </Button>
               )}
               <Button variant="secondary" onClick={handleReset}>
