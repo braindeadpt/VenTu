@@ -6,6 +6,7 @@ import {
   getWeatherlinkEmbedUrl,
   getWeatherlinkPageUrl,
 } from '@/lib/spotWeatherlink';
+import { getTranslation } from '@/lib/i18n';
 
 interface SpotWeatherlinkSectionProps {
   slug: string;
@@ -20,17 +21,14 @@ export default function SpotWeatherlinkSection({ slug, locale, embedded }: SpotW
   if (!station) return null;
 
   const isPt = locale === 'pt';
+  const t = getTranslation(locale);
   const title = isPt ? station.labelPt : station.labelEn;
   const embedUrl = getWeatherlinkEmbedUrl(station.pageId);
   const pageUrl = getWeatherlinkPageUrl(station.pageId);
 
   const body = (
     <>
-      <p className="text-meta text-fg-muted mb-4 max-w-2xl">
-        {isPt
-          ? 'Sensor Davis na praia (vento, temperatura, humidade). Complementa a previsão Open-Meteo — não altera o score VenTu.'
-          : 'Davis sensor on the beach (wind, temperature, humidity). Complements Open-Meteo — does not change the VenTu score.'}
-      </p>
+      <p className="text-meta text-fg-muted mb-4 max-w-2xl">{t.layout.weatherlinkDesc}</p>
 
       <div className={embedded ? undefined : 'card-1 p-4 md:p-5'}>
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-4">
@@ -49,7 +47,7 @@ export default function SpotWeatherlinkSection({ slug, locale, embedded }: SpotW
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-input text-sm font-semibold bg-surface-2/[0.08] text-fg border border-divider hover:border-divider-strong transition-colors min-h-[44px] shrink-0"
           >
-            {isPt ? 'Abrir no WeatherLink' : 'Open on WeatherLink'}
+            {t.layout.weatherLinkOpen}
             <ExternalLink className="w-4 h-4" aria-hidden />
           </a>
         </div>
@@ -57,11 +55,7 @@ export default function SpotWeatherlinkSection({ slug, locale, embedded }: SpotW
         <div className="w-full min-h-[320px] sm:min-h-[380px] rounded-lg overflow-hidden border border-divider bg-surface-1/[0.04]">
           <iframe
             src={embedUrl}
-            title={
-              isPt
-                ? `Condições em tempo real — ${title}`
-                : `Live conditions — ${title}`
-            }
+            title={t.layout.weatherlinkIframe.replace('{title}', title)}
             className="w-full h-[min(72vh,520px)] min-h-[320px]"
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
@@ -76,7 +70,7 @@ export default function SpotWeatherlinkSection({ slug, locale, embedded }: SpotW
   return (
     <section className="max-w-6xl mx-auto px-4 py-6" aria-labelledby="weatherlink-heading">
       <h2 id="weatherlink-heading" className="text-h2 text-fg mb-1">
-        {isPt ? 'Estação na praia' : 'Beach weather station'}
+        {t.layout.weatherBeachStation}
       </h2>
       {body}
     </section>
