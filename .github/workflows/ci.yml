@@ -284,6 +284,10 @@ jobs:
         run: npm run lighthouse:prod
         env:
           LIGHTHOUSE_RUNS: '5'
+          # 2 warm-ups: o CLS de cache fria do spot (~0.65 no <footer>)
+          # precisa de mais que uma navegação para assentar em CI (ver
+          # scripts/run-lighthouse-prod.js, evidência 2026-09-23).
+          LIGHTHOUSE_WARMUP: '2'
 
       # Quando o gate rebenta, o relatório do pior run (com os elementos que
       # mexeram e as requisições tardias) fica como artefacto: é o único sítio

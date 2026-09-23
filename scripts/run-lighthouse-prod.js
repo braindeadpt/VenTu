@@ -40,6 +40,14 @@ const ROUTES = [
 // cached. The budgets gate STEADY-STATE layout stability — a regression there
 // still breaches every measured run and fails the median. Disable with
 // LIGHTHOUSE_WARMUP=0 (not recommended).
+//
+// Evidência 2026-09-23 (porque o CI usa 2 warm-ups): o mesmo código deu CLS 0
+// em 5/5 corridas num run às 04:26 (FCP ~332 ms) e CLS 0.653 em 4/5 num run às
+// 11:45 (FCP ~344 ms, runner mais carregado), com o deslocamento no <footer>
+// (o corpo acima encolhe quando a fonte/CSS troca). A corrida 4/5 do run
+// falhado já dava CLS 0 — o regime «quente» só chega depois de algumas
+// navegações, por isso 1 warm-up não chegava nos dias maus. O limiar continua
+// 0.1: uma regressão real falha mesmo com o runner quente.
 const WARMUP_RUNS = Number.parseInt(process.env.LIGHTHOUSE_WARMUP || '1', 10);
 
 const OUT_DIR = path.join(__dirname, '..', 'out');
