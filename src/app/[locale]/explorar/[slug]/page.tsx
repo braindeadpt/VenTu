@@ -1,4 +1,4 @@
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
@@ -11,6 +11,7 @@ import {
   landingTitle,
 } from '@/lib/seoLandings'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -45,11 +46,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${landingTitle(landing, locale)} — VenTu`
   const description = landingDescription(landing, locale)
 
-  return {
+  const loc = validateLocale(locale)
+  return buildPageMetadata({
     title,
     description,
-    openGraph: { title, description },
-  }
+    locale: loc,
+    path: `/${loc}/explorar/${slug}/`,
+  })
 }
 
 export default async function ExplorarPage({ params }: Props) {

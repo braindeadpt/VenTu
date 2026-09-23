@@ -1,4 +1,4 @@
-import { getTranslation } from '@/lib/i18n'
+import { getTranslation, validateLocale } from '@/lib/i18n'
 import { localizedText } from '@/lib/localizedText';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
@@ -6,6 +6,7 @@ import { SpotGridClient } from '@/components/spots/SpotGridClient'
 import MapTilePreconnect from '@/components/MapTilePreconnect'
 import { locales } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -50,12 +51,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!name) return {}
   const tp = getTranslation(locale).pages
   const title = tp.modalitiesMetaTitle.replace('{name}', localizedText(name, locale))
-  return {
+  const loc = validateLocale(locale)
+  return buildPageMetadata({
     title,
     description: tp.modalitiesMetaDescription
-      .replace('{name}', localizedText(name, locale))
-      .replace('{schedule}', pipelineSchedule(locale)),
-  }
+      .replace('{name}', localizedText(name, loc))
+      .replace('{schedule}', pipelineSchedule(loc)),
+    locale: loc,
+    path: `/${loc}/modalidades/${slug}/`,
+  })
 }
 
 export default async function ModalidadePage({ params }: Props) {

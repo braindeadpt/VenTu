@@ -1,6 +1,7 @@
+import { buildPageMetadata } from '@/lib/seo'
 import CompareClient from '@/components/compare/CompareClient';
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule';
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({
@@ -12,17 +13,13 @@ export async function generateMetadata({
   const isPt = locale === 'pt';
   const cmp = getTranslation(locale).compare;
 
-  return {
+  const loc = validateLocale(locale);
+  return buildPageMetadata({
     title: cmp.metaTitle,
-    description: cmp.metaDescription.replace(
-      '{schedule}',
-      pipelineSchedule(isPt ? 'pt' : 'en'),
-    ),
-    alternates: {
-      canonical: `/${locale}/compare/`,
-      languages: { pt: '/pt/compare/', en: '/en/compare/' },
-    },
-  };
+    description: cmp.metaDescription.replace('{schedule}', pipelineSchedule(loc)),
+    locale: loc,
+    path: `/${loc}/compare/`,
+  });
 }
 
 export default function ComparePage() {

@@ -1,7 +1,7 @@
 import { getNewsBySlug, newsSlug, getRelatedNews } from '@/lib/news'
 import type { NewsItem } from '@/types'
 import { loadNews } from '@/lib/load-news'
-import { locales, getTranslation } from '@/lib/i18n'
+import { locales, getTranslation, validateLocale } from '@/lib/i18n'
 import { safeExternalUrl } from '@/lib/safeUrl'
 import { jsonLdHtml } from '@/lib/jsonLd'
 import NewsDetailHeader from '@/components/news/NewsDetailHeader'
@@ -9,6 +9,7 @@ import RelatedNews from '@/components/news/RelatedNews'
 import { ExternalLink, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 
 interface Props {
@@ -48,9 +49,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     alternates: {
       canonical: `/${locale}/news/${slug}/`,
+      // 5 línguas + x-default: a notícia é pt/en (conteúdo do pipeline), mas
+      // as páginas existem nas 5 e devem cruzar-se (antes só pt/en).
       languages: {
-        'pt': `/pt/news/${slug}/`,
-        'en': `/en/news/${slug}/`,
+        pt: `/pt/news/${slug}/`,
+        en: `/en/news/${slug}/`,
+        es: `/es/news/${slug}/`,
+        de: `/de/news/${slug}/`,
+        fr: `/fr/news/${slug}/`,
+        'x-default': `/pt/news/${slug}/`,
       },
     },
     openGraph: {
