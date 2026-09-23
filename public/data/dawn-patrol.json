@@ -1,129 +1,105 @@
 {
-  "date": "2026-09-22",
-  "topSpot": "Coxos",
-  "topSpotSlug": "coxos",
+  "date": "2026-09-23",
+  "generatedAt": "2026-09-23T03:06:58.352Z",
+  "topSpot": "Nazaré",
+  "topSpotSlug": "nazare",
   "pt": {
-    "headline": "Ondas perfeitas e vento leve no Coxos",
-    "advice": "Coxos oferece ondas de 1.8 m com período de 12 s e vento leve de 2 kt, água a 17 °C. Use fato 3/2 mm. Aviso à navegação costeira ANAV NR 1727/26 em vigor na zona. Chegue cedo para evitar a multidão.",
-    "bestTime": "09:30",
+    "headline": "Hoje é dia de Nazaré! 🌊",
+    "advice": "Melhor janela: 10:00h. Ondas de 2.1m com 3 nós de vento.",
+    "bestTime": "10:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chegue antes das 10h para pegar as melhores seções.",
-    "moonTideLine": "Gibosa crescente · Marés mortas · baixa-mar 20:00"
+    "crowdTip": "Chega cedo para evitar crowd!",
+    "moonTideLine": "Gibosa crescente · Marés mortas · baixa-mar 08:00"
   },
   "en": {
-    "headline": "Perfect waves and light wind at Coxos",
-    "advice": "Coxos has 1.8 m waves with a 12 s period and a light 2‑kt wind, water at 17 °C. Wear a 3/2 mm wetsuit. Coastal navigation warning ANAV NR 1727/26 is in effect. Arrive early to beat the crowd.",
-    "bestTime": "09:30",
+    "headline": "Today is Nazaré day! 🌊",
+    "advice": "Best window: 10:00. 2.1m waves with 3 knot wind.",
+    "bestTime": "10:00",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there before 10 am to catch the best sections.",
-    "moonTideLine": "Waxing gibbous · Neap tides · low tide 20:00"
+    "crowdTip": "Get there early to beat the crowd!",
+    "moonTideLine": "Waxing gibbous · Neap tides · low tide 08:00"
   },
   "spots": [
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 84,
-      "verdict": "go",
-      "ptReason": "Ondas boas (1.8 m) e vento moderado (4 kt). Aviso à navegação costeira ANAV NR 12/24, mas seguro para surf.",
-      "enReason": "Good waves (1.8 m) and moderate wind (4 kt). Coastal navigation warning ANAV NR 12/24, still safe to surf.",
-      "scoreForecast": 90,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 27.4
-      }
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 84,
-      "verdict": "maybe",
-      "ptReason": "Ondas decentes (1.7 m) mas vento mais forte (6 kt). Avisos de interação e avistamento de animais marinhos.",
-      "enReason": "Decent waves (1.7 m) but stronger wind (6 kt). Marine animal interaction and sighting warnings.",
-      "scoreForecast": 89,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 94.8
-      }
-    },
-    {
       "name": "Nazaré",
       "slug": "nazare",
-      "score": 84,
+      "score": 92,
+      "scoreForecast": 92,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
       "verdict": "go",
-      "ptReason": "Ondas maiores (1.9 m) e vento leve (2 kt). Sem avisos costeiros, ótimo para surf.",
-      "enReason": "Larger waves (1.9 m) and light wind (2 kt). No coastal warnings, great for surfing.",
-      "scoreForecast": 91,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 12.4
-      }
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 84,
-      "verdict": "maybe",
-      "ptReason": "Ondas boas (1.9 m) mas vento forte (7 kt). Aviso de avistamento de animais marinhos.",
-      "enReason": "Good waves (1.9 m) but strong wind (7 kt). Marine animal sighting warning.",
+      "score": 91,
       "scoreForecast": 91,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 66.1
-      }
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Coxos",
       "slug": "coxos",
-      "score": 84,
+      "score": 91,
+      "scoreForecast": 91,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
       "verdict": "go",
-      "ptReason": "Ondas de 1.8 m, vento leve (2 kt) e água agradável. Aviso de avistamento de animais marinhos, mas condições ideais.",
-      "enReason": "1.8 m waves, light wind (2 kt) and pleasant water. Marine animal sighting warning, but ideal conditions.",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 90,
       "scoreForecast": 90,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 65.1
-      }
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 90,
+      "scoreForecast": 90,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 83,
-      "verdict": "skip",
-      "ptReason": "Ondas pequenas (1.4 m) e aviso de plano de salvamento marítimo. Não vale a pena hoje.",
-      "enReason": "Small waves (1.4 m) and a maritime rescue plan warning. Not worth surfing today.",
+      "score": 87,
       "scoreForecast": 87,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 70.2
-      }
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 84,
-      "verdict": "skip",
-      "ptReason": "Ondas curtas (1.4 m) e múltiplos avisos de segurança. Melhor procurar outro spot.",
-      "enReason": "Short waves (1.4 m) and multiple safety warnings. Better to surf elsewhere.",
+      "score": 87,
       "scoreForecast": 87,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "Nazaré Costeira (WMO)",
-        "distanceKm": 98.6
-      }
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
     }
   ],
-  "generatedAt": "2026-09-22T16:47:16.633Z",
-  "topScore": 84,
-  "topScoreForecast": 90,
-  "topScoreSource": "boia",
-  "topScoreMeta": {
-    "stationName": "Nazaré Costeira (WMO)",
-    "distanceKm": 65.1
-  }
+  "topScore": 92,
+  "topScoreForecast": 92,
+  "topScoreSource": "previsão",
+  "topScoreMeta": null
 }
