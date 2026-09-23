@@ -201,7 +201,7 @@ export default function AboutDataCards({
       {keyInfo ? <IhKeyCard isPt={isPt} info={keyInfo} /> : null}
       {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
       {radar ? <RadarCard t={t} isPt={isPt} radar={radar} /> : null}
-      {skill?.hasData ? <SkillCard isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} archive={archive} /> : null}
+      {skill?.hasData ? <SkillCard t={t} isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} archive={archive} /> : null}
     </>
   )
 }
@@ -567,38 +567,41 @@ function TideObservationsList({
   )
 }
 
-function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData }) {
+function SkillCard({
+  t,
+  isPt,
+  skill,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  skill: ForecastSkillData
+}) {
         if (!skill.hasData) return null
         const byOrigin = skill.byOrigin ?? { ih: null, 'wmo-pt': null, 'wmo-es': null }
         const originLabel = (o: string | undefined) => forecastSkillOriginTag(o as never)
         return (
           <div className="card-1 p-8 space-y-4">
-            <h2 className="text-2xl font-bold text-fg">
-              {isPt ? 'Skill real do forecast por boia' : 'Real forecast skill per buoy'}
-            </h2>
+            <h2 className="text-2xl font-bold text-fg">{t.skillTitle}</h2>
             <p className="text-sm text-fg-muted leading-relaxed">
-              {isPt ? (
-                <>Skill <em className="not-italic text-fg">real</em> do forecast — a previsão best_match feita no run N para a hora H é comparada com a leitura da boia para H quando chega (lead time &gt; 0), acumulado run a run em <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = média(observado − previsão)</strong>: positivo significa que o modelo subestima a onda. Distinto do viés ERA5 acima — isto é o quão bom o forecast é, não o quão enviesado o modelo de reanálise está. As stats são separadas por plataforma: <strong className="text-fg">IH</strong> (boias Datawell, com chave) vs <strong className="text-fg">WMO-PT</strong> (Nazaré Costeira, Copernicus sem chave) vs <strong className="text-fg">WMO-ES</strong> (Copernicus sem chave, cross-border) — o total misto esconde como cada uma se comporta.</>
-              ) : (
-                <>Real forecast skill — the best_match forecast made in run N for hour H is compared with the buoy reading for H once it arrives (lead time &gt; 0), accumulated run after run in <code className="text-fg">forecast-skill.json</code>. <strong className="text-fg">ME = mean(observed − forecast)</strong>: positive means the model underestimates the wave. Distinct from the ERA5 bias above — this is how good the forecast is, not how biased the reanalysis model is. Stats are split by platform: <strong className="text-fg">IH</strong> (Datawell buoys, keyed) vs <strong className="text-fg">WMO-PT</strong> (Nazaré Costeira, Copernicus keyless) vs <strong className="text-fg">WMO-ES</strong> (Copernicus keyless, cross-border) — the mixed total alone hides how each behaves.</>
-              )}
+              <>{t.skillBodyLead} {t.skillBodyRest}{' '}
+              <code className="text-fg">forecast-skill.json</code>.{' '}
+              <strong className="text-fg">{t.skillBodyMe}</strong>
+              {t.skillBodyAfterMe}{' '}
+              <strong className="text-fg">IH</strong> {t.skillBodyIhDesc}{' '}
+              <strong className="text-fg">WMO-PT</strong> {t.skillBodyWmoPtDesc}{' '}
+              <strong className="text-fg">WMO-ES</strong> {t.skillBodyTail}</>
             </p>
             {byOrigin.ih || byOrigin['wmo-pt'] || byOrigin['wmo-es'] ? (
               <div className="flex flex-col sm:flex-row gap-3">
                 {(['ih', 'wmo-pt', 'wmo-es'] as const).map((origin) => {
                   const s = byOrigin[origin]
                   if (!s) return null
-                  const originName = isPt
-                    ? origin === 'ih'
-                      ? 'Boias IH (Datawell)'
+                  const originName =
+                    origin === 'ih'
+                      ? t.skillOriginIh
                       : origin === 'wmo-pt'
-                        ? 'Boia PT (Copernicus WMO · Nazaré)'
-                        : 'Boias ES (Copernicus WMO)'
-                    : origin === 'ih'
-                      ? 'IH buoys (Datawell)'
-                      : origin === 'wmo-pt'
-                        ? 'PT buoy (Copernicus WMO · Nazaré)'
-                        : 'ES buoys (Copernicus WMO)'
+                        ? t.skillOriginWmoPt
+                        : t.skillOriginWmoEs
                   return (
                     <div
                       key={origin}
@@ -621,15 +624,15 @@ function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData })
               <table className="w-full min-w-[480px] border-collapse text-meta">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle">
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Boia' : 'Buoy'}</th>
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Origem' : 'Origin'}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.skillColBuoy}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.skillColOrigin}</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">n</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">ME (m)</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">MAE (m)</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">RMSE (m)</th>
                     <th className="py-1.5 pr-3 text-right font-semibold">r</th>
                     <th className="py-1.5 text-right font-semibold">
-                      {isPt ? 'Lead médio (h)' : 'Mean lead (h)'}
+                      {t.skillColLead}
                     </th>
                   </tr>
                 </thead>
@@ -639,7 +642,7 @@ function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData })
                       <td className="py-1.5 pr-3 font-medium text-fg">{b.name}</td>
                       <td
                         className="py-1.5 pr-3 text-fg-muted whitespace-nowrap"
-                        title={forecastSkillOriginLabel(b.origin, isPt)}
+                        title={forecastSkillOriginLabel(b.origin, isPt, t.skillOriginEsCountry)}
                         data-skill-buoy-origin={b.origin}
                       >
                         {originLabel(b.origin)}
@@ -659,26 +662,20 @@ function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData })
               {(() => {
                 const byOrigin = skill.pairCountByOrigin ?? { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 }
                 const calib = skill.calibratedPairCount ?? 0
-                const base = isPt
-                  ? `Actualizado ${new Date(skill.fetchedAt ?? '').toLocaleDateString('pt-PT')} · ${skill.pairCount} pares previsto×medido acumulados · só boias com n≥10`
-                  : `Updated ${new Date(skill.fetchedAt ?? '').toLocaleDateString('en-GB')} · ${skill.pairCount} accumulated forecast×observed pairs · buoys with n≥10 only`
+                const base = t.skillMeta
+                  .replace('{date}', new Date(skill.fetchedAt ?? '').toLocaleDateString(isPt ? 'pt-PT' : 'en-GB'))
+                  .replace('{pairs}', String(skill.pairCount))
                 if (byOrigin.ih === 0 && byOrigin['wmo-pt'] === 0 && byOrigin['wmo-es'] === 0) return base
-                const perOrigin = isPt
-                  ? `IH ${byOrigin.ih} · WMO-PT ${byOrigin['wmo-pt']} · WMO-ES ${byOrigin['wmo-es']} pares`
-                  : `IH ${byOrigin.ih} · WMO-PT ${byOrigin['wmo-pt']} · WMO-ES ${byOrigin['wmo-es']} pairs`
-                const calibNote =
-                  calib > 0
-                    ? isPt
-                      ? ` · ${calib} da camada calibrada ES→PT (referência PT)`
-                      : ` · ${calib} from the ES→PT calibrated layer (PT reference)`
-                    : ''
+                const perOrigin = t.skillPerOrigin
+                  .replace('{ih}', String(byOrigin.ih))
+                  .replace('{pt}', String(byOrigin['wmo-pt']))
+                  .replace('{es}', String(byOrigin['wmo-es']))
+                const calibNote = calib > 0 ? t.skillCalibNote.replace('{n}', String(calib)) : ''
                 return `${base} · ${perOrigin}${calibNote}`
               })()}
               {(() => {
                 if (!skill.byOrigin?.['wmo-es']) return null
-                return isPt
-                  ? ' • O Noroeste é coberto pelas boias espanholas (Copernicus-ES) mesmo sem IH_API_KEY — o skill de Cabo Silleiro/Villano não depende da chave do IH.'
-                  : ' • The northwest is covered by the Spanish buoys (Copernicus-ES) even without an IH_API_KEY — Cabo Silleiro/Villano skill does not depend on the IH key.'
+                return t.skillNwNote
               })()}
             </p>
           </div>

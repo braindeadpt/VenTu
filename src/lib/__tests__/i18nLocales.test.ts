@@ -87,6 +87,7 @@ const ES_COGNATES = new Set([
   'Activa',              // espanhol correcto = PT (estado da camada de marés no /about)
   'Activo',              // espanhol correcto = PT (estado da camada de radar no /about)
   'Desde',               // espanhol correcto = PT (coluna «Desde» da tabela do arquivo)
+  'IH {ih} · WMO-PT {pt} · WMO-ES {es} pares', // espanhol correcto = PT (contagem de pares do skill)
 ]);
 
 /**

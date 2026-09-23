@@ -69,6 +69,8 @@ const round2 = (n: number) => Math.round(n * 100) / 100;
 export function forecastSkillOriginLabel(
   origin: ForecastSkillOrigin | undefined,
   isPt: boolean,
+  /** Nome do país de Espanha no idioma activo (as restantes partes são marcas). */
+  esCountry?: string,
 ): string {
   if (origin === 'ih') {
     return isPt ? 'IH · Portugal' : 'IH · Portugal';
@@ -77,7 +79,7 @@ export function forecastSkillOriginLabel(
     return isPt ? 'Copernicus-PT · Portugal' : 'Copernicus-PT · Portugal';
   }
   if (origin === 'wmo-es') {
-    return isPt ? 'Copernicus-ES · Espanha' : 'Copernicus-ES · Spain';
+    return isPt ? `Copernicus-ES · ${esCountry ?? 'Espanha'}` : `Copernicus-ES · ${esCountry ?? 'Spain'}`;
   }
   return '—';
 }
