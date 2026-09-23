@@ -1,3 +1,5 @@
+import { getTranslation } from '@/lib/i18n';
+
 export type {
   ConfidenceDetail,
   ConfidenceTier,
@@ -9,54 +11,24 @@ export {
   pickConfidenceFields,
 } from '@/lib/forecastConfidenceCore';
 
-const LABELS: Record<
-  import('@/lib/forecastConfidenceCore').ConfidenceTier,
-  { pt: string; en: string }
-> = {
-  alta: { pt: 'Alta', en: 'High' },
-  média: { pt: 'Média', en: 'Medium' },
-  baixa: { pt: 'Baixa', en: 'Low' },
-};
-
-const EXPLAIN: Record<
-  import('@/lib/forecastConfidenceCore').ConfidenceTier,
-  { pt: string; en: string }
-> = {
-  alta: {
-    pt: 'Modelos concordam — boa confiança na previsão.',
-    en: 'Models agree — good forecast confidence.',
-  },
-  média: {
-    pt: 'Alguma divergência entre modelos — usa com contexto.',
-    en: 'Some model divergence — use with context.',
-  },
-  baixa: {
-    pt: 'Modelos divergem — leva margem de segurança.',
-    en: 'Models diverge — allow a safety margin.',
-  },
-};
-
-const TOOLTIP: Record<'pt' | 'en', string> = {
-  pt: 'Confiança baseada na diferença entre modelos meteorológicos (ondas e vento). Não altera o score.',
-  en: 'Confidence from spread between weather models (waves and wind). Does not change the score.',
-};
-
 export function getConfidenceLabel(
   tier: import('@/lib/forecastConfidenceCore').ConfidenceTier,
-  isPt: boolean,
+  locale: string,
 ): string {
-  return LABELS[tier][isPt ? 'pt' : 'en'];
+  const t = getTranslation(locale).confidence;
+  return { alta: t.altaLabel, média: t.mediaLabel, baixa: t.baixaLabel }[tier];
 }
 
 export function getConfidenceExplain(
   tier: import('@/lib/forecastConfidenceCore').ConfidenceTier,
-  isPt: boolean,
+  locale: string,
 ): string {
-  return EXPLAIN[tier][isPt ? 'pt' : 'en'];
+  const t = getTranslation(locale).confidence;
+  return { alta: t.altaExplain, média: t.mediaExplain, baixa: t.baixaExplain }[tier];
 }
 
-export function getConfidenceTooltip(isPt: boolean): string {
-  return TOOLTIP[isPt ? 'pt' : 'en'];
+export function getConfidenceTooltip(locale: string): string {
+  return getTranslation(locale).confidence.tooltip;
 }
 
 export function getConfidenceTokenClass(

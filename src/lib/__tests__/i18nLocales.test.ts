@@ -101,6 +101,7 @@ const ES_COGNATES = new Set([
   'Actualizado {time}',                // espanhol correcto = PT (hora da última actualização)
   'Actualizado {day}, {time}',         // espanhol correcto = PT (data + hora)
   '{count} avisos · {spots} spots',    // espanhol correcto = PT (contagem de avisos costeiros)
+  'Alta',                              // espanhol correcto = PT (etiqueta de confiança alta)
 ]);
 
 /**

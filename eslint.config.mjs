@@ -57,6 +57,8 @@ const MIGRATED_GLOBS = [
   'src/components/ui/ScoreWindSourceBadge.tsx',
   'src/components/ui/FreshnessIndicator.tsx',
   'src/components/ui/DataSourceBadge.tsx',
+  'src/components/ui/ConfidenceBadge.tsx',
+  'src/components/ui/**',
   'src/lib/dataFreshness.ts',
   'src/lib/buoyLayerDowntime.ts',
   'src/components/ui/HomepageSearch.tsx',
