@@ -36,6 +36,7 @@ import {
   formatBuoyLayerDowntimeTitle,
 } from '@/lib/buoyLayerDowntime'
 import CoastalDailyActiveChart from '@/components/CoastalDailyActiveChart'
+import { getTranslation } from '@/lib/i18n'
 
 // pipeline-meta.json shapes needed for the live re-derivation. Deliberately
 // NOT imported from @/lib/pipelineMeta — that module reads fs at module scope,
@@ -66,7 +67,7 @@ const sign = (n: number) => `${n >= 0 ? '+' : ''}${n.toFixed(2)}`
 const two = (n: number | null | undefined) => (n == null ? '—' : n.toFixed(2))
 
 interface AboutDataCardsProps {
-  isPt: boolean
+  locale: string
   /** Build-time baked snapshots (production default — no fetch, no CLS). */
   bakedKey: IhKeyStatusInfo | null
   bakedTide: TideLayerStatusInfo | null
@@ -91,13 +92,17 @@ interface AboutDataCardsProps {
  * /data/** file. On failure we keep the baked snapshot (best-effort).
  */
 export default function AboutDataCards({
-  isPt,
+  locale,
   bakedKey,
   bakedTide,
   bakedRadar,
   bakedSkill,
   bakedArchive,
 }: AboutDataCardsProps) {
+  // Migração i18n bloco a bloco (M5): o bloco `about` já serve o TideCard; os
+  // restantes sub-cards ainda usam isPt e vão sendo migrados por commit.
+  const isPt = locale === 'pt'
+  const t = getTranslation(locale).about
   const [forceLive] = useState(() =>
     typeof document !== 'undefined' &&
     document.cookie.split(';').some((c) => c.trim() === 'ventu_live=1'),
@@ -194,7 +199,7 @@ export default function AboutDataCards({
   return (
     <>
       {keyInfo ? <IhKeyCard isPt={isPt} info={keyInfo} /> : null}
-      {tide ? <TideCard isPt={isPt} tide={tide} /> : null}
+      {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
       {radar ? <RadarCard isPt={isPt} radar={radar} /> : null}
       {skill?.hasData ? <SkillCard isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard isPt={isPt} archive={archive} /> : null}
     </>
@@ -436,43 +441,46 @@ function RadarCard({ isPt, radar }: { isPt: boolean; radar: RadarLayerStatusInfo
         )
 }
 
-function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) {
+function TideCard({
+  t,
+  isPt,
+  tide,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  tide: TideLayerStatusInfo
+}) {
         if (!tide) return null
         const conf = {
           ok: {
-            label: isPt ? 'Activa' : 'Active',
+            label: t.tideStatusActive,
             chipClass: 'bg-emerald-500/15 text-emerald-500 border-emerald-500/40',
             icon: CheckCircle2,
-            line: isPt
-              ? 'O IH devolveu observações de maré nas últimas 24 h — a altura observada e a estação aparecem no card de cada spot.'
-              : 'IH returned observed tide readings within the last 24 h — the observed height and station show on each spot’s card.',
+            line: t.tideLineActive,
           },
           stale: {
-            label: isPt ? 'Sem leituras recentes' : 'No recent readings',
+            label: t.tideStatusStale,
             chipClass: 'bg-amber-500/15 text-amber-500 border-amber-500/40',
             icon: AlertTriangle,
-            line: isPt
-              ? 'O ficheiro de marés não é actualizado há mais de 24 h — o IH não devolveu observações novas e o fetch reutiliza o último ficheiro conhecido (o pipeline de previsões continua).'
-              : 'The tide file has not been refreshed for over 24 h — IH returned no new observations and the fetch reuses the last known file (the forecast pipeline keeps running).',
+            line: t.tideLineStale,
           },
           down: {
-            label: isPt ? 'Sem dados' : 'No data',
+            label: t.tideStatusDown,
             chipClass: 'bg-score-fair/15 text-score-fair border-score-fair/40',
             icon: XCircle,
-            line: isPt
-              ? 'Sem ih-tides.json — a camada de marés observadas não tem dados.'
-              : 'No ih-tides.json — the observed-tide layer has no data.',
+            line: t.tideLineDown,
           },
         }[tide.status]
         const Icon = conf.icon
-        const metaLine = isPt
-          ? `última fetch ${tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString('pt-PT') : '—'} · ${tide.stations} estações · ${tide.mappedSpots} spots`
-          : `last fetch ${tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString('en-GB') : '—'} · ${tide.stations} stations · ${tide.mappedSpots} spots`
+        const metaLine = t.tideMeta
+          .replace('{date}', tide.fetchedAt ? new Date(tide.fetchedAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB') : '—')
+          .replace('{stations}', String(tide.stations))
+          .replace('{spots}', String(tide.mappedSpots))
         return (
           <div className="card-1 p-8 space-y-4" data-tide-layer-status={tide.status}>
             <div className="flex flex-wrap items-center gap-3">
               <h2 className="text-2xl font-bold text-fg">
-                {isPt ? 'Camada de marés IH (observadas)' : 'IH tide layer (observed)'}
+                {t.tideTitle}
               </h2>
               <span
                 className={`inline-flex items-center gap-1.5 rounded-card border px-3 py-1 text-sm font-medium ${conf.chipClass}`}
@@ -485,7 +493,7 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
             <p className="text-sm text-fg-muted leading-relaxed">{conf.line}</p>
             <p className="text-xs text-fg-subtle tabular-nums">{metaLine}</p>
             {tide.observations && tide.observations.length > 0 ? (
-              <TideObservationsList isPt={isPt} observations={tide.observations} />
+              <TideObservationsList t={t} isPt={isPt} observations={tide.observations} />
             ) : null}
             {
               // Streak down/stale (pipeline-meta tideLayer) — «há quantas runs a
@@ -497,24 +505,21 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
                   data-tide-layer-downtime="true"
                   title={
                     tide.lastOkAt
-                      ? `${isPt ? 'última vez ok' : 'last OK'}: ${new Date(tide.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
+                      ? `${t.lastOk}: ${new Date(tide.lastOkAt).toLocaleString(isPt ? 'pt-PT' : 'en-GB')}`
                       : undefined
                   }
                 >
                   <span aria-hidden>⏱</span>
                   <span className="tabular-nums">
-                    {isPt
-                      ? <>Sem observações novas há {tide.streak} {tide.streak === 1 ? 'run' : 'runs'} consecutivas</>
-                      : <>No new observations for {tide.streak} consecutive {tide.streak === 1 ? 'run' : 'runs'}</>}
+                    {(tide.streak === 1 ? t.tideStreakOne : t.tideStreakMany).replace(
+                      '{runs}',
+                      String(tide.streak),
+                    )}
                   </span>
                 </p>
               ) : null
             }
-            <p className="text-xs text-fg-subtle leading-relaxed">
-              {isPt
-                ? 'Esta camada nunca bloqueia o pipeline (uma outage do IH não pára as previsões) — é aqui e nos logs do workflow que a falta de dados fica visível. Quando o IH voltar a servir observações, a próxima fetch restaura o estado.'
-                : 'This layer never blocks the pipeline (an IH outage does not stop forecasts) — this card and the workflow logs are where the missing data becomes visible. When IH serves observations again, the next fetch restores the layer.'}
-            </p>
+            <p className="text-xs text-fg-subtle leading-relaxed">{t.tideNote}</p>
           </div>
         )
 }
@@ -523,9 +528,11 @@ function TideCard({ isPt, tide }: { isPt: boolean; tide: TideLayerStatusInfo }) 
  * de que a camada está viva, e o que falta quando está down. Formata a hora
  * local da leitura sem segundos; título vazio (EDR sem title) cai no genérico. */
 function TideObservationsList({
+  t,
   isPt,
   observations,
 }: {
+  t: ReturnType<typeof getTranslation>['about']
   isPt: boolean
   observations: TideObservation[]
 }) {
@@ -540,7 +547,7 @@ function TideObservationsList({
     <ul
       className="grid grid-cols-1 sm:grid-cols-2 gap-1.5"
       data-tide-observations="true"
-      aria-label={isPt ? 'Leituras observadas recentes' : 'Recent observed readings'}
+      aria-label={t.tideObsAria}
     >
       {observations.map((o, i) => (
         <li
@@ -548,7 +555,7 @@ function TideObservationsList({
           className="flex items-baseline justify-between gap-2 rounded-card border border-fg/10 px-2.5 py-1.5 text-xs"
         >
           <span className="truncate text-fg-muted">
-            {o.title || (isPt ? 'Estação' : 'Station')}
+            {o.title || t.tideStation}
           </span>
           <span className="tabular-nums text-fg whitespace-nowrap">
             {o.heightM.toFixed(2)} m

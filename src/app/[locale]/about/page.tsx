@@ -251,7 +251,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       </div>
 
 <AboutDataCards
-        isPt={isPt}
+        locale={locale}
         bakedKey={loadIhKeyStatus()}
         bakedTide={loadTideLayerStatus()}
         bakedRadar={loadRadarLayerStatus()}

@@ -84,6 +84,7 @@ const ES_COGNATES = new Set([
   'ver spot →',          // espanhol correcto = PT (link do banner Dawn Patrol)
   'Desactualizado',      // espanhol correcto = PT (selo de briefing antigo)
   'Ver Spot',            // espanhol correcto = PT (botão do banner)
+  'Activa',              // espanhol correcto = PT (estado da camada de marés no /about)
 ]);
 
 /**
