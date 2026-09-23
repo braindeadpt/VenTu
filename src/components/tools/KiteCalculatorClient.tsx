@@ -13,10 +13,10 @@ import {
 import { getTranslation } from '@/lib/i18n';
 import { TOOL_SPOT_OPTIONS, useSpotConditions } from './useSpotConditions';
 
-const DISCIPLINES: { id: KiteDiscipline; pt: string; en: string }[] = [
-  { id: 'twintip', pt: 'Twintip', en: 'Twintip' },
-  { id: 'strapless', pt: 'Strapless / onda', en: 'Strapless / surf' },
-  { id: 'foil', pt: 'Foil', en: 'Foil' },
+const DISCIPLINES: { id: KiteDiscipline; label: string }[] = [
+  { id: 'twintip', label: 'Twintip' },
+  { id: 'strapless', label: 'Strapless' },
+  { id: 'foil', label: 'Foil' },
 ];
 
 export default function KiteCalculatorClient({ locale }: { locale: string }) {
@@ -120,7 +120,7 @@ export default function KiteCalculatorClient({ locale }: { locale: string }) {
                   : 'bg-surface-1/[0.04] text-fg-muted border-divider hover:text-fg'
               }`}
             >
-              {isPt ? d.pt : d.en}
+              {d.id === 'strapless' ? t.kiteDisciplines.strapless : d.label}
             </button>
           ))}
         </div>

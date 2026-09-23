@@ -103,12 +103,13 @@ export function recommendKite(
 // ─── Wetsuit ───
 
 export interface WetsuitRecommendation {
-  /** e.g. "4/3 mm" */
-  suit: { pt: string; en: string };
+  /** e.g. "4/3 mm" (já localizado) */
+  suit: string;
   boots: boolean;
   gloves: boolean;
   hood: boolean;
-  note: { pt: string; en: string };
+  /** Conselho curto, já localizado. */
+  note: string;
 }
 
 export const WETSUIT_TEMP_C_MIN = 4;
@@ -120,8 +121,10 @@ export const WETSUIT_TEMP_C_MAX = 30;
  */
 export function recommendWetsuit(
   waterTempC: number,
+  locale: string,
   windy = false,
 ): WetsuitRecommendation | null {
+  const w = getTranslation(locale).wetsuit;
   if (
     !Number.isFinite(waterTempC) ||
     waterTempC < WETSUIT_TEMP_C_MIN ||
@@ -135,84 +138,64 @@ export function recommendWetsuit(
 
   if (t >= 23) {
     return {
-      suit: { pt: 'Licra ou fato de banho', en: 'Rashguard or boardshorts' },
+      suit: w.suitRashguard,
       boots: false,
       gloves: false,
       hood: false,
-      note: {
-        pt: 'Água quente — protege-te do sol, não do frio.',
-        en: 'Warm water — protect yourself from the sun, not the cold.',
-      },
+      note: w.noteWarm,
     };
   }
   if (t >= 20) {
     return {
-      suit: { pt: 'Shorty 2 mm ou top térmico', en: '2 mm shorty or thermal top' },
+      suit: w.suitShorty2,
       boots: false,
       gloves: false,
       hood: false,
-      note: {
-        pt: 'Sessões longas ao fim do dia podem pedir um 3/2.',
-        en: 'Long late-day sessions may call for a 3/2.',
-      },
+      note: w.noteLateSessions,
     };
   }
   if (t >= 17) {
     return {
-      suit: { pt: '3/2 mm', en: '3/2 mm' },
+      suit: '3/2 mm',
       boots: false,
       gloves: false,
       hood: false,
-      note: {
-        pt: 'O clássico do verão na costa oeste portuguesa.',
-        en: 'The Portuguese west coast summer classic.',
-      },
+      note: w.noteSummerClassic,
     };
   }
   if (t >= 14) {
     return {
-      suit: { pt: '4/3 mm', en: '4/3 mm' },
+      suit: '4/3 mm',
       boots: false,
       gloves: false,
       hood: false,
-      note: {
-        pt: 'Botas opcionais em sessões longas ou fundo de pedra.',
-        en: 'Boots optional on long sessions or rocky bottoms.',
-      },
+      note: w.noteBoots,
     };
   }
   if (t >= 11) {
     return {
-      suit: { pt: '5/4 mm', en: '5/4 mm' },
+      suit: '5/4 mm',
       boots: true,
       gloves: false,
       hood: true,
-      note: {
-        pt: 'Inverno a sério — capuz recomendado, luvas se fores friorento.',
-        en: 'Proper winter — hood recommended, gloves if you run cold.',
-      },
+      note: w.noteWinter,
     };
   }
   if (t >= 8) {
     return {
-      suit: { pt: '5/4 mm ou 6/5 mm', en: '5/4 mm or 6/5 mm' },
+      suit: w.suit54or65,
       boots: true,
       gloves: true,
       hood: true,
-      note: {
-        pt: 'Frio exigente — sessões mais curtas, aquece bem antes.',
-        en: 'Demanding cold — shorter sessions, warm up well first.',
-      },
+      note: w.noteCold,
     };
   }
   return {
-    suit: { pt: '6/5 mm', en: '6/5 mm' },
+    suit: '6/5 mm',
     boots: true,
     gloves: true,
     hood: true,
-    note: {
-      pt: 'Água gélida — equipamento completo obrigatório.',
-      en: 'Freezing water — full kit is mandatory.',
-    },
+    note: w.noteIcy,
   };
-}
+}import { getTranslation } from '@/lib/i18n';
+

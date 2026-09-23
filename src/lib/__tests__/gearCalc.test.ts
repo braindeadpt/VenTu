@@ -61,38 +61,38 @@ describe('recommendKite', () => {
 
 describe('recommendWetsuit', () => {
   it('Portuguese west coast summer (~18°C) → 3/2mm', () => {
-    const rec = recommendWetsuit(18)!;
-    expect(rec.suit.pt).toBe('3/2 mm');
+    const rec = recommendWetsuit(18, 'pt')!;
+    expect(rec.suit).toBe('3/2 mm');
     expect(rec.boots).toBe(false);
   });
 
   it('Portuguese winter (~14°C) → 4/3mm', () => {
-    expect(recommendWetsuit(14.5)!.suit.pt).toBe('4/3 mm');
+    expect(recommendWetsuit(14.5, 'pt')!.suit).toBe('4/3 mm');
   });
 
   it('cold water adds boots, gloves and hood progressively', () => {
-    const cold = recommendWetsuit(12)!;
+    const cold = recommendWetsuit(12, 'pt')!;
     expect(cold.boots).toBe(true);
     expect(cold.hood).toBe(true);
-    const freezing = recommendWetsuit(6)!;
+    const freezing = recommendWetsuit(6, 'pt')!;
     expect(freezing.gloves).toBe(true);
   });
 
   it('wind chill shifts the recommendation one band colder near an edge', () => {
-    const calm = recommendWetsuit(17.5, false)!;
-    const windy = recommendWetsuit(17.5, true)!;
-    expect(calm.suit.pt).toBe('3/2 mm');
-    expect(windy.suit.pt).toBe('4/3 mm');
+    const calm = recommendWetsuit(17.5, 'pt', false)!;
+    const windy = recommendWetsuit(17.5, 'pt', true)!;
+    expect(calm.suit).toBe('3/2 mm');
+    expect(windy.suit).toBe('4/3 mm');
   });
 
   it('warm water needs no neoprene', () => {
-    const rec = recommendWetsuit(25)!;
-    expect(rec.suit.en).toContain('Rashguard');
+    const rec = recommendWetsuit(25, 'en')!;
+    expect(rec.suit).toContain('Rashguard');
   });
 
   it('rejects nonsense temperatures', () => {
-    expect(recommendWetsuit(-3)).toBeNull();
-    expect(recommendWetsuit(45)).toBeNull();
-    expect(recommendWetsuit(NaN)).toBeNull();
+    expect(recommendWetsuit(-3, 'pt')).toBeNull();
+    expect(recommendWetsuit(45, 'pt')).toBeNull();
+    expect(recommendWetsuit(NaN, 'pt')).toBeNull();
   });
 });
