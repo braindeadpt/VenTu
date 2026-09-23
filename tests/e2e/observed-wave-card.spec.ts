@@ -296,7 +296,10 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(card.getByText(/boia CSA92\/D a 60 km/i).first()).toBeVisible();
     // Measured vs forecast comparison is present.
     await expect(card.getByText(/Altura \(medida\)|Height \(measured\)/i)).toBeVisible();
-    await expect(card.getByText(/1\.8 m/)).toBeVisible();
+    // O valor MEDIDO, pelo seu rótulo: a previsão do modelo ao lado vem dos dados
+    // reais do repo e pode coincidir (1.8 m = 1.8 m) — getByText(/1.8 m/) era frágil.
+    const measured = card.getByText(/Altura \(medida\)|Height \(measured\)/i).locator('xpath=following-sibling::p[1]');
+    await expect(measured).toHaveText(/1\.8 m/);
 
     // The score badge names the correcting buoy and exposes the skill ME/n.
     // S3: o badge existe no hero E na §7 «Como sabemos» — escopo ao veredicto.
