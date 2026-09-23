@@ -1,3 +1,5 @@
+import { getTranslation } from '@/lib/i18n'
+import { localizedText } from '@/lib/localizedText';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
@@ -46,18 +48,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const isPt = locale === 'pt'
   const name = sportNames[slug]
   if (!name) return {}
-  const title = isPt ? `${name.pt} — Modalidades — VenTu` : `${name.en} — Modalities — VenTu`
+  const tp = getTranslation(locale).pages
+  const title = tp.modalitiesMetaTitle.replace('{name}', localizedText(name, locale))
   return {
     title,
-    description: isPt
-      ? `Spots de ${name.pt.toLowerCase()} em Portugal. Condições ${pipelineSchedule('pt')}, previsões e scores náuticos.`
-      : `${name.en} spots in Portugal. Conditions ${pipelineSchedule('en')}, forecasts and nautical scores.`,
+    description: tp.modalitiesMetaDescription
+      .replace('{name}', localizedText(name, locale))
+      .replace('{schedule}', pipelineSchedule(locale)),
   }
 }
 
 export default async function ModalidadePage({ params }: Props) {
   const { locale, slug } = await params
   const isPt = locale === 'pt'
+  const tp = getTranslation(locale).pages
   const name = sportNames[slug]
   if (!name) notFound()
 
@@ -73,15 +77,15 @@ export default async function ModalidadePage({ params }: Props) {
           className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
-          {isPt ? 'Voltar' : 'Back'}
+          {getTranslation(locale).pages.back}
         </Link>
 
         <div>
-          <h1 className="text-3xl font-bold text-fg">{isPt ? name.pt : name.en}</h1>
+          <h1 className="text-3xl font-bold text-fg">{localizedText(name, locale)}</h1>
           <p className="text-fg-muted mt-1">
-            {isPt
-              ? `Spots de ${name.pt.toLowerCase()} em Portugal — condições ${pipelineSchedule('pt')}`
-              : `${name.en} spots in Portugal — conditions ${pipelineSchedule('en')}`}
+            {tp.modalitiesSubtitle
+              .replace('{name}', localizedText(name, locale))
+              .replace('{schedule}', pipelineSchedule(locale))}
           </p>
         </div>
       </div>

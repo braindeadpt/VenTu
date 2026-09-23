@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import type { Metadata } from 'next';
 import AccountClient from '@/components/account/AccountClient';
 
@@ -9,10 +10,8 @@ export async function generateMetadata({
   const { locale } = await params;
   const isPt = locale === 'pt';
   return {
-    title: isPt ? 'Conta — VenTu' : 'Account — VenTu',
-    description: isPt
-      ? 'Entrada com magic link e favoritos sincronizados.'
-      : 'Magic link sign-in and synced favorites.',
+    title: getTranslation(locale).pages.accountMetaTitle,
+    description: getTranslation(locale).pages.accountMetaDescription,
     robots: { index: false, follow: false },
   };
 }

@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
@@ -81,7 +82,7 @@ export default async function ExplorarPage({ params }: Props) {
             className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? 'Todos os spots' : 'All spots'}
+            {getTranslation(locale).pages.allSpotsLower}
           </Link>
 
           <div>
@@ -98,7 +99,7 @@ export default async function ExplorarPage({ params }: Props) {
             className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            {isPt ? 'Todos os spots' : 'All spots'}
+            {getTranslation(locale).pages.allSpotsLower}
           </Link>
         </div>
       )}

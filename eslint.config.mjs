@@ -66,6 +66,8 @@ const MIGRATED_GLOBS = [
   'src/lib/heroDataProvenance.ts',
   'src/lib/mapSportFilters.tsx',
   'src/lib/localizedSpotText.ts',
+  'src/lib/localizedText.ts',
+  'src/app/[locale]/**',
   'src/lib/dataFreshness.ts',
   'src/lib/buoyLayerDowntime.ts',
   'src/components/ui/HomepageSearch.tsx',

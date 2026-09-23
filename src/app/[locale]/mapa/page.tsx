@@ -1,3 +1,4 @@
+import { getTranslation } from '@/lib/i18n';
 import { locales } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data';
 import { MACRO_REGIONS } from '@/lib/regions';
@@ -20,10 +21,11 @@ export async function generateMetadata({
   const isPt = locale === 'pt';
   const loc = isPt ? 'pt' : 'en';
 
-  const title = isPt ? 'Mapa de spots — VenTu' : 'Spots map — VenTu';
-  const description = isPt
-    ? `Mapa interactivo com ${SPOT_COUNT} spots em Portugal — filtros por desporto, região e score.`
-    : `Interactive map of ${SPOT_COUNT} spots in Portugal — filter by sport, region and score.`;
+  const title = getTranslation(locale).pages.mapMetaTitle;
+  const description = getTranslation(locale).pages.mapMetaDescription.replace(
+    '{count}',
+    String(SPOT_COUNT),
+  );
 
   return buildPageMetadata({
     title,

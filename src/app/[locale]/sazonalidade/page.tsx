@@ -1,3 +1,4 @@
+import { localizedText } from '@/lib/localizedText';
 import { locales } from '@/lib/i18n'
 import type { Locale } from '@/lib/i18n'
 import { getTranslation } from '@/lib/i18n'
@@ -17,11 +18,10 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const isPt = locale === 'pt'
+  const tp = getTranslation(locale).pages
   return {
-    title: isPt ? 'Sazonalidade — VenTu' : 'Seasonality — VenTu',
-    description: isPt
-      ? 'Descobre a melhor altura do ano para cada desporto náutico em Portugal.'
-      : 'Discover the best time of year for each water sport in Portugal.',
+    title: tp.seasonalMetaTitle,
+    description: getTranslation(locale).pages.seasonalMetaDescription,
   }
 }
 
@@ -68,23 +68,22 @@ export default async function SazonalidadePage({ params }: Props) {
   const { locale } = await params
   const isPt = locale === 'pt'
   const t = getTranslation(locale as Locale)
+  const tp = getTranslation(locale).pages
 
   return (
     <div className="min-h-screen bg-bg-base">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
         <Link href={`/${locale}/`} className="inline-flex items-center gap-1.5 text-sm text-fg-muted hover:text-fg transition-colors">
           <ArrowLeft className="w-4 h-4" />
-          {isPt ? 'Voltar' : 'Back'}
+          {tp.back}
         </Link>
 
         <div className="flex items-center gap-4">
           <Calendar className="w-8 h-8 text-data-waves" />
           <div>
-            <h1 className="text-3xl font-bold text-fg">{isPt ? 'Sazonalidade' : 'Seasonality'}</h1>
+            <h1 className="text-3xl font-bold text-fg">{tp.seasonalTitle}</h1>
             <p className="text-fg-muted mt-1">
-              {isPt
-                ? 'Descobre a melhor altura do ano para cada desporto náutico em Portugal'
-                : 'Discover the best time of year for each water sport in Portugal'}
+              {tp.seasonalSubtitle}
             </p>
           </div>
         </div>
@@ -101,8 +100,8 @@ export default async function SazonalidadePage({ params }: Props) {
                     <Icon className="w-5 h-5 text-data-waves" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-fg">{isPt ? s.season.pt : s.season.en}</h2>
-                    <span className="text-sm text-fg-subtle">{isPt ? s.months.pt : s.months.en}</span>
+                    <h2 className="text-xl font-bold text-fg">{localizedText(s.season, locale)}</h2>
+                    <span className="text-sm text-fg-subtle">{localizedText(s.months, locale)}</span>
                   </div>
                 </div>
 
@@ -111,25 +110,25 @@ export default async function SazonalidadePage({ params }: Props) {
                     <div className="flex items-center gap-1.5 text-sm font-semibold text-data-waves">
                       <Waves className="w-4 h-4" /> Surf
                     </div>
-                    <p className="text-sm text-fg-muted leading-relaxed">{isPt ? s.surf.pt : s.surf.en}</p>
+                    <p className="text-sm text-fg-muted leading-relaxed">{localizedText(s.surf, locale)}</p>
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5 text-sm font-semibold text-data-wind">
                       <Wind className="w-4 h-4" /> Kitesurf
                     </div>
-                    <p className="text-sm text-fg-muted leading-relaxed">{isPt ? s.kite.pt : s.kite.en}</p>
+                    <p className="text-sm text-fg-muted leading-relaxed">{localizedText(s.kite, locale)}</p>
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5 text-sm font-semibold text-data-waves">
                       <Wind className="w-4 h-4" /> Windsurf
                     </div>
-                    <p className="text-sm text-fg-muted leading-relaxed">{isPt ? s.wind.pt : s.wind.en}</p>
+                    <p className="text-sm text-fg-muted leading-relaxed">{localizedText(s.wind, locale)}</p>
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center gap-1.5 text-sm font-semibold text-data-water">
-                      <Thermometer className="w-4 h-4" /> {isPt ? 'Temperatura' : 'Temperature'}
+                      <Thermometer className="w-4 h-4" /> {tp.temperature}
                     </div>
-                    <p className="text-sm text-fg-muted leading-relaxed">{isPt ? s.temp.pt : s.temp.en}</p>
+                    <p className="text-sm text-fg-muted leading-relaxed">{localizedText(s.temp, locale)}</p>
                   </div>
                 </div>
               </div>
@@ -139,15 +138,13 @@ export default async function SazonalidadePage({ params }: Props) {
 
         <div className="bg-surface-1/[0.04] border border-divider rounded-surface p-6 text-center">
           <p className="text-sm text-fg-muted">
-            {isPt
-              ? 'Queres ver as condições agora?'
-              : 'Want to see current conditions?'}
+            {tp.wantConditionsNow}
           </p>
           <Link
             href={`/${locale}/spots/`}
             className="inline-flex items-center gap-2 mt-3 px-6 py-3 rounded-xl bg-data-waves text-bg-base font-medium hover:bg-data-waves/80 transition-colors"
           >
-            {isPt ? 'Ver spots agora' : 'View spots now'}
+            {tp.viewSpotsNow}
           </Link>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { getTranslation } from '@/lib/i18n';
+import { localizedText } from '@/lib/localizedText';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
 import { locales } from '@/lib/i18n';
@@ -36,10 +38,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
   const loc = isPt ? 'pt' : 'en';
-  const title = isPt ? 'Explorar spots por desporto e região — VenTu' : 'Explore spots by sport and region — VenTu';
-  const description = isPt
-    ? `${SEO_LANDINGS.length} combinações de desporto e região em Portugal — condições ${pipelineSchedule('pt')}.`
-    : `${SEO_LANDINGS.length} sport and region combinations in Portugal — conditions ${pipelineSchedule('en')}.`;
+  const tp = getTranslation(locale).pages;
+  const title = tp.exploreMetaTitle;
+  const description = tp.exploreMetaDescription
+    .replace('{count}', String(SEO_LANDINGS.length))
+    .replace('{schedule}', pipelineSchedule(loc));
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/explorar/` });
 }
 
@@ -58,17 +61,18 @@ function groupLandings(landings: SeoLanding[]) {
 export default async function ExplorarIndexPage({ params }: Props) {
   const { locale } = await params;
   const isPt = locale === 'pt';
+  const tp = getTranslation(locale).pages;
   const groups = groupLandings(SEO_LANDINGS);
 
   return (
     <div className="min-h-screen bg-bg-base">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
         <PageHeader
-          title={isPt ? 'Explorar spots' : 'Explore spots'}
+          title={tp.exploreTitle}
           subtitle={
-            isPt
-              ? `${SEO_LANDINGS.length} páginas por desporto e região — scores, previsões e condições ${pipelineSchedule('pt')}.`
-              : `${SEO_LANDINGS.length} pages by sport and region — scores, forecasts and conditions ${pipelineSchedule('en')}.`
+            tp.exploreSubtitle
+              .replace('{count}', String(SEO_LANDINGS.length))
+              .replace('{schedule}', pipelineSchedule(locale))
           }
         />
 
@@ -82,7 +86,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
             return (
               <section key={sport}>
                 <h2 className="sport-accent text-h3 mb-4" data-sport={sport}>
-                  {isPt ? sportLabel?.pt : sportLabel?.en}
+                  {sportLabel ? localizedText(sportLabel, locale) : ''}
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -109,9 +113,7 @@ export default async function ExplorarIndexPage({ params }: Props) {
                       <p className="text-body font-medium text-fg group-hover:text-data-waves transition-colors flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-fg-subtle shrink-0" aria-hidden />
                         {landing.region
-                          ? isPt
-                            ? REGION_LABELS[landing.region].pt
-                            : REGION_LABELS[landing.region].en
+                          ? localizedText(REGION_LABELS[landing.region], locale)
                           : landing.slug}
                       </p>
                       <p className="text-meta text-fg-subtle mt-1">

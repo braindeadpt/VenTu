@@ -51,9 +51,8 @@ export default async function ModalidadesPage({ params }: Props) {
             {t.megaMenu.modalidadesTitle}
           </h1>
           <p className="text-fg-muted mt-2 max-w-2xl">
-            {isPt
-              ? `Escolhe uma modalidade — spots com score, condições ${pipelineSchedule('pt')} e previsão.`
-              : `Pick a modality — spots with score, conditions ${pipelineSchedule('en')} and forecast.`}
+            {getTranslation(locale).pages.modalitiesSubtitle
+              .replace('{schedule}', pipelineSchedule(locale))}
           </p>
         </div>
 
@@ -74,7 +73,7 @@ export default async function ModalidadesPage({ params }: Props) {
                 </span>
                 <span className="text-body-sm text-fg-muted flex-1">{t.megaMenu[item.i18nDesc]}</span>
                 <span className="inline-flex items-center gap-1.5 text-meta-sm font-medium text-accent">
-                  {isPt ? 'Ver spots' : 'View spots'}
+                  {getTranslation(locale).pages.viewSpots}
                   <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-150" aria-hidden />
                 </span>
               </Link>

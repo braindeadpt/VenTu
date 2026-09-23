@@ -111,6 +111,12 @@ const ES_COGNATES = new Set([
   'Favoritos',                         // espanhol correcto = PT (link de ferramentas)
   'Todos',                             // espanhol correcto = PT (filtro «todos os desportos»)
   'Épico',                             // espanhol correcto = PT (tier épico na janela)
+  'Temperatura',                       // espanhol correcto = PT (rótulo da temperatura)
+  '{name} — Modalidades — VenTu',      // espanhol correcto = PT (título de modalidade)
+  'Livecams — {count} spots — VenTu',  // espanhol correcto = PT (título das livecams)
+  'Mapa de spots — VenTu',             // espanhol correcto = PT (título do mapa)
+  'Favoritos — VenTu',                 // espanhol correcto = PT (título dos favoritos)
+  'Ver spots',                         // espanhol correcto = PT (CTA de modalidades)
 ]);
 
 /**
@@ -120,6 +126,7 @@ const FR_COGNATES = new Set([
   'IA',                 // sigla correcta em francês = PT (badge de resumo IA)
   'Framework React',    // termo adoptado igual em PT e FR (descrição de tecnologia no /about)
   ' · fetch {when}',    // francês correcto = PT (timestamp de fetch no indicador de frescura)
+  'Livecams — {count} spots — VenTu', // «Livecams» é o termo adoptado em francês = PT (título)
 ]);
 
 /**

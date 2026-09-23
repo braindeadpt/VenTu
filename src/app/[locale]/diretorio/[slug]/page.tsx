@@ -1,3 +1,4 @@
+import { localizedSpotName } from '@/lib/localizedSpotText';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslation, locales } from '@/lib/i18n';
@@ -28,17 +29,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const entry = loadDirectoryEntries().find((e) => e.slug === slug);
   const isPt = locale === 'pt';
-  const dv = getTranslation(isPt ? 'pt' : 'en').directory;
+  const dv = getTranslation(locale).directory;
   if (!entry) {
     return { title: dv.profile };
   }
-  const name = isPt ? entry.name : entry.nameEn || entry.name;
+  const name = localizedSpotName(entry, locale);
   return buildPageMetadata({
     locale: locale as 'pt' | 'en',
     title: `${name} — ${kindLabel(entry.kind, locale)}`,
-    description: isPt
-      ? `${name} no directório VenTu. Reclama o perfil se fores o responsável.`
-      : `${name} on the VenTu directory. Claim the profile if you run this business.`,
+    description: getTranslation(locale).pages.directoryProfileMetaDescription.replace(
+      '{name}',
+      name,
+    ),
     path: `/${locale}/diretorio/${entry.slug}/`,
   });
 }

@@ -1,3 +1,5 @@
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
+import { localizedText } from '@/lib/localizedText';
 import Link from 'next/link';
 import { ExternalLink, Video } from 'lucide-react';
 import { locales, getTranslation } from '@/lib/i18n';
@@ -20,10 +22,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const isPt = locale === 'pt';
   const loc = isPt ? 'pt' : 'en';
   const count = getLivecamSpotCount();
-  const title = isPt ? `Livecams — ${count} spots — VenTu` : `Live cams — ${count} spots — VenTu`;
-  const description = isPt
-    ? `${count} links para câmaras em direto nos spots mais populares — Surftotal e MEO Beachcam.`
-    : `${count} links to live cameras at popular spots — Surftotal and MEO Beachcam.`;
+  const title = getTranslation(locale).pages.livecamsMetaTitle.replace('{count}', String(count))
+  const description = getTranslation(locale).pages.livecamsMetaDescription.replace(
+    '{count}',
+    String(count),
+  );
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/livecams/` });
 }
 
@@ -45,8 +48,8 @@ export default async function LivecamsPage({ params }: Props) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {livecams.map(({ slug, cam }) => {
             const spot = spots.find(s => s.slug === slug);
-            const name = spot ? (isPt ? spot.name : spot.nameEn) : (isPt ? cam.labelPt : cam.labelEn);
-            const region = spot ? (isPt ? spot.region : spot.regionEn) : null;
+            const name = spot ? localizedSpotName(spot, locale) : localizedText({ pt: cam.labelPt, en: cam.labelEn }, locale);
+            const region = spot ? localizedSpotRegion(spot, locale) : null;
 
             return (
               <article

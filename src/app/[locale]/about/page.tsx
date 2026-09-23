@@ -167,7 +167,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <div className="text-center space-y-4">
         <p className="flex items-center justify-center gap-2 text-fg-muted">
           <Heart className="w-5 h-5 text-windDir-onshore" />
-          {isPt ? 'Feito com paixão pela comunidade náutica portuguesa' : 'Made with passion for the Portuguese nautical community'}
+          {getTranslation(locale).pages.communityLine}
         </p>
         <Button
           href="https://github.com/braindeadpt/ventu"
@@ -177,7 +177,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           rel="noopener noreferrer"
         >
           <Code className="w-5 h-5" aria-hidden />
-          {isPt ? 'Contribuir no GitHub ↗' : 'Contribute on GitHub ↗'}
+          {getTranslation(locale).pages.contributeGitHub}
         </Button>
       </div>
     </div>
