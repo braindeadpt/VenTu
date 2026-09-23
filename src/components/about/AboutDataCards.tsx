@@ -201,7 +201,7 @@ export default function AboutDataCards({
       {keyInfo ? <IhKeyCard isPt={isPt} info={keyInfo} /> : null}
       {tide ? <TideCard t={t} isPt={isPt} tide={tide} /> : null}
       {radar ? <RadarCard t={t} isPt={isPt} radar={radar} /> : null}
-      {skill?.hasData ? <SkillCard isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard isPt={isPt} archive={archive} /> : null}
+      {skill?.hasData ? <SkillCard isPt={isPt} skill={skill} /> : null}      {archive?.hasData ? <ArchiveCard t={t} isPt={isPt} archive={archive} /> : null}
     </>
   )
 }
@@ -685,32 +685,34 @@ function SkillCard({ isPt, skill }: { isPt: boolean; skill: ForecastSkillData })
         )
 }
 
-function ArchiveCard({ isPt, archive }: { isPt: boolean; archive: CoastalWarningsArchiveData }) {
+function ArchiveCard({
+  t,
+  isPt,
+  archive,
+}: {
+  t: ReturnType<typeof getTranslation>['about']
+  isPt: boolean
+  archive: CoastalWarningsArchiveData
+}) {
         if (!archive.hasData) return null
         return (
           <div className="card-1 p-8 space-y-4" data-coastal-archive>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="text-2xl font-bold text-fg">
-                {isPt
-                  ? 'Arquivo — Avisos à Navegação Costeiros (IH)'
-                  : 'Archive — IH coastal navigation warnings'}
-              </h2>
+              <h2 className="text-2xl font-bold text-fg">{t.archiveTitle}</h2>
               <span
                 className="inline-flex items-center gap-1.5 rounded-card border border-divider px-2.5 py-0.5 text-xs font-medium text-fg-muted"
                 data-visual-dynamic
               >
                 <Anchor className="w-3.5 h-3.5 text-score-poor" aria-hidden />
-                {isPt
-                  ? `${archive.dayCount} ${archive.dayCount === 1 ? 'dia' : 'dias'} de snapshots`
-                  : `${archive.dayCount} ${archive.dayCount === 1 ? 'day' : 'days'} of snapshots`}
+                {(archive.dayCount === 1 ? t.archiveChipOne : t.archiveChipMany).replace(
+                  '{n}',
+                  String(archive.dayCount),
+                )}
               </span>
             </div>
             <p className="text-sm text-fg-muted leading-relaxed">
-              {isPt ? (
-                <>Histórico diário dos avisos <em className="not-italic text-fg">em vigor</em> — o fetch arquiva um snapshot por dia e deriva a janela de cada aviso (primeiro/último dia em que foi visto). O ficheiro principal só guarda os de hoje; este arquivo lembra os que já expiraram, dentro da janela de {archive.windowDays} dias.</>
-              ) : (
-                <>Daily history of warnings <em className="not-italic text-fg">in force</em> — the fetch archives one snapshot per day and derives each warning’s window (first/last day it was seen). The live file only keeps today’s; this archive remembers expired ones, within the {archive.windowDays}-day window.</>
-              )}
+              <>{t.archiveBodyA} <em className="not-italic text-fg">{t.archiveBodyEm}</em>{' '}
+              {t.archiveBodyB.replace('{days}', String(archive.windowDays))}</>
             </p>
 
             {/* Mini-gráfico — avisos em vigor por dia na janela do arquivo.
@@ -721,12 +723,12 @@ function ArchiveCard({ isPt, archive }: { isPt: boolean; archive: CoastalWarning
               <table className="w-full min-w-[560px] border-collapse text-meta">
                 <thead>
                   <tr className="text-left text-xs uppercase tracking-wide text-fg-subtle">
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Referência' : 'Reference'}</th>
-                    <th className="py-1.5 pr-3 font-semibold">{isPt ? 'Categoria' : 'Category'}</th>
-                    <th className="py-1.5 pr-3 font-semibold">Fonte</th>
-                    <th className="py-1.5 pr-3 text-right font-semibold">{isPt ? 'Dias' : 'Days'}</th>
-                    <th className="py-1.5 pr-3 text-right font-semibold">{isPt ? 'Desde' : 'Since'}</th>
-                    <th className="py-1.5 text-right font-semibold">{isPt ? 'Até' : 'Until'}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.archiveColRef}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.archiveColCategory}</th>
+                    <th className="py-1.5 pr-3 font-semibold">{t.archiveColSource}</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">{t.archiveColDays}</th>
+                    <th className="py-1.5 pr-3 text-right font-semibold">{t.archiveColSince}</th>
+                    <th className="py-1.5 text-right font-semibold">{t.archiveColUntil}</th>
                   </tr>
                 </thead>
                 <tbody data-visual-dynamic>

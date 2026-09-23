@@ -86,6 +86,7 @@ const ES_COGNATES = new Set([
   'Ver Spot',            // espanhol correcto = PT (botão do banner)
   'Activa',              // espanhol correcto = PT (estado da camada de marés no /about)
   'Activo',              // espanhol correcto = PT (estado da camada de radar no /about)
+  'Desde',               // espanhol correcto = PT (coluna «Desde» da tabela do arquivo)
 ]);
 
 /**
