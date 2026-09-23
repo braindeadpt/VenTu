@@ -10,6 +10,8 @@ export interface MapHudSportOption {
 
 export interface MapFullscreenHudProps {
   visible?: boolean;
+  /** Locale do site — toda a copy dos painéis vem do dicionário. */
+  locale: string;
   isPt: boolean;
   sports: MapHudSportOption[];
   regions: readonly string[];

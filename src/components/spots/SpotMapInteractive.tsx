@@ -1402,6 +1402,7 @@ export default function SpotMapInteractive({
           {mapHud && isFullscreen && !isMobile && (
             <MapSpotPanel
               {...mapHud}
+              locale={locale}
               isPt={isPt}
               spotCount={hudSpotCount}
               rows={viewRows}
@@ -1427,6 +1428,7 @@ export default function SpotMapInteractive({
           {mapHud && isFullscreen && isMobile && (
             <MapExploreSheet
               {...mapHud}
+              locale={locale}
               isPt={isPt}
               spotCount={hudSpotCount}
               state={exploreSheetState}

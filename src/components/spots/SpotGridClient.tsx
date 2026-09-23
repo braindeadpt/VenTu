@@ -1,5 +1,6 @@
 'use client';
 
+import { getMapSportFilterLabel } from '@/lib/mapSportFilters';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -317,9 +318,10 @@ export function SpotGridClient({
           onSpotSelect={setSelectedSpotId}
           fullscreenBelowHeader
           mapHud={{
+            locale,
             sports: SPORTS.map((s) => ({
               id: s.id,
-              label: (isPt ? s.labelPt : s.labelEn) ?? s.id,
+              label: getMapSportFilterLabel(s.id, locale),
               icon: s.icon,
               color: s.color,
             })),

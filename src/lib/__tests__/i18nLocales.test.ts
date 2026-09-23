@@ -117,6 +117,10 @@ const ES_COGNATES = new Set([
   'Mapa de spots — VenTu',             // espanhol correcto = PT (título do mapa)
   'Favoritos — VenTu',                 // espanhol correcto = PT (título dos favoritos)
   'Ver spots',                         // espanhol correcto = PT (CTA de modalidades)
+  'por score',                         // espanhol correcto = PT (ordenação do mapa)
+  'Modo explorar',                     // espanhol correcto = PT (aria do modo explorar)
+  'Mostrar filtros',                   // espanhol correcto = PT (toggle de filtros)
+  'Ocultar filtros',                   // espanhol correcto = PT (toggle de filtros)
 ]);
 
 /**

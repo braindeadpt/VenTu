@@ -1,5 +1,6 @@
 'use client';
 
+import { getTranslation } from '@/lib/i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown, ChevronUp, Minimize2, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
@@ -167,8 +168,10 @@ export default function MapExploreSheet({
   selectedDifficulty,
   onDifficultyChange,
   difficultyGroupLabel,
+  locale,
   isPt,
 }: MapExploreSheetProps) {
+  const t = getTranslation(locale);
   const reduced = typeof window !== 'undefined'
     && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
@@ -346,7 +349,7 @@ export default function MapExploreSheet({
             </span>
             <span className="min-w-0 flex-1">
               <span className="block text-[10px] font-semibold uppercase tracking-wide text-fg-subtle">
-                {isPt ? 'Melhor agora' : 'Best now'}
+                {t.spotsMap.bestNow}
               </span>
               <span className="block truncate text-body-sm">
                 <span className="font-display font-bold text-fg">{best.name}</span>
@@ -369,13 +372,13 @@ export default function MapExploreSheet({
         <div
           className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x"
           role="group"
-          aria-label={isPt ? 'Filtros essenciais' : 'Essential filters'}
+          aria-label={t.spotsMap.essentialFilters}
         >
           <FilterPill compact onClick={() => onStateChange('half')}>
             {sportLabel} <ChevronDown className="h-3 w-3" aria-hidden />
           </FilterPill>
           <FilterPill compact onClick={() => onStateChange('half')}>
-            {isPt ? 'Região' : 'Region'}: {selectedRegion} <ChevronDown className="h-3 w-3" aria-hidden />
+            {t.spotsMap.region}: {selectedRegion} <ChevronDown className="h-3 w-3" aria-hidden />
           </FilterPill>
           <FilterPill compact active={onlyOnEnabled} onClick={onToggleOnlyOn} aria-label={onlyOnLabel} icon={<Zap className="h-3.5 w-3.5" aria-hidden />} toggleAttr="data-map-only-on-toggle">
             {onlyOnLabel}
@@ -410,9 +413,9 @@ export default function MapExploreSheet({
         {timeTrack}
         <div className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
-            {isPt ? 'Modalidade' : 'Sport'}
+            {t.spotsMap.sportWord}
           </span>
-          <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x pb-0.5" role="group" aria-label={isPt ? 'Modalidade' : 'Sport'}>
+          <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x pb-0.5" role="group" aria-label={t.spotsMap.sportWord}>
             {sports.map((sp) => (
               <FilterPill key={sp.id} compact active={selectedSport === sp.id} onClick={() => onSportChange(sp.id)} icon={sp.icon}>
                 {sp.label}
@@ -432,9 +435,9 @@ export default function MapExploreSheet({
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
-            {isPt ? 'Região' : 'Region'}
+            {t.spotsMap.region}
           </span>
-          <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x pb-0.5" role="group" aria-label={isPt ? 'Região' : 'Region'}>
+          <div className="edge-fade-x-end flex items-center gap-1.5 overflow-x-auto no-scrollbar touch-pan-x pb-0.5" role="group" aria-label={t.spotsMap.region}>
             {regions.map((r) => (
               <FilterPill key={r} compact active={selectedRegion === r} onClick={() => onRegionChange(r)}>
                 {r}
@@ -449,25 +452,25 @@ export default function MapExploreSheet({
         )}
         <div className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
-            {isPt ? 'Camadas' : 'Layers'}
+            {t.spotsMap.layers}
           </span>
           <div
             className="grid grid-cols-2 gap-1.5"
             role="group"
-            aria-label={isPt ? 'Camadas' : 'Layers'}
+            aria-label={t.spotsMap.layers}
           >
             {layers.map((item) => <LayerToggle key={item.key} item={item} />)}
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
-            {isPt ? 'Ver também' : 'See also'}
+            {t.spotsMap.seeAlso}
           </span>
           <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} isPt={isPt} />
           <div
             className="grid grid-cols-2 gap-1.5"
             role="group"
-            aria-label={isPt ? 'Ver também' : 'See also'}
+            aria-label={t.spotsMap.seeAlso}
           >
             {extras.map(toggleChip)}
           </div>
@@ -475,7 +478,7 @@ export default function MapExploreSheet({
         {legendNode && (
           <details className="rounded-input border border-divider bg-surface-1/[0.03] px-2.5 py-1.5">
             <summary className="flex min-h-[44px] cursor-pointer items-center text-meta-sm font-semibold text-fg-muted">
-              {isPt ? 'Legenda' : 'Legend'}
+              {t.spotsMap.legend}
             </summary>
             {legendNode}
           </details>
@@ -486,16 +489,14 @@ export default function MapExploreSheet({
       <div className="flex min-h-0 flex-1 flex-col px-3 pb-2" data-sheet-open>
         <MapSpotList
           rows={rows}
-          title={isPt ? 'Nesta vista' : 'In view'}
+          title={t.spotsMap.inView}
           countLabel={`${rows.length} ${isPt ? 'spots' : 'spots'}`}
-          sortLabel={isPt ? 'por score' : 'by score'}
-          emptyLabel={isPt ? 'Sem spots nesta vista' : 'No spots in view'}
-          hintLabel={isPt
-            ? 'A lista segue o pan/zoom do mapa. Tocar num spot aproxima e abre o detalhe — com teclado: ↑ ↓ navegam, Enter abre.'
-            : 'The list follows map pan/zoom. Tap a spot to fly to it and open details — keyboard: ↑ ↓ move, Enter opens.'}
+          sortLabel={t.spotsMap.byScore}
+          emptyLabel={t.spotsMap.noSpotsInView}
+          hintLabel={t.spotsMap.listFollowsPan}
           focusSpotId={focusSpotId}
           onSelect={onSelectRow}
-          listLabel={isPt ? 'Spots visíveis no mapa' : 'Spots visible on map'}
+          listLabel={t.spotsMap.spotsVisibleOnMap}
         />
         <AttributionLine html={attributionHtml} />
       </div>
@@ -505,7 +506,7 @@ export default function MapExploreSheet({
     <div
       ref={sheetRef}
       role="region"
-      aria-label={isPt ? 'Modo explorar' : 'Explore mode'}
+      aria-label={t.spotsMap.exploreMode}
       data-explore-sheet={state}
       // Mesmo contrato do HUD antigo: o useMapLayers mede a porção visível
       // (vh − rect.top) para levantar o carrossel do radar e a legenda.
@@ -524,7 +525,7 @@ export default function MapExploreSheet({
       <div className="relative shrink-0" style={{ height: GRABBER_H }}>
         <button
           type="button"
-          aria-label={isPt ? 'Painel do mapa — arrastar ou tocar para mudar de estado' : 'Map panel — drag or tap to change state'}
+          aria-label={t.spotsMap.mapPanelGrabber}
           aria-expanded={state !== 'peek'}
           data-sheet-grabber
           className="absolute inset-0 flex w-full cursor-grab items-center justify-center active:cursor-grabbing touch-none"
@@ -551,8 +552,8 @@ export default function MapExploreSheet({
           onClick={() => onStateChange(state === 'peek' ? 'half' : 'peek')}
           aria-expanded={state !== 'peek'}
           aria-label={state === 'peek'
-            ? (isPt ? 'Mostrar filtros' : 'Show filters')
-            : (isPt ? 'Ocultar filtros' : 'Hide filters')}
+            ? t.spotsMap.showFilters
+            : t.spotsMap.hideFilters}
           className="absolute right-1.5 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-fg-muted hover:bg-surface-2/[0.08] hover:text-fg"
         >
           {state === 'peek'

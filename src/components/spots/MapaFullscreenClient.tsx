@@ -226,6 +226,7 @@ export default function MapaFullscreenClient({
     sport !== DEFAULT_SPORT || region !== DEFAULT_REGION || difficulty !== 'all';
 
   const mapHud = {
+    locale,
     sports: HUD_SPORTS.map((s) => ({
       id: s.id,
       label: getMapSportFilterLabel(s.id, locale, s.label),
