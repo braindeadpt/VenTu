@@ -1,17 +1,18 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { MapPin, ArrowLeft, Search } from 'lucide-react';
 import PageHeader from '@/components/ui/PageHeader';
 import Button from '@/components/ui/Button';
 
 export default function NotFoundContent() {
   const pathname = usePathname() || '';
-  // 404 body copy is pt/en only (the partial-locale convention): /pt/ gets
-  // the Portuguese copy, every other locale (en/es/de/fr) gets English —
-  // never the PT copy for es/de/fr.
-  const locale = pathname.startsWith('/pt') ? 'pt' : 'en';
-  const isPt = locale === 'pt';
+  // The 404 lives outside the `[locale]` segment, so the locale comes from the
+  // first path segment (`/es/...` → es). Unknown prefixes fall back to the
+  // site default (pt) via `validateLocale`.
+  const locale = validateLocale(pathname.split('/')[1] ?? '');
+  const t = getTranslation(locale).notFound;
 
   return (
     <div className="min-h-screen bg-bg-base flex items-center justify-center px-4">
@@ -23,22 +24,18 @@ export default function NotFoundContent() {
               <MapPin className="w-8 h-8 text-data-waves" />
             </div>
           }
-          title={isPt ? 'Página não encontrada' : 'Page not found'}
-          subtitle={
-            isPt
-              ? 'O conteúdo que procuras não existe ou foi movido. Explora os spots ou volta à homepage.'
-              : 'The content you are looking for does not exist or was moved. Browse spots or return home.'
-          }
+          title={t.title}
+          subtitle={t.subtitle}
         />
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Button href={`/${locale}/spots/`} size="lg">
             <Search className="w-4 h-4" aria-hidden />
-            {isPt ? 'Ver todos os spots' : 'View all spots'}
+            {t.viewAllSpots}
           </Button>
           <Button href={`/${locale}/`} variant="secondary" size="lg">
             <ArrowLeft className="w-4 h-4" aria-hidden />
-            {isPt ? 'Voltar à homepage' : 'Back to homepage'}
+            {t.backHome}
           </Button>
         </div>
       </div>

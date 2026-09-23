@@ -1704,6 +1704,12 @@ export const translationsDe = {
   kiteDisciplines: {
     strapless: 'Strapless / Welle',
   },
+  notFound: {
+    title: 'Seite nicht gefunden',
+    subtitle: 'Der gesuchte Inhalt existiert nicht oder wurde verschoben. Entdecke Spots oder geh zur Startseite zurück.',
+    viewAllSpots: 'Alle Spots ansehen',
+    backHome: 'Zur Startseite',
+  },
   spotPageVerdict: spotPageVerdict.de,
   spotPageInstruments: spotPageInstruments.de,
   spotPageForecast: spotPageForecast.de,

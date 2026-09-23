@@ -1704,6 +1704,12 @@ export const translationsEs = {
   kiteDisciplines: {
     strapless: 'Strapless / olas',
   },
+  notFound: {
+    title: 'Página no encontrada',
+    subtitle: 'El contenido que buscas no existe o se ha movido. Explora los spots o vuelve a la página de inicio.',
+    viewAllSpots: 'Ver todos los spots',
+    backHome: 'Volver a la página de inicio',
+  },
   spotPageVerdict: spotPageVerdict.es,
   spotPageInstruments: spotPageInstruments.es,
   spotPageForecast: spotPageForecast.es,

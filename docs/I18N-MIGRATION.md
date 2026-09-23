@@ -125,10 +125,15 @@ inverso de leftovers.
 
 ### Estado do M5 (fecho)
 
-**672 → 4 ternárias** (116 → 1 ficheiro). A única excepção é
-`src/components/layout/NotFoundContent.tsx` (4), que por convenção documentada
-(`docs/I18N-MIGRATION.md`, decisão de produto) fica pt/en — o 404 é a página
-que o utilizador vê quando algo falha, e não vale a pena traduzi-la.
+**672 → 4 ternárias** (116 → 1 ficheiro). O `NotFoundContent` (o 404, que vive
+fora do segmento `[locale]` e por isso derivava pt/en do pathname) passou
+também a 5 línguas via `validateLocale(pathname.split('/')[1])` + bloco
+`notFound` — a antiga excepção deixou de existir.
+
+As 4 ternárias que sobram estão em
+`src/components/spots/verdict/SpotSafetyCoastalWarnings.tsx` (código novo do
+spot v2, superfície de outra sessão): o ratchet abaixo impede que a dívida
+cresça e o autor fecha-as quando quiser.
 
 Superfícies fechadas: `ui/**`, `homepage/**`, `app/[locale]/**`,
 `components/spots/**` (todas), `components/weather`, `components/compare`,
@@ -164,6 +169,14 @@ Infra nova reutilizável: `localizedText` (PT/EN com fallback EN),
 | `homepage/**` completo | `3640f58` | 52 → 0; `localizedSpotText`, `DATE_LOCALE` exportado, `getMapSportFilterLabel` |
 | `app/[locale]/**` completo | `6a85fef` | 13 páginas, bloco `pages`, `localizedText` para dados PT/EN |
 | `spots` (parcial) | `c0f1a0f` | `MapExploreSheet` + cluster do mapa; bloco `spotsMap` (35 keys) |
+
+### Ratchet da dívida
+
+`scripts/lib/__tests__/i18nDebt.test.js` mede a dívida (a mesma regra do
+`lint`, aplicada a todo o `src/`) e falha se passar o `BASELINE`. A dívida
+**só pode descer**: quando fechar dívida, baixar o `BASELINE` (é subtrair);
+nunca subir sem justificar. Mensagem de falha lista os ficheiros e aponta para
+este documento.
 
 Método por bloco: ler ternárias → JSON + acelerador → migrar componente →
 `npm run lint` (com o glob do ficheiro) + `npx tsc --noEmit` +

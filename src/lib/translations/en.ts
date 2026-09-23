@@ -1625,6 +1625,12 @@ export const translationsEn = {
   kiteDisciplines: {
     strapless: 'Strapless / surf',
   },
+  notFound: {
+    title: 'Page not found',
+    subtitle: 'The content you are looking for does not exist or was moved. Browse spots or return home.',
+    viewAllSpots: 'View all spots',
+    backHome: 'Back to homepage',
+  },
   spotPageVerdict: spotPageVerdict.en,
   spotPageInstruments: spotPageInstruments.en,
   spotPageForecast: spotPageForecast.en,
