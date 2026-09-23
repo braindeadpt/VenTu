@@ -1,5 +1,6 @@
 'use client';
 
+import { getSportLabel } from '@/lib/homepageSport';
 import { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 
 import type { SportType } from '@/lib/sportRatings';
@@ -365,19 +366,16 @@ export default function ForecastTable({
 
   /* ── sport label for score row ── */
   const sportLabel = sport
-    ? SPORT_LABELS[sport][isPt ? 'pt' : 'en']
+    ? getSportLabel(sport, locale)
     : undefined;
 
   /* ── wave-correction title for the waves row label ── */
+  const ftT = getTranslation(locale).spotsUi;
   const wavesRowTitle =
     waveSource === 'observed' && waveCorrection?.buoyName
-      ? isPt
-        ? `Altura medida pela boia ${waveCorrection.buoyName} — a medição vale para as horas seguintes (as células mostram a previsão por hora).`
-        : `Height measured by buoy ${waveCorrection.buoyName} — the measurement holds for the following hours (cells show the hourly forecast).`
+      ? ftT.wavesTitleBuoy.replace('{name}', waveCorrection.buoyName)
       : waveSource === 'bias-corrected'
-        ? isPt
-          ? 'Altura corrigida pelo viés regional — a correcção vale para as horas seguintes (as células mostram a previsão por hora).'
-          : 'Height corrected by regional bias — the correction holds for the following hours (cells show the hourly forecast).'
+        ? ftT.wavesTitleBias
         : undefined;
 
   /* ── cell dimensions ── */
@@ -682,9 +680,12 @@ export default function ForecastTable({
                     : '—';
                 const phaseTitle =
                   phase != null
-                    ? isPt
-                      ? { high: 'Maré alta', low: 'Maré baixa', rising: 'Maré a subir', falling: 'Maré a descer' }[phase]
-                      : { high: 'High tide', low: 'Low tide', rising: 'Rising tide', falling: 'Falling tide' }[phase]
+                    ? {
+                        high: getTranslation(locale).tideLabels.high,
+                        low: getTranslation(locale).tideLabels.low,
+                        rising: getTranslation(locale).tideLabels.rising,
+                        falling: getTranslation(locale).tideLabels.falling,
+                      }[phase]
                     : undefined;
                 return (
                   <td

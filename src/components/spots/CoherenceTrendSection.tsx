@@ -49,9 +49,10 @@ function PairTrendBars({ pair, locale }: { pair: CoherencePairTrend; locale: str
           {pair.incoherent > 0 && (
             <span
               className="ml-2 inline-block px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide bg-danger/15 text-danger"
-              title={isPt
-                ? `${pair.incoherent} dias incoherent na janela`
-                : `${pair.incoherent} incoherent days in the window`}
+              title={getTranslation(locale).spotsUi.incoherentDaysTitle.replace(
+                '{n}',
+                String(pair.incoherent),
+              )}
             >
               {pair.incoherent}
             </span>
@@ -67,9 +68,7 @@ function PairTrendBars({ pair, locale }: { pair: CoherencePairTrend; locale: str
       <div
         className="flex h-5 w-full max-w-[320px] overflow-hidden rounded-md border border-divider/60 bg-bg-base/60"
         role="img"
-        aria-label={isPt
-          ? `Tendência de coerência por dia para ${pair.pair}`
-          : `Daily coherence trend for ${pair.pair}`}
+        aria-label={getTranslation(locale).spotsUi.dayTrendAria.replace('{pair}', pair.pair)}
         data-coherence-bar="true"
       >
         {pair.days.map((d) => (
@@ -77,9 +76,7 @@ function PairTrendBars({ pair, locale }: { pair: CoherencePairTrend; locale: str
             key={d.day}
             className={`${VERDICT_STYLE[d.verdict].bar} h-full transition-colors`}
             style={{ width: `${(d.n / totalHours) * 100}%`, minWidth: 1 }}
-            title={isPt
-              ? `${dayLabel(d.day, locale)} · n=${d.n} · mean|Δ| ${d.meanAbsDeltaM} m · ${d.verdict}`
-              : `${dayLabel(d.day, locale)} · n=${d.n} · mean|Δ| ${d.meanAbsDeltaM} m · ${d.verdict}`}
+            title={`${dayLabel(d.day, locale)} · n=${d.n} · mean|Δ| ${d.meanAbsDeltaM} m · ${d.verdict}`}
           />
         ))}
       </div>

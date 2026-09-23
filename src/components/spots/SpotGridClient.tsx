@@ -1,5 +1,6 @@
 'use client';
 
+import { localizedText } from '@/lib/localizedText';
 import { getMapSportFilterLabel } from '@/lib/mapSportFilters';
 import { useState, useMemo, useEffect, useCallback } from 'react';
 import Link from 'next/link';
@@ -299,7 +300,7 @@ export function SpotGridClient({
         >
           <MapIcon className="w-4 h-4 text-fg-muted" aria-hidden />
           <span className="flex-1 text-left">
-            {isPt ? 'Mapa' : 'Map'}
+            {t.spotsMap.mapWord}
             <span className="text-fg-muted font-mono tabular-nums">
               {' '}· {mapSpotsData.length} {t.hero.spotsCount}
             </span>
@@ -339,7 +340,7 @@ export function SpotGridClient({
               mapDifficulty !== 'all',
             difficulties: MAP_DIFFICULTY_OPTIONS.map((d) => ({
               id: d.id,
-              label: isPt ? d.labelPt : d.labelEn,
+              label: localizedText({ pt: d.labelPt, en: d.labelEn }, locale),
             })),
             selectedDifficulty: mapDifficulty,
             onDifficultyChange: setMapDifficulty,
@@ -370,15 +371,14 @@ export function SpotGridClient({
         <EmptyState
           icon={<Filter className="w-8 h-8 text-fg-muted" aria-hidden />}
           title={
-            isPt
-              ? t.hero.noSpotsFound.replace('{sport}', sportLabel).replace('{region}', selectedRegion)
-              : t.hero.noSpotsFound.replace('{sport}', sportLabel).replace('{region}', selectedRegion)
+            t.hero.noSpotsFound.replace('{sport}', sportLabel).replace('{region}', selectedRegion)
           }
           description={
             alternativeSport
-              ? (isPt
-                ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, locale))
-                : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, locale)))
+              ? t.hero.tryAlternative.replace(
+                  '{suggestion}',
+                  getSportLabel(alternativeSport, locale),
+                )
               : getPlayfulEmptyCopy('no-spots-filter', locale).description
           }
           action={

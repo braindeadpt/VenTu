@@ -1,5 +1,6 @@
 'use client';
 
+import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation } from '@/lib/i18n';
 import { AlertTriangle, Waves } from 'lucide-react';
 import { cn } from '@/lib/cn';
@@ -11,11 +12,11 @@ import {
   warningsSourceLabel,
 } from '@/lib/ipmaWarnings';
 
-function formatEndDate(iso: string | undefined, isPt: boolean): string {
+function formatEndDate(iso: string | undefined, locale: string): string {
   if (!iso) return '';
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(isPt ? 'pt-PT' : 'en-GB', {
+  return d.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
@@ -74,7 +75,7 @@ export default function SeaStateSafetyBanner({
           )}
         >
           <Waves className="w-5 h-5 shrink-0" aria-hidden />
-          {isPt ? 'Mar perigoso — não surfar' : 'Dangerous sea — do not surf'}
+          {getTranslation(locale).spotsUi.dangerousSeaNoSurf}
         </span>
         <span className="text-meta-sm text-fg-muted flex flex-wrap items-center gap-x-2 gap-y-0.5">
           <span className="inline-flex items-center gap-1 font-medium">
@@ -83,7 +84,7 @@ export default function SeaStateSafetyBanner({
           </span>
           {warning.endTime && (
             <span>
-              {isPt ? 'até' : 'until'} {formatEndDate(warning.endTime, isPt)}
+              {getTranslation(locale).spotsUi.untilWord.replace('{date}', formatEndDate(warning.endTime, locale))}
             </span>
           )}
           <span>

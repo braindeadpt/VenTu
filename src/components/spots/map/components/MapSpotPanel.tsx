@@ -85,7 +85,7 @@ export default function MapSpotPanel({
           className="font-mono tabular-nums text-[11px] text-fg-subtle"
           style={{ writingMode: 'vertical-rl' }}
         >
-          {spotCount} {isPt ? 'spots' : 'spots'}
+          {spotCount} spots
         </span>
       </div>
     );
@@ -157,7 +157,7 @@ export default function MapSpotPanel({
       <div className="mt-2 flex min-h-0 flex-1 flex-col border-t border-divider px-3 pt-2">
         <MapSpotList
           rows={rows}
-          title={isPt ? 'Spots' : 'Spots'}
+          title="Spots"
           countLabel={`${rows.length}/${spotCount}`}
           sortLabel={t.spotsMap.byScore}
           emptyLabel={t.spotsMap.noSpotsInView}

@@ -80,7 +80,7 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
         type="button"
         data-buoy-layer-chip="true"
         aria-expanded={open}
-        aria-label={isPt ? 'Estado da camada de boias' : 'Buoy layer status'}
+        aria-label={t.spotsUi.buoyLayerStatusAria}
         title={c.body}
         onClick={() => setOpen((o) => !o)}
         className={cn(
@@ -123,7 +123,7 @@ export default function BuoyLayerChip({ locale }: { locale: string }) {
             className="inline-flex items-center gap-1 rounded-input border border-divider bg-surface-1/[0.04] px-2 py-1 text-meta-sm font-medium text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 min-h-[44px]"
           >
             <X className="w-3.5 h-3.5" aria-hidden />
-            {isPt ? 'Dispensar este aviso' : 'Dismiss this notice'}
+            {t.spotsUi.dismissThisNotice}
           </button>
           {status === 'stale' && (
             <button

@@ -15,6 +15,7 @@ import {
   getCardinalLabel,
   getWindRelationToCoast,
   type WindRelation,
+  getWindRelationLabel,
 } from '@/lib/wind';
 import { resolveBestWindowForSport } from '@/lib/bestWindowToday';
 import { phaseFromConditionsStatus, TIDE_PHASE_CELL } from '@/lib/tideSchedule';
@@ -71,10 +72,7 @@ export default function SpotRankedTable({
           {title ?? t.ranked.spotRanking}
         </h2>
         <p className="text-meta text-fg-muted mt-1">
-          {subtitle ??
-            (isPt
-              ? 'Ordenados por score · filtros activos'
-              : 'Sorted by score · active filters')}
+          {subtitle ?? t.spotsUi.sortedByScore}
         </p>
       </div>
 
@@ -86,9 +84,7 @@ export default function SpotRankedTable({
       >
         <table className="w-full border-collapse text-meta">
           <caption className="sr-only">
-            {isPt
-              ? 'Spots ordenados por score com ondas, direcção, vento, maré e melhor janela'
-              : 'Spots ranked by score with waves, direction, wind, tide and best window'}
+            {t.spotsUi.rankedCaption}
           </caption>
           <thead>
             <tr className="border-b border-divider text-left text-meta-sm text-fg-subtle">
@@ -204,7 +200,7 @@ export default function SpotRankedTable({
                   <td className="py-2 px-2 font-mono tabular-nums whitespace-nowrap">
                     <span className="text-fg">{windKt}kt</span>{' '}
                     <span className={cn('text-meta-sm font-sans', WIND_RELATION_TEXT[relation])}>
-                      {WIND_RELATION_LABEL[relation][isPt ? 'pt' : 'en']}
+                      {getWindRelationLabel(relation, locale).label}
                     </span>
                   </td>
                   <td className="py-2 px-2 font-mono tabular-nums whitespace-nowrap hidden lg:table-cell">
