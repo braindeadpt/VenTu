@@ -48,6 +48,7 @@ const MIGRATED_GLOBS = [
   'src/lib/emptyStateCopy.ts',
   'src/lib/mapSpotNarrative.ts',
   'src/lib/spotListCardDelight.ts',
+  'src/app/[locale]/fontes/**',
   'src/components/ui/HomepageSearch.tsx',
   'src/components/FeedbackForm.tsx',
   'src/components/DawnPatrolBanner.tsx',
