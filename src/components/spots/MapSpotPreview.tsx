@@ -62,7 +62,7 @@ export default function MapSpotPreview({
     return sb - sa;
   });
 
-  const narrative = getMapSpotNarrative(spot, conditions, allScores, highlightSport, isPt);
+  const narrative = getMapSpotNarrative(spot, conditions, allScores, highlightSport, locale);
   const tideLine = getMapTideLine(spot, conditions, isPt);
   const scoreFactors = getSpotScoreFactors({ spot, conditions, allScores, sport: highlightSport, locale });
   const windRelation =

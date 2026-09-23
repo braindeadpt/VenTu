@@ -1,4 +1,4 @@
-import { calmLabel, onLabel } from '@/lib/voice';
+import { getTranslation } from '@/lib/i18n';
 
 export type PlayfulEmptyVariant = 'flat-day' | 'no-spots-filter' | 'no-favorites' | 'no-top-now';
 
@@ -7,52 +7,20 @@ interface PlayfulEmptyCopy {
   description: string;
 }
 
-const COPY: Record<PlayfulEmptyVariant, { pt: PlayfulEmptyCopy; en: PlayfulEmptyCopy }> = {
-  'flat-day': {
-    pt: {
-      title: `${calmLabel(true).charAt(0).toUpperCase()}${calmLabel(true).slice(1)} hoje 🪞`,
-      description: 'Dia de SUP e cafés — o vento volta amanhã.',
-    },
-    en: {
-      title: 'Glassy seas today 🪞',
-      description: 'SUP and coffee day — wind returns tomorrow.',
-    },
-  },
-  'no-top-now': {
-    pt: {
-      title: `Ninguém ${onLabel(true)} agora 😴`,
-      description: `${calmLabel(true).charAt(0).toUpperCase()}${calmLabel(true).slice(1)} hoje 🪞 — dia de SUP e cafés. Vê o mapa na mesma.`,
-    },
-    en: {
-      title: `Nothing ${onLabel(false)} right now 😴`,
-      description: 'Glassy day — SUP and coffee. Still worth checking the map.',
-    },
-  },
-  'no-spots-filter': {
-    pt: {
-      title: 'Nada por aqui 🌊',
-      description: 'Experimenta outro desporto ou região — ou espera pela maré.',
-    },
-    en: {
-      title: 'Nothing here 🌊',
-      description: 'Try another sport or region — or wait for the tide.',
-    },
-  },
-  'no-favorites': {
-    pt: {
-      title: 'Ainda sem favoritos 🤙',
-      description: 'Entra e toca no coração num spot — sincroniza em todos os dispositivos.',
-    },
-    en: {
-      title: 'No favorites yet 🤙',
-      description: 'Sign in and tap the heart on a spot — syncs across all your devices.',
-    },
-  },
-};
-
+/** Micro-copy dos estados vazios — todo o texto vem do dicionário (5 línguas). */
 export function getPlayfulEmptyCopy(
   variant: PlayfulEmptyVariant,
-  isPt: boolean,
+  locale: string,
 ): PlayfulEmptyCopy {
-  return COPY[variant][isPt ? 'pt' : 'en'];
+  const t = getTranslation(locale).emptyStates;
+  switch (variant) {
+    case 'flat-day':
+      return { title: t.flatDayTitle, description: t.flatDayDesc };
+    case 'no-top-now':
+      return { title: t.noTopNowTitle, description: t.noTopNowDesc };
+    case 'no-spots-filter':
+      return { title: t.noSpotsTitle, description: t.noSpotsDesc };
+    case 'no-favorites':
+      return { title: t.noFavTitle, description: t.noFavDesc };
+  }
 }

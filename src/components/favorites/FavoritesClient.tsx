@@ -242,8 +242,8 @@ export default function FavoritesClient() {
         {favoriteSpots.length === 0 ? (
           <EmptyState
             icon={<Heart className="w-8 h-8 text-fg-subtle" aria-hidden />}
-            title={getPlayfulEmptyCopy('no-favorites', pt).title}
-            description={getPlayfulEmptyCopy('no-favorites', pt).description}
+            title={getPlayfulEmptyCopy('no-favorites', loc).title}
+            description={getPlayfulEmptyCopy('no-favorites', loc).description}
             action={
               <Button href={`/${loc}/spots/`} size="lg" locale={locale}>
                 {pt ? 'Explorar Spots' : 'Explore Spots'}

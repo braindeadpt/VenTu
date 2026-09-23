@@ -67,7 +67,7 @@ export default function HomepageFavoritesNow({
       <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 list-none p-0 m-0">
         {cards.map(({ data, sport, score }, i) => {
           const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
-          const statusLine = tierPhrase(score, isPt);
+          const statusLine = tierPhrase(score, locale);
 
           return (
             <li

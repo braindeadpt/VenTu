@@ -377,7 +377,7 @@ export function SpotGridClient({
               ? (isPt
                 ? t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt))
                 : t.hero.tryAlternative.replace('{suggestion}', getSportLabel(alternativeSport, isPt)))
-              : getPlayfulEmptyCopy('no-spots-filter', isPt).description
+              : getPlayfulEmptyCopy('no-spots-filter', locale).description
           }
           action={
             <div className="flex items-center gap-3 flex-wrap justify-center">

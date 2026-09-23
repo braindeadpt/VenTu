@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ThumbsDown, Minus, ThumbsUp } from 'lucide-react';
 import { getSupabaseClient, isSupabaseConfigured } from '@/lib/supabase';
+import { getTranslation } from '@/lib/i18n';
 import type { SportType } from '@/lib/sportRatings';
 
 type Verdict = 'better' | 'same' | 'worse';
@@ -38,7 +39,7 @@ export default function ScoreFeedback({
   conditionsSnapshot,
   locale,
 }: ScoreFeedbackProps) {
-  const isPt = locale === 'pt';
+  const t = getTranslation(locale).scoreFeedback;
   const [sent, setSent] = useState<Verdict | null>(null);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
@@ -47,7 +48,7 @@ export default function ScoreFeedback({
     if (sent || sending) return;
 
     if (!isSupabaseConfigured()) {
-      setError(isPt ? 'Feedback indisponível (Supabase não configurado)' : 'Feedback unavailable (Supabase not configured)');
+      setError(t.unavailable);
       return;
     }
 
@@ -74,8 +75,8 @@ export default function ScoreFeedback({
       if (!data?.ok) {
         setError(
           data?.error === 'rate_limit'
-            ? (isPt ? 'Demasiados votos — tenta novamente dentro de um minuto.' : 'Too many votes — try again in a minute.')
-            : (isPt ? 'Erro ao enviar feedback' : 'Error sending feedback')
+            ? t.rateLimit
+            : t.errorSend
         );
         return;
       }
@@ -91,7 +92,7 @@ export default function ScoreFeedback({
   if (sent) {
     return (
       <p className="text-meta-sm text-fg-muted">
-        {isPt ? 'Obrigado — o teu feedback ajuda a calibrar scores.' : 'Thanks — your feedback helps calibrate scores.'}
+        {t.thanks}
       </p>
     );
   }
@@ -99,13 +100,13 @@ export default function ScoreFeedback({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
       <p className="text-meta-sm text-fg-muted">
-        {isPt ? 'As condições reais foram…' : 'Were real conditions…'}
+        {t.prompt}
       </p>
       <div className="flex flex-wrap gap-2">
         {([
-          ['worse', ThumbsDown, isPt ? 'Piores' : 'Worse'],
-          ['same', Minus, isPt ? 'Iguais' : 'Same'],
-          ['better', ThumbsUp, isPt ? 'Melhores' : 'Better'],
+          ['worse', ThumbsDown, t.worse],
+          ['same', Minus, t.same],
+          ['better', ThumbsUp, t.better],
         ] as const).map(([verdict, Icon, label]) => (
           <button
             key={verdict}

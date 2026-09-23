@@ -94,8 +94,8 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
       {cards.length === 0 ? (
         <EmptyState
           className="py-10"
-          title={getPlayfulEmptyCopy('no-top-now', isPt).title}
-          description={getPlayfulEmptyCopy('no-top-now', isPt).description}
+          title={getPlayfulEmptyCopy('no-top-now', locale).title}
+          description={getPlayfulEmptyCopy('no-top-now', locale).description}
           action={
             <Button variant="secondary" href={`/${locale}/explorar/`} locale={cardLocale}>
               {isPt ? 'Ver previsões' : 'View forecasts'}
@@ -111,7 +111,7 @@ export default function HomepageTopNow({ spotsData, locale, maxCards, bakedAtMs 
           {cards.map(({ sport, data }, i) => {
             const score = getScoreForFilter(data, sport);
             const sportLabel = SPORT_LABELS[sport][isPt ? 'pt' : 'en'];
-            const statusLine = tierPhrase(score, isPt);
+            const statusLine = tierPhrase(score, locale);
 
             const warning = strongestSpotWarning(warningsData, data.spot.id);
             const warningBadge = warning

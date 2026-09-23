@@ -178,7 +178,7 @@ export default function HomepageMapHero({
 
   const onCount = useMemo(() => getOnCount(liveSpotsData, sport), [liveSpotsData, sport]);
 
-  const liveLine = heroStatusLine(onCount, isPt);
+  const liveLine = heroStatusLine(onCount, locale);
 
 
 

@@ -98,7 +98,7 @@ export default function SpotListCard({
   // canto e passa a ser a âncora visual, em numeral tabular grande.
   const scoreTokens = getScoreTokens(score);
   const scoreTierLabel = getScoreTierLabel(scoreTokens.tier, locale);
-  const hoverLine = getSpotListCardHoverLine(score, isPt);
+  const hoverLine = getSpotListCardHoverLine(score, locale);
   // Sufixo honesto da altura: «(boia)» / «(viés regional)» quando a correcção
   // foi aplicada (a altura mostrada É a corrigida); '' para previsão pura.
   const waveSource = waveCorrection?.source ?? 'forecast';

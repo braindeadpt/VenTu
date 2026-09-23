@@ -20,6 +20,7 @@ const SHARED_TOKENS = new Set([
   'Chat', 'Feedback', 'Links', 'Livecams', 'Livecams →', 'Powered by', 'Rankings', 'Reset',
   'Score', 'Swell', 'Top score', 'Radar', 'Radar IPMA', 'spots', 'Spots',
   'cross', 'offshore', 'onshore', 'kW/m', '{count} spots',
+  'flat', // termo adoptado em pt/en/es (frase de tier «flat»)
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
 ]);
 
@@ -94,6 +95,8 @@ const ES_COGNATES = new Set([
   'Mapas interactivos',                // espanhol correcto = PT (descrição de tecnologia no /about)
   'Instalar VenTu',                    // espanhol correcto = PT (aria do prompt de instalação)
   'Instalar',                          // espanhol correcto = PT (botão do prompt de instalação)
+  'lagoa/cable',                       // espanhol correcto = PT (contexto de água no mapa)
+  'crowd moderado',                    // espanhol correcto = PT (contexto de crowd no mapa)
 ]);
 
 /**
@@ -122,6 +125,7 @@ const EN_COGNATES = new Set([
   'Hs', 'Copernicus', 'Instituto Hidrográfico',
   ' · {n} frame',        // «frame» é o termo adoptado em PT e EN (contagem do radar)
   ' · {n} frames',
+  'flat',                // termo adoptado em PT e EN (frase de tier «flat»)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
