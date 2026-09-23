@@ -89,7 +89,7 @@ export default function CoastalArchiveCard({ locale, baked }: CoastalArchiveCard
       </div>
       <p className="text-sm text-fg-muted leading-relaxed">{t.intro}</p>
 
-      <CoastalDailyActiveChart dailyActive={archive.dailyActive} isPt={isPt} />
+      <CoastalDailyActiveChart dailyActive={archive.dailyActive} locale={locale} />
 
       <div className="space-y-1.5">
         <p className="text-xs uppercase tracking-wide text-fg-subtle">{t.recent}</p>

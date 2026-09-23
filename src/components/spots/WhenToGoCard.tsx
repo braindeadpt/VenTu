@@ -108,7 +108,7 @@ export default function WhenToGoCard({
           <SessionStrip
             hours={stripHours}
             windows={windows}
-            isPt={isPt}
+            locale={locale}
             nowMs={nowMs ?? Date.now()}
           />
         )}

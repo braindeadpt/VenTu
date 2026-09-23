@@ -8,31 +8,33 @@
  */
 export default function CoastalDailyActiveChart({
   dailyActive,
-  isPt,
+  locale,
 }: {
   dailyActive: { date: string; count: number }[];
-  isPt: boolean;
+  locale: string;
 }) {
   if (dailyActive.length === 0) return null;
 
   const maxCount = Math.max(1, ...dailyActive.map((d) => d.count));
+  const t = getTranslation(locale).spotsUi;
+
   return (
     <div className="space-y-1.5" data-daily-active-chart>
       <p className="text-xs uppercase tracking-wide text-fg-subtle">
-        {isPt
-          ? `Avisos em vigor por dia · ${dailyActive.length} ${dailyActive.length === 1 ? 'dia' : 'dias'}`
-          : `Warnings in force per day · ${dailyActive.length} ${dailyActive.length === 1 ? 'day' : 'days'}`}
+        {dailyActive.length === 1
+          ? t.warningsPerDayOne
+          : t.warningsPerDayMany.replace('{count}', String(dailyActive.length))}
       </p>
       <div
         className="flex h-24 items-end gap-[3px] overflow-x-auto pb-0.5"
         role="img"
-        aria-label={isPt ? 'Gráfico de avisos em vigor por dia' : 'Daily warnings-in-force chart'}
+        aria-label={t.dailyChartAria}
       >
         {dailyActive.map((d) => {
           const dt = new Date(`${d.date}T12:00:00`);
           const hpx = d.count > 0 ? Math.max(8, Math.round((d.count / maxCount) * 72)) : 3;
-          const full = dt.toLocaleDateString(isPt ? 'pt-PT' : 'en-GB');
-          const short = dt.toLocaleDateString(isPt ? 'pt-PT' : 'en-GB', {
+          const full = dt.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB');
+          const short = dt.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
             day: '2-digit',
             month: '2-digit',
           });
@@ -41,7 +43,7 @@ export default function CoastalDailyActiveChart({
               key={d.date}
               data-day={d.date}
               className="group flex h-full flex-col items-center justify-end gap-1"
-              title={`${full} · ${d.count} ${isPt ? 'aviso' : 'warning'}${d.count === 1 ? '' : 's'}`}
+              title={`${full} · ${(d.count === 1 ? t.warningsOne : t.warningsMany).replace('{count}', String(d.count))}`}
             >
               <div
                 className={`w-2.5 rounded-t transition-colors ${
@@ -58,4 +60,6 @@ export default function CoastalDailyActiveChart({
       </div>
     </div>
   );
-}
+}import { getTranslation } from '@/lib/i18n';
+import { DATE_LOCALE } from '@/lib/dataFreshness';
+

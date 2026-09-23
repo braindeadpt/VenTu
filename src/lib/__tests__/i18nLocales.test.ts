@@ -150,6 +150,8 @@ const ES_COGNATES = new Set([
   'Dormir',                            // espanhol correcto = PT/FR (dica local: dormir)
   'Ranking de spots',                  // espanhol correcto = PT (título da tabela)
   'Insuficiente',                      // espanhol correcto = PT (veredicto de amostra)
+  '{count} aviso',                     // espanhol correcto = PT (contagem de avisos)
+  '{count} avisos',                    // espanhol correcto = PT (contagem de avisos)
 ]);
 
 /**
