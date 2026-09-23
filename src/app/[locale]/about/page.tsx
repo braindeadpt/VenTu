@@ -14,7 +14,7 @@ import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution'
 import WaveBiasSection from '@/components/spots/WaveBiasSection'
 import CoherenceTrendSection from '@/components/spots/CoherenceTrendSection'
 import AboutDataCards from '@/components/about/AboutDataCards'
-import { getTranslation } from '@/lib/i18n'
+import { getTranslation, validateLocale } from '@/lib/i18n'
 import type { Metadata } from 'next'
 
 
@@ -23,7 +23,7 @@ import type { Metadata } from 'next'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isPt = locale === 'pt'
-  const loc = isPt ? 'pt' : 'en'
+  const loc = validateLocale(locale)
   const t = getTranslation(locale).about
 
   return buildPageMetadata({

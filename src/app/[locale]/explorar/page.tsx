@@ -1,4 +1,4 @@
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { localizedText } from '@/lib/localizedText';
 import Link from 'next/link';
 import { MapPin } from 'lucide-react';
@@ -37,12 +37,12 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
-  const loc = isPt ? 'pt' : 'en';
+  const loc = validateLocale(locale);
   const tp = getTranslation(locale).pages;
   const title = tp.exploreMetaTitle;
   const description = tp.exploreMetaDescription
     .replace('{count}', String(SEO_LANDINGS.length))
-    .replace('{schedule}', pipelineSchedule(loc));
+    .replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'));
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/explorar/` });
 }
 

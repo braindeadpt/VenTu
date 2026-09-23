@@ -6,7 +6,7 @@ import { ATTRIBUTIONS, type DataSourceId } from '@/lib/dataSources'
 import { loadCoastalWarningsArchive } from '@/lib/coastalWarningsArchive'
 import CoastalArchiveCard from '@/components/fontes/CoastalArchiveCard'
 import type { Metadata } from 'next'
-import { getTranslation } from '@/lib/i18n'
+import { getTranslation, validateLocale } from '@/lib/i18n'
 
 /** Link externo pequeno (atribuição obrigatória). */
 function A({
@@ -46,7 +46,7 @@ type Source = {
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isPt = locale === 'pt'
-  const loc = isPt ? 'pt' : 'en'
+  const loc = validateLocale(locale)
   const t = getTranslation(locale).fontesPage
 
   return buildPageMetadata({

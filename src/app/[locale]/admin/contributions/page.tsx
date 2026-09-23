@@ -15,7 +15,7 @@ export async function generateMetadata({
   const isPt = locale === 'pt';
 
   return {
-    title: getTranslation(isPt ? 'pt' : 'en').admin.metaTitleContributions,
+    title: getTranslation(locale).admin.metaTitleContributions,
     robots: { index: false, follow: false },
   };
 }

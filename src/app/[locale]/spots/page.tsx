@@ -1,3 +1,4 @@
+import { validateLocale } from '@/lib/i18n';
 import { getTranslation } from '@/lib/i18n'
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
@@ -11,12 +12,12 @@ import type { Metadata } from 'next'
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params
   const isPt = locale === 'pt'
-  const loc = isPt ? 'pt' : 'en'
+  const loc = validateLocale(locale)
 
   const title = getTranslation(locale).pages.allSpotsMetaTitle
   const description = getTranslation(locale).pages.spotsMetaDescription
     .replace('{count}', String(SPOT_COUNT))
-    .replace('{schedule}', pipelineSchedule(loc))
+    .replace('{schedule}', pipelineSchedule(isPt ? 'pt' : 'en'))
 
   return buildPageMetadata({ title, description, locale: loc, path: `/${loc}/spots/` })
 }

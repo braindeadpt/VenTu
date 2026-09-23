@@ -1,4 +1,4 @@
-import { getTranslation } from '@/lib/i18n';
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { locales } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data';
 import { MACRO_REGIONS } from '@/lib/regions';
@@ -19,7 +19,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
-  const loc = isPt ? 'pt' : 'en';
+  const loc = validateLocale(locale);
 
   const title = getTranslation(locale).pages.mapMetaTitle;
   const description = getTranslation(locale).pages.mapMetaDescription.replace(

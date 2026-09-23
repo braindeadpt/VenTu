@@ -170,16 +170,20 @@ Método por bloco: ler ternárias → JSON + acelerador → migrar componente �
 `vitest run src/lib/__tests__/i18nLocales.test.ts` → commit → e, no fim de cada
 superfície capturada, `Record Visual Baselines`.
 
-## Nota SEO (decisão em aberto)
+## Nota SEO (resolvida em 2026-09-23)
 
-Enquanto a migração não fechar, `/es/ /de/ /fr/` servem EN em parte das
-superfícies, mas o sitemap continua a anunciar 5 hreflangs (risco de conteúdo
-duplicado/fino). Duas opções, por ordem de preferência:
+A opção escolhida foi a **1 — continuar a migração**: com as superfícies
+fechadas, `/es/ /de/ /fr/` servem texto real e o sitemap pode anunciar as 5
+hreflangs sem risco de conteúdo fino.
 
-1. continuar a migração por superfície (este plano) — sem perder mercados;
-2. se for preciso fechar o risco antes disso, limitar `generate-sitemap.js` e os
-   `hreflang` às línguas realmente traduzidas por superfície (trabalho maior e
-   reversível).
+No fecho do M5 apareceu e foi corrigido um bug SEO que a migração expôs: as
+páginas de metadata passavam `locale: isPt ? 'pt' : 'en'` ao
+`buildPageMetadata`, pelo que `/es/ /de/ /fr/` declaravam **canonical para o
+URL EN** (conteúdo lido como duplicado de EN). Passam a usar
+`validateLocale(locale)` — o locale real da rota — e há guarda de regressão em
+`src/lib/__tests__/pageLocaleWiring.test.ts` (fonte: `validateLocale`,
+proibido `locale: isPt…`/`buildSpotMetadata(isPt…`).
 
-Nenhuma das duas é feita neste lote: é uma decisão de produto/SEO, registada
-aqui para não se perder.
+Verificação (build): `/es/mapa/` → canonical `/es/mapa/` + 5 hreflangs;
+`/de/spots/`, `/fr/spots/guincho/`, `/es/about/` idem; `/de/mapa/` com
+`<title>` alemão.

@@ -10,7 +10,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const isPt = locale === 'pt';
-  const cmp = getTranslation(isPt ? 'pt' : 'en').compare;
+  const cmp = getTranslation(locale).compare;
 
   return {
     title: cmp.metaTitle,
