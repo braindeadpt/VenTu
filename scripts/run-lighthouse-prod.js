@@ -8,11 +8,15 @@ const path = require('path');
 const http = require('http');
 const { evaluateLighthouseBudgets, medianReport } = require('./lib/lighthouseBudgets');
 
-// Perfil Chrome partilhado: NÃO usar. O `lighthouse` CLI arranca sempre um
-// perfil temporário próprio e ignora `--user-data-dir` passado em
-// `--chrome-flags` (ficou testado em 2026-09-23: a pasta ficava vazia e o
-// CLS/bytes continuavam a variar). A assinatura de CLS a frio foi resolvida na
-// origem — ver `src/lib/fonts/geist-mono.ts` (adjustFontFallback).
+// Nota (2026-09-23): NÃO usar um perfil Chrome partilhado para "aquecer" a
+// cache — o `lighthouse` CLI arranca sempre um perfil temporário próprio e
+// ignora `--user-data-dir` passado em `--chrome-flags` (testado: a pasta ficava
+// vazia e o CLS/bytes continuavam a variar). A assinatura de CLS a frio
+// (~0.64 no spot, fontes/CSS a chegar tarde) continua em aberto: o gate usa a
+// mediana de 5 corridas precisamente para a tolerar (uma regressão real falha
+// em todas). Tentativa de a resolver no fallback métrico da Geist Mono
+// (adjustFontFallback) foi revertida — alterava a geometria do popup do mapa
+// antes de a fonte carregar e partia `map-popup-ver-spot`.
 
 const PORT = process.env.LIGHTHOUSE_PORT || '4180';
 const BASE = `http://127.0.0.1:${PORT}`;

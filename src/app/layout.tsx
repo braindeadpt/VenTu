@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { GeistSans } from 'geist/font/sans'
-import { geistMono } from '@/lib/fonts/geist-mono'
+import { GeistMono } from 'geist/font/mono'
 import { spaceGrotesk } from '@/lib/fonts/display'
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL, SPOT_COUNT } from '@/lib/seo'
 import { pipelineSchedule } from '@/lib/dataPipelineSchedule'
@@ -153,7 +153,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-PT"
-      className={`${GeistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable}`}
+      className={`${GeistSans.variable} ${GeistMono.variable} ${spaceGrotesk.variable}`}
       suppressHydrationWarning
     >
       <head>
