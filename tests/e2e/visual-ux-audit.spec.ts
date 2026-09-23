@@ -481,7 +481,10 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       });
 
       // Hero score card includes compact metric chips (not duplicated in Agora)
-      await expect(hero.locator('.grid.grid-cols-2')).toHaveCount(1);
+      // O hero hidrata depois do primeiro paint em runner carregado; o default
+      // de 5s do Playwright dava 0 matches intermitentemente no CI (o mesmo
+      // padrão de flake do CLS). Alinhado com as asserções vizinhas (15s).
+      await expect(hero.locator('.grid.grid-cols-2')).toHaveCount(1, { timeout: 15_000 });
 
       await expect(hero.getByRole('meter')).toBeVisible({ timeout: 15_000 });
       await expect(hero.getByRole('status', { name: /Confiança da previsão/i })).toBeVisible({
