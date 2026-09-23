@@ -97,6 +97,7 @@ const ES_COGNATES = new Set([
   'Instalar',                          // espanhol correcto = PT (botão do prompt de instalação)
   'lagoa/cable',                       // espanhol correcto = PT (contexto de água no mapa)
   'crowd moderado',                    // espanhol correcto = PT (contexto de crowd no mapa)
+  'Aviso IPMA',                        // espanhol correcto = PT (pílula de aviso)
 ]);
 
 /**
