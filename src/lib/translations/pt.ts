@@ -4,6 +4,10 @@ import { spotPageVerdict } from '@/lib/translations/spotPage/verdict';
 import { spotPageInstruments } from '@/lib/translations/spotPage/instruments';
 import { spotPageForecast } from '@/lib/translations/spotPage/forecast';
 import { spotPageContext } from '@/lib/translations/spotPage/context';
+import { mapUiChrome } from '@/lib/translations/mapUi/chrome';
+import { mapUiExplore } from '@/lib/translations/mapUi/explore';
+import { mapUiMarkers } from '@/lib/translations/mapUi/markers';
+import { mapUiLayers } from '@/lib/translations/mapUi/layers';
 
 export const translationsPt = {
   nav: {
@@ -1666,4 +1670,8 @@ export const translationsPt = {
   spotPageInstruments: spotPageInstruments.pt,
   spotPageForecast: spotPageForecast.pt,
   spotPageContext: spotPageContext.pt,
+  mapUiChrome: mapUiChrome.pt,
+  mapUiExplore: mapUiExplore.pt,
+  mapUiMarkers: mapUiMarkers.pt,
+  mapUiLayers: mapUiLayers.pt,
 } as const;

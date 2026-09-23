@@ -450,6 +450,8 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
         // (dados estáticos), por isso o fit corre antes de anexar o basemap
         // — os tiles pedidos são já os da vista final e não os do zoom
         // default que seriam abortados a seguir.
+        // Ownership M5 (map-v3): enquadramento inicial / fit — ver
+        // docs/design/MAP-ZONES.md.
         if (!isHeroEmbed && initialViewBounds) {
           applyExploreMapFit(
             Leaflet,
@@ -486,6 +488,8 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
           } catch { /* noop */ }
         }
 
+        // Ownership M4 (map-v3): criação e opções do markercluster — ver
+        // docs/design/MAP-ZONES.md.
         await Promise.all([
           import('leaflet.markercluster/dist/MarkerCluster.css'),
           import('leaflet.markercluster/dist/MarkerCluster.Default.css'),

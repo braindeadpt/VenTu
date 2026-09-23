@@ -323,6 +323,21 @@ describe('i18n locales', () => {
     }
   });
 
+  it('en/es/de/fr mapUi* blocks carry every key of pt (zone namespaces stay in sync)', () => {
+    const pt = getTranslation('pt');
+    for (const ns of ['mapUiChrome', 'mapUiExplore', 'mapUiMarkers', 'mapUiLayers'] as const) {
+      const ptBlock = pt[ns] as Record<string, unknown> | undefined;
+      if (!ptBlock) continue;
+      for (const loc of ['en', 'es', 'de', 'fr'] as const) {
+        const locBlock = getTranslation(loc)[ns] as Record<string, unknown> | undefined;
+        expect(locBlock, `${loc}.${ns} missing`).toBeDefined();
+        for (const key of Object.keys(ptBlock)) {
+          expect(locBlock, `${loc}.${ns}.${key} missing`).toHaveProperty(key);
+        }
+      }
+    }
+  });
+
   /**
    * Blocos aninhados auditados: além do `map`, os shells es/de/fr têm de levar
    * TODAS as keys do pt e nenhum valor pode regressar ao placeholder EN (que o

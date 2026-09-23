@@ -8,9 +8,10 @@ import { join } from 'path';
  * Cada toggle de camada em /pt/mapa/ tem de ter um atributo data-map-*-toggle
  * nas DUAS superfícies que o renderizam:
  *   - MapControls (toolbar desktop, z-1200, centrada no topo);
- *   - a lista de camadas do sheet mobile — os items são construídos em
- *     SpotMapInteractive (sheetLayers) e renderizados pelo MapExploreSheet
- *     (estado «half»), com o toggleAttr espalhado no <button>.
+ *   - a lista de camadas do sheet mobile — os items são construídos na
+ *     MapLayersZone (sheetLayers, zona M5 desde o M1) e renderizados pelo
+ *     MapExploreSheet (estado «half»), com o toggleAttr espalhado no
+ *     <button>.
  *
  * HISTÓRIA (audit mobile 2026-09, de31e9111): radar e isóbatas nasceram sem
  * atributo — só tinham aria-label DEPENDENTE DO ESTADO («Radar IPMA» ↔
@@ -23,10 +24,11 @@ const ROOT = join(__dirname, '..', '..', '..');
 const read = (p: string) => readFileSync(join(ROOT, p), 'utf-8');
 
 const controls = read('src/components/spots/map/components/MapControls.tsx');
-// Os items das camadas do sheet mobile constroem-se aqui (sheetLayers) —
+// Os items das camadas do sheet mobile constroem-se na zona de camadas
+// (sheetLayers em MapLayersZone, dono M5 — ver docs/design/MAP-ZONES.md) —
 // cada item leva toggleAttr + pressed + onToggle, que o MapExploreSheet
 // aterra num <button aria-pressed onClick data-*> real.
-const sheetItems = read('src/components/spots/SpotMapInteractive.tsx');
+const sheetItems = read('src/components/spots/map/zones/MapLayersZone.tsx');
 const sheet = read('src/components/spots/map/components/MapExploreSheet.tsx');
 const layersMenu = read('src/components/spots/map/components/MapLayersMenu.tsx');
 
