@@ -273,7 +273,10 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(card.getByText(/boia CSA92\/D a 60 km/i).first()).toBeVisible();
     // Measured vs forecast comparison is present.
     await expect(card.getByText(/Altura \(medida\)|Height \(measured\)/i)).toBeVisible();
-    await expect(card.getByText(/1\.8 m/)).toBeVisible();
+    // O forecast do fixture pode coincidir com a medição (a ronda de baselines
+    // reescreve conditions.json) — dois «1.8 m» legítimos na mesma card; basta
+    // garantir que o valor medido está presente.
+    await expect(card.getByText(/1\.8 m/).first()).toBeVisible();
 
     // The score badge names the correcting buoy and exposes the skill ME/n.
     const badge = page.getByText('Corrigido pela boia CSA92/D');
