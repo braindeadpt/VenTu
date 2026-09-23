@@ -236,14 +236,21 @@ async function sweepLazyImages(page: Page): Promise<void> {
       await new Promise((r) => setTimeout(r, 120));
     }
     window.scrollTo(0, 0);
+    // Só espera por imagens desenhadas, e no máximo 5 s cada: uma imagem
+    // loading="lazy" dentro de um <details> fechado (accordions do mobile na
+    // página de spot) nunca é pedida — sem load nem error — e a espera
+    // pendurava o teste até ao timeout de 120 s.
     await Promise.all(
       Array.from(document.querySelectorAll('img'), (img) =>
-        img.complete
+        img.complete || img.getClientRects().length === 0
           ? Promise.resolve()
-          : new Promise((r) => {
-              img.addEventListener('load', r, { once: true });
-              img.addEventListener('error', r, { once: true });
-            }),
+          : Promise.race([
+              new Promise((r) => {
+                img.addEventListener('load', r, { once: true });
+                img.addEventListener('error', r, { once: true });
+              }),
+              new Promise((r) => setTimeout(r, 5000)),
+            ]),
       ),
     );
   });
