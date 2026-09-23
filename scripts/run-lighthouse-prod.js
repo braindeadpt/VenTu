@@ -8,6 +8,12 @@ const path = require('path');
 const http = require('http');
 const { evaluateLighthouseBudgets, medianReport } = require('./lib/lighthouseBudgets');
 
+// Perfil Chrome partilhado: NÃO usar. O `lighthouse` CLI arranca sempre um
+// perfil temporário próprio e ignora `--user-data-dir` passado em
+// `--chrome-flags` (ficou testado em 2026-09-23: a pasta ficava vazia e o
+// CLS/bytes continuavam a variar). A assinatura de CLS a frio foi resolvida na
+// origem — ver `src/lib/fonts/geist-mono.ts` (adjustFontFallback).
+
 const PORT = process.env.LIGHTHOUSE_PORT || '4180';
 const BASE = `http://127.0.0.1:${PORT}`;
 const ROUTES = [
