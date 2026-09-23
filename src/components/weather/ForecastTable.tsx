@@ -16,6 +16,7 @@ import {
   type TidePhase,
 } from '@/lib/tideSchedule';
 import { findCurrentHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
+import { formatDayShort } from '@/lib/verdict/formatHourLabel';
 import {
   waveFactorSuffix,
   type ScoreWaveCorrection,
@@ -171,10 +172,12 @@ function windDirBg(
   return 'bg-surface-1/[0.04]';
 }
 
-/* ──────────── time helpers ──────────── */
+/* ──────────── time helpers ────────────
+ * As horas são wall-time Open-Meteo (Europe/Lisbon, sem offset) — nunca
+ * `new Date(iso)`: o parse local muda com o fuso do browser e quebra a
+ * hidratação (React #418). Componentes extraem-se da própria string. */
 function parseHourLabel(iso: string): string {
-  const d = new Date(iso);
-  return `${d.getHours()}h`;
+  return `${Number(iso.slice(11, 13))}h`;
 }
 
 function isCurrentHour(iso: string, now: Date): boolean {
@@ -239,10 +242,17 @@ export default function ForecastTable({
   const { visible, visibleStart } = useMemo(() => {
     let startIndex = 0;
     if (startTime) {
-      startIndex = hourly.findIndex((h) => {
-        const d = new Date(h.time);
-        return d >= startTime;
-      });
+      // Wall-time Lisboa de startTime (epoch real) — comparação lexicográfica
+      // com as strings naive, determinística em qualquer fuso.
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Lisbon',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+      }).formatToParts(startTime);
+      const pick = (t: Intl.DateTimeFormatPartTypes) =>
+        parts.find((p) => p.type === t)?.value ?? '00';
+      const startKey = `${pick('year')}-${pick('month')}-${pick('day')}T${pick('hour')}:${pick('minute')}:${pick('second')}`;
+      startIndex = hourly.findIndex((h) => h.time >= startKey);
       if (startIndex === -1) startIndex = 0;
     }
     return {
@@ -294,13 +304,12 @@ export default function ForecastTable({
     const groups: { day: string; dayLabel: string; startIndex: number }[] = [];
     let currentDay = '';
     visible.forEach((h, i) => {
-      const d = new Date(h.time);
-      const dayKey = d.toDateString();
+      const dayKey = h.time.slice(0, 10);
       if (dayKey !== currentDay) {
         currentDay = dayKey;
         groups.push({
           day: dayKey,
-          dayLabel: d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' }),
+          dayLabel: formatDayShort(h.time, locale),
           startIndex: i,
         });
       }
@@ -481,8 +490,7 @@ export default function ForecastTable({
               </th>
               {visible.map((h, i) => {
                 const current = isCurrentHour(h.time, now);
-                const d = new Date(h.time);
-                const isNewDay = i === 0 || d.toDateString() !== new Date(visible[i - 1].time).toDateString();
+                const isNewDay = i === 0 || h.time.slice(0, 10) !== visible[i - 1].time.slice(0, 10);
                 return (
                   <th
                     key={i}
@@ -500,7 +508,7 @@ export default function ForecastTable({
                     <div className="flex flex-col items-center">
                       {isNewDay && !compact && (
                         <span className="text-[9px] md:text-[10px] font-semibold text-fg-subtle leading-none mb-0.5">
-                          {d.toLocaleDateString(locale, { weekday: 'short', day: 'numeric' })}
+                          {formatDayShort(h.time, locale)}
                         </span>
                       )}
                       <span className={compact ? 'text-[10px]' : ''}>{parseHourLabel(h.time)}</span>

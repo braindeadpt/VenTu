@@ -118,7 +118,7 @@ export default function SpotHowWeKnow({
 
   const raw = conditions as unknown as Record<string, unknown> | undefined;
   const scoreWaveSource = raw ? resolveScoreWaveSource(raw, freshnessNowMs) : undefined;
-  const scoreWaveCorrection = raw ? resolveScoreWaveCorrection(raw) : undefined;
+  const scoreWaveCorrection = raw ? resolveScoreWaveCorrection(raw, freshnessNowMs) : undefined;
   const scoreWindSource = raw ? resolveScoreWindSource(raw, freshnessNowMs) : undefined;
   const scoreWindCorrection = raw ? resolveScoreWindCorrection(raw) : undefined;
   const windObservedSource = conditions?.observed?.source;
