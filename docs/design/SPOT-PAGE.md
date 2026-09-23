@@ -28,7 +28,7 @@
    - Foco (hover, clique, teclado) = troca de material: escuro ↔ areia #FAFAF7, sem sombra, scale ≤1.012.
    - Painel de detalhe único por baixo dos três: Vento → ObservedNow, WindRelation, WindFlowGlyph, fonte do vento. Onda → SwellTrainsTable, ObservedWaveCard, BuoySkillLine, BuoyLayerNotice, IsobathsStrip, WaveCalibrationTag. Maré → TideScheduleStrip, MoonTideCard, temperatura da água.
    - Avisos de coerência: marca no cartão afectado + texto completo em #como-sabemos.
-5. ForecastMeteogram + ForecastTable com a hora escolhida destacada; clicar numa coluna muda o índice; ao mudar por outra via, scroll da tabela até à coluna (só se a tabela estiver visível). Windguru e "mostrar mais horas" mantêm-se.
+5. ForecastTable ("Hora a hora") com a hora escolhida destacada; clicar numa coluna/linha muda o índice; ao mudar por outra via, scroll até à coluna (só se a tabela estiver visível). O meteograma saiu (UX-v3 §5 — a régua de 48 h é o único eixo). Windguru e "mostrar mais horas" mantêm-se.
 6. Desktop 3 colunas, mobile empilhado (No local aberto, restantes em accordion):
    - No local: avisos (ou "Sem avisos activos · fonte, hh:mm"), livecam como link de saída (src/lib/spotLivecams.ts), estação (SpotWeatherlinkSection), qualidade da água (WaterQualityBadge), eventos só se existirem.
    - Chegar e estar: SpotLogisticsPanel, nível, facilidades, perigos (hazards) em lista, LocalTipsSection, SpotImage pequena.
@@ -48,7 +48,7 @@ Renderizados por **SpotDetailClient**:
 | linha standalone de tabs (`<section>` + `SportTab` ×n) | 2 · Barra fixa |
 | `WhenToGoCard` (com `SessionStrip` + `SpotVerdict` internos) | 3 · Quando ir |
 | `SpotConditionsDashboard` | 4 · Instrumentos |
-| secção previsão (`h2` + link Windguru + `ForecastMeteogram` + `ForecastTable` + `Button` expandir) | 5 · Previsão |
+| secção previsão (`h2` + link Windguru + `ForecastTable` + `Button` expandir; meteograma removido na UX-v3) | 5 · Previsão |
 | `CollapsibleSection` avisos → `SpotWarningsSection` | 0 (faixa activa) / 6 · No local (estado «sem avisos») |
 | `CollapsibleSection` livecam → `SpotWebcamSection` | 6 · No local (link de saída) |
 | `CollapsibleSection` estação → `SpotWeatherlinkSection` | 6 · No local |

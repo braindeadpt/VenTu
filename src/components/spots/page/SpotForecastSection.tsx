@@ -9,11 +9,11 @@ import {
   type RefObject,
 } from 'react';
 import { ChevronDown, ChevronUp, ExternalLink } from 'lucide-react';
-import ForecastMeteogram from '@/components/spots/ForecastMeteogram';
 import ForecastTable, {
   type ForecastHour,
 } from '@/components/weather/ForecastTable';
 import Button from '@/components/ui/Button';
+import { getTranslation } from '@/lib/i18n';
 import type { SportType } from '@/lib/sportRatings';
 import type {
   ScoreWaveCorrection,
@@ -45,8 +45,8 @@ function ForecastTimelineSync({
   const indexRef = useRef(index);
   const selfChange = useRef(false);
 
-  // Clique numa coluna da tabela (data-tl-col = índice global) ou no
-  // meteograma (colunas de largura fixa — índice por posição x).
+  // Clique numa coluna da tabela / linha da lista (data-tl-col = índice
+  // global da timeline). O meteograma saiu da página (UX v3 §5).
   useEffect(() => {
     const root = containerRef.current;
     if (!root || !setIndex) return;
@@ -56,17 +56,6 @@ function ForecastTimelineSync({
       if (cell && root.contains(cell)) {
         const i = Number(cell.getAttribute('data-tl-col'));
         if (Number.isFinite(i) && i !== indexRef.current) {
-          selfChange.current = true;
-          setIndex(i);
-        }
-        return;
-      }
-      const mg = target.closest<HTMLElement>('[data-tl-meteogram]');
-      if (mg && root.contains(mg)) {
-        const colW = Number(mg.getAttribute('data-tl-colw')) || 15;
-        const count = Number(mg.getAttribute('data-tl-count')) || 0;
-        const i = Math.floor((e.clientX - mg.getBoundingClientRect().left) / colW);
-        if (i >= 0 && i < count && i !== indexRef.current) {
           selfChange.current = true;
           setIndex(i);
         }
@@ -101,15 +90,6 @@ function ForecastTimelineSync({
         .forEach((n) => n.setAttribute('data-tl-selected', ''));
     }
 
-    const mg = root.querySelector<HTMLElement>('[data-tl-meteogram]');
-    const stripe = root.querySelector<HTMLElement>('[data-tl-stripe]');
-    const mgColW = Number(mg?.getAttribute('data-tl-colw')) || 15;
-    const mgCount = Number(mg?.getAttribute('data-tl-count')) || 0;
-    if (stripe) {
-      stripe.style.transform = `translateX(${index * mgColW}px)`;
-      stripe.style.opacity = index < mgCount ? '1' : '0';
-    }
-
     // Índice mudado noutra secção (régua, setas, autoplay): traz a coluna
     // para a vista — só se a tabela estiver visível no ecrã. Clique na
     // própria tabela (selfChange) não precisa de scroll — já está à vista.
@@ -125,16 +105,6 @@ function ForecastTimelineSync({
           .querySelector<HTMLElement>(`[data-tl-col="${index}"]`)
           ?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior });
       }
-      const mgScroll = mg?.parentElement;
-      if (mg && mgScroll && index < mgCount && inViewport(mgScroll)) {
-        const left = index * mgColW;
-        if (
-          left < mgScroll.scrollLeft ||
-          left + mgColW > mgScroll.scrollLeft + mgScroll.clientWidth
-        ) {
-          mgScroll.scrollTo({ left: Math.max(0, left - mgScroll.clientWidth / 2), behavior });
-        }
-      }
     }
     selfChange.current = false;
   }, [index, containerRef, epoch, reducedMotion]);
@@ -143,12 +113,17 @@ function ForecastTimelineSync({
 }
 
 /**
- * Secção 5 do contrato (docs/design/SPOT-PAGE.md) — dona: S3.
- * Previsão hora a hora (meteograma + tabela + Windguru + expandir). A S3
- * sincroniza-a com a hora escolhida do useSpotTimeline.
+ * Secção 5 do contrato (docs/design/SPOT-PAGE.md) — dona: S3, revista SP-B
+ * (UX v3 §5): «um painel, um eixo» — a régua de 48 h é o único eixo
+ * temporal; esta secção é o detalhe sincronizado. O meteograma saiu da
+ * página (era um terceiro eixo concorrente). Desktop: tabela densa com a
+ * primeira coluna fixa, separadores e chips de dia, contorno da coluna
+ * «agora» e coluna escolhida a --verdict. Mobile (<768 px): lista vertical
+ * por dia, 24 h + «Mostrar mais 24 h», cabeçalhos de dia sticky.
  */
 export interface SpotForecastSectionProps {
   locale: string;
+  /** Mantido na assinatura (o chamador passa-o); a lista usa `locale`. */
   isPt: boolean;
   isMobile: boolean;
   /** Horas completas da previsão (com score por hora). */
@@ -175,7 +150,6 @@ export interface SpotForecastSectionProps {
 
 export default function SpotForecastSection({
   locale,
-  isPt,
   isMobile,
   hours,
   coastOrientation,
@@ -188,15 +162,18 @@ export default function SpotForecastSection({
 }: SpotForecastSectionProps) {
   const [expanded, setExpanded] = useState(false);
   const syncRef = useRef<HTMLDivElement>(null);
+  const tf = getTranslation(locale).spotPageForecast;
+  // Desktop: 48 h colapsado (a janela da régua), 120 expandido. Mobile:
+  // a lista pagina sozinha 24 h de cada vez — o limite é o máximo.
   const forecastHours = useMemo(() => {
-    if (expanded) return isMobile ? 72 : 120;
-    return isMobile ? 36 : 48;
+    if (isMobile) return 120;
+    return expanded ? 120 : 48;
   }, [expanded, isMobile]);
 
   return (
     <section id="previsao" className="space-y-3 scroll-mt-32">
       <div className="flex flex-wrap items-end justify-between gap-2">
-        <h2 className="text-h2 text-fg">{copy.title}</h2>
+        <h2 className="text-h2 text-fg">{tf.hourlyTitle}</h2>
         <a
           href={windguruUrl}
           target="_blank"
@@ -208,16 +185,20 @@ export default function SpotForecastSection({
         </a>
       </div>
       {/* TODO: Windguru WRF 9km iframe — pending ToS review (see src/lib/windguru.ts) */}
-      <p className="text-meta text-fg-muted md:hidden">{copy.forecastHint}</p>
       {hours.length > 0 ? (
         <>
-          <div ref={syncRef} className="card-1 overflow-hidden p-3 md:p-4">
-            <ForecastMeteogram
-              hours={hours.slice(0, forecastHours)}
-              coastOrientation={coastOrientation}
-              isPt={isPt}
-              nowMs={nowMs ?? Date.now()}
-            />
+          {/* Mobile sem moldura de scroll — os cabeçalhos de dia sticky
+              precisam do scroll da página. `overflow-x: clip` (não hidden:
+              hidden computa overflow-y:auto e criava um scroll container,
+              o que desligava o sticky). */}
+          <div
+            ref={syncRef}
+            className={
+              isMobile
+                ? 'forecast-hourly-wrap card-1 overflow-x-clip p-0'
+                : 'card-1 overflow-hidden p-3 md:p-4'
+            }
+          >
             <ForecastTable
               hourly={hours}
               hours={forecastHours}
@@ -231,7 +212,7 @@ export default function SpotForecastSection({
             />
             <ForecastTimelineSync containerRef={syncRef} epoch={forecastHours} />
           </div>
-          {hours.length > (isMobile ? 36 : 48) && (
+          {!isMobile && hours.length > 48 && (
             <Button
               variant="ghost"
               size="sm"

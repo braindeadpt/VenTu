@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import { getScoreTokens, type SportScore } from '@/lib/sportScore';
@@ -87,6 +87,14 @@ export default function SpotInstrumentsSection({
   const rootRef = useRef<HTMLDivElement>(null);
   const paused = useInstrumentPaused(rootRef);
   const [open, setOpen] = useState<InstrumentId | null>(null);
+  // O miolo do acordeão fica montado durante o fecho — a animação
+  // grid-template-rows 1fr→0fr (240 ms, globals.css) precisa do conteúdo.
+  const [detailId, setDetailId] = useState<InstrumentId | null>(null);
+  useEffect(() => {
+    if (open || !detailId) return undefined;
+    const t = window.setTimeout(() => setDetailId(null), 280);
+    return () => window.clearTimeout(t);
+  }, [open, detailId]);
 
   const tier = getScoreTokens(selectedScore ?? score.score).tier;
 
@@ -122,7 +130,13 @@ export default function SpotInstrumentsSection({
     [conditions],
   );
 
-  const onToggle = (id: InstrumentId) => setOpen((cur) => (cur === id ? null : id));
+  const onToggle = (id: InstrumentId) => {
+    // Monta o painel no mesmo commit da abertura (0fr→1fr anima com
+    // conteúdo); no fecho o timeout do efeito desmonta após a transição.
+    const next = open === id ? null : id;
+    if (next) setDetailId(next);
+    setOpen(next);
+  };
 
   const coherence =
     conditions.observedWaveCoherenceWarning || conditions.observedWaveCoherenceRefused
@@ -150,8 +164,7 @@ export default function SpotInstrumentsSection({
         <div className="grid grid-cols-1 gap-4 min-[760px]:grid-cols-3">
           <WindCard
             hour={hour}
-            coastOrientation={spot.coastOrientation}
-            bestWind={spot.bestWind}
+            spot={spot}
             locale={locale}
             open={open === 'wind'}
             onToggle={onToggle}
@@ -174,21 +187,25 @@ export default function SpotInstrumentsSection({
             onToggle={onToggle}
           />
         </div>
-        {open && (
-          <InstrumentDetail
-            open={open}
-            spot={spot}
-            locale={locale}
-            conditions={conditions}
-            hour={hour}
-            tideSchedule={tideSchedule}
-            tideHourly={tideHourly}
-            freshnessNowMs={freshnessNowMs}
-            scoreWindSource={scoreWindSource}
-            scoreWindCorrection={scoreWindCorrection}
-            copy={copy}
-          />
-        )}
+        <div className="ventu-inst-acc" data-open={open ? '' : undefined}>
+          <div className="ventu-inst-acc-inner">
+            {detailId && (
+              <InstrumentDetail
+                open={detailId}
+                spot={spot}
+                locale={locale}
+                conditions={conditions}
+                hour={hour}
+                tideSchedule={tideSchedule}
+                tideHourly={tideHourly}
+                freshnessNowMs={freshnessNowMs}
+                scoreWindSource={scoreWindSource}
+                scoreWindCorrection={scoreWindCorrection}
+                copy={copy}
+              />
+            )}
+          </div>
+        </div>
       </div>
     </section>
   );
