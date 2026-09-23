@@ -96,31 +96,26 @@ export default function SpotNearbySpots({ spot, locale, selectedSport }: SpotNea
           const score = file && practised
             ? nearbySpotScore(file, entry, sport, step)
             : null;
+          const tokens = score !== null ? getScoreTokens(score) : null;
           return (
             <li key={s.id}>
               <a
-                href={`/${locale}/spots/${s.slug}/`}
-                className="flex items-center gap-2 py-2 min-h-[44px] -my-0.5 group"
+                href={`/${locale}/spots/${s.slug}/?sport=${sport}`}
+                className="flex items-center gap-2.5 py-2 min-h-[44px] -my-0.5 group"
                 data-nearby-spot={s.id}
               >
-                <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium text-fg group-hover:text-data-waves transition-colors truncate">
-                    {isPt ? s.name : s.nameEn}
-                  </span>
-                  <span className="block text-meta-sm text-fg-subtle truncate">
-                    {isPt ? s.region : s.regionEn} · {formatDistance(entry.distanceKm, locale)}
-                  </span>
-                </span>
-                {score !== null ? (
+                {/* Mosaico de score na cor do escalão (§6 v3). */}
+                {score !== null && tokens ? (
                   <span
-                    className={`font-mono tabular-nums text-sm font-bold shrink-0 ${getScoreTokens(score).text}`}
+                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-card border font-mono tabular-nums text-sm font-bold ${tokens.bg} ${tokens.border} ${tokens.text}`}
                     data-nearby-score={s.id}
+                    data-score-tier={tokens.tier}
                   >
                     {score}
                   </span>
                 ) : (
                   <span
-                    className="text-sm text-fg-subtle shrink-0"
+                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-card border border-divider text-sm text-fg-subtle"
                     aria-label={
                       loaded && !practised ? tc.notPracticedHere : undefined
                     }
@@ -129,6 +124,18 @@ export default function SpotNearbySpots({ spot, locale, selectedSport }: SpotNea
                     —
                   </span>
                 )}
+                {/* Nome nunca trunca (spec v3 §8) — quebra em 2 linhas. */}
+                <span className="min-w-0 flex-1">
+                  <span
+                    className="block text-sm font-medium text-fg group-hover:text-data-waves transition-colors"
+                    data-nearby-name={s.id}
+                  >
+                    {isPt ? s.name : s.nameEn}
+                  </span>
+                  <span className="block text-meta-sm text-fg-subtle">
+                    {isPt ? s.region : s.regionEn} · {formatDistance(entry.distanceKm, locale)}
+                  </span>
+                </span>
               </a>
             </li>
           );

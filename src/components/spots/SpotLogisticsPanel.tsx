@@ -17,6 +17,11 @@ interface SpotLogisticsPanelProps {
   difficultyLabel: string;
   /** Dentro de um card/rail: sem card próprio e sempre a uma coluna. */
   embedded?: boolean;
+  /** Que metade renderizar — 'both' (default, comportamento actual),
+   *  'map' só a coluna mapa+acções, 'about' só a coluna de texto.
+   *  Usado pela grelha §6 (SP-C) para distribuir as metades por colunas
+   *  internas sem duplicar o SpotMap. */
+  columns?: 'both' | 'map' | 'about';
 }
 
 /**
@@ -33,6 +38,7 @@ export default function SpotLogisticsPanel({
   regionLabel,
   difficultyLabel,
   embedded,
+  columns = 'both',
 }: SpotLogisticsPanelProps) {
   const isPt = locale === 'pt';
   const description = isPt ? spot.description : spot.descriptionEn;
@@ -44,6 +50,7 @@ export default function SpotLogisticsPanel({
   return (
     <div className={embedded ? undefined : 'card-1 rounded-card border border-divider overflow-hidden'}>
       <div className={embedded ? 'grid grid-cols-1 gap-4' : 'grid grid-cols-1 lg:grid-cols-2 lg:min-h-[280px]'}>
+        {columns !== 'about' && (
         <div className={embedded ? 'flex flex-col gap-4' : 'flex flex-col gap-4 p-4 md:p-5 border-b border-divider lg:border-b-0 lg:border-r border-divider bg-surface-1/[0.02]'}>
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
@@ -83,7 +90,9 @@ export default function SpotLogisticsPanel({
             </a>
           </div>
         </div>
+        )}
 
+        {columns !== 'map' && (
         <div className={embedded ? 'flex flex-col gap-4 border-t border-divider pt-4' : 'flex flex-col gap-4 p-4 md:p-5'}>
           <div>
             <h3 className="text-h3 text-fg">{aboutTitle}</h3>
@@ -98,6 +107,7 @@ export default function SpotLogisticsPanel({
           </div>
           <p className="text-body text-fg-muted leading-relaxed flex-1">{description}</p>
         </div>
+        )}
       </div>
     </div>
   );
