@@ -31,6 +31,16 @@ export function getRegionLifestylePath(slug: RegionImageSlug): string {
   return `/images/regions/${slug}.jpg`;
 }
 
+/**
+ * Imagem Open Graph (1200×630) da região — gerada no build por
+ * `scripts/generate-region-og-images.mjs` (ver `npm run og:generate`).
+ * Usada pelas landings `/explorar/{desporto}-{região}/` para a partilha ter
+ * imagem própria (antes não tinham nenhuma).
+ */
+export function getRegionOgPath(slug: RegionImageSlug): string {
+  return `/images/og/regions/${slug}.jpg`;
+}
+
 /** Default coastal band for home hero (continental presence). */
 export const HOME_HERO_REGION_SLUG: RegionImageSlug = 'centro';
 
