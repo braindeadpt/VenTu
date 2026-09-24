@@ -1,7 +1,7 @@
 'use client';
 
 import { getTranslation } from '@/lib/i18n';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronDown, Minimize2, SlidersHorizontal } from 'lucide-react';
 import MapSpotList, { type MapListJump, type MapSpotListRow } from './MapSpotList';
 import MapExploreFilters, {
@@ -55,8 +55,8 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
   layers: MapLayersMenuItem[];
   /** Primários do «Ver também»: agrupar, vento, legenda do vento —
    *  sempre com rótulo (o audit C4 proíbe strips só-ícone). O basemap
-   *  (mapa/satélite) é o radiogroup `MapBasemapRadio` mesmo acima e a
-   *  saída do fullscreen vive no grabber (sempre visível). */
+   *  (mapa/satélite) vive no grupo «Base» da secção Camadas desde a M5
+   *  (CORRECCOES-24SET); a saída do fullscreen fica no grabber. */
   extras: SheetToggleItem[];
   /** Saída do fullscreen — sempre visível à esquerda do grabber (era do
    *  HUD antigo; o C4 exige uma saída que não dependa de abrir o sheet). */
@@ -492,19 +492,43 @@ export default function MapExploreSheet({
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
             {t.spotsMap.layers}
           </span>
+          {/* CORRECCOES-24SET (M5): o basemap saiu do «Ver também» para o
+              grupo «Base» da secção Camadas; os toggles agrupam-se por
+              Tempo/Mar/Navegação (item.group — maquete §8). */}
+          <span className="text-[10px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+            {t.mapUiLayers.groupBase}
+          </span>
+          <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
           <div
             className="grid grid-cols-2 gap-1.5"
             role="group"
             aria-label={t.spotsMap.layers}
           >
-            {layers.map((item) => <LayerToggle key={item.key} item={item} />)}
+            {(['time', 'sea', 'nav'] as const).map((g) => {
+              const groupItems = layers.filter((i) => i.group === g);
+              if (groupItems.length === 0) return null;
+              const groupLabel =
+                g === 'time'
+                  ? t.mapUiLayers.groupTime
+                  : g === 'sea'
+                    ? t.mapUiLayers.groupSea
+                    : t.mapUiLayers.groupNav;
+              return (
+                <Fragment key={g}>
+                  <span className="col-span-2 mt-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+                    {groupLabel}
+                  </span>
+                  {groupItems.map((item) => <LayerToggle key={item.key} item={item} />)}
+                </Fragment>
+              );
+            })}
+            {layers.filter((i) => !i.group).map((item) => <LayerToggle key={item.key} item={item} />)}
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-[10.5px] font-bold uppercase tracking-wide text-fg-subtle">
             {t.spotsMap.seeAlso}
           </span>
-          <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
           <div
             className="grid grid-cols-2 gap-1.5"
             role="group"

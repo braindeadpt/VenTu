@@ -23,6 +23,11 @@ import {
 } from '@/lib/map-constants';
 import { openMeteoAttributionHtml } from '@/lib/openMeteoAttribution';
 import type { IpmaRadarData } from '@/lib/ipmaRadar';
+import { useToast } from '@/components/ui/ToastProvider';
+import {
+  MAP_RASTER_OFF_EVENT,
+  type MapHeavyRasterKey,
+} from '@/lib/mapLayerBus';
 import type { MapLayersMenuItem } from '../components/MapLayersMenu';
 import { useMapLayers } from '../hooks/useMapLayers';
 import { useMapHours } from '../hooks/useMapHours';
@@ -327,22 +332,16 @@ export function useMapLayersFields({
 
   // Camadas de dados do sheet (mesmas do menu «Camadas» do desktop — com
   // rótulo, nunca ícones soltos) e primários do «Ver também».
+  // §8 (maquete): o label é o NOME da camada (substantivo — o estado mostra
+  // o switch/aria-pressed), a ordem segue os grupos Tempo→Mar→Navegação e
+  // cada item declara o `group` para as superfícies agrupadas.
+  const lyr = t.mapUiLayers;
   const sheetLayers: MapLayersMenuItem[] = useMemo(() => [
     {
-      key: 'radar',
-      label: layerCopy.radarLabel,
-      hint: radarUnavailable ? `${layerCopy.radarHint} — indisponível` : layerCopy.radarHint,
-      icon: <CloudRain className="w-4 h-4" aria-hidden />,
-      pressed: radarEnabled,
-      disabled: radarUnavailable,
-      onToggle: toggleRadar,
-      toggleAttr: 'data-map-radar-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
       key: 'hours',
-      label: layerCopy.hoursLabel,
-      hint: hoursUnavailable ? `${layerCopy.hoursHint} — indisponível` : layerCopy.hoursHint,
+      group: 'time',
+      label: lyr.layerHours,
+      hint: hoursUnavailable ? `${layerCopy.hoursHint} — ${lyr.unavailable}` : layerCopy.hoursHint,
       icon: <Clock className="w-4 h-4" aria-hidden />,
       pressed: hoursOn,
       disabled: hoursUnavailable,
@@ -351,9 +350,33 @@ export function useMapLayersFields({
       iconClass: 'text-score-good',
     },
     {
+      key: 'radar',
+      group: 'time',
+      label: lyr.layerRadar,
+      hint: radarUnavailable ? `${layerCopy.radarHint} — ${lyr.unavailable}` : layerCopy.radarHint,
+      icon: <CloudRain className="w-4 h-4" aria-hidden />,
+      pressed: radarEnabled,
+      disabled: radarUnavailable,
+      onToggle: toggleRadar,
+      toggleAttr: 'data-map-radar-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
+      key: 'isobaths',
+      group: 'sea',
+      label: lyr.layerIsobaths,
+      hint: layerCopy.isobathsHint,
+      icon: <Waves className="w-4 h-4" aria-hidden />,
+      pressed: isobathsEnabled,
+      onToggle: toggleIsobaths,
+      toggleAttr: 'data-map-isobaths-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
       key: 'hs',
-      label: layerCopy.hsLabel,
-      hint: hsUnavailable ? `${layerCopy.hsHint} — indisponível` : layerCopy.hsHint,
+      group: 'sea',
+      label: lyr.layerHs,
+      hint: hsUnavailable ? `${layerCopy.hsHint} — ${lyr.unavailable}` : layerCopy.hsHint,
       icon: <Activity className="w-4 h-4" aria-hidden />,
       pressed: hsEnabled,
       disabled: hsUnavailable,
@@ -363,8 +386,9 @@ export function useMapLayersFields({
     },
     {
       key: 'sst',
-      label: layerCopy.sstLabel,
-      hint: sstUnavailable ? `${layerCopy.sstHint} — indisponível` : layerCopy.sstHint,
+      group: 'sea',
+      label: lyr.layerSst,
+      hint: sstUnavailable ? `${layerCopy.sstHint} — ${lyr.unavailable}` : layerCopy.sstHint,
       icon: <Thermometer className="w-4 h-4" aria-hidden />,
       pressed: sstEnabled,
       disabled: sstUnavailable,
@@ -374,8 +398,9 @@ export function useMapLayersFields({
     },
     {
       key: 'currents',
-      label: layerCopy.currentsLabel,
-      hint: currentsUnavailable ? `${layerCopy.currentsHint} — indisponível` : layerCopy.currentsHint,
+      group: 'sea',
+      label: lyr.layerCurrents,
+      hint: currentsUnavailable ? `${layerCopy.currentsHint} — ${lyr.unavailable}` : layerCopy.currentsHint,
       icon: <Navigation className="w-4 h-4" aria-hidden />,
       pressed: currentsEnabled,
       disabled: currentsUnavailable,
@@ -384,28 +409,9 @@ export function useMapLayersFields({
       iconClass: 'text-data-water',
     },
     {
-      key: 'buoys',
-      label: layerCopy.buoysLabel,
-      hint: layerCopy.buoysHint,
-      icon: <LifeBuoy className="w-4 h-4" aria-hidden />,
-      pressed: buoysEnabled,
-      onToggle: toggleBuoys,
-      toggleAttr: 'data-map-buoys-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
-      key: 'isobaths',
-      label: layerCopy.isobathsLabel,
-      hint: layerCopy.isobathsHint,
-      icon: <Waves className="w-4 h-4" aria-hidden />,
-      pressed: isobathsEnabled,
-      onToggle: toggleIsobaths,
-      toggleAttr: 'data-map-isobaths-toggle',
-      iconClass: 'text-data-waves',
-    },
-    {
       key: 'bathymetry',
-      label: layerCopy.bathymetryLabel,
+      group: 'sea',
+      label: lyr.layerBathymetry,
       hint: layerCopy.bathymetryHint,
       icon: <Mountain className="w-4 h-4" aria-hidden />,
       pressed: bathymetryEnabled,
@@ -414,8 +420,20 @@ export function useMapLayersFields({
       iconClass: 'text-data-water',
     },
     {
+      key: 'buoys',
+      group: 'nav',
+      label: lyr.layerBuoys,
+      hint: layerCopy.buoysHint,
+      icon: <LifeBuoy className="w-4 h-4" aria-hidden />,
+      pressed: buoysEnabled,
+      onToggle: toggleBuoys,
+      toggleAttr: 'data-map-buoys-toggle',
+      iconClass: 'text-data-waves',
+    },
+    {
       key: 'seamarks',
-      label: layerCopy.seamarksLabel,
+      group: 'nav',
+      label: lyr.layerSeamarks,
       hint: layerCopy.seamarksHint,
       icon: <Sailboat className="w-4 h-4" aria-hidden />,
       pressed: seamarksEnabled,
@@ -425,7 +443,8 @@ export function useMapLayersFields({
     },
     {
       key: 'coastalWarnings',
-      label: layerCopy.coastalWarningsLabel,
+      group: 'nav',
+      label: lyr.layerWarnings,
       hint: layerCopy.coastalWarningsHint,
       icon: <Anchor className="w-4 h-4" aria-hidden />,
       pressed: coastalWarningsEnabled,
@@ -434,7 +453,7 @@ export function useMapLayersFields({
       iconClass: 'text-score-poor',
     },
   ], [
-    layerCopy,
+    layerCopy, lyr,
     radarUnavailable, radarEnabled, toggleRadar,
     hoursUnavailable, hoursOn, toggleHours,
     hsUnavailable, hsEnabled, toggleHs,
@@ -559,6 +578,25 @@ export function MapLayersZone({
   handleRadarUserPausedChange,
   handleRadarImmersionOpen,
 }: MapLayersZoneProps) {
+  // §8 — toast do limite de raster pesadas: o cap em useMapLayers emite
+  // `ventu:map-raster-off` e aqui mostra-se «X desligado para manter o mapa
+  // fluido» localizado (o toast é a única superfície React do evento).
+  const { showToast } = useToast();
+  useEffect(() => {
+    const onRasterOff = (e: Event) => {
+      const key = (e as CustomEvent<{ key: MapHeavyRasterKey }>).detail?.key;
+      if (!key) return;
+      const names: Record<MapHeavyRasterKey, string> = {
+        radar: t.mapUiLayers.layerRadar,
+        bathymetry: t.mapUiLayers.layerBathymetry,
+        seamarks: t.mapUiLayers.layerSeamarks,
+      };
+      showToast(t.mapUiLayers.rasterCapToast.replace('{layer}', names[key]));
+    };
+    window.addEventListener(MAP_RASTER_OFF_EVENT, onRasterOff);
+    return () => window.removeEventListener(MAP_RASTER_OFF_EVENT, onRasterOff);
+  }, [showToast, t]);
+
   return (
     <>
       {tileState === 'loading' && (

@@ -5,7 +5,6 @@ import { getTranslation } from '@/lib/i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MapSpotList, { type MapListJump, type MapSpotListRow } from './MapSpotList';
 import MapExploreFilters from './MapExploreFilters';
-import MapBasemapRadio from './MapBasemapRadio';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { BasemapMode } from '../../MapLayerToggle';
 
@@ -17,8 +16,9 @@ import type { BasemapMode } from '../../MapLayerToggle';
  * «Agrupar spots», chips activos + «Limpar»), linha neutra de boias,
  * trilho temporal e lista «Nesta vista».
  *
- * Desvio registado: o «Mapa/Satélite» fica aqui até a M5 o mover para o
- * menu «Camadas» — em fullscreen não há outro controlo de basemap.
+ * O «Mapa/Satélite» vive na secção «Base» do menu «Camadas» (M5 merged na
+ * M6) — o painel já não o renderiza; as props ficam na interface para não
+ * partir os callers.
  */
 interface MapSpotPanelProps extends MapFullscreenHudProps {
   rows: MapSpotListRow[];
@@ -42,7 +42,9 @@ interface MapSpotPanelProps extends MapFullscreenHudProps {
   warningChip?: React.ReactNode;
   /** Trilho das 48h / radar — vive no painel em desktop (era do HUD). */
   timeTrack?: React.ReactNode;
-  /** Radiogroup «Mapa base» — fica aqui até a M5 o mover para «Camadas». */
+  /** Radiogroup «Mapa base» — CORRECCOES-24SET (M5): saiu do painel para a
+   *  secção «Base» do menu Camadas. As props ficam na interface para não
+   *  partir os callers (a M6 pode limpá-las). */
   basemapMode: BasemapMode;
   onBasemapChange: (mode: BasemapMode) => void;
   attributionHtml: string;
@@ -65,8 +67,6 @@ export default function MapSpotPanel({
   onJump,
   warningChip,
   timeTrack,
-  basemapMode,
-  onBasemapChange,
   attributionHtml,
   sports,
   regions,
@@ -167,7 +167,7 @@ export default function MapSpotPanel({
         />
         {warningChip}
         {timeTrack}
-        <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
+        {/* Basemap saiu para o menu Camadas (CORRECCOES-24SET, «Para a M5»). */}
       </div>
 
       <div className="mt-1 flex min-h-0 flex-1 flex-col px-3">

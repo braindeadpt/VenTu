@@ -8,7 +8,7 @@
  * comportamento.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { startTransition, useCallback, useEffect, useMemo, useState } from 'react';
 import type L from 'leaflet';
 import {
   HelpCircle, Layers, MapPin, Wind,
@@ -195,7 +195,12 @@ export function useMapExploreZone({
       setViewRows([]);
       return;
     }
-    const compute = () => setViewRows(buildRows());
+    // CORRECCOES-24SET (M5): o re-render da lista no moveend media ~180 ms
+    // num só task a 4× CPU e furava o gate «pan ≤ 50 ms» mesmo com o campo
+    // de vento suspenso (a M4 já o apontava como residual). A actualização
+    // da lista não é urgente — startTransition deixa o React fatiar o render
+    // sem bloquear o gesto; o conteúdo e a ordem mantêm-se.
+    const compute = () => startTransition(() => setViewRows(buildRows()));
     compute();
     map.on('moveend', compute);
     map.on('zoomend', compute);

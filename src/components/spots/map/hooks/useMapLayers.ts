@@ -2,7 +2,7 @@
 
 import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation } from '@/lib/i18n';
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { startTransition, useEffect, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
 import {
   fetchRadarData,
@@ -49,6 +49,13 @@ import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
   IPMA_RADAR_ATTRIBUTION_LABEL_EN,
 } from '@/lib/ipmaAttribution';
+import {
+  MAP_HEAVY_RASTER_KEYS,
+  MAP_HEAVY_RASTER_MAX,
+  MAP_RASTER_OFF_EVENT,
+  planHeavyRasterEnable,
+  type MapHeavyRasterKey,
+} from '@/lib/mapLayerBus';
 
 interface UseMapLayersOptions {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -162,6 +169,49 @@ export function useMapLayers({
   // Sync refs
   useEffect(() => { radarUserPausedRef.current = radarUserPaused; }, [radarUserPaused]);
 
+  // ── Limite de raster pesadas (map-v3 §8) ──
+  // Máximo 2 de {radar, bathymetry, seamarks} activas — a 3.ª desliga a mais
+  // antiga e emite `ventu:map-raster-off` para a UI mostrar o toast. Os
+  // setters são registados pelas secções de cada camada (heavySetRef) porque
+  // esta máquina é declarada antes delas no corpo do hook.
+  const heavySetRef = useRef<Partial<Record<MapHeavyRasterKey, (next: boolean) => void>>>({});
+  const heavyOrderRef = useRef<MapHeavyRasterKey[]>([]);
+  const heavyOnRef = useRef<Record<MapHeavyRasterKey, boolean>>({
+    radar: false,
+    bathymetry: false,
+    seamarks: false,
+  });
+
+  const evictHeavy = useCallback((key: MapHeavyRasterKey) => {
+    heavyOnRef.current[key] = false;
+    heavyOrderRef.current = heavyOrderRef.current.filter((k) => k !== key);
+    heavySetRef.current[key]?.(false);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(
+        new CustomEvent<{ key: MapHeavyRasterKey }>(MAP_RASTER_OFF_EVENT, { detail: { key } }),
+      );
+    }
+  }, []);
+
+  // Toggle único: `apply` faz o set+persist da camada; a máquina cuida da
+  // ordem e da evicção. Desligar nunca evita nada.
+  const toggleHeavy = useCallback(
+    (key: MapHeavyRasterKey, apply: (next: boolean) => void) => {
+      if (heavyOnRef.current[key]) {
+        heavyOnRef.current[key] = false;
+        heavyOrderRef.current = heavyOrderRef.current.filter((k) => k !== key);
+        apply(false);
+        return;
+      }
+      const plan = planHeavyRasterEnable(heavyOrderRef.current, key);
+      heavyOrderRef.current = plan.order;
+      heavyOnRef.current[key] = true;
+      apply(true);
+      if (plan.evict) evictHeavy(plan.evict);
+    },
+    [evictHeavy],
+  );
+
   // A navegação client-side (Link do carrossel → /mapa?radar=1) pode entregar
   // a prop DEPOIS do primeiro render (o MapaFullscreenClient lê o URL num
   // useEffect). Sincronizar: liga quando a prop inicial pede; nunca desliga
@@ -228,12 +278,17 @@ export function useMapLayers({
         next.delete(src);
         return next;
       });
-    const onMoveStart = () => busy('move');
-    const onDragStart = () => busy('drag');
-    const onZoomStart = () => busy('zoom');
-    const onMoveEnd = () => idle('move');
-    const onDragEnd = () => idle('drag');
-    const onZoomEnd = () => idle('zoom');
+    // CORRECCOES-24SET (M5 — gate «pan ≤ 50 ms»): cada movestart/moveend
+    // fazia um setState → re-render síncrono do SpotMapInteractive a meio
+    // do gesto (~50-130 ms por stroke a 4× CPU). O estado «busy» só alimenta
+    // a pausa dos relógios radar/horas — não-urgente → startTransition
+    // deixa o React fatiar o render sem bloquear o gesto.
+    const onMoveStart = () => startTransition(() => busy('move'));
+    const onDragStart = () => startTransition(() => busy('drag'));
+    const onZoomStart = () => startTransition(() => busy('zoom'));
+    const onMoveEnd = () => startTransition(() => idle('move'));
+    const onDragEnd = () => startTransition(() => idle('drag'));
+    const onZoomEnd = () => startTransition(() => idle('zoom'));
     map.on('movestart', onMoveStart);
     map.on('dragstart', onDragStart);
     map.on('zoomstart', onZoomStart);
@@ -276,12 +331,23 @@ export function useMapLayers({
 
   const toggleRadar = useCallback(() => {
     setRadarPrefSet(true);
-    setRadarEnabled((prev) => {
-      const next = !prev;
+    toggleHeavy('radar', (next) => {
+      setRadarEnabled(next);
       writeRadarEnabledPref(next);
       if (!next) writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
-      return next;
     });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.radar = (next: boolean) => {
+      setRadarPrefSet(true);
+      setRadarEnabled(next);
+      writeRadarEnabledPref(next);
+      if (!next) writeRadarPref(radarUserPausedRef.current, radarFrameIndexRef.current);
+    };
+    return () => { delete setters.radar; };
   }, []);
 
   const handleRadarFrameChange = useCallback((value: number) => {
@@ -493,11 +559,20 @@ export function useMapLayers({
   }, [bathymetryEnabled, isReady, mapInstanceRef, LRef]);
 
   const toggleBathymetry = useCallback(() => {
-    setBathymetryEnabled((prev) => {
-      const next = !prev;
+    toggleHeavy('bathymetry', (next) => {
+      setBathymetryEnabled(next);
       try { localStorage.setItem(MAP_BATHYMETRY_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-      return next;
     });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.bathymetry = (next: boolean) => {
+      setBathymetryEnabled(next);
+      try { localStorage.setItem(MAP_BATHYMETRY_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    };
+    return () => { delete setters.bathymetry; };
   }, []);
 
   // ── Seamarks (OpenSeaMap tiles) ──
@@ -539,12 +614,47 @@ export function useMapLayers({
   }, [seamarksEnabled, isReady, mapInstanceRef, LRef]);
 
   const toggleSeamarks = useCallback(() => {
-    setSeamarksEnabled((prev) => {
-      const next = !prev;
+    toggleHeavy('seamarks', (next) => {
+      setSeamarksEnabled(next);
       try { localStorage.setItem(MAP_SEAMARKS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
-      return next;
     });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.seamarks = (next: boolean) => {
+      setSeamarksEnabled(next);
+      try { localStorage.setItem(MAP_SEAMARKS_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    };
+    return () => { delete setters.seamarks; };
   }, []);
+
+  // Reconciliação do cap: mudanças por vias externas (deep link ?radar=1,
+  // reset do radar, prefs) mantêm a ordem/estado internos correctos.
+  useEffect(() => {
+    const on: Record<MapHeavyRasterKey, boolean> = {
+      radar: radarEnabled,
+      bathymetry: bathymetryEnabled,
+      seamarks: seamarksEnabled,
+    };
+    for (const k of MAP_HEAVY_RASTER_KEYS) {
+      const was = heavyOnRef.current[k];
+      if (on[k] === was) continue;
+      heavyOnRef.current[k] = on[k];
+      heavyOrderRef.current = on[k]
+        ? [...heavyOrderRef.current, k]
+        : heavyOrderRef.current.filter((x) => x !== k);
+    }
+    // Vias externas também respeitam o limite — desligam a mais antiga em
+    // silêncio (sem toast: não é uma acção directa do utilizador).
+    while (heavyOrderRef.current.length > MAP_HEAVY_RASTER_MAX) {
+      const oldest = heavyOrderRef.current[0];
+      heavyOnRef.current[oldest] = false;
+      heavyOrderRef.current = heavyOrderRef.current.slice(1);
+      heavySetRef.current[oldest]?.(false);
+    }
+  }, [radarEnabled, bathymetryEnabled, seamarksEnabled]);
 
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
