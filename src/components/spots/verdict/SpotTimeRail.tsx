@@ -212,8 +212,10 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   const [tip, setTip] = useState<{ x: number; gi: number } | null>(null);
 
   // ── Eixo: anti-colisão em píxeis ─────────────────────────────────────
-  // measureText com o font real do eixo (canvas). Antes de montar usa-se
-  // uma estimativa mono (6,6 px/caractere a 11 px) — determinístico no SSR.
+  // Medição no DOM com um probe escondido que replica as classes do eixo
+  // (o canvas não aplica `tabular-nums` e subestima dígitos). Antes de
+  // montar usa-se uma estimativa mono conservadora — sobrestimar remove
+  // etiquetas em vez de as sobrepor; determinístico no SSR.
   const axisCandidates = useMemo(
     () => railAxisCandidates(winHours, locale),
     [winHours, locale],
@@ -221,45 +223,64 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   const [trackW, setTrackW] = useState(0);
   const [measure, setMeasure] = useState<((s: string) => number) | null>(null);
   // A linha do topo («melhor: …» / «Agora») é sans — medida própria, senão
-  // o canvas mono sobrestima e o «Agora» cede sem necessidade.
+  // a medida mono sobrestima e o «Agora» cede sem necessidade.
   const topRowRef = useRef<HTMLDivElement>(null);
   const [measureTop, setMeasureTop] = useState<((s: string) => number) | null>(null);
   useEffect(() => {
     const track = trackRef.current;
     if (!track || typeof ResizeObserver === 'undefined') return;
-    const canvas = document.createElement('canvas').getContext('2d');
+    // Medição em DOM real — o canvas `measureText` não aplica
+    // `font-variant-numeric: tabular-nums` e subestima os dígitos (~6%),
+    // o que deixou «qui 24»/«12h» colidirem a 390 px (spec §3). Um span
+    // escondido com as mesmas classes mede exactamente o que se renderiza.
+    // Fica no <body> para não aparecer como filho extra do eixo/top row.
+    const probes: HTMLElement[] = [];
+    const makeProbe = (classes: string) => {
+      const el = document.createElement('span');
+      el.className = classes;
+      el.style.cssText =
+        'position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;white-space:nowrap;';
+      el.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(el);
+      probes.push(el);
+      return (s: string) => {
+        el.textContent = s;
+        const w = el.getBoundingClientRect().width;
+        el.textContent = '';
+        return w;
+      };
+    };
+    let measureAxis: ((s: string) => number) | null = null;
+    let measureTopRow: ((s: string) => number) | null = null;
     const update = () => {
       setTrackW(track.getBoundingClientRect().width);
-      if (canvas && axisRef.current) {
-        const cs = getComputedStyle(axisRef.current);
-        canvas.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-        const ctx = canvas;
-        setMeasure(() => (s: string) => ctx.measureText(s).width);
-      }
-      if (canvas && topRowRef.current) {
-        const cs = getComputedStyle(topRowRef.current);
-        canvas.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
-        const ctx = canvas;
-        setMeasureTop(() => (s: string) => ctx.measureText(s).width);
-      }
+      if (!measureAxis) measureAxis = makeProbe('text-meta-sm font-mono tabular-nums');
+      if (!measureTopRow) measureTopRow = makeProbe('text-meta-sm font-medium');
+      setMeasure(() => measureAxis);
+      setMeasureTop(() => measureTopRow);
     };
     update();
-    // O Geist Mono carrega async — medir de novo quando os fonts chegarem.
+    // O Geist Mono carrega async — `fonts.ready` cobre a carga inicial e
+    // `loadingdone` apanha swaps tardios que ocorram depois de `ready`.
     let cancelled = false;
-    document.fonts?.ready.then(() => {
+    const remeasure = () => {
       if (!cancelled) update();
-    });
+    };
+    document.fonts?.ready.then(remeasure);
+    document.fonts?.addEventListener?.('loadingdone', remeasure);
     const ro = new ResizeObserver(update);
     ro.observe(track);
     return () => {
       cancelled = true;
       ro.disconnect();
+      document.fonts?.removeEventListener?.('loadingdone', remeasure);
+      probes.forEach((el) => el.remove());
     };
   }, [locale]);
 
   const axisLabels = useMemo(() => {
     const w = trackW || 720; // estimativa pré-mount — o observer corrige
-    const m = measure ?? ((s: string) => s.length * 6.6);
+    const m = measure ?? ((s: string) => s.length * 7.4);
     return pickRailAxisLabelsPx(
       axisCandidates,
       n,
@@ -275,7 +296,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   // quando as caixas colidem — o traço de 1 px na régua já marca o «agora».
   const topRow = useMemo(() => {
     const w = trackW || 720;
-    const m = measureTop ?? ((s: string) => s.length * 6.2);
+    const m = measureTop ?? ((s: string) => s.length * 6.6);
     let win: { text: string; left: number; right: number } | null = null;
     if (bestWindow) {
       const lbl = formatWindowLabel(
@@ -584,7 +605,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
         </svg>
         <span
           aria-hidden
-          className="absolute left-1 font-mono text-[10px] tabular-nums text-fg-subtle pointer-events-none"
+          className="absolute left-1 font-mono text-[11px] tabular-nums text-fg-subtle pointer-events-none"
           style={{ top: `${(1 - GOOD_THRESHOLD / 100) * 100}%`, transform: 'translateY(-50%)' }}
         >
           {GOOD_THRESHOLD}

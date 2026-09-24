@@ -134,7 +134,8 @@ export default function SpotHowWeKnow({
           <h3 className="text-meta-sm font-semibold text-fg-subtle uppercase tracking-wide">
             {tc.sourcesTitle}
           </h3>
-          <ProvenanceRow align="start">
+          {/* UX v3 §8 — os badges abrem popovers: alvos tácteis ≥44 px. */}
+          <ProvenanceRow align="start" className="[&_button]:min-h-11">
             <ScoreWaveSourceBadge
               source={scoreWaveSource}
               correction={scoreWaveCorrection}

@@ -72,7 +72,7 @@ export default function InstrumentCard({
       </button>
       {coherence && (
         <a
-          className="mx-6 mb-3.5 inline-flex min-h-11 w-fit items-center gap-1.5 text-[12px] text-[color:var(--vi-m)] no-underline transition-colors duration-200 hover:text-[color:var(--vi-ink)] hover:underline motion-reduce:transition-none"
+          className="mx-6 mb-3.5 inline-flex min-h-11 w-fit items-center gap-1.5 text-[13px] text-[color:var(--vi-m)] no-underline transition-colors duration-200 hover:text-[color:var(--vi-ink)] hover:underline motion-reduce:transition-none"
           href="#como-sabemos"
         >
           <AlertTriangle size={14} aria-hidden="true" />

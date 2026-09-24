@@ -231,7 +231,7 @@ export default function SpotVerdictHero({
                 <span className="font-mono tabular-nums">{coords}</span>
               </span>
             </p>
-            <h1 className="font-display text-[clamp(40px,5vw,64px)] leading-[1.05] tracking-tight text-fg">
+            <h1 className="font-display text-[48px] lg:text-[64px] leading-[1.05] tracking-tight text-fg">
               {title}
             </h1>
             <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-meta-sm text-fg-muted">
@@ -263,7 +263,7 @@ export default function SpotVerdictHero({
                 aria-valuenow={target}
                 aria-valuetext={`${target} / 100 — ${bandLabel}`}
                 aria-label={tv.sectionTitle}
-                className="font-mono font-medium tabular-nums leading-[0.84] tracking-[-0.05em] text-[clamp(64px,10vw,104px)]"
+                className="font-mono font-medium tabular-nums leading-[0.84] tracking-[-0.05em] text-[64px] lg:text-[104px]"
                 style={{ color: 'var(--verdict)' }}
                 data-visual-dynamic
               >

@@ -19,7 +19,10 @@ import type {
   ScoreWaveCorrection,
   ScoreWaveSource,
 } from '@/lib/scoreConditions';
-import { SpotTimelineIndexContext } from '@/components/spots/timeline/SpotTimelineProvider';
+import {
+  SpotTimelineDataContext,
+  SpotTimelineIndexContext,
+} from '@/components/spots/timeline/SpotTimelineProvider';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { timelineIndexToColumn } from '@/lib/forecastTimeline';
 
@@ -163,6 +166,10 @@ export default function SpotForecastSection({
   const [expanded, setExpanded] = useState(false);
   const syncRef = useRef<HTMLDivElement>(null);
   const tf = getTranslation(locale).spotPageForecast;
+  // A hora corrente canónica do eixo partilhado (relógio vivo — não o
+  // baked do componente): a fatia abre na MESMA hora da janela da régua
+  // (CORRECCOES-24SET §3). Data-context: estável no scrub — não re-render.
+  const axisNowIndex = useContext(SpotTimelineDataContext)?.nowIndex ?? -1;
   // Desktop: 48 h colapsado (a janela da régua), 120 expandido. Mobile:
   // a lista pagina sozinha 24 h de cada vez — o limite é o máximo.
   const forecastHours = useMemo(() => {
@@ -173,7 +180,7 @@ export default function SpotForecastSection({
   return (
     <section id="previsao" className="space-y-3 scroll-mt-32">
       <div className="flex flex-wrap items-end justify-between gap-2">
-        <h2 className="text-h2 text-fg">{tf.hourlyTitle}</h2>
+        <h2 className="text-lg font-semibold text-fg">{tf.hourlyTitle}</h2>
         <a
           href={windguruUrl}
           target="_blank"
@@ -202,6 +209,7 @@ export default function SpotForecastSection({
             <ForecastTable
               hourly={hours}
               hours={forecastHours}
+              startIndex={axisNowIndex >= 0 ? axisNowIndex : undefined}
               startAtCurrentHour
               sport={sport}
               coastOrientation={coastOrientation}

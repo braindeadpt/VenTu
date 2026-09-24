@@ -27,7 +27,7 @@ export default function SportTab({ sport, score, active, onClick, locale }: Spor
       id={`sport-tab-${sport}`}
       onClick={onClick}
       className={cn(
-        'pill shrink-0 gap-2 px-3 py-2 min-h-[44px] text-meta font-medium',
+        'pill shrink-0 gap-2 px-3 py-2 min-h-[44px] text-body-sm font-medium',
         'transition-[background-color,border-color,color,box-shadow] duration-150 motion-reduce:transition-none',
         active
           ? cn(tokens.bg, tokens.text, tokens.border, 'border', glow && tokens.glow)

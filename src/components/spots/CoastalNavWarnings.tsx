@@ -141,7 +141,7 @@ export default function CoastalNavWarnings({
           </ul>
         </div>
       )}
-      <p className="text-meta-xs text-fg-subtle mt-1.5">
+      <p className="text-meta-sm text-fg-subtle mt-1.5">
         {t.navSources}
       </p>
     </div>

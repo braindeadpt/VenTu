@@ -60,6 +60,19 @@ test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
       /\d+/,
       { timeout: 20_000 },
     );
+    // O índice aterra na hora corrente num effect — /\d+/ passa já no 0
+    // inicial (race). Espera a aterragem: a 1.ª célula data-tl-col é a
+    // hora corrente. Sem isto o `offset` da régua e o contador de renders
+    // apanham o commit de montagem.
+    const firstCol = await page
+      .locator(`${SECTION} [data-tl-col]`)
+      .first()
+      .getAttribute('data-tl-col');
+    await expect(page.locator(INSTRUMENTS)).toHaveAttribute(
+      'data-spot-timeline-index',
+      firstCol ?? '',
+      { timeout: 10_000 },
+    );
   });
 
   test('título «Hora a hora» e sem meteograma na página', async ({ page }) => {

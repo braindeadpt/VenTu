@@ -162,7 +162,7 @@ export default function InstrumentDetail({
             {windRelation && (
               <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{copy.windRelationHints[windRelation]}</p>
             )}
-            <ul className="m-0 grid list-none gap-1.5 p-0 text-[12px] text-fg-muted">
+            <ul className="m-0 grid list-none gap-1.5 p-0 text-[13px] text-fg-muted">
               <li>
                 <span>Offshore</span> — {copy.windRelationHints.offshore}
               </li>

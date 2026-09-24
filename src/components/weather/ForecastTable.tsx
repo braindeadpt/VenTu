@@ -60,10 +60,16 @@ interface ForecastTableProps {
   hours?: number;
   startTime?: Date;
   /**
+   * Índice global explícito onde a fatia começa — o `nowIndex` do eixo
+   * partilhado (SpotTimelineProvider, relógio vivo). Ganha a
+   * `startAtCurrentHour`: «Hora a hora» é o detalhe da régua, cuja janela
+   * são 48 h a partir de «agora» — a mesma hora, não um relógio paralelo.
+   */
+  startIndex?: number;
+  /**
    * A fatia começa no balde da hora corrente (em vez de `hourly[0]`) —
-   * «Hora a hora» é o detalhe da régua, cuja janela são 48 h a partir de
-   * «agora» (CORRECCOES-24SET §3). Usa o relógio `now` (baked até montar,
-   * vivo depois) — o primeiro render SSR já começa na hora certa.
+   * fallback de `startIndex` antes de o eixo aterrar (e em páginas sem
+   * provider). Usa o relógio `now` (baked até montar, vivo depois).
    */
   startAtCurrentHour?: boolean;
   sport?: SportType;
@@ -224,6 +230,7 @@ export default function ForecastTable({
   hourly,
   hours = 24,
   startTime,
+  startIndex,
   startAtCurrentHour = false,
   sport,
   coastOrientation,
@@ -253,10 +260,11 @@ export default function ForecastTable({
      visibleStart = offset da fatia dentro de `hourly` (0 sem startTime) —
      os data-tl-col das células guardam o índice GLOBAL da timeline, que o
      sync da SpotForecastSection usa para destaque/selecção sem re-render.
-     Com `startAtCurrentHour` a fatia abre no balde da hora corrente —
-     a mesma origem da janela da régua (48 h a partir de «agora»). */
+     `startIndex` (nowIndex do eixo partilhado) ganha ao fallback
+     `startAtCurrentHour` (relógio baked) — a mesma hora da janela da
+     régua (48 h a partir de «agora»). */
   const { visible, visibleStart } = useMemo(() => {
-    let startIndex = 0;
+    let startIndex_ = 0;
     if (startTime) {
       // Wall-time Lisboa de startTime (epoch real) — comparação lexicográfica
       // com as strings naive, determinística em qualquer fuso.
@@ -268,19 +276,23 @@ export default function ForecastTable({
       const pick = (t: Intl.DateTimeFormatPartTypes) =>
         parts.find((p) => p.type === t)?.value ?? '00';
       const startKey = `${pick('year')}-${pick('month')}-${pick('day')}T${pick('hour')}:${pick('minute')}:${pick('second')}`;
-      startIndex = hourly.findIndex((h) => h.time >= startKey);
-      if (startIndex === -1) startIndex = 0;
+      startIndex_ = hourly.findIndex((h) => h.time >= startKey);
+      if (startIndex_ === -1) startIndex_ = 0;
+    } else if (startIndex != null && startIndex >= 0) {
+      // O eixo partilhado manda: a fatia abre na hora corrente do provider
+      // (relógio vivo), não no relógio baked deste componente.
+      startIndex_ = Math.min(startIndex, Math.max(0, hourly.length - 1));
     } else if (startAtCurrentHour) {
-      startIndex = findCurrentHourIndex(
+      startIndex_ = findCurrentHourIndex(
         hourly.map((h) => h.time),
         now,
       );
     }
     return {
-      visible: hourly.slice(startIndex, startIndex + visibleCount),
-      visibleStart: startIndex,
+      visible: hourly.slice(startIndex_, startIndex_ + visibleCount),
+      visibleStart: startIndex_,
     };
-  }, [hourly, startTime, startAtCurrentHour, visibleCount, now]);
+  }, [hourly, startTime, startIndex, startAtCurrentHour, visibleCount, now]);
 
   /* ── hover column state ── */
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
@@ -289,10 +301,24 @@ export default function ForecastTable({
   const scrollRef = useRef<HTMLDivElement>(null);
   const labelWidthPx = compact ? 72 : 96;
 
-  /* ── find current hour index ── */
+  /* ── find current hour index ──
+     Com `startIndex` (nowIndex do eixo partilhado) a coluna «agora» é a do
+     índice global — o mesmo instante que a régua marca, não um relógio
+     paralelo. Sem provider mantém o relógio `now` (baked→vivo). */
+  const isNowCol = useCallback(
+    (globalIdx: number, iso: string) =>
+      startIndex != null && startIndex >= 0
+        ? globalIdx === startIndex
+        : isCurrentHour(iso, now),
+    [startIndex, now],
+  );
   const currentHourIndex = useMemo(() => {
+    if (startIndex != null && startIndex >= 0) {
+      const rel = startIndex - visibleStart;
+      return rel >= 0 && rel < visible.length ? rel : -1;
+    }
     return visible.findIndex((h) => isCurrentHour(h.time, now));
-  }, [visible, now]);
+  }, [visible, visibleStart, startIndex, now]);
 
   // UX v3 §5: contorno da coluna «agora» = fg a 30% (classe em globals.css).
   const nowCol = useCallback(
@@ -461,6 +487,7 @@ export default function ForecastTable({
         sportLabel={sportLabel}
         caption={t.caption.replace('{hours}', String(visible.length))}
         now={now}
+        nowIndex={startIndex}
       />
     );
   }
@@ -519,7 +546,7 @@ export default function ForecastTable({
                 data-day-chip
                 data-active={i === initialDayGroupIndex ? '' : undefined}
                 onClick={() => scrollToDayGroup(i)}
-                className="px-2.5 py-1 rounded-pill text-meta-xs whitespace-nowrap shrink-0 transition-all bg-surface-1/[0.04] text-fg-muted border border-divider hover:bg-surface-2/[0.08] data-[active]:bg-score-good/20 data-[active]:text-score-good data-[active]:border-score-good/30 data-[active]:font-semibold"
+                className="inline-flex min-h-11 items-center px-2.5 rounded-pill text-meta-sm whitespace-nowrap shrink-0 transition-all bg-surface-1/[0.04] text-fg-muted border border-divider hover:bg-surface-2/[0.08] data-[active]:bg-score-good/20 data-[active]:text-score-good data-[active]:border-score-good/30 data-[active]:font-semibold"
               >
                 {dayChipLabel(group)}
               </button>
@@ -575,7 +602,7 @@ export default function ForecastTable({
                 </div>
               </th>
               {visible.map((h, i) => {
-                const current = isCurrentHour(h.time, now);
+                const current = isNowCol(visibleStart + i, h.time);
                 const isNewDay = i === 0 || h.time.slice(0, 10) !== visible[i - 1].time.slice(0, 10);
                 return (
                   <th
@@ -595,7 +622,7 @@ export default function ForecastTable({
                   >
                     <div className="flex flex-col items-center">
                       {isNewDay && !compact && (
-                        <span className="text-[9px] md:text-[10px] font-semibold text-fg-subtle leading-none mb-0.5">
+                        <span className="text-[11px] font-semibold text-fg-subtle leading-none mb-0.5">
                           {formatDayShort(h.time, locale)}
                         </span>
                       )}
@@ -896,14 +923,17 @@ function ForecastHourlyList({
   sportLabel,
   caption,
   now,
+  nowIndex,
 }: {
   visible: ForecastHour[];
   visibleStart: number;
   locale: string;
   sportLabel?: string;
   caption: string;
-  /** Relógio baked — a linha «agora» recebe o contorno fg/30 da spec §5. */
+  /** Relógio baked — fallback da linha «agora» sem eixo partilhado. */
   now: Date;
+  /** Índice «agora» do eixo partilhado — quando definido manda no `now`. */
+  nowIndex?: number;
 }) {
   const tf = getTranslation(locale).spotPageForecast;
   const tideLabels = getTranslation(locale).tideLabels;
@@ -929,7 +959,7 @@ function ForecastHourlyList({
     >
       {groups.map((g) => (
         <section key={g.day} aria-label={g.longLabel} className="forecast-day-group">
-          <h3 className="forecast-day-header m-0 px-3 py-2 text-[12px] font-semibold tracking-[0.04em] text-fg">
+          <h3 className="forecast-day-header m-0 px-3 py-2 text-[13px] font-semibold tracking-[0.04em] text-fg">
             {g.longLabel}
           </h3>
           <ol className="m-0 list-none p-0">
@@ -963,7 +993,10 @@ function ForecastHourlyList({
                         : '—';
               const score = typeof h.score === 'number' ? h.score : null;
               const variant = score !== null ? scoreVariant(score) : '--score-closed';
-              const current = isCurrentHour(h.time, now);
+              const current =
+                nowIndex != null && nowIndex >= 0
+                  ? visibleStart + i === nowIndex
+                  : isCurrentHour(h.time, now);
               return (
                 <li key={h.time}>
                   <button
@@ -979,7 +1012,7 @@ function ForecastHourlyList({
                       {formatHourLabel(h.time, locale)}
                     </span>
                     <span
-                      className="rounded-sm px-0.5 text-center font-mono text-[12px] font-semibold tabular-nums"
+                      className="rounded-sm px-0.5 text-center font-mono text-[13px] font-semibold tabular-nums"
                       style={
                         score !== null
                           ? {
@@ -994,15 +1027,15 @@ function ForecastHourlyList({
                     {/* Onda compacta «1,9 m 12 s» — CORRECCOES-24SET §3:
                         a spec proíbe truncar; se não couber numa linha
                         quebra para duas dentro da célula (56 px cabe). */}
-                    <span className="min-w-0 font-mono text-[12px] leading-tight tabular-nums text-fg">
+                    <span className="min-w-0 font-mono text-[13px] leading-tight tabular-nums text-fg">
                       {fmt.f1(h.waveHeight)} m {fmt.f0(h.wavePeriod)} s
                     </span>
-                    <span className="whitespace-nowrap font-mono text-[12px] tabular-nums text-fg-muted">
+                    <span className="whitespace-nowrap font-mono text-[13px] tabular-nums text-fg-muted">
                       {getWindArrow(h.windDirection)} {windKt} kt
                       {gustKt !== null ? ` (${gustKt})` : ''}
                     </span>
                     <span
-                      className="whitespace-nowrap font-mono text-[12px] tabular-nums text-fg-muted"
+                      className="whitespace-nowrap font-mono text-[13px] tabular-nums text-fg-muted"
                       title={tideTitle}
                     >
                       {tideText}

@@ -37,6 +37,18 @@ async function gotoGuincho({ page }: { page: Page }) {
     /\d+/,
     { timeout: 20_000 },
   );
+  // O índice aterra na hora corrente num effect — /\d+/ passa já no 0
+  // inicial. Espera a aterragem: a 1.ª célula data-tl-col é a hora
+  // corrente (lista mobile e tabela desktop partilham o mesmo início).
+  const firstCol = await page
+    .locator(`${SECTION} [data-tl-col]`)
+    .first()
+    .getAttribute('data-tl-col');
+  await expect(page.locator(INSTRUMENTS)).toHaveAttribute(
+    'data-spot-timeline-index',
+    firstCol ?? '',
+    { timeout: 10_000 },
+  );
 }
 
 test.describe('SP-B — lista «Hora a hora» mobile (390 px)', () => {
@@ -135,7 +147,6 @@ test.describe('SP-B — lista «Hora a hora» mobile (390 px)', () => {
       target = cols.find((c) => c !== now) ?? cols[0];
       chipText = await chipOf(target);
     }
-
     const row = page.locator(`${ROW}[data-tl-col="${target}"]`);
     await row.scrollIntoViewIfNeeded();
     await row.click();

@@ -23,13 +23,14 @@ test.describe('Spot detail dashboard', () => {
   });
 
   test('logistics block shows parking and stay', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: /^Logística$/i })).toBeVisible();
-    // Scope to main: the baked page streams content in a hidden S: container
-    // outside <main>; during the reveal window an unscoped getByText can match
-    // both the hydrated copy and the lingering streamed one (strict mode).
-    const main = page.locator('#main-content');
-    await expect(main.getByText('Estacionamento', { exact: true })).toBeVisible();
-    await expect(main.getByText('Dormir', { exact: true })).toBeVisible();
+    // SPOT-UX-V3 §6: «Logística» deixou de ser um heading próprio no desktop —
+    // o conteúdo vive na linha B «Chegar e estar» (#chegar), com os cards
+    // Estacionamento · Comer · Dormir na coluna «stay». O scoping a #chegar
+    // também resolve o problema do container S: streamed fora de <main>.
+    const chegar = page.locator('#chegar');
+    await expect(chegar).toBeVisible();
+    await expect(chegar.getByText('Estacionamento', { exact: true })).toBeVisible();
+    await expect(chegar.getByText('Dormir', { exact: true })).toBeVisible();
   });
 
   test('EN logistics block translates facilities/hazards tags (never the PT token verbatim)', async ({ page }) => {

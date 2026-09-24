@@ -96,7 +96,7 @@ export default function SpotSafetyCoastalWarnings({
             </li>
           ))}
         </ul>
-        <p className="text-meta-xs text-fg-subtle mt-1">
+        <p className="text-meta-sm text-fg-subtle mt-1">
           {isPt ? 'IH · IHM (CC-BY 4.0)' : 'IH · IHM (CC-BY 4.0)'}
         </p>
       </div>

@@ -2,7 +2,7 @@
 
 /** Leitura grande (números tabulares Geist Mono). */
 export const INST_BIG =
-  'font-mono tabular-nums text-[26px] min-[760px]:text-[30px] font-medium leading-[1.1] tracking-[-0.02em]';
+  'font-mono tabular-nums text-[32px] font-medium leading-[1.1] tracking-[-0.02em]';
 
 /** Linhas secundárias — a cor (--vi-m) troca com o material do cartão. */
 export const INST_SUB =

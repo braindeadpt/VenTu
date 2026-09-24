@@ -63,10 +63,21 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
     const nowAttr = await slider(page).getAttribute('aria-valuenow');
     expect(Number(nowAttr)).toBeGreaterThan(30);
 
-    // Veredicto (meter) e barra convergem para o mesmo score da hora escolhida.
-    await expect
-      .poll(async () => Number(await meter(page).getAttribute('aria-valuenow')))
-      .not.toBe(Number(before));
+    // Veredicto (meter) e barra convergem para o score DA HORA ARRASTADA —
+    // lido do aria-valuetext da régua («…: score N, TIER»). Não se assume
+    // que difere de `before`: a hora alvo pode ter o mesmo score.
+    const vt = (await slider(page).getAttribute('aria-valuetext')) ?? '';
+    const m = vt.match(/score\s+(\d+)/i);
+    const targetScore = m ? Number(m[1]) : Number.NaN;
+    if (Number.isFinite(targetScore)) {
+      await expect
+        .poll(async () => Number(await meter(page).getAttribute('aria-valuenow')))
+        .toBe(targetScore);
+    } else {
+      await expect
+        .poll(async () => Number(await meter(page).getAttribute('aria-valuenow')))
+        .not.toBe(Number(before));
+    }
     const verdictScore = Number(await meter(page).getAttribute('aria-valuenow'));
     await expect.poll(async () => barScore(page)).toBe(verdictScore);
   });
