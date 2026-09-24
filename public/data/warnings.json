@@ -1,15 +1,45 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-24T17:36:10.970Z",
+  "fetchedAt": "2026-09-24T17:50:51.449Z",
   "warnings": [
+    {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Tempo Quente",
+      "level": "orange",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-24T16:09:00",
+      "endTime": "2026-09-25T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "MPS",
+      "areaLabel": "Porto Santo",
+      "type": "Tempo Quente",
+      "level": "orange",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-24T16:09:00",
+      "endTime": "2026-09-25T18:00:00",
+      "relevant": false
+    },
+    {
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Tempo Quente",
+      "level": "orange",
+      "text": "Persistência de valores elevados da temperatura máxima.",
+      "startTime": "2026-09-24T16:09:00",
+      "endTime": "2026-09-25T18:00:00",
+      "relevant": false
+    },
     {
       "areaCode": "MRM",
       "areaLabel": "Madeira — Regiões Montanhosas",
       "type": "Trovoada",
       "level": "yellow",
       "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-      "startTime": "2026-09-24T10:48:00",
-      "endTime": "2026-09-24T18:00:00",
+      "startTime": "2026-09-24T16:09:00",
+      "endTime": "2026-09-24T21:00:00",
       "relevant": true
     },
     {
@@ -18,8 +48,8 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-      "startTime": "2026-09-24T10:48:00",
-      "endTime": "2026-09-24T18:00:00",
+      "startTime": "2026-09-24T16:09:00",
+      "endTime": "2026-09-24T21:00:00",
       "relevant": true
     },
     {
@@ -28,8 +58,8 @@
       "type": "Trovoada",
       "level": "yellow",
       "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-      "startTime": "2026-09-24T10:48:00",
-      "endTime": "2026-09-24T18:00:00",
+      "startTime": "2026-09-24T16:09:00",
+      "endTime": "2026-09-24T21:00:00",
       "relevant": true
     },
     {
@@ -98,7 +128,7 @@
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T10:48:00",
+      "startTime": "2026-09-24T16:09:00",
       "endTime": "2026-09-25T18:00:00",
       "relevant": false
     },
@@ -110,16 +140,6 @@
       "text": "Persistência de valores elevados da temperatura máxima.",
       "startTime": "2026-09-24T10:47:00",
       "endTime": "2026-09-24T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T10:48:00",
-      "endTime": "2026-09-25T18:00:00",
       "relevant": false
     },
     {
@@ -140,26 +160,6 @@
       "text": "Persistência de valores elevados da temperatura máxima.",
       "startTime": "2026-09-24T10:47:00",
       "endTime": "2026-09-24T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MPS",
-      "areaLabel": "Porto Santo",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T10:48:00",
-      "endTime": "2026-09-25T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-24T10:48:00",
-      "endTime": "2026-09-25T18:00:00",
       "relevant": false
     }
   ],
@@ -708,22 +708,22 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "porto-da-cruz": [
@@ -733,8 +733,8 @@
         "type": "Trovoada",
         "level": "yellow",
         "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
         "relevant": true
       },
       {
@@ -743,7 +743,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
+        "startTime": "2026-09-24T16:09:00",
         "endTime": "2026-09-25T18:00:00",
         "relevant": false
       }
@@ -752,66 +752,66 @@
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "jardim-mar": [
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "ponta-sao-lourenco": [
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "ribeira-brava": [
@@ -821,8 +821,8 @@
         "type": "Trovoada",
         "level": "yellow",
         "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
         "relevant": true
       },
       {
@@ -831,7 +831,7 @@
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
+        "startTime": "2026-09-24T16:09:00",
         "endTime": "2026-09-25T18:00:00",
         "relevant": false
       }
@@ -840,22 +840,22 @@
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "santa-cruz": [
@@ -982,88 +982,88 @@
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCS",
         "areaLabel": "Funchal",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "seixal-madeira": [
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "ponta-pargo": [
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ],
     "madalena-mar": [
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Trovoada",
-        "level": "yellow",
-        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-24T18:00:00",
-        "relevant": true
+        "type": "Tempo Quente",
+        "level": "orange",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-25T18:00:00",
+        "relevant": false
       },
       {
         "areaCode": "MCN",
         "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
+        "type": "Trovoada",
         "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-24T10:48:00",
-        "endTime": "2026-09-25T18:00:00",
-        "relevant": false
+        "text": "Na parte oeste: condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h;  rajadas até 70 km/h.",
+        "startTime": "2026-09-24T16:09:00",
+        "endTime": "2026-09-24T21:00:00",
+        "relevant": true
       }
     ]
   }
