@@ -61,8 +61,13 @@ test.describe('Map wind field', () => {
     await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
     await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(1);
 
-    // desligar o toggle remove o canvas e marca o atributo a false
-    await page.getByRole('button', { name: 'Ocultar vento' }).first().click();
+    // desligar o toggle remove o canvas e marca o atributo a false.
+    // UX v3 §0.3: o toggle chama-se «Vento» e o estado vai em aria-pressed —
+    // já não existe o botão de acção «Ocultar vento» do cromo antigo.
+    const windToggle = page.locator('[data-map-wind-toggle]');
+    await expect(windToggle).toHaveAttribute('aria-pressed', 'true');
+    await windToggle.click();
+    await expect(windToggle).toHaveAttribute('aria-pressed', 'false');
     await expect(map).toHaveAttribute('data-map-windfield', 'false');
     await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(0);
   });

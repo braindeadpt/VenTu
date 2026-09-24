@@ -162,11 +162,15 @@ export default function MapSpotList({
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="flex items-center gap-2 border-t border-divider px-1 pb-1.5 pt-2.5">
-        <span className="font-display font-bold text-body-sm text-fg">{title}</span>
-        <span className="font-mono tabular-nums text-meta-sm text-fg-subtle">{countLabel}</span>
+      {/* M6#3 (CORRECCOES-24SET): «Nesta vista · n spots» nunca quebra —
+          os chips de ilha caem para a linha de baixo quando faltar largura. */}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-divider px-1 pb-1.5 pt-2.5">
+        <span className="flex items-center gap-2 whitespace-nowrap">
+          <span className="font-display font-bold text-body-sm text-fg">{title}</span>
+          <span className="font-mono tabular-nums text-meta-sm text-fg-subtle">{countLabel}</span>
+        </span>
         {jumps && jumps.length > 0 && (
-          <div className="ml-auto flex items-center gap-1" role="group" aria-label={jumpLabel}>
+          <div className="ml-auto flex flex-wrap items-center gap-1" role="group" aria-label={jumpLabel}>
             {jumps.map((j) => (
               <button
                 key={j.id}

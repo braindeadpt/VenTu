@@ -28,12 +28,13 @@ const CONFIDENCE_ICONS = {
  *
  * Alta = os modelos concordam, o número é tão sólido como uma medição.
  * Média = concordam a meio, como uma previsão corrigida.
- * Baixa = divergem; é a única confiança que se lê como degradação.
+ * Baixa = divergem — lê-se âmbar (CORRECCOES-24SET SP-D#4 / M6#2: vermelho
+ * é só para perigo real, ex. fonte em baixo — nunca para confiança).
  */
 const CONFIDENCE_TIER: Record<ConfidenceTier, ProvenanceTier> = {
   alta: 'measured',
   média: 'adjusted',
-  baixa: 'degraded',
+  baixa: 'adjusted',
 };
 
 export interface ConfidenceBadgeProps {

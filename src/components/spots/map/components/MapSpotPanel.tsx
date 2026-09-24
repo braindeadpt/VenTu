@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getTranslation } from '@/lib/i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import MapSpotList, { type MapListJump, type MapSpotListRow } from './MapSpotList';
@@ -67,7 +67,6 @@ export default function MapSpotPanel({
   onJump,
   warningChip,
   timeTrack,
-  attributionHtml,
   sports,
   regions,
   selectedSport,
@@ -92,6 +91,29 @@ export default function MapSpotPanel({
     setDidToggle(true);
     onCollapsedChange(v);
   };
+
+  /* CORRECCOES-24SET (M6#5): o desvio do cromo ao painel aberto
+     (atribuição Leaflet, wrap do scrubber, pill «Agora») não é um literal
+     em globals.css — o painel publica `--map-panel-offset` (= borda
+     direita medida + 12 px de respiro) no root [data-map-fullscreen]
+     enquanto está aberto; ao recolher/desmontar a variável sai. */
+  const panelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (collapsed) return;
+    const el = panelRef.current;
+    const root = el?.closest<HTMLElement>('[data-map-fullscreen]');
+    if (!el || !root) return;
+    const publish = () => {
+      const right = el.getBoundingClientRect().right - root.getBoundingClientRect().left;
+      root.style.setProperty('--map-panel-offset', `${Math.round(right + 12)}px`);
+    };
+    publish();
+    window.addEventListener('resize', publish);
+    return () => {
+      window.removeEventListener('resize', publish);
+      root.style.removeProperty('--map-panel-offset');
+    };
+  }, [collapsed]);
   if (collapsed) {
     return (
       <div
@@ -119,6 +141,7 @@ export default function MapSpotPanel({
 
   return (
     <div
+      ref={panelRef}
       role="complementary"
       aria-label={t.mapUiExplore.title}
       data-map-panel="open"
@@ -185,14 +208,11 @@ export default function MapSpotPanel({
           onJump={onJump}
         />
       </div>
-
-      {attributionHtml && (
-        <div
-          data-panel-attribution
-          className="truncate border-t border-divider px-3 py-1.5 text-[10px] leading-tight text-fg-subtle [&_a]:text-fg-muted [&_a]:underline"
-          dangerouslySetInnerHTML={{ __html: attributionHtml }}
-        />
-      )}
+      {/* Atribuição: uma só vez no ecrã (CORRECCOES-24SET) — no desktop é o
+          controlo Leaflet, desviado do painel por --map-panel-offset. O
+          espelho textual que aqui existia foi removido na M6 (estava
+          escondido por CSS desde a M2). A prop attributionHtml fica na
+          interface para não partir os callers. */}
     </div>
   );
 }

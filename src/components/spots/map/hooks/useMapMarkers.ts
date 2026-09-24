@@ -351,10 +351,52 @@ export function useMapMarkers({
       };
       map.on('zoomend', applyLayout);
 
+      // Separação síncrona: os marcadores sãos ficam garantidos JÁ (LOD e
+      // presença no layer) e só os que precisam de (re)criação entram na
+      // fila chunked. Sem isto, no mobile (8 por chunk + yield de 40 ms) uma
+      // re-entrada do efeito — warnings/hora a resolver, visibleSpots novo —
+      // cancelava a passagem a meio e recomeçava do índice 0: a cauda da
+      // lista ficava sem marcador (regressão «22 spots sem marcador»).
+      const pendingV3: MapSpotData[] = [];
+      for (const data of markerSpots) {
+        const scoreOverride = hourScores?.get(data.spot.id);
+        const cacheKey = buildMarkerCacheKey(
+          data,
+          selectedSport,
+          showWindOnMarkers,
+          locale,
+          false,
+          warningsBySpot.get(data.spot.id)?.level ?? null,
+          scoreOverride,
+        );
+        const marker = cache.get(data.spot.id);
+        const meta = marker as (L.Marker & { ventuKey?: string; ventuLod?: string }) | undefined;
+        if (!marker || meta?.ventuKey !== cacheKey) {
+          pendingV3.push(data);
+          continue;
+        }
+        // Marcador intacto: só muda de papel se o LOD novo disser.
+        const entry = layoutById.get(data.spot.id) ?? {
+          id: data.spot.id,
+          kind: 'full' as const,
+          memberIds: [data.spot.id],
+        };
+        const key = `${v3LodKey(entry)}|${showWindTick ? 'w' : '-'}`;
+        if (meta!.ventuLod !== key) {
+          meta!.ventuLod = key;
+          applyV3LayoutIcon(Leaflet, marker, data, entry, {
+            selectedSport,
+            showWindTick,
+            moreAriaTemplate,
+            scoreOverride,
+          });
+        }
+        if (!lg.hasLayer(marker)) lg.addLayer(marker);
+      }
       const chunkSizeV3 = isMobile ? MARKER_ADD_CHUNK_SIZE_MOBILE : MARKER_ADD_CHUNK_SIZE_LOCAL;
       const yieldMsV3 = isMobile ? MARKER_CHUNK_YIELD_MS_MOBILE : 0;
       runChunked(
-        markerSpots,
+        pendingV3,
         (batch) => {
           for (const data of batch) {
             const entry = layoutById.get(data.spot.id) ?? {
@@ -363,7 +405,24 @@ export function useMapMarkers({
               memberIds: [data.spot.id],
             };
             const scoreOverride = hourScores?.get(data.spot.id);
-            const cacheKey = buildMarkerCacheKey(
+            const stale = cache.get(data.spot.id);
+            if (stale) {
+              lg.removeLayer(stale);
+              stale.remove();
+              cache.delete(data.spot.id);
+            }
+            const marker = createV3SpotMarker(Leaflet, data, entry, {
+              selectedSport,
+              locale,
+              showWindTick,
+              reducedMotion,
+              onOpen: openPreview,
+              onMarkerInteract,
+              onHover: showTip,
+              moreAriaTemplate,
+              scoreOverride,
+            });
+            (marker as L.Marker & { ventuKey?: string }).ventuKey = buildMarkerCacheKey(
               data,
               selectedSport,
               showWindOnMarkers,
@@ -372,42 +431,9 @@ export function useMapMarkers({
               warningsBySpot.get(data.spot.id)?.level ?? null,
               scoreOverride,
             );
-            let marker = cache.get(data.spot.id);
-            const meta = marker as (L.Marker & { ventuKey?: string; ventuLod?: string }) | undefined;
-            if (!marker || meta?.ventuKey !== cacheKey) {
-              if (marker) {
-                lg.removeLayer(marker);
-                marker.remove();
-                cache.delete(data.spot.id);
-              }
-              marker = createV3SpotMarker(Leaflet, data, entry, {
-                selectedSport,
-                locale,
-                showWindTick,
-                reducedMotion,
-                onOpen: openPreview,
-                onMarkerInteract,
-                onHover: showTip,
-                moreAriaTemplate,
-                scoreOverride,
-              });
-              (marker as L.Marker & { ventuKey?: string }).ventuKey = cacheKey;
-              (marker as L.Marker & { ventuLod?: string }).ventuLod =
-                `${v3LodKey(entry)}|${showWindTick ? 'w' : '-'}`;
-              cache.set(data.spot.id, marker);
-            } else {
-              // Marcador intacto: só muda de papel se o LOD novo disser.
-              const key = `${v3LodKey(entry)}|${showWindTick ? 'w' : '-'}`;
-              if (meta!.ventuLod !== key) {
-                meta!.ventuLod = key;
-                applyV3LayoutIcon(Leaflet, marker, data, entry, {
-                  selectedSport,
-                  showWindTick,
-                  moreAriaTemplate,
-                  scoreOverride,
-                });
-              }
-            }
+            (marker as L.Marker & { ventuLod?: string }).ventuLod =
+              `${v3LodKey(entry)}|${showWindTick ? 'w' : '-'}`;
+            cache.set(data.spot.id, marker);
             if (!lg.hasLayer(marker)) lg.addLayer(marker);
           }
         },

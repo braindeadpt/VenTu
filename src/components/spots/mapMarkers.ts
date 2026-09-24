@@ -382,13 +382,6 @@ export function applyExploreMapFit(
 export const MARKER_LOD_ZOOM_SPLIT = 8.5;
 
 /**
- * Evento partilhado «voltar à lista»: o «←» do sheet de spot (M4) pede ao
- * sheet de exploração (M3) que abra a lista. O listener vive em
- * MapExploreZone — contrato registado para a revisão da M6.
- */
-export const VENTU_OPEN_EXPLORE_SHEET = 'ventu:open-explore-sheet';
-
-/**
  * Raio de colisão entre centros de marcadores, em px do contentor.
  * Maquete: 52 px em mobile / 40 px em desktop abaixo de z8.5; 38 px a partir.
  * M4 desvio documentado: o arranque mobile assenta em z6 (fit do continente
@@ -663,6 +656,10 @@ export function createV3SpotMarker(
     const el = marker.getElement();
     if (!el) return;
     if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', spot.name);
+    // Ponte de hover com a lista «Nesta vista» (M3 §5) — igual ao
+    // marcador clássico: a linha liga .ventu-list-hover neste elemento e
+    // a delegação pointerover lê data-spot-id no sentido inverso.
+    el.setAttribute('data-spot-id', spot.id);
     if (options.reducedMotion) return;
     // Entrada da maquete: só opacity, 150 ms — nunca mexer na posição.
     el.style.opacity = '0';

@@ -50,6 +50,19 @@ async function openMapa(
   );
   await page.waitForLoadState('networkidle', { timeout: 30_000 }).catch(() => {});
   await waitMapSettled(page);
+  // Inserção chunked (8/batch + yield em mobile): «>0» + settled não chega —
+  // o probe pode apanhar a fila a meio. Espera a contagem estabilizar.
+  await expect
+    .poll(
+      async () => {
+        const n = await page.locator('[data-v3spot]').count();
+        await page.waitForTimeout(300);
+        const m = await page.locator('[data-v3spot]').count();
+        return n === m ? n : -1;
+      },
+      { timeout: 30_000, intervals: [350] },
+    )
+    .toBeGreaterThan(0);
 }
 
 interface MarkerDomInfo {

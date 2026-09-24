@@ -36,7 +36,8 @@ import MapTimeChrome from '../MapTimeChrome';
 import MapTideChip from '../MapTideChip';
 import MapThermalChip from '../MapThermalChip';
 import type { MapLayersFields } from './MapLayersZone';
-import '../mapChrome.css';
+// M6 (CORRECCOES-24SET): o cromo CSS vive num bloco delimitado da
+// globals.css («MAPA — CROMO UX V3») — já não há import por ficheiro.
 
 type MapTranslation = ReturnType<typeof getTranslation>;
 

@@ -185,9 +185,16 @@ test.describe('MAP-UX-V3 §5 — sheet mobile (390×844)', () => {
 
   test('teclado: ↑/↓ navegam e Enter abre a pré-visualização', async ({ page }) => {
     await openMapa(page, '?spot=nazare');
+    // M4: o deep link ?spot= abre a PRÉ-VISUALIZAÇÃO do spot (contrato
+    // markers — igual à resolução do merge em map-explore-sheet.spec.ts).
+    // O «← Voltar à lista» fecha-a e levanta o sheet explorar em «open».
+    await expect(page.locator('[data-testid="map-spot-sheet"]')).toBeVisible({ timeout: 20_000 });
+    await page.getByRole('button', { name: /Voltar à lista|Back to list/i }).click();
     await expect(page.locator('[data-explore-sheet]')).toHaveAttribute(
       'data-explore-sheet', 'open', { timeout: 20_000 });
     const focused = page.locator('[role="option"][data-spot-id="nazare"]');
+    await expect(focused).toBeVisible();
+    await focused.focus();
     await expect(focused).toBeFocused();
 
     const idx = Number(await focused.getAttribute('data-row-index'));
@@ -275,22 +282,22 @@ test.describe('MAP-UX-V3 §5 — painel desktop (1440×900)', () => {
 
     // Saltar para os Açores recentra o mapa — bounds da maquete
     // (s 36.9 / n 39.8 / w −31.4 / e −24.9 → centro ≈ 38.3, −28.2).
+    // O poll espera o DESTINO (lat e lon dos Açores): lat>36.5 sozinha é
+    // trivialmente verdade no continente (39.5) e lia o centro a meio do
+    // flyTo de 600 ms — com CPU partilhada entre workers, a leitura podia
+    // apanhar o início ou o meio do voo (lon −10 / −15 em vez de −28).
     await jumps.getByRole('button', { name: 'Açores' }).click();
     await expect
       .poll(async () =>
         page.evaluate(() => {
           const map = (window as any).__VENTU_MAP__;
-          return map ? map.getCenter().lat : null;
+          if (!map) return null;
+          const c = map.getCenter();
+          return c.lat > 36.5 && c.lat < 40.5 && c.lng > -32 && c.lng < -24
+            ? { lat: c.lat, lon: c.lng }
+            : null;
         }), { timeout: 15_000 })
-      .toBeGreaterThan(36.5);
-    const center = await page.evaluate(() => {
-      const map = (window as any).__VENTU_MAP__;
-      const c = map.getCenter();
-      return { lat: c.lat, lon: c.lng };
-    });
-    expect(center.lat).toBeLessThan(40.5);
-    expect(center.lon).toBeGreaterThan(-32);
-    expect(center.lon).toBeLessThan(-24);
+      .not.toBeNull();
   });
 
   test('hover bidireccional: a linha acende o marcador e vice-versa', async ({ page }) => {

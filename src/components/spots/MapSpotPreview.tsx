@@ -380,22 +380,14 @@ export function SpotCardContent({
     sport: highlightSport,
     locale,
   });
-  const windRelation =
-    spot.coastOrientation !== undefined
-      ? getWindRelationToCoast(conditions.windDirection, spot.coastOrientation)
-      : undefined;
-  const windRelationLabel =
-    windRelation != null ? getWindRelationLabel(windRelation, locale) : undefined;
   const sportLabel =
     highlightSport === 'all' ? t.mapUiMarkers.bestModality : getSportLabel(highlightSport, locale);
-  const whyBits = [
-    `${swellH.toFixed(1)} m a ${Math.round(swellT)} s`,
-    windKt > 0 || Number.isFinite(conditions.windDirection)
-      ? `${t.homepage.layerWind.toLowerCase()} ${windKt} kt${windRelationLabel ? ` ${windRelationLabel.label}` : ''}`
-      : null,
-  ]
-    .filter(Boolean)
-    .join(' · ');
+  // CORRECCOES-24SET (M6#2): o vento conta-se UMA vez — na linha de
+  // factores partilhada («… · side-offshore 2 kt», já em minúscula e
+  // idêntica à linha da lista — contrato data-score-factors). A frase
+  // «porquê» ficava com «vento 8 kt Onshore» a duplicar o factor; agora
+  // leva só a onda.
+  const whyBits = `${swellH.toFixed(1)} m a ${Math.round(swellT)} s`;
 
   return (
     <div>
@@ -491,12 +483,14 @@ export function SpotCardContent({
         hoursFrame={hoursFrame}
       />
 
+      {/* CTAs numa só linha cada um (CORRECCOES-24SET M6#2) — nowrap
+          explícito: «Ver spot →» e «Como chegar» nunca quebram. */}
       <div className="flex gap-2">
         <Button
           href={detailHref}
           variant="primary"
           size="lg"
-          className="flex-1"
+          className="flex-1 whitespace-nowrap"
           locale={locale}
           onClick={onViewSpot}
         >
@@ -507,7 +501,7 @@ export function SpotCardContent({
           href={directionsUrl}
           variant="secondary"
           size="lg"
-          className="flex-1"
+          className="flex-1 whitespace-nowrap"
           locale={locale}
           target="_blank"
           rel="noopener noreferrer"

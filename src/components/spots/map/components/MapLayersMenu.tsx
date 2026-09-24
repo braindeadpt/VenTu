@@ -518,17 +518,19 @@ export default function MapLayersMenu({
             >
               {item.icon}
             </span>
+            {/* CORRECCOES-24SET (M5/M6): texto NUNCA trunca — nome em linha
+                própria e descrição completa que pode ir até duas linhas. */}
             <span className="min-w-0">
               <span
                 className={cn(
-                  'block text-meta-sm font-medium leading-tight truncate',
+                  'block text-meta-sm font-medium leading-tight',
                   item.pressed ? 'text-fg' : 'text-fg-muted',
                 )}
               >
                 {name}
               </span>
               {desc && (
-                <span className="block text-[11px] leading-snug text-fg-subtle truncate">
+                <span className="block text-[11px] leading-snug text-fg-subtle">
                   {desc}
                 </span>
               )}
@@ -700,7 +702,7 @@ function BasemapSection({
               <span className={cn('block text-meta-sm font-medium leading-tight', checked ? 'text-fg' : 'text-fg-muted')}>
                 {r.name}
               </span>
-              <span className="block text-[11px] leading-snug text-fg-subtle truncate">{r.desc}</span>
+              <span className="block text-[11px] leading-snug text-fg-subtle">{r.desc}</span>
             </span>
             <span
               aria-hidden

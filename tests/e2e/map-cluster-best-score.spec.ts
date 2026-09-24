@@ -35,6 +35,20 @@ async function openMapa(page: Page): Promise<void> {
     { timeout: 30_000, polling: 250 },
   );
   await waitMapSettled(page);
+  // A inserção é chunked (8 por batch + yield em mobile) — «>0» apanha a
+  // primeira fatia e um probe cedo lia membros do grupo ainda sem
+  // marcador (NaN). Espera a contagem estabilizar em duas leituras.
+  await expect
+    .poll(
+      async () => {
+        const n = await page.locator('[data-v3spot]').count();
+        await page.waitForTimeout(300);
+        const m = await page.locator('[data-v3spot]').count();
+        return n === m ? n : -1;
+      },
+      { timeout: 30_000, intervals: [350] },
+    )
+    .toBeGreaterThan(0);
 }
 
 /** Grupos «+N»: representante + score de cada membro (pontos incluídos). */

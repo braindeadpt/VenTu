@@ -110,9 +110,10 @@ test.describe('Menu Camadas v3 — grupos e basemap (desktop)', () => {
     await pop.locator('[data-map-seamarks-toggle]').click();
     await expect(pop.locator('[data-map-seamarks-toggle]')).toHaveAttribute('aria-pressed', 'true');
 
-    // 3.ª pesada (radar — primário no strip): desliga a mais antiga (batimetria).
-    await page.locator('[data-map-controls] [data-map-radar-toggle]').click();
-    await expect(page.locator('[data-map-controls] [data-map-radar-toggle]')).toHaveAttribute(
+    // 3.ª pesada (radar — vive no menu «Camadas» no cromo v3, não num
+    // strip): desliga a mais antiga (batimetria). O popover fica aberto.
+    await pop.locator('[data-map-radar-toggle]').click();
+    await expect(pop.locator('[data-map-radar-toggle]')).toHaveAttribute(
       'aria-pressed',
       'true',
     );
@@ -122,9 +123,8 @@ test.describe('Menu Camadas v3 — grupos e basemap (desktop)', () => {
       page.getByText(/Batimetria — camada desligada para manter o mapa fluido/),
     ).toBeVisible({ timeout: 10_000 });
 
-    // Estado resultante: seamarks + radar ligados, batimetria desligada.
-    // (O clique no strip fechou o popover — reabre-se para verificar.)
-    await openMapLayersMenu(page);
+    // Estado resultante: seamarks + radar ligados, batimetria desligada —
+    // tudo verificável no popover ainda aberto.
     await expect(pop.locator('[data-map-seamarks-toggle]')).toHaveAttribute('aria-pressed', 'true');
     await expect(pop.locator('[data-map-bathymetry-toggle]')).toHaveAttribute('aria-pressed', 'false');
   });

@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
+import { waitHydrated } from './helpers/hydration';
 
 test.describe('wind ring legend', () => {
   // O cenário tem esperas sequenciais reais (auto-hide de 12 s do hint) —
@@ -69,7 +70,16 @@ test.describe('wind ring legend', () => {
     // assumiu-lhe o papel. O botão directo mantém-se na toolbar pill dos
     // embeds (/spots/ abre o mapa colapsado → expandir primeiro).
     await page.goto('/pt/spots/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
-    await page.getByRole('button', { name: /Mapa ·|Map ·/i }).click();
+    // Sem isto o primeiro clique caía antes da hidratação e o onClick do
+    // expansor era engolido — o mapa nunca montava (flake sob carga).
+    await waitHydrated(page);
+    // Em ≥1024 px o embed nasce ABERTO (efeito de mount do SpotGridClient) —
+    // clicar no expansor fechava-o e o .leaflet-container nunca aparecia.
+    // O clique só faz sentido quando o mapa arranca fechado.
+    const expander = page.getByRole('button', { name: /Mapa ·|Map ·/i });
+    if ((await expander.getAttribute('aria-expanded')) !== 'true') {
+      await expander.click();
+    }
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
 
     const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });

@@ -366,10 +366,36 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
     await expect(row).toBeFocused();
   });
 
-  test('atribuição no rodapé do painel (sempre visível)', async ({ page }) => {
+  test('atribuição uma só vez — controlo Leaflet desviado do painel, sem espelho no rodapé', async ({ page }) => {
     await openMapa(page);
-    const attr = page.locator('[data-panel-attribution]');
+    // M6 (CORRECCOES-24SET §1): o espelho textual do painel foi removido —
+    // a atribuição é só o controlo Leaflet, desviado para a direita do
+    // painel aberto via --map-panel-offset. O teste antigo pedia o
+    // «data-panel-attribution» visível — contrato substituído.
+    await expect(page.locator('[data-panel-attribution]')).toHaveCount(0);
+    const attr = page.locator('.leaflet-control-attribution');
+    await expect(attr).toHaveCount(1);
     await expect(attr).toBeVisible({ timeout: 20_000 });
     await expect(attr).toContainText(/OpenStreetMap|CARTO|Open-Meteo/);
+    // O painel aberto e o controlo podem ser re-montados durante o settle
+    // do mapa — boundingBox() devolvia null na corrida. Mede-se em evaluate
+    // com poll até a geometria estabilizar: attr.left > borda do painel.
+    const panelEl = page.locator('[data-map-panel="open"]');
+    await expect(panelEl).toBeVisible({ timeout: 20_000 });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const a = document.querySelector('.leaflet-control-attribution');
+            const p = document.querySelector('[data-map-panel="open"]');
+            if (!a || !p) return -1;
+            const ab = a.getBoundingClientRect();
+            const pb = p.getBoundingClientRect();
+            if (ab.width === 0 || pb.width === 0) return -1;
+            return ab.left - pb.right;
+          }),
+        { timeout: 20_000 },
+      )
+      .toBeGreaterThan(0);
   });
 });

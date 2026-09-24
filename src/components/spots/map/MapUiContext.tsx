@@ -49,6 +49,11 @@ export interface MapUiActions {
   /** Abre o spot na pré-visualização mobile. */
   openSpotSheet: (data: MapSpotSheetData) => void;
   closeSpotSheet: () => void;
+  /** Abre o sheet de exploração no estado «lista» (mobile). O «←» do sheet
+      de spot usa-a para voltar à lista — M6: substitui o evento
+      `ventu:open-explore-sheet` que existia porque o estado do sheet não
+      estava no contexto. */
+  openExploreSheet: () => void;
   /** Índice da hora das 48 h (trilho temporal partilhado). */
   setHoursFrame: (index: number) => void;
   /** Toggles de vista — localizados na UI dentro da zona dona. */

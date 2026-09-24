@@ -526,17 +526,25 @@ export default function SpotMapInteractive({
     hoursLive, hoursTimes, hoursFrame, hourScores, visibleSpots,
     focusSpotId, sheetSpot,
   ]);
+  // M6: «voltar à lista» do sheet de spot — acção do contexto (antes o
+  // evento partilhado `ventu:open-explore-sheet`).
+  const openExploreSheet = useCallback(
+    () => setExploreSheetState('open'),
+    [setExploreSheetState],
+  );
   const uiActions = useMemo<MapUiActions>(() => ({
     selectSpot,
     focusSpot: focusMapSpot,
     openSpotSheet: setSheetSpot,
     closeSpotSheet,
+    openExploreSheet,
     setHoursFrame: handleHoursFrameChange,
     toggleCluster,
     toggleWind,
     toggleOnlyOn,
   }), [
-    selectSpot, focusMapSpot, closeSpotSheet, handleHoursFrameChange,
+    selectSpot, focusMapSpot, closeSpotSheet, openExploreSheet,
+    handleHoursFrameChange,
     toggleCluster, toggleWind, toggleOnlyOn,
   ]);
 

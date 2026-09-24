@@ -143,7 +143,8 @@ function LayerToggle({ item }: { item: MapLayersMenuItem }) {
         )}
       </span>
       <span className={cn('shrink-0', item.iconClass)}>{item.icon}</span>
-      <span className="truncate">{item.label}</span>
+      {/* CORRECCOES-24SET (M5/M6): nome completo, nunca truncado. */}
+      <span className="min-w-0 text-left leading-snug">{item.label}</span>
     </button>
   );
 }
@@ -364,7 +365,7 @@ export default function MapExploreSheet({
       )}
     >
       {item.icon}
-      <span className="truncate">{item.label}</span>
+      <span className="min-w-0 text-left leading-snug">{item.label}</span>
     </button>
   );
 
@@ -499,8 +500,11 @@ export default function MapExploreSheet({
             {t.mapUiLayers.groupBase}
           </span>
           <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
+          {/* CORRECCOES-24SET (M5/M6): mobile = 1 coluna com o nome
+              completo da camada — duas colunas truncavam «Altura
+              significativa (Hs)», «Sinalização náutica»… */}
           <div
-            className="grid grid-cols-2 gap-1.5"
+            className="grid grid-cols-1 gap-1.5"
             role="group"
             aria-label={t.spotsMap.layers}
           >
@@ -515,7 +519,7 @@ export default function MapExploreSheet({
                     : t.mapUiLayers.groupNav;
               return (
                 <Fragment key={g}>
-                  <span className="col-span-2 mt-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+                  <span className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
                     {groupLabel}
                   </span>
                   {groupItems.map((item) => <LayerToggle key={item.key} item={item} />)}
@@ -530,7 +534,7 @@ export default function MapExploreSheet({
             {t.spotsMap.seeAlso}
           </span>
           <div
-            className="grid grid-cols-2 gap-1.5"
+            className="grid grid-cols-1 gap-1.5"
             role="group"
             aria-label={t.spotsMap.seeAlso}
           >

@@ -105,7 +105,17 @@ export default function MapTimeChrome({
     });
   }, [hoursFile, n, visibleSpots, sport, mapInstanceRef]);
 
-  const best = useMemo(() => computeBest(), [computeBest]);
+  /* `best` em estado: a leitura dos bounds do Leaflet é um ref — não pode
+     correr no render (react-hooks/refs). Recalcula quando os dados mudam
+     E no moveend — as barras seguem o «melhor score na vista» da maquete. */
+  const [best, setBest] = useState<number[]>([]);
+  useEffect(() => {
+    const update = () => setBest(computeBest());
+    update();
+    const map = mapInstanceRef.current;
+    map?.on('moveend', update);
+    return () => { map?.off('moveend', update); };
+  }, [computeBest, mapInstanceRef]);
 
   /* Noite = 20h–07h locais (horas do ficheiro já estão em Europe/Lisbon). */
   const night = useMemo(
@@ -224,30 +234,38 @@ export default function MapTimeChrome({
             aria-label={timeScrubLabel}
             className="pointer-events-auto w-[min(560px,100%)] rounded-surface border border-divider bg-bg-elevated px-3.5 pb-2 pt-2.5 shadow-card"
           >
+            {/* Cabeçalho NUMA linha (CORRECCOES-24SET M6#1): label + hint
+                com truncate (o hint é muto, não é um nome) e «Agora» fixo;
+                os chips de maré/térmica só entram no desktop — no mobile
+                rebentavam a linha e esmagavam o texto. Botão play com o
+                estilo .ib da maquete (transparente, ícone 18 px tinta fg —
+                nunca uma caixa branca vazia). */}
             <div className="mb-2 flex items-center gap-2">
               <button
                 type="button"
                 data-map-hours-play
-                aria-pressed={hoursUserPaused}
+                aria-pressed={!hoursHudPaused}
                 aria-label={hoursHudPaused ? timePlay : timePause}
                 onClick={() => onUserPausedChange(!hoursUserPaused)}
-                className="flex h-10 w-10 items-center justify-center rounded-input border border-divider bg-surface-2 text-fg transition-colors hover:bg-surface-3"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-input text-fg transition-colors hover:bg-surface-2"
               >
                 {hoursHudPaused ? (
-                  <Play aria-hidden className="h-4 w-4 fill-current" />
+                  <Play aria-hidden className="h-[18px] w-[18px] fill-current" />
                 ) : (
-                  <Pause aria-hidden className="h-4 w-4 fill-current" />
+                  <Pause aria-hidden className="h-[18px] w-[18px] fill-current" />
                 )}
               </button>
-              <b className="text-meta font-semibold text-fg">{stepLabel}</b>
-              <span className="text-[11px] text-fg-subtle">· {scrubBestHint}</span>
+              <span className="min-w-0 truncate text-meta text-fg-muted">
+                <b className="font-semibold text-fg">{stepLabel}</b>
+                <span className="text-[11px] text-fg-subtle"> · {scrubBestHint}</span>
+              </span>
               <span className="flex-1" />
-              {timeTrackChips}
+              {!isMobile && timeTrackChips}
               <button
                 type="button"
                 data-map-hours-now
                 onClick={() => onIndexChange(0)}
-                className="min-h-8 rounded-input px-2.5 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                className="min-h-8 shrink-0 whitespace-nowrap rounded-input px-2.5 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
               >
                 {timeNow}
               </button>

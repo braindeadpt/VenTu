@@ -58,10 +58,13 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
       await expectMinTargetSize(summary, 'summary «Legenda» do sheet');
 
       await summary.click();
-      await expect(page.getByRole('region', { name: 'Legenda do mapa' })).toBeVisible();
-      await expect(
-        page.getByRole('region', { name: 'Legenda do mapa' }).locator('.h-2'),
-      ).toBeVisible();
+      const legend = page.getByRole('region', { name: 'Legenda do mapa' });
+      await expect(legend).toBeVisible();
+      // UX v3 §4 — a régua usa amostras redondas (h-3.5) com os rótulos
+      // canónicos de getScoreTierLabel; o selector antigo (.h-2) era das
+      // barras de gradiente das camadas, que só existem com camadas ligadas.
+      await expect(legend.getByText('Épico')).toBeVisible();
+      await expect(legend.getByText('Fechado')).toBeVisible();
     });
   });
 

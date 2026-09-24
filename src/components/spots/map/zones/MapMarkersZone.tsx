@@ -22,7 +22,7 @@ import type { MapSpotData } from '../../mapSpotData';
 import { getBestScore } from '../../mapSpotData';
 import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 import { mapHoursClock } from '@/lib/mapHours';
-import { resolveExploreChrome, VENTU_OPEN_EXPLORE_SHEET } from '../../mapMarkers';
+import { resolveExploreChrome } from '../../mapMarkers';
 import { useMapMarkers } from '../hooks/useMapMarkers';
 import MapSpotSheet, { type MapSpotSheetData } from '../../MapSpotSheet';
 import { MapSpotCard } from '../../MapSpotPreview';
@@ -215,7 +215,9 @@ export function useMapMarkersZone({
       const ll: [number, number] = [d.spot.lat, d.spot.lon];
       const zoom = Math.max(map.getZoom(), 9);
       if (reducedMotion) map.setView(ll, zoom);
-      else map.flyTo(ll, zoom, { duration: 0.45 });
+      // §11: flyTo a partir da lista = 600 ms (CORRECCOES-24SET M6 p.7 —
+      // 450 ms era desvio NÃO aceite).
+      else map.flyTo(ll, zoom, { duration: 0.6 });
       if (exploreMode) {
         setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null });
         return;
@@ -264,16 +266,16 @@ export function MapMarkersZone() {
     hoursLive,
     hoursTimes,
   } = useMapUiData();
-  const { closeSpotSheet, selectSpot } = useMapUiActions();
+  const { closeSpotSheet, selectSpot, openExploreSheet } = useMapUiActions();
   const t = getTranslation(locale);
 
   // «←» do sheet volta à lista de spots do viewport: fecha a
-  // pré-visualização e levanta o sheet de exploração (evento partilhado —
-  // listener mínimo em MapExploreZone, registado para a M6).
+  // pré-visualização e levanta o sheet de exploração (M6: acção do
+  // MapUiContext — antes era o evento `ventu:open-explore-sheet`).
   const onBackToList = useCallback(() => {
     closeSpotSheet();
-    window.dispatchEvent(new CustomEvent(VENTU_OPEN_EXPLORE_SHEET));
-  }, [closeSpotSheet]);
+    openExploreSheet();
+  }, [closeSpotSheet, openExploreSheet]);
 
   if (!sheetSpot) return null;
   const scoreOverride = hourScores?.get(sheetSpot.spot.id);
