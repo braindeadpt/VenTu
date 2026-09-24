@@ -19,7 +19,8 @@ import { showAllMapMarkers } from './helpers/map-sheet';
  *   1. Chip de boias → popover → «Dispensar este aviso»
  *   2. Sem banner de boias sobre o mapa (C4: toast→chip — o aviso vive só
  *      no popover do chip)
- *   3. Popup de marcador (desktop) → fecho do popup Leaflet
+ *   3. Cartão de pré-visualização do marcador (desktop, UX v3) → «Fechar»
+ *      do cartão (o popup Leaflet já não existe no /mapa — resta nos embeds)
  *   4. Sheet do spot (mobile) → «Fechar» e «Ver spot» (regressão histórica:
  *      a fila de ações deslizava por baixo da barra do HUD e os toques caíam
  *      no HUD — z-fix documentado no MapSpotSheet)
@@ -275,24 +276,41 @@ test.describe('Mapa — dismiss dos overlays é hit-testável (desktop + mobile)
       ).toBeVisible({ timeout: 10_000 });
     });
 
-    test('popup de marcador: o fecho do popup Leaflet é o elemento de topo e fecha', async ({
+    test('cartão do marcador (v3): o «Fechar» é o elemento de topo e fecha a pré-visualização', async ({
       page,
     }) => {
       await openMapa(page);
       await openInViewportMarker(page);
-      const popup = page.locator('.leaflet-popup').last();
-      await expect(popup).toBeVisible({ timeout: 10_000 });
+      const card = page.locator('[data-testid="map-spot-card"]');
+      await expect(card).toBeVisible({ timeout: 10_000 });
 
-      const close = popup.locator('.leaflet-popup-close-button');
+      const close = card.getByRole('button', { name: 'Fechar' });
       await expectTopmostHit(page, close);
       await close.click();
-      await expect(popup).toHaveCount(0);
+      await expect(card).toHaveCount(0);
     });
 
     test('modal da legenda de vento: o botão de dispensa é o elemento de topo e fecha', async ({
       page,
     }) => {
-      await openMapa(page);
+      // UX v3 §2 (M2): no /mapa o «?» saiu da pilha — a leitura do vento vive
+      // no cartão «Legenda» e, no mobile, no item «windhelp» do sheet. O
+      // trigger directo do modal mantém-se na toolbar pill dos embeds — o
+      // hit-test corre lá (mesmo componente de modal).
+      await preseedWindRingLegend(page);
+      await page.addInitScript(() => {
+        localStorage.setItem('ventu.map.cluster', '0');
+        localStorage.setItem('ventu.map.wind', '1');
+      });
+      await page.goto('/pt/spots/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+      await waitHydrated(page);
+      // ≥1024 px: o embed nasce aberto — clicar fechava-o (ver
+      // wind-ring-legend). Só se expande quando vem recolhido.
+      const expander = page.getByRole('button', { name: /Mapa ·|Map ·/i });
+      if ((await expander.getAttribute('aria-expanded')) !== 'true') {
+        await expander.click();
+      }
+      await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
       const help = page.getByRole('button', { name: /Como ler o vento no mapa/i });
       await expect(help).toBeVisible({ timeout: 20_000 });
       await help.click();

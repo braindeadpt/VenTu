@@ -139,14 +139,19 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       const clustered = await mapShell.getAttribute('data-map-cluster');
       if (clustered === 'true') {
-        // Desktop: o toggle flutua no MapControls (visível). Mobile: vive nos
-        // extras do SHEET, que só aparece em peek→half — o mesmo caminho que
-        // showAllMapMarkers() já faz (grabber, clique, volta ao peek).
+        // M2 (UX v3 §2): o toggle saiu do cromo — «Agrupar spots» passa a
+        // switch do painel na M3. No mobile continua nos extras do SHEET
+        // (peek→half). No desktop, até a M3 aterrar, o caminho é a
+        // preferência em localStorage + reload.
         const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i }).first();
         if (await showAll.isVisible().catch(() => false)) {
           await showAll.click();
-        } else {
+        } else if (viewport === 'mobile') {
           await showAllMapMarkers(page);
+        } else {
+          await page.evaluate(() => localStorage.setItem('ventu.map.cluster', '0'));
+          await page.reload({ waitUntil: 'domcontentloaded' });
+          await page.waitForSelector('.leaflet-container', { timeout: 25_000 });
         }
       }
       await expect(mapShell).toHaveAttribute('data-map-cluster', 'false');
@@ -220,8 +225,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         .toBe(true);
 
       if (viewport === 'desktop') {
+        // M2 (UX v3 §2): a barra do topo é agora a pilha vertical à direita
+        // (mesmo selector data-map-controls, role=toolbar). O toggle
+        // «Agrupar spots» saiu do cromo → switch do painel na M3.
         await expect(page.locator('[data-map-controls="true"]')).toBeVisible();
-        await expect(page.getByRole('button', { name: /Agrupar spots|Cluster spots|Mostrar todos|Show all/i })).toBeVisible();
+        await expect(
+          page.locator('[data-map-controls="true"]'),
+        ).toHaveAttribute('role', 'toolbar');
       }
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });

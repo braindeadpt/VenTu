@@ -43,6 +43,7 @@ async function openMap(page: import('@playwright/test').Page) {
   await page.addInitScript(() => {
     localStorage.setItem('ventu.map.cluster', '0');
     localStorage.setItem('ventu.map.wind', '1');
+    localStorage.setItem('ventu.mapdebug', '1');
   });
   await interceptMapHours(page, MAP_HOURS_STUB);
   await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
@@ -60,8 +61,13 @@ test.describe('Map wind field', () => {
     await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
     await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(1);
 
-    // desligar o toggle remove o canvas e marca o atributo a false
-    await page.getByRole('button', { name: 'Ocultar vento' }).first().click();
+    // desligar o toggle remove o canvas e marca o atributo a false.
+    // UX v3 §0.3: o toggle chama-se «Vento» e o estado vai em aria-pressed —
+    // já não existe o botão de acção «Ocultar vento» do cromo antigo.
+    const windToggle = page.locator('[data-map-wind-toggle]');
+    await expect(windToggle).toHaveAttribute('aria-pressed', 'true');
+    await windToggle.click();
+    await expect(windToggle).toHaveAttribute('aria-pressed', 'false');
     await expect(map).toHaveAttribute('data-map-windfield', 'false');
     await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(0);
   });
@@ -150,6 +156,96 @@ test.describe('Map wind field — animado (sem reduced-motion)', () => {
 
     await page.evaluate(() => document.documentElement.classList.add('theme-ocean'));
     await expect(map).toHaveAttribute('data-map-windfield-color', '109 40 217');
+  });
+
+  test('§9 — fade-out durante o pan (opacity 0) e retoma ao assentar', async ({ page }) => {
+    await openMap(page);
+    const map = page.locator('.leaflet-container');
+    await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
+    await expect(map).toHaveAttribute('data-map-windfield-visible', 'true', { timeout: 10_000 });
+    const canvas = page.locator('canvas.ventu-windfield-canvas');
+
+    // Gesto real do Leaflet via flyTo — dispara os mesmos
+    // movestart/zoomstart/moveend/zoomend de um arrasto, mas sem depender
+    // do hit-test do rato sintético (um mousedown sobre um marcador ou
+    // chrome podia nunca iniciar o drag sob carga — flake observado).
+    await page.evaluate(() => {
+      const m = (window as unknown as {
+        __VENTU_MAP__?: {
+          getCenter(): { lat: number; lng: number };
+          getZoom(): number;
+          flyTo(c: [number, number], z: number, o: { duration: number }): void;
+        };
+      }).__VENTU_MAP__;
+      if (!m) throw new Error('__VENTU_MAP__ ausente (ventu.mapdebug)');
+      const c = m.getCenter();
+      m.flyTo([c.lat - 1.2, c.lng - 1.8], m.getZoom(), { duration: 1.2 });
+    });
+    // Durante o gesto o canvas vai a 0 (e a hidden depois do fade).
+    await expect(map).toHaveAttribute('data-map-windfield-visible', 'false', {
+      timeout: 10_000,
+    });
+    await expect(canvas).toHaveCSS('opacity', '0', { timeout: 10_000 });
+
+    // Assenta → após ~600 ms + fade de 300 ms volta a 1 e continua a
+    // desenhar. Folga larga: sob paralelismo o rAF/timer atrasam.
+    await expect(map).toHaveAttribute('data-map-windfield-visible', 'true', {
+      timeout: 15_000,
+    });
+    await expect(canvas).toHaveCSS('opacity', '1', { timeout: 10_000 });
+  });
+
+  test('§9 — a densidade de partículas sobe com o zoom', async ({ page }) => {
+    await openMap(page);
+    const map = page.locator('.leaflet-container');
+    await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
+
+    const lowTarget = await page.evaluate(() =>
+      document
+        .querySelector('.leaflet-container')
+        ?.getAttribute('data-map-windfield-target'),
+    );
+    expect(lowTarget).not.toBeNull();
+
+    await page.evaluate(() => {
+      const m = (window as unknown as {
+        __VENTU_MAP__?: { setZoom(z: number): void };
+      }).__VENTU_MAP__;
+      if (!m) throw new Error('__VENTU_MAP__ ausente (ventu.mapdebug)');
+      m.setZoom(10);
+    });
+    // Confirma que o zoom aconteceu — sem isto um no-op silencioso lia-se
+    // como «densidade não subiu».
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() =>
+            (window as unknown as { __VENTU_MAP__?: { getZoom(): number } })
+              .__VENTU_MAP__?.getZoom(),
+          ),
+        { timeout: 15_000 },
+      )
+      .toBe(10);
+    // O alvo novo é publicado quando o loop retoma depois do zoom.
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() =>
+            document
+              .querySelector('.leaflet-container')
+              ?.getAttribute('data-map-windfield-target'),
+          ),
+        { timeout: 30_000 },
+      )
+      .not.toBe(lowTarget);
+    const highTarget = await page.evaluate(() =>
+      Number(
+        document
+          .querySelector('.leaflet-container')
+          ?.getAttribute('data-map-windfield-target'),
+      ),
+    );
+    expect(highTarget).toBeGreaterThan(Number(lowTarget));
   });
 
   test('mudar para reduced-motion a meio congela o loop', async ({ page }) => {

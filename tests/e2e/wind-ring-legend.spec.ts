@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { WIND_RING_LEGEND_LS_KEY } from '../../src/lib/windRingLegend';
+import { waitHydrated } from './helpers/hydration';
 
 test.describe('wind ring legend', () => {
+  // O cenário tem esperas sequenciais reais (auto-hide de 12 s do hint) —
+  // o default de 30 s rebenta sob paralelismo do CI.
+  test.describe.configure({ timeout: 90_000 });
   // Wind rings are desktop-default-on (readWindPref ignores localStorage on
   // mobile by design), so the coach scenario is exercised at desktop size.
   test.use({ viewport: { width: 1280, height: 800 } });
@@ -62,9 +66,21 @@ test.describe('wind ring legend', () => {
       localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
 
-    await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    // UX v3 §2 (M2): no /mapa o «?» saiu do cromo — o toggle «Legenda»
+    // assumiu-lhe o papel. O botão directo mantém-se na toolbar pill dos
+    // embeds (/spots/ abre o mapa colapsado → expandir primeiro).
+    await page.goto('/pt/spots/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    // Sem isto o primeiro clique caía antes da hidratação e o onClick do
+    // expansor era engolido — o mapa nunca montava (flake sob carga).
+    await waitHydrated(page);
+    // Em ≥1024 px o embed nasce ABERTO (efeito de mount do SpotGridClient) —
+    // clicar no expansor fechava-o e o .leaflet-container nunca aparecia.
+    // O clique só faz sentido quando o mapa arranca fechado.
+    const expander = page.getByRole('button', { name: /Mapa ·|Map ·/i });
+    if ((await expander.getAttribute('aria-expanded')) !== 'true') {
+      await expander.click();
+    }
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
-    await page.waitForSelector('[data-map-wind="true"]', { timeout: 20_000 });
 
     const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
     await expect(dialog).toBeHidden({ timeout: 5_000 });

@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import type L from 'leaflet';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
+import { getTranslation } from '@/lib/i18n';
 import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
 import { strongestSpotWarning, warningBadgeLabel } from '@/lib/ipmaWarnings';
@@ -20,9 +21,11 @@ import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { MapSpotData } from '../../mapSpotData';
 import { getBestScore } from '../../mapSpotData';
 import { includeSpotInViewportBounds } from '../../mapViewportBounds';
+import { mapHoursClock } from '@/lib/mapHours';
 import { resolveExploreChrome } from '../../mapMarkers';
 import { useMapMarkers } from '../hooks/useMapMarkers';
 import MapSpotSheet, { type MapSpotSheetData } from '../../MapSpotSheet';
+import { MapSpotCard } from '../../MapSpotPreview';
 import { useMapUiActions, useMapUiData } from '../MapUiContext';
 
 type MapHudProps = Omit<MapFullscreenHudProps, 'isPt' | 'visible'>;
@@ -106,12 +109,15 @@ export function useMapMarkersZone({
     mapInstanceRef.current?.closePopup();
     setSheetSpot(null);
   }, [mapInstanceRef, setSheetSpot]);
+  const exploreMode = Boolean(mapHud) && isFullscreen;
   useMapMarkers({
     mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef,
     visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady,
     isMobile, isHeroEmbed, activeCluster, showWindOnMarkers, locale,
     warningsBySpot, hourScores, onSpotSelect, onMarkerInteract, setSheetSpot, closePopupAndSheet,
-    exploreChrome: resolveExploreChrome(Boolean(mapHud) && isFullscreen, isMobile, panelCollapsed),
+    exploreChrome: resolveExploreChrome(exploreMode, isMobile, panelCollapsed),
+    reducedMotion,
+    moreAriaTemplate: getTranslation(locale).mapUiMarkers.moreSpotsNearby,
   });
 
   // ── Popup click handler ──
@@ -198,6 +204,9 @@ export function useMapMarkersZone({
 
   // Toque numa linha: mobile abre o sheet de detalhe (mesmo do marcador),
   // desktop voa até ao marcador e abre o popup (desagrupa se preciso).
+  // UX v3: na superfície Explorar o foco abre SEMPRE a pré-visualização
+  // (cartão desktop / sheet mobile) — inclui o deep link ?spot=, que já não
+  // fica só com a linha da lista focada (§7 da maquete).
   const focusMapSpot = useCallback(
     (spotId: string, openDetail = true) => {
       const map = mapInstanceRef.current;
@@ -206,7 +215,13 @@ export function useMapMarkersZone({
       const ll: [number, number] = [d.spot.lat, d.spot.lon];
       const zoom = Math.max(map.getZoom(), 9);
       if (reducedMotion) map.setView(ll, zoom);
-      else map.flyTo(ll, zoom, { duration: 0.45 });
+      // §11: flyTo a partir da lista = 600 ms (CORRECCOES-24SET M6 p.7 —
+      // 450 ms era desvio NÃO aceite).
+      else map.flyTo(ll, zoom, { duration: 0.6 });
+      if (exploreMode) {
+        setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null });
+        return;
+      }
       if (!openDetail) return;
       if (isMobile) {
         setSheetSpot({ ...d, warning: warningsBySpot.get(d.spot.id) ?? null });
@@ -227,28 +242,75 @@ export function useMapMarkersZone({
       if (reducedMotion) openPopup();
       else map.once('moveend', openPopup);
     },
-    [visibleSpots, warningsBySpot, isMobile, reducedMotion, activeCluster,
+    [visibleSpots, warningsBySpot, isMobile, reducedMotion, activeCluster, exploreMode,
       mapInstanceRef, markersCacheRef, clusterGroupRef, setSheetSpot],
   );
 
   return { focusMapSpot, closePopupAndSheet };
 }
 
-// ─── Vista: pré-visualização do spot (sheet mobile) — lê a selecção do
-//     contexto partilhado ───
+// ─── Vista: pré-visualização do spot — sheet mobile / cartão 320 px
+//     ancorado ao marcador no desktop (maquete §7). Lê a selecção do
+//     contexto partilhado. ───
 
 export function MapMarkersZone() {
-  const { isMobile, sheetSpot, sport, locale } = useMapUiData();
-  const { closeSpotSheet, selectSpot } = useMapUiActions();
+  const {
+    isMobile,
+    isFullscreen,
+    isHeroEmbed,
+    sheetSpot,
+    sport,
+    locale,
+    hourScores,
+    hoursFrame,
+    hoursLive,
+    hoursTimes,
+  } = useMapUiData();
+  const { closeSpotSheet, selectSpot, openExploreSheet } = useMapUiActions();
+  const t = getTranslation(locale);
 
-  if (!isMobile) return null;
+  // «←» do sheet volta à lista de spots do viewport: fecha a
+  // pré-visualização e levanta o sheet de exploração (M6: acção do
+  // MapUiContext — antes era o evento `ventu:open-explore-sheet`).
+  const onBackToList = useCallback(() => {
+    closeSpotSheet();
+    openExploreSheet();
+  }, [closeSpotSheet, openExploreSheet]);
+
+  if (!sheetSpot) return null;
+  const scoreOverride = hourScores?.get(sheetSpot.spot.id);
+  const hourLabel =
+    hoursLive && hoursTimes[hoursFrame]
+      ? mapHoursClock(hoursTimes[hoursFrame])
+      : t.mapUiMarkers.now;
+
+  if (isMobile) {
+    return (
+      <MapSpotSheet
+        data={sheetSpot}
+        selectedSport={sport}
+        locale={locale}
+        onClose={closeSpotSheet}
+        onBackToList={isFullscreen ? onBackToList : undefined}
+        scoreOverride={scoreOverride}
+        hoursFrame={hoursLive ? hoursFrame : 0}
+        hourLabel={hourLabel}
+        onViewSpot={selectSpot}
+      />
+    );
+  }
+  // Cartão só na superfície Explorar — os embeds mantêm o popup Leaflet.
+  if (!isFullscreen || isHeroEmbed) return null;
   return (
-    <MapSpotSheet
+    <MapSpotCard
       data={sheetSpot}
-      selectedSport={sport}
       locale={locale}
+      highlightSport={sport}
+      scoreOverride={scoreOverride}
+      hoursFrame={hoursLive ? hoursFrame : 0}
+      hourLabel={hourLabel}
       onClose={closeSpotSheet}
-      onViewSpot={selectSpot}
+      onViewSpot={() => selectSpot(sheetSpot.spot.id)}
     />
   );
 }

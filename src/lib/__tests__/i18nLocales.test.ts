@@ -39,6 +39,8 @@ const SHARED_TOKENS = new Set([
   'PM', 'BM',
   // «ideal» é a mesma grafia em PT/EN/ES/DE (rótulo do sector ideal).
   'ideal {dirs}',
+  // «Madeira» é nome próprio — idêntico em todas as línguas (chip de ilha §10).
+  'Madeira',
 ]);
 
 /**
@@ -82,6 +84,9 @@ const ES_COGNATES = new Set([
   'Nada encontrado',    // espanhol correcto = PT
   'Verificado',         // espanhol correcto = PT
   'Ver perfil',         // espanhol correcto = PT
+  'Filtros',            // espanhol correcto = PT (painel/sheet «Explorar», M3)
+  'Filtros ({count})',  // espanhol correcto = PT (idem)
+  'Continente',         // espanhol correcto = PT (chip «Saltar para», M3)
   'Guardar',            // espanhol correcto = PT
   'condiciones',        // espanhol correcto = PT
   'MODALIDADES',        // espanhol correcto = PT (cabeçalho de grupo de pesquisa)
@@ -189,6 +194,11 @@ const ES_COGNATES = new Set([
   'Norte',                             // espanhol correcto = PT (região Norte)
   'Centro',                            // espanhol correcto = PT (região Centro)
   'Lisboa',                            // espanhol correcto = PT (região Lisboa)
+  'Mar',                               // espanhol correcto = PT (grupo «Mar» do menu Camadas, §8)
+  'Próximas 48 h',                     // espanhol correcto = PT (camada «48 h» do menu, §8)
+  'Isóbatas',                          // espanhol correcto = PT (camada de isóbatas)
+  'Altura significativa (Hs)',         // espanhol correcto = PT (camada Hs)
+  'Continente',                        // espanhol correcto = PT (chip de área §10)
 ]);
 
 /**
@@ -229,6 +239,7 @@ const EN_COGNATES = new Set([
   'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
   'Cross-on', 'Cross-off', // classifyWind: rótulos do chip adoptados em EN = PT
   'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
+  'Madeira',           // nome próprio — igual em EN (chip de ilha §10)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
