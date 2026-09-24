@@ -207,7 +207,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     const sheet = page.locator('[data-explore-sheet]');
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'half', { timeout: 15_000 });
     await page.locator('[data-sheet-grabber]').click(); // → open
-    const row = page.locator('[data-spot-id="nazare"]');
+    const row = page.locator('[role="option"][data-spot-id="nazare"]');
     await expect(row).toBeVisible({ timeout: 15_000 });
     expect(await rowScore(row)).toBe(20);
 
@@ -226,7 +226,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await openMapa(page, '?spot=nazare');
     const sheet = page.locator('[data-explore-sheet]');
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'open', { timeout: 20_000 });
-    const row = page.locator('[data-spot-id="nazare"]');
+    const row = page.locator('[role="option"][data-spot-id="nazare"]');
     await expect(row).toBeVisible({ timeout: 15_000 });
     await expect(row).toBeFocused();
   });
@@ -277,7 +277,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await openMapa(page, '?spot=nazare');
     await expect(page.locator('[data-explore-sheet]')).toHaveAttribute(
       'data-explore-sheet', 'open', { timeout: 20_000 });
-    const focused = page.locator('[data-spot-id="nazare"]');
+    const focused = page.locator('[role="option"][data-spot-id="nazare"]');
     await expect(focused).toBeFocused();
 
     const idx = Number(await focused.getAttribute('data-row-index'));
@@ -309,14 +309,30 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
     await openMapa(page);
     const panel = page.locator('[data-map-panel="open"]');
     await expect(panel).toBeVisible({ timeout: 20_000 });
-    const rows = panel.getByRole('option');
-    const count = await rows.count();
-    expect(count).toBeGreaterThan(0);
+    // [role="option"] explícito — getByRole('option') também apanha os
+    // <option> nativos dos selects Região/Nível (score «0» fantasma).
+    const rows = panel.locator('[role="listbox"] [role="option"]');
+    expect(await rows.count()).toBeGreaterThan(0);
 
-    const scores: number[] = [];
-    for (let i = 0; i < count; i += 1) {
-      scores.push(await rowScore(rows.nth(i)));
-    }
+    // Leitura em lote — um innerText por linha (~114) estourava o timeout
+    // do teste em ida-e-volta CDP. E a lista ainda assenta enquanto o fit
+    // inicial do mapa decorre: duas leituras iguais a 400 ms de distância
+    // garantem um instantâneo estável antes da asserção de ordenação.
+    const collect = () =>
+      rows.evaluateAll((els) =>
+        els.map((r) => Number((r.querySelector('span')?.textContent ?? '').trim())));
+    let scores = await collect();
+    await expect
+      .poll(
+        async () => {
+          const cur = await collect();
+          const stable = JSON.stringify(cur) === JSON.stringify(scores);
+          scores = cur;
+          return stable;
+        },
+        { timeout: 20_000, intervals: [400] },
+      )
+      .toBe(true);
     const sorted = [...scores].sort((a, b) => b - a);
     expect(scores).toEqual(sorted);
     // O topo do painel = maior score visível nos marcadores.
