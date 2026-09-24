@@ -43,9 +43,15 @@ function sitemapUrl(value) {
 }
 
 function hreflangLinks(localePath) {
-  return LOCALES.map(
+  const links = LOCALES.map(
     (loc) => `    <xhtml:link rel="alternate" hreflang="${loc}" href="${sitemapUrl(`${BASE_URL}/${loc}${localePath}`)}" />`,
-  ).join('\n');
+  );
+  // x-default: a variante para quem não corresponde a nenhuma língua (PT, o
+  // defaultLocale do site — o root redirecciona para /pt/).
+  links.push(
+    `    <xhtml:link rel="alternate" hreflang="x-default" href="${sitemapUrl(`${BASE_URL}/pt${localePath}`)}" />`,
+  );
+  return links.join('\n');
 }
 
 function addUrl(urls, localePath, { changefreq, priority, lastmod }) {

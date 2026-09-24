@@ -92,11 +92,19 @@ function guinchoTransform(
   if (mode === 'single-source-ih') {
     // Só a fonte vencedora (IH fresca), sem runner-up — o hero/sticky caem
     // para o rótulo compacto de fonte única, nunca para o chip lado a lado.
+    //
+    // `observedWaveAlt`/`observedWaveMeta` vêm dos dados reais (o pipeline
+    // acrescenta o runner-up WMO quando existe) e o `{...entry}` mantinha-os:
+    // o chip IH vs WMO aparecia com dados de produção e não com a fixture —
+    // o spec deixava de ser hermético. Limpar os dois é o que garante «uma só
+    // fonte» independentemente do dia.
     return {
       spots: {
         [SPOT_KEY]: (entry) => ({
           ...entry,
           observedWave: freshObservedWave(),
+          observedWaveAlt: undefined,
+          observedWaveMeta: undefined,
         }),
       },
     };
@@ -118,6 +126,10 @@ function guinchoTransform(
             observedAt: new Date(Date.now() - 5.5 * 3_600_000).toISOString(),
             skill: undefined,
           }),
+          // Como no modo IH: o runner-up dos dados reais não conta para
+          // «fonte única» (ver comentário do `single-source-ih`).
+          observedWaveAlt: undefined,
+          observedWaveMeta: undefined,
         }),
       },
     };

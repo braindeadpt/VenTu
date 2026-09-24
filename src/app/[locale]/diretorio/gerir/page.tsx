@@ -16,7 +16,7 @@ export async function generateMetadata({
   const { locale } = await params;
   const isPt = locale === 'pt';
   return {
-    title: getTranslation(isPt ? 'pt' : 'en').directory.manageSchoolsTitle,
+    title: getTranslation(locale).directory.manageSchoolsTitle,
     robots: { index: false, follow: false },
   };
 }

@@ -31,10 +31,20 @@ export function getRegionLifestylePath(slug: RegionImageSlug): string {
   return `/images/regions/${slug}.jpg`;
 }
 
+/**
+ * Imagem Open Graph (1200×630) da região — gerada no build por
+ * `scripts/generate-region-og-images.mjs` (ver `npm run og:generate`).
+ * Usada pelas landings `/explorar/{desporto}-{região}/` para a partilha ter
+ * imagem própria (antes não tinham nenhuma).
+ */
+export function getRegionOgPath(slug: RegionImageSlug): string {
+  return `/images/og/regions/${slug}.jpg`;
+}
+
 /** Default coastal band for home hero (continental presence). */
 export const HOME_HERO_REGION_SLUG: RegionImageSlug = 'centro';
 
-export function getRegionLifestyleAlt(slug: RegionImageSlug, locale: 'pt' | 'en'): string {
+export function getRegionLifestyleAlt(slug: RegionImageSlug, locale: string): string {
   const names: Record<RegionImageSlug, { pt: string; en: string }> = {
     norte: { pt: 'Costa norte de Portugal', en: 'Northern coast of Portugal' },
     centro: { pt: 'Costa centro de Portugal', en: 'Central coast of Portugal' },

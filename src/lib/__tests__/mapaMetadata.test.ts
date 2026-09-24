@@ -40,6 +40,7 @@ describe('mapa page SEO', () => {
       es: '/es/mapa/',
       de: '/de/mapa/',
       fr: '/fr/mapa/',
+      'x-default': '/pt/mapa/',
     });
     expect(en.alternates?.languages).toEqual({
       pt: '/pt/mapa/',
@@ -47,6 +48,7 @@ describe('mapa page SEO', () => {
       es: '/es/mapa/',
       de: '/de/mapa/',
       fr: '/fr/mapa/',
+      'x-default': '/pt/mapa/',
     });
     const images = pt.openGraph?.images;
     const first = Array.isArray(images) ? images[0] : images;

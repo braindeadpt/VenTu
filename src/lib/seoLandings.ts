@@ -48,15 +48,26 @@ export const SPORT_LABELS: Record<string, { pt: string; en: string }> = {
   'big-wave': { pt: 'Big Wave', en: 'Big Wave' },
 }
 
-export const REGION_LABELS: Record<MacroRegion, { pt: string; en: string }> = {
-  Todos: { pt: 'Portugal', en: 'Portugal' },
-  Norte: { pt: 'Norte', en: 'North' },
-  Centro: { pt: 'Centro', en: 'Central' },
-  Lisboa: { pt: 'Lisboa', en: 'Lisbon' },
-  Alentejo: { pt: 'Alentejo', en: 'Alentejo' },
-  Algarve: { pt: 'Algarve', en: 'Algarve' },
-  'Açores': { pt: 'Açores', en: 'Azores' },
-  Madeira: { pt: 'Madeira', en: 'Madeira' },
+/**
+ * Nome da macro-região no locale. «Centro/Lisboa» têm tradução real; Portugal,
+ * Alentejo, Algarve e Madeira são nomes próprios iguais em todas as línguas.
+ */
+export function regionLabel(region: MacroRegion, locale: string): string {
+  const t = getTranslation(locale).regions
+  switch (region) {
+    case 'Todos':
+      return 'Portugal'
+    case 'Norte':
+      return t.norte
+    case 'Centro':
+      return t.centro
+    case 'Lisboa':
+      return t.lisboa
+    case 'Açores':
+      return t.acores
+    default:
+      return region
+  }
 }
 
 function countSpots(sport: (typeof SEO_SPORTS)[number], region?: MacroRegion): number {
@@ -115,7 +126,7 @@ export function landingTitle(landing: SeoLanding, locale: string): string {
   if (!landing.region) {
     return t.inPortugal.replace('{sport}', sport)
   }
-  const region = localizedText(REGION_LABELS[landing.region], locale)
+  const region = regionLabel(landing.region, locale)
   return t.inRegion.replace('{sport}', sport).replace('{region}', region)
 }
 

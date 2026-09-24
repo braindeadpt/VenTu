@@ -1,4 +1,5 @@
-import { getTranslation } from '@/lib/i18n';
+import { getRegionOgPath, resolveRegionSlugFromMacro } from '@/lib/regionImage'
+import { getTranslation, validateLocale } from '@/lib/i18n';
 import { loadSpotListings } from '@/lib/load-spot-data'
 import { MACRO_REGIONS } from '@/lib/regions'
 import { SpotGridClient } from '@/components/spots/SpotGridClient'
@@ -11,6 +12,7 @@ import {
   landingTitle,
 } from '@/lib/seoLandings'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
@@ -45,11 +47,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = `${landingTitle(landing, locale)} — VenTu`
   const description = landingDescription(landing, locale)
 
-  return {
+  const loc = validateLocale(locale)
+  const regionSlug = landing.region ? resolveRegionSlugFromMacro(landing.region) : null
+  return buildPageMetadata({
     title,
     description,
-    openGraph: { title, description },
-  }
+    locale: loc,
+    path: `/${loc}/explorar/${slug}/`,
+    // Imagem OG da região quando a landing é desporto+região (senão o cartão
+    // do site, que é o default do builder).
+    ...(regionSlug
+      ? {
+          imagePath: getRegionOgPath(regionSlug),
+          imageAlt: `${landingTitle(landing, loc)} — VenTu`,
+        }
+      : {}),
+  })
 }
 
 export default async function ExplorarPage({ params }: Props) {

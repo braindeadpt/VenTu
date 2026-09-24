@@ -88,6 +88,7 @@ export default defineConfig({
       'scripts/lib/__tests__/sqlFunctionDrift.test.js',
       'scripts/lib/__tests__/dataHistoryBudget.test.js',
       'scripts/lib/__tests__/visualFixtureShape.test.js',
+    'scripts/lib/__tests__/i18nDebt.test.js',
     ],
   },
   resolve: {

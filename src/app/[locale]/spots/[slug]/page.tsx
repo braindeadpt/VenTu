@@ -1,7 +1,8 @@
+import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText'
 import { Suspense, type ComponentProps } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
-import { locales } from '@/lib/i18n'
+import { locales, validateLocale } from '@/lib/i18n'
 import { buildSpotMetadata } from '@/lib/seo'
 import { loadEvents } from '@/lib/load-events'
 import { loadSpotData } from '@/lib/load-spot-data'
@@ -31,10 +32,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   }
 
   const isPt = locale === 'pt'
-  const spotName = isPt ? spot.name : spot.nameEn
-  const regionName = isPt ? spot.region : spot.regionEn
+  const spotName = localizedSpotName(spot, locale)
+  const regionName = localizedSpotRegion(spot, locale)
 
-  return buildSpotMetadata(isPt ? 'pt' : 'en', slug, spotName, regionName)
+  return buildSpotMetadata(validateLocale(locale), slug, spotName, regionName)
 }
 
 export default async function SpotDetailPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {

@@ -1,5 +1,6 @@
-import { locales, getTranslation } from '@/lib/i18n'
+import { locales, getTranslation, validateLocale } from '@/lib/i18n'
 import type { Metadata } from 'next'
+import { buildPageMetadata } from '@/lib/seo'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import WetsuitCalculatorClient from '@/components/tools/WetsuitCalculatorClient'
@@ -15,10 +16,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const tt = getTranslation(locale).tools
-  return {
+  const loc = validateLocale(locale)
+  return buildPageMetadata({
     title: tt.wetsuitMetaTitle,
     description: tt.wetsuitMetaDescription,
-  }
+    locale: loc,
+    path: `/${loc}/ferramentas/calculadora-fato/`,
+  })
 }
 
 export default async function CalculadoraFatoPage({ params }: Props) {

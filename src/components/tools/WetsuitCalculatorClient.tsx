@@ -21,15 +21,15 @@ export default function WetsuitCalculatorClient({ locale }: { locale: string }) 
   const effectiveTempC = pick?.waterTempC ?? tempC;
 
   const rec = useMemo(
-    () => recommendWetsuit(effectiveTempC, windy),
-    [effectiveTempC, windy],
+    () => recommendWetsuit(effectiveTempC, locale, windy),
+    [effectiveTempC, locale, windy],
   );
 
   const extras = rec
     ? [
-        { on: rec.boots, pt: 'Botas', en: 'Boots' },
-        { on: rec.gloves, pt: 'Luvas', en: 'Gloves' },
-        { on: rec.hood, pt: 'Capuz', en: 'Hood' },
+        { on: rec.boots, label: t.wetsuitGear.boots },
+        { on: rec.gloves, label: t.wetsuitGear.gloves },
+        { on: rec.hood, label: t.wetsuitGear.hood },
       ]
     : [];
 
@@ -95,12 +95,12 @@ export default function WetsuitCalculatorClient({ locale }: { locale: string }) 
         {rec ? (
           <div className="space-y-3">
             <p className="font-mono tabular-nums text-num-lg text-accent font-semibold">
-              {isPt ? rec.suit.pt : rec.suit.en}
+              {rec.suit}
             </p>
             <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
               {extras.map((x) => (
                 <li
-                  key={x.en}
+                  key={x.label}
                   className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-pill border text-meta-sm font-medium ${
                     x.on
                       ? 'bg-accent/10 text-fg border-accent/30'
@@ -112,11 +112,11 @@ export default function WetsuitCalculatorClient({ locale }: { locale: string }) 
                   ) : (
                     <Minus className="w-3 h-3" aria-hidden />
                   )}
-                  {isPt ? x.pt : x.en}
+                  {x.label}
                 </li>
               ))}
             </ul>
-            <p className="text-body-sm text-fg-muted">{isPt ? rec.note.pt : rec.note.en}</p>
+            <p className="text-body-sm text-fg-muted">{rec.note}</p>
           </div>
         ) : (
           <p className="text-body-sm text-fg-muted">{t.tools.outOfRange}</p>

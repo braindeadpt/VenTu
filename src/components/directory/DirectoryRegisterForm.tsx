@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthProvider';
 import { getSupabaseClient } from '@/lib/supabase';
 import { getTranslation } from '@/lib/i18n';
 import { submitDirectoryListing } from '@/lib/directoryListings';
-import { DIRECTORY_KIND_LABELS } from '@/lib/directoryClient';
+import { kindLabel } from '@/lib/directoryClient';
 import { safeExternalUrl } from '@/lib/safeUrl';
 import { DIRECTORY_FIELD_LIMITS as L } from '@/lib/directoryFieldLimits';
 import type { DirectoryKind, DirectorySport } from '@/types/directory';
@@ -172,7 +172,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
           >
             {KINDS.map((k) => (
               <option key={k} value={k}>
-                {isPt ? DIRECTORY_KIND_LABELS[k].pt : DIRECTORY_KIND_LABELS[k].en}
+                {kindLabel(k, locale)}
               </option>
             ))}
           </select>

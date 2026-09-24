@@ -67,7 +67,7 @@ export function buildMarkerPopupContent(
       : undefined;
   const windRelationLabel =
     windRelation != null
-      ? getWindRelationLabel(windRelation, locale === 'pt' ? 'pt' : 'en')
+      ? getWindRelationLabel(windRelation, locale)
       : undefined;
 
   return renderSpotPopup({

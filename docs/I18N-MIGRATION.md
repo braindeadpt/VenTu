@@ -125,10 +125,15 @@ inverso de leftovers.
 
 ### Estado do M5 (fecho)
 
-**672 → 4 ternárias** (116 → 1 ficheiro). A única excepção é
-`src/components/layout/NotFoundContent.tsx` (4), que por convenção documentada
-(`docs/I18N-MIGRATION.md`, decisão de produto) fica pt/en — o 404 é a página
-que o utilizador vê quando algo falha, e não vale a pena traduzi-la.
+**672 → 4 ternárias** (116 → 1 ficheiro). O `NotFoundContent` (o 404, que vive
+fora do segmento `[locale]` e por isso derivava pt/en do pathname) passou
+também a 5 línguas via `validateLocale(pathname.split('/')[1])` + bloco
+`notFound` — a antiga excepção deixou de existir.
+
+As 4 ternárias que sobram estão em
+`src/components/spots/verdict/SpotSafetyCoastalWarnings.tsx` (código novo do
+spot v2, superfície de outra sessão): o ratchet abaixo impede que a dívida
+cresça e o autor fecha-as quando quiser.
 
 Superfícies fechadas: `ui/**`, `homepage/**`, `app/[locale]/**`,
 `components/spots/**` (todas), `components/weather`, `components/compare`,
@@ -165,21 +170,75 @@ Infra nova reutilizável: `localizedText` (PT/EN com fallback EN),
 | `app/[locale]/**` completo | `6a85fef` | 13 páginas, bloco `pages`, `localizedText` para dados PT/EN |
 | `spots` (parcial) | `c0f1a0f` | `MapExploreSheet` + cluster do mapa; bloco `spotsMap` (35 keys) |
 
+### Ratchet da dívida
+
+`scripts/lib/__tests__/i18nDebt.test.js` mede a dívida (a mesma regra do
+`lint`, aplicada a todo o `src/`) e falha se passar o `BASELINE`. A dívida
+**só pode descer**: quando fechar dívida, baixar o `BASELINE` (é subtrair);
+nunca subir sem justificar. Mensagem de falha lista os ficheiros e aponta para
+este documento.
+
 Método por bloco: ler ternárias → JSON + acelerador → migrar componente →
 `npm run lint` (com o glob do ficheiro) + `npx tsc --noEmit` +
 `vitest run src/lib/__tests__/i18nLocales.test.ts` → commit → e, no fim de cada
 superfície capturada, `Record Visual Baselines`.
 
-## Nota SEO (decisão em aberto)
+## Branch `m5/i18n-fecho` — handover para auditoria
 
-Enquanto a migração não fechar, `/es/ /de/ /fr/` servem EN em parte das
-superfícies, mas o sitemap continua a anunciar 5 hreflangs (risco de conteúdo
-duplicado/fino). Duas opções, por ordem de preferência:
+O trabalho desta ronda vive na branch **`m5/i18n-fecho`** (worktree
+`Ventu.M5-i18n`), **nunca em `main`** — a `main` está partilhada com as outras
+frentes (spot v2, dados/pipeline) e nada pode interferir.
 
-1. continuar a migração por superfície (este plano) — sem perder mercados;
-2. se for preciso fechar o risco antes disso, limitar `generate-sitemap.js` e os
-   `hreflang` às línguas realmente traduzidas por superfície (trabalho maior e
-   reversível).
+**Promoção:** PR `m5/i18n-fecho → main` depois de auditoria.
 
-Nenhuma das duas é feita neste lote: é uma decisão de produto/SEO, registada
-aqui para não se perder.
+### Commits
+
+| Commit | Assunto |
+|---|---|
+| `04dd22b9` | tiers do score · categorias de notícias · tiers do directório (5 línguas) |
+| `6af7eaa6` | marés/mapa · níveis IPMA · tipos de estabelecimento; helpers alargados a 5 línguas |
+| `4c15b729` | calculadora de fato (`recommendWetsuit(temp, locale)`) · disciplinas de kite |
+| `05fc4700` | **fix SEO**: canonical/hreflang usam o locale real da rota + guarda de regressão |
+| `6b11fc65` | `x-default` no metadata e no sitemap |
+| `abb62db5f` | 404 em 5 línguas (fim da excepção) + **ratchet da dívida** no CI |
+| `ac80ffbc8` | descrições das fontes (`/fontes`) e nomes de região em 5 línguas + parser do `validate-page-slugs` robusto |
+| (este) | Dawn Patrol: cadeia `locale → en → pt` pronta para 5 línguas (sem mexer no gerador) |
+
+### O que verificar na auditoria
+
+- `npm run lint` · `npx tsc --noEmit` · `npm test` (198 ficheiros / 1852 testes)
+- `node scripts/i18n-debt-report.js` → **4 ternárias em 1 ficheiro**
+  (`src/components/spots/verdict/SpotSafetyCoastalWarnings.tsx`, spot v2)
+- `node scripts/validate-page-slugs.js` · `node scripts/check-sitemap-drift.js`
+- Build + `grep canonical out/es/mapa/index.html` (deve ser `/es/mapa/`) e
+  `hreflang="x-default"` → `/pt/mapa/`; idem em `/de/ferramentas`,
+  `/es/sazonalidade`, `/de/explorar/surf-norte`, `/en/news`, `/es/compare`,
+  `/de/favorites` e uma notícia (todas declaravam a **home** antes do fix)
+- Ratchet: `scripts/lib/__tests__/i18nDebt.test.js` — quando a dívida descer,
+  baixar o `BASELINE` (só desce; nunca subir sem justificar)
+
+### Notas de integração
+
+- Se o spot v2 fechar o `SpotSafetyCoastalWarnings`, a dívida vai a 0 → baixar
+  o `BASELINE` para 0 (o ratchet fica no máximo).
+- **Conteúdo editorial** (Dawn Patrol) e **licenças** (fontes) continuam PT/EN
+  por design: o primeiro é gerado por IA no pipeline (bloco `pt`/`en` no JSON)
+  e as licenças são identificadores legais. O resto da UI fala 5 línguas.
+
+## Nota SEO (resolvida em 2026-09-23)
+
+A opção escolhida foi a **1 — continuar a migração**: com as superfícies
+fechadas, `/es/ /de/ /fr/` servem texto real e o sitemap pode anunciar as 5
+hreflangs sem risco de conteúdo fino.
+
+No fecho do M5 apareceu e foi corrigido um bug SEO que a migração expôs: as
+páginas de metadata passavam `locale: isPt ? 'pt' : 'en'` ao
+`buildPageMetadata`, pelo que `/es/ /de/ /fr/` declaravam **canonical para o
+URL EN** (conteúdo lido como duplicado de EN). Passam a usar
+`validateLocale(locale)` — o locale real da rota — e há guarda de regressão em
+`src/lib/__tests__/pageLocaleWiring.test.ts` (fonte: `validateLocale`,
+proibido `locale: isPt…`/`buildSpotMetadata(isPt…`).
+
+Verificação (build): `/es/mapa/` → canonical `/es/mapa/` + 5 hreflangs;
+`/de/spots/`, `/fr/spots/guincho/`, `/es/about/` idem; `/de/mapa/` com
+`<title>` alemão.
