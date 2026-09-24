@@ -6,7 +6,7 @@ import type { Spot } from '@/types';
 import { cn } from '@/lib/cn';
 import { getRegionGradientCss, getSpotImage, getSpotImageAlt } from '@/lib/spotImage';
 
-export type SpotImageAspect = 'video' | 'square' | 'hero';
+export type SpotImageAspect = 'video' | 'square' | 'hero' | 'band';
 
 export type SpotImageProps = {
   spot: Pick<Spot, 'slug' | 'name' | 'nameEn' | 'region' | 'type' | 'images'>;
@@ -22,6 +22,8 @@ const ASPECT_CLASS: Record<SpotImageAspect, string> = {
   hero: 'min-h-[220px] md:min-h-[280px] w-full',
   video: 'aspect-video w-full',
   square: 'aspect-square w-full',
+  /** Faixa fixa de 160 px (spec v3 §6 — topo do bloco «Chegar e estar»). */
+  band: 'h-40 w-full',
 };
 
 export default function SpotImage({
@@ -59,7 +61,9 @@ export default function SpotImage({
           sizes={
             aspect === 'hero'
               ? '(max-width: 768px) 100vw, 720px'
-              : '(max-width: 768px) 100vw, 400px'
+              : aspect === 'band'
+                ? '(max-width: 768px) 100vw, 1200px'
+                : '(max-width: 768px) 100vw, 400px'
           }
           className="object-cover"
           onError={() => setImgFailed(true)}
