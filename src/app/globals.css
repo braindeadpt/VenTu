@@ -567,11 +567,12 @@ html:has([data-embed-widget]) body {
     --vi-m: rgb(var(--fg-muted-rgb));
     --vi-ink: rgb(var(--fg-rgb));
     --vi-acc: var(--vi-verdict);
+    /* UX v3 §7 — inversão de foco do cartão: 240 ms na curva da página. */
     transition:
-      background-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-      color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-      border-color 200ms cubic-bezier(0.16, 1, 0.3, 1),
-      transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+      background-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 240ms cubic-bezier(0.16, 1, 0.3, 1),
+      transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   /* Foco = troca de material, sem sombra. */
@@ -599,6 +600,34 @@ html:has([data-embed-widget]) body {
       --vi-acc: var(--vi-verdict-inv);
       transform: scale(1.012);
     }
+  }
+
+  /* SP-B (UX v3 §4): o cartão aberto fica contornado a --verdict 40% —
+     o acento da hora escolhida, não a moldura neutra do hover/foco. */
+  .ventu-inst-card[data-open='true'],
+  html.theme-ocean .ventu-inst-card[data-open='true'] {
+    border-color: color-mix(
+      in srgb,
+      var(--verdict, var(--vi-verdict)) 40%,
+      transparent
+    );
+  }
+
+  /* Acordeão do painel de detalhe — grid-template-rows 0fr→1fr em
+     240 ms (UX v3 §4). O miolo (.ventu-inst-acc-inner) fica montado até
+     ao fim da transição para a altura animar no fecho. */
+  .ventu-inst-acc {
+    display: grid;
+    grid-template-rows: 0fr;
+    /* UX v3 §7 — acordeão/painel de detalhe: 240 ms ease-in-out. */
+    transition: grid-template-rows 240ms ease-in-out;
+  }
+  .ventu-inst-acc[data-open] {
+    grid-template-rows: 1fr;
+  }
+  .ventu-inst-acc-inner {
+    min-height: 0;
+    overflow: hidden;
   }
 
   html.theme-ocean .ventu-inst-card:focus-within,
@@ -718,6 +747,9 @@ html:has([data-embed-widget]) body {
     .ventu-inst-card[data-open='true'],
     .ventu-inst-card:hover {
       transform: none;
+      transition: none;
+    }
+    .ventu-inst-acc {
       transition: none;
     }
     .ventu-inst-wob,
@@ -1623,20 +1655,72 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
   box-shadow: 4px 0 10px -6px rgb(0 0 0 / 0.1);
 }
 
-/* S3 — coluna da hora escolhida (eixo de tempo partilhado): matiz leve de
-   --verdict (14%) sobre a cor semântica da célula + contorno inset. O
-   texto fica intacto — contraste ≥4.5:1 mantém-se porque o tint não
-   substitui o fundo nem mexe na cor do texto. */
-.forecast-table-scroll [data-tl-col] {
+/* S3/SP-B — coluna da hora escolhida (eixo de tempo partilhado): matiz
+   --verdict a 12% sobre a cor semântica da célula + contorno --verdict
+   (UX v3 §5). O texto fica intacto — contraste ≥4.5:1 mantém-se porque o
+   tint não substitui o fundo nem mexe na cor do texto. A mesma regra
+   cobre as linhas da lista mobile (.forecast-hourly-list). */
+.forecast-table-scroll [data-tl-col],
+.forecast-hourly-list [data-tl-col] {
   cursor: pointer;
 }
-.forecast-table-scroll [data-tl-selected] {
+:is(.forecast-table-scroll, .forecast-hourly-list) [data-tl-selected] {
   background-image: linear-gradient(
-    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent),
-    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 14%, transparent)
+    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 12%, transparent),
+    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 12%, transparent)
   );
+  box-shadow: inset 0 0 0 1.5px var(--verdict, rgb(var(--accent)));
+}
+
+/* UX v3 §5 — coluna «agora»: contorno do primeiro plano a 30%; quando é
+   também a seleccionada, o anel --verdict fica por fora do fg. */
+.forecast-col-now {
   box-shadow: inset 0 0 0 1.5px
-    color-mix(in srgb, var(--verdict, rgb(var(--accent))) 55%, transparent);
+    color-mix(in srgb, rgb(var(--fg-rgb)) 30%, transparent);
+}
+:is(.forecast-table-scroll, .forecast-hourly-list)
+  .forecast-col-now[data-tl-selected] {
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, rgb(var(--fg-rgb)) 30%, transparent),
+    inset 0 0 0 3px var(--verdict, rgb(var(--accent)));
+}
+
+/* UX v3 §5 — separador de dia: linha vertical na primeira coluna do dia. */
+.forecast-col-daystart {
+  box-shadow: inset 1.5px 0 0 0 rgb(var(--divider-strong));
+}
+.forecast-col-daystart.forecast-col-now {
+  box-shadow:
+    inset 1.5px 0 0 0 rgb(var(--divider-strong)),
+    inset 0 0 0 1.5px color-mix(in srgb, rgb(var(--fg-rgb)) 30%, transparent);
+}
+
+/* UX v3 §5 — altura de linha 36 px nas linhas de dados da tabela. */
+.forecast-table-scroll tbody > tr > th,
+.forecast-table-scroll tbody > tr > td {
+  height: 2.25rem;
+}
+
+/* UX v3 §5 — lista mobile «Hora a hora»: cabeçalho de dia fixo por baixo
+   da SpotStickyBar (top = header 64 + tabs 48) e linha seleccionada. */
+.forecast-day-header {
+  position: sticky;
+  top: calc(var(--ventu-spot-sticky-top) + var(--ventu-spot-tabs-h));
+  z-index: 20;
+  background: rgb(var(--bg-base));
+  border-bottom: 1px solid rgb(var(--divider));
+}
+.forecast-day-group + .forecast-day-group {
+  border-top: 1px solid rgb(var(--divider-strong));
+}
+.forecast-hourly-row:focus-visible {
+  outline: 2px solid rgb(var(--fg-rgb));
+  outline-offset: -2px;
+}
+@media (hover: hover) {
+  .forecast-hourly-row:hover {
+    background-color: rgb(var(--fg-rgb) / 0.04);
+  }
 }
 
 /* Overflow scroll shadows: thin gradient edges to signal more data. */

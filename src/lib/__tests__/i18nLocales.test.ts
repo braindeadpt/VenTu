@@ -24,6 +24,8 @@ const SHARED_TOKENS = new Set([
   'offshore', // termo adoptado em pt/en/es/de/fr (relação de vento)
   'Offshore', // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
   'Onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento, capitalizado)
+  'Cross-on',  // termo adoptado em pt/en (relação de vento side-onshore)
+  'Cross-off', // termo adoptado em pt/en (relação de vento side-offshore)
   'Multisport', // termo adoptado em pt/es/de/fr (tipo de spot)
   'Expert',   // termo adoptado em pt/en/es/de/fr (nível de dificuldade)
   'onshore',  // termo adoptado em pt/en/es/de/fr (relação de vento)
@@ -225,6 +227,7 @@ const EN_COGNATES = new Set([
   'N', 'S', 'E', 'O', 'score',
   'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
   'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
+  'Cross-on', 'Cross-off', // classifyWind: rótulos do chip adoptados em EN = PT
   'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
 ]);
 

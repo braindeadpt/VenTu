@@ -94,6 +94,38 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
     expect(readAfter).not.toEqual(readBefore);
   });
 
+  test('chip do vento usa classifyWind — 4 categorias do score (UX v3 §4)', async ({
+    page,
+  }) => {
+    const windCard = page.locator(`${CARDS}[data-instrument='wind']`);
+    const chip = windCard.locator('button .rounded-full');
+    // Um dos quatro rótulos canónicos — a mesma classificação do score
+    // (onshore / side-onshore / side-offshore / offshore).
+    await expect(chip).toHaveText(/^(Onshore|Cross-on|Cross-off|Offshore)$/);
+  });
+
+  test('abrir o cartão anima o painel por grid-template-rows (240 ms)', async ({
+    page,
+  }) => {
+    const windCard = page.locator(`${CARDS}[data-instrument='wind']`);
+    const acc = page.locator(`${SECTION} .ventu-inst-acc`);
+
+    // Fechado: 0fr. Aberto: 1fr — transição declarada na classe.
+    await expect(acc).toHaveCSS('grid-template-rows', '0px');
+    await windCard.getByRole('button').click();
+    await expect(acc).toHaveAttribute('data-open', '');
+    await expect(acc).toHaveCSS('transition-duration', '0.24s');
+
+    // A borda do cartão aberto usa --verdict a 40% — mas a cor interpola
+    // durante a transição de 240 ms: espera o valor final. Chromium pode
+    // serializar como color(srgb … / 0.4) ou oklab(… / 0.4).
+    await expect
+      .poll(async () =>
+        windCard.evaluate((el) => getComputedStyle(el).borderColor),
+      )
+      .toMatch(/[,/]\s*0\.4\s*\)$/);
+  });
+
   test('o painel de detalhe abre por teclado e fecha com Escape', async ({ page }) => {
     const waveCard = page.locator(`${CARDS}[data-instrument='wave']`);
     const waveBtn = waveCard.getByRole('button');

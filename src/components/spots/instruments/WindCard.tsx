@@ -2,7 +2,8 @@
 
 import { useId, useState, type CSSProperties } from 'react';
 import { getTranslation } from '@/lib/i18n';
-import { getWindRelationToCoast, getWindRelationLabel } from '@/lib/wind';
+import { classifyWind, type WindCategory } from '@/lib/sportScore';
+import type { Spot } from '@/types';
 import { cardinal16, idealSector } from '@/lib/instruments/sector';
 import { unwrapAngle } from '@/lib/instruments/unwrapAngle';
 import CompassDial, { BeamCone, BeamSource } from './CompassDial';
@@ -13,11 +14,17 @@ import type { InstrumentHour } from './types';
 
 const MS_TO_KT = 1.94384;
 
+/** Categoria classifyWind → chave i18n do chip (4 rótulos da spec). */
+const WIND_REL_KEY = {
+  onshore: 'windRelOnshore',
+  'side-onshore': 'windRelCrossOn',
+  'side-offshore': 'windRelCrossOff',
+  offshore: 'windRelOffshore',
+} as const satisfies Record<WindCategory, string>;
+
 interface WindCardProps {
   hour: InstrumentHour | null;
-  coastOrientation?: number;
-  /** «N, NNW» — sector ideal do spot. */
-  bestWind?: string;
+  spot: Spot;
   locale: string;
   open: boolean;
   onToggle: (id: InstrumentId) => void;
@@ -31,8 +38,7 @@ interface WindCardProps {
  */
 export default function WindCard({
   hour,
-  coastOrientation,
-  bestWind,
+  spot,
   locale,
   open,
   onToggle,
@@ -47,13 +53,14 @@ export default function WindCard({
   const gustMs = hour?.windGustMs ?? hour?.windSpeedMs;
   const gustKt = gustMs !== undefined ? gustMs * MS_TO_KT : undefined;
 
-  const relation =
-    dir !== undefined && coastOrientation !== undefined
-      ? getWindRelationToCoast(dir, coastOrientation)
+  // Chip vento↔costa — SP-B: classifyWind (sportScore), as mesmas 4
+  // categorias do score (SPOT-UX-V3 §4): onshore / cross-on / cross-off /
+  // offshore. src/lib/wind.ts (3 vias) fica intacto — usado noutros lados.
+  const category: WindCategory | null =
+    dir !== undefined && spot.coastOrientation !== undefined
+      ? classifyWind(spot, dir)
       : null;
-  const relationMeta = relation
-    ? getWindRelationLabel(relation, locale)
-    : null;
+  const categoryLabel = category ? ti[WIND_REL_KEY[category]] : null;
 
   // Feixe por transform com ângulo unwrapped (359→1 roda +2, nunca −358).
   // O unwrapping é estado derivado — padrão «adjust state during render».
@@ -77,20 +84,20 @@ export default function WindCard({
       : 1;
   const ampDeg = Math.max(1, Math.min(8, (gustFactor - 1) * 4));
 
-  const sector = idealSector(bestWind);
+  const sector = idealSector(spot.bestWind);
 
   return (
     <InstrumentCard
       instrument="wind"
       label={ti.wind}
-      chip={relationMeta?.label}
+      chip={categoryLabel}
       open={open}
       onToggle={onToggle}
       coherence={coherence}
       fig={
         <CompassDial
           hatchId={`${hatchId}-hatch`}
-          coastOrientation={coastOrientation}
+          coastOrientation={spot.coastOrientation}
           ideal={sector}
           labels={{ sea: ti.sea, land: ti.land }}
           beam={
@@ -114,7 +121,7 @@ export default function WindCard({
           : '—'}
       </span>
       <span className={INST_SUB}>
-        {sector && bestWind ? ti.idealFoot.replace('{dirs}', bestWind.replace(/\s*,\s*/g, '–')) : ' '}
+        {sector && spot.bestWind ? ti.idealFoot.replace('{dirs}', spot.bestWind.replace(/\s*,\s*/g, '–')) : ' '}
       </span>
     </InstrumentCard>
   );
