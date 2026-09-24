@@ -91,7 +91,9 @@ export default function SpotUnifiedBar({
     }
     const io = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
+        // A última entrada é o estado actual: se houver scroll entre o observe()
+        // e a 1.ª entrega, chegam duas do mesmo alvo e a [0] já é velha.
+        const entry = entries[entries.length - 1];
         if (entry) setHeroGone(!entry.isIntersecting);
       },
       { threshold: 0 },

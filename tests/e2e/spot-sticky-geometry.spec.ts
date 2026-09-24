@@ -95,8 +95,16 @@ test.describe('SpotUnifiedBar — barra única (desktop + mobile)', () => {
 
   async function scrollPastHero(page: Page) {
     await page.evaluate(() => window.scrollTo(0, 1500));
-    // Espera a entrada dos extras (200 ms) assentar antes de medir.
-    await page.waitForTimeout(350);
+    // Espera o sinal, não um tempo fixo: IntersectionObserver → setState →
+    // transição de 200 ms. Se o scroll cair antes da 1.ª entrega do observer
+    // chegam duas entradas do hero no mesmo callback (visível → fora); a
+    // barra lia a [0] e ficava presa sem extras — este teste apanhava-o ~1
+    // em 20. Se o observer ficar preso, isto falha aos 3 s.
+    await expect
+      .poll(async () => (await probe(page)).extrasVisibility, { timeout: 3_000 })
+      .toBe('visible');
+    // E o fim da transição (transform) antes de medir a geometria.
+    await page.waitForTimeout(250);
   }
 
   test('desktop: uma só tablist, cota 64px, tabs sempre visíveis e extras após scroll', async ({ page }) => {
