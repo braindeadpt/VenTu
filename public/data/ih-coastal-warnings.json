@@ -461,38 +461,6 @@
       ]
     },
     {
-      "id": 18657,
-      "ref": "ANAV NR 2144/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=6b539a09-f476-4887-8646-525f265cf6d2",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.778993,
-            40.605351
-          ],
-          [
-            -8.778993,
-            40.669962
-          ],
-          [
-            -8.685976,
-            40.669962
-          ],
-          [
-            -8.685976,
-            40.605351
-          ],
-          [
-            -8.778993,
-            40.605351
-          ]
-        ]
-      ]
-    },
-    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -6977,21 +6945,6 @@
       ]
     },
     {
-      "id": 2016905,
-      "ref": "ANAV NR 0743/26",
-      "category": "Animais Marinhos - Interação",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=47b8b9ab-e480-4940-b26d-4f3333ffddae",
-      "source": "ih",
-      "collection": "orca_anavnet_point",
-      "center": [
-        -9.145,
-        38.371667
-      ],
-      "radiusKm": 25,
-      "eventAt": "2026-03-28T00:00:00.000Z",
-      "polygons": []
-    },
-    {
       "id": 2017253,
       "ref": "ANAV NR 0956/26",
       "category": "Animais Marinhos - Avistamento",
@@ -7535,11 +7488,9 @@
       1000708
     ],
     "sao-jacinto": [
-      18657,
       1000711
     ],
     "costa-nova": [
-      18657,
       1000711
     ],
     "leirosa": [
@@ -7614,7 +7565,6 @@
     ],
     "fonte-telha": [
       1000782,
-      2016905,
       2017839,
       2018289
     ],
@@ -7638,21 +7588,18 @@
       1009371
     ],
     "lagoa-albufeira": [
-      2016905,
       2017839,
       2017849,
       2018177,
       2018289
     ],
     "foil-lagoa-albufeira": [
-      2016905,
       2017839,
       2017849,
       2018177,
       2018289
     ],
     "praia-lagoa-albufeira": [
-      2016905,
       2017839,
       2017849,
       2018177,
@@ -7906,7 +7853,6 @@
       1000459
     ],
     "barra-aveiro": [
-      18657,
       1000711,
       1010210
     ],
@@ -7931,7 +7877,6 @@
       2018213
     ],
     "meco": [
-      2016905,
       2017839,
       2017849,
       2018177,
@@ -8013,7 +7958,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-23T23:43:08.811Z",
+  "fetchedAt": "2026-09-24T04:37:09.840Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
