@@ -150,10 +150,10 @@ test.describe('Spot context v3 (SP-C §6)', () => {
     await openSpot(page, 390, 844);
     const boxes = await sectionBoxes(page);
     for (let i = 1; i < boxes.length; i++) {
-      expect(boxes[i].y).toBeGreaterThan(
-        boxes[i - 1].y,
+      expect(
+        boxes[i].y,
         `${boxes[i].name} devia estar por baixo de ${boxes[i - 1].name}`,
-      );
+      ).toBeGreaterThan(boxes[i - 1].y);
     }
     expectNoOverlap(boxes);
     await expectNoHorizontalOverflow(page);
