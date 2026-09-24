@@ -34,6 +34,7 @@ import MapSpotPanel from '../components/MapSpotPanel';
 import type { MapListJump, MapSpotListRow } from '../components/MapSpotList';
 import type { MapLayersMenuItem } from '../components/MapLayersMenu';
 import type { MapLayersFields } from './MapLayersZone';
+import { VENTU_OPEN_EXPLORE_SHEET } from '../../mapMarkers';
 import { useMapUiActions, useMapUiData } from '../MapUiContext';
 
 type MapTranslation = ReturnType<typeof getTranslation>;
@@ -102,6 +103,17 @@ export function useMapExploreZone({
   // Altura «open» = 88% do viewport (maquete: `open = round(innerHeight *
   // 0.88)`); o meio fica a 68% desta — ≈60% do ecrã, como os 56% da maquete.
   const [openHeight, setOpenHeight] = useState(620);
+
+  // UX v3 (M4): o «←» do sheet de spot volta à lista — o pedido chega por
+  // evento partilhado (`VENTU_OPEN_EXPLORE_SHEET`, declarado em
+  // mapMarkers.ts) porque o estado do sheet não está no contexto. Bloco
+  // aditivo mínimo — registado para a revisão da M6.
+  useEffect(() => {
+    const open = () => setExploreSheetState('open');
+    window.addEventListener(VENTU_OPEN_EXPLORE_SHEET, open);
+    return () => window.removeEventListener(VENTU_OPEN_EXPLORE_SHEET, open);
+  }, []);
+
   useEffect(() => {
     const sync = () => setOpenHeight(Math.round(window.innerHeight * 0.88));
     sync();

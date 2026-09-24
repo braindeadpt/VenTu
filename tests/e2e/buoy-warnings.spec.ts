@@ -422,6 +422,9 @@ test.describe('Chip de diagnóstico no ticker (pipeline-meta.json → HeroTicker
 });
 
 test.describe('Aviso de boias — dispensa (localStorage)', () => {
+  // Cada teste faz goto + reload em networkidle — sob paralelismo do CI o
+  // default de 30 s não chega (flake observado, ~27 s isolado).
+  test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block' });
 
   const DISMISS_KEY = 'ventu.map.buoyNoticeDismissed';
