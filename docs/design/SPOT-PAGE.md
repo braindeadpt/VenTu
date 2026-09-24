@@ -1,5 +1,10 @@
 # Página de spot — contrato
 
+> **Substituído por `docs/design/SPOT-PAGE-V3.md` (spec v3, «um painel, um
+> eixo»).** Este documento fica como referência histórica do contrato v2;
+> onde divergir, manda a v3 — e onde a v3 divergir da auditoria do dono,
+> manda `_audit/ux-v3/CORRECCOES-24SET.md`.
+
 ## Princípios
 - Uma pergunta por secção. Uma hora escolhida comanda tudo (useSpotTimeline). Um acento: a cor da banda do score da hora escolhida, exposta como variável CSS --verdict no contentor da página (ÉPICO 80–100 #0EA5E9, BOM 60–79 #10B981, FUN 40–59 #F59E0B, FLAT 20–39 #EF4444, FECHADO 0–19 #6B7280; em fundo claro, usar a variante com contraste ≥3:1 — tokens existentes: `--score-epic`/`--score-good`/`--score-fair`/`--score-poor`/`--score-closed` em `src/app/globals.css` (:90–94 dark = sky-500/emerald-500/amber-500/red-400/gray-500; :224–228 `.theme-ocean` claro já escurece para sky-700/emerald-800/amber-800/red-700/gray-500, AA). `--verdict` = `rgb(var(--score-<tier>))` do tier activo — `scoreTierName(score)` em `src/lib/sportScore.ts` mapeia 80/60/40/20).
 - Movimento só quando significa algo (dado ou feedback). Sem carrosséis, glassmorphism, gradientes decorativos, sombras pesadas, emoji, embeds de livecam.

@@ -5,9 +5,11 @@ import { test, expect, type Page } from '@playwright/test';
  *
  *  §1 hero — acções numa única linha (390/768/1440), sem sobreposição de
  *     caixas, um único CTA cheio; etiquetas <640 px são só ícone.
- *  §2 barra — escondida enquanto o hero está no ecrã; aparece pinned a
- *     64 px depois do scroll; chip score+hora fica fixo à direita no mobile
- *     (gradiente de 24 px por trás) e as âncoras só existem no desktop.
+ *  §2 barra — tabs sempre visíveis por baixo do hero (nunca fora da a11y
+ *     tree); os extras (chip score+hora, aviso, âncoras) entram quando o
+ *     hero sai do ecrã e a barra fica pinned a 64 px; o chip fica fixo à
+ *     direita no mobile (gradiente de 24 px por trás) e as âncoras só
+ *     existem no desktop.
  *  §3 régua — eixo sem etiquetas sobrepostas (a decisão é em píxeis no
  *     componente; aqui confirma-se nas caixas renderizadas), tooltip do
  *     desktop mostra hora+score ao pairar, e nada cria overflow horizontal.
@@ -129,19 +131,28 @@ for (const vp of VIEWPORTS) {
       expect(fits).toBe(true);
     });
 
-    test('§2 barra: escondida no hero, pinned a 64 px após scroll', async ({
+    test('§2 barra: tabs sempre visíveis, extras pinned a 64 px após scroll', async ({
       page,
     }) => {
       await openSpot(page);
       const bar = page.getByRole('region', { name: BAR_LABEL });
 
-      // Enquanto o hero está no ecrã a barra está escondida (v3 §2).
-      await expect(bar).toBeHidden();
-
-      // Depois do scroll: pinned a 64 px, visível, sem sobrepor o chip.
-      await page.evaluate(() => window.scrollTo(0, 1600));
+      // CORRECCOES-24SET §1: a barra (tabs) está SEMPRE visível por baixo
+      // do hero — nunca sai da a11y tree; só os extras (chip/âncoras) se
+      // escondem enquanto o hero está no ecrã.
       await expect(bar).toBeVisible();
-      // Espera a transição de entrada (200 ms) assentar antes de medir.
+      const extrasHidden = await page.evaluate(() => {
+        const el = document.querySelector(
+          `[role="region"][aria-label="${'Modalidade e hora escolhida'}"]`,
+        );
+        const extras = el?.querySelector('[data-testid="spot-bar-extras"]');
+        return extras ? getComputedStyle(extras).visibility : null;
+      });
+      expect(extrasHidden).toBe('hidden');
+
+      // Depois do scroll: pinned a 64 px, extras visíveis, sem sobrepor.
+      await page.evaluate(() => window.scrollTo(0, 1600));
+      // Espera a transição de entrada dos extras (200 ms) assentar.
       await page.waitForTimeout(350);
 
       const g = await page.evaluate(() => {
@@ -224,6 +235,42 @@ for (const vp of VIEWPORTS) {
     });
   });
 }
+
+test.describe('SP-D — prefers-reduced-motion', () => {
+  test.use({
+    serviceWorkers: 'block',
+    reducedMotion: 'reduce',
+    viewport: { width: 1440, height: 900 },
+  });
+
+  test('trocar de modalidade e de hora não deixa animações em curso', async ({
+    page,
+  }) => {
+    await openSpot(page);
+
+    // Troca de modalidade — as barras da régua animariam scaleY com stagger.
+    const tabs = page.getByRole('tab');
+    const count = await tabs.count();
+    for (let i = 0; i < count; i++) {
+      if ((await tabs.nth(i).getAttribute('aria-selected')) !== 'true') {
+        await tabs.nth(i).click();
+        break;
+      }
+    }
+
+    // Troca de hora — o tique da régua deslizaria 200 ms e o score faria
+    // count-up; em reduced-motion tudo é instantâneo.
+    const rail = page.getByRole('slider');
+    await rail.focus();
+    await rail.press('ArrowRight');
+
+    // Nenhuma animação/transição CSS em curso (a guarda global reduz
+    // durações a 0.01 ms — 150 ms de espera é folga de sobra).
+    await page.waitForTimeout(150);
+    const anims = await page.evaluate(() => document.getAnimations().length);
+    expect(anims).toBe(0);
+  });
+});
 
 test.describe('SP-A — tooltip da régua (desktop)', () => {
   test.use({

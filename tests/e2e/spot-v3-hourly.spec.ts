@@ -59,6 +59,12 @@ test.describe('SP-B — lista «Hora a hora» mobile (390 px)', () => {
     const firstBox = (await rows.first().boundingBox())!;
     expect(firstBox.height).toBeGreaterThanOrEqual(55);
 
+    // CORRECCOES-24SET §3: a lista começa na hora ACTUAL — a 1.ª linha é
+    // o índice global corrente e está realçada no primeiro ecrã.
+    const now = await globalIndex(page);
+    await expect(rows.first()).toHaveAttribute('data-tl-col', String(now));
+    await expect(rows.first()).toHaveAttribute('data-tl-selected', '');
+
     // Cabeçalhos de dia na forma «Quarta, 23» (weekday longo + nº do dia).
     const headers = await page.locator(DAY_HEADER).allTextContents();
     expect(headers.length).toBeGreaterThanOrEqual(1);
@@ -243,9 +249,10 @@ test.describe('SP-B — colisões e texto cortado (todos os breakpoints)', () =>
           }
         }
 
-        // 2. Elipses: rótulos das linhas da tabela e cabeçalhos de dia
-        //    não podem estar cortados (scrollWidth > clientWidth). O span
-        //    .truncate das linhas da lista é truncamento previsto — excluído.
+        // 2. Elipses: rótulos das linhas da tabela, cabeçalhos de dia e a
+        //    célula de onda da lista não podem estar cortados
+        //    (scrollWidth > clientWidth). CORRECCOES-24SET §3 — já não há
+        //    .truncate na lista; a guarda fica para qualquer recaída.
         const checkOverflow = (el: Element, what: string) => {
           if (
             !el.classList.contains('truncate') &&
@@ -260,6 +267,11 @@ test.describe('SP-B — colisões e texto cortado (todos os breakpoints)', () =>
         root
           .querySelectorAll('.forecast-day-header')
           .forEach((el, i) => checkOverflow(el, `header dia ${i}`));
+        // CORRECCOES-24SET §3 — a célula da onda da lista mobile não pode
+        // cortar («1,9 m · 1…» era o bug): todos os spans das linhas.
+        root
+          .querySelectorAll('.forecast-hourly-row span')
+          .forEach((el, i) => checkOverflow(el, `célula da lista ${i}`));
         return out;
       }, SECTION);
 

@@ -562,14 +562,23 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
               className="text-fg"
             />
           )}
-          {/* Tique da hora escolhida na base — só dentro da janela. */}
+          {/* Tique da hora escolhida na base — só dentro da janela.
+              Desliza por transform 200 ms na curva da página (UX v3 §7 —
+              «cursor/selecção da régua»); instantâneo em reduced-motion. */}
           {selInWindow && (
             <rect
-              x={selLocal + 0.1}
+              x={0.1}
               y={TRACK_H - 2.5}
               width={0.8}
               height={2.5}
               fill="var(--verdict)"
+              className={cn('motion-reduce:transition-none')}
+              style={{
+                transform: `translateX(${selLocal}px)`,
+                transition: reducedMotion
+                  ? 'none'
+                  : 'transform 200ms cubic-bezier(0.16,1,0.3,1)',
+              }}
             />
           )}
         </svg>

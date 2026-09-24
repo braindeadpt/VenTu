@@ -1,17 +1,21 @@
 import { test, expect, type Page } from '@playwright/test';
 
 /**
- * SpotUnifiedBar (v3 §2) — geometria da barra fixa única.
+ * SpotUnifiedBar (v3 §2 rev. CORRECCOES-24SET) — geometria da barra única.
  *
- * UMA barra (`role="region"` «Modalidade e hora escolhida») que está sempre
- * no fluxo e pina em `top: var(--ventu-spot-sticky-top)` = 64px. Na v3 ela
- * só APARECE quando o hero (#agora) sai do ecrã — translateY(-100%→0) +
- * opacity em 200 ms. Garantias:
+ * UMA barra (`role="region"` «Modalidade e hora escolhida») sempre no fluxo
+ * e visível: as tabs de modalidade são a antiga linha de tabs e ficam
+ * SEMPRE visíveis por baixo do hero; a barra pina em
+ * `top: var(--ventu-spot-sticky-top)` = 64px. Quando o hero (#agora) sai do
+ * ecrã, a MESMA barra fica fixa e ganha os extras (chip score+hora, aviso,
+ * âncoras) com 200 ms só nesses elementos. Garantias:
  *  - existe exactamente UM tablist na página e está dentro da barra;
  *  - a barra mede 48px (`--ventu-spot-tabs-h`) e a cota computada é 64px;
- *  - com o hero visível a barra está escondida (translateY(-100%) +
- *    invisible); depois do scroll fica pinned a 64px do topo e um clique no
- *    centro do 1º tab cai num tab da própria barra (hit-test);
+ *  - com o hero visível a barra está visível (nunca sai da a11y tree) e os
+ *    extras estão escondidos (visibility:hidden — fora da a11y tree);
+ *    depois do scroll os extras aparecem, a barra fica pinned a 64px do
+ *    topo e um clique no centro do 1º tab cai num tab da própria barra
+ *    (hit-test);
  *  - igual em mobile 390px, onde a fila de tabs rola horizontalmente por
  *    baixo do chip fixo da direita.
  *
@@ -20,7 +24,7 @@ import { test, expect, type Page } from '@playwright/test';
  */
 const BAR_LABEL = 'Modalidade e hora escolhida';
 
-test.describe('SpotUnifiedBar — barra fixa única (desktop + mobile)', () => {
+test.describe('SpotUnifiedBar — barra única (desktop + mobile)', () => {
   test.use({ serviceWorkers: 'block' });
 
   async function openSpot(page: Page) {
@@ -28,19 +32,17 @@ test.describe('SpotUnifiedBar — barra fixa única (desktop + mobile)', () => {
     await expect(
       page.getByRole('heading', { level: 1, name: /Guincho/i }),
     ).toBeVisible({ timeout: 20_000 });
-    // A barra existe no DOM desde o primeiro render — escondida enquanto o
-    // hero estiver no ecrã (IntersectionObserver decide depois de montar).
-    // Enquanto `invisible` ela sai da árvore de acessibilidade, por isso a
-    // sonda é CSS (`toBeAttached`), não getByRole.
+    // A barra está sempre na árvore de acessibilidade — sonda por role.
     await expect(
-      page.locator(`[role="region"][aria-label="${BAR_LABEL}"]`),
-    ).toBeAttached({ timeout: 20_000 });
+      page.getByRole('region', { name: BAR_LABEL }),
+    ).toBeVisible({ timeout: 20_000 });
   }
 
-  /** Sonda: nº de tablists, geometria da barra e hit-test no 1º tab. */
+  /** Sonda: nº de tablists, geometria da barra/extras e hit-test no 1º tab. */
   async function probe(page: Page) {
     return page.evaluate((label) => {
       const barEl = document.querySelector(`[role="region"][aria-label="${label}"]`);
+      const extras = barEl?.querySelector('[data-testid="spot-bar-extras"]');
       const tablists = Array.from(document.querySelectorAll('[role="tablist"]'));
       const r = barEl?.getBoundingClientRect();
       const tl = barEl?.querySelector('[role="tablist"]');
@@ -54,7 +56,7 @@ test.describe('SpotUnifiedBar — barra fixa única (desktop + mobile)', () => {
       return {
         barTop: barEl ? getComputedStyle(barEl).top : null,
         barRect: r ? { top: Math.round(r.top), h: Math.round(r.height) } : null,
-        hidden: barEl ? barEl.classList.contains('invisible') : null,
+        extrasVisibility: extras ? getComputedStyle(extras).visibility : null,
         tablistH: tlr ? Math.round(tlr.height) : null,
         tablistCount: tablists.length,
         tablistsInBar: barEl ? tablists.filter((t) => barEl.contains(t)).length : 0,
@@ -77,24 +79,27 @@ test.describe('SpotUnifiedBar — barra fixa única (desktop + mobile)', () => {
     expect(g.tablistH).toBe(48);
 
     if (scrolled) {
-      // Depois do scroll a barra está visível e pinned a 64px do topo.
-      expect(g.hidden).toBe(false);
+      // Depois do scroll os extras estão visíveis e a barra pinned a 64px.
+      expect(g.extrasVisibility).toBe('visible');
       expect(g.barRect!.top).toBe(64);
       // Hit-test: o clique no 1º tab cai num tab desta barra — nada cobre.
       expect(g.hitIsTabInBar).toBe(true);
     } else {
-      // Com o hero no ecrã a barra está fora (v3 §2 — aparece ao sair).
-      expect(g.hidden).toBe(true);
+      // Com o hero no ecrã os extras estão fora — as tabs ficam (a barra
+      // nunca sai da a11y tree enquanto visível, CORRECCOES-24SET §1).
+      expect(g.extrasVisibility).toBe('hidden');
+      // E a barra está por baixo do hero, no fluxo — não há faixa vazia.
+      expect(g.barRect!.top).toBeGreaterThan(0);
     }
   }
 
   async function scrollPastHero(page: Page) {
     await page.evaluate(() => window.scrollTo(0, 1500));
-    // Espera a entrada (translateY+opacity 200 ms) assentar antes de medir.
+    // Espera a entrada dos extras (200 ms) assentar antes de medir.
     await page.waitForTimeout(350);
   }
 
-  test('desktop: uma só tablist, cota 64px, escondida no hero e pinned após scroll', async ({ page }) => {
+  test('desktop: uma só tablist, cota 64px, tabs sempre visíveis e extras após scroll', async ({ page }) => {
     await openSpot(page);
     await assertGeometry(page, { scrolled: false });
     await scrollPastHero(page);

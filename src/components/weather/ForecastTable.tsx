@@ -59,6 +59,13 @@ interface ForecastTableProps {
   hourly: ForecastHour[];
   hours?: number;
   startTime?: Date;
+  /**
+   * A fatia começa no balde da hora corrente (em vez de `hourly[0]`) —
+   * «Hora a hora» é o detalhe da régua, cuja janela são 48 h a partir de
+   * «agora» (CORRECCOES-24SET §3). Usa o relógio `now` (baked até montar,
+   * vivo depois) — o primeiro render SSR já começa na hora certa.
+   */
+  startAtCurrentHour?: boolean;
   sport?: SportType;
   coastOrientation?: number;
   locale: string;
@@ -217,6 +224,7 @@ export default function ForecastTable({
   hourly,
   hours = 24,
   startTime,
+  startAtCurrentHour = false,
   sport,
   coastOrientation,
   locale,
@@ -238,10 +246,15 @@ export default function ForecastTable({
     );
   }
 
+  /* ── current hour ref ── */
+  const now = useMemo(() => (nowMs != null ? new Date(nowMs) : new Date()), [nowMs]);
+
   /* ── slice data ──
      visibleStart = offset da fatia dentro de `hourly` (0 sem startTime) —
      os data-tl-col das células guardam o índice GLOBAL da timeline, que o
-     sync da SpotForecastSection usa para destaque/selecção sem re-render. */
+     sync da SpotForecastSection usa para destaque/selecção sem re-render.
+     Com `startAtCurrentHour` a fatia abre no balde da hora corrente —
+     a mesma origem da janela da régua (48 h a partir de «agora»). */
   const { visible, visibleStart } = useMemo(() => {
     let startIndex = 0;
     if (startTime) {
@@ -257,15 +270,17 @@ export default function ForecastTable({
       const startKey = `${pick('year')}-${pick('month')}-${pick('day')}T${pick('hour')}:${pick('minute')}:${pick('second')}`;
       startIndex = hourly.findIndex((h) => h.time >= startKey);
       if (startIndex === -1) startIndex = 0;
+    } else if (startAtCurrentHour) {
+      startIndex = findCurrentHourIndex(
+        hourly.map((h) => h.time),
+        now,
+      );
     }
     return {
       visible: hourly.slice(startIndex, startIndex + visibleCount),
       visibleStart: startIndex,
     };
-  }, [hourly, startTime, visibleCount]);
-
-  /* ── current hour ref ── */
-  const now = useMemo(() => (nowMs != null ? new Date(nowMs) : new Date()), [nowMs]);
+  }, [hourly, startTime, startAtCurrentHour, visibleCount, now]);
 
   /* ── hover column state ── */
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
@@ -976,8 +991,11 @@ function ForecastHourlyList({
                     >
                       {score ?? '—'}
                     </span>
-                    <span className="min-w-0 truncate font-mono text-[12px] tabular-nums text-fg">
-                      {fmt.f1(h.waveHeight)} m · {fmt.f0(h.wavePeriod)} s
+                    {/* Onda compacta «1,9 m 12 s» — CORRECCOES-24SET §3:
+                        a spec proíbe truncar; se não couber numa linha
+                        quebra para duas dentro da célula (56 px cabe). */}
+                    <span className="min-w-0 font-mono text-[12px] leading-tight tabular-nums text-fg">
+                      {fmt.f1(h.waveHeight)} m {fmt.f0(h.wavePeriod)} s
                     </span>
                     <span className="whitespace-nowrap font-mono text-[12px] tabular-nums text-fg-muted">
                       {getWindArrow(h.windDirection)} {windKt} kt

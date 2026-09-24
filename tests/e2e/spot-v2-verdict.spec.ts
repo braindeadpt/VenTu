@@ -30,15 +30,12 @@ const slider = (page: Page) => page.getByRole('slider');
 const meter = (page: Page) => page.locator('#agora').getByRole('meter');
 
 /** Score mostrado no pill da barra fixa (testid explícito — os tabs também têm mini-scores).
- *  Na v3 a barra só aparece quando o hero sai do ecrã — faz-se scroll até a
- *  régua ficar pinned antes de ler. */
+ *  CORRECCOES-24SET §1: a barra está sempre visível (getByRole resolve), mas
+ *  o chip score+hora é um extra — só entra quando o hero sai do ecrã, por
+ *  isso faz-se scroll até a régua ficar pinned antes de ler. */
 async function barScore(page: Page): Promise<number> {
-  // v3: a barra só entra quando o hero (#agora) sai do ecrã — scroll largo
-  // garante que o hero deixou de intersectar (scrollIntoView do slider pode
-  // deixar a cauda do hero visível e a barra fica `invisible`/fora da a11y
-  // tree — o getByRole não resolve enquanto escondida).
   await page.evaluate(() => window.scrollTo(0, 1600));
-  const region = page.locator(`[role="region"][aria-label="${BAR_LABEL}"]`);
+  const region = page.getByRole('region', { name: BAR_LABEL });
   await expect(region).toBeVisible();
   const txt = await region.getByTestId('spot-bar-score').textContent();
   return Number(txt);

@@ -28,12 +28,15 @@ const CONFIDENCE_ICONS = {
  *
  * Alta = os modelos concordam, o número é tão sólido como uma medição.
  * Média = concordam a meio, como uma previsão corrigida.
- * Baixa = divergem; é a única confiança que se lê como degradação.
+ * Baixa = divergem — ÂMBAR, não vermelho (CORRECCOES-24SET §4 / spec §0.4:
+ * vermelho é só para perigo real; uma confiança divergente é cautela, não
+ * alarme — em todo o site, não só no hero). O estado `degraded` (fonte em
+ * baixo) continua a anotar-se via `detail.degraded` → `t.degradedNote`.
  */
 const CONFIDENCE_TIER: Record<ConfidenceTier, ProvenanceTier> = {
   alta: 'measured',
   média: 'adjusted',
-  baixa: 'degraded',
+  baixa: 'adjusted',
 };
 
 export interface ConfidenceBadgeProps {

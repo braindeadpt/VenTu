@@ -202,6 +202,7 @@ export default function SpotForecastSection({
             <ForecastTable
               hourly={hours}
               hours={forecastHours}
+              startAtCurrentHour
               sport={sport}
               coastOrientation={coastOrientation}
               locale={locale}

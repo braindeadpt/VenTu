@@ -23,10 +23,10 @@ html:has([data-embed-widget]) body {
 @layer base {
   :root {
     /* ───── LAYOUT — página de spot ─────
-       Cota a que a linha de sport tabs e a SpotStickyBar pinam (header h-16),
+       Cota a que a SpotUnifiedBar (sport tabs) pina (header h-16),
        e ALTURA da fila de sport tabs (SportTab min-h 44 + pb-1). Partilhadas
-       entre a secção sticky (SpotDetailClient) e a barra (SpotStickyBar) —
-       nunca divergirem: mudar aqui é mudar nas duas superfícies. */
+       entre a SpotUnifiedBar e as âncoras calculadas no CSS —
+       nunca divergirem: mudar aqui é mudar em todas as superfícies. */
     --ventu-spot-sticky-top: 64px;
     --ventu-spot-tabs-h: 48px;
 
@@ -650,7 +650,7 @@ html:has([data-embed-widget]) body {
     }
   }
 
-  /* A SpotStickyBar (header 64 + tabs 48) tapa o cartão quando o browser
+  /* A SpotUnifiedBar (header 64 + tabs 48) tapa o cartão quando o browser
      faz scroll até ele (âncora, foco por teclado, scrollIntoView). O
      botão .ventu-inst-hit é o elemento que recebe o scroll — a margem
      tem de estar nele, não só no cartão. */
@@ -1143,7 +1143,7 @@ html:has([data-embed-widget]) body {
   overflow: visible !important;
 }
 
-/* Spot page anchors: com a SpotStickyBar activa o topo tem header (64) +
+/* Spot page anchors: com a SpotUnifiedBar pinned o topo tem header (64) +
    tabs (48) + strip de métricas (56px) — o scroll-mt-20 genérico (80px)
    deixava o destino da âncora escondido debaixo da barra. */
 #spot-livecam {
@@ -1660,9 +1660,23 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
    (UX v3 §5). O texto fica intacto — contraste ≥4.5:1 mantém-se porque o
    tint não substitui o fundo nem mexe na cor do texto. A mesma regra
    cobre as linhas da lista mobile (.forecast-hourly-list). */
-.forecast-table-scroll [data-tl-col],
-.forecast-hourly-list [data-tl-col] {
+:is(.forecast-table-scroll, .forecast-hourly-list) [data-tl-col] {
   cursor: pointer;
+  /* UX v3 §7 — a coluna/linha escolhida entra em 150 ms ease-out. O matiz
+     é um gradiente por cima da cor semântica da célula: o estado base é
+     um gradiente transparente para o tint interpolar (cross-fade real).
+     A lista de transição inclui as cores do `transition-colors` da linha
+     (120 ms), para o hover mobile não perder o feedback. */
+  background-image: linear-gradient(transparent, transparent);
+  transition:
+    background-image 150ms ease-out,
+    box-shadow 150ms ease-out,
+    color 120ms ease-out,
+    background-color 120ms ease-out,
+    border-color 120ms ease-out,
+    text-decoration-color 120ms ease-out,
+    fill 120ms ease-out,
+    stroke 120ms ease-out;
 }
 :is(.forecast-table-scroll, .forecast-hourly-list) [data-tl-selected] {
   background-image: linear-gradient(
@@ -1702,7 +1716,7 @@ body.ventu-map-fullscreen-open .ventu-signup-nudge {
 }
 
 /* UX v3 §5 — lista mobile «Hora a hora»: cabeçalho de dia fixo por baixo
-   da SpotStickyBar (top = header 64 + tabs 48) e linha seleccionada. */
+   da SpotUnifiedBar (top = header 64 + tabs 48) e linha seleccionada. */
 .forecast-day-header {
   position: sticky;
   top: calc(var(--ventu-spot-sticky-top) + var(--ventu-spot-tabs-h));

@@ -3,7 +3,7 @@
  * Uma fonte por índice: no «agora» manda o score actual já calculado pela
  * página (correcções observadas incluídas — o mesmo número do badge do
  * herói); nas outras horas manda o score de previsão canónico, o mesmo que
- * alimenta o WhenToGoCard e a ForecastTable. Função pura.
+ * alimenta a régua 48h e a ForecastTable. Função pura.
  */
 export interface SpotTimelineScoreInput {
   /** Índice da hora escolhida. */

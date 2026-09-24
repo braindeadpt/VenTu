@@ -42,15 +42,20 @@ const ANCHORS: ReadonlyArray<{ href: string; key: 'anchorSummary' | 'anchorHourl
 ];
 
 /**
- * §2 da spec v3 — UMA barra fixa: tabs de modalidade com mini-score
- * (roving ←/→ igual à linha antiga), chip score+hora fixo à direita e
- * âncoras. Pina na cota partilhada `--ventu-spot-sticky-top`.
+ * §2 da spec v3 (rev. CORRECCOES-24SET) — UMA barra: tabs de modalidade
+ * com mini-score (roving ←/→ igual à linha antiga) SEMPRE visíveis por
+ * baixo do hero, na posição da antiga linha de tabs. A barra está sempre
+ * no fluxo e pina na cota partilhada `--ventu-spot-sticky-top` — nunca sai
+ * da árvore de acessibilidade enquanto visível.
  *
- * v3: a barra APARECE quando o hero (#agora) sai do ecrã — translateY
- * (-100% → 0) + opacity em 200 ms, ease-out (tabela de movimento §7). No
- * mobile as tabs deslizam por baixo do chip: ele tem fundo sólido bg-base
- * e um gradiente de 24 px à esquerda, e o tablist ganha padding-right
- * medido (ResizeObserver) para a última tab ficar alcançável.
+ * Quando o hero (#agora) sai do ecrã, a MESMA barra fica fixa e ganha os
+ * extras — chip score+hora, pill Agora/Previsão, aviso IPMA e âncoras —
+ * com transição de 200 ms só nesses elementos (§7: transform+opacity
+ * ease-out). No mobile as tabs deslizam por baixo do chip: ele tem fundo
+ * sólido bg-base e um gradiente de 24 px à esquerda, e o tablist ganha
+ * padding-right medido (ResizeObserver) para a última tab ficar
+ * alcançável — a reserva é constante, logo a entrada dos extras não move
+ * as tabs.
  */
 export default function SpotUnifiedBar({
   locale,
@@ -73,9 +78,10 @@ export default function SpotUnifiedBar({
 
   const shownScore = selectedScore ?? nowScoreFallback;
 
-  // Aparece quando o hero sai do ecrã. Escondido de início (SSR incluído —
-  // o estado inicial é sempre «hero visível»), o observer decide depois de
-  // montar; sem hero/observer a barra fica sempre visível (fallback seguro).
+  // Os extras (chip/âncoras) aparecem quando o hero sai do ecrã. Escondidos
+  // de início (SSR incluído — o estado inicial é sempre «hero visível»), o
+  // observer decide depois de montar; sem hero/observer ficam sempre
+  // visíveis (fallback seguro). As TABS são sempre visíveis.
   const [heroGone, setHeroGone] = useState(false);
   useEffect(() => {
     const hero = document.getElementById('agora');
@@ -125,19 +131,14 @@ export default function SpotUnifiedBar({
   };
 
   return (
+    // A barra está sempre no fluxo e visível (as tabs são a antiga linha
+    // de tabs): `sticky` pina-a quando o scroll a alcança. Só os extras
+    // entram/saem — 200 ms ease-out em transform+opacity+visibility
+    // (`visibility` na lista completa o fade antes de sair da a11y tree).
     <div
       role="region"
       aria-label={tv.barLabel}
-      className={cn(
-        'sticky z-30 border-b border-divider bg-bg-base supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm',
-        // Entrada/saída: translateY(-100% → 0) + opacity em 200 ms ease-out.
-        // `visibility` na lista de transição faz o fade-out completar antes
-        // de esconder (e tira os tabs da ordem de foco enquanto escondidos).
-        'transition-[transform,opacity,visibility] duration-200 ease-out motion-reduce:transition-none',
-        heroGone
-          ? 'translate-y-0 opacity-100 visible'
-          : '-translate-y-full opacity-0 invisible pointer-events-none',
-      )}
+      className="sticky z-30 border-b border-divider bg-bg-base supports-[backdrop-filter]:md:bg-bg-base/95 supports-[backdrop-filter]:md:backdrop-blur-sm"
       style={{ top: 'var(--ventu-spot-sticky-top)' }}
     >
       <div
@@ -169,12 +170,21 @@ export default function SpotUnifiedBar({
           ))}
         </div>
 
-        {/* Chip fixo à direita: fundo sólido + gradiente de 24 px à esquerda
-            — as tabs desaparecem por baixo dele (mobile) e as âncoras vivem
-            aqui no desktop. */}
+        {/* Extras — entram quando o hero sai do ecrã (200 ms só aqui):
+            chip fixo à direita com fundo sólido + gradiente de 24 px à
+            esquerda — as tabs desaparecem por baixo dele (mobile) e as
+            âncoras vivem aqui no desktop. `invisible` tira-os da a11y
+            tree e dos cliques enquanto o hero está no ecrã. */}
         <div
           ref={chipRef}
-          className="absolute inset-y-0 right-4 flex items-center gap-2 bg-bg-base"
+          data-testid="spot-bar-extras"
+          className={cn(
+            'absolute inset-y-0 right-4 flex items-center gap-2 bg-bg-base',
+            'transition-[opacity,transform,visibility] duration-200 ease-out motion-reduce:transition-none',
+            heroGone
+              ? 'opacity-100 translate-y-0 visible'
+              : 'opacity-0 -translate-y-2 invisible',
+          )}
         >
           <span
             aria-hidden
