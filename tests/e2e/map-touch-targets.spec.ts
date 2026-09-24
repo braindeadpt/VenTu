@@ -68,11 +68,21 @@ test.describe('Mapa — alvos de toque ≥44px', () => {
   test.describe('tablet 768px (touch — layout sm+)', () => {
     test.use({ viewport: { width: 768, height: 1024 }, hasTouch: true, serviceWorkers: 'block', reducedMotion: 'reduce' });
 
-    test('toggle da legenda ≥44px abaixo de lg', async ({ page }) => {
+    test('toggle da legenda ≥44px na pilha de controlos (UX v3 §2/§4)', async ({ page }) => {
       await openMapa(page);
 
-      const legend = page.getByRole('region', { name: 'Legenda do mapa' });
-      await expectMinTargetSize(legend.getByRole('button'), 'toggle da legenda (tablet)');
+      // M2: o toggle deixou de viver dentro do cartão da legenda — é um
+      // botão da pilha direita com aria-pressed, e o cartão abre por
+      // omissão no layout desktop (≥768px).
+      const toggle = page.locator('[data-map-legend-toggle]');
+      await expect(toggle).toBeVisible();
+      await expectMinTargetSize(toggle, 'toggle «Legenda» da pilha');
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true');
+      await expect(page.getByRole('region', { name: 'Legenda do mapa' })).toBeVisible();
+
+      await toggle.click();
+      await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+      await expect(page.getByRole('region', { name: 'Legenda do mapa' })).toHaveCount(0);
     });
   });
 

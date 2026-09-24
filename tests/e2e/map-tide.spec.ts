@@ -65,7 +65,8 @@ test.describe('Map tide chip', () => {
 
     const track = page.locator('[data-map-time-track-mode="hours"]');
     await expect(track).toBeVisible({ timeout: 15_000 });
-    await expect(track).toContainText('08h');
+    // UX v3: no frame 0 o scrubber mostra «Agora» (formato da maquete).
+    await expect(track).toContainText('Agora');
 
     const chip = page.locator('[data-map-tide-chip]');
     await expect(chip).toBeVisible();
@@ -75,7 +76,7 @@ test.describe('Map tide chip', () => {
 
     const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
     await slider.fill('3');
-    await expect(track).toContainText('17h');
+    await expect(track).toContainText('17:00');
     await expect(chip).toContainText('a descer');
     const afternoon = (await chip.textContent())?.trim() ?? '';
     expect(afternoon).not.toBe(morning);

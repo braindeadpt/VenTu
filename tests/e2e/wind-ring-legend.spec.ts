@@ -62,9 +62,12 @@ test.describe('wind ring legend', () => {
       localStorage.setItem('ventu:windRingLegendSeen', '1');
     });
 
-    await page.goto('/pt/mapa/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    // UX v3 §2 (M2): no /mapa o «?» saiu do cromo — o toggle «Legenda»
+    // assumiu-lhe o papel. O botão directo mantém-se na toolbar pill dos
+    // embeds (/spots/ abre o mapa colapsado → expandir primeiro).
+    await page.goto('/pt/spots/', { waitUntil: 'domcontentloaded', timeout: 60_000 });
+    await page.getByRole('button', { name: /Mapa ·|Map ·/i }).click();
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
-    await page.waitForSelector('[data-map-wind="true"]', { timeout: 20_000 });
 
     const dialog = page.getByRole('dialog', { name: /Ler o vento no mapa/i });
     await expect(dialog).toBeHidden({ timeout: 5_000 });

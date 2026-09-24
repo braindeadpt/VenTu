@@ -464,13 +464,15 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(page.locator('[data-map-hours="true"]')).toBeVisible();
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(track).toContainText('08h');
+      // UX v3 §3 — a pill mostra «Agora · HH:MM» ao vivo e o cabeçalho do
+      // scrubber «agora»/«qui 17:00» (formato da maquete, não «17h»).
+      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
 
       await expectNazareScore(page, '20');
 
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('3');
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
       await expectNazareScore(page, '88');
     });
 
@@ -479,7 +481,7 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
 
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
       await expectNazareScore(page, '88');
     });
 
@@ -491,12 +493,12 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(track).toBeVisible({ timeout: 15_000 });
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('0');
-      await expect(track).toContainText('08h');
+      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
       await expect(page.locator('[data-map-hours-play]')).toBeVisible();
       await expectNazareScore(page, '20');
 
       await slider.fill('3');
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
       await expectNazareScore(page, '88');
     });
   });
@@ -521,11 +523,11 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
       await expect(page.locator('[data-map-hours-toggle]')).toBeVisible({ timeout: 15_000 });
       const track = page.locator('[data-map-time-track-mode="hours"]');
       await expect(track).toBeVisible({ timeout: 15_000 });
-      await expect(track).toContainText('08h');
+      await expect(page.locator('[data-map-time-pill]')).toContainText('08:00');
 
       const slider = page.locator('[data-map-hours-scrubber] input[type="range"]');
       await slider.fill('3');
-      await expect(track).toContainText('17h');
+      await expect(track).toContainText('17:00');
     });
   });
 
