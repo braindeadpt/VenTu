@@ -44,6 +44,20 @@ export const spotPageVerdict = {
     railHint: 'Arrasta na régua ou usa as setas do teclado. Tudo o que está acima segue a hora escolhida.',
     /** §3 — palavra «score» no aria-valuetext («…, score 93, ÉPICO»). */
     scoreWord: 'score',
+    /** §1 — linha de proveniência: fonte base quando tudo é previsão. */
+    modelLabel: 'Modelo Open-Meteo',
+    /** §1 — «Onda corrigida pela boia CSA92» (correcção observada no agora). */
+    waveFromBuoy: 'Onda corrigida pela boia {name}',
+    /** §1 — correcção pelo viés regional quando a boia não está fresca. */
+    waveBiasCorrected: 'Onda corrigida (viés regional)',
+    /** §1 — «vento da estação Cabo Raso» (vento observado no agora). */
+    windFromStation: 'vento da estação {name}',
+    /** §1 — vento observado sem nome de estação. */
+    windObserved: 'vento observado',
+    /** §1 — «confiança baixa» na linha de proveniência ({tier} vem minúsculo). */
+    confidenceInline: 'confiança {tier}',
+    /** §1 — «actualizado há 12h» ({age} = «há 12h» de formatStaleAge). */
+    updatedAgo: 'actualizado {age}',
   },
   en: {
     sectionTitle: 'Verdict',
@@ -72,6 +86,13 @@ export const spotPageVerdict = {
     bestTag: 'best',
     railHint: 'Drag the rail or use the arrow keys. Everything above follows the chosen hour.',
     scoreWord: 'score',
+    modelLabel: 'Open-Meteo model',
+    waveFromBuoy: 'Wave corrected by {name} buoy',
+    waveBiasCorrected: 'Wave corrected (regional bias)',
+    windFromStation: 'wind from {name} station',
+    windObserved: 'observed wind',
+    confidenceInline: '{tier} confidence',
+    updatedAgo: 'updated {age}',
   },
   es: {
     sectionTitle: 'Veredicto',
@@ -100,6 +121,13 @@ export const spotPageVerdict = {
     bestTag: 'mejor',
     railHint: 'Arrastra la regla o usa las flechas del teclado. Todo lo de arriba sigue la hora elegida.',
     scoreWord: 'score',
+    modelLabel: 'Modelo Open-Meteo',
+    waveFromBuoy: 'Ola corregida por la boya {name}',
+    waveBiasCorrected: 'Ola corregida (sesgo regional)',
+    windFromStation: 'viento de la estación {name}',
+    windObserved: 'viento observado',
+    confidenceInline: 'confianza {tier}',
+    updatedAgo: 'actualizado {age}',
   },
   de: {
     sectionTitle: 'Fazit',
@@ -128,6 +156,13 @@ export const spotPageVerdict = {
     bestTag: 'beste',
     railHint: 'Ziehe die Skala oder nutze die Pfeiltasten. Alles oben folgt der gewählten Stunde.',
     scoreWord: 'Score',
+    modelLabel: 'Open-Meteo-Modell',
+    waveFromBuoy: 'Welle von Boje {name} korrigiert',
+    waveBiasCorrected: 'Welle korrigiert (regionale Verzerrung)',
+    windFromStation: 'Wind von der Station {name}',
+    windObserved: 'beobachteter Wind',
+    confidenceInline: 'Konfidenz {tier}',
+    updatedAgo: 'aktualisiert {age}',
   },
   fr: {
     sectionTitle: 'Verdict',
@@ -156,5 +191,12 @@ export const spotPageVerdict = {
     bestTag: 'meilleure',
     railHint: 'Fais glisser la règle ou utilise les flèches du clavier. Tout ce qui est au-dessus suit l’heure choisie.',
     scoreWord: 'score',
+    modelLabel: 'Modèle Open-Meteo',
+    waveFromBuoy: 'Houle corrigée par la bouée {name}',
+    waveBiasCorrected: 'Houle corrigée (biais régional)',
+    windFromStation: 'vent de la station {name}',
+    windObserved: 'vent observé',
+    confidenceInline: 'confiance {tier}',
+    updatedAgo: 'actualisé {age}',
   },
 } as const;

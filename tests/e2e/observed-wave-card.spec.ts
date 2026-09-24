@@ -314,8 +314,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(measured).toHaveText(/1\.8 m/);
 
     // The score badge names the correcting buoy and exposes the skill ME/n.
-    // S3: o badge existe no hero E na §7 «Como sabemos» — escopo ao veredicto.
-    const badge = page.locator('#agora').getByText('Corrigido pela boia CSA92/D');
+    // v3: o badge vive SÓ na §7 «Como sabemos» — o hero tem a linha de texto.
+    const badge = page.locator('#como-sabemos').getByText('Corrigido pela boia CSA92/D');
     await expect(badge).toBeVisible();
     await expect(badge).toHaveAttribute('title', /ME \+0\.2 m \(n=47\)/);
 
@@ -435,9 +435,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     await expect(cal).toContainText(/1\.4 m/);
     await expect(cal).toContainText(/viés -0\.9 m \(n=4\)/);
 
-    // O badge do score expõe a calibração no tooltip (hero + §7 — escopo ao
-    // veredicto).
-    const badge = page.locator('#agora').getByText('Corrigido pela boia Cabo Silleiro');
+    // O badge do score expõe a calibração no tooltip (v3: só na §7
+    // «Como sabemos» — saiu do hero).
+    const badge = page.locator('#como-sabemos').getByText('Corrigido pela boia Cabo Silleiro');
     await expect(badge).toBeVisible();
     await expect(badge).toHaveAttribute(
       'title',
@@ -732,17 +732,18 @@ test.describe('Observed wave card (boia X a Y km)', () => {
   }) => {
     await gotoSpot(page, 'with-observed-wave');
 
-    const hero = page.locator('.spot-hero-card');
+    // v3: o badge do score vive na §7 «Como sabemos» (saiu do hero).
+    const sources = page.locator('#como-sabemos');
     // O badge do score (ScoreWaveSourceBadge) usa a altura medida → rótulo
     // da boia vencedora + tooltip com o skill ME/n. Escopo pelo title único da
     // fonte de ONDA (o badge de vento também usa «Só previsão» quando não há
     // vento fresco — não deve colidir com estas asserções).
-    const waveBadge = hero.locator('[title*="altura de onda medida pela boia"]');
+    const waveBadge = sources.locator('[title*="altura de onda medida pela boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 15_000 });
     await expect(waveBadge).toHaveText('Corrigido pela boia CSA92/D');
     await expect(waveBadge).toHaveAttribute('title', /ME \+0\.2 m \(n=47\)/);
     // Com leitura fresca o rótulo de previsão da ONDA nunca aparece.
-    await expect(hero.locator('[title*="Sem correcção de boia"]')).toHaveCount(0);
+    await expect(sources.locator('[title*="Sem correcção de boia"]')).toHaveCount(0);
     // O sufixo honesto da fonte vive no rótulo da linha de ondas da
     // ForecastTable («Ondas (m) (boia)») — o hero já não tem stats de altura.
     const wavesLabel = page
@@ -756,11 +757,12 @@ test.describe('Observed wave card (boia X a Y km)', () => {
   test('badge do score: «Só previsão» sem leitura fresca da boia', async ({ page }) => {
     await gotoSpot(page, 'without-observed-wave');
 
-    const hero = page.locator('.spot-hero-card');
+    // v3: o badge vive na §7 «Como sabemos» (saiu do hero).
+    const sources = page.locator('#como-sabemos');
     // Sem observedWave fresco → a onda usa a previsão do modelo, rótulo honesto.
     // (O badge de vento pode também dizer «Só previsão» se a observação IPMA
     // real estiver velha — daí o escopo pelo title exclusivo da onda.)
-    const waveBadge = hero.locator('[title*="Sem correcção de boia"]');
+    const waveBadge = sources.locator('[title*="Sem correcção de boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 15_000 });
     // O chip de proveniência foi unificado com prefixo de eixo (8e2dbacd3):
     // «Onda · só previsão», não «Só previsão» solto.
@@ -797,9 +799,10 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
-    const hero = page.locator('.spot-hero-card');
+    // v3: o badge vive na §7 «Como sabemos» (saiu do hero).
+    const sources = page.locator('#como-sabemos');
     // Badge honesto do fallback (viés regional), nunca o de tempo real.
-    const badge = hero.locator('[title*="Viés regional"]');
+    const badge = sources.locator('[title*="Viés regional"]');
     await expect(badge).toBeVisible({ timeout: 20_000 });
     await expect(badge).toHaveText('Corrigido (viés regional)');
     // Tooltip completo: Δ (correcção efectiva) + origem client-side — o
@@ -818,7 +821,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       .first();
     await expect(wavesLabel).toBeVisible({ timeout: 15_000 });
     await expect(wavesLabel).toContainText('(viés regional)');
-    await expect(hero.locator('[title*="altura de onda medida pela boia"]')).toHaveCount(0);
+    await expect(sources.locator('[title*="altura de onda medida pela boia"]')).toHaveCount(0);
   });
 
   test('pipeline: meta waveBias na row (sem fallback) → tooltip distingue a origem', async ({
@@ -840,8 +843,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
-    const hero = page.locator('.spot-hero-card');
-    const badge = hero.locator('[title*="Viés regional"]');
+    const sources = page.locator('#como-sabemos');
+    const badge = sources.locator('[title*="Viés regional"]');
     await expect(badge).toBeVisible({ timeout: 20_000 });
     await expect(badge).toHaveText('Corrigido (viés regional)');
     await expect(badge).toHaveAttribute('title', /Δ \+0\.3 m aplicado à altura\. Viés regional ME \+0\.3 m \(n=120\)\. Correcção aplicada pela pipeline \(meta na row\)\./);
@@ -866,11 +869,11 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
-    const hero = page.locator('.spot-hero-card');
-    await expect(hero).toBeVisible({ timeout: 20_000 });
+    const sources = page.locator('#como-sabemos');
+    await expect(sources).toBeVisible({ timeout: 20_000 });
 
-    // Badge no hero: rótulo honesto + tooltip completo com ME/n do viés.
-    const badge = hero.locator('[title*="Viés regional"]');
+    // Badge na §7 (v3: saiu do hero): rótulo honesto + tooltip completo com ME/n do viés.
+    const badge = sources.locator('[title*="Viés regional"]');
     await expect(badge).toBeVisible({ timeout: 15_000 });
     await expect(badge).toHaveText('Corrigido (viés regional)');
     await expect(badge).toHaveAttribute(
@@ -879,9 +882,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     );
 
     // Sem leitura de boia, nunca aparece linguagem de boia — nem no badge,
-    // nem no sufixo do factor do hero.
-    await expect(hero.getByText(/Corrigido pela boia/i)).toHaveCount(0);
-    await expect(hero.getByText(/\(boia\)/)).toHaveCount(0);
+    // nem no sufixo do factor.
+    await expect(sources.getByText(/Corrigido pela boia/i)).toHaveCount(0);
+    await expect(sources.getByText(/\(boia\)/)).toHaveCount(0);
 
     // A linha de ondas da ForecastTable declara a mesma origem (bias-corrected)
     // com o sufixo do factor — as superfícies nunca divergem.
@@ -911,10 +914,10 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
-    const hero = page.locator('.spot-hero-card');
-    await expect(hero).toBeVisible({ timeout: 20_000 });
+    const sources = page.locator('#como-sabemos');
+    await expect(sources).toBeVisible({ timeout: 20_000 });
 
-    const badge = hero.locator('[title*="Viés regional"]');
+    const badge = sources.locator('[title*="Viés regional"]');
     await expect(badge).toBeVisible({ timeout: 15_000 });
     await expect(badge).toHaveText('Corrigido (viés regional)');
     // Δ com o sinal honesto — nunca «+» nem sem sinal para um viés negativo.
@@ -955,11 +958,11 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
-    const hero = page.locator('.spot-hero-card');
-    const waveBadge = hero.locator('[title*="Sem correcção de boia"]');
+    const sources = page.locator('#como-sabemos');
+    const waveBadge = sources.locator('[title*="Sem correcção de boia"]');
     await expect(waveBadge).toBeVisible({ timeout: 20_000 });
     await expect(waveBadge).toHaveText('Onda · só previsão');
-    await expect(hero.locator('[title*="Viés regional"]')).toHaveCount(0);
+    await expect(sources.locator('[title*="Viés regional"]')).toHaveCount(0);
     // SEM sufixo de medição/viés em superfície nenhuma — o ponto do teste é a
     // ausência da correcção (a linha de ondas fica sem data-wave-correction).
     await expect(page.getByText(/m \(boia\)|m \(viés regional\)/)).toHaveCount(0);
@@ -973,7 +976,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
   test('barra unificada desktop: tabs/score estáveis e chip IH vs WMO na §7', async ({ page }) => {
     // S3: a barra unificada está sempre montada (tabs + hora + score + aviso
     // IPMA) — os chips de fonte de onda vivem na §7 «Como sabemos».
+    // v3: a barra só APARECE quando o hero sai do ecrã — scroll primeiro.
     await gotoSpot(page, 'with-observed-wave');
+    await page.evaluate(() => window.scrollTo(0, 1600));
 
     const sticky = page.getByRole('region', { name: /Modalidade e hora escolhida|Sport and selected hour/i });
     await expect(sticky).toBeVisible({ timeout: 15_000 });
@@ -1004,9 +1009,10 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // logo um click OK é a prova de não-bloqueio pela barra.
     await gotoSpot(page, 'with-observed-wave');
 
-    // Garante que os dados carregaram (badge do score no hero) antes do scroll.
+    // Garante que os dados carregaram (badge do score na §7 — v3: saiu do
+    // hero) antes do scroll.
     await expect(
-      page.locator('#agora').getByText('Corrigido pela boia CSA92/D'),
+      page.locator('#como-sabemos').getByText('Corrigido pela boia CSA92/D'),
     ).toBeVisible({ timeout: 15_000 });
 
     await scrollToSettledBottom(page);
@@ -1123,12 +1129,12 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // O estado bias-corrected: a row traz o meta waveBias baked pela pipeline
     // (Cascais me +0.3 n=120) e NENHUMA leitura fresca — o viés vence e o
     // badge do score mostra «Corrigido (viés regional)» com o ME/n no tooltip.
-    // S3: o badge vive no hero e na §7 — a barra unificada já não leva badges.
+    // v3: o badge vive só na §7 — a barra unificada já não leva badges.
     await gotoSpot(page, 'with-wave-bias');
 
-    const hero = page.locator('.spot-hero-card');
-    await expect(hero).toBeVisible({ timeout: 20_000 });
-    const heroBadge = hero.locator('[title*="Viés regional"]');
+    const sources = page.locator('#como-sabemos');
+    await expect(sources).toBeVisible({ timeout: 20_000 });
+    const heroBadge = sources.locator('[title*="Viés regional"]');
     await expect(heroBadge).toBeVisible({ timeout: 15_000 });
     await expect(heroBadge).toHaveText('Corrigido (viés regional)');
     await expect(heroBadge).toHaveAttribute(
@@ -1154,11 +1160,11 @@ test.describe('Observed wave card (boia X a Y km)', () => {
   }) => {
     // Variação EN do badge de correcção: a mesma row (boia fresca), rótulo e
     // tooltip traduzidos — a localização nunca diverge do PT. S3: o badge vive
-    // no hero (e na §7) — a barra unificada já não leva badges de fonte.
+    // na §7 (v3: saiu do hero) — a barra unificada já não leva badges de fonte.
     await gotoSpot(page, 'with-observed-wave', 'en');
 
-    const hero = page.locator('.spot-hero-card');
-    const badge = hero.getByText('Corrected by CSA92/D buoy');
+    const sources = page.locator('#como-sabemos');
+    const badge = sources.getByText('Corrected by CSA92/D buoy');
     await expect(badge).toBeVisible({ timeout: 15_000 });
     await expect(badge).toHaveAttribute('title', /ME \+0\.2 m \(n=47\)/);
 
@@ -1182,8 +1188,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
 
     // O badge de onda declara «Wave · forecast only» — escopo pelo title
     // exclusivo da onda (o de vento também pode dizer forecast only).
-    const hero = page.locator('.spot-hero-card');
-    const waveBadge = hero.locator('[title*="No buoy correction"]');
+    // v3: o badge vive na §7 «Como sabemos».
+    const sources = page.locator('#como-sabemos');
+    const waveBadge = sources.locator('[title*="No buoy correction"]');
     await expect(waveBadge).toBeVisible({ timeout: 20_000 });
     await expect(waveBadge).toHaveText(/forecast only/i);
 
@@ -1280,8 +1287,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
-    // S3: o badge existe no hero E na §7 «Como sabemos» — escopo ao veredicto.
-    const badge = page.locator('#agora').getByText('Vento observado');
+    // v3: o badge vive SÓ na §7 «Como sabemos» — escopo à proveniência.
+    const badge = page.locator('#como-sabemos').getByText('Vento observado');
     await expect(badge).toBeVisible({ timeout: 20_000 });
     await expect(badge).toHaveAttribute('title', /ME \+2\.1 kt \(n=340\)/);
     await expect(badge).toHaveAttribute('title', /IPMA \/ Ecowitt \/ METAR/);
@@ -1310,8 +1317,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     });
 
     await page.goto('/pt/spots/guincho/');
-    // S3: o badge existe no hero E na §7 «Como sabemos» — escopo ao veredicto.
-    const badge = page.locator('#agora').getByText('Vento observado');
+    // v3: o badge vive SÓ na §7 «Como sabemos» — escopo à proveniência.
+    const badge = page.locator('#como-sabemos').getByText('Vento observado');
     await expect(badge).toBeVisible({ timeout: 20_000 });
     // Sem windBias o tooltip mantém-se o texto base (sem viés inventado).
     await expect(badge).toHaveAttribute('title', /fresco$/);
@@ -1764,7 +1771,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // Boia fresca → «(buoy)» na tabela, tooltip EN. S3: o hero já não tem a
     // stat de altura — o badge do score declara a fonte («Corrected by…»).
     await gotoSpot(page, 'with-observed-wave', 'en');
-    const heroBadge = page.locator('#agora').getByText('Corrected by CSA92/D buoy');
+    const heroBadge = page.locator('#como-sabemos').getByText('Corrected by CSA92/D buoy');
     await expect(heroBadge).toBeVisible({ timeout: 15_000 });
     await expect(heroBadge).toHaveAttribute('title', /ME \+0\.2 m \(n=47\)/);
 
@@ -1778,7 +1785,7 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // Viés regional → «(regional bias)» na tabela, nunca «(buoy)» — e o badge
     // do hero declara a correcção em EN.
     await gotoSpot(page, 'with-wave-bias', 'en');
-    const heroBias = page.locator('#agora').locator('[title*="Regional bias"]');
+    const heroBias = page.locator('#como-sabemos').locator('[title*="Regional bias"]');
     await expect(heroBias).toBeVisible({ timeout: 15_000 });
     await expect(heroBias).toHaveText('Region bias corrected');
 
@@ -1800,9 +1807,9 @@ test.describe('Observed wave card (boia X a Y km)', () => {
     // Nunca «Corrigido (viés regional)» nem «Corrigido pela boia» residuais.
     await gotoSpot(page, 'with-wave-bias', 'en');
 
-    const hero = page.locator('.spot-hero-card');
-    await expect(hero).toBeVisible({ timeout: 20_000 });
-    const badge = hero.locator('[title*="Regional bias"]');
+    const sources = page.locator('#como-sabemos');
+    await expect(sources).toBeVisible({ timeout: 20_000 });
+    const badge = sources.locator('[title*="Regional bias"]');
     await expect(badge).toBeVisible({ timeout: 15_000 });
     await expect(badge).toHaveText('Region bias corrected');
     // Tooltip EN completo: Δ aplicado + ME/n do viés + origem pipeline.
@@ -1811,8 +1818,8 @@ test.describe('Observed wave card (boia X a Y km)', () => {
       /Δ \+0\.3 m applied to the height\. Regional bias ME \+0\.3 m \(n=120\)\. Correction applied by the pipeline \(row meta\)\./,
     );
     // Sem resíduo pt nem linguagem de boia.
-    await expect(hero.getByText(/Corrigido \(viés regional\)|Corrigido pela boia/i)).toHaveCount(0);
-    await expect(hero.getByText(/\(boia\)|\(viés regional\)/i)).toHaveCount(0);
+    await expect(sources.getByText(/Corrigido \(viés regional\)|Corrigido pela boia/i)).toHaveCount(0);
+    await expect(sources.getByText(/\(boia\)|\(viés regional\)/i)).toHaveCount(0);
   });
 
   test('ForecastTable: rótulo da linha de ondas com sufixo «(boia)» e tooltip honesto', async ({ page }) => {

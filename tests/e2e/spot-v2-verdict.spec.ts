@@ -28,11 +28,17 @@ async function openSpot(page: Page) {
 
 const slider = (page: Page) => page.getByRole('slider');
 const meter = (page: Page) => page.locator('#agora').getByRole('meter');
-const bar = (page: Page) => page.getByRole('region', { name: BAR_LABEL });
 
-/** Score mostrado no pill da barra fixa (testid explícito — os tabs também têm mini-scores). */
+/** Score mostrado no pill da barra fixa (testid explícito — os tabs também têm mini-scores).
+ *  Na v3 a barra só aparece quando o hero sai do ecrã — faz-se scroll até a
+ *  régua ficar pinned antes de ler. */
 async function barScore(page: Page): Promise<number> {
-  const region = bar(page);
+  // v3: a barra só entra quando o hero (#agora) sai do ecrã — scroll largo
+  // garante que o hero deixou de intersectar (scrollIntoView do slider pode
+  // deixar a cauda do hero visível e a barra fica `invisible`/fora da a11y
+  // tree — o getByRole não resolve enquanto escondida).
+  await page.evaluate(() => window.scrollTo(0, 1600));
+  const region = page.locator(`[role="region"][aria-label="${BAR_LABEL}"]`);
   await expect(region).toBeVisible();
   const txt = await region.getByTestId('spot-bar-score').textContent();
   return Number(txt);

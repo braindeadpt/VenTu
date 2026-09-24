@@ -37,5 +37,8 @@ export function useCountUp(target: number, reducedMotion: boolean): number {
     return () => cancelAnimationFrame(raf);
   }, [target, reducedMotion]);
 
-  return display;
+  // Reduced-motion: o alvo é devolvido já neste render — o state `display`
+  // só converge no effect seguinte e um leitor entre o render e o effect
+  // veria o valor antigo (o texto tem de bater com aria-valuenow já).
+  return reducedMotion ? target : display;
 }

@@ -58,6 +58,8 @@ const ES_COGNATES = new Set([
   'Altura (medida)', // «Altura (medida)» é espanhol correcto — igual ao PT por coincidência de língua
   'par ES×PT',       // «par ES×PT» é espanhol correcto (par de boias ES×PT)
   'Actualizado {date}', // «Actualizado» é espanhol correcto — igual ao PT por coincidência de língua
+  'actualizado {age}', // «actualizado» é espanhol correcto — igual ao PT por coincidência de língua
+  'Modelo Open-Meteo', // «Modelo Open-Meteo» é espanhol correcto — igual ao PT por coincidência de língua
   'Abrir',              // «Abrir» é espanhol correcto — igual ao PT por coincidência de língua
   'Reclamar este perfil', // espanhol correcto = PT
   'Entrar para reclamar', // espanhol correcto = PT
