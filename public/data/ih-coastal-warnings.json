@@ -461,6 +461,38 @@
       ]
     },
     {
+      "id": 18659,
+      "ref": "ANAV NR 2150/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=7e814445-94cb-46dc-8d33-3c9f57075395",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -9.118652,
+            38.205814
+          ],
+          [
+            -9.118652,
+            38.530979
+          ],
+          [
+            -8.725891,
+            38.530979
+          ],
+          [
+            -8.725891,
+            38.205814
+          ],
+          [
+            -9.118652,
+            38.205814
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7606,6 +7638,7 @@
       2018289
     ],
     "troia": [
+      18659,
       1000786,
       1001983,
       2017253,
@@ -7614,11 +7647,13 @@
       2018289
     ],
     "comporta": [
+      18659,
       2017253,
       2017849,
       2018289
     ],
     "carvalhal-comporta": [
+      18659,
       2017253,
       2017849
     ],
@@ -7958,7 +7993,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-24T13:37:42.320Z",
+  "fetchedAt": "2026-09-24T15:12:42.760Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
