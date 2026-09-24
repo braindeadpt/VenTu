@@ -1026,9 +1026,11 @@ function ForecastHourlyList({
                     </span>
                     {/* Onda compacta «1,9 m 12 s» — CORRECCOES-24SET §3:
                         a spec proíbe truncar; se não couber numa linha
-                        quebra para duas dentro da célula (56 px cabe). */}
+                        quebra para duas dentro da célula (56 px cabe) — só
+                        entre altura e período, nunca entre número e unidade. */}
                     <span className="min-w-0 font-mono text-[13px] leading-tight tabular-nums text-fg">
-                      {fmt.f1(h.waveHeight)} m {fmt.f0(h.wavePeriod)} s
+                      <span className="whitespace-nowrap">{fmt.f1(h.waveHeight)} m</span>{' '}
+                      <span className="whitespace-nowrap">{fmt.f0(h.wavePeriod)} s</span>
                     </span>
                     <span className="whitespace-nowrap font-mono text-[13px] tabular-nums text-fg-muted">
                       {getWindArrow(h.windDirection)} {windKt} kt
