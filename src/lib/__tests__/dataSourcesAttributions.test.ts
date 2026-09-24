@@ -120,15 +120,17 @@ describe('cadeias de atribuição (dataSources.tsx)', () => {
     const files: string[] = [];
     for (const dir of UI_DIRS) walk(files, dir);
 
-    const sources = files.filter(
-      (f) => !f.includes('dataSources') && !f.includes('fontes'),
-    );
-    const uiText = sources.map((f) => readFileSync(f, 'utf-8')).join('\n');
+    // Cada ficheiro é lido UMA vez: ler dentro do ciclo por fonte eram
+    // ~15 × centenas de leituras síncronas e o teste passava os 5 s em Windows
+    // com a build a correr ao lado.
+    const sources = files
+      .filter((f) => !f.includes('dataSources') && !f.includes('fontes'))
+      .map((f) => readFileSync(f, 'utf-8'));
 
     for (const id of Object.keys(ATTRIBUTIONS) as DataSourceId[]) {
       const anchors = UI_ANCHORS[id];
-      const foundIn = sources.filter((f) =>
-        anchors.some((a) => readFileSync(f, 'utf-8').includes(a)),
+      const foundIn = sources.filter((text) =>
+        anchors.some((a) => text.includes(a)),
       );
       // A cadeia tem de estar em pelo menos um sítio da UI — nunca só na tabela.
       expect(
