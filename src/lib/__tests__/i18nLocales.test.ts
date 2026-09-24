@@ -37,6 +37,8 @@ const SHARED_TOKENS = new Set([
   'PM', 'BM',
   // «ideal» é a mesma grafia em PT/EN/ES/DE (rótulo do sector ideal).
   'ideal {dirs}',
+  // «Madeira» é nome próprio — idêntico em todas as línguas (chip de ilha §10).
+  'Madeira',
 ]);
 
 /**
@@ -185,6 +187,11 @@ const ES_COGNATES = new Set([
   'Norte',                             // espanhol correcto = PT (região Norte)
   'Centro',                            // espanhol correcto = PT (região Centro)
   'Lisboa',                            // espanhol correcto = PT (região Lisboa)
+  'Mar',                               // espanhol correcto = PT (grupo «Mar» do menu Camadas, §8)
+  'Próximas 48 h',                     // espanhol correcto = PT (camada «48 h» do menu, §8)
+  'Isóbatas',                          // espanhol correcto = PT (camada de isóbatas)
+  'Altura significativa (Hs)',         // espanhol correcto = PT (camada Hs)
+  'Continente',                        // espanhol correcto = PT (chip de área §10)
 ]);
 
 /**
@@ -224,6 +231,7 @@ const EN_COGNATES = new Set([
   'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
   'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
   'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
+  'Madeira',           // nome próprio — igual em EN (chip de ilha §10)
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

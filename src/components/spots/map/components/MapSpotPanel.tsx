@@ -4,7 +4,6 @@ import { getTranslation } from '@/lib/i18n';
 import { ChevronLeft, ChevronRight, Zap } from 'lucide-react';
 import FilterPill from '@/components/ui/FilterPill';
 import MapSpotList, { type MapSpotListRow } from './MapSpotList';
-import MapBasemapRadio from './MapBasemapRadio';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
 import type { BasemapMode } from '../../MapLayerToggle';
 
@@ -28,7 +27,9 @@ interface MapSpotPanelProps extends MapFullscreenHudProps {
   warningChip?: React.ReactNode;
   /** Trilho das 48h / radar — vive no painel em desktop (era do HUD). */
   timeTrack?: React.ReactNode;
-  /** Radiogroup «Mapa base» — vivia no HUD antigo; reposto no painel. */
+  /** Radiogroup «Mapa base» — CORRECCOES-24SET (M5): saiu do painel para a
+   *  secção «Base» do menu Camadas. As props ficam na interface para não
+   *  partir os callers (a M6 pode limpá-las). */
   basemapMode: BasemapMode;
   onBasemapChange: (mode: BasemapMode) => void;
   attributionHtml: string;
@@ -46,8 +47,6 @@ export default function MapSpotPanel({
   onlyOnHint,
   warningChip,
   timeTrack,
-  basemapMode,
-  onBasemapChange,
   attributionHtml,
   sports,
   regions,
@@ -151,7 +150,7 @@ export default function MapSpotPanel({
         )}
         {warningChip}
         {timeTrack}
-        <MapBasemapRadio value={basemapMode} onChange={onBasemapChange} locale={locale} />
+        {/* Basemap saiu para o menu Camadas (CORRECCOES-24SET, «Para a M5»). */}
       </div>
 
       <div className="mt-2 flex min-h-0 flex-1 flex-col border-t border-divider px-3 pt-2">
