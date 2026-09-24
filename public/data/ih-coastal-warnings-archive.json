@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-23T23:43:08.828Z",
+  "fetchedAt": "2026-09-24T06:48:15.211Z",
   "windowDays": 90,
   "dayCount": 23,
   "days": [
@@ -16602,13 +16602,6 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=e93cb7c4-3025-47d7-91f4-5b1a76947d85"
         },
         {
-          "id": 18657,
-          "ref": "ANAV NR 2144/26",
-          "category": "Requisitos de segurança maritima",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=6b539a09-f476-4887-8646-525f265cf6d2"
-        },
-        {
           "id": 1000182,
           "ref": "ANAV NR 121/21",
           "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -17659,13 +17652,6 @@
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=3c72080e-a2e9-4744-ab0d-ef0a61dbf74a"
         },
         {
-          "id": 2016905,
-          "ref": "ANAV NR 0743/26",
-          "category": "Animais Marinhos - Interação",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=47b8b9ab-e480-4940-b26d-4f3333ffddae"
-        },
-        {
           "id": 2017253,
           "ref": "ANAV NR 0956/26",
           "category": "Animais Marinhos - Avistamento",
@@ -18192,30 +18178,6 @@
       "category": "Portaria n.º 565/90 - Regulamento da Pesca no Rio Cávado",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=9a066f4b-f3a4-4477-8b73-034383035211",
-      "firstSeen": "2026-09-11",
-      "lastSeen": "2026-09-24",
-      "daysInForce": [
-        "2026-09-11",
-        "2026-09-12",
-        "2026-09-13",
-        "2026-09-14",
-        "2026-09-15",
-        "2026-09-16",
-        "2026-09-18",
-        "2026-09-19",
-        "2026-09-20",
-        "2026-09-21",
-        "2026-09-22",
-        "2026-09-23",
-        "2026-09-24"
-      ],
-      "nDays": 13
-    },
-    {
-      "ref": "ANAV NR 0743/26",
-      "category": "Animais Marinhos - Interação",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=47b8b9ab-e480-4940-b26d-4f3333ffddae",
       "firstSeen": "2026-09-11",
       "lastSeen": "2026-09-24",
       "daysInForce": [
@@ -19958,19 +19920,6 @@
         "2026-09-24"
       ],
       "nDays": 3
-    },
-    {
-      "ref": "ANAV NR 2144/26",
-      "category": "Requisitos de segurança maritima",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=6b539a09-f476-4887-8646-525f265cf6d2",
-      "firstSeen": "2026-09-23",
-      "lastSeen": "2026-09-24",
-      "daysInForce": [
-        "2026-09-23",
-        "2026-09-24"
-      ],
-      "nDays": 2
     },
     {
       "ref": "ANAV NR 22/25",
@@ -21835,6 +21784,41 @@
         "2026-09-24"
       ],
       "nDays": 13
+    },
+    {
+      "ref": "ANAV NR 0743/26",
+      "category": "Animais Marinhos - Interação",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=47b8b9ab-e480-4940-b26d-4f3333ffddae",
+      "firstSeen": "2026-09-11",
+      "lastSeen": "2026-09-23",
+      "daysInForce": [
+        "2026-09-11",
+        "2026-09-12",
+        "2026-09-13",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23"
+      ],
+      "nDays": 12
+    },
+    {
+      "ref": "ANAV NR 2144/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=6b539a09-f476-4887-8646-525f265cf6d2",
+      "firstSeen": "2026-09-23",
+      "lastSeen": "2026-09-23",
+      "daysInForce": [
+        "2026-09-23"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 2138/26",
