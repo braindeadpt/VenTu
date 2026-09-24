@@ -6,10 +6,15 @@ import type L from 'leaflet';
 import type { MapHoursFile } from '@/lib/mapHours';
 import { scoreAtHour } from '@/lib/mapHours';
 import { formatHourLabel, formatHourLong, formatWeekday } from '@/lib/verdict/formatHourLabel';
-import { pickRailAxisLabels } from '@/lib/verdict/railAxisLabels';
+import { pickRailAxisLabelsPx, railAxisCandidates } from '@/lib/verdict/railAxisLabels';
 import { getScoreCssVar } from '@/lib/scoreThresholds';
 import type { getTranslation } from '@/lib/i18n';
 import { useMapUiData } from './MapUiContext';
+
+/** Avanço do Geist Mono (600/1000 em) a 10 px — os ticks do eixo. */
+const AXIS_CHAR_PX = 6;
+/** Espaço mínimo entre etiquetas do eixo — o mesmo da régua do spot. */
+const AXIS_GAP_PX = 8;
 
 type MapTranslation = ReturnType<typeof getTranslation>;
 
@@ -49,7 +54,7 @@ interface MapTimeChromeProps {
  *    scrubber, `aria-expanded`.
  *  • **Scrubber** — barras de 16 passos de 3 h coloridas pelo melhor score
  *    visível no viewport, horas nocturnas sombreadas, marcador «agora»,
- *    ticks canónicos anti-colisão (`pickRailAxisLabels`), play/pause e
+ *    ticks canónicos anti-colisão (`pickRailAxisLabelsPx`), play/pause e
  *    «Agora». O `<input type="range">` cobre as barras (invisível): pointer
  *    drag + setas/Home/End de borla e o selector E2E
  *    `[data-map-hours-scrubber] input[type=range]` mantém-se.
@@ -126,10 +131,34 @@ export default function MapTimeChrome({
     [times],
   );
 
-  const ticks = useMemo(
-    () => (n > 1 ? pickRailAxisLabels(times, locale, isMobile ? 6 : 4) : []),
-    [times, locale, isMobile, n],
-  );
+  /* Ticks do eixo — o mesmo algoritmo da régua do spot: colisão medida em
+     píxeis (a versão por distância em horas sobrepunha «qua 23» e «12h» no
+     mobile, auditoria S8). Largura real da fila por ResizeObserver; o texto
+     é Geist Mono 10 px, de avanço fixo, por isso a largura mede-se por
+     contagem de caracteres (sem sonda no DOM). */
+  const axisRef = useRef<HTMLDivElement | null>(null);
+  const [axisW, setAxisW] = useState(0);
+  const axisMounted = scrubOpen && hoursOn && n > 1;
+  useEffect(() => {
+    const el = axisRef.current;
+    if (!axisMounted || !el) return;
+    const ro = new ResizeObserver(() => setAxisW(el.getBoundingClientRect().width));
+    ro.observe(el);
+    setAxisW(el.getBoundingClientRect().width);
+    return () => ro.disconnect();
+  }, [axisMounted]);
+  const axisCandidates = useMemo(() => railAxisCandidates(times, locale), [times, locale]);
+  const ticks = useMemo(() => {
+    if (n <= 1) return [];
+    const w = axisW || (isMobile ? 340 : 480); // estimativa pré-medida
+    return pickRailAxisLabelsPx(
+      axisCandidates,
+      n,
+      (i) => ((i + 0.5) / n) * w,
+      (s) => s.length * AXIS_CHAR_PX,
+      AXIS_GAP_PX,
+    );
+  }, [axisCandidates, n, axisW, isMobile]);
 
   /* Mede o scrubber → a zona levanta a legenda por cima dele. */
   useEffect(() => {
@@ -324,20 +353,18 @@ export default function MapTimeChrome({
             </div>
 
             {/* Ticks canónicos anti-colisão — prioridade à mudança de dia. */}
-            <div className="relative mt-1 h-4 font-mono text-[10px] tabular-nums text-fg-subtle" aria-hidden>
+            <div
+              ref={axisRef}
+              className="relative mt-1 h-4 font-mono text-[10px] tabular-nums text-fg-subtle"
+              aria-hidden
+            >
+              {/* `left` já vem clampado às bordas pelo algoritmo — é a
+                  caixa que foi testada contra colisões. */}
               {ticks.map((tick) => (
                 <span
                   key={tick.index}
                   className="absolute top-0 whitespace-nowrap"
-                  style={{
-                    left: `${((tick.index + 0.5) / n) * 100}%`,
-                    transform:
-                      tick.index === 0
-                        ? 'none'
-                        : tick.index === n - 1
-                          ? 'translateX(-100%)'
-                          : 'translateX(-50%)',
-                  }}
+                  style={{ left: tick.left }}
                 >
                   {tick.label}
                 </span>
