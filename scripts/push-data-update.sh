@@ -50,6 +50,15 @@ for attempt in $(seq 1 10); do
   git reset --hard -q
   git clean -fdq -- public/data data-state
   git checkout -f -B main origin/main
+  # O cp -a abaixo só acrescenta e substitui: nunca apaga. As frames de radar
+  # que o pipeline podou (0f204022d) voltavam do origin a cada commit do bot e
+  # acumulavam (89 ficheiros em 24 set, CI parada no orçamento de public/data).
+  # A pasta de frames é só do passo de radar e vem inteira, já podada, no
+  # backup: esvaziá-la antes do cp deixa-a igual ao backup (as removidas
+  # entram como deleções no git add -f abaixo).
+  if [ -d "$DATA_BACKUP/public-data/radar/frames" ]; then
+    rm -rf public/data/radar/frames
+  fi
   cp -a "$DATA_BACKUP/public-data/." public/data/
   if [ "$HAS_STATE" = 1 ]; then
     mkdir -p data-state
