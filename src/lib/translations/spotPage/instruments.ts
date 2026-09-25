@@ -27,6 +27,7 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s de {dir} · janela {dirs}',
     swellFoot: 'ondulação {h} m a {p} s',
+    ensembleCard: 'banda P10–P90 {lo}–{hi} m · {n} modelos',
     tideNextHigh: 'próxima preia-mar às {t}',
     tideNextLow: 'próxima baixa-mar às {t}',
     tideNoExtremum: 'sem extremo na janela',
@@ -35,6 +36,19 @@ export const spotPageInstruments = {
     nowTag: 'agora',
     obsStation: 'Estação',
     obsBuoy: 'Bóia',
+
+    // Banda ensemble (P10/P50/P90) + skill por horizonte de lead
+    ensembleTitle: 'Banda multi-modelo',
+    ensembleFamily: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    ensembleMembers: '{n} modelos',
+    ensembleHint:
+      'P10–P50–P90 dos modelos de onda e de vento da Open-Meteo para a hora escolhida. Intervalo estreito = modelos de acordo.',
+    skillLeadTitle: 'Skill por horizonte',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Erro do modelo de onda vs leituras de boia, por tempo de antecipação (lead time). Cresce com o horizonte — as horas mais distantes valem menos.',
 
     howWeKnow: 'Como sabemos — fontes e confiança',
     // Coerência entre fontes (texto + ícone, ligação a #como-sabemos)
@@ -64,6 +78,7 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s from {dir} · window {dirs}',
     swellFoot: 'swell {h} m at {p} s',
+    ensembleCard: 'P10–P90 band {lo}–{hi} m · {n} models',
     tideNextHigh: 'next high tide at {t}',
     tideNextLow: 'next low tide at {t}',
     tideNoExtremum: 'no turning point in the window',
@@ -71,6 +86,18 @@ export const spotPageInstruments = {
     nowTag: 'now',
     obsStation: 'Station',
     obsBuoy: 'Buoy',
+
+    ensembleTitle: 'Multi-model band',
+    ensembleFamily: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    ensembleMembers: '{n} models',
+    ensembleHint:
+      'P10–P50–P90 of the Open-Meteo wave and wind models for the chosen hour. A narrow interval means the models agree.',
+    skillLeadTitle: 'Skill by horizon',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Wave model error vs buoy readings by lead time. It grows with the horizon — farther-out hours are worth less.',
 
     howWeKnow: 'How we know — sources and confidence',
     coherenceMark: 'sources disagree',
@@ -99,6 +126,7 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s de {dir} · ventana {dirs}',
     swellFoot: 'mar de fondo {h} m a {p} s',
+    ensembleCard: 'banda P10–P90 {lo}–{hi} m · {n} modelos',
     tideNextHigh: 'próxima pleamar a las {t}',
     tideNextLow: 'próxima bajamar a las {t}',
     tideNoExtremum: 'sin extremo en la ventana',
@@ -106,6 +134,18 @@ export const spotPageInstruments = {
     nowTag: 'ahora',
     obsStation: 'Estación',
     obsBuoy: 'Boya',
+
+    ensembleTitle: 'Banda multimodelo',
+    ensembleFamily: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    ensembleMembers: '{n} modelos',
+    ensembleHint:
+      'P10–P50–P90 de los modelos de ola y viento de Open-Meteo para la hora elegida. Intervalo estrecho = los modelos coinciden.',
+    skillLeadTitle: 'Habilidad por horizonte',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Error del modelo de ola vs lecturas de boya según el tiempo de antelación. Crece con el horizonte — las horas lejanas valen menos.',
 
     howWeKnow: 'Cómo lo sabemos — fuentes y confianza',
     coherenceMark: 'fuentes divergentes',
@@ -134,6 +174,7 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s aus {dir} · Fenster {dirs}',
     swellFoot: 'Dünung {h} m bei {p} s',
+    ensembleCard: 'P10–P90-Band {lo}–{hi} m · {n} Modelle',
     tideNextHigh: 'nächstes Hochwasser um {t}',
     tideNextLow: 'nächstes Niedrigwasser um {t}',
     tideNoExtremum: 'kein Extremum im Fenster',
@@ -141,6 +182,18 @@ export const spotPageInstruments = {
     nowTag: 'jetzt',
     obsStation: 'Station',
     obsBuoy: 'Boje',
+
+    ensembleTitle: 'Multi-Modell-Band',
+    ensembleFamily: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    ensembleMembers: '{n} Modelle',
+    ensembleHint:
+      'P10–P50–P90 der Open-Meteo Wellen- und Windmodelle für die gewählte Stunde. Schmaler Bereich = die Modelle sind einig.',
+    skillLeadTitle: 'Güte nach Horizont',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Wellenmodell-Fehler vs. Bojenmessungen nach Vorlaufzeit. Er wächst mit dem Horizont — weiter entfernte Stunden sind weniger wert.',
 
     howWeKnow: 'Woher wir es wissen — Quellen und Vertrauen',
     coherenceMark: 'Quellen uneins',
@@ -169,6 +222,7 @@ export const spotPageInstruments = {
     idealFoot: 'idéal {dirs}',
     swellSub: '{p} s de {dir} · fenêtre {dirs}',
     swellFoot: 'houle {h} m à {p} s',
+    ensembleCard: 'bande P10–P90 {lo}–{hi} m · {n} modèles',
     tideNextHigh: 'prochaine pleine mer à {t}',
     tideNextLow: 'prochaine basse mer à {t}',
     tideNoExtremum: 'pas d’extrême dans la fenêtre',
@@ -176,6 +230,18 @@ export const spotPageInstruments = {
     nowTag: 'maintenant',
     obsStation: 'Station',
     obsBuoy: 'Bouée',
+
+    ensembleTitle: 'Bande multimodèle',
+    ensembleFamily: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    ensembleMembers: '{n} modèles',
+    ensembleHint:
+      'P10–P50–P90 des modèles de houle et de vent Open-Meteo pour l’heure choisie. Intervalle étroit = les modèles sont d’accord.',
+    skillLeadTitle: 'Compétence par horizon',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Erreur du modèle de houle vs lectures de bouée selon le délai. Elle augmente avec l’horizon — les heures lointaines valent moins.',
 
     howWeKnow: 'Comment nous le savons — sources et confiance',
     coherenceMark: 'sources divergentes',

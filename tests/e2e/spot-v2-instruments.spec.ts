@@ -200,3 +200,164 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
     await expect(cards.nth(2)).not.toContainText('Maré');
   });
 });
+
+/**
+ * Banda ensemble P10/P50/P90 (campo `ens` da linha horária) + skill por
+ * horizonte de lead (`byLead` do forecast-skill.json).
+ *
+ * O `ens` só existe nas horas multi-modelo — e o ficheiro servido em dev/CI é
+ * de um run best_match, sem a chave. Por isso o spec serve as linhas REAIS do
+ * spot com `ens` acrescentado (mantém o alinhamento com a régua de 48 h e o
+ * resto da página intacto) e stubba o forecast-skill.json com um byLead
+ * determinístico para a boia mapeada do Guincho (IH idEst 1010).
+ */
+test.describe('S2B — banda ensemble P10–P90 + skill por horizonte (lead)', () => {
+  // O SW do build estático serve os JSON de dados da cache — sem o bloquear,
+  // as rotas do Playwright não interceptam o ficheiro do spot.
+  test.use({ serviceWorkers: 'block' });
+
+  const SPOT = 'guincho';
+  const BUOY_ID = '1010';
+  const WAVE_CARD = `${CARDS}[data-instrument='wave']`;
+  const PANEL = '#instrumentos-detalhe';
+
+  /** Serve as linhas do spot com uma banda determinística derivada do valor. */
+  async function stubForecastBand(page: Page, withBand = true) {
+    await page.route('**/data/forecasts/*.json', async (route) => {
+      const rows = (await (await route.fetch()).json()) as Record<string, unknown>[];
+      const banded = rows.map((r) => {
+        if (!withBand) {
+          const copy = { ...r };
+          delete copy.ens;
+          return copy;
+        }
+        const h = Number.isFinite(Number(r.waveHeight)) ? Number(r.waveHeight) : 1.5;
+        const w = Number.isFinite(Number(r.windSpeed)) ? Number(r.windSpeed) : 7;
+        const q = (v: number, d = 2) => Number(v.toFixed(d));
+        return {
+          ...r,
+          // [waveP10, waveP50, waveP90, windP10, windP50, windP90, waveN, windN]
+          ens: [
+            q(Math.max(0, h - 0.4)),
+            q(h),
+            q(h + 0.5),
+            q(Math.max(0, w - 0.5), 1),
+            q(w, 1),
+            q(w + 0.8, 1),
+            4,
+            4,
+          ],
+        };
+      });
+      await route.fulfill({ json: banded });
+    });
+  }
+
+  async function stubSkillByLead(page: Page, byLead = true) {
+    const buckets = byLead
+      ? [
+          { from: 0, to: 12, n: 12, me: 0.1, mae: 0.2, rmse: 0.3, corr: 0.9, meanLeadHours: 6 },
+          { from: 24, to: 48, n: 14, me: 0.6, mae: 0.7, rmse: 0.9, corr: 0.6, meanLeadHours: 36 },
+        ]
+      : undefined;
+    await page.route('**/data/forecast-skill.json', (route) =>
+      route.fulfill({
+        json: {
+          fetchedAt: '2026-09-25T06:00:00.000Z',
+          pairCount: 40,
+          pairCountByOrigin: { ih: 40, 'wmo-pt': 0, 'wmo-es': 0 },
+          calibratedPairCount: 0,
+          stats: { n: 40, me: 0.3, mae: 0.5, rmse: 0.7, corr: 0.8, meanLeadHours: 20 },
+          byOrigin: { ih: { n: 40, me: 0.3, mae: 0.5, rmse: 0.7, corr: 0.8, meanLeadHours: 20 } },
+          byBuoy: {
+            [BUOY_ID]: {
+              buoyName: 'ZLT1',
+              n: 40,
+              me: 0.3,
+              mae: 0.5,
+              rmse: 0.7,
+              corr: 0.8,
+              meanLeadHours: 20,
+              origin: 'ih',
+              ...(buckets ? { byLead: buckets } : {}),
+            },
+          },
+        },
+      }),
+    );
+  }
+
+  /**
+   * Abre o spot e espera que as linhas horárias cheguem. Espera pela RESPOSTA
+   * do ficheiro do spot e depois pelo marcador `ready` (seletor de atributo +
+   * `.first()` — durante a hidratação o shell pode desenhar duas cópias do
+   * contentor e `#instrumentos > div` batia em strict mode).
+   */
+  async function openSpot(page: Page) {
+    const forecast = page.waitForResponse((r) => r.url().includes('/data/forecasts/'));
+    await page.goto(`/pt/spots/${SPOT}/`);
+    await forecast;
+    await expect(page.locator(`${SECTION} [data-instrument-rows="ready"]`).first()).toBeVisible({
+      timeout: 20_000,
+    });
+  }
+
+  test('cartão Onda mostra a banda P10–P90 da hora (e nada sem `ens`)', async ({ page }) => {
+    await stubForecastBand(page, false);
+    await openSpot(page);
+    // Sem `ens` na linha, o cartão não inventa banda.
+    await expect(page.locator(WAVE_CARD).locator('[data-wave-band="card"]')).toHaveCount(0);
+  });
+
+  test('cartão Onda: banda P10–P90 visível com os membros do ensemble', async ({ page }) => {
+    await stubForecastBand(page);
+    await openSpot(page);
+    const band = page.locator(WAVE_CARD).locator('[data-wave-band="card"]');
+    await expect(band).toBeVisible({ timeout: 15_000 });
+    await expect(band).toContainText('P10–P90');
+    await expect(band).toContainText('4 modelos');
+    // Formatação PT: vírgula decimal (o número grande do cartão usa a mesma).
+    await expect(band).toContainText(/\d,\d–\d,\d m/);
+  });
+
+  test('detalhe da Onda: banda da hora + skill por horizonte de lead', async ({ page }) => {
+    await stubForecastBand(page);
+    await stubSkillByLead(page);
+    await openSpot(page);
+    await page.locator(WAVE_CARD).getByRole('button').click();
+    const panel = page.locator(PANEL);
+    await expect(panel).toBeVisible({ timeout: 15_000 });
+
+    // Banda da hora escolhida: onda em m (P10/P50/P90) e vento em kt.
+    const detailBand = panel.locator('[data-wave-band="detail"]');
+    await expect(detailBand).toBeVisible();
+    await expect(detailBand).toContainText('Onda');
+    await expect(detailBand).toContainText('P10');
+    await expect(detailBand).toContainText('P50');
+    await expect(detailBand).toContainText('P90');
+    await expect(detailBand).toContainText('kt');
+    // Onda em metros com 2 casas e vírgula PT; vento convertido para kt inteiro.
+    await expect(detailBand).toContainText(/P10 \d,\d\d · P50 \d,\d\d · P90 \d,\d\d m/);
+    await expect(detailBand).toContainText(/P10 \d+ · P50 \d+ · P90 \d+ kt/);
+
+    // Skill por horizonte: só as faixas que o produtor publicou, com ME/RMSE/n.
+    const lead = panel.locator('[data-skill-by-lead="true"]');
+    await expect(lead).toBeVisible({ timeout: 20_000 });
+    await expect(lead).toContainText('0–12 h');
+    await expect(lead).toContainText('24–48 h');
+    await expect(lead).toContainText('n=12');
+    await expect(lead).toContainText('n=14');
+    await expect(lead).toContainText('RMSE');
+  });
+
+  test('skill por horizonte: sem byLead para a boia, a repartição não aparece', async ({
+    page,
+  }) => {
+    await stubForecastBand(page);
+    await stubSkillByLead(page, false);
+    await openSpot(page);
+    await page.locator(WAVE_CARD).getByRole('button').click();
+    await expect(page.locator(PANEL)).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator(`${PANEL} [data-skill-by-lead]`)).toHaveCount(0);
+  });
+});

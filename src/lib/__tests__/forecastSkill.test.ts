@@ -88,6 +88,37 @@ describe('parseForecastSkillBuoys', () => {
     expect(data.byOrigin).toEqual({ ih: null, 'wmo-pt': null, 'wmo-es': null });
   });
 
+  it('parseia byLead (faixas de horizonte) — global e por boia, com saneamento', () => {
+    const data = parseForecastSkillBuoys({
+      byBuoy: {
+        '19': {
+          buoyName: 'CSA92/D',
+          n: 47,
+          me: 0.2,
+          origin: 'ih',
+          byLead: [
+            { from: 24, to: 48, n: 30, me: -0.4, mae: 0.5, rmse: 0.7, meanLeadHours: 36 },
+            { from: 0, to: 12, n: 12, me: 0.9, mae: 1.0, rmse: 1.2, meanLeadHours: 6 },
+            { from: 48, to: 72, n: 0, me: 0.1 }, // n < 1 → fora
+            { from: 'x', to: 12, n: 5, me: 0.1 }, // intervalo inválido → fora
+          ],
+        },
+      },
+      byLead: [{ from: 0, to: 12, n: 40, me: 0.3, rmse: 1.1 }],
+    });
+    // Ordenado por `from`, não pela ordem do ficheiro.
+    const lead = data.buoys[0].byLead!;
+    expect(lead.map((b) => `${b.from}-${b.to}`)).toEqual(['0-12', '24-48']);
+    expect(lead[0]).toMatchObject({ n: 12, me: 0.9, rmse: 1.2, meanLeadHours: 6 });
+    expect(data.byLead).toEqual([{ from: 0, to: 12, n: 40, me: 0.3, rmse: 1.1 }]);
+  });
+
+  it('byLead ausente ou corrompido fica vazio (a UI esconde a repartição)', () => {
+    expect(parseForecastSkillBuoys({ byBuoy: {}, byLead: 'nope' }).byLead).toEqual([]);
+    expect(parseForecastSkillBuoys({ byLead: [{ n: 5, me: 0.1 }] }).byLead).toEqual([]);
+    expect(parseForecastSkillBuoys(null).byLead).toEqual([]);
+  });
+
   it('devolve vazio para null/corrompido/sem stats', () => {
     expect(parseForecastSkillBuoys(null).hasData).toBe(false);
     expect(parseForecastSkillBuoys({ byBuoy: {} }).hasData).toBe(false);

@@ -12,6 +12,7 @@ import type { ScoreWindCorrection, ScoreWindSource } from '@/lib/scoreConditions
 import ObservedNow from '@/components/spots/ObservedNow';
 import ObservedWaveCard from '@/components/spots/ObservedWaveCard';
 import BuoySkillLine from '@/components/spots/BuoySkillLine';
+import WaveSkillByLead from '@/components/spots/WaveSkillByLead';
 import BuoyLayerNotice from '@/components/spots/BuoyLayerNotice';
 import IsobathsStrip from '@/components/spots/IsobathsStrip';
 import TideScheduleStrip from '@/components/spots/TideScheduleStrip';
@@ -27,7 +28,8 @@ import type { InstrumentHour } from './types';
 /**
  * Painel de detalhe único por baixo dos três cartões (spec §4).
  * Vento → ObservedNow, relação vento↔costa, WindFlowGlyph, fonte do vento.
- * Onda → SwellTrainsTable, ObservedWaveCard, BuoySkillLine,
+ * Onda → SwellTrainsTable, banda ensemble P10/P50/P90 da hora escolhida,
+ *        ObservedWaveCard, BuoySkillLine, skill por horizonte de lead,
  *        BuoyLayerNotice, IsobathsStrip, WaveCalibrationTag.
  * Maré → TideScheduleStrip, MoonTideCard, temperatura da água.
  *
@@ -197,6 +199,38 @@ export default function InstrumentDetail({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="grid min-w-0 content-start gap-2.5">
             <SwellTrainsTable conditions={trainConditions} locale={locale} />
+            {hour?.ensemble && (
+              <div className="grid gap-1.5 border-t border-divider pt-2.5" data-wave-band="detail">
+                <h3 className="m-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
+                  {ti.ensembleTitle}
+                </h3>
+                <ul className="m-0 grid list-none gap-0.5 p-0 font-mono tabular-nums text-[12px] text-fg-muted">
+                  {hour.ensemble.wave && (
+                    <li>
+                      <span className="text-fg">{ti.wave}</span>{' '}
+                      {ti.ensembleFamily
+                        .replace('{p10}', fmt.f2(hour.ensemble.wave.p10))
+                        .replace('{p50}', fmt.f2(hour.ensemble.wave.p50))
+                        .replace('{p90}', fmt.f2(hour.ensemble.wave.p90))
+                        .replace('{unit}', 'm')}{' '}
+                      · {ti.ensembleMembers.replace('{n}', String(hour.ensemble.wave.n))}
+                    </li>
+                  )}
+                  {hour.ensemble.wind && (
+                    <li>
+                      <span className="text-fg">{ti.wind}</span>{' '}
+                      {ti.ensembleFamily
+                        .replace('{p10}', fmt.f0(hour.ensemble.wind.p10 * MS_TO_KT))
+                        .replace('{p50}', fmt.f0(hour.ensemble.wind.p50 * MS_TO_KT))
+                        .replace('{p90}', fmt.f0(hour.ensemble.wind.p90 * MS_TO_KT))
+                        .replace('{unit}', 'kt')}{' '}
+                      · {ti.ensembleMembers.replace('{n}', String(hour.ensemble.wind.n))}
+                    </li>
+                  )}
+                </ul>
+                <p className="m-0 text-[11px] leading-snug text-fg-subtle">{ti.ensembleHint}</p>
+              </div>
+            )}
           </div>
           <div className="grid min-w-0 content-start gap-2.5">
             <h3 className="m-0 mb-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
@@ -218,6 +252,9 @@ export default function InstrumentDetail({
             ) : (
               <BuoySkillLine spotId={spot.id} locale={locale} />
             )}
+            {/* Skill por horizonte de lead — sempre presente quando há byLead
+                para a boia do spot (independente de haver leitura fresca). */}
+            <WaveSkillByLead spotId={spot.id} locale={locale} />
             {!freshObservedWave && conditions.observedWave && (
               <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{tv.staleBuoy}</p>
             )}

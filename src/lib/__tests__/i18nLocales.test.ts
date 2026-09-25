@@ -41,6 +41,12 @@ const SHARED_TOKENS = new Set([
   'ideal {dirs}',
   // «Madeira» é nome próprio — idêntico em todas as línguas (chip de ilha §10).
   'Madeira',
+  // Fórmulas simbólicas da banda ensemble e do skill por lead: P10/P50/P90,
+  // ME, RMSE, n e h são símbolos/abreviaturas universais — nada a traduzir.
+  'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+  '{from}–{to} h',
+  'ME {me} m · RMSE {rmse} m · n={n}',
+  'ME {me} m · n={n}',
 ]);
 
 /**
@@ -199,6 +205,8 @@ const ES_COGNATES = new Set([
   'Isóbatas',                          // espanhol correcto = PT (camada de isóbatas)
   'Altura significativa (Hs)',         // espanhol correcto = PT (camada Hs)
   'Continente',                        // espanhol correcto = PT (chip de área §10)
+  'banda P10–P90 {lo}–{hi} m · {n} modelos', // espanhol correcto = PT (banda ensemble)
+  '{n} modelos',                        // espanhol correcto = PT (contagem de membros)
 ]);
 
 /**
@@ -240,6 +248,11 @@ const EN_COGNATES = new Set([
   'Cross-on', 'Cross-off', // classifyWind: rótulos do chip adoptados em EN = PT
   'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
   'Madeira',           // nome próprio — igual em EN (chip de ilha §10)
+  // Fórmulas simbólicas (mesmos símbolos em PT e EN): P10/P50/P90, ME, RMSE, n.
+  'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+  '{from}–{to} h',
+  'ME {me} m · RMSE {rmse} m · n={n}',
+  'ME {me} m · n={n}',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

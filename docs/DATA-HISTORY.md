@@ -26,6 +26,11 @@ normal, falha antes de se tornar um problema de histórico.
 > pela qual o campo é o array compacto de 8 números e não seis chaves nominais
 > (essas custariam +1,93 MB).
 
+> 2026-09-25 (continuação): o `forecast-skill.json` ganha `byLead` (skill por
+> faixa de horizonte de lead, por boia e global — ver CONTEXT.md) — ~+1 KB no
+> ficheiro do report, bem dentro do orçamento de 0,5 MB em
+> `check-payload-budgets.js`, e sem impacto na contagem de ficheiros.
+
 > 2026-09-23: o guard disparou a **302 ficheiros** — 72 frames de radar
 > acumulados (o manifesto só usa 12). Causa: uma corrida que falhava a meio do
 > fetch deixava os PNG escritos sem correr o prune (que só existia no fim).

@@ -98,14 +98,23 @@ export default function SwellCard({
               .replace('{dir}', cardinal16(dir))
               .replace('{dirs}', (bestSwell ?? '').replace(/\s*,\s*/g, '–'))
           : '—'}
-      </span>
-      <span className={INST_SUB}>
+      </span>      <span className={INST_SUB}>
         {hour?.swellHeightM !== undefined && hour?.swellPeriodS !== undefined
           ? ti.swellFoot
               .replace('{h}', fmt.f1(hour.swellHeightM))
               .replace('{p}', fmt.f1(hour.swellPeriodS))
-          : ' '}
+          : ' '}
       </span>
+      {/* Banda ensemble (P10–P90) da hora — só nas horas multi-modelo. Marca
+          visual de incerteza; o número grande continua a ser o P50/best_match. */}
+      {hour?.ensemble?.wave && (
+        <span className={INST_SUB} data-wave-band="card">
+          {ti.ensembleCard
+            .replace('{lo}', fmt.f1(hour.ensemble.wave.p10))
+            .replace('{hi}', fmt.f1(hour.ensemble.wave.p90))
+            .replace('{n}', String(hour.ensemble.wave.n))}
+        </span>
+      )}
     </InstrumentCard>
   );
 }

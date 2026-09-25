@@ -31,7 +31,7 @@
    - Onda: mesma rosa, janela de ondulação (bestSwell), cone = direcção, anéis ao ritmo do período, cone tracejado fora da janela; altura, período, direcção.
    - Maré: curva de 48 h com PM/BM, ponto na hora escolhida, "a encher/a vazar", próxima PM/BM.
    - Foco (hover, clique, teclado) = troca de material: escuro ↔ areia #FAFAF7, sem sombra, scale ≤1.012.
-   - Painel de detalhe único por baixo dos três: Vento → ObservedNow, WindRelation, WindFlowGlyph, fonte do vento. Onda → SwellTrainsTable, ObservedWaveCard, BuoySkillLine, BuoyLayerNotice, IsobathsStrip, WaveCalibrationTag. Maré → TideScheduleStrip, MoonTideCard, temperatura da água.
+   - Painel de detalhe único por baixo dos três: Vento → ObservedNow, WindRelation, WindFlowGlyph, fonte do vento. Onda → SwellTrainsTable, **banda ensemble P10/P50/P90 da hora** (`data-wave-band`), ObservedWaveCard, BuoySkillLine, **skill por horizonte de lead** (`WaveSkillByLead`, `data-skill-by-lead`), BuoyLayerNotice, IsobathsStrip, WaveCalibrationTag. Maré → TideScheduleStrip, MoonTideCard, temperatura da água. O cartão Onda mostra ainda a banda P10–P90 resumida da hora (`data-wave-band="card"`).
    - Avisos de coerência: marca no cartão afectado + texto completo em #como-sabemos.
 5. ForecastTable ("Hora a hora") com a hora escolhida destacada; clicar numa coluna/linha muda o índice; ao mudar por outra via, scroll até à coluna (só se a tabela estiver visível). O meteograma saiu (UX-v3 §5 — a régua de 48 h é o único eixo). Windguru e "mostrar mais horas" mantêm-se.
 6. Desktop 3 colunas, mobile empilhado (No local aberto, restantes em accordion):
@@ -99,6 +99,7 @@ Renderizados por **SpotConditionsDashboard**:
 | bloco relação vento↔costa (`getWindRelationToCoast` + hints) | 4 · detalhe Vento |
 | `SwellRadar` | 4 · Onda (rosa do instrumento) |
 | `SwellTrainsTable` | 4 · detalhe Onda |
+| `WaveSkillByLead` (skill por horizonte de lead) | 4 · detalhe Onda |
 | `ObservedWaveCard` | 4 · detalhe Onda |
 | `BuoySkillLine` | 4 · detalhe Onda |
 | `BuoyLayerNotice` | 4 · detalhe Onda |
