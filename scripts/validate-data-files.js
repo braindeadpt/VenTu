@@ -1,7 +1,9 @@
 /**
- * Validates every file under public/data: valid UTF-8 + JSON parses, plus
- * schema invariants for the hand-edited files (news.json, community-tips.json,
- * directory.json, events.json).
+ * Validates every file under public/data: valid UTF-8 + JSON parses, numeric
+ * plausibility of the served values (scripts/lib/dataPlausibility.js — class
+ * guard do fill 99.99 do IH, auditoria 2026-09-25), plus schema invariants for
+ * the hand-edited files (news.json, community-tips.json, directory.json,
+ * events.json).
  *
  * Guard for the incident where news.json was committed as UTF-16 and broke
  * the static export. Runs dependency-free (plain Node built-ins) so it works
@@ -22,6 +24,7 @@
 const fs = require('fs');
 const path = require('path');
 const { isBinaryDataRel } = require('./lib/dataFileKinds');
+const { findImplausibleValues, formatViolations } = require('./lib/dataPlausibility');
 
 const dataRoot = path.join(__dirname, '../public/data');
 const errors = [];
@@ -84,10 +87,20 @@ for (const file of files) {
 
   // 4. JSON files (including .backup snapshots) must parse
   if (/\.json(?:\.backup)?$/i.test(rel)) {
+    let parsed;
     try {
-      JSON.parse(buf.toString('utf8'));
+      parsed = JSON.parse(buf.toString('utf8'));
     } catch (e) {
       errors.push(`${rel}: invalid JSON (${e.message})`);
+      continue;
+    }
+    // 5. Plausibilidade numérica (class guard, auditoria 2026-09-25): o IH
+    //    serve 99.99 como fill e uma só destas linhas envenena o skill, o viés
+    //    e o monitor de regressão. O filtro vive na ingestão; isto garante que
+    //    nenhum valor impossível *publicado* passa o gate de dados.
+    const violations = findImplausibleValues(parsed);
+    for (const line of formatViolations(violations)) {
+      errors.push(`${rel}: ${line}`);
     }
   }
 }

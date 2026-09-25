@@ -18,6 +18,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { isPlausibleHm0 } = require('./ihBuoys.js');
 
 const HISTORICAL_MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 
@@ -109,6 +110,10 @@ function alignPairs(obsRows, modelSeries) {
   for (const r of modelSeries) byHour.set(r.time.slice(0, 13) + ':00', r.waveHeight);
   const pairs = [];
   for (const o of obsRows) {
+    // Defesa em profundidade: descarta leituras implausíveis (o IH serve 99.99
+    // como fill) mesmo que a série já venha de parseWaveRow — este caminho
+    // alimenta wave-bias.json, onde uma só linha destas reportava RMSE 10.1 m.
+    if (!isPlausibleHm0(o.hm0)) continue;
     const hour = o.date.slice(0, 13) + ':00';
     const model = byHour.get(hour);
     if (model == null) continue;

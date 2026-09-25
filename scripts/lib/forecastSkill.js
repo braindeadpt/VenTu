@@ -30,6 +30,7 @@ const fs = require('fs');
 const path = require('path');
 const { mapSpotsToNearestBuoy } = require('./wmoBiasArchive.js');
 const { wmoOriginForWmoCode } = require('./copernicusBuoys.js');
+const { isPlausibleHm0 } = require('./ihBuoys.js');
 
 const DEFAULT_OUTPUT_PATH = path.join(__dirname, '../../public/data/forecast-skill.json');
 const DEFAULT_ARCHIVE_PATH = path.join(__dirname, '../../data-state/forecast-skill-archive.json');
@@ -290,7 +291,12 @@ function crossPairs(archive, opts = {}) {
     const leadHours = (targetMs - runMs) / 3_600_000;
     if (leadHours <= 0 || leadHours > MAX_FORECAST_LEAD_HOURS) continue;
     if (targetMs > nowMs) continue; // hour still in the future — no truth yet
-    if (!Number.isFinite(f.hm0) || !Number.isFinite(obs.hm0)) continue;
+    // Plausibilidade nos DOIS lados: o IH serve 99.99 como fill de amostras
+    // em falta/QC, e uma só dessas linhas por boia faz o RMSE saltar de ~0.2 m
+    // para ~9 m e a corr cair a 0.0 no relatório público. O filtro vive aqui
+    // (no cruzamento) para que o arquivo antigo já poluído deixe de contar no
+    // relatório imediatamente, sem esperar os 30 dias de janela.
+    if (!isPlausibleHm0(f.hm0) || !isPlausibleHm0(obs.hm0)) continue;
 
     pairs.push({
       hourKey: hourKey(f.time),
@@ -497,7 +503,7 @@ function archiveWmoSkill(archive, inputs) {
     if (!live[code]) continue;
     const origin = wmoOriginForWmoCode(code);
     for (const r of e.readings ?? []) {
-      if (!Number.isFinite(r.hm0) || r.hm0 < 0) continue;
+      if (!isPlausibleHm0(r.hm0)) continue;
       newObs.push({
         time: r.date,
         hm0: r.hm0,
