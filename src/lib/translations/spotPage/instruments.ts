@@ -44,7 +44,7 @@ export const spotPageInstruments = {
     // horizonte de lead. Aqui as siglas podem aparecer, cada uma explicada.
     bandTitle: 'Banda multi-modelo',
     bandIntro:
-      'O número da onda é a mediana dos modelos. P10 e P90 são os percentis 10 e 90 — o intervalo onde ficam 8 de cada 10 modelos. Banda estreita = modelos de acordo; banda larga = incerteza.',
+      'O número da onda é a previsão principal do Open-Meteo, não a mediana dos modelos. P10 e P90 são os percentis 10 e 90 — o intervalo onde ficam 8 de cada 10 modelos; P50 é a mediana. Banda estreita = modelos de acordo; banda larga = incerteza.',
     bandHourLabel: 'Hora escolhida',
     bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
     bandMembers: 'membros: {n}',
@@ -96,7 +96,7 @@ export const spotPageInstruments = {
 
     bandTitle: 'Multi-model band',
     bandIntro:
-      'The wave number is the median of the models. P10 and P90 are the 10th and 90th percentiles — the range where 8 out of 10 models fall. Narrow band = models agree; wide band = uncertainty.',
+      'The wave number is Open-Meteo’s main forecast, not the median of the models. P10 and P90 are the 10th and 90th percentiles — the range where 8 out of 10 models fall; P50 is the median. Narrow band = models agree; wide band = uncertainty.',
     bandHourLabel: 'Selected hour',
     bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
     bandMembers: 'members: {n}',
@@ -147,7 +147,7 @@ export const spotPageInstruments = {
 
     bandTitle: 'Banda multimodelo',
     bandIntro:
-      'El número del oleaje es la mediana de los modelos. P10 y P90 son los percentiles 10 y 90 — el intervalo donde quedan 8 de cada 10 modelos. Banda estrecha = los modelos coinciden; banda ancha = incertidumbre.',
+      'El número del oleaje es la previsión principal de Open-Meteo, no la mediana de los modelos. P10 y P90 son los percentiles 10 y 90 — el intervalo donde quedan 8 de cada 10 modelos; P50 es la mediana. Banda estrecha = los modelos coinciden; banda ancha = incertidumbre.',
     bandHourLabel: 'Hora elegida',
     bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
     bandMembers: 'miembros: {n}',
@@ -198,7 +198,7 @@ export const spotPageInstruments = {
 
     bandTitle: 'Multi-Modell-Band',
     bandIntro:
-      'Der Wellenwert ist der Median der Modelle. P10 und P90 sind das 10. und 90. Perzentil — der Bereich, in dem 8 von 10 Modellen liegen. Schmaler Bereich = die Modelle sind einig; breiter Bereich = Unsicherheit.',
+      'Der Wellenwert ist die Hauptvorhersage von Open-Meteo, nicht der Median der Modelle. P10 und P90 sind das 10. und 90. Perzentil — der Bereich, in dem 8 von 10 Modellen liegen; P50 ist der Median. Schmaler Bereich = die Modelle sind einig; breiter Bereich = Unsicherheit.',
     bandHourLabel: 'Gewählte Stunde',
     bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
     bandMembers: 'Mitglieder: {n}',
@@ -249,7 +249,7 @@ export const spotPageInstruments = {
 
     bandTitle: 'Bande multimodèle',
     bandIntro:
-      'Le chiffre de la houle est la médiane des modèles. P10 et P90 sont les 10e et 90e percentiles — l’intervalle où tombent 8 modèles sur 10. Bande étroite = les modèles sont d’accord ; bande large = incertitude.',
+      'Le chiffre de la houle est la prévision principale d’Open-Meteo, pas la médiane des modèles. P10 et P90 sont les 10e et 90e percentiles — l’intervalle où tombent 8 modèles sur 10 ; P50 est la médiane. Bande étroite = les modèles sont d’accord ; bande large = incertitude.',
     bandHourLabel: 'Heure choisie',
     bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
     bandMembers: 'membres : {n}',
