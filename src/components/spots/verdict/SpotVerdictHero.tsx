@@ -146,6 +146,9 @@ export default function SpotVerdictHero({
   // horas o score é previsão pura e a linha de fonte diz isso. Antes de
   // montar (nowIndex<0) a hora mostrada é a do bake = «agora».
   const showObservedSources = isNow || nowIndex < 0;
+  // A pill segue a mesma regra: antes de montar diz «Agora» (não «Previsão»,
+  // mais comprida — no mobile partia a linha da hora e a página saltava).
+  const showAsNow = isNow || nowIndex < 0;
 
   // ── Linha de proveniência única ─────────────────────────────────────
   // «Onda corrigida pela boia CSA92 · vento da estação Cabo Raso ·
@@ -246,15 +249,20 @@ export default function SpotVerdictHero({
                 className={cn(
                   'rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
                   nowIndex < 0 && 'invisible',
-                  isNow
+                  showAsNow
                     ? 'border-divider-strong text-fg'
                     : 'border-divider text-fg-muted',
                 )}
               >
-                {isNow ? tv.nowLabel : tv.forecastLabel}
+                {showAsNow ? tv.nowLabel : tv.forecastLabel}
               </span>
             </p>
-            <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
+            {/* Nível do dia — na coluna só em ≥lg. Em <lg a coluna é
+                estreita (partilha a linha com o score) e a mensagem partia em
+                2 linhas contra 1 da caixa reservada: vai para linha própria. */}
+            <div className="hidden lg:block">
+              <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
+            </div>
           </div>
 
           <div className="flex flex-col gap-1 items-end text-right justify-self-end lg:col-span-5">
@@ -295,6 +303,9 @@ export default function SpotVerdictHero({
             {why}
           </p>
         )}
+        <div className="mt-2 lg:hidden">
+          <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
+        </div>
 
         {/* Hierarquia de acções: 1 primária; fantasmas 44 px com rótulo
             ≥640 px (só ícone abaixo, sempre com aria-label); «Mais» fecha. */}
