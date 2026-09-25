@@ -35,6 +35,39 @@ events). An optional `client_payload.force_mode` (`full` or
 `observations`) forces a run regardless of freshness, mirroring the
 `workflow_dispatch` input — useful for remote ops.
 
+## The same ping wakes the monitors
+
+A `repository_dispatch` event is delivered to **every** workflow that
+declares it — the `event_type` is not routed to a single workflow. The
+heartbeats and monitors declare the same `types: [ping]`, so one POST from
+the external cron wakes the pipeline **and** its watchdogs:
+
+| Workflow | What a ping makes it do |
+|----------|-------------------------|
+| `update-data.yml` | gate → `full` / `observations` / `skip` (resurrection) |
+| `staleness-alert.yml` | `pipeline-meta.json` age → issue `data-stale` |
+| `data-cadence-alert.yml` | last `public/data` commit age → issue `data-stale` |
+| `ih-health.yml` | IH tide + IPMA radar probes → issues `ih-outage` / `ipma-radar-outage` |
+| `telegram-poll.yml` | `/start` deep-link poll |
+
+**No extra external job is needed** — the cron you already run for the
+pipeline now also keeps the monitors off GitHub's best-effort scheduler.
+That is the point: the measured nominal delivery on 21–24/09 was 2–23% for
+some of those crons (Telegram Link Poll 2%, Pipeline Staleness Alert 12%,
+Data Cadence Alert 12%, IH Tide Health Monitor 23%), so when GitHub dropped
+the slot nobody was watching the pipeline precisely when the scheduler was
+failing. With the shared ping, a dropped GitHub slot only delays the
+*check*, never the *resurrection*.
+
+Every monitor is idempotent — its state is the open issue (or, for the
+poll, the stored offset) — so an extra tick can never duplicate an
+incident: it either finds nothing or re-confirms an incident already open.
+The `schedule:` crons stay in place on purpose; the ping is **additive**,
+never a replacement, so the two triggers still fail independently.
+
+Guard: `src/lib/__tests__/keepaliveTriggers.test.ts` fails if a monitor
+loses the trigger, or if a `schedule` is removed.
+
 ## 1. cron-job.org (recommended — zero infra)
 
 1. Create an account and a new job.
@@ -50,6 +83,9 @@ events). An optional `client_payload.force_mode` (`full` or
    the `:17`/`:47` GitHub crons (e.g. `5,35`). Frequency only affects how
    fast the pipeline resurrects after an outage — the gate prevents any
    double-run — so 30 min is a good cost/coverage balance.
+
+Do **not** create one job per workflow: the single `{"event_type":"ping"}`
+POST already reaches the pipeline and all four monitors (see above).
 
 ### Required token
 
@@ -104,6 +140,12 @@ threshold even when no external scheduler is configured. An external scheduler
 (cron-job.org) stays preferable — it resurrects at 2.5h instead of 3h — but
 cadence no longer *depends* on it.
 
+That self-healing dispatch carries the same `ping` type, so it also wakes the
+other monitors (IH/radar probes, Telegram poll). That is deliberate and
+harmless: they are idempotent, and the heartbeat only dispatches when it is
+*opening* the issue (guarded), so a long outage adds one extra round of runs —
+never a loop (a re-run finds the issue already open and dispatches nothing).
+
 Only one heartbeat fires per outage (first to open the issue); the
 open-issue guard prevents a second dispatch, and a failed dispatch is logged
 without turning the run red — alerting is never blocked by a resurrection
@@ -131,9 +173,9 @@ The keep-alive *resurrects* the pipeline; the **staleness alert**
   `OPS_TELEGRAM_CHAT_ID` + `TELEGRAM_BOT_TOKEN` are configured. Exit 0
   always — the issue/Telegram are the channel, not red runs.
 - Even a delayed GitHub schedule delivery still alerts eventually; the
-  3 h threshold absorbs the jitter. If you want the alert itself on a
-  non-GitHub scheduler, point the same external cron at a
-  `workflow_dispatch` of `staleness-alert.yml`.
+  3 h threshold absorbs the jitter — and since the monitors now declare
+  `repository_dispatch(ping)`, the external cron that keeps the pipeline
+  alive also wakes the alert, so no separate external job is needed for it.
 - Since 2026-09-10 the heartbeats are **self-healing**: the fallback above
   means a `schedule`-only repo still recovers without any external cron;
   the external cron just heals faster (2.5h vs 3h).

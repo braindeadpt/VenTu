@@ -19,6 +19,14 @@ on:
     # atrasado é melhor que nenhum.
     - cron: '7,37 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    # Mesmo keep-alive externo do update-data (docs/EXTERNAL-KEEPALIVE.md):
+    # um único POST repository_dispatch(ping) acorda TODOS os workflows que
+    # declaram este tipo — pipeline e monitores —, por isso o alerta deixa de
+    # depender da entrega (best-effort) do schedule do GitHub. O ping é
+    # idempotente: o monitor só abre/comenta a issue `data-stale` quando há
+    # mesmo staleness, por isso um tick a mais nunca duplica incidente.
+    types: [ping]
 
 permissions:
   issues: write
