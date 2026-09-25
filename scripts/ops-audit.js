@@ -48,6 +48,12 @@ const {
   evaluateObsPayload,
 } = require('./lib/obsWorkerHealth');
 const { sendTelegramMessage } = require('./lib/telegram');
+const {
+  pickGreenRun,
+  GREEN_RUN_MAX_AGE_DAYS_DEFAULT,
+  LAG_WARN_COMMITS_DEFAULT,
+  LAG_WARN_HOURS_DEFAULT,
+} = require('./lib/deploySource');
 
 const SITE_URL = (process.env.SITE_URL || 'https://ventu.surf').replace(/\/+$/, '');
 const OBS_BASE = resolveObsWorkerBase(
@@ -214,6 +220,8 @@ async function auditWorkflows(ghOk) {
     console.log('  último commit de dados não resolvido — staleness-alert cobre');
   }
 
+  auditCodeLag();
+
   // Issues de incidente abertas pelos monitores — se alguma está aberta,
   // há uma outage em curso que merece visibilidade no relatório diário.
   for (const label of INCIDENT_LABELS) {
@@ -225,6 +233,84 @@ async function auditWorkflows(ghOk) {
       finding('P1', `incidente aberto: #${n} (label ${label}) — ver Actions/issues`);
     }
   }
+}
+
+// O deploy publica CÓDIGO do último commit com CI verde + DADOS do main
+// (opção B). Sem isto, a produção fica fresca e bonita enquanto o código
+// estagna num commit antigo — o risco que a separação código/dados troca por
+// um risco invisível. Mede-se o atraso e reporta-se pela MESMA issue
+// `ops-audit` (mecanismo reutilizado, sem workflow nem label novos).
+function auditCodeLag() {
+  const mainSha = gh('api', `repos/${REPO}/commits/main`, '--jq', '.sha');
+  const runsRaw = gh(
+    'api',
+    `repos/${REPO}/actions/workflows/ci.yml/runs?branch=main&status=completed&per_page=50`,
+    '--jq', '[.workflow_runs[] | {conclusion, event, head_sha, created_at, run_number, html_url}]',
+  );
+  let runs = [];
+  try {
+    runs = runsOut(runsRaw);
+  } catch {
+    runs = [];
+  }
+
+  if (!mainSha || runs.length === 0) {
+    console.log('  lag código vs CI verde: não resolvido (API) — deploy.yml reporta no próprio run');
+    return;
+  }
+
+  const green = pickGreenRun(runs, {
+    nowMs: Date.now(),
+    maxAgeDays: GREEN_RUN_MAX_AGE_DAYS_DEFAULT,
+  });
+
+  if (!green) {
+    finding(
+      'P1',
+      `sem run verde do CI em main nos últimos ${GREEN_RUN_MAX_AGE_DAYS_DEFAULT} dias — ` +
+        'o deploy (opção B) recusa publicar até voltar a haver um base verde',
+    );
+    return;
+  }
+
+  if (green.head_sha === mainSha) {
+    console.log(`  lag código vs CI verde: 0 commits (main = CI verde ${green.head_sha.slice(0, 9)})`);
+    return;
+  }
+
+  const aheadOut = gh(
+    'api', `repos/${REPO}/compare/${green.head_sha}...${mainSha}`,
+    '--jq', '.ahead_by',
+  );
+  const lagCommits = Number.isFinite(Number(aheadOut)) ? Number(aheadOut) : null;
+  const createdMs = new Date(green.created_at).getTime();
+  const lagHours = Number.isFinite(createdMs)
+    ? Math.max(0, (Date.now() - createdMs) / 3600000)
+    : null;
+
+  const fmtLag = `${lagCommits ?? '—'} commits / ${lagHours === null ? '—' : `${lagHours.toFixed(1)} h`}`;
+  console.log(
+    `  lag código vs CI verde: ${fmtLag} (verde ${green.head_sha.slice(0, 9)}, ${green.created_at})`,
+  );
+
+  const over =
+    (Number.isFinite(lagCommits) && lagCommits > LAG_WARN_COMMITS_DEFAULT) ||
+    (lagHours !== null && lagHours > LAG_WARN_HOURS_DEFAULT);
+  if (over) {
+    finding(
+      'P1',
+      `código em produção atrasado ${fmtLag} face ao último CI verde ` +
+        `(${green.head_sha.slice(0, 9)}) — CD a publicar dados frescos com código antigo; ` +
+        'o CI está vermelho há demasiado tempo. Ver o resumo do run de deploy.yml.',
+    );
+  }
+}
+
+/** Parse the --jq array output; never throws. */
+function runsOut(raw) {
+  if (!raw) return [];
+  const parsed = JSON.parse(raw);
+  return Array.isArray(parsed) ? parsed : [];
 }
 
 // ── C. Endpoints externos ───────────────────────────────────────────────

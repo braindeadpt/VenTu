@@ -1,13 +1,34 @@
 name: Deploy to GitHub Pages
 
+# Publicação em duas fontes (opção B — separar código de dados).
+#
+# Contexto: os workflows de dados correm a cada ~30 min e NÃO disparam o CI
+# (public/data/** está em paths-ignore, de propósito, para os bots não
+# queimarem execuções). Por isso o gate antigo («CI vermelho ⇒ sem deploy»)
+# só valia para o caminho push → CI, que passou a ser a minoria dos gatilhos:
+# um commit de dados publicava o main inteiro, código vermelho incluído (prova
+# em 22/09: babd0e133 e 0cebb705d deram deploy skipped; às 05:29 um commit de
+# dados deu deploy success levando os dois).
+#
+# Com a opção B publicamos:
+#   - CÓDIGO do último commit cujo run do CI em main terminou com sucesso;
+#   - DADOS (public/data/**) do main actual, sobrepostos ANTES do build.
+# Os utilizadores nunca perdem condições novas (foi o que motivou a escolha:
+# o CI esteve vermelho em 16 de 27 execuções numa semana); código vermelho
+# nunca chega à produção. O custo passa a ser invisível — daí o job summary
+# com o atraso e o aviso acima do limiar (o ops-audit diário reutiliza a issue
+# `ops-audit` quando o atraso fica prolongado).
+#
+# Os paths-ignore dos workflows de dados não se tocam. O caminho
+# workflow_dispatch continua a ser decisão humana explícita, sem portão.
+
 on:
   workflow_dispatch:
-  # A push a main JÁ NÃO publica directamente: publicar exige que um workflow
-  # registado termine com sucesso no commit alvo (workflow_run abaixo). O CI
-  # é um deles, por isso um push com testes vermelhos nunca chega a produção.
-  # Bot data commits usam GITHUB_TOKEN — não disparam `push` nem o CI
-  # (paths-ignore em public/data/**) e continuam a publicar via workflow_run
-  # dos próprios workflows de dados, sem fricção.
+    inputs:
+      dry_run:
+        description: 'Resolve e descreve o que faria, mas não publica'
+        type: boolean
+        default: false
   workflow_run:
     workflows:
       - CI
@@ -29,27 +50,66 @@ concurrency:
 
 jobs:
   build:
-    # Gate real de publicação: workflow_dispatch é decisão humana explícita;
-    # qualquer outro caminho (push → CI, data/Dawn bots) só publica com o
-    # workflow_run concluído como success — CI vermelho ⇒ sem deploy. Runs
-    # desencadeados por pull_request nunca publicam (o workflow_run event
-    # original é pull_request, mesmo quando o filtro branches casa em main).
+    # Gate de entrada: workflow_dispatch é decisão humana; qualquer workflow_run
+    # concluído com success (CI verde, dados ou Dawn Patrol) entra e é RESOLVIDO
+    # pelo passo seguinte — só a resolução decide o que se publica. Runs de
+    # pull_request nunca publicam.
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
        github.event.workflow_run.event != 'pull_request')
     runs-on: ubuntu-latest
     # Build + export de ~2340 rotas: ~15–20 min normal; 45 min é o mesmo
-    # backstop do ci.yml quality (default GitHub = 6h).
+    # backstop do ci.yml quality (default GitHub = 6h). Inclui o smoke
+    # critical-routes sobre o build.
     timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          # Data/Dawn jobs push new commits with GITHUB_TOKEN (no push trigger).
-          # workflow_run.head_sha is the commit *before* that push — always use main.
+          # Em workflow_run, main (o head_sha do evento é o commit ANTES do push
+          # dos bots). Histórico completo: o SHA verde é um antepassado de main
+          # e precisa de existir localmente para o checkout.
           ref: ${{ github.event_name == 'workflow_run' && 'main' || github.sha }}
-          fetch-depth: 1
+          fetch-depth: 0
+
+      # Resolve código verde + dados frescos (opção B). Decide, valida a
+      # ancestralidade e escreve o job summary com o atraso. Sem run verde na
+      # janela ⇒ falha com barulho, nunca publica às escuras. Em dry_run,
+      # descreve e não publica.
+      - name: Resolve deploy source (código verde + dados frescos)
+        id: source
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VENTU_DRY_RUN: ${{ inputs.dry_run }}
+        run: node scripts/resolve-deploy-source.js
+
+      # public/data entra ANTES do build: o site é um export estático e o SSG
+      # lê os dados em build time (scores cozidos no HTML servido, imagens OG,
+      # SEO). Copiar dados para cima de um site já construído deixaria só a
+      # hidratação no cliente a corrigir. Nunca `checkout -f -B main` — a 22/09
+      # isso moveu o ref main partilhado por todas as worktrees.
+      - name: Checkout green code + overlay fresh data
+        if: steps.source.outputs.needs_checkout == 'true'
+        env:
+          CODE_SHA: ${{ steps.source.outputs.code_sha }}
+          DATA_SHA: ${{ steps.source.outputs.data_sha }}
+        run: |
+          git checkout --detach "$CODE_SHA"
+          # rm antes do checkout: `git checkout <sha> -- public/data` restaura
+          # ficheiros mas NÃO apaga os que só existem no verde — sem isto, um
+          # ficheiro removido pela pipeline sobrevivia no artefacto.
+          rm -rf public/data
+          git checkout "$DATA_SHA" -- public/data
+          echo "código (CI verde): $(git rev-parse --short HEAD)"
+          echo "dados de main:     $DATA_SHA"
+
+      # Validadores de dados que já existem (inclui a plausibilidade numérica
+      # nova, scripts/lib/dataPlausibility.js ligado ao passo 5). Corre sobre a
+      # combinação que só existe aqui — dados novos + código mais antigo — e é
+      # dependency-free, por isso vem antes do npm ci.
+      - name: Validate public/data
+        run: node scripts/validate-data-files.js
 
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
@@ -108,6 +168,24 @@ jobs:
       - name: Validate _headers security directives
         run: node scripts/check-headers-file.js
 
+      # Smoke sobre a combinação que passa a existir e que o CI nunca testa:
+      # dados frescos + código mais antigo. Costuma ser segura (código antigo
+      # ignora campos novos) e parte quando a pipeline renomeia/remove uma
+      # chave que o código antigo lê — exactamente o que este smoke apanha.
+      - name: Cache Playwright Chromium
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E — critical routes (smoke do deploy)
+        run: npx playwright test critical-routes
+        env:
+          CI: 'true'
+
       - name: Upload build log on failure
         if: failure()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
@@ -132,6 +210,10 @@ jobs:
       url: ${{ steps.publish.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    # dry_run (workflow_dispatch) corre todo o build e a resolução mas não
+    # publica — é com ele que se valida a primeira vez sem tocar em produção.
+    # Em workflow_run, inputs.dry_run é null ⇒ a condição é verdadeira.
+    if: github.event_name != 'workflow_dispatch' || inputs.dry_run != true
     # 5 tentativas × (deploy + 45s de espera) ≈ pior caso ~15 min.
     timeout-minutes: 20
     steps:
@@ -221,6 +303,7 @@ jobs:
     # contra o GitHub Pages puro (estado pré-S7), por isso o job é saltado enquanto
     # a repo variable S7_PROXY_ENABLED não for 'true' (Settings → Secrets and
     # variables → Actions → Variables) — ativar só depois do proxy estar aplicado.
+    # Em dry_run o deploy é saltado, logo este job também.
     if: vars.S7_PROXY_ENABLED == 'true'
     runs-on: ubuntu-latest
     needs: deploy
@@ -230,8 +313,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
         with:
-          # workflow_run.head_sha é o commit *antes* do push de dados — usa main
-          ref: ${{ github.event_name == 'workflow_run' && 'main' || github.sha }}
+          ref: main
           fetch-depth: 1
 
       - name: Check S7 security headers in production (retries para o edge)
