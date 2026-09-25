@@ -670,3 +670,93 @@ describe('validate-generated-data — ih-tides soft gate (--tides-soft-gate)', (
     expect(out).not.toMatch(/ttl\.ih-tides/);
   });
 });
+
+describe('validate-generated-data — banda ensemble P10/P50/P90 (ens)', () => {
+  const VALID = [1.13, 1.3, 1.54, 5.3, 6, 6.7, 4, 4];
+
+  const addBand = (rows, band) => rows.map((h) => (band ? { ...h, ens: band } : h));
+
+  /** forecasts.json é indexado por spot; o ficheiro por spot é o array cru. */
+  function setIndexEns(dir, band) {
+    const idx = JSON.parse(fs.readFileSync(path.join(dir, 'forecasts.json'), 'utf8'));
+    for (const k of Object.keys(idx)) idx[k] = addBand(idx[k], band);
+    fs.writeFileSync(path.join(dir, 'forecasts.json'), JSON.stringify(idx));
+  }
+  function setSpotFileEns(dir, slug, band) {
+    const rel = path.join(dir, 'forecasts', `${slug}.json`);
+    fs.writeFileSync(rel, JSON.stringify(addBand(JSON.parse(fs.readFileSync(rel, 'utf8')), band)));
+  }
+  function setEns(dir, band) {
+    setIndexEns(dir, band);
+    setSpotFileEns(dir, 'nazare', band);
+  }
+
+  /** A meta deste run diz mode=day → a banda é esperada. */
+  function markDayRun(dir) {
+    const p = path.join(dir, 'pipeline-meta.json');
+    const meta = JSON.parse(fs.readFileSync(p, 'utf8'));
+    meta.openMeteoUsage = { mode: 'day', waveModels: 4, windModels: 4 };
+    fs.writeFileSync(p, JSON.stringify(meta));
+  }
+
+  it('banda válida → exit 0 e a cobertura é reportada', () => {
+    const dir = makeDataDir();
+    setEns(dir, VALID);
+    markDayRun(dir);
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/forecasts ensemble: 24\/24 horas com banda P10\/P90 em 1\/1 spots/);
+  });
+
+  it('comprimento errado → exit 1 e a hora aparece no erro', () => {
+    const dir = makeDataDir();
+    setEns(dir, VALID.slice(0, 7));
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/forecasts\.nazare\.ensemble/);
+    expect(out).toMatch(/#0 ens com 7 valores \(esperado 8/);
+  });
+
+  it('quantis fora de ordem → exit 1 (P10/P50/P90 fora de ordem)', () => {
+    const dir = makeDataDir();
+    setEns(dir, [1.54, 1.3, 1.13, 5.3, 6, 6.7, 4, 4]);
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/wave: P10\/P50\/P90 fora de ordem/);
+  });
+
+  it('nulls parciais numa família → exit 1', () => {
+    const dir = makeDataDir();
+    setEns(dir, [1.13, 1.3, 1.54, 5.3, null, 6.7, 4, 4]);
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/wind: quantis parcialmente nulos/);
+  });
+
+  it('banda má só no ficheiro por spot → o erro nomeia esse ficheiro', () => {
+    const dir = makeDataDir();
+    // Índice sem banda; ficheiro por spot com banda fora de ordem.
+    setSpotFileEns(dir, 'nazare', [1.54, 1.3, 1.13, 5.3, 6, 6.7, 4, 4]);
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(1);
+    expect(out).toMatch(/forecasts\/nazare\.ensemble/);
+    expect(out).toMatch(/wave: P10\/P50\/P90 fora de ordem/);
+    expect(out).not.toMatch(/forecasts\.nazare\.ensemble/);
+  });
+
+  it('run diurno sem banda nenhuma → avisa mas não bloqueia o push (exit 0)', () => {
+    const dir = makeDataDir();
+    markDayRun(dir); // nenhuma linha tem ens
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).toMatch(/forecasts\.ensemble: nenhuma das 24 horas tem banda P10\/P90/);
+  });
+
+  it('sem mode=day na meta não opina sobre a cobertura (modo noite)', () => {
+    const dir = makeDataDir();
+    const { code, out } = runValidator(dir);
+    expect(code).toBe(0);
+    expect(out).not.toMatch(/forecasts\.ensemble/);
+    expect(out).not.toMatch(/forecasts ensemble/);
+  });
+});

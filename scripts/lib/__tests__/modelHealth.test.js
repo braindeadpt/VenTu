@@ -36,6 +36,29 @@ describe('countModelSlots', () => {
     expect(counts.gwam).toEqual({ ok: 0, total: 0, absentCount: 1 });
   });
 
+  it('série toda a 0 = run ausente preenchido → morto (Nazaré/gfswave025, 2026-09-25)', () => {
+    const hourly = {
+      wave_height_ncep_gfswave025: Array.from({ length: 168 }, () => 0),
+      wave_height_gwam: NUMERIC(168),
+    };
+    const counts = countModelSlots(hourly, 'wave_height', ['ncep_gfswave025', 'gwam']);
+    // ok=0 apesar de 168 valores presentes: sem esta regra o modelo parecia saudável
+    // e a confiança do spot ficava presa em "baixa" para sempre.
+    expect(counts.ncep_gfswave025).toEqual({ ok: 0, total: 168, absentCount: 0 });
+    expect(counts.gwam.ok).toBe(168);
+    expect(classifyModelCounts(counts).ncep_gfswave025.status).toBe('dead');
+    const report = buildHealthReport({ waveCounts: counts, windCounts: {}, sampledSpots: 1 });
+    expect(report.dead).toContainEqual({ family: 'wave', model: 'ncep_gfswave025' });
+  });
+
+  it('um 0 isolado é calmaria real, não run ausente', () => {
+    const arr = NUMERIC(168);
+    arr[3] = 0;
+    const counts = countModelSlots({ wave_height_ewam: arr }, 'wave_height', ['ewam']);
+    expect(counts.ewam.ok).toBe(168);
+    expect(classifyModelCounts(counts).ewam.status).toBe('ok');
+  });
+
   it('trata NaN/undefined como não-válidos', () => {
     const hourly = { wind_speed_10m_icon_eu: [1, null, undefined, NaN, 2] };
     const counts = countModelSlots(hourly, 'wind_speed_10m', ['icon_eu']);

@@ -142,6 +142,8 @@ async function updateConditions() {
   const ihTides = readJsonIfExists(ihTidesPath, { stations: {}, spotMapping: {} }, () => console.warn('⚠️ Could not parse ih-tides.json, continuing without IH tide data\n'));
   if (ihTides.stations && ihTides.spotMapping) console.log(`📡 IH tide data loaded (${Object.keys(ihTides.stations).length} stations, ${Object.keys(ihTides.spotMapping).length} spot mappings)\n`);
   let ihSkippedStale = 0;
+  // Ensemble P10/P50/P90 coverage for the run summary (see ensembleQuantiles.js).
+  const ensembleRun = { spots: 0, hours: 0 };
   const waveBiasEnabled = process.env.VENTU_WAVE_BIAS_CORRECTION === '1';
   const waveBiasPath = path.join(__dirname, '../public/data/wave-bias.json');
   const waveBias = readJsonIfExists(waveBiasPath, null, () => console.warn('⚠️ Could not parse wave-bias.json, continuing without bias correction'));
@@ -161,6 +163,10 @@ async function updateConditions() {
       });
       allConditions[spot.id] = result.conditions;
       allForecasts[spot.id] = result.forecast;
+      if (result.ensembleHours > 0) {
+        ensembleRun.spots += 1;
+        ensembleRun.hours += result.ensembleHours;
+      }
       usage.spotsFetched += 1;
       await sleep(MIN_REQUEST_INTERVAL);
     } catch (error) {
@@ -223,6 +229,12 @@ async function updateConditions() {
       console.error(`   Amostrados ${modelHealthRun.sampledSpots} spots — os modelos morrem em silêncio e degradam a confiança.`);
       console.error('   Report: public/data/model-health.json · remove o modelo de forecastConfidence.js ou contacta a Open-Meteo.\n');
     } else console.log(`💚 Modelos do ensemble OK (${modelHealthRun.sampledSpots} spots amostrados)`);
+    // Cobertura da banda P10/P90 gravada nas horas de previsão: um zero aqui
+    // com modelos vivos significa que a ligação ao ensembleQuantiles partiu.
+    console.log(`📊 Banda horária P10/P50/P90: ${ensembleRun.hours} horas em ${ensembleRun.spots}/${usage.spotsFetched} spots (${WAVE_MODELS.length} onda + ${WIND_MODELS.length} vento)`);
+    if (ensembleRun.hours === 0 && modelHealthRun.sampledSpots > 0) {
+      console.log('::warning title=Banda ensemble em falta::Nenhuma hora recebeu P10/P50/P90 apesar de haver modelos vivos — ver ensembleQuantiles.attachEnsemble');
+    }
     await notifyDeadModels(healthReport);
     writeModelHealth(healthReport);
   } else console.log('ℹ️ Modo noite: sem dados multi-modelo — health-check de modelos não aplicável.');
