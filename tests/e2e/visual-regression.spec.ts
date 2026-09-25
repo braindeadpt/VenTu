@@ -419,6 +419,35 @@ async function gotoStable(page: Page, path: string, isMap = false): Promise<void
         /* refresh failed — the bake stays, which is the honest fallback */
       });
   }
+  // Home «Top 8»/«Próximas janelas» (HomepageRankedSection): the section
+  // re-sorts and re-filters when the on-mount conditions.json refresh lands
+  // — until then it renders the BAKE (build data), after it the FIXTURE.
+  // Both are stable renders, so the capture raced which one it got
+  // (CI run 35880330375: 17px height flip when the 8th row changed spots
+  // between runs of the same build). Wait for the section's completion
+  // signal so the fixture render is the only state ever captured.
+  // Presence-gated like gridLiveDeferred — inert on routes without it.
+  const hasHomeLive = await page.evaluate(
+    () => typeof document !== 'undefined' && document.querySelector('[data-home-live]') !== null,
+  );
+  if (hasHomeLive) {
+    await page
+      .waitForFunction(
+        () => document.querySelector('[data-home-live]')?.getAttribute('data-home-live') === 'done',
+        undefined,
+        { timeout: 15_000 },
+      )
+      .catch(() => {
+        /* refresh failed — the bake stays, which is the honest fallback */
+      });
+  }
+  // Sibling fetches (warnings.json, ih-buoys.json, the sections' own
+  // conditions refreshes) fire on mount and can still be in flight when the
+  // ranked signal lands — a capture between them screenshots a half-updated
+  // page. A second networkidle after the live waits closes that window.
+  await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => {
+    /* a stalled request shouldn't gate the capture */
+  });
   await sweepLazyImages(page);
   await normalizeVolatileText(page);
   // Live-mode pages mount empty and fill from the fetched fixture — the CLS

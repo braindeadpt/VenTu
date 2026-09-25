@@ -6,7 +6,7 @@ import { getTranslation } from '@/lib/i18n';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import type { HomepageSpotData } from '@/lib/homepageSport';
-import { sortSpotsBySport, getSportLabel } from '@/lib/homepageSport';
+import { getScoreForFilter, getSportLabel } from '@/lib/homepageSport';
 import { SPORT_LABELS, type GridSportFilter, type SportType } from '@/lib/sportRatings';
 import { spotDetailHref } from '@/lib/gridSpotScore';
 import { getScoreTokens } from '@/lib/sportScore';
@@ -65,6 +65,31 @@ function hourOf(iso: string): string {
 }
 
 /**
+ * Ordem determinística do ranking denso: score desc, depois nome localizado
+ * asc, depois slug. sortSpotsBySport é estável mas resolve empates pela ordem
+ * de entrada — que é a ordenação score-desc do BAKE (loadRows), calculada com
+ * os dados de uma corrida da pipeline diferente da que o cliente depois
+ * refresca via conditions.json. Entre builds/estados o mesmo empate a 76
+ * caía em ordens diferentes (pixel gate: CI run 35880330375). Com este
+ * desempate a ordem deixa de «saltar» entre visitas para o utilizador também.
+ */
+export function compareHomeRanked(
+  a: HomepageSpotData,
+  b: HomepageSpotData,
+  sport: GridSportFilter,
+  locale: string,
+): number {
+  const byScore = getScoreForFilter(b, sport) - getScoreForFilter(a, sport);
+  if (byScore !== 0) return byScore;
+  const byName = localizedSpotName(a.spot, locale).localeCompare(
+    localizedSpotName(b.spot, locale),
+    locale,
+  );
+  if (byName !== 0) return byName;
+  return a.spot.slug.localeCompare(b.spot.slug);
+}
+
+/**
  * Auditoria C3 — a decisão densa da home: top-8 ranked pelo desporto
  * activo (a mesma tabela canónica de /spots) ao lado das melhores
  * janelas ≥Bom das próximas 48h em qualquer spot.
@@ -83,9 +108,20 @@ export default function HomepageRankedSection({
 
   const liveSpotsData = useLiveGridSpotData(spotsData);
 
+  // Sinal e2e «home estabilizada»: fica 'done' no primeiro render com os dados
+  // do cliente (o refresh on-mount do hook devolve sempre um array novo). O
+  // pixel gate espera por ele antes da captura — sem isto a screenshot corria
+  // contra a chegada do fetch e apanha ora o bake (dados da build) ora a
+  // fixture (CI run 35880330375: 17px de altura no «Top 8 · Surf»). Igual ao
+  // padrão data-grid-live-deferred do hero, mas para esta secção.
+  const liveReady = liveSpotsData !== spotsData;
+
   const top8 = useMemo(
-    () => sortSpotsBySport(liveSpotsData, sport).slice(0, TOP_N),
-    [liveSpotsData, sport],
+    () =>
+      [...liveSpotsData]
+        .sort((a, b) => compareHomeRanked(a, b, sport, locale))
+        .slice(0, TOP_N),
+    [liveSpotsData, sport, locale],
   );
 
   const rows = useMemo<WindowRow[]>(() => {
@@ -117,7 +153,11 @@ export default function HomepageRankedSection({
     }
     return out
       .filter((r) => new Date(r.window.endIso).getTime() > nowMs)
-      .sort((a, b) => a.window.startIso.localeCompare(b.window.startIso))
+      .sort(
+        (a, b) =>
+          a.window.startIso.localeCompare(b.window.startIso) ||
+          a.slug.localeCompare(b.slug),
+      )
       .slice(0, MAX_WINDOW_ROWS);
   }, [liveSpotsData, sport, locale, nowMs]);
 
@@ -139,7 +179,10 @@ export default function HomepageRankedSection({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2">
+    <div
+      className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-2"
+      data-home-live={liveReady ? 'done' : 'pending'}
+    >
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_300px]">
         <SpotRankedTable
           sorted={top8}
