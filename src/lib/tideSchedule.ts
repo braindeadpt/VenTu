@@ -16,6 +16,11 @@ export interface TideHourPoint {
 export interface TideEvent {
   type: 'high' | 'low';
   at: Date;
+  /** Hora de origem, tal como veio (ISO sem fuso, wall-time de Lisboa).
+   *  Chave para casar eventos com horas: `at` é um parse local e colide na
+   *  mudança de hora do fuso do browser (a hora que não existe salta para
+   *  a seguinte) — o texto não muda com o fuso. */
+  time?: string;
 }
 
 export interface TideSchedule {
@@ -70,10 +75,10 @@ export function findTideExtrema(points: TideHourPoint[]): TideEvent[] {
     }
 
     if (isHigh && curr - minOther >= MIN_EXTREMA_DELTA) {
-      raw.push({ type: 'high', at: parseTime(time) });
+      raw.push({ type: 'high', at: parseTime(time), time });
     }
     if (isLow && maxOther - curr >= MIN_EXTREMA_DELTA) {
-      raw.push({ type: 'low', at: parseTime(time) });
+      raw.push({ type: 'low', at: parseTime(time), time });
     }
   }
 
@@ -85,8 +90,8 @@ export function findTideExtrema(points: TideHourPoint[]): TideEvent[] {
       merged.push(ev);
       continue;
     }
-    const prevH = series.find((s) => parseTime(s.time).getTime() === last.at.getTime())?.h ?? 0;
-    const currH = series.find((s) => parseTime(s.time).getTime() === ev.at.getTime())?.h ?? 0;
+    const prevH = series.find((s) => s.time === last.time)?.h ?? 0;
+    const currH = series.find((s) => s.time === ev.time)?.h ?? 0;
     if (ev.type === 'high' ? currH > prevH : currH < prevH) {
       merged[merged.length - 1] = ev;
     }
@@ -209,13 +214,16 @@ export const TIDE_PHASE_CELL: Record<TidePhase, Record<Locale, string>> = {
 /** Per-hour tide phase from MSL curve (for forecast table). */
 export function getTidePhasesForHours(hours: TideHourPoint[]): (TidePhase | null)[] {
   const extrema = findTideExtrema(hours);
-  const extremaByTime = new Map(extrema.map((e) => [e.at.getTime(), e.type] as const));
+  // Casamento pelo texto da hora, não por parseTime().getTime(): em
+  // Pacific/Auckland a 27 set 2026 (entrada na hora de Verão) duas horas
+  // davam o mesmo instante, a «maré alta» mudava de coluna e a tabela saía
+  // diferente do HTML do build — React #418 (spot-hydration).
+  const extremaByTime = new Map(extrema.map((e) => [e.time, e.type] as const));
 
   return hours.map((h, i) => {
     if (typeof h.tideHeight !== 'number' || Number.isNaN(h.tideHeight)) return null;
 
-    const at = parseTime(h.time).getTime();
-    const atExtremum = extremaByTime.get(at);
+    const atExtremum = extremaByTime.get(h.time);
     if (atExtremum) return atExtremum;
 
     const next = hours[i + 1]?.tideHeight;
