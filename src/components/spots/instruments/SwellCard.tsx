@@ -119,7 +119,8 @@ export default function SwellCard({
               .replace('{dir}', cardinal16(dir))
               .replace('{dirs}', (bestSwell ?? '').replace(/\s*,\s*/g, '–'))
           : '—'}
-      </span>      <span
+      </span>
+      <span
         className={INST_SUB}
         data-wave-band={foot.kind === 'band' ? 'card' : undefined}
         title={foot.kind === 'band' ? ti.ensembleCardHint : undefined}
