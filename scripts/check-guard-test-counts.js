@@ -6,12 +6,15 @@
  * suite; this fails the build instead of letting a dropped guard pass
  * unnoticed.
  *
- * Two families are asserted:
+ * Three families are asserted:
  *  - URL-segment validator suites (validate-spots / validate-page-slugs /
  *    validate-news-livecams fixtures);
  *  - map teardown guards (Leaflet canvas teardown guard + the teardownMap
  *    overlay-sweep ordering), which lock in the unmount-race fixes of commit
- *    8326a7bd0 and its follow-ups.
+ *    8326a7bd0 and its follow-ups;
+ *  - the map layer-name guard (nome=modo), which itself carries the coverage
+ *    assertions over the real map chrome — so the guard cannot go green by
+ *    scanning nothing.
  *
  * Runs ONLY these small suites (a few seconds) through vitest's JSON
  * reporter and asserts, per file: present, zero failures, and the exact
@@ -34,6 +37,10 @@ const EXPECTED = {
   'scripts/lib/__tests__/validateNewsLivecams.test.js': 9,
   'src/components/spots/map/__tests__/leafletCanvasGuard.test.ts': 6,
   'src/components/spots/map/__tests__/mapOverlaySweep.test.ts': 6,
+  // Guard do «nome = modo» nos controlos de camada. Traz também as duas
+  // asserções de cobertura sobre o escopo real (toggles vistos > 0 e zero
+  // violações) — é o que impede o guarda de passar a verde por ver nada.
+  'scripts/lib/__tests__/mapLayerNames.test.js': 19,
 };
 
 const files = Object.keys(EXPECTED);

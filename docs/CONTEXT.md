@@ -508,7 +508,8 @@ Os guards vivem em `scripts/` e são invocados pelos workflows — esta tabela �
 | `validate-news-livecams.js` | ci.yml | slugs de notícias e livecams |
 | `validate-data-files.js` | ci.yml, update-data, update-news, apply-contributions | UTF-8 + JSON parseável em `public/data` |
 | `check-citation-cff.js` | ci.yml | `CITATION.cff` bem formado |
-| `check-guard-test-counts.js` | ci.yml | as 3 suites de slug-guard correm com contagens exactas |
+| `check-guard-test-counts.js` | ci.yml | as 6 suites de guarda correm com contagens exactas |
+| `check-map-layer-names.js` | ci.yml | nenhum controlo de camada do mapa tem `aria-label` dependente do estado (nome=modo) |
 | `check-sitemap-drift.js` | ci.yml | `public/sitemap.xml` commitado ≡ gerador |
 | `check-segment-paths.js` | ci.yml | dirs de segment-cache aninhados no `out/` |
 | `check-headers-file.js` | ci.yml, deploy.yml | directivas de segurança em `out/_headers` |
@@ -642,6 +643,25 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
 ### Distribuição de spots
 
 **185 spots:** surf, multisport, kitesurf, foil, wakeboard, windsurf, big-wave (ver `spots.ts`).
+
+## Acessibilidade do mapa — «nome = modo» (2026-09-21/25)
+
+Nos controlos de camada do mapa o **nome acessível é o MODO** e não muda com o
+estado: «Vento», «Radar IPMA», «Isóbatas 8/16/30 m», «Agrupar spots», «Só a
+bombar». Quem diz se está ligado é o `aria-pressed` + a marca visual (tinta,
+ícone). Um `aria-label` alternado («Mostrar vento» ↔ «Ocultar vento») faz o
+leitor de ecrã anunciar «Ocultar vento, premido» com a camada LIGADA.
+
+- A dica («Score ≥ 60») é descrição da acção e vai no `title`, nunca no nome.
+- A regra foi reintroduzida três vezes (cluster, «só a bombar», camadas do HUD),
+  por isso é agora travada por `scripts/check-map-layer-names.js` no ci.yml
+  (job quality, estático, `scripts/lib/mapLayerNames.js` + testes unitários).
+  O guarda varre `src/components/spots/map/**`,
+  `SpotMapInteractive.tsx`, `MapLayerToggle.tsx` e a pílula partilhada
+  `ui/FilterPill.tsx`; falha se um toggle tiver nome condicional e também se o
+  escopo encolher ao ponto de não ver toggles.
+- Excepção: `map/MapTimeTrack.tsx` (play/pause do radar e das 48 h) é transporte
+  de tempo, não camada — o nome descreve a acção e alterna de propósito.
 
 ## Convenções
 

@@ -104,6 +104,15 @@ jobs:
       - name: Guard suites ran with expected counts
         run: node scripts/check-guard-test-counts.js
 
+      # Guard (auditoria de acessibilidade do mapa): nos controlos de camada o
+      # nome acessível é o MODO e nunca o estado — o estado vive no
+      # aria-pressed. Um aria-label alternado («Mostrar vento» ↔ «Ocultar
+      # vento») faz o leitor de ecrã anunciar o contrário do que está ligado.
+      # A regra já foi reintroduzida três vezes (cluster, «só a bombar»,
+      # camadas do HUD) — passo estático, sem browser, alguns milissegundos.
+      - name: Map layer controls keep constant names (nome=modo, state in aria-pressed)
+        run: node scripts/check-map-layer-names.js
+
       # LOW8: cada função public.* só pode estar definida num ficheiro SQL —
       # is_ventu_admin() andou copiada verbatim em 3 antes do fix.
       - name: Validate SQL function definitions (no drift)
