@@ -32,6 +32,7 @@ export default defineConfig({
       'scripts/lib/__tests__/updateSchedule.test.js',
       'scripts/lib/__tests__/pipelineStaleness.test.js',
       'scripts/lib/__tests__/dataCadence.test.js',
+      'scripts/lib/__tests__/deploySource.test.js',
       'scripts/lib/__tests__/ihObservedTide.test.js',
       'scripts/lib/__tests__/contributionsPrivacy.test.js',
       'scripts/lib/__tests__/terraformExpressions.test.js',
