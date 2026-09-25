@@ -23,6 +23,13 @@ on:
     # (:07/:37), para nunca correrem ao mesmo tempo.
     - cron: '12,42 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    # Mesmo keep-alive externo do update-data (docs/EXTERNAL-KEEPALIVE.md):
+    # um único POST repository_dispatch(ping) acorda TODOS os workflows que
+    # declaram este tipo — pipeline e monitores. O heartbeat por commit deixa
+    # de depender da entrega do schedule do GitHub; o guard de issue-aberta
+    # torna um tick a mais inofensivo (uma outage nunca vira duas issues).
+    types: [ping]
 
 permissions:
   issues: write

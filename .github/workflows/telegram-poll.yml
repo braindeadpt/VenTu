@@ -5,6 +5,14 @@ on:
   schedule:
     - cron: '*/5 * * * *'
   workflow_dispatch:
+  repository_dispatch:
+    # Mesmo keep-alive externo do update-data (docs/EXTERNAL-KEEPALIVE.md):
+    # um único POST repository_dispatch(ping) acorda TODOS os workflows que
+    # declaram este tipo — o poll de /start deixa de depender da entrega do
+    # schedule do GitHub (medido: 2% das execuções nominais). O poll é
+    # idempotente (o offset só é gravado no fim) e cancel-in-progress já o
+    # protege de ticks concorrentes.
+    types: [ping]
 
 permissions:
   contents: read
