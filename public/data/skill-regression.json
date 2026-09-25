@@ -1,6 +1,6 @@
 {
   "source": "forecast-skill-regression",
-  "checkedAt": "2026-09-25T13:37:04.478Z",
+  "checkedAt": "2026-09-25T13:50:14.663Z",
   "windowDays": 60,
   "recentDays": 7,
   "baselineDays": 21,
@@ -43,7 +43,7 @@
         "snapshots": 7,
         "rmse": 0.19285714285714284,
         "me": -0.03,
-        "n": 520.1428571428571
+        "n": 520.2857142857143
       },
       "baseline": {
         "snapshots": 16,
@@ -79,9 +79,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 7,
-        "rmse": 4.37,
+        "rmse": 4.368571428571429,
         "me": -0.3057142857142857,
-        "n": 520.1428571428571
+        "n": 520.2857142857143
       },
       "baseline": {
         "snapshots": 16,
@@ -89,7 +89,7 @@
         "me": -0.42812500000000003,
         "n": 221.3125
       },
-      "rmseDelta": 3.92,
+      "rmseDelta": 3.91,
       "meAbsDelta": -0.12,
       "verdict": "regressed"
     },
@@ -176,9 +176,9 @@
       "origin": "ih",
       "recent": {
         "snapshots": 7,
-        "rmse": 4.37,
+        "rmse": 4.368571428571429,
         "me": -0.3057142857142857,
-        "n": 520.1428571428571
+        "n": 520.2857142857143
       },
       "baseline": {
         "snapshots": 16,
@@ -186,11 +186,11 @@
         "me": -0.42812500000000003,
         "n": 221.3125
       },
-      "rmseDelta": 3.92,
+      "rmseDelta": 3.91,
       "meAbsDelta": -0.12,
       "verdict": "regressed",
       "reasons": [
-        "RMSE +3.92 m (limiar +0.3)"
+        "RMSE +3.91 m (limiar +0.3)"
       ]
     },
     {
@@ -246,8 +246,8 @@
       "name": "IH (Datawell)",
       "recent": {
         "days": 7,
-        "n": 2496.57,
-        "me": 0.4936152437628748
+        "n": 2496.86,
+        "me": 0.49354216729602923
       },
       "baseline": {
         "days": 16,
