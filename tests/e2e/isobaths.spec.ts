@@ -122,13 +122,13 @@ test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
 
     // C4: o toggle de isóbatas vive no menu «Camadas».
     await openMapLayersMenu(page);
-    const toggle = page.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
+    const toggle = page.locator('[data-map-isobaths-toggle]');
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
 
     await toggle.click();
-    // O aria-label muda ao ligar (show → hide) — re-consultar pelo novo nome.
-    const active = page.getByRole('button', { name: 'Ocultar isóbatas' });
+    // M5: o item do menu tem nome estável — o estado vai em aria-pressed.
+    const active = page.locator('[data-map-isobaths-toggle]');
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
     // Legenda inline (dentro da MapLegend) com as três profundidades.
@@ -170,7 +170,7 @@ test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)',
   test('?isobaths=1 liga as isóbatas à entrada (ao lado do radar)', async ({ page }) => {
     await openMapa(page, '?isobaths=1');
     await openMapLayersMenu(page);
-    const active = page.getByRole('button', { name: 'Ocultar isóbatas' });
+    const active = page.locator('[data-map-isobaths-toggle]');
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
   });
@@ -179,7 +179,7 @@ test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)',
     await page.addInitScript((key) => localStorage.setItem(key, '0'), LS_KEY);
     await openMapa(page);
     await openMapLayersMenu(page);
-    const off = page.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
+    const off = page.locator('[data-map-isobaths-toggle]');
     await expect(off).toBeVisible({ timeout: 15_000 });
     await expect(off).toHaveAttribute('aria-pressed', 'false');
   });
@@ -187,12 +187,12 @@ test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)',
   test('toggle grava a preferência em localStorage', async ({ page }) => {
     await openMapa(page);
     await openMapLayersMenu(page);
-    const off = page.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
+    const off = page.locator('[data-map-isobaths-toggle]');
     await expect(off).toBeVisible({ timeout: 15_000 });
     await off.click();
-    await expect(page.getByRole('button', { name: 'Ocultar isóbatas' })).toBeVisible({
-      timeout: 15_000,
-    });
+    await expect(page.locator('[data-map-isobaths-toggle]')).toHaveAttribute(
+      'aria-pressed', 'true', { timeout: 15_000 },
+    );
     expect(await page.evaluate((key) => localStorage.getItem(key), LS_KEY)).toBe('1');
   });
 });

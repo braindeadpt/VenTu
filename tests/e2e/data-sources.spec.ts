@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { test, expect } from '@playwright/test';
+import { openMapLayersMenu } from './helpers/map-setup';
 
 /**
  * Página «Fontes de dados» (/fontes) — lista todas as fontes do projecto com
@@ -326,6 +327,8 @@ test.describe('Fontes de dados (data sources)', () => {
       await expect(attribution).toContainText('CARTO');
       await expect(attribution).not.toContainText(/Esri/);
     }
+    // M5: o rádio de basemap vive dentro do menu «Camadas» → abrir primeiro.
+    await openMapLayersMenu(page);
     await page.getByRole('radio', { name: 'Satélite' }).click();
     await expect(attribution).toContainText(/Esri/, { timeout: 15_000 });
     await expect(attribution).toContainText('OpenStreetMap');

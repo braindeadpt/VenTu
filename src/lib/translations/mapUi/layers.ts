@@ -1,21 +1,133 @@
 /** mapUiLayers — camadas, basemap e legendas (M5). Criado pelo M1; a M5 preenche.
  *  Regra de namespaces (docs/design/MAP-ZONES.md): aqui só entram chaves NOVAS — as chaves
- *  históricas do mapa vivem em `t.map` e as da Diana em `t.spotsMap`/`t.spotsUi`. */
+ *  históricas do mapa vivem em `t.map` e as da Diana em `t.spotsMap`/`t.spotsUi`.
+ *
+ *  Chaves criadas pela M5 para o menu Camadas v3 (MAP-UX-V3 §8): cabeçalhos
+ *  dos grupos, nomes de camada como SUBSTANTIVO (o estado mostra-se no
+ *  switch/aria-pressed — nunca «Ocultar X»), descrições do basemap e o toast
+ *  do limite de raster pesadas. */
 export const mapUiLayers = {
   pt: {
-    // (vazio — as chaves chegam na sessão dona)
+    // Cabeçalhos dos grupos do menu Camadas
+    groupBase: 'Base',
+    groupTime: 'Tempo',
+    groupSea: 'Mar',
+    groupNav: 'Navegação',
+    // Nomes de camada (substantivo — §0.3: «estados, não acções»)
+    layerHours: 'Próximas 48 h',
+    layerRadar: 'Radar IPMA',
+    layerIsobaths: 'Isóbatas',
+    layerHs: 'Altura significativa (Hs)',
+    layerSst: 'Temperatura da água (SST)',
+    layerCurrents: 'Correntes',
+    layerBathymetry: 'Batimetria',
+    layerBuoys: 'Boias',
+    layerSeamarks: 'Sinalização náutica',
+    layerWarnings: 'Avisos à navegação',
+    // Secção «Base» — descrições das linhas Mapa/Satélite
+    basemapMapDesc: 'Carta CARTO · OpenStreetMap',
+    basemapSatelliteDesc: 'Imagens de satélite — Esri',
+    // Toast do limite de 2 raster pesadas — «camada desligada» (feminino de
+    // «camada») evita a concordância com o nome («Batimetria desligada»).
+    rasterCapToast: '{layer} — camada desligada para manter o mapa fluido',
+    // Sufixo de estado nas descrições (camada sem dados)
+    unavailable: 'indisponível',
+    // Chips de salto de área (acção exposta pela M5; UI da M3)
+    areaContinent: 'Continente',
+    areaAzores: 'Açores',
+    areaMadeira: 'Madeira',
   },
   en: {
-    // (vazio — as chaves chegam na sessão dona)
+    groupBase: 'Basemap',
+    groupTime: 'Time',
+    groupSea: 'Sea',
+    groupNav: 'Navigation',
+    layerHours: 'Next 48 h',
+    layerRadar: 'IPMA radar',
+    layerIsobaths: 'Isobaths',
+    layerHs: 'Significant height (Hs)',
+    layerSst: 'Water temperature (SST)',
+    layerCurrents: 'Currents',
+    layerBathymetry: 'Bathymetry',
+    layerBuoys: 'Buoys',
+    layerSeamarks: 'Seamarks',
+    layerWarnings: 'Navigational warnings',
+    basemapMapDesc: 'CARTO basemap · OpenStreetMap',
+    basemapSatelliteDesc: 'Satellite imagery — Esri',
+    rasterCapToast: '{layer} — layer turned off to keep the map fluid',
+    unavailable: 'unavailable',
+    areaContinent: 'Mainland',
+    areaAzores: 'Azores',
+    areaMadeira: 'Madeira',
   },
   es: {
-    // (vazio — as chaves chegam na sessão dona)
+    groupBase: 'Mapa base',
+    groupTime: 'Tiempo',
+    groupSea: 'Mar',
+    groupNav: 'Navegación',
+    layerHours: 'Próximas 48 h',
+    layerRadar: 'Radar IPMA',
+    layerIsobaths: 'Isóbatas',
+    layerHs: 'Altura significativa (Hs)',
+    layerSst: 'Temperatura del agua (SST)',
+    layerCurrents: 'Corrientes',
+    layerBathymetry: 'Batimetría',
+    layerBuoys: 'Boyas',
+    layerSeamarks: 'Señalización náutica',
+    layerWarnings: 'Avisos a la navegación',
+    basemapMapDesc: 'Mapa CARTO · OpenStreetMap',
+    basemapSatelliteDesc: 'Imágenes de satélite — Esri',
+    rasterCapToast: '{layer} — capa desactivada para mantener el mapa fluido',
+    unavailable: 'no disponible',
+    areaContinent: 'Continente',
+    areaAzores: 'Azores',
+    areaMadeira: 'Madeira',
   },
   de: {
-    // (vazio — as chaves chegam na sessão dona)
+    groupBase: 'Basis',
+    groupTime: 'Zeit',
+    groupSea: 'Meer',
+    groupNav: 'Navigation',
+    layerHours: 'Nächste 48 h',
+    layerRadar: 'IPMA-Radar',
+    layerIsobaths: 'Isobathen',
+    layerHs: 'Signifikante Höhe (Hs)',
+    layerSst: 'Wassertemperatur (SST)',
+    layerCurrents: 'Strömungen',
+    layerBathymetry: 'Bathymetrie',
+    layerBuoys: 'Bojen',
+    layerSeamarks: 'Seezeichen',
+    layerWarnings: 'Navigationswarnungen',
+    basemapMapDesc: 'CARTO-Karte · OpenStreetMap',
+    basemapSatelliteDesc: 'Satellitenbilder — Esri',
+    rasterCapToast: '{layer} — Ebene deaktiviert, damit die Karte flüssig bleibt',
+    unavailable: 'nicht verfügbar',
+    areaContinent: 'Festland',
+    areaAzores: 'Azoren',
+    areaMadeira: 'Madeira',
   },
   fr: {
-    // (vazio — as chaves chegam na sessão dona)
+    groupBase: 'Fond',
+    groupTime: 'Temps',
+    groupSea: 'Mer',
+    groupNav: 'Navigation',
+    layerHours: 'Prochaines 48 h',
+    layerRadar: 'Radar IPMA',
+    layerIsobaths: 'Isobates',
+    layerHs: 'Hauteur significative (Hs)',
+    layerSst: "Température de l'eau (SST)",
+    layerCurrents: 'Courants',
+    layerBathymetry: 'Bathymétrie',
+    layerBuoys: 'Bouées',
+    layerSeamarks: 'Balisage nautique',
+    layerWarnings: 'Avis à la navigation',
+    basemapMapDesc: 'Carte CARTO · OpenStreetMap',
+    basemapSatelliteDesc: 'Images satellite — Esri',
+    rasterCapToast: '{layer} — couche désactivée pour garder la carte fluide',
+    unavailable: 'indisponible',
+    areaContinent: 'Continent',
+    areaAzores: 'Açores',
+    areaMadeira: 'Madère',
   },
 } as const;
 

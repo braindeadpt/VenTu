@@ -82,7 +82,11 @@ test.describe('Menu Camadas — teclado (desktop)', () => {
     await trigger(page).press('Enter');
     await expect(popover(page)).toBeVisible({ timeout: 10_000 });
 
-    const first = items(page).first();
+    // M5 (§8): os primeiros focáveis são os rádios Mapa/Satélite da secção
+    // «Base» — para o toggle multi-selecção usa-se a primeira linha com
+    // aria-pressed (uma camada de dados).
+    const first = popover(page).locator('button[aria-pressed]:not([disabled])').first();
+    await first.focus();
     const wasPressed = (await first.getAttribute('aria-pressed')) === 'true';
     await page.keyboard.press('Space');
     await expect(first).toHaveAttribute('aria-pressed', String(!wasPressed));

@@ -8,7 +8,7 @@
  * comportamento.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { startTransition, useCallback, useEffect, useMemo, useState } from 'react';
 import type L from 'leaflet';
 import {
   HelpCircle, Layers, MapPin, Wind,
@@ -16,6 +16,7 @@ import {
 import { getTranslation } from '@/lib/i18n';
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
 import { DEFAULT_REGION } from '@/lib/gridFilters';
+import { mapHoursClock } from '@/lib/mapHours';
 import { includeSpotInViewportBounds } from '../../mapViewportBounds';
 import type { GridSportFilter } from '@/lib/sportRatings';
 import type { MapFullscreenHudProps } from '../../mapHudTypes';
@@ -30,13 +31,20 @@ import MapExploreSheet, {
   type SheetToggleItem,
 } from '../components/MapExploreSheet';
 import MapSpotPanel from '../components/MapSpotPanel';
-import type { MapSpotListRow } from '../components/MapSpotList';
+import type { MapListJump, MapSpotListRow } from '../components/MapSpotList';
 import type { MapLayersMenuItem } from '../components/MapLayersMenu';
 import type { MapLayersFields } from './MapLayersZone';
 import { useMapUiActions, useMapUiData } from '../MapUiContext';
 
 type MapTranslation = ReturnType<typeof getTranslation>;
 type MapHudProps = Omit<MapFullscreenHudProps, 'isPt' | 'visible'>;
+
+/** Bounds dos chips «Saltar para» — os mesmos JUMPS da maquete aprovada. */
+const MAP_LIST_JUMP_BOUNDS: Record<string, { s: number; n: number; w: number; e: number }> = {
+  cont: { s: 36.9, n: 42.2, w: -9.6, e: -7.3 },
+  az: { s: 36.9, n: 39.8, w: -31.4, e: -24.9 },
+  ma: { s: 32.55, n: 33.15, w: -17.35, e: -16.25 },
+};
 
 // ─── Estado: sheet (3 estados), painel, altura aberta, lista e extras ───
 
@@ -91,9 +99,17 @@ export function useMapExploreZone({
     focusSpotId ? 'open' : initialHoursEnabled || initialRadarEnabled ? 'half' : 'peek',
   );
   const [panelCollapsed, setPanelCollapsed] = useState(false);
+  // Altura «open» = 88% do viewport (maquete: `open = round(innerHeight *
+  // 0.88)`); o meio fica a 68% desta — ≈60% do ecrã, como os 56% da maquete.
   const [openHeight, setOpenHeight] = useState(620);
+
+  // UX v3 (M4): o «←» do sheet de spot volta à lista — M6: a acção chega
+  // pelo MapUiContext (`openExploreSheet`, implementada em
+  // SpotMapInteractive sobre este `setExploreSheetState`); o evento
+  // `ventu:open-explore-sheet` deixou de existir.
+
   useEffect(() => {
-    const sync = () => setOpenHeight(Math.min(Math.round(window.innerHeight * 0.82), 720));
+    const sync = () => setOpenHeight(Math.round(window.innerHeight * 0.88));
     sync();
     window.addEventListener('resize', sync);
     return () => window.removeEventListener('resize', sync);
@@ -173,7 +189,12 @@ export function useMapExploreZone({
       setViewRows([]);
       return;
     }
-    const compute = () => setViewRows(buildRows());
+    // CORRECCOES-24SET (M5): o re-render da lista no moveend media ~180 ms
+    // num só task a 4× CPU e furava o gate «pan ≤ 50 ms» mesmo com o campo
+    // de vento suspenso (a M4 já o apontava como residual). A actualização
+    // da lista não é urgente — startTransition deixa o React fatiar o render
+    // sem bloquear o gesto; o conteúdo e a ordem mantêm-se.
+    const compute = () => startTransition(() => setViewRows(buildRows()));
     compute();
     map.on('moveend', compute);
     map.on('zoomend', compute);
@@ -183,11 +204,40 @@ export function useMapExploreZone({
     };
   }, [isReady, isFullscreen, mapHud, buildRows, mapInstanceRef]);
 
+  // Chips «Saltar para» no cabeçalho da lista — bounds da maquete
+  // (JUMPS): Continente / Açores / Madeira. §11: flyTo da lista = 600 ms
+  // (easeOutCubic — o easing interno do flyToBounds do Leaflet).
+  const jumpTo = useCallback(
+    (id: string) => {
+      const map = mapInstanceRef.current;
+      const b = MAP_LIST_JUMP_BOUNDS[id];
+      if (!map || !b) return;
+      map.flyToBounds(
+        [
+          [b.s, b.w],
+          [b.n, b.e],
+        ],
+        { duration: 0.6 },
+      );
+    },
+    [mapInstanceRef],
+  );
+  const jumps: MapListJump[] = useMemo(
+    () => [
+      { id: 'cont', label: t.mapUiExplore.continent },
+      { id: 'az', label: 'Açores' },
+      { id: 'ma', label: 'Madeira' },
+    ],
+    [t.mapUiExplore.continent],
+  );
+
   return {
     exploreSheetState, setExploreSheetState,
     panelCollapsed, setPanelCollapsed,
     openHeight, viewRows, sheetExtras,
     clusterLabel, onlyOnLabel, onlyOnHint, hudSpotCount,
+    clusterEnabled, toggleCluster,
+    jumpTo, jumps,
   };
 }
 
@@ -230,14 +280,29 @@ export function MapExploreZone({
   timeTrack,
   attributionHtml,
 }: MapExploreZoneProps) {
-  const { isPt, locale, focusSpotId } = useMapUiData();
+  const { isPt, locale, focusSpotId, hoursLive, hoursTimes, hoursFrame } = useMapUiData();
   const { focusSpot } = useMapUiActions();
+  const t = getTranslation(locale);
   const {
     exploreSheetState, setExploreSheetState,
     panelCollapsed, setPanelCollapsed,
     openHeight, viewRows, sheetExtras,
-    onlyOnLabel, onlyOnHint, hudSpotCount,
+    onlyOnHint, hudSpotCount,
+    clusterEnabled, toggleCluster,
+    jumpTo, jumps,
   } = state;
+
+  // Hora activa do trilho das 48 h — alimenta o kicker «Melhor 17h» do peek
+  // e a nota «Ordenado por score às 17h · métricas de agora» da lista.
+  const hourClock = hoursLive && hoursTimes[hoursFrame]
+    ? mapHoursClock(hoursTimes[hoursFrame])
+    : null;
+  const noteLabel = hourClock
+    ? t.mapUiExplore.sortedHintAt.replace('{time}', hourClock)
+    : t.mapUiExplore.sortedHintNow;
+  const bestLabel = hourClock
+    ? t.mapUiExplore.bestAt.replace('{time}', hourClock)
+    : t.spotsMap.bestNow;
 
   if (!mapHud || !isFullscreen) return null;
 
@@ -258,8 +323,13 @@ export function MapExploreZone({
           onCollapsedChange={setPanelCollapsed}
           onlyOnEnabled={onlyOnEnabled}
           onToggleOnlyOn={onToggleOnlyOn}
-          onlyOnLabel={onlyOnLabel}
           onlyOnHint={onlyOnHint}
+          clusterEnabled={clusterEnabled}
+          onToggleCluster={toggleCluster}
+          noteLabel={noteLabel}
+          jumpLabel={t.mapUiExplore.jumpTo}
+          jumps={jumps}
+          onJump={jumpTo}
           warningChip={<BuoyLayerChip locale={locale} />}
           timeTrack={timeTrack}
           basemapMode={basemapMode}
@@ -284,15 +354,20 @@ export function MapExploreZone({
           onSelectRow={(row) => focusSpot(row.spotId)}
           layers={sheetLayers}
           extras={sheetExtras}
-          clusterItem={sheetExtras.find((i) => i.key === 'cluster')}
           basemapMode={basemapMode}
           onBasemapChange={onBasemapChange}
           exitFullscreenLabel={exitFullscreenLabel}
           onExitFullscreen={onExitFullscreen}
           onlyOnEnabled={onlyOnEnabled}
           onToggleOnlyOn={onToggleOnlyOn}
-          onlyOnLabel={onlyOnLabel}
           onlyOnHint={onlyOnHint}
+          clusterEnabled={clusterEnabled}
+          onToggleCluster={toggleCluster}
+          bestLabel={bestLabel}
+          noteLabel={noteLabel}
+          jumpLabel={t.mapUiExplore.jumpTo}
+          jumps={jumps}
+          onJump={jumpTo}
           warningChip={<BuoyLayerChip locale={locale} />}
           legendNode={<MapLegend locale={locale} embedded {...legendLayerProps} />}
           timeTrack={timeTrack}

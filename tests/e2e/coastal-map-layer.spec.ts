@@ -48,6 +48,9 @@ async function interceptCoastalWarnings(page: import('@playwright/test').Page): 
 }
 
 test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)', () => {
+  // /mapa carrega ~158 marcadores + camadas — sob paralelismo do CI o default
+  // de 30 s não chega para goto+menu+toggle (flakes observados).
+  test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block' });
 
   test('toggle desenha os polígonos de TODOS os avisos e abre o popup de detalhe', async ({
@@ -63,15 +66,15 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     // Off por omissão — sem overlay nem atribuição.
     // C4: o toggle vive no menu «Camadas».
     await openMapLayersMenu(page);
-    const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
+    const toggle = page.locator('[data-map-coastal-warnings-toggle]');
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('.leaflet-container[data-coastal-warnings="true"]')).toHaveCount(0);
 
     await toggle.click();
 
-    // O aria-label muda ao ligar (show → hide) — re-consultar pelo novo nome.
-    const active = page.getByRole('button', { name: 'Ocultar avisos à navegação' });
+    // M5: o item do menu tem nome estável — o estado vai em aria-pressed.
+    const active = page.locator('[data-map-coastal-warnings-toggle]');
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
 
@@ -121,7 +124,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
 
     // Desligar remove o overlay e a marcação.
     await active.click();
-    await expect(page.getByRole('button', { name: 'Avisos à navegação (IH)' })).toBeVisible({
+    await expect(page.locator('[data-map-coastal-warnings-toggle]')).toBeVisible({
       timeout: 15_000,
     });
     await expect(page.locator('.leaflet-container[data-coastal-warnings="true"]')).toHaveCount(0);
@@ -134,7 +137,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await openMapLayersMenu(page);
 
-    const active = page.getByRole('button', { name: 'Ocultar avisos à navegação' });
+    const active = page.locator('[data-map-coastal-warnings-toggle]');
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
     await expect(
@@ -159,10 +162,10 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await openMapLayersMenu(page);
 
-    const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
+    const toggle = page.locator('[data-map-coastal-warnings-toggle]');
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await toggle.click();
-    await expect(page.getByRole('button', { name: 'Ocultar avisos à navegação' })).toBeVisible({
+    await expect(page.locator('[data-map-coastal-warnings-toggle]')).toBeVisible({
       timeout: 15_000,
     });
     // Sem polígonos → o mapa não fica marcado (o toggle fica activo, honesto).
@@ -177,10 +180,10 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await openMapLayersMenu(page);
 
-    const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
+    const toggle = page.locator('[data-map-coastal-warnings-toggle]');
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await toggle.click();
-    await expect(page.getByRole('button', { name: 'Ocultar avisos à navegação' })).toBeVisible({
+    await expect(page.locator('[data-map-coastal-warnings-toggle]')).toBeVisible({
       timeout: 15_000,
     });
     await expect(page.locator('.leaflet-container[data-coastal-warnings="true"]')).toHaveCount(0);
@@ -188,6 +191,7 @@ test.describe('Avisos à navegação (IH) — camada no mapa fullscreen (/mapa)'
 });
 
 test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso activo)', () => {
+  test.describe.configure({ timeout: 90_000 });
   test.use({ serviceWorkers: 'block' });
 
   test('?spot= de um spot coberto → liga a camada automaticamente e desenha os polígonos', async ({
@@ -199,7 +203,7 @@ test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso 
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await openMapLayersMenu(page);
 
-    const active = page.getByRole('button', { name: 'Ocultar avisos à navegação' });
+    const active = page.locator('[data-map-coastal-warnings-toggle]');
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
     // A camada foi ligada por deep link e desenha os polígonos (incl. o ES que
@@ -228,7 +232,7 @@ test.describe('Avisos à navegação — deep link ?spot= (de um spot com aviso 
     await page.waitForSelector('.leaflet-container', { timeout: 30_000 });
     await openMapLayersMenu(page);
 
-    const toggle = page.getByRole('button', { name: 'Avisos à navegação (IH)' });
+    const toggle = page.locator('[data-map-coastal-warnings-toggle]');
     await expect(toggle).toBeVisible({ timeout: 15_000 });
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
     await expect(page.locator('.leaflet-container[data-coastal-warnings="true"]')).toHaveCount(0);
