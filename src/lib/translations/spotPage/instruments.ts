@@ -27,6 +27,10 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s de {dir} · janela {dirs}',
     swellFoot: 'ondulação {h} m a {p} s',
+    // Linha secundária da Onda: uma frase humana, sem siglas ({lo}/{hi} =
+    // P10/P90 da hora já formatados). O detalhe técnico vive em «Como sabemos».
+    ensembleCard: 'entre {lo} e {hi} m',
+    ensembleCardHint: '8 em cada 10 modelos ficam neste intervalo',
     tideNextHigh: 'próxima preia-mar às {t}',
     tideNextLow: 'próxima baixa-mar às {t}',
     tideNoExtremum: 'sem extremo na janela',
@@ -35,6 +39,22 @@ export const spotPageInstruments = {
     nowTag: 'agora',
     obsStation: 'Estação',
     obsBuoy: 'Bóia',
+
+    // «Como sabemos» — detalhe técnico da banda ensemble e do erro por
+    // horizonte de lead. Aqui as siglas podem aparecer, cada uma explicada.
+    bandTitle: 'Banda multi-modelo',
+    bandIntro:
+      'O número da onda é a mediana dos modelos. P10 e P90 são os percentis 10 e 90 — o intervalo onde ficam 8 de cada 10 modelos. Banda estreita = modelos de acordo; banda larga = incerteza.',
+    bandHourLabel: 'Hora escolhida',
+    bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    bandMembers: 'membros: {n}',
+    skillLeadTitle: 'Erro do modelo por horizonte',
+    skillLeadBuoy: 'boia {name}',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'A previsão comparada com as leituras da boia, por tempo de antecipação (lead). ME é o erro médio e RMSE a raiz do erro quadrático médio: crescem com o horizonte, por isso as horas mais distantes valem menos.',
 
     howWeKnow: 'Como sabemos — fontes e confiança',
     // Coerência entre fontes (texto + ícone, ligação a #como-sabemos)
@@ -64,6 +84,8 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s from {dir} · window {dirs}',
     swellFoot: 'swell {h} m at {p} s',
+    ensembleCard: 'between {lo} and {hi} m',
+    ensembleCardHint: '8 out of 10 models fall within this range',
     tideNextHigh: 'next high tide at {t}',
     tideNextLow: 'next low tide at {t}',
     tideNoExtremum: 'no turning point in the window',
@@ -71,6 +93,20 @@ export const spotPageInstruments = {
     nowTag: 'now',
     obsStation: 'Station',
     obsBuoy: 'Buoy',
+
+    bandTitle: 'Multi-model band',
+    bandIntro:
+      'The wave number is the median of the models. P10 and P90 are the 10th and 90th percentiles — the range where 8 out of 10 models fall. Narrow band = models agree; wide band = uncertainty.',
+    bandHourLabel: 'Selected hour',
+    bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    bandMembers: 'members: {n}',
+    skillLeadTitle: 'Model error by horizon',
+    skillLeadBuoy: 'buoy {name}',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Forecast compared with the buoy readings, by lead time. ME is the mean error and RMSE the root mean square error: both grow with the horizon, so farther-out hours are worth less.',
 
     howWeKnow: 'How we know — sources and confidence',
     coherenceMark: 'sources disagree',
@@ -99,6 +135,8 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s de {dir} · ventana {dirs}',
     swellFoot: 'mar de fondo {h} m a {p} s',
+    ensembleCard: 'entre {lo} y {hi} m',
+    ensembleCardHint: '8 de cada 10 modelos quedan en este intervalo',
     tideNextHigh: 'próxima pleamar a las {t}',
     tideNextLow: 'próxima bajamar a las {t}',
     tideNoExtremum: 'sin extremo en la ventana',
@@ -106,6 +144,20 @@ export const spotPageInstruments = {
     nowTag: 'ahora',
     obsStation: 'Estación',
     obsBuoy: 'Boya',
+
+    bandTitle: 'Banda multimodelo',
+    bandIntro:
+      'El número del oleaje es la mediana de los modelos. P10 y P90 son los percentiles 10 y 90 — el intervalo donde quedan 8 de cada 10 modelos. Banda estrecha = los modelos coinciden; banda ancha = incertidumbre.',
+    bandHourLabel: 'Hora elegida',
+    bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    bandMembers: 'miembros: {n}',
+    skillLeadTitle: 'Error del modelo por horizonte',
+    skillLeadBuoy: 'boya {name}',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Previsión comparada con las lecturas de la boya, según el tiempo de antelación. ME es el error medio y RMSE la raíz del error cuadrático medio: crecen con el horizonte, por eso las horas más lejanas valen menos.',
 
     howWeKnow: 'Cómo lo sabemos — fuentes y confianza',
     coherenceMark: 'fuentes divergentes',
@@ -134,6 +186,8 @@ export const spotPageInstruments = {
     idealFoot: 'ideal {dirs}',
     swellSub: '{p} s aus {dir} · Fenster {dirs}',
     swellFoot: 'Dünung {h} m bei {p} s',
+    ensembleCard: 'zwischen {lo} und {hi} m',
+    ensembleCardHint: '8 von 10 Modellen liegen in diesem Bereich',
     tideNextHigh: 'nächstes Hochwasser um {t}',
     tideNextLow: 'nächstes Niedrigwasser um {t}',
     tideNoExtremum: 'kein Extremum im Fenster',
@@ -141,6 +195,20 @@ export const spotPageInstruments = {
     nowTag: 'jetzt',
     obsStation: 'Station',
     obsBuoy: 'Boje',
+
+    bandTitle: 'Multi-Modell-Band',
+    bandIntro:
+      'Der Wellenwert ist der Median der Modelle. P10 und P90 sind das 10. und 90. Perzentil — der Bereich, in dem 8 von 10 Modellen liegen. Schmaler Bereich = die Modelle sind einig; breiter Bereich = Unsicherheit.',
+    bandHourLabel: 'Gewählte Stunde',
+    bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    bandMembers: 'Mitglieder: {n}',
+    skillLeadTitle: 'Modellfehler nach Horizont',
+    skillLeadBuoy: 'Boje {name}',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Vorhersage im Vergleich zu den Bojenmessungen, nach Vorlaufzeit. ME ist der mittlere Fehler und RMSE die Wurzel des mittleren quadratischen Fehlers: beide wachsen mit dem Horizont, weiter entfernte Stunden sind daher weniger wert.',
 
     howWeKnow: 'Woher wir es wissen — Quellen und Vertrauen',
     coherenceMark: 'Quellen uneins',
@@ -169,6 +237,8 @@ export const spotPageInstruments = {
     idealFoot: 'idéal {dirs}',
     swellSub: '{p} s de {dir} · fenêtre {dirs}',
     swellFoot: 'houle {h} m à {p} s',
+    ensembleCard: 'entre {lo} et {hi} m',
+    ensembleCardHint: '8 modèles sur 10 tombent dans cet intervalle',
     tideNextHigh: 'prochaine pleine mer à {t}',
     tideNextLow: 'prochaine basse mer à {t}',
     tideNoExtremum: 'pas d’extrême dans la fenêtre',
@@ -176,6 +246,20 @@ export const spotPageInstruments = {
     nowTag: 'maintenant',
     obsStation: 'Station',
     obsBuoy: 'Bouée',
+
+    bandTitle: 'Bande multimodèle',
+    bandIntro:
+      'Le chiffre de la houle est la médiane des modèles. P10 et P90 sont les 10e et 90e percentiles — l’intervalle où tombent 8 modèles sur 10. Bande étroite = les modèles sont d’accord ; bande large = incertitude.',
+    bandHourLabel: 'Heure choisie',
+    bandQuantiles: 'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+    bandMembers: 'membres : {n}',
+    skillLeadTitle: 'Erreur du modèle par horizon',
+    skillLeadBuoy: 'bouée {name}',
+    skillLeadBucket: '{from}–{to} h',
+    skillLeadRow: 'ME {me} m · RMSE {rmse} m · n={n}',
+    skillLeadRowNoRmse: 'ME {me} m · n={n}',
+    skillLeadHint:
+      'Prévision comparée aux lectures de la bouée, selon le délai. ME est l’erreur moyenne et RMSE la racine de l’erreur quadratique moyenne : elles augmentent avec l’horizon, les heures lointaines valent donc moins.',
 
     howWeKnow: 'Comment nous le savons — sources et confiance',
     coherenceMark: 'sources divergentes',

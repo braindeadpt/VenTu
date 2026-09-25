@@ -1,4 +1,5 @@
 import type { TideHourPoint } from '@/lib/tideSchedule';
+import { parseEnsemble, type EnsembleBand } from '@/lib/ensembleBand';
 
 /**
  * Leitura de uma hora para os instrumentos — normalizada a partir de uma
@@ -19,6 +20,11 @@ export interface InstrumentHour {
   windWaveHeightM?: number;
   tideHeightM?: number;
   waterTempC?: number;
+  /**
+   * Banda ensemble P10/P50/P90 da hora (`ens` da linha de forecast) — só
+   * existe nas horas multi-modelo. Null/ausente = o slot não mostra banda.
+   */
+  ensemble?: EnsembleBand | null;
 }
 
 function num(v: unknown): number | undefined {
@@ -43,6 +49,7 @@ export function rowToInstrumentHour(
     windWaveHeightM: num(row.windWaveHeight),
     tideHeightM: num(row.tideHeight),
     waterTempC: num(row.waterTemp),
+    ensemble: parseEnsemble(row.ens),
   };
 }
 

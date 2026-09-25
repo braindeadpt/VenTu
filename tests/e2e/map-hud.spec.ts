@@ -214,6 +214,14 @@ test.describe('Explorar /mapa — garantias consolidadas (sheet mobile + painel 
     });
 
     test('o painel não colide com a legenda (cantos opostos)', async ({ page }) => {
+      // O painel e a legenda vivem no chunk lazy do mapa: `waitHydrated`
+      // devolve antes de eles montarem (medido: 4/10 corridas sem NENHUM dos
+      // dois no DOM, com a medição a devolver null). É o mesmo mount assíncrono
+      // que os helpers de zonas já esperam — sem esta espera o teste é uma
+      // corrida e falha em qualquer build com o bundle ligeiramente diferente.
+      await expect(page.locator('[data-map-panel="open"]')).toBeVisible();
+      await expect(page.locator('[aria-label="Legenda do mapa"]').first()).toBeAttached();
+
       const geo = await page.evaluate(() => {
         const panel = document.querySelector('[data-map-panel="open"]')?.getBoundingClientRect();
         const legend = document

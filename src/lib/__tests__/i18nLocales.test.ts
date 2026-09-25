@@ -41,6 +41,12 @@ const SHARED_TOKENS = new Set([
   'ideal {dirs}',
   // «Madeira» é nome próprio — idêntico em todas as línguas (chip de ilha §10).
   'Madeira',
+  // Fórmulas simbólicas da banda ensemble e do erro por horizonte: P10/P50/P90,
+  // ME, RMSE, n e h são símbolos/abreviaturas universais — nada a traduzir.
+  'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+  '{from}–{to} h',
+  'ME {me} m · RMSE {rmse} m · n={n}',
+  'ME {me} m · n={n}',
 ]);
 
 /**
@@ -240,6 +246,12 @@ const EN_COGNATES = new Set([
   'Cross-on', 'Cross-off', // classifyWind: rótulos do chip adoptados em EN = PT
   'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
   'Madeira',           // nome próprio — igual em EN (chip de ilha §10)
+  // Fórmulas simbólicas da banda ensemble e do erro por horizonte (mesmos
+  // símbolos em PT e EN): P10/P50/P90, ME, RMSE, n e h.
+  'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+  '{from}–{to} h',
+  'ME {me} m · RMSE {rmse} m · n={n}',
+  'ME {me} m · n={n}',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */
