@@ -4,6 +4,7 @@ import os from 'os';
 import path from 'path';
 import {
   ARCHIVE_WINDOW_DAYS,
+  MAX_PLAUSIBLE_RMSE_M,
   dayKeyOf,
   emptyArchive,
   readArchive,
@@ -97,6 +98,33 @@ describe('skillRegression', () => {
     expect(mergeSnapshot(a, byBuoy, '2026-08-15T10:00:00Z')).toBe(1);
     expect(a.snapshots).toHaveLength(1);
     expect(a.snapshots[0].buoyId).toBe('4');
+  });
+
+  it('mergeSnapshot nunca grava um snapshot com RMSE implausível (dado corrompido ≠ regressão)', () => {
+    // Caso real: 12 linhas com o fill 99.99 do IH deram RMSE 8.5–10.8 m.
+    const a = emptyArchive();
+    const byBuoy = {
+      4: { buoyName: 'CSA92/D', n: 409, me: 1.02, rmse: 8.52 },
+      19: { buoyName: 'CSA83/1D', n: 467, me: -0.05, rmse: 0.17 },
+    };
+    expect(mergeSnapshot(a, byBuoy, '2026-08-15T10:00:00Z')).toBe(1);
+    expect(a.snapshots.map((s) => s.buoyId)).toEqual(['19']);
+  });
+
+  it('buildRegressionReport ignora snapshots implausíveis já gravados (baseline envenenada)', () => {
+    const a = seededArchive({
+      baselineDays: 15,
+      recentDays: 7,
+      rmse: 0.3,
+    });
+    // Baseline com RMSE de metros (pré-guard) → a boia sai da comparação por
+    // completo, em vez de disparar uma «regressão» fantasma.
+    for (const s of a.snapshots) s.rmse = MAX_PLAUSIBLE_RMSE_M + 7;
+    const rep = buildRegressionReport(a);
+    expect(rep.regressions).toHaveLength(0);
+    // A boia sai do report por completo — não há baseline utilizável (e não
+    // uma «regressão» fantasma nem um 'insufficient' enganador).
+    expect(rep.byBuoy['19']).toBeUndefined();
   });
 
   it('pruneArchive remove snapshots fora da janela', () => {

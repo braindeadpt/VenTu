@@ -143,6 +143,27 @@ describe('arquivo + cruzamento com lead time', () => {
     const pairs = crossPairs(a, { nowMs: NOW });
     expect(pairs).toHaveLength(2);
   });
+
+  it('não forma par com leitura de fill do IH (99.99) — o RMSE não pode explodir', () => {
+    // Regressão viva: 12 linhas 99.99 no arquivo levavam o RMSE IH de ~0.2 m
+    // para 6.9 m e a corr a 0.05 no relatório público (auditoria 2026-09-25).
+    const a = emptyArchive();
+    archiveForecastRun(a, [
+      { time: '2026-08-14T12:00:00Z', hm0: 1.5, runAt: '2026-08-14T06:00:00Z', buoyId: 4 },
+      { time: '2026-08-14T13:00:00Z', hm0: 1.6, runAt: '2026-08-14T06:00:00Z', buoyId: 4 },
+    ]);
+    archiveObservations(a, [
+      { time: '2026-08-14T12:30:00Z', hm0: 99.99, buoyId: 4 },
+      { time: '2026-08-14T13:20:00Z', hm0: 1.7, buoyId: 4 },
+    ]);
+    const pairs = crossPairs(a, { nowMs: NOW });
+    expect(pairs).toHaveLength(1);
+    expect(pairs[0].observedHm0).toBe(1.7);
+    const report = buildReport(a, NOW);
+    expect(report.pairCount).toBe(1);
+    // ME == MAE == RMSE num par único — o valor tem de ser da ordem do mar real.
+    expect(report.stats.rmse).toBeLessThan(1);
+  });
 });
 
 describe('archiveWmoSkill (boias ES keyless)', () => {

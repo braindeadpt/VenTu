@@ -21,6 +21,8 @@ const {
   MAX_BUOY_MAP_KM,
   MAX_BUOY_ATTACH_KM,
   MAX_OBS_AGE_HOURS,
+  MAX_PLAUSIBLE_HM0_M,
+  isPlausibleHm0,
 } = require('../ihBuoys.js');
 
 afterEach(() => vi.unstubAllGlobals());
@@ -135,6 +137,40 @@ describe('parseWaveRow / pickLatestWave / extractWaveRows', () => {
     expect(parseWaveRow({ date: row.date, hm0: -1 })).toBeNull();
     expect(parseWaveRow({ date: 'not-a-date', hm0: 1 })).toBeNull();
     expect(parseWaveRow(null)).toBeNull();
+  });
+
+  it('descarta o fill 99.99 do IH (amostra em falta/QC) e qualquer hm0 acima do plausível', () => {
+    // 99.99 é o fill do getDatawellData: ingerido como leitura real, faz o RMSE
+    // do forecast-skill saltar de ~0.2 m para ~9 m e a corr cair a 0.0.
+    expect(parseWaveRow({ date: row.date, hm0: 99.99 })).toBeNull();
+    expect(parseWaveRow({ date: row.date, hm0: MAX_PLAUSIBLE_HM0_M + 1 })).toBeNull();
+    expect(parseWaveRow({ date: row.date, hm0: MAX_PLAUSIBLE_HM0_M })).toMatchObject({
+      hm0: MAX_PLAUSIBLE_HM0_M,
+    });
+    expect(parseWaveRow({ date: row.date, hm0: NaN })).toBeNull();
+  });
+
+  it('mantém a linha mas larga o hmax quando este vem com o fill 99.99', () => {
+    const parsed = parseWaveRow({ date: row.date, hm0: 1.4, hmax: 99.99 });
+    expect(parsed).toMatchObject({ hm0: 1.4 });
+    expect(parsed.hmax).toBeUndefined();
+  });
+
+  it('isPlausibleHm0 é a barreira partilhada pelas camadas de skill/bias', () => {
+    expect(isPlausibleHm0(0)).toBe(true);
+    expect(isPlausibleHm0(19)).toBe(true);
+    expect(isPlausibleHm0(MAX_PLAUSIBLE_HM0_M)).toBe(true);
+    expect(isPlausibleHm0(99.99)).toBe(false);
+    expect(isPlausibleHm0(-0.1)).toBe(false);
+    expect(isPlausibleHm0(Infinity)).toBe(false);
+    expect(isPlausibleHm0('abc')).toBe(false);
+  });
+
+  it('pickLatestWave nunca escolhe uma linha com hm0 de fill (99.99)', () => {
+    const older = { date: '2026-08-14T12:00:00+00:00', hm0: 1.1 };
+    const fill = { date: '2026-08-14T13:40:00+00:00', hm0: 99.99 };
+    expect(pickLatestWave([older, fill])).toMatchObject({ hm0: 1.1 });
+    expect(pickLatestWave([fill])).toBeNull();
   });
 
   it('ignora direcção fora de 0–360 e valores não finitos', () => {
@@ -308,6 +344,19 @@ describe('observedWaveForSpot', () => {
       observedWaveForSpot(mapping, { ...station, latest: { ...station.latest, date: '2026-08-14T08:00:00Z' } }, { nowMs: NOW }),
     ).toBeNull();
     expect(observedWaveForSpot(null, station)).toBeNull();
+  });
+
+  it('nunca anexa uma leitura de fill (99.99 m) ao spot — o score não pode ver 99.99', () => {
+    expect(
+      observedWaveForSpot(mapping, { ...station, latest: { ...station.latest, hm0: 99.99 } }, { nowMs: NOW }),
+    ).toBeNull();
+    const stale = observedWaveForSpot(
+      mapping,
+      { ...station, latest: { ...station.latest, hmax: 99.99 } },
+      { nowMs: NOW },
+    );
+    expect(stale.waveHeight).toBe(1.8);
+    expect(stale.maxWaveHeight).toBeUndefined();
   });
 
   it('respeita o raio de attach por omissão', () => {

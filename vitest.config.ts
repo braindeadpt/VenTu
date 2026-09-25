@@ -73,6 +73,7 @@ export default defineConfig({
       'scripts/lib/__tests__/evaluateAlertsVerification.test.js',
       'scripts/lib/__tests__/scoreSpotConditions.test.js',
       'scripts/lib/__tests__/dataFileKinds.test.js',
+      'scripts/lib/__tests__/dataPlausibility.test.js',
       'scripts/lib/__tests__/dataPipelineAudit.test.js',
       'scripts/lib/__tests__/llmFallback.test.js',
       'scripts/lib/__tests__/obsWorkerHealth.test.js',

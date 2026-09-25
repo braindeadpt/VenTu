@@ -32,6 +32,18 @@ const MIN_RECENT_SNAPSHOTS = 2;
 const MIN_BASELINE_SNAPSHOTS = 3;
 /** RMSE worsening threshold (m). */
 const RMSE_WORSE_M = 0.3;
+/**
+ * Tecto de plausibilidade para o RMSE de um snapshot (m).
+ *
+ * Um snapshot com RMSE de metros sobre uma janela de 30 dias nunca é skill do
+ * modelo — é dado de entrada corrompido. O caso real (auditoria 2026-09-25):
+ * o IH serve 99.99 como fill e 12 linhas dessas deram RMSE 8.5–10.8 m ao
+ * CSA92/D e BOND5, que ficaram como baseline do monitor durante 21 dias e
+ * dispararam avisos de «regressão do modelo» fantasma (2 boias no
+ * validate-generated-data de 2026-09-23). Snapshots acima do tecto são
+ * ignorados na comparação e não voltam a ser gravados.
+ */
+const MAX_PLAUSIBLE_RMSE_M = 3;
 /** |ME| worsening threshold (m) — |recent ME| ≥ |baseline ME| + this. */
 const ME_ABS_WORSE_M = 0.3;
 /**
@@ -119,6 +131,9 @@ function mergeSnapshot(archive, byBuoy, fetchedAt) {
     const me = Number(e.me);
     const rmse = Number(e.rmse);
     if (!Number.isInteger(n) || n < 10 || !Number.isFinite(me)) continue;
+    // Nunca gravar um snapshot implausível (dado de entrada corrompido, não
+    // regressão do modelo) — ver MAX_PLAUSIBLE_RMSE_M.
+    if (Number.isFinite(rmse) && rmse > MAX_PLAUSIBLE_RMSE_M) continue;
     const snap = {
       day,
       buoyId,
@@ -191,6 +206,10 @@ function buildRegressionReport(archive, opts = {}) {
   const byBuoy = {};
   const byId = new Map();
   for (const s of archive.snapshots) {
+    // Ignora snapshots implausíveis já gravados antes do guard (o tecto não
+    // reescreve história): sem isto, uma baseline envenenada continuaria a
+    // comparar-se com a janela recente durante os ARCHIVE_WINDOW_DAYS dias.
+    if (Number.isFinite(s.rmse) && s.rmse > MAX_PLAUSIBLE_RMSE_M) continue;
     if (!byId.has(s.buoyId)) byId.set(s.buoyId, { buoyId: s.buoyId, name: s.name, snaps: [] });
     // A origem (ih/wmo-es) pode variar entre snapshots legacy/posteriores —
     // apo médio mais recente vence para o report expor fins de auditoria.
@@ -521,6 +540,7 @@ module.exports = {
   MIN_BASELINE_SNAPSHOTS,
   RMSE_WORSE_M,
   ME_ABS_WORSE_M,
+  MAX_PLAUSIBLE_RMSE_M,
   dayKeyOf,
   emptyArchive,
   readArchive,
