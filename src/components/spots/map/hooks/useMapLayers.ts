@@ -315,7 +315,8 @@ export function useMapLayers({
   }, []);
 
   const radarFrameList = radarFrames(radarData ?? null);
-  const radarLabel = radarEnabled ? t.map.hideRadar : t.map.showRadar;
+  // Nome = camada; estado só no aria-pressed (auditoria 2026-09-21).
+  const radarLabel = t.map.showRadar;
   const radarHint = t.map.radarHint;
   const radarUnavailable = radarData === null;
   const radarAttributionLabel = getTranslation(locale).spotsMap.radarAttribution;
@@ -750,9 +751,8 @@ export function useMapLayers({
     });
   }, []);
 
-  const coastalWarningsLabel = coastalWarningsEnabled
-    ? t.map.hideCoastalWarnings
-    : t.map.showCoastalWarnings;
+  // Nome = camada; estado só no aria-pressed (auditoria 2026-09-21).
+  const coastalWarningsLabel = t.map.showCoastalWarnings;
 
   return {
     radarData, radarEnabled, radarFrameIndex, radarUserPaused, radarPrefSet,

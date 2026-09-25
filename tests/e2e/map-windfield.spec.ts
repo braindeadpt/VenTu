@@ -60,8 +60,10 @@ test.describe('Map wind field', () => {
     await expect(map).toHaveAttribute('data-map-windfield', 'true', { timeout: 15_000 });
     await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(1);
 
-    // desligar o toggle remove o canvas e marca o atributo a false
-    await page.getByRole('button', { name: 'Ocultar vento' }).first().click();
+    // desligar o toggle remove o canvas e marca o atributo a false. O nome do
+    // controlo é a camada («Vento») e não muda com o estado (auditoria
+    // 2026-09-21) — daí o exact, para não colidir com «Como ler o vento…».
+    await page.getByRole('button', { name: 'Vento', exact: true }).first().click();
     await expect(map).toHaveAttribute('data-map-windfield', 'false');
     await expect(page.locator('canvas.ventu-windfield-canvas')).toHaveCount(0);
   });

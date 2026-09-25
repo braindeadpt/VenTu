@@ -127,8 +127,9 @@ test.describe('Isóbatas — camada no mapa interactivo (/mapa)', () => {
     await expect(toggle).toHaveAttribute('aria-pressed', 'false');
 
     await toggle.click();
-    // O aria-label muda ao ligar (show → hide) — re-consultar pelo novo nome.
-    const active = page.getByRole('button', { name: 'Ocultar isóbatas' });
+    // O nome do controlo é a CAMADA e não muda com o estado — só o
+    // aria-pressed muda (auditoria 2026-09-21).
+    const active = page.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
     // Legenda inline (dentro da MapLegend) com as três profundidades.
@@ -170,7 +171,7 @@ test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)',
   test('?isobaths=1 liga as isóbatas à entrada (ao lado do radar)', async ({ page }) => {
     await openMapa(page, '?isobaths=1');
     await openMapLayersMenu(page);
-    const active = page.getByRole('button', { name: 'Ocultar isóbatas' });
+    const active = page.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
     await expect(active).toBeVisible({ timeout: 15_000 });
     await expect(active).toHaveAttribute('aria-pressed', 'true');
   });
@@ -190,7 +191,7 @@ test.describe('Isóbatas — preferência persistida e deep link (?isobaths=1)',
     const off = page.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
     await expect(off).toBeVisible({ timeout: 15_000 });
     await off.click();
-    await expect(page.getByRole('button', { name: 'Ocultar isóbatas' })).toBeVisible({
+    await expect(page.getByRole('button', { name: 'Isóbatas 8/16/30 m' })).toBeVisible({
       timeout: 15_000,
     });
     expect(await page.evaluate((key) => localStorage.getItem(key), LS_KEY)).toBe('1');
@@ -207,14 +208,15 @@ test.describe('Isóbatas — hero da homepage (TopMap), camada partilhada', () =
     const hero = page.getByRole('region', { name: /Mapa interactivo/i });
     await expect(hero).toBeVisible({ timeout: 20_000 });
 
-    // A camada partilhada do SpotMapInteractive arranca ligada no hero.
-    await expect(hero.getByRole('button', { name: 'Ocultar isóbatas' })).toBeVisible(
+    // A camada partilhada do SpotMapInteractive arranca ligada no hero. O nome
+    // é a camada e não muda — só o aria-pressed muda (2026-09-21).
+    await expect(hero.getByRole('button', { name: 'Isóbatas 8/16/30 m' })).toBeVisible(
       { timeout: 15_000 },
     );
-    const on = hero.getByRole('button', { name: 'Ocultar isóbatas' });
+    const on = hero.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
     await expect(on).toHaveAttribute('aria-pressed', 'true');
 
-    // Desligar: o botão passa a «Isóbatas 8/16/30 m» (pronto a ligar de novo).
+    // Desligar: o mesmo nome, agora com aria-pressed=false.
     await on.click();
     const off = hero.getByRole('button', { name: 'Isóbatas 8/16/30 m' });
     await expect(off).toBeVisible({ timeout: 15_000 });
@@ -222,7 +224,7 @@ test.describe('Isóbatas — hero da homepage (TopMap), camada partilhada', () =
 
     // Voltar a ligar: a camada desenha polylines no pane de overlays.
     await off.click();
-    await expect(hero.getByRole('button', { name: 'Ocultar isóbatas' })).toBeVisible({
+    await expect(hero.getByRole('button', { name: 'Isóbatas 8/16/30 m' })).toBeVisible({
       timeout: 15_000,
     });
     await expect(hero.locator('.leaflet-overlay-pane path').first()).toBeVisible({

@@ -710,18 +710,25 @@ export default function SpotMapInteractive({
   }, [warningsData, visibleSpots, locale]);
 
   // ── Labels ──
+  // Camadas: nome do controlo = a CAMADA (constante); o estado vive só no
+  // aria-pressed e na tinta activa. Antes o rótulo alternava («Ocultar vento»
+  // com aria-pressed=true), que o leitor de ecrã anunciava como «Ocultar
+  // vento, premido» — contraditório (auditoria 2026-09-21). A acção «ocultar»
+  // sai do nome. Cluster e «Só a bombar» mantêm o rótulo de modo (o helper
+  // e2e showAllMapMarkers e a UI lêem o modo a partir dele) — fora do âmbito
+  // desta correcção.
   const exitFullscreenLabel = t.map.exitFullscreen;
   const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
-  const windLabel = windEnabled ? t.map.hideWind : t.map.showWind;
+  const windLabel = t.map.showWind;
   const windHint = null;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
-  const hoursLabel = hoursOn ? t.map.hideHours : t.map.showHours;
+  const hoursLabel = t.map.showHours;
   const hoursHint = t.map.hoursHint;
-  const buoysLabel = buoysEnabled ? t.map.hideBuoys : t.map.showBuoys;
-  const hsLabel = hsEnabled ? t.map.hideHs : t.map.showHs;
-  const sstLabel = sstEnabled ? t.map.hideSst : t.map.showSst;
-  const currentsLabel = currentsEnabled ? t.map.hideCurrents : t.map.showCurrents;
+  const buoysLabel = t.map.showBuoys;
+  const hsLabel = t.map.showHs;
+  const sstLabel = t.map.showSst;
+  const currentsLabel = t.map.showCurrents;
   const windLegendHelpLabel = t.map.windRingLegend.help;
   const hudSpotCount = onlyOnEnabled ? visibleSpots.length : (mapHud?.spotCount ?? visibleSpots.length);
 
@@ -923,7 +930,7 @@ export default function SpotMapInteractive({
     {
       key: 'radar',
       label: radarLabel,
-      hint: radarUnavailable ? `${radarHint} — indisponível` : radarHint,
+      hint: radarUnavailable ? `${radarHint} — ${t.map.unavailable}` : radarHint,
       icon: <CloudRain className="w-4 h-4" aria-hidden />,
       pressed: radarEnabled,
       disabled: radarUnavailable,
@@ -934,7 +941,7 @@ export default function SpotMapInteractive({
     {
       key: 'hours',
       label: hoursLabel,
-      hint: hoursUnavailable ? `${hoursHint} — indisponível` : hoursHint,
+      hint: hoursUnavailable ? `${hoursHint} — ${t.map.unavailable}` : hoursHint,
       icon: <Clock className="w-4 h-4" aria-hidden />,
       pressed: hoursOn,
       disabled: hoursUnavailable,
@@ -945,7 +952,7 @@ export default function SpotMapInteractive({
     {
       key: 'hs',
       label: hsLabel,
-      hint: hsUnavailable ? `${t.map.hsHint} — indisponível` : t.map.hsHint,
+      hint: hsUnavailable ? `${t.map.hsHint} — ${t.map.unavailable}` : t.map.hsHint,
       icon: <Activity className="w-4 h-4" aria-hidden />,
       pressed: hsEnabled,
       disabled: hsUnavailable,
@@ -956,7 +963,7 @@ export default function SpotMapInteractive({
     {
       key: 'sst',
       label: sstLabel,
-      hint: sstUnavailable ? `${t.map.sstHint} — indisponível` : t.map.sstHint,
+      hint: sstUnavailable ? `${t.map.sstHint} — ${t.map.unavailable}` : t.map.sstHint,
       icon: <Thermometer className="w-4 h-4" aria-hidden />,
       pressed: sstEnabled,
       disabled: sstUnavailable,
@@ -967,7 +974,7 @@ export default function SpotMapInteractive({
     {
       key: 'currents',
       label: currentsLabel,
-      hint: currentsUnavailable ? `${t.map.currentsHint} — indisponível` : t.map.currentsHint,
+      hint: currentsUnavailable ? `${t.map.currentsHint} — ${t.map.unavailable}` : t.map.currentsHint,
       icon: <Navigation className="w-4 h-4" aria-hidden />,
       pressed: currentsEnabled,
       disabled: currentsUnavailable,
@@ -987,7 +994,7 @@ export default function SpotMapInteractive({
     },
     {
       key: 'isobaths',
-      label: isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths,
+      label: t.map.showIsobaths,
       hint: t.map.isobathsHint,
       icon: <Waves className="w-4 h-4" aria-hidden />,
       pressed: isobathsEnabled,
@@ -997,7 +1004,7 @@ export default function SpotMapInteractive({
     },
     {
       key: 'bathymetry',
-      label: bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry,
+      label: t.map.showBathymetry,
       hint: t.map.bathymetryHint,
       icon: <Mountain className="w-4 h-4" aria-hidden />,
       pressed: bathymetryEnabled,
@@ -1007,7 +1014,7 @@ export default function SpotMapInteractive({
     },
     {
       key: 'seamarks',
-      label: seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks,
+      label: t.map.showSeamarks,
       hint: t.map.seamarksHint,
       icon: <Sailboat className="w-4 h-4" aria-hidden />,
       pressed: seamarksEnabled,
@@ -1026,15 +1033,15 @@ export default function SpotMapInteractive({
       iconClass: 'text-score-poor',
     },
   ], [
-    radarLabel, radarHint, radarUnavailable, radarEnabled, toggleRadar,
+    radarLabel, radarHint, radarUnavailable, t.map.unavailable, radarEnabled, toggleRadar,
     hoursLabel, hoursHint, hoursUnavailable, hoursOn, toggleHours,
     hsLabel, hsUnavailable, hsEnabled, toggleHs, t.map.hsHint,
     sstLabel, sstUnavailable, sstEnabled, toggleSst, t.map.sstHint,
     currentsLabel, currentsUnavailable, currentsEnabled, toggleCurrents, t.map.currentsHint,
     buoysLabel, buoysEnabled, toggleBuoys, t.map.buoysHint,
-    isobathsEnabled, toggleIsobaths, t.map.hideIsobaths, t.map.showIsobaths, t.map.isobathsHint,
-    bathymetryEnabled, toggleBathymetry, t.map.hideBathymetry, t.map.showBathymetry, t.map.bathymetryHint,
-    seamarksEnabled, toggleSeamarks, t.map.hideSeamarks, t.map.showSeamarks, t.map.seamarksHint,
+    isobathsEnabled, toggleIsobaths, t.map.showIsobaths, t.map.isobathsHint,
+    bathymetryEnabled, toggleBathymetry, t.map.showBathymetry, t.map.bathymetryHint,
+    seamarksEnabled, toggleSeamarks, t.map.showSeamarks, t.map.seamarksHint,
     coastalWarningsLabel, coastalWarningsEnabled, toggleCoastalWarnings, t.map.coastalWarningsHint,
   ]);
 
@@ -1231,18 +1238,19 @@ export default function SpotMapInteractive({
             currentsUnavailable={currentsUnavailable}
             currentsLabel={currentsLabel}
             currentsHint={t.map.currentsHint}
-            isobathsLabel={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}
+            isobathsLabel={t.map.showIsobaths}
             bathymetryEnabled={bathymetryEnabled}
-            bathymetryLabel={bathymetryEnabled ? t.map.hideBathymetry : t.map.showBathymetry}
+            bathymetryLabel={t.map.showBathymetry}
             bathymetryHint={t.map.bathymetryHint}
             seamarksEnabled={seamarksEnabled}
-            seamarksLabel={seamarksEnabled ? t.map.hideSeamarks : t.map.showSeamarks}
+            seamarksLabel={t.map.showSeamarks}
             seamarksHint={t.map.seamarksHint}
             onlyOnLabel={onlyOnLabel}
             onlyOnHint={onlyOnHint}
             windLegendHelpLabel={windLegendHelpLabel}
             coastalWarningsLabel={coastalWarningsLabel}
             layersLabel={t.map.layersMenu}
+            unavailableLabel={t.map.unavailable}
             enterFullscreen={enterFullscreen}
             exitFullscreen={exitFullscreen}
             exitLabel={exitFullscreenLabel}
@@ -1365,9 +1373,9 @@ export default function SpotMapInteractive({
                   </button>
                 )}
               </div>
-              <button type="button" onClick={toggleIsobaths} aria-label={isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths} title={t.map.isobathsHint} aria-pressed={isobathsEnabled} className="absolute top-[70px] right-3 z-[1000] inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto">
+              <button type="button" onClick={toggleIsobaths} aria-label={t.map.showIsobaths} title={t.map.isobathsHint} aria-pressed={isobathsEnabled} className="absolute top-[70px] right-3 z-[1000] inline-flex min-h-[44px] min-w-[44px] justify-center items-center gap-1.5 px-2.5 py-1.5 rounded-md text-meta-sm font-medium text-fg bg-bg-elevated/90 border border-divider shadow-card backdrop-blur-sm hover:bg-bg-elevated transition-colors pointer-events-auto">
                 <Waves className="w-3.5 h-3.5 text-data-waves" aria-hidden />
-                <span className="hidden sm:inline">{isobathsEnabled ? t.map.hideIsobaths : t.map.showIsobaths}</span>
+                <span className="hidden sm:inline">{t.map.showIsobaths}</span>
               </button>
             </>
           )}

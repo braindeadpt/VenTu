@@ -119,6 +119,7 @@ export const translationsPt = {
     legendFlat: 'Fechado', legendPoor: 'Fraco', legendFair: 'Razoável', legendGood: 'Bom', legendEpic: 'Épico',
     layerMap: 'Mapa', layerSatellite: 'Satélite',
     layersMenu: 'Camadas',
+    unavailable: 'indisponível',
     clusterLabel: '{count} spots',
     noData: 'Sem dados',
     loading: 'A carregar mapa...',

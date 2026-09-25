@@ -55,6 +55,8 @@ interface MapControlsProps {
   windLegendHelpLabel: string;
   coastalWarningsLabel: string;
   layersLabel: string;
+  /** Sufixo «indisponível» já traduzido (nunca literal pt/EN hardcoded). */
+  unavailableLabel: string;
   fullscreenLabel: string;
   exitLabel: string;
   // Handlers
@@ -152,6 +154,7 @@ export default function MapControls({
   windLegendHelpLabel,
   coastalWarningsLabel,
   layersLabel,
+  unavailableLabel,
   fullscreenLabel,
   exitLabel,
   enterFullscreen,
@@ -187,7 +190,7 @@ export default function MapControls({
           {
             key: 'hours',
             label: hoursLabel,
-            hint: hoursUnavailable ? `${hoursHint} — indisponível` : hoursHint,
+            hint: hoursUnavailable ? `${hoursHint} — ${unavailableLabel}` : hoursHint,
             icon: <Clock className="w-4 h-4" aria-hidden />,
             pressed: hoursEnabled,
             disabled: hoursUnavailable,
@@ -201,7 +204,7 @@ export default function MapControls({
           {
             key: 'hs',
             label: hsLabel,
-            hint: hsUnavailable ? `${hsHint} — indisponível` : hsHint,
+            hint: hsUnavailable ? `${hsHint} — ${unavailableLabel}` : hsHint,
             icon: <Activity className="w-4 h-4" aria-hidden />,
             pressed: hsEnabled,
             disabled: hsUnavailable,
@@ -212,7 +215,7 @@ export default function MapControls({
           {
             key: 'sst',
             label: sstLabel,
-            hint: sstUnavailable ? `${sstHint} — indisponível` : sstHint,
+            hint: sstUnavailable ? `${sstHint} — ${unavailableLabel}` : sstHint,
             icon: <Thermometer className="w-4 h-4" aria-hidden />,
             pressed: sstEnabled,
             disabled: sstUnavailable,
@@ -223,7 +226,7 @@ export default function MapControls({
           {
             key: 'currents',
             label: currentsLabel,
-            hint: currentsUnavailable ? `${currentsHint} — indisponível` : currentsHint,
+            hint: currentsUnavailable ? `${currentsHint} — ${unavailableLabel}` : currentsHint,
             icon: <Navigation className="w-4 h-4" aria-hidden />,
             pressed: currentsEnabled,
             disabled: currentsUnavailable,
@@ -354,7 +357,7 @@ export default function MapControls({
           type="button"
           onClick={toggleRadar}
           disabled={radarUnavailable}
-          title={radarUnavailable ? `${radarHint} — indisponível` : radarHint}
+          title={radarUnavailable ? `${radarHint} — ${unavailableLabel}` : radarHint}
           className={`${item} ${radarUnavailable ? itemDisabled : radarEnabled ? active.radar : ''}`}
           aria-label={radarLabel}
           aria-pressed={radarEnabled}

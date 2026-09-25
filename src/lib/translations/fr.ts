@@ -175,6 +175,7 @@ export const translationsFr = {
     layerMap: 'Carte',
     layerSatellite: 'Satellite',
     layersMenu: 'Couches',
+    unavailable: 'indisponible',
     clusterLabel: '{count} spots',
     noData: 'Pas de données',
     loading: 'Chargement de la carte...',

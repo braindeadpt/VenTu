@@ -95,7 +95,7 @@ test.describe('IPMA radar carousel', () => {
     await expect(attribs.locator('a[href="https://open-meteo.com/"]')).toBeVisible();
 
     // Desligar esconde o badge (a atribuição do mapa mantém-se).
-    await page.click('button[aria-label="Ocultar radar"]');
+    await page.click('button[aria-label="Radar IPMA"]');
     await page.clock.runFor(100);
     await expect(badge).not.toBeVisible();
     await expect(attribution).toContainText('Open-Meteo.com');
@@ -114,7 +114,7 @@ test.describe('IPMA radar carousel', () => {
     await expect(badge).toContainText('Weather data by Open-Meteo.com');
 
     // O HUD reflecte o estado ligado (toggle pressionado).
-    await expect(page.getByRole('button', { name: 'Ocultar radar' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Radar IPMA' })).toBeVisible();
   });
 
   test('anima os 12 frames com indicador de hora e progresso', async ({ page }) => {
@@ -145,7 +145,7 @@ test.describe('IPMA radar carousel', () => {
     await expect(slider).toHaveValue('1');
 
     // Desligar o radar esconde o badge.
-    await page.click('button[aria-label="Ocultar radar"]');
+    await page.click('button[aria-label="Radar IPMA"]');
     await page.clock.runFor(100);
     await expect(badge).not.toBeVisible();
   });
@@ -402,7 +402,7 @@ test.describe('IPMA radar no mapa da homepage (hero)', () => {
     await expect(badge).toContainText('00:55');
 
     // Desligar esconde o carrossel.
-    await page.click('button[aria-label="Ocultar radar"]');
+    await page.click('button[aria-label="Radar IPMA"]');
     await page.clock.runFor(100);
     await expect(badge).not.toBeVisible();
   });
@@ -638,8 +638,9 @@ test.describe('IPMA radar no mapa da homepage (hero)', () => {
     // Recarregar restaura o radar ligado (sem novo clique) — persistência.
     await page.reload({ waitUntil: 'networkidle' });
     await page.clock.runFor(500);
-    // Com o radar ligado à entrada, o botão reflecte «Ocultar radar».
-    const offBtn = page.getByRole('button', { name: 'Ocultar radar' });
+    // Com o radar ligado à entrada, o botão mantém o nome («Radar IPMA») e
+    // reflecte o estado só no aria-pressed (auditoria 2026-09-21).
+    const offBtn = page.getByRole('button', { name: 'Radar IPMA' });
     await expect(offBtn).toBeVisible({ timeout: 15_000 });
     await expect(badge).toBeVisible({ timeout: 15_000 });
 
@@ -690,7 +691,7 @@ test.describe('IPMA radar no mapa da homepage (hero)', () => {
     await expect(fullscreenLink).toHaveAttribute('href', '/pt/mapa/?radar=1');
 
     // Desligar esconde o carrossel embebido.
-    await page.click('button[aria-label="Ocultar radar"]');
+    await page.click('button[aria-label="Radar IPMA"]');
     await page.clock.runFor(100);
     await expect(badge).not.toBeVisible();
   });
@@ -726,12 +727,19 @@ test.describe('IPMA radar no HUD fullscreen com viewport móvel', () => {
     // O HUD entra colapsado no móvel (padrão de /mapa).
     await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
 
-    // Liga o radar pelo toggle dentro do HUD colapsado.
-    await page.click('button[aria-label="Radar IPMA"]');
+    // A grelha de camadas só existe com o HUD expandido — o toggle de radar
+    // vive lá. Expandir → ligar → voltar ao peek (é o lift com o HUD
+    // COLAPSADO que este teste mede).
+    const expandBtn = page.getByRole('button', { name: /Mostrar filtros|Show filters/i });
+    await expect(expandBtn).toBeVisible();
+    await expandBtn.click();
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'false');
+    // O LayerToggle do sheet não põe aria-label: o selector estável é o
+    // data-* (contrato mapToggleAttributes), não o aria-label do HUD desktop.
+    await page.locator('[data-map-radar-toggle]').first().click();
     await expect(carousel).toBeVisible({ timeout: 15_000 });
-    // Sessão A: o scrubber vive no HUD; o carrossel fica só com o badge.
-    await expect(hud.locator('[data-map-time-track="true"]')).toBeVisible();
-    await expect(carousel.locator('[data-radar-scrubber="true"]')).toHaveCount(0);
+    await page.getByRole('button', { name: /Ocultar filtros|Hide filters/i }).click();
+    await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'true');
 
     // Guarda honesta do lift: o carrossel fica erguido por cima do HUD (bottom
     // do carrossel acima do topo do HUD), não sobreposto nem interceptado.
@@ -753,11 +761,13 @@ test.describe('IPMA radar no HUD fullscreen com viewport móvel', () => {
     expect(carouselBox!.y + carouselBox!.height).toBeLessThanOrEqual(hudBox!.y + 1);
 
     // Expandir filtros (HUD fica mais alto) → o carrossel re-ergue e mantém-se
-    // acima (ResizeObserver detectou a mudança de altura).
-    const expandBtn = page.getByRole('button', { name: /Mostrar filtros|Show filters/i });
-    await expect(expandBtn).toBeVisible();
+    // acima (ResizeObserver detectou a mudança de altura). Com o HUD expandido,
+    // o scrubber vive no HUD e o carrossel fica só com o badge
+    // (RadarCarousel hideScrubber={isFullscreen}).
     await expandBtn.click();
     await expect(hud).toHaveAttribute('data-map-hud-collapsed', 'false');
+    await expect(hud.locator('[data-map-time-track="true"]')).toBeVisible();
+    await expect(carousel.locator('[data-radar-scrubber="true"]')).toHaveCount(0);
     await assertAboveHud();
 
     // O botão play/pause continua clicável (não interceptado pelo HUD), mesmo
@@ -926,7 +936,7 @@ test.describe('radar: deep link ?radar=1 vs preferência persistida', () => {
     await expect(badge).toBeVisible({ timeout: 15_000 });
     await expect(badge).toContainText('/12');
     // O HUD reflecte o estado ligado (toggle pressionado).
-    await expect(page.getByRole('button', { name: 'Ocultar radar' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Radar IPMA' })).toBeVisible();
 
     // O deep link NÃO toca na preferência persistida: continua false.
     const stored = await page.evaluate(() =>

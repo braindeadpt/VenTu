@@ -117,6 +117,7 @@ export const translationsEn = {
     legendFlat: 'Closed', legendPoor: 'Poor', legendFair: 'Fair', legendGood: 'Good', legendEpic: 'Epic',
     layerMap: 'Map', layerSatellite: 'Satellite',
     layersMenu: 'Layers',
+    unavailable: 'unavailable',
     clusterLabel: '{count} spots',
     noData: 'No data',
     loading: 'Loading map...',

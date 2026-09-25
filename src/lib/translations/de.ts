@@ -175,6 +175,7 @@ export const translationsDe = {
     layerMap: 'Karte',
     layerSatellite: 'Satellit',
     layersMenu: 'Ebenen',
+    unavailable: 'nicht verfügbar',
     clusterLabel: '{count} Spots',
     noData: 'Keine Daten',
     loading: 'Karte wird geladen...',
