@@ -508,7 +508,7 @@ Os guards vivem em `scripts/` e são invocados pelos workflows — esta tabela �
 | `validate-news-livecams.js` | ci.yml | slugs de notícias e livecams |
 | `validate-data-files.js` | ci.yml, update-data, update-news, apply-contributions | UTF-8 + JSON parseável em `public/data` |
 | `check-citation-cff.js` | ci.yml | `CITATION.cff` bem formado |
-| `check-guard-test-counts.js` | ci.yml | as 3 suites de slug-guard correm com contagens exactas |
+| `check-guard-test-counts.js` | ci.yml | as 6 suites de guarda correm com contagens exactas |
 | `check-sitemap-drift.js` | ci.yml | `public/sitemap.xml` commitado ≡ gerador |
 | `check-segment-paths.js` | ci.yml | dirs de segment-cache aninhados no `out/` |
 | `check-headers-file.js` | ci.yml, deploy.yml | directivas de segurança em `out/_headers` |
@@ -603,6 +603,16 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
   falhava. Os `schedule:` mantêm-se (o ping é aditivo, nunca substituto) e todos os monitores são idempotentes
   (estado = issue aberta / offset gravado), pelo que um tick a mais nunca duplica incidente. Guard:
   `src/lib/__tests__/keepaliveTriggers.test.ts`.
+- **Ping não duplica sondagens ao IH/IPMA (2026-09-25)**: idempotente não é o mesmo que grátis —
+  o `ih-health` sonda dois endpoints de terceiros (IH `tide_obs_nrt/items` + manifest/PNG do radar
+  IPMA) e um ping repetia esse trabalho por cima do `schedule` horário do próprio monitor e da
+  sondagem de radar do `data-cadence` (30 min). O caminho do ping passa a ser gated
+  (`scripts/ih-health-gate.js` + `scripts/lib/ihHealthGate.js`): sonda só com o `pipeline-meta.json`
+  ou o último commit de `public/data` atrasados (3 h dia / 5 h noite, os MESMOS limiares dos
+  heartbeats) ou com incidente aberto (`ih-outage`/`ipma-radar-outage` — senão a recuperação nunca
+  seria vista e a issue ficava aberta para sempre). O `schedule` e o `workflow_dispatch` continuam a
+  sondar sempre: uma outage IH/IPMA com o pipeline saudável continua a ser detectada. Estado
+  imensurável → fail-open (sonda). Guard: `scripts/lib/__tests__/ihHealthGate.test.js`.
 - **Heartbeats — label `data-stale` + ciclo de vida da issue**: ambos partilham os MESMOS
   limiares (`STALE_ALERT_HOURS_DAY=3` / `STALE_ALERT_HOURS_NIGHT=5`, em
   `scripts/lib/pipelineStaleness.js`) e a MESMA label — quem detetar a outage primeiro abre a
