@@ -9,6 +9,13 @@ import type { SpotDashboardConditions } from '@/components/spots/SpotConditionsD
 import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/types';
 import { getConfidenceLabel } from '@/lib/forecastConfidence';
 import { isObservedWaveFresh } from '@/lib/observedWave';
+import { parseEnsemble } from '@/lib/ensembleBand';
+import { getInstrumentFmt } from '@/components/spots/instruments/format';
+import { useInstrumentRows } from '@/components/spots/instruments/useInstrumentRows';
+import {
+  useSpotTimelineData,
+  useSpotTimelineIndex,
+} from '@/components/spots/timeline/useSpotTimeline';
 import {
   resolveScoreWaveSource,
   resolveScoreWaveCorrection,
@@ -117,6 +124,23 @@ export default function SpotHowWeKnow({
   const td = getTranslation(locale).spotDetail;
   const isPt = locale === 'pt';
 
+  // ── Banda ensemble da hora escolhida ─────────────────────────────────
+  // O badge de confiança diz QUANTO os modelos divergem (alta/média/baixa);
+  // a banda diz QUANTO, em metros. Junta-se ao DETALHE do badge, nunca ao
+  // rótulo (o chip tem de manter a largura). Mesma fonte e mesma hora do
+  // cartão Onda e da faixa da régua: as linhas horárias do próprio spot.
+  const rows = useInstrumentRows(spot);
+  const { hours } = useSpotTimelineData();
+  const { index } = useSpotTimelineIndex();
+  const tvv = getTranslation(locale).spotPageVerdict;
+  const ti = getTranslation(locale).spotPageInstruments;
+  const band = parseEnsemble(rows?.get(hours[index] ?? '')?.ens)?.wave ?? null;
+  const bandDetail = band
+    ? `${tvv.bandRange
+        .replace('{lo}', getInstrumentFmt(locale).f1(band.p10))
+        .replace('{hi}', getInstrumentFmt(locale).f1(band.p90))}. ${ti.ensembleCardHint}.`
+    : null;
+
   const raw = conditions as unknown as Record<string, unknown> | undefined;
   const scoreWaveSource = raw ? resolveScoreWaveSource(raw, freshnessNowMs) : undefined;
   const scoreWaveCorrection = raw ? resolveScoreWaveCorrection(raw, freshnessNowMs) : undefined;
@@ -157,6 +181,7 @@ export default function SpotHowWeKnow({
               detail={conditions.confidenceDetail}
               locale={locale}
               size="sm"
+              extraDetail={bandDetail}
             />
             {conditions.source && (
               <DataSourceBadge

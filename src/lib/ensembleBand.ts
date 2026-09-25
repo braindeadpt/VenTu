@@ -38,6 +38,20 @@ function finite(v: unknown): v is number {
   return typeof v === 'number' && Number.isFinite(v);
 }
 
+/**
+ * A família tem banda publicável? É o mesmo gate do produtor, reaplicado no
+ * cliente (a leitura pode vir de um `ens` externo): quantis finitos e membros
+ * ≥ ENSEMBLE_MIN_MEMBERS. Vive aqui — e não em cada consumidor — para o cartão
+ * Onda e a régua de 48 h não divergirem no que consideram uma banda.
+ */
+export function isPublishableBand(
+  family: EnsembleFamily | null | undefined,
+): family is EnsembleFamily {
+  if (!family) return false;
+  if (!Number.isInteger(family.n) || family.n < ENSEMBLE_MIN_MEMBERS) return false;
+  return finite(family.p10) && finite(family.p90);
+}
+
 function family(raw: readonly unknown[], base: number, countIndex: number): EnsembleFamily | null {
   const p10 = raw[base];
   const p50 = raw[base + 1];

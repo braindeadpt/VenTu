@@ -3,9 +3,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import type { Spot } from '@/types';
+import { getInstrumentFmt } from '@/components/spots/instruments/format';
 import { getTranslation } from '@/lib/i18n';
 import { spotWindows } from '@/lib/spotWindows';
 import { spotTimelineScore } from '@/lib/spotTimelineScore';
+import { parseEnsemble, type EnsembleFamily } from '@/lib/ensembleBand';
+import { SAME_BOX_PLACEHOLDER } from '@/lib/ensembleCardLine';
+import {
+  railBandMark,
+  railBandScale,
+  railBandValue,
+  type RailBandHour,
+} from '@/lib/railBand';
 import { sunTimes } from '@/lib/verdict/sunTimes';
 import { scoreBand } from '@/lib/verdict/scoreBand';
 import { getScoreRgb } from '@/lib/scoreThresholds';
@@ -34,6 +43,11 @@ const ANNOUNCE_MS = 450;
 const GOOD_THRESHOLD = 60;
 /** Gap mínimo entre rótulos do eixo, em píxeis (spec §3). */
 const AXIS_GAP_PX = 8;
+/** Altura da faixa de incerteza (px de render = unidades do viewBox). */
+const BAND_H = 18;
+/** Altura mínima, em px, da marca de uma hora na faixa — o mesmo cuidado do
+ *  `MIN_BAND_MARK` no lib, aqui em píxeis para não sumir num ecrã denso. */
+const BAND_MARK_MIN_PX = 2.5;
 /** Stagger por barra ao mudar de modalidade: 6 ms, teto de 80 ms de delay
  *  (160 ms de animação + 80 = máximo 240 ms no total — spec §7). */
 const STAGGER_MS = 6;
@@ -57,6 +71,9 @@ interface RailHourMetrics {
   wavePeriod: number;
   windSpeed: number;
   windDirection: number;
+  /** Banda da onda da hora (P10/P50/P90 + membros) — null nas horas
+   *  best_match e nos runs de noite, em que o produtor não escreve `ens`. */
+  band: EnsembleFamily | null;
 }
 
 /**
@@ -72,6 +89,9 @@ interface RailHourMetrics {
 export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps) {
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotPageVerdict;
+  // A frase da cobertura («8 em cada 10 modelos…») é a MESMA do cartão Onda —
+  // vive lá para os dois sítios não divergirem no que afirmam do intervalo.
+  const ti = getTranslation(locale).spotPageInstruments;
   const { hours, scores, nowIndex, nowScore, windowStart, windowEnd } =
     useSpotTimelineData();
   const {
@@ -198,6 +218,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
             wavePeriod: Number(r.wavePeriod) || 0,
             windSpeed: Number(r.windSpeed) || 0,
             windDirection: Number(r.windDirection) || 0,
+            band: parseEnsemble(r.ens)?.wave ?? null,
           });
         }
         setMetrics(m);
@@ -207,6 +228,22 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
       cancelled = true;
     };
   }, [spot]);
+
+  // ── Faixa de incerteza da onda por hora (P10–P90) ───────────────────
+  // Uma escala SÓ para as 48 h visíveis: sem ela, a mesma incerteza parecia
+  // maior numa hora do que noutra. As decisões (escala, marca, números) são
+  // puras e vivem em `@/lib/railBand`. A caixa não muda com a hora escolhida:
+  // a faixa e a linha de baixo desenham-se sempre (placeholder NBSP quando a
+  // hora não tem banda) — a régua nunca ganha nem perde altura ao arrastar.
+  const bandHours = useMemo<RailBandHour[]>(
+    () =>
+      winHours.map((h) => {
+        const m = metrics?.get(h);
+        return { band: m?.band ?? null, wave: m?.waveHeight ?? null };
+      }),
+    [winHours, metrics],
+  );
+  const bandScale = useMemo(() => railBandScale(bandHours), [bandHours]);
 
   // ── Tooltip que segue o cursor (só pointer:fine — spec §3) ───────────
   const [tip, setTip] = useState<{ x: number; gi: number } | null>(null);
@@ -393,9 +430,20 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
 
   const tipHour = tip ? hours[tip.gi] : undefined;
   const tipMetrics = tipHour ? metrics?.get(tipHour) : undefined;
-  const nf1 = new Intl.NumberFormat(isPt ? 'pt-PT' : 'en-GB', {
-    maximumFractionDigits: 1,
-  });
+  // Os números da régua usam o MESMO formatador dos cartões (`f1`): fixa a casa
+  // decimal — «Ondas entre 1,0 e 1,9 m», não «1 e 1,9» — e segue o locale. Um
+  // `isPt ? 'pt-PT' : 'en-GB'` local punha um PONTO decimal dentro de uma frase
+  // em espanhol, alemão e francês («Olas entre 1.2 y 2.1 m»).
+  const f1 = getInstrumentFmt(locale).f1;
+  // Banda da hora escolhida — os números em palavras, e a marca da faixa
+  // destacada na mesma passagem (as duas leem o mesmo `ens`).
+  const selWaveBand = railBandValue(selInWindow ? bandHours[selLocal] : undefined);
+  const tipBand = railBandValue({ band: tipMetrics?.band ?? null, wave: tipMetrics?.waveHeight ?? null });
+  const bandText = selWaveBand
+    ? tv.bandRange
+        .replace('{lo}', f1(selWaveBand.p10))
+        .replace('{hi}', f1(selWaveBand.p90))
+    : null;
 
   return (
     <section
@@ -410,11 +458,24 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
           <span className="text-fg-muted font-normal text-meta-sm"> · {tv.range48}</span>
         </h2>
         <div className="flex items-center gap-2">
-          {nowIndex >= 0 && !isNow && (
+          {/* Botão «Agora» — caixa RESERVADA: existe sempre que há relógio,
+              invisível enquanto a hora escolhida já é o «agora». Antes ele
+              entrava e saía do fluxo ao arrastar a régua e mudava a altura
+              desta linha em 1,7 px (medido), empurrando tudo o que está
+              abaixo — a mesma regra do hero e do cartão Onda. `disabled` +
+              `tabIndex={-1}` + `aria-hidden` enquanto escondido, para não
+              deixar um alvo invisível ao teclado nem ao leitor de ecrã. */}
+          {nowIndex >= 0 && (
             <button
               type="button"
               onClick={goNow}
-              className="inline-flex items-center min-h-[44px] px-3 -my-2 rounded-input border border-divider-strong text-meta-sm font-medium text-fg-muted hover:text-fg hover:border-fg-subtle transition-colors duration-150"
+              disabled={isNow}
+              tabIndex={isNow ? -1 : undefined}
+              aria-hidden={isNow || undefined}
+              className={cn(
+                'inline-flex items-center min-h-[44px] px-3 -my-2 rounded-input border border-divider-strong text-meta-sm font-medium text-fg-muted hover:text-fg hover:border-fg-subtle transition-colors duration-150',
+                isNow && 'invisible',
+              )}
             >
               {tv.nowLabel}
             </button>
@@ -632,7 +693,13 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
             {tipMetrics && (
               <>
                 {' · '}
-                {nf1.format(tipMetrics.waveHeight)} m · {Math.round(tipMetrics.wavePeriod)} s ·{' '}
+                {/* Com banda, o intervalo substitui o valor único: é a mesma
+                    informação que o cartão Onda mostra nessa hora. */}
+                {tipBand
+                  ? `${f1(tipBand.p10)}–${f1(tipBand.p90)} m`
+                  : `${f1(tipMetrics.waveHeight)} m`}
+                {' · '}
+                {Math.round(tipMetrics.wavePeriod)} s ·{' '}
                 {Math.round(tipMetrics.windSpeed * MS_TO_KNOTS)} kt{' '}
                 {getWindArrow(tipMetrics.windDirection)}
               </>
@@ -661,6 +728,52 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
           </span>
         ))}
       </div>
+
+      {/* Faixa de incerteza da onda por hora — P10–P90 na escala das 48 h
+          visíveis (a mesma escala para todas as horas, senão a comparação
+          mentia). Os números vivem na linha de baixo: aqui é o desenho, e o
+          `title` diz o que ele é. */}
+      <div className="relative mt-1 h-[18px]" data-rail-band="strip" title={tv.bandScale}>
+        <svg
+          viewBox={`0 0 ${n} ${BAND_H}`}
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          className="block w-full h-full"
+        >
+          {bandHours.map((hour, i) => {
+            const mark = railBandMark(hour, bandScale);
+            if (!mark) return null;
+            const selected = selInWindow && i === selLocal;
+            const inner = BAND_H - 2;
+            return (
+              <rect
+                key={`b${winHours[i]}`}
+                x={i + 0.3}
+                y={1 + mark.top * inner}
+                width={0.4}
+                height={Math.max(BAND_MARK_MIN_PX, mark.height * inner)}
+                rx={0.2}
+                fill={selected ? 'var(--verdict)' : 'currentColor'}
+                fillOpacity={selected ? 1 : 0.45}
+                className="text-fg-subtle"
+              />
+            );
+          })}
+        </svg>
+      </div>
+
+      {/* Banda da hora escolhida, em palavras — sem siglas (o detalhe técnico
+          fica em «Como sabemos», regra v3 §8). Caixa reservada: sem banda a
+          linha leva o placeholder NBSP e a régua mantém a altura. */}
+      <p
+        className="mt-1.5 flex items-baseline gap-x-2 text-meta-sm text-fg-muted"
+        data-rail-band="line"
+      >
+        <span title={bandText ? ti.ensembleCardHint : undefined}>
+          {bandText ?? SAME_BOX_PLACEHOLDER}
+        </span>
+        {bandText && <span className="sr-only">{` — ${ti.ensembleCardHint}`}</span>}
+      </p>
 
       <p className="mt-2 text-meta-sm text-fg-muted">{tv.railHint}</p>
       <p aria-live="polite" className="sr-only">

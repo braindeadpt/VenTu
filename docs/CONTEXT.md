@@ -371,7 +371,24 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   `docs/DATA-HISTORY.md`) — vive na secção §8 (`SpotModelBand`), não nos cartões de
   instrumentos (regra v3: proveniência fora dos instrumentos). As duas linhas de
   família são desenhadas sempre (com «—» quando a hora não tem banda), para a secção
-  não mudar de altura ao passar a régua. A faixa na régua de 48 h continua por fazer.
+  não mudar de altura ao passar a régua.
+- **UI (régua de 48 h + badge de confiança)**: a mesma banda chega às duas superfícies,
+  sem siglas. Na régua (`SpotTimeRail`) há uma faixa por baixo do eixo com uma marca
+  P10–P90 por hora — **uma só escala para as 48 h visíveis** (`src/lib/railBand.ts`),
+  senão a mesma incerteza parecia maior numa hora do que noutra — e uma linha em
+  palavras para a hora escolhida («Ondas entre 1,0 e 1,9 m», com «8 em cada 10 modelos
+  ficam neste intervalo» no `title`/leitor de ecrã); o tooltip passa a dar o intervalo
+  em vez do valor único nas horas com banda. No badge de confiança (§7) o intervalo
+  entra no DETALHE do chip, nunca no rótulo: o chip tem de manter a largura, senão a
+  `ProvenanceRow` reflui. Caixa fixa nas três — a faixa e a linha desenham-se sempre
+  (placeholder NBSP sem banda), e o botão «Agora» da régua ganhou caixa reservada
+  (entrava e saía do fluxo ao arrastar e mudava a altura da secção em 1,7 px). Os
+  números da régua vêm do formatador dos cartões (`getInstrumentFmt(locale).f1`), como
+  no cartão Onda e no detalhe do badge: uma casa decimal sempre («1,0», não «1») e a
+  vírgula do idioma — um `isPt ? 'pt-PT' : 'en-GB'` local escrevia «1.4 m» dentro de
+  uma frase em espanhol, alemão e francês.
+  Provas em `tests/e2e/spot-band-rail.spec.ts` (dentro do `test:e2e:core`), que mede
+  320/390/1350 px e a frase nos 4 idiomas não-pt.
 
 ## Health-check de modelos (Open-Meteo ensemble)
 

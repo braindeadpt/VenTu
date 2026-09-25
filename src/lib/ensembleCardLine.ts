@@ -15,7 +15,7 @@
  * O detalhe técnico (P10/P50/P90 por família, nº de modelos, skill por
  * horizonte) não vive aqui: vai para «Como sabemos» (regra v3 §8).
  */
-import { ENSEMBLE_MIN_MEMBERS, type EnsembleFamily } from './ensembleBand';
+import { isPublishableBand, type EnsembleFamily } from './ensembleBand';
 
 /**
  * Placeholder da linha vazia: NBSP (U+00A0), não um espaço normal. Um espaço
@@ -45,13 +45,7 @@ export function ensembleCardLine(input: {
   swellPeriodS?: number;
 }): EnsembleCardLine {
   const { band, swellHeightM, swellPeriodS } = input;
-  if (
-    band &&
-    Number.isInteger(band.n) &&
-    band.n >= ENSEMBLE_MIN_MEMBERS &&
-    Number.isFinite(band.p10) &&
-    Number.isFinite(band.p90)
-  ) {
+  if (isPublishableBand(band)) {
     return { kind: 'band', p10: band.p10, p90: band.p90, n: band.n };
   }
   if (swellHeightM !== undefined && swellPeriodS !== undefined) {

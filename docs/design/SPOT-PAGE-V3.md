@@ -38,7 +38,8 @@ Mobile (<640): nome e score na mesma linha se couber (score 64 px à direita), s
 - Janelas: a janela ≥60 mais forte fica como uma faixa por trás das barras (--verdict a 8 %), com a etiqueta por cima: «melhor: qua 13–19h · pico 16h (85)». Regras da etiqueta:
   - o pico procura-se SÓ dentro da janela visível;
   - se a janela cobrir >70 % das 48 h, a etiqueta diz «bom quase todo o período · pico qui 16h (85)».
-- Tooltip no hover (só desktop, pointer:fine): hora · score · onda m/s · vento kt dir. Segue o cursor com transform, 120 ms.
+- Tooltip no hover (só desktop, pointer:fine): hora · score · onda m/s · vento kt dir. Segue o cursor com transform, 120 ms. Nas horas com banda ensemble, a onda aparece como intervalo («1,0–1,9 m») em vez do valor único.
+- Faixa de incerteza (banda ensemble P10–P90 por hora): uma marca por hora por baixo do eixo, numa escala ÚNICA para as 48 h visíveis — normalizar hora a hora faria a mesma incerteza parecer maior numa hora do que noutra — mais uma linha em palavras para a hora escolhida («Ondas entre 1,0 e 1,9 m»). Sem siglas na régua: P10/P50/P90, membros e ME/RMSE por horizonte vivem em «Como sabemos» (§8). Caixa reservada: a faixa e a linha existem SEMPRE (placeholder NBSP quando a hora não tem banda) e o botão «Agora» mantém a caixa quando já não acção («disabled» + invisível), senão a régua mudava de altura ao arrastar. Os números vêm do formatador dos cartões (`getInstrumentFmt(locale).f1`): uma casa decimal sempre — «Ondas entre 1,0 e 1,9 m», não «1 e 1,9» — e a vírgula ou o ponto do idioma, porque um `isPt ? 'pt-PT' : 'en-GB'` local escrevia «1.4 m» dentro de uma frase em espanhol, alemão ou francês.
 - Eixo: rótulos com prevenção de colisão em PÍXEIS (mede a largura do texto, gap mínimo de 8 px); a prioridade é mudança de dia > 12h > 6h.
 - Mudança de modalidade: as barras animam scaleY com stagger de 6 ms por barra (máximo 240 ms no total).
 
@@ -87,7 +88,7 @@ Mobile: os accordions ficam como estão.
 
 ## 8. Critérios de aceitação
 - 0 erros na consola (inclui #418) em PT/EN, desktop/mobile, claro/escuro.
-- CLS ≤ 0,05 (Lighthouse, mediana de 3).
+- CLS ≤ 0,05 (Lighthouse, mediana de 3); nenhuma secção muda de altura com a hora escolhida (§1 hero, §3 régua, §4 cartão Onda).
 - Nenhum texto cortado com reticências nos nomes de spots; nenhuma sobreposição a 390 px, 768 px e 1440 px (teste E2E de colisão por bounding boxes para o eixo da régua, a barra fixa e as acções do hero).
 - Alvos ≥ 44 px fora de tabelas.
 - No máximo 8 tamanhos de letra em main (escala: 11, 13, 15, 18, 24, 32, 48/64, 104).

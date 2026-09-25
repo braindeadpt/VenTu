@@ -47,6 +47,13 @@ export interface ConfidenceBadgeProps {
   withTooltip?: boolean;
   /** `false` inside link-cards, where a button would be invalid HTML. */
   interactive?: boolean;
+  /**
+   * Detalhe extra do domínio, acrescentado AO DETALHE do chip (tooltip +
+   * popover) — p.ex. a banda ensemble da hora escolhida. Nunca entra no
+   * rótulo: o chip tem a largura do texto dele e alargá-lo reflui a
+   * `ProvenanceRow` (e com ela a secção) sem nada ter mudado para o leitor.
+   */
+  extraDetail?: string | null;
   className?: string;
 }
 
@@ -57,6 +64,7 @@ export default function ConfidenceBadge({
   size = 'md',
   withTooltip = true,
   interactive = true,
+  extraDetail,
   className,
 }: ConfidenceBadgeProps) {
   const t = getTranslation(locale).confidence;
@@ -65,7 +73,9 @@ export default function ConfidenceBadge({
   const label = getConfidenceLabel(tier, locale);
   const explain = getConfidenceExplain(tier, locale);
   const tooltip = withTooltip
-    ? `${getConfidenceTooltip(locale)} ${explain}${detail?.degraded ? t.degradedNote : ''}`
+    ? `${getConfidenceTooltip(locale)} ${explain}${detail?.degraded ? t.degradedNote : ''}${
+        extraDetail ? ` ${extraDetail}` : ''
+      }`
     : undefined;
 
   return (

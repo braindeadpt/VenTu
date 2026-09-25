@@ -42,6 +42,10 @@ export const spotPageVerdict = {
     bestTag: 'melhor',
     /** §3 — dica de interacção por baixo da régua. */
     railHint: 'Arrasta na régua ou usa as setas do teclado. Tudo o que está acima segue a hora escolhida.',
+    /** §3 — banda da hora escolhida, em palavras («Ondas entre 1,0 e 1,9 m»). */
+    bandRange: 'Ondas entre {lo} e {hi} m',
+    /** §3 — o que são os traços por baixo do eixo (title + leitor de ecrã). */
+    bandScale: 'Incerteza da onda, hora a hora — mais estreito onde os modelos concordam',
     /** §3 — palavra «score» no aria-valuetext («…, score 93, ÉPICO»). */
     scoreWord: 'score',
     /** §1 — linha de proveniência: fonte base quando tudo é previsão. */
@@ -85,6 +89,10 @@ export const spotPageVerdict = {
     pause: 'Pause',
     bestTag: 'best',
     railHint: 'Drag the rail or use the arrow keys. Everything above follows the chosen hour.',
+    /** §3 — band of the chosen hour, in words («Waves between 1.0 and 1.9 m»). */
+    bandRange: 'Waves between {lo} and {hi} m',
+    /** §3 — what the marks under the axis are (title + screen reader). */
+    bandScale: 'Wave uncertainty, hour by hour — narrower where the models agree',
     scoreWord: 'score',
     modelLabel: 'Open-Meteo model',
     waveFromBuoy: 'Wave corrected by {name} buoy',
@@ -120,6 +128,10 @@ export const spotPageVerdict = {
     pause: 'Pausar',
     bestTag: 'mejor',
     railHint: 'Arrastra la regla o usa las flechas del teclado. Todo lo de arriba sigue la hora elegida.',
+    /** §3 — banda de la hora elegida, en palabras. */
+    bandRange: 'Olas entre {lo} y {hi} m',
+    /** §3 — qué son las marcas bajo el eje (title + lector de pantalla). */
+    bandScale: 'Incertidumbre de la ola, hora a hora — más estrecho donde los modelos coinciden',
     scoreWord: 'score',
     modelLabel: 'Modelo Open-Meteo',
     waveFromBuoy: 'Ola corregida por la boya {name}',
@@ -155,6 +167,10 @@ export const spotPageVerdict = {
     pause: 'Pause',
     bestTag: 'beste',
     railHint: 'Ziehe die Skala oder nutze die Pfeiltasten. Alles oben folgt der gewählten Stunde.',
+    /** §3 — Band der gewählten Stunde, in Worten. */
+    bandRange: 'Wellen zwischen {lo} und {hi} m',
+    /** §3 — was die Marken unter der Achse sind (title + Screenreader). */
+    bandScale: 'Wellenunsicherheit, Stunde für Stunde — schmaler, wo die Modelle übereinstimmen',
     scoreWord: 'Score',
     modelLabel: 'Open-Meteo-Modell',
     waveFromBuoy: 'Welle von Boje {name} korrigiert',
@@ -190,6 +206,10 @@ export const spotPageVerdict = {
     pause: 'Pause',
     bestTag: 'meilleure',
     railHint: 'Fais glisser la règle ou utilise les flèches du clavier. Tout ce qui est au-dessus suit l’heure choisie.',
+    /** §3 — bande de l’heure choisie, en mots. */
+    bandRange: 'Vagues entre {lo} et {hi} m',
+    /** §3 — ce que sont les traits sous l’axe (title + lecteur d’écran). */
+    bandScale: 'Incertitude de la vague, heure par heure — plus étroit là où les modèles concordent',
     scoreWord: 'score',
     modelLabel: 'Modèle Open-Meteo',
     waveFromBuoy: 'Houle corrigée par la bouée {name}',
