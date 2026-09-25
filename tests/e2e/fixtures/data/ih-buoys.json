@@ -1,44 +1,5 @@
 {
   "stations": {
-    "1": {
-      "idEst": 1,
-      "name": "CSA88/1",
-      "area": "Boia Nazaré Oceânica",
-      "wmoId": 6200192,
-      "depth": 1897,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 39.5,
-      "lon": -9.633333333333331,
-      "lastSea": "2025-09-30T05:00:00",
-      "family": "fugro"
-    },
-    "2": {
-      "idEst": 2,
-      "name": "CSA88/2",
-      "area": "Boia Nazaré Costeira",
-      "wmoId": 6200199,
-      "depth": 85,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 39.550000000000004,
-      "lon": -9.200000000000001,
-      "lastSea": "2026-09-08T06:00:00",
-      "family": "fugro"
-    },
-    "3": {
-      "idEst": 3,
-      "name": "CSA89/1 ",
-      "area": "Boia Leixões Oceânica",
-      "wmoId": 6200191,
-      "depth": 1647,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 41.1333333333333,
-      "lon": -9.56666666666667,
-      "lastSea": "2025-02-12T12:00:00",
-      "family": "fugro"
-    },
     "4": {
       "idEst": 4,
       "name": "CSA92/D",
@@ -223,80 +184,6 @@
       "lastPos": "2025-08-18T16:02:24+00:00",
       "lastSea": "2025-08-18T16:02:24+00:00",
       "family": "datawell"
-    },
-    "1004": {
-      "idEst": 1004,
-      "name": "CSA87",
-      "area": "Zona Piloto - S. Pedro de Moel",
-      "depth": 59,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 39.8731683,
-      "lon": -9.09806,
-      "lastSea": "2013-01-19T06:00:00",
-      "family": "fugro"
-    },
-    "1005": {
-      "idEst": 1005,
-      "name": "CSA81",
-      "area": "Boia Faro Oceânica",
-      "wmoId": 6200200,
-      "depth": 1300,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 36.4833333333333,
-      "lon": -8.06666666666667,
-      "lastSea": "2026-05-01T04:00:00",
-      "family": "fugro"
-    },
-    "1007": {
-      "idEst": 1007,
-      "name": "Subeco",
-      "area": "Setúbal",
-      "depth": 1012,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 38.1666666666667,
-      "lon": -9.33333333333333,
-      "lastSea": "2019-10-30T10:00:00",
-      "family": "fugro"
-    },
-    "1008": {
-      "idEst": 1008,
-      "name": "CSA83",
-      "area": "Boia Sines Oceânica",
-      "wmoId": 6201081,
-      "depth": 1052,
-      "status": "inactive",
-      "nrt": "near-real-time data not available",
-      "lat": 37.8833333333333,
-      "lon": -9.450000000000001,
-      "lastSea": "2025-11-28T07:00:00",
-      "family": "fugro"
-    },
-    "1010": {
-      "idEst": 1010,
-      "name": "ZLT1",
-      "area": "ZLT1",
-      "depth": 115,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 38.3833333333333,
-      "lon": -9.06666666666667,
-      "lastSea": "2026-09-08T06:00:00",
-      "family": "fugro"
-    },
-    "1011": {
-      "idEst": 1011,
-      "name": "ZLT2",
-      "area": "ZLT2",
-      "depth": 114,
-      "status": "active",
-      "nrt": "near-real-time data available",
-      "lat": 38.35,
-      "lon": -9,
-      "lastSea": "2026-09-08T06:00:00",
-      "family": "fugro"
     }
   },
   "spotMapping": {
