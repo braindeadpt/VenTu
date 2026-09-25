@@ -23,6 +23,10 @@ on:
     # IH/radar deixam de depender da entrega do schedule do GitHub. Num ping
     # os inputs do workflow_dispatch ficam vazios, logo os URLs caem sempre
     # nos defaults de produção (as simulações continuam a ser manuais).
+    #
+    # O ping passa pelo gate (passo «Decide whether to probe»): sondar IH e
+    # IPMA a cada ping duplicava o schedule horário deste monitor e a
+    # sondagem de radar do data-cadence-alert (30 min) num sistema saudável.
     types: [ping]
 
 permissions:
@@ -40,9 +44,23 @@ jobs:
       - name: Checkout
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
 
+      # Gate do ping: no `schedule` (cadência do monitor) e no dispatch manual
+      # sonda sempre; num ping do keep-alive externo só sonda quando o
+      # pipeline está atrasado (pipeline-meta.json OU último commit de
+      # public/data > 3 h dia / 5 h noite, os MESMOS limiares dos heartbeats)
+      # ou quando há incidente aberto (senão a recuperação nunca seria vista e
+      # a issue ficava aberta para sempre). Racional em
+      # scripts/lib/ihHealthGate.js; escreve probe=true|false em GITHUB_OUTPUT.
+      - name: Decide whether to probe (stale-only on keep-alive ping)
+        id: gate
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/ih-health-gate.js
+
       # Probe o tide_obs_nrt/items e gere a issue de incidente (label ih-outage):
       # abre quando cai, comenta+fecha quando recupera (transição down→up).
       - name: Probe IH tide backend and alert on recovery
+        if: steps.gate.outputs.probe == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: bash scripts/monitor-ih-tides.sh
@@ -51,6 +69,7 @@ jobs:
       # issue de incidente (label ipma-radar-outage): abre quando degrada
       # (slots path:null / PNG 404), comenta+fecha quando recupera.
       - name: Probe IPMA radar product and alert on recovery
+        if: steps.gate.outputs.probe == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RADAR_MANIFEST_URL: ${{ inputs.radar_manifest_url || 'https://www.ipma.pt/resources.www/transf/radar/imgs-radar.json' }}

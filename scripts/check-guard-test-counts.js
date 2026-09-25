@@ -6,12 +6,14 @@
  * suite; this fails the build instead of letting a dropped guard pass
  * unnoticed.
  *
- * Two families are asserted:
+ * Three families are asserted:
  *  - URL-segment validator suites (validate-spots / validate-page-slugs /
  *    validate-news-livecams fixtures);
  *  - map teardown guards (Leaflet canvas teardown guard + the teardownMap
  *    overlay-sweep ordering), which lock in the unmount-race fixes of commit
- *    8326a7bd0 and its follow-ups.
+ *    8326a7bd0 and its follow-ups;
+ *  - the ih-health ping gate (probe only when the pipeline is stale), including
+ *    the workflow wiring (gate step + `if:` on both probe steps).
  *
  * Runs ONLY these small suites (a few seconds) through vitest's JSON
  * reporter and asserts, per file: present, zero failures, and the exact
@@ -34,6 +36,10 @@ const EXPECTED = {
   'scripts/lib/__tests__/validateNewsLivecams.test.js': 9,
   'src/components/spots/map/__tests__/leafletCanvasGuard.test.ts': 6,
   'src/components/spots/map/__tests__/mapOverlaySweep.test.ts': 6,
+  // Gate do ping do ih-health (sonda só com o pipeline atrasado) + fiação do
+  // workflow: sem o `if:` do gate nas sondagens, o ping volta a duplicar
+  // trabalho de rede num sistema saudável — e nada falharia.
+  'scripts/lib/__tests__/ihHealthGate.test.js': 16,
 };
 
 const files = Object.keys(EXPECTED);
