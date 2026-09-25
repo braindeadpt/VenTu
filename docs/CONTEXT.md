@@ -526,7 +526,7 @@ Os guards vivem em `scripts/` e são invocados pelos workflows — esta tabela �
 | `check-pipeline-staleness.js` | staleness-alert | `pipeline-meta.json` deixa de refrescar |
 | `check-data-cadence.js` | data-cadence-alert | último commit em `public/data/**` fora do limiar |
 | `check-obs-worker.js` | api-keys | worker de observações responde |
-| `ops-audit.js` | ops-audit | saúde operacional agregada (diário) |
+| `ops-audit.js` | ops-audit | saúde operacional agregada (diário): produção, workflows, endpoints, drift e entrega nominal dos crons (`lib/cronDelivery.js` — finding P1 quando um cron entrega menos de metade do nominal; conta qualquer gatilho, ping incluído) |
 
 ### Auditoria de rotas — split custo/cobertura (2026-09-10)
 

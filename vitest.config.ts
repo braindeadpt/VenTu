@@ -92,6 +92,7 @@ export default defineConfig({
       'scripts/lib/__tests__/visualFixtureShape.test.js',
       'scripts/lib/__tests__/i18nDebt.test.js',
       'scripts/lib/__tests__/ihHealthGate.test.js',
+      'scripts/lib/__tests__/cronDelivery.test.js',
     ],
   },
   resolve: {
