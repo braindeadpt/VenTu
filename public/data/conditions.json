@@ -1,13 +1,13 @@
 {
   "moledo": {
-    "waveHeight": 1.1,
-    "wavePeriod": 9.75,
+    "waveHeight": 1.12,
+    "wavePeriod": 9.8,
     "waveDirection": 301,
-    "swellHeight": 1.06,
-    "swellPeriod": 8.15,
-    "swellDirection": 301,
-    "windWaveHeight": 0,
-    "wavePowerKw": 4.578670000000001,
+    "swellHeight": 1.1,
+    "swellPeriod": 8.25,
+    "swellDirection": 302,
+    "windWaveHeight": 0.02,
+    "wavePowerKw": 4.991250000000001,
     "windSpeed": 1.3,
     "windDirection": 86,
     "windGust": 3,
@@ -18,10 +18,10 @@
     "currentSpeed": 0.15,
     "currentDir": 0,
     "secondarySwellHeight": 0.1,
-    "secondarySwellPeriod": 16.15,
-    "secondarySwellDirection": 321,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "secondarySwellPeriod": 16.45,
+    "secondarySwellDirection": 323,
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -83,7 +83,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:03:00.385Z",
+    "updatedAt": "2026-09-25T00:15:23.726Z",
     "observedWave": {
       "waveHeight": 1.26,
       "wavePeriod": 11.1,
@@ -97,10 +97,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -122,14 +122,14 @@
     }
   },
   "vila-praia-ancora": {
-    "waveHeight": 1.04,
-    "wavePeriod": 9.7,
+    "waveHeight": 1.06,
+    "wavePeriod": 9.75,
     "waveDirection": 301,
-    "swellHeight": 1.02,
-    "swellPeriod": 8.1,
-    "swellDirection": 301,
-    "windWaveHeight": 0,
-    "wavePowerKw": 4.21362,
+    "swellHeight": 1.04,
+    "swellPeriod": 8.25,
+    "swellDirection": 302,
+    "windWaveHeight": 0.02,
+    "wavePowerKw": 4.461600000000001,
     "windSpeed": 1.22,
     "windDirection": 35,
     "windGust": 5.8,
@@ -139,11 +139,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.1,
     "currentDir": 0,
-    "secondarySwellHeight": 0.1,
-    "secondarySwellPeriod": 16.2,
-    "secondarySwellDirection": 321,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -205,7 +202,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:03:12.476Z",
+    "updatedAt": "2026-09-25T00:15:24.042Z",
     "observedWave": {
       "waveHeight": 1.26,
       "wavePeriod": 11.1,
@@ -219,10 +216,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -247,11 +244,11 @@
     "waveHeight": 1.06,
     "wavePeriod": 9.75,
     "waveDirection": 301,
-    "swellHeight": 1.02,
+    "swellHeight": 1.04,
     "swellPeriod": 8.25,
-    "swellDirection": 301,
+    "swellDirection": 302,
     "windWaveHeight": 0.02,
-    "wavePowerKw": 4.29165,
+    "wavePowerKw": 4.461600000000001,
     "windSpeed": 2.51,
     "windDirection": 355,
     "windGust": 7.3,
@@ -261,11 +258,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.1,
     "currentDir": 0,
-    "secondarySwellHeight": 0.1,
-    "secondarySwellPeriod": 16.4,
-    "secondarySwellDirection": 321,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -327,7 +321,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:03:24.552Z",
+    "updatedAt": "2026-09-25T00:15:24.357Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -352,10 +346,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -388,11 +382,11 @@
     "waveHeight": 1,
     "wavePeriod": 9.75,
     "waveDirection": 300,
-    "swellHeight": 0.96,
+    "swellHeight": 0.98,
     "swellPeriod": 8.3,
     "swellDirection": 300,
     "windWaveHeight": 0,
-    "wavePowerKw": 3.82464,
+    "wavePowerKw": 3.98566,
     "windSpeed": 1.63,
     "windDirection": 349,
     "windGust": 7.3,
@@ -402,11 +396,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 315,
-    "secondarySwellHeight": 0.1,
-    "secondarySwellPeriod": 16.35,
-    "secondarySwellDirection": 320,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -468,7 +459,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:03:36.645Z",
+    "updatedAt": "2026-09-25T00:15:24.672Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -493,10 +484,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -531,7 +522,7 @@
     "waveDirection": 302,
     "swellHeight": 0.94,
     "swellPeriod": 8.35,
-    "swellDirection": 302,
+    "swellDirection": 303,
     "windWaveHeight": 0.02,
     "wavePowerKw": 3.68903,
     "windSpeed": 0.92,
@@ -543,8 +534,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 315,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -606,7 +597,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:03:48.708Z",
+    "updatedAt": "2026-09-25T00:15:24.988Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -631,10 +622,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -669,7 +660,7 @@
     "waveDirection": 300,
     "swellHeight": 0.86,
     "swellPeriod": 8.35,
-    "swellDirection": 300,
+    "swellDirection": 301,
     "windWaveHeight": 0,
     "wavePowerKw": 3.0878299999999994,
     "windSpeed": 0.92,
@@ -681,8 +672,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 315,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -744,7 +735,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:04:00.799Z",
+    "updatedAt": "2026-09-25T00:15:25.305Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -769,10 +760,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -819,8 +810,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 315,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -882,7 +873,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:04:12.870Z",
+    "updatedAt": "2026-09-25T00:15:25.618Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -907,10 +898,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -957,8 +948,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 315,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -1020,7 +1011,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:04:24.959Z",
+    "updatedAt": "2026-09-25T00:15:25.934Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -1045,10 +1036,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -1095,8 +1086,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 315,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -1158,7 +1149,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:04:37.031Z",
+    "updatedAt": "2026-09-25T00:15:26.250Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -1183,10 +1174,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -1236,8 +1227,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -1299,7 +1290,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:04:49.122Z",
+    "updatedAt": "2026-09-25T00:15:26.565Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -1324,10 +1315,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -1377,8 +1368,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -1440,7 +1431,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:05:01.187Z",
+    "updatedAt": "2026-09-25T00:15:26.879Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -1465,10 +1456,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -1518,8 +1509,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -1581,7 +1572,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:05:13.278Z",
+    "updatedAt": "2026-09-25T00:15:27.195Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -1606,10 +1597,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -1659,8 +1650,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -1722,7 +1713,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:05:25.338Z",
+    "updatedAt": "2026-09-25T00:15:27.510Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -1747,10 +1738,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -1800,8 +1791,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 3.4,
     "secondarySwellDirection": 301,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -1863,7 +1854,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:05:37.429Z",
+    "updatedAt": "2026-09-25T00:15:27.825Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -1888,10 +1879,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -1941,8 +1932,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 3.05,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.871,
-    "tideObservedAt": "2026-09-24T23:58:45Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:11:45Z",
     "tideStation": "Leixões",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -2004,7 +1995,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:05:49.503Z",
+    "updatedAt": "2026-09-25T00:15:28.140Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 340,
@@ -2031,10 +2022,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -2084,8 +2075,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 3.05,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.871,
-    "tideObservedAt": "2026-09-24T23:58:45Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:11:45Z",
     "tideStation": "Leixões",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -2147,7 +2138,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:06:01.616Z",
+    "updatedAt": "2026-09-25T00:15:28.456Z",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 0,
@@ -2172,10 +2163,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -2225,8 +2216,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 4.5,
     "secondarySwellDirection": 297,
-    "tideObservedHeight": 2.871,
-    "tideObservedAt": "2026-09-24T23:58:45Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:11:45Z",
     "tideStation": "Leixões",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -2288,16 +2279,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:06:13.685Z",
+    "updatedAt": "2026-09-25T00:15:28.772Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.1,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -2313,10 +2304,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -2366,8 +2357,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 4.5,
     "secondarySwellDirection": 297,
-    "tideObservedHeight": 2.871,
-    "tideObservedAt": "2026-09-24T23:58:45Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:11:45Z",
     "tideStation": "Leixões",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -2429,16 +2420,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:06:25.775Z",
+    "updatedAt": "2026-09-25T00:15:29.088Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 2.4,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -2454,10 +2445,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -2507,8 +2498,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 5.1,
     "secondarySwellDirection": 299,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -2570,16 +2561,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:06:37.852Z",
+    "updatedAt": "2026-09-25T00:15:29.404Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 2.3,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -2595,10 +2586,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -2648,8 +2639,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 4.2,
     "secondarySwellDirection": 296,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -2711,16 +2702,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:06:49.955Z",
+    "updatedAt": "2026-09-25T00:15:29.720Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 3,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -2736,10 +2727,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -2786,8 +2777,8 @@
     "tideLabel": "Maré a Descer",
     "currentSpeed": 0,
     "currentDir": 0,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "média",
     "confidenceDetail": {
@@ -2849,7 +2840,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:07:02.018Z",
+    "updatedAt": "2026-09-25T00:15:30.035Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -2874,10 +2865,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -2927,8 +2918,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 4.2,
     "secondarySwellDirection": 296,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -2990,16 +2981,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:07:14.158Z",
+    "updatedAt": "2026-09-25T00:15:30.351Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.4,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -3015,10 +3006,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -3068,8 +3059,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 4.2,
     "secondarySwellDirection": 296,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -3131,16 +3122,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:07:26.230Z",
+    "updatedAt": "2026-09-25T00:15:30.666Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 4.7,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -3156,10 +3147,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -3209,8 +3200,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 4.2,
     "secondarySwellDirection": 296,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -3272,16 +3263,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:07:38.366Z",
+    "updatedAt": "2026-09-25T00:15:30.981Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 5.2,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -3297,10 +3288,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -3350,8 +3341,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 9.7,
     "secondarySwellDirection": 317,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -3413,16 +3404,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:07:50.435Z",
+    "updatedAt": "2026-09-25T00:15:31.296Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 11.9,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -3438,10 +3429,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -3491,8 +3482,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 9.7,
     "secondarySwellDirection": 317,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -3554,7 +3545,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:08:02.526Z",
+    "updatedAt": "2026-09-25T00:15:31.610Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -3579,10 +3570,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -3632,8 +3623,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 9.7,
     "secondarySwellDirection": 317,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -3695,7 +3686,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:08:14.592Z",
+    "updatedAt": "2026-09-25T00:15:31.926Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -3720,10 +3711,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -3773,8 +3764,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 9.7,
     "secondarySwellDirection": 317,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -3836,7 +3827,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:08:26.720Z",
+    "updatedAt": "2026-09-25T00:15:32.240Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -3861,10 +3852,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -3914,8 +3905,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 5.1,
     "secondarySwellDirection": 295,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -3977,7 +3968,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:08:38.779Z",
+    "updatedAt": "2026-09-25T00:15:32.555Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -4002,10 +3993,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -4055,8 +4046,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 5.1,
     "secondarySwellDirection": 295,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -4118,7 +4109,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:08:50.871Z",
+    "updatedAt": "2026-09-25T00:15:32.871Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -4143,10 +4134,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -4196,8 +4187,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 5.1,
     "secondarySwellDirection": 295,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -4259,7 +4250,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:09:02.930Z",
+    "updatedAt": "2026-09-25T00:15:33.188Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -4284,10 +4275,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -4337,8 +4328,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 5.1,
     "secondarySwellDirection": 295,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -4400,7 +4391,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:09:15.023Z",
+    "updatedAt": "2026-09-25T00:15:33.502Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -4425,10 +4416,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -4478,8 +4469,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 5.1,
     "secondarySwellDirection": 295,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -4541,7 +4532,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:09:27.093Z",
+    "updatedAt": "2026-09-25T00:15:33.818Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -4566,10 +4557,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -4619,8 +4610,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 5.1,
     "secondarySwellDirection": 295,
-    "tideObservedHeight": 3.007,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.166,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "B. do Douro - Cantareira",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -4682,7 +4673,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:09:39.207Z",
+    "updatedAt": "2026-09-25T00:15:34.134Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -4707,10 +4698,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -4760,8 +4751,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 6,
     "secondarySwellDirection": 243,
-    "tideObservedHeight": 2.731,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.826,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Aveiro-B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -4823,7 +4814,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:09:51.279Z",
+    "updatedAt": "2026-09-25T00:15:34.450Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -4848,10 +4839,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -4901,8 +4892,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 6,
     "secondarySwellDirection": 243,
-    "tideObservedHeight": 2.731,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.826,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Aveiro-B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -4964,7 +4955,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:03.416Z",
+    "updatedAt": "2026-09-25T00:15:34.766Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -4989,10 +4980,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -5042,8 +5033,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 6,
     "secondarySwellDirection": 243,
-    "tideObservedHeight": 2.731,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.826,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Aveiro-B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -5105,7 +5096,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:15.476Z",
+    "updatedAt": "2026-09-25T00:15:35.081Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5130,10 +5121,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -5183,8 +5174,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 11.4,
     "secondarySwellDirection": 238,
-    "tideObservedHeight": 2.731,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.826,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Aveiro-B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -5246,7 +5237,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:27.634Z",
+    "updatedAt": "2026-09-25T00:15:35.398Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5271,10 +5262,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -5324,8 +5315,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 4.75,
     "secondarySwellDirection": 243,
-    "tideObservedHeight": 2.731,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.826,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Aveiro-B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -5387,7 +5378,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:39.704Z",
+    "updatedAt": "2026-09-25T00:15:35.713Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -5412,10 +5403,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -5465,8 +5456,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 11.4,
     "secondarySwellDirection": 238,
-    "tideObservedHeight": 2.745,
-    "tideObservedAt": "2026-09-24T23:59:14Z",
+    "tideObservedHeight": 2.85,
+    "tideObservedAt": "2026-09-25T00:11:14Z",
     "tideStation": "Aveiro - Molhe Central",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -5528,7 +5519,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:51.884Z",
+    "updatedAt": "2026-09-25T00:15:36.028Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5553,10 +5544,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -5603,8 +5594,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.1,
     "currentDir": 270,
-    "tideObservedHeight": 2.731,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.826,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Aveiro-B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -5666,7 +5657,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:52.465Z",
+    "updatedAt": "2026-09-25T00:15:36.343Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -5691,10 +5682,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -5741,8 +5732,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.07,
     "currentDir": 315,
-    "tideObservedHeight": 2.861,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Figueira da Foz - C. Comercial",
     "confidence": "média",
     "confidenceDetail": {
@@ -5804,7 +5795,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:52.769Z",
+    "updatedAt": "2026-09-25T00:15:36.658Z",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 45,
@@ -5829,10 +5820,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -5879,8 +5870,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.05,
     "currentDir": 270,
-    "tideObservedHeight": 2.861,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Figueira da Foz - C. Comercial",
     "confidence": "média",
     "confidenceDetail": {
@@ -5942,7 +5933,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:53.072Z",
+    "updatedAt": "2026-09-25T00:15:36.973Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -5967,10 +5958,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -6017,8 +6008,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.05,
     "currentDir": 270,
-    "tideObservedHeight": 2.861,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Figueira da Foz - C. Comercial",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -6080,7 +6071,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:53.373Z",
+    "updatedAt": "2026-09-25T00:15:37.290Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -6105,10 +6096,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -6155,8 +6146,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.05,
     "currentDir": 270,
-    "tideObservedHeight": 2.903,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.997,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Figueira da Foz - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -6218,7 +6209,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:53.682Z",
+    "updatedAt": "2026-09-25T00:15:37.605Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -6243,10 +6234,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -6293,8 +6284,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.05,
     "currentDir": 270,
-    "tideObservedHeight": 2.903,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.997,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Figueira da Foz - C",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -6356,7 +6347,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:53.986Z",
+    "updatedAt": "2026-09-25T00:15:37.921Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 45,
@@ -6381,10 +6372,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -6431,8 +6422,8 @@
     "tideLabel": "Maré a Descer",
     "currentSpeed": 0,
     "currentDir": 0,
-    "tideObservedHeight": 2.9,
-    "tideObservedAt": "2026-09-24T23:58:56Z",
+    "tideObservedHeight": 3.001,
+    "tideObservedAt": "2026-09-25T00:11:56Z",
     "tideStation": "Nazaré - B",
     "confidence": "média",
     "confidenceDetail": {
@@ -6494,7 +6485,7 @@
         "degraded": true
       }
     ],
-    "updatedAt": "2026-09-25T00:10:54.290Z",
+    "updatedAt": "2026-09-25T00:15:38.236Z",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 315,
@@ -6569,8 +6560,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.18,
     "currentDir": 236,
-    "tideObservedHeight": 2.9,
-    "tideObservedAt": "2026-09-24T23:58:56Z",
+    "tideObservedHeight": 3.001,
+    "tideObservedAt": "2026-09-25T00:11:56Z",
     "tideStation": "Nazaré - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -6632,7 +6623,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:54.592Z",
+    "updatedAt": "2026-09-25T00:15:38.551Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 45,
@@ -6710,8 +6701,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 2.9,
     "secondarySwellDirection": 319,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -6773,7 +6764,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:54.896Z",
+    "updatedAt": "2026-09-25T00:15:38.866Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -6850,8 +6841,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 2.9,
     "secondarySwellDirection": 319,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -6913,7 +6904,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:55.200Z",
+    "updatedAt": "2026-09-25T00:15:39.180Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -6990,8 +6981,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 8.15,
     "secondarySwellDirection": 221,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -7053,7 +7044,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:55.503Z",
+    "updatedAt": "2026-09-25T00:15:39.495Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -7130,8 +7121,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 2.9,
     "secondarySwellDirection": 319,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -7193,7 +7184,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:55.807Z",
+    "updatedAt": "2026-09-25T00:15:39.811Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -7270,8 +7261,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 8.15,
     "secondarySwellDirection": 221,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -7333,7 +7324,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:56.112Z",
+    "updatedAt": "2026-09-25T00:15:40.126Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -7410,8 +7401,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 8.15,
     "secondarySwellDirection": 221,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -7473,7 +7464,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:56.419Z",
+    "updatedAt": "2026-09-25T00:15:40.440Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -7550,8 +7541,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 4.8,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -7613,7 +7604,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:56.723Z",
+    "updatedAt": "2026-09-25T00:15:40.755Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -7690,8 +7681,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 4.8,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -7753,7 +7744,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:57.027Z",
+    "updatedAt": "2026-09-25T00:15:41.071Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -7830,8 +7821,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 11.05,
     "secondarySwellDirection": 217,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -7893,7 +7884,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:57.332Z",
+    "updatedAt": "2026-09-25T00:15:41.387Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -7971,8 +7962,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -8034,7 +8025,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:57.637Z",
+    "updatedAt": "2026-09-25T00:15:41.703Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -8112,8 +8103,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -8175,7 +8166,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:57.941Z",
+    "updatedAt": "2026-09-25T00:15:42.020Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -8253,8 +8244,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -8316,7 +8307,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:58.245Z",
+    "updatedAt": "2026-09-25T00:15:42.336Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -8394,8 +8385,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -8457,7 +8448,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:58.549Z",
+    "updatedAt": "2026-09-25T00:15:42.650Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -8535,8 +8526,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -8598,7 +8589,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:58.852Z",
+    "updatedAt": "2026-09-25T00:15:42.967Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -8676,8 +8667,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -8739,7 +8730,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:59.155Z",
+    "updatedAt": "2026-09-25T00:15:43.283Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -8817,8 +8808,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -8880,7 +8871,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:59.463Z",
+    "updatedAt": "2026-09-25T00:15:43.598Z",
     "observed": {
       "windSpeedKt": 7,
       "windDirDeg": 315,
@@ -8958,8 +8949,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 7.45,
     "secondarySwellDirection": 216,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -9021,7 +9012,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:59.766Z",
+    "updatedAt": "2026-09-25T00:15:43.913Z",
     "observed": {
       "windSpeedKt": 15,
       "windDirDeg": 45,
@@ -9099,8 +9090,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 7.45,
     "secondarySwellDirection": 216,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -9162,7 +9153,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:00.071Z",
+    "updatedAt": "2026-09-25T00:15:44.227Z",
     "observed": {
       "windSpeedKt": 15,
       "windDirDeg": 45,
@@ -9240,8 +9231,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 3.3,
     "secondarySwellDirection": 302,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -9303,7 +9294,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:00.372Z",
+    "updatedAt": "2026-09-25T00:15:44.543Z",
     "observed": {
       "windSpeedKt": 14,
       "windDirDeg": 315,
@@ -9378,8 +9369,8 @@
     "tideLabel": "Maré a Descer",
     "currentSpeed": 0,
     "currentDir": 0,
-    "tideObservedHeight": 2.986,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.099,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Base Naval de Lisboa",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -9441,7 +9432,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:00.676Z",
+    "updatedAt": "2026-09-25T00:15:44.857Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -9519,8 +9510,8 @@
     "secondarySwellHeight": 0.62,
     "secondarySwellPeriod": 5.4,
     "secondarySwellDirection": 87,
-    "tideObservedHeight": 1.749,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 1.759,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Angra do Heroísmo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -9582,7 +9573,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:00.980Z",
+    "updatedAt": "2026-09-25T00:15:45.172Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -9609,10 +9600,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 1.37,
-        "n": 573,
+        "n": 574,
         "origin": "ih",
         "mae": 1.38,
-        "rmse": 10.15,
+        "rmse": 10.14,
         "corr": 0.09,
         "meanLeadHours": 40.6,
         "buoyName": "BOND5"
@@ -9621,7 +9612,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 86.9,
       "wmoDistanceKm": null
@@ -9662,8 +9653,8 @@
     "secondarySwellHeight": 0.58,
     "secondarySwellPeriod": 5.25,
     "secondarySwellDirection": 91,
-    "tideObservedHeight": 1.749,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 1.759,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Angra do Heroísmo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -9725,7 +9716,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:01.282Z",
+    "updatedAt": "2026-09-25T00:15:45.486Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 315,
@@ -9750,10 +9741,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 1.37,
-        "n": 573,
+        "n": 574,
         "origin": "ih",
         "mae": 1.38,
-        "rmse": 10.15,
+        "rmse": 10.14,
         "corr": 0.09,
         "meanLeadHours": 40.6,
         "buoyName": "BOND5"
@@ -9762,7 +9753,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 78.2,
       "wmoDistanceKm": null
@@ -9803,8 +9794,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 6.4,
     "secondarySwellDirection": 245,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -9866,7 +9857,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:01.587Z",
+    "updatedAt": "2026-09-25T00:15:45.800Z",
     "observed": {
       "windSpeedKt": 15,
       "windDirDeg": 0,
@@ -9944,8 +9935,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 6.4,
     "secondarySwellDirection": 245,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10007,7 +9998,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:01.890Z",
+    "updatedAt": "2026-09-25T00:15:46.115Z",
     "observed": {
       "windSpeedKt": 15,
       "windDirDeg": 0,
@@ -10085,8 +10076,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 2.95,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10148,7 +10139,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:02.193Z",
+    "updatedAt": "2026-09-25T00:15:46.429Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -10226,8 +10217,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 3.1,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10289,7 +10280,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:02.497Z",
+    "updatedAt": "2026-09-25T00:15:46.743Z",
     "observed": {
       "windSpeedKt": 15,
       "windDirDeg": 0,
@@ -10367,8 +10358,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 2.95,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.986,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.099,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Base Naval de Lisboa",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10430,7 +10421,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:02.797Z",
+    "updatedAt": "2026-09-25T00:15:47.057Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -10508,8 +10499,8 @@
     "secondarySwellHeight": 0.32,
     "secondarySwellPeriod": 3.15,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.986,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.099,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Base Naval de Lisboa",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10571,7 +10562,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:03.284Z",
+    "updatedAt": "2026-09-25T00:15:47.373Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -10649,8 +10640,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 2.95,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.986,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.099,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Base Naval de Lisboa",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10712,7 +10703,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:03.589Z",
+    "updatedAt": "2026-09-25T00:15:47.688Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -10790,8 +10781,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 9.1,
     "secondarySwellDirection": 216,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10853,7 +10844,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:03.986Z",
+    "updatedAt": "2026-09-25T00:15:48.001Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -10931,8 +10922,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 3.1,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -10994,7 +10985,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:04.309Z",
+    "updatedAt": "2026-09-25T00:15:48.317Z",
     "observed": {
       "windSpeedKt": 15,
       "windDirDeg": 0,
@@ -11072,8 +11063,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 2.95,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.986,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.099,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Base Naval de Lisboa",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -11135,7 +11126,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:04.628Z",
+    "updatedAt": "2026-09-25T00:15:48.633Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -11213,8 +11204,8 @@
     "secondarySwellHeight": 0.66,
     "secondarySwellPeriod": 4.85,
     "secondarySwellDirection": 351,
-    "tideObservedHeight": 1.789,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.829,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Horta",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -11276,7 +11267,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:05.125Z",
+    "updatedAt": "2026-09-25T00:15:48.949Z",
     "observed": {
       "windSpeedKt": 15,
       "windDirDeg": 0,
@@ -11301,10 +11292,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 1.37,
-        "n": 573,
+        "n": 574,
         "origin": "ih",
         "mae": 1.38,
-        "rmse": 10.15,
+        "rmse": 10.14,
         "corr": 0.09,
         "meanLeadHours": 40.6,
         "buoyName": "BOND5"
@@ -11313,7 +11304,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 84.1,
       "wmoDistanceKm": null
@@ -11354,8 +11345,8 @@
     "secondarySwellHeight": 0.32,
     "secondarySwellPeriod": 3.15,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.998,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 3.068,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Sesimbra",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -11417,7 +11408,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:05.597Z",
+    "updatedAt": "2026-09-25T00:15:49.264Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -11495,8 +11486,8 @@
     "secondarySwellHeight": 0.32,
     "secondarySwellPeriod": 3.15,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.998,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 3.068,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Sesimbra",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -11558,7 +11549,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:06.096Z",
+    "updatedAt": "2026-09-25T00:15:49.579Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -11636,8 +11627,8 @@
     "secondarySwellHeight": 0.32,
     "secondarySwellPeriod": 3.15,
     "secondarySwellDirection": 313,
-    "tideObservedHeight": 2.998,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 3.068,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Sesimbra",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -11699,7 +11690,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:06.439Z",
+    "updatedAt": "2026-09-25T00:15:49.894Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -11777,8 +11768,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 4.35,
     "secondarySwellDirection": 299,
-    "tideObservedHeight": 2.851,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.956,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Setúbal - Tróia",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -11840,7 +11831,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:06.785Z",
+    "updatedAt": "2026-09-25T00:15:50.209Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -11918,8 +11909,8 @@
     "secondarySwellHeight": 0.32,
     "secondarySwellPeriod": 2.95,
     "secondarySwellDirection": 303,
-    "tideObservedHeight": 2.851,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.956,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Setúbal - Tróia",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -11981,7 +11972,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:07.231Z",
+    "updatedAt": "2026-09-25T00:15:50.524Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -12059,8 +12050,8 @@
     "secondarySwellHeight": 0.42,
     "secondarySwellPeriod": 3.15,
     "secondarySwellDirection": 303,
-    "tideObservedHeight": 2.851,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.956,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Setúbal - Tróia",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -12122,7 +12113,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:07.709Z",
+    "updatedAt": "2026-09-25T00:15:50.837Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -12197,8 +12188,8 @@
     "tideLabel": "Maré a Descer",
     "currentSpeed": 0,
     "currentDir": 0,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "média",
     "confidenceDetail": {
@@ -12260,7 +12251,7 @@
         "degraded": true
       }
     ],
-    "updatedAt": "2026-09-25T00:11:08.086Z",
+    "updatedAt": "2026-09-25T00:15:51.150Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 45,
@@ -12335,8 +12326,8 @@
     "tideLabel": "Maré a Descer",
     "currentSpeed": 0,
     "currentDir": 0,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "média",
     "confidenceDetail": {
@@ -12398,7 +12389,7 @@
         "degraded": true
       }
     ],
-    "updatedAt": "2026-09-25T00:11:08.586Z",
+    "updatedAt": "2026-09-25T00:15:51.465Z",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 90,
@@ -12423,10 +12414,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -12476,8 +12467,8 @@
     "secondarySwellHeight": 0.56,
     "secondarySwellPeriod": 3.45,
     "secondarySwellDirection": 309,
-    "tideObservedHeight": 3.157,
-    "tideObservedAt": "2026-09-24T23:58:16Z",
+    "tideObservedHeight": 3.24,
+    "tideObservedAt": "2026-09-25T00:11:16Z",
     "tideStation": "Sines - Posto 3",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -12539,7 +12530,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:09.075Z",
+    "updatedAt": "2026-09-25T00:15:51.779Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -12617,8 +12608,8 @@
     "secondarySwellHeight": 0.6,
     "secondarySwellPeriod": 3.7,
     "secondarySwellDirection": 312,
-    "tideObservedHeight": 3.157,
-    "tideObservedAt": "2026-09-24T23:58:16Z",
+    "tideObservedHeight": 3.24,
+    "tideObservedAt": "2026-09-25T00:11:16Z",
     "tideStation": "Sines - Posto 3",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -12680,7 +12671,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:09.663Z",
+    "updatedAt": "2026-09-25T00:15:52.094Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -12758,8 +12749,8 @@
     "secondarySwellHeight": 0.6,
     "secondarySwellPeriod": 3.7,
     "secondarySwellDirection": 312,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -12821,7 +12812,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:10.014Z",
+    "updatedAt": "2026-09-25T00:15:52.408Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -12899,8 +12890,8 @@
     "secondarySwellHeight": 0.38,
     "secondarySwellPeriod": 13.8,
     "secondarySwellDirection": 336,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -12962,7 +12953,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:10.551Z",
+    "updatedAt": "2026-09-25T00:15:52.722Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 180,
@@ -13004,8 +12995,8 @@
     "secondarySwellHeight": 0.64,
     "secondarySwellPeriod": 3.75,
     "secondarySwellDirection": 314,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -13067,7 +13058,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:11.087Z",
+    "updatedAt": "2026-09-25T00:15:53.038Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -13145,8 +13136,8 @@
     "secondarySwellHeight": 0.38,
     "secondarySwellPeriod": 11.7,
     "secondarySwellDirection": 208,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -13208,7 +13199,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:11.573Z",
+    "updatedAt": "2026-09-25T00:15:53.352Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 225,
@@ -13250,8 +13241,8 @@
     "secondarySwellHeight": 0.36,
     "secondarySwellPeriod": 14.45,
     "secondarySwellDirection": 336,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -13313,7 +13304,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:11.946Z",
+    "updatedAt": "2026-09-25T00:15:53.666Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 45,
@@ -13355,8 +13346,8 @@
     "secondarySwellHeight": 0.64,
     "secondarySwellPeriod": 3.75,
     "secondarySwellDirection": 314,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -13418,7 +13409,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:12.411Z",
+    "updatedAt": "2026-09-25T00:15:53.982Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -13496,8 +13487,8 @@
     "secondarySwellHeight": 0.38,
     "secondarySwellPeriod": 11.7,
     "secondarySwellDirection": 208,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -13559,7 +13550,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:12.795Z",
+    "updatedAt": "2026-09-25T00:15:54.296Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -13601,8 +13592,8 @@
     "secondarySwellHeight": 0.64,
     "secondarySwellPeriod": 3.8,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -13664,7 +13655,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:13.173Z",
+    "updatedAt": "2026-09-25T00:15:54.611Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -13742,8 +13733,8 @@
     "secondarySwellHeight": 0.62,
     "secondarySwellPeriod": 3.85,
     "secondarySwellDirection": 317,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "média",
     "confidenceDetail": {
@@ -13805,7 +13796,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:13.548Z",
+    "updatedAt": "2026-09-25T00:15:54.927Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 135,
@@ -13883,8 +13874,8 @@
     "secondarySwellHeight": 0.36,
     "secondarySwellPeriod": 11.55,
     "secondarySwellDirection": 187,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -13946,7 +13937,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:13.904Z",
+    "updatedAt": "2026-09-25T00:15:55.610Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 225,
@@ -13988,8 +13979,8 @@
     "secondarySwellHeight": 0.6,
     "secondarySwellPeriod": 3.9,
     "secondarySwellDirection": 319,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -14051,7 +14042,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:14.315Z",
+    "updatedAt": "2026-09-25T00:15:55.934Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -14129,8 +14120,8 @@
     "secondarySwellHeight": 0.6,
     "secondarySwellPeriod": 3.9,
     "secondarySwellDirection": 319,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -14192,7 +14183,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:14.629Z",
+    "updatedAt": "2026-09-25T00:15:56.259Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -14270,8 +14261,8 @@
     "secondarySwellHeight": 0.56,
     "secondarySwellPeriod": 3.95,
     "secondarySwellDirection": 319,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "média",
     "confidenceDetail": {
@@ -14333,7 +14324,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:15.052Z",
+    "updatedAt": "2026-09-25T00:15:56.583Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 45,
@@ -14411,8 +14402,8 @@
     "secondarySwellHeight": 0.58,
     "secondarySwellPeriod": 4,
     "secondarySwellDirection": 323,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -14474,7 +14465,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:15.391Z",
+    "updatedAt": "2026-09-25T00:15:56.907Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 45,
@@ -14552,8 +14543,8 @@
     "secondarySwellHeight": 0.58,
     "secondarySwellPeriod": 4,
     "secondarySwellDirection": 323,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -14615,7 +14606,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:15.833Z",
+    "updatedAt": "2026-09-25T00:15:57.231Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -14693,8 +14684,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 3.95,
     "secondarySwellDirection": 323,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -14756,7 +14747,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:16.364Z",
+    "updatedAt": "2026-09-25T00:15:57.555Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -14834,8 +14825,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 3.95,
     "secondarySwellDirection": 323,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -14897,7 +14888,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:16.815Z",
+    "updatedAt": "2026-09-25T00:15:57.878Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -14975,8 +14966,8 @@
     "secondarySwellHeight": 0.42,
     "secondarySwellPeriod": 4,
     "secondarySwellDirection": 322,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -15038,7 +15029,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:17.165Z",
+    "updatedAt": "2026-09-25T00:15:58.203Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -15116,8 +15107,8 @@
     "secondarySwellHeight": 0.42,
     "secondarySwellPeriod": 4,
     "secondarySwellDirection": 322,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -15179,7 +15170,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:17.523Z",
+    "updatedAt": "2026-09-25T00:15:58.527Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -15257,8 +15248,8 @@
     "secondarySwellHeight": 0.4,
     "secondarySwellPeriod": 4.4,
     "secondarySwellDirection": 128,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -15320,7 +15311,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:17.994Z",
+    "updatedAt": "2026-09-25T00:15:58.852Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -15398,8 +15389,8 @@
     "secondarySwellHeight": 0.4,
     "secondarySwellPeriod": 4.4,
     "secondarySwellDirection": 128,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -15461,7 +15452,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:18.418Z",
+    "updatedAt": "2026-09-25T00:15:59.176Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 90,
@@ -15539,8 +15530,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 7.85,
     "secondarySwellDirection": 302,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -15602,7 +15593,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:18.920Z",
+    "updatedAt": "2026-09-25T00:15:59.500Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -15680,8 +15671,8 @@
     "secondarySwellHeight": 0.54,
     "secondarySwellPeriod": 4.35,
     "secondarySwellDirection": 122,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -15743,7 +15734,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:19.383Z",
+    "updatedAt": "2026-09-25T00:15:59.825Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -15821,8 +15812,8 @@
     "secondarySwellHeight": 0.54,
     "secondarySwellPeriod": 4.35,
     "secondarySwellDirection": 122,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -15884,7 +15875,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:19.785Z",
+    "updatedAt": "2026-09-25T00:16:00.150Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -15962,8 +15953,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 4.4,
     "secondarySwellDirection": 121,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16025,7 +16016,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:20.147Z",
+    "updatedAt": "2026-09-25T00:16:00.474Z",
     "observedWave": {
       "waveHeight": 1.79,
       "wavePeriod": 10.5,
@@ -16084,8 +16075,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 10.2,
     "secondarySwellDirection": 273,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16147,7 +16138,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:20.627Z",
+    "updatedAt": "2026-09-25T00:16:00.799Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 270,
@@ -16225,8 +16216,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 6.4,
     "secondarySwellDirection": 189,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16288,7 +16279,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:21.148Z",
+    "updatedAt": "2026-09-25T00:16:01.124Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -16363,8 +16354,8 @@
     "tideLabel": "Maré Alta",
     "currentSpeed": 0.05,
     "currentDir": 180,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16426,7 +16417,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:21.713Z",
+    "updatedAt": "2026-09-25T00:16:01.449Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -16501,8 +16492,8 @@
     "tideLabel": "Maré Alta",
     "currentSpeed": 0.05,
     "currentDir": 180,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16564,7 +16555,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:22.168Z",
+    "updatedAt": "2026-09-25T00:16:01.774Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -16639,8 +16630,8 @@
     "tideLabel": "Maré Alta",
     "currentSpeed": 0.05,
     "currentDir": 180,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16702,7 +16693,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:22.655Z",
+    "updatedAt": "2026-09-25T00:16:02.098Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 0,
@@ -16780,8 +16771,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 10.2,
     "secondarySwellDirection": 273,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16843,7 +16834,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:23.159Z",
+    "updatedAt": "2026-09-25T00:16:02.424Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 270,
@@ -16921,8 +16912,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 8.95,
     "secondarySwellDirection": 304,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -16984,7 +16975,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:23.692Z",
+    "updatedAt": "2026-09-25T00:16:02.749Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -17062,8 +17053,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 8.95,
     "secondarySwellDirection": 304,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -17125,7 +17116,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:24.178Z",
+    "updatedAt": "2026-09-25T00:16:03.075Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -17203,8 +17194,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 8.95,
     "secondarySwellDirection": 304,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -17266,7 +17257,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:24.657Z",
+    "updatedAt": "2026-09-25T00:16:03.401Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -17344,8 +17335,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 7.85,
     "secondarySwellDirection": 302,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -17407,7 +17398,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:25.257Z",
+    "updatedAt": "2026-09-25T00:16:03.727Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -17485,8 +17476,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 4.4,
     "secondarySwellDirection": 121,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "média",
     "confidenceDetail": {
@@ -17548,7 +17539,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:25.838Z",
+    "updatedAt": "2026-09-25T00:16:04.052Z",
     "observedWave": {
       "waveHeight": 1.79,
       "wavePeriod": 10.5,
@@ -17607,8 +17598,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 4.4,
     "secondarySwellDirection": 121,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -17670,7 +17661,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:26.230Z",
+    "updatedAt": "2026-09-25T00:16:04.378Z",
     "observedWave": {
       "waveHeight": 1.79,
       "wavePeriod": 10.5,
@@ -17729,8 +17720,8 @@
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 9,
     "secondarySwellDirection": 279,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -17792,7 +17783,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:26.919Z",
+    "updatedAt": "2026-09-25T00:16:04.703Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 315,
@@ -17870,8 +17861,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 9.1,
     "secondarySwellDirection": 274,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -17933,7 +17924,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:27.453Z",
+    "updatedAt": "2026-09-25T00:16:05.028Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -18011,8 +18002,8 @@
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 9,
     "secondarySwellDirection": 279,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -18074,7 +18065,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:27.991Z",
+    "updatedAt": "2026-09-25T00:16:05.353Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 315,
@@ -18152,8 +18143,8 @@
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 9,
     "secondarySwellDirection": 279,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -18215,7 +18206,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:28.364Z",
+    "updatedAt": "2026-09-25T00:16:05.677Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 315,
@@ -18293,8 +18284,8 @@
     "secondarySwellHeight": 0.3,
     "secondarySwellPeriod": 9.05,
     "secondarySwellDirection": 277,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -18356,7 +18347,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:28.840Z",
+    "updatedAt": "2026-09-25T00:16:06.002Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -18434,8 +18425,8 @@
     "secondarySwellHeight": 0.28,
     "secondarySwellPeriod": 9.1,
     "secondarySwellDirection": 274,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -18497,7 +18488,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:29.297Z",
+    "updatedAt": "2026-09-25T00:16:06.328Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 270,
@@ -18572,8 +18563,8 @@
     "tideLabel": "Maré Alta",
     "currentSpeed": 0.14,
     "currentDir": 225,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -18635,7 +18626,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:29.643Z",
+    "updatedAt": "2026-09-25T00:16:06.653Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -18710,8 +18701,8 @@
     "tideLabel": "Maré Alta",
     "currentSpeed": 0.14,
     "currentDir": 225,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "média",
     "confidenceDetail": {
@@ -18773,7 +18764,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:29.981Z",
+    "updatedAt": "2026-09-25T00:16:06.977Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -18848,8 +18839,8 @@
     "tideLabel": "Maré Alta",
     "currentSpeed": 0.11,
     "currentDir": 207,
-    "tideObservedHeight": 3.101,
-    "tideObservedAt": "2026-09-24T23:55:00Z",
+    "tideObservedHeight": 3.217,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila Real de S. António",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -18911,7 +18902,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:30.324Z",
+    "updatedAt": "2026-09-25T00:16:07.303Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -18989,8 +18980,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 4.35,
     "secondarySwellDirection": 122,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19052,7 +19043,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:30.671Z",
+    "updatedAt": "2026-09-25T00:16:07.628Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -19130,8 +19121,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 4.4,
     "secondarySwellDirection": 121,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19193,7 +19184,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:31.001Z",
+    "updatedAt": "2026-09-25T00:16:07.954Z",
     "observedWave": {
       "waveHeight": 1.79,
       "wavePeriod": 10.5,
@@ -19252,8 +19243,8 @@
     "secondarySwellHeight": 0.48,
     "secondarySwellPeriod": 11.1,
     "secondarySwellDirection": 324,
-    "tideObservedHeight": 1.777,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.807,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila do Porto",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19315,7 +19306,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:31.699Z",
+    "updatedAt": "2026-09-25T00:16:15.473Z",
     "observed": {
       "windSpeedKt": 9,
       "windDirDeg": 45,
@@ -19357,8 +19348,8 @@
     "secondarySwellHeight": 0.38,
     "secondarySwellPeriod": 13.45,
     "secondarySwellDirection": 333,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19420,7 +19411,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:43.747Z",
+    "updatedAt": "2026-09-25T00:16:16.120Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -19462,8 +19453,8 @@
     "secondarySwellHeight": 0.24,
     "secondarySwellPeriod": 10.1,
     "secondarySwellDirection": 206,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19525,7 +19516,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:55.934Z",
+    "updatedAt": "2026-09-25T00:16:16.434Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 180,
@@ -19562,7 +19553,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 30,
       "wmoDistanceKm": null
@@ -19603,8 +19594,8 @@
     "secondarySwellHeight": 0.46,
     "secondarySwellPeriod": 7.7,
     "secondarySwellDirection": 14,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19666,7 +19657,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:56.510Z",
+    "updatedAt": "2026-09-25T00:16:16.748Z",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 0,
@@ -19703,7 +19694,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 11.1,
       "wmoDistanceKm": null
@@ -19744,8 +19735,8 @@
     "secondarySwellHeight": 0.5,
     "secondarySwellPeriod": 5.55,
     "secondarySwellDirection": 15,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19807,7 +19798,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:56.854Z",
+    "updatedAt": "2026-09-25T00:16:17.063Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 135,
@@ -19844,7 +19835,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 47.8,
       "wmoDistanceKm": null
@@ -19885,8 +19876,8 @@
     "secondarySwellHeight": 0.5,
     "secondarySwellPeriod": 5.55,
     "secondarySwellDirection": 15,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -19948,7 +19939,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:57.226Z",
+    "updatedAt": "2026-09-25T00:16:17.378Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 135,
@@ -19985,7 +19976,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 46.2,
       "wmoDistanceKm": null
@@ -20026,8 +20017,8 @@
     "secondarySwellHeight": 0.3,
     "secondarySwellPeriod": 9.75,
     "secondarySwellDirection": 334,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -20089,7 +20080,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:57.554Z",
+    "updatedAt": "2026-09-25T00:16:17.692Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 135,
@@ -20126,7 +20117,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 2.5,
       "wmoDistanceKm": null
@@ -20167,8 +20158,8 @@
     "secondarySwellHeight": 0.24,
     "secondarySwellPeriod": 10.1,
     "secondarySwellDirection": 206,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -20230,7 +20221,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:57.862Z",
+    "updatedAt": "2026-09-25T00:16:18.007Z",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 0,
@@ -20267,7 +20258,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 32.3,
       "wmoDistanceKm": null
@@ -20308,8 +20299,8 @@
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 9.55,
     "secondarySwellDirection": 263,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -20371,7 +20362,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:58.165Z",
+    "updatedAt": "2026-09-25T00:16:18.321Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 45,
@@ -20408,7 +20399,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 20,
       "wmoDistanceKm": null
@@ -20446,8 +20437,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.1,
     "currentDir": 270,
-    "tideObservedHeight": 2.745,
-    "tideObservedAt": "2026-09-24T23:59:14Z",
+    "tideObservedHeight": 2.85,
+    "tideObservedAt": "2026-09-25T00:11:14Z",
     "tideStation": "Aveiro - Molhe Central",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -20509,7 +20500,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:58.488Z",
+    "updatedAt": "2026-09-25T00:16:18.635Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -20534,10 +20525,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -20587,8 +20578,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 7.35,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.871,
-    "tideObservedAt": "2026-09-24T23:58:45Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:11:45Z",
     "tideStation": "Leixões",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -20650,16 +20641,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:58.818Z",
+    "updatedAt": "2026-09-25T00:16:18.949Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 15.6,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -20675,10 +20666,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -20728,8 +20719,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 11.05,
     "secondarySwellDirection": 217,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -20791,7 +20782,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:59.200Z",
+    "updatedAt": "2026-09-25T00:16:19.265Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -20869,8 +20860,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 4.5,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -20932,7 +20923,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:59.517Z",
+    "updatedAt": "2026-09-25T00:16:19.580Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -21009,8 +21000,8 @@
     "secondarySwellHeight": 0.14,
     "secondarySwellPeriod": 4.5,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -21072,7 +21063,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:11:59.839Z",
+    "updatedAt": "2026-09-25T00:16:19.894Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -21146,8 +21137,8 @@
     "tideLabel": "Maré a Subir",
     "currentSpeed": 0.18,
     "currentDir": 236,
-    "tideObservedHeight": 2.9,
-    "tideObservedAt": "2026-09-24T23:58:56Z",
+    "tideObservedHeight": 3.001,
+    "tideObservedAt": "2026-09-25T00:11:56Z",
     "tideStation": "Nazaré - B",
     "confidence": "média",
     "confidenceDetail": {
@@ -21209,7 +21200,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:00.189Z",
+    "updatedAt": "2026-09-25T00:16:20.209Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 45,
@@ -21287,8 +21278,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -21350,7 +21341,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:00.498Z",
+    "updatedAt": "2026-09-25T00:16:20.524Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -21428,8 +21419,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -21491,7 +21482,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:00.805Z",
+    "updatedAt": "2026-09-25T00:16:20.840Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -21569,8 +21560,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 2.85,
     "secondarySwellDirection": 316,
-    "tideObservedHeight": 2.878,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.981,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Lisboa - Alcântara",
     "confidence": "média",
     "confidenceDetail": {
@@ -21632,7 +21623,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:01.109Z",
+    "updatedAt": "2026-09-25T00:16:21.157Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 0,
@@ -21710,8 +21701,8 @@
     "secondarySwellHeight": 0.22,
     "secondarySwellPeriod": 3.65,
     "secondarySwellDirection": 300,
-    "tideObservedHeight": 2.998,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 3.068,
+    "tideObservedAt": "2026-09-25T00:12:00Z",
     "tideStation": "Sesimbra",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -21773,7 +21764,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:01.432Z",
+    "updatedAt": "2026-09-25T00:16:21.470Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 0,
@@ -21851,8 +21842,8 @@
     "secondarySwellHeight": 0.56,
     "secondarySwellPeriod": 3.45,
     "secondarySwellDirection": 309,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -21914,7 +21905,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:01.737Z",
+    "updatedAt": "2026-09-25T00:16:21.786Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -21992,8 +21983,8 @@
     "secondarySwellHeight": 0.56,
     "secondarySwellPeriod": 3.6,
     "secondarySwellDirection": 309,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -22055,7 +22046,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:02.060Z",
+    "updatedAt": "2026-09-25T00:16:22.100Z",
     "observed": {
       "windSpeedKt": 6,
       "windDirDeg": 0,
@@ -22133,8 +22124,8 @@
     "secondarySwellHeight": 0.64,
     "secondarySwellPeriod": 3.75,
     "secondarySwellDirection": 314,
-    "tideObservedHeight": 3.135,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.229,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Sines - Terminal XXI",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -22196,7 +22187,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:02.369Z",
+    "updatedAt": "2026-09-25T00:16:22.415Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -22274,8 +22265,8 @@
     "secondarySwellHeight": 0.34,
     "secondarySwellPeriod": 9,
     "secondarySwellDirection": 279,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -22337,7 +22328,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:02.690Z",
+    "updatedAt": "2026-09-25T00:16:22.730Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 315,
@@ -22415,8 +22406,8 @@
     "secondarySwellHeight": 0.26,
     "secondarySwellPeriod": 8.75,
     "secondarySwellDirection": 276,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -22478,7 +22469,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:03.258Z",
+    "updatedAt": "2026-09-25T00:16:23.045Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -22555,8 +22546,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 8.95,
     "secondarySwellDirection": 304,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -22618,7 +22609,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:03.652Z",
+    "updatedAt": "2026-09-25T00:16:23.359Z",
     "observed": {
       "windSpeedKt": 1,
       "windDirDeg": 135,
@@ -22696,8 +22687,8 @@
     "secondarySwellHeight": 0.12,
     "secondarySwellPeriod": 11.75,
     "secondarySwellDirection": 222,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -22759,7 +22750,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:04.031Z",
+    "updatedAt": "2026-09-25T00:16:23.674Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 270,
@@ -22837,8 +22828,8 @@
     "secondarySwellHeight": 0.12,
     "secondarySwellPeriod": 11.75,
     "secondarySwellDirection": 222,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -22900,7 +22891,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:04.492Z",
+    "updatedAt": "2026-09-25T00:16:23.990Z",
     "observed": {
       "windSpeedKt": 11,
       "windDirDeg": 0,
@@ -22978,8 +22969,8 @@
     "secondarySwellHeight": 0.52,
     "secondarySwellPeriod": 4.4,
     "secondarySwellDirection": 121,
-    "tideObservedHeight": 3.093,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.165,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Barra de Faro-Olhão",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -23041,7 +23032,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:04.932Z",
+    "updatedAt": "2026-09-25T00:16:24.305Z",
     "observedWave": {
       "waveHeight": 1.79,
       "wavePeriod": 10.5,
@@ -23100,8 +23091,8 @@
     "secondarySwellHeight": 0.3,
     "secondarySwellPeriod": 9.75,
     "secondarySwellDirection": 334,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -23163,7 +23154,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:05.423Z",
+    "updatedAt": "2026-09-25T00:16:24.620Z",
     "observed": {
       "windSpeedKt": 5,
       "windDirDeg": 0,
@@ -23200,7 +23191,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 4.1,
       "wmoDistanceKm": null
@@ -23241,8 +23232,8 @@
     "secondarySwellHeight": 0.5,
     "secondarySwellPeriod": 5.55,
     "secondarySwellDirection": 15,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -23304,7 +23295,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:05.803Z",
+    "updatedAt": "2026-09-25T00:16:24.935Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 40,
@@ -23343,7 +23334,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 37.1,
       "wmoDistanceKm": null
@@ -23384,8 +23375,8 @@
     "secondarySwellHeight": 0.56,
     "secondarySwellPeriod": 5.3,
     "secondarySwellDirection": 15,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -23447,7 +23438,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:06.207Z",
+    "updatedAt": "2026-09-25T00:16:25.249Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 225,
@@ -23484,7 +23475,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 51.7,
       "wmoDistanceKm": null
@@ -23525,8 +23516,8 @@
     "secondarySwellHeight": 0.3,
     "secondarySwellPeriod": 8.6,
     "secondarySwellDirection": 6,
-    "tideObservedHeight": 2.53,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 2.557,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Funchal",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -23588,7 +23579,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:06.523Z",
+    "updatedAt": "2026-09-25T00:16:25.563Z",
     "observed": {
       "windSpeedKt": 0,
       "windDirDeg": 0,
@@ -23625,7 +23616,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.7,
+      "ihAgeHours": 1.8,
       "wmoAgeHours": null,
       "ihDistanceKm": 38.3,
       "wmoDistanceKm": null
@@ -23666,8 +23657,8 @@
     "secondarySwellHeight": 0.38,
     "secondarySwellPeriod": 11.7,
     "secondarySwellDirection": 208,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -23729,7 +23720,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:06.876Z",
+    "updatedAt": "2026-09-25T00:16:25.878Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 225,
@@ -23771,8 +23762,8 @@
     "secondarySwellHeight": 0.3,
     "secondarySwellPeriod": 11.65,
     "secondarySwellDirection": 186,
-    "tideObservedHeight": 1.648,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.72,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Ponta Delgada - B",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -23834,7 +23825,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:07.193Z",
+    "updatedAt": "2026-09-25T00:16:26.193Z",
     "observed": {
       "windSpeedKt": 3,
       "windDirDeg": 90,
@@ -23876,8 +23867,8 @@
     "secondarySwellHeight": 0.42,
     "secondarySwellPeriod": 11.05,
     "secondarySwellDirection": 317,
-    "tideObservedHeight": 1.777,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.807,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Vila do Porto",
     "confidence": "média",
     "confidenceDetail": {
@@ -23939,7 +23930,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:07.546Z",
+    "updatedAt": "2026-09-25T00:16:26.509Z",
     "observed": {
       "windSpeedKt": 9,
       "windDirDeg": 45,
@@ -23981,8 +23972,8 @@
     "secondarySwellHeight": 0.62,
     "secondarySwellPeriod": 5.4,
     "secondarySwellDirection": 87,
-    "tideObservedHeight": 1.749,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 1.759,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Angra do Heroísmo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -24044,7 +24035,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:08.010Z",
+    "updatedAt": "2026-09-25T00:16:26.824Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 315,
@@ -24069,10 +24060,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 1.37,
-        "n": 573,
+        "n": 574,
         "origin": "ih",
         "mae": 1.38,
-        "rmse": 10.15,
+        "rmse": 10.14,
         "corr": 0.09,
         "meanLeadHours": 40.6,
         "buoyName": "BOND5"
@@ -24081,7 +24072,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 90.3,
       "wmoDistanceKm": null
@@ -24122,8 +24113,8 @@
     "secondarySwellHeight": 0.48,
     "secondarySwellPeriod": 6.5,
     "secondarySwellDirection": 93,
-    "tideObservedHeight": 1.789,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.829,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Horta",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -24185,7 +24176,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:08.369Z",
+    "updatedAt": "2026-09-25T00:16:27.595Z",
     "observed": {
       "windSpeedKt": 12,
       "windDirDeg": 45,
@@ -24210,10 +24201,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 1.37,
-        "n": 573,
+        "n": 574,
         "origin": "ih",
         "mae": 1.38,
-        "rmse": 10.15,
+        "rmse": 10.14,
         "corr": 0.09,
         "meanLeadHours": 40.6,
         "buoyName": "BOND5"
@@ -24222,7 +24213,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 67.5,
       "wmoDistanceKm": null
@@ -24263,8 +24254,8 @@
     "secondarySwellHeight": 0.36,
     "secondarySwellPeriod": 5.2,
     "secondarySwellDirection": 97,
-    "tideObservedHeight": 1.789,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 1.829,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Horta",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -24326,7 +24317,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:08.675Z",
+    "updatedAt": "2026-09-25T00:16:27.911Z",
     "observed": {
       "windSpeedKt": 4,
       "windDirDeg": 0,
@@ -24351,10 +24342,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 1.37,
-        "n": 573,
+        "n": 574,
         "origin": "ih",
         "mae": 1.38,
-        "rmse": 10.15,
+        "rmse": 10.14,
         "corr": 0.09,
         "meanLeadHours": 40.6,
         "buoyName": "BOND5"
@@ -24363,7 +24354,7 @@
     "observedWaveMeta": {
       "winner": "ih",
       "reason": "ih-only",
-      "ihAgeHours": 1.4,
+      "ihAgeHours": 1.5,
       "wmoAgeHours": null,
       "ihDistanceKm": 49.7,
       "wmoDistanceKm": null
@@ -24404,8 +24395,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -24467,7 +24458,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:09.031Z",
+    "updatedAt": "2026-09-25T00:16:28.225Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -24492,10 +24483,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -24545,8 +24536,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -24608,7 +24599,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:09.342Z",
+    "updatedAt": "2026-09-25T00:16:28.540Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -24633,10 +24624,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -24686,8 +24677,8 @@
     "secondarySwellHeight": 0.18,
     "secondarySwellPeriod": 7.35,
     "secondarySwellDirection": 292,
-    "tideObservedHeight": 2.871,
-    "tideObservedAt": "2026-09-24T23:58:45Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:11:45Z",
     "tideStation": "Leixões",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -24749,7 +24740,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:09.651Z",
+    "updatedAt": "2026-09-25T00:16:28.857Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 340,
@@ -24776,10 +24767,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -24829,8 +24820,8 @@
     "secondarySwellHeight": 0.2,
     "secondarySwellPeriod": 4.5,
     "secondarySwellDirection": 297,
-    "tideObservedHeight": 2.871,
-    "tideObservedAt": "2026-09-24T23:58:45Z",
+    "tideObservedHeight": 2.976,
+    "tideObservedAt": "2026-09-25T00:11:45Z",
     "tideStation": "Leixões",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -24892,16 +24883,16 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:12:09.957Z",
+    "updatedAt": "2026-09-25T00:16:29.173Z",
     "observed": {
-      "windSpeedKt": 0,
-      "windDirDeg": 337,
+      "windSpeedKt": 1,
+      "windDirDeg": 336,
       "windCardinal": "NW",
       "windCardinalEn": "NW",
-      "tempC": 17.7,
+      "tempC": 17.8,
       "stationName": "TAP Teste 3",
       "distanceKm": 6.3,
-      "observedAt": "2026-09-25T00:12:13.000Z",
+      "observedAt": "2026-09-25T00:16:33.000Z",
       "source": "ecowitt"
     },
     "observedWave": {
@@ -24917,10 +24908,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -24970,8 +24961,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -25033,7 +25024,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:05:01.187Z",
+    "updatedAt": "2026-09-25T00:15:26.879Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -25058,10 +25049,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -25103,8 +25094,8 @@
     "secondarySwellHeight": 0.16,
     "secondarySwellPeriod": 4.9,
     "secondarySwellDirection": 283,
-    "tideObservedHeight": 2.853,
-    "tideObservedAt": "2026-09-24T23:59:00Z",
+    "tideObservedHeight": 2.935,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Viana do Castelo",
     "confidence": "baixa",
     "confidenceDetail": {
@@ -25166,7 +25157,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:05:01.187Z",
+    "updatedAt": "2026-09-25T00:15:26.879Z",
     "observed": {
       "windSpeedKt": 2,
       "windDirDeg": 90,
@@ -25191,10 +25182,10 @@
       "source": "ih-buoy",
       "skill": {
         "me": 0.89,
-        "n": 508,
+        "n": 509,
         "origin": "ih",
         "mae": 0.9,
-        "rmse": 7.62,
+        "rmse": 7.61,
         "corr": 0.01,
         "meanLeadHours": 41.7,
         "buoyName": "CSA92/D"
@@ -25236,8 +25227,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 8.15,
     "secondarySwellDirection": 221,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -25299,7 +25290,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:55.503Z",
+    "updatedAt": "2026-09-25T00:15:39.495Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
@@ -25368,8 +25359,8 @@
     "secondarySwellHeight": 0.1,
     "secondarySwellPeriod": 8.15,
     "secondarySwellDirection": 221,
-    "tideObservedHeight": 2.992,
-    "tideObservedAt": "2026-09-25T00:00:00Z",
+    "tideObservedHeight": 3.079,
+    "tideObservedAt": "2026-09-25T00:13:00Z",
     "tideStation": "Peniche - C",
     "confidence": "média",
     "confidenceDetail": {
@@ -25431,7 +25422,7 @@
         "degraded": false
       }
     ],
-    "updatedAt": "2026-09-25T00:10:55.503Z",
+    "updatedAt": "2026-09-25T00:15:39.495Z",
     "observed": {
       "windSpeedKt": 8,
       "windDirDeg": 0,
