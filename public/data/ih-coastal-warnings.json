@@ -7357,6 +7357,21 @@
       "radiusKm": 25,
       "eventAt": "2026-09-10T00:00:00.000Z",
       "polygons": []
+    },
+    {
+      "id": 2018667,
+      "ref": "ANAV NR 2161/26",
+      "category": "Animais Marinhos - Interação",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=1d750b7e-0464-45b2-966c-d5f64730e1c4",
+      "source": "ih",
+      "collection": "orca_anavnet_point",
+      "center": [
+        -9.266833,
+        38.363333
+      ],
+      "radiusKm": 25,
+      "eventAt": "2026-09-25T00:00:00.000Z",
+      "polygons": []
     }
   ],
   "coverage": {
@@ -7596,7 +7611,8 @@
     "fonte-telha": [
       1000782,
       2017839,
-      2018289
+      2018289,
+      2018667
     ],
     "ponta-dos-corvos": [
       2018289
@@ -7621,19 +7637,22 @@
       2017839,
       2017849,
       2018177,
-      2018289
+      2018289,
+      2018667
     ],
     "foil-lagoa-albufeira": [
       2017839,
       2017849,
       2018177,
-      2018289
+      2018289,
+      2018667
     ],
     "praia-lagoa-albufeira": [
       2017839,
       2017849,
       2018177,
-      2018289
+      2018289,
+      2018667
     ],
     "troia": [
       1000786,
@@ -7910,7 +7929,8 @@
       2017839,
       2017849,
       2018177,
-      2018289
+      2018289,
+      2018667
     ],
     "garrão": [
       1000816,
@@ -7990,7 +8010,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-25T07:49:27.351Z",
+  "fetchedAt": "2026-09-25T10:36:18.923Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
