@@ -330,6 +330,36 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     ).toHaveAttribute('aria-pressed', 'false');
     await expect(shell).toHaveAttribute('data-map-only-on', 'false');
   });
+
+  test('half: o chip do cluster em «Ver também» declara o nome = modo', async ({ page }) => {
+    await openMapa(page);
+    const sheet = page.locator('[data-explore-sheet]');
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek');
+    await page.locator('[data-sheet-grabber]').click();
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'half');
+
+    // O chip dos extras só existe no half (o peek tem o seu) — escopo no
+    // [data-sheet-half] para não apanhar a cópia fantasma do cross-fade.
+    const half = page.locator('[data-sheet-half]');
+    const chip = half.getByRole('button', { name: CLUSTER_TOGGLE_NAME });
+    await expect(chip).toBeVisible({ timeout: 20_000 });
+
+    // Nome DECLARADO (aria-label = o MODO) e não herdado do texto do chip:
+    // era o único controlo do mapa sem nome próprio no DOM.
+    await expect(chip).toHaveAttribute('aria-label', CLUSTER_TOGGLE_NAME);
+    // Mobile arranca agrupado; o estado vive no aria-pressed, não no nome.
+    await expect(chip).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.locator('[data-map-cluster]').first()).toHaveAttribute('data-map-cluster', 'true');
+
+    // Desagrupar: mesmo nome, só o aria-pressed (e o espelho do shell) mudam.
+    await chip.click();
+    const off = half.getByRole('button', { name: CLUSTER_TOGGLE_NAME });
+    await expect(off).toHaveAttribute('aria-pressed', 'false', { timeout: 15_000 });
+    await expect(off).toHaveAttribute('aria-label', CLUSTER_TOGGLE_NAME);
+    await expect(page.locator('[data-map-cluster]').first()).toHaveAttribute('data-map-cluster', 'false', {
+      timeout: 15_000,
+    });
+  });
 });
 
 test.describe('Lista sincronizada do /mapa — painel desktop', () => {

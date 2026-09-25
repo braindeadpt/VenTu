@@ -48,7 +48,9 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
    *  isóbatas, batimetria, sinalização, avisos) — MapLayersMenuItem da HUD. */
   layers: MapLayersMenuItem[];
   /** Primários do «Ver também»: agrupar spots, vento, legenda do vento —
-   *  sempre com rótulo (o audit C4 proíbe strips só-ícone). O basemap
+   *  sempre com rótulo (o audit C4 proíbe strips só-ícone). Cada chip declara
+   *  o nome acessível (`aria-label = label`), tal como o chip do peek: o mesmo
+   *  controlo noutra superfície não pode ficar sem nome declarado. O basemap
    *  (mapa/satélite) é o radiogroup `MapBasemapRadio` mesmo acima e a
    *  saída do fullscreen vive no grabber (sempre visível). */
   extras: SheetToggleItem[];
@@ -302,6 +304,12 @@ export default function MapExploreSheet({
   const bestTok = best ? getScoreTokens(best.score) : null;
   const sportLabel = sports.find((s) => s.id === selectedSport)?.label ?? sports[0]?.label;
 
+  // O nome acessível é declarado e igual ao rótulo visível — nunca herdado do
+  // texto do próprio chip. É a mesma regra do chip do peek (`clusterItem`) e
+  // das camadas do HUD: o nome é o MODO e não muda com o estado. Sem isto, o
+  // chip do cluster em «Ver também» era o único do mapa cujo nome dependia do
+  // que estava escrito lá dentro (bastava um ícone deixar de ser `aria-hidden`
+  // ou juntar-se texto ao rótulo para o nome mudar sem ninguém dar por isso).
   const toggleChip = (item: SheetToggleItem) => (
     <button
       key={item.key}
@@ -309,6 +317,7 @@ export default function MapExploreSheet({
       onClick={item.onToggle}
       disabled={item.disabled}
       aria-pressed={item.pressed}
+      aria-label={item.label}
       title={item.hint}
       {...(item.toggleAttr ? { [item.toggleAttr]: true } : {})}
       className={cn(
