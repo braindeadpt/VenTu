@@ -358,8 +358,20 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   dos endpoints multi-modelo não pode bloquear o push de dados frescos. Os testes de
   `ensembleQuantiles` incluem um guarda de ligação ao pipeline (falha se
   `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).
-- **Ainda não há UI**: a banda é publicada nos ficheiros; a faixa na régua de 48 h e
-  no badge de confiança é o passo seguinte.
+- **UI (cartão Onda)**: a banda é UMA frase humana na linha secundária que o cartão já
+  tem — «entre 1,0 e 1,9 m», com «8 em cada 10 modelos ficam neste intervalo» no
+  `title`/leitor de ecrã —, nunca uma linha a mais. O slot (banda → mar de fundo →
+  placeholder NBSP) decide-se em `src/lib/ensembleCardLine.ts` e desenha sempre uma
+  linha: a altura do cartão e da secção de instrumentos é a mesma com e sem banda, com
+  a régua parada e entre o HTML de partida e o relógio vivo. É a correcção da auditoria
+  de 25/09 ao `f2508ce66`, que acrescentava uma linha só nas horas multi-modelo e fazia
+  a página saltar ao mexer na régua (mesma classe do CLS do hero, `a737f4184`).
+- **UI («Como sabemos»)**: o detalhe técnico — P10/P50/P90 por família, nº de modelos e
+  o erro do modelo por horizonte de lead (`byLead` do forecast-skill, ver
+  `docs/DATA-HISTORY.md`) — vive na secção §8 (`SpotModelBand`), não nos cartões de
+  instrumentos (regra v3: proveniência fora dos instrumentos). As duas linhas de
+  família são desenhadas sempre (com «—» quando a hora não tem banda), para a secção
+  não mudar de altura ao passar a régua. A faixa na régua de 48 h continua por fazer.
 
 ## Health-check de modelos (Open-Meteo ensemble)
 
