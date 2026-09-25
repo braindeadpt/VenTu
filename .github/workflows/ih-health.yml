@@ -16,6 +16,14 @@ on:
         required: false
         default: ""
         type: string
+  repository_dispatch:
+    # Mesmo keep-alive externo do update-data (docs/EXTERNAL-KEEPALIVE.md):
+    # um único POST repository_dispatch(ping) acorda TODOS os workflows que
+    # declaram este tipo — pipeline e monitores —, por isso as sondagens
+    # IH/radar deixam de depender da entrega do schedule do GitHub. Num ping
+    # os inputs do workflow_dispatch ficam vazios, logo os URLs caem sempre
+    # nos defaults de produção (as simulações continuam a ser manuais).
+    types: [ping]
 
 permissions:
   issues: write

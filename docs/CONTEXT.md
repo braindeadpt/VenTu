@@ -539,7 +539,7 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
 | Camada | Mecanismo | O que mede | Schedule |
 |---|---|---|---|
 | **Crons** | `schedule` no `update-data.yml` | — | :17/:47 (GitHub) |
-| **Keep-alive** | cron-job.org → `repository_dispatch` no `update-data.yml` (`VENTU_KEEPALIVE=1`) | — | :05/:35 (externo) |
+| **Keep-alive** | cron-job.org → `repository_dispatch(ping)` em TODOS os workflows que o declaram — pipeline + os 4 monitores | — | :05/:35 (externo) |
 | **Heartbeat por meta** | `staleness-alert.yml` → `scripts/check-pipeline-staleness.js` | idade dos timestamps de `pipeline-meta.json` | :07/:37 |
 | **Heartbeat por commit** | `data-cadence-alert.yml` → `scripts/check-data-cadence.js` | committer date do último commit a tocar `public/data/**` | :12/:42 |
 
@@ -555,6 +555,14 @@ perdido pelo GitHub, push a falhar depois da geração, ou API em baixo:
   de 3 h mesmo sem cron externo configurado (gate idempotente: fresco → `skip`). Cron externo
   continua preferível (ressuscita aos 2,5 h vs 3 h do fallback), mas a cadência já não *depende*
   dele.
+- **Keep-alive partilhado (2026-09-25)**: um `repository_dispatch` é entregue a TODOS os workflows que
+  declaram o tipo (o `event_type` não é encaminhado para um só). Por isso `staleness-alert`, `data-cadence`,
+  `ih-health` e `telegram-poll` declaram o MESMO `types: [ping]` do `update-data` — o mesmo cron externo
+  acorda o pipeline e os vigilantes, sem job externo adicional. Motivo: a entrega nominal do `schedule` do
+  GitHub caiu para 2–23% nesses crons (21–24/09), ou seja, falhava o vigilante exactamente quando o scheduler
+  falhava. Os `schedule:` mantêm-se (o ping é aditivo, nunca substituto) e todos os monitores são idempotentes
+  (estado = issue aberta / offset gravado), pelo que um tick a mais nunca duplica incidente. Guard:
+  `src/lib/__tests__/keepaliveTriggers.test.ts`.
 - **Heartbeats — label `data-stale` + ciclo de vida da issue**: ambos partilham os MESMOS
   limiares (`STALE_ALERT_HOURS_DAY=3` / `STALE_ALERT_HOURS_NIGHT=5`, em
   `scripts/lib/pipelineStaleness.js`) e a MESMA label — quem detetar a outage primeiro abre a
