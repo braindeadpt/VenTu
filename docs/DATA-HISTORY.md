@@ -17,6 +17,15 @@
 **Orçamento actual (CI):** 300 ficheiros / 32 MB — folga para o crescimento
 normal, falha antes de se tornar um problema de histórico.
 
+> 2026-09-25: a banda ensemble P10/P50/P90 passa a ser gravada em cada linha
+> horária (`ens`, ver CONTEXT.md) — medido no payload real de 185 × 168 h:
+> `forecasts.json` 9,73 → **10,81 MB** e a árvore `public/data/` ~+1,1 MB. Não
+> muda a contagem de ficheiros (mesmos 185 por-spot), só o peso: a folga do
+> orçamento desce de ~6 MB para ~5 MB, e o orçamento de 12 MB de
+> `forecasts.json` em `check-payload-budgets.js` fica a 10% do limite — razão
+> pela qual o campo é o array compacto de 8 números e não seis chaves nominais
+> (essas custariam +1,93 MB).
+
 > 2026-09-23: o guard disparou a **302 ficheiros** — 72 frames de radar
 > acumulados (o manifesto só usa 12). Causa: uma corrida que falhava a meio do
 > fetch deixava os PNG escritos sem correr o prune (que só existia no fim).

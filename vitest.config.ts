@@ -18,6 +18,7 @@ export default defineConfig({
       'scripts/lib/__tests__/fetchRss.test.js',
       'scripts/lib/__tests__/fetchIHTides.test.js',
       'scripts/lib/__tests__/forecastConfidence.test.js',
+      'scripts/lib/__tests__/ensembleQuantiles.test.js',
       'scripts/lib/__tests__/ihBuoys.test.js',
       'scripts/lib/__tests__/ihApiKeyTest.test.js',
       'scripts/lib/__tests__/buoyBias.test.js',

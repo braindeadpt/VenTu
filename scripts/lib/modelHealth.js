@@ -7,9 +7,15 @@
  * the culprit). This module counts non-null values per configured model across
  * every multimodel response of a run and classifies each model:
  *
- *   - ok    → at least one non-null value was returned
- *   - dead  → zero non-null values despite the API returning the key
+ *   - ok    → at least one usable (non-null, non-zero) value was returned
+ *   - dead  → no usable value despite the API returning the key
  *             (or the key being absent entirely — same symptom)
+ *
+ * Zero-filled series count as dead: Open-Meteo fills an absent model run with
+ * 0 instead of null (measured 2026-09-25: ncep_gfswave025 returned 0 for all
+ * 192 hours at Nazaré while the other three models agreed on 1,1–3,2 m). A
+ * 0,00 m series is not calm — it is no data, and it used to look healthy here
+ * while silently pinning the spot's confidence to "baixa".
  *
  * The report is written to public/data/model-health.json and a Telegram
  * notification (OPS_TELEGRAM_CHAT_ID, opt-in) fires only when a model
@@ -20,6 +26,7 @@
 const fs = require('fs');
 const path = require('path');
 const { WAVE_MODELS, WIND_MODELS } = require('./forecastConfidence');
+const { isDeadSeries } = require('./ensembleQuantiles');
 
 /** Model families → the hourly key prefix + configured models. */
 const HEALTH_FAMILIES = {
@@ -50,7 +57,11 @@ function countModelSlots(hourly, baseKey, models) {
     for (const v of arr) {
       if (v != null && Number.isFinite(v)) ok += 1;
     }
-    out[model] = { ok, total: arr.length, absentCount: 0 };
+    // Série inteira a 0 = run ausente preenchido (ver isDeadSeries em
+    // ensembleQuantiles.js). Reportar ok=0 é o que faz o modelo aparecer como
+    // morto aqui em vez de saudável. O teste é sobre a SÉRIE, não valor a
+    // valor: um 0 isolado é uma calmaria real e continua a contar.
+    out[model] = { ok: isDeadSeries(arr) ? 0 : ok, total: arr.length, absentCount: 0 };
   }
   return out;
 }

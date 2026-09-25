@@ -323,10 +323,50 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
 - Trade-off honesto: entre âncoras, o windBlend (ICON-EU+mediana) não é
   recalculado — scores usam best_match e o badge de confiança fica degradado.
 
+## Banda ensemble P10/P50/P90 por spot-hora
+
+- Os 4 modelos de onda (EWAM, ECMWF WAM, GFS Wave, GWAM) e os 4 de vento (ICON-EU,
+  ECMWF IFS, GFS, Météo-France) já vinham nos payloads do run multi-modelo e eram
+  **descartados** depois de reduzidos ao tier alta/média/baixa (`confidenceDetail`).
+  Agora a distribuição é guardada: cada linha horária de `forecasts.json` e de
+  `public/data/forecasts/<slug>.json` ganha `ens`.
+- **Contrato do array** (`ENSEMBLE_FIELDS` em `scripts/lib/ensembleQuantiles.js`):
+  `[waveP10, waveP50, waveP90, windP10, windP50, windP90, waveN, windN]` — onda em m
+  (2 casas), vento em m/s (1 casa), contagens de membros no fim. Quantil por
+  interpolação linear entre estatísticas de ordem (R-7, o default do numpy/Excel);
+  **não** se ajusta nenhuma distribuição. Uma família com menos de 3 membros vivos
+  escreve `null` nos 3 quantis (um "P10" interpolado entre 2 pontos seria um número
+  com cara de probabilidade e sem conteúdo) e mantém a contagem. A chave é omitida na
+  hora toda quando nenhuma família tem membros, e em todo o run de noite (sem
+  multi-modelo).
+- **Custo**: zero chamadas Open-Meteo novas (os membros vêm no mesmo payload do
+  `fetchMarineWaveModels`/`fetchWindModels`). O preço é tamanho: medido no payload
+  real de 185 spots × 168 h, `forecasts.json` 9,73 → **10,81 MB** (orçamento 12 MB em
+  `check-payload-budgets.js`) e ~6 KB por página de spot cozida (orçamento 5 MB/rota).
+  O formato legível com chaves nominais custaria +1,93 MB e encostava ao orçamento.
+- **Membro morto**: uma série toda a 0 é a Open-Meteo a preencher um run ausente, não
+  meteorologia (medido 2026-09-25: `ncep_gfswave025` devolve 0 nas 192 h em Nazaré,
+  `past_days` incluído, enquanto os outros três dão 1,1–3,2 m). Esses membros saem
+  antes do cálculo — senão o P10 publicado seria 0,00 m — e o spread da confiança
+  deixa de os contar (Nazaré estava presa em "baixa"). `isDeadSeries`/`liveModels`
+  são a única implementação da regra, usada por `ensembleQuantiles.js`,
+  `forecastConfidence.js` e `modelHealth.js`. Mesma classe do sentinela 99,99 do IH
+  (dataPlausibility.js).
+- **Guardas**: `validate-generated-data.js` valida o shape de cada `ens` presente
+  (`forecasts.<spot>.ensemble` / `forecasts/<slug>.ensemble`) e, quando a meta diz
+  `mode=day`, avisa se nenhuma hora tiver banda — aviso, não falha, porque uma queda
+  dos endpoints multi-modelo não pode bloquear o push de dados frescos. Os testes de
+  `ensembleQuantiles` incluem um guarda de ligação ao pipeline (falha se
+  `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).
+- **Ainda não há UI**: a banda é publicada nos ficheiros; a faixa na régua de 48 h e
+  no badge de confiança é o passo seguinte.
+
 ## Health-check de modelos (Open-Meteo ensemble)
 
 - `model-health.json` + aviso no log: detecção de **modelos mortos** (devolvem só
-  null) no ensemble — ex.: o antigo `ecmwf_wam025` (removido por isso).
+  null, ou uma **série toda a 0** — run ausente preenchido pela Open-Meteo, ver a
+  secção da banda ensemble) no ensemble — ex.: o antigo `ecmwf_wam025` (removido por
+  isso) e o `ncep_gfswave025` a 0 em Nazaré (2026-09-25).
 - O `update-conditions.js` acumula contagens não-null por modelo configurado
   (`WAVE_MODELS`/`WIND_MODELS` em lib/forecastConfidence.js) em cada run
   multi-modelo (zero chamadas extra) e escreve o report; `models:health`

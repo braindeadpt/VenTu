@@ -1,5 +1,6 @@
 const { confidenceFromPrevious, applyWaveBiasToRow } = require('./updateConditionsPure');
 const { buildConditionsRow, mergeForecast } = require('./updateConditionsMerge');
+const { attachEnsemble } = require('./ensembleQuantiles');
 
 async function processSpot(spot, options) {
   const {
@@ -13,6 +14,9 @@ async function processSpot(spot, options) {
   let weatherData;
   let confidenceDetail;
   let dailyConfidence;
+  // Ensemble members kept for the forecast band (see ensembleQuantiles.js) —
+  // they arrive in the same two payloads the daytime run already fetches.
+  let waveModelsHourly = null;
   if (useMultiModel) {
     const [marine, weather, marineWaveModels, windModelData] = await Promise.all([
       fetchers.fetchMarineData(spot.lat, spot.lon, usage),
@@ -43,6 +47,7 @@ async function processSpot(spot, options) {
     weatherData = { ...weatherData, hourly: { ...weatherData.hourly, wind_speed_10m: weatherData.hourly.wind_speed_10m.map((v, i) => i === weatherIdx ? blend.windSpeed : v), wind_direction_10m: weatherData.hourly.wind_direction_10m.map((v, i) => i === weatherIdx ? blend.windDirection : v), wind_gusts_10m: weatherData.hourly.wind_gusts_10m.map((v, i) => i === weatherIdx ? blend.windGust : v) }, _windBlend: blend, _windModelsHourly: windModelData.hourly };
     confidenceDetail = confidenceAtIndex(marineWaveModels, windModelData, findCurrentHourIndex(marineWaveModels.hourly.time));
     dailyConfidence = confidenceByDay(marineWaveModels, windModelData);
+    waveModelsHourly = marineWaveModels.hourly;
   } else {
     [marineData, weatherData] = await Promise.all([fetchers.fetchMarineData(spot.lat, spot.lon, usage), fetchers.fetchWeatherData(spot.lat, spot.lon, usage)]);
     const inherited = confidenceFromPrevious(previousConditions[spot.id]);
@@ -61,8 +66,20 @@ async function processSpot(spot, options) {
   if (biasRow.waveBias) log.log(`  ↳ ${spot.id}: waveHeight ${biasRow.waveHeightRaw} → ${biasRow.waveHeight} m (bias ${biasRow.waveBias.me >= 0 ? '+' : ''}${biasRow.waveBias.me} m, n=${biasRow.waveBias.n})`);
   const conditions = buildConditionsRow(marineData, weatherData, current, biasRow, confidenceDetail, dailyConfidence, useMultiModel);
   const forecast = mergeForecast(marineData, weatherData);
+  // Quantiles come from the raw members, so they are attached before the wind
+  // blend rewrites the row's central windSpeed: `windP50` is the ensemble
+  // median while the row value stays the product wind (ICON-EU floor).
+  let ensembleHours = 0;
+  if (waveModelsHourly) {
+    ensembleHours = attachEnsemble(forecast, {
+      marineHourly: waveModelsHourly,
+      windHourly: weatherData._windModelsHourly ?? null,
+      waveModels,
+      windModels,
+    }).hours;
+  }
   if (weatherData._windModelsHourly) applyWindBlendToHours(forecast, weatherData._windModelsHourly, windModels);
   log.log(`  ✓ ${spot.id} updated${ihTideObs ? ` (IH tide: ${ihTideObs.lastObs}m)` : ''}`);
-  return { conditions, forecast };
+  return { conditions, forecast, ensembleHours };
 }
 module.exports = { processSpot };

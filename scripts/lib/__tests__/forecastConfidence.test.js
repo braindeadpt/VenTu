@@ -51,3 +51,40 @@ describe('forecastConfidence model lists', () => {
     expect(off.WIND_MODELS).not.toContain('ecmwf_aifs025');
   });
 });
+
+describe('forecastConfidence — membro morto (série toda a 0)', () => {
+  const times = Array.from({ length: 168 }, (_, i) =>
+    new Date(Date.UTC(2026, 8, 25) + i * 3_600_000).toISOString().slice(0, 16));
+  const live = (v) => times.map((_, i) => v + (i % 5) / 10);
+
+  /** Cenário Nazaré 2026-09-25: gfswave025 a 0 nas 168 h, os outros a ~1,2 m. */
+  const marineWith = (deadGfswave) => ({
+    hourly: {
+      time: times,
+      wave_height_ewam: live(1.2),
+      wave_height_ecmwf_wam: live(1.25),
+      wave_height_ncep_gfswave025: deadGfswave ? times.map(() => 0) : live(1.22),
+      wave_height_gwam: live(1.3),
+    },
+  });
+  const noWind = { hourly: { time: times } };
+
+  it('exclui a série a 0 da contagem e do spread', () => {
+    const { confidenceAtIndex } = loadModule();
+    const withDead = confidenceAtIndex(marineWith(true), noWind, 100);
+    const allLive = confidenceAtIndex(marineWith(false), noWind, 100);
+
+    expect(withDead.waveModelCount).toBe(3);
+    expect(allLive.waveModelCount).toBe(4);
+    expect(withDead.waveSpread).toBeLessThan(0.5);
+    // Sem o filtro, o spread seria max - 0 ≈ 1,3 m e o spot ficava preso em "baixa".
+    expect(withDead.confidence).toBe(allLive.confidence);
+  });
+
+  it('confidenceByDay usa os mesmos membros vivos', () => {
+    const { confidenceByDay } = loadModule();
+    const daily = confidenceByDay(marineWith(true), noWind);
+    expect(daily.length).toBeGreaterThan(0);
+    for (const d of daily) expect(d.waveSpread).toBeLessThan(0.5);
+  });
+});
