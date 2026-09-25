@@ -1,105 +1,105 @@
 {
-  "date": "2026-09-24",
-  "generatedAt": "2026-09-24T03:36:59.200Z",
-  "topSpot": "Nazaré",
-  "topSpotSlug": "nazare",
+  "date": "2026-09-25",
+  "topSpot": "Arrifana",
+  "topSpotSlug": "arrifana",
   "pt": {
-    "headline": "Hoje é dia de Nazaré! 🌊",
-    "advice": "Melhor janela: 6:00h. Ondas de 1.7m com 3 nós de vento.",
-    "bestTime": "6:00",
+    "headline": "Ondas perfeitas e vento leve em Arrifana!",
+    "advice": "Aproxima‑se de 1,3 m com período de 9 s e vento de apenas 3 kt – condições ideais para manobras. Aviso à navegação costeira ANAV NR 2/22 (Plano de Salvamento Marítimo Lagos) está em vigor, então respeite as sinalizações. Use fato 3/2 mm e chegue cedo para evitar aglomerações.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Gibosa crescente · Transição · baixa-mar 21:00"
+    "crowdTip": "Chegue antes das 10 h para garantir espaço no pico.",
+    "moonTideLine": "Lua cheia · Transição · baixa-mar 09:00"
   },
   "en": {
-    "headline": "Today is Nazaré day! 🌊",
-    "advice": "Best window: 6:00. 1.7m waves with 3 knot wind.",
-    "bestTime": "6:00",
+    "headline": "Perfect waves and light wind at Arrifana!",
+    "advice": "Expect around 1.3 m with a 9‑second period and only 3 kt wind – ideal for maneuvers. Coastal navigation warning ANAV NR 2/22 (Lagos Maritime Rescue Plan) is active, so respect the signs. Wear a 3/2 mm wetsuit and arrive early to beat the crowd.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Waxing gibbous · Transition · low tide 21:00"
+    "crowdTip": "Get there before 10 am to secure a spot.",
+    "moonTideLine": "Full moon · Transition · low tide 09:00"
   },
   "spots": [
     {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 89,
-      "scoreForecast": 89,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 89,
-      "scoreForecast": 89,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Supertubos",
       "slug": "supertubos",
-      "score": 88,
-      "scoreForecast": 88,
+      "score": 80,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, mas vento forte (7 kt) e aviso de navegação (ANAV NR 12/24); surfe com cautela.",
+      "enReason": "Good waves, but strong wind (7 kt) and coastal warning (ANAV NR 12/24); surf cautiously.",
+      "scoreForecast": 80,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Guincho",
       "slug": "guincho",
-      "score": 88,
-      "scoreForecast": 88,
+      "score": 80,
+      "verdict": "maybe",
+      "ptReason": "Ondas consistentes, porém vento de 7 kt e avisos de interação/avistamento de animais marinhos; fique atento.",
+      "enReason": "Consistent waves, but 7 kt wind and marine‑animal interaction/ sighting warnings; stay alert.",
+      "scoreForecast": 80,
       "scoreSource": "previsão",
-      "scoreMeta": null,
+      "scoreMeta": null
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 80,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Ondas de 1,2 m, período de 10 s e vento leve (5 kt); sem avisos costeiros, ótimo para surf.",
+      "enReason": "1.2 m waves, 10‑second period and light wind (5 kt); no coastal warnings, great for surfing.",
+      "scoreForecast": 80,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Ribeira d'Ilhas",
       "slug": "ribeira-ilhas",
-      "score": 88,
-      "scoreForecast": 88,
+      "score": 80,
+      "verdict": "maybe",
+      "ptReason": "Boa onda, mas vento forte (9 kt) e aviso de avistamento de animais marinhos; pode ficar movimentado.",
+      "enReason": "Good wave, but strong wind (9 kt) and marine‑animal sighting warning; may be crowded.",
+      "scoreForecast": 80,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 81,
+      "verdict": "maybe",
+      "ptReason": "Ondas excelentes, vento moderado (6 kt) e aviso de avistamento de animais marinhos; surfe com atenção.",
+      "enReason": "Excellent waves, moderate wind (6 kt) and marine‑animal sighting warning; surf with care.",
+      "scoreForecast": 81,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 88,
-      "scoreForecast": 88,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
+      "score": 81,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Ondas de 1,3 m, vento leve (3 kt) e score alto; aviso de salvamento marítimo, mas sem risco direto ao surfista.",
+      "enReason": "1.3 m waves, light wind (3 kt) and high score; maritime rescue plan warning but no direct surf risk.",
+      "scoreForecast": 81,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Carcavelos",
       "slug": "carcavelos",
-      "score": 86,
-      "scoreForecast": 86,
+      "score": 78,
+      "verdict": "skip",
+      "ptReason": "Ondas menores (1,1 m), muitos avisos de segurança e interação com animais marinhos; melhor escolher outro spot.",
+      "enReason": "Smaller waves (1.1 m) and multiple safety/ marine‑animal warnings; better to pick another spot.",
+      "scoreForecast": 78,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     }
   ],
-  "topScore": 89,
-  "topScoreForecast": 89,
+  "generatedAt": "2026-09-25T03:07:04.878Z",
+  "topScore": 81,
+  "topScoreForecast": 81,
   "topScoreSource": "previsão",
   "topScoreMeta": null
 }
