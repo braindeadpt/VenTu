@@ -238,18 +238,21 @@ export default function SpotVerdictHero({
               <span className="font-mono tabular-nums text-fg">
                 {selectedHour ? formatHourLong(selectedHour, locale) : '--:--'}
               </span>
-              {nowIndex >= 0 && (
-                <span
-                  className={cn(
-                    'rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
-                    isNow
-                      ? 'border-divider-strong text-fg'
-                      : 'border-divider text-fg-muted',
-                  )}
-                >
-                  {isNow ? tv.nowLabel : tv.forecastLabel}
-                </span>
-              )}
+              {/* A pill existe sempre — invisível até haver índice «agora»
+                  (HTML baked). Aparecer só depois da hidratação crescia a
+                  linha 4–5 px e empurrava a página inteira (CLS 0,2). */}
+              <span
+                aria-hidden={nowIndex < 0 || undefined}
+                className={cn(
+                  'rounded-pill border px-2 py-0.5 text-meta-sm font-medium',
+                  nowIndex < 0 && 'invisible',
+                  isNow
+                    ? 'border-divider-strong text-fg'
+                    : 'border-divider text-fg-muted',
+                )}
+              >
+                {isNow ? tv.nowLabel : tv.forecastLabel}
+              </span>
             </p>
             <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
           </div>
