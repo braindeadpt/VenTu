@@ -6,7 +6,7 @@
  * suite; this fails the build instead of letting a dropped guard pass
  * unnoticed.
  *
- * Three families are asserted:
+ * Four families are asserted:
  *  - URL-segment validator suites (validate-spots / validate-page-slugs /
  *    validate-news-livecams fixtures);
  *  - map teardown guards (Leaflet canvas teardown guard + the teardownMap
@@ -14,7 +14,9 @@
  *    8326a7bd0 and its follow-ups;
  *  - the map layer-name guard (nome=modo), which itself carries the coverage
  *    assertions over the real map chrome — so the guard cannot go green by
- *    scanning nothing.
+ *    scanning nothing;
+ *  - the ih-health ping gate (probe only when the pipeline is stale), including
+ *    the workflow wiring (gate step + `if:` on both probe steps).
  *
  * Runs ONLY these small suites (a few seconds) through vitest's JSON
  * reporter and asserts, per file: present, zero failures, and the exact
@@ -41,6 +43,10 @@ const EXPECTED = {
   // asserções de cobertura sobre o escopo real (toggles vistos > 0 e zero
   // violações) — é o que impede o guarda de passar a verde por ver nada.
   'scripts/lib/__tests__/mapLayerNames.test.js': 19,
+  // Gate do ping do ih-health (sonda só com o pipeline atrasado) + fiação do
+  // workflow: sem o `if:` do gate nas sondagens, o ping volta a duplicar
+  // trabalho de rede num sistema saudável — e nada falharia.
+  'scripts/lib/__tests__/ihHealthGate.test.js': 16,
 };
 
 const files = Object.keys(EXPECTED);

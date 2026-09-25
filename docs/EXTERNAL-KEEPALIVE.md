@@ -47,7 +47,7 @@ the external cron wakes the pipeline **and** its watchdogs:
 | `update-data.yml` | gate → `full` / `observations` / `skip` (resurrection) |
 | `staleness-alert.yml` | `pipeline-meta.json` age → issue `data-stale` |
 | `data-cadence-alert.yml` | last `public/data` commit age → issue `data-stale` |
-| `ih-health.yml` | IH tide + IPMA radar probes → issues `ih-outage` / `ipma-radar-outage` |
+| `ih-health.yml` | gate → IH tide + IPMA radar probes (só com o pipeline atrasado) → issues `ih-outage` / `ipma-radar-outage` |
 | `telegram-poll.yml` | `/start` deep-link poll |
 
 **No extra external job is needed** — the cron you already run for the
@@ -65,8 +65,129 @@ incident: it either finds nothing or re-confirms an incident already open.
 The `schedule:` crons stay in place on purpose; the ping is **additive**,
 never a replacement, so the two triggers still fail independently.
 
+Being idempotent is not the same as being free, though: `ih-health.yml`
+probes two third-party endpoints (IH `tide_obs_nrt/items` and the IPMA
+radar manifest + PNG) and a ping would repeat that work on top of its own
+hourly `schedule` and the radar probe the `data-cadence-alert` already runs
+every 30 min. So the ping path is **gated**
+(`scripts/ih-health-gate.js` + `scripts/lib/ihHealthGate.js`):
+
+| Ping state | Gate decision |
+|------------|---------------|
+| `pipeline-meta.json` or last `public/data` commit older than 3 h day / 5 h night | probe IH/IPMA |
+| an incident is open (`ih-outage` / `ipma-radar-outage`) | probe (otherwise the recovery could never be seen and the issue would stay open forever) |
+| pipeline healthy | `probe=false` — the two probe steps are skipped, the ping is a no-op |
+
+The gate applies **only to the ping**: the hourly `schedule` and a manual
+`workflow_dispatch` always probe (that is the monitor's cadence), so an IH
+or IPMA outage is still detected while the pipeline is healthy. Thresholds
+are the same ones the heartbeats use, so "stale" can never mean two
+different things. Unmeasurable state fails **open** (probe).
+Guard: `scripts/lib/__tests__/ihHealthGate.test.js` covers the decision
+matrix and the workflow wiring (gate step + `if:` on both probe steps).
+
 Guard: `src/lib/__tests__/keepaliveTriggers.test.ts` fails if a monitor
 loses the trigger, or if a `schedule` is removed.
+
+**Status (verified 2026-09-25): declared but NOT deployed.** The
+`types: [ping]` of the four monitors — and the `ih-health` ping gate
+described above — live in local commits that were never pushed, so on `main`
+a ping still wakes exactly one workflow. The table above is the contract;
+the section below is what production actually does today, with the commands
+and the numbers.
+
+## Verified on the real repository (2026-09-25)
+
+A ping is not routed to a single workflow — GitHub runs **every** workflow on
+`main` whose `on:` declares the type. That is what the section above claims;
+this is what the live repository showed at 12:09 UTC on 2026-09-25:
+
+```bash
+# Does this workflow ever run on a ping?
+gh run list --repo braindeadpt/VenTu --workflow=<wf> --event=repository_dispatch \
+  --limit 5 --json databaseId --jq 'length'
+# What does main actually declare?
+gh api repos/braindeadpt/VenTu/contents/.github/workflows/<wf> --jq .content \
+  | base64 -d | grep -c 'types: \[ping\]'
+```
+
+| Workflow | `repository_dispatch` runs (last 5) | `types: [ping]` on `main` |
+|---|---|---|
+| `update-data.yml` | **5** (every 30 min, `:05`/`:35`) | 1 |
+| `staleness-alert.yml` | 0 | 0 |
+| `data-cadence-alert.yml` | 0 | 0 |
+| `ih-health.yml` | 0 | 0 |
+| `telegram-poll.yml` | 0 | 0 |
+
+Root cause — deployment, not GitHub: the monitors' trigger is part of local
+commit `208bcbcb2`, which does not exist on GitHub
+(`gh api repos/braindeadpt/VenTu/commits/208bcbcb2` → HTTP 422 "No commit
+found"). The five declarations exist only in the working branch — five files
+locally against one on `main`:
+
+```bash
+# local: five
+grep -l 'types: \[ping\]' .github/workflows/*.yml
+# main: one (the two hits above are the `contents: write` comments of the
+# self-healing heartbeats, not triggers)
+```
+
+`main` has also moved on: the branch's base (`43f807542`) is **88 commits**
+behind `gh api repos/braindeadpt/VenTu/compare/43f807542...main`, code
+included, so the pending work needs a rebase — it is not a plain push. Every
+monitor run on record is `schedule` (12/12 in the last 12 runs of each).
+
+**Rebase rehearsal (2026-09-25, in a throwaway worktree):** of the five
+pending commits, **four reapply cleanly** onto `main` — the IH 99.99 sentinel,
+the deploy source gate, the keep-alive triggers above and the ensemble band —
+with `tsc --noEmit` and `npm test` green (204 files / 1973 tests) at that
+point. Only the map commit (`5784f94b6`) conflicts, and not because of the
+triggers: `main` refactored `MapControls.tsx` / `SpotMapInteractive.tsx` (v3
+shared layers menu, `buildLayerMenuItems`) and reworked three map specs, so
+that commit has to be **ported** onto the new shape, not rebased. The trigger
+commit is one of the four clean ones, which is why the monitors can be unblocked
+without waiting for the map work.
+
+The ping itself is healthy — for the workflow that declares it: all of the
+last 8 `update-data.yml` runs at `:05`/`:35` are `repository_dispatch`, and 7
+of those 8 finished in **under a minute** (`mode: skip`, a healthy hour as a
+cheap no-op) while the one after a 2 h gap ran **17 min**
+(`mode: full` — the resurrection path doing real work).
+
+What staying undeployed costs, measured on the same 12-run window (this is
+the delivery the keep-alive exists to survive):
+
+| Workflow | Nominal | Measured (12 runs) | Delivery |
+|---|---|---|---|
+| `staleness-alert.yml` | 30 min | 46.2 h → 4.2 h avg | **~12 %** |
+| `data-cadence-alert.yml` | 30 min | 44.6 h → 4.1 h avg | **~12 %** |
+| `ih-health.yml` | 1 h | 50.1 h → 4.6 h avg | **~22 %** |
+| `telegram-poll.yml` | 5 min | 44.2 h → 4.0 h avg | **~2 %** |
+
+These match the nominal-delivery numbers this document already quoted
+(2 % / 12 % / 12 % / 23 %), so the diagnosis was right — what is missing is
+the remedy: the monitors are still watching the pipeline on the scheduler
+that drops 4 out of every 5 slots.
+
+### Re-verifying after the trigger is deployed
+
+```bash
+# 1. one ping
+gh api repos/braindeadpt/VenTu/dispatches --method POST -f event_type=ping
+# 2. within a minute: five runs sharing the same trigger minute
+for wf in update-data.yml staleness-alert.yml data-cadence-alert.yml ih-health.yml telegram-poll.yml; do
+  printf '%-24s ' "$wf"
+  gh run list --repo braindeadpt/VenTu --workflow="$wf" --limit 1 \
+    --json event,createdAt,url --jq '.[0] | "\(.createdAt) \(.event) \(.url)"'
+done
+```
+
+Expected: one `repository_dispatch` run per workflow, all with the same
+`createdAt` to the minute. Until that is observed on `main`, the table above
+stays a declaration. Note that the same ping fires the `update-data` gate, so
+firing it when the pipeline is overdue legitimately starts a real data run
+(and, on success, the deploy) — that is the feature, not a side effect to
+avoid, but it is not a read-only check.
 
 ## 1. cron-job.org (recommended — zero infra)
 
