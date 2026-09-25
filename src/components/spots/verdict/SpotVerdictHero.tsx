@@ -126,21 +126,26 @@ export default function SpotVerdictHero({
   // Os factores descrevem as condições actuais — escondidos quando a hora
   // escolhida é previsão (mostrar factores de «agora» sobre uma hora futura
   // induzia em erro). Antes de montar (nowIndex<0) a hora mostrada é a do
-  // bake = «agora», por isso a linha fica. Uma só gramática de factores:
+  // bake = «agora», por isso a linha aparece. Uma só gramática de factores:
   // o formatador canónico do mapa (getSpotScoreFactors), não uma linha
   // própria — mapa e página dizem o mesmo «porquê».
-  const why =
-    isNow || nowIndex < 0
-      ? getSpotScoreFactors({
-          spot,
-          conditions,
-          allScores,
-          sport: selectedSport,
-          locale,
-        })
-          .map((s) => s.label)
-          .join(' · ') || null
-      : null;
+  //
+  // A caixa fica SEMPRE no fluxo (invisível quando a hora escolhida não é
+  // «agora»): o texto não depende da hora, por isso reservar o mesmo bloco
+  // mantém a altura do hero constante ao arrastar a régua — a mesma regra
+  // do cartão Onda (§4, uma caixa por hora). Sem isto, passar para uma hora
+  // de previsão encolhia o hero ~19 px e empurrava a página inteira.
+  const whyText =
+    getSpotScoreFactors({
+      spot,
+      conditions,
+      allScores,
+      sport: selectedSport,
+      locale,
+    })
+      .map((s) => s.label)
+      .join(' · ') || null;
+  const showWhy = isNow || nowIndex < 0;
 
   // Correcções observadas (boia/estação) só se aplicam ao «agora»: noutras
   // horas o score é previsão pura e a linha de fonte diz isso. Antes de
@@ -220,8 +225,25 @@ export default function SpotVerdictHero({
           {backLabel}
         </Link>
 
-        {/* Grelha: [nome | score] no mobile; 1–7 | 8–12 a partir de lg. */}
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] items-end gap-x-4 lg:grid-cols-12 lg:gap-8">
+        {/* Grelha: 1–7 | 8–12 a partir de lg; [nome | score] de sm a lg.
+            Abaixo de sm o score passa para a linha de baixo (spec v3 §1:
+            «nome e score na mesma linha SE COUBER, senão o score por baixo»),
+            porque a coluna do score é `auto`: a sua largura é a do NÚMERO do
+            score (147 px com 2 dígitos, 188 px com 3, 112 px com 1) e alimenta
+            a largura da coluna do nome, que decide se a linha hora+pill e as
+            coordenadas mudam de linha.
+
+            Medido a 390 px antes desta correcção: score 2 dígitos dava ao nome
+            188,8 px (coordenadas em 2 linhas), score 3 dígitos dava 153,6 px e
+            o hero crescia 19,4 px a meio da contagem do score depois de
+            hidratar; a 320 px o nome ficava com 118,8 px e o par
+            região+coordenadas (189,3 px) e «Guincho» (182 px) cortavam.
+
+            Empilhado abaixo de sm, a largura da coluna do nome deixa de
+            depender do conteúdo (288 px a 320 px, 358 px a 390 px — folga para
+            o par de coordenadas e para a linha hora+pill); de sm a lg a coluna
+            do nome tem ≥404 px mesmo com score de 3 dígitos. */}
+        <div className="grid grid-cols-1 items-end gap-y-1 sm:grid-cols-[minmax(0,1fr)_auto] sm:gap-x-4 sm:gap-y-0 lg:grid-cols-12 lg:gap-8">
           <div className="min-w-0 lg:col-span-7 space-y-1.5">
             <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-meta-sm text-fg-muted">
               <MapPin className="w-3.5 h-3.5 shrink-0" aria-hidden />
@@ -289,18 +311,31 @@ export default function SpotVerdictHero({
             >
               {bandLabel}
             </span>
-            {why && (
-              <p className="hidden lg:block text-meta-sm text-fg-muted leading-snug max-w-[42ch] truncate">
-                {why}
+            {whyText && (
+              <p
+                aria-hidden={!showWhy || undefined}
+                className={cn(
+                  'hidden lg:block text-meta-sm text-fg-muted leading-snug max-w-[42ch] truncate',
+                  !showWhy && 'invisible',
+                )}
+              >
+                {whyText}
               </p>
             )}
           </div>
         </div>
 
-        {/* Porquê — fora da coluna do score em <lg (linha própria, 1 linha). */}
-        {why && (
-          <p className="mt-1 text-meta-sm text-fg-muted leading-snug truncate lg:hidden">
-            {why}
+        {/* Porquê — fora da coluna do score em <lg (linha própria, 1 linha,
+            caixa reservada também nas horas de previsão — ver whyText). */}
+        {whyText && (
+          <p
+            aria-hidden={!showWhy || undefined}
+            className={cn(
+              'mt-1 text-meta-sm text-fg-muted leading-snug truncate lg:hidden',
+              !showWhy && 'invisible',
+            )}
+          >
+            {whyText}
           </p>
         )}
         <div className="mt-2 lg:hidden">

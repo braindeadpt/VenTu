@@ -25,6 +25,7 @@ Desktop (≥1024): grelha 12 colunas.
   - com correcção observada no «agora»: «Onda corrigida pela boia CSA92 · vento da estação Cabo Raso»;
   - o link leva a #como-sabemos.
 Mobile (<640): nome e score na mesma linha se couber (score 64 px à direita), senão o score por baixo. Acções numa linha só: [Como chegar] a ocupar o espaço livre + 3 ícones + Mais. Nunca 3 linhas.
+- **Altura reservada (CLS).** O hero tem a mesma altura em qualquer hora escolhida, modalidade e valor de score. Os dígitos do score não podem redimensionar a coluna do nome (é o que decide se a linha hora+pill e as coordenadas mudam de linha): por isso a grelha `1fr | auto` só existe a partir de `sm` — abaixo disso o score passa para a linha de baixo — e, de `sm` a `lg`, a coluna do nome tem ≥404 px mesmo com score de 3 dígitos. A linha de porquê fica sempre na caixa (invisível fora do «agora»), como o nível de hoje. Medido: 400,1 px a 320/390 px e 305,4 px a 1350 px em todas as 48 h e todas as modalidades; antes da correcção o hero crescia 19,4 px ~2 s depois do load (score baked → score vivo com correcção), empurrando a página inteira. Guardado por `tests/e2e/spot-hero-cls.spec.ts`.
 
 ## 2. Barra fixa
 - Desktop: tabs de modalidade (mini-score) à esquerda; à direita, chip «71 · 04:00 · Agora» + âncoras «Resumo · Hora a hora · No local · Chegar».
@@ -87,7 +88,7 @@ Mobile: os accordions ficam como estão.
 
 ## 8. Critérios de aceitação
 - 0 erros na consola (inclui #418) em PT/EN, desktop/mobile, claro/escuro.
-- CLS ≤ 0,05 (Lighthouse, mediana de 3).
+- CLS ≤ 0,05 (Lighthouse, mediana de 3); o hero não contribui com nenhum shift (§1, altura reservada).
 - Nenhum texto cortado com reticências nos nomes de spots; nenhuma sobreposição a 390 px, 768 px e 1440 px (teste E2E de colisão por bounding boxes para o eixo da régua, a barra fixa e as acções do hero).
 - Alvos ≥ 44 px fora de tabelas.
 - No máximo 8 tamanhos de letra em main (escala: 11, 13, 15, 18, 24, 32, 48/64, 104).
