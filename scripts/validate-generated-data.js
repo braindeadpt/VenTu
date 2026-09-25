@@ -39,6 +39,7 @@ if (MODE === 'skip') {
 }
 
 const { STALE_FULL_HOURS_DAY, STALE_FULL_HOURS_NIGHT, getLisbonParts } = require('./lib/updateSchedule');
+const { validateEnsembleEntry, ensembleCoverage } = require('./lib/ensembleQuantiles');
 const { findUnmappedEsBuoys } = require('./lib/copernicusBuoys.js');
 const { auditSpotDescriptions } = require('./lib/spotDescriptionAudit.js');
 
@@ -150,6 +151,15 @@ if (forecasts !== undefined) {
   check('forecasts.shape', typeof forecasts === 'object' && !Array.isArray(forecasts), 'must be an object');
   const keys = Object.keys(forecasts);
   check('forecasts.nonEmpty', keys.length > 0, 'no spots');
+  // Banda ensemble (P10/P50/P90 por hora): só se valida o que existe — as
+  // horas sem membros não trazem a chave (ver ensembleQuantiles.js). O shape é
+  // preso aqui, e não no gerador, para uma mudança de formato aparecer como
+  // falha de dados em vez de seguir para o build.
+  const badEns = (arr) =>
+    arr
+      .map((h, i) => ({ i, err: h && Object.prototype.hasOwnProperty.call(h, 'ens') ? validateEnsembleEntry(h.ens) : null }))
+      .filter(({ err }) => err);
+  const fmtEns = (bad) => bad.slice(0, 3).map(({ i, err }) => `#${i} ${err}`).join('; ');
   for (const k of keys) {
     const arr = forecasts[k];
     check(`forecasts.${k}.shape`, Array.isArray(arr) && arr.length >= FORECAST_MIN_HOURS,
@@ -158,6 +168,23 @@ if (forecasts !== undefined) {
       const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
       check(`forecasts.${k}.entries`, bad.length === 0,
         `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}`);
+      const badBands = badEns(arr);
+      check(`forecasts.${k}.ensemble`, badBands.length === 0,
+        `${badBands.length} hour(s) with an invalid P10/P50/P90 band: ${fmtEns(badBands)}`);
+    }
+  }
+  // Cobertura da banda: um run diurno (mode=day na meta que este mesmo run
+  // acabou de escrever) tem SEMPRE 4+4 membros, logo zero horas com banda
+  // significa que a ligação ao gerador partiu. Aviso, não falha: uma queda dos
+  // endpoints multi-modelo da Open-Meteo não pode bloquear o push de dados
+  // frescos (o best_match continua bom) — o model-health.json é que a nomeia.
+  if (meta?.openMeteoUsage?.mode === 'day') {
+    const { spots: bandedSpots, banded, total } = ensembleCoverage(forecasts);
+    if (total > 0 && banded === 0) {
+      warn(`forecasts.ensemble: nenhuma das ${total} horas tem banda P10/P90 apesar de a meta dizer mode=day — ver ensembleQuantiles.attachEnsemble no pipeline`);
+    } else {
+      checks.push('forecasts.ensembleCoverage');
+      console.log(`📊 forecasts ensemble: ${banded}/${total} horas com banda P10/P90 em ${bandedSpots}/${keys.length} spots`);
     }
   }
   // split-file integrity: every key has a file and vice versa. Ficheiro
@@ -176,6 +203,9 @@ if (forecasts !== undefined) {
       const bad = arr.map((h, i) => ({ h, i })).filter(({ h }) => !h || !isIso(h.time) || typeof h.waveHeight !== 'number' || typeof h.windSpeed !== 'number');
       check(`forecasts/${f}.entries`, bad.length === 0,
         `${bad.length} hour(s) missing time/waveHeight/windSpeed at index ${fmtNames(bad.map(({ i }) => i))}`);
+      const badBands = badEns(arr);
+      check(`forecasts/${f}.ensemble`, badBands.length === 0,
+        `${badBands.length} hour(s) with an invalid P10/P50/P90 band: ${fmtEns(badBands)}`);
     }
   }
 }

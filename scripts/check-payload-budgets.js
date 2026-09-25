@@ -99,6 +99,11 @@ function listingDirs(localeDir) {
 // Budgets sit ~1.2x current sizes (forecasts 10.2 MB, wind-bias 2.0 MB,
 // spots-index 1.0 MB, forecast-skill 0.03 MB, conditions 0.5 MB) — room for
 // organic growth (more spots/hours), nowhere near enough for a doubling.
+// forecasts.json grew to 10.8 MB on 2026-09-25 when the hourly ensemble band
+// (`ens`, see scripts/lib/ensembleQuantiles.js) started shipping: +1.1 MB for
+// 31,080 rows, which is why the field is a compact 8-number array. Raising
+// this budget to make room for a wider format is the wrong fix — measure the
+// format (the readable variant costs +1.9 MB and would sit at 97% of 12 MB).
 // forecast-skill is report-only since the 2026-09-18 split (raw series live
 // in data-state/): if it ever returns near 1 MB the raw arrays leaked back.
 const DATA_FILE_BUDGETS_MB = {

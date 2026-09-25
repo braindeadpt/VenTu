@@ -41,11 +41,17 @@ const WIND_MODELS = [
   ...AIFS_MODELS,
 ];
 
+// Um modelo cuja série vem toda a 0 é um run ausente preenchido pela
+// Open-Meteo (medido em 2026-09-25: ncep_gfswave025 a 0 nas 192h em Nazaré
+// enquanto os outros três davam 1,1–3,2 m). Contá-lo como membro inflacionava
+// o spread e prendia o spot em "baixa" — a mesma filtragem que a banda
+// ensemble usa em ensembleQuantiles.js.
+const { liveModels } = require('./ensembleQuantiles');
+
 function readModelValues(hourly, baseKey, models, index) {
   const values = [];
-  for (const model of models) {
-    const key = `${baseKey}_${model}`;
-    const v = hourly[key]?.[index];
+  for (const model of liveModels(hourly, baseKey, models)) {
+    const v = hourly[`${baseKey}_${model}`]?.[index];
     if (v != null && Number.isFinite(v)) values.push(v);
   }
   return values;
@@ -153,7 +159,7 @@ function confidenceByDay(marineMulti, weatherMulti) {
     const bucket = byDate.get(dk);
     bucket.n += 1;
 
-    for (const model of WAVE_MODELS) {
+    for (const model of liveModels(marineMulti.hourly, 'wave_height', WAVE_MODELS)) {
       const v = marineMulti.hourly[`wave_height_${model}`]?.[i];
       if (v != null && Number.isFinite(v)) {
         if (!bucket.waveByModel[model]) bucket.waveByModel[model] = { sum: 0, c: 0 };
@@ -161,7 +167,7 @@ function confidenceByDay(marineMulti, weatherMulti) {
         bucket.waveByModel[model].c += 1;
       }
     }
-    for (const model of WIND_MODELS) {
+    for (const model of liveModels(weatherMulti.hourly, 'wind_speed_10m', WIND_MODELS)) {
       const v = weatherMulti.hourly[`wind_speed_10m_${model}`]?.[i];
       if (v != null && Number.isFinite(v)) {
         if (!bucket.windByModel[model]) bucket.windByModel[model] = { sum: 0, c: 0 };
