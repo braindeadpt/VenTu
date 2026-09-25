@@ -160,14 +160,31 @@ const MapSpotList = memo(function MapSpotList({
     };
   }, []);
 
-  // Deep link: centra a linha do spot e dá-lhe foco uma vez (o utilizador
-  // mantém depois o controlo do foco).
+  // Deep link: centra a linha do spot e dá-lhe foco. O foco fica «devido»
+  // até o utilizador interagir: se a lista recriar o botão (a lista segue a
+  // vista — com reduced motion o setView é instantâneo e a linha é trocada
+  // logo a seguir ao primeiro foco), o foco caía no <body> e não voltava.
+  // Só se repõe quando está no <body>; se o utilizador o levou para outro
+  // sítio, fica lá.
+  const userTookFocusRef = useRef(false);
   useEffect(() => {
-    if (focusedOnceRef.current || !focusSpotId) return;
+    const mark = () => { userTookFocusRef.current = true; };
+    window.addEventListener('pointerdown', mark, { capture: true });
+    window.addEventListener('keydown', mark, { capture: true });
+    return () => {
+      window.removeEventListener('pointerdown', mark, { capture: true });
+      window.removeEventListener('keydown', mark, { capture: true });
+    };
+  }, []);
+  useEffect(() => {
+    if (!focusSpotId || userTookFocusRef.current) return;
     const el = listRef.current?.querySelector<HTMLButtonElement>(`[data-spot-id="${CSS.escape(focusSpotId)}"]`);
     if (!el) return;
+    const active = document.activeElement;
+    if (active === el) return;
+    if (focusedOnceRef.current && active && active !== document.body) return;
+    if (!focusedOnceRef.current) el.scrollIntoView({ block: 'nearest' });
     focusedOnceRef.current = true;
-    el.scrollIntoView({ block: 'nearest' });
     el.focus({ preventScroll: true });
     // renderLimit: a linha do deep link pode chegar no fill de idle —
     // re-corre o efeito quando ela entrar no DOM.
