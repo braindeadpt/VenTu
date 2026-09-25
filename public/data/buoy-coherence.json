@@ -1,24 +1,24 @@
 {
-  "day": "20260924",
-  "fetchedAt": "2026-09-24T19:11:04.319Z",
+  "day": "20260925",
+  "fetchedAt": "2026-09-25T05:06:46.536Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 640,
+    "pairHourCount": 644,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
     "windowDays": 180,
-    "dayCount": 22,
+    "dayCount": 23,
     "trend": {
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
-        "coherent": 21,
+        "coherent": 22,
         "review": 1,
         "incoherent": 0,
         "insufficient": 0,
-        "days": 22,
+        "days": 23,
         "incoherentRatio": 0
       },
       "6200083|6201079": {
@@ -84,9 +84,9 @@
         {
           "spot": "moledo",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 60,
-          "altKm": 0
+          "altKm": 56
         }
       ],
       "calibrated": 0,
@@ -101,67 +101,10 @@
         "ih-buoy": 8
       },
       "audited": 8,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 8,
+      "attachedIsClosest": 8,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "vila-praia-ancora",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 57,
-          "altKm": 0
-        },
-        {
-          "spot": "afife",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 52,
-          "altKm": 0
-        },
-        {
-          "spot": "castelo-neiva",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 50,
-          "altKm": 0
-        },
-        {
-          "spot": "amorosa",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 44,
-          "altKm": 0
-        },
-        {
-          "spot": "cabedelo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 42,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-cabedelo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 42,
-          "altKm": 0
-        },
-        {
-          "spot": "cabedelo-wakepark",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 44,
-          "altKm": 0
-        },
-        {
-          "spot": "rodanho",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 41,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -174,74 +117,10 @@
         "ih-buoy": 9
       },
       "audited": 9,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 9,
+      "attachedIsClosest": 9,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ofir",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 31,
-          "altKm": 0
-        },
-        {
-          "spot": "esposende",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "esposende-praia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "fao",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 28,
-          "altKm": 0
-        },
-        {
-          "spot": "apulia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 26,
-          "altKm": 0
-        },
-        {
-          "spot": "fao-ofir-surf",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 28,
-          "altKm": 0
-        },
-        {
-          "spot": "ofir-praia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 28,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-fao-cavado",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-esposende-piscinas",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -254,95 +133,10 @@
         "ih-buoy": 12
       },
       "audited": 12,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 12,
+      "attachedIsClosest": 12,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "povoa-varzim",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 20,
-          "altKm": 0
-        },
-        {
-          "spot": "leca-palmeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 27,
-          "altKm": 0
-        },
-        {
-          "spot": "matosinhos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 29,
-          "altKm": 0
-        },
-        {
-          "spot": "cabedelo-douro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 33,
-          "altKm": 0
-        },
-        {
-          "spot": "marina-afurada-foil",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 34,
-          "altKm": 0
-        },
-        {
-          "spot": "salgueiros",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 34,
-          "altKm": 0
-        },
-        {
-          "spot": "sereia-costa-verde",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 35,
-          "altKm": 0
-        },
-        {
-          "spot": "canide-sul",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 35,
-          "altKm": 0
-        },
-        {
-          "spot": "aguda",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 40,
-          "altKm": 0
-        },
-        {
-          "spot": "espinho",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 45,
-          "altKm": 0
-        },
-        {
-          "spot": "vila-cha",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 21,
-          "altKm": 0
-        },
-        {
-          "spot": "aterro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 25,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -355,25 +149,10 @@
         "ih-buoy": 2
       },
       "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "azurara",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 20,
-          "altKm": 0
-        },
-        {
-          "spot": "mindelo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 20,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -386,56 +165,26 @@
         "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "praia-da-lomba",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 55,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
       "suboptimal": []
     },
     "Espinho": {
-      "spotCount": 3,
-      "withObservedWave": 3,
+      "spotCount": 2,
+      "withObservedWave": 2,
       "bySource": {
-        "ih-buoy": 3
+        "ih-buoy": 2
       },
-      "audited": 3,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "audited": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "praia-37",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 45,
-          "altKm": 0
-        },
-        {
-          "spot": "bairro-piscatorio",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 45,
-          "altKm": 0
-        },
-        {
-          "spot": "paramos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 47,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -448,53 +197,10 @@
         "ih-buoy": 6
       },
       "audited": 6,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 6,
+      "attachedIsClosest": 6,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "barrinha-esmoriz",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 48,
-          "altKm": 0
-        },
-        {
-          "spot": "esmoriz",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 48,
-          "altKm": 0
-        },
-        {
-          "spot": "cortegaca",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 49,
-          "altKm": 0
-        },
-        {
-          "spot": "cortegaca-sul",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 50,
-          "altKm": 0
-        },
-        {
-          "spot": "maceda",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 52,
-          "altKm": 0
-        },
-        {
-          "spot": "furadouro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 56,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -507,60 +213,10 @@
         "ih-buoy": 7
       },
       "audited": 7,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 7,
+      "attachedIsClosest": 7,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "murtosa",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 71,
-          "altKm": 0
-        },
-        {
-          "spot": "ria-torreira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 69,
-          "altKm": 0
-        },
-        {
-          "spot": "praia-torreira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 66,
-          "altKm": 0
-        },
-        {
-          "spot": "muranzel",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 70,
-          "altKm": 0
-        },
-        {
-          "spot": "sao-jacinto",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 75,
-          "altKm": 0
-        },
-        {
-          "spot": "costa-nova",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 80,
-          "altKm": 0
-        },
-        {
-          "spot": "barra-aveiro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 78,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -580,9 +236,9 @@
         {
           "spot": "tocha",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 110,
-          "altKm": 0
+          "altKm": 91
         }
       ],
       "calibrated": 0,
@@ -604,23 +260,23 @@
         {
           "spot": "quiaios",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 122,
-          "altKm": 0
+          "altKm": 78
         },
         {
           "spot": "figueira-foz",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 130,
-          "altKm": 0
+          "altKm": 72
         },
         {
           "spot": "leirosa",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 140,
-          "altKm": 0
+          "altKm": 62
         }
       ],
       "calibrated": 0,
@@ -642,9 +298,9 @@
         {
           "spot": "praia-da-vieira",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 161,
-          "altKm": 0
+          "altKm": 40
         }
       ],
       "calibrated": 0,
@@ -666,9 +322,9 @@
         {
           "spot": "castelo-bode",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 195,
-          "altKm": 0
+          "altKm": 78
         }
       ],
       "calibrated": 0,
@@ -690,30 +346,30 @@
         {
           "spot": "nazare",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 187,
-          "altKm": 0
+          "altKm": 12
         },
         {
           "spot": "foz-arelho",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 169,
-          "altKm": 0
+          "altKm": 15
         },
         {
           "spot": "foil-foz-arelho",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 169,
-          "altKm": 0
+          "altKm": 15
         },
         {
           "spot": "sao-martinho-porto",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 178,
-          "altKm": 0
+          "altKm": 8
         }
       ],
       "calibrated": 0,
@@ -735,30 +391,30 @@
         {
           "spot": "obidos-lagoon",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 166,
-          "altKm": 0
+          "altKm": 18
         },
         {
           "spot": "praia-del-rey",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 166,
-          "altKm": 0
+          "altKm": 20
         },
         {
           "spot": "obidos-lagoon-sul",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 166,
-          "altKm": 0
+          "altKm": 18
         },
         {
           "spot": "obidos-lagoon-foz",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 166,
-          "altKm": 0
+          "altKm": 18
         }
       ],
       "calibrated": 0,
@@ -780,9 +436,9 @@
         {
           "spot": "foz-arelho-beach",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 170,
-          "altKm": 0
+          "altKm": 15
         }
       ],
       "calibrated": 0,
@@ -804,30 +460,30 @@
         {
           "spot": "almagreira",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 166,
-          "altKm": 0
+          "altKm": 22
         },
         {
           "spot": "baleal",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 165,
-          "altKm": 0
+          "altKm": 24
         },
         {
           "spot": "supertubos",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 163,
-          "altKm": 0
+          "altKm": 27
         },
         {
           "spot": "consolacao",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 160,
-          "altKm": 0
+          "altKm": 30
         }
       ],
       "calibrated": 0,
@@ -849,16 +505,16 @@
         {
           "spot": "foz-sizandro",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 138,
-          "altKm": 0
+          "altKm": 53
         },
         {
           "spot": "santa-cruz",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 141,
-          "altKm": 0
+          "altKm": 49
         }
       ],
       "calibrated": 0,
@@ -880,72 +536,72 @@
         {
           "spot": "coxos",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 127,
-          "altKm": 0
+          "altKm": 65
         },
         {
           "spot": "ribeira-ilhas",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 126,
-          "altKm": 0
+          "altKm": 66
         },
         {
           "spot": "empa",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 126,
-          "altKm": 0
+          "altKm": 67
         },
         {
           "spot": "sao-lourenco",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 125,
-          "altKm": 0
+          "altKm": 67
         },
         {
           "spot": "pedra-branca",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 125,
-          "altKm": 0
+          "altKm": 67
         },
         {
           "spot": "sao-sebastiao",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 124,
-          "altKm": 0
+          "altKm": 68
         },
         {
           "spot": "foz-lizandro",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 121,
-          "altKm": 0
+          "altKm": 71
         },
         {
           "spot": "cave-ericeira",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 124,
-          "altKm": 0
+          "altKm": 68
         },
         {
           "spot": "pescadores-ericeira",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 124,
-          "altKm": 0
+          "altKm": 69
         },
         {
           "spot": "crazy-left",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 123,
-          "altKm": 0
+          "altKm": 69
         }
       ],
       "calibrated": 0,
@@ -967,16 +623,16 @@
         {
           "spot": "praia-grande-sintra",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 111,
-          "altKm": 0
+          "altKm": 85
         },
         {
           "spot": "adraga",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 108,
-          "altKm": 0
+          "altKm": 89
         }
       ],
       "calibrated": 0,
@@ -991,30 +647,16 @@
         "ih-buoy": 3
       },
       "audited": 3,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 1,
       "onlySource": 0,
       "notClosest": [
         {
           "spot": "guincho",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 102,
-          "altKm": 0
-        },
-        {
-          "spot": "parede",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 92,
-          "altKm": 0
-        },
-        {
-          "spot": "carcavelos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 91,
-          "altKm": 0
+          "altKm": 95
         }
       ],
       "calibrated": 0,
@@ -1029,25 +671,10 @@
         "ih-buoy": 2
       },
       "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "seixal-bay",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 92,
-          "altKm": 0
-        },
-        {
-          "spot": "ponta-dos-corvos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 83,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1098,32 +725,10 @@
         "ih-buoy": 3
       },
       "audited": 3,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedIsClosest": 3,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "nova-vaga",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 87,
-          "altKm": 0
-        },
-        {
-          "spot": "sao-joao-caparica",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 87,
-          "altKm": 0
-        },
-        {
-          "spot": "praia-da-rainha",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 84,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1136,39 +741,10 @@
         "ih-buoy": 4
       },
       "audited": 4,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
+      "attachedIsClosest": 4,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "costa-caparica",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 85,
-          "altKm": 0
-        },
-        {
-          "spot": "fonte-telha",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 77,
-          "altKm": 0
-        },
-        {
-          "spot": "trafaria",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 88,
-          "altKm": 0
-        },
-        {
-          "spot": "cova-do-vapor",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 88,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1205,39 +781,10 @@
         "ih-buoy": 4
       },
       "audited": 4,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 4,
+      "attachedIsClosest": 4,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "lagoa-albufeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 67,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-lagoa-albufeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 67,
-          "altKm": 0
-        },
-        {
-          "spot": "praia-lagoa-albufeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 69,
-          "altKm": 0
-        },
-        {
-          "spot": "meco",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 65,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1250,32 +797,10 @@
         "ih-buoy": 3
       },
       "audited": 3,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedIsClosest": 3,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "troia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 64,
-          "altKm": 0
-        },
-        {
-          "spot": "comporta",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 53,
-          "altKm": 0
-        },
-        {
-          "spot": "carvalhal-comporta",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 40,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1288,38 +813,10 @@
         "ih-buoy": 12
       },
       "audited": 12,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 12,
+      "attachedIsClosest": 10,
+      "attachedNotClosest": 2,
       "onlySource": 0,
       "notClosest": [
-        {
-          "spot": "alqueva",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 129,
-          "altKm": 0
-        },
-        {
-          "spot": "melides",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 26,
-          "altKm": 0
-        },
-        {
-          "spot": "sao-torpes",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 11,
-          "altKm": 0
-        },
-        {
-          "spot": "porto-covo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 14,
-          "altKm": 0
-        },
         {
           "spot": "malhao",
           "winner": "ih-buoy",
@@ -1332,48 +829,6 @@
           "winner": "ih-buoy",
           "reason": "ih-only",
           "attachedKm": 26,
-          "altKm": 0
-        },
-        {
-          "spot": "zambujeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 46,
-          "altKm": 0
-        },
-        {
-          "spot": "carvalhal",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 48,
-          "altKm": 0
-        },
-        {
-          "spot": "odeceixe",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 55,
-          "altKm": 0
-        },
-        {
-          "spot": "lagoa-santo-andre",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 22,
-          "altKm": 0
-        },
-        {
-          "spot": "lagoa-sancha",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 16,
-          "altKm": 0
-        },
-        {
-          "spot": "pessegueiro",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 15,
           "altKm": 0
         }
       ],
@@ -1389,18 +844,10 @@
         "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ilha-do-ermal",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 78,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1413,18 +860,10 @@
         "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "sines",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 6,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1475,32 +914,10 @@
         "ih-buoy": 3
       },
       "audited": 3,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 3,
+      "attachedIsClosest": 3,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "amoreira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 64,
-          "altKm": 0
-        },
-        {
-          "spot": "monte-clerigo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 65,
-          "altKm": 0
-        },
-        {
-          "spot": "vale-figueiras",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 75,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1513,86 +930,44 @@
         "ih-buoy": 11
       },
       "audited": 11,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 11,
+      "attachedIsClosest": 6,
+      "attachedNotClosest": 5,
       "onlySource": 0,
       "notClosest": [
         {
-          "spot": "arrifana",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 70,
-          "altKm": 0
-        },
-        {
           "spot": "vila-real-santo-antonio",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 155,
-          "altKm": 0
+          "altKm": 89
         },
         {
           "spot": "monte-gordo",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 154,
-          "altKm": 0
+          "altKm": 89
         },
         {
           "spot": "praia-verde",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 150,
-          "altKm": 0
+          "altKm": 91
         },
         {
           "spot": "altura",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 151,
-          "altKm": 0
-        },
-        {
-          "spot": "alvor",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 93,
-          "altKm": 0
-        },
-        {
-          "spot": "foil-alvor",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 93,
-          "altKm": 0
-        },
-        {
-          "spot": "lagos-wakepark",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 94,
-          "altKm": 0
+          "altKm": 90
         },
         {
           "spot": "barrinha-faro",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 134,
-          "altKm": 0
-        },
-        {
-          "spot": "canavial",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 101,
-          "altKm": 0
-        },
-        {
-          "spot": "armacao-pera",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 104,
-          "altKm": 0
+          "altKm": 105
         }
       ],
       "calibrated": 0,
@@ -1607,25 +982,10 @@
         "ih-buoy": 2
       },
       "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "bordeira",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 80,
-          "altKm": 0
-        },
-        {
-          "spot": "amado",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 84,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1638,46 +998,10 @@
         "ih-buoy": 5
       },
       "audited": 5,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 5,
+      "attachedIsClosest": 5,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "barriga",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 91,
-          "altKm": 0
-        },
-        {
-          "spot": "castelejo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 93,
-          "altKm": 0
-        },
-        {
-          "spot": "burgau",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 96,
-          "altKm": 0
-        },
-        {
-          "spot": "salema",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 96,
-          "altKm": 0
-        },
-        {
-          "spot": "cordoama",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 97,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1690,25 +1014,10 @@
         "ih-buoy": 2
       },
       "audited": 2,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 2,
+      "attachedIsClosest": 2,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "luz",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 94,
-          "altKm": 0
-        },
-        {
-          "spot": "lagos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 93,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1721,18 +1030,10 @@
         "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "ferragudo",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 96,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1745,18 +1046,10 @@
         "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "praia-rocha",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 96,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1769,46 +1062,10 @@
         "ih-buoy": 5
       },
       "audited": 5,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 5,
+      "attachedIsClosest": 5,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "beliche",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 99,
-          "altKm": 0
-        },
-        {
-          "spot": "martinhal",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 100,
-          "altKm": 0
-        },
-        {
-          "spot": "zavial",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 98,
-          "altKm": 0
-        },
-        {
-          "spot": "tonel",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 102,
-          "altKm": 0
-        },
-        {
-          "spot": "mareta",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 102,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1828,9 +1085,9 @@
         {
           "spot": "fuseta",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 143,
-          "altKm": 0
+          "altKm": 93
         }
       ],
       "calibrated": 0,
@@ -1852,37 +1109,37 @@
         {
           "spot": "ilha-faro",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 134,
-          "altKm": 0
+          "altKm": 106
         },
         {
           "spot": "faro-mar",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 131,
-          "altKm": 0
+          "altKm": 109
         },
         {
           "spot": "culatra",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 142,
-          "altKm": 0
+          "altKm": 96
         },
         {
           "spot": "armona",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 142,
-          "altKm": 0
+          "altKm": 94
         },
         {
           "spot": "garrão",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 136,
-          "altKm": 0
+          "altKm": 104
         }
       ],
       "calibrated": 0,
@@ -1904,16 +1161,16 @@
         {
           "spot": "ilha-tavira",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 147,
-          "altKm": 0
+          "altKm": 91
         },
         {
           "spot": "cabanas-tavira",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 147,
-          "altKm": 0
+          "altKm": 91
         }
       ],
       "calibrated": 0,
@@ -1935,9 +1192,9 @@
         {
           "spot": "cacela-velha",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 149,
-          "altKm": 0
+          "altKm": 90
         }
       ],
       "calibrated": 0,
@@ -2081,9 +1338,9 @@
         {
           "spot": "areia-branca",
           "winner": "ih-buoy",
-          "reason": "ih-only",
+          "reason": "ih-fresh",
           "attachedKm": 153,
-          "altKm": 0
+          "altKm": 35
         }
       ],
       "calibrated": 0,
@@ -2098,18 +1355,10 @@
         "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "falesia",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 116,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -2122,18 +1371,10 @@
         "ih-buoy": 1
       },
       "audited": 1,
-      "attachedIsClosest": 0,
-      "attachedNotClosest": 1,
+      "attachedIsClosest": 1,
+      "attachedNotClosest": 0,
       "onlySource": 0,
-      "notClosest": [
-        {
-          "spot": "tres-irmaos",
-          "winner": "ih-buoy",
-          "reason": "ih-only",
-          "attachedKm": 93,
-          "altKm": 0
-        }
-      ],
+      "notClosest": [],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -2188,7 +1429,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-25T00:16:33.759Z",
+  "regionsAuditedAt": "2026-09-25T05:14:24.045Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
@@ -2198,104 +1439,34 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 413,
+      "n": 417,
       "meanDeltaM": 0,
       "meanAbsDeltaM": 0.3,
       "maxAbsDeltaM": 1.3,
-      "corr": 0.71,
+      "corr": 0.72,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-24T17",
+      "lastHour": "2026-09-25T03",
       "hours": [
         {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.8896499872207642,
-          "hour": "2026-09-24T00"
+          "6200084": 1.1699999570846558,
+          "6200199": 0.9960899949073792,
+          "hour": "2026-09-25T00"
         },
         {
-          "6200084": 1.8799999952316284,
-          "6200199": 1.7431600093841553,
-          "hour": "2026-09-24T01"
+          "6200084": 1.1699999570846558,
+          "6200199": 1.0839799642562866,
+          "hour": "2026-09-25T01"
         },
         {
-          "6200084": 2.3399999141693115,
-          "6200199": 1.8603500127792358,
-          "hour": "2026-09-24T02"
+          "6200084": 1.0499999523162842,
+          "6200199": 1.0986299514770508,
+          "hour": "2026-09-25T02"
         },
         {
-          "6200084": 1.8799999952316284,
-          "6200199": 1.8310500383377075,
-          "hour": "2026-09-24T03"
-        },
-        {
-          "6200084": 1.8799999952316284,
-          "6200199": 1.7431600093841553,
-          "hour": "2026-09-24T04"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.7138700485229492,
-          "hour": "2026-09-24T05"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.6992199420928955,
-          "hour": "2026-09-24T06"
-        },
-        {
-          "6200084": 1.5199999809265137,
-          "6200199": 1.9189499616622925,
-          "hour": "2026-09-24T07"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.7871099710464478,
-          "hour": "2026-09-24T08"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.6992199420928955,
-          "hour": "2026-09-24T09"
-        },
-        {
-          "6200084": 1.5199999809265137,
-          "6200199": 1.7724599838256836,
-          "hour": "2026-09-24T10"
-        },
-        {
-          "6200084": 1.409999966621399,
-          "6200199": 1.8603500127792358,
-          "hour": "2026-09-24T11"
-        },
-        {
-          "6200084": 1.7599999904632568,
-          "6200199": 1.4941400289535522,
-          "hour": "2026-09-24T12"
-        },
-        {
-          "6200084": 1.409999966621399,
-          "6200199": 1.5527299642562866,
-          "hour": "2026-09-24T13"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.5380899906158447,
-          "hour": "2026-09-24T14"
-        },
-        {
-          "6200084": 1.6399999856948853,
-          "6200199": 1.4208999872207642,
-          "hour": "2026-09-24T15"
-        },
-        {
-          "6200084": 1.5199999809265137,
-          "6200199": 1.4355499744415283,
-          "hour": "2026-09-24T16"
-        },
-        {
-          "6200084": 1.2899999618530273,
-          "6200199": 1.5087900161743164,
-          "hour": "2026-09-24T17"
+          "6200084": 1.0499999523162842,
+          "6200199": 1.0986299514770508,
+          "hour": "2026-09-25T03"
         }
       ]
     }
