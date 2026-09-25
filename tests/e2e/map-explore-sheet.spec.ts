@@ -82,8 +82,12 @@ async function chromeCoverage(page: Page, chromeSelector: string, edge: 'bottom'
 
 /** Score de uma linha da lista (chip mono à esquerda). */
 async function rowScore(row: ReturnType<Page['locator']>): Promise<number> {
-  const txt = await row.locator('span').first().innerText();
-  return Number(txt.trim());
+  // M7-F: as linhas têm content-visibility:auto — fora do scrollport o
+  // browser salta o render da subtree e innerText pode devolver '' mesmo
+  // após scrollIntoView (a a11y tree mantém sempre o texto). textContent
+  // lê o DOM directamente — a visibilidade da linha já é assertada à parte.
+  const txt = await row.locator('span').first().textContent();
+  return Number((txt ?? '').trim());
 }
 
 /**
