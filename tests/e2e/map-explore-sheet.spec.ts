@@ -12,7 +12,9 @@ import { expandMapHudFilters } from './helpers/map-hud';
  *  1. MESMA FONTE DE SCORE — a linha da lista, o peek «Melhor agora» e o
  *     marcador mostram o mesmo número (getBestScore com a hora activa).
  *  2. «Melhor agora» = a linha do topo = o marcador de maior score na vista.
- *  3. Deep link ?spot= abre a lista com a linha correspondente focada.
+ *  3. Deep link ?spot= abre a pré-visualização do spot (UX v3: cartão no
+ *     desktop, sheet no mobile — a linha focada continua a existir no
+ *     painel desktop via focusSpotId).
  *  4. Atribuição (OSM/CARTO/Open-Meteo) sempre visível — dentro do sheet em
  *     TODOS os estados e no rodapé do painel desktop.
  *  5. A lista segue o viewport — um pan/zoom reordena/reduz as linhas.
@@ -207,7 +209,7 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     const sheet = page.locator('[data-explore-sheet]');
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'half', { timeout: 15_000 });
     await page.locator('[data-sheet-grabber]').click(); // → open
-    const row = page.locator('[data-spot-id="nazare"]');
+    const row = page.locator('[role="option"][data-spot-id="nazare"]');
     await expect(row).toBeVisible({ timeout: 15_000 });
     expect(await rowScore(row)).toBe(20);
 
@@ -222,13 +224,13 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     expect(await rowScore(row)).toBe(88);
   });
 
-  test('deep link ?spot= abre a lista com a linha focada', async ({ page }) => {
+  test('deep link ?spot= abre a pré-visualização do spot (v3)', async ({ page }) => {
+    // UX v3 (M4): o deep link abre o sheet do spot — a lista com a linha
+    // focada era o comportamento da variante anterior (popup Leaflet).
     await openMapa(page, '?spot=nazare');
-    const sheet = page.locator('[data-explore-sheet]');
-    await expect(sheet).toHaveAttribute('data-explore-sheet', 'open', { timeout: 20_000 });
-    const row = page.locator('[data-spot-id="nazare"]');
-    await expect(row).toBeVisible({ timeout: 15_000 });
-    await expect(row).toBeFocused();
+    const sheet = page.locator('[data-testid="map-spot-sheet"]');
+    await expect(sheet).toBeVisible({ timeout: 20_000 });
+    await expect(sheet).toContainText('Nazaré');
   });
 
   test('a lista segue o viewport — zoom sobre o oeste reduz as linhas', async ({ page }) => {
@@ -274,19 +276,21 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
   });
 
   test('teclado: ↑/↓ navegam entre linhas da lista', async ({ page }) => {
-    await openMapa(page, '?spot=nazare');
-    await expect(page.locator('[data-explore-sheet]')).toHaveAttribute(
-      'data-explore-sheet', 'open', { timeout: 20_000 });
-    const focused = page.locator('[data-spot-id="nazare"]');
-    await expect(focused).toBeFocused();
-
-    const idx = Number(await focused.getAttribute('data-row-index'));
-    const last = (await page.getByRole('option').count()) - 1;
-    // Se a linha focada for a última, sobe; senão desce.
-    await page.keyboard.press(idx === last ? 'ArrowUp' : 'ArrowDown');
+    await openMapa(page);
+    const sheet = page.locator('[data-explore-sheet]');
+    await page.locator('[data-sheet-grabber]').click(); // peek → half
+    await page.locator('[data-sheet-grabber]').click(); // half → open
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'open', { timeout: 20_000 });
+    const rows = page.getByRole('option');
+    expect(await rows.count()).toBeGreaterThan(1);
+    // O clique abriria a pré-visualização do spot (v3) — a cobertura de
+    // teclado foca a primeira linha directamente e navega com as setas.
+    await rows.first().focus();
+    await page.keyboard.press('ArrowDown');
     const moved = page.locator('[data-explore-sheet] [role="option"]:focus');
-    await expect(moved).toHaveAttribute(
-      'data-row-index', String(idx === last ? last - 1 : idx + 1));
+    await expect(moved).toHaveAttribute('data-row-index', '1');
+    await page.keyboard.press('ArrowUp');
+    await expect(moved).toHaveAttribute('data-row-index', '0');
   });
 });
 
@@ -309,14 +313,30 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
     await openMapa(page);
     const panel = page.locator('[data-map-panel="open"]');
     await expect(panel).toBeVisible({ timeout: 20_000 });
-    const rows = panel.getByRole('option');
-    const count = await rows.count();
-    expect(count).toBeGreaterThan(0);
+    // [role="option"] explícito — getByRole('option') também apanha os
+    // <option> nativos dos selects Região/Nível (score «0» fantasma).
+    const rows = panel.locator('[role="listbox"] [role="option"]');
+    expect(await rows.count()).toBeGreaterThan(0);
 
-    const scores: number[] = [];
-    for (let i = 0; i < count; i += 1) {
-      scores.push(await rowScore(rows.nth(i)));
-    }
+    // Leitura em lote — um innerText por linha (~114) estourava o timeout
+    // do teste em ida-e-volta CDP. E a lista ainda assenta enquanto o fit
+    // inicial do mapa decorre: duas leituras iguais a 400 ms de distância
+    // garantem um instantâneo estável antes da asserção de ordenação.
+    const collect = () =>
+      rows.evaluateAll((els) =>
+        els.map((r) => Number((r.querySelector('span')?.textContent ?? '').trim())));
+    let scores = await collect();
+    await expect
+      .poll(
+        async () => {
+          const cur = await collect();
+          const stable = JSON.stringify(cur) === JSON.stringify(scores);
+          scores = cur;
+          return stable;
+        },
+        { timeout: 20_000, intervals: [400] },
+      )
+      .toBe(true);
     const sorted = [...scores].sort((a, b) => b - a);
     expect(scores).toEqual(sorted);
     // O topo do painel = maior score visível nos marcadores.
@@ -331,12 +351,12 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
     expect(scores[0]).toBe(maxMarker);
   });
 
-  test('clique numa linha abre o popup do marcador', async ({ page }) => {
+  test('clique numa linha abre a pré-visualização do spot (cartão v3)', async ({ page }) => {
     await openMapa(page);
     const row = page.locator('[data-map-panel] [data-spot-id]').first();
     await expect(row).toBeVisible({ timeout: 20_000 });
     await row.click();
-    await expect(page.locator('.leaflet-popup')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('[data-testid="map-spot-card"]')).toBeVisible({ timeout: 15_000 });
   });
 
   test('deep link ?spot= foca a linha no painel', async ({ page }) => {
@@ -346,10 +366,36 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
     await expect(row).toBeFocused();
   });
 
-  test('atribuição no rodapé do painel (sempre visível)', async ({ page }) => {
+  test('atribuição uma só vez — controlo Leaflet desviado do painel, sem espelho no rodapé', async ({ page }) => {
     await openMapa(page);
-    const attr = page.locator('[data-panel-attribution]');
+    // M6 (CORRECCOES-24SET §1): o espelho textual do painel foi removido —
+    // a atribuição é só o controlo Leaflet, desviado para a direita do
+    // painel aberto via --map-panel-offset. O teste antigo pedia o
+    // «data-panel-attribution» visível — contrato substituído.
+    await expect(page.locator('[data-panel-attribution]')).toHaveCount(0);
+    const attr = page.locator('.leaflet-control-attribution');
+    await expect(attr).toHaveCount(1);
     await expect(attr).toBeVisible({ timeout: 20_000 });
     await expect(attr).toContainText(/OpenStreetMap|CARTO|Open-Meteo/);
+    // O painel aberto e o controlo podem ser re-montados durante o settle
+    // do mapa — boundingBox() devolvia null na corrida. Mede-se em evaluate
+    // com poll até a geometria estabilizar: attr.left > borda do painel.
+    const panelEl = page.locator('[data-map-panel="open"]');
+    await expect(panelEl).toBeVisible({ timeout: 20_000 });
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const a = document.querySelector('.leaflet-control-attribution');
+            const p = document.querySelector('[data-map-panel="open"]');
+            if (!a || !p) return -1;
+            const ab = a.getBoundingClientRect();
+            const pb = p.getBoundingClientRect();
+            if (ab.width === 0 || pb.width === 0) return -1;
+            return ab.left - pb.right;
+          }),
+        { timeout: 20_000 },
+      )
+      .toBeGreaterThan(0);
   });
 });

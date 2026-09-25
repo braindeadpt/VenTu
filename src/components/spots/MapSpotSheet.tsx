@@ -3,9 +3,12 @@
 import { getTranslation } from '@/lib/i18n';
 import { localizedSpotName } from '@/lib/localizedSpotText';
 import { useEffect, useRef } from 'react';
-import { X } from 'lucide-react';
+import { ArrowLeft, X } from 'lucide-react';
 import type { GridSportFilter } from '@/lib/sportRatings';
-import MapSpotPreview, { type MapSpotPreviewData } from '@/components/spots/MapSpotPreview';
+import {
+  SpotCardContent,
+  type MapSpotPreviewData,
+} from '@/components/spots/MapSpotPreview';
 
 export type MapSpotSheetData = MapSpotPreviewData;
 
@@ -14,6 +17,12 @@ interface MapSpotSheetProps {
   selectedSport: GridSportFilter;
   locale: string;
   onClose: () => void;
+  /** UX v3 — «←» volta à lista de spots do viewport sem fechar o sheet. */
+  onBackToList?: () => void;
+  /** Score à hora activa das 48 h (mantém o cartão em sync com o marcador). */
+  scoreOverride?: number;
+  hoursFrame?: number;
+  hourLabel?: string;
   onViewSpot?: (spotId: string) => void;
 }
 
@@ -22,12 +31,15 @@ export default function MapSpotSheet({
   selectedSport,
   locale,
   onClose,
+  onBackToList,
+  scoreOverride,
+  hoursFrame,
+  hourLabel,
   onViewSpot,
 }: MapSpotSheetProps) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const dragStartYRef = useRef<number | null>(null);
-  const isPt = locale === 'pt';
 
   // Swipe-to-dismiss no handle: arrastar para baixo ≥96px fecha o sheet;
   // soltar antes devolve o painel com a transição CSS de volta.
@@ -86,63 +98,71 @@ export default function MapSpotSheet({
   }, [data, onClose]);
 
   if (!data) return null;
-  // The sheet is a modal: it must stack ABOVE the map HUD card (z-[1100], MapExploreHud)
-  // and the HUD filter panel (z-[1200]) — otherwise the bottom action row
-  // (Como chegar / Ver spot) slides up underneath the HUD bar and taps land on
-  // the HUD instead of the buttons. Backdrop z-[1200], panel z-[1201].
+
+  // UX v3: sem backdrop — o mapa continua clicável atrás do sheet (a maquete
+  // não tem scrim; tocar noutro marcador troca o spot em preview). O painel
+  // fica acima do HUD do mapa (z-[1100]) e do painel de filtros (z-[1200]).
+  const t = getTranslation(locale);
 
   return (
-    <>
-      <button
-        type="button"
-        className="absolute inset-0 z-[1200] bg-black/30 motion-reduce:transition-none transition-opacity duration-200"
-        aria-label={getTranslation(locale).homepage.close}
-        onClick={onClose}
-      />
+    <div
+      ref={panelRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="map-spot-sheet-title"
+      data-testid="map-spot-sheet"
+      className="absolute inset-x-0 bottom-0 z-[1201] max-h-[min(85dvh,640px)] overflow-y-auto rounded-t-2xl border-t border-divider bg-bg-elevated shadow-modal pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none transition-transform duration-200 ease-out"
+    >
       <div
-        ref={panelRef}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="map-spot-sheet-title"
-        data-testid="map-spot-sheet"
-        className="absolute inset-x-0 bottom-0 z-[1201] max-h-[min(85dvh,640px)] overflow-y-auto rounded-t-2xl border-t border-divider bg-bg-elevated shadow-modal pb-[max(1rem,env(safe-area-inset-bottom))] motion-reduce:transition-none transition-transform duration-200 ease-out"
+        className="flex justify-center pt-2 pb-1 sticky top-0 bg-bg-elevated z-10 touch-none cursor-grab active:cursor-grabbing"
+        aria-hidden
+        onPointerDown={onHandlePointerDown}
+        onPointerMove={onHandlePointerMove}
+        onPointerUp={onHandlePointerUp}
+        onPointerCancel={onHandlePointerUp}
       >
-        <div
-          className="flex justify-center pt-2 pb-1 sticky top-0 bg-bg-elevated z-10 touch-none cursor-grab active:cursor-grabbing"
-          aria-hidden
-          onPointerDown={onHandlePointerDown}
-          onPointerMove={onHandlePointerMove}
-          onPointerUp={onHandlePointerUp}
-          onPointerCancel={onHandlePointerUp}
-        >
-          <div className="w-8 h-1 rounded-full bg-fg-subtle/30" />
-        </div>
-
-        <div className="px-4 pt-1 pb-4">
-          <div className="flex justify-end mb-2">
-            <button
-              ref={closeRef}
-              type="button"
-              onClick={onClose}
-              className="p-2 rounded-input hover:bg-surface-1/[0.04] text-fg-muted hover:text-fg transition-colors duration-150 min-h-[44px] min-w-[44px] flex items-center justify-center"
-              aria-label={getTranslation(locale).homepage.close}
-            >
-              <X className="w-4 h-4" aria-hidden />
-            </button>
-          </div>
-
-          <div id="map-spot-sheet-title" className="sr-only">
-            {localizedSpotName(data.spot, locale)}
-          </div>
-
-          <MapSpotPreview
-            data={data}
-            locale={locale}
-            highlightSport={selectedSport}
-            onViewSpot={() => onViewSpot?.(data.spot.id)}
-          />
-        </div>
+        <div className="w-8 h-1 rounded-full bg-fg-subtle/30" />
       </div>
-    </>
+
+      <div className="px-4 pt-1 pb-4">
+        <div className="flex items-center justify-between mb-2 -ml-2">
+          {onBackToList ? (
+            <button
+              type="button"
+              onClick={onBackToList}
+              className="min-h-[44px] flex items-center gap-1 px-2 rounded-input text-fg-muted hover:text-fg hover:bg-surface-1/[0.04] transition-colors duration-150"
+            >
+              <ArrowLeft className="w-4 h-4" aria-hidden />
+              <span className="text-body-sm">{t.mapUiMarkers.backToList}</span>
+            </button>
+          ) : (
+            <span />
+          )}
+          <button
+            ref={closeRef}
+            type="button"
+            onClick={onClose}
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center rounded-input hover:bg-surface-1/[0.04] text-fg-muted hover:text-fg transition-colors duration-150"
+            aria-label={t.homepage.close}
+          >
+            <X className="w-4 h-4" aria-hidden />
+          </button>
+        </div>
+
+        <div id="map-spot-sheet-title" className="sr-only">
+          {localizedSpotName(data.spot, locale)}
+        </div>
+
+        <SpotCardContent
+          data={data}
+          locale={locale}
+          highlightSport={selectedSport}
+          scoreOverride={scoreOverride}
+          hoursFrame={hoursFrame}
+          hourLabel={hourLabel}
+          onViewSpot={() => onViewSpot?.(data.spot.id)}
+        />
+      </div>
+    </div>
   );
 }

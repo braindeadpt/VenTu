@@ -31,7 +31,7 @@ Por ordem: [+][−] (só com pointer:fine) · Localizar · Camadas · Vento (tog
 - Enquanto a hora escolhida não for «agora», o pill mostra «qui 16:00» em --verdict e os marcadores mostram os scores dessa hora.
 
 ## 4. Legenda (toggle)
-- Cartão compacto no canto inferior direito: 5 amostras DISCRETAS com os rótulos canónicos (getScoreTierLabel) e intervalos: ÉPICO 80–100 · BOM 60–79 · FUN 40–59 · FLAT 20–39 · FECHADO 0–19.
+- Cartão compacto no canto inferior direito: 5 amostras DISCRETAS com os rótulos canónicos (getScoreTierLabel) e intervalos: ÉPICO 80–100 · BOM 60–79 · RAZOÁVEL 40–59 · FRACO 20–39 · FECHADO 0–19. (CORRECCOES-24SET p.6: ficam os rótulos do código, usados no site inteiro — a maquete, que dizia FUN/FLAT, perde neste ponto.)
 - Com o vento ligado, junta a legenda de vento com amostras de traço reais (a mesma cor e espessura das partículas) para 5 / 15 / 25+ kt.
 - Com camadas de mar ligadas (Hs, SST, correntes), cada uma junta a sua mini-escala.
 - Por defeito aberta no desktop e fechada no mobile. Lembrada em localStorage (try/catch).
@@ -67,8 +67,8 @@ Sheet mobile (3 estados, snap):
 - **Hover** (desktop): scale 1.08 + tooltip com o nome, em 120 ms.
 - **Seleccionado:** scale 1.15 + anel exterior de 3 px accent + z-index no topo.
 - **Cluster:** círculo com a mesma linguagem: anel de 3 px na cor do escalão do MELHOR filho, interior neutro, melhor score ao centro, contagem num badge de 18 px. Diâmetro 38 / 44 / 50 conforme a contagem (<10 / <50 / ≥50). Igual no mobile e no desktop.
-- **Clustering:** desktop maxClusterRadius 40, disableClusteringAtZoom 9; mobile 52 / 9. Aceitação: no arranque, desktop 1440×900 com «Todas», ≥ 40 % dos spots visíveis individualmente; mobile 390×844, ≥ 1 marcador individual por região (Norte, Centro, Lisboa, Alentejo, Algarve).
-- Clique num cluster: zoomToBounds animado (Leaflet animate true, 400 ms); spiderfy no zoom máximo.
+- **Clustering (implementado como LOD por colisão, não markercluster):** dois níveis de detalhe — marcador completo ou ponto de 10 px — decididos por colisão entre centros (distância Chebyshev). Raio de colisão: 40 px no desktop e 44 px no mobile abaixo de z8.5; 38 px a partir de z8.5. Os pontos que colidem formam um grupo: o representante é o de maior score e leva o badge «+N» com a contagem dos escondidos. Aceitação: no arranque, desktop 1440×900 com «Todas», ≥ 40 % dos spots visíveis individualmente; mobile 390×844, ≥ 1 marcador individual por região (Norte, Centro, Lisboa, Alentejo, Algarve).
+- Clique num grupo «+N»: flyToBounds animado (400 ms); no zoom máximo os membros aparecem como marcadores completos.
 - Entrada de marcadores ao mudar filtros/hora: opacity 0→1 em 150 ms, sem mexer na posição.
 
 ## 7. Pré-visualização de spot
@@ -117,3 +117,18 @@ prefers-reduced-motion: sem flyTo (setView), sem stagger, o sheet faz cross-fade
 - Todos os toggles com aria-pressed; todos os controlos com nome acessível; alvos ≥ 44 px.
 - A atribuição aparece uma vez e visível (a licença obriga).
 - Legenda com os rótulos canónicos (teste).
+
+## 13. Estado de implementação (M6 — integração)
+
+Branch `map-v3/integration`. Merges `--no-ff` das branches aprovadas: chrome `4f7b8416e` (map-v3/chrome `29f5ae04b`), explore `e5be3946e` (map-v3/explore `46172db75`), markers `9fd12961e` (map-v3/markers `c053dd912`), layers `1b33afb7d` (map-v3/layers `790f98db0`). Conflitos documentados em `_audit/m6/MERGE-CONFLITOS.md`.
+
+Implementado conforme §1–§11, com estes desvios aceites (CORRECCOES-24SET p.6–7):
+- Rótulos de escalão: os do código (`getScoreTierLabel`), não FUN/FLAT da maquete.
+- Raio de colisão mobile 44 px (maquete: 52); colisão Chebyshev, não euclidiana.
+- Legenda escondida no mobile quando a faixa útil fica < 120 px.
+- Cabeçalho 48 + 1 px de borda.
+- Agrupamento por LOD de colisão (§6) em vez de markercluster — a forma visual do grupo mantém-se a da maquete.
+
+Desvio residual registado para adjudicação: o sheet mobile flutua 8 px acima da borda inferior (`bottom-2`) com raio de 8 px (`rounded-card`, token do design system) nos quatro cantos; a maquete encosta o sheet ao fundo (`bottom:0`) com raio de 18 px só em cima.
+
+Performance §12 medida (4× CPU, long tasks durante o pan): vento ligado máx. 139 ms (banda aceite 109–209), vento desligado máx. 105 ms na 1.ª corrida e 0 ms na repetição (banda 54–104; valor fronteiriço, sem tarefas > 50 ms na 2.ª passagem). 0 erros de consola. Detalhe completo em `_audit/m6/RELATORIO-M6.md`; comparação par-a-par com os 14 screenshots em `_audit/m6/comparacao/` (maquete em `maquete/`, diffs em `diff/`, lado-a-lado em `sxs/`).

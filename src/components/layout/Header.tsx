@@ -118,6 +118,11 @@ export default function Header({ locale }: HeaderProps) {
 
   const navLabel = t.nav;
 
+  // UX v3 §1 — no /mapa o header compacta para 48 px e perde a nav desktop:
+  // a área de mapa fica livre para o cromo. O menu hamburger e a drawer
+  // mobile ficam disponíveis em todas as larguras (a maquete mostra-os).
+  const isMapPage = pathUnder(pathname, locale, 'mapa');
+
   const isActive = (href: string) => pathname === href.split('?')[0];
 
   const handleLocaleChange = useCallback(
@@ -249,21 +254,33 @@ export default function Header({ locale }: HeaderProps) {
       <header
         className="site-header fixed top-0 left-0 right-0 z-[1300] bg-bg-base/95 backdrop-blur-md border-b border-divider transition-[background,border-color] duration-slow"
         onKeyDown={handleKeyDown}
+        data-header-compact={isMapPage ? 'true' : undefined}
       >
         <div className="max-w-7xl mx-auto pl-[max(1.25rem,env(safe-area-inset-left))] pr-[max(1.25rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
-          <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 lg:gap-x-4 2xl:gap-x-6 h-16">
-            <Link
-              href={`/${locale}/`}
-              className="flex items-center gap-2 group shrink-0 relative z-20"
-            >
-              <Wind className="w-7 h-7 sm:w-8 sm:h-8 text-accent group-hover:text-accent-hover transition-colors shrink-0" />
-              <span className="text-lg sm:text-xl font-bold text-fg tracking-tight">
-                Ven<span className="text-accent">Tu</span>
-              </span>
-            </Link>
+          <div
+            className={`grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 lg:gap-x-4 2xl:gap-x-6 ${
+              isMapPage ? 'h-12' : 'h-16'
+            }`}
+          >
+            <div className="flex items-center gap-2.5 shrink-0 relative z-20 min-w-0">
+              <Link
+                href={`/${locale}/`}
+                className="flex items-center gap-2 group shrink-0"
+              >
+                <Wind className="w-7 h-7 sm:w-8 sm:h-8 text-accent group-hover:text-accent-hover transition-colors shrink-0" />
+                <span className="text-lg sm:text-xl font-bold text-fg tracking-tight">
+                  Ven<span className="text-accent">Tu</span>
+                </span>
+              </Link>
+              {isMapPage && (
+                <span className="text-sm font-medium text-fg-muted truncate">
+                  {navLabel.mapa}
+                </span>
+              )}
+            </div>
 
             <nav
-              className="hidden lg:flex items-center justify-start gap-0 min-w-0 overflow-visible"
+              className={`${isMapPage ? 'hidden' : 'hidden lg:flex'} items-center justify-start gap-0 min-w-0 overflow-visible`}
               aria-label={navLabel.home}
             >
               <MegaMenu
@@ -296,7 +313,7 @@ export default function Header({ locale }: HeaderProps) {
               </Link>
             </nav>
 
-            <div className="hidden lg:flex items-center gap-0.5 2xl:gap-1 shrink-0 relative z-20 justify-end">
+            <div className={`${isMapPage ? 'hidden' : 'hidden lg:flex'} items-center gap-0.5 2xl:gap-1 shrink-0 relative z-20 justify-end`}>
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center gap-2 min-w-9 h-9 px-2 2xl:px-3 rounded-input text-sm text-fg-subtle hover:text-fg hover:bg-surface-1/[0.04] transition-all"
@@ -317,7 +334,9 @@ export default function Header({ locale }: HeaderProps) {
               />
             </div>
 
-            <div className="flex items-center gap-0.5 lg:hidden shrink-0 col-start-3 justify-end">
+            <div
+              className={`flex items-center gap-0.5 ${isMapPage ? '' : 'lg:hidden'} shrink-0 col-start-3 justify-end`}
+            >
               <button
                 onClick={openSearch}
                 className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
@@ -325,6 +344,7 @@ export default function Header({ locale }: HeaderProps) {
               >
                 <Search className="w-5 h-5" />
               </button>
+              {isMapPage && <ThemeToggle locale={locale} />}
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="inline-flex items-center justify-center w-11 h-11 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors shrink-0"
@@ -345,7 +365,7 @@ export default function Header({ locale }: HeaderProps) {
           aria-label={navLabel.mobileNav}
           onKeyDown={handleMobileKeyDown}
           className={[
-            'lg:hidden overflow-hidden transition-all duration-[300ms] ease-out-expo motion-reduce:transition-none',
+            `${isMapPage ? '' : 'lg:hidden'} overflow-hidden transition-all duration-[300ms] ease-out-expo motion-reduce:transition-none`,
             'bg-bg-base/95 backdrop-blur-xl',
             mobileMenuOpen
               ? 'max-h-[min(85dvh,640px)] border-b border-divider opacity-100 overflow-y-auto'

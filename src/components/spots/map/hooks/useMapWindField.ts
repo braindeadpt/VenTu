@@ -7,13 +7,12 @@ import {
   MAP_WIND_FADE,
   MAP_WIND_PANE,
   MAP_WIND_PANE_Z,
-  MAP_WIND_PARTICLES,
-  MAP_WIND_PARTICLES_MOBILE,
   advectWindParticle,
   buildWindFieldGrids,
   collectWindSamples,
   drawWindParticles,
   spawnWindParticle,
+  windParticleTarget,
   type WindParticle,
 } from '@/lib/mapWindField';
 import type { FieldSpot } from '@/lib/mapHsField';
@@ -80,7 +79,6 @@ export function useMapWindField({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef(0);
   const particlesRef = useRef<WindParticle[]>([]);
-  const zoomRafRef = useRef(0);
   const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion);
   // Reage a mudanças do SO/browser sem reload — antes ficava congelado no
   // valor do mount.
@@ -153,8 +151,9 @@ export function useMapWindField({
     // Cor segue o tema — antes era lida uma vez no mount e ficava presa ao
     // tema inicial até o layer ser re-ligado.
     const colorRef = { current: cssRgbToken(host, '--data-wind', '167 139 250') };
-    const budget = isMobile ? MAP_WIND_PARTICLES_MOBILE : MAP_WIND_PARTICLES;
     const particles = particlesRef.current;
+    // §9 — o pool ajusta-se ao zoom em vez de um budget fixo (denso em z alto).
+    const particleTarget = () => windParticleTarget(map.getZoom(), isMobile);
 
     const sizeCanvas = () => {
       const size = map.getSize();
@@ -183,7 +182,8 @@ export function useMapWindField({
     const respawnAll = () => {
       particles.length = 0;
       const view = spawnView();
-      for (let i = 0; i < budget; i++) {
+      const target = particleTarget();
+      for (let i = 0; i < target; i++) {
         const p: WindParticle = { lat: 0, lon: 0, px: 0, py: 0, hasPrev: false, life: 0, kt: 0, jit: 1 };
         if (spawnWindParticle(grids, view, p)) particles.push(p);
       }
@@ -212,7 +212,8 @@ export function useMapWindField({
           const pt = project(p.lat, p.lon);
           if (drawn) {
             const k = s / steps;
-            const a = Math.min(0.7, 0.22 + p.kt / 50) * (1 - k * k);
+            // §9 — mesmo tecto de 45% do modo animado.
+            const a = Math.min(0.45, 0.18 + p.kt / 45) * (1 - k * k);
             ctx.strokeStyle = `rgb(${colorRef.current} / ${a.toFixed(3)})`;
             ctx.lineWidth = (p.kt > 19 ? 1.7 : 1.15) * (1 - k * 0.5);
             ctx.beginPath();
@@ -227,6 +228,33 @@ export function useMapWindField({
       }
     };
 
+    // §9 — fade-out em pan/zoom (gate de performance CORRECCOES-24SET M5):
+    // durante o gesto o canvas desaparece (opacity 0, 200 ms) e o loop NÃO
+    // advecta nem desenha — a M4 media long tasks até 654 ms porque o campo
+    // competia com o compositor a cada frame de pan. Findo o fade o canvas
+    // passa a `visibility:hidden` — um elemento opacity:0 continua a ser
+    // rasterizado (o fill `destination-in` dos trails custa ~50-100 ms a
+    // 4× CPU); hidden tira-o do paint por completo durante o gesto. Ao
+    // assentar espera 600 ms, limpa, respawna no novo framing e volta a 1
+    // (300 ms fade-in) — o intervalo cobre pans encadeados sem restaurar.
+    const interacting = { current: false };
+    let resumeTimer = 0;
+    let watchdogTimer = 0;
+    const setWindVisible = (visible: boolean, fadeMs: number) => {
+      if (visible) {
+        canvas.style.transition = `opacity ${fadeMs}ms linear`;
+        canvas.style.visibility = 'visible';
+        canvas.style.opacity = '1';
+      } else {
+        // Atraso igual ao fade — visibility só vira hidden quando o canvas
+        // já está a 0 (visibility é animável de forma discreta em CSS).
+        canvas.style.transition = `opacity ${fadeMs}ms linear, visibility 0s linear ${fadeMs}ms`;
+        canvas.style.opacity = '0';
+        canvas.style.visibility = 'hidden';
+      }
+      host.setAttribute('data-map-windfield-visible', visible ? 'true' : 'false');
+    };
+
     // Pausa por inactividade — o último frame fica congelado no canvas e o
     // rAF para de ser agendado. `wake` (gesto no mapa, zoom, dados novos)
     // retoma o loop.
@@ -234,11 +262,13 @@ export function useMapWindField({
     let frameAcc = 0;
     let lastT = 0;
     let framesDrawn = 0;
+    let lastTargetAttr = -1;
     const tick = (t: number) => {
       rafRef.current = 0;
       if (idle.paused) return; // congelado — wake() retoma
-      if (document.hidden || isZoomAnimating(map)) {
-        // Continua a agendar — retoma quando visível/anim acabar.
+      if (interacting.current || document.hidden || isZoomAnimating(map)) {
+        // Continua a agendar — retoma quando visível/anim/gesto acabar.
+        // Durante o gesto não se advecta nem desenha (zero trabalho de campo).
         rafRef.current = requestAnimationFrame(tick);
         lastT = t;
         return;
@@ -271,6 +301,18 @@ export function useMapWindField({
 
       const view = spawnView();
       const zoom = map.getZoom();
+      // §9 — densidade por zoom: o pool converge para o alvo do nível actual.
+      const target = windParticleTarget(zoom, isMobile);
+      if (target !== lastTargetAttr) {
+        lastTargetAttr = target;
+        host.setAttribute('data-map-windfield-target', String(target));
+      }
+      if (particles.length > target) particles.length = target;
+      while (particles.length < target) {
+        const np: WindParticle = { lat: 0, lon: 0, px: 0, py: 0, hasPrev: false, life: 0, kt: 0, jit: 1 };
+        if (!spawnWindParticle(grids, view, np)) break;
+        particles.push(np);
+      }
       for (const p of particles) {
         if (!advectWindParticle(grids, p, dt, zoom)) {
           if (!spawnWindParticle(grids, view, p)) {
@@ -313,38 +355,53 @@ export function useMapWindField({
       }
     };
 
-    const onZoomStart = () => {
-      canvas.style.visibility = 'hidden';
+    // §9 — gesto de pan/zoom/drag: esconde (opacity 0, 200 ms) e suspende o
+    // trabalho; ao assentar espera 600 ms e volta com fade-in de 300 ms.
+    // movestart/zoomstart/dragstart cobrem arraste, pinch e fitBounds.
+    // Os 600 ms cobrem gestos encadeados (pan-pausa-pan) sem repintar entre
+    // eles — a M5 mediu ~1 s de raster do campo por stroke extra se o
+    // restore fosse mais curto.
+    const onGestureStart = () => {
+      interacting.current = true;
+      window.clearTimeout(resumeTimer);
+      setWindVisible(false, 200);
+      armWatchdog();
     };
-    const onZoomEnd = () => {
-      zoomRafRef.current = requestAnimationFrame(() => {
-        zoomRafRef.current = requestAnimationFrame(() => {
-          zoomRafRef.current = 0;
-          canvas.style.visibility = '';
-          // novo nível de zoom — trails velhos ficam na escala errada
-          const ctx = canvas.getContext('2d');
-          if (ctx) {
-            const size = map.getSize();
-            ctx.clearRect(0, 0, size.x, size.y);
-          }
-          respawnAll();
-          if (reducedMotion) paintStatic();
-        });
-      });
+    // Watchdog — um gesto que fica sem moveend/zoomend (animação flyTo
+    // interrompida por setView, teardown a meio) deixava o canvas em
+    // `visibility:hidden` para sempre. Se o mapa não emitir nenhum
+    // move/zoomanim durante 2,5 s, o gesto considera-se morto e o campo
+    // restaura pelo caminho normal.
+    const armWatchdog = () => {
+      window.clearTimeout(watchdogTimer);
+      watchdogTimer = window.setTimeout(() => {
+        watchdogTimer = 0;
+        if (interacting.current) onGestureEnd();
+      }, 2500);
     };
-    const onMove = () => {
-      // O fade (destination-in) demora ~1,5 s a matar trails velhos — durante
-      // o pan ficavam «sombras» da posição anterior. Limpar de imediato:
-      // as partículas continuam geo-ancoradas e o campo reconstrói em ms.
-      const ctx = canvas.getContext('2d');
-      if (ctx) {
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-      for (const p of particles) p.hasPrev = false;
-    };
-    const onMoveEnd = () => {
-      if (reducedMotion) paintStatic();
+    const onGestureEnd = () => {
+      window.clearTimeout(watchdogTimer);
+      watchdogTimer = 0;
+      window.clearTimeout(resumeTimer);
+      resumeTimer = window.setTimeout(() => {
+        resumeTimer = 0;
+        interacting.current = false;
+        // trails da vista/escala anterior não valem — repinta do zero.
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+          const size = map.getSize();
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, size.x, size.y);
+        }
+        respawnAll();
+        // Publica já o alvo do novo zoom — não espera pelo próximo frame
+        // desenhado (o loop pode ainda estar a drenar o cap de 30 fps).
+        const t = particleTarget();
+        lastTargetAttr = t;
+        host.setAttribute('data-map-windfield-target', String(t));
+        setWindVisible(true, 300);
+        if (reducedMotion) paintStatic();
+      }, 600);
     };
 
     // A cor segue a classe de tema no <html>; em modo estático repinta já.
@@ -359,16 +416,26 @@ export function useMapWindField({
     });
 
     respawnAll();
-    map.on('zoomstart', onZoomStart);
-    map.on('zoomend', onZoomEnd);
-    map.on('move', onMove);
-    map.on('moveend', onMoveEnd);
+    map.on('movestart', onGestureStart);
+    map.on('zoomstart', onGestureStart);
+    map.on('dragstart', onGestureStart);
+    map.on('moveend', onGestureEnd);
+    map.on('zoomend', onGestureEnd);
+    map.on('dragend', onGestureEnd);
+    // Gesto vivo: qualquer move/zoomanim re-arma o watchdog — só um gesto
+    // parado há 2,5 s (sem evento de fim) é declarado morto.
+    map.on('move', armWatchdog);
+    map.on('zoomanim', armWatchdog);
     // Interacção acorda o campo da pausa por inactividade.
     map.on('movestart', wake);
     map.on('zoomstart', wake);
     host.addEventListener('pointermove', wake, { passive: true });
     host.addEventListener('pointerdown', wake, { passive: true });
     host.addEventListener('touchstart', wake, { passive: true });
+    // §9 — o campo nasce a 0 e entra com fade de 300 ms (não «pisca»).
+    canvas.style.opacity = '0';
+    host.setAttribute('data-map-windfield-visible', 'false');
+    requestAnimationFrame(() => setWindVisible(true, 300));
     if (reducedMotion) paintStatic();
     else {
       lastT = 0;
@@ -379,25 +446,28 @@ export function useMapWindField({
     el.setAttribute('data-map-windfield', 'true');
     el.setAttribute('data-map-windfield-paused', 'false');
     el.setAttribute('data-map-windfield-color', colorRef.current);
+    el.setAttribute('data-map-windfield-target', String(particleTarget()));
 
     return () => {
       themeObs.disconnect();
-      map.off('zoomstart', onZoomStart);
-      map.off('zoomend', onZoomEnd);
-      map.off('move', onMove);
-      map.off('moveend', onMoveEnd);
+      map.off('movestart', onGestureStart);
+      map.off('zoomstart', onGestureStart);
+      map.off('dragstart', onGestureStart);
+      map.off('moveend', onGestureEnd);
+      map.off('zoomend', onGestureEnd);
+      map.off('dragend', onGestureEnd);
+      map.off('move', armWatchdog);
+      map.off('zoomanim', armWatchdog);
       map.off('movestart', wake);
       map.off('zoomstart', wake);
       host.removeEventListener('pointermove', wake);
       host.removeEventListener('pointerdown', wake);
       host.removeEventListener('touchstart', wake);
+      window.clearTimeout(resumeTimer);
+      window.clearTimeout(watchdogTimer);
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = 0;
-      }
-      if (zoomRafRef.current) {
-        cancelAnimationFrame(zoomRafRef.current);
-        zoomRafRef.current = 0;
       }
       const el2 = map.getContainer();
       if (el2) {
@@ -405,6 +475,8 @@ export function useMapWindField({
         el2.removeAttribute('data-map-windfield-paused');
         el2.removeAttribute('data-map-windfield-frames');
         el2.removeAttribute('data-map-windfield-color');
+        el2.removeAttribute('data-map-windfield-visible');
+        el2.removeAttribute('data-map-windfield-target');
       }
     };
   }, [windOn, isReady, grids, isMobile, reducedMotion, mapInstanceRef, LRef]);

@@ -23,16 +23,16 @@ describe('exploreFitPadding', () => {
 
   it('o painel aberto reserva a esquerda e desliga o desvio para oeste', () => {
     const pad = exploreFitPadding('panel-open', false);
-    // inset 8 px + largura 348 px do MapSpotPanel
-    expect(pad.topLeft[0]).toBeGreaterThanOrEqual(8 + 348);
+    // inset 8 px + largura 360 px do MapSpotPanel (§5)
+    expect(pad.topLeft[0]).toBeGreaterThanOrEqual(8 + 360);
     // o desvio empurrava a costa para debaixo do painel
     expect(pad.westShift).toBe(false);
   });
 
   it('o rail recolhido reserva só a sua largura e mantém o desvio', () => {
     const pad = exploreFitPadding('panel-rail', false);
-    expect(pad.topLeft[0]).toBeGreaterThanOrEqual(8 + 48);
-    expect(pad.topLeft[0]).toBeLessThan(8 + 348);
+    expect(pad.topLeft[0]).toBeGreaterThanOrEqual(8 + 56);
+    expect(pad.topLeft[0]).toBeLessThan(8 + 360);
     expect(pad.westShift).toBe(true);
   });
 
