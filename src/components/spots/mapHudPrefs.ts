@@ -20,7 +20,8 @@ export function isMobileViewport(): boolean {
  * (Persisted wind-on + cluster-off freezes /mapa for seconds.)
  * Desktop defaults clustered too: 185 pins + wind rings at country zoom are
  * an unreadable wall — the cluster group already explodes into individual
- * markers as the user zooms in (zoom-aware), so «Mostrar todos» is opt-in.
+ * markers as the user zooms in (zoom-aware), so turning the «Agrupar spots»
+ * toggle off («mostrar todos») is opt-in.
  */
 export function readClusterPref(): boolean {
   if (typeof window === 'undefined') return true;

@@ -710,15 +710,16 @@ export default function SpotMapInteractive({
   }, [warningsData, visibleSpots, locale]);
 
   // ── Labels ──
-  // Camadas: nome do controlo = a CAMADA (constante); o estado vive só no
-  // aria-pressed e na tinta activa. Antes o rótulo alternava («Ocultar vento»
-  // com aria-pressed=true), que o leitor de ecrã anunciava como «Ocultar
-  // vento, premido» — contraditório (auditoria 2026-09-21). A acção «ocultar»
-  // sai do nome. Cluster e «Só a bombar» mantêm o rótulo de modo (o helper
-  // e2e showAllMapMarkers e a UI lêem o modo a partir dele) — fora do âmbito
-  // desta correcção.
+  // Nome do controlo = a CAMADA/modo, constante; o estado vive só no
+  // aria-pressed e na marca visual (tinta no toolbar, visto no sheet). Antes
+  // o rótulo alternava («Ocultar vento», «Mostrar todos») e o leitor de ecrã
+  // anunciava «Ocultar vento, premido» com a camada ligada — contraditório
+  // (auditoria 2026-09-21). O modo de agrupamento passa a seguir a mesma
+  // regra: o nome é o modo («Agrupar spots») e quem diz se está ligado é o
+  // aria-pressed — o ícone continua a virar com o estado porque isso é marca
+  // visual, não nome.
   const exitFullscreenLabel = t.map.exitFullscreen;
-  const clusterLabel = clusterEnabled ? t.map.showAllSpots : t.map.clusterSpots;
+  const clusterLabel = t.map.clusterSpots;
   const windLabel = t.map.showWind;
   const windHint = null;
   const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
@@ -1049,10 +1050,12 @@ export default function SpotMapInteractive({
     {
       key: 'cluster',
       label: clusterLabel,
+      // Forma do ícone = marca visual do estado; nome e aria-pressed (=pressed)
+      // dizem o que o controlo é e se está ligado.
       icon: clusterEnabled
         ? <MapPin className="w-4 h-4" aria-hidden />
         : <Layers className="w-4 h-4" aria-hidden />,
-      pressed: !clusterEnabled,
+      pressed: clusterEnabled,
       onToggle: toggleCluster,
     },
     {

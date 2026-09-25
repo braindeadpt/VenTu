@@ -79,7 +79,8 @@ async function openMapa(
     // clicar — o pick ficava à espera até ao timeout de 60 s do teste (foi
     // assim que o CI #496 e o #499 falharam, com a árvore a mostrar só
     // «Melhor score N · X spots nesta zona»). showAllMapMarkers faz o
-    // caminho documentado: peek → «Mostrar todos» → volta ao peek, e só
+    // caminho documentado: peek → toggle «Agrupar spots» (estado no
+    // aria-pressed) → volta ao peek, e só
     // devolve com os marcadores montados e o mapa parado.
     await showAllMapMarkers(page);
     await expandMapHudFilters(page);

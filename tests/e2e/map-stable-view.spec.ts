@@ -188,7 +188,8 @@ test.describe('Map stable view — mobile 390×844', () => {
 
     // Mobile FORÇA o cluster no arranque (ignora o localStorage) → sem o
     // desfazer pela UI não existe nenhum `.spot-marker` e o toBeAttached
-    // expirava (CI #499). Mesmo caminho documentado: peek → «Mostrar todos».
+    // expirava (CI #499). Mesmo caminho documentado: peek → toggle
+    // «Agrupar spots» (o estado lê-se do aria-pressed, não do texto).
     await waitHydrated(page);
     await showAllMapMarkers(page);
 

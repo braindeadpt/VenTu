@@ -7,7 +7,7 @@ import { preseedWindRingLegend } from './helpers/map-setup';
 import { attachPageHealthCollectors, assertHealthyPage } from './helpers/audit-utils';
 import { expandMapHudFilters } from './helpers/map-hud';
 import { waitHydrated } from './helpers/hydration';
-import { openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
+import { CLUSTER_TOGGLE_NAME, openMapSpotSheet, showAllMapMarkers } from './helpers/map-sheet';
 
 type Viewport = 'desktop' | 'mobile';
 
@@ -142,9 +142,14 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         // Desktop: o toggle flutua no MapControls (visível). Mobile: vive nos
         // extras do SHEET, que só aparece em peek→half — o mesmo caminho que
         // showAllMapMarkers() já faz (grabber, clique, volta ao peek).
-        const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i }).first();
-        if (await showAll.isVisible().catch(() => false)) {
-          await showAll.click();
+        // O nome é o MODO («Agrupar spots»), constante; quem diz se o cluster
+        // está ligado é o aria-pressed, não o texto.
+        const clusterToggle = page
+          .getByRole('button', { name: CLUSTER_TOGGLE_NAME })
+          .filter({ visible: true })
+          .first();
+        if (await clusterToggle.isVisible().catch(() => false)) {
+          await clusterToggle.click();
         } else {
           await showAllMapMarkers(page);
         }
@@ -155,7 +160,10 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         timeout: 15_000,
       });
 
-      const clusterBtn = page.getByRole('button', { name: /Agrupar spots|Cluster spots/i });
+      const clusterBtn = page
+        .getByRole('button', { name: CLUSTER_TOGGLE_NAME })
+        .filter({ visible: true })
+        .first();
       if (await clusterBtn.isVisible()) {
         await clusterBtn.click();
         await expect(mapShell).toHaveAttribute('data-map-cluster', 'true');
@@ -221,7 +229,9 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
 
       if (viewport === 'desktop') {
         await expect(page.locator('[data-map-controls="true"]')).toBeVisible();
-        await expect(page.getByRole('button', { name: /Agrupar spots|Cluster spots|Mostrar todos|Show all/i })).toBeVisible();
+        await expect(
+          page.getByRole('button', { name: CLUSTER_TOGGLE_NAME }).filter({ visible: true }).first(),
+        ).toBeVisible();
       }
 
       await assertHealthyPage(page, health, { strictNetwork: false, strictConsole: false });

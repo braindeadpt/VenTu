@@ -92,6 +92,9 @@ const item =
   'flex h-10 min-w-10 shrink-0 items-center justify-center gap-1.5 rounded-full px-2.5 text-xs font-semibold whitespace-nowrap text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] transition-colors duration-150 touch-manipulation';
 const itemDisabled = 'opacity-40 cursor-not-allowed';
 const active = {
+  // Sem token semântico próprio (cluster): a tinta neutra é a marca visual do
+  // estado, tal como as outras usam a cor da camada.
+  pressed: 'bg-surface-2/[0.12] text-fg',
   wind: 'bg-data-wind/10 text-data-wind',
   radar: 'bg-data-waves/10 text-data-waves',
   hours: 'bg-score-good/10 text-score-good',
@@ -316,13 +319,16 @@ export default function MapControls({
           )}
         </button>
 
+        {/* Nome = modo («Agrupar spots»), constante; estado só no aria-pressed
+            — inverter (aria-pressed={!clusterEnabled}) com o rótulo a alternar
+            fazia o leitor de ecrã anunciar o contrário do que estava ligado. */}
         <button
           type="button"
           onClick={toggleCluster}
-          className={`${item} text-fg`}
+          className={`${item} ${clusterEnabled ? active.pressed : 'text-fg'}`}
           aria-label={clusterLabel}
           title={clusterLabel}
-          aria-pressed={!clusterEnabled}
+          aria-pressed={clusterEnabled}
         >
           {clusterEnabled ? <MapPin className="w-4 h-4 shrink-0" aria-hidden /> : <Layers className="w-4 h-4 shrink-0" aria-hidden />}
           <span className="hidden lg:inline">{clusterLabel}</span>

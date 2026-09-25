@@ -183,7 +183,6 @@ export const translationsDe = {
     mapUnavailable: 'Karte konnte nicht geladen werden',
     fullscreen: 'Vollbild',
     exitFullscreen: 'Vollbild beenden',
-    showAllSpots: 'Alle anzeigen',
     clusterSpots: 'Spots gruppieren',
     showWind: 'Wind',
     hideWind: 'Wind ausblenden',

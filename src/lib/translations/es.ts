@@ -183,7 +183,6 @@ export const translationsEs = {
     mapUnavailable: 'No se pudo cargar el mapa',
     fullscreen: 'Pantalla completa',
     exitFullscreen: 'Salir de pantalla completa',
-    showAllSpots: 'Mostrar todos',
     clusterSpots: 'Agrupar spots',
     showWind: 'Viento',
     hideWind: 'Ocultar viento',

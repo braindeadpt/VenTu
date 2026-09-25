@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import type { Page } from '@playwright/test';
+import { CLUSTER_TOGGLE_NAME } from './helpers/map-sheet';
 import { preseedWindRingLegend } from './helpers/map-setup';
 import { interceptMapHours } from './helpers/conditions';
 import { waitHydrated } from './helpers/hydration';
@@ -87,7 +88,9 @@ async function rowScore(row: ReturnType<Page['locator']>): Promise<number> {
 /**
  * Mobile arranca sempre com cluster (readClusterPref ignora o localStorage
  * em <md) — para ler marcadores individuais há que desligar o agrupamento
- * pelo toggle real «Mostrar todos» no grupo «Ver também» do estado «half».
+ * pelo toggle real no grupo «Ver também» do estado «half». O nome do
+ * controlo é o MODO («Agrupar spots», constante) e o estado lê-se do
+ * aria-pressed — não do texto (auditoria 2026-09-21).
  */
 async function unclusterMarkers(page: Page): Promise<void> {
   const sheet = page.locator('[data-explore-sheet]');
@@ -95,9 +98,13 @@ async function unclusterMarkers(page: Page): Promise<void> {
     await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
     await expect(sheet).toHaveAttribute('data-explore-sheet', 'half');
   }
-  const toggle = page.getByRole('button', { name: /Mostrar todos|Show all/i });
+  const toggle = page
+    .getByRole('button', { name: CLUSTER_TOGGLE_NAME })
+    .filter({ visible: true })
+    .first();
   await expect(toggle).toBeVisible({ timeout: 15_000 });
-  await toggle.click();
+  if ((await toggle.getAttribute('aria-pressed')) === 'true') await toggle.click();
+  await expect(page.locator('[data-map-cluster]').first()).toHaveAttribute('data-map-cluster', 'false');
   // A inserção chunked (8/batch) demora — espera marcadores individuais.
   await expect
     .poll(async () => page.locator('.leaflet-marker-icon.spot-marker').count(), { timeout: 20_000 })

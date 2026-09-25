@@ -125,7 +125,6 @@ export const translationsEn = {
     mapUnavailable: 'Unable to load the map',
     fullscreen: 'Full screen',
     exitFullscreen: 'Exit full screen',
-    showAllSpots: 'Show all',
     clusterSpots: 'Cluster spots',
     showWind: 'Wind',
     hideWind: 'Hide wind',

@@ -14,24 +14,41 @@ export async function waitMapSettled(page: Page) {
 }
 
 /**
- * Desfaz o cluster pelo toggle real do sheet. O mobile força cluster no
- * arranque (ignora o LS), por isso o único caminho é a UI: peek → half →
- * «Mostrar todos», voltando ao peek no fim. Só devolve com o sheet em
- * peek E o mapa parado — o fit depende da altura medida do peek e ainda
+ * Nome ACESSÍVEL do controlo de agrupamento — o MODO, constante em todas as
+ * línguas e superfícies (toolbar, extras do sheet, chip do peek). O estado não
+ * está aqui: está no `aria-pressed` do próprio botão e no `data-map-cluster`
+ * do shell. Antes o nome era a acção («Mostrar todos» quando agrupado), e os
+ * testes que liam o estado do texto deixaram de ser possíveis de escrever sem
+ * ambiguidade (auditoria 2026-09-21).
+ */
+export const CLUSTER_TOGGLE_NAME = /Agrupar spots|Cluster spots|Spots gruppieren|Regrouper les spots/i;
+
+/**
+ * Desfaz o cluster pelo toggle REAL da UI. O mobile força cluster no arranque
+ * (ignora o LS), por isso o único caminho é a UI: peek → half → o chip
+ * «Agrupar spots», voltando ao peek no fim. O clique é decidido pelo estado
+ * (`aria-pressed`), não pelo texto: um toggle já desligado não se toca. Só
+ * devolve com o cluster desfeito (`data-map-cluster=false`), os marcadores
+ * montados e o mapa parado — o fit depende da altura medida do peek e ainda
  * move os marcadores durante a animação.
  */
 export async function showAllMapMarkers(page: Page) {
-  const showAll = page.getByRole('button', { name: /Mostrar todos|Show all/i }).first();
+  const shell = page.locator('[data-map-cluster]').first();
+  const toggle = page.getByRole('button', { name: CLUSTER_TOGGLE_NAME }).filter({ visible: true }).first();
   const sheet = page.locator('[data-explore-sheet]');
   const grabber = page.locator('[data-sheet-grabber]');
-  // Sobe o sheet até aos extras ficarem visíveis (peek→half; open→peek→half).
-  for (let i = 0; i < 2 && !(await showAll.isVisible().catch(() => false)); i += 1) {
+  // Sobe o sheet até o toggle ficar visível (peek→half; open→peek→half).
+  for (let i = 0; i < 2 && !(await toggle.isVisible().catch(() => false)); i += 1) {
     await grabber.click();
   }
-  if (await showAll.isVisible().catch(() => false)) {
-    await showAll.click();
-    await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
+  if ((await toggle.isVisible().catch(() => false)) && (await toggle.getAttribute('aria-pressed')) === 'true') {
+    await toggle.click();
   }
+  // Falha aqui (e depressa) se o cluster continuar ligado sem toggle
+  // alcançável — o caminho antigo deixava passar em silêncio e o teste
+  // morria mais tarde num timeout de marcadores.
+  await expect(shell).toHaveAttribute('data-map-cluster', 'false', { timeout: 15_000 });
+  await page.waitForSelector('.leaflet-marker-icon.spot-marker', { timeout: 30_000 });
   // Volta ao peek mesmo quando o cluster já estava desfeito — no half/open
   // o sheet tapa a faixa de marcadores onde o clique iria cair.
   for (let i = 0; i < 3; i += 1) {
