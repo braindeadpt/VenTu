@@ -97,9 +97,13 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
       await page.waitForSelector('[data-map-hud="visible"]', { timeout: 25_000 });
       await expandMapHudFilters(page);
 
+      // Mapa v3 (M3): a região é um <select> «Região» — painel (desktop) e
+      // sheet (mobile) coexistem no DOM, conta o que está visível.
+      const regionSelect = () =>
+        page.getByLabel('Região', { exact: true }).filter({ visible: true });
       await page.getByRole('button', { name: 'Kitesurf', exact: true }).click();
       await expect(page).toHaveURL(/sport=kitesurf/);
-      await page.getByRole('button', { name: 'Algarve', exact: true }).click();
+      await regionSelect().selectOption('Algarve');
       await expect(page).toHaveURL(/region=Algarve/);
 
       await page.reload();
@@ -111,10 +115,7 @@ for (const viewport of ['desktop', 'mobile'] as Viewport[]) {
         'aria-pressed',
         'true',
       );
-      await expect(page.getByRole('button', { name: 'Algarve', exact: true })).toHaveAttribute(
-        'aria-pressed',
-        'true',
-      );
+      await expect(regionSelect()).toHaveValue('Algarve');
 
       await context.close();
     });
