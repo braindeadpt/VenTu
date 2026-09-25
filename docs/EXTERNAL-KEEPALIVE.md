@@ -169,6 +169,28 @@ These match the nominal-delivery numbers this document already quoted
 the remedy: the monitors are still watching the pipeline on the scheduler
 that drops 4 out of every 5 slots.
 
+### The numbers are now measured, not remembered
+
+The percentages above were a point-in-time count. `ops-audit.js` section E
+(`scripts/lib/cronDelivery.js`, 17 tests) now measures them every day: for
+each scheduled workflow it simulates the `cron:` fields minute by minute,
+counts the runs observed in a rolling window and opens a **P1 finding when
+delivery falls below half the nominal**. Two choices there are deliberate —
+any trigger counts (a ping that wakes a monitor *is* delivery, which is what
+the keep-alive exists for; isolating the scheduler is `event=schedule` by
+hand), and an unavailable API is *not judged*, never `0 runs` (`Number(null)`
+is `0` and would fabricate a finding). The window is 24 h for crons with a
+nominal ≥ 4/day and 7 days for daily/weekly ones, where 0 in 24 h is
+indistinguishable from a late slot.
+
+On 2026-09-25 that measurement reads `update-data` at 121 % (the pings are
+covering the scheduler) and `evaluate-alerts` at 56 %, with the four monitors
+at 2–25 %. Deploying the shared ping fixes three of them (≈113 % / ≈113 % /
+≈225 %), but **not `telegram-poll`**: it declares `*/5` (288/day) while the
+system delivers ~54/day, so even with the ping it lands at ≈19 %. Where a
+cron promises more than the system delivers there are two honest exits —
+align the `cron:` with reality, or record the gap on purpose.
+
 ### Re-verifying after the trigger is deployed
 
 ```bash

@@ -20,6 +20,9 @@
  *                    observations worker (/obs + /health).
  *   D. Drift       — fetches novos em scripts/ sem AbortSignal.timeout e
  *                    jobs em .github/workflows/ sem timeout-minutes.
+ *   E. Crons       — entrega nominal por cron: runs observados (API) vs
+ *                    esperados pelos `cron:` do repo, finding quando algum
+ *                    fica abaixo de metade do nominal.
  *
  * Severidade: P0 = produção/pipeline a falhar · P1 = camada degradada ou
  * incidente aberto · P2 = drift de higiene (regressões futuras).
@@ -40,6 +43,7 @@ const { readdirSync, readFileSync, existsSync } = require('fs');
 const { join } = require('path');
 const { evaluatePipelineStaleness } = require('./lib/pipelineStaleness');
 const { evaluateDataCadence } = require('./lib/dataCadence');
+const { parseCrons, evaluateCronDelivery } = require('./lib/cronDelivery');
 const { parseManifest } = require('./lib/ipmaRadar');
 const {
   resolveObsWorkerBase,
@@ -465,6 +469,85 @@ function auditDrift() {
   console.log(`  drift scan: ${files.length} scripts + workflows verificados`);
 }
 
+// ── E. Entrega nominal por cron ─────────────────────────────────────────
+
+/** Workflows com `schedule:` declarado, lido do próprio repo. */
+function scheduledWorkflows() {
+  const dir = join(REPO_ROOT, '.github', 'workflows');
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => /\.ya?ml$/.test(f))
+    .sort()
+    .map((file) => ({ file, crons: parseCrons(readFileSync(join(dir, file), 'utf-8')) }))
+    .filter((w) => w.crons.length > 0);
+}
+
+/**
+ * O `schedule` do GitHub é best-effort e a entrega medida é de 2–23% em vários
+ * crons (2026-09): um cron que corre metade do que agenda é uma perda
+ * silenciosa de vigilância — o monitor existe, mas só olha para a janela que
+ * o scheduler lhe der. Nada no repo media isto: os heartbeats olham para os
+ * DADOS (meta/commit), a secção B só vê o último run e se falhou.
+ *
+ * Mede runs observados (qualquer gatilho) contra os `cron:` do repositório.
+ * Contar qualquer gatilho é deliberado: a pergunta é «este workflow está vivo
+ * ao ritmo que promete?», e um ping do keep-alive que o acorde conta como
+ * entrega — é para isso que o keep-alive existe. Quem quiser isolar a entrega
+ * do SCHEDULER filtra `event=schedule` à mão.
+ */
+function auditCronDelivery(ghOk) {
+  console.log('— E. Entrega nominal por cron (observado vs esperado) —');
+  const workflows = scheduledWorkflows();
+  if (workflows.length === 0) {
+    console.log('  nenhum workflow com schedule');
+    return;
+  }
+  // Não se salta com `!ghOk`: estas leituras são read-only e um dry-run local
+  // (sem token) deve mostrar os números na mesma; o que não acontece é a
+  // entrega da issue/Telegram (tratada em deliver()).
+  const now = Date.now();
+  /** Runs observados numa janela (API de runs, `total_count` do filtro `created`). */
+  const observed = (file, hours) => {
+    const raw = gh(
+      'api',
+      `repos/${REPO}/actions/workflows/${file}/runs?created=%3E%3D${new Date(now - hours * 3600_000).toISOString()}&per_page=1`,
+      '--jq', '.total_count',
+    );
+    if (raw === null || raw === '') return null; // API indisponível ≠ 0 runs
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : null;
+  };
+
+  for (const wf of workflows) {
+    const d = evaluateCronDelivery({
+      crons: wf.crons,
+      observed24h: observed(wf.file, 24),
+      observed7d: observed(wf.file, 168),
+      nowMs: now,
+    });
+    if (!d.judge) {
+      console.log(`  ${wf.file}: ${d.reason}`);
+      continue;
+    }
+    const pct = `${Math.round(d.ratio * 100)}%`;
+    const nominal = Number.isInteger(d.expectedPerDay)
+      ? String(d.expectedPerDay)
+      : d.expectedPerDay.toFixed(2);
+    console.log(
+      `  ${wf.file}: ${d.observed}/${d.expected} runs em ${d.windowHours} h (${pct} do nominal ${nominal}/dia) — ${d.belowHalf ? '🔴 abaixo de metade' : '✅'}`,
+    );
+    if (d.belowHalf) {
+      finding(
+        'P1',
+        `cron abaixo de metade do nominal: ${wf.file} — ${d.observed}/${d.expected} runs em ${d.windowHours} h ` +
+          `(${pct}; nominal ${nominal}/dia, cron \`${wf.crons.join('` · `')}\`). Conta qualquer gatilho, ping incluído: ` +
+          'abaixo de metade significa que o workflow não corre o que promete — ver os eventos dos runs (schedule vs repository_dispatch). ' +
+          'Se a cadência é intencionalmente sustentada pelo ping do keep-alive (1 POST / 30 min), o `cron:` declarado promete mais do que o sistema corre: alinhar o cron com a realidade ou aceitar o finding como gap conhecido.',
+      );
+    }
+  }
+}
+
 // ── Issue / Telegram ────────────────────────────────────────────────────
 
 function openAuditIssue() {
@@ -553,6 +636,7 @@ async function main() {
   await auditWorkflows(ghOk);
   await auditEndpoints();
   auditDrift();
+  auditCronDelivery(ghOk);
   await deliver(ghOk);
   process.exit(0);
 }
