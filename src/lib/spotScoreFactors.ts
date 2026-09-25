@@ -1,7 +1,7 @@
 /**
  * Formatador partilhado da linha «porquê este score» — usado pelo popup do
  * mapa, pelo sheet/preview do spot e pela lista sincronizada. Uma só
- * gramática canónica (ex. «offshore 12 kt · período 11 s · swell NW»);
+ * gramática canónica (ex. «Cross-off 12 kt · período 11 s · swell NW»);
  * a lista densa usa `short`, a versão curta dos MESMOS factores.
  *
  * NÃO recalcula score: a selecção de factores lê `SportScore.factorsEn`
@@ -18,6 +18,7 @@ import { classifyWind } from '@/lib/sportScore';
 import type { MarineConditionsFields } from '@/lib/marineConditions';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getCardinalLabel } from '@/lib/wind';
+import { getTranslation } from '@/lib/i18n';
 
 export type ScoreFactorKind =
   | 'wind'
@@ -30,9 +31,9 @@ export type ScoreFactorKind =
 
 export interface ScoreFactorSegment {
   kind: ScoreFactorKind;
-  /** Etiqueta completa, ex. «offshore 12 kt». */
+  /** Etiqueta completa, ex. «Cross-off 12 kt». */
   label: string;
-  /** Versão curta do mesmo factor para linhas densas, ex. «off 12kt». */
+  /** Versão curta do mesmo factor para linhas densas, ex. «12 kt Cross-off». */
   short: string;
 }
 
@@ -63,15 +64,22 @@ const FACTOR_WORDS: Record<FactorLocale, {
   fr: { waves: 'vagues', period: 'période', flat: 'eau plate', flatShort: 'plate', water: 'eau' },
 };
 
-const WIND_CAT_SHORT: Record<string, string> = {
-  offshore: 'off',
-  onshore: 'on',
-  'side-offshore': 's-off',
-  'side-onshore': 's-on',
-};
-
 function factorLocale(locale: string): FactorLocale {
   return locale === 'en' || locale === 'es' || locale === 'de' || locale === 'fr' ? locale : 'pt';
+}
+
+/** Rótulo canónico da relação de vento (chaves windRel* de
+ *  spotPage/instruments — as mesmas do WindCard) para a saída do
+ *  classifyWind. M7: substitui as abreviaturas «s-off/s-on/off/on». */
+function windRelLabel(windCat: string, locale: string): string {
+  const rel = getTranslation(locale).spotPageInstruments;
+  switch (windCat) {
+    case 'offshore': return rel.windRelOffshore;
+    case 'onshore': return rel.windRelOnshore;
+    case 'side-offshore': return rel.windRelCrossOff;
+    case 'side-onshore': return rel.windRelCrossOn;
+    default: return windCat;
+  }
 }
 
 /** O desporto explicado: o seleccionado no mapa, ou o melhor quando 'all'. */
@@ -122,12 +130,22 @@ export function getSpotScoreFactors(input: SpotScoreFactorsInput): ScoreFactorSe
   const windCat = classifyWind(spot, conditions.windDirection);
   const waveH = conditions.waveHeight;
   const periodS = Math.round(conditions.wavePeriod);
+  // M7: decimais pela i18n do site («1,6 m» em pt/es/de/fr) e relação de
+  // vento canónica — a maquete mostra «1,0 m · 8 kt cross-on».
+  const nf1 = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
+  const windRel = windRelLabel(windCat, locale);
 
   const renderers: Record<Exclude<ScoreFactorKind, 'other'>, () => ScoreFactorSegment> = {
     wind: () => ({
       kind: 'wind',
-      label: `${windCat} ${windKt} kt`,
-      short: `${WIND_CAT_SHORT[windCat] ?? windCat} ${windKt}kt`,
+      // M7★: a forma longa também usa o rótulo canónico (windRel*) — é ela
+      // que alimenta a linha «porquê» do hero do spot, que antes mostrava
+      // o token cru do classifyWind («side-onshore 18 kt»).
+      label: `${windRel} ${windKt} kt`,
+      short: `${windKt} kt ${windRel}`,
     }),
     period: () => ({
       kind: 'period',
@@ -136,8 +154,8 @@ export function getSpotScoreFactors(input: SpotScoreFactorsInput): ScoreFactorSe
     }),
     waves: () => ({
       kind: 'waves',
-      label: `${w.waves} ${waveH.toFixed(1)} m`,
-      short: `${waveH.toFixed(1)} m`,
+      label: `${w.waves} ${nf1.format(waveH)} m`,
+      short: `${nf1.format(waveH)} m`,
     }),
     swell: () => {
       const dir = getCardinalLabel(conditions.swellDirection ?? conditions.waveDirection);
@@ -169,7 +187,7 @@ export function getSpotScoreFactors(input: SpotScoreFactorsInput): ScoreFactorSe
     const kind = factorKind(f);
     if (kind === 'windcat' || kind === 'wind') {
       // A categoria do vento funde-se no segmento de vento — «Xkt wind» e
-      // «side-offshore» do scorer viram «side-offshore 18 kt» uma só vez.
+      // «side-offshore» do scorer viram «Cross-off 18 kt» uma só vez.
       push(renderers.wind());
     } else if (kind === 'other') {
       // Factores qualitativos do scorer (infra wake, etc.) mantêm o texto dele.

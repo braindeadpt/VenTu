@@ -1813,9 +1813,10 @@ body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16
 [data-map-fullscreen='true']:has([data-map-panel='open']) .leaflet-control-attribution {
   margin-left: var(--map-panel-offset, 380px);
 }
-/* Mobile: a atribuição vive dentro do sheet (AttributionLine em peek/half/
-   open). O controlo Leaflet ficaria tapado pelo sheet — uma segunda
-   superfície invisível. Escondido ≤767 px. */
+/* Mobile: a atribuição vive no sheet — faixa própria acima da borda
+   superior no peek (M7-A) e em flow no fim do conteúdo em half/open.
+   O controlo Leaflet ficaria tapado pelo sheet — uma segunda superfície
+   invisível. Escondido ≤767 px. */
 @media (max-width: 767px) {
   [data-map-fullscreen='true'] .leaflet-control-attribution {
     display: none;
@@ -1824,6 +1825,18 @@ body:has(header[data-header-compact='true']) [data-map-fullscreen='true'].top-16
 /* (M6: o espelho textual da atribuição dentro do painel — antes escondido
    por `[data-panel-attribution]{display:none}` — foi removido do JSX do
    MapSpotPanel; a atribuição é só o controlo Leaflet, desviado acima.) */
+
+/* M7-F — lista «Nesta vista» (~150 linhas × ~10 nós): renderização
+   incremental do browser. content-visibility:auto salta layout/paint das
+   linhas fora do viewport (a árvore de a11y e o DOM mantêm-se completos —
+   roving tabindex e contagem de linhas não mudam); contain-intrinsic-size
+   `auto 64px` guarda o tamanho real medido e dá um fallback estável à
+   scrollbar antes da primeira medida. Só no fullscreen /mapa — os embeds
+   não têm a lista. */
+[data-map-fullscreen='true'] [data-row-index] {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 64px;
+}
 
 /* §2 — zoom nativo do Leaflet escondido no /mapa fullscreen: os botões
    vivem na pilha direita. Nos embeds o controlo continua top-left. */

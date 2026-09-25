@@ -275,6 +275,58 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await expect(attr).toBeVisible();
   });
 
+  test('peek: atribuição em faixa própria — inteira, uma vez, sem sobrepor o grabber', async ({
+    page,
+  }) => {
+    // M7-A (achado grave do auditor): a micro-linha truncada dentro do
+    // grabber («max-w-[46%] truncate») cortava o texto Open-Meteo e
+    // sobrepuha-se à alça. A maquete pede uma faixa própria.
+    await openMapa(page);
+    const sheet = page.locator('[data-explore-sheet]');
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek', { timeout: 20_000 });
+
+    const attr = sheet.locator('[data-sheet-attribution]');
+    await expect(attr).toHaveCount(1);
+    await expect(attr).toBeVisible({ timeout: 20_000 });
+    await expect(attr).toContainText('Open-Meteo');
+
+    const geo = await page.evaluate(() => {
+      const strip = document.querySelector<HTMLElement>('[data-sheet-attribution]')!;
+      const grabber = document.querySelector<HTMLElement>('[data-sheet-grabber]')!;
+      const a = strip.getBoundingClientRect();
+      const g = grabber.getBoundingClientRect();
+      const intersects =
+        !(a.right <= g.left || g.right <= a.left || a.bottom <= g.top || g.bottom <= a.top);
+      // Folhas-filho (links) também não podem transbordar.
+      const leafOverflow = Array.from(strip.querySelectorAll<HTMLElement>('*'))
+        .filter((el) => el.children.length === 0)
+        .some((el) => el.scrollWidth > el.clientWidth + 1);
+      return {
+        intersects,
+        stripOverflow: strip.scrollWidth > strip.clientWidth + 1,
+        leafOverflow,
+        ellipsis: getComputedStyle(strip).textOverflow === 'ellipsis',
+      };
+    });
+    expect(geo.intersects, 'a faixa de atribuição sobrepõe o grabber').toBe(false);
+    expect(geo.stripOverflow, 'atribuição cortada (scrollWidth > clientWidth)').toBe(false);
+    expect(geo.leafOverflow, 'link da atribuição cortado').toBe(false);
+    expect(geo.ellipsis, 'atribuição com text-overflow: ellipsis').toBe(false);
+
+    // Uma só superfície visível no mobile: o controlo Leaflet está
+    // escondido ≤767 px (globals.css §1) e o espelho do painel não existe.
+    const visibleSurfaces = await page.evaluate(() => {
+      const visible = (el: Element | null) =>
+        !!el && el.getBoundingClientRect().width > 0 && el.getBoundingClientRect().height > 0;
+      return [
+        visible(document.querySelector('.leaflet-control-attribution')),
+        visible(document.querySelector('[data-sheet-attribution]')),
+        visible(document.querySelector('[data-panel-attribution]')),
+      ].filter(Boolean).length;
+    });
+    expect(visibleSurfaces, 'atribuição tem de aparecer uma única vez').toBe(1);
+  });
+
   test('teclado: ↑/↓ navegam entre linhas da lista', async ({ page }) => {
     await openMapa(page);
     const sheet = page.locator('[data-explore-sheet]');

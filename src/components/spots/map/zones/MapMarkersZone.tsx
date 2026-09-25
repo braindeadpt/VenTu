@@ -21,12 +21,9 @@ import type { MapMarkerWarning } from '@/lib/mapWindArrow';
 import type { MapSpotData } from '../../mapSpotData';
 import { getBestScore } from '../../mapSpotData';
 import { includeSpotInViewportBounds } from '../../mapViewportBounds';
-import { mapHoursClock } from '@/lib/mapHours';
 import { resolveExploreChrome } from '../../mapMarkers';
 import { useMapMarkers } from '../hooks/useMapMarkers';
-import MapSpotSheet, { type MapSpotSheetData } from '../../MapSpotSheet';
-import { MapSpotCard } from '../../MapSpotPreview';
-import { useMapUiActions, useMapUiData } from '../MapUiContext';
+import type { MapSpotSheetData } from '../../MapSpotSheet';
 
 type MapHudProps = Omit<MapFullscreenHudProps, 'isPt' | 'visible'>;
 
@@ -249,68 +246,5 @@ export function useMapMarkersZone({
   return { focusMapSpot, closePopupAndSheet };
 }
 
-// ─── Vista: pré-visualização do spot — sheet mobile / cartão 320 px
-//     ancorado ao marcador no desktop (maquete §7). Lê a selecção do
-//     contexto partilhado. ───
-
-export function MapMarkersZone() {
-  const {
-    isMobile,
-    isFullscreen,
-    isHeroEmbed,
-    sheetSpot,
-    sport,
-    locale,
-    hourScores,
-    hoursFrame,
-    hoursLive,
-    hoursTimes,
-  } = useMapUiData();
-  const { closeSpotSheet, selectSpot, openExploreSheet } = useMapUiActions();
-  const t = getTranslation(locale);
-
-  // «←» do sheet volta à lista de spots do viewport: fecha a
-  // pré-visualização e levanta o sheet de exploração (M6: acção do
-  // MapUiContext — antes era o evento `ventu:open-explore-sheet`).
-  const onBackToList = useCallback(() => {
-    closeSpotSheet();
-    openExploreSheet();
-  }, [closeSpotSheet, openExploreSheet]);
-
-  if (!sheetSpot) return null;
-  const scoreOverride = hourScores?.get(sheetSpot.spot.id);
-  const hourLabel =
-    hoursLive && hoursTimes[hoursFrame]
-      ? mapHoursClock(hoursTimes[hoursFrame])
-      : t.mapUiMarkers.now;
-
-  if (isMobile) {
-    return (
-      <MapSpotSheet
-        data={sheetSpot}
-        selectedSport={sport}
-        locale={locale}
-        onClose={closeSpotSheet}
-        onBackToList={isFullscreen ? onBackToList : undefined}
-        scoreOverride={scoreOverride}
-        hoursFrame={hoursLive ? hoursFrame : 0}
-        hourLabel={hourLabel}
-        onViewSpot={selectSpot}
-      />
-    );
-  }
-  // Cartão só na superfície Explorar — os embeds mantêm o popup Leaflet.
-  if (!isFullscreen || isHeroEmbed) return null;
-  return (
-    <MapSpotCard
-      data={sheetSpot}
-      locale={locale}
-      highlightSport={sport}
-      scoreOverride={scoreOverride}
-      hoursFrame={hoursLive ? hoursFrame : 0}
-      hourLabel={hourLabel}
-      onClose={closeSpotSheet}
-      onViewSpot={() => selectSpot(sheetSpot.spot.id)}
-    />
-  );
-}
+// A vista (sheet/cartão de pré-visualização) vive em MapMarkersZoneView.tsx
+// — chunk dinâmico (M7-F): só carrega quando há um spot seleccionado.

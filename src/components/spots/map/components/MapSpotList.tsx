@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronRight, Thermometer, Timer, Waves, Wind } from 'lucide-react';
 import { getScoreTokens } from '@/lib/sportScore';
 import type { ScoreFactorSegment } from '@/lib/spotScoreFactors';
@@ -78,7 +78,17 @@ function FactorIcon({ kind }: { kind: ScoreFactorSegment['kind'] }) {
   }
 }
 
-export default function MapSpotList({
+/** Linhas renderizadas de imediato — o resto entra no primeiro idle (M7-F:
+ *  ~150 linhas × ~10 nós por commit de React era um dos long tasks do
+ *  /mapa). 24 cobre o viewport do painel/sheet com folga; o DOM completo
+ *  chega em <2 s, antes de qualquer interacção real. */
+const INITIAL_ROWS = 24;
+
+// M7-F: memo — o orquestrador comita várias vezes durante o arranque
+// (isReady, clusterReady, hoursFile, tiles…) e a lista de ~150 linhas
+// re-renderizava em todas. Com props estáveis (rows memoizadas, onSelect
+// via useCallback na vista) os commits redundantes saltam o subtree.
+const MapSpotList = memo(function MapSpotList({
   rows,
   title,
   countLabel,
@@ -97,6 +107,19 @@ export default function MapSpotList({
   );
   const listRef = useRef<HTMLDivElement>(null);
   const focusedOnceRef = useRef(false);
+
+  const [renderLimit, setRenderLimit] = useState(INITIAL_ROWS);
+  useEffect(() => {
+    if (renderLimit >= rows.length) return;
+    const ric = window.requestIdleCallback;
+    if (ric) {
+      const id = ric(() => setRenderLimit(rows.length), { timeout: 2000 });
+      return () => window.cancelIdleCallback(id);
+    }
+    const id = window.setTimeout(() => setRenderLimit(rows.length), 1);
+    return () => window.clearTimeout(id);
+  }, [rows.length, renderLimit]);
+  const renderedRows = renderLimit >= rows.length ? rows : rows.slice(0, renderLimit);
 
   // ── Hover bidireccional com o marcador ──
   // Linha → marcador: liga/desliga .ventu-list-hover no divIcon (anel —
@@ -146,7 +169,9 @@ export default function MapSpotList({
     focusedOnceRef.current = true;
     el.scrollIntoView({ block: 'nearest' });
     el.focus({ preventScroll: true });
-  }, [focusSpotId, rows]);
+    // renderLimit: a linha do deep link pode chegar no fill de idle —
+    // re-corre o efeito quando ela entrar no DOM.
+  }, [focusSpotId, rows, renderLimit]);
 
   const move = (dir: 1 | -1) => {
     setActiveIdx((i) => {
@@ -207,7 +232,7 @@ export default function MapSpotList({
             }
           }}
         >
-          {rows.map((row, i) => {
+          {renderedRows.map((row, i) => {
             const tok = getScoreTokens(row.score);
             const focused = row.spotId === focusSpotId;
             // Linha realçada quando o marcador correspondente está em hover
@@ -260,4 +285,6 @@ export default function MapSpotList({
       )}
     </div>
   );
-}
+});
+
+export default MapSpotList;

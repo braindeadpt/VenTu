@@ -41,15 +41,16 @@ async function openMapa(page: Page, query = ''): Promise<void> {
 
 /**
  * Altura visível do sheet: da borda de cima até ao fundo do contentor do
- * mapa menos o inset `bottom-2` (8 px). Mede-se contra `.leaflet-container`
- * — a mesma régua dos testes de cobertura do chrome.
+ * mapa — M7-D: o sheet é `bottom-0` (encostado, sem inset), por isso a
+ * régua é o próprio fundo do `.leaflet-container`, a mesma dos testes de
+ * cobertura do chrome.
  */
 async function sheetVisibleHeight(page: Page): Promise<number> {
   return page.evaluate(() => {
     const sheet = document.querySelector('[data-explore-sheet]');
     const map = document.querySelector('.leaflet-container');
     if (!sheet || !map) return -1;
-    return Math.round(map.getBoundingClientRect().bottom - 8 - sheet.getBoundingClientRect().top);
+    return Math.round(map.getBoundingClientRect().bottom - sheet.getBoundingClientRect().top);
   });
 }
 
@@ -98,6 +99,43 @@ test.describe('MAP-UX-V3 §5 — sheet mobile (390×844)', () => {
     await expect(sheet.getByText(/\d+ spots/).first()).toBeVisible();
     // Atribuição sempre visível — obrigação de licença.
     await expect(sheet.locator('[data-sheet-attribution]').first()).toBeVisible();
+  });
+
+  test('geometria da maquete: encostado ao fundo, raio só em cima, inset 8 px', async ({ page }) => {
+    await openMapa(page);
+    const sheet = page.locator('[data-explore-sheet]');
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek', { timeout: 20_000 });
+
+    const geo = await page.evaluate(() => {
+      const sheet = document.querySelector('[data-explore-sheet]')!;
+      const map = document.querySelector('.leaflet-container')!;
+      const s = sheet.getBoundingClientRect();
+      const m = map.getBoundingClientRect();
+      const cs = getComputedStyle(sheet);
+      return {
+        sheetBottom: Math.round(s.bottom),
+        mapBottom: Math.round(m.bottom),
+        leftGap: Math.round(s.left - m.left),
+        rightGap: Math.round(m.right - s.right),
+        rTL: cs.borderTopLeftRadius,
+        rTR: cs.borderTopRightRadius,
+        rBL: cs.borderBottomLeftRadius,
+        rBR: cs.borderBottomRightRadius,
+        borderBottom: cs.borderBottomWidth,
+      };
+    });
+    // M7-D: maquete `bottom:0` — a borda inferior do sheet está no fundo
+    // do contentor ou abaixo dele (translateY empurra-a para fora; nunca
+    // flutua com inset como o `bottom-2` anterior).
+    expect(geo.sheetBottom, 'sheet flutuava acima do fundo').toBeGreaterThanOrEqual(geo.mapBottom - 1);
+    // Maquete `left/right: 8px`, `border-radius: 18px 18px 0 0`.
+    expect(geo.leftGap).toBe(8);
+    expect(geo.rightGap).toBe(8);
+    expect(geo.rTL).toBe('18px');
+    expect(geo.rTR).toBe('18px');
+    expect(geo.rBL).toBe('0px');
+    expect(geo.rBR).toBe('0px');
+    expect(geo.borderBottom).toBe('0px');
   });
 
   test('o arrasto segue o dedo 1:1 (erro ≤2 px a meio do gesto)', async ({ page }) => {
@@ -181,6 +219,43 @@ test.describe('MAP-UX-V3 §5 — sheet mobile (390×844)', () => {
       return cs.textOverflow === 'ellipsis' || name.scrollWidth > name.clientWidth + 1;
     });
     expect(peekTruncated).toBe(false);
+  });
+
+  test('linhas de factores nunca truncam — lista aberta e peek', async ({ page }) => {
+    // M7-B: os formatos compactos mudaram («12 kt Cross-off», decimais por
+    // Intl) — a prova é geométrica: scrollWidth ≤ clientWidth em TODOS os
+    // segmentos [data-score-factors] e nas suas células de texto.
+    const overflowingFactors = () =>
+      page.evaluate(() => {
+        const bad: string[] = [];
+        document
+          .querySelectorAll<HTMLElement>('[data-explore-sheet] [data-score-factors]')
+          .forEach((line) => {
+            if (line.scrollWidth > line.clientWidth + 1) {
+              bad.push(`linha: ${line.textContent?.slice(0, 60)}`);
+            }
+            line.querySelectorAll<HTMLElement>('*').forEach((el) => {
+              if (el.children.length === 0 && el.scrollWidth > el.clientWidth + 1) {
+                bad.push(`segmento: ${el.textContent?.slice(0, 60)}`);
+              }
+            });
+          });
+        return bad;
+      });
+
+    await openMapa(page);
+    const sheet = page.locator('[data-explore-sheet]');
+    // Peek — cartão «Melhor agora».
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek', { timeout: 20_000 });
+    await expect(page.locator('[data-sheet-best] [data-score-factors]')).toBeVisible({ timeout: 20_000 });
+    expect(await overflowingFactors(), 'factores truncados no peek').toEqual([]);
+
+    // Lista «open» — as linhas usam flex-wrap; nenhum segmento corta.
+    await expandMapHudFilters(page); // peek → half
+    await page.locator('[data-sheet-grabber]').click(); // half → open
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'open');
+    await expect(sheet.locator('[role="option"]').first()).toBeVisible({ timeout: 15_000 });
+    expect(await overflowingFactors(), 'factores truncados na lista').toEqual([]);
   });
 
   test('teclado: ↑/↓ navegam e Enter abre a pré-visualização', async ({ page }) => {
@@ -338,5 +413,25 @@ test.describe('MAP-UX-V3 §5 — painel desktop (1440×900)', () => {
       await truncatedNames(page, '[data-map-panel="open"]'),
       'nomes truncados no painel',
     ).toEqual([]);
+
+    // M7-B — desktop: as linhas de factores do painel (flex-wrap) também
+    // nunca truncam segmentos.
+    const badFactors = await page.evaluate(() => {
+      const bad: string[] = [];
+      document
+        .querySelectorAll<HTMLElement>('[data-map-panel="open"] [data-score-factors]')
+        .forEach((line) => {
+          if (line.scrollWidth > line.clientWidth + 1) {
+            bad.push(`linha: ${line.textContent?.slice(0, 60)}`);
+          }
+          line.querySelectorAll<HTMLElement>('*').forEach((el) => {
+            if (el.children.length === 0 && el.scrollWidth > el.clientWidth + 1) {
+              bad.push(`segmento: ${el.textContent?.slice(0, 60)}`);
+            }
+          });
+        });
+      return bad;
+    });
+    expect(badFactors, 'factores truncados no painel desktop').toEqual([]);
   });
 });

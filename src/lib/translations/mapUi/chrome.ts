@@ -14,6 +14,8 @@ export const mapUiChrome = {
     timeNow: 'Agora',
     /** Legenda textual do scrubber (junto à hora seleccionada). */
     scrubBestHint: 'melhor score na vista, de 3 em 3 h',
+    /** Versão curta para o cabeçalho móvel (M7 — sem reticências). */
+    scrubBestHintShort: 'melhor da vista, 3 em 3 h',
     /** aria-valuetext do slider de horas — '{time}' = «qui 17 set, 12:00». */
     scrubValueText: '{time} — melhor score na vista {score}',
     /** Título «Score» do cartão da legenda. */
@@ -25,6 +27,7 @@ export const mapUiChrome = {
     zoomOut: 'Zoom out',
     timeNow: 'Now',
     scrubBestHint: 'best score in view, every 3 h',
+    scrubBestHintShort: 'best in view, 3-hourly',
     scrubValueText: '{time} — best score in view {score}',
     legendScoreTitle: 'Score',
   },
@@ -34,6 +37,7 @@ export const mapUiChrome = {
     zoomOut: 'Alejar',
     timeNow: 'Ahora',
     scrubBestHint: 'mejor puntuación en vista, cada 3 h',
+    scrubBestHintShort: 'mejor en vista, cada 3 h',
     scrubValueText: '{time} — mejor puntuación en vista {score}',
     legendScoreTitle: 'Score',
   },
@@ -43,6 +47,7 @@ export const mapUiChrome = {
     zoomOut: 'Verkleinern',
     timeNow: 'Jetzt',
     scrubBestHint: 'bester Score in der Ansicht, alle 3 h',
+    scrubBestHintShort: 'bester im Blick, alle 3 h',
     scrubValueText: '{time} — bester Score in der Ansicht {score}',
     legendScoreTitle: 'Score',
   },
@@ -52,6 +57,7 @@ export const mapUiChrome = {
     zoomOut: 'Zoom arrière',
     timeNow: 'Maintenant',
     scrubBestHint: 'meilleur score en vue, toutes les 3 h',
+    scrubBestHintShort: 'meilleur en vue, toutes les 3 h',
     scrubValueText: '{time} — meilleur score en vue {score}',
     legendScoreTitle: 'Score',
   },

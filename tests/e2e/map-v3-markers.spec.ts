@@ -247,6 +247,10 @@ test.describe('Marcadores v3 — badge «+N» e decisão por score', () => {
   }) => {
     test.skip(browserName !== 'chromium', 'mede o estilo inline do ícone Leaflet');
     await page.setViewportSize({ width: 1440, height: 900 });
+    // Windows: a emulação via test.use({ reducedMotion }) é silenciosamente
+    // ignorada nalgumas plataformas (ver visual-regression.spec.ts) — forçar
+    // por emulateMedia para o matchMedia resolver 'reduce'.
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     // reduced-motion activo via test.use → os ícones não podem ter a entrada.
     await openMapa(page, '?sport=all');
     const hasMotionlessEntry = await page.evaluate(() =>
@@ -282,6 +286,9 @@ test.describe('Marcadores v3 — pré-visualização do spot (§7)', () => {
 
   test('desktop: clique abre o cartão de 320 px ancorado ao marcador', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
+    // Windows: test.use({ reducedMotion }) não se aplica (visual-regression
+    // documenta o quirk) — sem isto o cartão media-se a meio do scale(0.96).
+    await page.emulateMedia({ reducedMotion: 'reduce' });
     await openMapa(page, '?sport=all');
 
     // Marcador completo clicável no viewport (elemento de topo no centro).

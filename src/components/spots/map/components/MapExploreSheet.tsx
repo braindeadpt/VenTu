@@ -106,7 +106,9 @@ function AttributionLine({ html }: { html: string }) {
   return (
     <div
       data-sheet-attribution
-      className="shrink-0 truncate pt-0.5 text-[10px] leading-tight text-fg-subtle [&_a]:text-fg-muted [&_a]:underline"
+      // M7-A: sem `truncate` — a cadeia CC BY fica inteira (quebra de
+      // linha em flow dentro da área scrollable, nunca reticências).
+      className="shrink-0 pt-0.5 text-[10px] leading-tight text-fg-subtle [&_a]:text-fg-muted [&_a]:underline"
       // O HTML vem do controlo de atribuição do Leaflet (links de créditos
       // das camadas ativas) — mesma fonte, sem duplicação de strings.
       dangerouslySetInnerHTML={{ __html: html }}
@@ -201,8 +203,10 @@ export default function MapExploreSheet({
   // O peek mede-se — nomes de spot em duas linhas tornam a altura variável;
   // um ResizeObserver mantém o snap exacto. A maquete fixa o peek em 136 px:
   // o valor medido é clampado a [132,136] — abaixo há faixa morta mínima,
-  // acima o conteúdo é cortado pelo overflow-hidden do sheet (a atribuição
-  // é a última linha e absorve o corte; os controlos ficam sempre à vista).
+  // acima o excedente fica abaixo da dobra do peek (o sheet continua com
+  // a altura «open» e a porção escondida está fora do viewport; a
+  // atribuição em flow dos estados half/open é a última linha e absorve
+  // o corte; os controlos ficam sempre à vista).
   const [peekH, setPeekH] = useState(136);
   const peekContentRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -246,8 +250,7 @@ export default function MapExploreSheet({
       if (target.closest('button, a, input, select, label, [role="switch"]')) return;
     }
     // Interrupção a meio da animação: lê o translateY REAL no ecrã e segue
-    // daí — nunca do valor lógico (apple-design §3). Ler via rect contra o
-    // offsetParent errava 8 px (o inset `bottom-2` não entra na conta).
+    // daí — nunca do valor lógico (apple-design §3).
     setAnimating(false);
     const m42 = new DOMMatrixReadOnly(getComputedStyle(el).transform).m42;
     const live = Number.isFinite(m42) && m42 !== 0 ? m42 : offsetRef.current;
@@ -339,6 +342,46 @@ export default function MapExploreSheet({
   }, [state, reduced]);
 
   const translateY = dragOffset ?? offsetFor(state);
+
+  // ── Atribuição móvel (M7-A): faixa própria encostada ao topo do sheet —
+  //    filha do sheet, por isso segue o translateY (drag e snap) sem rAF. ──
+  const attrStripRef = useRef<HTMLDivElement>(null);
+  const [attrStripH, setAttrStripH] = useState(0);
+  useEffect(() => {
+    const el = attrStripRef.current;
+    if (!el || state !== 'peek') {
+      setAttrStripH(0);
+      return;
+    }
+    const measure = () => setAttrStripH(Math.ceil(el.getBoundingClientRect().height));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [state, attributionHtml]);
+
+  // ── M7-E: a posição do sheet é publicada como variável CSS — o scrubber
+  //    lê --sheet-lift (12 px acima do topo visível do sheet, incluindo a
+  //    faixa de atribuição) e --sheet-snap-ms dá-lhe a mesma duração/easing
+  //    do snap. Substitui o rAF permanente do MapTimeChrome: só escreve
+  //    quando translateY/estado mudam. ──
+  // +4 px do gap da faixa de atribuição (-translate-y-1 no strip).
+  const sheetLiftPx = Math.max(0, Math.round(openHeight - translateY)) + 12 + attrStripH + (attrStripH > 0 ? 4 : 0);
+  const sheetSnapMs = animating && !reduced ? SNAP_MS : 0;
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty('--sheet-lift', `${sheetLiftPx}px`);
+    root.style.setProperty('--sheet-snap-ms', `${sheetSnapMs}ms`);
+  }, [sheetLiftPx, sheetSnapMs]);
+  useEffect(
+    () => () => {
+      const root = document.documentElement;
+      root.style.removeProperty('--sheet-lift');
+      root.style.removeProperty('--sheet-snap-ms');
+    },
+    [],
+  );
+
   const best = rows[0] ?? null;
   const bestTok = best ? getScoreTokens(best.score) : null;
   const activeFilters = countActiveExploreFilters({
@@ -452,8 +495,9 @@ export default function MapExploreSheet({
             {spotCount} spots
           </span>
         </div>
-        {/* A atribuição do peek vive no grabber (micro-linha à direita) —
-            em flow aqui rebentava os 136 px da maquete. */}
+        {/* A atribuição do peek NÃO entra em flow aqui (rebentava os
+            136 px da maquete) — rende como faixa própria flutuando acima
+            da borda do sheet (M7-A). */}
       </div>
     ) : s === 'half' ? (
       // O sheet tem a altura do estado aberto e anda por translateY — sem
@@ -580,7 +624,7 @@ export default function MapExploreSheet({
       // Mesmo contrato do HUD antigo: o useMapLayers mede a porção visível
       // (vh − rect.top) para levantar o carrossel do radar e a legenda.
       data-map-hud-collapsed={state === 'peek' ? 'true' : 'false'}
-      className="absolute inset-x-2 bottom-2 z-[1100] flex flex-col overflow-hidden rounded-card border border-divider-strong bg-bg-elevated shadow-card will-change-transform"
+      className="absolute inset-x-2 bottom-0 z-[1100] flex flex-col rounded-t-[18px] border border-b-0 border-divider-strong bg-bg-elevated shadow-card will-change-transform"
       style={{
         height: openHeight,
         transform: `translateY(${translateY}px)`,
@@ -628,17 +672,6 @@ export default function MapExploreSheet({
             <ChevronDown className="h-4 w-4" aria-hidden />
           </button>
         )}
-        {/* Atribuição no peek: micro-linha truncada à direita do grabber —
-            a obrigação de licença mantém-se visível sem consumir altura
-            (nos estados half/open rende em flow no fim do conteúdo). */}
-        {state === 'peek' && attributionHtml ? (
-          <span
-            data-sheet-attribution
-            aria-hidden
-            className="pointer-events-none absolute inset-y-0 right-2 flex max-w-[46%] items-center justify-end truncate text-[9px] leading-none text-fg-subtle [&_a]:text-inherit"
-            dangerouslySetInnerHTML={{ __html: attributionHtml }}
-          />
-        ) : null}
       </div>
 
       <div className="relative flex min-h-0 flex-1 flex-col">
@@ -665,6 +698,21 @@ export default function MapExploreSheet({
           </div>
         )}
       </div>
+
+      {/* Atribuição no peek (M7-A): faixa própria flutuando 4 px acima
+          da borda superior do sheet — nunca por cima do grabber nem
+          truncada (o texto quebra de linha, scrollWidth = clientWidth).
+          É filha do sheet, por isso acompanha o translateY do drag/snap;
+          nos estados half/open a mesma linha rende em flow no fim do
+          conteúdo (AttributionLine) — uma vez por estado. */}
+      {state === 'peek' && attributionHtml ? (
+        <div
+          ref={attrStripRef}
+          data-sheet-attribution
+          className="absolute inset-x-0 bottom-full -translate-y-1 rounded-input border border-divider bg-bg-elevated px-3 py-1.5 text-[10px] leading-snug text-fg-subtle shadow-card [&_a]:text-fg-muted [&_a]:underline"
+          dangerouslySetInnerHTML={{ __html: attributionHtml }}
+        />
+      ) : null}
     </div>
   );
 }
