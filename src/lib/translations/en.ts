@@ -218,7 +218,6 @@ export const translationsEn = {
     collapseHud: 'Hide filters',
     expandHud: 'Show filters',
     onlyOn: 'Firing only',
-    onlyOnOff: 'All spots',
     onlyOnHint: 'Score ≥ 60 — only spots firing for the selected sport',
     swell: 'Swell',
     energy: 'Energy',

@@ -47,15 +47,17 @@ interface MapExploreSheetProps extends MapFullscreenHudProps {
   /** Camadas de dados com rótulo (radar, 48 h, hs, sst, correntes, boias,
    *  isóbatas, batimetria, sinalização, avisos) — MapLayersMenuItem da HUD. */
   layers: MapLayersMenuItem[];
-  /** Primários do «Ver também»: agrupar, vento, legenda do vento —
+  /** Primários do «Ver também»: agrupar spots, vento, legenda do vento —
    *  sempre com rótulo (o audit C4 proíbe strips só-ícone). O basemap
    *  (mapa/satélite) é o radiogroup `MapBasemapRadio` mesmo acima e a
    *  saída do fullscreen vive no grabber (sempre visível). */
   extras: SheetToggleItem[];
-  /** Chip «Agrupar/Mostrar todos» no PEEK — o toggle vivia só no estado
-   *  half (extras), inalcançável a quem fica sempre no peek do fullscreen
-   *  mobile (D6). Mesmo item do half: label/estado/onToggle idênticos, uma
-   *  superfície por estado — nunca dois botões com o mesmo nome no DOM. */
+  /** Chip «Agrupar spots» no PEEK — o toggle vivia só no estado half (extras),
+   *  inalcançável a quem fica sempre no peek do fullscreen mobile (D6). Mesmo
+   *  item do half: nome/estado/onToggle idênticos, uma superfície por estado —
+   *  nunca dois botões com o mesmo nome no DOM. O nome é o MODO (constante) e
+   *  o estado é o `pressed`/aria-pressed; o filtro «Só a bombar» segue a mesma
+   *  regra (auditoria 2026-09-21). */
   clusterItem?: SheetToggleItem;
   /** Saída do fullscreen — sempre visível à esquerda do grabber (era do
    *  HUD antigo; o C4 exige uma saída que não dependa de abrir o sheet). */

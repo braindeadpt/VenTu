@@ -6,6 +6,10 @@ import { interceptMapHours } from './helpers/conditions';
 import { waitHydrated } from './helpers/hydration';
 import { expandMapHudFilters } from './helpers/map-hud';
 
+/** Nome ACESSÍVEL do «Só a bombar» — o MODO, constante (não a acção). O
+ *  estado lê-se do aria-pressed / do shell `data-map-only-on`. */
+const ONLY_ON_TOGGLE_NAME = 'Só a bombar';
+
 /**
  * Sheet explorar (mobile) + painel (desktop) — a lista sincronizada do /mapa.
  *
@@ -295,6 +299,37 @@ test.describe('Lista sincronizada do /mapa — sheet mobile', () => {
     await expect(moved).toHaveAttribute(
       'data-row-index', String(idx === last ? last - 1 : idx + 1));
   });
+
+  test('peek: «Só a bombar» mantém o nome e muda só o aria-pressed', async ({ page }) => {
+    await openMapa(page);
+    const sheet = page.locator('[data-explore-sheet]');
+    await expect(sheet).toHaveAttribute('data-explore-sheet', 'peek');
+    const shell = page.locator('[data-map-only-on]').first();
+
+    // O pill vive nos filtros essenciais do peek. Arranca desligado.
+    // .first() — o cross-fade de 220ms desenha duas cópias (a fantasma tem
+    // aria-hidden/inert) e a cópia viva vem primeiro no DOM.
+    const toggle = page.locator('[data-sheet-peek] [data-map-only-on-toggle]').first();
+    await expect(toggle).toBeVisible({ timeout: 20_000 });
+    await expect(page.getByRole('button', { name: ONLY_ON_TOGGLE_NAME })).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(shell).toHaveAttribute('data-map-only-on', 'false');
+
+    // Ligar: o NOME é o mesmo (o modo) — só o aria-pressed e o shell mudam.
+    await toggle.click();
+    const on = page.locator('[data-sheet-peek] [data-map-only-on-toggle]').first();
+    await expect(on).toBeVisible({ timeout: 15_000 });
+    await expect(page.getByRole('button', { name: ONLY_ON_TOGGLE_NAME })).toBeVisible();
+    await expect(on).toHaveAttribute('aria-pressed', 'true');
+    await expect(shell).toHaveAttribute('data-map-only-on', 'true');
+
+    // Desligar: mesmo nome, aria-pressed de volta a false.
+    await on.click();
+    await expect(
+      page.locator('[data-sheet-peek] [data-map-only-on-toggle]').first(),
+    ).toHaveAttribute('aria-pressed', 'false');
+    await expect(shell).toHaveAttribute('data-map-only-on', 'false');
+  });
 });
 
 test.describe('Lista sincronizada do /mapa — painel desktop', () => {
@@ -358,5 +393,32 @@ test.describe('Lista sincronizada do /mapa — painel desktop', () => {
     const attr = page.locator('[data-panel-attribution]');
     await expect(attr).toBeVisible({ timeout: 20_000 });
     await expect(attr).toContainText(/OpenStreetMap|CARTO|Open-Meteo/);
+  });
+
+  test('«Só a bombar»: nome = modo, estado só no aria-pressed', async ({ page }) => {
+    await openMapa(page);
+    // Em /mapa fullscreen o toggle vive SÓ no painel lateral (uma única casa).
+    const toggle = page.locator('[data-map-panel] [data-map-only-on-toggle]');
+    await expect(toggle).toBeVisible({ timeout: 20_000 });
+    const shell = page.locator('[data-map-only-on]').first();
+
+    // O nome é o MODO («Só a bombar»), não a acção — e arranca desligado.
+    await expect(page.getByRole('button', { name: ONLY_ON_TOGGLE_NAME })).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-pressed', 'false');
+    await expect(shell).toHaveAttribute('data-map-only-on', 'false');
+
+    // Ligar: o mesmo nome continua lá — só o aria-pressed muda.
+    await toggle.click();
+    const on = page.getByRole('button', { name: ONLY_ON_TOGGLE_NAME });
+    await expect(on).toBeVisible({ timeout: 15_000 });
+    await expect(on).toHaveAttribute('aria-pressed', 'true');
+    await expect(shell).toHaveAttribute('data-map-only-on', 'true');
+
+    // Desligar: mesmo nome, aria-pressed de volta a false.
+    await on.click();
+    const off = page.getByRole('button', { name: ONLY_ON_TOGGLE_NAME });
+    await expect(off).toBeVisible({ timeout: 15_000 });
+    await expect(off).toHaveAttribute('aria-pressed', 'false');
+    await expect(shell).toHaveAttribute('data-map-only-on', 'false');
   });
 });

@@ -13,6 +13,10 @@ interface FilterPillProps {
   activeClassName?: string;
   inactiveClassName?: string;
   'aria-label'?: string;
+  /** Descrição/dica da acção (ex. «Score ≥ 60»). NUNCA o estado: o estado
+   *  vive no aria-pressed. Fica no `title` para não poluir o nome acessível
+   *  — a regra nome=modo exige que o nome seja só o modo. */
+  title?: string;
   /** Atributo data-* no botão (ex. 'data-map-only-on-toggle') — selector
    *  estável para e2e, mesmo padrão dos MapLayersMenuItem. */
   toggleAttr?: string;
@@ -29,6 +33,7 @@ export default function FilterPill({
   activeClassName,
   inactiveClassName,
   'aria-label': ariaLabel,
+  title,
   toggleAttr,
 }: FilterPillProps) {
   return (
@@ -38,6 +43,7 @@ export default function FilterPill({
       disabled={disabled}
       aria-pressed={active}
       aria-label={ariaLabel}
+      title={title}
       {...(toggleAttr ? { [toggleAttr]: true } : {})}
       className={cn(
         'pill inline-flex items-center gap-1.5 text-meta font-medium whitespace-nowrap shrink-0',

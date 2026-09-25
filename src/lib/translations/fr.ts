@@ -275,7 +275,6 @@ export const translationsFr = {
     collapseHud: 'Masquer les filtres',
     expandHud: 'Afficher les filtres',
     onlyOn: 'Uniquement à fond',
-    onlyOnOff: 'Tous les spots',
     onlyOnHint: 'Score ≥ 60 — uniquement les spots à fond pour la discipline sélectionnée',
     swell: 'Swell',
     energy: 'Énergie',

@@ -712,17 +712,17 @@ export default function SpotMapInteractive({
   // ── Labels ──
   // Nome do controlo = a CAMADA/modo, constante; o estado vive só no
   // aria-pressed e na marca visual (tinta no toolbar, visto no sheet). Antes
-  // o rótulo alternava («Ocultar vento», «Mostrar todos») e o leitor de ecrã
-  // anunciava «Ocultar vento, premido» com a camada ligada — contraditório
-  // (auditoria 2026-09-21). O modo de agrupamento passa a seguir a mesma
-  // regra: o nome é o modo («Agrupar spots») e quem diz se está ligado é o
-  // aria-pressed — o ícone continua a virar com o estado porque isso é marca
-  // visual, não nome.
+  // o rótulo alternava («Ocultar vento», «Mostrar todos», «Todos os spots») e
+  // o leitor de ecrã anunciava «Ocultar vento, premido» com a camada ligada —
+  // contraditório (auditoria 2026-09-21). Cluster e «Só a bombar» seguem a
+  // mesma regra: o nome é o modo («Agrupar spots», «Só a bombar») e quem diz
+  // se está ligado é o aria-pressed; o ícone do cluster continua a virar com
+  // o estado porque isso é marca visual, não nome.
   const exitFullscreenLabel = t.map.exitFullscreen;
   const clusterLabel = t.map.clusterSpots;
   const windLabel = t.map.showWind;
   const windHint = null;
-  const onlyOnLabel = onlyOnEnabled ? t.map.onlyOnOff : t.map.onlyOn;
+  const onlyOnLabel = t.map.onlyOn;
   const onlyOnHint = t.map.onlyOnHint;
   const hoursLabel = t.map.showHours;
   const hoursHint = t.map.hoursHint;

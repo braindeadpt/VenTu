@@ -133,11 +133,16 @@ export default function MapSpotPanel({
               {d.label}
             </FilterPill>
           ))}
+          {/* Nome = MODO («Só a bombar»), constante; o estado vive no
+              aria-pressed. A dica («Score ≥ 60») vai no title — juntá-la ao
+              aria-label dava um nome do tipo «Só a bombar — Score ≥ 60», e
+              nome≠modo (auditoria 2026-09-25). Igual ao MapControls. */}
           <FilterPill
             compact
             active={onlyOnEnabled}
             onClick={onToggleOnlyOn}
-            aria-label={onlyOnHint ? `${onlyOnLabel} — ${onlyOnHint}` : onlyOnLabel}
+            aria-label={onlyOnLabel}
+            title={onlyOnHint}
             icon={<Zap className="h-3.5 w-3.5" aria-hidden />}
             toggleAttr="data-map-only-on-toggle"
           >

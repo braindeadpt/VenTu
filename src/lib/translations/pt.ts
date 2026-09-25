@@ -220,7 +220,6 @@ export const translationsPt = {
     collapseHud: 'Ocultar filtros',
     expandHud: 'Mostrar filtros',
     onlyOn: 'Só a bombar',
-    onlyOnOff: 'Todos os spots',
     onlyOnHint: 'Score ≥ 60 — só spots a bombar para a modalidade seleccionada',
     swell: 'Swell',
     energy: 'Energia',

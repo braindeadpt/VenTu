@@ -275,7 +275,6 @@ export const translationsDe = {
     collapseHud: 'Filter ausblenden',
     expandHud: 'Filter anzeigen',
     onlyOn: 'Nur laufende',
-    onlyOnOff: 'Alle Spots',
     onlyOnHint: 'Score ≥ 60 — nur laufende Spots für die gewählte Disziplin',
     swell: 'Swell',
     energy: 'Energie',
