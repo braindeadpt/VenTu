@@ -68,6 +68,9 @@ export default function SpotOnSiteWarnings({ spotId, locale }: SpotOnSiteWarning
     ? new Date(data.fetchedAt).toLocaleTimeString(isPt ? 'pt-PT' : 'en-GB', {
         hour: '2-digit',
         minute: '2-digit',
+        // Hora do spot, não a do browser (um visitante fora de Lisboa via a
+        // sua própria hora) — igual aos outros formatadores da página.
+        timeZone: 'Europe/Lisbon',
       })
     : null;
 
