@@ -60,6 +60,34 @@ const MAX_OBS_AGE_HOURS = 3;
 /** Time window (h) requested from getDatawellData — latest rows only. */
 const WAVE_WINDOW_HOURS = 24;
 
+/**
+ * Physical plausibility ceiling for significant wave height hm0 (m).
+ *
+ * IH `getDatawellData` uses **99.99 as the fill value** for missing/QC-rejected
+ * samples (seen live on 4/20/33/86 — 12 rows between 2026-09-03 and 2026-09-21).
+ * Without a bound those rows are ingested as real observations and poison every
+ * metric derived from the IH series: forecast-skill byBuoy blew up to
+ * RMSE 9.6 m / corr 0.00 (vs RMSE 0.2 m / corr 0.92 on the keyless WMO route
+ * for the same periods), wave-bias reported RMSE 10.1 m for BOND5, and a
+ * 99.99 m reading could reach a spot's observedWave for 3 h — distorting the
+ * real-time score. 25 m sits far above any measured sea state (the world
+ * record Hs is ~19 m) and far below the 99.99 sentinel.
+ */
+const MAX_PLAUSIBLE_HM0_M = 25;
+/** Same idea for the individual-wave hmax (m) — drop the field, keep the row. */
+const MAX_PLAUSIBLE_HMAX_M = 40;
+
+/**
+ * Is this value a physically plausible significant wave height (m)?
+ * Rejects non-finite, negative and fill/sentinel values (99.99…).
+ * @param {unknown} value
+ * @returns {boolean}
+ */
+function isPlausibleHm0(value) {
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 && n <= MAX_PLAUSIBLE_HM0_M;
+}
+
 function haversineKm(lat1, lon1, lat2, lon2) {
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -183,7 +211,7 @@ function finiteNumber(v) {
 function parseWaveRow(row) {
   if (!row || typeof row !== 'object') return null;
   const hm0 = finiteNumber(row.hm0);
-  if (hm0 == null || hm0 < 0) return null;
+  if (hm0 == null || !isPlausibleHm0(hm0)) return null;
   const date = row.date != null ? String(row.date) : '';
   const parsed = new Date(date).getTime();
   if (!Number.isFinite(parsed)) return null;
@@ -195,7 +223,7 @@ function parseWaveRow(row) {
   const temp = finiteNumber(row.temp);
   if (tp != null && tp >= 0) out.tp = tp;
   if (thtp != null && thtp >= 0 && thtp <= 360) out.thtp = thtp;
-  if (hmax != null && hmax >= 0) out.hmax = hmax;
+  if (hmax != null && hmax >= 0 && hmax <= MAX_PLAUSIBLE_HMAX_M) out.hmax = hmax;
   if (temp != null) out.temp = temp;
   return out;
 }
@@ -382,15 +410,17 @@ function observedWaveForSpot(mapping, station, opts = {}) {
   if (mapping.distanceKm > maxKm) return null;
   const latest = station.latest;
   if (!latest || typeof latest !== 'object') return null;
-  if (typeof latest.hm0 !== 'number' || !isFreshObservation(latest.date, nowMs, maxAgeHours)) {
-    return null;
-  }
+  if (typeof latest.hm0 !== 'number' || !isPlausibleHm0(latest.hm0)) return null;
+  if (!isFreshObservation(latest.date, nowMs, maxAgeHours)) return null;
 
   return {
     waveHeight: latest.hm0,
     wavePeriod: typeof latest.tp === 'number' ? latest.tp : undefined,
     waveDirection: typeof latest.thtp === 'number' ? latest.thtp : undefined,
-    maxWaveHeight: typeof latest.hmax === 'number' ? latest.hmax : undefined,
+    maxWaveHeight:
+      typeof latest.hmax === 'number' && latest.hmax <= MAX_PLAUSIBLE_HMAX_M
+        ? latest.hmax
+        : undefined,
     waterTemp: typeof latest.temp === 'number' ? latest.temp : undefined,
     stationName: station.name,
     stationArea: station.area,
@@ -411,6 +441,9 @@ module.exports = {
   MAX_BUOY_ATTACH_KM,
   MAX_OBS_AGE_HOURS,
   WAVE_WINDOW_HOURS,
+  MAX_PLAUSIBLE_HM0_M,
+  MAX_PLAUSIBLE_HMAX_M,
+  isPlausibleHm0,
   haversineKm,
   normalizeStation,
   fetchBuoyStations,
