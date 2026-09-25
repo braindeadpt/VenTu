@@ -453,38 +453,6 @@
       ]
     },
     {
-      "id": 18665,
-      "ref": "ANAV NR 2159/26",
-      "category": "Comunicações",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=76931111-a949-4bae-8e79-fe9020b38f2f",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.892692,
-            38.520781
-          ],
-          [
-            -8.892692,
-            38.521054
-          ],
-          [
-            -8.892252,
-            38.521054
-          ],
-          [
-            -8.892252,
-            38.520781
-          ],
-          [
-            -8.892692,
-            38.520781
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18669,
       "ref": "ANAV NR 2162/26",
       "category": "Requisitos de segurança maritima",
@@ -620,6 +588,38 @@
           [
             -9.090341,
             38.760509
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 18671,
+      "ref": "ANAV NR 2163/26",
+      "category": "Requisitos de segurança maritima",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f0286a1f-63e9-403d-94ee-0c80148b6321",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -8.483225,
+            37.078934
+          ],
+          [
+            -8.483225,
+            37.102623
+          ],
+          [
+            -8.408202,
+            37.102623
+          ],
+          [
+            -8.408202,
+            37.078934
+          ],
+          [
+            -8.483225,
+            37.078934
           ]
         ]
       ]
@@ -3672,38 +3672,6 @@
           [
             -8.260987,
             37.080166
-          ]
-        ]
-      ]
-    },
-    {
-      "id": 1005584,
-      "ref": "ANAV NR 119/24",
-      "category": "RESTRIÇÃO DE ACESSO  À GRUTA VALE DO COVO ",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=a826d8d6-74cf-4fd5-85cb-732e71be4229",
-      "source": "ih",
-      "collection": "nav_warning_local",
-      "polygons": [
-        [
-          [
-            -8.460245,
-            37.091663
-          ],
-          [
-            -8.460245,
-            37.092425
-          ],
-          [
-            -8.459687,
-            37.092425
-          ],
-          [
-            -8.459687,
-            37.091663
-          ],
-          [
-            -8.460245,
-            37.091663
           ]
         ]
       ]
@@ -7109,6 +7077,70 @@
       ]
     },
     {
+      "id": 1010316,
+      "ref": "ANAV NR 12/26",
+      "category": "SEGURANÇA DA NAVEGAÇÃO - BARRA ABERTA",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=271197d8-f89e-4b37-9d97-b05aad6d21c7",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -8.720453,
+            41.175073
+          ],
+          [
+            -8.720453,
+            41.187735
+          ],
+          [
+            -8.690916,
+            41.187735
+          ],
+          [
+            -8.690916,
+            41.175073
+          ],
+          [
+            -8.720453,
+            41.175073
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 1010324,
+      "ref": "ANAV NR 18/26",
+      "category": "Assoreamento da Barra",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=9d29976e-14d5-477c-85cb-ac05a272d3a5",
+      "source": "ih",
+      "collection": "nav_warning_local",
+      "polygons": [
+        [
+          [
+            -8.752633,
+            41.335447
+          ],
+          [
+            -8.752633,
+            41.339829
+          ],
+          [
+            -8.745082,
+            41.339829
+          ],
+          [
+            -8.745082,
+            41.335447
+          ],
+          [
+            -8.752633,
+            41.335447
+          ]
+        ]
+      ]
+    },
+    {
       "id": 2017253,
       "ref": "ANAV NR 0956/26",
       "category": "Animais Marinhos - Avistamento",
@@ -7601,6 +7633,7 @@
       1000202,
       1000709,
       1000777,
+      1010316,
       2018383
     ],
     "cabedelo-douro": [
@@ -8152,7 +8185,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-25T15:36:42.124Z",
+  "fetchedAt": "2026-09-25T18:11:01.503Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }

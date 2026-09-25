@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-25T15:36:42.146Z",
+  "fetchedAt": "2026-09-25T18:11:01.524Z",
   "windowDays": 90,
   "dayCount": 24,
   "days": [
@@ -17902,18 +17902,18 @@
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=25737c62-0b9f-492f-b538-1bda9db93d73"
         },
         {
-          "id": 18665,
-          "ref": "ANAV NR 2159/26",
-          "category": "Comunicações",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=76931111-a949-4bae-8e79-fe9020b38f2f"
-        },
-        {
           "id": 18669,
           "ref": "ANAV NR 2162/26",
           "category": "Requisitos de segurança maritima",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ab382b86-089c-4dfb-895c-7c3726ede293"
+        },
+        {
+          "id": 18671,
+          "ref": "ANAV NR 2163/26",
+          "category": "Requisitos de segurança maritima",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f0286a1f-63e9-403d-94ee-0c80148b6321"
         },
         {
           "id": 1000182,
@@ -18532,13 +18532,6 @@
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=a67ab1b2-37d9-4a72-b413-5a06a6633e23"
         },
         {
-          "id": 1005584,
-          "ref": "ANAV NR 119/24",
-          "category": "RESTRIÇÃO DE ACESSO  À GRUTA VALE DO COVO ",
-          "source": "ih",
-          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=a826d8d6-74cf-4fd5-85cb-732e71be4229"
-        },
-        {
           "id": 1005595,
           "ref": "ANAV NR 44/24",
           "category": "SEGURANÇA DA NAVEGAÇÃO - CAMPANHA CIENTÍFICA",
@@ -18964,6 +18957,20 @@
           "category": "BARRA DE ALVOR - BARRA ABERTA.",
           "source": "ih",
           "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=3c72080e-a2e9-4744-ab0d-ef0a61dbf74a"
+        },
+        {
+          "id": 1010316,
+          "ref": "ANAV NR 12/26",
+          "category": "SEGURANÇA DA NAVEGAÇÃO - BARRA ABERTA",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=271197d8-f89e-4b37-9d97-b05aad6d21c7"
+        },
+        {
+          "id": 1010324,
+          "ref": "ANAV NR 18/26",
+          "category": "Assoreamento da Barra",
+          "source": "ih",
+          "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=9d29976e-14d5-477c-85cb-ac05a272d3a5"
         },
         {
           "id": 2017253,
@@ -19934,31 +19941,6 @@
       "nDays": 14
     },
     {
-      "ref": "ANAV NR 119/24",
-      "category": "RESTRIÇÃO DE ACESSO  À GRUTA VALE DO COVO ",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=a826d8d6-74cf-4fd5-85cb-732e71be4229",
-      "firstSeen": "2026-09-11",
-      "lastSeen": "2026-09-25",
-      "daysInForce": [
-        "2026-09-11",
-        "2026-09-12",
-        "2026-09-13",
-        "2026-09-14",
-        "2026-09-15",
-        "2026-09-16",
-        "2026-09-18",
-        "2026-09-19",
-        "2026-09-20",
-        "2026-09-21",
-        "2026-09-22",
-        "2026-09-23",
-        "2026-09-24",
-        "2026-09-25"
-      ],
-      "nDays": 14
-    },
-    {
       "ref": "ANAV NR 12/24",
       "category": "Edital n.º 712 de 2024",
       "source": "ih",
@@ -20007,6 +19989,18 @@
         "2026-09-25"
       ],
       "nDays": 14
+    },
+    {
+      "ref": "ANAV NR 12/26",
+      "category": "SEGURANÇA DA NAVEGAÇÃO - BARRA ABERTA",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=271197d8-f89e-4b37-9d97-b05aad6d21c7",
+      "firstSeen": "2026-09-25",
+      "lastSeen": "2026-09-25",
+      "daysInForce": [
+        "2026-09-25"
+      ],
+      "nDays": 1
     },
     {
       "ref": "ANAV NR 121/21",
@@ -20865,9 +20859,9 @@
     },
     {
       "ref": "ANAV NR 18/26",
-      "category": "Perigo à Navegação",
+      "category": "Assoreamento da Barra",
       "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=eb8d1bf0-9fbf-4ce2-bbb2-695302f96a18",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=9d29976e-14d5-477c-85cb-ac05a272d3a5",
       "firstSeen": "2026-09-11",
       "lastSeen": "2026-09-25",
       "daysInForce": [
@@ -21323,18 +21317,6 @@
       "nDays": 1
     },
     {
-      "ref": "ANAV NR 2159/26",
-      "category": "Comunicações",
-      "source": "ih",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=76931111-a949-4bae-8e79-fe9020b38f2f",
-      "firstSeen": "2026-09-25",
-      "lastSeen": "2026-09-25",
-      "daysInForce": [
-        "2026-09-25"
-      ],
-      "nDays": 1
-    },
-    {
       "ref": "ANAV NR 2161/26",
       "category": "Animais Marinhos - Interação",
       "source": "ih",
@@ -21351,6 +21333,18 @@
       "category": "Requisitos de segurança maritima",
       "source": "ih",
       "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=ab382b86-089c-4dfb-895c-7c3726ede293",
+      "firstSeen": "2026-09-25",
+      "lastSeen": "2026-09-25",
+      "daysInForce": [
+        "2026-09-25"
+      ],
+      "nDays": 1
+    },
+    {
+      "ref": "ANAV NR 2163/26",
+      "category": "Requisitos de segurança maritima",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=f0286a1f-63e9-403d-94ee-0c80148b6321",
       "firstSeen": "2026-09-25",
       "lastSeen": "2026-09-25",
       "daysInForce": [
@@ -23299,6 +23293,30 @@
         "2026-09-25"
       ],
       "nDays": 14
+    },
+    {
+      "ref": "ANAV NR 119/24",
+      "category": "RESTRIÇÃO DE ACESSO  À GRUTA VALE DO COVO ",
+      "source": "ih",
+      "url": "https://geoanavnet.hidrografico.pt/local-warnings?uuid=a826d8d6-74cf-4fd5-85cb-732e71be4229",
+      "firstSeen": "2026-09-11",
+      "lastSeen": "2026-09-24",
+      "daysInForce": [
+        "2026-09-11",
+        "2026-09-12",
+        "2026-09-13",
+        "2026-09-14",
+        "2026-09-15",
+        "2026-09-16",
+        "2026-09-18",
+        "2026-09-19",
+        "2026-09-20",
+        "2026-09-21",
+        "2026-09-22",
+        "2026-09-23",
+        "2026-09-24"
+      ],
+      "nDays": 13
     },
     {
       "ref": "ANAV NR 2150/26",
