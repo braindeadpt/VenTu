@@ -230,7 +230,7 @@ export default function MapTimeChrome({
         aria-controls="map-hours-scrubber-card"
         onClick={onToggleScrub}
         style={pillStyle}
-        className="absolute top-3 left-1/2 z-[1150] inline-flex h-10 -translate-x-1/2 items-center gap-1.5 rounded-pill border border-divider bg-bg-elevated px-3.5 text-[13px] text-fg shadow-card transition-colors hover:bg-surface-2"
+        className="absolute top-3 left-1/2 z-[1150] inline-flex h-10 -translate-x-1/2 items-center gap-1.5 rounded-pill border border-divider bg-bg-elevated px-3.5 text-[13px] text-fg shadow-card transition-colors hover:border-divider-strong"
       >
         {!hoursOn || n === 0 ? (
           <span className="font-medium">{timeNow}</span>
@@ -276,7 +276,7 @@ export default function MapTimeChrome({
                 aria-pressed={!hoursHudPaused}
                 aria-label={hoursHudPaused ? timePlay : timePause}
                 onClick={() => onUserPausedChange(!hoursUserPaused)}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-input text-fg transition-colors hover:bg-surface-2"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-input text-fg transition-colors hover:bg-surface-2/[0.08]"
               >
                 {hoursHudPaused ? (
                   <Play aria-hidden className="h-[18px] w-[18px] fill-current" />
@@ -294,7 +294,7 @@ export default function MapTimeChrome({
                 type="button"
                 data-map-hours-now
                 onClick={() => onIndexChange(0)}
-                className="min-h-8 shrink-0 whitespace-nowrap rounded-input px-2.5 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                className="min-h-8 shrink-0 whitespace-nowrap rounded-input px-2.5 text-[12px] font-medium text-fg-muted transition-colors hover:bg-surface-2/[0.08] hover:text-fg"
               >
                 {timeNow}
               </button>
