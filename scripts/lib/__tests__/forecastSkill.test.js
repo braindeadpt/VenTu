@@ -18,11 +18,14 @@ const {
   crossPairs,
   attachWaveSkill,
   computeSkillStats,
+  leadBucketStats,
   buildStats,
   pruneArchive,
   buildReport,
   SKILL_WINDOW_DAYS,
   MIN_PAIRS,
+  MIN_BUCKET_PAIRS,
+  LEAD_BUCKETS,
   MAX_FORECAST_LEAD_HOURS,
   FORECAST_ARCHIVE_HOURS,
 } = require('../forecastSkill.js');
@@ -432,6 +435,91 @@ describe('stats', () => {
     const { byOrigin } = buildStats(ihPairs);
     expect(byOrigin.ih.n).toBe(12);
     expect(byOrigin['wmo-es']).toBeNull();
+  });
+
+  it('leadBucketStats reparte o skill por faixa de horizonte e corta faixas sem amostra', () => {
+    const pairs = [
+      ...Array.from({ length: 6 }, () => ({ leadTimeHours: 3, forecastHm0: 1, observedHm0: 1.2 })),
+      ...Array.from({ length: 6 }, () => ({ leadTimeHours: 30, forecastHm0: 2, observedHm0: 1.6 })),
+      // 1 par na cauda longa — abaixo de MIN_BUCKET_PAIRS, não vira faixa.
+      { leadTimeHours: 100, forecastHm0: 1, observedHm0: 1 },
+    ];
+    const buckets = leadBucketStats(pairs);
+    expect(buckets.map((b) => `${b.from}-${b.to}`)).toEqual(['0-12', '24-48']);
+    expect(buckets[0]).toMatchObject({ n: 6, me: 0.2 });
+    expect(buckets[1]).toMatchObject({ n: 6, me: -0.4 });
+    // Nunca publica uma faixa com menos de MIN_BUCKET_PAIRS pares.
+    expect(buckets.every((b) => b.n >= MIN_BUCKET_PAIRS)).toBe(true);
+  });
+
+  it('leadBucketStats inclui o lead == MAX na última faixa (72–168 h, limite inclusivo)', () => {
+    const pairs = Array.from({ length: MIN_BUCKET_PAIRS }, () => ({
+      leadTimeHours: MAX_FORECAST_LEAD_HOURS,
+      forecastHm0: 1,
+      observedHm0: 1.1,
+    }));
+    const buckets = leadBucketStats(pairs);
+    expect(buckets).toHaveLength(1);
+    expect(buckets[0]).toMatchObject({
+      from: LEAD_BUCKETS[LEAD_BUCKETS.length - 1].from,
+      to: MAX_FORECAST_LEAD_HOURS,
+      n: MIN_BUCKET_PAIRS,
+    });
+  });
+
+  it('leadBucketStats sem pares / com input inválido devolve lista vazia', () => {
+    expect(leadBucketStats([])).toEqual([]);
+    expect(leadBucketStats(null)).toEqual([]);
+  });
+
+  it('buildStats carrega byLead por boia e o report expõe-no globalmente', () => {
+    // 6 pares a ~6 h + 6 a ~36 h — duas faixas com amostra suficiente.
+    const pairs = [
+      ...Array.from({ length: 6 }, () => ({
+        buoyId: 4,
+        origin: 'ih',
+        forecastHm0: 1,
+        observedHm0: 1.2,
+        leadTimeHours: 6,
+      })),
+      ...Array.from({ length: 6 }, () => ({
+        buoyId: 4,
+        origin: 'ih',
+        forecastHm0: 2,
+        observedHm0: 1.5,
+        leadTimeHours: 36,
+      })),
+    ];
+    const { byBuoy } = buildStats(pairs);
+    expect(byBuoy[4].byLead.map((b) => `${b.from}-${b.to}`)).toEqual(['0-12', '24-48']);
+    expect(byBuoy[4].byLead[0]).toMatchObject({ n: 6, me: 0.2, meanLeadHours: 6 });
+    expect(byBuoy[4].byLead[1]).toMatchObject({ n: 6, me: -0.5, meanLeadHours: 36 });
+
+    // O mesmo arquivo real (forecasts × observations) tem de dar o byLead igual.
+    const a = emptyArchive();
+    const at = (iso, leadH, hm0, obsHm0) => {
+      a.forecasts.push({
+        time: iso,
+        hm0,
+        runAt: new Date(Date.parse(iso) - leadH * 3_600_000).toISOString(),
+        buoyId: 4,
+        origin: 'ih',
+      });
+      a.observations.push({ time: iso, hm0: obsHm0, buoyId: 4, origin: 'ih' });
+    };
+    const bucket0 = ['2026-08-14T02:00:00Z', '2026-08-14T03:00:00Z', '2026-08-14T04:00:00Z', '2026-08-14T05:00:00Z', '2026-08-14T06:00:00Z', '2026-08-14T07:00:00Z'];
+    const bucket1 = ['2026-08-14T08:00:00Z', '2026-08-14T09:00:00Z', '2026-08-14T10:00:00Z', '2026-08-14T11:00:00Z', '2026-08-14T12:00:00Z', '2026-08-14T13:00:00Z'];
+    bucket0.forEach((t) => at(t, 6, 1, 1.2));
+    bucket1.forEach((t) => at(t, 36, 2, 1.5));
+
+    const report = buildReport(a, NOW);
+    expect(report.byLead.map((b) => `${b.from}-${b.to}`)).toEqual(['0-12', '24-48']);
+    expect(report.byBuoy[4].byLead).toEqual(byBuoy[4].byLead);
+    // O report declara as faixas e o limiar para o consumidor não os adivinhar.
+    expect(report.leadBuckets).toEqual(LEAD_BUCKETS);
+    expect(report.minBucketPairs).toBe(MIN_BUCKET_PAIRS);
+    // E o archive (escrito em data-state) guarda o mesmo byLead global.
+    expect(a.byLead).toEqual(report.byLead);
   });
 
   it('buildReport inclui byOrigin no report e no archive', () => {

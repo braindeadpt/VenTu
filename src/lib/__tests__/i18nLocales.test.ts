@@ -37,6 +37,12 @@ const SHARED_TOKENS = new Set([
   'PM', 'BM',
   // «ideal» é a mesma grafia em PT/EN/ES/DE (rótulo do sector ideal).
   'ideal {dirs}',
+  // Fórmulas simbólicas da banda ensemble e do skill por lead: P10/P50/P90,
+  // ME, RMSE, n e h são símbolos/abreviaturas universais — nada a traduzir.
+  'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+  '{from}–{to} h',
+  'ME {me} m · RMSE {rmse} m · n={n}',
+  'ME {me} m · n={n}',
 ]);
 
 /**
@@ -179,6 +185,8 @@ const ES_COGNATES = new Set([
   'Par {key} · {n} spot(s) recalibrado(s): {spots}', // espanhol correcto = PT (tooltip do par)
   'a',                                 // espanhol correcto = PT (preposição)
   'gate cross-border {day}: {codes}',  // espanhol correcto = PT (nota de gate)
+  'banda P10–P90 {lo}–{hi} m · {n} modelos', // espanhol correcto = PT (banda ensemble)
+  '{n} modelos',                        // espanhol correcto = PT (contagem de membros)
 ]);
 
 /**
@@ -216,6 +224,11 @@ const EN_COGNATES = new Set([
   'ideal {dirs}', // «ideal» é a mesma grafia em EN e PT (rótulo do sector ideal)
   'Offshore', 'Onshore', 'Cross-shore', // relações de vento adoptadas em EN
   'Expert',            // termo adoptado em EN = PT (nível de dificuldade)
+  // Fórmulas simbólicas (mesmos símbolos em PT e EN): P10/P50/P90, ME, RMSE, n.
+  'P10 {p10} · P50 {p50} · P90 {p90} {unit}',
+  '{from}–{to} h',
+  'ME {me} m · RMSE {rmse} m · n={n}',
+  'ME {me} m · n={n}',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

@@ -6,6 +6,8 @@ const cache = new Map<
   {
     f0: (n: number) => string;
     f1: (n: number) => string;
+    /** 2 casas — quantis de onda (o produtor grava cm). */
+    f2: (n: number) => string;
     /** Com sinal explícito (−0,45 / +0,33) — marés. */
     fS: (n: number) => string;
     weekdayShort: (isoLocal: string) => string;
@@ -21,11 +23,16 @@ export function getInstrumentFmt(locale: string) {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1,
   });
+  const nf2 = new Intl.NumberFormat(tag, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
   const nf0 = new Intl.NumberFormat(tag, { maximumFractionDigits: 0 });
   const wd = new Intl.DateTimeFormat(tag, { weekday: 'short' });
   const fmt = {
     f0: (n: number) => nf0.format(Math.round(n)),
     f1: (n: number) => nf1.format(n),
+    f2: (n: number) => nf2.format(n),
     fS: (n: number) => (n < 0 ? '−' : n > 0 ? '+' : '') + nf1.format(Math.abs(n)),
     // «seg»/«Mon» — a data vem em ISO local («2026-09-21T00:00»); construir
     // por partes evita deriva de fuso num runtime fora de Europe/Lisbon.

@@ -49,6 +49,38 @@ const LISBON_TZ = 'Europe/Lisbon';
 const round1 = (n) => Math.round(n * 10) / 10;
 const round2 = (n) => Math.round(n * 100) / 100;
 
+/**
+ * Faixas de horizonte (lead time, horas) do skill por tempo de anticipação.
+ *
+ * O ME/RMSE agregado de uma boia mistura horas feitas 2 h antes com horas feitas
+ * 4 dias antes — e a previsão de amanhã vale muito mais do que a de depois de
+ * amanhã. Estas faixas separam as duas coisas, alinhadas com a operação do
+ * VenTu (a régua é 48 h, o arquivo vai até 7 dias):
+ *   · 0–12 h  — «agora»/hoje: o que o surfista usa para decidir;
+ *   · 12–24 h — amanhã;
+ *   · 24–48 h — a janela da régua de 48 h;
+ *   · 48–72 h — fim do arquivo por run (FORECAST_ARCHIVE_HOURS = 48 h no run
+ *               diário, por isso n escasso — publica-se só com amostra);
+ *   · 72–168 h — cauda longa (runs acumulados).
+ * A última faixa é INCLUSIVA no limite superior (lead == 168 h existe no
+ * arquivo); as outras são `lead < to`.
+ */
+const LEAD_BUCKETS = [
+  { from: 0, to: 12 },
+  { from: 12, to: 24 },
+  { from: 24, to: 48 },
+  { from: 48, to: 72 },
+  { from: 72, to: MAX_FORECAST_LEAD_HOURS },
+];
+
+/**
+ * Pares mínimos numa faixa de horizonte para a publicar. Abaixo disto o ME/RMSE
+ * seria ruído de 1–2 pares a fazer-se passar por skill — e o leitor não teria
+ * como saber (a faixa simplesmente não aparece). Mais baixo que MIN_PAIRS
+ * (10, por boia) porque cada faixa vê uma fracção dos pares da boia.
+ */
+const MIN_BUCKET_PAIRS = 5;
+
 /** Format an instant (Date) as a Lisbon wall hour key: YYYY-MM-DDTHH. */
 function lisbonHourKeyFromDate(date) {
   const parts = new Intl.DateTimeFormat('en-GB', {
@@ -366,9 +398,37 @@ function computeSkillStats(pairs) {
 }
 
 /**
+ * ME/MAE/RMSE/r por faixa de horizonte (lead time) — o skill do forecast a
+ * degradar com o tempo de anticipação. Só devolve as faixas com amostra
+ * suficiente (MIN_BUCKET_PAIRS); nunca inventa uma faixa com 1–2 pares.
+ * @param {Array<{ leadTimeHours?: number }>} pairs
+ * @returns {Array<{ from: number, to: number, n: number, me: number, mae: number, rmse: number, corr: number|null, meanLeadHours: number|null }>}
+ */
+function leadBucketStats(pairs) {
+  const list = Array.isArray(pairs) ? pairs : [];
+  const out = [];
+  for (let i = 0; i < LEAD_BUCKETS.length; i += 1) {
+    const { from, to } = LEAD_BUCKETS[i];
+    const last = i === LEAD_BUCKETS.length - 1;
+    const inBucket = list.filter(
+      (p) =>
+        Number.isFinite(p?.leadTimeHours) &&
+        p.leadTimeHours >= from &&
+        (last ? p.leadTimeHours <= to : p.leadTimeHours < to),
+    );
+    if (inBucket.length < MIN_BUCKET_PAIRS) continue;
+    const stats = computeSkillStats(inBucket);
+    if (stats) out.push({ from, to, ...stats });
+  }
+  return out;
+}
+
+/**
  * Recompute stats from pairs: global (mixed), per-platform and per-buoy.
  * The mixed total alone hides how each platform behaves — byOrigin splits
  * IH (Datawell, keyed) from WMO-ES (Copernicus, keyless).
+ * Each buoy entry also carries `byLead` (skill by lead horizon) when at least
+ * one bucket has enough pairs — the same breakdown the report carries globally.
  * @returns {{ overall: object|null, byOrigin: object, byBuoy: Record<number, object> }}
  */
 function buildStats(pairs) {
@@ -390,7 +450,13 @@ function buildStats(pairs) {
   for (const entry of byBuoyId.values()) {
     const stats = computeSkillStats(entry.pairs);
     if (stats && stats.n >= MIN_PAIRS) {
-      byBuoy[entry.buoyId] = { ...stats, buoyName: entry.buoyName, origin: entry.origin };
+      const byLead = leadBucketStats(entry.pairs);
+      byBuoy[entry.buoyId] = {
+        ...stats,
+        buoyName: entry.buoyName,
+        origin: entry.origin,
+        ...(byLead.length ? { byLead } : {}),
+      };
     }
   }
   const byOrigin = { ih: null, 'wmo-pt': null, 'wmo-es': null };
@@ -558,6 +624,10 @@ function buildReport(archive, nowMs = Date.now()) {
   archive.stats = stats.overall;
   archive.byOrigin = stats.byOrigin;
   archive.byBuoy = stats.byBuoy;
+  // Skill por horizonte (global, todas as boias misturadas) — a forma como a
+  // previsão degrada com o lead. Fica no report além do `meanLeadHours` único,
+  // que era a única leitura de horizonte até aqui.
+  archive.byLead = leadBucketStats(pairs);
 
   const pairCountByOrigin = { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 };
   let calibratedPairCount = 0;
@@ -588,12 +658,15 @@ function buildReport(archive, nowMs = Date.now()) {
     fetchedAt: archive.fetchedAt,
     windowDays: SKILL_WINDOW_DAYS,
     minPairs: MIN_PAIRS,
+    minBucketPairs: MIN_BUCKET_PAIRS,
+    leadBuckets: LEAD_BUCKETS,
     pairCount: pairs.length,
     pairCountByOrigin,
     calibratedPairCount,
     stats: stats.overall,
     byOrigin: stats.byOrigin,
     byBuoy: stats.byBuoy,
+    byLead: archive.byLead,
     lastPairs: pairs.slice(-10).reverse(),
     lastPairsByOrigin,
   };
@@ -602,6 +675,8 @@ function buildReport(archive, nowMs = Date.now()) {
 module.exports = {
   SKILL_WINDOW_DAYS,
   MIN_PAIRS,
+  MIN_BUCKET_PAIRS,
+  LEAD_BUCKETS,
   MAX_FORECAST_LEAD_HOURS,
   FORECAST_ARCHIVE_HOURS,
   LISBON_TZ,
@@ -617,6 +692,7 @@ module.exports = {
   attachWaveSkill,
   crossPairs,
   computeSkillStats,
+  leadBucketStats,
   buildStats,
   pruneArchive,
   buildReport,

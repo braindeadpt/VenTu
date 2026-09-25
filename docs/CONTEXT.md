@@ -254,6 +254,7 @@ scripts/lib/skillRegression.js → snapshots diários, janelas recente/baseline,
 ## Exposição do forecast-skill (UI)
 
 - **Página de spot:** o `ObservedWaveCard` mostra a linha «Skill desta boia» (ME/MAE/RMSE/r/lead, n) quando a leitura está fresca; **sem leitura fresca**, uma linha discreta `BuoySkillLine` (mesmo rótulo, `data-buoy-skill-line`) aparece na secção de verificação, resolvida em runtime a partir do `forecast-skill.json` + mapeamento spot→boia (`ih-buoys.json` idEst, fallback `wmo-buoys.json` code) via `src/lib/forecastSkill.ts` (client, cache por sessão; falha → silencioso).
+- **Skill por horizonte de lead:** o `byLead` do `forecast-skill.json` (`forecastSkill.js` → `leadBucketStats`, faixas `LEAD_BUCKETS` 0–12/12–24/24–48/48–72/72–168 h, publicadas só com n ≥ `MIN_BUCKET_PAIRS` = 5) alimenta a tabela «Skill por horizonte» no detalhe da Onda (`WaveSkillByLead`, `data-skill-by-lead` — ME/RMSE/n por faixa da boia do spot, resolvida pelo mesmo caminho da BuoySkillLine). Cada boia leva o seu `byLead`; o report leva também o global (`byLead` + `leadBuckets`/`minBucketPairs`). O agregado ME/RMSE mistura horizontes: esta é a leitura honesta de quanto vale a previsão a cada prazo (o n de cada faixa é mostrado — nunca se apresenta ruído como skill).
 - **About:** secção «Skill real do forecast por boia» (tabela n/ME/MAE/RMSE/r/lead médio) ao lado da calibração — lida em build time (`loadForecastSkillBuoys`, padrão waveBias.ts); esconde-se sem dados (n≥10 por boia, mesmo gate do produtor).
 - Distinção honesta mantida: o About explica que isto é skill REAL do forecast (lead>0), diferente do viés ERA5 da secção de calibração.
 
@@ -358,8 +359,7 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   dos endpoints multi-modelo não pode bloquear o push de dados frescos. Os testes de
   `ensembleQuantiles` incluem um guarda de ligação ao pipeline (falha se
   `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).
-- **Ainda não há UI**: a banda é publicada nos ficheiros; a faixa na régua de 48 h e
-  no badge de confiança é o passo seguinte.
+- **UI (2026-09-25)**: o **cartão Onda** mostra a banda da hora escolhida (`SwellCard`, `data-wave-band="card"` — «banda P10–P90 1,0–1,9 m · 4 modelos») e o **detalhe da Onda** repete-a por família (`InstrumentDetail`, `data-wave-band="detail"`): onda em m a 2 casas, vento convertido para kt, com a contagem de membros. O descodificador do array é `src/lib/ensembleBand.ts` (`parseEnsemble`, chamado pelo `rowToInstrumentHour`) — sem `ens` na linha não se desenha nada, nunca se inventa uma banda. A faixa sombreada na régua de 48 h e a leitura no badge de confiança continuam por fazer.
 
 ## Health-check de modelos (Open-Meteo ensemble)
 

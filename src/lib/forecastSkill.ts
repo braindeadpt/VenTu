@@ -13,6 +13,22 @@
 
 export type ForecastSkillOrigin = 'ih' | 'wmo-pt' | 'wmo-es';
 
+/**
+ * Skill de uma FAIXA de horizonte (lead time, horas) — o forecast degrada com
+ * o tempo de anticipação, e o ME/RMSE agregado esconde isso. `from`–`to` são
+ * os limites da faixa (horas); a última é inclusiva em `to`.
+ */
+export interface ForecastSkillLeadBucket {
+  from: number;
+  to: number;
+  n: number;
+  me: number;
+  mae?: number;
+  rmse?: number;
+  corr?: number | null;
+  meanLeadHours?: number | null;
+}
+
 /** Aggregated skill stats over a set of pairs (a platform or a buoy). */
 export interface ForecastSkillStats {
   n: number;
@@ -21,6 +37,8 @@ export interface ForecastSkillStats {
   rmse?: number;
   corr?: number | null;
   meanLeadHours?: number | null;
+  /** Skill por horizonte de lead (só as faixas com amostra suficiente). */
+  byLead?: ForecastSkillLeadBucket[];
 }
 
 export interface ForecastSkillBuoy extends ForecastSkillStats {
@@ -41,6 +59,8 @@ export interface ForecastSkillData {
   pairCountByOrigin?: Record<ForecastSkillOrigin, number>;
   /** Pairs whose reading is from a Spanish buoy (ES→PT calibrated layer). */
   calibratedPairCount?: number;
+  /** Skill global por horizonte de lead (todas as boias misturadas). */
+  byLead: ForecastSkillLeadBucket[];
   hasData: boolean;
 }
 
@@ -53,6 +73,7 @@ interface ByBuoyEntry {
   corr?: unknown;
   meanLeadHours?: unknown;
   origin?: unknown;
+  byLead?: unknown;
 }
 
 const round2 = (n: number) => Math.round(n * 100) / 100;
@@ -98,12 +119,71 @@ export function forecastSkillOriginTag(
 const MIN_PAIRS = 10;
 
 /**
- * Pure: sanitise a raw stats object ({n, me, mae, rmse, corr, meanLeadHours})
- * into ForecastSkillStats. Requires finite n and me; null otherwise.
+ * Pure: sanitise a raw `byLead` array into typed horizon buckets. Drops any
+ * malformed entry (missing interval, n < 1 or non-finite ME) and sorts by
+ * `from` — the producer already sorts, but the file is external input.
+ * Absent/invalid → empty list (the caller hides the breakdown).
+ */
+function sanitizeLeadBuckets(raw: unknown): ForecastSkillLeadBucket[] {
+  if (!Array.isArray(raw)) return [];
+  const out: ForecastSkillLeadBucket[] = [];
+  for (const item of raw) {
+    if (!item || typeof item !== 'object') continue;
+    const e = item as Record<string, unknown>;
+    // Guard null/undefined explícito: Number(null)/Number(undefined) mentem.
+    if (e.from == null || e.to == null) continue;
+    const from = Number(e.from);
+    const to = Number(e.to);
+    const n = Number(e.n);
+    const me = Number(e.me);
+    if (
+      !Number.isFinite(from) ||
+      !Number.isFinite(to) ||
+      !Number.isInteger(n) ||
+      n < 1 ||
+      !Number.isFinite(me)
+    ) {
+      continue;
+    }
+    const bucket: ForecastSkillLeadBucket = { from, to, n, me: round2(me) };
+    for (const [k, to2] of [
+      ['mae', round2],
+      ['rmse', round2],
+    ] as const) {
+      if (e[k] == null) continue;
+      const v = Number(e[k]);
+      if (Number.isFinite(v)) (bucket as unknown as Record<string, unknown>)[k] = to2(v);
+    }
+    if (e.corr != null) {
+      const corr = Number(e.corr);
+      if (Number.isFinite(corr)) bucket.corr = round2(corr);
+    }
+    if (e.meanLeadHours != null) {
+      const lead = Number(e.meanLeadHours);
+      if (Number.isFinite(lead)) bucket.meanLeadHours = round2(lead);
+    }
+    out.push(bucket);
+  }
+  out.sort((a, b) => a.from - b.from);
+  return out;
+}
+
+/**
+ * Pure: sanitise a raw stats object
+ * ({n, me, mae, rmse, corr, meanLeadHours, byLead}) into ForecastSkillStats.
+ * Requires finite n and me; null otherwise.
  */
 function sanitizeStats(raw: unknown): ForecastSkillStats | null {
   if (!raw || typeof raw !== 'object') return null;
-  const e = raw as { n?: unknown; me?: unknown; mae?: unknown; rmse?: unknown; corr?: unknown; meanLeadHours?: unknown };
+  const e = raw as {
+    n?: unknown;
+    me?: unknown;
+    mae?: unknown;
+    rmse?: unknown;
+    corr?: unknown;
+    meanLeadHours?: unknown;
+    byLead?: unknown;
+  };
   const n = Number(e.n);
   const me = Number(e.me);
   if (!Number.isInteger(n) || n < 1 || !Number.isFinite(me)) return null;
@@ -125,6 +205,8 @@ function sanitizeStats(raw: unknown): ForecastSkillStats | null {
     const lead = Number(e.meanLeadHours);
     if (Number.isFinite(lead)) out.meanLeadHours = round2(lead);
   }
+  const byLead = sanitizeLeadBuckets(e.byLead);
+  if (byLead.length) out.byLead = byLead;
   return out;
 }
 
@@ -140,6 +222,7 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
     buoys: [],
     pairCountByOrigin: { ih: 0, 'wmo-pt': 0, 'wmo-es': 0 },
     calibratedPairCount: 0,
+    byLead: [],
     hasData: false,
   };
   if (!raw || typeof raw !== 'object') return empty;
@@ -150,6 +233,7 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
     byOrigin?: unknown;
     pairCountByOrigin?: unknown;
     calibratedPairCount?: unknown;
+    byLead?: unknown;
   };
   const byBuoy =
     obj.byBuoy && typeof obj.byBuoy === 'object' && !Array.isArray(obj.byBuoy)
@@ -207,6 +291,8 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
       const lead = Number(e.meanLeadHours);
       if (Number.isFinite(lead)) buoy.meanLeadHours = round2(lead);
     }
+    const byLead = sanitizeLeadBuckets(e.byLead);
+    if (byLead.length) buoy.byLead = byLead;
     buoys.push(buoy);
   }
   buoys.sort((a, b) => a.name.localeCompare(b.name));
@@ -237,6 +323,9 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
     byOrigin,
     pairCountByOrigin,
     calibratedPairCount,
+    // byLead global (todas as boias) — o detalhe da onda usa o da boia do spot;
+    // este fica disponível para superfícies agregadas (About).
+    byLead: sanitizeLeadBuckets(obj.byLead),
     hasData: buoys.length > 0,
   };
 }
