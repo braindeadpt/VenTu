@@ -40,6 +40,18 @@ export async function openMapLayersMenu(page: Page): Promise<void> {
   const popover = page.locator('[data-map-layers-popover="true"]');
   if (await popover.isVisible()) return;
   const trigger = page.locator('[data-map-layers-menu]:visible');
+  // M7-F: a pilha de controlos é um chunk dinâmico — após goto/reload pode
+  // montar algumas centenas de ms depois de `is-hydrated`. Sem a espera o
+  // helper via 0 triggers, caía no ramo do sheet (também ausente) e saía
+  // em no-op — os toggles nunca apareciam. A corrida é com o sheet mobile
+  // (que não tem menu, mas prova que os chunks montaram).
+  if ((await trigger.count()) === 0) {
+    const sheet = page.locator('[data-explore-sheet]');
+    await Promise.race([
+      trigger.first().waitFor({ state: 'visible', timeout: 10_000 }),
+      sheet.waitFor({ state: 'attached', timeout: 10_000 }),
+    ]).catch(() => {});
+  }
   if ((await trigger.count()) === 0) {
     // Sheet mobile (MapExploreSheet): não há menu — as camadas vivem
     // sempre visíveis no estado «half».

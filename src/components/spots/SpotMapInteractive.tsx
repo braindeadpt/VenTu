@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback, useMemo, type ComponentProps } from 'react';
+import { useEffect, useRef, useState, useCallback, useMemo, startTransition, type ComponentProps } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import { unlockPageInteraction } from '@/lib/mapFullscreen';
@@ -28,20 +29,21 @@ import { MapUiProvider, type MapUiActions, type MapUiData } from './map/MapUiCon
 import {
   useMapLayersBase,
   useMapLayersFields,
-  MapLayersZone,
 } from './map/zones/MapLayersZone';
-import {
-  useMapChromeZone,
-  MapChromeZone,
-} from './map/zones/MapChromeZone';
-import {
-  useMapExploreZone,
-  MapExploreZone,
-} from './map/zones/MapExploreZone';
-import {
-  useMapMarkersZone,
-  MapMarkersZone,
-} from './map/zones/MapMarkersZone';
+import { useMapChromeZone } from './map/zones/MapChromeZone';
+import { useMapExploreZone } from './map/zones/MapExploreZone';
+import { useMapMarkersZone } from './map/zones/MapMarkersZone';
+
+// M7-F: as vistas das zonas vivem em chunks dinâmicos próprios. A
+// avaliação do chunk principal dividia-se numa única tarefa de ~220 ms
+// (trace Lighthouse) — com cada vista no seu ficheiro a avaliação parte-se
+// em tarefas separadas (cada uma com a isenção de 50 ms do TBT) e a
+// pré-visualização de spot nem chega a carregar até ao primeiro clique.
+// Renderizadas só em `isReady`, carregam em paralelo com o primeiro tile.
+const MapChromeZone = dynamic(() => import('./map/zones/MapChromeZoneView'));
+const MapLayersZone = dynamic(() => import('./map/zones/MapLayersZoneView'));
+const MapExploreZone = dynamic(() => import('./map/zones/MapExploreZoneView'));
+const MapMarkersZone = dynamic(() => import('./map/zones/MapMarkersZoneView'));
 import {
   scoreAtHour,
 } from '@/lib/mapHours';
@@ -168,6 +170,15 @@ export default function SpotMapInteractive({
       onReadyRef.current?.();
     }
   }, [isReady]);
+
+  // M7-F — montagem das vistas numa transição: o render concorrente do
+  // React fatia o trabalho em tarefas <50 ms (isenção do TBT) em vez de um
+  // commit síncrono de ~200 ms com painel+pilha+legenda. Só a fase de
+  // commit (mutação DOM) continua atómica — e só acontece uma vez.
+  const [zonesOn, setZonesOn] = useState(false);
+  useEffect(() => {
+    if (isReady && !zonesOn) startTransition(() => setZonesOn(true));
+  }, [isReady, zonesOn]);
 
   // ── Estado partilhado (vive no orquestrador; exposto às zonas via
   //    MapUiContext — docs/design/MAP-ZONES.md) ──
@@ -676,7 +687,7 @@ export default function SpotMapInteractive({
           />
         </div>
 
-        {isReady && (
+        {zonesOn && (
           <>
             <MapChromeZone
               t={t}

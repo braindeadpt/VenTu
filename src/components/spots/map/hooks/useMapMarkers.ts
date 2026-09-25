@@ -19,14 +19,42 @@ import {
   planMarkerLayout,
   runChunked,
   v3LodKey,
-  MARKER_ADD_CHUNK_SIZE,
   MARKER_ADD_CHUNK_SIZE_MOBILE,
   MARKER_CHUNK_YIELD_MS_MOBILE,
   type ExploreChrome,
   type MarkerLayoutEntry,
 } from '../../mapMarkers';
 
-const MARKER_ADD_CHUNK_SIZE_LOCAL = MARKER_ADD_CHUNK_SIZE;
+// M7-F (TBT): 25 marcadores/chunk no desktop estourava os 50 ms de long
+// task sob 4× CPU (cada divIcon + addLayer são ~2–3 ms) e entrava todo no
+// TBT. Com 12 por passo cada chunk fica <50 ms — mesmo trabalho total,
+// sem tasks longas (o export MARKER_ADD_CHUNK_SIZE fica intacto para os
+// outros consumidores).
+const MARKER_ADD_CHUNK_SIZE_LOCAL = 12;
+
+/**
+ * M7-F (TBT): igual a runChunked mas o passo seguinte corre num macrotask
+ * puro (setTimeout) em vez de rAF — o JS do chunk não se funde com o
+ * style/layout/paint da frame num único task >50 ms, que era o que entrava
+ * no TBT do Lighthouse. O trabalho total é o mesmo; usa-se só no desktop
+ * (o mobile mantém o rAF por lote, alinhado com o gesto).
+ */
+function runChunkedMacrotask<T>(
+  items: T[],
+  processBatch: (batch: T[]) => void,
+  cancelRef: { current: boolean },
+  chunkSize: number,
+): void {
+  let i = 0;
+  const step = () => {
+    if (cancelRef.current) return;
+    const batch = items.slice(i, i + chunkSize);
+    if (batch.length > 0) processBatch(batch);
+    i += chunkSize;
+    if (i < items.length) window.setTimeout(step, 0);
+  };
+  step();
+}
 
 interface UseMapMarkersParams {
   mapInstanceRef: React.MutableRefObject<L.Map | null>;
@@ -395,9 +423,7 @@ export function useMapMarkers({
       }
       const chunkSizeV3 = isMobile ? MARKER_ADD_CHUNK_SIZE_MOBILE : MARKER_ADD_CHUNK_SIZE_LOCAL;
       const yieldMsV3 = isMobile ? MARKER_CHUNK_YIELD_MS_MOBILE : 0;
-      runChunked(
-        pendingV3,
-        (batch) => {
+      const pumpV3 = (batch: MapSpotData[]) => {
           for (const data of batch) {
             const entry = layoutById.get(data.spot.id) ?? {
               id: data.spot.id,
@@ -436,12 +462,14 @@ export function useMapMarkers({
             cache.set(data.spot.id, marker);
             if (!lg.hasLayer(marker)) lg.addLayer(marker);
           }
-        },
-        markerChunkCancelRef,
-        undefined,
-        chunkSizeV3,
-        yieldMsV3,
-      );
+      };
+      // M7-F: desktop avança por macrotasks — o JS do chunk não se funde
+      // com o render da frame (ver runChunkedMacrotask).
+      if (isMobile) {
+        runChunked(pendingV3, pumpV3, markerChunkCancelRef, undefined, chunkSizeV3, yieldMsV3);
+      } else {
+        runChunkedMacrotask(pendingV3, pumpV3, markerChunkCancelRef, chunkSizeV3);
+      }
 
       return () => {
         markerChunkCancelRef.current = true;
@@ -466,9 +494,7 @@ export function useMapMarkers({
       if (marker.isPopupOpen()) { reopenSpotId = id; break; }
     }
 
-    runChunked(
-      markerSpots,
-      (batch) => {
+    const pump = (batch: MapSpotData[]) => {
         const toCluster: L.Marker[] = [];
         const toPlain: L.Marker[] = [];
         for (const data of batch) {
@@ -517,22 +543,37 @@ export function useMapMarkers({
             reopenSpotId = null;
           }
         }
-      },
-      markerChunkCancelRef,
-      undefined,
-      chunkSize,
-      yieldMs,
-    );
+    };
+    // M7-F: mesma razão que na passagem v3 — desktop por macrotasks.
+    if (isMobile) {
+      runChunked(markerSpots, pump, markerChunkCancelRef, undefined, chunkSize, yieldMs);
+    } else {
+      runChunkedMacrotask(markerSpots, pump, markerChunkCancelRef, chunkSize);
+    }
 
     return () => { markerChunkCancelRef.current = true; };
   }, [allowMarkers, visibleSpots, onlyOnEnabled, selectedSport, selectedRegion, isReady, clusterReady, activeCluster, showWindOnMarkers, locale, onSpotSelect, onMarkerInteract, isMobile, isHeroEmbed, warningsBySpot, hourScores, mapInstanceRef, LRef, clusterGroupRef, markersGroupRef, markersCacheRef, setSheetSpot, closePopupAndSheet, exploreMode, reducedMotion, moreAriaTemplate]);
 
   // ── Allow markers after delay ──
+  // M7-F (TBT): a 1ª passagem de marcadores (LOD/colisão + fila chunked)
+  // não é precisa para o primeiro frame — basemap + enquadramento já
+  // pintam o mapa. Arranca em requestIdleCallback (fallback setTimeout);
+  // no mobile mantém-se o atraso que deixava o sheet assentar primeiro.
   useEffect(() => {
     if (!isReady) { setAllowMarkers(false); return; }
-    const delay = isMobile ? 280 : 0;
-    const t = window.setTimeout(() => setAllowMarkers(true), delay);
-    return () => window.clearTimeout(t);
+    const ric = window.requestIdleCallback;
+    let idleId: number | undefined;
+    let timerId: number | undefined;
+    const arm = () => setAllowMarkers(true);
+    if (typeof ric === 'function') {
+      idleId = ric(arm, { timeout: isMobile ? 900 : 600 });
+    } else {
+      timerId = window.setTimeout(arm, isMobile ? 280 : 0);
+    }
+    return () => {
+      if (idleId !== undefined) window.cancelIdleCallback?.(idleId);
+      if (timerId !== undefined) window.clearTimeout(timerId);
+    };
   }, [isReady, isMobile]);
 
   return { allowMarkers, didFitBoundsRef, filterBoundsKeyRef };

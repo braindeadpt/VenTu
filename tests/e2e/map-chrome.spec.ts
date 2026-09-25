@@ -242,6 +242,101 @@ test.describe('Cromo do /mapa — UX v3 §1–§4', () => {
     });
   });
 
+  // ── §3 mobile — scrubber sobre o sheet, sem rAF permanente ──────────
+  test.describe('§3 mobile — scrubber sobre o sheet', () => {
+    test.use({
+      viewport: { width: 390, height: 844 },
+      hasTouch: true,
+      serviceWorkers: 'block',
+      reducedMotion: 'reduce',
+    });
+    test.describe.configure({ timeout: 90_000 });
+
+    test('flutua acima do sheet + dica sem reticências + 0 rAF em 5 s parado', async ({ page }) => {
+      // M7-E: antes havia um loop requestAnimationFrame permanente a medir
+      // o sheet (getBoundingClientRect em TODOS os frames). Conta-se TODOS
+      // os rAF da página: parado 5 s tem de dar 0 — qualquer loop vivo
+      // (do MapTimeChrome ou de outro cromo) rebenta a contagem.
+      await page.addInitScript(() => {
+        (window as unknown as { __rafCount: number }).__rafCount = 0;
+        const orig = window.requestAnimationFrame.bind(window);
+        window.requestAnimationFrame = (cb: FrameRequestCallback) => {
+          (window as unknown as { __rafCount: number }).__rafCount += 1;
+          return orig(cb);
+        };
+      });
+      await openMapa(page, '?hours=1');
+
+      const scrub = page.locator('[data-map-hours-scrubber]');
+      await expect(scrub).toBeVisible({ timeout: 15_000 });
+
+      // O scrubber flutua ACIMA do sheet peek (maquete: --peek + 12) e da
+      // faixa de atribuição — medido por CSS var --sheet-lift, não por rAF.
+      const geo = await page.evaluate(() => {
+        const s = document
+          .querySelector('[data-map-hours-scrubber]')!
+          .getBoundingClientRect();
+        const sheet = document
+          .querySelector('[data-explore-sheet]')!
+          .getBoundingClientRect();
+        const strip = document
+          .querySelector('[data-sheet-attribution]')
+          ?.getBoundingClientRect();
+        return {
+          gapToSheet: Math.round(sheet.top - s.bottom),
+          gapToStrip: strip ? Math.round(strip.top - s.bottom) : null,
+          scrubVisibleH: Math.round(s.height),
+        };
+      });
+      expect(geo.scrubVisibleH).toBeGreaterThan(40);
+      expect(geo.gapToSheet, 'scrubber dentro ou colado ao sheet').toBeGreaterThanOrEqual(10);
+      if (geo.gapToStrip !== null) {
+        expect(geo.gapToStrip, 'scrubber sobrepõe a faixa de atribuição').toBeGreaterThanOrEqual(0);
+      }
+
+      // M7-C: a dica curta do cabeçalho não pode sair cortada — os nós
+      // folha do cabeçalho têm scrollWidth ≤ clientWidth (wrap, não
+      // ellipsis, no mobile).
+      const hintOverflow = await page.evaluate(() => {
+        const bad: string[] = [];
+        document
+          .querySelectorAll<HTMLElement>('[data-map-hours-scrubber] *')
+          .forEach((el) => {
+            if (el.classList.contains('sr-only')) return;
+            if (el.children.length === 0 && el.scrollWidth > el.clientWidth + 1) {
+              bad.push(el.textContent?.slice(0, 40) ?? '?');
+            }
+          });
+        return bad;
+      });
+      expect(hintOverflow, 'texto do scrubber cortado').toEqual([]);
+
+      // A inserção chunked de marcadores (runChunked → rAF por lote de 8)
+      // ainda corre no arranque — medir «parado» só depois de ela acabar:
+      // espera a contagem estabilizar (2 leituras iguais a 250 ms).
+      let prevCount = -1;
+      await expect
+        .poll(
+          async () => {
+            const cur = await page.locator('.leaflet-marker-icon').count();
+            const stable = cur === prevCount;
+            prevCount = cur;
+            return stable;
+          },
+          { timeout: 30_000, intervals: [250] },
+        )
+        .toBe(true);
+      await page.evaluate(() => {
+        (window as unknown as { __rafCount: number }).__rafCount = 0;
+      });
+      await page.waitForTimeout(5000);
+      const rafCount = await page.evaluate(
+        () => (window as unknown as { __rafCount: number }).__rafCount,
+      );
+      expect(rafCount, 'rAF disparou com o scrubber aberto e a página parada').toBe(0);
+    });
+  });
+
   // ── §4 — legenda ────────────────────────────────────────────────────
   test.describe('§4 legenda', () => {
     test.use({ viewport: { width: 1440, height: 900 }, serviceWorkers: 'block', reducedMotion: 'reduce' });

@@ -60,7 +60,9 @@ interface MapTimeChromeProps {
  *    `[data-map-hours-scrubber] input[type=range]` mantém-se.
  *
  * No mobile acompanha a altura do bottom sheet (`bottom = vh − sheet.top +
- * 12`), medida por rAF — mesmo efeito do `--peek` da maquete.
+ * 12`) lendo `--sheet-lift`/`--sheet-snap-ms` — variáveis publicadas pelo
+ * MapExploreSheet a cada mudança de translateY (M7: era um rAF permanente
+ * com getBoundingClientRect em todos os frames, mesmo parado).
  */
 export default function MapTimeChrome({
   t,
@@ -171,23 +173,12 @@ export default function MapTimeChrome({
   }, [onSizeChange, scrubOpen, n]);
 
   /* Mobile: flutua 12 px acima da borda superior do sheet (maquete:
-     `bottom: var(--peek)+12`). Segue o drag por rAF. */
-  const [sheetLift, setSheetLift] = useState(12);
-  useEffect(() => {
-    if (!isMobile || !scrubOpen) {
-      setSheetLift(12);
-      return;
-    }
-    let raf = 0;
-    const tick = () => {
-      const sheet = document.querySelector<HTMLElement>('[data-explore-sheet]');
-      const top = sheet ? sheet.getBoundingClientRect().top : window.innerHeight;
-      setSheetLift(Math.max(12, Math.round(window.innerHeight - top + 12)));
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [isMobile, scrubOpen]);
+     `bottom: var(--peek)+12`). O MapExploreSheet publica --sheet-lift
+     (px acima do fundo do contentor) e --sheet-snap-ms (duração do snap)
+     em cada mudança de translateY — o wrap lê-as directamente do CSS,
+     sem rAF nem medições. A transição de `bottom` corre com a MESMA
+     duração/easing do transform do sheet → deslizam colados. */
+  const sheetLift = isMobile && scrubOpen ? 'var(--sheet-lift, 148px)' : undefined;
 
   // A pill está sempre presente (maquete) — com a camada desligada o
   // ficheiro ainda não foi pedido (useMapHours coalesce undefined→null) e a
@@ -201,7 +192,7 @@ export default function MapTimeChrome({
 
   // Copy: «Agora»/hint/valuetext são novos (mapUiChrome); scrub/play/pause
   // reutilizam as chaves canónicas do trilho temporal em t.map.
-  const { timeNow, scrubBestHint, scrubValueText } = t.mapUiChrome;
+  const { timeNow, scrubBestHint, scrubBestHintShort, scrubValueText } = t.mapUiChrome;
   const timeScrubLabel = t.map.hoursScrub;
   const timePlay = t.map.hoursPlay;
   const timePause = t.map.hoursPause;
@@ -253,7 +244,10 @@ export default function MapTimeChrome({
       {scrubVisible && (
         <div
           className="map-scrub-wrap pointer-events-none absolute left-0 right-3 z-[1140] flex justify-center"
-          style={{ bottom: isMobile ? sheetLift : 40 }}
+          style={{
+            bottom: sheetLift ?? 40,
+            transition: 'bottom var(--sheet-snap-ms, 0ms) cubic-bezier(0.32,0.72,0,1)',
+          }}
         >
           <section
             id="map-hours-scrubber-card"
@@ -284,9 +278,17 @@ export default function MapTimeChrome({
                   <Pause aria-hidden className="h-[18px] w-[18px] fill-current" />
                 )}
               </button>
-              <span className="min-w-0 truncate text-meta text-fg-muted">
+              {/* M7-C: no mobile a dica usa a versão curta (mapUiChrome
+                  .scrubBestHintShort) e PODE quebrar para segunda linha —
+                  nunca reticências. No desktop mantém o truncate de uma
+                  linha (o texto lá cabe). */}
+              <span
+                className={`min-w-0 text-meta text-fg-muted ${isMobile ? 'leading-snug' : 'truncate'}`}
+              >
                 <b className="font-semibold text-fg">{stepLabel}</b>
-                <span className="text-[11px] text-fg-subtle"> · {scrubBestHint}</span>
+                <span className="text-[11px] text-fg-subtle">
+                  {' · '}{isMobile ? scrubBestHintShort : scrubBestHint}
+                </span>
               </span>
               <span className="flex-1" />
               {!isMobile && timeTrackChips}

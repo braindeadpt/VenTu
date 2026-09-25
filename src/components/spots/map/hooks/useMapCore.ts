@@ -93,6 +93,19 @@ function tileSignature(mode: BasemapMode, dark: boolean): string {
   return mode === 'satellite' ? 'satellite' : `map:${dark ? 'dark' : 'light'}`;
 }
 
+/**
+ * M7-F: cede a main thread entre as peças do init — cada segmento fica
+ * num task próprio (<50 ms → fora do TBT) em vez de uma cadeia síncrona.
+ */
+const yieldToMain = () => new Promise<void>((r) => window.setTimeout(r, 0));
+
+/** requestIdleCallback com fallback setTimeout (Safari <15 / iframes). */
+function onIdle(cb: () => void, timeoutMs = 1200): void {
+  const ric = window.requestIdleCallback;
+  if (typeof ric === 'function') ric(cb, { timeout: timeoutMs });
+  else window.setTimeout(cb, 1);
+}
+
 function waitForMapBox(
   el: HTMLElement,
   isCancelled: () => boolean,
@@ -404,8 +417,10 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
       const mobileInit = window.matchMedia('(max-width: 767px)').matches;
 
       try {
-        await import('leaflet/dist/leaflet.css');
-        const leafletMod = await import('leaflet');
+        const [leafletMod] = await Promise.all([
+          import('leaflet'),
+          import('leaflet/dist/leaflet.css'),
+        ]);
         const Leaflet = leafletMod.default;
         if (cancelled || !containerRef.current) return;
 
@@ -451,6 +466,10 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
         container.dataset.mapSettled = 'true';
         created.invalidateSize({ animate: false });
 
+        if (cancelled) return;
+        // M7-F: init em pedaços — a criação + invalidateSize fecham um task;
+        // a atribuição/fit/basemap correm no seguinte.
+        await yieldToMain();
         if (cancelled) return;
 
         // O AttributionControl tem de existir ANTES de qualquer layer entrar
@@ -509,32 +528,58 @@ export function useMapCore({ containerRef, isHeroEmbed, locale = 'pt', initialVi
 
         // Ownership M4 (map-v3): criação e opções do markercluster — ver
         // docs/design/MAP-ZONES.md.
-        await Promise.all([
-          import('leaflet.markercluster/dist/MarkerCluster.css'),
-          import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
-          import('leaflet.markercluster'),
-        ]);
-        if (cancelled || !created) return;
+        markersGroupRef.current = Leaflet.layerGroup();
+        // M7-F (TBT /pt/mapa/): no modo Explorar o markercluster NUNCA entra
+        // no mapa — os marcadores vivem no LayerGroup e a colocação é o LOD
+        // por colisão (useMapMarkers). O trace mostrava ~110 ms de eval do
+        // chunk do plugin + construção do grupo num único task >50 ms no
+        // arranque; aqui o módulo deixa de ser carregado e o ref fica com
+        // um LayerGroup inerte que cumpre o contrato do caminho Explorar
+        // (hasLayer/removeLayer/clearLayers/on/off — nunca addLayers nem
+        // zoomToShowLayer, que só correm fora do Explorar).
+        const exploreInit = !isHeroEmbed && (exploreChrome?.enabled ?? false);
+        if (exploreInit) {
+          clusterGroupRef.current =
+            Leaflet.layerGroup() as unknown as L.MarkerClusterGroup;
+          if (!cancelled && mountedRef.current) setClusterReady(true);
+        } else {
+          // Embeds/hero: o plugin continua a ser preciso, mas o eval +
+          // construção vão para idle — não são precisos para o 1º frame.
+          onIdle(() => {
+            void (async () => {
+              try {
+                await Promise.all([
+                  import('leaflet.markercluster/dist/MarkerCluster.css'),
+                  import('leaflet.markercluster/dist/MarkerCluster.Default.css'),
+                  import('leaflet.markercluster'),
+                ]);
+                if (cancelled || !created) return;
 
-        const mcg = Leaflet.markerClusterGroup({
-          ...CLUSTER_CONFIG,
-          // UX v3 (M4): raio de agrupamento da maquete — 40 px desktop /
-          // 52 px mobile (o LOD por colisão do modo Explorar usa os mesmos
-          // valores abaixo de z8.5). Só se aplica a hero/embeds: no Explorar
-          // o markercluster nunca entra no mapa.
-          maxClusterRadius: mobileInit ? 52 : 40,
-          // Hero embed: o mapa não tem navegação (drag/zoom off) — um cluster
-          // que faz zoomToBounds prende o utilizador nessa vista sem saída.
-          // O clique é capturado pelo SpotMapInteractive e navega para /mapa/.
-          ...(isHeroEmbed ? { zoomToBoundsOnClick: false, spiderfyOnMaxZoom: false } : {}),
-          ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80 } : {}),
-          iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit, locale }),
-        });
-        const lg = Leaflet.layerGroup();
-        clusterGroupRef.current = mcg;
-        markersGroupRef.current = lg;
-        created.addLayer(mcg);
-        if (!cancelled && mountedRef.current) setClusterReady(true);
+                const mcg = Leaflet.markerClusterGroup({
+                  ...CLUSTER_CONFIG,
+                  // UX v3 (M4): raio de agrupamento da maquete — 40 px
+                  // desktop / 52 px mobile (o LOD por colisão do modo
+                  // Explorar usa os mesmos valores abaixo de z8.5). Só se
+                  // aplica a hero/embeds: no Explorar o markercluster
+                  // nunca entra no mapa.
+                  maxClusterRadius: mobileInit ? 52 : 40,
+                  // Hero embed: o mapa não tem navegação (drag/zoom off) —
+                  // um cluster que faz zoomToBounds prende o utilizador
+                  // nessa vista sem saída. O clique é capturado pelo
+                  // SpotMapInteractive e navega para /mapa/.
+                  ...(isHeroEmbed ? { zoomToBoundsOnClick: false, spiderfyOnMaxZoom: false } : {}),
+                  ...(mobileInit ? { chunkInterval: 200, chunkDelay: 80 } : {}),
+                  iconCreateFunction: createClusterIconFunction(Leaflet, { simple: mobileInit, locale }),
+                });
+                clusterGroupRef.current = mcg;
+                created.addLayer(mcg);
+                if (!cancelled && mountedRef.current) setClusterReady(true);
+              } catch {
+                if (!cancelled) teardownMap();
+              }
+            })();
+          });
+        }
       } catch {
         if (!cancelled) teardownMap();
       }

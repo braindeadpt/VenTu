@@ -12,6 +12,20 @@ import { expect, type Page } from '@playwright/test';
  */
 export async function expandMapHudFilters(page: Page): Promise<void> {
   const sheet = page.locator('[data-explore-sheet]');
+  // M7-F: as vistas das zonas são chunks dinâmicos — após goto/reload o
+  // sheet pode montar algumas centenas de ms depois de `is-hydrated`.
+  // Sem esta espera o helper via um sheet ausente, caía no ramo do HUD
+  // antigo (no-op) e os toggles de camadas nunca apareciam. A corrida é
+  // contra o botão do HUD (embeds/desktop nunca têm sheet).
+  if ((await sheet.count()) === 0) {
+    const expandBtn = page.getByRole('button', {
+      name: /Mostrar filtros|Show filters/i,
+    });
+    await Promise.race([
+      sheet.waitFor({ state: 'attached', timeout: 10_000 }),
+      expandBtn.waitFor({ state: 'visible', timeout: 10_000 }),
+    ]).catch(() => {});
+  }
   if (await sheet.count()) {
     if ((await sheet.getAttribute('data-explore-sheet')) === 'peek') {
       await page.getByRole('button', { name: /Mostrar filtros|Show filters/i }).click();
