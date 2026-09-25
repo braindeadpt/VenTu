@@ -532,7 +532,15 @@ export function useMapMarkers({
             if (!lg.hasLayer(marker)) toPlain.push(marker);
           }
         }
-        if (toCluster.length > 0) mcg.addLayers(toCluster);
+        if (toCluster.length > 0) {
+          // No Explorar o useMapCore põe aqui um LayerGroup (sem addLayers —
+          // M7-F, TBT). Este ramo não corre no Explorar hoje (sair do ecrã
+          // inteiro navega para outra página), mas o modo é decidido no
+          // arranque de um lado e ao vivo do outro: não rebentar se um dia
+          // divergirem.
+          if (typeof mcg.addLayers === 'function') mcg.addLayers(toCluster);
+          else toCluster.forEach((m) => mcg.addLayer(m));
+        }
         if (toPlain.length > 0) toPlain.forEach((m) => lg.addLayer(m));
         if (reopenSpotId != null) {
           const m = cache.get(reopenSpotId);
