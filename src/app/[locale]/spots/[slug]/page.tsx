@@ -1,5 +1,5 @@
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText'
-import { Suspense, type ComponentProps } from 'react'
+import { type ComponentProps } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
 import { locales, validateLocale } from '@/lib/i18n'
@@ -73,7 +73,7 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
     : null
 
   return (
-    <Suspense fallback={null}>
+    <>
       <SpotDetailClient
         spot={spot}
         locale={locale}
@@ -81,6 +81,6 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
         initialData={initialData ?? undefined}
         bakedAtMs={bakedAtMs}
       />
-    </Suspense>
+    </>
   )
 }
