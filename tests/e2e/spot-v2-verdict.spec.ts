@@ -173,7 +173,10 @@ test.describe('S2A — régua de 48 h comanda veredicto e barra', () => {
     await openSpot(page);
     const vt = await slider(page).getAttribute('aria-valuetext');
     // Ex.: «qui 17 set, 12:00: score 93, ÉPICO»
-    expect(vt).toMatch(/\w{3} \d{1,2} \w{3}, \d{2}:\d{2}: score \d{1,3}, (ÉPICO|BOM|FUN|FLAT|FECHADO)/);
+    // `\p{L}` (e não `\w`) de propósito: as abreviaturas do dia e do mês
+    // levam acento em pt («sáb», «dom», «fev», «mar») e `\w` é [A-Za-z0-9_] —
+    // aos fins de semana este teste ficava vermelho sem nada ter mudado.
+    expect(vt).toMatch(/\p{L}{3} \d{1,2} \p{L}{3}, \d{2}:\d{2}: score \d{1,3}, (ÉPICO|BOM|FUN|FLAT|FECHADO)/u);
   });
 
   test('menu «Mais»: abre por teclado, Esc fecha e devolve o foco', async ({ page }) => {
