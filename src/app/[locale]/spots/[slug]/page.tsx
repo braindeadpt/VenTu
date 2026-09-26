@@ -1,5 +1,5 @@
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText'
-import { Suspense, type ComponentProps } from 'react'
+import { type ComponentProps } from 'react'
 import { notFound } from 'next/navigation'
 import { getSpotBySlug, spots } from '@/lib/spots'
 import { locales, validateLocale } from '@/lib/i18n'
@@ -72,15 +72,26 @@ export default async function SpotDetailPage({ params }: { params: Promise<{ loc
       }
     : null
 
+  // SEM <Suspense> de propósito. O `fallback={null}` embrulhava a página toda
+  // numa fronteira que o Next resolvia por SCRIPT: no HTML exportado o <main>
+  // ficava vazio (<template id="B:1">) e o conteúdo só aparecia depois do
+  // chunk de voo correr — com o <footer> logo a seguir a </main>, o rodapé era
+  // o PRIMEIRO conteúdo pintado no lugar do herói, e só descia ~4700 px quando
+  // a fronteira resolvia. Medido a 390 px: 0,7133 de CLS num único entry
+  // (`footer` prev 390×602 em y=64 → cur 0×0), 84 % do total da página.
+  // Nada dentro da árvore usa useSearchParams (o deep link ?sport= é lido no
+  // cliente, ver SpotDetailClient) — a fronteira era herança dessa altura.
+  // Sem ela, a fronteira que resta é a do segmento (`spots/loading.tsx`), cujo
+  // esqueleto tem `min-h-screen`: reserva a altura da viewport desde o primeiro
+  // paint e o rodapé fica abaixo da dobra. Antes, um `fallback={null}` por
+  // dentro dessa fronteira era o que colapsava o <main>.
   return (
-    <Suspense fallback={null}>
-      <SpotDetailClient
-        spot={spot}
-        locale={locale}
-        events={events}
-        initialData={initialData ?? undefined}
-        bakedAtMs={bakedAtMs}
-      />
-    </Suspense>
+    <SpotDetailClient
+      spot={spot}
+      locale={locale}
+      events={events}
+      initialData={initialData ?? undefined}
+      bakedAtMs={bakedAtMs}
+    />
   )
 }

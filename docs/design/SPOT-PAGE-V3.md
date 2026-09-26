@@ -89,6 +89,7 @@ Mobile: os accordions ficam como estão.
 ## 8. Critérios de aceitação
 - 0 erros na consola (inclui #418) em PT/EN, desktop/mobile, claro/escuro.
 - CLS ≤ 0,05 (Lighthouse, mediana de 3); nenhuma secção muda de altura com a hora escolhida (§1 hero, §3 régua, §4 cartão Onda).
+- O conteúdo da rota existe no HTML EXPORTADO: o `<main>` nunca pode vir vazio. Nenhuma fronteira RSC com `fallback={null}` embrulha a página — o `<footer>` segue `</main>`, era o primeiro conteúdo pintado e saltava ~4700 px quando a fronteira resolvia (0,7133 de CLS só nesse entry, ~0,85 no total a 390 px). A rota do spot reserva a dobra com o esqueleto do segmento e o botão «Agora» da régua existe desde o primeiro paint (senão entrava numa linha `flex-wrap` já medida e forçava a quebra: 29 → 60 px e +31 px em tudo o que está abaixo, a 390 px). Provas em `tests/e2e/spot-page-cls.spec.ts`.
 - Nenhum texto cortado com reticências nos nomes de spots; nenhuma sobreposição a 390 px, 768 px e 1440 px (teste E2E de colisão por bounding boxes para o eixo da régua, a barra fixa e as acções do hero).
 - Alvos ≥ 44 px fora de tabelas.
 - No máximo 8 tamanhos de letra em main (escala: 11, 13, 15, 18, 24, 32, 48/64, 104).

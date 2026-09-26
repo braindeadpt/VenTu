@@ -127,6 +127,15 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   // acende a barra errada com um índice clampado.
   const selInWindow = index >= windowStart && index < windowEnd;
   const nowLocal = nowIndex >= windowStart && nowIndex < windowEnd ? nowIndex - windowStart : -1;
+  // O botão «Agora» esconde-se em dois casos, mas a CAIXA fica sempre no
+  // fluxo: quando a hora actual ainda não está na janela (`nowIndex < 0`, o
+  // primeiro paint, antes de o relógio/janela resolverem) e quando a hora
+  // escolhida JÁ é o «agora». Só o segundo caso era reservado — o botão
+  // entrava no fluxo mais tarde e, sendo esta linha `flex-wrap`, a sua largura
+  // (59 px a 390 px) empurrava-a para uma segunda linha: a linha do título
+  // passava de 29 px para 60 px e tudo o que está abaixo descia 31 px (0,1064
+  // de CLS, medido — o maior termo que sobra na página do spot).
+  const nowBtnHidden = nowIndex < 0 || isNow;
 
   // Score mostrado por barra — «agora» usa o score corrigido (o mesmo número
   // que o veredicto mostra), as outras horas o score canónico.
@@ -458,28 +467,29 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
           <span className="text-fg-muted font-normal text-meta-sm"> · {tv.range48}</span>
         </h2>
         <div className="flex items-center gap-2">
-          {/* Botão «Agora» — caixa RESERVADA: existe sempre que há relógio,
-              invisível enquanto a hora escolhida já é o «agora». Antes ele
-              entrava e saía do fluxo ao arrastar a régua e mudava a altura
-              desta linha em 1,7 px (medido), empurrando tudo o que está
-              abaixo — a mesma regra do hero e do cartão Onda. `disabled` +
-              `tabIndex={-1}` + `aria-hidden` enquanto escondido, para não
-              deixar um alvo invisível ao teclado nem ao leitor de ecrã. */}
-          {nowIndex >= 0 && (
-            <button
-              type="button"
-              onClick={goNow}
-              disabled={isNow}
-              tabIndex={isNow ? -1 : undefined}
-              aria-hidden={isNow || undefined}
-              className={cn(
-                'inline-flex items-center min-h-[44px] px-3 -my-2 rounded-input border border-divider-strong text-meta-sm font-medium text-fg-muted hover:text-fg hover:border-fg-subtle transition-colors duration-150',
-                isNow && 'invisible',
-              )}
-            >
-              {tv.nowLabel}
-            </button>
-          )}
+          {/* Botão «Agora» — caixa RESERVADA a dobrar: existe SEMPRE que a
+              régua existe e leva `invisible` enquanto não pode ser usado (sem
+              relógio na janela ou já a apontar para o «agora»). Antes ele
+              saía do fluxo ao arrastar e mudava a altura desta linha em
+              1,7 px; e, por só existir depois de `nowIndex >= 0`, entrava numa
+              linha `flex-wrap` já medida, forçando a quebra — 29 → 60 px de
+              linha e 31 px de deslocamento em tudo o que está abaixo.
+              `disabled` + `tabIndex={-1}` + `aria-hidden` enquanto escondido,
+              para não deixar um alvo invisível ao teclado nem ao leitor de
+              ecrã. */}
+          <button
+            type="button"
+            onClick={goNow}
+            disabled={nowBtnHidden}
+            tabIndex={nowBtnHidden ? -1 : undefined}
+            aria-hidden={nowBtnHidden || undefined}
+            className={cn(
+              'inline-flex items-center min-h-[44px] px-3 -my-2 rounded-input border border-divider-strong text-meta-sm font-medium text-fg-muted hover:text-fg hover:border-fg-subtle transition-colors duration-150',
+              nowBtnHidden && 'invisible',
+            )}
+          >
+            {tv.nowLabel}
+          </button>
           <button
             type="button"
             aria-pressed={playing}

@@ -382,13 +382,31 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   entra no DETALHE do chip, nunca no rótulo: o chip tem de manter a largura, senão a
   `ProvenanceRow` reflui. Caixa fixa nas três — a faixa e a linha desenham-se sempre
   (placeholder NBSP sem banda), e o botão «Agora» da régua ganhou caixa reservada
-  (entrava e saía do fluxo ao arrastar e mudava a altura da secção em 1,7 px). Os
+  (entrava e saía do fluxo ao arrastar e mudava a altura da secção em 1,7 px) — caixa
+  reservada desde o PRIMEIRO paint, não só quando `nowIndex >= 0`: a 390 px o botão
+  chegava depois de a linha já estar medida e, como essa linha é `flex-wrap`, forçava a
+  quebra (linha do título 29 → 60 px, tudo o que está abaixo +31 px, 0,1064 de CLS). Os
   números da régua vêm do formatador dos cartões (`getInstrumentFmt(locale).f1`), como
   no cartão Onda e no detalhe do badge: uma casa decimal sempre («1,0», não «1») e a
   vírgula do idioma — um `isPt ? 'pt-PT' : 'en-GB'` local escrevia «1.4 m» dentro de
   uma frase em espanhol, alemão e francês.
   Provas em `tests/e2e/spot-band-rail.spec.ts` (dentro do `test:e2e:core`), que mede
   320/390/1350 px e a frase nos 4 idiomas não-pt.
+- **Primeiro paint do spot (fronteiras RSC)**: a rota embrulhava o `SpotDetailClient` num
+  `<Suspense fallback={null}>`. Num export estático essa fronteira não é resolvida no
+  build: o `<main>` servido só tinha `<!--$?--><template id="B:1">` e o conteúdo
+  verdadeiro ia num `<div hidden id="S:1">` DEPOIS do rodapé, trocado por script. Com
+  `fallback={null}` o `<main>` reservava ZERO e, como o `<footer>` segue `</main>`, era
+  ele o primeiro conteúdo pintado (y=64) — e descia ~4700 px quando a fronteira
+  resolvia: **0,7133** num único layout-shift (prev 390×602 em y=64 → cur 0×0),
+  ~0,85 de CLS total a 390 px. A fronteira saiu (nada na árvore usa `useSearchParams`;
+  o `?sport=` é lido no cliente, ver `SpotDetailClient`) e o `<main>` passou a trazer o
+  esqueleto do segmento (`spots/loading.tsx`), que reserva a altura da viewport: o
+  rodapé fica abaixo da dobra desde o primeiro paint. **0,8538 → 0,032** a 390 px.
+  Provas em `tests/e2e/spot-page-cls.spec.ts` (dentro do `test:e2e:core`): guarda
+  estrutural do HTML exportado (o `<main>` reservava 0 caracteres; hoje ~940) + CLS com
+  o chunk da fronteira atrasado 400 ms (sem o atraso o reveal pode ganhar à primeira
+  pintura e o teste mediria 0,066 mesmo com o defeito).
 
 ## Health-check de modelos (Open-Meteo ensemble)
 
@@ -594,7 +612,7 @@ O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: 
 | `tools-calculators` | 13 | Calculadoras de kite e fato: outputs reais (m², janela confortável, espessura mm, extras), edge cases (6 kt, 45 kt, 4 °C, 24 °C, windchill), overflow horizontal em 390px e paridade pt/en |
 
 Notas de operação:
-- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **143 testes em 14 ficheiros** (`npx playwright test <specs do core> --list`) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
+- **Config** (`playwright.config.ts`): no CI usa `workers: 2` (runner 4 vCPU; browsers isolados por worker — medido ≈ 2m30s quando o core tinha ~115 testes) e `retries: 2` para flakes pontuais conhecidos (ex. `search palette` / sheet do mapa). Hoje o core são **318 testes em 48 ficheiros** (`npx playwright test <specs do core> --list`) — re-medir o tempo no CI se o passo apertar. O core completo (`npm run test:e2e:core`) corre como passo próprio no `ci.yml`.
 - **Determinismo**: estes specs NÃO dependem da rede nem de keys — as fixtures vivem em `tests/e2e/helpers/conditions.ts` (`interceptConditions`/`interceptIhBuoys`/`interceptWmoBuoys`/`interceptWaveBias`/`interceptIsobaths`/`interceptCoastalNavWarnings`). Se um spec precisa de dados que o build não tem, intercepta client-side.
 - **Bump de `@playwright/test` (dependabot)**: cada minor traz um Chromium novo → o pixel gate (`test:visual`) falha até as baselines Linux serem re-gravadas. O dependabot isola o Playwright no grupo `playwright` (PR próprio, fora do `minor-patch`); nesse PR corre-se **Actions → Record Visual Baselines → ref=\<branch do PR\>** (o workflow grava no ref indicado, não só em `main`), o push das baselines re-corre o CI, e merge quando verde. Nunca gravar baselines no Windows — são Linux-only.
 - **TopNow (homepage) — SSG vs re-hidratação**: o primeiro paint dos cards é SSG (`buildSpotData` em build-time), por isso o badge «Corrigido (viés regional)»/«Corrigido pela boia X» só sai baked no `out/` quando o `wave-bias.json`/`observedWave` existir em `public/data/` DURANTE o `npm run build` (teste baked-only salta com skip honesto). MAS o `HomepageTopNow` re-hidrata client-side (`useLiveGridSpotData`, mount + **15 min** + tab visível — o mesmo `refreshGridSpotScores` do grid/mapa): as rows SSG são substituídas pelas de `conditions.json` e o viés regional aplica-se em runtime, pelo que o badge aparece SEM rebuild e os testes positivos interceptam client-side (`interceptConditions` + transform `all`). Recipe local para validar o caminho baked: `node tests/e2e/fixtures/write-wave-bias-fixture.mjs && npm run build && npx playwright test topnow-wave-badge` (o fixture escreve `public/data/wave-bias.json` com ME +0.3/n=120 em todas as regiões; `public/data/` é gitignored, nunca é commitado).
