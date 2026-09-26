@@ -80,7 +80,7 @@ export default function SpotInstrumentsSection({
   ariaLabel,
 }: SpotInstrumentsSectionProps) {
   const ti = getTranslation(locale).spotPageInstruments;
-  const { hours } = useSpotTimelineData();
+  const { hours, nowIndex } = useSpotTimelineData();
   const { index, isNow, selectedScore } = useSpotTimelineIndex();
 
   const rows = useInstrumentRows(spot);
@@ -149,6 +149,10 @@ export default function SpotInstrumentsSection({
       aria-label={ariaLabel}
       className="scroll-mt-32"
       data-spot-timeline-index={index}
+      // «true» quando o eixo já aterrou na hora actual (relógio vivo). Antes
+      // disso mostra a hora do build (padrão mounted+bakedAtMs) — quem lê o
+      // índice tem de esperar por isto, não por data-instrument-rows.
+      data-spot-timeline-live={nowIndex >= 0 ? 'true' : 'false'}
     >
       <h2 className="sr-only">{ariaLabel}</h2>
       <div

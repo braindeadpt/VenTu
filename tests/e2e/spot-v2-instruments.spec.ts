@@ -12,7 +12,20 @@ const SECTION = '#instrumentos';
 const CARDS = `${SECTION} [data-instrument]`;
 const WIND_BEAM = `${CARDS}[data-instrument='wind'] [data-beam]`;
 
+/**
+ * O eixo só está na hora actual depois de montar (antes mostra a hora do
+ * build). data-instrument-rows=ready NÃO garante isso: com o conteúdo no
+ * shell (sem streaming) o «ready» chega ~350 ms antes da aterragem no agora,
+ * e um índice lido nesse intervalo fica velho a meio do teste.
+ */
+async function waitTimelineLive(page: Page) {
+  await expect(page.locator(SECTION)).toHaveAttribute('data-spot-timeline-live', 'true', {
+    timeout: 20_000,
+  });
+}
+
 async function setTimelineIndex(page: Page, index: number) {
+  await waitTimelineLive(page);
   // O mesmo caminho do utilizador: clique na régua — o track mapeia a
   // fracção horizontal → índice global dentro da janela de 48 h.
   const slider = page.getByRole('slider');
@@ -49,6 +62,7 @@ test.describe('S2B — Instrumentos (vento, onda, maré)', () => {
       'ready',
       { timeout: 20_000 },
     );
+    await waitTimelineLive(page);
   });
 
   test('três cartões com leituras e marcação acessível', async ({ page }) => {
@@ -282,6 +296,7 @@ test.describe('S2B — banda ensemble no cartão Onda (uma linha, sempre)', () =
     await expect(
       page.locator(`${SECTION} [data-instrument-rows='ready']`).first(),
     ).toBeVisible({ timeout: 20_000 });
+    await waitTimelineLive(page);
   }
 
   const height = async (page: Page, selector: string) => {
