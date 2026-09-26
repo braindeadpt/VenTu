@@ -206,6 +206,6 @@ test.describe('«Como sabemos» — banda ensemble e erro por horizonte', () => 
     await expect(block).toContainText('members: 4');
     // O cartão continua humano (a sigla vive no detalhe).
     await expect(page.locator(WAVE_CARD)).not.toContainText('P10');
-    await expect(page.locator(WAVE_CARD)).toContainText(/between \d\.\d and \d\.\d m/);
+    await expect(page.locator(WAVE_CARD)).toContainText(/models: \d\.\d–\d\.\d m/);
   });
 });

@@ -55,6 +55,8 @@ const SHARED_TOKENS = new Set([
  * (ex.: «Explorar mapa» é espanhol válido). Não se aplicam a de/fr.
  */
 const ES_COGNATES = new Set([
+  // Cartão Onda (banda dos modelos): «modelos» escreve-se igual em ES e PT.
+  'modelos: {lo}–{hi} m',
   'Abrir mapa', 'Actualizado', 'Agrupar spots', 'Alertas', 'Altura total',
   'Calculadora de kite', 'Comparar', 'Entrada gratuita', 'Entrar', 'Épico',
   'Excelente', 'Explorar', 'Explorar lista completa', 'Explorar mapa',

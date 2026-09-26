@@ -20,7 +20,7 @@ import {
  * «Como sabemos» — o detalhe técnico da banda ensemble e do erro por horizonte.
  *
  * A regra v3 (§8) põe a proveniência aqui, não nos cartões de instrumentos: o
- * cartão Onda mostra «entre 1,0 e 1,9 m» (uma frase, sem siglas) e é aqui que
+ * cartão Onda mostra «modelos: 1,0–1,9 m» (uma frase, sem siglas) e é aqui que
  * se explica de onde vem o intervalo — P10/P50/P90 por família, quantos modelos
  * responderam, e o erro do modelo contra as leituras da boia por tempo de
  * antecipação (ME/RMSE/n). As siglas aparecem com o significado por extenso.

@@ -359,7 +359,8 @@ public/data/               conditions.json, forecasts.json, news.json, dawn-patr
   `ensembleQuantiles` incluem um guarda de ligação ao pipeline (falha se
   `updateConditionsPerSpot` deixar de chamar `attachEnsemble`).
 - **UI (cartão Onda)**: a banda é UMA frase humana na linha secundária que o cartão já
-  tem — «entre 1,0 e 1,9 m», com «8 em cada 10 modelos ficam neste intervalo» no
+  tem — «modelos: 1,0–1,9 m», com «Os outros modelos de onda — 8 em cada 10
+  ficam neste intervalo» no
   `title`/leitor de ecrã —, nunca uma linha a mais. O slot (banda → mar de fundo →
   placeholder NBSP) decide-se em `src/lib/ensembleCardLine.ts` e desenha sempre uma
   linha: a altura do cartão e da secção de instrumentos é a mesma com e sem banda, com

@@ -238,8 +238,8 @@ test.describe('S2B — banda ensemble no cartão Onda (uma linha, sempre)', () =
   /** Filhos directos do miolo de leitura: big + 2 linhas secundárias. */
   const WAVE_LINES = `${WAVE_CARD} button > span.grid > span`;
   const WAVE_SLOT = `${WAVE_LINES}:nth-child(3)`;
-  const PT_TEXT = /^entre \d,\d e \d,\d m$/;
-  const PT_HINT = '8 em cada 10 modelos ficam neste intervalo';
+  const PT_TEXT = /^modelos: \d,\d–\d,\d m$/;
+  const PT_HINT = 'Os outros modelos de onda — 8 em cada 10 ficam neste intervalo';
 
   type BandMode = 'all' | 'even' | 'none';
 
@@ -331,7 +331,7 @@ test.describe('S2B — banda ensemble no cartão Onda (uma linha, sempre)', () =
     const band = page.locator(BAND);
     await expect(band).toBeVisible({ timeout: 15_000 });
     await expect(page.locator(`${BAND} > span`).first()).toHaveText(
-      /^between \d\.\d and \d\.\d m$/,
+      /^models: \d\.\d–\d\.\d m$/,
     );
     await expect(page.locator(WAVE_CARD)).not.toContainText('P10');
   });

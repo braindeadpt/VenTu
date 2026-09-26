@@ -66,8 +66,10 @@ export default function SwellCard({
   const periodS = hour?.wavePeriodS;
   const pulseS = periodS !== undefined ? Math.max(1.2, Math.min(6, periodS * 0.4)) : 3;
 
-  // Slot secundário: uma linha, uma decisão. «entre 1,0 e 1,9 m» é a leitura
-  // humana; o «8 em cada 10 modelos» fica no title/leitor de ecrã.
+  // Slot secundário: uma linha, uma decisão. «modelos: 1,0–1,9 m» — o
+  // número grande é a previsão principal e pode ficar FORA do intervalo dos
+  // outros modelos (em produção: 2,3 m vs 1,5–1,9 m); «entre» lia-se como
+  // contradição. O «8 em cada 10» fica no title/leitor de ecrã.
   const foot = ensembleCardLine({
     band: hour?.ensemble?.wave,
     swellHeightM: hour?.swellHeightM,
