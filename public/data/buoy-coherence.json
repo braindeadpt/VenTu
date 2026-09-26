@@ -1,6 +1,6 @@
 {
   "day": "20260926",
-  "fetchedAt": "2026-09-26T05:06:50.584Z",
+  "fetchedAt": "2026-09-26T05:20:05.081Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
@@ -442,18 +442,25 @@
       "suboptimal": []
     },
     "Ovar": {
-      "spotCount": 5,
-      "withObservedWave": 5,
+      "spotCount": 6,
+      "withObservedWave": 6,
       "bySource": {
-        "wmo-buoy": 5
+        "wmo-buoy": 6
       },
-      "audited": 5,
+      "audited": 6,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 5,
+      "attachedNotClosest": 6,
       "onlySource": 0,
       "notClosest": [
         {
           "spot": "barrinha-esmoriz",
+          "winner": "wmo-buoy",
+          "reason": "wmo-only",
+          "attachedKm": 144,
+          "altKm": 0
+        },
+        {
+          "spot": "esmoriz",
           "winner": "wmo-buoy",
           "reason": "wmo-only",
           "attachedKm": 144,
@@ -1774,7 +1781,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-26T05:17:12.639Z",
+  "regionsAuditedAt": "2026-09-26T05:23:06.883Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
