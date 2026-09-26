@@ -1,11 +1,11 @@
 {
   "day": "20260926",
-  "fetchedAt": "2026-09-26T16:06:52.918Z",
+  "fetchedAt": "2026-09-26T17:11:13.258Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 675,
+    "pairHourCount": 676,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -95,13 +95,13 @@
       "suboptimal": []
     },
     "Viana do Castelo": {
-      "spotCount": 8,
-      "withObservedWave": 8,
+      "spotCount": 7,
+      "withObservedWave": 7,
       "bySource": {
-        "ih-buoy": 8
+        "ih-buoy": 7
       },
-      "audited": 8,
-      "attachedIsClosest": 8,
+      "audited": 7,
+      "attachedIsClosest": 7,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -1429,7 +1429,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-26T16:15:02.399Z",
+  "regionsAuditedAt": "2026-09-26T17:20:25.124Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Datawell ao largo do Porto",
@@ -1487,14 +1487,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 446,
+      "n": 447,
       "meanDeltaM": 0,
       "meanAbsDeltaM": 0.3,
       "maxAbsDeltaM": 1.3,
       "corr": 0.74,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-26T14",
+      "lastHour": "2026-09-26T15",
       "hours": [
         {
           "6200084": 3.049999952316284,
@@ -1570,6 +1570,11 @@
           "6200084": 2.109999895095825,
           "6200199": 1.948240041732788,
           "hour": "2026-09-26T14"
+        },
+        {
+          "6200084": 2.109999895095825,
+          "6200199": 1.9628900289535522,
+          "hour": "2026-09-26T15"
         }
       ]
     }
