@@ -327,7 +327,7 @@ links de texto corrido, que o harness mede à parte, a nível informativo).
   camadas, legenda) cumprem os 44 px e têm specs próprios (`map-touch-targets`,
   `map-hud`).
 
-Guardas: `tests/e2e/a11y-touch-targets.spec.ts` (11 rotas a 390 px) e
+Guardas: `tests/e2e/a11y-touch-targets.spec.ts` (10 rotas a 390 px) e
 `tests/e2e/a11y-login-modal.spec.ts`, ambos no `test:e2e:core`.
 
 ---
