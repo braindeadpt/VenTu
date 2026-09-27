@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useCallback, useEffect, useRef, type KeyboardEvent, type ChangeEvent } from 'react';
 import { Menu, X, Wind, Globe, Search, ChevronDown } from 'lucide-react';
+import { lockBodyScroll } from '@/lib/scrollLock';
 import ThemeToggle from './ThemeToggle';
 import MegaMenu from './MegaMenu';
 import PlanMegaMenu from './PlanMegaMenu';
@@ -91,11 +92,9 @@ export default function Header({ locale }: HeaderProps) {
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
-    const prev = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = prev;
-    };
+    // Bloqueio partilhado (scrollLock): o menu móvel não destranca o scroll de
+    // um overlay que esteja aberto ao mesmo tempo.
+    return lockBodyScroll();
   }, [mobileMenuOpen]);
 
   // Hamburger through lg (1024px); full nav from lg up.

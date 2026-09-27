@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Mail, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { getTranslation } from '@/lib/i18n';
+import { lockBodyScroll } from '@/lib/scrollLock';
 
 type LoginReason = 'favorite' | 'favorites-page' | 'general';
 
@@ -15,6 +16,21 @@ interface LoginModalProps {
   onSignIn: (email: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
+/** Focáveis do diálogo — a mesma lista que o `Drawer` usa (sem biblioteca nova). */
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+/**
+ * Diálogo de entrada. Declara `role="dialog" aria-modal="true"` — isto AFIRMA
+ * ao leitor de ecrã que o resto da página está inerte, por isso cumpre o
+ * contrato todo (mega audit 2026-09-26, achado A1: era o único de 32 diálogos
+ * sem gestão de foco):
+ *   1. ao abrir, o foco entra no primeiro campo;
+ *   2. `Tab`/`Shift+Tab` ficam presos dentro do diálogo;
+ *   3. `Escape` fecha (e o ✕ e o backdrop continuam a fechar);
+ *   4. ao fechar, o foco volta ao controlo que abriu;
+ *   5. o fundo não faz scroll enquanto está aberto.
+ */
 export default function LoginModal({ open, reason, locale, onClose, onSignIn }: LoginModalProps) {
   const tr = getTranslation(locale);
   const t = tr.auth;
@@ -22,6 +38,87 @@ export default function LoginModal({ open, reason, locale, onClose, onSignIn }: 
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState('');
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  // Foco inicial + bloqueio do fundo + devolver o foco ao fechar.
+  useEffect(() => {
+    if (!open) return;
+    const previouslyFocused = document.activeElement;
+    previousFocusRef.current =
+      previouslyFocused instanceof HTMLElement && previouslyFocused !== document.body
+        ? previouslyFocused
+        : null;
+    // Bloqueio partilhado: o `Drawer`/`Header`/`SearchPalette` também trancam o
+    // scroll e um deles a escrever `''` não pode destrancar este diálogo.
+    const releaseScroll = lockBodyScroll();
+
+    const raf = requestAnimationFrame(() => {
+      // O campo de email é o primeiro campo; sem ele (ecrã «link enviado») o
+      // próprio diálogo recebe o foco, para o `Tab` começar dentro.
+      (emailRef.current ?? dialogRef.current)?.focus();
+    });
+
+    return () => {
+      cancelAnimationFrame(raf);
+      releaseScroll();
+      previousFocusRef.current?.focus();
+    };
+  }, [open]);
+
+  // Escape fecha. Listener no documento (e não só no painel): com o foco preso
+  // dentro do diálogo o evento sobe sempre, mas isto garante-o mesmo se o foco
+  // for parar a um nó portalizado.
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open, onClose]);
+
+  // Depois de enviar o link, o formulário sai e o campo com o foco desaparece:
+  // sem isto o foco ficaria no <body> e o Tab começava a partir do início do
+  // documento (fora do diálogo).
+  useEffect(() => {
+    if (open && sent) dialogRef.current?.querySelector<HTMLButtonElement>('[data-login-close]')?.focus();
+  }, [open, sent]);
+
+  // Trap de Tab/Shift+Tab.
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab') return;
+    const root = dialogRef.current;
+    if (!root) return;
+    const focusable = Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)).filter(
+      (el) => el.offsetParent !== null || el === document.activeElement,
+    );
+    if (focusable.length === 0) {
+      e.preventDefault();
+      return;
+    }
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement;
+    if (!(active instanceof HTMLElement) || !root.contains(active)) {
+      e.preventDefault();
+      first.focus();
+      return;
+    }
+    if (e.shiftKey) {
+      if (active === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else if (active === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }, []);
 
   if (!open) return null;
 
@@ -56,9 +153,12 @@ export default function LoginModal({ open, reason, locale, onClose, onSignIn }: 
       onClick={onClose}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label={t.signIn}
+        tabIndex={-1}
+        onKeyDown={handleKeyDown}
         className="card-hero w-full max-w-md p-5 sm:p-6 space-y-4 shadow-card"
         onClick={(e) => e.stopPropagation()}
       >
@@ -68,6 +168,7 @@ export default function LoginModal({ open, reason, locale, onClose, onSignIn }: 
             <p className="text-meta-sm text-fg-muted mt-1">{subtitle}</p>
           </div>
           <button
+            data-login-close
             type="button"
             onClick={onClose}
             className="p-2 rounded-lg text-fg-muted hover:text-fg hover:bg-surface-2/[0.08] min-w-[44px] min-h-[44px]"
@@ -93,6 +194,7 @@ export default function LoginModal({ open, reason, locale, onClose, onSignIn }: 
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-fg-subtle" aria-hidden />
                 <input
+                  ref={emailRef}
                   id="login-email"
                   type="email"
                   required

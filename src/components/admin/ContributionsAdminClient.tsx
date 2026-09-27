@@ -157,16 +157,25 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
 
   const filtered = filter === 'all' ? items : items.filter((i) => i.status === filter);
 
+  // O `<h1>` só para leitores de ecrã nos dois ecrãs sem conteúdo: o build
+  // servia esta página sem cabeçalho nenhum (mega audit 2026-09-26, achado A5)
+  // e a silhueta de carregamento não pode crescer para o acomodar.
   if (!isSupabaseConfigured()) {
     return (
       <div className="max-w-lg mx-auto py-16 px-4 text-center text-fg-muted">
+        <h1 className="sr-only">{admin.metaTitleContributions}</h1>
         {admin.supabaseNotConfiguredFull}
       </div>
     );
   }
 
   if (loading) {
-    return <div className="max-w-5xl mx-auto py-16 px-4 animate-pulse h-32 bg-surface-1/[0.04] rounded-lg" />;
+    return (
+      <div className="max-w-5xl mx-auto py-16 px-4">
+        <h1 className="sr-only">{admin.metaTitleContributions}</h1>
+        <div className="animate-pulse h-32 bg-surface-1/[0.04] rounded-lg" />
+      </div>
+    );
   }
 
   if (!session) {
@@ -188,7 +197,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
               onChange={(e) => setEmail(e.target.value)}
               required
               autoComplete="username"
-              className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-fg"
+              className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-fg"
             />
           </div>
           <div>
@@ -201,7 +210,7 @@ export default function ContributionsAdminClient({ locale }: ContributionsAdminC
               onChange={(e) => setPassword(e.target.value)}
               required
               autoComplete="current-password"
-              className="w-full px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-fg"
+              className="w-full min-h-[44px] px-3 py-2 rounded-lg bg-surface-1/[0.04] border border-divider text-fg"
             />
           </div>
           {error && <p className="text-sm text-score-poor">{error}</p>}

@@ -303,6 +303,33 @@ Input focado, resultados agrupados por tipo.
 - Media query `prefers-reduced-motion: reduce` desliga todas as animações
 - Score count-up respeita animação nula
 
+### Alvos de toque (≥ 44 px)
+Regra global: qualquer controlo (botão, `<select>`, `<input>`, `<summary>`,
+`[role=button|tab|switch]`) tem **≥ 44 px de altura** no viewport de toque. O que
+assina é a **altura** — uma pastilha de 32×44 está conforme (a WCAG 2.5.8 isenta
+links de texto corrido, que o harness mede à parte, a nível informativo).
+
+- **Densidade em desktop de rato puro:** a classe `.filter-pill-compact`
+  (globals.css) dá 44 px por omissão e 36 px só em `≥1024px` **e**
+  `any-pointer: fine` — a decisão V3′ de 2026-09, usada pelo `FilterPill`.
+  Chips/hud densos que queiram 36 px em desktop usam-na em vez de
+  `min-h-[36px]`.
+- **Crescer a área sem crescer o desenho:** onde o alvo tem de ser maior do que a
+  peça desenhada, usa-se `min-h-[44px]` com **margem vertical negativa** que
+  devolve a altura original ao fluxo (sliders das calculadoras), ou o `<label>`
+  que envolve o checkbox/rádio (é ele que recebe o clique e é ele que se mede).
+- **Diálogos:** `aria-modal="true"` obriga ao contrato completo (foco inicial
+  dentro, `Tab` preso, `Escape`, foco devolvido ao abridor, fundo bloqueado) — o
+  `Drawer` e o `LoginModal` seguem-no; nenhum diálogo pode declarar `aria-modal`
+  sem o cumprir.
+- **Marcadores do Leaflet** (`.spot-marker`, 24×24 desenhados) ficam fora desta
+  regra: o alvo é o mapa e a densidade é o produto — os controlos do mapa (HUD,
+  camadas, legenda) cumprem os 44 px e têm specs próprios (`map-touch-targets`,
+  `map-hud`).
+
+Guardas: `tests/e2e/a11y-touch-targets.spec.ts` (11 rotas a 390 px) e
+`tests/e2e/a11y-login-modal.spec.ts`, ambos no `test:e2e:core`.
+
 ---
 
 ## 9. MODO ESCURO vs CLARO

@@ -47,7 +47,7 @@ export default function NewsPagination({ currentPage, totalPages, onPageChange, 
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
+        className="inline-flex items-center justify-center w-10 h-10 min-h-[44px] min-w-[44px] rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
         aria-label={t.prevPageAria}
       >
         <ChevronLeft className="w-4 h-4" />
@@ -88,7 +88,7 @@ export default function NewsPagination({ currentPage, totalPages, onPageChange, 
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="inline-flex items-center justify-center w-10 h-10 rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
+        className="inline-flex items-center justify-center w-10 h-10 min-h-[44px] min-w-[44px] rounded-md text-sm transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-fg-muted hover:text-fg hover:bg-surface-1/[0.04]"
         aria-label={t.nextPageAria}
       >
         <ChevronRight className="w-4 h-4" />

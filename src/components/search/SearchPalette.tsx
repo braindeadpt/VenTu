@@ -9,6 +9,7 @@ import { getTranslation } from '@/lib/i18n';
 import { newsSlug } from '@/lib/news';
 import { getAssetPath } from '@/lib/paths';
 import { getMacroRegion } from '@/lib/regions';
+import { lockBodyScroll } from '@/lib/scrollLock';
 
 interface SpotLite {
   slug: string;
@@ -229,11 +230,12 @@ export default function SearchPalette({ locale, onClose }: SearchPaletteProps) {
       }
     };
     document.addEventListener('keydown', handler);
-    // Prevent body scroll
-    document.body.style.overflow = 'hidden';
+    // Prevent body scroll — bloqueio PARTILHADO (ver `lib/scrollLock`): a
+    // paleta não pode destrancar o scroll de outro overlay aberto.
+    const releaseScroll = lockBodyScroll();
     return () => {
       document.removeEventListener('keydown', handler);
-      document.body.style.overflow = '';
+      releaseScroll();
     };
   }, [onClose]);
 

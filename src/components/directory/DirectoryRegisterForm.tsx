@@ -188,7 +188,7 @@ export default function DirectoryRegisterForm({ locale, onCreated }: Props) {
                   key={s}
                   type="button"
                   onClick={() => toggleSport(s)}
-                  className={`pill min-h-[36px] px-3 py-1.5 text-meta ${
+                  className={`pill filter-pill-compact px-3 py-1.5 text-meta ${
                     active ? 'pill-active' : 'pill-ghost'
                   }`}
                   aria-pressed={active}

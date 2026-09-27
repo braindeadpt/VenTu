@@ -58,7 +58,8 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
   const telHref = safeTelHref(entry.phone);
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-8 sm:py-10 space-y-6">
+    // O <main id="main-content"> vem do layout — um só por documento (achado A2).
+    <div className="max-w-3xl mx-auto px-4 py-8 sm:py-10 space-y-6">
       <nav className="text-meta-sm text-fg-muted">
         <Link href={`/${locale}/diretorio/`} className="hover:text-fg">
           {d.title}
@@ -159,6 +160,6 @@ export default function DirectoryDetailClient({ locale, entry: seed }: Props) {
       <p className="text-meta-sm text-fg-subtle">
         {d.sourceNote.replace('{source}', entry.source === 'osm' ? 'OpenStreetMap' : entry.source)}
       </p>
-    </main>
+    </div>
   );
 }

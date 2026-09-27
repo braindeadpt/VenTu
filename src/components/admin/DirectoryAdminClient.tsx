@@ -180,28 +180,34 @@ export default function DirectoryAdminClient({
     return true;
   });
 
+  // Os três ecrãs-gate levam <h1> (mega audit 2026-09-26, achado A5: a página
+  // não tinha cabeçalho nenhum no build) e o <div> substituiu o <main> interno
+  // (achado A2: um documento, um marco principal — o do layout).
   if (!isSupabaseConfigured()) {
     return (
-      <main className="max-w-3xl mx-auto px-4 py-10">
-        <p className="text-body text-fg-muted">Supabase not configured.</p>
-      </main>
+      <div className="max-w-3xl mx-auto px-4 py-10 space-y-3">
+        <h1 className="font-display text-h2 text-fg">{admin.metaTitleDirectory}</h1>
+        <p className="text-body text-fg-muted">{admin.supabaseNotConfiguredFull}</p>
+      </div>
     );
   }
 
   if (loading) {
     return (
-      <main className="max-w-3xl mx-auto px-4 py-10">
+      <div className="max-w-3xl mx-auto px-4 py-10 space-y-3">
+        <h1 className="font-display text-h2 text-fg">{admin.metaTitleDirectory}</h1>
         <p className="text-body text-fg-muted">{admin.loading}</p>
-      </main>
+      </div>
     );
   }
 
   if (!session) {
     return (
-      <main className="max-w-md mx-auto px-4 py-10 space-y-4">
+      <div className="max-w-md mx-auto px-4 py-10 space-y-4">
         <h1 className="font-display text-h2 text-fg">
           {admin.metaTitleDirectory}
         </h1>
+        <p className="text-body text-fg-muted">{admin.loginIntro}</p>
         <form onSubmit={(e) => void handleLogin(e)} className="space-y-3">
           <input
             type="email"
@@ -224,12 +230,12 @@ export default function DirectoryAdminClient({
           </Button>
           {error && <p className="text-meta-sm text-score-poor">{error}</p>}
         </form>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="max-w-3xl mx-auto px-4 py-10 space-y-6">
+    <div className="max-w-3xl mx-auto px-4 py-10 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-h2 text-fg">
           {admin.metaTitleDirectory}
@@ -264,14 +270,14 @@ export default function DirectoryAdminClient({
         <button
           type="button"
           onClick={() => setTab('listings')}
-          className={`pill min-h-[36px] px-3 ${tab === 'listings' ? 'pill-active' : 'pill-ghost'}`}
+          className={`pill filter-pill-compact px-3 ${tab === 'listings' ? 'pill-active' : 'pill-ghost'}`}
         >
           {admin.listings} ({items.length})
         </button>
         <button
           type="button"
           onClick={() => setTab('claims')}
-          className={`pill min-h-[36px] px-3 ${tab === 'claims' ? 'pill-active' : 'pill-ghost'}`}
+          className={`pill filter-pill-compact px-3 ${tab === 'claims' ? 'pill-active' : 'pill-ghost'}`}
         >
           Claims ({claims.length})
         </button>
@@ -330,7 +336,7 @@ export default function DirectoryAdminClient({
                 key={f}
                 type="button"
                 onClick={() => setFilter(f)}
-                className={`pill min-h-[36px] px-3 ${filter === f ? 'pill-active' : 'pill-ghost'}`}
+                className={`pill filter-pill-compact px-3 ${filter === f ? 'pill-active' : 'pill-ghost'}`}
               >
                 {f === 'unverified'
                   ? directory.unverifiedShort
@@ -363,7 +369,7 @@ export default function DirectoryAdminClient({
                         value={e.tier ?? 'free'}
                         disabled={busy}
                         onChange={(ev) => void onTier(e.id, ev.target.value as DirectoryTier)}
-                        className="min-h-[36px] rounded-input border border-divider bg-bg-elevated px-2 text-body text-fg"
+                        className="min-h-[44px] rounded-input border border-divider bg-bg-elevated px-2 text-body text-fg"
                       >
                         {(['free', 'featured', 'pro'] as const).map((t) => (
                           <option key={t} value={t}>
@@ -415,6 +421,6 @@ export default function DirectoryAdminClient({
           </div>
         </>
       )}
-    </main>
+    </div>
   );
 }

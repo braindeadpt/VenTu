@@ -116,7 +116,10 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
   const pendingConfirm = isActive && !isVerified;
 
   return (
-    <section id="alertas" className="card-1 p-4 sm:p-5 space-y-4">
+    // O `id="alertas"` (destino do link de /xx/alerts/) é do contentor estável
+    // de `FavoritesClient` — aqui duplicá-lo-ia, e este painel não existe sem
+    // sessão nem sem favoritos (mega audit 2026-09-26, achado A7).
+    <section className="card-1 p-4 sm:p-5 space-y-4">
       <div className="flex items-start gap-3">
         <Bell className="w-5 h-5 text-data-waves shrink-0 mt-0.5" aria-hidden />
         <div className="min-w-0 flex-1">
