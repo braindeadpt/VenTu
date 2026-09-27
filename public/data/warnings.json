@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-27T17:07:14.930Z",
+  "fetchedAt": "2026-09-27T22:07:10.057Z",
   "warnings": [
     {
       "areaCode": "ACE",
@@ -18,7 +18,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-      "startTime": "2026-09-27T18:00:00",
+      "startTime": "2026-09-27T19:50:00",
       "endTime": "2026-09-28T06:00:00",
       "relevant": true
     },
@@ -30,6 +30,16 @@
       "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
       "startTime": "2026-09-28T03:00:00",
       "endTime": "2026-09-28T15:00:00",
+      "relevant": true
+    },
+    {
+      "areaCode": "BGC",
+      "areaLabel": "Bragança",
+      "type": "Trovoada",
+      "level": "yellow",
+      "text": "Condições favoráveis para ocorrência de fenómenos meteorológicos localizados, como: trovoada; precipitação localmente forte, com acumulação entre 10 a 20 mm em 1 h; granizo com diâmetro inferior a 2 cm; rajadas entre 70 e 90 km/h.",
+      "startTime": "2026-09-28T12:00:00",
+      "endTime": "2026-09-28T21:00:00",
       "relevant": true
     },
     {
@@ -91,46 +101,6 @@
       "startTime": "2026-09-28T12:00:00",
       "endTime": "2026-09-28T21:00:00",
       "relevant": true
-    },
-    {
-      "areaCode": "MRM",
-      "areaLabel": "Madeira — Regiões Montanhosas",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-27T09:21:00",
-      "endTime": "2026-09-27T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-27T09:21:00",
-      "endTime": "2026-09-27T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MPS",
-      "areaLabel": "Porto Santo",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-27T09:21:00",
-      "endTime": "2026-09-27T18:00:00",
-      "relevant": false
-    },
-    {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
-      "type": "Tempo Quente",
-      "level": "yellow",
-      "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-27T09:21:00",
-      "endTime": "2026-09-27T18:00:00",
-      "relevant": false
     }
   ],
   "spotWarnings": {
@@ -722,90 +692,6 @@
         "relevant": true
       }
     ],
-    "sao-vicente-madeira": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "porto-da-cruz": [
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "paul-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "jardim-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ponta-sao-lourenco": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ribeira-brava": [
-      {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "funchal": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
     "garrão": [
       {
         "areaCode": "FAR",
@@ -876,54 +762,6 @@
         "startTime": "2026-09-28T12:00:00",
         "endTime": "2026-09-28T21:00:00",
         "relevant": true
-      }
-    ],
-    "machico": [
-      {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "seixal-madeira": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "ponta-pargo": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
-      }
-    ],
-    "madalena-mar": [
-      {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
-        "type": "Tempo Quente",
-        "level": "yellow",
-        "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-27T09:21:00",
-        "endTime": "2026-09-27T18:00:00",
-        "relevant": false
       }
     ],
     "calhetas": [
