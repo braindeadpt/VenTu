@@ -1,400 +1,498 @@
 {
-  "source": "ipma",
-  "fetchedAt": "2026-09-27T08:10:41.804Z",
+  "source": "meteoalarm",
+  "fetchedAt": "2026-09-27T08:36:09.058Z",
   "warnings": [
     {
-      "areaCode": "ACE",
-      "areaLabel": "Angra do Heroísmo",
+      "areaCode": "Açores - Grupo Ocidental",
+      "areaLabel": "Açores - Grupo Ocidental",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-      "startTime": "2026-09-27T21:00:00",
-      "endTime": "2026-09-28T12:00:00",
+      "startTime": "2026-09-27T18:00:00.000Z",
+      "endTime": "2026-09-28T06:00:00.000Z",
       "relevant": true
     },
     {
-      "areaCode": "AOC",
-      "areaLabel": "Santa Cruz das Flores",
+      "areaCode": "Açores - Grupo Oriental",
+      "areaLabel": "Açores - Grupo Oriental",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-      "startTime": "2026-09-27T18:00:00",
-      "endTime": "2026-09-28T06:00:00",
+      "startTime": "2026-09-28T03:00:00.000Z",
+      "endTime": "2026-09-28T15:00:00.000Z",
       "relevant": true
     },
     {
-      "areaCode": "AOR",
-      "areaLabel": "Vila do Porto",
+      "areaCode": "Açores - Grupo Central",
+      "areaLabel": "Açores - Grupo Central",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-      "startTime": "2026-09-28T03:00:00",
-      "endTime": "2026-09-28T15:00:00",
+      "startTime": "2026-09-27T21:00:00.000Z",
+      "endTime": "2026-09-28T12:00:00.000Z",
       "relevant": true
     },
     {
-      "areaCode": "MRM",
-      "areaLabel": "Madeira — Regiões Montanhosas",
+      "areaCode": "Madeira - Costa Sul",
+      "areaLabel": "Madeira - Costa Sul",
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-26T22:58:00",
-      "endTime": "2026-09-27T18:00:00",
+      "startTime": "2026-09-26T18:00:00.000Z",
+      "endTime": "2026-09-27T18:00:00.000Z",
       "relevant": false
     },
     {
-      "areaCode": "MCN",
-      "areaLabel": "Madeira — Costa Norte",
+      "areaCode": "Madeira - Regiões Montanhosas",
+      "areaLabel": "Madeira - Regiões Montanhosas",
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-26T22:58:00",
-      "endTime": "2026-09-27T18:00:00",
+      "startTime": "2026-09-26T18:00:00.000Z",
+      "endTime": "2026-09-27T18:00:00.000Z",
       "relevant": false
     },
     {
-      "areaCode": "MPS",
-      "areaLabel": "Porto Santo",
+      "areaCode": "Madeira - Costa Norte",
+      "areaLabel": "Madeira - Costa Norte",
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-26T22:58:00",
-      "endTime": "2026-09-27T18:00:00",
+      "startTime": "2026-09-26T18:00:00.000Z",
+      "endTime": "2026-09-27T18:00:00.000Z",
       "relevant": false
     },
     {
-      "areaCode": "MCS",
-      "areaLabel": "Funchal",
+      "areaCode": "Madeira - Porto Santo",
+      "areaLabel": "Madeira - Porto Santo",
       "type": "Tempo Quente",
       "level": "yellow",
       "text": "Persistência de valores elevados da temperatura máxima.",
-      "startTime": "2026-09-26T22:58:00",
-      "endTime": "2026-09-27T18:00:00",
+      "startTime": "2026-09-26T18:00:00.000Z",
+      "endTime": "2026-09-27T18:00:00.000Z",
       "relevant": false
     }
   ],
   "spotWarnings": {
     "praia-vitoria": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "Açores - Grupo Central",
+        "areaLabel": "Açores - Grupo Central",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-27T21:00:00",
-        "endTime": "2026-09-28T12:00:00",
+        "startTime": "2026-09-27T21:00:00.000Z",
+        "endTime": "2026-09-28T12:00:00.000Z",
         "relevant": true
       }
     ],
     "santa-catarina-terceira": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "Açores - Grupo Central",
+        "areaLabel": "Açores - Grupo Central",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-27T21:00:00",
-        "endTime": "2026-09-28T12:00:00",
+        "startTime": "2026-09-27T21:00:00.000Z",
+        "endTime": "2026-09-28T12:00:00.000Z",
         "relevant": true
       }
     ],
     "almoxarife": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "Açores - Grupo Central",
+        "areaLabel": "Açores - Grupo Central",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-27T21:00:00",
-        "endTime": "2026-09-28T12:00:00",
+        "startTime": "2026-09-27T21:00:00.000Z",
+        "endTime": "2026-09-28T12:00:00.000Z",
         "relevant": true
       }
     ],
     "mosteiros": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "monte-verde": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "santa-barbara": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "milicias": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "agua-alto": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "anjos": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "ponta-delgada": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "sao-vicente-madeira": [
       {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Regiões Montanhosas",
+        "areaLabel": "Madeira - Regiões Montanhosas",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Costa Norte",
+        "areaLabel": "Madeira - Costa Norte",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "porto-da-cruz": [
       {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Costa Norte",
+        "areaLabel": "Madeira - Costa Norte",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "paul-mar": [
       {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Costa Norte",
+        "areaLabel": "Madeira - Costa Norte",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "jardim-mar": [
       {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Regiões Montanhosas",
+        "areaLabel": "Madeira - Regiões Montanhosas",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Costa Norte",
+        "areaLabel": "Madeira - Costa Norte",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "ponta-sao-lourenco": [
       {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "ribeira-brava": [
       {
-        "areaCode": "MRM",
-        "areaLabel": "Madeira — Regiões Montanhosas",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Regiões Montanhosas",
+        "areaLabel": "Madeira - Regiões Montanhosas",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "funchal": [
       {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "machico": [
       {
-        "areaCode": "MCS",
-        "areaLabel": "Funchal",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Costa Norte",
+        "areaLabel": "Madeira - Costa Norte",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "seixal-madeira": [
       {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
-      }
-    ],
-    "ponta-pargo": [
+      },
       {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
+        "areaCode": "Madeira - Regiões Montanhosas",
+        "areaLabel": "Madeira - Regiões Montanhosas",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Costa Norte",
+        "areaLabel": "Madeira - Costa Norte",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "madalena-mar": [
       {
-        "areaCode": "MCN",
-        "areaLabel": "Madeira — Costa Norte",
+        "areaCode": "Madeira - Costa Sul",
+        "areaLabel": "Madeira - Costa Sul",
         "type": "Tempo Quente",
         "level": "yellow",
         "text": "Persistência de valores elevados da temperatura máxima.",
-        "startTime": "2026-09-26T22:58:00",
-        "endTime": "2026-09-27T18:00:00",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
+        "relevant": false
+      },
+      {
+        "areaCode": "Madeira - Regiões Montanhosas",
+        "areaLabel": "Madeira - Regiões Montanhosas",
+        "type": "Tempo Quente",
+        "level": "yellow",
+        "text": "Persistência de valores elevados da temperatura máxima.",
+        "startTime": "2026-09-26T18:00:00.000Z",
+        "endTime": "2026-09-27T18:00:00.000Z",
         "relevant": false
       }
     ],
     "calhetas": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "ribeira-quente": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "formosa-santa-maria": [
       {
-        "areaCode": "AOR",
-        "areaLabel": "Vila do Porto",
+        "areaCode": "Açores - Grupo Oriental",
+        "areaLabel": "Açores - Grupo Oriental",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-28T03:00:00",
-        "endTime": "2026-09-28T15:00:00",
+        "startTime": "2026-09-28T03:00:00.000Z",
+        "endTime": "2026-09-28T15:00:00.000Z",
         "relevant": true
       }
     ],
     "porto-martins": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "Açores - Grupo Central",
+        "areaLabel": "Açores - Grupo Central",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-27T21:00:00",
-        "endTime": "2026-09-28T12:00:00",
+        "startTime": "2026-09-27T21:00:00.000Z",
+        "endTime": "2026-09-28T12:00:00.000Z",
         "relevant": true
       }
     ],
     "cachorro-pico": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "Açores - Grupo Central",
+        "areaLabel": "Açores - Grupo Central",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-27T21:00:00",
-        "endTime": "2026-09-28T12:00:00",
+        "startTime": "2026-09-27T21:00:00.000Z",
+        "endTime": "2026-09-28T12:00:00.000Z",
         "relevant": true
       }
     ],
     "faja-cubres": [
       {
-        "areaCode": "ACE",
-        "areaLabel": "Angra do Heroísmo",
+        "areaCode": "Açores - Grupo Central",
+        "areaLabel": "Açores - Grupo Central",
         "type": "Precipitação",
         "level": "yellow",
         "text": "Precipitação por vezes FORTE, podendo ser acompanhada de trovoada.",
-        "startTime": "2026-09-27T21:00:00",
-        "endTime": "2026-09-28T12:00:00",
+        "startTime": "2026-09-27T21:00:00.000Z",
+        "endTime": "2026-09-28T12:00:00.000Z",
         "relevant": true
       }
     ]
