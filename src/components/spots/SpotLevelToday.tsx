@@ -28,11 +28,18 @@ export default function SpotLevelToday({
       <p
         aria-hidden
         className={cn(
-          'invisible inline-flex items-center rounded-pill border px-2.5 py-1 text-meta-sm',
+          // Mesma estrutura do cartão com mensagem (ícone + gap + font-medium +
+          // espaço que NÃO colapsa — um espaço simples é removido em fim de
+          // linha e a caixa ficava sem line box, com baseline de SVG e 0,3 px
+          // menos no wrapper). A baseline de um inline-flex vem do 1.º item:
+          // assim a caixa vazia e o cartão com mensagem medem o mesmo, no
+          // bake e no relógio vivo.
+          'invisible inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1 text-meta-sm font-medium',
           className,
         )}
       >
-        {' '}
+        <TriangleAlert className="w-3.5 h-3.5 shrink-0" aria-hidden />
+        {'\u00A0'}
       </p>
     );
   }

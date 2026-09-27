@@ -444,16 +444,20 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
       >
         {topRow.win && (
           <span
-            className="absolute top-0 whitespace-nowrap font-medium text-fg-muted"
-            style={{ left: topRow.win.left }}
+            className="absolute top-0 left-0 whitespace-nowrap font-medium text-fg-muted"
+            // translateX e não `left`: a posição é re-medida quando as fontes
+            // chegam (fonts.ready) e em cada resize — com `left` cada correcção
+            // era um layout shift real (~0,002-0,008 no Lighthouse). Com
+            // transform a caixa não se move no layout (como o tooltip).
+            style={{ transform: `translateX(${topRow.win.left}px)` }}
           >
             {topRow.win.text}
           </span>
         )}
         {topRow.now && (
           <span
-            className="absolute top-0 whitespace-nowrap font-medium text-fg"
-            style={{ left: topRow.now.left }}
+            className="absolute top-0 left-0 whitespace-nowrap font-medium text-fg"
+            style={{ transform: `translateX(${topRow.now.left}px)` }}
           >
             {tv.nowLabel}
           </span>
@@ -653,9 +657,11 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
         {axisLabels.map((l) => (
           <span
             key={`${l.kind}${l.index}`}
-            className="absolute top-0 whitespace-nowrap font-mono tabular-nums"
-            // `left` vem da decisão em píxeis — a caixa medida é a renderizada.
-            style={{ left: l.left }}
+            className="absolute top-0 left-0 whitespace-nowrap font-mono tabular-nums"
+            // Posição em píxeis pelo translateX — a medida muda com o swap da
+            // mono (fonts.ready) e com `left` cada correcção contava como
+            // layout shift; o transform fica fora do layout.
+            style={{ transform: `translateX(${l.left}px)` }}
           >
             {l.label}
           </span>
