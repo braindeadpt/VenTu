@@ -529,38 +529,6 @@
       ]
     },
     {
-      "id": 18673,
-      "ref": "ANAV NR 2167/26",
-      "category": "Requisitos de segurança maritima",
-      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=4b05a39c-b191-4c9b-8cb9-98e1a3aad49c",
-      "source": "ih",
-      "collection": "nav_warning_coastal",
-      "polygons": [
-        [
-          [
-            -8.82809,
-            41.510891
-          ],
-          [
-            -8.82809,
-            41.563316
-          ],
-          [
-            -8.764934,
-            41.563316
-          ],
-          [
-            -8.764934,
-            41.510891
-          ],
-          [
-            -8.82809,
-            41.510891
-          ]
-        ]
-      ]
-    },
-    {
       "id": 18675,
       "ref": "ANAV NR 2168/26",
       "category": "Requisitos de segurança maritima",
@@ -7635,18 +7603,15 @@
       2018401
     ],
     "ofir": [
-      18673,
       1009684,
       2018401
     ],
     "esposende": [
-      18673,
       1000657,
       1009684,
       2018401
     ],
     "esposende-praia": [
-      18673,
       1000657,
       1009684,
       2018401
@@ -7692,13 +7657,11 @@
       2018383
     ],
     "foil-fao-cavado": [
-      18673,
       1000657,
       1009684,
       2018401
     ],
     "foil-esposende-piscinas": [
-      18673,
       1000657,
       1009684,
       2018401
@@ -8204,12 +8167,10 @@
       1009371
     ],
     "fao-ofir-surf": [
-      18673,
       1009684,
       2018401
     ],
     "ofir-praia": [
-      18673,
       1009684,
       2018401
     ],
@@ -8228,7 +8189,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-27T10:07:10.721Z",
+  "fetchedAt": "2026-09-27T13:07:07.129Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
