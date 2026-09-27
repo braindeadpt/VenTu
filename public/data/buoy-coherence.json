@@ -1,11 +1,11 @@
 {
   "day": "20260927",
-  "fetchedAt": "2026-09-27T14:19:57.931Z",
+  "fetchedAt": "2026-09-27T17:07:02.699Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 695,
+    "pairHourCount": 700,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -53,8 +53,8 @@
         "coherent": 1,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 12,
-        "days": 13,
+        "insufficient": 13,
+        "days": 14,
         "incoherentRatio": 0
       },
       "6200084|6201077": {
@@ -62,8 +62,8 @@
         "coherent": 1,
         "review": 0,
         "incoherent": 0,
-        "insufficient": 12,
-        "days": 13,
+        "insufficient": 13,
+        "days": 14,
         "incoherentRatio": 0
       }
     },
@@ -191,13 +191,13 @@
       "suboptimal": []
     },
     "Ovar": {
-      "spotCount": 6,
-      "withObservedWave": 6,
+      "spotCount": 5,
+      "withObservedWave": 5,
       "bySource": {
-        "ih-buoy": 6
+        "ih-buoy": 5
       },
-      "audited": 6,
-      "attachedIsClosest": 6,
+      "audited": 5,
+      "attachedIsClosest": 5,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -207,13 +207,13 @@
       "suboptimal": []
     },
     "Aveiro": {
-      "spotCount": 7,
-      "withObservedWave": 7,
+      "spotCount": 5,
+      "withObservedWave": 5,
       "bySource": {
-        "ih-buoy": 7
+        "ih-buoy": 5
       },
-      "audited": 7,
-      "attachedIsClosest": 7,
+      "audited": 5,
+      "attachedIsClosest": 5,
       "attachedNotClosest": 0,
       "onlySource": 0,
       "notClosest": [],
@@ -1429,8 +1429,56 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-27T14:20:09.626Z",
+  "regionsAuditedAt": "2026-09-27T17:18:56.552Z",
   "pairs": [
+    {
+      "pair": "Cabo Silleiro × Datawell ao largo do Porto",
+      "codes": [
+        "6200084",
+        "6201077"
+      ],
+      "distanceKm": 96.8,
+      "ptSource": "wmo",
+      "n": 21,
+      "meanDeltaM": -0.1,
+      "meanAbsDeltaM": 0.1,
+      "maxAbsDeltaM": 0.4,
+      "corr": 0.97,
+      "verdict": "coherent",
+      "firstHour": "2026-09-01T07",
+      "lastHour": "2026-09-27T08",
+      "hours": [
+        {
+          "6200084": 1.409999966621399,
+          "6201077": 1.5099999904632568,
+          "hour": "2026-09-27T08"
+        }
+      ]
+    },
+    {
+      "pair": "Villano-Sisargas × Datawell ao largo do Porto",
+      "codes": [
+        "6200083",
+        "6201077"
+      ],
+      "distanceKm": 243.5,
+      "ptSource": "wmo",
+      "n": 21,
+      "meanDeltaM": -0.2,
+      "meanAbsDeltaM": 0.3,
+      "maxAbsDeltaM": 1.1,
+      "corr": 0.76,
+      "verdict": "coherent",
+      "firstHour": "2026-09-01T07",
+      "lastHour": "2026-09-27T08",
+      "hours": [
+        {
+          "6200083": 1.5199999809265137,
+          "6201077": 1.5099999904632568,
+          "hour": "2026-09-27T08"
+        }
+      ]
+    },
     {
       "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
       "codes": [
@@ -1439,14 +1487,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 466,
+      "n": 469,
       "meanDeltaM": 0,
       "meanAbsDeltaM": 0.3,
       "maxAbsDeltaM": 1.3,
       "corr": 0.74,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-27T12",
+      "lastHour": "2026-09-27T15",
       "hours": [
         {
           "6200084": 1.8799999952316284,
@@ -1512,6 +1560,21 @@
           "6200084": 1.5199999809265137,
           "6200199": 1.816409945487976,
           "hour": "2026-09-27T12"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 1.6699199676513672,
+          "hour": "2026-09-27T13"
+        },
+        {
+          "6200084": 1.6399999856948853,
+          "6200199": 1.6406300067901611,
+          "hour": "2026-09-27T14"
+        },
+        {
+          "6200084": 1.409999966621399,
+          "6200199": 1.6113300323486328,
+          "hour": "2026-09-27T15"
         }
       ]
     }
