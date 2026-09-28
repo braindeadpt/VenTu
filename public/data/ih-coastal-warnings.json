@@ -529,6 +529,38 @@
       ]
     },
     {
+      "id": 18683,
+      "ref": "ANAV NR 2182/26",
+      "category": "Comunicações",
+      "url": "https://geoanavnet.hidrografico.pt/coastal-warnings?uuid=b47853b4-da63-4743-a9ea-3d49a4277e91",
+      "source": "ih",
+      "collection": "nav_warning_coastal",
+      "polygons": [
+        [
+          [
+            -33.925781,
+            34.957995
+          ],
+          [
+            -33.925781,
+            41.836828
+          ],
+          [
+            -21.181641,
+            41.836828
+          ],
+          [
+            -21.181641,
+            34.957995
+          ],
+          [
+            -33.925781,
+            34.957995
+          ]
+        ]
+      ]
+    },
+    {
       "id": 1000182,
       "ref": "ANAV NR 121/21",
       "category": "SEGURANÇA DA NAVEGAÇÃO - AVISO À NAVEGAÇÃO LOCAL",
@@ -7660,6 +7692,12 @@
       2017877,
       2018213
     ],
+    "praia-vitoria": [
+      18683
+    ],
+    "santa-catarina-terceira": [
+      18683
+    ],
     "parede": [
       1000782,
       2017877
@@ -7698,6 +7736,7 @@
       1000782
     ],
     "almoxarife": [
+      18683,
       1000441,
       1002358,
       1009371
@@ -7740,6 +7779,21 @@
     "carvalhal-comporta": [
       2017253,
       2017849
+    ],
+    "mosteiros": [
+      18683
+    ],
+    "monte-verde": [
+      18683
+    ],
+    "santa-barbara": [
+      18683
+    ],
+    "milicias": [
+      18683
+    ],
+    "agua-alto": [
+      18683
     ],
     "amoreira": [
       2017815
@@ -7950,6 +8004,12 @@
       2017807,
       2018247
     ],
+    "anjos": [
+      18683
+    ],
+    "ponta-delgada": [
+      18683
+    ],
     "sao-vicente-madeira": [
       1000459
     ],
@@ -8047,11 +8107,25 @@
     "madalena-mar": [
       1000459
     ],
+    "calhetas": [
+      18683
+    ],
+    "ribeira-quente": [
+      18683
+    ],
+    "formosa-santa-maria": [
+      18683
+    ],
+    "porto-martins": [
+      18683
+    ],
     "cachorro-pico": [
+      18683,
       1000441,
       1009371
     ],
     "faja-cubres": [
+      18683,
       1000441,
       1009371
     ],
@@ -8078,7 +8152,7 @@
     "configured": false,
     "status": "disabled"
   },
-  "fetchedAt": "2026-09-28T08:37:19.276Z",
+  "fetchedAt": "2026-09-28T11:37:01.406Z",
   "sourceCollection": "nav_warning_coastal+nav_warning_local+orca_anavnet_point",
   "sourceUrl": "https://ogcapi.hidrografico.pt/collections/nav_warning_coastal"
 }
