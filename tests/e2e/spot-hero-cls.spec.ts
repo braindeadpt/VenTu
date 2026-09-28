@@ -273,3 +273,177 @@ for (const vp of VIEWPORTS) {
     });
   });
 }
+
+/**
+ * Correcção HERO-390 (2.ª volta): abaixo de sm a linha de proveniência é
+ * só a decisão — confiança + frescura + link «Como sabemos» — porque a
+ * linha completa truncava exactamente esses dois dados (medido pela
+ * auditoria: scrollWidth 563 vs clientWidth 246 a 390 px em guincho).
+ * Nem a versão pedida com o rótulo completo cabe: «confiança baixa ·
+ * actualizado há 45 min · Comment nous le savons →» mede 391 px em FR
+ * contra 288 px úteis a 320 px — por isso o link é ícone-só em <sm
+ * (aria-label completo, como os fantasmas) e as fontes ficam a ≥sm,
+ * onde truncam entre si mas nunca a decisão.
+ *
+ * Prova: scrollWidth ≤ clientWidth e uma só linha, a 320/360/390 px,
+ * nas 5 línguas, com correcção observada (guincho: boia + estação) e sem
+ * (matosinhos: modelo). A 768 px as fontes voltam a ver-se e a decisão
+ * continua inteira dentro da linha.
+ */
+const PROV_LOCALES = ['pt', 'en', 'es', 'de', 'fr'] as const;
+const PROV_SPOTS = [
+  { slug: 'guincho', note: 'com correcção' },
+  { slug: 'matosinhos', note: 'sem correcção' },
+] as const;
+/** Frescura mais comprida por língua — «…45 min» (idade <1 h). */
+const WORST_AGE: Record<(typeof PROV_LOCALES)[number], string> = {
+  pt: 'actualizado há 45 min',
+  en: 'updated 45m ago',
+  es: 'actualizado hace 45 min',
+  de: 'aktualisiert vor 45 min',
+  fr: 'actualisé il y a 45 min',
+};
+
+interface ProvMeasure {
+  sw: number;
+  cw: number;
+  h: number;
+  text: string;
+  srcDisplay: string | null;
+  linkAria: string | null;
+  linkIcon: boolean;
+  linkTextVisible: boolean;
+  overflowers: string[];
+}
+
+const measureProvenance = (): ProvMeasure | null => {
+  const link = document.querySelector('#agora a[href="#como-sabemos"]') as HTMLElement | null;
+  const p = link?.closest('p') as HTMLElement | null;
+  if (!link || !p) return null;
+  const src = p.querySelector('[data-provenance-sources]') as HTMLElement | null;
+  const labelSpan = link.querySelector('span') as HTMLElement | null;
+  const pr = p.getBoundingClientRect();
+  const overflowers = Array.from(p.children)
+    .filter((c) => c !== src)
+    .filter((c) => {
+      const r = (c as HTMLElement).getBoundingClientRect();
+      return r.width > 1 && r.right > pr.right + 1;
+    })
+    .map((c) => (c.textContent ?? '').slice(0, 30));
+  return {
+    sw: p.scrollWidth,
+    cw: p.clientWidth,
+    h: Math.round(pr.height * 10) / 10,
+    text: (p.textContent ?? '').trim(),
+    srcDisplay: src ? getComputedStyle(src).display : null,
+    linkAria: link.getAttribute('aria-label'),
+    linkIcon: !!link.querySelector('svg'),
+    linkTextVisible: labelSpan ? getComputedStyle(labelSpan).display !== 'none' : false,
+    overflowers,
+  };
+};
+
+test.describe('SP-A §1 proveniência: decisão nunca cortada (5 línguas)', () => {
+  for (const locale of PROV_LOCALES) {
+    test(`${locale}: confiança+frescura+link cabem numa linha 320/360/390`, async ({ page }) => {
+      test.setTimeout(120_000);
+      for (const spot of PROV_SPOTS) {
+        await page.goto(`/${locale}/spots/${spot.slug}/`);
+        await page.waitForSelector('html.is-hydrated', { timeout: 40_000 });
+        for (const width of [320, 360, 390]) {
+          await page.setViewportSize({ width, height: 844 });
+          const m = await page.evaluate(measureProvenance);
+          expect(m, `${locale}/${spot.slug} (${spot.note}) @${width}: sem linha`).not.toBeNull();
+          if (!m) continue;
+          const ctx = `${locale}/${spot.slug} @${width} → "${m.text}"`;
+          expect(m.sw, `${ctx} sw=${m.sw} cw=${m.cw}`).toBeLessThanOrEqual(m.cw + 1);
+          expect(m.h, `${ctx} — mais de uma linha`).toBeLessThanOrEqual(20);
+          // Fontes escondidas em <sm; a decisão fica no texto.
+          expect(m.srcDisplay, ctx).toBe('none');
+          expect(m.text, ctx).toMatch(/confian|confidence|Konfidenz|confiance/i);
+          expect(m.text, ctx).toMatch(/há |ago|hace|vor |il y a|actualiz|updated|aktualis/i);
+          // Link presente e nomeado; em <sm é só o ícone.
+          expect(m.linkAria, ctx).toBeTruthy();
+          expect(m.linkIcon, ctx).toBe(true);
+          expect(m.linkTextVisible, ctx).toBe(false);
+          expect(m.overflowers, ctx).toEqual([]);
+        }
+        // Pior caso de frescura («…45 min» é o formato mais comprido) a
+        // 320 px — o estado real do dia pode ser «há 1d», mais curto.
+        await page.setViewportSize({ width: 320, height: 844 });
+        const worst = await page.evaluate((ageText) => {
+          const age = document.querySelector('#agora [data-prov="age"]') as HTMLElement | null;
+          if (age) age.textContent = ageText;
+          const link = document.querySelector('#agora a[href="#como-sabemos"]');
+          const p = link?.closest('p') as HTMLElement;
+          return { sw: p.scrollWidth, cw: p.clientWidth };
+        }, WORST_AGE[locale]);
+        expect(
+          worst.sw,
+          `${locale}/${spot.slug} @320 pior caso «${WORST_AGE[locale]}» → sw=${worst.sw} cw=${worst.cw}`,
+        ).toBeLessThanOrEqual(worst.cw + 1);
+
+        // ≥sm: as fontes reaparecem e podem truncar ENTRE SI — a decisão
+        // e o link (já com rótulo) ficam sempre inteiros dentro da linha.
+        await page.setViewportSize({ width: 768, height: 900 });
+        const m = await page.evaluate(measureProvenance);
+        expect(m).not.toBeNull();
+        if (!m) continue;
+        const ctx = `${locale}/${spot.slug} @768 → "${m.text}"`;
+        expect(m.srcDisplay, ctx).not.toBe('none');
+        expect(m.linkTextVisible, ctx).toBe(true);
+        expect(m.sw, `${ctx} sw=${m.sw} cw=${m.cw}`).toBeLessThanOrEqual(m.cw + 1);
+        expect(m.overflowers, ctx).toEqual([]);
+      }
+    });
+  }
+});
+
+/**
+ * «Como chegar» partia em 2 linhas a 320 px («Como / chegar»): com a
+ * câmara ao lado são 4 fantasmas de 44 px e o primário fica com ~80–150 px
+ * entre 320–390 px — o rótulo só cabe a partir de ~390 px no pior caso
+ * (EN «Get directions» ≈ 148 px), por isso o limiar é 400 px em spots com
+ * livecam e 360 px sem ela. Sempre com aria-label.
+ */
+test.describe('SP-A §1 acções: o primário nunca parte o rótulo', () => {
+  for (const locale of PROV_LOCALES) {
+    test(`${locale}: «Como chegar» numa linha 320/360/390/768`, async ({ page }) => {
+      test.setTimeout(120_000);
+      await page.goto(`/${locale}/spots/guincho/`); // guincho tem livecam → 4 fantasmas
+      await page.waitForSelector('html.is-hydrated', { timeout: 40_000 });
+      for (const width of [320, 360, 390, 768]) {
+        await page.setViewportSize({ width, height: width > 500 ? 900 : 844 });
+        const m = await page.evaluate(() => {
+          const a = document.querySelector('#agora a[target="_blank"]') as HTMLElement | null;
+          if (!a) return null;
+          const label = a.querySelector('span:last-of-type') as HTMLElement | null;
+          const row = a.parentElement as HTMLElement;
+          const lr = label?.getBoundingClientRect();
+          return {
+            btnH: Math.round(a.getBoundingClientRect().height * 10) / 10,
+            rowH: Math.round(row.getBoundingClientRect().height * 10) / 10,
+            aria: a.getAttribute('aria-label'),
+            labelVisible: label ? getComputedStyle(label).display !== 'none' : false,
+            labelH: lr ? Math.round(lr.height) : 0,
+          };
+        });
+        expect(m, `${locale} @${width}: sem botão`).not.toBeNull();
+        if (!m) continue;
+        const ctx = `${locale} @${width}`;
+        // O alvo mantém 44 px e a linha de acções nunca cresce.
+        expect(m.btnH, ctx).toBeLessThanOrEqual(46);
+        expect(m.rowH, ctx).toBeLessThanOrEqual(46);
+        expect(m.aria, ctx).toBeTruthy();
+        // Guincho tem livecam → o rótulo só aparece a partir de 400 px.
+        if (width < 400) {
+          expect(m.labelVisible, `${ctx} — o rótulo devia estar escondido`).toBe(false);
+        } else {
+          expect(m.labelVisible, `${ctx} — o rótulo devia ver-se`).toBe(true);
+          // Uma linha de text-sm ≈ 20 px; 2 linhas seriam ~40 px.
+          expect(m.labelH, `${ctx} — o rótulo partiu`).toBeLessThanOrEqual(24);
+        }
+      }
+    });
+  }
+});

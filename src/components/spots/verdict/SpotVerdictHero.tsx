@@ -2,7 +2,7 @@
 
 import { Fragment, type ReactNode } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, MapPin, Navigation, Video } from 'lucide-react';
+import { ArrowLeft, Info, MapPin, Navigation, Video } from 'lucide-react';
 import type { Spot } from '@/types';
 import type { SportType } from '@/lib/sportRatings';
 import type { SportScore } from '@/lib/sportScore';
@@ -76,9 +76,10 @@ const lowerFirst = (s: string) => (s ? s.charAt(0).toLowerCase() + s.slice(1) : 
  * fantasmas de 44 px (♡ · Alerta · Câmara) + menu «Mais». Os fantasmas
  * mostram rótulo a partir de 640 px e só ícone abaixo, sempre com
  * aria-label. Os chips de proveniência saíram do hero: ficam só em
- * «Como sabemos» — aqui fica UMA linha calma (fonte · confiança · frescura
- * · link), com âmbar em texto só para confiança baixa e frescura fora do
- * TTL (getDataFreshness — 2,5 h de dia / 5 h de noite, Lisboa).
+ * «Como sabemos» — aqui fica UMA linha calma (confiança · frescura ·
+ * link; as fontes — boia/estação/modelo — só a ≥sm), com âmbar em texto
+ * só para confiança baixa e frescura fora do TTL (getDataFreshness —
+ * 2,5 h de dia / 5 h de noite, Lisboa).
  */
 export default function SpotVerdictHero({
   spot,
@@ -155,21 +156,26 @@ export default function SpotVerdictHero({
   // mais comprida — no mobile partia a linha da hora e a página saltava).
   const showAsNow = isNow || nowIndex < 0;
 
-  // ── Linha de proveniência única ─────────────────────────────────────
-  // «Onda corrigida pela boia CSA92 · vento da estação Cabo Raso ·
-  //  confiança baixa · actualizado há 12 h · Como sabemos →»
-  const provenance: ReactNode[] = [];
+  // ── Linha de proveniência ───────────────────────────────────────────
+  // Duas famílias de segmentos:
+  //  · fontes (boia/estação/modelo) — só a ≥sm. Em <sm não cabem sem
+  //    cortar a decisão (medido: a linha completa pede 318 px em PT e
+  //    391 px em FR contra 288 px úteis a 320 px); ficam sempre em
+  //    #como-sabemos.
+  //  · decisão (confiança + frescura) — sempre visíveis, nunca truncam:
+  //    é exactamente para isto que a linha existe.
+  const provenanceSources: ReactNode[] = [];
   if (showObservedSources && scoreWaveSource === 'observed' && scoreWaveCorrection?.buoyName) {
-    provenance.push(
+    provenanceSources.push(
       <span key="wave">{tv.waveFromBuoy.replace('{name}', scoreWaveCorrection.buoyName)}</span>,
     );
   } else if (showObservedSources && scoreWaveSource === 'bias-corrected') {
-    provenance.push(<span key="wave">{tv.waveBiasCorrected}</span>);
+    provenanceSources.push(<span key="wave">{tv.waveBiasCorrected}</span>);
   } else {
-    provenance.push(<span key="wave">{tv.modelLabel}</span>);
+    provenanceSources.push(<span key="wave">{tv.modelLabel}</span>);
   }
   if (showObservedSources && scoreWindSource === 'observed') {
-    provenance.push(
+    provenanceSources.push(
       <span key="wind">
         {scoreWindCorrection?.station
           ? tv.windFromStation.replace('{name}', scoreWindCorrection.station)
@@ -181,10 +187,15 @@ export default function SpotVerdictHero({
     conditions.confidence || conditions.confidenceDetail
       ? getConfidenceTier(conditions.confidenceDetail ?? null, conditions.confidence ?? null)
       : null;
+  const provenanceDecision: ReactNode[] = [];
   if (confTier) {
     // Âmbar em texto (sem fundo) só quando a confiança é baixa — spec §0.4.
-    provenance.push(
-      <span key="conf" className={confTier === 'baixa' ? 'text-score-fair' : undefined}>
+    provenanceDecision.push(
+      <span
+        key="conf"
+        data-prov="conf"
+        className={confTier === 'baixa' ? 'text-score-fair' : undefined}
+      >
         {tv.confidenceInline.replace(
           '{tier}',
           lowerFirst(getConfidenceLabel(confTier, locale)),
@@ -197,9 +208,10 @@ export default function SpotVerdictHero({
     // (getDataFreshness — 2,5 h de dia / 5 h de noite, hora de Lisboa).
     const freshness = getDataFreshness(conditions.updatedAt, freshnessNowMs);
     const age = formatStaleAge(conditions.updatedAt, locale, freshnessNowMs);
-    provenance.push(
+    provenanceDecision.push(
       <span
         key="age"
+        data-prov="age"
         className={freshness && freshness !== 'fresh' ? 'text-score-fair' : undefined}
       >
         {tv.updatedAgo.replace('{age}', lowerFirst(age))}
@@ -332,21 +344,29 @@ export default function SpotVerdictHero({
           </div>
         </div>
 
-        {/* Porquê — fora da coluna do score em <lg (linha própria, 1 linha,
-            caixa reservada também nas horas de previsão — ver whyText). */}
-        {whyText && (
-          <p
-            aria-hidden={!showWhy || undefined}
-            className={cn(
-              'mt-1 text-meta-sm text-fg-muted leading-snug truncate lg:hidden',
-              !showWhy && 'invisible',
-            )}
-          >
-            {whyText}
-          </p>
-        )}
-        <div className="mt-2 lg:hidden">
-          <SpotLevelToday difficulty={spot.difficulty} score={target} locale={locale} />
+        {/* Porquê + nível do dia partilham UMA linha em <lg: a caixa do
+            nível fica sempre reservada (a mensagem pode aparecer com o
+            relógio vivo) mas não precisa de uma linha só sua — antes
+            deixava ~34 px de vazio entre o porquê e as acções. O porquê
+            trunca-se primeiro; a pill nunca encolhe nem muda de altura. */}
+        <div className="mt-1.5 flex items-center gap-2 lg:hidden">
+          {whyText && (
+            <p
+              aria-hidden={!showWhy || undefined}
+              className={cn(
+                'min-w-0 flex-1 truncate text-meta-sm leading-snug text-fg-muted',
+                !showWhy && 'invisible',
+              )}
+            >
+              {whyText}
+            </p>
+          )}
+          <SpotLevelToday
+            difficulty={spot.difficulty}
+            score={target}
+            locale={locale}
+            className="shrink-0"
+          />
         </div>
 
         {/* Hierarquia de acções: 1 primária; fantasmas 44 px com rótulo
@@ -356,6 +376,7 @@ export default function SpotVerdictHero({
             href={directionsUrl}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label={directionsLabel}
             className={cn(
               'inline-flex flex-1 sm:flex-none items-center justify-center gap-2 font-medium',
               'px-4 min-h-[44px] h-11 text-sm rounded-input',
@@ -364,7 +385,19 @@ export default function SpotVerdictHero({
             )}
           >
             <Navigation className="w-4 h-4" aria-hidden />
-            {directionsLabel}
+            {/* Só ícone quando o rótulo não cabe ao lado dos fantasmas —
+                «Como chegar» partia em 2 linhas a 320 px. O limiar depende
+                dos irmãos: sem câmara são 3 fantasmas (cabe ~340 px), com
+                câmara são 4 e o rótulo EN precisa de ~390 px → 400 px.
+                aria-label completo em qualquer caso. */}
+            <span
+              className={cn(
+                'hidden',
+                livecamLabel ? 'min-[400px]:inline' : 'min-[360px]:inline',
+              )}
+            >
+              {directionsLabel}
+            </span>
           </a>
           {/* Fantasma 44×44: a borda vem do wrapper (FavoriteButton é
               partilhado — o ícone é sempre só o coração). */}
@@ -406,27 +439,48 @@ export default function SpotVerdictHero({
           </span>
         </div>
 
-        {/* Linha de proveniência única — os chips vivem em #como-sabemos.
-            Uma só linha FIXA (spec §1: «uma linha calma»): os segmentos mudam
-            com o relógio vivo (fonte observada, confiança, frescura) e um wrap
+        {/* Linha de proveniência — os chips vivem em #como-sabemos. Uma só
+            linha FIXA (spec §1: «uma linha calma»): os segmentos mudam com o
+            relógio vivo (fonte observada, confiança, frescura) e um wrap
             tardio ganhava uma linha ~2 s depois do load (+~19 px de hero — o
-            CLS auditado). O link «Como sabemos →» nunca encolhe; o resto trunca
-            com reticências (os detalhes completos vivem em #como-sabemos). */}
-        <p className="mt-3 flex items-center gap-x-1.5 text-meta-sm text-fg-muted">
-          <span className="min-w-0 truncate">
-            {provenance.map((seg, i) => (
-              <Fragment key={i}>
-                {i > 0 && ' · '}
-                {seg}
-              </Fragment>
-            ))}
+            CLS auditado). Abaixo de sm a linha é só a decisão — confiança,
+            frescura e o link — que nunca trunca; as fontes ficam a ≥sm
+            (truncam entre si, nunca a decisão) e, sempre, em #como-sabemos.
+            O link é ícone-só em <sm (o label completo não cabe a 320 px nas
+            5 línguas) com aria-label cheio. */}
+        <p className="mt-3 flex items-center gap-x-1.5 whitespace-nowrap text-meta-sm text-fg-muted">
+          <span
+            data-provenance-sources
+            className="hidden min-w-0 items-center gap-x-1.5 sm:inline-flex"
+          >
+            <span className="min-w-0 truncate">
+              {provenanceSources.map((seg, i) => (
+                <Fragment key={i}>
+                  {i > 0 && ' · '}
+                  {seg}
+                </Fragment>
+              ))}
+            </span>
+            {provenanceDecision.length > 0 && <span aria-hidden>·</span>}
+          </span>
+          {provenanceDecision.map((seg, i) => (
+            <Fragment key={i}>
+              {i > 0 && <span aria-hidden>·</span>}
+              {seg}
+            </Fragment>
+          ))}
+          {/* Separador antes do link só a ≥sm — em <sm o ícone não precisa
+              de «·» e cada píxel conta nas línguas largas (DE/FR). */}
+          <span aria-hidden className="hidden sm:inline">
+            ·
           </span>
           <a
             href="#como-sabemos"
-            className="inline-flex shrink-0 items-center gap-x-1.5 min-h-[44px] -my-3 text-fg-muted hover:text-fg transition-colors duration-150"
+            aria-label={tv.howWeKnow}
+            className="inline-flex shrink-0 items-center justify-center min-w-[44px] min-h-[44px] -my-3 -ml-3 pl-3 text-fg-muted hover:text-fg transition-colors duration-150"
           >
-            <span aria-hidden>·</span>
-            <span className="underline underline-offset-2 decoration-divider-strong">
+            <Info className="w-3.5 h-3.5 sm:hidden" aria-hidden />
+            <span className="hidden underline underline-offset-2 decoration-divider-strong sm:inline">
               {tv.howWeKnow} →
             </span>
           </a>
