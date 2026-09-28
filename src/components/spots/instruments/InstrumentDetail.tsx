@@ -7,6 +7,7 @@ import type { SpotDashboardConditions } from '@/components/spots/SpotConditionsD
 import type { TideHourPoint, TideSchedule } from '@/lib/tideSchedule';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { isObservedFresh } from '@/lib/observations';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { isObservedWaveFresh } from '@/lib/observedWave';
 import type { ScoreWindCorrection, ScoreWindSource } from '@/lib/scoreConditions';
 import ObservedNow from '@/components/spots/ObservedNow';
@@ -141,6 +142,7 @@ export default function InstrumentDetail({
               lat={spot.lat}
               lon={spot.lon}
               freshnessNowMs={freshnessNowMs}
+              timeZone={spotTimeZone(spot)}
             />
             {!freshObserved && conditions.observed && (
               <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{tv.staleObservation}</p>
@@ -271,7 +273,7 @@ export default function InstrumentDetail({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="grid min-w-0 content-start gap-2.5">
             {tideSchedule ? (
-              <TideScheduleStrip schedule={tideSchedule} locale={locale} />
+              <TideScheduleStrip schedule={tideSchedule} locale={locale} timeZone={spotTimeZone(spot)} />
             ) : (
               <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">{ti.tideNoExtremum}</p>
             )}
@@ -286,6 +288,7 @@ export default function InstrumentDetail({
               locale={locale}
               tideHourly={tideHourly}
               date={freshnessNowMs !== undefined ? new Date(freshnessNowMs) : undefined}
+              timeZone={spotTimeZone(spot)}
             />
           </div>
         </div>

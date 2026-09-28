@@ -11,7 +11,8 @@ export const THERMAL_LAND = 2;
 export const THERMAL_HUD_MIN_SPOTS = 3;
 
 export interface ThermalInput {
-  lisbonHour: number;
+  /** Hora de parede LOCAL DO SPOT (0–23) — térmico é fenómeno local. */
+  localHour: number;
   airTemp: number;
   sst: number;
   windSpeedMs: number;
@@ -29,7 +30,7 @@ export function detectThermal(input: ThermalInput): ThermalKind | null {
   if (!Number.isFinite(windSpeedMs) || !Number.isFinite(windDirection)) return null;
   if (!Number.isFinite(coastOrientation)) return null;
 
-  const hour = ((input.lisbonHour % 24) + 24) % 24;
+  const hour = ((input.localHour % 24) + 24) % 24;
   const relation = getWindRelationToCoast(windDirection, coastOrientation);
 
   if (hour >= 11 && hour <= 19) {
@@ -69,7 +70,9 @@ export function thermalFromCode(n: number): ThermalKind | null {
   return null;
 }
 
-export function lisbonHourFromMapTime(time: string): number {
+/** Hora de parede (0–23) de um timestamp do eixo do mapa — extração por
+ *  string (o eixo é Lisbon wall; o fuso do browser não intervém). */
+export function hourOfDayFromMapTime(time: string): number {
   const h = Number(hourKeyFromOpenMeteo(time).slice(-2));
   return Number.isFinite(h) ? h : 0;
 }

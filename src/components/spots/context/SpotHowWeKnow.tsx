@@ -9,6 +9,7 @@ import type { SpotDashboardConditions } from '@/components/spots/SpotConditionsD
 import type { ConfidenceDetail, ConfidenceTier, DailyConfidence } from '@/types';
 import { getConfidenceLabel } from '@/lib/forecastConfidence';
 import { isObservedWaveFresh } from '@/lib/observedWave';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import {
   resolveScoreWaveSource,
   resolveScoreWaveCorrection,
@@ -184,6 +185,7 @@ export default function SpotHowWeKnow({
               meta={conditions.observedWaveMeta}
               locale={locale}
               freshnessNowMs={freshnessNowMs}
+              timeZone={spotTimeZone(spot)}
             />
           )}
 

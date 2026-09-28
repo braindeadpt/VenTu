@@ -9,6 +9,9 @@ import { loadForecastForSpot } from '@/lib/spotDataCache';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { getTranslation, validateLocale } from '@/lib/i18n';
 import Skeleton from '@/components/ui/Skeleton';
+import { wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { dateKeyInTz } from '@/lib/dataFreshness';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { cn } from '@/lib/cn';
 
 export interface CompareHourlyEntry {
@@ -24,7 +27,9 @@ interface CompareHourlyTableProps {
 }
 
 interface HourRow {
-  time: string;
+  /** Instante real (epoch ms) — o eixo é por instante, não por string:
+   *  «14:00» na Nazaré e «14:00» nos Açores NÃO são o mesmo instante. */
+  ms: number;
   hour: string;
   dayKey: string;
   isNewDay: boolean;
@@ -32,12 +37,20 @@ interface HourRow {
 
 const MAX_HOURS = 24;
 
-function weekdayShort(iso: string, locale: string): string {
+function weekdayShort(ms: number, locale: string, timeZone: string): string {
   const w = new Intl.DateTimeFormat(locale === 'pt' ? 'pt-PT' : 'en-GB', {
-    timeZone: 'Europe/Lisbon',
+    timeZone,
     weekday: 'short',
-  }).format(new Date(iso));
+  }).format(new Date(ms));
   return w.replace('.', '');
+}
+
+function hourLabel(ms: number, timeZone: string): string {
+  return new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit',
+    hourCycle: 'h23',
+    timeZone,
+  }).format(new Date(ms));
 }
 
 /**
@@ -84,37 +97,45 @@ export default function CompareHourlyTable({
     const nowMs = Date.now();
     const cutoff = nowMs + MAX_HOURS * 3_600_000;
 
-    // Eixo partilhado: horas futuras (≤24h) da primeira previsão com dados.
-    let axis: HourRow[] = [];
+    // Eixo partilhado = INSTANTES reais: cada spot resolve as suas horas
+    // wall-time no SEU fuso (Açores = Atlantic/Azores) — casar strings
+    // «14:00» entre fusos juntaria horas com 1 h de diferença real.
+    // A etiqueta da linha usa o fuso do 1.º spot (ordem do utilizador).
+    const axisTz = spotTimeZone(entries[0]?.spot);
+    let axisMs: number[] = [];
     for (const e of entries) {
+      const tz = spotTimeZone(e.spot);
       const rows = forecasts[getConditionsDataId(e.spot)] ?? [];
-      const times = rows
-        .map((r) => String(r.time ?? ''))
-        .filter((t) => {
-          const ms = new Date(t).getTime();
-          return Number.isFinite(ms) && ms >= nowMs && ms < cutoff;
-        })
+      const instants = rows
+        .map((r) => wallTimeToInstantMs(String(r.time ?? ''), tz))
+        .filter((ms) => Number.isFinite(ms) && ms >= nowMs && ms < cutoff)
         .slice(0, MAX_HOURS);
-      if (times.length > axis.length) {
-        axis = times.map((t, i) => ({
-          time: t,
-          hour: t.slice(11, 13),
-          dayKey: t.slice(0, 10),
-          isNewDay: i === 0 || t.slice(0, 10) !== times[i - 1]?.slice(0, 10),
-        }));
-      }
+      if (instants.length > axisMs.length) axisMs = instants;
     }
-    if (!axis.length) return { axis, columns: [] };
+    if (!axisMs.length) return { axis: [], columns: [], axisTz };
+
+    const axis: HourRow[] = axisMs.map((ms, i) => {
+      const dayKey = dateKeyInTz(new Date(ms), axisTz);
+      return {
+        ms,
+        hour: hourLabel(ms, axisTz),
+        dayKey,
+        isNewDay: i === 0 || dayKey !== dateKeyInTz(new Date(axisMs[i - 1]), axisTz),
+      };
+    });
 
     const columns = entries.map((e) => {
+      const tz = spotTimeZone(e.spot);
       const rows = forecasts[getConditionsDataId(e.spot)] ?? [];
-      const byTime = new Map(rows.map((r) => [String(r.time ?? ''), r]));
+      const byInstant = new Map(
+        rows.map((r) => [wallTimeToInstantMs(String(r.time ?? ''), tz), r]),
+      );
       const hourly = axis.map((h) => {
-        const r = byTime.get(h.time) as
+        const r = byInstant.get(h.ms) as
           | { waveHeight?: number; wavePeriod?: number; windSpeed?: number; windDirection?: number; windGust?: number; waterTemp?: number }
           | undefined;
         return {
-          time: h.time,
+          time: h.ms,
           waveHeight: r?.waveHeight ?? 0,
           wavePeriod: r?.wavePeriod ?? 0,
           windSpeed: r?.windSpeed ?? 0,
@@ -141,7 +162,7 @@ export default function CompareHourlyTable({
       };
     });
 
-    return { axis, columns };
+    return { axis, columns, axisTz };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [forecasts, slugsKey, sport, entries]);
 
@@ -187,13 +208,13 @@ export default function CompareHourlyTable({
           </thead>
           <tbody>
             {prepared.axis.map((h, hi) => (
-              <tr key={h.time} className="border-b border-divider/60 last:border-0">
+              <tr key={h.ms} className="border-b border-divider/60 last:border-0">
                 <th
                   scope="row"
                   className="sticky left-0 z-10 bg-bg-base py-1.5 pl-3 pr-2 text-left font-mono tabular-nums text-fg whitespace-nowrap"
                 >
                   {h.isNewDay && (
-                    <span className="text-fg-subtle mr-1">{weekdayShort(h.time, locale)}</span>
+                    <span className="text-fg-subtle mr-1">{weekdayShort(h.ms, locale, prepared.axisTz)}</span>
                   )}
                   {h.hour}h
                 </th>

@@ -15,6 +15,7 @@ const { attachMoonTideLines } = require('./lib/attachMoonTide');
 const { morningScore, resolveMorningRecalibration } = require('./lib/dawnPatrolScore');
 const { coastalWarningsForSpot, coastalWarningLine } = require('./lib/ihCoastalWarnings');
 const { seaWarningForSpot, seaWarningLine } = require('./lib/ipmaWarnings');
+const { spotTimeZone, LISBON_TZ } = require('./lib/spotTimeZone.js');
 
 /** conditions.json committed by the pipeline (observedWave + waveBias meta). */
 const CONDITIONS_PATH = path.join(__dirname, '../public/data/conditions.json');
@@ -94,19 +95,24 @@ const TOP_SPOTS = [
   { name: 'Carcavelos', slug: 'carcavelos', lat: 38.679, lon: -9.335, region: 'Lisboa', type: 'surf' },
 ];
 
-/** YYYY-MM-DD in Europe/Lisbon (matches Open-Meteo timezone=Europe/Lisbon). */
-function lisbonDateStr(date = new Date()) {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Lisbon' }).format(date);
+/** YYYY-MM-DD no fuso do spot (matches Open-Meteo timezone=<fuso do spot>). */
+function dateStrInTz(date = new Date(), tz = LISBON_TZ) {
+  return new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(date);
 }
 
-function lisbonHour(date = new Date()) {
+function hourInTz(date = new Date(), tz = LISBON_TZ) {
   return Number(
     new Intl.DateTimeFormat('en-GB', {
-      timeZone: 'Europe/Lisbon',
+      timeZone: tz,
       hour: 'numeric',
       hour12: false,
     }).format(date),
   );
+}
+
+/** YYYY-MM-DD in Europe/Lisbon — the bulletin publication clock (PT). */
+function lisbonDateStr(date = new Date()) {
+  return dateStrInTz(date, LISBON_TZ);
 }
 
 function addDays(date, days) {
@@ -145,10 +151,11 @@ async function fetchWithRetry(url, retries = 2) {
 async function fetchSpotData(lat, lon) {
   // Marine API: waves + sea surface temperature
   // NOTE: water_temperature is NOT valid on marine-api. Use sea_surface_temperature.
-  const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl&timezone=Europe/Lisbon&forecast_days=2`;
+  const tz = spotTimeZone(lon);
+  const marineUrl = `https://marine-api.open-meteo.com/v1/marine?latitude=${lat}&longitude=${lon}&hourly=wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl&timezone=${tz}&forecast_days=2`;
 
   // Forecast API: wind (10m) — marine API does not have wind variables
-  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=Europe/Lisbon&forecast_days=2&wind_speed_unit=ms`;
+  const forecastUrl = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=${tz}&forecast_days=2&wind_speed_unit=ms`;
 
   const [marine, forecast] = await Promise.all([
     fetchWithRetry(marineUrl),
@@ -177,16 +184,16 @@ async function fetchSpotData(lat, lon) {
   return hourly;
 }
 
-function getMorningConditions(hourly) {
+function getMorningConditions(hourly, tz = LISBON_TZ) {
   const now = new Date();
   const morningHours = [6, 7, 8, 9, 10, 11];
-  const currentHour = lisbonHour(now);
+  const currentHour = hourInTz(now, tz);
 
   const morningData = morningHours.map(h => {
-    // Past morning hours today → target same hour tomorrow (Lisbon local)
-    let dateStr = lisbonDateStr(now);
+    // Past morning hours today → target same hour tomorrow (spot local)
+    let dateStr = dateStrInTz(now, tz);
     if (h <= currentHour) {
-      dateStr = lisbonDateStr(addDays(now, 1));
+      dateStr = dateStrInTz(addDays(now, 1), tz);
     }
 
     const prefix = `${dateStr}T${String(h).padStart(2, '0')}`;
@@ -527,7 +534,7 @@ async function generateDawnPatrol() {
       continue;
     }
 
-    const morningConditions = getMorningConditions(hourly);
+    const morningConditions = getMorningConditions(hourly, spotTimeZone(spot.lon));
     if (morningConditions.length === 0) {
       console.log(`     ⚠️  Skipped ${spot.name} — no morning conditions`);
       continue;

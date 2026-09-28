@@ -1,4 +1,8 @@
 import { getTranslation } from '@/lib/i18n';
+import { LISBON_TZ } from '@/lib/spotTimeZone';
+import { wallTimeToInstantMs, dateKeyInTz } from '@/lib/openMeteoTime';
+
+export { dateKeyInTz };
 
 /**
  * Lisbon-hour stale thresholds, aligned with the pipeline schedule
@@ -15,13 +19,20 @@ export type DataFreshness = 'fresh' | 'stale' | 'very-stale';
 
 /** Current hour in Lisbon (0–23), in the viewer's frame — pure, testable. */
 export function lisbonHour(nowMs?: number): number {
+  return hourInTz(nowMs, LISBON_TZ);
+}
+
+/** Current hour (0–23) of `nowMs` on the wall clock of `timeZone`. */
+export function hourInTz(nowMs: number | undefined, timeZone: string): number {
   const hour = new Intl.DateTimeFormat('en-GB', {
     hour: 'numeric',
     hourCycle: 'h23',
-    timeZone: 'Europe/Lisbon',
+    timeZone,
   }).format(new Date(nowMs ?? Date.now()));
   return Number(hour);
 }
+
+
 
 /** Freshness gate matching the pipeline cadence at the given instant. */
 export function staleThresholdHours(nowMs?: number): number {
@@ -63,19 +74,23 @@ export type ForecastUpdatedParts = {
 };
 
 /** Date + clock time for trust surfaces (hero ticker, tooltips). */
-export function formatForecastUpdatedParts(ts: number, locale: string): ForecastUpdatedParts {
+export function formatForecastUpdatedParts(
+  ts: number,
+  locale: string,
+  timeZone: string = LISBON_TZ,
+): ForecastUpdatedParts {
   const date = new Date(ts);
   const loc = DATE_LOCALE[locale] ?? 'en-GB';
   const datePart = new Intl.DateTimeFormat(loc, {
     day: 'numeric',
     month: 'short',
-    timeZone: 'Europe/Lisbon',
+    timeZone,
   }).format(date);
   const timePart = new Intl.DateTimeFormat(loc, {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-    timeZone: 'Europe/Lisbon',
+    timeZone,
   }).format(date);
   const prefix = getTranslation(locale).freshness.updatedPrefix;
 
@@ -88,27 +103,33 @@ export function formatForecastUpdatedParts(ts: number, locale: string): Forecast
 }
 
 /** Clock time (and short date if not today) of the last pipeline update. */
-export function formatForecastUpdatedAt(ts: number, locale: string, nowMs?: number): string {
+export function formatForecastUpdatedAt(
+  ts: number,
+  locale: string,
+  nowMs?: number,
+  timeZone: string = LISBON_TZ,
+): string {
   const t = getTranslation(locale).freshness;
   const date = new Date(ts);
   const loc = DATE_LOCALE[locale] ?? 'en-GB';
   // nowMs pin: the isToday check is baked at build — the client must
   // reproduce it on first paint (React #418 guard), then live after mount.
-  const isToday = date.toDateString() === new Date(nowMs ?? Date.now()).toDateString();
+  // Both day keys come from `timeZone` — toDateString() is browser-local.
+  const isToday = dateKeyInTz(date, timeZone) === dateKeyInTz(new Date(nowMs ?? Date.now()), timeZone);
   // timeZone pinned: this label is baked at build time and re-rendered during
   // hydration — without it the clock differs per viewer tz and React throws #418.
   const time = new Intl.DateTimeFormat(loc, {
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
-    timeZone: 'Europe/Lisbon',
+    timeZone,
   }).format(date);
 
   if (isToday) {
     return t.updatedAt.replace('{time}', time);
   }
 
-  const day = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short', timeZone: 'Europe/Lisbon' }).format(date);
+  const day = new Intl.DateTimeFormat(loc, { day: 'numeric', month: 'short', timeZone }).format(date);
   return t.updatedAtDay.replace('{day}', day).replace('{time}', time);
 }
 
@@ -132,7 +153,10 @@ export function formatStaleAge(updatedAt: string, locale: string, nowMs?: number
 }
 
 export function isDawnPatrolStale(dateStr: string, maxAgeHours = 24): boolean {
-  const d = new Date(`${dateStr}T12:00:00`);
-  if (Number.isNaN(d.getTime())) return true;
-  return (Date.now() - d.getTime()) / 3600000 > maxAgeHours;
+  // dateStr é um dia civil de Lisboa (o boletim é gerado na cadência da
+  // pipeline) — resolve o instante explicitamente, nunca new Date(naive)
+  // que depende do fuso do browser.
+  const ms = wallTimeToInstantMs(`${dateStr}T12:00`, LISBON_TZ);
+  if (Number.isNaN(ms)) return true;
+  return (Date.now() - ms) / 3600000 > maxAgeHours;
 }

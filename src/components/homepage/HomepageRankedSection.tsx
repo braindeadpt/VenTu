@@ -1,7 +1,9 @@
 'use client';
 
 import { localizedSpotName, localizedSpotRegion } from '@/lib/localizedSpotText';
-import { DATE_LOCALE } from '@/lib/dataFreshness';
+import { DATE_LOCALE, dateKeyInTz } from '@/lib/dataFreshness';
+import { wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { getTranslation } from '@/lib/i18n';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -41,22 +43,18 @@ interface WindowRow {
   /** Set when the «all» filter picked the spot's best cross-sport window. */
   sportLabel: string | null;
   href: string;
+  /** Fuso das `startIso`/`endIso` — o do spot (Açores = Atlantic/Azores). */
+  tz: string;
 }
 
-const lisbonDayFmt = new Intl.DateTimeFormat('en-CA', {
-  timeZone: 'Europe/Lisbon',
-  year: 'numeric',
-  month: '2-digit',
-  day: '2-digit',
-});
-
-function lisbonDayKey(iso: string): string {
-  return lisbonDayFmt.format(new Date(iso));
-}
-
-function dayDiff(startIso: string, nowMs: number): number {
-  const a = new Date(lisbonDayKey(startIso) + 'T00:00:00Z').getTime();
-  const b = new Date(lisbonDayFmt.format(new Date(nowMs)) + 'T00:00:00Z').getTime();
+/**
+ * Dias entre o dia da janela e «hoje» — ambos no fuso DO SPOT: `startIso`
+ * já é wall-time local do spot (o dia civil sai da própria string) e o
+ * «hoje» mede-se no mesmo fuso. `new Date(naive)` seria local ao browser.
+ */
+function dayDiff(startIso: string, nowMs: number, tz: string): number {
+  const a = new Date(`${startIso.slice(0, 10)}T00:00:00Z`).getTime();
+  const b = new Date(`${dateKeyInTz(new Date(nowMs), tz)}T00:00:00Z`).getTime();
   return Math.round((a - b) / 86_400_000);
 }
 
@@ -149,10 +147,11 @@ export default function HomepageRankedSection({
         sportLabel:
           sport === 'all' ? getSportLabel(picked.sport, locale) : null,
         href: spotDetailHref(locale, data.spot.slug, picked.sport),
+        tz: spotTimeZone(data.spot),
       });
     }
     return out
-      .filter((r) => new Date(r.window.endIso).getTime() > nowMs)
+      .filter((r) => wallTimeToInstantMs(r.window.endIso, r.tz) > nowMs)
       .sort(
         (a, b) =>
           a.window.startIso.localeCompare(b.window.startIso) ||
@@ -161,7 +160,10 @@ export default function HomepageRankedSection({
       .slice(0, MAX_WINDOW_ROWS);
   }, [liveSpotsData, sport, locale, nowMs]);
 
-  const weekdayFmt = useMemo(
+  // Weekday por fuso do spot — formato Intl sobre o instante real da hora
+  // de parede (Açores: «hoje»/weekday seguem Atlantic/Azores, não Lisboa).
+  // Só existem 2 fusos de spot — um formatter por fuso, sem cache mutável.
+  const weekdayFmtLisbon = useMemo(
     () =>
       new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', {
         timeZone: 'Europe/Lisbon',
@@ -169,13 +171,25 @@ export default function HomepageRankedSection({
       }),
     [locale],
   );
+  const weekdayFmtAzores = useMemo(
+    () =>
+      new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', {
+        timeZone: 'Atlantic/Azores',
+        weekday: 'short',
+      }),
+    [locale],
+  );
+  const weekdayLabel = (iso: string, tz: string): string => {
+    const fmt = tz === 'Atlantic/Azores' ? weekdayFmtAzores : weekdayFmtLisbon;
+    const w = fmt.format(new Date(wallTimeToInstantMs(iso, tz))).replace('.', '');
+    return w.charAt(0).toUpperCase() + w.slice(1);
+  };
 
-  const dayLabel = (iso: string): string => {
-    const diff = dayDiff(iso, nowMs);
+  const dayLabel = (r: WindowRow): string => {
+    const diff = dayDiff(r.window.startIso, nowMs, r.tz);
     if (diff === 0) return t.today;
     if (diff === 1) return t.tomorrow;
-    const w = weekdayFmt.format(new Date(iso)).replace('.', '');
-    return w.charAt(0).toUpperCase() + w.slice(1);
+    return weekdayLabel(r.window.startIso, r.tz);
   };
 
   return (
@@ -222,7 +236,7 @@ export default function HomepageRankedSection({
                       className="flex min-h-[44px] items-center gap-2 py-1.5 rounded-sm transition-colors duration-150 hover:bg-surface-2/[0.06] -mx-1 px-1"
                     >
                       <span className="font-mono tabular-nums text-meta text-fg whitespace-nowrap">
-                        {dayLabel(r.window.startIso)}{' '}
+                        {dayLabel(r)}{' '}
                         <span className="text-fg-muted">
                           {hourOf(r.window.startIso)}–{hourOf(r.window.endIso)}h
                         </span>

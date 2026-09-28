@@ -10,6 +10,7 @@ import {
   type ReactNode,
 } from 'react';
 import { findCurrentHourIndex } from '@/lib/openMeteoTime';
+import { LISBON_TZ } from '@/lib/spotTimeZone';
 import { spotTimelineScore } from '@/lib/spotTimelineScore';
 import { spotTimelineWindow } from '@/components/spots/timeline/spotTimelineWindow';
 import { mapTimeTrackPaused } from '@/components/spots/map/mapTimeTrackPaused';
@@ -23,7 +24,7 @@ import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion';
  * que quem só precisa dos dados não re-renderize a cada scrub.
  */
 export interface SpotTimelineDataValue {
-  /** ISO local times (Open-Meteo, Europe/Lisbon wall time) alinhadas com scores. */
+  /** ISO local times (Open-Meteo, wall time NO FUSO DO SPOT) alinhadas com scores. */
   hours: readonly string[];
   /** Scores canónicos por hora (mesma fonte da ForecastTable e da régua 48h). */
   scores: readonly number[];
@@ -76,6 +77,8 @@ interface SpotTimelineProviderProps {
   mounted: boolean;
   /** Relógio de referência opcional (bake/testes); depois de montar usa-se o relógio real. */
   nowMs?: number;
+  /** Fuso em que `hours` está escrito — o do spot (default Lisboa). */
+  timeZone?: string;
   /** Cadência do autoplay em ms. */
   tickMs?: number;
   children: ReactNode;
@@ -87,6 +90,7 @@ export default function SpotTimelineProvider({
   nowScore,
   mounted,
   nowMs,
+  timeZone = LISBON_TZ,
   tickMs = 1000,
   children,
 }: SpotTimelineProviderProps) {
@@ -112,7 +116,7 @@ export default function SpotTimelineProvider({
       return;
     }
     const compute = () => {
-      const i = findCurrentHourIndex(hours as string[], new Date(nowMs ?? Date.now()));
+      const i = findCurrentHourIndex(hours as string[], new Date(nowMs ?? Date.now()), timeZone);
       setNowIndex(i);
       if (!didLandOnNow.current) {
         didLandOnNow.current = true;
@@ -125,7 +129,7 @@ export default function SpotTimelineProvider({
     };
     document.addEventListener('visibilitychange', onVisible);
     return () => document.removeEventListener('visibilitychange', onVisible);
-  }, [mounted, hours, nowMs]);
+  }, [mounted, hours, nowMs, timeZone]);
 
   // Janela de 48 h da régua — a mesma que limita o autoplay.
   const { start: windowStart, end: windowEnd } = useMemo(

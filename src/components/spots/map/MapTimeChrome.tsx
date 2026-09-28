@@ -124,10 +124,12 @@ export default function MapTimeChrome({
     return () => { map?.off('moveend', update); };
   }, [computeBest, mapInstanceRef]);
 
-  /* Noite = 20h–07h locais (horas do ficheiro já estão em Europe/Lisbon). */
+  /* Noite = 20h–07h — a hora extrai-se da string (eixo wall-time da grelha;
+     `new Date(iso)` seria local ao browser e deslocava a sombra noutros
+     fusos). */
   const night = useMemo(
     () => times.map((iso) => {
-      const h = new Date(iso).getHours();
+      const h = Number(iso.slice(11, 13));
       return h < 7 || h >= 20;
     }),
     [times],

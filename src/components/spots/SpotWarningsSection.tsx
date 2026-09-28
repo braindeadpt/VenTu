@@ -15,17 +15,23 @@ import {
   type IpmaWarningsData,
 } from '@/lib/ipmaWarnings';
 import CoastalNavWarnings from '@/components/spots/CoastalNavWarnings';
+import { wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { spotTimeZoneById } from '@/lib/spotTimeZone';
 
-function formatEndDate(iso: string | undefined, locale: string): string {
+// `endTime` do IPMA é wall-time naive local do aviso — resolve-se o instante
+// no fuso DO SPOT (nunca `new Date(iso)`, local ao browser, nem format sem
+// timeZone, que mostraria a hora do visitante).
+function formatEndDate(iso: string | undefined, locale: string, timeZone: string): string {
   if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
+  const ms = wallTimeToInstantMs(iso, timeZone);
+  if (Number.isNaN(ms)) return '';
+  return new Date(ms).toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone,
   });
 }
 
@@ -46,6 +52,7 @@ export default function SpotWarningsSection({
   const [data, setData] = useState<IpmaWarningsData | null>(null);
   const isPt = locale === 'pt';
   const t = getTranslation(locale).spotsUi;
+  const spotTz = spotTimeZoneById(spotId);
 
   useEffect(() => {
     // Optional layer — never break the spot page on failure.
@@ -104,7 +111,7 @@ export default function SpotWarningsSection({
                   {warningLevelLabel(w.level, locale)}
                 </span>
                 <span className="text-meta-sm text-fg-muted">
-                  {w.endTime ? t.untilWord.replace('{date}', formatEndDate(w.endTime, locale)) : ''}
+                  {w.endTime ? t.untilWord.replace('{date}', formatEndDate(w.endTime, locale, spotTz)) : ''}
                 </span>
               </div>
               {w.text ? (

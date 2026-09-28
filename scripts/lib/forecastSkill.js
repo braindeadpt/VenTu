@@ -12,10 +12,12 @@
  * (leadTimeHours > 0), so ME/RMSE measure genuine forecast skill with lead,
  * not nowcasting.
  *
- * Time handling: forecasts.json uses Europe/Lisbon wall hours (no offset) and
- * the IH API serves UTC. Both are normalised to the same Lisbon wall hour key
- * (YYYY-MM-DDTHH) — the same convention as src/lib/openMeteoTime.ts — while
- * runAt/observedAt keep real instants for lead-time and pruning maths.
+ * Time handling: forecasts.json uses the SPOT's wall hours (no offset —
+ * Europe/Lisbon mainland/Madeira, Atlantic/Azores for the Azores; each row
+ * carries `tz`) and the IH API serves UTC. Both are normalised to the same
+ * Lisbon wall hour key (YYYY-MM-DDTHH) — the same convention as
+ * src/lib/openMeteoTime.ts — while runAt/observedAt keep real instants for
+ * lead-time and pruning maths.
  *
  * The archive lives in data-state/forecast-skill-archive.json — raw
  * forecasts/observations/pairs grew past the public payload budget (1.6 MB,
@@ -31,6 +33,8 @@ const path = require('path');
 const { mapSpotsToNearestBuoy } = require('./wmoBiasArchive.js');
 const { wmoOriginForWmoCode } = require('./copernicusBuoys.js');
 const { isPlausibleHm0 } = require('./ihBuoys.js');
+const { spotTimeZone, LISBON_TZ } = require('./spotTimeZone.js');
+const { wallTimeToInstantMs } = require('./openMeteoTime.js');
 
 const DEFAULT_OUTPUT_PATH = path.join(__dirname, '../../public/data/forecast-skill.json');
 const DEFAULT_ARCHIVE_PATH = path.join(__dirname, '../../data-state/forecast-skill-archive.json');
@@ -43,8 +47,6 @@ const MIN_PAIRS = 10;
 const MAX_FORECAST_LEAD_HOURS = 168; // 7 days — matches forecast_days.
 /** Forecast hours to archive per run (ahead of now) — matches the script. */
 const FORECAST_ARCHIVE_HOURS = 48;
-
-const LISBON_TZ = 'Europe/Lisbon';
 
 const round1 = (n) => Math.round(n * 10) / 10;
 const round2 = (n) => Math.round(n * 100) / 100;
@@ -98,23 +100,32 @@ function lisbonHourKeyFromDate(date) {
 /**
  * Normalise any ISO string to a Lisbon wall hour key.
  *
- * - Offset-less (`2026-08-14T14:00` from forecasts.json / Open-Meteo) is already
- *   Europe/Lisbon wall time — take YYYY-MM-DDTHH directly. NEVER feed these to
- *   `new Date(iso)`: ES5 treats them as *host* local, so UTC CI runners shift
- *   WEST (+1) hours (T14 → T15) and break pair crossing.
+ * - Offset-less (`2026-08-14T14:00` from forecasts.json / Open-Meteo) is wall
+ *   time in `sourceTz` — the spot's zone (default Lisbon; Azores rows carry
+ *   `tz: 'Atlantic/Azores'`). NEVER feed these to `new Date(iso)`: ES5 treats
+ *   them as *host* local, so UTC CI runners shift WEST (+1) hours (T14 → T15)
+ *   and break pair crossing.
  * - With Z / ±offset (IH, WMO) → convert the instant to Lisbon wall hour.
  */
-function hourKey(iso) {
+function hourKey(iso, sourceTz = LISBON_TZ) {
   if (iso == null || iso === '') return null;
   const s = String(iso).trim();
-  // Offset-less → Lisbon wall (same convention as openMeteoTime.hourKeyFromOpenMeteo)
+  // Offset-less → wall time in sourceTz (the spot's own zone).
   if (!/(?:[zZ]|[+-]\d{2}:?\d{2})$/.test(s)) {
     const m = /^(\d{4}-\d{2}-\d{2}T\d{2})/.exec(s);
-    return m ? m[1] : null;
+    if (!m) return null;
+    if (sourceTz === LISBON_TZ) return m[1];
+    const ms = wallTimeToInstantMs(s, sourceTz);
+    return Number.isFinite(ms) ? lisbonHourKeyFromDate(new Date(ms)) : null;
   }
   const t = new Date(s).getTime();
   if (!Number.isFinite(t)) return null;
   return lisbonHourKeyFromDate(new Date(t));
+}
+
+/** Lisbon wall hour key of a forecast row (naive `time` is in `f.tz`). */
+function forecastHourKey(f) {
+  return hourKey(f?.time, f?.tz || LISBON_TZ);
 }
 
 /**
@@ -203,7 +214,7 @@ function writeArchive(archive, outputPath = DEFAULT_ARCHIVE_PATH) {
  */
 /** Dedupe key: one forecast slot per buoy per Lisbon hour. */
 function forecastKey(f) {
-  return `${f.buoyId}|${hourKey(f.time)}`;
+  return `${f.buoyId}|${forecastHourKey(f)}`;
 }
 
 function archiveForecastRun(archive, newForecasts) {
@@ -212,14 +223,14 @@ function archiveForecastRun(archive, newForecasts) {
     const key = forecastKey(f);
     const existing = seen.get(key);
     if (!existing || new Date(f.runAt) < new Date(existing.runAt)) {
-      seen.set(key, { ...f, hourKey: hourKey(f.time) });
+      seen.set(key, { ...f, hourKey: forecastHourKey(f) });
     }
   }
   for (const f of newForecasts) {
     const key = forecastKey(f);
     const existing = seen.get(key);
     if (!existing || new Date(f.runAt) < new Date(existing.runAt)) {
-      seen.set(key, { ...f, hourKey: hourKey(f.time) });
+      seen.set(key, { ...f, hourKey: forecastHourKey(f) });
     }
   }
   archive.forecasts = [...seen.values()];
@@ -317,7 +328,7 @@ function crossPairs(archive, opts = {}) {
     if (seen.has(key)) continue;
     const obs = obsByKey.get(key);
     if (!obs) continue;
-    const targetMs = hourKeyToUtcMs(hourKey(f.time));
+    const targetMs = hourKeyToUtcMs(forecastHourKey(f));
     const runMs = new Date(f.runAt).getTime();
     if (!Number.isFinite(targetMs) || !Number.isFinite(runMs)) continue;
     const leadHours = (targetMs - runMs) / 3_600_000;
@@ -331,7 +342,7 @@ function crossPairs(archive, opts = {}) {
     if (!isPlausibleHm0(f.hm0) || !isPlausibleHm0(obs.hm0)) continue;
 
     pairs.push({
-      hourKey: hourKey(f.time),
+      hourKey: forecastHourKey(f),
       buoyId: obs.buoyId,
       buoyName: f.buoyName ?? obs.buoyName,
       origin:
@@ -538,13 +549,17 @@ function archiveWmoSkill(archive, inputs) {
     }
   }
 
+  const spotById = new Map(spots.map((s) => [s.id, s]));
   let forecastRows = 0;
   const newForecasts = [];
   for (const [code, { spotId }] of nearestByBuoy) {
     const series = forecasts[spotId];
     if (!Array.isArray(series)) continue;
+    // As horas naive da série são wall time no fuso DO SPOT — o lead calcula-se
+    // sobre instantes reais, não sobre new Date(naive) (host-local).
+    const tz = spotTimeZone(spotById.get(spotId));
     for (const hour of series) {
-      const targetMs = new Date(hour.time).getTime();
+      const targetMs = wallTimeToInstantMs(hour.time, tz);
       if (!Number.isFinite(targetMs)) continue;
       const leadHours = (targetMs - nowMs) / 3_600_000;
       if (leadHours <= 0 || leadHours > forecastArchiveHours) continue;
@@ -552,6 +567,7 @@ function archiveWmoSkill(archive, inputs) {
       if (!Number.isFinite(hm0) || hm0 < 0) continue;
       newForecasts.push({
         time: hour.time,
+        tz,
         hm0,
         runAt,
         buoyId: code,

@@ -133,7 +133,9 @@ export function computeMagicWindows(
     if (waveVariance < 0.3 && windVariance < 5) {
       heuristic +=3;
     }
-    const hourOfDay = new Date(h.time).getHours();
+    // Hora de parede da string (wall-time do spot) — `new Date(h.time)`
+    // seria local ao browser e deslocava o bónus noutros fusos.
+    const hourOfDay = Number(h.time.slice(11, 13)) || 0;
     if ((spotType === 'surf' || spotType === 'big-wave') && hourOfDay >= 6 && hourOfDay <= 10) {
       heuristic +=4;
     }

@@ -44,6 +44,8 @@ export interface ObservedWaveSourcesChipProps {
   className?: string;
   /** Baked build-time clock (React #418 guard) — see the spot page callers. */
   freshnessNowMs?: number;
+  /** Fuso do spot para a hora exacta do tooltip (default: Lisboa). */
+  timeZone?: string;
 }
 
 export default function ObservedWaveSourcesChip({
@@ -53,6 +55,7 @@ export default function ObservedWaveSourcesChip({
   locale,
   className,
   freshnessNowMs,
+  timeZone,
 }: ObservedWaveSourcesChipProps) {
   const isPt = locale === 'pt';
   const t = getTranslation(locale).spotsUi;
@@ -71,12 +74,12 @@ export default function ObservedWaveSourcesChip({
     // Formato compacto: o vencedor mostra só a idade («IH ✓ (1h)»); o
     // runner-up acrescenta a distância («WMO (5h, a 56 km)»).
     const km = winner ? null : fmtDistanceKm(w.distanceKm);
-    // Tooltip com a hora EXACTA da leitura (Europe/Lisbon, mesmo relógio do
+    // Tooltip com a hora EXACTA da leitura (fuso do spot, mesmo relógio do
     // hero) + nome da estação — além da idade relativa mostrada no chip.
     const srcLabel = isIh ? 'IH' : 'WMO';
     const agePart = `(${fmtAgeHours(ageH)}${km ? t.kmAway.replace('{km}', km) : ''})`;
     const station = w.stationName?.trim() || w.stationArea?.trim() || '';
-    const clock = formatObservedClockTime(w.observedAt, locale);
+    const clock = formatObservedClockTime(w.observedAt, locale, timeZone);
     const title = t.waveSourcesTitle
       .replace('{src}', srcLabel)
       .replace('{winner}', winner ? ' ✓' : '')

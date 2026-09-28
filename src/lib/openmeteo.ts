@@ -1,5 +1,7 @@
 import { MarineData } from '@/types';
-import { findCurrentHourIndex } from '@/lib/openMeteoTime';
+import { findCurrentHourIndex, hourKeyFromInstantInTz, wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { spotTimeZone } from '@/lib/spotTimeZone';
+import { dateKeyInTz } from '@/lib/dataFreshness';
 
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
@@ -105,15 +107,16 @@ function generateMockData(lat: number, lon: number): MarineData {
   const hourlyWaterTemp: number[] = [];
   const hourlySeaLevel: number[] = [];
 
-  const startOfDay = new Date(now);
-  startOfDay.setHours(0, 0, 0, 0);
+  // Mesmo shape do real: wall-time naive NO FUSO DO SPOT (nunca toISOString
+  // UTC — consumers tratam estas strings como hora local do spot).
+  const tz = spotTimeZone(lon);
+  const startUtc = wallTimeToInstantMs(`${dateKeyInTz(now, tz)}T00:00`, tz);
 
   for (let i = 0; i < 168; i++) {
-    const hourTime = new Date(startOfDay.getTime() + i * 60 * 60 * 1000);
-    hourlyTime.push(hourTime.toISOString());
+    hourlyTime.push(`${hourKeyFromInstantInTz(startUtc + i * 60 * 60 * 1000, tz)}:00`);
     
     // Add some realistic variation (deterministic)
-    const hourOfDay = hourTime.getHours();
+    const hourOfDay = Number(hourlyTime[i].slice(11, 13));
     const dayVariation = Math.sin((hourOfDay - 6) * Math.PI / 12) * 0.3; // wind picks up during day
     const tideVariation = Math.sin(i * Math.PI / 6.2) * 0.5; // ~12.4h tidal cycle
     
@@ -133,8 +136,8 @@ function generateMockData(lat: number, lon: number): MarineData {
   const dailyWaterTempMax: number[] = [];
 
   for (let d = 0; d < 7; d++) {
-    const dayTime = new Date(startOfDay.getTime() + d * 24 * 60 * 60 * 1000);
-    dailyTime.push(dayTime.toISOString().split('T')[0]);
+    // Dia civil do spot — deriva das horas wall-time já geradas (fuso do spot).
+    dailyTime.push(hourlyTime[d * 24].slice(0, 10));
     
     const dayStart = d * 24;
     const dayEnd = dayStart + 24;
@@ -213,7 +216,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
     hourly:
       'wave_height,wave_direction,wave_period,sea_surface_temperature,sea_level_height_msl',
     daily: 'wave_height_max,sea_surface_temperature_max',
-    timezone: 'Europe/Lisbon',
+    timezone: spotTimeZone(lon),
     forecast_days: '7',
   });
 
@@ -222,7 +225,7 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
     longitude: lon.toString(),
     hourly: 'wind_speed_10m,wind_direction_10m,wind_gusts_10m',
     daily: 'wind_speed_10m_max',
-    timezone: 'Europe/Lisbon',
+    timezone: spotTimeZone(lon),
     forecast_days: '7',
     wind_speed_unit: 'ms',
   });
@@ -295,9 +298,9 @@ export async function fetchMarineData(lat: number, lon: number): Promise<FetchRe
   }
 }
 
-export function getCurrentConditions(result: FetchResult): CurrentConditions {
+export function getCurrentConditions(result: FetchResult, timeZone?: string): CurrentConditions {
   const data = result.data;
-  const timeIndex = findCurrentHourIndex(data.hourly.time);
+  const timeIndex = findCurrentHourIndex(data.hourly.time, undefined, timeZone);
 
   const seaLevel = data.hourly.sea_level_height?.[timeIndex];
   const seaLevelNext = data.hourly.sea_level_height?.[timeIndex + 1];
@@ -522,7 +525,7 @@ export async function fetchWeatherData(lat: number, lon: number): Promise<Weathe
     latitude: lat.toString(),
     longitude: lon.toString(),
     current: 'temperature_2m,weather_code,precipitation,cloudcover_relative,humidity_2m,wind_speed_10m,is_day',
-    timezone: 'Europe/Lisbon',
+    timezone: spotTimeZone(lon),
   });
 
   try {

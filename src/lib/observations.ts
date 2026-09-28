@@ -95,12 +95,17 @@ export function isObservedFresh(
   return age !== null && age <= maxHours;
 }
 
-/** Wall-clock time of the IPMA snapshot in Europe/Lisbon. */
-export function formatObservedClockTime(observedAt: string, locale: string): string {
+/** Wall-clock time of the observation instant in `timeZone` — the spot's
+ *  zone by the product rule; callers pass `spotTimeZone(spot)`. */
+export function formatObservedClockTime(
+  observedAt: string,
+  locale: string,
+  timeZone: string = 'Europe/Lisbon',
+): string {
   const d = new Date(observedAt);
   if (Number.isNaN(d.getTime())) return '—';
   return d.toLocaleTimeString(locale === 'pt' ? 'pt-PT' : 'en-GB', {
-    timeZone: 'Europe/Lisbon',
+    timeZone,
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,

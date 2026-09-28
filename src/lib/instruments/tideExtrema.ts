@@ -20,7 +20,7 @@ export interface TideExtremum {
   index: number;
   /** Altura interpolada no vértice, m (MSL-relativa). */
   height: number;
-  /** «HH:MM» local do vértice (a série já vem em hora local Europe/Lisbon). */
+  /** «HH:MM» local do vértice (a série vem em hora local DO SPOT). */
   hhmm: string;
 }
 

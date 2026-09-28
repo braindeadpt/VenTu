@@ -25,6 +25,8 @@ interface ObservedNowProps {
   lon: number;
   /** Baked build-time clock (React #418 guard) — see SpotConditionsDashboard. */
   freshnessNowMs?: number;
+  /** Fuso do spot — o relógio da leitura mostra a hora local do spot. */
+  timeZone?: string;
 }
 
 export default function ObservedNow({
@@ -34,6 +36,7 @@ export default function ObservedNow({
   lat,
   lon,
   freshnessNowMs,
+  timeZone,
 }: ObservedNowProps) {
   const { observed: liveObserved, loading, error } = useObservedNow(lat, lon);
 
@@ -84,6 +87,7 @@ export default function ObservedNow({
       fromLive={fromLive}
       loadingLive={loading && !fromLive && Boolean(bakedFresh)}
       freshnessNowMs={freshnessNowMs}
+      timeZone={timeZone}
     />
   );
 }
@@ -95,6 +99,7 @@ function ObservedNowContent({
   fromLive,
   loadingLive,
   freshnessNowMs,
+  timeZone,
 }: {
   observed: ObservedConditions;
   forecastWindSpeedMs: number;
@@ -102,6 +107,7 @@ function ObservedNowContent({
   fromLive: boolean;
   loadingLive: boolean;
   freshnessNowMs?: number;
+  timeZone?: string;
 }) {
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotVerify;
@@ -111,7 +117,7 @@ function ObservedNowContent({
   const badge = verificationBadge(verification.agreement, locale);
   const cardinal =
     isPt ? observed.windCardinal : (observed.windCardinalEn ?? observed.windCardinal);
-  const clock = formatObservedClockTime(observed.observedAt, locale);
+  const clock = formatObservedClockTime(observed.observedAt, locale, timeZone);
   const sourceLabel = observedSourceLabel(observed.source, locale);
   const title = observedSectionTitle(observed.source, fresh, locale);
 

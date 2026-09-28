@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { Trophy, Wind, Waves, Clock, ArrowLeft, Crown, Medal, Award, Check, Search, X } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { getAllSportScores, getScoreTokens, getSportScore } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -103,7 +104,7 @@ async function loadSpotBattleData(
 
   try {
     const result = await fetchMarineData(spot.lat, spot.lon);
-    const conditions = getCurrentConditions(result);
+    const conditions = getCurrentConditions(result, spotTimeZone(spot));
     return {
       spot,
       conditions,

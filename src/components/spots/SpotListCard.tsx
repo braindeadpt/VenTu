@@ -18,6 +18,7 @@ import type { ConfidenceDetail, ConfidenceTier } from '@/lib/forecastConfidence'
 import { waveFactorSuffix, type ScoreWaveCorrection } from '@/lib/scoreConditions';
 import type { ObservedWave } from '@/lib/observedWave';
 import { formatObservedClockTime } from '@/lib/observations';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { cn } from '@/lib/cn';
 
 export interface SpotListCardConditions {
@@ -42,7 +43,7 @@ interface SpotListCardProps {
   className?: string;
   calmWaterLabel?: string | null;
   withImage?: boolean;
-  spot?: Pick<Spot, 'slug' | 'type' | 'images' | 'name' | 'nameEn' | 'region'>;
+  spot?: Pick<Spot, 'slug' | 'type' | 'images' | 'name' | 'nameEn' | 'region' | 'lon'>;
   statusLine?: string;
   /** Active sea-state/wind IPMA warning — small badge on the card. */
   warning?: MapMarkerWarning | null;
@@ -238,7 +239,7 @@ export default function SpotListCard({
             <span className="inline-flex items-center gap-1">
               <Waves className="w-3 h-3 text-data-waves" aria-hidden />
               {conditions.waveHeight.toFixed(1)}m{waveFactorSuffix(waveSource, locale)}
-              {/* Relógio da leitura (HH:MM, Europe/Lisbon) — mesmo data-wave-clock
+              {/* Relógio da leitura (HH:MM, fuso do spot) — mesmo data-wave-clock
                   do hero, só quando a correcção é de boia fresca ('observed'). */}
               {waveSource === 'observed' && observedWaveAt ? (
                 <>
@@ -246,7 +247,7 @@ export default function SpotListCard({
                     ·
                   </span>
                   <span className="text-fg-subtle" data-wave-clock="true">
-                    {formatObservedClockTime(observedWaveAt, locale)}
+                    {formatObservedClockTime(observedWaveAt, locale, spotTimeZone(spot))}
                   </span>
                 </>
               ) : null}

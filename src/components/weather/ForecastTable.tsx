@@ -16,7 +16,8 @@ import {
   TIDE_PHASE_CELL,
   type TidePhase,
 } from '@/lib/tideSchedule';
-import { findCurrentHourIndex, hourKeyFromOpenMeteo, lisbonHourKeyFromDate } from '@/lib/openMeteoTime';
+import { findCurrentHourIndex, hourKeyFromDateInTz, hourKeyFromOpenMeteo } from '@/lib/openMeteoTime';
+import { LISBON_TZ } from '@/lib/spotTimeZone';
 import { groupForecastDays, type ForecastDayGroup } from '@/lib/forecastTimeline';
 import { formatDayShort, formatHourLabel } from '@/lib/verdict/formatHourLabel';
 import { getInstrumentFmt } from '@/components/spots/instruments/format';
@@ -92,6 +93,9 @@ interface ForecastTableProps {
    * (e2e fetch path / after mount).
    */
   nowMs?: number;
+  /** Fuso em que `hourly[].time` está escrito — o do spot (default Lisboa).
+   *  Necessário para «agora», chips de dia e hora de início correctos. */
+  timeZone?: string;
 }
 
 /* ──────────── cap hours ──────────── */
@@ -189,15 +193,15 @@ function windDirBg(
 }
 
 /* ──────────── time helpers ────────────
- * As horas são wall-time Open-Meteo (Europe/Lisbon, sem offset) — nunca
+ * As horas são wall-time Open-Meteo NO FUSO DO SPOT (sem offset) — nunca
  * `new Date(iso)`: o parse local muda com o fuso do browser e quebra a
  * hidratação (React #418). Componentes extraem-se da própria string. */
 function parseHourLabel(iso: string): string {
   return `${Number(iso.slice(11, 13))}h`;
 }
 
-function isCurrentHour(iso: string, now: Date): boolean {
-  return hourKeyFromOpenMeteo(iso) === lisbonHourKeyFromDate(now);
+function isCurrentHour(iso: string, now: Date, timeZone: string): boolean {
+  return hourKeyFromOpenMeteo(iso) === hourKeyFromDateInTz(now, timeZone);
 }
 
 function buildTooltip(h: ForecastHour, sportLabel?: string): string {
@@ -239,6 +243,7 @@ export default function ForecastTable({
   waveSource = 'forecast',
   waveCorrection = null,
   nowMs,
+  timeZone = LISBON_TZ,
 }: ForecastTableProps) {
   bumpForecastTableRenderCount();
   const t = getTranslation(locale).forecastTable;
@@ -266,10 +271,10 @@ export default function ForecastTable({
   const { visible, visibleStart } = useMemo(() => {
     let startIndex_ = 0;
     if (startTime) {
-      // Wall-time Lisboa de startTime (epoch real) — comparação lexicográfica
-      // com as strings naive, determinística em qualquer fuso.
+      // Wall-time do SPOT de startTime (instante real) — comparação
+      // lexicográfica com as strings naive, determinística em qualquer fuso.
       const parts = new Intl.DateTimeFormat('en-GB', {
-        timeZone: 'Europe/Lisbon',
+        timeZone,
         year: 'numeric', month: '2-digit', day: '2-digit',
         hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
       }).formatToParts(startTime);
@@ -286,13 +291,14 @@ export default function ForecastTable({
       startIndex_ = findCurrentHourIndex(
         hourly.map((h) => h.time),
         now,
+        timeZone,
       );
     }
     return {
       visible: hourly.slice(startIndex_, startIndex_ + visibleCount),
       visibleStart: startIndex_,
     };
-  }, [hourly, startTime, startIndex, startAtCurrentHour, visibleCount, now]);
+  }, [hourly, startTime, startIndex, startAtCurrentHour, visibleCount, now, timeZone]);
 
   /* ── hover column state ── */
   const [hoveredCol, setHoveredCol] = useState<number | null>(null);
@@ -309,16 +315,16 @@ export default function ForecastTable({
     (globalIdx: number, iso: string) =>
       startIndex != null && startIndex >= 0
         ? globalIdx === startIndex
-        : isCurrentHour(iso, now),
-    [startIndex, now],
+        : isCurrentHour(iso, now, timeZone),
+    [startIndex, now, timeZone],
   );
   const currentHourIndex = useMemo(() => {
     if (startIndex != null && startIndex >= 0) {
       const rel = startIndex - visibleStart;
       return rel >= 0 && rel < visible.length ? rel : -1;
     }
-    return visible.findIndex((h) => isCurrentHour(h.time, now));
-  }, [visible, visibleStart, startIndex, now]);
+    return visible.findIndex((h) => isCurrentHour(h.time, now, timeZone));
+  }, [visible, visibleStart, startIndex, now, timeZone]);
 
   // UX v3 §5: contorno da coluna «agora» = fg a 30% (classe em globals.css).
   const nowCol = useCallback(
@@ -358,11 +364,12 @@ export default function ForecastTable({
   );
 
   // UX v3 §5 — chips de dia relativos: «Hoje · Amanhã · qui 25 …». O dia
-  // civil compara-se em wall-time Lisboa com o relógio baked (`now`).
+  // civil compara-se em wall-time do SPOT com o relógio baked (`now`).
   const tCommon = getTranslation(locale).common;
-  const todayKey = lisbonHourKeyFromDate(now).slice(0, 10);
-  const tomorrowKey = lisbonHourKeyFromDate(
+  const todayKey = hourKeyFromDateInTz(now, timeZone).slice(0, 10);
+  const tomorrowKey = hourKeyFromDateInTz(
     new Date(now.getTime() + 86_400_000),
+    timeZone,
   ).slice(0, 10);
   const dayChipLabel = useCallback(
     (g: ForecastDayGroup) =>
@@ -467,8 +474,8 @@ export default function ForecastTable({
   const hasWaterTemp = visible.some((h) => typeof h.waterTemp === 'number');
   const hasTide = visible.some((h) => typeof h.tideHeight === 'number');
   const tidePhases = useMemo(
-    () => (hasTide ? getTidePhasesForHours(visible) : []),
-    [visible, hasTide],
+    () => (hasTide ? getTidePhasesForHours(visible, timeZone) : []),
+    [visible, hasTide, timeZone],
   );
   const hasAnyScore = visible.some((h) => typeof h.score === 'number');
 
@@ -488,6 +495,7 @@ export default function ForecastTable({
         caption={t.caption.replace('{hours}', String(visible.length))}
         now={now}
         nowIndex={startIndex}
+        timeZone={timeZone}
       />
     );
   }
@@ -924,6 +932,7 @@ function ForecastHourlyList({
   caption,
   now,
   nowIndex,
+  timeZone,
 }: {
   visible: ForecastHour[];
   visibleStart: number;
@@ -934,6 +943,8 @@ function ForecastHourlyList({
   now: Date;
   /** Índice «agora» do eixo partilhado — quando definido manda no `now`. */
   nowIndex?: number;
+  /** Fuso das `time` — o do spot. */
+  timeZone: string;
 }) {
   const tf = getTranslation(locale).spotPageForecast;
   const tideLabels = getTranslation(locale).tideLabels;
@@ -945,8 +956,8 @@ function ForecastHourlyList({
     [shownHours, locale],
   );
   const tidePhases = useMemo(
-    () => getTidePhasesForHours(shownHours),
-    [shownHours],
+    () => getTidePhasesForHours(shownHours, timeZone),
+    [shownHours, timeZone],
   );
   const loc = validateLocale(locale);
 
@@ -996,7 +1007,7 @@ function ForecastHourlyList({
               const current =
                 nowIndex != null && nowIndex >= 0
                   ? visibleStart + i === nowIndex
-                  : isCurrentHour(h.time, now);
+                  : isCurrentHour(h.time, now, timeZone);
               return (
                 <li key={h.time}>
                   <button

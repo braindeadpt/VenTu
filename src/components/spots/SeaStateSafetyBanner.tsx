@@ -11,17 +11,21 @@ import {
   warningTypeLabel,
   warningsSourceLabel,
 } from '@/lib/ipmaWarnings';
+import { wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { spotTimeZoneById } from '@/lib/spotTimeZone';
 
-function formatEndDate(iso: string | undefined, locale: string): string {
+// `endTime` do IPMA é wall-time naive — instante resolvido no fuso do spot.
+function formatEndDate(iso: string | undefined, locale: string, timeZone: string): string {
   if (!iso) return '';
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return '';
-  return d.toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
+  const ms = wallTimeToInstantMs(iso, timeZone);
+  if (Number.isNaN(ms)) return '';
+  return new Date(ms).toLocaleDateString(DATE_LOCALE[locale] ?? 'en-GB', {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
+    timeZone,
   });
 }
 
@@ -84,7 +88,7 @@ export default function SeaStateSafetyBanner({
           </span>
           {warning.endTime && (
             <span>
-              {getTranslation(locale).spotsUi.untilWord.replace('{date}', formatEndDate(warning.endTime, locale))}
+              {getTranslation(locale).spotsUi.untilWord.replace('{date}', formatEndDate(warning.endTime, locale, spotTimeZoneById(spotId)))}
             </span>
           )}
           <span>

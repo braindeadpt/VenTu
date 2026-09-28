@@ -9,6 +9,8 @@ import { getTranslation } from '@/lib/i18n';
 interface TideScheduleStripProps {
   schedule: TideSchedule;
   locale: string;
+  /** Fuso das horas da maré — o do spot (default Lisboa). */
+  timeZone?: string;
   className?: string;
 }
 
@@ -26,7 +28,7 @@ const phaseTone: Record<TidePhase, string> = {
   low: 'border-fg-subtle/30 bg-surface-1/[0.06] text-fg-muted',
 };
 
-export default function TideScheduleStrip({ schedule, locale, className }: TideScheduleStripProps) {
+export default function TideScheduleStrip({ schedule, locale, timeZone, className }: TideScheduleStripProps) {
   const isPt = locale === 'pt';
   const tv = getTranslation(locale).spotVerify;
   const PhaseIcon = phaseIcon[schedule.phase];
@@ -52,7 +54,7 @@ export default function TideScheduleStrip({ schedule, locale, className }: TideS
         <span className="text-meta-sm text-fg-muted">
           <span className="text-fg-subtle">{tv.tideLow}</span>{' '}
           <span className="font-mono tabular-nums text-fg">
-            {formatTideTime(schedule.nextLow, isPt ? 'pt' : 'en')}
+            {formatTideTime(schedule.nextLow, isPt ? 'pt' : 'en', timeZone)}
           </span>
         </span>
       )}
@@ -61,7 +63,7 @@ export default function TideScheduleStrip({ schedule, locale, className }: TideS
         <span className="text-meta-sm text-fg-muted">
           <span className="text-fg-subtle">{tv.tideHigh}</span>{' '}
           <span className="font-mono tabular-nums text-fg">
-            {formatTideTime(schedule.nextHigh, isPt ? 'pt' : 'en')}
+            {formatTideTime(schedule.nextHigh, isPt ? 'pt' : 'en', timeZone)}
           </span>
         </span>
       )}

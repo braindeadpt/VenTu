@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { Heart, ArrowLeft, Share2, Check, LogIn } from 'lucide-react';
 import { spots } from '@/lib/spots';
 import { fetchMarineData, getCurrentConditions } from '@/lib/openmeteo';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { getSportScore } from '@/lib/sportScore';
 import type { SportType } from '@/lib/sportRatings';
 import { SPORT_LABELS } from '@/lib/sportRatings';
@@ -110,7 +111,7 @@ export default function FavoritesClient() {
           if (!spot) return;
           try {
             const data = await fetchMarineData(spot.lat, spot.lon);
-            const current = getCurrentConditions(data);
+            const current = getCurrentConditions(data, spotTimeZone(spot));
             results[id] = current;
             const primarySport = (spot.compatibleSports?.[0] || spot.type) as SportType;
             scores[id] = getSportScore(spot, primarySport, current);

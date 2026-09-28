@@ -10,6 +10,7 @@ import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from 
 import { buildSwellTrains, totalSwellPowerKw } from '@/lib/waveEnergy';
 import { isObservedFresh } from '@/lib/observations';
 import { isObservedWaveFresh } from '@/lib/observedWave';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import SwellRadar from '@/components/ui/SwellRadar';
 import SwellTrainsTable from '@/components/spots/SwellTrainsTable';
 import ObservedNow from '@/components/spots/ObservedNow';
@@ -259,6 +260,7 @@ export default function SpotConditionsDashboard({
                   lat={spot.lat}
                   lon={spot.lon}
                   freshnessNowMs={freshnessNowMs}
+                  timeZone={spotTimeZone(spot)}
                 />
               ) : null}
               {showWaveBlock ? (
@@ -292,13 +294,14 @@ export default function SpotConditionsDashboard({
                     <p className="text-meta-sm font-semibold text-fg-muted mb-2">
                       {moonTideCopy.tidesForecast}
                     </p>
-                    <TideScheduleStrip schedule={tideSchedule} locale={locale} />
+                    <TideScheduleStrip schedule={tideSchedule} locale={locale} timeZone={spotTimeZone(spot)} />
                   </div>
                 ) : null}
                 <MoonTideCard
                   locale={locale}
                   tideHourly={tideHourly}
                   date={freshnessNowMs !== undefined ? new Date(freshnessNowMs) : undefined}
+                  timeZone={spotTimeZone(spot)}
                 />
                 {/* Fundo real perto da praia (IH depcnt_8_16_30) — profundidade
                     real do fundo, independente da maré/previsão. */}

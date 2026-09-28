@@ -5,6 +5,7 @@
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { spots } from '../src/lib/spots';
+import { spotTimeZone } from '../src/lib/spotTimeZone';
 import { getAllSportScores, type SportScore } from '../src/lib/sportScore';
 import type { SportType } from '../src/lib/sportRatings';
 import { pickConfidenceFields } from '../src/lib/forecastConfidenceCore';
@@ -82,7 +83,7 @@ function build() {
   const index = spots.map((spot) => {
     const dataId = spot.conditionsSource ?? spot.id;
     const forecast = forecastsData[dataId] ?? forecastsData[spot.id] ?? [];
-    const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast);
+    const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, undefined, spotTimeZone(spot));
     const cond = resolveConditionsEntry(spot, conditionsData);
     const useLakeDefault = !cond && isWakeboardOnly(spot);
     if (!cond && !useLakeDefault) {

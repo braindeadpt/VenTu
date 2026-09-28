@@ -65,6 +65,44 @@ Lê este ficheiro antes de qualquer trabalho no repo. Define o estado do project
 **`compatibleSports`:** 185/185 explícitos. Validação CI: `npm run spots:validate` (`scripts/validate-spots.js`).
 
 **Proveniência (gramática única, 2026-09-07):** cada número mostra de onde vem (tier `measured` | `adjusted` | `modeled` | `degraded`, eixo `wave`→`wind`→`calibration`→`confidence`→`freshness`) através de UM componente — `ProvenanceChip` (`title` no hover + popover portalizado para toque/teclado; `interactive={false}` = span estático dentro de cards-link) — definido em `src/lib/provenance.ts` e `src/components/ui/ProvenanceChip.tsx`. Convertidos: `ConfidenceBadge`, `DataSourceBadge`, `ScoreWaveSourceBadge`, `ScoreWindSourceBadge`, `WaveCalibrationTag`; selectores `data-*` antigos preservados via `chipAttrs`/`popoverAttrs`. Ao mexer em chips de origem/frescura/calibração, usar este componente — não criar um oitavo dialecto.
+## Fuso do spot — a hora é SEMPRE a local do spot (2026-10, data/fusos-acores)
+
+Regra do produto: a hora mostrada é a local do spot — nunca UTC, nunca a do
+browser. Decisão tomada (abordagem A, recomendada pela auditoria): **o
+pipeline pede cada spot no SEU fuso e o front lê o fuso do spot**.
+
+- **Mapeamento único:** `spotTimeZone(spot|lon)` em `src/lib/spotTimeZone.ts`
+  (twin `scripts/lib/spotTimeZone.js` para Node puro). Açores =
+  `Atlantic/Azores` (lon < −24: UTC−1, DST nas mesmas datas de Lisboa);
+  Madeira e continente = `Europe/Lisbon`.
+- **Pipeline:** `updateConditionsFetch.js`/`updateConditionsPerSpot.js`/
+  `check-model-health.js`/`dawn-patrol.js` pedem `timezone=<fuso do spot>`
+  ao Open-Meteo. Os `hourly.time` naive nos JSON são portanto **wall-time do
+  spot** — o ficheiro mostra a hora que o utilizador lê, sem conversão.
+- **Front:** nunca `new Date(naive)` — parse é local ao browser. Para
+  comparar/filtrar converte-se com `wallTimeToInstantMs(iso, spotTz)`
+  (`src/lib/openMeteoTime.ts`); para casar por hora usa-se a própria string
+  (`slice(0,13)`, commit 4b7d5f222 — o fix das marés em Auckland).
+- **`map-hours.json`:** `times[]` é um eixo de INSTANTES expresso em
+  wall-time Lisboa (referência do país). Cada spot é amostrado pelo mesmo
+  instante — `mapGridKeyForSpot` converte a chave Lisboa→fuso do spot, por
+  isso o passo «12h» do scrubber mostra nos Açores a hora local 11h. As
+  curvas de maré (`tides[]`) guardam `row.time` na parede DO SPOT.
+- **Comparador (`CompareHourlyTable`):** o eixo partilhado é de instantes
+  (ms); a etiqueta da linha usa o fuso do 1.º spot seleccionado.
+- **Excepções conscientes (globais Lisboa):** relógio da pipeline/frescura
+  global, cadência de alertas/digest, Dawn Patrol publication clock,
+  calendário de eventos, boias IH/WMO (todas offshore do continente),
+  strip sazonal (`getTideRegimeForLisbonDay`).
+- **Invariância testada:** Vitest multi-TZ
+  (`src/lib/__tests__/spotTimeZone.test.ts` + TZ-agnostic suites) corre as
+  mesmas funções sob TZ=Lisbon/Azores/Auckland/New_York — resultado idêntico.
+- **Deploy/transição:** os JSON commitados antes deste branch têm as horas
+  dos Açores em Lisboa-wall — o front novo interpreta-as como Azores-wall
+  (erro +1 h invertido até ao próximo run). Depois do merge, disparar
+  `update-conditions` uma vez (workflow_dispatch) para regenerar tudo no
+  fuso do spot e repôr a verdade antes de qualquer leitura pública.
+
 ## Maré (Instituto Hidrográfico)
 
 ```

@@ -25,6 +25,7 @@ import {
   tidePointsFromRows,
 } from '@/components/spots/instruments/types';
 import { getTranslation } from '@/lib/i18n';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 
 /**
  * Secção 4 do contrato (docs/design/SPOT-PAGE.md) — dona: S2B.
@@ -187,6 +188,7 @@ export default function SpotInstrumentsSection({
             tideSchedule={tideSchedule}
             index={index}
             locale={locale}
+            timeZone={spotTimeZone(spot)}
             open={open === 'tide'}
             onToggle={onToggle}
           />

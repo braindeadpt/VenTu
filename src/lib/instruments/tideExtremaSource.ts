@@ -17,6 +17,8 @@ import {
   type TideHourPoint,
   type TideSchedule,
 } from '@/lib/tideSchedule';
+import { wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { LISBON_TZ } from '@/lib/spotTimeZone';
 import { hhmmAt, tideExtrema, type TideExtremum } from './tideExtrema';
 
 /** «schedule» = tábua canónica (findTideExtrema sobre a série horária do
@@ -38,9 +40,12 @@ export interface ResolvedTideExtrema {
 export function alignTideEventsToSeries(
   events: TideEvent[],
   series: TideHourPoint[],
+  timeZone: string = LISBON_TZ,
 ): TideExtremum[] {
+  // Instant es reais via o fuso do spot — `new Date(p.time)` seria local ao
+  // browser (extremos trocados/fora da curva noutros fusos).
   const pts = series
-    .map((p, i) => ({ i, ms: new Date(p.time).getTime(), h: p.tideHeight, time: p.time }))
+    .map((p, i) => ({ i, ms: wallTimeToInstantMs(p.time, timeZone), h: p.tideHeight, time: p.time }))
     .filter(
       (p): p is { i: number; ms: number; h: number; time: string } =>
         Number.isFinite(p.ms) && typeof p.h === 'number' && !Number.isNaN(p.h),
@@ -83,11 +88,13 @@ export function resolveTideExtrema(opts: {
   series: TideHourPoint[];
   /** Série completa da tábua — o contexto ±2 h nas pontas da janela. */
   tableSeries: TideHourPoint[];
+  /** Fuso em que as `time` estão escritas — o do spot. */
+  timeZone?: string;
 }): ResolvedTideExtrema {
-  const { schedule, series, tableSeries } = opts;
+  const { schedule, series, tableSeries, timeZone = LISBON_TZ } = opts;
   if (schedule) {
-    const events = findTideExtrema(tableSeries.length ? tableSeries : series);
-    const aligned = alignTideEventsToSeries(events, series);
+    const events = findTideExtrema(tableSeries.length ? tableSeries : series, timeZone);
+    const aligned = alignTideEventsToSeries(events, series, timeZone);
     if (aligned.length) return { extrema: aligned, source: 'schedule' };
   }
   return { extrema: tideExtrema(series), source: 'model' };

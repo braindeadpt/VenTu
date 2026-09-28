@@ -12,6 +12,7 @@ import {
 } from '@/lib/ipmaWarnings';
 import SpotWarningsSection from '@/components/spots/SpotWarningsSection';
 import CoastalNavWarnings from '@/components/spots/CoastalNavWarnings';
+import { spotTimeZoneById } from '@/lib/spotTimeZone';
 
 interface SpotOnSiteWarningsProps {
   spotId: string;
@@ -70,7 +71,7 @@ export default function SpotOnSiteWarnings({ spotId, locale }: SpotOnSiteWarning
         minute: '2-digit',
         // Hora do spot, não a do browser (um visitante fora de Lisboa via a
         // sua própria hora) — igual aos outros formatadores da página.
-        timeZone: 'Europe/Lisbon',
+        timeZone: spotTimeZoneById(spotId),
       })
     : null;
 

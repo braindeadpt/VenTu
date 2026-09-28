@@ -4,12 +4,34 @@ import { getAllSportScores } from '@/lib/sportScore';
 import { rawToScoreInput } from '@/lib/scoreConditions';
 import {
   findCurrentHourIndex,
+  hourKeyFromInstantInTz,
   hourKeyFromOpenMeteo,
   lisbonHourKeyFromDate,
+  wallTimeToInstantMs,
 } from '@/lib/openMeteoTime';
 import { getAssetPath } from '@/lib/paths';
 import { getMacroRegion, MACRO_REGIONS } from '@/lib/regions';
-import { detectThermal, lisbonHourFromMapTime, thermalCode } from '@/lib/mapThermal';
+import { detectThermal, thermalCode } from '@/lib/mapThermal';
+import { spotTimeZone, LISBON_TZ } from '@/lib/spotTimeZone';
+
+/**
+ * Eixo canónico da grelha do mapa: `times[]` é um eixo de INSTANTES
+ * expressos em wall-time Europe/Lisbon (o fuso de referência do país —
+ * continente + Madeira). Os valores de cada spot são amostrados pelo
+ * MESMO instante: para um spot dos Açores (série em Atlantic/Azores)
+ * a chave de lookup converte-se para a hora de parede local — o passo
+ * «12:00» do scrubber mostra, nos Açores, a hora local 11:00 do mesmo
+ * instante. NUNCA casar índices/strings directamente entre fusos.
+ */
+const MAP_GRID_TZ = LISBON_TZ;
+
+/** Chave horária do spot para o instante do passo da grelha (Lisbon wall). */
+export function mapGridKeyForSpot(mapTime: string, spotTz: string): string {
+  const key = hourKeyFromOpenMeteo(mapTime);
+  if (spotTz === MAP_GRID_TZ) return key;
+  const ms = wallTimeToInstantMs(mapTime, MAP_GRID_TZ);
+  return Number.isFinite(ms) ? hourKeyFromInstantInTz(ms, spotTz) : key;
+}
 
 export const MAP_HOURS_STEP = 3;
 export const MAP_HOURS_COUNT = 16;
@@ -106,13 +128,23 @@ function conditionsRow(
   return null;
 }
 
-function hourRowForTime(
-  series: Array<Record<string, unknown>>,
-  time: string,
+function hourRowForKey(
+  seriesByKey: Map<string, Record<string, unknown>>,
+  key: string,
 ): Record<string, unknown> | null {
-  const key = hourKeyFromOpenMeteo(time);
-  const hit = series.find((h) => hourKeyFromOpenMeteo(String(h.time ?? '')) === key);
-  return hit ?? null;
+  return seriesByKey.get(key) ?? null;
+}
+
+/** Índice hora→row da série — as `time` vêm no fuso DO SPOT. */
+function seriesByHourKey(
+  series: Array<Record<string, unknown>>,
+): Map<string, Record<string, unknown>> {
+  const m = new Map<string, Record<string, unknown>>();
+  for (const h of series) {
+    const key = hourKeyFromOpenMeteo(String(h.time ?? ''));
+    if (!m.has(key)) m.set(key, h);
+  }
+  return m;
 }
 
 function finiteTideHeight(row: Record<string, unknown> | null): number | null {
@@ -127,12 +159,18 @@ function curveForSpot(
   hourlyTimes: string[],
 ): MapTideCurve | null {
   const series = forecastSeries(spot, forecasts);
+  const byKey = seriesByHourKey(series);
+  const tz = spotTimeZone(spot);
   const times: string[] = [];
   const height: number[] = [];
   for (const time of hourlyTimes) {
-    const h = finiteTideHeight(hourRowForTime(series, time));
+    const key = mapGridKeyForSpot(time, tz);
+    const row = byKey.get(key);
+    const h = finiteTideHeight(row ?? null);
     if (h === null) continue;
-    times.push(time);
+    // A curva guarda a hora de parede DO SPOT (row.time) — o chip mostra
+    // sempre a hora local do spot, mesmo num eixo Lisboa.
+    times.push(String(row?.time ?? ''));
     height.push(h);
   }
   if (height.length < 24) return null;
@@ -313,9 +351,12 @@ export function buildMapHoursFile(opts: {
     const windSpd: number[] = [];
     const windDir: number[] = [];
 
+    const tz = spotTimeZone(spot);
+    const byKey = seriesByHourKey(series);
     for (const time of times) {
       const isNow = hourKeyFromOpenMeteo(time) === nowKey;
-      const raw = (isNow && live) || hourRowForTime(series, time) || live;
+      const spotKey = mapGridKeyForSpot(time, tz);
+      const raw = (isNow && live) || hourRowForKey(byKey, spotKey) || live;
       if (!raw) {
         for (const sport of ALL_SPORTS) bySport[sport].push(0);
         bySport.best.push(0);
@@ -345,9 +386,12 @@ export function buildMapHoursFile(opts: {
       sstSeries.push(sstRounded);
       if (sstRounded >= 8) sstFinite += 1;
       const airRaw = Number(raw.airTemp);
+      // Térmico é fenómeno da tarde LOCAL do spot — a hora vem da chave
+      // já convertida para o fuso do spot (não da grelha Lisboa).
+      const spotHour = Number(spotKey.slice(-2));
       const kind = Number.isFinite(airRaw) && Number.isFinite(sstRaw)
         ? detectThermal({
-            lisbonHour: lisbonHourFromMapTime(time),
+            localHour: Number.isFinite(spotHour) ? spotHour : 12,
             airTemp: airRaw,
             sst: sstRaw,
             windSpeedMs: Number(raw.windSpeed) || 0,

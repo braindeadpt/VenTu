@@ -139,6 +139,8 @@ export interface SpotForecastSectionProps {
   waveCorrection?: ScoreWaveCorrection | null;
   /** Relógio de frescura (bakedAtMs até montar — guarda React #418). */
   nowMs?: number;
+  /** Fuso das `hours[].time` — o do spot (default Lisboa). */
+  timeZone?: string;
   copy: {
     /** «Previsão hora a hora». */
     title: string;
@@ -161,6 +163,7 @@ export default function SpotForecastSection({
   waveSource,
   waveCorrection,
   nowMs,
+  timeZone,
   copy,
 }: SpotForecastSectionProps) {
   const [expanded, setExpanded] = useState(false);
@@ -218,6 +221,7 @@ export default function SpotForecastSection({
               waveSource={waveSource}
               waveCorrection={waveCorrection}
               nowMs={nowMs}
+              timeZone={timeZone}
             />
             <ForecastTimelineSync containerRef={syncRef} epoch={forecastHours} />
           </div>

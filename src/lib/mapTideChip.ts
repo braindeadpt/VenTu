@@ -1,5 +1,6 @@
 import { DEFAULT_REGION } from '@/lib/gridFilters';
 import { MAP_TIDE_DEFAULT_REGION, type MapTideCurve } from '@/lib/mapHours';
+import { spotTimeZoneById } from '@/lib/spotTimeZone';
 import {
   buildTideSchedule,
   formatTideTime,
@@ -27,8 +28,11 @@ export function mapTideChipAt(
   at: Date,
   locale: string = 'pt',
 ): MapTideChipModel | null {
+  // As `curve.times` são wall-time do spot que amostrou a região —
+  // o schedule calcula-se no fuso desse spot (nunca no do browser).
+  const tz = spotTimeZoneById(curve.spotId);
   const hourly = curve.times.map((time, i) => ({ time, tideHeight: curve.height[i] }));
-  const schedule = buildTideSchedule(hourly, { now: at, locale });
+  const schedule = buildTideSchedule(hourly, { now: at, locale, timeZone: tz });
   if (!schedule) return null;
 
   let nextKind: 'high' | 'low' | null = null;
@@ -45,7 +49,7 @@ export function mapTideChipAt(
 
   return {
     phase: schedule.phase,
-    nextTime: nextDate ? formatTideTime(nextDate, locale) : null,
+    nextTime: nextDate ? formatTideTime(nextDate, locale, tz) : null,
     nextKind: nextDate ? nextKind : null,
   };
 }

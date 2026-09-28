@@ -206,8 +206,8 @@ function confidenceByDay(marineMulti, weatherMulti) {
 
 const { findCurrentHourIndex: findOpenMeteoHourIndex } = require('./openMeteoTime');
 
-function findCurrentHourIndex(times) {
-  return findOpenMeteoHourIndex(times);
+function findCurrentHourIndex(times, now, timeZone) {
+  return findOpenMeteoHourIndex(times, now, timeZone);
 }
 
 module.exports = {

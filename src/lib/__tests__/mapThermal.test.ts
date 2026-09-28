@@ -16,7 +16,7 @@ describe('mapThermal', () => {
   it('badges sea breeze only with afternoon ΔT + onshore wind', () => {
     expect(
       detectThermal({
-        lisbonHour: 17,
+        localHour: 17,
         airTemp: 28,
         sst: 18,
         windSpeedMs: 8,
@@ -29,7 +29,7 @@ describe('mapThermal', () => {
   it('does not badge térmico from wind and hour alone', () => {
     expect(
       detectThermal({
-        lisbonHour: 17,
+        localHour: 17,
         airTemp: 18.5,
         sst: 18,
         windSpeedMs: 8,
@@ -42,7 +42,7 @@ describe('mapThermal', () => {
   it('rejects sea breeze when the wind is offshore', () => {
     expect(
       detectThermal({
-        lisbonHour: 17,
+        localHour: 17,
         airTemp: 28,
         sst: 18,
         windSpeedMs: 8,
@@ -55,7 +55,7 @@ describe('mapThermal', () => {
   it('badges land breeze at night with reverse ΔT + offshore wind', () => {
     expect(
       detectThermal({
-        lisbonHour: 6,
+        localHour: 6,
         airTemp: 14,
         sst: 18,
         windSpeedMs: 4,
@@ -68,7 +68,7 @@ describe('mapThermal', () => {
   it('needs finite air temperature', () => {
     expect(
       detectThermal({
-        lisbonHour: 17,
+        localHour: 17,
         airTemp: Number.NaN,
         sst: 18,
         windSpeedMs: 8,

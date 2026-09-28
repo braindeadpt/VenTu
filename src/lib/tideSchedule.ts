@@ -5,6 +5,8 @@
 
 import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation, type Locale } from '@/lib/i18n'
+import { wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { LISBON_TZ } from '@/lib/spotTimeZone';
 
 export type TidePhase = 'high' | 'low' | 'rising' | 'falling';
 
@@ -15,11 +17,13 @@ export interface TideHourPoint {
 
 export interface TideEvent {
   type: 'high' | 'low';
+  /** Instante REAL (epoch) do extremo — `time` convertida no fuso do spot
+   *  (nunca `new Date(iso)`, que é local ao browser). */
   at: Date;
-  /** Hora de origem, tal como veio (ISO sem fuso, wall-time de Lisboa).
-   *  Chave para casar eventos com horas: `at` é um parse local e colide na
-   *  mudança de hora do fuso do browser (a hora que não existe salta para
-   *  a seguinte) — o texto não muda com o fuso. */
+  /** Hora de origem, tal como veio (ISO sem fuso, wall-time do SPOT).
+   *  Chave para casar eventos com horas: instantes podem colidir na
+   *  mudança de hora (a hora que não existe salta para a seguinte) —
+   *  o texto não muda com o fuso. */
   time?: string;
 }
 
@@ -40,12 +44,21 @@ const PHASE_LABELS: Record<TidePhase, { pt: string; en: string }> = {
 const EXTREMA_WINDOW = 2;
 const MIN_EXTREMA_DELTA = 0.06;
 
-function parseTime(iso: string): Date {
-  return new Date(iso);
+/**
+ * `iso` é wall-time naive no fuso do spot → converte para o instante real
+ * em `timeZone`. NUNCA `new Date(iso)` — o parse é local ao browser e um
+ * visitante noutro fuso vê horas de maré erradas/extremos trocados.
+ */
+function parseTime(iso: string, timeZone: string): Date {
+  return new Date(wallTimeToInstantMs(iso, timeZone));
 }
 
-/** Local maxima/minima on hourly curve (MSL-relative metres). */
-export function findTideExtrema(points: TideHourPoint[]): TideEvent[] {
+/** Local maxima/minima on hourly curve (MSL-relative metres).
+ *  `timeZone` = fuso em que as `time` estão escritas (o do spot). */
+export function findTideExtrema(
+  points: TideHourPoint[],
+  timeZone: string = LISBON_TZ,
+): TideEvent[] {
   const series = points
     .filter((p) => typeof p.tideHeight === 'number' && !Number.isNaN(p.tideHeight))
     .map((p) => ({ time: p.time, h: p.tideHeight as number }));
@@ -75,10 +88,10 @@ export function findTideExtrema(points: TideHourPoint[]): TideEvent[] {
     }
 
     if (isHigh && curr - minOther >= MIN_EXTREMA_DELTA) {
-      raw.push({ type: 'high', at: parseTime(time), time });
+      raw.push({ type: 'high', at: parseTime(time, timeZone), time });
     }
     if (isLow && maxOther - curr >= MIN_EXTREMA_DELTA) {
-      raw.push({ type: 'low', at: parseTime(time), time });
+      raw.push({ type: 'low', at: parseTime(time, timeZone), time });
     }
   }
 
@@ -103,13 +116,14 @@ export function findTideExtrema(points: TideHourPoint[]): TideEvent[] {
 function inferPhase(
   points: TideHourPoint[],
   now: Date,
-  fallback?: TidePhase,
+  fallback: TidePhase | undefined,
+  timeZone: string,
 ): TidePhase {
   if (fallback) return fallback;
 
   const series = points
     .filter((p) => typeof p.tideHeight === 'number')
-    .map((p) => ({ t: parseTime(p.time).getTime(), h: p.tideHeight as number }))
+    .map((p) => ({ t: parseTime(p.time, timeZone).getTime(), h: p.tideHeight as number }))
     .sort((a, b) => a.t - b.t);
 
   let idx = series.findIndex((s) => s.t >= now.getTime());
@@ -133,6 +147,8 @@ export function buildTideSchedule(
     now?: Date;
     locale?: string;
     phaseOverride?: TidePhase;
+    /** Fuso em que `hourly[].time` está escrito — o do spot (default Lisboa). */
+    timeZone?: string;
   } = {},
 ): TideSchedule | null {
   const series = hourly.filter((p) => typeof p.tideHeight === 'number');
@@ -140,10 +156,11 @@ export function buildTideSchedule(
 
   const now = options.now ?? new Date();
   const locale = options.locale ?? 'pt';
-  const extrema = findTideExtrema(series);
+  const timeZone = options.timeZone ?? LISBON_TZ;
+  const extrema = findTideExtrema(series, timeZone);
   const nowMs = now.getTime();
 
-  const phase = inferPhase(series, now, options.phaseOverride);
+  const phase = inferPhase(series, now, options.phaseOverride, timeZone);
   const phaseLabel = tidePhaseLabel(phase, locale);
 
   const nextHigh = extrema.find((e) => e.type === 'high' && e.at.getTime() > nowMs)?.at ?? null;
@@ -174,23 +191,31 @@ export function tidePhaseLabel(phase: TidePhase, locale: string): string {
   }
 }
 
-export function formatTideTime(date: Date, locale: string): string {
+/**
+ * HH:MM no fuso do spot (`timeZone` = o fuso em que o `Date` foi pensado —
+ * os `at` do schedule já são instantes reais nesse fuso).
+ */
+export function formatTideTime(date: Date, locale: string, timeZone: string = LISBON_TZ): string {
   return new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', {
     hour: '2-digit',
     minute: '2-digit',
-    timeZone: 'Europe/Lisbon',
+    timeZone,
   }).format(date);
 }
 
-export function formatTideScheduleLine(schedule: TideSchedule, locale: string): string {
+export function formatTideScheduleLine(
+  schedule: TideSchedule,
+  locale: string,
+  timeZone: string = LISBON_TZ,
+): string {
   const t = getTranslation(locale).tideLabels;
   const parts: string[] = [schedule.phaseLabel];
 
   if (schedule.nextLow) {
-    parts.push(t.lowAt.replace('{time}', formatTideTime(schedule.nextLow, locale)));
+    parts.push(t.lowAt.replace('{time}', formatTideTime(schedule.nextLow, locale, timeZone)));
   }
   if (schedule.nextHigh) {
-    parts.push(t.highAt.replace('{time}', formatTideTime(schedule.nextHigh, locale)));
+    parts.push(t.highAt.replace('{time}', formatTideTime(schedule.nextHigh, locale, timeZone)));
   }
 
   return parts.join(' · ');
@@ -211,9 +236,14 @@ export const TIDE_PHASE_CELL: Record<TidePhase, Record<Locale, string>> = {
   falling: { pt: '↓', en: '↓', es: '↓', de: '↓', fr: '↓' },
 };
 
-/** Per-hour tide phase from MSL curve (for forecast table). */
-export function getTidePhasesForHours(hours: TideHourPoint[]): (TidePhase | null)[] {
-  const extrema = findTideExtrema(hours);
+/** Per-hour tide phase from MSL curve (for forecast table).
+ *  `timeZone` é o fuso das `time` (o do spot) — só afecta `at` dos eventos;
+ *  o casamento é pelo texto (`e.time`), estável em qualquer fuso. */
+export function getTidePhasesForHours(
+  hours: TideHourPoint[],
+  timeZone: string = LISBON_TZ,
+): (TidePhase | null)[] {
+  const extrema = findTideExtrema(hours, timeZone);
   // Casamento pelo texto da hora, não por parseTime().getTime(): em
   // Pacific/Auckland a 27 set 2026 (entrada na hora de Verão) duas horas
   // davam o mesmo instante, a «maré alta» mudava de coluna e a tabela saía

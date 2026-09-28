@@ -21,6 +21,7 @@ import {
 } from '@/lib/ipmaWarnings';
 import { ATTRIBUTIONS, waveSourceAttributionId } from '@/lib/dataSources';
 import { getTranslation } from '@/lib/i18n';
+import { spotTimeZoneById } from '@/lib/spotTimeZone';
 import WarningPill from '@/components/ui/WarningPill';
 
 /**
@@ -89,7 +90,11 @@ export default function ObservedWaveCard({
   // Source-aware honesty gate (IH 3h, WMO/Copernicus 6h): stale → not rendered.
   if (!observedWave || !isObservedWaveFresh(observedWave, freshnessNowMs)) return null;
 
-  const clock = formatObservedClockTime(observedWave.observedAt, locale);
+  const clock = formatObservedClockTime(
+    observedWave.observedAt,
+    locale,
+    spotTimeZoneById(spotId),
+  );
   const label = observedWaveLabel(observedWave, locale);
   const verification = verifyWave(forecastWaveHeightM, observedWave.waveHeight);
   const badge = waveVerificationBadge(verification.agreement, locale);

@@ -6,11 +6,14 @@ import { getMoonPhase, type TideRegime } from '@/lib/moonPhase';
 import { getTranslation } from '@/lib/i18n';
 import type { TideHourPoint } from '@/lib/tideSchedule';
 import { dailyTideAmplitudeMetres } from '@/lib/tideAmplitude';
+import { LISBON_TZ } from '@/lib/spotTimeZone';
 
 interface MoonTideCardProps {
   locale: string;
   tideHourly?: TideHourPoint[];
   date?: Date;
+  /** Fuso das `tideHourly[].time` — o do spot (default Lisboa). */
+  timeZone?: string;
   title?: string;
   className?: string;
 }
@@ -25,6 +28,7 @@ export default function MoonTideCard({
   locale,
   tideHourly,
   date = new Date(),
+  timeZone = LISBON_TZ,
   title,
   className,
 }: MoonTideCardProps) {
@@ -32,7 +36,7 @@ export default function MoonTideCard({
   const moon = getMoonPhase(date);
   const amplitude =
     tideHourly && tideHourly.length > 0
-      ? dailyTideAmplitudeMetres(tideHourly, date)
+      ? dailyTideAmplitudeMetres(tideHourly, date, timeZone)
       : null;
 
   const cardTitle = title ?? mt.title;

@@ -13,6 +13,7 @@ import { formatHourLabel, formatHourLong } from '@/lib/verdict/formatHourLabel';
 import { formatWindowLabel } from '@/lib/verdict/formatWindowLabel';
 import { pickRailAxisLabelsPx, railAxisCandidates } from '@/lib/verdict/railAxisLabels';
 import { getWindArrow } from '@/lib/wind';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { MS_TO_KNOTS } from '@/lib/waveEnergy';
 import { getConditionsDataId } from '@/lib/spotConditionsSource';
 import { loadForecastForSpot } from '@/lib/spotDataCache';
@@ -38,8 +39,7 @@ const AXIS_GAP_PX = 8;
  *  (160 ms de animação + 80 = máximo 240 ms no total — spec §7). */
 const STAGGER_MS = 6;
 const STAGGER_CAP_MS = 80;
-/** Horas do eixo são wall-time Europe/Lisbon (Open-Meteo). */
-const SPOT_TZ = 'Europe/Lisbon';
+
 
 interface SpotTimeRailProps {
   spot: Spot;
@@ -141,8 +141,10 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
   // Noite real por dia civil: nascer/pôr NOAA (lat/lon do spot) → minutos
   // locais; a hora é noite se estiver antes do nascer ou a partir do pôr.
   const nightFlags = useMemo(() => {
+    // As horas do eixo vêm no fuso do spot — o nascer/pôr formata-se nele.
+    const tz = spotTimeZone(spot);
     const fmt = new Intl.DateTimeFormat('en-GB', {
-      timeZone: SPOT_TZ,
+      timeZone: tz,
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
@@ -155,7 +157,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
     return winHours.map((h) => {
       const date = h.slice(0, 10);
       if (!cache.has(date)) {
-        const s = sunTimes(date, spot.lat, spot.lon, SPOT_TZ);
+        const s = sunTimes(date, spot.lat, spot.lon, tz);
         cache.set(date, s ? { rise: toMin(s.sunrise), set: toMin(s.sunset) } : null);
       }
       const sun = cache.get(date);
@@ -163,7 +165,7 @@ export default function SpotTimeRail({ spot, locale, title }: SpotTimeRailProps)
       const mins = Number(h.slice(11, 13)) * 60 + Number(h.slice(14, 16));
       return mins < sun.rise || mins >= sun.set;
     });
-  }, [winHours, spot.lat, spot.lon]);
+  }, [winHours, spot]);
 
   // Janelas ≥60 sobre o eixo completo, cortadas à janela visível. A mais
   // forte (primeira — spotWindows ordena por pico) fica como faixa por

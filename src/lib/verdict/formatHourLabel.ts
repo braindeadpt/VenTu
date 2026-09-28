@@ -1,6 +1,6 @@
 /**
  * Rótulos da hora escolhida no eixo de tempo partilhado. As horas do eixo são
- * wall-time Open-Meteo (Europe/Lisbon, sem offset) — a formatação extrai os
+ * wall-time Open-Meteo NO FUSO DO SPOT (sem offset) — a formatação extrai os
  * componentes da própria string, por isso é estável em qualquer fuso da
  * máquina e reproduz o bake (React #418).
  *

@@ -2,10 +2,12 @@ import { computeMagicWindows, type HourlyCondition } from '@/lib/magicWindows';
 import { getCompatibleSports } from '@/lib/sportRatings';
 import type { SportType } from '@/lib/sportRatings';
 import { getHourlyScores, type Conditions } from '@/lib/sportScore';
+import { wallTimeToInstantMs } from '@/lib/openMeteoTime';
+import { LISBON_TZ } from '@/lib/spotTimeZone';
 import type { Spot } from '@/types';
 
 export interface BestWindowToday {
-  /** Hour of day in Europe/Lisbon (from forecast timestamp). */
+  /** Hour of day in the SPOT's own zone (from forecast timestamp). */
   start: number;
   end: number;
   score: number;
@@ -57,18 +59,24 @@ function toHourly(row: ForecastHourRow): HourlyCondition {
   };
 }
 
-/** Next `hours` of hourly forecast — same filter as SpotDetailClient magic windows. */
+/**
+ * Next `hours` of hourly forecast — same filter as SpotDetailClient magic
+ * windows. `timeZone` = fuso em que `time` está escrito (o do spot): a
+ * comparação com `nowMs` é sobre INSTANTES — `new Date(naive)` seria local
+ * ao browser e encurtaria/alongava a janela noutros fusos.
+ */
 function filterForecastNextHours(
   forecast: ForecastHourRow[],
   hours: number,
   nowMs: number,
+  timeZone: string = LISBON_TZ,
 ): HourlyCondition[] {
   const cutoff = nowMs + hours * HOUR_MS;
   return forecast
     .map(toHourly)
     .filter((h) => {
-      const t = new Date(h.time).getTime();
-      return t >= nowMs && t < cutoff;
+      const t = wallTimeToInstantMs(h.time, timeZone);
+      return Number.isFinite(t) && t >= nowMs && t < cutoff;
     });
 }
 
@@ -76,8 +84,9 @@ function filterForecastNextHours(
 export function filterForecastNext24h(
   forecast: ForecastHourRow[],
   nowMs = Date.now(),
+  timeZone: string = LISBON_TZ,
 ): HourlyCondition[] {
-  return filterForecastNextHours(forecast, 24, nowMs);
+  return filterForecastNextHours(forecast, 24, nowMs, timeZone);
 }
 
 function hourFromForecastTime(iso: string): number {
@@ -94,8 +103,9 @@ export function computeBestWindowsForSpot(
   spot: Pick<Spot, 'compatibleSports' | 'bestWind' | 'type'>,
   forecast: ForecastHourRow[],
   nowMs = Date.now(),
+  timeZone?: string,
 ): { bestWindowToday: BestWindowToday | null; bestWindowsBySport: BestWindowsBySport } {
-  const hourly = filterForecastNext24h(forecast, nowMs);
+  const hourly = filterForecastNext24h(forecast, nowMs, timeZone ?? LISBON_TZ);
   const bestWindowsBySport: BestWindowsBySport = {};
   let bestWindowToday: BestWindowToday | null = null;
 
@@ -141,8 +151,9 @@ export function computeUpcomingWindowsForSpot(
   forecast: ForecastHourRow[],
   currentConditions: Conditions,
   nowMs = Date.now(),
+  timeZone?: string,
 ): UpcomingWindowsBySport {
-  const hourly = filterForecastNextHours(forecast, 48, nowMs);
+  const hourly = filterForecastNextHours(forecast, 48, nowMs, timeZone ?? LISBON_TZ);
   const out: UpcomingWindowsBySport = {};
   if (!hourly.length) return out;
 

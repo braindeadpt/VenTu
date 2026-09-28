@@ -22,6 +22,7 @@ import SeoHead from '@/components/SeoHead';
 import type { ForecastHour } from '@/components/weather/ForecastTable';
 
 import { findCurrentHourIndex } from '@/lib/openMeteoTime';
+import { spotTimeZone } from '@/lib/spotTimeZone';
 import { getLocalTips } from '@/lib/spotTips';
 import { loadCommunityTips, mergeLocalTips } from '@/lib/communityTips';
 import { rememberDataUpdate } from '@/lib/dataCache';
@@ -244,6 +245,7 @@ export default function SpotDetailClient({
     if (!spotData?.forecast?.length) return null;
     return buildTideSchedule(spotData.forecast, {
       locale: isPt ? 'pt' : 'en',
+      timeZone: spotTimeZone(spot),
       phaseOverride: phaseFromConditionsStatus(spotData.conditions.tideStatus),
       // Same baked-clock pin as the freshness gates (React #418 guard): the
       // next high/low tide times and the phase label are relative to `now`.
@@ -251,7 +253,7 @@ export default function SpotDetailClient({
       // reproduces the build exactly; after mount the live clock takes over.
       now: freshnessNowMs != null ? new Date(freshnessNowMs) : undefined,
     });
-  }, [spotData, isPt, freshnessNowMs]);
+  }, [spotData, spot, isPt, freshnessNowMs]);
 
   const tideHourly: TideHourPoint[] = useMemo(() => {
     if (!spotData?.forecast?.length) return [];
@@ -417,7 +419,7 @@ export default function SpotDetailClient({
         const marineResult = await fetchMarineData(spot.lat, spot.lon);
         if (cancelled || spot.slug !== loadSlug) return;
 
-        conditions = getCurrentConditions(marineResult);
+        conditions = getCurrentConditions(marineResult, spotTimeZone(spot));
         forecast = getForecastData(marineResult).slice(0, 120);
 
         if (condJson) {
@@ -514,6 +516,7 @@ export default function SpotDetailClient({
       const nowIdx = findCurrentHourIndex(
         spotData.forecast.map((f) => f.time),
         new Date(freshnessNowMs ?? Date.now()),
+        spotTimeZone(spot),
       );
       if (nowIdx >= 0) scores[nowIdx] = nowScore;
     }
@@ -698,6 +701,7 @@ export default function SpotDetailClient({
           nowScore={score.score}
           mounted={mounted}
           nowMs={freshnessNowMs}
+          timeZone={spotTimeZone(spot)}
         >
           <SpotPageAccent fallbackScore={score.score}>
           {/* §0–3 — Veredicto + barra fixa + «Quando ir» (dona: S2A). */}
@@ -766,6 +770,7 @@ export default function SpotDetailClient({
               waveSource={scoreWaveSource}
               waveCorrection={scoreWaveCorrection}
               nowMs={freshnessNowMs}
+              timeZone={spotTimeZone(spot)}
               copy={{
                 title: tv.hourlyForecast,
                 windguruLink: td.windguruLink,

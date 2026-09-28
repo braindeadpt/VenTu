@@ -29,6 +29,7 @@ const {
 
 const MARINE_API = 'https://marine-api.open-meteo.com/v1/marine';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
+const { spotTimeZone } = require('./lib/spotTimeZone');
 
 function parseSpotsFromFile() {
   const spotsPath = path.join(__dirname, '../src/lib/spots.ts');
@@ -48,12 +49,15 @@ function parseSpotsFromFile() {
 }
 
 async function fetchMultimodel(spot) {
+  // Model-health pede as séries no fuso do spot — mesmo contrato que
+  // updateConditionsFetch (horas naive = hora local do spot).
+  const tz = spotTimeZone(spot);
   const waveParams = new URLSearchParams({
     latitude: spot.lat.toString(),
     longitude: spot.lon.toString(),
     hourly: HEALTH_FAMILIES.wave.baseKey,
     models: HEALTH_FAMILIES.wave.models.join(','),
-    timezone: 'Europe/Lisbon',
+    timezone: tz,
     forecast_days: '7',
   });
   const windParams = new URLSearchParams({
@@ -61,7 +65,7 @@ async function fetchMultimodel(spot) {
     longitude: spot.lon.toString(),
     hourly: `${HEALTH_FAMILIES.wind.baseKey},wind_direction_10m,wind_gusts_10m`,
     models: HEALTH_FAMILIES.wind.models.join(','),
-    timezone: 'Europe/Lisbon',
+    timezone: tz,
     forecast_days: '7',
     wind_speed_unit: 'ms',
   });

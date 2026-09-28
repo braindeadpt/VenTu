@@ -94,9 +94,10 @@ const { sleep, createUsageCounter, fetchWithRetry } = require('./lib/updateCondi
 const sourceFetcher = createUpdateConditionsFetcher({ marineApi: MARINE_API, weatherApi: WEATHER_API, fetchWithRetry });
 const { fetchMarineData, fetchWeatherData, fetchMarineWaveModels, fetchWindModels } = sourceFetcher;
 
-function getCurrentConditions(marineData, weatherData, ihTideObs) {
-  const marineTimeIndex = findCurrentHourIndex(marineData.hourly.time);
-  const weatherTimeIndex = Math.min(findCurrentHourIndex(weatherData.hourly.time), weatherData.hourly.wind_speed_10m.length - 1);
+function getCurrentConditions(marineData, weatherData, ihTideObs, timeZone) {
+  // `timeZone` = fuso do spot (horas naive vêm no fuso pedido no fetch).
+  const marineTimeIndex = findCurrentHourIndex(marineData.hourly.time, new Date(), timeZone);
+  const weatherTimeIndex = Math.min(findCurrentHourIndex(weatherData.hourly.time, new Date(), timeZone), weatherData.hourly.wind_speed_10m.length - 1);
   const seaLevel = marineData.hourly.sea_level_height_msl?.[marineTimeIndex] || 0;
   const seaLevelNext = marineData.hourly.sea_level_height_msl?.[marineTimeIndex + 1];
   const tide = require('./lib/updateConditionsPure').getTideStatus(seaLevel, seaLevelNext);

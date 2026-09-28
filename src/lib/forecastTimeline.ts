@@ -27,10 +27,11 @@ export function columnToTimelineIndex(column: number, visibleStart: number): num
 }
 
 /* ──────────── agrupamento por dia (lista mobile + separadores/chips) ────────────
- * As horas são wall-time Open-Meteo (Europe/Lisbon, naive) — o dia civil e o
- * weekday extraem-se da própria string, sem `new Date(iso)` (o parse local
- * muda com o fuso do browser e quebra a hidratação). O weekday calcula-se do
- * dia civil em UTC — determinístico em qualquer máquina.
+ * As horas são wall-time Open-Meteo NO FUSO DO SPOT (Europe/Lisbon no
+ * continente/Madeira, Atlantic/Azores nos Açores — ver spotTimeZone.ts) —
+ * o dia civil e o weekday extraem-se da própria string, sem `new Date(iso)`
+ * (o parse local muda com o fuso do browser e quebra a hidratação). O
+ * weekday calcula-se do dia civil em UTC — determinístico em qualquer máquina.
  */
 
 const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})/;

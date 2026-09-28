@@ -10,6 +10,7 @@ import { pickMarineDisplayFields, pickObservedField } from '@/lib/marineConditio
 import type { ObservedConditions } from '@/lib/observations'
 import type { ObservedWave, ObservedWaveMeta } from '@/lib/observedWave'
 import { resolveConditionsEntry } from '@/lib/spotConditionsSource'
+import { spotTimeZone } from '@/lib/spotTimeZone'
 import { applyRegionalBiasFallback, rawToScoreInput } from '@/lib/scoreConditions'
 import { loadWaveBiasRegionsBuild } from '@/lib/waveBias'
 import type { BestWindowToday, BestWindowsBySport, UpcomingWindowsBySport } from '@/lib/bestWindowToday'
@@ -236,8 +237,9 @@ function buildSpotData(
   // Forecast rows are pipeline-guaranteed to carry `time`; the file rows are
   // loosely typed, so the assertion goes through unknown.
   const forecast = (forecastsData[dataId] ?? forecastsData[spot.id] ?? []) as unknown as ForecastRow[]
-  const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast)
-  const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput)
+  const spotTz = spotTimeZone(spot)
+  const { bestWindowToday, bestWindowsBySport } = computeBestWindowsForSpot(spot, forecast, undefined, spotTz)
+  const upcomingWindowsBySport = computeUpcomingWindowsForSpot(spot, forecast, scoreInput, undefined, spotTz)
 
   if (!detail) {
     // D8 — a série diária de confiança (7 entradas × ~650 B por spot) só é

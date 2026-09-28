@@ -142,6 +142,8 @@ interface TideCardProps {
   tideSchedule: TideSchedule | null;
   index: number;
   locale: string;
+  /** Fuso das `tideHourly[].time` — o do spot (default Lisboa). */
+  timeZone?: string;
   open: boolean;
   onToggle: (id: InstrumentId) => void;
   coherence?: { text: string; linkLabel: string } | null;
@@ -152,6 +154,7 @@ export default function TideCard({
   tideSchedule,
   index,
   locale,
+  timeZone,
   open,
   onToggle,
   coherence,
@@ -172,8 +175,9 @@ export default function TideCard({
         schedule: tideSchedule,
         series,
         tableSeries: tideHourly,
+        timeZone,
       }),
-    [tideSchedule, series, tideHourly],
+    [tideSchedule, series, tideHourly, timeZone],
   );
 
   const h = index >= 0 && index < series.length ? series[index].tideHeight : undefined;
