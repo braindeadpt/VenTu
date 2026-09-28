@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback, useState } from 'react';
 import type { ReactNode } from 'react';
+import { lockBodyScroll } from '@/lib/scrollLock';
 
 interface DrawerProps {
   isOpen: boolean;
@@ -47,21 +48,19 @@ export default function Drawer({
   useEffect(() => {
     if (isOpen) {
       previousFocusRef.current = document.activeElement as HTMLElement;
-      document.body.style.overflow = 'hidden';
-      setMounted(true);
-      requestAnimationFrame(() => setVisible(true));
-    } else {
-      setVisible(false);
-      const timer = setTimeout(() => {
-        setMounted(false);
-        document.body.style.overflow = '';
-        previousFocusRef.current?.focus();
-      }, 320);
-      return () => clearTimeout(timer);
+      // Bloqueio PARTILHADO (scrollLock): a gaveta não pode destrancar o scroll
+      // de outro overlay aberto por cima, nem perder o seu bloqueio para quem
+      // escreva `''` a seguir.
+      // (O release acontece no cleanup deste efeito, quando `isOpen` volta a
+      //  false ou o componente desmonta.)
+      return lockBodyScroll();
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
+    setVisible(false);
+    const timer = setTimeout(() => {
+      setMounted(false);
+      previousFocusRef.current?.focus();
+    }, 320);
+    return () => clearTimeout(timer);
   }, [isOpen]);
 
   // Focus trap + Esc

@@ -30,12 +30,14 @@ export default async function DiretorioPage({ params }: Props) {
   const { locale } = await params;
   const file = loadDirectoryFile();
   return (
-    <main className="max-w-6xl mx-auto px-4 py-8 sm:py-10">
+    // O <main id="main-content"> é do layout: um documento tem UM só marco
+    // principal (mega audit 2026-09-26, achado A2 — 720 páginas com dois).
+    <div className="max-w-6xl mx-auto px-4 py-8 sm:py-10">
       <DirectoryClient
         locale={locale}
         entries={file?.entries ?? []}
         generatedAt={file?.generatedAt}
       />
-    </main>
+    </div>
   );
 }

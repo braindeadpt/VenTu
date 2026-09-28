@@ -97,25 +97,25 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
 
   if (!isSupabaseReady) {
     return (
-      <main className="max-w-lg mx-auto px-4 py-10">
+      <div className="max-w-lg mx-auto px-4 py-10">
         <p className="text-body text-fg-muted">
           {d.accountsUnavailable}
         </p>
-      </main>
+      </div>
     );
   }
 
   if (authLoading || loading) {
     return (
-      <main className="max-w-lg mx-auto px-4 py-10">
+      <div className="max-w-lg mx-auto px-4 py-10">
         <p className="text-body text-fg-muted">{d.loadingCurtain}</p>
-      </main>
+      </div>
     );
   }
 
   if (!session?.user) {
     return (
-      <main className="max-w-lg mx-auto px-4 py-10 space-y-4">
+      <div className="max-w-lg mx-auto px-4 py-10 space-y-4">
         <h1 className="font-display text-h2 text-fg">
           {d.manageProfile}
         </h1>
@@ -125,14 +125,14 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
         <Button variant="secondary" onClick={() => requestLogin()}>
           {nav.signIn}
         </Button>
-      </main>
+      </div>
     );
   }
 
   const empty = listings.length === 0 && profiles.length === 0;
 
   return (
-    <main className="max-w-lg mx-auto px-4 py-8 sm:py-10 space-y-6">
+    <div className="max-w-lg mx-auto px-4 py-8 sm:py-10 space-y-6">
       <nav className="text-meta-sm text-fg-muted">
         <Link href={`/${locale}/diretorio/`} className="hover:text-fg">
           {d.title}
@@ -273,7 +273,7 @@ export default function DirectoryManageClient({ locale, seedById }: Props) {
           })}
         </div>
       )}
-    </main>
+    </div>
   );
 }
 
@@ -589,7 +589,7 @@ function OwnerFormFields({
                 key={s}
                 type="button"
                 onClick={() => setSports(s)}
-                className={`pill min-h-[36px] px-3 py-1.5 text-meta ${
+                className={`pill filter-pill-compact px-3 py-1.5 text-meta ${
                   active ? 'pill-active' : 'pill-ghost'
                 }`}
                 aria-pressed={active}
