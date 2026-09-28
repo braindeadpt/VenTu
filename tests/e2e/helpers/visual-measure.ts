@@ -64,6 +64,8 @@ export interface VisualMeasure {
   animNames: string[];
   lazyImgs: number;
   skeleton: number;
+  /** Esqueletos com área ≥2000 px² (versão 3 do registo); ausente nos registos anteriores. */
+  skeletonBig?: number;
   mainCount: number;
   h1Count: number;
   textLen: number;
