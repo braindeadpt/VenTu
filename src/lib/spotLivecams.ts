@@ -19,9 +19,6 @@ const MEO = 'MEO Beachcam'
 const YOUTUBE = 'YouTube'
 const SURFLINE = 'Surfline'
 
-const FEELVIANA_SURFLINE_EMBED =
-  'https://embed.cdn-surfline.com/cams/613205b46012d3ad55a4eec5/ba821de41fedcb2cdd9cdc28e95d92e4450dad63'
-
 export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
   moledo: {
     url: 'https://www.surftotal.com/camaras-report/minho/moledo',
@@ -238,8 +235,10 @@ export const SPOT_LIVECAMS: Record<string, SpotLivecam> = {
     labelEn: 'Cabedelo — Viana do Castelo (24h live)',
   },
   'cabedelo-wakepark': {
+    // Sem embedUrl: o embed da Surfline (cams/613205b4…) devolve 404 desde
+    // 26 set (mega audit; confirmado com Referer). Regra do produto: livecam
+    // é ligação curada, nunca um embed partido — fica só o link.
     kind: 'surfline',
-    embedUrl: FEELVIANA_SURFLINE_EMBED,
     url: 'https://www.feelviana.com/en/wake-park',
     provider: SURFLINE,
     labelPt: 'FeelViana Wake Park — Cabedelo',

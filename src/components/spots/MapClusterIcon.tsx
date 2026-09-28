@@ -44,6 +44,9 @@ export function bestClusterScore(markers: { spotScore?: number }[]): number | nu
  * Tailwind nunca o le: depender da classe `sr-only` seria depender de outro
  * componente a continuar a usa-la. Inline nao tem esse acoplamento.
  */
+/** Sequência dos ids de clipPath dos clusters (ver clipId). */
+let clusterClipSeq = 0;
+
 const SR_ONLY_STYLE =
   'position:absolute;width:1px;height:1px;padding:0;margin:-1px;' +
   'overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0';
@@ -196,6 +199,10 @@ export function createClusterIconFunction(
     // Badge da contagem no canto superior direito — dentro do viewBox mas a
     // cavalgar a borda do squircle. Renderizado por cima dos arcos.
     const badgeR = 9;
+    // id do clipPath único por ícone: derivá-lo das contagens repetia o
+    // mesmo id (até 7× num documento — mega audit 26 set). Só corre no
+    // cliente (iconCreateFunction do Leaflet), por isso não há hidratação.
+    const clipId = `cluster-clip-${++clusterClipSeq}`;
     const badgeFont = String(total).length > 2 ? 7.5 : 8.5;
     const badge =
       bestScore === null
@@ -211,7 +218,7 @@ export function createClusterIconFunction(
       <span style="${SR_ONLY_STYLE}">${label}</span>
       <svg aria-hidden="true" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <clipPath id="cluster-clip-${total}-${goodCount}">
+          <clipPath id="${clipId}">
             <circle cx="${c}" cy="${c}" r="${innerR}" />
           </clipPath>
         </defs>
@@ -224,7 +231,7 @@ export function createClusterIconFunction(
           font-family="var(--font-geist-mono), 'Geist Mono', ui-monospace, monospace"
           font-size="${fontSize}" font-weight="700"
           fill="${bestScore === null ? 'rgb(var(--fg))' : scoreColor}"
-          clip-path="url(#cluster-clip-${total}-${goodCount})"
+          clip-path="url(#${clipId})"
         >${bestScore === null ? total : bestScore}</text>
         ${badge}
       </svg>
