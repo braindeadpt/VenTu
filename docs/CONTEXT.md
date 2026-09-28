@@ -555,6 +555,22 @@ O validador de export deriva as expectativas de `public/sitemap.xml` (a lista au
 
 A amostra é por **passo fixo sobre a lista ordenada** (sem aleatoriedade — mesmo teste em todos os runs) e só corta grupos same-template: um defeito de hidratação é template-wide (o #418 do relógio disparou 3142×; qualquer amostra o teria apanhado). O contrato é fechado por um teste de integridade no próprio spec (determinismo, caps, static/modalidade intactas) e por testes unitários em `scripts/lib/__tests__/checkExportRoutes.test.js`.
 
+### Mega audit de ponta a ponta (2026-09-26) — não corre no CI
+
+Varredura manual dedicada (não é passo de `ci.yml`: ~6 min no total), para cobrir o que o `full-audit` deixa de fora e para olhar o produto como um utilizador:
+
+| frente | onde | escala |
+|---|---|---|
+| Layout/HTML/a11y | `tests/e2e/mega-audit.layout.spec.ts` + `tests/e2e/helpers/audit-invariants.ts` | 445 provas: 30+80 rotas × 5 locales × 2 temas × 2 larguras |
+| Ligações internas | `scripts/mega-audit-links.mjs` (só Node, browserless) | 2 618 páginas, 114 574 links internos |
+| Botão a botão / mapa / movimento / capturas | `tests/e2e/mega-audit.interactions.spec.ts` | 237 controlos, 216 cliques em 18 hubs |
+
+`npm run test:e2e:mega-audit` (Playwright + links). Os dados brutos e as capturas vão para `_audit/mega-2026-09-26/` (**nunca** para `test-results/`: o Playwright apaga essa pasta no início de cada corrida, pelo que varrimentos diferentes apagavam-se uns aos outros). Relatório: `_audit/mega-2026-09-26/RELATORIO.md`.
+
+O que a varredura encontrou (detalhe e evidência no relatório): **`LoginModal` é `aria-modal="true"` sem mover nem conter o foco e sem fechar com Escape** (único de 32 diálogos); **720 páginas exportadas têm dois `<main>`** (`/diretorio/*` e `/admin/diretorio` renderizam o seu próprio dentro do da layout — `diretorio/page.tsx:33`, `DirectoryDetailClient.tsx:61`, `DirectoryManageClient.tsx`, `DirectoryAdminClient.tsx`); **`id` duplicado nos clusters do mapa** (`cluster-clip-<n>-0`, até 7×, 10 rotas); alvos de toque abaixo dos 44 px do projecto (✕ do aviso de locale 22×22, pílulas dos calculadores 36, inputs 42); `/auth/callback/` e `/admin/diretorio/` sem `<h1>` e quase vazias; âncora morta `/xx/favorites/#alertas` (o `id` só existe após hidratação) e dois embeds de terceiros quebrados (Surfline 404 em `cabedelo-wakepark`, X-Frame-Options do weatherlink em `foil-cabedelo`).
+
+Nota de método: a primeira versão da bateria deu falsos positivos que ficaram corrigidos no próprio harness — o mapa **não** usa `L.popup` (é um `aside[data-map-panel]`), o menu de camadas é um popover portalizado (`[data-map-layers-popover]`) e não um `role="dialog"`, e as «6 animações» de `prefers-reduced-motion` eram os `CSSTransition` de 10 ms dos tiles do Leaflet. Fica registado porque a mesma armadilha apanharia qualquer auditoria futura.
+
 ### E2E core — specs do CI (e o que cada um cobre)
 
 O `ci.yml` corre três passos Playwright: `critical-routes` (smoke de 18 rotas: homepage pt/en/es/de/fr, spot, mapa, comparador, favoritos, 404 localizados, palette de pesquisa), **`npm run test:e2e:core`** (os specs herméticos de dados/score — substituiu o antigo passo `test:e2e:data`, que era um subconjunto) e os audits `full-audit`/`visual-ux-audit`. O core agrupa os specs que correm no Actions sem rede nem `IH_API_KEY` (bloqueiam o SW e interceptam os data files client-side via `tests/e2e/helpers/conditions.ts`):

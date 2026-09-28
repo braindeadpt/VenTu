@@ -21,6 +21,8 @@
     "test:e2e": "playwright test",
     "test:e2e:audit": "playwright test full-audit",
     "test:e2e:ux": "playwright test visual-ux-audit",
+    "test:e2e:mega-audit": "playwright test mega-audit && node scripts/mega-audit-links.mjs",
+    "test:e2e:mega-audit:links": "node scripts/mega-audit-links.mjs",
     "test:e2e:axe": "playwright test axe-audit",
     "test:visual": "playwright test visual-regression",
     "test:visual:update": "playwright test visual-regression --update-snapshots",
