@@ -53,9 +53,13 @@ async function actionRects(page: Page) {
           right: Math.round(r.right),
           h: Math.round(r.height),
           w: Math.round(r.width),
+          // A livecam sai para o «Mais» abaixo de 400 px — o fantasma fica
+          // display:none no DOM e não pode contar como caixa da linha.
+          hidden: getComputedStyle(el).display === 'none' || r.width === 0,
           text: (el.textContent ?? '').trim().slice(0, 24),
         };
       })
+      .filter((el) => !el.hidden)
       .sort((a, b) => a.left - b.left);
   });
 }

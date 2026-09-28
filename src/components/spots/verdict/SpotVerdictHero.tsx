@@ -299,7 +299,14 @@ export default function SpotVerdictHero({
             </div>
           </div>
 
-          <div className="flex flex-col gap-1 items-end text-right justify-self-end lg:col-span-5">
+          {/* Em <sm a coluna ocupa a largura toda (o score fica na linha de
+              baixo) — a linha do rótulo de banda leva a pill do nível do dia
+              à esquerda. Medido: junto ao NÚMERO só há ~90 px livres a 320 px
+              (os dígitos reservam 3ch + «/100» ≈ 198 px no total) e nenhuma
+              mensagem cabe; na linha do rótulo («ÉPICO» ≈ 40 px à direita)
+              sobram ~240 px — a pill fica na mesma faixa vertical do score
+              sem acrescentar linha e sem cortar o porquê. */}
+          <div className="flex flex-col gap-1 items-end text-right sm:justify-self-end lg:col-span-5">
             <div className="flex items-baseline gap-1.5 justify-end">
               {/* Largura reservada para 3 dígitos (o pior caso — «100»): sem
                   isto o count-up mudava o dígito mais significativo depois de
@@ -323,13 +330,23 @@ export default function SpotVerdictHero({
               </span>
               <span className="font-mono text-num-lg text-fg-subtle">/100</span>
             </div>
-            <span
-              className="font-display text-meta-sm lg:text-lg font-semibold uppercase tracking-[0.18em] leading-none"
-              style={{ color: 'var(--verdict)' }}
-              data-visual-dynamic
-            >
-              {bandLabel}
-            </span>
+            {/* Linha da banda: em <sm a pill do nível (caixa sempre
+                reservada) alinha à esquerda e o rótulo fica à direita. */}
+            <div className="flex w-full items-center justify-end gap-3">
+              <SpotLevelToday
+                difficulty={spot.difficulty}
+                score={target}
+                locale={locale}
+                className="mr-auto sm:hidden"
+              />
+              <span
+                className="font-display text-meta-sm lg:text-lg font-semibold uppercase tracking-[0.18em] leading-none"
+                style={{ color: 'var(--verdict)' }}
+                data-visual-dynamic
+              >
+                {bandLabel}
+              </span>
+            </div>
             {whyText && (
               <p
                 aria-hidden={!showWhy || undefined}
@@ -344,14 +361,14 @@ export default function SpotVerdictHero({
           </div>
         </div>
 
-        {/* Porquê + nível do dia partilham UMA linha em <lg: a caixa do
-            nível fica sempre reservada (a mensagem pode aparecer com o
-            relógio vivo) mas não precisa de uma linha só sua — antes
-            deixava ~34 px de vazio entre o porquê e as acções. O porquê
-            trunca-se primeiro; a pill nunca encolhe nem muda de altura. */}
+        {/* Porquê: largura total em <sm (a pill do nível está na linha do
+            score); de sm a lg partilha a linha com a pill — a caixa fica
+            sempre reservada (a mensagem pode aparecer com o relógio vivo)
+            sem linha só sua, e o porquê trunca-se primeiro. */}
         <div className="mt-1.5 flex items-center gap-2 lg:hidden">
           {whyText && (
             <p
+              data-why
               aria-hidden={!showWhy || undefined}
               className={cn(
                 'min-w-0 flex-1 truncate text-meta-sm leading-snug text-fg-muted',
@@ -365,7 +382,7 @@ export default function SpotVerdictHero({
             difficulty={spot.difficulty}
             score={target}
             locale={locale}
-            className="shrink-0"
+            className="hidden sm:inline-flex shrink-0"
           />
         </div>
 
@@ -385,17 +402,12 @@ export default function SpotVerdictHero({
             )}
           >
             <Navigation className="w-4 h-4" aria-hidden />
-            {/* Só ícone quando o rótulo não cabe ao lado dos fantasmas —
-                «Como chegar» partia em 2 linhas a 320 px. O limiar depende
-                dos irmãos: sem câmara são 3 fantasmas (cabe ~340 px), com
-                câmara são 4 e o rótulo EN precisa de ~390 px → 400 px.
-                aria-label completo em qualquer caso. */}
-            <span
-              className={cn(
-                'hidden',
-                livecamLabel ? 'min-[400px]:inline' : 'min-[360px]:inline',
-              )}
-            >
+            {/* Rótulo SEMPRE a partir de 360 px — é a acção primária, um
+                ícone sozinho não diz «direcções». Abaixo de 360 fica só o
+                ícone com aria-label (partia em 2 linhas a 320 px). Quando
+                há livecam o fantasma dela passa para o menu «Mais» abaixo
+                de 400 px, o que liberta os ~44 px que o rótulo precisa. */}
+            <span className="hidden min-[360px]:inline whitespace-nowrap">
               {directionsLabel}
             </span>
           </a>
@@ -409,12 +421,14 @@ export default function SpotVerdictHero({
           <span className="inline-flex [&>div>button]:h-11 [&>div>button]:min-h-[44px] [&>div>button]:rounded-input [&>div>button]:border-divider-strong [&>div>button]:text-fg-muted [&>div>button]:hover:text-fg [&>div>button]:hover:border-fg-subtle max-sm:[&>div>button]:w-11 max-sm:[&>div>button]:px-0 max-sm:[&>div>button]:justify-center max-sm:[&>div>button]:gap-0 max-sm:[&>div>button]:text-[0px]">
             <SpotAlertPopover spotId={spot.id} sport={selectedSport} locale={locale} />
           </span>
+          {/* Fantasma da livecam: abaixo de 400 px sai para o menu «Mais»
+              (o primário fica com rótulo a partir de 360 px). */}
           {livecamLabel && (
             <a
               href="#spot-livecam"
               aria-label={livecamLabel}
               className={cn(
-                'inline-flex items-center justify-center gap-2 font-medium',
+                'hidden min-[400px]:inline-flex items-center justify-center gap-2 font-medium',
                 'w-11 sm:w-auto sm:px-3 min-h-[44px] h-11 rounded-input',
                 'border border-divider-strong text-fg-muted',
                 'hover:text-fg hover:border-fg-subtle transition-colors duration-150',
@@ -435,6 +449,7 @@ export default function SpotVerdictHero({
               spotId={spot.id}
               spotName={spot.name}
               locale={locale}
+              livecamLabel={livecamLabel}
             />
           </span>
         </div>

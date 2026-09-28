@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { MoreHorizontal } from 'lucide-react';
+import { MoreHorizontal, Video } from 'lucide-react';
 import SocialShare from '@/components/ui/SocialShare';
 import CheckInButton from '@/components/CheckInButton';
 
 /**
- * Menu «Mais» do veredicto — Partilhar + Check-in. Popover acessível:
- * aria-expanded/aria-controls no botão, Esc fecha e devolve o foco ao botão,
- * clique fora fecha. Alvos ≥44 px.
+ * Menu «Mais» do veredicto — Partilhar + Check-in (+ livecam em <400 px,
+ * quando o fantasma dela sai da linha de acções para o primário manter
+ * o rótulo). Popover acessível: aria-expanded/aria-controls no botão,
+ * Esc fecha e devolve o foco ao botão, clique fora fecha. Alvos ≥44 px.
  */
 export default function SpotMoreMenu({
   label,
@@ -18,6 +19,7 @@ export default function SpotMoreMenu({
   spotId,
   spotName,
   locale,
+  livecamLabel,
 }: {
   /** Texto do botão («Mais»). */
   label: string;
@@ -30,6 +32,9 @@ export default function SpotMoreMenu({
   spotId: string;
   spotName: string;
   locale: string;
+  /** Rótulo da livecam — vira item do menu só enquanto o fantasma está
+      escondido (<400 px). */
+  livecamLabel?: string;
 }) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -78,6 +83,16 @@ export default function SpotMoreMenu({
           aria-label={menuLabel}
           className="absolute right-0 top-full mt-1 z-50 card-2 rounded-card border border-divider p-2 min-w-[180px] flex flex-col gap-1"
         >
+          {livecamLabel && (
+            <a
+              href="#spot-livecam"
+              onClick={() => setOpen(false)}
+              className="min-[400px]:hidden flex items-center gap-2 min-h-[44px] px-1 rounded-input text-meta-sm text-fg hover:bg-surface-2 transition-colors duration-150"
+            >
+              <Video className="w-4 h-4 shrink-0" aria-hidden />
+              {livecamLabel}
+            </a>
+          )}
           <div className="flex items-center gap-2 min-h-[44px] px-1">
             <SocialShare title={shareTitle} locale={locale} />
             <span className="text-meta-sm text-fg">{shareLabel}</span>

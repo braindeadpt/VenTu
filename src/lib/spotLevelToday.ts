@@ -2,34 +2,21 @@ import type { Spot } from '@/types';
 
 export type SpotLevelTodayTone = 'good' | 'warn';
 
-export type SpotLevelTodayCopy = {
-  tone: SpotLevelTodayTone;
-  messagePt: string;
-  messageEn: string;
-};
-
+/**
+ * Resolve o tom da pill «nível do dia» no hero — a copy vive no dicionário
+ * (spotPageVerdict.levelToday{Good,Warn}{,Short}): a versão curta é usada
+ * na linha do score em <sm.
+ */
 export function resolveSpotLevelToday(
   difficulty: Spot['difficulty'],
   score: number,
-): SpotLevelTodayCopy | null {
+): SpotLevelTodayTone | null {
   const isBeginnerSpot = difficulty === 'beginner' || difficulty === 'all';
   const isHardSpot = difficulty === 'advanced' || difficulty === 'expert';
 
-  if (isBeginnerSpot && score >= 55) {
-    return {
-      tone: 'good',
-      messagePt: 'Bom para aprender hoje',
-      messageEn: 'Good day to learn here',
-    };
-  }
-
+  if (isBeginnerSpot && score >= 55) return 'good';
   if (isHardSpot || score < 40 || (difficulty === 'intermediate' && score < 50)) {
-    return {
-      tone: 'warn',
-      messagePt: 'Hoje não é dia para iniciantes aqui',
-      messageEn: 'Not a beginner day here today',
-    };
+    return 'warn';
   }
-
   return null;
 }

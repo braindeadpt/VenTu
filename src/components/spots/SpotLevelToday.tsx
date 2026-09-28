@@ -3,6 +3,7 @@
 import { GraduationCap, TriangleAlert } from 'lucide-react';
 import type { Spot } from '@/types';
 import { resolveSpotLevelToday } from '@/lib/spotLevelToday';
+import { getTranslation } from '@/lib/i18n';
 import { cn } from '@/lib/cn';
 
 interface SpotLevelTodayProps {
@@ -18,12 +19,12 @@ export default function SpotLevelToday({
   locale,
   className,
 }: SpotLevelTodayProps) {
-  const resolved = resolveSpotLevelToday(difficulty, score);
+  const tone = resolveSpotLevelToday(difficulty, score);
   // Sem mensagem, a linha continua a ocupar a mesma caixa (invisível): o
   // score vem da hora escolhida, que muda entre o HTML baked e o relógio
   // vivo (e a cada passo da régua). Retirá-la do fluxo encolhia o hero
   // ~27 px depois da hidratação — CLS 0,2 no Lighthouse (25 set).
-  if (!resolved) {
+  if (!tone) {
     return (
       <p
         aria-hidden
@@ -44,15 +45,14 @@ export default function SpotLevelToday({
     );
   }
 
-  const isPt = locale === 'pt';
-  const message = isPt ? resolved.messagePt : resolved.messageEn;
-  const Icon = resolved.tone === 'good' ? GraduationCap : TriangleAlert;
+  const tv = getTranslation(locale).spotPageVerdict;
+  const Icon = tone === 'good' ? GraduationCap : TriangleAlert;
 
   return (
     <p
       className={cn(
-        'inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1 text-meta-sm font-medium',
-        resolved.tone === 'good'
+        'inline-flex items-center gap-1.5 rounded-pill border px-2.5 py-1 text-meta-sm font-medium whitespace-nowrap',
+        tone === 'good'
           ? 'border-score-good/35 bg-score-good/[0.08] text-score-good'
           : 'border-score-poor/35 bg-score-poor/[0.08] text-score-poor',
         className,
@@ -60,7 +60,16 @@ export default function SpotLevelToday({
       role="status"
     >
       <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden />
-      {message}
+      {/* Forma curta só no mobile: em <sm a pill vive na linha do score
+          (junto ao rótulo de banda, à esquerda) e a versão completa não
+          cabia ao lado do número a 320 px — medido: ~90 px livres contra
+          ~150 px de pill. */}
+      <span className="sm:hidden">
+        {tone === 'good' ? tv.levelTodayGoodShort : tv.levelTodayWarnShort}
+      </span>
+      <span className="hidden sm:inline">
+        {tone === 'good' ? tv.levelTodayGood : tv.levelTodayWarn}
+      </span>
     </p>
   );
 }

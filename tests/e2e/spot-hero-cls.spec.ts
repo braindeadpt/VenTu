@@ -400,50 +400,215 @@ test.describe('SP-A §1 proveniência: decisão nunca cortada (5 línguas)', () 
 });
 
 /**
- * «Como chegar» partia em 2 linhas a 320 px («Como / chegar»): com a
- * câmara ao lado são 4 fantasmas de 44 px e o primário fica com ~80–150 px
- * entre 320–390 px — o rótulo só cabe a partir de ~390 px no pior caso
- * (EN «Get directions» ≈ 148 px), por isso o limiar é 400 px em spots com
- * livecam e 360 px sem ela. Sempre com aria-label.
+ * Nível do dia em <sm: a pill sai da linha do porquê (que a cortava —
+ * «ondas 2,0 m · perío…») para a linha do score, alinhada à esquerda na
+ * faixa do rótulo de banda. Junto ao NÚMERO só há ~90 px livres a 320 px
+ * (medido: dígitos reservam 3ch + «/100» ≈ 198 px); na linha do rótulo
+ * sobram ~240 px — a forma curta (<sm) das chaves levelToday* cabe em
+ * todas as línguas. A caixa fica reservada dentro dessa linha quando não
+ * há mensagem, e o porquê volta a ter a largura toda.
+ *
+ * Prova: pill visível, numa linha e sem corte na faixa do score; porquê a
+ * ocupar a linha toda; caixa invisível presente sem mensagem — a 320/360/
+ * 390 px nas 5 línguas, com warn (nazare), good (baleal) e sem (guincho).
  */
-test.describe('SP-A §1 acções: o primário nunca parte o rótulo', () => {
+const LEVEL_SPOTS = [
+  { slug: 'nazare', note: 'warn' },
+  { slug: 'baleal', note: 'good' },
+  // Intermediate com score ≥50 no bake → resolveSpotLevelToday = null:
+  // a caixa invisível tem de continuar na linha do score.
+  { slug: 'afife', note: 'sem mensagem' },
+] as const;
+
+test.describe('SP-A §1 nível do dia na linha do score em <sm', () => {
   for (const locale of PROV_LOCALES) {
-    test(`${locale}: «Como chegar» numa linha 320/360/390/768`, async ({ page }) => {
-      test.setTimeout(120_000);
-      await page.goto(`/${locale}/spots/guincho/`); // guincho tem livecam → 4 fantasmas
-      await page.waitForSelector('html.is-hydrated', { timeout: 40_000 });
-      for (const width of [320, 360, 390, 768]) {
-        await page.setViewportSize({ width, height: width > 500 ? 900 : 844 });
-        const m = await page.evaluate(() => {
-          const a = document.querySelector('#agora a[target="_blank"]') as HTMLElement | null;
-          if (!a) return null;
-          const label = a.querySelector('span:last-of-type') as HTMLElement | null;
-          const row = a.parentElement as HTMLElement;
-          const lr = label?.getBoundingClientRect();
-          return {
-            btnH: Math.round(a.getBoundingClientRect().height * 10) / 10,
-            rowH: Math.round(row.getBoundingClientRect().height * 10) / 10,
-            aria: a.getAttribute('aria-label'),
-            labelVisible: label ? getComputedStyle(label).display !== 'none' : false,
-            labelH: lr ? Math.round(lr.height) : 0,
-          };
-        });
-        expect(m, `${locale} @${width}: sem botão`).not.toBeNull();
-        if (!m) continue;
-        const ctx = `${locale} @${width}`;
-        // O alvo mantém 44 px e a linha de acções nunca cresce.
-        expect(m.btnH, ctx).toBeLessThanOrEqual(46);
-        expect(m.rowH, ctx).toBeLessThanOrEqual(46);
-        expect(m.aria, ctx).toBeTruthy();
-        // Guincho tem livecam → o rótulo só aparece a partir de 400 px.
-        if (width < 400) {
-          expect(m.labelVisible, `${ctx} — o rótulo devia estar escondido`).toBe(false);
-        } else {
-          expect(m.labelVisible, `${ctx} — o rótulo devia ver-se`).toBe(true);
-          // Uma linha de text-sm ≈ 20 px; 2 linhas seriam ~40 px.
-          expect(m.labelH, `${ctx} — o rótulo partiu`).toBeLessThanOrEqual(24);
+    for (const spot of LEVEL_SPOTS) {
+      test(`${locale}/${spot.slug} (${spot.note}): pill sem corte + porquê com largura toda`, async ({
+        page,
+      }) => {
+        test.setTimeout(120_000);
+        await page.goto(`/${locale}/spots/${spot.slug}/`);
+        await page.waitForSelector('html.is-hydrated', { timeout: 40_000 });
+        for (const width of [320, 360, 390]) {
+          await page.setViewportSize({ width, height: 844 });
+          const m = await page.evaluate(() => {
+            const hero = document.querySelector('#agora') as HTMLElement;
+            const heroRect = hero.getBoundingClientRect();
+            // A pill do <sm vive na linha da banda — é a instância visível.
+            const pills = Array.from(
+              hero.querySelectorAll(
+                'p[role="status"], p[aria-hidden].invisible:not([data-why])',
+              ),
+            ) as HTMLElement[];
+            const visible = pills.filter((p) => {
+              const r = p.getBoundingClientRect();
+              const cs = getComputedStyle(p);
+              return r.width > 1 && cs.display !== 'none';
+            });
+            const pill = visible.find(
+              (p) => getComputedStyle(p).visibility !== 'hidden',
+            );
+            const reserve = visible.find(
+              (p) => getComputedStyle(p).visibility === 'hidden',
+            );
+            const band = Array.from(
+              hero.querySelectorAll('span.font-display.uppercase'),
+            ).pop() as HTMLElement | undefined;
+            const bandRow = band?.parentElement as HTMLElement | null;
+            const why = hero.querySelector('[data-why]') as HTMLElement | null;
+            const whyRow = why?.parentElement as HTMLElement | null;
+            const pillRect = pill?.getBoundingClientRect();
+            const whyRect = why?.getBoundingClientRect();
+            const whyRowRect = whyRow?.getBoundingClientRect();
+            return {
+              pillInBandRow: !!pill && !!bandRow && bandRow.contains(pill),
+              reserveInBandRow: !!reserve && !!bandRow && bandRow.contains(reserve),
+              pill: pillRect
+                ? {
+                    l: pillRect.left - heroRect.left,
+                    r: heroRect.right - pillRect.right,
+                    w: pillRect.width,
+                    h: pillRect.height,
+                    sw: (pill as HTMLElement).scrollWidth,
+                    cw: (pill as HTMLElement).clientWidth,
+                    top: pillRect.top,
+                  }
+                : null,
+              bandTop: band?.getBoundingClientRect().top ?? null,
+              whyRight:
+                whyRect && whyRowRect
+                  ? whyRowRect.right - whyRect.right
+                  : null,
+              whySw: why?.scrollWidth ?? null,
+              whyCw: why?.clientWidth ?? null,
+            };
+          });
+          const ctx = `${locale}/${spot.slug} (${spot.note}) @${width}`;
+          if (spot.note === 'sem mensagem') {
+            // Caixa reservada invisível na linha da banda; sem pill visível.
+            expect(m.reserveInBandRow, `${ctx} — sem caixa reservada`).toBe(true);
+            expect(m.pill, `${ctx} — não devia haver pill visível`).toBeNull();
+          } else {
+            expect(m.pill, `${ctx} — sem pill visível`).not.toBeNull();
+            expect(m.pillInBandRow, `${ctx} — pill fora da linha do score`).toBe(true);
+            if (m.pill) {
+              // Dentro do hero, uma linha, sem corte, alinhada à esquerda
+              // e na mesma faixa vertical que o rótulo de banda.
+              expect(m.pill.sw, `${ctx} — pill cortada sw=${m.pill.sw} cw=${m.pill.cw}`).toBeLessThanOrEqual(m.pill.cw + 1);
+              expect(m.pill.h, `${ctx} — pill em 2 linhas`).toBeLessThanOrEqual(30);
+              expect(m.pill.l, `${ctx} — pill fora à esquerda`).toBeGreaterThanOrEqual(14);
+              expect(m.pill.r, `${ctx} — pill fora à direita`).toBeGreaterThanOrEqual(14);
+              if (m.bandTop != null) {
+                expect(
+                  Math.abs(m.pill.top - m.bandTop),
+                  `${ctx} — pill não está na linha do score`,
+                ).toBeLessThanOrEqual(8);
+              }
+            }
+          }
+          // O porquê tem a largura toda em <sm (sem pill ao lado) e não
+          // fica cortado com os factores reais do dia.
+          if (m.whyRight != null) {
+            expect(m.whyRight, `${ctx} — porquê sem largura toda`).toBeLessThanOrEqual(4);
+            expect(
+              m.whySw!,
+              `${ctx} — porquê cortado sw=${m.whySw} cw=${m.whyCw}`,
+            ).toBeLessThanOrEqual(m.whyCw! + 1);
+          }
         }
-      }
-    });
+      });
+    }
+  }
+});
+
+/**
+ * «Como chegar» tem SEMPRE texto a partir de 360 px — é a acção primária
+ * e um ícone sozinho não diz «direcções». Para caber com livecam ao lado,
+ * o fantasma da câmara passa para dentro do menu «Mais» abaixo de 400 px
+ * (item com o mesmo rótulo e destino). Abaixo de 360 px o primário fica
+ * ícone-só com aria-label. Alvos ≥44 px em todos os casos.
+ */
+test.describe('SP-A §1 acções: primário com rótulo ≥360 px + livecam no «Mais» <400 px', () => {
+  const CTA_SPOTS = [
+    { slug: 'guincho', livecam: true },
+    { slug: 'mosteiros', livecam: false },
+  ] as const;
+
+  for (const locale of PROV_LOCALES) {
+    for (const spot of CTA_SPOTS) {
+      test(`${locale}/${spot.slug}: «Como chegar» com texto a 360/390/768`, async ({ page }) => {
+        test.setTimeout(120_000);
+        await page.goto(`/${locale}/spots/${spot.slug}/`);
+        await page.waitForSelector('html.is-hydrated', { timeout: 40_000 });
+        for (const width of [320, 360, 390, 768]) {
+          await page.setViewportSize({ width, height: width > 500 ? 900 : 844 });
+          const m = await page.evaluate(() => {
+            const a = document.querySelector('#agora a[target="_blank"]') as HTMLElement | null;
+            if (!a) return null;
+            const label = a.querySelector('span:last-of-type') as HTMLElement | null;
+            const row = a.parentElement as HTMLElement;
+            const lr = label?.getBoundingClientRect();
+            // O fantasma da livecam é filho directo da linha de acções; o
+            // item do menu só existe no DOM quando o popover está aberto.
+            const camGhost = row.querySelector(
+              ':scope > a[href="#spot-livecam"]',
+            ) as HTMLElement | null;
+            return {
+              btnH: Math.round(a.getBoundingClientRect().height * 10) / 10,
+              rowH: Math.round(row.getBoundingClientRect().height * 10) / 10,
+              rowSw: row.scrollWidth,
+              rowCw: row.clientWidth,
+              aria: a.getAttribute('aria-label'),
+              labelVisible: label ? getComputedStyle(label).display !== 'none' : false,
+              labelH: lr ? Math.round(lr.height) : 0,
+              camGhostVisible: camGhost
+                ? getComputedStyle(camGhost).display !== 'none'
+                : null,
+            };
+          });
+          const ctx = `${locale}/${spot.slug} @${width}`;
+          expect(m, `${ctx}: sem botão`).not.toBeNull();
+          if (!m) continue;
+          expect(m.btnH, ctx).toBeLessThanOrEqual(46);
+          expect(m.rowH, ctx).toBeLessThanOrEqual(46);
+          expect(m.rowSw, `${ctx} — linha de acções estoura`).toBeLessThanOrEqual(m.rowCw + 1);
+          expect(m.aria, ctx).toBeTruthy();
+          if (width < 360) {
+            expect(m.labelVisible, `${ctx} — o rótulo devia estar escondido`).toBe(false);
+          } else {
+            expect(m.labelVisible, `${ctx} — o rótulo devia ver-se`).toBe(true);
+            // Uma linha de text-sm ≈ 20 px; 2 linhas seriam ~40 px.
+            expect(m.labelH, `${ctx} — o rótulo partiu`).toBeLessThanOrEqual(24);
+          }
+          // Fantasma da livecam: escondido <400 px, visível a partir daí.
+          if (spot.livecam) {
+            expect(
+              m.camGhostVisible,
+              `${ctx} — fantasma da livecam no estado errado`,
+            ).toBe(width < 400 ? false : true);
+          }
+        }
+        // O item da livecam no «Mais» só aparece quando o fantasma está
+        // escondido (<400 px): abre o menu nos dois lados do limiar.
+        if (spot.livecam) {
+          for (const width of [390, 768]) {
+            await page.setViewportSize({ width, height: width > 500 ? 900 : 844 });
+            const moreBtn = page.locator('#agora button[aria-haspopup="true"]');
+            await moreBtn.click();
+            const item = page.locator('#agora [role="group"] a[href="#spot-livecam"]');
+            const visible = await item.evaluate((el) => {
+              const cs = getComputedStyle(el);
+              const r = el.getBoundingClientRect();
+              return cs.display !== 'none' && r.height >= 44;
+            });
+            expect(
+              visible,
+              `${locale} @${width} — livecam no «Mais» ${width < 400 ? 'devia' : 'não devia'} ver-se`,
+            ).toBe(width < 400);
+            await page.keyboard.press('Escape');
+          }
+        }
+      });
+    }
   }
 });

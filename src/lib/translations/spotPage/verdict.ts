@@ -58,6 +58,12 @@ export const spotPageVerdict = {
     confidenceInline: 'confiança {tier}',
     /** §1 — «actualizado há 12h» ({age} = «há 12h» de formatStaleAge). */
     updatedAgo: 'actualizado {age}',
+    /** §1 — pill «nível do dia»: versão completa (linha do porquê/coluna). */
+    levelTodayGood: 'Bom para aprender hoje',
+    levelTodayWarn: 'Hoje não é dia para iniciantes aqui',
+    /** §1 — pill «nível do dia»: forma curta na linha do score em <sm. */
+    levelTodayGoodShort: 'Bom para aprender',
+    levelTodayWarnShort: 'Não é para iniciantes',
   },
   en: {
     sectionTitle: 'Verdict',
@@ -93,6 +99,10 @@ export const spotPageVerdict = {
     windObserved: 'observed wind',
     confidenceInline: '{tier} confidence',
     updatedAgo: 'updated {age}',
+    levelTodayGood: 'Good day to learn here',
+    levelTodayWarn: 'Not a beginner day here today',
+    levelTodayGoodShort: 'Good to learn',
+    levelTodayWarnShort: 'Not for beginners',
   },
   es: {
     sectionTitle: 'Veredicto',
@@ -128,6 +138,10 @@ export const spotPageVerdict = {
     windObserved: 'viento observado',
     confidenceInline: 'confianza {tier}',
     updatedAgo: 'actualizado {age}',
+    levelTodayGood: 'Buen día para aprender aquí',
+    levelTodayWarn: 'Hoy no es día para principiantes aquí',
+    levelTodayGoodShort: 'Bueno para aprender',
+    levelTodayWarnShort: 'No para principiantes',
   },
   de: {
     sectionTitle: 'Fazit',
@@ -163,6 +177,10 @@ export const spotPageVerdict = {
     windObserved: 'beobachteter Wind',
     confidenceInline: 'Konfidenz {tier}',
     updatedAgo: 'aktualisiert {age}',
+    levelTodayGood: 'Guter Tag zum Lernen hier',
+    levelTodayWarn: 'Heute kein Tag für Anfänger hier',
+    levelTodayGoodShort: 'Gut zum Lernen',
+    levelTodayWarnShort: 'Nicht für Anfänger',
   },
   fr: {
     sectionTitle: 'Verdict',
@@ -198,5 +216,9 @@ export const spotPageVerdict = {
     windObserved: 'vent observé',
     confidenceInline: 'confiance {tier}',
     updatedAgo: 'actualisé {age}',
+    levelTodayGood: 'Bon jour pour apprendre ici',
+    levelTodayWarn: "Pas un jour pour débutants aujourd'hui",
+    levelTodayGoodShort: 'Bien pour apprendre',
+    levelTodayWarnShort: 'Pas pour débutants',
   },
 } as const;
