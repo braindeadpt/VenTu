@@ -331,10 +331,12 @@ export default function ForecastTable({
   const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[40px]';
 
   /* ── scroll to current hour on mount ──
-     O eixo liga o live depois do mount (startIndex chega tarde) e este
-     efeito re-agenda o centro — um clique num chip de dia (ou drag/wheel)
-     nessa janela seria pisado de volta a 0. O auto-centro cede SEMPRE a
-     navegação explícita do utilizador. */
+     A tabela abre sempre na hora corrente (currentHourIndex 0, 48 colunas),
+     com ou sem o live do eixo — as deps do efeito não mudam depois do mount,
+     por isso corre uma só vez. O race é o timer de 200 ms: dispara DEPOIS de
+     um clique cedo (chip de dia, drag/wheel), repõe scrollLeft a 0 e
+     interrompe o scrollTo suave. O auto-centro cede SEMPRE a navegação
+     explícita do utilizador. */
   const userNavigatedRef = useRef(false);
   useEffect(() => {
     if (scrollRef.current && currentHourIndex >= 0) {
