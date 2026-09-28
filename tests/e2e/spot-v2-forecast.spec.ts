@@ -64,6 +64,14 @@ test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
     // inicial (race). Espera a aterragem: a 1.ª célula data-tl-col é a
     // hora corrente. Sem isto o `offset` da régua e o contador de renders
     // apanham o commit de montagem.
+    // A 1.ª coluna só é a hora viva depois de o eixo montar (nowIndex ≥ 0):
+    // antes a tabela fatia pelo relógio do bake — com o build de uma hora
+    // anterior lia-se a hora do bake e a aterragem nunca coincidia.
+    await expect(page.locator(INSTRUMENTS)).toHaveAttribute(
+      'data-spot-timeline-live',
+      'true',
+      { timeout: 20_000 },
+    );
     const firstCol = await page
       .locator(`${SECTION} [data-tl-col]`)
       .first()
@@ -141,6 +149,15 @@ test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
   test('arrasto de 10 passos na régua não re-renderiza a ForecastTable', async ({
     page,
   }) => {
+    // Último commit tardio da página: o overlay de dicas da comunidade
+    // (fetch pós-montagem) re-renderiza o SpotDetailClient e, em cascata, a
+    // tabela — nada a ver com o índice. Sob carga aterrava dentro do
+    // arrasto (flake «Received: 1»); o contador só zera com a página quieta.
+    await expect(page.locator('[data-community-tips]')).toHaveAttribute(
+      'data-community-tips',
+      'ready',
+      { timeout: 10_000 },
+    );
     await page.evaluate(() => {
       (window as unknown as { __ventuFtRenders?: number }).__ventuFtRenders = 0;
     });

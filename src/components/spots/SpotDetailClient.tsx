@@ -234,9 +234,12 @@ export default function SpotDetailClient({
 
   const freshnessNowMs = mounted ? undefined : bakedAtMs;
   const [isMobile, setIsMobile] = useState(false);
-  const [communityOverlay, setCommunityOverlay] = useState<
-    Record<string, import('@/lib/communityTips').CommunityTipEntry>
-  >({});
+  // null até o overlay chegar (fetch pós-montagem) — o wrapper expõe-o em
+  // data-community-tips para as specs esperarem pelo último commit tardio.
+  const [communityOverlay, setCommunityOverlay] = useState<Record<
+    string,
+    import('@/lib/communityTips').CommunityTipEntry
+  > | null>(null);
 
   const { session } = useAuth();
 
@@ -635,7 +638,7 @@ export default function SpotDetailClient({
   const mergedLocalTipsRaw = mergeLocalTips(
     spot,
     getLocalTips(spot.slug),
-    communityOverlay[spot.slug],
+    communityOverlay?.[spot.slug],
   );
   const mergedLocalTips = mergedLocalTipsRaw
     ? {
@@ -689,7 +692,10 @@ export default function SpotDetailClient({
         }}
       />
 
-      <div className="min-h-screen bg-bg-base pb-10">
+      <div
+        className="min-h-screen bg-bg-base pb-10"
+        data-community-tips={communityOverlay ? 'ready' : 'pending'}
+      >
         {/* Eixo de tempo partilhado — uma hora escolhida comanda o veredicto,
             a régua e a previsão (docs/design/SPOT-PAGE.md). */}
         <SpotTimelineProvider
