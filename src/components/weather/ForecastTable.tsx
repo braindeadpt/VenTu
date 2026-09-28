@@ -330,11 +330,17 @@ export default function ForecastTable({
   const labelW = compact ? 'w-[72px] min-w-[72px]' : 'w-[96px] min-w-[96px]';
   const hourW = compact ? 'w-[28px] min-w-[28px] max-w-[28px]' : 'min-w-[40px]';
 
-  /* ── scroll to current hour on mount ── */
+  /* ── scroll to current hour on mount ──
+     O eixo liga o live depois do mount (startIndex chega tarde) e este
+     efeito re-agenda o centro — um clique num chip de dia (ou drag/wheel)
+     nessa janela seria pisado de volta a 0. O auto-centro cede SEMPRE a
+     navegação explícita do utilizador. */
+  const userNavigatedRef = useRef(false);
   useEffect(() => {
     if (scrollRef.current && currentHourIndex >= 0) {
       const container = scrollRef.current;
       const timer = setTimeout(() => {
+        if (userNavigatedRef.current) return;
         const labelWidth = labelWidthPx;
         const dataStart = labelWidth;
         const cellWidth = (container.scrollWidth - labelWidth) / visible.length;
@@ -432,6 +438,7 @@ export default function ForecastTable({
   const scrollToDayGroup = (groupIndex: number) => {
     const group = dayGroups[groupIndex];
     if (!group || !scrollRef.current) return;
+    userNavigatedRef.current = true;
     applyActiveDay(groupIndex);
     const el = scrollRef.current;
     const dataWidth = Math.max(1, el.scrollWidth - labelWidthPx);
@@ -564,7 +571,11 @@ export default function ForecastTable({
         tabIndex={0}
         role="region"
         aria-label={t.caption.replace('{hours}', String(visibleCount))}
+        onPointerDown={() => {
+          userNavigatedRef.current = true;
+        }}
         onWheel={(e) => {
+          userNavigatedRef.current = true;
           if (window.matchMedia('(pointer: coarse)').matches) return;
           if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) {
             e.preventDefault();

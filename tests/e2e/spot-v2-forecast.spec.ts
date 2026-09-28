@@ -215,15 +215,40 @@ test.describe('S3/SP-B — «Hora a hora» no eixo de tempo partilhado', () => {
 
   test('desktop: chips de dia saltam para o dia certo', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    // Chips de dia (pills por cima da tabela) — 48 h cobrem ≥3 dias civis.
-    const allChips = page.locator(`${SECTION} .rounded-pill`);
-    expect(await allChips.count()).toBeGreaterThanOrEqual(2);
+    // Chips de dia (pills por cima da tabela, marcadas data-day-chip) —
+    // 48 h cobrem ≥2 dias civis.
+    const allChips = page.locator(`${SECTION} [data-day-chip]`);
+    const chipCount = await allChips.count();
+    expect(chipCount).toBeGreaterThanOrEqual(2);
 
     const scroller = page.locator(`${SECTION} .forecast-table-scroll`);
+    // O ÚLTIMO chip é o único determinístico a qualquer hora: o dia mais
+    // distante começa sempre ≥24 colunas à frente (48 h − hora actual),
+    // por isso centrar exige scrollLeft > 0. O 2.º chip («Amanhã») falha
+    // ao fim do dia — começa ~4 colunas à frente, targetLeft < 0 →
+    // clamp 0 → scrollLeft fica 0 (comportamento correcto: já está à
+    // vista, não há nada para centrar).
+    const chipIndex = chipCount - 1;
     const before = await scroller.evaluate((el) => el.scrollLeft);
-    await allChips.nth(1).click();
+    await allChips.nth(chipIndex).click();
     await expect
       .poll(async () => scroller.evaluate((el) => el.scrollLeft))
-      .not.toBe(before);
+      .toBeGreaterThan(before);
+
+    // Contrato real: a 1.ª coluna do dia clicado fica dentro da faixa
+    // visível do scroller (thead tem um .forecast-col-daystart por dia,
+    // na mesma ordem dos chips).
+    const dayCol = page.locator(
+      `${SECTION} .forecast-table-scroll thead .forecast-col-daystart`,
+    ).nth(chipIndex);
+    await expect
+      .poll(async () => {
+        const sBox = await scroller.boundingBox();
+        const cBox = await dayCol.boundingBox();
+        if (!sBox || !cBox) return -1;
+        const center = cBox.x + cBox.width / 2;
+        return center > sBox.x && center < sBox.x + sBox.width ? 1 : -1;
+      })
+      .toBe(1);
   });
 });
