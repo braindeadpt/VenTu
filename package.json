@@ -62,6 +62,7 @@
     "warnings:nav": "node scripts/fetch-ih-coastal-warnings.js",
     "storms:fetch": "node scripts/fetch-nhc-storms.js",
     "storms:state": "node scripts/build-storm-state.js",
+    "warnings:areas": "node scripts/fetch-warning-areas.js",
     "warnings:meteoalarm": "node scripts/fetch-meteoalarm-warnings.js",
     "warnings:test-key": "node scripts/test-meteoalarm-api-key.js",
     "radar:fetch": "node scripts/fetch-ipma-radar.js",

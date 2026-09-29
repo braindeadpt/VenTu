@@ -262,6 +262,8 @@ export const translationsEs = {
     hideStorms: 'Ocultar tormentas tropicales',
     stormsHint: 'Ciclones tropicales activos — cono de incertidumbre + trayectoria prevista (NOAA/NHC)',
     stormsAttribution: 'Ciclones tropicales © NOAA/NHC',
+    warnAreasHint: 'Distritos e islas bajo aviso IPMA vigente o anunciado — toca una zona para ver qué está activo',
+    warnAreasAttribution: 'Avisos IPMA · zonas © DGT CAOP2025 / OSM',
     coastalWarningsHint: 'Avisos a la Navegación Costeros en vigor — Instituto Hidrográfico',
     coastalWarningsLegend: 'Avisos a la navegación — IH',
     coastalWarningsLegendZone: 'Zona en aviso',

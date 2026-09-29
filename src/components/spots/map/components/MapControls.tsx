@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite, SatelliteDish, CloudLightning } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite, SatelliteDish, CloudLightning, AlertTriangle } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 export interface MapControlsProps {
@@ -61,6 +61,11 @@ export interface MapControlsProps {
   stormsHint: string;
   /** Ficheiro ausente/stale ou zero tempestades na região → toggle off. */
   stormsUnavailable: boolean;
+  warnAreasEnabled: boolean;
+  warnAreasLabel: string;
+  warnAreasHint: string;
+  /** Geometria em falta ou warnings sem área activa → toggle off. */
+  warnAreasUnavailable: boolean;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -88,6 +93,7 @@ export interface MapControlsProps {
   toggleGibsSat: () => void;
   toggleGoesIr: () => void;
   toggleStorms: () => void;
+  toggleWarnAreas: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
   // Refs
@@ -238,6 +244,17 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
       onToggle: p.toggleSeamarks,
       toggleAttr: 'data-map-seamarks-toggle',
       iconClass: 'text-score-good',
+    },
+    {
+      key: 'warnAreas',
+      label: p.warnAreasLabel,
+      hint: p.warnAreasHint,
+      icon: <AlertTriangle className="w-4 h-4" aria-hidden />,
+      pressed: p.warnAreasEnabled,
+      disabled: p.warnAreasUnavailable,
+      onToggle: p.toggleWarnAreas,
+      toggleAttr: 'data-map-warn-areas-toggle',
+      iconClass: 'text-score-poor',
     },
     {
       key: 'coastalWarnings',

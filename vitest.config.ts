@@ -40,6 +40,7 @@ export default defineConfig({
       'scripts/lib/__tests__/nhcStorms.test.js',
       'scripts/lib/__tests__/stormState.test.js',
       'scripts/lib/__tests__/alertWarnTriggers.test.js',
+      'scripts/lib/__tests__/warningAreas.test.js',
       'scripts/lib/__tests__/islandSpots.test.js',
       'scripts/lib/__tests__/contributionsPrivacy.test.js',
       'scripts/lib/__tests__/terraformExpressions.test.js',

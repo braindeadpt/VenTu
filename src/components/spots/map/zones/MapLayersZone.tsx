@@ -14,7 +14,7 @@ import type L from 'leaflet';
 import {
   Activity, Anchor, Clock, CloudRain, LifeBuoy,
   Mountain, Navigation, Sailboat, Satellite, SatelliteDish, CloudLightning,
-  Thermometer, Waves,
+  Thermometer, Waves, AlertTriangle,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
 import {
@@ -179,6 +179,8 @@ export interface MapLayerCopy {
   satIrHint: string;
   stormsLabel: string;
   stormsHint: string;
+  warnAreasLabel: string;
+  warnAreasHint: string;
   coastalWarningsLabel: string;
   coastalWarningsHint: string;
   layersMenuLabel: string;
@@ -228,6 +230,7 @@ export function useMapLayersFields({
     gibsSatEnabled, toggleGibsSat,
     goesIrEnabled, toggleGoesIr,
     stormsEnabled, stormsData, toggleStorms,
+    warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
   } = base;
 
@@ -325,6 +328,8 @@ export function useMapLayersFields({
     satIrHint: t.map.satIrHint,
     stormsLabel: t.mapUiLayers.layerStorms,
     stormsHint: t.map.stormsHint,
+    warnAreasLabel: t.mapUiLayers.layerWarnAreas,
+    warnAreasHint: t.map.warnAreasHint,
     coastalWarningsLabel,
     coastalWarningsHint: t.map.coastalWarningsHint,
     layersMenuLabel: t.map.layersMenu,
@@ -402,6 +407,22 @@ export function useMapLayersFields({
       disabled: !stormsData || stormsData.storms.length === 0,
       onToggle: toggleStorms,
       toggleAttr: 'data-map-storms-toggle',
+      iconClass: 'text-score-poor',
+    },
+    {
+      key: 'warnAreas',
+      group: 'time',
+      label: lyr.layerWarnAreas,
+      // Geometria em falta ou warnings resolvidos sem área sob aviso →
+      // desactiva-se em vez de pintar nada (mesmo padrão do storms).
+      hint: warnAreasUnavailable
+        ? `${layerCopy.warnAreasHint} — ${lyr.unavailable}`
+        : layerCopy.warnAreasHint,
+      icon: <AlertTriangle className="w-4 h-4" aria-hidden />,
+      pressed: warnAreasEnabled,
+      disabled: warnAreasUnavailable,
+      onToggle: toggleWarnAreas,
+      toggleAttr: 'data-map-warn-areas-toggle',
       iconClass: 'text-score-poor',
     },
     {
@@ -509,6 +530,7 @@ export function useMapLayersFields({
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
     stormsEnabled, stormsData, toggleStorms,
+    warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings,
   ]);
 

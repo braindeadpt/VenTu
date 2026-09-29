@@ -135,8 +135,25 @@ Ilhas = `radar: null` (fora das bounds IPMA — honesto).
 
 ### B2 — Polígonos de aviso no mapa
 
-- CAP MeteoAlarm (key) ou GeoJSON distritos baked + `areaCode` IPMA.
-- Cor por nível; **pulsação subtil só no vermelho**.
+**Estado: implementado** — `public/geo/warning-areas.json` (bake ocasional
+`npm run warnings:areas`, commitado — fronteiras quase não mudam). Fontes:
+distritos do continente via **DGT OGC API** `collections/distritos`
+(CAOP2025, oficial — a OGC só publica o continente) + ilhas via
+OpenStreetMap/Nominatim (`scripts/fetch-warning-areas.js`, 1 req/s).
+`scripts/lib/warningAreas.js`: mapeamento área→grupo (18 distritos →
+código IPMA; Madeira = ilha inteira para MCN/MCS/MRM; Açores = ilhas
+agrupadas em AOR/ACE/AOC), Douglas–Peucker + arredondamento 4 dp
+(~40 KB, 23 grupos). Camada opt-in «Áreas de aviso IPMA» (grupo Tempo,
+`data-map-warn-areas-toggle`, LS `ventu.map-warn-areas`): polígono
+tracejado translúcido na cor do nível máximo (amarelo/laranja/vermelho)
+com tooltip «área + avisos activos · nível · até»; **só pinta grupos com
+aviso em vigor ou anunciado** (`endTime` passado não pinta) — sem avisos
+activos o toggle desactiva-se. Reusa `warnings.json` via `useIpmaWarnings`
+(cache partilhado com os badges dos pins).
+
+- CAP MeteoAlarm (key) fica como upgrade futuro para geometrias
+  sub-distritais; o nível distrito/ilha do IPMA já é o que o aviso cobre.
+- Cor por nível; sem pulsação — o tracejado + cor já lêem bem.
 
 ### B4 — Alertas de aviso para o utilizador
 

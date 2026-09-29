@@ -205,6 +205,8 @@ export const translationsEn = {
     hideStorms: 'Hide tropical storms',
     stormsHint: 'Active tropical cyclones — uncertainty cone + forecast track (NOAA/NHC)',
     stormsAttribution: 'Tropical cyclones © NOAA/NHC',
+    warnAreasHint: 'Districts and islands under an active or announced IPMA warning — tap an area to see what is on',
+    warnAreasAttribution: 'IPMA warnings · areas © DGT CAOP2025 / OSM',
     coastalWarningsHint: 'Coastal navigation warnings in force — Instituto Hidrográfico',
     coastalWarningsLegend: 'Navigation warnings — IH',
     coastalWarningsLegendZone: 'Warning zone',

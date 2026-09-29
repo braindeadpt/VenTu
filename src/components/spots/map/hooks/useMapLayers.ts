@@ -2,7 +2,7 @@
 
 import { DATE_LOCALE } from '@/lib/dataFreshness';
 import { getTranslation } from '@/lib/i18n';
-import { startTransition, useEffect, useRef, useState, useCallback } from 'react';
+import { startTransition, useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import type L from 'leaflet';
 import {
   fetchRadarData,
@@ -37,6 +37,15 @@ import {
   MAP_STORMS_LS_KEY,
   type NhcStormsFile,
 } from '@/lib/nhcStorms';
+import {
+  loadWarningAreas,
+  activeWarnGroups,
+  MAP_WARN_AREAS_LS_KEY,
+  WARN_AREA_COLORS,
+  type WarningAreasFile,
+} from '@/lib/warningAreas';
+import { warningLevelLabel, warningTypeLabel } from '@/lib/ipmaWarnings';
+import { useIpmaWarnings } from '@/hooks/useIpmaWarnings';
 import {
   MAP_ISOBATHS_LS_KEY,
   MAP_COASTAL_LS_KEY,
@@ -165,6 +174,10 @@ interface UseMapLayersReturn {
   stormsData: NhcStormsFile | null | undefined;
   toggleStorms: () => void;
   stormsLabel: string;
+  // IPMA warning areas (polígonos distrito/ilha — B2)
+  warnAreasEnabled: boolean;
+  warnAreasUnavailable: boolean;
+  toggleWarnAreas: () => void;
 }
 
 export function useMapLayers({
@@ -1221,6 +1234,124 @@ export function useMapLayers({
 
   const stormsLabel = stormsEnabled ? t.map.hideStorms : t.map.showStorms;
 
+  // ── Áreas de aviso IPMA (B2 — polígonos distrito/ilha) ──
+  // Vectorial opt-in: pinta os grupos (distrito / ilha / grupo de ilhas) com
+  // avisos IPMA em vigor ou anunciados — aviso expirado (endTime passado)
+  // não pinta. Avisos vindos do cache partilhado de warnings.json (o mesmo
+  // dos badges nos pins); a geometria (~40 KB) só se descarrega ao ligar.
+  const ipmaWarnings = useIpmaWarnings();
+  const [warnAreasEnabled, setWarnAreasEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    try {
+      return localStorage.getItem(MAP_WARN_AREAS_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const [warnAreasData, setWarnAreasData] = useState<WarningAreasFile | null | undefined>(undefined);
+  const warnAreasLayerRef = useRef<L.LayerGroup | null>(null);
+
+  const warnAreaHits = useMemo(
+    () => activeWarnGroups(warnAreasData, ipmaWarnings?.warnings),
+    [warnAreasData, ipmaWarnings],
+  );
+  // O disabled NÃO pode depender dos hits (a geometria só se descarrega ao
+  // ligar — deadlock). Decide-se por: geometria falhada, ou warnings
+  // resolvidos sem nenhum aviso em vigor/anunciado. Os hits só contam quando
+  // ambos os dados existem (inconsistência geo↔códigos também desactiva).
+  const anyActiveWarning =
+    ipmaWarnings == null
+      ? null
+      : ipmaWarnings.warnings.some((w) => !w.endTime || Date.parse(w.endTime) > Date.now());
+  const warnAreasUnavailable =
+    warnAreasData === null ||
+    anyActiveWarning === false ||
+    (warnAreasData != null && ipmaWarnings != null && warnAreaHits.length === 0);
+
+  useEffect(() => {
+    if (!warnAreasEnabled) {
+      if (warnAreasLayerRef.current) {
+        mapInstanceRef.current?.removeLayer(warnAreasLayerRef.current);
+        warnAreasLayerRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current || !LRef.current) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+
+    if (warnAreasData === undefined) {
+      let cancelled = false;
+      loadWarningAreas().then((data) => {
+        if (!cancelled && mountedRef.current) setWarnAreasData(data);
+      });
+      return () => {
+        cancelled = true;
+      };
+    }
+    if (warnAreasData === null) return;
+    // Avisos ainda por resolver — o efeito re-corre quando o fetch acabar.
+    if (ipmaWarnings == null) return;
+    if (warnAreaHits.length === 0) return;
+
+    const escapeHtml = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const hourFmt = new Intl.DateTimeFormat(DATE_LOCALE[locale] ?? 'en-GB', {
+      day: 'numeric',
+      month: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const group = Leaflet.layerGroup();
+    for (const hit of warnAreaHits) {
+      const color = WARN_AREA_COLORS[hit.maxLevel];
+      const lines = hit.warnings
+        .slice()
+        .sort((a, b) => a.type.localeCompare(b.type))
+        .map((w) => {
+          const until = w.endTime ? ` — ${hourFmt.format(new Date(w.endTime))}` : '';
+          return `${escapeHtml(warningTypeLabel(w.type, locale))} · ${escapeHtml(warningLevelLabel(w.level, locale))}${escapeHtml(until)}`;
+        });
+      const tooltipHtml = `<b>${escapeHtml(hit.group.label)}</b><br>${lines.join('<br>')}`;
+      for (const poly of hit.group.polys) {
+        const latlngs = poly.map((ring) => ring.map(([lo, la]) => [la, lo] as [number, number]));
+        Leaflet.polygon(latlngs, {
+          color,
+          weight: 1.8,
+          opacity: 0.85,
+          fillColor: color,
+          fillOpacity: 0.14,
+          dashArray: '8 5',
+          className: 'ventu-warn-area',
+        })
+          .bindTooltip(tooltipHtml, { sticky: true, direction: 'top' })
+          .addTo(group);
+      }
+    }
+    group.addTo(map);
+    warnAreasLayerRef.current = group;
+    const attr = getTranslation(locale).map.warnAreasAttribution;
+    map.attributionControl?.addAttribution(attr);
+
+    return () => {
+      if (map.hasLayer(group)) map.removeLayer(group);
+      warnAreasLayerRef.current = null;
+      map.attributionControl?.removeAttribution(attr);
+    };
+  }, [warnAreasEnabled, isReady, warnAreasData, ipmaWarnings, warnAreaHits, locale, mapInstanceRef, LRef]);
+
+  const toggleWarnAreas = useCallback(() => {
+    setWarnAreasEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_WARN_AREAS_LS_KEY, next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  }, []);
+
   return {
     radarData, radarEnabled, radarFrameIndex, radarUserPaused, radarPrefSet,
     radarBusySources, radarLift, radarFrameIndexRef, radarUserPausedRef,
@@ -1236,5 +1367,6 @@ export function useMapLayers({
     handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
     stormsEnabled, stormsData, toggleStorms, stormsLabel,
+    warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
   };
 }

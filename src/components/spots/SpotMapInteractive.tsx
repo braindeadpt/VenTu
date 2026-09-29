@@ -222,6 +222,7 @@ export default function SpotMapInteractive({
     goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
     handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     stormsEnabled, stormsData, toggleStorms,
+    warnAreasEnabled, warnAreasUnavailable, toggleWarnAreas,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
     hoursFile, hoursOn, hoursLive, hoursFrame, hoursUserPaused, hoursPrefSet,
     hoursUnavailable, hoursTimes, toggleHours, handleHoursFrameChange,
@@ -625,6 +626,12 @@ export default function SpotMapInteractive({
       ? `${layerCopy.stormsHint} — ${t.mapUiLayers.unavailable}`
       : layerCopy.stormsHint,
     stormsUnavailable: !stormsData || stormsData.storms.length === 0,
+    warnAreasEnabled,
+    warnAreasLabel: layerCopy.warnAreasLabel,
+    warnAreasHint: warnAreasUnavailable
+      ? `${layerCopy.warnAreasHint} — ${t.mapUiLayers.unavailable}`
+      : layerCopy.warnAreasHint,
+    warnAreasUnavailable,
     onlyOnLabel,
     onlyOnHint,
     windLegendHelpLabel,
@@ -650,6 +657,7 @@ export default function SpotMapInteractive({
     toggleGibsSat,
     toggleGoesIr,
     toggleStorms,
+    toggleWarnAreas,
     toggleOnlyOn,
     toggleCoastalWarnings,
     windButtonRef,

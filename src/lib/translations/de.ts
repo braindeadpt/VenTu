@@ -262,6 +262,8 @@ export const translationsDe = {
     hideStorms: 'Tropische Stürme ausblenden',
     stormsHint: 'Aktive tropische Wirbelstürme — Unsicherheitskegel + Vorhersagetrack (NOAA/NHC)',
     stormsAttribution: 'Tropische Wirbelstürme © NOAA/NHC',
+    warnAreasHint: 'Distrikte und Inseln unter aktiver oder angekündigter IPMA-Warnung — Gebiet antippen zeigt die Details',
+    warnAreasAttribution: 'IPMA-Warnungen · Gebiete © DGT CAOP2025 / OSM',
     coastalWarningsHint: 'Gültige Küsten-Navigationswarnungen — Instituto Hidrográfico',
     coastalWarningsLegend: 'Navigationswarnungen — IH',
     coastalWarningsLegendZone: 'Warnzone',
