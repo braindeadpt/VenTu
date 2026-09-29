@@ -5,7 +5,7 @@ import { getTranslation } from '@/lib/i18n';
 import type { Spot } from '@/types';
 import type { SpotDashboardConditions } from '@/components/spots/SpotConditionsDashboard';
 import type { TideHourPoint, TideSchedule } from '@/lib/tideSchedule';
-import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
+import { getWindRelationLabel, getWindRelationToCoast, getCardinalLabel, type WindRelation } from '@/lib/wind';
 import { isObservedFresh } from '@/lib/observations';
 import { isObservedWaveFresh } from '@/lib/observedWave';
 import { europeanAqiLevel } from '@/lib/airQuality';
@@ -354,6 +354,28 @@ export default function InstrumentDetail({
                 )}
                 {Math.abs(conditions.tideAnomalyM) >= TIDE_SURGE_FLAG_M &&
                   ` · ${ti.tideAnomalySurge}`}
+              </p>
+            )}
+            {/* Corrente medida por radar HF (Fase C) — só spots na rede
+                IH Lisboa; o timestamp vai no title porque a grelha atrasa. */}
+            {conditions.currentMeasuredSpeed != null && (
+              <p
+                className="m-0 font-mono tabular-nums text-[12px] text-fg-muted"
+                data-current-measured
+                title={
+                  conditions.currentMeasuredAt
+                    ? `${ti.currentMeasuredTitle} ${conditions.currentMeasuredAt.replace('T', ' ').replace(':00Z', ' UTC')}`
+                    : ti.currentMeasuredTitle
+                }
+              >
+                {ti.currentMeasuredLine
+                  .replace('{spd}', fmt.f1(conditions.currentMeasuredSpeed))
+                  .replace(
+                    '{dir}',
+                    conditions.currentMeasuredDir != null
+                      ? getCardinalLabel(conditions.currentMeasuredDir)
+                      : '',
+                  )}
               </p>
             )}
           </div>

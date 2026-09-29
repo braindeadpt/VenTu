@@ -145,7 +145,10 @@ function getCurrentConditions(marineData, weatherData, ihTideObs, tideBaseline) 
       // O resíduo desta run entra no baseline DEPOIS de calcular a anomalia
       // — a amostra corrente não se julga a si mesma. Uma vez por estação:
       // vários spots partilham o mesmo codp/maregrafo.
-      if (!tideBaseline._recorded) tideBaseline._recorded = new Set();
+      // instanceof e não truthy: um baseline carregado do disco traz
+      // _recorded serializado como {} (Set → JSON) — recriar em vez de
+      // rebentar em .has(). O Set é apagado antes de persistir.
+      if (!(tideBaseline._recorded instanceof Set)) tideBaseline._recorded = new Set();
       if (!tideBaseline._recorded.has(key)) {
         tideBaseline._recorded.add(key);
         tideAnomaly.recordResidual(
@@ -237,10 +240,37 @@ async function updateConditions() {
     }
   }
   if (ihSkippedStale > 0) console.warn(`⚠️ Skipped stale IH observed tide on ${ihSkippedStale} spots (lastData > ${MAX_OBS_AGE_HOURS}h) — forecast tides stay on Open-Meteo`);
+  // Corrente MEDIDA por radar HF (fetch-hfr-currents.js → hfr-currents.json,
+  // EMODnet/IH Lisboa — Sines→Peniche). Camada suave como o AQI: só entra
+  // quando o grid é fresco (<6h); um outage nunca bloqueia.
+  const hfrPath = path.join(__dirname, '../public/data/hfr-currents.json');
+  const hfr = readJsonIfExists(hfrPath, null, () => console.warn('⚠️ Could not parse hfr-currents.json — measured current hidden this run'));
+  if (hfr?.spots && hfr.time) {
+    const hfrAgeH = require('./lib/hfrCurrents').gridAgeHours(hfr.time);
+    if (hfrAgeH <= require('./lib/hfrCurrents').MAX_AGE_HOURS) {
+      let hfrMerged = 0;
+      for (const [spotId, conditions] of Object.entries(allConditions)) {
+        const entry = hfr.spots[spotId];
+        if (entry && Number.isFinite(Number(entry.spd)) && Number.isFinite(Number(entry.dir))) {
+          conditions.currentMeasuredSpeed = Number(entry.spd);
+          conditions.currentMeasuredDir = Number(entry.dir);
+          conditions.currentMeasuredAt = hfr.time;
+          conditions.currentMeasuredNetwork = hfr.network;
+          hfrMerged += 1;
+        }
+      }
+      console.log(`📡 HFR measured current merged into ${hfrMerged} spots (grid ${hfrAgeH.toFixed(1)}h old)`);
+    } else {
+      console.warn(`⚠️ hfr-currents.json grid ${hfrAgeH.toFixed(1)}h old (>6h) — measured current hidden this run`);
+    }
+  }
   // Persiste o baseline de anomalia (mesmo sem anomalias emitidas — os
   // resíduos desta run contam para a mediana das próximas).
   try {
     tideBaseline.updatedAt = new Date().toISOString();
+    // O Set de dedupe é estado intra-run — serializaria como {} e
+    // corromperia a próxima run (.has is not a function).
+    delete tideBaseline._recorded;
     ensureParentDir(tideBaselinePath);
     atomicWriteJson(tideBaselinePath, tideBaseline);
     const anomalySpots = Object.values(allConditions).filter((c) => c.tideAnomalyM != null).length;

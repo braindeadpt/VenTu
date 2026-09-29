@@ -45,6 +45,11 @@ export interface SpotDashboardConditions {
   tideObservedAt?: string;
   tideStation?: string;
   tideAnomalyM?: number;
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots na rede. */
+  currentMeasuredSpeed?: number;
+  currentMeasuredDir?: number;
+  currentMeasuredAt?: string;
+  currentMeasuredNetwork?: string;
   swellHeight?: number;
   swellPeriod?: number;
   swellDirection?: number;

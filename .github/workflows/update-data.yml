@@ -222,6 +222,14 @@ jobs:
         continue-on-error: true
         run: node scripts/fetch-air-quality.js
 
+      # Corrente medida por radar HF (Fase C — EMODnet ERDDAP, keyless,
+      # rede IH Lisboa Sines→Peniche). Camada suave: o merge em
+      # update-conditions só usa o ficheiro se o grid for fresco (<6h).
+      - name: Fetch HFR measured currents (EMODnet ERDDAP)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: node scripts/fetch-hfr-currents.js
+
       # Climatologia NASA POWER (MERRA-2, baseline 2001–2020 fixa) —
       # artefacto raro: só corre quando o ficheiro ainda não existe. O
       # checkout traz o último commit do bot — depois de gerado uma vez,

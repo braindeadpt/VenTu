@@ -135,6 +135,11 @@ export interface SpotDetailConditions extends SpotListingConditions {
   tideStation?: string
   /** Anomalia de maré (m) — obs de-biased vs previsão (baseline por estação). */
   tideAnomalyM?: number
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots na rede. */
+  currentMeasuredSpeed?: number
+  currentMeasuredDir?: number
+  currentMeasuredAt?: string
+  currentMeasuredNetwork?: string
   /** Índice UV da hora corrente + máximo do dia (pipeline Open-Meteo). */
   uvIndex?: number
   uvIndexMax?: number
@@ -286,6 +291,10 @@ function buildSpotData(
     tideObservedAt: raw?.tideObservedAt as string | undefined,
     tideStation: raw?.tideStation as string | undefined,
     tideAnomalyM: raw?.tideAnomalyM as number | undefined,
+    currentMeasuredSpeed: raw?.currentMeasuredSpeed as number | undefined,
+    currentMeasuredDir: raw?.currentMeasuredDir as number | undefined,
+    currentMeasuredAt: raw?.currentMeasuredAt as string | undefined,
+    currentMeasuredNetwork: raw?.currentMeasuredNetwork as string | undefined,
     uvIndex: raw?.uvIndex as number | undefined,
     uvIndexMax: raw?.uvIndexMax as number | undefined,
     airQualityIndex: raw?.airQualityIndex as number | undefined,

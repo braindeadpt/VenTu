@@ -21,6 +21,10 @@ export interface PrecomputedConditions {
     tideObservedAt?: string;
     tideStation?: string;
     tideAnomalyM?: number;
+    currentMeasuredSpeed?: number;
+    currentMeasuredDir?: number;
+    currentMeasuredAt?: string;
+    currentMeasuredNetwork?: string;
     updatedAt: string;
     confidence?: 'alta' | 'média' | 'baixa';
     confidenceDetail?: {

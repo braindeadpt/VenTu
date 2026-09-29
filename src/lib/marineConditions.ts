@@ -31,6 +31,11 @@ export interface MarineConditionsFields {
   tideStation?: string;
   /** Anomalia de maré (m) — obs IH de-biased vs previsão; só presente com baseline suficiente. */
   tideAnomalyM?: number;
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots dentro da rede. */
+  currentMeasuredSpeed?: number;
+  currentMeasuredDir?: number;
+  currentMeasuredAt?: string;
+  currentMeasuredNetwork?: string;
   /** Multi-model forecast agreement (does not affect score). */
   confidence?: ConfidenceTier;
   confidenceDetail?: ConfidenceDetail;

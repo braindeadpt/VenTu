@@ -82,6 +82,11 @@ interface Conditions {
   tideObservedAt?: string;
   tideStation?: string;
   tideAnomalyM?: number;
+  /** Corrente medida por radar HF (EMODnet/IH Lisboa) — só spots na rede. */
+  currentMeasuredSpeed?: number;
+  currentMeasuredDir?: number;
+  currentMeasuredAt?: string;
+  currentMeasuredNetwork?: string;
   source?: 'real' | 'mock';
   updatedAt?: string;
   confidence?: import('@/lib/forecastConfidence').ConfidenceTier;
@@ -401,6 +406,10 @@ export default function SpotDetailClient({
               tideObservedAt: spotCond.tideObservedAt as string | undefined,
               tideStation: spotCond.tideStation as string | undefined,
               tideAnomalyM: spotCond.tideAnomalyM as number | undefined,
+              currentMeasuredSpeed: spotCond.currentMeasuredSpeed as number | undefined,
+              currentMeasuredDir: spotCond.currentMeasuredDir as number | undefined,
+              currentMeasuredAt: spotCond.currentMeasuredAt as string | undefined,
+              currentMeasuredNetwork: spotCond.currentMeasuredNetwork as string | undefined,
               confidence: spotCond.confidence as Conditions['confidence'],
               confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
               dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],
