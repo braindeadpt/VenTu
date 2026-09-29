@@ -578,6 +578,9 @@ export const translationsDe = {
     modeDigest: 'Tägliche Zusammenfassung (~7:30)',
     dailyDigest: 'Tägliche Zusammenfassung (~7:30) — empfohlen',
     immediate: 'Sofort, wenn es gut wird (max. 1×/3 h)',
+    warnOptIn: 'Offizielle Warnungen zu Favoriten',
+    warnOptInHint:
+      'Warne mich auch, wenn ein Favorit eine orange/rote IPMA-Warnung, eine echte Gefahr im Wasser (IH) oder einen Tropensturm-Kegel (NHC) hat — auch ohne gute Punktzahl.',
     disable: 'Deaktivieren',
     metaTitle: 'E-Mail-Alarme — VenTu',
     metaDescription:

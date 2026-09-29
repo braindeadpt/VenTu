@@ -32,6 +32,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
   const [sport, setSport] = useState<SportType>('kitesurf');
   const [minScore, setMinScore] = useState(70);
   const [alertMode, setAlertMode] = useState<AlertMode>('digest');
+  const [warn, setWarn] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
@@ -52,6 +53,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
         setSport(row.sport as SportType);
         setMinScore(row.min_score);
         setAlertMode(row.alert_mode);
+        setWarn(row.warn === true);
       }
     } finally {
       setLoading(false);
@@ -77,7 +79,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
     setSaved(false);
 
     try {
-      const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode);
+      const result = await subscribeFavoritesAlerts(sb, minScore, sport, locale, alertMode, warn);
       if (!result.ok) {
         setError(formatUserAlertsError(result.error, locale));
         return;
@@ -141,6 +143,7 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
           score ≥ {prefs!.min_score}
           {' · '}
           {alertModeLabel(prefs!.alert_mode, locale)}
+          {prefs!.warn === true && ` · ${a.warnOptIn}`}
         </p>
       )}
 
@@ -197,6 +200,19 @@ export default function FavoritesAlertsPanel({ locale, favoriteCount }: Favorite
             <option value="immediate">{a.immediate}</option>
           </select>
         </div>
+
+        <label className="flex items-start gap-2.5 cursor-pointer py-1">
+          <input
+            type="checkbox"
+            checked={warn}
+            onChange={(e) => setWarn(e.target.checked)}
+            className="mt-0.5 w-4 h-4 rounded border-divider accent-[var(--accent)] shrink-0"
+          />
+          <span className="min-w-0">
+            <span className="block text-sm text-fg">{a.warnOptIn}</span>
+            <span className="block text-meta-sm text-fg-muted mt-0.5">{a.warnOptInHint}</span>
+          </span>
+        </label>
 
         {error && <p className="text-xs text-score-poor">{error}</p>}
 

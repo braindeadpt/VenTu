@@ -506,6 +506,9 @@ export const translationsEn = {
     modeDigest: 'Daily digest (~7:30 AM)',
     dailyDigest: 'Daily digest (~7:30 AM) — recommended',
     immediate: 'Immediate when conditions fire (max once per 3h)',
+    warnOptIn: 'Official warnings on favorites',
+    warnOptInHint:
+      'Also alert me when a favorite has an orange/red IPMA warning, a real in-water navigation hazard (IH) or a tropical storm cone (NHC) — even without a good score.',
     disable: 'Disable',
     metaTitle: 'Email alerts — VenTu',
     metaDescription:

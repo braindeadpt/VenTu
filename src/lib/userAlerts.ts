@@ -10,6 +10,12 @@ export interface UserAlertPrefs {
   min_score: number;
   sport: string;
   alert_mode: AlertMode;
+  /**
+   * B4: avisos oficiais independentes do score — IPMA laranja/vermelho,
+   * perigo §0 do IH, cone NHC. Coluna `warn` (supabase-alerts-warn.sql);
+   * ausente → undefined → tratada como false.
+   */
+  warn?: boolean;
   verified: boolean;
   active: boolean;
   locale: string;
@@ -38,7 +44,7 @@ export async function fetchUserAlertPrefs(
   const { data, error } = await sb
     .from('user_alert_prefs')
     .select(
-      'user_id, email, min_score, sport, alert_mode, verified, active, locale, last_sent_at, created_at, updated_at',
+      'user_id, email, min_score, sport, alert_mode, warn, verified, active, locale, last_sent_at, created_at, updated_at',
     )
     .eq('user_id', userId)
     .maybeSingle();
@@ -57,12 +63,14 @@ export async function subscribeFavoritesAlerts(
   sport: SportType,
   locale: string,
   alertMode: AlertMode = 'digest',
+  warn = false,
 ): Promise<SubscribeFavoritesAlertsResult> {
   const { data, error } = await (sb as SupabaseClient).rpc('subscribe_favorites_alerts', {
     p_min_score: minScore,
     p_sport: sport,
     p_locale: locale,
     p_alert_mode: alertMode,
+    p_warn: warn,
   });
 
   if (error) {

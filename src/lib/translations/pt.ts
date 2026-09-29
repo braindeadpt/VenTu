@@ -508,6 +508,9 @@ export const translationsPt = {
     modeDigest: 'Resumo diário (~7h30)',
     dailyDigest: 'Resumo diário (~7h30) — recomendado',
     immediate: 'Imediato quando estiver bom (máx. 1×/3h)',
+    warnOptIn: 'Avisos oficiais nos favoritos',
+    warnOptInHint:
+      'Também me avisas quando um favorito tem aviso IPMA laranja/vermelho, perigo real à navegação (IH) ou cone de tempestade tropical (NHC) — mesmo sem bom score.',
     disable: 'Desactivar',
     metaTitle: 'Alertas por email — VenTu',
     metaDescription:

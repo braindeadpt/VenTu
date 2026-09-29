@@ -19,6 +19,8 @@ const WARNINGS_PATH =
 const COASTAL_WARNINGS_PATH =
   process.env.IH_COASTAL_WARNINGS_OUTPUT_PATH ||
   path.join(__dirname, '../public/data/ih-coastal-warnings.json');
+const STORMS_PATH =
+  process.env.NHC_STORMS_OUTPUT_PATH || path.join(__dirname, '../public/data/storms.json');
 const SITE_URL = 'https://ventu.surf';
 const FROM_EMAIL = process.env.RESEND_FROM || 'VenTu <alerts@ventu.surf>';
 const COOLDOWN_MS = 3 * 60 * 60 * 1000;
@@ -36,6 +38,7 @@ const {
   processTelegramLinkUpdates,
   fetchTelegramChatId,
 } = require('./lib/telegram');
+const { warningTriggersForSpot, triggerLines } = require('./lib/alertWarnTriggers');
 
 function loadEnvLocal() {
   const envPath = path.join(__dirname, '../.env.local');
@@ -85,6 +88,18 @@ function loadCoastalWarnings() {
     }
   } catch (err) {
     console.warn(`  ⚠️ Coastal warnings not loaded (${err.message}) — IH nav warnings omitted.`);
+  }
+  return null;
+}
+
+/** Load baked NHC tropical storms (best-effort — B4 warn triggers degrade without it). */
+function loadStorms() {
+  try {
+    if (fs.existsSync(STORMS_PATH)) {
+      return JSON.parse(fs.readFileSync(STORMS_PATH, 'utf-8'));
+    }
+  } catch (err) {
+    console.warn(`  ⚠️ Storms not loaded (${err.message}) — NHC cone triggers omitted.`);
   }
   return null;
 }
@@ -415,9 +430,10 @@ async function sendUserVerification(pref, favoriteCount) {
     : mode === 'immediate'
       ? 'immediate alerts (max once per 3h)'
       : 'daily digest (~7:30 AM)';
+  const warnNote = pref.warn === true ? (isPt ? ' + avisos oficiais' : ' + official warnings') : '';
   const html = isPt
-    ? `<p>Confirma alertas por email para <strong>${count}</strong> spot(s) favorito(s) (${sport}, score ≥ ${minScore}, ${freqNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
-    : `<p>Confirm email alerts for <strong>${count}</strong> favorite spot(s) (${sport}, score ≥ ${minScore}, ${freqNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
+    ? `<p>Confirma alertas por email para <strong>${count}</strong> spot(s) favorito(s) (${sport}, score ≥ ${minScore}, ${freqNote}${warnNote}):</p><p><a href="${link}">Confirmar alertas</a></p>`
+    : `<p>Confirm email alerts for <strong>${count}</strong> favorite spot(s) (${sport}, score ≥ ${minScore}, ${freqNote}${warnNote}):</p><p><a href="${link}">Confirm alerts</a></p>`;
   await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
 }
 
@@ -488,9 +504,10 @@ async function evaluateLegacySubscriptions(slugToId, conditions, warnings, coast
   };
 }
 
-async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal) {
+async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal, storms) {
   const prefs = await fetchUserAlertPrefs();
   let sent = 0;
+  let warnSent = 0;
   let digestSkipped = 0;
   let immediateSkipped = 0;
 
@@ -512,8 +529,16 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
     if (favoriteCount === 0) continue;
 
     const firing = [];
+    // B4: com `warn` opt-in, um favorito com aviso oficial activo (IPMA
+    // laranja/vermelho, perigo §0 do IH, cone NHC) dispara o alerta mesmo
+    // com score baixo. Sem a flag/coluna → comportamento E1c intacto.
+    const warned = [];
     for (const spotId of favoriteIds) {
       const slug = idToSlug[spotId] || spotId;
+      const triggers =
+        pref.warn === true
+          ? warningTriggersForSpot({ warnings, coastal, storms }, spotId)
+          : [];
       const scored = computeScore(spotId, pref.sport, conditions);
       if (scored !== null && scored.score >= pref.min_score) {
         firing.push({
@@ -522,11 +547,14 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
           source: scored.source,
           seaWarn: seaWarningForSpot(warnings, spotId),
           coastalWarn: coastalWarningsForSpot(coastal, spotId),
+          triggers,
         });
+      } else if (triggers.length > 0) {
+        warned.push({ slug, triggers });
       }
     }
 
-    if (firing.length === 0) continue;
+    if (firing.length === 0 && warned.length === 0) continue;
 
     const lastSent = pref.last_sent_at ? new Date(pref.last_sent_at).getTime() : 0;
 
@@ -550,38 +578,66 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
     const unsub = alertPath(pref.locale, 'unsubscribe', pref.verify_token);
     const anySea = firing.some((f) => f.seaWarn);
     const anyCoastal = firing.some((f) => f.coastalWarn.length > 0);
-    const subject =
-      `${anySea ? (isPt ? '⚠️ Mar perigoso — ' : '⚠️ Dangerous sea — ') : anyCoastal ? (isPt ? '⚠️ Aviso à navegação (IH) — ' : '⚠️ Coastal warning (IH) — ') : ''}` +
-      (mode === 'digest'
-        ? isPt
-          ? `VenTu — bom dia: ${firing.length} favorito(s) a bombar`
-          : `VenTu — morning: ${firing.length} favorite(s) firing`
-        : isPt
-          ? `VenTu — ${firing.length} favorito(s) a bombar`
-          : `VenTu — ${firing.length} favorite(s) firing`);
+    const anyWarn = warned.length > 0 || firing.some((f) => f.triggers.length > 0);
+
+    let subject;
+    if (firing.length === 0) {
+      // Só avisos — o assunto é o próprio aviso.
+      subject = isPt
+        ? `VenTu — ⚠️ aviso oficial em ${warned.length} favorito(s)`
+        : `VenTu — ⚠️ official warning on ${warned.length} favorite(s)`;
+    } else {
+      subject =
+        `${anySea ? (isPt ? '⚠️ Mar perigoso — ' : '⚠️ Dangerous sea — ') : anyCoastal ? (isPt ? '⚠️ Aviso à navegação (IH) — ' : '⚠️ Coastal warning (IH) — ') : ''}` +
+        (mode === 'digest'
+          ? isPt
+            ? `VenTu — bom dia: ${firing.length} favorito(s) a bombar`
+            : `VenTu — morning: ${firing.length} favorite(s) firing`
+          : isPt
+            ? `VenTu — ${firing.length} favorito(s) a bombar`
+            : `VenTu — ${firing.length} favorite(s) firing`);
+      if (anyWarn && !subject.startsWith('⚠️')) subject = `⚠️ ${subject}`;
+    }
 
     const intro =
-      mode === 'digest'
+      firing.length === 0
         ? isPt
-          ? '<p>Resumo diário dos teus favoritos com condições boas agora:</p>'
-          : '<p>Daily digest of your favorites with good conditions right now:</p>'
-        : isPt
-          ? '<p>Condições boas nos teus favoritos:</p>'
-          : '<p>Good conditions on your favorites:</p>';
+          ? '<p>Avisos oficiais em vigor nos teus favoritos:</p>'
+          : '<p>Official warnings in force on your favorites:</p>'
+        : mode === 'digest'
+          ? isPt
+            ? '<p>Resumo diário dos teus favoritos com condições boas agora:</p>'
+            : '<p>Daily digest of your favorites with good conditions right now:</p>'
+          : isPt
+            ? '<p>Condições boas nos teus favoritos:</p>'
+            : '<p>Good conditions on your favorites:</p>';
 
     const items = firing
-      .map(({ slug, score, source, seaWarn, coastalWarn }) => {
+      .map(({ slug, score, source, seaWarn, coastalWarn, triggers }) => {
         const spotUrl = spotPath(pref.locale, slug);
         const note = scoreSourceNote(source, isPt);
         // Email (items do digest/imediato): linha com área + texto oficial.
         const seaLine = seaWarningEmailLine(seaWarn, isPt);
         const coastalLine = coastalWarningLine(coastalWarn, isPt);
-        const safetyLine = [seaLine, coastalLine].filter(Boolean).join('<br/>');
-        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100${note}${safetyLine ? `<br/><strong>${escapeHtml(safetyLine)}</strong>` : ''}</li>`;
+        const warnLines = triggerLines(triggers, isPt, 'email');
+        const safetyLine = [seaLine, coastalLine, ...warnLines]
+          .filter(Boolean)
+          .map(escapeHtml)
+          .join('<br/>');
+        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a> — score ${escapeHtml(score)}/100${note}${safetyLine ? `<br/><strong>${safetyLine}</strong>` : ''}</li>`;
       })
       .join('');
 
-    const html = `${intro}<ul>${items}</ul><p><a href="${unsub}">${isPt ? 'Cancelar alertas' : 'Unsubscribe'}</a></p>`;
+    // Favoritos que só têm aviso (score abaixo do limiar) — sem score.
+    const warnedItems = warned
+      .map(({ slug, triggers }) => {
+        const spotUrl = spotPath(pref.locale, slug);
+        const lines = triggerLines(triggers, isPt, 'email').map(escapeHtml).join('<br/>');
+        return `<li><a href="${spotUrl}"><strong>${escapeHtml(slug)}</strong></a><br/><strong>${lines}</strong></li>`;
+      })
+      .join('');
+
+    const html = `${intro}<ul>${items}${warnedItems}</ul><p><a href="${unsub}">${isPt ? 'Cancelar alertas' : 'Unsubscribe'}</a></p>`;
 
     const ok = await sendEmail(pref.email, subject, html, { unsubscribeUrl: unsub });
 
@@ -590,20 +646,37 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
     const chatId = await fetchTelegramChatId(url, key, pref.user_id);
     let tgOk = false;
     if (chatId) {    const tgLines = firing
-      .map(({ slug, score, source, seaWarn, coastalWarn }) => {
+      .map(({ slug, score, source, seaWarn, coastalWarn, triggers }) => {
         const line = `• ${slug} — ${score}/100${scoreSourceNote(source, isPt)}`;
-        const safetyLine = [seaWarningLine(seaWarn, isPt), coastalWarningLine(coastalWarn, isPt)]
+        const safetyLine = [
+          seaWarningLine(seaWarn, isPt),
+          coastalWarningLine(coastalWarn, isPt),
+          ...triggerLines(triggers, isPt),
+        ]
           .filter(Boolean)
           .join('\n  ');
         return safetyLine ? `${line}\n  ${safetyLine}` : line;
       })
       .join('\n');
+      const tgWarnLines = warned
+        .map(
+          ({ slug, triggers }) =>
+            `• ${slug}\n  ${triggerLines(triggers, isPt).join('\n  ')}`,
+        )
+        .join('\n');
+      const allTgLines = [tgLines, tgWarnLines].filter(Boolean).join('\n');
       // Resumo dos avisos costeiros no DIGEST (não só na linha de cada spot):
       // um bloco agregado por refs distintos, antes das linhas por spot.
       const coastalSummary = mode === 'digest' ? buildCoastalDigestSummary(firing, isPt) : '';
-      const tgText = isPt
-        ? `VenTu — ${firing.length} favorito(s) a bombar${coastalSummary ? `\n\n${coastalSummary}` : ''}\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`
-        : `VenTu — ${firing.length} favorite(s) firing${coastalSummary ? `\n\n${coastalSummary}` : ''}\n\n${tgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`;
+      const tgHead =
+        firing.length === 0
+          ? isPt
+            ? `VenTu — ⚠️ aviso oficial em ${warned.length} favorito(s)`
+            : `VenTu — ⚠️ official warning on ${warned.length} favorite(s)`
+          : isPt
+            ? `VenTu — ${firing.length} favorito(s) a bombar`
+            : `VenTu — ${firing.length} favorite(s) firing`;
+      const tgText = `${tgHead}${coastalSummary ? `\n\n${coastalSummary}` : ''}\n\n${allTgLines}\n\n${SITE_URL}/${safeLocale(pref.locale)}/favorites/`;
       try {
         tgOk = await sendTelegramMessage(chatId, tgText);
       } catch (err) {
@@ -614,12 +687,14 @@ async function evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coast
     if (ok || tgOk) {
       await markUserPrefsSent(pref.user_id);
       sent++;
+      if (anyWarn) warnSent++;
     }
   }
 
   return {
     userPrefsCount: prefs.length,
     userDigestSent: sent,
+    userWarnSent: warnSent,
     digestSkipped,
     immediateSkipped,
   };
@@ -672,11 +747,21 @@ async function main() {
 
   const warnings = loadWarnings();
   const coastal = loadCoastalWarnings();
+  const storms = loadStorms();
   const legacy = await evaluateLegacySubscriptions(slugToId, conditions, warnings, coastal);
-  const e1c = await evaluateUserFavoritesAlerts(idToSlug, conditions, warnings, coastal);
+  const e1c = await evaluateUserFavoritesAlerts(
+    idToSlug,
+    conditions,
+    warnings,
+    coastal,
+    storms,
+  );
 
   console.log(`  Legacy subscriptions: ${legacy.legacyCount}`);
   console.log(`  User alert prefs (E1c): ${e1c.userPrefsCount}`);
+  if (e1c.userWarnSent > 0) {
+    console.log(`  Warn alerts (official warnings, score-independent): ${e1c.userWarnSent}`);
+  }
   if (e1c.digestSkipped > 0) {
     console.log(`  Digest skipped (outside window or already sent today): ${e1c.digestSkipped}`);
   }

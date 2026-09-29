@@ -578,6 +578,9 @@ export const translationsFr = {
     modeDigest: 'Résumé quotidien (~7h30)',
     dailyDigest: 'Résumé quotidien (~7 h 30) — recommandé',
     immediate: 'Immédiat quand c’est bon (max. 1×/3 h)',
+    warnOptIn: 'Alertes officielles sur les favoris',
+    warnOptInHint:
+      'M’alerte aussi quand un favori a un avis IPMA orange/rouge, un danger réel pour la navigation (IH) ou un cône de tempête tropicale (NHC) — même sans bon score.',
     disable: 'Désactiver',
     metaTitle: 'Alertes par e-mail — VenTu',
     metaDescription:

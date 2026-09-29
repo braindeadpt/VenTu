@@ -140,6 +140,18 @@ Ilhas = `radar: null` (fora das bounds IPMA — honesto).
 
 ### B4 — Alertas de aviso para o utilizador
 
+**Estado: implementado** — `scripts/lib/alertWarnTriggers.js` (triggers por
+spot: IPMA laranja/vermelho em `spotWarnings`, faixa §0 do IH via
+`coverage` — port dos regex de `navWarningSafety.ts`, cone NHC em
+`spotStorms`) + `warn` opt-in em `user_alert_prefs`
+(`supabase/supabase-alerts-warn.sql`: coluna + RPC
+`subscribe_favorites_alerts` 5-arg com rate-limit per-IP intacto) +
+`warned[]` no evaluator — email/Telegram dispara sem nenhum score firing,
+respeitando digest/imediato/cooldown existentes; UI: checkbox no
+`FavoritesAlertsPanel` ×5 locales. Amarelos IPMA e avisos de sinalização
+não disparam (ruído). Sem a coluna `warn` → `pref.warn === true` nunca e
+o comportamento E1c fica intacto (migration opcional, degrada limpo).
+
 - Gatilho independente do score: favorito com IPMA ≥ laranja, IH §0, ou
   **cone NHC a tocar o spot** → email/Telegram.
 - Flag `warn` em `user_alert_prefs` + path no evaluator + template ×5 locales.
