@@ -44,6 +44,7 @@ export interface MapLayersMenuItem {
 const GROUP_OF: Record<string, MapLayerGroup> = {
   hours: 'time',
   radar: 'time',
+  gibsSat: 'time',
   isobaths: 'sea',
   hs: 'sea',
   sst: 'sea',
@@ -59,6 +60,7 @@ const GROUP_ORDER: MapLayerGroup[] = ['time', 'sea', 'nav'];
 const ORDER_OF: Record<string, number> = {
   hours: 0,
   radar: 1,
+  gibsSat: 2,
   isobaths: 0,
   hs: 1,
   sst: 2,
@@ -72,6 +74,7 @@ const ORDER_OF: Record<string, number> = {
 const NAME_KEY: Record<string, keyof mapUiLayersDict> = {
   hours: 'layerHours',
   radar: 'layerRadar',
+  gibsSat: 'layerGibsSat',
   isobaths: 'layerIsobaths',
   hs: 'layerHs',
   sst: 'layerSst',

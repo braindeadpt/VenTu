@@ -47,6 +47,9 @@ const SHARED_TOKENS = new Set([
   '{from}–{to} h',
   'ME {me} m · RMSE {rmse} m · n={n}',
   'ME {me} m · n={n}',
+  // Siglas técnicas universais — «UV» (índice ultravioleta) e «AQI» (Air
+  // Quality Index europeu) são siglas oficiais iguais em todas as línguas.
+  'UV', 'AQI',
 ]);
 
 /**
@@ -254,6 +257,8 @@ const EN_COGNATES = new Set([
   '{from}–{to} h',
   'ME {me} m · RMSE {rmse} m · n={n}',
   'ME {me} m · n={n}',
+  // Siglas oficiais universais — «UV» e «AQI» são iguais em PT e EN.
+  'UV', 'AQI',
 ]);
 
 /** Allowlist por locale — cada valor idêntico ao pt tem de estar justificado. */

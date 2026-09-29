@@ -112,6 +112,8 @@ const DATA_FILE_BUDGETS_MB = {
   'spots-index.json': 1.5,
   'wind-bias.json': 2.5,
   'forecast-skill.json': 0.5,
+  'climatology.json': 0.5,
+  'air-quality.json': 0.2,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;

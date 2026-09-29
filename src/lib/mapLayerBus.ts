@@ -64,7 +64,7 @@ export function requestMapAreaFit(area: MapAreaKey) {
 /** Camadas raster pesadas (imagem/tiling de terceiros): máximo 2 activas —
  *  a 3.ª desliga a mais antiga. Hs/SST/correntes são canvas vectoriais e já
  *  têm exclusão mútua, por isso não entram aqui. */
-export const MAP_HEAVY_RASTER_KEYS = ['radar', 'bathymetry', 'seamarks'] as const;
+export const MAP_HEAVY_RASTER_KEYS = ['radar', 'bathymetry', 'seamarks', 'gibsSat'] as const;
 export type MapHeavyRasterKey = (typeof MAP_HEAVY_RASTER_KEYS)[number];
 export const MAP_HEAVY_RASTER_MAX = 2;
 

@@ -112,6 +112,7 @@ export default function MapLayersZone({
         radar: t.mapUiLayers.layerRadar,
         bathymetry: t.mapUiLayers.layerBathymetry,
         seamarks: t.mapUiLayers.layerSeamarks,
+        gibsSat: t.mapUiLayers.layerGibsSat,
       };
       showToast(t.mapUiLayers.rasterCapToast.replace('{layer}', names[key]));
     };

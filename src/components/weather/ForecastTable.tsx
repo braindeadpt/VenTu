@@ -52,6 +52,8 @@ export interface ForecastHour {
   windGust?: number;
   waterTemp?: number;
   tideHeight?: number;
+  /** Índice UV da hora (linha `uvIndex` do forecast — Open-Meteo). */
+  uvIndex?: number;
   score?: number;
 }
 
@@ -152,6 +154,14 @@ function waterBg(t: number): string {
 function waterText(t: number): string {
   if (t < 14) return 'text-windDir-onshore';
   return 'text-fg';
+}
+
+/** Índice UV → fundo (escala OMS: <3 baixo · 3–5 moderado · 6–7 alto · ≥8 muito alto). */
+function uvBg(u: number): string {
+  if (u < 3) return 'bg-surface-1/[0.02]';
+  if (u < 6) return 'bg-data-period/8';
+  if (u < 8) return 'bg-data-period/14';
+  return 'bg-data-period/20';
 }
 
 function tidePhaseBg(phase: TidePhase): string {
@@ -474,6 +484,7 @@ export default function ForecastTable({
   /* ── row presence checks ── */
   const hasGust = visible.some((h) => typeof h.windGust === 'number');
   const hasWaterTemp = visible.some((h) => typeof h.waterTemp === 'number');
+  const hasUv = visible.some((h) => typeof h.uvIndex === 'number');
   const hasTide = visible.some((h) => typeof h.tideHeight === 'number');
   const tidePhases = useMemo(
     () => (hasTide ? getTidePhasesForHours(visible) : []),
@@ -903,6 +914,38 @@ export default function ForecastTable({
                   {typeof h.waterTemp === 'number'
                     ? h.waterTemp.toFixed(1)
                     : '—'}
+                </td>
+              ))}
+            </tr>
+          )}
+
+          {/* ── UV (conditional) — índice previsto por hora, escala OMS ── */}
+          {hasUv && (
+            <tr>
+              <th
+                scope="row"
+                className={`forecast-sticky-label ${labelW} ${labelCellPx} text-left ${metaText} text-fg-subtle font-medium border-r-2 border-divider`}
+              >
+                {t.uv}
+              </th>
+              {visible.map((h, i) => (
+                <td
+                  key={i}
+                  data-tl-col={visibleStart + i}
+                  className={`${hourW} ${cellPx} max-md:snap-start ${nowCol(i)} ${
+                    typeof h.uvIndex === 'number'
+                      ? uvBg(h.uvIndex)
+                      : 'bg-surface-1/[0.04]'
+                  } font-mono ${numText} ${
+                    typeof h.uvIndex === 'number' && h.uvIndex >= 6
+                      ? 'text-data-period'
+                      : 'text-fg-muted'
+                  } ${dayStart[i] ? 'forecast-col-daystart' : ''} ${hoveredCol === i ? 'bg-surface-2/[0.08]' : ''} transition-colors duration-fast border-b border-divider/20`}
+                  title={buildTooltip(h, sportLabel)}
+                  onMouseEnter={() => setHoveredCol(i)}
+                  onMouseLeave={() => setHoveredCol(null)}
+                >
+                  {typeof h.uvIndex === 'number' ? h.uvIndex.toFixed(0) : '—'}
                 </td>
               ))}
             </tr>

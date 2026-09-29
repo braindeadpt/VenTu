@@ -8,6 +8,7 @@ import type { TideHourPoint, TideSchedule } from '@/lib/tideSchedule';
 import { getWindRelationLabel, getWindRelationToCoast, type WindRelation } from '@/lib/wind';
 import { isObservedFresh } from '@/lib/observations';
 import { isObservedWaveFresh } from '@/lib/observedWave';
+import { europeanAqiLevel } from '@/lib/airQuality';
 import type { ScoreWindCorrection, ScoreWindSource } from '@/lib/scoreConditions';
 import ObservedNow from '@/components/spots/ObservedNow';
 import ObservedWaveCard from '@/components/spots/ObservedWaveCard';
@@ -42,6 +43,8 @@ interface InstrumentDetailProps {
   conditions: SpotDashboardConditions;
   /** Linha da hora escolhida (modelo) — os valores seguem o eixo de tempo. */
   hour: InstrumentHour | null;
+  /** A hora escolhida é «agora» — o AQI só existe na hora corrente. */
+  isNow?: boolean;
   tideSchedule: TideSchedule | null;
   tideHourly?: TideHourPoint[];
   /** Relógio de frescura (bakedAtMs até montar — guarda React #418). */
@@ -51,6 +54,12 @@ interface InstrumentDetailProps {
   copy: {
     gustLabel: string;
     gustHint: string;
+    uvLabel: string;
+    uvMaxLabel: string;
+    uvHint: string;
+    aqiLabel: string;
+    aqiHint: string;
+    aqiLevels: Record<import('@/lib/airQuality').AqiLevel, string>;
     windContextTitle: string;
     windRelationHints: Record<WindRelation, string>;
     radarFootnote: string;
@@ -65,6 +74,7 @@ export default function InstrumentDetail({
   locale,
   conditions,
   hour,
+  isNow,
   tideSchedule,
   tideHourly,
   freshnessNowMs,
@@ -182,6 +192,27 @@ export default function InstrumentDetail({
               />{' '}
               {copy.gustLabel} {fmt.f0(gustKt)} kt
             </p>
+            {/* UV da hora escolhida + máximo do dia — planeamento de
+                exposição ao sol, mesma fonte Open-Meteo do vento. */}
+            {(hour?.uvIndex !== undefined || conditions.uvIndex !== undefined) && (
+              <p className="m-0 font-mono tabular-nums text-[13px] text-fg-muted" title={copy.uvHint}>
+                {copy.uvLabel} {hour?.uvIndex ?? conditions.uvIndex}
+                {conditions.uvIndexMax !== undefined && (
+                  <span className="text-fg-subtle"> · {copy.uvMaxLabel} {conditions.uvIndexMax}</span>
+                )}
+              </p>
+            )}
+            {/* AQI europeu — só na hora corrente (a camada CAMS não é por
+                hora de previsão nesta fase); fresco <8 h garantido no merge. */}
+            {isNow && conditions.airQualityIndex !== undefined && (
+              <p className="m-0 font-mono tabular-nums text-[13px] text-fg-muted" title={copy.aqiHint}>
+                {copy.aqiLabel} {conditions.airQualityIndex}
+                <span className="text-fg-subtle">
+                  {' · '}
+                  {copy.aqiLevels[europeanAqiLevel(conditions.airQualityIndex)]}
+                </span>
+              </p>
+            )}
             <p className="m-0 text-[13px] leading-[1.55] text-fg-muted">
               <ScoreWindSourceBadge
                 source={scoreWindSource}

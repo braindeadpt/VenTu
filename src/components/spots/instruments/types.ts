@@ -20,6 +20,8 @@ export interface InstrumentHour {
   windWaveHeightM?: number;
   tideHeightM?: number;
   waterTempC?: number;
+  /** Índice UV da hora (campo `uvIndex` das linhas de forecast). */
+  uvIndex?: number;
   /**
    * Banda ensemble P10/P50/P90 da hora (`ens` da linha de forecast) — só
    * existe nas horas multi-modelo. Null/ausente = o slot não mostra banda.
@@ -49,6 +51,7 @@ export function rowToInstrumentHour(
     windWaveHeightM: num(row.windWaveHeight),
     tideHeightM: num(row.tideHeight),
     waterTempC: num(row.waterTemp),
+    uvIndex: num(row.uvIndex),
     ensemble: parseEnsemble(row.ens),
   };
 }
@@ -71,6 +74,7 @@ export function conditionsToInstrumentHour(
     secondarySwellHeight?: number;
     tideHeight?: number;
     waterTemp?: number;
+    uvIndex?: number;
   },
 ): InstrumentHour {
   return {
@@ -86,6 +90,7 @@ export function conditionsToInstrumentHour(
     windWaveHeightM: c.secondarySwellHeight,
     tideHeightM: c.tideHeight,
     waterTempC: c.waterTemp,
+    uvIndex: c.uvIndex,
   };
 }
 

@@ -213,6 +213,25 @@ jobs:
         if: steps.gate.outputs.mode != 'skip'
         run: node scripts/fetch-ipma-radar.js
 
+      # Qualidade do ar (European AQI, CAMS via Open-Meteo Air Quality) —
+      # host separado do forecast API (quota própria). Falha suave por
+      # desenho: o merge em update-conditions só usa o ficheiro se fresco
+      # (<8h) — um outage AQ nunca bloqueia o pipeline de condições.
+      - name: Fetch air quality (Open-Meteo AQ, European AQI)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: node scripts/fetch-air-quality.js
+
+      # Climatologia NASA POWER (MERRA-2, baseline 2001–2020 fixa) —
+      # artefacto raro: só corre quando o ficheiro ainda não existe. O
+      # checkout traz o último commit do bot — depois de gerado uma vez,
+      # fica tracked e o passo salta. continue-on-error: sem o ficheiro o
+      # card simplesmente não renderiza (degradação suave por desenho).
+      - name: Fetch NASA POWER climatology (if missing)
+        if: steps.gate.outputs.mode == 'full'
+        continue-on-error: true
+        run: test -f public/data/climatology.json || node scripts/fetch-climatology.js
+
       - name: Update Conditions (Open-Meteo)
         if: steps.gate.outputs.mode == 'full'
         # Para activar o AIFS (vento) quando o Open-Meteo o servir no endpoint

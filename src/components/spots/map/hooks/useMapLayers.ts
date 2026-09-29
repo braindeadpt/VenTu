@@ -44,7 +44,15 @@ import {
   OPENSEAMAP_ATTRIBUTION,
   MAP_SEAMARKS_PANE,
   MAP_SEAMARKS_PANE_Z,
+  MAP_GIBS_SAT_LS_KEY,
 } from '@/lib/map-constants';
+import {
+  GIBS_SATELLITE_URL,
+  GIBS_SATELLITE_NATIVE_MAX_ZOOM,
+  GIBS_SATELLITE_ATTRIBUTION,
+  MAP_GIBS_SAT_PANE,
+  MAP_GIBS_SAT_PANE_Z,
+} from '@/lib/gibsSatellite';
 import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
   IPMA_RADAR_ATTRIBUTION_LABEL_EN,
@@ -112,6 +120,9 @@ interface UseMapLayersReturn {
   // Seamarks (OpenSeaMap raster tiles)
   seamarksEnabled: boolean;
   toggleSeamarks: () => void;
+  // Satélite NASA GIBS (raster true-color «hoje»)
+  gibsSatEnabled: boolean;
+  toggleGibsSat: () => void;
   // Coastal warnings
   coastalWarningsEnabled: boolean;
   coastalWarningsData: CoastalWarningsFile | null | undefined;
@@ -180,6 +191,7 @@ export function useMapLayers({
     radar: false,
     bathymetry: false,
     seamarks: false,
+    gibsSat: false,
   });
 
   const evictHeavy = useCallback((key: MapHeavyRasterKey) => {
@@ -630,6 +642,64 @@ export function useMapLayers({
     return () => { delete setters.seamarks; };
   }, []);
 
+  // ── Satélite NASA GIBS (MODIS Terra true-color) ──
+  // Imagem real do último passe de satélite — nuvens e frentes a chegar.
+  // O slot `default` da URL serve sempre a data mais recente (no-store, o
+  // browser revalida). Raster opaca num pane logo acima do basemap: enquanto
+  // ligada substitui a carta, com fields/radar/marcadores por cima. Opt-in,
+  // conta para o cap de raster pesadas.
+  const [gibsSatEnabled, setGibsSatEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    try {
+      return localStorage.getItem(MAP_GIBS_SAT_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    if (!gibsSatEnabled || !isReady) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+    if (!map || !Leaflet) return;
+
+    let pane = map.getPane(MAP_GIBS_SAT_PANE);
+    if (!pane) pane = map.createPane(MAP_GIBS_SAT_PANE);
+    pane.style.zIndex = MAP_GIBS_SAT_PANE_Z;
+    pane.style.pointerEvents = 'none';
+
+    const layer = Leaflet.tileLayer(GIBS_SATELLITE_URL, {
+      pane: MAP_GIBS_SAT_PANE,
+      opacity: 1,
+      attribution: GIBS_SATELLITE_ATTRIBUTION,
+      className: 'ventu-gibs-sat',
+      maxNativeZoom: GIBS_SATELLITE_NATIVE_MAX_ZOOM,
+      maxZoom: 19,
+    });
+    layer.addTo(map);
+
+    return () => {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+    };
+  }, [gibsSatEnabled, isReady, mapInstanceRef, LRef]);
+
+  const toggleGibsSat = useCallback(() => {
+    toggleHeavy('gibsSat', (next) => {
+      setGibsSatEnabled(next);
+      try { localStorage.setItem(MAP_GIBS_SAT_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.gibsSat = (next: boolean) => {
+      setGibsSatEnabled(next);
+      try { localStorage.setItem(MAP_GIBS_SAT_LS_KEY, next ? '1' : '0'); } catch { /* noop */ }
+    };
+    return () => { delete setters.gibsSat; };
+  }, []);
+
   // Reconciliação do cap: mudanças por vias externas (deep link ?radar=1,
   // reset do radar, prefs) mantêm a ordem/estado internos correctos.
   useEffect(() => {
@@ -637,6 +707,7 @@ export function useMapLayers({
       radar: radarEnabled,
       bathymetry: bathymetryEnabled,
       seamarks: seamarksEnabled,
+      gibsSat: gibsSatEnabled,
     };
     for (const k of MAP_HEAVY_RASTER_KEYS) {
       const was = heavyOnRef.current[k];
@@ -654,7 +725,7 @@ export function useMapLayers({
       heavyOrderRef.current = heavyOrderRef.current.slice(1);
       heavySetRef.current[oldest]?.(false);
     }
-  }, [radarEnabled, bathymetryEnabled, seamarksEnabled]);
+  }, [radarEnabled, bathymetryEnabled, seamarksEnabled, gibsSatEnabled]);
 
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
@@ -873,6 +944,7 @@ export function useMapLayers({
     isobathsEnabled, isobathsData, toggleIsobaths,
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
+    gibsSatEnabled, toggleGibsSat,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
   };
 }

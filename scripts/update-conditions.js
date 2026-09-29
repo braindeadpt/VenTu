@@ -114,6 +114,7 @@ function getCurrentConditions(marineData, weatherData, ihTideObs) {
     windGust: weatherData.hourly.wind_gusts_10m[weatherTimeIndex] || 0,
     waterTemp: marineData.hourly.sea_surface_temperature[marineTimeIndex] || 0,
     tideHeight: seaLevel, tideStatus: tide.status, tideLabel: tide.label,
+    ...require('./lib/updateConditionsPure').uvIndexFields(weatherData.hourly, weatherTimeIndex),
     ...require('./lib/updateConditionsMerge').readOceanCurrent(marineData.hourly, marineTimeIndex),
   };
   if (secondary) {
@@ -174,6 +175,27 @@ async function updateConditions() {
     }
   }
   applyAliasSpots(aliasSpots, allConditions, allForecasts);
+  // European AQI (fetch-air-quality.js → air-quality.json): camada suave —
+  // merge só quando o ficheiro é fresco (<8h); um outage AQ nunca bloqueia.
+  const airQualityPath = path.join(__dirname, '../public/data/air-quality.json');
+  const airQuality = readJsonIfExists(airQualityPath, null, () => console.warn('⚠️ Could not parse air-quality.json — AQI chip hidden this run'));
+  if (airQuality?.spots && airQuality.generatedAt) {
+    const aqAgeH = (Date.now() - new Date(airQuality.generatedAt).getTime()) / 3_600_000;
+    if (aqAgeH <= 8) {
+      let aqMerged = 0;
+      for (const [spotId, conditions] of Object.entries(allConditions)) {
+        const entry = airQuality.spots[spotId];
+        if (entry && entry.aqi != null && Number.isFinite(Number(entry.aqi))) {
+          conditions.airQualityIndex = Number(entry.aqi);
+          conditions.airQualityAt = entry.at;
+          aqMerged += 1;
+        }
+      }
+      console.log(`🌫 AQI merged into ${aqMerged} spots (file ${aqAgeH.toFixed(1)}h old)`);
+    } else {
+      console.warn(`⚠️ air-quality.json ${aqAgeH.toFixed(1)}h old (>8h) — AQI chip hidden this run`);
+    }
+  }
   if (ihSkippedStale > 0) console.warn(`⚠️ Skipped stale IH observed tide on ${ihSkippedStale} spots (lastData > ${MAX_OBS_AGE_HOURS}h) — forecast tides stay on Open-Meteo`);
   const biasApplied = Object.values(allConditions).filter((condition) => condition.waveBias).length;
   if (waveBiasEnabled && biasApplied > 0) console.log(`📏 Bias correction applied on ${biasApplied} spots (n≥${MIN_BIAS_N}, |ME|≥${MIN_BIAS_M} m)`);

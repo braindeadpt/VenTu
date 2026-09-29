@@ -67,6 +67,8 @@ export interface ForecastRow {
   windDirection?: number
   windGust?: number
   waterTemp?: number
+  /** Índice UV previsto da hora (merge do pipeline, Open-Meteo). */
+  uvIndex?: number
 }
 
 /**
@@ -127,6 +129,11 @@ export interface SpotDetailConditions extends SpotListingConditions {
   /** Station wind bias baked by the merge (wind-bias.json) — badge tooltip. */
   windBias?: { station?: string; source?: string; me?: number; mae?: number; rmse?: number; n?: number }
   tideHeight?: number
+  /** Índice UV da hora corrente + máximo do dia (pipeline Open-Meteo). */
+  uvIndex?: number
+  uvIndexMax?: number
+  /** European AQI da hora corrente (air-quality.json, CAMS — camada suave). */
+  airQualityIndex?: number
 }
 
 /** Shared row shell for both loaders. */
@@ -269,6 +276,9 @@ function buildSpotData(
       | undefined,
     windBias: raw?.windBias as SpotDetailConditions['windBias'],
     tideHeight: raw?.tideHeight as number | undefined,
+    uvIndex: raw?.uvIndex as number | undefined,
+    uvIndexMax: raw?.uvIndexMax as number | undefined,
+    airQualityIndex: raw?.airQualityIndex as number | undefined,
   }
 
   return {

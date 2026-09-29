@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 export interface MapControlsProps {
@@ -50,6 +50,9 @@ export interface MapControlsProps {
   bathymetryHint: string;
   seamarksLabel: string;
   seamarksHint: string;
+  gibsSatEnabled: boolean;
+  gibsSatLabel: string;
+  gibsSatHint: string;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -74,6 +77,7 @@ export interface MapControlsProps {
   toggleIsobaths: () => void;
   toggleBathymetry: () => void;
   toggleSeamarks: () => void;
+  toggleGibsSat: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
   // Refs
@@ -118,6 +122,16 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             resetVisible: p.radarPrefSet || p.radarEnabled,
             onReset: p.handleResetRadar,
             resetLabel: p.radarResetLabel,
+          },
+          {
+            key: 'gibsSat',
+            label: p.gibsSatLabel,
+            hint: p.gibsSatHint,
+            icon: <Satellite className="w-4 h-4" aria-hidden />,
+            pressed: p.gibsSatEnabled,
+            onToggle: p.toggleGibsSat,
+            toggleAttr: 'data-map-gibs-sat-toggle',
+            iconClass: 'text-data-water',
           },
           {
             key: 'hs',

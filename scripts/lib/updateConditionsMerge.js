@@ -54,6 +54,12 @@ function mergeForecast(marineData, weatherData) {
       ...(Number.isFinite(Number(weatherData.hourly.temperature_2m?.[i]))
         ? { airTemp: Math.round(Number(weatherData.hourly.temperature_2m[i]) * 10) / 10 }
         : {}),
+      // uv_index: `Number(null) === 0` — null da série significa «sem
+      // dados», nunca «UV 0». Só emitimos o campo com valor real.
+      ...(weatherData.hourly.uv_index?.[i] != null &&
+        Number.isFinite(Number(weatherData.hourly.uv_index[i]))
+        ? { uvIndex: Math.round(Number(weatherData.hourly.uv_index[i]) * 10) / 10 }
+        : {}),
       tideHeight: marineData.hourly.sea_level_height_msl[i] || 0,
       ...readOceanCurrent(marineData.hourly, i),
     });

@@ -49,6 +49,12 @@ export interface SpotInstrumentsSectionProps {
     subtitle: string;
     gustLabel: string;
     gustHint: string;
+    uvLabel: string;
+    uvMaxLabel: string;
+    uvHint: string;
+    aqiLabel: string;
+    aqiHint: string;
+    aqiLevels: Record<import('@/lib/airQuality').AqiLevel, string>;
     seaStateTitle: string;
     seaStateHint: string;
     windContextTitle: string;
@@ -200,6 +206,7 @@ export default function SpotInstrumentsSection({
                 locale={locale}
                 conditions={conditions}
                 hour={hour}
+                isNow={isNow}
                 tideSchedule={tideSchedule}
                 tideHourly={tideHourly}
                 freshnessNowMs={freshnessNowMs}

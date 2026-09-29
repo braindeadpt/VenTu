@@ -62,6 +62,11 @@ interface Conditions {
   windDirection: number;
   windGust: number;
   waterTemp: number;
+  /** UV da hora corrente + máximo do dia (pipeline Open-Meteo). */
+  uvIndex?: number;
+  uvIndexMax?: number;
+  /** European AQI da hora corrente (camada air-quality.json, CAMS). */
+  airQualityIndex?: number;
   swellHeight?: number;
   swellPeriod?: number;
   swellDirection?: number;
@@ -116,6 +121,8 @@ interface SpotData {
     windGust: number;
     waterTemp: number;
     tideHeight?: number;
+    /** Índice UV da hora (linha `uvIndex` do forecast, Open-Meteo). */
+    uvIndex?: number;
   }>;
 }
 
@@ -360,6 +367,9 @@ export default function SpotDetailClient({
               windDirection: Number(spotCond.windDirection) || 0,
               windGust: Number(spotCond.windGust) || 0,
               waterTemp: Number(spotCond.waterTemp) || 0,
+              uvIndex: spotCond.uvIndex as number | undefined,
+              uvIndexMax: spotCond.uvIndexMax as number | undefined,
+              airQualityIndex: spotCond.airQualityIndex as number | undefined,
               swellHeight: spotCond.swellHeight as number | undefined,
               swellPeriod: spotCond.swellPeriod as number | undefined,
               swellDirection: spotCond.swellDirection as number | undefined,
@@ -534,6 +544,7 @@ export default function SpotDetailClient({
       windGust: h.windGust,
       waterTemp: h.waterTemp,
       tideHeight: h.tideHeight,
+      uvIndex: h.uvIndex,
       score: hourlyScores[i],
     }));
   }, [spotData, hourlyScores]);
@@ -745,6 +756,19 @@ export default function SpotDetailClient({
                 subtitle: td.nowSubtitle,
                 gustLabel: td.gustLabel,
                 gustHint: td.gustHint,
+                uvLabel: td.uvLabel,
+                uvMaxLabel: td.uvMaxLabel,
+                uvHint: td.uvHint,
+                aqiLabel: td.aqiLabel,
+                aqiHint: td.aqiHint,
+                aqiLevels: {
+                  good: td.aqiLevelGood,
+                  fair: td.aqiLevelFair,
+                  moderate: td.aqiLevelModerate,
+                  poor: td.aqiLevelPoor,
+                  veryPoor: td.aqiLevelVeryPoor,
+                  extreme: td.aqiLevelExtreme,
+                },
                 seaStateTitle: td.seaStateTitle,
                 seaStateHint: td.seaStateHint,
                 windContextTitle: td.windContextTitle,

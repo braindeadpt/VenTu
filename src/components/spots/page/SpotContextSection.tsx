@@ -20,6 +20,7 @@ import SpotImage from '@/components/ui/SpotImage';
 import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
 import SpotOnSiteWarnings from '@/components/spots/context/SpotOnSiteWarnings';
 import SpotNearbySpots from '@/components/spots/context/SpotNearbySpots';
+import SpotClimateCard from '@/components/spots/context/SpotClimateCard';
 import SpotHowWeKnow, {
   type SpotContextConditions,
 } from '@/components/spots/context/SpotHowWeKnow';
@@ -157,6 +158,11 @@ export default function SpotContextSection({
 
               {/* Eventos — o componente só renderiza se houver futuros. */}
               <SpotUpcomingEvents embedded spotId={spot.id} locale={locale} events={events} />
+
+              {/* Clima do spot — médias mensais NASA POWER (MERRA-2).
+                  O card carrega /data/climatology.json no client e só
+                  renderiza (incl. o heading) se o spot tiver entrada. */}
+              <SpotClimateCard spotId={spot.id} locale={locale} subLabelClass={SUB_LABEL} />
             </div>
           </CollapsibleSection>
         </div>
