@@ -35,6 +35,8 @@ export const spotPageContext = {
     wqBeachNear: 'Água balnear {name}',
     wqLastSample: 'Última análise {date}',
     wqSource: 'APA · InfoÁgua',
+    stormConeTitle: '{name} — este spot está no cone de incerteza',
+    stormConeMeta: '{cls} · centro a {km} km · a seguir {dir} a {kmh} km/h · NOAA/NHC',
   },
   en: {
     sectionTitle: 'Context',
@@ -71,6 +73,8 @@ export const spotPageContext = {
     wqBeachNear: 'Bathing water {name}',
     wqLastSample: 'Last sample {date}',
     wqSource: 'APA · InfoÁgua',
+    stormConeTitle: '{name} — this spot is inside the uncertainty cone',
+    stormConeMeta: '{cls} · center {km} km away · heading {dir} at {kmh} km/h · NOAA/NHC',
   },
   es: {
     sectionTitle: 'Contexto',
@@ -107,6 +111,8 @@ export const spotPageContext = {
     wqBeachNear: 'Zona de baño {name}',
     wqLastSample: 'Último análisis {date}',
     wqSource: 'APA · InfoÁgua',
+    stormConeTitle: '{name} — este spot está en el cono de incertidumbre',
+    stormConeMeta: '{cls} · centro a {km} km · rumbo {dir} a {kmh} km/h · NOAA/NHC',
   },
   de: {
     sectionTitle: 'Kontext',
@@ -143,6 +149,8 @@ export const spotPageContext = {
     wqBeachNear: 'Badestelle {name}',
     wqLastSample: 'Letzte Analyse {date}',
     wqSource: 'APA · InfoÁgua',
+    stormConeTitle: '{name} — dieser Spot liegt im Unsicherheitskegel',
+    stormConeMeta: '{cls} · Zentrum {km} km entfernt · Richtung {dir} mit {kmh} km/h · NOAA/NHC',
   },
   fr: {
     sectionTitle: 'Contexte',
@@ -179,5 +187,7 @@ export const spotPageContext = {
     wqBeachNear: 'Eau de baignade {name}',
     wqLastSample: 'Dernière analyse {date}',
     wqSource: 'APA · InfoÁgua',
+    stormConeTitle: '{name} — ce spot est dans le cône d’incertitude',
+    stormConeMeta: '{cls} · centre à {km} km · cap {dir} à {kmh} km/h · NOAA/NHC',
   },
 } as const;

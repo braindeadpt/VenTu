@@ -13,7 +13,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import type L from 'leaflet';
 import {
   Activity, Anchor, Clock, CloudRain, LifeBuoy,
-  Mountain, Navigation, Sailboat, Satellite,
+  Mountain, Navigation, Sailboat, Satellite, CloudLightning,
   Thermometer, Waves,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
@@ -175,6 +175,8 @@ export interface MapLayerCopy {
   seamarksHint: string;
   gibsSatLabel: string;
   gibsSatHint: string;
+  stormsLabel: string;
+  stormsHint: string;
   coastalWarningsLabel: string;
   coastalWarningsHint: string;
   layersMenuLabel: string;
@@ -222,6 +224,7 @@ export function useMapLayersFields({
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
     gibsSatEnabled, toggleGibsSat,
+    stormsEnabled, stormsData, toggleStorms,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
   } = base;
 
@@ -315,6 +318,8 @@ export function useMapLayersFields({
     seamarksHint: t.map.seamarksHint,
     gibsSatLabel: t.mapUiLayers.layerGibsSat,
     gibsSatHint: t.map.gibsSatHint,
+    stormsLabel: t.mapUiLayers.layerStorms,
+    stormsHint: t.map.stormsHint,
     coastalWarningsLabel,
     coastalWarningsHint: t.map.coastalWarningsHint,
     layersMenuLabel: t.map.layersMenu,
@@ -366,6 +371,22 @@ export function useMapLayersFields({
       onToggle: toggleGibsSat,
       toggleAttr: 'data-map-gibs-sat-toggle',
       iconClass: 'text-data-water',
+    },
+    {
+      key: 'storms',
+      group: 'time',
+      label: lyr.layerStorms,
+      // Sem tempestades activas na região ou ficheiro stale → o toggle que
+      // não pinta nada desactiva-se em vez de parecer avariado.
+      hint: !stormsData || stormsData.storms.length === 0
+        ? `${layerCopy.stormsHint} — ${lyr.unavailable}`
+        : layerCopy.stormsHint,
+      icon: <CloudLightning className="w-4 h-4" aria-hidden />,
+      pressed: stormsEnabled,
+      disabled: !stormsData || stormsData.storms.length === 0,
+      onToggle: toggleStorms,
+      toggleAttr: 'data-map-storms-toggle',
+      iconClass: 'text-score-poor',
     },
     {
       key: 'isobaths',
@@ -470,6 +491,7 @@ export function useMapLayersFields({
     isobathsEnabled, toggleIsobaths,
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
+    stormsEnabled, stormsData, toggleStorms,
     coastalWarningsEnabled, toggleCoastalWarnings,
   ]);
 

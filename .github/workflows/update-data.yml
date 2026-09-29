@@ -206,6 +206,15 @@ jobs:
           ES_NAV_WARNINGS_URL: ${{ vars.ES_NAV_WARNINGS_URL }}
         run: node scripts/fetch-ih-coastal-warnings.js
 
+      # Ciclones tropicais NHC (CurrentStorms.json + KMZ track/cone, keyless
+      # NOAA) → storms.json: cone + track + spotStorms para a camada do mapa
+      # e o alerta no spot page. Filtrado à região Ventu; falhas de KMZ
+      # deixam geometria a null, nunca inventa.
+      - name: Fetch NHC tropical storms
+        if: steps.gate.outputs.mode != 'skip'
+        continue-on-error: true
+        run: node scripts/fetch-nhc-storms.js
+
       # Radar IPMA — frame PNG mais recente (manifest imgs-radar.json, 5 min)
       # + bounds oficiais do overlay Leaflet do IPMA. Sem WMTS/tiles públicos;
       # bake do frame para o nosso origin (ver scripts/fetch-ipma-radar.js).

@@ -89,6 +89,16 @@ Toda a escolha de fonte em baixo foi avaliada contra este rectângulo:
 
 ### B0 — NHC tempestades tropicais (fonte A) — o «a aproximar-se» oficial
 
+**Estado: implementado** — `scripts/lib/nhcStorms.js` (unzip KMZ manual com
+`zlib`, parse KML, scope, `spotStorms` por cone) + `fetch-nhc-storms.js` →
+`public/data/storms.json` + `src/lib/nhcStorms.ts` (loader cached,
+`stormsForSpot`, `stormsFresh` 24 h) + camada Leaflet «Tempestades
+tropicais» no grupo TEMPO (cone tracejado translúcido, track + pontos
+datados, centro com pulse CSS só em `no-preference`) + `SpotStormAlert` no
+spot page («No local», antes dos avisos IPMA/IH) + i18n ×5 + budget 0.2 MB
++ passo `continue-on-error` no workflow + `storms:fetch` no `data:update`.
+Rectângulo usado: 25–50 N, -48→-4 E + margem 8° no centro (Cabo Verde).
+
 - `scripts/fetch-nhc-storms.js` → `public/data/storms.json`: lista activa da
   bacia `al`, campos posição/classe/vento/pressão/movimento + track points +
   cone (parse KMZ→GeoJSON no fetcher; shapefile zip alternativo).

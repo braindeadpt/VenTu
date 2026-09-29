@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite, CloudLightning } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 export interface MapControlsProps {
@@ -53,6 +53,11 @@ export interface MapControlsProps {
   gibsSatEnabled: boolean;
   gibsSatLabel: string;
   gibsSatHint: string;
+  stormsEnabled: boolean;
+  stormsLabel: string;
+  stormsHint: string;
+  /** Ficheiro ausente/stale ou zero tempestades na região → toggle off. */
+  stormsUnavailable: boolean;
   onlyOnLabel: string;
   onlyOnHint: string;
   windLegendHelpLabel: string;
@@ -78,6 +83,7 @@ export interface MapControlsProps {
   toggleBathymetry: () => void;
   toggleSeamarks: () => void;
   toggleGibsSat: () => void;
+  toggleStorms: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
   // Refs
@@ -132,6 +138,17 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             onToggle: p.toggleGibsSat,
             toggleAttr: 'data-map-gibs-sat-toggle',
             iconClass: 'text-data-water',
+          },
+          {
+            key: 'storms',
+            label: p.stormsLabel,
+            hint: p.stormsHint,
+            icon: <CloudLightning className="w-4 h-4" aria-hidden />,
+            pressed: p.stormsEnabled,
+            disabled: p.stormsUnavailable,
+            onToggle: p.toggleStorms,
+            toggleAttr: 'data-map-storms-toggle',
+            iconClass: 'text-score-poor',
           },
           {
             key: 'hs',

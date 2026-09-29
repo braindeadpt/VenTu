@@ -19,6 +19,7 @@ import { WaterQualityBadge } from '@/components/spots/WaterQualityBadge';
 import SpotImage from '@/components/ui/SpotImage';
 import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
 import SpotOnSiteWarnings from '@/components/spots/context/SpotOnSiteWarnings';
+import SpotStormAlert from '@/components/spots/context/SpotStormAlert';
 import SpotNearbySpots from '@/components/spots/context/SpotNearbySpots';
 import SpotClimateCard from '@/components/spots/context/SpotClimateCard';
 import SpotHowWeKnow, {
@@ -127,6 +128,9 @@ export default function SpotContextSection({
             <div className="space-y-4">
               <div>
                 <h3 className={SUB_LABEL}>{copy.warningsRadar}</h3>
+                {/* Ciclone tropical cujo cone cobre o spot — antes dos avisos
+                    IPMA/IH por ser o perigo de maior escala. */}
+                <SpotStormAlert spotId={spot.id} locale={locale} />
                 <SpotOnSiteWarnings spotId={spot.id} locale={locale} />
               </div>
 

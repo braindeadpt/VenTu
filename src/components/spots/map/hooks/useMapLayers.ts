@@ -30,6 +30,14 @@ import {
   type CoastalWarningsFile,
 } from '@/lib/ihCoastalWarnings';
 import {
+  loadNhcStorms,
+  stormsFresh,
+  mphToKmh,
+  movementCardinal,
+  MAP_STORMS_LS_KEY,
+  type NhcStormsFile,
+} from '@/lib/nhcStorms';
+import {
   MAP_ISOBATHS_LS_KEY,
   MAP_COASTAL_LS_KEY,
   MAP_BATHYMETRY_LS_KEY,
@@ -85,6 +93,8 @@ interface UseMapLayersOptions {
       radarHint: string;
       showCoastalWarnings: string;
       hideCoastalWarnings: string;
+      showStorms: string;
+      hideStorms: string;
     };
   };
 }
@@ -128,6 +138,11 @@ interface UseMapLayersReturn {
   coastalWarningsData: CoastalWarningsFile | null | undefined;
   toggleCoastalWarnings: () => void;
   coastalWarningsLabel: string;
+  // NHC tropical storms
+  stormsEnabled: boolean;
+  stormsData: NhcStormsFile | null | undefined;
+  toggleStorms: () => void;
+  stormsLabel: string;
 }
 
 export function useMapLayers({
@@ -935,6 +950,157 @@ export function useMapLayers({
     ? t.map.hideCoastalWarnings
     : t.map.showCoastalWarnings;
 
+  // ── NHC tropical storms (cone + track — B0 do docs/STORM-STUDY.md) ──
+  // Camada vectorial opt-in: não conta para o cap de raster pesadas.
+  // `stormsFresh` guarda a honestidade: ficheiro velho ou ausente → a
+  // camada omite-se em vez de mostrar uma tempestade que já não existe.
+  const [stormsEnabled, setStormsEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    try {
+      return localStorage.getItem(MAP_STORMS_LS_KEY) === '1';
+    } catch {
+      return false;
+    }
+  });
+  const [stormsData, setStormsData] = useState<NhcStormsFile | null | undefined>(undefined);
+  const stormsLayerRef = useRef<L.LayerGroup | null>(null);
+
+  // Fetch uma vez no mount — ~6 KB; o menu precisa de saber se há
+  // tempestades na região para decidir disabled (carregar só ao ligar
+  // criava um deadlock: toggle off até dados, dados só com toggle on).
+  useEffect(() => {
+    if (stormsData !== undefined) return;
+    let cancelled = false;
+    loadNhcStorms().then((data) => {
+      if (!cancelled && mountedRef.current) setStormsData(data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [stormsData]);
+
+  useEffect(() => {
+    if (!stormsEnabled) {
+      if (stormsLayerRef.current) {
+        mapInstanceRef.current?.removeLayer(stormsLayerRef.current);
+        stormsLayerRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current || !LRef.current) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+
+    if (stormsData === undefined) return;
+    if (!stormsData || !stormsFresh(stormsData) || stormsData.storms.length === 0) return;
+
+    const isPt = locale === 'pt';
+    const escapeHtml = (s: string) =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    const group = Leaflet.layerGroup();
+
+    for (const s of stormsData.storms) {
+      const hurricane = s.classification === 'HU' || s.classification === 'MH';
+      const color = hurricane ? '#ef4444' : '#f97316';
+      const name = s.name ?? '—';
+      const cls = s.classificationLabel ?? s.classification;
+      const moveCard = movementCardinal(s.movementDirDeg, isPt);
+      const moveTxt =
+        s.movementSpeedMph != null
+          ? ` → ${moveCard ?? ''} ${mphToKmh(s.movementSpeedMph)} km/h`
+          : '';
+      const centerTip =
+        `${escapeHtml(name)} — ${escapeHtml(cls)} · ${mphToKmh(s.intensityMph)} km/h` +
+        `${moveTxt}${s.advisory ? ` · adv #${escapeHtml(s.advisory)}` : ''}`;
+
+      // Cone de incerteza — tracejado translúcido; nunca uma área sólida que
+      // finja certeza de trajectória.
+      if (Array.isArray(s.cone) && s.cone.length >= 3) {
+        const latlngs = s.cone.map(([lo, la]) => [la, lo] as [number, number]);
+        Leaflet.polygon(latlngs, {
+          color,
+          weight: 1.6,
+          opacity: 0.75,
+          fillColor: color,
+          fillOpacity: 0.1,
+          dashArray: '7 6',
+          className: 'ventu-storm-cone',
+          interactive: false,
+        }).addTo(group);
+      }
+
+      // Track prevista — linha + pontos datados (forecastHr/validAt do NHC).
+      if (Array.isArray(s.track) && s.track.length >= 2) {
+        const line = s.track.map(([lo, la]) => [la, lo] as [number, number]);
+        Leaflet.polyline(line, {
+          color,
+          weight: 2.2,
+          opacity: 0.85,
+          className: 'ventu-storm-track',
+          interactive: false,
+        }).addTo(group);
+      }
+      for (const p of s.trackPoints ?? []) {
+        const tip =
+          `${escapeHtml(name)}${p.forecastHr != null ? ` +${p.forecastHr} h` : ''}` +
+          `${p.maxWindMph != null ? ` · ${mphToKmh(p.maxWindMph)} km/h` : ''}` +
+          `${p.validAt ? ` — ${escapeHtml(p.validAt)}` : ''}`;
+        Leaflet.circleMarker([p.lat, p.lon], {
+          radius: 3.5,
+          color,
+          weight: 1.5,
+          fillColor: color,
+          fillOpacity: 0.9,
+          className: 'ventu-storm-point',
+        })
+          .bindTooltip(tip, { sticky: true, direction: 'top' })
+          .addTo(group);
+      }
+
+      // Centro — divIcon com pulse (CSS, só no-preference).
+      Leaflet.marker([s.lat, s.lon], {
+        interactive: true,
+        keyboard: false,
+        icon: Leaflet.divIcon({
+          className: 'ventu-storm-dot',
+          html:
+            `<span class="ventu-storm-ring" data-class="${escapeHtml(s.classification)}"></span>` +
+            `<span class="ventu-storm-label">${escapeHtml(name)} · ${escapeHtml(s.classification)}</span>`,
+          iconSize: [40, 24],
+          iconAnchor: [20, 12],
+          tooltipAnchor: [0, -12],
+        }),
+      })
+        .bindTooltip(centerTip, { sticky: true, direction: 'top' })
+        .addTo(group);
+    }
+
+    group.addTo(map);
+    stormsLayerRef.current = group;
+    const attr = getTranslation(locale).map.stormsAttribution;
+    map.attributionControl?.addAttribution(attr);
+
+    return () => {
+      if (map.hasLayer(group)) map.removeLayer(group);
+      stormsLayerRef.current = null;
+      map.attributionControl?.removeAttribution(attr);
+    };
+  }, [stormsEnabled, isReady, stormsData, locale, mapInstanceRef, LRef]);
+
+  const toggleStorms = useCallback(() => {
+    setStormsEnabled((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(MAP_STORMS_LS_KEY, next ? '1' : '0');
+      } catch {
+        /* noop */
+      }
+      return next;
+    });
+  }, []);
+
+  const stormsLabel = stormsEnabled ? t.map.hideStorms : t.map.showStorms;
+
   return {
     radarData, radarEnabled, radarFrameIndex, radarUserPaused, radarPrefSet,
     radarBusySources, radarLift, radarFrameIndexRef, radarUserPausedRef,
@@ -946,5 +1112,6 @@ export function useMapLayers({
     seamarksEnabled, toggleSeamarks,
     gibsSatEnabled, toggleGibsSat,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
+    stormsEnabled, stormsData, toggleStorms, stormsLabel,
   };
 }

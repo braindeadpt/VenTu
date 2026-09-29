@@ -1067,6 +1067,87 @@ html:has([data-embed-widget]) body {
   }
 }
 
+/* ── NHC tropical storms (camada vectorial — divIcon do centro) ── */
+.ventu-storm-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  pointer-events: none;
+  width: auto !important;
+}
+
+.ventu-storm-ring {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: #f97316;
+  border: 2px solid rgb(var(--bg-base));
+  box-shadow: 0 0 0 1.5px #f97316, 0 1px 4px rgb(0 0 0 / 0.5);
+  flex-shrink: 0;
+}
+
+.ventu-storm-ring[data-class='HU'],
+.ventu-storm-ring[data-class='MH'] {
+  background: #ef4444;
+  box-shadow: 0 0 0 1.5px #ef4444, 0 1px 4px rgb(0 0 0 / 0.5);
+}
+
+.ventu-storm-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgb(var(--fg));
+  background: rgb(var(--bg-base) / 0.92);
+  border: 1px solid rgb(var(--divider));
+  border-radius: 4px;
+  padding: 3px 6px;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.4);
+}
+
+@keyframes ventu-storm-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 1.5px #f97316, 0 0 0 1.5px rgb(249 115 22 / 0);
+  }
+  50% {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 1.5px #f97316, 0 0 0 7px rgb(249 115 22 / 0.22);
+  }
+}
+
+@keyframes ventu-storm-pulse-hu {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 1.5px #ef4444, 0 0 0 1.5px rgb(239 68 68 / 0);
+  }
+  50% {
+    transform: scale(1.35);
+    box-shadow: 0 0 0 1.5px #ef4444, 0 0 0 7px rgb(239 68 68 / 0.22);
+  }
+}
+
+/* O centro de um ciclone é a única coisa no mapa que «respira» — a
+   tempestade está viva e a mover-se. Só com motion permitido. */
+@media (prefers-reduced-motion: no-preference) {
+  .ventu-storm-ring {
+    animation: ventu-storm-pulse 2.6s ease-in-out infinite;
+  }
+  .ventu-storm-ring[data-class='HU'],
+  .ventu-storm-ring[data-class='MH'] {
+    animation-name: ventu-storm-pulse-hu;
+  }
+}
+
+.leaflet-div-icon.ventu-storm-dot {
+  background: transparent;
+  border: none;
+}
+
 /* Home hero map teaser: fill parent, page scroll passes through; markers stay clickable */
 [data-map-hero-teaser='true'] {
   height: 100%;

@@ -218,6 +218,7 @@ export default function SpotMapInteractive({
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
     gibsSatEnabled, toggleGibsSat,
+    stormsEnabled, stormsData, toggleStorms,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
     hoursFile, hoursOn, hoursLive, hoursFrame, hoursUserPaused, hoursPrefSet,
     hoursUnavailable, hoursTimes, toggleHours, handleHoursFrameChange,
@@ -610,6 +611,14 @@ export default function SpotMapInteractive({
     gibsSatEnabled,
     gibsSatLabel: layerCopy.gibsSatLabel,
     gibsSatHint: layerCopy.gibsSatHint,
+    stormsEnabled,
+    stormsLabel: layerCopy.stormsLabel,
+    // Sem tempestades na região ou ficheiro stale → hint «indisponível»
+    // localizado + toggle off (pintar nada parecia avaria).
+    stormsHint: !stormsData || stormsData.storms.length === 0
+      ? `${layerCopy.stormsHint} — ${t.mapUiLayers.unavailable}`
+      : layerCopy.stormsHint,
+    stormsUnavailable: !stormsData || stormsData.storms.length === 0,
     onlyOnLabel,
     onlyOnHint,
     windLegendHelpLabel,
@@ -633,6 +642,7 @@ export default function SpotMapInteractive({
     toggleBathymetry,
     toggleSeamarks,
     toggleGibsSat,
+    toggleStorms,
     toggleOnlyOn,
     toggleCoastalWarnings,
     windButtonRef,

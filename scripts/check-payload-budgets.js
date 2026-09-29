@@ -116,6 +116,8 @@ const DATA_FILE_BUDGETS_MB = {
   'air-quality.json': 0.2,
   'hfr-currents.json': 0.5,
   'water-quality.json': 0.5,
+  // NHC cones simplificados (~150 pts) × poucas tempestades — ~6 KB típico.
+  'storms.json': 0.2,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;
