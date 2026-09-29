@@ -1,9 +1,9 @@
 {
-  "lastRunAt": "2026-09-29T15:55:47.818Z",
-  "lastRunMode": "observations",
+  "lastRunAt": "2026-09-29T17:25:37.050Z",
+  "lastRunMode": "full",
   "observationsUpdatedAt": "2026-09-29T15:55:47.818Z",
-  "fullUpdatedAt": "2026-09-29T15:55:44.041Z",
-  "displayUpdatedAt": "2026-09-29T15:55:47.818Z",
+  "fullUpdatedAt": "2026-09-29T17:25:37.050Z",
+  "displayUpdatedAt": "2026-09-29T17:25:37.050Z",
   "buoyLayer": {
     "status": "ok",
     "apiKeyConfigured": true,
@@ -19,16 +19,16 @@
     },
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-09-29T15:55:47.816Z",
-    "lastOkAt": "2026-09-29T15:55:47.816Z",
+    "streakUpdatedAt": "2026-09-29T17:25:37.044Z",
+    "lastOkAt": "2026-09-29T17:25:37.044Z",
     "fugroRejectedStreak": 0
   },
   "radarLayer": {
-    "status": "ok",
+    "status": "stale",
     "frameTime": "2026-09-29T15:40:00.000Z",
-    "streak": 0,
-    "lastStatus": "ok",
-    "streakUpdatedAt": "2026-09-29T15:55:47.816Z",
+    "streak": 2,
+    "lastStatus": "stale",
+    "streakUpdatedAt": "2026-09-29T17:25:37.045Z",
     "lastOkAt": "2026-09-29T15:55:47.816Z"
   },
   "warningsLayer": {
@@ -38,8 +38,8 @@
     "fetchedAt": "2026-09-29T15:52:28.672Z",
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-09-29T15:55:47.816Z",
-    "lastOkAt": "2026-09-29T15:55:47.816Z"
+    "streakUpdatedAt": "2026-09-29T17:25:37.047Z",
+    "lastOkAt": "2026-09-29T17:25:37.047Z"
   },
   "coastalWarningsLayer": {
     "status": "ok",
@@ -54,8 +54,8 @@
     },
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-09-29T15:55:47.817Z",
-    "lastOkAt": "2026-09-29T15:55:47.817Z"
+    "streakUpdatedAt": "2026-09-29T17:25:37.050Z",
+    "lastOkAt": "2026-09-29T17:25:37.049Z"
   },
   "tideLayer": {
     "status": "ok",
@@ -64,19 +64,19 @@
     "fetchedAt": "2026-09-29T15:51:58.497Z",
     "streak": 0,
     "lastStatus": "ok",
-    "streakUpdatedAt": "2026-09-29T15:55:47.818Z",
-    "lastOkAt": "2026-09-29T15:55:47.818Z"
+    "streakUpdatedAt": "2026-09-29T17:25:37.050Z",
+    "lastOkAt": "2026-09-29T17:25:37.050Z"
   },
   "openMeteoUsage": {
-    "weightedCalls": 362,
-    "requests": 362,
+    "weightedCalls": 1810,
+    "requests": 724,
     "retries": 0,
     "spotsFetched": 181,
-    "mode": "night",
-    "weightedPerSpot": 2,
+    "mode": "day",
+    "weightedPerSpot": 10,
     "waveModels": 4,
     "windModels": 4,
     "dayUtc": "2026-09-29",
-    "dailyWeightedCalls": 2232
+    "dailyWeightedCalls": 4404
   }
 }
