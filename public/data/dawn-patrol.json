@@ -1,103 +1,103 @@
 {
   "date": "2026-09-29",
-  "generatedAt": "2026-09-29T03:07:18.801Z",
   "topSpot": "Carcavelos",
   "topSpotSlug": "carcavelos",
   "pt": {
-    "headline": "Hoje é dia de Carcavelos! 🌊",
-    "advice": "Melhor janela: 7:00h. Ondas de 1.5m com 10 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 00/14 — Normas de Segurança para a Navegação  · ANAV NR 1445/26 — Animais Marinhos - Interação",
-    "bestTime": "7:00",
+    "headline": "Carcavelos lidera hoje: ondas boas e vento leve!",
+    "advice": "Água a 17 °C, ideal para um 3/2 mm. O vento está em 10 kt, perfeito para manobras, mas há avisos de navegação e de interação com animais marinhos – surfe com atenção. Chegue cedo para fugir da maior parte da gente.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Chega cedo para evitar crowd!",
+    "crowdTip": "Chegue antes das 10h para evitar a maior parte da multidão.",
     "moonTideLine": "Gibosa minguante · Marés vivas · baixa-mar 11:00"
   },
   "en": {
-    "headline": "Today is Carcavelos day! 🌊",
-    "advice": "Best window: 7:00. 1.5m waves with 10 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 00/14 — Normas de Segurança para a Navegação  · ANAV NR 1445/26 — Animais Marinhos - Interação",
-    "bestTime": "7:00",
+    "headline": "Carcavelos tops the lineup: solid waves and light wind!",
+    "advice": "Water is around 17 °C, perfect for a 3/2 mm wetsuit. Wind is a mild 10 kt, great for turns, though there are coastal navigation and marine‑animal interaction warnings – stay aware. Arrive early to beat the crowd.",
+    "bestTime": "09:30",
     "wetsuit": "3/2mm",
-    "crowdTip": "Get there early to beat the crowd!",
+    "crowdTip": "Get there before 10 am to miss most of the surfers.",
     "moonTideLine": "Waning gibbous · Spring tides · low tide 11:00"
   },
   "spots": [
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 82,
-      "scoreForecast": 82,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Arrifana",
-      "slug": "arrifana",
-      "score": 79,
-      "scoreForecast": 79,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 78,
-      "scoreForecast": 78,
-      "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
       "name": "Supertubos",
       "slug": "supertubos",
       "score": 77,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, mas aviso costeiro ANAV NR 12/24; vento moderado.",
+      "enReason": "Good waves but coastal warning ANAV NR 12/24; moderate wind.",
       "scoreForecast": 77,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Guincho",
       "slug": "guincho",
       "score": 77,
+      "verdict": "maybe",
+      "ptReason": "Ondas decentes, porém avisos de interação e avistamento de animais marinhos.",
+      "enReason": "Decent waves but marine animal interaction and sighting warnings.",
       "scoreForecast": 77,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
     },
     {
       "name": "Nazaré",
       "slug": "nazare",
       "score": 77,
+      "verdict": "go",
+      "ptReason": "Ondas consistentes, sem avisos; vento aceitável.",
+      "enReason": "Consistent waves, no warnings; acceptable wind.",
       "scoreForecast": 77,
       "scoreSource": "previsão",
-      "scoreMeta": null,
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "scoreMeta": null
+    },
+    {
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 78,
+      "verdict": "maybe",
+      "ptReason": "Ondas fortes, mas aviso de avistamento de animais marinhos.",
+      "enReason": "Strong waves but marine animal sighting warning.",
+      "scoreForecast": 78,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     },
     {
       "name": "Coxos",
       "slug": "coxos",
       "score": 77,
+      "verdict": "maybe",
+      "ptReason": "Ondas boas, porém aviso de avistamento de animais marinhos.",
+      "enReason": "Good waves but marine animal sighting warning.",
       "scoreForecast": 77,
       "scoreSource": "previsão",
-      "scoreMeta": null,
+      "scoreMeta": null
+    },
+    {
+      "name": "Arrifana",
+      "slug": "arrifana",
+      "score": 79,
+      "verdict": "maybe",
+      "ptReason": "Ondas menores, vento leve, mas plano de salvamento marítimo em vigor.",
+      "enReason": "Smaller waves, light wind, but maritime rescue plan in effect.",
+      "scoreForecast": 79,
+      "scoreSource": "previsão",
+      "scoreMeta": null
+    },
+    {
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 82,
       "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
+      "ptReason": "Melhor score, ondas boas, vento leve; avisos de navegação e interação com animais, mas seguros.",
+      "enReason": "Top score, good waves, light wind; navigation and marine animal interaction warnings, but safe.",
+      "scoreForecast": 82,
+      "scoreSource": "previsão",
+      "scoreMeta": null
     }
   ],
+  "generatedAt": "2026-09-29T03:37:23.372Z",
   "topScore": 82,
   "topScoreForecast": 82,
   "topScoreSource": "previsão",
