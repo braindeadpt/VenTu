@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-09-29T19:48:00.246Z",
+  "generatedAt": "2026-09-29T23:15:47.610Z",
   "source": "infoagua.apambiente.pt",
   "beaches": 761,
-  "activeAlerts": 6,
+  "activeAlerts": 8,
   "spots": {
     "moledo": {
       "beachId": 538,
@@ -1267,11 +1267,11 @@
     "carcavelos": {
       "beachId": 549,
       "beach": "CARCAVELOS",
-      "advice": 1,
-      "adviceTitlePt": "Adequada",
-      "adviceTitleEn": "Adequate",
-      "adviceAt": 1788739200000,
-      "motive": null,
+      "advice": 2,
+      "adviceTitlePt": "Não tomar banho",
+      "adviceTitleEn": "Not showering",
+      "adviceAt": 1790726400000,
+      "motive": "Risco de poluição",
       "lastSampleAt": 1788739200000,
       "annualClass": 1,
       "annualClassDesc": "Excelente",
@@ -1280,7 +1280,16 @@
       "blueFlag": true,
       "guarded": true,
       "accessible": true,
-      "distKm": 0.2
+      "distKm": 0.2,
+      "alerts": [
+        {
+          "namePt": "Risco de poluição",
+          "nameEn": "Pollution risk",
+          "advicePt": "NÃO TOMAR BANHO.",
+          "adviceEn": "DO NOT BATHE.",
+          "date": "30/09/2026"
+        }
+      ]
     },
     "nova-vaga": {
       "beachId": 161,

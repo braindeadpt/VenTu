@@ -1,6 +1,6 @@
 {
   "source": "ipma",
-  "fetchedAt": "2026-09-29T19:46:48.033Z",
+  "fetchedAt": "2026-09-29T23:14:52.193Z",
   "warnings": [
     {
       "areaCode": "VIS",
@@ -18,7 +18,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva, por vezes forte.",
-      "startTime": "2026-09-29T18:24:00",
+      "startTime": "2026-09-29T20:36:00",
       "endTime": "2026-09-30T00:00:00",
       "relevant": true
     },
@@ -38,7 +38,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva, por vezes forte.",
-      "startTime": "2026-09-29T18:24:00",
+      "startTime": "2026-09-29T20:36:00",
       "endTime": "2026-09-30T03:00:00",
       "relevant": true
     },
@@ -53,12 +53,22 @@
       "relevant": true
     },
     {
+      "areaCode": "MRM",
+      "areaLabel": "Madeira — Regiões Montanhosas",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte.",
+      "startTime": "2026-09-29T20:34:00",
+      "endTime": "2026-09-30T03:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "VCT",
       "areaLabel": "Viana do Castelo",
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva, por vezes forte.",
-      "startTime": "2026-09-29T18:24:00",
+      "startTime": "2026-09-29T20:36:00",
       "endTime": "2026-09-30T00:00:00",
       "relevant": true
     },
@@ -83,6 +93,16 @@
       "relevant": true
     },
     {
+      "areaCode": "MCN",
+      "areaLabel": "Madeira — Costa Norte",
+      "type": "Precipitação",
+      "level": "yellow",
+      "text": "Precipitação, por vezes forte.",
+      "startTime": "2026-09-29T20:34:00",
+      "endTime": "2026-09-30T03:00:00",
+      "relevant": true
+    },
+    {
       "areaCode": "CBO",
       "areaLabel": "Castelo Branco",
       "type": "Precipitação",
@@ -98,7 +118,7 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva, por vezes forte.",
-      "startTime": "2026-09-29T18:24:00",
+      "startTime": "2026-09-29T20:36:00",
       "endTime": "2026-09-30T03:00:00",
       "relevant": true
     },
@@ -118,38 +138,18 @@
       "type": "Precipitação",
       "level": "yellow",
       "text": "Períodos de chuva, por vezes forte.",
-      "startTime": "2026-09-29T18:24:00",
+      "startTime": "2026-09-29T20:36:00",
       "endTime": "2026-09-30T00:00:00",
       "relevant": true
     },
     {
-      "areaCode": "PTO",
-      "areaLabel": "Porto",
-      "type": "Vento",
+      "areaCode": "MCS",
+      "areaLabel": "Funchal",
+      "type": "Precipitação",
       "level": "yellow",
-      "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-      "startTime": "2026-09-29T18:24:00",
-      "endTime": "2026-09-29T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "VCT",
-      "areaLabel": "Viana do Castelo",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-      "startTime": "2026-09-29T18:24:00",
-      "endTime": "2026-09-29T21:00:00",
-      "relevant": true
-    },
-    {
-      "areaCode": "BRG",
-      "areaLabel": "Braga",
-      "type": "Vento",
-      "level": "yellow",
-      "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-      "startTime": "2026-09-29T18:24:00",
-      "endTime": "2026-09-29T21:00:00",
+      "text": "Precipitação, por vezes forte.",
+      "startTime": "2026-09-29T20:34:00",
+      "endTime": "2026-09-30T03:00:00",
       "relevant": true
     }
   ],
@@ -161,18 +161,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -183,18 +173,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -205,18 +185,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -227,18 +197,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -249,18 +209,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -271,18 +221,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -293,18 +233,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -315,18 +245,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -337,18 +257,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -359,18 +269,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -381,18 +281,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -403,18 +293,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -425,18 +305,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -447,18 +317,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -469,18 +329,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -491,18 +341,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -513,18 +353,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -535,18 +365,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -557,18 +377,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -579,18 +389,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -601,18 +401,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -623,18 +413,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -645,18 +425,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -667,18 +437,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -689,18 +449,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -711,18 +461,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -733,18 +473,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -755,18 +485,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -777,18 +497,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -799,18 +509,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -821,18 +521,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -843,18 +533,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -865,18 +545,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -887,18 +557,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -909,18 +569,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -931,18 +581,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -953,7 +593,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -965,7 +605,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -977,7 +617,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -989,7 +629,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -1001,7 +641,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -1013,7 +653,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -1025,7 +665,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -1037,7 +677,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -1541,18 +1181,92 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
         "relevant": true
-      },
+      }
+    ],
+    "sao-vicente-madeira": [
       {
-        "areaCode": "BRG",
-        "areaLabel": "Braga",
-        "type": "Vento",
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
         "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "porto-da-cruz": [
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "paul-mar": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "jardim-mar": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-sao-lourenco": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "ribeira-brava": [
+      {
+        "areaCode": "MRM",
+        "areaLabel": "Madeira — Regiões Montanhosas",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "funchal": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
     ],
@@ -1563,7 +1277,7 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T03:00:00",
         "relevant": true
       }
@@ -1575,18 +1289,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -1686,6 +1390,54 @@
         "relevant": true
       }
     ],
+    "machico": [
+      {
+        "areaCode": "MCS",
+        "areaLabel": "Funchal",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "seixal-madeira": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "ponta-pargo": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
+    "madalena-mar": [
+      {
+        "areaCode": "MCN",
+        "areaLabel": "Madeira — Costa Norte",
+        "type": "Precipitação",
+        "level": "yellow",
+        "text": "Precipitação, por vezes forte.",
+        "startTime": "2026-09-29T20:34:00",
+        "endTime": "2026-09-30T03:00:00",
+        "relevant": true
+      }
+    ],
     "fao-ofir-surf": [
       {
         "areaCode": "VCT",
@@ -1693,18 +1445,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -1715,18 +1457,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "VCT",
-        "areaLabel": "Viana do Castelo",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -1737,18 +1469,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ],
@@ -1759,18 +1481,8 @@
         "type": "Precipitação",
         "level": "yellow",
         "text": "Períodos de chuva, por vezes forte.",
-        "startTime": "2026-09-29T18:24:00",
+        "startTime": "2026-09-29T20:36:00",
         "endTime": "2026-09-30T00:00:00",
-        "relevant": true
-      },
-      {
-        "areaCode": "PTO",
-        "areaLabel": "Porto",
-        "type": "Vento",
-        "level": "yellow",
-        "text": "No litoral, vento do quadrante sul, com rajadas até 70/80 km/h.",
-        "startTime": "2026-09-29T18:24:00",
-        "endTime": "2026-09-29T21:00:00",
         "relevant": true
       }
     ]
