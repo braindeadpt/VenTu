@@ -11,7 +11,8 @@
  * The decision itself lives in scripts/lib/deploySource.js (pure, unit-tested).
  * This script does the I/O the pure module cannot:
  *   - reads main's SHA from the checkout;
- *   - asks the GitHub API for the recent CI runs on main;
+ *   - asks the GitHub API for the recent CI runs on main (re-fetched when a
+ *     snapshot yields no green — the runs index is eventually consistent);
  *   - validates the candidate (event ≠ pull_request, SHA is an ancestor of
  *     main) — a green PR run says nothing about main;
  *   - measures the lag (commits and hours) between the green base and main;
@@ -24,9 +25,9 @@
  * shared main reference and detonated every other worktree.
  *
  * Failure policy: if there is no acceptable green run in the window (or the
- * API is unreachable), the script fails LOUDLY (exit 1). Option B must never
- * publish on a guess — a red-CI window that outlasts the window is an incident,
- * not a reason to ship unknown code.
+ * API is unreachable) after the fetch retries, the script fails LOUDLY
+ * (exit 1). Option B must never publish on a guess — a red-CI window that
+ * outlasts the window is an incident, not a reason to ship unknown code.
  *
  * What is overlaid and why only public/data: the site is a static export and
  * the SSG reads public/data at BUILD time (scores baked into the served HTML,
@@ -50,9 +51,11 @@ const { execFileSync } = require('child_process');
 const fs = require('fs');
 const {
   GREEN_RUN_MAX_AGE_DAYS_DEFAULT,
+  GREEN_RUN_RETRY_ATTEMPTS_DEFAULT,
+  GREEN_RUN_RETRY_DELAY_MS_DEFAULT,
   LAG_WARN_COMMITS_DEFAULT,
   LAG_WARN_HOURS_DEFAULT,
-  pickGreenRun,
+  pickGreenRunWithRetries,
   evaluateDeploySource,
   formatDeploySummary,
 } = require('./lib/deploySource');
@@ -63,6 +66,10 @@ const EVENT = process.env.GITHUB_EVENT_NAME || 'workflow_dispatch';
 const DRY_RUN = process.env.VENTU_DRY_RUN === '1' || process.env.VENTU_DRY_RUN === 'true';
 
 const maxAgeDays = Number(process.env.VENTU_GREEN_RUN_MAX_AGE_DAYS) || GREEN_RUN_MAX_AGE_DAYS_DEFAULT;
+const retryAttempts =
+  Number(process.env.VENTU_GREEN_RUN_RETRY_ATTEMPTS) || GREEN_RUN_RETRY_ATTEMPTS_DEFAULT;
+const retryDelayMs =
+  Number(process.env.VENTU_GREEN_RUN_RETRY_DELAY_MS) || GREEN_RUN_RETRY_DELAY_MS_DEFAULT;
 const lagWarnCommits = Number(process.env.VENTU_LAG_WARN_COMMITS) || LAG_WARN_COMMITS_DEFAULT;
 const lagWarnHours = Number(process.env.VENTU_LAG_WARN_HOURS) || LAG_WARN_HOURS_DEFAULT;
 
@@ -185,8 +192,20 @@ function main() {
     return;
   }
 
-  const runs = fetchCiRuns();
-  const greenRun = runs ? pickGreenRun(runs, { nowMs, maxAgeDays }) : null;
+  // A página de runs vem de um índice eventualmente consistente — um snapshot
+  // sem verdes não prova CI vermelho. Re-tenta antes de recusar o deploy.
+  const { greenRun, runs, attemptsUsed } = pickGreenRunWithRetries(fetchCiRuns, {
+    nowMs,
+    maxAgeDays,
+    attempts: retryAttempts,
+    delayMs: retryDelayMs,
+    onRetry: ({ attempt, attempts, runs: page }) =>
+      console.log(
+        `⚠️ sem run verde na tentativa ${attempt}/${attempts} ` +
+          `(${page ? page.length : 'indisponível'} runs analisados) — ` +
+          `retry em ${Math.round(retryDelayMs / 1000)} s`,
+      ),
+  });
 
   let greenIsAncestor = false;
   let lagCommits = null;
@@ -215,7 +234,7 @@ function main() {
   });
 
   console.log(
-    `CI runs analisados: ${runs ? runs.length : 'indisponível'} · verde escolhido: ${short(
+    `CI runs analisados: ${runs ? runs.length : 'indisponível'} (tentativa ${attemptsUsed}/${retryAttempts}) · verde escolhido: ${short(
       greenRun && greenRun.head_sha,
     )} (${greenRun ? greenRun.created_at : '—'}) · main: ${short(mainSha)}`,
   );

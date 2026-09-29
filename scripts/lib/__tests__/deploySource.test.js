@@ -5,10 +5,12 @@ const require = createRequire(import.meta.url);
 const {
   OVERLAY_PATHS,
   GREEN_RUN_MAX_AGE_DAYS_DEFAULT,
+  GREEN_RUN_RETRY_ATTEMPTS_DEFAULT,
   LAG_WARN_COMMITS_DEFAULT,
   LAG_WARN_HOURS_DEFAULT,
   isAcceptableGreenRun,
   pickGreenRun,
+  pickGreenRunWithRetries,
   evaluateDeploySource,
   formatDeploySummary,
 } = require('../deploySource.js');
@@ -76,6 +78,59 @@ describe('deploySource — escolha do run verde', () => {
     expect(pickGreenRun([run({ conclusion: 'failure' })], { nowMs: NOW })).toBeNull();
     expect(pickGreenRun([], { nowMs: NOW })).toBeNull();
     expect(pickGreenRun(null, { nowMs: NOW })).toBeNull();
+  });
+});
+
+describe('deploySource — retry do fetch (a API de runs é eventualmente consistente)', () => {
+  const green = () => run({ head_sha: 'g'.repeat(40) });
+  const redPage = () => [run({ conclusion: 'failure' })];
+
+  it('does not sleep when the first page already has a green', () => {
+    const sleeps = [];
+    const res = pickGreenRunWithRetries(() => [green()], {
+      nowMs: NOW,
+      sleep: (ms) => sleeps.push(ms),
+    });
+    expect(res.greenRun.head_sha).toBe('g'.repeat(40));
+    expect(res.attemptsUsed).toBe(1);
+    expect(sleeps).toEqual([]);
+  });
+
+  it('recovers when a stale page omits the green and the next has it', () => {
+    const sleeps = [];
+    const retries = [];
+    const pages = [redPage(), [green()]];
+    const res = pickGreenRunWithRetries(() => pages.shift() ?? null, {
+      nowMs: NOW,
+      sleep: (ms) => sleeps.push(ms),
+      onRetry: (info) => retries.push(info),
+    });
+    expect(res.greenRun.head_sha).toBe('g'.repeat(40));
+    expect(res.attemptsUsed).toBe(2);
+    expect(sleeps).toHaveLength(1);
+    expect(retries[0].attempt).toBe(1);
+  });
+
+  it('treats a failed fetch (null) like a green-less page and retries', () => {
+    const pages = [null, [green()]];
+    const res = pickGreenRunWithRetries(() => pages.shift(), {
+      nowMs: NOW,
+      sleep: () => {},
+    });
+    expect(res.greenRun).not.toBeNull();
+    expect(res.attemptsUsed).toBe(2);
+  });
+
+  it('still returns null after the last attempt — a real red window fails loudly', () => {
+    const sleeps = [];
+    const res = pickGreenRunWithRetries(() => redPage(), {
+      nowMs: NOW,
+      attempts: GREEN_RUN_RETRY_ATTEMPTS_DEFAULT,
+      sleep: (ms) => sleeps.push(ms),
+    });
+    expect(res.greenRun).toBeNull();
+    expect(res.attemptsUsed).toBe(GREEN_RUN_RETRY_ATTEMPTS_DEFAULT);
+    expect(sleeps).toHaveLength(GREEN_RUN_RETRY_ATTEMPTS_DEFAULT - 1);
   });
 });
 
