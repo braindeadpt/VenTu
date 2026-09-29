@@ -1,11 +1,11 @@
 {
   "day": "20260929",
-  "fetchedAt": "2026-09-29T15:52:17.554Z",
+  "fetchedAt": "2026-09-29T19:07:24.969Z",
   "minPairs": 3,
   "minAccumulatedPairs": 10,
   "archive": {
     "windowDays": 30,
-    "pairHourCount": 746,
+    "pairHourCount": 749,
     "path": "buoy-coherence-archive.json"
   },
   "daily": {
@@ -15,11 +15,11 @@
       "6200084|6200199": {
         "pair": "Cabo Silleiro × Nazaré Costeira (WMO)",
         "coherent": 25,
-        "review": 2,
-        "incoherent": 0,
+        "review": 1,
+        "incoherent": 1,
         "insufficient": 0,
         "days": 27,
-        "incoherentRatio": 0
+        "incoherentRatio": 0.037
       },
       "6200083|6201079": {
         "pair": "Villano-Sisargas × Datawell ao largo de Faro",
@@ -1612,13 +1612,65 @@
     },
     "São Miguel": {
       "spotCount": 7,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 7,
+      "bySource": {
+        "ih-buoy": 7
+      },
+      "audited": 7,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 7,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "mosteiros",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 229,
+          "altKm": 0
+        },
+        {
+          "spot": "monte-verde",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 245,
+          "altKm": 0
+        },
+        {
+          "spot": "santa-barbara",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 242,
+          "altKm": 0
+        },
+        {
+          "spot": "milicias",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 249,
+          "altKm": 0
+        },
+        {
+          "spot": "agua-alto",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 265,
+          "altKm": 0
+        },
+        {
+          "spot": "calhetas",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 249,
+          "altKm": 0
+        },
+        {
+          "spot": "ribeira-quente",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 276,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -1959,13 +2011,23 @@
     },
     "Açores": {
       "spotCount": 1,
-      "withObservedWave": 0,
-      "bySource": {},
-      "audited": 0,
+      "withObservedWave": 1,
+      "bySource": {
+        "ih-buoy": 1
+      },
+      "audited": 1,
       "attachedIsClosest": 0,
-      "attachedNotClosest": 0,
+      "attachedNotClosest": 1,
       "onlySource": 0,
-      "notClosest": [],
+      "notClosest": [
+        {
+          "spot": "ponta-delgada",
+          "winner": "ih-buoy",
+          "reason": "ih-only",
+          "attachedKm": 249,
+          "altKm": 0
+        }
+      ],
       "calibrated": 0,
       "calibrationRefs": {},
       "suboptimalRefs": 0,
@@ -2170,7 +2232,7 @@
       "suboptimal": []
     }
   },
-  "regionsAuditedAt": "2026-09-29T15:55:47.820Z",
+  "regionsAuditedAt": "2026-09-29T19:07:43.139Z",
   "pairs": [
     {
       "pair": "Cabo Silleiro × Datawell ao largo do Porto",
@@ -2228,14 +2290,14 @@
       ],
       "distanceKm": 285.3,
       "ptSource": "wmo",
-      "n": 511,
+      "n": 514,
       "meanDeltaM": -0.1,
       "meanAbsDeltaM": 0.3,
-      "maxAbsDeltaM": 2.5,
-      "corr": 0.64,
+      "maxAbsDeltaM": 2.8,
+      "corr": 0.6,
       "verdict": "coherent",
       "firstHour": "2026-09-01T00",
-      "lastHour": "2026-09-29T14",
+      "lastHour": "2026-09-29T17",
       "hours": [
         {
           "6200084": 1.8799999952316284,
@@ -2311,6 +2373,21 @@
           "6200084": 3.5199999809265137,
           "6200199": 1.1425800323486328,
           "hour": "2026-09-29T14"
+        },
+        {
+          "6200084": 3.630000114440918,
+          "6200199": 1.4208999872207642,
+          "hour": "2026-09-29T15"
+        },
+        {
+          "6200084": 3.869999885559082,
+          "6200199": 1.3623000383377075,
+          "hour": "2026-09-29T16"
+        },
+        {
+          "6200084": 4.21999979019165,
+          "6200199": 1.40625,
+          "hour": "2026-09-29T17"
         }
       ]
     }

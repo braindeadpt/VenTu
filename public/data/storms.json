@@ -1,0 +1,345 @@
+{
+  "source": "nhc",
+  "fetchedAt": "2026-09-29T19:07:28.962Z",
+  "region": {
+    "latMin": 25,
+    "latMax": 50,
+    "lonMin": -48,
+    "lonMax": -4
+  },
+  "storms": [
+    {
+      "id": "al062026",
+      "name": "Fay",
+      "classification": "TD",
+      "classificationLabel": "Depressão tropical",
+      "intensityMph": 30,
+      "pressureMb": 1010,
+      "lat": 24.2,
+      "lon": -47.3,
+      "movementDirDeg": 225,
+      "movementSpeedMph": 12,
+      "lastUpdate": "2026-09-29T15:00:00.000Z",
+      "advisory": "038",
+      "cone": [
+        [
+          -53.26258,
+          21.69605
+        ],
+        [
+          -52.93054,
+          21.69907
+        ],
+        [
+          -51.02124,
+          22.11479
+        ],
+        [
+          -49.39343,
+          22.7016
+        ],
+        [
+          -48.40394,
+          23.17391
+        ],
+        [
+          -47.1319,
+          23.98407
+        ],
+        [
+          -47.01874,
+          24.13662
+        ],
+        [
+          -47.03291,
+          24.29814
+        ],
+        [
+          -47.179,
+          24.44005
+        ],
+        [
+          -47.37956,
+          24.45389
+        ],
+        [
+          -48.97718,
+          23.81466
+        ],
+        [
+          -50.34051,
+          23.53943
+        ],
+        [
+          -53.45686,
+          23.24629
+        ],
+        [
+          -53.86629,
+          22.9025
+        ],
+        [
+          -53.96927,
+          22.37236
+        ],
+        [
+          -53.74693,
+          21.94094
+        ],
+        [
+          -53.26258,
+          21.69605
+        ]
+      ],
+      "track": [
+        [
+          -47.3,
+          24.2
+        ],
+        [
+          -48.9,
+          23.4
+        ],
+        [
+          -51,
+          22.8
+        ],
+        [
+          -53.1,
+          22.5
+        ]
+      ],
+      "trackPoints": [
+        {
+          "lat": 24.2,
+          "lon": -47.3,
+          "forecastHr": null,
+          "validAt": "11:00 AM AST September 29, 2026",
+          "maxWindMph": 35
+        },
+        {
+          "lat": 23.4,
+          "lon": -48.9,
+          "forecastHr": 12,
+          "validAt": "8:00 PM AST September 29, 2026",
+          "maxWindMph": 35
+        },
+        {
+          "lat": 22.8,
+          "lon": -51,
+          "forecastHr": 24,
+          "validAt": "8:00 AM AST September 30, 2026",
+          "maxWindMph": 35
+        },
+        {
+          "lat": 22.5,
+          "lon": -53.1,
+          "forecastHr": 36,
+          "validAt": "8:00 PM AST September 30, 2026",
+          "maxWindMph": 30
+        }
+      ],
+      "coneTouchesRegion": null
+    },
+    {
+      "id": "al082026",
+      "name": "Hanna",
+      "classification": "TS",
+      "classificationLabel": "Tempestade tropical",
+      "intensityMph": 35,
+      "pressureMb": 1004,
+      "lat": 34.6,
+      "lon": -45.5,
+      "movementDirDeg": 125,
+      "movementSpeedMph": 12,
+      "lastUpdate": "2026-09-29T15:00:00.000Z",
+      "advisory": "005",
+      "cone": [
+        [
+          -43.18752,
+          33.25084
+        ],
+        [
+          -42.36521,
+          33.35614
+        ],
+        [
+          -41.33656,
+          33.71401
+        ],
+        [
+          -38.9376,
+          34.37031
+        ],
+        [
+          -36.67138,
+          35.13386
+        ],
+        [
+          -33.1488,
+          36.01434
+        ],
+        [
+          -32.56015,
+          36.40162
+        ],
+        [
+          -32.25361,
+          36.82726
+        ],
+        [
+          -32.10536,
+          37.3729
+        ],
+        [
+          -32.19951,
+          37.87988
+        ],
+        [
+          -32.54034,
+          38.39972
+        ],
+        [
+          -33.12314,
+          38.78
+        ],
+        [
+          -33.90253,
+          38.97621
+        ],
+        [
+          -34.69086,
+          38.90875
+        ],
+        [
+          -38.04969,
+          37.38863
+        ],
+        [
+          -43.29079,
+          34.50184
+        ],
+        [
+          -43.6691,
+          34.40517
+        ],
+        [
+          -44.11896,
+          34.41113
+        ],
+        [
+          -45.46555,
+          34.86166
+        ],
+        [
+          -45.78153,
+          34.7216
+        ],
+        [
+          -45.81018,
+          34.5658
+        ],
+        [
+          -45.73061,
+          34.41638
+        ],
+        [
+          -44.68779,
+          33.75134
+        ],
+        [
+          -43.87781,
+          33.39296
+        ],
+        [
+          -43.18752,
+          33.25084
+        ]
+      ],
+      "track": [
+        [
+          -45.5,
+          34.6
+        ],
+        [
+          -44.2,
+          34
+        ],
+        [
+          -43,
+          33.9
+        ],
+        [
+          -41.6,
+          34.5
+        ],
+        [
+          -39.5,
+          35.3
+        ],
+        [
+          -37,
+          36.4
+        ],
+        [
+          -34.1,
+          37.4
+        ]
+      ],
+      "trackPoints": [
+        {
+          "lat": 34.6,
+          "lon": -45.5,
+          "forecastHr": null,
+          "validAt": "11:00 AM AST September 29, 2026",
+          "maxWindMph": 40
+        },
+        {
+          "lat": 34,
+          "lon": -44.2,
+          "forecastHr": 12,
+          "validAt": "8:00 PM AST September 29, 2026",
+          "maxWindMph": 40
+        },
+        {
+          "lat": 33.9,
+          "lon": -43,
+          "forecastHr": 24,
+          "validAt": "8:00 AM AST September 30, 2026",
+          "maxWindMph": 40
+        },
+        {
+          "lat": 34.5,
+          "lon": -41.6,
+          "forecastHr": 36,
+          "validAt": "8:00 PM AST September 30, 2026",
+          "maxWindMph": 40
+        },
+        {
+          "lat": 35.3,
+          "lon": -39.5,
+          "forecastHr": 48,
+          "validAt": "8:00 AM AST October 01, 2026",
+          "maxWindMph": 35
+        },
+        {
+          "lat": 36.4,
+          "lon": -37,
+          "forecastHr": 60,
+          "validAt": "8:00 PM AST October 01, 2026",
+          "maxWindMph": 35
+        },
+        {
+          "lat": 37.4,
+          "lon": -34.1,
+          "forecastHr": 72,
+          "validAt": "8:00 AM AST October 02, 2026",
+          "maxWindMph": 35
+        }
+      ],
+      "coneTouchesRegion": null
+    }
+  ],
+  "spotStorms": {},
+  "activeCount": 6
+}

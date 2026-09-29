@@ -32,16 +32,16 @@
       "nrt": "near-real-time data available",
       "lat": 37.921111111111095,
       "lon": -8.92861111111111,
-      "lastPos": "2026-09-29T13:56:45+00:00",
-      "lastSea": "2026-09-29T13:56:45+00:00",
+      "lastPos": "2026-09-29T17:26:45+00:00",
+      "lastSea": "2026-09-29T17:26:45+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-29T14:26:45.000Z",
-        "hm0": 1.24,
-        "tp": 11.8,
-        "thtp": 307,
-        "hmax": 1.61,
-        "temp": 21.1
+        "date": "2026-09-29T17:26:45.000Z",
+        "hm0": 1.1,
+        "tp": 10,
+        "thtp": 293,
+        "hmax": 1.76,
+        "temp": 21.5
       }
     },
     "20": {
@@ -82,16 +82,16 @@
       "nrt": "near-real-time data available",
       "lat": 32.727777777777796,
       "lon": -16.723888888888897,
-      "lastPos": "2026-09-29T13:59:58+00:00",
-      "lastSea": "2026-09-29T13:59:58+00:00",
+      "lastPos": "2026-09-29T17:29:58+00:00",
+      "lastSea": "2026-09-29T17:29:58+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-29T14:29:58.000Z",
-        "hm0": 0.85,
-        "tp": 10,
-        "thtp": 195,
-        "hmax": 1.39,
-        "temp": 22.9
+        "date": "2026-09-29T17:29:58.000Z",
+        "hm0": 0.79,
+        "tp": 10.5,
+        "thtp": 191,
+        "hmax": 1.19,
+        "temp": 22.6
       }
     },
     "66": {
@@ -159,15 +159,15 @@
       "nrt": "near-real-time data available",
       "lat": 39.08,
       "lon": -27.9633333333333,
-      "lastPos": "2026-09-29T14:19:06+00:00",
-      "lastSea": "2026-09-29T14:19:06+00:00",
+      "lastPos": "2026-09-29T17:49:06+00:00",
+      "lastSea": "2026-09-29T17:49:06+00:00",
       "family": "datawell",
       "latest": {
-        "date": "2026-09-29T14:49:06.000Z",
-        "hm0": 2.83,
+        "date": "2026-09-29T17:49:06.000Z",
+        "hm0": 3.63,
         "tp": 11.8,
-        "thtp": 65,
-        "hmax": 4.19,
+        "thtp": 63,
+        "hmax": 4.94,
         "temp": 21.6
       }
     },
@@ -623,13 +623,15 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 86.9
+      "distanceKm": 86.9,
+      "island": true
     },
     "santa-catarina-terceira": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 78.2
+      "distanceKm": 78.2,
+      "island": true
     },
     "parede": {
       "idEst": 19,
@@ -695,7 +697,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 84.1
+      "distanceKm": 84.1,
+      "island": true
     },
     "lagoa-albufeira": {
       "idEst": 19,
@@ -767,7 +770,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 228.5
+      "distanceKm": 228.5,
+      "island": true
     },
     "porto-covo": {
       "idEst": 19,
@@ -779,13 +783,15 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 244.6
+      "distanceKm": 244.6,
+      "island": true
     },
     "santa-barbara": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 241.9
+      "distanceKm": 241.9,
+      "island": true
     },
     "malhao": {
       "idEst": 19,
@@ -797,7 +803,8 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 248.6
+      "distanceKm": 248.6,
+      "island": true
     },
     "vila-nova-milfontes": {
       "idEst": 19,
@@ -810,6 +817,13 @@
       "stationTitle": "CSA83/1D",
       "area": "Continente - Sines",
       "distanceKm": 32.9
+    },
+    "agua-alto": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago dos Açores - Ilha da Graciosa",
+      "distanceKm": 265,
+      "island": true
     },
     "zambujeira": {
       "idEst": 19,
@@ -1043,49 +1057,57 @@
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 249.2
+      "distanceKm": 249.2,
+      "island": true
     },
     "sao-vicente-madeira": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 30
+      "distanceKm": 30,
+      "island": true
     },
     "porto-da-cruz": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 11.1
+      "distanceKm": 11.1,
+      "island": true
     },
     "paul-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 47.8
+      "distanceKm": 47.8,
+      "island": true
     },
     "jardim-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 46.2
+      "distanceKm": 46.2,
+      "island": true
     },
     "ponta-sao-lourenco": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 2.5
+      "distanceKm": 2.5,
+      "island": true
     },
     "ribeira-brava": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 32.3
+      "distanceKm": 32.3,
+      "island": true
     },
     "funchal": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 20
+      "distanceKm": 20,
+      "island": true
     },
     "barra-aveiro": {
       "idEst": 4,
@@ -1205,49 +1227,64 @@
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 4.1
+      "distanceKm": 4.1,
+      "island": true
     },
     "seixal-madeira": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 37.1
+      "distanceKm": 37.1,
+      "island": true
     },
     "ponta-pargo": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 51.7
+      "distanceKm": 51.7,
+      "island": true
     },
     "madalena-mar": {
       "idEst": 33,
       "stationTitle": "CSA94",
       "area": "Arquipélago da Madeira - Caniçal",
-      "distanceKm": 38.3
+      "distanceKm": 38.3,
+      "island": true
     },
     "calhetas": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 249
+      "distanceKm": 249,
+      "island": true
+    },
+    "ribeira-quente": {
+      "idEst": 86,
+      "stationTitle": "BOND5",
+      "area": "Arquipélago dos Açores - Ilha da Graciosa",
+      "distanceKm": 275.9,
+      "island": true
     },
     "porto-martins": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 90.3
+      "distanceKm": 90.3,
+      "island": true
     },
     "cachorro-pico": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 67.5
+      "distanceKm": 67.5,
+      "island": true
     },
     "faja-cubres": {
       "idEst": 86,
       "stationTitle": "BOND5",
       "area": "Arquipélago dos Açores - Ilha da Graciosa",
-      "distanceKm": 49.7
+      "distanceKm": 49.7,
+      "island": true
     },
     "fao-ofir-surf": {
       "idEst": 4,
@@ -1274,7 +1311,7 @@
       "distanceKm": 25.3
     }
   },
-  "fetchedAt": "2026-09-29T15:51:59.792Z",
+  "fetchedAt": "2026-09-29T19:07:01.948Z",
   "sourceCollections": [
     "buoys_datawell"
   ],
