@@ -20,6 +20,7 @@ import SpotImage from '@/components/ui/SpotImage';
 import SpotNearbyDirectory from '@/components/directory/SpotNearbyDirectory';
 import SpotOnSiteWarnings from '@/components/spots/context/SpotOnSiteWarnings';
 import SpotStormAlert from '@/components/spots/context/SpotStormAlert';
+import SpotRadarEcho from '@/components/spots/context/SpotRadarEcho';
 import SpotNearbySpots from '@/components/spots/context/SpotNearbySpots';
 import SpotClimateCard from '@/components/spots/context/SpotClimateCard';
 import SpotHowWeKnow, {
@@ -131,6 +132,9 @@ export default function SpotContextSection({
                 {/* Ciclone tropical cujo cone cobre o spot — antes dos avisos
                     IPMA/IH por ser o perigo de maior escala. */}
                 <SpotStormAlert spotId={spot.id} locale={locale} />
+                {/* Eco do radar IPMA por spot — «chuva sobre/perto/a aproximar-
+                    se», medido (não previsto), omite-se quando limpo/velho. */}
+                <SpotRadarEcho spotId={spot.id} locale={locale} />
                 <SpotOnSiteWarnings spotId={spot.id} locale={locale} />
               </div>
 

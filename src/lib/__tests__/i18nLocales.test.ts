@@ -54,6 +54,8 @@ const SHARED_TOKENS = new Set([
   'APA · InfoÁgua',
   // Intervalo numérico puro da banda de score — interpolação sem palavras.
   '{lo}–{hi}',
+  // «Radar IPMA» — nome do instrumento/instituição, igual em todas as línguas.
+  'Radar IPMA {time}',
 ]);
 
 /**

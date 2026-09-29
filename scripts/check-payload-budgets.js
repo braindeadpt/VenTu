@@ -118,6 +118,8 @@ const DATA_FILE_BUDGETS_MB = {
   'water-quality.json': 0.5,
   // NHC cones simplificados (~150 pts) × poucas tempestades — ~6 KB típico.
   'storms.json': 0.2,
+  // storm-state: {radar{state,distKm,...},warnLevel,inStormCone} × 185 — ~50 KB.
+  'storm-state.json': 0.1,
 };
 
 const budgetBytes = BUDGET_MB * 1024 * 1024;

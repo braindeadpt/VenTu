@@ -116,6 +116,17 @@ Rectângulo usado: 25–50 N, -48→-4 E + margem 8° no centro (Cabo Verde).
 
 ### B1 — Estado de tempestade por spot (derivação local)
 
+**Estado: implementado** — `scripts/lib/stormState.js` (eco por spot: mask
+alpha+máscara preta, distância ao eco mais próximo ≤60 km, intensidade por
+paleta azul→verde→amarelo→magenta, centróide 150 km + vector de deslocamento
+entre o último frame e o de ~15 min → «a aproximar-se» medido) +
+`build-storm-state.js` → `storm-state.json` (~50 KB: radar + warnLevel +
+inStormCone por spot) + `src/lib/stormState.ts` (loader + `radarStateFresh`
+75 min — o pipeline corre 2×/h) + `SpotRadarEcho` no bloco «No local»
+(linha compacta «Chuva sobre o spot agora» / «Precipitação a ~X km (W)»
++ intensidade · aproximação · hora do frame) + i18n ×5 + budget 0.1 MB.
+Ilhas = `radar: null` (fora das bounds IPMA — honesto).
+
 - PNG do radar mais recente → eco a ≤X km → `{ limpo | perto | sobre, distKm }`.
 - Centróide do eco em 2–3 frames → vector «a aproximar-se de W ~25 km/h».
 - Nível IPMA do distrito + NHC cone → estado composto por spot.
