@@ -1,91 +1,32 @@
 {
-  "date": "2026-09-28",
-  "generatedAt": "2026-09-28T03:37:04.446Z",
-  "topSpot": "Supertubos",
-  "topSpotSlug": "supertubos",
+  "date": "2026-09-29",
+  "generatedAt": "2026-09-29T03:07:18.801Z",
+  "topSpot": "Carcavelos",
+  "topSpotSlug": "carcavelos",
   "pt": {
-    "headline": "Hoje é dia de Supertubos! 🌊",
-    "advice": "Melhor janela: 6:00h. Ondas de 1.4m com 3 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 12/24 — Edital n.º 712 de 2024",
-    "bestTime": "6:00",
+    "headline": "Hoje é dia de Carcavelos! 🌊",
+    "advice": "Melhor janela: 7:00h. Ondas de 1.5m com 10 nós de vento. ⚓ Avisos à Navegação Costeiros (IH): ANAV NR 00/14 — Normas de Segurança para a Navegação  · ANAV NR 1445/26 — Animais Marinhos - Interação",
+    "bestTime": "7:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Chega cedo para evitar crowd!",
-    "moonTideLine": "Lua cheia · Marés vivas · baixa-mar 11:00"
+    "moonTideLine": "Gibosa minguante · Marés vivas · baixa-mar 11:00"
   },
   "en": {
-    "headline": "Today is Supertubos day! 🌊",
-    "advice": "Best window: 6:00. 1.4m waves with 3 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 12/24 — Edital n.º 712 de 2024",
-    "bestTime": "6:00",
+    "headline": "Today is Carcavelos day! 🌊",
+    "advice": "Best window: 7:00. 1.5m waves with 10 knot wind. ⚓ Coastal navigation warnings (IH): ANAV NR 00/14 — Normas de Segurança para a Navegação  · ANAV NR 1445/26 — Animais Marinhos - Interação",
+    "bestTime": "7:00",
     "wetsuit": "3/2mm",
     "crowdTip": "Get there early to beat the crowd!",
-    "moonTideLine": "Full moon · Spring tides · low tide 11:00"
+    "moonTideLine": "Waning gibbous · Spring tides · low tide 11:00"
   },
   "spots": [
     {
-      "name": "Supertubos",
-      "slug": "supertubos",
-      "score": 86,
-      "scoreForecast": 87,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 162.7
-      },
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Guincho",
-      "slug": "guincho",
-      "score": 86,
-      "scoreForecast": 87,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 101.9
-      },
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Nazaré",
-      "slug": "nazare",
-      "score": 86,
-      "scoreForecast": 88,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 186.8
-      },
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Ribeira d'Ilhas",
-      "slug": "ribeira-ilhas",
-      "score": 86,
-      "scoreForecast": 88,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 126.1
-      },
-      "verdict": "go",
-      "ptReason": "Condições excelentes",
-      "enReason": "Excellent conditions"
-    },
-    {
-      "name": "Coxos",
-      "slug": "coxos",
-      "score": 86,
-      "scoreForecast": 88,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 127.4
-      },
+      "name": "Carcavelos",
+      "slug": "carcavelos",
+      "score": 82,
+      "scoreForecast": 82,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
@@ -93,37 +34,72 @@
     {
       "name": "Arrifana",
       "slug": "arrifana",
-      "score": 86,
-      "scoreForecast": 87,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 70.2
-      },
+      "score": 79,
+      "scoreForecast": 79,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
     },
     {
-      "name": "Carcavelos",
-      "slug": "carcavelos",
-      "score": 86,
-      "scoreForecast": 85,
-      "scoreSource": "boia",
-      "scoreMeta": {
-        "stationName": "CSA83/1D",
-        "distanceKm": 91.4
-      },
+      "name": "Ribeira d'Ilhas",
+      "slug": "ribeira-ilhas",
+      "score": 78,
+      "scoreForecast": 78,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Supertubos",
+      "slug": "supertubos",
+      "score": 77,
+      "scoreForecast": 77,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Guincho",
+      "slug": "guincho",
+      "score": 77,
+      "scoreForecast": 77,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Nazaré",
+      "slug": "nazare",
+      "score": 77,
+      "scoreForecast": 77,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
+      "verdict": "go",
+      "ptReason": "Condições excelentes",
+      "enReason": "Excellent conditions"
+    },
+    {
+      "name": "Coxos",
+      "slug": "coxos",
+      "score": 77,
+      "scoreForecast": 77,
+      "scoreSource": "previsão",
+      "scoreMeta": null,
       "verdict": "go",
       "ptReason": "Condições excelentes",
       "enReason": "Excellent conditions"
     }
   ],
-  "topScore": 86,
-  "topScoreForecast": 87,
-  "topScoreSource": "boia",
-  "topScoreMeta": {
-    "stationName": "CSA83/1D",
-    "distanceKm": 162.7
-  }
+  "topScore": 82,
+  "topScoreForecast": 82,
+  "topScoreSource": "previsão",
+  "topScoreMeta": null
 }
