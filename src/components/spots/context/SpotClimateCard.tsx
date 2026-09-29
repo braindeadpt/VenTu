@@ -34,11 +34,15 @@ export default function SpotClimateCard({
 
   useEffect(() => {
     let cancelled = false;
-    loadClimatology().then((file) => {
-      if (cancelled) return;
-      setClima(spotClimatology(file, spotId));
-      setReady(true);
-    });
+    loadClimatology()
+      .then((file) => {
+        if (cancelled) return;
+        setClima(spotClimatology(file, spotId));
+        setReady(true);
+      })
+      .catch(() => {
+        if (!cancelled) setReady(true);
+      });
     return () => {
       cancelled = true;
     };
@@ -68,7 +72,7 @@ export default function SpotClimateCard({
             <div
               className={
                 i === month
-                  ? 'w-full rounded-sm bg-accent'
+                  ? 'w-full rounded-sm bg-data-wind'
                   : 'w-full rounded-sm bg-data-wind/45'
               }
               style={{ height: `${v === null ? 2 : Math.max(2, (v / max) * 28)}px` }}
@@ -99,7 +103,7 @@ export default function SpotClimateCard({
         {p != null && (
           <>
             {' · '}
-            {tc.climatePrecip} {p.toFixed(1)} {locale === 'pt' ? 'mm/dia' : 'mm/day'}
+            {tc.climatePrecip} {p.toFixed(1)} {tc.climatePrecipUnit}
           </>
         )}
       </p>

@@ -50,6 +50,8 @@ const SHARED_TOKENS = new Set([
   // Siglas técnicas universais — «UV» (índice ultravioleta) e «AQI» (Air
   // Quality Index europeu) são siglas oficiais iguais em todas as línguas.
   'UV', 'AQI',
+  // Atribuição da fonte APA/InfoÁgua — nome institucional igual em todas as línguas.
+  'APA · InfoÁgua',
   // Intervalo numérico puro da banda de score — interpolação sem palavras.
   '{lo}–{hi}',
 ]);
@@ -261,6 +263,8 @@ const EN_COGNATES = new Set([
   'ME {me} m · n={n}',
   // Siglas oficiais universais — «UV» e «AQI» são iguais em PT e EN.
   'UV', 'AQI',
+  // Atribuição da fonte APA/InfoÁgua — nome institucional igual em PT e EN.
+  'APA · InfoÁgua',
   // Intervalo numérico puro da banda de score — interpolação sem palavras.
   '{lo}–{hi}',
 ]);

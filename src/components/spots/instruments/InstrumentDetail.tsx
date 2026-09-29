@@ -210,7 +210,7 @@ export default function InstrumentDetail({
             )}
             {/* AQI europeu — só na hora corrente (a camada CAMS não é por
                 hora de previsão nesta fase); fresco <8 h garantido no merge. */}
-            {isNow && conditions.airQualityIndex !== undefined && (
+            {isNow && conditions.airQualityIndex != null && Number.isFinite(conditions.airQualityIndex) && (
               <p className="m-0 font-mono tabular-nums text-[13px] text-fg-muted" title={copy.aqiHint}>
                 {copy.aqiLabel} {conditions.airQualityIndex}
                 <span className="text-fg-subtle">
