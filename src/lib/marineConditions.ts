@@ -29,6 +29,8 @@ export interface MarineConditionsFields {
   tideObservedHeight?: number;
   tideObservedAt?: string;
   tideStation?: string;
+  /** Anomalia de maré (m) — obs IH de-biased vs previsão; só presente com baseline suficiente. */
+  tideAnomalyM?: number;
   /** Multi-model forecast agreement (does not affect score). */
   confidence?: ConfidenceTier;
   confidenceDetail?: ConfidenceDetail;

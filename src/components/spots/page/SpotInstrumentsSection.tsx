@@ -81,6 +81,7 @@ export default function SpotInstrumentsSection({
   conditions,
   tideSchedule,
   tideHourly,
+  selectedSport,
   score,
   freshnessNowMs,
   ariaLabel,
@@ -204,6 +205,7 @@ export default function SpotInstrumentsSection({
                 open={detailId}
                 spot={spot}
                 locale={locale}
+                selectedSport={selectedSport}
                 conditions={conditions}
                 hour={hour}
                 isNow={isNow}

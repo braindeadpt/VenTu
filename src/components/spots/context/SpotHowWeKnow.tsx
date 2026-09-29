@@ -133,7 +133,7 @@ export default function SpotHowWeKnow({
       {/* Detalhe técnico do número grande da onda — banda ensemble por família
           e erro do modelo por horizonte. A caixa é estável: passar a régua não
           muda a altura da secção. */}
-      <SpotModelBand spot={spot} locale={locale} />
+      <SpotModelBand spot={spot} locale={locale} sport={selectedSport} />
 
       {conditions && scoreWaveSource && scoreWindSource && (
         <div className="space-y-2.5" data-testid="how-we-know-sources">

@@ -748,6 +748,7 @@ export const translationsPt = {
     buoySkillTitle:
       'Skill real do forecast nesta boia ({name}, n={n}) — forecast-skill.json: best_match vs leitura da boia nas mesmas horas, com lead time > 0. ME = média(observado − previsão): positivo = modelo subestima.',
     buoySkillBody: 'Skill desta boia ({name}): {label} (n={n})',
+    buoySkillHitRate: 'acertou dentro de 0,5 m em {pct}% dos casos',
     buoySkillOrigins: 'Pares por plataforma: {counts} (total {total})',
     buoySkillOriginsTitle:
       'Repartição acumulada dos pares previsto×medido por plataforma (forecast-skill.json). A origem desta boia é {buoyOrigin}: se a plataforma dominante falhar, o skill do spot pode ficar sem cobertura.',

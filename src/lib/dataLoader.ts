@@ -20,6 +20,7 @@ export interface PrecomputedConditions {
     tideObservedHeight?: number;
     tideObservedAt?: string;
     tideStation?: string;
+    tideAnomalyM?: number;
     updatedAt: string;
     confidence?: 'alta' | 'média' | 'baixa';
     confidenceDetail?: {

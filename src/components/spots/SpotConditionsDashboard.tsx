@@ -40,6 +40,11 @@ export interface SpotDashboardConditions {
   uvIndexMax?: number;
   /** European AQI da hora corrente (CAMS via Open-Meteo, camada suave). */
   airQualityIndex?: number;
+  /** Maré observada (maregrafo IH, fresco <6h) + anomalia vs previsão. */
+  tideObservedHeight?: number;
+  tideObservedAt?: string;
+  tideStation?: string;
+  tideAnomalyM?: number;
   swellHeight?: number;
   swellPeriod?: number;
   swellDirection?: number;

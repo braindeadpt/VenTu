@@ -5,6 +5,7 @@ import type { Spot } from '@/types';
 import { getTranslation } from '@/lib/i18n';
 import { getAssetPath } from '@/lib/paths';
 import { parseEnsemble } from '@/lib/ensembleBand';
+import { scoreRangeForBand } from '@/lib/scoreBand';
 import {
   loadForecastSkillForSpot,
   type ForecastSkillLeadBucket,
@@ -32,12 +33,17 @@ import {
 const MS_TO_KT = 1.94384;
 const EMPTY = '—';
 
+const num = (v: unknown): number | undefined =>
+  typeof v === 'number' && Number.isFinite(v) ? v : undefined;
+
 interface SpotModelBandProps {
   spot: Spot;
   locale: string;
+  /** Desporto seleccionado — a banda de score (Fase B) é por desporto. */
+  sport?: import('@/lib/sportRatings').SportType;
 }
 
-export default function SpotModelBand({ spot, locale }: SpotModelBandProps) {
+export default function SpotModelBand({ spot, locale, sport }: SpotModelBandProps) {
   const ti = getTranslation(locale).spotPageInstruments;
   const fmt = getInstrumentFmt(locale);
   const rows = useInstrumentRows(spot);
@@ -48,6 +54,23 @@ export default function SpotModelBand({ spot, locale }: SpotModelBandProps) {
 
   // Banda da hora escolhida no eixo — a mesma que o cartão Onda mostra.
   const band = parseEnsemble(rows?.get(hours[index] ?? '')?.ens);
+  const hourRow = rows?.get(hours[index] ?? '');
+  // Banda de score (Fase B): scorer real nos cantos P10/P90 — intervalo de
+  // sensibilidade entre modelos, não uma probabilidade.
+  const scoreBand = sport
+    ? scoreRangeForBand({
+        spot,
+        sport,
+        band,
+        hour: {
+          waveDirectionDeg: num(hourRow?.waveDirection),
+          wavePeriodS: num(hourRow?.wavePeriod),
+          windDirectionDeg: num(hourRow?.windDirection),
+          windGustMs: num(hourRow?.windGust),
+          waterTempC: num(hourRow?.waterTemp),
+        },
+      })
+    : null;
 
   useEffect(() => {
     let cancelled = false;
@@ -100,6 +123,17 @@ export default function SpotModelBand({ spot, locale }: SpotModelBandProps) {
             <span className="text-fg">{ti.wind}</span>
             {' '}
             <span data-band-value>{familyRow(band?.wind, 'kt', MS_TO_KT)}</span>
+          </li>
+          <li className="text-meta-sm text-fg-muted font-mono tabular-nums">
+            <span className="text-fg">{ti.bandScoreLabel}</span>
+            {' '}
+            <span data-band-score>
+              {scoreBand
+                ? ti.bandScoreRange
+                    .replace('{lo}', String(scoreBand.lo))
+                    .replace('{hi}', String(scoreBand.hi))
+                : EMPTY}
+            </span>
           </li>
         </ul>
       </div>

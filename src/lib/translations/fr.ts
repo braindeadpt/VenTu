@@ -818,6 +818,7 @@ export const translationsFr = {
     buoySkillTitle:
       'Compétence réelle de la prévision à cette bouée ({name}, n={n}) — forecast-skill.json : best_match vs lecture de la bouée aux mêmes heures, avec délai > 0. ME = moyenne(observé − prévision) : positif = le modèle sous-estime.',
     buoySkillBody: 'Compétence de cette bouée ({name}) : {label} (n={n})',
+    buoySkillHitRate: 'prévision à ±0,5 m de la bouée dans {pct} % des cas',
     buoySkillOrigins: 'Paires par plateforme : {counts} ({total} au total)',
     buoySkillOriginsTitle:
       'Répartition cumulée des paires prévu×mesuré par plateforme (forecast-skill.json). L\'origine de cette bouée est {buoyOrigin} : si la plateforme dominante tombe, la compétence du spot peut perdre sa couverture.',

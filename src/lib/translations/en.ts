@@ -741,6 +741,7 @@ export const translationsEn = {
     buoySkillTitle:
       'Real forecast skill at this buoy ({name}, n={n}) — forecast-skill.json: best_match vs buoy reading on the same hours, with lead time > 0. ME = mean(observed − forecast): positive = model underestimates.',
     buoySkillBody: 'Buoy skill ({name}): {label} (n={n})',
+    buoySkillHitRate: 'within 0.5 m of the buoy reading in {pct}% of cases',
     buoySkillOrigins: 'Pairs by platform: {counts} ({total} total)',
     buoySkillOriginsTitle:
       'Accumulated forecast×observed pairs split by platform (forecast-skill.json). This buoy\'s origin is {buoyOrigin}: if the dominant platform fails, this spot\'s skill may lose coverage.',

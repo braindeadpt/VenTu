@@ -26,6 +26,8 @@ export interface ForecastSkillLeadBucket {
   mae?: number;
   rmse?: number;
   corr?: number | null;
+  /** Fracção de leituras da boia dentro de ±0,5 m da previsão (0–1). */
+  withinHalfM?: number;
   meanLeadHours?: number | null;
 }
 
@@ -36,6 +38,8 @@ export interface ForecastSkillStats {
   mae?: number;
   rmse?: number;
   corr?: number | null;
+  /** Fracção de leituras da boia dentro de ±0,5 m da previsão (0–1). */
+  withinHalfM?: number;
   meanLeadHours?: number | null;
   /** Skill por horizonte de lead (só as faixas com amostra suficiente). */
   byLead?: ForecastSkillLeadBucket[];
@@ -71,6 +75,7 @@ interface ByBuoyEntry {
   mae?: unknown;
   rmse?: unknown;
   corr?: unknown;
+  withinHalfM?: unknown;
   meanLeadHours?: unknown;
   origin?: unknown;
   byLead?: unknown;
@@ -149,6 +154,7 @@ function sanitizeLeadBuckets(raw: unknown): ForecastSkillLeadBucket[] {
     for (const [k, to2] of [
       ['mae', round2],
       ['rmse', round2],
+      ['withinHalfM', round2],
     ] as const) {
       if (e[k] == null) continue;
       const v = Number(e[k]);
@@ -181,6 +187,7 @@ function sanitizeStats(raw: unknown): ForecastSkillStats | null {
     mae?: unknown;
     rmse?: unknown;
     corr?: unknown;
+    withinHalfM?: unknown;
     meanLeadHours?: unknown;
     byLead?: unknown;
   };
@@ -192,6 +199,7 @@ function sanitizeStats(raw: unknown): ForecastSkillStats | null {
   for (const [k, to] of [
     ['mae', round2],
     ['rmse', round2],
+    ['withinHalfM', round2],
   ] as const) {
     if (e[k] == null) continue;
     const v = Number(e[k]);
@@ -278,6 +286,7 @@ export function parseForecastSkillBuoys(raw: unknown): ForecastSkillData {
     for (const [k, to] of [
       ['mae', round2],
       ['rmse', round2],
+      ['withinHalfM', round2],
     ] as const) {
       if (e[k] == null) continue;
       const v = Number(e[k]);

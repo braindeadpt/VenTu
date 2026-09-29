@@ -24,6 +24,12 @@ function skillLabel(b: ForecastSkillBuoy): string | null {
   return parts.join(' · ');
 }
 
+/** Hit-rate legível — fracção 0–1 → percentagem inteira, ou null se ausente. */
+function hitRatePct(b: ForecastSkillBuoy): number | null {
+  if (typeof b.withinHalfM !== 'number' || !Number.isFinite(b.withinHalfM)) return null;
+  return Math.round(b.withinHalfM * 100);
+}
+
 /**
  * Discreet «skill desta boia» line on the spot page, next to the observed
  * wave card. Resolves the spot's buoy (IH idEst, WMO code fallback) against
@@ -90,6 +96,8 @@ export default function BuoySkillLine({ spotId, locale }: BuoySkillLineProps) {
           .replace('{name}', nameWithOrigin)
           .replace('{label}', label)
           .replace('{n}', String(buoy.n))}
+        {hitRatePct(buoy) != null &&
+          ` · ${tv.buoySkillHitRate.replace('{pct}', String(hitRatePct(buoy)))}`}
       </p>
       {totalPairs > 0 && (
         <p

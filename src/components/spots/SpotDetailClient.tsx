@@ -77,6 +77,11 @@ interface Conditions {
   tideHeight?: number;
   tideStatus?: 'high' | 'low' | 'rising' | 'falling';
   tideLabel?: string;
+  /** Maré observada (maregrafo IH, fresco <6h) + anomalia vs previsão. */
+  tideObservedHeight?: number;
+  tideObservedAt?: string;
+  tideStation?: string;
+  tideAnomalyM?: number;
   source?: 'real' | 'mock';
   updatedAt?: string;
   confidence?: import('@/lib/forecastConfidence').ConfidenceTier;
@@ -392,6 +397,10 @@ export default function SpotDetailClient({
               tideHeight: spotCond.tideHeight as number | undefined,
               tideStatus: spotCond.tideStatus as Conditions['tideStatus'],
               tideLabel: spotCond.tideLabel as string | undefined,
+              tideObservedHeight: spotCond.tideObservedHeight as number | undefined,
+              tideObservedAt: spotCond.tideObservedAt as string | undefined,
+              tideStation: spotCond.tideStation as string | undefined,
+              tideAnomalyM: spotCond.tideAnomalyM as number | undefined,
               confidence: spotCond.confidence as Conditions['confidence'],
               confidenceDetail: spotCond.confidenceDetail as Conditions['confidenceDetail'],
               dailyConfidence: spotCond.dailyConfidence as Conditions['dailyConfidence'],

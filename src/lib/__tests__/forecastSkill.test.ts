@@ -17,11 +17,11 @@ const rawWithSkill = {
   calibratedPairCount: 10,
   byOrigin: {
     ih: { n: 12, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12 },
-    'wmo-es': { n: 10, me: -0.3, mae: 0.6, rmse: 0.7, corr: 0.88, meanLeadHours: 6 },
+    'wmo-es': { n: 10, me: -0.3, mae: 0.6, rmse: 0.7, corr: 0.88, withinHalfM: 0.7, meanLeadHours: 6 },
   },
   byBuoy: {
     '19': { buoyName: 'CSA92/D', n: 47, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12, origin: 'ih' },
-    '6200084': { buoyName: 'Cabo Silleiro', n: 30, me: -0.3, mae: 0.6, rmse: 0.7, corr: 0.88, meanLeadHours: 6, origin: 'wmo-es' },
+    '6200084': { buoyName: 'Cabo Silleiro', n: 30, me: -0.3, mae: 0.6, rmse: 0.7, corr: 0.88, withinHalfM: 0.83, meanLeadHours: 6, origin: 'wmo-es' },
     // Sem stats utilizáveis → ignorada.
     '2': { buoyName: 'CSA88/2', n: 3, me: 0.1 },
   },
@@ -48,6 +48,7 @@ describe('parseForecastSkillBuoys', () => {
       mae: 0.6,
       rmse: 0.7,
       corr: 0.88,
+      withinHalfM: 0.83,
       meanLeadHours: 6,
       origin: 'wmo-es',
     });
@@ -59,7 +60,7 @@ describe('parseForecastSkillBuoys', () => {
     expect(data.byOrigin).toEqual({
       ih: expect.objectContaining({ n: 12, me: 0.2, mae: 0.4, rmse: 0.5, corr: 0.91, meanLeadHours: 12 }),
       'wmo-pt': null,
-      'wmo-es': expect.objectContaining({ n: 10, me: -0.3, mae: 0.6, rmse: 0.7, corr: 0.88, meanLeadHours: 6 }),
+      'wmo-es': expect.objectContaining({ n: 10, me: -0.3, mae: 0.6, rmse: 0.7, corr: 0.88, withinHalfM: 0.7, meanLeadHours: 6 }),
     });
   });
 
@@ -97,7 +98,7 @@ describe('parseForecastSkillBuoys', () => {
           me: 0.2,
           origin: 'ih',
           byLead: [
-            { from: 24, to: 48, n: 30, me: -0.4, mae: 0.5, rmse: 0.7, meanLeadHours: 36 },
+            { from: 24, to: 48, n: 30, me: -0.4, mae: 0.5, rmse: 0.7, withinHalfM: 0.6, meanLeadHours: 36 },
             { from: 0, to: 12, n: 12, me: 0.9, mae: 1.0, rmse: 1.2, meanLeadHours: 6 },
             { from: 48, to: 72, n: 0, me: 0.1 }, // n < 1 → fora
             { from: 'x', to: 12, n: 5, me: 0.1 }, // intervalo inválido → fora
@@ -110,6 +111,7 @@ describe('parseForecastSkillBuoys', () => {
     const lead = data.buoys[0].byLead!;
     expect(lead.map((b) => `${b.from}-${b.to}`)).toEqual(['0-12', '24-48']);
     expect(lead[0]).toMatchObject({ n: 12, me: 0.9, rmse: 1.2, meanLeadHours: 6 });
+    expect(lead[1].withinHalfM).toBe(0.6);
     expect(data.byLead).toEqual([{ from: 0, to: 12, n: 40, me: 0.3, rmse: 1.1 }]);
   });
 

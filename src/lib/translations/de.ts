@@ -818,6 +818,7 @@ export const translationsDe = {
     buoySkillTitle:
       'Echte Vorhersage-Güte an dieser Boje ({name}, n={n}) — forecast-skill.json: best_match vs Bojenmessung zu denselben Stunden, mit Vorlauf > 0. ME = Mittelwert(beobachtet − Vorhersage): positiv = Modell unterschätzt.',
     buoySkillBody: 'Boje-Fähigkeit ({name}): {label} (n={n})',
+    buoySkillHitRate: 'innerhalb von 0,5 m in {pct} % der Fälle',
     buoySkillOrigins: 'Paare je Plattform: {counts} (insgesamt {total})',
     buoySkillOriginsTitle:
       'Kumulierte Aufteilung der Vorhersage×Messung-Paare je Plattform (forecast-skill.json). Der Ursprung dieser Boje ist {buoyOrigin}: fällt die dominante Plattform aus, kann die Fähigkeit des Spots ihre Abdeckung verlieren.',

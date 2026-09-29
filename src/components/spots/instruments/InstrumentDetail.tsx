@@ -24,6 +24,7 @@ import ScoreWindSourceBadge from '@/components/ui/ScoreWindSourceBadge';
 import { INSTRUMENT_DETAIL_ID, type InstrumentId } from './InstrumentCard';
 import { getInstrumentFmt } from './format';
 import type { InstrumentHour } from './types';
+import { scoreRangeForBand } from '@/lib/scoreBand';
 
 /**
  * Painel de detalhe único por baixo dos três cartões (spec §4).
@@ -40,6 +41,8 @@ interface InstrumentDetailProps {
   open: InstrumentId;
   spot: Spot;
   locale: string;
+  /** Desporto seleccionado — a banda de score do detalhe da Onda é por desporto. */
+  selectedSport?: import('@/lib/sportRatings').SportType;
   conditions: SpotDashboardConditions;
   /** Linha da hora escolhida (modelo) — os valores seguem o eixo de tempo. */
   hour: InstrumentHour | null;
@@ -67,11 +70,14 @@ interface InstrumentDetailProps {
 }
 
 const MS_TO_KT = 1.94384;
+/** |anomalia| a partir da qual a maré meteorológica é assinalada (scripts/lib/tideAnomaly). */
+const TIDE_SURGE_FLAG_M = 0.3;
 
 export default function InstrumentDetail({
   open,
   spot,
   locale,
+  selectedSport,
   conditions,
   hour,
   isNow,
@@ -228,6 +234,21 @@ export default function InstrumentDetail({
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="grid min-w-0 content-start gap-2.5">
             <SwellTrainsTable conditions={trainConditions} locale={locale} />
+            {/* Banda de score por modelo (Fase B): scorer real nos cantos
+                P10/P90 da banda ens — intervalo de sensibilidade, nunca
+                uma probabilidade fabricada. */}
+            {(() => {
+              if (!selectedSport || !hour?.ensemble) return null;
+              const band = scoreRangeForBand({ spot, sport: selectedSport, band: hour.ensemble, hour: hour ?? {} });
+              if (!band) return null;
+              return (
+                <p className="m-0 font-mono tabular-nums text-[12px] text-fg-muted" data-score-band>
+                  {ti.scoreBandLine
+                    .replace('{lo}', String(band.lo))
+                    .replace('{hi}', String(band.hi))}
+                </p>
+              );
+            })()}
           </div>
           <div className="grid min-w-0 content-start gap-2.5">
             <h3 className="m-0 mb-0.5 text-[11px] font-semibold uppercase tracking-[0.08em] text-fg-subtle">
@@ -309,6 +330,30 @@ export default function InstrumentDetail({
             {waterTemp !== undefined && (
               <p className="font-mono tabular-nums text-[13px] text-fg">
                 {td.waterLabel}: {fmt.f1(waterTemp)} °C
+              </p>
+            )}
+            {conditions.tideObservedHeight != null && (
+              <p className="font-mono tabular-nums text-[12px] text-fg-muted" data-tide-observed>
+                {ti.tideObservedLine
+                  .replace('{obs}', fmt.f1(conditions.tideObservedHeight))
+                  .replace('{station}', conditions.tideStation ?? '')}
+              </p>
+            )}
+            {conditions.tideAnomalyM != null && (
+              <p
+                className={`font-mono tabular-nums text-[12px] ${
+                  Math.abs(conditions.tideAnomalyM) >= TIDE_SURGE_FLAG_M
+                    ? 'text-score-fair'
+                    : 'text-fg-muted'
+                }`}
+                data-tide-anomaly
+              >
+                {ti.tideAnomalyLine.replace(
+                  '{delta}',
+                  `${conditions.tideAnomalyM >= 0 ? '+' : ''}${fmt.f1(conditions.tideAnomalyM)}`,
+                )}
+                {Math.abs(conditions.tideAnomalyM) >= TIDE_SURGE_FLAG_M &&
+                  ` · ${ti.tideAnomalySurge}`}
               </p>
             )}
           </div>
