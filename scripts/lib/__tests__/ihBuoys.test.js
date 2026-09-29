@@ -310,6 +310,25 @@ describe('mapSpotsToBuoys', () => {
     const mapping = mapSpotsToBuoys([{ id: 'm', lat: 32.7, lon: -16.9 }], mixed);
     expect(mapping.m.idEst).toBe(33);
   });
+
+  it('spots de ilha mapeiam até 280 km com flag island; continente fica em 250', () => {
+    const bond5 = { 86: { idEst: 86, name: 'BOND5', area: 'Graciosa', status: 'active', lat: 39.08, lon: -27.96 } };
+    // S. Miguel real: mosteiros 228 km · ribeira-quente 276 km · Sta Maria 344 km
+    const ilhas = [
+      { id: 'mosteiros', lat: 37.89, lon: -25.82 },
+      { id: 'ribeira-quente', lat: 37.73, lon: -25.31 },
+      { id: 'formosa-santa-maria', lat: 36.95, lon: -25.09 },
+      { id: 'mainland', lat: 39.0, lon: -27.9 }, // mesmo ponto no oceano? não — continente falso
+    ];
+    const m = mapSpotsToBuoys(ilhas, bond5);
+    expect(m.mosteiros).toMatchObject({ idEst: 86, island: true });
+    expect(m['ribeira-quente']).toMatchObject({ idEst: 86, island: true });
+    expect(m['formosa-santa-maria']).toBeUndefined(); // 344 km — honestamente fora
+    // um spot continental a >250 km não ganha cap ilha
+    const continental = mapSpotsToBuoys([{ id: 'sines', lat: 37.95, lon: -8.87 }], bond5);
+    expect(continental.sines).toBeUndefined();
+    expect(m.mosteiros.distanceKm).toBeGreaterThan(200);
+  });
 });
 
 describe('observedWaveForSpot', () => {
@@ -335,6 +354,19 @@ describe('observedWaveForSpot', () => {
       source: 'ih-buoy',
       observedAt: '2026-08-14T12:30:00Z',
     });
+  });
+
+  it('mapping de ilha anexa até 280 km; acima ou sem flag fica no cap normal', () => {
+    const islandMapping = { idEst: 86, distanceKm: 249, island: true };
+    expect(observedWaveForSpot(islandMapping, station, { nowMs: NOW })).toMatchObject({
+      distanceKm: 249,
+      source: 'ih-buoy',
+    });
+    expect(
+      observedWaveForSpot({ ...islandMapping, distanceKm: 281 }, station, { nowMs: NOW }),
+    ).toBeNull();
+    // sem a flag, 250 km continua fora (comportamento continental inalterado)
+    expect(observedWaveForSpot({ idEst: 86, distanceKm: 249 }, station, { nowMs: NOW })).toBeNull();
   });
 
   it('devolve null quando está longe de mais, sem leitura, ou leitura velha', () => {

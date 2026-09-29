@@ -30,6 +30,8 @@
  * @see https://data.marine.copernicus.eu/product/INSITU_GLO_PHYBGCWAV_DISCRETE_MYNRT_013_030/description
  */
 
+const { isIslandSpot, buoyMapKmFor, buoyAttachKmForMapping } = require('./islandSpots.js');
+
 const S3_BASE = 'https://s3.waw3-1.cloudferro.com/mdl-native-01';
 const S3_PREFIX =
   'native/INSITU_GLO_PHYBGCWAV_DISCRETE_MYNRT_013_030/' +
@@ -396,11 +398,15 @@ function mapSpotsToWmoBuoys(spots, buoys, maxKm = MAX_BUOY_MAP_KM, nowMs = Date.
     (b) => b.latest && typeof b.latest.date === 'string' && isFreshReading(b.latest.date, nowMs),
   );
   for (const spot of spots) {
+    // Spots de arquipélago (Açores/Madeira): a única boia viva do
+    // arquipélago fica a 230–280 km — cap alargado (mesma ordem da ponte
+    // Silleiro); a distância real fica no payload para a UI mostrar.
+    const limit = buoyMapKmFor(spot, maxKm);
     let nearest = null;
     let nearestDist = Infinity;
     for (const buoy of live) {
       const dist = haversineKm(spot.lat, spot.lon, buoy.lat, buoy.lon);
-      if (dist < nearestDist && dist <= maxKm) {
+      if (dist < nearestDist && dist <= limit) {
         nearestDist = dist;
         nearest = buoy;
       }
@@ -411,6 +417,7 @@ function mapSpotsToWmoBuoys(spots, buoys, maxKm = MAX_BUOY_MAP_KM, nowMs = Date.
         stationTitle: nearest.name,
         area: nearest.area,
         distanceKm: Math.round(nearestDist * 10) / 10,
+        ...(isIslandSpot(spot) ? { island: true } : {}),
       };
     }
   }
@@ -474,7 +481,8 @@ function observedWaveForSpot(mapping, buoy, opts = {}) {
     nowMs = Date.now(),
   } = opts;
   if (!mapping || !buoy) return null;
-  if (mapping.distanceKm > maxKm) return null;
+  // Spots de ilha (mapping.island): cap de attach alargado — ver mapSpotsToWmoBuoys.
+  if (mapping.distanceKm > buoyAttachKmForMapping(mapping, maxKm)) return null;
   const latest = buoy.latest;
   if (!latest || typeof latest !== 'object') return null;
   if (typeof latest.hs !== 'number' || !isFreshReading(latest.date, nowMs, maxAgeHours)) {

@@ -359,6 +359,23 @@ describe('mapSpotsToWmoBuoys', () => {
     expect(mapping).toEqual({});
   });
 
+  it('spots de ilha mapeiam até 280 km com flag island', () => {
+    const bond5wmo = {
+      '6202400': {
+        code: '6202400', name: 'Graciosa (WMO)', area: 'Açores',
+        lat: 39.08, lon: -27.96,
+        latest: { date: '2026-08-14T16:00:00Z', hs: 2.1 },
+      },
+    };
+    const ilhas = [
+      { id: 'mosteiros', lat: 37.89, lon: -25.82 },   // ~228 km — dentro
+      { id: 'santa-maria', lat: 36.95, lon: -25.09 }, // ~344 km — fora
+    ];
+    const m = mapSpotsToWmoBuoys(ilhas, bond5wmo, MAX_BUOY_MAP_KM, NOW);
+    expect(m.mosteiros).toMatchObject({ code: '6202400', island: true });
+    expect(m['santa-maria']).toBeUndefined();
+  });
+
   it('devolve {} sem boias frescas', () => {
     const stale = { date: '2026-08-14T01:00:00Z', hs: 1 };
     const allStale = {
@@ -388,6 +405,20 @@ describe('observedWaveForSpot (fallback WMO)', () => {
     expect(wave.distanceKm).toBe(55.8);
     expect(wave.observedAt).toBe('2026-08-14T16:00:00Z');
     expect(wave.source).toBe('wmo-buoy');
+  });
+
+  it('mapping de ilha anexa até 280 km; sem flag fica em 200', () => {
+    const islandMapping = { code: '6202400', distanceKm: 249, island: true };
+    expect(observedWaveForSpot(islandMapping, buoy, { nowMs: NOW })).toMatchObject({
+      distanceKm: 249,
+      source: 'wmo-buoy',
+    });
+    expect(
+      observedWaveForSpot({ ...islandMapping, distanceKm: 281 }, buoy, { nowMs: NOW }),
+    ).toBeNull();
+    expect(
+      observedWaveForSpot({ code: '6202400', distanceKm: 249 }, buoy, { nowMs: NOW }),
+    ).toBeNull();
   });
 
   it('recusa além do raio de attach ou leitura antiga', () => {

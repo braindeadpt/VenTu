@@ -20,6 +20,8 @@
  * @see https://faq.hidrografico.pt/books/hidrografico/page/servico-de-dados-boias-datawell-waverider
  */
 
+const { isIslandSpot, buoyMapKmFor, buoyAttachKmForMapping } = require('./islandSpots.js');
+
 const DEFAULT_IH_API = 'https://ogcapi.hidrografico.pt';
 const DEFAULT_WAVE_API = 'https://supportserver1.hidrografico.pt/geodata/buoys';
 const DEFAULT_COLLECTIONS = ['buoys_datawell', 'buoys_Fugro_oceanor_wavescan'];
@@ -370,11 +372,15 @@ function mapSpotsToBuoys(spots, stations, maxKm = MAX_BUOY_MAP_KM) {
     (s) => s.status !== 'inactive' && s.status !== 'inativa',
   );
   for (const spot of spots) {
+    // Spots de arquipélago (Açores/Madeira): a única boia nacional viva do
+    // arquipélago fica a 230–280 km — cap alargado (mesma ordem da ponte
+    // Silleiro); a distância real fica no payload para a UI mostrar.
+    const limit = buoyMapKmFor(spot, maxKm);
     let nearest = null;
     let nearestDist = Infinity;
     for (const station of active) {
       const dist = haversineKm(spot.lat, spot.lon, station.lat, station.lon);
-      if (dist < nearestDist && dist <= maxKm) {
+      if (dist < nearestDist && dist <= limit) {
         nearestDist = dist;
         nearest = station;
       }
@@ -385,6 +391,7 @@ function mapSpotsToBuoys(spots, stations, maxKm = MAX_BUOY_MAP_KM) {
         stationTitle: nearest.name,
         area: nearest.area,
         distanceKm: Math.round(nearestDist * 10) / 10,
+        ...(isIslandSpot(spot) ? { island: true } : {}),
       };
     }
   }
@@ -407,7 +414,8 @@ function observedWaveForSpot(mapping, station, opts = {}) {
     nowMs = Date.now(),
   } = opts;
   if (!mapping || !station) return null;
-  if (mapping.distanceKm > maxKm) return null;
+  // Spots de ilha (mapping.island): cap de attach alargado — ver mapSpotsToBuoys.
+  if (mapping.distanceKm > buoyAttachKmForMapping(mapping, maxKm)) return null;
   const latest = station.latest;
   if (!latest || typeof latest !== 'object') return null;
   if (typeof latest.hm0 !== 'number' || !isPlausibleHm0(latest.hm0)) return null;
