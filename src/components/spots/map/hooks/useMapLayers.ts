@@ -62,6 +62,20 @@ import {
   MAP_GIBS_SAT_PANE_Z,
 } from '@/lib/gibsSatellite';
 import {
+  goesIrFrames,
+  GOES_IR_ATTRIBUTION,
+  GOES_IR_NATIVE_MAX_ZOOM,
+  MAP_GOES_IR_PANE,
+  MAP_GOES_IR_PANE_Z,
+  type GoesIrFrame,
+} from '@/lib/goesIr';
+import {
+  readGoesIrEnabledPref,
+  readGoesIrPref,
+  writeGoesIrEnabledPref,
+  writeGoesIrPref,
+} from '@/lib/goesIrPrefs';
+import {
   IPMA_RADAR_ATTRIBUTION_LABEL_PT,
   IPMA_RADAR_ATTRIBUTION_LABEL_EN,
 } from '@/lib/ipmaAttribution';
@@ -133,6 +147,14 @@ interface UseMapLayersReturn {
   // Satélite NASA GIBS (raster true-color «hoje»)
   gibsSatEnabled: boolean;
   toggleGibsSat: () => void;
+  // Satélite IR GOES-East (carrossel 10 min — B5)
+  goesIrEnabled: boolean;
+  toggleGoesIr: () => void;
+  goesIrFrameList: GoesIrFrame[];
+  goesIrFrameIndex: number;
+  goesIrUserPaused: boolean;
+  handleGoesIrFrameChange: (value: number) => void;
+  handleGoesIrUserPausedChange: (paused: boolean) => void;
   // Coastal warnings
   coastalWarningsEnabled: boolean;
   coastalWarningsData: CoastalWarningsFile | null | undefined;
@@ -207,6 +229,7 @@ export function useMapLayers({
     bathymetry: false,
     seamarks: false,
     gibsSat: false,
+    goesIr: false,
   });
 
   const evictHeavy = useCallback((key: MapHeavyRasterKey) => {
@@ -715,6 +738,102 @@ export function useMapLayers({
     return () => { delete setters.gibsSat; };
   }, []);
 
+  // ── Satélite IR GOES-East (B5 — carrossel 10 min, tiles GIBS) ──
+  // Mesmo padrão do radar: slots TIME reais a terminar ~45 min atrás (o GIBS
+  // publica com ~35-40 min de latência), L.tileLayer com setUrl por frame.
+  const [goesIrEnabled, setGoesIrEnabled] = useState<boolean>(() => {
+    if (typeof window === 'undefined' || isHeroEmbed) return false;
+    return readGoesIrEnabledPref() === true;
+  });
+  const [goesIrFrameIndex, setGoesIrFrameIndex] = useState(0);
+  const [goesIrUserPaused, setGoesIrUserPaused] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false;
+    return readGoesIrPref().paused;
+  });
+  const [goesIrFrameList, setGoesIrFrameList] = useState<GoesIrFrame[]>([]);
+  const goesIrFrameIndexRef = useRef(0);
+  const goesIrUserPausedRef = useRef(goesIrUserPaused);
+  const goesIrLayerRef = useRef<L.TileLayer | null>(null);
+
+  useEffect(() => { goesIrUserPausedRef.current = goesIrUserPaused; }, [goesIrUserPaused]);
+
+  useEffect(() => {
+    if (!goesIrEnabled) {
+      if (goesIrLayerRef.current) {
+        mapInstanceRef.current?.removeLayer(goesIrLayerRef.current);
+        goesIrLayerRef.current = null;
+      }
+      return;
+    }
+    if (!isReady || !mapInstanceRef.current) return;
+    const map = mapInstanceRef.current;
+    const Leaflet = LRef.current;
+    if (!Leaflet) return;
+
+    // Slots calculados à entrada — a janela de ~2 h termina ~45 min atrás,
+    // por isso todos os tiles pedidos já existem publicados no GIBS.
+    const frames = goesIrFrames();
+    setGoesIrFrameList(frames);
+    const savedFrame = Math.max(0, Math.min(frames.length - 1, readGoesIrPref().frame));
+    goesIrFrameIndexRef.current = savedFrame;
+    setGoesIrFrameIndex(savedFrame);
+
+    let pane = map.getPane(MAP_GOES_IR_PANE);
+    if (!pane) pane = map.createPane(MAP_GOES_IR_PANE);
+    pane.style.zIndex = MAP_GOES_IR_PANE_Z;
+    pane.style.pointerEvents = 'none';
+
+    const layer = Leaflet.tileLayer(frames[savedFrame].url, {
+      pane: MAP_GOES_IR_PANE,
+      opacity: 0.85,
+      attribution: GOES_IR_ATTRIBUTION,
+      className: 'ventu-goes-ir',
+      maxNativeZoom: GOES_IR_NATIVE_MAX_ZOOM,
+      maxZoom: 19,
+    });
+    layer.addTo(map);
+    goesIrLayerRef.current = layer;
+
+    return () => {
+      if (map.hasLayer(layer)) map.removeLayer(layer);
+      goesIrLayerRef.current = null;
+    };
+  }, [goesIrEnabled, isReady, mapInstanceRef, LRef]);
+
+  const toggleGoesIr = useCallback(() => {
+    toggleHeavy('goesIr', (next) => {
+      setGoesIrEnabled(next);
+      writeGoesIrEnabledPref(next);
+      if (!next) writeGoesIrPref(goesIrUserPausedRef.current, goesIrFrameIndexRef.current);
+    });
+  }, [toggleHeavy]);
+
+  // Registo no cap de raster — usado quando outra pesada a desliga.
+  useEffect(() => {
+    const setters = heavySetRef.current;
+    setters.goesIr = (next: boolean) => {
+      setGoesIrEnabled(next);
+      writeGoesIrEnabledPref(next);
+      if (!next) writeGoesIrPref(goesIrUserPausedRef.current, goesIrFrameIndexRef.current);
+    };
+    return () => { delete setters.goesIr; };
+  }, []);
+
+  const handleGoesIrFrameChange = useCallback((value: number) => {
+    if (goesIrFrameList.length === 0) return;
+    const v = Math.max(0, Math.min(goesIrFrameList.length - 1, value));
+    goesIrFrameIndexRef.current = v;
+    setGoesIrFrameIndex(v);
+    goesIrLayerRef.current?.setUrl(goesIrFrameList[v].url);
+    if (goesIrUserPausedRef.current) writeGoesIrPref(true, v);
+  }, [goesIrFrameList]);
+
+  const handleGoesIrUserPausedChange = useCallback((paused: boolean) => {
+    goesIrUserPausedRef.current = paused;
+    setGoesIrUserPaused(paused);
+    writeGoesIrPref(paused, goesIrFrameIndexRef.current);
+  }, []);
+
   // Reconciliação do cap: mudanças por vias externas (deep link ?radar=1,
   // reset do radar, prefs) mantêm a ordem/estado internos correctos.
   useEffect(() => {
@@ -723,6 +842,7 @@ export function useMapLayers({
       bathymetry: bathymetryEnabled,
       seamarks: seamarksEnabled,
       gibsSat: gibsSatEnabled,
+      goesIr: goesIrEnabled,
     };
     for (const k of MAP_HEAVY_RASTER_KEYS) {
       const was = heavyOnRef.current[k];
@@ -740,7 +860,7 @@ export function useMapLayers({
       heavyOrderRef.current = heavyOrderRef.current.slice(1);
       heavySetRef.current[oldest]?.(false);
     }
-  }, [radarEnabled, bathymetryEnabled, seamarksEnabled, gibsSatEnabled]);
+  }, [radarEnabled, bathymetryEnabled, seamarksEnabled, gibsSatEnabled, goesIrEnabled]);
 
   // ── Coastal Warnings ──
   const [coastalWarningsEnabled, setCoastalWarningsEnabled] = useState<boolean>(() => {
@@ -1111,6 +1231,9 @@ export function useMapLayers({
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
     gibsSatEnabled, toggleGibsSat,
+    goesIrEnabled, toggleGoesIr,
+    goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
+    handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     coastalWarningsEnabled, coastalWarningsData, toggleCoastalWarnings, coastalWarningsLabel,
     stormsEnabled, stormsData, toggleStorms, stormsLabel,
   };

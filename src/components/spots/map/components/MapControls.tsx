@@ -1,6 +1,6 @@
 'use client';
 
-import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite, CloudLightning } from 'lucide-react';
+import { Maximize2, Minimize2, MapPin, Layers, Wind, HelpCircle, CloudRain, RotateCcw, Waves, Zap, Anchor, Clock, LifeBuoy, Activity, Navigation, Thermometer, Mountain, Sailboat, Satellite, SatelliteDish, CloudLightning } from 'lucide-react';
 import MapLayersMenu, { type MapLayersMenuItem } from './MapLayersMenu';
 
 export interface MapControlsProps {
@@ -53,6 +53,9 @@ export interface MapControlsProps {
   gibsSatEnabled: boolean;
   gibsSatLabel: string;
   gibsSatHint: string;
+  goesIrEnabled: boolean;
+  goesIrLabel: string;
+  goesIrHint: string;
   stormsEnabled: boolean;
   stormsLabel: string;
   stormsHint: string;
@@ -83,6 +86,7 @@ export interface MapControlsProps {
   toggleBathymetry: () => void;
   toggleSeamarks: () => void;
   toggleGibsSat: () => void;
+  toggleGoesIr: () => void;
   toggleStorms: () => void;
   toggleOnlyOn: () => void;
   toggleCoastalWarnings: () => void;
@@ -138,6 +142,16 @@ export function buildLayerMenuItems(p: MapControlsProps): MapLayersMenuItem[] {
             onToggle: p.toggleGibsSat,
             toggleAttr: 'data-map-gibs-sat-toggle',
             iconClass: 'text-data-water',
+          },
+          {
+            key: 'goesIr',
+            label: p.goesIrLabel,
+            hint: p.goesIrHint,
+            icon: <SatelliteDish className="w-4 h-4" aria-hidden />,
+            pressed: p.goesIrEnabled,
+            onToggle: p.toggleGoesIr,
+            toggleAttr: 'data-map-goes-ir-toggle',
+            iconClass: 'text-data-period',
           },
           {
             key: 'storms',

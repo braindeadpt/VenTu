@@ -194,6 +194,8 @@ export const translationsPt = {
     bathymetryLegend: 'Batimetria — m (EMODnet)',
     bathymetryContours: 'contornos 50–5000 m',
     gibsSatHint: 'Imagem real do último passe de satélite — nuvens e frentes a chegar (NASA GIBS · MODIS)',
+    satIrHint: 'Massa de nuvens em infravermelho GOES-East — células a formar-se no Atlântico, frames de ~10 min (NASA GIBS)',
+    satIrBadge: 'Satélite IR',
     showSeamarks: 'Sinalização náutica',
     hideSeamarks: 'Ocultar sinalização náutica',
     seamarksHint: 'Balizas, faróis e perigos das cartas náuticas (OpenSeaMap)',

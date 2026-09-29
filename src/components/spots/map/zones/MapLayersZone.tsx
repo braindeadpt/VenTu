@@ -13,7 +13,7 @@ import { useCallback, useEffect, useMemo } from 'react';
 import type L from 'leaflet';
 import {
   Activity, Anchor, Clock, CloudRain, LifeBuoy,
-  Mountain, Navigation, Sailboat, Satellite, CloudLightning,
+  Mountain, Navigation, Sailboat, Satellite, SatelliteDish, CloudLightning,
   Thermometer, Waves,
 } from 'lucide-react';
 import { getTranslation } from '@/lib/i18n';
@@ -175,6 +175,8 @@ export interface MapLayerCopy {
   seamarksHint: string;
   gibsSatLabel: string;
   gibsSatHint: string;
+  satIrLabel: string;
+  satIrHint: string;
   stormsLabel: string;
   stormsHint: string;
   coastalWarningsLabel: string;
@@ -224,6 +226,7 @@ export function useMapLayersFields({
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
     gibsSatEnabled, toggleGibsSat,
+    goesIrEnabled, toggleGoesIr,
     stormsEnabled, stormsData, toggleStorms,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
   } = base;
@@ -318,6 +321,8 @@ export function useMapLayersFields({
     seamarksHint: t.map.seamarksHint,
     gibsSatLabel: t.mapUiLayers.layerGibsSat,
     gibsSatHint: t.map.gibsSatHint,
+    satIrLabel: t.mapUiLayers.layerSatelliteIr,
+    satIrHint: t.map.satIrHint,
     stormsLabel: t.mapUiLayers.layerStorms,
     stormsHint: t.map.stormsHint,
     coastalWarningsLabel,
@@ -371,6 +376,17 @@ export function useMapLayersFields({
       onToggle: toggleGibsSat,
       toggleAttr: 'data-map-gibs-sat-toggle',
       iconClass: 'text-data-water',
+    },
+    {
+      key: 'goesIr',
+      group: 'time',
+      label: lyr.layerSatelliteIr,
+      hint: layerCopy.satIrHint,
+      icon: <SatelliteDish className="w-4 h-4" aria-hidden />,
+      pressed: goesIrEnabled,
+      onToggle: toggleGoesIr,
+      toggleAttr: 'data-map-goes-ir-toggle',
+      iconClass: 'text-data-period',
     },
     {
       key: 'storms',
@@ -484,6 +500,7 @@ export function useMapLayersFields({
     radarUnavailable, radarEnabled, toggleRadar,
     hoursUnavailable, hoursOn, toggleHours,
     gibsSatEnabled, toggleGibsSat,
+    goesIrEnabled, toggleGoesIr,
     hsUnavailable, hsEnabled, toggleHs,
     sstUnavailable, sstEnabled, toggleSst,
     currentsUnavailable, currentsEnabled, toggleCurrents,

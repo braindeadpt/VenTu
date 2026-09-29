@@ -11,7 +11,7 @@
  */
 
 import { useEffect } from 'react';
-import { CloudRain, RotateCcw, Waves } from 'lucide-react';
+import { CloudRain, RotateCcw, SatelliteDish, Waves } from 'lucide-react';
 import { useToast } from '@/components/ui/ToastProvider';
 import {
   MAP_RASTER_OFF_EVENT,
@@ -19,6 +19,13 @@ import {
 } from '@/lib/mapLayerBus';
 import type { BasemapLoadState } from '@/lib/map-constants';
 import type { IpmaRadarData } from '@/lib/ipmaRadar';
+import {
+  goesIrFrameClock,
+  goesIrFrameFullClock,
+  GOES_IR_CADENCE_MIN,
+  GOES_IR_STALE_MAX_AGE_MIN,
+} from '@/lib/goesIr';
+import { OpenMeteoAttribution } from '@/lib/openMeteoAttribution';
 import MapLayerToggle from '../../MapLayerToggle';
 import type { BasemapMode } from '../../MapLayerToggle';
 import RadarCarousel from '../../RadarCarousel';
@@ -63,6 +70,13 @@ interface MapLayersZoneProps {
   handleRadarFrameChange: (index: number) => void;
   handleRadarUserPausedChange: (paused: boolean) => void;
   handleRadarImmersionOpen: () => void;
+  // Carrossel de satélite IR (GOES-East, 10 min) — mesmo componente do radar.
+  goesIrEnabled: boolean;
+  goesIrFrameList: Array<{ url: string; frameTime: string }>;
+  goesIrFrameIndex: number;
+  goesIrUserPaused: boolean;
+  handleGoesIrFrameChange: (index: number) => void;
+  handleGoesIrUserPausedChange: (paused: boolean) => void;
 }
 
 export default function MapLayersZone({
@@ -99,6 +113,12 @@ export default function MapLayersZone({
   handleRadarFrameChange,
   handleRadarUserPausedChange,
   handleRadarImmersionOpen,
+  goesIrEnabled,
+  goesIrFrameList,
+  goesIrFrameIndex,
+  goesIrUserPaused,
+  handleGoesIrFrameChange,
+  handleGoesIrUserPausedChange,
 }: MapLayersZoneProps) {
   // §8 — toast do limite de raster pesadas: o cap em useMapLayers emite
   // `ventu:map-raster-off` e aqui mostra-se «X desligado para manter o mapa
@@ -113,6 +133,7 @@ export default function MapLayersZone({
         bathymetry: t.mapUiLayers.layerBathymetry,
         seamarks: t.mapUiLayers.layerSeamarks,
         gibsSat: t.mapUiLayers.layerGibsSat,
+        goesIr: t.mapUiLayers.layerSatelliteIr,
       };
       showToast(t.mapUiLayers.rasterCapToast.replace('{layer}', names[key]));
     };
@@ -202,6 +223,59 @@ export default function MapLayersZone({
           onFullscreenOpen={handleRadarImmersionOpen}
           hideScrubber={isFullscreen}
           externalScrubbing={radarScrubbing}
+        />
+      )}
+
+      {goesIrEnabled && goesIrFrameList.length > 0 && (
+        <RadarCarousel
+          className={isHeroEmbed ? 'absolute bottom-20 right-3 z-[1000] pointer-events-auto' : isFullscreen ? 'absolute z-[1000]' : 'absolute bottom-8 left-2 sm:left-auto sm:right-2 z-[1000] max-w-[min(100%,320px)] sm:max-w-none'}
+          style={{
+            // Com o radar também ligado, o badge do IR sobe ~84 px para não
+            // o tapar (o cap de raster permite as duas em simultâneo).
+            ...(isFullscreen
+              ? {
+                  bottom: Math.max(radarLift + 12, 32) + (radarEnabled ? 84 : 0),
+                  left: isMobile ? 8 : panelCollapsed ? 64 : 364,
+                }
+              : { bottom: radarEnabled ? 104 : undefined }),
+          }}
+          frames={goesIrFrameList}
+          frameIndex={goesIrFrameIndex}
+          onFrameChange={handleGoesIrFrameChange}
+          mapBusyCount={radarBusyCount}
+          userPaused={goesIrUserPaused}
+          onUserPausedChange={handleGoesIrUserPausedChange}
+          labels={{
+            badge: t.map.satIrBadge,
+            hint: t.map.satIrHint,
+            scrub: t.map.radarScrub,
+            play: t.map.radarPlay,
+            pause: t.map.radarPause,
+            paused: t.map.radarPaused,
+            ipmaAttribution: '',
+            gap: t.map.radarGap,
+            stale: t.map.radarStale,
+          }}
+          icon={<SatelliteDish className="w-3.5 h-3.5 text-data-period" aria-hidden />}
+          cadenceMin={GOES_IR_CADENCE_MIN}
+          staleMaxAgeMin={GOES_IR_STALE_MAX_AGE_MIN}
+          frameClock={goesIrFrameClock}
+          frameFullClock={goesIrFrameFullClock}
+          attribution={(
+            <>
+              <a
+                href="https://earthdata.nasa.gov/gibs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pointer-events-auto underline hover:text-fg transition-colors"
+              >
+                GOES-East © NASA GIBS
+              </a>
+              <span aria-hidden className="text-fg-muted">·</span>
+              <OpenMeteoAttribution className="pointer-events-auto underline hover:text-fg transition-colors" />
+            </>
+          )}
+          hideScrubber={isFullscreen}
         />
       )}
     </>

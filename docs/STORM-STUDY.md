@@ -147,6 +147,17 @@ Ilhas = `radar: null` (fora das bounds IPMA — honesto).
 
 ### B5 — Satélite IR animado (fonte B)
 
+**Estado: implementado** — `src/lib/goesIr.ts` (camada
+`GOES-East_ABI_Band13_Clean_Infrared`, `GoogleMapsCompatible_Level6`,
+PT10M; carrossel de 12 slots a terminar ~45 min atrás — latência real do
+produto medida no capabilities) + tileLayer num pane próprio (206, logo
+acima do GIBS true-color) + `RadarCarousel` generalizado
+(`cadenceMin`/`icon`/`attribution`/`staleMaxAgeMin`/relógio Lisbon-TZ) +
+item «Satélite IR (10 min)» no grupo TEMPO (menu desktop + sheet,
+`data-map-goes-ir-toggle`) + 5.ª key no cap de raster pesadas +
+prefs `ventu.goes-ir.state`. Badge com hora de Lisboa, gaps e «atrasado»
+>2 h; tiles sem publicar simplesmente não pintam — nunca inventados.
+
 - Camada «Satélite IR (10 min)» no grupo TEMPO: mesmo padrão GIBS +
   carrossel TIME (últimos ~2–3 h a 10 min) — herda o padrão do radar.
 - Opcional: misto IR+radar — IR mostra a massa de nuvens vinda do Atlântico,

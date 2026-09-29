@@ -26,8 +26,8 @@ describe('planHeavyRasterEnable (§8 — máx. 2 raster pesadas)', () => {
     expect(r.order).toEqual(['radar', 'bathymetry']);
   });
 
-  it('constantes: 4 pesadas conhecidas, máximo 2', () => {
-    expect(MAP_HEAVY_RASTER_KEYS).toEqual(['radar', 'bathymetry', 'seamarks', 'gibsSat']);
+  it('constantes: 5 pesadas conhecidas, máximo 2', () => {
+    expect(MAP_HEAVY_RASTER_KEYS).toEqual(['radar', 'bathymetry', 'seamarks', 'gibsSat', 'goesIr']);
     expect(MAP_HEAVY_RASTER_MAX).toBe(2);
   });
 });

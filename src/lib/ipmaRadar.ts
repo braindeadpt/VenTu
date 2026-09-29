@@ -114,7 +114,10 @@ export const RADAR_CADENCE_MIN = 5;
  * contígua, fim da lista, ou frameTime ausente/inválido). Um delta > 5 min é um
  * gap → `Math.round(delta/5) − 1` frames em falta nesse intervalo.
  */
-export function radarMissingFrames(frames: RadarFrameAsset[]): number[] {
+export function radarMissingFrames(
+  frames: RadarFrameAsset[],
+  cadenceMin: number = RADAR_CADENCE_MIN,
+): number[] {
   const out: number[] = [];
   for (let i = 0; i < frames.length; i++) {
     const a = frames[i]?.frameTime;
@@ -124,11 +127,11 @@ export function radarMissingFrames(frames: RadarFrameAsset[]): number[] {
       continue;
     }
     const deltaMin = (Date.parse(a) - Date.parse(b)) / 60_000;
-    if (!Number.isFinite(deltaMin) || deltaMin <= RADAR_CADENCE_MIN) {
+    if (!Number.isFinite(deltaMin) || deltaMin <= cadenceMin) {
       out.push(0);
       continue;
     }
-    out.push(Math.round(deltaMin / RADAR_CADENCE_MIN) - 1);
+    out.push(Math.round(deltaMin / cadenceMin) - 1);
   }
   return out;
 }

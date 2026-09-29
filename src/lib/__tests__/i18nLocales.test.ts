@@ -100,6 +100,8 @@ const ES_COGNATES = new Set([
   'Tipo',               // espanhol correcto = PT
   'Nada encontrado',    // espanhol correcto = PT
   'Verificado',         // espanhol correcto = PT
+  'Satélite IR',        // «Satélite» é espanhol correcto = PT
+  'Satélite IR (10 min)', // idem — nome da camada IR
   'Ver perfil',         // espanhol correcto = PT
   'Filtros',            // espanhol correcto = PT (painel/sheet «Explorar», M3)
   'Filtros ({count})',  // espanhol correcto = PT (idem)

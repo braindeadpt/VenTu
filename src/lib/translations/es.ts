@@ -249,6 +249,8 @@ export const translationsEs = {
     bathymetryLegend: 'Batimetría — m (EMODnet)',
     bathymetryContours: 'isobatas 50–5000 m',
     gibsSatHint: 'Imagen real del último paso del satélite — nubes y frentes llegando (NASA GIBS · MODIS)',
+    satIrHint: 'Masa de nubes en infrarrojo GOES-East — células formándose en el Atlántico, fotogramas de ~10 min (NASA GIBS)',
+    satIrBadge: 'Satélite IR',
     showSeamarks: 'Señalización náutica',
     hideSeamarks: 'Ocultar señalización náutica',
     seamarksHint: 'Balizas, faros y peligros de las cartas náuticas (OpenSeaMap)',

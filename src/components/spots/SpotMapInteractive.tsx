@@ -218,6 +218,9 @@ export default function SpotMapInteractive({
     bathymetryEnabled, toggleBathymetry,
     seamarksEnabled, toggleSeamarks,
     gibsSatEnabled, toggleGibsSat,
+    goesIrEnabled, toggleGoesIr,
+    goesIrFrameList, goesIrFrameIndex, goesIrUserPaused,
+    handleGoesIrFrameChange, handleGoesIrUserPausedChange,
     stormsEnabled, stormsData, toggleStorms,
     coastalWarningsEnabled, toggleCoastalWarnings, coastalWarningsLabel,
     hoursFile, hoursOn, hoursLive, hoursFrame, hoursUserPaused, hoursPrefSet,
@@ -611,6 +614,9 @@ export default function SpotMapInteractive({
     gibsSatEnabled,
     gibsSatLabel: layerCopy.gibsSatLabel,
     gibsSatHint: layerCopy.gibsSatHint,
+    goesIrEnabled,
+    goesIrLabel: layerCopy.satIrLabel,
+    goesIrHint: layerCopy.satIrHint,
     stormsEnabled,
     stormsLabel: layerCopy.stormsLabel,
     // Sem tempestades na região ou ficheiro stale → hint «indisponível»
@@ -642,6 +648,7 @@ export default function SpotMapInteractive({
     toggleBathymetry,
     toggleSeamarks,
     toggleGibsSat,
+    toggleGoesIr,
     toggleStorms,
     toggleOnlyOn,
     toggleCoastalWarnings,
@@ -755,6 +762,12 @@ export default function SpotMapInteractive({
               handleRadarFrameChange={handleRadarFrameChange}
               handleRadarUserPausedChange={handleRadarUserPausedChange}
               handleRadarImmersionOpen={handleRadarImmersionOpen}
+              goesIrEnabled={goesIrEnabled}
+              goesIrFrameList={goesIrFrameList}
+              goesIrFrameIndex={goesIrFrameIndex}
+              goesIrUserPaused={goesIrUserPaused}
+              handleGoesIrFrameChange={handleGoesIrFrameChange}
+              handleGoesIrUserPausedChange={handleGoesIrUserPausedChange}
             />
 
             <MapExploreZone
